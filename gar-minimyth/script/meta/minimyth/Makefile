@@ -62,6 +62,7 @@ BUILDDEPS = \
 	utils/coreutils \
 	devel/fakeroot \
 	utils/file \
+	utils/findutils \
 	utils/squashfs \
 	utils/tar \
 	utils/util-linux \
@@ -82,6 +83,3 @@ build-custom:
 
 install-custom:
 	@make -s -f minimyth.mk mm-install DESTIMG=$(DESTIMG)
-
-distro:
-	@make -s -f minimyth.mk mm-make-distro DESTIMG=$(DESTIMG)

@@ -5,6 +5,7 @@ build_system_bins = $(strip $(sort \
 	$(build_system_bins_coreutils) \
 	$(build_system_bins_cvs) \
 	$(build_system_bins_diffutils) \
+	$(build_system_bins_file) \
 	$(build_system_bins_findutils) \
 	$(build_system_bins_flex) \
 	$(build_system_bins_gawk) \
@@ -70,7 +71,8 @@ build_system_bins_coreutils = \
 	tr \
 	true \
 	uname \
-	uniq
+	uniq \
+	wc
 
 build_system_bins_cvs = \
 	cvs
@@ -78,6 +80,10 @@ build_system_bins_cvs = \
 # Overridden by binaries from package utils/diffutils.
 build_system_bins_diffutils = \
 	cmp
+
+# Overridden by binaries from package utils/file.
+build_system_bins_file = \
+	file
 
 # Overridden by binaries from package utils/findutils.
 build_system_bins_findutils = \
