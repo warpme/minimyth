@@ -1,7 +1,7 @@
 GARNAME = lirc
 GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-libusb.patch
 LICENSE = GPL2
@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11 lirc/libirman
-DEPENDS += lirc/lirc.any lirc/lirc.mceusb lirc/lirc.serial
+DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.mceusb lirc/lirc.serial lirc/lirc.streamzap
 
 WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
 
