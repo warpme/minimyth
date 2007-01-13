@@ -1,31 +1,39 @@
 #!/bin/sh
 
-# Export the Minimyth environment variables (for variables on the boot command line).
-[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 . /etc/minimyth.d/env.script
-mm_command_run "sh /etc/minimyth.d/fs.script"
-mm_command_run "sh /etc/minimyth.d/ld.script"
-mm_command_run "sh /etc/minimyth.d/dev.script"
-mm_command_run "sh /etc/minimyth.d/log.script"
-mm_command_run "sh /etc/minimyth.d/network.script"
-mm_command_run "sh /etc/minimyth.d/core.script"
-# Export the Minimyth environment variables (for variables in the minimyth.conf file).
-[ -n "`mm_var_get MM_DEBUG`" ] && set -x
-. /etc/minimyth.d/env.script
-mm_command_run "sh /etc/minimyth.d/mythtv.script"
-mm_command_run "sh /etc/minimyth.d/minimyth.script"
-mm_command_run "sh /etc/minimyth.d/extras.script"
-mm_command_run "sh /etc/minimyth.d/sensors.script"
-mm_command_run "sh /etc/minimyth.d/acpi.script"
-mm_command_run "sh /etc/minimyth.d/time.script"
-mm_command_run "sh /etc/minimyth.d/telnet.script"
-mm_command_run "sh /etc/minimyth.d/web.script"
-mm_command_run "sh /etc/minimyth.d/mount.script"
-mm_command_run "sh /etc/minimyth.d/sound.script"
-mm_command_run "sh /etc/minimyth.d/video.script"
-mm_command_run "sh /etc/minimyth.d/lirc.script"
-mm_command_run "sh /etc/minimyth.d/mythdb.script"
-mm_command_run "sh /etc/minimyth.d/x.script"
+
+if [ "`mm_var_get MM_INIT_MODE`" = "sh" ] ; then
+    echo "init: using 'sh' mode."
+    mm_command_run "sh /etc/minimyth.d/fs.script"
+    mm_command_run "sh /etc/minimyth.d/ld.script"
+    mm_command_run "sh /etc/minimyth.d/dev.script"
+    mm_command_run "sh /etc/minimyth.d/log.script"
+    mm_command_run "sh /etc/minimyth.d/network.script"
+    mm_command_run "sh /etc/minimyth.d/core.script"
+    mm_command_run "sh /etc/minimyth.d/mythtv.script"
+    mm_command_run "sh /etc/minimyth.d/minimyth.script"
+    mm_command_run "sh /etc/minimyth.d/extras.script"
+    mm_command_run "sh /etc/minimyth.d/sensors.script"
+    mm_command_run "sh /etc/minimyth.d/acpi.script"
+    mm_command_run "sh /etc/minimyth.d/time.script"
+    mm_command_run "sh /etc/minimyth.d/telnet.script"
+    mm_command_run "sh /etc/minimyth.d/web.script"
+    mm_command_run "sh /etc/minimyth.d/mount.script"
+    mm_command_run "sh /etc/minimyth.d/sound.script"
+    mm_command_run "sh /etc/minimyth.d/video.script"
+    mm_command_run "sh /etc/minimyth.d/lirc.script"
+    mm_command_run "sh /etc/minimyth.d/mythdb.script"
+    mm_command_run "sh /etc/minimyth.d/x.script"
+else
+    echo "init: using 'make' mode."
+    mm_command_run "mount -n -t tmpfs -o size=512K tmpfs /tmp"
+    mm_command_run "cp -rf /etc/rc.d /tmp/"
+    mm_command_run "make -s -j64 -C /tmp/rc.d all"
+    if [ -z "`mm_var_get MM_DEBUG`" ] ; then
+        mm_command_run "rm -rf /tmp/rc.d"
+    fi
+fi
+
 # Start X (if not debugging)
 if [ -z "`mm_var_get MM_DEBUG`" ] && [ -z "`mm_var_get MM_NO_X`" ] ; then
     xinit &
