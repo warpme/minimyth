@@ -1,8 +1,7 @@
 GARNAME = strace
-GARVERSION = 4.5.13
+GARVERSION = 4.5.14
 CATEGORIES = utils
-MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-MASTER_SITES += http://gd.tuwien.ac.at/opsys/linux/Owl/pool/sources/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
