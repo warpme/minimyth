@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.7
+GARVERSION = $(ALSA_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c kernel/alsa-driver
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -18,6 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += kernel/alsa-driver/package-api.mk
 include ../../gar.mk
 
 # The default STAGE_EXPORTS includes libdir, which confuses libtool.
