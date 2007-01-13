@@ -44,6 +44,7 @@ CONFIGURE_ARGS = \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
+	--disable-freebox \
 	--disable-dbox2 \
 	--disable-hdhomerun \
 	--disable-crciprec \
