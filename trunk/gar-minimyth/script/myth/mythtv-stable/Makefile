@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
+PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch $(DISTNAME)-gant.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
