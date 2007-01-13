@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis lib/zlib net/samba X11/freetype X11/X11 X11/libXvMCW
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis lib/zlib net/samba X11/freetype X11/X11 X11/Mesa X11/libXvMCW
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -62,4 +62,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxine.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libxine.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libxine.pc
 	@$(MAKECOOKIE)
