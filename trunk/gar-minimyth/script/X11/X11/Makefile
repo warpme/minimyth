@@ -41,9 +41,6 @@ ifneq ($(DESTIMG),build)
 BUILD_ARGS += CROSSCOMPILEDIR="$(build_DESTDIR)$(build_prefix)/$(GARHOST)/bin"
 endif
 
-BUILD_ENV     = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
-
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk kernel/linux/package-api.mk X11/fontconfig/package-api.mk
 include ../../gar.mk
 

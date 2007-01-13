@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c X11/X11 X11/freetype lib/libpng lirc/lirc myth/xine-lib
-BUILDDEPS = devel/pkgconfig
+DEPENDS = lang/c X11/X11 X11/freetype lib/libpng lirc/lirc myth/xine-lib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -28,12 +27,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-readline \
 	--with-aalib-prefix=$(DESTDIR)$(prefix) \
 	--with-aalib-exec-prefix=$(DESTDIR)$(prefix)
-CONFIGURE_ENV  = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
 include ../../gar.mk
-
-CFLAGS := $(CFLAGS) -Wl,-rpath-link,$(DESTDIR)$(x11libdir)
 
 pre-configure:
 	@echo "ac_cv_path_CURL_CONFIG=no"  >  $(WORKSRC)/config.cache

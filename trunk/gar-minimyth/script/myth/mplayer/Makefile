@@ -139,10 +139,8 @@ CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_WITH)
 
 CONFIGURE_ENV  = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig" \
 	DESTDIR="$(DESTDIR)"
 BUILD_ENV  = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig" \
 	DESTDIR="$(DESTDIR)"
 
 GAR_EXTRA_CONF += myth/mplayer/configure.mk
