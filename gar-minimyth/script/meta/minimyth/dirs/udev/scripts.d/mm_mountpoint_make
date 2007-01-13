@@ -41,11 +41,7 @@ mountpoint_remove()
 {
     symlink="$1"
 
-    mounted=`cat /proc/mounts | grep -c "^[^ ]* /media/${symlink}"`
-    while [ ${mounted} != '0' ] ; do
-        umount -l /media/${symlink}
-        mounted=`cat /proc/mounts | grep -c "^[^ ]* /media/${symlink}"`
-    done
+    umount -l /media/${symlink} || true
     rmdir /media/${symlink}
 }
 
@@ -60,7 +56,7 @@ mountpoint_add()
         hd[a-z])
             ;;
         sd[a-z])
-            mount -t auto /dev/${symlink} /media/${symlink}
+            mount -t auto /dev/${symlink} /media/${symlink} || true
             ;;
         sr[0-9]*)
             ;;
