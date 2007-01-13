@@ -1,8 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 20050720
+GARVERSION = 1.1.0
 CATEGORIES = myth
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/xine/
-MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/xine/
+MASTER_SITES += http://cambuca.ldhs.cetuc.puc-rio.br/~miguel/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = 
@@ -42,20 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 
 include ../../gar.mk
 
-cvs//%/$(DISTNAME).tar.gz:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar -zc $(DISTNAME) -f $(DISTNAME).tar.gz
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.gz:
-	@$(MAKECOOKIE)
-
 pre-configure:
-	@cd $(WORKSRC) ; ./autogen.sh noconfig
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
