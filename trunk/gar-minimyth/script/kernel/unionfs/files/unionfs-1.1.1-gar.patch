@@ -1,40 +1,33 @@
-diff -Naur unionfs-20050921-1517-old/Makefile unionfs-20050921-1517-new/Makefile
---- unionfs-20050921-1517-old/Makefile	2005-09-21 12:17:02.000000000 -0700
-+++ unionfs-20050921-1517-new/Makefile	2005-09-21 19:55:54.000000000 -0700
-@@ -1,5 +1,5 @@
- #
--# Makefile for the Linux 2.4 unionfs
-+# Makefile for the Linux 2.4/2.6 unionfs
- #
- 
- # this should point to where your kernel headers are
-@@ -10,6 +10,7 @@
+diff -Naur unionfs-1.1.1-old/Makefile unionfs-1.1.1-new/Makefile
+--- unionfs-1.1.1-old/Makefile	2005-10-25 17:50:19.000000000 -0700
++++ unionfs-1.1.1-new/Makefile	2005-11-02 20:24:30.000000000 -0800
+@@ -8,6 +8,7 @@
  # This is where the make install target will put stuff
  PREFIX   = /usr/local
  MANDIR   = ${PREFIX}/man
 +SBINDIR  = ${PREFIX}/sbin
  MODPREFIX=
- VERSION=20050921-1517
+ VERSION  = 1.1.1
  TAROPTS = czvf
-@@ -57,7 +58,7 @@
+@@ -49,7 +50,7 @@
  	@echo ""
  
- unionfs2.6:
+ unionfs.ko: FRC
 -	make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk modules
 +	make -C ${LINUXSRC} SUBDIRS=`pwd` FISTDEVMK=`pwd`/fistdev.mk modules
  
- unionfs2.4: ${obj-m}
+ FRC:
  
-@@ -84,7 +85,7 @@
+@@ -75,7 +76,7 @@
+ 	ctags *.[ch]
  
  clean:
- ifeq ($(KERNELVERSION),2.6)
 -	-make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk clean
 +	-make -C ${LINUXSRC} SUBDIRS=`pwd` FISTDEVMK=`pwd`/fistdev.mk clean
- endif
  	rm -f ${unionfs-objs} ${obj-m} ${obj-m:.o=.ko} *.d .*.flags \#* *~
  	rm -f ${BINS} TAGS tags
-@@ -96,10 +97,10 @@
+ 	rm -f unionfs-${VERSION}.tar${COMPEXT}
+@@ -86,10 +87,10 @@
  PHONY. utils: ${BINS}
  
  install-utils: utils
@@ -49,16 +42,16 @@ diff -Naur unionfs-20050921-1517-old/Makefile unionfs-20050921-1517-new/Makefile
  	mkdir -p ${MANDIR}/man4
  	mkdir -p ${MANDIR}/man8
  	cp man/unionfs.4 ${MANDIR}/man4
-@@ -109,18 +110,16 @@
- install-mod: unionfs$(KERNELVERSION)
+@@ -99,18 +100,16 @@
+ install-mod: unionfs.ko
  	mkdir -p ${MODPREFIX}/${MODDIR}/kernel/fs
- 	if [ -f unionfs.ko ] ; then cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs ; else cp unionfs.o ${MODPREFIX}/${MODDIR}/kernel/fs ; fi
+ 	cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs
 -	-/sbin/depmod -a
  
  install: install-utils install-mod
  
  uninstall:
- 	if [ -f unionfs.ko ] ; then rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.ko ; else rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.o ; fi
+ 	rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.ko
 -	-/sbin/depmod -a
  	rm ${MANDIR}/man8/unionctl.8
  	rm ${MANDIR}/man8/uniondbg.8
