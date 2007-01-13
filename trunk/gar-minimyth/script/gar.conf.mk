@@ -110,8 +110,8 @@ main_LDFLAGS +=
 
 # allow us to link to libraries we installed
 build_CPPFLAGS += 
-build_CFLAGS += -march=pentium-mmx -pipe -Os -fomit-frame-pointer -ffast-math
-#build_CXXFLAGS += -march=pentium-mmx -pipe -Os -fomit-frame-pointer -ffast-math
+build_CFLAGS += -march=$(build_GARCH) -O2
+#build_CXXFLAGS += -march=$(build_GARCH) -O2
 build_LDFLAGS += 
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
