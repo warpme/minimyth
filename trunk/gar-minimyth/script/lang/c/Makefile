@@ -6,7 +6,16 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lib/libgcc
+DEPENDS    = lib/libgcc
+BUILDDEPS  = lang/c
+# Development tools often used when building c language programs.
+BUILDDEPS += \
+	devel/bison \
+	devel/flex \
+	devel/gettext \
+	devel/autoconf \
+	devel/automake \
+	devel/libtool
 
 include ../../gar.mk
 
