@@ -16,7 +16,7 @@ DEPENDS = \
 	utils/busybox \
 	system/devfsd \
 	devel/gdb \
-	kernel/linux kernel/drm \
+	kernel/linux kernel/alsa-driver kernel/drm \
 	lirc/lirc \
 	utils/lm_sensors \
 	kernel/module-init-tools \
