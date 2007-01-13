@@ -30,6 +30,7 @@ DEPENDS = \
 	myth/mythtv-$(mm_MYTH_VERSION) \
 	net/ntp \
 	X11/nvidia \
+	utils/pciutils \
 	net/portmap \
 	system/powernowd \
 	qt/qt \
@@ -41,6 +42,7 @@ DEPENDS = \
 	system/sysvinit \
 	utils/transcode \
 	system/udev \
+	utils/usbutils \
 	utils/util-linux \
 	net/wakelan \
 	net/webfs \
@@ -70,3 +72,6 @@ build-custom:
 
 install-custom:
 	@make -s -f minimyth.mk mm-install DESTIMG=$(DESTIMG)
+
+distro:
+	@make -s -f minimyth.mk mm-make-distro DESTIMG=$(DESTIMG)
