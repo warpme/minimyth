@@ -22,6 +22,7 @@ DEPENDS = \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
+	utils/lsdvd \
 	X11/Mesa \
 	kernel/module-init-tools \
 	myth/mplayer \
