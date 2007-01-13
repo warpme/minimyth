@@ -1,5 +1,5 @@
 GARNAME = glproto
-GARVERSION = 1.4.3
+GARVERSION = X11R$(XORG_VERSION)-1.4.3
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/proto/
 DISTFILES = $(DISTNAME).tar.bz2

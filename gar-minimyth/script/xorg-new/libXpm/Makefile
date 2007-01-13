@@ -1,5 +1,5 @@
 GARNAME = libXpm
-GARVERSION = 3.5.4.2
+GARVERSION = X11R$(XORG_VERSION)-3.5.4.2
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
 DISTFILES = $(DISTNAME).tar.bz2

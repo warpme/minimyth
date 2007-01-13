@@ -1,5 +1,5 @@
 GARNAME = fontsproto
-GARVERSION = 2.0.2
+GARVERSION = X11R$(XORG_VERSION)-2.0.2
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/proto/
 DISTFILES = $(DISTNAME).tar.bz2
