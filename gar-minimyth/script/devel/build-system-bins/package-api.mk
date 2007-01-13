@@ -13,6 +13,7 @@ build_system_bins = $(strip $(sort \
 	$(build_system_bins_grep) \
 	$(build_system_bins_gzip) \
 	$(build_system_bins_util_linux) \
+	$(build_system_bins_m4) \
 	$(build_system_bins_make) \
 	$(build_system_bins_patch) \
 	$(build_system_bins_perl) \
@@ -47,6 +48,7 @@ build_system_bins_coreutils = \
 	cut \
 	date \
 	echo \
+	env \
 	expr \
 	false \
 	head \
@@ -110,6 +112,10 @@ build_system_bins_gzip = \
 # Overridden by binaries from package utils/util-linux.
 build_system_bins_util_linux = \
 	arch
+
+# Overridden by binaries from package utils/m4.
+build_system_bins_m4 = \
+	m4
 
 # Overridden by binaries from package devel/make.
 build_system_bins_make = \
