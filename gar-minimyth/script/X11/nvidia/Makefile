@@ -27,9 +27,11 @@ NVIDIA_LIBDIR = $(libdir)/nvidia
 NVIDIA_BINDIR = $(bindir)/nvidia
 
 install-custom:
+	@rm -rf $(DESTDIR)$(NVIDIA_BINDIR)
 	@mkdir -p $(DESTDIR)$(NVIDIA_BINDIR)
 	@install $(WORKSRC)/usr/bin/nvidia-xconfig \
 		$(DESTDIR)$(NVIDIA_BINDIR)/nvidia-xconfig
+	@rm -rf $(DESTDIR)$(NVIDIA_LIBDIR)
 	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)
 	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/drivers
 	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/extensions
