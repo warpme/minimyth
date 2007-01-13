@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch $(DISTNAME)-gant.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -21,6 +21,7 @@ BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
+	--compile-type="release" \
 	--prefix="$(prefix)" \
 	--disable-ccache \
 	--disable-distcc \
@@ -31,15 +32,21 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--enable-proc-opt \
 	--enable-mmx \
+	--disable-iwmmxt \
 	--disable-altivec \
 	--disable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
 	--enable-dvd \
+	--disable-valgrind \
+	--enable-frontend \
+	--enable-backend \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
+	--disable-dbox2 \
+	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
 	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
@@ -49,10 +56,11 @@ CONFIGURE_ARGS = \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-xvmc \
-	--enable-xvmc-vld \
+	--enable-xvmc-pro \
 	--disable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx
+
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
