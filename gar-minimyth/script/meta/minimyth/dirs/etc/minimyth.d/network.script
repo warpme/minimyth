@@ -4,7 +4,14 @@
 
 # Bring up the local loopback
 ifconfig lo 127.0.0.1
-# Get IP address and other IP parameters
+# Get the IP address and other IP parameters.
+# If an IP address was already obtained then request the same address.
 mkdir -p /tmp/etc
 mkdir -p /tmp/etc/minimyth.d
-udhcpc -s /etc/minimyth.d/dhcp.script
+ip=`ifconfig eth0 | grep '^ *inet addr:' | sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+echo $ip
+if [ -z $ip ] ; then
+    udhcpc -s /etc/minimyth.d/dhcp.script -i eth0
+else
+    udhcpc -s /etc/minimyth.d/dhcp.script -i eth0 -r $ip
+fi
