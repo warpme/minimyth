@@ -25,7 +25,7 @@ garchive:
 	@make -C script garchive
 
 install:
-	@echo "error: 'make build' must be run in directory 'script/meta/minimyth'."
+	@echo "error: 'make install' must be run in directory 'script/meta/minimyth'."
 	@exit 1
 
 tarball:
