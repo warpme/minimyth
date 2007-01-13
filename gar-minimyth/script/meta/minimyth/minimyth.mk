@@ -398,34 +398,41 @@ mm-install:
 	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).cmg     $(mm_DESTDIR)/$(mm_EXTRASNAME).cmg
 	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2
 	@cp -rf $(WORKSRC)/distro.d                 $(mm_DESTDIR)/distro.d
-	@su -c " \
-		mkdir -p $(mm_TFTPDIR) ; \
-		\
-		rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-		cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-		\
-		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
-			mkdir -p $(mm_TFTPDIR) ; \
+	@if [ $(mm_INSTALL_CRAMFS) = yes ] || [ $(mm_INSTALL_NFS) = yes ] ; then \
+		su -c " \
+			if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
+				mkdir -p $(mm_TFTPDIR) ; \
+				\
+				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				\
+				mkdir -p $(mm_TFTPDIR) ; \
+				\
+				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
+				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME) $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
+				\
+				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
+				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).cmg $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
+			fi ; \
 			\
-			rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
-			cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME) $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
+			if [ $(mm_INSTALL_NFS) = yes ] ; then \
+				mkdir -p $(mm_TFTPDIR) ; \
+				\
+				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				\
+				mkdir -p $(mm_NFSDIR) ; \
+				\
+				rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
+				mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME) ; \
+				tar -C $(mm_NFSDIR)/$(mm_NFSNAME) \
+					-jxf $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2 ; \
+				\
+				rm -rf $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
+				mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
+				tar -C $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) \
+					-jxf $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2 ; \
+			fi ; \
 			\
-			rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
-			cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).cmg $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
-		fi ; \
-		\
-		if [ $(mm_INSTALL_NFS) = yes ] ; then \
-			mkdir -p $(mm_NFSDIR) ; \
-			\
-			rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
-			mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME) ; \
-			tar -C $(mm_NFSDIR)/$(mm_NFSNAME) \
-				-jxf $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2 ; \
-			\
-			rm -rf $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
-			mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
-			tar -C $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) \
-				-jxf $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2 ; \
-		fi ; \
-		\
-	"
+		" ; \
+	fi
