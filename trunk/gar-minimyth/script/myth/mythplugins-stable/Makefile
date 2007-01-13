@@ -41,14 +41,17 @@ CONFIGURE_ARGS += \
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
 BUILD_ENV     += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
 INSTALL_ARGS  += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
