@@ -31,7 +31,7 @@ dev: /dev
 	touch /dev
 
 dev-dev:
-	mount -t ramfs none /dev
+	mount -t tmpfs tmpfs /dev
 	touch dev-dev
 
 /dev/console: dev-dev
