@@ -655,26 +655,28 @@ mm_hardware_pci2kernel_map() {
     subvendor=$6
     subdevice=$7
 
-    /bin/cat /etc/hardware.d/pci2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
-    {
-        found=
-        while read map ; do
-            if /usr/bin/test -n "${map}" ; then
-                map_class_prog=`   /bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-                map_vendor=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                map_device=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                map_kernel_module=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
-                   ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
-                   ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_kernel_module}
+    if /usr/bin/test -n "${class}" ; then
+        /bin/cat /etc/hardware.d/pci2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_class_prog=`   /bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
+                    map_vendor=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    map_device=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    map_kernel_module=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
+                    if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
+                       ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
+                       ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
+                        if /usr/bin/test -z "${found}" ; then
+                            found=1
+                            /bin/echo ${map_kernel_module}
+                        fi
                     fi
                 fi
-            fi
-        done
-    }
+            done
+        }
+    fi
 }
 
 mm_hardware_pci2x_map() {
@@ -686,44 +688,108 @@ mm_hardware_pci2x_map() {
     subvendor=$6
     subdevice=$7
 
-    /bin/cat /etc/hardware.d/pci2x.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
-    {
-        found=
-        while read map ; do
-            if /usr/bin/test -n "${map}" ; then
-                map_class_prog=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-                map_vendor=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                map_device=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                map_x_driver=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
-                   ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
-                   ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_x_driver}
+    if /usr/bin/test -n "${class}" ; then
+        /bin/cat /etc/hardware.d/pci2x.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_class_prog=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
+                    map_vendor=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    map_device=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    map_x_driver=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
+                    if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
+                       ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
+                       ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
+                        if /usr/bin/test -z "${found}" ; then
+                            found=1
+                            /bin/echo ${map_x_driver}
+                        fi
                     fi
                 fi
-            fi
-        done
-    }
+            done
+        }
+    fi
 }
 
 mm_hardware_x2kernel_map() {
     x_driver=$1
 
-    /bin/cat /etc/hardware.d/x2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${x_driver}," |
-    {
-        found=
-        while read map ; do
-            if /usr/bin/test -n "${map}" ; then
-                map_kernel_module=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-            fi
-            if /usr/bin/test -z "${found}" ; then
-                found=1
-                /bin/echo ${map_kernel_module}
-            fi
-        done
-    }
+    if /usr/bin/test -n "${x_driver}" ; then
+        /bin/cat /etc/hardware.d/x2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${x_driver}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_kernel_module=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
+                fi
+                if /usr/bin/test -z "${found}" ; then
+                    found=1
+                    /bin/echo ${map_kernel_module}
+                fi
+            done
+        }
+    fi
+}
+
+mm_hardware_usb_process() {
+    usb_process_function=$1
+
+    /usr/sbin/lsusb | /bin/sed -e 's%Bus \([^ ]*\) Device \([^:]*\): ID \([^:]*\):\([^ ]*\) .*$%\1 \2 \3\ \4%' | 
+    while read usb ; do
+        index=1            ; bus=`    /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
+        index=$((index+1)) ; device=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
+        index=$((index+1)) ; vendor=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
+        index=$((index+1)) ; product=`/bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
+        /bin/echo `${usb_process_function} ${bus} ${device} ${vendor} ${product}`
+    done |
+    mm_uniq
+}
+
+mm_hardware_usb2lirc_map() {
+    bus=$1
+    device=$2
+    vendor=$3
+    product=$4
+
+    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/usb2lirc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    if /usr/bin/test -z "${found}" ; then
+                        found=1
+                        /bin/echo ${map_driver}
+                    fi
+                fi
+            done
+        }
+    fi
+}
+
+mm_hardware_usb2lcdproc_map() {
+    bus=$1
+    device=$2
+    vendor=$3
+    product=$4
+
+    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/usb2lcdproc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    if /usr/bin/test -z "${found}" ; then
+                        found=1
+                        /bin/echo ${map_driver}
+                    fi
+                fi
+            done
+        }
+    fi
 }
 
 mm_hardware_cpu_get() {

@@ -9,6 +9,23 @@
 start() {
     mm_message_output info 'starting remote control ...'
 
+    # lircd is already running, so return.
+    if /usr/bin/test -n "`/bin/pidof lircd`" ; then
+        return
+    fi
+
+    # No LIRC driver was provided, so see whether or not we can autodetect it.
+    if /usr/bin/test -z ${MM_LIRC_DRIVER} ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_DRIVER not set. attempting to autodetect remote control receiver."
+        MM_LIRC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lirc_map`
+        if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
+            /usr/bin/logger -t minimyth -p "local0.info" "autodetected remote control receiver '${MM_LIRC_DRIVER}'."
+            LIRC_REMOTE=${MM_LIRC_REMOTE}
+            /usr/bin/test -e /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf && . /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
+            /usr/bin/test -n "${LIRC_REMOTE}" && MM_LIRC_REMOTE=${LIRC_REMOTE}
+        fi
+    fi
+
     # Load the LIRC configuration files.
     if /usr/bin/test -n ${MM_LIRC_REMOTE} ; then
         if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
@@ -60,11 +77,7 @@ start() {
 stop() {
     mm_message_output info 'stopping remote control ...'
 
-    if /usr/bin/test -f "/var/run/lircd.pid" ; then
-        pid=`/bin/cat /var/run/lircd.pid`
-        /bin/kill -9 ${pid}
-        /bin/rm -f /var/run/lircd.pid
-    fi
+    /usr/bin/test -n "`/bin/pidof lircd`" && /usr/bin/killall lircd
 }
 
 case $1 in

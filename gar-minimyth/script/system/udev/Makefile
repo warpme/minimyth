@@ -54,5 +54,6 @@ configdir   := $(sysconfdir)/udev
 udevdir     := $(rootdir)/dev
 
 pre-install:
+	@rm -rf $(DESTDIR)$(elibdif)/udev
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@$(MAKECOOKIE)

@@ -2,7 +2,7 @@ GARNAME = usbutils
 GARVERSION = 0.72
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-usb/
-DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
+DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY) usb.ids
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -22,4 +22,8 @@ include ../../gar.mk
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+extract-usb.ids:
+	@cp -f $(DOWNLOADDIR)/usb.ids $(WORKSRC)/usb.ids
 	@$(MAKECOOKIE)
