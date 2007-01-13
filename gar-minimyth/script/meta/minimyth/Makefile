@@ -32,6 +32,7 @@ DEPENDS = \
 	net/ntp \
 	X11/nvidia \
 	net/portmap \
+	system/powernowd \
 	qt/qt \
 	X11/rxvt \
 	system/splashutils \
