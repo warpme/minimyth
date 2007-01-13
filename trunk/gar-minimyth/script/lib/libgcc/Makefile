@@ -20,7 +20,16 @@ build-custom:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@cp -af $(CROSS_GCC_LIBDIR)/libgcc* $(DESTDIR)$(elibdir)
+	@mkdir -p $(DESTDIR)$(elibdir)
+	@$(if $(wildcard $(CROSS_GCC_LIBDIR)), \
+		cp -af $(CROSS_GCC_LIBDIR)/libgcc*    $(DESTDIR)$(elibdir) ; \
+	)
+	@$(if $(wildcard $(CROSS_GCC_DIR)/lib32), \
+		cp -af $(CROSS_GCC_DIR)/lib32/libgcc* $(DESTDIR)$(elibdir) ; \
+	)
+	@$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
+		cp -af $(CROSS_GCC_DIR)/lib64/libgcc* $(DESTDIR)$(elibdir) ; \
+	)
 	@$(MAKECOOKIE)
 
 CROSSIMG = $(DESTIMG)

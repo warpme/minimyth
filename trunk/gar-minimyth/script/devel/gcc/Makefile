@@ -68,16 +68,12 @@ configure-custom:
 post-install:
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
+	@# Native compile
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
-		rm -f $(DESTDIR)$(libdir)/libstdc++.la ; \
-		rm -f $(DESTDIR)$(libdir)/libsupc++.la ; \
 		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
 	)
+	@# Cross compile
 	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
-		$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
-			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
-			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
-		) \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-gcc $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cc ; \

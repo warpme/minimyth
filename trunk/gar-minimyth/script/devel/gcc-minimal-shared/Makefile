@@ -59,12 +59,3 @@ configure-custom:
 	@mkdir -p $(WORKBLD)
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)
-
-post-install:
-	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
-		$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
-			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
-			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
-		) \
-	)
-	@$(MAKECOOKIE)
