@@ -1,6 +1,6 @@
 diff -Naur MPlayer-1.0pre8-old/codec-cfg.c MPlayer-1.0pre8-new/codec-cfg.c
 --- MPlayer-1.0pre8-old/codec-cfg.c	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/codec-cfg.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/codec-cfg.c	2006-08-22 12:30:07.000000000 -0700
 @@ -178,6 +178,7 @@
  		{"ZRMJPEGIT", IMGFMT_ZRMJPEGIT},
  		{"ZRMJPEGIB", IMGFMT_ZRMJPEGIB},
@@ -11,7 +11,7 @@ diff -Naur MPlayer-1.0pre8-old/codec-cfg.c MPlayer-1.0pre8-new/codec-cfg.c
  
 diff -Naur MPlayer-1.0pre8-old/configure MPlayer-1.0pre8-new/configure
 --- MPlayer-1.0pre8-old/configure	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/configure	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/configure	2006-08-22 12:30:07.000000000 -0700
 @@ -422,7 +422,8 @@
    --with-xmmslibdir=DIR    libxmms.so.1 in DIR
    --with-cdparanoiaincdir=DIR  cdparanoia headers in DIR (*)
@@ -147,7 +147,7 @@ diff -Naur MPlayer-1.0pre8-old/configure MPlayer-1.0pre8-new/configure
  $_def_xinerama
 diff -Naur MPlayer-1.0pre8-old/etc/codecs.conf MPlayer-1.0pre8-new/etc/codecs.conf
 --- MPlayer-1.0pre8-old/etc/codecs.conf	2006-06-11 11:35:46.000000000 -0700
-+++ MPlayer-1.0pre8-new/etc/codecs.conf	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/etc/codecs.conf	2006-08-22 12:30:07.000000000 -0700
 @@ -124,6 +124,7 @@
    fourcc mx5p        ; MPEG IMX 625/50 (50 Mb/s)
    driver ffmpeg
@@ -158,7 +158,7 @@ diff -Naur MPlayer-1.0pre8-old/etc/codecs.conf MPlayer-1.0pre8-new/etc/codecs.co
  
 diff -Naur MPlayer-1.0pre8-old/help/help_mp-en.h MPlayer-1.0pre8-new/help/help_mp-en.h
 --- MPlayer-1.0pre8-old/help/help_mp-en.h	2006-06-11 11:35:45.000000000 -0700
-+++ MPlayer-1.0pre8-new/help/help_mp-en.h	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/help/help_mp-en.h	2006-08-22 12:30:07.000000000 -0700
 @@ -1524,6 +1524,7 @@
  #define MSGTR_MPCODECS_DRIFailure "[VD_FFMPEG] DRI failure.\n"
  #define MSGTR_MPCODECS_CouldntAllocateImageForCodec "[VD_FFMPEG] Couldn't allocate image for codec.\n"
@@ -167,20 +167,424 @@ diff -Naur MPlayer-1.0pre8-old/help/help_mp-en.h MPlayer-1.0pre8-new/help/help_m
  #define MSGTR_MPCODECS_TryingPixfmt "[VD_FFMPEG] Trying pixfmt=%d.\n"
  #define MSGTR_MPCODECS_McGetBufferShouldWorkOnlyWithXVMC "[VD_FFMPEG] The mc_get_buffer should work only with XVMC acceleration!!"
  #define MSGTR_MPCODECS_UnexpectedInitVoError "[VD_FFMPEG] Unexpected init_vo error.\n"
+diff -Naur MPlayer-1.0pre8-old/libavcodec/allcodecs.c MPlayer-1.0pre8-new/libavcodec/allcodecs.c
+--- MPlayer-1.0pre8-old/libavcodec/allcodecs.c	2006-06-11 11:35:48.000000000 -0700
++++ MPlayer-1.0pre8-new/libavcodec/allcodecs.c	2006-08-22 12:30:07.000000000 -0700
+@@ -314,6 +314,11 @@
+ #ifdef CONFIG_MPEGVIDEO_DECODER
+     register_avcodec(&mpegvideo_decoder);
+ #endif //CONFIG_MPEGVIDEO_DECODER
++#ifdef HAVE_XVMC_VLD
++#ifdef CONFIG_MPEG_XVMC_DECODER
++    register_avcodec(&mpeg_xxmc_decoder);
++#endif //CONFIG_MPEG_XVMC_DECODER
++#endif
+ #ifdef HAVE_XVMC
+ #ifdef CONFIG_MPEG_XVMC_DECODER
+     register_avcodec(&mpeg_xvmc_decoder);
+diff -Naur MPlayer-1.0pre8-old/libavcodec/avcodec.h MPlayer-1.0pre8-new/libavcodec/avcodec.h
+--- MPlayer-1.0pre8-old/libavcodec/avcodec.h	2006-06-11 11:35:48.000000000 -0700
++++ MPlayer-1.0pre8-new/libavcodec/avcodec.h	2006-08-22 12:30:07.000000000 -0700
+@@ -2119,6 +2119,7 @@
+ extern AVCodec mpeg2video_decoder;
+ extern AVCodec mpegvideo_decoder;
+ extern AVCodec mpeg_xvmc_decoder;
++extern AVCodec mpeg_xxmc_decoder;
+ extern AVCodec h263i_decoder;
+ extern AVCodec flv_decoder;
+ extern AVCodec rv10_decoder;
+diff -Naur MPlayer-1.0pre8-old/libavcodec/mpeg12.c MPlayer-1.0pre8-new/libavcodec/mpeg12.c
+--- MPlayer-1.0pre8-old/libavcodec/mpeg12.c	2006-06-11 11:35:48.000000000 -0700
++++ MPlayer-1.0pre8-new/libavcodec/mpeg12.c	2006-08-22 12:30:07.000000000 -0700
+@@ -83,10 +83,17 @@
+ extern void XVMC_init_block(MpegEncContext *s);//set s->block
+ #endif
+ 
++
++#ifdef HAVE_XVMC_VLD
++extern int XVMC_decode_slice(MpegEncContext *s, int start_code,
++                                 uint8_t *buffer, int buf_size);
++#endif
++
+ const enum PixelFormat pixfmt_yuv_420[]= {PIX_FMT_YUV420P,-1};
+ const enum PixelFormat pixfmt_yuv_422[]= {PIX_FMT_YUV422P,-1};
+ const enum PixelFormat pixfmt_yuv_444[]= {PIX_FMT_YUV444P,-1};
+ const enum PixelFormat pixfmt_xvmc_mpg2_420[] = {
++                                           PIX_FMT_XVMC_MPEG2_VLD,
+                                            PIX_FMT_XVMC_MPEG2_IDCT,
+                                            PIX_FMT_XVMC_MPEG2_MC,
+                                            -1};
+@@ -2525,6 +2532,16 @@
+         return -1;
+     }
+ 
++#ifdef HAVE_XVMC_VLD
++    if (s->avctx->xvmc_acceleration == 4){
++        int used = XVMC_decode_slice(s, mb_y, *buf, buf_size);
++        if (used < 0)
++            return DECODE_SLICE_ERROR;
++        *buf += used - 1;
++        return DECODE_SLICE_OK;
++    }
++#endif
++
+     init_get_bits(&s->gb, *buf, buf_size*8);
+ 
+     ff_mpeg1_clean_buffers(s);
+@@ -3306,6 +3323,41 @@
+ 
+ #endif
+ 
++#ifdef HAVE_XVMC_VLD
++static int mpeg_xxmc_decode_init(AVCodecContext *avctx){
++    Mpeg1Context *s;
++    if( avctx->thread_count > 1)
++        return -1;
++    if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
++        return -1;
++    if( !(avctx->slice_flags & SLICE_FLAG_ALLOW_FIELD) )
++        dprintf("mpeg12.c: XVMC_VLD decoder will work better if SLICE_FLAG_ALLOW_FIELD is set\n");
++
++    mpeg_decode_init(avctx);
++    s = avctx->priv_data;
++
++    avctx->pix_fmt = PIX_FMT_XVMC_MPEG2_VLD;
++    avctx->xvmc_acceleration = 4;
++
++    return 0;
++}
++
++AVCodec mpeg_xxmc_decoder = {
++    "mpegvideo_xvmc",
++    CODEC_TYPE_VIDEO,
++    CODEC_ID_MPEG2VIDEO_XVMC,
++    sizeof(Mpeg1Context),
++    mpeg_xxmc_decode_init,
++    NULL,
++    mpeg_decode_end,
++    mpeg_decode_frame,
++    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED| CODEC_CAP_HWACCEL,
++    .flush= ff_mpeg_flush,
++};
++
++#endif
++
++
+ /* this is ugly i know, but the alternative is too make
+    hundreds of vars global and prefix them with ff_mpeg1_
+    which is far uglier. */
+diff -Naur MPlayer-1.0pre8-old/libavcodec/xvmcvideo.c MPlayer-1.0pre8-new/libavcodec/xvmcvideo.c
+--- MPlayer-1.0pre8-old/libavcodec/xvmcvideo.c	2006-06-11 11:35:48.000000000 -0700
++++ MPlayer-1.0pre8-new/libavcodec/xvmcvideo.c	2006-08-22 12:30:07.000000000 -0700
+@@ -70,10 +70,67 @@
+     }
+ }
+ 
++#ifdef HAVE_XVMC_VLD
++static XvMCSurface* findPastSurface(MpegEncContext *s,
++                                    xvmc_render_state_t *render)
++{
++    Picture *lastp = s->last_picture_ptr;
++    xvmc_render_state_t *last = NULL;
++
++    if (NULL!=lastp) {
++        last = (xvmc_render_state_t*)(lastp->data[2]);
++        if (B_TYPE==last->pict_type)
++            av_log(s->avctx,AV_LOG_DEBUG, "Past frame is a B frame in findPastSurface, this is bad.\n");
++        //assert(B_TYPE!=last->pict_type);
++    }
++
++    if (NULL==last)
++        if (!s->first_field)
++            last = render; // predict second field from the first
++        else
++            return 0;
++
++    if (last->magic != MP_XVMC_RENDER_MAGIC)
++        return 0;
++
++    return (last->state & MP_XVMC_STATE_PREDICTION) ? last->p_surface : 0;
++}
++
++static XvMCSurface* findFutureSurface(MpegEncContext *s)
++{
++    Picture *nextp = s->next_picture_ptr;
++    xvmc_render_state_t *next = NULL;
++
++    if (NULL!=nextp) {
++        next = (xvmc_render_state_t*)(nextp->data[2]);
++        if (B_TYPE==next->pict_type)
++            av_log(s->avctx,AV_LOG_DEBUG, "Next frame is a B frame in findFutureSurface, thisis bad.\n");
++        //assert(B_TYPE!=next->pict_type);
++    }
++
++    assert(NULL!=next);
++
++    if (next->magic != MP_XVMC_RENDER_MAGIC)
++        return 0;
++
++    return (next->state & MP_XVMC_STATE_PREDICTION) ? next->p_surface : 0;
++}
++#endif //HAVE_XVMC_VLD
++
+ //these functions should be called on every new field or/and frame
+ //They should be safe if they are called few times for same field!
+ int XVMC_field_start(MpegEncContext*s, AVCodecContext *avctx){
+-xvmc_render_state_t * render,* last, * next;
++    xvmc_render_state_t * render, * last, * next;
++
++#ifdef HAVE_XVMC_VLD
++    XvMCMpegControl     binfo;
++    XvMCQMatrix         qmatrix;
++    int                 i;
++    Status              status;
++
++    memset(&binfo, 0, sizeof(binfo));
++    memset(&qmatrix, 0, sizeof(qmatrix));
++#endif
+ 
+     assert(avctx != NULL);
+ 
+@@ -85,12 +142,53 @@
+     render->picture_structure = s->picture_structure;
+     render->flags = (s->first_field)? 0: XVMC_SECOND_FIELD;
+ 
++#ifdef HAVE_XVMC_VLD
++    if (s->avctx->xvmc_acceleration == 4)
++    {
++        if (render->picture_structure == PICT_FRAME)
++            render->flags |= XVMC_FRAME_PICTURE;
++        else if (render->picture_structure == PICT_TOP_FIELD)
++            render->flags |= XVMC_TOP_FIELD;
++        else if (render->picture_structure == PICT_BOTTOM_FIELD)
++            render->flags |= XVMC_BOTTOM_FIELD;
++    }
++    else
++#endif
++    {
+ //make sure that all data is drawn by XVMC_end_frame
+     assert(render->filled_mv_blocks_num==0);
++    }
+ 
+     render->p_future_surface = NULL;
+     render->p_past_surface = NULL;
+ 
++    render->pict_type = s->pict_type; // for later frame dropping use
++
++#ifdef HAVE_XVMC_VLD
++    if (s->avctx->xvmc_acceleration == 4)
++{
++    switch(s->pict_type){
++        case  I_TYPE:
++            break;
++        case  B_TYPE:
++            render->p_past_surface = findPastSurface(s, render);
++            render->p_future_surface = findFutureSurface(s);
++            if (!render->p_past_surface)
++                av_log(avctx, AV_LOG_ERROR, "error: decoding B frame and past frame is null!");
++            else if (!render->p_future_surface)
++                av_log(avctx, AV_LOG_ERROR, "error: decoding B frame and future frame is null!");
++            break;
++            
++        case  P_TYPE:
++            render->p_past_surface = findPastSurface(s, render);
++            render->p_future_surface = render->p_surface;
++            if (!render->p_past_surface)
++                av_log(avctx, AV_LOG_ERROR, "error: decoding P frame and past frame is null!");
++            break;
++    }
++} else
++#endif
++{
+     switch(s->pict_type){
+         case  I_TYPE:
+             return 0;// no prediction from other frames
+@@ -111,8 +209,96 @@
+             render->p_past_surface = last->p_surface;
+             return 0;
+     }
++}
++
++#ifdef HAVE_XVMC_VLD
++    if (s->avctx->xvmc_acceleration == 4)
++    {
++        for (i = 0; i < 64; i++){
++        qmatrix.intra_quantiser_matrix[i] = s->intra_matrix[s->dsp.idct_permutation[i]];
++        qmatrix.non_intra_quantiser_matrix[i] = s->inter_matrix[s->dsp.idct_permutation[i]];
++        qmatrix.chroma_intra_quantiser_matrix[i] = s->chroma_intra_matrix[s->dsp.idct_permutation[i]];
++        qmatrix.chroma_non_intra_quantiser_matrix[i] = s->chroma_inter_matrix[s->dsp.idct_permutation[i]];
++        }
++
++    qmatrix.load_intra_quantiser_matrix = 1;
++    qmatrix.load_non_intra_quantiser_matrix = 1;
++    qmatrix.load_chroma_intra_quantiser_matrix = 1;
++    qmatrix.load_chroma_non_intra_quantiser_matrix = 1;
++
++
++    binfo.flags = 0;
++    if (s->alternate_scan)
++        binfo.flags |= XVMC_ALTERNATE_SCAN;
++    if (s->top_field_first)
++        binfo.flags |= XVMC_TOP_FIELD_FIRST;
++    if (s->frame_pred_frame_dct)
++        binfo.flags |= XVMC_PRED_DCT_FRAME;
++    else
++        binfo.flags |= XVMC_PRED_DCT_FIELD;
++
++    if (s->intra_vlc_format)
++        binfo.flags |= XVMC_INTRA_VLC_FORMAT;
++    if (!s->first_field && !s->progressive_sequence)
++        binfo.flags |= XVMC_SECOND_FIELD;
++    if (s->q_scale_type)
++        binfo.flags |= XVMC_Q_SCALE_TYPE;
++    if (s->concealment_motion_vectors)
++        binfo.flags |= XVMC_CONCEALMENT_MOTION_VECTORS;
++    if (s->progressive_sequence)
++        binfo.flags |= XVMC_PROGRESSIVE_SEQUENCE;
++
++    binfo.picture_structure = s->picture_structure;
++    switch (s->pict_type)
++    {
++    case I_TYPE:    binfo.picture_coding_type = XVMC_I_PICTURE;     break;
++    case P_TYPE:    binfo.picture_coding_type = XVMC_P_PICTURE;     break;
++    case B_TYPE:    binfo.picture_coding_type = XVMC_B_PICTURE;     break;
++    default:    av_log(avctx, AV_LOG_ERROR, "%s: Unknown picture coding type: %d\n", __FUNCTION__, s->pict_type);
++    }
++
++    binfo.intra_dc_precision = s->intra_dc_precision;;
++
++    if (s->codec_id == CODEC_ID_MPEG2VIDEO)
++        binfo.mpeg_coding = 2;
++    else
++        binfo.mpeg_coding = 1;
++
++    s->mb_width = (s->width + 15) / 16;
++    s->mb_height = (s->codec_id == CODEC_ID_MPEG2VIDEO && !s->progressive_sequence) ?
++        2 * ((s->height + 31) / 32) : (s->height + 15) / 16;
++
++    if (s->codec_id == CODEC_ID_MPEG2VIDEO)
++{
++    binfo.FVMV_range = (s->mpeg_f_code[0][1] - 1);
++    binfo.FHMV_range = (s->mpeg_f_code[0][0] - 1);
++    binfo.BVMV_range = (s->mpeg_f_code[1][1] - 1);
++    binfo.BHMV_range = (s->mpeg_f_code[1][0] - 1);
++}
++else
++{
++    binfo.FVMV_range = (s->mpeg_f_code[0][0] - 1);
++    binfo.FHMV_range = (s->mpeg_f_code[0][0] - 1);
++    binfo.BVMV_range = (s->mpeg_f_code[1][1] - 1);
++    binfo.BHMV_range = (s->mpeg_f_code[1][1] - 1);
++}
++
++    status = XvMCLoadQMatrix(render->disp, render->ctx, &qmatrix);
++    if (status)
++        av_log(avctx,AV_LOG_ERROR, "XvMCLoadQMatrix: Error: %d\n", status);
++
++    status = XvMCBeginSurface(render->disp, render->ctx, render->p_surface,
++                              render->p_past_surface, render->p_future_surface,
++                              &binfo);
++    if (status)
++        av_log(avctx,AV_LOG_ERROR, "XvMCBeginSurface: Error: %d\n", status);
++
++    if (!status)
++        return 0;
++    }
++#endif
+ 
+-return -1;
++    return -1;
+ }
+ 
+ void XVMC_field_end(MpegEncContext *s){
+@@ -120,10 +306,22 @@
+     render = (xvmc_render_state_t*)s->current_picture.data[2];
+     assert(render != NULL);
+ 
++#ifdef HAVE_XVMC_VLD
++    if (s->avctx->xvmc_acceleration == 4)
++    {
++        XvMCFlushSurface(render->disp, render->p_surface);
++        XvMCSyncSurface(render->disp, render->p_surface);
++
++    	s->error_count = 0;
++    }
++    else
++#endif
++    {
+     if(render->filled_mv_blocks_num > 0){
+ //        printf("xvmcvideo.c: rendering %d left blocks after last slice!!!\n",render->filled_mv_blocks_num );
+         ff_draw_horiz_band(s,0,0);
+     }
++    }
+ }
+ 
+ void XVMC_decode_mb(MpegEncContext *s){
+@@ -313,4 +511,50 @@
+ 
+ }
+ 
++#ifdef HAVE_XVMC_VLD
++static int length_to_next_start(uint8_t* pbuf_ptr, int buf_size)
++{
++    uint8_t*    buf_ptr;
++    unsigned int    state = 0xFFFFFFFF, v;
++
++    buf_ptr = pbuf_ptr;
++    while (buf_ptr < pbuf_ptr + buf_size)
++    {
++        v = *buf_ptr++;
++        if (state == 0x000001) {
++            return buf_ptr - pbuf_ptr - 4;
++        }
++        state = ((state << 8) | v) & 0xffffff;
++    }
++    return -1;
++}
++
++#define SLICE_MIN_START_CODE   0x00000101
++#define SLICE_MAX_START_CODE   0x000001af
++
++void XVMC_decode_slice(MpegEncContext *s, int mb_y, uint8_t* buffer, int buf_size)
++{
++    int slicelen = length_to_next_start(buffer, buf_size);
++    xvmc_render_state_t*    render;
++
++    if (slicelen < 0)
++    {
++        if ((mb_y == s->mb_height - 1) || 
++            (!s->progressive_sequence && mb_y == (s->mb_height >> 1) -1) ||
++	    (s->codec_id != CODEC_ID_MPEG2VIDEO))
++            slicelen = buf_size;
++        else
++            return;
++    }
++
++    render = (xvmc_render_state_t*)s->current_picture.data[2];
++    render->slice_code = SLICE_MIN_START_CODE + mb_y;
++    render->slice_data = buffer;
++    render->slice_datalen = slicelen;
++
++    ff_draw_horiz_band(s, 0, 0);
++}
++#endif
++
+ #endif
++
 diff -Naur MPlayer-1.0pre8-old/libavutil/avutil.h MPlayer-1.0pre8-new/libavutil/avutil.h
 --- MPlayer-1.0pre8-old/libavutil/avutil.h	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/libavutil/avutil.h	2006-07-21 11:34:02.000000000 -0700
-@@ -70,6 +70,7 @@
++++ MPlayer-1.0pre8-new/libavutil/avutil.h	2006-08-22 12:30:07.000000000 -0700
+@@ -67,6 +67,7 @@
+     PIX_FMT_YUVJ444P,  ///< Planar YUV 4:4:4 full scale (jpeg)
+     PIX_FMT_XVMC_MPEG2_MC,///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
+     PIX_FMT_XVMC_MPEG2_IDCT,
++    PIX_FMT_XVMC_MPEG2_VLD,
      PIX_FMT_UYVY422,   ///< Packed pixel, Cb Y0 Cr Y1
      PIX_FMT_UYVY411,   ///< Packed pixel, Cb Y0 Y1 Cr Y2 Y3
      PIX_FMT_NB,
-+    PIX_FMT_XVMC_MPEG2_VLD,
- };
- 
- #ifdef __cplusplus
 diff -Naur MPlayer-1.0pre8-old/libmpcodecs/img_format.c MPlayer-1.0pre8-new/libmpcodecs/img_format.c
 --- MPlayer-1.0pre8-old/libmpcodecs/img_format.c	2006-06-11 11:35:41.000000000 -0700
-+++ MPlayer-1.0pre8-new/libmpcodecs/img_format.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/libmpcodecs/img_format.c	2006-08-22 12:30:07.000000000 -0700
 @@ -65,6 +65,7 @@
  	case IMGFMT_ZRMJPEGIB: return("Zoran MJPEG bottom field first");
  	case IMGFMT_XVMC_MOCO_MPEG2: return("MPEG1/2 Motion Compensation");
@@ -191,7 +595,7 @@ diff -Naur MPlayer-1.0pre8-old/libmpcodecs/img_format.c MPlayer-1.0pre8-new/libm
  }
 diff -Naur MPlayer-1.0pre8-old/libmpcodecs/img_format.h MPlayer-1.0pre8-new/libmpcodecs/img_format.h
 --- MPlayer-1.0pre8-old/libmpcodecs/img_format.h	2006-06-11 11:35:41.000000000 -0700
-+++ MPlayer-1.0pre8-new/libmpcodecs/img_format.h	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/libmpcodecs/img_format.h	2006-08-22 12:30:07.000000000 -0700
 @@ -106,6 +106,7 @@
  //these are chroma420
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
@@ -202,7 +606,7 @@ diff -Naur MPlayer-1.0pre8-old/libmpcodecs/img_format.h MPlayer-1.0pre8-new/libm
      void* data;
 diff -Naur MPlayer-1.0pre8-old/libmpcodecs/vd_ffmpeg.c MPlayer-1.0pre8-new/libmpcodecs/vd_ffmpeg.c
 --- MPlayer-1.0pre8-old/libmpcodecs/vd_ffmpeg.c	2006-06-11 11:35:41.000000000 -0700
-+++ MPlayer-1.0pre8-new/libmpcodecs/vd_ffmpeg.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/libmpcodecs/vd_ffmpeg.c	2006-08-22 12:30:07.000000000 -0700
 @@ -10,6 +10,7 @@
  #include "bswap.h"
  
@@ -220,16 +624,16 @@ diff -Naur MPlayer-1.0pre8-old/libmpcodecs/vd_ffmpeg.c MPlayer-1.0pre8-new/libmp
  #endif
  	}
          return CONTROL_FALSE;
-@@ -201,6 +204,9 @@
+@@ -198,6 +201,9 @@
+     AVCodecContext *avctx;
+     vd_ffmpeg_ctx *ctx;
+     AVCodec *lavc_codec;
++#ifdef HAVE_XVMC
++    char *voname=0;
++#endif
  #if LIBAVCODEC_BUILD >= 4722
      int lowres_w=0;
  #endif
-+#ifdef HAVE_XVMC
-+    char *voname = 0;
-+#endif
-     int do_vis_debug= lavc_param_vismv || (lavc_param_debug&(FF_DEBUG_VIS_MB_TYPE|FF_DEBUG_VIS_QP));
- 
-     if(!avcodec_inited){
 @@ -243,11 +249,23 @@
  
  #ifdef HAVE_XVMC
@@ -278,7 +682,7 @@ diff -Naur MPlayer-1.0pre8-old/libmpcodecs/vd_ffmpeg.c MPlayer-1.0pre8-new/libmp
          avctx->flags|= CODEC_FLAG_EMU_EDGE;//do i need that??!!
 diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc.c
 --- MPlayer-1.0pre8-old/libvo/vo_xvmc.c	2006-06-11 11:35:43.000000000 -0700
-+++ MPlayer-1.0pre8-new/libvo/vo_xvmc.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/libvo/vo_xvmc.c	2006-08-22 12:30:07.000000000 -0700
 @@ -24,6 +24,10 @@
  #include <X11/extensions/Xvlib.h>
  #include <X11/extensions/XvMClib.h>
@@ -399,20 +803,16 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
        if( mp_msg_test(MSGT_VO,MSGL_DBG4) )
            printf("vo_xvmc: surface[%d] = %p .rndr=%p\n",i,&surface_array[i], &surface_render[i]);
     }
-@@ -580,8 +623,10 @@
+@@ -580,8 +623,6 @@
           printf("vo_xvmc: OSD support by additional frontend rendering\n");
           break;
        case BACKEND_SUBPICTURE:
 -         printf("vo_xvmc: OSD support by beckend rendering (fast)\n");
 -         printf("vo_xvmc: Pleace send feedback to configrm that it work,otherwise send bugreport!\n");
-+         printf("vo_xvmc: OSD support by backend rendering "
-+		"(fast, but untested with mplayer.)\n");
-+         printf("vo_xvmc: Pleace send feedback to confirm that OSD works.\n"
-+		"Otherwise, please send a bugreport!\n");
           break;
     }
  
-@@ -1011,8 +1056,9 @@
+@@ -1011,8 +1052,9 @@
  }
  
  static void put_xvmc_image(xvmc_render_state_t * p_render_surface, int draw_ck){
@@ -423,7 +823,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
  
     if(p_render_surface == NULL)
        return;
-@@ -1028,11 +1074,51 @@
+@@ -1028,11 +1070,51 @@
     if(benchmark)
        return;
  
@@ -477,7 +877,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
     if(rez != Success){
        printf("vo_xvmc: PutSurface failer, critical error %d!\n",rez);
        assert(0);
-@@ -1136,9 +1222,11 @@
+@@ -1136,9 +1218,11 @@
  
     if( number_of_surfaces ){
  
@@ -490,22 +890,16 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
        for(i=0; i<number_of_surfaces; i++)
        {
           XvMCHideSurface(mDisplay,&surface_array[i]);//it doesn't hurt, I hope
-@@ -1172,7 +1260,13 @@
+@@ -1172,7 +1256,7 @@
  static void uninit(void){
     if( mp_msg_test(MSGT_VO,MSGL_DBG4) ) {
        printf("vo_xvmc: uninit called\n"); }
 -   xvmc_free();
-+   //
-+   // This function can be called as part of a signal handler, and
-+   // calling xvmc_free() thus may result in a deadlock.
-+   // Don't do it this way. 
-+   // The xvmc subsystem should take care of this anyway.
-+   //
-+   // xvmc_free();
++   //  xvmc_free();
   //from vo_xv
  #ifdef HAVE_XF86VM
     vo_vm_close(mDisplay);
-@@ -1216,6 +1310,17 @@
+@@ -1216,6 +1300,17 @@
     assert( rndr != NULL );
     assert( rndr->magic == MP_XVMC_RENDER_MAGIC );
  
@@ -523,7 +917,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
     rez = XvMCRenderSurface(mDisplay,&ctx,rndr->picture_structure,
               		   rndr->p_surface,
                             rndr->p_past_surface,
-@@ -1227,7 +1332,7 @@
+@@ -1227,7 +1322,7 @@
     if(rez != Success)
     {
     int i;
@@ -532,7 +926,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
  
        printf("vo_xvmc::slice: pict=%d,flags=%x,start_blocks=%d,num_blocks=%d\n",
               rndr->picture_structure,rndr->flags,rndr->start_mv_blocks_num,
-@@ -1255,6 +1360,7 @@
+@@ -1255,6 +1350,7 @@
     rez = XvMCFlushSurface(mDisplay, rndr->p_surface);
     assert(rez==Success);
  
@@ -540,7 +934,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
  //   rndr->start_mv_blocks_num += rndr->filled_mv_blocks_num;
     rndr->start_mv_blocks_num = 0;
     rndr->filled_mv_blocks_num = 0;
-@@ -1347,8 +1453,16 @@
+@@ -1347,8 +1443,16 @@
  
  // these are shared!! so watch out
  // do call RenderSurface before overwriting
@@ -559,7 +953,7 @@ diff -Naur MPlayer-1.0pre8-old/libvo/vo_xvmc.c MPlayer-1.0pre8-new/libvo/vo_xvmc
  
 diff -Naur MPlayer-1.0pre8-old/Makefile MPlayer-1.0pre8-new/Makefile
 --- MPlayer-1.0pre8-old/Makefile	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/Makefile	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/Makefile	2006-08-22 12:30:07.000000000 -0700
 @@ -205,7 +205,9 @@
  ifeq ($(TREMOR),yes)
  PARTS += tremor
@@ -573,7 +967,7 @@ diff -Naur MPlayer-1.0pre8-old/Makefile MPlayer-1.0pre8-new/Makefile
  ALL_PRG += $(PRG_MENCODER)
 diff -Naur MPlayer-1.0pre8-old/mplayer.c MPlayer-1.0pre8-new/mplayer.c
 --- MPlayer-1.0pre8-old/mplayer.c	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/mplayer.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/mplayer.c	2006-08-22 12:30:07.000000000 -0700
 @@ -92,6 +92,8 @@
  extern int verbose;
  int quiet=0;
@@ -597,7 +991,7 @@ diff -Naur MPlayer-1.0pre8-old/mplayer.c MPlayer-1.0pre8-new/mplayer.c
      goto goto_next_file; // exit_player(MSGTR_Exit_error);
 diff -Naur MPlayer-1.0pre8-old/vidix/drivers/radeon_vid.c MPlayer-1.0pre8-new/vidix/drivers/radeon_vid.c
 --- MPlayer-1.0pre8-old/vidix/drivers/radeon_vid.c	2006-06-11 11:35:43.000000000 -0700
-+++ MPlayer-1.0pre8-new/vidix/drivers/radeon_vid.c	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/vidix/drivers/radeon_vid.c	2006-08-22 12:30:07.000000000 -0700
 @@ -905,7 +905,7 @@
   DEVICE_ATI_RADEON_R300_AF,
   DEVICE_ATI_RADEON_RV350_AP,
@@ -609,7 +1003,7 @@ diff -Naur MPlayer-1.0pre8-old/vidix/drivers/radeon_vid.c MPlayer-1.0pre8-new/vi
   DEVICE_ATI_RADEON_R350_NH,
 diff -Naur MPlayer-1.0pre8-old/xvmc_render.h MPlayer-1.0pre8-new/xvmc_render.h
 --- MPlayer-1.0pre8-old/xvmc_render.h	2006-06-11 11:35:47.000000000 -0700
-+++ MPlayer-1.0pre8-new/xvmc_render.h	2006-07-21 11:25:14.000000000 -0700
++++ MPlayer-1.0pre8-new/xvmc_render.h	2006-08-22 12:30:07.000000000 -0700
 @@ -5,6 +5,9 @@
  #include <X11/extensions/Xvlib.h>
  #include <X11/extensions/XvMClib.h>
