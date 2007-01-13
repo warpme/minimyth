@@ -1,9 +1,9 @@
 xsetroot -solid black
 xset -dpms s off
-if [ -z "`mm_var_get MM_NO_VNC`" ] ; then
+if [ "`mm_var_get MM_X_VNC_ENABLED`" = "yes" ] ; then
 	x11vnc -xinerama -xrandr -forever -q -bg
 fi
-if [ -z "`mm_var_get MM_NO_XWM`" ] ; then
+if [ "`mm_var_get MM_X_WM_ENABLED`" = "yes" ] ; then
 	ratpoison &
 fi
 if [ -z "`mm_var_get MM_DEBUG`" ] ; then
