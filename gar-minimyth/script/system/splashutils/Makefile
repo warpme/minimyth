@@ -3,7 +3,7 @@ GARVERSION = 1.1.9.10
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-makefile.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
