@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp	2005-04-24 08:53:17.710779090 -0700
-+++ mythtv-0.18-new/programs/mythfrontend/globalsettings.cpp	2005-04-24 11:31:40.772650648 -0700
+--- mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp	2005-04-13 11:57:11.000000000 -0700
++++ mythtv-0.18-new/programs/mythfrontend/globalsettings.cpp	2005-04-30 00:07:54.120025498 -0700
 @@ -20,6 +20,10 @@
      HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
  
@@ -80,12 +80,39 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
              gc->addSelection(theme->fileName());
      }
  
++    gc->setValue(gc->getValueIndex("G.A.N.T."));
++
+     return gc;
+ }
+ 
+@@ -708,6 +717,8 @@
+             gc->addSelection(theme->fileName());
+     }
+ 
 +    gc->setValue(gc->getValueIndex("Titivillus-OSD"));
 +
      return gc;
  }
  
-@@ -806,7 +815,7 @@
+@@ -718,6 +729,8 @@
+     QDir ttf(gContext->GetFontsDir(), gContext->GetFontsNameFilter());
+     gc->fillSelectionsFromDir(ttf, false);
+ 
++    gc->setValue(gc->getValueIndex("FreeSans.ttf"));
++
+     return gc;
+ }
+ 
+@@ -728,6 +741,8 @@
+     QDir ttf(gContext->GetFontsDir(), gContext->GetFontsNameFilter());
+     gc->fillSelectionsFromDir(ttf, false);
+ 
++    gc->setValue(gc->getValueIndex("FreeSans.ttf"));
++
+     return gc;
+ }
+ 
+@@ -806,7 +821,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("UseVideoTimebase");
      gc->setLabel(QObject::tr("Use video as timebase"));
@@ -94,7 +121,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      gc->setHelpText(QObject::tr("Use the video as the timebase and warp "
                      "the audio to keep it in sync. (Experimental)"));
      return gc;
-@@ -924,7 +933,7 @@
+@@ -924,7 +939,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -103,7 +130,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      gc->addSelection(QObject::tr("Always prompt"), "1");
      gc->setHelpText(QObject::tr("If set to prompt, a menu will be displayed "
                      "when you exit playback mode.  The options available will "
-@@ -970,7 +979,7 @@
+@@ -970,7 +985,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
      gc->setLabel(QObject::tr("Display live preview of recordings"));
@@ -112,7 +139,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
                      "will play in a small window on the \"Watch a "
                      "Recording\" menu."));
-@@ -1018,7 +1027,7 @@
+@@ -1018,7 +1033,7 @@
      HostComboBox *gc = new HostComboBox("AllowQuitShutdown");
      gc->setLabel(QObject::tr("System Exit key"));
      gc->addSelection(QObject::tr("ESC"), "4");
@@ -121,7 +148,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      gc->addSelection(QObject::tr("Control-ESC"), "1");
      gc->addSelection(QObject::tr("Meta-ESC"), "2");
      gc->addSelection(QObject::tr("Alt-ESC"), "3");
-@@ -1044,7 +1053,7 @@
+@@ -1044,7 +1059,7 @@
  {
      HostLineEdit *ge = new HostLineEdit("HaltCommand");
      ge->setLabel(QObject::tr("Halt command"));
@@ -130,7 +157,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      ge->setHelpText(QObject::tr("If you have configured an exit key using the "
                      "System Shutdown option, you will be given the opportunity "
                      "to exit MythTV or halt the system completely. "
-@@ -1710,7 +1719,8 @@
+@@ -1710,7 +1725,8 @@
      gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Dense));
      gc->addSelection(QObject::tr("Eco - Transparent (CPU Usage - Low)"),
@@ -140,7 +167,7 @@ diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-
      gc->addSelection(QObject::tr("Solid (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Solid));
      return gc;
-@@ -2107,7 +2117,7 @@
+@@ -2107,7 +2123,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("UseXvMcVld");
      gc->setLabel(QObject::tr("Use HW XVMC VLD Decoding (Via only)"));
