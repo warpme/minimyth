@@ -1,6 +1,6 @@
 diff -Naur lirc-0.7.1-old/configure lirc-0.7.1-new/configure
 --- lirc-0.7.1-old/configure	2005-04-17 05:07:46.000000000 -0700
-+++ lirc-0.7.1-new/configure	2005-07-03 10:12:49.000000000 -0700
++++ lirc-0.7.1-new/configure	2005-07-15 20:41:50.000000000 -0700
 @@ -203,7 +203,7 @@
                            irdeo, irdeo_remote, irman, irreal, it87,
                            knc_one, kworld, leadtek_0007, leadtek_0010,
@@ -58,8 +58,8 @@ diff -Naur lirc-0.7.1-old/configure lirc-0.7.1-new/configure
    drivers/lirc_serial/Makefile
 diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new/drivers/lirc_mceusbnew/lirc_mceusbnew.c
 --- lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c	1969-12-31 16:00:00.000000000 -0800
-+++ lirc-0.7.1-new/drivers/lirc_mceusbnew/lirc_mceusbnew.c	2005-07-03 10:03:08.000000000 -0700
-@@ -0,0 +1,621 @@
++++ lirc-0.7.1-new/drivers/lirc_mceusbnew/lirc_mceusbnew.c	2005-07-15 20:41:07.000000000 -0700
+@@ -0,0 +1,628 @@
 +/*
 + * LIRC driver for Philips eHome USB Infrared Transciever
 + * and the Microsoft MCE 2005 Remote Control
@@ -118,7 +118,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +#include "drivers/kcompat.h"
 +#include "drivers/lirc_dev/lirc_dev.h"
 +
-+#define DRIVER_VERSION		"0.22"
++#define DRIVER_VERSION		"0.3"
 +#define DRIVER_AUTHOR		"Martin Blatter <martin_a_blatter@yahoo.com>"
 +#define DRIVER_DESC		"USB remote driver for LIRC"
 +#define DRIVER_NAME		"lirc_mceusbnew"
@@ -143,7 +143,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +	}while(0)
 +
 +/* lock irctl structure */
-+#define IRLOCK			down_interruptible(&ir->lock)
++#define IRLOCK			down(&ir->lock)
 +#define IRUNLOCK		up(&ir->lock)
 +
 +/* general constants */
@@ -158,10 +158,12 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +
 +#define VENDOR_PHILIPS		0x0471
 +#define VENDOR_SMK              0x0609
++#define VENDOR_TATUNG           0x1460
 +
 +static struct usb_device_id usb_remote_table [] = {
 +	{ USB_DEVICE(VENDOR_PHILIPS, 0x0815) },	/* Philips eHome Infrared Transciever */
 +	{ USB_DEVICE(VENDOR_SMK, 0x031d) },	/* SMK/Toshiba G83C0004D410 */
++	{ USB_DEVICE(VENDOR_TATUNG, 0x9150) },  /* Tatung eHome Infrared Transceiver */
 +	{ }					/* Terminating entry */
 +};
 +
@@ -209,7 +211,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +	for (i = 0; i < len && i < USB_BUFLEN; i++) {
 +		snprintf(codes+i*3, 4, "%02x ", buf[i] & 0xFF);
 +	}
-+	printk(DRIVER_NAME "[%d]: data received %s (length=%d)\n",
++	dprintk(DRIVER_NAME "[%d]: data received %s (length=%d)\n",
 +		ir->devnum, codes, len);
 +}
 +
@@ -485,6 +487,8 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +
 +	dprintk(DRIVER_NAME ": usb probe called\n");
 +
++	usb_reset_device(dev);
++
 +	config=dev->actconfig;
 +
 +	idesc = intf->cur_altsetting;
@@ -495,7 +499,8 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +
 +		if ((ep_in == NULL)
 +			&& ((ep->bEndpointAddress & USB_ENDPOINT_DIR_MASK) == USB_DIR_IN)
-+			&& ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)) {
++			&& (((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)
++			|| ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))) {
 +
 +			dprintk(DRIVER_NAME ": acceptable inbound endpoint found\n");
 +			ep_in = ep;
@@ -505,7 +510,8 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +
 +		if ((ep_out == NULL)
 +			&& ((ep->bEndpointAddress & USB_ENDPOINT_DIR_MASK) == USB_DIR_OUT)
-+			&& ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)) {
++			&& (((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_BULK)
++			|| ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))) {
 +
 +			dprintk(DRIVER_NAME ": acceptable outbound endpoint found\n");
 +			ep_out = ep;
@@ -552,6 +558,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +			plugin->set_use_dec = &set_use_dec;
 +			plugin->code_length = sizeof(lirc_t) * 8;
 +			plugin->ioctl = NULL;
++//			plugin->owner = THIS_MODULE;
 +
 +			init_MUTEX(&ir->lock);
 +			init_waitqueue_head(&ir->wait_out);
@@ -683,7 +690,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/lirc_mceusbnew.c lirc-0.7.1-new
 +EXPORT_NO_SYMBOLS;
 diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.am lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.am
 --- lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.am	1969-12-31 16:00:00.000000000 -0800
-+++ lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.am	2005-07-03 10:02:53.000000000 -0700
++++ lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.am	2005-07-15 20:41:50.000000000 -0700
 @@ -0,0 +1,13 @@
 +## $Id: Makefile.am,v 1.3 2004/04/25 16:29:26 lirc Exp $
 +
@@ -700,7 +707,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.am lirc-0.7.1-new/driv
 +include ../Makefile.common
 diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.in lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.in
 --- lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.in	1969-12-31 16:00:00.000000000 -0800
-+++ lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.in	2005-07-03 10:02:41.000000000 -0700
++++ lirc-0.7.1-new/drivers/lirc_mceusbnew/Makefile.in	2005-07-15 20:41:50.000000000 -0700
 @@ -0,0 +1,394 @@
 +# Makefile.in generated automatically by automake 1.5 from Makefile.am.
 +
@@ -1098,7 +1105,7 @@ diff -Naur lirc-0.7.1-old/drivers/lirc_mceusbnew/Makefile.in lirc-0.7.1-new/driv
 +.NOEXPORT:
 diff -Naur lirc-0.7.1-old/drivers/Makefile.am lirc-0.7.1-new/drivers/Makefile.am
 --- lirc-0.7.1-old/drivers/Makefile.am	2005-02-12 06:20:23.000000000 -0800
-+++ lirc-0.7.1-new/drivers/Makefile.am	2005-07-03 10:09:58.000000000 -0700
++++ lirc-0.7.1-new/drivers/Makefile.am	2005-07-15 20:41:50.000000000 -0700
 @@ -8,7 +8,7 @@
  EXTRA_DIST = lirc.h kcompat.h Makefile.kernel Makefile.common
  
@@ -1110,7 +1117,7 @@ diff -Naur lirc-0.7.1-old/drivers/Makefile.am lirc-0.7.1-new/drivers/Makefile.am
  SUBDIRS = @lirc_driver@
 diff -Naur lirc-0.7.1-old/drivers/Makefile.in lirc-0.7.1-new/drivers/Makefile.in
 --- lirc-0.7.1-old/drivers/Makefile.in	2005-04-17 05:07:44.000000000 -0700
-+++ lirc-0.7.1-new/drivers/Makefile.in	2005-07-03 10:09:46.000000000 -0700
++++ lirc-0.7.1-new/drivers/Makefile.in	2005-07-15 20:41:50.000000000 -0700
 @@ -112,7 +112,7 @@
  EXTRA_DIST = lirc.h kcompat.h Makefile.kernel Makefile.common
  
@@ -1122,7 +1129,7 @@ diff -Naur lirc-0.7.1-old/drivers/Makefile.in lirc-0.7.1-new/drivers/Makefile.in
  
 diff -Naur lirc-0.7.1-old/remotes/mceusbnew/lircd.conf.mceusbnew lirc-0.7.1-new/remotes/mceusbnew/lircd.conf.mceusbnew
 --- lirc-0.7.1-old/remotes/mceusbnew/lircd.conf.mceusbnew	1969-12-31 16:00:00.000000000 -0800
-+++ lirc-0.7.1-new/remotes/mceusbnew/lircd.conf.mceusbnew	2005-07-03 10:06:30.000000000 -0700
++++ lirc-0.7.1-new/remotes/mceusbnew/lircd.conf.mceusbnew	2005-07-15 20:41:31.000000000 -0700
 @@ -0,0 +1,96 @@
 +#
 +# RC-6 config file
@@ -1222,7 +1229,7 @@ diff -Naur lirc-0.7.1-old/remotes/mceusbnew/lircd.conf.mceusbnew lirc-0.7.1-new/
 +end remote
 diff -Naur lirc-0.7.1-old/setup.data lirc-0.7.1-new/setup.data
 --- lirc-0.7.1-old/setup.data	2005-04-17 04:39:24.000000000 -0700
-+++ lirc-0.7.1-new/setup.data	2005-07-03 10:07:45.000000000 -0700
++++ lirc-0.7.1-new/setup.data	2005-07-15 20:41:50.000000000 -0700
 @@ -116,6 +116,7 @@
  	imon_rsc: "Soundgraph iMON RSC"
  	streamzap: "Streamzap PC Remote"
@@ -1249,7 +1256,7 @@ diff -Naur lirc-0.7.1-old/setup.data lirc-0.7.1-new/setup.data
  	none \
 diff -Naur lirc-0.7.1-old/setup-driver.sh lirc-0.7.1-new/setup-driver.sh
 --- lirc-0.7.1-old/setup-driver.sh	2005-04-17 05:07:48.000000000 -0700
-+++ lirc-0.7.1-new/setup-driver.sh	2005-07-03 10:08:09.000000000 -0700
++++ lirc-0.7.1-new/setup-driver.sh	2005-07-15 20:41:50.000000000 -0700
 @@ -266,6 +266,7 @@
                  elif test "$1" = "b"; then LIRC_DRIVER=imon_rsc;	DRIVER_PARAMETER=none; DRIVER_PARAM_TYPE=none;
                  elif test "$1" = "c"; then LIRC_DRIVER=streamzap;	DRIVER_PARAMETER=none; DRIVER_PARAM_TYPE=none;
