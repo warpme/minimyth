@@ -1,9 +1,9 @@
 GARNAME = binutils
 GARVERSION = 2.15.94.0.2
 CATEGORIES = devel
-MASTER_SITES  = ftp://ftp.gnu.org/pub/gnu/binutils/
-MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/binutils/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =

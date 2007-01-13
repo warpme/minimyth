@@ -1,8 +1,8 @@
 GARNAME = mysql
 GARVERSION = 4.1.8a
 CATEGORIES = db
-MASTER_SITES = http://downloads.mysql.com/archives/mysql-4.1/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 

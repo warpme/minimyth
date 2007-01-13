@@ -1,8 +1,8 @@
 GARNAME = freetype
 GARVERSION = 2.1.9
 CATEGORIES = X11
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/freetype/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = gar-base.diff
 LICENSE = FTL/GPL2
 FTL_LICENSE_TEXT = $(WORKSRC)/docs/FTL.txt

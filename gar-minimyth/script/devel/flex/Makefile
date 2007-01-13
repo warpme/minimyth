@@ -1,8 +1,8 @@
 GARNAME = flex
 GARVERSION = 2.5.4
 CATEGORIES = devel
-MASTER_SITES = ftp://ftp.gnu.org/non-gnu/flex/
-DISTFILES = $(GARNAME)-$(GARVERSION)a.tar.gz
+MASTER_SITES = ftp://ftp.gnu.org/non-gnu/$(GARNAME)/
+DISTFILES = $(DISTNAME)a.tar.gz
 LICENSE = BSD
 
 DESCRIPTION =
@@ -15,7 +15,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS = --build=$(GARBUILD) --host=$(GARHOST) \
 	--prefix=$(prefix) \
 	--exec_prefix=$(exec_prefix)
 

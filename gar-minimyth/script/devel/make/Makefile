@@ -1,8 +1,8 @@
 GARNAME = make
 GARVERSION = 3.80
 CATEGORIES = devel
-MASTER_SITES = ftp://ftp.gnu.org/gnu/make/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION = 

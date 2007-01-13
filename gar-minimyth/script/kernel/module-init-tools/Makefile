@@ -2,8 +2,8 @@ GARNAME = module-init-tools
 GARVERSION = 3.1
 CATEGORIES = kernel
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/module-init-tools/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
-PATCHFILES = $(GARNAME)-$(GARVERSION)-no_man.patch
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-no_man.patch
 LICENSE = GPL2
 
 DESCRIPTION =

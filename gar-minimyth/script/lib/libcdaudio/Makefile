@@ -1,9 +1,9 @@
 GARNAME = libcdaudio
 GARVERSION = 0.99.12
 CATEGORIES = lib
-MASTER_SITES = http://voxel.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
-PATCHFILES = $(GARNAME)-$(GARVERSION)-DESTDIR.patch
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = GPL2
 
 DESCRIPTION =

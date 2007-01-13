@@ -1,9 +1,9 @@
 GARNAME = libpng
 GARVERSION = 1.2.8
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/libpng/
-DISTFILES = $(GARNAME)-$(GARVERSION)-config.tar.gz
-PATCHFILES = $(GARNAME)-$(GARVERSION)-DESTDIR.patch
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME)-config.tar.gz
+PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = png
 png_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -13,7 +13,7 @@ endef
 
 DEPENDS = lang/c lib/zlib
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-$(GARVERSION)-config
+WORKSRC = $(WORKDIR)/$(DISTNAME)-config
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

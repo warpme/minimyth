@@ -2,9 +2,9 @@ GARNAME = MPlayer
 GARVERSION = 1.0pre6a
 CATEGORIES = myth
 MASTER_SITES  = http://ftp5.mplayerhq.hu/mplayer/releases/
-MASTER_SITES += http://internap.dl.sourceforge.net/sourceforge/unichrome/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
-PATCHFILES = $(GARNAME)-$(GARVERSION)-unichrome-0.5.bz2 $(GARNAME)-$(GARVERSION)-c3.patch $(GARNAME)-$(GARVERSION)-host.patch
+MASTER_SITES += http://unc.dl.sourceforge.net/sourceforge/unichrome/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-unichrome-0.5.bz2 $(DISTNAME)-c3.patch $(DISTNAME)-host.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 

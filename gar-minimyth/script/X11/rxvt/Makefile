@@ -1,8 +1,8 @@
 GARNAME = rxvt
 GARVERSION = 2.6.4
 CATEGORIES = X11
-MASTER_SITES = http://voxel.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
 DESCRIPTION =

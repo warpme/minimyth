@@ -1,8 +1,8 @@
 GARNAME = expat
 GARVERSION = 1.95.8
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/expat/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = MIT
 
 DESCRIPTION =
