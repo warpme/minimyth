@@ -9,7 +9,8 @@ CFLAGS   := -I$(DESTDIR)$(extras_includedir) $(CFLAGS)
 CFLAGS   := -L$(DESTDIR)$(extras_libdir)     $(CFLAGS)
 LDFLAGS  := -L$(DESTDIR)$(extras_libdir)     $(LDFLAGS)
 
-EXTRAS_DIRPATHS := \
+# Change TMP_DIRPATHS so that DIRPATHS will use extras directories.
+TMP_DIRPATHS := \
 	--prefix=$(extras_prefix) \
 	--exec_prefix=$(extras_exec_prefix) \
 	--bindir=$(extras_bindir) \
@@ -25,6 +26,7 @@ EXTRAS_DIRPATHS := \
 	--oldincludedir=$(extras_oldincludedir) \
 	--mandir=$(extras_mandir)
 
+# Change STAGE_EXPORTS so that it does not include directories.
 STAGE_EXPROTS :=
 STAGE_EXPORTS += CC CXX LD CPP AR AS NM RANLIB STRIP OBJCOPY OBJDUMP
 
