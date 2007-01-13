@@ -1,8 +1,7 @@
 GARNAME = MPlayer
-GARVERSION = 1.0pre7
+GARVERSION = 1.0pre7try2
 CATEGORIES = myth
-MASTER_SITES  = http://ftp5.mplayerhq.hu/mplayer/releases/
-MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/unichrome/
+MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-unichrome.patch $(DISTNAME)-c3.patch
 LICENSE = mplayer
