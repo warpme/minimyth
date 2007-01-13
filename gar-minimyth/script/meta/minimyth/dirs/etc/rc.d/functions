@@ -763,6 +763,22 @@ mm_mythdb_setting_update() {
     mm_mythdb_command_run "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
 }
 
+mm_mythdb_setting_set() {
+    local VALUE=$1
+    local DATA=$2
+
+    local HOSTNAME
+
+    HOSTNAME=`/bin/hostname`
+
+    mm_mythdb_command_query "${VALUE}" > /dev/null 2>&1
+    if /usr/bin/test $? -eq 0 ; then
+        mm_mythdb_command_update "${VALUE}" "${DATA}"
+    else
+        mm_mythdb_command_run "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
+    fi
+}
+
 mm_mythdb_setting_get() {
     local VALUE=$1
 
@@ -1009,6 +1025,8 @@ mm_hardware_motherboard2kernel_map() {
     vendor_clean=`/bin/echo ${vendor}   | sed -e 's%[ ,]%_%g'`
     product_clean=`/bin/echo ${product} | sed -e 's%[ ,]%_%g'`
 
+    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+
     if /usr/bin/test -n "${product}" ; then
         /bin/cat /etc/hardware.d/motherboard2kernel.map  | \
         /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g'  | \
@@ -1020,6 +1038,7 @@ mm_hardware_motherboard2kernel_map() {
                     map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                 fi
                 if /usr/bin/test -z "${found}" ; then
+                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known."
                     /bin/echo ${map_kernel_modules}
                     return 0
                 fi
@@ -1027,6 +1046,6 @@ mm_hardware_motherboard2kernel_map() {
         }
 	return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor ('${vendor}') and product ('${product}') are unknown. some kernel modules may not be loaded."
+    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. some kernel modules may not be loaded."
     return 0
 }

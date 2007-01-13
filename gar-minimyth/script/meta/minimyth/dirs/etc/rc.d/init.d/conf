@@ -104,8 +104,20 @@ conf_check() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_RESOLUTION}"         ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION" is obsolete.'
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}"       ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_X" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}"       ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_Y" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"       ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_X" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"       ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_Y" is obsolete.'
         exit 1
     fi
 
@@ -167,9 +179,10 @@ conf_write() {
     # Default video.
     MM_VIDEO_ASPECT_RATIO=${MM_VIDEO_ASPECT_RATIO:-'4:3'}
     MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
+    MM_VIDEO_FONT_SCALE=${MM_VIDEO_FONT_SCALE:-'100'}
     # Default X.
     MM_X_DRIVER=${MM_X_DRIVER:-`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`}
-    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-`mm_hardware_x2kernel_map "${MM_X_DRIVER}"`}
+    MM_HARDWARE_KERNEL_MODULES="${MM_HARDWARE_KERNEL_MODULES} `mm_hardware_x2kernel_map ${MM_X_DRIVER}`"
     MM_X_ENABLED=${MM_X_ENABLED:-'yes'}
     MM_X_WM_ENABLED=${MM_X_WM_ENABLED:-'no'}
     MM_X_VNC_ENABLED=${MM_X_VNC_ENABLED:-'yes'}
@@ -179,23 +192,8 @@ conf_write() {
     MM_X_TV_ENABLED=${MM_X_TV_ENABLED:-'yes'}
     MM_X_TV_TYPE=${MM_X_TV_TYPE:-'NTSC'}
     MM_X_TV_OUTPUT=${MM_X_TV_OUTPUT:-'Composite'}
-    MM_X_REFRESH=${MM_X_REFRESH:-`
-        case "${MM_X_TV_TYPE}" in
-            NTSC) /bin/echo '60' ;;
-            PAL)  /bin/echo '50' ;;
-        esac`}
-    MM_X_MODE=${MM_X_MODE:-`
-        case "${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED}" in
-            yes:no:no)
-                case "${MM_X_TV_TYPE}" in
-                    NTSC) /bin/echo '720x480Noscale' ;;
-                    PAL)  /bin/echo '720x576Noscale' ;;
-                esac
-                ;;
-            *)
-                /bin/echo '800x600'
-                ;;
-        esac`}
+    MM_X_REFRESH=${MM_X_REFRESH:-'auto'}
+    MM_X_MODE=${MM_X_MODE:-'auto'}
     # Default Myth master backend.
     MM_MYTH_SERVER=${MM_MYTH_SERVER:-${MM_TFTP_SERVER}}
     MM_MYTH_DBUSERNAME=${MM_MYTH_DBUSERNAME:-'mythtv'}
@@ -213,8 +211,20 @@ conf_write() {
     MM_MYTHMUSIC_ENABLED=${MM_MYTHMUSIC_ENABLED:-'yes'}
     MM_MYTHVIDEO_ENABLED=${MM_MYTHVIDEO_ENABLED:-'yes'}
     MM_MYTHWEATHER_ENABLED=${MM_MYTHWEATHER_ENABLED:-'yes'}
+    # Default extras.
+    MM_EXTRAS_URL=${MM_EXTRAS_URL:-'auto'}
+    # Default codecs.
+    MM_CODECS_URL=${MM_CODECS_URL:-'auto'}
+    # Default themes.
+    MM_THEME_URL=${MM_THEME_URL:-'auto'}
+    MM_THEMEOSD_URL=${MM_THEMEOSD_URL:-'auto'}
+    MM_THEMECACHE_URL=${MM_THEMECACHE_URL:-'none'}
     # Default LIRC (some values were defaulted by /etc/lirc.d/driver.*.conf).
-    MM_LIRC_IREXEC_ENABLED=${MM_LIRC_IREXEC_ENABLED:-'no'}
+    MM_LIRC_REMOTE=${MM_LIRC_REMOTE:-'auto'}
+    MM_LIRC_DRIVER=${MM_LIRC_REMOTE:-'auto'}
+    MM_LIRC_IREXEC_ENABLED=${MM_LIRC_IREXEC_ENABLED:-'auto'}
+    # Default LCDproc.
+    MM_LCDPROC_DRIVER=${MM_LCDPROC_DRIVER:-'auto'}
 
     ###########################################################################
     # Write the configuration variables /etc/conf.d/minimyth.
@@ -241,6 +251,7 @@ conf_write() {
     # Write video.
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO           "${MM_VIDEO_ASPECT_RATIO}"
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED    "${MM_VIDEO_DEINTERLACE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE             "${MM_VIDEO_FONT_SCALE}"
     # Write X.
     conf_variable_write "${conf_file}" MM_X_DRIVER                     "${MM_X_DRIVER}"
     conf_variable_write "${conf_file}" MM_X_DRIVER_TV                  "${MM_X_DRIVER_TV}"
@@ -256,10 +267,7 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_X_REFRESH                    "${MM_X_REFRESH}"
     conf_variable_write "${conf_file}" MM_X_MODE                       "${MM_X_MODE}"
     conf_variable_write "${conf_file}" MM_X_MODELINE                   "${MM_X_MODELINE}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_X               "${MM_X_RESOLUTION_X}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_Y               "${MM_X_RESOLUTION_Y}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X              "${MM_X_DISPLAYSIZE_X}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y              "${MM_X_DISPLAYSIZE_Y}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION                 "${MM_X_RESOLUTION}"
     # Write Myth master backend.
     conf_variable_write "${conf_file}" MM_MYTH_SERVER                  "${MM_MYTH_SERVER}"
     conf_variable_write "${conf_file}" MM_MYTH_DBUSERNAME              "${MM_MYTH_DBUSERNAME}"

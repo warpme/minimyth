@@ -1,15 +1,18 @@
 MiniMyth Changelog
 
 --------------------------------------------------------------------------------
-Changes since 18 (2006-09-12):
+Changes since 18 (2006-09-17):
 
 Current MythTV versions
     MythTV 18:  version 0.18.2,   release-0-18-fixes branch svn 8525.
     MythTV 19:  version 0.19,     release-0-19-fixes branch svn 10505.
-    MythTV 20:  version 0.20,     release-0-20-fixes branch svn 11163.
+    MythTV 20:  version 0.20,     release-0-20-fixes branch svn 11222.
     MythTV SVN: version svn10992, trunk svn 10992.
 
 Added MythTV 0.20 support
+
+Enabled color OSD for VIA graphics
+    The "hack" can be found here: <http://www.mythtv.org/wiki/index.php/XvMC>.
 
 Improved television compatibility
     Changed boot splash screen from 800x600 to 640x480, which should work
@@ -21,6 +24,30 @@ Improved documentation
         <html://linpvr.org/minimyth/>.
     Added the documentation to the MiniMyth image. It is available through
         the MiniMyth frontend's web interface.
+
+Cleand up the MiniMyth configuration file.
+    Merged MM_X_RESOLUTION_X and MM_X_RESOLUTION_Y into MM_X_RESOLUTION.
+    Removed MM_X_DISPLAYSIZE. It is now calculated automatically.
+    Added MM_VIDEO_FONT_SCALE.
+
+Improved auto-detection and auto-configuration
+    Changed motherboard determination to use the output of 'dmidecode' rather
+        than the output of 'lspci'.
+    Changed MiniMyth configuration variables that can auto-configure to have
+        the explicit values 'auto' and 'none' so the the user can disable
+        auto-configuration.
+    Made more MiniMyth configuration variables be able to auto-configure.
+        MM_X_DISPLAYSIZE defaults to 'auto', setting the display size so that
+            the the vertical dots per inch is 100, using MM_VIDEO_ASPECT_RATIO
+            and either MM_X_RESOLUTION or MM_X_MODE.
+        MM_EXTRAS_URL defaults to 'auto', setting the extras URL to
+            'hunt:extras.sfs'.
+        MM_CODECS_URL defaults to 'auto', setting the codecs URL to
+            'hunt:codecs.sfs'.
+        MM_THEME_URL defaults to 'auto', setting the MythTV theme URL to
+            "dist:/themes/${MM_THEME_NAME}".
+        MM_THEMEOSD_URL defaults to 'auto', setting the MythTV OSD theme URL to
+            "dist:/themes/${MM_THEMEOSD_NAME}".
 
 Fixed network boot with NFS root file system
     Fixed a bug introduced in a previous version that caused the DHCP client
@@ -44,9 +71,12 @@ Added packages
 Updated packages
     Updated kernel/linux.
     Updated kernel/vt1211.
+    Updated lib/fontconfig.
+    Updated lib/freetype.
     Updated lib/sysfsutils.
     Updated system/udev.
     Updated utils/lm_sensors.
+    Updated utils/pciutils.
     Updated xorg-mid/xf86-video-openchrome.
     Updated xorg-new/xf86-video-openchrome.
 

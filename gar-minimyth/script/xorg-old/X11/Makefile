@@ -5,7 +5,8 @@ MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 PATCHFILES  = $(GARNAME)R$(GARVERSION)-CAN-2005-2495.patch $(GARNAME)R$(GARVERSION)-CAN-2006-1526.patch
-PATCHFILES += $(GARNAME)R$(GARVERSION)-gcc4.patch $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
+PATCHFILES += $(GARNAME)R$(GARVERSION)-gcc4.patch $(GARNAME)R$(GARVERSION)-freetype_internal.patch
+PATCHFILES += $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
 
