@@ -5,6 +5,9 @@
 . /etc/rc.d/functions
 
 start() {
+
+    local dir
+
     mm_message_output info 'starting CPU frequency scaling ...'
 
     if /usr/bin/test ! "${MM_CPUFREQ_GOVERNOR}" = "performance" ; then
@@ -36,7 +39,6 @@ start() {
         esac
         /sbin/modprobe cpufreq-stats
 
-
         for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
             /bin/echo "${MM_CPUFREQ_GOVERNOR}" > ${dir}/scaling_governor
         done
@@ -44,6 +46,9 @@ start() {
 }
 
 stop() {
+
+    local dir
+
     mm_message_output info 'stopping CPU frequency scaling ...'
 
     if /usr/bin/test -n "`/bin/pidof powernowd`" ; then

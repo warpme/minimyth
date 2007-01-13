@@ -5,10 +5,15 @@
 . /etc/rc.d/functions
 
 start() {
+
+    local mountline
+    local mountpoint
+    local mounttype
+
     mm_message_output info 'finishing shutdown ...'
 
     # unmount any remaining network file systems.
-    /bin/cat /proc/mounts | while read mountpoint; do
+    /bin/cat /proc/mounts | while read mountline; do
         mountpoint=`/bin/echo ${mountline} | /usr/bin/cut -d ' ' -f 2`
         mounttype=`/bin/echo  ${mountline} | /usr/bin/cut -d ' ' -f 3`
         if /usr/bin/test "${mounttype}" = "cifs"  ||

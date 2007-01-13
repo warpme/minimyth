@@ -7,6 +7,10 @@
 . /etc/rc.d/functions
 
 start() {
+
+    local kernel_module
+    local PREFERRED_MPEG2_DECODER
+
     mm_message_output info 'configuring video ...'
 
     # Load X kernel modules.
@@ -48,10 +52,11 @@ start() {
         exit 1
     fi
 
+    PREFERRED_MPEG2_DECODER=''
     case "${MM_X_DRIVER}" in
         intel_i810)
             /bin/sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER=xvmc
+            PREFERRED_MPEG2_DECODER='xvmc'
             /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"              /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
@@ -59,7 +64,7 @@ start() {
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
         intel_i830)
-            PREFERRED_MPEG2_DECODER=ffmpeg
+            PREFERRED_MPEG2_DECODER='ffmpeg'
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
@@ -67,7 +72,7 @@ start() {
             /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         intel_i915)
-            PREFERRED_MPEG2_DECODER=ffmpeg
+            PREFERRED_MPEG2_DECODER='ffmpeg'
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
@@ -78,7 +83,7 @@ start() {
             /bin/sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
-            PREFERRED_MPEG2_DECODER=ffmpeg
+            PREFERRED_MPEG2_DECODER='ffmpeg'
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
@@ -87,7 +92,7 @@ start() {
             ;;
         via)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER=xvmc-vld
+            PREFERRED_MPEG2_DECODER='xvmc-vld'
             /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
@@ -96,7 +101,7 @@ start() {
             ;;
         via_pro)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER=xvmc-vld
+            PREFERRED_MPEG2_DECODER='xvmc-vld'
             /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config

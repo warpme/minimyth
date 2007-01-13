@@ -1,12 +1,18 @@
 #!/bin/sh
 
 script_file() {
+
+    local HELPER_FILE
+
     HELPER_FILE=`echo $0 | sed -e 's%^.*/%%g'`
 
     echo "${HELPER_FILE}"
 }
 
 script_dir() {
+
+    local HELPER_DIR
+
     HELPER_DIR=`echo $0 | sed -e 's%/[^/]*$%%g'`
     test ! "${HELPER_DIR}" = ""   || \
         HELPER_DIR="`pwd`"
@@ -18,8 +24,10 @@ script_dir() {
 }
 
 message_output() {
-    ERROR=$1
-    MESSAGE=$2
+    local ERROR=$1
+    local MESSAGE=$2
+
+    local SCRIPT_FILE
 
     test -n "${ERROR}"                                                  || \
         message_output 1 "message_output: argument 'ERROR' is missing." || \

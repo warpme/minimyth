@@ -5,6 +5,11 @@
 . /etc/rc.d/functions
 
 start() {
+
+    local DRI_TRUE
+    local LIB_PATH
+    local NVIDIA_TRUE
+
     mm_message_output info 'starting X ...'
 
     mm_conf_get /xorg.conf /etc/X11/xorg.conf
@@ -60,6 +65,8 @@ start() {
 
     # Hacks to deal with the fact that the proprietary NVIDIA GL libraries
     # conflict with the Open Source Mesa GL libraries.
+    DRI_TRUE=
+    NVIDIA_TRUE=
     case "${MM_X_DRIVER}" in
         intel_i810)
             DRI_TRUE=""
