@@ -169,6 +169,10 @@ mm-check:
 		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
+	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "usr" ] ; then \
+		echo "error: MiniMyth cannot be built in a subdirectory of \"/usr\"."; \
+		exit 1 ; \
+	fi
 	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
 		echo "error: mm_INSTALL_CRAMFS=\"$(mm_INSTALL_CRAMFS)\" is an invalid value." ; \
 		exit 1 ; \
