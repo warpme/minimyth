@@ -158,15 +158,12 @@ conf_write() {
     # Read MiniMyth environment variables from the MiniMyth configuration file.
     [ -r /etc/minimyth.d/minimyth.conf ] && \
 	. /etc/minimyth.d/minimyth.conf
-    
     # Read motherboard hardware specific configuration file.
-    [ -n "${MM_HARDWARE_MOTHERBOARD} ] && [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && \
+    [ -n "${MM_HARDWARE_MOTHERBOARD}" ] && [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && \
 	. /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
-
     # Read LIRC driver specific configuration file.
-    [ -n "${MM_LIRC_DIRVER} ] && [ -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ] && \
+    [ -n "${MM_LIRC_DRIVER}" ] && [ -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ] && \
 	. /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
-
     # Reread MiniMyth environment variables from the MiniMyth configuration file,
     # in case variables in minimyth.conf override variables in motherboard.*.conf or driver.*.conf.
     [ -r /etc/minimyth.d/minimyth.conf ] && \
@@ -186,17 +183,13 @@ conf_write() {
     MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-${_MM_HARDWARE_CPU}}
     _MM_HARDWARE_KERNEL_MODULES=`mm_hardware_pci_process mm_hardware_pci2kernel_map`
     MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-${_MM_HARDWARE_KERNEL_MODULES}}
-
     # Default CPU frequency governor.
     MM_CPUFREQ_GOVERNOR=${MM_CPUFREQ_GOVERNOR:-'performance'}
-
     # Default audio.
     MM_AUDIO_TYPE=${MM_AUDIO_TYPE:-'analog'}
-
     # Default video.
     MM_VIDEO_ASPECT_RATIO=${MM_VIDEO_ASPECT_RATIO:-'4:3'}
     MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
-
     # Default X.
     _MM_X_DRIVER=`mm_hardware_pci_process mm_hardware_pci2x_map | cut -d ' ' -f 1`
     MM_X_DRIVER=${MM_X_DRIVER:-${_MM_X_DRIVER}}
@@ -229,7 +222,6 @@ conf_write() {
     esac
     MM_X_REFRESH=${MM_X_REFRESH:-${_MM_X_REFRESH}}
     MM_X_MODE=${MM_X_MODE:-${_MM_X_MODE}}
-
     # Default Myth master backend.
     MM_MYTH_SERVER=${MM_MYTH_SERVER:-${MM_TFTP_SERVER}}
     MM_MYTH_DBUSERNAME=${MM_MYTH_DBUSERNAME:-'mythtv'}
@@ -240,7 +232,6 @@ conf_write() {
     MM_MYTH_WOLSQLRECONNECTWAITTIME=${MM_MYTH_WOLSQLRECONNECTWAITTIME:-'15'}
     MM_MYTH_WOLSQLCONNECTRETRY=${MM_MYTH_WOLSQLCONNECTRETRY:-'20'}
     MM_MYTH_WOLSQLCOMMAND=${MM_MYTH_WOLSQLCOMMAND:-'wakelan -b @MM_MYTH_WOL_BROADCAST@ -m @MM_MYTH_WOL_MAC@'}
-
     # Default Myth plugins.
     MM_MYTHTV_OPTICAL_DISK_ENABLED=${MM_MYTHTV_OPTICAL_DISK_ENABLED:-'yes'}
     MM_MYTHDVD_ENABLED=${MM_MYTHDVD_ENABLED:-'yes'}
@@ -248,10 +239,8 @@ conf_write() {
     MM_MYTHMUSIC_ENABLED=${MM_MYTHMUSIC_ENABLED:-'yes'}
     MM_MYTHVIDEO_ENABLED=${MM_MYTHVIDEO_ENABLED:-'yes'}
     MM_MYTHWEATHER_ENABLED=${MM_MYTHWEATHER_ENABLED:-'yes'}
-
     # Default LIRC (some values were defaulted by /etc/lirc.d/driver.*.conf).
     MM_LIRC_IREXEC_ENABLED=${MM_LIRC_IREXEC_ENABLED:-'no'}
-
     # Default kernel modules.
     MM_KERNEL_MODULES=`mm_uniq "${MM_KERNEL_MODULES} ${MM_HARDWARE_KERNEL_MODULES} ${MM_SENSOR_KERNEL_MODULES}"`
 
@@ -260,43 +249,37 @@ conf_write() {
     ###########################################################################
 
     # Write timezone.
-    conf_variable_write "${conf_file}" MM_TZ "${MM_TZ}"
-
+    conf_variable_write "${conf_file}" MM_TZ                           "${MM_TZ}"
     # Write hardware.
-    conf_variable_write "${conf_file}" MM_HARDWARE_MOTHERBOARD    "${MM_HARDWARE_MOTHERBOARD}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_CPU            "${MM_HARDWARE_CPU}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_KERNEL_MODULES "${MM_HARDWARE_KERNEL_MODULES}"
-
+    conf_variable_write "${conf_file}" MM_HARDWARE_MOTHERBOARD         "${MM_HARDWARE_MOTHERBOARD}"
+    conf_variable_write "${conf_file}" MM_HARDWARE_CPU                 "${MM_HARDWARE_CPU}"
+    conf_variable_write "${conf_file}" MM_HARDWARE_KERNEL_MODULES      "${MM_HARDWARE_KERNEL_MODULES}"
     # Write CPU frequency governor.
-    conf_variable_write "${conf_file}" MM_CPUFREQ_GOVERNOR "${MM_CPUFREQ_GOVERNOR}"
-
+    conf_variable_write "${conf_file}" MM_CPUFREQ_GOVERNOR             "${MM_CPUFREQ_GOVERNOR}"
     # Write audio.
-    conf_variable_write "${conf_file}" MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
-
+    conf_variable_write "${conf_file}" MM_AUDIO_TYPE                   "${MM_AUDIO_TYPE}"
     # Write video.
-    conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO        "${MM_VIDEO_ASPECT_RATIO}"
-    conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
-
+    conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO           "${MM_VIDEO_ASPECT_RATIO}"
+    conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED    "${MM_VIDEO_DEINTERLACE_ENABLED}"
     # Write X.
-    conf_variable_write "${conf_file}" MM_X_KERNEL_MODULES "${MM_X_KERNEL_MODULES}"
-    conf_variable_write "${conf_file}" MM_X_DRIVER         "${MM_X_DRIVER}"
-    conf_variable_write "${conf_file}" MM_X_DRIVER_TV      "${MM_X_DRIVER_TV}"
-    conf_variable_write "${conf_file}" MM_X_ENABLED        "${MM_X_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_WM_ENABLED     "${MM_X_WM_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED    "${MM_X_VNC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED    "${MM_X_DVI_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED    "${MM_X_VGA_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_TV_ENABLED     "${MM_X_TV_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_TV_TYPE        "${MM_X_TV_TYPE}"
-    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT      "${MM_X_TV_OUTPUT}"
-    conf_variable_write "${conf_file}" MM_X_REFRESH        "${MM_X_REFRESH}"
-    conf_variable_write "${conf_file}" MM_X_MODE           "${MM_X_MODE}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE       "${MM_X_MODELINE}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_X   "${MM_X_RESOLUTION_X}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_Y   "${MM_X_RESOLUTION_Y}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X  "${MM_X_DISPLAYSIZE_X}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y  "${MM_X_DISPLAYSIZE_Y}"
-
+    conf_variable_write "${conf_file}" MM_X_KERNEL_MODULES             "${MM_X_KERNEL_MODULES}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER                     "${MM_X_DRIVER}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER_TV                  "${MM_X_DRIVER_TV}"
+    conf_variable_write "${conf_file}" MM_X_ENABLED                    "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_WM_ENABLED                 "${MM_X_WM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED                "${MM_X_VNC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED                "${MM_X_DVI_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED                "${MM_X_VGA_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_ENABLED                 "${MM_X_TV_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_TYPE                    "${MM_X_TV_TYPE}"
+    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT                  "${MM_X_TV_OUTPUT}"
+    conf_variable_write "${conf_file}" MM_X_REFRESH                    "${MM_X_REFRESH}"
+    conf_variable_write "${conf_file}" MM_X_MODE                       "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE                   "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION_X               "${MM_X_RESOLUTION_X}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION_Y               "${MM_X_RESOLUTION_Y}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X              "${MM_X_DISPLAYSIZE_X}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y              "${MM_X_DISPLAYSIZE_Y}"
     # Write Myth master backend.
     conf_variable_write "${conf_file}" MM_MYTH_SERVER                  "${MM_MYTH_SERVER}"
     conf_variable_write "${conf_file}" MM_MYTH_DBUSERNAME              "${MM_MYTH_DBUSERNAME}"
@@ -307,48 +290,39 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_MYTH_WOLSQLRECONNECTWAITTIME "${MM_MYTH_WOLSQLRECONNECTWAITTIME}"
     conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCONNECTRETRY      "${MM_MYTH_WOLSQLCONNECTRETRY}"
     conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCOMMAND           "${MM_MYTH_WOLSQLCOMMAND}"
-
     # Write Myth plugins.
-    conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHMUSIC_ENABLED           "${MM_MYTHMUSIC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHVIDEO_ENABLED           "${MM_MYTHVIDEO_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHWEATHER_ENABLED         "${MM_MYTHWEATHER_ENABLED}"
-
+    conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED  "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED              "${MM_MYTHDVD_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED          "${MM_MYTHGALLERY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHMUSIC_ENABLED            "${MM_MYTHMUSIC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHVIDEO_ENABLED            "${MM_MYTHVIDEO_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHWEATHER_ENABLED          "${MM_MYTHWEATHER_ENABLED}"
     # Write extras.
-    conf_variable_write "${conf_file}" MM_EXTRAS_URL "${MM_EXTRAS_URL}"
-
+    conf_variable_write "${conf_file}" MM_EXTRAS_URL                   "${MM_EXTRAS_URL}"
     # Write codecs.
-    conf_variable_write "${conf_file}" MM_CODECS_URL "${MM_CODECS_URL}"
-
+    conf_variable_write "${conf_file}" MM_CODECS_URL                   "${MM_CODECS_URL}"
     # Write themes.
-    conf_variable_write "${conf_file}" MM_THEME_NAME     "${MM_THEME_NAME}"
-    conf_variable_write "${conf_file}" MM_THEMEOSD_NAME  "${MM_THEMEOSD_NAME}"
-    conf_variable_write "${conf_file}" MM_THEME_URL      "${MM_THEME_URL}"
-    conf_variable_write "${conf_file}" MM_THEMEOSD_URL   "${MM_THEMEOSD_URL}"
-    conf_variable_write "${conf_file}" MM_THEMECACHE_URL "${MM_THEMECACHE_URL}"
-
+    conf_variable_write "${conf_file}" MM_THEME_NAME                   "${MM_THEME_NAME}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_NAME                "${MM_THEMEOSD_NAME}"
+    conf_variable_write "${conf_file}" MM_THEME_URL                    "${MM_THEME_URL}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_URL                 "${MM_THEMEOSD_URL}"
+    conf_variable_write "${conf_file}" MM_THEMECACHE_URL               "${MM_THEMECACHE_URL}"
     # Write media shares.
-    conf_variable_write "${conf_file}" MM_MYTHDVD_URL     "${MM_MYTHDVD_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHGALLERY_URL "${MM_MYTHGALLERY_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHMUSIC_URL   "${MM_MYTHMUSIC_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL   "${MM_MYTHVIDEO_URL}"
-
+    conf_variable_write "${conf_file}" MM_MYTHDVD_URL                  "${MM_MYTHDVD_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHGALLERY_URL              "${MM_MYTHGALLERY_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHMUSIC_URL                "${MM_MYTHMUSIC_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL                "${MM_MYTHVIDEO_URL}"
     # Write LIRC.
-    [ -z "${MM_LIRC_IREXEC_ENABLED}" ] && MM_LIRC_IREXEC_ENABLED="no"
-    conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
-    conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
-    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
-    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
-    conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
-
+    conf_variable_write "${conf_file}" MM_LIRC_REMOTE                  "${MM_LIRC_REMOTE}"
+    conf_variable_write "${conf_file}" MM_LIRC_DRIVER                  "${MM_LIRC_DRIVER}"
+    conf_variable_write "${conf_file}" MM_LIRC_DEVICE                  "${MM_LIRC_DEVICE}"
+    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE           "${MM_LIRC_KERNEL_MODULE}"
+    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS   "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
+    conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED          "${MM_LIRC_IREXEC_ENABLED}"
     # Write sensor.
-    conf_variable_write "${conf_file}" MM_SENSOR_KERNEL_MODULES "${MM_SENSOR_KERNEL_MODULES}"
-
+    conf_variable_write "${conf_file}" MM_SENSOR_KERNEL_MODULES        "${MM_SENSOR_KERNEL_MODULES}"
     # Write kernel modules.
-    conf_variable_write "${conf_file}" MM_KERNEL_MODULES "${MM_KERNEL_MODULES}"
+    conf_variable_write "${conf_file}" MM_KERNEL_MODULES               "${MM_KERNEL_MODULES}"
 
     return 0
 }
