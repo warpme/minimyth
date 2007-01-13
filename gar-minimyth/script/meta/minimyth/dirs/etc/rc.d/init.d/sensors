@@ -7,43 +7,6 @@
 start() {
     mm_message_output info 'starting sensors ...'
 
-    # Load sensor kernel modules.
-    case "${MM_HARDWARE_SENSOR}" in
-        NATIONAL_LM85)
-            case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                INTEL_FW82801DB)
-                    modprobe i2c-i801
-                    ;;
-            esac
-            modprobe lm85 
-            ;;
-        VIA_VT1211)
-            modprobe vt1211
-            ;;
-        WINBOND_W83627EHG)
-            modprobe w83627ehf
-            ;;
-        WINBOND_W83627HF)
-            modprobe w83627hf
-            ;;
-        WINBOND_W83627HG)
-            case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                INTEL_82801DB)
-                    modprobe i2c-i801
-                    ;;
-            esac
-            modprobe w83627hf
-            ;;
-        WINBOND_W83782D)
-            case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                VIA_VT8235|VIA_VT8237|VIA_VT8237R)
-                    modprobe i2c-viapro
-                    ;;
-            esac
-            modprobe w83781d
-            ;;
-    esac
-
     # Start sensors.
     sensors -s
 

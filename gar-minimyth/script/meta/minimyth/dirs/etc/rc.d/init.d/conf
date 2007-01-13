@@ -65,39 +65,67 @@ conf_check() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING_<setting>" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NAME_SERVER}"   ] ; then
+    if [ ! -z "${MM_HARDWARE_CHIPSET}"     ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_CHIPSET" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_NORTHBRIDGE}" ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_NORTHBRIDGE" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_SOUTHBRIDGE}" ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SOUTHBRIDGE" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_LAN}"         ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_LAN" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_AUDIO}"       ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_AUDIO" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_TV}"          ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_TV" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_HARDWARE_SENSOR}"      ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SENSOR" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_NAME_SERVER}"          ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_X}"          ] ; then
+    if [ ! -z "${MM_NO_X}"                 ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_XWM}"        ] ; then
+    if [ ! -z "${MM_NO_XWM}"               ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_VNC}"        ] ; then
+    if [ ! -z "${MM_NO_VNC}"               ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_SOUND}"         ] ; then
+    if [ ! -z "${MM_SOUND}"                ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SOUND" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_SYSLOG_SERVER}" ] ; then
+    if [ ! -z "${MM_SYSLOG_SERVER}"        ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SYSLOG_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_TIME_SERVER}"   ] ; then
+    if [ ! -z "${MM_TIME_SERVER}"          ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_TV}"            ] ; then
+    if [ ! -z "${MM_TV}"                   ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_X_RESOLUTION}"  ] ; then
+    if [ ! -z "${MM_X_RESOLUTION}"         ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION" is obsolete.'
         exit 1
     fi
@@ -131,163 +159,31 @@ conf_write() {
 
     # Hardware.
     [ -z "${MM_HARDWARE_MOTHERBOARD}" ] && MM_HARDWARE_MOTHERBOARD="VIA_EPIA_M"
-    case "${MM_HARDWARE_MOTHERBOARD}" in
-        ASUS_A8N_VM_CSM)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="NVIDIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="NVIDIA_GFORCE6150"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="NVIDIA_NFORCE430"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="NVIDIA_NFORCE430"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="ANALOG_AD1986A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627EHG"
-            ;;
-        BIOSTAR_M7NCD)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="NVIDIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="NVIDIA_NFORCE2"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="NVIDIA_NFORCE2"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="NVIDIA_NFORCE2"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="REALTEK_ALC650"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627HF"
-            ;;
-        COMMELL_LV_675)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="INTEL"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="INTEL_82845GV"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="INTEL_82801DB"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="INTEL_82541PI"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="REALTEK_ALC655"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="CHRONTEL_CH7009"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627HF"
-            ;;
-        COMMELL_LV_667)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83782D"
-            ;;
-        T_ONLINE_S100)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="INTEL"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="INTEL_FW82830M"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="INTEL_FW82801DB"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="REALTEK_8139"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="INTEL_FW82801DB"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="FOCUS_FS454"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="NATIONAL_LM85"
-            ;;
-        VIA_EPIA_CN)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1618"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_EN)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6122"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1618"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_M)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1622"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_MII)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1622A"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_ML)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1622"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_MS)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1622A"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-	VIA_EPIA_N)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN400"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1617A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_PD)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1612A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_SP)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN400"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1617A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1623M"
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-        VIA_EPIA_TC)
-            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1612A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
-            ;;
-    esac
-    case `cat /proc/cpuinfo | grep '^model name' | cut -d : -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
-	AMD\ Athlon\(tm\)\ 64\ Processor\ *)
-            MM_HARDWARE_CPU="ATHLON64"
-            ;;
-        VIA\ Nehemiah)
-            MM_HARDWARE_CPU="C3-2"
-            ;;
-        VIA\ Samuel\ 2)
-            MM_HARDWARE_CPU="C3"
-            ;;
-    esac
-    conf_variable_write "${conf_file}" MM_HARDWARE_CHIPSET     "${MM_HARDWARE_CHIPSET}"
+    if [ -z "${MM_HARDWARE_CPU}" ] ; then
+        case `cat /proc/cpuinfo | grep '^model name' | cut -d ':' -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
+	    AMD\ Athlon\(tm\)\ 64\ Processor\ *)
+                MM_HARDWARE_CPU="ATHLON64"
+                ;;
+            VIA\ Nehemiah)
+                MM_HARDWARE_CPU="C3-2"
+                ;;
+            VIA\ Samuel\ 2)
+                MM_HARDWARE_CPU="C3"
+                ;;
+        esac
+    fi
     conf_variable_write "${conf_file}" MM_HARDWARE_MOTHERBOARD "${MM_HARDWARE_MOTHERBOARD}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_NORTHBRIDGE "${MM_HARDWARE_NORTHBRIDGE}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_SOUTHBRIDGE "${MM_HARDWARE_SOUTHBRIDGE}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_LAN         "${MM_HARDWARE_LAN}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_AUDIO       "${MM_HARDWARE_AUDIO}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_TV          "${MM_HARDWARE_TV}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_SENSOR      "${MM_HARDWARE_SENSOR}"
     conf_variable_write "${conf_file}" MM_HARDWARE_CPU         "${MM_HARDWARE_CPU}"
+
+    # Get hardware configuration files.
+    mm_conf_get /motherboard.${MM_HARDWARE_MOTHERBOARD}.conf /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
+    mm_conf_get /pci2kernel.map                              /etc/hardware.d/pci2kernel.map
+    mm_conf_get /pci2x.map                                   /etc/hardware.d/pci2x.map
+    mm_conf_get /x2kernel.map                                /etc/hardware.d/x2kernel.map
+
+    # Read motherboard hardware specific configuration file.
+    # This should not be needed, but not all hardware is detected.
+    [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && . /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
 
     # CPU frequency governor.
     [ -z "${MM_CPUFREQ_GOVERNOR}" ] && MM_CPUFREQ_GOVERNOR="performance"
@@ -295,7 +191,8 @@ conf_write() {
 
     # Audio.
     [ -z "${MM_AUDIO_TYPE}" ] && MM_AUDIO_TYPE="analog"
-    conf_variable_write "${conf_file}" MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
+    conf_variable_write "${conf_file}" MM_AUDIO_TYPE   "${MM_AUDIO_TYPE}"
+    conf_variable_write "${conf_file}" MM_AUDIO_DRIVER "${MM_AUDIO_DRIVER}"
 
     # Video.
     [ -z "${MM_VIDEO_ASPECT_RATIO}"        ] && MM_VIDEO_ASPECT_RATIO="4:3"
@@ -305,72 +202,63 @@ conf_write() {
 
     # X.
     if [ -z "${MM_X_DRIVER}" ] ; then
-        case "${MM_HARDWARE_NORTHBRIDGE}" in
-            INTEL_FW82830M)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="intel_i830"
-                ;;
-            INTEL_82845GV)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="intel_i830"
-                ;;
-            NVIDIA_GFORCE6150)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="nvidia"
-                ;;
-            VIA_CLE266)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via"
-                ;;
-            VIA_CN400)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via_pro"
-                ;;
-            VIA_CN700)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via_pro"
-                ;;
-            # See whether or not we can guess the X driver from the hardware.
-            *)
-                lspci -mn | sed -e 's%"%%g' | while read pci ; do
-                    index=1            ; bus=`       echo "${pci}" | cut -d' ' -f${index}`
-                    index=$((index+1)) ; class=`     echo "${pci}" | cut -d' ' -f${index}`
-                    index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d' ' -f${index}`
-                    index=$((index+1)) ; device=`    echo "${pci}" | cut -d' ' -f${index}`
-                    index=$((index+1)) ; revision=`  echo "${pci}" | cut -d' ' -f${index}`
-                    if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
-                        revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
-                    else
-                        index=$((index-1)) ; revision=
+        MM_X_DRIVER=`
+            lspci -mn | sed -e 's%"%%g' |
+            while read pci ; do
+                index=1            ; bus=\`       echo "${pci}" | cut -d ' ' -f ${index}\`
+                index=$((index+1)) ; class=\`     echo "${pci}" | cut -d ' ' -f ${index}\`
+                index=$((index+1)) ; vendor=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
+                index=$((index+1)) ; device=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
+                index=$((index+1)) ; revision=\`  echo "${pci}" | cut -d ' ' -f ${index}\`
+                if [ \`echo "${revision}"   | grep -c -e '^-r'\` = "1" ] ; then
+                    revision=\`  echo "${revision}"   | sed -e 's%^-r%%'\`
+                else
+                    index=$((index-1)) ; revision='00'
+                fi
+                index=$((index+1)) ; class_prog=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+                if [ \`echo "${class_prog}" | grep -c -e '^-p'\` = "1" ] ; then
+                    class_prog=\`echo "${class_prog}" | sed -e 's%^-p%%'\`
+                else
+                    index=$((index-1)) ; class_prog='00'
+                fi
+                index=$((index+1)) ; sub_vendor=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+                index=$((index+1)) ; sub_device=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+
+                cat /etc/hardware.d/pci2x.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," |
+                while read map ; do
+                    if [ -n "${map}" ] ; then
+                        map_class_prog=\`    echo ${map} | cut -d ',' -f 2\`
+                        map_vendor=\`        echo ${map} | cut -d ',' -f 3\`
+                        map_device=\`        echo ${map} | cut -d ',' -f 4\`
+                        map_x_driver=\`      echo ${map} | cut -d ',' -f 5\`
+                        if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
+                           ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
+                           ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
+                            echo ${map_x_driver}
+                        fi
                     fi
-                    index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d' ' -f${index}`
-                    if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
-                        class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
-                    else
-                        index=$((index-1)) ; class_prog=
-                    fi
-                    index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d' ' -f${index}`
-                    index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d' ' -f${index}`
-            
-                    case "${class}" in
-                        # VGA (Graphics).
-                        0300)
-                            case "${vendor}" in
-                                # NVIDIA.
-                                10de) 
-                                    MM_X_DRIVER="nvidia"
-                                    ;;
-                                # VIA.
-                                1106)
-                                    case "${device}" in
-                                        3122) MM_X_DRIVER="via" ;; # VIA CLE266
-                                    esac
-                                    ;;
-                            esac
-                            ;;
-                    esac
                 done
-                ;;
-        esac
-        if [ "${MM_X_DRIVER}" = "intel_i830" ] ; then
-             if [ "${MM_X_TV_ENABLED}" = "yes" ] && [ "${MM_HARDWARE_TV}" = "FOCUS_FS454" ] ; then
-                 MM_X_DRIVER="intel"
-             fi
-        fi
+        done`
+        MM_X_DRIVER=`echo ${MM_X_DRIVER} | cut -d ' ' -f 1`
+    fi
+    if [ "${MM_X_DRIVER}" = "intel_i830" ] && [ "${MM_X_DRIVER_TV}" = "fs454" ] ; then
+         if [ "${MM_X_TV_ENABLED}" = "yes" ] ; then
+             MM_X_DRIVER="intel"
+         fi
+    fi
+    if [ -z "${MM_X_KERNEL_MODULES}" ] ; then
+        MM_X_KERNEL_MODULES=`
+            cat /etc/hardware.d/x2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${MM_X_DRIVER}," | {
+            found=
+            while read map ; do
+                if [ -n "${map}" ] ; then
+                    map_kernel_modules=\`echo ${map} | cut -d ',' -f 2\`
+                fi
+                if [ -z "${found}" ] ; then
+                    found=1
+                    echo ${map_kernel_modules}
+                fi
+            done }`
     fi
     [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
     [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
@@ -405,22 +293,24 @@ conf_write() {
             esac
         fi
     fi
-    conf_variable_write "${conf_file}" MM_X_DRIVER        "${MM_X_DRIVER}"
-    conf_variable_write "${conf_file}" MM_X_ENABLED       "${MM_X_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_WM_ENABLED    "${MM_X_WM_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED   "${MM_X_VNC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED   "${MM_X_DVI_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED   "${MM_X_VGA_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_TV_ENABLED    "${MM_X_TV_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_TV_TYPE       "${MM_X_TV_TYPE}"
-    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT     "${MM_X_TV_OUTPUT}"
-    conf_variable_write "${conf_file}" MM_X_REFRESH       "${MM_X_REFRESH}"
-    conf_variable_write "${conf_file}" MM_X_MODE          "${MM_X_MODE}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE      "${MM_X_MODELINE}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_X  "${MM_X_RESOLUTION_X}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION_Y  "${MM_X_RESOLUTION_Y}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X "${MM_X_DISPLAYSIZE_X}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y "${MM_X_DISPLAYSIZE_Y}"
+    conf_variable_write "${conf_file}" MM_X_KERNEL_MODULES "${MM_X_KERNEL_MODULES}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER         "${MM_X_DRIVER}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER_TV      "${MM_X_DRIVER_TV}"
+    conf_variable_write "${conf_file}" MM_X_ENABLED        "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_WM_ENABLED     "${MM_X_WM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED    "${MM_X_VNC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED    "${MM_X_DVI_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED    "${MM_X_VGA_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_ENABLED     "${MM_X_TV_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_TYPE        "${MM_X_TV_TYPE}"
+    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT      "${MM_X_TV_OUTPUT}"
+    conf_variable_write "${conf_file}" MM_X_REFRESH        "${MM_X_REFRESH}"
+    conf_variable_write "${conf_file}" MM_X_MODE           "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE       "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION_X   "${MM_X_RESOLUTION_X}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION_Y   "${MM_X_RESOLUTION_Y}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X  "${MM_X_DISPLAYSIZE_X}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y  "${MM_X_DISPLAYSIZE_Y}"
 
     # Myth master backend.
     [ -z "${MM_MYTH_SERVER}"                  ] && MM_MYTH_SERVER="${MM_TFTP_SERVER}"
@@ -521,13 +411,69 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
 
+    # Sensor.
+    conf_variable_write "${conf_file}" MM_SENSOR_DRIVER "${MM_SENSOR_DRIVER}"
+
+    # Kernel Modules.
+    kernel_modules=`
+        lspci -mn | sed -e 's%"%%g' | 
+        while read pci ; do
+            index=1            ; bus=\`       echo "${pci}" | cut -d ' ' -f ${index}\`
+            index=$((index+1)) ; class=\`     echo "${pci}" | cut -d ' ' -f ${index}\`
+            index=$((index+1)) ; vendor=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
+            index=$((index+1)) ; device=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
+            index=$((index+1)) ; revision=\`  echo "${pci}" | cut -d ' ' -f ${index}\`
+            if [ \`echo "${revision}"   | grep -c -e '^-r'\` = "1" ] ; then
+                revision=\`  echo "${revision}"   | sed -e 's%^-r%%'\`
+            else
+                index=$((index-1)) ; revision='00'
+            fi
+            index=$((index+1)) ; class_prog=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+            if [ \`echo "${class_prog}" | grep -c -e '^-p'\` = "1" ] ; then
+                class_prog=\`echo "${class_prog}" | sed -e 's%^-p%%'\`
+            else
+                index=$((index-1)) ; class_prog='00'
+            fi
+            index=$((index+1)) ; sub_vendor=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+            index=$((index+1)) ; sub_device=\`echo "${pci}" | cut -d ' ' -f ${index}\`
+    
+            kernel_modules=\`
+                cat /etc/hardware.d/pci2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," | {
+                found=
+                while read map ; do
+                    if [ -n "${map}" ] ; then
+                        map_class_prog=\\\`    echo ${map} | cut -d ',' -f 2\\\`
+                        map_vendor=\\\`        echo ${map} | cut -d ',' -f 3\\\`
+                        map_device=\\\`        echo ${map} | cut -d ',' -f 4\\\`
+                        map_kernel_modules=\\\`echo ${map} | cut -d ',' -f 5\\\`
+                        if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
+                           ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
+                           ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
+                            if [ -z "${found}" ] ; then
+                                found=1
+                                echo ${map_kernel_modules}
+                            fi
+                        fi
+                    fi
+                done }\`
+            if [ -n "${kernel_modules}" ] ; then
+                echo ${kernel_modules}
+            fi
+        done`
+    MM_KERNEL_MODULES=`echo "${MM_X_KERNEL_MODULES} ${MM_AUDIO_DRIVER} ${MM_SENSOR_DRIVER} ${kernel_modules}" | 
+        sed -e 's% %\n%g' | 
+        sort | 
+        uniq |
+        sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'`
+    conf_variable_write "${conf_file}" MM_KERNEL_MODULES "${MM_KERNEL_MODULES}"
+
     return 0
 }
 
 start() {
     mm_message_output info 'processing configuration ...'
 
-    # Get minimyth.conf file
+    # Get minimyth.conf file.
     mm_conf_get /minimyth.conf /etc/minimyth.d/minimyth.conf
 
     # Make sure that there is a minimyth.conf file.

@@ -13,6 +13,13 @@ start() {
     # IO scheduler.
     modprobe as-iosched
 
+    # Load ACPI kernel modules.
+    modprobe button
+    modprobe fan
+    modprobe processor
+    modprobe thermal
+    modprobe video
+
     # Input.
     modprobe evdev
     modprobe psmouse
@@ -28,65 +35,13 @@ start() {
     modprobe parport_pc
     modprobe ppdev
 
-    # Look for PCI devices and load associated drivers.
-    lspci -mn | sed -e 's%"%%g' | while read pci ; do
-        index=1            ; bus=`       echo "${pci}" | cut -d' ' -f${index}`
-        index=$((index+1)) ; class=`     echo "${pci}" | cut -d' ' -f${index}`
-        index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d' ' -f${index}`
-        index=$((index+1)) ; device=`    echo "${pci}" | cut -d' ' -f${index}`
-        index=$((index+1)) ; revision=`  echo "${pci}" | cut -d' ' -f${index}`
-        if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
-            revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
-        else
-            index=$((index-1)) ; revision=
+    # Detected and user specified kernel modules.
+    for kernel_module in ${MM_KERNEL_MODULES} ; do
+        modprobe ${kernel_module}
+        if [ ! "$?" = "0" ] ; then
+            mm_message_output err "error: failed to load kernel module: ${kernel_module}"
+            exit 1
         fi
-        index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d' ' -f${index}`
-        if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
-            class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
-        else
-            index=$((index-1)) ; class_prog=
-        fi
-        index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d' ' -f${index}`
-        index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d' ' -f${index}`
-
-        case "${class}" in
-            # PCI bridge (assumed to imply AGP).
-            0604)
-                case "${vendor}" in
-                    8086) modprobe intel-agp  ;; # Intel
-                    10de) modprobe nvidia-agp ;; # NVIDIA
-                    1106) modprobe via-agp    ;; # VIA
-                esac
-                ;;
-            # IDE.
-            0101)
-                case "${vendor}" in
-                    8086) modprobe piix      ;; # Intel
-                    10de) modprobe amd74xx   ;; # NVIDIA
-                    1106) modprobe via82cxxx ;; # VIA
-                esac
-                ;;
-            # FireWire (IEEE1394).
-            0c00)
-                [ -z "${class_prog}" ] && class_prog="00"
-                case "${class_prog}" in
-                    00) modprobe ieee1394 ;;
-                    10) modprobe ohci1394 ;;
-                esac
-                ;;
-            # USB.
-            0c03)
-                [ -z "${class_prog}" ] && class_prog="00"
-                case "${class_prog}" in
-                    00) modprobe uhci-hcd ;;
-                    10) modprobe ohci-hcd ;;
-                    20) modprobe ehci-hcd ;;
-                esac
-                ;;
-            # SMBus.
-            0c05)
-                ;;
-        esac
     done
 
     # IDE.

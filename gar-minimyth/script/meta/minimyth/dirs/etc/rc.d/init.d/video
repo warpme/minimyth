@@ -9,6 +9,11 @@
 start() {
     mm_message_output info 'configuring video ...'
 
+    if [ -z "${MM_X_DRIVER}" ] ; then
+        mm_message_output err "error: no supported video hardware found."
+        exit 1
+    fi
+
     if   [ "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ] ; then
         sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
     elif [ "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ] ; then
@@ -44,7 +49,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         intel_i810)
-            modprobe i810
             sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc
             sed -i "s%@VIDEO_DRIVER@%xvmc%"              /root/.xine/config
@@ -54,7 +58,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
         intel_i830)
-            modprobe i830
             PREFERRED_MPEG2_DECODER=ffmpeg
             sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
             sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
@@ -63,7 +66,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         intel_i915)
-            modprobe i915
             PREFERRED_MPEG2_DECODER=ffmpeg
             sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
             sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
@@ -72,7 +74,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         nvidia)
-            modprobe nvidia
             sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
@@ -84,7 +85,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         via)
-            modprobe via
             sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc-vld
             sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
@@ -94,7 +94,6 @@ start() {
             sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
         via_pro)
-            modprobe via
             sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc-vld
             sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
