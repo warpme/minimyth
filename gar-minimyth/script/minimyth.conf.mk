@@ -52,9 +52,11 @@ mm_NFSDIR            ?= $(mm_NFS_ROOT)
 mm_KERNELNAME        ?= kernel-$(mm_NAME)
 mm_CRAMFSNAME        ?= rootfs-$(mm_NAME)
 mm_EXTRASNAME        ?= extras-$(mm_NAME).cmg
+mm_THEMESNAME        ?= themes-$(mm_NAME)
 mm_NFSNAME           ?= $(mm_NAME)
 mm_DESTDIR           ?= $(mm_BASEDIR)/rootfs-$(mm_NAME).d
 mm_EXTRASDIR         ?= $(mm_BASEDIR)/extras-$(mm_NAME).d
+mm_THEMESDIR         ?= $(mm_BASEDIR)/themes-$(mm_NAME).d
 # The version of Myth checked out from SVN when mm_MYTH_VERSION=svn.
 # If this is set, the patch files for myth/myth*-svn may fail.
 mm_MYTH_VERSION_SVN  ?=

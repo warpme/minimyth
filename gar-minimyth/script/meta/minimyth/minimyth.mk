@@ -58,7 +58,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
+mm-all: mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-themes mm-make-initrd mm-make-lib-list
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -327,6 +327,16 @@ mm-make-extras:
 	@mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
 	@rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
 
+mm-make-themes:
+	@rm -rf $(mm_THEMESDIR) ; mkdir -p $(mm_THEMESDIR)
+	@for dir in `cd $(mm_DESTDIR)/usr/share/mythtv/themes ; ls -1` ; do \
+		if test -d $(mm_DESTDIR)/usr/share/mythtv/themes/$${dir} ; then \
+			if test $${dir} != default && test $${dir} != defaultosd ; then \
+				mv $(mm_DESTDIR)/usr/share/mythtv/themes/$${dir} $(mm_THEMESDIR) ; \
+			fi ; \
+		fi ; \
+	done
+
 mm-make-initrd:
 	@if test -e $(mm_DESTDIR).ro ; then rm -rf $(mm_DESTDIR).ro ; fi
 	@mv $(mm_DESTDIR) $(mm_DESTDIR).ro
@@ -352,34 +362,71 @@ mm-make-lib-list:
 		echo "$(lib)" >> $(WORKSRC)/minimyth-lib-list.$(GARCH_FAMILY).complete ; )
 
 mm-install:
-	@su -c "[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
-		[ -e $(mm_EXTRASDIR).tmp ] && rm -rf $(mm_EXTRASDIR).tmp ; \
+	@mm_UID=`id --user` mm_GID=`id --group` su -m -c " \
+		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+		mkdir -p $(mm_TFTPDIR) ; \
+		cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+		\
+		[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
 		mkdir -p $(mm_DESTDIR).tmp ; \
 		cp -a $(mm_DESTDIR)/* $(mm_DESTDIR).tmp ; \
-		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-			mkdir -p $(mm_TFTPDIR) ; \
-			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 		chown -Rh root:root $(mm_DESTDIR).tmp ; \
 		mkdir        $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/initctl p; \
-		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
+		[ -e $(mm_BASEDIR)/$(mm_CRAMFSNAME) ] && rm -rf $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
+		mkfs.cramfs $(mm_DESTDIR).tmp $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
+		chown -Rh \$${mm_UID}:\$${mm_GID} $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
+		\
+		[ -e $(mm_EXTRASDIR).tmp ] && rm -rf $(mm_EXTRASDIR).tmp ; \
+		mkdir -p $(mm_EXTRASDIR).tmp ; \
+		cp -a $(mm_EXTRASDIR)/* $(mm_EXTRASDIR).tmp ; \
 		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
+		[ -e $(mm_BASEDIR)/$(mm_EXTRASNAME) ] && rm -rf $(mm_BASEDIR)/$(mm_EXTRASNAME) ; \
+		mkfs.cramfs $(mm_EXTRASDIR).tmp $(mm_BASEDIR)/$(mm_EXTRASNAME) ; \
+		chown -Rh \$${mm_UID}:\$${mm_GID} $(mm_BASEDIR)/$(mm_EXTRASNAME) ; \
+		\
+		[ -e $(mm_THEMESDIR).tmp ] && rm -rf $(mm_THEMESDIR).tmp ; \
+		mkdir -p $(mm_THEMESDIR).tmp ; \
+		cp -a $(mm_THEMESDIR)/* $(mm_THEMESDIR).tmp ; \
+		chown -Rh root:root $(mm_THEMESDIR).tmp ; \
+		chmod go-w $(mm_THEMESDIR).tmp ; \
+		[ -e $(mm_BASEDIR)/$(mm_THEMESNAME) ] && rm -rf $(mm_BASEDIR)/$(mm_THEMESNAME) ; \
+		mkdir -p $(mm_BASEDIR)/$(mm_THEMESNAME) ; \
+		themes=\"`cd $(mm_THEMESDIR) ; ls -1`\" ; \
+		for theme in \$${themes} ; do \
+			mkfs.cramfs $(mm_THEMESDIR).tmp/\$${theme} $(mm_BASEDIR)/$(mm_THEMESNAME)/\$${theme}.cmg ; \
+		done ; \
+		\
+		[ -e $(mm_BASEDIR)/$(mm_THEMESNAME).tar.bz2 ] && rm -rf $(mm_BASEDIR)/$(mm_THEMESNAME).tar.bz2 ; \
+		tar -C $(mm_BASEDIR) -jcf $(mm_BASEDIR)/$(mm_THEMESNAME).tar.bz2 $(mm_THEMESNAME) ; \
+		chown -Rh \$${mm_UID}:\$${mm_GID} $(mm_BASEDIR)/$(mm_THEMESNAME) ; \
+		chown -Rh \$${mm_UID}:\$${mm_GID} $(mm_BASEDIR)/$(mm_THEMESNAME).tar.bz2 ; \
+		\
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
-			mkfs.cramfs $(mm_DESTDIR).tmp $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
-			rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
+			rm -rf $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
-				cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
-			mkfs.cramfs $(mm_EXTRASDIR).tmp $(mm_BASEDIR)/$(mm_EXTRASNAME) ; \
-			rm -f $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
+				cp -r $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
+			rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
-				cp $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
+				cp -r $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
+			rm -rf $(mm_TFTPDIR)/$(mm_THEMESNAME) ; \
+				mkdir -p $(mm_TFTPDIR) ; \
+				cp -r $(mm_BASEDIR)/$(mm_THEMESNAME) $(mm_TFTPDIR)/$(mm_THEMESNAME) ; \
+			rm -rf $(mm_TFTPDIR)/$(mm_THEMESNAME).tar.bz2 ; \
+				mkdir -p $(mm_TFTPDIR) ; \
+				cp -r $(mm_BASEDIR)/$(mm_THEMESNAME).tar.bz2 $(mm_TFTPDIR)/$(mm_THEMESNAME).tar.bz2 ; \
 		fi ; \
+		\
 		if [ $(mm_INSTALL_NFS) = yes ] ; then \
 			rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
 				mkdir -p $(mm_NFSDIR) ; \
 				cp -a $(mm_DESTDIR).tmp $(mm_NFSDIR)/$(mm_NFSNAME) ; \
 			cp -a $(mm_EXTRASDIR).tmp/* $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
+			cp -a $(mm_THEMESDIR).tmp/* $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/usr/share/mythtv/themes ; \
 		fi ; \
-		rm -rf $(mm_DESTDIR).tmp ; \
-		rm -rf $(mm_EXTRASDIR).tmp"
+		\
+		[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
+		[ -e $(mm_EXTRASDIR).tmp ] && rm -rf $(mm_EXTRASDIR).tmp ; \
+		[ -e $(mm_THEMESDIR).tmp ] && rm -rf $(mm_THEMESDIR).tmp ; \
+	"
