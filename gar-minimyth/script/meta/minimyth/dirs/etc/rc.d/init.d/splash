@@ -27,17 +27,17 @@ start() {
     /usr/bin/test ${LOGLEVEL} -gt 4 && SPLASH_ENABLE=no
 
     # Disable splash screen when the video resolution is not compatible.
-    # That is when the resolution is not 800x600 or color depth is less than 16.
+    # That is when the resolution is not 640x480 or color depth is less than 16.
     GEOMETRY=`/usr/sbin/fbset | /bin/grep geometry`
     XRES=` /bin/echo ${GEOMETRY} | /usr/bin/cut -d ' ' -f 2`
     YRES=` /bin/echo ${GEOMETRY} | /usr/bin/cut -d ' ' -f 3`
     VXRES=`/bin/echo ${GEOMETRY} | /usr/bin/cut -d ' ' -f 4`
     VYRES=`/bin/echo ${GEOMETRY} | /usr/bin/cut -d ' ' -f 5`
     DEPTH=`/bin/echo ${GEOMETRY} | /usr/bin/cut -d ' ' -f 6`
-    /usr/bin/test ${XRES}  -ne 800 && SPLASH_ENABLE=no
-    /usr/bin/test ${YRES}  -ne 600 && SPLASH_ENABLE=no
-    /usr/bin/test ${VXRES} -ne 800 && SPLASH_ENABLE=no
-    /usr/bin/test ${VYRES} -ne 600 && SPLASH_ENABLE=no
+    /usr/bin/test ${XRES}  -ne 640 && SPLASH_ENABLE=no
+    /usr/bin/test ${YRES}  -ne 480 && SPLASH_ENABLE=no
+    /usr/bin/test ${VXRES} -ne 640 && SPLASH_ENABLE=no
+    /usr/bin/test ${VYRES} -ne 480 && SPLASH_ENABLE=no
     /usr/bin/test ${DEPTH} -lt 16  && SPLASH_ENABLE=no
 
     if /usr/bin/test "${SPLASH_ENABLE}" = "yes" ; then
