@@ -1,3 +1,1 @@
-MYTHTV_SVN_VERSION = $(mm_MYTH_VERSION_SVN)
-
 MYTHTV_SOURCEDIR = $(sourcedir)/mythtv

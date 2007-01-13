@@ -1,6 +1,710 @@
+diff -Naur mythplugins-0.18.1-old/.cvsignore mythplugins-0.18.1-new/.cvsignore
+--- mythplugins-0.18.1-old/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/.cvsignore	2006-05-03 03:13:10.000000000 -0700
+@@ -0,0 +1,2 @@
++config.pro
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythbrowser/.cvsignore mythplugins-0.18.1-new/mythbrowser/.cvsignore
+--- mythplugins-0.18.1-old/mythbrowser/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/.cvsignore	2006-05-03 03:12:57.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++diff.diff
+diff -Naur mythplugins-0.18.1-old/mythbrowser/i18n/.cvsignore mythplugins-0.18.1-new/mythbrowser/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythbrowser/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/i18n/.cvsignore	2006-05-03 03:12:56.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbookmarkmanager/.cvsignore mythplugins-0.18.1-new/mythbrowser/mythbookmarkmanager/.cvsignore
+--- mythplugins-0.18.1-old/mythbrowser/mythbookmarkmanager/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/mythbookmarkmanager/.cvsignore	2006-05-03 03:12:57.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++moc_*
+diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbrowser/.cvsignore mythplugins-0.18.1-new/mythbrowser/mythbrowser/.cvsignore
+--- mythplugins-0.18.1-old/mythbrowser/mythbrowser/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/mythbrowser/.cvsignore	2006-05-03 03:12:57.000000000 -0700
+@@ -0,0 +1,3 @@
++Makefile
++moc_*
++mythbrowser
+diff -Naur mythplugins-0.18.1-old/mythdvd/.cvsignore mythplugins-0.18.1-new/mythdvd/.cvsignore
+--- mythplugins-0.18.1-old/mythdvd/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/.cvsignore	2006-05-03 03:12:51.000000000 -0700
+@@ -0,0 +1,2 @@
++diff.diff
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythdvd/i18n/.cvsignore mythplugins-0.18.1-new/mythdvd/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythdvd/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/i18n/.cvsignore	2006-05-03 03:12:50.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/.cvsignore mythplugins-0.18.1-new/mythdvd/mtd/.cvsignore
+--- mythplugins-0.18.1-old/mythdvd/mtd/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/.cvsignore	2006-05-03 03:12:51.000000000 -0700
+@@ -0,0 +1,3 @@
++mtd
++Makefile
++moc_*
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/dvdprobe.cpp mythplugins-0.18.1-new/mythdvd/mtd/dvdprobe.cpp
+--- mythplugins-0.18.1-old/mythdvd/mtd/dvdprobe.cpp	2005-02-23 16:12:38.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/dvdprobe.cpp	2006-05-03 03:12:51.000000000 -0700
+@@ -21,6 +21,8 @@
+ #include <mythtv/mythcontext.h>
+ #include <mythtv/mythdbcon.h>
+ 
++#include <dvdread/ifo_read.h>
++
+ 
+ DVDSubTitle::DVDSubTitle(int subtitle_id, const QString &a_language)
+ {
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/dvdprobe.h mythplugins-0.18.1-new/mythdvd/mtd/dvdprobe.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/dvdprobe.h	2005-02-23 12:41:14.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/dvdprobe.h	2006-05-03 03:12:51.000000000 -0700
+@@ -10,11 +10,30 @@
+ #ifndef DVDPROBE_H_
+ #define DVDPROBE_H_
+ 
++#include <inttypes.h>
++
++#ifndef UINT8_MAX
++#define UINT8_MAX
++#define UINT16_MAX
++#define INT32_MAX
++#define MAXDEFS
++#endif
++
++// C headers
++extern "C" { /* needed for inttypes.h by glibc 2.3.5 */
++#include <dvdread/ifo_types.h>
++}
++
++#ifdef MAXDEFS
++#undef UINT8_MAX
++#undef UINT16_MAX
++#undef INT32_MAX
++#endif
++
++// Qt headers
+ #include <qstring.h>
+ #include <qptrlist.h>
+ 
+-#include <dvdread/dvd_reader.h>
+-#include <dvdread/ifo_read.h>
+ 
+ class DVDSubTitle
+ {
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/fileobs.cpp mythplugins-0.18.1-new/mythdvd/mtd/fileobs.cpp
+--- mythplugins-0.18.1-old/mythdvd/mtd/fileobs.cpp	2003-08-15 09:44:27.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mtd/fileobs.cpp	2006-05-03 03:12:51.000000000 -0700
+@@ -17,11 +17,11 @@
+ #include "fileobs.h"
+ #include "qdir.h"
+ 
+-RipFile::RipFile(const QString &a_base, const QString &an_extension)
++RipFile::RipFile(const QString &a_base, const QString &an_extension,
++        bool auto_remove_bad) : base_name(a_base), extension(an_extension),
++                                   auto_remove_bad_rips(auto_remove_bad)
+ {
+     filesize = gContext->GetNumSetting("MTDRipSize", 0) * 1024 * 1024;
+-    base_name = a_base;
+-    extension = an_extension;
+     active_file = NULL;
+     files.clear();
+     files.setAutoDelete(true);
+@@ -46,6 +46,7 @@
+ 
+ void RipFile::close()
+ {
++    auto_remove_bad_rips = false;
+     if(active_file)
+     {
+         active_file->close();
+@@ -155,7 +156,9 @@
+ 
+ RipFile::~RipFile()
+ {
++    if (active_file && auto_remove_bad_rips)
++    {
++        remove();
++    }
+     files.clear();
+ }
+-
+-
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/fileobs.h mythplugins-0.18.1-new/mythdvd/mtd/fileobs.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/fileobs.h	2003-08-07 13:26:35.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mtd/fileobs.h	2006-05-03 03:12:51.000000000 -0700
+@@ -21,7 +21,8 @@
+ 
+   public:
+   
+-    RipFile(const QString &a_base, const QString &an_extension);
++    RipFile(const QString &a_base, const QString &an_extension,
++            bool auto_remove_bad);
+     ~RipFile();
+     
+     bool    open(int mode, bool multiple_files);
+@@ -40,6 +41,7 @@
+     int             access_mode;
+     QPtrList<QFile> files;
+     bool            use_multiple_files;
++    bool            auto_remove_bad_rips;
+ };
+ 
+ #endif  // fileobs_h_
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/jobthread.cpp mythplugins-0.18.1-new/mythdvd/mtd/jobthread.cpp
+--- mythplugins-0.18.1-old/mythdvd/mtd/jobthread.cpp	2005-02-23 12:41:14.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/jobthread.cpp	2006-05-03 03:12:51.000000000 -0700
+@@ -11,14 +11,33 @@
+ #include <iostream>
+ using namespace std;
+ 
++#include <inttypes.h>
++
++#ifndef UINT8_MAX
++#define UINT8_MAX
++#define UINT16_MAX
++#define INT32_MAX
++#define MAXDEFS
++#endif
++
++// C headers
++extern "C" {
+ #include <dvdread/dvd_reader.h>
+ #include <dvdread/ifo_types.h>
+ #include <dvdread/ifo_read.h>
+ #include <dvdread/nav_read.h>
++}
++
++#ifdef MAXDEFS
++#undef UINT8_MAX
++#undef UINT16_MAX
++#undef INT32_MAX
++#endif
+ 
+ #include <qdatetime.h>
+ #include <qdir.h>
+ #include <qapplication.h>
++#include <qprocess.h>
+ 
+ #include <mythtv/mythcontext.h>
+ #include <mythtv/mythdbcon.h>
+@@ -171,6 +190,63 @@
+ ---------------------------------------------------------------------
+ */
+ 
++namespace 
++{ 
++    class MutexUnlocker 
++    { 
++      public: 
++        MutexUnlocker(QMutex *mutex) : m_mutex(mutex) 
++        { 
++            if (!(m_mutex && m_mutex->locked())) 
++            { 
++                cerr << __FILE__ << ": Invalid mutext passed to MutexUnlocker" 
++                        << endl; 
++            } 
++        } 
++ 
++        ~MutexUnlocker() 
++        { 
++            m_mutex->unlock(); 
++        } 
++ 
++      private: 
++        QMutex *m_mutex; 
++    }; 
++ 
++    template <typename HTYPE, typename CLEANF_RET = void> 
++    class SmartHandle 
++    { 
++      private: 
++        typedef CLEANF_RET (*clean_fun_t)(HTYPE); 
++ 
++      public: 
++        SmartHandle(HTYPE handle, clean_fun_t cleaner) : m_handle(handle),  
++                m_cleaner(cleaner) 
++        { 
++        } 
++ 
++        ~SmartHandle() { 
++            if (m_handle) 
++            { 
++                m_cleaner(m_handle); 
++            } 
++        } 
++
++        HTYPE get() 
++        { 
++            return m_handle; 
++        } 
++ 
++        HTYPE operator->() { 
++            return m_handle; 
++        } 
++ 
++      private: 
++        HTYPE m_handle; 
++        clean_fun_t m_cleaner; 
++    }; 
++} 
++ 
+ DVDThread::DVDThread(MTD *owner, 
+                      QMutex *drive_mutex, 
+                      const QString &dvd_device, 
+@@ -185,7 +261,6 @@
+     dvd_device_location = dvd_device;
+     dvd_title = track - 1;
+     destination_file_string = dest_file;
+-    ripfile = NULL;
+     rip_name = name;
+ }
+ 
+@@ -229,10 +304,11 @@
+         }
+     }    
+ 
++    MutexUnlocker qmul(dvd_device_access);
++
+     if(!keepGoing())
+     {
+         problem("abandoned job because master control said we need to shut down");
+-        dvd_device_access->unlock();
+         return false;
+     }
+ 
+@@ -244,16 +320,10 @@
+     //  Lets open our destination file
+     //
+     
+-    if(ripfile)
++    RipFile ripfile(to_location, extension, true);
++    if(!ripfile.open(IO_WriteOnly | IO_Raw | IO_Truncate, multiple_files))
+     {
+-        cerr << "jobthread.o: How is it that you already have a ripfile set?" << endl;
+-        delete ripfile;
+-        ripfile = NULL;
+-    }
+-    ripfile = new RipFile(to_location, extension);
+-    if(!ripfile->open(IO_WriteOnly | IO_Raw | IO_Truncate, multiple_files))
+-    {
+-        problem(QString("DVDPerfectThread could not open output file: %1").arg(ripfile->name()));
++        problem(QString("DVDPerfectThread could not open output file: %1").arg(ripfile.name()));
+         dvd_device_access->unlock();
+         return false;
+     }
+@@ -265,27 +335,20 @@
+     
+     int angle = 0;  // Change that at some point
+ 
+-    the_dvd = DVDOpen(dvd_device_location);
+-    if(!the_dvd)
++    SmartHandle<dvd_reader_t *> the_dvd(DVDOpen(dvd_device_location),
++            DVDClose);
++    if(!the_dvd.get())
+     {
+         problem(QString("DVDPerfectThread could not access this dvd device: %1").arg(dvd_device_location));
+-        ripfile->remove();
+-        delete ripfile;
+-        ripfile = NULL;
+-        dvd_device_access->unlock();
++        ripfile.remove();
+         return false;
+     }
+ 
+ 
+-    ifo_handle_t *vmg_file = ifoOpen( the_dvd, 0);
+-    if(!vmg_file)
++    SmartHandle<ifo_handle_t *> vmg_file(ifoOpen(the_dvd.get(), 0), ifoClose);
++    if(!vmg_file.get())
+     {
+         problem("DVDPerfectThread could not open VMG info.");
+-        ripfile->remove();
+-        delete ripfile;
+-        ripfile = NULL;
+-        DVDClose(the_dvd);
+-        dvd_device_access->unlock();
+         return false;
+     }
+     tt_srpt_t *tt_srpt = vmg_file->tt_srpt;
+@@ -297,25 +360,15 @@
+     if(title_number < 0 || title_number > tt_srpt->nr_of_srpts )
+     {
+         problem(QString("DVDPerfectThread could not open title number %1").arg(title_number + 1));
+-        ripfile->remove();
+-        delete ripfile;
+-        ripfile = NULL;
+-        ifoClose(vmg_file);
+-        DVDClose(the_dvd);
+-        dvd_device_access->unlock();
+         return false;
+     }
+ 
+-    ifo_handle_t *vts_file = ifoOpen(the_dvd, tt_srpt->title[title_number].title_set_nr);
+-    if(!vts_file)
++    SmartHandle<ifo_handle_t *> vts_file(
++            ifoOpen(the_dvd.get(), tt_srpt->title[title_number].title_set_nr),
++            ifoClose);
++    if(!vts_file.get())
+     {
+         problem("DVDPerfectThread could not open the title's info file");
+-        ripfile->remove();
+-        delete ripfile;
+-        ripfile = NULL;
+-        ifoClose(vmg_file);
+-        DVDClose(the_dvd);
+-        dvd_device_access->unlock();
+         return false;
+     }
+ 
+@@ -348,19 +401,14 @@
+     //  OK ... now actually open
+     //    
+     
+-    title = DVDOpenFile(the_dvd, 
+-                        tt_srpt->title[ title_number ].title_set_nr, 
+-                        DVD_READ_TITLE_VOBS );
+-    if(!title)
++    SmartHandle<dvd_file_t *> title(
++            DVDOpenFile(the_dvd.get(),
++                    tt_srpt->title[title_number].title_set_nr,
++                    DVD_READ_TITLE_VOBS),
++            DVDCloseFile);
++    if(!title.get())
+     {
+         problem("DVDPerfectThread could not open the title's actual VOB(s)");
+-        ripfile->remove();
+-        delete ripfile;
+-        ripfile = NULL;
+-        ifoClose(vts_file);
+-        ifoClose(vmg_file);
+-        DVDClose(the_dvd);
+-        dvd_device_access->unlock();
+         return false;
+     }
+     
+@@ -368,6 +416,8 @@
+ 
+     QTime job_time;
+     job_time.start();
++
++    unsigned char video_data[ 1024 * DVD_VIDEO_LB_LEN ];
+     
+     int next_cell = start_cell;    
+     for(int cur_cell = start_cell; next_cell < cur_pgc->nr_of_cells; )
+@@ -405,18 +455,10 @@
+             //  Read the NAV packet.
+             //            
+             
+-            int len = DVDReadBlocks( title, (int) cur_pack, 1, video_data );
++            int len = DVDReadBlocks(title.get(), (int) cur_pack, 1, video_data);
+             if( len != 1)
+             {
+                 problem(QString("DVDPerfectThread read failed for block %1").arg(cur_pack));
+-                ifoClose(vts_file);
+-                ifoClose(vmg_file);
+-                DVDCloseFile( title );
+-                DVDClose(the_dvd);
+-                dvd_device_access->unlock();
+-                ripfile->remove();
+-                delete ripfile;
+-                ripfile = NULL;
+                 return false;
+             }
+             
+@@ -456,21 +498,14 @@
+             //  Read in and output cursize packs
+             //
+             
+-            len = DVDReadBlocks( title, (int)cur_pack, cur_output_size, video_data );
++            len = DVDReadBlocks(title.get(), (int)cur_pack, cur_output_size,
++                    video_data);
+             if( len != (int) cur_output_size )
+             {
+                 problem(QString("DVDPerfectThread read failed for %1 blocks at %2") 
+                         .arg(cur_output_size)
+                         .arg(cur_pack)
+                        );
+-                ripfile->remove();
+-                delete ripfile;
+-                ripfile = NULL;
+-                ifoClose(vts_file);
+-                ifoClose(vmg_file);
+-                DVDCloseFile( title );
+-                DVDClose(the_dvd);
+-                dvd_device_access->unlock();
+                 return false;
+             }
+             
+@@ -478,17 +513,10 @@
+             overall_progress = subjob_progress * sub_to_overall_multiple;
+             updateSubjobString(job_time.elapsed() / 1000, 
+                                QObject::tr("Ripping to file ~"));
+-            if(!ripfile->writeBlocks(video_data, cur_output_size * DVD_VIDEO_LB_LEN))
++            if(!ripfile.writeBlocks(video_data,
++                    cur_output_size * DVD_VIDEO_LB_LEN))
+             {
+                 problem("Couldn't write blocks during a rip. Filesystem size exceeded? Disc full?");
+-                ripfile->remove();
+-                delete ripfile;
+-                ripfile = NULL;
+-                DVDCloseFile( title );
+-                ifoClose(vts_file);
+-                ifoClose(vmg_file);
+-                DVDClose(the_dvd);
+-                dvd_device_access->unlock();
+                 return false;
+             }
+ 
+@@ -504,14 +532,6 @@
+             if(!keepGoing())
+             {
+                 problem("abandoned job because master control said we need to shut down");
+-                ripfile->remove();
+-                delete ripfile;
+-                ripfile = NULL;
+-                DVDCloseFile( title );
+-                ifoClose(vts_file);
+-                ifoClose(vmg_file);
+-                DVDClose(the_dvd);
+-                dvd_device_access->unlock();
+                 return false;
+             }
+         }
+@@ -521,22 +541,13 @@
+     //  Wow, we're done.
+     //
+ 
+-    ifoClose(vts_file);
+-    ifoClose(vmg_file);
+-    DVDCloseFile( title );
+-    DVDClose(the_dvd);
+-    ripfile->close();
+-    dvd_device_access->unlock();
++    ripfile.close();
+     sendLoggingEvent("job thread finished ripping dvd title");
+     return true;
+ }
+ 
+ DVDThread::~DVDThread()
+ {
+-    if(ripfile);
+-    {
+-        delete ripfile;
+-    }
+ }
+ 
+ /*
+@@ -1232,13 +1243,6 @@
+     //
+     if(working_directory)
+     {
+-        if(ripfile)
+-        {
+-            ripfile->remove();
+-            delete ripfile;
+-            ripfile = NULL;
+-        }
+-            
+         if(two_pass)
+         {
+             working_directory->remove("twopass.log");
+@@ -1273,9 +1277,4 @@
+     {
+         delete tc_process;
+     }
+-    if(ripfile)
+-    {
+-        delete ripfile;
+-    }
+ }
+-
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/jobthread.h mythplugins-0.18.1-new/mythdvd/mtd/jobthread.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/jobthread.h	2005-02-23 12:41:15.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/jobthread.h	2006-05-03 03:12:51.000000000 -0700
+@@ -12,12 +12,6 @@
+ 
+ #include <qthread.h>
+ #include <qstringlist.h>
+-#include <qfile.h>
+-#include <qprocess.h>
+-#include <dvdread/dvd_reader.h>
+-#include <dvdread/ifo_types.h>
+-#include <dvdread/ifo_read.h>
+-#include <dvdread/nav_read.h>
+ 
+ #include "fileobs.h"
+ 
+@@ -107,9 +101,6 @@
+     QString      dvd_device_location;
+     QString      destination_file_string;
+     int          dvd_title;
+-    dvd_reader_t *the_dvd;
+-    dvd_file_t   *title;
+-    unsigned char video_data[ 1024 * DVD_VIDEO_LB_LEN ];
+     QString      rip_name;
+ };
+ 
+@@ -180,7 +171,7 @@
+     int          quality;
+     QDir         *working_directory;
+     QStringList  tc_arguments;
+-    QProcess     *tc_process;
++    class QProcess     *tc_process;
+     bool         two_pass;
+     int          audio_track;
+     int          length_in_seconds;
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/logging.h mythplugins-0.18.1-new/mythdvd/mtd/logging.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/logging.h	2003-07-28 08:34:52.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mtd/logging.h	2006-05-03 03:12:51.000000000 -0700
+@@ -9,14 +9,10 @@
+ 	Headers for logging object of the myth transcoding daemon
+ 
+ */
+-#include <unistd.h>
+-#include <iostream>
+-using namespace std;
+ 
+ #include <qobject.h>
+ #include <qstring.h>
+ #include <qfile.h>
+-#include <qtextstream.h>
+ 
+ 
+ class MTDLogger : public QObject
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/mtd.cpp mythplugins-0.18.1-new/mythdvd/mtd/mtd.cpp
+--- mythplugins-0.18.1-old/mythdvd/mtd/mtd.cpp	2005-02-23 16:12:39.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/mtd.cpp	2006-05-03 03:12:51.000000000 -0700
+@@ -11,6 +11,7 @@
+ #include <qstringlist.h>
+ #include <qregexp.h>
+ #include <qdir.h>
++#include <qtimer.h>
+ 
+ #include <mythtv/util.h>
+ #include <mythtv/mythcontext.h>
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/mtd.h mythplugins-0.18.1-new/mythdvd/mtd/mtd.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/mtd.h	2005-02-23 16:12:39.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mtd/mtd.h	2006-05-03 03:12:51.000000000 -0700
+@@ -11,9 +11,7 @@
+ */
+ 
+ #include <qobject.h>
+-#include <qstringlist.h>
+ #include <qptrlist.h>
+-#include <qtimer.h>
+ 
+ #include "logging.h"
+ #include "serversocket.h"
+@@ -21,6 +19,9 @@
+ #include "dvdprobe.h"
+ #include "threadevents.h"
+ 
++class QStringList;
++class QTimer;
++
+ class DiscCheckingThread : public QThread
+ {
+ 
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/serversocket.cpp mythplugins-0.18.1-new/mythdvd/mtd/serversocket.cpp
+--- mythplugins-0.18.1-old/mythdvd/mtd/serversocket.cpp	2003-07-28 08:34:52.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mtd/serversocket.cpp	2006-05-03 03:12:51.000000000 -0700
+@@ -8,6 +8,8 @@
+ 
+ */
+ 
++#include <qsocket.h>
++
+ #include <stdlib.h>
+ #include <iostream>
+ using namespace std;
+diff -Naur mythplugins-0.18.1-old/mythdvd/mtd/serversocket.h mythplugins-0.18.1-new/mythdvd/mtd/serversocket.h
+--- mythplugins-0.18.1-old/mythdvd/mtd/serversocket.h	2003-07-28 08:34:52.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mtd/serversocket.h	2006-05-03 03:12:51.000000000 -0700
+@@ -10,10 +10,9 @@
+ 
+ */
+ 
+-#include <qsocket.h>
+ #include <qserversocket.h>
+ 
+-
++class QSocket;
+ 
+ class MTDServerSocket : public QServerSocket
+ {
+diff -Naur mythplugins-0.18.1-old/mythdvd/mythdvd/.cvsignore mythplugins-0.18.1-new/mythdvd/mythdvd/.cvsignore
+--- mythplugins-0.18.1-old/mythdvd/mythdvd/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythdvd/mythdvd/.cvsignore	2006-05-03 03:12:50.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++moc_*
+diff -Naur mythplugins-0.18.1-old/mythdvd/mythdvd/dvdinfo.h mythplugins-0.18.1-new/mythdvd/mythdvd/dvdinfo.h
+--- mythplugins-0.18.1-old/mythdvd/mythdvd/dvdinfo.h	2003-08-13 11:41:07.000000000 -0700
++++ mythplugins-0.18.1-new/mythdvd/mythdvd/dvdinfo.h	2006-05-03 03:12:50.000000000 -0700
+@@ -10,11 +10,30 @@
+ #ifndef DVDINFO_H_
+ #define DVDINFO_H_
+ 
+-#include <qstring.h>
+-#include <qptrlist.h>
++#include <inttypes.h>
+ 
++#ifndef UINT8_MAX
++#define UINT8_MAX
++#define UINT16_MAX
++#define INT32_MAX
++#define MAXDEFS
++#endif
++
++// C headers
++extern "C" { /* needed for inttypes.h by glibc 2.3.5 */
+ #include <dvdread/dvd_reader.h>
+ #include <dvdread/ifo_read.h>
++}
++
++#ifdef MAXDEFS
++#undef UINT8_MAX
++#undef UINT16_MAX
++#undef INT32_MAX
++#endif
++
++// Qt headers
++#include <qstring.h>
++#include <qptrlist.h>
+ 
+ class DVDSubTitleInfo
+ {
+diff -Naur mythplugins-0.18.1-old/mythgallery/.cvsignore mythplugins-0.18.1-new/mythgallery/.cvsignore
+--- mythplugins-0.18.1-old/mythgallery/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgallery/.cvsignore	2006-05-03 03:13:02.000000000 -0700
+@@ -0,0 +1,3 @@
++diff.diff
++.qmake.internal.cache
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythgallery/i18n/.cvsignore mythplugins-0.18.1-new/mythgallery/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythgallery/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgallery/i18n/.cvsignore	2006-05-03 03:13:01.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythgallery/mythgallery/.cvsignore mythplugins-0.18.1-new/mythgallery/mythgallery/.cvsignore
+--- mythplugins-0.18.1-old/mythgallery/mythgallery/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgallery/mythgallery/.cvsignore	2006-05-03 03:13:02.000000000 -0700
+@@ -0,0 +1,6 @@
++.qmake.internal.cache
++Makefile
++moc_*
++mythgallery
++config.h
++config.pro
 diff -Naur mythplugins-0.18.1-old/mythgallery/mythgallery/qtiffio.cpp mythplugins-0.18.1-new/mythgallery/mythgallery/qtiffio.cpp
 --- mythplugins-0.18.1-old/mythgallery/mythgallery/qtiffio.cpp	2004-02-02 12:55:37.000000000 -0800
-+++ mythplugins-0.18.1-new/mythgallery/mythgallery/qtiffio.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythgallery/mythgallery/qtiffio.cpp	2006-05-03 03:13:02.000000000 -0700
 @@ -74,7 +74,7 @@
  /*! \warning always returns MAP_FAILED.
  */
@@ -10,9 +714,57 @@ diff -Naur mythplugins-0.18.1-old/mythgallery/mythgallery/qtiffio.cpp mythplugin
  }
  
  //! QIODevice / libtiff write wrapper
+diff -Naur mythplugins-0.18.1-old/mythgame/.cvsignore mythplugins-0.18.1-new/mythgame/.cvsignore
+--- mythplugins-0.18.1-old/mythgame/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgame/.cvsignore	2006-05-03 03:13:09.000000000 -0700
+@@ -0,0 +1,3 @@
++diff.diff
++.qmake.internal.cache
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythgame/i18n/.cvsignore mythplugins-0.18.1-new/mythgame/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythgame/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgame/i18n/.cvsignore	2006-05-03 03:13:08.000000000 -0700
+@@ -0,0 +1,2 @@
++i18n
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythgame/mythgame/.cvsignore mythplugins-0.18.1-new/mythgame/mythgame/.cvsignore
+--- mythplugins-0.18.1-old/mythgame/mythgame/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythgame/mythgame/.cvsignore	2006-05-03 03:13:09.000000000 -0700
+@@ -0,0 +1,8 @@
++.qmake.internal.cache
++Makefile
++moc_gametree.cpp
++moc_mamesettingsdlg.cpp
++moc_nessettingsdlg.cpp
++moc_pcsettingsdlg.cpp
++moc_snessettingsdlg.cpp
++mythgame
+diff -Naur mythplugins-0.18.1-old/mythmusic/.cvsignore mythplugins-0.18.1-new/mythmusic/.cvsignore
+--- mythplugins-0.18.1-old/mythmusic/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/.cvsignore	2006-05-03 03:12:56.000000000 -0700
+@@ -0,0 +1,3 @@
++diff.diff
++.qmake.internal.cache
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythmusic/i18n/.cvsignore mythplugins-0.18.1-new/mythmusic/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythmusic/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/i18n/.cvsignore	2006-05-03 03:12:52.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/.cvsignore mythplugins-0.18.1-new/mythmusic/mythmusic/.cvsignore
+--- mythplugins-0.18.1-old/mythmusic/mythmusic/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/mythmusic/.cvsignore	2006-05-03 03:12:56.000000000 -0700
+@@ -0,0 +1,6 @@
++.qmake.internal.cache
++Makefile
++moc_*
++config.h
++config.pro
++mythmusic
 diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/vcedit.c mythplugins-0.18.1-new/mythmusic/mythmusic/vcedit.c
 --- mythplugins-0.18.1-old/mythmusic/mythmusic/vcedit.c	2004-11-26 01:00:36.000000000 -0800
-+++ mythplugins-0.18.1-new/mythmusic/mythmusic/vcedit.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/mythmusic/vcedit.c	2006-05-03 03:12:56.000000000 -0700
 @@ -6,7 +6,7 @@
   *
   * Comment editing backend, suitable for use by nice frontend interfaces.
@@ -22,9 +774,52 @@ diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/vcedit.c mythplugins-0.18.
   */
  
  #include <stdio.h>
+diff -Naur mythplugins-0.18.1-old/mythnews/.cvsignore mythplugins-0.18.1-new/mythnews/.cvsignore
+--- mythplugins-0.18.1-old/mythnews/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythnews/.cvsignore	2006-05-03 03:13:10.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++diff.diff
+diff -Naur mythplugins-0.18.1-old/mythnews/i18n/.cvsignore mythplugins-0.18.1-new/mythnews/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythnews/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythnews/i18n/.cvsignore	2006-05-03 03:13:09.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythnews/mythnews/.cvsignore mythplugins-0.18.1-new/mythnews/mythnews/.cvsignore
+--- mythplugins-0.18.1-old/mythnews/mythnews/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythnews/mythnews/.cvsignore	2006-05-03 03:13:10.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++moc_*
+diff -Naur mythplugins-0.18.1-old/mythphone/.cvsignore mythplugins-0.18.1-new/mythphone/.cvsignore
+--- mythplugins-0.18.1-old/mythphone/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/.cvsignore	2006-05-03 03:13:07.000000000 -0700
+@@ -0,0 +1,3 @@
++diff.diff
++Makefile
++
+diff -Naur mythplugins-0.18.1-old/mythphone/i18n/.cvsignore mythplugins-0.18.1-new/mythphone/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythphone/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/i18n/.cvsignore	2006-05-03 03:13:06.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/.cvsignore mythplugins-0.18.1-new/mythphone/mythphone/.cvsignore
+--- mythplugins-0.18.1-old/mythphone/mythphone/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/.cvsignore	2006-05-03 03:13:07.000000000 -0700
+@@ -0,0 +1,8 @@
++Makefile
++config.pro
++config.h
++moc_phoneui.cpp
++moc_tone.cpp
++moc_sipfsm.cpp
++moc_webcam.cpp
++
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/add.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/add.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/add.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/add.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/add.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -36,7 +831,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/add.c mythplugins-0.18
   *  See private.h for the more commonly used macro versions.
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/code.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/code.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/code.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/code.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/code.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -48,7 +843,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/code.c mythplugins-0.1
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/config.h mythplugins-0.18.1-new/mythphone/mythphone/gsm/config.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/config.h	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/config.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/config.h	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -60,7 +855,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/config.h mythplugins-0
  #define	CONFIG_H
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/debug.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/debug.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/debug.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/debug.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/debug.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -72,7 +867,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/debug.c mythplugins-0.
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/decode.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/decode.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/decode.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/decode.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/decode.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -84,7 +879,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/decode.c mythplugins-0
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_create.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_create.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_create.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_create.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_create.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -96,7 +891,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_create.c mythplugi
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_decode.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_decode.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_decode.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_decode.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_decode.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -108,7 +903,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_decode.c mythplugi
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_destroy.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_destroy.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_destroy.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_destroy.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_destroy.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -120,7 +915,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_destroy.c mythplug
  #include "config.h"
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_encode.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_encode.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_encode.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_encode.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_encode.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -132,7 +927,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_encode.c mythplugi
  #include "gsm.h"
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_explode.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_explode.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_explode.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_explode.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_explode.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -144,7 +939,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_explode.c mythplug
  #include "gsm.h"
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm.h mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm.h	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm.h	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -156,7 +951,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm.h mythplugins-0.18
  #define	GSM_H
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_implode.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_implode.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_implode.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_implode.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_implode.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -168,7 +963,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_implode.c mythplug
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_option.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_option.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_option.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_option.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_option.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -180,7 +975,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_option.c mythplugi
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_print.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_print.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_print.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_print.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/gsm_print.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -192,7 +987,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/gsm_print.c mythplugin
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/long_term.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/long_term.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/long_term.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/long_term.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/long_term.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -204,7 +999,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/long_term.c mythplugin
  #include <assert.h>
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/lpc.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/lpc.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/lpc.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/lpc.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/lpc.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -216,7 +1011,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/lpc.c mythplugins-0.18
  #include <assert.h>
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/preprocess.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/preprocess.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/preprocess.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/preprocess.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/preprocess.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -228,7 +1023,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/preprocess.c mythplugi
  #include	<assert.h>
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/private.h mythplugins-0.18.1-new/mythphone/mythphone/gsm/private.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/private.h	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/private.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/private.h	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -240,7 +1035,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/private.h mythplugins-
  #define	PRIVATE_H
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/proto.h mythplugins-0.18.1-new/mythphone/mythphone/gsm/proto.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/proto.h	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/proto.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/proto.h	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -252,7 +1047,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/proto.h mythplugins-0.
  #define	PROTO_H
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/rpe.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/rpe.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/rpe.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/rpe.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/rpe.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -264,7 +1059,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/rpe.c mythplugins-0.18
  #include <assert.h>
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/short_term.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/short_term.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/short_term.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/short_term.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/short_term.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -276,7 +1071,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/short_term.c mythplugi
  #include <assert.h>
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/table.c mythplugins-0.18.1-new/mythphone/mythphone/gsm/table.c
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/table.c	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/table.c	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/table.c	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -288,7 +1083,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/table.c mythplugins-0.
   */
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/unproto.h mythplugins-0.18.1-new/mythphone/mythphone/gsm/unproto.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm/unproto.h	2004-11-04 14:31:01.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/unproto.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm/unproto.h	2006-05-03 03:13:07.000000000 -0700
 @@ -4,7 +4,7 @@
   * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
   */
@@ -300,7 +1095,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm/unproto.h mythplugins-
  #undef	PROTO_H
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm.cpp mythplugins-0.18.1-new/mythphone/mythphone/gsm.cpp
 --- mythplugins-0.18.1-old/mythphone/mythphone/gsm.cpp	2005-01-02 05:14:35.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/gsm.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/gsm.cpp	2006-05-03 03:13:07.000000000 -0700
 @@ -14,25 +14,25 @@
  #include <stdio.h>
  #include <string.h>
@@ -336,7 +1131,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/gsm.cpp mythplugins-0.18.1
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/h263.cpp mythplugins-0.18.1-new/mythphone/mythphone/h263.cpp
 --- mythplugins-0.18.1-old/mythphone/mythphone/h263.cpp	2005-01-02 05:15:56.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/h263.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/h263.cpp	2006-05-03 03:13:07.000000000 -0700
 @@ -8,16 +8,16 @@
    TODO:-
      These are non reentrant so need a mutex implemented, if they are to be used elsewhere in the Myth frontend
@@ -552,7 +1347,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/h263.cpp mythplugins-0.18.
 +
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/md5digest.cpp mythplugins-0.18.1-new/mythphone/mythphone/md5digest.cpp
 --- mythplugins-0.18.1-old/mythphone/mythphone/md5digest.cpp	2004-11-26 18:27:45.000000000 -0800
-+++ mythplugins-0.18.1-new/mythphone/mythphone/md5digest.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/md5digest.cpp	2006-05-03 03:13:07.000000000 -0700
 @@ -33,10 +33,10 @@
  
  #include <string.h>		/* for memcpy() */
@@ -569,7 +1364,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/md5digest.cpp mythplugins-
  
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/sipfsm.h mythplugins-0.18.1-new/mythphone/mythphone/sipfsm.h
 --- mythplugins-0.18.1-old/mythphone/mythphone/sipfsm.h	2005-04-05 15:15:30.000000000 -0700
-+++ mythplugins-0.18.1-new/mythphone/mythphone/sipfsm.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/sipfsm.h	2006-05-03 03:13:07.000000000 -0700
 @@ -201,8 +201,8 @@
  #define SIP_DISCONNECTING_BYE             (SIP_DISCONNECTING | SIP_BYE)
  #define SIP_CONNECTED_MODIFYSESSION       (SIP_CONNECTED     | SIP_MODIFYSESSION)
@@ -601,7 +1396,7 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/sipfsm.h mythplugins-0.18.
      QString myDisplayName;	// The name to display when I call others
 diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/tone.cpp mythplugins-0.18.1-new/mythphone/mythphone/tone.cpp
 --- mythplugins-0.18.1-old/mythphone/mythphone/tone.cpp	2005-04-05 15:15:30.000000000 -0700
-+++ mythplugins-0.18.1-new/mythphone/mythphone/tone.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythphone/mythphone/tone.cpp	2006-05-03 03:13:07.000000000 -0700
 @@ -5,46 +5,46 @@
  	
    Simple class to handle creation of audio tones
@@ -734,9 +1529,28 @@ diff -Naur mythplugins-0.18.1-old/mythphone/mythphone/tone.cpp mythplugins-0.18.
  
      if (dwResult = waveOutOpen(&hSpeaker, SpeakerDevice, &wfx, 0, 0L, WAVE_FORMAT_QUERY))
          return;
+diff -Naur mythplugins-0.18.1-old/mythvideo/.cvsignore mythplugins-0.18.1-new/mythvideo/.cvsignore
+--- mythplugins-0.18.1-old/mythvideo/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythvideo/.cvsignore	2006-05-03 03:13:05.000000000 -0700
+@@ -0,0 +1,2 @@
++diff.diff
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythvideo/i18n/.cvsignore mythplugins-0.18.1-new/mythvideo/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythvideo/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythvideo/i18n/.cvsignore	2006-05-03 03:13:03.000000000 -0700
+@@ -0,0 +1,2 @@
++Makefile
++i18n
+diff -Naur mythplugins-0.18.1-old/mythvideo/mythvideo/.cvsignore mythplugins-0.18.1-new/mythvideo/mythvideo/.cvsignore
+--- mythplugins-0.18.1-old/mythvideo/mythvideo/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythvideo/mythvideo/.cvsignore	2006-05-03 03:13:05.000000000 -0700
+@@ -0,0 +1,3 @@
++Makefile
++moc_*
++mythvideo
 diff -Naur mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.cpp mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.cpp
 --- mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.cpp	2005-03-04 13:23:28.000000000 -0800
-+++ mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.cpp	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.cpp	2006-05-03 03:13:05.000000000 -0700
 @@ -1,228 +1,228 @@
 -#include <qdir.h>
 -#include <qimage.h>
@@ -1196,7 +2010,7 @@ diff -Naur mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.cpp mythplugins-
 +}
 diff -Naur mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.h mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.h
 --- mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.h	2005-03-04 09:49:48.000000000 -0800
-+++ mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.h	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythvideo/mythvideo/videoscan.h	2006-05-03 03:13:05.000000000 -0700
 @@ -1,37 +1,37 @@
 -#ifndef VIDEO_SCANNER_H
 -#define  VIDEO_SCANNER_H
@@ -1272,9 +2086,32 @@ diff -Naur mythplugins-0.18.1-old/mythvideo/mythvideo/videoscan.h mythplugins-0.
 +};
 +
 +#endif
+diff -Naur mythplugins-0.18.1-old/mythweather/.cvsignore mythplugins-0.18.1-new/mythweather/.cvsignore
+--- mythplugins-0.18.1-old/mythweather/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythweather/.cvsignore	2006-05-03 03:13:01.000000000 -0700
+@@ -0,0 +1,2 @@
++diff.diff
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythweather/i18n/.cvsignore mythplugins-0.18.1-new/mythweather/i18n/.cvsignore
+--- mythplugins-0.18.1-old/mythweather/i18n/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythweather/i18n/.cvsignore	2006-05-03 03:12:58.000000000 -0700
+@@ -0,0 +1,2 @@
++i18n
++Makefile
+diff -Naur mythplugins-0.18.1-old/mythweather/mythweather/.cvsignore mythplugins-0.18.1-new/mythweather/mythweather/.cvsignore
+--- mythplugins-0.18.1-old/mythweather/mythweather/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythweather/mythweather/.cvsignore	2006-05-03 03:13:01.000000000 -0700
+@@ -0,0 +1,7 @@
++Makefile
++mythweather
++moc_databasebox.cpp
++moc_weather.cpp
++moc_weathercomms.cpp
++mythvideo
++accid.dat
 diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_vxml.php mythplugins-0.18.1-new/mythweb/config/theme_vxml.php
 --- mythplugins-0.18.1-old/mythweb/config/theme_vxml.php	2004-08-27 16:43:00.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/config/theme_vxml.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/config/theme_vxml.php	2006-05-03 03:12:48.000000000 -0700
 @@ -1,56 +1,56 @@
 -<?php
 -
@@ -1390,7 +2227,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_vxml.php mythplugins-0.18
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_wap.php mythplugins-0.18.1-new/mythweb/config/theme_wap.php
 --- mythplugins-0.18.1-old/mythweb/config/theme_wap.php	2004-05-10 23:18:22.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/config/theme_wap.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/config/theme_wap.php	2006-05-03 03:12:48.000000000 -0700
 @@ -1,56 +1,56 @@
 -<?php
 -
@@ -1506,7 +2343,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_wap.php mythplugins-0.18.
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_wml.php mythplugins-0.18.1-new/mythweb/config/theme_wml.php
 --- mythplugins-0.18.1-old/mythweb/config/theme_wml.php	2004-11-13 11:46:55.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/config/theme_wml.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/config/theme_wml.php	2006-05-03 03:12:48.000000000 -0700
 @@ -1,56 +1,56 @@
 -<?php
 -
@@ -1620,9 +2457,14 @@ diff -Naur mythplugins-0.18.1-old/mythweb/config/theme_wml.php mythplugins-0.18.
 +    define('video_img_height', 140);
 +
 +?>
+diff -Naur mythplugins-0.18.1-old/mythweb/images/icons/.cvsignore mythplugins-0.18.1-new/mythweb/images/icons/.cvsignore
+--- mythplugins-0.18.1-old/mythweb/images/icons/.cvsignore	1969-12-31 16:00:00.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/images/icons/.cvsignore	2006-05-03 03:12:48.000000000 -0700
+@@ -0,0 +1 @@
++*
 diff -Naur mythplugins-0.18.1-old/mythweb/languages/Dutch.php mythplugins-0.18.1-new/mythweb/languages/Dutch.php
 --- mythplugins-0.18.1-old/mythweb/languages/Dutch.php	2005-03-09 22:51:37.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/languages/Dutch.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/languages/Dutch.php	2006-05-03 03:12:48.000000000 -0700
 @@ -1,11 +1,11 @@
 -<?php
 -/***                                                                        ***\
@@ -1743,7 +2585,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/languages/Dutch.php mythplugins-0.18.1
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/log.php mythplugins-0.18.1-new/mythweb/log.php
 --- mythplugins-0.18.1-old/mythweb/log.php	2005-04-02 23:16:48.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/log.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/log.php	2006-05-03 03:12:49.000000000 -0700
 @@ -1,33 +1,33 @@
 -<?php
 -/*
@@ -1813,7 +2655,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/log.php mythplugins-0.18.1-new/mythweb
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/recorded_programs.php mythplugins-0.18.1-new/mythweb/themes/vxml/recorded_programs.php
 --- mythplugins-0.18.1-old/mythweb/themes/vxml/recorded_programs.php	2005-02-27 14:35:07.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/vxml/recorded_programs.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/vxml/recorded_programs.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,72 +1,72 @@
 -<?php
 -/***                                                                        ***\
@@ -1961,7 +2803,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/recorded_programs.php myth
 \ No newline at end of file
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/scheduled_recordings.php mythplugins-0.18.1-new/mythweb/themes/vxml/scheduled_recordings.php
 --- mythplugins-0.18.1-old/mythweb/themes/vxml/scheduled_recordings.php	2005-02-27 14:35:07.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/vxml/scheduled_recordings.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/vxml/scheduled_recordings.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,80 +1,80 @@
 -<?
 -/***                                                                        ***\
@@ -2125,7 +2967,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/scheduled_recordings.php m
 \ No newline at end of file
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/search.php mythplugins-0.18.1-new/mythweb/themes/vxml/search.php
 --- mythplugins-0.18.1-old/mythweb/themes/vxml/search.php	2005-02-27 14:35:07.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/vxml/search.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/vxml/search.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,58 +1,58 @@
 -<?php
 -/***                                                                        ***\
@@ -2245,7 +3087,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/search.php mythplugins-0.1
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/theme.php mythplugins-0.18.1-new/mythweb/themes/vxml/theme.php
 --- mythplugins-0.18.1-old/mythweb/themes/vxml/theme.php	2005-02-27 14:35:07.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/vxml/theme.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/vxml/theme.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,70 +1,70 @@
 -<?
 -/***                                                                        ***\
@@ -2389,7 +3231,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/vxml/theme.php mythplugins-0.18
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/channel_detail.php mythplugins-0.18.1-new/mythweb/themes/wap/channel_detail.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/channel_detail.php	2004-05-10 23:18:23.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/channel_detail.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/channel_detail.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,76 +1,76 @@
 -<?php
 -/***                                                                        ***\
@@ -2545,7 +3387,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/channel_detail.php mythplug
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/program_detail.php mythplugins-0.18.1-new/mythweb/themes/wap/program_detail.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/program_detail.php	2004-05-10 23:18:23.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/program_detail.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/program_detail.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,120 +1,120 @@
 -<?php
 -/***                                                                        ***\
@@ -2789,7 +3631,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/program_detail.php mythplug
 \ No newline at end of file
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/program_listing.php mythplugins-0.18.1-new/mythweb/themes/wap/program_listing.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/program_listing.php	2004-05-10 23:18:24.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/program_listing.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/program_listing.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,114 +1,114 @@
 -<?php
 -/***                                                                        ***\
@@ -3021,7 +3863,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/program_listing.php mythplu
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/scheduled_recordings.php mythplugins-0.18.1-new/mythweb/themes/wap/scheduled_recordings.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/scheduled_recordings.php	2004-05-10 23:18:24.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/scheduled_recordings.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/scheduled_recordings.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,80 +1,80 @@
 -<?php
 -/***                                                                        ***\
@@ -3185,7 +4027,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/scheduled_recordings.php my
 \ No newline at end of file
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/search.php mythplugins-0.18.1-new/mythweb/themes/wap/search.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/search.php	2004-05-10 23:18:24.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/search.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/search.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,58 +1,58 @@
 -<?php
 -/***                                                                        ***\
@@ -3305,7 +4147,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/search.php mythplugins-0.18
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/theme.php mythplugins-0.18.1-new/mythweb/themes/wap/theme.php
 --- mythplugins-0.18.1-old/mythweb/themes/wap/theme.php	2004-05-10 23:18:24.000000000 -0700
-+++ mythplugins-0.18.1-new/mythweb/themes/wap/theme.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wap/theme.php	2006-05-03 03:12:46.000000000 -0700
 @@ -1,70 +1,70 @@
 -<?php
 -/***                                                                        ***\
@@ -3449,7 +4291,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wap/theme.php mythplugins-0.18.
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/channel_detail.php mythplugins-0.18.1-new/mythweb/themes/wml/channel_detail.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/channel_detail.php	2004-12-05 11:52:58.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/channel_detail.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/channel_detail.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,90 +1,90 @@
 -<?php
 -/***                                                                        ***\
@@ -3633,7 +4475,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/channel_detail.php mythplug
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/program_detail.php mythplugins-0.18.1-new/mythweb/themes/wml/program_detail.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/program_detail.php	2005-02-11 10:02:48.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/program_detail.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/program_detail.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,131 +1,131 @@
 -<?php
 -/***                                                                        ***\
@@ -3899,7 +4741,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/program_detail.php mythplug
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/program_listing.php mythplugins-0.18.1-new/mythweb/themes/wml/program_listing.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/program_listing.php	2004-12-05 11:52:58.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/program_listing.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/program_listing.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,259 +1,259 @@
 -<?php
 -/***                                                                        ***\
@@ -4421,7 +5263,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/program_listing.php mythplu
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/scheduled_recordings.php mythplugins-0.18.1-new/mythweb/themes/wml/scheduled_recordings.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/scheduled_recordings.php	2005-03-08 22:24:14.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/scheduled_recordings.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/scheduled_recordings.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,136 +1,136 @@
 -<?php
 -/***                                                                        ***\
@@ -4697,7 +5539,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/scheduled_recordings.php my
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/search.php mythplugins-0.18.1-new/mythweb/themes/wml/search.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/search.php	2004-12-05 11:52:58.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/search.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/search.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,142 +1,142 @@
 -<?php
 -/***                                                                        ***\
@@ -4985,7 +5827,7 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/search.php mythplugins-0.18
 +?>
 diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/theme.php mythplugins-0.18.1-new/mythweb/themes/wml/theme.php
 --- mythplugins-0.18.1-old/mythweb/themes/wml/theme.php	2004-12-05 11:52:58.000000000 -0800
-+++ mythplugins-0.18.1-new/mythweb/themes/wml/theme.php	2005-12-27 07:30:32.000000000 -0800
++++ mythplugins-0.18.1-new/mythweb/themes/wml/theme.php	2006-05-03 03:12:45.000000000 -0700
 @@ -1,47 +1,47 @@
 -<?php
 -/***                                                                        ***\
@@ -5081,3 +5923,15 @@ diff -Naur mythplugins-0.18.1-old/mythweb/themes/wml/theme.php mythplugins-0.18.
 +    }
 +}
 +?>
+diff -Naur mythplugins-0.18.1-old/settings.pro mythplugins-0.18.1-new/settings.pro
+--- mythplugins-0.18.1-old/settings.pro	2005-05-06 15:52:24.000000000 -0700
++++ mythplugins-0.18.1-new/settings.pro	2006-05-03 03:13:10.000000000 -0700
+@@ -5,7 +5,7 @@
+     PREFIX = /usr/local
+ }
+ 
+-LIBVERSION = 0.18.1
++LIBVERSION = 0.18.2
+ 
+ INCLUDEPATH += $${PREFIX}/include
+ #INCLUDEPATH += /usr/include/cdda

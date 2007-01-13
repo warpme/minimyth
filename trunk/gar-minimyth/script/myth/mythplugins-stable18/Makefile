@@ -1,9 +1,9 @@
 GARNAME = mythplugins
-GARVERSION = $(MYTHTV_STABLE18_VERSION)
+GARVERSION = 0.18.1
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-video_ui.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE18_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-video_ui.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

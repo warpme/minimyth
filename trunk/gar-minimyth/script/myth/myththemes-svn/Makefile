@@ -1,5 +1,5 @@
 GARNAME = myththemes
-GARVERSION = $(MYTHTV_SVN_VERSION)
+GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = myth
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
