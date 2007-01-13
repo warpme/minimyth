@@ -3,7 +3,7 @@ GARVERSION = 5.01
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch
+PATCHFILES = $(DISTNAME).patch
 LICENSE = BSD
 
 DESCRIPTION =
@@ -24,20 +24,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	--with-hackdir=$(libexecdir)/xscreensaver \
 	--with-configdir=$(datadir)/xscreensaver/config \
-	--with-x-app-defaults=$(datadir)/X11/app-defaults \
-
-
-#  	--without-pam \
-#  	--without-kerberos \
-#  	--without-shadow \
-#  	--without-passwd-helper \
-#	--without-gtk \
-#	--without-motif
-
-BUILD_ARGS     = \
-	GTK_DATADIR=$(datadir)
+	--with-x-app-defaults=$(datadir)/X11/app-defaults
 INSTALL_ARGS   = \
-	GTK_DATADIR=$(datadir) \
 	install_prefix=$(DESTDIR)
 
 include ../../gar.mk

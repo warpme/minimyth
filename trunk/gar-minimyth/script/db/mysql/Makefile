@@ -15,9 +15,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/ncurses lib/zlib
+DEPENDS    = lang/c lib/ncurses lib/zlib
+BUILDDEPS  = utils/procps
 ifneq ($(DESTIMG),build)
-BUILDDEPS = db/mysql
+BUILDDEPS += db/mysql
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure

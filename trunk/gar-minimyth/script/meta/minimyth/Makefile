@@ -17,6 +17,7 @@ DEPENDS = \
  	utils/alsa-utils \
 	utils/busybox \
 	utils/dmidecode \
+	utils/ethtool \
 	devel/gdb \
 	disk/hdparm \
 	system/lcdproc \

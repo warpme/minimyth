@@ -41,6 +41,7 @@ CONFIGURE_ARGS = \
 	-largefile \
 	-stl \
 	-no-ipv6 \
+	-verbose \
 	-qt-imgfmt-png \
 	-qt-imgfmt-jpeg \
 	-qt-imgfmt-mng \
@@ -49,7 +50,7 @@ CONFIGURE_ARGS = \
 	-system-libmng \
 	-no-nas-sound \
 	-no-sm \
-	-xshape \
+	-no-xshape \
 	-xinerama \
 	-no-xcursor \
 	-xrandr \
@@ -101,7 +102,6 @@ UPDATE_PLATFORM   = sed -i 's%^\($(strip $(2))[ \t]*=\).*%\1 $(strip $(3))%g' $(
 # We add --preserve=timestamps to QMAKE_COPY so that files installed using qmake generated make files keep their
 # original dates. This keeps the dates of the MythTV themes with their original dates so that themecahes are not
 # needlessly regenerated when MiniMyth is updated.
-QMAKE_RPATH = -Wl,-rpath-link,
 CREATE_PLATFORM   = \
 	rm -rf $(1) ; \
 	cp -r $(PLATFORM_INITIAL_PATH) $(1) ; \
