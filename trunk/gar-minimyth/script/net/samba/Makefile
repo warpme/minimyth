@@ -41,6 +41,6 @@ INSTALL_OVERRIDE_DIRS = \
 include ../../gar.mk
 
 post-install:
-	@rm -f $(DESTDIR)$(esbindir)/smbmount ; mv     $(DESTDIR)$(BINDIR)/smbmount $(DESTDIR)$(esbindir)/smbmount
-	@rm -f $(DESTDIR)/sbin/mount.smbfs    ; ln -sf $(esbindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
+	@rm -f $(DESTDIR)$(esbindir)/smbmount ; mv $(DESTDIR)$(BINDIR)/smbmount $(DESTDIR)$(esbindir)/smbmount
+	@rm -f $(DESTDIR)/sbin/mount.smbfs    ; ln -sf smbmount $(DESTDIR)$(esbindir)/mount.smbfs
 	@$(MAKECOOKIE)
