@@ -40,7 +40,7 @@ CONFIGURE_ARGS = \
 	-no-pch \
 	-no-cups \
 	-largefile \
-	-no-stl \
+	-stl \
 	-no-ipv6 \
 	-qt-imgfmt-png \
 	-qt-imgfmt-jpeg \
