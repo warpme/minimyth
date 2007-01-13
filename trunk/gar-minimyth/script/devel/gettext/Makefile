@@ -2,7 +2,7 @@ GARNAME = gettext
 GARVERSION = 0.14.1
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 

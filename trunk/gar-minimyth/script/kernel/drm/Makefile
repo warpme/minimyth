@@ -2,7 +2,7 @@ GARNAME = drm
 GARVERSION = 20050120
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = 
 
 DESCRIPTION = 
@@ -12,7 +12,7 @@ endef
 DEPENDS   = lang/c kernel/linux
 BUILDDEPS = kernel/module-init-tools
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-$(GARVERSION)/linux-2.6
+WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-2.6
 
 DRM_MODULES = via
 
@@ -40,16 +40,16 @@ BUILD_ENV    = KBUILD_VERBOSE=1
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-cvs//%$(GARNAME)-$(GARVERSION).tar.bz2:
+cvs//%$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
 	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(GARNAME)-$(GARVERSION)
-	@cd $(PARTIALDIR); tar -jc $(GARNAME)-$(GARVERSION) -f $(GARNAME)-$(GARVERSION).tar.bz2
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); tar -jc $(DISTNAME) -f $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(GARNAME)-$(GARVERSION).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:

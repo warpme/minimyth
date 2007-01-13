@@ -5,7 +5,7 @@ MASTER_SITES = http://www.freedesktop.org/software/fontconfig/releases/
 # This site is needed until freedesktop.org is up-to-date
 # (freedesktop.org was hacked and has not been fully restored).
 MASTER_SITES += ftp://ftp.fu-berlin.de/unix/linux/mirrors/gentoo/distfiles/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = fontconfig
 fontconfig_LICENSE_TEXT = $(WORKSRC)/COPYING
 

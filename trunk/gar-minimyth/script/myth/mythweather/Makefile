@@ -1,9 +1,10 @@
 GARNAME = mythweather
 GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = myth
-MASTER_SITES = cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
-PATCHFILES = $(GARNAME)-$(GARVERSION).patch.gar
+MASTER_SITES  = http://www.mythtv.org/mc/
+MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 

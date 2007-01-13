@@ -3,7 +3,7 @@ GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 

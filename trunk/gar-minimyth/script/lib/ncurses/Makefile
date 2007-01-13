@@ -1,8 +1,8 @@
 GARNAME = ncurses
 GARVERSION = 5.4
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.gnu.org/gnu/ncurses/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = MIT
 
 DESCRIPTION =

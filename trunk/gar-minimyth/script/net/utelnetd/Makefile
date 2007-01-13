@@ -1,9 +1,9 @@
 GARNAME = utelnetd
 GARVERSION = 0.1.9
 CATEGORIES = net
-MASTER_SITES = http://www.pengutronix.de/software/utelnetd/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
-PATCHFILES = $(GARNAME)-$(GARVERSION)-install.patch
+MASTER_SITES = http://www.pengutronix.de/software/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION =

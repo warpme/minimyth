@@ -1,9 +1,8 @@
 GARNAME = x11vnc
-#GARVERSION = 0.6.2
 GARVERSION = 0.7
 CATEGORIES = X11
-MASTER_SITES = http://voxel.dl.sourceforge.net/sourceforge/libvncserver/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/libvncserver/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
 DESCRIPTION =
@@ -16,7 +15,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir)
 

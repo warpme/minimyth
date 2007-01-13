@@ -1,9 +1,9 @@
 GARNAME = e2fsprogs
 GARVERSION = 1.35
 CATEGORIES = disk
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/e2fsprogs/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
-PATCHFILES = $(GARNAME)-$(GARVERSION).patch
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -16,7 +16,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath \
 	--enable-elf-shlibs \
 	--with-gnu-ld

@@ -1,7 +1,7 @@
 GARNAME = flac
 GARVERSION = 1.1.1
 CATEGORIES = lib
-MASTER_SITES = http://voxel.dl.sourceforge.net/sourceforge/flac/
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 

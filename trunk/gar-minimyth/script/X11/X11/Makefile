@@ -4,7 +4,7 @@ CATEGORIES = X11
 MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
-MASTER_SITES += http://voxel.dl.sourceforge.net/sourceforge/unichrome/
+MASTER_SITES += http://unc.dl.sourceforge.net/sourceforge/unichrome/
 MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/unichrome/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
@@ -98,9 +98,6 @@ cvs//%$(UNICHROME_XvMC_DISTNAME).tar.gz:
 	@cd $(PARTIALDIR); rm -rf $(UNICHROME_XvMC_DISTNAME)
 	@$(MAKECOOKIE)
 
-disabled-checksum-$(UNICHROME_X_DISTNAME).tar.gz:
-	@$(MAKECOOKIE)
-
 checksum-$(UNICHROME_XvMC_DISTNAME).tar.gz:
 	@$(MAKECOOKIE)
 
@@ -165,7 +162,6 @@ configure-compiler:
 	@$(call CONFIG_FILE_APPEND, LdCmd                     , $(LdCmd))
 	@$(call CONFIG_FILE_APPEND, ArCmdBase                 , $(ArCmd))
 	@$(call CONFIG_FILE_APPEND, RanlibCmd                 , $(RanlibCmd))
-#	@$(call CONFIG_FILE_APPEND, LdPreLibs                 , LdPreLib)
 	@$(call CONFIG_FILE_APPEND, DefaultCDebugFlags        , )
 	@$(call CONFIG_FILE_APPEND, OptimizedCDebugFlags      , )
 	@$(call CONFIG_FILE_APPEND, AlternateIncRoot          , YES)

@@ -1,7 +1,7 @@
 GARNAME = nasm
 GARVERSION = 0.98.39
 CATEGORIES = devel
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/nasm/
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 

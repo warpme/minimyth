@@ -1,8 +1,8 @@
 GARNAME = webfs
 GARVERSION = 1.21
 CATEGORIES = net
-MASTER_SITES = http://dl.bytesex.org/releases/webfs/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz Make.config
+MASTER_SITES = http://dl.bytesex.org/releases/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz Make.config
 LICENSE = GPL2
 
 DESCRIPTION =

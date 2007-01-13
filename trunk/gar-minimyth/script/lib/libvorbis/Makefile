@@ -24,8 +24,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 CONFIGURE_ENV  = \
 	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
-xINSTALL_OVERRIDE_DIRS = libdir
-
 include ../../gar.mk
 
 # Libtool insists on relinking during install and including -L$(libdir) when relinking.

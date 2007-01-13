@@ -35,10 +35,6 @@ LIBDIR     = $(libdir)
 
 include ../../gar.mk
 
-#GARBUILD  := $(shell echo $(GARBUILD)  | sed 's%-gnu$$%%')
-#GARHOST   := $(shell echo $(GARHOST)   | sed 's%-gnu$$%%')
-#GARTARGET := $(shell echo $(GARTARGET) | sed 's%-gnu$$%%')
-
 pre-configure:
 	@echo 'ac_cv_c_const=$${ac_cv_c_const=yes}'                 >> $(WORKSRC)/config.cache
 	@echo 'ac_cv_header_stdc=$${ac_cv_header_stdc=yes}'         >> $(WORKSRC)/config.cache

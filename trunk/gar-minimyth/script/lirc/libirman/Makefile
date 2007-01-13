@@ -2,7 +2,7 @@ GARNAME = libirman
 GARVERSION = 0.4.3
 CATEGORIES = lirc
 MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =

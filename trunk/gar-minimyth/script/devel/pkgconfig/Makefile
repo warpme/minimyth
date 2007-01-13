@@ -1,8 +1,8 @@
 GARNAME = pkgconfig
 GARVERSION = 0.15.0
 CATEGORIES = devel
-MASTER_SITES = http://www.freedesktop.org/software/pkgconfig/releases/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz 
+MASTER_SITES = http://www.freedesktop.org/software/$(GARNAME)/releases/
+DISTFILES = $(DISTNAME).tar.gz 
 LICENSE = GPL2
 
 DESCRIPTION =

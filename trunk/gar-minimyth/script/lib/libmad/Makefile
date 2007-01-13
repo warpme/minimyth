@@ -1,7 +1,7 @@
 GARNAME = libmad
 GARVERSION = 0.15.1b
 CATEGORIES = lib
-MASTER_SITES = http://voxel.dl.sourceforge.net/sourceforge/mad/
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/mad/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

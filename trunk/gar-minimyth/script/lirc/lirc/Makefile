@@ -1,9 +1,9 @@
 GARNAME = lirc
 GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
-MASTER_SITES = http://aleron.dl.sourceforge.net/sourceforge/lirc/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
-PATCHFILES = $(GARNAME)-$(GARVERSION)-libusb.patch
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-libusb.patch
 LICENSE = GPL2
 
 DESCRIPTION =
