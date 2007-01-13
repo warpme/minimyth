@@ -1,0 +1,33 @@
+#!/bin/sh
+
+DEVICE=${1}
+ACTION=${2}
+
+case ${DEVICE} in
+    hd[a-z])
+        MOUNT=true
+        UMOUNT=true
+        ;;
+    sd[a-z])
+        MOUNT=mount
+        UMOUNT=umount
+        ;;
+    sr[0-9]*)
+        MOUNT=true
+        UMOUNT=true
+        ;;
+esac
+
+dev_list=`ls -l /dev | grep "${DEVICE}$" | sed 's% *-> *[^ ]*%%' | sed 's%.* %/dev/%'`
+for dev in ${dev_list} ; do
+    case ${ACTION} in
+        add)
+            mkdir -p /mnt/${dev}
+            ${MOUNT} -t auto ${dev} /mnt/${dev}
+            ;;
+        remove)
+            ${UMOUNT} -l /mnt/${dev}
+            rmdir /mnt/${dev}
+            ;;
+    esac
+done

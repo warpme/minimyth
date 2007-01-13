@@ -1,0 +1,16 @@
+# Add symbolic links for CDROMs and DVDs.
+KERNEL="hd[a-z]" , BUS="ide" , PROGRAM="/etc/udev/bin/mm_cdrom_check %k"           , SYMLINK+="cdrom%e"
+KERNEL="sr[0-9]*", BUS="scsi", PROGRAM="/etc/udev/bin/mm_cdrom_check %k"           , SYMLINK+="cdrom%e"
+
+KERNEL="hd[a-z]" , BUS="ide" , PROGRAM="/etc/udev/bin/mm_cdrom_check %k 'read DVD'", SYMLINK+="dvd%e"
+KERNEL="sr[0-9]*", BUS="scsi", PROGRAM="/etc/udev/bin/mm_cdrom_check %k 'read DVD'", SYMLINK+="dvd%e"
+
+# Create/delete the mount points and (in some cases) mount/unmount the devices.
+KERNEL="hd[a-z]" , BUS="ide" , ACTION=="add"   , RUN+="/etc/udev/bin/mm_mountpoint_make %k add"
+KERNEL="hd[a-z]" , BUS="ide" , ACTION=="remove", RUN+="/etc/udev/bin/mm_mountpoint_make %k remove"
+
+KERNEL="sd[a-z]" , BUS="scsi", ACTION=="add"   , RUN+="/etc/udev/bin/mm_mountpoint_make %k add"
+KERNEL="sd[a-z]" , BUS="scsi", ACTION=="remove", RUN+="/etc/udev/bin/mm_mountpoint_make %k remove"
+
+KERNEL="sr[0-9]*", BUS="scsi", ACTION=="add"   , RUN+="/etc/udev/bin/mm_mountpoint_make %k add"
+KERNEL="sr[0-9]*", BUS="scsi", ACTION=="remove", RUN+="/etc/udev/bin/mm_mountpoint_make %k remove"

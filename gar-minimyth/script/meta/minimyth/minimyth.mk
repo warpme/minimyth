@@ -320,9 +320,8 @@ mm-%/strip:
 	fi
 
 mm-make-udev:
-	$(foreach file, $(shell cd ./dirs/udev ; ls -1 dev.d/*/*.dev       ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
-	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/bin/*          ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
-	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/rules.d/*.rules), install -m 644 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs ; ls -1 udev/bin/*          ), install -m 755 -D ./dirs/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs ; ls -1 udev/rules.d/*.rules), install -m 644 -D ./dirs/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
