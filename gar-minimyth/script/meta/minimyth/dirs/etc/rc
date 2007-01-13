@@ -10,7 +10,6 @@ mount -n -t sysfs              /sys     /sys
 mount -n -t proc               /proc    /proc
 mount    -t tmpfs -o size=512K tmpfs    /var
 mount    -t tmpfs -o size=512K tmpfs    /tmp
-mount    -t tmpfs -o size=512K tmpfs    /mnt
 mkdir /var/run
 mkdir /var/lock
 mkdir /var/log
@@ -21,8 +20,6 @@ execute_and_log "syslogd"
 execute_and_log "klogd"
 # Convert ro directories to rw directories.
 execute_and_log "sh /etc/minimyth.d/ro2rw.script"
-# Create the shadow directories.
-execute_and_log "sh /etc/minimyth.d/shadow.script"
 # Bring up the network interfaces.
 execute_and_log "sh /etc/minimyth.d/network.script"
 # Start portmap on local interface.
@@ -36,7 +33,7 @@ execute_and_log "sh /etc/minimyth.d/mythtv.script"
 # Mount extras.
 execute_and_log "sh /etc/minimyth.d/extras.script"
 # Create ld.conf.cache
-execute_and_log "ldconfig -f /etc/ld.so.conf -C /tmp/etc/ld.so.cache"
+execute_and_log "ldconfig -f /etc/ld.so.conf -C /etc/ld.so.cache"
 # Run minimyth.script if the user provided one.
 execute_and_log "sh /etc/minimyth.d/minimyth.script"
 # Load modules.
