@@ -31,10 +31,11 @@ DEFAULT_ARGS = \
 	etcdir="$(etcdir)" \
 	sbindir="$(sbindir)" \
 	usrbindir="$(usrbindir)" \
+	usrsbindir="$(usrsbindir)" \
 	mandir="$(mandir)" \
 	configdir="$(configdir)" \
-	initdir="$(initdir)" \
 	udevdir="$(udevdir)"
+
 BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
 INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
 
@@ -46,9 +47,9 @@ exec_prefix := $(exec_prefix)
 etcdir      := $(sysconfdir)
 sbindir     := $(esbindir)
 usrbindir   := $(bindir)
+usrsbindir  := $(sbindir)
 mandir      := $(mandir)
 configdir   := $(sysconfdir)/udev
-initdir     := $(sysconfdir)/init.d
 udevdir     := $(rootdir)/dev
 
 pre-install:
