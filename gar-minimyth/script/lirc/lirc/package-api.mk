@@ -1,1 +1,1 @@
-LIRC_VERSION = 0.7.2pre2
+LIRC_VERSION = 0.7.2pre3
