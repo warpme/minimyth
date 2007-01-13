@@ -197,6 +197,7 @@ conf_write() {
     [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
     [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
     [ -z "${MM_X_VNC_ENABLED}"  ] && MM_X_VNC_ENABLED="yes"
+    [ -z "${MM_X_DVI_ENABLED}"  ] && MM_X_DVI_ENABLED="no"
     [ -z "${MM_X_VGA_ENABLED}"  ] && MM_X_VGA_ENABLED="no"
     [ -z "${MM_X_TV_ENABLED}"   ] && MM_X_TV_ENABLED="yes"
     [ -z "${MM_X_TV_TYPE}"      ] && MM_X_TV_TYPE="NTSC"
@@ -213,7 +214,9 @@ conf_write() {
     fi
     if [ -z "${MM_X_MODE}" ] ; then
         MM_X_MODE="800x600"
-        if   [ "${MM_X_VGA_ENABLED}" = "no"  ] && [ "${MM_X_TV_ENABLED}" = "yes" ] ; then
+        if [ "${MM_X_TV_ENABLED}"  = "yes" ] && \
+           [ "${MM_X_VGA_ENABLED}" = "no"  ] && \
+           [ "${MM_X_DVI_ENABLED}" = "no"  ] ; then
             case "${MM_X_TV_TYPE}" in
                 NTSC)
                     MM_X_MODE="720x480Noscale"
@@ -227,6 +230,7 @@ conf_write() {
     conf_variable_write MM_X_ENABLED       "${MM_X_ENABLED}"
     conf_variable_write MM_X_WM_ENABLED    "${MM_X_WM_ENABLED}"
     conf_variable_write MM_X_VNC_ENABLED   "${MM_X_VNC_ENABLED}"
+    conf_variable_write MM_X_DVI_ENABLED   "${MM_X_DVI_ENABLED}"
     conf_variable_write MM_X_VGA_ENABLED   "${MM_X_VGA_ENABLED}"
     conf_variable_write MM_X_TV_ENABLED    "${MM_X_TV_ENABLED}"
     conf_variable_write MM_X_TV_TYPE       "${MM_X_TV_TYPE}"

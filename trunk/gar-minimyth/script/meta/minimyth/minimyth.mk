@@ -81,7 +81,10 @@ LIST_LIBS = \
 mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
 mm-check:
-	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
+	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
+	    [ ! "$(mm_GARCH)" = "c3"          ] && \
+	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
+	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
 		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
 		exit 1 ; \
 	fi

@@ -46,8 +46,12 @@ CONFIGURE_ARGS += \
 endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
-
 include ../../gar.mk
+
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
 
 # Do not link to libc.so, because it is not available yet.
 pre-configure:

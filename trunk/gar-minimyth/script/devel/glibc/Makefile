@@ -4,6 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -59,9 +60,10 @@ INSTALL_ARGS    = \
 
 include ../../gar.mk
 
-CFLAGS := $(filter-out $(CFLAGS), -ffast-math)
+CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 
 pre-configure:
+	echo $(RANLIB)
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms

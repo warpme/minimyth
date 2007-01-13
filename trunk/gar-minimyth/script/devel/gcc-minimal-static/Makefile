@@ -46,8 +46,12 @@ CONFIGURE_ARGS += \
 endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
-
 include ../../gar.mk
+
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
