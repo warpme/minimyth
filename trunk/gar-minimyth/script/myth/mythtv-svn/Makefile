@@ -57,7 +57,7 @@ CONFIGURE_ARGS = \
 	--enable-xv \
 	--enable-xvmc \
 	--enable-xvmc-pro \
-	--disable-opengl-vsync \
+	--enable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx
 

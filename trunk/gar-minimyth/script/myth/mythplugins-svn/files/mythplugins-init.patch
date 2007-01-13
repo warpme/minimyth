@@ -1,6 +1,6 @@
-diff -Naur mythplugins-8867-old/mythdvd/mythdvd/settings.cpp mythplugins-8867-new/mythdvd/mythdvd/settings.cpp
---- mythplugins-8867-old/mythdvd/mythdvd/settings.cpp	2006-02-05 09:32:30.000000000 -0800
-+++ mythplugins-8867-new/mythdvd/mythdvd/settings.cpp	2006-02-05 09:34:36.000000000 -0800
+diff -Naur mythplugins-8925-old/mythdvd/mythdvd/settings.cpp mythplugins-8925-new/mythdvd/mythdvd/settings.cpp
+--- mythplugins-8925-old/mythdvd/mythdvd/settings.cpp	2006-02-12 07:00:50.000000000 -0800
++++ mythplugins-8925-new/mythdvd/mythdvd/settings.cpp	2006-02-12 07:05:25.000000000 -0800
 @@ -86,7 +86,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("DVDPlayerCommand");
@@ -19,9 +19,9 @@ diff -Naur mythplugins-8867-old/mythdvd/mythdvd/settings.cpp mythplugins-8867-ne
      gc->setHelpText(QObject::tr("This can be any command to launch a VCD player "
                      "(e.g. MPlayer, xine, etc.). If present, %d will "
                      "be substituted for the VCD device (e.g. /dev/cdrom)."));
-diff -Naur mythplugins-8867-old/mythgallery/mythgallery/gallerysettings.cpp mythplugins-8867-new/mythgallery/mythgallery/gallerysettings.cpp
---- mythplugins-8867-old/mythgallery/mythgallery/gallerysettings.cpp	2006-02-05 09:32:45.000000000 -0800
-+++ mythplugins-8867-new/mythgallery/mythgallery/gallerysettings.cpp	2006-02-05 09:34:36.000000000 -0800
+diff -Naur mythplugins-8925-old/mythgallery/mythgallery/gallerysettings.cpp mythplugins-8925-new/mythgallery/mythgallery/gallerysettings.cpp
+--- mythplugins-8925-old/mythgallery/mythgallery/gallerysettings.cpp	2006-02-12 07:01:06.000000000 -0800
++++ mythplugins-8925-new/mythgallery/mythgallery/gallerysettings.cpp	2006-02-12 07:05:25.000000000 -0800
 @@ -15,7 +15,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("GalleryDir");
@@ -49,9 +49,9 @@ diff -Naur mythplugins-8867-old/mythgallery/mythgallery/gallerysettings.cpp myth
      gc->setHelpText(QObject::tr("This is a colon separated list of paths. "
                      "If the path in the list is a directory, its contents will "
                      "be copied. If it is an executable, it will be run."));
-diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugins-8867-new/mythmusic/mythmusic/globalsettings.cpp
---- mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp	2006-02-05 09:32:40.000000000 -0800
-+++ mythplugins-8867-new/mythmusic/mythmusic/globalsettings.cpp	2006-02-05 09:34:36.000000000 -0800
+diff -Naur mythplugins-8925-old/mythmusic/mythmusic/globalsettings.cpp mythplugins-8925-new/mythmusic/mythmusic/globalsettings.cpp
+--- mythplugins-8925-old/mythmusic/mythmusic/globalsettings.cpp	2006-02-12 07:01:00.000000000 -0800
++++ mythplugins-8925-new/mythmusic/mythmusic/globalsettings.cpp	2006-02-12 07:10:14.000000000 -0800
 @@ -18,7 +18,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("MusicLocation");
@@ -61,7 +61,18 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("This directory must exist, and the user "
                      "running MythMusic needs to have write permission "
                      "to the directory."));
-@@ -47,7 +47,7 @@
+@@ -30,6 +30,10 @@
+     HostComboBox *gc = new HostComboBox("MusicAudioDevice", true);
+     gc->setLabel(QObject::tr("Audio device"));
+     gc->addSelection(QObject::tr("default"), "default");
++
++    gc->addSelection(QObject::tr("ALSA:default"), "ALSA:default");
++    gc->addSelection(QObject::tr("ALSA:iec958"), "ALSA:iec958");
++
+     QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
+     gc->fillSelectionsFromDir(dev);
+     dev.setNameFilter("adsp*");
+@@ -66,7 +70,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("TreeLevels", true);
      gc->setLabel(QObject::tr("Tree Sorting"));
@@ -70,7 +81,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("Order in which to sort the Music "
                      "Tree. Possible values are a space-separated list of "
                      "genre, splitartist, splitartist1, artist, album, and "
-@@ -70,7 +70,7 @@
+@@ -89,7 +93,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("NonID3FileNameFormat");
      gc->setLabel(QObject::tr("Filename Format"));
@@ -79,7 +90,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("Directory and filename Format used to grab "
                      "information if no ID3 information is found."));
      return gc;
-@@ -171,7 +171,7 @@
+@@ -190,7 +194,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("FilenameTemplate");
      gc->setLabel(QObject::tr("File storage location"));
@@ -88,7 +99,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("Defines the location/name for new songs. "
                      "Valid tokens are: GENRE, ARTIST, ALBUM, "
                      "TRACK, TITLE, YEAR, / and -. '-' will be replaced "
-@@ -282,7 +282,7 @@
+@@ -301,7 +305,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("ListAsShuffled");
      gc->setLabel(QObject::tr("List as Shuffled"));
@@ -97,7 +108,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("List songs on the playback screen "
                      "in the order they will be played."));
      return gc;
-@@ -292,7 +292,7 @@
+@@ -311,7 +315,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("ShowWholeTree");
      gc->setLabel(QObject::tr("Show entire music tree"));
@@ -106,7 +117,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("If selected, you can navigate your entire "
                      "music tree from the playing screen."));
      return gc;
-@@ -360,7 +360,7 @@
+@@ -379,7 +383,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("VisualMode");
      gc->setLabel(QObject::tr("Visualizations"));
@@ -115,7 +126,7 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("List of visualizations to use during playback. "
                      "Possible values are space-separated list of ") + "Random, "
                      "MonoScope, StereoScope, Spectrum, BumpScope, Goom, "
-@@ -375,7 +375,7 @@
+@@ -394,7 +398,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("CDWriterEnabled");
      gc->setLabel(QObject::tr("Enable CD Writing."));
@@ -124,9 +135,9 @@ diff -Naur mythplugins-8867-old/mythmusic/mythmusic/globalsettings.cpp mythplugi
      gc->setHelpText(QObject::tr("Requires a SCSI or an IDE-SCSI CD Writer."));
      return gc;
  };
-diff -Naur mythplugins-8867-old/mythvideo/mythvideo/globalsettings.cpp mythplugins-8867-new/mythvideo/mythvideo/globalsettings.cpp
---- mythplugins-8867-old/mythvideo/mythvideo/globalsettings.cpp	2006-02-05 09:32:52.000000000 -0800
-+++ mythplugins-8867-new/mythvideo/mythvideo/globalsettings.cpp	2006-02-05 09:34:36.000000000 -0800
+diff -Naur mythplugins-8925-old/mythvideo/mythvideo/globalsettings.cpp mythplugins-8925-new/mythvideo/mythvideo/globalsettings.cpp
+--- mythplugins-8925-old/mythvideo/mythvideo/globalsettings.cpp	2006-02-12 07:01:11.000000000 -0800
++++ mythplugins-8925-new/mythvideo/mythvideo/globalsettings.cpp	2006-02-12 07:05:25.000000000 -0800
 @@ -31,7 +31,7 @@
      gc->setLabel(QObject::tr("Default View"));
      gc->addSelection(QObject::tr("Gallery"), "1");
