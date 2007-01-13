@@ -1,6 +1,6 @@
 diff -Naur Mesa-6.3.2-old/configs/linux-dri Mesa-6.3.2-new/configs/linux-dri
 --- Mesa-6.3.2-old/configs/linux-dri	2005-08-19 15:03:05.000000000 -0700
-+++ Mesa-6.3.2-new/configs/linux-dri	2005-08-20 08:39:44.000000000 -0700
++++ Mesa-6.3.2-new/configs/linux-dri	2005-12-30 18:55:15.000000000 -0800
 @@ -25,7 +25,7 @@
  	-DPTHREADS -DUSE_EXTERNAL_DXTN_LIB=1 -DIN_DRI_DRIVER \
  	-DGLX_DIRECT_RENDERING -DHAVE_ALIAS
@@ -21,7 +21,7 @@ diff -Naur Mesa-6.3.2-old/configs/linux-dri Mesa-6.3.2-new/configs/linux-dri
  DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
 diff -Naur Mesa-6.3.2-old/src/glw/Makefile Mesa-6.3.2-new/src/glw/Makefile
 --- Mesa-6.3.2-old/src/glw/Makefile	2005-08-11 07:15:58.000000000 -0700
-+++ Mesa-6.3.2-new/src/glw/Makefile	2005-08-20 08:37:37.000000000 -0700
++++ Mesa-6.3.2-new/src/glw/Makefile	2005-12-30 18:55:15.000000000 -0800
 @@ -7,7 +7,7 @@
  MINOR = 0
  TINY = 0
@@ -33,7 +33,7 @@ diff -Naur Mesa-6.3.2-old/src/glw/Makefile Mesa-6.3.2-new/src/glw/Makefile
  OBJECTS = $(GLW_SOURCES:.c=.o)
 diff -Naur Mesa-6.3.2-old/src/glx/x11/dri_glx.c Mesa-6.3.2-new/src/glx/x11/dri_glx.c
 --- Mesa-6.3.2-old/src/glx/x11/dri_glx.c	2005-08-11 07:16:50.000000000 -0700
-+++ Mesa-6.3.2-new/src/glx/x11/dri_glx.c	2005-08-20 08:37:37.000000000 -0700
++++ Mesa-6.3.2-new/src/glx/x11/dri_glx.c	2005-12-30 18:55:15.000000000 -0800
 @@ -58,7 +58,7 @@
  
  #ifndef DEFAULT_DRIVER_DIR
@@ -43,9 +43,32 @@ diff -Naur Mesa-6.3.2-old/src/glx/x11/dri_glx.c Mesa-6.3.2-new/src/glx/x11/dri_g
  #endif
  
  static __DRIdriver *Drivers = NULL;
+diff -Naur Mesa-6.3.2-old/src/mesa/drivers/dri/dri_client/Makefile Mesa-6.3.2-new/src/mesa/drivers/dri/dri_client/Makefile
+--- Mesa-6.3.2-old/src/mesa/drivers/dri/dri_client/Makefile	2005-05-30 08:45:42.000000000 -0700
++++ Mesa-6.3.2-new/src/mesa/drivers/dri/dri_client/Makefile	2005-12-30 19:01:34.000000000 -0800
+@@ -1,5 +1,8 @@
+ # src/mesa/drivers/dri/gamma/Makefile
+ 
++AR ?= ar
++RANLIB ?= ranlib
++
+ TOP = ../../../../..
+ include $(TOP)/configs/current
+ 
+@@ -48,8 +51,8 @@
+ 
+ dri.a:	$(OBJECTS)
+ 	rm -f $@
+-	ar rcv $@ $(OBJECTS)
+-	ranlib $@
++	$(AR) rcv $@ $(OBJECTS)
++	$(RANLIB) $@
+ 
+ # Remove .o and backup files
+ clean:
 diff -Naur Mesa-6.3.2-old/src/mesa/drivers/dri/Makefile.template Mesa-6.3.2-new/src/mesa/drivers/dri/Makefile.template
 --- Mesa-6.3.2-old/src/mesa/drivers/dri/Makefile.template	2005-08-19 15:03:06.000000000 -0700
-+++ Mesa-6.3.2-new/src/mesa/drivers/dri/Makefile.template	2005-08-20 08:37:37.000000000 -0700
++++ Mesa-6.3.2-new/src/mesa/drivers/dri/Makefile.template	2005-12-30 18:55:15.000000000 -0800
 @@ -105,6 +105,6 @@
  	-rm -f depend depend.bak
  
@@ -54,3 +77,32 @@ diff -Naur Mesa-6.3.2-old/src/mesa/drivers/dri/Makefile.template Mesa-6.3.2-new/
 +	install $(LIBNAME) @GAR_DESTDIR@@GAR_x11libdir@/modules/dri/$(LIBNAME)
  
  include depend
+diff -Naur Mesa-6.3.2-old/src/mesa/Makefile Mesa-6.3.2-new/src/mesa/Makefile
+--- Mesa-6.3.2-old/src/mesa/Makefile	2005-08-11 07:15:58.000000000 -0700
++++ Mesa-6.3.2-new/src/mesa/Makefile	2005-12-30 19:01:41.000000000 -0800
+@@ -1,11 +1,13 @@
+ # src/mesa/Makefile
+ 
++AR ?= ar
++RANLAB ?= ranlib
++
+ TOP = ../..
+ include $(TOP)/configs/current
+ 
+ include sources
+ 
+-
+ GL_MAJOR = 1
+ GL_MINOR = 5
+ GL_TINY = 0$(MESA_MAJOR)0$(MESA_MINOR)0$(MESA_TINY)
+@@ -69,8 +71,8 @@
+ # Make archive of core object files
+ mesa.a:	$(SOLO_OBJECTS)
+ 	rm -f $@
+-	ar rcv $@ $(SOLO_OBJECTS)
+-	ranlib $@
++	$(AR) rcv $@ $(SOLO_OBJECTS)
++	$(RANLIB) $@
+ 	@if [ "${CONFIG_NAME}" = "beos" ] ; then \
+ 		mimeset -f "$@" ; \
+ 	fi

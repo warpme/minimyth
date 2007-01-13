@@ -3,7 +3,7 @@ GARVERSION = 1.0pre7try2
 CATEGORIES = mediaplayers
 MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-c3.patch
+PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(KERNEL_ARCH).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib net/samba X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/SDL lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/SDL lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -41,7 +41,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-rtc \
 	--disable-edl \
 	--enable-network \
-	--enable-smb \
+	--disable-smb \
 	--disable-live \
 	--enable-dvdread \
 	--disable-mpdvdkit \
@@ -55,7 +55,8 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
 	--enable-jpeg \
-	--enable-win32 \
+	--disable-win32 \
+	$(if $(filter i386,$(KERNEL_ARCH)),--enable-win32,--disable-win32) \
 	--enable-xanim \
 	--enable-real \
 	--disable-internal-tremor \
@@ -118,7 +119,7 @@ CONFIGURE_ARGS_MISC = \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
-	--target="$(GARCH)-linux"
+	--target="$(KERNEL_ARCH)-linux"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
 	--enable-mmx2 \
@@ -134,9 +135,6 @@ CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
 	--with-x11libdir="$(DESTDIR)$(x11libdir)" \
 	--with-codecsdir="$(libdir)/codecs" \
-	--with-win32libdir="$(libdir)/codecs" \
-	--with-xanimlibdir="$(libdir)/codecs" \
-	--with-reallibdir="$(libdir)/codecs" \
 	--with-xvmclib=XvMCW \
 	--with-xxmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
@@ -150,12 +148,15 @@ CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_MISC) \
 	$(CONFIGURE_ARGS_ADVANCED) \
 	$(CONFIGURE_ARGS_WITH)
+INSTALL_ARGS   = \
+	STRIPBINARIES=
 
 CONFIGURE_ENV  = \
 	DESTDIR="$(DESTDIR)"
 BUILD_ENV  = \
 	DESTDIR="$(DESTDIR)"
 
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 CFLAGS :=

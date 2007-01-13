@@ -3,6 +3,7 @@ GARVERSION = 20050815
 CATEGORIES = X11
 #MASTER_SITES = http://www.openchrome.org/snapshots/unichrome/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-imakefile.patch
 LICENSE =
 
 DESCRIPTION = 
@@ -18,34 +19,14 @@ INSTALL_SCRIPTS   = unichrome libxvmc
 GAR_EXTRA_CONF += X11/X11/package-api.mk
 include ../../gar.mk
 
-CppCmd       := $(shell echo $(CPP)    | sed 's%^$(compiler_prefix)%%')
-CcCmd        := $(shell echo $(CC)     | sed 's%^$(compiler_prefix)%%')
-CplusplusCmd := $(shell echo $(CXX)    | sed 's%^$(compiler_prefix)%%')
-LdCmd        := $(shell echo $(LD)     | sed 's%^$(compiler_prefix)%%')
-RanlibCmd    := $(shell echo $(RANLIB) | sed 's%^$(compiler_prefix)%%')
-AsCmd        := $(shell echo $(AS)     | sed 's%^$(compiler_prefix)%%')
-ArCmd        := $(shell echo $(AR)     | sed 's%^$(compiler_prefix)%%')
-
 configure-unichrome:
-	@cd $(WORKSRC)/unichrome ; xmkmf $(DESTDIR)$(X11_SOURCEDIR)
-	@sed -i "s%= $(ArCmd)%= $(AR)%"         $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(AsCmd)%= $(AS)%"         $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(CcCmd)%= $(CC)%"         $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(CplusplusCmd)%= $(CXX)%" $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(CppCmd)%= $(CPP)%"       $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(LdCmd)%= $(LD)%"         $(WORKSRC)/unichrome/Makefile
-	@sed -i "s%= $(RanlibCmd)%= $(RANLIB)%" $(WORKSRC)/unichrome/Makefile
+	@cd $(WORKSRC)/unichrome ; \
+		$(GARHOST)-imake -I$(DESTDIR)$(X11_SOURCEDIR)/config/cf -DTOPDIR=$(DESTDIR)$(X11_SOURCEDIR) -DCURDIR=.
 	@$(MAKECOOKIE)
 
 configure-libxvmc:
-	@cd $(WORKSRC)/libxvmc; xmkmf $(DESTDIR)$(X11_SOURCEDIR)
-	@sed -i "s%= $(ArCmd)%= $(AR)%"         $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(AsCmd)%= $(AS)%"         $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(CcCmd)%= $(CC)%"         $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(CplusplusCmd)%= $(CXX)%" $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(CppCmd)%= $(CPP)%"       $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(LdCmd)%= $(LD)%"         $(WORKSRC)/libxvmc/Makefile
-	@sed -i "s%= $(RanlibCmd)%= $(RANLIB)%" $(WORKSRC)/libxvmc/Makefile
+	@cd $(WORKSRC)/libxvmc ; \
+		$(GARHOST)-imake -I$(DESTDIR)$(X11_SOURCEDIR)/config/cf -DTOPDIR=$(DESTDIR)$(X11_SOURCEDIR) -DCURDIR=.
 	@$(MAKECOOKIE)
 
 install-unichrome:

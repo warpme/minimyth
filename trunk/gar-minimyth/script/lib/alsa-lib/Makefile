@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-static \
+	--enable-shared \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += kernel/alsa-driver/package-api.mk

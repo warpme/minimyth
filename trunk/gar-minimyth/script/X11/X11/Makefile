@@ -5,7 +5,7 @@ MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
-PATCHFILES  = $(GARNAME)R$(GARVERSION)-gcc4.patch $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch
+PATCHFILES  = $(GARNAME)R$(GARVERSION)-gcc4.patch $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
 
@@ -257,6 +257,7 @@ install-source:
 post-install:
 	@mkdir -p $(build_DESTDIR)/$(build_x11bindir)
 	@cp -f $(WORKSRC)/config/makedepend/makedepend $(build_DESTDIR)/$(build_x11bindir)/$(GARHOST)-makedepend
+	@cp -f $(WORKSRC)/config/imake/imake           $(build_DESTDIR)/$(build_x11bindir)/$(GARHOST)-imake
 	@rm -f $(DESTDIR)$(bindir)/X11
 	@rm -f $(DESTDIR)$(includedir)/X11
 	@rm -f $(DESTDIR)$(libdir)/X11

@@ -3,34 +3,81 @@ GARVERSION = 1.1.1
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch $(DISTNAME)-alsa_configure.patch
 LICENSE = 
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib net/samba X11/freetype X11/X11 X11/libXvMCW
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib X11/freetype X11/X11 X11/libXvMCW
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# The configure program does not deal well with cross compiling,
-# so we do not include --build or --host and we let CC set the compiler.
-# Since both the the build and the host are i386, this works.
-CONFIGURE_ARGS = $(DIRPATHS) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--disable-static \
+	--enable-shared \
+	--enable-nls \
 	--disable-altivec \
 	--disable-vis \
 	--disable-mlib \
+	--disable-mlib-lazyload \
+	--disable-ffmpegtest \
 	--disable-ipv6 \
+	--enable-opengl \
+	--enable-glu \
 	--disable-fb \
+	--disable-v4l \
+	--disable-static-xv \
+	--enable-xinerama \
+	--disable-aalib \
+	--disable-aalibtest \
+	--disable-caca \
+	--disable-cacatest \
+	--disable-fb \
+	--disable-macosx-video \
+	--disable-coreaudio \
+	--disable-directfb \
+	--enable-sdl \
+	--disable-sdltest \
+	--disable-polypaudio \
 	--disable-dxr3 \
+	--disable-libfametest \
 	--disable-vidix \
+	--disable-dha-kmod \
+	--disable-oggtest \
+	--disable-vorbistest \
+	--disable-theoratest \
+	--disable-speex \
+	--enable-flac \
 	--disable-libFLACtest \
+	--enable-a52dec \
+	--enable-mad \
+	--enable-mng \
+	--disable-imagemagick \
+	--enable-freetype \
+	--disable-oss \
+	--enable-alsa \
+	--enable-alsatest \
+	--disable-esd \
+	--disable-esdtest \
+	--disable-arts \
+	--disable-artstest \
+	--disable-gnome \
+	--disable-samba \
+	--disable-dvdnavtest \
+	--enable-vcd \
+	--enable-asf \
+	--enable-faad \
+	--enable-dts \
+	--enable-largefile \
+	--enable-optimizations \
+	--enable-min-symtab \
 	--with-gnu-ld \
 	--with-x \
 	--with-xvmc-lib=XvMCW \
@@ -41,7 +88,9 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 
 include ../../gar.mk
 
-pre-configure:
+post-patch:
+	@# Regenerate configure since configure.ac was patched.
+	@cd $(WORKSRC) ; autoconf
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
@@ -65,3 +114,13 @@ post-install:
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libxine.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libxine.pc
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(bindir)/xine-config
+	@rm -rf $(DESTDIR)$(includedir)/xine
+	@rm -rf $(DESTDIR)$(includedir)/xine.h
+	@rm -rf $(DESTDIR)$(libdir)/xine
+	@rm -rf $(DESTDIR)$(libdir)/libxine.*
+	@rm -rf $(DESTDIR)$(datadir)/xine
+	@rm -rf $(DESTDIR)$(docdir)/xine
