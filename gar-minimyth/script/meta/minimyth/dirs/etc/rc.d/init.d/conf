@@ -136,10 +136,19 @@ conf_write() {
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="NVIDIA"
             [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="NVIDIA_GFORCE6150"
             [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="NVIDIA_NFORCE430"
-            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="INTEL_88E1111"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="NVIDIA_NFORCE430"
             [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="ANALOG_AD1986A"
             [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627EHG"
+            ;;
+        BIOSTAR_M7NCD)
+            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="NVIDIA"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="NVIDIA_NFORCE2"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="NVIDIA_NFORCE2"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="NVIDIA_NFORCE2"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="REALTEK_ALC650"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627HF"
             ;;
         COMMELL_LV_675)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="INTEL"
@@ -314,6 +323,47 @@ conf_write() {
                 ;;
             VIA_CN700)
                 [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via_pro"
+                ;;
+            # See whether or not we can guess the X driver from the hardware.
+            *)
+                lspci -mn | sed -e 's%"%%g' | while read pci ; do
+                    index=1            ; bus=`       echo "${pci}" | cut -d' ' -f${index}`
+                    index=$((index+1)) ; class=`     echo "${pci}" | cut -d' ' -f${index}`
+                    index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d' ' -f${index}`
+                    index=$((index+1)) ; device=`    echo "${pci}" | cut -d' ' -f${index}`
+                    index=$((index+1)) ; revision=`  echo "${pci}" | cut -d' ' -f${index}`
+                    if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
+                        revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
+                    else
+                        index=$((index-1)) ; revision=
+                    fi
+                    index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d' ' -f${index}`
+                    if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
+                        class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
+                    else
+                        index=$((index-1)) ; class_prog=
+                    fi
+                    index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d' ' -f${index}`
+                    index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d' ' -f${index}`
+            
+                    case "${class}" in
+                        # VGA (Graphics).
+                        0300)
+                            case "${vendor}" in
+                                # NVIDIA.
+                                10de) 
+                                    MM_X_DRIVER="nvidia"
+                                    ;;
+                                # VIA.
+                                1106)
+                                    case "${device}" in
+                                        3122) MM_X_DRIVER="via" ;; # VIA CLE266
+                                    esac
+                                    ;;
+                            esac
+                            ;;
+                    esac
+                done
                 ;;
         esac
         if [ "${MM_X_DRIVER}" = "intel_i830" ] ; then
