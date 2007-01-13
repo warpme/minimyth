@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis X11/X11 X11/freetype
-BUILDDEPS = devel/pkgconfig
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis X11/X11 X11/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -35,12 +34,8 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-gnu-ld \
 	--with-x \
 	--with-xxmc-lib=viaXvMC
-CONFIGURE_ENV  = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
 include ../../gar.mk
-
-CFLAGS := $(CFLAGS) -Wl,-rpath-link,$(DESTDIR)$(x11libdir)
 
 post-patch:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
