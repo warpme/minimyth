@@ -5,6 +5,7 @@ MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://anonymous@lirc.cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-linux_2.6.17.patch
 LICENSE = GPL2
 
 DESCRIPTION =

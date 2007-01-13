@@ -13,7 +13,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = kernel/module-init-tools
+BUILDDEPS = kernel/module-init-tools utils/mktemp
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
