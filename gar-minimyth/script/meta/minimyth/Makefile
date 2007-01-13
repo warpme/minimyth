@@ -16,7 +16,6 @@ DEPENDS = \
 	system/bootsplash \
 	utils/busybox \
 	devel/gdb \
-	devel/make \
 	system/lcdproc \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs \
 	lirc/lirc \
