@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux
+#DEPENDS = lang/c kernel/linux
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
@@ -53,4 +53,10 @@ udevdir     := $(rootdir)/dev
 
 pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
+	@$(MAKECOOKIE)
+
+post-install:
+	@install -D $(WORKSRC)/udev      $(DESTDIR)$(esbindir)/udev
+	@install -D $(WORKSRC)/udevsend  $(DESTDIR)$(esbindir)/udevsend
+	@install -D $(WORKSRC)/udevstart $(DESTDIR)$(esbindir)/udevstart
 	@$(MAKECOOKIE)
