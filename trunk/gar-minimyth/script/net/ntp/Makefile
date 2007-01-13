@@ -3,7 +3,7 @@ GARVERSION = 4.2.0
 CATEGORIES = net
 MASTER_SITES = http://www.eecis.udel.edu/~$(GARNAME)/$(GARNAME)_spool/$(GARNAME)4/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-gcc4.patch
+PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-config_phone.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
