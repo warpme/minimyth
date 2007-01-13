@@ -37,6 +37,14 @@ fi
 if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
     mkdir -p /var/lock
     mkdir -p /var/run
+
+    # Wait up to 10 seconds for the device to appear in the device file system.
+    DELAY=0
+    while [ ! -e ${MM_LIRC_DEVICE} ] && [ ${DELAY} -lt 10 ] ; do
+        sleep 1
+        DELAY=$((DELAY + 1))
+    done
+
     if [ -e /usr/sbin/lircd.${MM_LIRC_DRIVER} ] ; then
     	lircd.${MM_LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
     else
