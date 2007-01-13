@@ -1,8 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.1
+GARVERSION = 1.1.2
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch $(DISTNAME)-alsa_configure.patch
 LICENSE = 
 
@@ -22,6 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-static \
 	--enable-shared \
+	--disable-rpath \
 	--enable-nls \
 	--disable-altivec \
 	--disable-vis \
@@ -34,6 +35,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-fb \
 	--disable-v4l \
 	--disable-static-xv \
+	--enable-xvmc \
 	--enable-xinerama \
 	--disable-aalib \
 	--disable-aalibtest \
@@ -68,13 +70,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-esdtest \
 	--disable-arts \
 	--disable-artstest \
-	--disable-gnome \
+	--disable-fusionsound \
+	--disable-gnomevfs \
 	--disable-samba \
 	--disable-dvdnavtest \
 	--enable-vcd \
 	--enable-asf \
 	--enable-faad \
 	--enable-dts \
+	--disable-modplug \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
 	--enable-largefile \
 	--enable-optimizations \
 	--enable-min-symtab \
@@ -82,10 +87,25 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	--with-xvmc-lib=XvMCW \
 	--with-xxmc-lib=XvMCW \
-	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
-	--with-libFLAC-libraries=$(DESTDIR)$(libdir) \
+	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
+	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-caca-prefix="$(DESTDIR)$(prefix)" \
+	--with-caca-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
+	--with-sdl-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
+	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-linux-path="$(KERNEL_SOURCEDIR)" \
+	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
+	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
+	--with-alsa-prefix="$(DESTDIR)$(prefix)" \
+	--with-alsa-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-esd-prefix="$(DESTDIR)$(prefix)" \
+	--with-esd-exec-prefix="$(DESTDIR)$(exec_prefix)" \
+	--with-arts-prefix="$(DESTDIR)$(prefix)" \
 	--with-w32-path="$(libdir)/codecs"
 
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 pre-configure:
@@ -102,11 +122,11 @@ pre-configure:
 	@echo "ac_cv_path_CACA_CONFIG=no"                                      >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_SDL_CONFIG=$(DESTDIR)$(bindir)/sdl-config"           >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_LIBFAME_CONFIG=no"                                   >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_WAND_CONFIG=no"                                      >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config" >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_ESD_CONFIG=no"                                       >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_ARTS_CONFIG=no"                                      >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_DVDNAV_CONFIG=no"                                    >> $(WORKSRC)/config.cache
-	@echo "ac_cv_path_LIBPNG_CONFIG=$(DESTDIR)$(bindir)/libpng-config"     >> $(WORKSRC)/config.cache
-	@echo "ac_cv_path_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
