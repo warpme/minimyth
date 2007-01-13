@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /etc/minimyth.d/minimyth.functions
+
 # udhcpc script edited by Tim Riker <Tim@Rikers.org>
 
 [ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
@@ -10,9 +12,8 @@ RESOLV_CONF="/etc/resolv.conf"
 
 case "$1" in
 	deconfig)
-		# Since we have NFS mounted the root partition, do not reset the interface
-		cat /proc/cmdline | grep -q 'root=/dev/nfs'
-		if [ ! $? = 0 ] ; then
+		# Since we have network mounted the root file system, do not reset the network interface
+		if [ ! "$MM_ROOTFS_TYPE" = "nfs" ] ; then
 			ifconfig $interface 0.0.0.0
 		fi
 		;;
