@@ -280,6 +280,8 @@ configure-X11_misc:
 	@$(MAKECOOKIE)
 
 post-install:
+	@mkdir -p $(build_DESTDIR)/$(build_x11bindir)
+	@cp -f $(WORKSRC)/config/makedepend/makedepend $(build_DESTDIR)/$(build_x11bindir)/$(GARHOST)-makedepend
 	@rm -f $(DESTDIR)$(bindir)/X11
 	@rm -f $(DESTDIR)$(includedir)/X11
 	@rm -f $(DESTDIR)$(libdir)/X11
