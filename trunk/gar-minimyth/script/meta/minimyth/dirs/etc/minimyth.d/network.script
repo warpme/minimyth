@@ -18,6 +18,13 @@ else
     udhcpc -s /etc/minimyth.d/dhcp.script -i eth0 -r $ip
 fi
 
+# Check hostname.
+HOSTNAME=`hostname`
+if [ -z "${HOSTNAME}" ] ; then
+    mm_message_output err 'error: no hostname provided'
+    exit 1
+fi
+
 # Set and check for DNS name servers.
 if [ ! -z "${MM_NAME_SERVER}" ] ; then
     echo "nameserver ${MM_NAME_SERVER}" >> /etc/resolv.conf
