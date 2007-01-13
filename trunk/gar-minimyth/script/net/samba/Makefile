@@ -47,5 +47,7 @@ install-mount.cifs:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm $(DESTDIR)$(esbindir)/mount.smbfs ; ln -s $(bindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
+	@mv -f $(DESTDIR)$(bindir)/smbmnt   $(DESTDIR)$(ebindir)/
+	@mv -f $(DESTDIR)$(bindir)/smbmount $(DESTDIR)$(ebindir)/
+	@rm -f $(DESTDIR)$(esbindir)/mount.smbfs ; ln -sf $(ebindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
 	@$(MAKECOOKIE)
