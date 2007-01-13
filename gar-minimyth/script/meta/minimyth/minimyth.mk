@@ -150,8 +150,10 @@ mm-copy-x11:
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)
 	@cp -fa $(DESTDIR)$(x11libdir)/modules $(mm_DESTDIR)$(x11libdir)
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11
-	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts   $(mm_DESTDIR)$(x11libdir)/X11
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/rgb.txt $(mm_DESTDIR)$(x11libdir)/X11
+	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/fonts
+	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/TTF $(mm_DESTDIR)$(x11libdir)/X11/fonts
+	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/misc $(mm_DESTDIR)$(x11libdir)/X11/fonts
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/xserver
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/xserver/SecurityPolicy $(mm_DESTDIR)$(x11libdir)/X11/xserver
 
