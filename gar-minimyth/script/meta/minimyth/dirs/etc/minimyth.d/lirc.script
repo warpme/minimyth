@@ -7,6 +7,25 @@
 
 . /etc/minimyth.d/minimyth.functions
 
+# If the LIRC driver is known, pick reasonable defaults.
+case "${MM_LIRC_DRIVER}" in
+    irman)
+        [ -z ${MM_LIRC_DEVICE}                ] && MM_LIRC_DEVICE=/dev/ttyS0
+        [ -z ${MM_LIRC_KERNEL_MODULE}         ] && MM_LIRC_KERNEL_MODULE=8250
+        [ -z ${MM_LIRC_KERNEL_MODULE_OPTIONS} ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+        ;;
+    mceusb)
+        [ -z ${MM_LIRC_DEVICE}                ] && MM_LIRC_DEVICE=
+        [ -z ${MM_LIRC_KERNEL_MODULE}         ] && MM_LIRC_KERNEL_MODULE=lirc_mceusb
+        [ -z ${MM_LIRC_KERNEL_MODULE_OPTIONS} ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+        ;;
+    serial)
+        [ -z ${MM_LIRC_DEVICE}                ] && MM_LIRC_DEVICE=/dev/lirc0
+        [ -z ${MM_LIRC_KERNEL_MODULE}         ] && MM_LIRC_KERNEL_MODULE=lirc_serial
+        [ -z ${MM_LIRC_KERNEL_MODULE_OPTIONS} ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+        ;;
+esac
+
 if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
     if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
         modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
