@@ -1,6 +1,7 @@
 #!/bin/sh
-mount -n -t tmpfs                                       none /rootfs-rw
-mount -n -t unionfs -o dirs=/rootfs-rw=rw:/rootfs-ro=ro none /rootfs
+mount -n -t tmpfs none /rw
+mkdir -p /rw/rootfs
+mount -n -t unionfs -o dirs=/rw/rootfs=rw:/rootfs-ro=ro none /rootfs
 cd /rootfs
 mkdir -p initrd
 pivot_root . initrd
