@@ -74,4 +74,5 @@ install-nfs: build
 		mknod -m 600 $(mm_DESTDIR).tmp/$(rootdir)/dev/console c 5 1 ; \
 		rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; cp -a $(mm_DESTDIR).tmp $(mm_NFSDIR)/$(mm_NFSNAME) ; \
 		rm -rf $(mm_DESTDIR).tmp ; \
+		cp -a $(mm_EXTRASDIR)/* $(mm_NFSDIR)/$(mm_NFSNAME)/$(extras_rootdir) ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME)"
