@@ -1,17 +1,17 @@
 GARNAME = mythtv
-GARVERSION = $(MYTHTV_SVN_VERSION)
+GARVERSION = $(MYTHTV_STABLE18_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-gant.patch
+PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdvdnav lib/zlib db/mysql xorg/freetype xorg/xorg qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql xorg/freetype xorg/xorg qt/qt lirc/lirc
 
 PWD := $(shell pwd)
 
@@ -20,9 +20,7 @@ CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
 
-CONFIGURE_ARGS = \
-	--compile-type="release" \
-	--prefix="$(prefix)" \
+CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-ccache \
 	--disable-distcc \
 	--extra-cflags="$(CFLAGS)" \
@@ -31,36 +29,27 @@ CONFIGURE_ARGS = \
 	--tune=$(GARCH) \
 	--arch=$(GARCH) \
 	--enable-proc-opt \
-	--enable-mmx \
-	--disable-iwmmxt \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-mmx,--disable-mmx) \
 	--disable-altivec \
 	--disable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	--enable-dvd \
-	--disable-valgrind \
-	--enable-frontend \
-	--enable-backend \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
-	--disable-dbox2 \
-	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
 	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--disable-dvb-eit \
 	--enable-x11 \
-	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-xvmc \
-	--enable-xvmc-pro \
-	--enable-opengl-vsync \
+	--enable-xvmc-vld \
+	--disable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx
-
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
@@ -86,11 +75,11 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

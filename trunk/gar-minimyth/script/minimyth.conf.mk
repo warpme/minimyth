@@ -31,8 +31,8 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # root files sytem image is given by mm_NFSNAME.
 mm_NFS_ROOT          ?= /home/public
 # The version of Myth to use.
-# Valid values are 'stable', 'knoppmyth' and 'svn'.
-mm_MYTH_VERSION      ?= stable
+# Valid values are 'stable18', 'stable19' and 'svn'.
+mm_MYTH_VERSION      ?= stable18
 # Overrides the Myth SVN version built. If the version changes too much then
 # the patches may no longer work.
 mm_MYTH_SVN_VERSION  ?=
