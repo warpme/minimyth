@@ -3,15 +3,30 @@
 #
 # The optional MiniMyth DHCP configuration file.
 #
+# This configuration file is a hack to work around crippled DHCP servers.
+#
 # This file contains configuration variables normally received from the
-# DHCP server.
+# DHCP server. The values in this file override the corresponding values
+# (if any) returned by the DHCP server.
 #
-# The MiniMyth DHCP configuration file is supported when MiniMyth is booted
-# from a USB key.
+# Retrieval of this MiniMyth DHCP configuration file is supported when MiniMyth
+# is booted from a USB key. Because the network is not up when the minimyth.conf
+# file is retrieved, it can only be retrieved from a local conf directory, which
+# is why it only works when booting from a USB key. Because the hostname is not
+# known when this file is retrieved, this file must be put in the default conf
+# directory (conf/default) not the host specific conf directory
+# (conf/<hostname>).
 #
-# Because the hostname is not known when this file is retrieved, this file must
-# be put in the default conf directory (conf/default) not the host specific conf
-# directory (conf/<hostname>).
+# The retrieved minimyth.dhcp file is placed in the /etc/minimyth.conf file.
+# If this file is present through some other means (e.g., it was added to the
+# CRAMFS image, or it was added to the NFS root image), then MiniMyth wil use
+# it.
+#
+# These same MM_DHCP_* variables can be put on the boot command line (i.e., the
+# APPEND line). If there is no /etc/minimyth.d/minimyth.dchp present, then
+# MiniMyth will create a /etc/minimyth.d/minimyth.dhcp file containing the
+# MM_DHCP_* variables from the enviroment that were set on the boot command
+# line.
 ################################################################################
 
 ################################################################################
