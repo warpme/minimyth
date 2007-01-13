@@ -537,10 +537,9 @@ mm-make-distro:
 	@mkdir -p $(mm_LOCALDIR)
 	@cp -r  $(mm_STAGEDIR)/version        $(mm_LOCALDIR)/version
 	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_LOCALDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_LOCALDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_LOCALDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_LOCALDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/html           $(mm_LOCALDIR)/html
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_LOCALDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_LOCALDIR)/scripts
 	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
 		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
@@ -561,10 +560,9 @@ mm-make-distro:
 	@mkdir -p $(mm_SHAREDIR)
 	@cp -r  $(mm_STAGEDIR)/version        $(mm_SHAREDIR)/version
 	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_SHAREDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_SHAREDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_SHAREDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_SHAREDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/html           $(mm_SHAREDIR)/html
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_SHAREDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_SHAREDIR)/scripts
 	@rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs
 	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2
