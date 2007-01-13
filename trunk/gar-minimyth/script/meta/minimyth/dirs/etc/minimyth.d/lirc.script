@@ -1,0 +1,22 @@
+#!/bin/sh
+################################################################################
+# lirc.script
+#
+# This script configures and starts LIRC.
+################################################################################
+
+. /etc/minimyth.d/minimyth.functions
+
+[ -n "${MMDEBUG}" ] && set -x
+
+if [ -n "${LIRC_DRIVER}" ] && [ -n ${LIRC_DEVICE} ] ; then
+    if [ -n "${LIRC_KERNEL_MODULE}" ] ; then
+        modprobe ${LIRC_KERNEL_MODULE} ${LIRC_KERNEL_MODULE_OPTIONS}
+    fi
+    if [ -e /usr/sbin/lircd.${LIRC_DRIVER} ] ; then
+        LIRC_LIRCD=lircd.${LIRC_DRIVER}
+    else
+        LIRC_LIRCD=lircd.any
+    fi
+    ${LIRC_LIRCD} --driver=${LIRC_DRIVER} --device=${LIRC_DEVICE}
+fi

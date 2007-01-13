@@ -1,0 +1,61 @@
+GARNAME = busybox
+GARVERSION = 1.00
+CATEGORIES = utils
+MASTER_SITES = http://www.busybox.net/downloads/
+CONFIGFILE = $(GARNAME)-$(GARVERSION).config
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2 $(CONFIGFILE)
+LICENSE = GPL2
+
+DESCRIPTION =
+define BLURB
+endef
+
+#DEPENDS = lang/c
+
+CONFIGURE_SCRIPTS = custom
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = custom
+
+CONFIGURE_ARGS = \
+	TARGET_ARCH="$(KERNEL_ARCH)" \
+	oldconfig
+BUILD_ARGS = \
+	TARGET_ARCH="$(KERNEL_ARCH)" \
+	CC="$(CC)" \
+	AR="$(AR)" \
+	AS="$(AS)" \
+	LD="$(LD)" \
+	NM="$(NM)" \
+	STRIP="$(STRIP)" \
+	CPP="$(CPP)" \
+	OPTIMIZATIONS="$(CFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	HOSTCC="$(build_CC)" \
+	HOSTCFLAGS="$(build_CFLAGS)"
+INSTALL_ARGS =
+BUILD_OVERRIDE_DIRS = PREFIX
+INSTALL_OVERRIDE_DIRS = PREFIX
+
+PREFIX=$(prefix)
+
+ifeq ($(DESTIMG),build)
+USING_CROSS_COMPILER = n
+else
+USING_CROSS_COMPILER = y
+endif
+
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
+include ../../gar.mk
+
+extract-$(CONFIGFILE):
+	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
+		| sed 's%@USING_CROSS_COMPILER@%$(USING_CROSS_COMPILER)%g' \
+		> $(WORKSRC)/.config
+	@$(MAKECOOKIE)
+
+configure-custom:
+	@$(CONFIGURE_ENV) $(MAKE) -C $(WORKSRC) $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
+
+install-custom:
+	@$(INSTALL_ENV) $(MAKE) -C $(WORKSRC) PREFIX=$(DESTDIR)$(rootdir) install

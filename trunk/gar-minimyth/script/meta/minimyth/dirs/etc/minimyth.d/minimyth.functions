@@ -1,0 +1,86 @@
+#!/bin/sh
+################################################################################
+# minimyth.functions
+################################################################################
+
+[ -r /etc/minimyth.d/dhcp.conf     ] && . /etc/minimyth.d/dhcp.conf
+[ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+
+################################################################################
+# mount_url
+#
+# This function mounts a remote directory as a local directory.
+#
+# This function takes three arguments:
+#     URL: required argument:
+#         A URL that points to the remote directory. A URL must have the
+#         following form:
+#             <protocol>username@password://<server>/<path>?options
+#         <protocol>, <server> and <path> are required.
+#         <options>, which are additional mount options (-o), are optional.
+#         For example:
+#             nfs://server.home/home/public/music
+#             smb://user@pass:server.home/home/public/music,workgroup=home
+#         The valid protocol values are: nfs and smb.
+#     MOUNT_DIR: required argument:
+#         The local directory (e.g. /mnt/music) where the URL will be mounted.
+################################################################################
+mount_url() {
+    URL="$1"
+    MOUNT_DIR="$2"
+
+    URL_PROTOCOL=`echo ${URL} | cut -d? -f1 | cut -d: -f1`
+    URL_USERNAME=`echo ${URL} | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f1`
+    URL_PASSWORD=`echo ${URL} | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f2`
+    URL_SERVER=`echo ${URL}   | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%^[^@]*@%%' | sed 's%/[^/]*%%g'`
+    URL_DIR=`echo ${URL}      | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%^[^@]*@%%' | sed 's%[^/]*%%'`
+    URL_OPTIONS=`echo ${URL}                | sed 's%^[^?]*%%'   | sed 's%^?%%'`
+
+echo "${URL_OPTIONS}"
+
+    MOUNT_DEVICE="${URL_SERVER}:${URL_DIR}"
+    MOUNT_OPTIONS="${URL_OPTIONS}"
+
+    MOUNT_VFSTYPE=""
+    if   [ "${URL_PROTOCOL}" = "nfs" ] ; then
+        MOUNT_VFSTYPE=nfs
+        MOUNT_OPTIONS="${MOUNT_OPTIONS},rsize=8192,wsize=8192"
+    elif [ "${URL_PROTOCOL}" = "smb" ] ; then
+        MOUNT_VFSTYPE=smbfs
+        [ -n "${URL_USERNAME}" ] && MOUNT_OPTIONS="${MOUNT_OPTIONS},username=\"${URL_USERNAME}\""
+        [ -n "${URL_PASSWORD}" ] && MOUNT_OPTIONS="${MOUNT_OPTIONS},password=\"${URL_PASSWORD}\""
+    fi
+
+    if [ -n "${MOUNT_VFSTYPE}" ] ; then
+        mkdir -p ${MOUNT_DIR}
+        MOUNT_OPTIONS=`echo ${MOUNT_OPTIONS} | sed 's%^,%%'`
+        [ -n "${MOUNT_OPTIONS}" ] && MOUNT_OPTIONS="-o ${MOUNT_OPTIONS}"
+        mount -t ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} ${MOUNT_DEVICE} ${MOUNT_DIR}
+    fi
+}
+
+################################################################################
+# get_file
+################################################################################
+get_file() {
+    REMOTE_FILE=$1
+    LOCAL_FILE=$2
+
+    mkdir -p `echo /tmp/${LOCAL_FILE} | sed 's%/[^/]*$%%'`
+
+    tftp -g -r ${TFTPROOT}/conf/`hostname`/${REMOTE_FILE} -l /tmp/${LOCAL_FILE} ${TFTPSERVER} || \
+    tftp -g -r ${TFTPROOT}/conf/${REMOTE_FILE}            -l /tmp/${LOCAL_FILE} ${TFTPSERVER} || \
+    cp         ${LOCAL_FILE}.default                         /tmp/${LOCAL_FILE}               || \
+    touch                                                    /tmp/${LOCAL_FILE}
+}
+
+execute_and_log() {
+    COMMAND=$1
+
+    LOGFILE=/dev/null
+    [ -z "${MMDEBUG}" ] && LOGFILE=/var/log/minimyth.log
+
+    echo "--- execution start: ${COMMAND}"  >> ${LOGFILE} 2>&1
+    ${COMMAND}                              >> ${LOGFILE} 2>&1
+    echo "--- execution end  : ${COMMAND}"  >> ${LOGFILE} 2>&1
+}

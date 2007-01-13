@@ -1,0 +1,47 @@
+#!/bin/sh
+
+. /etc/minimyth.d/minimyth.functions
+
+[ -n "${MMDEBUG}" ] && set -x
+
+export PATH=//sbin://bin://usr/sbin://usr/bin://usr/X11R6/bin://usr/lib/qt/bin
+export HOME=/root
+
+# Set up basic file system.
+mount -n -t sysfs              /sys     /sys
+mount -n -t proc               /proc    /proc
+mount    -t tmpfs -o size=512K tmpfs    /var
+mount    -t tmpfs -o size=512K tmpfs    /tmp
+mount    -t tmpfs -o size=512K tmpfs    /mnt
+mkdir /var/run
+mkdir /var/lock
+mkdir /var/log
+# Start device file system.
+sh /etc/minimyth.d/devfs.script
+# Start logging.
+execute_and_log syslogd
+execute_and_log klogd
+# Create the shadow directories.
+execute_and_log "sh /etc/minimyth.d/shadow.script"
+# Create ld.conf.cache
+execute_and_log "ldconfig -f /etc/ld.so.conf -C /tmp/etc/ld.so.cache"
+# Bring up the network interfaces.
+execute_and_log "sh /etc/minimyth.d/network.script"
+# Start portmap on local interface.
+execute_and_log "portmap -l"
+# Get configuration files from TFTP server.
+execute_and_log "sh /etc/minimyth.d/getremotefiles.script"
+# Run minimyth.script if the user provided one.
+execute_and_log "sh /etc/minimyth.d/minimyth.script"
+# Load modules.
+execute_and_log "sh /etc/minimyth.d/loadmods.script"
+# Start services.
+execute_and_log "sh /etc/minimyth.d/services.script"
+# Mount remote media directories.
+execute_and_log "sh /etc/minimyth.d/mount.script"
+# Add MYTHSERVER to Myth's mythsql.txt file.
+execute_and_log "sh /etc/minimyth.d/mysql.script"
+# Start LIRC.
+execute_and_log "sh /etc/minimyth.d/lirc.script"
+# Start X (if not debugging)
+[ -z "${MMDEBUG}" ] && [ -z "${MMNOXINIT}" ] && execute_and_log xinit &

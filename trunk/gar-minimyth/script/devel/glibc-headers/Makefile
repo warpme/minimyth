@@ -1,0 +1,59 @@
+GARNAME = glibc-headers
+GARVERSION = $(GLIBC_VERSION)
+CATEGORIES = devel
+SOURCEPKG = devel/glibc
+LICENSE = GPL2/LGPL2_1
+
+DESCRIPTION = 
+define BLURB
+endef
+
+WORKSRC = $(WORKDIR)/glibc-$(GARVERSION)
+WORKBLD = $(WORKSRC)_build
+
+DEPENDS = lang/c kernel/linux-libc-headers
+
+CONFIGURE_SCRIPTS = custom
+INSTALL_SCRIPTS   = custom
+
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-sanity-checks \
+	--with-binutils=$(build_DESTDIR)$(build_libdir) \
+	--without-cvs \
+	--enable-kernel=$(KERNEL_VERSION) \
+	--with-headers=$(DESTDIR)$(includedir) 
+INSTALL_ARGS    = \
+	cross-compiling=yes \
+	install_root=$(DESTDIR)
+
+GAR_EXTRA_CONF += devel/glibc/package-api.mk kernel/linux/package-api.mk
+
+include ../../gar.mk
+
+CONFIGURE_ENV := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
+BUILD_ENV     := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
+INSTALL_ENV   := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
+
+pre-configure:
+	@mkdir -p $(WORKBLD)
+	@rm -rf $(WORKBLD)/configparms
+	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
+	@$(MAKECOOKIE)
+
+configure-custom:
+	@mkdir -p $(WORKBLD)
+	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
+
+install-custom:
+	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $(WORKBLD) $(INSTALL_ARGS) install-headers
+	@$(MAKECOOKIE)
+
+post-install:
+	@mkdir -p $(DESTDIR)$(includedir)/gnu
+	@mkdir -p $(DESTDIR)$(includedir)/bits
+	@touch $(DESTDIR)$(includedir)/gnu/stubs.h
+	@cp $(WORKBLD)/bits/stdio_lim.h $(DESTDIR)$(includedir)/bits
+	@cp $(WORKSRC)/nptl/sysdeps/pthread/pthread.h $(DESTDIR)$(includedir)
+	@cp $(WORKSRC)/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h $(DESTDIR)$(includedir)/bits
+	@$(MAKECOOKIE)

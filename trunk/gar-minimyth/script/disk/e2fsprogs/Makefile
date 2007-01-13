@@ -1,0 +1,30 @@
+GARNAME = e2fsprogs
+GARVERSION = 1.35
+CATEGORIES = disk
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/e2fsprogs/
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+PATCHFILES = $(GARNAME)-$(GARVERSION).patch
+LICENSE = GPL2
+
+DESCRIPTION =
+define BLURB
+endef
+
+DEPENDS = lang/c
+
+PATCHDIR = $(WORKSRC)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = custom
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+	--disable-rpath \
+	--enable-elf-shlibs \
+	--with-gnu-ld
+
+include ../../gar.mk
+
+install-custom:
+	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $(WORKSRC) $(INSTALL_ARGS) install install-libs
+	@$(MAKECOOKIE)

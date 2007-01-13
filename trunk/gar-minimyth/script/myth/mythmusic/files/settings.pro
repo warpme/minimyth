@@ -1,0 +1,12 @@
+#CONFIG += debug
+CONFIG += release
+
+PREFIX = @PREFIX@
+
+INCLUDEPATH *= @DESTDIR@@INCLUDEDIR@/mythtv
+
+DEFINES += _GNU_SOURCE
+DEFINES += PREFIX=\"$${PREFIX}\"
+release {
+        QMAKE_CXXFLAGS_RELEASE = @CFLAGS@
+}
