@@ -45,7 +45,11 @@ INSTALL_ARGS   = $(DEFAULT_ARGS)
 
 CONFIGURE_ENV  = KBUILD_VERBOSE=1
 BUILD_ENV      = KBUILD_VERBOSE=1
-INSTALL_ENV    = KBUILD_VERBOSE=1
+INSTALL_ENV    = KBUILD_VERBOSE=1 IUSER="$(IUSER)" IGROUP="$(IGROUP)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
+
+IUSER  := `id -un`
+IGROUP := `id -gn`
+
