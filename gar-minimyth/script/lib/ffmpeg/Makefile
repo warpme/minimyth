@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 5457
+GARVERSION = 6412
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/ffmpeg/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -17,21 +17,25 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+
 CONFIGURE_ARGS = \
 	--prefix=$(prefix) \
 	--libdir=$(libdir) \
+	--shlibdir=$(libdir) \
 	--incdir=$(includedir)/ffmpeg \
 	--mandir=$(mandir) \
 	--enable-static \
 	--enable-shared \
 	--enable-pthreads \
 	--enable-gpl \
+	--cross-compile \
 	--cross-prefix=$(compiler_prefix) \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LD_FLAGS)" \
 	--cpu=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
+	--disable-armv5te \
 	--disable-iwmmxt \
 	--disable-altivec \
 	--disable-audio-oss \
@@ -41,10 +45,10 @@ CONFIGURE_ARGS = \
 	--disable-bktr \
 	--disable-dv1394 \
 	--disable-network \
-	--disable-lzo \
 	--disable-vhook \
 	--disable-debug \
 	--disable-mpegaudio-hp \
+	--disable-protocols \
 	--disable-ffserver \
 	--disable-ffplay
 INSTALL_ARGS   = \

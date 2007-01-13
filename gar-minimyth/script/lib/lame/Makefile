@@ -1,5 +1,5 @@
 GARNAME = lame
-GARVERSION = 3.96.1
+GARVERSION = 3.97
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
@@ -32,10 +32,11 @@ extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
-post-patch:
-	@cd $(WORKSRC) ; aclocal
-	@cd $(WORKSRC) ; libtoolize --copy --force
-	@cd $(WORKSRC) ; autoconf
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@#cd $(WORKSRC) ; aclocal
+	@#cd $(WORKSRC) ; libtoolize --copy --force
+	@#cd $(WORKSRC) ; autoconf
 	@$(MAKECOOKIE)
 
 post-install:
