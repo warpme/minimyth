@@ -16,20 +16,6 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-DEFAULT_ARGS   = \
-	HOSTCC="$(build_CC)" \
-	HOSTCXX="$(build_CXX)" \
-	HOSTCFLAGS="$(build_CFLAGS)" \
-	HOSTCXXFLAGS="$(build_CXXFLAGS)" \
-	AS="$(AS)" \
-	LD="$(LD)" \
-	CC="$(CC)" \
-	CPP="$(CPP)" \
-	AR="$(AR)" \
-	NM="$(NM)" \
-	STRIP="$(STRIP)" \
-	OBJCOPY="$(OBJCOPY)" \
-	OBJDUMP="$(OBJDUMP)"
 CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-gnu-ld \
 	--with-cross="$(compiler_prefix)" \
@@ -41,12 +27,12 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-sequencer=yes \
 	--with-oss=yes \
 	--with-cards="via82xx"
-BUILD_ARGS     = $(DEFAULT_ARGS)
-INSTALL_ARGS   = $(DEFAULT_ARGS)
+BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
+INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 
-CONFIGURE_ENV  = KBUILD_VERBOSE=1
-BUILD_ENV      = KBUILD_VERBOSE=1
-INSTALL_ENV    = KBUILD_VERBOSE=1 IUSER="$(IUSER)" IGROUP="$(IGROUP)"
+CONFIGURE_ENV = $(KERNEL_MAKE_ENV)
+BUILD_ENV     = $(KERNEL_MAKE_ENV)
+INSTALL_ENV   = $(KERNEL_MAKE_ENV) IUSER="$(IUSER)" IGROUP="$(IGROUP)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
