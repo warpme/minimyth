@@ -1,0 +1,51 @@
+diff -Naur mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.18-new/mythmusic/mythmusic/playlist.cpp
+--- mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp	2005-02-23 12:41:08.000000000 -0800
++++ mythplugins-0.18-new/mythmusic/mythmusic/playlist.cpp	2005-04-30 16:08:42.746330569 -0700
+@@ -329,11 +329,9 @@
+     MSqlQuery query(MSqlQuery::InitCon());
+     query.prepare("SELECT playlistid FROM musicplaylist "
+                   "WHERE name != :DEFAULT  "
+-                  "AND name != :BACKUP  "
+-                  "AND hostname = :HOST ORDER BY playlistid ;");
++                  "AND name != :BACKUP ORDER BY playlistid ;");
+     query.bindValue(":DEFAULT", "default_playlist_storage");
+     query.bindValue(":BACKUP", "backup_playlist_storage"); 
+-    query.bindValue(":HOST", my_host);
+ 
+     if (query.exec() && query.isActive() && query.size() > 0)
+     {
+@@ -470,10 +468,8 @@
+    
+     MSqlQuery query(MSqlQuery::InitCon());
+     query.prepare("SELECT playlistid, name, songlist FROM "
+-                  "musicplaylist WHERE name = :NAME AND "
+-                  "hostname = :HOST ;");
++                  "musicplaylist WHERE name = :NAME ;");
+     query.bindValue(":NAME", a_name);
+-    query.bindValue(":HOST", a_host);
+ 
+     if (query.exec() && query.size() > 0)
+     {
+@@ -500,10 +496,8 @@
+ {
+     MSqlQuery query(MSqlQuery::InitCon());
+     query.prepare("SELECT playlistid, name, songlist FROM "
+-                  "musicplaylist WHERE playlistid = :ID AND "
+-                  "hostname = :HOST ;");
++                  "musicplaylist WHERE playlistid = :ID ;");
+     query.bindValue(":ID", id);
+-    query.bindValue(":HOST", a_host);
+ 
+     query.exec();
+ 
+@@ -729,9 +723,8 @@
+     query.exec();
+ 
+     query.prepare("SELECT playlistid FROM musicplaylist WHERE "
+-                  "name = :NAME AND hostname = :HOST ;");
++                  "name = :NAME ;");
+     query.bindValue(":NAME", name.utf8());
+-    query.bindValue(":HOST", a_host);
+ 
+     if (query.exec() && query.isActive() && query.size() > 0)
+     {
