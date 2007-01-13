@@ -1,5 +1,5 @@
 GARNAME = linux-libc-headers
-GARVERSION = 2.6.10.0
+GARVERSION = 2.6.12.0
 CATEGORIES = kernel
 MASTER_SITES = http://ep09.pld-linux.org/~mmazur/linux-libc-headers/
 DISTFILES = $(DISTNAME).tar.bz2

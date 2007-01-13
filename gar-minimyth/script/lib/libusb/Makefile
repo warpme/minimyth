@@ -10,23 +10,16 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c X11/X11 qt/qt
+DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--disable-debug \
 	--disable-build-docs \
-	--with-gnu-ld \
-	--with-qt \
-	--with-x \
-	--with-qt-dir=$(DESTDIR)$(qtprefix) \
-	--with-qt-includes=$(DESTDIR)$(qtincludedir) \
-	--with-qt-libraries=$(DESTDIR)$(qtlibdir)
+	--with-gnu-ld
 
 include ../../gar.mk
 
