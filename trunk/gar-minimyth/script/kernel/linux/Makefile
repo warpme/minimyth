@@ -5,7 +5,7 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-cifs-1.39a.patch
+PATCHFILES = $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-cifs-1.39a.patch $(DISTNAME)-asus_acpi_hack.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

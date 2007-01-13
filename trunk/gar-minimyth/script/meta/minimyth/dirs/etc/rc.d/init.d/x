@@ -50,17 +50,26 @@ start() {
             ;;
     esac
 
-    # Hacks to deal with the fact that the proprietary NVIDIA drivers
-    # are not compatible with the Open Source drivers.
+    # Hacks to deal with the fact that the proprietary NVIDIA GL libraries
+    # conflict with the Open Source Mesa GL libraries.
     case "${MM_X_DRIVER}" in
         nvidia)
+            # Do not include dri module.
             MM_X_MODULE_DRI=""
+            # Include path to proprietary NVIDIA modules.
             MM_X_MODULEPATH="ModulePath	\"/usr/X11R6/lib-nvidia/modules\""
+            # Include path to proprietary NVIDIA libraries.
             LIB_PATHS=`cat /etc/ld.so.conf`
+            LIB_PATHS="/usr/X11R6/lib-${MM_X_DRIVER} ${LIB_PATHS}"
             echo -n > /etc/ld.so.conf
             for LIB_PATH in ${LIB_PATHS} ; do
                 echo "${LIB_PATH}" >> /etc/ld.so.conf
             done
+            # Remove Open Source libraries that conflict with NVIDIA libraries.
+            rm -f /usr/X11R6/lib/libGL.*
+            rm -f /usr/X11R6/lib/modules/extensions/libGLcore.*
+            rm -f /usr/X11R6/lib/modules/extensions/libglx.*
+            # Rebuild library cache.
             ldconfig
             ;;
         via)
@@ -80,12 +89,10 @@ start() {
     sed -i "s%@MM_X_MODULE_DRI@%${MM_X_MODULE_DRI}%"   /etc/X11/xorg.conf
     sed -i "s%@MM_X_MODULEPATH@%${MM_X_MODULEPATH}%"   /etc/X11/xorg.conf
 
-    # Modify library path so that chipset dependent libraries
-    # override chipset independent libraries.
-    # This is needed because the 
-    LIB_PATHS="/usr/X11R6/lib-${MM_X_DRIVER} ${LIB_PATHS}"
+    # Turn off splash screen.
+    mm_splash_halt
 
-    # Start X
+    # Start X.
     if [ "${MM_X_ENABLED}" = "yes" ] ; then
         xinit &
     fi
