@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = myth
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-gant.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-gant.patch $(GARNAME)-fadeaway.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -39,8 +39,6 @@ CONFIGURE_ARGS = \
 	--disable-audio-arts \
 	--disable-audio-jack \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
-	--enable-frontend \
-	--enable-backend \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
