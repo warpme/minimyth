@@ -1,8 +1,7 @@
 GARNAME = libdrm
 GARVERSION = 2.0
 CATEGORIES = xorg
-MASTER_SITES  = http://dri.freedesktop.org/libdrm/
-MASTER_SITES += cvs://anonymous@dri.freedesktop.org/cvs/dri/
+MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = 
 
@@ -29,13 +28,6 @@ cvs//%$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
 	@cd $(PARTIALDIR); tar -zcf $(DISTNAME).tar.gz $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@$(MAKECOOKIE)
-
-disabled-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-post-patch:
-	@cd $(WORKSRC) ; autoreconf --verbose --force
 	@$(MAKECOOKIE)
 
 post-install:

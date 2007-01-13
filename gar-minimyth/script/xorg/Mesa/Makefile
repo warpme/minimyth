@@ -3,7 +3,7 @@ GARVERSION = 6.4.1
 CATEGORIES = xorg
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
+PATCHFILES = $(DISTNAME)-bugfixes.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
 LICENSE = 
 
 DESCRIPTION = 
@@ -13,11 +13,20 @@ endef
 DEPENDS   = lang/c lib/expat xorg/libdrm xorg/xproto xorg/libX11 xorg/glproto xorg/xf86vidmodeproto xorg/libXext xorg/libXxf86vm xorg/libXmu xorg/libXi
 BUILDDEPS = xorg/makedepend
 
-MESA_CONFIG = linux-dri-x86
+MESA_CONFIG = $(strip \
+	$(if $(filter i386  ,$(GARCH_FAMILY)),linux-dri-x86   ) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),linux-dri-x86-64))
+MESA_LIBDIR = $(strip \
+	$(if $(filter i386  ,$(GARCH_FAMILY)),lib  ) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),lib64))
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile $(WORKSRC)/progs/xdemos/Makefile
 INSTALL_SCRIPTS   = custom source
+
+BUILD_ARGS = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
 
@@ -37,16 +46,16 @@ install-custom:
 	@cp -fd $(WORKSRC)/src/glw/*.h    $(DESTDIR)$(x11includedir)/GL/
 	@mkdir -p $(DESTDIR)$(x11libdir)
 	@rm -f $(DESTDIR)$(x11libdir)/libGL.* ; \
-		cp -fd $(WORKSRC)/lib/libGL.* $(DESTDIR)$(x11libdir)/
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGL.* $(DESTDIR)$(x11libdir)/
 	@rm -f $(DESTDIR)$(x11libdir)/libGLU.* ; \
-		cp -fd $(WORKSRC)/lib/libGLU.* $(DESTDIR)$(x11libdir)/
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLU.* $(DESTDIR)$(x11libdir)/
 	@rm -f $(DESTDIR)$(x11libdir)/libglut.* ; \
-		cp -fd $(WORKSRC)/lib/libglut.* $(DESTDIR)$(x11libdir)/
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libglut.* $(DESTDIR)$(x11libdir)/
 	@rm -f $(DESTDIR)$(x11libdir)/libGLw.* ; \
-		cp -fd $(WORKSRC)/lib/libGLw.* $(DESTDIR)$(x11libdir)/
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(x11libdir)/
 	@mkdir -p $(DESTDIR)$(x11libdir)/xorg/modules/dri
 	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/dri/unichrome_dri.* ; \
-		cp -fd $(WORKSRC)/lib/unichrome_dri.* $(DESTDIR)$(x11libdir)/xorg/modules/dri/
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/unichrome_dri.* $(DESTDIR)$(x11libdir)/xorg/modules/dri/
 	@mkdir -p $(DESTDIR)$(x11bindir)
 	@rm -f $(DESTDIR)$(x11bindir)/glxgears ; \
 		cp -fd $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(x11bindir)/
