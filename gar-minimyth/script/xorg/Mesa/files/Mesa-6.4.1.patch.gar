@@ -6,7 +6,7 @@ diff -Naur Mesa-6.4.1-old/configs/linux Mesa-6.4.1-new/configs/linux
  	-D_BSD_SOURCE -DPTHREADS -DUSE_XSHM
  
 -X11_INCLUDES = -I/usr/X11R6/include
-+X11_INCLUDES = -I@GAR_DESTDIR@@GAR_x11includedir@
++X11_INCLUDES = -I@GAR_DESTDIR@@GAR_includedir@
  
  CFLAGS   = $(WARN_FLAGS) $(OPT_FLAGS) $(PIC_FLAGS) $(ARCH_FLAGS) $(DEFINES) \
  	$(ASM_FLAGS) $(X11_INCLUDES) -std=c99 -ffast-math 
@@ -27,7 +27,7 @@ diff -Naur Mesa-6.4.1-old/configs/linux-dri Mesa-6.4.1-new/configs/linux-dri
  	-DGLX_DIRECT_RENDERING -DHAVE_ALIAS
  
 -X11_INCLUDES = -I/usr/X11R6/include
-+X11_INCLUDES = -I@GAR_DESTDIR@@GAR_x11includedir@
++X11_INCLUDES = -I@GAR_DESTDIR@@GAR_includedir@
  
  CFLAGS   = $(WARN_FLAGS) $(OPT_FLAGS) $(PIC_FLAGS) $(ARCH_FLAGS) $(DEFINES) \
  	$(ASM_FLAGS) -std=c99 -ffast-math 
@@ -36,7 +36,7 @@ diff -Naur Mesa-6.4.1-old/configs/linux-dri Mesa-6.4.1-new/configs/linux-dri
  
  # Library/program dependencies
 -EXTRA_LIB_PATH=-L/usr/X11R6/lib
-+EXTRA_LIB_PATH=-L@GAR_DESTDIR@@GAR_x11libdir@
++EXTRA_LIB_PATH=-L@GAR_DESTDIR@@GAR_libdir@
  
  LIBDRM_LIB = `pkg-config --libs libdrm` -ldrm
  DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
@@ -61,7 +61,7 @@ diff -Naur Mesa-6.4.1-old/src/glw/Makefile Mesa-6.4.1-new/src/glw/Makefile
  TINY = 0
  
 -INCDIRS = -I$(TOP)/include -I/usr/include/Motif1.2 -I/usr/contrib/X11R6/include -I/usr/X11R6/include
-+INCDIRS = -I$(TOP)/include -I@GAR_DESTDIR@@GAR_x11includedir@
++INCDIRS = -I$(TOP)/include -I@GAR_DESTDIR@@GAR_includedir@
  
  
  OBJECTS = $(GLW_SOURCES:.c=.o)
@@ -73,7 +73,7 @@ diff -Naur Mesa-6.4.1-old/src/glx/x11/dri_glx.c Mesa-6.4.1-new/src/glx/x11/dri_g
  #ifndef DEFAULT_DRIVER_DIR
  /* this is normally defined in the Imakefile */
 -#define DEFAULT_DRIVER_DIR "/usr/X11R6/lib/modules/dri"
-+#define DEFAULT_DRIVER_DIR "@GAR_x11libdir@/xorg/modules/dri"
++#define DEFAULT_DRIVER_DIR "@GAR_libdir@/xorg/modules/dri"
  #endif
  
  static __DRIdriver *Drivers = NULL;
@@ -85,7 +85,7 @@ diff -Naur Mesa-6.4.1-old/src/mesa/drivers/dri/Makefile.template Mesa-6.4.1-new/
  
  install: $(LIBNAME)
 -	install $(LIBNAME) /usr/X11R6/lib/modules/dri/$(LIBNAME)
-+	install $(LIBNAME) @GAR_DESTDIR@@GAR_x11libdir@/xorg/modules/dri/$(LIBNAME)
++	install $(LIBNAME) @GAR_DESTDIR@@GAR_libdir@/xorg/modules/dri/$(LIBNAME)
  
  include depend
 diff -Naur Mesa-6.4.1-old/src/mesa/Makefile Mesa-6.4.1-new/src/mesa/Makefile

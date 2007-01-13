@@ -20,9 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri \
 	--with-gnu-ld
 
-GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../../xorg/xorg.mk
 
 svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
@@ -42,13 +40,13 @@ post-patch:
 
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(x11includedir)/xorg/dri.h | sed -e 's%[/.]%_%g'`=yes"       >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(x11includedir)/xorg/dristruct.h | sed -e 's%[/.]%_%g'`=yes" >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(x11includedir)/xorg/sarea.h | sed -e 's%[/.]%_%g'`=yes"     >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(includedir)/xorg/dri.h | sed -e 's%[/.]%_%g'`=yes"       >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(includedir)/xorg/dristruct.h | sed -e 's%[/.]%_%g'`=yes" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(includedir)/xorg/sarea.h | sed -e 's%[/.]%_%g'`=yes"     >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/drivers/via_drv.la
-	@rm -f $(DESTDIR)$(x11libdir)/libviaXvMC.la
-	@rm -f $(DESTDIR)$(x11libdir)/libviaXvMCPro.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/via_drv.la
+	@rm -f $(DESTDIR)$(libdir)/libviaXvMC.la
+	@rm -f $(DESTDIR)$(libdir)/libviaXvMCPro.la
 	@$(MAKECOOKIE)

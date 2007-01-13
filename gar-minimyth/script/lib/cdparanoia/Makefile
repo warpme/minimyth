@@ -16,11 +16,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-x_CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --target=$(GARTARGET) \
-
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 BUILD_ARGS     = \
 	CPPFLAGS="$(CPPFLAGS)" \
 	FLAGS="$(CFLAGS)" \

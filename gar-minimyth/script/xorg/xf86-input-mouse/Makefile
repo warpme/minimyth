@@ -21,13 +21,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
 
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(x11prefix)/share/X11/sgml/defs.ent | sed -e 's%[/.]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[/.]%_%g'`=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/input/mouse_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/mouse_drv.la
 	@$(MAKECOOKIE)

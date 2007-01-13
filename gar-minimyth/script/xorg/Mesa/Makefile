@@ -31,36 +31,36 @@ BUILD_ARGS = \
 include ../../gar.mk
 
 configure-custom:
-	@echo "CC = $(CC)"                                            >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "CXX = $(CXX)"                                          >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "OPT_FLAGS = $(CFLAGS)"                                 >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "MKDEP = $(build_DESTDIR)$(build_x11bindir)/makedepend" >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "DRI_DIRS = unichrome"                                  >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "DRIVER_DIRS = dri"                                     >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "MKDEP = $(build_DESTDIR)$(build_bindir)/makedepend" >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "DRI_DIRS = unichrome"                               >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "DRIVER_DIRS = dri"                                  >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@ln -sf $(MESA_CONFIG) $(WORKSRC)/configs/current
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p $(DESTDIR)$(x11includedir)/GL
-	@cp -fd $(WORKSRC)/include/GL/*.h $(DESTDIR)$(x11includedir)/GL/
-	@cp -fd $(WORKSRC)/src/glw/*.h    $(DESTDIR)$(x11includedir)/GL/
-	@mkdir -p $(DESTDIR)$(x11libdir)
-	@rm -f $(DESTDIR)$(x11libdir)/libGL.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGL.* $(DESTDIR)$(x11libdir)/
-	@rm -f $(DESTDIR)$(x11libdir)/libGLU.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLU.* $(DESTDIR)$(x11libdir)/
-	@rm -f $(DESTDIR)$(x11libdir)/libglut.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libglut.* $(DESTDIR)$(x11libdir)/
-	@rm -f $(DESTDIR)$(x11libdir)/libGLw.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(x11libdir)/
-	@mkdir -p $(DESTDIR)$(x11libdir)/xorg/modules/dri
-	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/dri/unichrome_dri.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/unichrome_dri.* $(DESTDIR)$(x11libdir)/xorg/modules/dri/
-	@mkdir -p $(DESTDIR)$(x11bindir)
-	@rm -f $(DESTDIR)$(x11bindir)/glxgears ; \
-		cp -fd $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(x11bindir)/
-	@rm -f $(DESTDIR)$(x11bindir)/glxinfo ; \
-		cp -fd $(WORKSRC)/progs/xdemos/glxinfo $(DESTDIR)$(x11bindir)/
+	@mkdir -p $(DESTDIR)$(includedir)/GL
+	@cp -fd $(WORKSRC)/include/GL/*.h $(DESTDIR)$(includedir)/GL/
+	@cp -fd $(WORKSRC)/src/glw/*.h    $(DESTDIR)$(includedir)/GL/
+	@mkdir -p $(DESTDIR)$(libdir)
+	@rm -f $(DESTDIR)$(libdir)/libGL.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGL.* $(DESTDIR)$(libdir)/
+	@rm -f $(DESTDIR)$(libdir)/libGLU.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLU.* $(DESTDIR)$(libdir)/
+	@rm -f $(DESTDIR)$(libdir)/libglut.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libglut.* $(DESTDIR)$(libdir)/
+	@rm -f $(DESTDIR)$(libdir)/libGLw.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(libdir)/
+	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/dri
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/unichrome_dri.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/unichrome_dri.* $(DESTDIR)$(libdir)/xorg/modules/dri/
+	@mkdir -p $(DESTDIR)$(bindir)
+	@rm -f $(DESTDIR)$(bindir)/glxgears ; \
+		cp -fd $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(bindir)/
+	@rm -f $(DESTDIR)$(bindir)/glxinfo ; \
+		cp -fd $(WORKSRC)/progs/xdemos/glxinfo $(DESTDIR)$(bindir)/
 	@$(MAKECOOKIE)
 
 install-source:

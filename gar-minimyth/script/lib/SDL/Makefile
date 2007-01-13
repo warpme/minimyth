@@ -1,6 +1,6 @@
 GARNAME = SDL
 GARVERSION = 1.2.9
-CATEGORIES = X11
+CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME).patch.gar
@@ -18,8 +18,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--x-includes=$(DESTDIR)$(includedir) \
+	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-debug \
 	--disable-strict-ansi \
 	--enable-audio \

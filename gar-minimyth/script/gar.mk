@@ -43,12 +43,6 @@ $(DESTIMG)_qtlibdir ?= $(main_qtlibdir)
 $(DESTIMG)_qtincludedir ?= $(main_qtincludedir)
 $(DESTIMG)_qtbindir ?= $(main_qtbindir)
 $(DESTIMG)_qtprefix ?= $(main_qtprefix)
-$(DESTIMG)_x11sysconfdir ?= $(main_x11sysconfdir)
-$(DESTIMG)_x11mandir ?= $(main_x11mandir)
-$(DESTIMG)_x11libdir ?= $(main_x11libdir)
-$(DESTIMG)_x11includedir ?= $(main_x11includedir)
-$(DESTIMG)_x11bindir ?= $(main_x11bindir)
-$(DESTIMG)_x11prefix ?= $(main_x11prefix)
 $(DESTIMG)_exec_prefix ?= $(main_exec_prefix)
 $(DESTIMG)_ebindir ?= $(main_ebindir)
 $(DESTIMG)_bindir ?= $(main_bindir)
@@ -106,12 +100,6 @@ qtlibdir = $($(DESTIMG)_qtlibdir)
 qtincludedir = $($(DESTIMG)_qtincludedir)
 qtbindir = $($(DESTIMG)_qtbindir)
 qtprefix = $($(DESTIMG)_qtprefix)
-x11sysconfdir = $($(DESTIMG)_x11sysconfdir)
-x11mandir = $($(DESTIMG)_x11mandir)
-x11libdir = $($(DESTIMG)_x11libdir)
-x11includedir = $($(DESTIMG)_x11includedir)
-x11bindir = $($(DESTIMG)_x11bindir)
-x11prefix = $($(DESTIMG)_x11prefix)
 exec_prefix = $($(DESTIMG)_exec_prefix)
 ebindir = $($(DESTIMG)_ebindir)
 bindir = $($(DESTIMG)_bindir)
@@ -185,9 +173,9 @@ ALLFILES ?= $(DISTFILES) $(PATCHFILES)
 STAGINGDIR ?= $(build_DESTDIR)$(build_prefix)/staging
 
 # allow us to use programs we just built
-PATH := $(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_x11bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)
+PATH := $(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)
 # this causes pain for all involved once glibc is built.
-LD_LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_x11libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql
+LD_LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql
 # or at least it did before we had DESTDIR and fully-munged
 # builddeps.  The following may be more of a hindrance than a
 # help nowadays:

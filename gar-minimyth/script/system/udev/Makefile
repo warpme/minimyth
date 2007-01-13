@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 083
+GARVERSION = 084
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,7 +18,7 @@ DEFAULT_ARGS = \
 	V=true \
 	INSTALL="install" \
 	HOSTCC="$(build_CC)" \
-	CROSS="$(compiler_prefix)" \
+	CROSS_COMPILE="$(compiler_prefix)" \
 	CC="$(CC)" \
 	LD="$(CC)" \
 	AR="$(AR)" \

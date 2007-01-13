@@ -20,8 +20,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--x-includes=$(DESTDIR)$(includedir) \
+	--x-libraries=$(DESTDIR)$(libdir) \
 	--with-gnu-ld \
 	--with-x \
 	--without-motif \

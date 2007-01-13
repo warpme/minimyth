@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg X11/freetype X11/lesstif
+DEPENDS = lang/c xorg/xorg xorg/freetype X11/lesstif
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
@@ -20,12 +20,12 @@ DEFAULT_ARGS = \
 	CC="$(CC)" \
 	CFLAGS="$(CFLAGS)" \
 	DESTDIR="$(DESTDIR)" \
-	XROOT="$(x11prefix)" \
+	XROOT="$(prefix)" \
 	BINDIR="$(DESTDIR)$(bindir)" \
-	INCLUDEDIR="$(DESTDIR)$(x11includedir)" \
-	LIBDIR="$(DESTDIR)$(x11libdir)" \
+	INCLUDEDIR="$(DESTDIR)$(includedir)" \
+	LIBDIR="$(DESTDIR)$(libdir)" \
 	MANDIR="$(DESTDIR)$(mandir)/man1" \
-	CFGDIR="$(DESTDIR)$(x11sysconfdir)/aewm" \
+	CFGDIR="$(DESTDIR)$(sysconfdir)/aewm" \
 	GTKPROGS=""
 BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)

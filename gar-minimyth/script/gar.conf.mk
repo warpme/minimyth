@@ -30,12 +30,6 @@ main_rootdir ?= /
 # Warning: any changes to these paths will cause certain packages to break.
 main_prefix = $(main_rootdir)/usr
 main_exec_prefix = $(main_rootdir)/usr
-main_x11prefix = $(main_rootdir)/usr/X11R6
-main_x11bindir = $(main_x11prefix)/bin
-main_x11includedir = $(main_x11prefix)/include
-main_x11libdir = $(main_x11prefix)/lib
-main_x11mandir = $(main_x11prefix)/man
-main_x11sysconfdir = $(main_sysconfdir)/X11
 main_qtprefix = $(main_libdir)/qt
 main_qtbindir = $(main_qtprefix)/bin
 main_qtincludedir = $(main_qtprefix)/include
@@ -65,12 +59,6 @@ build_rootdir ?= $(mm_HOME)/images/build
 # Warning: any changes to these paths will cause certain packages to break.
 build_prefix = $(build_rootdir)/usr
 build_exec_prefix = $(build_rootdir)/usr
-build_x11prefix = $(build_rootdir)/usr/X11R6
-build_x11bindir = $(build_x11prefix)/bin
-build_x11includedir = $(build_x11prefix)/include
-build_x11libdir = $(build_x11prefix)/lib
-build_x11mandir = $(build_x11prefix)/man
-build_x11sysconfdir = $(build_sysconfdir)/X11
 build_qtprefix = $(build_libdir)/qt
 build_qtbindir = $(build_qtprefix)/bin
 build_qtincludedir = $(build_qtprefix)/include
@@ -158,7 +146,7 @@ build_GARCH_FAMILY := $(strip \
 build_NODEPEND += kernel/linux-libc-headers devel/glibc
 
 # This is for foo-config chaos
-PKG_CONFIG_PATH = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig
+PKG_CONFIG_PATH = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig
 
 # Put these variables in the environment during the
 # configure build and install stages

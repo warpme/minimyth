@@ -44,9 +44,9 @@ build_GARCH_FAMILY='$(strip \\\
 main_GARCH_FAMILY='$(strip \\\
     $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(main_GARHOST)  | cut -d- -f1)),i386  ) \\\
     $(if $(filter x86_64 athlon64            ,$(shell echo $(main_GARHOST)  | cut -d- -f1)),x86_64))'
-_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_x11bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)'
-_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_x11libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
-_PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
+_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)'
+_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
+_PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
 
 # Replace current GAR files with clean GAR files.
 rm -f ${SCRIPT_DIR}/gar.mk      ; cp ${GAR_LNX_BBC_DIR}/gar.mk ${SCRIPT_DIR}
@@ -102,30 +102,6 @@ sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%qtbindir = $($(DESTIMG)_qtb
 sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_qtprefix = $(\1_libdir)/qt%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_qtprefix ?= $(main_qtprefix)\n&%g' ${SCRIPT_DIR}/gar.mk
 sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%qtprefix = $($(DESTIMG)_qtprefix)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11sysconfdir = $(\1_sysconfdir)/X11%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11sysconfdir ?= $(main_x11sysconfdir)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11sysconfdir = $($(DESTIMG)_x11sysconfdir)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11mandir = $(\1_x11prefix)/man%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11mandir ?= $(main_x11mandir)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11mandir = $($(DESTIMG)_x11mandir)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11libdir = $(\1_x11prefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11libdir ?= $(main_x11libdir)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11libdir = $($(DESTIMG)_x11libdir)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11includedir = $(\1_x11prefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11includedir ?= $(main_x11includedir)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11includedir = $($(DESTIMG)_x11includedir)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11bindir = $(\1_x11prefix)/bin%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11bindir ?= $(main_x11bindir)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11bindir = $($(DESTIMG)_x11bindir)\n&%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11prefix = $(\1_rootdir)/usr/X11R6%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11prefix ?= $(main_x11prefix)\n&%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11prefix = $($(DESTIMG)_x11prefix)\n&%g' ${SCRIPT_DIR}/gar.mk
 
 sed -i 's%^\(build\|main\)_libdir *=.*$%\1_elibdir = $(\1_rootdir)/lib\n&%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_libdir *?= *$(main_libdir)%$(DESTIMG)_elibdir ?= $(main_elibdir)\n&%g' ${SCRIPT_DIR}/gar.mk

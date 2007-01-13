@@ -10,7 +10,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = xorg/mkfontdir xorg/mkfontscale X11/fontconfig
+BUILDDEPS = xorg/mkfontdir xorg/mkfontscale xorg/fontconfig
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -20,4 +20,3 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
