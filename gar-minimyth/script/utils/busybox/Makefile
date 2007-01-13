@@ -4,7 +4,7 @@ CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-fixes-20060403.patch $(DISTNAME)-dhcp_options.patch
+PATCHFILES = $(DISTNAME)-fixes-20060406.patch $(DISTNAME)-dhcp_options.patch
 LICENSE = GPL2
 
 DESCRIPTION =
