@@ -231,8 +231,12 @@ mm-copy-libs:
 			source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
 			target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
 			if test ! -e $${target_lib} ; then \
-				cp -f  $${source_lib} $${target_lib} ; \
-				make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
+				if test -d $${source_lib} ; then \
+					cp -fa  $${source_lib} $${target_lib} ; \
+				else \
+					cp -f  $${source_lib} $${target_lib} ; \
+					make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
+				fi ; \
 			fi ; \
 		else \
 			echo "warning: library \"$${lib}\" not found." ; \

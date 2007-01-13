@@ -38,6 +38,7 @@ DEPENDS = \
 	net/webfs \
 	X11/X11 \
 	X11/x11vnc \
+	myth/xine-ui \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls)))
 BUILDDEPS = \
 	utils/util-linux
