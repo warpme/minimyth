@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 4.1.12
+GARVERSION = 4.1.13
 CATEGORIES = db
 MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
 MASTER_SITES += http://mysql.sd1.mirrors.redwire.net/Downloads/MySQL-4.1/
