@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 058
+GARVERSION = 063
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -37,8 +37,8 @@ DEFAULT_ARGS = \
 	initdir="$(initdir)" \
 	dev_ddir="$(dev_ddir)" \
 	udevdir="$(udevdir)"
-BUILD_ARGS   = $(DEFAULT_ARGS)
-INSTALL_ARGS = $(DEFAULT_ARGS)
+BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS=extras/run_directory/
+INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS=extras/run_directory/
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -61,6 +61,5 @@ pre-install:
 	@$(MAKECOOKIE)
 
 post-install:
-	@sed -i 's%\(.*SYMLINK="cdrom".*\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
-	@ln -sf .$(call DIRSTODOTS, $(hotplugdir))$(sbindir)/udevsend $(DESTDIR)$(hotplugdir)/10-udev.hotplug
+	@sed -i 's%\(.*SYMLINK+*="cdrom".*\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
 	@$(MAKECOOKIE)
