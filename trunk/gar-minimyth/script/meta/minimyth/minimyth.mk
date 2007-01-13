@@ -28,11 +28,31 @@ MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard               minimyth-remove-list),               minimyth-remove-list) \
 	$(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)))
 
-MM_BINS    := $(sort $(if $(MM_BIN_FILES),    $(shell cat $(MM_BIN_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_BIN_LIST))
-MM_LIBS    := $(sort $(if $(MM_LIB_FILES),    $(shell cat $(MM_LIB_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_LIB_LIST))
-MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_ETC_LIST))
-MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(mm_USER_SHARE_LIST))
-MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(mm_USER_REMOVE_LIST))
+MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	gdb \
+	strace \
+	xdpyinfo \
+	valgrind \
+	valgrind-listener \
+	cg_annotate \
+	callgrind_control \
+	callgrind_annotate \
+	))
+MM_LIB_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	valgrind \
+	))
+MM_ETC_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+MM_SHARE_DEBUG  := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+MM_REMOVE_DEBUG := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+
+MM_BINS    := $(sort $(if $(MM_BIN_FILES),    $(shell cat $(MM_BIN_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_BIN_DEBUG)    $(mm_USER_BIN_LIST))
+MM_LIBS    := $(sort $(if $(MM_LIB_FILES),    $(shell cat $(MM_LIB_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_LIB_DEBUG)    $(mm_USER_LIB_LIST))
+MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_ETC_DEBUG)    $(mm_USER_ETC_LIST))
+MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(MM_SHARE_DEBUG)  $(mm_USER_SHARE_LIST))
+MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
 
 bindirs := \
 	$(extras_sbindir) \
@@ -278,8 +298,10 @@ mm-%/copy-libs:
 	fi
 
 mm-strip:
-	@echo 'stripping binaries and shared libraries'
-	@make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/strip DESTIMG=$(DESTIMG)
+	@if test ! $(mm_DEBUG) == yes ; then \
+		echo 'stripping binaries and shared libraries' ; \
+		make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/strip DESTIMG=$(DESTIMG) ; \
+	fi
 
 mm-%/strip:
 	@if test ! -L $* ; then \

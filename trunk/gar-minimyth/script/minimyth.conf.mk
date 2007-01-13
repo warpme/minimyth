@@ -11,11 +11,19 @@ mm_VERSION_MYTH      ?= $(strip \
                             $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                          )
 mm_VERSION_MINIMYTH  ?= 14
-mm_VERSION_EXTRA     ?=
+mm_VERSION_EXTRA     ?= $(strip \
+                            $(if $(filter yes,$(mm_DEBUG)),-debug) \
+                         )
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
+# Indicates whether or not to build with debugging enabled.
+# Enabling debug makes MiniMyth much larger, resulting in files that are too
+# big for CRAMFS. As a result, when you enable debugging, you can only use the
+# NFS file system image.
+# Valid values for mm_DEBUG are 'yes' and 'no'.
+mm_DEBUG             ?= no
 # Lists the chipset families supported.
 # Valid values for mm_CHIPSETS are one or more of 'intel', 'nvidia' and 'via'.
 mm_CHIPSETS          ?= via
@@ -90,8 +98,9 @@ mm_CFLAGS            ?= $(strip \
                             $(if $(filter pentium-mmx ,$(mm_GARCH)),-Os             ) \
                             -fomit-frame-pointer                                      \
                             -ffast-math                                               \
-                            $(if $(filter i386  ,$(GARCH_FAMILY)),-m32)               \
-                            $(if $(filter x86_64,$(GARCH_FAMILY)),-m64)               \
+                            $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)            \
+                            $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)            \
+                            $(if $(filter yes,$(mm_DEBUG)),-g)                        \
                          )
 mm_CXXFLAGS          ?= $(mm_CFLAGS)
 mm_NAME              ?= minimyth-$(mm_VERSION)
