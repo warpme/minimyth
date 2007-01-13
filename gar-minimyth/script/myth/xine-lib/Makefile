@@ -1,8 +1,7 @@
 GARNAME = xine-lib
 GARVERSION = 1.1.0
 CATEGORIES = myth
-MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/xine/
-MASTER_SITES += http://cambuca.ldhs.cetuc.puc-rio.br/~miguel/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = 
