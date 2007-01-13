@@ -1,13 +1,13 @@
-diff -Naur unionfs-1.1.1-old/Makefile unionfs-1.1.1-new/Makefile
---- unionfs-1.1.1-old/Makefile	2005-10-25 17:50:19.000000000 -0700
-+++ unionfs-1.1.1-new/Makefile	2005-11-02 20:24:30.000000000 -0800
+diff -Naur unionfs-1.1.2-old/Makefile unionfs-1.1.2-new/Makefile
+--- unionfs-1.1.2-old/Makefile	2006-01-25 13:58:11.000000000 -0800
++++ unionfs-1.1.2-new/Makefile	2006-01-25 21:44:30.000000000 -0800
 @@ -8,6 +8,7 @@
  # This is where the make install target will put stuff
  PREFIX   = /usr/local
  MANDIR   = ${PREFIX}/man
 +SBINDIR  = ${PREFIX}/sbin
  MODPREFIX=
- VERSION  = 1.1.1
+ VERSION  = 1.1.2
  TAROPTS = czvf
 @@ -49,7 +50,7 @@
  	@echo ""
@@ -19,7 +19,7 @@ diff -Naur unionfs-1.1.1-old/Makefile unionfs-1.1.1-new/Makefile
  FRC:
  
 @@ -75,7 +76,7 @@
- 	ctags *.[ch]
+ 	ctags $^
  
  clean:
 -	-make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk clean
@@ -27,7 +27,7 @@ diff -Naur unionfs-1.1.1-old/Makefile unionfs-1.1.1-new/Makefile
  	rm -f ${unionfs-objs} ${obj-m} ${obj-m:.o=.ko} *.d .*.flags \#* *~
  	rm -f ${BINS} TAGS tags
  	rm -f unionfs-${VERSION}.tar${COMPEXT}
-@@ -86,10 +87,10 @@
+@@ -88,10 +89,10 @@
  PHONY. utils: ${BINS}
  
  install-utils: utils
@@ -42,10 +42,10 @@ diff -Naur unionfs-1.1.1-old/Makefile unionfs-1.1.1-new/Makefile
  	mkdir -p ${MANDIR}/man4
  	mkdir -p ${MANDIR}/man8
  	cp man/unionfs.4 ${MANDIR}/man4
-@@ -99,18 +100,16 @@
+@@ -101,18 +102,16 @@
  install-mod: unionfs.ko
- 	mkdir -p ${MODPREFIX}/${MODDIR}/kernel/fs
- 	cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs
+ 	mkdir -p ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs
+ 	cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs
 -	-/sbin/depmod -a
  
  install: install-utils install-mod

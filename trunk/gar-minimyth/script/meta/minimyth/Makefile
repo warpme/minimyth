@@ -18,7 +18,6 @@ DEPENDS = \
 	devel/gdb \
 	disk/hdparm \
 	system/lcdproc \
-	X11/libXvMCW \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/nvidia kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
@@ -40,7 +39,6 @@ DEPENDS = \
 	system/sysvinit \
 	system/udev \
 	X11/unichrome \
-	X11/unichrome_dri \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \
