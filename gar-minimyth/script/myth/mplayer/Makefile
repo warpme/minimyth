@@ -30,7 +30,6 @@ CONFIGURE_ARGS_DIR = \
 CONFIGURE_ARGS_OPTIONAL = \
 	--disable-mencoder \
 	--disable-gui \
-	--enable-linux-devfs \
 	--disable-termcap \
 	--disable-termios \
 	--enable-iconv \
