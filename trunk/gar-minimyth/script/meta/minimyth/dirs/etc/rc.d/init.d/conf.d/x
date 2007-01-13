@@ -79,40 +79,30 @@ conf_check_x() {
         mm_message_output err "error: MM_X_TV_ENABLED='${MM_X_TV_ENABLED}' is not valid."
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_TV_TYPE}"          && \
-       /usr/bin/test !    "${MM_X_TV_TYPE}" = "NTSC" && \
-       /usr/bin/test !    "${MM_X_TV_TYPE}" = "PAL"  ; then
-        mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid."
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_X_TV_OUTPUT}"               && \
-       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "Composite" && \
-       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "S-Video"   && \
-       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "SC"        && \
-       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "RGP"       && \
-       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "YCbCr"     ; then
-        mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid."
-        exit 1
-    fi
+    
+    # We do not check MM_X_TV_TYPE, MM_X_TV_OUTPUT or MM_X_TV_OVERSCAN in this routine,
+    # because they depend on the value of MM_X_DRIVER,
+    # which is configured when 'conf_default_x' is run.
+    # Thefore, we check them in the 'conf_default_x' routine.
 
     # Check X display variables.
     # Check MM_X_SYNC.
-    if /usr/bin/test ! -z "${MM_X_SYNC}"                                                          && \
-       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*$'             > /dev/null 2>&1 && \
-       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*-[0-9][0-9]*$' > /dev/null 2>&1 ; then
+    if /usr/bin/test ! -z "${MM_X_SYNC}"                                                                                      && \
+       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
+       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
         exit 1
     fi
     # Check MM_X_REFRESH.
-    if /usr/bin/test ! -z "${MM_X_REFRESH}"                                                       && \
-       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$'             > /dev/null 2>&1 && \
-       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*-[0-9][0-9]*$' > /dev/null 2>&1 ; then
+    if /usr/bin/test ! -z "${MM_X_REFRESH}"                                                                                   && \
+       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
+       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
         exit 1
     fi
     # Make sure that MM_X_REFRESH is not a range when MM_X_RESOLUTION is set.
-    if /usr/bin/test -n "${MM_X_RESOLUTION}"                                           && \
-        ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+    if /usr/bin/test -n "${MM_X_RESOLUTION}"                                                     && \
+        ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*(\.[0-9]*)\?$' > /dev/null 2>&1 ; then
         mm_message_output err "error: 'MM_X_REFRESH' cannot be set to a range when 'MM_X_RESOLUTION' is set."
         exit 1
     fi
@@ -176,6 +166,113 @@ conf_default_x() {
         fi
     fi
 
+    # Default and check MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN now that we know the X driver.
+    case ${MM_X_DRIVER} in
+        nvidia)
+            if /usr/bin/test -z "${MM_X_TV_TYPE}" ; then
+                MM_X_TV_TYPE='NTSC-M';
+            fi
+            if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-B"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-D"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-G"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-H"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-I"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-K1"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-M"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-N"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL-NC"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC-J"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC-M"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD480i"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD480p"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD720p"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD1080i" &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD1080p" &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD576i"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD576p"  ; then
+                mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+        via|via_pro)
+            if /usr/bin/test -z "${MM_X_TV_TYPE}" ; then
+                MM_X_TV_TYPE='NTSC';
+            fi
+            if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC" ; then
+                mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+        *)
+            if /usr/bin/test -z "${MM_X_TV_TYPE}" ; then
+                MM_X_TV_TYPE='NTSC';
+            fi
+            if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC" ; then
+                mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+    esac
+    case ${MM_X_DRIVER} in
+        nvidia)
+            if /usr/bin/test -z "${MM_X_TV_OUTPUT}" ; then
+                MM_X_TV_OUTPUT='COMPOSITE'
+            fi
+            if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "COMPOSITE" &&
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SVIDEO"    ; then
+                mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+        via|via_pro)
+            if /usr/bin/test -z "${MM_X_TV_OUTPUT}" ; then
+                MM_X_TV_OUTPUT='Composite'
+            fi
+            if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "Composite" && \
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "S-Video"   && \
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SC"        && \
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "RGP"       && \
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "YCbCr"     ; then
+                mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+        *)
+            if /usr/bin/test -z "${MM_X_TV_OUTPUT}" ; then
+                MM_X_TV_OUTPUT='Composite'
+            fi
+            if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "Composite" ; then
+                mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+    esac
+    case ${MM_X_DRIVER} in
+        nvidia)
+            if /usr/bin/test -z "${MM_X_TV_OVERSCAN}" ; then
+                MM_X_TV_OVERSCAN='0.0'
+            fi
+            if /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.[0-9]*\)\?$' > /dev/null 2>&1 ||
+               /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^1\(\.0*\)\?$'     > /dev/null 2>&1 ; then
+                :
+            else
+                mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+        *)
+            if /usr/bin/test -z "${MM_X_TV_OVERSCAN}" ; then
+                MM_X_TV_OVERSCAN='0.0'
+            fi
+            if /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.0*\)\?$' > /dev/null 2>&1 ; then
+                mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
+                exit 1
+            fi
+            ;;
+    esac
+
     # X application variables.
     if /usr/bin/test -z "${MM_X_ENABLED}"             ; then
         MM_X_ENABLED='yes'
@@ -200,27 +297,36 @@ conf_default_x() {
     if /usr/bin/test -z "${MM_X_TV_ENABLED}"          ; then
         MM_X_TV_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_TV_TYPE}"             ; then
-        MM_X_TV_TYPE='NTSC'
-    fi
-    if /usr/bin/test -z "${MM_X_TV_OUTPUT}"           ; then
-        MM_X_TV_OUTPUT='Composite'
+    if /usr/bin/test -z "${MM_X_TV_OVERSCAN}"         ; then
+        MM_X_TV_OVERSCAN='0.0'
     fi
 
     # X display variables.
     # X sync rate.
     if /usr/bin/test -z "${MM_X_SYNC}"                ; then
-        MM_X_SYNC='20-80'
+        MM_X_SYNC='20.0-80.0'
     fi
     # X refresh rate.
     if /usr/bin/test -z "${MM_X_REFRESH}"             ; then
         MM_X_REFRESH=
         case "${MM_X_TV_TYPE}" in
-            NTSC)
-                MM_X_REFRESH='60'
+            NTSC|NTSC-J|NTSC-M)
+                MM_X_REFRESH='60.0'
                 ;;
-            PAL)
-                MM_X_REFRESH='50'
+            PAL|PAL-B|PAL-D|PAL-G|PAL-H|PAL-I|PAL-K1|PAL-M|PAL-N|PAL-NC)
+                MM_X_REFRESH='50.0'
+                ;;
+            HD480i|HD1080i)
+                MM_X_REFRESH='60.0'
+                ;;
+            HD480p|HD720p|HD1080p)
+                MM_X_REFRESH='60.0'
+                ;;
+            HD576i)
+                MM_X_REFRESH='50.0'
+                ;;
+            HD576p)
+                MM_X_REFRESH='50.0'
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
@@ -330,13 +436,19 @@ conf_default_x() {
     fi
 
     # Convert single valued MM_X_SYNC values to small range.
-    if /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
-        MM_X_SYNC="$((${MM_X_SYNC}-1))-$((${MM_X_SYNC}+1))"
+    if /bin/echo ${MM_X_SYNC} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+        MM_X_SYNC_M=`/bin/echo ${MM_X_SYNC} | /usr/bin/cut -d . -f 1`
+        MM_X_SYNC_N=`/bin/echo ${MM_X_SYNC} | /usr/bin/cut -d . -f 2`
+        MM_X_SYNC_N=${MM_X_SYNC_N:-'0'}
+        MM_X_SYNC="$((${MM_X_SYNC_M}-1)).${MM_X_SYNC_N}-$((${MM_X_SYNC_M}+1)).${MM_X_SYNC_N}"
     fi
 
     # Convert single valued MM_X_REFRESH values to small range.
-    if /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
-        MM_X_REFRESH="$((${MM_X_REFRESH}-1))-$((${MM_X_REFRESH}+1))"
+    if /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+        MM_X_REFRESH_M=`/bin/echo ${MM_X_REFRESH} | /usr/bin/cut -d . -f 1`
+        MM_X_REFRESH_N=`/bin/echo ${MM_X_REFRESH} | /usr/bin/cut -d . -f 2`
+        MM_X_REFRESH_N=${MM_X_REFRESH_N:-'0'}
+        MM_X_REFRESH="$((${MM_X_REFRESH_M}-1)).${MM_X_REFRESH_N}-$((${MM_X_REFRESH_M}+1)).${MM_X_REFRESH_N}"
     fi
 
     MM_X_SYNC="HorizSync ${MM_X_SYNC}"
@@ -360,6 +472,7 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_TV_ENABLED          "${MM_X_TV_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_TV_TYPE             "${MM_X_TV_TYPE}"
     conf_variable_write "${conf_file}" MM_X_TV_OUTPUT           "${MM_X_TV_OUTPUT}"
+    conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN         "${MM_X_TV_OVERSCAN}"
 
     conf_variable_write "${conf_file}" MM_X_SYNC                "${MM_X_SYNC}"
     conf_variable_write "${conf_file}" MM_X_REFRESH             "${MM_X_REFRESH}"

@@ -10,6 +10,7 @@ build_system_bins = $(strip $(sort \
 	$(build_system_bins_flex) \
 	$(build_system_bins_gawk) \
 	$(build_system_bins_gcc) \
+	$(build_system_bins_git) \
 	$(build_system_bins_glibc) \
 	$(build_system_bins_grep) \
 	$(build_system_bins_gzip) \
@@ -101,6 +102,9 @@ build_system_bins_gawk = \
 build_system_bins_gcc = \
 	cpp \
 	gcc
+
+build_system_bins_git = \
+	git
 
 build_system_bins_glibc = \
 	getconf \

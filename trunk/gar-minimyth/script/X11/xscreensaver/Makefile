@@ -25,8 +25,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-hackdir=$(libexecdir)/xscreensaver \
 	--with-configdir=$(datadir)/xscreensaver/config \
 	--with-x-app-defaults=$(datadir)/X11/app-defaults \
-	--without-gtk \
-	--without-motif
+
+
+#  	--without-pam \
+#  	--without-kerberos \
+#  	--without-shadow \
+#  	--without-passwd-helper \
+#	--without-gtk \
+#	--without-motif
+
 BUILD_ARGS     = \
 	GTK_DATADIR=$(datadir)
 INSTALL_ARGS   = \
