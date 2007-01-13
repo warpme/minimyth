@@ -3,7 +3,7 @@ GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libusb.patch
+PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-mceusb.patch
 LICENSE = GPL2
 
 DESCRIPTION =
