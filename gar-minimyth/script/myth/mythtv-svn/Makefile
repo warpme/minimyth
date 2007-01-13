@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdvdnav lib/zlib db/mysql xorg/freetype xorg/xorg qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql xorg/freetype xorg/xorg qt/qt lirc/lirc
 
 PWD := $(shell pwd)
 
@@ -23,6 +23,7 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
 CONFIGURE_ARGS = \
 	--compile-type="release" \
 	--prefix="$(prefix)" \
+	--libdir-name="lib" \
 	--disable-ccache \
 	--disable-distcc \
 	--extra-cflags="$(CFLAGS)" \
@@ -38,7 +39,6 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	--enable-dvd \
 	--disable-valgrind \
 	--enable-frontend \
 	--enable-backend \
@@ -57,6 +57,7 @@ CONFIGURE_ARGS = \
 	--enable-xv \
 	--enable-xvmc \
 	--enable-xvmc-pro \
+	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx
@@ -71,7 +72,7 @@ BUILD_ENV     += \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  += \
+INSTALL_ENV   += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \

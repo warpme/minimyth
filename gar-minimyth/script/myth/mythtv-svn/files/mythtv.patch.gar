@@ -1,7 +1,7 @@
-diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
---- mythtv-8925-old/configure	2006-02-12 06:53:14.000000000 -0800
-+++ mythtv-8925-new/configure	2006-02-12 06:55:04.000000000 -0800
-@@ -870,26 +870,7 @@
+diff -Naur mythtv-9056-old/configure mythtv-9056-new/configure
+--- mythtv-9056-old/configure	2006-02-20 06:36:42.000000000 -0800
++++ mythtv-9056-new/configure	2006-02-20 06:42:52.000000000 -0800
+@@ -874,26 +874,7 @@
  
  has_library()
  {
@@ -24,21 +24,21 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
 -        done
 -    fi
 -
--    LIBPATHS="`echo $LIBPATHS /lib /usr/lib /usr/local/lib /usr/X11R6/lib | sed s/'\/ '/' '/g` "
-+    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_libdir@ | sed s/'\/ '/' '/g` "
+-    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ | sed s/'\/ '/' '/g` "
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-@@ -902,7 +883,7 @@
+@@ -906,7 +887,7 @@
  
  has_header()
  {
 -    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
-+    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_includedir@"
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@"
      INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
-     HPATHS="$HPATHS `echo $INCL | sed s/lib/include/g` "
+     HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
  
-@@ -1743,8 +1724,8 @@
+@@ -1749,8 +1730,8 @@
  
  freetype2=no
  if test "x$targetos" != "xBeOS" && test "$os2" != "yes"; then
@@ -49,7 +49,7 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
        freetype2=yes
      fi
    fi
-@@ -1761,8 +1742,8 @@
+@@ -1767,8 +1748,8 @@
  #
  #sdl_too_old=no
  #sdl=no
@@ -60,7 +60,7 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
  #if test "$_sdlversion" -lt 121 ; then
  #sdl_too_old=yes
  #else
-@@ -1852,9 +1833,9 @@
+@@ -1858,9 +1839,9 @@
  EOF
  
  audio_arts=no
@@ -73,7 +73,7 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
  audio_arts_cflags=`echo $audio_arts_tmp | sed "s/include\/artsc/include/g"`
  if $cc -o $TMPE $TMPC $audio_arts_cflags $audio_arts_libs > /dev/null 2>&1; then
  audio_arts=yes
-@@ -2093,10 +2074,10 @@
+@@ -2096,10 +2077,10 @@
  
  if test x"$direct_fb" = x"yes" ; then
      direct_fb="no"
@@ -87,7 +87,7 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
      fi
  fi
  
-@@ -2386,8 +2367,8 @@
+@@ -2389,8 +2370,8 @@
  fi
  if test "$freetype2" = "yes" ; then
    echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
@@ -98,7 +98,7 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
  fi
  if test "$sunmlib" = "yes" ; then
    echo "HAVE_MLIB=yes" >> $MYTH_CONFIG_MAK
-@@ -2404,8 +2385,8 @@
+@@ -2407,8 +2388,8 @@
  fi
  if test "$sdl" = "yes" ; then
    echo "CONFIG_SDL=yes" >> $MYTH_CONFIG_MAK
@@ -109,9 +109,9 @@ diff -Naur mythtv-8925-old/configure mythtv-8925-new/configure
  fi
  if test "$texi2html" = "yes"; then
    echo "BUILD_DOC=yes" >> $MYTH_CONFIG_MAK
-diff -Naur mythtv-8925-old/contrib/mythnotify/cidbcast/Makefile mythtv-8925-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-8925-old/contrib/mythnotify/cidbcast/Makefile	2006-02-12 06:53:13.000000000 -0800
-+++ mythtv-8925-new/contrib/mythnotify/cidbcast/Makefile	2006-02-12 06:55:04.000000000 -0800
+diff -Naur mythtv-9056-old/contrib/mythnotify/cidbcast/Makefile mythtv-9056-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-9056-old/contrib/mythnotify/cidbcast/Makefile	2006-02-20 06:36:39.000000000 -0800
++++ mythtv-9056-new/contrib/mythnotify/cidbcast/Makefile	2006-02-20 06:40:22.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -121,9 +121,9 @@ diff -Naur mythtv-8925-old/contrib/mythnotify/cidbcast/Makefile mythtv-8925-new/
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-8925-old/contrib/mythnotify/mythudprelay/Makefile mythtv-8925-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-8925-old/contrib/mythnotify/mythudprelay/Makefile	2006-02-12 06:53:13.000000000 -0800
-+++ mythtv-8925-new/contrib/mythnotify/mythudprelay/Makefile	2006-02-12 06:55:04.000000000 -0800
+diff -Naur mythtv-9056-old/contrib/mythnotify/mythudprelay/Makefile mythtv-9056-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-9056-old/contrib/mythnotify/mythudprelay/Makefile	2006-02-20 06:36:39.000000000 -0800
++++ mythtv-9056-new/contrib/mythnotify/mythudprelay/Makefile	2006-02-20 06:40:22.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -141,21 +141,21 @@ diff -Naur mythtv-8925-old/contrib/mythnotify/mythudprelay/Makefile mythtv-8925-
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-8925-old/programs/mythfrontend/mythfrontend.pro mythtv-8925-new/programs/mythfrontend/mythfrontend.pro
---- mythtv-8925-old/programs/mythfrontend/mythfrontend.pro	2006-02-12 06:53:09.000000000 -0800
-+++ mythtv-8925-new/programs/mythfrontend/mythfrontend.pro	2006-02-12 06:55:04.000000000 -0800
+diff -Naur mythtv-9056-old/programs/mythfrontend/mythfrontend.pro mythtv-9056-new/programs/mythfrontend/mythfrontend.pro
+--- mythtv-9056-old/programs/mythfrontend/mythfrontend.pro	2006-02-20 06:36:37.000000000 -0800
++++ mythtv-9056-new/programs/mythfrontend/mythfrontend.pro	2006-02-20 06:44:12.000000000 -0800
 @@ -35,7 +35,7 @@
  
  macx {
      RC_FILE += mythfrontend.icns
 -    LIBS += `freetype-config --libs`
 +    LIBS += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
- }
  
- # OpenBSD ldconfig expects different arguments than the Linux one
-diff -Naur mythtv-8925-old/programs/mythtranscode/Makefile.standlone mythtv-8925-new/programs/mythtranscode/Makefile.standlone
---- mythtv-8925-old/programs/mythtranscode/Makefile.standlone	2006-02-12 06:53:10.000000000 -0800
-+++ mythtv-8925-new/programs/mythtranscode/Makefile.standlone	2006-02-12 06:55:04.000000000 -0800
+     using_mac_accel : LIBS += -lobjc
+ 
+diff -Naur mythtv-9056-old/programs/mythtranscode/Makefile.standlone mythtv-9056-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-9056-old/programs/mythtranscode/Makefile.standlone	2006-02-20 06:36:38.000000000 -0800
++++ mythtv-9056-new/programs/mythtranscode/Makefile.standlone	2006-02-20 06:40:22.000000000 -0800
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -165,9 +165,9 @@ diff -Naur mythtv-8925-old/programs/mythtranscode/Makefile.standlone mythtv-8925
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-8925-old/settings.pro mythtv-8925-new/settings.pro
---- mythtv-8925-old/settings.pro	2006-02-12 06:53:14.000000000 -0800
-+++ mythtv-8925-new/settings.pro	2006-02-12 06:55:04.000000000 -0800
+diff -Naur mythtv-9056-old/settings.pro mythtv-9056-new/settings.pro
+--- mythtv-9056-old/settings.pro	2006-02-20 06:36:42.000000000 -0800
++++ mythtv-9056-new/settings.pro	2006-02-20 06:40:22.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
@@ -186,9 +186,9 @@ diff -Naur mythtv-8925-old/settings.pro mythtv-8925-new/settings.pro
  INCLUDEPATH += $$CONFIG_INCLUDEPATH
  
  # figure out compile flags based on qmake info
-diff -Naur mythtv-8925-old/setup/setup.pro mythtv-8925-new/setup/setup.pro
---- mythtv-8925-old/setup/setup.pro	2006-02-12 06:53:14.000000000 -0800
-+++ mythtv-8925-new/setup/setup.pro	2006-02-12 06:55:04.000000000 -0800
+diff -Naur mythtv-9056-old/setup/setup.pro mythtv-9056-new/setup/setup.pro
+--- mythtv-9056-old/setup/setup.pro	2006-02-20 06:36:41.000000000 -0800
++++ mythtv-9056-new/setup/setup.pro	2006-02-20 06:40:22.000000000 -0800
 @@ -15,7 +15,7 @@
  LIBS += -lmythavcodec-$$LIBVERSION -lmythavutil-$$LIBVERSION
  LIBS += -lmyth-$$LIBVERSION $$EXTRA_LIBS

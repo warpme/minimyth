@@ -19,12 +19,13 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)"
+
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  += \
+INSTALL_ENV   += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
