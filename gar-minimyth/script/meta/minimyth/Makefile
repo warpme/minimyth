@@ -47,6 +47,7 @@ DEPENDS = \
 	system/zoneinfo \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls)))
 BUILDDEPS = \
+	devel/fakeroot \
 	utils/util-linux
 
 BUILD_SCRIPTS   = custom
