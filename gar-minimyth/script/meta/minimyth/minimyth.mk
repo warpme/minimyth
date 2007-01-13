@@ -222,7 +222,10 @@ mm-make-conf:
 	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
 	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
 	@cp -r ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%'          $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
@@ -230,7 +233,7 @@ mm-make-conf:
 	@rm -rf $(mm_ROOTFSDIR)/root       ; cp -r ./dirs/root $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv        ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv/www/fs ; ln -sf / $(mm_ROOTFSDIR)/srv/www/fs
-	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
 

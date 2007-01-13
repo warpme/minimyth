@@ -4,7 +4,14 @@
 #-------------------------------------------------------------------------------
 
 # The version of MiniMyth.
-mm_VERSION           ?= 0.19.0.1
+mm_VERSION           ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
+mm_VERSION_MYTH      ?= $(strip \
+                            $(if $(filter stable18,$(mm_MYTH_VERSION)),0.18.1              ) \
+                            $(if $(filter stable19,$(mm_MYTH_VERSION)),0.19                ) \
+                            $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_SVN_VERSION)) \
+                         )
+mm_VERSION_MINIMYTH  ?= 11
+mm_VERSION_EXTRA     ?=
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -32,13 +39,13 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of xorg to use.
 # Value values are 'old' and 'new'.
-mm_XORG_VERSION      ?= new
+mm_XORG_VERSION      ?= old
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19' and 'svn'.
 mm_MYTH_VERSION      ?= stable19
-# Overrides the Myth SVN version built. If the version changes too much then
-# the patches may no longer work.
-mm_MYTH_SVN_VERSION  ?=
+# Myth SVN version built. If the version changes too much then the patches may
+# no longer work.
+mm_MYTH_SVN_VERSION  ?= 9056
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES     ?=
 # Lists additional binaries to include in the MiniMyth image
