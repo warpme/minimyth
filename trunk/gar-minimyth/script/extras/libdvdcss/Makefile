@@ -1,6 +1,6 @@
 GARNAME = libdvdcss
 GARVERSION = 1.2.8
-CATEGORIES = lib
+CATEGORIES = extras
 MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 LICENSE = GPL2
@@ -18,6 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
+include ../extras.mk
 
 post-patch:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
@@ -27,5 +28,5 @@ post-patch:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libdvdcss.la
+	@rm -f $(DESTDIR)$(extras_libdir)/libdvdcss.la
 	@$(MAKECOOKIE)

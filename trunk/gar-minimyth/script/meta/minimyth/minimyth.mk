@@ -1,12 +1,14 @@
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-MM_BINS   := $(sort $(shell cat minimyth-bin-list   | sed 's%[ \t]*\#.*%%'))
-MM_LIBS   := $(sort $(shell cat minimyth-lib-list   | sed 's%[ \t]*\#.*%%'))
-MM_ETCS   := $(sort $(shell cat minimyth-etc-list   | sed 's%[ \t]*\#.*%%'))
-MM_SHARES := $(sort $(shell cat minimyth-share-list | sed 's%[ \t]*\#.*%%'))
+MM_BINS   := $(sort $(shell cat minimyth-bin-list   ../../extras/extras-bin-list   | sed 's%[ \t]*\#.*%%'))
+MM_LIBS   := $(sort $(shell cat minimyth-lib-list   ../../extras/extras-lib-list   | sed 's%[ \t]*\#.*%%'))
+MM_ETCS   := $(sort $(shell cat minimyth-etc-list   ../../extras/extras-etc-list   | sed 's%[ \t]*\#.*%%'))
+MM_SHARES := $(sort $(shell cat minimyth-share-list ../../extras/extras-share-list | sed 's%[ \t]*\#.*%%'))
 
 bindirs := \
+	$(extras_sbindir) \
+	$(extras_bindir) \
 	$(esbindir) \
 	$(ebindir) \
 	$(sbindir) \
@@ -14,11 +16,18 @@ bindirs := \
 	$(x11bindir) \
 	$(qtbindir)
 libdirs := \
+	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
 	$(x11libdir) \
 	$(qtlibdir)
+etcdirs :=  \
+	$(extras_sysconfdir) \
+	$(sysconfdir)
+sharedirs :=  \
+	$(extras_sharedstatedir) \
+	$(sharedstatedir)
 
 IS_BIN = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB Shared Object'),yes,no)
 IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB executable'   ),yes,no)
@@ -100,10 +109,9 @@ mm-copy-bins:
 	@for bin in $(MM_BINS) ; do \
 		bindir="" ; \
 		for dir in $(bindirs) ; do \
-			if test -d $(DESTDIR)/$${dir} ; then \
-				if test x`cd $(DESTDIR)/$${dir} ; ls -1 $${bin} 2>/dev/null` == x$${bin} ; then \
-					bindir=$${dir} ; \
-				fi ; \
+			if test -e $(DESTDIR)/$${dir}/$${bin} ; then \
+				bindir=$${dir} ; \
+				break ; \
 			fi ; \
 		done ; \
 		if test ! -z $${bindir} ; then \
@@ -121,11 +129,20 @@ mm-copy-bins:
 mm-copy-etcs:
 	@echo 'copying etcs'
 	@for etc in $(MM_ETCS) ; do \
-		source_etc="$(DESTDIR)/$(sysconfdir)/$${etc}" ; \
-		target_etc="$(mm_DESTDIR)/$(sysconfdir)/$${etc}" ; \
-		if test -e $${source_etc} ; then \
-			if test ! -e $${target_etc} ; then \
-				cp -fa  $${source_etc} $${target_etc} ; \
+		etcdir="" ; \
+		for dir in $(etcdirs) ; do \
+			if test -e $(DESTDIR)/$${dir}/$${etc} ; then \
+				etcdir=$${dir} ; \
+				break ; \
+			fi ; \
+		done ; \
+		if test ! -z $${etcdir} ; then \
+			source_etc="$(DESTDIR)/$${etcdir}/$${etc}" ; \
+			target_etc="$(mm_DESTDIR)/$${etcdir}/$${etc}" ; \
+			if test -e $${source_etc} ; then \
+				if test ! -e $${target_etc} ; then \
+					cp -fa  $${source_etc} $${target_etc} ; \
+				fi ; \
 			fi ; \
 		else \
 			echo "warning: etc \"$${etc}\" not found." ; \
@@ -135,11 +152,20 @@ mm-copy-etcs:
 mm-copy-shares:
 	@echo 'copying shares'
 	@for share in $(MM_SHARES) ; do \
-		source_share="$(DESTDIR)/$(sharedstatedir)/$${share}" ; \
-		target_share="$(mm_DESTDIR)/$(sharedstatedir)/$${share}" ; \
-		if test -e $${source_share} ; then \
-			if test ! -e $${target_share} ; then \
-				cp -fa  $${source_share} $${target_share} ; \
+		sharedir="" ; \
+		for dir in $(sharedirs) ; do \
+			if test -e $(DESTDIR)/$${dir}/$${share} ; then \
+				sharedir=$${dir} ; \
+				break ; \
+			fi ; \
+		done ; \
+		if test ! -z $${sharedir} ; then \
+			source_share="$(DESTDIR)/$${sharedir}/$${share}" ; \
+			target_share="$(mm_DESTDIR)/$${sharedir}/$${share}" ; \
+			if test -e $${source_share} ; then \
+				if test ! -e $${target_share} ; then \
+					cp -fa  $${source_share} $${target_share} ; \
+				fi ; \
 			fi ; \
 		else \
 			echo "warning: share \"$${share}\" not found." ; \
@@ -151,10 +177,9 @@ mm-copy-libs:
 	@for lib in $(MM_LIBS) ; do \
 		libdir="" ; \
 		for dir in $(libdirs) ; do \
-			if test -d $(DESTDIR)/$${dir} ; then \
-				if test x`cd $(DESTDIR)/$${dir} ; ls -1 $${lib} 2>/dev/null` == x$${lib} ; then \
-					libdir=$${dir} ; \
-				fi ; \
+			if test -e $(DESTDIR)/$${dir}/$${lib} ; then \
+				libdir=$${dir} ; \
+				break; \
 			fi ; \
 		done ; \
 		if test ! -z $${libdir} ; then \
@@ -220,6 +245,7 @@ mm-conf:
 	rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
 	cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
 	sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%g' $(mm_DESTDIR)$(sysconfdir)/rc
+	sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
 	$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
@@ -245,3 +271,6 @@ mm-conf:
 	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
+	rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
+	mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
+	rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)

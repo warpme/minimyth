@@ -180,7 +180,7 @@ FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)/
 MASTER_SITES += http://linpvr.org/dnload/gar-source/
 
 # Extra confs to include after gar.conf.mk
-GAR_EXTRA_CONF += minimyth.conf.mk devel/gcc/package-api.mk
+GAR_EXTRA_CONF += minimyth.conf.mk extras/extras.conf.mk devel/gcc/package-api.mk
 
 # Extra libs to include with gar.mk
 GAR_EXTRA_LIBS += minimyth.lib.mk
