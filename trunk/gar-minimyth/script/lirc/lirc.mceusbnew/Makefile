@@ -8,7 +8,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/libusb
 
 WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
 
@@ -19,9 +19,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--program-suffix=".mceusbnew" \
 	--enable-sandboxed \
-	--x-includes="$(DESTDIR)$(x11includedir)" \
-	--x-libraries="$(DESTDIR)$(x11libdir)" \
 	--with-gnu-ld \
+	--without-x \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
 	--with-driver=mceusbnew
