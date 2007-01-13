@@ -1,0 +1,216 @@
+#!/bin/sh 
+#
+# This script creates a USB key that boots MiniMyth.
+
+volume_path=/tmp/mkusbkey
+
+distro_path=$1
+conf_path=$2
+version=$3
+device=$4
+
+kernel=
+rootfs=
+extras=
+
+# Check for required binaries that are not always installed or in the path.
+which su > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'su'."
+    exit 1
+fi
+
+which mkfs.msdos > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'mkfs.msdos'."
+    exit 1
+fi
+
+which mount > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'mount'."
+    exit 1
+fi
+
+which syslinux > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'syslinux'."
+    exit 1
+fi
+
+which umount > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'umount'."
+    exit 1
+fi
+
+if [ -z "${conf_path}" ] ; then
+    conf_path="${distro_path}"
+    if [ -d ${distro_path}/conf ] ; then
+        conf_path=${distro_path}
+    fi
+fi
+
+if [ -z "${version}" ] ; then
+    if [ -d "${distro_path}" ] ; then
+        kernel_list=`ls -1tr ${distro_path} | grep "kernel-"`
+        rootfs_list=`ls -1tr ${distro_path} | grep "rootfs-"`
+        extras_list=`ls -1tr ${distro_path} | grep "extras-"`
+        if [ -n "${kernel_list}" ] ; then
+            for kernel in ${kernel_list} ; do
+                found=1;
+            done
+        fi
+        if [ -n "${rootfs_list}" ] ; then
+            for rootfs in ${rootfs_list} ; do
+                found=1;
+            done
+        fi
+        if [ -n "${extras_list}" ] ; then
+            for extras in ${extras_list} ; do
+                found=1;
+            done
+        fi
+        [ -n "${kernel_list}" ] && kernel=${distro_path}/${kernel}
+        [ -n "${rootfs_list}" ] && rootfs=${distro_path}/${rootfs}
+        [ -n "${extras_list}" ] && extras=${distro_path}/${extras}
+    fi
+    [ -n "${kernel}" ] && [ -n "${rootfs}" ] && version="*"
+else
+    [ -e "${distro_path}/kernel-${version}" ] && kernel="${distro_path}/kernel-${version}"
+    [ -e "${distro_path}/rootfs-${version}" ] && rootfs="${distro_path}/rootfs-${version}"
+    [ -e "${distro_path}/extras-${version}" ] && extras="${distro_path}/extras-${version}"
+fi
+
+if [ -z "${device}" ] ; then
+    device_list=
+    for device in `ls -1 /sys/block | grep -e '^sd.$'` ; do
+        good=1
+        [ ! -e /dev/${device}                              ] && good=0
+        [ ! -d /sys/block/${device}                        ] && good=0
+        [ ! -f /sys/block/${device}/removable              ] && good=0
+        [ ! "`cat /sys/block/${device}/removable`" = "1"   ] && good=0
+        [ ! -f /sys/block/${device}/device/type            ] && good=0
+        [ ! "`cat /sys/block/${device}/device/type`" = "0" ] && good=0
+        [ ! -f /sys/block/${device}/device/vendor          ] && good=0
+        [ ! -f /sys/block/${device}/device/model           ] && good=0
+        if [ "${good}" = "1" ] ; then
+            if [ -z "${device_list}" ] ; then
+                device_list="${device}"
+            else
+                device_list="${device_list} ${device}"
+            fi
+        fi
+    done
+    device_list_count=`echo "${device_list}" | wc -w`
+    if [ "${device_list_count}" = "1" ] ; then
+        device=${device_list}
+    else
+        device=
+    fi
+fi
+
+if [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || [ -z "${version}" ] || [ -z "${device}" ] ; then
+    echo "usage:"
+    echo "    $0 <distro_path> [ <conf_path> [ <version> [ <device> ] ] ]"
+    echo "where:"
+    echo "    <distro_path>: Path to the location of the MiniMyth kernel and rootfs."
+    echo "    <conf_path>  : Path to the location of the MiniMyth conf directory."
+    echo "                   Default is <distro_path>."
+    echo "    <version>    : MiniMyth version."
+    echo "                   Default is newest kernel, rootfs and extras in <distro_path>."
+    echo "    <device>     : usb key (e.g. sda)."
+    echo "example:"
+    echo "    $0 /var/tftpboot/minimyth"
+    exit 1
+fi
+
+if [ ! -e /dev/${device} ] ; then
+    echo "error: /dev/${device} does not exist."
+    exit 1
+fi
+
+if [ ! -d /sys/block/${device} ] ; then
+    echo "error: cannot determine characteristics of the block device ${device}."
+    exit 1
+fi
+
+if [ ! -f /sys/block/${device}/removable ] ; then
+    echo "error: cannot determine whether or not the block device is removable."
+    exit 1
+fi
+
+if [ ! "`cat /sys/block/${device}/removable`" = "1" ] ; then
+    echo "error: ${device} is not a usb key because it is not removable."
+    exit 1
+fi
+
+if [ ! -f /sys/block/${device}/device/vendor ] ; then
+    echo "error: cannot determine usb key vendor."
+    exit 1
+fi
+
+if [ ! -f /sys/block/${device}/device/model ] ; then
+    echo "error: cannot determine usb key model."
+    exit 1
+fi
+
+vendor=`cat /sys/block/${device}/device/vendor | sed 's%^ *%%g'`
+model=`cat /sys/block/${device}/device/model   | sed 's% *$%%g'`
+
+echo "Making a bootable USB based on the following information:"
+echo "    usb key: /dev/${device} (vendor: '${vendor}', model: '${model}'"
+echo "    kernel:  ${kernel}"
+echo "    rootfs:  ${rootfs}"
+echo "    extras:  ${extras}"
+echo "    conf:    ${conf_path}/conf"
+echo -n "Continue [y/N]? "
+read response
+if [ -z "${response}" ] ; then
+    response=n
+fi
+if [ ! "${response}" = "y" ] && [ ! "${response}" = "Y" ] ; then
+    echo "warning: exited at user request."
+    exit 1
+fi
+
+rm -rf   ${volume_path}
+mkdir -p ${volume_path}
+
+mkdir -p ${volume_path}/stage
+echo "DEFAULT minimyth"                                                                                       \
+	>> ${volume_path}/stage/syslinux.cfg
+echo ""                                                                                                       \
+	>> ${volume_path}/stage/syslinux.cfg
+echo "LABEL minimyth"                                                                                         \
+	>> ${volume_path}/stage/syslinux.cfg
+echo "	KERNEL kernel"                                                                                        \
+	>> ${volume_path}/stage/syslinux.cfg
+echo "	APPEND ro root=/dev/ram0 initrd=rootfs ramdisk_blocksize=4096 ramdisk=64000 irqpoll MM_BOOT_TYPE=usb" \
+	>> ${volume_path}/stage/syslinux.cfg
+if [ -e ${kernel}         ] ; then
+    cp -r ${kernel}         ${volume_path}/stage/kernel
+fi
+if [ -e ${rootfs}         ] ; then
+    cp -r ${rootfs}         ${volume_path}/stage/rootfs
+fi
+if [ -e ${extras}         ] ; then
+    cp -r ${extras}         ${volume_path}/stage/extras.cmg
+fi
+if [ -e ${conf_path}/conf ] ; then
+    cp -r ${conf_path}/conf ${volume_path}/stage/
+fi
+
+mkdir -p ${volume_path}/mount
+su -c " \
+    umount /dev/${device} ; \
+    mkfs.msdos -I -F 32 -n minimyth /dev/${device} ; \
+    syslinux /dev/${device} ; \
+    mount /dev/${device} /${volume_path}/mount ; \
+    cp -r ${volume_path}/stage/* ${volume_path}/mount/ ; \
+    umount /${volume_path}/mount ; \
+"
+
+rm -rf ${volume_path}
+
+exit 0

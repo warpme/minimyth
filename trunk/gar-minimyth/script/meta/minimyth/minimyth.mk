@@ -354,12 +354,14 @@ mm-make-distro:
 	@cp -f $(mm_HOME)/docs/minimyth.conf       $(WORKSRC)/distro.d/minimyth.conf
 	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
 	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
+	@cp -f ./files/mkusbkey                    $(WORKSRC)/distro.d/mkusbkey
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum mkusbkey                 >> md5sums.txt
 
 mm-install: mm-check
 	@rm -rf $(mm_DESTDIR)
