@@ -8,6 +8,9 @@ conf_check_audio() {
         exit 1
     fi
 
+    # Reset the variables.
+    conf_reset 'MM_AUDIO_'
+
     if /usr/bin/test ! -z "${MM_AUDIO_TYPE}"                    && \
        /usr/bin/test !    "${MM_AUDIO_TYPE}" = "analog"         && \
        /usr/bin/test !    "${MM_AUDIO_TYPE}" = "digital"        && \
@@ -20,6 +23,10 @@ conf_check_audio() {
 }
 
 conf_default_audio() {
+
+    # Reset the variables.
+    conf_reset 'MM_AUDIO_'
+
     if /usr/bin/test -z "${MM_AUDIO_TYPE}" ; then
         MM_AUDIO_TYPE='analog'
     fi
