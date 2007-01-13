@@ -143,10 +143,16 @@ build_CPP = $(build_compiler_prefix)cpp
 # GARCH and GARHOST for main.  Override these for cross-compilation
 main_GARCH ?= $(mm_GARCH)
 main_GARHOST ?= $(mm_GARHOST)
+main_GARCH_FAMILY ?= $(strip \
+    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(main_GARHOST)  | cut -d- -f1)),i386  ) \
+    $(if $(filter x86_64 athlon64            ,$(shell echo $(main_GARHOST)  | cut -d- -f1)),x86_64))
 
 # GARCH and GARHOST for build.  Do not change these.
 build_GARCH := $(shell arch)
 build_GARHOST := $(GARBUILD)
+build_GARCH_FAMILY := $(strip \
+    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(build_GARHOST) | cut -d- -f1)),i386  ) \
+    $(if $(filter x86_64 athlon64            ,$(shell echo $(build_GARHOST) | cut -d- -f1)),x86_64))
 
 # Don't build these packages as in the build image
 build_NODEPEND += kernel/linux-libc-headers devel/glibc

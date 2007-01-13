@@ -21,7 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
-pre-configure:
+post-patch:
 	@cd $(WORKSRC) ; autoreconf -v --install
 	@$(MAKECOOKIE)
 

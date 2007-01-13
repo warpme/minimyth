@@ -23,11 +23,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Libtool insists on relinking during install and including -L$(libdir) when relinking.
-# This causes -L$(DESTDIR)$(libdir) to appear first so the right libraries get linked during relinking.
-CFLAGS  += -L$(DESTDIR)$(libdir)
-LDFLAGS += -L$(DESTDIR)$(libdir)
-
 post-patch:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure

@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv
+DEPENDS = lang/c myth/mythtv-stable
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
@@ -23,7 +23,7 @@ CONFIGURE_ENV += \
 INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+GAR_EXTRA_CONF += myth/mythtv-stable/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:

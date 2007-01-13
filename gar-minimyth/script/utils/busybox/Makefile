@@ -18,10 +18,10 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS = \
-	TARGET_ARCH="$(KERNEL_ARCH)" \
+	TARGET_ARCH="$(GARCH_FAMILY)" \
 	oldconfig
 BUILD_ARGS = \
-	TARGET_ARCH="$(KERNEL_ARCH)" \
+	TARGET_ARCH="$(GARCH_FAMILY)" \
 	CC="$(CC)" \
 	AR="$(AR)" \
 	AS="$(AS)" \
@@ -45,7 +45,6 @@ else
 USING_CROSS_COMPILER = y
 endif
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 extract-$(CONFIGFILE):

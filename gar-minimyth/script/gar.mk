@@ -75,6 +75,7 @@ $(DESTIMG)_DESTDIR ?= $(main_DESTDIR)
 # Default image architecture
 $(DESTIMG)_GARCH ?= $(main_GARCH)
 $(DESTIMG)_GARHOST ?= $(main_GARHOST)
+$(DESTIMG)_GARCH_FAMILY ?= $(main_GARCH_FAMILY)
 
 # Default image tools
 $(DESTIMG)_compiler_prefix ?= $(main_compiler_prefix)
@@ -137,6 +138,7 @@ DESTDIR = $($(DESTIMG)_DESTDIR)
 # Architecture
 GARCH = $($(DESTIMG)_GARCH)
 GARHOST = $($(DESTIMG)_GARHOST)
+GARCH_FAMILY = $($(DESTIMG)_GARCH_FAMILY)
 
 # GARTARGET may be exported from a package with an arbitrary value to indicate
 # that dependencies of that package which recognize a "target" platform, such

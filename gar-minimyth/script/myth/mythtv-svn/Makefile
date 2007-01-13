@@ -1,5 +1,5 @@
 GARNAME = mythtv
-GARVERSION = $(MYTHTV_VERSION)
+GARVERSION = $(MYTHTV_SVN_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
@@ -62,7 +62,7 @@ BUILD_ENV     += \
 INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk myth/mythtv/package-api.mk
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:

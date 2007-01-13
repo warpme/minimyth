@@ -23,7 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	
 include ../../gar.mk
 
-pre-configure:
+post-patch:
 	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
 	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
 	@cd $(WORKSRC) ; aclocal

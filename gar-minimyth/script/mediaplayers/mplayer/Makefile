@@ -3,7 +3,7 @@ GARVERSION = 1.0pre7try2
 CATEGORIES = mediaplayers
 MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(KERNEL_ARCH).patch
+PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -56,7 +56,7 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-png \
 	--enable-jpeg \
 	--disable-win32 \
-	$(if $(filter i386,$(KERNEL_ARCH)),--enable-win32,--disable-win32) \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32,--disable-win32) \
 	--enable-xanim \
 	--enable-real \
 	--disable-internal-tremor \
@@ -119,7 +119,7 @@ CONFIGURE_ARGS_MISC = \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
-	--target="$(KERNEL_ARCH)-linux"
+	--target="$(GARCH_FAMILY)-linux"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
 	--enable-mmx2 \
@@ -156,7 +156,6 @@ CONFIGURE_ENV  = \
 BUILD_ENV  = \
 	DESTDIR="$(DESTDIR)"
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 CFLAGS :=

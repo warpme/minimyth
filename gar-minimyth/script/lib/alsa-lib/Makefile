@@ -23,10 +23,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += kernel/alsa-driver/package-api.mk
 include ../../gar.mk
 
-# The default STAGE_EXPORTS includes libdir, which confuses libtool.
-STAGE_EXPORTS := $(filter-out libdir, $(STAGE_EXPORTS))
-
 post-patch:
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.

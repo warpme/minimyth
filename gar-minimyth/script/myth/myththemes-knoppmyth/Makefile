@@ -1,5 +1,5 @@
 GARNAME = myththemes
-GARVERSION = $(MYTHTV_VERSION)
+GARVERSION = $(MYTHTV_KNOPPMYTH_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv
+DEPENDS = lang/c myth/mythtv-knoppmyth
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -26,7 +26,7 @@ CONFIGURE_ENV += \
 INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+GAR_EXTRA_CONF += myth/mythtv-knoppmyth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:

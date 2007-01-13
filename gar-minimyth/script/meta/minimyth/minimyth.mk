@@ -1,3 +1,7 @@
+PWD := `pwd`
+
+WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
+
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
@@ -65,7 +69,7 @@ MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
 
 LIST_FILES = \
-	$(strip $(sort $(foreach dir, $(2), $(shell cd $(strip $(1))$(dir) ; ls -1) )))
+	$(strip $(sort $(foreach dir, $(2), $(shell if test -d $(strip $(1)$(dir)) ; then cd $(strip $(1))$(dir) ; ls -1 ; fi) )))
 LIST_LIBS = \
 	$(filter-out \
 		$(call LIST_FILES, $(mm_DESTDIR), $(libdirs)), \
@@ -78,7 +82,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd
+mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -359,6 +363,12 @@ mm-make-initrd:
 	@ln -s ../rootfs-ro/sbin/pivot_root $(mm_DESTDIR)/sbin/pivot_root
 	@ln -s ../rootfs-ro/bin/sh          $(mm_DESTDIR)/bin/sh
 	@cp -r ./dirs/initrd/sbin/init      $(mm_DESTDIR)/sbin/init
+
+mm-make-lib-list:
+	@mkdir -p $(WORKSRC)
+	@rm -rf $(WORKSRC)/minimyth-lib-list.$(GARCH_FAMILY).complete
+	@$(foreach lib, $(call LIST_FILES, $(mm_DESTDIR)/rootfs-ro, $(libdirs)), \
+		echo "$(lib)" >> $(WORKSRC)/minimyth-lib-list.$(GARCH_FAMILY).complete ; )
 
 mm-install:
 	@su -c "[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
