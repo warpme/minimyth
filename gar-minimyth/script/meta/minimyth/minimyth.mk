@@ -316,6 +316,7 @@ mm-conf:
 	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/minimyth.script)
 	$(call CONVERT_TO_LINK, $(sysconfdir)/X11/xorg.conf             )
 	$(call CONVERT_TO_LINK, /root/.mythtv/mysql.txt                 )
+	$(call CONVERT_TO_LINK, /root/.xine/config                      )
 	$(call CONVERT_TO_LINK, /root/.xinitrc                          )
 	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
