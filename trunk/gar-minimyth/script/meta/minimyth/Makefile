@@ -31,6 +31,7 @@ DEPENDS = \
 	net/ntp \
 	net/portmap \
 	qt/qt \
+	X11/rxvt \
 	net/samba \
 	net/utelnetd \
 	utils/util-linux \
