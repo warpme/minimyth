@@ -1,6 +1,6 @@
-diff -Naur mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.18-new/mythmusic/mythmusic/playlist.cpp
---- mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp	2005-02-23 12:41:08.000000000 -0800
-+++ mythplugins-0.18-new/mythmusic/mythmusic/playlist.cpp	2005-04-30 16:08:42.746330569 -0700
+diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.18.1-new/mythmusic/mythmusic/playlist.cpp
+--- mythplugins-0.18.1-old/mythmusic/mythmusic/playlist.cpp	2005-02-23 12:41:08.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/mythmusic/playlist.cpp	2005-05-16 06:38:04.372714691 -0700
 @@ -329,11 +329,9 @@
      MSqlQuery query(MSqlQuery::InitCon());
      query.prepare("SELECT playlistid FROM musicplaylist "
@@ -14,19 +14,33 @@ diff -Naur mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.1
  
      if (query.exec() && query.isActive() && query.size() > 0)
      {
-@@ -470,10 +468,8 @@
+@@ -469,11 +467,20 @@
+     }
     
      MSqlQuery query(MSqlQuery::InitCon());
-     query.prepare("SELECT playlistid, name, songlist FROM "
+-    query.prepare("SELECT playlistid, name, songlist FROM "
 -                  "musicplaylist WHERE name = :NAME AND "
 -                  "hostname = :HOST ;");
-+                  "musicplaylist WHERE name = :NAME ;");
-     query.bindValue(":NAME", a_name);
+-    query.bindValue(":NAME", a_name);
 -    query.bindValue(":HOST", a_host);
++    if ((a_name == "default_playlist_storage") || (a_name == "backup_playlist_storage"))
++    {
++        query.prepare("SELECT playlistid, name, songlist FROM "
++                      "musicplaylist WHERE name = :NAME AND "
++                      "hostname = :HOST ;");
++        query.bindValue(":NAME", a_name);
++        query.bindValue(":HOST", a_host);
++    }
++    else
++    {
++        query.prepare("SELECT playlistid, name, songlist FROM "
++                      "musicplaylist WHERE name = :NAME ;");
++        query.bindValue(":NAME", a_name);
++    }
  
      if (query.exec() && query.size() > 0)
      {
-@@ -500,10 +496,8 @@
+@@ -500,10 +507,8 @@
  {
      MSqlQuery query(MSqlQuery::InitCon());
      query.prepare("SELECT playlistid, name, songlist FROM "
@@ -38,7 +52,7 @@ diff -Naur mythplugins-0.18-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.1
  
      query.exec();
  
-@@ -729,9 +723,8 @@
+@@ -729,9 +734,8 @@
      query.exec();
  
      query.prepare("SELECT playlistid FROM musicplaylist WHERE "
