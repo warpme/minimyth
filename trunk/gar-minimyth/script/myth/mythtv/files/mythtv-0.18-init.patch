@@ -1,7 +1,7 @@
-diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp	2005-04-10 05:33:45.000000000 -0700
-+++ mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp	2005-04-23 11:26:34.000000000 -0700
-@@ -18,6 +18,10 @@
+diff -Naur mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.18-old/programs/mythfrontend/globalsettings.cpp	2005-04-24 08:53:17.710779090 -0700
++++ mythtv-0.18-new/programs/mythfrontend/globalsettings.cpp	2005-04-24 11:31:40.772650648 -0700
+@@ -20,6 +20,10 @@
      HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
  
      gc->setLabel(QObject::tr("Audio output device"));
@@ -12,7 +12,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
      gc->fillSelectionsFromDir(dev);
      dev.setNameFilter("adsp*");
-@@ -39,7 +43,7 @@
+@@ -41,7 +45,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("MythControlsVolume");
      gc->setLabel(QObject::tr("Use internal volume controls"));
@@ -21,7 +21,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("MythTV can control the PCM and master "
                      "mixer volume.  If you prefer to use an external mixer "
                      "program, then disable this option."));
-@@ -51,6 +55,9 @@
+@@ -53,6 +57,9 @@
      HostComboBox *gc = new HostComboBox("MixerDevice", true);
  
      gc->setLabel(QObject::tr("Mixer Device"));
@@ -31,7 +31,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      QDir dev("/dev", "mixer*", QDir::Name, QDir::System);
      gc->fillSelectionsFromDir(dev);
  
-@@ -132,7 +139,7 @@
+@@ -134,7 +141,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("Deinterlace");
      gc->setLabel(QObject::tr("Deinterlace playback"));
@@ -40,7 +40,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("Make the video look normal on a progressive "
                      "display (i.e. monitor)."));
      return gc;
-@@ -144,7 +151,7 @@
+@@ -146,7 +153,7 @@
      gc->setLabel(QObject::tr("Algorithm"));
      gc->addSelection(QObject::tr("Linear blend"), "linearblend");
      gc->addSelection(QObject::tr("Kernel (less motion blur)"), "kerneldeint");
@@ -49,7 +49,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->addSelection(QObject::tr("One field"), "onefield");
      gc->setHelpText(QObject::tr("Deinterlace algorithm. "
                                  "'Kernel' require SSE. 'Bob' requires "
-@@ -184,7 +191,7 @@
+@@ -186,7 +193,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("DecodeExtraAudio");
      gc->setLabel(QObject::tr("Extra audio buffering"));
@@ -58,25 +58,16 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("Enable this setting if MythTV is playing "
                      "\"crackly\" audio and you are using hardware encoding. "
                      "This setting will have no effect "
-@@ -545,7 +552,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("PlayBoxOrdering");
-     gc->setLabel(QObject::tr("List Newest Recording First"));
--    gc->setValue(true);
-+    gc->setValue(false);
-     gc->setHelpText(QObject::tr("When enabled, the most recent recording "
-                     "will be listed first in the 'Watch Recordings' "
-                     "screen, otherwise the oldest recording will be "
-@@ -558,7 +565,7 @@
+@@ -603,7 +610,7 @@
      HostComboBox *gc = new HostComboBox("PlayBoxEpisodeSort");
      gc->setLabel(QObject::tr("Sort Episodes"));
      gc->addSelection(QObject::tr("Record date"), "Date");
--    gc->addSelection(QObject::tr("Program ID"), "Id");
-+    gc->addSelection(QObject::tr("Program ID"), "Id", true);
+-    gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate");
++    gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate", true);
+     gc->addSelection(QObject::tr("Program ID"), "Id");
      gc->setHelpText(QObject::tr("Selects how to sort a shows episodes"));
      return gc;
- }
-@@ -567,7 +574,7 @@
+@@ -613,7 +620,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("StickyKeys");
      gc->setLabel(QObject::tr("Sticky keys"));
@@ -85,12 +76,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("If enabled, fast forward and rewind "
                      "continue after the key is released.  Pressing the key "
                      "again increases the fast forward or rewind speed.  The "
-@@ -657,11 +664,12 @@
-     for( ; it.current() != 0 ; ++it ) {
-         theme = it.current();
-         QFileInfo xml(theme->absFilePath() + "/osd.xml");
--
-         if (theme->fileName()[0] != '.' && xml.exists())
+@@ -681,6 +688,8 @@
              gc->addSelection(theme->fileName());
      }
  
@@ -99,25 +85,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      return gc;
  }
  
-@@ -672,6 +680,8 @@
-     QDir ttf(gContext->GetFontsDir(), gContext->GetFontsNameFilter());
-     gc->fillSelectionsFromDir(ttf, false);
- 
-+    gc->setValue(gc->getValueIndex("FreeSans.ttf"));
-+
-     return gc;
- }
- 
-@@ -682,6 +692,8 @@
-     QDir ttf(gContext->GetFontsDir(), gContext->GetFontsNameFilter());
-     gc->fillSelectionsFromDir(ttf, false);
- 
-+    gc->setValue(gc->getValueIndex("FreeSans.ttf"));
-+
-     return gc;
- }
- 
-@@ -760,7 +772,7 @@
+@@ -806,7 +815,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("UseVideoTimebase");
      gc->setLabel(QObject::tr("Use video as timebase"));
@@ -126,16 +94,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("Use the video as the timebase and warp "
                      "the audio to keep it in sync. (Experimental)"));
      return gc;
-@@ -794,7 +806,7 @@
-     HostCheckBox *gc = new HostCheckBox("PersistentBrowseMode");
-     gc->setLabel(QObject::tr("Always use Browse mode when changing channels "
-                  "in LiveTV"));
--    gc->setValue(false);
-+    gc->setValue(true);
-     gc->setHelpText(QObject::tr("If enabled, Browse mode will "
-                     "automatically be activated whenever you use Channel "
-                     "UP/DOWN while watching Live TV."));
-@@ -878,7 +890,7 @@
+@@ -924,7 +933,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -144,7 +103,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->addSelection(QObject::tr("Always prompt"), "1");
      gc->setHelpText(QObject::tr("If set to prompt, a menu will be displayed "
                      "when you exit playback mode.  The options available will "
-@@ -924,7 +936,7 @@
+@@ -970,7 +979,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
      gc->setLabel(QObject::tr("Display live preview of recordings"));
@@ -153,20 +112,16 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
                      "will play in a small window on the \"Watch a "
                      "Recording\" menu."));
-@@ -971,11 +983,11 @@
- {
+@@ -1018,7 +1027,7 @@
      HostComboBox *gc = new HostComboBox("AllowQuitShutdown");
      gc->setLabel(QObject::tr("System Exit key"));
--    gc->addSelection(QObject::tr("ESC"), "4");
-     gc->addSelection(QObject::tr("No exit key"), "0");
+     gc->addSelection(QObject::tr("ESC"), "4");
+-    gc->addSelection(QObject::tr("No exit key"), "0");
++    gc->addSelection(QObject::tr("No exit key"), "0", true);
      gc->addSelection(QObject::tr("Control-ESC"), "1");
      gc->addSelection(QObject::tr("Meta-ESC"), "2");
      gc->addSelection(QObject::tr("Alt-ESC"), "3");
-+    gc->addSelection(QObject::tr("ESC"), "4");
-     gc->setHelpText(QObject::tr("MythTV is designed to run continuously. If "
-                     "you wish, you may use the ESC key or the ESC key + a "
-                     "modifier to exit MythTV. Do not choose a key combination "
-@@ -998,7 +1010,7 @@
+@@ -1044,7 +1053,7 @@
  {
      HostLineEdit *ge = new HostLineEdit("HaltCommand");
      ge->setLabel(QObject::tr("Halt command"));
@@ -175,7 +130,7 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      ge->setHelpText(QObject::tr("If you have configured an exit key using the "
                      "System Shutdown option, you will be given the opportunity "
                      "to exit MythTV or halt the system completely. "
-@@ -1654,7 +1666,8 @@
+@@ -1710,7 +1719,8 @@
      gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Dense));
      gc->addSelection(QObject::tr("Eco - Transparent (CPU Usage - Low)"),
@@ -185,12 +140,12 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->addSelection(QObject::tr("Solid (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Solid));
      return gc;
-@@ -2030,7 +2043,7 @@
+@@ -2107,7 +2117,7 @@
  {
-     HostCheckBox *gc = new HostCheckBox("UseXVMC");
-     gc->setLabel(QObject::tr("Use hardware XvMC MPEG Decoding"));
--    gc->setValue(true);
-+    gc->setValue(false);
+     HostCheckBox *gc = new HostCheckBox("UseXvMcVld");
+     gc->setLabel(QObject::tr("Use HW XVMC VLD Decoding (Via only)"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("Enables the use of viaXvMC HW Mpeg decoding "
+                     "for the Via Unichrome Chipset"));
      return gc;
- };
- #endif

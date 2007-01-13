@@ -1,0 +1,229 @@
+diff -Naur mythtv-0.18-old/configure mythtv-0.18-new/configure
+--- mythtv-0.18-old/configure	2005-04-24 08:53:17.586793342 -0700
++++ mythtv-0.18-new/configure	2005-04-24 09:07:54.697154146 -0700
+@@ -1410,8 +1410,8 @@
+ 
+ freetype2=no
+ if test "x$targetos" != "xBeOS" && test "$os2" != "yes"; then
+-  if (freetype-config --version) >/dev/null 2>&1 ; then
+-    if $cc -o $TMPE $TMPC `freetype-config --cflags` `freetype-config --libs`  > /dev/null 2>&1 ; then
++  if (@DESTDIR@/@bindir@/freetype-config --version) >/dev/null 2>&1 ; then
++    if $cc -o $TMPE $TMPC `@DESTDIR@/@bindir@/freetype-config --cflags` `@DESTDIR@/@bindir@/freetype-config --libs`  > /dev/null 2>&1 ; then
+       freetype2=yes
+     fi
+   fi
+@@ -1428,8 +1428,8 @@
+ #
+ #sdl_too_old=no
+ #sdl=no
+-#if $cc -o $TMPE `sdl-config --cflags` $TMPC `sdl-config --libs`  > /dev/null 2>&1 ; then
+-#_sdlversion=`sdl-config --version | sed 's/[^0-9]//g'`
++#if $cc -o $TMPE `@DESTDIR@/@bindir@/sdl-config --cflags` $TMPC `@DESTDIR@/@bindir@/sdl-config --libs`  > /dev/null 2>&1 ; then
++#_sdlversion=`@DESTDIR@/@bindir@/sdl-config --version | sed 's/[^0-9]//g'`
+ #if test "$_sdlversion" -lt 121 ; then
+ #sdl_too_old=yes
+ #else
+@@ -1516,9 +1516,9 @@
+ EOF
+ 
+ audio_arts=no
+-if (artsc-config --version) > /dev/null 2>&1; then
+-audio_arts_libs=`artsc-config --libs`
+-audio_arts_tmp=`artsc-config --cflags`
++if (@DESTDIR@/@bindir@/artsc-config --version) > /dev/null 2>&1; then
++audio_arts_libs=`@DESTDIR@/@bindir@/artsc-config --libs`
++audio_arts_tmp=`@DESTDIR@/@bindir@/artsc-config --cflags`
+ audio_arts_cflags=`echo $audio_arts_tmp | sed "s/include\/artsc/include/g"`
+ if $cc -o $TMPE $TMPC $audio_arts_cflags $audio_arts_libs > /dev/null 2>&1; then
+ audio_arts=yes
+@@ -1607,8 +1607,8 @@
+ #test for lirc client libraries
+ if test x"$lirc" = x"yes" ; then
+    lirc="no"
+-   lirc_c1=`ls /usr/lib/liblirc_client.so* 2> /dev/null | head -n 1`
+-   lirc_c2=`ls /usr/local/lib/liblirc_client.so* 2> /dev/null | head -n 1`
++   lirc_c1=`ls @DESTDIR@/@libdir@/liblirc_client.so* 2> /dev/null | head -n 1`
++   lirc_c2=`ls @DESTDIR@/@libdir@/liblirc_client.so* 2> /dev/null | head -n 1`
+    if test x"$lirc_c1" != x"" -o x"$lirc_c2" != x"" ; then
+        lirc="yes"
+    fi
+@@ -1630,13 +1630,13 @@
+ 
+ if test x"$firewire_cable_box" = x"yes" ; then
+     firewire_cable_box="no"
+-    libiec1=`ls /usr/local/lib/libiec61883* 2> /dev/null | head -n 1`
+-    libiec2=`ls /usr/lib/libiec61883* 2> /dev/null | head -n 1`
+-    libiec3=`ls /usr/lib64/libiec61883* 2> /dev/null | head -n 1`
++    libiec1=`ls @DESTDIR@/@libdir@/libiec61883* 2> /dev/null | head -n 1`
++    libiec2=`ls @DESTDIR@/@libdir@/libiec61883* 2> /dev/null | head -n 1`
++    libiec3=`ls @DESTDIR@/@libdir@/libiec61883* 2> /dev/null | head -n 1`
+     if test x"$libiec1" != x"" -o x"$libiec2" != x"" -o x"$libiec3" != x"" ; then
+-        libraw1=`ls /usr/local/lib/libraw1394* 2> /dev/null | head -n 1`
+-        libraw2=`ls /usr/lib/libraw1394* 2> /dev/null | head -n 1`
+-        libraw3=`ls /usr/lib64/libraw1394* 2> /dev/null | head -n 1`
++        libraw1=`ls @DESTDIR@/@libdir@/libraw1394* 2> /dev/null | head -n 1`
++        libraw2=`ls @DESTDIR@/@libdir@/libraw1394* 2> /dev/null | head -n 1`
++        libraw3=`ls @DESTDIR@/@libdir@/libraw1394* 2> /dev/null | head -n 1`
+         if test x"$libraw1" != x"" -o x"$libraw2" != x"" -o x"$libraw3" != x"" ; then
+             firewire_cable_box="yes"
+         fi
+@@ -1645,7 +1645,7 @@
+ 
+ if test x"$x11" = x"yes" ; then
+     x11="no"
+-    if test -f /usr/X11R6/bin/xinit ; then
++    if test -f @DESTDIR@/@x11bindir@/xinit ; then
+         x11="yes"
+     fi
+ fi
+@@ -1658,14 +1658,14 @@
+ 
+ if test x"$xrandr" = x"yes" ; then
+     xrandr="no"
+-    if test -f /usr/X11R6/include/X11/extensions/Xrandr.h ; then
++    if test -f @DESTDIR@/@x11includedir@/X11/extensions/Xrandr.h ; then
+         xrandr="yes"
+     fi
+ fi
+ 
+ if test x"$xv" = x"yes" ; then
+     xv="no"
+-    if test x`ls /usr/X11R6/lib/libXv.* 2> /dev/null | head -n 1` != x"" ; then
++    if test x`ls @DESTDIR@@x11libdir@/libXv.* 2> /dev/null | head -n 1` != x"" ; then
+         xv="yes"
+     fi
+ fi
+@@ -1673,24 +1673,24 @@
+ VENDOR_XVMC_LIBS=""
+ if test x"$xvmc" = x"yes"; then
+     xvmc="no"
+-    nvidia_xvmc=`ls /usr/X11R6/lib/libXvMCNVIDIA* 2> /dev/null | head -n 1`
+-    if test x`ls /usr/X11R6/lib/libXvMCW.* 2> /dev/null | head -n 1` != x"" ; then
++    nvidia_xvmc=`ls @DESTDIR@@x11libdir@/libXvMCNVIDIA* 2> /dev/null | head -n 1`
++    if test x`ls @DESTDIR@@x11libdir@/libXvMCW.* 2> /dev/null | head -n 1` != x"" ; then
+         VENDOR_XVMC_LIBS="-lXvMCW"
+         xvmc="yes"
+     elif test x"$nvidia_xvmc" != x""; then
+         VENDOR_XVMC_LIBS="-lXvMCNVIDIA"
+         xvmc="yes"
+-    elif test x`ls /usr/X11R6/lib/libI810XvMC.* 2> /dev/null | head -n 1` != x"" ; then
++    elif test x`ls @DESTDIR@@x11libdir@/libI810XvMC.* 2> /dev/null | head -n 1` != x"" ; then
+         VENDOR_XVMC_LIBS="-lI810XvMC"
+         xvmc="yes"
+     fi
+ fi
+ 
+-if test x`ls /usr/X11R6/lib/libviaXvMC.* 2> /dev/null | head -n 1` = x"" ; then
++if test x`ls @DESTDIR@@x11libdir@/libviaXvMC.* 2> /dev/null | head -n 1` = x"" ; then
+     xvmc_vld="no"
+ fi
+ if test x"$xvmc_vld" = x"yes" ; then
+-    if test x`ls /usr/X11R6/lib/libXvMCW.* 2> /dev/null | head -n 1` != x"" ; then
++    if test x`ls @DESTDIR@@x11libdir@/libXvMCW.* 2> /dev/null | head -n 1` != x"" ; then
+         VENDOR_XVMC_LIBS="-lXvMCW"
+     else
+         VENDOR_XVMC_LIBS="-lviaXvMC"
+@@ -1704,10 +1704,10 @@
+ 
+ if test x"$direct_fb" = x"yes" ; then
+     direct_fb="no"
+-    if test x`which directfb-config 2> /dev/null` != x"" ; then
++    if test x`which @DESTDIR@/@bindir@/directfb-config 2> /dev/null` != x"" ; then
+         direct_fb="yes"
+-        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
+-        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
++        CONFIG_DIRECTFB_LIBS=`@DESTDIR@/@bindir@/directfb-config --libs`
++        CONFIG_DIRECTFB_CXXFLAGS=`@DESTDIR@/@bindir@/directfb-config --cflags`
+     fi
+ fi
+ 
+@@ -1951,8 +1951,8 @@
+ fi
+ if test "$sdl" = "yes" ; then
+   echo "CONFIG_SDL=yes" >> config.mak
+-  echo "SDL_LIBS=`sdl-config --libs`" >> config.mak
+-  echo "SDL_CFLAGS=`sdl-config --cflags`" >> config.mak
++  echo "SDL_LIBS=`@DESTDIR@/@bindir@/sdl-config --libs`" >> config.mak
++  echo "SDL_CFLAGS=`@DESTDIR@/@bindir@/sdl-config --cflags`" >> config.mak
+ fi
+ if test "$texi2html" = "yes"; then
+   echo "BUILD_DOC=yes" >> config.mak
+diff -Naur mythtv-0.18-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.18-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-0.18-old/contrib/mythnotify/cidbcast/Makefile	2005-04-24 08:53:17.590792882 -0700
++++ mythtv-0.18-new/contrib/mythnotify/cidbcast/Makefile	2005-04-24 09:11:25.408045464 -0700
+@@ -15,7 +15,7 @@
+ # Libraries
+ 
+ STDLIBS    = -lm
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++X11LIBS    =  -L@DESTDIR@/@x11libdir@ -lX11
+ PROGRAM    = cidbcast
+ 
+ #################################################################################
+diff -Naur mythtv-0.18-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.18-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-0.18-old/contrib/mythnotify/mythudprelay/Makefile	2005-04-24 08:53:17.590792882 -0700
++++ mythtv-0.18-new/contrib/mythnotify/mythudprelay/Makefile	2005-04-24 09:11:54.471720562 -0700
+@@ -9,13 +9,13 @@
+ RM       =  rm 
+ RM_FLAGS =  -f
+ 
+-CFLAGS  	= -g -Wall `xml2-config --cflags` -O
++CFLAGS  	= -g -Wall `@DESTDIR@/@bindir@/xml2-config --cflags` -O
+ CDEFS   	= -DDEBUG
+ 
+ # Libraries
+ 
+-STDLIBS    = -lm `xml2-config --libs` -lxslt
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++STDLIBS    = -lm `@DESTDIR@/@bindir@/xml2-config --libs` -lxslt
++X11LIBS    =  -L@DESTDIR@/@x11libdir@ -lX11
+ PROGRAM = mythudprelay
+ 
+ #################################################################################
+diff -Naur mythtv-0.18-old/libs/libmythtv/libmythtv.pro mythtv-0.18-new/libs/libmythtv/libmythtv.pro
+--- mythtv-0.18-old/libs/libmythtv/libmythtv.pro	2005-04-24 08:53:17.690781389 -0700
++++ mythtv-0.18-new/libs/libmythtv/libmythtv.pro	2005-04-24 09:09:37.726365261 -0700
+@@ -32,8 +32,8 @@
+ QMAKE_CFLAGS_RELEASE = $$OPTFLAGS -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+ QMAKE_CFLAGS_DEBUG = -g -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+ 
+-QMAKE_CXXFLAGS_RELEASE += `freetype-config --cflags`
+-QMAKE_CXXFLAGS_DEBUG += `freetype-config --cflags`
++QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/freetype-config --cflags`
++QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/freetype-config --cflags`
+ 
+ # old libvbitext
+ 
+diff -Naur mythtv-0.18-old/libs/libmythui/libmythui.pro mythtv-0.18-new/libs/libmythui/libmythui.pro
+--- mythtv-0.18-old/libs/libmythui/libmythui.pro	2005-04-24 08:53:17.702780009 -0700
++++ mythtv-0.18-new/libs/libmythui/libmythui.pro	2005-04-24 09:12:36.182948951 -0700
+@@ -50,7 +50,7 @@
+ #
+ 
+ using_x11 {
+-    LIBS += -L/usr/X11R6/lib -lXinerama
++    LIBS += -L@DESTDIR@/@x11libdir@ -lXinerama
+ }
+ 
+ macx {
+diff -Naur mythtv-0.18-old/settings.pro mythtv-0.18-new/settings.pro
+--- mythtv-0.18-old/settings.pro	2005-04-24 08:53:17.586793342 -0700
++++ mythtv-0.18-new/settings.pro	2005-04-24 10:47:23.670195824 -0700
+@@ -1,7 +1,7 @@
+ CONFIG += $$CCONFIG
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @prefix@
+ }
+ 
+ LIBVERSION = 0.18
+@@ -17,7 +17,7 @@
+     }
+ }
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @DESTDIR@/@includedir@
+ INCLUDEPATH += $$CONFIG_INCLUDEPATH
+ 
+ # figure out compile flags based on qmake info

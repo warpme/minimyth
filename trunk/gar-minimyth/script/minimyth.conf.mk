@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 # The version of MiniMyth.
-mm_VERSION        ?= 0.17.0.0
+mm_VERSION        ?= 0.18.0.0beta1
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.

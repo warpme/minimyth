@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-settings.patch.gar $(DISTNAME)-cvs20050218.patch $(DISTNAME)-imagecount.patch $(DISTNAME)-loadimage.patch $(DISTNAME)-loadscale.patch $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -19,10 +19,33 @@ BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) \
-	--cross-prefix=$(compiler_prefix) \
-	--cpu=$(KERNEL_ARCH) \
 	--extra-cflags="$(CFLAGS)" \
-	--extra-ldflags="$(LDFLAGS)"
+	--extra-cxxflags="$(CFLAGS)" \
+	--cpu=$(GARCH) \
+	--tune=$(GARCH) \
+	--arch=$(GARCH) \
+	--enable-proc-opt \
+	--enable-mmx \
+	--disable-altivec \
+	--disable-audio-oss \
+	--enable-audio-alsa \
+	--disable-audio-arts \
+	--disable-audio-jack \
+	--enable-lirc \
+	--disable-joystick-menu \
+	--disable-firewire \
+	--disable-ivtv \
+	--disable-dvb \
+	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
+	--disable-dvb-eit \
+	--enable-x11 \
+	--enable-xrandr \
+	--enable-xv \
+	--disable-xvmc \
+	--enable-xvmc-vld \
+	--disable-opengl-vsync \
+	--disable-directfb \
+	--disable-directx
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \

@@ -16,6 +16,7 @@ gar-patch-%:
 		| sed 's%@datadir@%$(datadir)%g' \
 		| sed 's%@includedir@%$(includedir)%g' \
 		| sed 's%@libdir@%$(libdir)%g' \
+		| sed 's%@x11bindir@%$(x11bindir)%g' \
 		| sed 's%@x11includedir@%$(x11includedir)%g' \
 		| sed 's%@x11libdir@%$(x11libdir)%g' \
 		| sed 's%@CFLAGS@%$(CFLAGS)%g' \
