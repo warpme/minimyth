@@ -9,30 +9,84 @@
 start() {
     mm_message_output info 'configuring MythTV ...'
 
-    # Mount theme.
-    if [ -n "${MM_THEME_URL}" ] && [ -n "${MM_THEME_NAME}" ] ; then
-        mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}"
+    # Check theme names.
+    if [ ! -n "${MM_THEME_NAME}" ] ; then
+        MM_THEME_NAME=`mm_mythdb_setting_dump Theme | grep '^Theme' | cut -f2`
+        mm_message_output err "error: \"MM_THEME_NAME\" not present (Myth database value ${MM_THEME_NAME})."
+        exit 1
+    fi
+    if [ ! -n "${MM_THEMEOSD_NAME}" ] ; then
+        MM_THEMEOSD_NAME=`mm_mythdb_setting_dump OSDTheme | grep '^OSDTheme' | cut -f2`
+        mm_message_output err "error: \"MM_THEMEOSD_NAME\" not present (Myth database value ${MM_THEMEOSD_NAME})."
+        exit 1
     fi
 
-    # Mount OSD theme.
-    if [ -n "${MM_THEMEOSD_URL}" ] && [ -n "${MM_THEMEOSD_NAME}" ] ; then
+    # Set themes.
+    if [ -n "${MM_THEME_NAME}" ] ; then
+        mm_mythdb_setting_update "Theme"    "${MM_THEME_NAME}"
+    fi
+    if [ -n "${MM_THEMEOSD_NAME}" ] ; then
+        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
+    fi
+
+    # Convert special 'default' theme URLs.
+    if [ "${MM_EXTRAS_URL}" = "default" ] ; then
+        INITRD_DIR=` echo ${initrd} | sed 's%[^/]*$%%'`
+        INITRD_FILE=`echo ${initrd} | sed 's%^.*/%%'`
+        INITRD_FILE_PREFIX=`echo ${INITRD_FILE} | sed 's%-.*$%%'`
+        if [ "${INITRD_FILE_PREFIX}" = "rootfs" ] ; then
+            THEME_DIR="${INITRD_DIR}"
+            THEME_FILE=`echo ${INITRD_FILE} | sed 's%^rootfs-%themes-%'`/${MM_THEME_NAME}.cmg
+            MM_THEME_URL="tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${THEME_DIR}${THEME_FILE}"
+        else
+            MM_THEME_URL=
+        fi
+    fi
+    if [ "${MM_EXTRAS_URL}" = "default" ] ; then
+        INITRD_DIR=` echo ${initrd} | sed 's%[^/]*$%%'`
+        INITRD_FILE=`echo ${initrd} | sed 's%^.*/%%'`
+        INITRD_FILE_PREFIX=`echo ${INITRD_FILE} | sed 's%-.*$%%'`
+        if [ "${INITRD_FILE_PREFIX}" = "rootfs" ] ; then
+            THEMEOSD_DIR="${INITRD_DIR}"
+            THEMEOSD_FILE=`echo ${INITRD_FILE} | sed 's%^rootfs-%themes-%'`/${MM_THEMEOSD_NAME}.cmg
+            MM_THEMEOSD_URL="tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${THEMEOSD_DIR}${THEMEOSD_FILE}"
+        else
+            MM_THEMEOSD_URL=
+        fi
+    fi
+    if [ "${MM_THEMECACHE_URL}" = "default" ] ; then
+        MM_THEMECACHE_URL="conf:themecache.cmg"
+    fi
+
+    # Mount theme directories.
+    if [ ! -e "/usr/share/themes/${MM_THEME_NAME}" ] ; then
+        mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}"
+    fi
+    if [ ! -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ] ; then
         mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
     fi
 
-    # Mount themecache.
+    # Check theme directories.
+    THEME_FILE_COUNT=0
+    if [ -d /usr/share/mythtv/themes/${MM_THEME_NAME} ] ; then
+        THEME_FILE_COUNT=`cd /usr/share/mythtv/themes/${MM_THEME_NAME} ; ls -1 | grep -c ''`
+    fi
+    if [ ${THEME_FILE_COUNT} -eq 0 ] ; then
+        mm_message_output err "error: Theme ${MM_THEME_NAME} is missing."
+        exit 1
+    fi
+    THEMEOSD_FILE_COUNT=0
+    if [ -d /usr/share/mythtv/themes/${MM_THEMEOSD_NAME} ] ; then
+        THEMEOSD_FILE_COUNT=`cd /usr/share/mythtv/themes/${MM_THEMEOSD_NAME} ; ls -1 | grep -c ''`
+    fi
+    if [ ${THEMEOSD_FILE_COUNT} -eq 0 ] ; then
+        mm_message_output err "error: OSD Theme ${MM_THEMEOSD_NAME} is missing."
+        exit 1
+    fi
+
+    # Mount themecache directory.
     if [ -n "${MM_THEMECACHE_URL}" ] ; then
-        [ "${MM_THEMECACHE_URL}" = "default" ] && MM_THEMECACHE_URL="conf:themecache.cmg"
         mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
-    fi
-
-    # Set theme.
-    if [ -n "${MM_THEME_NAME}" ] ; then
-        mm_mythdb_setting_update "Theme" "${MM_THEME_NAME}"
-    fi
-
-    # Set OSD theme.
-    if [ -n "${MM_THEMEOSD_NAME}" ] ; then
-        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
     fi
 
     # Create mysql.txt file.

@@ -1,6 +1,6 @@
 diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-8839-old/programs/mythfrontend/globalsettings.cpp	2006-02-02 04:59:00.000000000 -0800
-+++ mythtv-8839-new/programs/mythfrontend/globalsettings.cpp	2006-02-02 05:12:10.000000000 -0800
+--- mythtv-8839-old/programs/mythfrontend/globalsettings.cpp	2006-02-02 05:05:54.000000000 -0800
++++ mythtv-8839-new/programs/mythfrontend/globalsettings.cpp	2006-02-04 12:22:24.000000000 -0800
 @@ -23,6 +23,10 @@
      HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
  
@@ -67,25 +67,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->setHelpText(QObject::tr("If enabled, fast forward and rewind "
                      "continue after the key is released.  Pressing the key "
                      "again increases the fast forward or rewind speed.  The "
-@@ -752,6 +759,8 @@
-             gc->addSelection(theme->fileName());
-     }
- 
-+    gc->setValue(gc->getValueIndex("G.A.N.T."));
-+
-     return gc;
- }
- 
-@@ -779,6 +788,8 @@
-             gc->addSelection(theme->fileName());
-     }
- 
-+    gc->setValue(gc->getValueIndex("Titivillus-OSD"));
-+
-     return gc;
- }
- 
-@@ -789,6 +800,10 @@
+@@ -789,6 +796,10 @@
      QDir ttf(gContext->GetFontsDir(), gContext->GetFontsNameFilter());
      gc->fillSelectionsFromDir(ttf, false);
  
@@ -96,7 +78,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      return gc;
  }
  
-@@ -875,7 +890,7 @@
+@@ -875,7 +886,7 @@
      gc->addSelection(QObject::tr("Standard XvMC"), "xvmc");
  #endif // USING_XVMC
  #ifdef USING_XVMC_VLD
@@ -105,7 +87,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
  #endif // USING_XVMC_VLD    
      gc->setHelpText(
          QObject::tr("Decoder to use to play back MPEG2 video.") + " " +
-@@ -900,7 +915,7 @@
+@@ -900,7 +911,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("UseVideoTimebase");
      gc->setLabel(QObject::tr("Use video as timebase"));
@@ -114,7 +96,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->setHelpText(QObject::tr("Use the video as the timebase and warp "
                      "the audio to keep it in sync. (Experimental)"));
      return gc;
-@@ -1019,7 +1034,7 @@
+@@ -1019,7 +1030,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -123,7 +105,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->addSelection(QObject::tr("Always prompt"), "1");
      gc->setHelpText(QObject::tr("If set to prompt, a menu will be displayed "
                      "when you exit playback mode.  The options available will "
-@@ -1032,7 +1047,7 @@
+@@ -1032,7 +1043,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("EndOfRecordingExitPrompt");
      gc->setLabel(QObject::tr("Prompt at end of recording"));
@@ -132,7 +114,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->setHelpText(QObject::tr("If set, a menu will be displayed allowing "
                      "you to delete the recording when it has finished "
                      "playing."));
-@@ -1080,7 +1095,7 @@
+@@ -1080,7 +1091,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
      gc->setLabel(QObject::tr("Display live preview of recordings"));
@@ -141,7 +123,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
                      "will play in a small window on the \"Watch a "
                      "Recording\" menu."));
-@@ -1139,7 +1154,7 @@
+@@ -1139,7 +1150,7 @@
      HostComboBox *gc = new HostComboBox("AllowQuitShutdown");
      gc->setLabel(QObject::tr("System Exit key"));
      gc->addSelection(QObject::tr("ESC"), "4");
@@ -150,7 +132,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      gc->addSelection(QObject::tr("Control-ESC"), "1");
      gc->addSelection(QObject::tr("Meta-ESC"), "2");
      gc->addSelection(QObject::tr("Alt-ESC"), "3");
-@@ -1165,7 +1180,7 @@
+@@ -1165,7 +1176,7 @@
  {
      HostLineEdit *ge = new HostLineEdit("HaltCommand");
      ge->setLabel(QObject::tr("Halt command"));
@@ -159,7 +141,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      ge->setHelpText(QObject::tr("If you have configured an exit key using the "
                      "System Shutdown option, you will be given the opportunity "
                      "to exit MythTV or halt the system completely. "
-@@ -1812,7 +1827,7 @@
+@@ -1812,7 +1823,7 @@
      GlobalCheckBox *bc = new GlobalCheckBox("LastFreeCard");
      bc->setLabel(QObject::tr("Avoid conflicts between live TV and "
                   "scheduled shows."));
@@ -168,7 +150,7 @@ diff -Naur mythtv-8839-old/programs/mythfrontend/globalsettings.cpp mythtv-8839-
      bc->setHelpText(QObject::tr("If enabled, live TV will choose a tuner card "
                      "that is less likely to have scheduled recordings "
                      "rather than the best card available."));
-@@ -1867,7 +1882,8 @@
+@@ -1867,7 +1878,8 @@
      gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Dense));
      gc->addSelection(QObject::tr("Eco - Transparent (CPU Usage - Low)"),
