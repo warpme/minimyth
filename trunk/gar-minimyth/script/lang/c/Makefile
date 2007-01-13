@@ -15,7 +15,8 @@ BUILDDEPS += \
 	devel/gettext \
 	devel/autoconf \
 	devel/automake \
-	devel/libtool
+	devel/libtool \
+	utils/coreutils
 
 include ../../gar.mk
 
