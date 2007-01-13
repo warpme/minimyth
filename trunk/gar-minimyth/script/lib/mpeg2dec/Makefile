@@ -22,7 +22,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--enable-static \
 	--with-gnu-ld \
-	--with-x
+	--with-x \
+	$(if $(filter i386,$(GARCH_FAMILY)),,--disable-accel-detect)
 
 CONFIGURE_ENV = \
 	SDLCONFIG="$(DESTDIR)$(bindir)/sdl-config"

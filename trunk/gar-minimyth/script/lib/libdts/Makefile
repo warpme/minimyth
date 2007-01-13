@@ -31,4 +31,7 @@ include ../../gar.mk
 post-install:
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
+	@if [ -e $(DESTDIR)$(libdir)/libdts_pic.a ] ; then \
+		mv -f $(DESTDIR)$(libdir)/libdts_pic.a $(DESTDIR)$(libdir)/libdts.a ; \
+	 fi
 	@$(MAKECOOKIE)

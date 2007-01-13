@@ -30,7 +30,7 @@ CONFIGURE_ARGS = \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LD_FLAGS)" \
-	--cpu=$(GARCH) \
+	--cpu=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
 	--disable-iwmmxt \
 	--disable-altivec \
@@ -47,6 +47,9 @@ CONFIGURE_ARGS = \
 	--disable-mpegaudio-hp \
 	--disable-ffserver \
 	--disable-ffplay
+INSTALL_ARGS   = \
+	INSTALLSTRIP="" \
+	LDCONFIG="true"
 
 include ../../gar.mk
 
