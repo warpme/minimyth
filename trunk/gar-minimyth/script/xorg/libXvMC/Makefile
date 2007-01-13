@@ -3,6 +3,7 @@ GARVERSION = 1.0.1
 CATEGORIES = xorg
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-xconfigdir.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -22,6 +23,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
+
+sysconfdir := $(subst //,/,$(sysconfdir))
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
