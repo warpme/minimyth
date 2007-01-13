@@ -72,7 +72,7 @@ LIST_LIBS = \
 	)
 
 
-mm-all: mm-check mm-clean mm-make-dirs mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras
+mm-all: mm-check mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -107,22 +107,8 @@ mm-check:
 mm-clean:
 	@rm -rf $(mm_BASEDIR)
 
-mm-make-dirs:
-	@mkdir -p $(mm_DESTDIR)
-	@$(foreach dir, $(bindirs), mkdir -p $(mm_DESTDIR)$(dir) ;)
-	@$(foreach dir, $(libdirs), mkdir -p $(mm_DESTDIR)$(dir) ;)
-	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
-	@mkdir -p $(mm_DESTDIR)$(sharedstatedir)
-	@mkdir -p $(mm_DESTDIR)$(localstatedir)
-	@mkdir -p $(mm_DESTDIR)/dev
-	@mkdir -p $(mm_DESTDIR)/media
-	@mkdir -p $(mm_DESTDIR)/mnt
-	@mkdir -p $(mm_DESTDIR)/proc
-	@mkdir -p $(mm_DESTDIR)/srv
-	@mkdir -p $(mm_DESTDIR)/sys
-	@mkdir -p $(mm_DESTDIR)/tmp
-
 mm-make-conf:
+	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
 	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
 	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
@@ -172,6 +158,8 @@ mm-copy-x11:
 
 mm-copy-bins:
 	@echo 'copying binaries'
+	@$(foreach dir, $(bindirs), mkdir -p $(mm_DESTDIR)$(dir) ;)
+	@$(foreach dir, $(libdirs), mkdir -p $(mm_DESTDIR)$(dir) ;)
 	@for bin in $(MM_BINS) ; do \
 		bindir="" ; \
 		for dir in $(bindirs) ; do \
@@ -196,6 +184,7 @@ mm-copy-bins:
 
 mm-copy-etcs:
 	@echo 'copying etcs'
+	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
 	@for etc in $(MM_ETCS) ; do \
 		etcdir="" ; \
 		for dir in $(etcdirs) ; do \
@@ -221,6 +210,7 @@ mm-copy-etcs:
 
 mm-copy-shares:
 	@echo 'copying shares'
+	@mkdir -p $(mm_DESTDIR)$(sharedstatedir)
 	@for share in $(MM_SHARES) ; do \
 		sharedir="" ; \
 		for dir in $(sharedirs) ; do \
@@ -246,6 +236,7 @@ mm-copy-shares:
 
 mm-copy-libs:
 	@echo 'copying shared libraries'
+	@$(foreach dir, $(libdirs), mkdir -p $(mm_DESTDIR)$(dir) ;)
 	@for lib in $(MM_LIBS) ; do \
 		libdir="" ; \
 		for dir in $(libdirs) ; do \
@@ -334,13 +325,25 @@ mm-make-extras:
 	@cp -f ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)
 
 mm-install:
-	@su -c "cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp ; \
+	@su -c "[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
+		[ -e $(mm_EXTRASDIR).tmp ] && rm -rf $(mm_EXTRASDIR).tmp ; \
+		mkdir -p $(mm_DESTDIR).tmp ; \
+		cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp/rootfs-ro ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 			mkdir -p $(mm_TFTPDIR) ; \
 			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 		chown -Rh root:root $(mm_DESTDIR).tmp ; \
-		mknod -m 666 $(mm_DESTDIR).tmp/$(rootdir)/dev/null c 1 3 ; \
-		mknod -m 600 $(mm_DESTDIR).tmp/$(rootdir)/dev/console c 5 1 ; \
+		mkdir $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev ; \
+		mknod -m 666 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/null c 1 3 ; \
+		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
+		cp -r ./dirs/initrd/etc $(mm_DESTDIR).tmp/ ; \
+		ln -s rootfs-ro/bin  $(mm_DESTDIR).tmp/bin  ; \
+		ln -s rootfs-ro/lib  $(mm_DESTDIR).tmp/lib  ; \
+		ln -s rootfs-ro/sbin $(mm_DESTDIR).tmp/sbin ; \
+		cp -dr $(mm_DESTDIR).tmp/rootfs-ro/dev     $(mm_DESTDIR).tmp/ ; \
+		cp -dr $(mm_DESTDIR).tmp/rootfs-ro/linuxrc $(mm_DESTDIR).tmp/ ; \
+		mkdir -p $(mm_DESTDIR).tmp/rootfs-rw ; \
+		mkdir -p $(mm_DESTDIR).tmp/rootfs ; \
 		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
 		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
@@ -357,7 +360,7 @@ mm-install:
 			rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
 				mkdir -p $(mm_NFSDIR) ; \
 				cp -a $(mm_DESTDIR).tmp $(mm_NFSDIR)/$(mm_NFSNAME) ; \
-			cp -a $(mm_EXTRASDIR).tmp/* $(mm_NFSDIR)/$(mm_NFSNAME)/$(extras_rootdir) ; \
+			cp -a $(mm_EXTRASDIR).tmp/* $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
 		fi ; \
 		rm -rf $(mm_DESTDIR).tmp ; \
 		rm -rf $(mm_EXTRASDIR).tmp"

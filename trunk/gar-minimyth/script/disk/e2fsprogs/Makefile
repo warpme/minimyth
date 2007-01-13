@@ -26,3 +26,8 @@ include ../../gar.mk
 install-custom:
 	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $(WORKSRC) $(INSTALL_ARGS) install install-libs
 	@$(MAKECOOKIE)
+
+post-install:
+	@mv $(DESTDIR)$(libdir)/libblkid.* $(DESTDIR)$(elibdir)/
+	@mv $(DESTDIR)$(libdir)/libuuid.*  $(DESTDIR)$(elibdir)/
+	@$(MAKECOOKIE)
