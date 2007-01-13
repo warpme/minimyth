@@ -12,8 +12,6 @@ endef
 
 DEPENDS = lirc/lirc.any lirc/lirc.serial
 
-PATCHDIR=$(WORKSRC)
-
 include ../../gar.mk
 
 post-patch:

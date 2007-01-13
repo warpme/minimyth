@@ -14,8 +14,6 @@ endef
 DEPENDS   = lang/c
 BUILDDEPS = kernel/module-init-tools
 
-PATCHDIR=$(WORKSRC)
-
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom

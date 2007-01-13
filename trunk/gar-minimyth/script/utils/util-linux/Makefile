@@ -12,8 +12,6 @@ endef
 
 DEPENDS = lang/c lib/ncurses lib/zlib utils/procps disk/e2fsprogs
 
-PATCHDIR = $(WORKSRC)
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile

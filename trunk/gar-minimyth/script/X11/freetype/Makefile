@@ -13,8 +13,6 @@ endef
 
 DEPENDS = lang/c lib/zlib
 
-PATCHDIR = $(WORKSRC)
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile

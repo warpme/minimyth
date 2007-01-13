@@ -12,8 +12,6 @@ endef
 
 DEPENDS = lang/c lib/ncurses
 
-PATCHDIR = $(WORKSRC)
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile

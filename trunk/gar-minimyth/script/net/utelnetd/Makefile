@@ -12,8 +12,6 @@ endef
 
 DEPENDS = lang/c
 
-PATCHDIR = $(WORKSRC)
-
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
