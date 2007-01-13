@@ -1,6 +1,6 @@
 MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
 
-MYTHTV_STABLE20_FIXES_VERSION = 11482
+MYTHTV_STABLE20_FIXES_VERSION = 11496
 
 mythtv-fixes-patch:
 	@mkdir -p $(PARTIALDIR)
