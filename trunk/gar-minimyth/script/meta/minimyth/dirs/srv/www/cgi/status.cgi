@@ -51,10 +51,7 @@ cat <<EOF
   </div>
 
   <p>
-    browsable directories:
-    <a href="/etc">etc</a>
-    <a href="/log">log</a>
-    <a href="/tmp">tmp</a>
+    <a href="/fs">browse filesystem</a>
   </p>
 
   <h1>@mm_NAME_PRETTY@</h1>
