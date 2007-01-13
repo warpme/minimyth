@@ -55,9 +55,9 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
 	--enable-jpeg \
-	--disable-win32 \
-	--disable-xanim \
-	--disable-real \
+	--enable-win32 \
+	--enable-xanim \
+	--enable-real \
 	--enable-vorbis \
 	--enable-internal-matroska \
 	--enable-mad
@@ -129,6 +129,9 @@ CONFIGURE_ARGS_ADVANCED = \
 CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
 	--with-x11libdir="$(DESTDIR)$(x11libdir)" \
+	--with-win32libdir="${libdir}/win32" \
+	--with-xanimlibdir="${libdir}/win32" \
+	--with-reallibdir="${libdir}/win32" \
 	--with-xvmclib=XvMCW \
 	--with-xxmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
