@@ -169,8 +169,8 @@ mm-check:
 		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
-	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "usr" ] ; then \
-		echo "error: MiniMyth cannot be built in a subdirectory of \"/usr\"."; \
+	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qtprefix))))" ] ; then \
+		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qtprefix))))\"."; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
