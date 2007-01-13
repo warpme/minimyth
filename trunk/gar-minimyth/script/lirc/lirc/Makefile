@@ -1,35 +1,68 @@
 GARNAME = lirc
-GARVERSION = $(LIRC_VERSION)
+GARVERSION = 0.8.0pre2
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-MASTER_SITES += http://lirc.sourceforge.net/software/snapshots/
+MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
+MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-any.patch $(DISTNAME)-fixes.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = $(LIRC_DEPENDS)
-DEPENDS += $(addprefix lirc/,$(filter lirc.%,$(shell cd ../ ; ls )))
+include ../../kernel/linux/package-api.mk
 
-WORKSRC = $(LIRC_WORKSRC)
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/libusb lirc/libirman
 
-CONFIGURE_SCRIPTS = $(LIRC_CONFIGURE_SCRIPTS)
-BUILD_SCRIPTS     = $(LIRC_BUILD_SCRIPTS)
-INSTALL_SCRIPTS   = $(LIRC_INSTALL_SCRIPTS)
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(LIRC_CONFIGURE_ARGS) --with-driver=none
-BUILD_ARGS     = $(LIRC_BUILD_ARGS)
-INSTALL_ARGS   = $(LIRC_INSTALL_ARGS)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-sandboxed \
+	--with-gnu-ld \
+	--without-x \
+	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
+	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
+	--with-driver=all
+BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
+INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 
-CONFIGURE_ENV = $(LIRC_CONFIGURE_ENV)
-BUILD_ENV     = $(LIRC_BUILD_ENV)
-INSTALL_ENV   = $(LIRC_INSTALL_ENV)
+CONFIGURE_ENV = $(KERNEL_MAKE_ENV) LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
+BUILD_ENV     = $(KERNEL_MAKE_ENV)
+INSTALL_ENV   = $(KERNEL_MAKE_ENV)
 
-GAR_EXTRA_CONF += lirc/lirc/package-api.mk
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
+
+cvs//%$(DISTNAME).tar.bz2:
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)
+	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); cd $(DISTNAME); aclocal
+	@cd $(PARTIALDIR); cd $(DISTNAME); libtoolize --copy --force
+	@cd $(PARTIALDIR); cd $(DISTNAME); autoconf
+	@cd $(PARTIALDIR); cd $(DISTNAME); autoheader
+	@cd $(PARTIALDIR); cd $(DISTNAME); automake --copy --add-missing
+	@cd $(PARTIALDIR); cd $(DISTNAME); cp $(build_DESTDIR)$(build_datadir)/libtool/install-sh .
+	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(MAKECOOKIE)
+
+x-checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
+	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
+	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
+	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
+	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
+	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
+	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la

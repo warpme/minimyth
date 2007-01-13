@@ -28,6 +28,7 @@ start() {
         modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
     fi
     # Start the LIRC daemon.
+
     if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
         mkdir -p /var/lock
         mkdir -p /var/run
@@ -39,11 +40,10 @@ start() {
             DELAY=$((DELAY + 1))
         done
 
-        if [ -e /usr/sbin/lircd.${MM_LIRC_DRIVER} ] ; then
-    	    lircd.${MM_LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
-        else
-    	    lircd.any               --device=${MM_LIRC_DEVICE} --driver=${MM_LIRC_DRIVER}
-        fi
+        LIRC_DRIVER=`lircd.any --driver=help 2>&1 | grep "${MM_LIRC_DRIVER}"`
+        [ -z ${LIRC_DRIVER} ] && LIRC_DRIVER="default"
+
+        lircd --device=${MM_LIRC_DEVICE} --driver=${LIRC_DRIVER}
     fi
 
     # Start the irexec daemon.
