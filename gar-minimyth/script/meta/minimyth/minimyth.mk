@@ -70,7 +70,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-check mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-udev mm-conf
+mm-all: mm-check mm-clean mm-make-dirs mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -118,6 +118,23 @@ mm-make-dirs:
 	@mkdir -p $(mm_DESTDIR)/sys
 	@mkdir -p $(mm_DESTDIR)/tmp
 
+mm-make-conf:
+	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
+	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
+	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
+	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
+	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
+	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
+	@ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
+	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
+	@ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
+
 mm-make-busybox:
 	@main_DESTDIR=$(mm_DESTDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 
@@ -160,6 +177,8 @@ mm-copy-bins:
 			source_bin="$(DESTDIR)/$${bindir}/$${bin}" ; \
 			target_bin="$(mm_DESTDIR)/$${bindir}/$${bin}" ; \
 			if test ! -e $${target_bin} ; then \
+                                target_dir=`echo $${target_bin} | sed -e 's%/[^/]*$$%/%'` ; \
+                                mkdir -p $${target_dir} ; \
 				cp -fa  $${source_bin} $${target_bin} ; \
 				make -s -f minimyth.mk mm-$${target_bin}/copy-libs DESTIMG=$(DESTIMG) ; \
 			fi ; \
@@ -183,6 +202,8 @@ mm-copy-etcs:
 			target_etc="$(mm_DESTDIR)/$${etcdir}/$${etc}" ; \
 			if test -e $${source_etc} ; then \
 				if test ! -e $${target_etc} ; then \
+                                        target_dir=`echo $${target_etc} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        mkdir -p $${target_dir} ; \
 					cp -fa  $${source_etc} $${target_etc} ; \
 				fi ; \
 			fi ; \
@@ -206,6 +227,8 @@ mm-copy-shares:
 			target_share="$(mm_DESTDIR)/$${sharedir}/$${share}" ; \
 			if test -e $${source_share} ; then \
 				if test ! -e $${target_share} ; then \
+                                        target_dir=`echo $${target_share} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        mkdir -p $${target_dir} ; \
 					cp -fa  $${source_share} $${target_share} ; \
 				fi ; \
 			fi ; \
@@ -229,8 +252,12 @@ mm-copy-libs:
 			target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
 			if test ! -e $${target_lib} ; then \
 				if test -d $${source_lib} ; then \
+                                        target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        mkdir -p $${target_dir} ; \
 					cp -fa  $${source_lib} $${target_lib} ; \
 				else \
+                                        target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        mkdir -p $${target_dir} ; \
 					cp -f  $${source_lib} $${target_lib} ; \
 					make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
 				fi ; \
@@ -261,6 +288,8 @@ mm-%/copy-libs:
 					source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
 					target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
 					if test ! -e $${target_lib} ; then \
+                                                target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                                mkdir -p $${target_dir} ; \
 						cp -f  $${source_lib} $${target_lib} ; \
 						make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
 					fi ; \
@@ -287,27 +316,12 @@ mm-%/strip:
 		fi ; \
 	fi
 
-mm-udev:
+mm-make-udev:
 	$(foreach file, $(shell cd ./dirs/udev ; ls -1 dev.d/*/*.dev       ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/bin/*          ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/rules.d/*.rules), install -m 644 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 
-mm-conf:
-	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
-	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
-	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
-	@$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
-	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
-	@rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
-	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
-	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
-	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
-	@ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
-	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
-	@ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
+mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
 	@mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
 	@rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
