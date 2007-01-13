@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

@@ -94,6 +94,14 @@ sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_qtprefix = $(\1_libdir)/qt%g'
 sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_qtprefix ?= $(main_qtprefix)\n&%g' ${SCRIPT_DIR}/gar.mk
 sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%qtprefix = $($(DESTIMG)_qtprefix)\n&%g' ${SCRIPT_DIR}/gar.mk
 
+sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11sysconfdir = $(\1_sysconfdir)/X11%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11sysconfdir ?= $(main_x11sysconfdir)\n&%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11sysconfdir = $($(DESTIMG)_x11sysconfdir)\n&%g' ${SCRIPT_DIR}/gar.mk
+
+sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11mandir = $(\1_x11prefix)/man%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11mandir ?= $(main_x11mandir)\n&%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11mandir = $($(DESTIMG)_x11mandir)\n&%g' ${SCRIPT_DIR}/gar.mk
+
 sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_x11libdir = $(\1_x11prefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_x11libdir ?= $(main_x11libdir)\n&%g' ${SCRIPT_DIR}/gar.mk
 sed -i 's%^exec_prefix *= *$($(DESTIMG)_exec_prefix)%x11libdir = $($(DESTIMG)_x11libdir)\n&%g' ${SCRIPT_DIR}/gar.mk
