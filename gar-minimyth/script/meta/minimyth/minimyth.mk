@@ -127,7 +127,7 @@ COPY_FILES = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-copy-libs mm-strip mm-gen-files mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
 
 mm-check:
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
@@ -221,7 +221,14 @@ mm-make-conf:
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
 
-mm-remove:
+mm-remove-pre:
+	@# Remove unwanted binaries, etc, shares and libraries.
+	@echo 'removing unwanted files'
+	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
+		rm -rf $${remove} ; \
+	done
+
+mm-remove-post:
 	@# Remove unwanted binaries, etc, shares and libraries.
 	@echo 'removing unwanted files'
 	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
