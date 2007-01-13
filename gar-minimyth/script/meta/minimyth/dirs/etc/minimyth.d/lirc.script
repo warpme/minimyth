@@ -4,8 +4,15 @@
 #
 # This script configures and starts LIRC.
 ################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-. /etc/minimyth.d/minimyth.functions
+MM_LIRC_DEVICE=`mm_var_get MM_LIRC_DEVICE`
+MM_LIRC_DRIVER=`mm_var_get MM_LIRC_DRIVER`
+MM_LIRC_KERNEL_MODULE=`mm_var_get MM_LIRC_KERNEL_MODULE`
+MM_LIRC_KERNEL_MODULE_OPTIONS=`mm_var_get MM_LIRC_KERNEL_MODULE_OPTIONS`
+MM_LIRC_REMOTE=`mm_var_get MM_LIRC_REMOTE`
+
+mm_dir_make_rw /etc
 
 # Load the LIRC configuration files.
 if [ -n ${MM_LIRC_REMOTE} ] ; then
@@ -16,6 +23,10 @@ if [ -n ${MM_LIRC_REMOTE} ] ; then
         cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /etc/lircrc
     fi
 fi
+
+# Get the LIRC configuration files.
+mm_conf_get /lircd.conf /etc/lircd.conf
+mm_conf_get /lircrc /etc/lircrc
 
 # If the LIRC driver is known, pick reasonable defaults.
 case "${MM_LIRC_DRIVER}" in
@@ -36,11 +47,14 @@ case "${MM_LIRC_DRIVER}" in
         ;;
 esac
 
-# Load kernel module (if needed) and start the LIRC daemon.
+# Load kernel module (if needed).
+if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
+    modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
+fi
+# Start the LIRC daemon.
 if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
-    if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
-        modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
-    fi
+    mkdir -p /var/lock
+    mkdir -p /var/run
     if [ -e /usr/sbin/lircd.${MM_LIRC_DRIVER} ] ; then
     	lircd.${MM_LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
     else
