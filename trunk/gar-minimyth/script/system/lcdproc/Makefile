@@ -17,5 +17,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-drivers=mtxorb,cfontz,cwlnx,curses,lb216,hd44780,bayrad,glk,stv5730,sed1330,sed1520,lcdm001,t6963,wirz-sli,sgx120
+BUILD_ARGS     = \
+	CFLAGS="$(CFLAGS)"
+INSTALL_ARGS   = \
+	CFLAGS="$(CFLAGS)"
 
 include ../../gar.mk
