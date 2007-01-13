@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libmad X11/fontconfig X11/freetype X11/X11 X11/sdl lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/libvorbis X11/fontconfig X11/freetype X11/X11 X11/sdl lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -51,22 +51,22 @@ CONFIGURE_ARGS_OPTIONAL = \
 # Codecs
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
-	--disable-png \
-	--disable-jpeg \
+	--enable-png \
+	--enable-jpeg \
 	--disable-win32 \
 	--disable-xanim \
 	--disable-real \
-	--disable-vorbis \
+	--enable-vorbis \
 	--disable-internal-matroska \
 	--enable-mad
 # Video output: enable xv (requires x11 and vm) and xxmc
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix \
-	--disable-gl \
+	--enable-gl \
 	--disable-dga \
 	--disable-vesa \
 	--disable-svga \
-	--disable-sdl \
+	--enable-sdl \
 	--disable-aa \
 	--disable-caca \
 	--disable-ggi \
@@ -81,7 +81,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-xvmc \
 	--enable-xxmc \
 	--enable-vm \
-	--disable-xinerama \
+	--enable-xinerama \
 	--enable-x11 \
 	--disable-fbdev \
 	--disable-mlib \
@@ -96,7 +96,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-md5sum
 # Audio output: enable alsa
 CONFIGURE_ARGS_AUDIO = \
-	--disable-alsa \
+	--enable-alsa \
 	--enable-ossaudio \
 	--disable-arts \
 	--disable-esd \
@@ -114,15 +114,15 @@ CONFIGURE_ARGS_MISC = \
 	--as="$(AS)" \
 	--target="$(GARCH)-linux"
 CONFIGURE_ARGS_ADVANCED = \
-	--$(if $(filter, $(GARCH), c3 c3-2),enable,disable)-mmx \
+	--$(if $(filter $(GARCH), c3 c3-2),enable,disable)-mmx \
 	--disable-mmx2 \
-	--$(if $(filter, $(GARCH), c3     ),enable,disable)-3dnow \
+	--$(if $(filter $(GARCH), c3     ),enable,disable)-3dnow \
 	--disable-3dnowex \
-	--$(if $(filter, $(GARCH),    c3-2),enable,disable)-sse \
+	--$(if $(filter $(GARCH),    c3-2),enable,disable)-sse \
 	--disable-sse2 \
 	--enable-shm \
 	--disable-altivec \
-	--disable-fastmemcpy \
+	--enable-fastmemcpy \
 	--disable-big-endian
 CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
