@@ -3,7 +3,7 @@ GARVERSION = 1.00
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
-DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
+DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE) halt
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -59,3 +59,5 @@ configure-custom:
 
 install-custom:
 	@$(INSTALL_ENV) $(MAKE) -C $(WORKSRC) PREFIX=$(DESTDIR)$(rootdir) install
+	@rm $(DESTDIR)/sbin/halt
+	@cp $(DOWNLOADDIR)/halt $(DESTDIR)/sbin/halt
