@@ -174,15 +174,8 @@ conf_write() {
     ###########################################################################
 
     # Default hardware.
-    case `cat /proc/cpuinfo | grep '^model name' | cut -d ':' -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
-        AMD\ Athlon\(tm\)\ 64\ Processor\ *) _MM_HARDWARE_CPU='ATHLON64' ;;
-        VIA\ Nehemiah)                       _MM_HARDWARE_CPU='C3-2'     ;;
-        VIA\ Samuel\ 2)                      _MM_HARDWARE_CPU='C3'       ;;
-        *)                                   _MM_HARDWARE_CPU=''         ;;
-    esac
-    MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-${_MM_HARDWARE_CPU}}
-    _MM_HARDWARE_KERNEL_MODULES=`mm_hardware_pci_process mm_hardware_pci2kernel_map`
-    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-${_MM_HARDWARE_KERNEL_MODULES}}
+    MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-`mm_hardware_cpu_get`}
+    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-`mm_hardware_pci_process mm_hardware_pci2kernel_map`}
     # Default CPU frequency governor.
     MM_CPUFREQ_GOVERNOR=${MM_CPUFREQ_GOVERNOR:-'performance'}
     # Default audio.
@@ -191,10 +184,8 @@ conf_write() {
     MM_VIDEO_ASPECT_RATIO=${MM_VIDEO_ASPECT_RATIO:-'4:3'}
     MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
     # Default X.
-    _MM_X_DRIVER=`mm_hardware_pci_process mm_hardware_pci2x_map | cut -d ' ' -f 1`
-    MM_X_DRIVER=${MM_X_DRIVER:-${_MM_X_DRIVER}}
-    _MM_X_KERNEL_MODULES=`mm_hardware_x2kernel_map ${MM_X_DRIVER}`
-    MM_X_KERNEL_MODULES=${MM_X_KERNEL_MODULES:-${_MM_X_KERNEL_MODULES}}
+    MM_X_DRIVER=${MM_X_DRIVER:-`mm_hardware_pci_process mm_hardware_pci2x_map | cut -d ' ' -f 1`}
+    MM_X_KERNEL_MODULES=${MM_X_KERNEL_MODULES:-`mm_hardware_x2kernel_map "${MM_X_DRIVER}"`}
     MM_X_ENABLED=${MM_X_ENABLED:-'yes'}
     MM_X_WM_ENABLED=${MM_X_WM_ENABLED:-'no'}
     MM_X_VNC_ENABLED=${MM_X_VNC_ENABLED:-'yes'}
@@ -203,25 +194,23 @@ conf_write() {
     MM_X_TV_ENABLED=${MM_X_TV_ENABLED:-'yes'}
     MM_X_TV_TYPE=${MM_X_TV_TYPE:-'NTSC'}
     MM_X_TV_OUTPUT=${MM_X_TV_OUTPUT:-'Composite'}
-    case "${MM_X_TV_TYPE}" in
-        NTSC) _MM_X_REFRESH='60' ;;
-        PAL)  _MM_X_REFRESH='50' ;;
-        *)    _MM_X_REFRESH=''   ;;
-    esac
-    case "${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED}" in
-        yes:no:no)
-            case "${MM_X_TV_TYPE}" in
-                NTSC) _MM_X_MODE='720x480Noscale' ;;
-                PAL)  _MM_X_MODE='720x576Noscale' ;;
-                *)    _MM_X_MODE=''               ;;
-            esac
-            ;;
-        *)
-            _MM_X_MODE='800x600'
-            ;;
-    esac
-    MM_X_REFRESH=${MM_X_REFRESH:-${_MM_X_REFRESH}}
-    MM_X_MODE=${MM_X_MODE:-${_MM_X_MODE}}
+    MM_X_REFRESH=${MM_X_REFRESH:-`
+        case "${MM_X_TV_TYPE}" in
+            NTSC) echo '60' ;;
+            PAL)  echo '50' ;;
+        esac`}
+    MM_X_MODE=${MM_X_MODE:-`
+        case "${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED}" in
+            yes:no:no)
+                case "${MM_X_TV_TYPE}" in
+                    NTSC) echo '720x480Noscale' ;;
+                    PAL)  echo '720x576Noscale' ;;
+                esac
+                ;;
+            *)
+                echo '800x600'
+                ;;
+        esac`}
     # Default Myth master backend.
     MM_MYTH_SERVER=${MM_MYTH_SERVER:-${MM_TFTP_SERVER}}
     MM_MYTH_DBUSERNAME=${MM_MYTH_DBUSERNAME:-'mythtv'}
@@ -338,11 +327,6 @@ start() {
         mm_message_output err 'error: no minimyth.conf configuration file found.'
         exit 1
     fi
-
-    # Get hardware configuration files.
-    mm_conf_get /pci2kernel.map /etc/hardware.d/pci2kernel.map
-    mm_conf_get /pci2x.map      /etc/hardware.d/pci2x.map
-    mm_conf_get /x2kernel.map   /etc/hardware.d/x2kernel.map
 
     core_check
     dhcp_check

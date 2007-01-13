@@ -582,3 +582,12 @@ mm_hardware_x2kernel_map() {
         done
     }
 }
+
+mm_hardware_cpu_get() {
+    case `cat /proc/cpuinfo | grep '^model name' | cut -d ':' -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
+        AMD\ Athlon\(tm\)\ 64\ Processor\ *) echo 'athlon64' ;;
+        VIA\ Nehemiah)                       echo 'c3-2'     ;;
+        VIA\ Samuel\ 2)                      echo 'c3'       ;;
+        *)                                   echo ''         ;;
+    esac
+}
