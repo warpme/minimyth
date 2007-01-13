@@ -361,30 +361,35 @@ mm-make-initrd:
 
 mm-make-distro:
 	@echo 'making minimyth distribution'
-	@# Make root file system cram image and tarball files.
-	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME)
-	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME).bz2
-	rm -rf $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
-	mkdir -p $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
-	fakeroot sh -c                                                                  " \
-		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/initctl p     ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/rootfs.d  ; \
-		chmod -R go-w $(WORKSRC)/rootfs.d                                       ; \
-		mkfs.cramfs $(WORKSRC)/rootfs.d $(WORKSRC)/$(mm_ROOTFSNAME)             ; \
-		tar -C $(WORKSRC)/rootfs.d -jcf $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 .   "
-	@# Make extras cram image and tarball files.
-	rm -rf $(WORKSRC)/$(mm_EXTRASNAME).cmg
-	rm -rf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
-	fakeroot sh -c                                                      " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/extras.d  ; \
-		chmod -R go-w $(WORKSRC)/rootfs.d                                       ; \
-		mkfs.cramfs $(WORKSRC)/extras.d $(WORKSRC)/$(mm_EXTRASNAME).cmg         ; \
-		tar -C $(WORKSRC)/extras.d -jcf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 . "
+	@# Make root file system squashfs image and tarball files.
+	@rm -rf $(WORKSRC)/$(mm_ROOTFSNAME)
+	@rm -rf $(WORKSRC)/$(mm_ROOTFSNAME).bz2
+	@rm -rf $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
+	@mkdir -p $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
+	@fakeroot sh -c                                                                     " \
+		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/console c 5 1     ; \
+		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/initctl p         ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/rootfs.d      ; \
+		chmod -R go-w $(WORKSRC)/rootfs.d                                           ; \
+		mksquashfs $(WORKSRC)/rootfs.d $(WORKSRC)/$(mm_ROOTFSNAME) > /dev/null 2>&1 ; \
+		tar -C $(WORKSRC)/rootfs.d -jcf $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 .       "
+	@chmod 644 $(WORKSRC)/$(mm_ROOTFSNAME)
+	@chmod 644 $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2
+	@# Make extras squashfs image and tarball files.
+	@rm -rf $(WORKSRC)/$(mm_EXTRASNAME).sfs
+	@rm -rf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
+	@fakeroot sh -c                                                                         " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/extras.d          ; \
+		chmod -R go-w $(WORKSRC)/rootfs.d                                               ; \
+		mksquashfs $(WORKSRC)/extras.d $(WORKSRC)/$(mm_EXTRASNAME).sfs > /dev/null 2>&1 ; \
+		tar -C $(WORKSRC)/extras.d -jcf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 .           "
+	@chmod 644 $(WORKSRC)/$(mm_EXTRASNAME).sfs
+	@chmod 644 $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
 	@# Make source tarball file.
 	@rm -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2
 	@cd $(mm_HOME) ; make tarball
 	@mv -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
+	@chmod 644 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
 	@# Make public distribution files
 	@rm -rf $(WORKSRC)/distro.d
 	@mkdir -p $(WORKSRC)/distro.d
@@ -396,7 +401,7 @@ mm-make-distro:
 	@cp -f $(mm_HOME)/docs/minimyth.dhcp       $(WORKSRC)/distro.d/minimyth.dhcp
 	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
 	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
-	@cp -f ./files/mkusbkey                    $(WORKSRC)/distro.d/mkusbkey
+	@cp -f ./files/mkflashboot                 $(WORKSRC)/distro.d/mkflashboot
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> md5sums.txt
@@ -405,7 +410,7 @@ mm-make-distro:
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.dhcp            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum mkusbkey                 >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum mkflashboot              >> md5sums.txt
 
 mm-install: mm-check
 	@rm -rf $(mm_DESTDIR)
@@ -414,7 +419,7 @@ mm-install: mm-check
 	@cp -f  $(WORKSRC)/$(mm_KERNELNAME)         $(mm_DESTDIR)/$(mm_KERNELNAME)
 	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME)         $(mm_DESTDIR)/$(mm_ROOTFSNAME)
 	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).cmg     $(mm_DESTDIR)/$(mm_EXTRASNAME).cmg
+	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs     $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs
 	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2
 	@cp -rf $(WORKSRC)/distro.d                 $(mm_DESTDIR)/distro.d
 	@if [ $(mm_INSTALL_CRAMFS) = yes ] || [ $(mm_INSTALL_NFS) = yes ] ; then \
@@ -430,8 +435,8 @@ mm-install: mm-check
 				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
 				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME) $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
 				\
-				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
-				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).cmg $(mm_TFTPDIR)/$(mm_EXTRASNAME).cmg ; \
+				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
+				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
 			fi ; \
 			\
 			if [ $(mm_INSTALL_NFS) = yes ] ; then \

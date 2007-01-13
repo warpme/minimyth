@@ -3,7 +3,7 @@ GARVERSION = 1.0.11
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-depmod.patch
+PATCHFILES = $(DISTNAME)-depmod.patch $(DISTNAME)-ac97_vt1617a.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -43,3 +43,7 @@ LDFLAGS  :=
 
 IUSER  := `id -u`
 IGROUP := `id -g`
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/alsa/"

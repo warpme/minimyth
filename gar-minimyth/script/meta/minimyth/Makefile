@@ -40,6 +40,7 @@ DEPENDS = \
 	utils/regionset \
 	X11/rxvt \
 	system/splashutils \
+	utils/squashfs \
 	devel/strace \
 	system/sysvinit \
 	utils/transcode \
@@ -60,6 +61,7 @@ BUILDDEPS = \
 	utils/coreutils \
 	devel/fakeroot \
 	utils/file \
+	utils/squashfs \
 	utils/tar \
 	utils/util-linux \
 	xorg/xorg
