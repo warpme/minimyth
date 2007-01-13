@@ -64,9 +64,14 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
-		mv -f $(CROSS_GCC_DIR)/lib64 $(CROSS_GCC_LIBDIR) ; \
-		rm -rf $(CROSS_GCC_DIR)/lib64 ; \
+	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
+		$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
+			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
+			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
+		) \
+		$(if $(wildcard $(CROSS_GCC_LIBDIR)/specs), \
+			sed -i 's%/lib64%/lib%' $(DESTDIR)$(CROSS_GCC_LIBDIR)/specs ; \
+		) \
 	)
 	@$(MAKECOOKIE)
 

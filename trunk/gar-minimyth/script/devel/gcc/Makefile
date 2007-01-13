@@ -66,10 +66,6 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
-		mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
-		rm -rf $(CROSS_GCC_DIR)/lib64 ; \
-	)
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
@@ -78,6 +74,13 @@ post-install:
 		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
 	)
 	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
+		$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
+			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
+			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
+		) \
+		$(if $(wildcard $(CROSS_GCC_LIBDIR)/specs), \
+			sed -i 's%/lib64%/lib%' $(DESTDIR)$(CROSS_GCC_LIBDIR)/specs ; \
+		) \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-gcc $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cc ; \
