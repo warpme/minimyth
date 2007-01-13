@@ -1,65 +1,56 @@
 diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/playlist.cpp mythplugins-0.18.1-new/mythmusic/mythmusic/playlist.cpp
 --- mythplugins-0.18.1-old/mythmusic/mythmusic/playlist.cpp	2005-02-23 12:41:08.000000000 -0800
-+++ mythplugins-0.18.1-new/mythmusic/mythmusic/playlist.cpp	2005-05-16 06:38:04.372714691 -0700
-@@ -329,11 +329,9 @@
-     MSqlQuery query(MSqlQuery::InitCon());
++++ mythplugins-0.18.1-new/mythmusic/mythmusic/playlist.cpp	2005-05-16 17:16:10.108519984 -0700
+@@ -330,10 +330,11 @@
      query.prepare("SELECT playlistid FROM musicplaylist "
                    "WHERE name != :DEFAULT  "
--                  "AND name != :BACKUP  "
+                   "AND name != :BACKUP  "
 -                  "AND hostname = :HOST ORDER BY playlistid ;");
-+                  "AND name != :BACKUP ORDER BY playlistid ;");
++                  "AND (hostname = :HOST OR hostname = :EMPTY) ORDER BY playlistid ;");
      query.bindValue(":DEFAULT", "default_playlist_storage");
      query.bindValue(":BACKUP", "backup_playlist_storage"); 
--    query.bindValue(":HOST", my_host);
+     query.bindValue(":HOST", my_host);
++    query.bindValue(":EMPTY", "");
  
      if (query.exec() && query.isActive() && query.size() > 0)
      {
-@@ -469,11 +467,20 @@
-     }
-    
+@@ -471,9 +472,10 @@
      MSqlQuery query(MSqlQuery::InitCon());
--    query.prepare("SELECT playlistid, name, songlist FROM "
--                  "musicplaylist WHERE name = :NAME AND "
+     query.prepare("SELECT playlistid, name, songlist FROM "
+                   "musicplaylist WHERE name = :NAME AND "
 -                  "hostname = :HOST ;");
--    query.bindValue(":NAME", a_name);
--    query.bindValue(":HOST", a_host);
-+    if ((a_name == "default_playlist_storage") || (a_name == "backup_playlist_storage"))
-+    {
-+        query.prepare("SELECT playlistid, name, songlist FROM "
-+                      "musicplaylist WHERE name = :NAME AND "
-+                      "hostname = :HOST ;");
-+        query.bindValue(":NAME", a_name);
-+        query.bindValue(":HOST", a_host);
-+    }
-+    else
-+    {
-+        query.prepare("SELECT playlistid, name, songlist FROM "
-+                      "musicplaylist WHERE name = :NAME ;");
-+        query.bindValue(":NAME", a_name);
-+    }
++                  "(hostname = :HOST OR hostname = :EMPTY) ;");
+     query.bindValue(":NAME", a_name);
+     query.bindValue(":HOST", a_host);
++    query.bindValue(":EMPTY", "");
  
      if (query.exec() && query.size() > 0)
      {
-@@ -500,10 +507,8 @@
- {
+@@ -501,9 +503,10 @@
      MSqlQuery query(MSqlQuery::InitCon());
      query.prepare("SELECT playlistid, name, songlist FROM "
--                  "musicplaylist WHERE playlistid = :ID AND "
+                   "musicplaylist WHERE playlistid = :ID AND "
 -                  "hostname = :HOST ;");
-+                  "musicplaylist WHERE playlistid = :ID ;");
++                  "(hostname = :HOST OR hostname = :EMPTY) ;");
      query.bindValue(":ID", id);
--    query.bindValue(":HOST", a_host);
+     query.bindValue(":HOST", a_host);
++    query.bindValue(":EMPTY", "");
  
      query.exec();
  
-@@ -729,9 +734,8 @@
-     query.exec();
- 
-     query.prepare("SELECT playlistid FROM musicplaylist WHERE "
--                  "name = :NAME AND hostname = :HOST ;");
-+                  "name = :NAME ;");
-     query.bindValue(":NAME", name.utf8());
--    query.bindValue(":HOST", a_host);
- 
-     if (query.exec() && query.isActive() && query.size() > 0)
-     {
+@@ -1108,13 +1111,13 @@
+         Playlist *a_list;
+         for(a_list = all_other_playlists->last(); a_list; a_list = all_other_playlists->prev())
+         {
+-            if (a_list->getID() * -1 == index)
++            if (a_list->getID() == index)
+             {
+                 return a_list->getName();   
+             }
+         }
+     }
+-    cerr << "playlist.o: Asked to getPlaylistName() with an index number I couldn't find" << endl ;
++    cerr << "playlist.o: Asked to getPlaylistName() with an index number (" << index << ") I couldn't find" << endl ;
+     reference = true;
+     return QObject::tr("Something is Wrong");
+ }
