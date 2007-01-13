@@ -1,7 +1,8 @@
 GARNAME = libdrm
-GARVERSION = 2.0
+GARVERSION = 20060131
 CATEGORIES = xorg
-MASTER_SITES = http://dri.freedesktop.org/libdrm/
+MASTER_SITES  = http://dri.freedesktop.org/libdrm/
+MASTER_SITES += cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = 
 
@@ -21,13 +22,18 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
-cvs//%$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar -zcf $(DISTNAME).tar.gz $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+cvs//%$(DISTNAME).tar.gz:
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR) ; cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) drm
+	@cd $(PARTIALDIR) ; tar -zcf $(DISTNAME).tar.gz $(DISTNAME)
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.gz:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 post-install:

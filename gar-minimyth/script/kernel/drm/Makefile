@@ -1,5 +1,5 @@
 GARNAME = drm
-GARVERSION = 20060126
+GARVERSION = 20060131
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -27,10 +27,7 @@ GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 cvs//%$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) $(GARNAME)
 	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
