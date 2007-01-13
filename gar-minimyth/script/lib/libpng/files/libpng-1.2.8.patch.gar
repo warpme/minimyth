@@ -1,6 +1,6 @@
 diff -Naur libpng-1.2.8-config-old/Makefile.in libpng-1.2.8-config-new/Makefile.in
 --- libpng-1.2.8-config-old/Makefile.in	2004-12-02 16:14:51.000000000 -0800
-+++ libpng-1.2.8-config-new/Makefile.in	2005-01-16 11:21:32.580140118 -0800
++++ libpng-1.2.8-config-new/Makefile.in	2005-10-27 16:50:05.000000000 -0700
 @@ -885,9 +885,9 @@
  libpng-config:
  	( cat ${srcdir}/scripts/libpng-config-head.in; \
@@ -8,20 +8,29 @@ diff -Naur libpng-1.2.8-config-old/Makefile.in libpng-1.2.8-config-new/Makefile.
 -	echo I_opts=\"-I$(includedir)\"; \
 -	echo L_opts=\"-L$(libdir)\"; \
 -	echo R_opts=\"-Wl,-rpath,$(libdir)\"; \
-+	echo I_opts=\"-I\$${DESTDIR}$(includedir)\"; \
-+	echo L_opts=\"-L\$${DESTDIR}$(libdir)\"; \
-+	echo R_opts=\"-Wl,-rpath-rlink,\$${DESTDIR}$(libdir)\"; \
++	echo I_opts=\"-I$(DESTDIR)$(includedir)\"; \
++	echo L_opts=\"-L$(DESTDIR)$(libdir)\"; \
++	echo R_opts=\"-Wl,-rpath-rlink,$(DESTDIR)$(libdir)\"; \
  	echo libs=\"-lpng12 -lz -lm\"; \
  	cat ${srcdir}/scripts/libpng-config-body.in ) > libpng-config
  
 diff -Naur libpng-1.2.8-config-old/scripts/libpng.pc.in libpng-1.2.8-config-new/scripts/libpng.pc.in
 --- libpng-1.2.8-config-old/scripts/libpng.pc.in	2004-12-02 16:14:31.000000000 -0800
-+++ libpng-1.2.8-config-new/scripts/libpng.pc.in	2005-01-16 11:21:32.580140118 -0800
-@@ -7,5 +7,5 @@
++++ libpng-1.2.8-config-new/scripts/libpng.pc.in	2005-10-27 16:53:01.000000000 -0700
+@@ -1,11 +1,12 @@
+ 
++DESTDIR=@GAR_DESTDIR@
+ prefix=@PREFIX@
+ exec_prefix=${prefix}
+-libdir=${exec_prefix}/lib
+-includedir=${exec_prefix}/include
++libdir=@GAR_libdir@
++includedir=@GAR_includedir@
+ 
  Name: libpng12
  Description: Loads and saves PNG files
  Version: 1.2.8
 -Libs: -L${libdir} -lpng12 -lz -lm
 -Cflags: -I${includedir}/libpng12
-+Libs: -L${DESTDIR}${libdir} -lpng12 -lz -lm
-+Cflags: -I${DESTDIR}${includedir}/libpng12
++Libs: -L$DESTDIR/$libdir -lpng12 -lz -lm
++Cflags: -I$DESTDIR/$includedir/libpng12

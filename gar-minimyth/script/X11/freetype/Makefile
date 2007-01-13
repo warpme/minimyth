@@ -3,7 +3,7 @@ GARVERSION = 2.1.10
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = FTL/GPL2
 FTL_LICENSE_TEXT = $(WORKSRC)/docs/FTL.TXT
 

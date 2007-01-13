@@ -1,21 +1,28 @@
 diff -Naur libusb-0.1.10a-old/libusb-config.in libusb-0.1.10a-new/libusb-config.in
 --- libusb-0.1.10a-old/libusb-config.in	2002-05-13 15:29:07.000000000 -0700
-+++ libusb-0.1.10a-new/libusb-config.in	2005-06-01 05:24:50.452352641 -0700
-@@ -50,8 +50,8 @@
++++ libusb-0.1.10a-new/libusb-config.in	2005-10-27 17:03:37.000000000 -0700
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ 
++DESTDIR=@GAR_DESTDIR@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ exec_prefix_set=no
+@@ -50,8 +51,8 @@
        exit 0
        ;;
      --cflags)
 -      if test "@includedir@" != /usr/include ; then
 -        includes="-I@includedir@"
-+      if test "${DESTDIR}@includedir@" != /usr/include ; then
-+        includes="-I${DESTDIR}@includedir@"
++      if test "@includedir@" != "@GAR_includedir@" ; then
++        includes="-I$DESTDIR/@includedir@"
        fi
        echo_cflags=yes
        ;;
-@@ -75,5 +75,5 @@
+@@ -75,5 +76,5 @@
  	echo $includes
  fi
  if test "$echo_libs" = "yes"; then
 -	echo -L@libdir@ -lusb @OSLIBS@
-+	echo -L${DESTDIR}@libdir@ -lusb @OSLIBS@
++	echo -L$DESTDIR/@libdir@ -lusb @OSLIBS@
  fi
