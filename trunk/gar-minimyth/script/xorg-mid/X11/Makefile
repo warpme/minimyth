@@ -3,7 +3,6 @@ GARVERSION = $(XORG_VERSION)
 CATEGORIES = xorg-mid
 MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
-MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 PATCHFILES  = $(GARNAME)R$(GARVERSION)-CAN-2005-2495.patch $(GARNAME)R$(GARVERSION)-CAN-2006-1526.patch
 PATCHFILES += $(GARNAME)R$(GARVERSION)-gcc4.patch $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
@@ -68,14 +67,6 @@ CONFIG_FILE_HEADER = \
 CONFIG_FILE_APPEND = \
 	echo "\#undef  $(1)"      >> $(CONFIG_FILE); \
 	echo "\#define $(1) $(2)" >> $(CONFIG_FILE)
-
-
-cvs//%$(GARNAME)R$(GARVERSION)-src.tar.bz2:
-	@cd $(PARTIALDIR); rm -rf xc
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) xc
-	@cd $(PARTIALDIR); tar -jcf $(GARNAME)R$(GARVERSION)-src.tar.bz2 xc
-	@cd $(PARTIALDIR); rm -rf xc
-	@$(MAKECOOKIE)
 
 disable-checksum-$(GARNAME)R$(GARVERSION)-src.tar.bz2:
 	@$(MAKECOOKIE)
