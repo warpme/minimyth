@@ -45,15 +45,15 @@ while read setting ; do
     mm_mythdb_setting_update "${setting_value}" "${setting_data}"
 done
 
-# Configure Myth database settings to match MiniMyth frontend.
-cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING=' | sed -e 's%^MM_MYTHDB_SETTING=%%' | \
+# Configure Myth database jumppoints to match MiniMyth frontend.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_JUMPPOINT=' | sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
     sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
     sed -e 's%^"%%'    -e 's%"$%%'    | \
     sed -e "s%^'%%"    -e "s%'$%%"    |
-while read setting ; do
-    setting_value=`echo ${setting} | cut -d~ -f1`
-    setting_data=`echo ${setting} | cut -d~ -f2`
-    mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+while read jumppoint ; do
+    jumppoint_destination=`echo ${jumppoint} | cut -d~ -f1`
+    jumppoint_keylist=`echo ${jumppoint} | cut -d~ -f2`
+    mm_mythdb_jumppoint_update "${jumppoint_destination}" "${jumppoint_keylist}"
 done
 
 # Configure Myth database keybindings to match MiniMyth frontend.
@@ -66,6 +66,17 @@ while read keybinding ; do
     keybinding_action=`echo ${keybinding} | cut -d~ -f2`
     keybinding_keylist=`echo ${keybinding} | cut -d~ -f3`
     mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
+done
+
+# Configure Myth database settings to match MiniMyth frontend.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING=' | sed -e 's%^MM_MYTHDB_SETTING=%%' | \
+    sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+    sed -e 's%^"%%'    -e 's%"$%%'    | \
+    sed -e "s%^'%%"    -e "s%'$%%"    |
+while read setting ; do
+    setting_value=`echo ${setting} | cut -d~ -f1`
+    setting_data=`echo ${setting} | cut -d~ -f2`
+    mm_mythdb_setting_update "${setting_value}" "${setting_data}"
 done
 
 # Delete disabled plugins.
