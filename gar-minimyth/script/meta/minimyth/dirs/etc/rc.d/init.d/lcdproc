@@ -5,7 +5,7 @@
 . /etc/rc.d/functions
 
 start() {
-    mm_message_output info 'starting LCD display ...'
+    mm_message_output info 'starting LCD/VFD display ...'
 
     # LCDd is already running, so return.
     if /usr/bin/test -n "`/bin/pidof LCDd`" ; then
@@ -14,10 +14,10 @@ start() {
 
     # No LCDproc driver was provided, so see whether or not we can autodetect it.
     if /usr/bin/test -z "${MM_LCDPROC_DRIVER}" ; then
-        /usr/bin/logger -t minimyth -p "local0.info" "MM_LCDPROC_DRIVER not set. attempting to autodetect LCD display."
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_LCDPROC_DRIVER not set. attempting to autodetect LCD/VFD display."
         MM_LCDPROC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lcdproc_map`
         if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
-            /usr/bin/logger -t minimyth -p "local0.info" "autodetected LCD display '${MM_LCDPROC_DRIVER}'."
+            /usr/bin/logger -t minimyth -p "local0.info" "autodetected LCD/VFD display '${MM_LCDPROC_DRIVER}'."
         fi
     fi
 
@@ -40,7 +40,7 @@ start() {
 
 
 stop() {
-    mm_message_output info 'stopping LCD display ...'
+    mm_message_output info 'stopping LCD/VFD display ...'
 
     /usr/bin/test -n "`/bin/pidof mythlcdserver`" && /usr/bin/killall mythlcdserver
     /usr/bin/test -n "`/bin/pidof LCDd`"          && /usr/bin/killall LCDd
