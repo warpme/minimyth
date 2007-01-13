@@ -37,7 +37,7 @@ fs-rw: mm_dir_make_rw
 	mm_dir_make_rw /usr  ; touch /usr
 	touch fs-rw
 
-fs-dev: /proc /sys
+fs-dev: /proc /sys fs-rw
 	mount -n -t tmpfs tmpfs /dev
 	mknod -m 640 /dev/mem     c 1 1
 	mknod -m 666 /dev/null    c 1 3

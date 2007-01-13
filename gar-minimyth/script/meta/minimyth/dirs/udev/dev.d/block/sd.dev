@@ -1,0 +1,18 @@
+#!/bin/sh
+
+base=$(basename $DEVNAME)
+
+case ${base} in
+    sd[a-z])
+        case ${ACTION} in
+            add)
+                mkdir -p /mnt/${base}
+                mount -t auto ${DEVNAME} /mnt/${base}
+                ;;
+            remove)
+                umount -l /mnt/${base}
+                rmdir /mnt/${base}
+                ;;
+        esac
+        ;;
+esac

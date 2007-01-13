@@ -15,6 +15,17 @@ mkdir -p /var/log
 mkdir -p /var/run
 # Create /tmp
 mount -n -t tmpfs -o size=512K tmpfs /tmp
+# Make remaining directories rw
+mkdir -p /var/unionfs
+mount -n -t tmpfs tmpfs /var/unionfs
+modprobe unionfs
+mm_dir_make_rw /bin
+mm_dir_make_rw /etc
+mm_dir_make_rw /lib
+mm_dir_make_rw /mnt
+mm_dir_make_rw /root
+mm_dir_make_rw /sbin
+mm_dir_make_rw /usr
 # Create /dev
 mount -n -t tmpfs tmpfs /dev
 mknod -m 600 /dev/console c 5 1
@@ -39,14 +50,3 @@ mkdir /dev/shm
 mount -n -t tmpfs  none /dev/shm
 echo "/sbin/udev" > /proc/sys/kernel/hotplug
 udevstart
-# Make remaining directories rw
-mkdir -p /var/unionfs
-mount -n -t tmpfs tmpfs /var/unionfs
-modprobe unionfs
-mm_dir_make_rw /bin
-mm_dir_make_rw /etc
-mm_dir_make_rw /lib
-mm_dir_make_rw /mnt
-mm_dir_make_rw /root
-mm_dir_make_rw /sbin
-mm_dir_make_rw /usr

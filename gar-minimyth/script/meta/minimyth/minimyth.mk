@@ -70,7 +70,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-check mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-conf
+mm-all: mm-check mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-udev mm-conf
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -287,26 +287,29 @@ mm-%/strip:
 		fi ; \
 	fi
 
+mm-udev:
+	$(foreach file, $(shell cd ./dirs/udev ; ls -1 dev.d/*/*.dev), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+
 mm-conf:
-	rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
-	cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
-	sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
-	sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
-	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
-	$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
-	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
-	rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
-	rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
-	rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
-	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
-	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
-	ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
-	sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
-	ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
-	rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
-	mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
-	rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
-	cp -f ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)
+	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
+	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
+	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
+	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
+	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
+	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
+	@ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
+	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
+	@ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
+	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
+	@mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
+	@rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
+	@cp -f ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)
 
 mm-install:
 	@su -c "cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp ; \
