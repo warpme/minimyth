@@ -127,7 +127,7 @@ COPY_FILES = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-copy-libs mm-strip mm-gen-files mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
 
 mm-check:
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
@@ -173,14 +173,6 @@ mm-check:
 		fi ; \
 	done
 
-checks:
-	@for bin in $(build_system_bins) ; do \
-		PATH=$(BUILD_SYSTEM_PATH) LD_LIBRARY_PATH="" binpath=`which $${bin}` ;  \
-		PATH=$(BUILD_SYSTEM_PATH) LD_LIBRARY_PATH="" package=`/bin/rpm -q --whatprovides $${binpath}` ; \
-		echo $${package}:$${binpath}:$${bin} ; \
-	done
-	
-
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
@@ -202,7 +194,43 @@ mm-copy:
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
 	@$(call COPY_FILES, "shares"   , "share"  , $(sharedirs), $(MM_SHARES))
 	@$(call COPY_FILES, "libraries", "library", $(libdirs)  , $(MM_LIBS)  )
+
+mm-make-conf:
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/fonts
+	@echo -n                                         >  $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<?xml version="1.0"?>'                    >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<fontconfig>'                             >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@cp -r ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%'          $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
+	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
+	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
+	@rm -rf $(mm_ROOTFSDIR)/root       ; cp -r ./dirs/root $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/srv        ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/srv/www/fs ; ln -sf / $(mm_ROOTFSDIR)/srv/www/fs
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
+	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
+	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+
+mm-remove:
+	@# Remove unwanted binaries, etc, shares and libraries.
+	@echo 'removing unwanted files'
+	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
+		rm -rf $${remove} ; \
+	done
+
+mm-copy-libs:
 	@# Copy dependent libraries.
+	@echo 'copying dependent libraries'
 	@make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/copy-libs DESTIMG=$(DESTIMG)
 
 mm-%/copy-libs:
@@ -238,41 +266,6 @@ mm-%/copy-libs:
 		fi ; \
 	fi
 
-mm-make-conf:
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/fonts
-	@echo -n                                         >  $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<?xml version="1.0"?>'                    >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<fontconfig>'                             >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@cp -r ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%'          $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
-	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
-	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
-	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_ROOTFSDIR)/root       ; cp -r ./dirs/root $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/srv        ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/srv/www/fs ; ln -sf / $(mm_ROOTFSDIR)/srv/www/fs
-	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
-	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
-
-mm-remove:
-	@echo 'removing unneeded files'
-	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
-		rm -rf $${remove} ; \
-	done
-	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
-	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
-	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
-
 mm-strip:
 	@echo 'stripping binaries and shared libraries'
 	@make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/strip DESTIMG=$(DESTIMG)
@@ -288,6 +281,11 @@ mm-%/strip:
 			$(STRIP) --strip-all -R .note -R .comment $* ; \
 		fi ; \
 	fi
+
+mm-gen-files:
+	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
+	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
 
 mm-make-udev:
 	$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
@@ -352,6 +350,8 @@ mm-make-distro:
 	@cp -f $(WORKSRC)/$(mm_KERNELNAME)         $(WORKSRC)/distro.d/$(mm_KERNELNAME)
 	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME)         $(WORKSRC)/distro.d/$(mm_ROOTFSNAME)
 	@cp -f $(mm_HOME)/docs/minimyth.conf       $(WORKSRC)/distro.d/minimyth.conf
+	@cp -f $(mm_HOME)/docs/minimyth.script     $(WORKSRC)/distro.d/minimyth.script
+	@cp -f $(mm_HOME)/docs/minimyth.dhcp       $(WORKSRC)/distro.d/minimyth.dhcp
 	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
 	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
 	@cp -f ./files/mkusbkey                    $(WORKSRC)/distro.d/mkusbkey
@@ -359,6 +359,8 @@ mm-make-distro:
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum minimyth.dhcp            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum mkusbkey                 >> md5sums.txt

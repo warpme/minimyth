@@ -5,6 +5,8 @@
 
 . /etc/conf
 
+[ -r /etc/minimyth.d/minimyth.dhcp ] && ./etc/minimyth.d/minimyth.dhcp
+
 DHCP_CONF="/etc/conf.d/dhcp"
 HOSTS_CONF="/etc/hosts"
 NTP_CONF="/etc/ntp.conf"
@@ -27,6 +29,12 @@ case "$1" in
         fi
         ;;
     renew|bound)
+        [ -z "$hostname" ] && [ -n "$MM_DHCP_HOSTNAME"    ] && hostname=$MM_DHCP_HOSTNAME
+        [ -z "$domain"   ] && [ -n "$MM_DHCP_DOMAINNAME"  ] && domain=$MM_DHCP_DOMAINNAME
+        [ -z "$dns"      ] && [ -n "$MM_DHCP_DNS_SERVERS" ] && dns=$MM_DHCP_DNS_SERVERS
+        [ -z "$ntpsrv"   ] && [ -n "$MM_DHCP_NTP_SERVERS" ] && ntpsrv=$MM_DHCP_NTP_SERVERS
+        [ -z "$logsrv"   ] && [ -n "$MM_DHCP_LOG_SERVERS" ] && logsrv=$MM_DHCP_LOG_SERVERS
+
         [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
         [ -n "$subnet"    ] && NETMASK="netmask $subnet"
         ifconfig $interface $ip $BROADCAST $NETMASK
