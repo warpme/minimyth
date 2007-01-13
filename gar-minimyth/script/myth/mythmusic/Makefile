@@ -19,7 +19,8 @@ BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	--enable-opengl
+	--enable-opengl \
+	--enable-sdl
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
