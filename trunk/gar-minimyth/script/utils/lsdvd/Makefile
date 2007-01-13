@@ -23,7 +23,7 @@ include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -ldl
 
-post-patch:
+pre-configure:
 	@cd $(WORKSRC); aclocal
 	@cd $(WORKSRC); libtoolize --copy --force
 	@cd $(WORKSRC); autoconf

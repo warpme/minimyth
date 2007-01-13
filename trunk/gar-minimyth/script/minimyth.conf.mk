@@ -37,12 +37,22 @@ mm_MYTH_VERSION      ?= stable
 # the patches may no longer work.
 mm_MYTH_SVN_VERSION  ?=
 # Lists additional packages to build when minimyth is built.
-# You can use this to add your own packages or packages that are not normally
-# built You can include the results of these additional packages in the
-# MiniMyth image by listing the desired binaries, libraries configurations and
-# data to the 'user-bin-list', 'user-lib-list', 'user-minimyth-etc-list', and
-# 'user-share-list' to your $(HOME)/.minimyth directory.
 mm_USER_PACKAGES     ?=
+# Lists additional binaries to include in the MiniMyth image
+# by adding to the lists found in minimyth-bin-list and bins-share-list
+mm_USER_BIN_LIST     ?=
+# Lists additional configs to include in the MiniMyth image
+# by adding to the lists found in minimyth-etc-list and extras-etc-list
+mm_USER_ETC_LIST     ?=
+# Lists additional libraries to include in the MiniMyth image
+# by adding to the lists found in minimyth-lib-list and extras-lib-list
+mm_USER_LIB_LIST     ?=
+# Lists additional data to include in the MiniMyth image
+# by adding to the lists found in minimyth-share-list and extras-share-list
+mm_USER_REMOVE_LIST   ?=
+# Lists additional files to remove from the MiniMyth image
+# by adding to the lists found in minimyth-remove-list*.
+mm_USER_SHARE_LIST   ?=
 
 #-------------------------------------------------------------------------------
 # Variables that you are not likely to override.

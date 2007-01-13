@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += lib/libmng/package-api.mk
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
 	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
 	@cd $(WORKSRC) ; aclocal

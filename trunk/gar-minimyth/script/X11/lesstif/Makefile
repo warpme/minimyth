@@ -40,7 +40,7 @@ CONFIGURE_ENV  = \
 
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@cd $(WORKSRC) ; aclocal
 	@cd $(WORKSRC) ; libtoolize --copy --force
 	@cd $(WORKSRC) ; autoconf

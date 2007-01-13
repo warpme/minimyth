@@ -25,7 +25,7 @@ include ../../gar.mk
 
 mandir := $(mandir)/man1
 
-post-patch:
+pre-configure:
 	@cp -f $(build_DESTDIR)$(build_datadir)/libtool/config.sub $(WORKSRC)
 	@sed -i 's%^host=.*%host=$(GARHOST)%' $(WORKSRC)/ltconfig
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.

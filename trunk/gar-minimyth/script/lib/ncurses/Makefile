@@ -30,7 +30,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@sed -i '/[ \t]*CPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
 	@sed -i '/[ \t]*ACPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
 	@$(MAKECOOKIE)

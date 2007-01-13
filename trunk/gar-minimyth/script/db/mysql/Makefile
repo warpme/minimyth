@@ -41,7 +41,7 @@ CONFIGURE_ENV = $(shell cat $(WORKDIR)/config.cache.$(GARCH_FAMILY))
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@cd $(WORKSRC) ; aclocal
 	@cd $(WORKSRC) ; libtoolize --copy --force
 	@cd $(WORKSRC) ; autoconf

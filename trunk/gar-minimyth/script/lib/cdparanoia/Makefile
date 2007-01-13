@@ -36,6 +36,6 @@ extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
-post-patch:
+pre-configure:
 	@cp -f $(build_DESTDIR)$(build_datadir)/libtool/config.sub $(WORKSRC)/configure.sub
 	@$(MAKECOOKIE)

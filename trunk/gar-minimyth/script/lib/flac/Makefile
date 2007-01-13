@@ -31,7 +31,7 @@ include ../../gar.mk
 CFLAGS  += -L$(DESTDIR)$(libdir)
 LDFLAGS += -L$(DESTDIR)$(libdir)
 
-post-patch:
+pre-configure:
 	@# Tell FLAC that there is no XMMS.
 	@echo "ac_cv_path_XMMS_CONFIG=no" >  $(WORKSRC)/config.cache
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
