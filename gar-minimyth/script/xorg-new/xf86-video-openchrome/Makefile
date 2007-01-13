@@ -1,5 +1,5 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 217
+GARVERSION = 218
 CATEGORIES = xorg-new
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
