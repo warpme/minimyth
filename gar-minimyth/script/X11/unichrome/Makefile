@@ -1,9 +1,9 @@
 GARNAME = unichrome
-GARVERSION = 20050815
+GARVERSION = 153
 CATEGORIES = X11
-#MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
+MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-imakefile.patch
+#PATCHFILES = $(DISTNAME)-imakefile.patch
 LICENSE =
 
 DESCRIPTION = 
@@ -28,7 +28,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-disabled-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-unichrome:
@@ -43,7 +43,7 @@ configure-libxvmc:
 
 install-unichrome:
 	@mkdir -p $(DESTDIR)$(x11libdir)/modules/drivers
-	@cp -df $(WORKSRC)/unichrome/via_drv.o $(DESTDIR)$(x11libdir)/modules/drivers/via_drv.o
+	@cp -df $(WORKSRC)/unichrome/via_drv.so $(DESTDIR)$(x11libdir)/modules/drivers/via_drv.so
 	@$(MAKECOOKIE)
 
 install-libxvmc:
