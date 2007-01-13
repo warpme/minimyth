@@ -1,5 +1,5 @@
 GARNAME = alsa-driver
-GARVERSION = $(ALSA_VERSION)b
+GARVERSION = $(ALSA_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
 DISTFILES = $(DISTNAME).tar.bz2
