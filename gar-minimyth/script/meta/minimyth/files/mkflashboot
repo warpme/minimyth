@@ -86,14 +86,16 @@ if [ -z "${device}" ] ; then
     device_list=
     for device in `ls -1 /sys/block | grep -e '^sd.$'` ; do
         good=1
-        [ ! -e /dev/${device}                              ] && good=0
-        [ ! -d /sys/block/${device}                        ] && good=0
-        [ ! -f /sys/block/${device}/removable              ] && good=0
-        [ ! "`cat /sys/block/${device}/removable`" = "1"   ] && good=0
-        [ ! -f /sys/block/${device}/device/type            ] && good=0
-        [ ! "`cat /sys/block/${device}/device/type`" = "0" ] && good=0
-        [ ! -f /sys/block/${device}/device/vendor          ] && good=0
-        [ ! -f /sys/block/${device}/device/model           ] && good=0
+        [ ! -e /dev/${device}                            ] && good=0
+        [ ! -d /sys/block/${device}                      ] && good=0
+        [ ! -f /sys/block/${device}/removable            ] && good=0
+        [ ! `cat /sys/block/${device}/removable`   -eq 1 ] && good=0
+        [ ! -f /sys/block/${device}/size                 ] && good=0
+        [ ! `cat /sys/block/${device}/size`        -gt 0 ] && good=0
+        [ ! -f /sys/block/${device}/device/type          ] && good=0
+        [ ! `cat /sys/block/${device}/device/type` -eq 0 ] && good=0
+        [ ! -f /sys/block/${device}/device/vendor        ] && good=0
+        [ ! -f /sys/block/${device}/device/model         ] && good=0
         if [ "${good}" = "1" ] ; then
             if [ -z "${device_list}" ] ; then
                 device_list="${device}"
