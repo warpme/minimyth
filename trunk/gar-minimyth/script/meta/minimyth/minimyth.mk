@@ -279,11 +279,11 @@ mm-install:
 	@su -c "cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-		chown -R root:root $(mm_DESTDIR).tmp ; \
+		chown -Rh root:root $(mm_DESTDIR).tmp ; \
 		mknod -m 666 $(mm_DESTDIR).tmp/$(rootdir)/dev/null c 1 3 ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/$(rootdir)/dev/console c 5 1 ; \
 		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
-		chown -R root:root $(mm_EXTRASDIR).tmp ; \
+		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
 			mkfs.cramfs $(mm_DESTDIR).tmp $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
 			rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
