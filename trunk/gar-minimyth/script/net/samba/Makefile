@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-swatdir=$(datadir)/samba/swat \
 	--with-configdir=$(sysconfdir)/samba \
 	--with-logfilebase=$(localstatedir)/log/samba \
-	--with-libdir=$(libdir)/samba \
+	--with-libdir=$(libdir) \
 	--with-mandir=$(mandir) \
 	--with-smbmount
 
@@ -48,6 +48,7 @@ install-mount.cifs:
 	@$(MAKECOOKIE)
 
 post-install:
+	@ln -s libsmbclient.so $(DESTDIR)$(libdir)/libsmbclient.so.0
 	@mv -f $(DESTDIR)$(bindir)/smbmnt   $(DESTDIR)$(ebindir)/
 	@mv -f $(DESTDIR)$(bindir)/smbmount $(DESTDIR)$(ebindir)/
 	@rm -f $(DESTDIR)$(esbindir)/mount.smbfs ; ln -sf .$(call DIRSTODOTS,$(esbindir))$(ebindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs

@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/libvorbis lib/zlib X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/sdl lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libvorbis lib/zlib net/samba X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/sdl lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -42,6 +42,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-rtc \
 	--disable-edl \
 	--enable-network \
+	--enable-smb \
 	--disable-live \
 	--enable-dvdread \
 	--disable-mpdvdkit \
@@ -58,8 +59,11 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-win32 \
 	--enable-xanim \
 	--enable-real \
+	--disable-internal-tremor \
 	--enable-vorbis \
 	--enable-internal-matroska \
+	--enable-external-faad \
+	--disable-internal-faad \
 	--enable-mad
 # Video output: enable xv (requires x11 and vm) and xxmc
 CONFIGURE_ARGS_VIDEO = \

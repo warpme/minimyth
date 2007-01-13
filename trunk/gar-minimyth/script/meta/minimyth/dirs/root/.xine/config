@@ -46,6 +46,10 @@ gui.experience_level:Master of the known universe
 # string, default: /root
 #gui.snapshotdir:/root
 
+# Display splash screen
+# bool, default: 1
+gui.splash:0
+
 # Subtitle autoloading
 # bool, default: 1
 #gui.subtitle_autoload:1
@@ -86,7 +90,7 @@ gui.visual_anim:None
 # bool, default: 1
 #gui.osd_use_unscaled:1
 
-# Screensaver wakeup
+# Screensaver reset interval (s)
 # numeric, default: 10
 #gui.screensaver_timeout:10
 
@@ -110,9 +114,9 @@ gui.visual_anim:None
 # bool, default: 1
 #gui.stream_resize_window:1
 
-# tips timeout (ms)
-# numeric, default: 500
-#gui.tips_timeout:500
+# Tips timeout (ms)
+# numeric, default: 5000
+#gui.tips_timeout:5000
 
 # gui tips visibility
 # bool, default: 1
@@ -172,6 +176,62 @@ gui.setup_x:70
 
 gui.setup_y:1
 
+# color specification yuv-opacity
+# string, default: 8080c0-f
+#gui.osdmenu.color_focused_button:8080c0-f
+
+# color specification yuv-opacity
+# string, default: 808080-f
+#gui.osdmenu.color_focused_slider:808080-f
+
+# color specification yuv-opacity
+# string, default: ff8080-f
+#gui.osdmenu.color_focused_slider_knob:ff8080-f
+
+# color specification yuv-opacity
+# string, default: 808080-f
+#gui.osdmenu.color_focused_text_border:808080-f
+
+# color specification yuv-opacity
+# string, default: ff8080-f
+#gui.osdmenu.color_focused_text_foreground:ff8080-f
+
+# color specification yuv-opacity
+# string, default: 0080c0-f
+#gui.osdmenu.color_label_border:0080c0-f
+
+# color specification yuv-opacity
+# string, default: c08080-f
+#gui.osdmenu.color_label_foreground:c08080-f
+
+# color specification yuv-opacity
+# string, default: 0080c0-f
+#gui.osdmenu.color_label_window:0080c0-f
+
+# color specification yuv-opacity
+# string, default: 008000-f
+#gui.osdmenu.color_slider:008000-f
+
+# color specification yuv-opacity
+# string, default: ffff00-f
+#gui.osdmenu.color_slider_knob:ffff00-f
+
+# color specification yuv-opacity
+# string, default: 008000-f
+#gui.osdmenu.color_text_border:008000-f
+
+# color specification yuv-opacity
+# string, default: ffff00-f
+#gui.osdmenu.color_text_foreground:ffff00-f
+
+# color specification yuv-opacity
+# string, default: 0080c0-f
+#gui.osdmenu.color_text_window:0080c0-f
+
+# directory a media in dvd device will be mounted
+# string, default: /dvd
+#gui.osdmenu.dvd_mountpoint:/dvd
+
 # palette (foreground-border-background) to use for subtitles and OSD
 # { white-black-transparent  white-none-transparent  white-none-translucid  yellow-black-transparent }, default: 0
 #ui.osd.text_palette:white-black-transparent
@@ -181,7 +241,7 @@ gui.setup_y:1
 #audio.alsa_hw_mixer:1
 
 # audio driver to use
-# { auto  null  alsa  oss  none  file }, default: 0
+# { auto  null  alsa  oss  file  none }, default: 0
 audio.driver:alsa
 
 # use A/52 dynamic range compression
@@ -226,7 +286,7 @@ audio.device.alsa_front_device:default
 
 # speaker arrangement
 # { Mono 1.0  Stereo 2.0  Headphones 2.0  Stereo 2.1  Surround 3.0  Surround 4.0  Surround 4.1  Surround 5.0  Surround 5.1  Surround 6.0  Surround 6.1  Surround 7.1  Pass Through }, default: 1
-audio.output.speaker_arrangement:@SPEAKER_ARRANGEMENT@
+audio.output.speaker_arrangement:Pass Through
 
 # offset for digital passthrough
 # numeric, default: 0
@@ -253,7 +313,7 @@ audio.output.speaker_arrangement:@SPEAKER_ARRANGEMENT@
 #audio.volume.remember_volume:0
 
 # video driver to use
-# { auto  xv  xshm  xxmc  none }, default: 0
+# { auto  xv  xshm  none  xxmc  sdl  xvmc }, default: 0
 video.driver:xxmc
 
 # Unichrome cpu save
@@ -263,6 +323,10 @@ video.device.unichrome_cpu_save:1
 # pitch alignment workaround
 # bool, default: 0
 #video.device.xv_pitch_alignment:0
+
+# Use bob as accelerated deinterlace method.
+# bool, default: 0
+#video.device.xvmc_bob_deinterlacing:0
 
 # Make XvMC allocate more frames for better buffering.
 # bool, default: 0
@@ -299,10 +363,6 @@ video.device.unichrome_cpu_save:1
 # MPEG-4 postprocessing quality
 # [0..6], default: 3
 #video.processing.ffmpeg_pp_quality:3
-
-# Domains, where to ignore the HTTP proxy
-# string, default: 
-#input.http_no_proxy:
 
 # device used for CD audio
 # string, default: /dev/cdrom
@@ -368,6 +428,10 @@ video.device.unichrome_cpu_save:1
 # { key  disc  title }, default: 0
 #media.dvd.css_decryption_method:key
 
+# play mode when title/chapter is given
+# { entire dvd  one chapter }, default: 0
+#media.dvd.play_single_chapter:entire dvd
+
 # unit for seeking
 # { seek in program chain  seek in program }, default: 0
 #media.dvd.seek_behaviour:seek in program chain
@@ -378,10 +442,11 @@ video.device.unichrome_cpu_save:1
 
 # path to the title key cache
 # string, default: /root/.dvdcss/
+#media.dvd.css_cache_path:/root/.dvdcss/
 
 # file browsing start location
-# string, default: /
-#media.files.origin_path:/
+# string, default: /root/.xine
+#media.files.origin_path:/root/.xine
 
 # list hidden files
 # bool, default: 0
@@ -390,6 +455,10 @@ video.device.unichrome_cpu_save:1
 # network bandwidth
 # { 14.4 Kbps (Modem)  19.2 Kbps (Modem)  28.8 Kbps (Modem)  33.6 Kbps (Modem)  34.4 Kbps (Modem)  57.6 Kbps (Modem)  115.2 Kbps (ISDN)  262.2 Kbps (Cable/DSL)  393.2 Kbps (Cable/DSL)  524.3 Kbps (Cable/DSL)  1.5 Mbps (T1)  10.5 Mbps (LAN) }, default: 10
 #media.network.bandwidth:1.5 Mbps (T1)
+
+# Domains for which to ignore the HTTP proxy
+# string, default: 
+#media.network.http_no_proxy:
 
 # HTTP proxy host
 # string, default: 
@@ -411,37 +480,9 @@ video.device.unichrome_cpu_save:1
 # { auto  TCP  HTTP }, default: 0
 #media.network.mms_protocol:auto
 
-# automatically advance track/entry
-# bool, default: 1
-#media.vcd.autoadvance:1
-
-# default type to use on VCD autoplay
-# { track  entry  segment  playlist }, default: 3
-#media.vcd.autoplay:playlist
-
 # device used for VCD playback
 # string, default: /dev/cdrom
-#media.vcd.device: /dev/cdrom
-
-# position slider range
-# { auto  track  entry }, default: 0
-#media.vcd.length_reporting:auto
-
-# show 'rejected' LIDs
-# bool, default: 0
-#media.vcd.show_rejected:0
-
-# format string for stream comment field
-# string, default: %P - Track %T
-#media.vcd.comment_format:%P - Track %T
-
-# debug flag mask
-# numeric, default: 0
-#media.vcd.debug:0
-
-# format string for display banner
-# string, default: %F - %I %N%L%S, disk %c of %C - %v %A
-#media.vcd.title_format:%F - %I %N%L%S, disk %c of %C - %v %A
+#media.vcd.device:/dev/cdrom
 
 # v4l radio device
 # string, default: /dev/v4l/radio0
@@ -456,12 +497,12 @@ video.device.unichrome_cpu_save:1
 #media.wintv_pvr.device:/dev/video0
 
 # path to RealPlayer codecs
-# string, default: /usr/lib/win32
-#decoder.external.real_codecs_path:/usr/lib/win32
+# string, default: 
+#decoder.external.real_codecs_path:
 
 # path to Win32 codecs
-# string, default: /usr/lib/win32
-#decoder.external.win32_codecs_path:/usr/lib/win32
+# string, default: //usr/lib/win32
+#decoder.external.win32_codecs_path://usr/lib/win32
 
 # subtitle size
 # { tiny  small  normal  large  very large  huge }, default: 1
@@ -483,13 +524,9 @@ video.device.unichrome_cpu_save:1
 # bool, default: 1
 #subtitles.separate.use_unscaled_osd:1
 
-# default duration of subtitle display in seconds
-# numeric, default: 4
-#subtitles.separate.timeout:4
-
 # frames per second to generate
-# numeric, default: 10
-#effects.goom.fps:10
+# numeric, default: 14
+#effects.goom.fps:14
 
 # goom image height
 # numeric, default: 240
@@ -543,17 +580,21 @@ video.device.unichrome_cpu_save:1
 # numeric, default: 0
 #engine.decoder_priorities.ffmpegvideo:0
 
+# priority for flacdec decoder
+# numeric, default: 0
+#engine.decoder_priorities.flacdec:0
+
 # priority for gsm610 decoder
 # numeric, default: 0
 #engine.decoder_priorities.gsm610:0
 
-# priority for image decoder
-# numeric, default: 0
-#engine.decoder_priorities.image:0
-
 # priority for mad decoder
 # numeric, default: 0
 #engine.decoder_priorities.mad:0
+
+# priority for mpc decoder
+# numeric, default: 0
+#engine.decoder_priorities.mpc:0
 
 # priority for mpeg2 decoder
 # numeric, default: 0
