@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 # The version of MiniMyth.
-mm_VERSION        ?= 0.5.1.901
+mm_VERSION        ?= 0.17.0.0beta1
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -32,7 +32,7 @@ mm_NFS_ROOT       ?= /home/public
 # Variables that you are not likely to override.
 #-------------------------------------------------------------------------------
 mm_GARHOST        ?= i586-minimyth-linux-gnu
-mm_NAME           ?= minimyth-$(mm_VERSION)-$(mm_GARCH)
+mm_NAME           ?= minimyth-$(mm_VERSION).$(mm_GARCH)
 mm_NAME_PRETTY    ?= MiniMyth $(mm_VERSION) $(mm_GARCH)
 mm_BASEDIR        ?= $(mm_HOME)/images/mm
 mm_TFTPDIR        ?= $(mm_TFTP_ROOT)
