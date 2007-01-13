@@ -24,11 +24,11 @@ symlinks_add()
 {
     name="$1"
 
-    symlinks=`udevinfo -q symlink -n "${name}"`
+    symlinks="${DEVLINKS}"
 
     for symlink in ${symlinks} ; do
         dev_name="${name}"
-        dev_symlink="${symlink}"
+        dev_symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
         echo "${dev_name}=${dev_symlink}" >> /media/.symlinks
     done
     rm -f /media/.symlinks~
@@ -39,7 +39,8 @@ symlinks_add()
 
 mountpoint_remove()
 {
-    symlink="$1"
+    name="$1"
+    symlink="$2"
 
     umount -l /media/${symlink} || true
     rmdir /media/${symlink}
@@ -47,9 +48,8 @@ mountpoint_remove()
 
 mountpoint_add()
 {
-    symlink="$1"
-
-    name=`udevinfo -q name -n "${symlink}"`
+    name="$1"
+    symlink="$2"
 
     mkdir -p /media/${symlink}
     case ${name} in
@@ -68,14 +68,14 @@ case ${action} in
         symlinks_add    "${name}"
         symlinks=`cat /media/.symlinks | grep "^${name}=" | sed "s%^${name}=%%"`
         for symlink in ${symlinks} ; do
-            mountpoint_remove "${symlink}"
-            mountpoint_add    "${symlink}"
+            mountpoint_remove "${name}" "${symlink}"
+            mountpoint_add    "${name}" "${symlink}"
         done
         ;;
     remove)
         symlinks=`cat /media/.symlinks | grep "^${name}=" | sed "s%^${name}=%%"`
         for symlink in ${symlinks} ; do
-            mountpoint_remove "${symlink}"
+            mountpoint_remove "${name}" "${symlink}"
         done
         symlinks_remove "${name}"
         ;;
