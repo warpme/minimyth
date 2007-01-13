@@ -10,9 +10,12 @@ MM_MYTH_DBNAME=`mm_var_get MM_MYTH_DBNAME`
 MM_MYTH_DBPASSWORD=`mm_var_get MM_MYTH_DBPASSWORD`
 MM_MYTH_DBUSERNAME=`mm_var_get MM_MYTH_DBUSERNAME`
 MM_MYTH_SERVER=`mm_var_get MM_MYTH_SERVER`
-MM_MYTHGALLERY_URL=`mm_var_get MM_MYTHGALLERY_URL`
-MM_MYTHMUSIC_URL=`mm_var_get MM_MYTHMUSIC_URL`
-MM_MYTHVIDEO_URL=`mm_var_get MM_MYTHVIDEO_URL`
+MM_MYTHDVD_ENABLED=`mm_var_get MM_MYTHDVD_ENABLED`
+MM_MYTHGALLERY_ENABLED=`mm_var_get MM_MYTHGALLERY_ENABLED`
+MM_MYTHMUSIC_ENABLED=`mm_var_get MM_MYTHMUSIC_ENABLED`
+MM_MYTHTV_OPTICAL_DISK_ENABLED=`mm_var_get MM_MYTHTV_OPTICAL_DISK_ENABLED`
+MM_MYTHVIDEO_ENABLED=`mm_var_get MM_MYTHVIDEO_ENABLED`
+MM_MYTHWEATHER_ENABLED=`mm_var_get MM_MYTHWEATHER_ENABLED`
 MM_TFTP_SERVER=`mm_var_get MM_TFTP_SERVER`
 MM_THEMECACHE_URL=`mm_var_get MM_THEMECACHE_URL`
 
@@ -40,3 +43,33 @@ while read setting ; do
     setting_value=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ \t]*%%' -e 's%[ \t]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
     mm_mythdb_setting_update "${setting_label}" "${setting_value}"
 done
+
+# Delete disabled plugins.
+if [ "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no" ] ; then
+    sed -i 's%<depends>mythmusic mythdvd</depends>%<depends>disabled</depends>%' /usr/share/mythtv/mainmenu.xml
+fi
+if [ "${MM_MYTHDVD_ENABLED}"     = "no" ] ; then
+    rm -rf /usr/lib/mythtv/plugins/libmythdvd.so
+    rm -rf /usr/share/mythtv/dvd*
+    rm -rf /usr/share/mythtv/mythdvd*
+fi
+if [ "${MM_MYTHGALLERY_ENABLED}" = "no" ] ; then
+    rm -rf /usr/lib/mythtv/plugins/libmythgallery.so
+    rm -rf /usr/share/mythtv/gallery*
+    rm -rf /usr/share/mythtv/mythgallery*
+fi
+if [ "${MM_MYTHMUSIC_ENABLED}"   = "no" ] ; then
+    rm -rf /usr/lib/mythtv/plugins/libmythmusic.so
+    rm -rf /usr/share/mythtv/music*
+    rm -rf /usr/share/mythtv/mythmusic*
+fi
+if [ "${MM_MYTHVIDEO_ENABLED}"   = "no" ] ; then
+    rm -rf /usr/lib/mythtv/plugins/libmythvideo.so
+    rm -rf /usr/share/mythtv/video*
+    rm -rf /usr/share/mythtv/mythvideo*
+fi
+if [ "${MM_MYTHWEATHER_ENABLED}" = "no" ] ; then
+    rm -rf /usr/lib/mythtv/plugins/libmythweather.so
+    rm -rf /usr/share/mythtv/weather*
+    rm -rf /usr/share/mythtv/mythweather*
+fi
