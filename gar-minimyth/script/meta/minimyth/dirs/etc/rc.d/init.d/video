@@ -19,13 +19,13 @@ start() {
     fi
 
     if   [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ] ; then
-        mm_mythdb_setting_update Deinterlace 0
+        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update Deinterlace 0
         sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
         sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
         sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
     elif [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ] ; then
-        mm_mythdb_setting_update Deinterlace 1
-        mm_mythdb_setting_update DeinterlaceFilter bobdeint
+        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update Deinterlace 1
+        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update DeinterlaceFilter bobdeint
         sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
         sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
         sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
@@ -38,12 +38,12 @@ start() {
         nvidia)
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
-            mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
+            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
             ;;
         via)
-            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
+            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
             sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
             ;;
