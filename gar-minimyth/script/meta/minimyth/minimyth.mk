@@ -5,6 +5,18 @@ WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
+build_bins := \
+	bzip2 \
+	cvs \
+	flex \
+	grep \
+	gzip \
+	patch \
+	perl \
+	sed \
+	svn \
+	tar
+
 mm_ROOTFSDIR := $(PWD)/$(WORKSRC)/rootfs.d
 mm_EXTRASDIR := $(PWD)/$(WORKSRC)/extras.d
 
@@ -161,6 +173,13 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
+	@for bin in $(build_bins) ; do \
+		which $${bin} > /dev/null 2>&1 ; \
+		if [ ! "$$?" = "0" ] ; then \
+			echo "error: the build system does not contain the program '$${bin}'." ; \
+			exit 1 ; \
+		fi ; \
+	done
 
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
