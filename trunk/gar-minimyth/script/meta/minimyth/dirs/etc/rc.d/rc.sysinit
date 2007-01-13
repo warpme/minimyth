@@ -36,9 +36,15 @@ mkdir -p /dev/pts
 mount -n -t devpts none /dev/pts
 mkdir -p /dev/shm
 mount -n -t tmpfs  none /dev/shm
+# Stop kernel from calling hotplug.
 echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
+# Start udev userspace daemon of listening to events.
 udevd -d
-udevstart
+# Regenerate events for existing devices
+# so that they can be processed by udev daemon.
+for i in /sys/block/*/uevent        ; do echo 1 > $i; done
+for i in /sys/bus/*/devices/*/uevent; do echo 1 > $i; done
+for i in /sys/class/*/*/uevent      ; do echo 1 > $i; done
 
 # Create remaining root directories.
 mkdir -p /media
