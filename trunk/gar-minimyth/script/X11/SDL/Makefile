@@ -3,7 +3,7 @@ GARVERSION = 1.2.9
 CATEGORIES = X11
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME).patch.gar
 LICENSE =
 
 DESCRIPTION =

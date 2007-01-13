@@ -3,6 +3,7 @@ GARVERSION = 1.0.4
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-gcc4.patch
 LICENSE = GPL2
 
 DESCRIPTION =
