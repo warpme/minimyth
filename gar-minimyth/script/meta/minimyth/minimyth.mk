@@ -301,7 +301,7 @@ mm-conf:
 	rm -rf $(mm_DESTDIR)/root ; cp -r ./dirs/root $(mm_DESTDIR)
 	rm -rf $(mm_DESTDIR)/root/.mplayer 
 	mkdir -p $(mm_DESTDIR)/root/.mplayer
-	mkdir -p $(mm_DESTDIR)/root/.mythtv
+	mkdir -p $(mm_DESTDIR)/root/.mythtv/themecache
 	ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
 	sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
 	$(call CONVERT_TO_LINK, $(sysconfdir)/ld.so.cache               )
