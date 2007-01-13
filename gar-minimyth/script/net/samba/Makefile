@@ -49,5 +49,5 @@ install-mount.cifs:
 post-install:
 	@mv -f $(DESTDIR)$(bindir)/smbmnt   $(DESTDIR)$(ebindir)/
 	@mv -f $(DESTDIR)$(bindir)/smbmount $(DESTDIR)$(ebindir)/
-	@rm -f $(DESTDIR)$(esbindir)/mount.smbfs ; ln -sf $(ebindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
+	@rm -f $(DESTDIR)$(esbindir)/mount.smbfs ; ln -sf .$(call DIRSTODOTS,$(esbindir))$(ebindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
 	@$(MAKECOOKIE)
