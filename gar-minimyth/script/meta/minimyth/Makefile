@@ -46,6 +46,7 @@ DEPENDS = \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux \
+	devel/valgrind \
 	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
