@@ -9,6 +9,10 @@ start() {
 
     # If the boot type is usb, then load the drivers needed to read the usb drive.
     if [ "${MM_BOOT_TYPE}" = "usb" ] ; then
+	modprobe usbcore
+        while [ ! -e /proc/bus/usb ] ; do
+            sleep 1
+        done
         modprobe ehci-hcd
         modprobe uhci-hcd
         modprobe ohci-hcd
