@@ -2,7 +2,7 @@ GARNAME = mythtv
 GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
-MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
+MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch
 LICENSE = GPL2
@@ -60,9 +60,9 @@ INSTALL_ARGS  += \
 GAR_EXTRA_CONF += kernel/linux/package-api.mk myth/mythtv/package-api.mk
 include ../../gar.mk
 
-cvs//%/$(DISTNAME).tar.bz2:
+svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
+	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
 	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
