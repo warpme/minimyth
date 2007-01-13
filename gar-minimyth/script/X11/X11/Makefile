@@ -270,13 +270,8 @@ configure-X11_misc:
 	@$(call CONFIG_FILE_APPEND, BuildXFree86ConfigTools   , NO)
 	@$(call CONFIG_FILE_APPEND, BuildXcursorLibrary       , NO)
 	@$(call CONFIG_FILE_APPEND, BuildXcursorgen           , NO)
-	@$(call CONFIG_FILE_APPEND, BuildRandR                , NO)
-	@$(call CONFIG_FILE_APPEND, BuildRandRLibrary         , NO)
 	@$(call CONFIG_FILE_APPEND, BuildDmx                  , NO)
-	@$(call CONFIG_FILE_APPEND, BuildXterm                , YES)
-	@$(call CONFIG_FILE_APPEND, HasMMXSupport             , $(if $(filter $(GARCH), c3 c3-2),YES,NO))
-	@$(call CONFIG_FILE_APPEND, Has3DNowSupport           , $(if $(filter $(GARCH), c3     ),YES,NO))
-	@$(call CONFIG_FILE_APPEND, HasSSESupport             , $(if $(filter $(GARCH),    c3-2),YES,NO))
+	@$(call CONFIG_FILE_APPEND, BuildXterm                , NO)
 	@$(MAKECOOKIE)
 
 post-install:
