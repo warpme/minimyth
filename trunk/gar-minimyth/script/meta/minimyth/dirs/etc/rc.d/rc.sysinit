@@ -6,20 +6,24 @@
 
 # Create /proc.
 mkdir -p /proc
-mount -n -t proc  none /proc
-mount -n -t usbfs none /proc/bus/usb
+mount -n -t proc  /proc /proc
+if [ ! -d /proc/bus/usb ]; then
+    modprobe usbcore >/dev/null 2>&1 && mount -n -t usbfs /proc/bus/usb /proc/bus/usb
+else
+    mount -n -t usbfs /proc/bus/usb /proc/bus/usb
+fi
 
 # Create /sys.
 mkdir -p /sys
-mount -n -t sysfs none /sys
+mount -n -t sysfs /sys /sys
 
 # Create /tmp.
 mkdir -p /tmp
-mount -n -t tmpfs -o size=512K none /tmp
+mount -n -t tmpfs -o size=512K /tmp /tmp
 
 # Create /var.
 mkdir -p /var
-mount -n -t tmpfs -o size=512K none /var
+mount -n -t tmpfs -o size=512K /var /var
 mkdir -p /var/cache
 mkdir -p /var/lock
 mkdir -p /var/log
@@ -27,16 +31,16 @@ mkdir -p /var/run
 
 # Create /dev.
 mkdir -p /dev
-mount -n -t tmpfs none /dev
+mount -n -t tmpfs /dev /dev
 ln -s /proc/kcore     /dev/core
 ln -s /proc/self/fd   /dev/fd
 ln -s /proc/self/fd/0 /dev/stdin
 ln -s /proc/self/fd/1 /dev/stdout
 ln -s /proc/self/fd/2 /dev/stderr
 mkdir -p /dev/pts
-mount -n -t devpts none /dev/pts
+mount -n -t devpts /dev/pts /dev/pts
 mkdir -p /dev/shm
-mount -n -t tmpfs  none /dev/shm
+mount -n -t tmpfs  /dev/shm /dev/shm
 
 # Stop kernel from calling hotplug.
 echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
