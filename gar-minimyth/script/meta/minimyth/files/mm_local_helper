@@ -99,12 +99,18 @@
 ################################################################################
 
 script_file() {
+
+    local SCRIPT_FILE
+
     SCRIPT_FILE=`echo $0 | sed -e 's%^.*/%%g'`
 
     echo "${SCRIPT_FILE}"
 }
 
 script_dir() {
+
+    local SCRIPT_DIR
+
     SCRIPT_DIR=`echo $0 | sed -e 's%/[^/]*$%%g'`
     test ! "${SCRIPT_DIR}" = ""   || \
         SCRIPT_DIR="`pwd`"
@@ -116,8 +122,10 @@ script_dir() {
 }
 
 message_output() {
-    ERROR=$1
-    MESSAGE=$2
+    local ERROR=$1
+    local MESSAGE=$2
+
+    local SCRIPT_FILE
 
     test -n "${ERROR}"                                                  || \
         message_output 1 "message_output: argument 'ERROR' is missing." || \
@@ -140,8 +148,8 @@ message_output() {
 }
 
 url_file_fetch () {
-    LOCAL_FILE=$1
-    URL_PATH=$2
+    local LOCAL_FILE=$1
+    local URL_PATH=$2
 
     test -n "${LOCAL_FILE}"                                                  || \
         message_output 1 "url_file_fetch: argument 'LOCAL_FILE' is missing." || \
@@ -159,10 +167,10 @@ url_file_fetch () {
 }
 
 url_http_fetch () {
-    LOCAL_FILE=$1
-    URL_PATH=$2
-    URL_SERVER=$3
-    URL=$4
+    local LOCAL_FILE=$1
+    local URL_PATH=$2
+    local URL_SERVER=$3
+    local URL=$4
 
     test -n "${LOCAL_FILE}"                                                  || \
         message_output 1 "url_http_fetch: argument 'LOCAL_FILE' is missing." || \
@@ -186,9 +194,9 @@ url_http_fetch () {
 }
 
 url_tftp_fetch () {
-    LOCAL_FILE=$1
-    URL_PATH=$2
-    URL_SERVER=$3
+    local LOCAL_FILE=$1
+    local URL_PATH=$2
+    local URL_SERVER=$3
 
     test -n "${LOCAL_FILE}"                                                  || \
         message_output 1 "url_tftp_fetch: argument 'LOCAL_FILE' is missing." || \
@@ -209,44 +217,52 @@ url_tftp_fetch () {
 }
 
 url_fetch() {
-    _URL=$1
-    _LOCAL_FILE=$2
+    local URL=$1
+    local LOCAL_FILE=$2
 
-    test -n "${_URL}"                                             || \
-        message_output 1 "url_fetch: argument '_URL' is missing." || \
+    test -n "${URL}"                                             || \
+        message_output 1 "url_fetch: argument 'URL' is missing." || \
         return
 
-    _URL_PROTOCOL=`echo "${_URL}" | cut -d? -f1 | \
+    local LOCAL_DIR
+    local URL_OPTIONS
+    local URL_PASSWORD
+    local URL_PATH
+    local URL_PROTOCOL
+    local URL_SERVER
+    local URL_USERNAME
+
+    URL_PROTOCOL=`echo "${URL}" | cut -d? -f1 | \
                   cut -d: -f1`
-    _URL_USERNAME=`echo "${_URL}" | cut -d? -f1 | \
+    URL_USERNAME=`echo "${URL}" | cut -d? -f1 | \
                   sed 's%^[^:]*:%%' | sed 's%^//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f1`
-    _URL_PASSWORD=`echo "${_URL}" | cut -d? -f1 | \
+    URL_PASSWORD=`echo "${URL}" | cut -d? -f1 | \
                   sed 's%^[^:]*:%%' | sed 's%^//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f2`
-    _URL_SERVER=`  echo "${_URL}" | cut -d? -f1 | \
+    URL_SERVER=`  echo "${URL}" | cut -d? -f1 | \
                   sed 's%^[^:]*:%%' | sed 's%^//%%' | sed 's%^[^@]*@%%' | sed 's%/[^/]*%%g'`
-    _URL_PATH=`    echo "${_URL}" | cut -d? -f1 | \
+    URL_PATH=`    echo "${URL}" | cut -d? -f1 | \
                   sed 's%^[^:]*:%%' | sed 's%^//[^/]*/%/%'`
-    _URL_OPTIONS=` echo "${_URL}"               | \
+    URL_OPTIONS=` echo "${URL}"               | \
                   sed 's%^[^?]*%%'  | sed 's%^?%%'`
 
-    case ${_URL_PROTOCOL} in
+    case ${URL_PROTOCOL} in
         file|http|tftp)
-            if test -n "${_LOCAL_FILE}" ; then
-                _LOCAL_DIR=`echo "${_LOCAL_FILE}" | sed -e 's%[^/]*$%%' -e 's%/$%%'`
-                test -z "${_LOCAL_DIR}" || test -d "${_LOCAL_DIR}" || mkdir -p "${_LOCAL_DIR}" || \
-                    message_output 1 "cannot create directory '${_LOCAL_DIR}'"                 || \
+            if test -n "${LOCAL_FILE}" ; then
+                LOCAL_DIR=`echo "${LOCAL_FILE}" | sed -e 's%[^/]*$%%' -e 's%/$%%'`
+                test -z "${LOCAL_DIR}" || test -d "${LOCAL_DIR}" || mkdir -p "${LOCAL_DIR}" || \
+                    message_output 1 "cannot create directory '${LOCAL_DIR}'"               || \
                     return
-                rm -fr "${_LOCAL_FILE}"                                || \
-                    message_output 1 "cannot remove '${_LOCAL_FILE}'." || \
+                rm -fr "${LOCAL_FILE}"                                || \
+                    message_output 1 "cannot remove '${LOCAL_FILE}'." || \
                     return
-                message_output 0 "fetching file '${_URL}'."
-                url_${_URL_PROTOCOL}_fetch "${_LOCAL_FILE}" "${_URL_PATH}" "${_URL_SERVER}" "${_URL}" || \
+                message_output 0 "fetching file '${URL}'."
+                url_${URL_PROTOCOL}_fetch "${LOCAL_FILE}" "${URL_PATH}" "${URL_SERVER}" "${URL}" || \
                     return
             fi
             return
             ;;
         *)
-            message_output 1 "_URL protocol '${_URL_PROTOCOL}' is not supported." || \
+            message_output 1 "URL protocol '${URL_PROTOCOL}' is not supported." || \
                 return
             return
             ;;
@@ -254,18 +270,21 @@ url_fetch() {
 }
 
 url_check() {
-    _URL=$1
+    local URL=$1
 
-    test -n "${_URL}"                                            || \
+    test -n "${URL}"                                             || \
         message_output 1 "url_check: argument 'URL' is missing." || \
         return
 
-    url_fetch "${_URL}" || \
+    url_fetch "${URL}" || \
         return
 }
 
 distribution_check() {
-    DIST_DIR=$1
+    local DIST_DIR=$1
+
+    local DIST_FILE
+    local DIST_FILE_LIST
 
     test -n "${DIST_DIR}"                                                      || \
         message_output 1 "distribution_check: argument 'DIST_DIR' is missing." || \
@@ -294,8 +313,12 @@ distribution_check() {
 }
 
 distribution_copy() {
-    SOURCE_DIST_DIR=$1
-    TARGET_DIST_DIR=$2
+    local SOURCE_DIST_DIR=$1
+    local TARGET_DIST_DIR=$2
+
+    local DIST_FILE
+    local DIST_FILE_DIR
+    local DIST_FILE_LIST
 
     test -n "${SOURCE_DIST_DIR}"                                                     || \
         message_output 1 "distribution_copy: argument 'SOURCE_DIST_DIR' is missing." || \
@@ -336,9 +359,9 @@ distribution_copy() {
 }
 
 command_check() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
 
     test -n "${URL}"                                                 || \
         message_output 1 "command_check: argument 'URL' is missing." || \
@@ -355,9 +378,11 @@ command_check() {
 
 
 command_fetch_helper() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local HELPER_DIR
 
     test -n "${URL}"                                                        || \
         message_output 1 "command_fetch_helper: argument 'URL' is missing." || \
@@ -369,7 +394,7 @@ command_fetch_helper() {
         message_output 1 "command_fetch_helper: argument 'TEMP_DIR' is missing." || \
         return
 
-    HELPER_DIR=`script_dir`
+    local HELPER_DIR=`script_dir`
 
     url_fetch "${URL}/helper.tar.bz2" "${TEMP_DIR}/helper.tar.bz2"  || \
 	message_output 1 "failed to fetch '${URL}/helper.tar.bz2'." || \
@@ -391,9 +416,11 @@ command_fetch_helper() {
 }
 
 command_version_old () {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local VERSION
 
     test -n "${URL}"                                                       || \
         message_output 1 "command_version_old: argument 'URL' is missing." || \
@@ -413,9 +440,11 @@ command_version_old () {
 }
 
 command_version_new () {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local VERSION
 
     test -n "${URL}"                                                       || \
         message_output 1 "command_version_new: argument 'URL' is missing." || \
@@ -441,9 +470,13 @@ command_version_new () {
 }
 
 command_fetch() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local FETCHED
+    local FILE
+    local VERSION
 
     test -n "${URL}"                                                 || \
         message_output 1 "command_fetch: argument 'URL' is missing." || \
@@ -460,25 +493,24 @@ command_fetch() {
         message_output 1 "command_fetch: cannot determine 'VERSION'." || \
         return
 
-
     FETCHED=0
     if test ${FETCHED} -eq 0 ; then
         url_fetch "${URL}/sfs-minimyth-${VERSION}.tar.bz2.md5" "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5"
         if test $? -eq 0 ; then
             url_fetch "${URL}/sfs-minimyth-${VERSION}.tar.bz2" "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2"
             if test $? -eq 0 ; then
-                cd "${TEMP_DIR}" ; md5sum -c 'sfs-minimyth-${VERSION}.tar.bz2.md5' > /dev/null 2>&1
+                cd "${TEMP_DIR}" ; md5sum -c "sfs-minimyth-${VERSION}.tar.bz2.md5" > /dev/null 2>&1
                 test $? -eq 0 || \
                     message_output 1 "fetched distribution file '${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2' failed checksum check." || \
                     return
                 rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5" || \
                     true
                 cd "${TEMP_DIR}" ; tar -jxf "sfs-minimyth-${VERSION}.tar.bz2"                          || \
-                    message_output 1 "failed to extract ${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2'." || \
+                    message_output 1 "failed to extract '${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2'." || \
                     return
                 rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2" || \
                     true
-                mv ${TEMP_DIR}/sfs-minimyth-${VERSION} ${TEMP_DIR}/minimyth-${VERSION} || 
+                mv "${TEMP_DIR}/sfs-minimyth-${VERSION}" "${TEMP_DIR}/minimyth-${VERSION}" || 
                     true
                 FETCHED=1
             else
@@ -517,9 +549,12 @@ command_fetch() {
 }
 
 command_install() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local SOURCE_DIST_DIR
+    local VERSION
 
     test -n "${URL}"                                                   || \
         message_output 1 "command_install: argument 'URL' is missing." || \
@@ -541,9 +576,13 @@ command_install() {
 }
 
 command_delete() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
+
+    local DIST_FILE
+    local DIST_FILE_DIR
+    local DIST_FILE_LIST
 
     test -n "${URL}"                                                  || \
         message_output 1 "command_delete: argument 'URL' is missing." || \
@@ -581,9 +620,9 @@ command_delete() {
 }
 
 command_backup_create() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
 
     test -n "${URL}"                                                         || \
         message_output 1 "command_backup_create: argument 'URL' is missing." || \
@@ -599,9 +638,9 @@ command_backup_create() {
 }
 
 command_backup_delete() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
 
     test -n "${URL}"                                                         || \
         message_output 1 "command_backup_delete: argument 'URL' is missing." || \
@@ -619,9 +658,9 @@ command_backup_delete() {
 }
 
 command_backup_restore() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
 
     test -n "${URL}"                                                          || \
         message_output 1 "command_backup_restore: argument 'URL' is missing." || \
@@ -637,9 +676,9 @@ command_backup_restore() {
 }
 
 command_temp_delete() {
-    URL=$1
-    BOOT_DIR=$2
-    TEMP_DIR=$3
+    local URL=$1
+    local BOOT_DIR=$2
+    local TEMP_DIR=$3
 
     test -n "${URL}"                                                       || \
         message_output 1 "command_temp_delete: argument 'URL' is missing." || \

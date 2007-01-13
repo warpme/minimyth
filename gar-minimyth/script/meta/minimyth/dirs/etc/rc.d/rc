@@ -35,11 +35,15 @@ halt_script_list="\
     telnet"
 
 rc_script_list_run() {
-    action=$1
-    script_list=$2
+    local action=$1
+    local script_list=$2
+
+    local count
+    local script
 
     count=`/bin/echo ${script_list} | /usr/bin/wc -w`
     mm_splash_init ${count}
+    script=
     for script in ${script_list} ; do
         mm_command_run "/bin/sh /etc/rc.d/init.d/${script} ${action}"
         if /usr/bin/test $? -ne 0 ; then

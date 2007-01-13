@@ -5,6 +5,10 @@
 . /etc/rc.d/functions
 
 start() {
+
+    local control
+    local timeout
+
     mm_message_output info 'configuring audio ...'
 
     # Wait for audio driver to load.
@@ -20,6 +24,7 @@ start() {
 
     # Unmute audio.
     if /usr/bin/test `/usr/bin/amixer > /dev/null 2>&1 ; /bin/echo $?` -eq 0 ; then
+        control=
         /usr/bin/amixer | /bin/grep -e '^Simple mixer control' | /bin/sed -e "s%^[^']*'%%" | /bin/sed -e "s%'[^']*$%%" |
         while read control ; do
             case "${MM_AUDIO_TYPE}" in
@@ -70,6 +75,9 @@ start() {
 }
 
 stop () {
+
+    local control
+
     mm_message_output info 'muting audio ...'
 
     # Mute audio.
