@@ -1,7 +1,7 @@
-xset -dpms s off
 xsetroot -solid black
+xset -dpms s off
 if [ -z "`mm_var_get MM_NO_VNC`" ] ; then
-	x11vnc -many -q -bg
+	x11vnc -xinerama -xrandr -forever -q -bg
 fi
 if [ -z "`mm_var_get MM_NO_XWM`" ] ; then
 	ratpoison &
