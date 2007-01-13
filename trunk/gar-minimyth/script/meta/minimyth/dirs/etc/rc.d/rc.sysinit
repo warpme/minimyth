@@ -61,4 +61,8 @@ mkdir -p /srv
 # Start system logging.
 syslogd
 
+# Determine root file system type and write it to the core configuration file.
+[ -r /proc/mounts ] && MM_ROOTFS_TYPE=`cat /proc/mounts | grep '^/dev/root /initrd ' | cut -d' ' -f3`
+echo "MM_ROOTFS_TYPE=\"${MM_ROOTFS_TYPE}\"" >> /etc/conf.d/core
+
 exit 0
