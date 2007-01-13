@@ -17,6 +17,7 @@ DEPENDS = \
 	utils/dmidecode \
 	devel/gdb \
 	disk/hdparm \
+	X11/intel \
 	system/lcdproc \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/nvidia kernel/unionfs kernel/vt1211 \
 	lirc/lirc \

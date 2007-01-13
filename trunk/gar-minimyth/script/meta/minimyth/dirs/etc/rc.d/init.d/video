@@ -35,6 +35,14 @@ start() {
     fi
 
     case "${MM_X_DRIVER}" in
+        intel)
+            PREFERRED_MPEG2_DECODER=ffmpeg
+            sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
+            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
+            sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
+            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
+            sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
+            ;;
         intel_i810)
             modprobe i810
             sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
