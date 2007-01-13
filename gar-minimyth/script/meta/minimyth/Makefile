@@ -36,7 +36,8 @@ DEPENDS = \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \
-	X11/x11vnc
+	X11/x11vnc \
+	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls)))
 BUILDDEPS = \
 	utils/util-linux
 
@@ -56,8 +57,13 @@ install-custom:
 		mknod -m 600 $(mm_DESTDIR).tmp/$(rootdir)/dev/console c 5 1 ; \
 		mkfs.cramfs $(mm_DESTDIR).tmp $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
 		rm -rf $(mm_DESTDIR).tmp ; \
+		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
+		chown -R root:root $(mm_EXTRASDIR).tmp ; \
+		cd $(mm_EXTRASDIR) ; tar -jc -f $(mm_BASEDIR)/$(mm_EXTRASNAME) * ; \
+		rm -rf $(mm_EXTRASDIR).tmp ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-		rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME)"
+		rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
+		rm -f $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; cp $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME)"
 
 install-cramfs: install
 
