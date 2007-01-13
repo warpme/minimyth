@@ -1,10 +1,10 @@
 GARNAME = MPlayer
-GARVERSION = 20016
+GARVERSION = 20016.6412
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
-MASTER_SITES += svn://svn.mplayerhq.hu/mplayer/trunk/
+MASTER_SITES += svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
@@ -189,8 +189,21 @@ include ../../gar.mk
 
 CFLAGS :=
 
+# When using the SVN version, GARVERSION must have the form <mplayer-svn-version>.<ffmpeg-svn-version>.
+# This is done to ensure that the correct version of FFmpeg is used.
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_SVN, svn://$*/mplayer/trunk           , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
+	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavutil  , $(word 2,$(subst ., ,$(GARVERSION))), libavutil  )
+	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavcodec , $(word 2,$(subst ., ,$(GARVERSION))), libavcodec )
+	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavformat, $(word 2,$(subst ., ,$(GARVERSION))), libavformat)
+	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libpostproc, $(word 2,$(subst ., ,$(GARVERSION))), libpostproc)
+	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2 ; rm -r $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR) ; tar -jxf libavutil.tar.bz2   ; rm -r libavutil.tar.bz2   ; rm -rf $(DISTNAME)/libavutil   ; mv libavutil   $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jxf libavcodec.tar.bz2  ; rm -r libavcodec.tar.bz2  ; rm -rf $(DISTNAME)/libavcodec  ; mv libavcodec  $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jxf libavformat.tar.bz2 ; rm -r libavformat.tar.bz2 ; rm -rf $(DISTNAME)/libavformat ; mv libavformat $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jxf libpostproc.tar.bz2 ; rm -r libpostproc.tar.bz2 ; rm -rf $(DISTNAME)/libpostproc ; mv libpostproc $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
