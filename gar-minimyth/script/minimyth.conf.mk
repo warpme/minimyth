@@ -53,7 +53,7 @@ mm_XORG_VERSION      ?= new
 mm_MYTH_VERSION      ?= stable19
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_SVN_VERSION  ?= 10701
+mm_MYTH_SVN_VERSION  ?= 10992
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES     ?=
 # Lists additional binaries to include in the MiniMyth image
