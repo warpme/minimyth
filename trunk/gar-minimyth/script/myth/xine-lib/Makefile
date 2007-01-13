@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis X11/X11 X11/freetype
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis X11/freetype X11/X11 X11/libXvMCW
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -33,7 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-libFLACtest \
 	--with-gnu-ld \
 	--with-x \
-	--with-xxmc-lib=viaXvMC \
+	--with-xxmc-lib=XvMCW \
 	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
 	--with-libFLAC-libraries=$(DESTDIR)$(libdir)
 

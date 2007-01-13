@@ -17,6 +17,7 @@ DEPENDS = \
 	utils/busybox \
 	devel/gdb \
 	system/lcdproc \
+	X11/libXvMCW \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs \
 	lirc/lirc \
 	utils/lm_sensors \
