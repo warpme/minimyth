@@ -27,14 +27,24 @@ mm_CHIPSETS          ?= intel nvidia via
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH             ?= pentium-mmx
-# Indicates whether or not to install the MiniMyth files need to boot with
-# the root file system downloaded using TFTP.
-# Valid values for mm_INSTALL_TFTP_BOOT are 'yes' and 'no'.
-mm_INSTALL_TFTP_BOOT ?= no
-# Indicates whether or not to install the MiniMyth files needed to boot with
-# the root file system mounted using NFS.
+# Indicates whether or not to install the MiniMyth files needed to network boot
+# with a RAM root file system. This will cause files to be installed in
+# directory $(mm_TFTP_ROOT)/minimyth-$(mm_VERSION)/.
+# Valid values for mm_INSTALL_RAM_BOOT are 'yes' and 'no'.
+mm_INSTALL_RAM_BOOT  ?= no
+# Indicates whether or not to install the MiniMyth files needed to network boot
+# with an NFS root file system. This will cause files to be installed in
+# directories $(mm_TFTP_ROOT)/minimyth-$(mm_VERSION) and
+# $(mm_NFS_ROOT)/minimyth-$(mm_VERSION).
 # Valid values for mm_INSTALL_NFS_BOOT are 'yes' and 'no'.
 mm_INSTALL_NFS_BOOT  ?= no
+# Indicates whether or not to install the MiniMyth files needed to run the
+# mm_local_install and mm_local_update. These files will be installed in
+# directory $(mm_TFTP_ROOT)/latest so that they can be downloaded via TFTP. It
+# is called latest because that is the directory name used in the public
+# MiniMyth distribution download directory.
+# Valid values for mm_INSTALL_LATEST are 'yes' and 'no'.
+mm_INSTALL_LATEST    ?= no
 # Indicates the directory where the GAR MiniMyth build system is installed.
 mm_HOME              ?= $(P4ROOT)/gar-minimyth
 # Indicates the pxeboot TFTP directory.
