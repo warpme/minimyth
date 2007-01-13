@@ -52,7 +52,8 @@ DEPENDS = \
 	$(mm_USER_PACKAGES)
 BUILDDEPS = \
 	devel/fakeroot \
-	utils/util-linux
+	utils/util-linux \
+	xorg/xorg
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
