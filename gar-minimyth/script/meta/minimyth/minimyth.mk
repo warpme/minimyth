@@ -55,7 +55,7 @@ LIST_LIBS = \
 	)
 CONVERT_TO_LINK = \
 	test -e $(mm_DESTDIR)/$(strip $(1)) && mv $(mm_DESTDIR)/$(strip $(1)) $(mm_DESTDIR)/$(strip $(1)).default ; \
-	ln -s /tmp/$(strip $(1)) $(mm_DESTDIR)$(strip $(1))
+	ln -sf /tmp/$(strip $(1)) $(mm_DESTDIR)$(strip $(1))
 
 mm-all: mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-conf
 #mm-all: mm-clean mm-make-busybox mm-make-dirs mm-copy mm-conf
