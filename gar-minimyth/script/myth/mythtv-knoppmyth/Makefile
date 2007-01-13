@@ -61,6 +61,9 @@ BUILD_ENV     += \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	OPTFLAGS="$(CFLAGS)"
 INSTALL_ARGS  += \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
