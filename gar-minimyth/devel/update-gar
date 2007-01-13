@@ -51,7 +51,7 @@ main_CPPFLAGS=''
 main_CFLAGS='$(mm_CFLAGS)'
 main_CXXFLAGS='$(mm_CXXFLAGS)'
 main_LDFLAGS=''
-_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)'
+GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
 _PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
 
@@ -207,7 +207,10 @@ sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%\1 = ${_LD_LIBRARY_PATH}%g" ${SCRIPT_DIR}/
 sed -i "s%^\(#*PATCHDIR\) *?=.*$%\1 ?= ${PATCHDIR}%g" ${SCRIPT_DIR}/gar.lib.mk
 
 # Change PATH
-sed -i "s%^PATH *:=.*$%PATH := ${_PATH}%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^PATH *:= *%BUILD_SYSTEM_PATH := \$(if \$(BUILD_SYSTEM_PATH),\$(BUILD_SYSTEM_PATH),\$(PATH))\nPATH := %g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^PATH *:= *%GAR_SYSTEM_PATH := ${GAR_SYSTEM_PATH}\nPATH := %g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^PATH *:=.*$%PATH := \$(if \$(wildcard \$(build_DESTDIR)\$(build_rootdir)/bin-build-system),\$(GAR_SYSTEM_PATH),\$(GAR_SYSTEM_PATH):\$(BUILD_SYSTEM_PATH))%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^export PATH%export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH%g" ${SCRIPT_DIR}/gar.conf.mk
 
 # Change PKG_CONFIG_PATH.
 sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_PATH = ${_PKG_CONFIG_PATH}%g" ${SCRIPT_DIR}/gar.conf.mk
@@ -215,3 +218,6 @@ sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_PATH = ${_PKG_CONFIG_PATH}%g" ${SCRI
 sed -i '/^INSTALL_DIRS *=/s%$(sbindir)%$(esbindir) &%' ${SCRIPT_DIR}/gar.mk
 sed -i '/^INSTALL_DIRS *=/s%$(bindir)%$(ebindir) &%' ${SCRIPT_DIR}/gar.mk
 sed -i '/^INSTALL_DIRS *=/s%$(libdir)%$(elibdir) &%' ${SCRIPT_DIR}/gar.mk
+
+# Change build_DEPENDS
+sed -i "s%^build_DEPENDS *+= *\(.*\)$%build_DEPENDS += devel/build-system-bins \1%g" ${SCRIPT_DIR}/gar.lib.mk

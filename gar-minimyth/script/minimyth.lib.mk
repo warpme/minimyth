@@ -1,19 +1,31 @@
 # $(call FETCH_CVS, <cvs_root>, <cvs_module>, <cvs_date>, <file_base>)
 FETCH_CVS = \
-	mkdir -p $(PARTIALDIR)                                                                   ; \
-	cd $(PARTIALDIR)                                                                         ; \
-	cvs -z9 -d:pserver:$(strip $(1)) co -D $(strip $(3)) -d $(strip $(4)) $(strip $(2))      ; \
-	rm -rf $(strip $(3)).tar.bz2                                                             ; \
-	tar  --exclude '*/CVS' --exclude '*/.cvsignore' -jcf $(strip $(4)).tar.bz2 $(strip $(4)) ; \
+	mkdir -p $(PARTIALDIR)                                                              ; \
+	cd $(PARTIALDIR)                                                                    ; \
+	rm -rf $(strip $(4))                                                                ; \
+	rm -rf $(strip $(4)).tar.bz2                                                        ; \
+	cvs -z9 -d:pserver:$(strip $(1)) co -D $(strip $(3)) -d $(strip $(4)) $(strip $(2)) ; \
+	if [ ! -d $(strip $(4)) ] ; then                                                      \
+		rm -rf $(strip $(4))                                                        ; \
+		rm -rf $(strip $(4)).tar.bz2                                                ; \
+		exit 1                                                                      ; \
+	fi                                                                                  ; \
+	tar --exclude '*/.svn' -jcf $(strip $(4)).tar.bz2 $(strip $(4))                     ; \
 	rm -rf $(strip $(4))
+
 
 # $(call FETCH_SVN, <svn_url>, <svn_revision>, <file_base>)
 FETCH_SVN = \
 	mkdir -p $(PARTIALDIR)                                          ; \
 	cd $(PARTIALDIR)                                                ; \
 	rm -rf $(strip $(3))                                            ; \
-	svn co -r $(strip $(2)) $(strip $(1)) $(strip $(3))             ; \
 	rm -rf $(strip $(3)).tar.bz2                                    ; \
+	svn co -r $(strip $(2)) $(strip $(1)) $(strip $(3))             ; \
+	if [ ! -d $(strip $(3)) ] ; then                                  \
+		rm -rf $(strip $(3))                                    ; \
+		rm -rf $(strip $(3)).tar.bz2                            ; \
+		exit 1                                                  ; \
+	fi                                                              ; \
 	tar --exclude '*/.svn' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
 	rm -rf $(strip $(3))
 

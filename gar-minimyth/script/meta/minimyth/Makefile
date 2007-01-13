@@ -54,7 +54,10 @@ DEPENDS = \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
 	$(mm_USER_PACKAGES)
 BUILDDEPS = \
+	utils/coreutils \
 	devel/fakeroot \
+	utils/file \
+	utils/tar \
 	utils/util-linux \
 	xorg/xorg
 

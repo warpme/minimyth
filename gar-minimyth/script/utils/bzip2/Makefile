@@ -1,0 +1,44 @@
+GARNAME = bzip2
+GARVERSION = 1.0.3
+CATEGORIES = utils
+MASTER_SITES = http://www.bzip.org/$(GARVERSION)/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch
+LICENSE = bzip2
+bzip2_LICENSE_TEXT = $(WORKSRC)/LICENSE
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c
+
+BUILD_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS = $(WORKSRC)/Makefile
+
+BUILD_ARGS   = \
+	CC="$(CC)" \
+	AR="$(AR)" \
+	RANLIB="$(RANLIB)" \
+	CFLAGS="$(CFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	DESTDIR="$(DESTDIR)" \
+	prefix="$(prefix)" \
+	bindir="$(bindir)" \
+	libdir="$(libdir)" \
+	includedir="$(includedir)" \
+	mandir="$(mandir)"
+INSTALL_ARGS = \
+	CC="$(CC)" \
+	AR="$(AR)" \
+	RANLIB="$(RANLIB)" \
+	CFLAGS="$(CFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	DESTDIR="$(DESTDIR)" \
+	prefix="$(prefix)" \
+	bindir="$(bindir)" \
+	libdir="$(libdir)" \
+	includedir="$(includedir)" \
+	mandir="$(mandir)"
+
+include ../../gar.mk

@@ -10,15 +10,29 @@ DEPENDS    = lib/libgcc
 BUILDDEPS  = lang/c
 # Development tools often used when building c language programs.
 BUILDDEPS += \
+	utils/coreutils \
+	utils/ed \
+	utils/sed \
+	utils/gawk \
+	utils/grep \
+	utils/m4 \
+	utils/diffutils \
+	utils/findutils \
 	devel/bison \
 	devel/flex \
 	devel/gettext \
+	utils/bash \
 	devel/autoconf \
 	devel/automake-1.6 \
 	devel/automake \
 	devel/libtool \
 	devel/pkg-config \
-	utils/coreutils
+	devel/patch \
+	utils/which \
+	utils/file \
+	utils/gzip \
+	utils/bzip2 \
+	utils/tar
 
 include ../../gar.mk
 

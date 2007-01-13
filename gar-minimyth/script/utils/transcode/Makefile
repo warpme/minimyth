@@ -1,7 +1,8 @@
 GARNAME = transcode
 GARVERSION = 1.0.2
 CATEGORIES = utils
-MASTER_SITES = http://www.jakemsr.com/$(GARNAME)/
+MASTER_SITES  = http://www.jakemsr.com/$(GARNAME)/
+MASTER_SITES += http://www.kraymer.mynetcologne.de/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2

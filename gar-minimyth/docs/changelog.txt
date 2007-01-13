@@ -22,10 +22,43 @@ Fixed bugs:
         be resolved by DNS. Now DHCP creates a local /etc/hosts file and ns is
         configured to check the local /etc/hosts file first.
 
+Improved the robustness of the GAR based build system
+    Added explicit check for $(HOME)/.minimyth/minimyth.conf.mk.
+    Added explicit check for binaries that must be installed for the build
+        system to run correctly.
+    Reduced the probability the non build system binaries are used
+        unintentionally by the build system. Changed the binary search path 
+        environment variable (PATH) so that it only includes build system
+        directories, and created symbolic links in a build system directory
+        for the binaries that must be installed for the build system to run
+        correctly.
+    Added packages that compile native environment replacements for most of the
+        binaries that must be installed for the build system to run correctly
+        (excluding: cvs, svn and wget, because they are only used for fetching
+        source code; su, because it must be suid; getconf and ldconfig,
+        because we do not replace the native environment glibc libraries; and
+        perl, because it is large and takes time to compile).
+    Improved error handling when CVS and SVN repositories fail during fetch.
+
 Added packages
+    Added devel/build-system-bins.
+    Added devel/patch.
+    Added utils/bash.
+    Added utils/bzip2.
+    Added utils/diffutils.
     Added utils/dmidecode.
+    Added utils/ed.
+    Added utils/file.
+    Added utils/findutils.
+    Added utils/gawk.
+    Added utils/grep.
+    Added utils/gzip.
+    Added utils/m4.
     Added utils/pciutils.
+    Added utils/sed.
+    Added utils/tar.
     Added utils/usbutils.
+    Added utils/which.
 
 Updated packages
     Updated kernel/nvidia.

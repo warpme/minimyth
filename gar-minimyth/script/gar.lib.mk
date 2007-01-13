@@ -444,7 +444,7 @@ install-%.init:
 # obsolete... merely integrated into a more general mechanism
 IMGDEPS += $(sort $(if $(BUILDDEPS),build,) $(if $(strip $(DEPENDS) $(LIBDEPS)),$(DESTIMG),))
 $(DESTIMG)_DEPENDS += $(LIBDEPS) $(DEPENDS)
-build_DEPENDS += $(BUILDDEPS)
+build_DEPENDS += devel/build-system-bins $(BUILDDEPS)
 
 # Standard deps install into the standard install dir.  For the
 # BBC, we set the includedir to the build tree and the libdir to

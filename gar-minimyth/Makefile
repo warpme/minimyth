@@ -9,6 +9,10 @@ TAR_FILE := $(mm_SOURCENAME).tar.bz2
 
 PWD := $(shell pwd)
 
+build:
+	@echo "error: 'make build' must be run in directory 'script/meta/minimyth'."
+	@exit 1
+
 clean:
 	@rm -rf images/*
 	@make -C script clean
@@ -19,6 +23,10 @@ clean-main:
 
 garchive:
 	@make -C script garchive
+
+install:
+	@echo "error: 'make build' must be run in directory 'script/meta/minimyth'."
+	@exit 1
 
 tarball:
 	@rm -rf   $(DIR_HEAD)/$(DIR_TAIL)~
