@@ -4,11 +4,10 @@
 
 volume_path=/tmp/mkflashboot
 
-boot_type=$1
-distro_path=$2
-conf_path=$3
-version=$4
-device=$5
+distro_path=$1
+conf_path=$2
+version=$3
+device=$4
 
 kernel=
 rootfs=
@@ -18,6 +17,12 @@ extras=
 which su > /dev/null 2>&1
 if [ ! "$?" = "0" ] ; then
     echo "error: cannot find required binary 'su'."
+    exit 1
+fi
+
+which md5sum > /dev/null 2>&1
+if [ ! "$?" = "0" ] ; then
+    echo "error: cannot find required binary 'md5sum'."
     exit 1
 fi
 
@@ -53,33 +58,15 @@ fi
 
 if [ -z "${version}" ] ; then
     if [ -d "${distro_path}" ] ; then
-        kernel_list=`ls -1tr ${distro_path} | grep "kernel-"`
-        rootfs_list=`ls -1tr ${distro_path} | grep "rootfs-"`
-        extras_list=`ls -1tr ${distro_path} | grep "extras-"`
-        if [ -n "${kernel_list}" ] ; then
-            for kernel in ${kernel_list} ; do
-                found=1;
-            done
-        fi
-        if [ -n "${rootfs_list}" ] ; then
-            for rootfs in ${rootfs_list} ; do
-                found=1;
-            done
-        fi
-        if [ -n "${extras_list}" ] ; then
-            for extras in ${extras_list} ; do
-                found=1;
-            done
-        fi
-        [ -n "${kernel_list}" ] && kernel=${distro_path}/${kernel}
-        [ -n "${rootfs_list}" ] && rootfs=${distro_path}/${rootfs}
-        [ -n "${extras_list}" ] && extras=${distro_path}/${extras}
+        version_list=`ls -1t ${distro_path} | grep -e "^kernel-" | sed -e 's%^kernel-%%'`
+        version=`echo ${version_list} | cut -d ' ' -f 1`
     fi
-    [ -n "${kernel}" ] && [ -n "${rootfs}" ] && version="*"
-else
-    [ -e "${distro_path}/kernel-${version}" ] && kernel="${distro_path}/kernel-${version}"
-    [ -e "${distro_path}/rootfs-${version}" ] && rootfs="${distro_path}/rootfs-${version}"
-    [ -e "${distro_path}/extras-${version}" ] && extras="${distro_path}/extras-${version}"
+fi
+
+if [ -n "${version}" ] ; then
+    [ -e "${distro_path}/kernel-${version}"     ] && kernel="${distro_path}/kernel-${version}"
+    [ -e "${distro_path}/rootfs-${version}"     ] && rootfs="${distro_path}/rootfs-${version}"
+    [ -e "${distro_path}/extras-${version}.sfs" ] && extras="${distro_path}/extras-${version}.sfs"
 fi
 
 if [ -z "${device}" ] ; then
@@ -112,11 +99,10 @@ if [ -z "${device}" ] ; then
     fi
 fi
 
-if [ -z "${boot_type}" ] || [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || [ -z "${version}" ] || [ -z "${device}" ] ; then
+if [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || [ -z "${version}" ] || [ -z "${device}" ] ; then
     echo "usage:"
-    echo "    $0 <type> <distro_path> [ <conf_path> [ <version> [ <device> ] ] ]"
+    echo "    $0 <distro_path> [ <conf_path> [ <version> [ <device> ] ] ]"
     echo "where:"
-    echo "    <boot_type>  : MM_BOOT_TYPE. Valid values are 'ide' or 'usb'."
     echo "    <distro_path>: Path to the location of the MiniMyth kernel and rootfs."
     echo "    <conf_path>  : Path to the location of the MiniMyth conf directory."
     echo "                   Default is <distro_path>."
@@ -125,11 +111,6 @@ if [ -z "${boot_type}" ] || [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || 
     echo "    <device>     : flash device (e.g. sda)."
     echo "example:"
     echo "    $0 /var/tftpboot/minimyth"
-    exit 1
-fi
-
-if [ ! "${boot_type}" == "ide" ] && [ ! "${boot_type}" == "usb" ] ; then
-    echo "error: <boot_type> is \'${boot_type}\' but must be either 'ide' or 'usb'."
     exit 1
 fi
 
@@ -168,6 +149,7 @@ model=`cat /sys/block/${device}/device/model   | sed 's% *$%%g'`
 
 echo "Making a bootable flash device based on the following information:"
 echo "    flash device: /dev/${device} (vendor: '${vendor}', model: '${model}')"
+echo "    version:      ${version}"
 echo "    kernel:       ${kernel}"
 echo "    rootfs:       ${rootfs}"
 echo "    extras:       ${extras}"
@@ -178,34 +160,41 @@ if [ -z "${response}" ] ; then
     response=n
 fi
 if [ ! "${response}" = "y" ] && [ ! "${response}" = "Y" ] ; then
-    echo "warning: exited at user request."
-    exit 1
+    echo "info: exited at user request."
+    exit 0
 fi
 
 rm -rf   ${volume_path}
 mkdir -p ${volume_path}
 
 mkdir -p ${volume_path}/stage
-echo "DEFAULT minimyth"                                                                                                \
+echo "DEFAULT minimyth"                                                                      \
 	>> ${volume_path}/stage/syslinux.cfg
-echo ""                                                                                                                \
+echo ""                                                                                      \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "LABEL minimyth"                                                                                                  \
+echo "LABEL minimyth"                                                                        \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "	KERNEL kernel"                                                                                                 \
+echo "	KERNEL kernel"                                                                       \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "	APPEND ro root=/dev/ram0 initrd=rootfs ramdisk_blocksize=4096 ramdisk=64000 irqpoll MM_BOOT_TYPE=${boot_type}" \
+echo "	APPEND ro root=/dev/ram0 initrd=rootfs ramdisk_blocksize=4096 ramdisk=64000 irqpoll" \
 	>> ${volume_path}/stage/syslinux.cfg
-if [ -e ${kernel}         ] ; then
+if [ -n "${version}"        ] ; then
+    echo "${version}" >     ${volume_path}/stage/version
+    cd ${volume_path}/stage ; md5sum version    >> checksums.md5
+fi
+if [ -e "${kernel}"         ] ; then
     cp -r ${kernel}         ${volume_path}/stage/kernel
+    cd ${volume_path}/stage ; md5sum kernel     >> checksums.md5
 fi
-if [ -e ${rootfs}         ] ; then
+if [ -e "${rootfs}"         ] ; then
     cp -r ${rootfs}         ${volume_path}/stage/rootfs
+    cd ${volume_path}/stage ; md5sum rootfs     >> checksums.md5
 fi
-if [ -e ${extras}         ] ; then
-    cp -r ${extras}         ${volume_path}/stage/extras.cmg
+if [ -e "${extras}"         ] ; then
+    cp -r ${extras}         ${volume_path}/stage/extras.sfs
+    cd ${volume_path}/stage ; md5sum extras.sfs >> checksums.md5
 fi
-if [ -e ${conf_path}/conf ] ; then
+if [ -e "${conf_path}/conf" ] ; then
     cp -r ${conf_path}/conf ${volume_path}/stage/
 fi
 
