@@ -26,7 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-altivec \
 	--disable-vis \
 	--disable-mlib \
-	--enable-ipv6 \
+	--disable-ipv6 \
 	--disable-fb \
 	--disable-dxr3 \
 	--disable-vidix \

@@ -48,7 +48,8 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-cdparanoia \
 	--enable-freetype \
 	--enable-fontconfig \
-	--enable-menu
+	--enable-menu \
+	--disable-inet6
 # Codecs
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
