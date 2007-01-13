@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql X11/freetype X11/X11 X11/Mesa X11/libXvMCW qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdvdnav lib/zlib db/mysql X11/freetype X11/X11 X11/Mesa X11/libXvMCW qt/qt lirc/lirc
 
 PWD := $(shell pwd)
 
@@ -34,6 +34,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
+	--enable-dvd \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
