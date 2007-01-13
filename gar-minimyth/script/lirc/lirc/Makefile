@@ -1,9 +1,10 @@
 GARNAME = lirc
 GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES += http://lirc.sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-mceusb2.patch
+PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-bugs.patch
 LICENSE = GPL2
 
 DESCRIPTION =
