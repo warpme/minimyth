@@ -1,0 +1,4148 @@
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/avformatdecoder.cpp mythtv-20050202-new/libs/libmythtv/avformatdecoder.cpp
+--- mythtv-20050202-old/libs/libmythtv/avformatdecoder.cpp	2005-02-05 10:51:06.650394912 -0800
++++ mythtv-20050202-new/libs/libmythtv/avformatdecoder.cpp	2005-02-05 10:57:04.020068279 -0800
+@@ -249,21 +249,12 @@
+             break;
+         skipFrames--;
+     }
+-
+ }
+ 
+ void AvFormatDecoder::Reset(void)
+ {
+     SeekReset();
+ 
+-    //
+-    // Clear out the existing mpeg streams
+-    // so we can get a clean set from the 
+-    // new seek position.
+-    for (int i = ic->nb_streams - 1; i >= 0; i--)
+-    {
+-        av_remove_stream(ic, ic->streams[i]->id);
+-    }
+     m_positionMap.clear();
+     framesPlayed = 0;
+     framesRead = 0;
+@@ -912,7 +903,8 @@
+                     positionMapType = MARK_GOP_BYFRAME;
+ 
+                 VERBOSE(VB_PLAYBACK, QString("Stream initial keyframedist: %1.").arg(keyframedist));
+-                m_parent->SetKeyframeDistance(keyframedist);
++                m_parent->SetVideoParams(-1, -1, -1, keyframedist,
++                                         current_aspect);
+             }
+         }
+         else
+@@ -930,8 +922,8 @@
+                 else
+                     positionMapType = MARK_GOP_BYFRAME;
+ 
+-                m_parent->SetKeyframeDistance(keyframedist);
+-
++                m_parent->SetVideoParams(-1, -1, -1, keyframedist,
++                                         current_aspect);
+                 // also reset length
+                 long long index = m_positionMap[m_positionMap.size() - 1].index;
+                 long long totframes = index * keyframedist;
+@@ -1149,7 +1141,6 @@
+         wantedAudioStream = audioStreams[currentAudioTrack];
+ 
+         AVCodecContext *e = &ic->streams[wantedAudioStream]->codec;
+-        SetupAudioStream();
+         CheckAudioParams(e->sample_rate, e->channels, true);
+     }
+ }
+@@ -1167,7 +1158,6 @@
+         wantedAudioStream = audioStreams[currentAudioTrack];
+ 
+         AVCodecContext *e = &ic->streams[wantedAudioStream]->codec;
+-        SetupAudioStream();
+         CheckAudioParams(e->sample_rate, e->channels, true);
+     }
+ }
+@@ -1186,23 +1176,10 @@
+     wantedAudioStream = audioStreams[currentAudioTrack];
+ 
+     AVCodecContext *e = &ic->streams[wantedAudioStream]->codec;
+-    SetupAudioStream();
+     CheckAudioParams(e->sample_rate, e->channels, true);
+     return true;
+ }
+ 
+-//
+-// This function will select the best audio track
+-// available usgin the following rules:
+-//
+-// 1. The fist AC3 track found will be select,
+-// 2. If no AC3 is found then the audio track with
+-// the most number of channels is selected. 
+-//
+-// This code has no awareness to language preferences
+-// although I don't think it would be too hard to 
+-// add.
+-//
+ bool AvFormatDecoder::autoSelectAudioTrack()
+ {
+     if (!audioStreams.size())
+@@ -1215,10 +1192,7 @@
+     if (do_ac3_passthru)
+         minChannels = 2;
+ 
+-    int selectedTrack = -1;
+-    int selectedChannels = -1;
+-    
+-    while ((!foundAudio) && (minChannels >= 0))
++    while (!foundAudio)
+     {
+         for (track = maxTracks; track >= 0; track--)
+         {
+@@ -1227,58 +1201,26 @@
+ 
+             if (e->channels > minChannels)
+             {
+-                //if we find an AC3 codec then we select it 
+-                //as the preferred codec.
+-                if (e->codec_id == CODEC_ID_AC3)
+-                {
+-                    selectedTrack = track;
+-                    foundAudio = true;
+-                    break;
+-                }
+-
+-                if (e->channels > selectedChannels)
+-                {
+-                    //this is a candidate with more channels
+-                    //than the previous, or there was no previous
+-                    //so select it.
+-                    selectedTrack = track;
+-                }
++                currentAudioTrack = track;
++                wantedAudioStream = tempStream;
++                VERBOSE(VB_AUDIO, 
++                        QString("Auto-selecting audio track #%1 (stream #%2).")
++                               .arg(track + 1).arg(tempStream));
++                VERBOSE(VB_AUDIO, 
++                        QString("It has %1 channels and we needed at least %2")
++                               .arg(e->channels).arg(minChannels + 1));
++
++                AVCodecContext *e = &ic->streams[wantedAudioStream]->codec;
++                CheckAudioParams(e->sample_rate, e->channels, true);
++                return true;
+             }
+         }
+-        if (!foundAudio)
+-        {
+         minChannels--;
+-        }
++        if (minChannels < 0)
++            return false;
+     }
+ 
+-    if (selectedTrack == -1)
+-    {
+-        //no suitable track was found
+     return false;
+-    }
+-
+-    currentAudioTrack = selectedTrack;
+-    wantedAudioStream = audioStreams[currentAudioTrack];
+-     
+-    AVCodecContext *e = &ic->streams[wantedAudioStream]->codec;
+-    if (e->codec_id == CODEC_ID_AC3)
+-    {
+-        VERBOSE(VB_AUDIO, 
+-                QString("Auto-selecting AC3 audio track (stream #%2).")
+-                .arg(wantedAudioStream)); 
+-    }
+-    else
+-    {
+-        VERBOSE(VB_AUDIO, 
+-                QString("Auto-selecting audio track #%1 (stream #%2).")
+-                .arg(selectedTrack + 1).arg(wantedAudioStream));
+-        VERBOSE(VB_AUDIO, 
+-                QString("It has %1 channels and we needed at least %2")
+-                .arg(selectedChannels).arg(minChannels + 1));
+-    }
+-    SetupAudioStream();
+-    CheckAudioParams(e->sample_rate, e->channels, true);
+-    return true;
+ }
+ 
+ void AvFormatDecoder::SetupAudioStream(void)
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/channelbase.cpp mythtv-20050202-new/libs/libmythtv/channelbase.cpp
+--- mythtv-20050202-old/libs/libmythtv/channelbase.cpp	2005-02-05 10:51:06.651394799 -0800
++++ mythtv-20050202-new/libs/libmythtv/channelbase.cpp	2005-02-05 10:57:04.021068166 -0800
+@@ -165,8 +165,8 @@
+     if (externalChanger[currentcapchannel].isEmpty())
+         return false;
+ 
+-    QString command = QString("%1 %2").arg(externalChanger[currentcapchannel])
+-                                      .arg(channum);
++    QString command = QString("%1 %2 &").arg(externalChanger[currentcapchannel])
++                                        .arg(channum);
+ 
+     VERBOSE(VB_CHANNEL, QString("External channel change: %1").arg(command));
+     pid_t child = fork();
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dbcheck.cpp mythtv-20050202-new/libs/libmythtv/dbcheck.cpp
+--- mythtv-20050202-old/libs/libmythtv/dbcheck.cpp	2005-02-05 10:51:06.653394574 -0800
++++ mythtv-20050202-new/libs/libmythtv/dbcheck.cpp	2005-02-05 10:57:04.022068053 -0800
+@@ -8,7 +8,7 @@
+ 
+ #include "mythcontext.h"
+ 
+-const QString currentDatabaseVersion = "1066";
++const QString currentDatabaseVersion = "1064";
+ 
+ void UpdateDBVersionNumber(const QString &newnumber)
+ {
+@@ -1201,42 +1201,6 @@
+ };
+         performActualUpdate(updates, "1064", dbver);
+     }
+-
+-    if (dbver == "1064")
+-    {
+-        const QString updates[] = {
+-"ALTER TABLE `program` CHANGE `stereo` `stereo` TINYINT( 1 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `subtitled` `subtitled` TINYINT( 1 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `hdtv` `hdtv` TINYINT( 1 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `closecaptioned` `closecaptioned` TINYINT( 1 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `partnumber` `partnumber` INT( 11 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `parttotal` `parttotal` INT( 11 ) DEFAULT '0' NOT NULL;",
+-"ALTER TABLE `program` CHANGE `programid` `programid` VARCHAR( 20 ) NOT NULL;",
+-"ALTER TABLE `oldrecorded` CHANGE `programid` `programid` VARCHAR( 20 ) NOT NULL;",
+-"ALTER TABLE `recorded` CHANGE `programid` `programid` VARCHAR( 20 ) NOT NULL;",
+-"ALTER TABLE `record` CHANGE `programid` `programid` VARCHAR( 20 ) NOT NULL;",
+-""
+-};
+-        performActualUpdate(updates, "1065", dbver);
+-
+-    }
+-
+- 
+-  
+-    if (dbver == "1065") {
+-        const QString updates[] = {
+-"INSERT INTO profilegroups SET name = 'FireWire Input', cardtype = 'FIREWIRE', is_default = 1;",
+-"ALTER TABLE capturecard ADD COLUMN firewire_port INT UNSIGNED NOT NULL DEFAULT 0;",
+-"ALTER TABLE capturecard ADD COLUMN firewire_node INT UNSIGNED NOT NULL DEFAULT 2;",
+-"ALTER TABLE capturecard ADD COLUMN firewire_speed INT UNSIGNED NOT NULL DEFAULT 0;",
+-"ALTER TABLE capturecard ADD COLUMN firewire_model varchar(32) default NULL;",
+-""
+-};
+-        performActualUpdate(updates, "1066", dbver);
+-    } 
+- 
+-
+-
+ }
+ 
+ void InitializeDatabase(void)
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbcam.cpp mythtv-20050202-new/libs/libmythtv/dvbcam.cpp
+--- mythtv-20050202-old/libs/libmythtv/dvbcam.cpp	2005-02-05 10:51:06.654394461 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbcam.cpp	2005-02-05 10:57:04.023067940 -0800
+@@ -46,7 +46,6 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/poll.h>
+-#include <linux/dvb/ca.h>
+ 
+ #include "recorderbase.h"
+ 
+@@ -62,17 +61,6 @@
+     ciHandler = NULL;
+ 
+     pthread_mutex_init(&pmt_lock, NULL);
+-
+-    int cafd;
+-    if ((cafd = open(dvbdevice(DVB_DEV_CA, cardnum), O_RDONLY)) >= 0)
+-    {
+-        ca_caps_t caps;
+-        ioctl(cafd, CA_GET_CAP, &caps);
+-        numslots = caps.slot_num;
+-        close(cafd);
+-    }
+-    else
+-        numslots = 0;
+ }
+ 
+ DVBCam::~DVBCam()
+@@ -84,9 +72,6 @@
+ 
+ bool DVBCam::Start()
+ {
+-    if (numslots == 0)
+-        return false;
+-
+     exitCiThread = false;
+     have_pmt = false;
+     pmt_sent = false;
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbcam.h mythtv-20050202-new/libs/libmythtv/dvbcam.h
+--- mythtv-20050202-old/libs/libmythtv/dvbcam.h	2005-02-05 10:51:06.654394461 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbcam.h	2005-02-05 10:57:04.024067827 -0800
+@@ -27,7 +27,6 @@
+     void SendPMT(PMTObject &pmt, uint8_t cplm);
+ 
+     int             cardnum;
+-    int             numslots;
+     cCiHandler      *ciHandler;
+ 
+     bool            exitCiThread;
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbchannel.cpp mythtv-20050202-new/libs/libmythtv/dvbchannel.cpp
+--- mythtv-20050202-old/libs/libmythtv/dvbchannel.cpp	2005-02-05 10:51:06.655394348 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbchannel.cpp	2005-02-05 10:57:04.024067827 -0800
+@@ -272,16 +272,14 @@
+  */
+ bool DVBChannel::GetChannelOptions(QString channum)
+ {
++    QString         thequery;
++    QSqlQuery       query;
++    QString         inputName;
+ 
+     if (db_conn == NULL)
+        return false;
+ 
+     pthread_mutex_lock(db_lock);
+-
+-    QString         thequery;
+-    QSqlQuery       query(QString::null, db_conn);
+-    QString         inputName;
+-
+     MythContext::KickDatabase(db_conn);
+ 
+ // TODO: pParent doesn't exist when you create a DVBChannel from videosource
+@@ -336,15 +334,13 @@
+ 
+ bool DVBChannel::GetTransportOptions(int mplexid)
+ {
++    QSqlQuery query;
++    QString thequery;
+ 
+     if (db_conn == NULL)
+        return false;
+ 
+     pthread_mutex_lock(db_lock);
+-
+-    QSqlQuery query(QString::null, db_conn);
+-    QString thequery;
+-
+     MythContext::KickDatabase(db_conn);
+ 
+      // TODO: See previous comment about pParent
+@@ -428,13 +424,11 @@
+     }
+ 
+     query.next();
++    pthread_mutex_unlock(db_lock);
+ 
+     if (!ParseTransportQuery(query))
+-    {
+-        pthread_mutex_unlock(db_lock);
+         return false;
+-    }
+-    pthread_mutex_unlock(db_lock);
++
+     return true;
+ }
+ 
+@@ -459,7 +453,7 @@
+             }
+ 
+             // TODO: Make DiSEqC class print options here as well
+-            // NOTE: Diseqc and LNB is handled by DVBDiSEqC.
++            //NOTE: Diseqc and LNB is handled by DVBDiSEqC.
+             break;
+ 
+         case FE_QAM:
+@@ -725,13 +719,11 @@
+ 
+ bool DVBChannel::ParseTransportQuery(QSqlQuery& query)
+ {
+-
+-    // This function must be called with db_lock held
+-
+     pthread_mutex_lock(&chan_opts.lock);
+ 
+     switch(info.type)
+     {
++// TODO: Add in Diseqc_Pos when diseqc class supports position as well as switches
+         case FE_QPSK:
+             if (!ParseQPSK(query.value(0).toString(), query.value(1).toString(),
+                            query.value(2).toString(), query.value(3).toString(),
+@@ -782,7 +774,6 @@
+     }
+ 
+     pthread_mutex_unlock(&chan_opts.lock);
+-
+     return true;
+ }
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbchannel.h mythtv-20050202-new/libs/libmythtv/dvbchannel.h
+--- mythtv-20050202-old/libs/libmythtv/dvbchannel.h	2005-02-05 10:51:06.655394348 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbchannel.h	2005-02-05 10:57:04.024067827 -0800
+@@ -100,6 +100,7 @@
+     bool CheckCodeRate(fe_code_rate_t& rate);
+ 
+     bool ParseTransportQuery(QSqlQuery& query);
++    bool ParseChannelQuery(QSqlQuery& query);
+ 
+     bool TuneQPSK(dvb_tuning_t& tuning, bool reset, bool& havetuned);
+     bool TuneQAM(dvb_tuning_t& tuning, bool reset, bool& havetuned);
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbrecorder.cpp mythtv-20050202-new/libs/libmythtv/dvbrecorder.cpp
+--- mythtv-20050202-old/libs/libmythtv/dvbrecorder.cpp	2005-02-05 10:51:06.655394348 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbrecorder.cpp	2005-02-05 10:57:04.024067827 -0800
+@@ -176,13 +176,12 @@
+         return false;
+     }
+ 
++    VERBOSE(VB_GENERAL, QString("DVB#%1 ").arg(_card_number_option)
++            << "Recorder: Card opened successfully.");
++
+     connect(dvbchannel, SIGNAL(ChannelChanged(dvb_channel_t&)),
+             this, SLOT(ChannelChanged(dvb_channel_t&)));
+ 
+-    VERBOSE(VB_GENERAL, QString("DVB#%1 Recorder: Card opened successfully (using %2 mode).")
+-                        .arg(_card_number_option)
+-                        .arg(_record_transport_stream_option ? "TS" : "PS"));
+-
+     dvbchannel->RecorderStarted();
+ 
+     return true;
+@@ -288,13 +287,13 @@
+             case ES_TYPE_VIDEO_MPEG1:
+             case ES_TYPE_VIDEO_MPEG2:
+                 init_ipack(ip, 2048, ProcessDataPS);
+-                ip->replaceid = videoid++;
++                ip->replaceid=0xe0;
+                 break;
+ 
+             case ES_TYPE_AUDIO_MPEG1:
+             case ES_TYPE_AUDIO_MPEG2:
+                 init_ipack(ip, 65535, ProcessDataPS); /* don't repack PES */
+-                ip->replaceid = audioid++;
++                ip->replaceid=0xc0;
+                 break;
+ 
+             case ES_TYPE_AUDIO_AC3:
+@@ -332,27 +331,40 @@
+     _wait_for_keyframe = _wait_for_keyframe_option;
+     keyframe_found = false;
+ 
+-    audioid = 0xC0;
+-    videoid = 0xE0;
+-
+-
+-    // Record all streams flagged for recording
+-    bool need_pcr_pid = true;
+-    QValueList<ElementaryPIDObject>::Iterator es;
+-    for (es = m_pmt.Components.begin(); es != m_pmt.Components.end(); ++es)
++    if (_record_transport_stream_option)
+     {
+-        if ((*es).Record)
++        bool need_pcr_pid = true;
++
++        // Record all streams flagged for recording
++        QValueList<ElementaryPIDObject>::Iterator es;
++        for (es = m_pmt.Components.begin(); es != m_pmt.Components.end(); ++es)
+         {
+-            OpenFilters((*es).PID, (*es).Type);
++            if ((*es).Record)
++            {
++                OpenFilters((*es).PID, (*es).Type);
+ 
+-            if ((*es).PID == m_pmt.PCRPID)
+-                need_pcr_pid = false;
++                if ((*es).PID == m_pmt.PCRPID)
++                    need_pcr_pid = false;
++            }
+         }
+-    }
+-
+-    if (_record_transport_stream_option && need_pcr_pid)
+-        OpenFilters(m_pmt.PCRPID, ES_TYPE_UNKNOWN);
+ 
++        if (need_pcr_pid)
++            OpenFilters(m_pmt.PCRPID, ES_TYPE_UNKNOWN);
++    }
++    else
++    {
++        // PES recording currently only supports one video and one audio PID (I think???)
++        ElementaryPIDObject *as = m_pmt.PreferredAudioStream();
++        ElementaryPIDObject *vs = m_pmt.PreferredVideoStream();
++//        ElementaryPIDObject *sub = m_pmt.PreferredSubtitleStream();
++
++        if (as)
++            OpenFilters(as->PID, as->Type);
++        if (vs)
++            OpenFilters(vs->PID, vs->Type);
++        //if (sub)
++        //    OpenFilters(sub->PID, sub->Type);
++    }
+ 
+     if (_pid_filters.size() == 0 && pid_ipack.size() == 0)
+     {
+@@ -381,13 +393,9 @@
+     StreamTypes += ES_TYPE_AUDIO_MPEG1;
+     StreamTypes += ES_TYPE_AUDIO_MPEG2;
+     StreamTypes += ES_TYPE_AUDIO_AC3;
+-    if (_record_transport_stream_option)
+-    {
+-        // PS recorder can't handle these
+-        StreamTypes += ES_TYPE_AUDIO_AAC;
+-        StreamTypes += ES_TYPE_TELETEXT;
+-        StreamTypes += ES_TYPE_SUBTITLE;
+-    }
++    StreamTypes += ES_TYPE_AUDIO_AAC;
++    StreamTypes += ES_TYPE_TELETEXT;
++    StreamTypes += ES_TYPE_SUBTITLE;
+ 
+     QMap<ES_Type, bool> flagged;
+     QValueList<ElementaryPIDObject>::Iterator es;
+@@ -421,35 +429,6 @@
+                 continue; // Ignore this stream
+         }
+ 
+-        if (!_record_transport_stream_option)
+-        {
+-            // The MPEG PS decoder in Myth currently only handles one stream
+-            // of each type, so make sure we don't already have one
+-            switch ((*es).Type)
+-            {
+-                case ES_TYPE_VIDEO_MPEG1:
+-                case ES_TYPE_VIDEO_MPEG2:
+-                    if (flagged.contains(ES_TYPE_VIDEO_MPEG1) || flagged.contains(ES_TYPE_VIDEO_MPEG2))
+-                        continue; // Ignore this stream
+-                    break;
+-
+-                case ES_TYPE_AUDIO_MPEG1:
+-                case ES_TYPE_AUDIO_MPEG2:
+-                    if (flagged.contains(ES_TYPE_AUDIO_MPEG1) || flagged.contains(ES_TYPE_AUDIO_MPEG2))
+-                        continue; // Ignore this stream
+-                    break;
+-
+-                case ES_TYPE_AUDIO_AC3:
+-                    if (flagged.contains(ES_TYPE_AUDIO_AC3))
+-                        continue; // Ignore this stream
+-                    break;
+-
+-                default:
+-                    break;
+-            }
+-        }
+-
+-
+         if (Languages.isEmpty() // No specific language wanted
+             || (*es).Language.isEmpty() // Component has no language
+             || Languages.contains((*es).Language)) // This language is wanted!
+@@ -691,7 +670,7 @@
+                     if ((pktbuf[1] & 0x40) == 0)
+                         continue; // No PUSI - drop packet
+ 
+-                    RECORD(QString("Found PUSI for PID %1").arg(pid));
++                    RECORD(QString("Found payload_unit_start_indicator for PID%1").arg(pid));
+                     pusi_seen[pid] = true;
+                 }
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbrecorder.h mythtv-20050202-new/libs/libmythtv/dvbrecorder.h
+--- mythtv-20050202-old/libs/libmythtv/dvbrecorder.h	2005-02-05 10:51:06.655394348 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbrecorder.h	2005-02-05 10:57:04.024067827 -0800
+@@ -70,10 +70,6 @@
+     bool            _software_filter_open;
+     bool            _reset_pid_filters; // set when we want to generate a new filter set
+ 
+-    // Stream IDs for the PS recorder
+-    uint8_t audioid;
+-    uint8_t videoid;
+-
+     uint8_t *pat_pkt;
+     uint8_t *pmt_pkt;
+     static const int PMT_PID;
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbsiparser.cpp mythtv-20050202-new/libs/libmythtv/dvbsiparser.cpp
+--- mythtv-20050202-old/libs/libmythtv/dvbsiparser.cpp	2005-02-05 10:51:06.655394348 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbsiparser.cpp	2005-02-05 10:57:04.025067714 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: dvbsiparser.cpp,v 1.2 2005/01/31 05:49:56 ijr Exp $
++ * $Id: dvbsiparser.cpp,v 1.1 2005/01/23 22:45:30 ijr Exp $
+  * vim: set expandtab tabstop=4 shiftwidth=4: 
+  *
+  * DVBSIParser.cpp: Digital Video Broadcast - Section/Table Parser
+@@ -68,16 +68,12 @@
+     pthread_mutex_destroy(&poll_lock);
+ }
+ 
+-void DVBSIParser::AddPid(uint16_t pid,uint8_t mask,uint8_t filter, bool CheckCRC, int bufferFactor)
++void DVBSIParser::AddPid(uint16_t pid,uint8_t mask,uint8_t filter, bool CheckCRC)
+ {
+ 
+     struct dmx_sct_filter_params params;
+     int fd;
+ 
+-    int sect_buf_size = MAX_SECTION_SIZE * bufferFactor;
+-
+-    SIPARSER(QString("Adding PID %1 Filter %2 Mask %3 Buffer %4").arg(pid,4,16).arg(filter,2,16).arg(mask,2,16).arg(sect_buf_size));
+-
+     /* Set flag so other processes can get past poll_lock */
+     filterChange = true;
+     pthread_mutex_lock(&poll_lock);
+@@ -112,12 +108,6 @@
+         return;
+     }
+ 
+-    if (ioctl(fd, DMX_SET_BUFFER_SIZE, sect_buf_size) < 0) {
+-        ERRNO(QString("Failed to set demux buffer size (pid %1)").arg(pid));
+-        pthread_mutex_unlock(&poll_lock);
+-        return;
+-    }
+-
+     if (ioctl(fd, DMX_SET_FILTER, &params) < 0)
+     {
+         ERRNO(QString("Failed to set section filter (pid %1)").arg(pid));
+@@ -144,8 +134,6 @@
+     PIDFDMap::Iterator it;
+     int x = 0;
+ 
+-    SIPARSER(QString("Deleting PID %1").arg(pid,4,16));
+-
+     filterChange = true;
+ 
+     pthread_mutex_lock(&poll_lock);
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbsiparser.h mythtv-20050202-new/libs/libmythtv/dvbsiparser.h
+--- mythtv-20050202-old/libs/libmythtv/dvbsiparser.h	2005-02-05 10:51:06.656394235 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbsiparser.h	2005-02-05 10:57:04.025067714 -0800
+@@ -65,8 +65,7 @@
+     ~DVBSIParser();
+ 
+     /* Control PIDs */
+-    void AddPid(uint16_t pid,uint8_t mask = 0x00,uint8_t filter = 0xFF, bool CheckCRC = true,
+-                int bufferFactor = 10);
++    void AddPid(uint16_t pid,uint8_t mask = 0x00,uint8_t filter = 0xFF, bool CheckCRC = true);
+     void DelPid(int pid);
+     void DelAllPids();
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/dvbtransporteditor.cpp mythtv-20050202-new/libs/libmythtv/dvbtransporteditor.cpp
+--- mythtv-20050202-old/libs/libmythtv/dvbtransporteditor.cpp	2005-02-05 10:51:06.656394235 -0800
++++ mythtv-20050202-new/libs/libmythtv/dvbtransporteditor.cpp	2005-02-05 10:57:04.025067714 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: dvbtransporteditor.cpp,v 1.2 2005/02/02 07:11:10 ijr Exp $
++ * $Id: dvbtransporteditor.cpp,v 1.1 2005/01/23 22:45:30 ijr Exp $
+  * vim: set expandtab tabstop=4 shiftwidth=4:
+  *
+  * Original Project
+@@ -173,7 +173,9 @@
+                                              tr("No, don't"), 2);
+ 
+     if (val == 0) {
+-        QSqlQuery query = m_db->exec(QString("DELETE FROM dtv_multiplex "
++        QSqlQuery query;
++
++        query = m_db->exec(QString("DELETE FROM dtv_multiplex "
+                                  "WHERE mplexid ='%1'").arg(m_nID));
+         if (!query.isActive())
+             MythContext::DBError("TransportEditor Delete DVBTransport", query);
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/firewirechannel.cpp mythtv-20050202-new/libs/libmythtv/firewirechannel.cpp
+--- mythtv-20050202-old/libs/libmythtv/firewirechannel.cpp	2005-02-05 10:51:06.656394235 -0800
++++ mythtv-20050202-new/libs/libmythtv/firewirechannel.cpp	1969-12-31 16:00:00.000000000 -0800
+@@ -1,59 +0,0 @@
+-/**
+- *  FirewireChannel
+- *  Copyright (c) 2005 by Jim Westfall
+- *  Distributed as part of MythTV under GPL v2 and later.
+- */
+-
+-
+-#include <iostream>
+-#include "mythcontext.h"
+-#include "firewirechannel.h"
+-
+-class TVRec;
+-
+-
+-FirewireChannel::FirewireChannel(TVRec *parent): ChannelBase(parent) {
+-    capchannels = 1;
+-    channelnames[0] = "MPEG2TS";
+-}
+-
+-FirewireChannel::~FirewireChannel(void)
+-{   
+-}
+-
+-bool FirewireChannel::SetChannelByString(const QString &chan) {
+-
+-
+-     inputChannel[currentcapchannel] = chan;
+-     curchannelname = chan;
+-
+-     if (externalChanger[currentcapchannel].isEmpty()) {
+-         VERBOSE(VB_IMPORTANT,QString("FireWire: external channel changer only supported at this time.")); 
+-     } else if(!ChangeExternalChannel(chan)) {
+-         return false;
+-     }
+-     return true;
+-}
+-
+-bool FirewireChannel::Open() {
+-    SetExternalChanger();
+-    return true;
+-}
+-void FirewireChannel::Close() {
+-
+-}
+-    
+-void FirewireChannel::SwitchToInput(const QString &input, const QString &chan)
+-{
+-    currentcapchannel = 0;
+-    if (channelnames.empty())
+-       channelnames[currentcapchannel] = input;
+-
+-    SetChannelByString(chan);
+-}
+-
+-void FirewireChannel::SetExternalChanger(void) {
+-	
+-     pParent->RetrieveInputChannels(inputChannel, inputTuneTo,
+-                                       externalChanger, sourceid);
+-}
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/firewirechannel.h mythtv-20050202-new/libs/libmythtv/firewirechannel.h
+--- mythtv-20050202-old/libs/libmythtv/firewirechannel.h	2005-02-05 10:51:06.657394122 -0800
++++ mythtv-20050202-new/libs/libmythtv/firewirechannel.h	1969-12-31 16:00:00.000000000 -0800
+@@ -1,33 +0,0 @@
+-/**
+- *  FirewireChannel
+- *  Copyright (c) 2005 by Jim Westfall
+- *  Distributed as part of MythTV under GPL v2 and later.
+- */
+-
+-
+-#ifndef FIREWIRECHANNEL_H
+-#define FIREWIRECHANNEL_H
+-
+-#include <qstring.h>
+-#include "tv_rec.h"
+-#include "channelbase.h"
+-
+-using namespace std;
+-
+-class FirewireChannel : public ChannelBase
+-{
+- public:
+-    FirewireChannel(TVRec *parent);
+-    ~FirewireChannel(void);
+-
+-    bool SetChannelByString(const QString &chan);
+-    bool Open();
+-    void Close();
+-    void SwitchToInput(const QString &inputname, const QString &chan);
+-    void SwitchToInput(int newcapchannel, bool setstarting)
+-                      { (void)newcapchannel; (void)setstarting; }
+-    void SetExternalChanger(void);
+-
+-};
+-
+-#endif
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/firewirerecorder.cpp mythtv-20050202-new/libs/libmythtv/firewirerecorder.cpp
+--- mythtv-20050202-old/libs/libmythtv/firewirerecorder.cpp	2005-02-05 10:51:06.657394122 -0800
++++ mythtv-20050202-new/libs/libmythtv/firewirerecorder.cpp	1969-12-31 16:00:00.000000000 -0800
+@@ -1,230 +0,0 @@
+-/**
+- *  FirewireRecorder
+- *  Copyright (c) 2005 by Jim Westfall
+- *  Distributed as part of MythTV under GPL v2 and later.
+- */
+-
+-#include <iostream>
+-using namespace std;
+-
+-#include <pthread.h>
+-#include "RingBuffer.h"
+-#include "mythcontext.h"
+-#include "firewirerecorder.h"
+-#include "mpeg/tspacket.h"
+-#include <sys/select.h>
+-
+-// callback function for libiec61883
+-int read_tspacket (unsigned char *tspacket, int len, unsigned int dropped, void *callback_data) {
+-
+-     FirewireRecorder *fw = (FirewireRecorder*)callback_data;
+-     if(!fw) return 0;
+-
+-     if(dropped) {
+-         VERBOSE(VB_GENERAL,QString("FireWire: %1 packet(s) dropped.").arg(dropped));
+-     }
+-     fw->ProcessTSPacket(tspacket,len);
+-     return 1;
+-}
+-
+-
+-FirewireRecorder::FirewireRecorder() {
+-
+-    isopen = false;
+-    fwchannel = -1;
+-    fwbandwidth = -1;
+-    fwport = -1;
+-    fwnode = 0;
+-    fwspeed = -1;
+-    fwhandle = NULL;
+-    fwmpeg = NULL;
+-    fwfd = -1;
+-           
+-}
+-
+-FirewireRecorder::~FirewireRecorder() {
+-
+-    if(isopen) {
+-        VERBOSE(VB_GENERAL,QString("FireWire: releasing iec61883_mpeg2 object"));
+-        iec61883_mpeg2_close(fwmpeg);
+-        if(fwchannel > -1) {
+-              VERBOSE(VB_GENERAL,QString("FireWire: disconnecting channel %1").arg(fwchannel));
+-	      iec61883_cmp_disconnect (fwhandle, fwnode | 0xffc0,
+-                   raw1394_get_local_id (fwhandle), fwchannel, fwbandwidth);
+-        }
+-        VERBOSE(VB_GENERAL,QString("FireWire: releasing raw1394 handle"));
+-        raw1394_destroy_handle(fwhandle);
+-    }    
+-    isopen = false;
+-}
+-
+-bool FirewireRecorder::Open() {
+-
+-     if(isopen)
+-         return true;
+-    
+-     VERBOSE(VB_GENERAL,QString("FireWire: Initializing Port: %1, Node: %2, Speed: %3")
+-                               .arg(fwport)
+-                               .arg(fwnode)
+-                               .arg(FirewireSpeedString(fwspeed)));
+-
+-     if((fwhandle = raw1394_new_handle_on_port(fwport)) == NULL) {
+-         VERBOSE(VB_IMPORTANT, QString("Firewire: unable to get handle for port: %1, bailing").arg(fwport));
+-         perror("firewire port");
+-         return false;
+-     }
+-
+-     fwchannel = iec61883_cmp_connect (fwhandle, fwnode | 0xffc0,
+-                        raw1394_get_local_id (fwhandle), &fwbandwidth);
+-
+-     if(fwchannel > -1) {
+-	VERBOSE(VB_GENERAL,QString("FireWire: Created Channel: %1, Bandwidth Allocation: %2").arg(fwchannel).arg(fwbandwidth));
+-     }
+-
+-     if((fwmpeg = iec61883_mpeg2_recv_init (fwhandle, read_tspacket, this)) == NULL) {
+-         VERBOSE(VB_IMPORTANT, QString("Firewire: unable to init iec61883_mpeg2 object, bailing"));
+-         perror("iec61883_mpeg2 object");
+- 
+-         // release raw1394 object;
+-	 raw1394_destroy_handle(fwhandle);
+-         return false;
+-     }
+-     
+-     // set speed if needed
+-     // probably shouldnt even allow user to set, 100Mbps should be more the enough
+-     int curspeed = iec61883_mpeg2_get_speed(fwmpeg);
+-     if(curspeed != fwspeed) {
+-         VERBOSE(VB_GENERAL,QString("FireWire: Changing Speed %1 -> %2")
+-                                    .arg(FirewireSpeedString(curspeed))
+-                                    .arg(FirewireSpeedString(fwspeed)));
+-         iec61883_mpeg2_set_speed(fwmpeg, fwspeed);
+-         if(fwspeed != iec61883_mpeg2_get_speed(fwmpeg)) {
+-              VERBOSE(VB_IMPORTANT, QString("Firewire: unable to set firewire speed, continuing"));
+-         }
+-     }
+-     
+-     isopen = true;
+-     fwfd = raw1394_get_fd(fwhandle); 
+-     return true;
+-}
+-
+-void FirewireRecorder::StartRecording(void) {
+-
+-    struct timeval tv;
+-    fd_set rfds;
+-  
+-    VERBOSE(VB_RECORD, QString("StartRecording"));
+-
+-    if (!Open()) {
+-        _error = true;        
+-        return;
+-    }
+-
+-    _request_recording = true;
+-    _recording = true;
+-   
+-    iec61883_mpeg2_recv_start(fwmpeg,fwchannel);
+-    lastpacket = time(NULL);
+-    while(_request_recording) {
+-       if(_request_pause) {
+-            if(!_paused) {
+-                 // stop mpeg
+-                 iec61883_mpeg2_recv_stop(fwmpeg);
+-                  _paused = true;
+-            }
+-            pauseWait.wakeAll();
+-
+-            usleep(1000);
+-            continue;
+-
+-       } else if(!_request_pause && _paused) {
+-            _paused = false;
+-            iec61883_mpeg2_recv_start(fwmpeg,fwchannel);
+-            lastpacket = time(NULL);
+-       }
+-
+-       if(time(NULL) - lastpacket > FIREWIRE_TIMEOUT) {
+-            VERBOSE(VB_IMPORTANT, QString("Firewire: No Input in %1 seconds [P:%2 N:%3] (time)").arg(FIREWIRE_TIMEOUT).arg(fwport).arg(fwnode));
+-            iec61883_mpeg2_recv_stop(fwmpeg);
+-            _error = true;
+-            return;
+-       }
+-
+-       FD_ZERO (&rfds);
+-       FD_SET (fwfd, &rfds);
+-       tv.tv_sec = FIREWIRE_TIMEOUT;
+-
+-       if(select (fwfd + 1, &rfds, NULL, NULL, &tv) > 0) {
+-            if(raw1394_loop_iterate(fwhandle) != 0) {
+-                 VERBOSE(VB_IMPORTANT, "Firewire: libraw1394_loop_iterate() returned error.");
+-                 iec61883_mpeg2_recv_stop(fwmpeg);
+-                 _error = true;
+-	         return;	
+-            }
+-       } else { 
+-            VERBOSE(VB_IMPORTANT, QString("Firewire: No Input in %1 seconds [P:%2 N:%3] (select)").arg(FIREWIRE_TIMEOUT).arg(fwport).arg(fwnode));
+-            iec61883_mpeg2_recv_stop(fwmpeg);
+-            // to bad setting _error does nothing once recording has started..
+-            _error = true;
+-            return;
+-       }
+-    }        
+-
+-    iec61883_mpeg2_recv_stop(fwmpeg);
+-    FinishRecording();
+-    _recording = false;
+-}  
+-
+-void FirewireRecorder::ProcessTSPacket(unsigned char *tspacket, int len) {
+-    tpkt.InitHeader(tspacket);
+-    tpkt.InitPayload(tspacket+4);
+-    FindKeyframes(&tpkt);
+-    lastpacket = time(NULL);
+-    ringBuffer->Write(tspacket,len);
+-}
+-
+-void FirewireRecorder::SetOptionsFromProfile(RecordingProfile *profile,
+-                                         const QString &videodev,
+-                                         const QString &audiodev,
+-                                         const QString &vbidev, int ispip) {
+-    (void)videodev;
+-    (void)audiodev;
+-    (void)vbidev;
+-    (void)profile;
+-    (void)ispip;
+-}
+-
+-void FirewireRecorder::SetOption(const QString &name, const QString &value) {
+-
+-    if(name == "model") {
+-        fwmodel = value;
+-    }
+-}
+-
+-void FirewireRecorder::SetOption(const QString &name, int value) {
+-
+-    if(name == "port") {
+-	fwport = value;
+-    } else if(name == "node") {
+-        fwnode = value;
+-    } else if(name == "speed") {
+-        fwspeed = value;
+-        if(fwspeed != RAW1394_ISO_SPEED_100 && fwspeed != RAW1394_ISO_SPEED_200 && fwspeed != RAW1394_ISO_SPEED_400) {
+-            VERBOSE(VB_IMPORTANT, QString("Firewire: Invalid speed '%1', assuming 0 (100Mbps)").arg(fwspeed));
+-            fwspeed = 0;
+-        }
+-    }
+-}
+-
+-QString FirewireRecorder::FirewireSpeedString (int speed) {
+-    switch(speed) {
+-        case RAW1394_ISO_SPEED_100:
+-               return("100Mbps");
+-        case RAW1394_ISO_SPEED_200: 
+-               return("200Mbps");
+-        case RAW1394_ISO_SPEED_400:
+-               return("400Mbps");
+-        default:
+-               return(QString("Invalid (%1)").arg(speed));
+-     }
+-}
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/firewirerecorder.h mythtv-20050202-new/libs/libmythtv/firewirerecorder.h
+--- mythtv-20050202-old/libs/libmythtv/firewirerecorder.h	2005-02-05 10:51:06.657394122 -0800
++++ mythtv-20050202-new/libs/libmythtv/firewirerecorder.h	1969-12-31 16:00:00.000000000 -0800
+@@ -1,49 +0,0 @@
+-/**
+- *  FirewireRecorder
+- *  Copyright (c) 2005 by Jim Westfall
+- *  Distributed as part of MythTV under GPL v2 and later.
+- */
+-
+-#ifndef FIREWIRERECORDER_H_
+-#define FIREWIRERECORDER_H_
+-
+-#include "dtvrecorder.h"
+-#include "mpeg/tspacket.h"
+-#include <libraw1394/raw1394.h>
+-#include <libiec61883/iec61883.h>
+-
+-#include <time.h>
+-
+-#define FIREWIRE_TIMEOUT 15
+-
+-class FirewireRecorder : public DTVRecorder
+-{
+-  public:
+-
+-    FirewireRecorder();
+-    ~FirewireRecorder();
+-
+-    void StartRecording(void);
+-    bool Open(void); 
+-    void ProcessTSPacket(unsigned char *tspacket, int len);
+-    void FirewireRecorder::SetOptionsFromProfile(RecordingProfile *profile,
+-                                         const QString &videodev,
+-                                         const QString &audiodev,
+-                                         const QString &vbidev, int ispip);
+-
+-    void SetOption(const QString &name, const QString &value);
+-    void SetOption(const QString &name, int value);
+-    QString FirewireSpeedString(int speed);
+-
+-  private:
+-    int fwport, fwchannel, fwspeed, fwbandwidth, fwfd;
+-    QString fwmodel;
+-    nodeid_t fwnode;
+-    raw1394handle_t fwhandle;
+-    iec61883_mpeg2_t fwmpeg;
+-    bool isopen;
+-    time_t lastpacket;
+-    TSPacket tpkt;
+-};
+-
+-#endif
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/guidegrid.cpp mythtv-20050202-new/libs/libmythtv/guidegrid.cpp
+--- mythtv-20050202-old/libs/libmythtv/guidegrid.cpp	2005-02-05 10:51:06.657394122 -0800
++++ mythtv-20050202-new/libs/libmythtv/guidegrid.cpp	2005-02-05 10:57:04.026067602 -0800
+@@ -84,7 +84,6 @@
+ 
+     fullRect = QRect(0, 0, size().width(), size().height());
+     dateRect = QRect(0, 0, 0, 0);
+-    jumpToChannelRect = QRect(0, 0, 0, 0);
+     channelRect = QRect(0, 0, 0, 0);
+     timeRect = QRect(0, 0, 0, 0);
+     programRect = QRect(0, 0, 0, 0);
+@@ -94,12 +93,6 @@
+ 
+     MythContext::KickDatabase(m_db);
+ 
+-    jumpToChannelEnabled = gContext->GetNumSetting("EPGEnableJumpToChannel", 0);
+-    jumpToChannelActive = false;
+-    jumpToChannelHasRect = false; // by default, we assume there is no specific region for jumpToChannel in the theme
+-    jumpToChannelTimer = new QTimer(this);
+-    connect(jumpToChannelTimer, SIGNAL(timeout()), SLOT(jumpToChannelTimeout()));
+-    
+     theme = new XMLParse();
+     theme->SetWMult(wmult);
+     theme->SetHMult(hmult);
+@@ -129,7 +122,7 @@
+ 
+     selectChangesChannel = gContext->GetNumSetting("SelectChangesChannel", 0);
+     selectRecThreshold = gContext->GetNumSetting("SelChangeRecThreshold", 16);
+-
++    
+     LayerSet *container = NULL;
+     container = theme->GetSet("guide");
+     if (container)
+@@ -351,15 +344,6 @@
+                 dayLeft();
+             else if (action == "DAYRIGHT")
+                 dayRight();
+-            else if (jumpToChannelEnabled &&
+-                     ((action[0] >= '0') && (action[0] <= '9')))
+-                jumpToChannelDigitPress(action.toInt());
+-            else if (jumpToChannelEnabled && jumpToChannelActive &&
+-                     (action == "ESCAPE"))
+-                jumpToChannelCancel();
+-            else if (jumpToChannelEnabled && jumpToChannelActive &&
+-                     (action == "DELETE"))
+-                jumpToChannelDeleteLastDigit();
+             else if (action == "NEXTFAV" || action == "4")
+                 toggleGuideListing();
+             else if (action == "6")
+@@ -475,10 +459,6 @@
+         timeRect = area;
+     if (name.lower() == "date_info")
+         dateRect = area;
+-    if (name.lower() == "jumptochannel") {
+-        jumpToChannelRect = area;
+-        jumpToChannelHasRect = true;
+-    }
+     if (name.lower() == "current_info")
+         curInfoRect = area;
+     if (name.lower() == "current_video")
+@@ -923,7 +903,7 @@
+ 
+     if (r.intersects(infoRect))
+         paintInfo(&p);
+-    if (r.intersects(dateRect) && (jumpToChannelHasRect || (!jumpToChannelHasRect && !jumpToChannelActive)))
++    if (r.intersects(dateRect))
+         paintDate(&p);
+     if (r.intersects(channelRect))
+         paintChannels(&p);
+@@ -934,11 +914,6 @@
+     if (r.intersects(curInfoRect))
+         paintCurrentInfo(&p);
+ 
+-    // if jumpToChannel has its own rect, use that; otherwise use the date's rect
+-    if ((jumpToChannelHasRect && r.intersects(jumpToChannelRect)) ||
+-        (!jumpToChannelHasRect && r.intersects(dateRect)))
+-        paintJumpToChannel(&p);
+-
+     qApp->unlock();
+ }
+ 
+@@ -973,49 +948,6 @@
+     p->drawPixmap(dr.topLeft(), pix);
+ }
+ 
+-void GuideGrid::paintJumpToChannel(QPainter *p)
+-{
+-    if (!jumpToChannelEnabled || !jumpToChannelActive)
+-        return;
+-
+-    QRect jtcr;
+-    LayerSet *container = NULL;
+-
+-    if (jumpToChannelHasRect) {
+-        jtcr = jumpToChannelRect;
+-        container = theme->GetSet("jumptochannel");
+-    } else {
+-        jtcr = dateRect;
+-        container = theme->GetSet("date_info");
+-    }
+-
+-    QPixmap pix(jtcr.size());
+-    pix.fill(this, jtcr.topLeft());
+-    QPainter tmp(&pix);
+-
+-    if (container)
+-    {
+-        UITextType *type = (UITextType *)container->GetType((jumpToChannelHasRect) ? "channel" : "date");
+-        if (type) {
+-            type->SetText(QString::number(jumpToChannel));
+-        }
+-    }
+-
+-    if (container)
+-    {
+-        container->Draw(&tmp, 1, m_context);
+-        container->Draw(&tmp, 2, m_context);
+-        container->Draw(&tmp, 3, m_context);
+-        container->Draw(&tmp, 4, m_context);
+-        container->Draw(&tmp, 5, m_context);
+-        container->Draw(&tmp, 6, m_context);
+-        container->Draw(&tmp, 7, m_context);
+-        container->Draw(&tmp, 8, m_context);
+-    }
+-    tmp.end();
+-    p->drawPixmap(jtcr.topLeft(), pix);
+-}
+-
+ void GuideGrid::paintCurrentInfo(QPainter *p)
+ {
+     QRect dr = curInfoRect;
+@@ -1414,7 +1346,6 @@
+     repaint(programRect, false);
+     repaint(infoRect, false);
+     repaint(dateRect, false);
+-    repaint(jumpToChannelRect, false);
+     repaint(timeRect, false);
+ }
+ 
+@@ -1436,7 +1367,6 @@
+     repaint(programRect, false);
+     repaint(infoRect, false);
+     repaint(dateRect, false);
+-    repaint(jumpToChannelRect, false);
+     repaint(timeRect, false);
+ }
+ 
+@@ -1656,7 +1586,6 @@
+ 
+     m_recList.FromScheduler();
+     fillProgramInfos();
+-
+     repaint(fullRect, false);
+ }
+ 
+@@ -1704,110 +1633,3 @@
+     m_player->EPGChannelUpdate(m_channelInfos[chanNum].chanstr);
+ }
+ 
+-//
+-// jumpToChannel - Jason Parekh <jasonparekh@gmail.com> - 06/23/2004
+-//
+-// The way this works is if you enter a digit, it will set a timer for 2.5 seconds and enter
+-// jump to channel mode where as you enter digits, it will find the closest matching channel
+-// and show that on the program guide.  Within the 2.5 seconds, if you press the button bound
+-// to END, it will cancel channel jump mode and revert to the highlighted channel before entering
+-// this mode.  If you let the timer expire, it will stay on the selected channel.
+-//
+-// The positioning for the channel display can be in either one of two ways.  To ensure compatibility
+-// with themes, I made it so if it can't find a specific jumptochannel container, it will use the date's
+-// and just overwrite the date whenever it is in channel jump mode.  However, if there is a jumptochannel
+-// container, it will use that.  An example container is as follows:
+-//
+-//     <container name="jumptochannel">
+-//     <area>20,20,115,25</area>
+-//     <textarea name="channel" draworder="4" align="right">
+-//         <font>info</font>
+-//         <area>0,0,115,25</area>
+-//         <cutdown>no</cutdown>
+-//     </textarea>
+-//     </container>
+-//
+-
+-void GuideGrid::jumpToChannelDigitPress(int digit)
+-{
+-    // if this is the first digit press (coming from inactive mode)
+-    if (jumpToChannelActive == false) {
+-        jumpToChannelActive = true;
+-        jumpToChannel = 0;
+-        jumpToChannelPreviousStartChannel = m_currentStartChannel;
+-        jumpToChannelPreviousRow = m_currentRow;
+-    }
+-    
+-    // setup the timeout timer for jump mode
+-    jumpToChannelTimer->stop();
+-    jumpToChannelTimer->start(3500, true);
+-
+-    jumpToChannel = (jumpToChannel * 10) + digit;
+-
+-    // So it will move to the closest channels while they enter the digits
+-    jumpToChannelShowSelection();
+-}
+-
+-void GuideGrid::jumpToChannelDeleteLastDigit()
+-{
+-    jumpToChannel /= 10;
+-    
+-    if (jumpToChannel == 0) {
+-        jumpToChannelCancel();
+-    }
+-}
+-
+-void GuideGrid::jumpToChannelShowSelection()
+-{
+-    unsigned int i;
+-    
+-    // Not the best method, but the channel list is small and this isn't time critical
+-    // Go through until the ith channel is equal to or greater than the one we're looking for
+-    for (i=0; (i < m_channelInfos.size()-1) &&
+-             (m_channelInfos[i].chanstr.toInt() < jumpToChannel); i++);
+-    
+-    if ((i > 0) &&
+-        ((m_channelInfos[i].chanstr.toInt() - jumpToChannel) > (jumpToChannel - m_channelInfos[i-1].chanstr.toInt()))) {
+-        i--;
+-    }
+-
+-    // DISPLAY_CHANS to center
+-    setStartChannel(i-DISPLAY_CHANS/2);
+-    m_currentRow = DISPLAY_CHANS/2;
+-    
+-    fillProgramInfos();
+-
+-    repaint(fullRect, false);
+-}
+-
+-void GuideGrid::jumpToChannelCommit()
+-{
+-    jumpToChannelResetAndHide();
+-}
+-
+-void GuideGrid::jumpToChannelCancel()
+-{
+-    setStartChannel(jumpToChannelPreviousStartChannel);
+-    m_currentRow = jumpToChannelPreviousRow;
+-    
+-    fillProgramInfos();
+-    
+-    repaint(fullRect, false);
+-    
+-    jumpToChannelResetAndHide();
+-}
+-
+-void GuideGrid::jumpToChannelResetAndHide()
+-{
+-    jumpToChannelActive = false;
+-
+-    jumpToChannelTimer->stop();
+-
+-    repaint(fullRect, false);
+-}
+-
+-void GuideGrid::jumpToChannelTimeout()
+-{
+-    jumpToChannelCommit();
+-}
+-
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/guidegrid.h mythtv-20050202-new/libs/libmythtv/guidegrid.h
+--- mythtv-20050202-old/libs/libmythtv/guidegrid.h	2005-02-05 10:51:06.658394010 -0800
++++ mythtv-20050202-new/libs/libmythtv/guidegrid.h	2005-02-05 10:57:04.026067602 -0800
+@@ -81,7 +81,6 @@
+ 
+   private slots:
+     void timeout();
+-    void jumpToChannelTimeout();
+ 
+   private:
+     void keyPressEvent(QKeyEvent *e);
+@@ -89,7 +88,6 @@
+ 
+     void updateBackground(void);
+     void paintDate(QPainter *);
+-    void paintJumpToChannel(QPainter *);
+     void paintChannels(QPainter *);
+     void paintTimes(QPainter *);
+     void paintPrograms(QPainter *);
+@@ -112,7 +110,6 @@
+ 
+     QRect fullRect;
+     QRect dateRect;
+-    QRect jumpToChannelRect;
+     QRect channelRect;
+     QRect timeRect;
+     QRect programRect;
+@@ -171,20 +168,6 @@
+     QSqlDatabase *m_db;
+ 
+     bool keyDown;
+-
+-    void jumpToChannelResetAndHide();
+-    void jumpToChannelCancel();
+-    void jumpToChannelCommit();
+-    void jumpToChannelShowSelection();
+-    void jumpToChannelDeleteLastDigit();
+-    void jumpToChannelDigitPress(int);
+-    int jumpToChannel;
+-    int jumpToChannelPreviousStartChannel;
+-    int jumpToChannelPreviousRow;
+-    bool jumpToChannelEnabled;
+-    bool jumpToChannelActive;
+-    bool jumpToChannelHasRect;
+-    QTimer *jumpToChannelTimer;
+ };
+ 
+ #endif
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/hdtvrecorder.cpp mythtv-20050202-new/libs/libmythtv/hdtvrecorder.cpp
+--- mythtv-20050202-old/libs/libmythtv/hdtvrecorder.cpp	2005-02-05 10:51:06.658394010 -0800
++++ mythtv-20050202-new/libs/libmythtv/hdtvrecorder.cpp	2005-02-05 10:57:04.027067489 -0800
+@@ -921,7 +921,7 @@
+     int pos = freqid.find('-');
+     if (pos != -1) 
+     {
+-        desired_channel = -1;
++        desired_channel = atoi(freqid.left(pos));
+         desired_subchannel = atoi(freqid.mid(pos+1).ascii());
+     }
+     else
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/ivtvdecoder.cpp mythtv-20050202-new/libs/libmythtv/ivtvdecoder.cpp
+--- mythtv-20050202-old/libs/libmythtv/ivtvdecoder.cpp	2005-02-05 10:51:06.658394010 -0800
++++ mythtv-20050202-new/libs/libmythtv/ivtvdecoder.cpp	2005-02-05 10:57:04.027067489 -0800
+@@ -290,7 +290,7 @@
+                                 positionMapType = MARK_GOP_BYFRAME;
+ 
+                             gopset = true;
+-                            m_parent->SetKeyframeDistance(keyframedist);
++                            m_parent->SetVideoParams(-1, -1, -1, keyframedist);
+                             VERBOSE(VB_PLAYBACK,
+                                     QString("keyframedist changed to %1")
+                                     .arg(keyframedist));
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/jobqueue.cpp mythtv-20050202-new/libs/libmythtv/jobqueue.cpp
+--- mythtv-20050202-old/libs/libmythtv/jobqueue.cpp	2005-02-05 10:51:06.659393897 -0800
++++ mythtv-20050202-new/libs/libmythtv/jobqueue.cpp	2005-02-05 10:57:04.028067376 -0800
+@@ -1582,6 +1582,17 @@
+         ChangeJobStatus(commthread_db->db(), jobID, JOB_ERRORED,
+                         "ERROR: Unable to find mythcommflag.");
+     }
++    else if (breaksFound == 254)
++    {
++        msg = QString("Commercial Flagging ERRORED for %1.")
++                      .arg(logDesc);
++
++        gContext->LogEntry("commflag", LP_WARNING,
++                           "Commercial Flagging Errored", msg);
++
++        ChangeJobStatus(commthread_db->db(), jobID, JOB_ERRORED,
++                        "Job aborted with Error.");
++    }
+     else if ((*(jobControlFlags[key]) == JOB_STOP) ||
+              (breaksFound == 255))
+     {
+@@ -1594,17 +1605,6 @@
+         ChangeJobStatus(commthread_db->db(), jobID, JOB_ABORTED,
+                         "Job aborted by user.");
+     }
+-    else if (breaksFound >= 200)
+-    {
+-        msg = QString("Commercial Flagging ERRORED for %1 with result %2.")
+-                      .arg(logDesc).arg(breaksFound);
+-
+-        gContext->LogEntry("commflag", LP_WARNING,
+-                           "Commercial Flagging Errored", msg);
+-
+-        ChangeJobStatus(commthread_db->db(), jobID, JOB_ERRORED,
+-                        QString("Job aborted with Error %1.").arg(breaksFound));
+-    }
+     else
+     {
+         msg = QString("Finished Commercial Flagging for %1. "
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/libmythtv.pro mythtv-20050202-new/libs/libmythtv/libmythtv.pro
+--- mythtv-20050202-old/libs/libmythtv/libmythtv.pro	2005-02-05 10:51:06.659393897 -0800
++++ mythtv-20050202-new/libs/libmythtv/libmythtv.pro	2005-02-05 10:57:04.028067376 -0800
+@@ -1,4 +1,3 @@
+-include ( ../../config.mak )
+ include ( ../../settings.pro )
+ 
+ TEMPLATE = lib
+@@ -32,8 +31,10 @@
+ QMAKE_CFLAGS_RELEASE = $$OPTFLAGS -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+ QMAKE_CFLAGS_DEBUG = -g -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+ 
+-QMAKE_CXXFLAGS_RELEASE += `freetype-config --cflags`
+-QMAKE_CXXFLAGS_DEBUG += `freetype-config --cflags`
++FREETYPEFLAGS = $$system(freetype-config --cflags)
++
++QMAKE_CXXFLAGS_RELEASE += $$FREETYPEFLAGS
++QMAKE_CXXFLAGS_DEBUG += $$FREETYPEFLAGS
+ 
+ # old libvbitext
+ 
+@@ -130,11 +131,6 @@
+     HEADERS += dvbdev/dvbci.h
+ }
+ 
+-using_firewire {
+-    SOURCES += firewirerecorder.cpp firewirechannel.cpp
+-    HEADERS += firewirerecorder.h firewirechannel.h
+-}
+-
+ using_directfb {
+     SOURCES += videoout_directfb.cpp
+     HEADERS += videoout_directfb.h
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/mpeg/tsstats.h mythtv-20050202-new/libs/libmythtv/mpeg/tsstats.h
+--- mythtv-20050202-old/libs/libmythtv/mpeg/tsstats.h	2005-02-05 10:51:06.647395250 -0800
++++ mythtv-20050202-new/libs/libmythtv/mpeg/tsstats.h	2005-02-05 10:57:04.017068617 -0800
+@@ -22,11 +22,11 @@
+ 
+ inline QString TSStats::toString() {
+     QString str("Transport Stream Statistics\n");
+-    str.append(QString("TSPacket Count: %1").arg((long)_tspacket_count));
++    str.append(QString("TSPacket Count: %1").arg(_tspacket_count));
+     QMapIterator<int, long long> it = _pid_counts.begin();
+     for (; it != _pid_counts.end(); it++)
+         str.append(QString("\nPID 0x%1 Count: %2").
+-                   arg((int)it.key(),0,16).arg((long)it.data(),10,10));
++                   arg((int)it.key(),0,16).arg((long long)it.data(),10,10));
+     return str;
+ }
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-20050202-new/libs/libmythtv/NuppelVideoPlayer.cpp
+--- mythtv-20050202-old/libs/libmythtv/NuppelVideoPlayer.cpp	2005-02-05 10:51:06.648395138 -0800
++++ mythtv-20050202-new/libs/libmythtv/NuppelVideoPlayer.cpp	2005-02-05 10:57:04.017068617 -0800
+@@ -170,8 +170,6 @@
+     commrewindamount = gContext->GetNumSetting("CommRewindAmount",0);
+     commnotifyamount = gContext->GetNumSetting("CommNotifyAmount",0);
+ 
+-    m_DeintSetting = gContext->GetNumSetting("Deinterlace", 0);
+-
+     timedisplay = NULL;
+     seekamount = 30;
+     seekamountpos = 4;
+@@ -451,9 +449,7 @@
+     InitFilters();
+     videoOutput->InputChanged(video_width, video_height, video_aspect);
+ 
+-    videofiltersLock.lock();
+     ReinitOSD();
+-    videofiltersLock.unlock();
+ 
+     ClearAfterSeek();
+ }
+@@ -505,11 +501,6 @@
+     return scan;
+ }
+ 
+-void NuppelVideoPlayer::SetKeyframeDistance(int keyframedistance)
+-{
+-    if (keyframedistance > 0)
+-        keyframedist = keyframedistance;
+-}
+ 
+ void NuppelVideoPlayer::SetVideoParams(int width, int height, double fps,
+                                        int keyframedistance, float aspect,
+@@ -536,17 +527,15 @@
+     if (reinit)
+         ReinitVideo();
+ 
+-    videofiltersLock.lock();
+-
+     m_scan = detectInterlace(scan, m_scan, video_frame_rate, video_height);
+     VERBOSE(VB_PLAYBACK, QString("Interlaced: %1  video_height: %2  fps: %3")
+                                 .arg(toQString(m_scan)).arg(video_height).arg(fps));
+-
+     // Set up deinterlacing in the video output method
+     m_double_framerate = false;
+     if (videoOutput)
+         videoOutput->SetupDeinterlace(false);
+-    if (m_scan == kScan_Interlaced && m_DeintSetting) {
++    if (m_scan == kScan_Interlaced &&
++        gContext->GetNumSetting("Deinterlace")) {
+         if (videoOutput && videoOutput->SetupDeinterlace(true)) {
+             if (videoOutput->NeedsDoubleFramerate())
+                 m_double_framerate = true;
+@@ -566,7 +555,6 @@
+         }
+     }
+ 
+-    videofiltersLock.unlock();
+ }
+ 
+ void NuppelVideoPlayer::SetFileLength(int total, int frames)
+@@ -1492,7 +1480,8 @@
+     {
+         // Set up deinterlacing in the video output method
+         m_double_framerate = false;
+-        if (m_scan == kScan_Interlaced && m_DeintSetting) {
++        if (m_scan == kScan_Interlaced &&
++            gContext->GetNumSetting("Deinterlace")) {
+             if (videoOutput && videoOutput->SetupDeinterlace(true)) {
+                 if (videoOutput->NeedsDoubleFramerate())
+                     m_double_framerate = true;
+@@ -2714,15 +2703,6 @@
+             deleteMap.clear();
+             UpdateEditSlider();
+         }
+-        else if (action == "INVERTMAP")
+-        {
+-            QMap<long long, int>::Iterator it;
+-            for (it = deleteMap.begin(); it != deleteMap.end(); ++it)
+-                ReverseMark(it.key());
+-
+-            UpdateEditSlider();
+-            UpdateTimeDisplay();
+-        }
+         else if (action == "LOADCOMMSKIP")
+         {
+             if (hascommbreaktable)
+@@ -2739,7 +2719,6 @@
+                     }
+                 }
+                 UpdateEditSlider();
+-                UpdateTimeDisplay();
+             }
+         }
+         else if (action == "PREVCUT")
+@@ -2977,7 +2956,8 @@
+                 AddMark(framesPlayed, type);
+                 break;
+             case 3:
+-                ReverseMark(deleteframe);
++                DeleteMark(deleteframe);
++                AddMark(deleteframe, 1 - type);
+                 break;
+             default:
+                 break;
+@@ -3018,18 +2998,6 @@
+     deleteMap.remove(frames);
+ }
+ 
+-void NuppelVideoPlayer::ReverseMark(long long frames)
+-{
+-    osd->HideEditArrow(frames, deleteMap[frames]);
+-
+-    if (deleteMap[frames] == 0)
+-        deleteMap[frames] = 1;
+-    else
+-        deleteMap[frames] = 0;
+-
+-    osd->ShowEditArrow(frames, totalFrames, deleteMap[frames]);
+-}
+-
+ void NuppelVideoPlayer::HandleArbSeek(bool right)
+ {
+     if (seekamount == -2)
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/NuppelVideoPlayer.h mythtv-20050202-new/libs/libmythtv/NuppelVideoPlayer.h
+--- mythtv-20050202-old/libs/libmythtv/NuppelVideoPlayer.h	2005-02-05 10:51:06.648395138 -0800
++++ mythtv-20050202-new/libs/libmythtv/NuppelVideoPlayer.h	2005-02-05 10:57:04.017068617 -0800
+@@ -154,7 +154,6 @@
+     // decoder stuff..
+     void ForceVideoOutputType(VideoOutputType type);
+ 
+-    void SetKeyframeDistance(int keyframedistance);
+     void SetVideoParams(int width, int height, double fps,
+                         int keyframedistance, float aspect = 1.33333,
+                         FrameScanType scan = kScan_Ignore, bool reinit = false);
+@@ -263,7 +262,6 @@
+     void UpdateEditSlider(void);
+     void AddMark(long long frames, int type);
+     void DeleteMark(long long frames);
+-    void ReverseMark(long long frames);
+     void HandleSelect(void);
+     void HandleResponse(void);
+     void HandleArbSeek(bool right);
+@@ -469,8 +467,6 @@
+     QMutex videofiltersLock;
+ 
+     bool errored;
+-
+-    int m_DeintSetting;
+ };
+ 
+ #endif
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/programinfo.cpp mythtv-20050202-new/libs/libmythtv/programinfo.cpp
+--- mythtv-20050202-old/libs/libmythtv/programinfo.cpp	2005-02-05 10:51:06.664393333 -0800
++++ mythtv-20050202-new/libs/libmythtv/programinfo.cpp	2005-02-05 10:57:04.032066924 -0800
+@@ -4,7 +4,6 @@
+ #include <qmap.h>
+ #include <qlayout.h>
+ #include <qlabel.h>
+-#include <qapplication.h>
+ 
+ #include "programinfo.h"
+ #include "scheduledrecording.h"
+@@ -870,12 +869,12 @@
+ 
+ bool ProgramInfo::IsSameProgram(const ProgramInfo& other) const
+ {
+-    if (rectype == kFindOneRecord)
+-        return recordid == other.recordid;
+-
+     if (title != other.title)
+         return false;
+ 
++    if (rectype == kFindOneRecord)
++        return true;
++
+     if (findid && other.findid)
+         return findid == other.findid;
+ 
+@@ -1812,24 +1811,24 @@
+     switch (rectype)
+     {
+     case kSingleRecord:
+-        return QObject::tr("S", "RecTypeChar kSingleRecord");
++        return QObject::tr("S", "RecTypeChar");
+     case kTimeslotRecord:
+-        return QObject::tr("T", "RecTypeChar kTimeslotRecord");
++        return QObject::tr("T", "RecTypeChar");
+     case kWeekslotRecord:
+-        return QObject::tr("W", "RecTypeChar kWeekslotRecord");
++        return QObject::tr("W", "RecTypeChar");
+     case kChannelRecord:
+-        return QObject::tr("C", "RecTypeChar kChannelRecord");
++        return QObject::tr("C", "RecTypeChar");
+     case kAllRecord:
+-        return QObject::tr("A", "RecTypeChar kAllRecord");
++        return QObject::tr("A", "RecTypeChar");
+     case kFindOneRecord:
+-        return QObject::tr("F", "RecTypeChar kFindOneRecord");
++        return QObject::tr("F", "RecTypeChar");
+     case kFindDailyRecord:
+-        return QObject::tr("d", "RecTypeChar kFindDailyRecord");
++        return QObject::tr("d", "RecTypeChar");
+     case kFindWeeklyRecord:
+-        return QObject::tr("w", "RecTypeChar kFindWeeklyRecord");
++        return QObject::tr("w", "RecTypeChar");
+     case kOverrideRecord:
+     case kDontRecord:
+-        return QObject::tr("O", "RecTypeChar kOverrideRecord/kDontRecord");
++        return QObject::tr("O", "RecTypeChar");
+     case kNotRecording:
+     default:
+         return " ";
+@@ -1869,39 +1868,39 @@
+     switch (recstatus)
+     {
+     case rsDeleted:
+-        return QObject::tr("D", "RecStatusChar rsDeleted");
++        return QObject::tr("D", "RecStatusChar");
+     case rsStopped:
+-        return QObject::tr("S", "RecStatusChar rsStopped");
++        return QObject::tr("S", "RecStatusChar");
+     case rsRecorded:
+-        return QObject::tr("R", "RecStatusChar rsRecorded");
++        return QObject::tr("R", "RecStatusChar");
+     case rsRecording:
+         return QString::number(cardid);
+     case rsWillRecord:
+         return QString::number(cardid);
+     case rsDontRecord:
+-        return QObject::tr("X", "RecStatusChar rsDontRecord");
++        return QObject::tr("X", "RecStatusChar");
+     case rsPreviousRecording:
+-        return QObject::tr("P", "RecStatusChar rsPreviousRecording");
++        return QObject::tr("P", "RecStatusChar");
+     case rsCurrentRecording:
+-        return QObject::tr("R", "RecStatusChar rsCurrentRecording");
++        return QObject::tr("R", "RecStatusChar");
+     case rsRepeat:
+-        return QObject::tr("r", "RecStatusChar rsRepeat");    
++        return QObject::tr("r", "RecStatusChar");    
+     case rsEarlierShowing:
+-        return QObject::tr("E", "RecStatusChar rsEarlierShowing");
++        return QObject::tr("E", "RecStatusChar");
+     case rsTooManyRecordings:
+-        return QObject::tr("T", "RecStatusChar rsTooManyRecordings");
++        return QObject::tr("T", "RecStatusChar");
+     case rsCancelled:
+-        return QObject::tr("N", "RecStatusChar rsCancelled");
++        return QObject::tr("N", "RecStatusChar");
+     case rsConflict:
+-        return QObject::tr("C", "RecStatusChar rsConflict");
++        return QObject::tr("C", "RecStatusChar");
+     case rsLaterShowing:
+-        return QObject::tr("L", "RecStatusChar rsLaterShowing");
++        return QObject::tr("L", "RecStatusChar");
+     case rsLowDiskSpace:
+-        return QObject::tr("K", "RecStatusChar rsLowDiskSpace");
++        return QObject::tr("K", "RecStatusChar");
+     case rsTunerBusy:
+-        return QObject::tr("B", "RecStatusChar rsTunerBusy");
++        return QObject::tr("B", "RecStatusChar");
+     case rsInactive:
+-        return QObject::tr("x", "RecStatusChar rsInactive");
++        return QObject::tr("x", "RecStatusChar");
+     default:
+         return "-";
+     }
+@@ -2339,8 +2338,7 @@
+     msg += "\n";
+ 
+     if (category != "")
+-        msg += QObject::tr("Category") + ":  " +
+-               qApp->translate("Category", category) + "\n";
++        msg += QObject::tr("Category") + ":  " + category + "\n";
+ 
+     if (category_type  != "")
+     {
+@@ -2906,12 +2904,11 @@
+     return false;
+ }
+ 
+-int ProgramList::compareItems(QPtrCollection::Item item1,
+-                              QPtrCollection::Item item2)
++int ProgramList::compareItems(ProgramInfo *p1, ProgramInfo *p2)
+ {
+     if (compareFunc)
+-        return compareFunc(reinterpret_cast<ProgramInfo *>(item1),
+-                           reinterpret_cast<ProgramInfo *>(item2));
++        return compareFunc(p1, p2);
+     else
+         return 0;
+ }
++
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/programinfo.h mythtv-20050202-new/libs/libmythtv/programinfo.h
+--- mythtv-20050202-old/libs/libmythtv/programinfo.h	2005-02-05 10:51:06.664393333 -0800
++++ mythtv-20050202-new/libs/libmythtv/programinfo.h	2005-02-05 10:57:04.032066924 -0800
+@@ -338,8 +338,7 @@
+     };
+ 
+  protected:
+-    virtual int compareItems(QPtrCollection::Item item1,
+-                             QPtrCollection::Item item2);
++    virtual int compareItems(ProgramInfo *p1, ProgramInfo *p2);
+ 
+  private:
+     CompareFunc compareFunc;
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/RingBuffer.cpp mythtv-20050202-new/libs/libmythtv/RingBuffer.cpp
+--- mythtv-20050202-old/libs/libmythtv/RingBuffer.cpp	2005-02-05 10:51:06.650394912 -0800
++++ mythtv-20050202-new/libs/libmythtv/RingBuffer.cpp	2005-02-05 10:57:04.019068392 -0800
+@@ -354,9 +354,6 @@
+     normalfile = true;
+     filename = (QString)lfilename;
+ 
+-    if (filename.right(4) != ".nuv")
+-        openAttempts = 1;
+-
+     if (write)
+     {
+         tfw = new ThreadedFileWriter(filename.ascii(),
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/scanwizard.cpp mythtv-20050202-new/libs/libmythtv/scanwizard.cpp
+--- mythtv-20050202-old/libs/libmythtv/scanwizard.cpp	2005-02-05 10:51:06.665393220 -0800
++++ mythtv-20050202-new/libs/libmythtv/scanwizard.cpp	2005-02-05 10:57:04.034066699 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: scanwizard.cpp,v 1.2 2005/01/31 05:49:56 ijr Exp $
++ * $Id: scanwizard.cpp,v 1.1 2005/01/23 22:45:30 ijr Exp $
+  * vim: set expandtab tabstop=4 shiftwidth=4:
+  *
+  * Original Project
+@@ -657,7 +657,10 @@
+                 // Wait for dvbsections to start this is silly,
+                 // but does the trick
+                 while (dvbchannel->siparser == NULL)
++                {
+                    usleep(250);
++                   printf("Waiting for dvb sections to start..\n");
++                }
+                 popupProgress->status(tr("Scanning"));
+                 connect(dvbchannel->siparser, SIGNAL(TableLoaded()),
+                            this,SLOT(TableLoaded()));
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/scheduledrecording.cpp mythtv-20050202-new/libs/libmythtv/scheduledrecording.cpp
+--- mythtv-20050202-old/libs/libmythtv/scheduledrecording.cpp	2005-02-05 10:51:06.666393107 -0800
++++ mythtv-20050202-new/libs/libmythtv/scheduledrecording.cpp	2005-02-05 10:57:04.034066699 -0800
+@@ -391,6 +391,32 @@
+     }
+ }
+ 
++bool ScheduledRecording::hasChanged(QSqlDatabase* db) {
++    QString thequery;
++    
++    bool retval = false;
++
++    thequery = "SELECT data FROM settings WHERE value = \"RecordChanged\";";
++    QSqlQuery query = db->exec(thequery);
++
++    if (query.isActive() && query.numRowsAffected() > 0)
++    {
++        query.next();
++
++        QString value = query.value(0).toString();
++        if (value == "yes")
++        {
++            thequery = "UPDATE settings SET data = \"no\" WHERE value = "
++                       "\"RecordChanged\";";
++            query = db->exec(thequery);
++
++            retval = true;
++        }
++    }
++
++    return retval;
++}
++
+ void ScheduledRecording::doneRecording(QSqlDatabase* db, 
+                                        const ProgramInfo& proginfo) 
+ {
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/scheduledrecording.h mythtv-20050202-new/libs/libmythtv/scheduledrecording.h
+--- mythtv-20050202-old/libs/libmythtv/scheduledrecording.h	2005-02-05 10:51:06.666393107 -0800
++++ mythtv-20050202-new/libs/libmythtv/scheduledrecording.h	2005-02-05 10:57:04.034066699 -0800
+@@ -111,6 +111,8 @@
+     // be recorded again)
+     void forgetHistory(QSqlDatabase* db, const ProgramInfo& proginfo);
+ 
++    static bool hasChanged(QSqlDatabase* db);
++
+     static void fillSelections(QSqlDatabase* db, SelectSetting* setting);
+ 
+     static void signalChange(int recordid);
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/siparser.cpp mythtv-20050202-new/libs/libmythtv/siparser.cpp
+--- mythtv-20050202-old/libs/libmythtv/siparser.cpp	2005-02-05 10:51:06.666393107 -0800
++++ mythtv-20050202-new/libs/libmythtv/siparser.cpp	2005-02-05 10:57:04.035066586 -0800
+@@ -9,105 +9,6 @@
+ /* needed for kenneths verification functions that need to be re-written*/
+ #define WORD(i,j)   ((i << 8) | j)
+ 
+-// Set EIT_DEBUG_SID to a valid serviceid to enable EIT debugging
+-// #define EIT_DEBUG_SID 1602
+-
+-SIParser::description_table_rec SIParser::description_table[] = 
+-{ 
+-    { 0x10, "Movies" },
+-    { 0x11, "Movie - detective/thriller" },
+-    { 0x12, "Movie - adventure/western/war" },
+-    { 0x13, "Movie - science fiction/fantasy/horror" },
+-    { 0x14, "Movie - comedy" },
+-    { 0x15, "Movie - soap/melodrama/folkloric" },
+-    { 0x16, "Movie - romance" },
+-    { 0x17, "Movie - serious/classical/religious/historical movie/drama" },
+-    { 0x18, "Movie - adult movie/drama" },
+-    
+-    { 0x20, "News" },
+-    { 0x21, "news/weather report" },
+-    { 0x22, "news magazine" },
+-    { 0x23, "documentary" },
+-    { 0x24, "discussion/interview/debate" },
+-    
+-    { 0x30, "show/game Show" },
+-    { 0x31, "game show/quiz/contest" },
+-    { 0x32, "variety show" },
+-    { 0x33, "talk show" },
+-    
+-    { 0x40, "Sports" },
+-    { 0x41, "special events (Olympic Games, World Cup etc.)" },
+-    { 0x42, "sports magazines" },
+-    { 0x43, "football/soccer" },
+-    { 0x44, "tennis/squash" },
+-    { 0x45, "team sports (excluding football)" },
+-    { 0x46, "athletics" },
+-    { 0x47, "motor sport" },
+-    { 0x48, "water sport" },
+-    { 0x49, "winter sports" },
+-    { 0x4A, "equestrian" },
+-    { 0x4B, "martial sports" },
+-    
+-    { 0x50, "Kids" },
+-    { 0x51, "pre-school children's programmes" },
+-    { 0x52, "entertainment programmes for 6 to14" },
+-    { 0x53, "entertainment programmes for 10 to 16" },
+-    { 0x54, "informational/educational/school programmes" },
+-    { 0x55, "cartoons/puppets" },
+-    
+-    { 0x60, "music/ballet/dance" },
+-    { 0x61, "rock/pop" },
+-    { 0x62, "serious music/classical music" },
+-    { 0x63, "folk/traditional music" },
+-    { 0x64, "jazz" },
+-    { 0x65, "musical/opera" },
+-    { 0x66, "ballet" },
+-
+-    { 0x70, "arts/culture" },
+-    { 0x71, "performing arts" },
+-    { 0x72, "fine arts" },
+-    { 0x73, "religion" },
+-    { 0x74, "popular culture/traditional arts" },
+-    { 0x75, "literature" },
+-    { 0x76, "film/cinema" },
+-    { 0x77, "experimental film/video" },
+-    { 0x78, "broadcasting/press" },
+-    { 0x79, "new media" },
+-    { 0x7A, "arts/culture magazines" },
+-    { 0x7B, "fashion" },
+-    
+-    { 0x80, "social/policical/economics" },
+-    { 0x81, "magazines/reports/documentary" },
+-    { 0x82, "economics/social advisory" },
+-    { 0x83, "remarkable people" },
+-    
+-    { 0x90, "Education/Science/Factual" },
+-    { 0x91, "nature/animals/environment" },
+-    { 0x92, "technology/natural sciences" },
+-    { 0x93, "medicine/physiology/psychology" },
+-    { 0x94, "foreign countries/expeditions" },
+-    { 0x95, "social/spiritual sciences" },
+-    { 0x96, "further education" },
+-    { 0x97, "languages" },
+-    
+-    { 0xA0, "leisure/hobbies" },
+-    { 0xA1, "tourism/travel" },
+-    { 0xA2, "handicraft" },
+-    { 0xA3, "motoring" },
+-    { 0xA4, "fitness & health" },
+-    { 0xA5, "cooking" },
+-    { 0xA6, "advertizement/shopping" },
+-    { 0xA7, "gardening" },
+-    // Special
+-    { 0xB0, "Original Language" },
+-    { 0xB1, "black & white" },
+-    { 0xB2, "unpublished" },
+-    { 0xB3, "live broadcast" },
+-    // UK Freeview custom id
+-    { 0xF0, "Drama" },
+-    { 0, NULL }    
+-};
+-
+ SIParser::SIParser()
+ {
+     ThreadRunning = false;
+@@ -128,20 +29,7 @@
+     Table[SERVICES] = new ServiceHandler();
+     Table[NETWORK] = new NetworkHandler();
+ 
+-    initialiseCategories();
+-
+     Reset();
+-
+-    // Get a list of wanted languages and set up their priorities
+-    // (Lowest number wins)
+-    QStringList PreferredLanguages = QStringList::split(",", gContext->GetSetting("PreferredLanguages", ""));
+-    QStringList::Iterator plit;
+-    int prio = 1;
+-    for (plit = PreferredLanguages.begin(); plit != PreferredLanguages.end(); ++plit)
+-    {
+-        SIPARSER(QString("Added preferred language %1 with priority %2").arg(*plit).arg(prio));
+-        LanguagePriority[*plit] = prio++;
+-    }
+ }
+ 
+ SIParser::~SIParser()
+@@ -149,16 +37,6 @@
+     pthread_mutex_destroy(&pmap_lock);
+ }
+ 
+-void SIParser::initialiseCategories()
+-{
+-    description_table_rec *p=description_table;
+-    while (p->id!= 0)
+-    { 
+-        m_mapCategories[p->id] = QObject::tr(p->desc);
+-        p++;
+-    }
+-}
+-
+ /* Resets all trackers, and closes all section filters */
+ void SIParser::Reset()
+ {
+@@ -217,8 +95,8 @@
+             SIPARSER(QString("Table[%1]->RequirePIDs() == true").arg((tabletypes) x));
+             while (Table[x]->GetPIDs(pid,filter,mask))
+             {
+-                AddPid(pid, mask, filter, true, 
+-                        ((SIStandard == SI_STANDARD_DVB) && (x == EVENTS)) ? 1000 : 10);
++                AddPid(pid,mask,filter,true);
++                SIPARSER(QString("Adding PID %1 Filter %2 Mask %3").arg(pid,4,16).arg(filter,2,16).arg(mask,2,16));
+             }
+         }
+     }
+@@ -276,6 +154,8 @@
+                        .arg(NetworkID)
+                        .arg(STD);
+ 
++printf("%s\n",theQuery.ascii());
++
+     pthread_mutex_lock(db_lock);
+     QSqlQuery query = db_conn->exec(theQuery);
+ 
+@@ -306,14 +186,6 @@
+                 SIPARSER(QString("ChannelNumbers Present using Descriptor %d")
+                          .arg(PrivateTypes.ChannelNumbers));
+             }
+-            if (QString(query.value(0).toString()) == "force_guide_present")
+-            {
+-                if (query.value(1).toString() == "yes")
+-                {
+-                    PrivateTypes.ForceGuidePresent = true;
+-                    SIPARSER(QString("Forcing Guide Present"));
+-                }
+-            }
+             if (QString(query.value(0).toString()) == "guide_fixup")
+             {
+                 PrivateTypes.EITFixUp = query.value(1).toInt();
+@@ -323,16 +195,12 @@
+             {
+                 PrivateTypes.CustomGuideRanges = true;
+                 QStringList temp  = QStringList::split(",",query.value(1).toString());
+-                PrivateTypes.CurrentTransportTableMin = temp[0].toInt();
+-                PrivateTypes.CurrentTransportTableMax = temp[1].toInt();
+-                PrivateTypes.OtherTransportTableMin = temp[2].toInt();
+-                PrivateTypes.OtherTransportTableMax = temp[3].toInt();
+-                
+-                SIPARSER(QString("Using Guide Custom Range; CurrentTransport: %1-%2, OtherTransport: %3-%4")
+-                         .arg(PrivateTypes.CurrentTransportTableMin,2,16)
+-                         .arg(PrivateTypes.CurrentTransportTableMax,2,16)
+-                         .arg(PrivateTypes.OtherTransportTableMin,2,16)
+-                         .arg(PrivateTypes.OtherTransportTableMax,2,16));
++                QStringList::Iterator i;
++                PrivateTypes.GuideTableMin = temp[0].toInt();
++                PrivateTypes.GuideTableMax = temp[1].toInt();
++                SIPARSER(QString("Using Guide Custom Range %1 - %2")
++                         .arg(PrivateTypes.GuideTableMin,2,16)
++                         .arg(PrivateTypes.GuideTableMax,2,16));
+             }
+             if (QString(query.value(0).toString()) == "tv_types")
+             {
+@@ -373,13 +241,12 @@
+     return true;
+ }
+ 
+-void SIParser::AddPid(uint16_t pid,uint8_t mask,uint8_t filter, bool CheckCRC, int bufferFactor)
++void SIParser::AddPid(uint16_t pid,uint8_t mask,uint8_t filter, bool CheckCRC)
+ {
+     (void) pid;
+     (void) mask;
+     (void) filter;
+     (void) CheckCRC;
+-    (void) bufferFactor;
+     SIPARSER("Using AddPid from SIParser which does nothing");
+ }
+ 
+@@ -412,6 +279,8 @@
+ 
+     SIStandard = _SIStandard;
+ 
++printf("SI Standard = %d\n",SIStandard);
++
+     pthread_mutex_unlock(&pmap_lock);
+ 
+     return true;
+@@ -517,8 +386,9 @@
+         {
+               case 0xC7:  ParseMGT(&head, &buffer[8], size-8);
+                           break;
+-              case 0xC8:  
+-              case 0xC9:  ParseVCT(&head, &buffer[8], size-8);
++              case 0xC8:  ParseTVCT(&head, &buffer[8], size-8);
++                          break;
++              case 0xC9:  ParseCVCT(&head, &buffer[8], size-8);
+                           break;
+               case 0xCA:  ParseRRT(&head, &buffer[8], size-8);
+                           break;
+@@ -835,13 +705,37 @@
+ void SIParser::ProcessUnknownDescriptor(uint8_t* buf, int len)
+ {
+ 
+-    QString temp = "Unknown Descriptor: ";
+-   
++    (void) buf;
++    (void) len;
++
++// TODO: Add to SIDEBUG level
++
++/*    fprintf(stderr,"Unknown Descriptor: ");
+     for (int x=0;x<len;x++)
+-       temp += QString("%1 ").arg(buf[x],2,16);
++       fprintf(stderr,"%02X ",buf[x]);
++    fprintf(stderr,"\n");
++*/
++}
+ 
+-    SIPARSER(temp);
++/*------------------------------------------------------------------------
++ *   CRC CHECKERS
++ *------------------------------------------------------------------------*/
+ 
++ bool SIParser::ATSC_CRC32(uint8_t* buffer, int size)
++{
++   //TODO: Cut and paste from PSIP PCHDTV Code
++   (void) buffer;
++   (void) size;
++   return true;
++}
++
++ bool SIParser::DVB_CRC32(uint8_t* buffer, int size)
++{
++   // This doesnt need to be implimented right now since the DVB drivers
++   // already do the CRC checking.
++   (void) buffer;
++   (void) size;
++   return true;
+ }
+ 
+ /*------------------------------------------------------------------------
+@@ -1057,9 +951,13 @@
+     
+         if (PrivateTypes.ChannelNumbers && !(ChannelNumbers.empty()))
+         {
++            printf("I got some ChannelNumbers this time around!\n");
+             QMap_uint16_t::Iterator c;
+             for (c = ChannelNumbers.begin() ; c != ChannelNumbers.end() ; ++c)
++            {
++                printf("ServiceID %d = Channelnumber %d\n",c.key(),c.data());
+                 ((ServiceHandler*) Table[SERVICES])->Services[t.TransportID][c.key()].ChanNum = c.data();
++            }
+         }
+ 
+         ((NetworkHandler*) Table[NETWORK])->NITList.Transport += t;
+@@ -1111,14 +1009,15 @@
+     uint16_t descriptors_loop_length = 0;
+     SDTObject s;
+ 
+-    SIPARSER(QString("SDT: NetworkID=%1 TransportID=%2").arg(network_id).arg(head->table_id_ext));
++    s.TransportID = head->table_id_ext;
++    s.NetworkID = network_id;
+ 
+     while (pos < (size-4))
+     {
+         s.ServiceID = buffer[pos] << 8 | buffer[pos+1];
+         s.TransportID = head->table_id_ext;
+         s.NetworkID = network_id;
+-        s.EITPresent = PrivateTypes.ForceGuidePresent ? 1 : (buffer[pos+2] & 0x02) >> 1;
++        s.EITPresent = (buffer[pos+2] & 0x02) >> 1;
+         s.RunningStatus = (buffer[pos+3] & 0xE0) >> 5;
+         s.CAStatus = (buffer[pos+3] & 0x10) >> 4;
+         s.Version = head->version;
+@@ -1145,24 +1044,17 @@
+             len = buffer[pos + 6 + lentotal];
+             lentotal += (len + 2);
+         }
++        SIPARSER(QString("SDT: sid=%1 type=%2 name=%3").arg(s.ServiceID).arg(s.ServiceType).arg(s.ServiceName.ascii()));
+ 
+-        bool eit_requested = false;
+ #ifdef USING_DVB_EIT
+ 
+         if ((s.EITPresent) && (s.ServiceType == 1) && ((!PrivateTypes.GuideOnSingleTransport) ||
+             ((PrivateTypes.GuideOnSingleTransport) && 
+             (PrivateTypes.GuideTransportID == PrivateTypes.CurrentTransportID)))) 
+-        {
++
+             Table[EVENTS]->RequestEmit(s.ServiceID);
+-            eit_requested = true;
+-        }
+ #endif
+ 
+-        SIPARSER(QString("SDT: sid=%1 type=%2 eit_present=%3 eit_requested=%4 name=%5")
+-                 .arg(s.ServiceID).arg(s.ServiceType)
+-                 .arg(s.EITPresent).arg(eit_requested)
+-                 .arg(s.ServiceName.ascii()));
+-
+         if (CurrentTransport)
+             ((ServiceHandler*) Table[SERVICES])->Services[0][s.ServiceID] = s;
+         else
+@@ -1176,7 +1068,7 @@
+ 
+     // TODO: This is temp
+     Table[EVENTS]->DependencyMet(SERVICES);
+-    Table[EVENTS]->AddPid(0x12,0x00,0x00,true);
++    Table[EVENTS]->AddPid(0x12,0x00,0x00);
+ }
+ 
+ void SIParser::ParseDVBEIT(tablehead_t* head, uint8_t* buffer ,int size)
+@@ -1189,19 +1081,8 @@
+     {
+         if (PrivateTypes.CustomGuideRanges)
+         {
+-            if ((head->table_id >= PrivateTypes.CurrentTransportTableMin)
+-                && (head->table_id <= PrivateTypes.CurrentTransportTableMax))
+-            {
+-                for (int x = PrivateTypes.CurrentTransportTableMin; x <= PrivateTypes.CurrentTransportTableMax; x++)
+-                    ((EventHandler*) Table[EVENTS])->Tracker[head->table_id_ext][x].Reset();
+-            }
+-            else if ((head->table_id >= PrivateTypes.OtherTransportTableMin)
+-                && (head->table_id <= PrivateTypes.OtherTransportTableMax))
+-            {
+-                for (int x = PrivateTypes.OtherTransportTableMin; x <= PrivateTypes.OtherTransportTableMax; x++)
+-                    ((EventHandler*) Table[EVENTS])->Tracker[head->table_id_ext][x].Reset();
+-            }
+-            
++            for (int x = PrivateTypes.GuideTableMin ; x < last_table_id ; x++)
++              ((EventHandler*) Table[EVENTS])->Tracker[head->table_id_ext][x].Reset();
+         }
+         else
+         {
+@@ -1223,7 +1104,7 @@
+     if (Table[EVENTS]->AddSection(head,head->table_id_ext,head->table_id))
+         return;
+ 
+-    if (last_segment_number != head->section_last)
++    if (last_segment_number != last_table_id)
+     {
+         for (int x=(last_segment_number+1);x<((head->section_number&0xF8)+8);x++)
+             ((EventHandler*) Table[EVENTS])->Tracker[head->table_id_ext][head->table_id].MarkUnused(x);
+@@ -1242,9 +1123,7 @@
+     e.TransportID                = buffer[0] << 8 | buffer[1];
+     e.NetworkID                  = buffer[2]  << 8 | buffer[3];
+ 
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-    fprintf(sdtout,"EIT_DEBUG: sid:%d nid:%04X tid:%04X lseg:%02X ltab:%02X tab:%02X sec:%02X lsec: %02X size:%d\n",
++    printf("EIT_DEBUG: sid:%d nid:%04X tid:%04X lseg:%02X ltab:%02X tab:%02X sec:%02X lsec: %02X size:%d\n",
+            e.ServiceID,
+            e.NetworkID,
+            e.TransportID,
+@@ -1254,8 +1133,6 @@
+            head->section_number,
+            head->section_last,
+            size);
+-}
+-#endif
+ 
+    // Loop through table (last 4 bytes are CRC)
+    while (pos < (size-4))
+@@ -1267,129 +1144,49 @@
+                        (bcdtoint(buffer[pos+7] & 0xFF) * 3600) +
+                        (bcdtoint(buffer[pos+8] & 0xFF) * 60) +
+                        (bcdtoint(buffer[pos+9] & 0xFF)) ) ;
++       descriptor_length = ((buffer[pos+10] & 0x0F) << 8) | buffer[pos+11];
++       des_pos = pos + 12;
+ 
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-       fprintf(stdout,"EIT_EVENT: %d EventID: %d   Time: %s - %s\n",e.ServiceID,e.EventID,e.StartTime.toString(QString("yyyyMMddhhmm")).ascii(),e.EndTime.toString(QString("yyyyMMddhhmm")).ascii());
+-}
+-#endif
++  /*     fprintf(stderr,"DVBDate: %02X %02X %02X %02X %02X\n",
++                       buffer[pos+2],
++                       buffer[pos+3],
++                       buffer[pos+4],
++                       buffer[pos+5],
++                       buffer[pos+6]);
++*/
++//       fprintf(stdout,"EIT: %d EventID: %d   Time: %s\n",e.ServiceID,e.EventID,e.StartTime.toString(QString("yyyyMMddhhmm")).ascii());
+ 
+-        // variables to store info about "best descriptor" 4D & 4E
+-        // (used to pick out the one with the preferred language 
+-        // in case there are more than one)
+-        int bd4D_prio = -1;
+-        uint8_t *bd4D_data = NULL;
+-        QString bd4D_lang;
+-        int bd4E_prio = -1;
+-        uint8_t *bd4E_data = NULL;
+-        QString bd4E_lang;
+-
+-        // Parse descriptors
+-        descriptor_length = ((buffer[pos+10] & 0x0F) << 8) | buffer[pos+11];
+-        pos+=12;
+-        des_pos = pos;
+-        while (des_pos < (pos + descriptor_length)) 
++       // Parse descriptors for length
++        while(des_pos < (pos + descriptor_length)) 
+         { 
+             switch (buffer[des_pos]) 
+             {
+                 case 0x4D:
+-                    {
+-                        QString lang = QString::fromLatin1((const char*) &buffer[des_pos + 2], 3);
+-                        int prio = LanguagePriority[lang];
+-
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-       fprintf(stdout,"EIT_EVENT: 4D descriptor, lang %s, prio %i\n", lang.ascii(), prio);
+-}
+-#endif
+-
+-                        if ((prio > 0 && prio < bd4D_prio) || bd4D_prio == -1)
+-                        {
+-                            // this descriptor is better than what we have
+-                            // => store a reference to this one
+-                            bd4D_lang = lang;
+-                            bd4D_prio = prio;
+-                            bd4D_data = &buffer[des_pos];
+-                        }
+-                    }
+-                    break;
+-
++                           ProcessShortEventDescriptor(&buffer[des_pos],
++                               buffer[des_pos+1]+2,e);
++                           break;
+                 case 0x4E:
+-                    {
+-                        QString lang = QString::fromLatin1((const char*) &buffer[des_pos + 3], 3);
+-                        int prio = LanguagePriority[lang];
+-
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-       fprintf(stdout,"EIT_EVENT: 4E descriptor, lang %s, prio %i\n", lang.ascii(), prio);
+-}
+-#endif
+-
+-                        if ((prio > 0 && prio < bd4E_prio) || bd4E_prio == -1)
+-                        {
+-                            // this descriptor is better than what we have
+-                            // => store a reference to this one
+-                            bd4E_lang = lang;
+-                            bd4E_prio = prio;
+-                            bd4E_data = &buffer[des_pos];
+-                        }
+-                    }
+-                    break;
+-
+-                case 0x50:
+-                    ProcessComponentDescriptor(&buffer[des_pos], buffer[des_pos+1]+2,e);
+-                    break;
+-
++                           ProcessExtendedEventDescriptor(&buffer[des_pos],
++                               buffer[des_pos+1]+2,e);
++                           break;
+                 case 0x54:
+-                    e.ContentDescription =
+-                            ProcessContentDescriptor(&buffer[des_pos],buffer[des_pos+1]+2);
+-                    break;
+-
++                           e.ContentDescription = ProcessContentDescriptor(
++                                &buffer[des_pos],buffer[des_pos+1]+2);
++                           break;
+                 default:            
+-                    ProcessUnknownDescriptor(&buffer[des_pos],buffer[des_pos+1]+2);
+-                    break;
+-            }
+-            des_pos += (buffer[des_pos+1]+2);
+-
+-            if (des_pos > size)
+-                return;
+-        }
+-
++                           ProcessUnknownDescriptor(&buffer[des_pos],buffer[des_pos+1]+2);
++             }
++             des_pos += (buffer[des_pos+1] + 2);
+ 
+-        // Resolve data for "best" 4D & 4E descriptors
+-        if (bd4D_data != NULL)
+-        {
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-        fprintf(stdout, "EIT_EVENT: using 4D data for language='%s'\n", bd4D_lang.ascii());
+-}
+-#endif
+-            e.LanguageCode = bd4D_lang;
+-            ProcessShortEventDescriptor(bd4D_data, bd4D_data[1] + 2, e);
++             if (des_pos > size)
++                 return;
+         }
+-        if (bd4E_data != NULL)
+-        {
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-        fprintf(stdout, "EIT_EVENT: using 4E data for language='%s'\n", bd4E_lang.ascii());
+-}
+-#endif
+-            e.LanguageCode = bd4E_lang;
+-            ProcessExtendedEventDescriptor(bd4E_data, bd4E_data[1] + 2, e);
+-        }
+-
+ 
+         EITFixUp(e);
+ 
+-#ifdef EIT_DEBUG_SID
+-if (e.ServiceID == EIT_DEBUG_SID) {
+-        fprintf(stdout, "EIT_EVENT: LanguageCode='%s' Event_Name='%s' Description='%s'\n", e.LanguageCode.ascii(), e.Event_Name.ascii(), e.Description.ascii());
+-}
+-#endif
+-
+         ((EventHandler*) Table[EVENTS])->Events[head->table_id_ext][e.EventID] = e;
+         e.clearEventValues();
+-        pos += descriptor_length;
++        pos += (descriptor_length + 12);
+     }
+ }
+ 
+@@ -1435,8 +1232,6 @@
+     n.LinkageType = buffer[8];
+     n.LinkagePresent = 1;
+ 
+-    //The following was found to break EIT guide for 
+-    // Kristian Kalweit <kalweit@exorpro.de>
+     if (n.LinkageType == 4)
+     {
+         PrivateTypes.GuideOnSingleTransport = true;
+@@ -1487,6 +1282,8 @@
+         uint16_t channel_num = (buffer[i+2]&0x03<<8)|(buffer[i+3]&0xff);
+ 
+         numbers[service_id] = channel_num;
++
++        cerr << "UK service "<<service_id<<" on channel "<<channel_num<<"\n";
+     }
+ }
+ 
+@@ -1853,32 +1650,84 @@
+ QString SIParser::ProcessContentDescriptor(uint8_t *buf,int size)
+ {
+ // TODO: Add all types, possibly just lookup from a big array that is an include file?
++
+     (void) size;
+-    uint8_t content = buf[2];
+-    if (content)
+-        return m_mapCategories[content];
+-    else
+-        return QString();
++
++    QString retval;
++
++    switch ((buf[2] & 0xF0) >> 4) 
++    {
++    case 0:
++        retval = "Undefined Content";
++        break;
++    case 1:
++        retval = "Movies / Drama";
++        break;
++    case 2:
++        retval = "News / Current Affairs";
++        break;
++    case 3:
++        retval = "Show / Game Show";
++        break;
++    case 4:
++        retval = "Sports";
++        break;
++    case 5:
++        retval = "Childrens";
++        break;
++    case 6:
++        retval = "Music / Ballet / Dance";
++        break;
++    case 7:
++        retval = "Arts / Culture";
++        break;
++    case 8:
++        retval = "Social/Political Issues/Economics";
++        break;
++    case 9:
++        retval = "Educational";
++        break;
++    case 0x0A:
++        retval = "Leisure Hobbies";
++        break;
++    case 0x0B:
++        retval = "Special Characteristics";
++        break;
++    case 0x0C:
++    case 0x0D:
++    case 0x0E:
++        retval = "Reserved for Future Use";
++        break;
++    case 0x0F:
++        retval = "User Defined";
++        break;
++    }
++    return retval;
+ }
+ 
+ /*
+- *  DVB Descriptor 0x4D - Short Event Descriptor - EIT
++ *  DVB Descriptor 0x40 - Short Event Descriptor - EIT
+  */
+ 
+ void SIParser::ProcessShortEventDescriptor(uint8_t *buf,int size,Event& e)
+ {
+ // TODO: Test lower loop
+ 
+-    (void) size;
++   (void) size;
++
++   int event_name_len = buf[5] & 0xFF;
++   int text_char_len = buf[event_name_len + 6];;
+ 
+-    int event_name_len = buf[5] & 0xFF;
+-    int text_char_len = buf[event_name_len + 6];;
++// TODO: Use common Language extractor for ATSC/DVB since its the same
++// Might also use the lookuptable that Daniel has
++   e.LanguageCode = QString::fromLatin1((const char*) buf + 2, 3);
+ 
+-    e.Event_Name = DecodeText(buf + 6, event_name_len);
+-    e.Event_Subtitle = DecodeText(buf + event_name_len + 7, text_char_len);
++   e.Event_Name = DecodeText(buf + 6, event_name_len);
++   e.Description = DecodeText(buf + event_name_len + 7, text_char_len);
++
++  if(e.Event_Name == e.Description)
++      e.Description="";
+ 
+-    if(e.Event_Subtitle == e.Event_Name)
+-        e.Event_Subtitle= "";
+ }
+ 
+ 
+@@ -1892,6 +1741,8 @@
+ 
+ // TODO: Nothing, Complete
+ 
++    e.LanguageCode = QString::fromLatin1((const char*) buf + 3, 3);
++
+     if (buf[6] != 0)
+       return;
+ 
+@@ -1906,32 +1757,6 @@
+     return QString::fromLatin1((const char*) buffer + 2, 3);
+ }
+ 
+-void SIParser::ProcessComponentDescriptor(uint8_t *buf,int size,Event& e)
+-{
+-   (void)size;
+-   switch (buf[2] & 0x0f)
+-   {
+-   case 0x1: //Video
+-       if ((buf[3]>=0x9) && (buf[3]<=0x10))
+-           e.HDTV = true;
+-       break;
+-   case 0x2: //Audio
+-       if ((buf[3]=0x3) || (buf[3]=0x5))
+-           e.Stereo = true;
+-       break;
+-   case 0x3: //Teletext/Subtitles
+-       switch (buf[3])
+-       {
+-       case 0x1:
+-       case 0x3:
+-       case 0x10 ... 0x13:
+-       case 0x20 ... 0x23:
+-            e.SubTitled = true;
+-       }
+-       break;
+-   }
+-}
+-
+ void SIParser::ParseDescriptorTeletext(uint8_t* buffer, int size)
+ {
+     SIPARSER(QString("Teletext Descriptor"));
+@@ -2119,9 +1944,9 @@
+ }
+ 
+ /*
+- *  ATSC Table 0xC8/0xC9 - Terrestrial/Cable Virtual Channel Table - PID 0x1FFB
++ *  ATSC Table 0xC8 - Terrestrial Virtual Channel Table - PID 0x1FFB
+  */
+-void SIParser::ParseVCT(tablehead_t* head, uint8_t* buffer, int size)
++void SIParser::ParseTVCT(tablehead_t* head, uint8_t* buffer, int size)
+ {
+ 
+ // Prerequisites: MGT, and CHANNEL_ETT
+@@ -2154,7 +1979,6 @@
+             LoadPrivateTypes(s.TransportID);
+ 
+ //        uint8_t ETM_Location = (buffer[pos+26] & 0xC0) >> 6;
+-        s.CAStatus = (buffer[pos+26] & 0x20) >> 5;
+         s.ServiceID = buffer[pos+24] << 8 | buffer[pos+25];
+ 
+         s.ATSCSourceID = buffer[pos+28] << 8 | buffer[pos+29];
+@@ -2166,9 +1990,6 @@
+         s.ServiceType = 1;
+         s.EITPresent = 1;
+ 
+-        SIPARSER(QString("Found Channel %1-%2 - %3 CAStatus=%4").arg(major_channel_number)
+-                 .arg(minor_channel_number).arg(s.ServiceName).arg(s.CAStatus));
+-
+         uint16_t descriptors_length = (buffer[pos+30] & 0x02) << 8 | buffer[pos+31];
+ 
+         lentotal = 0;
+@@ -2209,6 +2030,16 @@
+ }
+ 
+ /*
++ *  ATSC Table 0xC9 - Cable Virtual Channel Table - PID 0x1FFB
++ */
++void SIParser::ParseCVCT(tablehead_t* head, uint8_t* buffer, int size)
++{
++    (void)head;
++    (void)buffer;
++    (void)size;
++}
++
++/*
+  *  ATSC Table 0xCA - Rating Region Table - PID 0x1FFB
+  */
+ void SIParser::ParseRRT(tablehead_t* head, uint8_t* buffer, int size)
+@@ -2225,17 +2056,26 @@
+ 
+     QString temp = ParseMSS(&buffer[2],buffer[1]);
+ 
++    printf("RRT: %02X %s\n",head->table_id_ext & 0xFF,temp.ascii());
++
+     pos += buffer[1] + 2;
+     uint8_t dimensions = buffer[pos++];
+ 
++    printf("RRT: %d dimensions\n",dimensions);
++
+     for (int x = 0 ; x < dimensions ; x++)
+     {
+         QString Name = ParseMSS(&buffer[pos + 1],buffer[pos]);
++        printf("RRT: %s\n",Name.ascii());
++
+         /* Skip past Dimesion Name */
+         pos += buffer[pos] + 1;
+ 
+         /* Skip past Values Defined */
++        if ((buffer[pos] & 0xE0) != 0xE0)
++            printf("RRT: Lost Here\n");
+         uint8_t values = buffer[pos] & 0x0F;
++        printf("RRT: %d values\n",values);
+         pos++;
+ 
+         for (int y = 0 ; y < values ; y++)
+@@ -2246,6 +2086,8 @@
+             QString Rating_Value_Text = ParseMSS(&buffer[pos + 1],buffer[pos]);
+             pos += buffer[pos] + 1;
+ 
++            printf("RRT: [%d][%d] %s %s\n",x,y,Value_Text.ascii(),Rating_Value_Text.ascii());
++
+         }
+ 
+     }
+@@ -2289,10 +2131,8 @@
+         uint8_t title_length = buffer[pos+9];
+         e.Event_Name = ParseMSS(&buffer[pos+10],title_length);
+ 
+-#ifdef EIT_DEBUG_SID
+-        fprintf(stdout,"Title [%02X][%04X] = %s  %s - %s\n",head->table_id_ext,event_id,e.Event_Name.ascii(),e.StartTime.toString(Qt::TextDate).ascii(),
++        printf("Title [%02X][%04X] = %s  %s - %s\n",head->table_id_ext,event_id,e.Event_Name.ascii(),e.StartTime.toString(Qt::TextDate).ascii(),
+                                            e.EndTime.toString(Qt::TextDate).ascii());
+-#endif
+ 
+         pos += (title_length + 10);
+ 
+@@ -2423,9 +2263,13 @@
+         uint8_t dimensions = buffer[pos+1];
+         pos += 2;
+         for (int y = 0 ; y < dimensions ; y++)
++        {
++            printf("Dim: %02X %02X ",buffer[pos],buffer[pos+1]);
+             pos += 2;
++        }
+         if (buffer[pos] > 0)
+             temp = ParseMSS(&buffer[pos+1],buffer[pos]);
++        printf("Rating Region: %s\n",temp.ascii());
+         pos += buffer[pos] + 1;
+     }
+ 
+@@ -2798,12 +2642,7 @@
+ 
+ void SIParser::EITFixUp(Event& event)
+ {
+-    if (event.Description == "" && event.Event_Subtitle != "") 
+-    {
+-         event.Description = event.Event_Subtitle;        
+-         event.Event_Subtitle="";        
+-    }
+-
++        
+     switch (PrivateTypes.EITFixUp)
+     {   
+         case 1:    EITFixUpStyle1(event);
+@@ -2882,7 +2721,7 @@
+     position = event.Description.find("(CC)");
+     if (position != -1)
+     {
+-       event.SubTitled = true;
++       event.SubTitles = QString("teletext");
+        event.Description = event.Description.replace("(CC)","");
+     }
+ 
+@@ -2890,7 +2729,7 @@
+     position = event.Description.find("(Stereo)");
+     if (position != -1)
+     {
+-       event.Stereo = true;
++       event.Audio = QString("stereo");
+        event.Description = event.Description.replace("(Stereo)","");
+     }
+ 
+@@ -2903,18 +2742,17 @@
+     {
+         //Do something here
+     }
+-    //BBC three case (could add another record here ?)
+-    event.Description = event.Description.replace(" Then 60 Seconds.","");
+-    event.Description = event.Description.replace(" Followed by 60 Seconds.","");
+-    event.Description = event.Description.replace("Brand New Series - ","");
+-    event.Description = event.Description.replace("Brand New Series","");
+-    event.Description = event.Description.replace("New Series","");
+ 
+     position = event.Description.find(':');
+     if (position != -1)
+     {
+         event.Event_Subtitle = event.Description.left(position);
+         event.Description = event.Description.right(event.Description.length()-position-2);
++        //BBC three case (could add another record here ?)
++        event.Description = event.Description.replace(" Then 60 Seconds.","");
++        event.Event_Subtitle = event.Event_Subtitle.replace("Brand New Series - ","");
++        event.Event_Subtitle = event.Event_Subtitle.replace("Brand New Series","");
++        event.Event_Subtitle = event.Event_Subtitle.replace("New Series","");
+         if ((event.Event_Subtitle.length() > 0) &&
+             (event.Description.length() > 0) &&
+             (event.Event_Subtitle.length() > event.Description.length()))
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/siparser.h mythtv-20050202-new/libs/libmythtv/siparser.h
+--- mythtv-20050202-old/libs/libmythtv/siparser.h	2005-02-05 10:51:06.666393107 -0800
++++ mythtv-20050202-new/libs/libmythtv/siparser.h	2005-02-05 10:57:04.035066586 -0800
+@@ -1,4 +1,3 @@
+-
+ #ifndef SIPARSER_H
+ #define SIPARSER_H
+ 
+@@ -97,7 +96,7 @@
+     // Stops all collection of data and clears all values (on a channel change for example)
+     void Reset();
+ 
+-    virtual void AddPid(uint16_t pid,uint8_t mask,uint8_t filter,bool CheckCRC,int bufferFactor);
++    virtual void AddPid(uint16_t pid,uint8_t mask,uint8_t filter,bool CheckCRC);
+     virtual void DelPid(int pid);
+     virtual void DelAllPids();
+ 
+@@ -114,7 +113,7 @@
+     void CheckTrackers();
+ 
+     void SetDB(QSqlDatabase* _db_conn, pthread_mutex_t* _db_lock)
+-        { db_conn = _db_conn; db_lock = _db_lock; };
++        { db_conn = _db_conn; db_lock = _db_lock; printf("Setting DB in siparser\n"); };
+ 
+ signals:
+ 
+@@ -159,6 +158,10 @@
+ 
+     void ProcessUnknownDescriptor(uint8_t *buffer, int size);
+ 
++    // CRC Functions to verify table is OK.
++    bool ATSC_CRC32(uint8_t* buffer, int size);
++    bool DVB_CRC32(uint8_t* buffer, int size);
++
+     // Common Helper Functions
+     QString DecodeText(uint8_t *s, int length);
+ 
+@@ -192,8 +195,7 @@
+     // DVB EIT Table Descriptors
+     QString ProcessContentDescriptor       (uint8_t *buf,int size);
+     void ProcessShortEventDescriptor       (uint8_t *buf,int size,Event& e);
+-    void ProcessExtendedEventDescriptor    (uint8_t *buf,int size,Event& e);
+-    void ProcessComponentDescriptor        (uint8_t *buf,int size,Event& e);
++    void ProcessExtendedEventDescriptor    (uint8_t *buf,int size,Event &e);
+ 
+     // ATSC Helper Parsers
+     QDateTime ConvertATSCDate(uint32_t offset);
+@@ -201,7 +203,8 @@
+ 
+     // ATSC Table Parsers
+     void ParseMGT       (tablehead_t* head, uint8_t* buffer, int size);
+-    void ParseVCT      (tablehead_t* head, uint8_t* buffer, int size);
++    void ParseTVCT      (tablehead_t* head, uint8_t* buffer, int size);
++    void ParseCVCT      (tablehead_t* head, uint8_t* buffer, int size);
+     void ParseRRT       (tablehead_t* head, uint8_t* buffer, int size);
+     void ParseATSCEIT   (tablehead_t* head, uint8_t* buffer, int size, uint16_t pid);
+     void ParseETT       (tablehead_t* head, uint8_t* buffer, int size, uint16_t pid);
+@@ -219,9 +222,6 @@
+     uint16_t CurrentTransport;
+     uint16_t RequestedServiceID;
+     uint16_t RequestedTransportID;
+-    
+-    // Preferred languages and their priority
+-    QMap<QString, int>  LanguagePriority;
+ 
+     // DVB Variables
+     uint16_t NITPID;
+@@ -281,19 +281,10 @@
+     void EITFixUpStyle2(Event& event);
+     void EITFixUpStyle3(Event& event);
+ 
+-    //DVB category descriptions
+-    typedef struct 
+-    {         
+-        uint8_t id;
+-        char *desc;
+-    } description_table_rec;
+-    static description_table_rec description_table[];
+-    QMap<uint8_t,QString>  m_mapCategories;
+-    void initialiseCategories();
+ };
+ 
+ #define SIPARSER(args...) \
+-    VERBOSE(VB_SIPARSER, QString("SIParser: ") << args);
++    VERBOSE(VB_GENERAL, QString("SIParser: ") << args);
+         
+ 
+ #endif // SIPARSER_H
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/siscan.cpp mythtv-20050202-new/libs/libmythtv/siscan.cpp
+--- mythtv-20050202-old/libs/libmythtv/siscan.cpp	2005-02-05 10:51:06.667392995 -0800
++++ mythtv-20050202-new/libs/libmythtv/siscan.cpp	2005-02-05 10:57:04.035066586 -0800
+@@ -9,8 +9,6 @@
+ #include "libmythtv/scheduledrecording.h"
+ 
+ #define CHECKNIT_TIMER 5000
+-//#define SISCAN_DEBUG
+-
+ 
+ SIScan::SIScan(DVBChannel* advbchannel,QSqlDatabase *thedb, pthread_mutex_t* _db_lock, int _sourceID)
+ {
+@@ -78,6 +76,8 @@
+                        "sourceid = %1")
+                        .arg(SourceID);
+ 
++    //printf("%s\n",theQuery.ascii());
++
+     pthread_mutex_lock(db_lock);
+     QSqlQuery query = db->exec(theQuery);
+ 
+@@ -98,6 +98,7 @@
+         query.next();
+         int mplexid = query.value(0).toInt();
+         scanTransports += TransportScanList(mplexid);
++        printf("I will scan %d\n",mplexid);
+     }
+     pthread_mutex_unlock(db_lock);
+     sourceID = SourceID;
+@@ -245,16 +246,40 @@
+ 
+     // Check if you are tuned to a transport that is on SourceID x
+ 
+-#ifdef SISCAN_DEBUG
+     printf("current transport = %d\n",chan->GetCurrentTransportDBID());
+-#endif
+     fillingEvents = false;
+ 
++    // Request the NIT for sourceID
++
++
++/*
++    First pull NIT if possible to check for possible Linkage Transport
++    to use to pull guide..
++
++
++
++        If present see if you are tuned to that transport.. If so go ahead and
++        start pulling data..
++
++        If not assume you have to pull on a transport by transport basis
++
++    Now generate a list of serviceIDs from the database.. Then pull the SDT and
++    see what of those channels have EIT available.. Then call fill events..
++
++    If there are more transports you will need to check for tunability to those,
++    and then pull from those as well..
++
++    repeat until complete.
++
++*/
+     return true;
+ }
+ 
+ void SIScan::EventsReady(QMap_Events* EventList)
+ {
++// DEBUG FOR CHANNEL CHANGE LOCKING
++//    return;
++
+     // Extra check since adding events to the DB is SLOW..
+     if (threadExit)
+         return;
+@@ -288,6 +313,7 @@
+     }
+ 
+     QMap_SDTObject::Iterator s;
++    QSqlQuery query;
+     int chanid=0;
+ 
+ /*
+@@ -319,9 +345,7 @@
+ 
+ //    int DVBTID = chan->GetCurrentTransportDBID();
+ 
+-#ifdef  SISCAN_DEBUG
+     printf("The mplexid is %d\n",DVBTID);
+-#endif
+     if (DVBTID == -1)
+     {
+         SISCAN("Error determing what transport this service table is associated with so failing");
+@@ -337,8 +361,6 @@
+     QString versionQuery = QString("SELECT serviceversion FROM dtv_multiplex "
+                                    "WHERE mplexid = %1")
+                                    .arg(DVBTID);
+-    pthread_mutex_lock(db_lock);
+-    QSqlQuery query(QString::null, db);
+ 
+     if(!query.exec(versionQuery))
+         MythContext::DBError("Selecting channel/dtv_multiplex", query);
+@@ -354,7 +376,6 @@
+         {
+             SISCAN("Service table up to date for this network.");
+             emit ServiceScanUpdateText("Channels up to date");
+-            pthread_mutex_unlock(db_lock);
+             return;
+         }
+         else
+@@ -394,10 +415,7 @@
+         FTAOnly = query.value(0).toInt();
+     }
+     else
+-    {
+-        pthread_mutex_unlock(db_lock);
+         return;    
+-    }
+ 
+ // TODO: Process Steps 3 and 4.. Only a partial 4 is being done now..
+     for (s = SDT.begin() ; s != SDT.end() ; ++s )
+@@ -433,35 +451,36 @@
+                     QString status = QString("Adding %1").arg((*s).ServiceName);
+                     emit ServiceScanUpdateText(status);
+                     // Get next chanid and determine what Transport its on
+-
+                     chanid = GenerateNewChanID();
+-
+                     int ChanNum;
++printf("Finding ChanNum\n");
+                     if( (*s).ChanNum == -1 )
+                         ChanNum = (*s).ServiceID;
+                     else
+                         ChanNum = (*s).ChanNum;
++printf("Done Finding ChanNum\n");
+ 
+-                     query.prepare("INSERT INTO channel (chanid, channum, "
+-                               "sourceid, callsign, name,  mplexid, "
++                    // TODO: Handle UK Channel Numbers from NIT
++                    // Insert new channel into the database
++                    theQuery = QString("INSERT INTO channel (chanid, channum, "
++                               " sourceid, callsign, name,  mplexid, "
+                                "serviceid, atscsrcid, useonairguide ) "
+-                               "VALUES (:CHANID,:CHANNUM,:SOURCEID,:CALLSIGN,"
+-                               ":NAME,:MPLEXID,:SERVICEID,:ATSCSRCID,:USEOAG);");
+-                     query.bindValue(":CHANID",chanid);
+-                     query.bindValue(":CHANNUM",ChanNum);
+-                     query.bindValue(":SOURCEID",sourceID);
+-                     query.bindValue(":CALLSIGN",(*s).ServiceName.utf8());
+-                     query.bindValue(":NAME",(*s).ServiceName.utf8());
+-                     query.bindValue(":MPLEXID",chan->GetCurrentTransportDBID());
+-                     query.bindValue(":SERVICEID",(*s).ServiceID);
+-                     query.bindValue(":ATSCSRCID",(*s).ATSCSourceID);
+-                     query.bindValue(":USEOAG",(*s).EITPresent);
++                               "VALUES (%1,%2,%3,\"%4\",\"%5\",%6,%7,%8,%9)")
++                               .arg(chanid)
++                               .arg(ChanNum)
++                               .arg(sourceID)
++                               .arg((*s).ServiceName.utf8())
++                               .arg((*s).ServiceName.utf8())
++                               .arg(chan->GetCurrentTransportDBID())
++                               .arg((*s).ServiceID)
++                               .arg((*s).ATSCSourceID)
++                               .arg((*s).EITPresent);
+ 
+-                     if(!query.exec())
++                    if(!query.exec(theQuery))
+                         MythContext::DBError("Adding new DVB Channel", query);
+ 
+-                     if (!query.isActive())
+-                         MythContext::DBError("Adding new DVB Channel", query);
++                    if (!query.isActive())
++                        MythContext::DBError("Adding new DVB Channel", query);
+ 
+                 }
+                 else
+@@ -487,8 +506,6 @@
+                 emit ServiceScanUpdateText(status);
+             }
+     }
+-    pthread_mutex_unlock(db_lock);
+-
+ }
+ 
+ void SIScan::CheckNIT(NITObject& NIT)
+@@ -580,8 +597,7 @@
+ 
+     for (t = NIT.Transport.begin() ; t != NIT.Transport.end() ; ++t )
+     {
+-        pthread_mutex_lock(db_lock);
+-        QSqlQuery query(QString::null, db);
++        QSqlQuery query;
+         // See if transport already in database
+         QString theQuery = QString("select * from dtv_multiplex where NetworkID = %1 and "
+                    " TransportID = %2 and Frequency = %3 and sourceID = %4")
+@@ -589,11 +605,13 @@
+                    .arg((*t).TransportID)
+                    .arg((*t).Frequency)
+                    .arg(sourceID);
++        pthread_mutex_lock(db_lock);
+         if(!query.exec(theQuery))
+             MythContext::DBError("Selecting transports", query);
+ 
+         if (!query.isActive())
+             MythContext::DBError("Check Transport in dtv_multiplex.", query);
++        pthread_mutex_unlock(db_lock);
+ 
+         // If transport not present add it, and move on to the next
+         if (query.numRowsAffected() <= 0)
+@@ -606,34 +624,35 @@
+                    .arg((*t).TransportID)
+                    .arg((*t).NetworkID));
+ 
+-            query.prepare("INSERT into dtv_multiplex (transportid, "
++            theQuery = QString("INSERT into dtv_multiplex (transportid, "
+                                "networkid, frequency, symbolrate, fec, "
+                                "polarity, modulation, constellation, "
+                                "bandwidth, hierarchy, hp_code_rate, "
+                                "lp_code_rate, guard_interval, "
+                                "transmission_mode, inversion, sourceid) "
+-                               "VALUES (:TRANSPORTID,:NETWORKID,:FREQUENCY,"
+-                               ":SYMBOLRATE,:FEC,:POLARITY,:MODULATION,"
+-                               ":CONSTELLATION,:BANDWIDTH,:HIERARCHY,"
+-                               ":HP_CODE_RATE,:LP_CODE_RATE,:GUARD_INTERVAL,"
+-                               ":TRANSMISSION_MODE,:INVERSION,:SOURCEID);");
+-                               query.bindValue(":TRANSPORTID",(*t).TransportID);
+-                               query.bindValue(":NETWORKID",(*t).NetworkID);
+-                               query.bindValue(":FREQUENCY",(*t).Frequency);
+-                               query.bindValue(":SYMBOLRATE",(*t).SymbolRate);
+-                               query.bindValue(":FEC",(*t).FEC_Inner);
+-                               query.bindValue(":POLARITY",(*t).Polarity);
+-                               query.bindValue(":MODULATION",(*t).Modulation);
+-                               query.bindValue(":CONSTELLATION",(*t).Constellation);
+-                               query.bindValue(":BANDWIDTH",(*t).Bandwidth);
+-                               query.bindValue(":HIERARCHY",(*t).Hiearchy);
+-                               query.bindValue(":HP_CODE_RATE",(*t).CodeRateHP);
+-                               query.bindValue(":LP_CODE_RATE",(*t).CodeRateLP);
+-                               query.bindValue(":GUARD_INTERVAL",(*t).GuardInterval);
+-                               query.bindValue(":TRANSMISSION_MODE",(*t).TransmissionMode);
+-                               query.bindValue(":INVERSION",(*t).Inversion);
+-                               query.bindValue(":SOURCEID",sourceID);
+-            if(!query.exec())
++                               "VALUES (%1 ,%2 ,%3 ,%4 ,\"%5\" ,\"%6\" ,"
++                                       "\"%7\" ,\"%8\" ,\"%9\" ,")
++                               .arg((*t).TransportID)
++                               .arg((*t).NetworkID)
++                               .arg((*t).Frequency)
++                               .arg((*t).SymbolRate)
++                               .arg((*t).FEC_Inner)
++                               .arg((*t).Polarity)
++                               .arg((*t).Modulation)
++                               .arg((*t).Constellation)
++                               .arg((*t).Bandwidth);
++
++            theQuery += QString("\"%1\" ,\"%2\" ,\"%3\" ,\"%4\" ,\"%5\" ,"
++                                "\"%6\", %7 )")
++                               .arg((*t).Hiearchy)
++                               .arg((*t).CodeRateHP)
++                               .arg((*t).CodeRateLP)
++                               .arg((*t).GuardInterval)
++                               .arg((*t).TransmissionMode)
++                               .arg((*t).Inversion)
++                               .arg(sourceID);
++            pthread_mutex_lock(db_lock);
++            if(!query.exec(theQuery))
+                 MythContext::DBError("Inserting new transport", query);
+             if (!query.isActive())
+                 MythContext::DBError("Adding transport to Database.", query);
+@@ -641,14 +660,13 @@
+         }
+         else
+         {
+-            emit TransportScanUpdateText(QString("Transport %1 - %2 Already in Database")
++           emit TransportScanUpdateText(QString("Transport %1 - %2 Already in Database")
+                    .arg((*t).TransportID)
+                    .arg((*t).NetworkID));
+ 
+-            SISCAN(QString("Transport TID = %1 NID = %2 already in Database")
++           SISCAN(QString("Transport TID = %1 NID = %2 already in Database")
+                    .arg((*t).TransportID)
+                    .arg((*t).NetworkID));
+-            pthread_mutex_unlock(db_lock);
+         }
+     }
+ }
+@@ -656,19 +674,16 @@
+ int SIScan::GetDVBTID(uint16_t NetworkID,uint16_t TransportID,int CurrentMplexId)
+ {
+ 
+-#ifdef SISCAN_DEBUG
+-    printf("Request for Networkid/Transportid %d %d\n",NetworkID,TransportID);
+-#endif
++printf("Request for Networkid/Transportid %d %d\n",NetworkID,TransportID);
+ 
+     // See if you can get an exact match baed on the current mplexid's sourceID
+     // and the NetworkID/TransportID
++    QSqlQuery query;
++    QString theQuery;
+ 
+     // First see if current one is NULL, if so update those values and return current mplexid
+     pthread_mutex_lock(db_lock);
+ 
+-    QSqlQuery query(QString::null, db);
+-    QString theQuery;
+-
+     theQuery = QString("select networkid,transportid from dtv_multiplex where "
+                        "mplexid = %1")
+                        .arg(CurrentMplexId);
+@@ -681,9 +696,7 @@
+ 
+     query.next();
+ 
+-#ifdef SISCAN_DEBUG
+-    printf("Query Results: %d %d\n",query.value(0).toInt(),query.value(1).toInt());
+-#endif
++printf("Query Results: %d %d\n",query.value(0).toInt(),query.value(1).toInt());
+ 
+     if ((query.value(0).toInt() == NetworkID) && (query.value(1).toInt() == TransportID))
+     {
+@@ -731,21 +744,16 @@
+     // mplexid this NetworkId/TransportId is for.
+     if (query.numRowsAffected() == 1)
+     {
+-#ifdef SISCAN_DEBUG
+-        printf("Exact Match!\n");
+-#endif
+-        int tmp = query.value(0).toInt();
++printf("exact match\n");
+         pthread_mutex_unlock(db_lock);
+-        return tmp;
++        return query.value(0).toInt();
+     }
+ 
+     // If you got more than 1 hit then all you can do is hope that this NetworkID/TransportID
+     // pair belongs to the CurrentMplexId;
+     if (query.numRowsAffected() > 1)
+     {
+-#ifdef SISCAN_DEBUG
+-        printf("more than 1 hit\n");
+-#endif
++printf("more than 1 hit\n");
+         pthread_mutex_unlock(db_lock);
+         return CurrentMplexId;
+     }
+@@ -778,29 +786,26 @@
+     {
+         SISCAN(QString("Found more than 1 match for NetworkID %1 TransportID %2")
+                .arg(NetworkID).arg(TransportID));
+-        int tmp = query.value(0).toInt();
+         pthread_mutex_unlock(db_lock);
+-        return tmp;
++        return query.value(0).toInt();
+     }
+ 
+     // You found the entries, but it was on a different sourceID, so return that value
+-    int retval = query.value(0).toInt();
+     pthread_mutex_unlock(db_lock);
+-
+-    return retval;
++    return query.value(0).toInt();
+ 
+ }
+ 
+ int SIScan::GenerateNewChanID()
+ {
+ 
+-    // This function must be called with db_lock enabled
+-
+-    QSqlQuery query(QString::null, db);
++    QSqlQuery query;
+ 
+     QString theQuery = QString("select max(chanid) as maxchan from channel where sourceid=%1")
+                        .arg(sourceID);
+ 
++//    pthread_mutex_lock(db_lock);
++
+     if(!query.exec(theQuery))
+         MythContext::DBError("Calculating new ChanID", query);
+ 
+@@ -811,9 +816,13 @@
+ 
+     // If transport not present add it, and move on to the next
+     if (query.numRowsAffected() <= 0)
++    {
++//        pthread_mutex_unlock(db_lock);
+         return sourceID * 1000;
++    }
+ 
+     int MaxChanID = query.value(0).toInt();
++//    pthread_mutex_unlock(db_lock);
+ 
+     if (MaxChanID == 0)
+         return sourceID * 1000;
+@@ -824,7 +833,7 @@
+ 
+ void SIScan::AddEvents()
+ {
+-    QSqlQuery query(QString::null, db);
++    QSqlQuery query;
+     QString theQuery;
+     int counter = 0;
+ 
+@@ -846,9 +855,8 @@
+             theQuery = QString("select chanid,useonairguide from channel where atscsrcid=%1 and mplexid=%2")
+                            .arg((*e).ServiceID)
+                            .arg(chan->GetCurrentTransportDBID());
+-#ifdef SISCAN_DEBUG
++
+              printf("CHANID QUERY: %s\n",theQuery.ascii());
+-#endif
+         }
+         else  /* DVB Link to chanid */
+         {
+@@ -857,9 +865,7 @@
+                            .arg((*e).ServiceID)
+                            .arg((*e).NetworkID);
+ 
+-#ifdef SISCAN_DEBUG
+             printf("CHANID QUERY: %s\n",theQuery.ascii());
+-#endif
+         }
+         pthread_mutex_lock(db_lock);
+ 
+@@ -890,9 +896,8 @@
+             continue;
+         }
+ 
+-#ifdef SISCAN_DEBUG
+         printf("QUERY: %d Events found for ChanId=%d\n",events->size(),ChanID);
+-#endif
++
+         for (e = events->begin() ; e != events->end() ; ++e)
+         {
+ 
+@@ -914,9 +919,8 @@
+                  counter++;
+ 
+                  query.prepare("INSERT INTO program (chanid,starttime,endtime,"
+-                          "title,description,subtitle,category,programid,"
+-                          "stereo,closecaptioned,hdtv)"
+-                          "VALUES (:CHANID,:STARTTIME,:ENDTIME,:TITLE,:DESCRIPTION,:SUBTITLE,:CATEGORY,:PROGRAMID,:STEREO,:CLOSECAPTIONED,:HDTV);");
++                          "title,description,subtitle,category,programid) "
++                          "VALUES (:CHANID,:STARTTIME,:ENDTIME,:TITLE,:DESCRIPTION,:SUBTITLE,:CATEGORY,:PROGRAMID);");
+                 query.bindValue(":CHANID",ChanID);
+                 query.bindValue(":STARTTIME",(*e).StartTime.toString(QString("yyyy-MM-dd hh:mm:00")));
+                 query.bindValue(":ENDTIME",(*e).EndTime.toString(QString("yyyy-MM-dd hh:mm:00")));
+@@ -925,9 +929,6 @@
+                 query.bindValue(":SUBTITLE",(*e).Event_Subtitle.utf8());
+                 query.bindValue(":CATEGORY",(*e).ContentDescription.utf8());
+                 query.bindValue(":PROGRAMID",(*e).EventID);
+-                query.bindValue(":STEREO",(*e).Stereo);
+-                query.bindValue(":CLOSECAPTIONED",(*e).SubTitled);
+-                query.bindValue(":HDTV",(*e).HDTV);
+ 
+                 if(!query.exec())
+                     MythContext::DBError("Adding Event", query);
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/sitypes.cpp mythtv-20050202-new/libs/libmythtv/sitypes.cpp
+--- mythtv-20050202-old/libs/libmythtv/sitypes.cpp	2005-02-05 10:51:06.667392995 -0800
++++ mythtv-20050202-new/libs/libmythtv/sitypes.cpp	2005-02-05 10:57:04.035066586 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: sitypes.cpp,v 1.5 2005/02/02 07:11:10 ijr Exp $
++ * $Id: sitypes.cpp,v 1.3 2005/01/26 05:54:05 ijr Exp $
+  * vim: set expandtab tabstop=4 shiftwidth=4:
+  *
+  * Original Project
+@@ -32,9 +32,6 @@
+ #include <stdint.h>
+ #include "sitypes.h"
+ 
+-// Set EIT_DEBUG_SID to a valid serviceid to enable EIT debugging
+-// #define EIT_DEBUG_SID 1602
+-
+ void pidHandler::reset()
+ {
+     pid = 0;
+@@ -51,12 +48,9 @@
+     EITFixUp = 0;
+     SDTMapping = false;
+     CurrentTransportID = 0;
+-    ForceGuidePresent = false;
+     CustomGuideRanges = false;
+-    CurrentTransportTableMin = 0;
+-    CurrentTransportTableMax = 0;
+-    OtherTransportTableMin = 0;
+-    OtherTransportTableMax = 0;
++    GuideTableMin = 0;
++    GuideTableMax = 0;
+     GuidePID = 0;
+     GuideTransportID = 0;
+     CustomGuidePID = false;
+@@ -99,14 +93,15 @@
+ 
+ int SectionTracker::Complete()
+ {
++    int done = 1;
+     if (MaxSections == -1)
+         return 0;
+-    for (int x = 0; x <= MaxSections; x++)
++    for (int x=0;x<MaxSections+1;x++)
+     {
+         if (Filled[x] == 0)
+-            return 0;
++            done = 0;
+     }
+-    return 1;
++    return done;
+ }
+ 
+ QString SectionTracker::loadStatus()
+@@ -139,6 +134,7 @@
+     }
+     else if (Version != head->version)
+     {
++         printf("Version Change: Old: %d  New: %d\n",Version,head->version);
+          Reset();
+          MaxSections = head->section_last;
+          Version = head->version;
+@@ -242,9 +238,8 @@
+     Event_Subtitle = "";
+     ContentDescription = "";
+     Year = "";
+-    SubTitled = false;
+-    Stereo = false;
+-    HDTV = false;
++    SubTitles = "";
++    Audio = "";
+     ATSC = false;
+ }
+ 
+@@ -294,6 +289,58 @@
+     hasVideo = false;
+ }
+ 
++// Try to auto detect which audio stream to use
++// NOTE!!! This is only used for PS recording via transform.c!
++ElementaryPIDObject *PMTObject::PreferredAudioStream()
++{
++    QValueList<ElementaryPIDObject>::Iterator pit;
++
++    // Change this if you prefer AC3
++    bool prefer_ac3 = false;
++    if (prefer_ac3)
++    {
++        for (pit = Components.begin(); pit != Components.end(); ++pit)
++            if ((*pit).Record && ((*pit).Type == ES_TYPE_AUDIO_AC3))
++                return &(*pit);
++    }
++
++    // Use first MPEG audio stream
++    for (pit = Components.begin(); pit != Components.end(); ++pit)
++        if ((*pit).Record && (((*pit).Type == ES_TYPE_AUDIO_MPEG1) || ((*pit).Type == ES_TYPE_AUDIO_MPEG2)))
++            return &(*pit);
++
++    // No MPEG audio found - look for AC3
++    for (pit = Components.begin(); pit != Components.end(); ++pit)
++        if ((*pit).Record && ((*pit).Type == ES_TYPE_AUDIO_AC3))
++            return &(*pit);
++
++    return NULL;
++}
++
++// Try to auto detect which video stream to use
++// NOTE!!! This is only used for PS recording via transform.c!
++ElementaryPIDObject *PMTObject::PreferredVideoStream()
++{
++    // Use first video stream
++    QValueList<ElementaryPIDObject>::Iterator pit;
++    for (pit = Components.begin(); pit != Components.end(); ++pit)
++        if ((*pit).Record && (((*pit).Type == ES_TYPE_VIDEO_MPEG1) || ((*pit).Type == ES_TYPE_VIDEO_MPEG2)))
++            return &(*pit);
++
++    return NULL;
++}
++
++ElementaryPIDObject *PMTObject::PreferredSubtitleStream()
++{
++    // Use first subtitle stream
++    QValueList<ElementaryPIDObject>::Iterator pit;
++    for (pit = Components.begin(); pit != Components.end(); ++pit)
++        if ((*pit).Record && ((*pit).Type == ES_TYPE_SUBTITLE))
++            return &(*pit);
++
++    return NULL;
++}
++
+ void PATHandler::Reset()
+ {
+     status.Reset();
+@@ -481,7 +528,10 @@
+     int retval = Tracker.AddSection(head);
+ 
+     if (retval == -1)
++    {
++        printf("MGT Changed!\n");
+         return false;
++    }
+     return retval;
+ }
+ 
+@@ -662,9 +712,6 @@
+ 
+ void EventHandler::RequestEmit(uint16_t key)
+ {
+-#ifdef EIT_DEBUG_SID
+-    fprintf(stdout,"EventHandler::RequestEmit for serviceid=%i\n", key);
+-#endif
+     status[key].requested = true;
+     status[key].requestedEmit = true;
+     status[key].emitted = false;
+@@ -690,25 +737,17 @@
+ 
+     for (s = status.begin() ; s != status.end() ; ++s)
+     {
+-        if (s.data().emitted || !s.data().pulling)
+-        {
+-            continue;
+-        }
+-
+-        AllComplete = true;
+-        /* Make sure all sections are being pulled otherwise your not done */
+-        if (TrackerSetup[s.key()] == false)
+-            AllComplete = false;
+-        for (i = Tracker[s.key()].begin() ; i != Tracker[s.key()].end() ; ++i)
++        if ((s.data().emitted == false) && (s.data().pulling == true))
+         {
+-            if (!i.data().Complete())
+-            {
++            AllComplete = true;
++            /* Make sure all sections are being pulled otherwise your not done */
++            if (TrackerSetup[s.key()] == false)
+                 AllComplete = false;
+-                break;
++            for (i = Tracker[s.key()].begin() ; i != Tracker[s.key()].end() ; ++i)
++            {
++                if (i.data().Complete() == false)
++                    AllComplete = false;
+             }
+-        }
+-        if (SIStandard == SI_STANDARD_ATSC)
+-        {
+             for (e = Events[s.key()].begin() ; e != Events[s.key()].end() ; ++e)
+             {
+                 if (e.data().ETM_Location != 0)
+@@ -727,9 +766,9 @@
+                     }
+                 }
+             }
++            if (AllComplete)
++                return true;
+         }
+-        if (AllComplete)
+-            return true;
+     }
+     return false;
+ }
+@@ -755,23 +794,20 @@
+                 if (!(i.data().Complete()))
+                     AllComplete = false;
+             }
+-            if (SIStandard == SI_STANDARD_ATSC)
++            for (e = Events[s.key()].begin() ; e != Events[s.key()].end() ; ++e)
+             {
+-                for (e = Events[s.key()].begin() ; e != Events[s.key()].end() ; ++e)
++                if (e.data().ETM_Location != 0)
+                 {
+-                    if (e.data().ETM_Location != 0)
++                    for (p = EITpid.begin() ; p != EITpid.end() ; ++p)
+                     {
+-                        for (p = EITpid.begin() ; p != EITpid.end() ; ++p)
++                        if (e.data().SourcePID == p.data().pid)
+                         {
+-                            if (e.data().SourcePID == p.data().pid)
+-                            {
+-                                /* Delete events that need ETTs that aren't filtered */
+-                                if (ETTpid.contains(p.key()))
+-                                    AllComplete = false;
+-    // Don't remove it because it screwed up the list.. This is temporary..
+-    //                                    else
+-    //                                        Events[s.key()].remove(e);
+-                            }
++                            /* Delete events that need ETTs that aren't filtered */
++                            if (ETTpid.contains(p.key()))
++                                AllComplete = false;
++// Don't remove it because it screwed up the list.. This is temporary..
++//                                    else
++//                                        Events[s.key()].remove(e);
+                         }
+                     }
+                 }
+@@ -832,12 +868,6 @@
+ {
+     int retval = false;
+ 
+-#ifdef EIT_DEBUG_SID
+-    if (key0 == EIT_DEBUG_SID) {
+-        printf("EventHandler::AddSection sid=%i eid=%i version=%i section %02x of %02x\n", key0, key1, head->version, head->section_number, head->section_last);
+-    }
+-#endif
+-
+     if (SIStandard == SI_STANDARD_ATSC)
+     {
+         QMap_pidHandler::Iterator p;
+@@ -852,12 +882,6 @@
+ 
+     if (SIStandard == SI_STANDARD_DVB)
+     {
+-#ifdef EIT_DEBUG_SID
+-        if (key0 == EIT_DEBUG_SID) {
+-            QString foo = Tracker[key0][key1].loadStatus();
+-            printf("%s\n", foo.ascii());
+-        }
+-#endif
+         return Tracker[key0][key1].AddSection(head);
+     }
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/sitypes.h mythtv-20050202-new/libs/libmythtv/sitypes.h
+--- mythtv-20050202-old/libs/libmythtv/sitypes.h	2005-02-05 10:51:06.667392995 -0800
++++ mythtv-20050202-new/libs/libmythtv/sitypes.h	2005-02-05 10:57:04.035066586 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: sitypes.h,v 1.3 2005/01/31 05:49:56 ijr Exp $
++ * $Id: sitypes.h,v 1.2 2005/01/26 05:54:05 ijr Exp $
+  * vim: set expandtab tabstop=4 shiftwidth=4:
+  */
+ 
+@@ -104,12 +104,9 @@
+     uint8_t       ChannelNumbers;
+     /* Use Custom Guide Ranges other than 0x50-0x5F & 0x60-0x6F in DVB */
+     bool          CustomGuideRanges;
+-    uint8_t       CurrentTransportTableMin;
+-    uint8_t       CurrentTransportTableMax;
+-    uint8_t       OtherTransportTableMin;
+-    uint8_t       OtherTransportTableMax;
++    uint8_t       GuideTableMin;
++    uint8_t       GuideTableMax;
+     /* Custom Guide Parameters */
+-    bool          ForceGuidePresent;
+     bool          CustomGuidePID;
+     uint16_t      GuidePID;
+     bool          GuideOnSingleTransport;
+@@ -193,7 +190,6 @@
+     virtual void DependencyChanged(tabletypes /*t*/) {}
+ 
+     SISTANDARD SIStandard;
+-
+ };
+ 
+ /* Object best to be removed and not used anymore */
+@@ -324,9 +320,8 @@
+     QString ContentDescription;
+     QString Year;
+     QStringList Actors;
+-    bool Stereo;
+-    bool HDTV;
+-    bool SubTitled;
++    QString SubTitles;
++    QString Audio;
+     int ETM_Location;    /* Used to flag still waiting ETTs for ATSC */
+     bool ATSC;
+ };
+@@ -410,6 +405,10 @@
+     bool OnAir() { return TelevisionService(); }
+     bool FTA() { return !hasCA; }
+ 
++    ElementaryPIDObject *PreferredAudioStream();
++    ElementaryPIDObject *PreferredVideoStream();
++    ElementaryPIDObject *PreferredSubtitleStream();
++
+     uint16_t PCRPID;
+     uint16_t ServiceID;
+     uint16_t PMTPID;
+@@ -530,7 +529,6 @@
+     EventHandler() : TableHandler() { Reset(); }
+     ~EventHandler() {}
+     void Reset();
+-    void SetSIStandard(SISTANDARD _SIStandard) { SIStandard = _SIStandard; }
+     bool Complete();
+     void SetupTrackers();
+     bool RequirePIDs();
+@@ -560,7 +558,6 @@
+ public:
+     ServiceHandler() : TableHandler() { Reset(); }
+     ~ServiceHandler() {}
+-    void SetSIStandard(SISTANDARD _SIStandard) { SIStandard = _SIStandard; }
+     void Reset();
+     bool Complete();
+     bool RequirePIDs();
+@@ -585,7 +582,6 @@
+ public:
+     NetworkHandler() : TableHandler() { Reset(); }
+     ~NetworkHandler() {}
+-    void SetSIStandard(SISTANDARD _SIStandard) { SIStandard = _SIStandard; }
+     void Reset();
+     bool Complete();
+     bool RequirePIDs();
+@@ -597,7 +593,6 @@
+     bool AddSection(tablehead_t *head, uint16_t key0, uint16_t key1);
+     void DependencyMet(tabletypes t) { (void) t;}
+ 
+-    SISTANDARD           SIStandard;
+     SectionTracker         Tracker;
+     pullStatus             status;
+     bool                 mgtloaded;
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/tv_play.cpp mythtv-20050202-new/libs/libmythtv/tv_play.cpp
+--- mythtv-20050202-old/libs/libmythtv/tv_play.cpp	2005-02-05 10:51:06.669392769 -0800
++++ mythtv-20050202-new/libs/libmythtv/tv_play.cpp	2005-02-05 10:57:04.037066360 -0800
+@@ -178,7 +178,6 @@
+     REG_KEY("TV Playback", "SUBCHANNELSEP", "Separator for HDTV subchannels", "_");
+     
+     REG_KEY("TV Editing", "CLEARMAP", "Clear editing cut points", "C,Q,Home");
+-    REG_KEY("TV Editing", "INVERTMAP", "Invert Begin/End cut points", "I");
+     REG_KEY("TV Editing", "LOADCOMMSKIP", "Load cut list from commercial skips",
+             "Z,End");
+     REG_KEY("TV Editing", "NEXTCUT", "Jump to the next cut point", "PgDown");
+@@ -3308,7 +3307,7 @@
+     if (osd)
+     {
+         int val = (int)(normal_speed*500);
+-        osd->StartPause(val, false, tr("Adjust Time Stretch"), text, 10, 
++        osd->StartPause(val, false, tr("Adjust Time Stretch"), tr(text), 10, 
+                         kOSDFunctionalType_TimeStretchAdjust);
+         update_osd_pos = false;
+     }
+@@ -3370,7 +3369,7 @@
+                               TRUE);
+     }
+ 
+-    text = tr("Sleep ") + " " + sleep_timer_array[sleep_index].dispString;
++    text = tr("Sleep ") + " " + tr(sleep_timer_array[sleep_index].dispString);
+ 
+     // display OSD
+     if (osd && !browsemode)
+@@ -3687,7 +3686,7 @@
+ 
+     if (osd)
+     {
+-        QString title = tr("Adjust Picture");
++        char *title = "Adjust Picture";
+         QString picName;
+ 
+         AudioOutput *aud = NULL;
+@@ -3713,11 +3712,11 @@
+                 aud = nvp->getAudioOutput();
+                 value = (aud) ? (aud->GetCurrentVolume()) 
+                         : 99; 
+-                title = tr("Adjust Volume");
++                title = "Adjust Volume";
+                 picName = QString("%1 %2 %").arg(tr("Volume")).arg(value);
+                 break;
+         }
+-        osd->StartPause(value*10, true, title, picName, 5, 
++        osd->StartPause(value*10, true, tr(title), picName, 5, 
+                         kOSDFunctionalType_PictureAdjust);
+         update_osd_pos = false;
+     }
+@@ -3733,7 +3732,7 @@
+    
+     if (osd)
+     {
+-        QString title = tr("Adjust Recording");
++        QString title("Adjust Recording");
+         QString recName;
+       
+         switch (recAdjustment)
+@@ -3763,7 +3762,7 @@
+                                   .arg(tr("(REC)")).arg(value);
+                 break;
+         }
+-        osd->StartPause(value * 10, true, title, recName, 5,
++        osd->StartPause(value * 10, true, tr(title), recName, 5,
+                         kOSDFunctionalType_RecPictureAdjust);
+         update_osd_pos = false;
+     }
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/tv_rec.cpp mythtv-20050202-new/libs/libmythtv/tv_rec.cpp
+--- mythtv-20050202-old/libs/libmythtv/tv_rec.cpp	2005-02-05 10:51:06.669392769 -0800
++++ mythtv-20050202-new/libs/libmythtv/tv_rec.cpp	2005-02-05 10:57:04.038066247 -0800
+@@ -37,11 +37,6 @@
+ #include "siscan.h"
+ #endif
+ 
+-#ifdef USING_FIREWIRE
+-#include "firewirerecorder.h"
+-#include "firewirechannel.h"
+-#endif
+-
+ void *SpawnEncode(void *param)
+ {
+     RecorderBase *nvr = (RecorderBase *)param;
+@@ -91,7 +86,7 @@
+     QString inputname, startchannel;
+ 
+     GetDevices(capturecardnum, videodev, vbidev, audiodev, audiosamplerate,
+-               inputname, startchannel, cardtype, dvb_options, firewire_options, skip_btaudio);
++               inputname, startchannel, cardtype, dvb_options, skip_btaudio);
+ 
+     if (cardtype == "DVB")
+     {
+@@ -119,24 +114,6 @@
+         exit(-20);
+ #endif
+     }
+-    if (cardtype == "FIREWIRE")
+-    {
+-#ifdef USING_FIREWIRE
+-        channel = new FirewireChannel(this);
+-        channel->Open();
+-        if (inputname.isEmpty())
+-            channel->SetChannelByString(startchannel);
+-        else
+-            channel->SwitchToInput(inputname, startchannel);
+-        channel->SetChannelOrdering(chanorder);
+-#else
+-        VERBOSE(VB_IMPORTANT, "ERROR: FireWire Input configured, "
+-                              "but no FireWire support compiled in!");
+-        VERBOSE(VB_IMPORTANT, "Remove the card from configuration, "
+-                              "or recompile MythTV.");
+-        exit(-20);
+-#endif
+-    }
+     else if ((cardtype == "MPEG") && (videodev.lower().left(5) == "file:"))
+     {
+         channel = NULL;
+@@ -668,20 +645,6 @@
+         nvr->Initialize();
+         return;
+     }
+-    else if (cardtype == "FIREWIRE")
+-    {
+-#ifdef USING_FIREWIRE
+-        nvr = new FirewireRecorder();
+-        nvr->SetRingBuffer(rbuffer);
+-        nvr->SetOptionsFromProfile(&profile, videodev, audiodev, vbidev, ispip);
+-        nvr->SetOption("port", firewire_options.port);
+-        nvr->SetOption("node", firewire_options.node);
+-        nvr->SetOption("speed", firewire_options.speed);
+-        nvr->SetOption("model", firewire_options.model);
+-        nvr->Initialize();
+-#endif
+-        return;
+-    }
+     else if (cardtype == "DVB")
+     {
+ #ifdef USING_DVB
+@@ -1133,8 +1096,7 @@
+ void TVRec::GetDevices(int cardnum, QString &video, QString &vbi, 
+                        QString &audio, int &rate, QString &defaultinput,
+                        QString &startchan, QString &type, 
+-                       dvb_options_t &dvb_opts, firewire_options_t &firewire_opts, 
+-                       bool &skip_bt)
++                       dvb_options_t &dvb_opts, bool &skip_bt)
+ {
+     video = "";
+     vbi = "";
+@@ -1151,9 +1113,7 @@
+                                "audioratelimit,defaultinput,cardtype,"
+                                "dvb_swfilter, dvb_recordts,"
+                                "dvb_wait_for_seqstart,dvb_dmx_buf_size,"
+-                               "dvb_pkt_buf_size, skipbtaudio, dvb_on_demand,"
+-                               "firewire_port, firewire_node, firewire_speed,"
+-                               "firewire_model "
++                               "dvb_pkt_buf_size, skipbtaudio, dvb_on_demand "
+                                "FROM capturecard WHERE cardid = %1;")
+                               .arg(cardnum);
+ 
+@@ -1198,12 +1158,6 @@
+ 
+         skip_bt = query.value(11).toInt();
+         dvb_opts.dvb_on_demand = query.value(12).toInt();
+-        firewire_opts.port = query.value(13).toInt();
+-        firewire_opts.node = query.value(14).toInt(); 
+-        firewire_opts.speed = query.value(15).toInt();
+-        test = query.value(16).toString();
+-        if (test != QString::null)
+-	   firewire_opts.model = QString::fromUtf8(test);
+     }
+ 
+     thequery = QString("SELECT if(startchan!='', startchan, '3') "
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/tv_rec.h mythtv-20050202-new/libs/libmythtv/tv_rec.h
+--- mythtv-20050202-old/libs/libmythtv/tv_rec.h	2005-02-05 10:51:06.669392769 -0800
++++ mythtv-20050202-new/libs/libmythtv/tv_rec.h	2005-02-05 10:57:04.038066247 -0800
+@@ -41,14 +41,6 @@
+     bool dvb_on_demand;
+ } dvb_options_t;
+ 
+-typedef struct _firewire_options_t
+-{
+-    int port;
+-    int node;
+-    int speed;
+-    QString model;
+-} firewire_options_t;
+-
+ class TVRec
+ {
+  public:
+@@ -164,8 +156,7 @@
+ 
+     void GetDevices(int cardnum, QString &video, QString &vbi, QString &audio,
+                     int &rate, QString &defaultinput, QString &startchannel,
+-                    QString &type, dvb_options_t &dvb_opts, firewire_options_t &firewire_opts,
+-                    bool &skip_bt);
++                    QString &type, dvb_options_t &dvb_opts, bool &skip_bt);
+ 
+     void ConnectDB(int cardnum);
+     void DisconnectDB(void);
+@@ -241,7 +232,6 @@
+     int autoTranscode;
+ 
+     dvb_options_t dvb_options;
+-    firewire_options_t firewire_options;
+ 
+     char requestBuffer[256001];
+ 
+diff -Naur --exclude=CVS mythtv-20050202-old/libs/libmythtv/videosource.cpp mythtv-20050202-new/libs/libmythtv/videosource.cpp
+--- mythtv-20050202-old/libs/libmythtv/videosource.cpp	2005-02-05 10:51:06.673392318 -0800
++++ mythtv-20050202-new/libs/libmythtv/videosource.cpp	2005-02-05 10:57:04.041065908 -0800
+@@ -474,7 +474,7 @@
+     if (grabber == "tv_grab_de" || grabber == "tv_grab_se" || 
+         grabber == "tv_grab_fi" || grabber == "tv_grab_es" ||
+         grabber == "tv_grab_nl" || grabber == "tv_grab_jp" ||
+-        grabber == "tv_grab_no" || grabber == "tv_grab_pt")
++        grabber == "tv_grab_no")
+     {
+         cerr << "You _MUST_ run 'mythfilldatabase --manual the first time, "
+              << "instead\n";
+@@ -545,9 +545,6 @@
+ 
+     addTarget("tv_grab_jp", new XMLTV_generic_config(parent, "tv_grab_jp"));
+     grabber->addSelection("Japan", "tv_grab_jp");
+-
+-    addTarget("tv_grab_pt", new XMLTV_generic_config(parent, "tv_grab_pt"));
+-    grabber->addSelection("Portugal", "tv_grab_pt");
+ }
+ 
+ VideoSource::VideoSource() 
+@@ -786,74 +783,6 @@
+     };
+ };
+ 
+-class FirewireModel: public ComboBoxSetting, public CCSetting {
+-    public:
+-	FirewireModel(const CaptureCard& parent):
+- 	CCSetting(parent, "firewire_model") {
+-            setLabel(QObject::tr("Firewire Model"));
+-            addSelection(QObject::tr("Other"));
+-            setHelpText(QObject::tr("Firewire Model is for future use incase there " 
+-                                     "is a need to model specific work arounds.")); 
+-
+-        }
+-};
+-
+-class FirewirePort: public LineEditSetting, public CCSetting {
+-    public:
+-	FirewirePort(const CaptureCard& parent):
+- 	CCSetting(parent, "firewire_port") {
+-            setValue("0");
+-            setLabel(QObject::tr("Firewire Port"));
+-            setHelpText(QObject::tr("Firewire port on your firewire card."));
+-        }
+-};
+-
+-class FirewireNode: public LineEditSetting, public CCSetting {
+-    public:
+-        FirewireNode(const CaptureCard& parent):
+-        CCSetting(parent, "firewire_node") {
+-            setValue("2");
+-            setLabel(QObject::tr("Firewire Node"));
+-            setHelpText(QObject::tr("Firewire node is the remote device."));
+-        }
+-};
+-
+-class FirewireSpeed: public ComboBoxSetting, public CCSetting {
+-    public:
+-	FirewireSpeed(const CaptureCard& parent):
+- 	CCSetting(parent, "firewire_speed") {
+-            setLabel(QObject::tr("Firewire Speed"));
+-            addSelection(QObject::tr("100Mbps"),"0");
+-            addSelection(QObject::tr("200Mbps"),"1");
+-            addSelection(QObject::tr("400Mbps"),"2");
+-        }
+-};
+-
+-class FirewireInput: public ComboBoxSetting, public CCSetting {
+-    public:
+-	FirewireInput(const CaptureCard& parent):
+- 	CCSetting(parent, "defaultinput") {
+-            setLabel(QObject::tr("Default Input"));
+-            addSelection("MPEG2TS");
+-            setHelpText(QObject::tr("Only MPEG2TS is supported at this time."));
+-        }
+-};
+-
+-class FirewireConfigurationGroup: public VerticalConfigurationGroup {
+-public:
+-    FirewireConfigurationGroup(CaptureCard& a_parent):
+-        parent(a_parent) {
+-        setUseLabel(false);
+-        addChild(new FirewireModel(parent));
+-        addChild(new FirewirePort(parent));
+-        addChild(new FirewireNode(parent));
+-        addChild(new FirewireSpeed(parent));
+-   	addChild(new FirewireInput(parent));
+-    };
+-private:
+-    CaptureCard& parent;
+-};
+-
+ class V4LConfigurationGroup: public VerticalConfigurationGroup {
+ public:
+     V4LConfigurationGroup(CaptureCard& a_parent):
+@@ -894,7 +823,6 @@
+ 
+     addTarget("V4L", new V4LConfigurationGroup(parent));
+     addTarget("DVB", new DVBConfigurationGroup(parent));
+-    addTarget("FIREWIRE", new FirewireConfigurationGroup(parent));
+ }
+ 
+ void CaptureCardGroup::triggerChanged(const QString& value) 
+@@ -918,24 +846,16 @@
+ 
+ void CaptureCard::fillSelections(QSqlDatabase* db,
+                                  SelectSetting* setting) {
+-    QString query = QString("SELECT cardtype, videodevice, cardid, firewire_port, firewire_node "
++    QString query = QString("SELECT cardtype, videodevice, cardid "
+                             "FROM capturecard WHERE hostname = \"%1\";")
+                             .arg(gContext->GetHostName());
+     QSqlQuery result = db->exec(query);
+ 
+     if (result.isActive() && result.numRowsAffected() > 0)
+         while (result.next())
+-            // dont like doing this..
+-            if(result.value(0).toString() == "FIREWIRE") {
+-                     setting->addSelection("[ " + result.value(0).toString() + " Port: " +
+-                                  result.value(3).toString() + ", Node: " +
+-                                  result.value(4).toString() + "]",
+-                                  result.value(2).toString());
+-            } else {
+-                     setting->addSelection("[ " + result.value(0).toString() + " : " +
++            setting->addSelection("[ " + result.value(0).toString() + " : " +
+                                   result.value(1).toString() + " ]",
+                                   result.value(2).toString());
+-            }
+ }
+ 
+ void CaptureCard::loadByID(QSqlDatabase* db, int cardid) {
+@@ -963,8 +883,6 @@
+                           "HDTV");
+     setting->addSelection(QObject::tr("Digital Video Broadcast card (DVB)"), 
+                           "DVB");
+-    setting->addSelection(QObject::tr("FireWire Input"),
+-                          "FIREWIRE");
+ }
+ 
+ class CardID: public SelectLabelSetting, public CISetting {
+@@ -1473,8 +1391,7 @@
+     // SelectSetting provided a facility to edit the labels, we
+     // could use CaptureCard::fillSelections
+ 
+-    QString thequery = QString("SELECT cardid, videodevice, cardtype, dvb_diseqc_type, "
+-                               "firewire_port, firewire_node "
++    QString thequery = QString("SELECT cardid, videodevice, cardtype, dvb_diseqc_type "
+                                "FROM capturecard WHERE hostname = \"%1\";")
+                               .arg(gContext->GetHostName());
+ 
+@@ -1485,20 +1402,14 @@
+             QString videodevice(capturecards.value(1).toString());
+ 
+             QStringList inputs;
+-            if (capturecards.value(2).toString() == "DVB")
++            if (capturecards.value(2).toString() != "DVB")
+             {
+-                QValueList<DVBDiseqcInputList> dvbinput;
+-                dvbinput = VideoDevice::fillDVBInputsDiseqc(capturecards.value(3).toInt());
+-
+-                QValueList<DVBDiseqcInputList>::iterator it;
+-                for (it = dvbinput.begin(); it != dvbinput.end(); ++it)
++                inputs = VideoDevice::probeInputs(videodevice);
++                for (QStringList::iterator i = inputs.begin(); 
++                     i != inputs.end(); ++i)
+                 {
+-                    // IS DVB Check for CardInput class
+-                    CardInput* cardinput = new CardInput(1);
+-                    cardinput->loadByInput(db, cardid, (*it).input);
+-
+-                    cardinput->fillDiseqcSettingsInput((*it).position,(*it).port);
+-
++                    CardInput* cardinput = new CardInput();
++                    cardinput->loadByInput(db, cardid, *i);
+                     cardinputs.push_back(cardinput);
+                     QString index = QString::number(cardinputs.size()-1);
+ 
+@@ -1506,28 +1417,6 @@
+                         .arg("[ " + capturecards.value(2).toString() +
+                              " : " + capturecards.value(1).toString() +
+                              " ]")
+-                        .arg((*it).input)
+-                        .arg(cardinput->getSourceName());
+-                    addSelection(label, index);
+-                }
+-            }
+-            else if(capturecards.value(2).toString() == "FIREWIRE")
+-            {
+-                inputs = QStringList("MPEG2TS");
+-                for (QStringList::iterator i = inputs.begin();
+-                     i != inputs.end(); ++i)
+-                { 
+-                    CardInput* cardinput = new CardInput();
+-                    cardinput->loadByInput(db, cardid, *i);   
+-                    cardinputs.push_back(cardinput);
+-                    QString index = QString::number(cardinputs.size()-1);
+-
+-                    QString label;
+-                    label = QString("%1 (%2) -> %3")
+-                        .arg("[ " + capturecards.value(2).toString() +
+-                             " Port: " + capturecards.value(3).toString() +
+-                             ", Node: " + capturecards.value(4).toString() +
+-                             " ]")
+                         .arg(*i)
+                         .arg(cardinput->getSourceName());
+                     addSelection(label, index);
+@@ -1535,12 +1424,18 @@
+             }
+             else
+             {
+-                inputs = VideoDevice::probeInputs(videodevice);
+-                for (QStringList::iterator i = inputs.begin(); 
+-                     i != inputs.end(); ++i)
++                QValueList<DVBDiseqcInputList> dvbinput;
++                dvbinput = VideoDevice::fillDVBInputsDiseqc(capturecards.value(3).toInt());
++
++                QValueList<DVBDiseqcInputList>::iterator it;
++                for (it = dvbinput.begin(); it != dvbinput.end(); ++it)
+                 {
+-                    CardInput* cardinput = new CardInput();
+-                    cardinput->loadByInput(db, cardid, *i);
++                    // IS DVB Check for CardInput class
++                    CardInput* cardinput = new CardInput(1);
++                    cardinput->loadByInput(db, cardid, (*it).input);
++
++                    cardinput->fillDiseqcSettingsInput((*it).position,(*it).port);
++
+                     cardinputs.push_back(cardinput);
+                     QString index = QString::number(cardinputs.size()-1);
+ 
+@@ -1548,7 +1443,7 @@
+                         .arg("[ " + capturecards.value(2).toString() +
+                              " : " + capturecards.value(1).toString() +
+                              " ]")
+-                        .arg(*i)
++                        .arg((*it).input)
+                         .arg(cardinput->getSourceName());
+                     addSelection(label, index);
+                 }
+@@ -1732,7 +1627,6 @@
+ 
+     for(QStringList::iterator i = inputs.begin(); i != inputs.end(); ++i)
+         addSelection(*i);
+-
+ }
+ 
+ void TunerCardInput::fillSelections(const QString& device) {
+@@ -1831,26 +1725,50 @@
+     }
+ };
+ 
+-static GlobalLineEdit *DiseqcLatitude()
++class BackendSettingVS: public SimpleDBStorage, virtual public Configurable
++{
++public:
++    BackendSettingVS(QString name): SimpleDBStorage("settings", "data")
++    {
++        setName(name);
++    }
++
++protected:
++    virtual QString whereClause(void)
++    {
++        return QString("value = '%1'").arg(getName());
++    }
++
++    virtual QString setClause(void)
++    {
++        return QString("value = '%1', data = '%2'").arg(getName()).arg(getValue());
++    }
++};
++
++class DiseqcLatitude : public LineEditSetting, public BackendSettingVS
+ {
+-    GlobalLineEdit *gc = new GlobalLineEdit("latitude");
+-    gc->setLabel("Latitude");
+-    gc->setHelpText(QObject::tr("The Latitude of your satellite dishes "
++public:
++    DiseqcLatitude() : BackendSettingVS("latitude")
++    {
++        setLabel("Latitude");
++        setHelpText(QObject::tr("The Latitude of your satellite dishes "
+                     "location on the Earth.. "
+                     " This is used with DiSEqC Motor Support.  Format 35.78"
+                     " for 35.78 degrees North Longitude"));
+-    return gc;
++    }
+ };
+ 
+-static GlobalLineEdit *DiseqcLongitude()
++class DiseqcLongitude : public LineEditSetting, public BackendSettingVS
+ {
+-    GlobalLineEdit *gc = new GlobalLineEdit("longitude");
+-    gc->setLabel("Longitude");
+-    gc->setHelpText(QObject::tr("The Longitude of your satellite dishes "
++public:
++    DiseqcLongitude() : BackendSettingVS("longitude")
++    {
++        setLabel("Longitude");
++        setHelpText(QObject::tr("The Longitude of your satellite dishes "
+                     "location on the Earth.. "
+                     " This is used with DiSEqC Motor Support.  Format -78.93"
+                     " for 78.93 degrees West Longitude"));
+-    return gc;
++    }
+ };
+ 
+ class DVBDiseqcConfigurationWizard: public ConfigurationWizard
+@@ -1862,8 +1780,8 @@
+         rec->setLabel(QObject::tr("Diseqc Options"));
+         rec->setUseLabel(false);
+ 
+-        rec->addChild(DiseqcLatitude());
+-        rec->addChild(DiseqcLongitude());
++        rec->addChild(new DiseqcLatitude());
++        rec->addChild(new DiseqcLongitude());
+         addChild(rec);
+     }
+ };
