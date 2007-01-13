@@ -57,7 +57,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-xanim \
 	--disable-real \
 	--enable-vorbis \
-	--disable-internal-matroska \
+	--enable-internal-matroska \
 	--enable-mad
 # Video output: enable xv (requires x11 and vm) and xxmc
 CONFIGURE_ARGS_VIDEO = \
