@@ -7,11 +7,11 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
  EXESUF=".exe"
 -test -f /usr/include/inttypes.h || \
 -test -f /usr/local/include/inttypes.h || \
-+test -f @DESTDIR@/@includedir@/inttypes.h || \
-+test -f @DESTDIR@/@includedir@/inttypes.h || \
++test -f @GAR_DESTDIR@@GAR_includedir@/inttypes.h || \
++test -f @GAR_DESTDIR@@GAR_includedir@/inttypes.h || \
  echo "Missing inttypes.h, please copy cygwin_inttypes.h to" \
 -     "/usr/local/include/inttypes.h !!!"
-+     "@DESTDIR@/@includedir@/inttypes.h !!!"
++     "@GAR_DESTDIR@@GAR_includedir@/inttypes.h !!!"
  CONFIG_DEFINES="$CONFIG_DEFINES _WIN32"
  ;;
  Linux)
@@ -20,12 +20,12 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
  has_library()
  {
 -    LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
-+    LIBPATHS=`cat @DESTDIR@/@sysconfdir@/ld.so.conf | grep -v "#" | grep -v "include" | sed 's%^\(.*\)%@DESTDIR@/\1%'`
++    LIBPATHS=`cat @GAR_DESTDIR@@GAR_sysconfdir@/ld.so.conf | grep -v "#" | grep -v "include" | sed 's%^\(.*\)%@GAR_DESTDIR@/\1%'`
      LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
  
      # recurse down just one level, should be enough in most cases
 -    INCL=`cat /etc/ld.so.conf | grep -v "#" | grep "include "`
-+    INCL=`cat @DESTDIR@/@sysconfdir@/ld.so.conf | grep -v "#" | grep "include "`
++    INCL=`cat @GAR_DESTDIR@@GAR_sysconfdir@/ld.so.conf | grep -v "#" | grep "include "`
      SRCH=`echo $INCL | sed s/"include "//g`
      for x in $SRCH ; do
          LP_APPEND=`cat /etc/$x | grep -v "#" | grep -v "include"`
@@ -33,7 +33,7 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
      done
  
 -    LIBPATHS="`echo $LIBPATHS /lib /usr/lib | sed s/'\/ '/' '/g` "
-+    LIBPATHS="`echo $LIBPATHS @DESTDIR@/@elibdir@ @DESTDIR@/@libdir@ | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo $LIBPATHS @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ | sed s/'\/ '/' '/g` "
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
@@ -42,7 +42,7 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
  if test x"$x11" = x"yes" ; then
      x11="no"
 -    if test -f /usr/X11R6/bin/xinit ; then
-+    if test -f @DESTDIR@/@x11bindir@/xinit ; then
++    if test -f @GAR_DESTDIR@@GAR_x11bindir@/xinit ; then
          x11="yes"
      fi
  fi
@@ -51,7 +51,7 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
  if test x"$xrandr" = x"yes" ; then
      xrandr="no"
 -    if test -f /usr/X11R6/include/X11/extensions/Xrandr.h ; then
-+    if test -f @DESTDIR@/@x11includedir@/X11/extensions/Xrandr.h ; then
++    if test -f @GAR_DESTDIR@@GAR_x11includedir@/X11/extensions/Xrandr.h ; then
          xrandr="yes"
      fi
  fi
@@ -63,7 +63,7 @@ diff -Naur mythtv-0.18.1-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.18.1-
  
  STDLIBS    = -lm
 -X11LIBS    =  -L/usr/X11R6/lib -lX11
-+X11LIBS    =  -L@DESTDIR@/@x11libdir@ -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
  PROGRAM    = cidbcast
  
  #################################################################################
@@ -75,15 +75,15 @@ diff -Naur mythtv-0.18.1-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.1
  RM_FLAGS =  -f
  
 -CFLAGS  	= -g -Wall `xml2-config --cflags` -O
-+CFLAGS  	= -g -Wall `@DESTDIR@/@bindir@/xml2-config --cflags` -O
++CFLAGS  	= -g -Wall `@GAR_DESTDIR@@GAR_bindir@/xml2-config --cflags` -O
  CDEFS   	= -DDEBUG
  
  # Libraries
  
 -STDLIBS    = -lm `xml2-config --libs` -lxslt
 -X11LIBS    =  -L/usr/X11R6/lib -lX11
-+STDLIBS    = -lm `@DESTDIR@/@bindir@/xml2-config --libs` -lxslt
-+X11LIBS    =  -L@DESTDIR@/@x11libdir@ -lX11
++STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
  PROGRAM = mythudprelay
  
  #################################################################################
@@ -96,8 +96,8 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro mythtv-0.18.1-new/libs
  
 -QMAKE_CXXFLAGS_RELEASE += `freetype-config --cflags`
 -QMAKE_CXXFLAGS_DEBUG += `freetype-config --cflags`
-+QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/freetype-config --cflags`
-+QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/freetype-config --cflags`
++QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
  
  # old libvbitext
  
@@ -109,7 +109,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythui/libmythui.pro mythtv-0.18.1-new/libs
  
  using_x11 {
 -    LIBS += -L/usr/X11R6/lib -lXinerama
-+    LIBS += -L@DESTDIR@/@x11libdir@ -lXinerama
++    LIBS += -L@GAR_DESTDIR@@GAR_x11libdir@ -lXinerama
  }
  
  macx {
@@ -121,7 +121,7 @@ diff -Naur mythtv-0.18.1-old/settings.pro mythtv-0.18.1-new/settings.pro
  
  isEmpty( PREFIX ) {
 -    PREFIX = /usr/local
-+    PREFIX = @prefix@
++    PREFIX = @GAR_prefix@
  }
  
  LIBVERSION = 0.18.1
@@ -130,7 +130,7 @@ diff -Naur mythtv-0.18.1-old/settings.pro mythtv-0.18.1-new/settings.pro
  }
  
 -INCLUDEPATH += $${PREFIX}/include
-+INCLUDEPATH += @DESTDIR@/@includedir@
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
  INCLUDEPATH += $$CONFIG_INCLUDEPATH
  
  # figure out compile flags based on qmake info
