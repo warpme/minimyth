@@ -57,8 +57,6 @@ endif
 INSTALL_ARGS    = \
 	install_root=$(DESTDIR)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
-
 include ../../gar.mk
 
 pre-configure:

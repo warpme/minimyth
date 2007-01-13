@@ -53,8 +53,7 @@ BUILD_ARGS      = \
 INSTALL_ARGS    = \
 	install_root=$(DESTDIR)
 
-GAR_EXTRA_CONF += devel/glibc/package-api.mk kernel/linux/package-api.mk
-
+GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 pre-configure:
