@@ -59,6 +59,8 @@ INSTALL_ARGS    = \
 
 include ../../gar.mk
 
+CFLAGS := $(filter-out $(CFLAGS), -ffast-math)
+
 pre-configure:
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
