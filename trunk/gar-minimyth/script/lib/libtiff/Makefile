@@ -16,7 +16,8 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld \
 	--without-x
 
 include ../../gar.mk

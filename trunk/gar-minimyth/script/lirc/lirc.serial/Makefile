@@ -34,6 +34,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-sandboxed \
 	--x-includes="$(DESTDIR)$(x11includedir)" \
 	--x-libraries="$(DESTDIR)$(x11libdir)" \
+	--with-gnu-ld \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--with-moduledir="$(KERNEL_MODULESDIR)/lirc" \
 	--with-driver=serial

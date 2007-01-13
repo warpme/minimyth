@@ -17,9 +17,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+        --$(if $(filter, $(GARCH), c3     ),enable,disable)-3dnow \
+        --$(if $(filter, $(GARCH),    c3-2),enable,disable)-sse \
+	--disable-altivec \
+	--disable-oggtest \
+	--with-gnu-ld \
 	--with-ogg-includes=$(DESTDIR)$(includedir) \
-	--with-ogg-libraries=$(DESTDIR)$(libdir) \
-	--disable-oggtest
+	--with-ogg-libraries=$(DESTDIR)$(libdir)
 
 CONFIGURE_ENV  = \
         PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"

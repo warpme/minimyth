@@ -15,7 +15,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 BUILD_OVERRIDE_DIRS   = prefix exec_prefix bindir sbindir libdir sysconfdir includedir
 INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir sbindir libdir sysconfdir includedir
