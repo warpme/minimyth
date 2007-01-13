@@ -1,0 +1,16 @@
+#!/bin/sh
+################################################################################
+# x.script
+################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
+
+MM_TV=`mm_var_get MM_TV`
+[ -z ${MM_TV} ] && MM_TV=NTSC
+
+mm_dir_make_rw /etc
+mm_dir_make_rw /root
+
+mm_conf_get /xinitrc /root/.xinitrc
+mm_conf_get /xorg.conf /etc/X11/xorg.conf
+
+sed -i "s%@MM_TV@%${MM_TV}%" /etc/X11/xorg.conf

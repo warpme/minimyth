@@ -1,0 +1,28 @@
+#!/bin/sh
+################################################################################
+# mm_dir_make_rw
+################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
+
+DIR=$1
+
+# Only make the directory rw if the directory is not already rw.
+mkdir -p ${DIR}
+touch ${DIR}
+if [ ! $? = 0 ] ; then
+    modprobe unionfs
+
+    UNIONFS=/var/unionfs
+    UNIONFS_RO=${UNIONFS}/ro
+    UNIONFS_RW=${UNIONFS}/rw
+
+    if [ ! -e ${UNIONFS} ] ; then
+        mkdir -p /var/unionfs
+        mount -t tmpfs tmpfs ${UNIONFS}
+    fi
+    mkdir -p ${UNIONFS_RO}${DIR}
+    mkdir -p ${UNIONFS_RW}${DIR}
+
+    mount --bind ${DIR} ${UNIONFS_RO}${DIR}
+    mount -t unionfs -o dirs=${UNIONFS_RW}${DIR}=rw:${UNIONFS_RO}${DIR}=ro,copyup=preserve none ${DIR}
+fi

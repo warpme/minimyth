@@ -1,0 +1,17 @@
+#!/bin/sh
+################################################################################
+# time.script
+################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
+
+MM_TIME_SERVER=`mm_var_get MM_TIME_SERVER`
+
+mm_dir_make_rw /etc
+
+mm_conf_get /localtime /etc/localtime
+
+if [ -n ${MM_TIME_SERVER} ] ; then
+  ntpdate ${MM_TIME_SERVER}
+  echo "server ${MM_TIME_SERVER}" > /etc/ntp.conf
+  ntpd
+fi

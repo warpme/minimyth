@@ -4,8 +4,10 @@
 #
 # This script (downloads and) mounts the extras directory tree.
 ################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-. /etc/minimyth.d/minimyth.functions
+MM_TFTP_SERVER=`mm_var_get MM_TFTP_SERVER`
+MM_TFTP_ROOTDIR=`mm_var_get MM_TFTP_ROOTDIR`
 
 if [ "${MM_EXTRAS_URL}" = "default" ] ; then
     INITRD_DIR=` echo ${initrd} | sed 's%[^/]*$%%'`
@@ -20,5 +22,6 @@ if [ "${MM_EXTRAS_URL}" = "default" ] ; then
     fi
 fi
 if [ -n "${MM_EXTRAS_URL}" ] ; then
-    mount_url "${MM_EXTRAS_URL}" "//usr/local"
+    mm_url_mount "${MM_EXTRAS_URL}" "/usr/local"
+    sh ./ld.script
 fi

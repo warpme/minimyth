@@ -4,23 +4,37 @@
 #
 # The script configures the sound.
 ################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-. /etc/minimyth.d/minimyth.functions
+MM_SOUND=`mm_var_get MM_SOUND`
 
 # Default MM_SOUND to analog.
 [ -z ${MM_SOUND} ] && MM_SOUND=analog
+
+# Load ALSA kernel modules.
+# The options at the end get rid of the crackle.
+modprobe snd-via82xx index=0 dxs_support=3
+modprobe snd-rtctimer
+
+# Load OSS emulation kernel modules.
+modprobe snd-mixer-oss
+modprobe snd-seq-oss
+modprobe snd-mixer-oss
+modprobe snd-pcm-oss
+
+mm_dir_make_rw /root
 
 if   [ "${MM_SOUND}" = "analog"  ] ; then
     amixer set 'PCM'    90% unmute 
     amixer set 'Master' 90% unmute 
     sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
-    update_mythdb_settings "AudioOutputDevice" "ALSA:default"
-    update_mythdb_settings "MythControlsVolume" "0"
-    update_mythdb_settings "AudioDevice" "ALSA:default"
+    mm_mythdb_setting_update "AudioOutputDevice" "ALSA:default"
+    mm_mythdb_setting_update "MythControlsVolume" "0"
+    mm_mythdb_setting_update "AudioDevice" "ALSA:default"
 elif [ "${MM_SOUND}" = "digital" ] ; then
     amixer set 'IEC958 Playback AC97-SPSA' 0
     sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
-    update_mythdb_settings "AudioOutputDevice" "ALSA:iec958"
-    update_mythdb_settings "MythControlsVolume" "0"
-    update_mythdb_settings "AudioDevice" "ALSA:default"
+    mm_mythdb_setting_update "AudioOutputDevice" "ALSA:iec958"
+    mm_mythdb_setting_update "MythControlsVolume" "0"
+    mm_mythdb_setting_update "AudioDevice" "ALSA:default"
 fi

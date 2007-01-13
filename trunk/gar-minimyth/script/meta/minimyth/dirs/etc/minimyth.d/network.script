@@ -1,9 +1,12 @@
 #!/bin/sh
+################################################################################
+# network.script
+################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-. /etc/minimyth.d/minimyth.functions
-
-# Bring up the local loopback
+# Bring up the local (loopback) interface.
 ifconfig lo 127.0.0.1
+
 # Get the IP address and other IP parameters.
 # If an IP address was already obtained then request the same address.
 ip=`ifconfig eth0 | grep '^ *inet addr:' | sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
@@ -12,3 +15,6 @@ if [ -z $ip ] ; then
 else
     udhcpc -s /etc/minimyth.d/dhcp.script -i eth0 -r $ip
 fi
+
+# Start portmap on local interface.
+portmap -l

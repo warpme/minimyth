@@ -1,0 +1,18 @@
+#!/bin/sh
+################################################################################
+# mm_mythdb_command_run
+################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
+
+COMMAND=$1
+
+DBHostName=`cat /root/.mythtv/mysql.txt | grep "^DBHostName" | sed -e 's%^[^=]*=%%'`
+DBUserName=`cat /root/.mythtv/mysql.txt | grep "^DBUserName" | sed -e 's%^[^=]*=%%'`
+DBPassword=`cat /root/.mythtv/mysql.txt | grep "^DBPassword" | sed -e 's%^[^=]*=%%'`
+DBName=`cat /root/.mythtv/mysql.txt     | grep "^DBName"     | sed -e 's%^[^=]*=%%'`
+
+mysql \
+    --host=${DBHostName} \
+    --user=${DBPassword} \
+    --password=${DBPassword} \
+    --exec="use ${DBName} ; ${COMMAND} ;"

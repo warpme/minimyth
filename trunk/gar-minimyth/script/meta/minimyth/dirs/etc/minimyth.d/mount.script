@@ -4,18 +4,23 @@
 #
 # This script mounts the remote media directories.
 ################################################################################
+[ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-. /etc/minimyth.d/minimyth.functions
+MM_MYTHGALLERY_URL=`mm_var_get MM_MYTHGALLERY_URL`
+MM_MYTHMUSIC_URL=`mm_var_get MM_MYTHMUSIC_URL`
+MM_MYTHVIDEO_URL=`mm_var_get MM_MYTHVIDEO_URL`
+
+mm_dir_make_rw /mnt
 
 if [ -n "${MM_MYTHGALLERY_URL}" ] ; then
-    mount_url "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
-    update_mythdb_settings "GalleryDir" "/mnt/gallery/"
+    mm_url_mount "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
+    mm_mythdb_setting_update "GalleryDir" "/mnt/gallery/"
 fi
 if [ -n "${MM_MYTHMUSIC_URL}"   ] ; then
-    mount_url "${MM_MYTHMUSIC_URL}"   "/mnt/music"
-    update_mythdb_settings "MusicLocation" "/mnt/music/"
+    mm_url_mount "${MM_MYTHMUSIC_URL}"   "/mnt/music"
+    mm_mythdb_setting_update "MusicLocation" "/mnt/music/"
 fi
 if [ -n "${MM_MYTHVIDEO_URL}"   ] ; then
-    mount_url "${MM_MYTHVIDEO_URL}"   "/mnt/video"
-    update_mythdb_settings "VideoStartupDir" "/mnt/video/"
+    mm_url_mount "${MM_MYTHVIDEO_URL}"   "/mnt/video"
+    mm_mythdb_setting_update "VideoStartupDir" "/mnt/video/"
 fi
