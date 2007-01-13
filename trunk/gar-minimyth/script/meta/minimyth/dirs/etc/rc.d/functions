@@ -95,6 +95,211 @@ mm_uniq() {
 }
 
 #-------------------------------------------------------------------------------
+# mm_update
+#-------------------------------------------------------------------------------
+mm_update() {
+    # Make sure there is not an unrestored backup directory.
+    if /usr/bin/test -e /minimyth/backup ; then
+        /bin/echo "error: mm_update will not run when the backup directory '/minimyth/backup' exists."
+        /bin/false
+        return
+    fi
+    # Make sure that MM_UPDATE_URL protocol is valid.
+    PROTOCOL=`/bin/echo "${MM_UPDATE_URL}" | /usr/bin/cut -d? -f1 | /usr/bin/cut -d: -f1`
+    case ${PROTOCOL} in
+        http)
+            ;;
+        tftp)
+            ;;
+        file)
+            ;;
+        *)
+            mm_update_exit 1 "unknown protocol '${PROTOCOL}' used update in URL '${MM_UPDATE_URL}'." || return
+            ;;
+    esac
+    # Make sure that /minimyth is a default local boot MiniMyth configuration.
+    if /usr/bin/test ! -d /minimyth ; then
+        mm_update_exit 1 "mm_update can only be run on MiniMyth frontends that use local boot." || return
+    fi
+    if /usr/bin/test ! -f /minimyth/kernel ; then
+        mm_update_exit 1 "mm_update requires that the MiniMyth kernel file be located at '/minimyth/kernel'." || return
+    fi
+    if /usr/bin/test ! -f /minimyth/rootfs ; then
+        mm_update_exit 1 "mm_update requires that the MiniMyth root file system image be located at '/minimyth/rootfs'." || return
+    fi
+    # Perpare update directories.
+    if /usr/bin/test -e /tmp/minimyth-update ; then
+        /bin/rm -rf /tmp/minimyth-update
+    fi
+    if /usr/bin/test -e /minimyth/update ; then
+        /bin/rm -rf /minimyth/update
+    fi
+    # Determine old MiniMyth version.
+    VERSION_OLD='unknown'
+    cd /minimyth ; /usr/bin/test -e version && /usr/bin/test -e checksums.md5 && /usr/bin/md5sum -c -s checksums.md5
+    if /usr/bin/test $? -eq 0 ; then
+        VERSION_OLD=`/bin/cat /minimyth/version`
+    fi
+    # Determine new MiniMyth version.
+    /bin/mkdir -p /tmp/minimyth-update
+    mm_update_fetch ${MM_UPDATE_URL}/version /tmp/minimyth-update/version
+    if /usr/bin/test $? -ne 0 || /usr/bin/test ! -e /tmp/minimyth-update/version ; then
+        mm_update_exit 1 "failed to retrieve MiniMyth version file from '${MM_UPDATE_URL}'." || return
+    fi
+    VERSION_NEW=`/bin/cat /tmp/minimyth-update/version`
+    # Check whether or not the user wants to update MiniMyth.
+    /bin/echo ''
+    /bin/echo "current MiniMyth version: ${VERSION_OLD}"
+    /bin/echo "new     MiniMyth version: ${VERSION_NEW}"
+    /bin/echo ''
+    read -p 'update MiniMyth version [N/y]? ' UPDATE
+    /bin/echo ''
+    if /usr/bin/test ! "${UPDATE}" = "y" && /usr/bin/test ! "${UPDATE}" = "Y" ; then
+        mm_update_exit 0 "uptade aborted due to user request."
+        return
+    fi
+    # Create the file lists.
+    FILES_UPDATE_REQUIRED="version kernel-${VERSION_NEW} rootfs-${VERSION_NEW}"
+    FILES_UPDATE_OPTIONAL="extras-${VERSION_NEW}.sfs"
+    FILES_UPDATE="${FILES_UPDATE_REQUIRED} ${FILES_UPDATE_OPTIONAL}"
+    FILES_BACKUP=`echo "checksums.md5 ${FILES_UPDATE}" | /bin/sed -e "s%-${VERSION_NEW}%%g"`
+    # Retrieve files and corresponding checksum files.
+    mkdir -p /tmp/minimyth-update
+    mkdir -p /minimyth/update
+    for FILE in ${FILES_UPDATE} ; do
+        mm_update_fetch ${MM_UPDATE_URL}/${FILE}.md5 /tmp/minimyth-update/${FILE}.md5
+        if /usr/bin/test $? -ne 0 || /usr/bin/test ! -e /tmp/minimyth-update/${FILE}.md5 ; then
+            /bin/rm -f /tmp/minimyth-update/${FILE}.md5
+        fi
+        if /usr/bin/test -e /tmp/minimyth-update/${FILE}.md5 ; then
+            mm_update_fetch ${MM_UPDATE_URL}/${FILE} /minimyth/update/${FILE}
+            if /usr/bin/test $? -ne 0 || /usr/bin/test ! -e /minimyth/update/${FILE} ; then
+                /bin/rm -f /minimyth/update/${FILE}
+                /bin/rm -f /tmp/minimyth-update/${FILE}.md5
+            fi
+        fi
+    done
+    # Make sure that we have the required files.
+    for FILE in ${FILES_UPDATE_REQUIRED} ; do
+        if /usr/bin/test ! -e /minimyth/update/${FILE} ; then
+            mm_update_exit 1 "failed to retrieve file '${FILE}' from '${MM_UPDATE_URL}'." || return
+        fi
+    done
+    # Let the user know which optional files will not be updated.
+    for FILE in ${FILES_UPDATE_OPTIONAL} ; do
+        if /usr/bin/test ! -e /minimyth/update/${FILE} ; then
+            /usr/echo "'info: ${FILE}' not retrieved from '${MM_UPDATE_URL}'." || return
+        fi
+    done
+    # Make sure that the checksums pass.
+    for FILE in ${FILES_UPDATE} ; do
+        if /usr/bin/test -e /minimyth/update/${FILE} ; then
+            cd /minimyth/update ; /usr/bin/md5sum -c -s /tmp/minimyth-update/${FILE}.md5
+            if /usr/bin/test $? -ne 0 ; then
+                mm_update_exit 1 "checksum failed on file '${FILE}' from '${MM_UPDATE_URL}'." || return
+            fi
+        fi
+    done
+    # Backup existing files.
+    mkdir -p /minimyth/backup
+    for FILE in ${FILES_BACKUP} ; do
+        if /usr/bin/test -e /minimyth/${FILE} ; then
+            mv /minimyth/${FILE} /minimyth/backup/${FILE}
+        fi
+    done
+    # Update files and create checksums file.
+    for FILE in ${FILES_UPDATE} ; do
+        FILE_OLD=${FILE}
+        FILE_NEW=`echo ${FILE} | sed -e "s%-${VERSION_NEW}%%"`
+        if   /usr/bin/test -e /minimyth/update/${FILE_OLD} ; then
+            cd /minimyth/update ; /usr/bin/md5sum ${FILE_OLD} >> /minimyth/checksums.md5
+            /bin/mv /minimyth/update/${FILE_OLD} /minimyth/${FILE_NEW}
+            /bin/sed -e "s%${FILE_OLD}%${FILE_NEW}%g" -i /minimyth/checksums.md5
+        elif /usr/bin/test -e /minimyth/backup/${FILE_NEW} ; then
+            cd /minimyth/backup ; /usr/bin/md5sum ${FILE_NEW} >> /minimyth/checksums.md5
+            /bin/cp /minimyth/backup/${FILE_NEW} /minimyth/${FILE_NEW}
+        fi
+    done
+    # Check the checksums.
+    cd /minimyth ; /usr/bin/test -e checksums.md5 && /usr/bin/md5sum -c -s checksums.md5
+    if /usr/bin/test $? -ne 0 ; then
+        mm_update_exit 1 "final checksums failed." || return
+    fi
+    # Let user know that the update succeeded.
+    mm_update_exit 0 "MiniMyth update was successful." || return
+}
+
+mm_update_exit() {
+    status="$1"
+    message="$2"
+
+    if /usr/bin/test ${status} -ne 0 ; then
+        if /usr/bin/test -e /minimyth/backup ; then
+            /bin/cat /minimyth/checksums.md5 | /bin/sed -e 's%  *% %g' | /usr/bin/cut -d ' ' -f 2 | 
+            while read FILE ; do
+                /bin/rm -f /minimyth/${FILE}
+            done
+            /bin/rm -f /minimyth/checksums.md5
+            /bin/mv /minimyth/backup/* /minimyth/
+        fi
+    fi
+
+    /usr/bin/test -e /tmp/minimyth-update && /bin/rm -rf /tmp/minimyth-update
+    /usr/bin/test -e /minimyth/update     && /bin/rm -rf /minimyth/update
+    /usr/bin/test -e /minimyth/backup     && /bin/rm -rf /minimyth/backup
+
+    if /usr/bin/test ${status} -eq 0 ; then
+        /bin/echo "info: ${message}"
+        /bin/true
+    else
+        /bin/echo "error: ${message}"
+        /bin/false
+    fi
+
+    return
+}
+
+mm_update_fetch() {
+    URL="$1"
+    LOCAL_FILE="$2"
+
+    URL_PROTOCOL=`/bin/echo "${URL}" | /usr/bin/cut -d? -f1 | \
+                  /usr/bin/cut -d: -f1`
+    URL_USERNAME=`/bin/echo "${URL}" | /usr/bin/cut -d? -f1 | \
+                  /bin/sed 's%^[^:]*:%%' | /bin/sed 's%^//%%' | /bin/sed 's%[^@]*$%%'  | /bin/sed 's%@$%%' | /usr/bin/cut -d: -f1`
+    URL_PASSWORD=`/bin/echo "${URL}" | /usr/bin/cut -d? -f1 | \
+                  /bin/sed 's%^[^:]*:%%' | /bin/sed 's%^//%%' | /bin/sed 's%[^@]*$%%'  | /bin/sed 's%@$%%' | /usr/bin/cut -d: -f2`
+    URL_SERVER=`  /bin/echo "${URL}" | /usr/bin/cut -d? -f1 | \
+                  /bin/sed 's%^[^:]*:%%' | /bin/sed 's%^//%%' | /bin/sed 's%^[^@]*@%%' | /bin/sed 's%/[^/]*%%g'`
+    URL_PATH=`    /bin/echo "${URL}" | /usr/bin/cut -d? -f1 | \
+                  /bin/sed 's%^[^:]*:%%' | /bin/sed 's%^//[^/]*/%/%'`
+    URL_OPTIONS=` /bin/echo "${URL}"                        | \
+                  /bin/sed 's%^[^?]*%%'  | /bin/sed 's%^?%%'`
+
+    case ${URL_PROTOCOL} in
+        http)
+            /bin/echo "info: fetching file '${URL}'."
+            /usr/bin/wget "${URL}" -O "${LOCAL_FILE}"
+            return
+            ;;
+        tftp)
+            /bin/echo "info: fetching file '${URL}'."
+            /usr/bin/tftp -g -r "${URL_PATH}" -l "${LOCAL_FILE}" "${URL_SERVER}"
+            return
+            ;;
+        file)
+            /bin/echo "info: fetching file '${URL}'."
+            /bin/cp -f "${URL_PATH}" "${LOCAL_FILE}"
+            return
+            ;;
+        *)
+            /bin/false
+            return
+            ;;
+    esac
+}
+
+#-------------------------------------------------------------------------------
 # mm_url_mount
 #
 # This function mounts a remote directory as a local directory.

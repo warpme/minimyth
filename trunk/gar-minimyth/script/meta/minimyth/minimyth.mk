@@ -391,6 +391,14 @@ mm-make-distro:
 	@cd $(mm_HOME) ; make tarball
 	@mv -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
 	@chmod 644 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
+	@# Make version and checksums.
+	@cd $(WORKSRC) ; echo "${mm_NAME}"               >> version
+	@cd $(WORKSRC) ; md5sum $(mm_SOURCENAME).tar.bz2 >> ${mm_SOURCENAME}.tar.bz2.md5
+	@cd $(WORKSRC) ; md5sum $(mm_KERNELNAME)         >> ${mm_KERNELNAME}.md5
+	@cd $(WORKSRC) ; md5sum $(mm_ROOTFSNAME)         >> ${mm_ROOTFSNAME}.md5
+	@cd $(WORKSRC) ; md5sum $(mm_ROOTFSNAME).tar.bz2 >> ${mm_ROOTFSNAME}.tar.bz2.md5
+	@cd $(WORKSRC) ; md5sum $(mm_EXTRASNAME).sfs     >> ${mm_EXTRASNAME}.sfs.md5
+	@cd $(WORKSRC) ; md5sum $(mm_EXTRASNAME).tar.bz2 >> ${mm_EXTRASNAME}.tar.bz2.md5
 	@# Make public distribution files
 	@rm -rf $(WORKSRC)/distro.d
 	@mkdir -p $(WORKSRC)/distro.d
@@ -403,48 +411,70 @@ mm-make-distro:
 	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
 	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
 	@cp -f ./files/mkflashboot                 $(WORKSRC)/distro.d/mkflashboot
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME).tar.bz2 >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum mkflashboot              >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 >> ${mm_SOURCENAME}.tar.bz2.md5
+	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> ${mm_KERNELNAME}.md5
+	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> ${mm_ROOTFSNAME}.md5
+	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME).tar.bz2 >> ${mm_ROOTFSNAME}.tar.bz2.md5
+	@cd $(WORKSRC)/distro.d ; echo "${mm_NAME}"               >> version
+	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> minimyth.conf.md5
+	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          >> minimyth.script.md5
+	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> changelog.txt.md5
+	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> readme.txt.md5
+	@cd $(WORKSRC)/distro.d ; md5sum mkflashboot              >> mkflashboot.md5
 
 mm-install: mm-check
 	@rm -rf $(mm_DESTDIR)
 	@mkdir -p $(mm_DESTDIR)
-	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2 $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_KERNELNAME)         $(mm_DESTDIR)/$(mm_KERNELNAME)
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME)         $(mm_DESTDIR)/$(mm_ROOTFSNAME)
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs     $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2
-	@cp -rf $(WORKSRC)/distro.d                 $(mm_DESTDIR)/distro.d
+	@cp -f  $(WORKSRC)/version                      $(mm_DESTDIR)/version
+	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2     $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2
+	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2.md5
+	@cp -f  $(WORKSRC)/$(mm_KERNELNAME)             $(mm_DESTDIR)/$(mm_KERNELNAME)
+	@cp -f  $(WORKSRC)/$(mm_KERNELNAME).md5         $(mm_DESTDIR)/$(mm_KERNELNAME).md5
+	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME)             $(mm_DESTDIR)/$(mm_ROOTFSNAME)
+	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).md5         $(mm_DESTDIR)/$(mm_ROOTFSNAME).md5
+	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2     $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2
+	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2.md5
+	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs         $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs
+	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs.md5     $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs.md5
+	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2     $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2
+	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2.md5
+	@cp -rf $(WORKSRC)/distro.d                     $(mm_DESTDIR)/distro.d
 	@if [ $(mm_INSTALL_CRAMFS) = yes ] || [ $(mm_INSTALL_NFS) = yes ] ; then \
 		su -c " \
 			if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
 				mkdir -p $(mm_TFTPDIR) ; \
 				\
+				rm -rf $(mm_TFTPDIR)/version ; \
+				cp -r $(mm_DESTDIR)/version $(mm_TFTPDIR)/version ; \
+				\
 				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
+				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME).md5 $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
 				\
 				mkdir -p $(mm_TFTPDIR) ; \
 				\
 				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
 				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME) $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
+				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME).md5 ; \
+				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME).md5 $(mm_TFTPDIR)/$(mm_ROOTFSNAME).md5 ; \
 				\
 				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
 				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
+				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs.md5 ; \
+				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs.md5 $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs.md5 ; \
 			fi ; \
 			\
 			if [ $(mm_INSTALL_NFS) = yes ] ; then \
 				mkdir -p $(mm_TFTPDIR) ; \
 				\
+				rm -rf $(mm_TFTPDIR)/version ; \
+				cp -r $(mm_DESTDIR)/version $(mm_TFTPDIR)/version ; \
+				\
 				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
+				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME).md5 $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
 				\
 				mkdir -p $(mm_NFSDIR) ; \
 				\
