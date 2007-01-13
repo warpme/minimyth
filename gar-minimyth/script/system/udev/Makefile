@@ -56,9 +56,3 @@ udevdir     := $(rootdir)/dev
 pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@$(MAKECOOKIE)
-
-post-install:
-	@install -D $(WORKSRC)/udev      $(DESTDIR)$(esbindir)/udev
-	@install -D $(WORKSRC)/udevsend  $(DESTDIR)$(esbindir)/udevsend
-	@install -D $(WORKSRC)/udevstart $(DESTDIR)$(esbindir)/udevstart
-	@$(MAKECOOKIE)
