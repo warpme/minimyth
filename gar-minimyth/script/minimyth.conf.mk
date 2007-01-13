@@ -38,7 +38,7 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # root files sytem image is given by mm_NFSNAME.
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of xorg to use.
-# Value values are 'old' and 'new'.
+# Value values are 'old', 'mid' and 'new'.
 mm_XORG_VERSION      ?= new
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19' and 'svn'.
