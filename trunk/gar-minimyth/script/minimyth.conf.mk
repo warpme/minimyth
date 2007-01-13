@@ -62,8 +62,8 @@ mm_NFS_ROOT          ?= /home/public/minimyth
 # Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable19
 # The version of xorg to use.
-# Valid values are 'old', 'mid' and 'new'.
-mm_XORG_VERSION      ?= new
+# Valid values are '6.8' and '7.0'.
+mm_XORG_VERSION      ?= 7.0
 # The version of the NVIDIA driver.
 # Valid values are '8178', '8774' and '9625' (beta).
 mm_NVIDIA_VERSION    ?= 8178

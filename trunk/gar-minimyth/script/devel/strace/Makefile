@@ -3,6 +3,7 @@ GARVERSION = 4.5.14
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-glibc_2.5.patch
 LICENSE = GPL2
 
 DESCRIPTION =
