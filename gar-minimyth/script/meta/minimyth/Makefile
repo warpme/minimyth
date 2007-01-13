@@ -14,6 +14,7 @@ DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
 	utils/busybox \
+	utils/dmidecode \
 	devel/gdb \
 	disk/hdparm \
 	system/lcdproc \
