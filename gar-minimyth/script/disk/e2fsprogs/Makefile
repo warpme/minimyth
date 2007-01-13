@@ -1,5 +1,5 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.35
+GARVERSION = 1.36
 CATEGORIES = disk
 MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz

@@ -1,5 +1,5 @@
 GARNAME = X11
-GARVERSION = 6.8.1
+GARVERSION = 6.8.2
 CATEGORIES = X11
 MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
