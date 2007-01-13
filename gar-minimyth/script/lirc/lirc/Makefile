@@ -18,5 +18,8 @@ include ../../gar.mk
 
 post-patch:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%g' $(WORKSRC)/configure
+	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
+	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
+	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
+
