@@ -23,7 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@cd $(WORKSRC) ; rm -rf aclocal.m4 configure
 	@cd $(WORKSRC) ; aclocal
 	@cd $(WORKSRC) ; libtoolize --copy --force

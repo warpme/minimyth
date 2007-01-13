@@ -3,13 +3,14 @@ GARVERSION = 1.0.2
 CATEGORIES = utils
 MASTER_SITES = http://www.jakemsr.com/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ffmpeg lib/libmpeg2 xorg/xorg
+DEPENDS = lang/c lib/ffmpeg lib/lame lib/mpeg2dec lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -19,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--x-include=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--disable-static \
 	--enable-mmx \
 	--enable-3dnow \
 	--enable-sse \
@@ -40,7 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-libpostproc \
 	--disable-freetype2 \
 	--disable-avifile \
-	--disable-lame \
+	--enable-lame \
 	--disable-ogg \
 	--disable-vorbis \
 	--disable-theora \
@@ -155,6 +157,10 @@ include ../../gar.mk
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 pre-install:

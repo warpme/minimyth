@@ -10,29 +10,25 @@ mm_EXTRASDIR := $(PWD)/$(WORKSRC)/extras.d
 
 MM_BIN_FILES    := $(strip \
 	$(if $(wildcard               minimyth-bin-list   ),               minimyth-bin-list   ) \
-	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ) \
-	$(if $(wildcard $(HOME)/.minimyth/user-bin-list   ), $(HOME)/.minimyth/user-bin-list   ))
+	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ))
 MM_LIB_FILES    := $(strip \
 	$(if $(wildcard               minimyth-lib-list   ),               minimyth-lib-list   ) \
-	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ) \
-	$(if $(wildcard $(HOME)/.minimyth/user-lib-list   ), $(HOME)/.minimyth/user-lib-list   ))
+	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ))
 MM_ETC_FILES    := $(strip \
 	$(if $(wildcard               minimyth-etc-list   ),               minimyth-etc-list   ) \
-	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ) \
-	$(if $(wildcard $(HOME)/.minimyth/user-etc-list   ), $(HOME)/.minimyth/user-etc-list   ))
+	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ))
 MM_SHARE_FILES  := $(strip \
 	$(if $(wildcard               minimyth-share-list ),               minimyth-share-list ) \
-	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ) \
-	$(if $(wildcard $(HOME)/.minimyth/user-share-list ), $(HOME)/.minimyth/user-share-list ))
+	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ))
 MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard               minimyth-remove-list),               minimyth-remove-list) \
 	$(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)))
 
-MM_BINS    := $(sort $(if $(MM_BIN_FILES),    $(shell cat $(MM_BIN_FILES)    | sed 's%[ \t]*\#.*%%')))
-MM_LIBS    := $(sort $(if $(MM_LIB_FILES),    $(shell cat $(MM_LIB_FILES)    | sed 's%[ \t]*\#.*%%')))
-MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | sed 's%[ \t]*\#.*%%')))
-MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')))
-MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')))
+MM_BINS    := $(sort $(if $(MM_BIN_FILES),    $(shell cat $(MM_BIN_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_BIN_LIST))
+MM_LIBS    := $(sort $(if $(MM_LIB_FILES),    $(shell cat $(MM_LIB_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_LIB_LIST))
+MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | sed 's%[ \t]*\#.*%%')) $(mm_USER_ETC_LIST))
+MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(mm_USER_SHARE_LIST))
+MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(mm_USER_REMOVE_LIST))
 
 bindirs := \
 	$(extras_sbindir) \

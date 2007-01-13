@@ -88,7 +88,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@# Regenerate configure since configure.ac was patched.
 	@cd $(WORKSRC) ; autoconf
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.

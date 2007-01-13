@@ -39,7 +39,7 @@ INSTALL_BUILD_FC_LANG =
 USE_BUILD_FC_LANG     = sed -i 's%\$$\$${dir}/fc-lang %fc-lang %g' $(WORKSRC)/fc-lang/Makefile
 endif
 
-post-patch:
+pre-configure:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.

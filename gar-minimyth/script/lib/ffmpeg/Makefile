@@ -1,16 +1,16 @@
 GARNAME = ffmpeg
-GARVERSION = 20060214
+GARVERSION = 20060218
 CATEGORIES = lib
 MASTER_SITES = cvs://anonymous@mplayerhq.hu:/cvsroot/$(GARNAME)/
-
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = 
+PATCHFILES = $(DISTNAME).patch.gar
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lib/faad2 lib/lame lib/libogg lib/libtheora lib/libvorbis lib/zlib
+DEPENDS = lang/c lib/SDL lib/zlib
 
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -22,14 +22,6 @@ CONFIGURE_ARGS = \
 	--libdir=$(libdir) \
 	--incdir=$(includedir)/ffmpeg \
 	--mandir=$(mandir) \
-	--enable-mp3lame \
-	--enable-libogg \
-	--enable-vorbis \
-	--enable-theora \
-	--enable-faad \
-	--enable-a52 \
-	--enable-a52bin \
-	--enable-pp \
 	--enable-static \
 	--enable-shared \
 	--enable-pthreads \
@@ -54,16 +46,30 @@ CONFIGURE_ARGS = \
 	--disable-debug \
 	--disable-mpegaudio-hp \
 	--disable-ffserver \
-	--disable-ffplay \
-	--enable-small
+	--disable-ffplay
 
 include ../../gar.mk
 
+CFLAGS += -DHAVE_XVMC
+
 cvs//%$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) $(GARNAME)
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); tar --exclude '*/CVS/*' --exclude '*/CVS' --exclude '*/.cvsignore' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+post-configure:
+	@echo "HAVE_XVMC_ACCEL=yes" >> $(WORKSRC)/config.mak
+	@$(MAKECOOKIE)
+
+post-install:
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libavcodec.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libavcodec.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libavformat.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libavformat.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libavutil.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libavutil.pc
 	@$(MAKECOOKIE)

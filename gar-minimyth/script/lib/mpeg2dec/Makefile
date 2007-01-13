@@ -24,9 +24,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-x
 
+CONFIGURE_ENV = \
+	SDLCONFIG="$(DESTDIR)$(bindir)/sdl-config"
+
 include ../../gar.mk
 
-post-patch:
+pre-configure:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
