@@ -3,7 +3,7 @@ GARVERSION = 0.94.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-aclocal.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-aclocal.patch $(DISTNAME)-ac_path_prog.patch
 LICENSE =
 
 DESCRIPTION =
@@ -34,6 +34,9 @@ CONFIGURE_ENV  = \
 include ../../gar.mk
 
 post-patch:
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
