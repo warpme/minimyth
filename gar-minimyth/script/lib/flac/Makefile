@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
         --$(if $(filter, $(GARCH), c3     ),enable,disable)-3dnow \
         --$(if $(filter, $(GARCH),    c3-2),enable,disable)-sse \
 	--disable-altivec \
@@ -25,8 +26,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-ogg-includes=$(DESTDIR)$(includedir) \
 	--with-ogg-libraries=$(DESTDIR)$(libdir)
 
+
 CONFIGURE_ENV  = \
-	XMMS_CONFIG=no \
         PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
 include ../../gar.mk
@@ -37,6 +38,8 @@ CFLAGS  += -L$(DESTDIR)$(libdir)
 LDFLAGS += -L$(DESTDIR)$(libdir)
 
 post-patch:
+	@# Tell FLAC that there is no XMMS.
+	@echo "ac_cv_path_XMMS_CONFIG=no" >  $(WORKSRC)/config.cache
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
