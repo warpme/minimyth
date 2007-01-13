@@ -55,19 +55,19 @@ MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | s
 MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
 
 bindirs := \
-	$(extras_sbindir) \
-	$(extras_bindir) \
 	$(esbindir) \
 	$(ebindir) \
 	$(sbindir) \
 	$(bindir) \
-	$(qtbindir)
+	$(qtbindir) \
+	$(extras_sbindir) \
+	$(extras_bindir)
 libdirs_base := \
-	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
-	$(qtlibdir)
+	$(qtlibdir) \
+	$(extras_libdir)
 libdirs := \
 	$(libdir)/xorg/modules \
 	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia) \
@@ -231,13 +231,13 @@ mm-copy:
 mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/fonts
-	@echo -n                                         >  $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<?xml version="1.0"?>'                    >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<fontconfig>'                             >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
-	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)/$(sysconfdir)/fonts/local.conf
+	@echo -n                                         >  $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '<?xml version="1.0"?>'                    >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '<fontconfig>'                             >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@cp -r ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%'          $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
@@ -253,6 +253,9 @@ mm-make-conf:
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+	@mkdir -p $(mm_ROOTFSDIR)$(datadir)/X11 ; \
+		rm -rf $(mm_ROOTFSDIR)$(datadir)/X11/app-defaults ; \
+		cp -r ./dirs/usr/share/X11/app-defaults $(mm_ROOTFSDIR)$(datadir)/X11
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -396,6 +399,7 @@ mm-make-distro:
 	@cp -f $(WORKSRC)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_SOURCENAME).tar.bz2
 	@cp -f $(WORKSRC)/$(mm_KERNELNAME)         $(WORKSRC)/distro.d/$(mm_KERNELNAME)
 	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME)         $(WORKSRC)/distro.d/$(mm_ROOTFSNAME)
+	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_ROOTFSNAME).tar.bz2
 	@cp -f $(mm_HOME)/docs/minimyth.conf       $(WORKSRC)/distro.d/minimyth.conf
 	@cp -f $(mm_HOME)/docs/minimyth.script     $(WORKSRC)/distro.d/minimyth.script
 	@cp -f $(mm_HOME)/docs/minimyth.dhcp       $(WORKSRC)/distro.d/minimyth.dhcp
@@ -405,6 +409,7 @@ mm-make-distro:
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         >> md5sums.txt
+	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME).tar.bz2 >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.dhcp            >> md5sums.txt

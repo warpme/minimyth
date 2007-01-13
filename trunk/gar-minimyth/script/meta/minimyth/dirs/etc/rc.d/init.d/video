@@ -11,39 +11,39 @@ start() {
 
     # Load X kernel modules.
     for kernel_module in ${MM_X_KERNEL_MODULES} ; do
-        modprobe ${kernel_module}
-        if [ ! "$?" = "0" ] ; then
+        /sbin/modprobe ${kernel_module}
+        if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to load kernel module: ${kernel_module}"
             exit 1
         fi
     done
 
     # IDE.
-    if [ -z "${MM_X_DRIVER}" ] ; then
+    if /usr/bin/test -z "${MM_X_DRIVER}" ; then
         mm_message_output err "error: no supported video hardware found."
         exit 1
     fi
 
-    if   [ "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ] ; then
-        sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
-    elif [ "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ] ; then
-        sed -i "s%@MONITORASPECT@%16:9%" /root/.mplayer/config
+    if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ; then
+        /bin/sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
+    elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
+        /bin/sed -i "s%@MONITORASPECT@%16:9%" /root/.mplayer/config
     else
         mm_message_output err 'error: invalid value for MM_VIDEO_ASPECT_RATIO.'
         exit 1
     fi
 
-    if   [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ] ; then
+    if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
         mm_mythdb_setting_update Deinterlace 0
-        sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
-        sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
-        sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
-    elif [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ] ; then
+        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
+        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
+        /bin/sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
+    elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
         mm_mythdb_setting_update Deinterlace 1
         mm_mythdb_setting_update DeinterlaceFilter bobdeint
-        sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
-        sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
-        sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
+        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
+        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
+        /bin/sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
     else
         mm_message_output err 'error: invalid value for MM_VIDEO_DEINTERLACE_ENABLED.'
         exit 1
@@ -52,71 +52,71 @@ start() {
     case "${MM_X_DRIVER}" in
         intel)
             PREFERRED_MPEG2_DECODER=ffmpeg
-            sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         intel_i810)
-            sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
+            /bin/sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc
-            sed -i "s%@VIDEO_DRIVER@%xvmc%"              /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"              /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
         intel_i830)
             PREFERRED_MPEG2_DECODER=ffmpeg
-            sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         intel_i915)
             PREFERRED_MPEG2_DECODER=ffmpeg
-            sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         nvidia)
-            sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
+            /bin/sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
             PREFERRED_MPEG2_DECODER=ffmpeg
-            sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"                    /root/.mplayer/config
             ;;
         via)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
+            /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc-vld
-            sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
         via_pro)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
+            /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER=xvmc-vld
-            sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
-            sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /root/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             ;;
     esac
 
     case "${PREFERRED_MPEG2_DECODER}" in
         ffmpeg)
-            if [ "${MM_VERSION_MYTH}" = "0.18.2" ] ; then
+            if /usr/bin/test "${MM_VERSION_MYTH}" = "0.18.2" ; then
                 mm_mythdb_setting_update UseMPEG2Dec 0
                 mm_mythdb_setting_update UseXVMC 0
                 mm_mythdb_setting_update UseXvMcVld 0
@@ -125,7 +125,7 @@ start() {
             fi
             ;;
         libmpeg2)
-            if [ "${MM_VERSION_MYTH}" = "0.18.2" ] ; then
+            if /usr/bin/test "${MM_VERSION_MYTH}" = "0.18.2" ; then
                 mm_mythdb_setting_update UseMPEG2Dec 1
                 mm_mythdb_setting_update UseXVMC 0
                 mm_mythdb_setting_update UseXvMcVld 0
@@ -134,7 +134,7 @@ start() {
             fi
             ;;
         xvmc)
-            if [ "${MM_VERSION_MYTH}" = "0.18.2" ] ; then
+            if /usr/bin/test "${MM_VERSION_MYTH}" = "0.18.2" ; then
                 mm_mythdb_setting_update UseMPEG2Dec 0
                 mm_mythdb_setting_update UseXVMC 1
                 mm_mythdb_setting_update UseXvMcVld 0
@@ -143,7 +143,7 @@ start() {
             fi
             ;;
         xvmc-vld)
-            if [ "${MM_VERSION_MYTH}" = "0.18.2" ] ; then
+            if /usr/bin/test "${MM_VERSION_MYTH}" = "0.18.2" ; then
                 mm_mythdb_setting_update UseMPEG2Dec 0
                 mm_mythdb_setting_update UseXVMC 0
                 mm_mythdb_setting_update UseXvMcVld 1

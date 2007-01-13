@@ -8,26 +8,26 @@ start() {
     mm_message_output info 'starting NTP client ...'
 
     # Set and check localtime file.
-    if [ ! -z "${MM_TZ}" ] ; then
-        cp /usr/share/zoneinfo/${MM_TZ} /etc/localtime
+    if /usr/bin/test ! -z "${MM_TZ}" ; then
+        /bin/cp /usr/share/zoneinfo/${MM_TZ} /etc/localtime
     else
         mm_message_output err 'error: "MM_TZ" not present.'
         exit 1
     fi
 
     # Check for NTP time servers.
-    for i in `cat /etc/ntp.conf | grep '^server ' | sed 's%^server %%'` ; do
-        if [ -z "${TIME_SERVER}" ] ; then
+    for i in `/bin/cat /etc/ntp.conf | /bin/grep '^server ' | /bin/sed 's%^server %%'` ; do
+        if /usr/bin/test -z "${TIME_SERVER}" ; then
             TIME_SERVER="$i"
         fi
     done
-    if [ -z "${TIME_SERVER}" ] ; then
+    if /usr/bin/test -z "${TIME_SERVER}" ; then
         mm_message_output err 'error: no NTP server(s) provided.'
         exit 1
     fi
 
-    ntpdate ${TIME_SERVER}
-    ntpd
+    /usr/bin/ntpdate ${TIME_SERVER}
+    /usr/bin/ntpd
 
     return 0
 }
@@ -35,9 +35,9 @@ start() {
 stop() {
     mm_message_output info 'stopping NTP client ...'
 
-    if [ -n "`pidof ntpd`" ] ; then
-        killall ntpd
-        hwclock --systohc --utc
+    if /usr/bin/test -n "`/bin/pidof ntpd`" ; then
+        /usr/bin/killall ntpd
+        /sbin/hwclock --systohc --utc
     fi
 
     return 0

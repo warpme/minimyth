@@ -10,12 +10,12 @@ start() {
     mm_message_output info 'starting remote control ...'
 
     # Load the LIRC configuration files.
-    if [ -n ${MM_LIRC_REMOTE} ] ; then
-        if [ -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ] ; then
-            cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
+    if /usr/bin/test -n ${MM_LIRC_REMOTE} ; then
+        if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
+            /bin/cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
         fi
-        if [ -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} ] ; then
-            cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /etc/lircrc
+        if /usr/bin/test -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} ; then
+            /bin/cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /etc/lircrc
         fi
     fi
 
@@ -24,46 +24,46 @@ start() {
     mm_conf_get /lircrc /etc/lircrc
 
     # Load kernel module (if needed).
-    if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
-        modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
+    if /usr/bin/test -n "${MM_LIRC_KERNEL_MODULE}" ; then
+        /sbin/modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
     fi
     # Start the LIRC daemon.
 
-    if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
-        mkdir -p /var/lock
-        mkdir -p /var/run
+    if /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -n ${MM_LIRC_DEVICE} ; then
+        /bin/mkdir -p /var/lock
+        /bin/mkdir -p /var/run
 
         # Wait up to 60 seconds for the device to appear in the device file system.
         DELAY=0
-        while [ ! -e ${MM_LIRC_DEVICE} ] && [ ${DELAY} -lt 60 ] ; do
-            sleep 1
+        while /usr/bin/test ! -e ${MM_LIRC_DEVICE} && /usr/bin/test ${DELAY} -lt 60 ; do
+            /bin/sleep 1
             DELAY=$((DELAY + 1))
             mm_message_output info "waiting for remote control device (${DELAY} seconds) ..."
         done
-        if [ ! -e ${MM_LIRC_DEVICE} ] ; then
+        if /usr/bin/test ! -e ${MM_LIRC_DEVICE} ; then
             mm_message_output err 'error: timed out waiting for remote control device.'
             exit 1
         fi
 
-        LIRC_DRIVER=`lircd --driver=help 2>&1 | grep -i "${MM_LIRC_DRIVER}" | sed 's%[[:cntrl:]]%%g'`
-        [ -z ${LIRC_DRIVER} ] && LIRC_DRIVER="default"
+        LIRC_DRIVER=`/usr/sbin/lircd --driver=help 2>&1 | /bin/grep -i "${MM_LIRC_DRIVER}" | /bin/sed 's%[[:cntrl:]]%%g'`
+        /usr/bin/test -z ${LIRC_DRIVER} && LIRC_DRIVER="default"
 
-        lircd --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
+        /usr/sbin/lircd --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
     fi
 
     # Start the irexec daemon.
-    if [ "${MM_LIRC_IREXEC_ENABLED}" = "yes" ] ; then
-        irexec -d /etc/lircrc
+    if /usr/bin/test "${MM_LIRC_IREXEC_ENABLED}" = "yes" ; then
+        /usr/bin/irexec -d /etc/lircrc
     fi
 }
 
 stop() {
     mm_message_output info 'stopping remote control ...'
 
-    if [ -f "/var/run/lircd.pid" ] ; then
-        pid=`cat /var/run/lircd.pid`
-        kill -9 ${pid}
-        rm -f /var/run/lircd.pid
+    if /usr/bin/test -f "/var/run/lircd.pid" ; then
+        pid=`/bin/cat /var/run/lircd.pid`
+        /bin/kill -9 ${pid}
+        /bin/rm -f /var/run/lircd.pid
     fi
 }
 

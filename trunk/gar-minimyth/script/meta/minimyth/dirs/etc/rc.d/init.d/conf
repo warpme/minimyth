@@ -9,7 +9,7 @@
 # Check core (/etc/conf.d/core) configuration file.
 core_check() {
     # Read DHCP configuration file file.
-    [ -r /etc/conf.d/core ] && . /etc/conf.d/core
+    /usr/bin/test -r /etc/conf.d/core && . /etc/conf.d/core
 
     return 0
 }
@@ -17,17 +17,17 @@ core_check() {
 # Check dhcp (/etc/conf.d/dhcp) configuration file.
 dhcp_check() {
     # Read DHCP configuration file file.
-    [ -r /etc/conf.d/dhcp ] && . /etc/conf.d/dhcp
+    /usr/bin/test -r /etc/conf.d/dhcp && . /etc/conf.d/dhcp
 
-    if [ -z "${MM_HOSTNAME}"   ] ; then
+    if /usr/bin/test -z "${MM_HOSTNAME}"   ; then
         mm_message_output err 'error: no hostname provided by DHCP.'
         exit 1
     fi
-    if [ -z "${MM_DNS_SERVER}" ] ; then
+    if /usr/bin/test -z "${MM_DNS_SERVER}" ; then
         mm_message_output err 'error: no DNS server provided by DHCP.'
         exit 1
     fi
-    if [ -z "${MM_NTP_SERVER}" ] ; then
+    if /usr/bin/test -z "${MM_NTP_SERVER}" ; then
         mm_message_output err 'error: no NTP server provided by DHCP.'
         exit 1
     fi
@@ -38,94 +38,94 @@ dhcp_check() {
 # Check minimyth.conf for obosolete variables and values.
 conf_check() {
     # MiniMyth configuration file.
-    [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+    /usr/bin/test -r /etc/minimyth.d/minimyth.conf && . /etc/minimyth.d/minimyth.conf
     
-    if [ "${MM_CODECS_URL}"         = "default"        ] ; then
+    if /usr/bin/test "${MM_CODECS_URL}"         = "default"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_CODECS_URL=default" is obsolete.'
         exit 1
     fi
-    if [ "${MM_LIRC_DRIVER}"        = "mceusbnew"      ] ; then
+    if /usr/bin/test "${MM_LIRC_DRIVER}"        = "mceusbnew"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DRIVER=mceusbnew" is obsolete.'
         exit 1
     fi
-    if [ "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ] ; then
+    if /usr/bin/test "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_KERNEL_MODULE=lirc_mceusbnew" is obsolete.'
         exit 1
     fi
-    if [ "${MM_LIRC_REMOTE}"        = "mceusbnew"      ] ; then
+    if /usr/bin/test "${MM_LIRC_REMOTE}"        = "mceusbnew"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_REMOTE=mceusbnew" is obsolete.'
         exit 1
     fi
-    if [ "${MM_THEMECACHE_URL}"     = "default"        ] ; then
+    if /usr/bin/test "${MM_THEMECACHE_URL}"     = "default"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_THEMECACHE_URL=default" is obsolete.'
         exit 1
     fi
-    cat /etc/minimyth.d/minimyth.conf | grep -q '^MM_MYTHDB_SETTING_'
-    if [ "$?" = "0" ] ; then
+    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -q '^MM_MYTHDB_SETTING_'
+    if /usr/bin/test $? -eq 0 ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING_<setting>" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_CHIPSET}"     ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_CHIPSET}"     ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_CHIPSET" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_NORTHBRIDGE}" ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_NORTHBRIDGE}" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_NORTHBRIDGE" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_SOUTHBRIDGE}" ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_SOUTHBRIDGE}" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SOUTHBRIDGE" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_LAN}"         ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_LAN}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_LAN" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_AUDIO}"       ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_AUDIO}"       ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_AUDIO" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_TV}"          ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_TV}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_TV" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_HARDWARE_SENSOR}"      ] ; then
+    if /usr/bin/test ! -z "${MM_HARDWARE_SENSOR}"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SENSOR" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NAME_SERVER}"          ] ; then
+    if /usr/bin/test ! -z "${MM_NAME_SERVER}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_X}"                 ] ; then
+    if /usr/bin/test ! -z "${MM_NO_X}"                 ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_XWM}"               ] ; then
+    if /usr/bin/test ! -z "${MM_NO_XWM}"               ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_NO_VNC}"               ] ; then
+    if /usr/bin/test ! -z "${MM_NO_VNC}"               ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_SOUND}"                ] ; then
+    if /usr/bin/test ! -z "${MM_SOUND}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SOUND" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_SYSLOG_SERVER}"        ] ; then
+    if /usr/bin/test ! -z "${MM_SYSLOG_SERVER}"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SYSLOG_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_TIME_SERVER}"          ] ; then
+    if /usr/bin/test ! -z "${MM_TIME_SERVER}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_TV}"                   ] ; then
+    if /usr/bin/test ! -z "${MM_TV}"                   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
     fi
-    if [ ! -z "${MM_X_RESOLUTION}"         ] ; then
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION" is obsolete.'
         exit 1
     fi
@@ -136,16 +136,16 @@ conf_check() {
 conf_file=/etc/conf.d/minimyth
 
 conf_variable_write() {
-    echo -n "$2=" >> $1
-    echo -n "'"   >> $1
-    echo -n "$3"  >> $1
-    echo    "'"   >> $1
+    /bin/echo -n "$2=" >> $1
+    /bin/echo -n "'"   >> $1
+    /bin/echo -n "$3"  >> $1
+    /bin/echo    "'"   >> $1
 
     return 0
 }
 
 conf_init() {
-    rm -rf ${conf_file}
+    /bin/rm -rf ${conf_file}
 
     return 0
 }
@@ -156,17 +156,17 @@ conf_write() {
     ###########################################################################
 
     # Read MiniMyth environment variables from the MiniMyth configuration file.
-    [ -r /etc/minimyth.d/minimyth.conf ] && \
+    /usr/bin/test -r /etc/minimyth.d/minimyth.conf && \
 	. /etc/minimyth.d/minimyth.conf
     # Read motherboard hardware specific configuration file.
-    [ -n "${MM_HARDWARE_MOTHERBOARD}" ] && [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && \
+    /usr/bin/test -n "${MM_HARDWARE_MOTHERBOARD}" && /usr/bin/test -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf && \
 	. /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
     # Read LIRC driver specific configuration file.
-    [ -n "${MM_LIRC_DRIVER}" ] && [ -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ] && \
+    /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf && \
 	. /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
     # Reread MiniMyth environment variables from the MiniMyth configuration file,
     # in case variables in minimyth.conf override variables in motherboard.*.conf or driver.*.conf.
-    [ -r /etc/minimyth.d/minimyth.conf ] && \
+    /usr/bin/test -r /etc/minimyth.d/minimyth.conf && \
 	. /etc/minimyth.d/minimyth.conf
     
     ###########################################################################
@@ -184,7 +184,7 @@ conf_write() {
     MM_VIDEO_ASPECT_RATIO=${MM_VIDEO_ASPECT_RATIO:-'4:3'}
     MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
     # Default X.
-    MM_X_DRIVER=${MM_X_DRIVER:-`mm_hardware_pci_process mm_hardware_pci2x_map | cut -d ' ' -f 1`}
+    MM_X_DRIVER=${MM_X_DRIVER:-`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`}
     MM_X_KERNEL_MODULES=${MM_X_KERNEL_MODULES:-`mm_hardware_x2kernel_map "${MM_X_DRIVER}"`}
     MM_X_ENABLED=${MM_X_ENABLED:-'yes'}
     MM_X_WM_ENABLED=${MM_X_WM_ENABLED:-'no'}
@@ -197,19 +197,19 @@ conf_write() {
     MM_X_TV_OUTPUT=${MM_X_TV_OUTPUT:-'Composite'}
     MM_X_REFRESH=${MM_X_REFRESH:-`
         case "${MM_X_TV_TYPE}" in
-            NTSC) echo '60' ;;
-            PAL)  echo '50' ;;
+            NTSC) /bin/echo '60' ;;
+            PAL)  /bin/echo '50' ;;
         esac`}
     MM_X_MODE=${MM_X_MODE:-`
         case "${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED}" in
             yes:no:no)
                 case "${MM_X_TV_TYPE}" in
-                    NTSC) echo '720x480Noscale' ;;
-                    PAL)  echo '720x576Noscale' ;;
+                    NTSC) /bin/echo '720x480Noscale' ;;
+                    PAL)  /bin/echo '720x576Noscale' ;;
                 esac
                 ;;
             *)
-                echo '800x600'
+                /bin/echo '800x600'
                 ;;
         esac`}
     # Default Myth master backend.
@@ -327,7 +327,7 @@ start() {
     mm_conf_get /minimyth.conf /etc/minimyth.d/minimyth.conf
 
     # Make sure that there is a minimyth.conf file.
-    if [ ! -e /etc/minimyth.d/minimyth.conf ] ; then
+    if /usr/bin/test ! -e /etc/minimyth.d/minimyth.conf ; then
         mm_message_output err 'error: no minimyth.conf configuration file found.'
         exit 1
     fi

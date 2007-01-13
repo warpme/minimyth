@@ -8,13 +8,13 @@ start() {
     mm_message_output info 'finishing shutdown ...'
 
     # unmount any remaining network file systems.
-    cat /proc/mounts | while read mountpoint; do
-        mountpoint=`echo ${mountline} | cut -d ' ' -f 2`
-        mounttype=`echo  ${mountline} | cut -d ' ' -f 3`
-        if [ "${mounttype}" = "cifs"  ] ||
-           [ "${mounttype}" = "nfs"   ] ||
-           [ "${mounttype}" = "smbfs" ] ; then
-            umount -r ${mountpoint}
+    /bin/cat /proc/mounts | while read mountpoint; do
+        mountpoint=`/bin/echo ${mountline} | /usr/bin/cut -d ' ' -f 2`
+        mounttype=`/bin/echo  ${mountline} | /usr/bin/cut -d ' ' -f 3`
+        if /usr/bin/test "${mounttype}" = "cifs"  ||
+           /usr/bin/test "${mounttype}" = "nfs"   ||
+           /usr/bin/test "${mounttype}" = "smbfs" ; then
+            /bin/umount -r ${mountpoint}
         fi
     done
 

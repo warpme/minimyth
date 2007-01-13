@@ -37,11 +37,11 @@ rc_script_list_run() {
     action=$1
     script_list=$2
 
-    count=`echo ${script_list} | wc -w`
+    count=`/bin/echo ${script_list} | /usr/bin/wc -w`
     mm_splash_init ${count}
     for script in ${script_list} ; do
-        mm_command_run "sh /etc/rc.d/init.d/${script} ${action}"
-        if [ $? != 0 ] ; then
+        mm_command_run "/bin/sh /etc/rc.d/init.d/${script} ${action}"
+        if /usr/bin/test $? -ne 0 ; then
             exit $?
         fi
         mm_splash_progress_update

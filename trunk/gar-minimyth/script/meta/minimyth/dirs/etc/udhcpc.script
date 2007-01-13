@@ -5,7 +5,7 @@
 
 . /etc/conf
 
-[ -r /etc/minimyth.d/minimyth.dhcp ] && . /etc/minimyth.d/minimyth.dhcp
+/usr/bin/test -r /etc/minimyth.d/minimyth.dhcp && . /etc/minimyth.d/minimyth.dhcp
 
 DHCP_CONF="/etc/conf.d/dhcp"
 HOSTS_CONF="/etc/hosts"
@@ -13,10 +13,10 @@ NTP_CONF="/etc/ntp.conf"
 RESOLV_CONF="/etc/resolv.conf"
 
 conf_variable_write() {
-    echo -n "$2="  >> $1
-    echo -n "'"    >> $1
-    echo -n "$3"   >> $1
-    echo    "'"    >> $1
+    /bin/echo -n "$2="  >> $1
+    /bin/echo -n "'"    >> $1
+    /bin/echo -n "$3"   >> $1
+    /bin/echo    "'"    >> $1
 
     return 0
 }
@@ -24,97 +24,97 @@ conf_variable_write() {
 case "$1" in
     deconfig)
         # If the root file system is not network mounted, reset the network interface.
-        if [ ! "$MM_ROOTFS_TYPE" = "nfs" ] ; then
-            ifconfig $interface 0.0.0.0
+        if /usr/bin/test ! "$MM_ROOTFS_TYPE" = "nfs" ; then
+            /sbin/ifconfig $interface 0.0.0.0
         fi
         ;;
     renew|bound)
-        [ -n "$MM_DHCP_HOSTNAME"    ] && hostname=$MM_DHCP_HOSTNAME
-        [ -n "$MM_DHCP_DOMAINNAME"  ] && domain=$MM_DHCP_DOMAINNAME
-        [ -n "$MM_DHCP_DNS_SERVERS" ] && dns=$MM_DHCP_DNS_SERVERS
-        [ -n "$MM_DHCP_NTP_SERVERS" ] && ntpsrv=$MM_DHCP_NTP_SERVERS
-        [ -n "$MM_DHCP_LOG_SERVERS" ] && logsrv=$MM_DHCP_LOG_SERVERS
+        /usr/bin/test -n "$MM_DHCP_HOSTNAME"    && hostname=$MM_DHCP_HOSTNAME
+        /usr/bin/test -n "$MM_DHCP_DOMAINNAME"  && domain=$MM_DHCP_DOMAINNAME
+        /usr/bin/test -n "$MM_DHCP_DNS_SERVERS" && dns=$MM_DHCP_DNS_SERVERS
+        /usr/bin/test -n "$MM_DHCP_NTP_SERVERS" && ntpsrv=$MM_DHCP_NTP_SERVERS
+        /usr/bin/test -n "$MM_DHCP_LOG_SERVERS" && logsrv=$MM_DHCP_LOG_SERVERS
 
-        [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
-        [ -n "$subnet"    ] && NETMASK="netmask $subnet"
-        ifconfig $interface $ip $BROADCAST $NETMASK
+        /usr/bin/test -n "$broadcast" && BROADCAST="broadcast $broadcast"
+        /usr/bin/test -n "$subnet"    && NETMASK="netmask $subnet"
+        /sbin/ifconfig $interface $ip $BROADCAST $NETMASK
 
-        if [ -n "$router" ] ; then
-            while route del default gw 0.0.0.0 dev $interface ; do
+        if /usr/bin/test -n "$router" ; then
+            while /sbin/route del default gw 0.0.0.0 dev $interface ; do
                 :
             done
 
             for i in $router ; do
-                route add default gw $i dev $interface
+                /sbin/route add default gw $i dev $interface
             done
         fi
 
         MM_HOSTNAME=$hostname
-        if [ -n "$hostname" ] ; then
-            hostname $hostname
+        if /usr/bin/test -n "$hostname" ; then
+            /bin/hostname $hostname
         fi
 
         MM_DNS_SERVER=
         for i in $dns ; do
-           if [ -z "$MM_DNS_SERVER" ] ; then
+           if /usr/bin/test -z "$MM_DNS_SERVER" ; then
                MM_DNS_SERVER=$i
            fi
         done
 
-        rm -f $RESOLV_CONF~
-        if [ -n "$domain" ] ; then
-            echo search $domain >> $RESOLV_CONF~
+        /bin/rm -f $RESOLV_CONF~
+        if /usr/bin/test -n "$domain" ; then
+            /bin/echo search $domain >> $RESOLV_CONF~
         fi
         for i in $dns ; do
-            if [ -n "$i" ] ; then
-                echo nameserver $i >> $RESOLV_CONF~
+            if /usr/bin/test -n "$i" ; then
+                /bin/echo nameserver $i >> $RESOLV_CONF~
             fi
         done
-        mv -f $RESOLV_CONF~ $RESOLV_CONF
+        /bin/mv -f $RESOLV_CONF~ $RESOLV_CONF
 
-        rm -f $HOSTS_CONF~
-        echo "127.0.0.1 localhost.localdomain localhost" >> $HOSTS_CONF~
-        if [ -n "$hostname" ] ; then
-            echo -n "$ip"                                >> $HOSTS_CONF~
-            if [ -n "$domain" ] ; then
-                echo -n " $hostname.$domain"             >> $HOSTS_CONF~
+        /bin/rm -f $HOSTS_CONF~
+        /bin/echo "127.0.0.1 localhost.localdomain localhost" >> $HOSTS_CONF~
+        if /usr/bin/test -n "$hostname" ; then
+            /bin/echo -n "$ip"                                >> $HOSTS_CONF~
+            if /usr/bin/test -n "$domain" ; then
+                /bin/echo -n " $hostname.$domain"             >> $HOSTS_CONF~
             fi
-            echo -n " $hostname"                         >> $HOSTS_CONF~
+            /bin/echo -n " $hostname"                         >> $HOSTS_CONF~
         fi
-        mv -f $HOSTS_CONF~ $HOSTS_CONF
+        /bin/mv -f $HOSTS_CONF~ $HOSTS_CONF
 
         MM_NTP_SERVER=
         for i in $ntpsrv ; do
-            if [ -z "$MM_NTP_SERVER" ] ; then
+            if /usr/bin/test -z "$MM_NTP_SERVER" ; then
                 MM_NTP_SERVER=$i
             fi
         done
-        rm -f $NTP_CONF~
+        /bin/rm -f $NTP_CONF~
         for i in $ntpsrv ; do
-            if [ -n "$i" ] ; then
-                echo server $i >> $NTP_CONF~
+            if /usr/bin/test -n "$i" ; then
+                /bin/echo server $i >> $NTP_CONF~
             fi
         done
-        mv -f $NTP_CONF~ $NTP_CONF
+        /bin/mv -f $NTP_CONF~ $NTP_CONF
 
         MM_LOG_SERVER=
         for i in $logsvr ; do
-            if [ -z "$MM_LOG_SERVER" ] ; then
+            if /usr/bin/test -z "$MM_LOG_SERVER" ; then
                 MM_LOG_SERVER=$i
             fi
         done
 
         MM_TFTP_SERVER=$siaddr
-        MM_TFTP_ROOTDIR=`echo $boot_file | sed 's%[^/]*$%%' | sed 's%/$%%'`
+        MM_TFTP_ROOTDIR=`/bin/echo $boot_file | /bin/sed 's%[^/]*$%%' | /bin/sed 's%/$%%'`
              
-        rm -f $DHCP_CONF~
+        /bin/rm -f $DHCP_CONF~
         conf_variable_write $DHCP_CONF~ MM_HOSTNAME     $MM_HOSTNAME
         conf_variable_write $DHCP_CONF~ MM_DNS_SERVER   $MM_DNS_SERVER
         conf_variable_write $DHCP_CONF~ MM_NTP_SERVER   $MM_NTP_SERVER
         conf_variable_write $DHCP_CONF~ MM_LOG_SERVER   $MM_LOG_SERVER
         conf_variable_write $DHCP_CONF~ MM_TFTP_SERVER  $MM_TFTP_SERVER
         conf_variable_write $DHCP_CONF~ MM_TFTP_ROOTDIR $MM_TFTP_ROOTDIR
-        mv -f $DHCP_CONF~ $DHCP_CONF
+        /bin/mv -f $DHCP_CONF~ $DHCP_CONF
         ;;
 esac
 

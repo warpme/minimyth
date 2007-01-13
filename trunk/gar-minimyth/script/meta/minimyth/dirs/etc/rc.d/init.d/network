@@ -10,24 +10,25 @@ start() {
     # Initialize /etc/minimyth.d/minimyth.dhcp
     # This allows you to set parameters
     # normally provided by DHCP on the boot command line.
-    if [ ! -e /etc/minimyth.d/miniyth.dhcp ] ; then
-        set | grep -e '^MM_DHCP_' > /etc/minimyth.d/minimyth.dhcp
+    if /usr/bin/test ! -e /etc/minimyth.d/minimyth.dhcp ; then
+        /bin/mkdir -p /etc/minimyth.d
+        set | /bin/grep -e '^MM_DHCP_' > /etc/minimyth.d/minimyth.dhcp
     fi
 
     # Bring up the local (loopback) interface.
-    ifconfig lo 127.0.0.1
+    /sbin/ifconfig lo 127.0.0.1
 
     # Get the IP address and other IP parameters.
     # If an IP address was already obtained then request the same address.
-    ip=`ifconfig eth0 | grep '^ *inet addr:' | sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
-    if [ -z "$ip" ] ; then
-        udhcpc -s /etc/udhcpc.script -i eth0         >> /dev/null 2>&1
+    ip=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+    if /usr/bin/test -z "$ip" ; then
+        /sbin/udhcpc -s /etc/udhcpc.script -i eth0         >> /dev/null 2>&1
     else
-        udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
+        /sbin/udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
     fi
 
     # Start portmap on local interface.
-    portmap -l
+    /sbin/portmap -l
 
     return 0
 }
@@ -35,8 +36,8 @@ start() {
 stop() {
     mm_message_output info 'stopping network ...'
 
-    [ -n "`pidof portmap`" ] && killall portmap
-    [ -n "`pidof udhcpc`"  ] && killall udhcpc
+    /usr/bin/test -n "`/bin/pidof portmap`" && /usr/bin/killall portmap
+    /usr/bin/test -n "`/bin/pidof udhcpc`"  && /usr/bin/killall udhcpc
 
     return 0
 }

@@ -9,16 +9,16 @@
 start() {
     mm_message_output info 'mounting media shares ...'
 
-    if [ -n "${MM_MYTHDVD_URL}"     ] ; then
+    if /usr/bin/test -n "${MM_MYTHDVD_URL}"     ; then
         mm_url_mount "${MM_MYTHDVD_URL}"     "/mnt/dvd"
     fi
-    if [ -n "${MM_MYTHGALLERY_URL}" ] ; then
+    if /usr/bin/test -n "${MM_MYTHGALLERY_URL}" ; then
         mm_url_mount "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
     fi
-    if [ -n "${MM_MYTHMUSIC_URL}"   ] ; then
+    if /usr/bin/test -n "${MM_MYTHMUSIC_URL}"   ; then
         mm_url_mount "${MM_MYTHMUSIC_URL}"   "/mnt/music"
     fi
-    if [ -n "${MM_MYTHVIDEO_URL}"   ] ; then
+    if /usr/bin/test -n "${MM_MYTHVIDEO_URL}"   ; then
         mm_url_mount "${MM_MYTHVIDEO_URL}"   "/mnt/video"
     fi
 
@@ -28,17 +28,17 @@ start() {
 stop() {
     mm_message_output info 'unmounting media shares ...'
 
-    if [ -n "${MM_MYTHVIDEO_URL}"   ] && [ -d /mnt/video   ] ; then
-        umount /mnt/video
+    if /usr/bin/test -n "${MM_MYTHVIDEO_URL}"   && /usr/bin/test -d /mnt/video   ; then
+        /bin/umount /mnt/video
     fi
-    if [ -n "${MM_MYTHMUSIC_URL}"   ] && [ -d /mnt/music   ] ; then
-        umount /mnt/music
+    if /usr/bin/test -n "${MM_MYTHMUSIC_URL}"   && /usr/bin/test -d /mnt/music   ; then
+        /bin/umount /mnt/music
     fi
-    if [ -n "${MM_MYTHGALLERY_URL}" ] && [ -d /mnt/gallery ] ; then
-        umount /mnt/gallery
+    if /usr/bin/test -n "${MM_MYTHGALLERY_URL}" && /usr/bin/test -d /mnt/gallery ; then
+        /bin/umount /mnt/gallery
     fi
-    if [ -n "${MM_MYTHDVD_URL}"     ]  && [ -d /mnt/dvd    ] ; then
-        umount /mnt/dvd
+    if /usr/bin/test -n "${MM_MYTHDVD_URL}"     && /usr/bin/test -d /mnt/dvd     ; then
+        /bin/umount /mnt/dvd
     fi
 
     return 0
