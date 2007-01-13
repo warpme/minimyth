@@ -746,7 +746,7 @@ mm_hardware_usb_process() {
     mm_uniq
 }
 
-mm_hardware_usb2lirc_map() {
+mm_hardware_usb2lirc_driver_map() {
     bus=$1
     device=$2
     vendor=$3
@@ -762,6 +762,29 @@ mm_hardware_usb2lirc_map() {
                     if /usr/bin/test -z "${found}" ; then
                         found=1
                         /bin/echo ${map_driver}
+                    fi
+                fi
+            done
+        }
+    fi
+}
+
+mm_hardware_usb2lirc_remote_map() {
+    bus=$1
+    device=$2
+    vendor=$3
+    product=$4
+
+    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/usb2lirc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
+        {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_remote=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    if /usr/bin/test -z "${found}" ; then
+                        found=1
+                        /bin/echo ${map_remote}
                     fi
                 fi
             done
