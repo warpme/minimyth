@@ -3,6 +3,7 @@ GARVERSION = 5.2.1
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-sysinfo.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

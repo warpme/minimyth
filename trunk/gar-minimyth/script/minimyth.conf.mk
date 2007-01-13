@@ -57,12 +57,33 @@ mm_USER_SHARE_LIST   ?=
 #-------------------------------------------------------------------------------
 # Variables that you are not likely to override.
 #-------------------------------------------------------------------------------
-mm_GARHOST           ?= $(strip \
+mm_GARCH_FAMILY      ?= $(strip \
                             $(if $(filter athlon64   ,$(mm_GARCH)),x86_64) \
-                            $(if $(filter c3         ,$(mm_GARCH)),i586  ) \
-                            $(if $(filter c3-2       ,$(mm_GARCH)),i586  ) \
-                            $(if $(filter pentium-mmx,$(mm_GARCH)),i586  ) \
+                            $(if $(filter c3         ,$(mm_GARCH)),i386  ) \
+                            $(if $(filter c3-2       ,$(mm_GARCH)),i386  ) \
+                            $(if $(filter pentium-mmx,$(mm_GARCH)),i386  ) \
+                         )
+mm_GARHOST           ?= $(strip \
+                            $(if $(filter athlon64   ,$(mm_GARCH)),               \
+                                $(if $(filter i386  ,$(mm_GARCH_FAMILY)),i686  )  \
+                                $(if $(filter x86_64,$(mm_GARCH_FAMILY)),x86_64)) \
+                            $(if $(filter c3         ,$(mm_GARCH)),      i586  )  \
+                            $(if $(filter c3-2       ,$(mm_GARCH)),      i586  )  \
+                            $(if $(filter pentium-mmx,$(mm_GARCH)),      i586  )  \
                          )-minimyth-linux-gnu
+mm_CFLAGS            ?= $(strip \
+                            -pipe                                                     \
+                            -march=$(mm_GARCH)                                        \
+                            $(if $(filter athlon64    ,$(mm_GARCH)),-O3 -mfpmath=sse) \
+                            $(if $(filter c3          ,$(mm_GARCH)),-Os             ) \
+                            $(if $(filter c3-2        ,$(mm_GARCH)),-Os -mfpmath=sse) \
+                            $(if $(filter pentium-mmx ,$(mm_GARCH)),-Os             ) \
+                            -fomit-frame-pointer                                      \
+                            -ffast-math                                               \
+                            $(if $(filter i386  ,$(GARCH_FAMILY)),-m32)               \
+                            $(if $(filter x86_64,$(GARCH_FAMILY)),-m64)               \
+                         )
+mm_CXXFLAGS          ?= $(mm_CFLAGS)
 mm_NAME              ?= minimyth-$(mm_VERSION)
 mm_NAME_PRETTY       ?= MiniMyth $(mm_VERSION)
 mm_DESTDIR           ?= $(mm_HOME)/images/mm

@@ -92,14 +92,14 @@ build_chroot_DESTDIR ?= /tmp/chroot
 
 # allow us to link to libraries we installed
 main_CPPFLAGS += 
-main_CFLAGS += -march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math
+main_CFLAGS += $(mm_CFLAGS)
 main_LDFLAGS += 
-#main_CXXFLAGS += -march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math
+#main_CXXFLAGS += $(mm_CXXFLAGS)
 
 # allow us to link to libraries we installed
 build_CPPFLAGS += 
-build_CFLAGS += -march=$(build_GARCH) -O2
-#build_CXXFLAGS += -march=$(build_GARCH) -O2
+build_CFLAGS += -march=$(build_GARCH) -O2 $(if $(filter i386,$(build_GARCH_FAMILY)),-m32) $(if $(filter x86_64,$(build_GARCH_FAMILY)),-m64)
+#build_CXXFLAGS += -march=$(build_GARCH) -O2 $(if $(filter i386,$(build_GARCH_FAMILY)),-m32) $(if $(filter x86_64,$(build_GARCH_FAMILY)),-m64)
 build_LDFLAGS += 
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
@@ -131,16 +131,12 @@ build_CPP = $(build_compiler_prefix)cpp
 # GARCH and GARHOST for main.  Override these for cross-compilation
 main_GARCH ?= $(mm_GARCH)
 main_GARHOST ?= $(mm_GARHOST)
-main_GARCH_FAMILY ?= $(strip \
-    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(main_GARHOST)  | cut -d- -f1)),i386  ) \
-    $(if $(filter x86_64 athlon64            ,$(shell echo $(main_GARHOST)  | cut -d- -f1)),x86_64))
+main_GARCH_FAMILY ?= $(mm_GARCH_FAMILY)
 
 # GARCH and GARHOST for build.  Do not change these.
-build_GARCH := $(subst x86_64,x86-64,$(shell arch))
-build_GARHOST := $(GARBUIL)
-build_GARCH_FAMILY := $(strip \
-    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(build_GARHOST) | cut -d- -f1)),i386  ) \
-    $(if $(filter x86_64 athlon64            ,$(shell echo $(build_GARHOST) | cut -d- -f1)),x86_64))
+build_GARCH := $(subst x86_64,x86-64,$(shell uname -m))
+build_GARHOST := $(GARBUILD)
+build_GARCH_FAMILY := $(subst x86-64,x86_64,$(shell uname -i))
 
 # Don't build these packages as in the build image
 build_NODEPEND += kernel/linux-libc-headers devel/glibc
