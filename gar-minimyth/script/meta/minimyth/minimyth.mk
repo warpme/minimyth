@@ -57,8 +57,33 @@ CONVERT_TO_LINK = \
 	test -e $(mm_DESTDIR)/$(strip $(1)) && mv $(mm_DESTDIR)/$(strip $(1)) $(mm_DESTDIR)/$(strip $(1)).default ; \
 	ln -sf /tmp/$(strip $(1)) $(mm_DESTDIR)$(strip $(1))
 
-mm-all: mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-conf
-#mm-all: mm-clean mm-make-busybox mm-make-dirs mm-copy mm-conf
+mm-all: mm-check mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-conf
+
+mm-check:
+	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] ; then \
+		echo "error: mm_GARCH is set to an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
+		echo "error: mm_INSTALL_CRAMFS is set to an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_INSTALL_NFS)" = "yes" ] && [ ! "$(mm_INSTALL_NFS)" = "no" ] ; then \
+		echo "error: mm_INSTALL_NFS is set to an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_HOME)" = "`cd $(GARDIR)/.. ; pwd`" ] ; then \
+		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\"." ; \
+		exit 1 ; \
+	fi
+	@if [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+		echo "error: the directory specified by mm_TFTP_ROOT does not exist." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
+		echo "error: the directory specified by mm_NFS_ROOT does not exist." ; \
+		exit 1 ; \
+	fi
 
 mm-clean:
 	@rm -rf $(mm_BASEDIR)
