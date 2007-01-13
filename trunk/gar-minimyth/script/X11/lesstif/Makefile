@@ -3,7 +3,7 @@ GARVERSION = 0.94.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-aclocal.patch $(DISTNAME)-ac_path_prog.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-aclocal.patch $(DISTNAME)-ac_path_prog.patch $(DISTNAME)-m4_includes.patch
 LICENSE =
 
 DESCRIPTION =
@@ -22,14 +22,21 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-x \
+	--without-motif \
+	--with-freetype-config=$(DESTDIR)$(bindir)/freetype-config \
+	--without-fontconfig-config \
+	--without-fontconfig-includes \
+	--without-fontconfig-lib
+
 BUILD_ARGS     = \
 	rootdir="$(docdir)/$(DISTNAME)"
 INSTALL_ARGS   = \
 	rootdir="$(docdir)/$(DISTNAME)"
 
 CONFIGURE_ENV  = \
-	man2html_cmd=$(build_DESTDIR)$(build_bindir)/$(GARNAME)-man2html
+	$(if $(filter-out build,$(DESTIMG)),man2html_cmd=$(build_DESTDIR)$(build_bindir)/$(GARNAME)-man2html)
 
 include ../../gar.mk
 
