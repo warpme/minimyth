@@ -35,7 +35,10 @@ start() {
 stop() {
     mm_message_output info 'stopping NTP client ...'
 
-    [ -n "`pidof ntpd`" ] && killall ntpd
+    if [ -n "`pidof ntpd`" ] ; then
+        killall ntpd
+        hwclock --systohc --utc
+    fi
 
     return 0
 }
