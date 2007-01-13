@@ -1,5 +1,5 @@
 GARNAME = samba
-GARVERSION = 3.0.20rc1
+GARVERSION = 3.0.20rc2
 CATEGORIES = net
 MASTER_SITES  = http://us1.samba.org/samba/ftp/stable/
 MASTER_SITES += http://us1.samba.org/samba/ftp/rc/
@@ -49,7 +49,7 @@ install-mount.cifs:
 	@$(MAKECOOKIE)
 
 post-install:
-	@ln -s libsmbclient.so $(DESTDIR)$(libdir)/libsmbclient.so.0
+	@ln -fs libsmbclient.so $(DESTDIR)$(libdir)/libsmbclient.so.0
 	@mv -f $(DESTDIR)$(bindir)/smbmnt   $(DESTDIR)$(ebindir)/
 	@mv -f $(DESTDIR)$(bindir)/smbmount $(DESTDIR)$(ebindir)/
 	@rm -f $(DESTDIR)$(esbindir)/mount.smbfs ; ln -sf .$(call DIRSTODOTS,$(esbindir))$(ebindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
