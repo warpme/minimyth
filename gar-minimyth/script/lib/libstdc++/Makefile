@@ -20,7 +20,10 @@ build-custom:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@cp -af $(CROSS_GCC_LIBDIR)/lib*c++* $(DESTDIR)$(libdir)
+	@mkdir -p $(DESTDIR)$(libdir)
+	@$(if $(wildcard $(CROSS_GCC_LIBDIR)), \
+		cp -af $(CROSS_GCC_LIBDIR)/lib*c++* $(DESTDIR)$(libdir) ; \
+	)
 	@$(MAKECOOKIE)
 
 CROSSIMG = $(DESTIMG)
