@@ -4,7 +4,8 @@ CATEGORIES = xorg
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/util/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-includedir.patch
-LICENSE =
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
 DESCRIPTION = 
 define BLURB
