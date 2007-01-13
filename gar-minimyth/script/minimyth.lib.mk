@@ -72,6 +72,7 @@ gar-patch-%:
 		| sed 's%@GAR_localstatedir@%$(localstatedir)%g' \
 		| sed 's%@GAR_mandir@%$(mandir)%g' \
 		| sed 's%@GAR_sbindir@%$(sbindir)%g' \
+		| sed 's%@GAR_sourcedir@%$(sourcedir)%g' \
 		| sed 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
 		| sed 's%@GAR_CFLAGS@%$(CFLAGS)%g' \
 		| sed 's%@GAR_CXXFLAGS@%$(CFLAGS)%g' \

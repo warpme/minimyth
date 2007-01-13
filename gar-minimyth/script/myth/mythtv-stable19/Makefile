@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql lib/freetype xorg/xorg qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ kernel/linux lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql lib/freetype xorg/xorg qt/qt lirc/lirc
 
 PWD := $(shell pwd)
 
@@ -48,7 +48,7 @@ CONFIGURE_ARGS = \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
-	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
+	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)/include" \
 	--disable-dvb-eit \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \

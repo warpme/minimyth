@@ -1,7 +1,8 @@
 GARNAME = xvidcore
 GARVERSION = 1.1.0
 CATEGORIES = lib
-MASTER_SITES = http://downloads.xvid.org/downloads/
+MASTER_SITES  = http://downloads.xvid.org/downloads/
+MASTER_SITES += http://ftp.osuosl.org/pub/blfs/svn/x/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 

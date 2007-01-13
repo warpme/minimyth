@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql lib/freetype xorg/xorg qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ kernel/linux lib/alsa-lib lib/lame lib/libdts lib/zlib db/mysql lib/freetype xorg/xorg qt/qt lirc/lirc utils/lm_sensors
 
 PWD := $(shell pwd)
 
@@ -25,6 +25,8 @@ CONFIGURE_ARGS = \
 	--libdir-name="lib" \
 	--disable-ccache \
 	--disable-distcc \
+	--cross-prefix="$(compiler_prefix)" \
+	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
 	--cpu=$(GARCH) \
