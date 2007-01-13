@@ -25,7 +25,7 @@ include ../../gar.mk
 
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[/.]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:

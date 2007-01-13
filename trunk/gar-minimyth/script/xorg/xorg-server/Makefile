@@ -94,8 +94,8 @@ include ../../gar.mk
 
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
-	@echo "ac_cv_sys_linker_h=no"                                                        >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[/.]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "ac_cv_sys_linker_h=no"                                                                >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
@@ -143,8 +143,8 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%-I$${moduledir}%-I$(DESTDIR)$${moduledir}%g'   $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%-I$${sdkdir}%-I$(DESTDIR)$${sdkdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'                  $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g'          $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-I$${moduledir}%-I$(DESTDIR)$${moduledir}%g'            $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%^sdkdir=$(includedir)%sdkdir=$(DESTDIR)$(includedir)%g' $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
 	@$(MAKECOOKIE)
