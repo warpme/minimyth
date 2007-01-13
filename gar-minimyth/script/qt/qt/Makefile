@@ -57,7 +57,7 @@ CONFIGURE_ARGS = \
 	-xft \
 	-no-tablet \
 	-no-xkb \
-	-dlopen-opengl
+	-no-dlopen-opengl
 ifeq ($(DESTIMG),build)
 BUILD_ENV = \
 	LD_LIBRARY_PATH="$(PWD)/$(WORKSRC)/lib:$(LD_LIBRARY_PATH)"
