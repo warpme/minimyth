@@ -17,14 +17,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	MAPFILES_PATH=$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_x11libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)
+	MAPFILES_PATH=$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
 
 post-patch:
-	sed -i 's%^MAPFILES_PATH=.*%MAPFILES_PATH=$$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_x11libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)%g' $(WORKSRC)/configure
+	sed -i 's%^MAPFILES_PATH=.*%MAPFILES_PATH=$$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)%g' $(WORKSRC)/configure
 	@sed -i 's%^ISO8859_2_BDF_FILES *=.*%%g'  $(WORKSRC)/Makefile.in
 	@sed -i 's%^ISO8859_2_PCF_FILES *=.*%%g'  $(WORKSRC)/Makefile.in
 	@sed -i 's%^ISO8859_3_BDF_FILES *=.*%%g'  $(WORKSRC)/Makefile.in

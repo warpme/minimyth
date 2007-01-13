@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c X11/fontconfig X11/freetype xorg/libXrender
+DEPENDS = lang/c xorg/fontconfig xorg/freetype xorg/libXrender
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -20,10 +20,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
 
 post-install:
-	@rm -f $(DESTDIR)$(x11libdir)/$(GARNAME).la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(x11libdir)/pkgconfig/xft.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(x11libdir)/pkgconfig/xft.pc
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xft.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xft.pc
 	@$(MAKECOOKIE)

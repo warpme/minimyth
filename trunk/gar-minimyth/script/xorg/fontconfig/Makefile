@@ -1,6 +1,6 @@
 GARNAME = fontconfig
 GARVERSION = 2.3.2
-CATEGORIES = X11
+CATEGORIES = xorg
 MASTER_SITES = http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = fontconfig
@@ -10,9 +10,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/expat X11/freetype
+DEPENDS   = lang/c lib/expat xorg/freetype
 ifneq ($(DESTIMG),build)
-BUILDDEPS = X11/fontconfig
+BUILDDEPS = xorg/fontconfig
 endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

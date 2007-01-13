@@ -19,10 +19,3 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
-
-x-post-install:
-	@rm -f $(DESTDIR)$(x11libdir)/$(GARNAME).la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(x11libdir)/pkgconfig/xdmcp.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(x11libdir)/pkgconfig/xdmcp.pc
-	@$(MAKECOOKIE)

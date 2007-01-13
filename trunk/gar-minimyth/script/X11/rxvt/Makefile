@@ -17,8 +17,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--x-includes=$(DESTDIR)$(includedir) \
+	--x-libraries=$(DESTDIR)$(libdir) \
 	--with-gnu-ld
 
 include ../../gar.mk

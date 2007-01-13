@@ -85,18 +85,18 @@ start() {
             # Do not include dri module.
             MM_X_MODULE_DRI=""
             # Include path to proprietary NVIDIA modules.
-            MM_X_MODULEPATH="ModulePath	\"/usr/X11R6/lib-nvidia/xorg/modules\""
+            MM_X_MODULEPATH="ModulePath	\"/usr/lib/nvidia/xorg/modules\""
             # Include path to proprietary NVIDIA libraries.
             LIB_PATHS=`cat /etc/ld.so.conf`
-            LIB_PATHS="/usr/X11R6/lib-${MM_X_DRIVER} ${LIB_PATHS}"
+            LIB_PATHS="/usr/lib-${MM_X_DRIVER} ${LIB_PATHS}"
             echo -n > /etc/ld.so.conf
             for LIB_PATH in ${LIB_PATHS} ; do
                 echo "${LIB_PATH}" >> /etc/ld.so.conf
             done
             # Remove Open Source libraries that conflict with NVIDIA libraries.
-            rm -f /usr/X11R6/lib/libGL.*
-            rm -f /usr/X11R6/lib/xorg/modules/extensions/libGLcore.*
-            rm -f /usr/X11R6/lib/xorg/modules/extensions/libglx.*
+            rm -f /usr/lib/libGL.*
+            rm -f /usr/lib/xorg/modules/extensions/libGLcore.*
+            rm -f /usr/lib/xorg/modules/extensions/libglx.*
             # Rebuild library cache.
             ldconfig
             ;;

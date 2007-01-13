@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib X11/freetype xorg/xorg
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib xorg/freetype xorg/xorg lib/SDL
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -18,8 +18,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
-	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--x-includes=$(DESTDIR)$(includedir) \
+	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-static \
 	--enable-shared \
 	--enable-nls \

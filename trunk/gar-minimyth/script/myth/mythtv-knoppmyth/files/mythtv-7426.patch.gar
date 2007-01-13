@@ -25,7 +25,7 @@ diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
 -    fi
 -
 -    LIBPATHS="`echo $LIBPATHS /lib /usr/lib /usr/local/lib /usr/X11R6/lib | sed s/'\/ '/' '/g` "
-+    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_x11libdir@ | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_libdir@ | sed s/'\/ '/' '/g` "
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
@@ -34,7 +34,7 @@ diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
  has_header()
  {
 -    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
-+    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_x11includedir@"
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_includedir@"
      INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
      HPATHS="$HPATHS `echo $INCL | sed s/lib/include/g` "
  
@@ -106,7 +106,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/
  
  STDLIBS    = -lm
 -X11LIBS    =  -L/usr/X11R6/lib -lX11
-+X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
  PROGRAM    = cidbcast
  
  #################################################################################
@@ -126,7 +126,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-
 -STDLIBS    = -lm `xml2-config --libs` -lxslt
 -X11LIBS    =  -L/usr/X11R6/lib -lX11
 +STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
-+X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
  PROGRAM = mythudprelay
  
  #################################################################################

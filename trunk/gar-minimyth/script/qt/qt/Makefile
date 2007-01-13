@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql X11/freetype X11/fontconfig xorg/xorg
+DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql xorg/freetype xorg/fontconfig xorg/xorg
 BUILDDEPS  = devel/bison devel/flex
 ifneq ($(DESTIMG),build)
 BUILDDEPS += qt/qt
@@ -82,11 +82,9 @@ PLATFORM_DEFAULT_PATH  = $(DESTDIR)$(qtprefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
 
 QMAKE_INCLUDES     = \
 	$(filter  -I%, $($(strip $(1))CPPFLAGS)) \
-	-I$($(strip $(1))DESTDIR)$($(strip $(1))x11includedir) \
 	-I$($(strip $(1))DESTDIR)$($(strip $(1))includedir)/mysql
 QMAKE_LIBS         = \
 	$(filter  -L%, $($(strip $(1))LDFLAGS)) \
-	-L$($(strip $(1))DESTDIR)$($(strip $(1))x11libdir) \
 	-L$($(strip $(1))DESTDIR)$($(strip $(1))libdir)/mysql
 QMAKE_RPATH        = \
 	-Wl,-rpath-link,
@@ -118,10 +116,10 @@ CREATE_PLATFORM   = \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_RPATH         , ) ; \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR        , $($(strip $(2))DESTDIR)$($(strip $(2))includedir)) ; \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR        , $($(strip $(2))DESTDIR)$($(strip $(2))libdir)) ; \
-	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))x11includedir)) ; \
-	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))x11libdir)) ; \
-	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))x11includedir)) ; \
-	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))x11libdir)) ;
+	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))includedir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))libdir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))includedir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))libdir)) ;
 
 ifeq ($(DESTIMG),build)
 USE_BUILD_BIN =

@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib X11/fontconfig X11/freetype xorg/xorg X11/SDL lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib xorg/fontconfig xorg/freetype xorg/xorg lib/SDL lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -132,8 +132,8 @@ CONFIGURE_ARGS_ADVANCED = \
 	--enable-fastmemcpy \
 	--disable-big-endian
 CONFIGURE_ARGS_WITH = \
-	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
-	--with-x11libdir="$(DESTDIR)$(x11libdir)" \
+	--with-x11incdir="$(DESTDIR)$(includedir)" \
+	--with-x11libdir="$(DESTDIR)$(libdir)" \
 	--with-codecsdir="$(libdir)/codecs" \
 	--with-xvmclib=XvMCW \
 	--with-xxmclib=XvMCW \

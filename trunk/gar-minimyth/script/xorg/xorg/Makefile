@@ -29,19 +29,5 @@ DEPENDS = \
 	xorg/libXxf86dga \
 	xorg/libXres
 
-#	xorg/libXScrnSaver
-
-#	xorg/libXxf86misc
-
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
-
-clean-all:
-	@$(MAKE) -C ../ clean
-	@rm -rf $(DESTDIR)$(x11prefix)
-	@rm -rf $(DESTDIR)$(bindir)/X11
-	@rm -rf $(DESTDIR)$(datadir)/X11
-	@rm -rf $(DESTDIR)$(includedir)/X11
-	@rm -rf $(DESTDIR)$(libdir)/X11
-	@rm -rf $(DESTDIR)$(sysconfdir)/X11

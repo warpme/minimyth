@@ -21,9 +21,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
-include ../xorg.mk
 
 post-install:
-	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/input/kbd_drv.la
-	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/input/keyboard_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/kbd_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/keyboard_drv.la
 	@$(MAKECOOKIE)

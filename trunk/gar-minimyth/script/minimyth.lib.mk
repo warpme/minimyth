@@ -23,12 +23,6 @@ gar-patch-%:
 		| sed 's%@GAR_mandir@%$(mandir)%g' \
 		| sed 's%@GAR_sbindir@%$(sbindir)%g' \
 		| sed 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
-		| sed 's%@GAR_x11bprefix@%$(x11prefix)%g' \
-		| sed 's%@GAR_x11bindir@%$(x11bindir)%g' \
-		| sed 's%@GAR_x11includedir@%$(x11includedir)%g' \
-		| sed 's%@GAR_x11libdir@%$(x11libdir)%g' \
-		| sed 's%@GAR_x11mandir@%$(x11mandir)%g' \
-		| sed 's%@GAR_x11sysconfdir@%$(x11sysconfdir)%g' \
 		| sed 's%@GAR_CFLAGS@%$(CFLAGS)%g' \
 		| sed 's%@GAR_CXXFLAGS@%$(CFLAGS)%g' \
 		| $(GARPATCH)

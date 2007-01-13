@@ -21,18 +21,16 @@ bindirs := \
 	$(ebindir) \
 	$(sbindir) \
 	$(bindir) \
-	$(x11bindir) \
 	$(qtbindir)
 libdirs_base := \
 	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
-	$(x11libdir) \
 	$(qtlibdir)
 libdirs := \
-	$(x11libdir)/xorg/modules \
-	$(x11libdir)-nvidia \
+	$(libdir)/xorg/modules \
+	$(libdir)/nvidia \
 	$(libdirs_base)
 etcdirs :=  \
 	$(extras_sysconfdir) \
@@ -60,7 +58,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
+mm-all: mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -94,23 +92,6 @@ mm-check:
 mm-clean:
 	@rm -rf $(mm_BASEDIR)
 
-mm-make-conf:
-	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
-	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
-	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/rc.d/init.d/extras
-	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
-	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
-	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
-	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
-	@rm -rf $(mm_DESTDIR)/srv        ; cp -r ./dirs/srv  $(mm_DESTDIR)
-	@rm -rf $(mm_DESTDIR)/srv/www/fs ; ln -sf / $(mm_DESTDIR)/srv/www/fs
-	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi-bin/functions
-	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
-
 mm-make-busybox:
 	@main_DESTDIR=$(mm_DESTDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_DESTDIR)/var
@@ -132,18 +113,17 @@ mm-copy-mythtv:
 	@cp -fa $(DESTDIR)$(libdir)/mythtv $(mm_DESTDIR)$(libdir)
 
 mm-copy-x11:
-	@mkdir -p $(mm_DESTDIR)$(x11bindir)
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)/xorg
-	@cp -fa $(DESTDIR)$(x11libdir)/xorg/modules        $(mm_DESTDIR)$(x11libdir)/xorg
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)-nvidia/xorg
-	@cp -fa $(DESTDIR)$(x11libdir)-nvidia/xorg/modules $(mm_DESTDIR)$(x11libdir)-nvidia/xorg
-	@mkdir -p $(mm_DESTDIR)$(x11prefix)/share/X11
-	@cp -fa $(DESTDIR)$(x11prefix)/share/X11/rgb.txt $(mm_DESTDIR)$(x11prefix)/share/X11
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/fonts
-	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/TTF $(mm_DESTDIR)$(x11libdir)/X11/fonts
-	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/misc $(mm_DESTDIR)$(x11libdir)/X11/fonts
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)/xserver
-	@cp -fa $(DESTDIR)$(x11libdir)/xserver/SecurityPolicy $(mm_DESTDIR)$(x11libdir)/xserver
+	@mkdir -p $(mm_DESTDIR)$(libdir)/xorg
+	@cp -fa $(DESTDIR)$(libdir)/xorg/modules        $(mm_DESTDIR)$(libdir)/xorg
+	@mkdir -p $(mm_DESTDIR)$(libdir)/nvidia/xorg
+	@cp -fa $(DESTDIR)$(libdir)/nvidia/xorg/modules $(mm_DESTDIR)$(libdir)/nvidia/xorg
+	@mkdir -p $(mm_DESTDIR)$(prefix)/share/X11
+	@cp -fa $(DESTDIR)$(prefix)/share/X11/rgb.txt $(mm_DESTDIR)$(prefix)/share/X11
+	@mkdir -p $(mm_DESTDIR)$(libdir)/X11/fonts
+	@cp -fa $(DESTDIR)$(libdir)/X11/fonts/TTF $(mm_DESTDIR)$(libdir)/X11/fonts
+	@cp -fa $(DESTDIR)$(libdir)/X11/fonts/misc $(mm_DESTDIR)$(libdir)/X11/fonts
+	@mkdir -p $(mm_DESTDIR)$(libdir)/xserver
+	@cp -fa $(DESTDIR)$(libdir)/xserver/SecurityPolicy $(mm_DESTDIR)$(libdir)/xserver
 
 mm-copy-bins:
 	@echo 'copying binaries'
@@ -286,6 +266,31 @@ mm-%/copy-libs:
 			done ; \
 		fi ; \
 	fi
+
+mm-make-conf:
+	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
+	@mkdir -p $(mm_DESTDIR)$(sysconfdir)/fonts
+	@echo -n                                         >  $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<?xml version="1.0"?>'                    >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<fontconfig>'                             >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@echo '</fontconfig>'                            >> $(mm_DESTDIR)/$(sysconfdir)/fonts/local.conf
+	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)$(sysconfdir)/rc.d/init.d/extras
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
+	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
+	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
+	@rm -rf $(mm_DESTDIR)/srv        ; cp -r ./dirs/srv  $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/srv/www/fs ; ln -sf / $(mm_DESTDIR)/srv/www/fs
+	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi-bin/functions
+	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
+	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
+	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
 
 mm-remove:
 	@echo 'removing unneeded files'
