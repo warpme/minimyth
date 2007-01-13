@@ -29,8 +29,8 @@ sharedirs :=  \
 	$(extras_sharedstatedir) \
 	$(sharedstatedir)
 
-IS_BIN = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB Shared Object'),yes,no)
-IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB executable'   ),yes,no)
+IS_BIN = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB executable'   ),yes,no)
+IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB shared object'),yes,no)
 
 MM_PATH := $(PATH)
 
@@ -70,7 +70,6 @@ LIST_LIBS = \
                         | sed 's%linux-gate\.so\.1%%' \
 		) \
 	)
-
 
 mm-all: mm-check mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
@@ -175,7 +174,6 @@ mm-copy-bins:
                                 target_dir=`echo $${target_bin} | sed -e 's%/[^/]*$$%/%'` ; \
                                 mkdir -p $${target_dir} ; \
 				cp -fa  $${source_bin} $${target_bin} ; \
-				make -s -f minimyth.mk mm-$${target_bin}/copy-libs DESTIMG=$(DESTIMG) ; \
 			fi ; \
 		else \
 			echo "warning: binary \"$${bin}\" not found." ; \
@@ -258,7 +256,6 @@ mm-copy-libs:
                                         target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
                                         mkdir -p $${target_dir} ; \
 					cp -f  $${source_lib} $${target_lib} ; \
-					make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
 				fi ; \
 			fi ; \
 		else \
@@ -290,7 +287,6 @@ mm-%/copy-libs:
                                                 target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
                                                 mkdir -p $${target_dir} ; \
 						cp -f  $${source_lib} $${target_lib} ; \
-						make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
 					fi ; \
 				else \
 					echo "warning: library \"$${lib}\" not found." ; \

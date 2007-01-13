@@ -14,6 +14,7 @@ gar-patch-%:
 		| sed 's%@GAR_prefix@%$(prefix)%g' \
 		| sed 's%@GAR_bindir@%$(bindir)%g' \
 		| sed 's%@GAR_datadir@%$(datadir)%g' \
+		| sed 's%@GAR_docdir@%$(docdir)%g' \
 		| sed 's%@GAR_ebindir@%$(ebindir)%g' \
 		| sed 's%@GAR_esbindir@%$(esbindir)%g' \
 		| sed 's%@GAR_includedir@%$(includedir)%g' \
