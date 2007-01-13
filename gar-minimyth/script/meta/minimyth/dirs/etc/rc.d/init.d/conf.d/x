@@ -96,10 +96,24 @@ conf_check_x() {
     fi
 
     # Check X display variables.
+    # Check MM_X_SYNC.
+    if /usr/bin/test ! -z "${MM_X_SYNC}"                                                          && \
+       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*$'             > /dev/null 2>&1 && \
+       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*-[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
+        exit 1
+    fi
     # Check MM_X_REFRESH.
-    if /usr/bin/test ! -z "${MM_X_REFRESH}"       && \
-       /usr/bin/test !     ${MM_X_REFRESH}  -gt 0 ; then
+    if /usr/bin/test ! -z "${MM_X_REFRESH}"                                                       && \
+       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$'             > /dev/null 2>&1 && \
+       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*-[0-9][0-9]*$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
+        exit 1
+    fi
+    # Make sure that MM_X_REFRESH is not a range when MM_X_RESOLUTION is set.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}"                                           && \
+        ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: 'MM_X_REFRESH' cannot be set to a range when 'MM_X_RESOLUTION' is set."
         exit 1
     fi
     # Make sure that only one of MM_X_RESOLUTION, MM_X_MODELINE and MM_X_MODE is set.
@@ -117,24 +131,21 @@ conf_check_x() {
     fi
     # Check the format of MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
-        /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
             exit 1
         fi
     fi
     # Check the format of MM_X_MODELINE.
     if /usr/bin/test -n "${MM_X_MODELINE}" ; then
-        /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
             exit 1
         fi
     fi
     # Check the format of MM_X_MODE.
     if /usr/bin/test -n "${MM_X_MODE}" ; then
-        /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
             exit 1
         fi
@@ -197,6 +208,10 @@ conf_default_x() {
     fi
 
     # X display variables.
+    # X sync rate.
+    if /usr/bin/test -z "${MM_X_SYNC}"                ; then
+        MM_X_SYNC='20-80'
+    fi
     # X refresh rate.
     if /usr/bin/test -z "${MM_X_REFRESH}"             ; then
         MM_X_REFRESH=
@@ -216,8 +231,7 @@ conf_default_x() {
 
     # Auto-configure MM_X_MODELINE based on MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
-        /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
             exit 1
         fi
@@ -229,8 +243,7 @@ conf_default_x() {
 
     # Auto-configure MM_X_MODE based on MM_X_MODELINE.
     if /usr/bin/test -n "${MM_X_MODELINE}" ; then
-        /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
             exit 1
         fi
@@ -272,8 +285,7 @@ conf_default_x() {
 
     # Auto-configure MM_X_RESOLUTION based on MM_X_MODE.
     if /usr/bin/test -z "${MM_X_RESOLUTION}" ; then
-        /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
             exit 1
         fi
@@ -282,8 +294,7 @@ conf_default_x() {
 
     # Auto-configure MM_X_DISPLAYSIZE based on MM_X_RESOLUTION.
     if /usr/bin/test -z "${MM_X_DISPLAYSIZE}"         || /usr/bin/test "${MM_X_DISPLAYSIZE}"         = "auto" ; then
-        /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
-        if /usr/bin/test $? -ne 0 ; then
+        if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
             exit 1
         fi
@@ -318,6 +329,19 @@ conf_default_x() {
         esac
     fi
 
+    # Convert single valued MM_X_SYNC values to small range.
+    if /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        MM_X_SYNC="$((${MM_X_SYNC}-1))-$((${MM_X_SYNC}+1))"
+    fi
+
+    # Convert single valued MM_X_REFRESH values to small range.
+    if /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        MM_X_REFRESH="$((${MM_X_REFRESH}-1))-$((${MM_X_REFRESH}+1))"
+    fi
+
+    MM_X_SYNC="HorizSync ${MM_X_SYNC}"
+    MM_X_REFRESH="VertRefresh ${MM_X_REFRESH}"
+
     return 0
 }
 
@@ -337,6 +361,7 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_TV_TYPE             "${MM_X_TV_TYPE}"
     conf_variable_write "${conf_file}" MM_X_TV_OUTPUT           "${MM_X_TV_OUTPUT}"
 
+    conf_variable_write "${conf_file}" MM_X_SYNC                "${MM_X_SYNC}"
     conf_variable_write "${conf_file}" MM_X_REFRESH             "${MM_X_REFRESH}"
     conf_variable_write "${conf_file}" MM_X_RESOLUTION          "${MM_X_RESOLUTION}"
     conf_variable_write "${conf_file}" MM_X_MODELINE            "${MM_X_MODELINE}"

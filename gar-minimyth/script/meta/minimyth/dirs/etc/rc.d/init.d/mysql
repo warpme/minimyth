@@ -52,7 +52,7 @@ start() {
 		/bin/sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1
         while /usr/bin/test ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} && \
-              /usr/bin/test `mm_mythdb_command_run > /dev/null 2>&1 ; /bin/echo $?` -ne 0 ; do
+              ! mm_mythdb_command_run > /dev/null 2>&1                        ; do
             mm_message_output info "waking Myth database (${WOLSqlConnectAttempt}) ..."
             ${WOLSqlCommand}
             /bin/sleep ${WOLSqlReconnectWaitTime}
@@ -61,8 +61,7 @@ start() {
     fi
 
     # Test Myth database connection.
-    mm_mythdb_command_run
-    if /usr/bin/test $? -ne 0 ; then
+    if ! mm_mythdb_command_run > /dev/null 2>&1 ; then
         mm_message_output err 'error: cannot connect to the Myth database.'
         exit 1
     fi

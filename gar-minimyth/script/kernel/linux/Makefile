@@ -52,12 +52,12 @@ install-custom:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(MAKE) clean -C ../alsa-driver
-	@$(MAKE) clean -C ../drm
-	@$(MAKE) clean -C ../linux
-	@$(MAKE) clean -C ../nvidia
-	@$(MAKE) clean -C ../unionfs
-	@$(MAKE) clean -C ../vt1211
-	@$(MAKE) clean -C ../../lirc
+	@$(MAKE) clean     -C ../alsa-driver
+	@$(MAKE) clean     -C ../drm
+	@$(MAKE) clean     -C ../linux
+	@$(MAKE) clean     -C ../unionfs
+	@$(MAKE) clean     -C ../vt1211
+	@$(MAKE) clean     -C ../../lirc
+	@$(MAKE) clean-all -C ../../nvidia
 	@rm -rf $(DESTDIR)$(KERNEL_DIR)
 	@rm -rf $(DESTDIR)$(KERNEL_MODULESPREFIX)

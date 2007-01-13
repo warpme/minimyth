@@ -69,6 +69,8 @@ MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | s
 MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(MM_SHARE_DEBUG)  $(mm_USER_SHARE_LIST))
 MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
 
+build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(GARDIR)/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
+
 bindirs := \
 	$(esbindir) \
 	$(ebindir) \
@@ -280,6 +282,9 @@ mm-make-conf:
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@rm -rf   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/build
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/conf.d
+	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/build ; )
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
@@ -293,11 +298,12 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
 	@cp -r  $(mm_HOME)/html/include/*       $(mm_ROOTFSDIR)/srv/www/include/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
-	@cp -r  $(mm_HOME)/html/script/*        $(mm_ROOTFSDIR)/srv/www/script/
-	@cp -r  $(mm_HOME)/html/minimyth        $(mm_ROOTFSDIR)/srv/www/
-	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.mythtv/lircrc
-	@ln -sf $(sysconfdir)/X11/xinit/xinitrc $(mm_ROOTFSDIR)/root/.xinitrc
+	@cp -r  $(mm_HOME)/html/script/*          $(mm_ROOTFSDIR)/srv/www/script/
+	@cp -r  $(mm_HOME)/html/minimyth          $(mm_ROOTFSDIR)/srv/www/
+	@ln -sf $(sysconfdir)/lircrc              $(mm_ROOTFSDIR)/root/.lircrc
+	@ln -sf $(sysconfdir)/lircrc              $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/X11/xinit/xinitrc   $(mm_ROOTFSDIR)/root/.xinitrc
+	@ln -sf $(sysconfdir)/X11/xinit/xserverrc $(mm_ROOTFSDIR)/root/.xserverrc
 	@mkdir -p $(mm_ROOTFSDIR)$(datadir)/X11 ; \
 		rm -rf $(mm_ROOTFSDIR)$(datadir)/X11/app-defaults ; \
 		cp -r ./dirs/usr/share/X11/app-defaults $(mm_ROOTFSDIR)$(datadir)/X11

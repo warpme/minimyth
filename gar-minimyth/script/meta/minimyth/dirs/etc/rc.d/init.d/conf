@@ -15,8 +15,7 @@ conf_reset() {
 
     rm -rf ${tempfile}
     for filter in "$@" ; do
-        echo ${filter} | grep -q -e '_$' > /dev/null 2>&1
-        if /usr/bin/test $? -eq 0 ; then
+        if echo ${filter} | grep -q -e '_$' > /dev/null 2>&1 ; then
             set                                    | /bin/grep -e "^${filter}"  | /bin/sed -e 's%=.*%=%' >> ${tempfile}
             /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -e "^${filter}"                           >> ${tempfile}
         else

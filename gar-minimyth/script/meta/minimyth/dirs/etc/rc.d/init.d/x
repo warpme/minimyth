@@ -20,7 +20,6 @@ start() {
     X_DISPLAYSIZE_X=`/bin/echo ${MM_X_DISPLAYSIZE} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
     X_DISPLAYSIZE_Y=`/bin/echo ${MM_X_DISPLAYSIZE} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
     MM_X_DISPLAYSIZE="DisplaySize ${X_DISPLAYSIZE_X} ${X_DISPLAYSIZE_Y}"
-    MM_X_USE_EDID_DPI="false"
 
     MM_X_DEVICE_NVIDIA=""
     MM_X_DEVICE_VIA=""
@@ -104,20 +103,20 @@ start() {
     /bin/sed -i "s%@MM_X_DEVICE_VIA@%${MM_X_DEVICE_VIA}%"       /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_TV_TYPE@%${MM_X_TV_TYPE}%"             /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_TV_OUTPUT@%${MM_X_TV_OUTPUT}%"         /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_SYNC@%${MM_X_SYNC}%"                   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_REFRESH@%${MM_X_REFRESH}%"             /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"           /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"                   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%"     /etc/X11/xorg.conf
     /bin/sed -i "s%@DRI_TRUE@%${DRI_TRUE}%"                     /etc/X11/xorg.conf
     /bin/sed -i "s%@NVIDIA_TRUE@%${NVIDIA_TRUE}%"               /etc/X11/xorg.conf
-    /bin/sed -i "s%@MM_X_USE_EDID_DPI@%${MM_X_USE_EDID_DPI}%"   /etc/X11/xorg.conf
 
     # Turn off splash screen.
     mm_splash_halt
 
     # Start X.
     if /usr/bin/test "${MM_X_ENABLED}" = "yes" ; then
-        /usr/bin/xinit -- /usr/bin/X &
+        /usr/bin/xinit &
     fi
 
     return 0
