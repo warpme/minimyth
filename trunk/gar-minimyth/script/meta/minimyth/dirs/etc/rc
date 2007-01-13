@@ -2,7 +2,10 @@
 
 . /etc/minimyth.d/env.script
 
-if [ "`mm_var_get MM_INIT_MODE`" = "sh" ] ; then
+MM_INIT_MODE=`mm_var_get MM_INIT_MODE`
+[ -z "${MM_INIT_MODE}" ] && MM_INIT_MODE="sh"
+
+if   [ "${MM_INIT_MODE}" = "sh"   ] ; then
     echo "init: using 'sh' mode."
     mm_command_run "sh /etc/minimyth.d/fs.script"
     mm_command_run "sh /etc/minimyth.d/ld.script"
@@ -23,7 +26,7 @@ if [ "`mm_var_get MM_INIT_MODE`" = "sh" ] ; then
     mm_command_run "sh /etc/minimyth.d/lirc.script"
     mm_command_run "sh /etc/minimyth.d/mythdb.script"
     mm_command_run "sh /etc/minimyth.d/x.script"
-else
+elif [ "${MM_INIT_MODE}" = "make" ] ; then
     echo "init: using 'make' mode."
     mm_command_run "mount -n -t tmpfs -o size=512K tmpfs /tmp"
     mm_command_run "cp -rf /etc/rc.d /tmp/"
