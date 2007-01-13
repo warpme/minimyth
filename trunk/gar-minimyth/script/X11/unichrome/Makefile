@@ -1,5 +1,5 @@
 GARNAME = unichrome
-GARVERSION = 20050718
+GARVERSION = 20050730
 CATEGORIES = X11
 MASTER_SITES  = http://myth.ivor.org/unichrome/
 MASTER_SITES += http://myth.ivor.org/unichrome/old/
