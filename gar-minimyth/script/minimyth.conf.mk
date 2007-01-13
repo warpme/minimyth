@@ -6,6 +6,10 @@
 # The version of MiniMyth.
 mm_VERSION        ?= 0.18.1.8
 
+# The version of Myth to use.
+# Valid values are 'stable', 'knoppmyth' and 'svn'.
+mm_MYTH_VERSION   ?= stable
+
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------

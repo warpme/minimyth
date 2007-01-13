@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -13,12 +13,15 @@ endef
 
 DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql X11/freetype X11/X11 X11/Mesa X11/libXvMCW qt/qt lirc/lirc
 
+PWD := $(shell pwd)
+
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS     += $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
 
-CONFIGURE_ARGS = $(DIRPATHS) \
+CONFIGURE_ARGS = \
+	--prefix="$(prefix)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
 	--cpu=$(GARCH) \
@@ -39,6 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--disable-dvb-eit \
 	--enable-x11 \
+	--x11-path="$(DESTDIR)$(x11includedir)" \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-xvmc \
@@ -69,17 +73,14 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-disabled-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
 
-clean-all:
-	@$(foreach dir,$(wildcard ../myth*),$(MAKE) -C $(dir) clean ; )
-	@rm -rf $(DESTDIR)$(bindir)/myth*
-	@rm -rf $(DESTDIR)$(datadir)/myth*
-	@rm -rf $(DESTDIR)$(includedir)/myth*
-	@rm -rf $(DESTDIR)$(libdir)/libmyth*
-	@rm -rf $(DESTDIR)$(libdir)/myth*
+install-source:
+	@mkdir -p $(DESTDIR)$(sourcedir)
+	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/mythtv
+	@$(MAKECOOKIE)

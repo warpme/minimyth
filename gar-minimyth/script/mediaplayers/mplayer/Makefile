@@ -1,6 +1,6 @@
 GARNAME = MPlayer
 GARVERSION = 1.0pre7try2
-CATEGORIES = myth
+CATEGORIES = mediaplayers
 MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-c3.patch

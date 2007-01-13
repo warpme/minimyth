@@ -1,0 +1,78 @@
+GARNAME = mythplugins
+GARVERSION = $(MYTHTV_VERSION)
+CATEGORIES = myth
+MASTER_SITES  = http://www.mythtv.org/mc/
+MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-mythconfig.patch
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS  = lang/c myth/mythtv
+# mythdvd
+DEPENDS += lib/libdvdread
+# mythgallery
+DEPENDS += lib/libexif lib/libtiff
+# mythmusic
+DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/SDL
+# misc
+DEPENDS += lib/libdvdread
+
+CONFIGURE_SCRIPTS += $(WORKSRC)/configure
+CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
+BUILD_SCRIPTS     += $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS += \
+	--prefix="$(prefix)" \
+	--enable-opengl \
+	--disable-mythbrowser \
+	--disable-mythcontrols \
+	--enable-mythdvd \
+		--disable-transcode \
+		--enable-vcd \
+	--enable-mythgallery \
+		--enable-exif \
+	--disable-mythgame \
+	--enable-mythmusic \
+		--enable-fftw \
+		--enable-sdl \
+		--enable-aac \
+	--enable-mythnews \
+	--disable-mythphone \
+		--disable-festival \
+	--enable-mythvideo \
+	--enable-mythweather
+
+CONFIGURE_ENV += \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	OPTFLAGS="$(CFLAGS)"
+BUILD_ENV     += \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	OPTFLAGS="$(CFLAGS)"
+INSTALL_ARGS  += \
+	INSTALL_ROOT="$(DESTDIR)"
+
+GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+include ../../gar.mk
+
+svn//%/$(DISTNAME).tar.bz2:
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)
+	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+configure-%/mythtv:
+	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	@$(MAKECOOKIE)

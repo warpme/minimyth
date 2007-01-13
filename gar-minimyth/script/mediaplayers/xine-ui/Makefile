@@ -1,6 +1,6 @@
 GARNAME = xine-ui
 GARVERSION = 0.99.4
-CATEGORIES = myth
+CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c X11/X11 X11/freetype lib/libpng lirc/lirc myth/xine-lib
+DEPENDS = lang/c X11/X11 X11/freetype lib/libpng lirc/lirc mediaplayers/xine-lib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
