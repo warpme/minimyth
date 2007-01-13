@@ -1,0 +1,70 @@
+#!/bin/sh
+################################################################################
+# lirc
+#
+# This script configures and starts LIRC.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting remote control ...'
+
+    # Load the LIRC configuration files.
+    if [ -n ${MM_LIRC_REMOTE} ] ; then
+        if [ -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ] ; then
+            cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
+        fi
+        if [ -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} ] ; then
+            cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /etc/lircrc
+        fi
+    fi
+
+    # Get the LIRC configuration files.
+    mm_conf_get /lircd.conf /etc/lircd.conf
+    mm_conf_get /lircrc /etc/lircrc
+
+    # Load kernel module (if needed).
+    if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
+        modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
+    fi
+    # Start the LIRC daemon.
+    if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
+        mkdir -p /var/lock
+        mkdir -p /var/run
+
+        # Wait up to 10 seconds for the device to appear in the device file system.
+        DELAY=0
+        while [ ! -e ${MM_LIRC_DEVICE} ] && [ ${DELAY} -lt 10 ] ; do
+            sleep 1
+            DELAY=$((DELAY + 1))
+        done
+
+        if [ -e /usr/sbin/lircd.${MM_LIRC_DRIVER} ] ; then
+    	    lircd.${MM_LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
+        else
+    	    lircd.any               --device=${MM_LIRC_DEVICE} --driver=${MM_LIRC_DRIVER}
+        fi
+    fi
+
+    # Start the irexec daemon.
+    if [ "${MM_LIRC_IREXEC_ENABLED}" = "yes" ] ; then
+        irexec -d /etc/lircrc
+    fi
+}
+
+stop() {
+    mm_message_output info 'stopping remote control ...'
+
+    if [ -f "/var/run/lircd.pid" ] ; then
+        pid=`cat /var/run/lircd.pid`
+        kill -9 ${pid}
+        rm -f /var/run/lircd.pid
+    fi
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

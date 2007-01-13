@@ -1,0 +1,335 @@
+#!/bin/sh
+################################################################################
+# conf
+#
+# This script retrieves and the user's minimyth.conf configuration file.
+################################################################################
+. /etc/rc.d/functions
+
+conf_file=/etc/conf.d/minimyth
+
+conf_variable_write() {
+    echo "$1=\"$2\"" >> ${conf_file}
+
+    return 0
+}
+
+conf_init() {
+    rm -rf ${conf_file}
+
+    return 0
+}
+
+# Check minimyth.conf for obosolete variables and values.
+conf_check() {
+    # Read MiniMyth environment variables from the MiniMyth configuration file.
+    [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+    
+    if [ "${MM_LIRC_DRIVER}"        = "mceusbnew"      ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DRIVER=mceusbnew" is obsolete.'
+        exit 1
+    fi
+    if [ "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_KERNEL_MODULE=lirc_mceusbnew" is obsolete.'
+        exit 1
+    fi
+    if [ "${MM_LIRC_REMOTE}"        = "mceusbnew"      ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_REMOTE=mceusbnew" is obsolete.'
+        exit 1
+    fi
+    cat /etc/minimyth.d/minimyth.conf | grep -q '^MM_MYTHDB_SETTING_'
+    if [ "$?" = "0" ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING_<setting>" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_NAME_SERVER}"   ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_NO_X}"          ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_NO_XWM}"        ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_NO_VNC}"        ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_SOUND}"         ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SOUND" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_SYSLOG_SERVER}" ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SYSLOG_SERVER" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_TIME_SERVER}"   ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_TV}"            ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
+        exit 1
+    fi
+    if [ ! -z "${MM_X_RESOLUTION}"  ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION" is obsolete.'
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_write() {
+    # Read MiniMyth environment variables from the MiniMyth configuration file.
+    [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+    
+    # Root file system type.
+    [ -r /proc/mounts ] && MM_ROOTFS_TYPE=`cat /proc/mounts | grep '^/dev/root /initrd ' | cut -d' ' -f3`
+    conf_variable_write MM_ROOTFS_TYPE "${MM_ROOTFS_TYPE}"
+
+    # Timezone.
+    conf_variable_write MM_TZ "${MM_TZ}"
+
+    # Hardware.
+    [ -z "${MM_HARDWARE_MOTHERBOARD}" ] && MM_HARDWARE_MOTHERBOARD="VIA_EPIA_M"
+    case "${MM_HARDWARE_MOTHERBOARD}" in
+        COMMELL_LV_667)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CN400"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8237"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1616"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1625"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="W83782D"
+            ;;
+        VIA_EPIA_PD)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1612A"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_M)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1616"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1622"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_MII)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1616"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1622A"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_ML)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1616"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1622"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_MS)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8237"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1616"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1622A"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_SP)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CN400"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8237"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1617A"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VT1623"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+        VIA_EPIA_TC)
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VT1612A"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
+            ;;
+    esac
+    conf_variable_write MM_HARDWARE_MOTHERBOARD "${MM_HARDWARE_MOTHERBOARD}"
+    conf_variable_write MM_HARDWARE_NORTHBRIDGE "${MM_HARDWARE_NORTHBRIDGE}"
+    conf_variable_write MM_HARDWARE_SOUTHBRIDGE "${MM_HARDWARE_SOUTHBRIDGE}"
+    conf_variable_write MM_HARDWARE_LAN         "${MM_HARDWARE_LAN}"
+    conf_variable_write MM_HARDWARE_AUDIO       "${MM_HARDWARE_AUDIO}"
+    conf_variable_write MM_HARDWARE_TV          "${MM_HARDWARE_TV}"
+    conf_variable_write MM_HARDWARE_SENSOR      "${MM_HARDWARE_SENSOR}"
+
+    # Audio.
+    [ -z "${MM_AUDIO_TYPE}" ] && MM_AUDIO_TYPE="analog"
+    conf_variable_write MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
+
+    # Video.
+    [ -z "${MM_VIDEO_ASPECT_RATIO}"        ] && MM_VIDEO_ASPECT_RATIO="4:3"
+    [ -z "${MM_VIDEO_DEINTERLACE_ENABLED}" ] && MM_VIDEO_DEINTERLACE_ENABLED="no"
+    conf_variable_write MM_VIDEO_ASPECT_RATIO        "${MM_VIDEO_ASPECT_RATIO}"
+    conf_variable_write MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
+
+    # X.
+    [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
+    [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
+    [ -z "${MM_X_VNC_ENABLED}"  ] && MM_X_VNC_ENABLED="yes"
+    [ -z "${MM_X_VGA_ENABLED}"  ] && MM_X_VGA_ENABLED="no"
+    [ -z "${MM_X_TV_ENABLED}"   ] && MM_X_TV_ENABLED="yes"
+    [ -z "${MM_X_TV_TYPE}"      ] && MM_X_TV_TYPE="NTSC"
+    [ -z "${MM_X_TV_OUTPUT}"    ] && MM_X_TV_OUTPUT="Composite"
+    if [ -z "${MM_X_REFRESH}" ] ; then
+        case "${MM_X_TV_TYPE}" in
+            NTSC)
+                MM_X_REFRESH="60"
+                ;;
+            PAL)
+                MM_X_REFRESH="50"
+                ;;
+        esac
+    fi
+    if [ -z "${MM_X_MODE}" ] ; then
+        MM_X_MODE="800x600"
+        if   [ "${MM_X_VGA_ENABLED}" = "no"  ] && [ "${MM_X_TV_ENABLED}" = "yes" ] ; then
+            case "${MM_X_TV_TYPE}" in
+                NTSC)
+                    MM_X_MODE="720x480Noscale"
+                    ;;
+                PAL)
+                    MM_X_MODE="720x576Noscale"
+                    ;;
+            esac
+        fi
+    fi
+    conf_variable_write MM_X_ENABLED       "${MM_X_ENABLED}"
+    conf_variable_write MM_X_WM_ENABLED    "${MM_X_WM_ENABLED}"
+    conf_variable_write MM_X_VNC_ENABLED   "${MM_X_VNC_ENABLED}"
+    conf_variable_write MM_X_VGA_ENABLED   "${MM_X_VGA_ENABLED}"
+    conf_variable_write MM_X_TV_ENABLED    "${MM_X_TV_ENABLED}"
+    conf_variable_write MM_X_TV_TYPE       "${MM_X_TV_TYPE}"
+    conf_variable_write MM_X_TV_OUTPUT     "${MM_X_TV_OUTPUT}"
+    conf_variable_write MM_X_REFRESH       "${MM_X_REFRESH}"
+    conf_variable_write MM_X_MODE          "${MM_X_MODE}"
+    conf_variable_write MM_X_MODELINE      "${MM_X_MODELINE}"
+    conf_variable_write MM_X_RESOLUTION_X  "${MM_X_RESOLUTION_X}"
+    conf_variable_write MM_X_RESOLUTION_Y  "${MM_X_RESOLUTION_Y}"
+    conf_variable_write MM_X_DISPLAYSIZE_X "${MM_X_DISPLAYSIZE_X}"
+    conf_variable_write MM_X_DISPLAYSIZE_X "${MM_X_DISPLAYSIZE_Y}"
+
+    # Myth master backend.
+    [ -z "${MM_MYTH_SERVER}"     ] && MM_MYTH_SERVER="${MM_TFTP_SERVER}"
+    [ -z "${MM_MYTH_DBUSERNAME}" ] && MM_MYTH_DBUSERNAME="mythtv"
+    [ -z "${MM_MYTH_DBPASSWORD}" ] && MM_MYTH_DBPASSWORD="mythtv"
+    [ -z "${MM_MYTH_DBNAME}"     ] && MM_MYTH_DBNAME="mythconverg"
+    conf_variable_write MM_MYTH_SERVER     "${MM_MYTH_SERVER}"
+    conf_variable_write MM_MYTH_DBUSERNAME "${MM_MYTH_DBUSERNAME}"
+    conf_variable_write MM_MYTH_DBPASSWORD "${MM_MYTH_DBPASSWORD}"
+    conf_variable_write MM_MYTH_DBNAME     "${MM_MYTH_DBNAME}"
+
+    # Myth plugins.
+    [ -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" ] && MM_MYTHTV_OPTICAL_DISK_ENABLED="yes"
+    [ -z "${MM_MYTHDVD_ENABLED}"             ] && MM_MYTHDVD_ENABLED="yes"
+    [ -z "${MM_MYTHGALLERY_ENABLED}"         ] && MM_MYTHGALLERY_ENABLED="yes"
+    [ -z "${MM_MYTHMUSIC_ENABLED}"           ] && MM_MYTHMUSIC_ENABLED="yes"
+    [ -z "${MM_MYTHVIDEO_ENABLED}"           ] && MM_MYTHVIDEO_ENABLED="yes"
+    [ -z "${MM_MYTHWEATHER_ENABLED}"         ] && MM_MYTHWEATHER_ENABLED="yes"
+    conf_variable_write MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
+    conf_variable_write MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
+    conf_variable_write MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
+    conf_variable_write MM_MYTHMUSIC_ENABLED           "${MM_MYTHMUSIC_ENABLED}"
+    conf_variable_write MM_MYTHVIDEO_ENABLED           "${MM_MYTHVIDEO_ENABLED}"
+    conf_variable_write MM_MYTHWEATHER_ENABLED         "${MM_MYTHWEATHER_ENABLED}"
+
+    # Extras.
+    conf_variable_write MM_EXTRAS_URL "${MM_EXTRAS_URL}"
+
+    # Themecache.
+    conf_variable_write MM_THEMECACHE_URL "${MM_THEMECACHE_URL}"
+
+    # Media shares.
+    conf_variable_write MM_MYTHGALLERY_URL "${MM_MYTHGALLERY_URL}"
+    conf_variable_write MM_MYTHMUSIC_URL   "${MM_MYTHMUSIC_URL}"
+    conf_variable_write MM_MYTHVIDEO_URL   "${MM_MYTHVIDEO_URL}"
+
+    # LIRC.
+    case "${MM_LIRC_DRIVER}" in
+        irman)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/ttyS0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="8250"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+        imon)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_imon"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+        mceusb)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_mceusb"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+        mceusb2)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_mceusb2"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+        serial)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_serial"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+        streamzap)
+            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
+            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_streamzap"
+            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
+            ;;
+    esac
+    [ -z "${MM_LIRC_IREXEC_ENABLED}" ] && MM_LIRC_IREXEC_ENABLED="no"
+    conf_variable_write MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
+    conf_variable_write MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
+    conf_variable_write MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
+    conf_variable_write MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
+    conf_variable_write MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
+    conf_variable_write MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
+
+    return 0
+}
+
+start() {
+    mm_message_output info 'processing configuration ...'
+
+    # Get minimyth.conf file
+    mm_conf_get /minimyth.conf /etc/minimyth.d/minimyth.conf
+
+    # Make sure that there is a minimyth.conf file.
+    if [ ! -e /etc/minimyth.d/minimyth.conf ] ; then
+        mm_message_output err 'error: no minimyth.conf configuration file found.'
+        exit 1
+    fi
+
+    conf_init
+    conf_check
+    conf_write
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

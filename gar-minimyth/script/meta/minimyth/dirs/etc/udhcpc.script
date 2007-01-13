@@ -1,0 +1,68 @@
+#!/bin/sh
+################################################################################
+# udhcpc.script
+################################################################################
+
+. /etc/conf
+
+DHCP_CONF="/etc/conf.d/dhcp"
+NTP_CONF="/etc/ntp.conf"
+RESOLV_CONF="/etc/resolv.conf"
+
+case "$1" in
+    deconfig)
+        # If the root file system is not network mounted, reset the network interface.
+        if [ ! "$MM_ROOTFS_TYPE" = "nfs" ] ; then
+            ifconfig $interface 0.0.0.0
+        fi
+        ;;
+    renew|bound)
+        [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+        [ -n "$subnet"    ] && NETMASK="netmask $subnet"
+        ifconfig $interface $ip $BROADCAST $NETMASK
+
+        if [ -n "$router" ] ; then
+            while route del default gw 0.0.0.0 dev $interface ; do
+                :
+            done
+
+            for i in $router ; do
+                route add default gw $i dev $interface
+            done
+        fi
+
+        if [ -n "$hostname" ] ; then
+            hostname $hostname
+        fi
+
+        rm -f $RESOLV_CONF~
+        [ -n "$domain" ] && echo search $domain >> $RESOLV_CONF~
+        for i in $dns ; do
+            echo nameserver $i >> $RESOLV_CONF~
+        done
+        mv -f $RESOLV_CONF~ $RESOLV_CONF
+
+        rm -f $NTP_CONF~
+        for i in $ntpsrv ; do
+            echo server $i >> $NTP_CONF~
+        done
+        mv -f $NTP_CONF~ $NTP_CONF
+
+        MM_LOG_SERVER=
+        for i in $logsvr ; do
+            if [ -z "$MM_LOG_SERVER" ] ; then
+                MM_LOG_SERVER=$i
+            fi
+        done
+        MM_TFTP_SERVER=$siaddr
+        MM_TFTP_ROOTDIR=`echo $boot_file | sed 's%[^/]*$%%' | sed 's%/$%%'`
+             
+        rm -f $DHCP_CONF~
+        echo "MM_LOG_SERVER=\"$MM_LOG_SERVER\""     >> $DHCP_CONF~
+        echo "MM_TFTP_SERVER=\"$MM_TFTP_SERVER\""   >> $DHCP_CONF~
+        echo "MM_TFTP_ROOTDIR=\"$MM_TFTP_ROOTDIR\"" >> $DHCP_CONF~
+        mv -f $DHCP_CONF~ $DHCP_CONF
+        ;;
+esac
+
+exit 0

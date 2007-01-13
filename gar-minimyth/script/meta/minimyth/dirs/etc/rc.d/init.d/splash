@@ -1,0 +1,66 @@
+#!/bin/sh
+################################################################################
+# splash
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting splash screen ...'
+
+    SPLASH_ENABLE=yes
+
+    # Disable splash screen when more than kernel errors are logged to the console.
+    # That is when the loglevel is greater than 4.
+    PRINTK=`cat /proc/sys/kernel/printk`
+    LOGLEVEL=`echo ${PRINTK} | cut -d' ' -f 1`
+    [ ${LOGLEVEL} -gt 4 ] && SPLASH_ENABLE=no
+
+    # Disable splash screen when the video resolution is not compatible.
+    # That is when the resolution is not 800x600 or color depth is less than 16.
+    GEOMETRY=`fbset | grep geometry`
+    XRES=` echo ${GEOMETRY} | cut -d' ' -f 2`
+    YRES=` echo ${GEOMETRY} | cut -d' ' -f 3`
+    VXRES=`echo ${GEOMETRY} | cut -d' ' -f 4`
+    VYRES=`echo ${GEOMETRY} | cut -d' ' -f 5`
+    DEPTH=`echo ${GEOMETRY} | cut -d' ' -f 6`
+    [ ${XRES}  -ne 800 ] && SPLASH_ENABLE=no
+    [ ${YRES}  -ne 600 ] && SPLASH_ENABLE=no
+    [ ${VXRES} -ne 800 ] && SPLASH_ENABLE=no
+    [ ${VYRES} -ne 600 ] && SPLASH_ENABLE=no
+    [ ${DEPTH} -lt 16  ] && SPLASH_ENABLE=no
+
+    if [ "${SPLASH_ENABLE}" = "yes" ] ; then
+        chvt 1
+        mkdir -p /var/cache/splash
+        splash_util --daemon --theme="MythTV"
+        echo "set mode silent"                        >> /var/cache/splash/fifo
+        echo "progress 0"                             >> /var/cache/splash/fifo
+        echo "set message starting splash screen ..." >> /var/cache/splash/fifo
+        echo "repaint"                                >> /var/cache/splash/fifo
+    fi
+
+    return 0
+}
+
+stop() {
+    mm_message_output info 'stopping splash screen ...'
+
+    if [ -e "/var/cache/splash" ] ; then
+        echo "setmode off" >> /var/cache/splash/fifo
+    fi
+
+    [ -n "`pidof -s splash_util`" ] && killall splash_util
+
+    if [ -e "/var/cache/splash" ] ; then
+        rm -rf /var/cache/spalsh
+    fi
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

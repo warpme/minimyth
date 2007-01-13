@@ -111,8 +111,8 @@ mm-make-conf:
 	@mkdir -p $(mm_DESTDIR)$(sysconfdir)
 	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
 	@cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.conf
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
@@ -182,6 +182,7 @@ mm-copy-bins:
 			echo "warning: binary \"$${bin}\" not found." ; \
 		fi ; \
 	done
+	@cp ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)/
 
 mm-copy-etcs:
 	@echo 'copying etcs'
@@ -323,7 +324,6 @@ mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
 	@mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
 	@rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
-	@cp -f ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)
 
 mm-make-initrd:
 	@if test -e $(mm_DESTDIR).ro ; then rm -rf $(mm_DESTDIR).ro ; fi
