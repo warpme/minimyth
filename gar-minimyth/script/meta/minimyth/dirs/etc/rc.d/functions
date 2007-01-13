@@ -83,15 +83,15 @@ mm_message_output() {
 #             nfs://server.home/home/public/music
 #             cifs://user:pass@server.home/home/public/music,domain=home
 #             conf:themecache.tar.bz2
-#         The valid protocol values are: nfs, smbfs (aka smb), cifs, tftp and
-#         conf. For nfs, smbfs and cifs, the URL points to a remote directory.
-#         For tftp, the URL points to a tarfile (*.tar.bz2) or a cramfs image
-#         (*.cmg) on a TFTP server that will be downloaded and expanded into
-#         (for files) or downloaded and mounted at (for images) the mount point.
-#         For conf, the URL points to a tarfile (*.tar.bz2) or a cramfs image
-#         (*.cmg) in the MiniMyth conf directory on the TFTP server that will be
-#         downloaded and expanded into (for files) or downloaded and mounted at
-#         (for images) the mount point.
+#         The valid protocol values are: nfs, cifs, tftp and conf. For nfs and
+#         cifs, the URL points to a remote directory. For tftp, the URL points
+#         to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) on a TFTP server
+#         that will be downloaded and expanded into (for files) or downloaded
+#         and mounted at (for images) the mount point. For conf, the URL points
+#         to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) in the MiniMyth
+#         conf directory on the TFTP server that will be downloaded and expanded
+#         into (for files) or downloaded and mounted at (for images) the mount
+#         point.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
@@ -123,16 +123,6 @@ mm_url_mount() {
         MOUNT_VFSTYPE=nfs
         MOUNT_DEVICE="${URL_SERVER}:${URL_PATH}"
         MOUNT_OPTIONS="${MOUNT_OPTIONS},rsize=8192,wsize=8192"
-    elif [ "${URL_PROTOCOL}" = "smbfs" ] || [ "${URL_PROTOCOL}" = "smb" ] ; then
-        MOUNT_VFSTYPE=smbfs
-        EXTRA_OPTIONS="-n"
-        MOUNT_DEVICE="//${URL_SERVER}${URL_PATH}"
-        if [ ! "${URL_USERNAME}" = "" ] ; then
-            MOUNT_OPTIONS="${MOUNT_OPTIONS},username=${URL_USERNAME}"
-        fi
-        if [ ! "${URL_PASSWORD}" = "" ] ; then
-            MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
-        fi
     elif [ "${URL_PROTOCOL}" = "cifs" ] ; then
         MOUNT_VFSTYPE=cifs
         EXTRA_OPTIONS="-n"
@@ -194,9 +184,6 @@ mm_url_mount() {
             echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
             ;;
         nfs)
-            echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
-            ;;
-        smbfs)
             echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
             ;;
     esac

@@ -64,6 +64,13 @@ start() {
         MM_X_MODE=`echo ${MM_X_MODELINE} | sed 's%^Modeline "\([^"]*\)".*%\1%'`
     fi
 
+    # Ignore EDID when using a user defined modeline.
+    if   [ ! -z "${MM_X_MODELINE}" ] ; then
+        MM_X_EDID_IGNORE="true"
+    else
+        MM_X_EDID_IGNORE="flase"
+    fi
+
     # Set MM_X_DISPLAYSIZE
     if   [ ! -z "${MM_X_DISPLAYSIZE_X}" ] && [ ! -z "${MM_X_DISPLAYSIZE_Y}" ] ; then
         MM_X_DISPLAYSIZE="DisplaySize ${MM_X_DISPLAYSIZE_X} ${MM_X_DISPLAYSIZE_Y}"
@@ -110,6 +117,7 @@ start() {
     sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%"     /etc/X11/xorg.conf
     sed -i "s%@MM_X_MODULE_DRI@%${MM_X_MODULE_DRI}%"       /etc/X11/xorg.conf
     sed -i "s%@MM_X_MODULEPATH@%${MM_X_MODULEPATH}%"       /etc/X11/xorg.conf
+    sed -i "s%@MM_X_EDID_IGNORE@%${MM_X_EDID_IGNORE}%"     /etc/X11/xorg.conf
 
     # Turn off splash screen.
     mm_splash_halt

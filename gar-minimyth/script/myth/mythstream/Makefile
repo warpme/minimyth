@@ -34,7 +34,7 @@ GAR_EXTRA_CONF += myth/mythtv/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@ln -sf $(DESTDIR)$(MYTHTV_SOURCEDIR) $(WORKSRC)/mythstream/mythtv
+	@ln -sf $(DESTDIR)$(MYTHTV_SOURCEDIR)/libs/libmyth $(WORKSRC)/mythstream/mythtv
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

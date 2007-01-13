@@ -3,7 +3,7 @@ GARVERSION = 6.3.2
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES = Mesa-$(GARVERSION).patch.gar
+PATCHFILES = Mesa-$(GARVERSION).patch.gar Mesa-$(GARVERSION)-gen_matypes.patch
 LICENSE = 
 
 DESCRIPTION = 
@@ -14,13 +14,22 @@ DEPENDS = lang/c X11/X11 lib/libdrm
 
 WORKSRC = $(WORKDIR)/Mesa-$(GARVERSION)
 
-MESA_CONFIG = linux-dri-x86
+MESA_CONFIG = $(strip \
+	$(if $(filter i386  ,$(KERNEL_ARCH)),linux-dri-x86   ) \
+	$(if $(filter x86_64,$(KERNEL_ARCH)),linux-dri-x86-64))
+MESA_LIBDIR = $(strip \
+	$(if $(filter i386  ,$(KERNEL_ARCH)),lib  ) \
+	$(if $(filter x86_64,$(KERNEL_ARCH)),lib64))
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
-GAR_EXTRA_CONF += kernel/drm/package-api.mk
+BUILD_ARGS = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CFLAGS="$(build_CFLAGS)"
+
+GAR_EXTRA_CONF += kernel/linux/package-api.mk kernel/drm/package-api.mk
 include ../../gar.mk
 
 configure-custom:
@@ -35,7 +44,7 @@ configure-custom:
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(x11libdir)
-	@cp -fd $(WORKSRC)/lib/libGL.*         $(DESTDIR)$(x11libdir)/
+	@cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGL.*         $(DESTDIR)$(x11libdir)/
 	@mkdir -p $(DESTDIR)$(x11libdir)/modules/dri/
-	@cp -fd $(WORKSRC)/lib/unichrome_dri.* $(DESTDIR)$(x11libdir)/modules/dri/
+	@cp -fd $(WORKSRC)/$(MESA_LIBDIR)/unichrome_dri.* $(DESTDIR)$(x11libdir)/modules/dri/
 	@$(MAKECOOKIE)

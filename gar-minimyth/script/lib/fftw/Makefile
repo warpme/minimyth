@@ -3,6 +3,7 @@ GARVERSION = 2.1.5
 CATEGORIES = lib
 MASTER_SITES = http://www.fftw.org/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -16,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
 	--disable-fortran \
 	--enable-i386-hacks \
 	--with-gnu-ld

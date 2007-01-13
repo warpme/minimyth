@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch
+PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -17,7 +17,7 @@ DEPENDS += lib/libdvdread
 # mythgallery
 DEPENDS += lib/libexif lib/libtiff
 # mythmusic
-DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/Mesa X11/SDL
+DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/SDL
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -25,24 +25,18 @@ BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS += \
+	--disable-all \
 	--enable-opengl \
-	--disable-mythbrowser \
 	--enable-mythdvd \
-		--disable-transcode \
 		--enable-vcd \
 	--enable-mythgallery \
 		--enable-exif \
-	--disable-mythgame \
 	--enable-mythmusic \
-		--enable-fftw \
 		--enable-sdl \
 		--enable-aac \
 	--enable-mythnews \
-	--disable-mythphone \
-		--disable-festival \
 	--enable-mythvideo \
 	--enable-mythweather
-
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
@@ -54,7 +48,7 @@ BUILD_ENV     += \
 INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+GAR_EXTRA_CONF += kernel/linux/package-api.mk myth/mythtv/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
@@ -67,6 +61,10 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 disabled-checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+post-patch:
+	@$(if $(filter x86_64,$(KERNEL_ARCH)),echo "DEFINES -= HAVE_MMX" >> $(WORKSRC)/settings.pro)
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

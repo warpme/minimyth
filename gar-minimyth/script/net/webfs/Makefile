@@ -3,6 +3,7 @@ GARVERSION = 1.21
 CATEGORIES = net
 MASTER_SITES = http://dl.bytesex.org/releases/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz Make.config
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION =

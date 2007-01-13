@@ -23,6 +23,7 @@ DEPENDS = \
 	utils/lm_sensors \
 	utils/lsdvd \
 	kernel/module-init-tools \
+	net/mount.cifs \
 	mediaplayers/mplayer \
 	myth/myth \
 	net/ntp \
@@ -30,7 +31,6 @@ DEPENDS = \
 	net/portmap \
 	qt/qt \
 	X11/rxvt \
-	net/samba \
 	system/splashutils \
 	utils/strace \
 	system/sysvinit \
