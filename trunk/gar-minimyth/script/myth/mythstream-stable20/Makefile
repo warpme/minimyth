@@ -35,7 +35,6 @@ INSTALL_ARGS  = \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
-
 GAR_EXTRA_CONF += myth/mythtv-stable20/package-api.mk
 include ../../gar.mk
 
