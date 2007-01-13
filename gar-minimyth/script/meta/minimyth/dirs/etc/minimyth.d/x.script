@@ -13,6 +13,8 @@ MM_X_RESOLUTION_Y=`mm_var_get MM_X_RESOLUTION_Y`
 MM_X_REFRESH=`mm_var_get MM_X_REFRESH`
 MM_X_MODE=`mm_var_get MM_X_MODE`
 MM_X_MODELINE=`mm_var_get MM_X_MODELINE`
+MM_X_DISPLAYSIZE_X=`mm_var_get MM_X_DISPLAYSIZE_X`
+MM_X_DISPLAYSIZE_Y=`mm_var_get MM_X_DISPLAYSIZE_Y`
 
 MM_HARDWARE_NORTHBRIDGE=`mm_var_get MM_HARDWARE_NORTHBRIDGE`
 
@@ -30,19 +32,27 @@ elif [ "${MM_X_VGA_ENABLED}" = "yes" ] && [ "${MM_X_TV_ENABLED}" = "yes" ] ; the
     MM_X_DEVICE="CRT,TV"
 fi
 
-# Override M_X_MODE and M_X_MODELINE if MM_X_RESOLUTION_X and MM_X_RESOLUTION_Y are set.
+# Override MM_X_MODE and MM_X_MODELINE if MM_X_RESOLUTION_X and MM_X_RESOLUTION_Y are set.
 if   [ ! -z "${MM_X_RESOLUTION_X}" ] && [ ! -z "${MM_X_RESOLUTION_Y}" ] ; then
     MM_X_MODELINE=`gtf ${MM_X_RESOLUTION_X} ${MM_X_RESOLUTION_Y} ${MM_X_REFRESH} | sed 's% *#.*%%'`
     MM_X_MODELINE=`echo ${MM_X_MODELINE}`
     MM_X_MODE=`echo ${MM_X_MODELINE} | sed 's%^Modeline "\([^"]*\)".*%\1%'`
 fi
 
-sed -i "s%@MM_X_DEVICE@%${MM_X_DEVICE}%"       /etc/X11/xorg.conf
-sed -i "s%@MM_X_TV_TYPE@%${MM_X_TV_TYPE}%"     /etc/X11/xorg.conf
-sed -i "s%@MM_X_TV_OUTPUT@%${MM_X_TV_OUTPUT}%" /etc/X11/xorg.conf
-sed -i "s%@MM_X_REFRESH@%${MM_X_REFRESH}%"     /etc/X11/xorg.conf
-sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"   /etc/X11/xorg.conf
-sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"           /etc/X11/xorg.conf
+# Set MM_X_DISPLAYSIZE
+if   [ ! -z "${MM_X_DISPLAYSIZE_X}" ] && [ ! -z "${MM_X_DISPLAYSIZE_Y}" ] ; then
+    MM_X_DISPLAYSIZE="DisplaySize ${MM_X_DISPLAYSIZE_X} ${MM_X_DISPLAYSIZE_Y}"
+else
+    MM_X_DISPLAYSIZE=
+fi
+
+sed -i "s%@MM_X_DEVICE@%${MM_X_DEVICE}%"           /etc/X11/xorg.conf
+sed -i "s%@MM_X_TV_TYPE@%${MM_X_TV_TYPE}%"         /etc/X11/xorg.conf
+sed -i "s%@MM_X_TV_OUTPUT@%${MM_X_TV_OUTPUT}%"     /etc/X11/xorg.conf
+sed -i "s%@MM_X_REFRESH@%${MM_X_REFRESH}%"         /etc/X11/xorg.conf
+sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"       /etc/X11/xorg.conf
+sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"               /etc/X11/xorg.conf
+sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%" /etc/X11/xorg.conf
 
 case "${MM_HARDWARE_NORTHBRIDGE}" in
     CLE266)
