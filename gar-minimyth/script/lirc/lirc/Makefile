@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11 lirc/libirman
+DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb lirc/libirman
 DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.mceusbnew lirc/lirc.serial lirc/lirc.streamzap
 
 WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
@@ -21,9 +21,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-sandboxed \
-	--x-includes="$(DESTDIR)$(x11includedir)" \
-	--x-libraries="$(DESTDIR)$(x11libdir)" \
 	--with-gnu-ld \
+	--without-x \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
 	--with-driver=none
