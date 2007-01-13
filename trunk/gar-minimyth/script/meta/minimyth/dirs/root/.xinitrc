@@ -4,7 +4,7 @@ if [ "`mm_var_get MM_X_VNC_ENABLED`" = "yes" ] ; then
 	x11vnc -xinerama -xrandr -forever -q -bg
 fi
 if [ "`mm_var_get MM_X_WM_ENABLED`" = "yes" ] ; then
-	ratpoison &
+	aewm &
 fi
 if [ -z "`mm_var_get MM_DEBUG`" ] ; then
 	mythfrontend        >> "`mm_var_get MM_LOGFILE`" 2>&1

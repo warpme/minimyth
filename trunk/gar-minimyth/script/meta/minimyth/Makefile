@@ -12,6 +12,7 @@ DESTIMG = $(MINIMYTHIMG)
 
 DEPENDS = \
 	system/acpid \
+	X11/aewm \
  	utils/alsa-utils \
 	system/bootsplash \
 	utils/busybox \
@@ -21,6 +22,7 @@ DEPENDS = \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
+	X11/Mesa \
 	kernel/module-init-tools \
 	myth/mplayer \
 	myth/mythplugins \
@@ -30,14 +32,12 @@ DEPENDS = \
 	net/ntp \
 	net/portmap \
 	qt/qt \
-	X11/ratpoison \
 	X11/rxvt \
 	net/samba \
 	utils/strace \
 	net/utelnetd \
 	system/udev \
 	X11/unichrome \
-	X11/unichrome_dri \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \

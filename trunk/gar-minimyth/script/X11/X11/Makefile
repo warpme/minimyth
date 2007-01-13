@@ -239,6 +239,7 @@ configure-X11_misc:
 	@$(call CONFIG_FILE_APPEND, BuildXcursorLibrary       , NO)
 	@$(call CONFIG_FILE_APPEND, BuildXcursorgen           , NO)
 	@$(call CONFIG_FILE_APPEND, BuildDmx                  , NO)
+	@$(call CONFIG_FILE_APPEND, BuildOSMesaLib            , NO)
 	@$(call CONFIG_FILE_APPEND, BuildXterm                , NO)
 	@$(call CONFIG_FILE_APPEND, BuildIPv6                 , NO)
 	@$(MAKECOOKIE)
