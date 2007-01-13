@@ -1,7 +1,7 @@
-diff -Naur freetype-2.1.9-old/builds/unix/freetype-config.in freetype-2.1.9-new/builds/unix/freetype-config.in
---- freetype-2.1.9-old/builds/unix/freetype-config.in	2004-04-17 11:58:43.000000000 -0700
-+++ freetype-2.1.9-new/builds/unix/freetype-config.in	2004-12-14 07:05:57.018128384 -0800
-@@ -7,7 +7,6 @@
+diff -Naur freetype-2.1.10-old/builds/unix/freetype-config.in freetype-2.1.10-new/builds/unix/freetype-config.in
+--- freetype-2.1.10-old/builds/unix/freetype-config.in	2005-06-04 14:58:48.000000000 -0700
++++ freetype-2.1.10-new/builds/unix/freetype-config.in	2005-07-03 17:02:24.000000000 -0700
+@@ -16,7 +16,6 @@
  libdir=@libdir@
  enable_shared=@enable_shared@
  wl=@wl@
@@ -9,7 +9,7 @@ diff -Naur freetype-2.1.9-old/builds/unix/freetype-config.in freetype-2.1.9-new/
  
  usage()
  {
-@@ -105,9 +104,9 @@
+@@ -128,9 +127,9 @@
  fi
  
  if test "$echo_cflags" = "yes" ; then
@@ -21,7 +21,7 @@ diff -Naur freetype-2.1.9-old/builds/unix/freetype-config.in freetype-2.1.9-new/
    else
      echo $cflags
    fi
-@@ -115,12 +114,9 @@
+@@ -138,12 +137,9 @@
  
  if test "$echo_libs" = "yes" ; then
    rpath=
@@ -29,13 +29,13 @@ diff -Naur freetype-2.1.9-old/builds/unix/freetype-config.in freetype-2.1.9-new/
 -    eval "rpath=\"$hardcode_libdir_flag_spec\""
 -  fi
    libs="-lfreetype @LIBZ@"
-   if test "$libdir" != "/usr/lib" ; then
+   if test "$libdir" != "/usr/lib" && test "$libdir" != "/usr/lib64"; then
 -    echo -L$libdir $rpath $libs
-+    echo -L${DESTDIR}/$libdir $rpath $libs
++    echo -L$libdir $libs
    else
      echo $libs
    fi
-@@ -128,7 +124,7 @@
+@@ -151,7 +147,7 @@
  
  if test "$echo_libtool" = "yes" ; then
    convlib="libfreetype.la"
