@@ -25,11 +25,8 @@ DEPENDS = \
 	utils/lsdvd \
 	kernel/module-init-tools \
 	X11/Mesa \
-	myth/mplayer \
-	myth/mythplugins \
-	myth/mythstream \
-	myth/mythtv \
-	myth/myththemes \
+	mediaplayers/mplayer \
+	myth/myth \
 	net/ntp \
 	net/portmap \
 	qt/qt \
@@ -43,7 +40,7 @@ DEPENDS = \
 	net/webfs \
 	X11/X11 \
 	X11/x11vnc \
-	myth/xine-ui \
+	mediaplayers/xine-ui \
 	system/zoneinfo \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls)))
 BUILDDEPS = \

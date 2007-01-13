@@ -1,5 +1,4 @@
 GARNAME = myththemes
-#GARVERSION = $(MYTHTV_VERSION)
 GARVERSION = 0.18
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/

@@ -1,6 +1,6 @@
 GARNAME = xine-lib
 GARVERSION = 1.1.0
-CATEGORIES = myth
+CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar

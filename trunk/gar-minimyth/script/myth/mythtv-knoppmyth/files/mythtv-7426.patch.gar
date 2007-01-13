@@ -1,0 +1,100 @@
+diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
+--- mythtv-7426-old/configure	2005-10-25 09:18:36.000000000 -0700
++++ mythtv-7426-new/configure	2005-10-25 09:28:44.000000000 -0700
+@@ -856,26 +856,7 @@
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "include"`
+-        SRCH=`echo $INCL | sed s/"include "//g`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat /etc/$x | grep -v "#" | grep -v "include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
+-    fi
+-
+-    LIBPATHS="`echo $LIBPATHS /lib /usr/lib /usr/local/lib /usr/X11R6/lib | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_x11libdir@ | sed s/'\/ '/' '/g` "
+ 
+     HAS_IT="no"
+     for LIBPATH in $LIBPATHS ; do
+@@ -888,7 +869,7 @@
+ 
+ has_header()
+ {
+-    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_x11includedir@"
+     INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+     HPATHS="$HPATHS `echo $INCL | sed s/lib/include/g` "
+ 
+diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile	2005-10-25 09:18:36.000000000 -0700
++++ mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile	2005-10-25 09:34:24.000000000 -0700
+@@ -15,7 +15,7 @@
+ # Libraries
+ 
+ STDLIBS    = -lm
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
+ PROGRAM    = cidbcast
+ 
+ #################################################################################
+diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile	2005-10-25 09:18:36.000000000 -0700
++++ mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile	2005-10-25 09:34:24.000000000 -0700
+@@ -9,13 +9,13 @@
+ RM       =  rm 
+ RM_FLAGS =  -f
+ 
+-CFLAGS  	= -g -Wall `xml2-config --cflags` -O
++CFLAGS  	= -g -Wall `@GAR_DESTDIR@@GAR_bindir@/xml2-config --cflags` -O
+ CDEFS   	= -DDEBUG
+ 
+ # Libraries
+ 
+-STDLIBS    = -lm `xml2-config --libs` -lxslt
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_x11libdir@ -lX11
+ PROGRAM = mythudprelay
+ 
+ #################################################################################
+diff -Naur mythtv-7426-old/libs/libmythtv/libmythtv.pro mythtv-7426-new/libs/libmythtv/libmythtv.pro
+--- mythtv-7426-old/libs/libmythtv/libmythtv.pro	2005-10-25 09:18:23.000000000 -0700
++++ mythtv-7426-new/libs/libmythtv/libmythtv.pro	2005-10-25 09:32:14.000000000 -0700
+@@ -32,9 +32,9 @@
+ TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
+ 
+ DEFINES += _LARGEFILE_SOURCE
+-QMAKE_CXXFLAGS_RELEASE += `freetype-config --cflags`
+-QMAKE_CXXFLAGS_DEBUG += `freetype-config --cflags`
+-QMAKE_LFLAGS_SHLIB += `freetype-config --libs`
++QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++QMAKE_LFLAGS_SHLIB += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+ 
+ macx {
+     # Mac OS X Frameworks
+diff -Naur mythtv-7426-old/settings.pro mythtv-7426-new/settings.pro
+--- mythtv-7426-old/settings.pro	2005-10-25 09:18:36.000000000 -0700
++++ mythtv-7426-new/settings.pro	2005-10-25 09:33:19.000000000 -0700
+@@ -1,7 +1,7 @@
+ CONFIG += $$CCONFIG
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @GAR_prefix@
+ }
+ 
+ LIBVERSION = 0.18
