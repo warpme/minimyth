@@ -20,6 +20,7 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "    <title>MiniMyth Frontend Software</title>"
 /bin/echo "    <style type=\"text/css\" title=\"main-styles\">"
 /bin/echo "      @import \"../css/linpvr.css\";"
+/bin/echo "      @import \"../css/linpvr-sidebar-hide.css\";"
 /bin/echo "    </style>"
 /bin/echo "  </head>"
 /bin/echo "  <body>"
