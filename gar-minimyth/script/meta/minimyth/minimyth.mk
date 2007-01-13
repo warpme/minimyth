@@ -159,7 +159,7 @@ mm-copy-bins:
 			source_bin="$(DESTDIR)/$${bindir}/$${bin}" ; \
 			target_bin="$(mm_ROOTFSDIR)/$${bindir}/$${bin}" ; \
 			if test ! -e $${target_bin} ; then \
-                                target_dir=`echo $${target_bin} | sed -e 's%/[^/]*$$%/%'` ; \
+                                target_dir=`dirname $${target_bin}` ; \
                                 mkdir -p $${target_dir} ; \
 				cp -fa  $${source_bin} $${target_bin} ; \
 			fi ; \
@@ -185,7 +185,7 @@ mm-copy-etcs:
 			target_etc="$(mm_ROOTFSDIR)/$${etcdir}/$${etc}" ; \
 			if test -e $${source_etc} ; then \
 				if test ! -e $${target_etc} ; then \
-                                        target_dir=`echo $${target_etc} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        target_dir=`dirname $${target_etc}` ; \
                                         mkdir -p $${target_dir} ; \
 					cp -fa  $${source_etc} $${target_etc} ; \
 				fi ; \
@@ -211,7 +211,7 @@ mm-copy-shares:
 			target_share="$(mm_ROOTFSDIR)/$${sharedir}/$${share}" ; \
 			if test -e $${source_share} ; then \
 				if test ! -e $${target_share} ; then \
-                                        target_dir=`echo $${target_share} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        target_dir=`dirname $${target_share}` ; \
                                         mkdir -p $${target_dir} ; \
 					cp -fa  $${source_share} $${target_share} ; \
 				fi ; \
@@ -234,11 +234,11 @@ mm-copy-libs:
 					target_lib="$(mm_ROOTFSDIR)/$${libdir}/$${lib}" ; \
 					if test ! -e $${target_lib} ; then \
 						if test -d $${source_lib} ; then \
-                                        		target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        		target_dir=`dirname $${target_lib}` ; \
                                         		mkdir -p $${target_dir} ; \
 							cp -fa  $${source_lib} $${target_lib} ; \
 						else \
-                                        		target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        		target_dir=`dirname $${target_lib}` ; \
                                         		mkdir -p $${target_dir} ; \
 							cp -f  $${source_lib} $${target_lib} ; \
 						fi ; \
@@ -269,7 +269,7 @@ mm-%/copy-libs:
 								source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
 								target_lib="$(mm_ROOTFSDIR)/$${libdir}/$${lib}" ; \
 								if test ! -e $${target_lib} ; then \
-                                                			target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                                			target_dir=`dirname $${target_lib}` ; \
                                                 			mkdir -p $${target_dir} ; \
 									cp -f  $${source_lib} $${target_lib} ; \
 									make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
