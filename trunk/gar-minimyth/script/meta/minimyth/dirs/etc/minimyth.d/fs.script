@@ -4,8 +4,6 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-# Create /proc
-mount -n -t proc /proc /proc
 # Create /sys
 mount -n -t sysfs /sys /sys
 # Create /var
@@ -18,7 +16,6 @@ mount -n -t tmpfs -o size=512K tmpfs /tmp
 # Make remaining directories rw
 mkdir -p /var/unionfs
 mount -n -t tmpfs tmpfs /var/unionfs
-modprobe unionfs
 mm_dir_make_rw /bin
 mm_dir_make_rw /etc
 mm_dir_make_rw /lib
