@@ -7,7 +7,7 @@ DISTFILES = \
 	$(if $(filter 1.1.2,$(GARVERSION)),$(DISTNAME).tar.bz2)
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch $(DISTNAME)-alsa_configure.patch
 PATCHFILES += $(if $(filter 1.1.1,$(GARVERSION)),$(DISTNAME)-xxmc_subpicture.patch)
-LICENSE = 
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

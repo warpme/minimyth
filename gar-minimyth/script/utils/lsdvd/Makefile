@@ -3,7 +3,7 @@ GARVERSION = 0.16
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

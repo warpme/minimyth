@@ -4,7 +4,7 @@ CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch
-LICENSE =
+LICENSE = BSD
 
 DESCRIPTION =
 define BLURB

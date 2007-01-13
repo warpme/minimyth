@@ -1,10 +1,9 @@
 GARNAME = unichrome
 GARVERSION = 20050815
 CATEGORIES = xorg-old
-#MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-imakefile.patch
-LICENSE =
+LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB

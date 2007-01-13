@@ -3,7 +3,7 @@ GARVERSION = 1.1.0
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xvid.org/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

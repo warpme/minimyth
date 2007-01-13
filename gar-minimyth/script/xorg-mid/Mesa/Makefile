@@ -4,14 +4,12 @@ CATEGORIES = xorg-mid
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
 PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
-LICENSE = 
+LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
 define BLURB
 endef
 
-#DEPENDS   = lang/c++ lib/expat xorg-new/libdrm xorg-new/xproto xorg-new/libX11 xorg-new/glproto xorg-new/xf86vidmodeproto xorg-new/libXext xorg-new/libXxf86vm xorg-new/libXmu xorg-new/libXi
-#BUILDDEPS = xorg-new/makedepend
 DEPENDS = lang/c xorg-mid/X11 xorg-mid/libdrm
 
 PWD := $(shell pwd)

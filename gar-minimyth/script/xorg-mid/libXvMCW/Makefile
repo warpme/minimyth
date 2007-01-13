@@ -4,7 +4,7 @@ CATEGORIES = xorg-mid
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/unichrome/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch
-LICENSE =
+LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB
