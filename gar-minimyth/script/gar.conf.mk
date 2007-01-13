@@ -148,7 +148,7 @@ build_GARHOST := $(GARBUILD)
 build_NODEPEND += kernel/linux-libc-headers devel/glibc
 
 # This is for foo-config chaos
-PKG_CONFIG_PATH=$(DESTDIR)$(libdir)/pkgconfig/
+PKG_CONFIG_PATH = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig
 
 # Put these variables in the environment during the
 # configure build and install stages
