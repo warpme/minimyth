@@ -3,7 +3,7 @@ GARVERSION = 1.2.8
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-config.tar.gz
-PATCHFILES = $(DISTNAME)-DESTDIR.patch
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = png
 png_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -28,6 +28,6 @@ INSTALL_OVERRIDE_DIRS = prefix exec_prefix
 include ../../gar.mk
 
 post-install:
-	rm -f $(DESTDIR)$(libdir)/libpng12.la
-	rm -f $(DESTDIR)$(libdir)/libpng.la
-	$(MAKECOOKIE)
+	@rm -f $(DESTDIR)$(libdir)/libpng12.la
+	@rm -f $(DESTDIR)$(libdir)/libpng.la
+	@$(MAKECOOKIE)

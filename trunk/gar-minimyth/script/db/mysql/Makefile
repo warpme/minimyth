@@ -5,6 +5,7 @@ MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-4.1/
 MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-4.1/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
