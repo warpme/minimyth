@@ -72,7 +72,7 @@ LIST_LIBS = \
 	)
 
 
-mm-all: mm-check mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras
+mm-all: mm-check mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -129,6 +129,7 @@ mm-make-conf:
 
 mm-make-busybox:
 	@main_DESTDIR=$(mm_DESTDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
+	@rm -rf $(mm_DESTDIR)/var
 
 mm-copy: mm-copy-kernel mm-copy-qt mm-copy-mythtv mm-copy-x11 mm-copy-bins mm-copy-etcs mm-copy-shares mm-copy-libs
 
@@ -324,26 +325,32 @@ mm-make-extras:
 	@rm -rf $(mm_DESTDIR)/$(extras_rootdir) ; mkdir -p $(mm_DESTDIR)/$(extras_rootdir)
 	@cp -f ./dirs/usr/bin/* $(mm_DESTDIR)$(bindir)
 
+mm-make-initrd:
+	@if test -e $(mm_DESTDIR).ro ; then rm -rf $(mm_DESTDIR).ro ; fi
+	@mv $(mm_DESTDIR) $(mm_DESTDIR).ro
+	@mkdir -p                $(mm_DESTDIR)
+	@mkdir -p                $(mm_DESTDIR)/rootfs
+	@mkdir -p                $(mm_DESTDIR)/rootfs-rw
+	@mv $(mm_DESTDIR).ro     $(mm_DESTDIR)/rootfs-ro
+	@cp -r ./dirs/initrd/etc $(mm_DESTDIR)/
+	@ln -s rootfs-ro/bin     $(mm_DESTDIR)/bin
+	@ln -s rootfs-ro/dev     $(mm_DESTDIR)/dev
+	@ln -s rootfs-ro/lib     $(mm_DESTDIR)/lib
+	@ln -s rootfs-ro/linuxrc $(mm_DESTDIR)/linuxrc
+	@ln -s rootfs-ro/sbin    $(mm_DESTDIR)/sbin
+
 mm-install:
 	@su -c "[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
 		[ -e $(mm_EXTRASDIR).tmp ] && rm -rf $(mm_EXTRASDIR).tmp ; \
 		mkdir -p $(mm_DESTDIR).tmp ; \
-		cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp/rootfs-ro ; \
+		cp -a $(mm_DESTDIR)/* $(mm_DESTDIR).tmp ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 			mkdir -p $(mm_TFTPDIR) ; \
 			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 		chown -Rh root:root $(mm_DESTDIR).tmp ; \
-		mkdir $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev ; \
+		mkdir        $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev ; \
 		mknod -m 666 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/null c 1 3 ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		cp -r ./dirs/initrd/etc $(mm_DESTDIR).tmp/ ; \
-		ln -s rootfs-ro/bin  $(mm_DESTDIR).tmp/bin  ; \
-		ln -s rootfs-ro/lib  $(mm_DESTDIR).tmp/lib  ; \
-		ln -s rootfs-ro/sbin $(mm_DESTDIR).tmp/sbin ; \
-		cp -dr $(mm_DESTDIR).tmp/rootfs-ro/dev     $(mm_DESTDIR).tmp/ ; \
-		cp -dr $(mm_DESTDIR).tmp/rootfs-ro/linuxrc $(mm_DESTDIR).tmp/ ; \
-		mkdir -p $(mm_DESTDIR).tmp/rootfs-rw ; \
-		mkdir -p $(mm_DESTDIR).tmp/rootfs ; \
 		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
 		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
