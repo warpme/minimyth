@@ -7,13 +7,16 @@
 start() {
     mm_message_output info 'configuring audio ...'
 
-    if [ -z "${MM_AUDIO_DRIVER}" ] ; then
-        mm_message_output err "error: no supported audio hardware found."
+    # Wait for audio driver to load.
+    timeout=10
+    while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] && [ ! "${timeout}" = "0" ] ; do
+        sleep 1
+        timeout=$((timeout-1))
+    done
+    if [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; then
+        mm_message_output err "error: the audio driver does not appear to be loaded."
         exit 1
     fi
-
-    # Wait for audio driver to load.
-    while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
 
     # Unmute audio.
     if [ `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; then
