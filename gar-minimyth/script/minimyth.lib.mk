@@ -1,4 +1,3 @@
-cvs//%$(DISTNAME).tar.bz2:
 # $(call FETCH_CVS, <cvs_root>, <cvs_module>, <cvs_date>, <file_base>)
 FETCH_CVS = \
 	cd $(PARTIALDIR)                                                                         ; \
