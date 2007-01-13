@@ -3,6 +3,7 @@ GARVERSION = 2.4.1
 CATEGORIES = lib
 MASTER_SITES = http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-build.patch
 LICENSE = fontconfig
 fontconfig_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -25,9 +26,24 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-expat-includes=$(DESTDIR)$(includedir) \
 	--with-expat-lib=$(DESTDIR)$(libdir)
 
+DEFAULT_ENV   = \
+	CPP_FOR_BUILD="$(build_CPP)" \
+	CC_FOR_BUILD="$(build_CC)" \
+	CXX_FOR_BUILD="$(build_CXX)" \
+	AR_FOR_BUILD="$(build_AR)" \
+	AS_FOR_BUILD="$(build_AS)" \
+	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
+	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
+	CXXFLAGS_FOR_BUILD="$(build_CXXFLAGS)" \
+	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
+CONFIGURE_ENV = $(DEFAULT_ENV)
+BUILD_ENV     = $(DEFAULT_ENV)
+INSTALL_ENV   = $(DEFAULT_ENV)
+
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
