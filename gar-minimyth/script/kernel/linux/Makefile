@@ -50,3 +50,13 @@ install-custom:
 	@cp $(WORKSRC)/System.map               $(DESTDIR)$(KERNEL_DIR)/System.map
 	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) modules_install
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean -C ../alsa-driver
+	@$(MAKE) clean -C ../drm
+	@$(MAKE) clean -C ../linux
+	@$(MAKE) clean -C ../unionfs
+	@$(MAKE) clean -C ../vt1211
+	@$(MAKE) clean -C ../../lirc
+	@rm -rf $(DESTDIR)$(KERNEL_DIR)
+	@rm -rf $(DESTDIR)$(KERNEL_MODULESPREFIX)
