@@ -1,5 +1,5 @@
 GARNAME = samba
-GARVERSION = 3.0.20pre1
+GARVERSION = 3.0.20pre2
 CATEGORIES = net
 MASTER_SITES  = http://us1.samba.org/samba/ftp/stable/
 MASTER_SITES += http://us1.samba.org/samba/ftp/pre/
