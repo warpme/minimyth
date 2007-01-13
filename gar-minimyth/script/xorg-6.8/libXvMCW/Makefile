@@ -29,6 +29,9 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libXvMCW.la
 	@$(MAKECOOKIE)

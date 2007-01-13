@@ -35,6 +35,9 @@ BUILD_ARGS = \
 GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 configure-custom:
 	@echo "CC = $(CC) -Wl,-z,noexecstack"                                 >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CXX = $(CXX)"                                                  >> $(WORKSRC)/configs/$(MESA_CONFIG)

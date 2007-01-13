@@ -89,7 +89,7 @@ $(DESTIMG)_CPP ?= $(main_CPP)
 # Default image tool options
 $(DESTIMG)_CPPFLAGS ?= $(main_CPPFLAGS)
 $(DESTIMG)_CFLAGS ?= $(main_CFLAGS)
-#$(DESTIMG)_CXXFLAGS ?= $(main_CXXFLAGS)
+$(DESTIMG)_CXXFLAGS ?= $(main_CXXFLAGS)
 $(DESTIMG)_LDFLAGS ?= $(main_LDFLAGS)
 
 ##### Set upstream package control variables #####
@@ -154,7 +154,7 @@ CPP = $($(DESTIMG)_CPP)
 # provide additional tool options.
 CPPFLAGS += $($(DESTIMG)_CPPFLAGS)
 CFLAGS += $($(DESTIMG)_CFLAGS)
-#CXXFLAGS += $($(DESTIMG)_CXXFLAGS)
+CXXFLAGS += $($(DESTIMG)_CXXFLAGS)
 LDFLAGS += $($(DESTIMG)_LDFLAGS)
 
 ####### Defaults for GAR target control variables #######

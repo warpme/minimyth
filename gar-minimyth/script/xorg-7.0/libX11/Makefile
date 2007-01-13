@@ -45,6 +45,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 install-build:
 	install -D $(WORKSRC)/src/util/makekeys $(DESTDIR)$(bindir)/xorg-libX11-makekeys
 	@$(MAKECOOKIE)

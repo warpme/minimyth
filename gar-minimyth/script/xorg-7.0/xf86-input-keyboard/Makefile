@@ -23,6 +23,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/kbd_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/keyboard_drv.la

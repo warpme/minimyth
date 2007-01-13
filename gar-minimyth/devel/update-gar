@@ -45,11 +45,11 @@ build_compiler_prefix=''
 main_compiler_prefix='$(GARHOST)-'
 build_CPPFLAGS=''
 build_CFLAGS='-march=$(build_GARCH) -O2 $(if $(filter i386,$(build_GARCH_FAMILY)),-m32) $(if $(filter x86_64,$(build_GARCH_FAMILY)),-m64)'
-build_CXXFLAGS='-march=$(build_GARCH) -O2 $(if $(filter i386,$(build_GARCH_FAMILY)),-m32) $(if $(filter x86_64,$(build_GARCH_FAMILY)),-m64)'
+build_CXXFLAGS='$(build_CFLAGS)'
 build_LDFLAGS=''
 main_CPPFLAGS=''
 main_CFLAGS='$(mm_CFLAGS)'
-main_CXXFLAGS='$(mm_CXXFLAGS)'
+main_CXXFLAGS='$(main_CFLAGS)'
 main_LDFLAGS=''
 GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
@@ -181,13 +181,18 @@ if [ "x${GAR_EXTRA_LIBS}" = "x" ] ; then
 	sed -i 's%^include *.*$(GAR_EXTRA_LIBS).*$%#&%g' ${SCRIPT_DIR}/gar.lib.mk
 fi
 
+# Enable CXXFLAGS
+sed -i "s%^#*\(.*_CXXFLAGS *+=.*\)$%\1%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^#*\(.*_CXXFLAGS *?=.*\)$%\1%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^#*\(CXXFLAGS *+=.*\)$%\1%g" ${SCRIPT_DIR}/gar.mk
+
 # Replace compiler flags
 sed -i 's%^#*\(build_[^ ]*FLAGS\) *+=.*$%\1 +=%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i -n 'G; s%\n%&&%; /^\(build_[^ ]*FLAGS +=.*\n\).*\n\1/d; s%\n%%; h; P' ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^#*\(#*build_CPPFLAGS\) *+=.*$%\1 += ${build_CPPFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^#*\(#*build_CFLAGS\) *+=.*$%\1 += ${build_CFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^#*\(#*build_CXXFLAGS\) *+=.*$%\1 += ${build_CXXFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^#*\(#*build_LDFLAGS\) *+=.*$%\1 += ${build_LDFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^#*\(build_CPPFLAGS\) *+=.*$%\1 += ${build_CPPFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^#*\(build_CFLAGS\) *+=.*$%\1 += ${build_CFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^#*\(build_CXXFLAGS\) *+=.*$%\1 += ${build_CXXFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^#*\(build_LDFLAGS\) *+=.*$%\1 += ${build_LDFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i 's%^#*\(main_[^ ]*FLAGS\) *+=.*$%\1 +=%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i -n 'G; s%\n%&&%; /^\(main_[^ ]*FLAGS +=.*\n\).*\n\1/d; s%\n%%; h; P' ${SCRIPT_DIR}/gar.conf.mk
