@@ -1,1034 +1,1355 @@
 /*
-    vt1211.c - Part of lm_sensors, Linux kernel modules
-                for hardware monitoring
-                
-    Copyright (c) 2002 Mark D. Studebaker <mdsxyz123@yahoo.com>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-
-
-    Adapted to Linux 2.6 kernel by Lars Ekman <emil71se@yahoo.com>
-
-    Updates (latest first):
-
-    Wed Apr 26 18:29:55 CEST 2006 (Przemyslaw Bruski <pbruskispam at op.pl>)
-	Update for 2.6.16
-	    - owner and name fields are now in inner struct
-	    - I2C_DRIVERID_VT1211 was no longer definde
-    Mon Jan 16 15:00 PST 2006 (Eugene Weiss <eweiss@barracudanetworks.com>)
-        Update for 2.6.15
-            - Remove owner and name fields from i2c_driver structure.
-            - Remove flags field from 12c_driver structure.
-            - Change obsolete MODULE_PARM to module_param.
-    Sun Sep 25 08:55:00 CEST 2005 -
-	Update for 2.6.14-rc1. New i2c handling.
-    Sun Sep  4 08:18:59 CEST 2005 -
-	Update for 2.6.13; new device_attribute added in sys-file init.
-    Sat Mar 19 11:23:36 CET 2005 -
-	Preparations for official release;
-	    - Remove all the #ifdef stuff (ALL_SENSORS and no convertion 
-	      is now default).
-	    - Remove normal_xxx_range defines which cause compile warnings.
-	    - Remove uch_config  initialization in vt1211_init_client 
-	      (trust the BIOS initialization instead, or use setting in 
-	      sensors.conf)
-    Tue Oct  5 17:17:01 CEST 2004 -
-	Corrected faulty return value in "show_temp_hyst()".
-    Sun Sep 26 09:14:36 CEST 2004 -
-	Register conversion optional (disabled by default)
-
-*/
-
-/* Supports VIA VT1211 Super I/O sensors via ISA (LPC) accesses only. */
+ * vt1211.c - driver for the VIA VT1211 Super-I/O chip integrated hardware
+ *            monitoring features
+ * Copyright (C) 2006 Juerg Haefliger <juergh@gmail.com>
+ *
+ * This driver is based on the driver for kernel 2.4 by Mark D. Studebaker
+ * and its port to kernel 2.6 by Lars Ekman.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
-#include <linux/moduleparam.h>
-#include <linux/i2c.h>
-#include <linux/i2c-isa.h>
+#include <linux/jiffies.h>
+#include <linux/platform_device.h>
 #include <linux/hwmon.h>
+#include <linux/hwmon-sysfs.h>
 #include <linux/hwmon-vid.h>
 #include <linux/err.h>
+#include <linux/mutex.h>
 #include <asm/io.h>
 
-/*
-  Even if the register values are not converted to uasable units in
-  the driver, the values should still be multiplied with some
-  factor. This factor seems to be 10 for 2.4 versions and 1000 now for
-  2.6. The multiplier for "in" values (voltages) was commented out in
-  the 2.4 version, and I don't know the correct setting for 2.6 yet.
-  Since there is still some confusion around this I made
-  easy-to-change macros for the factors.
- */
-#define TEMP3_MULTIPLIER 1000
-#define TEMP_MULTIPLIER 1000
-#define IN_MULTIPLIER 10		/* Or what? */
+static int uch_config = -1;
+module_param(uch_config, int, 0);
+MODULE_PARM_DESC(uch_config, "Initialize the universal channel configuration");
 
+static int int_mode = -1;
+module_param(int_mode, int, 0);
+MODULE_PARM_DESC(int_mode, "Force the temperature interrupt mode");
 
-static int force_addr = 0;
-module_param(force_addr, int, 0644);
-MODULE_PARM_DESC(force_addr,
-		 "Initialize the base address of the sensors");
+static struct platform_device *pdev;
 
-static unsigned short normal_i2c[] = { I2C_CLIENT_END };
-static int isa_address = 0;
+#define DRVNAME "vt1211"
 
-I2C_CLIENT_INSMOD_1(vt1211);
+/* ---------------------------------------------------------------------
+ * Registers
+ *
+ * The sensors are defined as follows.
+ *
+ * Sensor          Voltage Mode   Temp Mode   Notes (from the datasheet)
+ * --------        ------------   ---------   --------------------------
+ * Reading 1                      temp1       Intel thermal diode
+ * Reading 3                      temp2       Internal thermal diode
+ * UCH1/Reading2   in0            temp3       NTC type thermistor
+ * UCH2            in1            temp4       +2.5V
+ * UCH3            in2            temp5       VccP
+ * UCH4            in3            temp6       +5V
+ * UCH5            in4            temp7       +12V
+ * 3.3V            in5                        Internal VDD (+3.3V)
+ *
+ * --------------------------------------------------------------------- */
 
-/* modified from kernel/include/traps.c */
-#define	REG	0x2e	/* The register to read/write */
-#define	DEV	0x07	/* Register: Logical device select */
-#define	VAL	0x2f	/* The value to read/write */
-#define PME	0x0b	/* The device with the hardware monitor */
-#define	DEVID	0x20	/* Register: Device ID */
+/* Voltages (in) numbered 0-5 (ix) */
+#define VT1211_REG_IN(ix)		(0x21 + (ix))
+#define VT1211_REG_IN_MIN(ix)		((ix) == 0 ? 0x3e : 0x2a + 2 * (ix))
+#define VT1211_REG_IN_MAX(ix)		((ix) == 0 ? 0x3d : 0x29 + 2 * (ix))
 
-static inline void
-superio_outb(int reg, int val)
-{
-	outb(reg, REG);
-	outb(val, VAL);
-}
+/* Temperatures (temp) numbered 0-6 (ix) */
+static u8 regtemp[]	= {0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25};
+static u8 regtempmax[]	= {0x39, 0x1d, 0x3d, 0x2b, 0x2d, 0x2f, 0x31};
+static u8 regtemphyst[]	= {0x3a, 0x1e, 0x3e, 0x2c, 0x2e, 0x30, 0x32};
 
-static inline int
-superio_inb(int reg)
-{
-	outb(reg, REG);
-	return inb(VAL);
-}
+/* Fans numbered 0-1 (ix) */
+#define VT1211_REG_FAN(ix)		(0x29 + (ix))
+#define VT1211_REG_FAN_MIN(ix)		(0x3b + (ix))
+#define VT1211_REG_FAN_DIV		 0x47
 
-static inline void
-superio_select(void)
-{
-	outb(DEV, REG);
-	outb(PME, VAL);
-}
+/* PWMs numbered 0-1 (ix) */
+/* Auto points numbered 0-3 (ap) */
+#define VT1211_REG_PWM(ix)		(0x60 + (ix))
+#define VT1211_REG_PWM_CLK		 0x50
+#define VT1211_REG_PWM_CTL		 0x51
+#define VT1211_REG_PWM_AUTO_TEMP(ap)	(0x55 - (ap))
+#define VT1211_REG_PWM_AUTO_PWM(ix, ap)	(0x58 + 2 * (ix) - (ap))
 
-static inline void
-superio_enter(void)
-{
-	outb(0x87, REG);
-	outb(0x87, REG);
-}
+/* Miscellaneous registers */
+#define VT1211_REG_CONFIG		0x40
+#define VT1211_REG_ALARM1		0x41
+#define VT1211_REG_ALARM2		0x42
+#define VT1211_REG_VID			0x45
+#define VT1211_REG_UCH_CONFIG		0x4a
+#define VT1211_REG_TEMP1_CONFIG		0x4b
+#define VT1211_REG_TEMP2_CONFIG		0x4c
 
-static inline void
-superio_exit(void)
-{
-	outb(0xAA, REG);
-}
+/* In, temp & fan alarm bits */
+static const u8 bitalarmin[]	= {11, 0, 1, 3, 8, 2, 9};
+static const u8 bitalarmtemp[]	= {4, 15, 11, 0, 1, 3, 8};
+static const u8 bitalarmfan[]	= {6, 7};
 
-
-#define VT1211_DEVID 0x3c
-#define VT1211_ACT_REG 0x30
-#define VT1211_BASE_REG 0x60
-#define VT1211_EXTENT 0x80
-
-/* pwm numbered 1-2 */
-#define VT1211_REG_PWM(nr) (0x5f + (nr))
-#define VT1211_REG_PWM_CTL 0x51
-
-/* The VT1211 registers */
-/* We define the sensors as follows. Somewhat convoluted to minimize
-   changes from via686a.
-	Sensor		Voltage Mode	Temp Mode
-	--------	------------	---------
-	Reading 1			temp3
-	Reading 3			temp1	not in vt1211
-	UCH1/Reading2	in0		temp2
-	UCH2		in1		temp4
-	UCH3		in2		temp5
-	UCH4		in3		temp6
-	UCH5		in4		temp7
-	3.3V		in5
-	-12V		in6			not in vt1211
-*/
-
-/* ins numbered 0-6 */
-#define VT1211_REG_IN_MAX(nr) ((nr)==0 ? 0x3d : 0x29 + ((nr) * 2))
-#define VT1211_REG_IN_MIN(nr) ((nr)==0 ? 0x3e : 0x2a + ((nr) * 2))
-#define VT1211_REG_IN(nr)     (0x21 + (nr))
-
-/* fans numbered 1-2 */
-#define VT1211_REG_FAN_MIN(nr) (0x3a + (nr))
-#define VT1211_REG_FAN(nr)     (0x28 + (nr))
-
-static const u8 regtemp[] = { 0x20, 0x21, 0x1f, 0x22, 0x23, 0x24, 0x25 };
-static const u8 regover[] = { 0x39, 0x3d, 0x1d, 0x2b, 0x2d, 0x2f, 0x31 };
-static const u8 reghyst[] = { 0x3a, 0x3e, 0x1e, 0x2c, 0x2e, 0x30, 0x32 };
-
-/* temps numbered 1-7 */
-#define VT1211_REG_TEMP(nr)		(regtemp[(nr) - 1])
-#define VT1211_REG_TEMP_OVER(nr)	(regover[(nr) - 1])
-#define VT1211_REG_TEMP_HYST(nr)	(reghyst[(nr) - 1])
-#define VT1211_REG_TEMP_LOW3	0x4b	/* bits 7-6 */
-#define VT1211_REG_TEMP_LOW2	0x49	/* bits 5-4 */
-#define VT1211_REG_TEMP_LOW47	0x4d
-
-#define VT1211_REG_CONFIG 0x40
-#define VT1211_REG_ALARM1 0x41
-#define VT1211_REG_ALARM2 0x42
-#define VT1211_REG_VID    0x45
-#define VT1211_REG_FANDIV 0x47
-#define VT1211_REG_UCH_CONFIG 0x4a
-#define VT1211_REG_TEMP1_CONFIG 0x4b
-#define VT1211_REG_TEMP2_CONFIG 0x4c
-
-/* temps 1-7; voltages 0-6 */
-#define ISTEMP(i, ch_config) ((i) == 1 ? 1 : \
-			      (i) == 3 ? 1 : \
-			      (i) == 2 ? ((ch_config) >> 2) & 0x01 : \
-			                 ((ch_config) >> ((i)-1)) & 0x01)
-#define ISVOLT(i, ch_config) ((i) > 4 ? 1 : !(((ch_config) >> ((i)+2)) & 0x01))
-
-#define DIV_FROM_REG(val) (1 << (val))
-#define DIV_TO_REG(val) ((val)==8?3:(val)==4?2:(val)==1?0:1)
-#define PWM_FROM_REG(val) (val)
-#define PWM_TO_REG(val) SENSORS_LIMIT((val), 0, 255)
-
-#define TEMP3_FROM_REG(val) ((val)*TEMP3_MULTIPLIER)
-#define TEMP3_FROM_REG10(val) (((val)*TEMP3_MULTIPLIER)/4)
-#define TEMP3_TO_REG(val) (SENSORS_LIMIT(((val)<0? \
-	(((val)-(TEMP3_MULTIPLIER/2))/TEMP3_MULTIPLIER):\
-	((val)+(TEMP3_MULTIPLIER/2))/TEMP3_MULTIPLIER),0,255))
-#define TEMP_FROM_REG(val) ((val)*TEMP_MULTIPLIER)
-#define TEMP_FROM_REG10(val) (((val)*TEMP_MULTIPLIER)/4)
-#define TEMP_TO_REG(val) (SENSORS_LIMIT(((val)<0? \
-	(((val)-(TEMP_MULTIPLIER/2))/TEMP_MULTIPLIER):\
-	((val)+(TEMP_MULTIPLIER/2))/TEMP_MULTIPLIER),0,255))
-
-
-/********* FAN RPM CONVERT ********/
-/* But this chip saturates back at 0, not at 255 like all the other chips.
-   So, 0 means 0 RPM */
-static inline u8 FAN_TO_REG(long rpm, int div)
-{
-	if (rpm == 0)
-		return 0;
-	rpm = SENSORS_LIMIT(rpm, 1, 1000000);
-	return SENSORS_LIMIT((1310720 + rpm * div / 2) / (rpm * div), 1, 255);
-}
-
-#define MIN_TO_REG(a,b) FAN_TO_REG(a,b)
-#define FAN_FROM_REG(val,div) ((val)==0?0:(val)==255?0:1310720/((val)*(div)))
-
-
+/* ---------------------------------------------------------------------
+ * Data structures and manipulation thereof
+ * --------------------------------------------------------------------- */
 
 struct vt1211_data {
-	struct i2c_client client;
-        struct class_device *class_dev;
-	struct semaphore lock;
-	enum chips type;
+	unsigned short addr;
+	const char *name;
+	struct class_device *class_dev;
 
-	struct semaphore update_lock;
-	char valid;		/* !=0 if following fields are valid */
+	struct mutex update_lock;
+	char valid;			/* !=0 if following fields are valid */
 	unsigned long last_updated;	/* In jiffies */
 
-	u8 in[7];		/* Register value */
-	u8 in_max[7];		/* Register value */
-	u8 in_min[7];		/* Register value */
-	u16 temp[7];		/* Register value 10 bit */
-	u8 temp_over[7];	/* Register value */
-	u8 temp_hyst[7];	/* Register value */
-	u8 fan[2];		/* Register value */
-	u8 fan_min[2];		/* Register value */
-	u8 fan_div[2];		/* Register encoding, shifted right */
-	u16 alarms;		/* Register encoding */
-	u8 pwm[2];		/* Register value */
-	u8 pwm_ctl;		/* Register value */
-	u8 vid;			/* Register encoding */
-	u8 vrm;
-	u8 uch_config;
+	/* Register values */
+	u8  in[6];
+	u8  in_max[6];
+	u8  in_min[6];
+	u8  temp[7];
+	u8  temp_max[7];
+	u8  temp_hyst[7];
+	u8  fan[2];
+	u8  fan_min[2];
+	u8  fan_div[2];
+	u8  fan_ctl;
+	u8  pwm[2];
+	u8  pwm_ctl[2];
+	u8  pwm_clk;
+	u8  pwm_auto_temp[4];
+	u8  pwm_auto_pwm[2][4];
+	u8  vid;		/* Read once at init time */
+	u8  vrm;
+	u8  uch_config;		/* Read once at init time */
+	u16 alarms;
 };
 
-static int vt1211_attach_adapter(struct i2c_adapter *adapter);
-static int vt1211_isa_attach_adapter(struct i2c_adapter *adapter);
-static int vt1211_detach_client(struct i2c_client *client);
-static struct vt1211_data *vt1211_update_device(struct device *dev);
+/* ix = [0-5] */
+#define ISVOLT(ix, uch_config)	((ix) > 4 ? 1 : \
+				 !(((uch_config) >> ((ix) + 2)) & 1))
 
-#ifndef I2C_DRIVERID_VT1211
-#define I2C_DRIVERID_VT1211 1032
-#endif
+/* ix = [0-6] */
+#define ISTEMP(ix, uch_config)	((ix) < 2 ? 1 : \
+				 ((uch_config) >> (ix)) & 1)
 
-static struct i2c_driver vt1211_driver = {
-	.driver = {
-		.owner	= THIS_MODULE,
-		.name	= "vt1211",
-	},
-	.id		= I2C_DRIVERID_VT1211,
-	.attach_adapter	= vt1211_attach_adapter,
-	.detach_client	= vt1211_detach_client,
-};
+/* in5 (ix = 5) is special. It's the internal 3.3V so it's scaled in the
+   driver according to the VT1211 BIOS porting guide */
+#define IN_FROM_REG(ix, reg)	((reg) < 3 ? 0 : (ix) == 5 ? \
+				 (((reg) - 3) * 15882 + 479) / 958 : \
+				 (((reg) - 3) * 10000 + 479) / 958)
+#define IN_TO_REG(ix, val)	(SENSORS_LIMIT((ix) == 5 ? \
+				 ((val) * 958 + 7941) / 15882 + 3 : \
+				 ((val) * 958 + 5000) / 10000 + 3, 0, 255))
 
-static struct i2c_driver vt1211_isa_driver = {
-	.driver = {
-		.owner	= THIS_MODULE,
-		.name	= "vt1211-isa",
-	},
-	.attach_adapter	= vt1211_isa_attach_adapter,
-	.detach_client	= vt1211_detach_client,
-};
+/* temp1 (ix = 0) is an intel thermal diode which is scaled in user space.
+   temp2 (ix = 1) is the internal temp diode so it's scaled in the driver
+   according to some measurements that I took on an EPIA M10000.
+   temp3-7 are thermistor based so the driver returns the voltage measured at
+   the pin (range 0V - 2.2V). */
+#define TEMP_FROM_REG(ix, reg)	((ix) == 0 ? (reg) * 1000 : \
+				 (ix) == 1 ? (reg) < 51 ? 0 : \
+				 ((reg) - 51) * 1000 : \
+				 ((253 - (reg)) * 2200 + 105) / 210)
+#define TEMP_TO_REG(ix, val)	SENSORS_LIMIT( \
+				 ((ix) == 0 ? ((val) + 500) / 1000 : \
+				  (ix) == 1 ? ((val) + 500) / 1000 + 51 : \
+				  253 - ((val) * 210 + 1100) / 2200), 0, 255)
 
-static inline int vt_rdval(struct i2c_client *client, u8 reg)
+#define DIV_FROM_REG(reg)	(1 << (reg))
+
+#define RPM_FROM_REG(reg, div)	(((reg) == 0) || ((reg) == 255) ? 0 : \
+				 1310720 / (reg) / DIV_FROM_REG(div))
+#define RPM_TO_REG(val, div)	((val) == 0 ? 255 : \
+				 SENSORS_LIMIT((1310720 / (val) / \
+				 DIV_FROM_REG(div)), 1, 254))
+
+/* ---------------------------------------------------------------------
+ * Super-I/O constants and functions
+ * --------------------------------------------------------------------- */
+
+/* Configuration & data index port registers */
+#define SIO_REG_CIP		0x2e
+#define SIO_REG_DIP		0x2f
+
+/* Configuration registers */
+#define SIO_VT1211_LDN		0x07	/* logical device number */
+#define SIO_VT1211_DEVID	0x20	/* device ID */
+#define SIO_VT1211_DEVREV	0x21	/* device revision */
+#define SIO_VT1211_ACTIVE	0x30	/* HW monitor active */
+#define SIO_VT1211_BADDR	0x60	/* base I/O address */
+#define SIO_VT1211_ID		0x3c	/* VT1211 device ID */
+
+/* VT1211 logical device numbers */
+#define SIO_VT1211_LDN_HWMON	0x0b	/* HW monitor */
+
+static inline void superio_outb(int reg, int val)
 {
-	return (inb_p(client->addr + reg));
+	outb(reg, SIO_REG_CIP);
+	outb(val, SIO_REG_DIP);
 }
 
-static inline void vt1211_write_value(
-	struct i2c_client *client, u8 reg, u8 value)
+static inline int superio_inb(int reg)
 {
-	outb_p(value, client->addr + reg);
+	outb(reg, SIO_REG_CIP);
+	return inb(SIO_REG_DIP);
 }
 
-static void vt1211_init_client(struct i2c_client *client)
+static inline void superio_select(int ldn)
 {
-	struct vt1211_data *data = i2c_get_clientdata(client);
-
-	data->vrm = vid_which_vrm();
-	/* set "default" interrupt mode for alarms, which isn't the default */
-	vt1211_write_value(client, VT1211_REG_TEMP1_CONFIG, 0);
-	vt1211_write_value(client, VT1211_REG_TEMP2_CONFIG, 0);
+	outb(SIO_VT1211_LDN, SIO_REG_CIP);
+	outb(ldn, SIO_REG_DIP);
 }
 
-#define IN_FROM_REG(val,n) ((val)*IN_MULTIPLIER)
-#define IN_TO_REG(val,n)  (SENSORS_LIMIT( \
-	(((val)+(IN_MULTIPLIER/2))/IN_MULTIPLIER),0,255))
-
-/* ----------------------------------------------------------------------
-   Temerature file definitions;
-*/
-
-static ssize_t show_temp(struct device *dev, char *buf, int nr)
+static inline void superio_enter(void)
 {
-	struct vt1211_data *data = vt1211_update_device(dev);
-	if (nr == 2) {
-		return sprintf(buf, "%d\n", TEMP3_FROM_REG10(data->temp[nr]));
-	}
-	return sprintf(buf, "%d\n", TEMP_FROM_REG10(data->temp[nr]));
-}
-static ssize_t show_temp_over(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	if (nr == 2) {
-		return sprintf(buf, "%d\n", 
-			       TEMP3_FROM_REG(data->temp_over[nr]));
-	}
-	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_over[nr]));
+	outb(0x87, SIO_REG_CIP);
+	outb(0x87, SIO_REG_CIP);
 }
 
-static ssize_t set_temp_over(
-	struct device *dev, const char *buf, size_t count, int nr)
+static inline void superio_exit(void)
 {
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	if (nr == 2) {
-		data->temp_over[nr] = TEMP3_TO_REG(val);
-	} else {
-		data->temp_over[nr] = TEMP_TO_REG(val);
-	}
-	vt1211_write_value(client,
-			   VT1211_REG_TEMP_OVER(nr + 1),
-			   data->temp_over[nr]);
-	return count;
+	outb(0xaa, SIO_REG_CIP);
 }
 
-static ssize_t show_temp_hyst(struct device *dev, char *buf, int nr)
+/* ---------------------------------------------------------------------
+ * Device I/O access
+ * --------------------------------------------------------------------- */
+
+static inline u8 vt1211_read8(struct vt1211_data *data, u8 reg)
 {
-	struct vt1211_data *data = vt1211_update_device(dev);
-	if (nr == 2) {
-		return sprintf(buf, "%d\n", 
-			       TEMP3_FROM_REG(data->temp_hyst[nr]));
-	}
-	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_hyst[nr]));
+	return inb(data->addr + reg);
 }
 
-static ssize_t set_temp_hyst(
-	struct device *dev, const char *buf, size_t count, int nr)
+static inline void vt1211_write8(struct vt1211_data *data, u8 reg, u8 val)
 {
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	if (nr == 2) {
-		data->temp_hyst[nr] = TEMP3_TO_REG(val);
-	} else {
-		data->temp_hyst[nr] = TEMP_TO_REG(val);
-	}
-	vt1211_write_value(client,
-			   VT1211_REG_TEMP_HYST(nr + 1),
-			   data->temp_hyst[nr]);
-	return count;
+	outb(val, data->addr + reg);
 }
 
-#define show_temp_offset(offset)					\
-static ssize_t show_temp_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_temp(dev, buf, 0x##offset -1);			\
-}									\
-static ssize_t show_temp_over_##offset (struct device *dev, struct device_attribute *attr, char *buf)\
-{									\
-	return show_temp_over(dev, buf, 0x##offset -1);			\
-}									\
-static ssize_t set_temp_over_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_temp_over(dev, buf, count, 0x##offset - 1);		\
-}									\
-static ssize_t show_temp_hyst_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_temp_hyst(dev, buf, 0x##offset -1);			\
-}									\
-static ssize_t set_temp_hyst_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_temp_hyst(dev, buf, count, 0x##offset - 1);		\
-}									\
-static DEVICE_ATTR(temp##offset##_input, S_IRUGO, show_temp_##offset, NULL); \
-static DEVICE_ATTR(temp##offset##_max, S_IRUGO | S_IWUSR,		\
-		   show_temp_over_##offset, set_temp_over_##offset);	\
-static DEVICE_ATTR(temp##offset##_max_hyst, S_IRUGO | S_IWUSR,		\
-		show_temp_hyst_##offset, set_temp_hyst_##offset)
-
-
-show_temp_offset(1);
-show_temp_offset(2);
-show_temp_offset(3);
-show_temp_offset(4);
-show_temp_offset(5);
-show_temp_offset(6);
-show_temp_offset(7);
-
-/* ----------------------------------------------------------------------
-   uch_config;
- */
-
-static ssize_t show_uch_config(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", data->uch_config & 0x7c);
-}
-
-static ssize_t set_uch_config(
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = vt1211_update_device(dev);
-	long val = simple_strtol(buf, NULL, 10);
-	data->uch_config = (data->uch_config & 0x83)|(val & 0x7c);
-	vt1211_write_value(client, VT1211_REG_UCH_CONFIG, data->uch_config);
-	return count;
-}
-
-static DEVICE_ATTR(uch_config, S_IRUGO | S_IWUSR, 
-		   show_uch_config, set_uch_config);
-
-/* ----------------------------------------------------------------------
-   Fan definitions;
- */
-
-static ssize_t show_fan(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", 
-		       FAN_FROM_REG(data->fan[nr],
-				    DIV_FROM_REG(data->fan_div[nr])));
-}
-static ssize_t show_fan_min(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", 
-		       FAN_FROM_REG(data->fan_min[nr],
-				    DIV_FROM_REG(data->fan_div[nr])));
-}
-static ssize_t set_fan_min(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	data->fan_min[nr] = MIN_TO_REG(val, DIV_FROM_REG(data->fan_div[nr]));
-	vt1211_write_value(client, VT1211_REG_FAN_MIN(nr+1), 
-			   data->fan_min[nr]);
-	return count;
-}
-static ssize_t show_fan_div(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", DIV_FROM_REG(data->fan_div[nr]));
-}
-static ssize_t set_fan_div(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	int old = vt_rdval(client, VT1211_REG_FANDIV);
-	if (nr == 0) {
-		data->fan_div[0] = DIV_TO_REG(val);
-		old = (old & 0xcf) | (data->fan_div[0] << 4);
-	} else {
-		data->fan_div[1] = DIV_TO_REG(val);
-		old = (old & 0x3f) | (data->fan_div[1] << 6);
-	}
-	vt1211_write_value(client, VT1211_REG_FANDIV, old);
-	return count;
-}
-static ssize_t show_fan_pwm(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", PWM_FROM_REG(data->pwm[nr]));
-}
-static ssize_t set_fan_pwm(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	data->pwm[nr] = PWM_TO_REG(val);
-	vt1211_write_value(client, VT1211_REG_PWM(nr+1), data->pwm[nr]);
-	return count;
-}
-static ssize_t show_fan_pwm_ctl(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n",(data->pwm_ctl >> (3 + (4 * nr))) & 1);
-}
-static ssize_t set_fan_pwm_ctl(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	if (val) {
-		data->pwm_ctl |= (0x08 << (4 * nr));
-		vt1211_write_value(client, VT1211_REG_PWM_CTL, data->pwm_ctl);
-	} else {
-		data->pwm_ctl &= ~ (0x08 << (4 * nr));
-		vt1211_write_value(client, VT1211_REG_PWM_CTL, data->pwm_ctl);
-	}
-	return count;
-}
-
-#define show_fan_offset(offset)						\
-static ssize_t show_fan_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_fan(dev, buf, 0x##offset - 1);			\
-}									\
-static ssize_t show_fan_min_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_fan_min(dev, buf, 0x##offset - 1);			\
-}									\
-static ssize_t set_fan_min_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_fan_min(dev, buf, count, 0x##offset - 1);		\
-}									\
-static ssize_t show_fan_div_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_fan_div(dev, buf, 0x##offset - 1);			\
-}									\
-static ssize_t set_fan_div_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_fan_div(dev, buf, count, 0x##offset - 1);		\
-}									\
-static ssize_t show_fan_pwm_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_fan_pwm(dev, buf, 0x##offset - 1);			\
-}									\
-static ssize_t set_fan_pwm_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_fan_pwm(dev, buf, count, 0x##offset - 1);		\
-}									\
-static ssize_t show_fan_pwm_ctl_##offset (struct device *dev, struct device_attribute *attr, char *buf)\
-{									\
-	return show_fan_pwm_ctl(dev, buf, 0x##offset - 1);		\
-}									\
-static ssize_t set_fan_pwm_ctl_##offset (				\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_fan_pwm_ctl(dev, buf, count, 0x##offset - 1);	\
-}									\
-static DEVICE_ATTR(fan##offset##_input, S_IRUGO, show_fan_##offset, NULL); \
-static DEVICE_ATTR(fan##offset##_min, S_IRUGO | S_IWUSR,		\
-	show_fan_min_##offset, set_fan_min_##offset);			\
-static DEVICE_ATTR(fan##offset##_div, S_IRUGO | S_IWUSR,		\
-	 show_fan_div_##offset, set_fan_div_##offset);			\
-static DEVICE_ATTR(fan##offset##_pwm, S_IRUGO | S_IWUSR,		\
-	show_fan_pwm_##offset, set_fan_pwm_##offset);			\
-static DEVICE_ATTR(fan##offset##_pwm_enable, S_IRUGO | S_IWUSR,		\
-	show_fan_pwm_ctl_##offset, set_fan_pwm_ctl_##offset);
-
-show_fan_offset(1);
-show_fan_offset(2);
-
-/* ----------------------------------------------------------------------
-   Voltage (in) file definitions;
-*/
-
-static ssize_t show_in(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG(data->in[nr], nr));
-}
-static ssize_t show_in_min(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG(data->in_min[nr], nr));
-}
-static ssize_t set_in_min(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	data->in_min[nr] = IN_TO_REG(val, nr);
-	vt1211_write_value(client, VT1211_REG_IN_MIN(nr), data->in_min[nr]);
-	return count;
-}
-static ssize_t show_in_max(struct device *dev, char *buf, int nr)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG(data->in_max[nr], nr));
-}
-static ssize_t set_in_max(
-	struct device *dev, const char *buf, size_t count, int nr)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	data->in_max[nr] = IN_TO_REG(val, nr);
-	vt1211_write_value(client, VT1211_REG_IN_MAX(nr), data->in_max[nr]);
-	return count;
-}
-
-#define show_in_offset(offset)						\
-static ssize_t show_in_##offset (struct device *dev, struct device_attribute *attr, char *buf)		\
-{									\
-	return show_in(dev, buf, 0x##offset);				\
-}									\
-static ssize_t show_in_min_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_in_min(dev, buf, 0x##offset);			\
-}									\
-static ssize_t set_in_min_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_in_min(dev, buf, count, 0x##offset);			\
-}									\
-static ssize_t show_in_max_##offset (struct device *dev, struct device_attribute *attr, char *buf)	\
-{									\
-	return show_in_max(dev, buf, 0x##offset);			\
-}									\
-static ssize_t set_in_max_##offset (					\
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)		\
-{									\
-	return set_in_max(dev, buf, count, 0x##offset);			\
-}									\
-static DEVICE_ATTR(in##offset##_input, S_IRUGO, show_in_##offset, NULL); \
-static DEVICE_ATTR(in##offset##_min, S_IRUGO | S_IWUSR,			\
-	show_in_min_##offset, set_in_min_##offset);			\
-static DEVICE_ATTR(in##offset##_max, S_IRUGO | S_IWUSR,			\
-	show_in_max_##offset, set_in_max_##offset);			\
-
-show_in_offset(0);
-show_in_offset(1);
-show_in_offset(2);
-show_in_offset(3);
-show_in_offset(4);
-show_in_offset(5);
-show_in_offset(6);
-
-static ssize_t show_vid(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", vid_from_reg(data->vid, data->vrm));
-}
-static DEVICE_ATTR(in0_ref, S_IRUGO, show_vid, NULL);
-
-static ssize_t show_vrm(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", data->vrm);
-}
-static ssize_t set_vrm(
-	struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
-{
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	long val = simple_strtol(buf, NULL, 10);
-	data->vrm = val;
-	return count;
-}
-static DEVICE_ATTR(vrm, S_IRUGO | S_IWUSR, show_vrm, set_vrm);
-
-/* ----------------------------------------------------------------------
-   alarm file definitions;
-*/
-
-static ssize_t show_alarms(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", data->alarms);
-}
-static DEVICE_ATTR(alarms, S_IRUGO, show_alarms, NULL);
-
-
-/*
-  END of file definitions
-  ---------------------------------------------------------------------- */
-
-/*
-  (vt1211_update_device is almost unchanged since 2.4.x)
- */
 static struct vt1211_data *vt1211_update_device(struct device *dev)
 {
-	struct i2c_client *client = to_i2c_client(dev);
-	struct vt1211_data *data = i2c_get_clientdata(client);
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	int ix, val;
 
-	down(&data->update_lock);
+	mutex_lock(&data->update_lock);
 
-	if ((jiffies - data->last_updated > HZ + HZ / 2) ||
-	    (jiffies < data->last_updated) || !data->valid) {
+	/* registers cache is refreshed after 1 second */
+	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
+		/* read VID */
+		data->vid = vt1211_read8(data, VT1211_REG_VID) & 0x1f;
 
-		int i, j;
-
-		dev_dbg(&client->dev, "Starting vt1211 update\n");
-
-		for (i = 0; i <= 5; i++) {
-			if(ISVOLT(i, data->uch_config)) {
-				data->in[i] =vt_rdval(client,VT1211_REG_IN(i));
-				data->in_min[i] = vt_rdval(client,
-				                        VT1211_REG_IN_MIN(i));
-				data->in_max[i] = vt_rdval(client,
-				                        VT1211_REG_IN_MAX(i));
-			} else {
-				data->in[i] = 0;
-				data->in_min[i] = 0;
-				data->in_max[i] = 0;
-			}
-		}
-		for (i = 1; i <= 2; i++) {
-			data->fan[i - 1] = vt_rdval(client, VT1211_REG_FAN(i));
-			data->fan_min[i - 1] = vt_rdval(client,
-						     VT1211_REG_FAN_MIN(i));
-		}
-		for (i = 2; i <= 7; i++) {
-			if(ISTEMP(i, data->uch_config)) {
-				data->temp[i - 1] = vt_rdval(client,
-					             VT1211_REG_TEMP(i)) << 2;
-				switch(i) {
-					case 1:
-						/* ? */
-						j = 0;
-						break;
-					case 2:
-						j = (vt_rdval(client,
-						  VT1211_REG_TEMP_LOW2) &
-						                    0x30) >> 4;
-						break;
-					case 3:
-						j = (vt_rdval(client,
-						  VT1211_REG_TEMP_LOW3) &
-						                    0xc0) >> 6;
-						break;
-					case 4:
-					case 5:
-					case 6:
-					case 7:
-					default:
-						j = (vt_rdval(client,
-						  VT1211_REG_TEMP_LOW47) >>
-						            ((i-4)*2)) & 0x03;
-						break;
-	
-				}
-				data->temp[i - 1] |= j;
-				data->temp_over[i - 1] = vt_rdval(client,
-					              VT1211_REG_TEMP_OVER(i));
-				data->temp_hyst[i - 1] = vt_rdval(client,
-					              VT1211_REG_TEMP_HYST(i));
-			} else {
-				data->temp[i - 1] = 0;
-				data->temp_over[i - 1] = 0;
-				data->temp_hyst[i - 1] = 0;
+		/* voltage (in) registers */
+		for (ix = 0; ix < ARRAY_SIZE(data->in); ix++) {
+			if (ISVOLT(ix, data->uch_config)) {
+				data->in[ix] = vt1211_read8(data,
+						VT1211_REG_IN(ix));
+				data->in_min[ix] = vt1211_read8(data,
+						VT1211_REG_IN_MIN(ix));
+				data->in_max[ix] = vt1211_read8(data,
+						VT1211_REG_IN_MAX(ix));
 			}
 		}
 
-		for (i = 1; i <= 2; i++) {
-			data->fan[i - 1] = vt_rdval(client, VT1211_REG_FAN(i));
-			data->fan_min[i - 1] = vt_rdval(client,
-			                                VT1211_REG_FAN_MIN(i));
-			data->pwm[i - 1] = vt_rdval(client, VT1211_REG_PWM(i));
+		/* temp registers */
+		for (ix = 0; ix < ARRAY_SIZE(data->temp); ix++) {
+			if (ISTEMP(ix, data->uch_config)) {
+				data->temp[ix] = vt1211_read8(data,
+						regtemp[ix]);
+				data->temp_max[ix] = vt1211_read8(data,
+						regtempmax[ix]);
+				data->temp_hyst[ix] = vt1211_read8(data,
+						regtemphyst[ix]);
+			}
 		}
 
-		data->pwm_ctl = vt_rdval(client, VT1211_REG_PWM_CTL);
-		i = vt_rdval(client, VT1211_REG_FANDIV);
-		data->fan_div[0] = (i >> 4) & 0x03;
-		data->fan_div[1] = i >> 6;
-		data->alarms = vt_rdval(client, VT1211_REG_ALARM1) |
-		                    (vt_rdval(client, VT1211_REG_ALARM2) << 8);
-		data->vid= vt_rdval(client, VT1211_REG_VID) & 0x1f;
+		/* fan & pwm registers */
+		for (ix = 0; ix < ARRAY_SIZE(data->fan); ix++) {
+			data->fan[ix] = vt1211_read8(data,
+						VT1211_REG_FAN(ix));
+			data->fan_min[ix] = vt1211_read8(data,
+						VT1211_REG_FAN_MIN(ix));
+			data->pwm[ix] = vt1211_read8(data,
+						VT1211_REG_PWM(ix));
+		}
+		val = vt1211_read8(data, VT1211_REG_FAN_DIV);
+		data->fan_div[0] = (val >> 4) & 3;
+		data->fan_div[1] = (val >> 6) & 3;
+		data->fan_ctl = val & 0xf;
+
+		val = vt1211_read8(data, VT1211_REG_PWM_CTL);
+		data->pwm_ctl[0] = val & 0xf;
+		data->pwm_ctl[1] = (val >> 4) & 0xf;
+
+		data->pwm_clk = vt1211_read8(data, VT1211_REG_PWM_CLK);
+
+		/* pwm & temp auto point registers */
+		data->pwm_auto_pwm[0][1] = vt1211_read8(data,
+						VT1211_REG_PWM_AUTO_PWM(0, 1));
+		data->pwm_auto_pwm[0][2] = vt1211_read8(data,
+						VT1211_REG_PWM_AUTO_PWM(0, 2));
+		data->pwm_auto_pwm[1][1] = vt1211_read8(data,
+						VT1211_REG_PWM_AUTO_PWM(1, 1));
+		data->pwm_auto_pwm[1][2] = vt1211_read8(data,
+						VT1211_REG_PWM_AUTO_PWM(1, 2));
+		for (ix = 0; ix < ARRAY_SIZE(data->pwm_auto_temp); ix++) {
+			data->pwm_auto_temp[ix] = vt1211_read8(data,
+						VT1211_REG_PWM_AUTO_TEMP(ix));
+		}
+
+		/* alarm registers */
+		data->alarms = (vt1211_read8(data, VT1211_REG_ALARM2) << 8) |
+				vt1211_read8(data, VT1211_REG_ALARM1);
 
 		data->last_updated = jiffies;
 		data->valid = 1;
 	}
 
-	up(&data->update_lock);
+	mutex_unlock(&data->update_lock);
 
 	return data;
 }
 
-/* This function is called by i2c_probe */
-int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
+/* ---------------------------------------------------------------------
+ * Voltage sysfs interfaces
+ * ix = [0-5]
+ * --------------------------------------------------------------------- */
+
+#define SHOW_IN_INPUT	0
+#define SHOW_SET_IN_MIN	1
+#define SHOW_SET_IN_MAX	2
+#define SHOW_IN_ALARM	3
+
+static ssize_t show_in(struct device *dev, struct device_attribute *attr,
+		       char *buf)
 {
-	struct i2c_client *new_client = 0;
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	int res;
+
+	switch (fn) {
+	case SHOW_IN_INPUT:
+		res = IN_FROM_REG(ix, data->in[ix]);
+		break;
+	case SHOW_SET_IN_MIN:
+		res = IN_FROM_REG(ix, data->in_min[ix]);
+		break;
+	case SHOW_SET_IN_MAX:
+		res = IN_FROM_REG(ix, data->in_max[ix]);
+		break;
+	case SHOW_IN_ALARM:
+		res = (data->alarms >> bitalarmin[ix]) & 1;
+		break;
+	default:
+		res = 0;
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+	return sprintf(buf, "%d\n", res);
+}
+
+static ssize_t set_in(struct device *dev, struct device_attribute *attr,
+		      const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+
+	mutex_lock(&data->update_lock);
+	switch (fn) {
+	case SHOW_SET_IN_MIN:
+		data->in_min[ix] = IN_TO_REG(ix, val);
+		vt1211_write8(data, VT1211_REG_IN_MIN(ix), data->in_min[ix]);
+		break;
+	case SHOW_SET_IN_MAX:
+		data->in_max[ix] = IN_TO_REG(ix, val);
+		vt1211_write8(data, VT1211_REG_IN_MAX(ix), data->in_max[ix]);
+		break;
+	default:
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+	mutex_unlock(&data->update_lock);
+
+	return count;
+}
+
+/* ---------------------------------------------------------------------
+ * Temperature sysfs interfaces
+ * ix = [0-6]
+ * --------------------------------------------------------------------- */
+
+#define SHOW_TEMP_INPUT		0
+#define SHOW_SET_TEMP_MAX	1
+#define SHOW_SET_TEMP_MAX_HYST	2
+#define SHOW_TEMP_ALARM		3
+
+static ssize_t show_temp(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	int res;
+
+	switch (fn) {
+	case SHOW_TEMP_INPUT:
+		res = TEMP_FROM_REG(ix, data->temp[ix]);
+		break;
+	case SHOW_SET_TEMP_MAX:
+		res = TEMP_FROM_REG(ix, data->temp_max[ix]);
+		break;
+	case SHOW_SET_TEMP_MAX_HYST:
+		res = TEMP_FROM_REG(ix, data->temp_hyst[ix]);
+		break;
+	case SHOW_TEMP_ALARM:
+		res = (data->alarms >> bitalarmtemp[ix]) & 1;
+		break;
+	default:
+		res = 0;
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+	return sprintf(buf, "%d\n", res);
+}
+
+static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
+			const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+
+	mutex_lock(&data->update_lock);
+	switch (fn) {
+	case SHOW_SET_TEMP_MAX:
+		data->temp_max[ix] = TEMP_TO_REG(ix, val);
+		vt1211_write8(data, regtempmax[ix],
+			      data->temp_max[ix]);
+		break;
+	case SHOW_SET_TEMP_MAX_HYST:
+		data->temp_hyst[ix] = TEMP_TO_REG(ix, val);
+		vt1211_write8(data, regtemphyst[ix],
+			      data->temp_hyst[ix]);
+		break;
+	default:
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+	mutex_unlock(&data->update_lock);
+
+	return count;
+}
+
+/* ---------------------------------------------------------------------
+ * Fan sysfs interfaces
+ * ix = [0-1]
+ * --------------------------------------------------------------------- */
+
+#define SHOW_FAN_INPUT		0
+#define SHOW_SET_FAN_MIN	1
+#define SHOW_SET_FAN_DIV	2
+#define SHOW_FAN_ALARM		3
+
+static ssize_t show_fan(struct device *dev, struct device_attribute *attr,
+			char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	int res;
+
+	switch (fn) {
+	case SHOW_FAN_INPUT:
+		res = RPM_FROM_REG(data->fan[ix], data->fan_div[ix]);
+		break;
+	case SHOW_SET_FAN_MIN:
+		res = RPM_FROM_REG(data->fan_min[ix], data->fan_div[ix]);
+		break;
+	case SHOW_SET_FAN_DIV:
+		res = DIV_FROM_REG(data->fan_div[ix]);
+		break;
+	case SHOW_FAN_ALARM:
+		res = (data->alarms >> bitalarmfan[ix]) & 1;
+		break;
+	default:
+		res = 0;
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+	return sprintf(buf, "%d\n", res);
+}
+
+static ssize_t set_fan(struct device *dev, struct device_attribute *attr,
+		       const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+	int reg;
+
+	mutex_lock(&data->update_lock);
+
+	/* sync the data cache */
+	reg = vt1211_read8(data, VT1211_REG_FAN_DIV);
+	data->fan_div[0] = (reg >> 4) & 3;
+	data->fan_div[1] = (reg >> 6) & 3;
+	data->fan_ctl = reg & 0xf;
+
+	switch (fn) {
+	case SHOW_SET_FAN_MIN:
+		data->fan_min[ix] = RPM_TO_REG(val, data->fan_div[ix]);
+		vt1211_write8(data, VT1211_REG_FAN_MIN(ix),
+			      data->fan_min[ix]);
+		break;
+	case SHOW_SET_FAN_DIV:
+		switch (val) {
+			case 1: data->fan_div[ix] = 0; break;
+			case 2: data->fan_div[ix] = 1; break;
+			case 4: data->fan_div[ix] = 2; break;
+			case 8: data->fan_div[ix] = 3; break;
+			default:
+				count = -EINVAL;
+				dev_warn(dev, "fan div value %ld not "
+					 "supported. Choose one of 1, 2, "
+					 "4, or 8.\n", val);
+				goto EXIT;
+		}
+		vt1211_write8(data, VT1211_REG_FAN_DIV,
+			      ((data->fan_div[1] << 6) |
+			       (data->fan_div[0] << 4) |
+				data->fan_ctl));
+		break;
+	default:
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+EXIT:
+	mutex_unlock(&data->update_lock);
+	return count;
+}
+
+/* ---------------------------------------------------------------------
+ * PWM sysfs interfaces
+ * ix = [0-1]
+ * --------------------------------------------------------------------- */
+
+#define SHOW_PWM			0
+#define SHOW_SET_PWM_ENABLE		1
+#define SHOW_SET_PWM_FREQ		2
+#define SHOW_SET_PWM_AUTO_CHANNELS_TEMP	3
+
+static ssize_t show_pwm(struct device *dev, struct device_attribute *attr,
+			char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	int res;
+
+	switch (fn) {
+	case SHOW_PWM:
+		res = data->pwm[ix];
+		break;
+	case SHOW_SET_PWM_ENABLE:
+		res = ((data->pwm_ctl[ix] >> 3) & 1) ? 2 : 0;
+		break;
+	case SHOW_SET_PWM_FREQ:
+		res = 90000 >> (data->pwm_clk & 7);
+		break;
+	case SHOW_SET_PWM_AUTO_CHANNELS_TEMP:
+		res = (data->pwm_ctl[ix] & 7) + 1;
+		break;
+	default:
+		res = 0;
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+	return sprintf(buf, "%d\n", res);
+}
+
+static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
+		       const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int fn = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+	int tmp, reg;
+
+	mutex_lock(&data->update_lock);
+
+	switch (fn) {
+	case SHOW_SET_PWM_ENABLE:
+		/* sync the data cache */
+		reg = vt1211_read8(data, VT1211_REG_FAN_DIV);
+		data->fan_div[0] = (reg >> 4) & 3;
+		data->fan_div[1] = (reg >> 6) & 3;
+		data->fan_ctl = reg & 0xf;
+		reg = vt1211_read8(data, VT1211_REG_PWM_CTL);
+		data->pwm_ctl[0] = reg & 0xf;
+		data->pwm_ctl[1] = (reg >> 4) & 0xf;
+		switch (val) {
+		case 0:
+			data->pwm_ctl[ix] &= 7;
+			/* disable SmartGuardian if both PWM outputs are
+			 * disabled */
+			if ((data->pwm_ctl[ix ^ 1] & 1) == 0) {
+				data->fan_ctl &= 0xe;
+			}
+			break;
+		case 2:
+			data->pwm_ctl[ix] |= 8;
+			data->fan_ctl |= 1;
+			break;
+		default:
+			count = -EINVAL;
+			dev_warn(dev, "pwm mode %ld not supported. "
+				 "Choose one of 0 or 2.\n", val);
+			goto EXIT;
+		}
+		vt1211_write8(data, VT1211_REG_PWM_CTL,
+			      ((data->pwm_ctl[1] << 4) |
+				data->pwm_ctl[0]));
+		vt1211_write8(data, VT1211_REG_FAN_DIV,
+			      ((data->fan_div[1] << 6) |
+			       (data->fan_div[0] << 4) |
+				data->fan_ctl));
+		break;
+	case SHOW_SET_PWM_FREQ:
+		val = 135000 / SENSORS_LIMIT(val, 135000 >> 7, 135000);
+		/* calculate tmp = log2(val) */
+		tmp = 0;
+		for (val >>= 1; val > 0; val >>= 1) {
+			tmp++;
+		}
+		/* sync the data cache */
+		reg = vt1211_read8(data, VT1211_REG_PWM_CLK);
+		data->pwm_clk = (reg & 0xf8) | tmp;
+		vt1211_write8(data, VT1211_REG_PWM_CLK, data->pwm_clk);
+		break;
+	case SHOW_SET_PWM_AUTO_CHANNELS_TEMP:
+		if ((val < 1) || (val > 7)) {
+			count = -EINVAL;
+			dev_warn(dev, "temp channel %ld not supported. "
+				 "Choose a value between 1 and 7.\n", val);
+			goto EXIT;
+		}
+		if (!ISTEMP(val - 1, data->uch_config)) {
+			count = -EINVAL;
+			dev_warn(dev, "temp channel %ld is not available.\n",
+				 val);
+			goto EXIT;
+		}
+		/* sync the data cache */
+		reg = vt1211_read8(data, VT1211_REG_PWM_CTL);
+		data->pwm_ctl[0] = reg & 0xf;
+		data->pwm_ctl[1] = (reg >> 4) & 0xf;
+		data->pwm_ctl[ix] = (data->pwm_ctl[ix] & 8) | (val - 1);
+		vt1211_write8(data, VT1211_REG_PWM_CTL,
+			      ((data->pwm_ctl[1] << 4) | data->pwm_ctl[0]));
+		break;
+	default:
+		dev_dbg(dev, "Unknown attr fetch (%d)\n", fn);
+	}
+
+EXIT:
+	mutex_unlock(&data->update_lock);
+	return count;
+}
+
+/* ---------------------------------------------------------------------
+ * PWM auto point definitions
+ * ix = [0-1]
+ * ap = [0-3]
+ * --------------------------------------------------------------------- */
+
+/*
+ * pwm[ix+1]_auto_point[ap+1]_temp mapping table:
+ * Note that there is only a single set of temp auto points that controls both
+ * PWM controllers. We still create 2 sets of sysfs files to make it look
+ * more consistent even though they map to the same registers.
+ *
+ * ix ap : description
+ * -------------------
+ * 0  0  : pwm1/2 off temperature        (pwm_auto_temp[0])
+ * 0  1  : pwm1/2 low speed temperature  (pwm_auto_temp[1])
+ * 0  2  : pwm1/2 high speed temperature (pwm_auto_temp[2])
+ * 0  3  : pwm1/2 full speed temperature (pwm_auto_temp[3])
+ * 1  0  : pwm1/2 off temperature        (pwm_auto_temp[0])
+ * 1  1  : pwm1/2 low speed temperature  (pwm_auto_temp[1])
+ * 1  2  : pwm1/2 high speed temperature (pwm_auto_temp[2])
+ * 1  3  : pwm1/2 full speed temperature (pwm_auto_temp[3])
+ */
+
+static ssize_t show_pwm_auto_point_temp(struct device *dev,
+					struct device_attribute *attr,
+					char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int ap = sensor_attr_2->nr;
+
+	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->pwm_ctl[ix] & 7,
+		       data->pwm_auto_temp[ap]));
+}
+
+static ssize_t set_pwm_auto_point_temp(struct device *dev,
+				       struct device_attribute *attr,
+				       const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int ap = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+	int reg;
+
+	mutex_lock(&data->update_lock);
+
+	/* sync the data cache */
+	reg = vt1211_read8(data, VT1211_REG_PWM_CTL);
+	data->pwm_ctl[0] = reg & 0xf;
+	data->pwm_ctl[1] = (reg >> 4) & 0xf;
+
+	data->pwm_auto_temp[ap] = TEMP_TO_REG(data->pwm_ctl[ix] & 7, val);
+	vt1211_write8(data, VT1211_REG_PWM_AUTO_TEMP(ap),
+		      data->pwm_auto_temp[ap]);
+	mutex_unlock(&data->update_lock);
+
+	return count;
+}
+
+/*
+ * pwm[ix+1]_auto_point[ap+1]_pwm mapping table:
+ * Note that the PWM auto points 0 & 3 are hard-wired in the VT1211 and can't
+ * be changed.
+ *
+ * ix ap : description
+ * -------------------
+ * 0  0  : pwm1 off                   (pwm_auto_pwm[0][0], hard-wired to 0)
+ * 0  1  : pwm1 low speed duty cycle  (pwm_auto_pwm[0][1])
+ * 0  2  : pwm1 high speed duty cycle (pwm_auto_pwm[0][2])
+ * 0  3  : pwm1 full speed            (pwm_auto_pwm[0][3], hard-wired to 255)
+ * 1  0  : pwm2 off                   (pwm_auto_pwm[1][0], hard-wired to 0)
+ * 1  1  : pwm2 low speed duty cycle  (pwm_auto_pwm[1][1])
+ * 1  2  : pwm2 high speed duty cycle (pwm_auto_pwm[1][2])
+ * 1  3  : pwm2 full speed            (pwm_auto_pwm[1][3], hard-wired to 255)
+*/
+
+static ssize_t show_pwm_auto_point_pwm(struct device *dev,
+				       struct device_attribute *attr,
+				       char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int ap = sensor_attr_2->nr;
+
+	return sprintf(buf, "%d\n", data->pwm_auto_pwm[ix][ap]);
+}
+
+static ssize_t set_pwm_auto_point_pwm(struct device *dev,
+				      struct device_attribute *attr,
+				      const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	struct sensor_device_attribute_2 *sensor_attr_2 =
+						to_sensor_dev_attr_2(attr);
+	int ix = sensor_attr_2->index;
+	int ap = sensor_attr_2->nr;
+	long val = simple_strtol(buf, NULL, 10);
+
+	if ((val < 0) || (val > 255)) {
+		dev_err(dev, "pwm value %ld is out of range. "
+			"Choose a value between 0 and 255." , val);
+		return -EINVAL;
+	}
+
+	mutex_lock(&data->update_lock);
+	data->pwm_auto_pwm[ix][ap] = val;
+	vt1211_write8(data, VT1211_REG_PWM_AUTO_PWM(ix, ap),
+		      data->pwm_auto_pwm[ix][ap]);
+	mutex_unlock(&data->update_lock);
+
+	return count;
+}
+
+/* ---------------------------------------------------------------------
+ * Miscellaneous sysfs interfaces (VRM, VID, name, and (legacy) alarms)
+ * --------------------------------------------------------------------- */
+
+static ssize_t show_vrm(struct device *dev, struct device_attribute *attr,
+			char *buf)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%d\n", data->vrm);
+}
+
+static ssize_t set_vrm(struct device *dev, struct device_attribute *attr,
+		       const char *buf, size_t count)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+	long val = simple_strtol(buf, NULL, 10);
+
+	data->vrm = val;
+
+	return count;
+}
+
+static ssize_t show_vid(struct device *dev, struct device_attribute *attr,
+			char *buf)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%d\n", vid_from_reg(data->vid, data->vrm));
+}
+
+static ssize_t show_name(struct device *dev,
+			 struct device_attribute *attr, char *buf)
+{
+	struct vt1211_data *data = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%s\n", data->name);
+}
+
+static ssize_t show_alarms(struct device *dev,
+			   struct device_attribute *attr, char *buf)
+{
+	struct vt1211_data *data = vt1211_update_device(dev);
+
+	return sprintf(buf, "%d\n", data->alarms);
+}
+
+/* ---------------------------------------------------------------------
+ * Device attribute structs
+ * --------------------------------------------------------------------- */
+
+#define SENSOR_ATTR_IN_INPUT(ix) \
+	SENSOR_ATTR_2(in##ix##_input, S_IRUGO, \
+		show_in, NULL, SHOW_IN_INPUT, ix)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_in_input[] = {
+	SENSOR_ATTR_IN_INPUT(0),
+	SENSOR_ATTR_IN_INPUT(1),
+	SENSOR_ATTR_IN_INPUT(2),
+	SENSOR_ATTR_IN_INPUT(3),
+	SENSOR_ATTR_IN_INPUT(4),
+	SENSOR_ATTR_IN_INPUT(5),
+};
+
+#define SENSOR_ATTR_IN_MIN(ix) \
+	SENSOR_ATTR_2(in##ix##_min, S_IRUGO | S_IWUSR, \
+		show_in, set_in, SHOW_SET_IN_MIN, ix)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_in_min[] = {
+	SENSOR_ATTR_IN_MIN(0),
+	SENSOR_ATTR_IN_MIN(1),
+	SENSOR_ATTR_IN_MIN(2),
+	SENSOR_ATTR_IN_MIN(3),
+	SENSOR_ATTR_IN_MIN(4),
+	SENSOR_ATTR_IN_MIN(5),
+};
+
+#define SENSOR_ATTR_IN_MAX(ix) \
+	SENSOR_ATTR_2(in##ix##_max, S_IRUGO | S_IWUSR, \
+		show_in, set_in, SHOW_SET_IN_MAX, ix)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_in_max[] = {
+	SENSOR_ATTR_IN_MAX(0),
+	SENSOR_ATTR_IN_MAX(1),
+	SENSOR_ATTR_IN_MAX(2),
+	SENSOR_ATTR_IN_MAX(3),
+	SENSOR_ATTR_IN_MAX(4),
+	SENSOR_ATTR_IN_MAX(5),
+};
+
+#define SENSOR_ATTR_IN_ALARM(ix) \
+	SENSOR_ATTR_2(in##ix##_alarm, S_IRUGO, \
+		show_in, NULL, SHOW_IN_ALARM, ix)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_in_alarm[] = {
+	SENSOR_ATTR_IN_ALARM(0),
+	SENSOR_ATTR_IN_ALARM(1),
+	SENSOR_ATTR_IN_ALARM(2),
+	SENSOR_ATTR_IN_ALARM(3),
+	SENSOR_ATTR_IN_ALARM(4),
+	SENSOR_ATTR_IN_ALARM(5),
+};
+
+#define SENSOR_ATTR_TEMP_INPUT(ix) \
+	SENSOR_ATTR_2(temp##ix##_input, S_IRUGO, \
+		show_temp, NULL, SHOW_TEMP_INPUT, ix-1)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_temp_input[] = {
+	SENSOR_ATTR_TEMP_INPUT(1),
+	SENSOR_ATTR_TEMP_INPUT(2),
+	SENSOR_ATTR_TEMP_INPUT(3),
+	SENSOR_ATTR_TEMP_INPUT(4),
+	SENSOR_ATTR_TEMP_INPUT(5),
+	SENSOR_ATTR_TEMP_INPUT(6),
+	SENSOR_ATTR_TEMP_INPUT(7),
+};
+
+#define SENSOR_ATTR_TEMP_MAX(ix) \
+	SENSOR_ATTR_2(temp##ix##_max, S_IRUGO | S_IWUSR, \
+		show_temp, set_temp, SHOW_SET_TEMP_MAX, ix-1)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_temp_max[] = {
+	SENSOR_ATTR_TEMP_MAX(1),
+	SENSOR_ATTR_TEMP_MAX(2),
+	SENSOR_ATTR_TEMP_MAX(3),
+	SENSOR_ATTR_TEMP_MAX(4),
+	SENSOR_ATTR_TEMP_MAX(5),
+	SENSOR_ATTR_TEMP_MAX(6),
+	SENSOR_ATTR_TEMP_MAX(7),
+};
+
+#define SENSOR_ATTR_TEMP_MAX_HYST(ix) \
+	SENSOR_ATTR_2(temp##ix##_max_hyst, S_IRUGO | S_IWUSR, \
+		show_temp, set_temp, SHOW_SET_TEMP_MAX_HYST, ix-1)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_temp_max_hyst[] = {
+	SENSOR_ATTR_TEMP_MAX_HYST(1),
+	SENSOR_ATTR_TEMP_MAX_HYST(2),
+	SENSOR_ATTR_TEMP_MAX_HYST(3),
+	SENSOR_ATTR_TEMP_MAX_HYST(4),
+	SENSOR_ATTR_TEMP_MAX_HYST(5),
+	SENSOR_ATTR_TEMP_MAX_HYST(6),
+	SENSOR_ATTR_TEMP_MAX_HYST(7),
+};
+
+#define SENSOR_ATTR_TEMP_ALARM(ix) \
+	SENSOR_ATTR_2(temp##ix##_alarm, S_IRUGO, \
+		show_temp, NULL, SHOW_TEMP_ALARM, ix-1)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_temp_alarm[] = {
+	SENSOR_ATTR_TEMP_ALARM(1),
+	SENSOR_ATTR_TEMP_ALARM(2),
+	SENSOR_ATTR_TEMP_ALARM(3),
+	SENSOR_ATTR_TEMP_ALARM(4),
+	SENSOR_ATTR_TEMP_ALARM(5),
+	SENSOR_ATTR_TEMP_ALARM(6),
+	SENSOR_ATTR_TEMP_ALARM(7),
+};
+
+#define SENSOR_ATTR_FAN(ix) \
+	SENSOR_ATTR_2(fan##ix##_input, S_IRUGO, \
+		show_fan, NULL, SHOW_FAN_INPUT, ix-1), \
+	SENSOR_ATTR_2(fan##ix##_min, S_IRUGO | S_IWUSR, \
+		show_fan, set_fan, SHOW_SET_FAN_MIN, ix-1), \
+	SENSOR_ATTR_2(fan##ix##_div, S_IRUGO | S_IWUSR, \
+		show_fan, set_fan, SHOW_SET_FAN_DIV, ix-1), \
+	SENSOR_ATTR_2(fan##ix##_alarm, S_IRUGO, \
+		show_fan, NULL, SHOW_FAN_ALARM, ix-1)
+
+#define SENSOR_ATTR_PWM(ix) \
+	SENSOR_ATTR_2(pwm##ix, S_IRUGO, \
+		show_pwm, NULL, SHOW_PWM, ix-1), \
+	SENSOR_ATTR_2(pwm##ix##_enable, S_IRUGO | S_IWUSR, \
+		show_pwm, set_pwm, SHOW_SET_PWM_ENABLE, ix-1), \
+	SENSOR_ATTR_2(pwm##ix##_auto_channels_temp, S_IRUGO | S_IWUSR, \
+		show_pwm, set_pwm, SHOW_SET_PWM_AUTO_CHANNELS_TEMP, ix-1)
+
+#define SENSOR_ATTR_PWM_FREQ(ix) \
+	SENSOR_ATTR_2(pwm##ix##_freq, S_IRUGO | S_IWUSR, \
+		show_pwm, set_pwm, SHOW_SET_PWM_FREQ, ix-1)
+
+#define SENSOR_ATTR_PWM_FREQ_RO(ix) \
+	SENSOR_ATTR_2(pwm##ix##_freq, S_IRUGO, \
+		show_pwm, NULL, SHOW_SET_PWM_FREQ, ix-1)
+
+#define SENSOR_ATTR_PWM_AUTO_POINT_TEMP(ix, ap) \
+	SENSOR_ATTR_2(pwm##ix##_auto_point##ap##_temp, S_IRUGO | S_IWUSR, \
+		show_pwm_auto_point_temp, set_pwm_auto_point_temp, \
+		ap-1, ix-1)
+
+#define SENSOR_ATTR_PWM_AUTO_POINT_TEMP_RO(ix, ap) \
+	SENSOR_ATTR_2(pwm##ix##_auto_point##ap##_temp, S_IRUGO, \
+		show_pwm_auto_point_temp, NULL, \
+		ap-1, ix-1)
+
+#define SENSOR_ATTR_PWM_AUTO_POINT_PWM(ix, ap) \
+	SENSOR_ATTR_2(pwm##ix##_auto_point##ap##_pwm, S_IRUGO | S_IWUSR, \
+		show_pwm_auto_point_pwm, set_pwm_auto_point_pwm, \
+		ap-1, ix-1)
+
+#define SENSOR_ATTR_PWM_AUTO_POINT_PWM_RO(ix, ap) \
+	SENSOR_ATTR_2(pwm##ix##_auto_point##ap##_pwm, S_IRUGO, \
+		show_pwm_auto_point_pwm, NULL, \
+		ap-1, ix-1)
+
+static struct sensor_device_attribute_2 vt1211_sysfs_fan_pwm[] = {
+	SENSOR_ATTR_FAN(1),
+	SENSOR_ATTR_FAN(2),
+	SENSOR_ATTR_PWM(1),
+	SENSOR_ATTR_PWM(2),
+	SENSOR_ATTR_PWM_FREQ(1),
+	SENSOR_ATTR_PWM_FREQ_RO(2),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP(1, 1),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP(1, 2),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP(1, 3),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP(1, 4),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP_RO(2, 1),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP_RO(2, 2),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP_RO(2, 3),
+	SENSOR_ATTR_PWM_AUTO_POINT_TEMP_RO(2, 4),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM_RO(1, 1),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM(1, 2),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM(1, 3),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM_RO(1, 4),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM_RO(2, 1),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM(2, 2),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM(2, 3),
+	SENSOR_ATTR_PWM_AUTO_POINT_PWM_RO(2, 4),
+};
+
+static struct device_attribute vt1211_sysfs_misc[] = {
+	__ATTR(vrm, S_IRUGO | S_IWUSR, show_vrm, set_vrm),
+	__ATTR(cpu0_vid, S_IRUGO, show_vid, NULL),
+	__ATTR(name, S_IRUGO, show_name, NULL),
+	__ATTR(alarms, S_IRUGO, show_alarms, NULL),
+};
+
+/* ---------------------------------------------------------------------
+ * Device registration and initialization
+ * --------------------------------------------------------------------- */
+
+static void __devinit vt1211_init_device(struct vt1211_data *data)
+{
+	/* set VRM */
+	data->vrm = vid_which_vrm();
+
+	/* Read (and initialize) UCH config */
+	data->uch_config = vt1211_read8(data, VT1211_REG_UCH_CONFIG);
+	if (uch_config > -1) {
+		data->uch_config = (data->uch_config & 0x83) |
+				   (uch_config << 2);
+		vt1211_write8(data, VT1211_REG_UCH_CONFIG, data->uch_config);
+	}
+
+	/* Initialize the interrupt mode (if request at module load time).
+	 * The VT1211 implements 3 different modes for clearing interrupts:
+	 * 0: Clear INT when status register is read. Regenerate INT as long
+	 *    as temp stays above hysteresis limit.
+	 * 1: Clear INT when status register is read. DON'T regenerate INT
+	 *    until temp falls below hysteresis limit and exceeds hot limit
+	 *    again.
+	 * 2: Clear INT when temp falls below max limit.
+	 *
+	 * The driver only allows to force mode 0 since that's the only one
+	 * that makes sense for 'sensors' */
+	if (int_mode == 0) {
+		vt1211_write8(data, VT1211_REG_TEMP1_CONFIG, 0);
+		vt1211_write8(data, VT1211_REG_TEMP2_CONFIG, 0);
+	}
+
+	/* Fill in some hard wired values into our data struct */
+	data->pwm_auto_pwm[0][3] = 255;
+	data->pwm_auto_pwm[1][3] = 255;
+}
+
+static void vt1211_remove_sysfs(struct platform_device *pdev)
+{
+	struct device *dev = &pdev->dev;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_in_input); i++) {
+		device_remove_file(dev,
+			&vt1211_sysfs_in_input[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_in_min[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_in_max[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_in_alarm[i].dev_attr);
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_temp_input); i++) {
+		device_remove_file(dev,
+			&vt1211_sysfs_temp_input[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_temp_max[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_temp_max_hyst[i].dev_attr);
+		device_remove_file(dev,
+			&vt1211_sysfs_temp_alarm[i].dev_attr);
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_fan_pwm); i++) {
+		device_remove_file(dev,
+			&vt1211_sysfs_fan_pwm[i].dev_attr);
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_misc); i++) {
+		device_remove_file(dev, &vt1211_sysfs_misc[i]);
+	}
+}
+
+static int __devinit vt1211_probe(struct platform_device *pdev)
+{
+	struct device *dev = &pdev->dev;
 	struct vt1211_data *data;
-	int err = 0;
-	u8 val;
+	struct resource *res;
+	int i, err;
 
-	if (!i2c_is_isa_adapter(adapter)) {
-		return 0;
-	}
-
-	if(force_addr) {
-		printk("vt1211.o: forcing ISA address 0x%04X\n", address);
-		address = force_addr & ~(VT1211_EXTENT - 1);
-		superio_enter();
-		superio_select();
-		superio_outb(VT1211_BASE_REG, address >> 8);
-		superio_outb(VT1211_BASE_REG+1, address & 0xff);
-		superio_exit();
-	}
-
-	superio_enter();
-	superio_select();
-	if((val = 0x01 & superio_inb(VT1211_ACT_REG)) == 0)
-		superio_outb(VT1211_ACT_REG, 1);
-	superio_exit();
-
-	if (!request_region(address, VT1211_EXTENT, vt1211_isa_driver.driver.name)) {
-		return -EBUSY;
-	}
-
-	/* OK. For now, we presume we have a valid client. We now
-	   create the client structure, even though we cannot fill it
-	   completely yet.
-	   */
-
-	if (!(data = kmalloc(sizeof(struct vt1211_data), GFP_KERNEL))) {
+	if (!(data = kzalloc(sizeof(struct vt1211_data), GFP_KERNEL))) {
 		err = -ENOMEM;
-		goto ERROR1;
+		dev_err(dev, "Out of memory\n");
+		goto EXIT;
 	}
-	memset(data, 0, sizeof(struct vt1211_data));
-	new_client = &data->client;
 
-	init_MUTEX(&data->lock);
-	i2c_set_clientdata(new_client, data);
-	new_client->addr = address;
-	new_client->adapter = adapter;
-	new_client->driver = &vt1211_isa_driver;
+	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+	data->addr = res->start;
+	data->name = DRVNAME;
+	mutex_init(&data->update_lock);
 
-	/* Fill in the remaining client fields and put into the global list */
-	strlcpy(new_client->name, "vt1211", I2C_NAME_SIZE);
-	data->type = vt1211;
+	platform_set_drvdata(pdev, data);
 
-	data->valid = 0;
-	init_MUTEX(&data->update_lock);
+	/* Initialize the VT1211 chip */
+	vt1211_init_device(data);
 
-	/* Tell the I2C layer a new client has arrived */
-	if ((err = i2c_attach_client(new_client)))
-		goto ERROR1;
+	/* Create sysfs interface files */
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_in_input); i++) {
+		if (ISVOLT(i, data->uch_config)) {
+			if ((err = device_create_file(dev,
+				&vt1211_sysfs_in_input[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_in_min[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_in_max[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_in_alarm[i].dev_attr))) {
+				goto EXIT_DEV_REMOVE;
+			}
+		}
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_temp_input); i++) {
+		if (ISTEMP(i, data->uch_config)) {
+			if ((err = device_create_file(dev,
+				&vt1211_sysfs_temp_input[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_temp_max[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_temp_max_hyst[i].dev_attr)) ||
+			    (err = device_create_file(dev,
+				&vt1211_sysfs_temp_alarm[i].dev_attr))) {
+				goto EXIT_DEV_REMOVE;
+			}
+		}
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_fan_pwm); i++) {
+		err = device_create_file(dev,
+			&vt1211_sysfs_fan_pwm[i].dev_attr);
+		if (err) {
+			goto EXIT_DEV_REMOVE;
+		}
+	}
+	for (i = 0; i < ARRAY_SIZE(vt1211_sysfs_misc); i++) {
+		err = device_create_file(dev,
+		       &vt1211_sysfs_misc[i]);
+		if (err) {
+			goto EXIT_DEV_REMOVE;
+		}
+	}
 
-	vt1211_init_client(new_client);
-
-	data->class_dev = hwmon_device_register(&new_client->dev);
+	/* Register device */
+	data->class_dev = hwmon_device_register(dev);
 	if (IS_ERR(data->class_dev)) {
 		err = PTR_ERR(data->class_dev);
-		goto ERROR2;
+		dev_err(dev, "Class registration failed (%d)\n", err);
+		goto EXIT_DEV_REMOVE_SILENT;
 	}
 
-
-	device_create_file(&new_client->dev, &dev_attr_uch_config);
-
-	device_create_file(&new_client->dev, &dev_attr_temp1_input);
-	device_create_file(&new_client->dev, &dev_attr_temp1_max);
-	device_create_file(&new_client->dev, &dev_attr_temp1_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp2_input);
-	device_create_file(&new_client->dev, &dev_attr_temp2_max);
-	device_create_file(&new_client->dev, &dev_attr_temp2_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp3_input);
-	device_create_file(&new_client->dev, &dev_attr_temp3_max);
-	device_create_file(&new_client->dev, &dev_attr_temp3_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp4_input);
-	device_create_file(&new_client->dev, &dev_attr_temp4_max);
-	device_create_file(&new_client->dev, &dev_attr_temp4_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp5_input);
-	device_create_file(&new_client->dev, &dev_attr_temp5_max);
-	device_create_file(&new_client->dev, &dev_attr_temp5_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp6_input);
-	device_create_file(&new_client->dev, &dev_attr_temp6_max);
-	device_create_file(&new_client->dev, &dev_attr_temp6_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp7_input);
-	device_create_file(&new_client->dev, &dev_attr_temp7_max);
-	device_create_file(&new_client->dev, &dev_attr_temp7_max_hyst);
-
-	device_create_file(&new_client->dev, &dev_attr_fan1_input);
-	device_create_file(&new_client->dev, &dev_attr_fan2_input);
-	device_create_file(&new_client->dev, &dev_attr_fan1_div);
-	device_create_file(&new_client->dev, &dev_attr_fan2_div);
-	device_create_file(&new_client->dev, &dev_attr_fan1_min);
-	device_create_file(&new_client->dev, &dev_attr_fan2_min);
-	device_create_file(&new_client->dev, &dev_attr_fan1_pwm);
-	device_create_file(&new_client->dev, &dev_attr_fan2_pwm);
-	device_create_file(&new_client->dev, &dev_attr_fan1_pwm_enable);
-	device_create_file(&new_client->dev, &dev_attr_fan2_pwm_enable);
-
-	device_create_file(&new_client->dev, &dev_attr_in0_ref);
-	device_create_file(&new_client->dev, &dev_attr_alarms);
-	device_create_file(&new_client->dev, &dev_attr_vrm);
-	device_create_file(&new_client->dev, &dev_attr_in0_input);
-	device_create_file(&new_client->dev, &dev_attr_in0_min);
-	device_create_file(&new_client->dev, &dev_attr_in0_max);
-	device_create_file(&new_client->dev, &dev_attr_in1_input);
-	device_create_file(&new_client->dev, &dev_attr_in1_min);
-	device_create_file(&new_client->dev, &dev_attr_in1_max);
-	device_create_file(&new_client->dev, &dev_attr_in2_input);
-	device_create_file(&new_client->dev, &dev_attr_in2_min);
-	device_create_file(&new_client->dev, &dev_attr_in2_max);
-	device_create_file(&new_client->dev, &dev_attr_in3_input);
-	device_create_file(&new_client->dev, &dev_attr_in3_min);
-	device_create_file(&new_client->dev, &dev_attr_in3_max);
-	device_create_file(&new_client->dev, &dev_attr_in4_input);
-	device_create_file(&new_client->dev, &dev_attr_in4_min);
-	device_create_file(&new_client->dev, &dev_attr_in4_max);
-	device_create_file(&new_client->dev, &dev_attr_in5_input);
-	device_create_file(&new_client->dev, &dev_attr_in5_min);
-	device_create_file(&new_client->dev, &dev_attr_in5_max);
-	device_create_file(&new_client->dev, &dev_attr_in6_input);
-	device_create_file(&new_client->dev, &dev_attr_in6_min);
-	device_create_file(&new_client->dev, &dev_attr_in6_max);
 	return 0;
 
- ERROR2:
-	i2c_detach_client(new_client);
- ERROR1:
-	kfree(new_client);
-	release_region(address, VT1211_EXTENT);
+EXIT_DEV_REMOVE:
+	dev_err(dev, "Sysfs interface creation failed (%d)\n", err);
+EXIT_DEV_REMOVE_SILENT:
+	vt1211_remove_sysfs(pdev);
+	platform_set_drvdata(pdev, NULL);
+	kfree(data);
+EXIT:
 	return err;
 }
 
-
-static int vt1211_attach_adapter(struct i2c_adapter *adapter)
+static int __devexit vt1211_remove(struct platform_device *pdev)
 {
-	if (!(adapter->class & I2C_CLASS_HWMON))
-		return 0;
-	return i2c_probe(adapter, &addr_data, vt1211_detect);
-}
-
-static int vt1211_isa_attach_adapter(struct i2c_adapter *adapter)
-{
-	return vt1211_detect(adapter, isa_address, -1);
-}
-
-
-static int vt1211_detach_client(struct i2c_client *client)
-{
-	struct vt1211_data *data = i2c_get_clientdata(client);
-	int err;
-
-	/* release ISA region first */
-	release_region(client->addr, VT1211_EXTENT);
+	struct vt1211_data *data = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(data->class_dev);
-
-	/* now it's safe to scrap the rest */
-	if ((err = i2c_detach_client(client))) {
-		return err;
-	}
-
+	vt1211_remove_sysfs(pdev);
+	platform_set_drvdata(pdev, NULL);
 	kfree(data);
+
 	return 0;
 }
 
-static int vt1211_find(int *address)
+static struct platform_driver vt1211_driver = {
+	.driver = {
+		.owner = THIS_MODULE,
+		.name  = DRVNAME,
+	},
+	.probe  = vt1211_probe,
+	.remove = __devexit_p(vt1211_remove),
+};
+
+static int __init vt1211_device_add(unsigned short address)
 {
-	u16 val;
+	struct resource res = {
+		.start	= address,
+		.end	= address + 0x7f,
+		.flags	= IORESOURCE_IO,
+	};
+	int err;
+
+	pdev = platform_device_alloc(DRVNAME, address);
+	if (!pdev) {
+		err = -ENOMEM;
+		printk(KERN_ERR DRVNAME ": Device allocation failed (%d)\n",
+		       err);
+		goto EXIT;
+	}
+
+	res.name = pdev->name;
+	err = platform_device_add_resources(pdev, &res, 1);
+	if (err) {
+		printk(KERN_ERR DRVNAME ": Device resource addition failed "
+		       "(%d)\n", err);
+		goto EXIT_DEV_PUT;
+	}
+
+	err = platform_device_add(pdev);
+	if (err) {
+		printk(KERN_ERR DRVNAME ": Device addition failed (%d)\n",
+		       err);
+		goto EXIT_DEV_PUT;
+	}
+
+	return 0;
+
+EXIT_DEV_PUT:
+	platform_device_put(pdev);
+EXIT:
+	return err;
+}
+
+static int __init vt1211_find(unsigned short *address)
+{
+	int err = -ENODEV;
 
 	superio_enter();
-	val= superio_inb(DEVID);
-	if(VT1211_DEVID != val) {
-		superio_exit();
-		return -ENODEV;
+
+	if (superio_inb(SIO_VT1211_DEVID) != SIO_VT1211_ID) {
+		goto EXIT;
 	}
 
-	superio_select();
-	val = (superio_inb(VT1211_BASE_REG) << 8) |
-	       superio_inb(VT1211_BASE_REG + 1);
-	*address = val & ~(VT1211_EXTENT - 1);
-	if (*address == 0 && force_addr == 0) {
-		printk("vt1211: base address not set-use force_addr=0xaddr\n");
-		superio_exit();
-		return -ENODEV;
-	}
-	if (force_addr)
-		*address = force_addr;	/* so detect will get called */
+	superio_select(SIO_VT1211_LDN_HWMON);
 
+	if ((superio_inb(SIO_VT1211_ACTIVE) & 1) == 0) {
+		printk(KERN_WARNING DRVNAME ": HW monitor is disabled, "
+		       "skipping\n");
+		goto EXIT;
+	}
+
+	*address = ((superio_inb(SIO_VT1211_BADDR) << 8) |
+		    (superio_inb(SIO_VT1211_BADDR + 1))) & 0xff00;
+	if (*address == 0) {
+		printk(KERN_WARNING DRVNAME ": Base address is not set, "
+		       "skipping\n");
+		goto EXIT;
+	}
+
+	err = 0;
+	printk(KERN_INFO DRVNAME ": Found VT1211 chip at 0x%04x, "
+	       "revision %u\n", *address, superio_inb(SIO_VT1211_DEVREV));
+
+EXIT:
 	superio_exit();
-	return 0;
+	return err;
 }
 
-
-
-
-
-static int __init sm_vt1211_init(void)
+static int __init vt1211_init(void)
 {
-        int res;
+	int err;
+	unsigned short address = 0;
 
-        /*printk("vt1211 for 2.6: (%s %s) loaded ...\n", __DATE__, __TIME__);
-        */
-	if (vt1211_find(&isa_address)) {
-		printk("vt1211: not detected, module not inserted.\n");
-		return -ENODEV;
+	err = vt1211_find(&address);
+	if (err) {
+		goto EXIT;
 	}
 
-	res = i2c_add_driver(&vt1211_driver);
-	if (res) return res;
-
-	res = i2c_isa_add_driver(&vt1211_isa_driver);
-	if (res) {
-		i2c_isa_del_driver(&vt1211_driver);
-		return res;
+	if ((uch_config < -1) || (uch_config > 31)) {
+		err = -EINVAL;
+		printk(KERN_WARNING DRVNAME ": Invalid UCH configuration %d. "
+		       "Choose a value between 0 and 31.\n", uch_config);
+	  goto EXIT;
 	}
+
+	if ((int_mode < -1) || (int_mode > 0)) {
+		err = -EINVAL;
+		printk(KERN_WARNING DRVNAME ": Invalid interrupt mode %d. "
+		       "Only mode 0 is supported.\n", int_mode);
+	  goto EXIT;
+	}
+
+	err = platform_driver_register(&vt1211_driver);
+	if (err) {
+		goto EXIT;
+	}
+
+	/* Sets global pdev as a side effect */
+	err = vt1211_device_add(address);
+	if (err) {
+		goto EXIT_DRV_UNREGISTER;
+	}
+
 	return 0;
+
+EXIT_DRV_UNREGISTER:
+	platform_driver_unregister(&vt1211_driver);
+EXIT:
+	return err;
 }
 
-static void __exit sm_vt1211_exit(void)
+static void __exit vt1211_exit(void)
 {
-	i2c_isa_del_driver(&vt1211_isa_driver);
-	i2c_del_driver(&vt1211_driver);
+	platform_device_unregister(pdev);
+	platform_driver_unregister(&vt1211_driver);
 }
 
-
-
-MODULE_AUTHOR("Mark D. Studebaker <mdsxyz123@yahoo.com>, "
-	      "Updated to 2.6 by Lars Ekman <emil71se@yahoo.com>");
+MODULE_AUTHOR("Juerg Haefliger <juergh@gmail.com>");
 MODULE_DESCRIPTION("VT1211 sensors");
 MODULE_LICENSE("GPL");
 
-module_init(sm_vt1211_init);
-module_exit(sm_vt1211_exit);
+module_init(vt1211_init);
+module_exit(vt1211_exit);
