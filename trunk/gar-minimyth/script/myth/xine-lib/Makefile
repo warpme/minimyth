@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 20050716
+GARVERSION = 20050720
 CATEGORIES = myth
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/xine/
 MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/xine/
