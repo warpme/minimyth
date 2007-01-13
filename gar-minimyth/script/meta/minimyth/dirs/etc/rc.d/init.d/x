@@ -10,22 +10,6 @@ start() {
     mm_conf_get /xinitrc /root/.xinitrc
     mm_conf_get /xorg.conf /etc/X11/xorg.conf
 
-    # Configure XvMC.
-    case "${MM_X_DRIVER}" in
-        intel_810)
-            sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
-            ;;
-        nvidia)
-            sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
-            ;;
-        via)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
-            ;;
-        via_pro)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
-            ;;
-    esac
-
     MM_X_DEVICE_NVIDIA=""
     MM_X_DEVICE_VIA=""
     if [ "${MM_X_TV_ENABLED}"  = yes ] ; then
