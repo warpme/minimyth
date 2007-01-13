@@ -80,7 +80,6 @@ checksum-$(GARNAME)R$(GARVERSION)-src.tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-os:
-	$(call GLIBC_ADD_LIB_PATH, $(libdir)/gcc/$(GARHOST)/$(GCC_VERSION))
 	@$(call CONFIG_FILE_HEADER, Operating System.)
 	@$(call CONFIG_FILE_APPEND, LinuxDistribution         , 0)
 	@$(call CONFIG_FILE_APPEND, DefaultOSMajorVersion     , $(KERNEL_MAJOR_VERSION))
