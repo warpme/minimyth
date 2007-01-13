@@ -1,9 +1,7 @@
 GARNAME = drm
 GARVERSION = 20060712Z
-#GARVERSION = 62f6ea225615392098dedee47d4ccdd69e126a43
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
-#MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -30,10 +28,6 @@ include ../../gar.mk
 
 cvs//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-git//%$(DISTNAME).tar.bz2:
-	$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

@@ -254,10 +254,8 @@ conf_default_x() {
             if /usr/bin/test -z "${MM_X_TV_OVERSCAN}" ; then
                 MM_X_TV_OVERSCAN='0.0'
             fi
-            if /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.[0-9]*\)\?$' > /dev/null 2>&1 ||
-               /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^1\(\.0*\)\?$'     > /dev/null 2>&1 ; then
-                :
-            else
+            if ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.[0-9]*\)\?$' > /dev/null 2>&1 &&
+               ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^1\(\.0*\)\?$'     > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
                 exit 1
             fi
@@ -266,7 +264,7 @@ conf_default_x() {
             if /usr/bin/test -z "${MM_X_TV_OVERSCAN}" ; then
                 MM_X_TV_OVERSCAN='0.0'
             fi
-            if /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.0*\)\?$' > /dev/null 2>&1 ; then
+            if ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.0*\)\?$' > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
                 exit 1
             fi
