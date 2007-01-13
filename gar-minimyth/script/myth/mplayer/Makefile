@@ -99,8 +99,8 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-md5sum
 # Audio output: enable alsa
 CONFIGURE_ARGS_AUDIO = \
-	--enable-alsa \
-	--disable-ossaudio \
+	--disable-alsa \
+	--enable-ossaudio \
 	--disable-arts \
 	--disable-esd \
 	--disable-polyp \
