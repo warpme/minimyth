@@ -13,9 +13,9 @@ DESTIMG = $(MINIMYTHIMG)
 DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
-	X11/blackbox \
 	utils/busybox \
 	system/devfsd \
+	X11/fvwm \
 	devel/gdb \
 	kernel/linux kernel/drm \
 	lirc/lirc \
