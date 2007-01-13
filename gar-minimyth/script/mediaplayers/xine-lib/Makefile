@@ -37,7 +37,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-xxmc-lib=XvMCW \
 	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
 	--with-libFLAC-libraries=$(DESTDIR)$(libdir) \
-	--with-w32-path="$(libdir)/win32"
+	--with-w32-path="$(libdir)/codecs"
 
 include ../../gar.mk
 
