@@ -80,3 +80,10 @@ install-source:
 	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -rf $(DESTDIR)$(datadir)/mythtv/FreeMono.ttf
+	@ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/FreeMono.ttf $(DESTDIR)$(datadir)/mythtv/FreeMono.ttf
+	@rm -rf $(DESTDIR)$(datadir)/mythtv/FreeSans.ttf
+	@ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/FreeSans.ttf $(DESTDIR)$(datadir)/mythtv/FreeSans.ttf
+	@$(MAKECOOKIE)
