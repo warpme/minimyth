@@ -6,6 +6,7 @@
 . /etc/conf
 
 DHCP_CONF="/etc/conf.d/dhcp"
+HOSTS_CONF="/etc/hosts"
 NTP_CONF="/etc/ntp.conf"
 RESOLV_CONF="/etc/resolv.conf"
 
@@ -51,6 +52,7 @@ case "$1" in
                MM_DNS_SERVER=$i
            fi
         done
+
         rm -f $RESOLV_CONF~
         if [ -n "$domain" ] ; then
             echo search $domain >> $RESOLV_CONF~
@@ -61,6 +63,17 @@ case "$1" in
             fi
         done
         mv -f $RESOLV_CONF~ $RESOLV_CONF
+
+        rm -f $HOSTS_CONF~
+        echo "127.0.0.1 localhost.localdomain localhost" >> $HOSTS_CONF~
+        if [ -n "$hostname" ] ; then
+            echo -n "$ip"                                >> $HOSTS_CONF~
+            if [ -n "$domain" ] ; then
+                echo -n " $hostname.$domain"             >> $HOSTS_CONF~
+            fi
+            echo -n " $hostname"                         >> $HOSTS_CONF~
+        fi
+        mv -f $HOSTS_CONF~ $HOSTS_CONF
 
         MM_NTP_SERVER=
         for i in $ntpsrv ; do
