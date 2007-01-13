@@ -36,7 +36,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries="$(DESTDIR)$(x11libdir)" \
 	--with-gnu-ld \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
-	--with-moduledir="$(KERNEL_MODULESDIR)/lirc" \
+	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
 	--with-driver=any
 BUILD_ARGS     = $(DEFAULT_ARGS)
 INSTALL_ARGS   = $(DEFAULT_ARGS)
