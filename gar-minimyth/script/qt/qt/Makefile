@@ -39,6 +39,7 @@ CONFIGURE_ARGS = \
 	-no-nis \
 	-no-pch \
 	-no-cups \
+	-largefile \
 	-no-stl \
 	-no-ipv6 \
 	-qt-imgfmt-png \

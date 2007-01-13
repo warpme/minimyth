@@ -1,7 +1,7 @@
 GARNAME = MPlayer
 GARVERSION = 1.0pre7try2
 CATEGORIES = mediaplayers
-MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
+MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-demuxer_h.patch $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
