@@ -53,7 +53,7 @@ checksum-$(GARNAME)-$(GARVERSION).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p "$(DESTDIR)$(KERNEL_MODULESDIR)/kernel/drivers/char/drm/"
-	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(KERNEL_MODULESDIR)/kernel/drivers/char/drm/"
+	@mkdir -p "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
+	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
 	@$(MAKECOOKIE)
