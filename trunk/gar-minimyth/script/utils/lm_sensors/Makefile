@@ -1,7 +1,7 @@
 GARNAME = lm_sensors
 GARVERSION = 2.9.2
 CATEGORIES = utils
-MASTER_SITES = http://secure.netroedge.com/~lm78/archive/
+MASTER_SITES = http://dl.lm-sensors.org/lm-sensors/releases/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
