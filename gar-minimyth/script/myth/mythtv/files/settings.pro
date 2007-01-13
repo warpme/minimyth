@@ -45,8 +45,8 @@ EXTRA_LIBS += -lXinerama -lXv -lX11 -lXext -lXxf86vm
 #DEFINES += LCD_DEVICE
 
 # Default audio output, OSS
-#CONFIG += using_oss
-#DEFINES += USING_OSS
+CONFIG += using_oss
+DEFINES += USING_OSS
 
 # Native ALSA support
 CONFIG += using_alsa
