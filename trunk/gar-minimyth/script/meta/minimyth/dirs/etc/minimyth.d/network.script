@@ -4,8 +4,6 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-MM_NAME_SERVER=`mm_var_get MM_NAME_SERVER`
-
 # Bring up the local (loopback) interface.
 ifconfig lo 127.0.0.1
 
@@ -25,10 +23,7 @@ if [ -z "${HOSTNAME}" ] ; then
     exit 1
 fi
 
-# Set and check for DNS name servers.
-if [ ! -z "${MM_NAME_SERVER}" ] ; then
-    echo "nameserver ${MM_NAME_SERVER}" >> /etc/resolv.conf
-fi
+# Check for DNS name servers.
 for i in `cat /etc/resolv.conf | grep '^nameserver ' | sed 's%^nameserver %%'` ; do
     if [ -z "${NAME_SERVER}" ] ; then
         NAME_SERVER="$i"
