@@ -136,10 +136,10 @@ conf_check() {
 conf_file=/etc/conf.d/minimyth
 
 conf_variable_write() {
-    echo -n "$2="  >> $1
-    echo -n "'"    >> $1
-    echo -n "$3"   >> $1
-    echo    "'"    >> $1
+    echo -n "$2=" >> $1
+    echo -n "'"   >> $1
+    echo -n "$3"  >> $1
+    echo    "'"   >> $1
 
     return 0
 }
@@ -151,147 +151,133 @@ conf_init() {
 }
 
 conf_write() {
+    ###########################################################################
+    # Read configuration variables from their configuration files.
+    ###########################################################################
+
     # Read MiniMyth environment variables from the MiniMyth configuration file.
-    [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+    [ -r /etc/minimyth.d/minimyth.conf ] && \
+	. /etc/minimyth.d/minimyth.conf
     
-    # Timezone.
+    # Read motherboard hardware specific configuration file.
+    [ -n "${MM_HARDWARE_MOTHERBOARD} ] && [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && \
+	. /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
+
+    # Read LIRC driver specific configuration file.
+    [ -n "${MM_LIRC_DIRVER} ] && [ -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ] && \
+	. /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
+
+    # Reread MiniMyth environment variables from the MiniMyth configuration file,
+    # in case variables in minimyth.conf override variables in motherboard.*.conf or driver.*.conf.
+    [ -r /etc/minimyth.d/minimyth.conf ] && \
+	. /etc/minimyth.d/minimyth.conf
+    
+    ###########################################################################
+    # Set unset/null configuration variables to their defaults.
+    ###########################################################################
+
+    # Default hardware.
+    case `cat /proc/cpuinfo | grep '^model name' | cut -d ':' -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
+        AMD\ Athlon\(tm\)\ 64\ Processor\ *) _MM_HARDWARE_CPU='ATHLON64' ;;
+        VIA\ Nehemiah)                       _MM_HARDWARE_CPU='C3-2'     ;;
+        VIA\ Samuel\ 2)                      _MM_HARDWARE_CPU='C3'       ;;
+        *)                                   _MM_HARDWARE_CPU=''         ;;
+    esac
+    MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-${_MM_HARDWARE_CPU}}
+    _MM_HARDWARE_KERNEL_MODULES=`mm_hardware_pci_process mm_hardware_pci2kernel_map`
+    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-${_MM_HARDWARE_KERNEL_MODULES}}
+
+    # Default CPU frequency governor.
+    MM_CPUFREQ_GOVERNOR=${MM_CPUFREQ_GOVERNOR:-'performance'}
+
+    # Default audio.
+    MM_AUDIO_TYPE=${MM_AUDIO_TYPE:-'analog'}
+
+    # Default video.
+    MM_VIDEO_ASPECT_RATIO=${MM_VIDEO_ASPECT_RATIO:-'4:3'}
+    MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
+
+    # Default X.
+    _MM_X_DRIVER=`mm_hardware_pci_process mm_hardware_pci2x_map | cut -d ' ' -f 1`
+    MM_X_DRIVER=${MM_X_DRIVER:-${_MM_X_DRIVER}}
+    _MM_X_KERNEL_MODULES=`mm_hardware_x2kernel_map ${MM_X_DRIVER}`
+    MM_X_KERNEL_MODULES=${MM_X_KERNEL_MODULES:-${_MM_X_KERNEL_MODULES}}
+    MM_X_ENABLED=${MM_X_ENABLED:-'yes'}
+    MM_X_WM_ENABLED=${MM_X_WM_ENABLED:-'no'}
+    MM_X_VNC_ENABLED=${MM_X_VNC_ENABLED:-'yes'}
+    MM_X_DVI_ENABLED=${MM_X_DVI_ENABLED:-'no'}
+    MM_X_VGA_ENABLED=${MM_X_VGA_ENABLED:-'no'}
+    MM_X_TV_ENABLED=${MM_X_TV_ENABLED:-'yes'}
+    MM_X_TV_TYPE=${MM_X_TV_TYPE:-'NTSC'}
+    MM_X_TV_OUTPUT=${MM_X_TV_OUTPUT:-'Composite'}
+    case "${MM_X_TV_TYPE}" in
+        NTSC) _MM_X_REFRESH='60' ;;
+        PAL)  _MM_X_REFRESH='50' ;;
+        *)    _MM_X_REFRESH=''   ;;
+    esac
+    case "${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED}" in
+        yes:no:no)
+            case "${MM_X_TV_TYPE}" in
+                NTSC) _MM_X_MODE='720x480Noscale' ;;
+                PAL)  _MM_X_MODE='720x576Noscale' ;;
+                *)    _MM_X_MODE=''               ;;
+            esac
+            ;;
+        *)
+            _MM_X_MODE='800x600'
+            ;;
+    esac
+    MM_X_REFRESH=${MM_X_REFRESH:-${_MM_X_REFRESH}}
+    MM_X_MODE=${MM_X_MODE:-${_MM_X_MODE}}
+
+    # Default Myth master backend.
+    MM_MYTH_SERVER=${MM_MYTH_SERVER:-${MM_TFTP_SERVER}}
+    MM_MYTH_DBUSERNAME=${MM_MYTH_DBUSERNAME:-'mythtv'}
+    MM_MYTH_DBPASSWORD=${MM_MYTH_DBPASSWORD:-'mythtv'}
+    MM_MYTH_DBNAME=${MM_MYTH_DBNAME:-'mythconverg'}
+    MM_MYTH_WOL_ENABLED=${MM_MYTH_WOL_ENABLED:-'no'}
+    MM_MYTH_WOL_MAC=${MM_MYTH_WOL_MAC:-'00:00:00:00:00:00'}
+    MM_MYTH_WOLSQLRECONNECTWAITTIME=${MM_MYTH_WOLSQLRECONNECTWAITTIME:-'15'}
+    MM_MYTH_WOLSQLCONNECTRETRY=${MM_MYTH_WOLSQLCONNECTRETRY:-'20'}
+    MM_MYTH_WOLSQLCOMMAND=${MM_MYTH_WOLSQLCOMMAND:-'wakelan -b @MM_MYTH_WOL_BROADCAST@ -m @MM_MYTH_WOL_MAC@'}
+
+    # Default Myth plugins.
+    MM_MYTHTV_OPTICAL_DISK_ENABLED=${MM_MYTHTV_OPTICAL_DISK_ENABLED:-'yes'}
+    MM_MYTHDVD_ENABLED=${MM_MYTHDVD_ENABLED:-'yes'}
+    MM_MYTHGALLERY_ENABLED=${MM_MYTHGALLERY_ENABLED:-'yes'}
+    MM_MYTHMUSIC_ENABLED=${MM_MYTHMUSIC_ENABLED:-'yes'}
+    MM_MYTHVIDEO_ENABLED=${MM_MYTHVIDEO_ENABLED:-'yes'}
+    MM_MYTHWEATHER_ENABLED=${MM_MYTHWEATHER_ENABLED:-'yes'}
+
+    # Default LIRC (some values were defaulted by /etc/lirc.d/driver.*.conf).
+    MM_LIRC_IREXEC_ENABLED=${MM_LIRC_IREXEC_ENABLED:-'no'}
+
+    # Default kernel modules.
+    MM_KERNEL_MODULES=`mm_uniq "${MM_KERNEL_MODULES} ${MM_HARDWARE_KERNEL_MODULES} ${MM_SENSOR_KERNEL_MODULES}"`
+
+    ###########################################################################
+    # Write the configuration variables /etc/conf.d/minimyth.
+    ###########################################################################
+
+    # Write timezone.
     conf_variable_write "${conf_file}" MM_TZ "${MM_TZ}"
 
-    # Hardware.
-    [ -z "${MM_HARDWARE_MOTHERBOARD}" ] && MM_HARDWARE_MOTHERBOARD="VIA_EPIA_M"
-    if [ -z "${MM_HARDWARE_CPU}" ] ; then
-        case `cat /proc/cpuinfo | grep '^model name' | cut -d ':' -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
-	    AMD\ Athlon\(tm\)\ 64\ Processor\ *)
-                MM_HARDWARE_CPU="ATHLON64"
-                ;;
-            VIA\ Nehemiah)
-                MM_HARDWARE_CPU="C3-2"
-                ;;
-            VIA\ Samuel\ 2)
-                MM_HARDWARE_CPU="C3"
-                ;;
-        esac
-    fi
-    conf_variable_write "${conf_file}" MM_HARDWARE_MOTHERBOARD "${MM_HARDWARE_MOTHERBOARD}"
-    conf_variable_write "${conf_file}" MM_HARDWARE_CPU         "${MM_HARDWARE_CPU}"
+    # Write hardware.
+    conf_variable_write "${conf_file}" MM_HARDWARE_MOTHERBOARD    "${MM_HARDWARE_MOTHERBOARD}"
+    conf_variable_write "${conf_file}" MM_HARDWARE_CPU            "${MM_HARDWARE_CPU}"
+    conf_variable_write "${conf_file}" MM_HARDWARE_KERNEL_MODULES "${MM_HARDWARE_KERNEL_MODULES}"
 
-    # Get hardware configuration files.
-    mm_conf_get /motherboard.${MM_HARDWARE_MOTHERBOARD}.conf /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
-    mm_conf_get /pci2kernel.map                              /etc/hardware.d/pci2kernel.map
-    mm_conf_get /pci2x.map                                   /etc/hardware.d/pci2x.map
-    mm_conf_get /x2kernel.map                                /etc/hardware.d/x2kernel.map
-
-    # Read motherboard hardware specific configuration file.
-    # This should not be needed, but not all hardware is detected.
-    [ -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf ] && . /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
-
-    # CPU frequency governor.
-    [ -z "${MM_CPUFREQ_GOVERNOR}" ] && MM_CPUFREQ_GOVERNOR="performance"
+    # Write CPU frequency governor.
     conf_variable_write "${conf_file}" MM_CPUFREQ_GOVERNOR "${MM_CPUFREQ_GOVERNOR}"
 
-    # Audio.
-    [ -z "${MM_AUDIO_TYPE}" ] && MM_AUDIO_TYPE="analog"
+    # Write audio.
     conf_variable_write "${conf_file}" MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
 
-    # Video.
-    [ -z "${MM_VIDEO_ASPECT_RATIO}"        ] && MM_VIDEO_ASPECT_RATIO="4:3"
-    [ -z "${MM_VIDEO_DEINTERLACE_ENABLED}" ] && MM_VIDEO_DEINTERLACE_ENABLED="no"
+    # Write video.
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO        "${MM_VIDEO_ASPECT_RATIO}"
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
 
-    # X.
-    if [ -z "${MM_X_DRIVER}" ] ; then
-        MM_X_DRIVER=`
-            lspci -mn | sed -e 's%"%%g' |
-            while read pci ; do
-                index=1            ; bus=\`       echo "${pci}" | cut -d ' ' -f ${index}\`
-                index=$((index+1)) ; class=\`     echo "${pci}" | cut -d ' ' -f ${index}\`
-                index=$((index+1)) ; vendor=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
-                index=$((index+1)) ; device=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
-                index=$((index+1)) ; revision=\`  echo "${pci}" | cut -d ' ' -f ${index}\`
-                if [ \`echo "${revision}"   | grep -c -e '^-r'\` = "1" ] ; then
-                    revision=\`  echo "${revision}"   | sed -e 's%^-r%%'\`
-                else
-                    index=$((index-1)) ; revision='00'
-                fi
-                index=$((index+1)) ; class_prog=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-                if [ \`echo "${class_prog}" | grep -c -e '^-p'\` = "1" ] ; then
-                    class_prog=\`echo "${class_prog}" | sed -e 's%^-p%%'\`
-                else
-                    index=$((index-1)) ; class_prog='00'
-                fi
-                index=$((index+1)) ; sub_vendor=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-                index=$((index+1)) ; sub_device=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-
-                cat /etc/hardware.d/pci2x.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," |
-                while read map ; do
-                    if [ -n "${map}" ] ; then
-                        map_class_prog=\`    echo ${map} | cut -d ',' -f 2\`
-                        map_vendor=\`        echo ${map} | cut -d ',' -f 3\`
-                        map_device=\`        echo ${map} | cut -d ',' -f 4\`
-                        map_x_driver=\`      echo ${map} | cut -d ',' -f 5\`
-                        if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
-                           ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
-                           ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
-                            echo ${map_x_driver}
-                        fi
-                    fi
-                done
-        done`
-        MM_X_DRIVER=`echo ${MM_X_DRIVER} | cut -d ' ' -f 1`
-    fi
-    if [ "${MM_X_DRIVER}" = "intel_i830" ] && [ "${MM_X_DRIVER_TV}" = "fs454" ] ; then
-         if [ "${MM_X_TV_ENABLED}" = "yes" ] ; then
-             MM_X_DRIVER="intel"
-         fi
-    fi
-    if [ -z "${MM_X_KERNEL_MODULES}" ] ; then
-        MM_X_KERNEL_MODULES=`
-            cat /etc/hardware.d/x2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${MM_X_DRIVER}," | {
-            found=
-            while read map ; do
-                if [ -n "${map}" ] ; then
-                    map_kernel_modules=\`echo ${map} | cut -d ',' -f 2\`
-                fi
-                if [ -z "${found}" ] ; then
-                    found=1
-                    echo ${map_kernel_modules}
-                fi
-            done }`
-    fi
-    [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
-    [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
-    [ -z "${MM_X_VNC_ENABLED}"  ] && MM_X_VNC_ENABLED="yes"
-    [ -z "${MM_X_DVI_ENABLED}"  ] && MM_X_DVI_ENABLED="no"
-    [ -z "${MM_X_VGA_ENABLED}"  ] && MM_X_VGA_ENABLED="no"
-    [ -z "${MM_X_TV_ENABLED}"   ] && MM_X_TV_ENABLED="yes"
-    [ -z "${MM_X_TV_TYPE}"      ] && MM_X_TV_TYPE="NTSC"
-    [ -z "${MM_X_TV_OUTPUT}"    ] && MM_X_TV_OUTPUT="Composite"
-    if [ -z "${MM_X_REFRESH}" ] ; then
-        case "${MM_X_TV_TYPE}" in
-            NTSC)
-                MM_X_REFRESH="60"
-                ;;
-            PAL)
-                MM_X_REFRESH="50"
-                ;;
-        esac
-    fi
-    if [ -z "${MM_X_MODE}" ] ; then
-        MM_X_MODE="800x600"
-        if [ "${MM_X_TV_ENABLED}"  = "yes" ] && \
-           [ "${MM_X_VGA_ENABLED}" = "no"  ] && \
-           [ "${MM_X_DVI_ENABLED}" = "no"  ] ; then
-            case "${MM_X_TV_TYPE}" in
-                NTSC)
-                    MM_X_MODE="720x480Noscale"
-                    ;;
-                PAL)
-                    MM_X_MODE="720x576Noscale"
-                    ;;
-            esac
-        fi
-    fi
+    # Write X.
     conf_variable_write "${conf_file}" MM_X_KERNEL_MODULES "${MM_X_KERNEL_MODULES}"
     conf_variable_write "${conf_file}" MM_X_DRIVER         "${MM_X_DRIVER}"
     conf_variable_write "${conf_file}" MM_X_DRIVER_TV      "${MM_X_DRIVER_TV}"
@@ -311,16 +297,7 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_X  "${MM_X_DISPLAYSIZE_X}"
     conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE_Y  "${MM_X_DISPLAYSIZE_Y}"
 
-    # Myth master backend.
-    [ -z "${MM_MYTH_SERVER}"                  ] && MM_MYTH_SERVER="${MM_TFTP_SERVER}"
-    [ -z "${MM_MYTH_DBUSERNAME}"              ] && MM_MYTH_DBUSERNAME="mythtv"
-    [ -z "${MM_MYTH_DBPASSWORD}"              ] && MM_MYTH_DBPASSWORD="mythtv"
-    [ -z "${MM_MYTH_DBNAME}"                  ] && MM_MYTH_DBNAME="mythconverg"
-    [ -z "${MM_MYTH_WOL_ENABLED}"             ] && MM_MYTH_WOL_ENABLED="no"
-    [ -z "${MM_MYTH_WOL_MAC}"                 ] && MM_MYTH_WOL_MAC="00:00:00:00:00:00"
-    [ -z "${MM_MYTH_WOLSQLRECONNECTWAITTIME}" ] && MM_MYTH_WOLSQLRECONNECTWAITTIME="15"
-    [ -z "${MM_MYTH_WOLSQLCONNECTRETRY}"      ] && MM_MYTH_WOLSQLCONNECTRETRY="20"
-    [ -z "${MM_MYTH_WOLSQLCOMMAND}"           ] && MM_MYTH_WOLSQLCOMMAND="wakelan -b @MM_MYTH_WOL_BROADCAST@ -m @MM_MYTH_WOL_MAC@"
+    # Write Myth master backend.
     conf_variable_write "${conf_file}" MM_MYTH_SERVER                  "${MM_MYTH_SERVER}"
     conf_variable_write "${conf_file}" MM_MYTH_DBUSERNAME              "${MM_MYTH_DBUSERNAME}"
     conf_variable_write "${conf_file}" MM_MYTH_DBPASSWORD              "${MM_MYTH_DBPASSWORD}"
@@ -331,13 +308,7 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCONNECTRETRY      "${MM_MYTH_WOLSQLCONNECTRETRY}"
     conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCOMMAND           "${MM_MYTH_WOLSQLCOMMAND}"
 
-    # Myth plugins.
-    [ -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" ] && MM_MYTHTV_OPTICAL_DISK_ENABLED="yes"
-    [ -z "${MM_MYTHDVD_ENABLED}"             ] && MM_MYTHDVD_ENABLED="yes"
-    [ -z "${MM_MYTHGALLERY_ENABLED}"         ] && MM_MYTHGALLERY_ENABLED="yes"
-    [ -z "${MM_MYTHMUSIC_ENABLED}"           ] && MM_MYTHMUSIC_ENABLED="yes"
-    [ -z "${MM_MYTHVIDEO_ENABLED}"           ] && MM_MYTHVIDEO_ENABLED="yes"
-    [ -z "${MM_MYTHWEATHER_ENABLED}"         ] && MM_MYTHWEATHER_ENABLED="yes"
+    # Write Myth plugins.
     conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
@@ -345,63 +316,26 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_MYTHVIDEO_ENABLED           "${MM_MYTHVIDEO_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHWEATHER_ENABLED         "${MM_MYTHWEATHER_ENABLED}"
 
-    # Extras.
+    # Write extras.
     conf_variable_write "${conf_file}" MM_EXTRAS_URL "${MM_EXTRAS_URL}"
 
-    # Codecs.
+    # Write codecs.
     conf_variable_write "${conf_file}" MM_CODECS_URL "${MM_CODECS_URL}"
 
-    # Themes.
+    # Write themes.
     conf_variable_write "${conf_file}" MM_THEME_NAME     "${MM_THEME_NAME}"
     conf_variable_write "${conf_file}" MM_THEMEOSD_NAME  "${MM_THEMEOSD_NAME}"
     conf_variable_write "${conf_file}" MM_THEME_URL      "${MM_THEME_URL}"
     conf_variable_write "${conf_file}" MM_THEMEOSD_URL   "${MM_THEMEOSD_URL}"
     conf_variable_write "${conf_file}" MM_THEMECACHE_URL "${MM_THEMECACHE_URL}"
 
-    # Media shares.
+    # Write media shares.
     conf_variable_write "${conf_file}" MM_MYTHDVD_URL     "${MM_MYTHDVD_URL}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_URL "${MM_MYTHGALLERY_URL}"
     conf_variable_write "${conf_file}" MM_MYTHMUSIC_URL   "${MM_MYTHMUSIC_URL}"
     conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL   "${MM_MYTHVIDEO_URL}"
 
-    # LIRC.
-    case "${MM_LIRC_DRIVER}" in
-        irman)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/ttyS0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="8250"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        imon)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_imon"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        mceusb)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_mceusb"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        mceusb2)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_mceusb2"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        serial)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_serial"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        streamzap)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/lirc0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE="lirc_streamzap"
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-        tira)
-            [ -z "${MM_LIRC_DEVICE}"                ] && MM_LIRC_DEVICE="/dev/ttyUSB0"
-            [ -z "${MM_LIRC_KERNEL_MODULE}"         ] && MM_LIRC_KERNEL_MODULE=
-            [ -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ] && MM_LIRC_KERNEL_MODULE_OPTIONS=
-            ;;
-    esac
+    # Write LIRC.
     [ -z "${MM_LIRC_IREXEC_ENABLED}" ] && MM_LIRC_IREXEC_ENABLED="no"
     conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
@@ -410,60 +344,10 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
 
-    # Sensor.
-    conf_variable_write "${conf_file}" MM_SENSOR_DRIVER "${MM_SENSOR_DRIVER}"
+    # Write sensor.
+    conf_variable_write "${conf_file}" MM_SENSOR_KERNEL_MODULES "${MM_SENSOR_KERNEL_MODULES}"
 
-    # Kernel Modules.
-    kernel_modules=`
-        lspci -mn | sed -e 's%"%%g' | 
-        while read pci ; do
-            index=1            ; bus=\`       echo "${pci}" | cut -d ' ' -f ${index}\`
-            index=$((index+1)) ; class=\`     echo "${pci}" | cut -d ' ' -f ${index}\`
-            index=$((index+1)) ; vendor=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
-            index=$((index+1)) ; device=\`    echo "${pci}" | cut -d ' ' -f ${index}\`
-            index=$((index+1)) ; revision=\`  echo "${pci}" | cut -d ' ' -f ${index}\`
-            if [ \`echo "${revision}"   | grep -c -e '^-r'\` = "1" ] ; then
-                revision=\`  echo "${revision}"   | sed -e 's%^-r%%'\`
-            else
-                index=$((index-1)) ; revision='00'
-            fi
-            index=$((index+1)) ; class_prog=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-            if [ \`echo "${class_prog}" | grep -c -e '^-p'\` = "1" ] ; then
-                class_prog=\`echo "${class_prog}" | sed -e 's%^-p%%'\`
-            else
-                index=$((index-1)) ; class_prog='00'
-            fi
-            index=$((index+1)) ; sub_vendor=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-            index=$((index+1)) ; sub_device=\`echo "${pci}" | cut -d ' ' -f ${index}\`
-    
-            kernel_modules=\`
-                cat /etc/hardware.d/pci2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," | {
-                found=
-                while read map ; do
-                    if [ -n "${map}" ] ; then
-                        map_class_prog=\\\`    echo ${map} | cut -d ',' -f 2\\\`
-                        map_vendor=\\\`        echo ${map} | cut -d ',' -f 3\\\`
-                        map_device=\\\`        echo ${map} | cut -d ',' -f 4\\\`
-                        map_kernel_modules=\\\`echo ${map} | cut -d ',' -f 5\\\`
-                        if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
-                           ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
-                           ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
-                            if [ -z "${found}" ] ; then
-                                found=1
-                                echo ${map_kernel_modules}
-                            fi
-                        fi
-                    fi
-                done }\`
-            if [ -n "${kernel_modules}" ] ; then
-                echo ${kernel_modules}
-            fi
-        done`
-    MM_KERNEL_MODULES=`echo "${MM_KERNEL_MODULES} ${MM_X_KERNEL_MODULES} ${MM_SENSOR_DRIVER} ${kernel_modules}" | 
-        sed -e 's% %\n%g' | 
-        sort | 
-        uniq |
-        sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'`
+    # Write kernel modules.
     conf_variable_write "${conf_file}" MM_KERNEL_MODULES "${MM_KERNEL_MODULES}"
 
     return 0
@@ -480,6 +364,11 @@ start() {
         mm_message_output err 'error: no minimyth.conf configuration file found.'
         exit 1
     fi
+
+    # Get hardware configuration files.
+    mm_conf_get /pci2kernel.map /etc/hardware.d/pci2kernel.map
+    mm_conf_get /pci2x.map      /etc/hardware.d/pci2x.map
+    mm_conf_get /x2kernel.map   /etc/hardware.d/x2kernel.map
 
     core_check
     dhcp_check

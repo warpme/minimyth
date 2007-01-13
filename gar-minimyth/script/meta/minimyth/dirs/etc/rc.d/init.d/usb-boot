@@ -4,43 +4,35 @@
 ################################################################################
 . /etc/rc.d/functions
 
+pci2usb_map() {
+    class=$1
+    vendor=$2
+    device=$3
+    revision=$4
+    class_prog=$5
+    subvendor=$6
+    subdevice=$7
+
+    # Only look for USB controllers.
+    if [ "${class}" = "0c03" ] ; then
+        echo `mm_hardware_pci2kernel_map ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
+    fi
+}
+
 start() {
     mm_message_output info 'mounting USB boot device ...'
 
     # If the boot type is usb, then load the drivers needed to read the usb drive.
     if [ "${MM_BOOT_TYPE}" = "usb" ] ; then
-        lspci -mn | sed -e 's%"%%g' | while read pci ; do
-            index=1            ; bus=`       echo "${pci}" | cut -d ' ' -f ${index}`
-            index=$((index+1)) ; class=`     echo "${pci}" | cut -d ' ' -f ${index}`
-            index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d ' ' -f ${index}`
-            index=$((index+1)) ; device=`    echo "${pci}" | cut -d ' ' -f ${index}`
-            index=$((index+1)) ; revision=`  echo "${pci}" | cut -d ' ' -f ${index}`
-            if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
-                revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
-            else
-                index=$((index-1)) ; revision=
+        kernel_modules=`mm_hardware_pci_process pci2usb_map`
+        for kernel_module in ${kernel_modules} ; do
+            modprobe ${kernel_module}
+            if [ ! "$?" = "0" ] ; then
+                mm_message_output err "error: failed to load kernel module: ${kernel_module}"
+                exit 1
             fi
-            index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d ' ' -f ${index}`
-            if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
-                class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
-            else
-                index=$((index-1)) ; class_prog=
-            fi
-            index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d ' ' -f ${index}`
-            index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d ' ' -f ${index}`
-
-            case "${class}" in
-                # USB.
-                0c03)
-                    [ -z "${class_prog}" ] && class_prog="00"
-                    case "${class_prog}" in
-                        00) modprobe uhci-hcd ;;
-                        10) modprobe ohci-hcd ;;
-                        20) modprobe ehci-hcd ;;
-                    esac
-                    ;;
-            esac
         done
+
         if [ `lsmod | grep -c -e '^ehci_hcd'` = "1" ] || \
            [ `lsmod | grep -c -e '^ohci_hcd'` = "1" ] || \
            [ `lsmod | grep -c -e '^uhci_hcd'` = "1" ] ; then
