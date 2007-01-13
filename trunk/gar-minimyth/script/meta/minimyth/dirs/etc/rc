@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Read and export the Minimyth environment variables (for variables on the boot command line).
+. /etc/minimyth.d/env.script
+
 . /etc/minimyth.d/minimyth.functions
 
 # Set up basic file system.
@@ -24,6 +27,8 @@ execute_and_log "sh /etc/minimyth.d/network.script"
 execute_and_log "portmap -l"
 # Get configuration files from TFTP server.
 execute_and_log "sh /etc/minimyth.d/getremotefiles.script"
+# Read and export the Minimyth environment variables (for variables in the minimyth.conf file).
+. /etc/minimyth.d/env.script
 # Mount extras.
 execute_and_log "sh /etc/minimyth.d/extras.script"
 # Mount themecache.
@@ -44,8 +49,6 @@ execute_and_log "sh /etc/minimyth.d/mount.script"
 execute_and_log "sh /etc/minimyth.d/mysql.script"
 # Start LIRC.
 execute_and_log "sh /etc/minimyth.d/lirc.script"
-# Read and export the Minimyth environment variables
-. /etc/minimyth.d/env.script
 # Start X (if not debugging)
 if [ -z ${MM_DEBUG} ] && [ -z ${MM_NO_X} ] ; then
 	xinit &
