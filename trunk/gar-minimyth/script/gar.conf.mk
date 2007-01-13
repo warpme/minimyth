@@ -106,8 +106,8 @@ main_LDFLAGS +=
 
 # allow us to link to libraries we installed
 build_CPPFLAGS += 
-build_CFLAGS += -march=$(build_GARCH) -pipe -O3 -fomit-frame-pointer
-#build_CXXFLAGS += -march=$(build_GARCH) -pipe -O3 -fomit-frame-pointer
+build_CFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer
+#build_CXXFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer
 build_LDFLAGS += 
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
