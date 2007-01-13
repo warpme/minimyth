@@ -11,8 +11,7 @@ DEPENDS = \
 	xorg-old/X11 \
 	xorg-old/Mesa \
 	xorg-old/libXvMCW \
-	xorg-old/unichrome \
-	xorg-old/freefont-ttf
+	xorg-old/unichrome
 
 GAR_EXTRA_CONF += xorg-old/xorg/package-api.mk
 include ../../gar.mk
