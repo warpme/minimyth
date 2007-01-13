@@ -4,16 +4,49 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
-mount -n -t sysfs              /sys  /sys
-mount -n -t proc               /proc /proc
-mount    -t tmpfs -o size=512K tmpfs /var
-mount    -t tmpfs -o size=512K tmpfs /tmp
-
-modprobe unionfs
-
+# Create /proc
+mount -n -t proc /proc /proc
+# Create /sys
+mount -n -t sysfs /sys /sys
+# Create /var
+mount -n -t tmpfs -o size=512K tmpfs /var
 mkdir -p /var/lock
 mkdir -p /var/log
 mkdir -p /var/run
+# Create /tmp
+mount -n -t tmpfs -o size=512K tmpfs /tmp
+# Create /dev
+mount -n -t tmpfs tmpfs /dev
+mknod -m 600 /dev/console c 5 1
+mknod -m 640 /dev/mem     c 1 1
+mknod -m 666 /dev/null    c 1 3
+mknod -m 666 /dev/ptmx    c 5 2
+mknod -m 666 /dev/random  c 1 8
+mknod -m 666 /dev/tty     c 5 0
+mknod -m 660 /dev/tty0    c 4 0
+mknod -m 660 /dev/tty1    c 4 1
+mknod -m 660 /dev/tty2    c 4 2
+mknod -m 444 /dev/urandom c 1 9
+mknod -m 666 /dev/zero    c 1 5
+ln -s /proc/kcore     /dev/core
+ln -s /proc/self/fd   /dev/fd
+ln -s /proc/self/fd/0 /dev/stdin
+ln -s /proc/self/fd/1 /dev/stdout
+ln -s /proc/self/fd/2 /dev/stderr
+mkdir /dev/pts
+mount -n -t devpts none /dev/pts
+mkdir /dev/shm
+mount -n -t tmpfs  none /dev/shm
+echo "/sbin/udev" > /proc/sys/kernel/hotplug
+udevstart
+# Make remaining directories rw
 mkdir -p /var/unionfs
-
-mount    -t tmpfs              tmpfs /var/unionfs
+mount -n -t tmpfs tmpfs /var/unionfs
+modprobe unionfs
+mm_dir_make_rw /bin
+mm_dir_make_rw /etc
+mm_dir_make_rw /lib
+mm_dir_make_rw /mnt
+mm_dir_make_rw /root
+mm_dir_make_rw /sbin
+mm_dir_make_rw /usr

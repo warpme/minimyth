@@ -3,13 +3,17 @@
 ################################################################################
 
 FS = \
+	/bin \
 	/dev \
 	/etc \
+	/lib \
 	/mnt \
 	/proc \
 	/root \
+	/sbin \
 	/sys \
 	/tmp \
+	/usr \
 	/var \
 	/var/lock \
 	/var/log \
@@ -23,24 +27,15 @@ fs-modules:
 	modprobe unionfs
 	touch fs-modules
 
-/sys: fs-sys
-	touch /sys
-
-fs-sys:
-	mount -n -t sysfs /sys /sys
-	touch /sys
-	touch fs-sys
-
-/proc: fs-proc
-	touch /proc
-
-fs-proc:
-	mount -n -t proc /proc /proc
-	touch /proc
-	touch fs-proc
-
-/dev: fs-dev
-	touch /dev
+fs-rw: mm_dir_make_rw
+	mm_dir_make_rw /bin  ; touch /bin
+	mm_dir_make_rw /etc  ; touch /etc
+	mm_dir_make_rw /lib  ; touch /lib
+	mm_dir_make_rw /mnt  ; touch /mnt
+	mm_dir_make_rw /root ; touch /root
+	mm_dir_make_rw /sbin ; touch /sbin
+	mm_dir_make_rw /usr  ; touch /usr
+	touch fs-rw
 
 fs-dev: /proc /sys
 	mount -n -t tmpfs tmpfs /dev
@@ -67,58 +62,72 @@ fs-dev: /proc /sys
 	touch /dev
 	touch fs-dev
 
-/var: fs-var
-	touch /var
+fs-proc:
+	mount -n -t proc /proc /proc
+	touch /proc
+	touch fs-proc
 
-fs-var: /proc
-	mount -t tmpfs -o size=512K tmpfs /var
-	touch /var
-	touch fs-var
-
-/tmp: fs-tmp
-	touch /tmp
+fs-sys:
+	mount -n -t sysfs /sys /sys
+	touch /sys
+	touch fs-sys
 
 fs-tmp:
 	touch /tmp
 	touch fs-tmp
 
-/etc: fs-etc
+fs-var: /proc
+	mount -t tmpfs -o size=512K tmpfs /var                       ; touch /var
+	mkdir -p /var/lock                                           ; touch /var/lock
+	mkdir -p /var/log                                            ; touch /var/log
+	mkdir -p /var/run                                            ; touch /var/run
+	mkdir -p /var/unionfs ; mount -n -t tmpfs tmpfs /var/unionfs ; touch /var/unionfs
+	touch fs-var
+
+/bin: fs-rw
+	touch /bin
+
+/dev: fs-dev
+	touch /dev
+
+/etc: fs-rw
 	touch /etc
 
-fs-etc: mm_dir_make_rw
-	mm_dir_make_rw /etc
-	touch /etc
-	touch fs-etc
+/lib: fs-rw
+	touch /lib
 
-/mnt: fs-mnt
+/mnt: fs-rw
 	touch /mnt
 
-fs-mnt: mm_dir_make_rw
-	mm_dir_make_rw /mnt
-	touch /mnt
-	touch fs-mnt
+/proc: fs-proc
+	touch /proc
 
-/root: fs-root
+/root: fs-rw
 	touch /root
 
-fs-root: mm_dir_make_rw
-	mm_dir_make_rw /root
-	touch /root
-	touch fs-root
+/sbin: fs-rw
+	touch /sbin
 
-/var/lock: /var
-	mkdir -p /var/lock
+/sys: fs-sys
+	touch /sys
+
+/tmp: fs-tmp
+	touch /tmp
+
+/usr: fs-rw
+	touch /usr
+
+/var: fs-var
+	touch /var
+
+/var/lock: fs-var
 	touch /var/lock
 
-/var/log: /var
-	mkdir -p /var/log
+/var/log: fs-var
 	touch /var/log
 
-/var/run: /var
-	mkdir -p /var/run
+/var/run: fs-var
 	touch /var/run
 
-/var/unionfs: /var
-	mkdir -p /var/unionfs
-	mount -n -t tmpfs tmpfs /var/unionfs
+/var/unionfs: fs-var
 	touch /var/unionfs
