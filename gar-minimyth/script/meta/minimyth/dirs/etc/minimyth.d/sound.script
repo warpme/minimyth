@@ -12,12 +12,18 @@ mm_dir_make_rw /root
 
 case "${MM_SOUND}" in
     analog)
+        sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
         amixer set 'PCM'    90% unmute 
         amixer set 'Master' 90% unmute 
-        sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
         ;;
     digital)
-        amixer set 'IEC958 Playback AC97-SPSA' 0
         sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+        amixer set 'IEC958 Playback AC97-SPSA' 0
+        ;;
+    digital+analog)
+        sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+        amixer set 'IEC958 Playback AC97-SPSA' 0
+        amixer set 'PCM'    90% unmute 
+        amixer set 'Master' 90% unmute 
         ;;
 esac
