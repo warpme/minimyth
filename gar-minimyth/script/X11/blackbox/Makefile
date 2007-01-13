@@ -1,5 +1,5 @@
 GARNAME = blackbox
-GARVERSION = 0.70.0beta2
+GARVERSION = 0.70.0beta3
 CATEGORIES = X11
 MASTER_SITES = http://telia.dl.sourceforge.net/sourceforge/blackboxwm/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
@@ -16,9 +16,10 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir)
+	--x-libraries=$(DESTDIR)$(x11libdir) \
+	--with-gnu-ld
 
 CONFIGURE_ENV  = \
 	PKG_CONFIG_PATH=$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig
