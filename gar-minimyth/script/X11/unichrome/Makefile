@@ -1,5 +1,5 @@
 GARNAME = unichrome
-GARVERSION = 20050515
+GARVERSION = 20050528
 CATEGORIES = X11
 MASTER_SITES = http://myth.ivor.org/unichrome/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -34,9 +34,6 @@ configure-unichrome:
 	@sed -i "s%= $(CppCmd)%= $(CPP)%"       $(WORKSRC)/unichrome/Makefile
 	@sed -i "s%= $(LdCmd)%= $(LD)%"         $(WORKSRC)/unichrome/Makefile
 	@sed -i "s%= $(RanlibCmd)%= $(RANLIB)%" $(WORKSRC)/unichrome/Makefile
-#	@rm -rf $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc/programs/Xserver/hw/xfree86/drivers/via
-#	@ln -s  $(mm_HOME)/script/X11/via_drv/$(WORKSRC)/unichrome \
-#	        $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc/programs/Xserver/hw/xfree86/drivers/via
 	@$(MAKECOOKIE)
 
 configure-libxvmc:
@@ -48,9 +45,6 @@ configure-libxvmc:
 	@sed -i "s%= $(CppCmd)%= $(CPP)%"       $(WORKSRC)/libxvmc/Makefile
 	@sed -i "s%= $(LdCmd)%= $(LD)%"         $(WORKSRC)/libxvmc/Makefile
 	@sed -i "s%= $(RanlibCmd)%= $(RANLIB)%" $(WORKSRC)/libxvmc/Makefile
-#	@rm -rf $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc/lib/XvMC/hw/via
-#	@ln -s  $(mm_HOME)/script/X11/$(GARNAME)/$(WORKSRC)/libxvmc \
-#	        $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc/lib/XvMC/hw/via
 	@$(MAKECOOKIE)
 
 install-unichrome:
