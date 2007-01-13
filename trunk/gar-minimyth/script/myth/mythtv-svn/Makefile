@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql xorg/freetype xorg/xorg qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/libdts lib/libdvdnav lib/zlib db/mysql lib/freetype xorg/xorg qt/qt lirc/lirc
 
 PWD := $(shell pwd)
 

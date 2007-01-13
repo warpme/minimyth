@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/fontconfig xorg/freetype xorg/libXrender
+DEPENDS = lang/c lib/fontconfig lib/freetype xorg/libXrender
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

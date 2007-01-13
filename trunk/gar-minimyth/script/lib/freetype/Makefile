@@ -1,6 +1,6 @@
 GARNAME = freetype
 GARVERSION = 2.1.10
-CATEGORIES = xorg
+CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar

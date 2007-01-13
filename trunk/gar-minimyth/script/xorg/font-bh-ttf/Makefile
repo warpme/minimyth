@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = xorg/mkfontdir xorg/mkfontscale xorg/fontconfig
+BUILDDEPS = xorg/mkfontdir xorg/mkfontscale lib/fontconfig
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
