@@ -3,6 +3,8 @@ GARVERSION = $(GCC_VERSION)
 CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)/
 MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/releases/$(DISTNAME)/
+MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/releases/$(DISTNAME)/
+MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2_1
 
