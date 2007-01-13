@@ -18,8 +18,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-  	--with-expat-includes=$(DESTDIR)$(includedir) \
-  	--with-expat-lib=$(DESTDIR)$(libdir) \
+	--with-expat-includes=$(DESTDIR)$(includedir) \
+	--with-expat-lib=$(DESTDIR)$(libdir) \
 	--disable-docs \
 	--with-freetype-config=$(DESTDIR)$(bindir)/freetype-config
 
