@@ -1,8 +1,7 @@
 GARNAME = mythtv
 GARVERSION = $(MYTHTV_STABLE19_VERSION)
 CATEGORIES = myth
-MASTER_SITES  = http://www.mythtv.org/mc/
-MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-fixes-9048.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch
 LICENSE = GPL2
@@ -80,18 +79,6 @@ INSTALL_ENV   += \
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
-
-svn//%/$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@$(MAKECOOKIE)
-
-disabled-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro

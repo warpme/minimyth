@@ -23,10 +23,7 @@ GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
 cvs//%$(DISTNAME).tar.gz:
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR) ; cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) drm
-	@cd $(PARTIALDIR) ; tar -zcf $(DISTNAME).tar.gz $(DISTNAME)
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
+	@$(call FETCH_CVS, $*, drm, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.gz:

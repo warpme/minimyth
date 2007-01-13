@@ -53,9 +53,7 @@ include ../../gar.mk
 CFLAGS += -DHAVE_XVMC
 
 cvs//%$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) $(GARNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/CVS/*' --exclude '*/CVS' --exclude '*/.cvsignore' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
