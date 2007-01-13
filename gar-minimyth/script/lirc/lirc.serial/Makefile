@@ -16,20 +16,6 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-DEFAULT_ARGS   = \
-	HOSTCC="$(build_CC)" \
-	HOSTCXX="$(build_CXX)" \
-	HOSTCFLAGS="$(build_CFLAGS)" \
-	HOSTCXXFLAGS="$(build_CXXFLAGS)" \
-	AS="$(AS)" \
-	LD="$(LD)" \
-	CC="$(CC)" \
-	CPP="$(CPP)" \
-	AR="$(AR)" \
-	NM="$(NM)" \
-	STRIP="$(STRIP)" \
-	OBJCOPY="$(OBJCOPY)" \
-	OBJDUMP="$(OBJDUMP)"
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--program-suffix=".serial" \
 	--enable-sandboxed \
@@ -39,12 +25,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
 	--with-driver=serial
-BUILD_ARGS     = $(DEFAULT_ARGS)
-INSTALL_ARGS   = $(DEFAULT_ARGS)
+BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
+INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 
-CONFIGURE_ENV  = KBUILD_VERBOSE=1 LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
-BUILD_ENV      = KBUILD_VERBOSE=1
-INSTALL_ENV    = KBUILD_VERBOSE=1
+CONFIGURE_ENV = $(KERNEL_MAKE_ENV) LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
+BUILD_ENV     = $(KERNEL_MAKE_ENV)
+INSTALL_ENV   = $(KERNEL_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk lirc/lirc/package-api.mk
 include ../../gar.mk
