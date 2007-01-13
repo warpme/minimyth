@@ -79,7 +79,7 @@ HELPER_DIR=`script_dir`
 HELPER_OLD="${HELPER_DIR}/mm_local_helper_old"
 test -e "${HELPER_OLD}"                                                         || \
     message_output 1 "command_local_update: '${HELPER_OLD}' script is missing." || \
-    return
+    exit 1
 HELPER_OLD="sh ${HELPER_OLD}"
 
 # Check to make sure that we recognize the MiniMyth distribution.
@@ -91,20 +91,20 @@ if test $? -ne 0 ; then
     echo    ''
     test "${UPDATE}" = "y" || test "${UPDATE}" = "Y"                  || \
         message_output 1 "MiniMyth update aborted at user's request." || \
-        return
+        exit 1
 fi
 
 # Fetch the new local helper script (mm_local_helper_new) from the update server.
 ${HELPER_OLD} fetch_helper "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
 if test $? -ne 0 ; then
-    return
+    exit 1
 fi
 
 # Check for mm_local_helper_new.
 HELPER_NEW="${HELPER_DIR}/mm_local_helper_new"
 test -e "${HELPER_NEW}"                                                         || \
     message_output 1 "command_local_update: '${HELPER_NEW}' script is missing." || \
-    return
+    exit 1
 HELPER_NEW="sh ${HELPER_NEW}"
 
 # Check whether or not the user wants to update MiniMyth.
@@ -119,21 +119,21 @@ read UPDATE
 echo    ''
 test "${UPDATE}" = "y" || test "${UPDATE}" = "Y"                  || \
     message_output 1 "MiniMyth update aborted at user's request." || \
-    return
+    exit 1
 
 # Fetch the MiniMyth distribution.
 ${HELPER_NEW} fetch "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
 if test $? -ne 0 ; then
     ${HELPER_OLD} backup_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_NEW} temp_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
-    return
+    exit 1
 fi
 # Create a back up of the current MiniMyth distribution.
 ${HELPER_OLD} backup_create "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
 if test $? -ne 0 ; then
     ${HELPER_OLD} backup_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_NEW} temp_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
-    return
+    exit 1
 fi
 # Delete the current MiniMyth distribution.
 ${HELPER_OLD} delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
@@ -141,7 +141,7 @@ if test $? -ne 0 ; then
     ${HELPER_OLD} backup_restore "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_OLD} backup_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_NEW} temp_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
-    return
+    exit 1
 fi
 # Install the new MiniMyth distribution.
 ${HELPER_NEW} install "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
@@ -150,7 +150,7 @@ if test $? -ne 0 ; then
     ${HELPER_OLD} backup_restore "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_OLD} backup_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
     ${HELPER_NEW} temp_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
-    return
+    exit 1
 fi
 # Delete the back up and temporary files.
 ${HELPER_OLD} backup_delete "${URL}" "${BOOT_DIR}" "${TEMP_DIR}"
