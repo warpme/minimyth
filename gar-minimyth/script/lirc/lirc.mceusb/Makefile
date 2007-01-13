@@ -31,6 +31,7 @@ DEFAULT_ARGS   = \
 	OBJCOPY="$(OBJCOPY)" \
 	OBJDUMP="$(OBJDUMP)"
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--program-suffix=".mceusb" \
 	--enable-sandboxed \
 	--x-includes="$(DESTDIR)$(x11includedir)" \
 	--x-libraries="$(DESTDIR)$(x11libdir)" \
@@ -50,6 +51,5 @@ include ../../gar.mk
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la
-	@mv $(DESTDIR)$(sbindir)/lircd $(DESTDIR)$(sbindir)/lircd.mceusb
 	@depmod -e -b $(DESTDIR) -v $(KERNEL_FULL_VERSION)
 	@$(MAKECOOKIE)

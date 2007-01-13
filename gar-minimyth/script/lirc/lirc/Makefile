@@ -10,8 +10,45 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lirc/lirc.any lirc/lirc.mceusb lirc/lirc.serial
+DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11 lirc/libirman
+DEPENDS += lirc/lirc.any lirc/lirc.mceusb lirc/lirc.serial
 
+WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+DEFAULT_ARGS   = \
+	HOSTCC="$(build_CC)" \
+	HOSTCXX="$(build_CXX)" \
+	HOSTCFLAGS="$(build_CFLAGS)" \
+	HOSTCXXFLAGS="$(build_CXXFLAGS)" \
+	AS="$(AS)" \
+	LD="$(LD)" \
+	CC="$(CC)" \
+	CPP="$(CPP)" \
+	AR="$(AR)" \
+	NM="$(NM)" \
+	STRIP="$(STRIP)" \
+	OBJCOPY="$(OBJCOPY)" \
+	OBJDUMP="$(OBJDUMP)"
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-sandboxed \
+	--x-includes="$(DESTDIR)$(x11includedir)" \
+	--x-libraries="$(DESTDIR)$(x11libdir)" \
+	--with-gnu-ld \
+	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
+	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
+	--with-driver=none
+BUILD_ARGS     = $(DEFAULT_ARGS)
+INSTALL_ARGS   = $(DEFAULT_ARGS)
+
+CONFIGURE_ENV  = KBUILD_VERBOSE=1 LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
+BUILD_ENV      = KBUILD_VERBOSE=1
+INSTALL_ENV    = KBUILD_VERBOSE=1
+
+GAR_EXTRA_CONF += kernel/linux/package-api.mk lirc/lirc/package-api.mk
 include ../../gar.mk
 
 post-patch:
@@ -24,3 +61,7 @@ post-patch:
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la
+	@depmod -b $(DESTDIR) -v $(KERNEL_FULL_VERSION)
+	@$(MAKECOOKIE)
