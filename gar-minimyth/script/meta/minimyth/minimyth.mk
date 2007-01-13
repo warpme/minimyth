@@ -35,8 +35,24 @@ IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB executable'   ),yes,no
 MM_PATH := $(PATH)
 
 MM_LD_LIBRARY_PATH = $(call MAKE_PATH, /lib $(addprefix $(DESTDIR), $(libdirs)))
-# This is a hack.
-MM_LDD = $(DESTDIR)$(elibdir)/ld-linux.so.2 --list
+# This is a hack that attempts to determine the MM_LDD that will work on the system.
+MM_LDD_CROSS  := $(DESTDIR)$(elibdir)/ld-linux.so.2 --list
+MM_LDD_SYSTEM := $(shell which ldd)
+MM_LDD_TEST = \
+	$(shell \
+		PATH="$(MM_PATH)" ; \
+		LD_LIBRARY_PATH=$(MM_LD_LIBRARY_PATH) ; \
+		$(1) $(DESTDIR)$(esbindir)/mkfs.cramfs >& /dev/null ; \
+		if [ "$$?" = "0" ] ; then \
+			echo "yes" ; \
+		else \
+			echo "no"  ; \
+		fi \
+	)
+MM_LDD_CROSS_VALID  := $(call MM_LDD_TEST, $(MM_LDD_CROSS))
+MM_LDD_SYSTEM_VALID := $(call MM_LDD_TEST, $(MM_LDD_SYSTEM))
+MM_LDD := $(strip $(if $(filter $(MM_LDD_CROSS_VALID),yes),$(MM_LDD_CROSS), \
+                  $(if $(filter $(MM_LDD_SYSTEM_VALID),yes),$(MM_LDD_SYSTEM),)))
 
 MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
@@ -82,6 +98,10 @@ mm-check:
 	fi
 	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_NFS_ROOT does not exist." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(MM_LDD)" = "" ] ; then \
+		echo "error: no working ldd command for determining libraries." ; \
 		exit 1 ; \
 	fi
 
