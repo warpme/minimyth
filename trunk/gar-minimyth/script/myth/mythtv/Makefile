@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-xvmc.patch $(DISTNAME).patch.gar $(DISTNAME)-settings.patch.gar $(DISTNAME)-fadeaway.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-settings.patch.gar $(DISTNAME)-fadeaway.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
