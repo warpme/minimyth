@@ -7,16 +7,14 @@
 
 . /etc/minimyth.d/minimyth.functions
 
-[ -n "${MMDEBUG}" ] && set -x
-
-if [ -n "${LIRC_DRIVER}" ] && [ -n ${LIRC_DEVICE} ] ; then
-    if [ -n "${LIRC_KERNEL_MODULE}" ] ; then
-        modprobe ${LIRC_KERNEL_MODULE} ${LIRC_KERNEL_MODULE_OPTIONS}
+if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
+    if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
+        modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
     fi
-    if [ -e /usr/sbin/lircd.${LIRC_DRIVER} ] ; then
-        LIRC_LIRCD=lircd.${LIRC_DRIVER}
+    if [ -e /usr/sbin/lircd.${MM_LIRC_DRIVER} ] ; then
+        MM_LIRC_LIRCD=lircd.${MM_LIRC_DRIVER}
     else
-        LIRC_LIRCD=lircd.any
+        MM_LIRC_LIRCD=lircd.any
     fi
-    ${LIRC_LIRCD} --driver=${LIRC_DRIVER} --device=${LIRC_DEVICE}
+    ${MM_LIRC_LIRCD} --driver=${MM_LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
 fi

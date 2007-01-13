@@ -2,9 +2,7 @@
 
 . /etc/minimyth.d/minimyth.functions
 
-[ -n "${MMDEBUG}" ] && set -x
-
-export PATH=//sbin://bin://usr/sbin://usr/bin://usr/X11R6/bin://usr/lib/qt/bin
+export PATH=@PATH@
 export HOME=/root
 
 # Set up basic file system.
@@ -39,9 +37,13 @@ execute_and_log "sh /etc/minimyth.d/loadmods.script"
 execute_and_log "sh /etc/minimyth.d/services.script"
 # Mount remote media directories.
 execute_and_log "sh /etc/minimyth.d/mount.script"
-# Add MYTHSERVER to Myth's mythsql.txt file.
+# Add Myth server to Myth's mythsql.txt file.
 execute_and_log "sh /etc/minimyth.d/mysql.script"
 # Start LIRC.
 execute_and_log "sh /etc/minimyth.d/lirc.script"
+# Export Minimyth environment variables
+execute_and_log "sh /etc/minimyth.d/env.script"
 # Start X (if not debugging)
-[ -z "${MMDEBUG}" ] && [ -z "${MMNOXINIT}" ] && execute_and_log xinit &
+if [ -z ${MM_DEBUG} ] && [ -z ${MM_NO_X} ] ; then
+	execute_and_log "xinit" &
+fi
