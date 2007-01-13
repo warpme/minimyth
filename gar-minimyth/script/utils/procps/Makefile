@@ -1,8 +1,8 @@
 GARNAME = procps
-GARVERSION = 3.2.4
+GARVERSION = 3.2.5
 CATEGORIES = utils
 MASTER_SITES = http://procps.sourceforge.net/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
