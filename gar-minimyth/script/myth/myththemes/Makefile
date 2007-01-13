@@ -3,7 +3,7 @@ GARNAME = myththemes
 GARVERSION = 0.18
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
-MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
+MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
@@ -27,9 +27,9 @@ INSTALL_ARGS  += \
 GAR_EXTRA_CONF += myth/mythtv/package-api.mk
 include ../../gar.mk
 
-cvs//%/$(DISTNAME).tar.bz2:
+svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
+	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
 	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
