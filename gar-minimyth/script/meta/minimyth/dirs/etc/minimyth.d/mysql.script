@@ -3,6 +3,29 @@
 . /etc/minimyth.d/minimyth.functions
 
 mkdir -p /tmp/root/.mythtv
-cat /root/.mythtv/mysql.txt.default \
-  | sed "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%g" \
-  > /root/.mythtv/mysql.txt
+cat /root/.mythtv/mysql.txt.default > /tmp/root/.mythtv/mysql.txt
+
+# If the Myth server has not been specified, then assume it is the same as the TFTP server.
+if [ ! "${MM_MYTH_SERVER}" = ""     ] ; then
+    sed -i "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%g"         /tmp/root/.mythtv/mysql.txt
+else
+    sed -i "s%@MM_MYTH_SERVER@%${MM_TFTP_SERVER}%g"         /tmp/root/.mythtv/mysql.txt
+fi
+# If the Myth databasae username has not been specified, then assume it is the default.
+if [ ! "${MM_MYTH_DBUSERNAME}" = "" ] ; then
+    sed -i "s%@MM_MYTH_DBUSERNAME@%${MM_MYTH_DBUSERNAME}%g" /tmp/root/.mythtv/mysql.txt
+else
+    sed -i "s%@MM_MYTH_DBUSERNAME@%mythtv%g"                /tmp/root/.mythtv/mysql.txt
+fi
+# If the Myth databasae password has not been specified, then assume it is the default.
+if [ ! "${MM_MYTH_DBPASSWORD}" = "" ] ; then
+    sed -i "s%@MM_MYTH_DBPASSWORD@%${MM_MYTH_DBPASSWORD}%g" /tmp/root/.mythtv/mysql.txt
+else
+    sed -i "s%@MM_MYTH_DBPASSWORD@%mythtv%g"                /tmp/root/.mythtv/mysql.txt
+fi
+# If the Myth databasae name has not been specified, then assume it is the default.
+if [ ! "${MM_MYTH_DBNAME}" = ""     ] ; then
+    sed -i "s%@MM_MYTH_DBNAME@%${MM_MYTH_DBNAME}%g"         /tmp/root/.mythtv/mysql.txt
+else
+    sed -i "s%@MM_MYTH_DBNAME@%mythconverg%g"               /tmp/root/.mythtv/mysql.txt
+fi
