@@ -403,7 +403,7 @@ command_fetch_helper() {
         message_output 1 "failed to extract ${TEMP_DIR}/helper.tar.bz2'." || \
         return
     cd "${TEMP_DIR}/helper" ; md5sum -c 'mm_local_helper.md5' > /dev/null 2>&1         || \
-        message_output 1 "'${TEMP_DIR}/helper/mm_local_helper' failed checksum check." || \
+        message_output 1 "file '${TEMP_DIR}/helper/mm_local_helper' failed checksum check." || \
         return
     cp -fr "${TEMP_DIR}/helper/mm_local_helper" "${HELPER_DIR}/mm_local_helper_new"    || \
         message_output 1 "failed to install 'mm_local_helper_new' in '${HELPER_DIR}'." || \
@@ -474,8 +474,6 @@ command_fetch() {
     local BOOT_DIR=$2
     local TEMP_DIR=$3
 
-    local FETCHED
-    local FILE
     local VERSION
 
     test -n "${URL}"                                                 || \
@@ -493,59 +491,25 @@ command_fetch() {
         message_output 1 "command_fetch: cannot determine 'VERSION'." || \
         return
 
-    FETCHED=0
-    if test ${FETCHED} -eq 0 ; then
-        url_fetch "${URL}/sfs-minimyth-${VERSION}.tar.bz2.md5" "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5"
-        if test $? -eq 0 ; then
-            url_fetch "${URL}/sfs-minimyth-${VERSION}.tar.bz2" "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2"
-            if test $? -eq 0 ; then
-                cd "${TEMP_DIR}" ; md5sum -c "sfs-minimyth-${VERSION}.tar.bz2.md5" > /dev/null 2>&1
-                test $? -eq 0 || \
-                    message_output 1 "fetched distribution file '${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2' failed checksum check." || \
-                    return
-                rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5" || \
-                    true
-                cd "${TEMP_DIR}" ; tar -jxf "sfs-minimyth-${VERSION}.tar.bz2"                          || \
-                    message_output 1 "failed to extract '${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2'." || \
-                    return
-                rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2" || \
-                    true
-                mv "${TEMP_DIR}/sfs-minimyth-${VERSION}" "${TEMP_DIR}/minimyth-${VERSION}" || 
-                    true
-                FETCHED=1
-            else
-                rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2" || \
-                    true
-                rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5" || \
-                    true
-            fi
-        else
-            rm -fr "${TEMP_DIR}/sfs-minimyth-${VERSION}.tar.bz2.md5" || \
-                true
-        fi
-    fi
-    if test ${FETCHED} -eq 0 ; then
-        url_fetch "${URL}/minimyth-${VERSION}/minimyth.md5" "${TEMP_DIR}/minimyth-${VERSION}/minimyth.md5"
-        if test $? -eq 0 ; then
-            for FILE in `cat "${TEMP_DIR}/minimyth-${VERSION}/minimyth.md5" | sed -e 's%  *% %g' | cut -d ' ' -f 2` ; do
-                url_fetch "${URL}/minimyth-${VERSION}/${FILE}" "${TEMP_DIR}/minimyth-${VERSION}/${FILE}" || \
-                    message_output 1 "failed to fetch file '${URL}/minimyth-${VERSION}/${FILE}'."        || \
-                    return
-            done
-            FETCHED=1
-        else
-            rm -fr "${TEMP_DIR}/minimyth-${VERSION}/minimyth.md5" || \
-                true
-            rm -fr "${TEMP_DIR}/minimyth-${VERSION}" || 
-                true
-        fi
-    fi
-    # Distribution was not downloaded.
-    test ${FETCHED} -ne 0 || \
+    url_fetch "${URL}/ram-minimyth-${VERSION}.tar.bz2.md5" "${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2.md5" || \
+        message_output 1 "command_fetch: failed to download file '${URL}/ram-minimyth-${VERSION}.tar.bz2.md5'" || \
         return
-    # Check distribution.
-    distribution_check "${TEMP_DIR}/minimyth-${VERSION}" || \
+    url_fetch "${URL}/ram-minimyth-${VERSION}.tar.bz2" "${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2" || \
+        message_output 1 "command_fetch: failed to download file '${URL}/ram-minimyth-${VERSION}.tar.bz2'" || \
         return
+    cd "${TEMP_DIR}" ; md5sum -c "ram-minimyth-${VERSION}.tar.bz2.md5" > /dev/null 2>&1 || \
+        message_output 1 "command_check: file '${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2' failed checksum check." || \
+        return
+    rm -fr "${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2.md5" || \
+        true
+    cd "${TEMP_DIR}" ; tar -jxf "ram-minimyth-${VERSION}.tar.bz2"                          || \
+        message_output 1 "failed to extract '${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2'." || \
+        return
+    rm -fr "${TEMP_DIR}/ram-minimyth-${VERSION}.tar.bz2" || \
+        true
+    mv "${TEMP_DIR}/ram-minimyth-${VERSION}" "${TEMP_DIR}/minimyth-${VERSION}" || 
+        true
+    distribution_check "${TEMP_DIR}/minimyth-${VERSION}"
 }
 
 command_install() {
