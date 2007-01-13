@@ -348,7 +348,7 @@ mm-install:
 			rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
-			cd $(mm_EXTRASDIR).tmp ; tar -jc -f $(mm_BASEDIR)/$(mm_EXTRASNAME) * ; \
+			cd $(mm_EXTRASDIR).tmp ; tar -jcf $(mm_BASEDIR)/$(mm_EXTRASNAME) * ; \
 			rm -f $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
