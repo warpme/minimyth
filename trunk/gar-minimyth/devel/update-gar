@@ -66,6 +66,7 @@ sed -i '/^STAGE_EXPORTS *+=/s% includedir%& oldincludedir%g' ${SCRIPT_DIR}/gar.c
 # Add the variable rootdir.
 # Set prefix=rootdir/usr.
 # Set sysconfdir=rootdir/etc and locatestatedir=rootdir/var.
+# Set mandir=rootdir/usr/share/man
 # Add essential library (elib), user binary (ebin) and system binary (esbin) directories.
 # Make all prefixes and directories relative to rootdir.
 sed -i "s%^build_prefix *?=.*%build_rootdir ?= ${build_rootdir}\n&%g" ${SCRIPT_DIR}/gar.conf.mk
@@ -77,6 +78,8 @@ sed -i 's%^\(build\|main\)_prefix *?=.*%\1_prefix = $(\1_rootdir)/usr%g' ${SCRIP
 
 sed -i 's%^\(build\|main\)_sysconfdir *=.*%\1_sysconfdir = $(\1_rootdir)/etc%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^\(build\|main\)_localstatedir *=.*%\1_localstatedir = $(\1_rootdir)/var%g' ${SCRIPT_DIR}/gar.conf.mk
+
+sed -i 's%^\(build\|main\)_mandir *=.*%\1_mandir = $(\1_rootdir)/usr/share/man%g' ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i 's%^\(build\|main\)_exec_prefix *=.*$%&\n\1_qtlibdir = $(\1_qtprefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_exec_prefix *?= *$(main_exec_prefix)%$(DESTIMG)_qtlibdir ?= $(main_qtlibdir)\n&%g' ${SCRIPT_DIR}/gar.mk

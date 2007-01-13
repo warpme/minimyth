@@ -21,9 +21,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-static \
 	--enable-shared
 
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix
-
+INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir libdir includedir mandir
+  
 include ../../gar.mk
+
+mandir := $(mandir)/man1
 
 post-patch:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
