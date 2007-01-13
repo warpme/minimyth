@@ -1,9 +1,9 @@
 GARNAME = libexif
-GARVERSION = 0.5.12
+GARVERSION = 0.6.12
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-#LICENSE = GPL2
+LICENSE = LGPL2_1
 
 DESCRIPTION =
 define BLURB
