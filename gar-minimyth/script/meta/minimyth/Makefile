@@ -27,7 +27,7 @@ DEPENDS = \
 	net/mount.cifs \
 	mediaplayers/mplayer \
 	myth/mythplugins-$(mm_MYTH_VERSION) \
-	myth/mythstream \
+	myth/mythstream-$(mm_MYTH_VERSION) \
 	myth/myththemes-$(mm_MYTH_VERSION) \
 	myth/mythtv-$(mm_MYTH_VERSION) \
 	net/ntp \
