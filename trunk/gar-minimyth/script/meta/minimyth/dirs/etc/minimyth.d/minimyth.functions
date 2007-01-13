@@ -157,3 +157,21 @@ dump_mythdb_settings() {
 
     run_mythdb_command "SELECT * FROM settings WHERE hostname=\"${HOSTNAME}\""
 }
+
+################################################################################
+# Use unionfs to make a ro directory into a rw directory.
+################################################################################
+make_dir_rw() {
+  DIR=$1
+
+  modprobe unionfs
+
+  UNIONFS_RO=/tmp/unionfs/ro
+  UNIONFS_RW=/tmp/unionfs/rw
+
+  mkdir -p ${UNIONFS_RO}${DIR}
+  mkdir -p ${UNIONFS_RW}${DIR}
+
+  mount --bind ${DIR} ${UNIONFS_RO}${DIR}
+  mount -t unionfs -o dirs=${UNIONFS_RW}${DIR}=rw:${UNIONFS_RO}${DIR}=ro,copyup=preserve none ${DIR}
+}
