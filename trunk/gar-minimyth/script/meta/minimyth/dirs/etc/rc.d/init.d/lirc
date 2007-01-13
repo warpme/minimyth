@@ -18,34 +18,9 @@ start() {
         return
     fi
 
-    # Auto-configure remote control receiver.
-    if /usr/bin/test "${MM_LIRC_DRIVER}" = "auto" ; then
-        /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_DRIVER is 'auto'. attempting to auto-configure remote control receiver."
-        MM_LIRC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lirc_driver_map`
-        if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
-            /usr/bin/logger -t minimyth -p "local0.info" "auto-configured remote control receiver to '${MM_LIRC_DRIVER}'."
-            /usr/bin/test -e /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf && . /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
-        else
-            /usr/bin/logger -t minimyth -p "local0.info" "no remote control receiver configured."
-            MM_LIRC_DRIVER='none'
-        fi
-    fi
-
-    # Auto-configure remote control receiver.
-    if /usr/bin/test "${MM_LIRC_REMOTE}" = "auto" ; then
-        /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_REMOTE is 'auto'. attempting to auto-configure remote control."
-        MM_LIRC_REMOTE=`mm_hardware_usb_process mm_hardware_usb2lirc_remote_map`
-        if /usr/bin/test -n "${MM_LIRC_REMOTE}" ; then
-            /usr/bin/logger -t minimyth -p "local0.info" "auto-configured remote control '${MM_LIRC_REMOTE}'."
-        else
-            /usr/bin/logger -t minimyth -p "local0.info" "no remote control configured."
-            MM_LIRC_REMOTE='none'
-        fi
-    fi
-
     # Load the LIRC configuration files.
-    if /usr/bin/test ! "${MM_LIRC_REMOTE}" = "none" ; then
-        if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" ; then
+    if /usr/bin/test -n "${MM_LIRC_REMOTE}" ; then
+        if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
             if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
                 /bin/cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
             fi
@@ -63,9 +38,9 @@ start() {
     if /usr/bin/test -n "${MM_LIRC_KERNEL_MODULE}" ; then
         /sbin/modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
     fi
-    # Start the LIRC daemon.
 
-    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -n "${MM_LIRC_DEVICE}" ; then
+    # Start the LIRC daemon.
+    if /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -n "${MM_LIRC_DEVICE}" ; then
         /bin/mkdir -p /var/lock
         /bin/mkdir -p /var/run
 

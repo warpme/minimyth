@@ -1,0 +1,104 @@
+################################################################################
+# Myth theme configuration variables.
+################################################################################
+conf_check_theme() {
+    # Check for obsolete variables.
+    if /usr/bin/test "${MM_THEMECACHE_URL}" = "default" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_THEMECACHE_URL=default" is obsolete.'
+        exit 1
+    fi
+
+    if /usr/bin/test ! -n "${MM_THEME_NAME}" ; then
+        mm_message_output err "error: 'MM_THEME_NAME' must be set."
+        exit 1
+    fi
+    if /usr/bin/test ! -n "${MM_THEMEOSD_NAME}" ; then
+        mm_message_output err "error: 'MM_THEMEOSD_NAME' must be set."
+        exit 1
+    fi
+
+    if /usr/bin/test ! -z "${MM_THEME_URL}"          && \
+       /usr/bin/test !    "${MM_THEME_URL}" = "none" && \
+       /usr/bin/test !    "${MM_THEME_URL}" = "auto" ; then
+        if /usr/bin/test -e "/usr/share/themes/${MM_THEME_NAME}" ; then
+            mm_message_output err "error: MythTV theme directory '${MM_THEME_NAME}' already exists."
+            exit 1
+        fi
+    fi
+    if /usr/bin/test ! -z "${MM_THEMEOSD_URL}"          && \
+       /usr/bin/test !    "${MM_THEMEOSD_URL}" = "none" && \
+       /usr/bin/test !    "${MM_THEMEOSD_URL}" = "auto" ; then
+        if /usr/bin/test -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
+            mm_message_output err "error: MythTV theme directory '${MM_THEMEOSD_NAME}' already exists."
+            exit 1
+        fi
+    fi
+
+    if /usr/bin/test "${MM_THEME_URL}" = "none" ; then
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEME_NAME}" ; then
+            mm_message_output err "error: MythTV theme directory '${MM_THEME_NAME}' does not exist."
+            exit 1
+        fi
+    fi
+    if /usr/bin/test "${MM_THEMEOSD_URL}" = "none" ; then
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
+            mm_message_output err "error: MythTV theme directory '${MM_THEMEOSD_NAME}' does not exist."
+            exit 1
+        fi
+    fi
+
+    return 0
+}
+
+conf_default_theme() {
+    if /usr/bin/test -z "${MM_THEME_URL}" ; then
+        MM_THEME_URL='auto'
+    fi
+    if /usr/bin/test -z "${MM_THEMEOSD_URL}" ; then
+        MM_THEMEOSD_URL='auto'
+    fi
+    if /usr/bin/test -z "${MM_THEMECACHE_URL}" ; then
+        MM_THEMECACHE_URL='none'
+    fi
+
+    if /usr/bin/test "${MM_THEME_URL}" = "auto" ; then
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEME_NAME}" ; then
+            MM_THEME_URL="dist:themes/${MM_THEME_NAME}.sfs"
+        else
+            MM_THEME_URL="none"
+        fi
+    fi
+    if /usr/bin/test "${MM_THEMEOSD_URL}" = "auto" ; then
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
+            MM_THEMEOSD_URL="dist:themes/${MM_THEMEOSD_NAME}.sfs"
+        else
+            MM_THEMEOSD_URL="none"
+        fi
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_THEME_URL}" = "none" ; then
+        MM_THEME_URL=
+    fi
+    if /usr/bin/test "${MM_THEMEOSD_URL}" = "none" ; then
+        MM_THEMEOSD_URL=
+    fi
+    if /usr/bin/test "${MM_THEMECACHE_URL}" = "none" ; then
+        MM_THEMECACHE_URL=
+    fi
+
+
+    return 0
+}
+
+conf_write_theme() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_THEME_NAME     "${MM_THEME_NAME}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_NAME  "${MM_THEMEOSD_NAME}"
+    conf_variable_write "${conf_file}" MM_THEME_URL      "${MM_THEME_URL}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_URL   "${MM_THEMEOSD_URL}"
+    conf_variable_write "${conf_file}" MM_THEMECACHE_URL "${MM_THEMECACHE_URL}"
+
+    return 0
+}

@@ -1,0 +1,37 @@
+################################################################################
+# CODECs directory configuration variables.
+################################################################################
+conf_check_codecs() {
+    # Check for obsolete variables.
+    if /usr/bin/test "${MM_CODECS_URL}" = "default" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_CODECS_URL=default" is obsolete.'
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_codecs() {
+    if /usr/bin/test -z "${MM_CODECS_URL}" ; then
+        MM_CODECS_URL='auto'
+    fi
+
+    if /usr/bin/test "${MM_CODECS_URL}" = "auto" ; then
+        MM_CODECS_URL='hunt://codecs.sfs'
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_COCECS_URL}" = "none" ; then
+        MM_CODECS_URL=
+    fi
+
+    return 0
+}
+
+conf_write_codecs() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_CODECS_URL "${MM_CODECS_URL}"
+
+    return 0
+}

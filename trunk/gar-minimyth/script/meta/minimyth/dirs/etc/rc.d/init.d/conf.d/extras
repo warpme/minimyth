@@ -1,0 +1,37 @@
+################################################################################
+# Extras directory configuration variables.
+################################################################################
+conf_check_extras() {
+    # Check for obsolete variables.
+    if /usr/bin/test "${MM_EXTRAS_URL}" = "default" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_EXTRAS_URL=default" is obsolete.'
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_extras() {
+    if /usr/bin/test -z "${MM_EXTRAS_URL}" ; then
+        MM_EXTRAS_URL='auto'
+    fi
+
+    if /usr/bin/test "${MM_EXTRAS_URL}" = "auto" ; then
+        MM_EXTRAS_URL='hunt://extras.sfs'
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_EXTRAS_URL}" = "none" ; then
+        MM_EXTRAS_URL=
+    fi
+
+    return 0
+}
+
+conf_write_extras() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_EXTRAS_URL "${MM_EXTRAS_URL}"
+
+    return 0
+}

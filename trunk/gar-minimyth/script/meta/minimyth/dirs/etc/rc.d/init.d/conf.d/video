@@ -1,0 +1,49 @@
+################################################################################
+# Video configuration variables.
+################################################################################
+conf_check_video() {
+    if /usr/bin/test ! -z "${MM_VIDEO_ASPECT_RATIO}"          && \
+       /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  && \
+       /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
+        mm_message_output err "error: MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_VIDEO_DEINTERLACE_ENABLED}"          && \
+       /usr/bin/test !    "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_VIDEO_DEINTERLACE_ENABLED='${MM_VIDEO_DEINTERLACE_ENABLED}' is not valid."
+        exit 1
+    fi
+    if ( /usr/bin/test ! -z "${MM_VIDEO_FONT_SCALE}"            ) && \
+       ( /usr/bin/test !    "${MM_VIDEO_FONT_SCALE}" -ge 25  ||      \
+         /usr/bin/test !    "${MM_VIDEO_FONT_SCALE}" -le 400    ) ; then
+        mm_message_output err "error: MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}' is not valid."
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_video() {
+    if /usr/bin/test -z "${MM_VIDEO_ASPECT_RATIO}"        ; then
+        MM_VIDEO_ASPECT_RATIO='4:3'
+    fi
+    if /usr/bin/test -z "${MM_VIDEO_DEINTERLACE_ENABLED}" ; then
+        MM_VIDEO_DEINTERLACE_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_VIDEO_FONT_SCALE}"          ; then
+        MM_VIDEO_FONT_SCALE='100'
+    fi
+
+    return 0
+}
+
+conf_write_video() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO        "${MM_VIDEO_ASPECT_RATIO}"
+    conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE          "${MM_VIDEO_FONT_SCALE}"
+
+    return 0
+}

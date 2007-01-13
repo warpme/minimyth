@@ -1,0 +1,56 @@
+################################################################################
+# Myth master backend database configuration variables.
+################################################################################
+conf_check_myth() {
+    return 0
+}
+
+conf_default_myth() {
+    if /usr/bin/test -z "${MM_MYTH_SERVER}" ; then
+        MM_MYTH_SERVER="${MM_TFTP_SERVER}"
+    fi
+    if /usr/bin/test -z "${MM_MYTH_DBUSERNAME}" ; then
+        MM_MYTH_DBUSERNAME='mythtv'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_DBPASSWORD}" ; then
+        MM_MYTH_DBPASSWORD='mythtv'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_DBNAME}" ; then
+        MM_MYTH_DBNAME='mythconverg'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_WOL_ENABLED}" ; then
+        MM_MYTH_WOL_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_WOL_MAC}" ; then
+        MM_MYTH_WOL_MAC='00:00:00:00:00:00'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_WOLSQLRECONNECTWAITTIME}" ; then
+        MM_MYTH_WOLSQLRECONNECTWAITTIME='15'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_WOLSQLCONNECTRETRY}" ; then
+        MM_MYTH_WOLSQLCONNECTRETRY='20'
+    fi
+    if /usr/bin/test -z "${MM_MYTH_WOLSQLCOMMAND}" ; then
+        MM_MYTH_WOLSQLCOMMAND='wakelan -b @MM_MYTH_WOL_BROADCAST@ -m @MM_MYTH_WOL_MAC@'
+    fi
+
+    # Default Myth plugins.
+
+    return 0
+}
+
+conf_write_myth() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_MYTH_SERVER                  "${MM_MYTH_SERVER}"
+    conf_variable_write "${conf_file}" MM_MYTH_DBUSERNAME              "${MM_MYTH_DBUSERNAME}"
+    conf_variable_write "${conf_file}" MM_MYTH_DBPASSWORD              "${MM_MYTH_DBPASSWORD}"
+    conf_variable_write "${conf_file}" MM_MYTH_DBNAME                  "${MM_MYTH_DBNAME}"
+    conf_variable_write "${conf_file}" MM_MYTH_WOL_ENABLED             "${MM_MYTH_WOL_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTH_WOL_MAC                 "${MM_MYTH_WOL_MAC}"
+    conf_variable_write "${conf_file}" MM_MYTH_WOLSQLRECONNECTWAITTIME "${MM_MYTH_WOLSQLRECONNECTWAITTIME}"
+    conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCONNECTRETRY      "${MM_MYTH_WOLSQLCONNECTRETRY}"
+    conf_variable_write "${conf_file}" MM_MYTH_WOLSQLCOMMAND           "${MM_MYTH_WOLSQLCOMMAND}"
+
+    return 0
+}
