@@ -1,5 +1,6 @@
 GARNAME = myththemes
-GARVERSION = $(MYTHTV_VERSION)
+#GARVERSION = $(MYTHTV_VERSION)
+GARVERSION = 0.18
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/

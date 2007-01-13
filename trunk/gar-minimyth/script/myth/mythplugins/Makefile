@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-cvsfixes.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-pageup_pagedown.patch $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-pageup_pagedown.patch $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
