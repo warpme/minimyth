@@ -304,6 +304,14 @@ post-install:
 		sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'             $(DESTDIR)$(x11libdir)/pkgconfig/$${file} ; \
 		sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g'     $(DESTDIR)$(x11libdir)/pkgconfig/$${file} ; \
 	done
+	@for file in `cd $(DESTDIR)$(x11bindir) ; ls -1 *-config` ; do \
+		sed -i 's%-L$(x11libdir)%-L$(DESTDIR)$(x11libdir)%g'         $(DESTDIR)$(x11bindir)/$${file} ; \
+		sed -i 's%-I$(x11includedir)%-I$(DESTDIR)$(x11includedir)%g' $(DESTDIR)$(x11bindir)/$${file} ; \
+		sed -i 's%-L$(libdir)%-L$(DESTDIR)$(libdir)%g'               $(DESTDIR)$(x11bindir)/$${file} ; \
+		sed -i 's%-I$(includedir)%-I$(DESTDIR)$(includedir)%g'       $(DESTDIR)$(x11bindir)/$${file} ; \
+		sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'             $(DESTDIR)$(x11bindir)/$${file} ; \
+		sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g'     $(DESTDIR)$(x11bindir)/$${file} ; \
+	done
 	@$(call FONTCONFIG_ADD_FONTDIR,$(x11libdir)/X11/fonts/TTF)
 	@$(call FONTCONFIG_ADD_FONTDIR,$(x11libdir)/X11/fonts/misc)
 	@$(MAKECOOKIE)
