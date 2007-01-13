@@ -1,8 +1,8 @@
 GARNAME = mpeg2dec
-GARVERSION = 0.4.0
+GARVERSION = 0.4.1
 CATEGORIES = lib
 MASTER_SITES = http://libmpeg2.sourceforge.net/files/
-DISTFILES = $(DISTNAME)b.tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION =
