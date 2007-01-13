@@ -1,5 +1,5 @@
 GARNAME = x11vnc
-GARVERSION = 0.7.2
+GARVERSION = 0.8
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/
 DISTFILES = $(DISTNAME).tar.gz
@@ -17,6 +17,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
-	--x-libraries=$(DESTDIR)$(libdir)
+	--x-libraries=$(DESTDIR)$(libdir) \
+	--with-x
 
 include ../../gar.mk

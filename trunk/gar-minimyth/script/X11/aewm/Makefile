@@ -1,5 +1,5 @@
 GARNAME = aewm
-GARVERSION = 1.3.1
+GARVERSION = 1.3.3
 CATEGORIES = X11
 MASTER_SITES = http://www.red-bean.com/~decklin/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
