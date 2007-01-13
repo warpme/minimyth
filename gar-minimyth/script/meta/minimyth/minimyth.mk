@@ -123,7 +123,6 @@ mm-make-conf:
 	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi-bin/functions
 	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
-	@ln -sf /proc/mounts $(mm_DESTDIR)/etc/mtab
 
 mm-make-busybox:
 	@main_DESTDIR=$(mm_DESTDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
@@ -330,8 +329,8 @@ mm-make-initrd:
 	@mv $(mm_DESTDIR) $(mm_DESTDIR).ro
 	@mkdir -p                           $(mm_DESTDIR)
 	@mkdir -p                           $(mm_DESTDIR)/rootfs
-	@mkdir -p                           $(mm_DESTDIR)/rootfs-rw
 	@mv $(mm_DESTDIR).ro                $(mm_DESTDIR)/rootfs-ro
+	@mkdir -p                           $(mm_DESTDIR)/rw
 	@mkdir -p                           $(mm_DESTDIR)/bin
 	@ln -s rootfs-ro/dev                $(mm_DESTDIR)/dev
 	@ln -s rootfs-ro/lib                $(mm_DESTDIR)/lib
@@ -369,7 +368,7 @@ mm-install:
 			rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
-			cd $(mm_EXTRASDIR).tmp ; tar -jcf $(mm_BASEDIR)/$(mm_EXTRASNAME) * ; \
+			mkfs.cramfs $(mm_EXTRASDIR).tmp $(mm_BASEDIR)/$(mm_EXTRASNAME) ; \
 			rm -f $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
 				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
