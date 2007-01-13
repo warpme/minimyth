@@ -50,6 +50,25 @@ start() {
                     ;;
             esac
             ;;
+        REALTEK_ALC650)
+            modprobe snd-intel8x0
+            while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
+            case "${MM_AUDIO_TYPE}" in
+                analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
+                    amixer set 'PCM' 90% unmute 
+                    amixer set 'Master' 90% unmute 
+                    ;;
+                digital)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    ;;
+                digital+analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    amixer set 'PCM' 90% unmute 
+                    amixer set 'Master' 90% unmute 
+                    ;;
+            esac
+            ;;
         REALTEK_ALC655)
             modprobe snd-intel8x0
             while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
@@ -104,6 +123,12 @@ stop () {
            amixer set 'IEC958' off
            amixer set 'PCM' 0% mute 
            amixer set 'Front' 0% mute 
+           ;;
+        INTEL_FW82801DB)
+           ;;
+        REALTEK_ALC650)
+           amixer set 'PCM' 90% unmute 
+           amixer set 'Master' 90% unmute 
            ;;
         REALTEK_ALC655)
            ;;
