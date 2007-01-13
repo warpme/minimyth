@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lirc/lirc.any lirc/lirc.serial
+DEPENDS = lirc/lirc.any lirc/lirc.mceusb lirc/lirc.serial
 
 include ../../gar.mk
 
