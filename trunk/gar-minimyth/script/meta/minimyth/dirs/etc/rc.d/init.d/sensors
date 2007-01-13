@@ -1,0 +1,29 @@
+#!/bin/sh
+################################################################################
+# sensors
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting sensors ...'
+
+    # Start sensors.
+    sensors -s
+
+    return 0
+}
+
+stop() {
+    mm_message_output info 'stopping sensors ...'
+
+    [ -n "`pidof sensors`" ] && killall sensors
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

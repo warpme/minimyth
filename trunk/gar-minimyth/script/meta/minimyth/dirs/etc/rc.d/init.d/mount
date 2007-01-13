@@ -1,0 +1,46 @@
+#!/bin/sh
+################################################################################
+# mount
+#
+# This script mounts the remote media directories.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'mounting media shares ...'
+
+    if [ -n "${MM_MYTHGALLERY_URL}" ] ; then
+        mm_url_mount "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
+    fi
+    if [ -n "${MM_MYTHMUSIC_URL}"   ] ; then
+        mm_url_mount "${MM_MYTHMUSIC_URL}"   "/mnt/music"
+    fi
+    if [ -n "${MM_MYTHVIDEO_URL}"   ] ; then
+        mm_url_mount "${MM_MYTHVIDEO_URL}"   "/mnt/video"
+    fi
+
+    return 0
+}
+
+stop() {
+    mm_message_output info 'unmounting media shares ...'
+
+    if [ -n "${MM_MYTHVIDEO_URL}"   ] && [ -d /mnt/video   ] ; then
+        umount /mnt/video
+    fi
+    if [ -n "${MM_MYTHMUSIC_URL}"   ] && [ -d /mnt/music   ] ; then
+        umount /mnt/music
+    fi
+    if [ -n "${MM_MYTHGALLERY_URL}" ] && [ -d /mnt/gallery ] ; then
+        umount /mnt/gallery
+    fi
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

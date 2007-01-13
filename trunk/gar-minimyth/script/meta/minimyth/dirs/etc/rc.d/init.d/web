@@ -1,0 +1,29 @@
+#!/bin/sh
+################################################################################
+# web
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting web server ...'
+
+    webfsd -u 0 -g 0 -p 80 -f index.html -r /srv/www -x /cgi-bin -s
+
+    return 0
+}
+
+
+stop() {
+    mm_message_output info 'stopping web server ...'
+
+    [ -n "`pidof webfsd`" ] && killall webfsd
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

@@ -1,0 +1,40 @@
+#!/bin/sh
+################################################################################
+# audio
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'configuring audio ...'
+
+    case "${MM_AUDIO_TYPE}" in
+        analog)
+            sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
+            amixer set 'PCM'    90% unmute 
+            amixer set 'Master' 90% unmute 
+            ;;
+        digital)
+            sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+            amixer set 'IEC958 Playback AC97-SPSA' 0
+            ;;
+        digital+analog)
+            sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+            amixer set 'IEC958 Playback AC97-SPSA' 0
+            amixer set 'PCM'    90% unmute 
+            amixer set 'Master' 90% unmute 
+            ;;
+    esac
+
+    return 0
+}
+
+stop () {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

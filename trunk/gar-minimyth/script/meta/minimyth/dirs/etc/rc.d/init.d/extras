@@ -1,0 +1,41 @@
+#!/bin/sh
+################################################################################
+# extras
+#
+# This script (downloads and) mounts the extras directory tree.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'installing extras ...'
+
+    if [ "${MM_EXTRAS_URL}" = "default" ] ; then
+        INITRD_DIR=` echo ${initrd} | sed 's%[^/]*$%%'`
+        INITRD_FILE=`echo ${initrd} | sed 's%^.*/%%'`
+        INITRD_FILE_PREFIX=`echo ${INITRD_FILE} | sed 's%-.*$%%'`
+        if [ "${INITRD_FILE_PREFIX}" = "rootfs" ] ; then
+            EXTRAS_DIR="${INITRD_DIR}"
+            EXTRAS_FILE=`echo ${INITRD_FILE} | sed 's%^rootfs-%extras-%'`.tar.bz2
+            MM_EXTRAS_URL="tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${EXTRAS_DIR}${EXTRAS_FILE}"
+        else
+            MM_EXTRAS_URL=
+        fi
+    fi
+    if [ -n "${MM_EXTRAS_URL}" ] ; then
+        mm_url_mount "${MM_EXTRAS_URL}" "@EXTRAS_ROOTDIR@"
+        sh /etc/minimyth.d/ld.script
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

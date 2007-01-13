@@ -1,0 +1,49 @@
+#!/bin/sh
+################################################################################
+# video
+#
+# The script configures the video.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'configuring video ...'
+
+    if   [ "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ] ; then
+        sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
+    elif [ "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ] ; then
+        sed -i "s%@MONITORASPECT@%16:9%" /root/.mplayer/config
+    else
+        mm_message_output err 'error: invalid value for MM_VIDEO_ASPECT_RATIO.'
+        exit 1
+    fi
+
+    if   [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ] ; then
+        mm_mythdb_setting_update Deinterlace 0
+        sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
+        sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
+        sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
+    elif [ "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ] ; then
+        mm_mythdb_setting_update Deinterlace 1
+        mm_mythdb_setting_update DeinterlaceFilter bobdeint
+        sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
+        sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
+        sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
+    else
+        mm_message_output err 'error: invalid value for MM_VIDEO_DEINTERLACE_ENABLED.'
+        exit 1
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

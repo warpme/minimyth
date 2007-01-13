@@ -1,0 +1,60 @@
+#!/bin/sh
+################################################################################
+# network
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting network ...'
+
+    # Bring up the local (loopback) interface.
+    ifconfig lo 127.0.0.1
+
+    # Get the IP address and other IP parameters.
+    # If an IP address was already obtained then request the same address.
+    ip=`ifconfig eth0 | grep '^ *inet addr:' | sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+    if [ -z "$ip" ] ; then
+        udhcpc -s /etc/udhcpc.script -i eth0         >> /dev/null 2>&1
+    else
+        udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
+    fi
+
+    # Check hostname.
+    HOSTNAME=`hostname`
+    if [ -z "${HOSTNAME}" ] ; then
+        mm_message_output err 'error: no hostname provided'
+        exit 1
+    fi
+
+    # Check for DNS name servers.
+    for i in `cat /etc/resolv.conf | grep '^nameserver ' | sed 's%^nameserver %%'` ; do
+        if [ -z "${NAME_SERVER}" ] ; then
+            NAME_SERVER="$i"
+        fi
+    done
+    if [ -z "${NAME_SERVER}" ] ; then
+        mm_message_output err 'error: no DNS name server(s) provided'
+        exit 1
+    fi
+
+    # Start portmap on local interface.
+    portmap -l
+
+    return 0
+}
+
+stop() {
+    mm_message_output info 'stopping network ...'
+
+    [ -n "`pidof portmap`" ] && killall portmap
+    [ -n "`pidof udhcpc`"  ] && killall udhcpc
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?

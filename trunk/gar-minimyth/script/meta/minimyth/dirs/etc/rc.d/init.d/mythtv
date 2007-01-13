@@ -1,0 +1,120 @@
+#!/bin/sh
+################################################################################
+# mythtv
+#
+# This script configures MythTV.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'configuring MythTV ...'
+
+    # Mount themecache.
+    if   [ -z ${MM_THEMECACHE_URL} ] ; then
+        touch /root/.mythtv/themecache
+    else
+        [ "${MM_THEMECACHE_URL}" = "default" ] && MM_THEMECACHE_URL="conf:themecache.tar.bz2"
+        mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
+    fi
+
+    # Create mysql.txt file.
+    echo ""                                 >  /root/.mythtv/mysql.txt
+    echo "DBHostName=${MM_MYTH_SERVER}"     >> /root/.mythtv/mysql.txt
+    echo "DBUserName=${MM_MYTH_DBUSERNAME}" >> /root/.mythtv/mysql.txt
+    echo "DBPassword=${MM_MYTH_DBPASSWORD}" >> /root/.mythtv/mysql.txt
+    echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
+
+    # Test Myth database connection.
+    mm_mythdb_command_run
+    if [ $? -ne 0 ] ; then
+        mm_message_output err 'error: cannot connect to the Myth backend database.'
+        exit 1
+    fi 
+
+    # Configure Myth database jumppoints to match MiniMyth frontend.
+    cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_JUMPPOINT=' | sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
+        sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+        sed -e 's%^"%%'    -e 's%"$%%'    | \
+        sed -e "s%^'%%"    -e "s%'$%%"    |
+    while read jumppoint ; do
+        jumppoint_destination=`echo ${jumppoint} | cut -d~ -f1`
+        jumppoint_keylist=`echo ${jumppoint} | cut -d~ -f2`
+        mm_mythdb_jumppoint_update "${jumppoint_destination}" "${jumppoint_keylist}"
+    done
+
+    # Configure Myth database keybindings to match MiniMyth frontend.
+    cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_KEYBINDING=' | sed -e 's%^MM_MYTHDB_KEYBINDING=%%' | \
+        sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+        sed -e 's%^"%%'    -e 's%"$%%'    | \
+        sed -e "s%^'%%"    -e "s%'$%%"    |
+    while read keybinding ; do
+        keybinding_context=`echo ${keybinding} | cut -d~ -f1`
+        keybinding_action=`echo ${keybinding} | cut -d~ -f2`
+        keybinding_keylist=`echo ${keybinding} | cut -d~ -f3`
+        mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
+    done
+
+    # Configure Myth database settings to match MiniMyth frontend.
+    cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING=' | sed -e 's%^MM_MYTHDB_SETTING=%%' | \
+        sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+        sed -e 's%^"%%'    -e 's%"$%%'    | \
+        sed -e "s%^'%%"    -e "s%'$%%"    |
+    while read setting ; do
+        setting_value=`echo ${setting} | cut -d~ -f1`
+        setting_data=`echo ${setting} | cut -d~ -f2`
+        mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+    done
+
+    # Delete disabled plugins.
+    if [ "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no" ] ; then
+        sed -i 's%<depends>mythmusic mythdvd</depends>%<depends>disabled</depends>%' /usr/share/mythtv/mainmenu.xml
+    fi
+    if [ "${MM_MYTHDVD_ENABLED}"     = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythdvd.so
+        rm -rf /usr/share/mythtv/dvd*
+        rm -rf /usr/share/mythtv/mythdvd*
+    fi
+    if [ "${MM_MYTHGALLERY_ENABLED}" = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythgallery.so
+        rm -rf /usr/share/mythtv/gallery*
+        rm -rf /usr/share/mythtv/mythgallery*
+    fi
+    if [ "${MM_MYTHMUSIC_ENABLED}"   = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythmusic.so
+        rm -rf /usr/share/mythtv/music*
+        rm -rf /usr/share/mythtv/mythmusic*
+    fi
+    if [ "${MM_MYTHNEWS_ENABLED}"    = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythnews.so
+        rm -rf /usr/share/mythtv/news*
+        rm -rf /usr/share/mythtv/mythnews*
+    fi
+    if [ "${MM_MYTHSTREAM_ENABLED}"  = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythstream.so
+        rm -rf /usr/share/mythtv/stream*
+        rm -rf /usr/share/mythtv/mythstream*
+    fi
+    if [ "${MM_MYTHVIDEO_ENABLED}"   = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythvideo.so
+        rm -rf /usr/share/mythtv/video*
+        rm -rf /usr/share/mythtv/mythvideo*
+    fi
+    if [ "${MM_MYTHWEATHER_ENABLED}" = "no" ] ; then
+        rm -rf /usr/lib/mythtv/plugins/libmythweather.so
+        rm -rf /usr/share/mythtv/weather*
+        rm -rf /usr/share/mythtv/mythweather*
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit $?
