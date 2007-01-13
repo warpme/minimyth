@@ -47,7 +47,7 @@ post-patch:
 pre-configure:
 	@echo "ac_cv_path_AALIB_CONFIG=no"                                     >  $(WORKSRC)/config.cache
 	@echo "ac_cv_path_CACA_CONFIG=no"                                      >> $(WORKSRC)/config.cache
-	@echo "ac_cv_path_SDL_CONFIG=no"                                       >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_SDL_CONFIG=$(DESTDIR)$(bindir)/sdl-config"           >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_LIBFAME_CONFIG=no"                                   >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_ESD_CONFIG=no"                                       >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_ARTS_CONFIG=no"                                      >> $(WORKSRC)/config.cache
