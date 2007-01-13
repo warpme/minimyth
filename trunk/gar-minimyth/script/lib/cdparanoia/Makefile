@@ -2,7 +2,7 @@ GARNAME = cdparanoia
 GARVERSION = III-alpha9.8
 CATEGORIES = lib
 MASTER_SITES = http://www.xiph.org/paranoia/download/
-DISTFILES = $(DISTNAME).src.tgz config.cache.$(KERNEL_ARCH)
+DISTFILES = $(DISTNAME).src.tgz config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch $(DISTNAME)-gcc-3.4.x.patch
 LICENSE =
 
@@ -34,11 +34,10 @@ MANDIR     = $(mandir)
 INCLUDEDIR = $(includedir)
 LIBDIR     = $(libdir)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-extract-config.cache.$(KERNEL_ARCH):
-	@cp $(DOWNLOADDIR)/config.cache.$(KERNEL_ARCH) $(WORKSRC)/config.cache
+extract-config.cache.$(GARCH_FAMILY):
+	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-patch:

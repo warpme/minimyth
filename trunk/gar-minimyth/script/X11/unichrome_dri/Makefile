@@ -15,11 +15,11 @@ DEPENDS = lang/c X11/X11 lib/libdrm
 WORKSRC = $(WORKDIR)/Mesa-$(GARVERSION)
 
 MESA_CONFIG = $(strip \
-	$(if $(filter i386  ,$(KERNEL_ARCH)),linux-dri-x86   ) \
-	$(if $(filter x86_64,$(KERNEL_ARCH)),linux-dri-x86-64))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),linux-dri-x86   ) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),linux-dri-x86-64))
 MESA_LIBDIR = $(strip \
-	$(if $(filter i386  ,$(KERNEL_ARCH)),lib  ) \
-	$(if $(filter x86_64,$(KERNEL_ARCH)),lib64))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),lib  ) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),lib64))
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -29,7 +29,7 @@ BUILD_ARGS = \
 	BUILD_CC="$(build_CC)" \
 	BUILD_CFLAGS="$(build_CFLAGS)"
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk kernel/drm/package-api.mk
+GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
 configure-custom:

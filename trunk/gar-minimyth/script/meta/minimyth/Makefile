@@ -1,5 +1,5 @@
 GARNAME = minimyth
-GARVERSION = none
+GARVERSION = $(mm_VERSION)
 CATEGORIES = meta
 
 DESCRIPTION =
@@ -26,7 +26,10 @@ DEPENDS = \
 	kernel/module-init-tools \
 	net/mount.cifs \
 	mediaplayers/mplayer \
-	myth/myth \
+	myth/mythplugins-$(mm_MYTH_VERSION) \
+	myth/mythstream \
+	myth/myththemes-$(mm_MYTH_VERSION) \
+	myth/mythtv-$(mm_MYTH_VERSION) \
 	net/ntp \
 	X11/nvidia \
 	net/portmap \

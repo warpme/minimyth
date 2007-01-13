@@ -23,7 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-pre-configure:
+post-patch:
 	@cd $(WORKSRC) ; aclocal
 	@cd $(WORKSRC) ; libtoolize --copy --force
 	@cd $(WORKSRC) ; autoconf

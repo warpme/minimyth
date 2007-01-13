@@ -38,6 +38,12 @@ main_CPPFLAGS=''
 main_CFLAGS='-march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math'
 main_CXXFLAGS='-march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math'
 main_LDFLAGS=''
+build_GARCH_FAMILY='$(strip \\\
+    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(build_GARHOST) | cut -d- -f1)),i386  ) \\\
+    $(if $(filter x86_64 athlon64            ,$(shell echo $(build_GARHOST) | cut -d- -f1)),x86_64))'
+main_GARCH_FAMILY='$(strip \\\
+    $(if $(filter i386 i486 i586 i686 c3 c3-2,$(shell echo $(main_GARHOST)  | cut -d- -f1)),i386  ) \\\
+    $(if $(filter x86_64 athlon64            ,$(shell echo $(main_GARHOST)  | cut -d- -f1)),x86_64))'
 _PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_x11bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_x11libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
 _PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
@@ -201,6 +207,12 @@ sed -i "s%^\(#*main_CPPFLAGS\) *+=.*$%\1 += ${main_CPPFLAGS}%g" ${SCRIPT_DIR}/ga
 sed -i "s%^\(#*main_CFLAGS\) *+=.*$%\1 += ${main_CFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
 sed -i "s%^\(#*main_CXXFLAGS\) *+=.*$%\1 += ${main_CXXFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
 sed -i "s%^\(#*main_LDFLAGS\) *+=.*$%\1 += ${main_LDFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
+
+# Add GARCH_FAMILY attribute.
+sed -i "s%^build_GARHOST *:=.*$%&\nbuild_GARCH_FAMILY := ${build_GARCH_FAMILY}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_GARHOST *?=.*$%&\nmain_GARCH_FAMILY ?= ${main_GARCH_FAMILY}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^\$(DESTIMG)_GARHOST *?= *\$(main_GARHOST)%&\n\$(DESTIMG)_GARCH_FAMILY ?= \$(main_GARCH_FAMILY)%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^GARHOST *= *\$(\$(DESTIMG)_GARHOST)%&\nGARCH_FAMILY = \$(\$(DESTIMG)_GARCH_FAMILY)%g" ${SCRIPT_DIR}/gar.mk
 
 # # Disable LD_LIBRARY_PATH
 # # We use the Linux From Scratch patches instead.

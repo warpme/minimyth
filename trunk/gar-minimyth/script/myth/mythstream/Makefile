@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv lib/fftw
+DEPENDS = lang/c myth/mythtv-$(mm_MYTH_VERSION) lib/fftw
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-0.16
 
@@ -30,7 +30,7 @@ INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
 
-GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+GAR_EXTRA_CONF += myth/mythtv-$(mm_MYTH_VERSION)/package-api.mk
 include ../../gar.mk
 
 pre-configure:

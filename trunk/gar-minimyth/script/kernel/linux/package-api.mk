@@ -8,8 +8,6 @@ KERNEL_FULL_VERSION = $(KERNEL_VERSION)
 
 KERNEL_MAKEFILE = $(DESTDIR)$(rootdir)/lib/modules/$(KERNEL_VERSION)*/source/Makefile
 
-KERNEL_ARCH = $(strip $(shell grep ^$(shell echo $(GARTARGET) | cut -d- -f1): $(GARDIR)/kernel/linux/kernel-arch-map | cut -d: -f2))
-
 KERNEL_DIR           = $(rootdir)/boot
 KERNEL_DIR           = $(rootdir)/boot
 KERNEL_MODULESPREFIX = $(rootdir)/lib/modules
@@ -18,7 +16,7 @@ KERNEL_SOURCEDIR     = $(KERNEL_MODULESDIR)/source
 KERNEL_BUILDDIR      = $(KERNEL_MODULESDIR)/build
 
 KERNEL_MAKE_ARGS = \
-	ARCH="$(KERNEL_ARCH)" \
+	ARCH="$(GARCH_FAMILY)" \
 	HOSTCC="$(build_CC)" \
 	HOSTCXX="$(build_CXX)" \
 	HOSTCFLAGS="$(build_CFLAGS)" \

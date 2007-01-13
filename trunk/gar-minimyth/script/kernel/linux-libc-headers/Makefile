@@ -12,12 +12,11 @@ endef
 
 INSTALL_SCRIPTS = custom
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(includedir)/asm
-	@cp -r $(WORKSRC)/include/asm-$(KERNEL_ARCH)/* $(DESTDIR)$(includedir)/asm
+	@cp -r $(WORKSRC)/include/asm-$(GARCH_FAMILY)/* $(DESTDIR)$(includedir)/asm
 	@cp -r $(WORKSRC)/include/linux $(DESTDIR)$(includedir)
 	@rm -f $(DESTDIR)$(includedir)/linux/config.h
 	@touch $(DESTDIR)$(includedir)/linux/config.h
