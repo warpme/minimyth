@@ -14,7 +14,6 @@ DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
 	utils/busybox \
-	system/devfsd \
 	devel/gdb \
 	kernel/linux kernel/alsa-driver kernel/drm \
 	lirc/lirc \
@@ -34,6 +33,7 @@ DEPENDS = \
 	X11/rxvt \
 	net/samba \
 	net/utelnetd \
+	system/udev \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \
