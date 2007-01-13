@@ -56,7 +56,7 @@ post-install:
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
 		rm -f $(DESTDIR)$(libdir)/libstdc++.la ; \
 		rm -f $(DESTDIR)$(libdir)/libsupc++.la ; \
-		ln -s gcc $(DESTDIR)$(bindir)/cc ; \
+		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
 	)
 	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \

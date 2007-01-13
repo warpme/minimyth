@@ -4,8 +4,6 @@ CATEGORIES = X11
 MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
-MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/unichrome/
-MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/unichrome/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch
 LICENSE = xorg
@@ -68,6 +66,17 @@ CONFIG_FILE_APPEND = \
 	echo "\#undef  $(1)"      >> $(CONFIG_FILE); \
 	echo "\#define $(1) $(2)" >> $(CONFIG_FILE)
 
+
+cvs//%$(GARNAME)R$(GARVERSION)-src.tar.bz2:
+	@cd $(PARTIALDIR); rm -rf xc
+	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) xc
+	@cd $(PARTIALDIR); tar -jcf $(GARNAME)R$(GARVERSION)-src.tar.bz2 xc
+	@cd $(PARTIALDIR); rm -rf xc
+	@$(MAKECOOKIE)
+
+checksum-$(GARNAME)R$(GARVERSION)-src.tar.bz2:
+	@$(MAKECOOKIE)
+
 configure-os:
 	$(call GLIBC_ADD_LIB_PATH, $(libdir)/gcc/$(GARHOST)/$(GCC_VERSION))
 	@$(call CONFIG_FILE_HEADER, Operating System.)
@@ -124,8 +133,9 @@ configure-compiler:
 
 configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
-	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , )
+	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , via)
 	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
+	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , unichrome)
 	@$(call CONFIG_FILE_APPEND, XInputDrivers             , mouse keyboard)
 	@$(MAKECOOKIE)
 
@@ -148,6 +158,7 @@ configure-installed_software:
 	@$(call CONFIG_FILE_APPEND, HasGhostPCL               , NO)
 	@$(call CONFIG_FILE_APPEND, HasGhostScript            , NO)
 	@$(call CONFIG_FILE_APPEND, HasLibpng                 , YES)
+	@$(call CONFIG_FILE_APPEND, HasSecureRPC              , NO)
 	@$(call CONFIG_FILE_APPEND, LibpngDir                 , $(DESTDIR)$(prefix))
 	@$(call CONFIG_FILE_APPEND, LibpngIncDir              , $(DESTDIR)$(includedir))
 	@$(call CONFIG_FILE_APPEND, LibpngLibDir              , $(DESTDIR)$(libdir))
