@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://www.xiph.org/paranoia/download/
 DISTFILES = $(DISTNAME).src.tgz config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch $(DISTNAME)-gcc-3.4.x.patch
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

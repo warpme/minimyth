@@ -3,7 +3,7 @@ GARVERSION = 20060712Z
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = 
+LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB

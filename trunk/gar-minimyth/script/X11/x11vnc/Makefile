@@ -3,7 +3,7 @@ GARVERSION = 0.8.2
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

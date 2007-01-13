@@ -4,7 +4,7 @@ CATEGORIES = xorg-old
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
 PATCHFILES = Mesa-$(GARVERSION).patch.gar Mesa-$(GARVERSION)-gen_matypes.patch Mesa-$(GARVERSION)-xdemos.patch
-LICENSE = 
+LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
 define BLURB

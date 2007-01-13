@@ -6,7 +6,8 @@ DISTFILES = $(DISTNAME).tar.gz
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
-LICENSE =
+LICENSE = ntp
+ntp_LICENSE_TEXT = $(WORKSRC)/COPYRIGHT
 
 DESCRIPTION =
 define BLURB

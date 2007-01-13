@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
-LICENSE =
+LICENSE = LGPL2_1
 
 DESCRIPTION =
 define BLURB

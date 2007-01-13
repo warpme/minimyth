@@ -3,7 +3,7 @@ GARVERSION = 1.0.5
 CATEGORIES = xorg-old
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = 
+LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB

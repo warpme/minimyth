@@ -3,7 +3,7 @@ GARVERSION = 2.6.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

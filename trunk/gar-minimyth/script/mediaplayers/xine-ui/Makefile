@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
-LICENSE = 
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

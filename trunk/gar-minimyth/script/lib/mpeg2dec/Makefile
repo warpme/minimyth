@@ -3,7 +3,7 @@ GARVERSION = 0.4.0
 CATEGORIES = lib
 MASTER_SITES = http://libmpeg2.sourceforge.net/files/
 DISTFILES = $(DISTNAME)b.tar.gz
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB

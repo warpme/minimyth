@@ -3,7 +3,7 @@ GARVERSION = 211
 CATEGORIES = xorg-mid
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE =
+LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB

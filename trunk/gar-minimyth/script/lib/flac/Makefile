@@ -3,7 +3,8 @@ GARVERSION = 1.1.2
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = GPL2/xiph
+xiph_LICENSE_TEXT = $(WORKSRC)/COPYING.Xiph
 
 DESCRIPTION =
 define BLURB
