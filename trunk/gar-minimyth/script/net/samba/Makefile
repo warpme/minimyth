@@ -1,5 +1,5 @@
 GARNAME = samba
-GARVERSION = 2.2.12
+GARVERSION = 3.0.10
 CATEGORIES = net
 MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
@@ -13,34 +13,26 @@ DEPENDS = lang/c kernel/linux
 
 WORKSRC = $(WORKDIR)/$(DISTNAME)/source
 
-BASEDIR    = $(exec_prefix)
-BINDIR     = $(bindir)
-DATADIR    = $(datadir)
-SBINDIR    = $(sbindir)
-LIBDIR     = $(libdir)
-VARDIR     = $(localstatedir)
-CONFIGDIR  = $(sysconfdir)
-MANDIR     = $(mandir)
-INCLUDEDIR = $(includedir)
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
-	--with-smbmount \
-	--disable-cups
-
-BUILD_OVERRIDE_DIRS   = \
-	BASEDIR BINDIR DATADIR SBINDIR LIBDIR VARDIR CONFIGDIR MANDIR INCLUDEDIR \
-	prefix exec_prefix mandir sysconfdir
-INSTALL_OVERRIDE_DIRS = \
-	BASEDIR BINDIR DATADIR SBINDIR LIBDIR VARDIR CONFIGDIR MANDIR INCLUDEDIR \
-	prefix exec_prefix mandir sysconfdir
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-cups \
+	--disable-xmltest \
+	--with-privatedir=$(sysconfdir)/samba/private \
+	--with-lockdir=$(localstatedir)/locks \
+	--with-piddir=$(localstatedir)/locks \
+	--with-swatdir=$(datadir)/samba/swat \
+	--with-configdir=$(sysconfdir)/samba \
+	--with-logfilebase=$(localstatedir)/log/samba \
+	--with-libdir=$(libdir)/samba \
+	--with-mandir=$(mandir) \
+	--with-smbmount
 
 include ../../gar.mk
 
-post-install:
-	@rm -f $(DESTDIR)$(esbindir)/smbmount ; mv $(DESTDIR)$(BINDIR)/smbmount $(DESTDIR)$(esbindir)/smbmount
-	@rm -f $(DESTDIR)/sbin/mount.smbfs    ; ln -sf smbmount $(DESTDIR)$(esbindir)/mount.smbfs
+post-patch:
+	@#Hack to allow configure to work. This works because we are not really cross compiling.
+	@sed -i 's%\("$$cross_compiling" *= *\)yes%\1gar%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
