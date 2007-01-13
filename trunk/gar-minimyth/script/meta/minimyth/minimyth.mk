@@ -97,24 +97,8 @@ sharedirs :=  \
 	$(extras_sharedstatedir) \
 	$(sharedstatedir)
 
-IS_BIN = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB executable'   ),yes,no)
-IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB shared object'),yes,no)
-
-MM_PATH := $(PATH)
-
 MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
-LIST_FILES = \
-	$(strip $(sort $(foreach dir, $(2), $(shell if test -d $(strip $(1)$(dir)) ; then cd $(strip $(1))$(dir) ; ls -1 ; fi) )))
-LIST_LIBS = \
-	$(filter-out \
-		$(call LIST_FILES, $(mm_ROOTFSDIR), $(libdirs)), \
-		$(shell $(OBJDUMP) -x $(1) 2> /dev/null \
-			| grep -e '^ *NEEDED  *' \
-			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
-			| cut -d' ' -f 2 \
-		) \
-	)
 
 GET_UID = \
 	$(shell cat ./dirs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
@@ -334,57 +318,60 @@ mm-remove-post:
 mm-copy-libs:
 	@# Copy dependent libraries.
 	@echo 'copying dependent libraries'
-	@make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/copy-libs DESTIMG=$(DESTIMG)
-
-mm-%/copy-libs:
-	@if test ! -L $* ; then \
-		if   test -d $* ; then \
-			for dir in `cd $* ; ls` ; do \
-				make -s -f minimyth.mk mm-$*/$${dir}/copy-libs DESTIMG=$(DESTIMG) ; \
-			done ; \
-		elif test -f $* && ( test $(call IS_BIN, $*) == yes || test $(call IS_LIB, $*) == yes ) ; then \
-			for lib in $(call LIST_LIBS, $*) ; do \
-				libdir="" ; \
-				for dir in $(libdirs) ; do \
-					if test -d $(DESTDIR)/$${dir} ; then \
-						if test x`cd $(DESTDIR)/$${dir} ; ls -1 $${lib} 2>/dev/null` == x$${lib} ; then \
-							libdir=$${dir} ; \
-							if test ! -z $${libdir} ; then \
-								source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
-								target_lib="$(mm_ROOTFSDIR)/$${libdir}/$${lib}" ; \
-								if test ! -e $${target_lib} ; then \
-                                                			target_dir=`dirname $${target_lib}` ; \
-                                                			mkdir -p $${target_dir} ; \
-									cp -f  $${source_lib} $${target_lib} ; \
-									make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
-								fi ; \
-							fi ; \
-						fi ; \
-					fi ; \
-				done ; \
-				if test -z $${libdir} ; then \
-					echo "warning: library \"$${lib}\" not found ($*)." ; \
-				fi ; \
+	new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
+	pass=0 ; \
+	lib_count=1 ; \
+	bin_list="`find $(mm_ROOTFSDIR) -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB executable' \
+		| sed -e 's%:.*%%'`" ; \
+	bin_list=`echo $${bin_list}` ; \
+	while test $${lib_count} -gt 0 ; do \
+		pass=$$((pass+1)) ; \
+		lib_list="`find $(mm_ROOTFSDIR) -exec file '{}' \; \
+			| grep -i 'ELF ..-bit LSB shared object' \
+			| sed -e 's%:.*%%'`" ; \
+		lib_list=`echo $${lib_list}` ; \
+		new_list="`$(OBJDUMP) -x $${bin_list} $${lib_list} 2> /dev/null \
+			| grep -e '^ *NEEDED  *' \
+			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
+			| cut -d' ' -f 2 \
+			| sort \
+			| uniq`" ; \
+		new_list=`echo $${new_list}` ; \
+		old_list="`echo $${lib_list} \
+			| sed -e 's%[^ ]*/%%g' \
+			| sort \
+			| uniq`" ; \
+		old_list=`echo $${old_list}` ; \
+		old_filter="\(`echo $${old_list} | sed -e 's%\([.+]\)%\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
+		new_list=`echo " $${new_list} " \
+			| sed -e 's%  *%  %g' \
+			| sed -e "s% $${old_filter} % %g"` ; \
+		new_list=`echo $${new_list} | sed -e 's%  *% %g' | sed -e 's%^  *%%' | sed -e 's%  *$$%%'` ; \
+		lib_count=`echo "$${new_list}" | wc -w` ; \
+		echo "  pass $${pass} found $${lib_count} libraries to copy" ; \
+		if test $${lib_count} -gt 0 ; then \
+		        new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
+		        new_filter="$${new_filter_path}/$${new_filter_file}" ; \
+			new_list=`cd $(DESTDIR) ; find * -regex "$${new_filter}"` ; \
+			for lib in $${new_list} ; do \
+				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
+				mkdir -p $(mm_ROOTFSDIR)/$${dir} ; \
+				cp -f $(DESTDIR)/$${lib} $(mm_ROOTFSDIR)/$${dir} ; \
 			done ; \
 		fi ; \
-	fi
+		bin_list= ; \
+		lib_list= ; \
+	done
 
 mm-strip:
 	@if test ! $(mm_DEBUG) == yes ; then \
-		echo 'stripping binaries and shared libraries' ; \
-		make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/strip DESTIMG=$(DESTIMG) ; \
-	fi
-
-mm-%/strip:
-	@if test ! -L $* ; then \
-		if   test -d $* ; then \
-			for dir in `cd $* ; ls` ; do \
-				make -s -f minimyth.mk mm-$*/$${dir}/strip DESTIMG=$(DESTIMG) ; \
-			done ; \
-		elif test -f $* && ( test $(call IS_BIN, $*) == yes || test $(call IS_LIB, $*) == yes ) ; then \
-			chmod u+w $* ; \
-			$(STRIP) --strip-all -R .note -R .comment $* ; \
-		fi ; \
+		echo 'stripping binaries' ; \
+		$(STRIP) --strip-all -R .note -R .comment \
+			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB executable'    | sed -e 's%:.*%%'` ; \
+		echo 'stripping shared libraries' ; \
+		$(STRIP) --strip-all -R .note -R .comment \
+			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB shared object' | sed -e 's%:.*%%'` ; \
 	fi
 
 mm-gen-files:
@@ -476,18 +463,21 @@ mm-make-distro:
 	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Make source tarball file.
+	@echo "  making source tarball file"
 	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)           \
 		SOURCE_DIR_HEAD=`echo $(mm_HOME)  | sed 's%/[^/]*$$%%g'` \
 		SOURCE_DIR_TAIL=`echo  $(mm_HOME) | sed 's%[^/]*/%%g'`
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
-	# Make documentation tarball file.
+	@# Make documentation tarball file.
+	@echo "  making documentation tarball file"
 	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
 	@fakeroot sh -c                                                                " \
 		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/html ; \
 		chmod -R go-w $(mm_STAGEDIR)/html                                      ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html            "
 	@chmod 644 $(mm_STAGEDIR)/html.tar.bz2
-	# Make helper tarball file.
+	@# Make helper tarball file.
+	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
 	@fakeroot sh -c                                                                  " \
 		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/helper ; \
@@ -495,6 +485,7 @@ mm-make-distro:
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper          "
 	@chmod 644 $(mm_STAGEDIR)/helper.tar.bz2
 	@# Make root file system squashfs image file.
+	@echo "  making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@fakeroot sh -c                                                                          " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
@@ -506,6 +497,7 @@ mm-make-distro:
 		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@# Make root file system tarball.
+	@echo "  making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
@@ -517,6 +509,7 @@ mm-make-distro:
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@# Make extras squashfs image file.
+	@echo "  making extras squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@fakeroot sh -c                                                                              " \
 		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)                   ; \
@@ -524,6 +517,7 @@ mm-make-distro:
 		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@# Make extras tarball file.
+	@echo "  making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)             ; \
@@ -531,6 +525,7 @@ mm-make-distro:
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@# Make themes squashfs image files.
+	@echo "  making themes squashfs image files"
 	@rm -rf    $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
 	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
 	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
@@ -541,6 +536,7 @@ mm-make-distro:
 		chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
 	done
 	@# Make themes tarball file.
+	@echo "  making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_THEMESDIR)             ; \
@@ -548,6 +544,7 @@ mm-make-distro:
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@# Make local (private) distribution
+	@echo "  making local (private) distribution"
 	@rm -rf   $(mm_LOCALDIR)
 	@mkdir -p $(mm_LOCALDIR)
 	@cp -r  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
@@ -574,6 +571,7 @@ mm-make-distro:
 	@cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
 	@# Make share (public) distribution
+	@echo "  making share (public) distribution"
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
 	@cp -r  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
