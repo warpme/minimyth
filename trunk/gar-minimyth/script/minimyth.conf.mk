@@ -47,6 +47,10 @@ mm_EXTRASDIR      ?= $(mm_BASEDIR)/extras-$(mm_NAME).d
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.
 #-------------------------------------------------------------------------------
-PKG_CONFIG_PATH  = "$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
-CONFIGURE_ENV   += PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
-BUILD_ENV       += PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
+PKG_CONFIG_PATH    = "$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
+CONFIGURE_ENV     += PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
+BUILD_ENV         += PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
+INSTALL_ENV       += PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)"
+CONFIGURE_ENV     += PATCH_GET=0
+BUILD_ENV         += PATCH_GET=0
+INSTALL_ENV       += PATCH_GET=0
