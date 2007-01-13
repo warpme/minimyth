@@ -26,16 +26,29 @@ start() {
         VT1211)
             modprobe i2c-core
             modprobe i2c-dev
-            modprobe i2c-sensor
             modprobe i2c-isa
             modprobe vt1211
+            ;;
+        W83627EHG)
+            modprobe i2c-core
+            modprobe i2c-dev
+            modprobe i2c-isa
+            case "${MM_HARDWARE_SOUTHBRIDGE}" in
+                NFORCE_430)
+                    modprobe i2c-nforce2
+                    ;;
+            esac
+            modprobe w83627ehf
             ;;
         W83782D)
             modprobe i2c-core
             modprobe i2c-dev
-            modprobe i2c-sensor
             modprobe i2c-isa
-            modprobe i2c-viapro
+            case "${MM_HARDWARE_SOUTHBRIDGE}" in
+                VT8235|VT8237)
+                    modprobe i2c-viapro
+                    ;;
+            esac
             modprobe w83781d
             ;;
     esac
@@ -47,7 +60,14 @@ start() {
     modprobe loop
 
     # IDE.
-    modprobe via82cxxx
+    case "${MM_HARDWARE_SOUTHBRIDGE}" in
+        NFORCE_430)
+            modprobe amd74xx
+            ;;
+        VT8235|VT8237)
+            modprobe via82cxxx
+            ;;
+    esac
     modprobe ide-core
     modprobe ide-cd
 
@@ -95,18 +115,33 @@ start() {
     modprobe vfat
 
     # Net.
-    modprobe netlink_dev
     modprobe af_packet
     modprobe unix
 
     # Sound.
     modprobe soundcore
-    modprobe snd-via82xx
+    case "${MM_HARDWARE_AUDIO}" in
+        AD1986A)
+            modprobe snd-hda-intel
+            ;;
+        VT1612A|VT1616|VT1617A)
+            modprobe snd-via82xx
+            ;;
+    esac
 
     # Video.
     modprobe agpgart
-    modprobe via-agp
-    modprobe via
+    case "${MM_HARDWARE_NORTHBRIDGE}" in
+        GFORCE_6150)
+            modprobe nvidia-agp
+            modprobe nvidia
+            ;;
+        CLE2666|CN400)
+            modprobe via-agp
+            modprobe via
+            ;;
+    esac
+
 
     return 0
 }

@@ -1,6 +1,6 @@
 diff -Naur mythplugins-7738-old/configure mythplugins-7738-new/configure
 --- mythplugins-7738-old/configure	2005-11-17 15:08:47.000000000 -0800
-+++ mythplugins-7738-new/configure	2005-11-17 15:11:00.000000000 -0800
++++ mythplugins-7738-new/configure	2005-12-21 03:52:56.000000000 -0800
 @@ -240,27 +240,7 @@
  
  has_library()
@@ -81,23 +81,74 @@ diff -Naur mythplugins-7738-old/configure mythplugins-7738-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL           support will not be included in MythMusic"
+diff -Naur mythplugins-7738-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-7738-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
+--- mythplugins-7738-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-11-17 15:08:37.000000000 -0800
++++ mythplugins-7738-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-12-21 03:53:53.000000000 -0800
+@@ -1,8 +1,7 @@
+ include ( ../../mythconfig.mak )
+ include ( ../../settings.pro )
+ 
+-INCLUDEPATH += /usr/include/kde
+-INCLUDEPATH += /opt/kde3/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/kde
+ 
+ TEMPLATE = lib
+ CONFIG += plugin thread warn_on debug
+diff -Naur mythplugins-7738-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-7738-new/mythbrowser/mythbrowser/mythbrowser.pro
+--- mythplugins-7738-old/mythbrowser/mythbrowser/mythbrowser.pro	2005-11-17 15:08:37.000000000 -0800
++++ mythplugins-7738-new/mythbrowser/mythbrowser/mythbrowser.pro	2005-12-21 03:54:51.000000000 -0800
+@@ -1,10 +1,7 @@
+ include (../../mythconfig.mak )
+ include (../../settings.pro )
+ 
+-INCLUDEPATH += /usr/include/kde
+-INCLUDEPATH += /opt/kde3/include
+-
+-LIBS += -L/usr/local/lib
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/kde
+ 
+ TEMPLATE = app
+ CONFIG += thread
+@@ -18,7 +15,7 @@
+ INSTALLS += installimages
+ 
+ LIBS += -lmyth-$$LIBVERSION $$EXTRA_LIBS
+-LIBS += -L/opt/kde3/lib -lkhtml
++LIBS += -lkhtml
+ 
+ # Input
+ HEADERS += webpage.h tabview.h
+diff -Naur mythplugins-7738-old/mythmusic/mythmusic/mythmusic.pro mythplugins-7738-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-7738-old/mythmusic/mythmusic/mythmusic.pro	2005-11-17 15:08:36.000000000 -0800
++++ mythplugins-7738-new/mythmusic/mythmusic/mythmusic.pro	2005-12-21 03:55:22.000000000 -0800
+@@ -6,7 +6,7 @@
+    error(Missing config.pro: please run the configure script)
+ }
+ 
+-INCLUDEPATH *= /usr/include/cdda
++INCLUDEPATH *= @GAR_DESTDIR@@GAR_includedir@/cdda
+ TEMPLATE = lib
+ CONFIG += plugin thread
+ TARGET = mythmusic
 diff -Naur mythplugins-7738-old/settings.pro mythplugins-7738-new/settings.pro
 --- mythplugins-7738-old/settings.pro	2005-11-17 15:08:47.000000000 -0800
-+++ mythplugins-7738-new/settings.pro	2005-11-17 15:09:47.000000000 -0800
++++ mythplugins-7738-new/settings.pro	2005-12-21 03:56:32.000000000 -0800
 @@ -2,18 +2,18 @@
  
  LIBVERSION = 0.18
  
 -INCLUDEPATH += $${PREFIX}/include
-+INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
- #INCLUDEPATH += /usr/include/cdda
- #INCLUDEPATH += /usr/include/FLAC
+-#INCLUDEPATH += /usr/include/cdda
+-#INCLUDEPATH += /usr/include/FLAC
 -INCLUDEPATH += /usr/kde/3.3/include
-+#INCLUDEPATH += /usr/kde/3.3/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/cdda
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/FLAC
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_prefix@/kde/3.3/include
  
 -LIBPATH += /usr/kde/3.3/lib
 -LIBS *= -L$${PREFIX}/lib
-+#LIBPATH += /usr/kde/3.3/lib
++#LIBPATH += @GAR_DESTDIR@@GAR_prefix@/kde/3.3/lib
 +LIBS *= -L@GAR_DESTDIR@@GAR_libdir@
  
  DEFINES += _GNU_SOURCE

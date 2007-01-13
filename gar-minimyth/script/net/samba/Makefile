@@ -1,5 +1,5 @@
 GARNAME = samba
-GARVERSION = 3.0.20b
+GARVERSION = 3.0.21
 CATEGORIES = net
 MASTER_SITES  = http://samba.org/samba/ftp/stable/
 MASTER_SITES += http://samba.org/samba/ftp/rc/
@@ -35,7 +35,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 post-patch:
-	@cd $(WORKDIR)/$(DISTNAME) ; patch -p1 < packaging/Debian/debian-stable/patches/smbmount-nomtab.patch
+	@cd $(WORKDIR)/$(DISTNAME) ; patch -p1 < packaging/Debian/debian-unstable/patches/smbmount-nomtab.patch
 	@#Hack to allow configure to work. This works because we are not really cross compiling.
 	@sed -i 's%\("$$cross_compiling" *= *\)yes%\1gar%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)

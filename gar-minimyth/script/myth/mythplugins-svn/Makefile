@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c myth/mythtv X11/Mesa
+DEPENDS  = lang/c myth/mythtv
 # mythdvd
 DEPENDS += lib/libdvdread
 # mythgallery

@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/alsa-lib X11/X11 X11/Mesa
+DEPENDS   = lang/c lib/alsa-lib X11/X11
 BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

@@ -55,6 +55,7 @@ clean-all:
 	@$(MAKE) clean -C ../alsa-driver
 	@$(MAKE) clean -C ../drm
 	@$(MAKE) clean -C ../linux
+	@$(MAKE) clean -C ../nvidia
 	@$(MAKE) clean -C ../unionfs
 	@$(MAKE) clean -C ../vt1211
 	@$(MAKE) clean -C ../../lirc

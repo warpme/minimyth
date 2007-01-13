@@ -1,8 +1,7 @@
 GARNAME = unichrome
 GARVERSION = 20050815
 CATEGORIES = X11
-MASTER_SITES  = http://myth.ivor.org/unichrome/
-MASTER_SITES += http://myth.ivor.org/unichrome/old/
+#MASTER_SITES = http://www.openchrome.org/snapshots/unichrome/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE =
 

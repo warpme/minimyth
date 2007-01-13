@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib net/samba X11/fontconfig X11/freetype X11/X11 X11/Mesa X11/libXvMCW X11/SDL lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib net/samba X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/SDL lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -121,11 +121,11 @@ CONFIGURE_ARGS_MISC = \
 	--target="$(GARCH)-linux"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
-	--disable-mmx2 \
+	--enable-mmx2 \
 	--enable-3dnow \
-	--disable-3dnowex \
+	--enable-3dnowex \
 	--enable-sse \
-	--disable-sse2 \
+	--enable-sse2 \
 	--enable-shm \
 	--disable-altivec \
 	--enable-fastmemcpy \

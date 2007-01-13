@@ -1,6 +1,6 @@
 diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
 --- mythtv-7426-old/configure	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/configure	2005-10-25 09:28:44.000000000 -0700
++++ mythtv-7426-new/configure	2005-12-21 03:49:19.000000000 -0800
 @@ -856,26 +856,7 @@
  
  has_library()
@@ -38,9 +38,69 @@ diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
      INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
      HPATHS="$HPATHS `echo $INCL | sed s/lib/include/g` "
  
+@@ -1695,8 +1676,8 @@
+ 
+ freetype2=no
+ if test "x$targetos" != "xBeOS" && test "$os2" != "yes"; then
+-  if (freetype-config --version) >/dev/null 2>&1 ; then
+-    if $cc -o $TMPE $TMPC `freetype-config --cflags` `freetype-config --libs`  > /dev/null 2>&1 ; then
++  if (@GAR_DESTDIR@@GAR_bindir@/freetype-config --version) >/dev/null 2>&1 ; then
++    if $cc -o $TMPE $TMPC `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags` `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`  > /dev/null 2>&1 ; then
+       freetype2=yes
+     fi
+   fi
+@@ -1713,8 +1694,8 @@
+ #
+ #sdl_too_old=no
+ #sdl=no
+-#if $cc -o $TMPE `sdl-config --cflags` $TMPC `sdl-config --libs`  > /dev/null 2>&1 ; then
+-#_sdlversion=`sdl-config --version | sed 's/[^0-9]//g'`
++#if $cc -o $TMPE `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags` $TMPC `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`  > /dev/null 2>&1 ; then
++#_sdlversion=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --version | sed 's/[^0-9]//g'`
+ #if test "$_sdlversion" -lt 121 ; then
+ #sdl_too_old=yes
+ #else
+@@ -1804,9 +1785,9 @@
+ EOF
+ 
+ audio_arts=no
+-if (artsc-config --version) > /dev/null 2>&1; then
+-audio_arts_libs=`artsc-config --libs`
+-audio_arts_tmp=`artsc-config --cflags`
++if (@GAR_DESTDIR@@GAR_bindir@/artsc-config --version) > /dev/null 2>&1; then
++audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`
++audio_arts_tmp=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags`
+ audio_arts_cflags=`echo $audio_arts_tmp | sed "s/include\/artsc/include/g"`
+ if $cc -o $TMPE $TMPC $audio_arts_cflags $audio_arts_libs > /dev/null 2>&1; then
+ audio_arts=yes
+@@ -2018,10 +1999,10 @@
+ 
+ if test x"$direct_fb" = x"yes" ; then
+     direct_fb="no"
+-    if test x`which directfb-config 2> /dev/null` != x"" ; then
++    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
+         direct_fb="yes"
+-        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
+-        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
++        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
++        CONFIG_DIRECTFB_CXXFLAGS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --cflags`
+     fi
+ fi
+ 
+@@ -2316,8 +2297,8 @@
+ fi
+ if test "$sdl" = "yes" ; then
+   echo "CONFIG_SDL=yes" >> $MYTH_CONFIG_MAK
+-  echo "SDL_LIBS=`sdl-config --libs`" >> $MYTH_CONFIG_MAK
+-  echo "SDL_CFLAGS=`sdl-config --cflags`" >> $MYTH_CONFIG_MAK
++  echo "SDL_LIBS=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`" >> $MYTH_CONFIG_MAK
++  echo "SDL_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> $MYTH_CONFIG_MAK
+ fi
+ if test "$texi2html" = "yes"; then
+   echo "BUILD_DOC=yes" >> $MYTH_CONFIG_MAK
 diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile
 --- mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile	2005-10-25 09:34:24.000000000 -0700
++++ mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile	2005-12-21 03:48:02.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -52,7 +112,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/
  #################################################################################
 diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile
 --- mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile	2005-10-25 09:34:24.000000000 -0700
++++ mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile	2005-12-21 03:48:02.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -72,7 +132,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-
  #################################################################################
 diff -Naur mythtv-7426-old/libs/libmythtv/libmythtv.pro mythtv-7426-new/libs/libmythtv/libmythtv.pro
 --- mythtv-7426-old/libs/libmythtv/libmythtv.pro	2005-10-25 09:18:23.000000000 -0700
-+++ mythtv-7426-new/libs/libmythtv/libmythtv.pro	2005-10-25 09:32:14.000000000 -0700
++++ mythtv-7426-new/libs/libmythtv/libmythtv.pro	2005-12-21 03:48:02.000000000 -0800
 @@ -32,9 +32,9 @@
  TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
  
@@ -88,7 +148,7 @@ diff -Naur mythtv-7426-old/libs/libmythtv/libmythtv.pro mythtv-7426-new/libs/lib
      # Mac OS X Frameworks
 diff -Naur mythtv-7426-old/settings.pro mythtv-7426-new/settings.pro
 --- mythtv-7426-old/settings.pro	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/settings.pro	2005-10-25 09:33:19.000000000 -0700
++++ mythtv-7426-new/settings.pro	2005-12-21 03:48:02.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
