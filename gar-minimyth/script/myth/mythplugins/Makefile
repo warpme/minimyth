@@ -15,7 +15,7 @@ DEPENDS  = lang/c myth/mythtv
 # mythdvd
 DEPENDS += lib/libdvdread
 # mythgallery
-DEPENDS += lib/libtiff
+DEPENDS += lib/libexif lib/libtiff
 # mythmusic
 DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/sdl
 
