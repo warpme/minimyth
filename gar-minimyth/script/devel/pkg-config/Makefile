@@ -1,5 +1,5 @@
 GARNAME = pkg-config
-GARVERSION = 0.20
+GARVERSION = 0.21
 CATEGORIES = devel
 MASTER_SITES = http://pkgconfig.freedesktop.org/releases/
 DISTFILES = $(DISTNAME).tar.gz 
