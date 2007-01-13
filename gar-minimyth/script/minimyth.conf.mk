@@ -6,10 +6,6 @@
 # The version of MiniMyth.
 mm_VERSION           ?= 0.18.1.11
 
-# The version of Myth to use.
-# Valid values are 'stable', 'knoppmyth' and 'svn'.
-mm_MYTH_VERSION      ?= stable
-
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
@@ -34,6 +30,19 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # system image will be installed. The name of the directory containing the NFS
 # root files sytem image is given by mm_NFSNAME.
 mm_NFS_ROOT          ?= /home/public
+# The version of Myth to use.
+# Valid values are 'stable', 'knoppmyth' and 'svn'.
+mm_MYTH_VERSION      ?= stable
+# Overrides the Myth SVN version built. If the version changes too much then
+# the patches may no longer work.
+mm_MYTH_SVN_VERSION  ?=
+# Lists additional packages to build when minimyth is built.
+# You can use this to add your own packages or packages that are not normally
+# built You can include the results of these additional packages in the
+# MiniMyth image by listing the desired binaries, libraries configurations and
+# data to the 'user-bin-list', 'user-lib-list', 'user-minimyth-etc-list', and
+# 'user-share-list' to your $(HOME)/.minimyth directory.
+mm_USER_PACKAGES     ?=
 
 #-------------------------------------------------------------------------------
 # Variables that you are not likely to override.

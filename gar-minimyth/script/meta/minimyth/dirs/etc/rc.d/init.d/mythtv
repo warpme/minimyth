@@ -62,6 +62,19 @@ start() {
         exit 1
     fi 
 
+    # Configure MythDVD ripping.
+    if [ "${MM_MYTHDVD_ENABLED}" = "yes" ] ; then
+        if [ -d /mnt/dvd ] && [ -w /mnt/dvd ] ; then
+            mkdir -p /mnt/dvd/mythdvd/temp
+        fi
+        if [ -d /mnt/dvd/mythdvd/temp ] && [ -w /mnt/dvd/mythdvd/temp ]  ; then
+            mm_mythdb_setting_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
+            TRANSCODE=`which transcode`
+            mm_mythdb_setting_update "TranscodeCommand" "${TRANSCODE}"
+            mtd --daemon
+        fi
+    fi
+
     # Configure Myth database jumppoints to match MiniMyth frontend.
     cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_JUMPPOINT=' | sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
         sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \

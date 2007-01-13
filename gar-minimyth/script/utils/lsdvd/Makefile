@@ -3,7 +3,7 @@ GARVERSION = 0.15
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/acidrip/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-cflags.patch $(DISTNAME)-stdint_h.patch
+PATCHFILES = $(DISTNAME)-cflags.patch
 LICENSE =
 
 DESCRIPTION =

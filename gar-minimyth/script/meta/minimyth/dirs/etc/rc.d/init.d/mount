@@ -9,6 +9,9 @@
 start() {
     mm_message_output info 'mounting media shares ...'
 
+    if [ -n "${MM_MYTHDVD_URL}"     ] ; then
+        mm_url_mount "${MM_MYTHDVD_URL}"     "/mnt/dvd"
+    fi
     if [ -n "${MM_MYTHGALLERY_URL}" ] ; then
         mm_url_mount "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
     fi
@@ -33,6 +36,9 @@ stop() {
     fi
     if [ -n "${MM_MYTHGALLERY_URL}" ] && [ -d /mnt/gallery ] ; then
         umount /mnt/gallery
+    fi
+    if [ -n "${MM_MYTHDVD_URL}"     ]  && [ -d /mnt/dvd    ] ; then
+        umount /mnt/dvd
     fi
 
     return 0
