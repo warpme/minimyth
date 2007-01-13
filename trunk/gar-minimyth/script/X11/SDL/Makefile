@@ -1,9 +1,9 @@
 GARNAME = SDL
-GARVERSION = 1.2.8
+GARVERSION = 1.2.9
 CATEGORIES = X11
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-DESTDIR.patch
+PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE =
 
 DESCRIPTION =
@@ -81,6 +81,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-video-picogui \
 	--enable-sdl-dlopen \
 	--disable-atari-ldg \
+	--disable-rpath \
 	--with-gnu-ld \
 	--with-x
 
