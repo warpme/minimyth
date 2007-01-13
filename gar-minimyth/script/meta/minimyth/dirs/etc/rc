@@ -29,6 +29,8 @@ execute_and_log "portmap -l"
 execute_and_log "sh /etc/minimyth.d/getremotefiles.script"
 # Read and export the Minimyth environment variables (for variables in the minimyth.conf file).
 . /etc/minimyth.d/env.script
+# create and configure the '/root/.mythtv' directory.
+execute_and_log "sh /etc/minimyth.d/mythtv.script"
 # Mount extras.
 execute_and_log "sh /etc/minimyth.d/extras.script"
 # Create ld.conf.cache
@@ -43,10 +45,10 @@ execute_and_log "sh /etc/minimyth.d/sound.script"
 execute_and_log "sh /etc/minimyth.d/services.script"
 # Mount remote media directories.
 execute_and_log "sh /etc/minimyth.d/mount.script"
-# create and configure the '/root/.mythtv' directory.
-execute_and_log "sh /etc/minimyth.d/mythtv.script"
 # Start LIRC.
 execute_and_log "sh /etc/minimyth.d/lirc.script"
+# Configure frontend settings in the database.
+execute_and_log "sh /etc/minimyth.d/mythdb.script"
 # Start X (if not debugging)
 if [ -z ${MM_DEBUG} ] && [ -z ${MM_NO_X} ] ; then
 	xinit &

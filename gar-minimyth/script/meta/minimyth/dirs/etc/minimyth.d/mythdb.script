@@ -1,0 +1,28 @@
+#######     #!/bin/sh
+################################################################################
+# mythdb.script
+#
+# Configure Myth database settings to match MiniMyth frontend.
+################################################################################
+
+. /etc/minimyth.d/minimyth.functions
+
+# Settings that should not be changed.
+update_mythdb_settings "CDDevice"          "/dev/cdrom"
+update_mythdb_settings "CDWriterEnabled"   "0"
+update_mythdb_settings "DVDDeviceLocation" "/dev/dvd"
+update_mythdb_settings "EnableXbox"        "0"
+update_mythdb_settings "DecodeExtraAudio"  "0"
+update_mythdb_settings "RealtimePriority"  "1"
+update_mythdb_settings "UseMPEG2Dec"       "0"
+update_mythdb_settings "UseXVMC"           "0"
+update_mythdb_settings "UseXvMcVld"        "1"
+update_mythdb_settings "VCDDeviceLocation" "/dev/cdrom"
+
+# Settings read from minimyth.conf.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING_' | sed -e 's%^MM_MYTHDB_SETTING_%%' | \
+while read setting ; do
+    setting_label=`echo ${setting} | sed -e 's%=.*$%%'    -e 's%^[ \t]*%%' -e 's%[ \t]*$%%'`
+    setting_value=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ \t]*%%' -e 's%[ \t]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
+    update_mythdb_settings "${setting_label}" "${setting_value}"
+done
