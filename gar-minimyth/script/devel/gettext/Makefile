@@ -19,3 +19,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libasprintf.la
+	@rm -f $(DESTDIR)$(libdir)/libgettextlib.la
+	@rm -f $(DESTDIR)$(libdir)/libgettextsrc.la
+	@rm -f $(DESTDIR)$(libdir)/libgettextpo.la
+	@$(MAKECOOKIE)
