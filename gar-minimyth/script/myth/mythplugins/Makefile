@@ -17,7 +17,7 @@ DEPENDS += lib/libdvdread
 # mythgallery
 DEPENDS += lib/libtiff
 # mythmusic
-DEPENDS += lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/fftw lib/libcdaudio lib/cdparanoia X11/sdl
+DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/sdl
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -36,7 +36,7 @@ CONFIGURE_ARGS += \
 	--enable-mythmusic \
 		--enable-fftw \
 		--enable-sdl \
-		--disable-aac \
+		--enable-aac \
 	--disable-mythnews \
 	--disable-mythphone \
 		--disable-festival \
