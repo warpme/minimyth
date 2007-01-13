@@ -1,0 +1,32 @@
+diff -Naur mythdvd-20050128-old/settings.pro mythdvd-20050128-new/settings.pro
+--- mythdvd-20050128-old/settings.pro	2005-01-27 01:23:04.000000000 -0800
++++ mythdvd-20050128-new/settings.pro	2005-01-31 16:15:09.185190151 -0800
+@@ -2,22 +2,22 @@
+ CONFIG += release
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @prefix@
+ }
+ 
+ LIBVERSION = 0.17
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @DESTDIR@@includedir@
+ 
+-LIBS *= -L$${PREFIX}/lib
++LIBS *= -L@DESTDIR@@libdir@
+ 
+ DEFINES += _GNU_SOURCE
+ release {
+-    QMAKE_CXXFLAGS_RELEASE = -O3 -march=pentiumpro -fomit-frame-pointer
++    QMAKE_CXXFLAGS_RELEASE = @CXXFLAGS@
+     macx {
+         # Don't use -O3, it causes some Qt moc methods to go missing
+-        QMAKE_CXXFLAGS_RELEASE = -O2
++        QMAKE_CXXFLAGS_RELEASE = @CXXFLAGS@
+     }
+-    QMAKE_CFLAGS_RELEASE = $${QMAKE_CXXFLAGS_RELEASE}
++    QMAKE_CFLAGS_RELEASE = @CFLAGS@
+ }
+ 
