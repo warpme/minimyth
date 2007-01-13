@@ -20,6 +20,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdrm.la
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdrm.pc

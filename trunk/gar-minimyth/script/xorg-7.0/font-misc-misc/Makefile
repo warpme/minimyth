@@ -23,6 +23,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 pre-configure:
 	sed -i 's%^MAPFILES_PATH=.*%MAPFILES_PATH=$$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)%g' $(WORKSRC)/configure
 	@sed -i 's%^ISO8859_2_BDF_FILES *=.*%%g'  $(WORKSRC)/Makefile.in

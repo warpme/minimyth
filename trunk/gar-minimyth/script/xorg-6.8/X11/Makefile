@@ -36,6 +36,9 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk kernel/linux/package-api.mk xorg-6.8/xorg/package-api.mk xorg-6.8/X11/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 CDebugFlags  := $(filter-out $(CPPFLAGS) $(LDFLAGS), $(CFLAGS))
 HostCcCmd    := $(build_CC)
 CppCmd       := $(shell echo $(CPP)    | sed 's%^$(compiler_prefix)%%')
@@ -107,6 +110,9 @@ configure-directory:
 # three utilities (makekeys, mkg3states and gen_matypes) that are compiled to
 # run on the host pick up some of the cross compile compiler flags, including
 # *CDebugFlags. Therefore, we include CDebugFlags as part of CcCmd and
+
+CFLAGS := $(patsubst -O%,,$(CFLAGS)) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 # CplusplusCmd and clear that *CDebugFlags to work around the problem.
 configure-compiler:
 	@$(call CONFIG_FILE_HEADER, Compiler.)

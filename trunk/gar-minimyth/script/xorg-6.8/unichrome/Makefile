@@ -18,6 +18,9 @@ INSTALL_SCRIPTS   = unichrome libxvmc
 GAR_EXTRA_CONF += xorg-6.8/X11/package-api.mk
 include ../../gar.mk
 
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
 svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
 	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$* $(GARNAME)
