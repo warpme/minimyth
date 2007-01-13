@@ -1,5 +1,5 @@
 GARNAME = lirc
-GARVERSION = 0.8.0pre2
+GARVERSION = 0.8.0pre3
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
@@ -68,3 +68,13 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la
 	@depmod -b $(DESTDIR) -v $(KERNEL_FULL_VERSION)
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(KERNEL_MODULESDIR)/misc/lirc
+	@rm -rf $(DESTDIR)$(bindir)/lirc*
+	@rm -rf $(DESTDIR)$(sbindir)/lirc*
+	@rm -rf $(DESTDIR)$(includedir)/lirc
+	@rm -rf $(DESTDIR)$(libdir)/liblirc_client.*
+	@rm -rf $(DESTDIR)$(mandir)/man1/lirc*
+	@rm -rf $(DESTDIR)$(mandir)/man8/lirc*
