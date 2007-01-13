@@ -4,8 +4,7 @@ CATEGORIES = kernel
 MASTER_SITES = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/
 CONFIGFILE = $(DISTNAME)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-#PATCHFILES = $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-bootsplash.patch
-PATCHFILES = $(DISTNAME)-bootsplash.patch
+PATCHFILES = $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-bootsplash.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
