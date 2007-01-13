@@ -1,0 +1,24 @@
+diff -Naur linux-2.6.14.7-old/drivers/acpi/utilities/utmisc.c linux-2.6.14.7-new/drivers/acpi/utilities/utmisc.c
+--- linux-2.6.14.7-old/drivers/acpi/utilities/utmisc.c	2006-01-30 22:52:07.000000000 -0800
++++ linux-2.6.14.7-new/drivers/acpi/utilities/utmisc.c	2006-02-04 03:29:42.000000000 -0800
+@@ -436,6 +436,7 @@
+ 	char *name_ptr = (char *)&name;
+ 	char character;
+ 	acpi_native_uint i;
++	int badcnt = 0
+ 
+ 	ACPI_FUNCTION_ENTRY();
+ 
+@@ -446,9 +447,11 @@
+ 		if (!((character == '_') ||
+ 		      (character >= 'A' && character <= 'Z') ||
+ 		      (character >= '0' && character <= '9'))) {
+-			return (FALSE);
++			badcnt++;
+ 		}
+ 	}
++	if (badcnt > 1)
++		return (FALSE);
+ 
+ 	return (TRUE);
+ }
