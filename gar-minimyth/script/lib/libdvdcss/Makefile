@@ -1,7 +1,7 @@
 GARNAME = libdvdcss
 GARVERSION = 1.2.8
 CATEGORIES = lib
-MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)
+MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 LICENSE = GPL2
 
