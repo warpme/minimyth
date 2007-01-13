@@ -1,0 +1,40 @@
+diff -Naur xscreensaver-5.00-old/configure.in xscreensaver-5.00-new/configure.in
+--- xscreensaver-5.00-old/configure.in	2006-05-23 15:07:00.000000000 -0700
++++ xscreensaver-5.00-new/configure.in	2006-08-04 19:34:17.000000000 -0700
+@@ -333,10 +333,9 @@
+   OBJCC="$CC"
+ 
+   AC_MSG_CHECKING([whether the compiler works on ANSI C])
+-  AC_TRY_RUN([ main(int ac, char **av) { return 0; } ],
++  AC_COMPILE_IFELSE([ main(int ac, char **av) { return 0; } ],
+      AC_MSG_RESULT(yes),
+      AC_MSG_RESULT(no)
+-     AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.),
+      AC_MSG_ERROR(Couldn't build even a trivial ANSI C program: check CC.))
+ 
+   if test -n "$GCC"; then
+@@ -3394,15 +3393,6 @@
+ DEPEND_DEFINES=
+ 
+ 
+-if test \! -z "$includedir" ; then 
+-  INCLUDES="$INCLUDES -I$includedir"
+-fi
+-
+-if test \! -z "$libdir" ; then
+-  LDFLAGS="$LDFLAGS -L$libdir"
+-fi
+-
+-
+ PREFERRED_DEMO_PROGRAM=''
+ ALL_DEMO_PROGRAMS=
+ if test "$have_motif" = yes; then
+@@ -4062,7 +4052,7 @@
+   changequote(X,Y)
+   rpmv=`(rpm -qv $rpmnames) 2>/dev/null | \
+         sed -n 's/^[-a-z]*-\([0-9][0-9]*[.][0-9][0-9a-z]*\)-.*$/\1/p' | \
+-        head -1`
++        head -n 1`
+   changequote([,])
+ 
+   if test \! -z "$rpmv" ; then

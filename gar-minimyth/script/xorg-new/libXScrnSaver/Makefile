@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += xorg-new/xorg/package-api.mk
