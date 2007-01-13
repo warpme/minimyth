@@ -84,6 +84,20 @@ fi
 
 if [ -n "${MOUNT_VFSTYPE}" ] ; then
     MOUNT_OPTIONS=`echo ${MOUNT_OPTIONS} | sed 's%^,%%'`
-    [ -n "${MOUNT_OPTIONS}" ] && MOUNT_OPTIONS="-o ${MOUNT_OPTIONS}"
-    mount -n -t ${MOUNT_VFSTYPE} ${EXTRA_OPTIONS} ${MOUNT_OPTIONS} ${MOUNT_DEVICE} ${MOUNT_DIR}
+    [ -n "${EXTRA_OPTIONS}" ] && OPTIONS="${EXTRA_OPTIONS}"
+    [ -n "${MOUNT_OPTIONS}" ] && OPTIONS="${OPTIONS} -o ${MOUNT_OPTIONS}"
+    mount -n -t ${MOUNT_VFSTYPE} ${OPTIONS} ${MOUNT_DEVICE} ${MOUNT_DIR}
 fi
+
+# Update fstab.
+case "${MOUNT_VFSTYPE}" in
+    cifs)
+        echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
+        ;;
+    nfs)
+        echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
+        ;;
+    smbfs)
+        echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
+        ;;
+esac
