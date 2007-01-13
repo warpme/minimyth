@@ -32,9 +32,9 @@ checksum-$(DISTNAME).tar.bz2:
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(includedir)/xorg/dri.h | sed -e 's%[/.]%_%g'`=yes"       >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(includedir)/xorg/dristruct.h | sed -e 's%[/.]%_%g'`=yes" >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(includedir)/xorg/sarea.h | sed -e 's%[/.]%_%g'`=yes"     >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"       >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"     >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
