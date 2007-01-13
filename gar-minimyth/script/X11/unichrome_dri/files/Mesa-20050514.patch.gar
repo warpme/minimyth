@@ -1,0 +1,56 @@
+diff -Naur Mesa-20050514-old/configs/linux-dri Mesa-20050514-new/configs/linux-dri
+--- Mesa-20050514-old/configs/linux-dri	2005-04-13 13:59:15.000000000 -0700
++++ Mesa-20050514-new/configs/linux-dri	2005-05-15 08:35:24.491106600 -0700
+@@ -24,7 +24,7 @@
+ 	-D_BSD_SOURCE -D_GNU_SOURCE \
+ 	-DDRI_NEW_INTERFACE_ONLY -DPTHREADS -DUSE_EXTERNAL_DXTN_LIB=1 
+ 
+-X11_INCLUDES = -I/usr/X11R6/include -I/usr/X11R6/include/X11/extensions
++X11_INCLUDES = -I@DESTDIR@@x11includedir@ -I@DESTDIR@@x11includedir@/X11/extensions
+ 
+ CFLAGS   = $(WARN_FLAGS) $(OPT_FLAGS) $(PIC_FLAGS) $(ARCH_FLAGS) $(DEFINES) \
+ 	$(ASM_FLAGS) -std=c99 -ffast-math 
+@@ -35,7 +35,7 @@
+ ASM_SOURCES = 
+ 
+ # Library/program dependencies
+-EXTRA_LIB_PATH=-L/usr/X11R6/lib
++EXTRA_LIB_PATH=-L@DESTDIR@@x11libdir@
+ 
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lm -lpthread -ldl
+diff -Naur Mesa-20050514-old/src/glw/Makefile Mesa-20050514-new/src/glw/Makefile
+--- Mesa-20050514-old/src/glw/Makefile	2005-05-07 10:06:50.000000000 -0700
++++ Mesa-20050514-new/src/glw/Makefile	2005-05-15 08:33:07.605525588 -0700
+@@ -7,7 +7,7 @@
+ MINOR = 0
+ TINY = 0
+ 
+-INCDIRS = -I$(TOP)/include -I/usr/include/Motif1.2 -I/usr/contrib/X11R6/include -I/usr/X11R6/include
++INCDIRS = -I$(TOP)/include -I@DESTDIR@@x11includedir@
+ 
+ 
+ OBJECTS = $(GLW_SOURCES:.c=.o)
+diff -Naur Mesa-20050514-old/src/glx/x11/dri_glx.c Mesa-20050514-new/src/glx/x11/dri_glx.c
+--- Mesa-20050514-old/src/glx/x11/dri_glx.c	2005-04-13 13:59:15.000000000 -0700
++++ Mesa-20050514-new/src/glx/x11/dri_glx.c	2005-05-15 08:33:07.605525588 -0700
+@@ -66,7 +66,7 @@
+ 
+ #ifndef DEFAULT_DRIVER_DIR
+ /* this is normally defined in the Imakefile */
+-#define DEFAULT_DRIVER_DIR "/usr/X11R6/lib/modules/dri"
++#define DEFAULT_DRIVER_DIR "@x11libdir@/modules/dri"
+ #endif
+ 
+ static __DRIdriver *Drivers = NULL;
+diff -Naur Mesa-20050514-old/src/mesa/drivers/dri/Makefile.template Mesa-20050514-new/src/mesa/drivers/dri/Makefile.template
+--- Mesa-20050514-old/src/mesa/drivers/dri/Makefile.template	2005-05-13 11:31:36.000000000 -0700
++++ Mesa-20050514-new/src/mesa/drivers/dri/Makefile.template	2005-05-15 08:33:07.606525476 -0700
+@@ -108,6 +108,6 @@
+ 	-rm -f depend depend.bak
+ 
+ install: $(LIBNAME)
+-	install $(LIBNAME) /usr/X11R6/lib/modules/dri/$(LIBNAME)
++	install $(LIBNAME) @DESTDIR@@x11libdir@/modules/dri/$(LIBNAME)
+ 
+ include depend
