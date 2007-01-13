@@ -34,8 +34,9 @@ pre-configure:
 	@cd $(WORKSRC) ; aclocal
 	@cd $(WORKSRC) ; libtoolize --copy --force
 	@cd $(WORKSRC) ; autoconf
-	$(MAKECOOKIE)
+	@$(MAKECOOKIE)
 
 post-install:
-	rm -f $(DESTDIR)$(libdir)/libusb.la
-	$(MAKECOOKIE)
+	@rm -f $(DESTDIR)$(libdir)/libusb.la
+	@rm -f $(DESTDIR)$(libdir)/libusbpp.la
+	@$(MAKECOOKIE)
