@@ -24,10 +24,16 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-shared \
-	--with-lib-path=$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$(CROSS_GCC_LIBDIR)
+	--with-lib-path=$(LIB_PATH)
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
+
+LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$(CROSS_GCC_LIBDIR):$(LIBDIR):$(CROSS_GCC_LIBDIR)
+# For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
+ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+LIB_PATH := $(LIB_PATH):/lib:/usr/lib
+endif
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libbfd.la

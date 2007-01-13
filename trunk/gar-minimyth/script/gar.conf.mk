@@ -99,16 +99,16 @@ build_DESTDIR ?= /
 build_chroot_DESTDIR ?= /tmp/chroot
 
 # allow us to link to libraries we installed
-main_CPPFLAGS += -I$(DESTDIR)$(includedir) -I$(CROSS_GCC_INCLUDEDIR)
-main_CFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer -I$(DESTDIR)$(includedir) -I$(CROSS_GCC_INCLUDEDIR) -L$(DESTDIR)$(elibdir) -L$(DESTDIR)$(libdir) -L$(CROSS_GCC_LIBDIR)
-main_LDFLAGS += -L$(DESTDIR)$(elibdir) -L$(DESTDIR)$(libdir) -L$(CROSS_GCC_LIBDIR)
-#main_CXXFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer -I$(DESTDIR)$(includedir) -I$(CROSS_GCC_INCLUDEDIR) -L$(DESTDIR)$(elibdir) -L$(DESTDIR)$(libdir) -L$(CROSS_GCC_LIBDIR)
+main_CPPFLAGS += 
+main_CFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer
+main_LDFLAGS += 
+#main_CXXFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer
 
 # allow us to link to libraries we installed
-build_CPPFLAGS += -I$(build_DESTDIR)$(build_includedir)
-build_CFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer -I$(build_DESTDIR)$(build_includedir) -L$(build_DESTDIR)$(build_elibdir) -L$(build_DESTDIR)$(build_libdir)
-#build_CXXFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer -I$(build_DESTDIR)$(build_includedir) -L$(build_DESTDIR)$(build_elibdir) -L$(build_DESTDIR)$(build_libdir)
-build_LDFLAGS += -L$(build_DESTDIR)$(build_elibdir) -L$(build_DESTDIR)$(build_libdir)
+build_CPPFLAGS += 
+build_CFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer
+#build_CXXFLAGS += -march=i586 -pipe -O3 -fomit-frame-pointer
+build_LDFLAGS += 
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
 main_compiler_prefix ?= $(GARHOST)-
@@ -145,7 +145,7 @@ build_GARCH := $(shell arch)
 build_GARHOST := $(GARBUILD)
 
 # Don't build these packages as in the build image
-build_NODEPEND += lang/c lang/c++ kernel/linux-libc-headers
+build_NODEPEND += kernel/linux-libc-headers devel/glibc
 
 # This is for foo-config chaos
 PKG_CONFIG_PATH=$(DESTDIR)$(libdir)/pkgconfig/
