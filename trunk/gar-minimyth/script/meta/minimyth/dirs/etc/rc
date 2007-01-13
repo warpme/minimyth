@@ -10,9 +10,11 @@ box() {
 
 rc_splash() {
     if [ -e /proc/splash ] ; then 
-	splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
-        fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "$1"
-        echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
+	if [ -n "`cat /proc/splash | grep ': on' | grep 'silent'`" ] ; then
+	    splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
+            fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "$1"
+            echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
+        fi
     fi
     progress=$((progress + 1))
 }
