@@ -152,20 +152,29 @@ conf_write() {
             ;;
         COMMELL_LV_667)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN400"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
             [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
             [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
             [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625"
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83782D"
             ;;
-        VIA_EPIA_PD)
+        VIA_EPIA_CN)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
             [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
-            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1612A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1618"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
+            ;;
+        VIA_EPIA_EN)
+            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN700"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6122"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1618"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
             ;;
         VIA_EPIA_M)
@@ -204,13 +213,31 @@ conf_write() {
             [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1622A"
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
             ;;
+	VIA_EPIA_N)
+            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN400"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237R"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1617A"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625M"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
+            ;;
+        VIA_EPIA_PD)
+            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CLE266"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8235"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1612A"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
+            ;;
         VIA_EPIA_SP)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
             [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="VIA_CN400"
             [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="VIA_VT8237"
             [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="VIA_VT6103"
             [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1617A"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1623"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1623M"
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VIA_VT1211"
             ;;
         VIA_EPIA_TC)
@@ -259,20 +286,25 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
 
     # X.
-    case "${MM_HARDWARE_NORTHBRIDGE}" in
-        INTEL_845GV)
-            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=intel_i830
-            ;;
-        NVIDIA_GFORCE6150)
-            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=nvidia
-            ;;
-        VIA_CLE266)
-            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via
-            ;;
-        VIA_CN400)
-            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via_pro
-            ;;
-    esac
+    if [ -z "${MM_X_DRIVER}" ] ; then
+        case "${MM_HARDWARE_NORTHBRIDGE}" in
+            INTEL_845GV)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=intel_i830
+                ;;
+            NVIDIA_GFORCE6150)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=nvidia
+                ;;
+            VIA_CLE266)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via
+                ;;
+            VIA_CN400)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via_pro
+                ;;
+            VIA_CN700)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via_pro
+                ;;
+        esac
+    fi
     [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
     [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
     [ -z "${MM_X_VNC_ENABLED}"  ] && MM_X_VNC_ENABLED="yes"

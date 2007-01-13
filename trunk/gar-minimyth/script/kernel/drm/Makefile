@@ -1,7 +1,7 @@
 GARNAME = drm
 GARVERSION = $(strip \
 	$(if $(filter old,$(mm_XORG_VERSION)),20051117) \
-	$(if $(filter new,$(mm_XORG_VERSION)),20060422))
+	$(if $(filter new,$(mm_XORG_VERSION)),20060616))
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -40,3 +40,7 @@ install-custom:
 	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
