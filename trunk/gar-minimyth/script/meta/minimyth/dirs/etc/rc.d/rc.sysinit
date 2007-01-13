@@ -36,12 +36,8 @@ mkdir -p /dev/pts
 mount -n -t devpts none /dev/pts
 mkdir -p /dev/shm
 mount -n -t tmpfs  none /dev/shm
-if [ -e /sys/class/tty/console/uevent ] ; then
-    echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
-    udevd -d
-else
-    echo '/sbin/udev'          > /proc/sys/kernel/hotplug
-fi
+echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
+udevd -d
 udevstart
 
 # Create remaining root directories.

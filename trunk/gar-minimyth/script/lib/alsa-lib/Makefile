@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = $(ALSA_VERSION)
+GARVERSION = 1.0.11rc3
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,7 +20,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--with-gnu-ld
 
-GAR_EXTRA_CONF += kernel/alsa-driver/package-api.mk
 include ../../gar.mk
 
 post-patch:
