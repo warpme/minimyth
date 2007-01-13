@@ -37,7 +37,7 @@ CONFIGURE_ARGS += \
 		--enable-fftw \
 		--enable-sdl \
 		--enable-aac \
-	--disable-mythnews \
+	--enable-mythnews \
 	--disable-mythphone \
 		--disable-festival \
 	--enable-mythvideo \
