@@ -517,16 +517,16 @@ mm_hardware_pci2kernel_map() {
         found=
         while read map ; do
             if [ -n "${map}" ] ; then
-                map_class_prog=`    echo ${map} | cut -d ',' -f 2`
-                map_vendor=`        echo ${map} | cut -d ',' -f 3`
-                map_device=`        echo ${map} | cut -d ',' -f 4`
-                map_kernel_modules=`echo ${map} | cut -d ',' -f 5`
+                map_class_prog=`   echo ${map} | cut -d ',' -f 2`
+                map_vendor=`       echo ${map} | cut -d ',' -f 3`
+                map_device=`       echo ${map} | cut -d ',' -f 4`
+                map_kernel_module=`echo ${map} | cut -d ',' -f 5`
                 if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
                    ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
                    ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
                     if [ -z "${found}" ] ; then
                         found=1
-                        echo ${map_kernel_modules}
+                        echo ${map_kernel_module}
                     fi
                 fi
             fi
@@ -573,11 +573,11 @@ mm_hardware_x2kernel_map() {
         found=
         while read map ; do
             if [ -n "${map}" ] ; then
-                map_kernel_modules=`echo ${map} | cut -d ',' -f 2`
+                map_kernel_module=`echo ${map} | cut -d ',' -f 2`
             fi
             if [ -z "${found}" ] ; then
                 found=1
-                echo ${map_kernel_modules}
+                echo ${map_kernel_module}
             fi
         done
     }
