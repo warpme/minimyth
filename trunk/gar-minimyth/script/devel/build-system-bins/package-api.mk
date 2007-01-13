@@ -52,6 +52,7 @@ build_system_bins_coreutils = \
 	expr \
 	false \
 	head \
+	id \
 	install \
 	ln \
 	ls \
