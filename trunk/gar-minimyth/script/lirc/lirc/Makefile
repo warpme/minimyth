@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11 lirc/libirman
-DEPENDS += lirc/lirc.any lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.serial lirc/lirc.streamzap
+DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.serial lirc/lirc.streamzap
 
 WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
 
