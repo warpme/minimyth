@@ -87,7 +87,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa"
 
-GAR_EXTRA_CONF += xorg/xorg/package-api.mk xorg/Mesa/package-api.mk
+GAR_EXTRA_CONF += xorg/xorg/package-api.mk
 include ../../gar.mk
 include ../xorg.mk
 

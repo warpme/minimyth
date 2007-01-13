@@ -3,6 +3,7 @@ GARVERSION = 1.0.0
 CATEGORIES = xorg
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/util/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-includedir.patch
 LICENSE =
 
 DESCRIPTION = 
