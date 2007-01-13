@@ -6,7 +6,7 @@ if [ "${MM_X_VNC_ENABLED}" = "yes" ] ; then
 	x11vnc -xinerama -xrandr -forever -q -bg
 fi
 if [ "${MM_X_WM_ENABLED}" = "yes" ] ; then
-	aewm &
+	ratpoison &
 fi
 if [ -z "${MM_DEBUG}" ] ; then
 	mythfrontend

@@ -12,7 +12,6 @@ DESTIMG = $(MINIMYTHIMG)
 
 DEPENDS = \
 	system/acpid \
-	X11/aewm \
  	utils/alsa-utils \
 	utils/busybox \
 	devel/gdb \
@@ -34,6 +33,7 @@ DEPENDS = \
 	net/portmap \
 	system/powernowd \
 	qt/qt \
+	X11/ratpoison \
 	X11/rxvt \
 	system/splashutils \
 	devel/strace \
