@@ -811,8 +811,8 @@ mm_hardware_pci_process() {
     local subvendor
     local vendor
 
-    /usr/sbin/lspci -mn | /bin/sed -e 's%"%%g' | 
-    while read pci ; do
+    /usr/sbin/lspci -mn | /bin/sed -e 's%"%%g' \
+    | while read pci ; do
         index=1            ; bus=`      /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; class=`    /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; vendor=`   /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
@@ -832,8 +832,8 @@ mm_hardware_pci_process() {
         index=$((index+1)) ; subvendor=`/bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; subdevice=`/bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
         /bin/echo `${pci_process_function} ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
-    done |
-    mm_uniq
+    done \
+    | mm_uniq
 }
 
 mm_hardware_pci2x_map() {
@@ -853,8 +853,10 @@ mm_hardware_pci2x_map() {
     local map_x_driver
 
     if /usr/bin/test -n "${class}" ; then
-        /bin/cat /etc/hardware.d/pci2x.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
-        {
+        /bin/cat /etc/hardware.d/pci2x.map                                                                      \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${class},"                                                                             \
+        | {
             found=
             while read map ; do
                 if /usr/bin/test -n "${map}" ; then
@@ -884,8 +886,10 @@ mm_hardware_x2kernel_map() {
     local map_kernel_module
 
     if /usr/bin/test -n "${x_driver}" ; then
-        /bin/cat /etc/hardware.d/x2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${x_driver}," |
-        {
+        /bin/cat /etc/hardware.d/x2kernel.map                                                                   \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${x_driver},"                                                                          \
+        | {
             found=
             while read map ; do
                 map_kernel_module=
@@ -911,15 +915,15 @@ mm_hardware_usb_process() {
     local usb
     local vendor
 
-    /usr/sbin/lsusb | /bin/sed -e 's%Bus \([^ ]*\) Device \([^:]*\): ID \([^:]*\):\([^ ]*\) .*$%\1 \2 \3\ \4%' | 
-    while read usb ; do
+    /usr/sbin/lsusb | /bin/sed -e 's%Bus \([^ ]*\) Device \([^:]*\): ID \([^:]*\):\([^ ]*\) .*$%\1 \2 \3\ \4%' \
+    | while read usb ; do
         index=1            ; bus=`    /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; device=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; vendor=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
         index=$((index+1)) ; product=`/bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
         /bin/echo `${usb_process_function} ${bus} ${device} ${vendor} ${product}`
-    done |
-    mm_uniq
+    done \
+    | mm_uniq
 }
 
 mm_hardware_usb2lirc_driver_map() {
@@ -933,8 +937,10 @@ mm_hardware_usb2lirc_driver_map() {
     local map_driver
 
     if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2lirc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
-        {
+        /bin/cat /etc/hardware.d/usb2lirc.map                                                                   \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor},${product},"                                                                 \
+        | {
             found=
             while read map ; do
                 if /usr/bin/test -n "${map}" ; then
@@ -960,8 +966,10 @@ mm_hardware_usb2lirc_remote_map() {
     local map_remote
 
     if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2lirc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
-        {
+        /bin/cat /etc/hardware.d/usb2lirc.map                                                                   \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor},${product},"                                                                 \
+        | {
             found=
             while read map ; do
                 if /usr/bin/test -n "${map}" ; then
@@ -987,8 +995,10 @@ mm_hardware_usb2lcdproc_map() {
     local map_driver
 
     if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2lcdproc.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${vendor},${product}," |
-        {
+        /bin/cat /etc/hardware.d/usb2lcdproc.map                                                                \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor},${product},"                                                                 \
+        | {
             found=
             while read map ; do
                 if /usr/bin/test -n "${map}" ; then
@@ -1023,16 +1033,16 @@ mm_hardware_motherboard2kernel_map() {
 
     vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
-    vendor_clean=`/bin/echo ${vendor}   | sed -e 's%[ ,]%_%g'`
-    product_clean=`/bin/echo ${product} | sed -e 's%[ ,]%_%g'`
+    vendor_clean=`/bin/echo ${vendor}   | sed -e 's%,%_%g'`
+    product_clean=`/bin/echo ${product} | sed -e 's%,%_%g'`
 
     /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
 
     if /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/motherboard2kernel.map  | \
-        /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g'  | \
-        /bin/grep -e "^${vendor_clean},${product_clean}" |
-        {
+        /bin/cat /etc/hardware.d/motherboard2kernel.map                                                         \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor_clean},${product_clean}"                                                      \
+        | {
             while read map ; do
                 map_kernel_modules=
                 if /usr/bin/test -n "${map}" ; then
