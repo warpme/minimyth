@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/libvorbis X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/sdl lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/libvorbis lib/zlib X11/fontconfig X11/freetype X11/X11 X11/libXvMCW X11/sdl lirc/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
