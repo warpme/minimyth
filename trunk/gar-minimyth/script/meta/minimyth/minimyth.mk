@@ -71,31 +71,31 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-check mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
+mm-all: mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
-		echo "error: mm_GARCH is set to an invalid value." ; \
+		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
-		echo "error: mm_INSTALL_CRAMFS is set to an invalid value." ; \
+		echo "error: mm_INSTALL_CRAMFS=\"$(mm_INSTALL_CRAMFS)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_INSTALL_NFS)" = "yes" ] && [ ! "$(mm_INSTALL_NFS)" = "no" ] ; then \
-		echo "error: mm_INSTALL_NFS is set to an invalid value." ; \
+		echo "error: mm_INSTALL_NFS=\"$(mm_INSTALL_NFS)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_HOME)" = "`cd $(GARDIR)/.. ; pwd`" ] ; then \
-		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\"." ; \
+		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
 	@if [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
-		echo "error: the directory specified by mm_TFTP_ROOT does not exist." ; \
+		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
 	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
-		echo "error: the directory specified by mm_NFS_ROOT does not exist." ; \
+		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
 	@if [ "$(MM_LDD)" = "" ] ; then \

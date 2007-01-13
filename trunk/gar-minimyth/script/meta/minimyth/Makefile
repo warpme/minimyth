@@ -51,6 +51,10 @@ INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
 
+pre-fetch:
+	@make -s -f minimyth.mk mm-check DESTIMG=$(DESTIMG)
+	@$(MAKECOOKIE)
+
 build-custom:
 	@make -s -f minimyth.mk mm-all DESTIMG=$(DESTIMG)
 	@$(MAKECOOKIE)
