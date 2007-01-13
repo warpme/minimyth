@@ -7,6 +7,13 @@
 start() {
     mm_message_output info 'starting network ...'
 
+    # Initialize /etc/minimyth.d/minimyth.dhcp
+    # This allows you to set parameters
+    # normally provided by DHCP on the boot command line.
+    if [ ! -e /etc/minimyth.d/miniyth.dhcp ] ; then
+        set | grep -e '^MM_DHCP_' > /etc/minimyth.d/minimyth.dhcp
+    fi
+
     # Bring up the local (loopback) interface.
     ifconfig lo 127.0.0.1
 
