@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch $(DISTNAME)-video_ui.patch
+PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-musicplaylist.patch $(GARNAME)-init.patch $(GARNAME)-remove_import_menu_items.patch $(GARNAME)-video_ui.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -64,7 +64,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
