@@ -4,7 +4,13 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
+MM_SYSLOG_SERVER=`mm_var_get MM_SYSLOG_SERVER`
+
 mkdir -p /var/log
 
-syslogd
+if [ -n "${MM_SYSLOG_SERVER}" ] ; then
+    syslogd -R "${MM_SYSLOG_SERVER}"
+else
+    syslogd
+fi
 klogd
