@@ -16,6 +16,7 @@ DEPENDS = \
  	utils/alsa-utils \
 	utils/busybox \
 	devel/gdb \
+	disk/hdparm \
 	system/lcdproc \
 	X11/libXvMCW \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/nvidia kernel/unionfs kernel/vt1211 \
