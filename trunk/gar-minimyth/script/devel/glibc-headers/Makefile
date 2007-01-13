@@ -20,14 +20,12 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sanity-checks \
 	--with-binutils=$(build_DESTDIR)$(build_libdir) \
 	--without-cvs \
-	--enable-kernel=$(KERNEL_VERSION) \
 	--with-headers=$(DESTDIR)$(includedir) 
 INSTALL_ARGS    = \
 	cross-compiling=yes \
 	install_root=$(DESTDIR)
 
-GAR_EXTRA_CONF += devel/glibc/package-api.mk kernel/linux/package-api.mk
-
+GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CONFIGURE_ENV := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
