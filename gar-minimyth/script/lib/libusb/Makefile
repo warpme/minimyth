@@ -1,5 +1,5 @@
 GARNAME = libusb
-GARVERSION = 0.1.10a
+GARVERSION = 0.1.11
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -39,4 +39,6 @@ post-patch:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libusb.la
 	@rm -f $(DESTDIR)$(libdir)/libusbpp.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libusb.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libusb.pc
 	@$(MAKECOOKIE)
