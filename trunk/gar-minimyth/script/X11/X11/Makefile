@@ -138,7 +138,7 @@ configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
 	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , via)
 	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
-	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , unichrome)
+	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , )
 	@$(call CONFIG_FILE_APPEND, XInputDrivers             , mouse keyboard)
 	@$(MAKECOOKIE)
 
