@@ -2,10 +2,8 @@
 # minimyth.functions
 ################################################################################
 
-[ -r /etc/minimyth.d/dhcp.conf     ] && . /etc/minimyth.d/dhcp.conf
-[ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
-
-[ -n ${MM_DEBUG} ] && set -x
+# Read and export MiniMyth environment variables
+. /etc/minimyth.d/env.script
 
 ################################################################################
 # mount_url
@@ -78,10 +76,7 @@ get_file() {
 execute_and_log() {
     COMMAND=$1
 
-    LOGFILE=/dev/null
-    [ -n ${MM_DEBUG} ] && LOGFILE=/var/log/minimyth.log
-
-    echo "--- execution start: ${COMMAND}"  >> ${LOGFILE} 2>&1
-    ${COMMAND}                              >> ${LOGFILE} 2>&1
-    echo "--- execution end  : ${COMMAND}"  >> ${LOGFILE} 2>&1
+    echo "--- execution start: ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
+    ${COMMAND}                              >> ${MM_LOGFILE} 2>&1
+    echo "--- execution end  : ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
 }
