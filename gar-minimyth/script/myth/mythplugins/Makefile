@@ -1,25 +1,47 @@
-GARNAME = mythgallery
+GARNAME = mythplugins
 GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-pageup_pagedown.patch $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv lib/libtiff
+DEPENDS  = lang/c myth/mythtv
+# mythdvd
+DEPENDS += lib/libdvdread
+# mythgallery
+DEPENDS += lib/libtiff
+# mythmusic
+DEPENDS += lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/libcdaudio lib/cdparanoia X11/sdl
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/configure 
+CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS     += $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = \
-	--enable-opengl
+CONFIGURE_ARGS += \
+	--enable-opengl \
+	--enable-mythmusic \
+	--disable-fftw \
+	--enable-sdl \
+	--disable-aac \
+	--enable-mythvideo \
+	--enable-mythdvd \
+	--disable-transcode \
+	--enable-vcd \
+	--enable-mythweather \
+	--enable-mythgallery \
+	--disable-exif \
+	--disable-mythgame \
+	--disable-mythnews \
+	--disable-mythphone \
+	--disable-festival
+
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
@@ -47,5 +69,5 @@ disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
-	@$(MAKECOOKIE)
+	cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	$(MAKECOOKIE)

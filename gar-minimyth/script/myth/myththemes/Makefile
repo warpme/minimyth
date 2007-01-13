@@ -1,10 +1,10 @@
-GARNAME = mythvideo
+GARNAME = myththemes
 GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-metadata.patch $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -13,15 +13,10 @@ endef
 
 DEPENDS = lang/c myth/mythtv
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/$(GARNAME)/mythtv
-BUILD_SCRIPTS     += $(WORKSRC)/$(GARNAME)/Makefile
-INSTALL_SCRIPTS   += $(WORKSRC)/$(GARNAME)/Makefile
+CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
+INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ENV += \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	OPTFLAGS="$(CFLAGS)"
@@ -44,5 +39,5 @@ disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
-	@$(MAKECOOKIE)
+	cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	$(MAKECOOKIE)

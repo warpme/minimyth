@@ -22,12 +22,9 @@ DEPENDS = \
 	utils/lm_sensors \
 	kernel/module-init-tools \
 	myth/mplayer \
-	myth/mythdvd \
-	myth/mythgallery \
-	myth/mythmusic \
-	myth/mythvideo \
+	myth/mythplugins \
 	myth/mythtv \
-	myth/mythweather \
+	myth/myththemes \
 	net/ntp \
 	net/portmap \
 	qt/qt \
