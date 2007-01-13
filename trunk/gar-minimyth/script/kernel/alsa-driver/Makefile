@@ -18,7 +18,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-gnu-ld \
-	--with-cross="$(compiler_prefix)" \
 	--with-kernel="$(DESTDIR)$(KERNEL_BUILDDIR)" \
 	--with-build="$(DESTDIR)$(KERNEL_BUILDDIR)" \
 	--with-redhat=no \
@@ -40,4 +39,3 @@ include ../../gar.mk
 
 IUSER  := `id -un`
 IGROUP := `id -gn`
-

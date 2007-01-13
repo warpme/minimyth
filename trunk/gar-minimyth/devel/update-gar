@@ -139,15 +139,17 @@ sed -i 's%^\(main\|build\)\(_[^ ]*\) *= *$(\(main\|build\)_exec_prefix)%\1\2 = $
 sed -i 's%^\(build\|main\)_rootdir *?=.*%&\n# Warning: any changes to these paths will cause certain packages to break.%g' ${SCRIPT_DIR}/gar.conf.mk
 
 # Configure compiler programs
-sed -i "s%^build_CC .*?=%build_compiler_prefix ?= ${build_compiler_prefix}\n&%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^main_CC .*?=%main_compiler_prefix ?= ${main_compiler_prefix}\n&%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^build_CC *?=%build_compiler_prefix ?= ${build_compiler_prefix}\n&%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_CC *?=%main_compiler_prefix ?= ${main_compiler_prefix}\n&%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^\$(DESTIMG)_CC *?=%\$(DESTIMG)_compiler_prefix ?= \$(main_compiler_prefix)\n&%" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^CC *=%compiler_prefix = \$(\$(DESTIMG)_compiler_prefix)\n&%" ${SCRIPT_DIR}/gar.mk
 programs="CC CXX LD"
-sed -i "s%^build_CC .*?=.*%build_CC = \$(build_compiler_prefix)gcc%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^main_CC .*?=.*%main_CC = \$(main_compiler_prefix)gcc%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^build_CXX .*?=.*%build_CXX = \$(build_compiler_prefix)g++%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^main_CXX .*?=.*%main_CXX = \$(main_compiler_prefix)g++%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^build_LD .*?=.*%build_LD = \$(build_compiler_prefix)ld%" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^main_LD .*?=.*%main_LD = \$(main_compiler_prefix)ld%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^build_CC *?=.*%build_CC = \$(build_compiler_prefix)gcc%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_CC *?=.*%main_CC = \$(main_compiler_prefix)gcc%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^build_CXX *?=.*%build_CXX = \$(build_compiler_prefix)g++%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_CXX *?=.*%main_CXX = \$(main_compiler_prefix)g++%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^build_LD *?=.*%build_LD = \$(build_compiler_prefix)ld%" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_LD *?=.*%main_LD = \$(main_compiler_prefix)ld%" ${SCRIPT_DIR}/gar.conf.mk
 programs="CPP AR AS NM RANLIB STRIP OBJCOPY OBJDUMP"
 for program in ${programs} ; do
     program_uc=`echo ${program} | sed -r 's%[a-z]+%\U&%g'`

@@ -77,6 +77,7 @@ $(DESTIMG)_GARCH ?= $(main_GARCH)
 $(DESTIMG)_GARHOST ?= $(main_GARHOST)
 
 # Default image tools
+$(DESTIMG)_compiler_prefix ?= $(main_compiler_prefix)
 $(DESTIMG)_CC ?= $(main_CC)
 $(DESTIMG)_CXX ?= $(main_CXX)
 $(DESTIMG)_LD ?= $(main_LD)
@@ -144,6 +145,7 @@ GARHOST = $($(DESTIMG)_GARHOST)
 GARTARGET ?= $(GARHOST)
 
 # Tools
+compiler_prefix = $($(DESTIMG)_compiler_prefix)
 CC = $($(DESTIMG)_CC)
 CXX = $($(DESTIMG)_CXX)
 LD = $($(DESTIMG)_LD)

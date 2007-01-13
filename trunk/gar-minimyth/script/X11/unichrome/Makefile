@@ -19,13 +19,13 @@ INSTALL_SCRIPTS   = unichrome libxvmc
 GAR_EXTRA_CONF += X11/X11/package-api.mk
 include ../../gar.mk
 
-CppCmd       := $(shell echo $(CPP)    | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-CcCmd        := $(shell echo $(CC)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-CplusplusCmd := $(shell echo $(CXX)    | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-LdCmd        := $(shell echo $(LD)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-RanlibCmd    := $(shell echo $(RANLIB) | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-AsCmd        := $(shell echo $(AS)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-ArCmd        := $(shell echo $(AR)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
+CppCmd       := $(shell echo $(CPP)    | sed 's%^$(compiler_prefix)%%')
+CcCmd        := $(shell echo $(CC)     | sed 's%^$(compiler_prefix)%%')
+CplusplusCmd := $(shell echo $(CXX)    | sed 's%^$(compiler_prefix)%%')
+LdCmd        := $(shell echo $(LD)     | sed 's%^$(compiler_prefix)%%')
+RanlibCmd    := $(shell echo $(RANLIB) | sed 's%^$(compiler_prefix)%%')
+AsCmd        := $(shell echo $(AS)     | sed 's%^$(compiler_prefix)%%')
+ArCmd        := $(shell echo $(AR)     | sed 's%^$(compiler_prefix)%%')
 
 configure-unichrome:
 	@cd $(WORKSRC)/unichrome ; xmkmf $(DESTDIR)$(X11_SOURCEDIR)

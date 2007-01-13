@@ -35,6 +35,8 @@ install-custom:
 	@mkdir -p $(DESTDIR)$(x11includedir)/GL
 	@cp -fd $(WORKSRC)/include/GL/*.h $(DESTDIR)$(x11includedir)/GL/
 	@cp -fd $(WORKSRC)/src/glw/*.h    $(DESTDIR)$(x11includedir)/GL/
+	@rm -f $(DESTDIR)$(includedir)/GL
+	@ln -sf ./$(call DIRSTODOTS,$(includedir))/$(x11includedir)/GL $(DESTDIR)$(includedir)/GL
 	@mkdir -p $(DESTDIR)$(x11libdir)
 	@rm -f $(DESTDIR)$(x11libdir)/libGL.* ; \
 		cp -fd $(WORKSRC)/lib/libGL.* $(DESTDIR)$(x11libdir)/
