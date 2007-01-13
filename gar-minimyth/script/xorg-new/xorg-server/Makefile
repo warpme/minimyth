@@ -57,6 +57,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xtrap \
 	--enable-record \
 	--enable-xv \
+	--enable-xvmc \
 	--enable-dga \
 	--enable-screensaver \
 	--disable-xdmcp \
@@ -74,6 +75,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-evi \
 	--disable-multibuffer \
 	--disable-fontcache \
+	--enable-dbe \
 	--enable-xorg \
 	--disable-dmx \
 	--enable-xvfb \
@@ -89,6 +91,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-kbd_mode \
 	--with-gnu-ld \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa"
+
 
 GAR_EXTRA_CONF += xorg-new/xorg/package-api.mk
 include ../../gar.mk
