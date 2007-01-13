@@ -115,10 +115,10 @@ mm_url_mount() {
     URL_EXT2=
     [ ${URL_EXTMAX} -ge 2 ] && URL_EXT2=`echo ${URL_FILE} | sed 's%^.*/%%' | cut -s -d. -f$((${URL_EXTMAX}-1))`
 
-    MOUNT_OPTIONS="${URL_OPTIONS}"
-
     MOUNT_VFSTYPE=""
     EXTRA_OPTIONS=""
+    MOUNT_DEVICE=""
+    MOUNT_OPTIONS="${URL_OPTIONS}"
     if   [ "${URL_PROTOCOL}" = "nfs" ] ; then
         MOUNT_VFSTYPE="nfs"
         MOUNT_DEVICE="${URL_SERVER}:${URL_PATH}"
@@ -172,6 +172,7 @@ mm_url_mount() {
     fi
 
     if [ -n "${MOUNT_VFSTYPE}" ] ; then
+        OPTIONS=""
         MOUNT_OPTIONS=`echo ${MOUNT_OPTIONS} | sed 's%^,%%'`
         [ -n "${EXTRA_OPTIONS}" ] && OPTIONS="${EXTRA_OPTIONS}"
         [ -n "${MOUNT_OPTIONS}" ] && OPTIONS="${OPTIONS} -o ${MOUNT_OPTIONS}"

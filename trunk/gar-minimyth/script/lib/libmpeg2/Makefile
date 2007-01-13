@@ -1,22 +1,28 @@
-GARNAME = sysfsutils
-GARVERSION = 2.0.0
+GARNAME = mpeg2dec
+GARVERSION = 0.4.0
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-diag/
-DISTFILES = $(DISTNAME).tar.gz
-LICENSE = GPL2/LGPL2_1
+MASTER_SITES = http://libmpeg2.sourceforge.net/files/
+DISTFILES = $(DISTNAME)b.tar.gz
+LICENSE =
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS   = lang/c lib/SDL xorg/xorg
+BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-gnu-ld
+	--x-includes=$(DESTDIR)$(includedir) \
+	--x-libraries=$(DESTDIR)$(libdir) \
+	--enable-shared \
+	--enable-static \
+	--with-gnu-ld \
+	--with-x
 
 include ../../gar.mk
 
@@ -31,5 +37,7 @@ post-patch:
 	@$(MAKECOOKIE)
 
 post-install:
-	rm -f $(DESTDIR)$(libdir)/libsysfs.la
-	@$(MAKECOOKIE)
+	rm -f $(DESTDIR)$(libdir)/libmpeg2.la
+	rm -f $(DESTDIR)$(libdir)/libmpeg2convert.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libmpeg2.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libmpeg2convert.pc

@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch $(DISTNAME)-mythconfig.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-mythconfig.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -29,6 +29,7 @@ CONFIGURE_ARGS += \
 	--disable-all \
 	--enable-opengl \
 	--enable-mythdvd \
+		--enable-transcode \
 		--enable-vcd \
 	--enable-mythgallery \
 		--enable-exif \
