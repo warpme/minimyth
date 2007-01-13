@@ -79,6 +79,12 @@ LIST_LIBS = \
 		) \
 	)
 
+GET_UID = \
+	$(shell cat ./dirs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
+GET_GID = \
+	$(shell cat ./dirs/etc/group  | grep -e '^$1' | cut -d':' -f 3)
+
+
 # $1 = file type label plural.
 # $2 = file type label singular.
 # $3 = file directories.
@@ -296,7 +302,7 @@ mm-make-initrd:
 
 mm-make-distro:
 	@echo 'making minimyth distribution'
-	@# Make root file system carm image and tarball files.
+	@# Make root file system cram image and tarball files.
 	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME)
 	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME).bz2
 	rm -rf $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
@@ -304,13 +310,17 @@ mm-make-distro:
 	fakeroot sh -c                                                                  " \
 		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
 		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/initctl p     ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/rootfs.d  ; \
+		chmod -R go-w $(WORKSRC)/rootfs.d                                       ; \
 		mkfs.cramfs $(WORKSRC)/rootfs.d $(WORKSRC)/$(mm_ROOTFSNAME)             ; \
 		tar -C $(WORKSRC)/rootfs.d -jcf $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 .   "
 	@# Make extras cram image and tarball files.
 	rm -rf $(WORKSRC)/$(mm_EXTRASNAME).cmg
 	rm -rf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
 	fakeroot sh -c                                                      " \
-		mkfs.cramfs $(WORKSRC)/extras.d $(WORKSRC)/$(mm_EXTRASNAME).cmg       ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/extras.d  ; \
+		chmod -R go-w $(WORKSRC)/rootfs.d                                       ; \
+		mkfs.cramfs $(WORKSRC)/extras.d $(WORKSRC)/$(mm_EXTRASNAME).cmg         ; \
 		tar -C $(WORKSRC)/extras.d -jcf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 . "
 	@# Make source tarball file.
 	@rm -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2
