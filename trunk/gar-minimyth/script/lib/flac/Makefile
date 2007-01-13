@@ -26,6 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-ogg-libraries=$(DESTDIR)$(libdir)
 
 CONFIGURE_ENV  = \
+	XMMS_CONFIG=no \
         PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
 include ../../gar.mk
