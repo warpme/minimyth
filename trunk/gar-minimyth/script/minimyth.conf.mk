@@ -3,8 +3,8 @@
 # '$(HOME)/.minimyth/minimyth.conf.mk'.
 #-------------------------------------------------------------------------------
 
-# The version of GAR MiniMyth.
-mm_VERSION        ?= 0.0.5
+# The version of MiniMyth.
+mm_VERSION        ?= 0.5.1.901
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -32,8 +32,8 @@ mm_NFS_ROOT       ?= /home/public
 # Variables that you are not likely to override.
 #-------------------------------------------------------------------------------
 mm_GARHOST        ?= i586-minimyth-linux-gnu
-mm_NAME           ?= gar-minimyth-$(mm_VERSION)-$(mm_GARCH)
-mm_NAME_PRETTY    ?= GAR Minimyth $(mm_VERSION) $(mm_GARCH)
+mm_NAME           ?= minimyth-$(mm_VERSION)-$(mm_GARCH)
+mm_NAME_PRETTY    ?= MiniMyth $(mm_VERSION) $(mm_GARCH)
 mm_BASEDIR        ?= $(mm_HOME)/images/mm
 mm_TFTPDIR        ?= $(mm_TFTP_ROOT)
 mm_NFSDIR         ?= $(mm_NFS_ROOT)
