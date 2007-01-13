@@ -1,4 +1,4 @@
-GARNAME = xf86-video-unichrome
+GARNAME = xf86-video-openchrome
 GARVERSION = 175
 CATEGORIES = xorg
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/

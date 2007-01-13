@@ -1,9 +1,10 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.11rc3
+GARVERSION = 1.0.11rc4
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-MVIAC3_2.patch $(DISTNAME)-depmod.patch $(DISTNAME)-asus_hack.patch
+#PATCHFILES = $(DISTNAME)-MVIAC3_2.patch $(DISTNAME)-depmod.patch $(DISTNAME)-asus_hack.patch
+PATCHFILES = $(DISTNAME)-MVIAC3_2.patch $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
