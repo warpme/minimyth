@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp
 --- mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp	2005-04-13 11:57:11.000000000 -0700
-+++ mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp	2005-05-16 06:32:45.134239133 -0700
++++ mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp	2005-07-18 08:06:07.000000000 -0700
 @@ -20,6 +20,10 @@
      HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
  
@@ -49,15 +49,15 @@ diff -Naur mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp mythtv-0.1
      gc->setHelpText(QObject::tr("Enable this setting if MythTV is playing "
                      "\"crackly\" audio and you are using hardware encoding. "
                      "This setting will have no effect "
-@@ -603,7 +610,7 @@
-     HostComboBox *gc = new HostComboBox("PlayBoxEpisodeSort");
+@@ -604,7 +611,7 @@
      gc->setLabel(QObject::tr("Sort Episodes"));
      gc->addSelection(QObject::tr("Record date"), "Date");
--    gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate");
-+    gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate", true);
-     gc->addSelection(QObject::tr("Program ID"), "Id");
+     gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate");
+-    gc->addSelection(QObject::tr("Program ID"), "Id");
++    gc->addSelection(QObject::tr("Program ID"), "Id", true);
      gc->setHelpText(QObject::tr("Selects how to sort a shows episodes"));
      return gc;
+ }
 @@ -613,7 +620,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("StickyKeys");
@@ -157,6 +157,15 @@ diff -Naur mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp mythtv-0.1
      ge->setHelpText(QObject::tr("If you have configured an exit key using the "
                      "System Shutdown option, you will be given the opportunity "
                      "to exit MythTV or halt the system completely. "
+@@ -1655,7 +1670,7 @@
+     GlobalCheckBox *bc = new GlobalCheckBox("LastFreeCard");
+     bc->setLabel(QObject::tr("Avoid conflicts between live TV and "
+                  "scheduled shows."));
+-    bc->setValue(false);
++    bc->setValue(true);
+     bc->setHelpText(QObject::tr("If enabled, live TV will choose a tuner card "
+                     "that is less likely to have scheduled recordings "
+                     "rather than the best card available."));
 @@ -1710,7 +1725,8 @@
      gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Dense));
