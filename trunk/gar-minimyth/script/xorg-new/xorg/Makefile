@@ -17,7 +17,6 @@ DEPENDS = \
 	xorg-new/font-bh-ttf \
 	xorg-new/font-misc-misc \
 	xorg-new/font-cursor-misc \
-	xorg-new/freefont-ttf \
 	xorg-new/rgb \
 	xorg-new/xdpyinfo \
 	xorg-new/xinit \
