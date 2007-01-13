@@ -35,6 +35,16 @@ start() {
     fi
 
     case "${MM_X_DRIVER}" in
+        intel_i810)
+            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update PreferredMPEG2Decoder xvmc
+            sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
+            sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
+            ;;
+        intel_i830|intel_i915)
+            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
+            sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
+            sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
+            ;;
         nvidia)
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
@@ -42,7 +52,7 @@ start() {
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
             ;;
-        via)
+        via|via_pro)
             [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
             sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config

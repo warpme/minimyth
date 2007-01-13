@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.19-old/contrib/mythrename.pl mythtv-0.19-new/contrib/mythrename.pl
 --- mythtv-0.19-old/contrib/mythrename.pl	2006-02-06 19:05:03.000000000 -0800
-+++ mythtv-0.19-new/contrib/mythrename.pl	2006-03-15 17:12:46.000000000 -0800
++++ mythtv-0.19-new/contrib/mythrename.pl	2006-03-17 16:39:40.000000000 -0800
 @@ -1,6 +1,6 @@
  #!/usr/bin/perl -w
  #
@@ -11,7 +11,7 @@ diff -Naur mythtv-0.19-old/contrib/mythrename.pl mythtv-0.19-new/contrib/mythren
  #
 diff -Naur mythtv-0.19-old/contrib/optimize_mythdb.pl mythtv-0.19-new/contrib/optimize_mythdb.pl
 --- mythtv-0.19-old/contrib/optimize_mythdb.pl	2005-08-20 13:21:40.000000000 -0700
-+++ mythtv-0.19-new/contrib/optimize_mythdb.pl	2006-03-15 17:12:46.000000000 -0800
++++ mythtv-0.19-new/contrib/optimize_mythdb.pl	2006-03-17 16:39:40.000000000 -0800
 @@ -1,6 +1,6 @@
  #!/usr/bin/perl -w
  #
@@ -22,7 +22,7 @@ diff -Naur mythtv-0.19-old/contrib/optimize_mythdb.pl mythtv-0.19-new/contrib/op
  #
 diff -Naur mythtv-0.19-old/libs/libavformat/aviobuf.c mythtv-0.19-new/libs/libavformat/aviobuf.c
 --- mythtv-0.19-old/libs/libavformat/aviobuf.c	2006-01-15 23:14:43.000000000 -0800
-+++ mythtv-0.19-new/libs/libavformat/aviobuf.c	2006-03-15 17:12:29.000000000 -0800
++++ mythtv-0.19-new/libs/libavformat/aviobuf.c	2006-03-17 16:39:20.000000000 -0800
 @@ -164,7 +164,13 @@
  
  void url_fskip(ByteIOContext *s, offset_t offset)
@@ -38,9 +38,45 @@ diff -Naur mythtv-0.19-old/libs/libavformat/aviobuf.c mythtv-0.19-new/libs/libav
  }
  
  offset_t url_ftell(ByteIOContext *s)
+diff -Naur mythtv-0.19-old/libs/libmyth/mythcontext.cpp mythtv-0.19-new/libs/libmyth/mythcontext.cpp
+--- mythtv-0.19-old/libs/libmyth/mythcontext.cpp	2006-01-25 02:22:57.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/mythcontext.cpp	2006-03-17 16:39:26.000000000 -0800
+@@ -2621,9 +2621,13 @@
+         d->LoadLogSettings();
+     if (d->m_logenable == 1)
+     {
++        QString fullMsg = message;
++        if (!details.isEmpty())
++            fullMsg += ": " + details;
++
+         if (message.left(21) != "Last message repeated")
+         {
+-            if (message == d->lastLogStrings[module])
++            if (fullMsg == d->lastLogStrings[module])
+             {
+                 d->lastLogCounts[module] += 1;
+                 return;
+@@ -2639,7 +2643,7 @@
+                 }
+ 
+                 d->lastLogCounts[module] = 0;
+-                d->lastLogStrings[module] = message;
++                d->lastLogStrings[module] = fullMsg;
+             }
+         }
+ 
+@@ -2693,7 +2697,7 @@
+         }
+ 
+         if (priority <= d->m_logprintlevel)
+-            VERBOSE(VB_IMPORTANT, module + ": " + message);
++            VERBOSE(VB_IMPORTANT, module + ": " + fullMsg);
+     }
+ }
+ 
 diff -Naur mythtv-0.19-old/libs/libmyth/mythdialogs.cpp mythtv-0.19-new/libs/libmyth/mythdialogs.cpp
 --- mythtv-0.19-old/libs/libmyth/mythdialogs.cpp	2006-01-15 22:45:15.000000000 -0800
-+++ mythtv-0.19-new/libs/libmyth/mythdialogs.cpp	2006-03-15 17:12:33.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/mythdialogs.cpp	2006-03-17 16:39:26.000000000 -0800
 @@ -2617,6 +2617,7 @@
      password_editor->setEchoMode(QLineEdit::Password);
      password_editor->setGeometry(textWidth + 20,10,135,30);
@@ -51,7 +87,7 @@ diff -Naur mythtv-0.19-old/libs/libmyth/mythdialogs.cpp mythtv-0.19-new/libs/lib
  
 diff -Naur mythtv-0.19-old/libs/libmyth/mythwidgets.cpp mythtv-0.19-new/libs/libmyth/mythwidgets.cpp
 --- mythtv-0.19-old/libs/libmyth/mythwidgets.cpp	2005-11-22 00:51:53.000000000 -0800
-+++ mythtv-0.19-new/libs/libmyth/mythwidgets.cpp	2006-03-15 17:12:33.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/mythwidgets.cpp	2006-03-17 16:39:26.000000000 -0800
 @@ -353,7 +353,8 @@
                      (e->key() == Qt::Key_Enter) ||
                      (e->key() == Qt::Key_Return)))
@@ -62,9 +98,34 @@ diff -Naur mythtv-0.19-old/libs/libmyth/mythwidgets.cpp mythtv-0.19-new/libs/lib
                  {
                      popup = new VirtualKeyboard(gContext->GetMainWindow(), this);
                      gContext->GetMainWindow()->detach(popup);
+@@ -726,10 +727,11 @@
+                 QWidget::focusNextPrevChild(true);
+                 emit tryingToLooseFocus(true);
+             }
+-            else if (action == "SELECT" &&
+-                    (e->text().isNull() ||
+-                    (e->key() == Qt::Key_Enter) || 
+-                    (e->key() == Qt::Key_Return)))
++            else if ((action == "SELECT") &&
++                     (!active_cycle) &&
++                     ((e->text().isNull()) ||
++                      (e->key() == Qt::Key_Enter) || 
++                      (e->key() == Qt::Key_Return)))
+             {
+                 if (gContext->GetNumSetting("UseVirtualKeyboard", 1) == 1)
+                 {
+@@ -749,7 +751,7 @@
+     if (handled)
+         return;
+ 
+-    if (!handled && popup && popup->isShown())
++    if (popup && popup->isShown())
+     {
+         endCycle();
+         QTextEdit::keyPressEvent(e);
 diff -Naur mythtv-0.19-old/libs/libmyth/mythwidgets.h mythtv-0.19-new/libs/libmyth/mythwidgets.h
 --- mythtv-0.19-old/libs/libmyth/mythwidgets.h	2005-10-30 03:41:09.000000000 -0800
-+++ mythtv-0.19-new/libs/libmyth/mythwidgets.h	2006-03-15 17:12:33.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/mythwidgets.h	2006-03-17 16:39:26.000000000 -0800
 @@ -122,17 +122,21 @@
      Q_OBJECT
    public:
@@ -99,7 +160,7 @@ diff -Naur mythtv-0.19-old/libs/libmyth/mythwidgets.h mythtv-0.19-new/libs/libmy
  
 diff -Naur mythtv-0.19-old/libs/libmyth/remotefile.cpp mythtv-0.19-new/libs/libmyth/remotefile.cpp
 --- mythtv-0.19-old/libs/libmyth/remotefile.cpp	2005-12-07 12:49:24.000000000 -0800
-+++ mythtv-0.19-new/libs/libmyth/remotefile.cpp	2006-03-15 17:12:33.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/remotefile.cpp	2006-03-17 16:39:26.000000000 -0800
 @@ -15,6 +15,7 @@
      path = url;
      readposition = 0;
@@ -146,7 +207,7 @@ diff -Naur mythtv-0.19-old/libs/libmyth/remotefile.cpp mythtv-0.19-new/libs/libm
 +
 diff -Naur mythtv-0.19-old/libs/libmyth/remotefile.h mythtv-0.19-new/libs/libmyth/remotefile.h
 --- mythtv-0.19-old/libs/libmyth/remotefile.h	2005-12-07 12:49:24.000000000 -0800
-+++ mythtv-0.19-new/libs/libmyth/remotefile.h	2006-03-15 17:12:33.000000000 -0800
++++ mythtv-0.19-new/libs/libmyth/remotefile.h	2006-03-17 16:39:26.000000000 -0800
 @@ -27,6 +27,8 @@
  
      long long GetFileSize(void);
@@ -166,7 +227,7 @@ diff -Naur mythtv-0.19-old/libs/libmyth/remotefile.h mythtv-0.19-new/libs/libmyt
  #endif
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.cpp mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.cpp	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +239,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.cpp mythtv-0.19-new/l
  // $Id: AAFilter.cpp 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.h mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/AAFilter.h	2006-03-17 16:39:17.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +251,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/AAFilter.h mythtv-0.19-new/lib
  // $Id: AAFilter.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/BPMDetect.h mythtv-0.19-new/libs/libmythsoundtouch/BPMDetect.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/BPMDetect.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/BPMDetect.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/BPMDetect.h	2006-03-17 16:39:17.000000000 -0800
 @@ -26,7 +26,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +263,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/BPMDetect.h mythtv-0.19-new/li
  // $Id: BPMDetect.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect.h mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect.h	2006-03-17 16:39:17.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -214,7 +275,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect.h mythtv-0.19-new/l
  // $Id: cpu_detect.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2005-01-23 22:42:19.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +287,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp mythtv-
  // $Id: cpu_detect_x86_gcc.cpp 5151 2005-01-24 06:42:19Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +299,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp mythtv-0.
  // $Id: FIFOSampleBuffer.cpp 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.h mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2006-03-17 16:39:17.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +311,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSampleBuffer.h mythtv-0.19
  // $Id: FIFOSampleBuffer.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSamplePipe.h mythtv-0.19-new/libs/libmythsoundtouch/FIFOSamplePipe.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/FIFOSamplePipe.h	2005-05-23 13:39:12.000000000 -0700
-+++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2006-03-17 16:39:17.000000000 -0800
 @@ -17,7 +17,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +323,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIFOSamplePipe.h mythtv-0.19-n
  // $Id: FIFOSamplePipe.h 6468 2005-05-23 20:39:12Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.cpp mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.cpp	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -11,7 +11,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +335,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.cpp mythtv-0.19-new/
  // $Id: FIRFilter.cpp 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.h mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/FIRFilter.h	2006-03-17 16:39:17.000000000 -0800
 @@ -11,7 +11,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -286,7 +347,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/FIRFilter.h mythtv-0.19-new/li
  // $Id: FIRFilter.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/mmx_gcc.cpp mythtv-0.19-new/libs/libmythsoundtouch/mmx_gcc.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/mmx_gcc.cpp	2005-06-29 14:41:57.000000000 -0700
-+++ mythtv-0.19-new/libs/libmythsoundtouch/mmx_gcc.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/mmx_gcc.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +359,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/mmx_gcc.cpp mythtv-0.19-new/li
  // $Id: mmx_gcc.cpp 6741 2005-06-29 21:41:57Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.cpp mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.cpp	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -10,7 +10,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -310,7 +371,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.cpp mythtv-0.19
  // $Id: RateTransposer.cpp 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.h mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/RateTransposer.h	2006-03-17 16:39:17.000000000 -0800
 @@ -14,7 +14,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -322,7 +383,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/RateTransposer.h mythtv-0.19-n
  // $Id: RateTransposer.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.cpp mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.cpp	2005-11-11 15:19:13.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -41,7 +41,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -334,7 +395,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.cpp mythtv-0.19-new
  // $Id: SoundTouch.cpp 7850 2005-11-11 23:19:13Z danielk $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.h mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.h	2005-11-11 15:19:13.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/SoundTouch.h	2006-03-17 16:39:17.000000000 -0800
 @@ -41,7 +41,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -346,7 +407,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/SoundTouch.h mythtv-0.19-new/l
  // $Id: SoundTouch.h 7850 2005-11-11 23:19:13Z danielk $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/STTypes.h mythtv-0.19-new/libs/libmythsoundtouch/STTypes.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/STTypes.h	2005-01-20 22:08:36.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/STTypes.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/STTypes.h	2006-03-17 16:39:17.000000000 -0800
 @@ -8,7 +8,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -358,7 +419,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/STTypes.h mythtv-0.19-new/libs
  // $Id: STTypes.h 5097 2005-01-21 06:08:36Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.cpp mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.cpp
 --- mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.cpp	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -370,7 +431,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.cpp mythtv-0.19-new/
  // $Id: TDStretch.cpp 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.h mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.h
 --- mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythsoundtouch/TDStretch.h	2006-03-17 16:39:17.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -382,7 +443,7 @@ diff -Naur mythtv-0.19-old/libs/libmythsoundtouch/TDStretch.h mythtv-0.19-new/li
  // $Id: TDStretch.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur mythtv-0.19-old/libs/libmythtv/dvbconfparser.cpp mythtv-0.19-new/libs/libmythtv/dvbconfparser.cpp
 --- mythtv-0.19-old/libs/libmythtv/dvbconfparser.cpp	2006-02-07 13:56:06.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/dvbconfparser.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/dvbconfparser.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: dvbconfparser.cpp 8901 2006-02-07 21:56:06Z danielk $
@@ -405,7 +466,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/dvbconfparser.cpp mythtv-0.19-new/libs
      if (i != end) c.serviceid = (*i++).toInt(); else return false;
 diff -Naur mythtv-0.19-old/libs/libmythtv/dvbtypes.cpp mythtv-0.19-new/libs/libmythtv/dvbtypes.cpp
 --- mythtv-0.19-old/libs/libmythtv/dvbtypes.cpp	2005-12-15 16:23:00.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/dvbtypes.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/dvbtypes.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -202,7 +202,7 @@
  {
     {"TRANSMISSION_MODE_AUTO",TRANSMISSION_MODE_AUTO},
@@ -435,7 +496,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/dvbtypes.cpp mythtv-0.19-new/libs/libm
  
 diff -Naur mythtv-0.19-old/libs/libmythtv/frequencytables.cpp mythtv-0.19-new/libs/libmythtv/frequencytables.cpp
 --- mythtv-0.19-old/libs/libmythtv/frequencytables.cpp	2006-01-18 08:46:14.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/frequencytables.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/frequencytables.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -283,15 +283,15 @@
          "ATSC Channel %1", 70, 809000000, 887000000, 6000000, VSB_8);
  #endif // USING_DVB
@@ -514,7 +575,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/frequencytables.cpp mythtv-0.19-new/li
  }
 diff -Naur mythtv-0.19-old/libs/libmythtv/jobqueue.cpp mythtv-0.19-new/libs/libmythtv/jobqueue.cpp
 --- mythtv-0.19-old/libs/libmythtv/jobqueue.cpp	2005-12-15 21:17:00.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/jobqueue.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/jobqueue.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -275,6 +275,11 @@
                      (hostname != "") &&
                      (hostname != m_hostname))
@@ -529,7 +590,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/jobqueue.cpp mythtv-0.19-new/libs/libm
                                        .arg(JobText(type))
 diff -Naur mythtv-0.19-old/libs/libmythtv/libmythtv.pro mythtv-0.19-new/libs/libmythtv/libmythtv.pro
 --- mythtv-0.19-old/libs/libmythtv/libmythtv.pro	2006-01-13 00:11:45.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/libmythtv.pro	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/libmythtv.pro	2006-03-17 16:39:17.000000000 -0800
 @@ -144,10 +144,10 @@
      # On screen display (video output overlay)
      HEADERS += osd.h                    osdtypes.h
@@ -545,7 +606,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/libmythtv.pro mythtv-0.19-new/libs/lib
      HEADERS += videooutbase.h           videoout_null.h
 diff -Naur mythtv-0.19-old/libs/libmythtv/mpegrecorder.cpp mythtv-0.19-new/libs/libmythtv/mpegrecorder.cpp
 --- mythtv-0.19-old/libs/libmythtv/mpegrecorder.cpp	2005-12-23 06:59:28.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/mpegrecorder.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/mpegrecorder.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -481,6 +481,9 @@
                  continue;
              case 0:
@@ -558,8 +619,16 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/mpegrecorder.cpp mythtv-0.19-new/libs/
          }
 diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.cpp
 --- mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp	2006-02-07 13:56:06.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.cpp	2006-03-15 17:12:26.000000000 -0800
-@@ -747,6 +747,8 @@
++++ mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.cpp	2006-03-17 16:39:17.000000000 -0800
+@@ -147,6 +147,7 @@
+       hascommbreaktable(false),
+       deleteIter(deleteMap.end()),  blankIter(blankMap.end()),
+       commBreakIter(commBreakMap.end()),
++      forcePositionMapSync(false),
+       // Playback (output) speed control
+       decoder_lock(true),
+       next_play_speed(1.0f),        next_normal_speed(true),
+@@ -747,6 +748,8 @@
          SetDecoder(new IvtvDecoder(this, m_playbackinfo));
          no_audio_out = true; // no audio with ivtv.
          audio_bits = 16;
@@ -568,7 +637,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
      }
      else if (forceVideoOutput == kVideoOutput_IVTV)
      {
-@@ -1920,7 +1922,7 @@
+@@ -1920,7 +1923,7 @@
          ShowText();
          DisplaySubtitles();
      }
@@ -577,7 +646,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
      {
          ClearSubtitles();
      }
-@@ -2199,6 +2201,7 @@
+@@ -2199,6 +2202,7 @@
      }
      if (IsErrored())
      {
@@ -585,7 +654,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
          eof = true;
          return;
      }
-@@ -2284,6 +2287,7 @@
+@@ -2284,6 +2288,7 @@
  
      if (errored || !GetDecoder())
      {
@@ -593,7 +662,68 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
          errored = true;
          return;
      }
-@@ -4654,6 +4658,7 @@
+@@ -2471,6 +2476,12 @@
+                 JumpToProgram();
+         }
+ 
++        if (forcePositionMapSync)
++        {
++            forcePositionMapSync = false;
++            GetDecoder()->SyncPositionMap();
++        }
++
+         if (IsErrored() || (nvr_enc && nvr_enc->GetErrorStatus()))
+         {
+             VERBOSE(VB_IMPORTANT, LOC_ERR + "Unknown error, exiting decoder");
+@@ -4398,6 +4409,8 @@
+     hascommbreaktable = !commBreakMap.isEmpty();
+     SetCommBreakIter();
+     commBreakMapLock.unlock();
++
++    forcePositionMapSync = true;
+ }
+ 
+ bool NuppelVideoPlayer::RebuildSeekTable(bool showPercentage, StatusCallback cb, void* cbData)
+@@ -4541,7 +4554,8 @@
+     return (int)((float)(written - played) / video_frame_rate);
+ }
+ 
+-void NuppelVideoPlayer::calcSliderPos(struct StatusPosInfo &posInfo)
++void NuppelVideoPlayer::calcSliderPos(struct StatusPosInfo &posInfo,
++                                      bool paddedFields)
+ {
+     posInfo.desc = "";
+     posInfo.position = 0;
+@@ -4588,15 +4602,23 @@
+     int ssecs = (playbackLen - shours * 3600 - smins * 60);
+ 
+     QString text1, text2;
+-    if (shours > 0)
++    if (paddedFields)
+     {
+-        text1.sprintf("%d:%02d:%02d", phours, pmins, psecs);
+-        text2.sprintf("%d:%02d:%02d", shours, smins, ssecs);
++        text1.sprintf("%02d:%02d:%02d", phours, pmins, psecs);
++        text2.sprintf("%02d:%02d:%02d", shours, smins, ssecs);
+     }
+     else
+     {
+-        text1.sprintf("%d:%02d", pmins, psecs);
+-        text2.sprintf("%d:%02d", smins, ssecs);
++        if (shours > 0)
++        {
++            text1.sprintf("%d:%02d:%02d", phours, pmins, psecs);
++            text2.sprintf("%d:%02d:%02d", shours, smins, ssecs);
++        }
++        else
++        {
++            text1.sprintf("%d:%02d", pmins, psecs);
++            text2.sprintf("%d:%02d", smins, ssecs);
++        }
+     }
+ 
+     posInfo.desc = QObject::tr("%1 of %2").arg(text1).arg(text2);
+@@ -4654,6 +4676,7 @@
  
              if (commBreakIter.key() == totalFrames)
              {
@@ -601,7 +731,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
                  eof = true;
              }
              else
-@@ -4721,7 +4726,7 @@
+@@ -4721,7 +4744,7 @@
  
          QString message = "COMMFLAG_REQUEST ";
          message += m_playbackinfo->chanid + " " +
@@ -610,7 +740,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
          RemoteSendMessage(message);
  
          return false;
-@@ -5018,7 +5023,7 @@
+@@ -5018,7 +5041,7 @@
                  QImage scaledImage = qImage.smoothScale(rect->w, rect->h);
  
                  OSDTypeImage* image = new OSDTypeImage();
@@ -619,9 +749,30 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/
                  image->LoadFromQImage(scaledImage);
  
                  subtitleOSD->AddType(image);
+diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.h mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.h
+--- mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.h	2006-02-02 10:06:32.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.h	2006-03-17 16:39:17.000000000 -0800
+@@ -150,7 +150,8 @@
+     // Complicated gets
+     long long CalcMaxFFTime(long long ff, bool setjump = true) const;
+     long long CalcRWTime(long long rw) const;
+-    void      calcSliderPos(struct StatusPosInfo &posInfo);
++    void      calcSliderPos(struct StatusPosInfo &posInfo,
++                            bool paddedFields = false);
+ 
+     /// Non-const gets
+     OSD         *GetOSD(void)                 { return osd; }
+@@ -543,6 +544,7 @@
+     QMap<long long, int>::Iterator deleteIter;
+     QMap<long long, int>::Iterator blankIter;
+     QMap<long long, int>::Iterator commBreakIter;
++    bool       forcePositionMapSync;
+ 
+     // Playback (output) speed control
+     /// Lock for next_play_speed and next_normal_speed
 diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoRecorder.cpp mythtv-0.19-new/libs/libmythtv/NuppelVideoRecorder.cpp
 --- mythtv-0.19-old/libs/libmythtv/NuppelVideoRecorder.cpp	2006-01-20 08:31:04.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/NuppelVideoRecorder.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/NuppelVideoRecorder.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -626,13 +626,14 @@
      int frag, blocksize = 4096;
      int tmp;
@@ -654,7 +805,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoRecorder.cpp mythtv-0.19-ne
      blocksize *= 4;
 diff -Naur mythtv-0.19-old/libs/libmythtv/osd.cpp mythtv-0.19-new/libs/libmythtv/osd.cpp
 --- mythtv-0.19-old/libs/libmythtv/osd.cpp	2006-01-26 20:55:51.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osd.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osd.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -154,7 +154,8 @@
          }
  
@@ -712,7 +863,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osd.cpp mythtv-0.19-new/libs/libmythtv
      set->Display();
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdimagecache.cpp mythtv-0.19-new/libs/libmythtv/osdimagecache.cpp
 --- mythtv-0.19-old/libs/libmythtv/osdimagecache.cpp	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdimagecache.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdimagecache.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -0,0 +1,205 @@
 +// -*- Mode: c++ -*-
 +/** OSDImageCache
@@ -921,7 +1072,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdimagecache.cpp mythtv-0.19-new/libs
 +}
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdimagecache.h mythtv-0.19-new/libs/libmythtv/osdimagecache.h
 --- mythtv-0.19-old/libs/libmythtv/osdimagecache.h	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdimagecache.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdimagecache.h	2006-03-17 16:39:17.000000000 -0800
 @@ -0,0 +1,63 @@
 +// -*- Mode: c++ -*-
 +
@@ -988,7 +1139,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdimagecache.h mythtv-0.19-new/libs/l
 +};
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdlistbtntype.cpp mythtv-0.19-new/libs/libmythtv/osdlistbtntype.cpp
 --- mythtv-0.19-old/libs/libmythtv/osdlistbtntype.cpp	2005-12-04 17:39:09.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdlistbtntype.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdlistbtntype.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -19,206 +19,148 @@
   * 
   * ============================================================ */
@@ -2334,7 +2485,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdlistbtntype.cpp mythtv-0.19-new/lib
 -
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdlistbtntype.h mythtv-0.19-new/libs/libmythtv/osdlistbtntype.h
 --- mythtv-0.19-old/libs/libmythtv/osdlistbtntype.h	2005-12-04 17:39:09.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdlistbtntype.h	2006-03-15 17:12:25.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdlistbtntype.h	2006-03-17 16:39:17.000000000 -0800
 @@ -1,3 +1,4 @@
 +// -*- Mode: c++ -*-
  /* ============================================================
@@ -2783,7 +2934,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdlistbtntype.h mythtv-0.19-new/libs/
  
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdtypes.cpp mythtv-0.19-new/libs/libmythtv/osdtypes.cpp
 --- mythtv-0.19-old/libs/libmythtv/osdtypes.cpp	2005-12-04 22:40:28.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdtypes.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdtypes.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -160,9 +160,6 @@
                      int displaywidth, int displayheight, 
                      float wmult, float hmult, int frint)
@@ -3425,7 +3576,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdtypes.cpp mythtv-0.19-new/libs/libm
  
 diff -Naur mythtv-0.19-old/libs/libmythtv/osdtypes.h mythtv-0.19-new/libs/libmythtv/osdtypes.h
 --- mythtv-0.19-old/libs/libmythtv/osdtypes.h	2005-12-04 22:40:28.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/osdtypes.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdtypes.h	2006-03-17 16:39:17.000000000 -0800
 @@ -8,6 +8,7 @@
  #include <vector>
  #include <qobject.h>
@@ -3652,7 +3803,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/osdtypes.h mythtv-0.19-new/libs/libmyt
  
 diff -Naur mythtv-0.19-old/libs/libmythtv/RingBuffer.cpp mythtv-0.19-new/libs/libmythtv/RingBuffer.cpp
 --- mythtv-0.19-old/libs/libmythtv/RingBuffer.cpp	2006-02-07 13:56:06.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/RingBuffer.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/RingBuffer.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -162,6 +162,7 @@
  
      bool is_local = false;
@@ -3766,7 +3917,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/RingBuffer.cpp mythtv-0.19-new/libs/li
          if (commserror)
 diff -Naur mythtv-0.19-old/libs/libmythtv/RingBuffer.h mythtv-0.19-new/libs/libmythtv/RingBuffer.h
 --- mythtv-0.19-old/libs/libmythtv/RingBuffer.h	2006-02-06 20:31:49.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/RingBuffer.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/RingBuffer.h	2006-03-17 16:39:17.000000000 -0800
 @@ -91,6 +91,7 @@
      long long GetTotalReadPosition(void);
  
@@ -3777,7 +3928,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/RingBuffer.h mythtv-0.19-new/libs/libm
      static void *StartReader(void *type);
 diff -Naur mythtv-0.19-old/libs/libmythtv/scanwizardhelpers.h mythtv-0.19-new/libs/libmythtv/scanwizardhelpers.h
 --- mythtv-0.19-old/libs/libmythtv/scanwizardhelpers.h	2006-02-01 08:56:06.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/scanwizardhelpers.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/scanwizardhelpers.h	2006-03-17 16:39:17.000000000 -0800
 @@ -1,5 +1,5 @@
  /* -*- Mode: c++ -*-
 - * $Id: scanwizardhelpers.h 8817 2006-02-01 16:56:06Z danielk $
@@ -3796,7 +3947,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/scanwizardhelpers.h mythtv-0.19-new/li
  
 diff -Naur mythtv-0.19-old/libs/libmythtv/tv_play.cpp mythtv-0.19-new/libs/libmythtv/tv_play.cpp
 --- mythtv-0.19-old/libs/libmythtv/tv_play.cpp	2006-02-07 13:56:06.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/tv_play.cpp	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/tv_play.cpp	2006-03-17 16:39:17.000000000 -0800
 @@ -247,7 +247,7 @@
        browsechannum(""), browsechanid(""), browsestarttime(""),
        // Program Info for currently playing video
@@ -3909,6 +4060,15 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/tv_play.cpp mythtv-0.19-new/libs/libmy
              osdlock.unlock();
          }
  
+@@ -2743,7 +2773,7 @@
+                 speedStr = QString("%1X").arg(normal_speed);
+ 
+             struct StatusPosInfo posInfo;
+-            nvp->calcSliderPos(posInfo);
++            nvp->calcSliderPos(posInfo, true);
+ 
+             QDateTime respDate = mythCurrentDateTime();
+             QString infoStr = "";
 @@ -2806,8 +2836,10 @@
          }
          else
@@ -3986,7 +4146,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/tv_play.cpp mythtv-0.19-new/libs/libmy
                  QStringList mark;
 diff -Naur mythtv-0.19-old/libs/libmythtv/tv_play.h mythtv-0.19-new/libs/libmythtv/tv_play.h
 --- mythtv-0.19-old/libs/libmythtv/tv_play.h	2006-02-01 08:40:46.000000000 -0800
-+++ mythtv-0.19-new/libs/libmythtv/tv_play.h	2006-03-15 17:12:26.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/tv_play.h	2006-03-17 16:39:17.000000000 -0800
 @@ -456,7 +456,6 @@
      ProgramInfo *recorderPlaybackInfo; ///< info requested from recorder
      ProgramInfo *playbackinfo;  ///< info sent in via Playback()
@@ -4006,7 +4166,7 @@ diff -Naur mythtv-0.19-old/libs/libmythtv/tv_play.h mythtv-0.19-new/libs/libmyth
      RingBuffer *prbuffer;
 diff -Naur mythtv-0.19-old/programs/mythbackend/filetransfer.cpp mythtv-0.19-new/programs/mythbackend/filetransfer.cpp
 --- mythtv-0.19-old/programs/mythbackend/filetransfer.cpp	2006-02-06 07:35:33.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/filetransfer.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/filetransfer.cpp	2006-03-17 16:39:39.000000000 -0800
 @@ -131,3 +131,9 @@
  
      return size;
@@ -4019,7 +4179,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/filetransfer.cpp mythtv-0.19-new
 +
 diff -Naur mythtv-0.19-old/programs/mythbackend/filetransfer.h mythtv-0.19-new/programs/mythbackend/filetransfer.h
 --- mythtv-0.19-old/programs/mythbackend/filetransfer.h	2006-02-06 07:35:33.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/filetransfer.h	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/filetransfer.h	2006-03-17 16:39:39.000000000 -0800
 @@ -35,6 +35,8 @@
  
      long long GetFileSize(void);
@@ -4031,7 +4191,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/filetransfer.h mythtv-0.19-new/p
      QMutex readthreadLock;
 diff -Naur mythtv-0.19-old/programs/mythbackend/housekeeper.cpp mythtv-0.19-new/programs/mythbackend/housekeeper.cpp
 --- mythtv-0.19-old/programs/mythbackend/housekeeper.cpp	2005-12-26 21:20:47.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/housekeeper.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/housekeeper.cpp	2006-03-17 16:39:39.000000000 -0800
 @@ -138,7 +138,6 @@
  
      while (1)
@@ -4042,7 +4202,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/housekeeper.cpp mythtv-0.19-new/
  
 diff -Naur mythtv-0.19-old/programs/mythbackend/mainserver.cpp mythtv-0.19-new/programs/mythbackend/mainserver.cpp
 --- mythtv-0.19-old/programs/mythbackend/mainserver.cpp	2006-01-28 15:49:24.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/mainserver.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/mainserver.cpp	2006-03-17 16:39:39.000000000 -0800
 @@ -1919,11 +1919,8 @@
      if (m_sched) {
          if (table == "") m_sched->getAllPending(strList);
@@ -4072,7 +4232,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/mainserver.cpp mythtv-0.19-new/p
          VERBOSE(VB_IMPORTANT, QString("Unknown command: %1").arg(command));
 diff -Naur mythtv-0.19-old/programs/mythbackend/scheduler.cpp mythtv-0.19-new/programs/mythbackend/scheduler.cpp
 --- mythtv-0.19-old/programs/mythbackend/scheduler.cpp	2006-02-08 22:27:56.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/scheduler.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/scheduler.cpp	2006-03-17 16:39:39.000000000 -0800
 @@ -35,8 +35,7 @@
  #define LOC_ERR QString("Scheduler, Error: ")
  
@@ -4125,7 +4285,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/scheduler.cpp mythtv-0.19-new/pr
  "OR RECTABLE.type = %3 " // finddailyrecord
 diff -Naur mythtv-0.19-old/programs/mythbackend/scheduler.h mythtv-0.19-new/programs/mythbackend/scheduler.h
 --- mythtv-0.19-old/programs/mythbackend/scheduler.h	2006-02-07 13:53:46.000000000 -0800
-+++ mythtv-0.19-new/programs/mythbackend/scheduler.h	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythbackend/scheduler.h	2006-03-17 16:39:39.000000000 -0800
 @@ -23,8 +23,7 @@
  {
    public:
@@ -4138,7 +4298,7 @@ diff -Naur mythtv-0.19-old/programs/mythbackend/scheduler.h mythtv-0.19-new/prog
      void Reschedule(int recordid);
 diff -Naur mythtv-0.19-old/programs/mythcommflag/main.cpp mythtv-0.19-new/programs/mythcommflag/main.cpp
 --- mythtv-0.19-old/programs/mythcommflag/main.cpp	2006-02-07 22:42:13.000000000 -0800
-+++ mythtv-0.19-new/programs/mythcommflag/main.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythcommflag/main.cpp	2006-03-17 16:39:38.000000000 -0800
 @@ -895,9 +895,6 @@
          return COMMFLAG_EXIT_INVALID_CMDLINE;
      }
@@ -4177,7 +4337,7 @@ diff -Naur mythtv-0.19-old/programs/mythcommflag/main.cpp mythtv-0.19-new/progra
                  }
 diff -Naur mythtv-0.19-old/programs/mythfrontend/customrecord.cpp mythtv-0.19-new/programs/mythfrontend/customrecord.cpp
 --- mythtv-0.19-old/programs/mythfrontend/customrecord.cpp	2006-01-21 20:16:48.000000000 -0800
-+++ mythtv-0.19-new/programs/mythfrontend/customrecord.cpp	2006-03-15 17:12:44.000000000 -0800
++++ mythtv-0.19-new/programs/mythfrontend/customrecord.cpp	2006-03-17 16:39:37.000000000 -0800
 @@ -149,7 +149,7 @@
      m_cfrom << "";
      m_csql << "program.stars >= 0.75 ";
@@ -4198,9 +4358,21 @@ diff -Naur mythtv-0.19-old/programs/mythfrontend/customrecord.cpp mythtv-0.19-ne
  
          if (query.exec() && query.isActive())
          {
+diff -Naur mythtv-0.19-old/programs/mythfrontend/networkcontrol.cpp mythtv-0.19-new/programs/mythfrontend/networkcontrol.cpp
+--- mythtv-0.19-old/programs/mythfrontend/networkcontrol.cpp	2006-02-09 12:21:59.000000000 -0800
++++ mythtv-0.19-new/programs/mythfrontend/networkcontrol.cpp	2006-03-17 16:39:37.000000000 -0800
+@@ -469,7 +469,7 @@
+             message = "NETWORK_CONTROL SEEK BACKWARD";
+         else if (tokens[2].contains(QRegExp("^\\d\\d:\\d\\d:\\d\\d$")))
+         {
+-            int hours = tokens[2].left(0).toInt();
++            int hours   = tokens[2].mid(0, 2).toInt();
+             int minutes = tokens[2].mid(3, 2).toInt();
+             int seconds = tokens[2].mid(6, 2).toInt();
+             message = QString("NETWORK_CONTROL SEEK POSITION %1")
 diff -Naur mythtv-0.19-old/programs/mythfrontend/playbackbox.cpp mythtv-0.19-new/programs/mythfrontend/playbackbox.cpp
 --- mythtv-0.19-old/programs/mythfrontend/playbackbox.cpp	2006-02-07 09:21:33.000000000 -0800
-+++ mythtv-0.19-new/programs/mythfrontend/playbackbox.cpp	2006-03-15 17:12:44.000000000 -0800
++++ mythtv-0.19-new/programs/mythfrontend/playbackbox.cpp	2006-03-17 16:39:37.000000000 -0800
 @@ -140,6 +140,7 @@
        // Main Recording List support
        fillListTimer(new QTimer(this)),  connected(false),
@@ -4258,7 +4430,7 @@ diff -Naur mythtv-0.19-old/programs/mythfrontend/playbackbox.cpp mythtv-0.19-new
          groupDisplayName = recGroup;
 diff -Naur mythtv-0.19-old/programs/mythfrontend/playbackbox.h mythtv-0.19-new/programs/mythfrontend/playbackbox.h
 --- mythtv-0.19-old/programs/mythfrontend/playbackbox.h	2006-02-01 18:43:31.000000000 -0800
-+++ mythtv-0.19-new/programs/mythfrontend/playbackbox.h	2006-03-15 17:12:44.000000000 -0800
++++ mythtv-0.19-new/programs/mythfrontend/playbackbox.h	2006-03-17 16:39:37.000000000 -0800
 @@ -337,6 +337,7 @@
      int                 progIndex;  ///< Index of selected item index on page
      QStringList         titleList;  ///< list of pages
@@ -4269,7 +4441,7 @@ diff -Naur mythtv-0.19-old/programs/mythfrontend/playbackbox.h mythtv-0.19-new/p
      QStringList         playList;   ///< list of selected items "play list"
 diff -Naur mythtv-0.19-old/programs/mythfrontend/tv_schedule.xml mythtv-0.19-new/programs/mythfrontend/tv_schedule.xml
 --- mythtv-0.19-old/programs/mythfrontend/tv_schedule.xml	2006-02-01 07:28:40.000000000 -0800
-+++ mythtv-0.19-new/programs/mythfrontend/tv_schedule.xml	2006-03-15 17:12:44.000000000 -0800
++++ mythtv-0.19-new/programs/mythfrontend/tv_schedule.xml	2006-03-17 16:39:37.000000000 -0800
 @@ -26,7 +26,7 @@
        <alttext lang="CA">Guia</alttext>
        <alttext lang="DE">EPG</alttext>
@@ -4281,7 +4453,7 @@ diff -Naur mythtv-0.19-old/programs/mythfrontend/tv_schedule.xml mythtv-0.19-new
        <alttext lang="JA">ガイド</alttext>
 diff -Naur mythtv-0.19-old/programs/mythtranscode/mpeg2fix.cpp mythtv-0.19-new/programs/mythtranscode/mpeg2fix.cpp
 --- mythtv-0.19-old/programs/mythtranscode/mpeg2fix.cpp	2006-01-26 08:42:44.000000000 -0800
-+++ mythtv-0.19-new/programs/mythtranscode/mpeg2fix.cpp	2006-03-15 17:12:44.000000000 -0800
++++ mythtv-0.19-new/programs/mythtranscode/mpeg2fix.cpp	2006-03-17 16:39:38.000000000 -0800
 @@ -1776,6 +1776,7 @@
  
          if (vFrame.count() && (file_end || vFrame.getLast()->isSequence))
@@ -4313,7 +4485,7 @@ diff -Naur mythtv-0.19-old/programs/mythtranscode/mpeg2fix.cpp mythtv-0.19-new/p
                          }
 diff -Naur mythtv-0.19-old/programs/mythtv/main.cpp mythtv-0.19-new/programs/mythtv/main.cpp
 --- mythtv-0.19-old/programs/mythtv/main.cpp	2006-01-04 07:45:55.000000000 -0800
-+++ mythtv-0.19-new/programs/mythtv/main.cpp	2006-03-15 17:12:45.000000000 -0800
++++ mythtv-0.19-new/programs/mythtv/main.cpp	2006-03-17 16:39:39.000000000 -0800
 @@ -132,6 +132,7 @@
          ProgramInfo *pginfo = new ProgramInfo();
          pginfo->endts = QDateTime::currentDateTime().addSecs(-180);

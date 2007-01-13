@@ -11,11 +11,13 @@ start() {
         analog)
             sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
             case "${MM_HARDWARE_AUDIO}" in
-                AD1986A)
+                ANALOG_AD1986A)
                     amixer set 'PCM' 90% unmute 
                     amixer set 'Front' 90% unmute 
                     ;;
-                VT1612A|VT1616|VT1617A)
+                REALTEK_ALC655)
+                    ;;
+                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
                     amixer set 'PCM' 90% unmute 
                     amixer set 'Master' 90% unmute 
                     amixer set 'VIA DXS',0 100%
@@ -25,10 +27,12 @@ start() {
         digital)
             sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
             case "${MM_HARDWARE_AUDIO}" in
-                AD1986A)
+                ANALOG_AD1986A)
                     amixer set 'IEC958' on
                     ;;
-                VT1612A|VT1616|VT1617A)
+                REALTEK_ALC655)
+                    ;;
+                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
                     amixer set 'IEC958' on
                     amixer set 'IEC958 Playback AC97-SPSA' 0
                     amixer set 'VIA DXS',0 100%
@@ -38,12 +42,14 @@ start() {
         digital+analog)
             sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
             case "${MM_HARDWARE_AUDIO}" in
-                AD1986A)
+                ANALOG_AD1986A)
                     amixer set 'IEC958' on
                     amixer set 'PCM' 90% unmute 
                     amixer set 'Front' 90% unmute 
                     ;;
-                VT1612A|VT1616|VT1617A)
+                REALTEK_ALC655)
+                    ;;
+                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
                     amixer set 'IEC958' on
                     amixer set 'IEC958 Playback AC97-SPSA' 0
                     amixer set 'PCM' 90% unmute 
@@ -61,12 +67,14 @@ stop () {
     mm_message_output info 'muting audio ...'
 
     case "${MM_HARDWARE_AUDIO}" in
-        AD1986A)
+        ANALOG_AD1986A)
            amixer set 'IEC958' off
            amixer set 'PCM' 0% mute 
            amixer set 'Front' 0% mute 
            ;;
-        VT1612A|VT1616|VT1617A)
+        REALTEK_ALC655)
+           ;;
+        VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
            amixer set 'IEC958' off
            amixer set 'IEC958 Playback AC97-SPSA' 0
            amixer set 'PCM' 0% mute 

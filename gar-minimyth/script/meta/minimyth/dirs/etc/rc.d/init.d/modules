@@ -49,29 +49,29 @@ start() {
 
     # Sensors.
     case "${MM_HARDWARE_SENSOR}" in
-        VT1211)
+        VIA_VT1211)
             modprobe i2c-core
             modprobe i2c-dev
             modprobe i2c-isa
             modprobe vt1211
             ;;
-        W83627EHG)
+        WINBOND_W83627EHG)
             modprobe i2c-core
             modprobe i2c-dev
             modprobe i2c-isa
             case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                NFORCE_430)
+                NVIDIA_NFORCE430)
                     modprobe i2c-nforce2
                     ;;
             esac
             modprobe w83627ehf
             ;;
-        W83782D)
+        WINBOND_W83782D)
             modprobe i2c-core
             modprobe i2c-dev
             modprobe i2c-isa
             case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                VT8235|VT8237)
+                VIA_VT8235|VIA_VT8237)
                     modprobe i2c-viapro
                     ;;
             esac
@@ -87,10 +87,13 @@ start() {
 
     # IDE.
     case "${MM_HARDWARE_SOUTHBRIDGE}" in
-        NFORCE_430)
+        INTEL_ICH4)
+            modprobe piix
+            ;;
+        NVIDIA_NFORCE430)
             modprobe amd74xx
             ;;
-        VT8235|VT8237)
+        VIA_VT8235|VIA_VT8237)
             modprobe via82cxxx
             ;;
     esac
@@ -111,10 +114,13 @@ start() {
     modprobe usbcore
     modprobe ehci-hcd
     case "${MM_HARDWARE_SOUTHBRIDGE}" in
-        NFORCE_430)
+        INTEL_ICH4)
+            modprobe uhci-hcd
+            ;;
+        NVIDIA_NFORCE430)
             modprobe ohci-hcd
             ;;
-        VT8235|VT8237)
+        VIA_VT8235|VIA_VT8237)
             modprobe uhci-hcd
             ;;
     esac
@@ -152,10 +158,13 @@ start() {
     # Sound.
     modprobe soundcore
     case "${MM_HARDWARE_AUDIO}" in
-        AD1986A)
+        ANALOG_AD1986A)
             modprobe snd-hda-intel
             ;;
-        VT1612A|VT1616|VT1617A)
+        REALTEK_ALC655)
+            modprobe snd-intel8x0
+            ;;
+        VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
             modprobe snd-via82xx
             ;;
     esac
@@ -163,14 +172,26 @@ start() {
     # Video.
     modprobe agpgart
     case "${MM_HARDWARE_NORTHBRIDGE}" in
-        GFORCE_6150)
+        INTEL_845GV)
+            modprobe intel-agp
+            ;;
+        NVIDIA_GFORCE6150)
             modprobe nvidia-agp
             ;;
-        CLE266|CN400)
+        VIA_CLE266|VIA_CN400)
             modprobe via-agp
             ;;
     esac
     case "${MM_X_DRIVER}" in
+        intel_810)
+            modprobe i810
+            ;;
+        intel_830)
+            modprobe i830
+            ;;
+        intel_915)
+            modprobe i915
+            ;;
         nvidia)
             modprobe nvidia
             ;;
