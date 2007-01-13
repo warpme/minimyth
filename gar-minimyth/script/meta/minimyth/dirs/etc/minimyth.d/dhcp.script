@@ -36,23 +36,35 @@ case "$1" in
 			done
 		fi
 
+		if [ -n "$hostname" ] ; then
+			hostname $hostname
+		fi
+
 		echo -n > $RESOLV_CONF
 		[ -n "$domain" ] && echo search $domain >> $RESOLV_CONF
 		for i in $dns ; do
 			echo adding dns server $i
 			echo nameserver $i >> $RESOLV_CONF
 		done
+
 		echo -n > $NTP_CONF
 		for i in $ntpsrv ; do
 			echo adding ntp server $i
 			echo server $i >> $NTP_CONF
 		done
-		if [ -n "$hostname" ] ; then
-			hostname $hostname
-		fi
-		echo ""                                                                        >  /etc/minimyth.d/dhcp.conf
-		echo "MM_TFTP_SERVER=\"$siaddr\""                                              >> /etc/minimyth.d/dhcp.conf
-		echo "MM_TFTP_ROOTDIR=\"`echo $boot_file | sed 's%[^/]*$%%' | sed 's%/$%%'`\"" >> /etc/minimyth.d/dhcp.conf
+
+		MM_LOG_SERVER=
+		for i in $logsvr ; do
+			if [ -z "$MM_LOG_SERVER" ] ; then
+				MM_LOG_SERVER=$i
+			fi
+		done
+		MM_TFTP_SERVER=$siaddr
+		MM_TFTP_ROOTDIR=`echo $boot_file | sed 's%[^/]*$%%' | sed 's%/$%%'`
+		echo -n                                     >  /etc/minimyth.d/dhcp.conf
+		echo "MM_LOG_SERVER=\"$MM_LOG_SERVER\""     >> /etc/minimyth.d/dhcp.conf
+		echo "MM_TFTP_SERVER=\"$MM_TFTP_SERVER\""   >> /etc/minimyth.d/dhcp.conf
+		echo "MM_TFTP_ROOTDIR=\"$MM_TFTP_ROOTDIR\"" >> /etc/minimyth.d/dhcp.conf
 		;;
 esac
 
