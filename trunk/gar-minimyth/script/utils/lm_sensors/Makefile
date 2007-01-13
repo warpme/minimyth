@@ -1,9 +1,9 @@
 GARNAME = lm_sensors
-GARVERSION = 4169
+GARVERSION = 2.10.1
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -42,7 +42,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-install:
