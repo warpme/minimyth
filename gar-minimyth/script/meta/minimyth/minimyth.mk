@@ -118,6 +118,7 @@ mm-make-dirs:
 	@mkdir -p $(mm_DESTDIR)/media
 	@mkdir -p $(mm_DESTDIR)/mnt
 	@mkdir -p $(mm_DESTDIR)/proc
+	@mkdir -p $(mm_DESTDIR)/srv
 	@mkdir -p $(mm_DESTDIR)/sys
 	@mkdir -p $(mm_DESTDIR)/tmp
 
@@ -132,10 +133,14 @@ mm-make-conf:
 	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
 	@rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
 	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
+	@rm -rf $(mm_DESTDIR)/srv         ; cp -r ./dirs/srv  $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/srv/www/etc ; ln -s /etc     $(mm_DESTDIR)/srv/www/etc
+	@rm -rf $(mm_DESTDIR)/srv/www/log ; ln -s /var/log $(mm_DESTDIR)/srv/www/log
+	@rm -rf $(mm_DESTDIR)/srv/www/tmp ; ln -s /tmp     $(mm_DESTDIR)/srv/www/tmp
+	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/srv/www/cgi/status.cgi
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	@ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
-	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
 	@ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
 
 mm-make-busybox:
