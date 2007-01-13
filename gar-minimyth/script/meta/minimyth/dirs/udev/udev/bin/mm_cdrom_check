@@ -1,0 +1,35 @@
+#!/bin/sh
+
+device="$1"
+attribute="$2"
+
+[ -e /proc/sys/dev/cdrom/info ] || exit 1
+
+device_found=0
+/bin/cat /proc/sys/dev/cdrom/info | {
+    while read line; do
+        if [ "$line" = "" ] ; then
+            device_found=0
+        else
+            if [ "$device_found" = "0" ] ; then
+                if [ "`echo \"$line\" | grep \"drive name:\"`"  = "$line" ]; then
+                    line=`echo $line | sed 's%^[^:]*:[ \t]*%%'`
+                    if [ "$line" = "$device" ] ; then
+                        device_found=1
+                    fi
+                fi
+            else
+                if [ "$attribute" = "" ] ; then
+                    exit 0
+                fi
+                if [ "`echo \"$line\" | grep \"$attribute:\" `" = "$line" ]; then
+                    line=`echo $line | sed 's%^[^:]*:[ \t]*%%'`
+                    if [ "$line" = "1"       ] ; then
+                        exit 0
+                    fi
+                fi
+            fi
+        fi
+    done
+    exit 1
+}

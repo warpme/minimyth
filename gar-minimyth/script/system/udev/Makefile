@@ -55,8 +55,13 @@ initdir     := $(sysconfdir)/init.d
 dev_ddir    := $(sysconfdir)/dev.d
 udevdir     := $(rootdir)/dev
 
+pre-install:
+	@rm -rf $(DESTDIR)$(sysconfdir)/dev.d
+	@rm -rf $(DESTDIR)$(sysconfdir)/udev
+	@$(MAKECOOKIE)
+
 post-install:
-	@sed -i 's%SYMLINK="cdrom"%SYMLINK="cdrom dvd"%g' $(DESTDIR)$(sysconfdir)/udev/rules.d/50-udev.rules
+	@sed -i 's%\(.*SYMLINK="cdrom".*\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
 	@ln -sf udev $(DESTDIR)$(sbindir)/udevstart
 	@ln -sf .$(call DIRSTODOTS, $(hotplugdir))$(sbindir)/udevsend $(DESTDIR)$(hotplugdir)/10-udev.hotplug
 	@$(MAKECOOKIE)
