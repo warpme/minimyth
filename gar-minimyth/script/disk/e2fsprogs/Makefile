@@ -24,10 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; rm -rf aclocal.m4 configure
-	@cd $(WORKSRC) ; aclocal
-	@cd $(WORKSRC) ; libtoolize --copy --force
-	@cd $(WORKSRC) ; autoconf
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 install-custom:
