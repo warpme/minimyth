@@ -1,8 +1,8 @@
 GARNAME = bison
-GARVERSION = 1.875
+GARVERSION = 2.0
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/bison/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION =

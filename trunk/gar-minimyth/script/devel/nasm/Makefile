@@ -1,8 +1,8 @@
 GARNAME = nasm
-GARVERSION = 0.98.38
+GARVERSION = 0.98.39
 CATEGORIES = devel
 MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/nasm/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -16,6 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
                                                                                                                              
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+
 INSTALL_ENV = INSTALLROOT="$(DESTDIR)"
 
 include ../../gar.mk
