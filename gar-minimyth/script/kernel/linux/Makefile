@@ -5,7 +5,7 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-bootsplash.patch
+PATCHFILES = $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

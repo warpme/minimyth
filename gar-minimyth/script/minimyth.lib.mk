@@ -14,8 +14,13 @@ gar-patch-%:
 		| sed 's%@GAR_prefix@%$(prefix)%g' \
 		| sed 's%@GAR_bindir@%$(bindir)%g' \
 		| sed 's%@GAR_datadir@%$(datadir)%g' \
+		| sed 's%@GAR_ebindir@%$(ebindir)%g' \
+		| sed 's%@GAR_esbindir@%$(esbindir)%g' \
 		| sed 's%@GAR_includedir@%$(includedir)%g' \
 		| sed 's%@GAR_libdir@%$(libdir)%g' \
+		| sed 's%@GAR_localstatedir@%$(localstatedir)%g' \
+		| sed 's%@GAR_mandir@%$(mandir)%g' \
+		| sed 's%@GAR_sbindir@%$(sbindir)%g' \
 		| sed 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
 		| sed 's%@GAR_x11bprefix@%$(x11prefix)%g' \
 		| sed 's%@GAR_x11bindir@%$(x11bindir)%g' \

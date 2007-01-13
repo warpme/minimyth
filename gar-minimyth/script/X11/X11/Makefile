@@ -37,13 +37,13 @@ include ../../gar.mk
 
 CDebugFlags  := $(filter-out $(CPPFLAGS) $(LDFLAGS), $(CFLAGS))
 HostCcCmd    := $(build_CC)
-CppCmd       := $(shell echo $(CPP)    | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-CcCmd        := $(shell echo $(CC)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-CplusplusCmd := $(shell echo $(CXX)    | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-LdCmd        := $(shell echo $(LD)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-RanlibCmd    := $(shell echo $(RANLIB) | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-AsCmd        := $(shell echo $(AS)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
-ArCmd        := $(shell echo $(AR)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
+CppCmd       := $(shell echo $(CPP)    | sed 's%^$(compiler_prefix)%%')
+CcCmd        := $(shell echo $(CC)     | sed 's%^$(compiler_prefix)%%')
+CplusplusCmd := $(shell echo $(CXX)    | sed 's%^$(compiler_prefix)%%')
+LdCmd        := $(shell echo $(LD)     | sed 's%^$(compiler_prefix)%%')
+RanlibCmd    := $(shell echo $(RANLIB) | sed 's%^$(compiler_prefix)%%')
+AsCmd        := $(shell echo $(AS)     | sed 's%^$(compiler_prefix)%%')
+ArCmd        := $(shell echo $(AR)     | sed 's%^$(compiler_prefix)%%')
 
 # Set compiler and clear compiler flags so that they do not cause
 # problems when compiling with HostCcCmd.
@@ -106,7 +106,7 @@ configure-directory:
 	@$(call CONFIG_FILE_APPEND, StdIncDir                 , $(DESTDIR)$(includedir))
 	@$(call CONFIG_FILE_APPEND, DefaultGccIncludeDir      , $(CROSS_GCC_INCLUDEDIR))
 	@$(call CONFIG_FILE_APPEND, LinkGLToUsrLib            , NO)
-	@$(call CONFIG_FILE_APPEND, LinkGLToUsrInclude        , NO)
+	@$(call CONFIG_FILE_APPEND, LinkGLToUsrInclude        , YES)
 	@$(MAKECOOKIE)
 
 # CDebugFlags should be set in CONFIG_FILE. However, when cross compiling,
@@ -263,6 +263,8 @@ post-install:
 	@ln -sf ./$(call DIRSTODOTS,$(bindir))/$(x11bindir)             $(DESTDIR)$(bindir)/X11
 	@ln -sf ./$(call DIRSTODOTS,$(includedir))/$(x11includedir)/X11 $(DESTDIR)$(includedir)/X11
 	@ln -sf ./$(call DIRSTODOTS,$(libdir))/$(x11libdir)/X11         $(DESTDIR)$(libdir)/X11
+	@rm -f $(DESTDIR)$(includedir)/GL
+	@ln -sf ./$(call DIRSTODOTS,$(includedir))/$(x11includedir)/GL $(DESTDIR)$(includedir)/GL
 	@$(call GLIBC_ADD_LIB_PATH, $(x11prefix)/lib)
 	@for file in `cd $(DESTDIR)$(x11libdir)/pkgconfig ; ls -1` ; do \
 		sed -i 's%-L$(x11libdir)%-L$(DESTDIR)$(x11libdir)%g'         $(DESTDIR)$(x11libdir)/pkgconfig/$${file} ; \

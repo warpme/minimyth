@@ -3,20 +3,13 @@
 # mm_message_output
 ################################################################################
 
-box() {
-    return 0;
-}
-. /etc/bootsplash/themes/MythTV/config/bootsplash-800x600.cfg
-
 LEVEL=$1
 MESSAGE=$2
 
-if [ ! -z "${MESSAGE}" ] ; then
+if [ -e "/var/cache/splash/fifo" ] ; then
+    logger    -t minimyth -p local0.${LEVEL} "${MESSAGE}"
+    echo "set message ${MESSAGE}" >> /var/cache/splash/fifo
+    echo "repaint"                >> /var/cache/splash/fifo
+else
     logger -s -t minimyth -p local0.${LEVEL} "${MESSAGE}"
-fi
-if [ -e /proc/splash ] ; then
-    if [ -n "`cat /proc/splash | grep ': on' | grep 'silent'`" ] ; then
-        splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
-        fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "${MESSAGE}"
-    fi
 fi

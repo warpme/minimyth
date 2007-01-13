@@ -7,7 +7,7 @@ if [ "`mm_var_get MM_X_WM_ENABLED`" = "yes" ] ; then
 	aewm &
 fi
 if [ -z "`mm_var_get MM_DEBUG`" ] ; then
-	mythfrontend        >> "`mm_var_get MM_LOGFILE`" 2>&1
+	mythfrontend
 else
-	mythfrontend -v all >> "`mm_var_get MM_LOGFILE`" 2>&1
+	mythfrontend -v all
 fi

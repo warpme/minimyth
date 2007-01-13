@@ -14,7 +14,6 @@ DEPENDS = \
 	system/acpid \
 	X11/aewm \
  	utils/alsa-utils \
-	system/bootsplash \
 	utils/busybox \
 	devel/gdb \
 	system/lcdproc \
@@ -32,6 +31,7 @@ DEPENDS = \
 	qt/qt \
 	X11/rxvt \
 	net/samba \
+	system/splashutils \
 	utils/strace \
 	system/udev \
 	X11/unichrome \

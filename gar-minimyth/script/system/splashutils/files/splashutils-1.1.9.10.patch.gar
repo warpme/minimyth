@@ -1,0 +1,120 @@
+diff -Naur splashutils-1.1.9.10-old/config.h splashutils-1.1.9.10-new/config.h
+--- splashutils-1.1.9.10-old/config.h	2005-05-15 10:41:28.000000000 -0700
++++ splashutils-1.1.9.10-new/config.h	2005-11-26 21:36:30.000000000 -0800
+@@ -1,7 +1,7 @@
+-#define CONFIG_PNG
++//#define CONFIG_PNG
+ #define CONFIG_TTF
+ #define CONFIG_TTF_KERNEL
+-#define CONFIG_FBSPLASH
++//#define CONFIG_FBSPLASH
+ //#define CONFIG_MNG
+-#define THEME_DIR 			"/etc/splash"
+-#define SPLASH_FIFO			"/lib/splash/cache/.splash"
++#define THEME_DIR 			"@GAR_sysconfdir@/splash"
++#define SPLASH_FIFO			"@GAR_localstatedir@/cache/splash/fifo"
+diff -Naur splashutils-1.1.9.10-old/Makefile splashutils-1.1.9.10-new/Makefile
+--- splashutils-1.1.9.10-old/Makefile	2005-09-28 16:40:24.000000000 -0700
++++ splashutils-1.1.9.10-new/Makefile	2005-11-26 21:36:16.000000000 -0800
+@@ -10,7 +10,7 @@
+ PKG_VERSION = 1.1.9.10
+ DEBUG 	 = false		# set to true to prevent stripping
+ K_SHARED = false		# set to true if you want to link to a shared klibc
+-QUIET    = true
++QUIET    = false
+ 
+ CC	= gcc
+ KLCC	= klcc
+@@ -20,12 +20,12 @@
+ ZLIBSRC ?= libs/zlib-1.2.3
+ FT2SRC  ?= libs/freetype-2.1.9
+ 
+-prefix     =
+-sbindir    = ${prefix}/sbin
+-usrbindir  = ${prefix}/usr/bin
+-mandir 	   = ${prefix}/usr/share/man
++prefix     = @GAR_prefix@
++sbindir    = @GAR_esbindir@
++usrbindir  = @GAR_bindir@
++mandir 	   = @GAR_mandir@
+ 
+-INSTALL 	= /usr/bin/install -c
++INSTALL 	= install -c
+ INSTALL_PROG 	= ${INSTALL}
+ INSTALL_DATA 	= ${INSTALL} -m 644
+ INSTALL_SCRIPT 	= ${INSTALL_PROG}
+@@ -47,8 +47,8 @@
+ ROOT	= $(shell pwd)
+ 
+ # flags for the kernel utils
+-K_CFLAGS = -w -ffunction-sections -fdata-sections $(MISCINCS) \
+-	   -I$(ROOT)/$(ZLIBSRC) -I$(ROOT)/$(FT2SRC)/include -I$(ROOT)/linux/include -I$(ROOT)/linux/include2 \
++K_CFLAGS = $(CFLAGS) \
++	   -I$(ROOT)/linux/include -I$(ROOT)/linux/include2 \
+ 	   -DWITH_ERRLIST -DTARGET_KERNEL -DTT_CONFIG_OPTION_BYTECODE_INTERPRETER
+ 
+ PNGDEFS = -DPNG_NO_WRITE_TIME -DPNG_NO_FLOATING_POINT_SUPPORTED -DPNG_NO_WRITE_SUPPORTED -DPNG_NO_READ_iTXt \
+@@ -56,7 +56,7 @@
+ 	  -DPNG_NO_ERROR_NUMBERS -DPNG_READ_GRAY_TO_RGB_SUPPORTED -DPNG_READ_16_TO_8_SUPPORTED \
+ 	  -DPNG_READ_STRIP_ALPHA_SUPPORTED -DPNG_NO_INFO_IMAGE -DPNG_NO_READ_TRANSFORMS -DPNG_NO_READ_ANCILLARY_CHUNKS
+ 	  
+-K_LDLIBS = $(JPEGSRC)/libjpeg.a 
++K_LDLIBS = @GAR_DESTDIR@@GAR_libdir@/libjpeg.a
+ K_OBJS 	 = $(KOUT)/kernel.o $(KOUT)/dev.o $(KOUT)/parse.o $(KOUT)/render.o $(KOUT)/image.o \
+ 	   $(KOUT)/cmd.o $(KOUT)/common.o $(KOUT)/list.o $(KOUT)/effects.o 
+ K_DEPS   = 
+@@ -65,7 +65,7 @@
+ CFLAGS   = -Wall -g
+ LDLIBS   = -ljpeg -lm
+ LDFLAGS  = 
+-INCLUDES = -I$(ROOT)/linux/include -I/usr/include/freetype2
++INCLUDES = -I$(ROOT)/linux/include -I@GAR_DESTDIR@@GAR_includedir@/freetype2
+ OBJS     = splash.o parse.o render.o image.o cmd.o common.o daemon.o list.o effects.o
+ 
+ # checks whether an opton is set in config.h
+@@ -82,13 +82,13 @@
+ endif
+ 
+ ifeq ($(call config_opt,CONFIG_TTF_KERNEL),true)
+-	K_LDLIBS += $(FT2SRC)/objs/.libs/libfreetype.a 
++	K_LDLIBS += @GAR_DESTDIR@@GAR_libdir@/libfreetype.a @GAR_DESTDIR@@GAR_libdir@/libz.a
+ 	K_OBJS 	 += $(KOUT)/ttf.o
+ 	K_DEPS	 += ft2
+ endif
+ 
+ ifeq ($(call config_opt,CONFIG_PNG),true)
+-	K_LDLIBS += $(LPNGSRC)/libpng.a $(ZLIBSRC)/libz.a 
++	K_LDLIBS += @GAR_DESTDIR@@GAR_libdir@/libpng.a @GAR_DESTDIR@@GAR_libdir@/libz.a
+ 	K_DEPS	 += libpng
+ 	LDLIBS	 += -lpng -lz -lm
+ endif	
+@@ -180,7 +180,7 @@
+ 	if ! make -q CFLAGS="$(K_CFLAGS)" library; then $(call info,MAKE,freetype2) ; fi ; \
+ 	make CFLAGS="-c $(K_CFLAGS)" library > $(OUTPUT)
+ 	
+-splash_kern: linux jpeglib kdir $(K_DEPS) $(SP_HELPER) config.h $(K_LDLIBS)
++splash_kern: linux kdir $(SP_HELPER) config.h
+ 
+ $(SP_HELPER): $(K_OBJS)
+ 	@$(call info,LD,$@)
+@@ -189,7 +189,7 @@
+ 
+ $(KOUT)/%.o: %.c config.h splash.h
+ 	@$(call info,CC,$@)
+-	$(Q)$(KLCC) $(K_CFLAGS) -I/usr/include -c -o $@ $<
++	$(Q)$(KLCC) $(K_CFLAGS) -c -o $@ $<
+ 
+ %.o: %.c config.h splash.h
+ 	@$(call info,CC,$@)
+diff -Naur splashutils-1.1.9.10-old/splash.h splashutils-1.1.9.10-new/splash.h
+--- splashutils-1.1.9.10-old/splash.h	2005-09-28 14:25:35.000000000 -0700
++++ splashutils-1.1.9.10-new/splash.h	2005-11-26 21:36:16.000000000 -0800
+@@ -27,7 +27,7 @@
+ #define DEFAULT_MESSAGE "Initializing the kernel..."
+ #define DEFAULT_FONT 	"luxisri.ttf"
+ #define DEFAULT_THEME	"default"
+-#define TTF_DEFAULT	THEME_DIR "/" DEFAULT_FONT
++#define TTF_DEFAULT	"@GAR_x11libdir@/X11/fonts/TTF" "/" DEFAULT_FONT
+ 
+ /* Settings that shouldn't be changed */
+ #define PROGRESS_MAX 	0xffff
