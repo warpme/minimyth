@@ -34,4 +34,5 @@ post-patch:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libtiff.la
+	@rm -f $(DESTDIR)$(libdir)/libtiffxx.la
 	@$(MAKECOOKIE)
