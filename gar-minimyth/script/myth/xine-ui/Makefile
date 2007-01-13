@@ -23,8 +23,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--with-gnu-ld \
 	--with-xine-prefix=$(DESTDIR)$(prefix) \
+	--with-xine-exec-prefix=$(DESTDIR)$(prefix) \
 	--with-x \
-	--without-readline
+	--without-readline \
+	--with-aalib-prefix=$(DESTDIR)$(prefix) \
+	--with-aalib-exec-prefix=$(DESTDIR)$(prefix)
 CONFIGURE_ENV  = \
 	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
