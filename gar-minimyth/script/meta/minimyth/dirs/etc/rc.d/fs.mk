@@ -11,8 +11,9 @@ FS = \
 	/sys \
 	/tmp \
 	/var \
-	/var/run \
 	/var/lock \
+	/var/log \
+	/var/run \
 	/var/unionfs
 
 fs: fs-modules $(FS)
@@ -37,6 +38,34 @@ fs-proc:
 	mount -n -t proc /proc /proc
 	touch /proc
 	touch fs-proc
+
+/dev: fs-dev
+	touch /dev
+
+fs-dev: /proc /sys
+	mount -n -t tmpfs tmpfs /dev
+	mknod -m 640 /dev/mem     c 1 1
+	mknod -m 666 /dev/null    c 1 3
+	mknod -m 666 /dev/zero    c 1 5
+	mknod -m 666 /dev/random  c 1 8
+	mknod -m 444 /dev/urandom c 1 9
+	mknod -m 660 /dev/tty0    c 4 0
+	mknod -m 660 /dev/tty1    c 4 1
+	mknod -m 660 /dev/tty2    c 4 2
+	mknod -m 666 /dev/tty     c 5 0
+	mknod -m 600 /dev/console c 5 1
+	mknod -m 666 /dev/ptmx    c 5 2
+	ln -s /proc/kcore     /dev/core
+	ln -s /proc/self/fd   /dev/fd
+	ln -s /proc/self/fd/0 /dev/stdin
+	ln -s /proc/self/fd/1 /dev/stdout
+	ln -s /proc/self/fd/2 /dev/stderr
+	mkdir -p /dev/pts ; mount -n -t devpts none /dev/pts
+	mkdir -p /dev/shm ; mount -n -t tmpfs  none /dev/shm
+	echo "/sbin/udev" > /proc/sys/kernel/hotplug
+	udevstart
+	touch /dev
+	touch fs-dev
 
 /var: fs-var
 	touch /var
@@ -81,15 +110,15 @@ fs-root: mm_dir_make_rw
 	mkdir -p /var/lock
 	touch /var/lock
 
+/var/log: /var
+	mkdir -p /var/log
+	touch /var/log
+
 /var/run: /var
 	mkdir -p /var/run
 	touch /var/run
 
-/var/unionfs: fs-var-unionfs
-	touch /var/unionfs
-
-fs-var-unionfs: /var
+/var/unionfs: /var
 	mkdir -p /var/unionfs
-	mount -t tmpfs tmpfs /var/unionfs
+	mount -n -t tmpfs tmpfs /var/unionfs
 	touch /var/unionfs
-	touch fs-var-unionfs

@@ -5,6 +5,6 @@
 telnet: utelnetd
 	touch telnet
 
-utelnetd: mm_var_get network
+utelnetd: network /dev
 	utelnetd -d
 	touch utelnetd

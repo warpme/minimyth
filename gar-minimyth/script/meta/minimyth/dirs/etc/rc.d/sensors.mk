@@ -2,6 +2,6 @@
 # sensors.mk
 ################################################################################
 
-sensors:
+sensors: /proc
 	-sensors -s
 	touch sensors
