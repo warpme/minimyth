@@ -1,7 +1,8 @@
 GARNAME = tiff
 GARVERSION = 3.7.2
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.remotesensing.org/pub/libtiff/
+MASTER_SITES  = ftp://ftp.remotesensing.org/pub/libtiff/
+MASTER_SITES += ftp://ftp.remotesensing.org/pub/libtiff/old/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = libtiff
 libtiff_LICENSE_TEXT = $(WORKSRC)/COPYRIGHT
