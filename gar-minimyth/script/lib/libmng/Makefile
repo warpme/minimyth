@@ -17,9 +17,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld \
 	--with-zlib \
-	--with-jpeg \
-	--with-gnu-ld
+	--with-jpeg
 	
 xxx-BUILD_ARGS = \
 	CC="$(CC)" \

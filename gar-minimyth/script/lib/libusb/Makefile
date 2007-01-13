@@ -19,7 +19,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-build-docs
+	--disable-debug \
+	--disable-build-docs \
+	--with-gnu-ld
 
 include ../../gar.mk
 

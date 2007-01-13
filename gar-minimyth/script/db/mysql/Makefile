@@ -18,7 +18,13 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-thread-safe-client \
+	--with-gnu-ld \
+	--without-debug \
+	--without-server \
+	--without-docs \
+	--without-bench
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
@@ -37,16 +43,17 @@ USE_BUILD_BIN     = \
 INSTALL_BUILD_BIN =
 endif
 
+post-patch:
+	@#Hack to allow configure to work. This works because we are not really cross compiling.
+	@sed -i 's%\([ \t]*cross_compiling *= *\)yes%\1no%' $(WORKSRC)/configure
+	@$(MAKECOOKIE)
+
 post-configure:
 	@$(call USE_BUILD_BIN, libmysql, conf_to_src)
-	@$(call USE_BUILD_BIN, strings , conf_to_src)
-	@$(call USE_BUILD_BIN, sql     , gen_lex_hash)
 	@$(MAKECOOKIE)
 
 post-install:
 	@$(call INSTALL_BUILD_BIN, libmysql, conf_to_src)
-	@$(call INSTALL_BUILD_BIN, strings , conf_to_src)
-	@$(call INSTALL_BUILD_BIN, sql     , gen_lex_hash)
 	@$(call GLIBC_ADD_LIB_PATH, $(libdir)/mysql)
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
 	@$(MAKECOOKIE)
