@@ -7,6 +7,16 @@
 
 . /etc/minimyth.d/minimyth.functions
 
+# Load the LIRC configuration files.
+if [ -n ${MM_LIRC_REMOTE} ] ; then
+    if [ -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ] ; then
+        cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /tmp/etc/lircd.conf
+    fi
+    if [ -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} ] ; then
+        cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /tmp/etc/lircrc
+    fi
+fi
+
 # If the LIRC driver is known, pick reasonable defaults.
 case "${MM_LIRC_DRIVER}" in
     irman)
@@ -26,6 +36,7 @@ case "${MM_LIRC_DRIVER}" in
         ;;
 esac
 
+# Load kernel module (if needed) and start the LIRC daemon.
 if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
     if [ -n "${MM_LIRC_KERNEL_MODULE}" ] ; then
         modprobe ${MM_LIRC_KERNEL_MODULE} ${MM_LIRC_KERNEL_MODULE_OPTIONS}
