@@ -41,5 +41,5 @@ CPPFLAGS :=
 CFLAGS   :=
 LDFLAGS  :=
 
-IUSER  := `id -un`
-IGROUP := `id -gn`
+IUSER  := `id -u`
+IGROUP := `id -g`
