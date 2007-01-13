@@ -6,22 +6,22 @@
 
 # Create /proc.
 mkdir -p /proc
-mount -n -t proc /proc /proc
+mount -n -t proc  none /proc
 # Create /sys.
 mkdir -p /sys
-mount -n -t sysfs /sys /sys
+mount -n -t sysfs none /sys
 # Create /var.
 mkdir -p /var
-mount -n -t tmpfs -o size=512K tmpfs /var
+mount -n -t tmpfs -o size=512K none /var
 mkdir -p /var/lock
 mkdir -p /var/log
 mkdir -p /var/run
 # Create /tmp.
 mkdir -p /tmp
-mount -n -t tmpfs -o size=512K tmpfs /tmp
-# Create /dev (must be done after /media is rw).
+mount -n -t tmpfs -o size=512K none /tmp
+# Create /dev.
 mkdir -p /dev
-mount -n -t tmpfs tmpfs /dev
+mount -n -t tmpfs none /dev
 mknod -m 600 /dev/console c 5 1
 mknod -m 640 /dev/mem     c 1 1
 mknod -m 666 /dev/null    c 1 3
@@ -38,9 +38,9 @@ ln -s /proc/self/fd   /dev/fd
 ln -s /proc/self/fd/0 /dev/stdin
 ln -s /proc/self/fd/1 /dev/stdout
 ln -s /proc/self/fd/2 /dev/stderr
-mkdir /dev/pts
+mkdir -p /dev/pts
 mount -n -t devpts none /dev/pts
-mkdir /dev/shm
+mkdir -p /dev/shm
 mount -n -t tmpfs  none /dev/shm
 echo "/sbin/udev" > /proc/sys/kernel/hotplug
 udevstart
