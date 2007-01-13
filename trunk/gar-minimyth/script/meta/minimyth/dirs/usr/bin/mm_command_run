@@ -8,10 +8,14 @@ COMMAND=$1
 
 MM_LOGFILE=`mm_var_get MM_LOGFILE`
 
-# Make sure log directory exists.
 LOG_DIR=`echo ${MM_LOGFILE} | sed -e 's%[^/]*$%%' -e 's%/$%%'`
-[ -n "${LOG_DIR}" ] && mkdir -p ${LOG_DIR}
 
-echo "--- execution start: ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
-${COMMAND}                              >> ${MM_LOGFILE} 2>&1
-echo "--- execution end  : ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
+if [ -w ${MM_LOGFILE} ] || [ -w ${LOG_DIR} ] ; then
+    echo "--- execution start: ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
+    ${COMMAND}                              >> ${MM_LOGFILE} 2>&1
+    echo "--- execution end  : ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
+else
+    echo "--- execution start: ${COMMAND}"  2>&1
+    ${COMMAND}                              2>&1
+    echo "--- execution end  : ${COMMAND}"  2>&1
+fi
