@@ -74,7 +74,7 @@ configure-os:
 	@$(call CONFIG_FILE_APPEND, LinuxDistribution         , 0)
 	@$(call CONFIG_FILE_APPEND, DefaultOSMajorVersion     , $(KERNEL_MAJOR_VERSION))
 	@$(call CONFIG_FILE_APPEND, DefaultOSMinorVersion     , $(KERNEL_MINOR_VERSION))
-	@$(call CONFIG_FILE_APPEND, DefaultOSTeenyVersion     , $(KERNEL_SUBMINOR_VERSION))
+	@$(call CONFIG_FILE_APPEND, DefaultOSTeenyVersion     , $(KERNEL_TEENY_VERSION))
 	@$(MAKECOOKIE)
 
 configure-directory:

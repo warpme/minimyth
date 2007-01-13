@@ -1,7 +1,8 @@
 GARNAME = samba
-GARVERSION = 3.0.14a
+GARVERSION = 3.0.15pre2
 CATEGORIES = net
-MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
+MASTER_SITES  = http://us1.samba.org/samba/ftp/stable/
+MASTER_SITES += http://us1.samba.org/samba/ftp/pre/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

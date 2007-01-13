@@ -1,10 +1,10 @@
 GARNAME = MPlayer
-GARVERSION = 1.0pre6a
+GARVERSION = 1.0pre7
 CATEGORIES = myth
 MASTER_SITES  = http://ftp5.mplayerhq.hu/mplayer/releases/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/unichrome/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-unichrome-0.5.bz2 $(DISTNAME)-c3.patch $(DISTNAME)-host.patch
+PATCHFILES = $(DISTNAME)-unichrome.patch $(DISTNAME)-c3.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -129,9 +129,9 @@ CONFIGURE_ARGS_ADVANCED = \
 CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
 	--with-x11libdir="$(DESTDIR)$(x11libdir)" \
-	--with-win32libdir="${libdir}/win32" \
-	--with-xanimlibdir="${libdir}/win32" \
-	--with-reallibdir="${libdir}/win32" \
+	--with-win32libdir="$(libdir)/win32" \
+	--with-xanimlibdir="$(libdir)/win32" \
+	--with-reallibdir="$(libdir)/win32" \
 	--with-xvmclib=XvMCW \
 	--with-xxmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \

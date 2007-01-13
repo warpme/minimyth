@@ -1,8 +1,8 @@
-GARNAME = libmng
+GARNAME = libmng-mini
 GARVERSION = $(LIBMNG_VERSION)
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
+SOURCEPKG = lib/libmng
+PATCHFILES = libmng-$(GARVERSION)-no_jpeg.patch
 LICENSE = libmng
 libmng_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -10,17 +10,21 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libjpeg lib/zlib
+DEPENDS = lang/c lib/zlib
+
+WORKSRC = $(WORKDIR)/libmng-$(GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
-	--with-zlib \
-	--with-jpeg
-	
+	--without-zlib \
+	--without-lcms \
+	--without-jpeg
+
+GAR_EXTRA_CONF += lib/libmng/package-api.mk
 include ../../gar.mk
 
 pre-configure:
@@ -32,6 +36,6 @@ pre-configure:
 	@cd $(WORKSRC) ; autoconf
 	@$(MAKECOOKIE)
 
-post-install:
-	@rm -f $(DESTDIR)$(libdir)/libmng.la
+install-custom:
+	@install -m 0755 $(WORKSRC)/.libs/libmng.a $(DESTDIR)$(libdir)/libmng-mini.a
 	@$(MAKECOOKIE)
