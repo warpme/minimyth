@@ -35,6 +35,21 @@ start() {
                     ;;
             esac
             ;;
+        INTEL_FW82801DB)
+            modprobe snd-intel8x0
+            while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
+            case "${MM_AUDIO_TYPE}" in
+                analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
+                    ;;
+                digital)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    ;;
+                digital+analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    ;;
+            esac
+            ;;
         REALTEK_ALC655)
             modprobe snd-intel8x0
             while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done

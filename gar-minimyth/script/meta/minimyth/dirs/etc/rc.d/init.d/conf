@@ -143,12 +143,12 @@ conf_write() {
             ;;
         COMMELL_LV_675)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="INTEL"
-            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="INTEL_845GV"
-            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="INTEL_ICH4"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="INTEL_82845GV"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="INTEL_82801DB"
             [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="INTEL_82541PI"
             [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="REALTEK_ALC655"
-            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV=""
-            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR=""
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="CHRONTEL_CH7009"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83627HF"
             ;;
         COMMELL_LV_667)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
@@ -158,6 +158,15 @@ conf_write() {
             [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="VIA_VT1616"
             [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="VIA_VT1625"
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="WINBOND_W83782D"
+            ;;
+        T_ONLINE_S100)
+            [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="INTEL"
+            [ -z "${MM_HARDWARE_NORTHBRIDGE}" ] && MM_HARDWARE_NORTHBRIDGE="INTEL_FW82830M"
+            [ -z "${MM_HARDWARE_SOUTHBRIDGE}" ] && MM_HARDWARE_SOUTHBRIDGE="INTEL_FW82801DB"
+            [ -z "${MM_HARDWARE_LAN}"         ] && MM_HARDWARE_LAN="REALTEK_8139"
+            [ -z "${MM_HARDWARE_AUDIO}"       ] && MM_HARDWARE_AUDIO="INTEL_FW82801DB"
+            [ -z "${MM_HARDWARE_TV}"          ] && MM_HARDWARE_TV="FOCUS_FS454"
+            [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="NATIONAL_LM85"
             ;;
         VIA_EPIA_CN)
             [ -z "${MM_HARDWARE_CHIPSET}"     ] && MM_HARDWARE_CHIPSET="VIA"
@@ -288,22 +297,30 @@ conf_write() {
     # X.
     if [ -z "${MM_X_DRIVER}" ] ; then
         case "${MM_HARDWARE_NORTHBRIDGE}" in
-            INTEL_845GV)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=intel_i830
+            INTEL_FW82830M)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="intel_i830"
+                ;;
+            INTEL_82845GV)
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="intel_i830"
                 ;;
             NVIDIA_GFORCE6150)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=nvidia
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="nvidia"
                 ;;
             VIA_CLE266)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via"
                 ;;
             VIA_CN400)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via_pro
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via_pro"
                 ;;
             VIA_CN700)
-                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via_pro
+                [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER="via_pro"
                 ;;
         esac
+        if [ "${MM_X_DRIVER}" = "intel_i830" ] ; then
+             if [ "${MM_X_TV_ENABLED}" = "yes" ] && [ "${MM_HARDWARE_TV}" = "FOCUS_FS454" ] ; then
+                 MM_X_DRIVER="intel"
+             fi
+        fi
     fi
     [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
     [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"

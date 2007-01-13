@@ -61,15 +61,25 @@ start() {
     # Hacks to deal with the fact that the proprietary NVIDIA GL libraries
     # conflict with the Open Source Mesa GL libraries.
     case "${MM_X_DRIVER}" in
-        intel_i810|intel_i830|intel_i915)
-            MM_X_MODULE_DRI="Load	\"dri\""
-            MM_X_MODULEPATH=""
+        intel)
+            DRI_TRUE="#"
+            NVIDIA_TRUE="#"
+            ;;
+        intel_i810)
+            DRI_TRUE=""
+            NVIDIA_TRUE="#"
+            ;;
+        intel_i830)
+            DRI_TRUE=""
+            NVIDIA_TRUE="#"
+            ;;
+        intel_i915)
+            DRI_TRUE=""
+            NVIDIA_TRUE="#"
             ;;
         nvidia)
-            # Do not include dri module.
-            MM_X_MODULE_DRI=""
-            # Include path to proprietary NVIDIA modules.
-            MM_X_MODULEPATH="ModulePath	\"/usr/lib/nvidia/xorg/modules\""
+            DRI_TRUE="#"
+            NVIDIA_TRUE=""
             # Include path to proprietary NVIDIA libraries.
             LIB_PATHS=`cat /etc/ld.so.conf`
             LIB_PATHS="/usr/lib/${MM_X_DRIVER} ${LIB_PATHS}"
@@ -84,9 +94,13 @@ start() {
             # Rebuild library cache.
             ldconfig
             ;;
-        via|via_pro)
-            MM_X_MODULE_DRI="Load	\"dri\""
-            MM_X_MODULEPATH=""
+        via)
+            DRI_TRUE=""
+            NVIDIA_TRUE="#"
+            ;;
+        via_pro)
+            DRI_TRUE=""
+            NVIDIA_TRUE="#"
             ;;
     esac
 
@@ -99,8 +113,8 @@ start() {
     sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"           /etc/X11/xorg.conf
     sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"                   /etc/X11/xorg.conf
     sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%"     /etc/X11/xorg.conf
-    sed -i "s%@MM_X_MODULE_DRI@%${MM_X_MODULE_DRI}%"       /etc/X11/xorg.conf
-    sed -i "s%@MM_X_MODULEPATH@%${MM_X_MODULEPATH}%"       /etc/X11/xorg.conf
+    sed -i "s%@DRI_TRUE@%${DRI_TRUE}%"                     /etc/X11/xorg.conf
+    sed -i "s%@NVIDIA_TRUE@%${NVIDIA_TRUE}%"               /etc/X11/xorg.conf
     sed -i "s%@MM_X_USE_EDID_DPI@%${MM_X_USE_EDID_DPI}%"   /etc/X11/xorg.conf
 
     # Turn off splash screen.

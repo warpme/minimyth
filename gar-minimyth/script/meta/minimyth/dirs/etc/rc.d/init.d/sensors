@@ -9,11 +9,27 @@ start() {
 
     # Load sensor kernel modules.
     case "${MM_HARDWARE_SENSOR}" in
+        NATIONAL_LM85)
+            case "${MM_HARDWARE_SOUTHBRIDGE}" in
+                INTEL_FW82801DB)
+                    modprobe i2c-i801
+                    ;;
+            esac
+            modprobe lm85 
+            ;;
         VIA_VT1211)
             modprobe vt1211
             ;;
         WINBOND_W83627EHG)
             modprobe w83627ehf
+            ;;
+        WINBOND_W83627HG)
+            case "${MM_HARDWARE_SOUTHBRIDGE}" in
+                INTEL_82801DB)
+                    modprobe i2c-i801
+                    ;;
+            esac
+            modprobe w83627hf
             ;;
         WINBOND_W83782D)
             case "${MM_HARDWARE_SOUTHBRIDGE}" in
