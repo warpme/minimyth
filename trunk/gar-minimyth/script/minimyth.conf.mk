@@ -11,6 +11,12 @@ mm_VERSION        ?= 0.17.0.0beta1
 #-------------------------------------------------------------------------------
 # Indicates the Via microprocessor architecture.
 # Valid values for mm_GARCH are 'c3' and 'c3-2'.
+# Use 'c3' if you have a processor that uses a Samuel or Ezra core.
+# Motherboards with Ezra based processors include:
+#   EPIA M6000E, EPIA M9000 and EPIA M10000.
+# Use 'c3-2' if you have a processor that uses a Nehemiah or Antaur core.
+# Motherboards with Nehemiah based processors include:
+#   EPIA M10000N and EPIA MII12000.
 mm_GARCH          ?= c3
 # Indicates whether or not to install the CRAMFS (ramdisk) root file system image.
 # Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.
