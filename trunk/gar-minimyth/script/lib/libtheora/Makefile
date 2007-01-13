@@ -1,4 +1,4 @@
-GARNAME = libtheora
+GARNAME = libtheora-mmx
 GARVERSION = 1.0alpha5
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/theora/
