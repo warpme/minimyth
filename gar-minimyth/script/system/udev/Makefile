@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 081
+GARVERSION = 083
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,7 +12,7 @@ endef
 DEPENDS = lang/c kernel/linux
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS = $(WORKSRC)/Makefile custom
 
 DEFAULT_ARGS = \
 	V=true \
@@ -53,4 +53,10 @@ udevdir     := $(rootdir)/dev
 
 pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
+	@$(MAKECOOKIE)
+
+install-custom:
+	@install -D $(WORKSRC)/udev      $(DESTDIR)$(esbindir)/udev
+	@install -D $(WORKSRC)/udevsend  $(DESTDIR)$(esbindir)/udevsend
+	@install -D $(WORKSRC)/udevstart $(DESTDIR)$(esbindir)/udevstart
 	@$(MAKECOOKIE)

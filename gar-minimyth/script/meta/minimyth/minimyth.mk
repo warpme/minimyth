@@ -353,14 +353,7 @@ mm-install:
 			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 		chown -Rh root:root $(mm_DESTDIR).tmp ; \
 		mkdir        $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev ; \
-		mknod -m 666 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/null c 1 3 ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty0 c 4 0 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty1 c 4 1 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty2 c 4 2 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty3 c 4 3 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty4 c 4 4 ; \
-		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty5 c 4 5 ; \
 		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/initctl p; \
 		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
 		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
