@@ -49,13 +49,16 @@ endif
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+
 post-install:
-	$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
+	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la ;
+	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la ;
+	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
+		rm -f $(DESTDIR)$(libdir)/libstdc++.la ; \
+		rm -f $(DESTDIR)$(libdir)/libsupc++.la ; \
 		ln -s gcc $(DESTDIR)$(bindir)/cc ; \
 	)
-	$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
-		rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la ; \
-		rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la ; \
+	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-gcc $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cc ; \
