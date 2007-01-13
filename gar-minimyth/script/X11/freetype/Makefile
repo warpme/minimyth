@@ -1,11 +1,11 @@
 GARNAME = freetype
-GARVERSION = 2.1.9
+GARVERSION = 2.1.10
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = gar-base.diff
+PATCHFILES = $(DISTNAME).patch
 LICENSE = FTL/GPL2
-FTL_LICENSE_TEXT = $(WORKSRC)/docs/FTL.txt
+FTL_LICENSE_TEXT = $(WORKSRC)/docs/FTL.TXT
 
 DESCRIPTION = 
 define BLURB
