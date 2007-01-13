@@ -40,6 +40,7 @@ DEPENDS = \
 	system/sysvinit \
 	system/udev \
 	utils/util-linux \
+	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
 	xorg/xorg \
