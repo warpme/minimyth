@@ -2,7 +2,7 @@
 ################################################################################
 # mythtv.script
 #
-# This script creates and configures the directory '/root/.mythtv'.
+# This script configures MythTV.
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
@@ -10,11 +10,15 @@ MM_MYTH_DBNAME=`mm_var_get MM_MYTH_DBNAME`
 MM_MYTH_DBPASSWORD=`mm_var_get MM_MYTH_DBPASSWORD`
 MM_MYTH_DBUSERNAME=`mm_var_get MM_MYTH_DBUSERNAME`
 MM_MYTH_SERVER=`mm_var_get MM_MYTH_SERVER`
+MM_MYTHGALLERY_URL=`mm_var_get MM_MYTHGALLERY_URL`
+MM_MYTHMUSIC_URL=`mm_var_get MM_MYTHMUSIC_URL`
+MM_MYTHVIDEO_URL=`mm_var_get MM_MYTHVIDEO_URL`
 MM_TFTP_SERVER=`mm_var_get MM_TFTP_SERVER`
 MM_THEMECACHE_URL=`mm_var_get MM_THEMECACHE_URL`
 
 mm_dir_make_rw /root
 
+# Mount themecache.
 if   [ -z ${MM_THEMECACHE_URL} ] ; then
     touch /root/.mythtv/themecache
 else
@@ -28,3 +32,25 @@ echo "DBHostName=${MM_MYTH_SERVER}"     >> /root/.mythtv/mysql.txt
 echo "DBUserName=${MM_MYTH_DBUSERNAME}" >> /root/.mythtv/mysql.txt
 echo "DBPassword=${MM_MYTH_DBPASSWORD}" >> /root/.mythtv/mysql.txt
 echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
+
+# Configure Myth database settings to match MiniMyth frontend.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING_' | sed -e 's%^MM_MYTHDB_SETTING_%%' | \
+while read setting ; do
+    setting_label=`echo ${setting} | sed -e 's%=.*$%%'    -e 's%^[ \t]*%%' -e 's%[ \t]*$%%'`
+    setting_value=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ \t]*%%' -e 's%[ \t]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
+    mm_mythdb_setting_update "${setting_label}" "${setting_value}"
+done
+
+# Delete unused Myth plugins.
+if [ ! -e /dev/dvd     ] ; then
+    rm -f /usr/lib/mythtv/plugins/libmythdvd.so
+fi
+if [ ! -e /mnt/gallery ] ; then
+    rm -f /usr/lib/mythtv/plugins/libmythgallery.so
+fi
+if [ ! -e /mnt/music   ] ; then
+    rm -f /usr/lib/mythtv/plugins/libmythmusic.so
+fi
+if [ ! -e /mnt/video   ] ; then
+    rm -f /usr/lib/mythtv/plugins/libmythvideo.so
+fi
