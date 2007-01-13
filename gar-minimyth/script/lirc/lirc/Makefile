@@ -11,41 +11,25 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb lirc/libirman
-DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.mceusb2 lirc/lirc.serial lirc/lirc.streamzap
+DEPENDS  = $(LIRC_DEPENDS)
+DEPENDS += $(addprefix lirc/,$(filter lirc.%,$(shell cd ../ ; ls )))
 
-WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
+WORKSRC = $(LIRC_WORKSRC)
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(LIRC_CONFIGURE_SCRIPTS)
+BUILD_SCRIPTS     = $(LIRC_BUILD_SCRIPTS)
+INSTALL_SCRIPTS   = $(LIRC_INSTALL_SCRIPTS)
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--enable-sandboxed \
-	--with-gnu-ld \
-	--without-x \
-	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
-	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
-	--with-driver=none
-BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
-INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
+CONFIGURE_ARGS = $(LIRC_CONFIGURE_ARGS) --with-driver=none
+BUILD_ARGS     = $(LIRC_BUILD_ARGS)
+INSTALL_ARGS   = $(LIRC_INSTALL_ARGS)
 
-CONFIGURE_ENV = $(KERNEL_MAKE_ENV) LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
-BUILD_ENV     = $(KERNEL_MAKE_ENV)
-INSTALL_ENV   = $(KERNEL_MAKE_ENV)
+CONFIGURE_ENV = $(LIRC_CONFIGURE_ENV)
+BUILD_ENV     = $(LIRC_BUILD_ENV)
+INSTALL_ENV   = $(LIRC_INSTALL_ENV)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk lirc/lirc/package-api.mk
+GAR_EXTRA_CONF += lirc/lirc/package-api.mk
 include ../../gar.mk
-
-post-patch:
-	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
-	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
-	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
-	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la
