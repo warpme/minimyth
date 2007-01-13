@@ -65,6 +65,8 @@ pre-configure:
 	@echo "libc_cv_c_cleanup=yes"     >> $(WORKBLD)/config.cache
 	@$(MAKECOOKIE)
 
+CFLAGS := $(filter-out $(CFLAGS), -ffast-math)
+
 configure-custom:
 	@mkdir -p $(WORKBLD)
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)

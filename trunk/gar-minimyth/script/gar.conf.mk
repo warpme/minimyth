@@ -104,14 +104,14 @@ build_chroot_DESTDIR ?= /tmp/chroot
 
 # allow us to link to libraries we installed
 main_CPPFLAGS += 
-main_CFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer
+main_CFLAGS += -march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math
 main_LDFLAGS += 
-#main_CXXFLAGS += -march=$(GARCH) -pipe -O3 -fomit-frame-pointer
+#main_CXXFLAGS += -march=$(GARCH) -pipe -Os -fomit-frame-pointer -ffast-math
 
 # allow us to link to libraries we installed
 build_CPPFLAGS += 
-build_CFLAGS += -march=pentium-mmx -pipe -O3 -fomit-frame-pointer
-#build_CXXFLAGS += -march=pentium-mmx -pipe -O3 -fomit-frame-pointer
+build_CFLAGS += -march=pentium-mmx -pipe -Os -fomit-frame-pointer -ffast-math
+#build_CXXFLAGS += -march=pentium-mmx -pipe -Os -fomit-frame-pointer -ffast-math
 build_LDFLAGS += 
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
