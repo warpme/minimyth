@@ -126,3 +126,34 @@ execute_and_log() {
     echo "--- execution end  : ${COMMAND}"  >> ${MM_LOGFILE} 2>&1
 }
 
+################################################################################
+# Myth database access commands.
+################################################################################
+run_mythdb_command() {
+    COMMAND=$1
+
+    DBHostName=`cat /root/.mythtv/mysql.txt | grep "^DBHostName" | sed -e 's%^[^=]*=%%'`
+    DBUserName=`cat /root/.mythtv/mysql.txt | grep "^DBUserName" | sed -e 's%^[^=]*=%%'`
+    DBPassword=`cat /root/.mythtv/mysql.txt | grep "^DBPassword" | sed -e 's%^[^=]*=%%'`
+    DBName=`cat /root/.mythtv/mysql.txt     | grep "^DBName"     | sed -e 's%^[^=]*=%%'`
+
+    mysql \
+	--host=${DBHostName} \
+	--user=${DBPassword} \
+	--password=${DBPassword} \
+	--exec="use ${DBName} ; ${COMMAND} ;"
+}
+
+update_mythdb_settings() {
+    VALUE=$1
+    DATA=$2
+    HOSTNAME=`hostname`
+
+    run_mythdb_command "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+}
+
+dump_mythdb_settings() {
+    HOSTNAME=`hostname`
+
+    run_mythdb_command "SELECT * FROM settings WHERE hostname=\"${HOSTNAME}\""
+}

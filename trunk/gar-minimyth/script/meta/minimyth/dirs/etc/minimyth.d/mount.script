@@ -7,6 +7,15 @@
 
 . /etc/minimyth.d/minimyth.functions
 
-[ -n "${MM_MYTHGALLERY_URL}" ] && mount_url "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
-[ -n "${MM_MYTHMUSIC_URL}"   ] && mount_url "${MM_MYTHMUSIC_URL}"   "/mnt/music"
-[ -n "${MM_MYTHVIDEO_URL}"   ] && mount_url "${MM_MYTHVIDEO_URL}"   "/mnt/video"
+if [ -n "${MM_MYTHGALLERY_URL}" ] ; then
+    mount_url "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
+    update_mythdb_settings "GalleryDir" "/mnt/gallery/"
+fi
+if [ -n "${MM_MYTHMUSIC_URL}"   ] ; then
+    mount_url "${MM_MYTHMUSIC_URL}"   "/mnt/music"
+    update_mythdb_settings "MusicLocation" "/mnt/music/"
+fi
+if [ -n "${MM_MYTHVIDEO_URL}"   ] ; then
+    mount_url "${MM_MYTHVIDEO_URL}"   "/mnt/video"
+    update_mythdb_settings "VideoStartupDir" "/mnt/video/"
+fi
