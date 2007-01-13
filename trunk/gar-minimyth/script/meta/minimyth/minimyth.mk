@@ -285,7 +285,7 @@ mm-make-conf:
 	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
-	@cp -r  $(mm_HOME)/html/css/linpvr.css    $(mm_ROOTFSDIR)/srv/www/css/
+	@cp -r  $(mm_HOME)/html/css/*             $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
 	@cp -r  $(mm_HOME)/html/include/*         $(mm_ROOTFSDIR)/srv/www/include/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
