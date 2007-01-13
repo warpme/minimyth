@@ -1,0 +1,7 @@
+#!/bin/sh
+mount -n -t tmpfs                                       tmpfs   /rootfs-rw
+mount -n -t unionfs -o dirs=/rootfs-rw=rw:/rootfs-ro=ro unionfs /rootfs
+cd /rootfs
+mkdir -p initrd
+pivot_root . initrd
+exec /usr/sbin/chroot . ./linuxrc <dev/console >dev/console 2>&1

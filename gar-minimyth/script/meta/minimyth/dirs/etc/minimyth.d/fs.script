@@ -5,30 +5,22 @@
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
 # Create /proc.
+mkdir -p /proc
 mount -n -t proc /proc /proc
 # Create /sys.
+mkdir -p /sys
 mount -n -t sysfs /sys /sys
 # Create /var.
+mkdir -p /var
 mount -n -t tmpfs -o size=512K tmpfs /var
 mkdir -p /var/lock
 mkdir -p /var/log
 mkdir -p /var/run
 # Create /tmp.
+mkdir -p /tmp
 mount -n -t tmpfs -o size=512K tmpfs /tmp
-# Make remaining directories rw.
-modprobe unionfs
-mkdir -p /var/unionfs
-mount -n -t tmpfs tmpfs /var/unionfs
-mm_dir_make_rw /bin
-mm_dir_make_rw /etc
-mm_dir_make_rw /lib
-mm_dir_make_rw /media
-mm_dir_make_rw /mnt
-mm_dir_make_rw /root
-mm_dir_make_rw /sbin
-mm_dir_make_rw /srv
-mm_dir_make_rw /usr
 # Create /dev (must be done after /media is rw).
+mkdir -p /dev
 mount -n -t tmpfs tmpfs /dev
 mknod -m 600 /dev/console c 5 1
 mknod -m 640 /dev/mem     c 1 1
@@ -52,5 +44,9 @@ mkdir /dev/shm
 mount -n -t tmpfs  none /dev/shm
 echo "/sbin/udev" > /proc/sys/kernel/hotplug
 udevstart
+# Create remaining root directories.
+mkdir -p /media
+mkdir -p /mnt
+mkdir -p /srv
 
 exit 0
