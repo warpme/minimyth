@@ -112,7 +112,7 @@
               <dd>
                 <a href="#MM_EXTRAS_URL">MM_EXTRAS_URL</a>.
               </dd>
-              <dt><a href="#MM_CODECS">Codecs directory configuration variables</a></dt>
+              <dt><a href="#MM_CODECS">CODECs directory configuration variables</a></dt>
               <dd>
                 <a href="#MM_CODECS_URL">MM_CODECS_URL</a>.
               </dd>
@@ -273,7 +273,7 @@
                   The MiniMyth frontend's
                   <a href="http://en.wikipedia.org/wiki/Domain_name">domain</a>.
                   MiniMyth does not require a domain name,
-                  but it can be useful when using DNS to resolve local network hostnames to IP addressses.
+                  but it can be useful when using DNS to resolve local network hostnames to IP addresses.
                 </p>
                 <p>
                   The corresponding
@@ -350,7 +350,7 @@
                   <a href="http://en.wikipedia.org/wiki/Syslog">syslog</a>
                   server DNS names or IP addresses to which MiniMyth will log.
                   MiniMyth will log to the first log server in the list.
-                  If MiniMyth does not optain a log server address,
+                  If MiniMyth does not obtain a log server address,
                   then MiniMyth will log locally.
                 </p>
                 <p>
@@ -419,7 +419,7 @@
                 </p>
                 <p>
                   At this time, this is supported for the AMD Athlon64 only.
-                  VIA CPU frequecy scaling support in the Linux kernel (the longhaul driver) has been disabled
+                  VIA CPU frequency scaling support in the Linux kernel (the longhaul driver) has been disabled
                   by the kernel maintainers until stability problems are addressed.
                 </p>
               </dd>
@@ -462,8 +462,9 @@
               <dd>
                 <p>
                   Specify the font size scale factor as a percentage.
+                  The value must an integer that is not less than '25' or greater than '400'.
                   The default value is '100'.
-                  A smaller value reults in smaller MythTV fonts, and a larger value results in larger MythTV fonts.
+                  A smaller value results in smaller MythTV fonts, and a larger value results in larger MythTV fonts.
                 </p>
                 <p>
                   MythTV is designed for 100 dots per inch.
@@ -479,14 +480,24 @@
             <p>
               The X configuration variables can be divided into three groups: application, output and display.
               The X application configuration variables configure which X applications are to be enabled.
-              The X output configuration variabls configure which video outputs are to be enabled.
-              The X display configuration variables configure the parameters of the X diplay.
+              The X output configuration variables configure which video outputs are to be enabled.
+              The X display configuration variables configure the parameters of the X display.
             </p>
             <p>
-              The X display configuration variables allow you set the X variables related to the mode,
-              such as vertical refresh rate, resolution in pixels, and mode lines.
-              However they do no allow you to set the physical display size.
-              This is because the physical display size is not relavent.
+              X needs a mode line in order to work.
+              The X display configuration variables provide three methods for specifying the mode line.
+              <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>,
+              <a href="#MM_X_MODELINE">MM_X_MODELINE</a> and
+              <a href="#MM_X_MODE">MM_X_MODE</a>.
+              Since these are mutually exclusive, you must only set one of them in your MiniMyth configuration file.
+              If you do not set one of them, then MiniMyth will pick a default for
+              <a href="#MM_X_MODE">MM_X_MODE</a>
+              that may not be optimal but should work.
+            </p>
+            <p>
+              While the X display configuration variables allow you set the X variables related to the mode,
+              they do not allow you to set the physical display size.
+              This is because the physical display size is not relevant.
               Unlike with a computer monitor, with a television the bigger the television the farther back you sit.
               As a result, the television always appears to be the same size.
               Consequently, MythTV does not care about the physical display size.
@@ -510,7 +521,7 @@
                   MiniMyth requires the X Window System in order to run MythTV and other X application.
                   There should be no reason to use 'MM_X_ENABLED' to disable the X Window System.
                   If you are debugging MiniMyth,
-                  then you sould set
+                  then you should set
                   '<a href="document-boot.shtml#MM_DEBUG">MM_DEBUG</a>'
                   on the
                   <a href="document-boot.shtml#bootline">boot line</a>.
@@ -535,7 +546,7 @@
                   MiniMyth does not require the X window manager to run MythTV or other X applications.
                   There should be no reason to use 'MM_X_WM_ENABLED' to enabled the X window manager.
                   However, because X applications are usually developed on systems running an X window manager,
-                  they sometimes exhibit starge behavior on systems that do not.
+                  they sometimes exhibit strange behavior on systems that do not.
                   For example, some X applications may have focus problems on systems that are not running an X window manager.
                 </p>
                 <p>
@@ -647,20 +658,62 @@
                   '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'.
                 </p>
               </dd>
+              <dt id="MM_X_RESOLUTION"><strong>MM_X_RESOLUTION</strong></dt>
+              <dd>
+                <p>
+                  Specify the screen resolution (in pixels).
+                  The screen resolution has the form 'HxV' (e.g. '1024x768'), where H and V are the horizontal and vertical resolution in pixels.
+                </p>
+                <p>
+                  MiniMyth will use 'MM_X_RESOLUTION' along with
+                  '<a href="#MM_X_REFRESH">MM_X_REFRESH</a>'
+                  to generate the screen mode line that X will use.
+                </p>
+                <p>
+                  If 'MM_X_RESOLUTION' is set, then
+                  '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>'
+                  and
+                  '<a href="#MM_X_MODE">MM_X_MODE</a>'
+                  must not be set.
+                </p>
+              </dd>
+              <dt id="MM_X_MODELINE"><strong>MM_X_MODELINE</strong></dt>
+              <dd>
+                <p>
+                  Specify the screen mode line that X will use.
+                  The screen mode line has the form 'Modeline&nbsp;"HxV..."&nbsp;...', where H and V are the horizontal and vertical resolution in pixels.
+                  For example:
+                </p>
+                <p>
+                  MM_X_MODELINE='Modeline&nbsp;"1280x720_60.00"&nbsp;&nbsp;74.48&nbsp;&nbsp;1280&nbsp;1336&nbsp;1472&nbsp;1664&nbsp;&nbsp;720&nbsp;721&nbsp;724&nbsp;746&nbsp;&nbsp;-HSync&nbsp;+Vsync'
+                </p>
+                <p>
+                  The screen mode line must have this form 'Modeline&nbsp;"HxV..."&nbsp;...',
+                  because MiniMyth needs to know the X resolution in pixels before starting X.
+                  MiniMyth needs to know the X resolution in pixels before starting X,
+                  because MiniMyth uses the X resolution in pixels to calculate an X display size in millimeters.
+                </p>
+                <p>
+                <p>
+                  If 'MM_X_MODELINE' is set, then
+                  '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
+                  and
+                  '<a href="#MM_X_MODE">MM_X_MODE</a>'
+                  must not be set.
+                </p>
+              </dd>
               <dt id="MM_X_MODE"><strong>MM_X_MODE</strong></dt>
               <dd>
                 <p>
-                  The screen mode that specifies a built in or user specified
-                  ('<a href="#MM_X_MODELINE">MM_X_MODELINE</a>')
-                  screen mode.
-                  The value can be the screen mode or 'auto'
+                  Specify the built in screen mode that X will use.
+                  The value can be the screen mode or 'auto', with 'auto' being the default.
                   The screen mode must have the form 'HxV...' (e.g. '1024x768_60.0'), where H and V are the horizontal and vertical resolution in pixels.
                 </p>
                 <p>
                   The screen mode must have this form 'HxV...',
                   because MiniMyth needs to know the X resolution in pixels before starting X.
                   MiniMyth needs to know the X resolution in pixels before starting X,
-                  because MiniMyth uses the X resolution in pixesl to calculate an X display size in millimeters.
+                  because MiniMyth uses the X resolution in pixels to calculate an X display size in millimeters.
                 </p>
                 <p>
                   If the value is 'auto' then the screen mode will be auto-configured based on
@@ -672,35 +725,14 @@
                   <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>.
                 </p>
                 <p>
-                  Some popular modes are: '720x480', '720x480Noscale', '720x480Over', '720x576', '720x570Noscale' nad '720x576Over'.
+                  Some popular modes are: '720x480', '720x480Noscale', '720x480Over', '720x576', '720x570Noscale' and '720x576Over'.
                 </p>
                 <p>
-                  If
+                  If 'MM_X_MODE' is set, then
                   '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
-                  is non-empty, then 'MM_X_MODE' is ignored.
-                </p>
-              </dd>
-              <dt id="MM_X_MODELINE"><strong>MM_X_MODELINE</strong></dt>
-              <dd>
-                <p>
-                  Specify a line for a screen mode. For example:
-                </p>
-                <p>
-                  MM_X_MODELINE='Modeline&nbsp;"1280x720_60.00"&nbsp;&nbsp;74.48&nbsp;&nbsp;1280&nbsp;1336&nbsp;1472&nbsp;1664&nbsp;&nbsp;720&nbsp;721&nbsp;724&nbsp;746&nbsp;&nbsp;-HSync&nbsp;+Vsync'
-                </p>
-                <p>
-                  The default value for 'MM_X_MODELINE' is ''.
-                  If
-                  '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
-                  is non-empty, then 'MM_X_MODELINE' is ignored.
-                </p>
-              </dd>
-              <dt id="MM_X_RESOLUTION"><strong>MM_X_RESOLUTION</strong></dt>
-              <dd>
-                <p>
-                  Specify the screen resolution (in pixels).
-                  The screen resolution has the form 'WxH' (e.g. '1024x768'), where H and V are the horizontal and vertical resolution in pixels 
-                  The default value for 'MM_X_RESOLUTION' is ''.
+                  and
+                  '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>'
+                  must not be set.
                 </p>
               </dd>
             </dl>
@@ -846,7 +878,7 @@
           <div id="MM_EXTRAS" class="contentitem">
             <div class="contentitemheader">Extras directory configuration variables</div>
             <p>
-              You can extend MiniMyth by adding adding files under /usr/local. 
+              You can extend MiniMyth by adding files under /usr/local. 
             </p>
             <p>
               The
@@ -918,23 +950,23 @@
             </p>
           </div>
           <div id="MM_CODECS" class="contentitem">
-            <div class="contentitemheader">Codecs directory configuration variables</div>
+            <div class="contentitemheader">CODECs directory configuration variables</div>
             <p>
-              You can extend MiniMyth by adding adding files under '/usr/lib/codecs'.
+              You can extend MiniMyth by adding files under '/usr/lib/codecs'.
             </p>
             <p>
-              The URLs in this section must have the the form described in the
+              The URLs in this section must have the form described in the
               <a href="#MM_EXTRAS">Extras directory ...</a>
               section.
             </p>
             <p>
-              The codecs directory configuration variables are:
+              The CODECs directory configuration variables are:
             </p>
             <dl>
               <dt id="MM_CODECS_URL"><strong>MM_CODECS_URL</strong></dt>
               <dd>
                 <p>
-                  The pointer to the location of the codecs directoy that will be mounted as '/usr/lib/codecs'.
+                  The pointer to the location of the CODECs directoy that will be mounted as '/usr/lib/codecs'.
                   Valid values are a URL, 'none' and 'auto'.
                 </p>
                 <p>
@@ -943,20 +975,20 @@
                 </p>
                 <p>
                   If the value is 'auto',
-                  then MiniMyth will assume that the codecs are in a squashfs image file
+                  then MiniMyth will assume that the CODECs are in a squashfs image file
                   located in either MiniMyth distribution directory or the MiniMyth configuration directory and
                   having the name 'codecs.sfs'.
                   That is, MiniMyth will assume MM_CODECS_URL='hunt:codecs.sfs'.
                 </p>
                 <p>
-                  MiniMyth contains a script 'mm_squashfs_codecs_make' to help with creating a codecs squashfs image (*.sfs).
+                  MiniMyth contains a script 'mm_squashfs_codecs_make' to help with creating a CODECs squashfs image (*.sfs).
                   Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_codecs_make'.
-                  If their is no codecs directory or the codecs directory is empty,
+                  If there is no CODECs directory or the CODECs directory is empty,
                   then the script will download the
-                  <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential codecs tarball</a>
+                  <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential CODECs tarball</a>
                   from the Internet,
-                  create the codecs directory and put the downloaded codecs in the codecs directory.
-                  After that, the script will create the codecs squashfs image,
+                  create the CODECs directory and put the downloaded CODECs in the CODECs directory.
+                  After that, the script will create the CODECs squashfs image,
                   put the image in the root directory (/) and tell you the name of the image.
                   You can then download the image from your MiniMyth frontend through the web interface
                   to the MiniMyth file system 'http://{frontend}:8080/'.
@@ -964,7 +996,7 @@
               </dd>
             </dl>
             <p>
-              Alternatively, you can mount the codecs directory by adding the appropriate commands to the 'minimyth.script' script.
+              Alternatively, you can mount the CODECs directory by adding the appropriate commands to the 'minimyth.script' script.
             </p>
           </div>
           <div id="MM_THEME" class="contentitem">
@@ -973,7 +1005,7 @@
               MythTV themes are large and numerous.
               Rather than burden the MiniMyth root file system image with this extra size,
               MiniMyth downloads and mounts the MythTV theme and the MythTV OSD theme that are to be used by the frontend.
-              The MiniMyth distribution contains serveral themes, which can be found in the 'themes/' directory.
+              The MiniMyth distribution contains several themes, which can be found in the 'themes/' directory.
               Themes that end in 'osd' are MythTV OSD themes.
               Themes that end in 'wide' are widescreen MythTV themes.
               The remaining themes are standard MythTV themes.
@@ -982,15 +1014,15 @@
             <p>
               MythTV scales the MythTV theme graphics to sizes that are appropriate for your display resolution.
               If it present and up-to-date, then this cached theme is reused each time mythfrontend is starts.
-              This works well on MythTV frontend's that have non-volitile storage (e.g. a hard disk drive).
-              However, MiniMyth systems do not have non-volitile storage.
+              This works well on MythTV frontend's that have non-volatile storage (e.g. a hard disk drive).
+              However, MiniMyth systems do not have non-volatile storage.
               As a result, mythfrontend regenerates the cached theme each time that MiniMyth is rebooted.
-              In order to enable MiniMyth to have all the avantages of a cached theme
+              In order to enable MiniMyth to have all the advantages of a cached theme
               without regenerating the cached theme each time MiniMyth is rebooted,
               MiniMyth can mount the themecache directory at boot time.
             </p>
             <p>
-              The URLs in this section must have the the form described in the
+              The URLs in this section must have the form described in the
               <a href="#MM_EXTRAS">Extras directory ...</a>
               section.
             </p>
@@ -1056,7 +1088,7 @@
                   MiniMyth contains a script 'mm_squashfs_themecache_make' to help with
                   creating a themecache squashfs image (*.sfs).
                   Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_themecache_make'.
-                  If their is a themecache directory with exactly on cached theme,
+                  If there is a themecache directory with exactly on cached theme,
                   then the script will create the themecache squashfs image of the themecache directory,
                   put the image in the root directory (/) and tell you the name of the image.
                   You can then download the image from your MiniMyth frontend through
@@ -1074,7 +1106,7 @@
               You can mount remote media directories by setting some variables.
             </p>
             <p>
-              The URLs in this section must have the the form described in the
+              The URLs in this section must have the form described in the
               <a href="#MM_EXTRAS">Extras directory ...</a>
               section.
             </p>
@@ -1138,7 +1170,7 @@
             <p>
               MiniMyth uses
               <a href="www.lirc.org">LIRC</a>
-              to enable the control of MiniMyth appications using a remote control.
+              to enable the control of MiniMyth applications using a remote control.
               <a href="www.lirc.org">LIRC</a>
               supports many remote control receivers and remote controls,
               each of which require different configuration.
@@ -1176,7 +1208,7 @@
                   then please file a
                   <a href="http://linpvr.org/bugs/">bug report</a>
                   that contains the remote control receiver vendor and model, the LIRC driver used and
-                  the ouput of the command 'lsusb' with the remote control receiver connected.
+                  the output of the command 'lsusb' with the remote control receiver connected.
                 </p>
               </dd>
               <dt id="MM_LIRC_REMOTE"><strong>MM_LIRC_REMOTE</strong></dt>
@@ -1196,7 +1228,7 @@
                 <p>
                   If MiniMyth does not have built-in LIRC configuration files
                   or you do not want to use the built-in configuration files,
-                  then you can place your your 'lircd.conf' and 'lircrc' files in the MiniMyth configuration directory.
+                  then you can place your 'lircd.conf' and 'lircrc' files in the MiniMyth configuration directory.
                   In the 'lircrc' file, each record's 'prog' attribute must be set to the name of the program being controlled
                   (i.e. 'mythtv', 'mplayer' or 'xine') not to 'irxevent'.
                 </p>
@@ -1212,7 +1244,7 @@
                   then please file a
                   <a href="http://linpvr.org/bugs/">bug report</a>
                   that contains the remote control / remote control receiver vendor and model, the LIRC driver used, 
-                  the ouput of the command 'lspusb' with the remote control receiver connected and (if you have them)
+                  the output of the command 'lspusb' with the remote control receiver connected and (if you have them)
                   'lircd.conf' and 'lircrc' files that work with MiniMyth.
                 </p>
               </dd>
@@ -1323,7 +1355,7 @@
                   then please file a
                   <a href="http://linpvr.org/bugs/">bug report</a>
                   that contains the LCD or VFD vendor and model, the LCDproc driver used,
-                  the ouput of the command 'lsusb' with the LCD or VFD connected, and (if you have one)
+                  the output of the command 'lsusb' with the LCD or VFD connected, and (if you have one)
                   an 'LCDd.conf' file that works with MiniMyth.
                 </p>
               </dd>
@@ -1336,7 +1368,7 @@
           <div id="MM_MYTHDB" class="contentitem">
             <div class="contentitemheader">Myth frontend configuration variables</div>
             <p>
-              Based on settings in other sections, MiniMyth changes the Myth frontent settings in the Myth database.
+              Based on settings in other sections, MiniMyth changes the Myth frontend settings in the Myth database.
               However, if you want MiniMyth to change other Myth frontend settings in the Myth database
               (or you want to override the changes made by MiniMyth as a result of seeting in other sections),
               then you can use the Myth frontend configuration variables.
