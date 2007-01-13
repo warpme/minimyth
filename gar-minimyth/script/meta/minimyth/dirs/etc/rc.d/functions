@@ -819,66 +819,6 @@ mm_hardware_pci_process() {
     mm_uniq
 }
 
-mm_hardware_pci2motherboard_map() {
-    local class=$1
-    local vendor=$2
-    local device=$3
-    local revision=$4
-    local class_prog=$5
-    local subvendor=$6
-    local subdevice=$7
-
-    local found
-    local map
-    local map_motherboard
-
-    if /usr/bin/test -n "${class}"     && \
-       /usr/bin/test -n "${vendor}"    && \
-       /usr/bin/test -n "${device}"    && \
-       /usr/bin/test -n "${subvendor}" && \
-       /usr/bin/test -n "${subdevice}" ; then
-        /bin/cat /etc/hardware.d/pci2motherboard.map | /bin/sed -e 's%#.*$%%g' | \
-        /bin/grep -e "^ *${class} *, *${vendor} *, *${device} *, *${subvendor} *, *${subdevice} *," |
-        {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_motherboard=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 6`
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_motherboard}
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
-mm_hardware_motherboard2kernel_map() {
-    local motherboard=$1
-
-    local found
-    local map
-    local map_kernel_modules
-
-    if /usr/bin/test -n "${motherboard}" ; then
-        /bin/cat /etc/hardware.d/motherboard2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${motherboard}," |
-        {
-            found=
-            while read map ; do
-                map_kernel_modules=
-                if /usr/bin/test -n "${map}" ; then
-                    map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-                fi
-                if /usr/bin/test -z "${found}" ; then
-                    found=1
-                    /bin/echo ${map_kernel_modules}
-                fi
-            done
-        }
-    fi
-}
-
 mm_hardware_pci2x_map() {
     local class=$1
     local vendor=$2
@@ -1053,4 +993,40 @@ mm_hardware_cpu_get() {
         VIA\ Samuel\ 2)                      /bin/echo 'c3'       ;;
         *)                                   /bin/echo ''         ;;
     esac
+}
+
+mm_hardware_motherboard2kernel_map() {
+
+    local vendor
+    local product
+    local vendor_clean
+    local product_clean
+    local map
+    local map_kernel_modules
+
+    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
+    product=`/usr/sbin/dmidecode -s baseboard-product-name`
+    vendor_clean=`/bin/echo ${vendor}   | sed -e 's%[ ,]%_%g'`
+    product_clean=`/bin/echo ${product} | sed -e 's%[ ,]%_%g'`
+
+    if /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/motherboard2kernel.map  | \
+        /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g'  | \
+        /bin/grep -e "^${vendor_clean},${product_clean}" |
+        {
+            while read map ; do
+                map_kernel_modules=
+                if /usr/bin/test -n "${map}" ; then
+                    map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                fi
+                if /usr/bin/test -z "${found}" ; then
+                    /bin/echo ${map_kernel_modules}
+                    return 0
+                fi
+            done
+        }
+	return 0
+    fi
+    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor ('${vendor}') and product ('${product}') are unknown. some kernel modules may not be loaded."
+    return 1
 }

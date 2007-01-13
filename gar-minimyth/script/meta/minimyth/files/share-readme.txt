@@ -13,5 +13,6 @@ Directory listing:
     nfs-<version>.tar.bz2.md5 : The MD5 checksum for the file 'nfs-<version>.tar.bz2'
     html.tar.bz2              : A tarball of the MiniMyth documentation files in HTML (XHTML 1.1) fromat.
                                 These files are included in ram-<version>.tar.bz2 and nfs-<version>.tar.bz2.
+    html.tar.bz2.md5          : The MD5 checksum for the file 'html.tar.bz2'.
     scripts/                  : MiniMyth automation scripts.
                                 These files are included in ram-<version>.tar.bz2 and nfs-<version>.tar.bz2.
