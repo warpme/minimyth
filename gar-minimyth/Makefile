@@ -21,10 +21,9 @@ garchive:
 	@make -C script garchive
 
 tarball:
-	@mkdir -p $(DIR_HEAD)/$(DIR_TAIL)~
 	@rm -rf   $(DIR_HEAD)/$(DIR_TAIL)~
 	@mkdir -p $(DIR_HEAD)/$(DIR_TAIL)~
-	@cd $(DIR_HEAD) ; tar -jcf $(DIR_TAIL)~/$(TAR_FILE) $(DIR_TAIL) \
+	@cd $(DIR_HEAD) ; tar  \
 		--exclude '$(DIR_TAIL)/$(TAR_FILE)' \
 		--exclude '$(DIR_TAIL)/images/*' \
 		--exclude '$(DIR_TAIL)/source/*' \
@@ -39,7 +38,8 @@ tarball:
 		--exclude '$(DIR_TAIL)/*.log' \
 		--exclude '$(DIR_TAIL)/script/*.log' \
 		--exclude '$(DIR_TAIL)/script/*/*.log' \
-		--exclude '$(DIR_TAIL)/script/*/*/*.log'
+		--exclude '$(DIR_TAIL)/script/*/*/*.log' \
+		-jcf $(DIR_TAIL)~/$(TAR_FILE) $(DIR_TAIL)
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; tar -jxf $(TAR_FILE)
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; rm -f    $(TAR_FILE)
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; mv $(DIR_TAIL) $(TAR_BASE)

@@ -74,7 +74,9 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
+mm-all:
+
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -82,6 +84,10 @@ mm-check:
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
 	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
 		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_HOME)" = "`cd $(GARDIR)/.. ; pwd`" ] ; then \
+		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
@@ -92,11 +98,11 @@ mm-check:
 		echo "error: mm_INSTALL_NFS=\"$(mm_INSTALL_NFS)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_HOME)" = "`cd $(GARDIR)/.. ; pwd`" ] ; then \
-		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
+	@if [ "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@if [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
@@ -400,7 +406,7 @@ mm-make-distro:
 	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
 
-mm-install:
+mm-install: mm-check
 	@rm -rf $(mm_DESTDIR)
 	@mkdir -p $(mm_DESTDIR)
 	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2 $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2

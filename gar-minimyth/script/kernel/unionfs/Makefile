@@ -1,5 +1,5 @@
 GARNAME = unionfs
-GARVERSION = 1.1.2
+GARVERSION = 1.1.3
 CATEGORIES = kernel
 MASTER_SITES  = ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/
 MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/snapshots/

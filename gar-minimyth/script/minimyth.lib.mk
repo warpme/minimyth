@@ -1,5 +1,6 @@
 # $(call FETCH_CVS, <cvs_root>, <cvs_module>, <cvs_date>, <file_base>)
 FETCH_CVS = \
+	mkdir -p $(PARTIALDIR)                                                                   ; \
 	cd $(PARTIALDIR)                                                                         ; \
 	cvs -z9 -d:pserver:$(strip $(1)) co -D $(strip $(3)) -d $(strip $(4)) $(strip $(2))      ; \
 	rm -rf $(strip $(3)).tar.bz2                                                             ; \
@@ -8,6 +9,7 @@ FETCH_CVS = \
 
 # $(call FETCH_SVN, <svn_url>, <svn_revision>, <file_base>)
 FETCH_SVN = \
+	mkdir -p $(PARTIALDIR)                                          ; \
 	cd $(PARTIALDIR)                                                ; \
 	rm -rf $(strip $(3))                                            ; \
 	svn co -r $(strip $(2)) $(strip $(1)) $(strip $(3))             ; \

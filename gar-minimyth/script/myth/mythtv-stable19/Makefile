@@ -3,7 +3,7 @@ GARVERSION = $(MYTHTV_STABLE19_VERSION)
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-9048.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch $(DISTNAME)-fadeaway.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
