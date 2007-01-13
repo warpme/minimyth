@@ -1,9 +1,9 @@
 GARNAME = util-linux
-GARVERSION = 2.12p
+GARVERSION = 2.12q
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
-PATCHFILES = $(GARNAME)-$(GARVERSION)-gar.patch
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = BSD/GPL2
 
 DESCRIPTION =
