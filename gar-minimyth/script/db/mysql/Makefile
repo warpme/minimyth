@@ -1,9 +1,9 @@
 GARNAME = mysql
-GARVERSION = 4.1.14
+GARVERSION = 5.0.15
 CATEGORIES = db
-MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
-MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-4.1/
-MASTER_SITES += http://mysql.sd1.mirrors.redwire.net/Downloads/MySQL-4.1/
+MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
+MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
+MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
