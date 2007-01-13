@@ -32,13 +32,11 @@ DEFAULT_ARGS = \
 	sbindir="$(sbindir)" \
 	usrbindir="$(usrbindir)" \
 	mandir="$(mandir)" \
-	hotplugdir="$(hotplugdir)" \
 	configdir="$(configdir)" \
 	initdir="$(initdir)" \
-	dev_ddir="$(dev_ddir)" \
 	udevdir="$(udevdir)"
-BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS=extras/run_directory/
-INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS=extras/run_directory/
+BUILD_ARGS   = $(DEFAULT_ARGS)
+INSTALL_ARGS = $(DEFAULT_ARGS)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -49,17 +47,15 @@ etcdir      := $(sysconfdir)
 sbindir     := $(esbindir)
 usrbindir   := $(bindir)
 mandir      := $(mandir)
-hotplugdir  := $(sysconfdir)/hotplug.d/default
 configdir   := $(sysconfdir)/udev
 initdir     := $(sysconfdir)/init.d
-dev_ddir    := $(sysconfdir)/dev.d
 udevdir     := $(rootdir)/dev
 
 pre-install:
-	@rm -rf $(DESTDIR)$(sysconfdir)/dev.d
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@$(MAKECOOKIE)
 
 post-install:
-	@sed -i 's%\(.*SYMLINK+*="cdrom".*\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
+	@sed -i 's%\(.*SYMLINK+*="cdrom".*\)%#\1%'     $(DESTDIR)$(configdir)/rules.d/50-udev.rules
+	@sed -i 's%\(RUN="/sbin/udev_run_devd"\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
 	@$(MAKECOOKIE)
