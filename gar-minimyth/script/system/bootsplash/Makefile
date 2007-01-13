@@ -1,7 +1,7 @@
 GARNAME = bootsplash
-GARVERSION = 3.1
+GARVERSION = 3.2
 CATEGORIES = system
-MASTER_SITES = ftp://ftp.openbios.org/pub/$(GARNAME)/rpm-sources/$(GARNAME)/
+MASTER_SITES = http://www.bootsplash.de/files/splashutils/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libmng X11/freetype
+DEPENDS = lang/c lib/libmng-mini lib/libmng X11/freetype
 
 BUILD_SCRIPTS   = $(WORKSRC)/Utilities/Makefile
 INSTALL_SCRIPTS = custom

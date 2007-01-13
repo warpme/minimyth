@@ -17,7 +17,7 @@ DEPENDS += lib/libdvdread
 # mythgallery
 DEPENDS += lib/libtiff
 # mythmusic
-DEPENDS += lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/libcdaudio lib/cdparanoia X11/sdl
+DEPENDS += lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/fftw lib/libcdaudio lib/cdparanoia X11/sdl
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -34,7 +34,7 @@ CONFIGURE_ARGS += \
 		--disable-exif \
 	--disable-mythgame \
 	--enable-mythmusic \
-		--disable-fftw \
+		--enable-fftw \
 		--enable-sdl \
 		--disable-aac \
 	--disable-mythnews \
@@ -70,5 +70,5 @@ disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
-	cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
-	$(MAKECOOKIE)
+	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	@$(MAKECOOKIE)

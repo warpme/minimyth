@@ -1,5 +1,5 @@
 GARNAME = unichrome
-GARVERSION = 20050528
+GARVERSION = 20050616
 CATEGORIES = X11
 MASTER_SITES = http://myth.ivor.org/unichrome/
 DISTFILES = $(DISTNAME).tar.bz2

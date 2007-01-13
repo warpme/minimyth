@@ -1,9 +1,9 @@
 GARNAME = alsa-driver
-GARVERSION = $(ALSA_VERSION)
+GARVERSION = $(ALSA_VERSION)b
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-MVIAC3_2.patch
+PATCHFILES = $(DISTNAME)-MVIAC3_2.patch $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 

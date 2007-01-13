@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 052
+GARVERSION = 058
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -62,6 +62,5 @@ pre-install:
 
 post-install:
 	@sed -i 's%\(.*SYMLINK="cdrom".*\)%#\1%' $(DESTDIR)$(configdir)/rules.d/50-udev.rules
-	@ln -sf udev $(DESTDIR)$(sbindir)/udevstart
 	@ln -sf .$(call DIRSTODOTS, $(hotplugdir))$(sbindir)/udevsend $(DESTDIR)$(hotplugdir)/10-udev.hotplug
 	@$(MAKECOOKIE)

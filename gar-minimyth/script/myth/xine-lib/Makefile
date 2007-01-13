@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 1.0
+GARVERSION = 1.0.1
 CATEGORIES = myth
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
@@ -36,7 +36,8 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-xvmc-lib=XvMCW \
 	--with-xxmc-lib=XvMCW \
 	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
-	--with-libFLAC-libraries=$(DESTDIR)$(libdir)
+	--with-libFLAC-libraries=$(DESTDIR)$(libdir) \
+	--with-w32-path="$(libdir)/win32"
 
 include ../../gar.mk
 

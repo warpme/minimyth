@@ -24,6 +24,7 @@ DEPENDS = \
 	kernel/module-init-tools \
 	myth/mplayer \
 	myth/mythplugins \
+	myth/mythstream \
 	myth/mythtv \
 	myth/myththemes \
 	net/ntp \
