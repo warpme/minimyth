@@ -10,7 +10,11 @@ RESOLV_CONF="/etc/resolv.conf"
 
 case "$1" in
 	deconfig)
-#		ifconfig $interface 0.0.0.0
+		# Since we have NFS mounted the root partition, do not reset the interface
+		cat /proc/cmdline | grep -q 'root=/dev/nfs'
+		if [ ! $? = 0 ] ; then
+			ifconfig $interface 0.0.0.0
+		fi
 		;;
 
 	renew|bound)
