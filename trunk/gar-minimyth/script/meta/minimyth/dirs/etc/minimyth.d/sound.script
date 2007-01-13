@@ -8,16 +8,16 @@
 
 MM_SOUND=`mm_var_get MM_SOUND`
 
-# Default MM_SOUND to analog.
-[ -z ${MM_SOUND} ] && MM_SOUND=analog
-
 mm_dir_make_rw /root
 
-if   [ "${MM_SOUND}" = "analog"  ] ; then
-    amixer set 'PCM'    90% unmute 
-    amixer set 'Master' 90% unmute 
-    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
-elif [ "${MM_SOUND}" = "digital" ] ; then
-    amixer set 'IEC958 Playback AC97-SPSA' 0
-    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+case "${MM_SOUND}" in
+    analog)
+        amixer set 'PCM'    90% unmute 
+        amixer set 'Master' 90% unmute 
+        sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
+        ;;
+    digital)
+        amixer set 'IEC958 Playback AC97-SPSA' 0
+        sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+        ;;
 fi

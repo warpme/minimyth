@@ -5,10 +5,8 @@
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
 MM_TV=`mm_var_get MM_TV`
-[ -z ${MM_TV} ] && MM_TV=NTSC
 
-MM_XVMC_LIB=`mm_var_get MM_XVMC_LIB`
-[ -z ${MM_XVMC_LIB} ] && MM_XVMC_LIB=viaXvMC
+MM_HARDWARE_NORTHBRIDGE=`mm_var_get MM_HARDWARE_NORTHBRIDGE`
 
 mm_dir_make_rw /etc
 mm_dir_make_rw /root
@@ -18,8 +16,12 @@ mm_conf_get /xorg.conf /etc/X11/xorg.conf
 
 sed -i "s%@MM_TV@%${MM_TV}%" /etc/X11/xorg.conf
 
-sed -i "s%@MM_XVMC_LIB@%${MM_XVMC_LIB}%" /etc/X11/XvMCConfig
-
-if [ -e /usr/X11R6/lib/modules/drivers/via_drv.o.${MM_XVMC_LIB} ] ; then
-    cd /usr/X11R6/lib/modules/drivers ; mv -f via_drv.o.${MM_XVMC_LIB} via_drv.o
-fi
+case "${MM_HARDWARE_NORTHBRIDGE}" in
+    CLE266)
+        sed -i "s%@MM_XVMC_LIB@%viaXvMC%"    /etc/X11/XvMCConfig
+        ;;
+    CN400)
+        sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%" /etc/X11/XvMCConfig
+        cd /usr/X11R6/lib/modules/drivers ; mv -f via_drv.o.livXvMCPro via_drv.o
+        ;;
+esac
