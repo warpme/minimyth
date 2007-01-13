@@ -22,9 +22,18 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-shared \
-	--with-lib-path=$(LIB_PATH)
+	--with-sysroot=$($(CROSSIMG)_DESTDIR)
+# I do not know what '=' does at the beginning of the path name. However, the correct libraries are not found without it.
+# For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
+ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+CONFIGURE_ARGS += \
+	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):/lib:/usr/lib"
+else
+CONFIGURE_ARGS += \
+	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir)"
+endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
@@ -33,12 +42,6 @@ CPPFLAGS :=
 CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
-
-LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_qtlibdir):$(CROSS_GCC_LIBDIR)
-# For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
-ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-LIB_PATH := $(LIB_PATH):/lib:/usr/lib
-endif
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libbfd.la

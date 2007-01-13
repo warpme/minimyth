@@ -34,16 +34,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--enable-clocale=gnu \
 	--enable-languages=c \
 	--disable-libmudflap \
+	--disable-libssp \
 	--disable-multilib \
 	--disable-nls \
 	--enable-shared \
-        --enable-threads=posix \
-        --enable-version-specific-runtime-libs
-
-ifneq ($(DESTIMG),$(CROSSIMG))
-CONFIGURE_ARGS += \
+        --enable-threads=no \
+        --enable-version-specific-runtime-libs \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
@@ -69,9 +66,5 @@ post-install:
 			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
 			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
 		) \
-		$(if $(wildcard $(CROSS_GCC_LIBDIR)/specs), \
-			sed -i 's%/lib64%/lib%' $(DESTDIR)$(CROSS_GCC_LIBDIR)/specs ; \
-		) \
 	)
 	@$(MAKECOOKIE)
-

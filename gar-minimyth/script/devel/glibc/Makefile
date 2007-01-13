@@ -76,10 +76,3 @@ configure-custom:
 	@mkdir -p $(WORKBLD)
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)
-
-post-install:
-	@sed -i 's% $(elibdir)/% $(DESTDIR)$(elibdir)/%g' $(DESTDIR)$(libdir)/libpthread.so
-	@sed -i 's% $(libdir)/% $(DESTDIR)$(libdir)/%g' $(DESTDIR)$(libdir)/libpthread.so
-	@sed -i 's% $(elibdir)/% $(DESTDIR)$(elibdir)/%g' $(DESTDIR)$(libdir)/libc.so
-	@sed -i 's% $(libdir)/% $(DESTDIR)$(libdir)/%g' $(DESTDIR)$(libdir)/libc.so
-	@$(MAKECOOKIE)
