@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 # The version of MiniMyth.
-mm_VERSION        ?= 0.18.1.10
+mm_VERSION        ?= 0.18.1.11
 
 # The version of Myth to use.
 # Valid values are 'stable', 'knoppmyth' and 'svn'.
