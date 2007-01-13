@@ -7,7 +7,7 @@ MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
 #DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 DISTFILES = xorg-x11-6.8.99.901.tar.bz2
-PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch $(GARNAME)R$(GARVERSION)-via_dri_h.patch
+PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch $(GARNAME)R$(GARVERSION)-via_dri_h.patch $(GARNAME)R$(GARVERSION)-sse.patch
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
 
@@ -116,7 +116,6 @@ configure-directory:
 configure-compiler:
 	@$(call CONFIG_FILE_HEADER, Compiler.)
 	@$(call CONFIG_FILE_APPEND, UseInstalledOnCrossCompile, YES)
-	@$(call CONFIG_FILE_APPEND, HasGcc3                   , YES)
 	@$(call CONFIG_FILE_APPEND, HostCcCmd                 , $(HostCcCmd))
 	@$(call CONFIG_FILE_APPEND, HasCplusplus              , YES)
 	@$(call CONFIG_FILE_APPEND, DoRanlibCmd               , YES)
