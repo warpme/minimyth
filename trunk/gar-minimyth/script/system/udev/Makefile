@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 095
+GARVERSION = 096
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS = lang/c kernel/linux
+DEPENDS = lang/c
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
@@ -39,7 +39,6 @@ DEFAULT_ARGS = \
 BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
 INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 prefix      := $(prefix)
