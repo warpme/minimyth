@@ -1,6 +1,6 @@
 mm_VERSION     := 0.0.4
 
-mm_HOME        := $(HOME)/gar-minimyth
+mm_HOME        := $(P4ROOT)/gar-minimyth
 # Valid values mm_GARCH are c3 and c3-2
 mm_GARCH       := c3
 mm_GARHOST     := i586-minimyth-linux-gnu
