@@ -240,6 +240,8 @@ mm-remove:
 		rm -rf $${remove} ; \
 	done
 	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
+	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
 
 mm-strip:
 	@echo 'stripping binaries and shared libraries'
