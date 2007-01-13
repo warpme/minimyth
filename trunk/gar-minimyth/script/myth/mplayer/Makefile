@@ -98,7 +98,7 @@ CONFIGURE_ARGS_VIDEO = \
 # Audio output: enable alsa
 CONFIGURE_ARGS_AUDIO = \
 	--enable-alsa \
-	--enable-ossaudio \
+	--disable-ossaudio \
 	--disable-arts \
 	--disable-esd \
 	--disable-polyp \

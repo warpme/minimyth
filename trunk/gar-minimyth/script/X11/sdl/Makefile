@@ -32,7 +32,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-endian \
 	--enable-file \
 	--enable-cpuinfo \
-	--enable-oss \
+	--disable-oss \
 	--enable-alsa \
 	--enable-alsatest \
 	--enable-alsa-shared \
