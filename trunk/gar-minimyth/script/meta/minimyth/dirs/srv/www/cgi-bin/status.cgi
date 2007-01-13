@@ -1,10 +1,10 @@
 #!/bin/sh
 
-. /srv/www/cgi/functions
+. /srv/www/cgi-bin/functions
 
 page_host=`hostname`
 page_date=`date`
-page_path="/cgi/status.cgi"
+page_path="/cgi-bin/status.cgi"
 page_head="Status"
 
 status_sensors_head="Sensors"

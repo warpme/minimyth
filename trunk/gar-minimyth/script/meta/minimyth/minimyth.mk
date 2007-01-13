@@ -120,7 +120,7 @@ mm-make-conf:
 	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
 	@rm -rf $(mm_DESTDIR)/srv        ; cp -r ./dirs/srv  $(mm_DESTDIR)
 	@rm -rf $(mm_DESTDIR)/srv/www/fs ; ln -sf / $(mm_DESTDIR)/srv/www/fs
-	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi/functions
+	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi-bin/functions
 	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	@ln -sf /proc/mounts $(mm_DESTDIR)/etc/mtab
