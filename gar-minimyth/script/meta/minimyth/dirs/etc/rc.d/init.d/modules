@@ -47,6 +47,7 @@ start() {
     # IDE.
     if [ `lsmod | grep -c -e '^ide_core'` = "1" ] ; then
         modprobe ide-cd
+        modprobe ide-disk
     fi
 
     # FireWire (IEEE1394).
@@ -74,8 +75,8 @@ start() {
     fi
 
     # File systems (hard disk).
-    if [ `lsmod | grep -c -e '^sd_mod'` = "1" ] ; then
-        modprobe fat
+    if [ `lsmod | grep -c -e '^ide_disk'` = "1" ] || \
+       [ `lsmod | grep -c -e '^sd_mod'`   = "1" ] ; then
         modprobe msdos
         modprobe vfat
     fi

@@ -3,13 +3,37 @@
 name="$1"
 action="$2"
 
-mountpoint_remove()
+label_get()
 {
     name="$1"
-    symlink="$2"
 
-    umount -l /media/${symlink} || true
-    rmdir /media/${symlink}
+    label=""
+    case ${name} in
+        hd[a-z]*)
+            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || true
+            ;;
+        sd[a-z]*)
+            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || true
+            ;;
+    esac
+
+    echo ${label}
+}
+
+minimyth_add()
+{
+    name="$1"
+
+    mkdir -p /minimyth
+    mount -t auto /dev/${name} /minimyth || true
+}
+
+minimyth_remove()
+{
+    name="$1"
+
+    umount -l /minimyth || true
+    rmdir /minimyth
 }
 
 mountpoint_add()
@@ -29,20 +53,39 @@ mountpoint_add()
     esac
 }
 
+mountpoint_remove()
+{
+    name="$1"
+    symlink="$2"
+
+    umount -l /media/${symlink} || true
+    rmdir /media/${symlink}
+}
+
 case ${action} in
     add)
-        symlinks="${DEVLINKS}"
-        for symlink in ${symlinks} ; do
-            symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
-            mountpoint_remove "${name}" "${symlink}"
-            mountpoint_add    "${name}" "${symlink}"
-        done
+        label=`${label_get} "${name}"`
+        if [ "${label}" = "minimyth" ] ; then
+            minimyth_add "${name}"
+        else
+            symlinks="${DEVLINKS}"
+            for symlink in ${symlinks} ; do
+                symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
+                mountpoint_remove "${name}" "${symlink}"
+                mountpoint_add    "${name}" "${symlink}"
+            done
+        fi
         ;;
     remove)
-        symlinks="${DEVLINKS}"
-        for symlink in ${symlinks} ; do
-            symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
-            mountpoint_remove "${name}" "${symlink}"
-        done
+        label=`${label_get} "${name}"`
+        if [ "${label}" = "minimyth" ] ; then
+            minimyth_remove "${name}"
+        else
+            symlinks="${DEVLINKS}"
+            for symlink in ${symlinks} ; do
+                symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
+                mountpoint_remove "${name}" "${symlink}"
+            done
+        fi
         ;;
 esac

@@ -47,11 +47,11 @@ mm_conf_get() {
 
     rm -f "${TMP_FILE}"
     FILE_GOT=0
-    if [ "${MM_BOOT_TYPE}" = "usb" ] ; then
-        [ ${FILE_GOT} = 0 ] && [ -n "`hostname`" ] && [ -e "/media/minimyth/conf/`hostname`/${REMOTE_FILE}" ] &&
-	    cp          "/media/minimyth/conf/`hostname`/${REMOTE_FILE}"      "${TMP_FILE}"                     && FILE_GOT=1
-        [ ${FILE_GOT} = 0 ] &&                        [ -e "/media/minimyth/conf/default/${REMOTE_FILE}"    ] &&
-	    cp          "/media/minimyth/conf/default/${REMOTE_FILE}"         "${TMP_FILE}"                     && FILE_GOT=1
+    if [ -d "/minimyth" ] ; then
+        [ ${FILE_GOT} = 0 ] && [ -n "`hostname`" ] && [ -e "/minimyth/conf/`hostname`/${REMOTE_FILE}" ] &&
+	    cp          "/minimyth/conf/`hostname`/${REMOTE_FILE}"            "${TMP_FILE}"                     && FILE_GOT=1
+        [ ${FILE_GOT} = 0 ] &&                        [ -e "/minimyth/conf/default/${REMOTE_FILE}"    ] &&
+	    cp          "/minimyth/conf/default/${REMOTE_FILE}"               "${TMP_FILE}"                     && FILE_GOT=1
     else
         [ ${FILE_GOT} = 0 ] && [ -n "`hostname`" ] &&
             tftp -g -r "${MM_TFTP_ROOTDIR}/conf/`hostname`/${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" && FILE_GOT=1
@@ -108,14 +108,15 @@ mm_uniq() {
 #         points to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) on a TFTP
 #         server that will be downloaded and expanded into (for files) or
 #         downloaded and mounted at (for images) the mount point. For file, the
-#         URL point to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) on the
-#         local file system that will be copied and expanded into (for files) or
-#         copied and mounted at (for images) the mount point. For conf, the URL
-#         points to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) in the
-#         MiniMyth conf directory that is either on the TFTP server (when
-#         network booting) or on the USB key (when USB booting) that will be
-#         downloaded/copied and expanded into (for files) or downloaded/copied
-#         and mounted at (for images) the mount point.
+#         URL point to a tarfile (*.tar.bz2), a cramfs image (*.cmg) or a 
+#         directory on the local file system that will be copied and expanded
+#         into (for files), copied and mounted at (for images) or mounted at
+#         (for directories) the mount point. For conf, the URL points to a
+#         tarfile (*.tar.bz2) or a cramfs image (*.cmg) in the MiniMyth conf
+#         directory that is either on the TFTP server (when network booting) or
+#         on the USB key (when USB booting) that will be downloaded/copied and
+#         expanded into (for files) or downloaded/copied and mounted at (for
+#         images) the mount point.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
@@ -194,22 +195,26 @@ mm_url_mount() {
             rm -f "${TARFILE}"
         fi
     elif [ "${URL_PROTOCOL}" = "file" ] ; then
-        if   [ "${URL_EXT1}" = "cmg" ] ; then
-            DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
-            FILE="image.cmg"
-            mkdir -p "${DIR}"
-            mkdir -p "${DIR}/ro"
-            mkdir -p "${DIR}/rw"
-            cd "${DIR}"
-            cp "${URL_PATH}" "${FILE}"
-            mount -t cramfs -o loop "${DIR}/${FILE}" "${DIR}/ro"
-            mount -t unionfs -o dirs=${DIR}/rw=rw:${DIR}/ro=ro none "${MOUNT_DIR}"
-        elif [ "${URL_EXT1}" = "bz2" ] && [ "${URL_EXT2}" = "tar" ] ; then
-            TARFILE="tmp.tar.bz2~"
-            cd "${MOUNT_DIR}"
-            cp "${URL_PATH}" "${TARFILE}"
-            tar -jxf "${TARFILE}"
-            rm -f "${TARFILE}"
+        if   [ -f "${URL_PATH}" ] ; then
+            if   [ "${URL_EXT1}" = "cmg" ] ; then
+                DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
+                FILE="image.cmg"
+                mkdir -p "${DIR}"
+                mkdir -p "${DIR}/ro"
+                mkdir -p "${DIR}/rw"
+                cd "${DIR}"
+                cp "${URL_PATH}" "${FILE}"
+                mount -t cramfs -o loop "${DIR}/${FILE}" "${DIR}/ro"
+                mount -t unionfs -o dirs=${DIR}/rw=rw:${DIR}/ro=ro none "${MOUNT_DIR}"
+            elif [ "${URL_EXT1}" = "bz2" ] && [ "${URL_EXT2}" = "tar" ] ; then
+                TARFILE="tmp.tar.bz2~"
+                cd "${MOUNT_DIR}"
+                cp "${URL_PATH}" "${TARFILE}"
+                tar -jxf "${TARFILE}"
+                rm -f "${TARFILE}"
+            fi
+        elif [ -d "${URL_PATH}" ] ; then
+            mount --rbind "${URL_PATH}" "${MOUNT_DIR}"
         fi
     fi
 
