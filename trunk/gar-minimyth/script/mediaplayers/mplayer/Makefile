@@ -155,7 +155,6 @@ CONFIGURE_ENV  = \
 BUILD_ENV  = \
 	DESTDIR="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mplayer/configure.mk
 include ../../gar.mk
 
 CFLAGS :=
