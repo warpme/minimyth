@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
 --- mythtv-0.18.1-old/configure	2005-05-05 00:15:43.000000000 -0700
-+++ mythtv-0.18.1-new/configure	2005-05-16 06:30:53.711002573 -0700
++++ mythtv-0.18.1-new/configure	2005-12-21 03:45:58.000000000 -0800
 @@ -413,10 +413,10 @@
  extralibs=""
  cygwin="yes"
@@ -37,6 +37,41 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
+@@ -1441,8 +1441,8 @@
+ 
+ freetype2=no
+ if test "x$targetos" != "xBeOS" && test "$os2" != "yes"; then
+-  if (freetype-config --version) >/dev/null 2>&1 ; then
+-    if $cc -o $TMPE $TMPC `freetype-config --cflags` `freetype-config --libs`  > /dev/null 2>&1 ; then
++  if (@GAR_DESTDIR@@GAR_bindir@/freetype-config --version) >/dev/null 2>&1 ; then
++    if $cc -o $TMPE $TMPC `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags` `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`  > /dev/null 2>&1 ; then
+       freetype2=yes
+     fi
+   fi
+@@ -1459,8 +1459,8 @@
+ #
+ #sdl_too_old=no
+ #sdl=no
+-#if $cc -o $TMPE `sdl-config --cflags` $TMPC `sdl-config --libs`  > /dev/null 2>&1 ; then
+-#_sdlversion=`sdl-config --version | sed 's/[^0-9]//g'`
++#if $cc -o $TMPE `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags` $TMPC `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`  > /dev/null 2>&1 ; then
++#_sdlversion=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --version | sed 's/[^0-9]//g'`
+ #if test "$_sdlversion" -lt 121 ; then
+ #sdl_too_old=yes
+ #else
+@@ -1547,9 +1547,9 @@
+ EOF
+ 
+ audio_arts=no
+-if (artsc-config --version) > /dev/null 2>&1; then
+-audio_arts_libs=`artsc-config --libs`
+-audio_arts_tmp=`artsc-config --cflags`
++if (@GAR_DESTDIR@@GAR_bindir@/artsc-config --version) > /dev/null 2>&1; then
++audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`
++audio_arts_tmp=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags`
+ audio_arts_cflags=`echo $audio_arts_tmp | sed "s/include\/artsc/include/g"`
+ if $cc -o $TMPE $TMPC $audio_arts_cflags $audio_arts_libs > /dev/null 2>&1; then
+ audio_arts=yes
 @@ -1666,7 +1666,7 @@
  
  if test x"$x11" = x"yes" ; then
@@ -55,9 +90,34 @@ diff -Naur mythtv-0.18.1-old/configure mythtv-0.18.1-new/configure
          xrandr="yes"
      fi
  fi
+@@ -1730,10 +1730,10 @@
+ 
+ if test x"$direct_fb" = x"yes" ; then
+     direct_fb="no"
+-    if test x`which directfb-config 2> /dev/null` != x"" ; then
++    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
+         direct_fb="yes"
+-        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
+-        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
++        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
++        CONFIG_DIRECTFB_CXXFLAGS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --cflags`
+     fi
+ fi
+ 
+@@ -1977,8 +1977,8 @@
+ fi
+ if test "$sdl" = "yes" ; then
+   echo "CONFIG_SDL=yes" >> config.mak
+-  echo "SDL_LIBS=`sdl-config --libs`" >> config.mak
+-  echo "SDL_CFLAGS=`sdl-config --cflags`" >> config.mak
++  echo "SDL_LIBS=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`" >> config.mak
++  echo "SDL_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> config.mak
+ fi
+ if test "$texi2html" = "yes"; then
+   echo "BUILD_DOC=yes" >> config.mak
 diff -Naur mythtv-0.18.1-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.18.1-new/contrib/mythnotify/cidbcast/Makefile
 --- mythtv-0.18.1-old/contrib/mythnotify/cidbcast/Makefile	2003-11-07 00:01:42.000000000 -0800
-+++ mythtv-0.18.1-new/contrib/mythnotify/cidbcast/Makefile	2005-05-16 06:30:53.711002573 -0700
++++ mythtv-0.18.1-new/contrib/mythnotify/cidbcast/Makefile	2005-12-21 03:44:44.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -69,7 +129,7 @@ diff -Naur mythtv-0.18.1-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.18.1-
  #################################################################################
 diff -Naur mythtv-0.18.1-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.18.1-new/contrib/mythnotify/mythudprelay/Makefile
 --- mythtv-0.18.1-old/contrib/mythnotify/mythudprelay/Makefile	2003-11-07 00:01:43.000000000 -0800
-+++ mythtv-0.18.1-new/contrib/mythnotify/mythudprelay/Makefile	2005-05-16 06:30:53.712002458 -0700
++++ mythtv-0.18.1-new/contrib/mythnotify/mythudprelay/Makefile	2005-12-21 03:44:44.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -89,7 +149,7 @@ diff -Naur mythtv-0.18.1-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.1
  #################################################################################
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro
 --- mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro	2005-05-06 13:19:54.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro	2005-05-16 06:30:53.712002458 -0700
++++ mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro	2005-12-21 03:44:44.000000000 -0800
 @@ -32,8 +32,8 @@
  QMAKE_CFLAGS_RELEASE = $$OPTFLAGS -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
  QMAKE_CFLAGS_DEBUG = -g -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
@@ -103,7 +163,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro mythtv-0.18.1-new/libs
  
 diff -Naur mythtv-0.18.1-old/libs/libmythui/libmythui.pro mythtv-0.18.1-new/libs/libmythui/libmythui.pro
 --- mythtv-0.18.1-old/libs/libmythui/libmythui.pro	2005-05-06 13:19:54.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythui/libmythui.pro	2005-05-16 06:30:53.713002344 -0700
++++ mythtv-0.18.1-new/libs/libmythui/libmythui.pro	2005-12-21 03:44:44.000000000 -0800
 @@ -50,7 +50,7 @@
  #
  
@@ -115,7 +175,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythui/libmythui.pro mythtv-0.18.1-new/libs
  macx {
 diff -Naur mythtv-0.18.1-old/settings.pro mythtv-0.18.1-new/settings.pro
 --- mythtv-0.18.1-old/settings.pro	2005-05-06 13:19:54.000000000 -0700
-+++ mythtv-0.18.1-new/settings.pro	2005-05-16 06:30:53.713002344 -0700
++++ mythtv-0.18.1-new/settings.pro	2005-12-21 03:44:44.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  

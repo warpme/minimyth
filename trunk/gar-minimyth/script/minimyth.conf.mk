@@ -13,15 +13,11 @@ mm_MYTH_VERSION   ?= stable
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
-# Indicates the Via microprocessor architecture.
+# Lists the chipset families supported.
+# Valid values for mm_CHIPSETS are 'nvidia' and 'via'.
+mm_CHIPSETS       ?= via
+# Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2' and 'pentium-mmx'.
-# Use 'c3' if you have a processor that uses a Samuel or Ezra core.
-# Motherboards with Ezra based processors include:
-#   EPIA M6000E, EPIA M9000 and EPIA M10000.
-# Use 'c3-2' if you have a processor that uses a Nehemiah or Antaur core.
-# Motherboards with Nehemiah based processors include:
-#   EPIA M10000N and EPIA MII12000.
-# Use 'pentium-mmx' if you want an image that will work on all EPIA M boards.
 mm_GARCH          ?= pentium-mmx
 # Indicates whether or not to install the CRAMFS (ramdisk) root file system image.
 # Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.

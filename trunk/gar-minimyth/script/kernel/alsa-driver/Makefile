@@ -26,7 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
-	--with-cards="via82xx"
+	--with-cards="hda-intel,via82xx"
 BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
 INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 

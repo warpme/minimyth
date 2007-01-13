@@ -76,7 +76,7 @@ cvs//%$(GARNAME)R$(GARVERSION)-src.tar.bz2:
 	@cd $(PARTIALDIR); rm -rf xc
 	@$(MAKECOOKIE)
 
-checksum-$(GARNAME)R$(GARVERSION)-src.tar.bz2:
+disable-checksum-$(GARNAME)R$(GARVERSION)-src.tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-os:
@@ -135,8 +135,9 @@ configure-compiler:
 
 configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
-	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , via)
+	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , )
 	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
+	@$(call CONFIG_FILE_APPEND, BuildDevelDRIDrivers      , YES)
 	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , )
 	@$(call CONFIG_FILE_APPEND, XInputDrivers             , mouse keyboard)
 	@$(MAKECOOKIE)

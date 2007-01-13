@@ -17,16 +17,24 @@ start() {
         digital)
             sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
             amixer set 'IEC958' on
-            amixer set 'IEC958 Playback AC97-SPSA' 0
-            amixer set 'VIA DXS',0 100%
+            case "${MM_HARDWARE_AUDIO}" in
+                VT1612A|VT1616|VT1617A)
+                    amixer set 'IEC958 Playback AC97-SPSA' 0
+                    amixer set 'VIA DXS',0 100%
+                    ;;
+            esac
             ;;
         digital+analog)
             sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
             amixer set 'IEC958' on
-            amixer set 'IEC958 Playback AC97-SPSA' 0
             amixer set 'PCM'    90% unmute 
             amixer set 'Master' 90% unmute 
-            amixer set 'VIA DXS',0 100%
+            case "${MM_HARDWARE_AUDIO}" in
+                VT1612A|VT1616|VT1617A)
+                    amixer set 'IEC958 Playback AC97-SPSA' 0
+                    amixer set 'VIA DXS',0 100%
+                    ;;
+            esac
             ;;
     esac
 
@@ -37,10 +45,14 @@ stop () {
     mm_message_output info 'muting audio ...'
 
     amixer set 'IEC958' off
-    amixer set 'IEC958 Playback AC97-SPSA' 0
     amixer set 'PCM'    0% mute 
     amixer set 'Master' 0% mute 
-    amixer set 'VIA DXS',0 0%
+    case "${MM_HARDWARE_AUDIO}" in
+        VT1612A|VT1616|VT1617A)
+           amixer set 'IEC958 Playback AC97-SPSA' 0
+           amixer set 'VIA DXS',0 0%
+           ;;
+    esac
 
     return 0
 }

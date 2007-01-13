@@ -18,15 +18,15 @@ DEPENDS = \
 	devel/gdb \
 	system/lcdproc \
 	X11/libXvMCW \
-	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs kernel/vt1211 \
+	kernel/linux kernel/alsa-driver kernel/drm kernel/nvidia kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
 	kernel/module-init-tools \
-	X11/Mesa \
 	mediaplayers/mplayer \
 	myth/myth \
 	net/ntp \
+	X11/nvidia \
 	net/portmap \
 	qt/qt \
 	X11/rxvt \
@@ -36,6 +36,7 @@ DEPENDS = \
 	system/sysvinit \
 	system/udev \
 	X11/unichrome \
+	X11/unichrome_dri \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \

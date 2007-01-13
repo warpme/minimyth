@@ -19,7 +19,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-nasm \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-gtk-prefix="$(DESTDIR)$(prefix)"
+	--with-gtk-exec-prefix="$(DESTDIR)$(exec_prefix)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk

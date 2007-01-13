@@ -1,10 +1,13 @@
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-MM_BINS   := $(sort $(shell cat minimyth-bin-list   ../../extras/extras-bin-list   | sed 's%[ \t]*\#.*%%'))
-MM_LIBS   := $(sort $(shell cat minimyth-lib-list   ../../extras/extras-lib-list   | sed 's%[ \t]*\#.*%%'))
-MM_ETCS   := $(sort $(shell cat minimyth-etc-list   ../../extras/extras-etc-list   | sed 's%[ \t]*\#.*%%'))
-MM_SHARES := $(sort $(shell cat minimyth-share-list ../../extras/extras-share-list | sed 's%[ \t]*\#.*%%'))
+MM_BINS    := $(sort $(shell cat minimyth-bin-list   ../../extras/extras-bin-list   | sed 's%[ \t]*\#.*%%'))
+MM_LIBS    := $(sort $(shell cat minimyth-lib-list   ../../extras/extras-lib-list   | sed 's%[ \t]*\#.*%%'))
+MM_ETCS    := $(sort $(shell cat minimyth-etc-list   ../../extras/extras-etc-list   | sed 's%[ \t]*\#.*%%'))
+MM_SHARES  := $(sort $(shell cat minimyth-share-list ../../extras/extras-share-list | sed 's%[ \t]*\#.*%%'))
+MM_REMOVES := $(sort $(shell \
+	cat minimyth-remove-list $(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)) | \
+	sed 's%[ \t]*\#.*%%'))
 
 bindirs := \
 	$(extras_sbindir) \
@@ -15,13 +18,16 @@ bindirs := \
 	$(bindir) \
 	$(x11bindir) \
 	$(qtbindir)
-libdirs := \
+libdirs_base := \
 	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
 	$(x11libdir) \
 	$(qtlibdir)
+libdirs := \
+	$(x11libdir)-nvidia \
+	$(libdirs_base)
 etcdirs :=  \
 	$(extras_sysconfdir) \
 	$(sysconfdir)
@@ -71,7 +77,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
+mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -115,7 +121,7 @@ mm-make-conf:
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
-	@$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
+	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
 	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
@@ -148,7 +154,9 @@ mm-copy-mythtv:
 mm-copy-x11:
 	@mkdir -p $(mm_DESTDIR)$(x11bindir)
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)
-	@cp -fa $(DESTDIR)$(x11libdir)/modules $(mm_DESTDIR)$(x11libdir)
+	@mkdir -p $(mm_DESTDIR)$(x11libdir)-nvidia
+	@cp -fa $(DESTDIR)$(x11libdir)/modules        $(mm_DESTDIR)$(x11libdir)
+	@cp -fa $(DESTDIR)$(x11libdir)-nvidia/modules $(mm_DESTDIR)$(x11libdir)-nvidia
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/rgb.txt $(mm_DESTDIR)$(x11libdir)/X11
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/fonts
@@ -243,24 +251,24 @@ mm-copy-libs:
 		for dir in $(libdirs) ; do \
 			if test -e $(DESTDIR)/$${dir}/$${lib} ; then \
 				libdir=$${dir} ; \
-				break; \
-			fi ; \
-		done ; \
-		if test ! -z $${libdir} ; then \
-			source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
-			target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
-			if test ! -e $${target_lib} ; then \
-				if test -d $${source_lib} ; then \
-                                        target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
-                                        mkdir -p $${target_dir} ; \
-					cp -fa  $${source_lib} $${target_lib} ; \
-				else \
-                                        target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
-                                        mkdir -p $${target_dir} ; \
-					cp -f  $${source_lib} $${target_lib} ; \
+				if test ! -z $${libdir} ; then \
+					source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
+					target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
+					if test ! -e $${target_lib} ; then \
+						if test -d $${source_lib} ; then \
+                                        		target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        		mkdir -p $${target_dir} ; \
+							cp -fa  $${source_lib} $${target_lib} ; \
+						else \
+                                        		target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                        		mkdir -p $${target_dir} ; \
+							cp -f  $${source_lib} $${target_lib} ; \
+						fi ; \
+					fi ; \
 				fi ; \
 			fi ; \
-		else \
+		done ; \
+		if test -z $${libdir} ; then \
 			echo "warning: library \"$${lib}\" not found." ; \
 		fi ; \
 	done
@@ -279,23 +287,30 @@ mm-%/copy-libs:
 					if test -d $(DESTDIR)/$${dir} ; then \
 						if test x`cd $(DESTDIR)/$${dir} ; ls -1 $${lib} 2>/dev/null` == x$${lib} ; then \
 							libdir=$${dir} ; \
+							if test ! -z $${libdir} ; then \
+								source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
+								target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
+								if test ! -e $${target_lib} ; then \
+                                                			target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
+                                                			mkdir -p $${target_dir} ; \
+									cp -f  $${source_lib} $${target_lib} ; \
+								fi ; \
+							fi ; \
 						fi ; \
 					fi ; \
 				done ; \
-				if test ! -z $${libdir} ; then \
-					source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
-					target_lib="$(mm_DESTDIR)/$${libdir}/$${lib}" ; \
-					if test ! -e $${target_lib} ; then \
-                                                target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
-                                                mkdir -p $${target_dir} ; \
-						cp -f  $${source_lib} $${target_lib} ; \
-					fi ; \
-				else \
+				if test -z $${libdir} ; then \
 					echo "warning: library \"$${lib}\" not found." ; \
 				fi ; \
 			done ; \
 		fi ; \
 	fi
+
+mm-remove:
+	@echo 'removing unneeded files'
+	@for remove in $(MM_REMOVES) ; do \
+		rm -rf $(mm_DESTDIR)/$${remove} ; \
+	done
 
 mm-strip:
 	@echo 'stripping binaries and shared libraries'

@@ -35,6 +35,41 @@ start() {
         MM_X_DISPLAYSIZE=
     fi
 
+    case "${MM_HARDWARE_NORTHBRIDGE}" in
+        CLE266)
+            MM_X_DRIVER=via
+            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
+            ;;
+        CN400)
+            MM_X_DRIVER=via
+            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
+            ;;
+        GFORCE_6150)
+            sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
+            MM_X_DRIVER=nvidia
+            ;;
+    esac
+
+    # Hacks to deal with the fact that the proprietary NVIDIA drivers
+    # are not compatible with the Open Source drivers.
+    case "${MM_X_DRIVER}" in
+        nvidia)
+            MM_X_MODULE_DRI=""
+            MM_X_MODULEPATH="ModulePath	\"/usr/X11R6/lib-nvidia/modules\""
+            LIB_PATHS=`cat /etc/ld.so.conf`
+            echo -n > /etc/ld.so.conf
+            for LIB_PATH in ${LIB_PATHS} ; do
+                echo "${LIB_PATH}" >> /etc/ld.so.conf
+            done
+            ldconfig
+            ;;
+        via)
+            MM_X_MODULE_DRI="Load	\"dri\""
+            MM_X_MODULEPATH=""
+            ;;
+    esac
+
+    sed -i "s%@MM_X_DRIVER@%${MM_X_DRIVER}%"           /etc/X11/xorg.conf
     sed -i "s%@MM_X_DEVICE@%${MM_X_DEVICE}%"           /etc/X11/xorg.conf
     sed -i "s%@MM_X_TV_TYPE@%${MM_X_TV_TYPE}%"         /etc/X11/xorg.conf
     sed -i "s%@MM_X_TV_OUTPUT@%${MM_X_TV_OUTPUT}%"     /etc/X11/xorg.conf
@@ -42,15 +77,13 @@ start() {
     sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"       /etc/X11/xorg.conf
     sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"               /etc/X11/xorg.conf
     sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%" /etc/X11/xorg.conf
+    sed -i "s%@MM_X_MODULE_DRI@%${MM_X_MODULE_DRI}%"   /etc/X11/xorg.conf
+    sed -i "s%@MM_X_MODULEPATH@%${MM_X_MODULEPATH}%"   /etc/X11/xorg.conf
 
-    case "${MM_HARDWARE_NORTHBRIDGE}" in
-        CLE266)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"    /etc/X11/XvMCConfig
-            ;;
-        CN400)
-            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%" /etc/X11/XvMCConfig
-            ;;
-    esac
+    # Modify library path so that chipset dependent libraries
+    # override chipset independent libraries.
+    # This is needed because the 
+    LIB_PATHS="/usr/X11R6/lib-${MM_X_DRIVER} ${LIB_PATHS}"
 
     # Start X
     if [ "${MM_X_ENABLED}" = "yes" ] ; then
