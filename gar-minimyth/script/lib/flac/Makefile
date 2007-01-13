@@ -18,8 +18,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
-        --$(if $(filter, $(GARCH), c3     ),enable,disable)-3dnow \
-        --$(if $(filter, $(GARCH),    c3-2),enable,disable)-sse \
 	--disable-altivec \
 	--disable-oggtest \
 	--with-gnu-ld \
