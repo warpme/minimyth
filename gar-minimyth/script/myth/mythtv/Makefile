@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-settings.patch.gar $(DISTNAME)-fadeaway.patch $(DISTNAME)-cvs20050218.patch $(DISTNAME)-imagecount.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-settings.patch.gar $(DISTNAME)-cvs20050218.patch $(DISTNAME)-imagecount.patch $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -52,3 +52,11 @@ disabled-checksum-$(DISTNAME).tar.bz2:
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(foreach dir,$(wildcard ../myth*),$(MAKE) -C $(dir) clean ; )
+	@rm -rf $(DESTDIR)$(bindir)/myth*
+	@rm -rf $(DESTDIR)$(datadir)/myth*
+	@rm -rf $(DESTDIR)$(includedir)/myth*
+	@rm -rf $(DESTDIR)$(lib)/libmyth*
+	@rm -rf $(DESTDIR)$(lib)/myth*

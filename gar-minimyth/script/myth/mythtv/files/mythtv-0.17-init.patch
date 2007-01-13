@@ -1,0 +1,130 @@
+diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp	2005-02-10 17:27:43.000000000 -0800
++++ mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp	2005-03-17 22:35:17.750746760 -0800
+@@ -18,6 +18,10 @@
+     HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
+ 
+     gc->setLabel(QObject::tr("Audio output device"));
++
++    gc->addSelection(QObject::tr("ALSA:default"), "ALSA:default");
++    gc->addSelection(QObject::tr("ALSA:iec958"), "ALSA:iec958");
++
+     QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
+     gc->fillSelectionsFromDir(dev);
+     dev.setNameFilter("adsp*");
+@@ -39,7 +43,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("MythControlsVolume");
+     gc->setLabel(QObject::tr("Use internal volume controls"));
+-    gc->setValue(true);
++    gc->setValue(false);
+     gc->setHelpText(QObject::tr("MythTV can control the PCM and master "
+                     "mixer volume.  If you prefer to use an external mixer "
+                     "program, then disable this option."));
+@@ -144,7 +148,7 @@
+     gc->setLabel(QObject::tr("Algorithm"));
+     gc->addSelection(QObject::tr("Linear blend"), "linearblend");
+     gc->addSelection(QObject::tr("Kernel (less motion blur)"), "kerneldeint");
+-    gc->addSelection(QObject::tr("Bob (2x framerate)"), "bobdeint");
++    gc->addSelection(QObject::tr("Bob (2x framerate)"), "bobdeint", true);
+     gc->addSelection(QObject::tr("One field"), "onefield");
+     gc->setHelpText(QObject::tr("Deinterlace algorithm. "
+                                 "'Kernel' require SSE. 'Bob' requires "
+@@ -184,7 +188,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("DecodeExtraAudio");
+     gc->setLabel(QObject::tr("Extra audio buffering"));
+-    gc->setValue(true);
++    gc->setValue(false);
+     gc->setHelpText(QObject::tr("Enable this setting if MythTV is playing "
+                     "\"crackly\" audio and you are using hardware encoding. "
+                     "This setting will have no effect "
+@@ -545,7 +549,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("PlayBoxOrdering");
+     gc->setLabel(QObject::tr("List Newest Recording First"));
+-    gc->setValue(true);
++    gc->setValue(false);
+     gc->setHelpText(QObject::tr("When enabled, the most recent recording "
+                     "will be listed first in the 'Watch Recordings' "
+                     "screen, otherwise the oldest recording will be "
+@@ -567,7 +571,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("StickyKeys");
+     gc->setLabel(QObject::tr("Sticky keys"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("If enabled, fast forward and rewind "
+                     "continue after the key is released.  Pressing the key "
+                     "again increases the fast forward or rewind speed.  The "
+@@ -658,8 +662,13 @@
+         theme = it.current();
+         QFileInfo xml(theme->absFilePath() + "/osd.xml");
+ 
+-        if (theme->fileName()[0] != '.' && xml.exists())
+-            gc->addSelection(theme->fileName());
++        if (theme->fileName()[0] != '.' && xml.exists()) {
++            if (!strcmp(theme->fileName(),"Titivillus-OSD")) {
++                gc->addSelection(theme->fileName(),QString::null,true);
++            } else {
++                gc->addSelection(theme->fileName());
++            }
++        }
+     }
+ 
+     return gc;
+@@ -794,7 +803,7 @@
+     HostCheckBox *gc = new HostCheckBox("PersistentBrowseMode");
+     gc->setLabel(QObject::tr("Always use Browse mode when changing channels "
+                  "in LiveTV"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("If enabled, Browse mode will "
+                     "automatically be activated whenever you use Channel "
+                     "UP/DOWN while watching Live TV."));
+@@ -878,7 +887,7 @@
+     HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
+     gc->setLabel(QObject::tr("Action on playback exit"));
+     gc->addSelection(QObject::tr("Just exit"), "0");
+-    gc->addSelection(QObject::tr("Save position and exit"), "2");
++    gc->addSelection(QObject::tr("Save position and exit"), "2", true);
+     gc->addSelection(QObject::tr("Always prompt"), "1");
+     gc->setHelpText(QObject::tr("If set to prompt, a menu will be displayed "
+                     "when you exit playback mode.  The options available will "
+@@ -924,7 +933,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
+     gc->setLabel(QObject::tr("Display live preview of recordings"));
+-    gc->setValue(true);
++    gc->setValue(false);
+     gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
+                     "will play in a small window on the \"Watch a "
+                     "Recording\" menu."));
+@@ -998,7 +1007,7 @@
+ {
+     HostLineEdit *ge = new HostLineEdit("HaltCommand");
+     ge->setLabel(QObject::tr("Halt command"));
+-    ge->setValue("halt");
++    ge->setValue("poweroff");
+     ge->setHelpText(QObject::tr("If you have configured an exit key using the "
+                     "System Shutdown option, you will be given the opportunity "
+                     "to exit MythTV or halt the system completely. "
+@@ -1654,7 +1663,8 @@
+     gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
+                      QString::number((int)UIGuideType::Dense));
+     gc->addSelection(QObject::tr("Eco - Transparent (CPU Usage - Low)"),
+-                     QString::number((int)UIGuideType::Eco));
++                     QString::number((int)UIGuideType::Eco),
++                     true);
+     gc->addSelection(QObject::tr("Solid (CPU Usage - Middle)"),
+                      QString::number((int)UIGuideType::Solid));
+     return gc;
+@@ -2030,7 +2040,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("UseXVMC");
+     gc->setLabel(QObject::tr("Use hardware XvMC MPEG Decoding"));
+-    gc->setValue(true);
++    gc->setValue(false);
+     return gc;
+ };
+ #endif
