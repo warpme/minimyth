@@ -36,3 +36,7 @@ post-patch:
 	@#Hack to allow configure to work. This works because we are not really cross compiling.
 	@sed -i 's%\("$$cross_compiling" *= *\)yes%\1gar%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm $(DESTDIR)$(esbindir)/mount.smbfs ; ln -s $(bindir)/smbmount $(DESTDIR)$(esbindir)/mount.smbfs
+	@$(MAKECOOKIE)

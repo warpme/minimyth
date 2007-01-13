@@ -14,7 +14,7 @@
 #     URL: required argument:
 #         A URL that points to the remote directory. A URL must have the
 #         following form:
-#             <protocol>username@password://<server>/<path>?options
+#             <protocol>://username@password:<server>/<path>?options
 #         <protocol>, <server> and <path> are required.
 #         <options>, which are additional mount options (-o), are optional.
 #         For example:
@@ -36,7 +36,7 @@ mount_url() {
     URL_PASSWORD=`echo ${URL} | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f2`
     URL_SERVER=`  echo ${URL} | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%^[^@]*@%%' | sed 's%/[^/]*%%g'`
     URL_PATH=`    echo ${URL} | cut -d? -f1 | sed 's%^[^/]*//%%' | sed 's%^[^@]*@%%' | sed 's%[^/]*%%'`
-    URL_OPTINOS=` echo ${URL}               | sed 's%^[^?]*%%'   | sed 's%^?%%'`
+    URL_OPTIONS=` echo ${URL}               | sed 's%^[^?]*%%'   | sed 's%^?%%'`
 
     MOUNT_OPTIONS="${URL_OPTIONS}"
 
@@ -47,7 +47,13 @@ mount_url() {
         MOUNT_OPTIONS="${MOUNT_OPTIONS},rsize=8192,wsize=8192"
     elif [ "${URL_PROTOCOL}" = "smb" ] ; then
         MOUNT_VFSTYPE=smbfs
-    	MOUNT_DEVICE="${URL_SERVER}:${URL_PATH}"
+    	MOUNT_DEVICE="//${URL_SERVER}${URL_PATH}"
+        if [ ! "${URL_USERNAME}" = "" ] ; then
+            MOUNT_OPTIONS="${MOUNT_OPTIONS},username=${URL_USERNAME}"
+        fi
+        if [ ! "${URL_PASSWORD}" = "" ] ; then
+            MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
+        fi
     elif [ "${URL_PROTOCOL}" = "tftp" ] ; then
         MOUNT_VFSTYPE=tmpfs
     	MOUNT_DEVICE=tmpfs
