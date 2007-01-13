@@ -23,7 +23,7 @@ include ../../gar.mk
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfreetype.la
-	@ln -s freetype2/freetype $(DESTDIR)$(includedir)/freetype
+	@ln -sf freetype2/freetype $(DESTDIR)$(includedir)/freetype
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/freetype2.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/freetype2.pc
 	@$(MAKECOOKIE)

@@ -128,7 +128,7 @@ USE_BUILD_BIN =
 else
 USE_BUILD_BIN = \
 	mkdir -p $(WORKSRC)/bin ; \
-	ln -s $(build_DESTDIR)$(build_qtprefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
+	ln -sf $(build_DESTDIR)$(build_qtprefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
 endif
 
 pre-configure:
@@ -148,7 +148,7 @@ post-install:
 	@rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
-	@ln -s $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
+	@ln -sf $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
 	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_INCDIR_QT, $(DESTDIR)$(qtincludedir))
 	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_LIBDIR_QT, $(DESTDIR)$(qtlibdir))
 	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC,       $(build_DESTDIR)$(build_qtbindir)/moc)
