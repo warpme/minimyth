@@ -1,0 +1,41 @@
+diff -Naur lirc-0.7.2pre2-old/drivers/kcompat.h lirc-0.7.2pre2-new/drivers/kcompat.h
+--- lirc-0.7.2pre2-old/drivers/kcompat.h	2005-07-22 08:53:58.000000000 -0700
++++ lirc-0.7.2pre2-new/drivers/kcompat.h	2005-07-31 10:29:16.000000000 -0700
+@@ -11,6 +11,7 @@
+ #define LIRC_HAVE_SYSFS
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,13)
++#include <linux/device.h>
+ typedef struct class_simple lirc_class_t;
+ 
+ static inline lirc_class_t *class_create(struct module *owner, char *name)
+diff -Naur lirc-0.7.2pre2-old/drivers/lirc_cmdir/lirc_cmdir.h lirc-0.7.2pre2-new/drivers/lirc_cmdir/lirc_cmdir.h
+--- lirc-0.7.2pre2-old/drivers/lirc_cmdir/lirc_cmdir.h	1969-12-31 16:00:00.000000000 -0800
++++ lirc-0.7.2pre2-new/drivers/lirc_cmdir/lirc_cmdir.h	2005-07-31 10:27:12.000000000 -0700
+@@ -0,0 +1,26 @@
++/*      $Id: lirc_cmdir.h,v 1.1 2005/07/10 08:34:13 lirc Exp $      */
++
++/*
++ *   lirc_cmdir.h
++ */
++
++#ifndef LIRC_CMDIR_H
++#define LIRC_CMDIR_H
++
++#define ON          1
++#define OFF         0
++
++/* transmitter channel control */
++#define MAX_CHANNELS     32
++
++/* CommandIR control codes */
++#define MCU_CTRL_SIZE   3
++#define FREQ_HEADER     2
++#define TX_HEADER       7
++ 
++
++extern int cmdir_write(unsigned char *buffer, int count, void *callback_fct);
++extern ssize_t cmdir_read (unsigned char *buffer, size_t count);
++extern int set_tx_channels (unsigned int next_tx);
++
++#endif
