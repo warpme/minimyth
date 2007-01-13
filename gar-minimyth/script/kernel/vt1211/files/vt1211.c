@@ -995,7 +995,7 @@ static int __init sm_vt1211_init(void)
 
 	res = i2c_isa_add_driver(&vt1211_isa_driver);
 	if (res) {
-		i2c_del_driver(&vt1211_driver);
+		i2c_isa_del_driver(&vt1211_driver);
 		return res;
 	}
 	return 0;
@@ -1003,7 +1003,7 @@ static int __init sm_vt1211_init(void)
 
 static void __exit sm_vt1211_exit(void)
 {
-	i2c_del_driver(&vt1211_isa_driver);
+	i2c_isa_del_driver(&vt1211_isa_driver);
 	i2c_del_driver(&vt1211_driver);
 }
 

@@ -2,7 +2,7 @@ GARNAME = vt1211
 GARVERSION =
 CATEGORIES = kernel
 MASTER_SITES =
-DISTFILES = Makefile vt1211.c-$(KERNEL_VERSION)
+DISTFILES = Makefile vt1211.c
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -38,9 +38,9 @@ extract-Makefile:
 	@cp $(DOWNLOADDIR)/Makefile $(WORKSRC)/
 	@$(MAKECOOKIE)
 
-extract-vt1211.c-$(KERNEL_VERSION):
+extract-vt1211.c:
 	@mkdir -p $(WORKSRC)
-	@cp $(DOWNLOADDIR)/vt1211.c-$(KERNEL_VERSION) $(WORKSRC)/vt1211.c
+	@cp $(DOWNLOADDIR)/vt1211.c $(WORKSRC)/
 	@$(MAKECOOKIE)
 
 build-custom:
