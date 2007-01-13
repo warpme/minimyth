@@ -1,5 +1,5 @@
 GARNAME = ncurses
-GARVERSION = 5.4
+GARVERSION = 5.5
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -33,7 +33,6 @@ include ../../gar.mk
 post-patch:
 	@sed -i '/[ \t]*CPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
 	@sed -i '/[ \t]*ACPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
-	@sed -i 's% @BUILD_CPPFLAGS@% -I$$(INCDIR) @BUILD_CPPFLAGS@%' $(WORKSRC)/ncurses/Makefile.in
 	@$(MAKECOOKIE)
 
 post-install:
