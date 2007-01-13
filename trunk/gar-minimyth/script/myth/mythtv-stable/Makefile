@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--tune=$(GARCH) \
 	--arch=$(GARCH) \
 	--enable-proc-opt \
-	$(if $(filter i386,$(KERNEL_ARCH)),--enable-mmx,--disable-mmx) \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-mmx,--disable-mmx) \
 	--disable-altivec \
 	--disable-audio-oss \
 	--enable-audio-alsa \

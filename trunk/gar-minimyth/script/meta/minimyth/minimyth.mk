@@ -45,44 +45,21 @@ IS_LIB = $(if $(shell file $(1) | grep -i 'ELF ..-bit LSB shared object'),yes,no
 
 MM_PATH := $(PATH)
 
-MM_LD_LIBRARY_PATH = $(call MAKE_PATH, /lib $(addprefix $(DESTDIR), $(libdirs)))
-# This is a hack that attempts to determine the MM_LDD that will work on the system.
-MM_LDD_CROSS  := $(DESTDIR)$(elibdir)/ld-linux.so.2 --list
-MM_LDD_SYSTEM := $(shell which ldd)
-MM_LDD_TEST = \
-	$(shell \
-		PATH="$(MM_PATH)" ; \
-		LD_LIBRARY_PATH=$(MM_LD_LIBRARY_PATH) ; \
-		$(1) $(DESTDIR)$(esbindir)/mkfs.cramfs >& /dev/null ; \
-		if [ "$$?" = "0" ] ; then \
-			echo "yes" ; \
-		else \
-			echo "no"  ; \
-		fi \
-	)
-MM_LDD_CROSS_VALID  := $(call MM_LDD_TEST, $(MM_LDD_CROSS))
-MM_LDD_SYSTEM_VALID := $(call MM_LDD_TEST, $(MM_LDD_SYSTEM))
-MM_LDD := $(strip $(if $(filter $(MM_LDD_CROSS_VALID),yes),$(MM_LDD_CROSS), \
-                  $(if $(filter $(MM_LDD_SYSTEM_VALID),yes),$(MM_LDD_SYSTEM),)))
-
 MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
-
 LIST_FILES = \
 	$(strip $(sort $(foreach dir, $(2), $(shell if test -d $(strip $(1)$(dir)) ; then cd $(strip $(1))$(dir) ; ls -1 ; fi) )))
 LIST_LIBS = \
 	$(filter-out \
 		$(call LIST_FILES, $(mm_DESTDIR), $(libdirs)), \
-		$(shell PATH="$(MM_PATH)" ; LD_LIBRARY_PATH=$(MM_LD_LIBRARY_PATH) ; $(MM_LDD) $(1) 2>/dev/null \
-			| grep ' => ' \
-			| sed 's%^[ \t]*%%' \
-			| sed 's%[ \t].*%%' \
-			| sed 's%.*/%%' \
-                        | sed 's%linux-gate\.so\.1%%' \
+		$(shell $(OBJDUMP) -x $(1) 2> /dev/null \
+			| grep -e '^ *NEEDED  *' \
+			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
+			| cut -d' ' -f 2 \
 		) \
 	)
 
-mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
+mm-all: mm-clean mm-make-conf mm-make-busybox mm-copy mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-lib-list
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -110,12 +87,6 @@ mm-check:
 	fi
 	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
-		exit 1 ; \
-	fi
-
-mm-check-ldd:
-	@if [ "$(MM_LDD)" = "" ] ; then \
-		echo "error: no working ldd command for determining libraries." ; \
 		exit 1 ; \
 	fi
 
@@ -302,13 +273,14 @@ mm-%/copy-libs:
                                                 			target_dir=`echo $${target_lib} | sed -e 's%/[^/]*$$%/%'` ; \
                                                 			mkdir -p $${target_dir} ; \
 									cp -f  $${source_lib} $${target_lib} ; \
+									make -s -f minimyth.mk mm-$${target_lib}/copy-libs DESTIMG=$(DESTIMG) ; \
 								fi ; \
 							fi ; \
 						fi ; \
 					fi ; \
 				done ; \
 				if test -z $${libdir} ; then \
-					echo "warning: library \"$${lib}\" not found." ; \
+					echo "warning: library \"$${lib}\" not found ($*)." ; \
 				fi ; \
 			done ; \
 		fi ; \

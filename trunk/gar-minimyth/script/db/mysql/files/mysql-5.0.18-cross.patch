@@ -1,72 +1,18 @@
-diff -Naur mysql-5.0.18-old/configure mysql-5.0.18-new/configure
---- mysql-5.0.18-old/configure	2005-12-21 11:41:46.000000000 -0800
-+++ mysql-5.0.18-new/configure	2006-01-02 12:31:19.000000000 -0800
-@@ -20844,7 +20844,7 @@
- echo "${ECHO_T}\"int\"" >&6
-     ;;
-   *)
--if test "$cross_compiling" = yes; then
-+if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -20893,7 +20893,7 @@
- sed 's/^/| /' conftest.$ac_ext >&5
+diff -Naur mysql-5.0.18-old/extra/Makefile.am mysql-5.0.18-new/extra/Makefile.am
+--- mysql-5.0.18-old/extra/Makefile.am	2005-12-21 11:39:55.000000000 -0800
++++ mysql-5.0.18-new/extra/Makefile.am	2006-01-04 17:23:06.000000000 -0800
+@@ -30,7 +30,7 @@
  
- ( exit $ac_status )
--if test "$cross_compiling" = yes; then
-+if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -25581,7 +25581,7 @@
- echo $ECHO_N "checking for atomic operations... $ECHO_C" >&6
- 
-   atom_ops=
--  if test "$cross_compiling" = yes; then
-+  if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -25631,7 +25631,7 @@
- fi
- rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
- fi
--  if test "$cross_compiling" = yes; then
-+  if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -26060,7 +26060,7 @@
- echo "${ECHO_T}no" >&6
-     ;;
-   *)
--if test "$cross_compiling" = yes; then
-+if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -27706,7 +27706,7 @@
- if test "${ac_cv_sys_restartable_syscalls+set}" = set; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
- else
--  if test "$cross_compiling" = yes; then
-+  if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
-@@ -32499,7 +32499,7 @@
- if test "${ac_cv_conv_longlong_to_float+set}" = set; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
- else
--  if test "$cross_compiling" = yes; then
-+  if test "$cross_compiling" = gar; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
+ # This will build mysqld_error.h and sql_state.h
+ $(top_builddir)/include/mysqld_error.h: comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++	mysql-comp_err \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
 diff -Naur mysql-5.0.18-old/extra/Makefile.in mysql-5.0.18-new/extra/Makefile.in
 --- mysql-5.0.18-old/extra/Makefile.in	2005-12-21 11:41:16.000000000 -0800
-+++ mysql-5.0.18-new/extra/Makefile.in	2006-01-02 12:37:08.000000000 -0800
++++ mysql-5.0.18-new/extra/Makefile.in	2006-01-04 17:22:14.000000000 -0800
 @@ -871,7 +871,7 @@
  
  # This will build mysqld_error.h and sql_state.h
@@ -76,15 +22,27 @@ diff -Naur mysql-5.0.18-old/extra/Makefile.in mysql-5.0.18-new/extra/Makefile.in
  	--charset=$(top_srcdir)/sql/share/charsets \
  	--out-dir=$(top_builddir)/sql/share/ \
  	--header_file=$(top_builddir)/include/mysqld_error.h \
+diff -Naur mysql-5.0.18-old/sql/Makefile.am mysql-5.0.18-new/sql/Makefile.am
+--- mysql-5.0.18-old/sql/Makefile.am	2005-12-21 11:39:32.000000000 -0800
++++ mysql-5.0.18-new/sql/Makefile.am	2006-01-04 17:24:01.000000000 -0800
+@@ -149,7 +149,7 @@
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # For testing of udf_example.so;  Works on platforms with gcc
+ # (This is not part of our build process but only provided as an example)
 diff -Naur mysql-5.0.18-old/sql/Makefile.in mysql-5.0.18-new/sql/Makefile.in
 --- mysql-5.0.18-old/sql/Makefile.in	2005-12-21 11:41:41.000000000 -0800
-+++ mysql-5.0.18-new/sql/Makefile.in	2006-01-02 12:31:19.000000000 -0800
++++ mysql-5.0.18-new/sql/Makefile.in	2006-01-04 17:23:48.000000000 -0800
 @@ -1254,7 +1254,7 @@
  		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
  
  lex_hash.h:	gen_lex_hash$(EXEEXT)
 -		./gen_lex_hash$(EXEEXT) > $@
-+		mysql-gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
  
  # For testing of udf_example.so;  Works on platforms with gcc
  # (This is not part of our build process but only provided as an example)

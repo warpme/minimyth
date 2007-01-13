@@ -5,7 +5,7 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-asus_acpi_hack.patch
+PATCHFILES = $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-cifs-1.39a.patch $(DISTNAME)-asus_acpi_hack.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -46,8 +46,8 @@ pre-install:
 
 install-custom:
 	@mkdir -p "$(DESTDIR)$(KERNEL_DIR)"
-	@cp $(WORKSRC)/arch/$(GARCH_FAMILY)/boot/bzImage $(DESTDIR)$(KERNEL_DIR)/vmlinuz
-	@cp $(WORKSRC)/System.map                        $(DESTDIR)$(KERNEL_DIR)/System.map
+	@cat $(WORKSRC)/arch/$(GARCH_FAMILY)/boot/bzImage > $(DESTDIR)$(KERNEL_DIR)/vmlinuz
+	@cp $(WORKSRC)/System.map                           $(DESTDIR)$(KERNEL_DIR)/System.map
 	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) modules_install
 	@$(MAKECOOKIE)
 

@@ -34,7 +34,7 @@ CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
 
-LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_x11libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_qtlibdir):$(CROSS_GCC_LIBDIR):$(CROSS_GCC_LIB64DIR)
+LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_x11libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_qtlibdir):$(CROSS_GCC_LIBDIR)
 # For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 LIB_PATH := $(LIB_PATH):/lib:/usr/lib

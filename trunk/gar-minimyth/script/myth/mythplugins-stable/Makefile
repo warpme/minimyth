@@ -64,6 +64,11 @@ svn//%/$(DISTNAME).tar.bz2:
 disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
+post-patch:
+	@$(if $(filter i386,  $(GARCH_FAMILY)),echo "DEFINES += HAVE_MMX" >> $(WORKSRC)/settings.pro)
+	@$(if $(filter x86_64,$(GARCH_FAMILY)),echo "DEFINES -= HAVE_MMX" >> $(WORKSRC)/settings.pro)
+	@$(MAKECOOKIE)
+
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)

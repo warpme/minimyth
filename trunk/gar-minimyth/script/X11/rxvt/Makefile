@@ -2,7 +2,7 @@ GARNAME = rxvt
 GARVERSION = 2.6.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
 LICENSE =
 
 DESCRIPTION =
@@ -16,8 +16,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+extract-config.cache.$(GARCH_FAMILY):
+	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)

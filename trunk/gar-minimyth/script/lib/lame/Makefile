@@ -3,6 +3,7 @@ GARVERSION = 3.96.1
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
+PATCHFILES = $(DISTNAME)-gtk_m4.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -12,13 +13,13 @@ endef
 DEPENDS   = lang/c lib/ncurses
 BUILDDEPS = devel/nasm
 
+PWD := $(shell pwd)
+
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-#CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-
-CONFIGURE_ARGS = $(DIRPATHS) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-nasm \
 	--with-gnu-ld \
@@ -29,6 +30,12 @@ include ../../gar.mk
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+post-patch:
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
 	@$(MAKECOOKIE)
 
 post-install:
