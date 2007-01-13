@@ -18,11 +18,13 @@ DEPENDS = \
 	utils/busybox \
 	devel/gdb \
 	system/lcdproc \
+	X11/libXvMCW \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
 	kernel/module-init-tools \
+	X11/Mesa \
 	myth/mplayer \
 	myth/mythplugins \
 	myth/mythstream \
@@ -36,6 +38,7 @@ DEPENDS = \
 	utils/strace \
 	net/utelnetd \
 	system/udev \
+	X11/unichrome \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \

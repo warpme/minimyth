@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql X11/freetype X11/X11 qt/qt lirc/lirc
+DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql X11/freetype X11/X11 X11/Mesa X11/libXvMCW qt/qt lirc/lirc
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
