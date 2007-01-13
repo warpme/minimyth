@@ -1,9 +1,9 @@
 GARNAME = Mesa
-GARVERSION = 6.4.1
+GARVERSION = 6.4.2
 CATEGORIES = xorg
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-bugfixes.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
+PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
 LICENSE = 
 
 DESCRIPTION = 
@@ -35,8 +35,6 @@ configure-custom:
 	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "MKDEP = $(build_DESTDIR)$(build_bindir)/makedepend" >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "DRI_DIRS = unichrome"                               >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "DRIVER_DIRS = dri"                                  >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@ln -sf $(MESA_CONFIG) $(WORKSRC)/configs/current
 	@$(MAKECOOKIE)
 

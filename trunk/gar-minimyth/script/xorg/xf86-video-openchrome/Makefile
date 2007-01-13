@@ -34,11 +34,8 @@ svn//%/$(DISTNAME).tar.bz2:
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
-post-patch:
-	@cd $(WORKSRC) ; autoreconf -v --install
-	@$(MAKECOOKIE)
-
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(includedir)/xorg/dri.h | sed -e 's%[/.]%_%g'`=yes"       >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(includedir)/xorg/dristruct.h | sed -e 's%[/.]%_%g'`=yes" >> $(WORKSRC)/config.cache
