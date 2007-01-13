@@ -1,6 +1,6 @@
 diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
 --- mythtv-7426-old/configure	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/configure	2005-12-21 03:49:19.000000000 -0800
++++ mythtv-7426-new/configure	2006-01-02 06:51:16.000000000 -0800
 @@ -856,26 +856,7 @@
  
  has_library()
@@ -100,7 +100,7 @@ diff -Naur mythtv-7426-old/configure mythtv-7426-new/configure
    echo "BUILD_DOC=yes" >> $MYTH_CONFIG_MAK
 diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile
 --- mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile	2005-12-21 03:48:02.000000000 -0800
++++ mythtv-7426-new/contrib/mythnotify/cidbcast/Makefile	2006-01-02 06:51:16.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -112,7 +112,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/cidbcast/Makefile mythtv-7426-new/
  #################################################################################
 diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile
 --- mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile	2005-12-21 03:48:02.000000000 -0800
++++ mythtv-7426-new/contrib/mythnotify/mythudprelay/Makefile	2006-01-02 06:51:16.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -132,7 +132,7 @@ diff -Naur mythtv-7426-old/contrib/mythnotify/mythudprelay/Makefile mythtv-7426-
  #################################################################################
 diff -Naur mythtv-7426-old/libs/libmythtv/libmythtv.pro mythtv-7426-new/libs/libmythtv/libmythtv.pro
 --- mythtv-7426-old/libs/libmythtv/libmythtv.pro	2005-10-25 09:18:23.000000000 -0700
-+++ mythtv-7426-new/libs/libmythtv/libmythtv.pro	2005-12-21 03:48:02.000000000 -0800
++++ mythtv-7426-new/libs/libmythtv/libmythtv.pro	2006-01-02 06:51:16.000000000 -0800
 @@ -32,9 +32,9 @@
  TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
  
@@ -146,9 +146,21 @@ diff -Naur mythtv-7426-old/libs/libmythtv/libmythtv.pro mythtv-7426-new/libs/lib
  
  macx {
      # Mac OS X Frameworks
+diff -Naur mythtv-7426-old/programs/mythfrontend/mythfrontend.pro mythtv-7426-new/programs/mythfrontend/mythfrontend.pro
+--- mythtv-7426-old/programs/mythfrontend/mythfrontend.pro	2005-10-25 09:18:35.000000000 -0700
++++ mythtv-7426-new/programs/mythfrontend/mythfrontend.pro	2006-01-02 06:53:20.000000000 -0800
+@@ -33,7 +33,7 @@
+ 
+ macx {
+     RC_FILE += mythfrontend.icns
+-    LIBS += `freetype-config --libs`
++    LIBS += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+ }
+ 
+ # OpenBSD ldconfig expects different arguments than the Linux one
 diff -Naur mythtv-7426-old/settings.pro mythtv-7426-new/settings.pro
 --- mythtv-7426-old/settings.pro	2005-10-25 09:18:36.000000000 -0700
-+++ mythtv-7426-new/settings.pro	2005-12-21 03:48:02.000000000 -0800
++++ mythtv-7426-new/settings.pro	2006-01-02 06:55:06.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
@@ -158,3 +170,24 @@ diff -Naur mythtv-7426-old/settings.pro mythtv-7426-new/settings.pro
  }
  
  LIBVERSION = 0.18
+@@ -17,7 +17,7 @@
+     }
+ }
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
+ INCLUDEPATH += $$CONFIG_INCLUDEPATH
+ 
+ # figure out compile flags based on qmake info
+diff -Naur mythtv-7426-old/setup/setup.pro mythtv-7426-new/setup/setup.pro
+--- mythtv-7426-old/setup/setup.pro	2005-10-25 09:18:36.000000000 -0700
++++ mythtv-7426-new/setup/setup.pro	2006-01-02 06:51:48.000000000 -0800
+@@ -15,7 +15,7 @@
+ LIBS += -lmythavcodec-$$LIBVERSION -lmythavutil-$$LIBVERSION
+ LIBS += -lmyth-$$LIBVERSION $$EXTRA_LIBS
+ 
+-LIBS += `freetype-config --libs`
++LIBS += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+ 
+ isEmpty(QMAKE_EXTENSION_SHLIB) {
+   QMAKE_EXTENSION_SHLIB=so

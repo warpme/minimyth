@@ -1,6 +1,6 @@
 diff -Naur mythplugins-0.18.1-old/configure mythplugins-0.18.1-new/configure
 --- mythplugins-0.18.1-old/configure	2005-04-17 20:41:08.000000000 -0700
-+++ mythplugins-0.18.1-new/configure	2005-12-21 03:24:40.000000000 -0800
++++ mythplugins-0.18.1-new/configure	2006-01-02 07:28:42.000000000 -0800
 @@ -330,8 +330,8 @@
          cat ./mythdvd/mythdvd/dvd_settings.xml.mid >> ./mythdvd/mythdvd/dvd_settings.xml
  
@@ -25,9 +25,26 @@ diff -Naur mythplugins-0.18.1-old/configure mythplugins-0.18.1-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL           support will not be included in MythMusic"
+@@ -472,13 +472,10 @@
+     if test "$festival" = "yes" ; then
+         echo "        FESTIVAL      support will be included in MythPhone"
+         echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
+-        echo "FESTIVALDIR = /home/paul/Build/festival/festival/" >> ./mythphone/mythphone/config.pro
+-        echo "SPEECHTOOLSDIR = /home/paul/Build/festival/speech_tools/" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += \$\${FESTIVALDIR}/src/include" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += \$\${SPEECHTOOLSDIR}/include" >> ./mythphone/mythphone/config.pro
++        echo "FESTIVALDIR = @GAR_prefix@" >> ./mythphone/mythphone/config.pro
++        echo "SPEECHTOOLSDIR = @GAR_prefix@" >> ./mythphone/mythphone/config.pro
++        echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@" >> ./mythphone/mythphone/config.pro
+         echo "DEFINES += FESTIVAL_HOME=\\\"\$\${FESTIVALDIR}\\\"" >> ./mythphone/mythphone/config.pro
+-        echo "LIBS += -L\$\${FESTIVALDIR}/src/lib" >> ./mythphone/mythphone/config.pro
+-        echo "LIBS += -L\$\${SPEECHTOOLSDIR}/lib" >> ./mythphone/mythphone/config.pro
+         echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
+     fi
+ 
 diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-0.18.1-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
 --- mythplugins-0.18.1-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-04-12 20:41:05.000000000 -0700
-+++ mythplugins-0.18.1-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-12-21 03:27:37.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2006-01-02 07:27:17.000000000 -0800
 @@ -1,7 +1,6 @@
  include ( ../../settings.pro )
  
@@ -39,7 +56,7 @@ diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbookmarkmanager/mythbookmarkma
  CONFIG += plugin thread warn_on debug
 diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-0.18.1-new/mythbrowser/mythbrowser/mythbrowser.pro
 --- mythplugins-0.18.1-old/mythbrowser/mythbrowser/mythbrowser.pro	2005-04-12 20:41:05.000000000 -0700
-+++ mythplugins-0.18.1-new/mythbrowser/mythbrowser/mythbrowser.pro	2005-12-21 03:26:58.000000000 -0800
++++ mythplugins-0.18.1-new/mythbrowser/mythbrowser/mythbrowser.pro	2006-01-02 07:27:17.000000000 -0800
 @@ -1,9 +1,6 @@
  include (../../settings.pro )
  
@@ -62,7 +79,7 @@ diff -Naur mythplugins-0.18.1-old/mythbrowser/mythbrowser/mythbrowser.pro mythpl
  HEADERS += webpage.h tabview.h
 diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/mythmusic.pro mythplugins-0.18.1-new/mythmusic/mythmusic/mythmusic.pro
 --- mythplugins-0.18.1-old/mythmusic/mythmusic/mythmusic.pro	2005-04-12 20:41:05.000000000 -0700
-+++ mythplugins-0.18.1-new/mythmusic/mythmusic/mythmusic.pro	2005-12-21 03:28:18.000000000 -0800
++++ mythplugins-0.18.1-new/mythmusic/mythmusic/mythmusic.pro	2006-01-02 07:27:17.000000000 -0800
 @@ -5,7 +5,7 @@
     error(Missing config.pro: please run the configure script)
  }
@@ -74,7 +91,7 @@ diff -Naur mythplugins-0.18.1-old/mythmusic/mythmusic/mythmusic.pro mythplugins-
  TARGET = mythmusic
 diff -Naur mythplugins-0.18.1-old/settings.pro mythplugins-0.18.1-new/settings.pro
 --- mythplugins-0.18.1-old/settings.pro	2005-05-06 15:52:24.000000000 -0700
-+++ mythplugins-0.18.1-new/settings.pro	2005-12-21 03:24:40.000000000 -0800
++++ mythplugins-0.18.1-new/settings.pro	2006-01-02 07:27:17.000000000 -0800
 @@ -2,16 +2,16 @@
  CONFIG += release
  

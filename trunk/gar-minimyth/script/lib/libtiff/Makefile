@@ -1,5 +1,5 @@
 GARNAME = tiff
-GARVERSION = 3.7.4
+GARVERSION = 3.8.0
 CATEGORIES = lib
 MASTER_SITES  = http://fresh.t-systems-sfr.com/unix/src/misc/
 MASTER_SITES += ftp://ftp.remotesensing.org/pub/libtiff/

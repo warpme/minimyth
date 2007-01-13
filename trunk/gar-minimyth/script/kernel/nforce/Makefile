@@ -14,7 +14,7 @@ endef
 DEPENDS   = lang/c kernel/linux
 BUILDDEPS = kernel/module-init-tools
 
-WORKSRC = $(NFORCE_DISTFILE)
+WORKSRC = $(WORKDIR)/$(NFORCE_DISTFILE)
 
 BUILD_SCRIPTS   = $(WORKSRC)/nvnet/makefile $(WORKSRC)/nvsound/main/makefile
 INSTALL_SCRIPTS = $(WORKSRC)/nvnet/makefile $(WORKSRC)/nvsound/main/makefile

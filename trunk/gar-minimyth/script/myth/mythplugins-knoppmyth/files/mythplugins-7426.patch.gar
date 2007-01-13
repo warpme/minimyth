@@ -1,6 +1,6 @@
 diff -Naur mythplugins-7426-old/configure mythplugins-7426-new/configure
 --- mythplugins-7426-old/configure	2005-10-25 09:20:18.000000000 -0700
-+++ mythplugins-7426-new/configure	2005-12-21 03:58:36.000000000 -0800
++++ mythplugins-7426-new/configure	2006-01-02 06:59:45.000000000 -0800
 @@ -223,20 +223,7 @@
  
  has_library()
@@ -74,9 +74,22 @@ diff -Naur mythplugins-7426-old/configure mythplugins-7426-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL           support will not be included in MythMusic"
+@@ -746,10 +733,9 @@
+     if test "$festival" = "yes" ; then
+         echo "        FESTIVAL      support will be included in MythPhone"
+         echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
+-        echo "FESTIVALDIR = /home/paul/Build/festival/festival/" >> ./mythphone/mythphone/config.pro
++        echo "FESTIVALDIR = @GAR_prefix@" >> ./mythphone/mythphone/config.pro
+         echo "DEFINES += FESTIVAL_HOME=\\\"\$\${FESTIVALDIR}\\\"" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += /usr/include/festival /usr/include/speech_tools" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += /usr/local/include/festival /usr/local/include/speech_tools" >> ./mythphone/mythphone/config.pro
++        echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/festival @GAR_DESTDIR@@GAR_includedir@/speech_tools" >> ./mythphone/mythphone/config.pro
+         echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
+     fi
+ 
 diff -Naur mythplugins-7426-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-7426-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
 --- mythplugins-7426-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-10-25 09:20:11.000000000 -0700
-+++ mythplugins-7426-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2005-12-21 03:59:24.000000000 -0800
++++ mythplugins-7426-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2006-01-02 06:58:53.000000000 -0800
 @@ -1,7 +1,6 @@
  include ( ../../settings.pro )
  
@@ -88,7 +101,7 @@ diff -Naur mythplugins-7426-old/mythbrowser/mythbookmarkmanager/mythbookmarkmana
  CONFIG += plugin thread warn_on debug
 diff -Naur mythplugins-7426-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-7426-new/mythbrowser/mythbrowser/mythbrowser.pro
 --- mythplugins-7426-old/mythbrowser/mythbrowser/mythbrowser.pro	2005-10-25 09:20:11.000000000 -0700
-+++ mythplugins-7426-new/mythbrowser/mythbrowser/mythbrowser.pro	2005-12-21 04:00:06.000000000 -0800
++++ mythplugins-7426-new/mythbrowser/mythbrowser/mythbrowser.pro	2006-01-02 06:58:53.000000000 -0800
 @@ -1,9 +1,6 @@
  include (../../settings.pro )
  
@@ -111,7 +124,7 @@ diff -Naur mythplugins-7426-old/mythbrowser/mythbrowser/mythbrowser.pro mythplug
  HEADERS += webpage.h tabview.h
 diff -Naur mythplugins-7426-old/mythmusic/mythmusic/mythmusic.pro mythplugins-7426-new/mythmusic/mythmusic/mythmusic.pro
 --- mythplugins-7426-old/mythmusic/mythmusic/mythmusic.pro	2005-10-25 09:20:11.000000000 -0700
-+++ mythplugins-7426-new/mythmusic/mythmusic/mythmusic.pro	2005-12-21 04:01:35.000000000 -0800
++++ mythplugins-7426-new/mythmusic/mythmusic/mythmusic.pro	2006-01-02 06:58:53.000000000 -0800
 @@ -5,7 +5,7 @@
     error(Missing config.pro: please run the configure script)
  }
@@ -123,7 +136,7 @@ diff -Naur mythplugins-7426-old/mythmusic/mythmusic/mythmusic.pro mythplugins-74
  TARGET = mythmusic
 diff -Naur mythplugins-7426-old/settings.pro mythplugins-7426-new/settings.pro
 --- mythplugins-7426-old/settings.pro	2005-10-25 09:20:18.000000000 -0700
-+++ mythplugins-7426-new/settings.pro	2005-12-21 04:00:53.000000000 -0800
++++ mythplugins-7426-new/settings.pro	2006-01-02 06:58:53.000000000 -0800
 @@ -3,18 +3,18 @@
  
  LIBVERSION = 0.18
