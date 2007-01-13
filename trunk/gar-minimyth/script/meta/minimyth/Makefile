@@ -33,7 +33,6 @@ DEPENDS = \
 	X11/rxvt \
 	net/samba \
 	utils/strace \
-	net/utelnetd \
 	system/udev \
 	X11/unichrome \
 	utils/util-linux \
