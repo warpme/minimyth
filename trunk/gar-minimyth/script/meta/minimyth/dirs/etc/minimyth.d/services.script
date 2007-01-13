@@ -11,7 +11,6 @@ webfsd -u 0 -g 0 -p 80 -f index.html -r /etc/www -x /cgi -s
 # start NTP daemon
 if [ -n ${MM_TIME_SERVER} ] ; then
   ntpdate ${MM_TIME_SERVER}
-  mkdir -p /tmp/etc
   echo "server ${MM_TIME_SERVER}" > /etc/ntp.conf
   ntpd
 fi
@@ -21,5 +20,5 @@ fi
 #
 # check for PAL
 if [ "$MM_TV" = "PAL" ]; then
-    sed -i "s%NTSC%PAL%" /tmp/etc/X11/xorg.conf
+    sed -i "s%NTSC%PAL%" /etc/X11/xorg.conf
 fi

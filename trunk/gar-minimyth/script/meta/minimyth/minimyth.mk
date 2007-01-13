@@ -69,9 +69,6 @@ LIST_LIBS = \
 			| sed 's%.*/%%' \
 		) \
 	)
-CONVERT_TO_LINK = \
-	test -e $(mm_DESTDIR)/$(strip $(1)) && mv $(mm_DESTDIR)/$(strip $(1)) $(mm_DESTDIR)/$(strip $(1)).default ; \
-	ln -sf /tmp/$(strip $(1)) $(mm_DESTDIR)$(strip $(1))
 
 mm-all: mm-check mm-clean mm-make-busybox mm-make-dirs mm-copy mm-strip mm-conf
 
@@ -298,27 +295,13 @@ mm-conf:
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
 	$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
-	rm -rf $(mm_DESTDIR)/root ; cp -r ./dirs/root $(mm_DESTDIR)
-	rm -rf $(mm_DESTDIR)/root/.mplayer 
-	mkdir -p $(mm_DESTDIR)/root/.mplayer
-	rm -rf $(mm_DESTDIR)/root/.mythtv
-	mkdir -p $(mm_DESTDIR)/root/.mythtv
+	rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
+	rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
+	rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
+	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
+	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
 	sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
-	$(call CONVERT_TO_LINK, $(sysconfdir)/ld.so.cache               )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/lircd.conf                )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/lircrc                    )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/localtime                 )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/ntp.conf                  )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/resolv.conf               )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/dhcp.conf      )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/loadmods.script)
-	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/minimyth.conf  )
-	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/minimyth.script)
-	$(call CONVERT_TO_LINK, $(sysconfdir)/X11/xorg.conf             )
-	$(call CONVERT_TO_LINK, /root/.xine/config                      )
-	$(call CONVERT_TO_LINK, /root/.xinitrc                          )
-	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
 	rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
 	mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)

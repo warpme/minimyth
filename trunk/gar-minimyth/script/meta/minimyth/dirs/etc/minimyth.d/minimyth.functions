@@ -34,6 +34,8 @@ mount_url() {
     URL="$1"
     MOUNT_DIR="$2"
 
+    mkdir -p ${MOUNT_DIR}
+
     URL_PROTOCOL=`echo ${URL} | cut -d? -f1 | cut -d: -f1`
     URL_USERNAME=`echo ${URL} | cut -d? -f1 | sed 's%^[^:]*:%%' | sed 's%^//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f1`
     URL_PASSWORD=`echo ${URL} | cut -d? -f1 | sed 's%^[^:]*:%%' | sed 's%^//%%' | sed 's%[^@]*$%%'  | sed 's%@$%%' | cut -d: -f2`
@@ -70,33 +72,27 @@ mount_url() {
             MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
         fi
     elif [ "${URL_PROTOCOL}" = "tftp" ] ; then
-        MOUNT_VFSTYPE=tmpfs
-    	MOUNT_DEVICE=tmpfs
-    elif [ "${URL_PROTOCOL}" = "conf" ] ; then
-        MOUNT_VFSTYPE=tmpfs
-    	MOUNT_DEVICE=tmpfs
-    fi
-
-    if [ -n "${MOUNT_VFSTYPE}" ] ; then
-        mkdir -p ${MOUNT_DIR}
-        MOUNT_OPTIONS=`echo ${MOUNT_OPTIONS} | sed 's%^,%%'`
-        [ -n "${MOUNT_OPTIONS}" ] && MOUNT_OPTIONS="-o ${MOUNT_OPTIONS}"
-        mount -t ${MOUNT_VFSTYPE} ${EXTRA_OPTIONS} ${MOUNT_OPTIONS} ${MOUNT_DEVICE} ${MOUNT_DIR}
-    fi
-
-    if   [ "${URL_PROTOCOL}" = "tftp" ] ; then
-	TARFILE="__tmp__.tar.bz2"
+	touch ${MOUNT_DIR}
+        [ $? = 0 ] || make_dir_rw ${MOUNT_DIR}
+	TARFILE="tmp.tar.bz2~"
 	cd ${MOUNT_DIR}
     	tftp -g -r ${URL_PATH} -l ${TARFILE} ${URL_SERVER}
 	tar -jxf ${TARFILE}
 	rm -f ${TARFILE}
     elif [ "${URL_PROTOCOL}" = "conf" ] ; then
-	TARFILE="__tmp__.tar.bz2"
+	touch ${MOUNT_DIR}
+        [ $? = 0 ] || make_dir_rw ${MOUNT_DIR}
+	TARFILE="tmp.tar.bz2~"
 	cd ${MOUNT_DIR}
-    	tftp -g -r ${MM_TFTP_ROOTDIR}/conf/`hosthame`/${URL_PATH} -l ${TARFILE} ${MM_TFTP_SERVER} || \
-    	tftp -g -r ${MM_TFTP_ROOTDIR}/conf/${URL_PATH}            -l ${TARFILE} ${MM_TFTP_SERVER}
+	get_file ${URL_PATH} ${TARFILE}
 	tar -jxf ${TARFILE}
 	rm -f ${TARFILE}
+    fi
+
+    if [ -n "${MOUNT_VFSTYPE}" ] ; then
+        MOUNT_OPTIONS=`echo ${MOUNT_OPTIONS} | sed 's%^,%%'`
+        [ -n "${MOUNT_OPTIONS}" ] && MOUNT_OPTIONS="-o ${MOUNT_OPTIONS}"
+        mount -t ${MOUNT_VFSTYPE} ${EXTRA_OPTIONS} ${MOUNT_OPTIONS} ${MOUNT_DEVICE} ${MOUNT_DIR}
     fi
 }
 
@@ -109,10 +105,17 @@ get_file() {
 
     mkdir -p `echo /tmp/${LOCAL_FILE} | sed 's%/[^/]*$%%'`
 
-    tftp -g -r ${MM_TFTP_ROOTDIR}/conf/`hostname`/${REMOTE_FILE} -l /tmp/${LOCAL_FILE} ${MM_TFTP_SERVER} || \
-    tftp -g -r ${MM_TFTP_ROOTDIR}/conf/${REMOTE_FILE}            -l /tmp/${LOCAL_FILE} ${MM_TFTP_SERVER} || \
-    cp         ${LOCAL_FILE}.default                                /tmp/${LOCAL_FILE}                   || \
-    touch                                                           /tmp/${LOCAL_FILE}
+    TMP_FILE=${LOCAL_FILE}~
+
+    rm -f ${TMP_FILE}
+    FILE_GOT=0
+    [ ${FILE_GOT} = 0 ] && 
+        tftp -g -r ${MM_TFTP_ROOTDIR}/conf/`hostname`/${REMOTE_FILE} -l ${TMP_FILE} ${MM_TFTP_SERVER} && FILE_GOT=1
+    [ ${FILE_GOT} = 0 ] && 
+        tftp -g -r ${MM_TFTP_ROOTDIR}/conf/${REMOTE_FILE}            -l ${TMP_FILE} ${MM_TFTP_SERVER} && FILE_GOT=1
+    [ ${FILE_GOT} = 1 ] && 
+        mv -f ${TMP_FILE} ${LOCAL_FILE}
+    rm -f ${TMP_FILE}
 }
 
 ################################################################################
@@ -162,16 +165,21 @@ dump_mythdb_settings() {
 # Use unionfs to make a ro directory into a rw directory.
 ################################################################################
 make_dir_rw() {
-  DIR=$1
+    DIR=$1
 
-  modprobe unionfs
+    modprobe unionfs
 
-  UNIONFS_RO=/tmp/unionfs/ro
-  UNIONFS_RW=/tmp/unionfs/rw
+    UNIONFS=/var/unionfs
+    UNIONFS_RO=${UNIONFS}/ro
+    UNIONFS_RW=${UNIONFS}/rw
 
-  mkdir -p ${UNIONFS_RO}${DIR}
-  mkdir -p ${UNIONFS_RW}${DIR}
+    if [ ! -e ${UNIONFS} ] ; then
+	mkdir -p /var/unionfs
+        mount -t tmpfs tmpfs ${UNIONFS}
+    fi
+    mkdir -p ${UNIONFS_RO}${DIR}
+    mkdir -p ${UNIONFS_RW}${DIR}
 
-  mount --bind ${DIR} ${UNIONFS_RO}${DIR}
-  mount -t unionfs -o dirs=${UNIONFS_RW}${DIR}=rw:${UNIONFS_RO}${DIR}=ro,copyup=preserve none ${DIR}
+    mount --bind ${DIR} ${UNIONFS_RO}${DIR}
+    mount -t unionfs -o dirs=${UNIONFS_RW}${DIR}=rw:${UNIONFS_RO}${DIR}=ro,copyup=preserve none ${DIR}
 }
