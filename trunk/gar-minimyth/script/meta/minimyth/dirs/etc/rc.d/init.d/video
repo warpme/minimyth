@@ -36,26 +36,65 @@ start() {
 
     case "${MM_X_DRIVER}" in
         intel_i810)
-            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc
+            PREFE
+            PREFERRED_MPEG2_DECODER=xvmc
             sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
             ;;
         intel_i830|intel_i915)
-            mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
+            PREFERRED_MPEG2_DECODER=ffmpeg
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
             ;;
         nvidia)
             # this should really be the more efficient 'libmpeg2',
             # but it causes stalls during when fast forwarding and rewinding.
-            mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
+            PREFERRED_MPEG2_DECODER=ffmpeg
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
             ;;
         via|via_pro)
-            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
+            PREFERRED_MPEG2_DECODER=xvmc-vld
             sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
+            ;;
+    esac
+
+    case "${PREFERRED_MPEG2_DECODER}" in
+        ffmpeg)
+            if [ "$(MM_VERSION_MYTH) = "0.18.1" ] ; then
+                mm_mythdb_setting_update UseMPEG2Dec 0
+                mm_mythdb_setting_update UseXVMC 0
+                mm_mythdb_setting_update UseXvMcVld 0
+            else
+                mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            fi
+        libmpeg2)
+            if [ "$(MM_VERSION_MYTH) = "0.18.1" ] ; then
+                mm_mythdb_setting_update UseMPEG2Dec 1
+                mm_mythdb_setting_update UseXVMC 0
+                mm_mythdb_setting_update UseXvMcVld 0
+            else
+                mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            fi
+            ;;
+        xvmc)
+            if [ "$(MM_VERSION_MYTH) = "0.18.1" ] ; then
+                mm_mythdb_setting_update UseMPEG2Dec 0
+                mm_mythdb_setting_update UseXVMC 1
+                mm_mythdb_setting_update UseXvMcVld 0
+            else
+                mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            fi
+            ;;
+        xvmc-vld)
+            if [ "$(MM_VERSION_MYTH) = "0.18.1" ] ; then
+                mm_mythdb_setting_update UseMPEG2Dec 0
+                mm_mythdb_setting_update UseXVMC 0
+                mm_mythdb_setting_update UseXvMcVld 1
+            else
+                mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            fi
             ;;
     esac
 
