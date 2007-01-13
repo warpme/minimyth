@@ -7,21 +7,30 @@
 start() {
     mm_message_output info 'starting CPU frequency scaling ...'
 
+    GOVERNOR_IS_USERSPACE="no"
     for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
         GOVERNOR_FOUND="no"
 	for governor in `cat ${dir}/scaling_available_governors` ; do
             [ "${governor}" = "${MM_CPUFREQ_GOVERNOR}" ] && GOVERNOR_FOUND="yes"
+            [ "${governor}" = "userspace"              ] && GOVERNOR_IS_USERSPACE="yes"
         done
         if   [ "${GOVERNOR_FOUND}" = "yes" ] ; then
             echo "${MM_CPUFREQ_GOVERNOR}" > ${dir}/scaling_governor
         fi
     done
+    if [ "${GOVERNOR_IS_USERSPACE}" = "yes" ] ; then
+        powernowd
+    fi
 
     return 0
 }
 
 stop() {
     mm_message_output info 'stopping CPU frequency scaling ...'
+
+    if [ -n "`pidof powernowd`" ] ; then
+        killall powernowd
+    fi
 
     for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
         echo performance > ${dir}/scaling_governor
