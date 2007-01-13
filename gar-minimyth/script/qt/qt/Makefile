@@ -22,12 +22,11 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	-debug \
 	-prefix $(qtprefix) \
 	-bindir $(qtbindir) \
 	-libdir $(qtlibdir) \
 	-headerdir $(qtincludedir) \
-	-release \
+	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
 	-shared \
 	-qt-gif \
 	-system-zlib \

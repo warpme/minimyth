@@ -19,7 +19,9 @@ CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
 
-CONFIGURE_ARGS = $(DIRPATHS) \
+CONFIGURE_ARGS = \
+	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
+	--prefix="$(prefix)" \
 	--disable-ccache \
 	--disable-distcc \
 	--extra-cflags="$(CFLAGS)" \

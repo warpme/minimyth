@@ -20,7 +20,7 @@ BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
-	--compile-type="release" \
+	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
 	--prefix="$(prefix)" \
 	--libdir-name="lib" \
 	--disable-ccache \
@@ -38,7 +38,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	--disable-valgrind \
+	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
 	--enable-frontend \
 	--enable-backend \
 	--enable-lirc \
