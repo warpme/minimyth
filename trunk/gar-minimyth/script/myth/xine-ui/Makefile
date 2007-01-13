@@ -3,7 +3,7 @@ GARVERSION = 0.99.3
 CATEGORIES = myth
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-rootwindow.patch
 LICENSE = 
 
 DESCRIPTION =
