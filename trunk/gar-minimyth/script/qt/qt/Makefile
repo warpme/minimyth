@@ -52,7 +52,7 @@ CONFIGURE_ARGS = \
 	-xshape \
 	-xinerama \
 	-no-xcursor \
-	-no-xrandr \
+	-xrandr \
 	-xrender \
 	-xft \
 	-no-tablet \
