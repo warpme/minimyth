@@ -16,6 +16,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-cross="$(compiler_prefix)" \
 	--with-kernel="$(DESTDIR)$(KERNEL_BUILDDIR)" \
@@ -35,7 +36,10 @@ INSTALL_ENV   = $(KERNEL_MAKE_ENV) IUSER="$(IUSER)" IGROUP="$(IGROUP)"
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-CC := $(build_CC)
+CC       := 
+CPPFLAGS :=
+CFLAGS   :=
+LDFLAGS  :=
 
 IUSER  := `id -un`
 IGROUP := `id -gn`
