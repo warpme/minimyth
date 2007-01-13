@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c X11/X11 X11/freetype lib/libpng lirc/lirc mediaplayers/xine-lib
+DEPENDS = lang/c xorg/xorg X11/freetype lib/libpng lirc/lirc mediaplayers/xine-lib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

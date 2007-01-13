@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql X11/freetype X11/fontconfig X11/X11
+DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql X11/freetype X11/fontconfig xorg/xorg
 BUILDDEPS  = devel/bison devel/flex
 ifneq ($(DESTIMG),build)
 BUILDDEPS += qt/qt
@@ -68,7 +68,7 @@ endif
 INSTALL_ARGS = \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk X11/X11/package-api.mk
+GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
 PLATFORM_INITIAL_NAME  = linux-g++
