@@ -4,6 +4,8 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
+MM_HARDWARE_SENSOR=`mm_var_get MM_HARDWARE_SENSOR`
+
 # ACPI.
 modprobe button
 modprobe fan
@@ -19,11 +21,23 @@ modprobe evdev
 modprobe psmouse
 
 # Sensors.
-modprobe i2c-core
-modprobe i2c-dev
-modprobe i2c-sensor
-modprobe i2c-isa
-modprobe vt1211
+case "${MM_HARDWARE_SENSOR}" in
+    VT1211)
+        modprobe i2c-core
+        modprobe i2c-dev
+        modprobe i2c-sensor
+        modprobe i2c-isa
+        modprobe vt1211
+        ;;
+    W83782D)
+        modprobe i2c-core
+        modprobe i2c-dev
+        modprobe i2c-sensor
+        modprobe i2c-isa
+        modprobe i2c-viapro
+        modprobe w83781d
+        ;;
+esac
 
 # IO scheduler.
 modprobe as-iosched
