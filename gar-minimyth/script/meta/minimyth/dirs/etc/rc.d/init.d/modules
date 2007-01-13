@@ -18,9 +18,22 @@ start() {
     case "${MM_HARDWARE_CPU}" in
         ATHLON64)
             modprobe powernow-k8
-            modprobe cpufreq-conservative
             ;;
         C3|C3-2)
+            modprobe longhaul
+            ;;
+    esac
+    case "${MM_CPUFREQ_GOVERNOR}" in
+        performance)
+            ;;
+        powersave)
+            modprobe cpufreq-powersave
+            ;;
+        ondemand)
+            modprobe cpufreq-ondemand
+            ;;
+        conservative)
+            modprobe cpufreq-conservative
             ;;
     esac
 
