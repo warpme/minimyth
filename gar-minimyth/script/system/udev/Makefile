@@ -3,7 +3,6 @@ GARVERSION = 052
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -58,4 +57,6 @@ udevdir     := $(rootdir)/dev
 
 post-install:
 	@sed -i 's%SYMLINK="cdrom"%SYMLINK="cdrom dvd"%g' $(DESTDIR)$(sysconfdir)/udev/rules.d/50-udev.rules
+	@ln -sf udev $(DESTDIR)$(sbindir)/udevstart
+	@ln -sf .$(call DIRSTODOTS, $(hotplugdir))$(sbindir)/udevsend $(DESTDIR)$(hotplugdir)/10-udev.hotplug
 	@$(MAKECOOKIE)
