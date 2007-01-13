@@ -24,11 +24,13 @@ MINOR_VERSION = $(NVIDIA_MINOR_VERSION)
 TEENY_VERSION = $(NVIDIA_TEENY_VERSION)
 
 NVIDIA_LIBDIR = $(libdir)/nvidia
-NVIDIA_BINDIR = $(bindir)/nvidia
+NVIDIA_BINDIR = $(bindir)
 
 install-custom:
-	@rm -rf $(DESTDIR)$(NVIDIA_BINDIR)
+	@rm -rf $(DESTDIR)$(NVIDIA_BINDIR)/nvidia*
 	@mkdir -p $(DESTDIR)$(NVIDIA_BINDIR)
+	@install $(WORKSRC)/usr/bin/nvidia-bug-report.sh \
+		$(DESTDIR)$(NVIDIA_BINDIR)/nvidia-bug-report.sh
 	@install $(WORKSRC)/usr/bin/nvidia-xconfig \
 		$(DESTDIR)$(NVIDIA_BINDIR)/nvidia-xconfig
 	@rm -rf $(DESTDIR)$(NVIDIA_LIBDIR)
