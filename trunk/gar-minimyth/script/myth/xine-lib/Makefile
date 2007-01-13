@@ -1,7 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 1.0.1
+GARVERSION = 20050716
 CATEGORIES = myth
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
+MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/xine/
+MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = 
@@ -41,7 +42,20 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 
 include ../../gar.mk
 
-post-patch:
+cvs//%/$(DISTNAME).tar.gz:
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)
+	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); tar -zc $(DISTNAME) -f $(DISTNAME).tar.gz
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.gz:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; ./autogen.sh noconfig
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
@@ -49,9 +63,6 @@ post-patch:
 	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
 	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
-	@$(MAKECOOKIE)
-
-pre-configure:
 	@echo "ac_cv_path_AALIB_CONFIG=no"                                     >  $(WORKSRC)/config.cache
 	@echo "ac_cv_path_CACA_CONFIG=no"                                      >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_SDL_CONFIG=$(DESTDIR)$(bindir)/sdl-config"           >> $(WORKSRC)/config.cache
