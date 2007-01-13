@@ -34,6 +34,7 @@ DEPENDS = \
 	system/powernowd \
 	qt/qt \
 	X11/ratpoison \
+	utils/regionset \
 	X11/rxvt \
 	system/splashutils \
 	devel/strace \

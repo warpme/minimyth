@@ -19,6 +19,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
 	--with-expat-includes=$(DESTDIR)$(includedir) \
 	--with-expat-lib=$(DESTDIR)$(libdir) \
 	--disable-docs \
@@ -34,6 +35,9 @@ pre-configure:
 	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
 	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
+	@# Create config.cache
+	@rm -f $(WORKSRC)/config.cache
+	@echo "ac_cv_prog_HASDOCBOOK=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
