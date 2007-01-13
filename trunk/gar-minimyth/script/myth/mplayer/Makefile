@@ -114,11 +114,11 @@ CONFIGURE_ARGS_MISC = \
 	--as="$(AS)" \
 	--target="$(GARCH)-linux"
 CONFIGURE_ARGS_ADVANCED = \
-	--$(if $(filter $(GARCH), c3 c3-2),enable,disable)-mmx \
+	--enable-mmx \
 	--disable-mmx2 \
-	--$(if $(filter $(GARCH), c3     ),enable,disable)-3dnow \
+	--enable-3dnow \
 	--disable-3dnowex \
-	--$(if $(filter $(GARCH),    c3-2),enable,disable)-sse \
+	--enable-sse \
 	--disable-sse2 \
 	--enable-shm \
 	--disable-altivec \
