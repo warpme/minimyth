@@ -174,6 +174,17 @@ conf_write() {
             [ -z "${MM_HARDWARE_SENSOR}"      ] && MM_HARDWARE_SENSOR="VT1211"
             ;;
     esac
+    case `cat /proc/cpuinfo | grep '^model name' | cut -d : -f 2 | sed 's%^ *%%' | sed 's% *$$%%'` in
+	AMD\ Athlon\(tm\)\ 64\ Processor\ *)
+            MM_HARDWARE_CPU="ATHLON64"
+            ;;
+        VIA\ Nehemiah)
+            MM_HARDWARE_CPU="C3-2"
+            ;;
+        VIA\ Samuel\ 2)
+            MM_HARDWARE_CPU="C3"
+            ;;
+    esac
     conf_variable_write MM_HARDWARE_CHIPSET     "${MM_HARDWARE_CHIPSET}"
     conf_variable_write MM_HARDWARE_MOTHERBOARD "${MM_HARDWARE_MOTHERBOARD}"
     conf_variable_write MM_HARDWARE_NORTHBRIDGE "${MM_HARDWARE_NORTHBRIDGE}"
@@ -182,6 +193,7 @@ conf_write() {
     conf_variable_write MM_HARDWARE_AUDIO       "${MM_HARDWARE_AUDIO}"
     conf_variable_write MM_HARDWARE_TV          "${MM_HARDWARE_TV}"
     conf_variable_write MM_HARDWARE_SENSOR      "${MM_HARDWARE_SENSOR}"
+    conf_variable_write MM_HARDWARE_CPU         "${MM_HARDWARE_CPU}"
 
     # Audio.
     [ -z "${MM_AUDIO_TYPE}" ] && MM_AUDIO_TYPE="analog"

@@ -14,6 +14,16 @@ start() {
     modprobe thermal
     modprobe video
 
+    # CPU Frequency Scaling.
+    case "${MM_HARDWARE_CPU}" in
+        ATHLON64)
+            modprobe powernow-k8
+            modprobe cpufreq-conservative
+            ;;
+        C3|C3-2)
+            ;;
+    esac
+
     # Real time clock.
     modprobe rtc
 
