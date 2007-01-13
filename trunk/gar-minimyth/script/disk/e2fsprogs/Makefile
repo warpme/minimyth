@@ -1,5 +1,5 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.38
+GARVERSION = 1.39
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -35,8 +35,8 @@ install-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@mv $(DESTDIR)$(libdir)/libblkid.* $(DESTDIR)$(elibdir)/
-	@mv $(DESTDIR)$(libdir)/libuuid.*  $(DESTDIR)$(elibdir)/
+	@mv -f $(DESTDIR)$(libdir)/libblkid.* $(DESTDIR)$(elibdir)/
+	@mv -f $(DESTDIR)$(libdir)/libuuid.*  $(DESTDIR)$(elibdir)/
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/blkid.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/blkid.pc
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/com_err.pc
