@@ -1,0 +1,24 @@
+diff -Naur lsdvd-0.15-old/configure.in lsdvd-0.15-new/configure.in
+--- lsdvd-0.15-old/configure.in	2004-12-24 02:37:57.000000000 -0800
++++ lsdvd-0.15-new/configure.in	2006-01-28 18:53:35.000000000 -0800
+@@ -5,7 +5,8 @@
+ AC_PROG_CC
+ AC_CHECK_LIB(dvdread, DVDOpen, , AC_MSG_ERROR([libdvdread not found!]))
+ AC_MSG_CHECKING([for dvdread/ifo_read.h])
+-AC_TRY_COMPILE([#include <dvdread/ifo_read.h>], ,
++AC_TRY_COMPILE([#include <stdint.h>
++#include <dvdread/ifo_read.h>], ,
+ 	AC_MSG_RESULT([yes]), 
+ 	AC_MSG_RESULT([no]) 
+ 	AC_MSG_ERROR([Header files for dvdread not found]))
+diff -Naur lsdvd-0.15-old/lsdvd.c lsdvd-0.15-new/lsdvd.c
+--- lsdvd-0.15-old/lsdvd.c	2005-04-13 14:34:34.000000000 -0700
++++ lsdvd-0.15-new/lsdvd.c	2006-01-28 18:57:06.000000000 -0800
+@@ -13,6 +13,7 @@
+  *  2003-04-19  Cleanups get_title_name, added dvdtime2msec, added helper macros,
+  *			  output info structures in form of a Perl module, by Henk Vergonet.
+  */
++#include <stdint.h>
+ #include <dvdread/ifo_read.h>
+ #include <string.h>
+ #include <sys/stat.h>

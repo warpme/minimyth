@@ -1,5 +1,5 @@
 GARNAME = libdvdread
-GARVERSION = 0.9.4
+GARVERSION = 0.9.5
 CATEGORIES = lib
 MASTER_SITES = http://www.dtek.chalmers.se/groups/dvd/dist/
 DISTFILES = $(DISTNAME).tar.gz
