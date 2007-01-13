@@ -15,19 +15,25 @@ start() {
     fi
 
     # No LIRC driver was provided, so see whether or not we can autodetect it.
-    if /usr/bin/test -z ${MM_LIRC_DRIVER} ; then
+    if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_DRIVER not set. attempting to autodetect remote control receiver."
-        MM_LIRC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lirc_map`
+        MM_LIRC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lirc_driver_map`
         if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
             /usr/bin/logger -t minimyth -p "local0.info" "autodetected remote control receiver '${MM_LIRC_DRIVER}'."
-            LIRC_REMOTE=${MM_LIRC_REMOTE}
             /usr/bin/test -e /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf && . /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
-            /usr/bin/test -n "${LIRC_REMOTE}" && MM_LIRC_REMOTE=${LIRC_REMOTE}
+        fi
+    fi
+    # No LIRC remote was provided, so see whether or not we can autodetect it.
+    if /usr/bin/test -z "${MM_LIRC_REMOTE}" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_REMOTE not set. attempting to autodetect remote control."
+        MM_LIRC_REMOTE=`mm_hardware_usb_process mm_hardware_usb2lirc_remote_map`
+        if /usr/bin/test -n "${MM_LIRC_REMOTE}" ; then
+            /usr/bin/logger -t minimyth -p "local0.info" "autodetected remote control '${MM_LIRC_REMOTE}'."
         fi
     fi
 
     # Load the LIRC configuration files.
-    if /usr/bin/test -n ${MM_LIRC_REMOTE} ; then
+    if /usr/bin/test -n "${MM_LIRC_REMOTE}" ; then
         if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
             /bin/cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
         fi
@@ -46,7 +52,7 @@ start() {
     fi
     # Start the LIRC daemon.
 
-    if /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -n ${MM_LIRC_DEVICE} ; then
+    if /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -n "${MM_LIRC_DEVICE}" ; then
         /bin/mkdir -p /var/lock
         /bin/mkdir -p /var/run
 
@@ -63,7 +69,7 @@ start() {
         fi
 
         LIRC_DRIVER=`/usr/sbin/lircd --driver=help 2>&1 | /bin/grep -i "${MM_LIRC_DRIVER}" | /bin/sed 's%[[:cntrl:]]%%g'`
-        /usr/bin/test -z ${LIRC_DRIVER} && LIRC_DRIVER="default"
+        /usr/bin/test -z "${LIRC_DRIVER}" && LIRC_DRIVER="default"
 
         /usr/sbin/lircd --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
     fi
