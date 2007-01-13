@@ -40,7 +40,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-tv-bsdbt848 \
 	--enable-rtc \
 	--disable-edl \
-	--disable-network \
+	--enable-network \
 	--disable-live \
 	--enable-dvdread \
 	--disable-mpdvdkit \
