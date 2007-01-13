@@ -6,23 +6,10 @@ echo
 cat <<EOF
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type"content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <style type="text/css" title="Default" media="all">
   <!--
-  body {
-    background-color:#fff;
-    font:11px verdana, arial, helvetica, sans-serif;
-    margin:20px;
-  }
-  h1 {
-    font-size:28px;
-    font-weight:900;
-    color:#ccc;
-    letter-spacing:0.5em;
-    margin-bottom:30px;
-    width:650px;
-  }
-  h2 {
+  h2.status {
     font-size:18px;
     font-weight:800;
     color:#360;
@@ -32,10 +19,7 @@ cat <<EOF
     margin-bottom:10px;
     margin-top:0px;
   }
-  hr {
-    display:none;
-  }
-  div.content {
+  div.status {
     width:450px;
     border-top:1px solid #000;
     border-right:1px solid #000;
@@ -52,21 +36,29 @@ cat <<EOF
 <body>
 
   <h1>Status for $hostname</h1>
-  <div class="content">
-    <h2>Sensors Output</h2>
+
+  <div class="status">
+    <h2 class="status">Sensors Output</h2>
     <pre>
 `sensors | sed -e 's/^ERROR:.*//' -e 's/\(\+[1234]....C\)/<span style="color: rgb(0, 102, 0); font-weight: bold;">\1<\/span>/' -e 's/\(\+[56]....C\)/<span style="color: rgb(205, 127, 0); font-weight: bold;">\1<\/span>/' -e 's/\(\+[78]....C\)/<span style="color: rgb(255, 0, 0); font-weight: bold;">\1<\/span>/'`
     </pre>
   </div>
-  <br />
-  <div class="content">
-    <h2>Load Average Output</h2>
+  <div class="status">
+    <h2 class="status">Load Average Output</h2>
     <pre>
 `cat /proc/loadavg`
     </pre>
   </div>
-  <br />
+
+  <p>
+    browsable directories:
+    <a href="/etc">etc</a>
+    <a href="/log">log</a>
+    <a href="/tmp">tmp</a>
+  </p>
+
   <h1>@mm_NAME_PRETTY@</h1>
+
 </body>
 </html>
 
