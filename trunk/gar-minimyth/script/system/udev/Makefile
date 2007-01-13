@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 077
+GARVERSION = 078
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,7 @@ INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 DEFAULT_ARGS = \
 	V=true \
+	INSTALL="install" \
 	HOSTCC="$(build_CC)" \
 	CROSS="$(compiler_prefix)" \
 	CC="$(CC)" \
@@ -24,8 +25,6 @@ DEFAULT_ARGS = \
 	STRIP="$(STRIP)" \
 	RANLIB="$(RANLIB)" \
 	DESTDIR="$(DESTDIR)" \
-	KERNEL_DIR="$(DESTDIR)$(KERNEL_BUILDDIR)" \
-	ARCH="$(KERNEL_ARCH)" \
 	prefix="$(prefix)" \
 	exec_prefix="$(exec_prefix)" \
 	etcdir="$(etcdir)" \
