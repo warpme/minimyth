@@ -10,11 +10,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux-libc-headers devel/glibc-headers
 ifeq ($(DESTIMG),build)
-BUILDDEPS = devel/binutils-bootstrap devel/gcc-bootstrap
+DEPENDS   = lang/c
+BUILDDEPS = devel/binutils devel/gcc
 else
-BUILDDEPS = devel/binutils           devel/gcc-minimal-shared
+DEPENDS   = lang/c kernel/linux-libc-headers devel/glibc-headers
+BUILDDEPS = devel/binutils devel/gcc-minimal-shared
 endif
 
 # If this is the build image and the system is using linuxthreads, then we need to use linux threads.
