@@ -1,10 +1,10 @@
 GARNAME = mythtv
-GARVERSION = $(MYTHTV_SVN_VERSION)
+GARVERSION = $(MYTHTV_STABLE19_VERSION)
 CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-gant.patch
+PATCHFILES = $(DISTNAME)-fixes-9048.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -90,7 +90,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

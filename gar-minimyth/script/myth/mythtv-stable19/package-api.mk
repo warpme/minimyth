@@ -1,0 +1,3 @@
+MYTHTV_STABLE19_VERSION = 0.19
+
+MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
