@@ -1,5 +1,5 @@
 GARNAME = drm
-GARVERSION = 20060616
+GARVERSION = 20060620
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.bz2
