@@ -3,7 +3,7 @@ GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-mceusb.patch
+PATCHFILES = $(DISTNAME)-libusb.patch $(DISTNAME)-mceusbnew.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c kernel/linux lib/alsa-lib lib/libusb X11/X11 lirc/libirman
-DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.serial lirc/lirc.streamzap
+DEPENDS += lirc/lirc.any lirc/lirc.atiusb lirc/lirc.imon lirc/lirc.mceusb lirc/lirc.mceusbnew lirc/lirc.serial lirc/lirc.streamzap
 
 WORKSRC = $(WORKDIR)/lirc-$(LIRC_VERSION)
 
