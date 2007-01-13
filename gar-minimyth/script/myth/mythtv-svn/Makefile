@@ -46,6 +46,7 @@ CONFIGURE_ARGS = \
 	--disable-firewire \
 	--disable-dbox2 \
 	--disable-hdhomerun \
+	--disable-crciprec \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
