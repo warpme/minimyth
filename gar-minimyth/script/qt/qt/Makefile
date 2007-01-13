@@ -1,0 +1,158 @@
+GARNAME = qt-x11-free
+GARVERSION = 3.3.3
+CATEGORIES = qt
+MASTER_SITES = ftp://ftp.trolltech.com/qt/source/
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql X11/freetype X11/fontconfig X11/X11
+BUILDDEPS  = devel/bison devel/flex
+ifneq ($(DESTIMG),build)
+BUILDDEPS += qt/qt
+endif
+
+PWD := $(shell pwd)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = \
+	-debug \
+	-prefix $(qtprefix) \
+	-bindir $(qtbindir) \
+	-libdir $(qtlibdir) \
+	-headerdir $(qtincludedir) \
+	-release \
+	-shared \
+	-qt-gif \
+	-system-zlib \
+	-no-fast \
+	-no-exceptions \
+	-platform $(PLATFORM_GARBUILD_NAME) \
+	-plugin-sql-mysql -I$(DESTDIR)$(includedir)/mysql -L$(DESTDIR)$(libdir)/mysql \
+	-thread \
+	-no-nis \
+	-no-pch \
+	-no-cups \
+	-no-stl \
+	-ipv6 \
+	-qt-imgfmt-png \
+	-qt-imgfmt-jpeg \
+	-qt-imgfmt-mng \
+	-system-libpng \
+	-system-libjpeg \
+	-system-libmng \
+	-no-nas-sound \
+	-no-sm \
+	-xshape \
+	-xinerama \
+	-no-xcursor \
+	-no-xrandr \
+	-xrender \
+	-xft \
+	-no-tablet \
+	-no-xkb \
+	-dlopen-opengl
+ifeq ($(DESTIMG),build)
+BUILD_ENV = \
+	LD_LIBRARY_PATH="$(PWD)/$(WORKSRC)/lib:$(LD_LIBRARY_PATH)"
+else
+CONFIGURE_ARGS += \
+	-xplatform $(PLATFORM_GARHOST_NAME)
+endif
+INSTALL_ARGS = \
+	INSTALL_ROOT="$(DESTDIR)"
+
+GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk X11/X11/package-api.mk
+include ../../gar.mk
+
+PLATFORM_INITIAL_NAME  = linux-g++
+PLATFORM_GARBUILD_NAME = $(PLATFORM_INITIAL_NAME)-garbuild
+PLATFORM_GARHOST_NAME  = $(PLATFORM_INITIAL_NAME)-garhost
+PLATFORM_DEFAULT_NAME  = default
+PLATFORM_INITIAL_PATH  = $(WORKSRC)/mkspecs/$(PLATFORM_INITIAL_NAME)
+PLATFORM_GARBUILD_PATH = $(WORKSRC)/mkspecs/$(PLATFORM_GARBUILD_NAME)
+PLATFORM_GARHOST_PATH  = $(WORKSRC)/mkspecs/$(PLATFORM_GARHOST_NAME)
+PLATFORM_DEFAULT_PATH  = $(DESTDIR)$(qtprefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
+
+QMAKE_INCLUDES     = \
+	$(filter  -I%, $($(strip $(1))CPPFLAGS)) \
+	-I$($(strip $(1))DESTDIR)$($(strip $(1))x11includedir) \
+	-I$($(strip $(1))DESTDIR)$($(strip $(1))includedir)/mysql
+QMAKE_LIBS         = \
+	$(filter  -L%, $($(strip $(1))LDFLAGS)) \
+	-L$($(strip $(1))DESTDIR)$($(strip $(1))x11libdir) \
+	-L$($(strip $(1))DESTDIR)$($(strip $(1))libdir)/mysql
+QMAKE_RPATH        = \
+	-Wl,-rpath-link,
+QMAKE_RPATHS       = \
+	$(subst  -L,  $(QMAKE_RPATH),  $(call QMAKE_LIBS, $(1)))
+QMAKE_CFLAGS       = \
+	$(call QMAKE_INCLUDES, $(1)) $(call QMAKE_LIBS, $(1))
+QMAKE_LFLAGS       = \
+	$(call QMAKE_LIBS, $(1)) $(call QMAKE_RPATHS, $(1))
+
+UPDATE_PLATFORM   = sed -i 's%^\($(strip $(2))[ \t]*=\).*%\1 $(strip $(3))%g' $(strip $(1))/qmake.conf 
+# We should not need to provide QMAKE_INCDIR or QMAKE_LIBDIR since they are compiled into the compiler and linker.
+# However, the QT configure program does not find the supported libraries without them.
+QMAKE_RPATH = -Wl,-rpath-link,
+CREATE_PLATFORM   = \
+	rm -rf $(1) ; \
+	cp -r $(PLATFORM_INITIAL_PATH) $(1) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_YACC          , bison -y) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_CC            , $($(strip $(2))CC)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_CXX           , $($(strip $(2))CXX)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LINK          , $($(strip $(2))CXX)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LINK_SHLIB    , $($(strip $(2))CXX)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_AR            , $($(strip $(2))AR) cqs) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_RANLIB        , $($(strip $(2))RANLIB)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_STRIP         , $($(strip $(2))STRIP)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_CFLAGS        , $(call QMAKE_CFLAGS, $(2))) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_CFLAGS_RELEASE, $($(strip $(2))CFLAGS)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LFLAGS        , $(call QMAKE_LFLAGS, $(2))) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_RPATH         , ) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR        , $($(strip $(2))DESTDIR)$($(strip $(2))includedir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR        , $($(strip $(2))DESTDIR)$($(strip $(2))libdir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))x11includedir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_X11    , $($(strip $(2))DESTDIR)$($(strip $(2))x11libdir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_INCDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))x11includedir)) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_LIBDIR_OPENGL , $($(strip $(2))DESTDIR)$($(strip $(2))x11libdir)) ;
+
+ifeq ($(DESTIMG),build)
+USE_BUILD_BIN =
+else
+USE_BUILD_BIN = \
+	mkdir -p $(WORKSRC)/bin ; \
+	ln -s $(build_DESTDIR)$(build_qtprefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
+endif
+
+pre-configure:
+	@$(call CREATE_PLATFORM, $(PLATFORM_GARBUILD_PATH), build_)
+	@$(call CREATE_PLATFORM, $(PLATFORM_GARHOST_PATH) ,       )
+	@$(MAKECOOKIE)
+
+configure-%/configure:
+	@cd $* && $(CONFIGURE_ENV) echo "yes" | ./configure $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
+
+post-configure:
+	@$(call USE_BUILD_BIN, uic)
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
+	@rm -f $(PLATFORM_DEFAULT_PATH)
+	@ln -s $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_INCDIR_QT, $(DESTDIR)$(qtincludedir))
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_LIBDIR_QT, $(DESTDIR)$(qtlibdir))
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC,       $(build_DESTDIR)$(build_qtbindir)/moc)
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_UIC,       $(build_DESTDIR)$(build_qtbindir)/uic)
+	@$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
+	@sed -i 's% -L$${libdir}% -L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
+	@sed -i 's% -I$${includedir}% -I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
+	@$(MAKECOOKIE)

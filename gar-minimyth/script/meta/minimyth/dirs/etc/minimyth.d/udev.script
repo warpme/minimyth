@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /etc/minimyth.d/minimyth.functions
+
+[ -n "${MMDEBUG}" ] && set -x
+
+# Set up device file system
+mount -n -t tmpfs -o mode=0755 none     /dev
+echo "/sbin/udev" > /proc/sys/kernel/hotplug
+mkdir -p -m 0755 /dev/pts
+mount -n -t devpts             /dev/pts /dev/pts
+udevstart

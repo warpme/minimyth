@@ -1,0 +1,36 @@
+GARNAME = alsa-lib
+GARVERSION = 1.0.7
+CATEGORIES = lib
+MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+LICENSE = LGPL2_1
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+
+include ../../gar.mk
+
+# The default STAGE_EXPORTS includes libdir, which confuses libtool.
+STAGE_EXPORTS := $(filter-out libdir, $(STAGE_EXPORTS))
+
+post-patch:
+	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
+	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
+	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
+	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libasound.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/alsa.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/alsa.pc
+	@$(MAKECOOKIE)

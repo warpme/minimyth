@@ -1,0 +1,20 @@
+diff -Naur MPlayer-1.0pre6a-old/Makefile MPlayer-1.0pre6a-new/Makefile
+--- MPlayer-1.0pre6a-old/Makefile	2004-11-05 06:02:40.000000000 -0800
++++ MPlayer-1.0pre6a-new/Makefile	2005-01-01 09:26:44.391676255 -0800
+@@ -35,6 +35,7 @@
+ CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(DTS_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(X264_LIB)
+ COMMON_LIBS = libmpcodecs/libmpcodecs.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
+ 
++HOST_CFLAGS = -I.
+ CFLAGS = $(OPTFLAGS) -I. $(FREETYPE_INC) $(EXTRA_INC) $(CDPARANOIA_INC) $(SDL_INC) $(X11_INC) $(FRIBIDI_INC) $(DVB_INC) $(XVID_INC) $(FONTCONFIG_INC) $(CACA_INC) # -Wall
+ ifeq ($(TOOLAME),yes)
+ CFLAGS += $(TOOLAME_EXTRAFLAGS) 
+@@ -267,7 +268,7 @@
+ $(MENCODER_DEP): version.h help_mp.h
+ 
+ $(PRG_CFG): version.h codec-cfg.c codec-cfg.h
+-	$(HOST_CC) $(CFLAGS) -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
++	$(HOST_CC) $(HOST_CFLAGS) -g codec-cfg.c mp_msg.c -o $(PRG_CFG) -DCODECS2HTML $(EXTRA_LIB) $(I18NLIBS)
+ 
+ install: $(ALL_PRG)
+ ifeq ($(VIDIX),yes)

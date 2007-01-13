@@ -1,0 +1,27 @@
+diff -Naur libpng-1.2.7-config-old/Makefile.in libpng-1.2.7-config-new/Makefile.in
+--- libpng-1.2.7-config-old/Makefile.in	2004-09-11 19:19:54.000000000 -0700
++++ libpng-1.2.7-config-new/Makefile.in	2004-12-30 09:03:53.751916396 -0800
+@@ -885,9 +885,9 @@
+ libpng-config:
+ 	( cat ${srcdir}/scripts/libpng-config-head.in; \
+ 	echo prefix=\"$(prefix)\"; \
+-	echo I_opts=\"-I$(includedir)\"; \
+-	echo L_opts=\"-L$(libdir)\"; \
+-	echo R_opts=\"-Wl,-rpath,$(libdir)\"; \
++	echo I_opts=\"-I\$${DESTDIR}$(includedir)\"; \
++	echo L_opts=\"-L\$${DESTDIR}$(libdir)\"; \
++	echo R_opts=\"-Wl,-rpath-rlink,\$${DESTDIR}$(libdir)\"; \
+ 	echo libs=\"-lpng12 -lz -lm\"; \
+ 	cat ${srcdir}/scripts/libpng-config-body.in ) > libpng-config
+ 
+diff -Naur libpng-1.2.7-config-old/scripts/libpng.pc.in libpng-1.2.7-config-new/scripts/libpng.pc.in
+--- libpng-1.2.7-config-old/scripts/libpng.pc.in	2004-09-11 19:19:36.000000000 -0700
++++ libpng-1.2.7-config-new/scripts/libpng.pc.in	2004-12-30 09:06:34.018708636 -0800
+@@ -7,5 +7,5 @@
+ Name: libpng12
+ Description: Loads and saves PNG files
+ Version: 1.2.7
+-Libs: -L${libdir} -lpng12 -lz -lm
+-Cflags: -I${includedir}/libpng12
++Libs: -L${DESTDIR}${libdir} -lpng12 -lz -lm
++Cflags: -I${DESTDIR}${includedir}/libpng12

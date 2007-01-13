@@ -1,0 +1,66 @@
+GARNAME = mythmusic
+GARVERSION = $(MYTHTV_VERSION)
+CATEGORIES = myth
+MASTER_SITES = cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
+CONFIGFILE = settings.pro
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2 $(CONFIGFILE)
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c myth/mythtv lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/libcdaudio lib/cdparanoia
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure custom
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = \
+	--enable-opengl
+CONFIGURE_ENV = \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	OPTFLAGS="$(CFLAGS)"
+BUILD_ENV     = \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	OPTFLAGS="$(CFLAGS)"
+INSTALL_ARGS  = \
+	INSTALL_ROOT="$(DESTDIR)"
+
+GAR_EXTRA_CONF += myth/mythtv/package-api.mk
+include ../../gar.mk
+
+cvs//%/$(GARNAME)-$(GARVERSION).tar.bz2:
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)
+	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(GARNAME)-$(GARVERSION)
+	@cd $(PARTIALDIR); tar -jc $(GARNAME)-$(GARVERSION) -f $(GARNAME)-$(GARVERSION).tar.bz2
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
+	@$(MAKECOOKIE)
+
+checksum-$(GARNAME)-$(GARVERSION).tar.bz2:
+	@$(MAKECOOKIE)
+
+extract-$(CONFIGFILE):
+	@cp $(DOWNLOADDIR)/$(CONFIGFILE)        $(WORKSRC)/settings.pro
+	@sed -i 's%@PREFIX@%$(prefix)%'         $(WORKSRC)/settings.pro
+	@sed -i 's%@DESTDIR@%$(DESTDIR)%'       $(WORKSRC)/settings.pro
+	@sed -i 's%@INCLUDEDIR@%$(includedir)%' $(WORKSRC)/settings.pro
+	@sed -i 's%@CFLAGS@%$(CFLAGS)%'         $(WORKSRC)/settings.pro
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@sed -i 's%INCLUDEPATH \*= /usr/include/cdda%%g' $(WORKSRC)/mythmusic/mythmusic.pro
+	@$(MAKECOOKIE)
+
+configure-custom: 
+	@cd $(WORKSRC) ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	@$(MAKECOOKIE)
+
+post-configure:
+# There are serveral references that assume we are not cross compiling or relocating the installation.
+	@sed -i 's%`sdl-config%`$(DESTDIR)$(bindir)/sdl-config%g' $(WORKSRC)/mythmusic/config.pro
+	@$(MAKECOOKIE)
