@@ -247,10 +247,8 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_ROOTFSDIR)/root       ; cp -r ./dirs/root $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/srv        ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/srv/www/fs ; ln -sf / $(mm_ROOTFSDIR)/srv/www/fs
-	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%' $(mm_ROOTFSDIR)/srv/www/cgi-bin/functions
+	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)$(datadir)/X11 ; \

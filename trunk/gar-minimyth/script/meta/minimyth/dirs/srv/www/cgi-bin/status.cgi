@@ -27,7 +27,7 @@ page_body="
 ${status_sensors}
 ${status_loads}
 <p>
-<a href=\"/fs\">browse the MiniMyth filesystem</a>
+<a href="http://${SERVER_ADDR}:8080/">browse the MiniMyth filesystem</a>
 </p>"
 
 output_page "${page_host}" "${page_date}" "${page_path}" "${page_head}" "${page_body}"
