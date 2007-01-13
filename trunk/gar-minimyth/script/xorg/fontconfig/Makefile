@@ -11,7 +11,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/expat xorg/freetype
+DEPENDS   = lang/c lib/expat xorg/freetype
+BUILDDEPS = xorg/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
