@@ -66,13 +66,16 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
+	@# libssp.la and libssp_nonshared.la are installed by 4.1.x.
+	@rm -f $(CROSS_GCC_LIBDIR)/libssp.la
+	@rm -f $(CROSS_GCC_LIBDIR)/libssp_nonshared.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
-	@# Native compile
+	@# Native compile.
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
 		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
 	)
-	@# Cross compile
+	@# Cross compile.
 	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \
