@@ -5,6 +5,7 @@ MM_BINS    := $(sort $(shell cat minimyth-bin-list   ../../extras/extras-bin-lis
 MM_LIBS    := $(sort $(shell cat minimyth-lib-list   ../../extras/extras-lib-list   | sed 's%[ \t]*\#.*%%'))
 MM_ETCS    := $(sort $(shell cat minimyth-etc-list   ../../extras/extras-etc-list   | sed 's%[ \t]*\#.*%%'))
 MM_SHARES  := $(sort $(shell cat minimyth-share-list ../../extras/extras-share-list | sed 's%[ \t]*\#.*%%'))
+
 MM_REMOVES := $(sort $(shell \
 	cat minimyth-remove-list $(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)) | \
 	sed 's%[ \t]*\#.*%%'))
@@ -308,9 +309,10 @@ mm-%/copy-libs:
 
 mm-remove:
 	@echo 'removing unneeded files'
-	@for remove in $(MM_REMOVES) ; do \
-		rm -rf $(mm_DESTDIR)/$${remove} ; \
+	@for remove in $(addprefix $(mm_DESTDIR),$(MM_REMOVES)) ; do \
+		rm -rf $${remove} ; \
 	done
+	@depmod -b "$(mm_DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
 
 mm-strip:
 	@echo 'stripping binaries and shared libraries'

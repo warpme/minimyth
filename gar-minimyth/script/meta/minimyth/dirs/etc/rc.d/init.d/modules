@@ -84,7 +84,14 @@ start() {
     # USB.
     modprobe usbcore
     modprobe ehci-hcd
-    modprobe uhci-hcd
+    case "${MM_HARDWARE_SOUTHBRIDGE}" in
+        NFORCE_430)
+            modprobe ohci-hcd
+            ;;
+        VT8235|VT8237)
+            modprobe uhci-hcd
+            ;;
+    esac
     modprobe usbhid
     modprobe usblcd
     modprobe usb-storage
