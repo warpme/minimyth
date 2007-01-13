@@ -1,5 +1,7 @@
 GARNAME = drm
-GARVERSION = 20060422
+GARVERSION = $(strip \
+	$(if $(filter old,$(mm_XORG_VERSION)),20051117) \
+	$(if $(filter new,$(mm_XORG_VERSION)),20060422))
 CATEGORIES = kernel
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.bz2
