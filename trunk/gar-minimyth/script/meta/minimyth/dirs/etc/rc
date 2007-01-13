@@ -21,9 +21,10 @@ rc_command_run() {
     COMMAND="$1"
     MESSAGE="$2"
     rc_progress
-    mm_message_display "${MESSAGE}"
-    mm_command_run     "${COMMAND}"
+    mm_message_output info "${MESSAGE}"
+    mm_command_run "${COMMAND}"
    if [ $? != 0 ] ; then
+       mm_message_output err "error: command \'${COMMAND}\' failed"
        exit $?
    fi
 }
