@@ -12,15 +12,15 @@ endef
 
 DEPENDS = lang/c myth/mythtv-stable18
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ENV += \
+CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ENV   += \
+INSTALL_ENV   = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \

@@ -14,10 +14,10 @@ DEPENDS = lang/c lang/c++ lib/lame lib/alsa-lib lib/zlib db/mysql lib/freetype x
 
 PWD := $(shell pwd)
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/configure
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-BUILD_SCRIPTS     += $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-ccache \
@@ -50,17 +50,17 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-directfb \
 	--disable-directx
 
-CONFIGURE_ENV += \
+CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     += \
+BUILD_ENV     = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ENV   += \
+INSTALL_ENV   = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \

@@ -2,20 +2,8 @@ PWD := `pwd`
 
 WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
+GAR_EXTRA_CONF += kernel/linux/package-api.mk devel/build-system-bins/package-api.mk
 include ../../gar.mk
-
-build_bins := \
-	bzip2 \
-	cvs \
-	flex \
-	grep \
-	gzip \
-	patch \
-	perl \
-	sed \
-	svn \
-	tar
 
 mm_ROOTFSDIR := $(PWD)/$(WORKSRC)/rootfs.d
 mm_EXTRASDIR := $(PWD)/$(WORKSRC)/extras.d
@@ -142,6 +130,10 @@ mm-all:
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove mm-strip mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
 
 mm-check:
+	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
+		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
+		exit 1 ; \
+	fi
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
 	    [ ! "$(mm_GARCH)" = "c3"          ] && \
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
@@ -173,13 +165,21 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@for bin in $(build_bins) ; do \
+	@for bin in $(build_system_bins) ; do \
 		which $${bin} > /dev/null 2>&1 ; \
 		if [ ! "$$?" = "0" ] ; then \
 			echo "error: the build system does not contain the program '$${bin}'." ; \
 			exit 1 ; \
 		fi ; \
 	done
+
+checks:
+	@for bin in $(build_system_bins) ; do \
+		PATH=$(BUILD_SYSTEM_PATH) LD_LIBRARY_PATH="" binpath=`which $${bin}` ;  \
+		PATH=$(BUILD_SYSTEM_PATH) LD_LIBRARY_PATH="" package=`/bin/rpm -q --whatprovides $${binpath}` ; \
+		echo $${package}:$${binpath}:$${bin} ; \
+	done
+	
 
 mm-clean:
 	@rm -rf $(mm_DESTDIR)

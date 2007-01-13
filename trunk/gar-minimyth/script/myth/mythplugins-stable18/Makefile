@@ -18,12 +18,12 @@ DEPENDS += lib/libexif lib/libtiff
 # mythmusic
 DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/configure
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-BUILD_SCRIPTS     += $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS += \
+CONFIGURE_ARGS = \
 	--disable-all \
 	--enable-opengl \
 	--enable-mythdvd \
@@ -39,17 +39,17 @@ CONFIGURE_ARGS += \
 	--enable-mythvideo \
 	--enable-mythweather
 
-CONFIGURE_ENV += \
+CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     += \
+BUILD_ENV     = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ENV   += \
+INSTALL_ENV   = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \

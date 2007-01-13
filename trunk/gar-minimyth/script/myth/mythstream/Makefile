@@ -15,21 +15,21 @@ DEPENDS = lang/c myth/mythtv-$(mm_MYTH_VERSION) lib/fftw
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-0.16_5
 
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-BUILD_SCRIPTS     += $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ENV += \
+CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     += \
+BUILD_ENV     = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  += \
+INSTALL_ARGS  = \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
