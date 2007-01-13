@@ -145,6 +145,7 @@ post-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
 	@ln -s $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
