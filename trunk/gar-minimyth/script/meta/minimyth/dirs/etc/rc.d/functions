@@ -284,7 +284,65 @@ mm_var_get() {
     /bin/echo `set | /bin/grep "^${VAR}=" | /bin/sed 's%^[^=]*=%%' | /bin/sed "s%^'%%" | /bin/sed "s%'$%%"`
 }
 
-mm_themecache_squashfs_make() {
+#===============================================================================
+# squashfs functions
+#===============================================================================
+mm_squashfs_codecs_make() {
+    if /usr/bin/test -d /usr/lib/codecs && /usr/bin/test `ls -1 /usr/lib/codecs | /usr/bin/wc -l` -ne 0 ; then
+        /bin/true
+    else
+        /bin/rm -rf /usr/lib/codecs
+        /bin/mkdir -p /usr/lib/codecs
+        cd /usr/lib/codecs
+        /usr/bin/wget http://www4.mplayerhq.hu/MPlayer/releases/codecs/essential-20060611.tar.bz2
+        /bin/tar -jxf essential-20060611.tar.bz2
+        /bin/rm -f essential-20060611.tar.bz2
+        /bin/mv essential-20060611/* .
+        /bin/rm -rf essential-20060611
+    fi
+
+    FILE=/codecs.sfs
+    /usr/bin/mksquashfs /usr/lib/codecs ${FILE} > /dev/null 2>&1
+    if /usr/bin/test $? -ne 0 ; then
+        /bin/rm -f ${FILE}
+        /bin/echo "error: mksquashfs failed."
+        return 1
+    fi
+
+    /bin/chmod 644 ${FILE}
+
+    /bin/echo "created codecs squashfs image: \"${FILE}\"."
+    return 0
+}
+
+mm_squashfs_extras_make() {
+    if /usr/bin/test ! -d /usr/local ; then
+        /bin/echo "error: the extras directory does not exist."
+        return 1
+    fi
+
+    INITRD_FILE=`/bin/echo ${initrd} | /bin/sed 's%^.*/%%'`
+    INITRD_FILE_PREFIX=`/bin/echo ${INITRD_FILE} | /bin/sed 's%-.*$%%'`
+    if /usr/bin/test "${INITRD_FILE_PREFIX}" = "rootfs" ; then
+        FILE=/`/bin/echo ${INITRD_FILE} | /bin/sed 's%^rootfs%extras%'`.sfs
+    else
+        FILE=/extras.sfs
+    fi
+
+    /usr/bin/mksquashfs /usr/local ${FILE} > /dev/null 2>&1
+    if /usr/bin/test $? -ne 0 ; then
+        /bin/rm -f ${FILE}
+        /bin/echo "error: mksquashfs failed."
+        return 1
+    fi
+
+    /bin/chmod 644 ${FILE}
+
+    /bin/echo "created extras squashfs image: \"${FILE}\"."
+    return 0
+}
+
+mm_squashfs_themecache_make() {
     if /usr/bin/test ! -d /root/.mythtv/themecache ; then
         /bin/echo "error: the MythTV themecache directory does not exist."
         return 1
@@ -294,17 +352,17 @@ mm_themecache_squashfs_make() {
         return 1
     fi
 
-    FILE=`cd /root/.mythtv/themecache ; ls`.sfs
-    mksquashfs /root/.mythtv/themecache /${FILE} > /dev/null 2>&1
+    FILE=/`cd /root/.mythtv/themecache ; ls`.sfs
+    /usr/bin/mksquashfs /root/.mythtv/themecache ${FILE} > /dev/null 2>&1
     if /usr/bin/test $? -ne 0 ; then
-        /bin/rm -f /${FILE}
+        /bin/rm -f ${FILE}
         /bin/echo "error: mksquashfs failed."
         return 1
     fi
 
-    /bin/chmod 644 /${FILE}
+    /bin/chmod 644 ${FILE}
 
-    /bin/echo "created themecache squashfs image: \"/${FILE}\"."
+    /bin/echo "created themecache squashfs image: \"${FILE}\"."
     return 0
 }
 
