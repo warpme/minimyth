@@ -17,7 +17,6 @@ DEPENDS = \
 	utils/busybox \
 	devel/gdb \
 	system/lcdproc \
-	X11/libviaXvMC \
 	X11/libXvMCW \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs \
 	lirc/lirc \
@@ -36,10 +35,10 @@ DEPENDS = \
 	utils/strace \
 	net/utelnetd \
 	system/udev \
+	X11/unichrome \
 	X11/unichrome_dri \
 	utils/util-linux \
 	net/webfs \
-	X11/via_drv \
 	X11/X11 \
 	X11/x11vnc \
 	myth/xine-ui \
