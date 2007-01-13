@@ -8,20 +8,28 @@ MM_TIME_SERVER=`mm_var_get MM_TIME_SERVER`
 
 mm_dir_make_rw /etc
 
+# Get and check for localtime file.
 mm_conf_get /localtime /etc/localtime
-
 if [ ! -e /etc/localtime ] ; then
-  mm_message_display 'error: configuration file "localtime" not present'
-  exit 1
+    mm_message_display 'error: configuration file "localtime" not present'
+    exit 1
 fi
 
-if [ -n ${MM_TIME_SERVER} ] ; then
-  ntpdate ${MM_TIME_SERVER}
-  echo "server ${MM_TIME_SERVER}" > /etc/ntp.conf
-  ntpd
-else
-  mm_message_display 'error: configuration variable "MM_TIME_SERVER" not set'
-  exit 1
+# Set and check for NTP time servers.
+if [ ! -z "${MM_TIME_SERVER}" ] ; then
+    echo "server ${MM_TIME_SERVER}" >> /etc/ntp.conf
 fi
+for i in `cat /etc/ntp.conf | grep '^server ' | sed 's%^server %%'` ; do
+    if [ -z "${TIME_SERVER}" ] ; then
+        TIME_SERVER="$i"
+    fi
+done
+if [ -z "${TIME_SERVER}" ] ; then
+    mm_message_display 'error: no NTP server(s) provided'
+    exit 1
+fi
+
+ntpdate ${TIME_SERVER}
+ntpd
 
 exit 0

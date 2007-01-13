@@ -4,6 +4,7 @@ CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
+PATCHFILES = $(DISTNAME)-ntpsrv.patch
 LICENSE = GPL2
 
 DESCRIPTION =
