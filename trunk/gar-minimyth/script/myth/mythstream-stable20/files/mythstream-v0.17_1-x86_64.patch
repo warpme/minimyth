@@ -1,0 +1,21 @@
+diff -Naur mythstream-0.17-old/libs/fft.cpp mythstream-0.17-new/libs/fft.cpp
+--- mythstream-0.17-old/libs/fft.cpp	2006-08-07 17:59:30.000000000 -0700
++++ mythstream-0.17-new/libs/fft.cpp	2006-08-07 18:00:20.000000000 -0700
+@@ -77,7 +77,7 @@
+ 
+     fileBase = (commArea*)mmap(0,fileStat.st_size,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+ 
+-    if ( (int)fileBase == -1)
++    if ( (long)fileBase == -1)
+     {
+         cerr << "mmap error" << endl;
+         return;
+@@ -90,7 +90,7 @@
+ 
+ SampleObject::~SampleObject()
+ {
+-    if ( (int)fileBase != -1 )
++    if ( (long)fileBase != -1 )
+       munmap(fileBase, fileStat.st_size);
+ 
+     close(fd);

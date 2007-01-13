@@ -8,6 +8,7 @@ mm_VERSION           ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EX
 mm_VERSION_MYTH      ?= $(strip \
                             $(if $(filter stable18,$(mm_MYTH_VERSION)),0.18.2                   ) \
                             $(if $(filter stable19,$(mm_MYTH_VERSION)),0.19                     ) \
+                            $(if $(filter stable20,$(mm_MYTH_VERSION)),0.20                     ) \
                             $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                          )
 mm_VERSION_MINIMYTH  ?= 18
@@ -61,7 +62,7 @@ mm_NFS_ROOT          ?= /home/public/minimyth
 # Value values are 'old', 'mid' and 'new'.
 mm_XORG_VERSION      ?= new
 # The version of Myth to use.
-# Valid values are 'stable18', 'stable19' and 'svn'.
+# Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable19
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
