@@ -6,13 +6,13 @@
 
 COMMAND=$1
 
-DBHostName=`cat /root/.mythtv/mysql.txt | grep "^DBHostName" | sed -e 's%^[^=]*=%%'`
-DBUserName=`cat /root/.mythtv/mysql.txt | grep "^DBUserName" | sed -e 's%^[^=]*=%%'`
-DBPassword=`cat /root/.mythtv/mysql.txt | grep "^DBPassword" | sed -e 's%^[^=]*=%%'`
-DBName=`cat /root/.mythtv/mysql.txt     | grep "^DBName"     | sed -e 's%^[^=]*=%%'`
+MM_MYTH_SERVER=`mm_var_get MM_MYTH_SERVER`
+MM_MYTH_DBUSERNAME=`mm_var_get MM_MYTH_DBUSERNAME`
+MM_MYTH_DBPASSWORD=`mm_var_get MM_MYTH_DBPASSWORD`
+MM_MYTH_DBNAME=`mm_var_get MM_MYTH_DBNAME`
 
 mysql \
-    --host=${DBHostName} \
-    --user=${DBPassword} \
-    --password=${DBPassword} \
-    --exec="use ${DBName} ; ${COMMAND} ;"
+    --host=${MM_MYTH_SERVER} \
+    --user=${MM_MYTH_DBUSERNAME} \
+    --password=${MM_MYTH_DBPASSWORD} \
+    --exec="use ${MM_MYTH_DBNAME} ; ${COMMAND} ;"
