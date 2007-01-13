@@ -19,3 +19,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+post-install:
+	@rm -rf $(DESTDIR)$(libdir)/libmagic.la
+	@$(MAKECOOKIE)

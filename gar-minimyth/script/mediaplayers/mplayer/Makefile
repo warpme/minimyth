@@ -5,7 +5,7 @@ MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-demuxer_h.patch $(DISTNAME)-gcc4.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-demuxer_h.patch $(DISTNAME)-gcc4.patch $(DISTNAME)-vobsub_newline.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 

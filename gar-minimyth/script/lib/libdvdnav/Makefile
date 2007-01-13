@@ -3,6 +3,7 @@ GARVERSION = 0.1.10
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/dvd/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 

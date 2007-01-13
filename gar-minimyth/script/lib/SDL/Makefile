@@ -1,9 +1,9 @@
 GARNAME = SDL
-GARVERSION = 1.2.9
+GARVERSION = 1.2.10
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE =
 
 DESCRIPTION =
@@ -20,8 +20,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--disable-debug \
-	--disable-strict-ansi \
+	--enable-libc \
 	--enable-audio \
 	--enable-video \
 	--enable-events \
@@ -29,9 +28,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-cdrom \
 	--enable-threads \
 	--enable-timers \
-	--enable-endian \
 	--enable-file \
+	--enable-loadso \
 	--enable-cpuinfo \
+	--enable-assembly \
 	--disable-oss \
 	--enable-alsa \
 	--enable-alsatest \
@@ -43,44 +43,54 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-arts-shared \
 	--disable-nas \
 	--disable-diskaudio \
+	--disable-dummyaudio \
 	--disable-mintaudio \
 	--enable-nasm \
+	--disable-altivec \
+	--disable-ipod \
 	--disable-video-nanox \
 	--disable-nanox-debug \
 	--disable-nanox-share-memory \
 	--disable-nanox-direct-fb \
 	--enable-video-x11 \
-	--enable-video-x11-vm \
+	--enable-x11-shared \
 	--disable-dga \
+	--disable-video-dga \
 	--disable-video-x11-dgamouse \
+	--enable-video-x11-vm \
 	--enable-video-x11-xv \
 	--enable-video-x11-xinerama \
 	--disable-video-x11-xme \
-	--disable-video-dga \
+	--enable-video-x11-xrandr \
+	--disable-video-dpms \
 	--disable-video-photon \
+	--disable-video-carbon \
+	--disable-video-cocoa \
 	--disable-video-fbcon \
 	--disable-video-directfb \
 	--disable-video-ps2gs \
 	--disable-video-ggi \
 	--disable-video-svga \
 	--disable-video-vgl \
+	--enable-video-wscons \
 	--disable-video-aalib \
+	--disable-video-qtopia \
+	--disable-video-picogui \
 	--disable-video-xbios \
 	--disable-video-gem \
 	--disable-video-dummy \
 	--enable-video-opengl \
 	--enable-osmesa-shared \
 	--enable-input-events \
+	--disable-input-tslib \
 	--enable-pth \
 	--enable-pthreads \
 	--enable-pthread-sem \
-	--enable-sigaction \
 	--disable-stdio-redirect \
 	--disable-directx \
-	--disable-video-qtopia \
-	--disable-video-picogui \
 	--enable-sdl-dlopen \
 	--disable-atari-ldg \
+	--disable-clock_gettime \
 	--disable-rpath \
 	--with-gnu-ld \
 	--with-x

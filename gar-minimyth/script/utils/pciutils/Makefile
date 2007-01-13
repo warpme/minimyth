@@ -3,6 +3,7 @@ GARVERSION = 2.2.3
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/software/utils/pciutils/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION =
