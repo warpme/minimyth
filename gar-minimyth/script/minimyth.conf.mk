@@ -6,7 +6,7 @@
 # The version of MiniMyth.
 mm_VERSION           ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH      ?= $(strip \
-                            $(if $(filter stable18,$(mm_MYTH_VERSION)),0.18.1              ) \
+                            $(if $(filter stable18,$(mm_MYTH_VERSION)),0.18.2              ) \
                             $(if $(filter stable19,$(mm_MYTH_VERSION)),0.19                ) \
                             $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_SVN_VERSION)) \
                          )
