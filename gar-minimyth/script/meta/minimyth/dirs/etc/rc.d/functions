@@ -768,14 +768,15 @@ mm_mythdb_setting_set() {
     local DATA=$2
 
     local HOSTNAME
+    local DATA_CURRENT
 
     HOSTNAME=`/bin/hostname`
 
-    mm_mythdb_command_query "${VALUE}" > /dev/null 2>&1
-    if /usr/bin/test $? -eq 0 ; then
-        mm_mythdb_command_update "${VALUE}" "${DATA}"
-    else
+    DATA_CURRENT=`mm_mythdb_setting_get "${VALUE}"`
+    if /usr/bin/test -z "${DATA_CURRENT}" ; then
         mm_mythdb_command_run "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
+    elif /usr/bin/test "${DATA_CURRENT}" != "${DATA}" ; then
+        mm_mythdb_setting_update "${VALUE}" "${DATA}"
     fi
 }
 
