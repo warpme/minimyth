@@ -301,7 +301,8 @@ mm-conf:
 	rm -rf $(mm_DESTDIR)/root ; cp -r ./dirs/root $(mm_DESTDIR)
 	rm -rf $(mm_DESTDIR)/root/.mplayer 
 	mkdir -p $(mm_DESTDIR)/root/.mplayer
-	mkdir -p $(mm_DESTDIR)/root/.mythtv/themecache
+	rm -rf $(mm_DESTDIR)/root/.mythtv
+	mkdir -p $(mm_DESTDIR)/root/.mythtv
 	ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf
 	sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/etc/www/cgi/status.cgi
 	$(call CONVERT_TO_LINK, $(sysconfdir)/ld.so.cache               )
@@ -315,11 +316,9 @@ mm-conf:
 	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/minimyth.conf  )
 	$(call CONVERT_TO_LINK, $(sysconfdir)/minimyth.d/minimyth.script)
 	$(call CONVERT_TO_LINK, $(sysconfdir)/X11/xorg.conf             )
-	$(call CONVERT_TO_LINK, /root/.mythtv/mysql.txt                 )
 	$(call CONVERT_TO_LINK, /root/.xine/config                      )
 	$(call CONVERT_TO_LINK, /root/.xinitrc                          )
 	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
-	ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	ln -s /proc/mounts $(mm_DESTDIR)/etc/mtab
 	rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
 	mv $(mm_DESTDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
