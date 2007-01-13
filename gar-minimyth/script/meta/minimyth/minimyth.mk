@@ -133,10 +133,8 @@ mm-make-conf:
 	@rm -rf $(mm_DESTDIR)/root          ; cp -r ./dirs/root $(mm_DESTDIR)
 	@rm -rf $(mm_DESTDIR)/root/.mplayer ; mkdir -p $(mm_DESTDIR)/root/.mplayer
 	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
-	@rm -rf $(mm_DESTDIR)/srv         ; cp -r ./dirs/srv  $(mm_DESTDIR)
-	@rm -rf $(mm_DESTDIR)/srv/www/etc ; ln -s /etc     $(mm_DESTDIR)/srv/www/etc
-	@rm -rf $(mm_DESTDIR)/srv/www/log ; ln -s /var/log $(mm_DESTDIR)/srv/www/log
-	@rm -rf $(mm_DESTDIR)/srv/www/tmp ; ln -s /tmp     $(mm_DESTDIR)/srv/www/tmp
+	@rm -rf $(mm_DESTDIR)/srv        ; cp -r ./dirs/srv  $(mm_DESTDIR)
+	@rm -rf $(mm_DESTDIR)/srv/www/fs ; ln -s / $(mm_DESTDIR)/srv/www/fs
 	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/srv/www/cgi/status.cgi
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
