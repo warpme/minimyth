@@ -1,7 +1,7 @@
 GARNAME = libmng
 GARVERSION = 1.0.9
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = libmng
 libmng_LICENSE_TEXT = $(WORKSRC)/LICENSE

@@ -1,7 +1,7 @@
 GARNAME = libcdaudio
 GARVERSION = 0.99.12
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = GPL2

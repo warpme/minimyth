@@ -1,7 +1,7 @@
 GARNAME = acpid
 GARVERSION = 1.0.4
 CATEGORIES = system
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

@@ -1,7 +1,7 @@
 GARNAME = libpng
 GARVERSION = 1.2.8
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-config.tar.gz
 PATCHFILES = $(DISTNAME)-DESTDIR.patch
 LICENSE = png

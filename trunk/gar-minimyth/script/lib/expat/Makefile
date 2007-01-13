@@ -1,7 +1,7 @@
 GARNAME = expat
 GARVERSION = 1.95.8
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = MIT
 

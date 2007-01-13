@@ -1,7 +1,7 @@
 GARNAME = flac
 GARVERSION = 1.1.2
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
