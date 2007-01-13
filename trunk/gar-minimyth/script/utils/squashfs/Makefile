@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c lib/zlib
 
 DISTNAME = $(GARNAME)$(GARVERSION)
 WORKSRC  = $(WORKDIR)/$(DISTNAME)/squashfs-tools
