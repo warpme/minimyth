@@ -3,6 +3,7 @@ GARVERSION = 1.2.2
 CATEGORIES = lib
 MASTER_SITES = http://www.libpng.org/pub/png/src/
 DISTFILES = $(DISTNAME).tar.gz license
+PATCHFILES = $(DISTNAME)-can-2005-2096.patch
 LICENSE = zlib
 zlib_LICENSE_TEXT = $(WORKDIR)/license
 
