@@ -135,7 +135,7 @@ mm-make-conf:
 	@rm -rf $(mm_DESTDIR)/root/.mythtv  ; mkdir -p $(mm_DESTDIR)/root/.mythtv
 	@rm -rf $(mm_DESTDIR)/srv        ; cp -r ./dirs/srv  $(mm_DESTDIR)
 	@rm -rf $(mm_DESTDIR)/srv/www/fs ; ln -s / $(mm_DESTDIR)/srv/www/fs
-	@sed -i 's%@mm_NAME_PRETTY@%$(mm_NAME_PRETTY)%' $(mm_DESTDIR)/srv/www/cgi/status.cgi
+	@sed -i 's%@mm_VERSION@%$(mm_VERSION)%' $(mm_DESTDIR)/srv/www/cgi/functions
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.lircrc
 	@ln -s $(sysconfdir)/lircrc $(mm_DESTDIR)/root/.mythtv/lircrc
 	@ln -s $(x11libdir)/X11/fonts/TTF/luxisr.ttf $(mm_DESTDIR)/root/.mplayer/subfont.ttf

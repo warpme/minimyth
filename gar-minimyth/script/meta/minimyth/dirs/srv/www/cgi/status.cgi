@@ -1,62 +1,33 @@
 #!/bin/sh
-hostname=`hostname`
-date=`date`
-echo "Content-Type"content="text/html; charset=iso-8859-1"
-echo 
-cat <<EOF
-<html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <style type="text/css" title="Default" media="all">
-  <!--
-  h2.status {
-    font-size:18px;
-    font-weight:800;
-    color:#360;
-    border:none;
-    letter-spacing:0.3em;
-    padding:0px;
-    margin-bottom:10px;
-    margin-top:0px;
-  }
-  div.status {
-    width:450px;
-    border-top:1px solid #000;
-    border-right:1px solid #000;
-    border-bottom:1px solid #000;
-    border-left:10px solid #000;
-    padding:10px;
-    margin-bottom:30px;
-    -moz-border-radius:8px 0px 0px 8px;
-  }
-  -->
-  </style>
-  <title>MiniMyth Status - $hostname - $date </title>
-</head>
-<body>
 
-  <h1>Status for $hostname</h1>
+. /srv/www/cgi/functions
 
-  <div class="status">
-    <h2 class="status">Sensors Output</h2>
-    <pre>
-`sensors | sed -e 's/^ERROR:.*//' -e 's/\(\+[1234]....C\)/<span style="color: rgb(0, 102, 0); font-weight: bold;">\1<\/span>/' -e 's/\(\+[56]....C\)/<span style="color: rgb(205, 127, 0); font-weight: bold;">\1<\/span>/' -e 's/\(\+[78]....C\)/<span style="color: rgb(255, 0, 0); font-weight: bold;">\1<\/span>/'`
-    </pre>
-  </div>
-  <div class="status">
-    <h2 class="status">Load Average Output</h2>
-    <pre>
-`cat /proc/loadavg`
-    </pre>
-  </div>
+page_host=`hostname`
+page_date=`date`
+page_path="/cgi/status.cgi"
+page_head="Status"
 
-  <p>
-    <a href="/fs">browse filesystem</a>
-  </p>
+status_sensors_head="Sensors"
+status_sensors_body=` \
+    sensors | \
+    sed \
+        -e 's/\(\-[1-9][0-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
+        -e 's/\(\-[1-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
+        -e 's/\(\+[1-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
+        -e 's/\(\+[1-4][0-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
+        -e 's/\(\+[5-6][0-9]\.[0-9] C\)/<span class="temp_warm">\1<\/span>/' \
+        -e 's/\(\+[7-9][0-9]\.[0-9] C\)/<span class="temp_hot">\1<\/span>/'`
+status_sensors=`output_status "${status_sensors_head}" "${status_sensors_body}"`
 
-  <h1>@mm_NAME_PRETTY@</h1>
+status_loads_head="Loads"
+status_loads_body=`cat /proc/loadavg`
+status_loads=`output_status "${status_loads_head}" "${status_loads_body}"`
 
-</body>
-</html>
+page_body="
+${status_sensors}
+${status_loads}
+<p>
+<a href=\"/fs\">browse the MiniMyth filesystem</a>
+</p>"
 
-EOF
+output_page "${page_host}" "${page_date}" "${page_path}" "${page_head}" "${page_body}"
