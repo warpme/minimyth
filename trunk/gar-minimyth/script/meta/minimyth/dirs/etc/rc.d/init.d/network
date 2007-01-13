@@ -19,24 +19,6 @@ start() {
         udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
     fi
 
-    # Check hostname.
-    HOSTNAME=`hostname`
-    if [ -z "${HOSTNAME}" ] ; then
-        mm_message_output err 'error: no hostname provided'
-        exit 1
-    fi
-
-    # Check for DNS name servers.
-    for i in `cat /etc/resolv.conf | grep '^nameserver ' | sed 's%^nameserver %%'` ; do
-        if [ -z "${NAME_SERVER}" ] ; then
-            NAME_SERVER="$i"
-        fi
-    done
-    if [ -z "${NAME_SERVER}" ] ; then
-        mm_message_output err 'error: no DNS name server(s) provided'
-        exit 1
-    fi
-
     # Start portmap on local interface.
     portmap -l
 
