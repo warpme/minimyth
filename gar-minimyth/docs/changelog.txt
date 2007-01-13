@@ -9,8 +9,9 @@ Current MythTV versions
     MythTV SVN: version svn10701, trunk svn 10701.
 
 Changed how DCHP parameter override works.
-    Eliminated the 'minimyth.dhcp' file
+    Eliminated the 'minimyth.dhcp' file.
     Added DHCP override variables to the 'minimyth.conf' file.
+    Added DHCP override hostname variable to the boot line.
 
 Changed binary image to include Intel and NVIDIA support
     Modified default build to include Intel, INVIDIA, and VIA support.
@@ -32,15 +33,15 @@ Changed from CRAMFS to SQUASHFS
     The MM_EXTRAS_URL value 'default' now points to a squashfs image (*.sfs)
         rather than a cramfs image (*.cmg).
 
-Added support for booting from an IDE disk to support CF-to-IDE adapters
-    Modified init scripts to load modules for mounting IDE disks when
-        MM_BOOT_TYPE=ide is added to the boot command line.
+Improved local boot support.
+    Added support for booting from an IDE disk to support CF-to-IDE adapters.
+    Removed the need for the MM_BOOT_TYPE boot line parameter.
+    Improved the 'mkusbkey' script to better support card readers.
+    Renamed the 'mkusbkey' script from 'mkusbkey' to 'mkflashboot'.
     Modified udev scripts to mount any IDE or SCSI (for USB) disk/partition
         with the label 'minimyth' as the directory '/minimyth'.
-    Modified the init scripts to retrieve files from '/minimyth' when present
-        rather than from the TFTP server.
-    Modified the 'mkusbkey' script to add IDE device boot support and renamed
-        the script 'mkflashboot'.
+    Modified the init scripts to treat '/minimyth' rather than the TFTP server 
+        as the boot directory when '/minimyth' is present.
     The disk/partition with the 'minimyth' label must be formatted as a FAT
         filesystem.
 

@@ -1,0 +1,62 @@
+#!/bin/sh
+################################################################################
+# mm_mount
+#
+# This script takes four parameters:
+#   device:
+#      The path to the device to be mounted/unmounted.
+#   mount_point:
+#      The mount point where ${device} is to be mounted/unmounted.
+#   action:
+#      The action to be taken.
+#      Valid values are:
+#        add:    create mount point and (optionally) mount device.
+#        remove: unmount device and remove mount point.
+#   mount:
+#      Whether or not to mount the device or just create the mount point.
+#      Valid values are:
+#        0: create mount point
+#        1: create mount point and mount device
+################################################################################
+
+device="$1"
+mount_point="$2"
+action="$3"
+mount="$4"
+
+device_get()
+{
+    mount_point="$1"
+
+    device=
+    if /usr/bin/test -r /proc/mounts ; then
+        device=`/bin/cat /proc/mounts | /bin/grep "^[\ ] ${mount_point}" | /usr/bin/cut -d' ' -f1`
+    fi
+
+    /bin/echo ${device}
+}
+
+case ${action} in
+    add)
+        if /usr/bin/test ! -e ${mount_point} ; then
+            /bin/mkdir -p ${mount_point}
+            /usr/bin/logger -t minimyth -p "local0.info" "created mount point '${mount_point}'."
+        fi
+        if /usr/bin/test ${mount} -ne 0 ; then
+            if /usr/bin/test -d ${mount_point} ; then
+                if  /usr/bin/test -z "`device ${mount_point}`" ; then
+                    /bin/mount -t auto ${device} ${mount_point} > /dev/null 2>&1 || /bin/true
+                    /usr/bin/logger -t minimyth -p "local0.info" "mounted device '${device}' at mount point '${mount_point}'."
+                fi
+            fi
+        fi
+        ;;
+    remove)
+        /bin/umount -l /dev/${name} > /dev/null 2>&1 || /bin/true
+        /usr/bin/logger -t minimyth -p "local0.info" "unmounted device '${device}'."
+        if /usr/bin/test -z "`device_get ${mount_point}`" ; then
+            /bin/rmdir ${mount_point} > /dev/null 2>&1 | /bin/true
+            /usr/bin/logger -t minimyth -p "local0.info" "deleted mount point '${mount_point}'."
+        fi
+        ;;
+esac

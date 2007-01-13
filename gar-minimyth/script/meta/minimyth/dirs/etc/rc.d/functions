@@ -46,24 +46,26 @@ mm_conf_get() {
     TMP_FILE="${LOCAL_FILE}~"
 
     /bin/rm -f "${TMP_FILE}"
-    FILE_GOT=0
+    FILE_GOT=
     if /usr/bin/test -d "/minimyth" ; then
-        /usr/bin/test ${FILE_GOT} = 0 && /usr/bin/test -n "`/bin/hostname`" && /usr/bin/test -e "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}" &&
+        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" && /usr/bin/test -e "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}" &&
 	    /bin/cp          "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}"                "${TMP_FILE}"                     && 
-	    FILE_GOT=1
-        /usr/bin/test ${FILE_GOT} = 0 &&                             /usr/bin/test -e "/minimyth/conf/default/${REMOTE_FILE}"         &&
+	    FILE_GOT="retrieved configuration file '${REMOTE_FILE}' from local directory '/minimyth/conf/`/bin/hostname`'"
+        /usr/bin/test -z "${FILE_GOT}" &&                             /usr/bin/test -e "/minimyth/conf/default/${REMOTE_FILE}"         &&
 	    /bin/cp          "/minimyth/conf/default/${REMOTE_FILE}"                        "${TMP_FILE}"                     &&
-	    FILE_GOT=1
+	    FILE_GOT="retrieved configuration file '${REMOTE_FILE}' from local directory '/minimyth/conf/default'"
     else
-        /usr/bin/test ${FILE_GOT} = 0 && /usr/bin/test -n "`/bin/hostname`" &&
+        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" &&
             /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/`/bin/hostname`/${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-	    FILE_GOT=1
-        /usr/bin/test ${FILE_GOT} = 0 && 
+	    FILE_GOT="retrieved configuration file '${REMOTE_FILE}' from remote TFTP directory '${MM_TFTP_SERVER}/conf/`/bin/hostname`'"
+        /usr/bin/test -z "${FILE_GOT}" && 
             /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}"         -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-	    FILE_GOT=1
+	    FILE_GOT="retrieved configuration file '${REMOTE_FILE}' from remote TFTP directory '${MM_TFTP_ROOTDIR}/conf/default'"
     fi
-    /usr/bin/test ${FILE_GOT} = 1 && 
+    if /usr/bin/test -n "${FILE_GOT}" ; then
         /bin/mv -f "${TMP_FILE}" "${LOCAL_FILE}"
+        /usr/bin/logger    -t minimyth -p "local0.info" "${FILE_GOT}"
+    fi
     /bin/rm -f "${TMP_FILE}"
 }
 
@@ -117,11 +119,9 @@ mm_uniq() {
 #         file system that will be copied and expanded into (for files), copied
 #         and mounted at (for images) or mounted at (for directories) the mount
 #         point. For conf, the URL points to a tarfile (*.tar.bz2), a cramfs
-#         image (*.cmg) or squashfs image (*.sfs) in the MiniMyth conf directory
-#         that is either on the TFTP server (when network booting) or on the 
-#         local storage device (when IDE or USB booting) that will be
-#         downloaded/copied and expanded into (for files) or downloaded/copied
-#         and mounted at (for images) the mount point.
+#         image (*.cmg) or squashfs image (*.sfs) in the MiniMyth configuration
+#         directory will be downloaded/copied and expanded into (for files) or
+#         downloaded/copied and mounted at (for images) the mount point.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
