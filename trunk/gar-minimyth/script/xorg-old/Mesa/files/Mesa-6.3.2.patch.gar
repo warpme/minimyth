@@ -15,7 +15,7 @@ diff -Naur Mesa-6.3.2-old/configs/linux-dri Mesa-6.3.2-new/configs/linux-dri
  
  # Library/program dependencies
 -EXTRA_LIB_PATH=-L/usr/X11R6/lib
-+EXTRA_LIB_PATH=-L@GAR_DESTDIR@@GAR_x11libdir@
++EXTRA_LIB_PATH=-L@GAR_DESTDIR@@GAR_libdir@
  
  LIBDRM_LIB = `pkg-config --libs libdrm` -ldrm
  DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
@@ -39,7 +39,7 @@ diff -Naur Mesa-6.3.2-old/src/glx/x11/dri_glx.c Mesa-6.3.2-new/src/glx/x11/dri_g
  #ifndef DEFAULT_DRIVER_DIR
  /* this is normally defined in the Imakefile */
 -#define DEFAULT_DRIVER_DIR "/usr/X11R6/lib/modules/dri"
-+#define DEFAULT_DRIVER_DIR "@GAR_x11libdir@/xorg/modules/dri"
++#define DEFAULT_DRIVER_DIR "@GAR_libdir@/xorg/modules/dri"
  #endif
  
  static __DRIdriver *Drivers = NULL;
@@ -74,7 +74,7 @@ diff -Naur Mesa-6.3.2-old/src/mesa/drivers/dri/Makefile.template Mesa-6.3.2-new/
  
  install: $(LIBNAME)
 -	install $(LIBNAME) /usr/X11R6/lib/modules/dri/$(LIBNAME)
-+	install $(LIBNAME) @GAR_DESTDIR@@GAR_x11libdir@/xorg/modules/dri/$(LIBNAME)
++	install $(LIBNAME) @GAR_DESTDIR@@GAR_libdir@/xorg/modules/dri/$(LIBNAME)
  
  include depend
 diff -Naur Mesa-6.3.2-old/src/mesa/Makefile Mesa-6.3.2-new/src/mesa/Makefile
