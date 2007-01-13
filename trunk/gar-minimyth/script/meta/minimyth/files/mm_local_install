@@ -122,50 +122,61 @@ BINARIES='md5sum mkfs.msdos mount su sync syslinux umount'
 for BINARY in ${BINARIES} ; do
     which "${BINARY}" > /dev/null 2>&1                              || \
         message_output 1 "cannot find required binary '${BINARY}'." || \
-        return
+        exit 1
 done
 
-# Determine default value for 'DEVICE' parameter.
-# The device must be a removable SCSI device of non-zero size,
-# and there must be only one.
-DEVICE_DEFAULT=
-DEVICE_LIST=
-for DEVICE in `ls -1 /sys/block | grep -e '^sd.$'` ; do
-    device_check "${DEVICE}" > /dev/null 2>& 1
-    if test $? -eq 0 ; then
-        if test -z "${DEVICE_LIST}" ; then
-            DEVICE_LIST="${DEVICE}"
-        else
-            DEVICE_LIST="${DEVICE_LIST} ${DEVICE}"
+# Set 'CONF' value.
+CONF=$1
+
+# Set 'DEVICE' value.
+DEVCIE=$2
+# If no 'DEVICE' command line option was provided, then try to guess the flash device.
+# If there is exactly one removable SCSI device of non-zero size, then assume it is the flash device.
+if test -z "${DEVICE}" ; then
+    DEVICE_DEFAULT=
+    DEVICE_LIST=
+    for DEVICE in `ls -1 /sys/block | grep -e '^sd.$'` ; do
+        device_check "${DEVICE}" > /dev/null 2>& 1
+        if test $? -eq 0 ; then
+            if test -z "${DEVICE_LIST}" ; then
+                DEVICE_LIST="${DEVICE}"
+            else
+                DEVICE_LIST="${DEVICE_LIST} ${DEVICE}"
+            fi
         fi
+    done
+    DEVICE_LIST_COUNT=`echo "${DEVICE_LIST}" | wc -w`
+    if   test ${DEVICE_LIST_COUNT} -eq 0 ; then
+        message_output 1 "failed to find any flash devices (removable SCSI devices)."
+        exit 1
+    elif test ${DEVICE_LIST_COUNT} -eq 1 ; then
+        DEVICE_DEFAULT=${DEVICE_LIST}
+    else
+        message_output 1 "found more than one flash device (removable SCSI device): ${DEVICE_LIST}."
     fi
-done
-DEVICE_LIST_COUNT=`echo "${DEVICE_LIST}" | wc -w`
-if test ${DEVICE_LIST_COUNT} -eq 1 ; then
-    DEVICE_DEFAULT=${DEVICE_LIST}
+    DEVICE=${DEVICE_DEFAULT}
 fi
 
-CONF=$1
-URL=${2:-"${URL_DEFAULT}"}
-DEVICE=${3:-"${DEVICE_DEFAULT}"}
+# Set 'URL' value.
+URL=${3:-"${URL_DEFAULT}"}
 
-if test -z "${CONF}" || test -z "${URL}" || test -z "${DEVICE}" ; then
+if test -z "${CONF}" || test -z "${DEVICE}" || test -z "${URL}" ; then
     SCRIPT=`script_file`
     echo ""
     echo "usage:"
-    echo "    ${SCRIPT} <CONF> [ <URL> [ <device> ] ] ]"
+    echo "    ${SCRIPT} <CONF> [ {DEVICE} [ {URL} ] ]"
     echo "where:"
-    echo "    <CONF>   : Path to the location of the MiniMyth conf directory."
-    echo "    <URL>    : URL that points to the MiniMyth distribution to be used."
+    echo "    {CONF}   : Path to the location that contains the MiniMyth conf directory."
+    echo "    {DEVICE} : Flash device (e.g. sda)."
+    echo "    {URL}    : URL that points to the MiniMyth distribution to be used."
     echo "             : Default is '${URL_DEFAULT}'."
-    echo "               Default is newest kernel, rootfs and extras in <distro_path>."
-    echo "    <DEVICE> : flash device (e.g. sda)."
     echo "example:"
     echo "    ${SCRIPT} /var/tftpboot/minimyth"
     echo ""
     exit 1
 fi
 
+# Check make sure that 'DEVICE' is a removable SCSI device of non-zero size.
 device_check "${DEVICE}" ||
     exit 1
 

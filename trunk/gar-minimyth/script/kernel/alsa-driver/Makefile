@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
-	--with-cards="hda-intel,intel8x0,via82xx"
+	--with-cards="hda-intel,intel8x0,usb-audio,via82xx"
 
 CONFIGURE_ENV = $(KERNEL_MAKE_ENV)
 BUILD_ENV     = $(KERNEL_MAKE_ENV)

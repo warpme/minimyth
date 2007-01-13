@@ -165,10 +165,26 @@ mm-all:
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-make-distro
 
 mm-check:
-	@if [ "`id -u`" = "0" ] ; then \
-		echo "error: gar-minimyth must not be run as root." ; \
+	@for bin in $(build_system_bins) ; do \
+		which $${bin} > /dev/null 2>&1 ; \
+		if [ ! "$$?" = "0" ] ; then \
+			echo "error: the build system does not contain the program '$${bin}'." ; \
+			exit 1 ; \
+		fi ; \
+	done
+	@if [ `id -u` -eq 0 ] || [ `id -g` -eq 0 ] ; then \
+		echo "error: gar-minimyth cannot be run by the user 'root'." ; \
 		exit 1 ; \
 	fi
+	@for dir in /          /lib                              /bin           /sbin \
+	            /usr       /usr/lib       /usr/libexec       /usr/bin       /usr/sbin \
+	            /usr/local /usr/local/lib /usr/local/libexec /usr/local/bin /usr/local/sbin\
+	            /opt ; do \
+		if [ -e "$${dir}" ] && [ -w "$${dir}" ] ; then \
+			echo "error: gar-minimyth cannot be run by a user with write access to '$${dir}'." ; \
+			exit 1 ; \
+		fi ; \
+	done
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
 		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
 		exit 1 ; \
@@ -224,13 +240,6 @@ mm-check:
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@for bin in $(build_system_bins) ; do \
-		which $${bin} > /dev/null 2>&1 ; \
-		if [ ! "$$?" = "0" ] ; then \
-			echo "error: the build system does not contain the program '$${bin}'." ; \
-			exit 1 ; \
-		fi ; \
-	done
 
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
@@ -277,6 +286,15 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
+	@cp -r  $(mm_HOME)/html/css/*           $(mm_ROOTFSDIR)/srv/www/css/
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/image
+	@cp -r  $(mm_HOME)/html/image/*         $(mm_ROOTFSDIR)/srv/www/image/
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
+	@cp -r  $(mm_HOME)/html/include/*       $(mm_ROOTFSDIR)/srv/www/include/
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
+	@cp -r  $(mm_HOME)/html/script/*        $(mm_ROOTFSDIR)/srv/www/script/
+	@cp -r  $(mm_HOME)/html/minimyth        $(mm_ROOTFSDIR)/srv/www/
 	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.lircrc
 	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.mythtv/lircrc
 	@ln -sf $(sysconfdir)/X11/xinit/xinitrc $(mm_ROOTFSDIR)/root/.xinitrc
@@ -371,16 +389,9 @@ mm-make-other:
 	@mkdir -p $(mm_STAGEDIR)
 	@rm -rf $(mm_STAGEDIR)/version
 	@echo "$(mm_VERSION)" > $(mm_STAGEDIR)/version
-	@# Get docs.
-	@rm -rf   $(mm_STAGEDIR)/docs
-	@mkdir -p $(mm_STAGEDIR)/docs
-	@cp $(mm_HOME)/docs/readme.txt      $(mm_STAGEDIR)/docs/readme.txt
-	@cp $(mm_HOME)/docs/changelog.txt   $(mm_STAGEDIR)/docs/changelog.txt
-	@cp $(mm_HOME)/docs/minimyth.conf   $(mm_STAGEDIR)/docs/minimyth.conf
-	@cp $(mm_HOME)/docs/minimyth.conf   $(mm_STAGEDIR)/docs/minimyth.conf.txt
-	@cp $(mm_HOME)/docs/minimyth.script $(mm_STAGEDIR)/docs/minimyth.script
-	@cp $(mm_HOME)/docs/minimyth.script $(mm_STAGEDIR)/docs/minimyth.script.txt
-	@cp $(mm_HOME)/docs/todo.txt        $(mm_STAGEDIR)/docs/todo.txt
+	@# Get html documentation.
+	@rm -rf $(mm_STAGEDIR)/html
+	@cp -r $(mm_HOME)/html $(mm_STAGEDIR)
 	@# Get scripts
 	@rm -rf   $(mm_STAGEDIR)/scripts
 	@mkdir -p $(mm_STAGEDIR)/scripts
@@ -440,9 +451,9 @@ mm-make-distro:
 	@# Get version.
 	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
-	@# Get docs.
-	@cp -r $(mm_STAGEDIR)/docs    $(mm_STAGEDIR)/ram-$(mm_NAME)/
-	@cp -r $(mm_STAGEDIR)/docs    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@# Get html documentation.
+	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Get scripts
 	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/nfs-$(mm_NAME)/
@@ -521,7 +532,7 @@ mm-make-distro:
 	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_LOCALDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_LOCALDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_LOCALDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/docs           $(mm_LOCALDIR)/docs
+	@cp -r  $(mm_STAGEDIR)/html           $(mm_LOCALDIR)/html
 	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_LOCALDIR)/scripts
 	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
 		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
@@ -544,7 +555,7 @@ mm-make-distro:
 	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_SHAREDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_SHAREDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_SHAREDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/docs           $(mm_SHAREDIR)/docs
+	@cp -r  $(mm_STAGEDIR)/html           $(mm_SHAREDIR)/html
 	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_SHAREDIR)/scripts
 	@rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs
 	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2
@@ -631,18 +642,19 @@ mm-install: mm-check
 			fi ; \
 			\
 			if [ $(mm_INSTALL_RAM_BOOT) = yes ] ; then \
-				mkdir -p $(mm_TFTP_ROOT)/                                                                         ; \
-				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                           ; \
-				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                           ; \
-				tar -jxf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                  ; \
+				mkdir -p $(mm_TFTP_ROOT)/                                                                               ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                                 ; \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                                 ; \
+				tar -jxf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                        ; \
 				\
-				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                                               ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version $(mm_TFTP_ROOT)/$(mm_NAME)/version ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/kernel  $(mm_TFTP_ROOT)/$(mm_NAME)/kernel  ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/rootfs  $(mm_TFTP_ROOT)/$(mm_NAME)/rootfs  ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/themes  $(mm_TFTP_ROOT)/$(mm_NAME)/themes  ; \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                                                     ; \
+				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version    $(mm_TFTP_ROOT)/$(mm_NAME)/version    ; \
+				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/kernel     $(mm_TFTP_ROOT)/$(mm_NAME)/kernel     ; \
+				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/rootfs     $(mm_TFTP_ROOT)/$(mm_NAME)/rootfs     ; \
+				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/themes     $(mm_TFTP_ROOT)/$(mm_NAME)/themes     ; \
+				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/extras.sfs $(mm_TFTP_ROOT)/$(mm_NAME)/extras.sfs ; \
 				\
-				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                           ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                                 ; \
 			fi ; \
 			\
 			if [ $(mm_INSTALL_NFS_BOOT) = yes ] ; then \
@@ -661,8 +673,8 @@ mm-install: mm-check
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/themes.tar.bz2  -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp     ; \
 				mkdir -p $(mm_NFS_ROOT)                                                                                      ; \
 				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/rootfs   $(mm_NFS_ROOT)/$(mm_NAME)                                   ; \
-				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/extras/* $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)       ; \
 				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/themes/* $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/usr/share/mythtv/themes ; \
+				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/extras/* $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)       ; \
 				\
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                                      ; \
 			fi ; \
