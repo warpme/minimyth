@@ -1,4 +1,5 @@
 xset -dpms s off
+xsetroot -solid black
 if [ -z "`mm_var_get MM_NO_VNC`" ] ; then
 	x11vnc -many -q -bg
 fi
