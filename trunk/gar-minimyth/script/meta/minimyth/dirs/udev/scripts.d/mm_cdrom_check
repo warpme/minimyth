@@ -1,7 +1,7 @@
 #!/bin/sh
 
 device="$1"
-attributes="$2"
+attribute="$2"
 
 [ -e /proc/sys/dev/cdrom/info ] || exit 1
 
@@ -11,7 +11,7 @@ device_found=0
         if [ "$line" = "" ] ; then
             device_found=0
         else
-            if [ "$device_found" = "0" ] ; then
+            if [ "$device_found"  = "0" ] ; then
                 if [ "`echo \"$line\" | grep \"drive name:\"`"  = "$line" ]; then
                     line=`echo $line | sed 's%^[^:]*:[ \t]*%%'`
                     if [ "$line" = "$device" ] ; then
@@ -19,17 +19,15 @@ device_found=0
                     fi
                 fi
             else
-                if [ "$attributes" = "" ] ; then
+                if [ "$attribute" = ""  ] ; then
                     exit 0
                 fi
-                for attribute in $attributes ; do
-                    if [ "`echo \"$line\" | grep \"$attribute:\" `" = "$line" ]; then
-                        line=`echo $line | sed 's%^[^:]*:[ \t]*%%'`
-                        if [ "$line" = "1" ] ; then
-                            exit 0
-                        fi
+                if [ "`echo \"$line\" | grep \"$attribute:\"`" = "$line" ]; then
+                    line=`echo $line | sed 's%^[^:]*:[ \t]*%%'`
+                    if [ "$line" = "1" ] ; then
+                        exit 0
                     fi
-                done
+                fi
             fi
         fi
     done
