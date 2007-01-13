@@ -15,7 +15,6 @@ DEPENDS = \
  	utils/alsa-utils \
 	utils/busybox \
 	system/devfsd \
-	X11/fvwm \
 	devel/gdb \
 	kernel/linux kernel/drm \
 	lirc/lirc \
@@ -31,6 +30,7 @@ DEPENDS = \
 	net/ntp \
 	net/portmap \
 	qt/qt \
+	X11/ratpoison \
 	X11/rxvt \
 	net/samba \
 	net/utelnetd \
