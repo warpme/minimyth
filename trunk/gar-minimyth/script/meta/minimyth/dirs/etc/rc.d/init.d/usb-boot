@@ -10,24 +10,24 @@ start() {
     # If the boot type is usb, then load the drivers needed to read the usb drive.
     if [ "${MM_BOOT_TYPE}" = "usb" ] ; then
         lspci -mn | sed -e 's%"%%g' | while read pci ; do
-            index=1            ; bus=`       echo "${pci}" | cut -d' ' -f${index}`
-            index=$((index+1)) ; class=`     echo "${pci}" | cut -d' ' -f${index}`
-            index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d' ' -f${index}`
-            index=$((index+1)) ; device=`    echo "${pci}" | cut -d' ' -f${index}`
-            index=$((index+1)) ; revision=`  echo "${pci}" | cut -d' ' -f${index}`
+            index=1            ; bus=`       echo "${pci}" | cut -d ' ' -f ${index}`
+            index=$((index+1)) ; class=`     echo "${pci}" | cut -d ' ' -f ${index}`
+            index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d ' ' -f ${index}`
+            index=$((index+1)) ; device=`    echo "${pci}" | cut -d ' ' -f ${index}`
+            index=$((index+1)) ; revision=`  echo "${pci}" | cut -d ' ' -f ${index}`
             if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
                 revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
             else
                 index=$((index-1)) ; revision=
             fi
-            index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d' ' -f${index}`
+            index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d ' ' -f ${index}`
             if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
                 class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
             else
                 index=$((index-1)) ; class_prog=
             fi
-            index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d' ' -f${index}`
-            index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d' ' -f${index}`
+            index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d ' ' -f ${index}`
+            index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d ' ' -f ${index}`
 
             case "${class}" in
                 # USB.

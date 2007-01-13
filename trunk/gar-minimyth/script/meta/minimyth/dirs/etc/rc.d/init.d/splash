@@ -12,17 +12,17 @@ start() {
     # Disable splash screen when more than kernel errors are logged to the console.
     # That is when the loglevel is greater than 4.
     PRINTK=`cat /proc/sys/kernel/printk`
-    LOGLEVEL=`echo ${PRINTK} | cut -d' ' -f 1`
+    LOGLEVEL=`echo ${PRINTK} | cut -d ' ' -f 1`
     [ ${LOGLEVEL} -gt 4 ] && SPLASH_ENABLE=no
 
     # Disable splash screen when the video resolution is not compatible.
     # That is when the resolution is not 800x600 or color depth is less than 16.
     GEOMETRY=`fbset | grep geometry`
-    XRES=` echo ${GEOMETRY} | cut -d' ' -f 2`
-    YRES=` echo ${GEOMETRY} | cut -d' ' -f 3`
-    VXRES=`echo ${GEOMETRY} | cut -d' ' -f 4`
-    VYRES=`echo ${GEOMETRY} | cut -d' ' -f 5`
-    DEPTH=`echo ${GEOMETRY} | cut -d' ' -f 6`
+    XRES=` echo ${GEOMETRY} | cut -d ' ' -f 2`
+    YRES=` echo ${GEOMETRY} | cut -d ' ' -f 3`
+    VXRES=`echo ${GEOMETRY} | cut -d ' ' -f 4`
+    VYRES=`echo ${GEOMETRY} | cut -d ' ' -f 5`
+    DEPTH=`echo ${GEOMETRY} | cut -d ' ' -f 6`
     [ ${XRES}  -ne 800 ] && SPLASH_ENABLE=no
     [ ${YRES}  -ne 600 ] && SPLASH_ENABLE=no
     [ ${VXRES} -ne 800 ] && SPLASH_ENABLE=no

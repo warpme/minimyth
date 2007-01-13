@@ -1,0 +1,28 @@
+# Maps PCI bus information to kernel modules.
+#
+# classes:
+#    0101: IDE
+#    0401: Audio
+#    0604: PCI bridge (assumed to imply AGP)
+#    0c00: FireWire (IEEE 1394)
+#    0c03: USB
+#    0c05: SMBus
+# vendors:
+#    8086: Intel
+#    10de: NVIDIA
+#    1106: VIA
+#
+# The first field ('class') is required.
+#
+# class , class_prog , vendor , device , kernel_modules
+  0101 ,             , 8086   ,        , piix
+  0101 ,             , 10de   ,        , amd74xx
+  0101 ,             , 1106   ,        , via82cxxx
+  0604 ,             , 8086   ,        , intel-agp
+  0604 ,             , 10de   ,        , nvidia-agp
+  0604 ,             , 1106   ,        , via-agp
+  0c00 ,  00         ,        ,        , ieee1394
+  0c00 ,  10         ,        ,        , ohci1394
+  0c03 ,  00         ,        ,        , uhci-hcd
+  0c03 ,  10         ,        ,        , ohci-hcd
+  0c03 ,  20         ,        ,        , ehci-hcd
