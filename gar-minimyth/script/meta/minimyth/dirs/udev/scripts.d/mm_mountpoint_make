@@ -1,0 +1,86 @@
+#!/bin/sh
+
+name="$1"
+action="$2"
+
+symlinks_remove()
+{
+    name="$1"
+
+    rm -f /media/.symlinks~
+    touch /media/.symlinks
+    cat /media/.symlinks |
+    while read dev ; do
+        dev_name=`echo ${dev}    | cut -d= -f1`
+        dev_symlink=`echo ${dev} | cut -d= -f2`
+        if [ ! "${dev_name}" = "${name}" ] ; then
+            echo "${dev_name}=${dev_symlink}" >> /media/.symlinks~
+        fi
+    done
+    mv -f /media/.symlinks~ /media/.symlinks
+}
+
+symlinks_add()
+{
+    name="$1"
+
+    symlinks=`udevinfo -q symlink -n "${name}"`
+
+    for symlink in ${symlinks} ; do
+        dev_name="${name}"
+        dev_symlink="${symlink}"
+        echo "${dev_name}=${dev_symlink}" >> /media/.symlinks
+    done
+    rm -f /media/.symlinks~
+    touch /media/.symlinks
+    cat /media/.symlinks | sort -u > /media/.symlinks~
+    mv -f /media/.symlinks~ /media/.symlinks
+}
+
+mountpoint_remove()
+{
+    symlink="$1"
+
+    mounted=`cat /proc/mounts | grep -c "^[^ ]* /media/${symlink}"`
+    while [ ${mounted} != '0' ] ; do
+        umount -l /media/${symlink}
+        mounted=`cat /proc/mounts | grep -c "^[^ ]* /media/${symlink}"`
+    done
+    rmdir /media/${symlink}
+}
+
+mountpoint_add()
+{
+    symlink="$1"
+
+    name=`udevinfo -q name -n "${symlink}"`
+
+    mkdir -p /media/${symlink}
+    case ${name} in
+        hd[a-z])
+            ;;
+        sd[a-z])
+            mount -t auto /dev/${symlink} /media/${symlink}
+            ;;
+        sr[0-9]*)
+            ;;
+    esac
+}
+
+case ${action} in
+    add)
+        symlinks_add    "${name}"
+        symlinks=`cat /media/.symlinks | grep "^${name}=" | sed "s%^${name}=%%"`
+        for symlink in ${symlinks} ; do
+            mountpoint_remove "${symlink}"
+            mountpoint_add    "${symlink}"
+        done
+        ;;
+    remove)
+        symlinks=`cat /media/.symlinks | grep "^${name}=" | sed "s%^${name}=%%"`
+        for symlink in ${symlinks} ; do
+            mountpoint_remove "${symlink}"
+        done
+        symlinks_remove "${name}"
+        ;;
+esac
