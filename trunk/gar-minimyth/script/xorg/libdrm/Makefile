@@ -3,7 +3,7 @@ GARVERSION = 20060218
 CATEGORIES = xorg
 MASTER_SITES  = http://dri.freedesktop.org/libdrm/
 MASTER_SITES += cvs://anonymous@dri.freedesktop.org/cvs/dri/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = 
 
 DESCRIPTION = 
@@ -22,11 +22,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += kernel/drm/package-api.mk
 include ../../gar.mk
 
-cvs//%$(DISTNAME).tar.gz:
+cvs//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, drm, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.gz:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
