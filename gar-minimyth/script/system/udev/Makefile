@@ -1,8 +1,9 @@
 GARNAME = udev
-GARVERSION = 068
+GARVERSION = 069
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-extras.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -35,8 +36,8 @@ DEFAULT_ARGS = \
 	configdir="$(configdir)" \
 	initdir="$(initdir)" \
 	udevdir="$(udevdir)"
-BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/volume_id/"
-INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/volume_id/"
+BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
+INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
