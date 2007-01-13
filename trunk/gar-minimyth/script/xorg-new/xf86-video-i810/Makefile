@@ -1,5 +1,5 @@
 GARNAME = xf86-video-i810
-GARVERSION = 1.4.1.3
+GARVERSION = X11R$(XORG_VERSION)-1.4.1.3
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/driver/
 DISTFILES = $(DISTNAME).tar.bz2

@@ -1,5 +1,5 @@
 GARNAME = xdpyinfo
-GARVERSION = 1.0.1
+GARVERSION = X11R$(XORG_VERSION)-1.0.1
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/app/
 DISTFILES = $(DISTNAME).tar.bz2

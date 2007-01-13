@@ -1,5 +1,5 @@
 GARNAME = libXft
-GARVERSION = 2.1.8.2
+GARVERSION = X11R$(XORG_VERSION)-2.1.8.2
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
 DISTFILES = $(DISTNAME).tar.bz2

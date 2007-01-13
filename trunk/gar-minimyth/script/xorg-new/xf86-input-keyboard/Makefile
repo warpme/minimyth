@@ -1,5 +1,5 @@
 GARNAME = xf86-input-keyboard
-GARVERSION = 1.0.1.3
+GARVERSION = X11R$(XORG_VERSION)-1.0.1.3
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/driver/
 DISTFILES = $(DISTNAME).tar.bz2

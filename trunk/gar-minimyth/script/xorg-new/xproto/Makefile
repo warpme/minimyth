@@ -1,5 +1,5 @@
 GARNAME = xproto
-GARVERSION = 7.0.4
+GARVERSION = X11R$(XORG_VERSION)-7.0.4
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/proto/
 DISTFILES = $(DISTNAME).tar.bz2
