@@ -1,3 +1,38 @@
+# DRI devices always go into a subdirectory (as per the LSB spec)
+KERNEL=="card*",		NAME="dri/card%n"
+
+# alsa devices
+KERNEL=="controlC[0-9]*",	NAME="snd/%k"
+KERNEL=="hw[CD0-9]*",		NAME="snd/%k"
+KERNEL=="pcm[CD0-9cp]*",	NAME="snd/%k"
+KERNEL=="midiC[D0-9]*",		NAME="snd/%k"
+KERNEL=="timer",		NAME="snd/%k"
+KERNEL=="seq",			NAME="snd/%k"
+
+# input devices
+KERNEL=="mice",			NAME="input/%k"
+KERNEL=="mouse*",		NAME="input/%k"
+KERNEL=="event*",		NAME="input/%k"
+KERNEL=="js*",			NAME="input/%k"
+KERNEL=="ts*",			NAME="input/%k"
+
+# USB devices
+KERNEL=="hiddev*",		NAME="usb/%k"
+KERNEL=="auer*",		NAME="usb/%k"
+KERNEL=="legousbtower*",	NAME="usb/%k"
+KERNEL=="dabusb*",		NAME="usb/%k"
+BUS=="usb", KERNEL=="lp[0-9]*",	NAME="usb/%k"
+
+# CAPI devices
+KERNEL=="capi",			NAME="capi20", SYMLINK+="isdn/capi20"
+KERNEL=="capi*",		NAME="capi/%n"
+
+# Network devices
+KERNEL=="tun",			NAME="net/%k"
+
+# raw devices
+KERNEL=="raw[0-9]*",		NAME="raw/%k"
+
 # Add generic symbolic links for CDROMs and DVDs.
 KERNEL=="hd[a-z]" , PROGRAM=="/etc/udev/scripts.d/mm_cdrom_check %k"           , SYMLINK+="cdrom%e"
 KERNEL=="sr[0-9]*", PROGRAM=="/etc/udev/scripts.d/mm_cdrom_check %k"           , SYMLINK+="cdrom%e"
