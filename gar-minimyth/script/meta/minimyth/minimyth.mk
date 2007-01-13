@@ -169,7 +169,9 @@ mm-copy:
 	@cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(WORKSRC)/$(mm_KERNELNAME)
 	@# Copy QT mysql plugin.
 	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
-	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers   $(mm_ROOTFSDIR)$(qtprefix)/plugins
+	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
+	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
+	@cp -fa ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
 	@# Copy binaries, etcs, shares, and libraries.
 	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
