@@ -10,18 +10,20 @@ start() {
     mm_conf_get /xinitrc /root/.xinitrc
     mm_conf_get /xorg.conf /etc/X11/xorg.conf
 
-    case "${MM_HARDWARE_NORTHBRIDGE}" in
-        CLE266)
-            MM_X_DRIVER=via
-            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
-            ;;
-        CN400)
-            MM_X_DRIVER=via
-            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
-            ;;
-        GFORCE_6150)
+    # Configure XvMC.
+    case "${MM_X_DRIVER}" in
+        nvidia)
             sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
-            MM_X_DRIVER=nvidia
+            ;;
+        via)
+            case "${MM_HARDWARE_NORTHBRIDGE}" in
+                CLE266)
+                    sed -i "s%@MM_XVMC_LIB@%viaXvMC%"    /etc/X11/XvMCConfig
+                    ;;
+                CN400)
+                    sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%" /etc/X11/XvMCConfig
+                    ;;
+            esac
             ;;
     esac
 
