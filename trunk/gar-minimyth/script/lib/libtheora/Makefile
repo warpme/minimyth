@@ -1,5 +1,5 @@
 GARNAME = libtheora
-GARVERSION = 1.0alpha6
+GARVERSION = 1.0alpha7
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/theora/
 DISTFILES = $(DISTNAME).tar.bz2
