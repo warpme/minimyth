@@ -2,6 +2,16 @@
 # DHCP override variables.
 ################################################################################
 conf_check_dhcp() {
+
+    # Reset the variables.
+    conf_reset \
+        'MM_HOSTNAME' \
+        'MM_DOMAIN' \
+        'MM_DNS_SERVERS' \
+        'MM_DNS_SERVERS' \
+        'MM_NTP_SERVERS' \
+        'MM_LOG_SERVERS'
+
     # Check for obsolete variables.
     if /usr/bin/test ! -z "${MM_NAME_SERVER}"   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
@@ -20,6 +30,16 @@ conf_check_dhcp() {
 }
 
 conf_default_dhcp() {
+
+    # Reset the variables.
+    conf_reset \
+        'MM_HOSTNAME' \
+        'MM_DOMAIN' \
+        'MM_DNS_SERVERS' \
+        'MM_DNS_SERVERS' \
+        'MM_NTP_SERVERS' \
+        'MM_LOG_SERVERS'
+
     if /usr/bin/test -z "${MM_HOSTNAME}"    ; then
         MM_HOSTNAME="${MM_DHCP_HOSTNAME}"
     fi

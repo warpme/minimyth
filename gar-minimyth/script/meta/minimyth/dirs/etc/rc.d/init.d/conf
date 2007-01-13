@@ -6,6 +6,28 @@
 ################################################################################
 . /etc/rc.d/functions
 
+conf_reset() {
+
+    local tempfile
+    local filter
+
+    tempfile=`/bin/mktemp /tmp/minimyth.conf.XXXXXX`
+
+    rm -rf ${tempfile}
+    for filter in "$@" ; do
+        echo ${filter} | grep -q -e '_$' > /dev/null 2>&1
+        if /usr/bin/test $? -eq 0 ; then
+            set                                    | /bin/grep -e "^${filter}"  | /bin/sed -e 's%=.*%=%' >> ${tempfile}
+            /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -e "^${filter}"                           >> ${tempfile}
+        else
+            set                                    | /bin/grep -e "^${filter}=" | /bin/sed -e 's%=.*%=%' >> ${tempfile}
+            /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -e "^${filter}="                          >> ${tempfile}
+        fi
+    done
+    . ${tempfile}
+    rm -rf ${tempfile}
+}
+
 conf_variable_write() {
     /bin/echo -n "$2=" >> $1
     /bin/echo -n "'"   >> $1

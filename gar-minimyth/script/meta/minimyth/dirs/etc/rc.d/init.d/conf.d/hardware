@@ -36,12 +36,18 @@ conf_check_hardware() {
         exit 1
     fi
 
+    # Reset the variables.
+    conf_reset 'MM_HARDWARE_'
+
     return 0
 }
 
 conf_default_hardware() {
     # The routine relies on MM_X_* variables.
     conf_default_x
+
+    # Reset the variables.
+    conf_reset 'MM_HARDWARE_'
 
     if /usr/bin/test -z "${MM_HARDWARE_CPU}" ; then
         MM_HARDWARE_CPU="`mm_hardware_cpu_get`"
