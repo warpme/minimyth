@@ -278,6 +278,7 @@ mm-conf:
 mm-install:
 	@su -c "cp -a $(mm_DESTDIR) $(mm_DESTDIR).tmp ; \
 		rm -f $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
+			mkdir -p $(mm_TFTPDIR) ; \
 			cp $(mm_BASEDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
 		chown -Rh root:root $(mm_DESTDIR).tmp ; \
 		mknod -m 666 $(mm_DESTDIR).tmp/$(rootdir)/dev/null c 1 3 ; \
@@ -287,13 +288,16 @@ mm-install:
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
 			mkfs.cramfs $(mm_DESTDIR).tmp $(mm_BASEDIR)/$(mm_CRAMFSNAME) ; \
 			rm -f $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
+				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_CRAMFSNAME) $(mm_TFTPDIR)/$(mm_CRAMFSNAME) ; \
 			cd $(mm_EXTRASDIR).tmp ; tar -jc -f $(mm_BASEDIR)/$(mm_EXTRASNAME) * ; \
 			rm -f $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
+				mkdir -p $(mm_TFTPDIR) ; \
 				cp $(mm_BASEDIR)/$(mm_EXTRASNAME) $(mm_TFTPDIR)/$(mm_EXTRASNAME) ; \
 		fi ; \
 		if [ $(mm_INSTALL_NFS) = yes ] ; then \
 			rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
+				mkdir -p $(mm_NFSDIR) ; \
 				cp -a $(mm_DESTDIR).tmp $(mm_NFSDIR)/$(mm_NFSNAME) ; \
 			cp -a $(mm_EXTRASDIR).tmp/* $(mm_NFSDIR)/$(mm_NFSNAME)/$(extras_rootdir) ; \
 		fi ; \
