@@ -1,5 +1,5 @@
 GARNAME = libvorbis
-GARVERSION = 1.1.1
+GARVERSION = 1.1.2
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/vorbis/
 DISTFILES = $(DISTNAME).tar.gz
