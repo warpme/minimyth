@@ -1,8 +1,7 @@
 GARNAME = xine-ui
 GARVERSION = 0.99.4
 CATEGORIES = myth
-MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/xine/
-MASTER_SITES += http://cambuca.ldhs.cetuc.puc-rio.br/~miguel/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = 
