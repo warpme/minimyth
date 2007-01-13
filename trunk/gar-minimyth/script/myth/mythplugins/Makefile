@@ -31,7 +31,7 @@ CONFIGURE_ARGS += \
 		--disable-transcode \
 		--enable-vcd \
 	--enable-mythgallery \
-		--disable-exif \
+		--enable-exif \
 	--disable-mythgame \
 	--enable-mythmusic \
 		--enable-fftw \
