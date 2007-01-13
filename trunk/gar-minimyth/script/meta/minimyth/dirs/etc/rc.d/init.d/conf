@@ -28,6 +28,11 @@ conf_check() {
     # Read MiniMyth environment variables from the MiniMyth configuration file.
     [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
     
+    if [ "${MM_CODECS_URL}"         = "default"        ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_CODECS_URL=default" is obsolete.'
+        exit 1
+    fi
+    if [ "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ] ; then
     if [ "${MM_LIRC_DRIVER}"        = "mceusbnew"      ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DRIVER=mceusbnew" is obsolete.'
         exit 1
@@ -38,6 +43,10 @@ conf_check() {
     fi
     if [ "${MM_LIRC_REMOTE}"        = "mceusbnew"      ] ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_REMOTE=mceusbnew" is obsolete.'
+        exit 1
+    fi
+    if [ "${MM_THEMECACHE_URL}"     = "default"        ] ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_THEMECACHE_URL=default" is obsolete.'
         exit 1
     fi
     cat /etc/minimyth.d/minimyth.conf | grep -q '^MM_MYTHDB_SETTING_'

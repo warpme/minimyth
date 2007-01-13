@@ -351,7 +351,7 @@ mm-make-initrd:
 	@cp -r ./dirs/initrd/sbin/init      $(mm_ROOTFSDIR)/sbin/init
 
 mm-make-distro:
-	@echo 'making minimyth distrobution'
+	@echo 'making minimyth distribution'
 	@# Make root file system carm image and tarball files.
 	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME)
 	rm -rf $(WORKSRC)/$(mm_ROOTFSNAME).bz2
@@ -372,7 +372,7 @@ mm-make-distro:
 	@rm -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2
 	@cd $(mm_HOME) ; make tarball
 	@mv -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
-	@# Make public distrobution files
+	@# Make public distribution files
 	@rm -rf $(WORKSRC)/distro.d
 	@mkdir -p $(WORKSRC)/distro.d
 	@cp -f $(WORKSRC)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_SOURCENAME).tar.bz2
