@@ -1,5 +1,5 @@
 GARNAME = expat
-GARVERSION = 1.95.8
+GARVERSION = 2.0.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,11 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir libdir includedir man1dir
-
 include ../../gar.mk
-
-man1dir := $(mandir)/man1
 
 post-install:
 	rm -f $(DESTDIR)$(libdir)/libexpat.la

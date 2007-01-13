@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c X11/X11 X11/freetype X11/lesstif
+DEPENDS = lang/c xorg/xorg X11/freetype X11/lesstif
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile

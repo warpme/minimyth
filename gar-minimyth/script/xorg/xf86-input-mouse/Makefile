@@ -1,0 +1,33 @@
+GARNAME = xf86-input-mouse
+GARVERSION = 1.0.3.1
+CATEGORIES = xorg
+MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/driver/
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE =
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c xorg/xorg-server xorg/xproto
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
+	--with-gnu-ld
+
+GAR_EXTRA_CONF += xorg/xorg/package-api.mk
+include ../../gar.mk
+include ../xorg.mk
+
+pre-configure:
+	@rm -f $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(x11prefix)/share/X11/sgml/defs.ent | sed -e 's%[/.]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(x11libdir)/xorg/modules/input/mouse_drv.la
+	@$(MAKECOOKIE)

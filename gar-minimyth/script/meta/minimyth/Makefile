@@ -38,11 +38,10 @@ DEPENDS = \
 	utils/strace \
 	system/sysvinit \
 	system/udev \
-	X11/unichrome \
 	utils/util-linux \
 	net/webfs \
-	X11/X11 \
 	X11/x11vnc \
+	xorg/xorg \
 	mediaplayers/xine-ui \
 	system/zoneinfo \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls)))

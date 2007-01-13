@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c kernel/linux X11/X11
+DEPENDS   = lang/c kernel/linux xorg/xorg
 BUILDDEPS = kernel/module-init-tools
 
 WORKSRC = $(WORKDIR)/$(NVIDIA_DISTFILE)
@@ -28,8 +28,8 @@ install-custom:
 	@install $(WORKSRC)/usr/bin/nvidia-xconfig \
 		$(DESTDIR)$(x11bindir)-nvidia/nvidia-xconfig
 	@mkdir -p $(DESTDIR)$(x11libdir)-nvidia
-	@mkdir -p $(DESTDIR)$(x11libdir)-nvidia/modules/drivers
-	@mkdir -p $(DESTDIR)$(x11libdir)-nvidia/modules/extensions
+	@mkdir -p $(DESTDIR)$(x11libdir)-nvidia/xorg/modules/drivers
+	@mkdir -p $(DESTDIR)$(x11libdir)-nvidia/xorg/modules/extensions
 	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.a \
 		$(DESTDIR)$(x11libdir)-nvidia/libXvMCNVIDIA.a
 	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
@@ -38,10 +38,10 @@ install-custom:
 		$(DESTDIR)$(x11libdir)-nvidia
 	@install $(WORKSRC)/usr/lib/libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		$(DESTDIR)$(x11libdir)-nvidia
-	@install $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.o \
-		$(DESTDIR)$(x11libdir)-nvidia/modules/drivers
+	@install $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so \
+		$(DESTDIR)$(x11libdir)-nvidia/xorg/modules/drivers
 	@install $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(x11libdir)-nvidia/modules/extensions
+		$(DESTDIR)$(x11libdir)-nvidia/xorg/modules/extensions
 	@install $(WORKSRC)/usr/lib/tls/libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		$(DESTDIR)$(x11libdir)-nvidia
 	@install $(WORKSRC)/usr/lib/libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
@@ -67,7 +67,7 @@ install-custom:
 		       libGLcore.so.$(MAJOR_VERSION) ; \
 		ln -sf libGLcore.so.$(MAJOR_VERSION) \
 		       libGLcore.so
-	@cd $(DESTDIR)$(x11libdir)-nvidia/modules/extensions; \
+	@cd $(DESTDIR)$(x11libdir)-nvidia/xorg/modules/extensions; \
 		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION) \

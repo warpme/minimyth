@@ -1,0 +1,22 @@
+GARNAME = bdftopcf
+GARVERSION = 1.0.0
+CATEGORIES = xorg
+MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/app/
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE =
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c xorg/libXfont
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+
+GAR_EXTRA_CONF += xorg/xorg/package-api.mk
+include ../../gar.mk
+include ../xorg.mk

@@ -31,6 +31,7 @@ libdirs_base := \
 	$(x11libdir) \
 	$(qtlibdir)
 libdirs := \
+	$(x11libdir)/xorg/modules \
 	$(x11libdir)-nvidia \
 	$(libdirs_base)
 etcdirs :=  \
@@ -132,17 +133,17 @@ mm-copy-mythtv:
 
 mm-copy-x11:
 	@mkdir -p $(mm_DESTDIR)$(x11bindir)
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)-nvidia
-	@cp -fa $(DESTDIR)$(x11libdir)/modules        $(mm_DESTDIR)$(x11libdir)
-	@cp -fa $(DESTDIR)$(x11libdir)-nvidia/modules $(mm_DESTDIR)$(x11libdir)-nvidia
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11
-	@cp -fa $(DESTDIR)$(x11libdir)/X11/rgb.txt $(mm_DESTDIR)$(x11libdir)/X11
+	@mkdir -p $(mm_DESTDIR)$(x11libdir)/xorg
+	@cp -fa $(DESTDIR)$(x11libdir)/xorg/modules        $(mm_DESTDIR)$(x11libdir)/xorg
+	@mkdir -p $(mm_DESTDIR)$(x11libdir)-nvidia/xorg
+	@cp -fa $(DESTDIR)$(x11libdir)-nvidia/xorg/modules $(mm_DESTDIR)$(x11libdir)-nvidia/xorg
+	@mkdir -p $(mm_DESTDIR)$(x11prefix)/share/X11
+	@cp -fa $(DESTDIR)$(x11prefix)/share/X11/rgb.txt $(mm_DESTDIR)$(x11prefix)/share/X11
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/fonts
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/TTF $(mm_DESTDIR)$(x11libdir)/X11/fonts
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts/misc $(mm_DESTDIR)$(x11libdir)/X11/fonts
-	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/xserver
-	@cp -fa $(DESTDIR)$(x11libdir)/X11/xserver/SecurityPolicy $(mm_DESTDIR)$(x11libdir)/X11/xserver
+	@mkdir -p $(mm_DESTDIR)$(x11libdir)/xserver
+	@cp -fa $(DESTDIR)$(x11libdir)/xserver/SecurityPolicy $(mm_DESTDIR)$(x11libdir)/xserver
 
 mm-copy-bins:
 	@echo 'copying binaries'

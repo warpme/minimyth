@@ -17,7 +17,7 @@ BUILDDEPS += \
 	devel/automake-1.6 \
 	devel/automake \
 	devel/libtool \
-	devel/pkgconfig \
+	devel/pkg-config \
 	utils/coreutils
 
 include ../../gar.mk
