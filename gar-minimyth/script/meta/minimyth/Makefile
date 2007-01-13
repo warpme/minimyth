@@ -18,7 +18,7 @@ DEPENDS = \
 	devel/gdb \
 	system/lcdproc \
 	X11/libXvMCW \
-	kernel/linux kernel/alsa-driver kernel/cifs kernel/drm kernel/unionfs \
+	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs \
 	lirc/lirc \
 	utils/lm_sensors \
 	kernel/module-init-tools \
