@@ -42,6 +42,8 @@ CONFIGURE_ENV = KBUILD_VERBOSE=1
 BUILD_ENV     = KBUILD_VERBOSE=1
 INSTALL_ENV   = KBUILD_VERBOSE=1 INSTALL_PATH="$(DESTDIR)$(KERNEL_DIR)" INSTALL_MOD_PATH="$(DESTDIR)$(rootdir)"
 
+i386_KERNEL = arch/i386/boot/bzImage
+
 include ../../gar.mk
 
 configure-custom:
@@ -59,6 +61,7 @@ pre-install:
 
 install-custom:
 	@mkdir -p "$(DESTDIR)$(KERNEL_DIR)"
-	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) install
+	@cp $(WORKSRC)/$($(KERNEL_ARCH)_KERNEL) $(DESTDIR)$(KERNEL_DIR)/vmlinuz
+	@cp $(WORKSRC)/System.map               $(DESTDIR)$(KERNEL_DIR)/System.map
 	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) modules_install
 	@$(MAKECOOKIE)
