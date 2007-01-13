@@ -9,7 +9,7 @@ CFLAGS   := -I$(DESTDIR)$(extras_includedir) $(CFLAGS)
 CFLAGS   := -L$(DESTDIR)$(extras_libdir)     $(CFLAGS)
 LDFLAGS  := -L$(DESTDIR)$(extras_libdir)     $(LDFLAGS)
 
-TMP_DIRPATHS := \
+EXTRAS_DIRPATHS := \
 	--prefix=$(extras_prefix) \
 	--exec_prefix=$(extras_exec_prefix) \
 	--bindir=$(extras_bindir) \
@@ -21,7 +21,6 @@ TMP_DIRPATHS := \
 	--localstatedir=$(extras_localstatedir) \
 	--libdir=$(extras_libdir) \
 	--infodir=$(extras_infodir) \
-	--lispdir=$(extras_lispdir) \
 	--includedir=$(extras_includedir) \
 	--oldincludedir=$(extras_oldincludedir) \
 	--mandir=$(extras_mandir)
