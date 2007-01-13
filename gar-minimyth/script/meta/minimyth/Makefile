@@ -36,7 +36,7 @@ DEPENDS = \
 	qt/qt \
 	X11/rxvt \
 	system/splashutils \
-	utils/strace \
+	devel/strace \
 	system/sysvinit \
 	system/udev \
 	utils/util-linux \
