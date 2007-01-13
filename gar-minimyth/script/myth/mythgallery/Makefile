@@ -43,7 +43,7 @@ cvs//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+disabled-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
