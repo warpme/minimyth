@@ -9,11 +9,7 @@
 start() {
     mm_message_output info 'installing extras ...'
 
-    if /usr/bin/test "${MM_EXTRAS_URL}" = "auto" ; then
-        MM_EXTRAS_URL="hunt://extras.sfs"
-        /usr/bin/logger -t minimyth -p "local0.info" "auto-configured extras URL to '${MM_EXTRAS_URL}'."
-    fi
-    if /usr/bin/test ! "${MM_EXTRAS_URL}" = "none" ; then
+    if /usr/bin/test -n "${MM_EXTRAS_URL}" ; then
         mm_url_mount "${MM_EXTRAS_URL}" "@EXTRAS_ROOTDIR@"
         /usr/sbin/ldconfig
     fi

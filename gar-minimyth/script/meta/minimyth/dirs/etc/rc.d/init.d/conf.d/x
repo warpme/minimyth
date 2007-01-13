@@ -1,0 +1,331 @@
+################################################################################
+# X configuration variables.
+################################################################################
+
+conf_check_x() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_NO_VNC}"          ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_NO_X}"            ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_NO_XWM}"          ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_TV}"              ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_X" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_Y" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"  ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_X" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"  ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_Y" is obsolete.'
+        exit 1
+    fi
+
+    # Check X application variables.
+    if /usr/bin/test ! -z "${MM_X_WM_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_WM_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_WM_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_WM_ENABLED='${MM_X_WM_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_VNC_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_VNC_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_VNC_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_VNC_ENABLED='${MM_X_VNC_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_SCREENSAVER_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_SCREENSAVER_ENABLED='${MM_X_SCREENSAVER_ENABLED}' is not valid."
+        exit 1
+    fi
+
+    # Check X output variables.
+    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_DVI_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_DVI_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_DVI_ENABLED='${MM_X_DVI_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_VGA_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_VGA_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_VGA_ENABLED='${MM_X_VGA_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"          && \
+       /usr/bin/test !    "${MM_X_TV_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_X_TV_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_X_TV_ENABLED='${MM_X_TV_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_TV_TYPE}"          && \
+       /usr/bin/test !    "${MM_X_TV_TYPE}" = "NTSC" && \
+       /usr/bin/test !    "${MM_X_TV_TYPE}" = "PAL"  ; then
+        mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_TV_OUTPUT}"               && \
+       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "Composite" && \
+       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "S-Video"   && \
+       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "SC"        && \
+       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "RGP"       && \
+       /usr/bin/test !    "${MM_X_TV_OUTPUT}" = "YCbCr"     ; then
+        mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid."
+        exit 1
+    fi
+
+    # Check X display variables.
+    # Check MM_X_REFRESH.
+    if /usr/bin/test ! -z "${MM_X_REFRESH}"       && \
+       /usr/bin/test !     ${MM_X_REFRESH}  -gt 0 ; then
+        mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
+        exit 1
+    fi
+    # Make sure that only one of MM_X_RESOLUTION, MM_X_MODELINE and MM_X_MODE is set.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_MODE}"     ; then
+        mm_message_output err "error: both 'MM_X_RESOLUTION' and 'MM_X_MODE' cannot be set."
+        exit 1
+    fi
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_MODELINE}" ; then
+        mm_message_output err "error: both 'MM_X_RESOLUTION' and 'MM_X_MODELINE' cannot be set."
+        exit 1
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE}"   && /usr/bin/test -n "${MM_X_MODE}"     ; then
+        mm_message_output err "error: both 'MM_X_MODELINE' and 'MM_X_MODE' cannot be set."
+        exit 1
+    fi
+    # Check the format of MM_X_RESOLUTION.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
+        /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
+            exit 1
+        fi
+    fi
+    # Check the format of MM_X_MODELINE.
+    if /usr/bin/test -n "${MM_X_MODELINE}" ; then
+        /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^Modeline "[0-9][0-9]*x[0-9][^"]*".*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
+            exit 1
+        fi
+    fi
+    # Check the format of MM_X_MODE.
+    if /usr/bin/test -n "${MM_X_MODE}" ; then
+        /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_MODE' format is not valid'
+            exit 1
+        fi
+    fi
+
+    return 0
+}
+
+conf_default_x() {
+
+    local X_RESOLUTION_X
+    local X_RESOLUTION_Y
+    local X_DISPLAYSIZE_X
+    local X_DISPLAYSIZE_Y
+
+    # The routine relies on MM_VIDEO_* variables.
+    conf_default_video
+
+    # X driver variables.
+    if /usr/bin/test -z "${MM_X_DRIVER}"              ; then
+        MM_X_DRIVER="`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`"
+        if /usr/bin/test -z "${MM_X_DRIVER}" ; then
+            mm_message_output err "error: no supported video hardware found."
+            exit 1
+        fi
+    fi
+
+    # X application variables.
+    if /usr/bin/test -z "${MM_X_ENABLED}"             ; then
+        MM_X_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_X_WM_ENABLED}"          ; then
+        MM_X_WM_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_X_VNC_ENABLED}"         ; then
+        MM_X_VNC_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_X_SCREENSAVER_ENABLED}" ; then
+        MM_X_SCREENSAVER_ENABLED='no'
+    fi
+
+    # X output variables.
+    if /usr/bin/test -z "${MM_X_DVI_ENABLED}"         ; then
+        MM_X_DVI_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_X_VGA_ENABLED}"         ; then
+        MM_X_VGA_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_X_TV_ENABLED}"          ; then
+        MM_X_TV_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_X_TV_TYPE}"             ; then
+        MM_X_TV_TYPE='NTSC'
+    fi
+    if /usr/bin/test -z "${MM_X_TV_OUTPUT}"           ; then
+        MM_X_TV_OUTPUT='Composite'
+    fi
+
+    # X display variables.
+    # X refresh rate.
+    if /usr/bin/test -z "${MM_X_REFRESH}"             ; then
+        MM_X_REFRESH=
+        case "${MM_X_TV_TYPE}" in
+            NTSC)
+                MM_X_REFRESH='60'
+                ;;
+            PAL)
+                MM_X_REFRESH='50'
+                ;;
+            *)
+                mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
+                exit 1
+                ;;
+        esac
+    fi
+
+    # Auto-configure MM_X_MODELINE based on MM_X_RESOLUTION.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
+        /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
+            exit 1
+        fi
+        X_RESOLUTION_X=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
+        X_RESOLUTION_Y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
+        MM_X_MODELINE=`/usr/bin/gtf ${X_RESOLUTION_X} ${X_RESOLUTION_Y} ${MM_X_REFRESH} | /bin/sed 's% *#.*%%'`
+        MM_X_MODELINE=`/bin/echo ${MM_X_MODELINE}`
+    fi
+
+    # Auto-configure MM_X_MODE based on MM_X_MODELINE.
+    if /usr/bin/test -n "${MM_X_MODELINE}" ; then
+        /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^Modeline "[0-9][0-9]*x[0-9][^"]*".*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
+            exit 1
+        fi
+        MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^Modeline "\([0-9][0-9]*x[0-9][^"]*\)".*%\1%'`
+    fi
+
+    # Auto-configure MM_X_MODE.
+    if /usr/bin/test -z "${MM_X_MODE}" ; then
+        MM_X_MODE=
+        case ${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED} in
+            # TV only so we will use minimal TV resolutions
+            # The openChrome driver has special TV resolutions that produce nicer output.
+            yes:no:no)
+                case ${MM_X_TV_TYPE} in
+                    NTSC)
+                        case ${MM_X_DRIVER} in
+                            via|via_pro) MM_X_MODE='720x480Noscale' ;;
+                            *)           MM_X_MODE='720x480'        ;;
+                        esac
+                        ;;
+                    PAL)
+                        case ${MM_X_DRIVER} in
+                            via|via_pro) MM_X_MODE='720x576Noscale' ;;
+                            *)           MM_X_MODE='720x576'        ;;
+                        esac
+                        ;;
+                    *)
+                        mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
+                        exit 1
+                        ;;
+                esac
+                ;;
+            # Not TV only, so we will use minimal computer resolutions.
+            *)
+                MM_X_MODE='640x480'
+                ;;
+        esac
+    fi
+
+    # Auto-configure MM_X_DISPLAYSIZE.
+    if /usr/bin/test -z "${MM_X_DISPLAYSIZE}"         || /usr/bin/test "${MM_X_DISPLAYSIZE}"         = "auto" ; then
+        /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_MODE' format is not valid'
+            exit 1
+        fi
+        X_RESOLUTION_X=`/bin/echo ${MM_X_MODE} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
+        X_RESOLUTION_Y=`/bin/echo ${MM_X_MODE} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
+        # MythTV is reported to work best at 100dots/inch.
+        # (100dots/inch) / (25.4inch/mm) ~ 4dots/mm
+        # Y in mm = (Y in dots) / (4dots/mm)
+        # Make Y a multiple of 3 (for 4:3) or 9 (for 16:9) so that X will be a whole number.
+        X_DISPLAYSIZE_Y=
+        X_DISPLAYSIZE_X=
+        MM_X_DISPLAYSIZE=
+        if /usr/bin/test ! ${MM_VIDEO_FONT_SCALE} -gt 0 ; then
+            mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}'."
+            exit 1
+        fi
+        case ${MM_VIDEO_ASPECT_RATIO} in
+            4:3)
+                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 3)) * 3))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} *  4 / 3))
+                MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
+                ;;
+            16:9)
+                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 9)) * 9))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 / 9))
+                MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
+                ;;
+            *)
+                mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
+                exit 1
+                ;;
+        esac
+    fi
+
+    return 0
+}
+
+conf_write_x() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_X_DRIVER              "${MM_X_DRIVER}"
+
+    conf_variable_write "${conf_file}" MM_X_ENABLED             "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_WM_ENABLED          "${MM_X_WM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED         "${MM_X_VNC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_SCREENSAVER_ENABLED "${MM_X_SCREENSAVER_ENABLED}"
+
+    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED         "${MM_X_DVI_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED         "${MM_X_VGA_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_ENABLED          "${MM_X_TV_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_TV_TYPE             "${MM_X_TV_TYPE}"
+    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT           "${MM_X_TV_OUTPUT}"
+
+    conf_variable_write "${conf_file}" MM_X_REFRESH             "${MM_X_REFRESH}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION          "${MM_X_RESOLUTION}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE            "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_MODE                "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE         "${MM_X_DISPLAYSIZE}"
+
+    return 0
+}

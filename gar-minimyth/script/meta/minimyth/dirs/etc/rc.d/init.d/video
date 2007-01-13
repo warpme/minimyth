@@ -13,30 +13,6 @@ start() {
 
     mm_message_output info 'configuring video ...'
 
-    # Check to make sure that there is an X driver, because we need to know it
-    # for some of the video settings
-    if /usr/bin/test -z "${MM_X_DRIVER}" ; then
-        mm_message_output err "error: no supported video hardware found."
-        exit 1
-    fi
-
-    # Check video configuration variables
-    if /usr/bin/test ! "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  && \
-       /usr/bin/test ! "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
-        mm_message_output err "error: MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}' is not valid."
-        exit 1
-    fi
-    if /usr/bin/test ! "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" && \
-       /usr/bin/test ! "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
-        mm_message_output err "error: MM_VIDEO_DEINTERLACE_ENABLED='${MM_VIDEO_DEINTERLACE_ENABLED}' is not valid."
-        exit 1
-    fi
-    if /usr/bin/test ! "${MM_VIDEO_FONT_SCALE}" -ge 25  && \
-       /usr/bin/test ! "${MM_VIDEO_FONT_SCALE}" -le 400 ; then
-        mm_message_output err "error: MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}' is not valid."
-        exit 1
-    fi
-
     if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ; then
         /bin/sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
     elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then

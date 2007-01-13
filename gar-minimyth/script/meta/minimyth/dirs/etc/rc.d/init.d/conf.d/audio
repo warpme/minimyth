@@ -1,0 +1,36 @@
+################################################################################
+# Audio configuration variables.
+################################################################################
+conf_check_audio() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_SOUND}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SOUND" is obsolete.'
+        exit 1
+    fi
+
+    if /usr/bin/test ! -z "${MM_AUDIO_TYPE}"                    && \
+       /usr/bin/test !    "${MM_AUDIO_TYPE}" = "analog"         && \
+       /usr/bin/test !    "${MM_AUDIO_TYPE}" = "digital"        && \
+       /usr/bin/test !    "${MM_AUDIO_TYPE}" = "digital+analog" ; then
+        mm_message_output err "error: MM_AUDIO_TYPE='${MM_AUDIO_TYPE}' is not valid."
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_audio() {
+    if /usr/bin/test -z "${MM_AUDIO_TYPE}" ; then
+        MM_AUDIO_TYPE='analog'
+    fi
+
+    return 0
+}
+
+conf_write_audio() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
+
+    return 0
+}

@@ -1,0 +1,35 @@
+################################################################################
+# LCDproc configuration variables.
+################################################################################
+conf_check_lcdproc() {
+    return 0
+}
+
+conf_default_lcdproc() {
+    if /usr/bin/test -z "${MM_LCDPROC_DRIVER}" ; then
+        MM_LCDPROC_DRIVER='auto'
+    fi
+
+    # Auto-configure LCD/VFD display.
+    if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "auto" ; then
+        MM_LCDPROC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lcdproc_map`
+        if /usr/bin/test -z "${MM_LCDPROC_DRIVER}" ; then
+            MM_LCDPROC_DRIVER='none'
+        fi
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "none" ; then
+        MM_LCDPROC_DRIVER=
+    fi
+
+    return 0
+}
+
+conf_write_lcdproc() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_LCDPROC_DRIVER "${MM_LCDPROC_DRIVER}"
+
+    return 0
+}

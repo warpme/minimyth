@@ -1,0 +1,32 @@
+################################################################################
+# CPU frequency scaling variables.
+################################################################################
+conf_check_cpufreq() {         
+    if /usr/bin/test ! -z "${MM_CPUFREQ_GOVERNOR}"                  && \
+       /usr/bin/test !    "${MM_CPUFREQ_GOVERNOR}" = "performance"  && \
+       /usr/bin/test !    "${MM_CPUFREQ_GOVERNOR}" = "powersave"    && \
+       /usr/bin/test !    "${MM_CPUFREQ_GOVERNOR}" = "ondemand"     && \
+       /usr/bin/test !    "${MM_CPUFREQ_GOVERNOR}" = "conservative" && \
+       /usr/bin/test !    "${MM_CPUFREQ_GOVERNOR}" = "userspace"    ; then
+        mm_message_output err "error: MM_CPUFREQ_GOVERNOR='${MM_CPUFREQ_GOVERNOR}' is not valid."
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_cpufreq() {
+    if /usr/bin/test -z "${MM_CPUFREQ_GOVERNOR}" ; then
+        MM_CPUFREQ_GOVERNOR='performance'
+    fi
+
+    return 0
+}
+
+conf_write_cpufreq() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_CPUFREQ_GOVERNOR "${MM_CPUFREQ_GOVERNOR}"
+
+    return 0
+}

@@ -12,28 +12,22 @@ start() {
         return
     fi
 
-    # Auto-configure LCD/VFD display.
-    if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "auto" ; then
-        /usr/bin/logger -t minimyth -p "local0.info" "MM_LCDPROC_DRIVER is 'auto'. attempting to auto-configure LCD/VFD."
-        MM_LCDPROC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lcdproc_map`
-        if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
-            /usr/bin/logger -t minimyth -p "local0.info" "auto-configured LCD/VFD to '${MM_LCDPROC_DRIVER}'."
-        else
-            /usr/bin/logger -t minimyth -p "local0.info" "no LCD/VFD configured."
-            MM_LCDPROC_DRIVER='none'
-        fi
-    fi
-
-    if /usr/bin/test ! "${MM_LCDPROC_DRIVER}" = "none" ; then
+    # Load the LCDproc configuration file.
+    if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
         if /usr/bin/test -e /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} ; then
             cp /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} /etc/LCDd.conf
         else
             cp /etc/lcdproc.d/LCDd.conf                      /etc/LCDd.conf
         fi
-        mm_conf_get LCDd.conf /etc/LCDd.conf
-        
-        /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
+    fi
 
+    # Get the LCDproc configuration file.
+    mm_conf_get LCDd.conf /etc/LCDd.conf
+
+    /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
+
+    # Start LCDproc LCDd daemon and Myth LCD server.
+    if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
         /usr/bin/test -e /usr/sbin/LCDd         && /usr/sbin/LCDd -c /etc/LCDd.conf
         /usr/bin/test -e /usr/bin/mythlcdserver && /usr/bin/mythlcdserver -d -l /var/log/mythlcdserver.log
     fi

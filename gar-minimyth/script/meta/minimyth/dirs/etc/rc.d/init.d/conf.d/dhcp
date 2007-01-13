@@ -1,0 +1,60 @@
+################################################################################
+# DHCP override variables.
+################################################################################
+conf_check_dhcp() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_NAME_SERVER}"   ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_SYSLOG_SERVER}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SYSLOG_SERVER" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_TIME_SERVER}"   ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
+        exit 1
+    fi
+
+    return 0
+}
+
+conf_default_dhcp() {
+    if /usr/bin/test -z "${MM_HOSTNAME}"    ; then
+        MM_HOSTNAME="${MM_DHCP_HOSTNAME}"
+    fi
+    if /usr/bin/test -z "${MM_DOMAIN}"      ; then
+        MM_DOMAIN="${MM_DHCP_DOMAIN}"
+    fi
+    if /usr/bin/test -z "${MM_DNS_SERVERS}" ; then
+        MM_DNS_SERVERS="${MM_DHCP_DNS_SERVERS}"
+    fi
+    if /usr/bin/test -z "${MM_NTP_SERVERS}" ; then
+        MM_NTP_SERVERS="${MM_DHCP_NTP_SERVERS}"
+    fi
+    if /usr/bin/test -z "${MM_LOG_SERVERS}" ; then
+        MM_LOG_SERVERS="${MM_DHCP_LOG_SERVERS}"
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_DOMAIN}" = "none" ; then
+        MM_DOMAIN=
+    fi
+    if /usr/bin/test "${MM_LOG_SERVERS}" = "none" ; then
+        MM_LOG_SERVERS=
+    fi
+
+    return 0
+}
+
+conf_write_dhcp() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_HOSTNAME    "${MM_HOSTNAME}"
+    conf_variable_write "${conf_file}" MM_DOMAIN      "${MM_DOMAIN}"
+    conf_variable_write "${conf_file}" MM_DNS_SERVERS "${MM_DNS_SERVERS}"
+    conf_variable_write "${conf_file}" MM_NTP_SERVERS "${MM_NTP_SERVERS}"
+    conf_variable_write "${conf_file}" MM_LOG_SERVERS "${MM_LOG_SERVERS}"
+
+    return 0
+}
