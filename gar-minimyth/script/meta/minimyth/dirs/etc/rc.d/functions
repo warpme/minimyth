@@ -261,22 +261,37 @@ mm_splash_init() {
 
     # Disable splash screen when more than kernel errors are logged to the console.
     # That is when the loglevel is greater than 4.
-    LOGLEVEL=`cat /proc/sys/kernel/printk | cut -f 1`
-    [ ${LOGLEVEL} -gt 4 ] && SPLASH_ENABLE=no
+    if [ "${SPLASH_ENABLE}" = "yes" ] ; then
+        LOGLEVEL=`cat /proc/sys/kernel/printk | cut -f 1`
+        [ -z "${LOGLEVEL}" ] && SPLASH_ENABLE='no'
+        [ -n "${LOGLEVEL}" ] && [ ${LOGLEVEL} -gt 4 ] && SPLASH_ENABLE='no'
+    fi
+
+    # Disable splash screen when there is no framebuffer device.
+    if [ "${SPLASH_ENABLE}" = "yes" ] ; then
+        [ ! -e '/dev/fb0' ] && SPLASH_ENABLE='no'
+    fi
 
     # Disable splash screen when the video resolution is not compatible.
     # That is when the resolution is not 800x600 or color depth is less than 16.
-    GEOMETRY=`fbset | grep geometry`
-    XRES=` echo ${GEOMETRY} | cut -d' ' -f 2`
-    YRES=` echo ${GEOMETRY} | cut -d' ' -f 3`
-    VXRES=`echo ${GEOMETRY} | cut -d' ' -f 4`
-    VYRES=`echo ${GEOMETRY} | cut -d' ' -f 5`
-    DEPTH=`echo ${GEOMETRY} | cut -d' ' -f 6`
-    [ ${XRES}  -ne 800 ] && SPLASH_ENABLE="no"
-    [ ${YRES}  -ne 600 ] && SPLASH_ENABLE="no"
-    [ ${VXRES} -ne 800 ] && SPLASH_ENABLE="no"
-    [ ${VYRES} -ne 600 ] && SPLASH_ENABLE="no"
-    [ ${DEPTH} -lt 16  ] && SPLASH_ENABLE="no"
+    if [ "${SPLASH_ENABLE}" = "yes" ] ; then
+        GEOMETRY=`fbset | grep geometry`
+        XRES=` echo ${GEOMETRY} | cut -d ' ' -f 2`
+        YRES=` echo ${GEOMETRY} | cut -d ' ' -f 3`
+        VXRES=`echo ${GEOMETRY} | cut -d ' ' -f 4`
+        VYRES=`echo ${GEOMETRY} | cut -d ' ' -f 5`
+        DEPTH=`echo ${GEOMETRY} | cut -d ' ' -f 6`
+        [ -z "${XRES}"  ] && SPLASH_ENABLE='no'
+        [ -z "${YRES}"  ] && SPLASH_ENABLE='no'
+        [ -z "${VXRES}" ] && SPLASH_ENABLE='no'
+        [ -z "${VYRES}" ] && SPLASH_ENABLE='no'
+        [ -z "${DEPTH}" ] && SPLASH_ENABLE='no'
+        [ -n "${XRES}"  ] && [ ${XRES}  -ne 800 ] && SPLASH_ENABLE='no'
+        [ -n "${YRES}"  ] && [ ${YRES}  -ne 600 ] && SPLASH_ENABLE='no'
+        [ -n "${VXRES}" ] && [ ${VXRES} -ne 800 ] && SPLASH_ENABLE='no'
+        [ -n "${VYRES}" ] && [ ${VYRES} -ne 600 ] && SPLASH_ENABLE='no'
+        [ -n "${DEPTH}" ] && [ ${DEPTH} -lt 16  ] && SPLASH_ENABLE='no'
+    fi
 
     if [ "${SPLASH_ENABLE}" = "yes" ] ; then
         chvt 1
