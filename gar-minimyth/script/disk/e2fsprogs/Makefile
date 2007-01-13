@@ -3,7 +3,7 @@ GARVERSION = 1.38
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -22,6 +22,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+post-patch:
+	@cd $(WORKSRC) ; rm -rf aclocal.m4 configure
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
+	@$(MAKECOOKIE)
 
 install-custom:
 	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $(WORKSRC) $(INSTALL_ARGS) install install-libs

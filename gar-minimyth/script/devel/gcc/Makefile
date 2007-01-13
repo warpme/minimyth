@@ -66,8 +66,12 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la ;
-	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la ;
+	@$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
+		mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
+		rm -rf $(CROSS_GCC_DIR)/lib64 ; \
+	)
+	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
+	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
 		rm -f $(DESTDIR)$(libdir)/libstdc++.la ; \
 		rm -f $(DESTDIR)$(libdir)/libsupc++.la ; \

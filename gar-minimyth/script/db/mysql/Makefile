@@ -5,7 +5,7 @@ MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
 MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
-PATCHFILES  = $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-configure.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
@@ -41,12 +41,10 @@ CONFIGURE_ENV = $(shell cat $(WORKDIR)/config.cache.$(GARCH_FAMILY))
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-install-cross:
-	cp -f $(WORKSRC)/extra/comp_err   $(DESTDIR)$(bindir)/mysql-comp_err
-	cp -f $(WORKSRC)/sql/gen_lex_hash $(DESTDIR)$(bindir)/mysql-gen_lex_hash
-	@$(MAKECOOKIE)
-
 post-patch:
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
@@ -54,6 +52,11 @@ post-patch:
 	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
 	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
+	@$(MAKECOOKIE)
+
+install-cross:
+	cp -f $(WORKSRC)/extra/comp_err   $(DESTDIR)$(bindir)/mysql-comp_err
+	cp -f $(WORKSRC)/sql/gen_lex_hash $(DESTDIR)$(bindir)/mysql-gen_lex_hash
 	@$(MAKECOOKIE)
 
 post-install:
