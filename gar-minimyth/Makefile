@@ -1,4 +1,5 @@
 include script/gar.conf.mk
+-include $(HOME)/.minimyth/minimyth.conf.mk
 include script/minimyth.conf.mk
 
 DIR_HEAD := $(shell echo $(mm_HOME) | sed 's%/[^/]*$$%%')
@@ -18,7 +19,7 @@ garchive:
 	@make -C script garchive
 
 tarball:
-	@cd $(DIR_HEAD) ; tar -jc $(DIR_TAIL) -f $(DIR_TAIL)/gar-minimyth-$(mm_VERSION).tar.bz2 \
+	@cd $(DIR_HEAD) ; tar -jcf $(DIR_TAIL)/gar-minimyth-$(mm_VERSION).tar.bz2 $(DIR_TAIL) \
 		--exclude '$(DIR_TAIL)/gar-minimyth-*.tar.bz2' \
 		--exclude '$(DIR_TAIL)/images/*' \
 		--exclude '$(DIR_TAIL)/source/*' \
