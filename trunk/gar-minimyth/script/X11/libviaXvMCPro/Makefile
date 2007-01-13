@@ -3,7 +3,7 @@ GARVERSION = 20050421
 CATEGORIES = X11
 MASTER_SITES = http://myth.ivor.org/unichrome/
 DISTFILES = unichrome-$(GARVERSION).tar.bz2
-PATCHFILES = unichrome-$(GARVERSION)-dotclock.patch
+PATCHFILES = unichrome-$(GARVERSION)-no_debug.patch unichrome-$(GARVERSION)-dotclock.patch
 LICENSE =
 
 DESCRIPTION = 

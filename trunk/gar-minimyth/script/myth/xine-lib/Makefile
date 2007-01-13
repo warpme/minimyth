@@ -33,6 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-libFLACtest \
 	--with-gnu-ld \
 	--with-x \
+	--with-xvmc-lib=XvMCW \
 	--with-xxmc-lib=XvMCW \
 	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
 	--with-libFLAC-libraries=$(DESTDIR)$(libdir)

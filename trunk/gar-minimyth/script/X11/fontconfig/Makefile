@@ -1,5 +1,5 @@
 GARNAME = fontconfig
-GARVERSION = 2.2.3
+GARVERSION = 2.3.2
 CATEGORIES = X11
 MASTER_SITES = http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.gz

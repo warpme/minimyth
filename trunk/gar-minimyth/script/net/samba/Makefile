@@ -1,5 +1,5 @@
 GARNAME = samba
-GARVERSION = 3.0.11
+GARVERSION = 3.0.14a
 CATEGORIES = net
 MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
 DISTFILES = $(DISTNAME).tar.gz

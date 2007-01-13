@@ -80,7 +80,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-mga \
 	--disable-xmga \
 	--enable-xv \
-	--disable-xvmc \
+	--enable-xvmc \
 	--enable-xxmc \
 	--enable-vm \
 	--enable-xinerama \
@@ -129,6 +129,7 @@ CONFIGURE_ARGS_ADVANCED = \
 CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(x11includedir)" \
 	--with-x11libdir="$(DESTDIR)$(x11libdir)" \
+	--with-xvmclib=XvMCW \
 	--with-xxmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
 	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config"
