@@ -9,13 +9,15 @@ start() {
 
     # If the boot type is usb, then load the drivers needed to read the usb drive.
     if [ "${MM_BOOT_TYPE}" = "usb" ] ; then
-	modprobe usbcore
-        while [ ! -e /proc/bus/usb ] ; do
-            sleep 1
-        done
-        modprobe ehci-hcd
-        modprobe uhci-hcd
-        modprobe ohci-hcd
+        lspci -mn | grep -e '^[^ ][^ ]*  *"0c03"' | sed -e 's%"%%g' | while read pci ; do
+            if   [ `echo "${pci}" | grep -c -e ' -p20'` = "1" ] ; then
+	        modprobe ehci-hcd
+            elif [ `echo "${pci}" | grep -c -e ' -p10'` = "1" ] ; then
+	        modprobe ohci-hcd
+            else
+	        modprobe uhci-hcd
+            fi
+	done
         modprobe usb-storage
         modprobe sd_mod
         modprobe msdos
