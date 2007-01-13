@@ -7,198 +7,139 @@
 start() {
     mm_message_output info 'loading kernel modules ...'
 
-    # ACPI.
-    modprobe button
-    modprobe fan
-    modprobe processor
-    modprobe thermal
-    modprobe video
-
-    # CPU Frequency Scaling.
-    case "${MM_HARDWARE_CPU}" in
-        ATHLON64)
-            modprobe powernow-k8
-            ;;
-        C3|C3-2)
-            modprobe longhaul
-            ;;
-    esac
-    case "${MM_CPUFREQ_GOVERNOR}" in
-        performance)
-            ;;
-        powersave)
-            modprobe cpufreq-powersave
-            ;;
-        ondemand)
-            modprobe cpufreq-ondemand
-            ;;
-        conservative)
-            modprobe cpufreq-conservative
-            ;;
-        userspace)
-            modprobe cpufreq-userspace
-            ;;
-    esac
-
     # Real time clock.
     modprobe rtc
+
+    # IO scheduler.
+    modprobe as-iosched
 
     # Input.
     modprobe evdev
     modprobe psmouse
 
-    # Sensors.
-    case "${MM_HARDWARE_SENSOR}" in
-        VIA_VT1211)
-            modprobe i2c-core
-            modprobe i2c-dev
-            modprobe i2c-isa
-            modprobe vt1211
-            ;;
-        WINBOND_W83627EHG)
-            modprobe i2c-core
-            modprobe i2c-dev
-            modprobe i2c-isa
-            case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                NVIDIA_NFORCE430)
-                    modprobe i2c-nforce2
-                    ;;
-            esac
-            modprobe w83627ehf
-            ;;
-        WINBOND_W83782D)
-            modprobe i2c-core
-            modprobe i2c-dev
-            modprobe i2c-isa
-            case "${MM_HARDWARE_SOUTHBRIDGE}" in
-                VIA_VT8235|VIA_VT8237)
-                    modprobe i2c-viapro
-                    ;;
-            esac
-            modprobe w83781d
-            ;;
-    esac
-
-    # IO scheduler.
-    modprobe as-iosched
-
     # Loopback device.
     modprobe loop
 
-    # IDE.
-    case "${MM_HARDWARE_SOUTHBRIDGE}" in
-        INTEL_ICH4)
-            modprobe piix
-            ;;
-        NVIDIA_NFORCE430)
-            modprobe amd74xx
-            ;;
-        VIA_VT8235|VIA_VT8237)
-            modprobe via82cxxx
-            ;;
-    esac
-    modprobe ide-core
-    modprobe ide-cd
-
-    # IEEE1394 (firewire).
-    modprobe ieee1394
-    modprobe ohci1394
-    modprobe sbp2
+    # Net.
+    modprobe af_packet
 
     # Parallel port.
     modprobe parport
     modprobe parport_pc
     modprobe ppdev
 
-    # USB.
-    modprobe usbcore
-    modprobe ehci-hcd
-    case "${MM_HARDWARE_SOUTHBRIDGE}" in
-        INTEL_ICH4)
-            modprobe uhci-hcd
-            ;;
-        NVIDIA_NFORCE430)
-            modprobe ohci-hcd
-            ;;
-        VIA_VT8235|VIA_VT8237)
-            modprobe uhci-hcd
-            ;;
-    esac
-    modprobe usbhid
-    modprobe usblcd
-    modprobe usb-storage
-    modprobe usbserial
-    modprobe ftdi-sio
+    # Look for PCI devices and load associated drivers.
+    lspci -mn | sed -e 's%"%%g' | while read pci ; do
+        index=1            ; bus=`       echo "${pci}" | cut -d' ' -f${index}`
+        index=$((index+1)) ; class=`     echo "${pci}" | cut -d' ' -f${index}`
+        index=$((index+1)) ; vendor=`    echo "${pci}" | cut -d' ' -f${index}`
+        index=$((index+1)) ; device=`    echo "${pci}" | cut -d' ' -f${index}`
+        index=$((index+1)) ; revision=`  echo "${pci}" | cut -d' ' -f${index}`
+        if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
+            revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
+        else
+            index=$((index-1)) ; revision=
+        fi
+        index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d' ' -f${index}`
+        if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
+            class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
+        else
+            index=$((index-1)) ; class_prog=
+        fi
+        index=$((index+1)) ; sub_vendor=`echo "${pci}" | cut -d' ' -f${index}`
+        index=$((index+1)) ; sub_device=`echo "${pci}" | cut -d' ' -f${index}`
 
-    # SCSI (used by USB devices).
-    modprobe sd_mod
-    modprobe sr_mod
+        case "${class}" in
+            # PCI bridge (assumed to imply AGP).
+            0604)
+                case "${vendor}" in
+                    8086) modprobe intel-agp  ;; # Intel
+                    10de) modprobe nvidia-agp ;; # NVIDIA
+                    1106) modprobe via-agp    ;; # VIA
+                esac
+                ;;
+            # IDE.
+            0101)
+                case "${vendor}" in
+                    8086) modprobe piix      ;; # Intel
+                    10de) modprobe amd74xx   ;; # NVIDIA
+                    1106) modprobe via82cxxx ;; # VIA
+                esac
+                ;;
+            # FireWire (IEEE1394).
+            0c00)
+                [ -z "${class_prog}" ] && class_prog="00"
+                case "${class_prog}" in
+                    00) modprobe ieee1394 ;;
+                    10) modprobe ohci1394 ;;
+                esac
+                ;;
+            # USB.
+            0c03)
+                [ -z "${class_prog}" ] && class_prog="00"
+                case "${class_prog}" in
+                    00) modprobe uhci-hcd ;;
+                    10) modprobe ohci-hcd ;;
+                    20) modprobe ehci-hcd ;;
+                esac
+                ;;
+        esac
+    done
 
-    # CD-ROM.
-    modprobe cdrom
+    # IDE.
+    if [ `lsmod | grep -c -e '^ide_core'` = "1" ] ; then
+        modprobe ide-cd
+    fi
 
-    # File systems.
-    modprobe nls_ascii
-    modprobe nls_base
-    modprobe nls_cp437
-    modprobe nls_cp850
-    modprobe nls_iso8859-1
-    modprobe nls_iso8859-15
-    modprobe nls_utf8
+    # FireWire (IEEE1394).
+    if [ `lsmod | grep -c -e '^ieee1394'` = "1" ] ; then
+        modprobe sbp2
+    fi
+    if [ `lsmod | grep -c -e '^sbp2'` = "1" ] ; then
+        modprobe sd_mod
+        modprobe sr_mod
+    fi
+
+    # USB
+    if [ `lsmod | grep -c -e '^ehci_hcd'` = "1" ] || \
+       [ `lsmod | grep -c -e '^ohci_hcd'` = "1" ] || \
+       [ `lsmod | grep -c -e '^uhci_hcd'` = "1" ] ; then
+        modprobe usbhid
+        modprobe usblcd
+        modprobe usb-storage
+        modprobe usbserial
+        modprobe ftdi-sio
+    fi
+    if [ `lsmod | grep -c -e '^usb_storage'` = "1" ] ; then
+        modprobe sd_mod
+        modprobe sr_mod
+    fi
+
+    # File systems (hard disk).
+    if [ `lsmod | grep -c -e '^sd_mod'` = "1" ] ; then
+        modprobe fat
+        modprobe msdos
+        modprobe vfat
+    fi
+
+    # File systems (cdrom).
+    if [ `lsmod | grep -c -e '^cdrom'` = "1" ] ; then
+        modprobe isofs
+        modprobe udf
+    fi
+
+    # File systems (network).
     modprobe cifs
-    modprobe fat
-    modprobe isofs
-    modprobe msdos
-    modprobe udf
-    modprobe vfat
 
-    # Net.
-    modprobe af_packet
-
-    # Sound.
-    modprobe soundcore
-    case "${MM_HARDWARE_AUDIO}" in
-        ANALOG_AD1986A)
-            modprobe snd-hda-intel
-            ;;
-        REALTEK_ALC655)
-            modprobe snd-intel8x0
-            ;;
-        VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
-            modprobe snd-via82xx
-            ;;
-    esac
-
-    # Video.
-    modprobe agpgart
-    case "${MM_HARDWARE_NORTHBRIDGE}" in
-        INTEL_845GV)
-            modprobe intel-agp
-            ;;
-        NVIDIA_GFORCE6150)
-            modprobe nvidia-agp
-            ;;
-        VIA_CLE266|VIA_CN400)
-            modprobe via-agp
-            ;;
-    esac
-    case "${MM_X_DRIVER}" in
-        intel_810)
-            modprobe i810
-            ;;
-        intel_830)
-            modprobe i830
-            ;;
-        intel_915)
-            modprobe i915
-            ;;
-        nvidia)
-            modprobe nvidia
-            ;;
-        via)
-            modprobe via
-            ;;
-    esac
+    # File system character sets.
+    if [ `lsmod | grep -c -e '^nls_base'` = "1" ] ; then
+        modprobe nls_ascii
+        modprobe nls_cp437
+        modprobe nls_cp850
+        modprobe nls_iso8859-1
+        modprobe nls_iso8859-15
+        modprobe nls_utf8
+    fi
 
     return 0
 }

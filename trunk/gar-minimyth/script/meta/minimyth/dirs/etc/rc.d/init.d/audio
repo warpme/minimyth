@@ -7,55 +7,67 @@
 start() {
     mm_message_output info 'configuring audio ...'
 
-    case "${MM_AUDIO_TYPE}" in
-        analog)
-            sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
-            case "${MM_HARDWARE_AUDIO}" in
-                ANALOG_AD1986A)
+    case "${MM_HARDWARE_AUDIO}" in
+        ANALOG_AD1986A)
+            modprobe snd-hda-intel
+            while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
+            case "${MM_AUDIO_TYPE}" in
+                analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
                     amixer set 'PCM' 90% unmute 
                     amixer set 'Front' 90% unmute 
                     amixer set 'Surround' 90% unmute 
                     amixer set 'Center' 90% unmute 
                     amixer set 'LFE' 90% unmute 
                     ;;
-                REALTEK_ALC655)
+                digital)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    amixer set 'IEC958' on
                     ;;
-                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
+                digital+analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    amixer set 'IEC958' on
                     amixer set 'PCM' 90% unmute 
-                    amixer set 'Master' 90% unmute 
-                    amixer set 'VIA DXS',0 100%
+                    amixer set 'Front' 90% unmute 
+                    amixer set 'Surround' 90% unmute 
+                    amixer set 'Center' 90% unmute 
+                    amixer set 'LFE' 90% unmute 
                     ;;
             esac
             ;;
-        digital)
-            sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
-            case "${MM_HARDWARE_AUDIO}" in
-                ANALOG_AD1986A)
-                    amixer set 'IEC958' on
+        REALTEK_ALC655)
+            modprobe snd-intel8x0
+            while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
+            case "${MM_AUDIO_TYPE}" in
+                analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
                     ;;
-                REALTEK_ALC655)
+                digital)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
                     ;;
-                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
+                digital+analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
+                    ;;
+            esac
+            ;;
+        VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
+            modprobe snd-via82xx
+            while [ ! `amixer > /dev/null 2>&1 ; echo $?` = "0" ] ; do sleep 1 ; done
+            case "${MM_AUDIO_TYPE}" in
+                analog)
+                    amixer set 'PCM' 90% unmute 
+                    amixer set 'Master' 90% unmute 
+                    amixer set 'VIA DXS',0 100%
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /root/.xine/config
+                    ;;
+                digital)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
                     amixer set 'IEC958' on
                     amixer set 'IEC958 Playback AC97-SPSA' 0
                     amixer set 'VIA DXS',0 100%
                     ;;
-            esac
-            ;;
-        digital+analog)
-            sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
-            case "${MM_HARDWARE_AUDIO}" in
-                ANALOG_AD1986A)
-                    amixer set 'IEC958' on
-                    amixer set 'PCM' 90% unmute 
-                    amixer set 'Front' 90% unmute 
-                    amixer set 'Surround' 90% unmute 
-                    amixer set 'Center' 90% unmute 
-                    amixer set 'LFE' 90% unmute 
-                    ;;
-                REALTEK_ALC655)
-                    ;;
-                VIA_VT1612A|VIA_VT1616|VIA_VT1617A)
+                digital+analog)
+                    sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /root/.xine/config
                     amixer set 'IEC958' on
                     amixer set 'IEC958 Playback AC97-SPSA' 0
                     amixer set 'PCM' 90% unmute 
