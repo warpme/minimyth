@@ -1,8 +1,8 @@
 GARNAME = libmng
-GARVERSION = 1.0.8
+GARVERSION = 1.0.9
 CATEGORIES = lib
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/libmng/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = libmng
 libmng_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -12,7 +12,7 @@ endef
 
 DEPENDS = lang/c lib/libjpeg lib/zlib
 
-CONFIGURE_SCRIPTS = custom
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
@@ -21,23 +21,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-zlib \
 	--with-jpeg
 	
-xxx-BUILD_ARGS = \
-	CC="$(CC)" \
-	CFLAGS="$(CFLAGS)" \
-	prefix="$(prefix)" \
-	ZLIBINC="$(DESTDIR)$(includedir)" \
-	ZLIBLIB="$(DESTDIR)$(libdir)" \
-	JPEGINC="$(DESTDIR)$(includedir)" \
-	JPEGLIB="$(DESTDIR)$(libdir)" \
-	LCMSINC="$(DESTDIR)$(includedir)" \
-	LCMSLIB="$(DESTDIR)$(libdir)"
-
-xxx-INSTALL_OVERRIDE_DIRS = prefix exec_prefix
-
 include ../../gar.mk
 
-configure-custom:
-	@cd $(WORKSRC) && $(CONFIGURE_ENV) sh autogen.sh $(CONFIGURE_ARGS)
+pre-configure:
+	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
+	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --automake
+	@cd $(WORKSRC) ; automake --foreign --add-missing
+	@cd $(WORKSRC) ; autoconf
 	@$(MAKECOOKIE)
 
 install-custom:
