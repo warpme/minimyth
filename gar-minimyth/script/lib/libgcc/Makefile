@@ -8,20 +8,6 @@ define BLURB
 endef
 
 BUILDDEPS  = lang/c
-ifeq ($(DESTIMG),build)
-# Make sure that the native build evironment has been built.
-BUILDDEPS += \
-        devel/make-bootstrap \
-        devel/binutils-bootstrap \
-        devel/gcc-bootstrap \
-        kernel/linux-libc-headers \
-        devel/glibc-headers \
-        devel/glibc \
-        devel/binutils-adjust-toolchain \
-        devel/gcc-adjust-toolchain \
-        devel/gcc \
-        devel/binutils
-endif
 # Make sure that the basic build tools have been built.
 BUILDDEPS += devel/make
 

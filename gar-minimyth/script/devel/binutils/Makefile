@@ -1,5 +1,5 @@
 GARNAME = binutils
-GARVERSION = $(BINUTILS_VERSION)
+GARVERSION = 2.15.94.0.2
 CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/pub/gnu/binutils/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/binutils/
