@@ -111,6 +111,11 @@ mm_MYTH_VERSION_SVN  ?=
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.
 #-------------------------------------------------------------------------------
+# Set the language for gettext to English so the configure scripts for packages
+# such as lib/libjpeg do not yield incorrect results.
+LANGUAGE=en
+export LANGUAGE
+
 # Stop attempts to check out patches from perforce.
 PATCH_GET=0
 export PATCH_GET

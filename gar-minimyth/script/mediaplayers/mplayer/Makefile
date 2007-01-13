@@ -1,11 +1,11 @@
 GARNAME = MPlayer
-GARVERSION = 1.0pre7try2
+GARVERSION = 1.0pre8
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-demuxer_h.patch $(DISTNAME)-gcc4.patch $(DISTNAME)-vobsub_newline.patch $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -32,45 +32,65 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-mencoder \
 	--disable-gui \
 	--enable-largefiles \
+	--disable-linux-devfs \
 	--disable-termcap \
 	--disable-termios \
 	--enable-iconv \
+	--enable-langinfo \
 	--enable-lirc \
+	--disable-lircc \
+	--disable-joystick \
+	--enable-vm \
+	--enable-xf86keysym \
 	--disable-tv \
 	--disable-tv-v4l \
 	--disable-tv-v4l2 \
 	--disable-tv-bsdbt848 \
 	--enable-rtc \
-	--disable-edl \
 	--enable-network \
+	--disable-winsock2 \
 	--disable-smb \
 	--disable-live \
 	--enable-dvdread \
 	--disable-mpdvdkit \
 	--enable-cdparanoia \
 	--enable-freetype \
-	--enable-fontconfig \
+	--enable-unrarlib \
 	--enable-menu \
-	--disable-inet6
+	--enable-sortsub \
+	--disable-fribidi \
+	--disable-enca \
+	--disable-macosx \
+	--disable-macosx-finder-support \
+	--disable-macosx-bundle \
+	--disable-inet6 \
+	--enable-gethostbyname2 \
+	--enable-ftp \
+	--disable-vstream \
+	--enable-pthreads \
+	--disable-rpath
 # Codecs
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
 	--enable-jpeg \
-	--disable-win32 \
+	--disable-libcdio \
+	--disable-liblzo \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32,--disable-win32) \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-dshow,--disable-dshow) \
+	--disable-qtx \
 	--enable-xanim \
 	--enable-real \
 	--disable-internal-tremor \
 	--enable-vorbis \
 	--enable-theora \
-	--enable-internal-matroska \
 	--enable-external-faad \
 	--disable-internal-faad \
 	--enable-mad
-# Video output: enable xv (requires x11 and vm) and xxmc
+# Video output: enable xv (requires x11 and vm) and xvmc
 CONFIGURE_ARGS_VIDEO = \
-	--disable-vidix \
+	--disable-internal-vidix \
+	--disable-external-vidix \
 	--enable-gl \
 	--disable-dga \
 	--disable-vesa \
@@ -79,6 +99,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-aa \
 	--disable-caca \
 	--disable-ggi \
+	--disable-ggiwmh \
 	--disable-directx \
 	--disable-dxr2 \
 	--disable-dxr3 \
@@ -88,7 +109,6 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-xmga \
 	--enable-xv \
 	--enable-xvmc \
-	--enable-xxmc \
 	--enable-vm \
 	--enable-xinerama \
 	--enable-x11 \
@@ -96,6 +116,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-mlib \
 	--disable-3dfx \
 	--disable-tdfxfb \
+	--disable-s3fb \
 	--disable-directfb \
 	--disable-zr \
 	--disable-bl \
@@ -111,6 +132,7 @@ CONFIGURE_ARGS_AUDIO = \
 	--disable-esd \
 	--disable-polyp \
 	--disable-jack \
+	--disable-openal \
 	--disable-nas \
 	--disable-sgiaudio \
 	--disable-sunaudio \
@@ -121,24 +143,29 @@ CONFIGURE_ARGS_MISC = \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
-	--target="$(GARCH_FAMILY)-linux"
+	--target="$(GARCH_FAMILY)-linux" \
+	--charset=noconv
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
-	--enable-mmx2 \
+	--enable-mmxext \
 	--enable-3dnow \
-	--enable-3dnowex \
+	--enable-3dnowext \
 	--enable-sse \
 	--enable-sse2 \
 	--enable-shm \
 	--disable-altivec \
 	--enable-fastmemcpy \
-	--disable-big-endian
+	--disable-big-endian \
+	--disable-debug \
+	--disable-profile \
+	--enable-sighandler \
+	--disable-crash-debug \
+	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
 	--with-x11incdir="$(DESTDIR)$(includedir)" \
 	--with-x11libdir="$(DESTDIR)$(libdir)" \
 	--with-codecsdir="$(libdir)/codecs" \
 	--with-xvmclib=XvMCW \
-	--with-xxmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
 	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config"
 CONFIGURE_ARGS = \
@@ -161,10 +188,6 @@ BUILD_ENV  = \
 include ../../gar.mk
 
 CFLAGS :=
-
-post-patch:
-	@sed -i 's%\([ \t]*\)ldconfig%\1true%' $(WORKSRC)/libdha/Makefile
-	@$(MAKECOOKIE)
 
 install-config:
 	@mkdir -p $(DESTDIR)$(rootdir)/root/.mplayer

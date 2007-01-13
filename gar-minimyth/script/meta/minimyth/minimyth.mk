@@ -130,6 +130,10 @@ mm-all:
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
 
 mm-check:
+	@if [ "`id -u`" = "0" ] ; then \
+		echo "error: gar-minimyth must not be run as root." ; \
+		exit 1 ; \
+	fi
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
 		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
 		exit 1 ; \
