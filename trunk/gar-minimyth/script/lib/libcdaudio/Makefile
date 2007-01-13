@@ -1,5 +1,5 @@
 GARNAME = libcdaudio
-GARVERSION = 0.99.12
+GARVERSION = 0.99.12p2
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
