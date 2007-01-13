@@ -29,8 +29,6 @@ CONFIGURE_ARGS += \
 	--disable-all \
 	--enable-opengl \
 	--enable-mythdvd \
-		--enable-transcode \
-		--enable-vcd \
 	--enable-mythgallery \
 		--enable-exif \
 		--enable-new-exif \
@@ -52,7 +50,7 @@ BUILD_ENV     += \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  += \
+INSTALL_ENV   += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \

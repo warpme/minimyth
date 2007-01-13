@@ -50,6 +50,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx
+
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
@@ -60,7 +61,7 @@ BUILD_ENV     += \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  += \
+INSTALL_ENV   += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	QMAKESPEC="default" \
