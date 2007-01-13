@@ -9,10 +9,30 @@
 start() {
     mm_message_output info 'configuring MythTV ...'
 
+    # Mount theme.
+    if [ -n "${MM_THEME_URL}" ] && [ -n "${MM_THEME_NAME}" ] ; then
+        mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}"
+    fi
+
+    # Mount OSD theme.
+    if [ -n "${MM_THEMEOSD_URL}" ] && [ -n "${MM_THEMEOSD_NAME}" ] ; then
+        mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
+    fi
+
     # Mount themecache.
     if [ -n "${MM_THEMECACHE_URL}" ] ; then
         [ "${MM_THEMECACHE_URL}" = "default" ] && MM_THEMECACHE_URL="conf:themecache.cmg"
         mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
+    fi
+
+    # Set theme.
+    if [ -n "${MM_THEME_NAME}" ] ; then
+        mm_mythdb_setting_update "Theme" "${MM_THEME_NAME}"
+    fi
+
+    # Set OSD theme.
+    if [ -n "${MM_THEMEOSD_NAME}" ] ; then
+        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
     fi
 
     # Create mysql.txt file.
