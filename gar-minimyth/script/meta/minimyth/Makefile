@@ -32,6 +32,7 @@ DEPENDS = \
 	X11/ratpoison \
 	X11/rxvt \
 	net/samba \
+	utils/strace \
 	net/utelnetd \
 	system/udev \
 	X11/unichrome_dri \
