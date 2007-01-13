@@ -22,72 +22,92 @@ start() {
 
     mm_message_output info 'configuring MythTV ...'
 
-    # Check for required variables.
-    if /usr/bin/test -z "${MM_THEME_NAME}"    ; then
-        mm_message_output err 'error: "MM_THEME_NAME" not present.'
-        exit 1
-    fi
-    if /usr/bin/test -z "${MM_THEMEOSD_NAME}" ; then
-        mm_message_output err 'error: "MM_THEMEOSD_NAME" not present.'
-        exit 1
-    fi
-
     # Set OSD fonts.
     mm_mythdb_setting_update "OSDFont"   "luxisr.ttf"
     mm_mythdb_setting_update "OSDCCFont" "luxisr.ttf"
 
-    # Set themes.
+    # Make sure that a MythTV theme has been set.
+    if /usr/bin/test -z "${MM_THEME_NAME}"    ; then
+        mm_message_output err 'error: "MM_THEME_NAME" not present.'
+        exit 1
+    fi
+    # Set the MythTV theme.
     if /usr/bin/test -n "${MM_THEME_NAME}" ; then
-        mm_mythdb_setting_update "Theme"    "${MM_THEME_NAME}"
+        mm_mythdb_setting_update "Theme" "${MM_THEME_NAME}"
     fi
-    if /usr/bin/test -n "${MM_THEMEOSD_NAME}" ; then
-        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
-    fi
-
-    # Mount user specified theme directories.
-    if /usr/bin/test -n "${MM_THEME_URL}" ; then
+    # Check and auto-detect the MythTV theme URL.
+    if   /usr/bin/test "${MM_THEME_URL}" = "none" ; then
+        :
+    elif /usr/bin/test "${MM_THEME_URL}" = "auto" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_THEME_URL is 'auto'. attempting to auto-configure MythTV theme URL."
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEME_NAME}" ; then
+            MM_THEME_URL="dist:themes/${MM_THEME_NAME}.sfs"
+        else
+            MM_THEME_URL="none"
+        fi
+        /usr/bin/logger -t minimyth -p "local0.info" "auto-configured MythTV theme URL to '${MM_THEME_URL}'."
+    else
         if /usr/bin/test -e "/usr/share/themes/${MM_THEME_NAME}" ; then
             mm_message_output err "error: MythTV theme directory '${MM_THEME_NAME}' already exists."
             exit 1
         fi
+    fi
+    # Mount MythTV theme directory.
+    if /usr/bin/test ! "${MM_THEME_URL}" = "none" ; then
         mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}"
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: mount of 'MM_THEME_URL=${MM_THEME_URL}'' failed."
             exit 1
         fi
     fi
-    if /usr/bin/test -n "${MM_THEMEOSD_URL}" ; then
-        if /usr/bin/test -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
-            mm_message_output err "error: MythTV OSD theme directory '${MM_THEMEOSD_NAME}' already exists."
-            exit 1
-        fi
-        mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
-        if /usr/bin/test $? -ne 0 ; then
-            mm_message_output err "error: mount of 'MM_THEMEOSD_URL=${MM_THEMEOSD_URL}' failed."
-            exit 1
-        fi
-    fi
-
-    # Mount distribution provided theme directories.
-    if /usr/bin/test ! -e "/usr/share/themes/${MM_THEME_NAME}"    ; then
-        mm_url_mount "dist:themes/${MM_THEME_NAME}.sfs"    "/usr/share/mythtv/themes/${MM_THEME_NAME}"
-    fi
-    if /usr/bin/test ! -e "/usr/share/themes/${MM_OSDTHEME_NAME}" ; then
-        mm_url_mount "dist:themes/${MM_THEMEOSD_NAME}.sfs" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
-    fi
-
-    # Check for theme directories.
+    # Check the MythTV theme directory.
     if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEME_NAME}"    ; then
         mm_message_output err "error: MythTV theme '${MM_THEME_NAME}' not found."
         exit 1
     fi
+
+    # Make sure that a MythTV OSD theme has been set.
+    if /usr/bin/test -z "${MM_THEMEOSD_NAME}"    ; then
+        mm_message_output err 'error: "MM_THEMEOSD_NAME" not present.'
+        exit 1
+    fi
+    # Set the MythTV OSD theme.
+    if /usr/bin/test -n "${MM_THEMEOSD_NAME}" ; then
+        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
+    fi
+    # Check and auto-detect the MythTV OSD theme URL.
+    if   /usr/bin/test "${MM_THEMEOSD_URL}" = "none" ; then
+        :
+    elif /usr/bin/test "${MM_THEMEOSD_URL}" = "auto" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_THEMEOSD_URL is 'auto'. attempting to auto-configure MythTV OSD theme URL."
+        if /usr/bin/test ! -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
+            MM_THEMEOSD_URL="dist:themes/${MM_THEMEOSD_NAME}.sfs"
+        else
+            MM_THEMEOSD_URL="none"
+        fi
+        /usr/bin/logger -t minimyth -p "local0.info" "auto-configured MythTV OSD theme URL to '${MM_THEMEOSD_URL}'."
+    else
+        if /usr/bin/test -e "/usr/share/themes/${MM_THEMEOSD_NAME}" ; then
+            mm_message_output err "error: MythTV theme directory '${MM_THEMEOSD_NAME}' already exists."
+            exit 1
+        fi
+    fi
+    # Mount MythTV OSD theme directory.
+    if /usr/bin/test ! "${MM_THEMEOSD_URL}" = "none" ; then
+        mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err "error: mount of 'MM_THEMEOSD_URL=${MM_THEMEOSD_URL}'' failed."
+            exit 1
+        fi
+    fi
+    # Check the MythTV OSD theme directory.
     if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}" ; then
         mm_message_output err "error: MythTV OSD theme '${MM_THEMEOSD_NAME}' not found."
         exit 1
     fi
 
     # Mount themecache directory.
-    if /usr/bin/test -n "${MM_THEMECACHE_URL}" ; then
+    if /usr/bin/test ! "${MM_THEMECACHE_URL}" = "none" ; then
         mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: mount of 'MM_THEMECACHE_URL=${MM_THEMECACHE_URL}' failed."

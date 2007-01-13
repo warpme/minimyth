@@ -535,12 +535,13 @@ mm-make-distro:
 	@# Make local (private) distribution
 	@rm -rf   $(mm_LOCALDIR)
 	@mkdir -p $(mm_LOCALDIR)
-	@cp -r  $(mm_STAGEDIR)/version        $(mm_LOCALDIR)/version
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_LOCALDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_LOCALDIR)/ram-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_LOCALDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_LOCALDIR)/helper.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_LOCALDIR)/scripts
+	@cp -r  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_LOCALDIR)/html.tar.bz2
+	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
+	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)         $(mm_LOCALDIR)/ram-$(mm_NAME)
+	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)         $(mm_LOCALDIR)/nfs-$(mm_NAME)
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
+	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_LOCALDIR)/scripts
 	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
 		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
 		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
@@ -553,18 +554,20 @@ mm-make-distro:
 	@rm -rf $(mm_LOCALDIR)/nfs-$(mm_NAME)
 	@cd $(mm_LOCALDIR) ; md5sum version                > version.md5
 	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
+	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2 > gar-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
 	@# Make share (public) distribution
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
-	@cp -r  $(mm_STAGEDIR)/version        $(mm_SHAREDIR)/version
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_SHAREDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_SHAREDIR)/ram-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_SHAREDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_SHAREDIR)/helper.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/scripts        $(mm_SHAREDIR)/scripts
+	@cp -r  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_SHAREDIR)/html.tar.bz2
+	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
+	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)         $(mm_SHAREDIR)/ram-$(mm_NAME)
+	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)         $(mm_SHAREDIR)/nfs-$(mm_NAME)
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
+	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_SHAREDIR)/scripts
 	@rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs
 	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
@@ -579,6 +582,7 @@ mm-make-distro:
 	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)
 	@cd $(mm_SHAREDIR) ; md5sum version                > version.md5
 	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
+	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2 > gar-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_SHAREDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5

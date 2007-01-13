@@ -3,6 +3,7 @@ GARVERSION = X11R$(XORG_VERSION)-1.0.0
 CATEGORIES = xorg-new
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-freetype_internal.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 

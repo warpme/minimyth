@@ -30,6 +30,11 @@
         <!--#include file="include/sidebar-long.html" -->
         <div class="content">
           <div class="contentheader">minimyth.conf description</div>
+          <div class="contentitem">
+            <p>
+              <em>This configuration information applies to the yet-to-be-released -19.</em>
+            </p>
+          </div>
           <div id="toc" class="contentitem">
             <div class="contentitemheader">Table of contents</div>
             <dl>
@@ -58,12 +63,18 @@
               <dd>
                 <a href="#MM_AUDIO_TYPE">MM_AUDIO_TYPE</a>.
               </dd>
+              <dt><a href="#MM_VIDEO">Video configuration variables</a></dt>
+              <dd>
+                <a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a>,
+                <a href="#MM_VIDEO_DEINTERLACE_ENABLED">MM_VIDEO_DEINTERLACE_ENABLED</a> and
+                <a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a>.
+              </dd>
               <dt><a href="#MM_X">X configuration variables</a></dt>
               <dd>
                 <a href="#MM_X_ENABLED">MM_X_ENABLED</a>,
                 <a href="#MM_X_WM_ENABLED">MM_X_VM_ENABLED</a>,
                 <a href="#MM_X_VNC_ENABLED">MM_X_VNC_ENABLED</a>,
-                <a href="#MM_X_SCREENSAVER">MM_X_SCREENSAVER_ENABLED</a>,
+                <a href="#MM_X_SCREENSAVER_ENABLED">MM_X_SCREENSAVER_ENABLED</a>,
                 <a href="#MM_X_DVI_ENABLED">MM_X_DVI_ENABLED</a>,
                 <a href="#MM_X_VGA_ENABLED">MM_X_VGA_ENABLED</a>,
                 <a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a>,
@@ -71,11 +82,8 @@
                 <a href="#MM_X_TV_OUTPUT">MM_X_TV_OUTPUT</a>,
                 <a href="#MM_X_REFRESH">MM_X_REFRESH</a>,
                 <a href="#MM_X_MODE">MM_X_MODE</a>,,
-                <a href="#MM_X_MODELINE">MM_X_MODELINE</a>,
-                <a href="#MM_X_RESOLUTION_X">MM_X_RESOLUTION_X</a>,
-                <a href="#MM_X_RESOLUTION_Y">MM_X_RESOLUTION_Y</a>,
-                <a href="#MM_X_DISPLAYSIZE_X">MM_X_DISPLAYSIZE_X</a> and
-                <a href="#MM_X_DISPLAYSIZE_Y">MM_X_DISPLAYSIZE_Y</a>.
+                <a href="#MM_X_MODELINE">MM_X_MODELINE</a> and
+                <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>.
               </dd>
               <dt><a href="#MM_MYTH">Myth master backend database configuration variables</a></dt>
               <dd>
@@ -104,11 +112,11 @@
               <dd>
                 <a href="#MM_EXTRAS_URL">MM_EXTRAS_URL</a>.
               </dd>
-              <dt><a href="#MM_CODECS">Codecs directory configuration variables.</a></dt>
+              <dt><a href="#MM_CODECS">Codecs directory configuration variables</a></dt>
               <dd>
                 <a href="#MM_CODECS_URL">MM_CODECS_URL</a>.
               </dd>
-              <dt><a href="#MM_THEME">These configuration variables</a></dt>
+              <dt><a href="#MM_THEME">Theme configuration variables</a></dt>
               <dd>
                 <a href="#MM_THEME_NAME">MM_THEME_NAME</a>,
                 <a href="#MM_THEMEOSD_NAME">MM_THEMEOSD_NAME</a>,
@@ -156,9 +164,8 @@
             <p>
               Essentially, the MiniMyth configuration file variables are shell variables.
               In fact, with the exception of the of the
-              '<a href="#MM_MYTHDB">MM_MYTHDB_*</a>'
-              variables,
-              MiniMyth configuration files are processed using the shell.
+              <a href="#MM_MYTHDB">Myth frontend configuration variables ('MM_MYTHDB_*')</a>,
+              MiniMyth configuration variables are processed using the shell.
               Therefore, all variable values should be enclosed in single quotes (')
               to prevent the shell from interpreting the values.
               Therefore, all MiniMyth configuration file settings should take the form:
@@ -170,8 +177,9 @@
           <div id="MM_UPDATE" class="contentitem">
             <div class="contentitemheader">MiniMyth update variables</div>
             <p>
-              If you are using local boot,
-              then you can use the command 'mm_local_update' to
+              If you are using
+              <a href="document-boot.shtml#local">local boot</a>,
+              then you can use the MiniMyth command 'mm_local_update' to
               update your MiniMyth distribution: the kernel file,
               the root file system image, the theme file system images and
               (optionally) extras file system image.
@@ -450,12 +458,45 @@
                   Valid values are 'yes' and 'no' with 'no' being the default.
                 </p>
               </dd>
+              <dt id="MM_VIDEO_FONT_SCALE"><strong>MM_VIDEO_FONT_SCALE</strong></dt>
+              <dd>
+                <p>
+                  Specify the font size scale factor as a percentage.
+                  The default value is '100'.
+                  A smaller value reults in smaller MythTV fonts, and a larger value results in larger MythTV fonts.
+                </p>
+                <p>
+                  MythTV is designed for 100 dots per inch.
+                  By default, MiniMyth configures X so that the vertical dots per inch is 100.
+                  Decreasing or increasing 'MM_VIDEO_FONT_SCALE' will decrease or increase the dots per inch,
+                  resulting in smaller or larger MythTV fonts.
+                </p>
+              </dd>
             </dl>
           </div>
           <div id="MM_X" class="contentitem">
             <div class="contentitemheader">X configuration variables</div>
             <p>
-              The X configuration variables are:
+              The X configuration variables can be divided into three groups: application, output and display.
+              The X application configuration variables configure which X applications are to be enabled.
+              The X output configuration variabls configure which video outputs are to be enabled.
+              The X display configuration variables configure the parameters of the X diplay.
+            </p>
+            <p>
+              The X display configuration variables allow you set the X variables related to the mode,
+              such as vertical refresh rate, resolution in pixels, and mode lines.
+              However they do no allow you to set the physical display size.
+              This is because the physical display size is not relavent.
+              Unlike with a computer monitor, with a television the bigger the television the farther back you sit.
+              As a result, the television always appears to be the same size.
+              Consequently, MythTV does not care about the physical display size.
+              Instead, it is optimized for 100 dots per inch.
+              Therefore, MiniMyth calculates the physical display size so that the vertical dots per inch is 100.
+              If this results in fonts that are too small or too large, then you can adjust the font size using
+              <a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a>.
+            </p>
+            <p>
+              The X application configuration variables are:
             </p>
             <dl>
               <dt id="MM_X_ENABLED"><strong>MM_X_ENABLED</strong></dt>
@@ -530,7 +571,7 @@
                   VNC server.
                 </p>
               </dd>
-              <dt id="MM_X_SCREENSAVER"><strong>MM_X_SCREENSAVER</strong></dt>
+              <dt id="MM_X_SCREENSAVER_ENABLED"><strong>MM_X_SCREENSAVER_ENABLED</strong></dt>
               <dd>
                 <p>
                   Specify whether or not to enable the X
@@ -549,6 +590,11 @@
                   screensaver.
                 </p>
               </dd>
+            </dl>
+            <p>
+               The X output configuration variables are:
+            </p>
+            <dl>
               <dt id="MM_X_DVI_ENABLED"><strong>MM_X_DVI_ENABLED</strong></dt>
               <dd>
                 <p>
@@ -585,49 +631,53 @@
                   'YCbCr' (untested) with 'Composite' being the default.
                 </p>
               </dd>
+            </dl>
+            <p>
+              The X display configuration variables are:
+            </p>
+            <dl>
               <dt id="MM_X_REFRESH"><strong>MM_X_REFRESH</strong></dt>
               <dd>
                 <p>
                   Specify the screen vertical refresh rate.
-                  The default depends on 
-                  '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'
-                  as follows:
+                  The value can be the vertical refresh rate or 'auto'.
                 </p>
-                <dl style="list-style-type:none;">
-                  <dt>'60':</dt><dd>for MM_X_TV_TYPE='NTSC' and</dd>
-                  <dt>'50':</dt><dd>for MM_X_TV_TYPE='PAL'.</dd>
-                </dl>
+                <p>
+                  If the value is 'auto' then the refresh rate will be auto-configured based on
+                  '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'.
+                </p>
               </dd>
               <dt id="MM_X_MODE"><strong>MM_X_MODE</strong></dt>
               <dd>
                 <p>
-                  Specify a built in or user specified
+                  The screen mode that specifies a built in or user specified
                   ('<a href="#MM_X_MODELINE">MM_X_MODELINE</a>')
                   screen mode.
-                  The default depends on
-                  '<a href="#MM_X_VGA_ENABLED">MM_X_VGA_ENABLED</a>',
-                  '<a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a>'
-                  and
-                  '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'
-                  as follows:
+                  The value can be the screen mode or 'auto'
+                  The screen mode must have the form 'HxV...' (e.g. '1024x768_60.0'), where H and V are the horizontal and vertical resolution in pixels.
                 </p>
-                <dl>
-                  <dt>'720x480Noscale':</dt>
-                  <dd>for MM_X_VGA_ENABLED='no' and MM_X_TV_ENABLED='yes' and MM_X_TV_TYPE='NTSC',</dd>
-                  <dt>'720x576Noscale':</dt>
-                  <dd>for MM_X_VGA_ENABLED='no' and MM_X_TV_ENABLED='yes' and MM_X_TV_TYPE='PAL' and</dd>
-                  <dt>'800x600':</dt>
-                  <dd>otherwise.</dd>
-                </dl>
                 <p>
-                  Other popular modes are: '720x480', '720x480Over', '720x576' and '720x576Over'.
+                  The screen mode must have this form 'HxV...',
+                  because MiniMyth needs to know the X resolution in pixels before starting X.
+                  MiniMyth needs to know the X resolution in pixels before starting X,
+                  because MiniMyth uses the X resolution in pixesl to calculate an X display size in millimeters.
+                </p>
+                <p>
+                  If the value is 'auto' then the screen mode will be auto-configured based on
+                  <a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a>,
+                  <a href="#MM_X_DVI_ENABLED">MM_X_DVI_ENABLED</a>,
+                  <a href="#MM_X_VGA_ENABLED">MM_X_VGA_ENABLED</a>,
+                  <a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a>,
+                  <a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a> and
+                  <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>.
+                </p>
+                <p>
+                  Some popular modes are: '720x480', '720x480Noscale', '720x480Over', '720x576', '720x570Noscale' nad '720x576Over'.
                 </p>
                 <p>
                   If
-                  '<a href="#MM_X_RESOLUTION_X">MM_X_RESOLUTION_X</a>'
-                  and
-                  '<a href="#MM_X_RESOLUTION_Y">MM_X_RESOLUTION_Y</a>'
-                  are non-empty, then 'MM_X_MODE' is ignored.
+                  '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
+                  is non-empty, then 'MM_X_MODE' is ignored.
                 </p>
               </dd>
               <dt id="MM_X_MODELINE"><strong>MM_X_MODELINE</strong></dt>
@@ -641,50 +691,16 @@
                 <p>
                   The default value for 'MM_X_MODELINE' is ''.
                   If
-                  '<a href="#MM_X_RESOLUTION_X">MM_X_RESOLUTION_X</a>'
-                  and
-                  '<a href="#MM_X_RESOLUTION_Y">MM_X_RESOLUTION_Y</a>'
-                  are non-empty, then 'MM_X_MODELINE' is ignored.
+                  '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
+                  is non-empty, then 'MM_X_MODELINE' is ignored.
                 </p>
               </dd>
-              <dt id="MM_X_RESOLUTION_X"><strong>MM_X_RESOLUTION_X</strong></dt>
+              <dt id="MM_X_RESOLUTION"><strong>MM_X_RESOLUTION</strong></dt>
               <dd>
                 <p>
-                  Specify the horizontal screen resolution (in pixels).
-                  The default value for 'MM_X_RESOLUTION_X' is ''.
-                  If 'MM_X_RESOLUTION_X' is specified, then
-                  '<a href="#MM_X_RESOLUTION_Y">MM_X_RESOLUTION_Y</a>'
-                  must be specified.
-                </p>
-              </dd>
-              <dt id="MM_X_RESOLUTION_Y"><strong>MM_X_RESOLUTION_Y</strong></dt>
-              <dd>
-                <p>
-                  Specify the vertical screen resolution (in pixels).
-                  The default value for 'MM_X_RESOLUTION_Y' is ''.
-                  If 'MM_X_RESOLUTION_Y' is specified, then
-                  '<a href="#MM_X_RESOLUTION_X">MM_X_RESOLUTION_X</a>'
-                  must be specified.
-                </p>
-              </dd>
-              <dt id="MM_X_DISPLAYSIZE_X"><strong>MM_X_DISPLAYSIZE_X</strong></dt>
-              <dd>
-                <p>
-                  Specify the horizontal display size (in millimeters).
-                  The default value for 'MM_X_DISPLAYSIZE_X' is ''.
-                  If 'MM_X_DISPLAYSIZE_X' is specified, then
-                  '<a href="#MM_X_DISPLAYSIZE_Y">MM_X_DISPLAYSIZE_Y</a>'
-                  must be specified.
-                </p>
-              </dd>
-              <dt id="MM_X_DISPLAYSIZE_Y"><strong>MM_X_DISPLAYSIZE_Y</strong></dt>
-              <dd>
-                <p>
-                  Specify the vertical display size (in millimeters).
-                  The default value for 'MM_X_DISPLAYSIZE_Y' is ''.
-                  If 'MM_X_DISPLAYSIZE_Y' is specified, then
-                  '<a href="#MM_X_DISPLAYSIZE_X">MM_X_DISPLAYSIZE_X</a>'
-                  must be specified.
+                  Specify the screen resolution (in pixels).
+                  The screen resolution has the form 'WxH' (e.g. '1024x768'), where H and V are the horizontal and vertical resolution in pixels 
+                  The default value for 'MM_X_RESOLUTION' is ''.
                 </p>
               </dd>
             </dl>
@@ -871,8 +887,19 @@
               <dt id="MM_EXTRAS_URL"><strong>MM_EXTRAS_URL</strong></dt>
               <dd>
                 <p>
-                  The URL that points to the location of the extras directory.
-                  This will be mounted at '/usr/local'.
+                  The pointer to the location of the extras directoy that will be mounted as '/usr/local'.
+                  Valid values are a URL, 'none' and 'auto'.
+                </p>
+                <p>
+                  If the value is 'none',
+                  then nothing will be mounted as '/usr/local'.
+                </p>
+                <p>
+                  If the value is 'auto',
+                  then MiniMyth will assume that the extras are in a squashfs image file
+                  located in either MiniMyth distribution directory or the MiniMyth configuration directory and
+                  having the name 'extras.sfs'.
+                  That is, MiniMyth will assume MM_EXTRAS_URL='hunt:extras.sfs'.
                 </p>
                 <p>
                   MiniMyth contains a script 'mm_squashfs_extras_make' to help with creating an extras squashfs image (*.sfs).
@@ -907,8 +934,19 @@
               <dt id="MM_CODECS_URL"><strong>MM_CODECS_URL</strong></dt>
               <dd>
                 <p>
-                  The URL that points to the location of the codecs directory.
-                  This will be mounted at '/usr/lib/codecs'.
+                  The pointer to the location of the codecs directoy that will be mounted as '/usr/lib/codecs'.
+                  Valid values are a URL, 'none' and 'auto'.
+                </p>
+                <p>
+                  If the value is 'none',
+                  then nothing will be mounted as '/usr/lib/codecs'.
+                </p>
+                <p>
+                  If the value is 'auto',
+                  then MiniMyth will assume that the codecs are in a squashfs image file
+                  located in either MiniMyth distribution directory or the MiniMyth configuration directory and
+                  having the name 'codecs.sfs'.
+                  That is, MiniMyth will assume MM_CODECS_URL='hunt:codecs.sfs'.
                 </p>
                 <p>
                   MiniMyth contains a script 'mm_squashfs_codecs_make' to help with creating a codecs squashfs image (*.sfs).
@@ -975,23 +1013,39 @@
               <dt id="MM_THEME_URL"><strong>MM_THEME_URL</strong></dt>
               <dd>
                 <p>
-                  The URL that points to the location of the MythTV theme that will be mounted
-                  in the MythTV themes directory ('/usr/share/mythtv/themes') as ${MM_THEME_NAME}.
-                  If you do not provide 'MM_THEME_URL',
-                  then MiniMyth will assume that the theme is a squashfs image file
-                  located in the distribution's themes directory ('themes')
+                  The pointer to the location of the MythTV theme that will be mounted
+                  in the MythTV themes directory ('/usr/share/mythtv/themes') as '${MM_THEME_NAME}'.
+                  Valid values are a URL, 'none' and 'auto'.
+                </p>
+                <p>
+                  If the value is 'none',
+                  then nothing will be mounted in the MythTV themes directory as '${MM_THEME_NAME}'.
+                </p>
+                <p>
+                  If the value is 'auto',
+                  then MiniMyth will assume that the MyhtTV theme is in a squashfs image file
+                  located in the MiniMyth distribution's themes directory ('themes')
                   having the name '${MM_THEME_NAME}.sfs'.
+                  That is, MiniMyth will assume MM_THEME_URL="dist:themes/${MM_THEME_NAME}.sfs".
                 </p>
               </dd>
               <dt id="MM_THEMEOSD_URL"><strong>MM_THEMEOSD_URL</strong></dt>
               <dd>
                 <p>
-                  The URL that points to the location of the MythTV OSD theme that will be mounted
+                  The pointer to the location of the MythTV OSD theme that will be mounted
                   in the MythTV themes directory ('/usr/share/mythtv/themes') as '${MM_THEMEOSD_NAME}'.
-                  If you do not provide 'MM_THEMEOSD_URL',
-                  then MiniMyth will assume that the theme is a squashfs image file
-                  located in the distribution's themes directory ('themes')
-                  having the name '${MM_THEME_NAME}.sfs'.
+                  Valid values are a URL, 'none' and 'auto'.
+                </p>
+                <p>
+                  If the value is 'none',
+                  then nothing will be mounted in the MythTV themes directory as '${MM_THEMEOSD_NAME}'.
+                </p>
+                <p>
+                  If the value is 'auto',
+                  then MiniMyth will assume that the MythTV OSD theme is in a squashfs image file
+                  located in the MiniMyth distribution's themes directory ('themes')
+                  having the name '${MM_THEMEOSD_NAME}.sfs'.
+                  That is, MiniMyth will assume MM_THEMEOSD_URL="dist:themes/${MM_THEMEOSD_NAME}.sfs".
                 </p>
               </dd>
               <dt id="MM_THEMECACHE_URL"><strong>MM_THEMECACHE_URL</strong></dt>
@@ -1103,55 +1157,63 @@
               The LIRC configuration variables are:
             </p>
             <dl>
+              <dt id="MM_LIRC_DRIVER"><strong>MM_LIRC_DRIVER</strong></dt>
+              <dd>
+                <p>
+                  The name of the lircd driver (e.g. irman).
+                  Valid values are the name of the lircd driver, 'none' and 'auto', with 'auto' being the default.
+                  'MM_LIRC_DRIVER' is used to determine what LIRC driver to use and to pick a built-in 'lircd.conf' file.
+                </p>
+                <p>
+                  If the value is 'none,' then no lircd driver will be set and the lircd daemon will not be started.
+                </p>
+                <p>
+                  If the value is 'auto', then MiniMyth will attempt to auto-configure your lircd driver.
+                  If you use a remote control receiver that connects using USB,
+                  then MiniMyth will attempt to determine the value for 'MM_LIRC_DRIVER'
+                  using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
+                  If your remote control receiver is not auto-configured and you believe that it should have been auto-configured,
+                  then please file a
+                  <a href="http://linpvr.org/bugs/">bug report</a>
+                  that contains the remote control receiver vendor and model, the LIRC driver used and
+                  the ouput of the command 'lsusb' with the remote control receiver connected.
+                </p>
+              </dd>
               <dt id="MM_LIRC_REMOTE"><strong>MM_LIRC_REMOTE</strong></dt>
               <dd>
                 <p>
                   The remote control that you are using.
+                  Valid values are the remote control name, 'none' and 'auto', with 'auto' being the default.
                   'MM_LIRC_REMOTE' is used to pick built-in 'lircd.conf' and 'lircrc' files.
-                  While 'lircrc' is depends on the remote, 'lircd.conf' depends on the remote and the driver.
-                  Current values are:
+                  While 'lircrc' is depends on the remote control, 'lircd.conf' depends on the remote control and the remote control receiver.
+                  Currently understood remote control names:
                 </p>
                 <p>
-                  hauppauge_A415 with drivers: 'irman'<br/>
-                  hauppauge_R808 with drivers: 'irman' and 'serial'<br/>
-                  mceusb2        with drivers: 'mceusb2'
+                  'hauppauge_A415' with drivers: 'irman'<br/>
+                  'hauppauge_R808' with drivers: 'irman' and 'serial'<br/>
+                  'mceusb2'        with drivers: 'mceusb2'.
                 </p>
                 <p>
-                  If you MiniMyth does not have built-in LIRC configuration files
+                  If MiniMyth does not have built-in LIRC configuration files
                   or you do not want to use the built-in configuration files,
                   then you can place your your 'lircd.conf' and 'lircrc' files in the MiniMyth configuration directory.
                   In the 'lircrc' file, each record's 'prog' attribute must be set to the name of the program being controlled
                   (i.e. 'mythtv', 'mplayer' or 'xine') not to 'irxevent'.
                 </p>
                 <p>
-                  If you do not specify 'MM_LIRC_REMOTE' and
-                  you are using a remote control the comes bundled with a remote control receiver that connects using USB,
+                  If the value is 'none,' then no remote control will be set.
+                </p>
+                <p>
+                  If the value is 'auto', then MiniMyth will attempt to auto-configure your remote control.
+                  If you use a remote control that comes bundled with a remote control receiver that connects using USB,
                   then MiniMyth will attempt to determine the value for 'MM_LIRC_REMOTE'
                   using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
-                  If your remote control is not auto-detected and you believe that it should have been auto-detected,
+                  If your remote control is not auto-autoconfigured and you believe that it should have been auto-configured,
                   then please file a
                   <a href="http://linpvr.org/bugs/">bug report</a>
                   that contains the remote control / remote control receiver vendor and model, the LIRC driver used, 
                   the ouput of the command 'lspusb' with the remote control receiver connected and (if you have them)
                   'lircd.conf' and 'lircrc' files that work with MiniMyth.
-                </p>
-              </dd>
-              <dt id="MM_LIRC_DRIVER"><strong>MM_LIRC_DRIVER</strong></dt>
-              <dd>
-                <p>
-                  The name of the lircd driver (e.g. irman).
-                  'MM_LIRC_DRIVER' is used to determine what LIRC driver to use and to
-                  pick a built-in 'lircd.conf' file.
-                </p>
-                <p>
-                  If you do not specify 'MM_LIRC_DRIVER' and you are using a remote control receiver that connects using USB,
-                  then MiniMyth will attempt to determine the value for 'MM_LIRC_DRIVER'
-                  using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
-                  If your remote control receiver is not auto-detected and you believe that it should have been auto-detected,
-                  then please file a
-                  <a href="http://linpvr.org/bugs/">bug report</a>
-                  that contains the remote control receiver vendor and model, the LIRC driver used and
-                  the ouput of the command 'lsusb' with the remote control receiver connected.
                 </p>
               </dd>
               <dt id="MM_LIRC_DEVICE"><strong>MM_LIRC_DEVICE</strong></dt>
@@ -1234,8 +1296,11 @@
               <dd>
                 <p>
                   The name of the LCDd device.
+                  Valid values are the name of the LCDd device, 'none' and 'auto', with 'auto' being the default'
                   'MM_LCDPROC_DEVICE' is used to pick a device specific built-in LCDd.conf file.
-                  If there is no device specific build-in LCDd.conf file,
+                </p>
+                <p>
+                  If there is no device specific build-in LCDd.conf file for the LCDd device,
                   then the generic LCDd.conf file is used.
                   Currently, there are no built-in 'LCDd.conf' files.
                   If your LCD or VFD does not have a built-in 'LCDd.conf' file or you do not want to use the built-in 'LCDd.conf' file,
@@ -1247,7 +1312,11 @@
                   <a href="http://linpvr.org/bugs/">bug report</a>.
                 </p>
                 <p>
-                  If you do not specify 'MM_LCDPROC_DRIVER' and you use an LCD or VFD the connects using USB,
+                  If the value is 'none,' then none will be picked and LCDd daemon will not be started.
+                </p>
+                <p>
+                  If the value is 'auto', then MiniMyth will attempt to auto-configure your LCD or VFD.
+                  If you use an LCD or VFD the connects using USB,
                   then MiniMyth will attempt to determine the value for 'MM_LCDPROC_DRIVER'
                   using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lcdproc.map' file.
                   If your LCD or VFD is not auto-detected and you believe that it should have been auto-detected,
@@ -1319,7 +1388,7 @@
           <a href="document.shtml">Documents</a> |
           minimyth.conf
           <br />
-          Last Updated: 2006-09-13 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+          Last Updated: 2006-09-17 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
         </div>
       </div>
     </div>

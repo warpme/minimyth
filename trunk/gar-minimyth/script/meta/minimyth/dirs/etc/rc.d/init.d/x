@@ -6,6 +6,12 @@
 
 start() {
 
+    local X_RESOLUTION
+    local X_RESOLUTION_X
+    local X_RESOLUTION_Y
+    local X_DISPLAYSIZE
+    local X_DISPLAYSIZE_X
+    local X_DISPLAYSIZE_Y
     local DRI_TRUE
     local LIB_PATH
     local NVIDIA_TRUE
@@ -14,6 +20,61 @@ start() {
 
     mm_conf_get /xorg.conf /etc/X11/xorg.conf
     mm_conf_get /xinitrc   /etc/X11/xinit/xinitrc
+
+    # Auto-configure the X refresh rate.
+    if /usr/bin/test "${MM_X_REFRESH}" = "auto" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_X_REFRESH is 'auto'. attempting to auto-configure X refresh rate."
+        case "${MM_X_TV_TYPE}" in
+            NTSC) MM_X_REFRESH='60';;
+            PAL)  MM_X_REFRESH='50';;
+            *)    MM_X_REFRESH=''  ;;
+        esac
+        if /usr/bin/test -z "${MM_X_REFRESH}" ; then
+            /usr/bin/logger -t minimyth -p "local0.info" "determination of X refresh rate failed'."
+        else
+            /usr/bin/logger -t minimyth -p "local0.info" "auto-configured X refresh rate to '${MM_X_REFRESH}'."
+        fi
+    fi
+
+    # Auto-configure X mode.
+    if /usr/bin/test "${MM_X_MODE}" = "auto" ; then
+        # Do not set X mode since X resolution will be used to create an X mode line
+        if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_REFRESH}" ; then
+            MM_X_MODE=
+        else
+            /usr/bin/logger -t minimyth -p "local0.info" "MM_X_MODE is 'auto'. attempting to auto-configure X mode."
+            MM_X_MODE=
+            case ${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED} in
+                # TV only so we will use minimal TV resolutions
+                yes:no:no)
+                    case ${MM_X_DRIVER} in
+                        # openChrome driver has special TV resolutions that produce nicer output.
+                        via|via_pro)
+                            case ${MM_X_TV_TYPE} in
+                                NTSC) MM_X_MODE='720x480Noscale' ;;
+                                PAL)  MM_X_MODE='720x576Noscale' ;;
+                            esac
+                            ;;
+                        *)
+                            case ${MM_X_TV_TYPE} in
+                                NTSC) MM_X_MODE='720x480' ;;
+                                PAL)  MM_X_MODE='720x576' ;;
+                            esac
+                            ;;
+                    esac
+                    ;;
+                # Not TV only, so we will use minimal computer resolutions.
+                *)
+                    MM_X_MODE='640x480'
+                    ;;
+            esac
+            if /usr/bin/test -z "${MM_X_MODE}" ; then
+                /usr/bin/logger -t minimyth -p "local0.info" "determination of X mode failed'."
+            else
+                /usr/bin/logger -t minimyth -p "local0.info" "auto-configured X mode to '${MM_X_MODE}'."
+            fi
+        fi
+    fi
 
     MM_X_DEVICE_NVIDIA=""
     MM_X_DEVICE_VIA=""
@@ -35,28 +96,90 @@ start() {
     case "${MM_X_DRIVER}" in
         nvidia)
             if /usr/bin/test ! -n "${MM_X_DEVICE_NVIDIA}" ; then
-                mm_message_output err 'error: no X video output enabled'
+                mm_message_output err 'error: no X video output enabled.'
                 exit 1
             fi
             ;;
         via|via_pro)
             if /usr/bin/test ! -n "${MM_X_DEVICE_VIA}"    ; then
-                mm_message_output err 'error: no X video output enabled'
+                mm_message_output err 'error: no X video output enabled.'
                 exit 1
             fi
             ;;
     esac
 
-    # Override MM_X_MODE and MM_X_MODELINE if MM_X_RESOLUTION_X and MM_X_RESOLUTION_Y are set.
-    if   /usr/bin/test ! -z "${MM_X_RESOLUTION_X}" && /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}" ; then
-        MM_X_MODELINE=`/usr/bin/gtf ${MM_X_RESOLUTION_X} ${MM_X_RESOLUTION_Y} ${MM_X_REFRESH} | /bin/sed 's% *#.*%%'`
+    # Check the format of MM_X_RESOLUTION.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
+        echo ${MM_X_RESOLUTION} | grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_RESOLUTION' format is invalid'
+            exit 1
+        fi
+    fi
+
+    # Check the format of MM_X_MODE.
+    if /usr/bin/test -n "${MM_X_MODE}" ; then
+        echo ${MM_X_MODE} | grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err 'error: 'MM_X_MODE' format is invalid'
+            exit 1
+        fi
+    fi
+
+    # Override MM_X_MODE and MM_X_MODELINE when MM_X_RESOLUTION and MM_X_REFRESH are set.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_REFRESH}" ; then
+        X_RESOLUTION_X=`echo ${MM_X_RESOLUTION} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
+        X_RESOLUTION_Y=`echo ${MM_X_RESOLUTION} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
+        MM_X_MODELINE=`/usr/bin/gtf ${X_RESOLUTION_X} ${X_RESOLUTION_Y} ${MM_X_REFRESH} | /bin/sed 's% *#.*%%'`
         MM_X_MODELINE=`/bin/echo ${MM_X_MODELINE}`
         MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^Modeline "\([^"]*\)".*%\1%'`
     fi
 
-    # Set MM_X_DISPLAYSIZE
-    if   /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}" && /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}" ; then
-        MM_X_DISPLAYSIZE="DisplaySize ${MM_X_DISPLAYSIZE_X} ${MM_X_DISPLAYSIZE_Y}"
+    # Determine X display size (in millimeters).
+    X_RESOLUTION=
+    if   /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
+        X_RESOLUTION=`echo ${MM_X_RESOLUTION} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1x\2%'`
+    else
+        X_RESOLUTION=`echo ${MM_X_MODE}       | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1x\2%'`
+    fi
+    if /usr/bin/test -n "${X_RESOLUTION}" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "determined X resolution to be '${X_RESOLUTION}'."
+        X_RESOLUTION_X=`echo ${X_RESOLUTION} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
+        X_RESOLUTION_Y=`echo ${X_RESOLUTION} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
+        # MythTV is reported to work best at 100dots/inch.
+        # (100dots/inch) / (25.4inch/mm) ~ 4dots/mm
+        # Y in mm = (Y in dots) / (4dots/mm)
+        # Make Y a multiple of 3 (for 4:3) or 9 (for 16:9) so that X will be a whole number.
+        case ${MM_VIDEO_ASPECT_RATIO} in
+            4:3)
+                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 3)) * 3))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} *  4 / 3))
+                X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
+                ;;
+            16:9)
+                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 9)) * 9))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 / 9))
+                X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
+                ;;
+            *)
+                X_DISPLAYSIZE_Y=
+                X_DISPLAYSIZE_X=
+                X_DISPLAYSIZE=
+                ;;
+        esac
+    else
+        /usr/bin/logger -t minimyth -p "local0.info" "determination of X resolution failed'."
+    fi
+    if /usr/bin/test -n "${X_DISPLAYSIZE}" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "determined X display size to be '${X_DISPLAYSIZE}'."
+    else
+        /usr/bin/logger -t minimyth -p "local0.info" "determination of X display size failed."
+    fi
+
+    if /usr/bin/test -n "${X_DISPLAYSIZE}" ; then
+        X_DISPLAYSIZE_X=`echo ${X_DISPLAYSIZE} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\1%'`
+        X_DISPLAYSIZE_Y=`echo ${X_DISPLAYSIZE} | sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
+        MM_X_DISPLAYSIZE="DisplaySize ${X_DISPLAYSIZE_X} ${X_DISPLAYSIZE_Y}"
         MM_X_USE_EDID_DPI="false"
     else
         MM_X_DISPLAYSIZE=
