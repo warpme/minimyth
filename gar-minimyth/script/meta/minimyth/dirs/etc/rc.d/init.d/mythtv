@@ -48,12 +48,11 @@ start() {
         mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
     fi
 
-    # Create mysql.txt file.
-    echo ""                                 >  /root/.mythtv/mysql.txt
-    echo "DBHostName=${MM_MYTH_SERVER}"     >> /root/.mythtv/mysql.txt
-    echo "DBUserName=${MM_MYTH_DBUSERNAME}" >> /root/.mythtv/mysql.txt
-    echo "DBPassword=${MM_MYTH_DBPASSWORD}" >> /root/.mythtv/mysql.txt
-    echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
+    # Configure mysql.txt file.
+    sed -i "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%"         /root/.mythtv/mysql.txt
+    sed -i "s%@MM_MYTH_DBUSERNAME@%${MM_MYTH_DBUSERNAME}%" /root/.mythtv/mysql.txt
+    sed -i "s%@MM_MYTH_DBPASSWORD@%${MM_MYTH_DBPASSWORD}%" /root/.mythtv/mysql.txt
+    sed -i "s%@MM_MYTH_DBNAME@%${MM_MYTH_DBNAME}%"         /root/.mythtv/mysql.txt
 
     # Test Myth database connection.
     mm_mythdb_command_run

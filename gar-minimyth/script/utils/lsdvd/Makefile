@@ -1,7 +1,7 @@
 GARNAME = lsdvd
 GARVERSION = 0.16
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/acidrip/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNEM)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
