@@ -2,8 +2,6 @@
 
 . /etc/minimyth.d/minimyth.functions
 
-[ -n "${MMDEBUG}" ] && set -x
-
 # start ACPI daemon.
 acpid -S
 # Start telnet server daemon.
@@ -11,10 +9,10 @@ utelnetd -d
 # Start web server daemon.
 webfsd -u 0 -g 0 -p 80 -f index.html -r /etc/www -x /cgi -s
 # start NTP daemon
-if [ -n "${TIMESERVER}" ] ; then
-  ntpdate ${TIMESERVER}
+if [ -n ${MM_TIME_SERVER} ] ; then
+  ntpdate ${MM_TIME_SERVER}
   mkdir -p /tmp/etc
-  echo "server ${TIMESERVER}" > /etc/ntp.conf
+  echo "server ${MM_TIME_SERVER}" > /etc/ntp.conf
   ntpd
 fi
 
@@ -22,6 +20,6 @@ fi
 # seems like misc stuff is going in here
 #
 # check for PAL
-if [ "$TV" = "PAL" ]; then
+if [ "$MM_TV" = "PAL" ]; then
     sed -i "s%NTSC%PAL%" /etc/X11/xorg.conf
 fi

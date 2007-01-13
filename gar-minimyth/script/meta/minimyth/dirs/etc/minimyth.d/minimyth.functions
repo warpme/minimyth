@@ -1,10 +1,11 @@
-#!/bin/sh
 ################################################################################
 # minimyth.functions
 ################################################################################
 
 [ -r /etc/minimyth.d/dhcp.conf     ] && . /etc/minimyth.d/dhcp.conf
 [ -r /etc/minimyth.d/minimyth.conf ] && . /etc/minimyth.d/minimyth.conf
+
+[ -n ${MM_DEBUG} ] && set -x
 
 ################################################################################
 # mount_url
@@ -68,17 +69,17 @@ get_file() {
 
     mkdir -p `echo /tmp/${LOCAL_FILE} | sed 's%/[^/]*$%%'`
 
-    tftp -g -r ${TFTPROOT}/conf/`hostname`/${REMOTE_FILE} -l /tmp/${LOCAL_FILE} ${TFTPSERVER} || \
-    tftp -g -r ${TFTPROOT}/conf/${REMOTE_FILE}            -l /tmp/${LOCAL_FILE} ${TFTPSERVER} || \
-    cp         ${LOCAL_FILE}.default                         /tmp/${LOCAL_FILE}               || \
-    touch                                                    /tmp/${LOCAL_FILE}
+    tftp -g -r ${MM_TFTP_ROOTDIR}/conf/`hostname`/${REMOTE_FILE} -l /tmp/${LOCAL_FILE} ${MM_TFTP_SERVER} || \
+    tftp -g -r ${MM_TFTP_ROOTDIR}/conf/${REMOTE_FILE}            -l /tmp/${LOCAL_FILE} ${MM_TFTP_SERVER} || \
+    cp         ${LOCAL_FILE}.default                                /tmp/${LOCAL_FILE}                   || \
+    touch                                                           /tmp/${LOCAL_FILE}
 }
 
 execute_and_log() {
     COMMAND=$1
 
     LOGFILE=/dev/null
-    [ -z "${MMDEBUG}" ] && LOGFILE=/var/log/minimyth.log
+    [ -n ${MM_DEBUG} ] && LOGFILE=/var/log/minimyth.log
 
     echo "--- execution start: ${COMMAND}"  >> ${LOGFILE} 2>&1
     ${COMMAND}                              >> ${LOGFILE} 2>&1
