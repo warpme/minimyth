@@ -2,7 +2,7 @@ GARNAME = myth
 GARVERSION =
 CATEGORIES = myth
 
-DESCRIPTION =  Meta package for building the correct version of Myth
+DESCRIPTION = Meta package for building the correct version of Myth
 define BLURB
 endef
 
@@ -13,9 +13,9 @@ DEPENDS += myth/mythtv myth/myththemes myth/mythplugins myth/mythstream
 include ../../gar.mk
 
 pre-fetch:
-	@cd $(PWD)/.. ; ln -s mythtv-$(mm_MYTH_VERSION)      mythtv
-	@cd $(PWD)/.. ; ln -s myththemes-$(mm_MYTH_VERSION)  myththemes
-	@cd $(PWD)/.. ; ln -s mythplugins-$(mm_MYTH_VERSION) mythplugins
+	@cd $(PWD)/.. ; rm -rf mythtv      ; ln -s mythtv-$(mm_MYTH_VERSION)      mythtv
+	@cd $(PWD)/.. ; rm -rf myththemes  ; ln -s myththemes-$(mm_MYTH_VERSION)  myththemes
+	@cd $(PWD)/.. ; rm -rf mythplugins ; ln -s mythplugins-$(mm_MYTH_VERSION) mythplugins
 	@$(MAKECOOKIE)
 
 clean-all:

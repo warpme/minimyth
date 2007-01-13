@@ -16,6 +16,7 @@ CONFIGURE_SCRIPTS = unichrome libxvmc
 BUILD_SCRIPTS     = $(WORKSRC)/unichrome/Makefile $(WORKSRC)/libxvmc/Makefile
 INSTALL_SCRIPTS   = unichrome libxvmc
 
+GAR_EXTRA_CONF += X11/X11/package-api.mk
 include ../../gar.mk
 
 CppCmd       := $(shell echo $(CPP)    | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
@@ -27,7 +28,7 @@ AsCmd        := $(shell echo $(AS)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%
 ArCmd        := $(shell echo $(AR)     | sed 's%^$($(DESTIMG)_compiler_prefix)%%')
 
 configure-unichrome:
-	@cd $(WORKSRC)/unichrome ; xmkmf $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc
+	@cd $(WORKSRC)/unichrome ; xmkmf $(DESTDIR)$(X11_SOURCEDIR)
 	@sed -i "s%= $(ArCmd)%= $(AR)%"         $(WORKSRC)/unichrome/Makefile
 	@sed -i "s%= $(AsCmd)%= $(AS)%"         $(WORKSRC)/unichrome/Makefile
 	@sed -i "s%= $(CcCmd)%= $(CC)%"         $(WORKSRC)/unichrome/Makefile
@@ -38,7 +39,7 @@ configure-unichrome:
 	@$(MAKECOOKIE)
 
 configure-libxvmc:
-	@cd $(WORKSRC)/libxvmc; xmkmf $(mm_HOME)/script/X11/X11/$(WORKDIR)/xc
+	@cd $(WORKSRC)/libxvmc; xmkmf $(DESTDIR)$(X11_SOURCEDIR)
 	@sed -i "s%= $(ArCmd)%= $(AR)%"         $(WORKSRC)/libxvmc/Makefile
 	@sed -i "s%= $(AsCmd)%= $(AS)%"         $(WORKSRC)/libxvmc/Makefile
 	@sed -i "s%= $(CcCmd)%= $(CC)%"         $(WORKSRC)/libxvmc/Makefile

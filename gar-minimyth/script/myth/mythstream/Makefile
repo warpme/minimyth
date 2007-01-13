@@ -29,10 +29,12 @@ BUILD_ENV     += \
 INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
+
+GAR_EXTRA_CONF += myth/mythtv/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@ln -sf $(DESTDIR)$(sourcedir)/mythtv $(WORKSRC)/mythstream/mythtv
+	@ln -sf $(DESTDIR)$(MYTHTV_SOURCEDIR) $(WORKSRC)/mythstream/mythtv
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

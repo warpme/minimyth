@@ -81,6 +81,8 @@ configure-%/mythtv:
 	@$(MAKECOOKIE)
 
 install-source:
-	@mkdir -p $(DESTDIR)$(sourcedir)
-	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/mythtv
+	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@mkdir -p $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@$(MAKECOOKIE)

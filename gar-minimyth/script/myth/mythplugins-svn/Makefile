@@ -11,13 +11,13 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c myth/mythtv
+DEPENDS  = lang/c myth/mythtv X11/Mesa
 # mythdvd
 DEPENDS += lib/libdvdread
 # mythgallery
 DEPENDS += lib/libexif lib/libtiff
 # mythmusic
-DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/Mesa X11/SDL
+DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/SDL
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -32,7 +32,6 @@ CONFIGURE_ARGS += \
 		--enable-vcd \
 	--enable-mythgallery \
 		--enable-exif \
-		--disable-new-exif \
 	--enable-mythmusic \
 		--enable-fftw \
 		--enable-sdl \

@@ -19,18 +19,20 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += X11/X11
 endif
 
+PWD := $(shell pwd)
+
 WORKSRC = $(WORKDIR)/xc
 
 CONFIGURE_SCRIPTS = os directory compiler installed_hardware installed_software X11_fonts X11_docs X11_misc
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 BUILD_ARGS = World
 ifneq ($(DESTIMG),build)
 BUILD_ARGS += CROSSCOMPILEDIR="$(build_DESTDIR)$(build_prefix)/$(GARHOST)/bin"
 endif
 
-GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk kernel/linux/package-api.mk X11/fontconfig/package-api.mk
+GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk kernel/linux/package-api.mk X11/fontconfig/package-api.mk X11/X11/package-api.mk
 include ../../gar.mk
 
 CDebugFlags  := $(filter-out $(CPPFLAGS) $(LDFLAGS), $(CFLAGS))
@@ -243,6 +245,13 @@ configure-X11_misc:
 	@$(call CONFIG_FILE_APPEND, BuildOSMesaLib            , NO)
 	@$(call CONFIG_FILE_APPEND, BuildXterm                , NO)
 	@$(call CONFIG_FILE_APPEND, BuildIPv6                 , NO)
+	@$(MAKECOOKIE)
+
+install-source:
+	@rm -rf $(DESTDIR)$(X11_SOURCEDIR)
+	@mkdir -p $(DESTDIR)$(X11_SOURCEDIR)
+	@rm -rf $(DESTDIR)$(X11_SOURCEDIR)
+	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(X11_SOURCEDIR)
 	@$(MAKECOOKIE)
 
 post-install:

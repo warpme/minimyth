@@ -4,22 +4,20 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-mythconfig.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-remove_import_menu_items.patch $(DISTNAME)-mythconfig.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS  = lang/c myth/mythtv
+DEPENDS  = lang/c myth/mythtv X11/Mesa
 # mythdvd
 DEPENDS += lib/libdvdread
 # mythgallery
 DEPENDS += lib/libexif lib/libtiff
 # mythmusic
 DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis X11/SDL
-# misc
-DEPENDS += lib/libdvdread
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -28,25 +26,19 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS += \
 	--prefix="$(prefix)" \
+	--disable-all \
 	--enable-opengl \
-	--disable-mythbrowser \
-	--disable-mythcontrols \
 	--enable-mythdvd \
-		--disable-transcode \
 		--enable-vcd \
 	--enable-mythgallery \
 		--enable-exif \
-	--disable-mythgame \
 	--enable-mythmusic \
 		--enable-fftw \
 		--enable-sdl \
 		--enable-aac \
 	--enable-mythnews \
-	--disable-mythphone \
-		--disable-festival \
 	--enable-mythvideo \
 	--enable-mythweather
-
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \

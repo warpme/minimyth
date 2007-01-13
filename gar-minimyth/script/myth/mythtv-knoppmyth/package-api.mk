@@ -1,1 +1,3 @@
 MYTHTV_VERSION = 7426
+
+MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
