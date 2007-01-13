@@ -22,7 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--disable-debug \
 	--disable-strict-ansi \
-	--disable-audio \
+	--enable-audio \
 	--enable-video \
 	--enable-events \
 	--disable-joystick \
@@ -79,7 +79,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-directx \
 	--disable-video-qtopia \
 	--disable-video-picogui \
-	--disable-sdl-dlopen \
+	--enable-sdl-dlopen \
 	--disable-atari-ldg \
 	--with-gnu-ld \
 	--with-x
