@@ -40,8 +40,20 @@ conf_check() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING_<setting>" is obsolete.'
         exit 1
     fi
+    if /usr/bin/test ! -z "${MM_HARDWARE_AUDIO}"       ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_AUDIO" is obsolete.'
+        exit 1
+    fi
     if /usr/bin/test ! -z "${MM_HARDWARE_CHIPSET}"     ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_CHIPSET" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_HARDWARE_LAN}"         ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_LAN" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_HARDWARE_MOTHERBOARD}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_MOTHERBOARD" is obsolete.'
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_HARDWARE_NORTHBRIDGE}" ; then
@@ -52,24 +64,20 @@ conf_check() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SOUTHBRIDGE" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_HARDWARE_LAN}"         ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_LAN" is obsolete.'
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_HARDWARE_AUDIO}"       ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_AUDIO" is obsolete.'
+    if /usr/bin/test ! -z "${MM_HARDWARE_SENSOR}"      ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SENSOR" is obsolete.'
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_HARDWARE_TV}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_TV" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_HARDWARE_SENSOR}"      ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_HARDWARE_SENSOR" is obsolete.'
-        exit 1
-    fi
     if /usr/bin/test ! -z "${MM_NAME_SERVER}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_NO_VNC}"               ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_NO_X}"                 ; then
@@ -78,10 +86,6 @@ conf_check() {
     fi
     if /usr/bin/test ! -z "${MM_NO_XWM}"               ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_NO_VNC}"               ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_SOUND}"                ; then
@@ -133,9 +137,6 @@ conf_write() {
     # Read MiniMyth environment variables from the MiniMyth configuration file.
     /usr/bin/test -r /etc/minimyth.d/minimyth.conf && \
 	. /etc/minimyth.d/minimyth.conf
-    # Read motherboard hardware specific configuration file.
-    /usr/bin/test -n "${MM_HARDWARE_MOTHERBOARD}" && /usr/bin/test -r /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf && \
-	. /etc/hardware.d/motherboard.${MM_HARDWARE_MOTHERBOARD}.conf
     # Read LIRC driver specific configuration file.
     /usr/bin/test -n "${MM_LIRC_DRIVER}" && /usr/bin/test -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf && \
 	. /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf
@@ -153,11 +154,13 @@ conf_write() {
     # DCHP provided parameters.
     MM_HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
     MM_DOMAIN=${MM_DOMAIN:-${MM_DHCP_DOMAIN}}
-    MM_DNS_SERVERS=${MM_DNS_SERVER:-${MM_DHCP_DNS_SERVERS}}
+    MM_DNS_SERVERS=${MM_DNS_SERVERS:-${MM_DHCP_DNS_SERVERS}}
     MM_NTP_SERVERS=${MM_NTP_SERVERS:-${MM_DHCP_NTP_SERVERS}}
     MM_LOG_SERVERS=${MM_LOG_SERVERS:-${MM_DHCP_LOG_SERVERS}}
     # Default hardware.
+    MM_HARDWARE_MOTHERBOARD=${MM_HARDWARE_MOTHERBOARD:-`mm_hardware_pci_process mm_hardware_pci2motherboard_map | /usr/bin/cut -d ' ' -f 1`}
     MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-`mm_hardware_cpu_get`}
+    MM_HARDWARE_KERNEL_MODULES="${MM_HARDWARE_KERNEL_MODULES} `mm_hardware_motherboard2kernel_map ${MM_HARDWARE_MOTHERBOARD}`"
     # Default CPU frequency governor.
     MM_CPUFREQ_GOVERNOR=${MM_CPUFREQ_GOVERNOR:-'performance'}
     # Default audio.
@@ -167,7 +170,7 @@ conf_write() {
     MM_VIDEO_DEINTERLACE_ENABLED=${MM_VIDEO_DEINTERLACE_ENABLED:-'no'}
     # Default X.
     MM_X_DRIVER=${MM_X_DRIVER:-`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`}
-    MM_X_KERNEL_MODULES=${MM_X_KERNEL_MODULES:-`mm_hardware_x2kernel_map "${MM_X_DRIVER}"`}
+    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-`mm_hardware_x2kernel_map "${MM_X_DRIVER}"`}
     MM_X_ENABLED=${MM_X_ENABLED:-'yes'}
     MM_X_WM_ENABLED=${MM_X_WM_ENABLED:-'no'}
     MM_X_VNC_ENABLED=${MM_X_VNC_ENABLED:-'yes'}
@@ -241,7 +244,6 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO           "${MM_VIDEO_ASPECT_RATIO}"
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED    "${MM_VIDEO_DEINTERLACE_ENABLED}"
     # Write X.
-    conf_variable_write "${conf_file}" MM_X_KERNEL_MODULES             "${MM_X_KERNEL_MODULES}"
     conf_variable_write "${conf_file}" MM_X_DRIVER                     "${MM_X_DRIVER}"
     conf_variable_write "${conf_file}" MM_X_DRIVER_TV                  "${MM_X_DRIVER_TV}"
     conf_variable_write "${conf_file}" MM_X_ENABLED                    "${MM_X_ENABLED}"

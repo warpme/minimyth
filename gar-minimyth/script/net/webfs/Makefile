@@ -17,13 +17,14 @@ INSTALL_SCRIPTS = $(WORKSRC)/GNUmakefile
 
 BUILD_ARGS = verbose=yes
 
-extract-Make.config:
-	@cp $(DOWNLOADDIR)/Make.config $(WORKSRC)
-	@$(MAKECOOKIE)
-
 BUILD_OVERRIDE_DIRS   = prefix bindir mandir locdir
 INSTALL_OVERRIDE_DIRS = prefix bindir mandir locdir
 
 include ../../gar.mk
 
 locdir := $(datadir)/locale
+
+extract-Make.config:
+	@cp $(DOWNLOADDIR)/Make.config $(WORKSRC)
+	@$(MAKECOOKIE)
+
