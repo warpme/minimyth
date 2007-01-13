@@ -1,10 +1,7 @@
 GARNAME = fontconfig
 GARVERSION = 2.2.3
 CATEGORIES = X11
-MASTER_SITES = http://www.freedesktop.org/software/fontconfig/releases/
-# This site is needed until freedesktop.org is up-to-date
-# (freedesktop.org was hacked and has not been fully restored).
-MASTER_SITES += ftp://ftp.fu-berlin.de/unix/linux/mirrors/gentoo/distfiles/
+MASTER_SITES = http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = fontconfig
 fontconfig_LICENSE_TEXT = $(WORKSRC)/COPYING

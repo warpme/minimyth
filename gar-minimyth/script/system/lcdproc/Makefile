@@ -1,7 +1,7 @@
 GARNAME = lcdproc
 GARVERSION = 0.4.5
 CATEGORIES = system
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 

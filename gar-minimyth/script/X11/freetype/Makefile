@@ -1,7 +1,7 @@
 GARNAME = freetype
 GARVERSION = 2.1.9
 CATEGORIES = X11
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = gar-base.diff
 LICENSE = FTL/GPL2

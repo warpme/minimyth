@@ -1,7 +1,7 @@
 GARNAME = rxvt
 GARVERSION = 2.6.4
 CATEGORIES = X11
-MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
