@@ -10,16 +10,20 @@ mm_EXTRASDIR := $(PWD)/$(WORKSRC)/extras.d
 
 MM_BIN_FILES    := $(strip \
 	$(if $(wildcard               minimyth-bin-list   ),               minimyth-bin-list   ) \
-	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ))
+	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ) \
+	$(filter $(patsubst %,minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-bin-list.*)))
 MM_LIB_FILES    := $(strip \
 	$(if $(wildcard               minimyth-lib-list   ),               minimyth-lib-list   ) \
-	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ))
+	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ) \
+	$(filter $(patsubst %,minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-lib-list.*)))
 MM_ETC_FILES    := $(strip \
 	$(if $(wildcard               minimyth-etc-list   ),               minimyth-etc-list   ) \
-	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ))
+	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ) \
+	$(filter $(patsubst %,minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-etc-list.*)))
 MM_SHARE_FILES  := $(strip \
 	$(if $(wildcard               minimyth-share-list ),               minimyth-share-list ) \
-	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ))
+	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ) \
+	$(filter $(patsubst %,minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard               minimyth-remove-list),               minimyth-remove-list) \
 	$(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)))
@@ -46,7 +50,8 @@ libdirs_base := \
 	$(qtlibdir)
 libdirs := \
 	$(libdir)/xorg/modules \
-	$(libdir)/nvidia \
+	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia) \
+	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia/xorg/modules) \
 	$(libdirs_base)
 etcdirs :=  \
 	$(extras_sysconfdir) \
@@ -73,6 +78,46 @@ LIST_LIBS = \
 			| cut -d' ' -f 2 \
 		) \
 	)
+
+# $1 = file type label plural.
+# $2 = file type label singular.
+# $3 = file directories.
+# $4 = files.
+COPY_FILES = \
+	echo "copying $(strip $(1))" ; \
+	for dir in $(strip $(3)) ; do \
+		mkdir -p $(mm_ROOTFSDIR)$${dir} ; \
+	done ; \
+	for file_item in $(strip $(4)) ; do \
+		found="" ; \
+		for dir in $(strip $(3)) ; do \
+			file_list="" ; \
+			if test -e $(DESTDIR)/$${dir} ; then \
+				file_list=`cd $(DESTDIR)/$${dir} ; ls -1d $${file_item} 2> /dev/null` ; \
+			fi ; \
+			for file in $${file_list} ; do \
+				if test -e $(DESTDIR)/$${dir}/$${file} ; then \
+					found="true" ; \
+					source_file="$(DESTDIR)/$${dir}/$${file}" ; \
+					target_file="$(mm_ROOTFSDIR)/$${dir}/$${file}" ; \
+					if test ! -e $${target_file} ; then \
+						if test -d $${source_file} ; then \
+                                       			target_dir=`dirname $${target_file}` ; \
+                                       			mkdir -p $${target_dir} ; \
+							cp -fa  $${source_file} $${target_file} ; \
+						else \
+                                       			target_dir=`dirname $${target_file}` ; \
+                                       			mkdir -p $${target_dir} ; \
+							cp -f  $${source_file} $${target_file} ; \
+						fi ; \
+					fi ; \
+				fi ; \
+			done ; \
+		done ; \
+		if test -z $${found} ; then \
+			echo "warning: $(strip $(2)) \"$${file_item}\" not found." ; \
+		fi ; \
+	done
 
 mm-all:
 
@@ -118,144 +163,19 @@ mm-make-busybox:
 	@main_DESTDIR=$(mm_ROOTFSDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_ROOTFSDIR)/var
 
-mm-copy: mm-copy-kernel mm-copy-qt mm-copy-mythtv mm-copy-x11 mm-copy-bins mm-copy-etcs mm-copy-shares mm-copy-libs
-
-mm-copy-kernel:
+mm-copy:
+	@# Copy kernel.
 	@mkdir -p $(WORKSRC)
 	@cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(WORKSRC)/$(mm_KERNELNAME)
-	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)
-	@cp -fa $(DESTDIR)$(elibdir)/modules $(mm_ROOTFSDIR)$(elibdir)
-
-mm-copy-qt:
+	@# Copy QT mysql plugin.
 	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
 	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers   $(mm_ROOTFSDIR)$(qtprefix)/plugins
-
-mm-copy-mythtv:
-	@mkdir -p $(mm_ROOTFSDIR)$(datadir)
-	@cp -fa $(DESTDIR)$(datadir)/mythtv $(mm_ROOTFSDIR)$(datadir)
-	@mkdir -p $(mm_ROOTFSDIR)$(libdir)
-	@cp -fa $(DESTDIR)$(libdir)/mythtv $(mm_ROOTFSDIR)$(libdir)
-
-mm-copy-x11:
-	@mkdir -p $(mm_ROOTFSDIR)$(libdir)/xorg
-	@cp -fa $(DESTDIR)$(libdir)/xorg/modules        $(mm_ROOTFSDIR)$(libdir)/xorg
-	@mkdir -p $(mm_ROOTFSDIR)$(libdir)/nvidia/xorg
-	@cp -fa $(DESTDIR)$(libdir)/nvidia/xorg/modules $(mm_ROOTFSDIR)$(libdir)/nvidia/xorg
-	@mkdir -p $(mm_ROOTFSDIR)$(prefix)/share/X11
-	@cp -fa $(DESTDIR)$(prefix)/share/X11/rgb.txt $(mm_ROOTFSDIR)$(prefix)/share/X11
-	@mkdir -p $(mm_ROOTFSDIR)$(libdir)/X11/fonts
-	@cp -fa $(DESTDIR)$(libdir)/X11/fonts/TTF $(mm_ROOTFSDIR)$(libdir)/X11/fonts
-	@cp -fa $(DESTDIR)$(libdir)/X11/fonts/misc $(mm_ROOTFSDIR)$(libdir)/X11/fonts
-	@mkdir -p $(mm_ROOTFSDIR)$(libdir)/xserver
-	@cp -fa $(DESTDIR)$(libdir)/xserver/SecurityPolicy $(mm_ROOTFSDIR)$(libdir)/xserver
-
-mm-copy-bins:
-	@echo 'copying binaries'
-	@$(foreach dir, $(bindirs), mkdir -p $(mm_ROOTFSDIR)$(dir) ;)
-	@$(foreach dir, $(libdirs), mkdir -p $(mm_ROOTFSDIR)$(dir) ;)
-	@for bin in $(MM_BINS) ; do \
-		bindir="" ; \
-		for dir in $(bindirs) ; do \
-			if test -e $(DESTDIR)/$${dir}/$${bin} ; then \
-				bindir=$${dir} ; \
-				break ; \
-			fi ; \
-		done ; \
-		if test ! -z $${bindir} ; then \
-			source_bin="$(DESTDIR)/$${bindir}/$${bin}" ; \
-			target_bin="$(mm_ROOTFSDIR)/$${bindir}/$${bin}" ; \
-			if test ! -e $${target_bin} ; then \
-                                target_dir=`dirname $${target_bin}` ; \
-                                mkdir -p $${target_dir} ; \
-				cp -fa  $${source_bin} $${target_bin} ; \
-			fi ; \
-		else \
-			echo "warning: binary \"$${bin}\" not found." ; \
-		fi ; \
-	done
-	@cp ./dirs/usr/bin/* $(mm_ROOTFSDIR)$(bindir)/
-
-mm-copy-etcs:
-	@echo 'copying etcs'
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)
-	@for etc in $(MM_ETCS) ; do \
-		etcdir="" ; \
-		for dir in $(etcdirs) ; do \
-			if test -e $(DESTDIR)/$${dir}/$${etc} ; then \
-				etcdir=$${dir} ; \
-				break ; \
-			fi ; \
-		done ; \
-		if test ! -z $${etcdir} ; then \
-			source_etc="$(DESTDIR)/$${etcdir}/$${etc}" ; \
-			target_etc="$(mm_ROOTFSDIR)/$${etcdir}/$${etc}" ; \
-			if test -e $${source_etc} ; then \
-				if test ! -e $${target_etc} ; then \
-                                        target_dir=`dirname $${target_etc}` ; \
-                                        mkdir -p $${target_dir} ; \
-					cp -fa  $${source_etc} $${target_etc} ; \
-				fi ; \
-			fi ; \
-		else \
-			echo "warning: etc \"$${etc}\" not found." ; \
-		fi ; \
-	done
-
-mm-copy-shares:
-	@echo 'copying shares'
-	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)
-	@for share in $(MM_SHARES) ; do \
-		sharedir="" ; \
-		for dir in $(sharedirs) ; do \
-			if test -e $(DESTDIR)/$${dir}/$${share} ; then \
-				sharedir=$${dir} ; \
-				break ; \
-			fi ; \
-		done ; \
-		if test ! -z $${sharedir} ; then \
-			source_share="$(DESTDIR)/$${sharedir}/$${share}" ; \
-			target_share="$(mm_ROOTFSDIR)/$${sharedir}/$${share}" ; \
-			if test -e $${source_share} ; then \
-				if test ! -e $${target_share} ; then \
-                                        target_dir=`dirname $${target_share}` ; \
-                                        mkdir -p $${target_dir} ; \
-					cp -fa  $${source_share} $${target_share} ; \
-				fi ; \
-			fi ; \
-		else \
-			echo "warning: share \"$${share}\" not found." ; \
-		fi ; \
-	done
-
-mm-copy-libs:
-	@echo 'copying shared libraries'
-	@$(foreach dir, $(libdirs), mkdir -p $(mm_ROOTFSDIR)$(dir) ;)
-	@for lib in $(MM_LIBS) ; do \
-		libdir="" ; \
-		for dir in $(libdirs) ; do \
-			if test -e $(DESTDIR)/$${dir}/$${lib} ; then \
-				libdir=$${dir} ; \
-				if test ! -z $${libdir} ; then \
-					source_lib="$(DESTDIR)/$${libdir}/$${lib}" ; \
-					target_lib="$(mm_ROOTFSDIR)/$${libdir}/$${lib}" ; \
-					if test ! -e $${target_lib} ; then \
-						if test -d $${source_lib} ; then \
-                                        		target_dir=`dirname $${target_lib}` ; \
-                                        		mkdir -p $${target_dir} ; \
-							cp -fa  $${source_lib} $${target_lib} ; \
-						else \
-                                        		target_dir=`dirname $${target_lib}` ; \
-                                        		mkdir -p $${target_dir} ; \
-							cp -f  $${source_lib} $${target_lib} ; \
-						fi ; \
-					fi ; \
-				fi ; \
-			fi ; \
-		done ; \
-		if test -z $${libdir} ; then \
-			echo "warning: library \"$${lib}\" not found." ; \
-		fi ; \
-	done
+	@# Copy binaries, etcs, shares, and libraries.
+	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
+	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
+	@$(call COPY_FILES, "shares"   , "share"  , $(sharedirs), $(MM_SHARES))
+	@$(call COPY_FILES, "libraries", "library", $(libdirs)  , $(MM_LIBS)  )
+	@# Copy dependent libraries.
 	@make -s -f minimyth.mk mm-$(mm_ROOTFSDIR)/copy-libs DESTIMG=$(DESTIMG)
 
 mm-%/copy-libs:
