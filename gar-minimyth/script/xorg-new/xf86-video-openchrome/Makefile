@@ -1,5 +1,5 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 181
+GARVERSION = 186
 CATEGORIES = xorg-new
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -32,9 +32,10 @@ checksum-$(DISTNAME).tar.bz2:
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"       >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"     >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"        >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"  >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"      >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/xf86Module.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
