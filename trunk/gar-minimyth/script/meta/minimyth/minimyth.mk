@@ -115,6 +115,7 @@ mm-make-dirs:
 	@mkdir -p $(mm_DESTDIR)$(sharedstatedir)
 	@mkdir -p $(mm_DESTDIR)$(localstatedir)
 	@mkdir -p $(mm_DESTDIR)/dev
+	@mkdir -p $(mm_DESTDIR)/media
 	@mkdir -p $(mm_DESTDIR)/mnt
 	@mkdir -p $(mm_DESTDIR)/proc
 	@mkdir -p $(mm_DESTDIR)/sys
@@ -320,7 +321,7 @@ mm-%/strip:
 	fi
 
 mm-make-udev:
-	$(foreach file, $(shell cd ./dirs ; ls -1 udev/bin/*          ), install -m 755 -D ./dirs/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs ; ls -1 udev/scripts.d/*    ), install -m 755 -D ./dirs/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 	$(foreach file, $(shell cd ./dirs ; ls -1 udev/rules.d/*.rules), install -m 644 -D ./dirs/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 
 mm-make-extras:
