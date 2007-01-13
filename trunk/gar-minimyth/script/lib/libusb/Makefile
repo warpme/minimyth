@@ -23,6 +23,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@cd $(WORKSRC) ; aclocal
+	@cd $(WORKSRC) ; libtoolize --copy --force
+	@cd $(WORKSRC) ; autoconf
+	$(MAKECOOKIE)
+
 post-install:
 	rm -f $(DESTDIR)$(libdir)/libusb.la
 	$(MAKECOOKIE)
