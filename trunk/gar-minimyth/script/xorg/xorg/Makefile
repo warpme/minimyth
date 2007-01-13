@@ -11,6 +11,7 @@ DEPENDS = \
 	xorg/xorg-server \
 	xorg/xf86-input-keyboard \
 	xorg/xf86-input-mouse \
+	xorg/xf86-video-i810 \
 	xorg/xf86-video-openchrome \
 	xorg/font-alias \
 	xorg/font-bh-ttf \

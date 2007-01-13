@@ -12,18 +12,17 @@ start() {
 
     # Configure XvMC.
     case "${MM_X_DRIVER}" in
+        intel_810)
+            sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
+            ;;
         nvidia)
             sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
             ;;
         via)
-            case "${MM_HARDWARE_NORTHBRIDGE}" in
-                CLE266)
-                    sed -i "s%@MM_XVMC_LIB@%viaXvMC%"    /etc/X11/XvMCConfig
-                    ;;
-                CN400)
-                    sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%" /etc/X11/XvMCConfig
-                    ;;
-            esac
+            sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
+            ;;
+        via_pro)
+            sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
             ;;
     esac
 
@@ -51,7 +50,7 @@ start() {
                 exit 1
             fi
             ;;
-        via)
+        via|via_pro)
             if [ ! -n "${MM_X_DEVICE_VIA}"    ] ; then
                 mm_message_output err 'error: no X video output enabled'
                 exit 1
@@ -83,6 +82,10 @@ start() {
     # Hacks to deal with the fact that the proprietary NVIDIA GL libraries
     # conflict with the Open Source Mesa GL libraries.
     case "${MM_X_DRIVER}" in
+        intel_i810|intel_i830|intel_i915)
+            MM_X_MODULE_DRI="Load	\"dri\""
+            MM_X_MODULEPATH=""
+            ;;
         nvidia)
             # Do not include dri module.
             MM_X_MODULE_DRI=""
@@ -102,7 +105,7 @@ start() {
             # Rebuild library cache.
             ldconfig
             ;;
-        via)
+        via|via_pro)
             MM_X_MODULE_DRI="Load	\"dri\""
             MM_X_MODULEPATH=""
             ;;

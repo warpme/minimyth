@@ -52,6 +52,12 @@ install-custom:
 	@rm -f $(DESTDIR)$(libdir)/libGLw.* ; \
 		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(libdir)/
 	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/dri
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i810_dri.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i810_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i830_dri.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i830_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i915_dri.* ; \
+		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i915_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/unichrome_dri.* ; \
 		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/unichrome_dri.* $(DESTDIR)$(libdir)/xorg/modules/dri/
 	@mkdir -p $(DESTDIR)$(bindir)

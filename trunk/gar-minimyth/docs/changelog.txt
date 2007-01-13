@@ -3,6 +3,13 @@ MiniMyth Changelog
 --------------------------------------------------------------------------------
 Changes since 0.19:
 
+Added Intel support:
+    Added initial support for Intel chipset based motherboards. Currently,
+        there is untested support for the Commell LV-675 motherboard.
+    By default, Intel support is not included in the binaries. To add Intel
+        support to the binaries, set mm_CHIPSETS to 'intel via' in
+        minimyth.conf.mk.
+
 Added master backend wake-on-lan support:
     Added minimyth.conf variables MM_MYTH_WOL_ENABLED, MM_MYTH_WOL_MAC,
         MM_MYTH_WOLSQLRECONNECTWAITTIME, MM_MYTH_WOLSQLCONNECTRETRY, and
@@ -10,10 +17,18 @@ Added master backend wake-on-lan support:
     Disabled myth database access during init when wake-on-lan is enabled.
     Added package 'net/wakelan'.
 
+Updated init:
+    Moved checking of DHCP provided values until after the telnet daemon
+        is started so that users can debug DCHP problems by telnetting in.
+    Changed MM_HARDWARE_* values to include both the manufacturer name and
+        part number, not just the part number. With the inclusion of Intel
+        and NVIDIA based motherboards, it was getting confusing.
+
 Added packages
     Added net/wakelan.
 
 Updated packages
+    Updated db/mysql.
     Updated kernel/drm.
     Updated lib/libtiff.
     Updated myth/myth*-stable19.

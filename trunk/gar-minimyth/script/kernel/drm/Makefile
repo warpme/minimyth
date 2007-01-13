@@ -14,7 +14,7 @@ BUILDDEPS = kernel/module-init-tools
 
 WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-core
 
-DRM_MODULES = via
+DRM_MODULES = i810 i830 i915 via
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
