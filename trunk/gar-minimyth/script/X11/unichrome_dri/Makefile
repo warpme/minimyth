@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 20050203
+GARVERSION = 20050210
 CATEGORIES = X11
 MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/mesa/
 DISTFILES = $(DISTNAME).tar.bz2
