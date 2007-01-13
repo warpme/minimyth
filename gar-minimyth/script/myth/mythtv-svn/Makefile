@@ -45,17 +45,19 @@ CONFIGURE_ARGS = \
 	--disable-joystick-menu \
 	--disable-firewire \
 	--disable-dbox2 \
+	--disable-hdhomerun \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
 	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
-	--disable-dvb-eit \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-xvmc \
 	--enable-xvmc-pro \
+	--disable-xvmc-opengl \
+	--xvmc-lib=XvMCW \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \

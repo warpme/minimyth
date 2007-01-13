@@ -25,6 +25,7 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS += \
 	--prefix="$(prefix)" \
+	--libdir-name="lib" \
 	--disable-all \
 	--enable-opengl \
 	--enable-mythdvd \
