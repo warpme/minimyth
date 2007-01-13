@@ -1,9 +1,8 @@
 GARNAME = zlib
-GARVERSION = 1.2.2
+GARVERSION = 1.2.3
 CATEGORIES = lib
-MASTER_SITES = http://www.libpng.org/pub/png/src/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libpng/
 DISTFILES = $(DISTNAME).tar.gz license
-PATCHFILES = $(DISTNAME)-can-2005-2096.patch
 LICENSE = zlib
 zlib_LICENSE_TEXT = $(WORKDIR)/license
 
