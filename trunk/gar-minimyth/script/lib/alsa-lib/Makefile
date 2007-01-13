@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.12rc1
+GARVERSION = 1.0.12rc2
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,16 +26,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal
-	@cd $(WORKSRC) ; libtoolize --copy --force
-	@cd $(WORKSRC) ; autoconf
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
 	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
-	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
 post-install:
