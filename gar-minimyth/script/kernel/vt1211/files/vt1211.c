@@ -21,6 +21,22 @@
 
 
     Adapted to Linux 2.6 kernel by Lars Ekman <emil71se@yahoo.com>
+
+    Updates (latest first):
+
+    Sat Mar 19 11:23:36 CET 2005 -
+	Preparations for official release;
+	    - Remove all the #ifdef stuff (ALL_SENSORS and no convertion 
+	      is now default).
+	    - Remove normal_xxx_range defines which cause compile warnings.
+	    - Remove uch_config  initialization in vt1211_init_client 
+	      (trust the BIOS initialization instead, or use setting in 
+	      sensors.conf)
+    Tue Oct  5 17:17:01 CEST 2004 -
+	Corrected faulty return value in "show_temp_hyst()".
+    Sun Sep 26 09:14:36 CEST 2004 -
+	Register conversion optional (disabled by default)
+
 */
 
 /* Supports VIA VT1211 Super I/O sensors via ISA (LPC) accesses only. */
@@ -34,22 +50,26 @@
 #include <asm/io.h>
 
 /*
-  If ALL_SENSORS is defined code (and /sys files) for all sensors in
-  the original vt1211.c are included. If ALL_SENSORS is un-defined only
-  the ones which seems to be "known" in the example "/etc/sensors.conf"
-  are included.
+  Even if the register values are not converted to uasable units in
+  the driver, the values should still be multiplied with some
+  factor. This factor seems to be 10 for 2.4 versions and 1000 now for
+  2.6. The multiplier for "in" values (voltages) was commented out in
+  the 2.4 version, and I don't know the correct setting for 2.6 yet.
+  Since there is still some confusion around this I made
+  easy-to-change macros for the factors.
+ */
+#define TEMP3_MULTIPLIER 1000
+#define TEMP_MULTIPLIER 1000
+#define IN_MULTIPLIER 10		/* Or what? */
 
-#define ALL_SENSORS
-*/
+
 static int force_addr = 0;
 MODULE_PARM(force_addr, "i");
 MODULE_PARM_DESC(force_addr,
 		 "Initialize the base address of the sensors");
 
 static unsigned short normal_i2c[] = { I2C_CLIENT_END };
-static unsigned short normal_i2c_range[] = { I2C_CLIENT_END };
 static unsigned int normal_isa[] = { 0x0000, I2C_CLIENT_ISA_END };
-static unsigned int normal_isa_range[] = { I2C_CLIENT_ISA_END };
 
 SENSORS_INSMOD_1(vt1211);
 
@@ -162,120 +182,19 @@ static const u8 reghyst[] = { 0x3a, 0x3e, 0x1e, 0x2c, 0x2e, 0x30, 0x32 };
 #define PWM_FROM_REG(val) (val)
 #define PWM_TO_REG(val) SENSORS_LIMIT((val), 0, 255)
 
-
-/*
-  "temp3" is the the CPU temp.
-  From the example "etc/sensors.conf" for vt1211;
-
-	compute temp3  (@ - 65) / 0.9686,  (@ * 0.9686) + 65
-
-  The 10 bits seems to be fixed point 8.2 bit. Which gives this
-  formula for "temp3" (val in millidegree Celcius);
-
-	val = 1000 * (reg - (65*4)) / 4 / 0.9686   =>
-	val = 258 * (reg - 260)
-
-  or for 8 bit registers;
-
-	val = 1032 * (reg - 65)
-
-  (BTW: 67596 = 65.5 * 1032)
- */
-#define TEMP3_FROM_REG10(val) (258 * ((int)val - 260))
-#define TEMP3_FROM_REG(val) (1032 * ((int)val - 65))
-#define TEMP3_TO_REG(val) (SENSORS_LIMIT(((val + 67596) / 1032),0,255))
-
-/* 
-   Others temeratures than "temp3" are thermistor values.
-   This should be a FP computation including a ln(x) operation
-   which is be implemented as a lookup table (see "via686a.c").
-
-   Here is the formula from "/etc/sensors.conf" ('`' is the ln(x));
-
-   (1 / (((1 / 3435) * (` ((253 - @) / (@ - 43)))) + (1 / 298.15)))  - 273.15
-
-   Based on this a table is computed. The values are in 1/100 degrees
-   Celsius. Values <44 and >253 gives invalid values in the ln(x).
-
-   The "via686a.c" seems much more sophisticated and scientific. I
-   don't know why. This is just a table from the formula above. Here
-   is the computation loop;
-
-	for (i = 44; i < 253; i++) {
-		double reg = (double)i;
-		double temp;
-		int itemp;
-		temp = 1 / (
-			((1.0/3435.0) * log((253.0 - reg)/(reg-43.0)))
-			+ (1.0 / 298.15)
-			) - 273.15;
-		itemp = temp*100;
-		table[i] = itemp;
-	}
-
-*/
-short int const reg2temp[256] = {
- /*  0*/ -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999,
- /* 10*/ -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999,
- /* 20*/ -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999,
- /* 30*/ -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999,
- /* 40*/ -9999, -9999, -9999, -9999, -6945, -6065, -5512, -5100, -4767, -4487,
- /* 50*/ -4243, -4026, -3831, -3652, -3488, -3334, -3191, -3056, -2929, -2807,
- /* 60*/ -2692, -2581, -2475, -2373, -2275, -2180, -2088, -1999, -1912, -1828,
- /* 70*/ -1746, -1666, -1588, -1512, -1438, -1365, -1293, -1223, -1154, -1086,
- /* 80*/ -1020,  -954,  -890,  -826,  -764,  -702,  -641,  -581,  -521,  -462,
- /* 90*/  -404,  -347,  -290,  -234,  -178,  -123,   -68,   -13,    39,    93,
- /*100*/   146,   199,   251,   303,   355,   406,   457,   508,   558,   609,
- /*110*/   659,   708,   758,   808,   857,   906,   955,  1004,  1052,  1101,
- /*120*/  1149,  1197,  1246,  1294,  1342,  1390,  1438,  1486,  1534,  1582,
- /*130*/  1630,  1677,  1725,  1773,  1821,  1869,  1917,  1965,  2013,  2061,
- /*140*/  2110,  2158,  2206,  2255,  2304,  2352,  2401,  2450,  2499,  2549,
- /*150*/  2598,  2648,  2698,  2748,  2799,  2849,  2900,  2951,  3002,  3054,
- /*160*/  3106,  3158,  3210,  3263,  3316,  3370,  3423,  3478,  3532,  3587,
- /*170*/  3642,  3698,  3754,  3811,  3868,  3926,  3984,  4043,  4102,  4162,
- /*180*/  4223,  4284,  4346,  4408,  4471,  4535,  4600,  4665,  4731,  4798,
- /*190*/  4866,  4935,  5005,  5076,  5147,  5220,  5294,  5369,  5446,  5523,
- /*200*/  5602,  5683,  5764,  5848,  5932,  6019,  6107,  6197,  6289,  6383,
- /*210*/  6479,  6578,  6679,  6782,  6888,  6996,  7108,  7223,  7341,  7463,
- /*220*/  7588,  7718,  7852,  7990,  8134,  8283,  8438,  8600,  8768,  8944,
- /*230*/  9128,  9322,  9526,  9740,  9968, 10209, 10467, 10742, 11038, 11358,
- /*240*/ 11706, 12087, 12508, 12976, 13505, 14109, 14812, 15651, 16681, 18004,
- /*250*/ 19824, 22636, 28279, 30000, 30000, 30000
-};
-#define TEMP_FROM_REG(val)   (reg2temp[val]*10)
-static int TEMP_FROM_REG10(u16 val)
-{
-	u16 eightBits = val >> 2;
-	u16 twoBits = val & 3;
-	int base, diff;
-
-	/* no interpolation for these */
-	if (twoBits == 0 || eightBits < 44 || eightBits > 251)
-		return TEMP_FROM_REG(eightBits);
-
-	/* do some linear interpolation */
-	base = TEMP_FROM_REG(eightBits);
-	diff = TEMP_FROM_REG(eightBits+1) - base;
-	return base + ((twoBits * diff) >> 2);
-}
-static u8 TEMP_TO_REG(int val)
-{
-	/* Yes, this is a linear search but this is only used when
-	 * writing tempX_max or tempX_max_hyst, which should be a rare
-	 * operation. So I don't care ... */
-
-	unsigned int i = 43;
-	val /= 10;
-	while (i < 254 && val > reg2temp[i]) i++;
-	return i;
-}
+#define TEMP3_FROM_REG(val) ((val)*TEMP3_MULTIPLIER)
+#define TEMP3_FROM_REG10(val) (((val)*TEMP3_MULTIPLIER)/4)
+#define TEMP3_TO_REG(val) (SENSORS_LIMIT(((val)<0? \
+	(((val)-(TEMP3_MULTIPLIER/2))/TEMP3_MULTIPLIER):\
+	((val)+(TEMP3_MULTIPLIER/2))/TEMP3_MULTIPLIER),0,255))
+#define TEMP_FROM_REG(val) ((val)*TEMP_MULTIPLIER)
+#define TEMP_FROM_REG10(val) (((val)*TEMP_MULTIPLIER)/4)
+#define TEMP_TO_REG(val) (SENSORS_LIMIT(((val)<0? \
+	(((val)-(TEMP_MULTIPLIER/2))/TEMP_MULTIPLIER):\
+	((val)+(TEMP_MULTIPLIER/2))/TEMP_MULTIPLIER),0,255))
 
 
-#define IN_FROM_REG(val) /*(((val)*10+5)/10)*/ (val)
-#define IN_TO_REG(val)  (SENSORS_LIMIT((((val) * 10 + 5)/10),0,255))
-
-
-/********* FAN RPM CONVERSIONS ********/
+/********* FAN RPM CONVERT ********/
 /* But this chip saturates back at 0, not at 255 like all the other chips.
    So, 0 means 0 RPM */
 static inline u8 FAN_TO_REG(long rpm, int div)
@@ -349,67 +268,11 @@ static void vt1211_init_client(struct i2c_client *client)
 	/* set "default" interrupt mode for alarms, which isn't the default */
 	vt1211_write_value(client, VT1211_REG_TEMP1_CONFIG, 0);
 	vt1211_write_value(client, VT1211_REG_TEMP2_CONFIG, 0);
-
-	/* Default configuration; temp2, temp4, in2-in6 */
-	data->uch_config = (data->uch_config & 0x83)|(12 & 0x7c);
-	vt1211_write_value(client, VT1211_REG_UCH_CONFIG, data->uch_config);
 }
 
-/* ----------------------------------------------------------------------
-   Voltage translation;
-
-   This is according to the example /etc/sensors.conf;
-
-    compute in2 ((@ * 100) - 3) / (0.5952 * 95.8), (@ * 0.5952 * 0.958) + .03
-    compute in3 ((@ * 100) - 3) / (0.4167 * 95.8), (@ * 0.4167 * 0.958) + .03
-    compute in4 ((@ * 100) - 3) / (0.1754 * 95.8), (@ * 0.1754 * 0.958) + .03
-    compute in5 ((@ * 100) - 3) / (0.6296 * 95.8), (@ * 0.6296 * 0.958) + .03
-
-    in2 is labled "VCore1" and should have K = 1.0 (fault in sensors.conf?)
-
-    The unit should be millivolt not 1/100's of volts.  And to get
-    better precision in the integer calculations we multiply divisor
-    and dividend(?) with 8192.
- 
-    Example;
-
-	in2_input = 1000*reg - 30 / (0.5952 * 95.8) =
-		8192 * (1000*reg - 30) / 8192 * (0.5952 * 95.8) =
-		(8192000*reg - 245760) / 467109
-
-	No overflow because; (8192000*255) < 2^31
-
-    I got these results (EPIA-CL 6000 Mini-ITX);
-
-	lm_sensors	BIOS
-	1.241		1.189	(VCore)
-	4.758		4.983
-	12.436		12.196
-	3.331		3.260
-
-*/
-static int nconstant(int nr)
-{
-	switch (nr) {
-	case 2: return 784794;	/* VCore: 8192 * (1.0 * 95.8) */
-	case 3: return 327023;	/* 5.0V: 8192 * (0.4167 * 95.8) */
-	case 4: return 137653;	/* 12V: 8192 * (0.1754 * 95.8) */
-	case 5: return 494105;	/* 3.3V: 8192 * (0.6296 * 95.8) */
-	default:;
-	}
-	return  784794;		/* (K = 1.0) */
-}
-
-static int IN_FROM_REG_fn(u8 reg, int nr)
-{
-	return ((int)reg*8192000 - 245760) / nconstant(nr);
-}
-
-static u8 IN_TO_REG_fn(int val, int nr)
-{
-	int reg = (val * nconstant(nr) + 245760) / 8192000;
-	return (SENSORS_LIMIT(reg,0,255));
-}
+#define IN_FROM_REG(val,n) ((val)*IN_MULTIPLIER)
+#define IN_TO_REG(val,n)  (SENSORS_LIMIT( \
+	(((val)+(IN_MULTIPLIER/2))/IN_MULTIPLIER),0,255))
 
 /* ----------------------------------------------------------------------
    Temerature file definitions;
@@ -457,7 +320,7 @@ static ssize_t show_temp_hyst(struct device *dev, char *buf, int nr)
 		return sprintf(buf, "%d\n", 
 			       TEMP3_FROM_REG(data->temp_hyst[nr]));
 	}
-	return sprintf(buf, "%d\n", data->temp_hyst[nr]);
+	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_hyst[nr]));
 }
 
 static ssize_t set_temp_hyst(
@@ -507,20 +370,18 @@ static DEVICE_ATTR(temp##offset##_max_hyst, S_IRUGO | S_IWUSR,		\
 		show_temp_hyst_##offset, set_temp_hyst_##offset)
 
 
+show_temp_offset(1);
 show_temp_offset(2);
 show_temp_offset(3);
 show_temp_offset(4);
-#ifdef ALL_SENSORS
-show_temp_offset(1);
 show_temp_offset(5);
 show_temp_offset(6);
 show_temp_offset(7);
-#endif
 
 /* ----------------------------------------------------------------------
    uch_config;
  */
-#ifdef ALL_SENSORS
+
 static ssize_t show_uch_config(struct device *dev, char *buf)
 {
 	struct vt1211_data *data = vt1211_update_device(dev);
@@ -540,7 +401,7 @@ static ssize_t set_uch_config(
 
 static DEVICE_ATTR(uch_config, S_IRUGO | S_IWUSR, 
 		   show_uch_config, set_uch_config);
-#endif
+
 /* ----------------------------------------------------------------------
    Fan definitions;
  */
@@ -689,12 +550,12 @@ show_fan_offset(2);
 static ssize_t show_in(struct device *dev, char *buf, int nr)
 {
 	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG_fn(data->in[nr], nr));
+	return sprintf(buf, "%d\n", IN_FROM_REG(data->in[nr], nr));
 }
 static ssize_t show_in_min(struct device *dev, char *buf, int nr)
 {
 	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG_fn(data->in_min[nr], nr));
+	return sprintf(buf, "%d\n", IN_FROM_REG(data->in_min[nr], nr));
 }
 static ssize_t set_in_min(
 	struct device *dev, const char *buf, size_t count, int nr)
@@ -702,14 +563,14 @@ static ssize_t set_in_min(
 	struct i2c_client *client = to_i2c_client(dev);
 	struct vt1211_data *data = i2c_get_clientdata(client);
 	long val = simple_strtol(buf, NULL, 10);
-	data->in_min[nr] = IN_TO_REG_fn(val, nr);
+	data->in_min[nr] = IN_TO_REG(val, nr);
 	vt1211_write_value(client, VT1211_REG_IN_MIN(nr), data->in_min[nr]);
 	return count;
 }
 static ssize_t show_in_max(struct device *dev, char *buf, int nr)
 {
 	struct vt1211_data *data = vt1211_update_device(dev);
-	return sprintf(buf, "%d\n", IN_FROM_REG_fn(data->in_max[nr], nr));
+	return sprintf(buf, "%d\n", IN_FROM_REG(data->in_max[nr], nr));
 }
 static ssize_t set_in_max(
 	struct device *dev, const char *buf, size_t count, int nr)
@@ -717,7 +578,7 @@ static ssize_t set_in_max(
 	struct i2c_client *client = to_i2c_client(dev);
 	struct vt1211_data *data = i2c_get_clientdata(client);
 	long val = simple_strtol(buf, NULL, 10);
-	data->in_max[nr] = IN_TO_REG_fn(val, nr);
+	data->in_max[nr] = IN_TO_REG(val, nr);
 	vt1211_write_value(client, VT1211_REG_IN_MAX(nr), data->in_max[nr]);
 	return count;
 }
@@ -751,15 +612,13 @@ static DEVICE_ATTR(in##offset##_min, S_IRUGO | S_IWUSR,			\
 static DEVICE_ATTR(in##offset##_max, S_IRUGO | S_IWUSR,			\
 	show_in_max_##offset, set_in_max_##offset);			\
 
+show_in_offset(0);
+show_in_offset(1);
 show_in_offset(2);
 show_in_offset(3);
 show_in_offset(4);
 show_in_offset(5);
-#ifdef ALL_SENSORS
-show_in_offset(0);
-show_in_offset(1);
 show_in_offset(6);
-#endif
 
 static ssize_t show_vid(struct device *dev, char *buf)
 {
@@ -967,16 +826,29 @@ int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
 
 	vt1211_init_client(new_client);
 
+	device_create_file(&new_client->dev, &dev_attr_uch_config);
+
+	device_create_file(&new_client->dev, &dev_attr_temp1_input);
+	device_create_file(&new_client->dev, &dev_attr_temp1_max);
+	device_create_file(&new_client->dev, &dev_attr_temp1_max_hyst);
+	device_create_file(&new_client->dev, &dev_attr_temp2_input);
+	device_create_file(&new_client->dev, &dev_attr_temp2_max);
+	device_create_file(&new_client->dev, &dev_attr_temp2_max_hyst);
 	device_create_file(&new_client->dev, &dev_attr_temp3_input);
 	device_create_file(&new_client->dev, &dev_attr_temp3_max);
 	device_create_file(&new_client->dev, &dev_attr_temp3_max_hyst);
-
-	device_create_file(&new_client->dev, &dev_attr_temp2_input);
 	device_create_file(&new_client->dev, &dev_attr_temp4_input);
-	device_create_file(&new_client->dev, &dev_attr_temp2_max);
 	device_create_file(&new_client->dev, &dev_attr_temp4_max);
-	device_create_file(&new_client->dev, &dev_attr_temp2_max_hyst);
 	device_create_file(&new_client->dev, &dev_attr_temp4_max_hyst);
+	device_create_file(&new_client->dev, &dev_attr_temp5_input);
+	device_create_file(&new_client->dev, &dev_attr_temp5_max);
+	device_create_file(&new_client->dev, &dev_attr_temp5_max_hyst);
+	device_create_file(&new_client->dev, &dev_attr_temp6_input);
+	device_create_file(&new_client->dev, &dev_attr_temp6_max);
+	device_create_file(&new_client->dev, &dev_attr_temp6_max_hyst);
+	device_create_file(&new_client->dev, &dev_attr_temp7_input);
+	device_create_file(&new_client->dev, &dev_attr_temp7_max);
+	device_create_file(&new_client->dev, &dev_attr_temp7_max_hyst);
 
 	device_create_file(&new_client->dev, &dev_attr_fan1_input);
 	device_create_file(&new_client->dev, &dev_attr_fan2_input);
@@ -992,6 +864,12 @@ int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
 	device_create_file(&new_client->dev, &dev_attr_in0_ref);
 	device_create_file(&new_client->dev, &dev_attr_alarms);
 	device_create_file(&new_client->dev, &dev_attr_vrm);
+	device_create_file(&new_client->dev, &dev_attr_in0_input);
+	device_create_file(&new_client->dev, &dev_attr_in0_min);
+	device_create_file(&new_client->dev, &dev_attr_in0_max);
+	device_create_file(&new_client->dev, &dev_attr_in1_input);
+	device_create_file(&new_client->dev, &dev_attr_in1_min);
+	device_create_file(&new_client->dev, &dev_attr_in1_max);
 	device_create_file(&new_client->dev, &dev_attr_in2_input);
 	device_create_file(&new_client->dev, &dev_attr_in2_min);
 	device_create_file(&new_client->dev, &dev_attr_in2_max);
@@ -1004,36 +882,9 @@ int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
 	device_create_file(&new_client->dev, &dev_attr_in5_input);
 	device_create_file(&new_client->dev, &dev_attr_in5_min);
 	device_create_file(&new_client->dev, &dev_attr_in5_max);
-
-
-#ifdef ALL_SENSORS
-	device_create_file(&new_client->dev, &dev_attr_uch_config);
-
-	device_create_file(&new_client->dev, &dev_attr_temp1_input);
-	device_create_file(&new_client->dev, &dev_attr_temp5_input);
-	device_create_file(&new_client->dev, &dev_attr_temp6_input);
-	device_create_file(&new_client->dev, &dev_attr_temp7_input);
-
-	device_create_file(&new_client->dev, &dev_attr_temp1_max);
-	device_create_file(&new_client->dev, &dev_attr_temp5_max);
-	device_create_file(&new_client->dev, &dev_attr_temp6_max);
-	device_create_file(&new_client->dev, &dev_attr_temp7_max);
-
-	device_create_file(&new_client->dev, &dev_attr_temp1_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp5_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp6_max_hyst);
-	device_create_file(&new_client->dev, &dev_attr_temp7_max_hyst);
-
-	device_create_file(&new_client->dev, &dev_attr_in0_input);
-	device_create_file(&new_client->dev, &dev_attr_in0_min);
-	device_create_file(&new_client->dev, &dev_attr_in0_max);
-	device_create_file(&new_client->dev, &dev_attr_in1_input);
-	device_create_file(&new_client->dev, &dev_attr_in1_min);
-	device_create_file(&new_client->dev, &dev_attr_in1_max);
 	device_create_file(&new_client->dev, &dev_attr_in6_input);
 	device_create_file(&new_client->dev, &dev_attr_in6_min);
 	device_create_file(&new_client->dev, &dev_attr_in6_max);
-#endif
 	return 0;
 
  ERROR3:
