@@ -1,4 +1,4 @@
-GARNAME = lirc.mceusb
+GARNAME = lirc.mceusbnew
 GARVERSION = $(LIRC_VERSION)
 CATEGORIES = lirc
 SOURCEPKG = lirc/lirc
@@ -17,14 +17,14 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--program-suffix=".mceusb" \
+	--program-suffix=".mceusbnew" \
 	--enable-sandboxed \
 	--x-includes="$(DESTDIR)$(x11includedir)" \
 	--x-libraries="$(DESTDIR)$(x11libdir)" \
 	--with-gnu-ld \
 	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
 	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
-	--with-driver=mceusb
+	--with-driver=mceusbnew
 BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
 INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 
