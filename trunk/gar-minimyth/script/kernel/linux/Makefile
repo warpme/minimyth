@@ -5,7 +5,7 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-squashfs_3.0.patch $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-longhaul_ide_lockup.patch
+PATCHFILES = $(DISTNAME)-squashfs_3.1.patch $(DISTNAME)-defaults.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-longhaul_ide_lockup.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

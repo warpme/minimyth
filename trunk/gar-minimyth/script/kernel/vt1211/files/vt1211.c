@@ -24,6 +24,15 @@
 
     Updates (latest first):
 
+    Wed Apr 26 18:29:55 CEST 2006 (Przemyslaw Bruski <pbruskispam at op.pl>)
+	Update for 2.6.16
+	    - owner and name fields are now in inner struct
+	    - I2C_DRIVERID_VT1211 was no longer definde
+    Mon Jan 16 15:00 PST 2006 (Eugene Weiss <eweiss@barracudanetworks.com>)
+        Update for 2.6.15
+            - Remove owner and name fields from i2c_driver structure.
+            - Remove flags field from 12c_driver structure.
+            - Change obsolete MODULE_PARM to module_param.
     Sun Sep 25 08:55:00 CEST 2005 -
 	Update for 2.6.14-rc1. New i2c handling.
     Sun Sep  4 08:18:59 CEST 2005 -
@@ -48,6 +57,7 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
+#include <linux/moduleparam.h>
 #include <linux/i2c.h>
 #include <linux/i2c-isa.h>
 #include <linux/hwmon.h>
@@ -70,7 +80,7 @@
 
 
 static int force_addr = 0;
-MODULE_PARM(force_addr, "i");
+module_param(force_addr, int, 0644);
 MODULE_PARM_DESC(force_addr,
 		 "Initialize the base address of the sensors");
 
@@ -248,18 +258,25 @@ static int vt1211_isa_attach_adapter(struct i2c_adapter *adapter);
 static int vt1211_detach_client(struct i2c_client *client);
 static struct vt1211_data *vt1211_update_device(struct device *dev);
 
+#ifndef I2C_DRIVERID_VT1211
+#define I2C_DRIVERID_VT1211 1032
+#endif
+
 static struct i2c_driver vt1211_driver = {
-	.owner		= THIS_MODULE,
-	.name		= "vt1211",
+	.driver = {
+		.owner	= THIS_MODULE,
+		.name	= "vt1211",
+	},
 	.id		= I2C_DRIVERID_VT1211,
-	.flags		= I2C_DF_NOTIFY,
 	.attach_adapter	= vt1211_attach_adapter,
 	.detach_client	= vt1211_detach_client,
 };
 
 static struct i2c_driver vt1211_isa_driver = {
-	.owner		= THIS_MODULE,
-	.name		= "vt1211-isa",
+	.driver = {
+		.owner	= THIS_MODULE,
+		.name	= "vt1211-isa",
+	},
 	.attach_adapter	= vt1211_isa_attach_adapter,
 	.detach_client	= vt1211_detach_client,
 };
@@ -803,7 +820,7 @@ int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
 		superio_outb(VT1211_ACT_REG, 1);
 	superio_exit();
 
-	if (!request_region(address, VT1211_EXTENT, vt1211_isa_driver.name)) {
+	if (!request_region(address, VT1211_EXTENT, vt1211_isa_driver.driver.name)) {
 		return -EBUSY;
 	}
 
@@ -824,7 +841,6 @@ int vt1211_detect(struct i2c_adapter *adapter, int address, int kind)
 	new_client->addr = address;
 	new_client->adapter = adapter;
 	new_client->driver = &vt1211_isa_driver;
-	new_client->flags = 0;
 
 	/* Fill in the remaining client fields and put into the global list */
 	strlcpy(new_client->name, "vt1211", I2C_NAME_SIZE);

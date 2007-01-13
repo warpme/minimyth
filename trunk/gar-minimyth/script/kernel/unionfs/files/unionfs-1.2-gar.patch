@@ -1,0 +1,68 @@
+diff -Naur unionfs-1.2-old/Makefile unionfs-1.2-new/Makefile
+--- unionfs-1.2-old/Makefile	2006-06-09 00:04:43.000000000 -0700
++++ unionfs-1.2-new/Makefile	2006-08-26 08:28:00.000000000 -0700
+@@ -8,6 +8,7 @@
+ # This is where the make install target will put stuff
+ PREFIX   = /usr/local
+ MANDIR   = ${PREFIX}/man
++SBINDIR  = ${PREFIX}/sbin
+ MODPREFIX=
+ VERSION  = 1.2
+ SUP_MAJOR= 2
+@@ -51,7 +52,7 @@
+ 	@echo ""
+ 
+ unionfs.ko: FRC
+-	make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk modules
++	make -C ${LINUXSRC} SUBDIRS=`pwd` FISTDEVMK=`pwd`/fistdev.mk modules
+ 
+ FRC:
+ 
+@@ -68,7 +69,7 @@
+ 	ctags $^
+ 
+ clean:
+-	-make -C ${LINUXSRC} SUBDIRS=$(PWD) FISTDEVMK=$(PWD)/fistdev.mk clean
++	-make -C ${LINUXSRC} SUBDIRS=`pwd` FISTDEVMK=`pwd`/fistdev.mk clean
+ 	rm -f ${unionfs-objs} ${obj-m} ${obj-m:.o=.ko} *.d .*.flags \#* *~
+ 	rm -f TAGS tags
+ 	rm -f unionfs-${VERSION}.tar${COMPEXT}
+@@ -98,13 +99,11 @@
+ install-mod: unionfs.ko
+ 	mkdir -p ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs
+ 	cp unionfs.ko ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs
+-	-/sbin/depmod -a
+ 
+ install: install-utils install-mod
+ 
+ uninstall:
+ 	rm ${MODPREFIX}/${MODDIR}/kernel/fs/unionfs.ko
+-	-/sbin/depmod -a
+ 	rm ${MANDIR}/man8/unionctl.8
+ 	rm ${MANDIR}/man8/uniondbg.8
+ 	rm ${MANDIR}/man4/unionfs.4
+diff -Naur unionfs-1.2-old/utils/Makefile unionfs-1.2-new/utils/Makefile
+--- unionfs-1.2-old/utils/Makefile	2006-06-09 00:04:44.000000000 -0700
++++ unionfs-1.2-new/utils/Makefile	2006-08-26 08:28:34.000000000 -0700
+@@ -23,13 +23,13 @@
+ 
+ PHONY. utils: ${BINS}
+ 
+-install-utils: utils
+-	mkdir -p ${PREFIX}/sbin
+-	cp unionctl ${PREFIX}/sbin
+-	cp uniondbg ${PREFIX}/sbin
+-	cp unionimap ${PREFIX}/sbin
++install: utils
++	mkdir -p ${SBINDIR}
++	cp unionctl ${SBINDIR}
++	cp uniondbg ${SBINDIR}
++	cp unionimap ${SBINDIR}
+ 
+ uninstall:
+-	rm ${PREFIX}/sbin/unionctl
+-	rm ${PREFIX}/sbin/uniondbg
+-	rm ${PREFIX}/sbin/unionimap
++	rm ${SBINDIR}/unionctl
++	rm ${SBINDIR}/uniondbg
++	rm ${SBINDIR}/unionimap

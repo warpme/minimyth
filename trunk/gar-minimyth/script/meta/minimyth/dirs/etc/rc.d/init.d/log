@@ -7,20 +7,14 @@
 start() {
     mm_message_output info 'starting system logging ...'
 
-    /usr/bin/test -n "`/bin/pidof klogd`"   && /usr/bin/killall klogd
-    /usr/bin/test -n "`/bin/pidof syslogd`" && /usr/bin/killall syslogd
-    # The network interface is not up yet, so (re)start only local syslogd.
-    if /usr/bin/test -z "`/bin/pidof udhcpc`" ; then
-        /sbin/syslogd
-    # The network interface is up, so (re)start both local/remote syslogd and klogd.
-    else
-        if /usr/bin/test -n "${MM_LOG_SERVER}" ; then
-            /sbin/syslogd -R "${MM_LOG_SERVER}"
-        else
-            /sbin/syslogd
-        fi
-        /sbin/klogd
+    LOG_SERVER=`/bin/echo ${MM_LOG_SERVERS} | /usr/bin/cut -d ' ' -f 1`
+    if /usr/bin/test -n "${LOG_SERVER}" ; then
+        /usr/bin/test -n "`/bin/pidof klogd`"   && /usr/bin/killall klogd
+        /usr/bin/test -n "`/bin/pidof syslogd`" && /usr/bin/killall syslogd
+        /sbin/syslogd -R "${MM_LOG_SERVER}"
     fi
+    /usr/bin/test -z "`/bin/pidof syslogd`" && /sbin/syslogd
+    /usr/bin/test -z "`/bin/pidof klogd`"   && /sbin/klogd
 }
 
 stop() {

@@ -3,14 +3,9 @@
 # udhcpc.script
 ################################################################################
 
-. /etc/conf
+/usr/bin/test -r /etc/conf.d/minimyth && . /etc/conf.d/minimyth
 
-/usr/bin/test -r /etc/minimyth.d/minimyth.dhcp && . /etc/minimyth.d/minimyth.dhcp
-
-DHCP_CONF="/etc/conf.d/dhcp"
-HOSTS_CONF="/etc/hosts"
-NTP_CONF="/etc/ntp.conf"
-RESOLV_CONF="/etc/resolv.conf"
+DHCP_CONF='/etc/conf.d/dhcp'
 
 conf_variable_write() {
     /bin/echo -n "$2="  >> $1
@@ -29,16 +24,29 @@ case "$1" in
         fi
         ;;
     renew|bound)
-        /usr/bin/test -n "$MM_DHCP_HOSTNAME"    && hostname=$MM_DHCP_HOSTNAME
-        /usr/bin/test -n "$MM_DHCP_DOMAINNAME"  && domain=$MM_DHCP_DOMAINNAME
-        /usr/bin/test -n "$MM_DHCP_DNS_SERVERS" && dns=$MM_DHCP_DNS_SERVERS
-        /usr/bin/test -n "$MM_DHCP_NTP_SERVERS" && ntpsrv=$MM_DHCP_NTP_SERVERS
-        /usr/bin/test -n "$MM_DHCP_LOG_SERVERS" && logsrv=$MM_DHCP_LOG_SERVERS
+        MM_DHCP_ADDRESS=${ip}
+        MM_DHCP_HOSTNAME=${MM_DHCP_HOSTNAME:-${hostname}}
+        MM_DHCP_DOMAIN=${MM_DHCP_DOMAIN:-${domain}}
+        MM_DHCP_DNS_SERVERS=${MM_DHCP_DNS_SERVERS:-${dns}}
+        MM_DHCP_NTP_SERVERS=${MM_DHCP_NTP_SERVERS:-${ntpsrv}}
+        MM_DHCP_LOG_SERVERS=${MM_DHCP_LOG_SERVERS:-${logsrv}}
+        MM_TFTP_SERVER=${siaddr}
+        MM_TFTP_ROOTDIR=`/bin/echo $boot_file | /bin/sed 's%[^/]*$%%' | /bin/sed 's%/$%%'`
+
+        /bin/rm -f ${DHCP_CONF}~
+        conf_variable_write $DHCP_CONF~ MM_DHCP_ADDRESS     ${MM_DHCP_ADDRESS}
+        conf_variable_write $DHCP_CONF~ MM_DHCP_HOSTNAME    ${MM_DHCP_HOSTNAME}
+        conf_variable_write $DHCP_CONF~ MM_DHCP_DOMAIN      ${MM_DHCP_DOMAIN}
+        conf_variable_write $DHCP_CONF~ MM_DHCP_DNS_SERVERS ${MM_DHCP_DNS_SERVERS}
+        conf_variable_write $DHCP_CONF~ MM_DHCP_NTP_SERVERS ${MM_DHCP_NTP_SERVERS}
+        conf_variable_write $DHCP_CONF~ MM_DHCP_LOG_SERVERS ${MM_DHCP_LOG_SERVERS}
+        conf_variable_write $DHCP_CONF~ MM_TFTP_SERVER      ${MM_TFTP_SERVER}
+        conf_variable_write $DHCP_CONF~ MM_TFTP_ROOTDIR     ${MM_TFTP_ROOTDIR}
+        /bin/mv -f ${DHCP_CONF}~ ${DHCP_CONF}
 
         /usr/bin/test -n "$broadcast" && BROADCAST="broadcast $broadcast"
         /usr/bin/test -n "$subnet"    && NETMASK="netmask $subnet"
-        /sbin/ifconfig $interface $ip $BROADCAST $NETMASK
-
+        /sbin/ifconfig $interface $ip $BROADCAST $NETMASK 
         if /usr/bin/test -n "$router" ; then
             while /sbin/route del default gw 0.0.0.0 dev $interface ; do
                 :
@@ -49,72 +57,11 @@ case "$1" in
             done
         fi
 
-        MM_HOSTNAME=$hostname
-        if /usr/bin/test -n "$hostname" ; then
-            /bin/hostname $hostname
+        HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
+        if /usr/bin/test -n "$HOSTNAME" ; then
+            /bin/hostname ${HOSTNAME}
         fi
 
-        MM_DNS_SERVER=
-        for i in $dns ; do
-           if /usr/bin/test -z "$MM_DNS_SERVER" ; then
-               MM_DNS_SERVER=$i
-           fi
-        done
-
-        /bin/rm -f $RESOLV_CONF~
-        if /usr/bin/test -n "$domain" ; then
-            /bin/echo search $domain >> $RESOLV_CONF~
-        fi
-        for i in $dns ; do
-            if /usr/bin/test -n "$i" ; then
-                /bin/echo nameserver $i >> $RESOLV_CONF~
-            fi
-        done
-        /bin/mv -f $RESOLV_CONF~ $RESOLV_CONF
-
-        /bin/rm -f $HOSTS_CONF~
-        /bin/echo "127.0.0.1 localhost.localdomain localhost" >> $HOSTS_CONF~
-        if /usr/bin/test -n "$hostname" ; then
-            /bin/echo -n "$ip"                                >> $HOSTS_CONF~
-            if /usr/bin/test -n "$domain" ; then
-                /bin/echo -n " $hostname.$domain"             >> $HOSTS_CONF~
-            fi
-            /bin/echo -n " $hostname"                         >> $HOSTS_CONF~
-        fi
-        /bin/mv -f $HOSTS_CONF~ $HOSTS_CONF
-
-        MM_NTP_SERVER=
-        for i in $ntpsrv ; do
-            if /usr/bin/test -z "$MM_NTP_SERVER" ; then
-                MM_NTP_SERVER=$i
-            fi
-        done
-        /bin/rm -f $NTP_CONF~
-        for i in $ntpsrv ; do
-            if /usr/bin/test -n "$i" ; then
-                /bin/echo server $i >> $NTP_CONF~
-            fi
-        done
-        /bin/mv -f $NTP_CONF~ $NTP_CONF
-
-        MM_LOG_SERVER=
-        for i in $logsvr ; do
-            if /usr/bin/test -z "$MM_LOG_SERVER" ; then
-                MM_LOG_SERVER=$i
-            fi
-        done
-
-        MM_TFTP_SERVER=$siaddr
-        MM_TFTP_ROOTDIR=`/bin/echo $boot_file | /bin/sed 's%[^/]*$%%' | /bin/sed 's%/$%%'`
-             
-        /bin/rm -f $DHCP_CONF~
-        conf_variable_write $DHCP_CONF~ MM_HOSTNAME     $MM_HOSTNAME
-        conf_variable_write $DHCP_CONF~ MM_DNS_SERVER   $MM_DNS_SERVER
-        conf_variable_write $DHCP_CONF~ MM_NTP_SERVER   $MM_NTP_SERVER
-        conf_variable_write $DHCP_CONF~ MM_LOG_SERVER   $MM_LOG_SERVER
-        conf_variable_write $DHCP_CONF~ MM_TFTP_SERVER  $MM_TFTP_SERVER
-        conf_variable_write $DHCP_CONF~ MM_TFTP_ROOTDIR $MM_TFTP_ROOTDIR
-        /bin/mv -f $DHCP_CONF~ $DHCP_CONF
         ;;
 esac
 
