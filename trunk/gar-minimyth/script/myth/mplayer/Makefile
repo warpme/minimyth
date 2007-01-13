@@ -3,7 +3,7 @@ GARVERSION = 1.0pre7try2
 CATEGORIES = myth
 MASTER_SITES = http://ftp1.mplayerhq.hu/MPlayer/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-unichrome.patch $(DISTNAME)-c3.patch
+PATCHFILES = $(DISTNAME)-unichrome.patch $(DISTNAME)-xvmc_fallback.patch $(DISTNAME)-c3.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
