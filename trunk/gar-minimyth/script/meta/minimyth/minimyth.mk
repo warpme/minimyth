@@ -395,9 +395,9 @@ mm-make-other:
 	@# Get scripts
 	@rm -rf   $(mm_STAGEDIR)/scripts
 	@mkdir -p $(mm_STAGEDIR)/scripts
-	@cp ./files/mm_local_install        $(mm_STAGEDIR)/scripts/mm_local_install
-	@cp ./files/mm_local_update         $(mm_STAGEDIR)/scripts/mm_local_update
-	@cp ./files/mm_local_helper         $(mm_STAGEDIR)/scripts/mm_local_helper
+	@cp ./files/mm_local_install $(mm_STAGEDIR)/scripts/mm_local_install
+	@cp ./files/mm_local_update  $(mm_STAGEDIR)/scripts/mm_local_update
+	@cp ./files/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
 	@# Get kernel.
 	@rm -rf $(mm_STAGEDIR)/kernel
 	@cp $(DESTDIR)/$(KERNEL_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
@@ -555,6 +555,7 @@ mm-make-distro:
 	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
+	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
 	@# Make share (public) distribution
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
@@ -580,6 +581,8 @@ mm-make-distro:
 	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
 	@cd $(mm_SHAREDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
 	@cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
+	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
+	@cp -r ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
 
 mm-make-source:
 	@rm -rf   $(mm_STAGEDIR)/source
