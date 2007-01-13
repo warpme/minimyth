@@ -17,7 +17,7 @@ mm_CHIPSETS          ?= via
 mm_GARCH             ?= pentium-mmx
 # Indicates whether or not to install the CRAMFS (ramdisk) file system images.
 # Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.
-mm_INSTALL_CRAMFS    ?= yes
+mm_INSTALL_CRAMFS    ?= no
 # Indicates whether or not to install the NFS file system images.
 # Valid values for mm_INSTALL_NFS are 'yes' and 'no'.
 mm_INSTALL_NFS       ?= no
@@ -29,7 +29,7 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # Indicates the directory in which the directory containing the NFS root file
 # system image will be installed. The name of the directory containing the NFS
 # root files sytem image is given by mm_NFSNAME.
-mm_NFS_ROOT          ?= /home/public
+mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19' and 'svn'.
 mm_MYTH_VERSION      ?= stable18
