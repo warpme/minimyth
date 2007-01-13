@@ -41,7 +41,7 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--enable-x11 \
 	--enable-xrandr \
 	--enable-xv \
-	--disable-xvmc \
+	--enable-xvmc \
 	--enable-xvmc-vld \
 	--disable-opengl-vsync \
 	--disable-directfb \

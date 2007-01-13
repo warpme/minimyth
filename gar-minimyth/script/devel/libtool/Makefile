@@ -1,5 +1,5 @@
 GARNAME = libtool
-GARVERSION = 1.5.12
+GARVERSION = 1.5.16
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
