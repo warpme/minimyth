@@ -1,5 +1,5 @@
 GARNAME = alsa-utils
-GARVERSION = $(ALSA_VERSION)
+GARVERSION = 1.0.11rc2
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,5 +18,4 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-alsatest
 
-GAR_EXTRA_CONF += kernel/alsa-driver/package-api.mk
 include ../../gar.mk
