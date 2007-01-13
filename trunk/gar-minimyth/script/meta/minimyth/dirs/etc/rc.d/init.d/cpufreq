@@ -8,16 +8,12 @@ start() {
     mm_message_output info 'starting CPU frequency scaling ...'
 
     for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
-        GOVERNOR_ONDEMAND="no"
-        GOVERNOR_CONSERVATIVE="no"
+        GOVERNOR_FOUND="no"
 	for governor in `cat ${dir}/scaling_available_governors` ; do
-            [ "${governor}" = "ondemand"     ] && GOVERNOR_ONDEMAND="yes"
-            [ "${governor}" = "conservative" ] && GOVERNOR_CONSERVATIVE="yes"
+            [ "${governor}" = "${MM_CPUFREQ_GOVERNOR}" ] && GOVERNOR_FOUND="yes"
         done
-        if   [ "${GOVERNOR_ONDEMAND}"     = "yes" ] ; then
-            echo ondemand     > ${dir}/scaling_governor
-        elif [ "${GOVERNOR_CONSERVATIVE}" = "yes" ] ; then
-            echo conservative > ${dir}/scaling_governor
+        if   [ "${GOVERNOR_FOUND}" = "yes" ] ; then
+            echo "${MM_CPUFREQ_GOVERNOR}" > ${dir}/scaling_governor
         fi
     done
 

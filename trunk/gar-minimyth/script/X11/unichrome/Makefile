@@ -1,7 +1,7 @@
 GARNAME = unichrome
 GARVERSION = 20050815
 CATEGORIES = X11
-#MASTER_SITES = http://www.openchrome.org/snapshots/unichrome/
+#MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-imakefile.patch
 LICENSE =
@@ -18,6 +18,18 @@ INSTALL_SCRIPTS   = unichrome libxvmc
 
 GAR_EXTRA_CONF += X11/X11/package-api.mk
 include ../../gar.mk
+
+svn//%/$(DISTNAME).tar.bz2:
+	@cd $(PARTIALDIR); rm -rf $(GARNAME)
+	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$* $(GARNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(MAKECOOKIE)
+
+disabled-checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 configure-unichrome:
 	@cd $(WORKSRC)/unichrome ; \
