@@ -1,0 +1,32 @@
+diff -Naur mythtv-0.18-old/configure mythtv-0.18-new/configure
+--- mythtv-0.18-old/configure	2005-05-14 07:08:41.843500657 -0700
++++ mythtv-0.18-new/configure	2005-05-14 07:11:54.304628248 -0700
+@@ -1706,18 +1706,21 @@
+     fi
+ fi
+ 
+-if has_library libviaXvMC ; then
+-    echo > /dev/null
+-else
+-    xvmc_vld="no"
+-fi
+ if test x"$xvmc_vld" = x"yes" ; then
++    xvmc_vld="no"
+     if has_library libXvMCW ; then
+         VENDOR_XVMC_LIBS="-lXvMCW"
+-    else
++        xvmc_vld="yes"
++        xvmc="yes"
++    elif has_library libviaXvMC ; then
+         VENDOR_XVMC_LIBS="-lviaXvMC"
++        xvmc_vld="yes"
++        xvmc="yes"
++    elif has_library libviaXvMCPro ; then
++        VENDOR_XVMC_LIBS="-lviaXvMCPro"
++        xvmc_vld="yes"
++        xvmc="yes"
+     fi
+-    xvmc="yes"
+ fi
+ 
+ if test x"$VENDOR_XVMC_LIBS" = x"-lXvMCW" ; then
