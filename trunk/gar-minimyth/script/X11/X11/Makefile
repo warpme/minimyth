@@ -7,7 +7,7 @@ MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/unichrome/
 MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/unichrome/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
-PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
+PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
 
