@@ -10,33 +10,9 @@ start() {
 
     local kernel_module
     local PREFERRED_MPEG2_DECODER
+    local DEINTERLACE_FILTER
 
     mm_message_output info 'configuring video ...'
-
-    if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ; then
-        /bin/sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
-    elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
-        /bin/sed -i "s%@MONITORASPECT@%16:9%" /root/.mplayer/config
-    else
-        mm_message_output err "error: something is very wrong in the 'video' init script."
-        exit 1
-    fi
-
-    if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
-        mm_mythdb_setting_update Deinterlace 0
-        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
-        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
-        /bin/sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
-    elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
-        mm_mythdb_setting_update Deinterlace 1
-        mm_mythdb_setting_update DeinterlaceFilter bobdeint
-        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
-        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
-        /bin/sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
-    else
-        mm_message_output err "error: something is very wrong in the 'video' init script."
-        exit 1
-    fi
 
     PREFERRED_MPEG2_DECODER=''
     case "${MM_X_DRIVER}" in
@@ -136,6 +112,60 @@ start() {
             fi
             ;;
     esac
+
+    if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
+        mm_mythdb_setting_update Deinterlace 0
+        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
+        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
+        /bin/sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
+    elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
+        case ${PREFERRED_MPEG2_DECODER} in
+            ffmpeg)
+                if /bin/cat /proc/cpuinfo | /bin/grep -e '^flags' | /bin/grep -q -e ' sse ' > /dev/null 2>&1 ; then
+                    DEINTERLACE_FILTER='kerneldeint'
+                else
+                    DEINTERLACE_FILTER='linearblend'
+                fi
+                ;;
+            libmpeg2)
+                if /bin/cat /proc/cpuinfo | /bin/grep -e '^flags' | /bin/grep -q -e ' sse ' > /dev/null 2>&1 ; then
+                    DEINTERLACE_FILTER='kerneldeint'
+                else
+                    DEINTERLACE_FILTER='linearblend'
+                fi
+                ;;
+            xvmc)
+                DEINTERLACE_FILTER='bobdeint'
+                ;;
+            xvmc-vld)
+                DEINTERLACE_FILTER='bobdeint'
+                ;;
+            *)
+                if /bin/cat /proc/cpuinfo | /bin/grep -e '^flags' | /bin/grep -q -e ' sse ' > /dev/null 2>&1 ; then
+                    DEINTERLACE_FILTER='kerneldeint'
+                else
+                    DEINTERLACE_FILTER='linearblend'
+                fi
+                ;;
+        esac
+        mm_mythdb_setting_update Deinterlace 1
+        mm_mythdb_setting_update DeinterlaceFilter ${DEINTERLACE_FILTER}
+        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
+        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
+        /bin/sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
+    else
+        mm_message_output err "error: something is very wrong in the 'video' init script."
+        exit 1
+    fi
+
+    if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ; then
+        /bin/sed -i "s%@MONITORASPECT@%4:3%"  /root/.mplayer/config
+    elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
+        /bin/sed -i "s%@MONITORASPECT@%16:9%" /root/.mplayer/config
+    else
+        mm_message_output err "error: something is very wrong in the 'video' init script."
+        exit 1
+    fi
 
     return 0
 }

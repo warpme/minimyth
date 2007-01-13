@@ -35,12 +35,7 @@ INSTALL_ARGS  = \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv-svn/package-api.mk
 include ../../gar.mk
-
-x-pre-configure:
-	@ln -sf $(DESTDIR)$(MYTHTV_SOURCEDIR)/libs/libmyth $(WORKSRC)/mythstream/mythtv
-	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
