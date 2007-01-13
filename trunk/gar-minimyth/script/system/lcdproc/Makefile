@@ -1,25 +1,22 @@
 GARNAME = lcdproc
-GARVERSION = 0.4.5
+GARVERSION = 0.5.0
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncurses
+DEPENDS = lang/c lib/ncurses lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--enable-drivers=mtxorb,cfontz,cwlnx,curses,lb216,hd44780,bayrad,glk,stv5730,sed1330,sed1520,lcdm001,t6963,wirz-sli,sgx120
-BUILD_ARGS     = \
-	CFLAGS="$(CFLAGS)"
-INSTALL_ARGS   = \
-	CFLAGS="$(CFLAGS)"
+	--enable-libusb \
+	--enable-drivers=all
 
 include ../../gar.mk
