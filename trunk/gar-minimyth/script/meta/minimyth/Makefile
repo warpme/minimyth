@@ -61,7 +61,7 @@ pre-fetch:
 	@$(MAKECOOKIE)
 
 build-custom:
-	@make -s -f minimyth.mk mm-all DESTIMG=$(DESTIMG)
+	@make -s -f minimyth.mk mm-build DESTIMG=$(DESTIMG)
 	@$(MAKECOOKIE)
 
 install-custom:
