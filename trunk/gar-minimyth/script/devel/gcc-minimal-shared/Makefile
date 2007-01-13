@@ -20,17 +20,26 @@ COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 
 WORKSRC = $(WORKDIR)/gcc-$(GARVERSION)
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+WORKBLD = $(WORKSRC)_build
+
+CONFIGURE_SCRIPTS = custom
+BUILD_SCRIPTS     = $(WORKBLD)/Makefile
+INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+	--with-gnu-as \
+	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
+        --enable-__cxa_atexit \
+	--enable-clocale=gnu \
 	--enable-languages=c \
+	--disable-libmudflap \
+	--disable-multilib \
 	--disable-nls \
 	--enable-shared \
-	--enable-multilib=no \
+        --enable-threads=posix \
         --enable-version-specific-runtime-libs
+
 ifneq ($(DESTIMG),$(CROSSIMG))
 CONFIGURE_ARGS += \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
@@ -43,4 +52,9 @@ include ../../gar.mk
 # Do not link to libc.so, because it is not available yet.
 pre-configure:
 	@sed -i '/^SHLIB_LC = /s%-lc%%' $(WORKSRC)/gcc/config/t-slibgcc-elf-ver
+	@$(MAKECOOKIE)
+
+configure-custom:
+	@mkdir -p $(WORKBLD)
+	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)

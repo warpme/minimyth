@@ -21,20 +21,24 @@ BUILDDEPS = devel/make devel/binutils
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+WORKBLD = $(WORKSRC)_build
+
+CONFIGURE_SCRIPTS = custom
+BUILD_SCRIPTS     = $(WORKBLD)/Makefile
+INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
-	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
 	--with-gnu-as \
 	--with-gnu-ld \
+	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
+	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
+	--enable-languages=c,c++ \
+	--disable-libmudflap \
+	--disable-multilib \
+	--enable-nls \
 	--enable-shared \
 	--enable-threads=posix \
-	--enable-__cxa_atexit \
-	--disable-multilib \
-	--enable-languages=c,c++ \
 	--enable-version-specific-runtime-libs
 ifneq ($(DESTIMG),$(CROSSIMG))
 CONFIGURE_ARGS += \
@@ -49,6 +53,10 @@ endif
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+configure-custom:
+	@mkdir -p $(WORKBLD)
+	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la ;
