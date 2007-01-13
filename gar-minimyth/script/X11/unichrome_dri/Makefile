@@ -47,6 +47,6 @@ post-patch:
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(x11libdir)/modules/dri
-	@rm -f $(DESTDIR)$(x11libdir)/modules/dir/unichrome_dri.* ; \
+	@rm -f $(DESTDIR)$(x11libdir)/modules/dri/unichrome_dri.* ; \
 		cp -fd $(WORKSRC)/lib/unichrome_dri.* $(DESTDIR)$(x11libdir)/modules/dri
 	@$(MAKECOOKIE)
