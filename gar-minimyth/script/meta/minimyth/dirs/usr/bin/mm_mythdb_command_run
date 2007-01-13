@@ -11,8 +11,12 @@ MM_MYTH_DBUSERNAME=`mm_var_get MM_MYTH_DBUSERNAME`
 MM_MYTH_DBPASSWORD=`mm_var_get MM_MYTH_DBPASSWORD`
 MM_MYTH_DBNAME=`mm_var_get MM_MYTH_DBNAME`
 
+RETURN=0
 mysql \
     --host=${MM_MYTH_SERVER} \
     --user=${MM_MYTH_DBUSERNAME} \
     --password=${MM_MYTH_DBPASSWORD} \
     --exec="use ${MM_MYTH_DBNAME} ; ${COMMAND} ;"
+RETURN=$?
+
+exit ${RETURN}
