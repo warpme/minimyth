@@ -36,7 +36,9 @@ start() {
 
     case "${MM_X_DRIVER}" in
         nvidia)
-            mm_mythdb_setting_update PreferredMPEG2Decoder libmpeg2
+            # this should really be the more efficient 'libmpeg2',
+            # but it causes stalls during when fast forwarding and rewinding.
+            mm_mythdb_setting_update PreferredMPEG2Decoder ffmpeg
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
             ;;
