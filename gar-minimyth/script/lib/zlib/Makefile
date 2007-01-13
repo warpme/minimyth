@@ -31,4 +31,5 @@ INSTALL_OVERRIDE_DIRS = prefix exec_prefix libdir includedir mandir
 
 include ../../gar.mk
 
-AR := $(AR) -rc
+CFLAGS := $(CFLAGS) -fPIC
+AR     := $(AR) -rc

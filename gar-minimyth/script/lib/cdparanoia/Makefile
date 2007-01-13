@@ -3,7 +3,7 @@ GARVERSION = III-alpha9.8
 CATEGORIES = lib
 MASTER_SITES = http://www.xiph.org/paranoia/download/
 DISTFILES = $(DISTNAME).src.tgz
-PATCHFILES = $(DISTNAME)-gcc-3.4.x.patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-gcc-3.4.x.patch
 LICENSE =
 
 DESCRIPTION =
@@ -16,10 +16,11 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --target=$(GARTARGET) \
+x_CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --target=$(GARTARGET) \
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(x11includedir) \
-	--x-libraries=$(DESTDIR)$(x11libdir) \
-	--cache-file=config.cache
+	--x-libraries=$(DESTDIR)$(x11libdir)
 BUILD_ARGS     = \
 	CPPFLAGS="$(CPPFLAGS)" \
 	FLAGS="$(CFLAGS)" \
@@ -35,11 +36,6 @@ LIBDIR     = $(libdir)
 
 include ../../gar.mk
 
-pre-configure:
-	@echo 'ac_cv_c_const=$${ac_cv_c_const=yes}'                 >> $(WORKSRC)/config.cache
-	@echo 'ac_cv_header_stdc=$${ac_cv_header_stdc=yes}'         >> $(WORKSRC)/config.cache
-	@echo 'ac_cv_sizeof_int=$${ac_cv_sizeof_int=4}'             >> $(WORKSRC)/config.cache
-	@echo 'ac_cv_sizeof_long=$${ac_cv_sizeof_long=4}'           >> $(WORKSRC)/config.cache
-	@echo 'ac_cv_sizeof_long_long=$${ac_cv_sizeof_long_long=8}' >> $(WORKSRC)/config.cache
-	@echo 'ac_cv_sizeof_short=$${ac_cv_sizeof_short=2}'         >> $(WORKSRC)/config.cache
+post-patch:
+	@cp -f $(build_DESTDIR)$(build_datadir)/libtool/config.sub $(WORKSRC)/configure.sub
 	@$(MAKECOOKIE)

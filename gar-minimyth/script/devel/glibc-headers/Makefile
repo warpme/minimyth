@@ -28,9 +28,18 @@ INSTALL_ARGS    = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-CONFIGURE_ENV := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
-BUILD_ENV     := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
-INSTALL_ENV   := DESTDIR="$(DESTDIR)" CC="$(build_CC)"
+DEFAULT_ENV   := \
+	DESTDIR="$(DESTDIR)" \
+	CC="$(build_CC)" \
+	CXX="$(build_CXX)" \
+	LD="$(build_LD)" \
+	AR="$(build_AR)" \
+	AS="$(build_AS)" \
+	OBJDUMP="$(build_OBJDUMP)" \
+	RANLIB="$(build_RANLIB)"
+CONFIGURE_ENV := $(DEFAULT_ENV)
+BUILD_ENV     := $(DEFAULT_ENV)
+INSTALL_ENV   := $(DEFAULT_ENV)
 
 pre-configure:
 	@mkdir -p $(WORKBLD)

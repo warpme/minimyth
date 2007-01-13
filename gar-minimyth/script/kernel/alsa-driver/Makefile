@@ -16,8 +16,8 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) \
-	--with-gnu-ld \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
+	--with-cross="$(compiler_prefix)" \
 	--with-kernel="$(DESTDIR)$(KERNEL_BUILDDIR)" \
 	--with-build="$(DESTDIR)$(KERNEL_BUILDDIR)" \
 	--with-redhat=no \
@@ -27,8 +27,6 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--with-sequencer=yes \
 	--with-oss=no \
 	--with-cards="hda-intel,via82xx"
-BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
-INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
 
 CONFIGURE_ENV = $(KERNEL_MAKE_ENV)
 BUILD_ENV     = $(KERNEL_MAKE_ENV)
@@ -36,6 +34,8 @@ INSTALL_ENV   = $(KERNEL_MAKE_ENV) IUSER="$(IUSER)" IGROUP="$(IGROUP)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
+
+CC := $(build_CC)
 
 IUSER  := `id -un`
 IGROUP := `id -gn`

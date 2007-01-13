@@ -29,7 +29,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
 
-LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_x11libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_qtlibdir):$(CROSS_GCC_LIBDIR):$(LIBDIR):$(CROSS_GCC_LIBDIR)
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
+
+LIB_PATH := $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_x11libdir):$($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_qtlibdir):$(CROSS_GCC_LIBDIR):$(CROSS_GCC_LIB64DIR)
 # For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 LIB_PATH := $(LIB_PATH):/lib:/usr/lib

@@ -38,7 +38,12 @@ mm_NFS_ROOT       ?= /home/public
 #-------------------------------------------------------------------------------
 # Variables that you are not likely to override.
 #-------------------------------------------------------------------------------
-mm_GARHOST        ?= i586-minimyth-linux-gnu
+mm_GARHOST        ?= $(strip \
+                         $(if $(filter athlon64   ,$(mm_GARCH)),x86_64) \
+                         $(if $(filter c3         ,$(mm_GARCH)),i586  ) \
+                         $(if $(filter c3-2       ,$(mm_GARCH)),i586  ) \
+                         $(if $(filter pentium-mmx,$(mm_GARCH)),i586  ) \
+                      )-minimyth-linux-gnu
 mm_NAME           ?= minimyth-$(mm_VERSION)
 mm_NAME_PRETTY    ?= MiniMyth $(mm_VERSION)
 mm_BASEDIR        ?= $(mm_HOME)/images/mm
