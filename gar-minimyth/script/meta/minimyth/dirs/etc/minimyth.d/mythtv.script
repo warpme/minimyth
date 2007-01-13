@@ -37,14 +37,6 @@ echo "DBUserName=${MM_MYTH_DBUSERNAME}" >> /root/.mythtv/mysql.txt
 echo "DBPassword=${MM_MYTH_DBPASSWORD}" >> /root/.mythtv/mysql.txt
 echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
 
-# Configure Myth database settings to match MiniMyth frontend.
-cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING_' | sed -e 's%^MM_MYTHDB_SETTING_%%' | \
-while read setting ; do
-    setting_value=`echo ${setting} | sed -e 's%=.*$%%'    -e 's%^[ ]*%%' -e 's%[ ]*$%%'`
-    setting_data=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ ]*%%' -e 's%[ ]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
-    mm_mythdb_setting_update "${setting_value}" "${setting_data}"
-done
-
 # Configure Myth database jumppoints to match MiniMyth frontend.
 cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_JUMPPOINT=' | sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
     sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
