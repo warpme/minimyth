@@ -33,6 +33,7 @@ DEPENDS = \
 	net/samba \
 	system/splashutils \
 	utils/strace \
+	system/sysvinit \
 	system/udev \
 	X11/unichrome \
 	utils/util-linux \

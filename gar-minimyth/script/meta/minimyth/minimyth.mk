@@ -328,16 +328,20 @@ mm-make-extras:
 mm-make-initrd:
 	@if test -e $(mm_DESTDIR).ro ; then rm -rf $(mm_DESTDIR).ro ; fi
 	@mv $(mm_DESTDIR) $(mm_DESTDIR).ro
-	@mkdir -p                $(mm_DESTDIR)
-	@mkdir -p                $(mm_DESTDIR)/rootfs
-	@mkdir -p                $(mm_DESTDIR)/rootfs-rw
-	@mv $(mm_DESTDIR).ro     $(mm_DESTDIR)/rootfs-ro
-	@cp -r ./dirs/initrd/etc $(mm_DESTDIR)/
-	@ln -s rootfs-ro/bin     $(mm_DESTDIR)/bin
-	@ln -s rootfs-ro/dev     $(mm_DESTDIR)/dev
-	@ln -s rootfs-ro/lib     $(mm_DESTDIR)/lib
-	@ln -s rootfs-ro/linuxrc $(mm_DESTDIR)/linuxrc
-	@ln -s rootfs-ro/sbin    $(mm_DESTDIR)/sbin
+	@mkdir -p                           $(mm_DESTDIR)
+	@mkdir -p                           $(mm_DESTDIR)/rootfs
+	@mkdir -p                           $(mm_DESTDIR)/rootfs-rw
+	@mv $(mm_DESTDIR).ro                $(mm_DESTDIR)/rootfs-ro
+	@mkdir -p                           $(mm_DESTDIR)/bin
+	@ln -s rootfs-ro/dev                $(mm_DESTDIR)/dev
+	@ln -s rootfs-ro/lib                $(mm_DESTDIR)/lib
+	@mkdir -p                           $(mm_DESTDIR)/sbin
+	@ln -s ../rootfs-ro/bin/mkdir       $(mm_DESTDIR)/bin/mkdir
+	@ln -s ../rootfs-ro/sbin/modprobe   $(mm_DESTDIR)/sbin/modprobe
+	@ln -s ../rootfs-ro/bin/mount       $(mm_DESTDIR)/bin/mount
+	@ln -s ../rootfs-ro/sbin/pivot_root $(mm_DESTDIR)/sbin/pivot_root
+	@ln -s ../rootfs-ro/bin/sh          $(mm_DESTDIR)/bin/sh
+	@cp -r ./dirs/initrd/sbin/init      $(mm_DESTDIR)/sbin/init
 
 mm-install:
 	@su -c "[ -e $(mm_DESTDIR).tmp   ] && rm -rf $(mm_DESTDIR).tmp   ; \
@@ -357,6 +361,7 @@ mm-install:
 		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty3 c 4 3 ; \
 		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty4 c 4 4 ; \
 		mknod -m 660 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/tty5 c 4 5 ; \
+		mknod -m 600 $(mm_DESTDIR).tmp/rootfs-ro/$(rootdir)/dev/initctl p; \
 		cp -a $(mm_EXTRASDIR) $(mm_EXTRASDIR).tmp ; \
 		chown -Rh root:root $(mm_EXTRASDIR).tmp ; \
 		if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
