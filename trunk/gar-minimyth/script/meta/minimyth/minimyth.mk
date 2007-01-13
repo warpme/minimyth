@@ -288,7 +288,9 @@ mm-%/strip:
 	fi
 
 mm-udev:
-	$(foreach file, $(shell cd ./dirs/udev ; ls -1 dev.d/*/*.dev), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs/udev ; ls -1 dev.d/*/*.dev       ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/bin/*          ), install -m 755 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
+	$(foreach file, $(shell cd ./dirs/udev ; ls -1 udev/rules.d/*.rules), install -m 644 -D ./dirs/udev/$(file) $(mm_DESTDIR)$(sysconfdir)/$(file) ; )
 
 mm-conf:
 	@rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
