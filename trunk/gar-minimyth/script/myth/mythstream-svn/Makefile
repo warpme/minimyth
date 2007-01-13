@@ -1,10 +1,9 @@
 GARNAME = mythstream
-GARVERSION = v0.16_5
+GARVERSION = v0.17_1
 CATEGORIES = myth
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-fontsize.patch $(DISTNAME)-c++.patch $(DISTNAME)-x86_64.patch
-PATCHFILES += $(if $(filter svn,$(mm_MYTH_VERSION)),$(DISTNAME)-themedmenu.patch)
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-fontsize.patch $(DISTNAME)-c++.patch $(DISTNAME)-x86_64.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -13,7 +12,7 @@ endef
 
 DEPENDS = lang/c myth/mythtv-$(mm_MYTH_VERSION) lib/fftw
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.16_5
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.17
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
