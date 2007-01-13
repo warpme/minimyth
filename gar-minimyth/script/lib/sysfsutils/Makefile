@@ -1,5 +1,5 @@
 GARNAME = sysfsutils
-GARVERSION = 2.0.0
+GARVERSION = 2.1.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-diag/
 DISTFILES = $(DISTNAME).tar.gz

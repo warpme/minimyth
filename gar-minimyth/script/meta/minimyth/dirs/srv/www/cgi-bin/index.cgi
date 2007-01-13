@@ -5,6 +5,8 @@
 page_host=`hostname`
 page_date=`date +'%Y-%m-%d %H:%M:%S %Z'`
 
+server=${HTTP_HOST:-${SERVER_ADDR}}
+
 status_sensors_head="Sensors (output of command \"sensors\")"
 /usr/bin/sensors > /dev/null 2>&1
 if /usr/bin/test $? -eq 0 ; then
@@ -54,8 +56,8 @@ status_loads_body=`/bin/cat /proc/loadavg`
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"sitemenu\">"
 /bin/echo "        <span class=\"siteMenuItem\"><a id=\"a0\" href=\"../index.html\" class=\"active\">Home</a></span>"
-/bin/echo "        <span class=\"siteMenuItem\"><a id=\"a1\" href=\"http://${SERVER_ADDR}:8080/\">${page_host}</a></span>"
-/bin/echo "        <span class=\"siteMenuItem\"><a id=\"a2\" href=\"../minimyth/index.shtml\">MiniMyth</a></span>"
+/bin/echo "        <span class=\"siteMenuItem\"><a id=\"a1\" href=\"http://${server}:8080/\">${page_host}</a></span>"
+/bin/echo "        <span class=\"siteMenuItem\"><a id=\"a2\" href=\"../minimyth/index.shtml\" title=\"The report of our death was an exaggeration\">MiniMyth</a></span>"
 /bin/echo "        <span class=\"siteMenuItem\"><a id=\"a3\" href=\"http://linpvr.org/forum/\">Forum</a></span>"
 /bin/echo "        <span class=\"siteMenuItem\"><a id=\"a4\" href=\"http://linpvr.org/bugs/\">Bug Tracker</a></span>"
 /bin/echo "      </div>"
@@ -81,7 +83,7 @@ status_loads_body=`/bin/cat /proc/loadavg`
 /bin/echo "          <div class=\"contentitem\">"
 /bin/echo "            <div class=\"contentitemheader\">Useful links</div>"
 /bin/echo "            <ul>"
-/bin/echo "              <li>browse <a href=\"http://${SERVER_ADDR}:8080/\">${page_host}'s filesystem</a></li>"
+/bin/echo "              <li>browse <a href=\"http://${server}:8080/\">${page_host}'s filesystem</a></li>"
 /bin/echo "              <li>browse the <a href=\"../minimyth/index.shtml\">MiniMyth documentation</a></li>"
 /bin/echo "            </ul>"
 /bin/echo "          </div>"
@@ -89,12 +91,12 @@ status_loads_body=`/bin/cat /proc/loadavg`
 /bin/echo "        <div class=\"footer\">"
 /bin/echo "          <hr />"
 /bin/echo "          Home |"
-/bin/echo "          <a href=\"http://${SERVER_ADDR}:8080/\">${page_host}</a> |"
-/bin/echo "          <a href=\"../minimyth/index.html\">MiniMyth</a> |"
+/bin/echo "          <a href=\"http://${server}:8080/\">${page_host}</a> |"
+/bin/echo "          <a href=\"../minimyth/index.html\" title=\"The report of our death was an exaggeration\">MiniMyth</a> |"
 /bin/echo "          <a href=\"http://linpvr.org/forum/\">Forum</a>"
 /bin/echo "          <a href=\"http://linpvr.org/bugs/\">Bug Tracker</a>"
 /bin/echo "          <br />"
-/bin/echo "          Last Updated: 2006-09-12 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "          Last Updated: 2006-09-13 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
 /bin/echo "        </div>"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
