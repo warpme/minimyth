@@ -221,6 +221,17 @@ conf_write() {
     conf_variable_write MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
 
     # X.
+    case "${MM_HARDWARE_NORTHBRIDGE}" in
+        CLE266)
+            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via
+            ;;
+        CN400)
+            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=via
+            ;;
+        GFORCE_6150)
+            [ -z "${MM_X_DRIVER}" ] && MM_X_DRIVER=nvidia
+            ;;
+    esac
     [ -z "${MM_X_ENABLED}"      ] && MM_X_ENABLED="yes"
     [ -z "${MM_X_WM_ENABLED}"   ] && MM_X_WM_ENABLED="no"
     [ -z "${MM_X_VNC_ENABLED}"  ] && MM_X_VNC_ENABLED="yes"
@@ -254,6 +265,7 @@ conf_write() {
             esac
         fi
     fi
+    conf_variable_write MM_X_DRIVER        "${MM_X_DRIVER}"
     conf_variable_write MM_X_ENABLED       "${MM_X_ENABLED}"
     conf_variable_write MM_X_WM_ENABLED    "${MM_X_WM_ENABLED}"
     conf_variable_write MM_X_VNC_ENABLED   "${MM_X_VNC_ENABLED}"

@@ -34,21 +34,16 @@ start() {
         exit 1
     fi
 
-    case "${MM_HARDWARE_NORTHBRIDGE}" in
-        CLE266)
-            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
-            sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
-            ;;
-        CN400)
-            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
-            sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
-            sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
-            ;;
-        GFORCE_6150)
+    case "${MM_X_DRIVER}" in
+        nvidia)
             mm_mythdb_setting_update PreferredMPEG2Decoder libmpeg2
             sed -i "s%@XVMC_TRUE@%\#%"  /root/.mplayer/config
             sed -i "s%@XVMC_FALSE@%%"   /root/.mplayer/config
+            ;;
+        via)
+            mm_mythdb_setting_update PreferredMPEG2Decoder xvmc-vld
+            sed -i "s%@XVMC_TRUE@%%"    /root/.mplayer/config
+            sed -i "s%@XVMC_FALSE@%\#%" /root/.mplayer/config
             ;;
     esac
 
