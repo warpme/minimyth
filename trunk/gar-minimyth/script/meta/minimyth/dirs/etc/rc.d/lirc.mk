@@ -37,7 +37,7 @@ LIRC_LIRCD_COMMAND = $(strip \
 LIRC_LIRCD_CONF    = $(strip /etc/lirc.d/lircd.conf.$(LIRC_REMOTE).$(LIRC_DRIVER))
 LIRC_LIRCRC        = $(strip /etc/lirc.d/lircrc.$(LIRC_REMOTE))
 
-lirc: mm_var_get /dev /etc/lircd.conf /etc/lircrc /var/lock /var/run
+lirc: mm_var_get /dev /etc/lircd.conf /etc/lircrc /var/lock /var/log /var/run
 	$(if $(LIRC_KERNEL_MODULE),modprobe $(LIRC_KERNEL_MODULE) $(LIRC_KERNEL_MODULE_OPTIONS))
 	$(if $(LIRC_DRIVER),$(if $(LIRC_DEVICE),$(LIRC_LIRCD_COMMAND)))
 	touch lirc

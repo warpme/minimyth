@@ -23,6 +23,6 @@ EXTRAS_URL         = $(strip \
 extras: /usr/local
 	touch extras
 
-/usr/local: mm_var_get mm_url_mount
+/usr/local: /etc mm_var_get mm_url_mount
 	$(if $(EXTRAS_URL),mm_url_mount "$(EXTRAS_URL)" "/usr/local")
 	ldconfig -f /etc/ld.so.conf -C /etc/ld.so.cache

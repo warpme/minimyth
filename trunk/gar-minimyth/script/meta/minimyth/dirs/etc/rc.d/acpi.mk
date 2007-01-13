@@ -5,6 +5,6 @@
 acpi: acpid
 	touch acpi
 
-acpid: /var/log
+acpid: /proc /var/log
 	acpid -S
 	touch acpid

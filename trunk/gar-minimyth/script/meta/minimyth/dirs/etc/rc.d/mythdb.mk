@@ -2,7 +2,7 @@
 # mythdb.mk
 ################################################################################
 
-mythdb: mm_var_get mm_mythdb_setting_update
+mythdb: /etc/minimyth.d/minimyth.conf mm_mythdb_setting_update
 	cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING_' | sed -e 's%^MM_MYTHDB_SETTING_%%' | \
 	while read setting ; do \
 		setting_label=`echo "$${setting}" | \
