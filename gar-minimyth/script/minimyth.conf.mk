@@ -6,7 +6,7 @@ mm_VERSION        ?= 0.0.5
 # Valid values for mm_GARCH are c3 and c3-2
 mm_GARCH          ?= c3
 mm_INSTALL_CRAMFS ?= yes
-mm_INSTALL_NFS    ?= yes
+mm_INSTALL_NFS    ?= no
 mm_TFTP_ROOT      ?= /var/tftpboot/minimyth
 mm_HOME           ?= $(P4ROOT)/gar-minimyth
 mm_NFS_ROOT       ?= /home/public
