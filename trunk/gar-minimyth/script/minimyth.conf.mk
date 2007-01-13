@@ -19,9 +19,6 @@ mm_VERSION_EXTRA     ?= $(strip \
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
 # Indicates whether or not to build with debugging enabled.
-# Enabling debug makes MiniMyth much larger, resulting in files that are too
-# big for CRAMFS. As a result, when you enable debugging, you can only use the
-# NFS file system image.
 # Valid values for mm_DEBUG are 'yes' and 'no'.
 mm_DEBUG             ?= no
 # Lists the chipset families supported.
@@ -30,20 +27,25 @@ mm_CHIPSETS          ?= intel nvidia via
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH             ?= pentium-mmx
-# Indicates whether or not to install the CRAMFS (ramdisk) file system images.
-# Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.
-mm_INSTALL_CRAMFS    ?= no
-# Indicates whether or not to install the NFS file system images.
-# Valid values for mm_INSTALL_NFS are 'yes' and 'no'.
-mm_INSTALL_NFS       ?= no
+# Indicates whether or not to install the MiniMyth files need to boot with
+# the root file system downloaded using TFTP.
+# Valid values for mm_INSTALL_TFTP_BOOT are 'yes' and 'no'.
+mm_INSTALL_TFTP_BOOT ?= no
+# Indicates whether or not to install the MiniMyth files needed to boot with
+# the root file system mounted using NFS.
+# Valid values for mm_INSTALL_NFS_BOOT are 'yes' and 'no'.
+mm_INSTALL_NFS_BOOT  ?= no
 # Indicates the directory where the GAR MiniMyth build system is installed.
 mm_HOME              ?= $(P4ROOT)/gar-minimyth
 # Indicates the pxeboot TFTP directory.
-# The kernel and the CRAMFS image are installed in this directory.
+# The MiniMyth kernel, the MiniMyth file system image and MiniMyth themes are
+# installed in this directory. The files will be installed in a subdirectory
+# named 'minimyth-$(mm_VERSION)'.
+# The files 
 mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
-# Indicates the directory in which the directory containing the NFS root file
-# system image will be installed. The name of the directory containing the NFS
-# root files sytem image is given by mm_NFSNAME.
+# Indicates the directory in which the directory containing the MiniMyth root
+# file system for mounting using NFS. The MiniMyth root file system will be
+# installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of xorg to use.
 # Value values are 'old', 'mid' and 'new'.
@@ -103,16 +105,8 @@ mm_CFLAGS            ?= $(strip \
                             $(if $(filter yes,$(mm_DEBUG)),-g)                        \
                          )
 mm_CXXFLAGS          ?= $(mm_CFLAGS)
-mm_NAME              ?= minimyth-$(mm_VERSION)
-mm_NAME_PRETTY       ?= MiniMyth $(mm_VERSION)
 mm_DESTDIR           ?= $(mm_HOME)/images/mm
-mm_TFTPDIR           ?= $(mm_TFTP_ROOT)
-mm_NFSDIR            ?= $(mm_NFS_ROOT)
 mm_SOURCENAME        ?= gar-minimyth-$(mm_VERSION)
-mm_KERNELNAME        ?= kernel-$(mm_NAME)
-mm_ROOTFSNAME        ?= rootfs-$(mm_NAME)
-mm_EXTRASNAME        ?= extras-$(mm_NAME)
-mm_NFSNAME           ?= $(mm_NAME)
 # The version of Myth checked out from SVN when mm_MYTH_VERSION=svn.
 # If this is set, the patch files for myth/myth*-svn may fail.
 mm_MYTH_VERSION_SVN  ?=

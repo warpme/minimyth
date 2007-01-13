@@ -1,18 +1,46 @@
 MiniMyth Changelog
 
 --------------------------------------------------------------------------------
-Changes since 16 (2006.08.30):
+Changes since 16 (2006.09.03):
 
 Current MythTV versions
     MythTV 18:  version 0.18.2,   release-0-18-fixes branch svn 8525.
     MythTV 19:  version 0.19,     release-0-19-fixes branch svn 10505.
     MythTV SVN: version svn10992, trunk svn 10992.
 
+Changed MiniMyth distribution packaging
+    Separated MythTV themes into separate files.
+        Themes are loaded at boot time from the distribution's 'themes'
+            directory.
+        Which MythTV theme and MythTV OSD theme are loaded are controlled by
+            the required minimyth.conf variables MM_THEME_URL and
+            MM_THEMEOSD_URL respectively.
+    There are now two MiniMyth distribution files:
+        sfs-<version>.tar.bz2 that contains squashfs based booting image files.
+        tar-<version>.tar.bz2 that contains nfs based booting tarball files.
+    sfs-<version> expands into a directory 'sfs-<version>' which contains:
+        kernel : the Linux kernel
+        rootfs : the MiniMyth root files system squashfs image
+        themes : a directory of MythTV theme squashfs images.
+
+Improved the local boot install and update scripts
+    Renamed the install and update scripts to 'mm_local_install' and
+       'mm_local_update' respectively.
+    Added the 'mm_local_helper' file that is used by 'mm_local_install' and
+       'mm_local_update'. This file enables the installation method to change
+       between releases because this file is first downloaded from MiniMyth
+       distribution directory and then used to install the distribution.
+
+Modified GAR build system
+    Removed several attributes from 'minimyth.conf.mk'.
+    Moved source tarball generation to 'meta/minimyth/minimyth.mk'.
+
 Updated packages
     Updated mythtv/mythplugins-svn.
     Updated mythtv/myththemes-svn.
     Updated mythtv/mythtv-svn.
     Updated system/splashutils.
+    Updated utils/m4.
 
 --------------------------------------------------------------------------------
 Changes since 15 (2006.08.29):
