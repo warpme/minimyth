@@ -451,7 +451,7 @@ mm-make-distro:
 	@# Get version.
 	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
-	@# Get html documentation.
+	@# Get documentation 
 	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Get scripts
@@ -465,6 +465,13 @@ mm-make-distro:
 		SOURCE_DIR_HEAD=`echo $(mm_HOME)  | sed 's%/[^/]*$$%%g'` \
 		SOURCE_DIR_TAIL=`echo  $(mm_HOME) | sed 's%[^/]*/%%g'`
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
+	# Make documentation tarball file.
+	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
+	@fakeroot sh -c                                                                " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/html ; \
+		chmod -R go-w $(mm_STAGEDIR)/html                                      ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html            "
+	@chmod 644 $(mm_STAGEDIR)/html.tar.bz2
 	# Make helper tarball file.
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
 	@fakeroot sh -c                                                                  " \
@@ -529,6 +536,7 @@ mm-make-distro:
 	@rm -rf   $(mm_LOCALDIR)
 	@mkdir -p $(mm_LOCALDIR)
 	@cp -r  $(mm_STAGEDIR)/version        $(mm_LOCALDIR)/version
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_LOCALDIR)/html.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_LOCALDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_LOCALDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_LOCALDIR)/nfs-$(mm_NAME)
@@ -552,6 +560,7 @@ mm-make-distro:
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
 	@cp -r  $(mm_STAGEDIR)/version        $(mm_SHAREDIR)/version
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2   $(mm_SHAREDIR)/html.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2 $(mm_SHAREDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME) $(mm_SHAREDIR)/ram-$(mm_NAME)
 	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME) $(mm_SHAREDIR)/nfs-$(mm_NAME)
