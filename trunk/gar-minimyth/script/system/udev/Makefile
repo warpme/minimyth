@@ -35,8 +35,8 @@ DEFAULT_ARGS = \
 	configdir="$(configdir)" \
 	initdir="$(initdir)" \
 	udevdir="$(udevdir)"
-BUILD_ARGS   = $(DEFAULT_ARGS)
-INSTALL_ARGS = $(DEFAULT_ARGS)
+BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/volume_id/"
+INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/volume_id/"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
