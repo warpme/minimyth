@@ -21,18 +21,20 @@ BUILD_ARGS = \
 INSTALL_ARGS = \
 	ldconfig="true" \
 	install="install -D"
+BUILD_OVERRIDE_DIRS = \
+	usr/bin bin sbin usr/proc/bin man1 man5 man8 lib usr/lib usr/include
 INSTALL_OVERRIDE_DIRS = \
 	usr/bin bin sbin usr/proc/bin man1 man5 man8 lib usr/lib usr/include
 
-usr/bin      = $(bindir)/
-bin          = $(ebindir)/
-sbin         = $(esbindir)/
-usr/proc/bin = $(bindir)/
-man1         = $(mandir)/man1/
-man5         = $(mandir)/man5/
-man8         = $(mandir)/man8/
-lib          = $(elibdir)/
-usr/lib      = $(libdir)/
-usr/include  = $(includedir)/
-
 include ../../gar.mk
+
+usr/bin      := $(bindir)/
+bin          := $(ebindir)/
+sbin         := $(esbindir)/
+usr/proc/bin := $(bindir)/
+man1         := $(mandir)/man1/
+man5         := $(mandir)/man5/
+man8         := $(mandir)/man8/
+lib          := $(elibdir)/
+usr/lib      := $(libdir)/
+usr/include  := $(includedir)/

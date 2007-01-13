@@ -3,7 +3,7 @@ GARVERSION = 0.94.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-aclocal.patch
 LICENSE =
 
 DESCRIPTION =
@@ -20,6 +20,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--with-gnu-ld
+BUILD_ARGS     = \
+	rootdir="$(docdir)/$(DISTNAME)"
+INSTALL_ARGS   = \
+	rootdir="$(docdir)/$(DISTNAME)"
 
 include ../../gar.mk
 
