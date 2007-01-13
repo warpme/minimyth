@@ -24,7 +24,7 @@ mm_VERSION_EXTRA     ?= $(strip \
 mm_DEBUG             ?= no
 # Lists the chipset families supported.
 # Valid values for mm_CHIPSETS are one or more of 'intel', 'nvidia' and 'via'.
-mm_CHIPSETS          ?= intel nvidia via
+mm_CHIPSETS          ?= intel nvidia via other
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH             ?= pentium-mmx
