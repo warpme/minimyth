@@ -1,11 +1,13 @@
 GARNAME = X11
-GARVERSION = 6.8.2
+GARVERSION = 6.9-RC1
 CATEGORIES = X11
-MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
+MASTER_SITES  = http://xorg.freedesktop.org/releases/$(GARNAME)R$(GARVERSION)/src-single/
+MASTER_SITES += http://xorg.freedesktop.org/releases/$(GARNAME)R$(GARVERSION)/
 MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
-DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
-PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch
+#DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
+DISTFILES = xorg-x11-6.8.99.901.tar.bz2
+PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch $(GARNAME)R$(GARVERSION)-gtf.patch $(GARNAME)R$(GARVERSION)-via_dri_h.patch
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
 
@@ -135,6 +137,7 @@ configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
 	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , via)
 	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
+	@$(call CONFIG_FILE_APPEND, BuildDevelDRIDrivers      , YES)
 	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , unichrome)
 	@$(call CONFIG_FILE_APPEND, XInputDrivers             , mouse keyboard)
 	@$(MAKECOOKIE)
