@@ -10,30 +10,30 @@ label_get()
     label=""
     case ${name} in
         hd[a-z]*)
-            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || true
+            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || /bin/true
             ;;
         sd[a-z]*)
-            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || true
+            label=`/lib/udev/vol_id -l /dev/${name} 2> /dev/null` || /bin/true
             ;;
     esac
 
-    echo ${label}
+    /bin/echo ${label}
 }
 
 minimyth_add()
 {
     name="$1"
 
-    mkdir -p /minimyth
-    mount -t auto /dev/${name} /minimyth || true
+    /bin/mkdir -p /minimyth
+    /bin/mount -t auto /dev/${name} /minimyth || /bin/true
 }
 
 minimyth_remove()
 {
     name="$1"
 
-    umount -l /minimyth || true
-    rmdir /minimyth
+    /bin/umount -l /minimyth || /bin/true
+    /bin/rmdir /minimyth
 }
 
 mountpoint_add()
@@ -41,12 +41,12 @@ mountpoint_add()
     name="$1"
     symlink="$2"
 
-    mkdir -p /media/${symlink}
+    /bin/mkdir -p /media/${symlink}
     case ${name} in
         hd[a-z])
             ;;
         sd[a-z])
-            mount -t auto /dev/${symlink} /media/${symlink} || true
+            /bin/mount -t auto /dev/${symlink} /media/${symlink} || /bin/true
             ;;
         sr[0-9]*)
             ;;
@@ -58,19 +58,19 @@ mountpoint_remove()
     name="$1"
     symlink="$2"
 
-    umount -l /media/${symlink} || true
-    rmdir /media/${symlink}
+    /bin/umount -l /media/${symlink} || /bin/true
+    /bin/rmdir /media/${symlink}
 }
 
 case ${action} in
     add)
         label=`${label_get} "${name}"`
-        if [ "${label}" = "minimyth" ] ; then
+        if /usr/bin/test "${label}" = "minimyth" ; then
             minimyth_add "${name}"
         else
             symlinks="${DEVLINKS}"
             for symlink in ${symlinks} ; do
-                symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
+                symlink=`/bin/echo ${symlink} | /bin/sed 's%//*%/%g' | /bin/sed 's%^/dev/%%'`
                 mountpoint_remove "${name}" "${symlink}"
                 mountpoint_add    "${name}" "${symlink}"
             done
@@ -78,12 +78,12 @@ case ${action} in
         ;;
     remove)
         label=`${label_get} "${name}"`
-        if [ "${label}" = "minimyth" ] ; then
+        if /usr/bin/test "${label}" = "minimyth" ; then
             minimyth_remove "${name}"
         else
             symlinks="${DEVLINKS}"
             for symlink in ${symlinks} ; do
-                symlink=`echo ${symlink} | sed 's%//*%/%g' | sed 's%^/dev/%%'`
+                symlink=`/bin/echo ${symlink} | /bin/sed 's%//*%/%g' | /bin/sed 's%^/dev/%%'`
                 mountpoint_remove "${name}" "${symlink}"
             done
         fi

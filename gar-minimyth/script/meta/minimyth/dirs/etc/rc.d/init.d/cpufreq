@@ -7,13 +7,13 @@
 start() {
     mm_message_output info 'starting CPU frequency scaling ...'
 
-    if [ ! "${MM_CPUFREQ_GOVERNOR}" = "performance" ] ; then
+    if /usr/bin/test ! "${MM_CPUFREQ_GOVERNOR}" = "performance" ; then
         case "${MM_HARDWARE_CPU}" in
             athlon64)
-                modprobe powernow-k8
+                /sbin/modprobe powernow-k8
                 ;;
             c3|c3-2)
-                modprobe longhaul
+                /sbin/modprobe longhaul
                 ;;
         esac
 
@@ -21,24 +21,24 @@ start() {
             performance)
                 ;;
             powersave)
-                modprobe cpufreq-powersave
+                /sbin/modprobe cpufreq-powersave
                 ;;
             ondemand)
-                modprobe cpufreq-ondemand
+                /sbin/modprobe cpufreq-ondemand
                 ;;
             conservative)
-                modprobe cpufreq-conservative
+                /sbin/modprobe cpufreq-conservative
                 ;;
             userspace)
-                modprobe cpufreq-userspace
+                /sbin/modprobe cpufreq-userspace
                 powernowd
                 ;;
         esac
-        modprobe cpufreq-stats
+        /sbin/modprobe cpufreq-stats
 
 
         for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
-            echo "${MM_CPUFREQ_GOVERNOR}" > ${dir}/scaling_governor
+            /bin/echo "${MM_CPUFREQ_GOVERNOR}" > ${dir}/scaling_governor
         done
     fi
 }
@@ -46,12 +46,12 @@ start() {
 stop() {
     mm_message_output info 'stopping CPU frequency scaling ...'
 
-    if [ -n "`pidof powernowd`" ] ; then
-        killall powernowd
+    if /usr/bin/test -n "`/bin/pidof powernowd`" ; then
+        /usr/sbin/killall powernowd
     fi
 
     for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
-        echo performance > ${dir}/scaling_governor
+        /bin/echo performance > ${dir}/scaling_governor
     done
 
     return 0

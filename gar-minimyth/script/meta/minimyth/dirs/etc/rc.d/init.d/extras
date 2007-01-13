@@ -9,14 +9,14 @@
 start() {
     mm_message_output info 'installing extras ...'
 
-    if [ "${MM_EXTRAS_URL}" = "default" ] ; then
-        INITRD_DIR=` echo ${initrd} | sed 's%[^/]*$%%'`
-        INITRD_FILE=`echo ${initrd} | sed 's%^.*/%%'`
-        INITRD_FILE_PREFIX=`echo ${INITRD_FILE} | sed 's%-.*$%%'`
-        if [ "${INITRD_FILE_PREFIX}" = "rootfs" ] ; then
+    if /usr/bin/test "${MM_EXTRAS_URL}" = "default" ; then
+        INITRD_DIR=` /bin/echo ${initrd} | /bin/sed 's%[^/]*$%%'`
+        INITRD_FILE=`/bin/echo ${initrd} | /bin/sed 's%^.*/%%'`
+        INITRD_FILE_PREFIX=`/bin/echo ${INITRD_FILE} | /bin/sed 's%-.*$%%'`
+        if /usr/bin/test "${INITRD_FILE_PREFIX}" = "rootfs" ; then
             EXTRAS_DIR="${INITRD_DIR}"
-            EXTRAS_FILE=`echo ${INITRD_FILE} | sed 's%^rootfs%extras%'`.sfs
-            if [ -d "/minimyth" ] ; then
+            EXTRAS_FILE=`/bin/echo ${INITRD_FILE} | /bin/sed 's%^rootfs%extras%'`.sfs
+            if /usr/bin/test -d "/minimyth" ; then
                 MM_EXTRAS_URL="file:/minimyth/${EXTRAS_DIR}${EXTRAS_FILE}"
             else
                 MM_EXTRAS_URL="tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${EXTRAS_DIR}${EXTRAS_FILE}"
@@ -25,9 +25,9 @@ start() {
             MM_EXTRAS_URL=
         fi
     fi
-    if [ -n "${MM_EXTRAS_URL}" ] ; then
+    if /usr/bin/test -n "${MM_EXTRAS_URL}" ; then
         mm_url_mount "${MM_EXTRAS_URL}" "@EXTRAS_ROOTDIR@"
-        ldconfig
+        /usr/sbin/ldconfig
     fi
 
     return 0

@@ -23,9 +23,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile config
 CONFIGURE_ARGS_DIR = \
 	--prefix="$(prefix)" \
 	--bindir="$(bindir)" \
-	--datadir="$(datadir)" \
+	--datadir="$(datadir)/mplayer" \
 	--mandir="$(mandir)" \
-	--confdir="$(sysconfdir)" \
+	--confdir="$(sysconfdir)/mplayer" \
 	--libdir="$(libdir)"
 # Optional features
 CONFIGURE_ARGS_OPTIONAL = \

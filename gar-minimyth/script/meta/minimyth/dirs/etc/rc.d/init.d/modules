@@ -8,96 +8,96 @@ start() {
     mm_message_output info 'loading kernel modules ...'
 
     # Real time clock.
-    modprobe rtc
+    /sbin/modprobe rtc
 
     # IO scheduler.
-    modprobe as-iosched
+    /sbin/modprobe as-iosched
 
     # Load ACPI kernel modules.
-    modprobe button
-    modprobe fan
-    modprobe processor
-    modprobe thermal
-    modprobe video
+    /sbin/modprobe button
+    /sbin/modprobe fan
+    /sbin/modprobe processor
+    /sbin/modprobe thermal
+    /sbin/modprobe video
 
     # Input.
-    modprobe evdev
-    modprobe psmouse
+    /sbin/modprobe evdev
+    /sbin/modprobe psmouse
 
     # Loopback device.
-    modprobe loop
+    /sbin/modprobe loop
 
     # Net.
-    modprobe af_packet
+    /sbin/modprobe af_packet
 
     # Parallel port.
-    modprobe parport
-    modprobe parport_pc
-    modprobe ppdev
+    /sbin/modprobe parport
+    /sbin/modprobe parport_pc
+    /sbin/modprobe ppdev
 
     # Detected and user specified kernel modules.
     for kernel_module in ${MM_KERNEL_MODULES} ; do
-        modprobe ${kernel_module}
-        if [ ! "$?" = "0" ] ; then
+        /sbin/modprobe ${kernel_module}
+        if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to load kernel module: ${kernel_module}"
             exit 1
         fi
     done
 
     # IDE.
-    if [ `lsmod | grep -c -e '^ide_core'` = "1" ] ; then
-        modprobe ide-cd
-        modprobe ide-disk
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_core'` = "1" ; then
+        /sbin/modprobe ide-cd
+        /sbin/modprobe ide-disk
     fi
 
     # FireWire (IEEE1394).
-    if [ `lsmod | grep -c -e '^ieee1394'` = "1" ] ; then
-        modprobe sbp2
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ieee1394'` = "1" ; then
+        /sbin/modprobe sbp2
     fi
-    if [ `lsmod | grep -c -e '^sbp2'` = "1" ] ; then
-        modprobe sd_mod
-        modprobe sr_mod
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^sbp2'` = "1" ; then
+        /sbin/modprobe sd_mod
+        /sbin/modprobe sr_mod
     fi
 
     # USB
-    if [ `lsmod | grep -c -e '^ehci_hcd'` = "1" ] || \
-       [ `lsmod | grep -c -e '^ohci_hcd'` = "1" ] || \
-       [ `lsmod | grep -c -e '^uhci_hcd'` = "1" ] ; then
-        modprobe usbhid
-        modprobe usblcd
-        modprobe usb-storage
-        modprobe usbserial
-        modprobe ftdi-sio
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ehci_hcd'` = "1" || \
+       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ohci_hcd'` = "1" || \
+       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^uhci_hcd'` = "1" ; then
+        /sbin/modprobe usbhid
+        /sbin/modprobe usblcd
+        /sbin/modprobe usb-storage
+        /sbin/modprobe usbserial
+        /sbin/modprobe ftdi-sio
     fi
-    if [ `lsmod | grep -c -e '^usb_storage'` = "1" ] ; then
-        modprobe sd_mod
-        modprobe sr_mod
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^usb_storage'` = "1" ; then
+        /sbin/modprobe sd_mod
+        /sbin/modprobe sr_mod
     fi
 
     # File systems (hard disk).
-    if [ `lsmod | grep -c -e '^ide_disk'` = "1" ] || \
-       [ `lsmod | grep -c -e '^sd_mod'`   = "1" ] ; then
-        modprobe msdos
-        modprobe vfat
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_disk'` = "1" || \
+       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^sd_mod'`   = "1" ; then
+        /sbin/modprobe msdos
+        /sbin/modprobe vfat
     fi
 
     # File systems (cdrom).
-    if [ `lsmod | grep -c -e '^cdrom'` = "1" ] ; then
-        modprobe isofs
-        modprobe udf
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^cdrom'` = "1" ; then
+        /sbin/modprobe isofs
+        /sbin/modprobe udf
     fi
 
     # File systems (network).
-    modprobe cifs
+    /sbin/modprobe cifs
 
     # File system character sets.
-    if [ `lsmod | grep -c -e '^nls_base'` = "1" ] ; then
-        modprobe nls_ascii
-        modprobe nls_cp437
-        modprobe nls_cp850
-        modprobe nls_iso8859-1
-        modprobe nls_iso8859-15
-        modprobe nls_utf8
+    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^nls_base'` = "1" ; then
+        /sbin/modprobe nls_ascii
+        /sbin/modprobe nls_cp437
+        /sbin/modprobe nls_cp850
+        /sbin/modprobe nls_iso8859-1
+        /sbin/modprobe nls_iso8859-15
+        /sbin/modprobe nls_utf8
     fi
 
     return 0

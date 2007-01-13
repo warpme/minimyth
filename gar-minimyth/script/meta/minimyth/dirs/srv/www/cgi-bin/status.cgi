@@ -9,8 +9,8 @@ page_head="Status"
 
 status_sensors_head="Sensors"
 status_sensors_body=` \
-    sensors | \
-    sed \
+    /usr/bin/sensors | \
+    /bin/sed \
         -e 's/\(\-[1-9][0-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
         -e 's/\(\-[1-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
         -e 's/\(\+[1-9]\.[0-9] C\)/<span class="temp_cool">\1<\/span>/' \
@@ -20,7 +20,7 @@ status_sensors_body=` \
 status_sensors=`output_status "${status_sensors_head}" "${status_sensors_body}"`
 
 status_loads_head="Loads"
-status_loads_body=`cat /proc/loadavg`
+status_loads_body=`/bin/cat /proc/loadavg`
 status_loads=`output_status "${status_loads_head}" "${status_loads_body}"`
 
 page_body="
