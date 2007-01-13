@@ -14,10 +14,10 @@ mm_MYTH_VERSION   ?= stable
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
 # Lists the chipset families supported.
-# Valid values for mm_CHIPSETS are 'nvidia' and 'via'.
+# Valid values for mm_CHIPSETS are one or more of 'nvidia' and 'via'.
 mm_CHIPSETS       ?= via
 # Indicates the microprocessor architecture.
-# Valid values for mm_GARCH are 'c3', 'c3-2' and 'pentium-mmx'.
+# Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH          ?= pentium-mmx
 # Indicates whether or not to install the CRAMFS (ramdisk) root file system image.
 # Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.
