@@ -10,8 +10,18 @@ mm_dir_make_rw /etc
 
 mm_conf_get /localtime /etc/localtime
 
+if [ ! -e /etc/localtime ] ; then
+  mm_message_display 'error: configuration file "localtime" not present'
+  exit 1
+fi
+
 if [ -n ${MM_TIME_SERVER} ] ; then
   ntpdate ${MM_TIME_SERVER}
   echo "server ${MM_TIME_SERVER}" > /etc/ntp.conf
   ntpd
+else
+  mm_message_display 'error: configuration variable "MM_TIME_SERVER" not set'
+  exit 1
 fi
+
+exit 0

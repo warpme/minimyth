@@ -1,0 +1,21 @@
+#!/bin/sh
+################################################################################
+# mm_message_display
+################################################################################
+
+. /etc/minimyth.d/env.conf
+
+box() {
+    return 0;
+}
+. /etc/bootsplash/themes/MythTV/config/bootsplash-800x600.cfg
+
+MESSAGE=$1
+
+echo "$MESSAGE"
+if [ -e /proc/splash ] ; then
+    if [ -n "`cat /proc/splash | grep ': on' | grep 'silent'`" ] ; then
+        splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
+        fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "$MESSAGE"
+    fi
+fi
