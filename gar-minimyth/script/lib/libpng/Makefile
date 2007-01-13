@@ -1,5 +1,5 @@
 GARNAME = libpng
-GARVERSION = 1.2.7
+GARVERSION = 1.2.8
 CATEGORIES = lib
 MASTER_SITES = http://unc.dl.sourceforge.net/sourceforge/libpng/
 DISTFILES = $(GARNAME)-$(GARVERSION)-config.tar.gz
