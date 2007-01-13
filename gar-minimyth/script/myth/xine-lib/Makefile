@@ -10,19 +10,18 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/flac lib/libogg lib/libvorbis X11/X11 X11/freetype
+DEPENDS   = lang/c kernel/linux lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libvorbis X11/X11 X11/freetype
+BUILDDEPS = devel/pkgconfig
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ENV = \
-	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
-
 # The configure program does not deal well with cross compiling,
 # so we do not include --build or --host and we let CC set the compiler.
 # Since both the the build and the host are i386, this works.
 CONFIGURE_ARGS = $(DIRPATHS) \
+	--cache-file=config.cache \
 	--x-includes=$(DESTDIR)$(x11includedir) \
 	--x-libraries=$(DESTDIR)$(x11libdir) \
 	--disable-altivec \
@@ -30,12 +29,14 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-mlib \
 	--enable-ipv6 \
 	--disable-fb \
-	--disable-sdltest \
 	--disable-dxr3 \
 	--disable-vidix \
+	--disable-libFLACtest \
 	--with-gnu-ld \
 	--with-x \
 	--with-xxmc-lib=viaXvMC
+CONFIGURE_ENV  = \
+	PKG_CONFIG_PATH="$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig"
 
 include ../../gar.mk
 
@@ -46,6 +47,18 @@ post-patch:
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
 	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@echo "ac_cv_path_AALIB_CONFIG=no"                                     >  $(WORKSRC)/config.cache
+	@echo "ac_cv_path_CACA_CONFIG=no"                                      >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_SDL_CONFIG=no"                                       >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_LIBFAME_CONFIG=no"                                   >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_ESD_CONFIG=no"                                       >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_ARTS_CONFIG=no"                                      >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_DVDNAV_CONFIG=no"                                    >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_LIBPNG_CONFIG=$(DESTDIR)$(bindir)/libpng-config"     >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
