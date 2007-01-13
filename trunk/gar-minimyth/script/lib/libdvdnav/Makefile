@@ -1,7 +1,7 @@
-GARNAME = libdvdread
-GARVERSION = 0.9.4
+GARNAME = libdvdnav
+GARVERSION = 0.1.10
 CATEGORIES = lib
-MASTER_SITES = http://www.dtek.chalmers.se/groups/dvd/dist/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/dvd/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+#DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -31,5 +31,5 @@ post-patch:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libdvdread.la
+	@rm -f $(DESTDIR)$(libdir)/libdvdnav.la
 	@$(MAKECOOKIE)
