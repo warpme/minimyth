@@ -23,12 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$* $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' --exclude '*/.svn' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

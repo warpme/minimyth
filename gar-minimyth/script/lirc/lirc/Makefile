@@ -3,7 +3,6 @@ GARVERSION = 0.8.0
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
-MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -35,24 +34,6 @@ INSTALL_ENV   = $(KERNEL_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
-
-cvs//%$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); cd $(DISTNAME); aclocal
-	@cd $(PARTIALDIR); cd $(DISTNAME); libtoolize --copy --force
-	@cd $(PARTIALDIR); cd $(DISTNAME); autoconf
-	@cd $(PARTIALDIR); cd $(DISTNAME); autoheader
-	@cd $(PARTIALDIR); cd $(DISTNAME); automake --copy --add-missing
-	@cd $(PARTIALDIR); cd $(DISTNAME); cp $(build_DESTDIR)$(build_datadir)/libtool/install-sh .
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@$(MAKECOOKIE)
-
-x-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.

@@ -27,9 +27,7 @@ GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 cvs//%$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) -d $(DISTNAME) $(GARNAME)
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

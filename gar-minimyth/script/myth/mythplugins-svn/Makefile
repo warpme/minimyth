@@ -1,8 +1,7 @@
 GARNAME = mythplugins
 GARVERSION = $(MYTHTV_SVN_VERSION)
 CATEGORIES = myth
-MASTER_SITES  = http://www.mythtv.org/mc/
-MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-musicplaylist.patch $(GARNAME)-video_ui.patch
 LICENSE = GPL2
@@ -61,12 +60,7 @@ GAR_EXTRA_CONF += myth/mythtv-svn/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' --exclude '*/.svn' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

@@ -1,8 +1,7 @@
 GARNAME = mythplugins
 GARVERSION = $(MYTHTV_STABLE18_VERSION)
 CATEGORIES = myth
-MASTER_SITES  = http://www.mythtv.org/mc/
-MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-fixes-8395.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-init.patch $(DISTNAME)-video_ui.patch
 LICENSE = GPL2
@@ -59,18 +58,6 @@ INSTALL_ENV   += \
 
 GAR_EXTRA_CONF += myth/mythtv-stable18/package-api.mk
 include ../../gar.mk
-
-svn//%/$(DISTNAME).tar.bz2:
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)
-	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
-	@$(MAKECOOKIE)
-
-disabled-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@$(if $(filter i386,  $(GARCH_FAMILY)),echo "DEFINES += HAVE_MMX" >> $(WORKSRC)/settings.pro)
