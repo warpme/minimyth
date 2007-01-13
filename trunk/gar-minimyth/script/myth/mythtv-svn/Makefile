@@ -22,6 +22,8 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)" \
+	--disable-ccache \
+	--disable-distcc \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
 	--cpu=$(GARCH) \
