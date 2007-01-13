@@ -4,12 +4,15 @@
 ################################################################################
 [ -n "`mm_var_get MM_DEBUG`" ] && set -x
 
+MM_TZ=`mm_var_get MM_TZ`
 MM_TIME_SERVER=`mm_var_get MM_TIME_SERVER`
 
-mm_dir_make_rw /etc
-
 # Get and check for localtime file.
-mm_conf_get /localtime /etc/localtime
+if [ ! -z "${MM_TZ}" ] ; then
+    cp /usr/share/zoneinfo/${MM_TZ} /etc/localtime
+else
+    mm_conf_get /localtime /etc/localtime
+fi
 if [ ! -e /etc/localtime ] ; then
     mm_message_display 'error: configuration file "localtime" not present'
     exit 1
