@@ -19,10 +19,10 @@ mm_CHIPSETS          ?= via
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH             ?= pentium-mmx
-# Indicates whether or not to install the CRAMFS (ramdisk) root file system image.
+# Indicates whether or not to install the CRAMFS (ramdisk) file system images.
 # Valid values for mm_INSTALL_CRAMFS are 'yes' and 'no'.
 mm_INSTALL_CRAMFS    ?= yes
-# Indicates whether or not to install the NFS root file system image.
+# Indicates whether or not to install the NFS file system images.
 # Valid values for mm_INSTALL_NFS are 'yes' and 'no'.
 mm_INSTALL_NFS       ?= no
 # Indicates the directory where the GAR MiniMyth build system is installed.
@@ -46,17 +46,14 @@ mm_GARHOST           ?= $(strip \
                          )-minimyth-linux-gnu
 mm_NAME              ?= minimyth-$(mm_VERSION)
 mm_NAME_PRETTY       ?= MiniMyth $(mm_VERSION)
-mm_BASEDIR           ?= $(mm_HOME)/images/mm
+mm_DESTDIR           ?= $(mm_HOME)/images/mm
 mm_TFTPDIR           ?= $(mm_TFTP_ROOT)
 mm_NFSDIR            ?= $(mm_NFS_ROOT)
+mm_SOURCENAME        ?= gar-minimyth-$(mm_VERSION)
 mm_KERNELNAME        ?= kernel-$(mm_NAME)
-mm_CRAMFSNAME        ?= rootfs-$(mm_NAME)
-mm_EXTRASNAME        ?= extras-$(mm_NAME).cmg
-mm_THEMESNAME        ?= themes-$(mm_NAME)
+mm_ROOTFSNAME        ?= rootfs-$(mm_NAME)
+mm_EXTRASNAME        ?= extras-$(mm_NAME)
 mm_NFSNAME           ?= $(mm_NAME)
-mm_DESTDIR           ?= $(mm_BASEDIR)/rootfs-$(mm_NAME).d
-mm_EXTRASDIR         ?= $(mm_BASEDIR)/extras-$(mm_NAME).d
-mm_THEMESDIR         ?= $(mm_BASEDIR)/themes-$(mm_NAME).d
 # The version of Myth checked out from SVN when mm_MYTH_VERSION=svn.
 # If this is set, the patch files for myth/myth*-svn may fail.
 mm_MYTH_VERSION_SVN  ?=

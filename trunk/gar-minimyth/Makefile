@@ -4,8 +4,8 @@ include script/minimyth.conf.mk
 
 DIR_HEAD := $(shell echo $(mm_HOME) | sed 's%/[^/]*$$%%')
 DIR_TAIL := $(shell echo $(mm_HOME) | sed 's%[^/]*/%%g')
-TAR_BASE := gar-minimyth-$(mm_VERSION)
-TAR_FILE := $(TAR_BASE).tar.bz2
+TAR_BASE := $(mm_SOURCENAME)
+TAR_FILE := $(mm_SOURCENAME).tar.bz2
 
 PWD := $(shell pwd)
 
