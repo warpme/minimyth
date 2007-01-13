@@ -13,6 +13,7 @@ DESTIMG = $(MINIMYTHIMG)
 DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
+	system/bootsplash \
 	utils/busybox \
 	devel/gdb \
 	devel/make \

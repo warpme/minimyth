@@ -4,7 +4,7 @@ CATEGORIES = kernel
 MASTER_SITES = http://www.kernel.org/pub/linux/kernel/v$(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION)/
 CONFIGFILE = $(DISTNAME)-via_epia_m-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-vt1211.patch $(DISTNAME)-touchkitusb.patch $(DISTNAME)-via-rhine-pxeboot.patch
+PATCHFILES = $(DISTNAME)-vt1211.patch $(DISTNAME)-touchkitusb.patch $(DISTNAME)-via-rhine-pxeboot.patch $(DISTNAME)-bootsplash.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

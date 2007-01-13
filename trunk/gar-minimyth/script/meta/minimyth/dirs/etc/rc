@@ -5,27 +5,34 @@
 MM_INIT_MODE=`mm_var_get MM_INIT_MODE`
 [ -z "${MM_INIT_MODE}" ] && MM_INIT_MODE="sh"
 
+bootsplash_progress() {
+    progress=$((progress + 1))
+    [ -e /proc/splash ] && echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
+}
+
 if   [ "${MM_INIT_MODE}" = "sh"   ] ; then
-    echo "init: using 'sh' mode."
-    mm_command_run "sh /etc/minimyth.d/fs.script"
-    mm_command_run "sh /etc/minimyth.d/ld.script"
-    mm_command_run "sh /etc/minimyth.d/log.script"
-    mm_command_run "sh /etc/minimyth.d/network.script"
-    mm_command_run "sh /etc/minimyth.d/core.script"
-    mm_command_run "sh /etc/minimyth.d/mythtv.script"
-    mm_command_run "sh /etc/minimyth.d/minimyth.script"
-    mm_command_run "sh /etc/minimyth.d/extras.script"
-    mm_command_run "sh /etc/minimyth.d/sensors.script"
-    mm_command_run "sh /etc/minimyth.d/acpi.script"
-    mm_command_run "sh /etc/minimyth.d/time.script"
-    mm_command_run "sh /etc/minimyth.d/telnet.script"
-    mm_command_run "sh /etc/minimyth.d/web.script"
-    mm_command_run "sh /etc/minimyth.d/mount.script"
-    mm_command_run "sh /etc/minimyth.d/sound.script"
-    mm_command_run "sh /etc/minimyth.d/video.script"
-    mm_command_run "sh /etc/minimyth.d/lirc.script"
-    mm_command_run "sh /etc/minimyth.d/mythdb.script"
-    mm_command_run "sh /etc/minimyth.d/x.script"
+    progress=0
+    progress_max=20
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/fs.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/bootsplash.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/ld.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/log.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/network.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/core.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mythtv.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/minimyth.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/extras.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/sensors.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/acpi.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/time.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/telnet.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/web.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mount.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/sound.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/video.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/lirc.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mythdb.script"
+    bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/x.script"
 elif [ "${MM_INIT_MODE}" = "make" ] ; then
     echo "init: using 'make' mode."
     mm_command_run "mount -n -t tmpfs -o size=512K tmpfs /tmp"
