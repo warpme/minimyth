@@ -6,7 +6,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lib/libstdc++
+DEPENDS   = lang/c lib/libstdc++
 BUILDDEPS = lang/c++
 
 include ../../gar.mk

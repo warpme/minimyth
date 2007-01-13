@@ -7,17 +7,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-BUILDDEPS = \
-	lang/c \
-	devel/make \
-	devel/binutils \
-	devel/gcc \
-	devel/bison \
-	devel/flex \
-	devel/gettext \
-	devel/autoconf \
-	devel/automake \
-	devel/libtool
+DEPENDS = lang/c
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
