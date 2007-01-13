@@ -12,7 +12,7 @@ endef
 DEPENDS = lang/c kernel/linux
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/Makefile custom
+INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 DEFAULT_ARGS = \
 	V=true \
@@ -53,10 +53,4 @@ udevdir     := $(rootdir)/dev
 
 pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
-	@$(MAKECOOKIE)
-
-install-custom:
-	@install -D $(WORKSRC)/udev      $(DESTDIR)$(esbindir)/udev
-	@install -D $(WORKSRC)/udevsend  $(DESTDIR)$(esbindir)/udevsend
-	@install -D $(WORKSRC)/udevstart $(DESTDIR)$(esbindir)/udevstart
 	@$(MAKECOOKIE)
