@@ -67,8 +67,10 @@ LIST_LIBS = \
 			| sed 's%^[ \t]*%%' \
 			| sed 's%[ \t].*%%' \
 			| sed 's%.*/%%' \
+                        | sed 's%linux-gate\.so\.1%%' \
 		) \
 	)
+
 
 mm-all: mm-check mm-clean mm-make-dirs mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras
 
