@@ -4,6 +4,7 @@ CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-mceusb2_key_stutter_fix.patch
 LICENSE = GPL2
 
 DESCRIPTION =

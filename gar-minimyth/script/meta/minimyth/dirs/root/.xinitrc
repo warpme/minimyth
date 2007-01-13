@@ -6,7 +6,7 @@ if [ "${MM_X_SCREENSAVER_ENABLED}" = "yes" ] ; then
 	xscreensaver &
 fi
 if [ "${MM_X_VNC_ENABLED}" = "yes" ] ; then
-	x11vnc -xinerama -xrandr -forever -q -bg
+	x11vnc
 fi
 if [ "${MM_X_WM_ENABLED}" = "yes" ] ; then
 	ratpoison &
