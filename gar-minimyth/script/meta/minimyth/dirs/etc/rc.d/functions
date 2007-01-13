@@ -646,39 +646,6 @@ mm_hardware_pci_process() {
     mm_uniq
 }
 
-mm_hardware_pci2kernel_map() {
-    class=$1
-    vendor=$2
-    device=$3
-    revision=$4
-    class_prog=$5
-    subvendor=$6
-    subdevice=$7
-
-    if /usr/bin/test -n "${class}" ; then
-        /bin/cat /etc/hardware.d/pci2kernel.map | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *%%g' | /bin/grep -e "^${class}," |
-        {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_class_prog=`   /bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-                    map_vendor=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                    map_device=`       /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    map_kernel_module=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                    if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
-                       ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
-                       ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
-                        if /usr/bin/test -z "${found}" ; then
-                            found=1
-                            /bin/echo ${map_kernel_module}
-                        fi
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
 mm_hardware_pci2x_map() {
     class=$1
     vendor=$2

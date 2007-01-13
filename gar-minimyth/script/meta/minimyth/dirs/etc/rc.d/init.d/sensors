@@ -7,6 +7,15 @@
 start() {
     mm_message_output info 'starting sensors ...'
 
+    # Load sensor kernel modules.
+    for kernel_module in ${MM_SENSOR_KERNEL_MODULES} ; do
+        /sbin/modprobe ${kernel_module}
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err "error: failed to load kernel module: ${kernel_module}"
+            exit 1
+        fi
+    done
+
     # Start sensors.
     /usr/bin/sensors -s
 

@@ -4,58 +4,11 @@
 ################################################################################
 . /etc/rc.d/functions
 
-pci2ide_map() {
-    class=$1
-    vendor=$2
-    device=$3
-    revision=$4
-    class_prog=$5
-    subvendor=$6
-    subdevice=$7
-
-    # Only look for IDE controllers.
-    if /usr/bin/test "${class}" = "0101" ; then
-        /bin/echo `mm_hardware_pci2kernel_map ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
-    fi
-}
-
-pci2usb_map() {
-    class=$1
-    vendor=$2
-    device=$3
-    revision=$4
-    class_prog=$5
-    subvendor=$6
-    subdevice=$7
-
-    # Only look for USB controllers.
-    if /usr/bin/test "${class}" = "0c03" ; then
-        /bin/echo `mm_hardware_pci2kernel_map ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
-    fi
-}
-
 start() {
     # If the boot type is ide, then load the drivers needed to read the ide drive.
     if   /usr/bin/test "${MM_BOOT_TYPE}" = "ide" ; then
         mm_message_output info 'mounting IDE boot device ...'
 
-        kernel_modules=`mm_hardware_pci_process pci2ide_map`
-        for kernel_module in ${kernel_modules} ; do
-            /sbin/modprobe ${kernel_module}
-            if /usr/bin/test $? -ne 0 ; then
-                mm_message_output err "error: failed to load kernel module: ${kernel_module}"
-                exit 1
-            fi
-        done
-
-        if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_core'` = "1" ; then
-            /sbin/modprobe ide-disk
-        fi
-        if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_disk'` = "1" ; then
-            /sbin/modprobe msdos
-            /sbin/modprobe vfat
-        fi
-
         # Wait for /minimyth directory to mount.
         waiting_time=0
         while /usr/bin/test ! -d "/minimyth" ; do
@@ -63,37 +16,11 @@ start() {
             /bin/sleep 1
             waiting_time=$((waiting_time+1))
         done
-
-        # Get MiniMyth DCHP defaults,
-        # allowing IDE booted MiniMyth to work with limited DHCP servers.
-        mm_conf_get /minimyth.dhcp /etc/minimyth.d/minimyth.dhcp
 
     # If the boot type is usb, then load the drivers needed to read the usb drive.
     elif /usr/bin/test "${MM_BOOT_TYPE}" = "usb" ; then
         mm_message_output info 'mounting USB boot device ...'
 
-        kernel_modules=`mm_hardware_pci_process pci2usb_map`
-        for kernel_module in ${kernel_modules} ; do
-            /sbin/modprobe ${kernel_module}
-            if /usr/bin/test $? -ne 0 ; then
-                mm_message_output err "error: failed to load kernel module: ${kernel_module}"
-                exit 1
-            fi
-        done
-
-        if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ehci_hcd'` = "1" || \
-           /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ohci_hcd'` = "1" || \
-           /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^uhci_hcd'` = "1" ; then
-            /sbin/modprobe usb-storage
-        fi
-        if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^usb_storage'` = "1" ; then
-            /sbin/modprobe sd_mod
-        fi
-        if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^sd_mod'` = "1" ; then
-            /sbin/modprobe msdos
-            /sbin/modprobe vfat
-        fi
-
         # Wait for /minimyth directory to mount.
         waiting_time=0
         while /usr/bin/test ! -d "/minimyth" ; do
@@ -101,10 +28,6 @@ start() {
             /bin/sleep 1
             waiting_time=$((waiting_time+1))
         done
-
-        # Get MiniMyth DCHP defaults,
-        # allowing USB booted MiniMyth to work with limited DHCP servers.
-        mm_conf_get /minimyth.dhcp /etc/minimyth.d/minimyth.dhcp
     fi
 
     return 0

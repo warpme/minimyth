@@ -6,35 +6,6 @@
 ################################################################################
 . /etc/rc.d/functions
 
-# Check core (/etc/conf.d/core) configuration file.
-core_check() {
-    # Read DHCP configuration file file.
-    /usr/bin/test -r /etc/conf.d/core && . /etc/conf.d/core
-
-    return 0
-}
-
-# Check dhcp (/etc/conf.d/dhcp) configuration file.
-dhcp_check() {
-    # Read DHCP configuration file file.
-    /usr/bin/test -r /etc/conf.d/dhcp && . /etc/conf.d/dhcp
-
-    if /usr/bin/test -z "${MM_HOSTNAME}"   ; then
-        mm_message_output err 'error: no hostname provided by DHCP.'
-        exit 1
-    fi
-    if /usr/bin/test -z "${MM_DNS_SERVER}" ; then
-        mm_message_output err 'error: no DNS server provided by DHCP.'
-        exit 1
-    fi
-    if /usr/bin/test -z "${MM_NTP_SERVER}" ; then
-        mm_message_output err 'error: no NTP server provided by DHCP.'
-        exit 1
-    fi
-
-    return 0
-}
-
 # Check minimyth.conf for obosolete variables and values.
 conf_check() {
     # MiniMyth configuration file.
@@ -173,9 +144,14 @@ conf_write() {
     # Set unset/null configuration variables to their defaults.
     ###########################################################################
 
+    # DCHP provided parameters.
+    MM_HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
+    MM_DOMAIN=${MM_DOMAIN:-${MM_DHCP_DOMAIN}}
+    MM_DNS_SERVERS=${MM_DNS_SERVER:-${MM_DHCP_DNS_SERVERS}}
+    MM_NTP_SERVERS=${MM_NTP_SERVERS:-${MM_DHCP_NTP_SERVERS}}
+    MM_LOG_SERVERS=${MM_LOG_SERVERS:-${MM_DHCP_LOG_SERVERS}}
     # Default hardware.
     MM_HARDWARE_CPU=${MM_HARDWARE_CPU:-`mm_hardware_cpu_get`}
-    MM_HARDWARE_KERNEL_MODULES=${MM_HARDWARE_KERNEL_MODULES:-`mm_hardware_pci_process mm_hardware_pci2kernel_map`}
     # Default CPU frequency governor.
     MM_CPUFREQ_GOVERNOR=${MM_CPUFREQ_GOVERNOR:-'performance'}
     # Default audio.
@@ -231,13 +207,17 @@ conf_write() {
     MM_MYTHWEATHER_ENABLED=${MM_MYTHWEATHER_ENABLED:-'yes'}
     # Default LIRC (some values were defaulted by /etc/lirc.d/driver.*.conf).
     MM_LIRC_IREXEC_ENABLED=${MM_LIRC_IREXEC_ENABLED:-'no'}
-    # Default kernel modules.
-    MM_KERNEL_MODULES=`mm_uniq "${MM_KERNEL_MODULES} ${MM_HARDWARE_KERNEL_MODULES} ${MM_SENSOR_KERNEL_MODULES}"`
 
     ###########################################################################
     # Write the configuration variables /etc/conf.d/minimyth.
     ###########################################################################
 
+    # Write network.
+    conf_variable_write "${conf_file}" MM_HOSTNAME                     "${MM_HOSTNAME}"
+    conf_variable_write "${conf_file}" MM_DOMAIN                       "${MM_DOMAIN}"
+    conf_variable_write "${conf_file}" MM_DNS_SERVERS                  "${MM_DNS_SERVERS}"
+    conf_variable_write "${conf_file}" MM_NTP_SERVERS                  "${MM_NTP_SERVERS}"
+    conf_variable_write "${conf_file}" MM_LOG_SERVERS                  "${MM_LOG_SERVERS}"
     # Write timezone.
     conf_variable_write "${conf_file}" MM_TZ                           "${MM_TZ}"
     # Write hardware.
@@ -312,12 +292,10 @@ conf_write() {
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE           "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS   "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED          "${MM_LIRC_IREXEC_ENABLED}"
-    # Write LCD.
+    # Write LCDproc.
     conf_variable_write "${conf_file}" MM_LCDPROC_DRIVER               "${MM_LCDPROC_DRIVER}"
     # Write sensor.
     conf_variable_write "${conf_file}" MM_SENSOR_KERNEL_MODULES        "${MM_SENSOR_KERNEL_MODULES}"
-    # Write kernel modules.
-    conf_variable_write "${conf_file}" MM_KERNEL_MODULES               "${MM_KERNEL_MODULES}"
 
     return 0
 }
@@ -335,7 +313,6 @@ start() {
     fi
 
     core_check
-    dhcp_check
     conf_check
 
     conf_init

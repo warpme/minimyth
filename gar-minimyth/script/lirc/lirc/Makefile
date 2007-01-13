@@ -1,8 +1,9 @@
 GARNAME = lirc
-GARVERSION = 0.8.0
+GARVERSION = 20060505Z
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
+MASTER_SITES += cvs://anonymous@lirc.cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -35,7 +36,15 @@ INSTALL_ENV   = $(KERNEL_MAKE_ENV)
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
+cvs//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.

@@ -20,10 +20,6 @@ start() {
     /sbin/modprobe thermal
     /sbin/modprobe video
 
-    # Input.
-    /sbin/modprobe evdev
-    /sbin/modprobe psmouse
-
     # Loopback device.
     /sbin/modprobe loop
 
@@ -35,70 +31,18 @@ start() {
     /sbin/modprobe parport_pc
     /sbin/modprobe ppdev
 
-    # Detected and user specified kernel modules.
-    for kernel_module in ${MM_KERNEL_MODULES} ; do
-        /sbin/modprobe ${kernel_module}
-        if /usr/bin/test $? -ne 0 ; then
-            mm_message_output err "error: failed to load kernel module: ${kernel_module}"
-            exit 1
-        fi
+    # Enable udev rules that handle detected hardware.
+    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *.rules.disabled 2> /dev/null` ; do
+        file_old=`/bin/echo ${file}`
+        file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
+	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
     done
 
-    # IDE.
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_core'` = "1" ; then
-        /sbin/modprobe ide-cd
-        /sbin/modprobe ide-disk
-    fi
-
-    # FireWire (IEEE1394).
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ieee1394'` = "1" ; then
-        /sbin/modprobe sbp2
-    fi
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^sbp2'` = "1" ; then
-        /sbin/modprobe sd_mod
-        /sbin/modprobe sr_mod
-    fi
-
-    # USB
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ehci_hcd'` = "1" || \
-       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ohci_hcd'` = "1" || \
-       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^uhci_hcd'` = "1" ; then
-        /sbin/modprobe usbhid
-        /sbin/modprobe usblcd
-        /sbin/modprobe usb-storage
-        /sbin/modprobe usbserial
-        /sbin/modprobe ftdi-sio
-    fi
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^usb_storage'` = "1" ; then
-        /sbin/modprobe sd_mod
-        /sbin/modprobe sr_mod
-    fi
-
-    # File systems (hard disk).
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^ide_disk'` = "1" || \
-       /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^sd_mod'`   = "1" ; then
-        /sbin/modprobe msdos
-        /sbin/modprobe vfat
-    fi
-
-    # File systems (cdrom).
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^cdrom'` = "1" ; then
-        /sbin/modprobe isofs
-        /sbin/modprobe udf
-    fi
-
-    # File systems (network).
-    /sbin/modprobe cifs
-
-    # File system character sets.
-    if /usr/bin/test `/bin/lsmod | /bin/grep -c -e '^nls_base'` = "1" ; then
-        /sbin/modprobe nls_ascii
-        /sbin/modprobe nls_cp437
-        /sbin/modprobe nls_cp850
-        /sbin/modprobe nls_iso8859-1
-        /sbin/modprobe nls_iso8859-15
-        /sbin/modprobe nls_utf8
-    fi
+    # Restart udev with the additional udev rules that handle detected hardware.
+    /usr/bin/test -n "`pidof udevd`" && killall udevd
+    /sbin/udevd -d
+    /sbin/udevtrigger
+    /sbin/udevsettle --timeout=60
 
     return 0
 }

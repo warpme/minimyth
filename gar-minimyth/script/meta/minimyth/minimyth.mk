@@ -333,7 +333,7 @@ mm-gen-files:
 mm-make-udev:
 	$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
 		install -m 755 -D  ./dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
-	$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules), \
+	$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
 		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d/$(file) ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
 
@@ -400,7 +400,6 @@ mm-make-distro:
 	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_ROOTFSNAME).tar.bz2
 	@cp -f $(mm_HOME)/docs/minimyth.conf       $(WORKSRC)/distro.d/minimyth.conf
 	@cp -f $(mm_HOME)/docs/minimyth.script     $(WORKSRC)/distro.d/minimyth.script
-	@cp -f $(mm_HOME)/docs/minimyth.dhcp       $(WORKSRC)/distro.d/minimyth.dhcp
 	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
 	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
 	@cp -f ./files/mkflashboot                 $(WORKSRC)/distro.d/mkflashboot
@@ -410,7 +409,6 @@ mm-make-distro:
 	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME).tar.bz2 >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          >> md5sums.txt
-	@cd $(WORKSRC)/distro.d ; md5sum minimyth.dhcp            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               >> md5sums.txt
 	@cd $(WORKSRC)/distro.d ; md5sum mkflashboot              >> md5sums.txt

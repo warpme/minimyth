@@ -1,0 +1,30 @@
+ACTION=="add", SUBSYSTEM=="?*",          ENV{MODALIAS}=="?*",   RUN+="/sbin/modprobe -q $env{MODALIAS}"
+# sd: 0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
+# sr: 4 TYPE_WORM, 5 TYPE_ROM
+ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="0|7|14", RUN+="/sbin/modprobe -q sd_mod"
+ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="4|5",    RUN+="/sbin/modprobe -q sr_mod"
+
+KERNEL=="hd[a-z]",  IMPORT{program}="/lib/udev/cdrom_id --export $tempnode"
+KERNEL=="sd[a-z]*", IMPORT{program}="/lib/udev/cdrom_id --export $tempnode"
+KERNEL=="sr[0-9]*", IMPORT{program}="/lib/udev/cdrom_id --export $tempnode"
+
+KERNEL=="hd[a-z]",  IMPORT{program}="/lib/udev/vol_id   --export $tempnode"
+KERNEL=="sd[a-z]",  IMPORT{program}="/lib/udev/vol_id   --export $tempnode"
+KERNEL=="sr[0-9]*", IMPORT{program}="/lib/udev/vol_id   --export $tempnode"
+
+# Add generic symbolic links for CDROMs and DVDs.
+ENV{ID_CDROM}=="?*",     SYMLINK+="cdrom cdrom-%k"
+ENV{ID_CDROM_DVD}=="?*", SYMLINK+="dvd dvd-%k"
+
+# Add label based symbolic link for non CDROM drives.
+ENV{ID_FS_LABEL_SAFE}=="?*", ENV{ID_CDROM}=="", SYMLINK+="disk/by-name/$env{ID_FS_LABEL_SAFE}"
+
+# Create/delete the mount points and (in some cases) mount/unmount the devices.
+KERNEL=="hd[a-z]*", ACTION=="add"   , RUN+="/lib/udev/mm_mountpoint_make %k add"
+KERNEL=="hd[a-z]*", ACTION=="remove", RUN+="/lib/udev/mm_mountpoint_make %k remove"
+
+KERNEL=="sd[a-z]*", ACTION=="add"   , RUN+="/lib/udev/mm_mountpoint_make %k add"
+KERNEL=="sd[a-z]*", ACTION=="remove", RUN+="/lib/udev/mm_mountpoint_make %k remove"
+
+KERNEL=="sr[0-9]*", ACTION=="add"   , RUN+="/lib/udev/mm_mountpoint_make %k add"
+KERNEL=="sr[0-9]*", ACTION=="remove", RUN+="/lib/udev/mm_mountpoint_make %k remove"
