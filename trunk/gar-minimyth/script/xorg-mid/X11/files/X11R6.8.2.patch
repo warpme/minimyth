@@ -1,0 +1,42 @@
+diff -Naur xc-old/config/cf/X11.rules xc-new/config/cf/X11.rules
+--- xc-old/config/cf/X11.rules	2004-08-30 07:26:53.000000000 -0700
++++ xc-new/config/cf/X11.rules	2005-02-11 05:14:26.315461913 -0800
+@@ -43,7 +43,7 @@
+ # define XBinDir	$(BINDIR)
+ #endif
+ 
+-#ifdef X11ProjectRoot
++#if UseInstalledX11 && defined(X11ProjectRoot)
+ # define XUsrLibDirPath	$(USRLIBDIR):$(XPROJECTROOT)/lib
+ #else
+ # define XUsrLibDirPath	$(USRLIBDIR)
+@@ -59,7 +59,7 @@
+ 
+ #if ImportX11
+ # define XLdPreLibs	-L$(LIBSRC)
+-#elif defined(UseInstalledX11) && defined(X11ProjectRoot)
++#elif UseInstalledX11 && defined(X11ProjectRoot)
+ # define XLdPreLibs	-L$(XPROJECTROOT)/lib
+ #else
+ # define XLdPreLibs	/**/
+@@ -69,7 +69,7 @@
+ #endif
+ #define LdPreLibs	LdPreLib XLdPreLibs
+ 
+-#ifdef X11ProjectRoot
++#if UseInstalledX11 && defined(X11ProjectRoot)
+ # define XLdPostLibs	-L$(XPROJECTROOT)/lib
+ #else
+ # define XLdPostLibs	/**/
+diff -Naur xc-old/programs/xkbcomp/cross/Imakefile xc-new/programs/xkbcomp/cross/Imakefile
+--- xc-old/programs/xkbcomp/cross/Imakefile	2004-04-23 12:54:51.000000000 -0700
++++ xc-new/programs/xkbcomp/cross/Imakefile	2005-02-11 05:14:26.316461799 -0800
+@@ -13,7 +13,7 @@
+ 		 xkbparse.o parseutils.o utils.o
+         DEPLIBS = $(DEPXONLYLIB)
+ XCOMM Assumes local libraries installed in /usr/X11R6/lib
+-LOCAL_LIBRARIES = -L/usr/X11R6/lib $(XKBFILELIB) $(XONLYLIB)
++LOCAL_LIBRARIES = -L$(XPROJECTROOT)/lib $(XKBFILELIB) $(XONLYLIB)
+ 
+ ROOT_DEFINES = -DDFLT_XKB_CONFIG_ROOT=\"$(LIBDIR)/xkb\"
+ 

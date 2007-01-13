@@ -1,6 +1,6 @@
 GARNAME = libdrm
-GARVERSION = 2.0.1
-CATEGORIES = xorg-old
+GARVERSION = 1.0.5
+CATEGORIES = xorg-mid
 MASTER_SITES  = http://dri.freedesktop.org/libdrm/
 MASTER_SITES += cvs://anonymous@dri.freedesktop.org/cvs/dri/
 DISTFILES = $(DISTNAME).tar.gz
