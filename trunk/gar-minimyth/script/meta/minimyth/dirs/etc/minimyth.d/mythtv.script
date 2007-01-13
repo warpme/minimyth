@@ -35,6 +35,13 @@ echo "DBUserName=${MM_MYTH_DBUSERNAME}" >> /root/.mythtv/mysql.txt
 echo "DBPassword=${MM_MYTH_DBPASSWORD}" >> /root/.mythtv/mysql.txt
 echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
 
+# Test Myth database connection.
+mm_mythdb_command_run
+if [ $? -ne 0 ] ; then
+    mm_message_output err 'error: cannot connect to the Myth backend database.'
+    exit 1
+fi 
+
 # Configure Myth database jumppoints to match MiniMyth frontend.
 cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_JUMPPOINT=' | sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
     sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
