@@ -11,6 +11,7 @@ MM_LIRC_DRIVER=`mm_var_get MM_LIRC_DRIVER`
 MM_LIRC_KERNEL_MODULE=`mm_var_get MM_LIRC_KERNEL_MODULE`
 MM_LIRC_KERNEL_MODULE_OPTIONS=`mm_var_get MM_LIRC_KERNEL_MODULE_OPTIONS`
 MM_LIRC_REMOTE=`mm_var_get MM_LIRC_REMOTE`
+MM_LIRC_IREXEC_ENABLED=`mm_var_get MM_LIRC_IREXEC_ENABLED`
 
 mm_dir_make_rw /etc
 
@@ -41,6 +42,11 @@ if [ -n "${MM_LIRC_DRIVER}" ] && [ -n ${MM_LIRC_DEVICE} ] ; then
     else
     	lircd.any               --device=${MM_LIRC_DEVICE} --driver=${MM_LIRC_DRIVER}
     fi
+fi
+
+# Start the irexec daemon.
+if [ "${MM_LIRC_IREXEC_ENABLED}" = "yes" ] ; then
+    irexec -d /etc/lircrc
 fi
 
 exit 0
