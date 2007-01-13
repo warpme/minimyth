@@ -40,9 +40,32 @@ echo "DBName=${MM_MYTH_DBNAME}"         >> /root/.mythtv/mysql.txt
 # Configure Myth database settings to match MiniMyth frontend.
 cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING_' | sed -e 's%^MM_MYTHDB_SETTING_%%' | \
 while read setting ; do
-    setting_label=`echo ${setting} | sed -e 's%=.*$%%'    -e 's%^[ ]*%%' -e 's%[ ]*$%%'`
-    setting_value=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ ]*%%' -e 's%[ ]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
-    mm_mythdb_setting_update "${setting_label}" "${setting_value}"
+    setting_value=`echo ${setting} | sed -e 's%=.*$%%'    -e 's%^[ ]*%%' -e 's%[ ]*$%%'`
+    setting_data=`echo ${setting} | sed -e 's%^[^=]*=%%' -e 's%^[ ]*%%' -e 's%[ ]*$%%' -e 's%^"%%' -e 's%"$%%' -e "s%^'%%" -e "s%'$%%"`
+    mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+done
+
+# Configure Myth database settings to match MiniMyth frontend.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_SETTING=' | sed -e 's%^MM_MYTHDB_SETTING=%%' | \
+    sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+    sed -e 's%^"%%'    -e 's%"$%%'    | \
+    sed -e "s%^'%%"    -e "s%'$%%"    |
+while read setting ; do
+    setting_value=`echo ${setting} | cut -d~ -f1`
+    setting_data=`echo ${setting} | cut -d~ -f2`
+    mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+done
+
+# Configure Myth database keybindings to match MiniMyth frontend.
+cat /etc/minimyth.d/minimyth.conf | grep '^MM_MYTHDB_KEYBINDING=' | sed -e 's%^MM_MYTHDB_KEYBINDING=%%' | \
+    sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
+    sed -e 's%^"%%'    -e 's%"$%%'    | \
+    sed -e "s%^'%%"    -e "s%'$%%"    |
+while read keybinding ; do
+    keybinding_context=`echo ${keybinding} | cut -d~ -f1`
+    keybinding_action=`echo ${keybinding} | cut -d~ -f2`
+    keybinding_keylist=`echo ${keybinding} | cut -d~ -f3`
+    mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
 done
 
 # Delete disabled plugins.
