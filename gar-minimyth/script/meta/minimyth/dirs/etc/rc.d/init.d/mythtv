@@ -9,42 +9,12 @@
 start() {
     mm_message_output info 'configuring MythTV ...'
 
-    # Determine broadcast address.
-    MM_MYTH_WOL_BROADCAST=`ifconfig eth0 | grep ' Bcast:' | sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
-
-    # Configure mysql.txt file.
-    sed -i "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%"                                   /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_DBUSERNAME@%${MM_MYTH_DBUSERNAME}%"                           /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_DBPASSWORD@%${MM_MYTH_DBPASSWORD}%"                           /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_DBNAME@%${MM_MYTH_DBNAME}%"                                   /root/.mythtv/mysql.txt
-    if [ "${MM_MYTH_WOL_ENABLED}" = "yes" ] ; then
-        sed -i "s%@MM_MYTH_WOL_FALSE@%\#%"                                           /root/.mythtv/mysql.txt
-        sed -i "s%@MM_MYTH_WOL_TRUE@%%"                                              /root/.mythtv/mysql.txt
-    else
-        sed -i "s%@MM_MYTH_WOL_FALSE@%%"                                             /root/.mythtv/mysql.txt
-        sed -i "s%@MM_MYTH_WOL_TRUE@%\#%"                                            /root/.mythtv/mysql.txt
-    fi
-    sed -i "s%@MM_MYTH_WOLSQLRECONNECTWAITTIME@%${MM_MYTH_WOLSQLRECONNECTWAITTIME}%" /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_WOLSQLCONNECTRETRY@%${MM_MYTH_WOLSQLCONNECTRETRY}%"           /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_WOLSQLCOMMAND@%${MM_MYTH_WOLSQLCOMMAND}%"                     /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_WOL_BROADCAST@%${MM_MYTH_WOL_BROADCAST}%"                     /root/.mythtv/mysql.txt
-    sed -i "s%@MM_MYTH_WOL_MAC@%${MM_MYTH_WOL_MAC}%"                                 /root/.mythtv/mysql.txt
-
-    # Test Myth database connection.
-    if [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] ; then
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_command_run
-        if [ $? -ne 0 ] ; then
-            mm_message_output err 'error: cannot connect to the Myth backend database.'
-            exit 1
-        fi 
-    fi
-
     # Set themes.
     if [ -n "${MM_THEME_NAME}" ] ; then
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update "Theme"    "${MM_THEME_NAME}"
+        mm_mythdb_setting_update "Theme"    "${MM_THEME_NAME}"
     fi
     if [ -n "${MM_THEMEOSD_NAME}" ] ; then
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
+        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
     fi
 
     # Mount theme directory.
@@ -84,9 +54,9 @@ start() {
             mkdir -p /mnt/dvd/mythdvd/temp
         fi
         if [ -d /mnt/dvd/mythdvd/temp ] && [ -w /mnt/dvd/mythdvd/temp ]  ; then
-            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
+            mm_mythdb_setting_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
             TRANSCODE=`which transcode`
-            [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update "TranscodeCommand" "${TRANSCODE}"
+            mm_mythdb_setting_update "TranscodeCommand" "${TRANSCODE}"
             mtd --daemon
         fi
     fi
@@ -99,7 +69,7 @@ start() {
     while read jumppoint ; do
         jumppoint_destination=`echo ${jumppoint} | cut -d~ -f1`
         jumppoint_keylist=`echo ${jumppoint} | cut -d~ -f2`
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_jumppoint_update "${jumppoint_destination}" "${jumppoint_keylist}"
+        mm_mythdb_jumppoint_update "${jumppoint_destination}" "${jumppoint_keylist}"
     done
 
     # Configure Myth database keybindings to match MiniMyth frontend.
@@ -111,7 +81,7 @@ start() {
         keybinding_context=`echo ${keybinding} | cut -d~ -f1`
         keybinding_action=`echo ${keybinding} | cut -d~ -f2`
         keybinding_keylist=`echo ${keybinding} | cut -d~ -f3`
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
+        mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
     done
 
     # Configure Myth database settings to match MiniMyth frontend.
@@ -122,7 +92,7 @@ start() {
     while read setting ; do
         setting_value=`echo ${setting} | cut -d~ -f1`
         setting_data=`echo ${setting} | cut -d~ -f2`
-        [ "${MM_MYTH_WOL_ENABLED}" != "yes" ] && mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+        mm_mythdb_setting_update "${setting_value}" "${setting_data}"
     done
 
     # Delete disabled plugins.
