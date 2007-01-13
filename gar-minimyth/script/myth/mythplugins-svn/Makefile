@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-musicplaylist.patch $(GARNAME)-init.patch $(GARNAME)-remove_import_menu_items.patch $(GARNAME)-video_ui.patch
+PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-musicplaylist.patch $(GARNAME)-remove_import_menu_items.patch $(GARNAME)-video_ui.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -31,6 +31,7 @@ CONFIGURE_ARGS += \
 	--enable-mythdvd \
 		--enable-vcd \
 	--enable-mythgallery \
+		--enable-exif \
 		--enable-new-exif \
 	--enable-mythmusic \
 		--enable-fftw \
@@ -39,6 +40,7 @@ CONFIGURE_ARGS += \
 	--enable-mythnews \
 	--enable-mythvideo \
 	--enable-mythweather
+
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
@@ -64,7 +66,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$*
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' --exclude '*/.svn' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
