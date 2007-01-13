@@ -71,7 +71,7 @@ LIST_LIBS = \
 		) \
 	)
 
-mm-all: mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
+mm-all: mm-check-ldd mm-clean mm-make-conf mm-make-busybox mm-copy mm-strip mm-make-udev mm-make-extras mm-make-initrd
 
 mm-check:
 	@if [ ! "$(mm_GARCH)" = "c3" ] && [ ! "$(mm_GARCH)" = "c3-2" ] && [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
@@ -98,6 +98,8 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
+
+mm-check-ldd:
 	@if [ "$(MM_LDD)" = "" ] ; then \
 		echo "error: no working ldd command for determining libraries." ; \
 		exit 1 ; \
