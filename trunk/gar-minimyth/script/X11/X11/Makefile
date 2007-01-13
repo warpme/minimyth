@@ -8,17 +8,8 @@ MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/unichrome/
 MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/unichrome/
 DISTFILES = $(GARNAME)R$(GARVERSION)-src.tar.bz2
 PATCHFILES  = $(GARNAME)R$(GARVERSION).patch $(GARNAME)R$(GARVERSION)-relpath.patch
-PATCHFILES += $(UNICHROME_X_DISTNAME).tar.gz $(UNICHROME_XvMC_DISTNAME).tar.gz
 LICENSE = xorg
 xorg_LICENSE_TEXT = $(WORKSRC)/programs/Xserver/hw/xfree86/doc/LICENSE
-
-UNICHROME_X_GARNAME    = unichrome-X
-UNICHROME_X_GARVERSION = r30
-UNICHROME_X_DISTNAME   = $(UNICHROME_X_GARNAME)-$(UNICHROME_X_GARVERSION)
-
-UNICHROME_XvMC_GARNAME    = libxvmc
-UNICHROME_XvMC_GARVERSION = release-0-13-3
-UNICHROME_XvMC_DISTNAME   = $(UNICHROME_XvMC_GARNAME)-$(UNICHROME_XvMC_GARVERSION)
 
 DESCRIPTION = 
 define BLURB
@@ -77,40 +68,6 @@ CONFIG_FILE_APPEND = \
 	echo "\#undef  $(1)"      >> $(CONFIG_FILE); \
 	echo "\#define $(1) $(2)" >> $(CONFIG_FILE)
 
-cvs//%$(UNICHROME_X_DISTNAME).tar.gz:
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_X_GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -r $(UNICHROME_X_GARVERSION) $(UNICHROME_X_GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_X_DISTNAME)
-	@cd $(PARTIALDIR); mv $(UNICHROME_X_GARNAME) $(UNICHROME_X_DISTNAME)
-	@cd $(PARTIALDIR); tar -zc $(UNICHROME_X_DISTNAME) -f $(UNICHROME_X_DISTNAME).tar.gz
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_X_DISTNAME)
-	@$(MAKECOOKIE)
-
-cvs//%$(UNICHROME_XvMC_DISTNAME).tar.gz:
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_XvMC_GARNAME)
-	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -r $(UNICHROME_XvMC_GARVERSION) $(UNICHROME_XvMC_GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_XvMC_DISTNAME)
-	@cd $(PARTIALDIR); mv $(UNICHROME_XvMC_GARNAME) $(UNICHROME_XvMC_DISTNAME)
-	@cd $(PARTIALDIR); tar -zc $(UNICHROME_XvMC_DISTNAME) -f $(UNICHROME_XvMC_DISTNAME).tar.gz
-	@cd $(PARTIALDIR); rm -rf $(UNICHROME_XvMC_DISTNAME)
-	@$(MAKECOOKIE)
-
-checksum-$(UNICHROME_XvMC_DISTNAME).tar.gz:
-	@$(MAKECOOKIE)
-
-patch-$(UNICHROME_X_DISTNAME).tar.gz:
-	@gzip -dc $(DOWNLOADDIR)/$(UNICHROME_X_DISTNAME).tar.gz | tar -xf - -C $(EXTRACTDIR)
-	@rm -rf $(WORKSRC)/programs/Xserver/hw/xfree86/drivers/via
-	@cp -r $(EXTRACTDIR)/$(UNICHROME_X_DISTNAME) $(WORKSRC)/programs/Xserver/hw/xfree86/drivers/via
-	@$(MAKECOOKIE)
-
-patch-$(UNICHROME_XvMC_DISTNAME).tar.gz:
-	@gzip -dc $(DOWNLOADDIR)/$(UNICHROME_XvMC_DISTNAME).tar.gz | tar -xf - -C $(EXTRACTDIR)
-	@rm -rf $(WORKSRC)/lib/XvMC/hw/via
-	@cp -r $(EXTRACTDIR)/$(UNICHROME_XvMC_DISTNAME) $(WORKSRC)/lib/XvMC/hw/via
-	@sed -i '/^SUBDIRS *=/ { s% hw/via%%g; s%.*%& hw/via% }' $(WORKSRC)/lib/XvMC/Imakefile
-	@$(MAKECOOKIE)
-
 configure-os:
 	$(call GLIBC_ADD_LIB_PATH, $(libdir)/gcc/$(GARHOST)/$(GCC_VERSION))
 	@$(call CONFIG_FILE_HEADER, Operating System.)
@@ -167,8 +124,8 @@ configure-compiler:
 
 configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
-	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , via)
-	@$(call CONFIG_FILE_APPEND, DriDrivers                , via)
+	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , )
+	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
 	@$(call CONFIG_FILE_APPEND, XInputDrivers             , mouse keyboard)
 	@$(MAKECOOKIE)
 
@@ -284,7 +241,6 @@ post-install:
 	@ln -sf ./$(call DIRSTODOTS,$(bindir))/$(x11bindir)             $(DESTDIR)$(bindir)/X11
 	@ln -sf ./$(call DIRSTODOTS,$(includedir))/$(x11includedir)/X11 $(DESTDIR)$(includedir)/X11
 	@ln -sf ./$(call DIRSTODOTS,$(libdir))/$(x11libdir)/X11         $(DESTDIR)$(libdir)/X11
-	@cp $(WORKSRC)/lib/XvMC/hw/via/vldXvMC.h $(DESTDIR)$(x11includedir)/X11/extensions
 	@$(call GLIBC_ADD_LIB_PATH, $(x11prefix)/lib)
 	@for file in `cd $(DESTDIR)$(x11libdir)/pkgconfig ; ls -1` ; do \
 		sed -i 's%-L$(x11libdir)%-L$(DESTDIR)$(x11libdir)%g'         $(DESTDIR)$(x11libdir)/pkgconfig/$${file} ; \
