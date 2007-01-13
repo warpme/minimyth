@@ -51,6 +51,7 @@ DEPENDS = \
 	X11/x11vnc \
 	xorg/xorg \
 	mediaplayers/xine-ui \
+	X11/xscreensaver \
 	system/zoneinfo \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
 	$(mm_USER_PACKAGES)

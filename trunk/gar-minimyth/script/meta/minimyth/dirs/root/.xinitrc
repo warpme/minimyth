@@ -2,6 +2,9 @@
 
 xsetroot -solid black
 xset -dpms s off
+if [ "${MM_X_SCREENSAVER_ENABLED}" = "yes" ] ; then
+	xscreensaver &
+fi
 if [ "${MM_X_VNC_ENABLED}" = "yes" ] ; then
 	x11vnc -xinerama -xrandr -forever -q -bg
 fi
