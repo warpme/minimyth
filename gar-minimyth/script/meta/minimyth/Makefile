@@ -38,6 +38,7 @@ DEPENDS = \
 	system/splashutils \
 	devel/strace \
 	system/sysvinit \
+	utils/transcode \
 	system/udev \
 	utils/util-linux \
 	net/wakelan \

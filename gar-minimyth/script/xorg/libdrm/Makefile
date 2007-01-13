@@ -1,5 +1,5 @@
 GARNAME = libdrm
-GARVERSION = 20060406
+GARVERSION = 20060414
 CATEGORIES = xorg
 MASTER_SITES  = http://dri.freedesktop.org/libdrm/
 MASTER_SITES += cvs://anonymous@dri.freedesktop.org/cvs/dri/

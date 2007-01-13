@@ -18,6 +18,7 @@ DEPENDS = \
 	xorg/font-misc-misc \
 	xorg/font-cursor-misc \
 	xorg/rgb \
+	xorg/xdpyinfo \
 	xorg/xinit \
 	xorg/xset \
 	xorg/xsetroot \
