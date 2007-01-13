@@ -22,7 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-locking \
 	--with-x \
-	--with-hackdir=$(libexecdir) \
+	--with-hackdir=$(libexecdir)/xscreensaver \
 	--with-configdir=$(datadir)/xscreensaver/config \
 	--with-x-app-defaults=$(datadir)/X11/app-defaults \
 	--without-gtk \
