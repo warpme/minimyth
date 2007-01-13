@@ -47,6 +47,6 @@ mm_EXTRASDIR      ?= $(mm_BASEDIR)/extras-$(mm_NAME).d
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.
 #-------------------------------------------------------------------------------
-CONFIGURE_ENV     += PATCH_GET=0
-BUILD_ENV         += PATCH_GET=0
-INSTALL_ENV       += PATCH_GET=0
+# Stop attempts to check out patches from perforce.
+PATCH_GET=0
+export PATCH_GET
