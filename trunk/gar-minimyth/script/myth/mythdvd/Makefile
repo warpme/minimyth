@@ -2,8 +2,8 @@ GARNAME = mythdvd
 GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = myth
 MASTER_SITES = cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
-CONFIGFILE = settings.pro
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2 $(CONFIGFILE)
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -12,46 +12,39 @@ endef
 
 DEPENDS = lang/c myth/mythtv lib/libdvdread
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure custom
-BUILD_SCRIPTS     = $(WORKSRC)/$(GARNAME)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/$(GARNAME)/Makefile
+CONFIGURE_SCRIPTS += $(WORKSRC)/configure 
+CONFIGURE_SCRIPTS += $(WORKSRC)/$(GARNAME)/mythtv
+BUILD_SCRIPTS     += $(WORKSRC)/$(GARNAME)/Makefile
+INSTALL_SCRIPTS   += $(WORKSRC)/$(GARNAME)/Makefile
 
 CONFIGURE_ARGS = \
 	--enable-vcd
-CONFIGURE_ENV  = \
+CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV      = \
+BUILD_ENV     += \
 	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
 	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS   = \
+INSTALL_ARGS  += \
 	INSTALL_ROOT="$(DESTDIR)"
 
 GAR_EXTRA_CONF += myth/mythtv/package-api.mk
 include ../../gar.mk
 
-cvs//%/$(GARNAME)-$(GARVERSION).tar.bz2:
+cvs//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); rm -rf $(GARNAME)
 	@cd $(PARTIALDIR); cvs -z3 -d:pserver:$* co -D $(GARVERSION) $(GARNAME)
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
-	@cd $(PARTIALDIR); mv $(GARNAME) $(GARNAME)-$(GARVERSION)
-	@cd $(PARTIALDIR); tar -jc $(GARNAME)-$(GARVERSION) -f $(GARNAME)-$(GARVERSION).tar.bz2
-	@cd $(PARTIALDIR); rm -rf $(GARNAME)-$(GARVERSION)
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
+	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
+	@cd $(PARTIALDIR); tar -jc $(DISTNAME) -f $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(GARNAME)-$(GARVERSION).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
-extract-$(CONFIGFILE):
-	@cp $(DOWNLOADDIR)/$(CONFIGFILE)        $(WORKSRC)/settings.pro
-	@sed -i 's%@PREFIX@%$(prefix)%'         $(WORKSRC)/settings.pro
-	@sed -i 's%@DESTDIR@%$(DESTDIR)%'       $(WORKSRC)/settings.pro
-	@sed -i 's%@INCLUDEDIR@%$(includedir)%' $(WORKSRC)/settings.pro
-	@sed -i 's%@CFLAGS@%$(CFLAGS)%'         $(WORKSRC)/settings.pro
-	@$(MAKECOOKIE)
-
-configure-custom: 
-	@cd $(WORKSRC)/$(GARNAME) ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+configure-%/mythtv:
+	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
