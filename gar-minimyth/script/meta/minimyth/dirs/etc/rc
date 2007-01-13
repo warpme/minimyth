@@ -8,39 +8,48 @@ box() {
 
 . /etc/bootsplash/themes/MythTV/config/bootsplash-800x600.cfg
 
-rc_splash() {
+rc_progress() {
     if [ -e /proc/splash ] ; then 
 	if [ -n "`cat /proc/splash | grep ': on' | grep 'silent'`" ] ; then
-	    splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
-            fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "$1"
             echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
         fi
+        progress=$((progress + 1))
     fi
-    progress=$((progress + 1))
+}
+
+rc_command_run() {
+    COMMAND="$1"
+    MESSAGE="$2"
+    rc_progress
+    mm_message_display "${MESSAGE}"
+    mm_command_run     "${COMMAND}"
+   if [ $? != 0 ] ; then
+       exit $?
+   fi
 }
 
 progress=0
 progress_max=17
-mm_command_run "sh /etc/minimyth.d/fs.script"
-mm_command_run "sh /etc/minimyth.d/bootsplash.script"
-rc_splash 'configuring shared libraries ...'     ; mm_command_run "sh /etc/minimyth.d/ld.script"
-rc_splash 'starting network ...'                 ; mm_command_run "sh /etc/minimyth.d/network.script"
-rc_splash 'fetching user configuration ...'      ; mm_command_run "sh /etc/minimyth.d/core.script"
-rc_splash 'running user script ...'              ; mm_command_run "sh /etc/minimyth.d/minimyth.script"
-rc_splash 'starting system logging ...'          ; mm_command_run "sh /etc/minimyth.d/log.script"
-rc_splash 'loading kernel modules ...'           ; mm_command_run "sh /etc/minimyth.d/modules.script"
-rc_splash 'installing extras ...'                ; mm_command_run "sh /etc/minimyth.d/extras.script"
-rc_splash 'starting sensors ...'                 ; mm_command_run "sh /etc/minimyth.d/sensors.script"
-rc_splash 'starting ACPI ...'                    ; mm_command_run "sh /etc/minimyth.d/acpi.script"
-rc_splash 'starting NTP client ...'              ; mm_command_run "sh /etc/minimyth.d/time.script"
-rc_splash 'starting telnet server ...'           ; mm_command_run "sh /etc/minimyth.d/telnet.script"
-rc_splash 'starting web server ...'              ; mm_command_run "sh /etc/minimyth.d/web.script"
-rc_splash 'mounting media shares ...'            ; mm_command_run "sh /etc/minimyth.d/mount.script"
-rc_splash 'configuring sound ...'                ; mm_command_run "sh /etc/minimyth.d/sound.script"
-rc_splash 'configuring remote control ...'       ; mm_command_run "sh /etc/minimyth.d/lirc.script"
-rc_splash 'configuring mythtv ...'               ; mm_command_run "sh /etc/minimyth.d/mythtv.script"
-rc_splash 'configuring X ...'                    ; mm_command_run "sh /etc/minimyth.d/x.script"
-rc_splash
+mm_command_run 'sh /etc/minimyth.d/fs.script'
+mm_command_run 'sh /etc/minimyth.d/bootsplash.script'
+rc_command_run 'sh /etc/minimyth.d/ld.script'         'configuring shared libraries ...'
+rc_command_run 'sh /etc/minimyth.d/network.script'    'starting network ...'
+rc_command_run 'sh /etc/minimyth.d/core.script'       'fetching user configuration ...'
+rc_command_run 'sh /etc/minimyth.d/minimyth.script'   'running user script ...'
+rc_command_run 'sh /etc/minimyth.d/log.script'        'starting system logging ...'
+rc_command_run 'sh /etc/minimyth.d/modules.script'    'loading kernel modules ...'
+rc_command_run 'sh /etc/minimyth.d/extras.script'     'installing extras ...'
+rc_command_run 'sh /etc/minimyth.d/sensors.script'    'starting sensors ...'
+rc_command_run 'sh /etc/minimyth.d/acpi.script'       'starting ACPI ...'
+rc_command_run 'sh /etc/minimyth.d/time.script'       'starting NTP client ...'
+rc_command_run 'sh /etc/minimyth.d/telnet.script'     'starting telnet server ...'
+rc_command_run 'sh /etc/minimyth.d/web.script'        'starting web server ...'
+rc_command_run 'sh /etc/minimyth.d/mount.script'      'mounting media shares ...'
+rc_command_run 'sh /etc/minimyth.d/sound.script'      'configuring sound ...'
+rc_command_run 'sh /etc/minimyth.d/lirc.script'       'configuring remote control ...'
+rc_command_run 'sh /etc/minimyth.d/mythtv.script'     'configuring mythtv ...'
+rc_command_run 'sh /etc/minimyth.d/x.script'          'configuring X ...'
+rc_command_run ''                                     ''
 
 # Start X (if not debugging)
 if [ -z "`mm_var_get MM_DEBUG`" ] && [ -z "`mm_var_get MM_NO_X`" ] ; then

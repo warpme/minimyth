@@ -15,6 +15,12 @@ if [ -z $ip ] ; then
 else
     udhcpc -s /etc/minimyth.d/dhcp.script -i eth0 -r $ip
 fi
+if [ ! -e /etc/resolv.conf ] ; then
+  mm_message_display 'error: DHCP server did not provide DNS server address(es)'
+  exit 1
+fi
 
 # Start portmap on local interface.
 portmap -l
+
+exit 0
