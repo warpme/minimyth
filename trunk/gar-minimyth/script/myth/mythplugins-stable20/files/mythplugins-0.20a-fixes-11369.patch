@@ -1,6 +1,6 @@
 diff -Naur mythplugins-0.20a-old/mytharchive/mytharchive/exportnativewizard.cpp mythplugins-0.20a-new/mytharchive/mytharchive/exportnativewizard.cpp
 --- mythplugins-0.20a-old/mytharchive/mytharchive/exportnativewizard.cpp	2006-08-31 14:55:30.000000000 -0700
-+++ mythplugins-0.20a-new/mytharchive/mytharchive/exportnativewizard.cpp	2006-09-27 20:34:14.000000000 -0700
++++ mythplugins-0.20a-new/mytharchive/mytharchive/exportnativewizard.cpp	2006-10-01 14:56:25.000000000 -0700
 @@ -782,6 +782,8 @@
      ArchiveDestinations[AD_FILE].freeSpace = 
              getDiskSpace(filename_edit->getText(), dummy, dummy);
@@ -12,7 +12,7 @@ diff -Naur mythplugins-0.20a-old/mytharchive/mytharchive/exportnativewizard.cpp 
      if (ArchiveDestinations[AD_FILE].freeSpace == -1)
 diff -Naur mythplugins-0.20a-old/mytharchive/mytharchive/mythburnwizard.cpp mythplugins-0.20a-new/mytharchive/mytharchive/mythburnwizard.cpp
 --- mythplugins-0.20a-old/mytharchive/mytharchive/mythburnwizard.cpp	2006-08-31 14:55:30.000000000 -0700
-+++ mythplugins-0.20a-new/mytharchive/mytharchive/mythburnwizard.cpp	2006-09-27 20:34:14.000000000 -0700
++++ mythplugins-0.20a-new/mytharchive/mytharchive/mythburnwizard.cpp	2006-10-01 14:56:25.000000000 -0700
 @@ -590,8 +590,9 @@
      QString outFile = tempDir + "/work/file.xml";
  
@@ -35,7 +35,7 @@ diff -Naur mythplugins-0.20a-old/mytharchive/mytharchive/mythburnwizard.cpp myth
      if (ArchiveDestinations[AD_FILE].freeSpace == -1)
 diff -Naur mythplugins-0.20a-old/mytharchive/mytharchivehelper/main.cpp mythplugins-0.20a-new/mytharchive/mytharchivehelper/main.cpp
 --- mythplugins-0.20a-old/mytharchive/mytharchivehelper/main.cpp	2006-08-11 04:46:16.000000000 -0700
-+++ mythplugins-0.20a-new/mytharchive/mytharchivehelper/main.cpp	2006-09-27 20:34:14.000000000 -0700
++++ mythplugins-0.20a-new/mytharchive/mytharchivehelper/main.cpp	2006-10-01 14:56:25.000000000 -0700
 @@ -297,7 +297,7 @@
          burnISOImage(mediaType, bEraseDVDRW);
  
@@ -60,7 +60,7 @@ diff -Naur mythplugins-0.20a-old/mytharchive/mytharchivehelper/main.cpp mythplug
                  else
 diff -Naur mythplugins-0.20a-old/mytharchive/mythburn/scripts/mythburn.py mythplugins-0.20a-new/mytharchive/mythburn/scripts/mythburn.py
 --- mythplugins-0.20a-old/mytharchive/mythburn/scripts/mythburn.py	2006-09-10 03:24:29.000000000 -0700
-+++ mythplugins-0.20a-new/mytharchive/mythburn/scripts/mythburn.py	2006-09-27 20:34:21.000000000 -0700
++++ mythplugins-0.20a-new/mytharchive/mythburn/scripts/mythburn.py	2006-10-01 14:56:32.000000000 -0700
 @@ -895,9 +895,10 @@
          del cursor
  
@@ -75,7 +75,7 @@ diff -Naur mythplugins-0.20a-old/mytharchive/mythburn/scripts/mythburn.py mythpl
          db = getDatabaseConnection()
 diff -Naur mythplugins-0.20a-old/mythdvd/mythdvd/main.cpp mythplugins-0.20a-new/mythdvd/mythdvd/main.cpp
 --- mythplugins-0.20a-old/mythdvd/mythdvd/main.cpp	2006-08-20 18:15:09.000000000 -0700
-+++ mythplugins-0.20a-new/mythdvd/mythdvd/main.cpp	2006-09-27 20:34:07.000000000 -0700
++++ mythplugins-0.20a-new/mythdvd/mythdvd/main.cpp	2006-10-01 14:56:21.000000000 -0700
 @@ -102,7 +102,8 @@
          myth_system(command_string);
          gContext->GetMainWindow()->raise();
@@ -86,9 +86,83 @@ diff -Naur mythplugins-0.20a-old/mythdvd/mythdvd/main.cpp mythplugins-0.20a-new/
      }
      gContext->removeCurrentLocation();
  }
+diff -Naur mythplugins-0.20a-old/mythmusic/mythmusic/playbackbox.cpp mythplugins-0.20a-new/mythmusic/mythmusic/playbackbox.cpp
+--- mythplugins-0.20a-old/mythmusic/mythmusic/playbackbox.cpp	2006-09-04 20:36:34.000000000 -0700
++++ mythplugins-0.20a-new/mythmusic/mythmusic/playbackbox.cpp	2006-10-01 14:56:25.000000000 -0700
+@@ -549,7 +549,7 @@
+         return;
+ 
+    closePlaylistPopup();
+-   updatePlaylistFromQuickPlaylist("ORDER BY artist_name, album_name, track");
++   updatePlaylistFromQuickPlaylist("ORDER BY music_artists.artist_name, album_name, track");
+ }
+ 
+ void PlaybackBoxMusic::fromCD()
+@@ -605,7 +605,7 @@
+         return;
+ 
+     QString value = formattedFieldValue(curMeta->Artist().utf8());
+-    QString whereClause = "WHERE artist_name = " + value +
++    QString whereClause = "WHERE music_artists.artist_name = " + value +
+                           " ORDER BY album_name, track"; 
+ 
+     closePlaylistPopup();
+@@ -631,7 +631,7 @@
+ 
+     QString value = formattedFieldValue(curMeta->Genre().utf8()); 
+     QString whereClause = "WHERE genre = " + value +
+-                          " ORDER BY artist_name, album_name, track";   
++                          " ORDER BY music_artists.artist_name, album_name, track";   
+     closePlaylistPopup();
+     updatePlaylistFromQuickPlaylist(whereClause);
+ }
+@@ -642,8 +642,8 @@
+         return;
+ 
+     QString value = formattedFieldValue(curMeta->Year()); 
+-    QString whereClause = "WHERE year = " + value + 
+-                          " ORDER BY artist_name, album_name, track";
++    QString whereClause = "WHERE music_songs.year = " + value + 
++                          " ORDER BY music_artists.artist_name, album_name, track";
+     closePlaylistPopup();
+     updatePlaylistFromQuickPlaylist(whereClause);
+ }
+diff -Naur mythplugins-0.20a-old/mythmusic/mythmusic/search.cpp mythplugins-0.20a-new/mythmusic/mythmusic/search.cpp
+--- mythplugins-0.20a-old/mythmusic/mythmusic/search.cpp	2006-08-31 07:36:17.000000000 -0700
++++ mythplugins-0.20a-new/mythmusic/mythmusic/search.cpp	2006-10-01 14:56:25.000000000 -0700
+@@ -103,7 +103,7 @@
+ 
+     MSqlQuery query(MSqlQuery::InitCon());
+ 
+-    QString queryString("SELECT filename, artist_name, album_name, name, song_id "
++    QString queryString("SELECT filename, music_artists.artist_name, album_name, name, song_id "
+                         "FROM music_songs "
+                         "LEFT JOIN music_artists ON music_songs.artist_id=music_artists.artist_id "
+                         "LEFT JOIN music_albums ON music_songs.album_id=music_albums.album_id ");      
+@@ -143,7 +143,7 @@
+     }
+ 
+     queryString += whereClause;
+-    queryString += " ORDER BY artist_name, album_name, name, song_id, filename ";
++    queryString += " ORDER BY music_artists.artist_name, album_name, name, song_id, filename ";
+ 
+     query.prepare(queryString);
+ 
+diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/metadatalistmanager.h mythplugins-0.20a-new/mythvideo/mythvideo/metadatalistmanager.h
+--- mythplugins-0.20a-old/mythvideo/mythvideo/metadatalistmanager.h	2006-08-18 20:00:36.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/metadatalistmanager.h	2006-10-01 14:56:59.000000000 -0700
+@@ -1,6 +1,8 @@
+ #ifndef METADATALISTMANAGER_H_
+ #define METADATALISTMANAGER_H_
+ 
++#include <list>
++
+ #include "quicksp.h"
+ 
+ class MetadataListManager
 diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videodlg.cpp mythplugins-0.20a-new/mythvideo/mythvideo/videodlg.cpp
 --- mythplugins-0.20a-old/mythvideo/mythvideo/videodlg.cpp	2006-08-19 19:31:05.000000000 -0700
-+++ mythplugins-0.20a-new/mythvideo/mythvideo/videodlg.cpp	2006-09-27 20:34:48.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/videodlg.cpp	2006-10-01 14:56:59.000000000 -0700
 @@ -191,7 +191,8 @@
  
      gContext->GetMainWindow()->raise();
@@ -101,7 +175,7 @@ diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videodlg.cpp mythplugins-0.
  
 diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videoselected.cpp mythplugins-0.20a-new/mythvideo/mythvideo/videoselected.cpp
 --- mythplugins-0.20a-old/mythvideo/mythvideo/videoselected.cpp	2006-08-28 05:01:53.000000000 -0700
-+++ mythplugins-0.20a-new/mythvideo/mythvideo/videoselected.cpp	2006-09-27 20:34:48.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/videoselected.cpp	2006-10-01 14:56:59.000000000 -0700
 @@ -196,7 +196,8 @@
  
          gContext->GetMainWindow()->raise();
@@ -112,9 +186,21 @@ diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videoselected.cpp mythplugi
  
          m_state = 0;
          update(fullRect);
+diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videoselected.h mythplugins-0.20a-new/mythvideo/mythvideo/videoselected.h
+--- mythplugins-0.20a-old/mythvideo/mythvideo/videoselected.h	2006-08-18 20:00:36.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/videoselected.h	2006-10-01 14:56:59.000000000 -0700
+@@ -14,6 +14,8 @@
+ #ifndef VIDEOSELECTED_H_
+ #define VIDEOSELECTED_H_
+ 
++#include <memory>
++
+ #include <mythtv/uitypes.h>
+ 
+ class Metadata;
 diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videotree.cpp mythplugins-0.20a-new/mythvideo/mythvideo/videotree.cpp
 --- mythplugins-0.20a-old/mythvideo/mythvideo/videotree.cpp	2006-09-09 16:16:50.000000000 -0700
-+++ mythplugins-0.20a-new/mythvideo/mythvideo/videotree.cpp	2006-09-27 20:34:48.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/videotree.cpp	2006-10-01 14:56:59.000000000 -0700
 @@ -541,7 +541,8 @@
      m_imp->video_tree_list->deactivate();
      gContext->GetMainWindow()->raise();
@@ -125,9 +211,21 @@ diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videotree.cpp mythplugins-0
  
      updateForeground();
  }
+diff -Naur mythplugins-0.20a-old/mythvideo/mythvideo/videotree.h mythplugins-0.20a-new/mythvideo/mythvideo/videotree.h
+--- mythplugins-0.20a-old/mythvideo/mythvideo/videotree.h	2006-08-18 20:00:36.000000000 -0700
++++ mythplugins-0.20a-new/mythvideo/mythvideo/videotree.h	2006-10-01 14:56:59.000000000 -0700
+@@ -1,6 +1,8 @@
+ #ifndef VIDEOTREE_H_
+ #define VIDEOTREE_H_
+ 
++#include <memory>
++
+ #include <mythtv/mythdialogs.h>
+ 
+ class Metadata;
 diff -Naur mythplugins-0.20a-old/mythweb/.htaccess mythplugins-0.20a-new/mythweb/.htaccess
 --- mythplugins-0.20a-old/mythweb/.htaccess	2006-06-28 11:33:11.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/.htaccess	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/.htaccess	2006-10-01 14:56:23.000000000 -0700
 @@ -7,7 +7,7 @@
  # See http://www.mythtv.org/ for information about MythTV itself.
  #
@@ -139,7 +237,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/.htaccess mythplugins-0.20a-new/mythweb
  #
 diff -Naur mythplugins-0.20a-old/mythweb/includes/channels.php mythplugins-0.20a-new/mythweb/includes/channels.php
 --- mythplugins-0.20a-old/mythweb/includes/channels.php	2006-09-10 14:08:56.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/channels.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/channels.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * The Channel object, and a couple of related subroutines.
@@ -153,7 +251,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/channels.php mythplugins-0.20a
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/config.php mythplugins-0.20a-new/mythweb/includes/config.php
 --- mythplugins-0.20a-old/mythweb/includes/config.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/config.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/config.php	2006-10-01 14:56:21.000000000 -0700
 @@ -9,8 +9,8 @@
   *       editor settings that define them.  For now, this file will contain
   *       settings slowly moved from config/conf.php and related files.
@@ -167,7 +265,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/config.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/css.php mythplugins-0.20a-new/mythweb/includes/css.php
 --- mythplugins-0.20a-old/mythweb/includes/css.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/css.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/css.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Various routines that deal with figuring out and/or displaying css.
@@ -181,7 +279,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/css.php mythplugins-0.20a-new/
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/db_update.php mythplugins-0.20a-new/mythweb/includes/db_update.php
 --- mythplugins-0.20a-old/mythweb/includes/db_update.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/db_update.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/db_update.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Make sure the database is at the most recent version
@@ -195,7 +293,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/db_update.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/errordisplay.php mythplugins-0.20a-new/mythweb/includes/errordisplay.php
 --- mythplugins-0.20a-old/mythweb/includes/errordisplay.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/errordisplay.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/errordisplay.php	2006-10-01 14:56:21.000000000 -0700
 @@ -11,8 +11,8 @@
   * would like to inquire about the status of this arrangement, please contact
   * me personally.
@@ -209,7 +307,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/errordisplay.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/errors.php mythplugins-0.20a-new/mythweb/includes/errors.php
 --- mythplugins-0.20a-old/mythweb/includes/errors.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/errors.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/errors.php	2006-10-01 14:56:21.000000000 -0700
 @@ -13,8 +13,8 @@
   * would like to inquire about the status of this arrangement, please contact
   * me personally.
@@ -223,7 +321,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/errors.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/init.php mythplugins-0.20a-new/mythweb/includes/init.php
 --- mythplugins-0.20a-old/mythweb/includes/init.php	2006-07-14 23:21:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/init.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/init.php	2006-10-01 14:56:21.000000000 -0700
 @@ -6,8 +6,8 @@
   * Initialization routines.  This file basically loads all of the necessary
   * shared files for the entire program.
@@ -237,7 +335,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/init.php mythplugins-0.20a-new
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/mobile.php mythplugins-0.20a-new/mythweb/includes/mobile.php
 --- mythplugins-0.20a-old/mythweb/includes/mobile.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/mobile.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/mobile.php	2006-10-01 14:56:21.000000000 -0700
 @@ -23,8 +23,8 @@
   * development of very detailed themes/layouts for mobile devices. This
   * code is intented to be easily re-usable in different applications.
@@ -251,7 +349,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/mobile.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/mouseovers.php mythplugins-0.20a-new/mythweb/includes/mouseovers.php
 --- mythplugins-0.20a-old/mythweb/includes/mouseovers.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/mouseovers.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/mouseovers.php	2006-10-01 14:56:21.000000000 -0700
 @@ -3,8 +3,8 @@
   * This allows you to create inline help items - popup tables linked to
   * mouseover events.  It requires the mouseovers.js file.
@@ -265,7 +363,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/mouseovers.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/mythbackend.php mythplugins-0.20a-new/mythweb/includes/mythbackend.php
 --- mythplugins-0.20a-old/mythweb/includes/mythbackend.php	2006-07-14 23:21:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/mythbackend.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/mythbackend.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,10 +2,10 @@
  /**
   * Routines that allow mythweb to communicate with mythbackend
@@ -308,7 +406,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/mythbackend.php mythplugins-0.
      // Delete outdated images, but not until the show has finished recording
 diff -Naur mythplugins-0.20a-old/mythweb/includes/mythfrontend.php mythplugins-0.20a-new/mythweb/includes/mythfrontend.php
 --- mythplugins-0.20a-old/mythweb/includes/mythfrontend.php	2006-03-23 22:00:28.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/includes/mythfrontend.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/mythfrontend.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Connection routines for the new socket interface to mythfrontend.
@@ -322,7 +420,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/mythfrontend.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_mysqli_compat.php mythplugins-0.20a-new/mythweb/includes/objects/Database_mysqli_compat.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database_mysqli_compat.php	2006-07-14 23:21:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database_mysqli_compat.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database_mysqli_compat.php	2006-10-01 14:56:21.000000000 -0700
 @@ -20,8 +20,8 @@
   * compatibility so programs can take advantage of the better integration of
   * mysqli but still run on older installations.
@@ -336,7 +434,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_mysqli_compat
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_mysql.php mythplugins-0.20a-new/mythweb/includes/objects/Database_mysql.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database_mysql.php	2006-07-17 14:35:13.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database_mysql.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database_mysql.php	2006-10-01 14:56:21.000000000 -0700
 @@ -13,8 +13,8 @@
   *
   * MySQL Database connection class.
@@ -350,7 +448,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_mysql.php myt
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database.php mythplugins-0.20a-new/mythweb/includes/objects/Database.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database.php	2006-07-15 18:19:04.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database.php	2006-10-01 14:56:21.000000000 -0700
 @@ -24,8 +24,8 @@
   * define _errstr() and _errno() methods to return the appropriate database
   * engine error string/number.
@@ -364,7 +462,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database.php mythplugi
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysqli_compat.php mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysqli_compat.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysqli_compat.php	2006-07-14 23:21:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysqli_compat.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysqli_compat.php	2006-10-01 14:56:21.000000000 -0700
 @@ -15,8 +15,8 @@
   * This is also the parent class for the full/expanded mysqli query object,
   * since many of the routines are shared between them.
@@ -378,7 +476,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysqli_
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysql.php mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysql.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysql.php	2006-07-14 23:21:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysql.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query_mysql.php	2006-10-01 14:56:21.000000000 -0700
 @@ -13,8 +13,8 @@
   *
   * Query handler for MySQL
@@ -392,7 +490,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query_mysql.p
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query.php mythplugins-0.20a-new/mythweb/includes/objects/Database_Query.php
 --- mythplugins-0.20a-old/mythweb/includes/objects/Database_Query.php	2006-07-15 18:19:04.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/objects/Database_Query.php	2006-10-01 14:56:21.000000000 -0700
 @@ -14,8 +14,8 @@
   * This is an abstract superclass that defines the basic variables and functions
   * used by possible subclasses.
@@ -406,7 +504,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/objects/Database_Query.php myt
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/includes/programs.php mythplugins-0.20a-new/mythweb/includes/programs.php
 --- mythplugins-0.20a-old/mythweb/includes/programs.php	2006-09-10 14:08:56.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/programs.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/programs.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * This contains the Program class
@@ -420,7 +518,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/programs.php mythplugins-0.20a
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/recording_schedules.php mythplugins-0.20a-new/mythweb/includes/recording_schedules.php
 --- mythplugins-0.20a-old/mythweb/includes/recording_schedules.php	2006-09-11 11:46:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/recording_schedules.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/recording_schedules.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,9 +2,9 @@
  /**
   * The Schedule object and a couple of related subroutines.
@@ -429,8 +527,8 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/recording_schedules.php mythpl
 - * @date        $Date: 2006-09-11 14:46:10 -0400 (Mon, 11 Sep 2006) $
 - * @version     $Revision: 11150 $
 + * @url         $URL: http://svn.mythtv.org/svn/branches/release-0-20-fixes/mythplugins/mythweb/includes/recording_schedules.php $
-+ * @date        $Date: 2006-09-14 11:19:45 -0700 (Thu, 14 Sep 2006) $
-+ * @version     $Revision: 11188 $
++ * @date        $Date: 2006-09-30 18:03:13 -0700 (Sat, 30 Sep 2006) $
++ * @version     $Revision: 11363 $
   * @author      $Author: xris $
   * @license     GPL
   *
@@ -483,14 +581,14 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/recording_schedules.php mythpl
 +                         _or($this->subtitle,      ''              ),
 +                         _or($this->description,   ''              ),
 +                         _or($this->profile,       'Default'       ),
-+                         _or($this->recpriority,   0,          true),
-+                         _or($this->category,      0,          true),
++                         _or($this->recpriority,   0               ),
++                         _or($this->category,      0               ),
 +                         _or($this->maxnewest,     0,          true),
 +                         _or($this->inactive,      0,          true),
 +                         _or($this->maxepisodes,   0,          true),
 +                         _or($this->autoexpire,    0,          true),
-+                         _or($this->startoffset,   0,          true),
-+                         _or($this->endoffset,     0,          true),
++                         _or($this->startoffset,   0               ),
++                         _or($this->endoffset,     0               ),
 +                         _or($this->recgroup,      'Default'       ),
 +                         _or($this->dupmethod,     0,          true),
 +                         _or($this->dupin,         15,         true),
@@ -514,7 +612,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/recording_schedules.php mythpl
          $recordid = $sh->insert_id();
 diff -Naur mythplugins-0.20a-old/mythweb/includes/recordings.php mythplugins-0.20a-new/mythweb/includes/recordings.php
 --- mythplugins-0.20a-old/mythweb/includes/recordings.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/recordings.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/recordings.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * The Recording object, and a couple of related subroutines.
@@ -528,7 +626,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/recordings.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/session.php mythplugins-0.20a-new/mythweb/includes/session.php
 --- mythplugins-0.20a-old/mythweb/includes/session.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/session.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/session.php	2006-10-01 14:56:21.000000000 -0700
 @@ -5,8 +5,8 @@
   * It also uses the global variable $db, so it must be called from init.php
   * *after* the database connection has been established.
@@ -542,7 +640,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/session.php mythplugins-0.20a-
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/sorting.php mythplugins-0.20a-new/mythweb/includes/sorting.php
 --- mythplugins-0.20a-old/mythweb/includes/sorting.php	2006-07-08 23:52:57.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/sorting.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/sorting.php	2006-10-01 14:56:21.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Routines for sorting Program objects
@@ -556,7 +654,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/sorting.php mythplugins-0.20a-
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/translate.php mythplugins-0.20a-new/mythweb/includes/translate.php
 --- mythplugins-0.20a-old/mythweb/includes/translate.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/translate.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/translate.php	2006-10-01 14:56:21.000000000 -0700
 @@ -17,8 +17,8 @@
   * would like to inquire about the status of this arrangement, please contact
   * me personally.
@@ -570,7 +668,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/translate.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/includes/utils.php mythplugins-0.20a-new/mythweb/includes/utils.php
 --- mythplugins-0.20a-old/mythweb/includes/utils.php	2006-06-26 18:36:28.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/includes/utils.php	2006-09-27 20:34:08.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/includes/utils.php	2006-10-01 14:56:21.000000000 -0700
 @@ -11,9 +11,9 @@
   * library.  If you would like to inquire about the status of this arrangement,
   * please contact me personally.
@@ -606,7 +704,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/includes/utils.php mythplugins-0.20a-ne
  
 diff -Naur mythplugins-0.20a-old/mythweb/js/ajax.js mythplugins-0.20a-new/mythweb/js/ajax.js
 --- mythplugins-0.20a-old/mythweb/js/ajax.js	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/ajax.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/ajax.js	2006-10-01 14:56:23.000000000 -0700
 @@ -4,8 +4,8 @@
   *  - Plaintext responses [non-XML]
   *  - Browser Support: Safari, Opera, Firefox
@@ -620,7 +718,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/ajax.js mythplugins-0.20a-new/mythwe
   * @license     LGPL
 diff -Naur mythplugins-0.20a-old/mythweb/js/browser.js mythplugins-0.20a-new/mythweb/js/browser.js
 --- mythplugins-0.20a-old/mythweb/js/browser.js	2006-04-02 03:02:44.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/browser.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/browser.js	2006-10-01 14:56:23.000000000 -0700
 @@ -15,8 +15,8 @@
   * support for anything earlier than version 4 browsers because of their lack
   * of the RegExp object.
@@ -634,7 +732,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/browser.js mythplugins-0.20a-new/myt
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/js/debug.js mythplugins-0.20a-new/mythweb/js/debug.js
 --- mythplugins-0.20a-old/mythweb/js/debug.js	2006-03-21 00:15:41.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/js/debug.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/debug.js	2006-10-01 14:56:23.000000000 -0700
 @@ -1,8 +1,8 @@
  /**
   * A random assortment of javascript debug routines
@@ -648,7 +746,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/debug.js mythplugins-0.20a-new/mythw
   * @copyright   Silicon Mechanics
 diff -Naur mythplugins-0.20a-old/mythweb/js/init.js mythplugins-0.20a-new/mythweb/js/init.js
 --- mythplugins-0.20a-old/mythweb/js/init.js	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/init.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/init.js	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
   * javascript initialization routine, and the content necessary to load the
   * other javascript files.
@@ -662,7 +760,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/init.js mythplugins-0.20a-new/mythwe
   * @license     LGPL
 diff -Naur mythplugins-0.20a-old/mythweb/js/mouseovers.js mythplugins-0.20a-new/mythweb/js/mouseovers.js
 --- mythplugins-0.20a-old/mythweb/js/mouseovers.js	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/mouseovers.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/mouseovers.js	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
   * Functions to show/hide sections of the page (for mouseovers).
   * Primarily used for interactive menus
@@ -676,7 +774,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/mouseovers.js mythplugins-0.20a-new/
   * @license     LGPL
 diff -Naur mythplugins-0.20a-old/mythweb/js/utils.js mythplugins-0.20a-new/mythweb/js/utils.js
 --- mythplugins-0.20a-old/mythweb/js/utils.js	2006-07-07 23:05:05.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/utils.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/utils.js	2006-10-01 14:56:23.000000000 -0700
 @@ -1,8 +1,8 @@
  /**
   * A random assortment of javascript utility routines
@@ -690,7 +788,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/utils.js mythplugins-0.20a-new/mythw
   * @license     LGPL
 diff -Naur mythplugins-0.20a-old/mythweb/js/visibility.js mythplugins-0.20a-new/mythweb/js/visibility.js
 --- mythplugins-0.20a-old/mythweb/js/visibility.js	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/js/visibility.js	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/js/visibility.js	2006-10-01 14:56:23.000000000 -0700
 @@ -1,8 +1,8 @@
  /**
   * Functions to show/hide html elements
@@ -704,7 +802,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/js/visibility.js mythplugins-0.20a-new/
   * @license     LGPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/handler.php mythplugins-0.20a-new/mythweb/modules/backend_log/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/handler.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/handler.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/handler.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * View the logs
@@ -718,7 +816,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/handler.php mythplu
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/init.php mythplugins-0.20a-new/mythweb/modules/backend_log/init.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/init.php	2006-03-23 21:55:11.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/init.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/init.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb Backend Logs module
@@ -732,7 +830,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/init.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/backend_log.php mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/backend_log.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/backend_log.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/backend_log.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/backend_log.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -746,7 +844,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/backen
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/compact/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -760,7 +858,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/compact/welcom
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/backend_log.php mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/backend_log.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/backend_log.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/backend_log.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/backend_log.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -774,7 +872,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/backen
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/backend_log/tmpl/default/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -788,7 +886,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/backend_log/tmpl/default/welcom
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/handler.php mythplugins-0.20a-new/mythweb/modules/music/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/music/handler.php	2006-08-21 19:11:53.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/music/handler.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/handler.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * MythMusic browser
@@ -802,7 +900,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/handler.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/init.php mythplugins-0.20a-new/mythweb/modules/music/init.php
 --- mythplugins-0.20a-old/mythweb/modules/music/init.php	2006-03-22 23:46:57.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/music/init.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/init.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,9 +2,9 @@
  /**
   * Initialization routines for the MythWeb Music module
@@ -827,7 +925,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/init.php mythplugins-0.20
  
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/music.php mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/music.php
 --- mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/music.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/music.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/music.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * MythMusic browser.
@@ -841,7 +939,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/music.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/compact/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Music module.
@@ -855,7 +953,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/compact/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/music.php mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/music.php
 --- mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/music.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/music.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/music.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * MythMusic browser.
@@ -869,7 +967,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/music.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/music/tmpl/default/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Music module.
@@ -883,7 +981,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/music/tmpl/default/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/channels.php mythplugins-0.20a-new/mythweb/modules/settings/channels.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/channels.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/channels.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/channels.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Channels
@@ -897,7 +995,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/channels.php mythplugi
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/handler.php mythplugins-0.20a-new/mythweb/modules/settings/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/handler.php	2006-03-29 19:25:32.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/handler.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/handler.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Handler for all MythWeb Settings routines
@@ -911,7 +1009,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/handler.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/init.php mythplugins-0.20a-new/mythweb/modules/settings/init.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/init.php	2006-03-30 00:06:53.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/init.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/init.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb settings module
@@ -925,7 +1023,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/init.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/keys.php mythplugins-0.20a-new/mythweb/modules/settings/keys.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/keys.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/keys.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/keys.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Key Bindings
@@ -939,7 +1037,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/keys.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/mythweb.php mythplugins-0.20a-new/mythweb/modules/settings/mythweb.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/mythweb.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/mythweb.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/mythweb.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Display/save mythweb default settings
@@ -953,7 +1051,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/mythweb.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/session.php mythplugins-0.20a-new/mythweb/modules/settings/session.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/session.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/session.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/session.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Display/save mythweb session settings
@@ -967,7 +1065,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/session.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/settings.php mythplugins-0.20a-new/mythweb/modules/settings/settings.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/settings.php	2006-04-11 10:30:50.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/settings.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/settings.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Settings table
@@ -981,7 +1079,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/settings.php mythplugi
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/channels.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/channels.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/channels.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/channels.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/channels.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Channel info
@@ -995,7 +1093,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/channels.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/keys.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/keys.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/keys.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/keys.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/keys.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Key Bindings
@@ -1009,7 +1107,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/keys.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/mythweb.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/mythweb.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/mythweb.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/mythweb.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/mythweb.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythWeb Session info
@@ -1023,7 +1121,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/mythweb.p
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/overview.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/overview.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/overview.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/overview.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/overview.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Main settings index
@@ -1037,7 +1135,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/overview.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/session.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/session.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/session.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/session.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/session.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythWeb Session info
@@ -1051,7 +1149,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/session.p
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/settings.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/settings.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/settings.php	2006-03-29 19:27:47.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/settings.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/settings.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Settings table
@@ -1065,7 +1163,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/settings.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/welcome.php	2006-01-24 19:41:36.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/compact/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Settings module.
@@ -1079,7 +1177,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/compact/welcome.p
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/channels.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/channels.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/channels.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/channels.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/channels.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Channel info
@@ -1093,7 +1191,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/channels.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/keys.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/keys.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/keys.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/keys.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/keys.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Key Bindings
@@ -1107,7 +1205,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/keys.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/mythweb.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/mythweb.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/mythweb.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/mythweb.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/mythweb.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythWeb Session info
@@ -1121,7 +1219,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/mythweb.p
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/overview.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/overview.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/overview.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/overview.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/overview.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Main settings index
@@ -1135,7 +1233,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/overview.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/session.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/session.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/session.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/session.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/session.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythWeb Session info
@@ -1149,7 +1247,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/session.p
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/settings.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/settings.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/settings.php	2006-03-29 19:27:47.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/settings.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/settings.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Configure MythTV Settings table
@@ -1163,7 +1261,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/settings.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/welcome.php	2006-01-24 19:41:36.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/settings/tmpl/default/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Settings module.
@@ -1175,9 +1273,153 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/settings/tmpl/default/welcome.p
   * @version     $Revision: 8709 $
   * @author      $Author: xris $
   * @license     GPL
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Czech.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Czech.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Czech.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Czech.lang	2006-10-01 14:56:23.000000000 -0700
+@@ -290,7 +290,7 @@
+ "None"
+     Žádný
+ "Notes"
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Danish.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Danish.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Danish.lang	2006-09-10 09:44:44.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Danish.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -425,7 +425,7 @@
+     Ingen
+ "Notes"
+     Bemærkninger
+-"Number of epsodes"
++"Number of episodes"
+     Antal episoder
+ "Number of shows"
+     Antal shows
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Dutch.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Dutch.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Dutch.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Dutch.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -418,7 +418,7 @@
+     Geen
+ "Notes"
+     Opmerkingen
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/English_GB.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/English_GB.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/English_GB.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/English_GB.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -243,7 +243,7 @@
+ "Non-Series HDTV"
+ "None"
+ "Notes"
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/English.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/English.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/English.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/English.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -232,7 +232,7 @@
+ "Non-Series HDTV"
+ "None"
+ "Notes"
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Finnish.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Finnish.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Finnish.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Finnish.lang	2006-10-01 14:56:23.000000000 -0700
+@@ -403,7 +403,7 @@
+     Ei Mikään
+ "Notes"
+     Viesti
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/French.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/French.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/French.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/French.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -339,7 +339,7 @@
+     Aucun
+ "Notes"
+     Notes
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/German.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/German.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/German.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/German.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -416,7 +416,7 @@
+     Keine
+ "Notes"
+     Hinweis
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Japanese.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Japanese.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Japanese.lang	2006-09-04 13:11:00.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Japanese.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -427,7 +427,7 @@
+     無し
+ "Notes"
+     備考
+-"Number of epsodes"
++"Number of episodes"
+     録画数
+ "Number of shows"
+     番組数
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Slovenian.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Slovenian.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Slovenian.lang	2006-08-30 22:49:58.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Slovenian.lang	2006-10-01 14:56:23.000000000 -0700
+@@ -333,7 +333,7 @@
+     Nobeno
+ "Notes"
+     Opombe
+-"Number of epsodes"
++"Number of episodes"
+ "Number of shows"
+ "Number of timeslots"
+ "Only display favourite channels"
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Spanish.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Spanish.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Spanish.lang	2006-08-31 15:47:00.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Spanish.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -453,7 +453,7 @@
+     Ninguna
+ "Notes"
+     Notas
+-"Number of epsodes"
++"Number of episodes"
+     Número de episodios
+ "Number of shows"
+     Número de programas
+diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/lang/Swedish.lang mythplugins-0.20a-new/mythweb/modules/_shared/lang/Swedish.lang
+--- mythplugins-0.20a-old/mythweb/modules/_shared/lang/Swedish.lang	2006-09-04 13:28:35.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/lang/Swedish.lang	2006-10-01 14:56:22.000000000 -0700
+@@ -454,7 +454,7 @@
+     Ingen
+ "Notes"
+     Anteckningar
+-"Number of epsodes"
++"Number of episodes"
+     Antal avsnitt
+ "Number of shows"
+     Antal visningar
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/footer.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/footer.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/footer.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/footer.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/footer.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * This footer file is shared by all MythWeb modules.
@@ -1191,7 +1433,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/footer.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/header.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/header.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/header.php	2006-07-08 02:31:57.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/header.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/header.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * This header file is shared by all MythWeb modules.
@@ -1205,7 +1447,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/header.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/welcome.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/compact/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -1219,7 +1461,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/compact/welcome.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/footer.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/footer.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/footer.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/footer.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/footer.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * This footer file is shared by all MythWeb modules.
@@ -1233,7 +1475,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/footer.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/header.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/header.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/header.php	2006-07-08 02:31:57.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/header.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/header.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * This header file is shared by all MythWeb modules.
@@ -1247,7 +1489,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/header.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/welcome.php	2006-03-26 02:17:20.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/default/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -1261,7 +1503,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/default/welcome.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/footer.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/footer.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/footer.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/footer.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/footer.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * WAP footer
@@ -1275,21 +1517,35 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/footer.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/header.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/header.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/header.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/header.php	2006-09-27 20:34:10.000000000 -0700
-@@ -2,8 +2,8 @@
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/header.php	2006-10-01 14:56:23.000000000 -0700
+@@ -2,9 +2,9 @@
  /**
   * WAP header
   *
 - * @url         $URL: svn+ssh://ijr@cvs.mythtv.org/var/lib/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/_shared/tmpl/wap/header.php $
 - * @date        $Date: 2006-03-26 05:09:14 -0500 (Sun, 26 Mar 2006) $
+- * @version     $Revision: 9493 $
 + * @url         $URL: http://svn.mythtv.org/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/_shared/tmpl/wap/header.php $
-+ * @date        $Date: 2006-03-26 02:09:14 -0800 (Sun, 26 Mar 2006) $
-  * @version     $Revision: 9493 $
++ * @date        $Date: 2006-09-29 22:46:38 -0700 (Fri, 29 Sep 2006) $
++ * @version     $Revision: 11338 $
   * @author      $Author: xris $
   * @license     GPL
+  *
+@@ -37,8 +37,8 @@
+     </span>
+ 
+ </center><br />
+-<form action="<?php echo root ?>tv/search" method="post">
+-        <center><input type="text" name="searchstr" value="<?php echo $_GET['searchstr'] ?>"><br />
+-        <input type="submit" class="submit" value="search"></center><br />
++<form action="<?php echo root ?>tv/search" method="get">
++        <center><input type="text" name="s" value="<?php echo $_GET['s'] ?>"><br />
++        <input type="submit" class="submit" name="search" value="Search"></center><br />
+ </form>
+ 
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/welcome.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/welcome.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wap/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page for the WAP template
@@ -1303,7 +1559,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wap/welcome.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/header.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/header.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/header.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/header.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/header.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * WML header
@@ -1317,7 +1573,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/header.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/welcome.php mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/welcome.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/_shared/tmpl/wml/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page for the WML template
@@ -1331,7 +1587,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/_shared/tmpl/wml/welcome.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/handler.php mythplugins-0.20a-new/mythweb/modules/stats/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/handler.php	2006-04-06 19:53:45.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/stats/handler.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/stats/handler.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Mythweb recording stats.
@@ -1345,7 +1601,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/handler.php mythplugins-0
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/init.php mythplugins-0.20a-new/mythweb/modules/stats/init.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/init.php	2006-03-26 14:26:24.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/stats/init.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/stats/init.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb Stats module
@@ -1359,21 +1615,32 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/init.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/compact/stats.php mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/stats.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/tmpl/compact/stats.php	2006-03-26 14:29:53.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/stats.php	2006-09-27 20:34:11.000000000 -0700
-@@ -3,8 +3,8 @@
++++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/stats.php	2006-10-01 14:56:23.000000000 -0700
+@@ -3,9 +3,9 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
   *
 - * @url         $URL: svn+ssh://ijr@cvs.mythtv.org/var/lib/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/stats/tmpl/compact/stats.php $
 - * @date        $Date: 2006-03-26 17:29:53 -0500 (Sun, 26 Mar 2006) $
+- * @version     $Revision: 9509 $
 + * @url         $URL: http://svn.mythtv.org/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/stats/tmpl/compact/stats.php $
-+ * @date        $Date: 2006-03-26 14:29:53 -0800 (Sun, 26 Mar 2006) $
-  * @version     $Revision: 9509 $
++ * @date        $Date: 2006-09-29 22:32:43 -0700 (Fri, 29 Sep 2006) $
++ * @version     $Revision: 11336 $
   * @author      $Author: xris $
   * @license     GPL
+  *
+@@ -62,7 +62,7 @@
+         <dl>
+             <dt><?php echo t('Number of shows') ?>:
+             <dd><?php echo $title_count ?></dd>
+-            <dt><?php echo t('Number of epsodes') ?>:</dt>
++            <dt><?php echo t('Number of episodes') ?>:</dt>
+             <dd><?php echo $show_count ?></dd>
+             <dt><?php echo t('First recording') ?>:</dt>
+             <dd><?php echo date('l F jS, Y', $first) ?></dd>
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/tmpl/compact/welcome.php	2006-03-26 14:26:24.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/welcome.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/compact/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -1387,21 +1654,32 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/compact/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/default/stats.php mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/stats.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/tmpl/default/stats.php	2006-03-26 14:29:53.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/stats.php	2006-09-27 20:34:11.000000000 -0700
-@@ -3,8 +3,8 @@
++++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/stats.php	2006-10-01 14:56:23.000000000 -0700
+@@ -3,9 +3,9 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
   *
 - * @url         $URL: svn+ssh://ijr@cvs.mythtv.org/var/lib/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/stats/tmpl/default/stats.php $
 - * @date        $Date: 2006-03-26 17:29:53 -0500 (Sun, 26 Mar 2006) $
+- * @version     $Revision: 9509 $
 + * @url         $URL: http://svn.mythtv.org/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/stats/tmpl/default/stats.php $
-+ * @date        $Date: 2006-03-26 14:29:53 -0800 (Sun, 26 Mar 2006) $
-  * @version     $Revision: 9509 $
++ * @date        $Date: 2006-09-29 22:32:43 -0700 (Fri, 29 Sep 2006) $
++ * @version     $Revision: 11336 $
   * @author      $Author: xris $
   * @license     GPL
+  *
+@@ -58,7 +58,7 @@
+         <dl>
+             <dt><?php echo t('Number of shows') ?>:
+             <dd><?php echo $title_count ?></dd>
+-            <dt><?php echo t('Number of epsodes') ?>:</dt>
++            <dt><?php echo t('Number of episodes') ?>:</dt>
+             <dd><?php echo $show_count ?></dd>
+             <dt><?php echo t('First recording') ?>:</dt>
+             <dd><?php echo date('l F jS, Y', $first) ?></dd>
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/stats/tmpl/default/welcome.php	2006-03-26 14:26:24.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/welcome.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/stats/tmpl/default/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -1415,7 +1693,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/stats/tmpl/default/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/handler.php mythplugins-0.20a-new/mythweb/modules/status/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/status/handler.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/status/handler.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/handler.php	2006-10-01 14:56:22.000000000 -0700
 @@ -3,8 +3,8 @@
   * A straight passthrough for the mythbackend status web page (usually on
   * port 6544)
@@ -1429,7 +1707,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/handler.php mythplugins-
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/init.php mythplugins-0.20a-new/mythweb/modules/status/init.php
 --- mythplugins-0.20a-old/mythweb/modules/status/init.php	2006-03-22 23:46:57.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/init.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/init.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb Status module
@@ -1443,7 +1721,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/init.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/status.php mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/status.php
 --- mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/status.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/status.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/status.php	2006-10-01 14:56:22.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -1457,7 +1735,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/status.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/compact/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -1471,7 +1749,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/compact/welcome.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/status.php mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/status.php
 --- mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/status.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/status.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/status.php	2006-10-01 14:56:22.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -1485,7 +1763,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/status.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/default/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the status module.
@@ -1499,7 +1777,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/default/welcome.php
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/wap/status.php mythplugins-0.20a-new/mythweb/modules/status/tmpl/wap/status.php
 --- mythplugins-0.20a-old/mythweb/modules/status/tmpl/wap/status.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/wap/status.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/status/tmpl/wap/status.php	2006-10-01 14:56:22.000000000 -0700
 @@ -3,8 +3,8 @@
   * The display code for the main welcome page that lists the available mythweb
   * sections.
@@ -1513,7 +1791,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/status/tmpl/wap/status.php myth
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/stream/handler.pl mythplugins-0.20a-new/mythweb/modules/stream/handler.pl
 --- mythplugins-0.20a-old/mythweb/modules/stream/handler.pl	2006-08-05 23:41:34.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/stream/handler.pl	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/stream/handler.pl	2006-10-01 14:56:23.000000000 -0700
 @@ -1,12 +1,15 @@
  #
  # MythWeb Streaming/Download module
@@ -1570,7 +1848,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/stream/handler.pl mythplugins-0
  
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/canned_searches.conf.php mythplugins-0.20a-new/mythweb/modules/tv/canned_searches.conf.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/canned_searches.conf.php	2006-06-28 12:19:22.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/canned_searches.conf.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/canned_searches.conf.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * Should contain one variable, a hash of the 'advanced' searches.
   * Each of these searches will show up as an advanced search
@@ -1584,7 +1862,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/canned_searches.conf.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/channel.php mythplugins-0.20a-new/mythweb/modules/tv/channel.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/channel.php	2006-09-09 14:18:32.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/channel.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/channel.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show the current lineup for a specific channel
@@ -1598,7 +1876,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/channel.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/detail.php mythplugins-0.20a-new/mythweb/modules/tv/detail.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/detail.php	2006-09-10 14:08:56.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/detail.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/detail.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * This displays details about a program, as well as provides recording
   * commands.
@@ -1612,7 +1890,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/detail.php mythplugins-0.20a
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/handler.php mythplugins-0.20a-new/mythweb/modules/tv/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/handler.php	2006-06-13 23:50:09.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/handler.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/handler.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Handler for all MythWeb TV routines
@@ -1626,7 +1904,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/handler.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/init.php mythplugins-0.20a-new/mythweb/modules/tv/init.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/init.php	2006-03-22 23:46:57.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/tv/init.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/init.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb TV module.
@@ -1640,7 +1918,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/init.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/list.php mythplugins-0.20a-new/mythweb/modules/tv/list.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/list.php	2006-08-23 23:20:38.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/list.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/list.php	2006-10-01 14:56:23.000000000 -0700
 @@ -5,8 +5,8 @@
   *
   * This is the default viewing mode, and shows the current program listings.
@@ -1654,7 +1932,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/list.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/recorded.php mythplugins-0.20a-new/mythweb/modules/tv/recorded.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/recorded.php	2006-07-04 12:36:23.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/recorded.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/recorded.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * view and manipulate recorded programs.
@@ -1668,7 +1946,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/recorded.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules_custom.php mythplugins-0.20a-new/mythweb/modules/tv/schedules_custom.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/schedules_custom.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/schedules_custom.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/schedules_custom.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying various search options
@@ -1682,7 +1960,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules_custom.php mythplu
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules_manual.php mythplugins-0.20a-new/mythweb/modules/tv/schedules_manual.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/schedules_manual.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/schedules_manual.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/schedules_manual.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying starttime and length
@@ -1696,7 +1974,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules_manual.php mythplu
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules.php mythplugins-0.20a-new/mythweb/modules/tv/schedules.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/schedules.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/schedules.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/schedules.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * View all recording schedules
@@ -1710,7 +1988,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/schedules.php mythplugins-0.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/searches.php mythplugins-0.20a-new/mythweb/modules/tv/searches.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/searches.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/searches.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/searches.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * An index for handy SQL searches in the listings data
@@ -1724,7 +2002,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/searches.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/search.php mythplugins-0.20a-new/mythweb/modules/tv/search.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/search.php	2006-08-30 22:49:58.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/search.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/search.php	2006-10-01 14:56:23.000000000 -0700
 @@ -9,8 +9,8 @@
   *
   *   Use ^ and/or $ to anchor the search, and enclose in // to use regex.
@@ -1738,7 +2016,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/search.php mythplugins-0.20a
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/channel.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/channel.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/channel.php	2006-09-05 21:47:17.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/channel.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/channel.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show the current lineup for a specific channel
@@ -1752,7 +2030,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/channel.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/detail.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/detail.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/detail.php	2006-08-03 01:01:31.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/detail.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/detail.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * This displays details about a program, as well as provides recording
   * commands.
@@ -1766,7 +2044,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/detail.php myth
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/list.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/list.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/list.php	2006-08-30 22:24:50.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/list.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/list.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Print the program list
@@ -1780,7 +2058,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/list.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/recorded.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/recorded.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/recorded.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/recorded.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/recorded.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show recorded programs.
@@ -1794,7 +2072,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/recorded.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_custom.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_custom.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_custom.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_custom.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_custom.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying various search options
@@ -1808,7 +2086,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_custo
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_manual.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_manual.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_manual.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_manual.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules_manual.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying starttime and length
@@ -1822,7 +2100,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules_manua
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/schedules.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * This file defines a theme class for the all recordings section.
   * It must define one method.   documentation will be added someday.
@@ -1836,7 +2114,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/schedules.php m
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/searches.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/searches.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/searches.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/searches.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/searches.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Handy predefined searches
@@ -1850,7 +2128,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/searches.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/search.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/search.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/search.php	2006-07-17 13:45:19.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/search.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/search.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show search results, or how to perform a detailed search.
@@ -1864,7 +2142,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/search.php myth
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/upcoming.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/upcoming.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/upcoming.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/upcoming.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/upcoming.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show all upcoming recordings.
@@ -1878,7 +2156,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/upcoming.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/welcome.php	2006-01-24 19:41:36.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/welcome.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/compact/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the TV module.
@@ -1892,7 +2170,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/compact/welcome.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/channel.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/channel.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/channel.php	2006-09-05 21:47:17.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/channel.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/channel.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show the current lineup for a specific channel
@@ -1906,7 +2184,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/channel.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/detail.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/detail.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/detail.php	2006-08-30 23:47:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/detail.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/detail.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * This displays details about a program, as well as provides recording
   * commands.
@@ -1920,7 +2198,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/detail.php myth
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/list.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/list.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/list.php	2006-08-30 22:24:50.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/list.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/list.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Print the program list
@@ -1934,7 +2212,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/list.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/recorded.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/recorded.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/recorded.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/recorded.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/recorded.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show recorded programs.
@@ -1948,7 +2226,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/recorded.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_custom.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_custom.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_custom.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_custom.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_custom.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying various search options
@@ -1962,7 +2240,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_custo
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_manual.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_manual.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_manual.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_manual.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules_manual.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Schedule a custom recording by manually specifying starttime and length
@@ -1976,7 +2254,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules_manua
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/schedules.php	2006-10-01 14:56:23.000000000 -0700
 @@ -3,8 +3,8 @@
   * This file defines a theme class for the all recordings section.
   * It must define one method.   documentation will be added someday.
@@ -1990,7 +2268,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/schedules.php m
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/searches.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/searches.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/searches.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/searches.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/searches.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Handy predefined searches
@@ -2004,7 +2282,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/searches.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/search.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/search.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/search.php	2006-08-30 22:49:58.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/search.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/search.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show search results, or how to perform a detailed search.
@@ -2018,7 +2296,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/search.php myth
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/upcoming.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/upcoming.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/upcoming.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/upcoming.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/upcoming.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Show all upcoming recordings.
@@ -2032,7 +2310,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/upcoming.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/welcome.php	2006-01-24 19:41:36.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/welcome.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/default/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the TV module.
@@ -2046,7 +2324,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/default/welcome.php myt
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/channel.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/channel.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/channel.php	2006-08-23 23:20:38.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/channel.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/channel.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Channel detail
@@ -2060,7 +2338,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/channel.php mythplu
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/detail.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/detail.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/detail.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/detail.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/detail.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Program detail
@@ -2074,7 +2352,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/detail.php mythplug
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/list.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/list.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/list.php	2006-08-30 22:24:50.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/list.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/list.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Program listing
@@ -2088,7 +2366,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/list.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/recorded.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/recorded.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/recorded.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/recorded.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/recorded.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Recorded programs
@@ -2102,21 +2380,32 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/recorded.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/search.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/search.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/search.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/search.php	2006-09-27 20:34:11.000000000 -0700
-@@ -2,8 +2,8 @@
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/search.php	2006-10-01 14:56:23.000000000 -0700
+@@ -2,9 +2,9 @@
  /**
   * Search
   *
 - * @url         $URL: svn+ssh://ijr@cvs.mythtv.org/var/lib/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/tv/tmpl/wap/search.php $
 - * @date        $Date: 2006-06-24 15:03:10 -0400 (Sat, 24 Jun 2006) $
+- * @version     $Revision: 10290 $
 + * @url         $URL: http://svn.mythtv.org/svn/branches/release-0-20-fixes/mythplugins/mythweb/modules/tv/tmpl/wap/search.php $
-+ * @date        $Date: 2006-06-24 12:03:10 -0700 (Sat, 24 Jun 2006) $
-  * @version     $Revision: 10290 $
++ * @date        $Date: 2006-09-29 22:46:38 -0700 (Fri, 29 Sep 2006) $
++ * @version     $Revision: 11338 $
   * @author      $Author: xris $
   * @license     GPL
+  *
+@@ -23,7 +23,7 @@
+         return;
+     }
+ // Get the url search string so we don't have to recreate it for each sort type
+-    $search_str = '&searchstr='.urlencode($_GET['searchstr']);
++    $search_str = '&s='.urlencode($_GET['s']);
+     if ($_GET['search_title'])         $search_str .= '&search_title=yes';
+     if ($_GET['search_subtitle'])      $search_str .= '&search_subtitle=yes';
+     if ($_GET['search_description'])   $search_str .= '&search_description=yes';
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/upcoming.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/upcoming.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/upcoming.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/upcoming.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wap/upcoming.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Upcoming recordings
@@ -2130,7 +2419,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wap/upcoming.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/channel.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/channel.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/channel.php	2006-08-23 23:20:38.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/channel.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/channel.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Channel detail
@@ -2144,7 +2433,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/channel.php mythplu
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/detail.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/detail.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/detail.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/detail.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/detail.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Program detail
@@ -2158,7 +2447,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/detail.php mythplug
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/list.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/list.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/list.php	2006-08-23 23:20:38.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/list.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/list.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Program listing
@@ -2172,7 +2461,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/list.php mythplugin
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/recorded.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/recorded.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/recorded.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/recorded.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/recorded.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Recorded programs
@@ -2186,7 +2475,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/recorded.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/search.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/search.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/search.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/search.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/search.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Search
@@ -2200,7 +2489,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/search.php mythplug
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/upcoming.php mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/upcoming.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/upcoming.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/upcoming.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/tmpl/wml/upcoming.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Upcoming recordings
@@ -2214,7 +2503,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/tmpl/wml/upcoming.php mythpl
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/upcoming.php mythplugins-0.20a-new/mythweb/modules/tv/upcoming.php
 --- mythplugins-0.20a-old/mythweb/modules/tv/upcoming.php	2006-09-10 14:08:56.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/tv/upcoming.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/tv/upcoming.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * View and fix scheduling conflicts.
@@ -2228,7 +2517,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/tv/upcoming.php mythplugins-0.2
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/edit.php mythplugins-0.20a-new/mythweb/modules/video/edit.php
 --- mythplugins-0.20a-old/mythweb/modules/video/edit.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/video/edit.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/edit.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Edit MythVideo file information
@@ -2242,7 +2531,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/edit.php mythplugins-0.20
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/handler.php mythplugins-0.20a-new/mythweb/modules/video/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/video/handler.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/video/handler.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/handler.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * View MythVideo files
@@ -2256,7 +2545,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/handler.php mythplugins-0
   *
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/init.php mythplugins-0.20a-new/mythweb/modules/video/init.php
 --- mythplugins-0.20a-old/mythweb/modules/video/init.php	2006-03-22 23:46:57.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/video/init.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/init.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb Video module
@@ -2270,7 +2559,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/init.php mythplugins-0.20
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/video.php mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/video.php
 --- mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/video.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/video.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/video.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Rudimentary interface to MythVideo data
@@ -2284,7 +2573,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/video.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/compact/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Video module.
@@ -2298,7 +2587,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/compact/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/video.php mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/video.php
 --- mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/video.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/video.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/video.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Rudimentary interface to MythVideo data
@@ -2312,7 +2601,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/video.php my
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/welcome.php	2006-09-27 20:34:10.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/video/tmpl/default/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Video module.
@@ -2326,7 +2615,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/video/tmpl/default/welcome.php 
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/handler.php mythplugins-0.20a-new/mythweb/modules/weather/handler.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/handler.php	2006-04-01 23:40:11.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/weather/handler.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/handler.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Handler for the Weather module.
@@ -2340,7 +2629,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/handler.php mythplugins
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/init.php mythplugins-0.20a-new/mythweb/modules/weather/init.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/init.php	2006-03-22 23:46:57.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/weather/init.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/init.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Initialization routines for the MythWeb Weather module
@@ -2354,7 +2643,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/init.php mythplugins-0.
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/weather.php mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/weather.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/weather.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/weather.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/weather.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Display template for the Weather module
@@ -2368,7 +2657,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/weather.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/welcome.php mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/compact/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Weather module.
@@ -2382,7 +2671,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/compact/welcome.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/weather.php mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/weather.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/weather.php	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/weather.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/weather.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Display template for the Weather module
@@ -2396,7 +2685,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/weather.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/welcome.php mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/welcome.php	2005-12-12 23:23:18.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/welcome.php	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/weather/tmpl/default/welcome.php	2006-10-01 14:56:22.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page description of the Weather module.
@@ -2410,7 +2699,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/weather/tmpl/default/welcome.ph
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/modules/welcome.php mythplugins-0.20a-new/mythweb/modules/welcome.php
 --- mythplugins-0.20a-old/mythweb/modules/welcome.php	2006-03-26 02:09:14.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/modules/welcome.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/modules/welcome.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * Welcome page that lists the available mythweb sections
@@ -2424,7 +2713,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/modules/welcome.php mythplugins-0.20a-n
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/mythweb.php mythplugins-0.20a-new/mythweb/mythweb.php
 --- mythplugins-0.20a-old/mythweb/mythweb.php	2006-03-22 23:08:29.000000000 -0800
-+++ mythplugins-0.20a-new/mythweb/mythweb.php	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/mythweb.php	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  /**
   * The main brain script for all of MythWeb.
@@ -2438,7 +2727,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/mythweb.php mythplugins-0.20a-new/mythw
   * @license     GPL
 diff -Naur mythplugins-0.20a-old/mythweb/mythweb.pl mythplugins-0.20a-new/mythweb/mythweb.pl
 --- mythplugins-0.20a-old/mythweb/mythweb.pl	2006-04-08 14:21:52.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/mythweb.pl	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/mythweb.pl	2006-10-01 14:56:23.000000000 -0700
 @@ -2,8 +2,8 @@
  #
  # This is the perl-based module handler.  It is the counterpart of mythweb.php
@@ -2452,7 +2741,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/mythweb.pl mythplugins-0.20a-new/mythwe
  #
 diff -Naur mythplugins-0.20a-old/mythweb/README mythplugins-0.20a-new/mythweb/README
 --- mythplugins-0.20a-old/mythweb/README	2006-09-09 10:31:36.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/README	2006-09-27 20:34:11.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/README	2006-10-01 14:56:23.000000000 -0700
 @@ -113,7 +113,8 @@
      anywhere other than the root directory, the default won't work and you will
      have to hand-edit the file with the correct path.  Look for the line that
@@ -2465,7 +2754,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/README mythplugins-0.20a-new/mythweb/RE
      not storing properly)
 diff -Naur mythplugins-0.20a-old/mythweb/skins/default/style.css mythplugins-0.20a-new/mythweb/skins/default/style.css
 --- mythplugins-0.20a-old/mythweb/skins/default/style.css	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/skins/default/style.css	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/skins/default/style.css	2006-10-01 14:56:22.000000000 -0700
 @@ -15,7 +15,7 @@
      Use the alpha_png class instead.
      img { behavior: url("/js/pngbehavior.htc"); }
@@ -2477,7 +2766,7 @@ diff -Naur mythplugins-0.20a-old/mythweb/skins/default/style.css mythplugins-0.2
  a:active  { color: #990033; text-decoration: none; }
 diff -Naur mythplugins-0.20a-old/mythweb/skins/grey/style.css mythplugins-0.20a-new/mythweb/skins/grey/style.css
 --- mythplugins-0.20a-old/mythweb/skins/grey/style.css	2006-06-24 12:03:10.000000000 -0700
-+++ mythplugins-0.20a-new/mythweb/skins/grey/style.css	2006-09-27 20:34:09.000000000 -0700
++++ mythplugins-0.20a-new/mythweb/skins/grey/style.css	2006-10-01 14:56:22.000000000 -0700
 @@ -15,7 +15,7 @@
      Use the alpha_png class instead.
      img { behavior: url("/js/pngbehavior.htc"); }

@@ -1,9 +1,10 @@
 GARNAME = MPlayer
-GARVERSION = 1.0pre8
+GARVERSION = 20016
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
+MASTER_SITES += svn://svn.mplayerhq.hu/mplayer/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
@@ -43,7 +44,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-vm \
 	--enable-xf86keysym \
 	--disable-tv \
-	--disable-tv-v4l \
+	--disable-tv-v4l1 \
 	--disable-tv-v4l2 \
 	--disable-tv-bsdbt848 \
 	--enable-rtc \
@@ -77,20 +78,18 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libcdio \
 	--disable-liblzo \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32,--disable-win32) \
-	$(if $(filter i386,$(GARCH_FAMILY)),--enable-dshow,--disable-dshow) \
 	--disable-qtx \
 	--enable-xanim \
 	--enable-real \
-	--disable-internal-tremor \
-	--enable-vorbis \
+	--disable-tremor-internal \
+	--enable-libvorbis \
 	--enable-theora \
-	--enable-external-faad \
-	--disable-internal-faad \
+	--disable-faad-internal \
 	--enable-mad
 # Video output: enable xv (requires x11 and vm) and xvmc
 CONFIGURE_ARGS_VIDEO = \
-	--disable-internal-vidix \
-	--disable-external-vidix \
+	--disable-vidix-internal \
+	--disable-vidix-external \
 	--enable-gl \
 	--disable-dga \
 	--disable-vesa \
@@ -162,7 +161,8 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-crash-debug \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
-	--with-x11incdir="$(DESTDIR)$(includedir)" \
+	--with-extraincdir="$(DESTDIR)$(includedir)" \
+	--with-extralibdir="$(DESTDIR)$(libdir)" \
 	--with-x11libdir="$(DESTDIR)$(libdir)" \
 	--with-codecsdir="$(libdir)/codecs" \
 	--with-xvmclib=XvMCW \
@@ -188,6 +188,13 @@ BUILD_ENV  = \
 include ../../gar.mk
 
 CFLAGS :=
+
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 install-config:
 	@mkdir -p $(DESTDIR)$(rootdir)/root/.mplayer

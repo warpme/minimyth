@@ -1,9 +1,9 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.12
+GARVERSION = 1.0.13
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-depmod.patch $(DISTNAME)-ac97_vt1617a.patch
+PATCHFILES = $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 

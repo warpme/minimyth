@@ -1,0 +1,25 @@
+diff -Naur ffmpeg-6412-old/configure ffmpeg-6412-new/configure
+--- ffmpeg-6412-old/configure	2006-10-01 15:11:32.000000000 -0700
++++ ffmpeg-6412-new/configure	2006-10-01 15:16:12.000000000 -0700
+@@ -1420,9 +1420,9 @@
+ 
+ freetype2=no
+ if test "x$targetos" != "xBeOS"; then
+-  if (freetype-config --version) >/dev/null 2>&1 ; then
+-      temp_cflags `freetype-config --cflags`
+-      temp_extralibs `freetype-config --libs`
++  if (@GAR_DESTDIR@@GAR_bindir@/freetype-config --version) >/dev/null 2>&1 ; then
++      temp_cflags `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++      temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+       check_ld <<EOF && freetype2=yes
+ #include <ft2build.h>
+ int main( void ) { return (int) FT_Init_FreeType(0); }
+@@ -1436,7 +1436,7 @@
+ 
+ sdl_too_old=no
+ sdl=no
+-SDL_CONFIG="${cross_prefix}sdl-config"
++SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
+ if ("${SDL_CONFIG}" --version) >/dev/null 2>&1 ; then
+     temp_cflags `"${SDL_CONFIG}" --cflags`
+     temp_extralibs `"${SDL_CONFIG}" --libs`
