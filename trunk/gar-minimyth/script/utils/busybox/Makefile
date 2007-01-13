@@ -1,5 +1,5 @@
 GARNAME = busybox
-GARVERSION = 1.1.3
+GARVERSION = 1.2.0
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
@@ -49,7 +49,8 @@ include ../../gar.mk
 
 extract-$(CONFIGFILE):
 	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
-		| sed 's%@USING_CROSS_COMPILER@%$(USING_CROSS_COMPILER)%g' \
+		| sed -e 's%@USING_CROSS_COMPILER@%$(USING_CROSS_COMPILER)%g' \
+		| sed -e 's%@GAR_rootdir@%$(rootdir)%g' \
 		> $(WORKSRC)/.config
 	@$(MAKECOOKIE)
 

@@ -75,6 +75,19 @@ mm_message_output() {
     fi
 }
 
+mm_uniq() {
+    if [ "$#" = "0" ] ; then
+        ARG=
+        while read line ; do
+            ARG="${ARG} ${line}"
+        done
+    else
+        ARG=$1
+    fi
+
+    echo `echo "${ARG}" | sed -e 's% %\n%g' | sort | uniq | sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'`
+}
+
 #-------------------------------------------------------------------------------
 # mm_url_mount
 #
@@ -455,3 +468,117 @@ mm_mythdb_setting_update() {
     mm_mythdb_command_run "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
 }
 
+
+#===============================================================================
+# Hardware processing functions.
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+mm_hardware_pci_process() {
+    pci_process_function=$1
+
+    lspci -mn | sed -e 's%"%%g' | 
+    while read pci ; do
+        index=1            ; bus=`      echo "${pci}" | cut -d ' ' -f ${index}`
+        index=$((index+1)) ; class=`    echo "${pci}" | cut -d ' ' -f ${index}`
+        index=$((index+1)) ; vendor=`   echo "${pci}" | cut -d ' ' -f ${index}`
+        index=$((index+1)) ; device=`   echo "${pci}" | cut -d ' ' -f ${index}`
+        index=$((index+1)) ; revision=` echo "${pci}" | cut -d ' ' -f ${index}`
+        if [ `echo "${revision}"   | grep -c -e '^-r'` = "1" ] ; then
+            revision=`  echo "${revision}"   | sed -e 's%^-r%%'`
+        else
+            index=$((index-1)) ; revision='00'
+        fi
+        index=$((index+1)) ; class_prog=`echo "${pci}" | cut -d ' ' -f ${index}`
+        if [ `echo "${class_prog}" | grep -c -e '^-p'` = "1" ] ; then
+            class_prog=`echo "${class_prog}" | sed -e 's%^-p%%'`
+        else
+            index=$((index-1)) ; class_prog='00'
+        fi
+        index=$((index+1)) ; subvendor=`echo "${pci}" | cut -d ' ' -f ${index}`
+        index=$((index+1)) ; subdevice=`echo "${pci}" | cut -d ' ' -f ${index}`
+        echo `${pci_process_function} ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
+    done |
+    mm_uniq
+}
+
+mm_hardware_pci2kernel_map() {
+    class=$1
+    vendor=$2
+    device=$3
+    revision=$4
+    class_prog=$5
+    subvendor=$6
+    subdevice=$7
+
+    cat /etc/hardware.d/pci2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," |
+    {
+        found=
+        while read map ; do
+            if [ -n "${map}" ] ; then
+                map_class_prog=`    echo ${map} | cut -d ',' -f 2`
+                map_vendor=`        echo ${map} | cut -d ',' -f 3`
+                map_device=`        echo ${map} | cut -d ',' -f 4`
+                map_kernel_modules=`echo ${map} | cut -d ',' -f 5`
+                if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
+                   ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
+                   ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
+                    if [ -z "${found}" ] ; then
+                        found=1
+                        echo ${map_kernel_modules}
+                    fi
+                fi
+            fi
+        done
+    }
+}
+
+mm_hardware_pci2x_map() {
+    class=$1
+    vendor=$2
+    device=$3
+    revision=$4
+    class_prog=$5
+    subvendor=$6
+    subdevice=$7
+
+    cat /etc/hardware.d/pci2x.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${class}," |
+    {
+        found=
+        while read map ; do
+            if [ -n "${map}" ] ; then
+                map_class_prog=`echo ${map} | cut -d ',' -f 2`
+                map_vendor=`    echo ${map} | cut -d ',' -f 3`
+                map_device=`    echo ${map} | cut -d ',' -f 4`
+                map_x_driver=`  echo ${map} | cut -d ',' -f 5`
+                if ( [ -z "${map_class_prog}" ] || [ "${map_class_prog}" = "${class_prog}" ] ) &&
+                   ( [ -z "${map_vendor}"     ] || [ "${map_vendor}"     = "${vendor}"     ] ) &&
+                   ( [ -z "${map_device}"     ] || [ "${map_device}"     = "${device}"     ] ) ; then
+                    if [ -z "${found}" ] ; then
+                        found=1
+                        echo ${map_x_driver}
+                    fi
+                fi
+            fi
+        done
+    }
+}
+
+mm_hardware_x2kernel_map() {
+    x_driver=$1
+
+    cat /etc/hardware.d/x2kernel.map | sed -e 's%#.*$%%g' | sed -e 's% *%%g' | grep -e "^${x_driver}," |
+    {
+        found=
+        while read map ; do
+            if [ -n "${map}" ] ; then
+                map_kernel_modules=`echo ${map} | cut -d ',' -f 2`
+            fi
+            if [ -z "${found}" ] ; then
+                found=1
+                echo ${map_kernel_modules}
+            fi
+        done
+    }
+}

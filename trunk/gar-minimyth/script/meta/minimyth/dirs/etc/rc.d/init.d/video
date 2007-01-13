@@ -9,6 +9,16 @@
 start() {
     mm_message_output info 'configuring video ...'
 
+    # Load X kernel modules.
+    for kernel_module in ${MM_X_KERNEL_MODULES} ; do
+        modprobe ${kernel_module}
+        if [ ! "$?" = "0" ] ; then
+            mm_message_output err "error: failed to load kernel module: ${kernel_module}"
+            exit 1
+        fi
+    done
+
+    # IDE.
     if [ -z "${MM_X_DRIVER}" ] ; then
         mm_message_output err "error: no supported video hardware found."
         exit 1
