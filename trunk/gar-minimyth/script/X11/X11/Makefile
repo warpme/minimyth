@@ -1,7 +1,8 @@
 GARNAME = X11
 GARVERSION = 6.8.1
 CATEGORIES = X11
-MASTER_SITES  = ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
+MASTER_SITES  = http://xorg.freedesktop.org/$(GARNAME)R$(GARVERSION)/src-single/
+MASTER_SITES += ftp://ftp.x.org/pub/$(GARNAME)R$(GARVERSION)/src-single/
 MASTER_SITES += cvs://anoncvs@cvs.freedesktop.org:/cvs/xorg/
 MASTER_SITES += http://voxel.dl.sourceforge.net/sourceforge/unichrome/
 MASTER_SITES += cvs://anonymous@cvs.sourceforge.net:/cvsroot/unichrome/
