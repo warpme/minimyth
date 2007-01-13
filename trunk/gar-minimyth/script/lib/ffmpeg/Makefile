@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 20060331
+GARVERSION = 20060414
 CATEGORIES = lib
 MASTER_SITES = cvs://anonymous@mplayerhq.hu:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
