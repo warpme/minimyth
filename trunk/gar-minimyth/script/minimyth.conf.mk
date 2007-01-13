@@ -58,12 +58,15 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # file system for mounting using NFS. The MiniMyth root file system will be
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT          ?= /home/public/minimyth
-# The version of xorg to use.
-# Value values are 'old', 'mid' and 'new'.
-mm_XORG_VERSION      ?= new
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable19
+# The version of xorg to use.
+# Valid values are 'old', 'mid' and 'new'.
+mm_XORG_VERSION      ?= new
+# The version of the NVIDIA driver.
+# Valid values are '8178' and '8774'.
+mm_NVIDIA_VERSION    ?= 8178
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
 mm_MYTH_SVN_VERSION  ?= 10992
@@ -118,9 +121,6 @@ mm_CFLAGS            ?= $(strip \
 mm_CXXFLAGS          ?= $(mm_CFLAGS)
 mm_DESTDIR           ?= $(mm_HOME)/images/mm
 mm_SOURCENAME        ?= gar-minimyth-$(mm_VERSION)
-# The version of Myth checked out from SVN when mm_MYTH_VERSION=svn.
-# If this is set, the patch files for myth/myth*-svn may fail.
-mm_MYTH_VERSION_SVN  ?=
 
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.

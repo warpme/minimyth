@@ -1,7 +1,9 @@
 GARNAME = nvidia
-GARVERSION = $(NVIDIA_VERSION)
-CATEGORIES = X11
-SOURCEPKG = kernel/nvidia
+GARVERSION = $(MAJOR_VERSION).$(MINOR_VERSION)-$(TEENY_VERSION)
+CATEGORIES = kernel
+MASTER_SITES = http://download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
+DISTFILES = $(DISTFILE).run
+PATCHFILES = $(DISTFILE)-bugfixes_20060118.patch
 LICENSE = nvidia
 nvidia_LICENSE_TEXT=$(WORKSRC)/LICENSE
 
@@ -12,83 +14,117 @@ endef
 DEPENDS   = lang/c kernel/linux xorg/xorg
 BUILDDEPS = kernel/module-init-tools
 
-WORKSRC = $(WORKDIR)/$(NVIDIA_DISTFILE)
+SUPER_VERSION = $(strip \
+	$(if $(filter i386,  $(GARCH_FAMILY)),x86   ) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
+MAJOR_VERSION = 1
+MINOR_VERSION = 0
+TEENY_VERSION = 8178
+EXTRA_VERSION = $(strip \
+	$(if $(filter x86,   $(SUPER_VERSION)),pkg1) \
+	$(if $(filter x86_64,$(SUPER_VERSION)),pkg2))
+DISTFILE      = NVIDIA-Linux-$(SUPER_VERSION)-$(GARVERSION)-$(EXTRA_VERSION)
 
-INSTALL_SCRIPTS = custom
+WORKSRC = $(WORKDIR)/$(DISTFILE)
 
-GAR_EXTRA_CONF += kernel/nvidia/package-api.mk
+BUILD_SCRIPTS   = $(WORKSRC)/usr/src/nv/makefile
+INSTALL_SCRIPTS = kernel x11
+
+BUILD_ARGS = \
+	module \
+	$(KERNEL_MAKE_ARGS) \
+	HOST_CC=$(build_CC) \
+	SYSSRC=$(DESTDIR)$(KERNEL_SOURCEDIR) \
+	SYSOUT=$(DESTDIR)$(KERNEL_BUILDDIR) \
+	MODULE_ROOT=$(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
+
+BUILD_ENV = \
+	$(KERNEL_MAKE_ENV)
+
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-MAJOR_VERSION = $(NVIDIA_MAJOR_VERSION)
-MINOR_VERSION = $(NVIDIA_MINOR_VERSION)
-TEENY_VERSION = $(NVIDIA_TEENY_VERSION)
+extract-%.run:
+	@mkdir -p $(WORKDIR)
+	@cp $(DOWNLOADDIR)/$*.run $(WORKDIR)
+	@cd $(WORKDIR) ; sh $*.run --extract-only
+	@cd $(WORKDIR) ; rm -rf $*.run
+	@$(MAKECOOKIE)
 
-NVIDIA_LIBDIR = $(libdir)/nvidia
-NVIDIA_BINDIR = $(bindir)
+build-%/makefile:
+	@echo " ==> Running make in $*"
+	@cd $*; $(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") $(BUILD_ARGS)
+	@$(MAKECOOKIE)
 
-install-custom:
-	@rm -rf $(DESTDIR)$(NVIDIA_BINDIR)/nvidia*
-	@mkdir -p $(DESTDIR)$(NVIDIA_BINDIR)
+install-kernel:
+	@mkdir -p $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
+	@cp $(WORKSRC)/usr/src/nv/nvidia.ko $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia/nvidia.ko
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@$(MAKECOOKIE)
+
+install-x11:
+	@rm -rf $(DESTDIR)$(bindir)/nvidia*
+	@mkdir -p $(DESTDIR)$(bindir)
 	@install $(WORKSRC)/usr/bin/nvidia-bug-report.sh \
-		$(DESTDIR)$(NVIDIA_BINDIR)/nvidia-bug-report.sh
+		$(DESTDIR)$(bindir)/nvidia-bug-report.sh
 	@install $(WORKSRC)/usr/bin/nvidia-xconfig \
-		$(DESTDIR)$(NVIDIA_BINDIR)/nvidia-xconfig
-	@rm -rf $(DESTDIR)$(NVIDIA_LIBDIR)
-	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)
-	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/drivers
-	@mkdir -p $(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/extensions
+		$(DESTDIR)$(bindir)/nvidia-xconfig
+	@rm -rf $(DESTDIR)$(libdir)/nvidia
+	@mkdir -p $(DESTDIR)$(libdir)/nvidia
+	@mkdir -p $(DESTDIR)$(libdir)/nvidia/xorg/modules/drivers
+	@mkdir -p $(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions
 	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.a \
-		$(DESTDIR)$(NVIDIA_LIBDIR)/libXvMCNVIDIA.a
+		$(DESTDIR)$(libdir)/nvidia/libXvMCNVIDIA.a
 	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)
+		$(DESTDIR)$(libdir)/nvidia
 	@install $(WORKSRC)/usr/lib/libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)
+		$(DESTDIR)$(libdir)/nvidia
 	@install $(WORKSRC)/usr/lib/libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)
+		$(DESTDIR)$(libdir)/nvidia
 	@install $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so \
-		$(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/drivers
+		$(DESTDIR)$(libdir)/nvidia/xorg/modules/drivers
 	@install $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/extensions
+		$(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions
 	@install $(WORKSRC)/usr/lib/tls/libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)
+		$(DESTDIR)$(libdir)/nvidia
 	@install $(WORKSRC)/usr/lib/libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(NVIDIA_LIBDIR)
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR) ; \
+		$(DESTDIR)$(libdir)/nvidia
+	@cd $(DESTDIR)$(libdir)/nvidia ; \
 		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
 		       libXvMCNVIDIA.so.$(MAJOR_VERSION) ; \
 		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION) \
 		       libXvMCNVIDIA.so
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR) ; \
+	@cd $(DESTDIR)$(libdir)/nvidia ; \
 		ln -sf libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
 		       libGL.so.$(MAJOR_VERSION) ; \
 		ln -sf libGL.so.$(MAJOR_VERSION) \
 		       libGL.so
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR) ; \
+	@cd $(DESTDIR)$(libdir)/nvidia ; \
 		ln -sf libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
 		       libGLcore.so.$(MAJOR_VERSION) ; \
 		ln -sf libGLcore.so.$(MAJOR_VERSION) \
 		       libGLcore.so
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR)/xorg/modules/extensions; \
+	@cd $(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions; \
 		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
 		       libglx.so.$(MAJOR_VERSION) ; \
 		ln -sf libglx.so.$(MAJOR_VERSION) \
 		       libglx.so
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR) ; \
+	@cd $(DESTDIR)$(libdir)/nvidia ; \
 		ln -sf libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
 		       libnvidia-tls.so.$(MAJOR_VERSION) ; \
 		ln -sf libnvidia-tls.so.$(MAJOR_VERSION) \
 		       libnvidia-tls.so
-	@cd $(DESTDIR)$(NVIDIA_LIBDIR) ; \
+	@cd $(DESTDIR)$(libdir)/nvidia ; \
 		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
 		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
@@ -96,3 +132,13 @@ install-custom:
 		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION) \
 		       libnvidia-cfg.so
 	@$(MAKECOOKIE)
+
+clean-all: clean-all-kernel clean-all-x11
+	@$(MAKE) clean
+
+clean-all-kernel:
+	@mkdir -p $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
+
+clean-all-x11:
+	@rm -rf $(DESTDIR)$(bindir)/nvidia*
+	@rm -rf $(DESTDIR)$(libdir)/nvidia

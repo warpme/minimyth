@@ -13,17 +13,17 @@ start() {
 
     # Wait for audio driver to load.
     timeout=10
-    while /usr/bin/test `/usr/bin/amixer > /dev/null 2>&1 ; /bin/echo $?` -ne 0 && /usr/bin/test ${timeout} -gt 0 ; do
+    while ! /usr/bin/amixer > /dev/null 2>&1 && /usr/bin/test ${timeout} -gt 0 ; do
         /bin/sleep 1
         timeout=$((timeout-1))
     done
-    if /usr/bin/test `/usr/bin/amixer > /dev/null 2>&1 ; /bin/echo $?` -ne 0 ; then
+    if  ! /usr/bin/amixer > /dev/null 2>&1 ; then
         mm_message_output err "error: the audio driver does not appear to be loaded."
         exit 1
     fi
 
     # Unmute audio.
-    if /usr/bin/test `/usr/bin/amixer > /dev/null 2>&1 ; /bin/echo $?` -eq 0 ; then
+    if /usr/bin/amixer > /dev/null 2>&1 ; then
         control=
         /usr/bin/amixer | /bin/grep -e '^Simple mixer control' | /bin/sed -e "s%^[^']*'%%" | /bin/sed -e "s%'[^']*$%%" |
         while read control ; do
@@ -81,7 +81,7 @@ stop () {
     mm_message_output info 'muting audio ...'
 
     # Mute audio.
-    if /usr/bin/test `/usr/bin/amixer > /dev/null 2>&1 ; /bin/echo $?` -eq 0 ; then
+    if /usr/bin/amixer > /dev/null 2>&1 ; then
         /usr/bin/amixer | /bin/grep -e '^Simple mixer control' | /bin/sed -e "s%^[^']*'%%" | /bin/sed -e "s%'[^']*$%%" |
         while read control ; do
             case "${MM_AUDIO_TYPE}" in

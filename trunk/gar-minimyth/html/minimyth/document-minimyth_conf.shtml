@@ -80,6 +80,7 @@
                 <a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a>,
                 <a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>,
                 <a href="#MM_X_TV_OUTPUT">MM_X_TV_OUTPUT</a>,
+                <a href="#MM_X_SYNC">MM_X_SYNC</a>,
                 <a href="#MM_X_REFRESH">MM_X_REFRESH</a>,
                 <a href="#MM_X_MODE">MM_X_MODE</a>,,
                 <a href="#MM_X_MODELINE">MM_X_MODELINE</a> and
@@ -655,15 +656,41 @@
               The X display configuration variables are:
             </p>
             <dl>
+              <dt id="MM_X_SYNC"><strong>MM_X_SYNC</strong></dt>
+              <dd>
+                <p>
+                  Specify the horizontal sync rate that X will use.
+                  The value can be a horizontal sync rate value, a horizontal sync rate range or 'auto', with 'auto' being the default.
+                </p>
+                <p>
+                  If the value is 'auto' then the horizontal sync rate will be auto-configured to
+                  '20-80'.
+                </p>
+                <p>
+                  If the value is a horizontal sync rate value,
+                  then MiniMyth will set the horizontal sync rate to a range that is between one less than the value and one more than the value.
+                  This is done to ensure that rounding errors do not cause X to declare a mode line out of range.
+                </p>
+              </dd>
               <dt id="MM_X_REFRESH"><strong>MM_X_REFRESH</strong></dt>
               <dd>
                 <p>
-                  Specify the screen vertical refresh rate.
-                  The value can be the vertical refresh rate or 'auto'.
+                  Specify the vertical refresh rate that X will use.
+                  The value can be a vertical refresh rate value, a vertical refresh rate range or 'auto', with 'auto' being the default.
                 </p>
                 <p>
-                  If the value is 'auto' then the refresh rate will be auto-configured based on
+                  If the value is 'auto' then the vertical refresh rate will be auto-configured based on
                   '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'.
+                </p>
+                <p>
+                  If the value is a vertical refresh rate value,
+                  then MiniMyth will set the vertical refresh rate to a range that is between one less than the value and one more than the value.
+                  This is done to ensure that rounding errors do not cause X to declare a mode line out of range.
+                </p>
+                <p>
+                  If
+                  <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>
+                  is set, then the value cannot be a range.
                 </p>
               </dd>
               <dt id="MM_X_RESOLUTION"><strong>MM_X_RESOLUTION</strong></dt>
@@ -1054,7 +1081,7 @@
                 <p>
                   The pointer to the location of the MythTV theme that will be mounted
                   in the MythTV themes directory ('/usr/share/mythtv/themes') as '${MM_THEME_NAME}'.
-                  Valid values are a URL, 'none' and 'auto'.
+                  Valid values are a URL, 'none' and 'auto', with 'auto' being the default.
                 </p>
                 <p>
                   If the value is 'none',
@@ -1062,10 +1089,10 @@
                 </p>
                 <p>
                   If the value is 'auto',
-                  then MiniMyth will assume that the MyhtTV theme is in a squashfs image file
-                  located in the MiniMyth distribution's themes directory ('themes')
-                  having the name '${MM_THEME_NAME}.sfs'.
-                  That is, MiniMyth will assume MM_THEME_URL="dist:themes/${MM_THEME_NAME}.sfs".
+                  then MiniMyth will use a 'hunt' URL to look for a squashfs image
+                  named for the MythTV theme and located in the directory 'themes'.
+                  That is, MiniMyth will assume MM_THEMEOSD_URL="hunt:themes/${MM_THEME_NAME}.sfs".
+                </p>
                 </p>
               </dd>
               <dt id="MM_THEMEOSD_URL"><strong>MM_THEMEOSD_URL</strong></dt>
@@ -1073,7 +1100,7 @@
                 <p>
                   The pointer to the location of the MythTV OSD theme that will be mounted
                   in the MythTV themes directory ('/usr/share/mythtv/themes') as '${MM_THEMEOSD_NAME}'.
-                  Valid values are a URL, 'none' and 'auto'.
+                  Valid values are a URL, 'none' and 'auto', with 'auto' being the default.
                 </p>
                 <p>
                   If the value is 'none',
@@ -1081,23 +1108,37 @@
                 </p>
                 <p>
                   If the value is 'auto',
-                  then MiniMyth will assume that the MythTV OSD theme is in a squashfs image file
-                  located in the MiniMyth distribution's themes directory ('themes')
-                  having the name '${MM_THEMEOSD_NAME}.sfs'.
-                  That is, MiniMyth will assume MM_THEMEOSD_URL="dist:themes/${MM_THEMEOSD_NAME}.sfs".
+                  then MiniMyth will use a 'hunt' URL to look for a squashfs image
+                  named for the MythTV OSD theme and located in the directory 'themes'.
+                  That is, MiniMyth will assume MM_THEMEOSD_URL="hunt:themes/${MM_THEMEOSD_NAME}.sfs".
                 </p>
               </dd>
               <dt id="MM_THEMECACHE_URL"><strong>MM_THEMECACHE_URL</strong></dt>
               <dd>
                 <p>
-                  The URL that points to the location of the already generated themecache directory.
-                  This will be mounted at /root/.mythtv/themecache.
+                  The pointer to the location of the already generated MythTV themecache directory that will be mounted
+                  as the MythtTV themecache directory ('/root/.mythtv/themecache').
+                  Valid values are URL, 'none' and 'auto', with 'auto' being the default.
+                <p>
+                  If the value is 'none',
+                  then nothing will be mounted as the already generated MythTV themecache directory.
+                </p>
+                <p>
+                  If the value is 'auto',
+                  then MiniMyth will use a 'hunt' URL to look for a squashfs image file
+                  named for the themecache name and located in the directory 'themecaches'.
+                  That is, MiniMyth will assume MM_THEMECACHE_URL="hunt:themecaches/${MM_THEME_NAME}.{GuiWidth}.{GuiHeight}.sfs",
+                  where {GuiWidth} is the MythTV GUI width and {GuiHeight} is the MythTV GUI height.
+                </p>
+                <p>
                   MiniMyth contains a script 'mm_squashfs_themecache_make' to help with
                   creating a themecache squashfs image (*.sfs).
                   Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_themecache_make'.
                   If there is a themecache directory with exactly on cached theme,
                   then the script will create the themecache squashfs image of the themecache directory,
                   put the image in the root directory (/) and tell you the name of the image.
+                  The name of the image will be "${MM_THEME_NAME}.{GuiWidth}.{GuiHeight}.sfs",
+                  where {GuiWidth} is the MythTV GUI width and {GuiHeight} is the MythTV GUI height.
                   You can then download the image from your MiniMyth frontend through
                   the web interface to the MiniMyth file system 'http://{frontend}:8080/'.
                 </p>
@@ -1450,7 +1491,7 @@
           <a href="document.shtml">Documents</a> |
           minimyth.conf
           <br />
-          Last Updated: 2006-09-19 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+          Last Updated: 2006-09-20 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
         </div>
       </div>
     </div>

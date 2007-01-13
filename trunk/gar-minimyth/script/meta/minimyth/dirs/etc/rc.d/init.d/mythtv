@@ -32,8 +32,7 @@ start() {
     fi
     # Mount MythTV theme directory.
     if /usr/bin/test -n "${MM_THEME_URL}" ; then
-        mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}"
-        if /usr/bin/test $? -ne 0 ; then
+        if ! mm_url_mount "${MM_THEME_URL}" "/usr/share/mythtv/themes/${MM_THEME_NAME}" ; then
             mm_message_output err "error: mount of 'MM_THEME_URL=${MM_THEME_URL}'' failed."
             exit 1
         fi
@@ -45,8 +44,7 @@ start() {
     fi
     # Mount MythTV OSD theme directory.
     if /usr/bin/test -n "${MM_THEMEOSD_URL}" ; then
-        mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}"
-        if /usr/bin/test $? -ne 0 ; then
+        if ! mm_url_mount "${MM_THEMEOSD_URL}" "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}" ; then
             mm_message_output err "error: mount of 'MM_THEMEOSD_URL=${MM_THEMEOSD_URL}'' failed."
             exit 1
         fi
@@ -55,10 +53,6 @@ start() {
     # Mount themecache directory.
     if /usr/bin/test -n "${MM_THEMECACHE_URL}" ; then
         mm_url_mount "${MM_THEMECACHE_URL}" "/root/.mythtv/themecache"
-        if /usr/bin/test $? -ne 0 ; then
-            mm_message_output err "error: mount of 'MM_THEMECACHE_URL=${MM_THEMECACHE_URL}' failed."
-            exit 1
-        fi
     fi
 
     # Configure MythDVD ripping.

@@ -18,7 +18,7 @@ DEPENDS = \
 	devel/gdb \
 	disk/hdparm \
 	system/lcdproc \
-	kernel/linux kernel/alsa-driver kernel/drm kernel/nvidia kernel/unionfs kernel/vt1211 \
+	kernel/linux kernel/alsa-driver kernel/drm kernel/unionfs kernel/vt1211 \
 	lirc/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
@@ -30,7 +30,7 @@ DEPENDS = \
 	myth/myththemes-$(mm_MYTH_VERSION) \
 	myth/mythtv-$(mm_MYTH_VERSION) \
 	net/ntp \
-	X11/nvidia \
+	nvidia/nvidia-$(mm_NVIDIA_VERSION) \
 	utils/pciutils \
 	net/portmap \
 	system/powernowd \
