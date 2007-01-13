@@ -3,7 +3,7 @@ GARVERSION = 0.20a
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-video_ui.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
