@@ -60,7 +60,7 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
-mm_MYTH_VERSION      ?= stable19
+mm_MYTH_VERSION      ?= stable20
 # The version of xorg to use.
 # Valid values are '6.8' and '7.0'.
 mm_XORG_VERSION      ?= 7.0
@@ -69,7 +69,7 @@ mm_XORG_VERSION      ?= 7.0
 mm_NVIDIA_VERSION    ?= 8178
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_SVN_VERSION  ?= 10992
+mm_MYTH_SVN_VERSION  ?= 11467
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES     ?=
 # Lists additional binaries to include in the MiniMyth image
