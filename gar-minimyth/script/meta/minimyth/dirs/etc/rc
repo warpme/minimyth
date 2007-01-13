@@ -2,34 +2,45 @@
 
 . /etc/minimyth.d/env.script
 
-bootsplash_progress() {
+box() {
+    return 0;
+}
+
+. /etc/bootsplash/themes/MythTV/config/bootsplash-800x600.cfg
+
+rc_splash() {
+    if [ -e /proc/splash ] ; then 
+	splash -s -u 0 /etc/bootsplash/themes/MythTV/config/refresh.cfg
+        fbtruetype -x $text_x -y $text_y -t $text_color -s $text_size "$1"
+        echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
+    fi
     progress=$((progress + 1))
-    [ -e /proc/splash ] && echo "show $(( 65535 * $progress / $progress_max ))" > /proc/splash
 }
 
 progress=0
-progress_max=21
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/proc.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/bootsplash.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/modules.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/fs.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/ld.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/log.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/network.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/core.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mythtv.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/minimyth.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/extras.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/sensors.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/acpi.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/time.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/telnet.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/web.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mount.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/sound.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/lirc.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/mythdb.script"
-bootsplash_progress ; mm_command_run "sh /etc/minimyth.d/x.script"
+progress_max=19
+mm_command_run "sh /etc/minimyth.d/fs-core.script"
+mm_command_run "sh /etc/minimyth.d/bootsplash.script"
+rc_splash 'loading kernel modules ...'           ; mm_command_run "sh /etc/minimyth.d/modules.script"
+rc_splash 'configuring filesystem ...'           ; mm_command_run "sh /etc/minimyth.d/fs.script"
+rc_splash 'configuring shared libraries ...'     ; mm_command_run "sh /etc/minimyth.d/ld.script"
+rc_splash 'starting system logging ...'          ; mm_command_run "sh /etc/minimyth.d/log.script"
+rc_splash 'starting network ...'                 ; mm_command_run "sh /etc/minimyth.d/network.script"
+rc_splash 'fetching user configuration ...'      ; mm_command_run "sh /etc/minimyth.d/core.script"
+rc_splash 'configuring mythtv directory ...'     ; mm_command_run "sh /etc/minimyth.d/mythtv.script"
+rc_splash 'running user script ...'              ; mm_command_run "sh /etc/minimyth.d/minimyth.script"
+rc_splash 'installing extras ...'                ; mm_command_run "sh /etc/minimyth.d/extras.script"
+rc_splash 'starting sensors ...'                 ; mm_command_run "sh /etc/minimyth.d/sensors.script"
+rc_splash 'starting ACPI ...'                    ; mm_command_run "sh /etc/minimyth.d/acpi.script"
+rc_splash 'starting NTP client ...'              ; mm_command_run "sh /etc/minimyth.d/time.script"
+rc_splash 'starting telnet server ...'           ; mm_command_run "sh /etc/minimyth.d/telnet.script"
+rc_splash 'starting web server ...'              ; mm_command_run "sh /etc/minimyth.d/web.script"
+rc_splash 'mounting media shares ...'            ; mm_command_run "sh /etc/minimyth.d/mount.script"
+rc_splash 'configuring sound ...'                ; mm_command_run "sh /etc/minimyth.d/sound.script"
+rc_splash 'configuring remote control ...'       ; mm_command_run "sh /etc/minimyth.d/lirc.script"
+rc_splash 'configuring mythfrontend settings...' ; mm_command_run "sh /etc/minimyth.d/mythdb.script"
+rc_splash 'configuring X ...'                    ; mm_command_run "sh /etc/minimyth.d/x.script"
+rc_splash
 
 # Start X (if not debugging)
 if [ -z "`mm_var_get MM_DEBUG`" ] && [ -z "`mm_var_get MM_NO_X`" ] ; then
