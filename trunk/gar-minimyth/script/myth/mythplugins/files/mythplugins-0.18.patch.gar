@@ -1,42 +1,42 @@
 diff -Naur mythplugins-0.18-old/configure mythplugins-0.18-new/configure
---- mythplugins-0.18-old/configure	2005-04-24 10:31:38.732050458 -0700
-+++ mythplugins-0.18-new/configure	2005-04-24 10:35:59.980220318 -0700
-@@ -283,9 +283,9 @@
- if test "$sdl" = "yes" ; then
-   echo "        SDL           support will be included in MythMusic"
-   echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
--  echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
--  echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
--  echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+  echo "LIBS += `@DESTDIR@/@bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+  echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+  echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
- fi
- if test "$sdl" = "no" ; then
-   echo "        SDL           support will not be included in MythMusic"
-@@ -361,8 +361,8 @@
-     cat ./mythdvd/mythdvd/dvd_settings.xml.mid >> ./mythdvd/mythdvd/dvd_settings.xml
+--- mythplugins-0.18-old/configure	2005-05-14 07:54:01.314460698 -0700
++++ mythplugins-0.18-new/configure	2005-05-14 07:55:54.432618558 -0700
+@@ -330,8 +330,8 @@
+         cat ./mythdvd/mythdvd/dvd_settings.xml.mid >> ./mythdvd/mythdvd/dvd_settings.xml
  
- #  echo "LIBS += -lrfftw -lfftw" >> ./mythdvd/mythdvd/config.pro
--#  echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
--#  echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
-+#  echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
-+#  echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
- fi
+         #  echo "LIBS += -lrfftw -lfftw" >> ./mythdvd/mythdvd/config.pro
+-        #  echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
+-        #  echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
++        #  echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
++        #  echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
+     fi
  
- if test "$transcode" = "no" ; then
-@@ -411,7 +411,7 @@
-   echo "#define EXIF_SUPPORT 1" >> ./mythgallery/mythgallery/config.h
-   echo "LIBS += -lexif" >> ./mythgallery/mythgallery/config.pro
+     if test "$transcode" = "no" ; then
+@@ -383,7 +383,7 @@
+         echo "#define EXIF_SUPPORT 1" >> ./mythgallery/mythgallery/config.h
+         echo "LIBS += -lexif" >> ./mythgallery/mythgallery/config.pro
  
--  if `pkg-config --atleast-version 0.6.9 libexif` ; then
-+  if `@DESTDIR@/@bindir@/pkg-config --atleast-version 0.6.9 libexif` ; then
-      echo "#define NEW_LIB_EXIF 1" >> ./mythgallery/mythgallery/config.h
-   fi
- fi
+-        if `pkg-config --atleast-version 0.6.9 libexif` ; then
++        if `@DESTDIR@/@bindir@/pkg-config --atleast-version 0.6.9 libexif` ; then
+             echo "#define NEW_LIB_EXIF 1" >> ./mythgallery/mythgallery/config.h
+         fi
+     fi
+@@ -432,9 +432,9 @@
+     if test "$sdl" = "yes" ; then
+         echo "        SDL           support will be included in MythMusic"
+         echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+-        echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
+-        echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
+-        echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `@DESTDIR@/@bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
+     fi
+     if test "$sdl" = "no" ; then
+         echo "        SDL           support will not be included in MythMusic"
 diff -Naur mythplugins-0.18-old/settings.pro mythplugins-0.18-new/settings.pro
---- mythplugins-0.18-old/settings.pro	2005-04-24 10:31:38.732050458 -0700
-+++ mythplugins-0.18-new/settings.pro	2005-04-24 10:34:40.822258360 -0700
+--- mythplugins-0.18-old/settings.pro	2005-05-14 07:54:01.315460584 -0700
++++ mythplugins-0.18-new/settings.pro	2005-05-14 07:58:28.690107120 -0700
 @@ -2,16 +2,16 @@
  CONFIG += release
  
@@ -45,12 +45,14 @@ diff -Naur mythplugins-0.18-old/settings.pro mythplugins-0.18-new/settings.pro
 +    PREFIX = @prefix@
  }
  
- LIBVERSION = 0.18
+ LIBVERSION = 0.18.1
  
 -INCLUDEPATH += $${PREFIX}/include
+-#INCLUDEPATH += /usr/include/cdda
+-#INCLUDEPATH += /usr/include/FLAC
 +INCLUDEPATH += @DESTDIR@/@includedir@
- #INCLUDEPATH += /usr/include/cdda
- #INCLUDEPATH += /usr/include/FLAC
++#INCLUDEPATH += @DESTDIR@/@includedir@/cdda
++#INCLUDEPATH += @DESTDIR@/@includedir@/FLAC
  
 -LIBS *= -L$${PREFIX}/lib
 +LIBS *= -L@DESTDIR@/@libdir@

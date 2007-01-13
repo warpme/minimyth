@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += cvs://mythtv:mythtv@cvs.mythtv.org:/var/lib/mythcvs/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-pageup_pagedown.patch $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME)-cvsfixes.patch $(DISTNAME).patch.gar $(DISTNAME)-musicplaylist.patch $(DISTNAME)-pageup_pagedown.patch $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -26,21 +26,22 @@ INSTALL_SCRIPTS   += $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS += \
 	--enable-opengl \
-	--enable-mythmusic \
-	--disable-fftw \
-	--enable-sdl \
-	--disable-aac \
-	--enable-mythvideo \
+	--disable-mythbrowser \
 	--enable-mythdvd \
-	--disable-transcode \
-	--enable-vcd \
-	--enable-mythweather \
+		--disable-transcode \
+		--enable-vcd \
 	--enable-mythgallery \
-	--disable-exif \
+		--disable-exif \
 	--disable-mythgame \
+	--enable-mythmusic \
+		--disable-fftw \
+		--enable-sdl \
+		--disable-aac \
 	--disable-mythnews \
 	--disable-mythphone \
-	--disable-festival
+		--disable-festival \
+	--enable-mythvideo \
+	--enable-mythweather
 
 CONFIGURE_ENV += \
 	DESTDIR="$(DESTDIR)" \
