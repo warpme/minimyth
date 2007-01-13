@@ -3,7 +3,8 @@ GARVERSION = 1.0.1.3
 CATEGORIES = xorg
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/driver/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE =
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
 DESCRIPTION = 
 define BLURB
