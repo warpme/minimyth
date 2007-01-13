@@ -209,6 +209,11 @@ mm-make-busybox:
 	@rm -rf $(mm_ROOTFSDIR)/var
 
 mm-copy:
+	@# Copy licenses.
+	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)
+	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
+	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
+	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
 	@# Copy kernel.
 	@mkdir -p $(WORKSRC)
 	@cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(WORKSRC)/$(mm_KERNELNAME)

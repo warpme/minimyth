@@ -3,7 +3,7 @@ GARVERSION = 2.12r
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cramfs.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cramfs.patch $(DISTNAME)-cramfs_maxentries.patch
 LICENSE = BSD/GPL2
 
 DESCRIPTION =
