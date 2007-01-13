@@ -10,15 +10,12 @@ DIR=$1
 mkdir -p ${DIR}
 touch ${DIR}
 if [ ! $? = 0 ] ; then
-    modprobe unionfs
-
     UNIONFS=/var/unionfs
     UNIONFS_RO=${UNIONFS}/ro
     UNIONFS_RW=${UNIONFS}/rw
 
     if [ ! -e ${UNIONFS} ] ; then
-        mkdir -p /var/unionfs
-        mount -t tmpfs tmpfs ${UNIONFS}
+        echo "error: directory \"${UNIONFS}\" does not exist."
     fi
     mkdir -p ${UNIONFS_RO}${DIR}
     mkdir -p ${UNIONFS_RW}${DIR}
