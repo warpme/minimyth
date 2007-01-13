@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.11rc4
+GARVERSION = 1.0.12rc1
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,7 +18,10 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-static \
 	--enable-shared \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-tmpdir="$(rootdir)/tmp" \
+	--with-alsa-devdir="$(rootdir)/dev/snd" \
+	--with-aload-devdir="$(rootdir)/dev"
 
 include ../../gar.mk
 
