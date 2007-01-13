@@ -14,7 +14,6 @@ endef
 DEPENDS = lang/c lib/zlib
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-$(GARVERSION)-config
-PATCHDIR = $(WORKSRC)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

@@ -14,8 +14,6 @@ endef
 
 DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/libdvdread lib/libmad X11/fontconfig X11/freetype X11/X11 lirc/lirc
 
-PATCHDIR = $(WORKSRC)
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile config

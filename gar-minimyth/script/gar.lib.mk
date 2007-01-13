@@ -201,7 +201,7 @@ extract-%: cp-extract-%
 
 #################### PATCH RULES ####################
 
-PATCHDIR ?= $(WORKDIR)
+PATCHDIR ?= $(WORKSRC)
 PATCHDIRLEVEL ?= 1
 PATCHDIRFUZZ ?= 2
 GARPATCH = patch -d$(PATCHDIR) -p$(PATCHDIRLEVEL) -F$(PATCHDIRFUZZ)

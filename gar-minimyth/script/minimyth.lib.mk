@@ -1,5 +1,3 @@
-PATCHDIR = $(WORKSRC)
-
 clean-image:
 	@rm -rf $(COOKIEROOTDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d

@@ -30,8 +30,7 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += X11/X11
 endif
 
-WORKSRC=$(WORKDIR)/xc
-PATCHDIR=$(WORKSRC)
+WORKSRC = $(WORKDIR)/xc
 
 CONFIGURE_SCRIPTS = os directory compiler installed_hardware installed_software X11_fonts X11_docs X11_misc
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
