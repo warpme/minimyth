@@ -67,14 +67,14 @@ elif [ "${URL_PROTOCOL}" = "cifs" ] ; then
         MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
     fi
 elif [ "${URL_PROTOCOL}" = "tftp" ] ; then
-    make_dir_rw ${MOUNT_DIR}
+    mm_dir_make_rw ${MOUNT_DIR}
     TARFILE="tmp.tar.bz2~"
     cd ${MOUNT_DIR}
     tftp -g -r ${URL_PATH} -l ${TARFILE} ${URL_SERVER}
     tar -jxf ${TARFILE}
     rm -f ${TARFILE}
 elif [ "${URL_PROTOCOL}" = "conf" ] ; then
-    make_dir_rw ${MOUNT_DIR}
+    mm_dir_make_rw ${MOUNT_DIR}
     TARFILE="tmp.tar.bz2~"
     cd ${MOUNT_DIR}
     mm_conf_get ${URL_PATH} ${TARFILE}
