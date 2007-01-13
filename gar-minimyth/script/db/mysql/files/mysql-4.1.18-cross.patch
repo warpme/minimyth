@@ -1,0 +1,60 @@
+diff -Naur mysql-4.1.18-old/configure.in mysql-4.1.18-new/configure.in
+--- mysql-4.1.18-old/configure.in	2006-01-27 08:26:27.000000000 -0800
++++ mysql-4.1.18-new/configure.in	2006-04-24 18:15:39.000000000 -0700
+@@ -51,7 +51,7 @@
+       ;;
+     *)
+   echo "$i/errmsg.sys: $i/errmsg.txt
+-	\$(top_builddir)/extra/comp_err -C\$(srcdir)/charsets/ $i/errmsg.txt $i/errmsg.sys" \
++	mysql-comp_err -C\$(srcdir)/charsets/ $i/errmsg.txt $i/errmsg.sys" \
+     >> $AVAILABLE_LANGUAGES_ERRORS_RULES
+       ;;
+   esac
+diff -Naur mysql-4.1.18-old/sql/Makefile.am mysql-4.1.18-new/sql/Makefile.am
+--- mysql-4.1.18-old/sql/Makefile.am	2006-01-27 08:26:01.000000000 -0800
++++ mysql-4.1.18-new/sql/Makefile.am	2006-04-24 18:12:45.000000000 -0700
+@@ -138,7 +138,7 @@
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # For testing of udf_example.so;  Works on platforms with gcc
+ # (This is not part of our build process but only provided as an example)
+diff -Naur mysql-4.1.18-old/sql/Makefile.in mysql-4.1.18-new/sql/Makefile.in
+--- mysql-4.1.18-old/sql/Makefile.in	2006-01-27 08:27:54.000000000 -0800
++++ mysql-4.1.18-new/sql/Makefile.in	2006-04-24 18:12:45.000000000 -0700
+@@ -1234,7 +1234,7 @@
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # For testing of udf_example.so;  Works on platforms with gcc
+ # (This is not part of our build process but only provided as an example)
+diff -Naur mysql-4.1.18-old/sql/share/Makefile.am mysql-4.1.18-new/sql/share/Makefile.am
+--- mysql-4.1.18-old/sql/share/Makefile.am	2006-01-27 08:26:27.000000000 -0800
++++ mysql-4.1.18-new/sql/share/Makefile.am	2006-04-24 18:13:42.000000000 -0700
+@@ -53,7 +53,7 @@
+ fix_errors:
+ 	for lang in @AVAILABLE_LANGUAGES@; \
+ 	do \
+-	../../extra/comp_err -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
++	mysql-comp_err -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
+         done
+ 
+ # Don't update the files from bitkeeper
+diff -Naur mysql-4.1.18-old/sql/share/Makefile.in mysql-4.1.18-new/sql/share/Makefile.in
+--- mysql-4.1.18-old/sql/share/Makefile.in	2006-01-27 08:27:55.000000000 -0800
++++ mysql-4.1.18-new/sql/share/Makefile.in	2006-04-24 18:14:13.000000000 -0700
+@@ -520,7 +520,7 @@
+ fix_errors:
+ 	for lang in @AVAILABLE_LANGUAGES@; \
+ 	do \
+-	../../extra/comp_err -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
++	mysql-comp_err -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
+         done
+ 
+ # Don't update the files from bitkeeper
