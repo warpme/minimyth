@@ -39,7 +39,7 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of xorg to use.
 # Value values are 'old' and 'new'.
-mm_XORG_VERSION      ?= old
+mm_XORG_VERSION      ?= new
 # The version of Myth to use.
 # Valid values are 'stable18', 'stable19' and 'svn'.
 mm_MYTH_VERSION      ?= stable19
