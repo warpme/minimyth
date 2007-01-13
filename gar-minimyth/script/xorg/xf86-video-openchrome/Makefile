@@ -1,5 +1,5 @@
 GARNAME = xf86-video-unichrome
-GARVERSION = 160
+GARVERSION = 161
 CATEGORIES = xorg
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -27,7 +27,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR); svn co -r $(GARVERSION) http://$* $(GARNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@cd $(PARTIALDIR); mv $(GARNAME) $(DISTNAME)
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR); tar --exclude '*/.svn/*' --exclude '*/.svn' -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR); rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
