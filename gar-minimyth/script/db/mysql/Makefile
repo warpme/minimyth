@@ -56,4 +56,5 @@ post-install:
 	@$(call INSTALL_BUILD_BIN, libmysql, conf_to_src)
 	@$(call GLIBC_ADD_LIB_PATH, $(libdir)/mysql)
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient_r.la
 	@$(MAKECOOKIE)
