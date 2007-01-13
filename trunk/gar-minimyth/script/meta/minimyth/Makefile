@@ -34,6 +34,7 @@ DEPENDS = \
 	net/samba \
 	net/utelnetd \
 	system/udev \
+	X11/unichrome_dri \
 	utils/util-linux \
 	net/webfs \
 	X11/X11 \
