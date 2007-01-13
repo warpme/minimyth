@@ -1,7 +1,8 @@
 GARNAME = strace
-GARVERSION = 4.5.12
+GARVERSION = 4.5.13
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES += http://gd.tuwien.ac.at/opsys/linux/Owl/pool/sources/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -15,7 +16,6 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-gnu-ld
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
