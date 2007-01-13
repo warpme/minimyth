@@ -98,10 +98,14 @@ QMAKE_LFLAGS       = \
 UPDATE_PLATFORM   = sed -i 's%^\($(strip $(2))[ \t]*=\).*%\1 $(strip $(3))%g' $(strip $(1))/qmake.conf 
 # We should not need to provide QMAKE_INCDIR or QMAKE_LIBDIR since they are compiled into the compiler and linker.
 # However, the QT configure program does not find the supported libraries without them.
+# We add --preserve=timestamps to QMAKE_COPY so that files installed using qmake generated make files keep their
+# original dates. This keeps the dates of the MythTV themes with their original dates so that themecahes are not
+# needlessly regenerated when MiniMyth is updated.
 QMAKE_RPATH = -Wl,-rpath-link,
 CREATE_PLATFORM   = \
 	rm -rf $(1) ; \
 	cp -r $(PLATFORM_INITIAL_PATH) $(1) ; \
+	$(call UPDATE_PLATFORM, $(1), QMAKE_COPY          , cp -f --preserve=timestamps) ; \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_YACC          , bison -y) ; \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_CC            , $($(strip $(2))CC)) ; \
 	$(call UPDATE_PLATFORM, $(1), QMAKE_CXX           , $($(strip $(2))CXX)) ; \

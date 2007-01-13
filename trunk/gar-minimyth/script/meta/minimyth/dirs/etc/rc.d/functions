@@ -105,18 +105,19 @@ mm_uniq() {
 #             conf:themecache.tar.bz2
 #         The valid protocol values are: nfs, cifs, tftp, file and conf. For
 #         nfs and cifs the URL points to a remote directory. For tftp, the URL
-#         points to a tarfile (*.tar.bz2) or a cramfs image (*.cmg) on a TFTP
-#         server that will be downloaded and expanded into (for files) or
-#         downloaded and mounted at (for images) the mount point. For file, the
-#         URL point to a tarfile (*.tar.bz2), a cramfs image (*.cmg) or a 
-#         directory on the local file system that will be copied and expanded
-#         into (for files), copied and mounted at (for images) or mounted at
-#         (for directories) the mount point. For conf, the URL points to a
-#         tarfile (*.tar.bz2) or a cramfs image (*.cmg) in the MiniMyth conf
-#         directory that is either on the TFTP server (when network booting) or
-#         on the USB key (when USB booting) that will be downloaded/copied and
-#         expanded into (for files) or downloaded/copied and mounted at (for
-#         images) the mount point.
+#         points to a tarfile (*.tar.bz2), a cramfs image (*.cmg) or a squashfs
+#         image (*.sfs) on a TFTP server that will be downloaded and expanded
+#         into (for files) or downloaded and mounted at (for images) the mount
+#         point. For file, the URL point to a tarfile (*.tar.bz2), a cramfs
+#         image (*.cmg), a squashfs image (*.sfs) or a directory on the local
+#         file system that will be copied and expanded into (for files), copied
+#         and mounted at (for images) or mounted at (for directories) the mount
+#         point. For conf, the URL points to a tarfile (*.tar.bz2), a cramfs
+#         image (*.cmg) or squashfs image (*.sfs) in the MiniMyth conf directory
+#         that is either on the TFTP server (when network booting) or on the 
+#         local storage device (when IDE or USB booting) that will be
+#         downloaded/copied and expanded into (for files) or downloaded/copied
+#         and mounted at (for images) the mount point.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
@@ -159,7 +160,17 @@ mm_url_mount() {
             MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
         fi
     elif [ "${URL_PROTOCOL}" = "tftp" ] ; then
-        if   [ "${URL_EXT1}" = "cmg" ] ; then
+        if   [ "${URL_EXT1}" = "sfs" ] ; then
+            DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
+            FILE="image.sfs"
+            mkdir -p "${DIR}"
+            mkdir -p "${DIR}/ro"
+            mkdir -p "${DIR}/rw"
+            cd "${DIR}"
+            tftp -g -r "${URL_PATH}" -l "${FILE}" "${URL_SERVER}"
+            mount -t squashfs -o loop "${DIR}/${FILE}" "${DIR}/ro"
+            mount -t unionfs -o dirs=${DIR}/rw=rw:${DIR}/ro=ro none "${MOUNT_DIR}"
+        elif [ "${URL_EXT1}" = "cmg" ] ; then
             DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
             FILE="image.cmg"
             mkdir -p "${DIR}"
@@ -177,7 +188,17 @@ mm_url_mount() {
             rm -f "${TARFILE}"
         fi
     elif [ "${URL_PROTOCOL}" = "conf" ] ; then
-        if   [ "${URL_EXT1}" = "cmg" ] ; then
+        if   [ "${URL_EXT1}" = "sfs" ] ; then
+            DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
+            FILE="image.sfs"
+            mkdir -p "${DIR}"
+            mkdir -p "${DIR}/ro"
+            mkdir -p "${DIR}/rw"
+            cd "${DIR}"
+            mm_conf_get "${URL_PATH}" "${FILE}"
+            mount -t squashfs -o loop "${DIR}/${FILE}" "${DIR}/ro"
+            mount -t unionfs -o dirs=${DIR}/rw=rw:${DIR}/ro=ro none "${MOUNT_DIR}"
+        elif [ "${URL_EXT1}" = "cmg" ] ; then
             DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
             FILE="image.cmg"
             mkdir -p "${DIR}"
@@ -196,7 +217,17 @@ mm_url_mount() {
         fi
     elif [ "${URL_PROTOCOL}" = "file" ] ; then
         if   [ -f "${URL_PATH}" ] ; then
-            if   [ "${URL_EXT1}" = "cmg" ] ; then
+            if   [ "${URL_EXT1}" = "sfs" ] ; then
+                DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
+                FILE="image.sfs"
+                mkdir -p "${DIR}"
+                mkdir -p "${DIR}/ro"
+                mkdir -p "${DIR}/rw"
+                cd "${DIR}"
+                cp "${URL_PATH}" "${FILE}"
+                mount -t squashfs -o loop "${DIR}/${FILE}" "${DIR}/ro"
+                mount -t unionfs -o dirs=${DIR}/rw=rw:${DIR}/ro=ro none "${MOUNT_DIR}"
+            elif [ "${URL_EXT1}" = "cmg" ] ; then
                 DIR="/initrd/rw/loopfs/`echo ${MOUNT_DIR} | sed 's%//*%~%g'`"
                 FILE="image.cmg"
                 mkdir -p "${DIR}"
@@ -241,6 +272,30 @@ mm_var_get() {
     VAR=$1
 
     echo `set | grep "^${VAR}=" | sed 's%^[^=]*=%%' | sed "s%^'%%" | sed "s%'$%%"`
+}
+
+mm_themecache_squashfs_make() {
+    if [ ! -d /root/.mythtv/themecache ] ; then
+        echo "error: the MythTV themecache directory does not exist."
+        return 1
+    fi
+    if [ ! "`cd /root/.mythtv/themecache ; ls -1 | grep -c *`" = "1" ] ; then
+        echo "error: the MythTV themecache directory does not contain exactly one cached theme."
+        return 1
+    fi
+
+    FILE=`cd /root/.mythtv/themecache ; ls`.sfs
+    mksquashfs /root/.mythtv/themecache /${FILE} > /dev/null 2>&1
+    if [ ! "$?" = "0" ] ; then
+        rm -f /${FILE}
+        echo "error: mksquashfs failed."
+        return 1
+    fi
+
+    chmod 644 /${FILE}
+
+    echo "created themecache squashfs image: \"/${FILE}\"."
+    return 0
 }
 
 #===============================================================================

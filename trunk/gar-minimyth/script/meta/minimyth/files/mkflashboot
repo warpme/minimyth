@@ -1,13 +1,14 @@
 #!/bin/sh 
 #
-# This script creates a USB key that boots MiniMyth.
+# This script installs the files needed to make a flash device boot MiniMyth.
 
-volume_path=/tmp/mkusbkey
+volume_path=/tmp/mkflashboot
 
-distro_path=$1
-conf_path=$2
-version=$3
-device=$4
+boot_type=$1
+distro_path=$2
+conf_path=$3
+version=$4
+device=$5
 
 kernel=
 rootfs=
@@ -45,7 +46,6 @@ if [ ! "$?" = "0" ] ; then
 fi
 
 if [ -z "${conf_path}" ] ; then
-    conf_path="${distro_path}"
     if [ -d ${distro_path}/conf ] ; then
         conf_path=${distro_path}
     fi
@@ -110,18 +110,24 @@ if [ -z "${device}" ] ; then
     fi
 fi
 
-if [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || [ -z "${version}" ] || [ -z "${device}" ] ; then
+if [ -z "${boot_type}" ] || [ -z "${distro_path}" ] || [ -z "${conf_path}" ] || [ -z "${version}" ] || [ -z "${device}" ] ; then
     echo "usage:"
-    echo "    $0 <distro_path> [ <conf_path> [ <version> [ <device> ] ] ]"
+    echo "    $0 <type> <distro_path> [ <conf_path> [ <version> [ <device> ] ] ]"
     echo "where:"
+    echo "    <boot_type>  : MM_BOOT_TYPE. Valid values are 'ide' or 'usb'."
     echo "    <distro_path>: Path to the location of the MiniMyth kernel and rootfs."
     echo "    <conf_path>  : Path to the location of the MiniMyth conf directory."
     echo "                   Default is <distro_path>."
     echo "    <version>    : MiniMyth version."
     echo "                   Default is newest kernel, rootfs and extras in <distro_path>."
-    echo "    <device>     : usb key (e.g. sda)."
+    echo "    <device>     : flash device (e.g. sda)."
     echo "example:"
     echo "    $0 /var/tftpboot/minimyth"
+    exit 1
+fi
+
+if [ ! "${boot_type}" == "ide" ] && [ ! "${boot_type}" == "usb" ] ; then
+    echo "error: <boot_type> is \'${boot_type}\' but must be either 'ide' or 'usb'."
     exit 1
 fi
 
@@ -141,29 +147,29 @@ if [ ! -f /sys/block/${device}/removable ] ; then
 fi
 
 if [ ! "`cat /sys/block/${device}/removable`" = "1" ] ; then
-    echo "error: ${device} is not a usb key because it is not removable."
+    echo "error: ${device} is not a flash device because it is not removable."
     exit 1
 fi
 
 if [ ! -f /sys/block/${device}/device/vendor ] ; then
-    echo "error: cannot determine usb key vendor."
+    echo "error: cannot determine flash device vendor."
     exit 1
 fi
 
 if [ ! -f /sys/block/${device}/device/model ] ; then
-    echo "error: cannot determine usb key model."
+    echo "error: cannot determine flash device model."
     exit 1
 fi
 
 vendor=`cat /sys/block/${device}/device/vendor | sed 's%^ *%%g'`
 model=`cat /sys/block/${device}/device/model   | sed 's% *$%%g'`
 
-echo "Making a bootable USB based on the following information:"
-echo "    usb key: /dev/${device} (vendor: '${vendor}', model: '${model}')"
-echo "    kernel:  ${kernel}"
-echo "    rootfs:  ${rootfs}"
-echo "    extras:  ${extras}"
-echo "    conf:    ${conf_path}/conf"
+echo "Making a bootable flash device based on the following information:"
+echo "    flash device: /dev/${device} (vendor: '${vendor}', model: '${model}')"
+echo "    kernel:       ${kernel}"
+echo "    rootfs:       ${rootfs}"
+echo "    extras:       ${extras}"
+echo "    conf:         ${conf_path}/conf"
 echo -n "Continue [y/N]? "
 read response
 if [ -z "${response}" ] ; then
@@ -178,15 +184,15 @@ rm -rf   ${volume_path}
 mkdir -p ${volume_path}
 
 mkdir -p ${volume_path}/stage
-echo "DEFAULT minimyth"                                                                                       \
+echo "DEFAULT minimyth"                                                                                                \
 	>> ${volume_path}/stage/syslinux.cfg
-echo ""                                                                                                       \
+echo ""                                                                                                                \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "LABEL minimyth"                                                                                         \
+echo "LABEL minimyth"                                                                                                  \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "	KERNEL kernel"                                                                                        \
+echo "	KERNEL kernel"                                                                                                 \
 	>> ${volume_path}/stage/syslinux.cfg
-echo "	APPEND ro root=/dev/ram0 initrd=rootfs ramdisk_blocksize=4096 ramdisk=64000 irqpoll MM_BOOT_TYPE=usb" \
+echo "	APPEND ro root=/dev/ram0 initrd=rootfs ramdisk_blocksize=4096 ramdisk=64000 irqpoll MM_BOOT_TYPE=${boot_type}" \
 	>> ${volume_path}/stage/syslinux.cfg
 if [ -e ${kernel}         ] ; then
     cp -r ${kernel}         ${volume_path}/stage/kernel

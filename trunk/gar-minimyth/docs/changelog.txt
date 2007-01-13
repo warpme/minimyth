@@ -8,15 +8,42 @@ Current MythTV versions
     MythTV 19:  version 0.19,     release-0-19-fixes branch svn 10143.
     MythTV SVN: version svn10701, trunk svn 10701.
 
-Added support for booting from an IDE disk to support CF -> IDE adapters
+Changed from CRAMFS to SQUASHFS
+    Files such as libmythtv have been getting bigger with each release of
+        MythTV. With the latest SVN versions, libmythtv is approaching the
+        cramfs 16MB file limit, even when stripped and optimized for size. To
+        make sure that this file limit does not become a problem for those
+        building custom versions of MiniMyth, the files system has been changed
+        from cramfs to squashfs.
+    The root file system (rootfs) is now a squashfs image rather than a cramfs
+        image.
+    Any minimyth.conf URL that supported cramfs images (*.cmg) now supports
+        squashfs images (*.sfs) as well.
+    The MM_EXTRAS_URL value 'default' now points to a squashfs image (*.sfs)
+        rather than a cramfs image (*.cmg).
+
+Added support for booting from an IDE disk to support CF-to-IDE adapters
     Modified init scripts to load modules for mounting IDE disks when
         MM_BOOT_TYPE=ide is added to the boot command line.
     Modified udev scripts to mount any IDE or SCSI (for USB) disk/partition
         with the label 'minimyth' as the directory '/minimyth'.
     Modified the init scripts to retrieve files from '/minimyth' when present
         rather than from the TFTP server.
+    Modified the 'mkusbkey' script to add IDE device boot support and renamed
+        the script 'mkflashboot'.
     The disk/partition with the 'minimyth' label must be formatted as a FAT
         filesystem.
+
+Added experimental support for mceusb2 transmitter to LIRC
+    Applied Daniel M's patch sent to the lirc-list@lists.sourceforge.net
+        mailing list on 18 August 2006.
+
+Fixed problem with the VIA VT1617a's analog power consumption
+    Applied Andrey Liakhovets's patch sent to the
+        openchrome-users@openchrome.org mailing list on 18 August 2006.
+    The bad analog power consumption results in bad sound on some setups that
+        use the VIA VT1617a, including some setups with VIA EPIA SP
+        motherboards.
 
 Added debug option to the GAR based build system
     Controlled using the mm_DEBUG variable in minimyth.conf.mk.
