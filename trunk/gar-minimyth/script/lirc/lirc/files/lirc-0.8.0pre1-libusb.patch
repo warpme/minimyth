@@ -1,14 +1,16 @@
 diff -Naur lirc-0.8.0pre1-old/configure lirc-0.8.0pre1-new/configure
 --- lirc-0.8.0pre1-old/configure	2005-11-05 08:55:58.000000000 -0800
-+++ lirc-0.8.0pre1-new/configure	2005-11-05 14:27:13.000000000 -0800
-@@ -8586,8 +8586,8 @@
++++ lirc-0.8.0pre1-new/configure	2005-12-06 10:59:41.000000000 -0800
+@@ -8586,8 +8586,10 @@
  		;;
  	atilibusb)
  		hw_module="${hw_module} hw_atilibusb.o receive.o"
 -		atilibusb_lib=`libusb-config --libs`
 -		CFLAGS="$CFLAGS `libusb-config --cflags`"
-+		atilibusb_lib=`${DESTDIR}${bindir}/libusb-config --libs`
-+		CFLAGS="$CFLAGS `${DESTDIR}${bindir}/libusb-config --cflags`"
++		if test -n "${LIBUSB_CONFIG}"; then
++				atilibusb_lib=`${LIBUSB_CONFIG} --libs`
++				CFLAGS="$CFLAGS `${LIBUSB_CONFIG} --cflags`"
++		fi
  		;;
  	audio)
  		hw_module="${hw_module} hw_audio.o receive.o"
