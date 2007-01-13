@@ -1,9 +1,9 @@
 GARNAME = mysql
-GARVERSION = 4.1.16
+GARVERSION = 5.0.17
 CATEGORIES = db
-MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
-MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-4.1/
-MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-4.1/
+MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
+MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
+MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
@@ -40,3 +40,18 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient_r.la
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(build_DESTDIR)$(build_prefix)/mysql-test
+	@rm -rf $(build_DESTDIR)$(build_bindir)/mysql*
+	@rm -rf $(build_DESTDIR)$(build_datadir)/mysql
+	@rm -rf $(build_DESTDIR)$(build_includedir)/mysql
+	@rm -rf $(build_DESTDIR)$(build_libdir)/mysql
+	@rm -rf $(build_DESTDIR)$(build_mandir)/man1/mysql*
+	@rm -rf $(DESTDIR)$(prefix)/mysql-test
+	@rm -rf $(DESTDIR)$(bindir)/mysql*
+	@rm -rf $(DESTDIR)$(datadir)/mysql
+	@rm -rf $(DESTDIR)$(includedir)/mysql
+	@rm -rf $(DESTDIR)$(libdir)/mysql
+	@rm -rf $(DESTDIR)$(mandir)/man1/mysql*

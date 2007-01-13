@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.18.1-old/contrib/trailer.pl mythtv-0.18.1-new/contrib/trailer.pl
 --- mythtv-0.18.1-old/contrib/trailer.pl	2005-03-13 10:04:24.000000000 -0800
-+++ mythtv-0.18.1-new/contrib/trailer.pl	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/contrib/trailer.pl	2005-12-27 07:23:56.000000000 -0800
 @@ -1,266 +1,266 @@
 -#!/usr/bin/perl -w
 -# Author: Andrei Rjeousski ( arjeousski at gmail com )
@@ -536,7 +536,7 @@ diff -Naur mythtv-0.18.1-old/contrib/trailer.pl mythtv-0.18.1-new/contrib/traile
 +
 diff -Naur mythtv-0.18.1-old/libs/libavcodec/avcodec.h mythtv-0.18.1-new/libs/libavcodec/avcodec.h
 --- mythtv-0.18.1-old/libs/libavcodec/avcodec.h	2005-01-31 21:09:30.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libavcodec/avcodec.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libavcodec/avcodec.h	2005-12-27 07:23:56.000000000 -0800
 @@ -1760,40 +1760,7 @@
  } AVCodecContext;
  
@@ -581,7 +581,7 @@ diff -Naur mythtv-0.18.1-old/libs/libavcodec/avcodec.h mythtv-0.18.1-new/libs/li
   * Parse option(s) and sets fields in passed structure
 diff -Naur mythtv-0.18.1-old/libs/libavcodec/common.h mythtv-0.18.1-new/libs/libavcodec/common.h
 --- mythtv-0.18.1-old/libs/libavcodec/common.h	2005-01-07 22:32:42.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libavcodec/common.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libavcodec/common.h	2005-12-27 07:23:56.000000000 -0800
 @@ -16,6 +16,38 @@
  #define M_PI    3.14159265358979323846
  #endif
@@ -631,7 +631,7 @@ diff -Naur mythtv-0.18.1-old/libs/libavcodec/common.h mythtv-0.18.1-new/libs/lib
  #else
 diff -Naur mythtv-0.18.1-old/libs/libavcodec/libpostproc/postprocess_template.c mythtv-0.18.1-new/libs/libavcodec/libpostproc/postprocess_template.c
 --- mythtv-0.18.1-old/libs/libavcodec/libpostproc/postprocess_template.c	2004-11-17 21:59:37.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libavcodec/libpostproc/postprocess_template.c	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libavcodec/libpostproc/postprocess_template.c	2005-12-27 07:23:56.000000000 -0800
 @@ -2898,6 +2898,8 @@
  
  		src+= step; // src points to begin of the 8x8 Block
@@ -650,9 +650,223 @@ diff -Naur mythtv-0.18.1-old/libs/libavcodec/libpostproc/postprocess_template.c 
  		);
  	}else
  		src+= step; // src points to begin of the 8x8 Block
+diff -Naur mythtv-0.18.1-old/libs/libavcodec/ppc/dsputil_ppc.c mythtv-0.18.1-new/libs/libavcodec/ppc/dsputil_ppc.c
+--- mythtv-0.18.1-old/libs/libavcodec/ppc/dsputil_ppc.c	2004-11-17 21:59:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libavcodec/ppc/dsputil_ppc.c	2005-12-27 07:23:56.000000000 -0800
+@@ -305,6 +305,8 @@
+ 	}
+ #endif //CONFIG_ENCODERS
+ 
++      if (avctx->lowres==0)
++      {
+         if ((avctx->idct_algo == FF_IDCT_AUTO) ||
+                 (avctx->idct_algo == FF_IDCT_ALTIVEC))
+         {
+@@ -316,6 +318,7 @@
+             c->idct_permutation_type = FF_NO_IDCT_PERM;
+ #endif /* ALTIVEC_USE_REFERENCE_C_CODE */
+         }
++      }
+         
+ #ifdef POWERPC_PERFORMANCE_REPORT
+         {
+diff -Naur mythtv-0.18.1-old/libs/libavcodec/ppc/fdct_altivec.c mythtv-0.18.1-new/libs/libavcodec/ppc/fdct_altivec.c
+--- mythtv-0.18.1-old/libs/libavcodec/ppc/fdct_altivec.c	2003-10-28 13:48:29.000000000 -0800
++++ mythtv-0.18.1-new/libs/libavcodec/ppc/fdct_altivec.c	2005-12-27 07:23:56.000000000 -0800
+@@ -18,7 +18,7 @@
+  */
+ 
+ 
+-#include "../common.h"
++#include "common.h"
+ #include "../dsputil.h"
+ #include "dsputil_altivec.h"
+ #include "gcc_fixes.h"
+@@ -214,8 +214,8 @@
+ 
+     /* setup constants {{{ */
+     /* mzero = -0.0 */
+-    vu32(mzero) = vec_splat_u32(-1);
+-    vu32(mzero) = vec_sl(vu32(mzero), vu32(mzero));
++    mzero = ((vector float)vec_splat_u32(-1));
++    mzero = ((vector float)vec_sl(vu32(mzero), vu32(mzero)));
+     cp = fdctconsts;
+     cnsts0 = vec_ld(0, cp); cp++;
+     cnsts1 = vec_ld(0, cp); cp++;
+@@ -227,43 +227,43 @@
+ #define MERGE_S16(hl,a,b) vec_merge##hl(vs16(a), vs16(b))
+ 
+     bp = (vector signed short*)block;
+-    vs16(b00) = vec_ld(0,    bp);
+-    vs16(b40) = vec_ld(16*4, bp);
+-    vs16(b01) = MERGE_S16(h, b00, b40);
+-    vs16(b11) = MERGE_S16(l, b00, b40);
++    b00 = ((vector float)vec_ld(0,    bp));
++    b40 = ((vector float)vec_ld(16*4, bp));
++    b01 = ((vector float)MERGE_S16(h, b00, b40));
++    b11 = ((vector float)MERGE_S16(l, b00, b40));
+     bp++;
+-    vs16(b10) = vec_ld(0,    bp);
+-    vs16(b50) = vec_ld(16*4, bp);
+-    vs16(b21) = MERGE_S16(h, b10, b50);
+-    vs16(b31) = MERGE_S16(l, b10, b50);
++    b10 = ((vector float)vec_ld(0,    bp));
++    b50 = ((vector float)vec_ld(16*4, bp));
++    b21 = ((vector float)MERGE_S16(h, b10, b50));
++    b31 = ((vector float)MERGE_S16(l, b10, b50));
+     bp++;
+-    vs16(b20) = vec_ld(0,    bp);
+-    vs16(b60) = vec_ld(16*4, bp);
+-    vs16(b41) = MERGE_S16(h, b20, b60);
+-    vs16(b51) = MERGE_S16(l, b20, b60);
++    b20 = ((vector float)vec_ld(0,    bp));
++    b60 = ((vector float)vec_ld(16*4, bp));
++    b41 = ((vector float)MERGE_S16(h, b20, b60));
++    b51 = ((vector float)MERGE_S16(l, b20, b60));
+     bp++;
+-    vs16(b30) = vec_ld(0,    bp);
+-    vs16(b70) = vec_ld(16*4, bp);
+-    vs16(b61) = MERGE_S16(h, b30, b70);
+-    vs16(b71) = MERGE_S16(l, b30, b70);
+-
+-    vs16(x0) = MERGE_S16(h, b01, b41);
+-    vs16(x1) = MERGE_S16(l, b01, b41);
+-    vs16(x2) = MERGE_S16(h, b11, b51);
+-    vs16(x3) = MERGE_S16(l, b11, b51);
+-    vs16(x4) = MERGE_S16(h, b21, b61);
+-    vs16(x5) = MERGE_S16(l, b21, b61);
+-    vs16(x6) = MERGE_S16(h, b31, b71);
+-    vs16(x7) = MERGE_S16(l, b31, b71);
+-
+-    vs16(b00) = MERGE_S16(h, x0, x4);
+-    vs16(b10) = MERGE_S16(l, x0, x4);
+-    vs16(b20) = MERGE_S16(h, x1, x5);
+-    vs16(b30) = MERGE_S16(l, x1, x5);
+-    vs16(b40) = MERGE_S16(h, x2, x6);
+-    vs16(b50) = MERGE_S16(l, x2, x6);
+-    vs16(b60) = MERGE_S16(h, x3, x7);
+-    vs16(b70) = MERGE_S16(l, x3, x7);
++    b30 = ((vector float)vec_ld(0,    bp));
++    b70 = ((vector float)vec_ld(16*4, bp));
++    b61 = ((vector float)MERGE_S16(h, b30, b70));
++    b71 = ((vector float)MERGE_S16(l, b30, b70));
++
++    x0 = ((vector float)MERGE_S16(h, b01, b41));
++    x1 = ((vector float)MERGE_S16(l, b01, b41));
++    x2 = ((vector float)MERGE_S16(h, b11, b51));
++    x3 = ((vector float)MERGE_S16(l, b11, b51));
++    x4 = ((vector float)MERGE_S16(h, b21, b61));
++    x5 = ((vector float)MERGE_S16(l, b21, b61));
++    x6 = ((vector float)MERGE_S16(h, b31, b71));
++    x7 = ((vector float)MERGE_S16(l, b31, b71));
++
++    b00 = ((vector float)MERGE_S16(h, x0, x4));
++    b10 = ((vector float)MERGE_S16(l, x0, x4));
++    b20 = ((vector float)MERGE_S16(h, x1, x5));
++    b30 = ((vector float)MERGE_S16(l, x1, x5));
++    b40 = ((vector float)MERGE_S16(h, x2, x6));
++    b50 = ((vector float)MERGE_S16(l, x2, x6));
++    b60 = ((vector float)MERGE_S16(h, x3, x7));
++    b70 = ((vector float)MERGE_S16(l, x3, x7));
+ 
+ #undef MERGE_S16
+     /* }}} */
+@@ -275,32 +275,32 @@
+  */
+ #if 1
+     /* fdct rows {{{ */
+-    vs16(x0) = vec_add(vs16(b00), vs16(b70));
+-    vs16(x7) = vec_sub(vs16(b00), vs16(b70));
+-    vs16(x1) = vec_add(vs16(b10), vs16(b60));
+-    vs16(x6) = vec_sub(vs16(b10), vs16(b60));
+-    vs16(x2) = vec_add(vs16(b20), vs16(b50));
+-    vs16(x5) = vec_sub(vs16(b20), vs16(b50));
+-    vs16(x3) = vec_add(vs16(b30), vs16(b40));
+-    vs16(x4) = vec_sub(vs16(b30), vs16(b40));
++    x0 = ((vector float)vec_add(vs16(b00), vs16(b70)));
++    x7 = ((vector float)vec_sub(vs16(b00), vs16(b70)));
++    x1 = ((vector float)vec_add(vs16(b10), vs16(b60)));
++    x6 = ((vector float)vec_sub(vs16(b10), vs16(b60)));
++    x2 = ((vector float)vec_add(vs16(b20), vs16(b50)));
++    x5 = ((vector float)vec_sub(vs16(b20), vs16(b50)));
++    x3 = ((vector float)vec_add(vs16(b30), vs16(b40)));
++    x4 = ((vector float)vec_sub(vs16(b30), vs16(b40)));
+ 
+-    vs16(b70) = vec_add(vs16(x0), vs16(x3));
+-    vs16(b10) = vec_add(vs16(x1), vs16(x2));
++    b70 = ((vector float)vec_add(vs16(x0), vs16(x3)));
++    b10 = ((vector float)vec_add(vs16(x1), vs16(x2)));
+ 
+-    vs16(b00) = vec_add(vs16(b70), vs16(b10));
+-    vs16(b40) = vec_sub(vs16(b70), vs16(b10));
++    b00 = ((vector float)vec_add(vs16(b70), vs16(b10)));
++    b40 = ((vector float)vec_sub(vs16(b70), vs16(b10)));
+ 
+ #define CTF0(n) \
+-    vs32(b##n##1) = vec_unpackl(vs16(b##n##0)); \
+-    vs32(b##n##0) = vec_unpackh(vs16(b##n##0)); \
++    b##n##1 = ((vector float)vec_unpackl(vs16(b##n##0))); \
++    b##n##0 = ((vector float)vec_unpackh(vs16(b##n##0))); \
+     b##n##1 = vec_ctf(vs32(b##n##1), 0); \
+     b##n##0 = vec_ctf(vs32(b##n##0), 0);
+ 
+     CTF0(0);
+     CTF0(4);
+ 
+-    vs16(b20) = vec_sub(vs16(x0), vs16(x3));
+-    vs16(b60) = vec_sub(vs16(x1), vs16(x2));
++    b20 = ((vector float)vec_sub(vs16(x0), vs16(x3)));
++    b60 = ((vector float)vec_sub(vs16(x1), vs16(x2)));
+ 
+     CTF0(2);
+     CTF0(6);
+@@ -321,8 +321,8 @@
+     b61 = vec_madd(cnst, b61, x1);
+ 
+ #define CTFX(x,b) \
+-    vs32(b##0) = vec_unpackh(vs16(x)); \
+-    vs32(b##1) = vec_unpackl(vs16(x)); \
++    b##0 = ((vector float)vec_unpackh(vs16(x))); \
++    b##1 = ((vector float)vec_unpackl(vs16(x))); \
+     b##0 = vec_ctf(vs32(b##0), 0); \
+     b##1 = vec_ctf(vs32(b##1), 0); \
+ 
+@@ -473,9 +473,9 @@
+ #define CTS(n) \
+     b##n##0 = vec_round(b##n##0); \
+     b##n##1 = vec_round(b##n##1); \
+-    vs32(b##n##0) = vec_cts(b##n##0, 0); \
+-    vs32(b##n##1) = vec_cts(b##n##1, 0); \
+-    vs16(b##n##0) = vec_pack(vs32(b##n##0), vs32(b##n##1)); \
++    b##n##0 = ((vector float)vec_cts(b##n##0, 0)); \
++    b##n##1 = ((vector float)vec_cts(b##n##1, 0)); \
++    b##n##0 = ((vector float)vec_pack(vs32(b##n##0), vs32(b##n##1))); \
+     vec_st(vs16(b##n##0), 0, bp);
+ 
+     bp = (vector signed short*)block;
+diff -Naur mythtv-0.18.1-old/libs/libavcodec/ppc/mpegvideo_ppc.c mythtv-0.18.1-new/libs/libavcodec/ppc/mpegvideo_ppc.c
+--- mythtv-0.18.1-old/libs/libavcodec/ppc/mpegvideo_ppc.c	2004-05-20 22:30:57.000000000 -0700
++++ mythtv-0.18.1-new/libs/libavcodec/ppc/mpegvideo_ppc.c	2005-12-27 07:23:56.000000000 -0800
+@@ -39,6 +39,8 @@
+ #ifdef HAVE_ALTIVEC
+     if (has_altivec())
+     {
++      if (s->avctx->lowres==0)
++      {
+         if ((s->avctx->idct_algo == FF_IDCT_AUTO) ||
+                 (s->avctx->idct_algo == FF_IDCT_ALTIVEC))
+         {
+@@ -50,6 +52,7 @@
+             s->dsp.idct_permutation_type = FF_NO_IDCT_PERM;
+ #endif /* ALTIVEC_USE_REFERENCE_C_CODE */
+         }
++      }
+ 
+         // Test to make sure that the dct required alignments are met.
+         if ((((long)(s->q_intra_matrix) & 0x0f) != 0) ||
 diff -Naur mythtv-0.18.1-old/libs/libmyth/audiooutputca.cpp mythtv-0.18.1-new/libs/libmyth/audiooutputca.cpp
 --- mythtv-0.18.1-old/libs/libmyth/audiooutputca.cpp	2004-11-10 23:36:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmyth/audiooutputca.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmyth/audiooutputca.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -7,7 +7,7 @@
   * This plays MythTV audio through the default output device on OS X.
   *
@@ -662,9 +876,21 @@ diff -Naur mythtv-0.18.1-old/libs/libmyth/audiooutputca.cpp mythtv-0.18.1-new/li
   *
   * = AUTHORS
   * Jeremiah Morris
+diff -Naur mythtv-0.18.1-old/libs/libmyth/jsmenu.h mythtv-0.18.1-new/libs/libmyth/jsmenu.h
+--- mythtv-0.18.1-old/libs/libmyth/jsmenu.h	2004-10-14 10:02:01.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmyth/jsmenu.h	2005-12-27 07:23:56.000000000 -0800
+@@ -76,7 +76,7 @@
+     
+     void ButtonUp(int button);
+     void AxisChange(int axis, int value);
+-    void JoystickMenuClient::EmitKey(QString code);
++    void EmitKey(QString code);
+     int  ReadConfig(QString config_file);
+ 
+   private:
 diff -Naur mythtv-0.18.1-old/libs/libmyth/mythcontext.cpp mythtv-0.18.1-new/libs/libmyth/mythcontext.cpp
 --- mythtv-0.18.1-old/libs/libmyth/mythcontext.cpp	2005-04-11 11:59:29.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmyth/mythcontext.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmyth/mythcontext.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -1974,7 +1974,15 @@
          WriteStringList(d->serverSock, strlist);
          ok = ReadStringList(d->serverSock, strlist, quickTimeout);
@@ -693,19 +919,19 @@ diff -Naur mythtv-0.18.1-old/libs/libmyth/mythcontext.cpp mythtv-0.18.1-new/libs
                                  "server has gone away for some reason.. "
 diff -Naur mythtv-0.18.1-old/libs/libmyth/mythcontext.h mythtv-0.18.1-new/libs/libmyth/mythcontext.h
 --- mythtv-0.18.1-old/libs/libmyth/mythcontext.h	2005-05-10 13:10:17.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmyth/mythcontext.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmyth/mythcontext.h	2005-12-27 07:23:56.000000000 -0800
 @@ -162,7 +162,7 @@
      void *m_data;
  };
  
 -#define MYTH_BINARY_VERSION "0.18.1.20050510-1"
-+#define MYTH_BINARY_VERSION "0.18.1.20050523-1"
++#define MYTH_BINARY_VERSION "0.18.1.20051226-1"
  #define MYTH_PROTO_VERSION "15"
  
  extern int print_verbose_messages;
 diff -Naur mythtv-0.18.1-old/libs/libmyth/mythwidgets.cpp mythtv-0.18.1-new/libs/libmyth/mythwidgets.cpp
 --- mythtv-0.18.1-old/libs/libmyth/mythwidgets.cpp	2005-04-09 22:15:53.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmyth/mythwidgets.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmyth/mythwidgets.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -934,9 +934,13 @@
  {
      bool handled = false;
@@ -742,7 +968,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmyth/mythwidgets.cpp mythtv-0.18.1-new/libs
          QPushButton::keyReleaseEvent(e);
 diff -Naur mythtv-0.18.1-old/libs/libmyth/mythwidgets.h mythtv-0.18.1-new/libs/libmyth/mythwidgets.h
 --- mythtv-0.18.1-old/libs/libmyth/mythwidgets.h	2005-04-09 22:15:53.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmyth/mythwidgets.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmyth/mythwidgets.h	2005-12-27 07:23:56.000000000 -0800
 @@ -260,6 +260,8 @@
      QColor origcolor;
      QString helptext;
@@ -752,9 +978,33 @@ diff -Naur mythtv-0.18.1-old/libs/libmyth/mythwidgets.h mythtv-0.18.1-new/libs/l
  };
  
  class MythCheckBox: public QCheckBox
+diff -Naur mythtv-0.18.1-old/libs/libmythmpeg2/cpu_accel.c mythtv-0.18.1-new/libs/libmythmpeg2/cpu_accel.c
+--- mythtv-0.18.1-old/libs/libmythmpeg2/cpu_accel.c	2005-01-21 11:25:42.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythmpeg2/cpu_accel.c	2005-12-27 07:23:56.000000000 -0800
+@@ -139,7 +139,7 @@
+ 
+     canjump = 1;
+ 
+-#ifdef HAVE_ALTIVEC_H	/* gnu */
++#ifdef HAVE_ALTIVEC_H && !defined(CONFIG_DARWIN)	/* gnu */
+ #define VAND(a,b,c) "vand " #a "," #b "," #c "\n\t"
+ #else			/* apple */
+ #define VAND(a,b,c) "vand v" #a ",v" #b ",v" #c "\n\t"
+diff -Naur mythtv-0.18.1-old/libs/libmythmpeg2/cpu_state.c mythtv-0.18.1-new/libs/libmythmpeg2/cpu_state.c
+--- mythtv-0.18.1-old/libs/libmythmpeg2/cpu_state.c	2005-01-21 11:25:42.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythmpeg2/cpu_state.c	2005-12-27 07:23:56.000000000 -0800
+@@ -44,7 +44,7 @@
+ #endif
+ 
+ #ifdef ARCH_PPC
+-#ifdef HAVE_ALTIVEC_H	/* gnu */
++#ifdef HAVE_ALTIVEC_H && !defined(CONFIG_DARWIN)	/* gnu */
+ #define LI(a,b) "li " #a "," #b "\n\t"
+ #define STVX0(a,b,c) "stvx " #a ",0," #c "\n\t"
+ #define STVX(a,b,c) "stvx " #a "," #b "," #c "\n\t"
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -12,10 +12,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -771,7 +1021,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.cpp mythtv-0.18.1-n
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.h mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/AAFilter.h	2005-12-27 07:23:56.000000000 -0800
 @@ -13,10 +13,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -788,7 +1038,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/AAFilter.h mythtv-0.18.1-new
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/BPMDetect.h mythtv-0.18.1-new/libs/libmythsoundtouch/BPMDetect.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/BPMDetect.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/BPMDetect.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/BPMDetect.h	2005-12-27 07:23:56.000000000 -0800
 @@ -26,10 +26,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -805,7 +1055,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/BPMDetect.h mythtv-0.18.1-ne
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect.h mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect.h	2005-12-27 07:23:56.000000000 -0800
 @@ -12,10 +12,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -822,7 +1072,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect.h mythtv-0.18.1-n
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2005-01-23 22:42:19.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -12,10 +12,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -839,7 +1089,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp mytht
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -15,10 +15,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -856,7 +1106,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp mythtv-
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.h mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2005-12-27 07:23:56.000000000 -0800
 @@ -15,10 +15,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -873,7 +1123,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSampleBuffer.h mythtv-0.
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSamplePipe.h mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSamplePipe.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSamplePipe.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2005-12-27 07:23:56.000000000 -0800
 @@ -17,10 +17,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -890,7 +1140,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIFOSamplePipe.h mythtv-0.18
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -11,10 +11,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -907,7 +1157,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.cpp mythtv-0.18.1-
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.h mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/FIRFilter.h	2005-12-27 07:23:56.000000000 -0800
 @@ -11,10 +11,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -924,7 +1174,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/FIRFilter.h mythtv-0.18.1-ne
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/mmx_gcc.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/mmx_gcc.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/mmx_gcc.cpp	2005-01-30 22:14:20.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/mmx_gcc.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/mmx_gcc.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -15,10 +15,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -950,7 +1200,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/mmx_gcc.cpp mythtv-0.18.1-ne
      for (i = 0;i < length; i += 4) 
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -10,10 +10,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -967,7 +1217,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.cpp mythtv-0.
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.h mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/RateTransposer.h	2005-12-27 07:23:56.000000000 -0800
 @@ -14,10 +14,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -984,7 +1234,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/RateTransposer.h mythtv-0.18
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/SoundTouch.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/SoundTouch.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -41,10 +41,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -1001,24 +1251,33 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/SoundTouch.cpp mythtv-0.18.1
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/SoundTouch.h mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/SoundTouch.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/SoundTouch.h	2005-12-27 07:23:56.000000000 -0800
 @@ -41,10 +41,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
  //
 -// Last changed  : $Date: 2004/11/13 22:29:44 $
 -// File revision : $Revision: 1.1 $
-+// Last changed  : $Date: 2004-11-13 14:29:45 -0800 (Sat, 13 Nov 2004) $
-+// File revision : $Revision: 4714 $
++// Last changed  : $Date: 2005-12-26 15:55:48 -0800 (Mon, 26 Dec 2005) $
++// File revision : $Revision: 8390 $
  //
 -// $Id: SoundTouch.h,v 1.1 2004/11/13 22:29:44 ijr Exp $
-+// $Id: SoundTouch.h 4714 2004-11-13 22:29:45Z ijr $
++// $Id: SoundTouch.h 8390 2005-12-26 23:55:48Z jarod $
  //
  ////////////////////////////////////////////////////////////////////////////////
  //
+@@ -159,7 +159,7 @@
+     static const char *getVersionString();
+ 
+     /// Get SoundTouch library version Id
+-    static uint SoundTouch::getVersionId();
++    static uint getVersionId();
+ 
+     /// Sets new rate control value. Normal rate = 1.0, smaller values
+     /// represent slower rate, larger faster rates.
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/STTypes.h mythtv-0.18.1-new/libs/libmythsoundtouch/STTypes.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/STTypes.h	2005-01-20 22:08:36.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/STTypes.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/STTypes.h	2005-12-27 07:23:56.000000000 -0800
 @@ -8,10 +8,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -1035,7 +1294,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/STTypes.h mythtv-0.18.1-new/
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.cpp mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.cpp
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.cpp	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.cpp	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -13,10 +13,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -1052,7 +1311,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.cpp mythtv-0.18.1-
  //
 diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.h mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.h
 --- mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.h	2004-11-13 14:29:44.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.h	2005-11-19 07:20:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythsoundtouch/TDStretch.h	2005-12-27 07:23:56.000000000 -0800
 @@ -13,10 +13,10 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -1067,10 +1326,803 @@ diff -Naur mythtv-0.18.1-old/libs/libmythsoundtouch/TDStretch.h mythtv-0.18.1-ne
  //
  ////////////////////////////////////////////////////////////////////////////////
  //
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/atsc_huffman.h mythtv-0.18.1-new/libs/libmythtv/atsc_huffman.h
+--- mythtv-0.18.1-old/libs/libmythtv/atsc_huffman.h	2005-01-23 14:45:30.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/atsc_huffman.h	2005-12-27 07:23:56.000000000 -0800
+@@ -244,392 +244,392 @@
+ 
+ struct huffman_table Table128[] = {
+ 
+-    0x0000, 0x20, 0x03,  // ' '
+-    0x0002, 0x65, 0x04,  // 'e'
+-    0x0003, 0x74, 0x04,  // 't'
+-    0x0004, 0x61, 0x04,  // 'a'
+-    0x0005, 0x6F, 0x04,  // 'o'
+-    0x0006, 0x73, 0x04,  // 's'
+-    0x0007, 0x6E, 0x04,  // 'n'
+-    0x0020, 0x72, 0x06,  // 'r'
+-    0x0021, 0x69, 0x06,  // 'i'
+-    0x0022, 0x6C, 0x06,  // 'l'
+-    0x0023, 0x63, 0x06,  // 'c'
+-    0x0024, 0x68, 0x06,  // 'h'
+-    0x0025, 0x75, 0x06,  // 'u'
+-    0x0026, 0x64, 0x06,  // 'd'
+-    0x0027, 0x70, 0x06,  // 'p'
+-    0x0028, 0x6D, 0x06,  // 'm'
+-    0x0029, 0x67, 0x06,  // 'g'
+-    0x002A, 0x79, 0x06,  // 'y'
+-    0x002B, 0x76, 0x06,  // 'v'
+-    0x002C, 0x0A, 0x06,  // '''
+-    0x002D, 0x2E, 0x06,  // '.'
+-    0x002E, 0x77, 0x06,  // 'w'
+-    0x002F, 0x66, 0x06,  // 'f'
+-    0x0060, 0x53, 0x07,  // 'S'
+-    0x0061, 0x62, 0x07,  // 'b'
+-    0x0062, 0x54, 0x07,  // 'T'
+-    0x0063, 0x22, 0x07,  // '"'
+-    0x0064, 0x6B, 0x07,  // 'k'
+-    0x0065, 0x50, 0x07,  // 'P'
+-    0x0066, 0x41, 0x07,  // 'A'
+-    0x0067, 0x43, 0x07,  // 'C'
+-    0x0068, 0x44, 0x07,  // 'D'
+-    0x0069, 0x4C, 0x07,  // 'L'
+-    0x006A, 0x4D, 0x07,  // 'M'
+-    0x006B, 0x49, 0x07,  // 'I'
+-    0x006C, 0x4E, 0x07,  // 'N'
+-    0x006D, 0x3A, 0x07,  // ':'
+-    0x006E, 0x52, 0x07,  // 'R'
+-    0x006F, 0x2C, 0x07,  // ','
+-    0x00E0, 0x45, 0x08,  // 'E'
+-    0x00E1, 0x55, 0x08,  // 'U'
+-    0x00E2, 0x46, 0x08,  // 'F'
+-    0x00E3, 0x48, 0x08,  // 'H'
+-    0x00E4, 0x59, 0x08,  // 'Y'
+-    0x00E5, 0x56, 0x08,  // 'V'
+-    0x00E6, 0x2D, 0x08,  // '-'
+-    0x00E7, 0x7A, 0x08,  // 'z'
+-    0x00E8, 0x78, 0x08,  // 'x'
+-    0x00E9, 0x2F, 0x08,  // '/'
+-    0x00EA, 0x4F, 0x08,  // 'O'
+-    0x00EB, 0x3F, 0x08,  // '?'
+-    0x00EC, 0x57, 0x08,  // 'W'
+-    0x00ED, 0x47, 0x08,  // 'G'
+-    0x00EE, 0x42, 0x08,  // 'B'
+-    0x00EF, 0x33, 0x08,  // '3'
+-    0x01E0, 0x31, 0x09,  // '1'
+-    0x01E1, 0x71, 0x09,  // 'q'
+-    0x01E2, 0x30, 0x09,  // '0'
+-    0x01E3, 0x21, 0x09,  // '!'
+-    0x01E4, 0x6A, 0x09,  // 'j'
+-    0x01E5, 0x5A, 0x09,  // 'Z'
+-    0x01E6, 0x39, 0x09,  // '9'
+-    0x01E7, 0x34, 0x09,  // '4'
+-    0x01E8, 0x4B, 0x09,  // 'K'
+-    0x01E9, 0x2A, 0x09,  // '*'
+-    0x01EA, 0x37, 0x09,  // '7'
+-    0x01EB, 0x36, 0x09,  // '6'
+-    0x01EC, 0x35, 0x09,  // '5'
+-    0x01ED, 0x4A, 0x09,  // 'J'
+-    0x01EE, 0x38, 0x09,  // '8'
+-    0x01EF, 0x29, 0x09,  // ')'
+-    0x03E0, 0x28, 0x0A,  // '('
+-    0x03E1, 0x58, 0x0A,  // 'X'
+-    0x03E2, 0x51, 0x0A,  // 'Q'
+-    0x03E3, 0x3C, 0x0A,  // '<'
+-    0x03E4, 0x32, 0x0A,  // '2'
+-    0x03E5, 0x27, 0x0A,  // '''
+-    0x03E6, 0x26, 0x0A,  // '&'
+-    0x07CE, 0x7F, 0x0B,  // '
+-    0x07CF, 0x7E, 0x0B,  // '~'
+-    0x07D0, 0x7D, 0x0B,  // '}'
+-    0x07D1, 0x7C, 0x0B,  // '|'
+-    0x07D2, 0x7B, 0x0B,  // '{'
+-    0x07D3, 0x60, 0x0B,  // '`'
+-    0x07D4, 0x5F, 0x0B,  // '_'
+-    0x07D5, 0x5E, 0x0B,  // '^'
+-    0x07D6, 0x5D, 0x0B,  // ']'
+-    0x07D7, 0x5C, 0x0B,  // '\'
+-    0x07D8, 0x5B, 0x0B,  // '['
+-    0x07D9, 0x40, 0x0B,  // '@'
+-    0x07DA, 0x3E, 0x0B,  // '>'
+-    0x07DB, 0x3D, 0x0B,  // '='
+-    0x07DC, 0x3B, 0x0B,  // ';'
+-    0x07DD, 0x2B, 0x0B,  // '+'
+-    0x07DE, 0x25, 0x0B,  // '%'
+-    0x07DF, 0x24, 0x0B,  // '$'
+-    0x07E0, 0x23, 0x0B,  // '#'
+-    0x07E1, 0x1F, 0x0B,  // ''
+-    0x07E2, 0x1E, 0x0B,  // ''
+-    0x07E3, 0x1D, 0x0B,  // ''
+-    0x07E4, 0x1C, 0x0B,  // ''
+-    0x07E5, 0x1B, 0x0B,  // ''
+-    0x07E6, 0x1A, 0x0B,  // ''
+-    0x07E7, 0x19, 0x0B,  // ''
+-    0x07E8, 0x18, 0x0B,  // ''
+-    0x07E9, 0x17, 0x0B,  // ''
+-    0x07EA, 0x16, 0x0B,  // ''
+-    0x07EB, 0x15, 0x0B,  // ''
+-    0x07EC, 0x14, 0x0B,  // ''
+-    0x07ED, 0x13, 0x0B,  // ''
+-    0x07EE, 0x12, 0x0B,  // ''
+-    0x07EF, 0x11, 0x0B,  // ''
+-    0x07F0, 0x10, 0x0B,  // ''
+-    0x07F1, 0x0F, 0x0B,  // ''
+-    0x07F2, 0x0E, 0x0B,  // ''
+-    0x07F3, 0x0D, 0x0B,  // ''
+-    0x07F4, 0x0C, 0x0B,  // ''
+-    0x07F5, 0x0B, 0x0B,  // ''
+-    0x07F6, 0x09, 0x0B,  // ''
+-    0x07F7, 0x08, 0x0B,  // ''
+-    0x07F8, 0x07, 0x0B,  // ''
+-    0x07F9, 0x06, 0x0B,  // ''
+-    0x07FA, 0x05, 0x0B,  // ''
+-    0x07FB, 0x04, 0x0B,  // ''
+-    0x07FC, 0x03, 0x0B,  // ''
+-    0x07FD, 0x02, 0x0B,  // ''
+-    0x07FE, 0x01, 0x0B,  // ''
+-    0x07FF, 0x00, 0x0B,  // ''
++    { 0x0000, 0x20, 0x03, },  // ' '
++    { 0x0002, 0x65, 0x04, },  // 'e'
++    { 0x0003, 0x74, 0x04, },  // 't'
++    { 0x0004, 0x61, 0x04, },  // 'a'
++    { 0x0005, 0x6F, 0x04, },  // 'o'
++    { 0x0006, 0x73, 0x04, },  // 's'
++    { 0x0007, 0x6E, 0x04, },  // 'n'
++    { 0x0020, 0x72, 0x06, },  // 'r'
++    { 0x0021, 0x69, 0x06, },  // 'i'
++    { 0x0022, 0x6C, 0x06, },  // 'l'
++    { 0x0023, 0x63, 0x06, },  // 'c'
++    { 0x0024, 0x68, 0x06, },  // 'h'
++    { 0x0025, 0x75, 0x06, },  // 'u'
++    { 0x0026, 0x64, 0x06, },  // 'd'
++    { 0x0027, 0x70, 0x06, },  // 'p'
++    { 0x0028, 0x6D, 0x06, },  // 'm'
++    { 0x0029, 0x67, 0x06, },  // 'g'
++    { 0x002A, 0x79, 0x06, },  // 'y'
++    { 0x002B, 0x76, 0x06, },  // 'v'
++    { 0x002C, 0x0A, 0x06, },  // '''
++    { 0x002D, 0x2E, 0x06, },  // '.'
++    { 0x002E, 0x77, 0x06, },  // 'w'
++    { 0x002F, 0x66, 0x06, },  // 'f'
++    { 0x0060, 0x53, 0x07, },  // 'S'
++    { 0x0061, 0x62, 0x07, },  // 'b'
++    { 0x0062, 0x54, 0x07, },  // 'T'
++    { 0x0063, 0x22, 0x07, },  // '"'
++    { 0x0064, 0x6B, 0x07, },  // 'k'
++    { 0x0065, 0x50, 0x07, },  // 'P'
++    { 0x0066, 0x41, 0x07, },  // 'A'
++    { 0x0067, 0x43, 0x07, },  // 'C'
++    { 0x0068, 0x44, 0x07, },  // 'D'
++    { 0x0069, 0x4C, 0x07, },  // 'L'
++    { 0x006A, 0x4D, 0x07, },  // 'M'
++    { 0x006B, 0x49, 0x07, },  // 'I'
++    { 0x006C, 0x4E, 0x07, },  // 'N'
++    { 0x006D, 0x3A, 0x07, },  // ':'
++    { 0x006E, 0x52, 0x07, },  // 'R'
++    { 0x006F, 0x2C, 0x07, },  // ','
++    { 0x00E0, 0x45, 0x08, },  // 'E'
++    { 0x00E1, 0x55, 0x08, },  // 'U'
++    { 0x00E2, 0x46, 0x08, },  // 'F'
++    { 0x00E3, 0x48, 0x08, },  // 'H'
++    { 0x00E4, 0x59, 0x08, },  // 'Y'
++    { 0x00E5, 0x56, 0x08, },  // 'V'
++    { 0x00E6, 0x2D, 0x08, },  // '-'
++    { 0x00E7, 0x7A, 0x08, },  // 'z'
++    { 0x00E8, 0x78, 0x08, },  // 'x'
++    { 0x00E9, 0x2F, 0x08, },  // '/'
++    { 0x00EA, 0x4F, 0x08, },  // 'O'
++    { 0x00EB, 0x3F, 0x08, },  // '?'
++    { 0x00EC, 0x57, 0x08, },  // 'W'
++    { 0x00ED, 0x47, 0x08, },  // 'G'
++    { 0x00EE, 0x42, 0x08, },  // 'B'
++    { 0x00EF, 0x33, 0x08, },  // '3'
++    { 0x01E0, 0x31, 0x09, },  // '1'
++    { 0x01E1, 0x71, 0x09, },  // 'q'
++    { 0x01E2, 0x30, 0x09, },  // '0'
++    { 0x01E3, 0x21, 0x09, },  // '!'
++    { 0x01E4, 0x6A, 0x09, },  // 'j'
++    { 0x01E5, 0x5A, 0x09, },  // 'Z'
++    { 0x01E6, 0x39, 0x09, },  // '9'
++    { 0x01E7, 0x34, 0x09, },  // '4'
++    { 0x01E8, 0x4B, 0x09, },  // 'K'
++    { 0x01E9, 0x2A, 0x09, },  // '*'
++    { 0x01EA, 0x37, 0x09, },  // '7'
++    { 0x01EB, 0x36, 0x09, },  // '6'
++    { 0x01EC, 0x35, 0x09, },  // '5'
++    { 0x01ED, 0x4A, 0x09, },  // 'J'
++    { 0x01EE, 0x38, 0x09, },  // '8'
++    { 0x01EF, 0x29, 0x09, },  // ')'
++    { 0x03E0, 0x28, 0x0A, },  // '('
++    { 0x03E1, 0x58, 0x0A, },  // 'X'
++    { 0x03E2, 0x51, 0x0A, },  // 'Q'
++    { 0x03E3, 0x3C, 0x0A, },  // '<'
++    { 0x03E4, 0x32, 0x0A, },  // '2'
++    { 0x03E5, 0x27, 0x0A, },  // '''
++    { 0x03E6, 0x26, 0x0A, },  // '&'
++    { 0x07CE, 0x7F, 0x0B, },  // '
++    { 0x07CF, 0x7E, 0x0B, },  // '~'
++    { 0x07D0, 0x7D, 0x0B, },  // '}'
++    { 0x07D1, 0x7C, 0x0B, },  // '|'
++    { 0x07D2, 0x7B, 0x0B, },  // '{'
++    { 0x07D3, 0x60, 0x0B, },  // '`'
++    { 0x07D4, 0x5F, 0x0B, },  // '_'
++    { 0x07D5, 0x5E, 0x0B, },  // '^'
++    { 0x07D6, 0x5D, 0x0B, },  // ']'
++    { 0x07D7, 0x5C, 0x0B, },  // '\'
++    { 0x07D8, 0x5B, 0x0B, },  // '['
++    { 0x07D9, 0x40, 0x0B, },  // '@'
++    { 0x07DA, 0x3E, 0x0B, },  // '>'
++    { 0x07DB, 0x3D, 0x0B, },  // '='
++    { 0x07DC, 0x3B, 0x0B, },  // ';'
++    { 0x07DD, 0x2B, 0x0B, },  // '+'
++    { 0x07DE, 0x25, 0x0B, },  // '%'
++    { 0x07DF, 0x24, 0x0B, },  // '$'
++    { 0x07E0, 0x23, 0x0B, },  // '#'
++    { 0x07E1, 0x1F, 0x0B, },  // ''
++    { 0x07E2, 0x1E, 0x0B, },  // ''
++    { 0x07E3, 0x1D, 0x0B, },  // ''
++    { 0x07E4, 0x1C, 0x0B, },  // ''
++    { 0x07E5, 0x1B, 0x0B, },  // ''
++    { 0x07E6, 0x1A, 0x0B, },  // ''
++    { 0x07E7, 0x19, 0x0B, },  // ''
++    { 0x07E8, 0x18, 0x0B, },  // ''
++    { 0x07E9, 0x17, 0x0B, },  // ''
++    { 0x07EA, 0x16, 0x0B, },  // ''
++    { 0x07EB, 0x15, 0x0B, },  // ''
++    { 0x07EC, 0x14, 0x0B, },  // ''
++    { 0x07ED, 0x13, 0x0B, },  // ''
++    { 0x07EE, 0x12, 0x0B, },  // ''
++    { 0x07EF, 0x11, 0x0B, },  // ''
++    { 0x07F0, 0x10, 0x0B, },  // ''
++    { 0x07F1, 0x0F, 0x0B, },  // ''
++    { 0x07F2, 0x0E, 0x0B, },  // ''
++    { 0x07F3, 0x0D, 0x0B, },  // ''
++    { 0x07F4, 0x0C, 0x0B, },  // ''
++    { 0x07F5, 0x0B, 0x0B, },  // ''
++    { 0x07F6, 0x09, 0x0B, },  // ''
++    { 0x07F7, 0x08, 0x0B, },  // ''
++    { 0x07F8, 0x07, 0x0B, },  // ''
++    { 0x07F9, 0x06, 0x0B, },  // ''
++    { 0x07FA, 0x05, 0x0B, },  // ''
++    { 0x07FB, 0x04, 0x0B, },  // ''
++    { 0x07FC, 0x03, 0x0B, },  // ''
++    { 0x07FD, 0x02, 0x0B, },  // ''
++    { 0x07FE, 0x01, 0x0B, },  // ''
++    { 0x07FF, 0x00, 0x0B, },  // ''
+ 
+ } ;
+ 
+ struct huffman_table Table255[] = {
+ 
+-    0x0000, 0x20, 0x02,  // ' '
+-    0x0004, 0x65, 0x04,  // 'e'
+-    0x0005, 0x72, 0x04,  // 'r'
+-    0x0006, 0x6E, 0x04,  // 'n'
+-    0x0007, 0x61, 0x04,  // 'a'
+-    0x0010, 0x74, 0x05,  // 't'
+-    0x0011, 0x6F, 0x05,  // 'o'
+-    0x0012, 0x73, 0x05,  // 's'
+-    0x0013, 0x69, 0x05,  // 'i'
+-    0x0014, 0x6C, 0x05,  // 'l'
+-    0x0015, 0x75, 0x05,  // 'u'
+-    0x0016, 0x63, 0x05,  // 'c'
+-    0x0017, 0x64, 0x05,  // 'd'
+-    0x0060, 0x70, 0x07,  // 'p'
+-    0x0061, 0x6D, 0x07,  // 'm'
+-    0x0062, 0x76, 0x07,  // 'v'
+-    0x0063, 0x67, 0x07,  // 'g'
+-    0x0064, 0x68, 0x07,  // 'h'
+-    0x0065, 0x2E, 0x07,  // '.'
+-    0x0066, 0x66, 0x07,  // 'f'
+-    0x0067, 0x0A, 0x07,  // ''
+-    0x0068, 0x53, 0x07,  // 'S'
+-    0x0069, 0x41, 0x07,  // 'A'
+-    0x006A, 0x45, 0x07,  // 'E'
+-    0x006B, 0x43, 0x07,  // 'C'
+-    0x006C, 0x27, 0x07,  // '''
+-    0x006D, 0x7A, 0x07,  // 'z'
+-    0x006E, 0x52, 0x07,  // 'R'
+-    0x006F, 0x22, 0x07,  // '"'
+-    0x00E0, 0x4C, 0x08,  // 'L'
+-    0x00E1, 0x49, 0x08,  // 'I'
+-    0x00E2, 0x4F, 0x08,  // 'O'
+-    0x00E3, 0x62, 0x08,  // 'b'
+-    0x00E4, 0x54, 0x08,  // 'T'
+-    0x00E5, 0x4E, 0x08,  // 'N'
+-    0x00E6, 0x55, 0x08,  // 'U'
+-    0x00E7, 0x79, 0x08,  // 'y'
+-    0x00E8, 0x44, 0x08,  // 'D'
+-    0x00E9, 0x50, 0x08,  // 'P'
+-    0x00EA, 0x71, 0x08,  // 'q'
+-    0x00EB, 0x56, 0x08,  // 'V'
+-    0x00EC, 0x2D, 0x08,  // '-'
+-    0x00ED, 0x3A, 0x08,  // ':'
+-    0x00EE, 0x2C, 0x08,  // ','
+-    0x00EF, 0x48, 0x08,  // 'H'
+-    0x01E0, 0x4D, 0x09,  // 'M'
+-    0x01E1, 0x78, 0x09,  // 'x'
+-    0x01E2, 0x77, 0x09,  // 'w'
+-    0x01E3, 0x42, 0x09,  // 'B'
+-    0x01E4, 0x47, 0x09,  // 'G'
+-    0x01E5, 0x46, 0x09,  // 'F'
+-    0x01E6, 0x30, 0x09,  // '0'
+-    0x01E7, 0x3F, 0x09,  // '?'
+-    0x01E8, 0x33, 0x09,  // '3'
+-    0x01E9, 0x2F, 0x09,  // '/'
+-    0x01EA, 0x39, 0x09,  // '9'
+-    0x01EB, 0x31, 0x09,  // '1'
+-    0x01EC, 0x38, 0x09,  // '8'
+-    0x01ED, 0x6B, 0x09,  // 'k'
+-    0x01EE, 0x6A, 0x09,  // 'j'
+-    0x01EF, 0x21, 0x09,  // '!'
+-    0x03E0, 0x36, 0x0A,  // '6'
+-    0x03E1, 0x35, 0x0A,  // '5'
+-    0x03E2, 0x59, 0x0A,  // 'Y'
+-    0x03E3, 0x51, 0x0A,  // 'Q'
+-    0x07C8, 0x34, 0x0B,  // '4'
+-    0x07C9, 0x58, 0x0B,  // 'X'
+-    0x07CA, 0x32, 0x0B,  // '2'
+-    0x07CB, 0x2B, 0x0B,  // '+'
+-    0x07CC, 0x2A, 0x0B,  // '*'
+-    0x07CD, 0x5A, 0x0B,  // 'Z'
+-    0x07CE, 0x4A, 0x0B,  // 'J'
+-    0x07CF, 0x29, 0x0B,  // ')'
+-    0x0FA0, 0x28, 0x0C,  // '('
+-    0x0FA1, 0x23, 0x0C,  // '#'
+-    0x0FA2, 0x57, 0x0C,  // 'W'
+-    0x0FA3, 0x4B, 0x0C,  // 'K'
+-    0x0FA4, 0x3C, 0x0C,  // '<'
+-    0x0FA5, 0x37, 0x0C,  // '7'
+-    0x0FA6, 0x7D, 0x0C,  // '}'
+-    0x0FA7, 0x7B, 0x0C,  // '{'
+-    0x0FA8, 0x60, 0x0C,  // '`'
+-    0x0FA9, 0x26, 0x0C,  // '&'
+-    0x1F54, 0xFE, 0x0D,  // 'þ'
+-    0x1F55, 0xFD, 0x0D,  // 'ý'
+-    0x1F56, 0xFC, 0x0D,  // 'ü'
+-    0x1F57, 0xFB, 0x0D,  // 'û'
+-    0x1F58, 0xFA, 0x0D,  // 'ú'
+-    0x1F59, 0xF9, 0x0D,  // 'ù'
+-    0x1F5A, 0xF8, 0x0D,  // 'ø'
+-    0x1F5B, 0xF7, 0x0D,  // '÷'
+-    0x1F5C, 0xF6, 0x0D,  // 'ö'
+-    0x1F5D, 0xF5, 0x0D,  // 'õ'
+-    0x1F5E, 0xF4, 0x0D,  // 'ô'
+-    0x1F5F, 0xF3, 0x0D,  // 'ó'
+-    0x1F60, 0xF2, 0x0D,  // 'ò'
+-    0x1F61, 0xF1, 0x0D,  // 'ñ'
+-    0x1F62, 0xF0, 0x0D,  // 'ð'
+-    0x1F63, 0xEF, 0x0D,  // 'ï'
+-    0x1F64, 0xEE, 0x0D,  // 'î'
+-    0x1F65, 0xED, 0x0D,  // 'í'
+-    0x1F66, 0xEC, 0x0D,  // 'ì'
+-    0x1F67, 0xEB, 0x0D,  // 'ë'
+-    0x1F68, 0xEA, 0x0D,  // 'ê'
+-    0x1F69, 0xE9, 0x0D,  // 'é'
+-    0x1F6A, 0xE8, 0x0D,  // 'è'
+-    0x1F6B, 0xE7, 0x0D,  // 'ç'
+-    0x1F6C, 0xE6, 0x0D,  // 'æ'
+-    0x1F6D, 0xE5, 0x0D,  // 'å'
+-    0x1F6E, 0xE4, 0x0D,  // 'ä'
+-    0x1F6F, 0xE3, 0x0D,  // 'ã'
+-    0x1F70, 0xE2, 0x0D,  // 'â'
+-    0x1F71, 0xE1, 0x0D,  // 'á'
+-    0x1F72, 0xE0, 0x0D,  // 'à'
+-    0x1F73, 0xDF, 0x0D,  // 'ß'
+-    0x1F74, 0xDE, 0x0D,  // 'Þ'
+-    0x1F75, 0xDD, 0x0D,  // 'Ý'
+-    0x1F76, 0xDC, 0x0D,  // 'Ü'
+-    0x1F77, 0xDB, 0x0D,  // 'Û'
+-    0x1F78, 0xDA, 0x0D,  // 'Ú'
+-    0x1F79, 0xD9, 0x0D,  // 'Ù'
+-    0x1F7A, 0xD8, 0x0D,  // 'Ø'
+-    0x1F7B, 0xD7, 0x0D,  // '×'
+-    0x1F7C, 0xD6, 0x0D,  // 'Ö'
+-    0x1F7D, 0xD5, 0x0D,  // 'Õ'
+-    0x1F7E, 0xD4, 0x0D,  // 'Ô'
+-    0x1F7F, 0xD3, 0x0D,  // 'Ó'
+-    0x1F80, 0xD2, 0x0D,  // 'Ò'
+-    0x1F81, 0xD1, 0x0D,  // ''
+-    0x1F82, 0xD0, 0x0D,  // ''
+-    0x1F83, 0xCF, 0x0D,  // ''
+-    0x1F84, 0xCE, 0x0D,  // ''
+-    0x1F85, 0xCD, 0x0D,  // ''
+-    0x1F86, 0xCC, 0x0D,  // ''
+-    0x1F87, 0xCB, 0x0D,  // ''
+-    0x1F88, 0xCA, 0x0D,  // ''
+-    0x1F89, 0xC9, 0x0D,  // ''
+-    0x1F8A, 0xC8, 0x0D,  // ''
+-    0x1F8B, 0xC7, 0x0D,  // ''
+-    0x1F8C, 0xC6, 0x0D,  // ''
+-    0x1F8D, 0xC5, 0x0D,  // ''
+-    0x1F8E, 0xC4, 0x0D,  // ''
+-    0x1F8F, 0xC3, 0x0D,  // ''
+-    0x1F90, 0xC2, 0x0D,  // ''
+-    0x1F91, 0xC1, 0x0D,  // ''
+-    0x1F92, 0xC0, 0x0D,  // ''
+-    0x1F93, 0xBF, 0x0D,  // ''
+-    0x1F94, 0xBE, 0x0D,  // ''
+-    0x1F95, 0xBD, 0x0D,  // ''
+-    0x1F96, 0xBC, 0x0D,  // ''
+-    0x1F97, 0xBB, 0x0D,  // ''
+-    0x1F98, 0xBA, 0x0D,  // ''
+-    0x1F99, 0xB9, 0x0D,  // ''
+-    0x1F9A, 0xB8, 0x0D,  // ''
+-    0x1F9B, 0xB7, 0x0D,  // ''
+-    0x1F9C, 0xB6, 0x0D,  // ''
+-    0x1F9D, 0xB5, 0x0D,  // ''
+-    0x1F9E, 0xB4, 0x0D,  // ''
+-    0x1F9F, 0xB3, 0x0D,  // ''
+-    0x1FA0, 0xB2, 0x0D,  // ''
+-    0x1FA1, 0xB1, 0x0D,  // ''
+-    0x1FA2, 0xB0, 0x0D,  // ''
+-    0x1FA3, 0xAF, 0x0D,  // ''
+-    0x1FA4, 0xAE, 0x0D,  // ''
+-    0x1FA5, 0xAD, 0x0D,  // ''
+-    0x1FA6, 0xAC, 0x0D,  // ''
+-    0x1FA7, 0xAB, 0x0D,  // ''
+-    0x1FA8, 0xAA, 0x0D,  // ''
+-    0x1FA9, 0xA9, 0x0D,  // ''
+-    0x1FAA, 0xA8, 0x0D,  // ''
+-    0x1FAB, 0xA7, 0x0D,  // ''
+-    0x1FAC, 0xA6, 0x0D,  // ''
+-    0x1FAD, 0xA5, 0x0D,  // ''
+-    0x1FAE, 0xA4, 0x0D,  // ''
+-    0x1FAF, 0xA3, 0x0D,  // ''
+-    0x1FB0, 0xA2, 0x0D,  // ''
+-    0x1FB1, 0xA1, 0x0D,  // ''
+-    0x1FB2, 0xA0, 0x0D,  // ''
+-    0x1FB3, 0x9F, 0x0D,  // ''
+-    0x1FB4, 0x9E, 0x0D,  // ''
+-    0x1FB5, 0x9D, 0x0D,  // ''
+-    0x1FB6, 0x9C, 0x0D,  // ''
+-    0x1FB7, 0x9B, 0x0D,  // ''
+-    0x1FB8, 0x9A, 0x0D,  // ''
+-    0x1FB9, 0x99, 0x0D,  // ''
+-    0x1FBA, 0x98, 0x0D,  // ''
+-    0x1FBB, 0x97, 0x0D,  // ''
+-    0x1FBC, 0x96, 0x0D,  // ''
+-    0x1FBD, 0x95, 0x0D,  // ''
+-    0x1FBE, 0x94, 0x0D,  // ''
+-    0x1FBF, 0x93, 0x0D,  // ''
+-    0x1FC0, 0x92, 0x0D,  // ''
+-    0x1FC1, 0x91, 0x0D,  // ''
+-    0x1FC2, 0x90, 0x0D,  // ''
+-    0x1FC3, 0x8F, 0x0D,  // ''
+-    0x1FC4, 0x8E, 0x0D,  // ''
+-    0x1FC5, 0x8D, 0x0D,  // ''
+-    0x1FC6, 0x8C, 0x0D,  // ''
+-    0x1FC7, 0x8B, 0x0D,  // ''
+-    0x1FC8, 0x8A, 0x0D,  // ''
+-    0x1FC9, 0x89, 0x0D,  // ''
+-    0x1FCA, 0x88, 0x0D,  // ''
+-    0x1FCB, 0x87, 0x0D,  // ''
+-    0x1FCC, 0x86, 0x0D,  // ''
+-    0x1FCD, 0x85, 0x0D,  // ''
+-    0x1FCE, 0x84, 0x0D,  // ''
+-    0x1FCF, 0x83, 0x0D,  // ''
+-    0x1FD0, 0x82, 0x0D,  // ''
+-    0x1FD1, 0x81, 0x0D,  // ''
+-    0x1FD2, 0x80, 0x0D,  // ''
+-    0x1FD3, 0x7F, 0x0D,  // ''
+-    0x1FD4, 0x7E, 0x0D,  // ''
+-    0x1FD5, 0x7C, 0x0D,  // ''
+-    0x1FD6, 0x5F, 0x0D,  // ''
+-    0x1FD7, 0x5E, 0x0D,  // ''
+-    0x1FD8, 0x5D, 0x0D,  // ''
+-    0x1FD9, 0x5C, 0x0D,  // ''
+-    0x1FDA, 0x5B, 0x0D,  // ''
+-    0x1FDB, 0x40, 0x0D,  // ''
+-    0x1FDC, 0x3E, 0x0D,  // ''
+-    0x1FDD, 0x3D, 0x0D,  // ''
+-    0x1FDE, 0x3B, 0x0D,  // ''
+-    0x1FDF, 0x25, 0x0D,  // ''
+-    0x1FE0, 0x24, 0x0D,  // ''
+-    0x1FE1, 0x1F, 0x0D,  // ''
+-    0x1FE2, 0x1E, 0x0D,  // ''
+-    0x1FE3, 0x1D, 0x0D,  // ''
+-    0x1FE4, 0x1C, 0x0D,  // ''
+-    0x1FE5, 0x1B, 0x0D,  // ''
+-    0x1FE6, 0x1A, 0x0D,  // ''
+-    0x1FE7, 0x19, 0x0D,  // ''
+-    0x1FE8, 0x18, 0x0D,  // ''
+-    0x1FE9, 0x17, 0x0D,  // ''
+-    0x1FEA, 0x16, 0x0D,  // ''
+-    0x1FEB, 0x15, 0x0D,  // ''
+-    0x1FEC, 0x14, 0x0D,  // ''
+-    0x1FED, 0x13, 0x0D,  // ''
+-    0x1FEE, 0x12, 0x0D,  // ''
+-    0x1FEF, 0x11, 0x0D,  // ''
+-    0x1FF0, 0x10, 0x0D,  // ''
+-    0x1FF1, 0x0F, 0x0D,  // ''
+-    0x1FF2, 0x0E, 0x0D,  // ''
+-    0x1FF3, 0x0D, 0x0D,  // ''
+-    0x1FF4, 0x0C, 0x0D,  // ''
+-    0x1FF5, 0x0B, 0x0D,  // ''
+-    0x1FF6, 0x09, 0x0D,  // ''
+-    0x1FF7, 0x08, 0x0D,  // ''
+-    0x1FF8, 0x07, 0x0D,  // ''
+-    0x1FF9, 0x06, 0x0D,  // ''
+-    0x1FFA, 0x05, 0x0D,  // ''
+-    0x1FFB, 0x04, 0x0D,  // ''
+-    0x1FFC, 0x03, 0x0D,  // ''
+-    0x1FFD, 0x02, 0x0D,  // ''
+-    0x1FFE, 0x01, 0x0D,  // ''
+-    0x1FFF, 0x00, 0x0D   // ''
++    { 0x0000, 0x20, 0x02, },  // ' '
++    { 0x0004, 0x65, 0x04, },  // 'e'
++    { 0x0005, 0x72, 0x04, },  // 'r'
++    { 0x0006, 0x6E, 0x04, },  // 'n'
++    { 0x0007, 0x61, 0x04, },  // 'a'
++    { 0x0010, 0x74, 0x05, },  // 't'
++    { 0x0011, 0x6F, 0x05, },  // 'o'
++    { 0x0012, 0x73, 0x05, },  // 's'
++    { 0x0013, 0x69, 0x05, },  // 'i'
++    { 0x0014, 0x6C, 0x05, },  // 'l'
++    { 0x0015, 0x75, 0x05, },  // 'u'
++    { 0x0016, 0x63, 0x05, },  // 'c'
++    { 0x0017, 0x64, 0x05, },  // 'd'
++    { 0x0060, 0x70, 0x07, },  // 'p'
++    { 0x0061, 0x6D, 0x07, },  // 'm'
++    { 0x0062, 0x76, 0x07, },  // 'v'
++    { 0x0063, 0x67, 0x07, },  // 'g'
++    { 0x0064, 0x68, 0x07, },  // 'h'
++    { 0x0065, 0x2E, 0x07, },  // '.'
++    { 0x0066, 0x66, 0x07, },  // 'f'
++    { 0x0067, 0x0A, 0x07, },  // ''
++    { 0x0068, 0x53, 0x07, },  // 'S'
++    { 0x0069, 0x41, 0x07, },  // 'A'
++    { 0x006A, 0x45, 0x07, },  // 'E'
++    { 0x006B, 0x43, 0x07, },  // 'C'
++    { 0x006C, 0x27, 0x07, },  // '''
++    { 0x006D, 0x7A, 0x07, },  // 'z'
++    { 0x006E, 0x52, 0x07, },  // 'R'
++    { 0x006F, 0x22, 0x07, },  // '"'
++    { 0x00E0, 0x4C, 0x08, },  // 'L'
++    { 0x00E1, 0x49, 0x08, },  // 'I'
++    { 0x00E2, 0x4F, 0x08, },  // 'O'
++    { 0x00E3, 0x62, 0x08, },  // 'b'
++    { 0x00E4, 0x54, 0x08, },  // 'T'
++    { 0x00E5, 0x4E, 0x08, },  // 'N'
++    { 0x00E6, 0x55, 0x08, },  // 'U'
++    { 0x00E7, 0x79, 0x08, },  // 'y'
++    { 0x00E8, 0x44, 0x08, },  // 'D'
++    { 0x00E9, 0x50, 0x08, },  // 'P'
++    { 0x00EA, 0x71, 0x08, },  // 'q'
++    { 0x00EB, 0x56, 0x08, },  // 'V'
++    { 0x00EC, 0x2D, 0x08, },  // '-'
++    { 0x00ED, 0x3A, 0x08, },  // ':'
++    { 0x00EE, 0x2C, 0x08, },  // ','
++    { 0x00EF, 0x48, 0x08, },  // 'H'
++    { 0x01E0, 0x4D, 0x09, },  // 'M'
++    { 0x01E1, 0x78, 0x09, },  // 'x'
++    { 0x01E2, 0x77, 0x09, },  // 'w'
++    { 0x01E3, 0x42, 0x09, },  // 'B'
++    { 0x01E4, 0x47, 0x09, },  // 'G'
++    { 0x01E5, 0x46, 0x09, },  // 'F'
++    { 0x01E6, 0x30, 0x09, },  // '0'
++    { 0x01E7, 0x3F, 0x09, },  // '?'
++    { 0x01E8, 0x33, 0x09, },  // '3'
++    { 0x01E9, 0x2F, 0x09, },  // '/'
++    { 0x01EA, 0x39, 0x09, },  // '9'
++    { 0x01EB, 0x31, 0x09, },  // '1'
++    { 0x01EC, 0x38, 0x09, },  // '8'
++    { 0x01ED, 0x6B, 0x09, },  // 'k'
++    { 0x01EE, 0x6A, 0x09, },  // 'j'
++    { 0x01EF, 0x21, 0x09, },  // '!'
++    { 0x03E0, 0x36, 0x0A, },  // '6'
++    { 0x03E1, 0x35, 0x0A, },  // '5'
++    { 0x03E2, 0x59, 0x0A, },  // 'Y'
++    { 0x03E3, 0x51, 0x0A, },  // 'Q'
++    { 0x07C8, 0x34, 0x0B, },  // '4'
++    { 0x07C9, 0x58, 0x0B, },  // 'X'
++    { 0x07CA, 0x32, 0x0B, },  // '2'
++    { 0x07CB, 0x2B, 0x0B, },  // '+'
++    { 0x07CC, 0x2A, 0x0B, },  // '*'
++    { 0x07CD, 0x5A, 0x0B, },  // 'Z'
++    { 0x07CE, 0x4A, 0x0B, },  // 'J'
++    { 0x07CF, 0x29, 0x0B, },  // ')'
++    { 0x0FA0, 0x28, 0x0C, },  // '('
++    { 0x0FA1, 0x23, 0x0C, },  // '#'
++    { 0x0FA2, 0x57, 0x0C, },  // 'W'
++    { 0x0FA3, 0x4B, 0x0C, },  // 'K'
++    { 0x0FA4, 0x3C, 0x0C, },  // '<'
++    { 0x0FA5, 0x37, 0x0C, },  // '7'
++    { 0x0FA6, 0x7D, 0x0C, },  // '}'
++    { 0x0FA7, 0x7B, 0x0C, },  // '{'
++    { 0x0FA8, 0x60, 0x0C, },  // '`'
++    { 0x0FA9, 0x26, 0x0C, },  // '&'
++    { 0x1F54, 0xFE, 0x0D, },  // 'þ'
++    { 0x1F55, 0xFD, 0x0D, },  // 'ý'
++    { 0x1F56, 0xFC, 0x0D, },  // 'ü'
++    { 0x1F57, 0xFB, 0x0D, },  // 'û'
++    { 0x1F58, 0xFA, 0x0D, },  // 'ú'
++    { 0x1F59, 0xF9, 0x0D, },  // 'ù'
++    { 0x1F5A, 0xF8, 0x0D, },  // 'ø'
++    { 0x1F5B, 0xF7, 0x0D, },  // '÷'
++    { 0x1F5C, 0xF6, 0x0D, },  // 'ö'
++    { 0x1F5D, 0xF5, 0x0D, },  // 'õ'
++    { 0x1F5E, 0xF4, 0x0D, },  // 'ô'
++    { 0x1F5F, 0xF3, 0x0D, },  // 'ó'
++    { 0x1F60, 0xF2, 0x0D, },  // 'ò'
++    { 0x1F61, 0xF1, 0x0D, },  // 'ñ'
++    { 0x1F62, 0xF0, 0x0D, },  // 'ð'
++    { 0x1F63, 0xEF, 0x0D, },  // 'ï'
++    { 0x1F64, 0xEE, 0x0D, },  // 'î'
++    { 0x1F65, 0xED, 0x0D, },  // 'í'
++    { 0x1F66, 0xEC, 0x0D, },  // 'ì'
++    { 0x1F67, 0xEB, 0x0D, },  // 'ë'
++    { 0x1F68, 0xEA, 0x0D, },  // 'ê'
++    { 0x1F69, 0xE9, 0x0D, },  // 'é'
++    { 0x1F6A, 0xE8, 0x0D, },  // 'è'
++    { 0x1F6B, 0xE7, 0x0D, },  // 'ç'
++    { 0x1F6C, 0xE6, 0x0D, },  // 'æ'
++    { 0x1F6D, 0xE5, 0x0D, },  // 'å'
++    { 0x1F6E, 0xE4, 0x0D, },  // 'ä'
++    { 0x1F6F, 0xE3, 0x0D, },  // 'ã'
++    { 0x1F70, 0xE2, 0x0D, },  // 'â'
++    { 0x1F71, 0xE1, 0x0D, },  // 'á'
++    { 0x1F72, 0xE0, 0x0D, },  // 'à'
++    { 0x1F73, 0xDF, 0x0D, },  // 'ß'
++    { 0x1F74, 0xDE, 0x0D, },  // 'Þ'
++    { 0x1F75, 0xDD, 0x0D, },  // 'Ý'
++    { 0x1F76, 0xDC, 0x0D, },  // 'Ü'
++    { 0x1F77, 0xDB, 0x0D, },  // 'Û'
++    { 0x1F78, 0xDA, 0x0D, },  // 'Ú'
++    { 0x1F79, 0xD9, 0x0D, },  // 'Ù'
++    { 0x1F7A, 0xD8, 0x0D, },  // 'Ø'
++    { 0x1F7B, 0xD7, 0x0D, },  // '×'
++    { 0x1F7C, 0xD6, 0x0D, },  // 'Ö'
++    { 0x1F7D, 0xD5, 0x0D, },  // 'Õ'
++    { 0x1F7E, 0xD4, 0x0D, },  // 'Ô'
++    { 0x1F7F, 0xD3, 0x0D, },  // 'Ó'
++    { 0x1F80, 0xD2, 0x0D, },  // 'Ò'
++    { 0x1F81, 0xD1, 0x0D, },  // ''
++    { 0x1F82, 0xD0, 0x0D, },  // ''
++    { 0x1F83, 0xCF, 0x0D, },  // ''
++    { 0x1F84, 0xCE, 0x0D, },  // ''
++    { 0x1F85, 0xCD, 0x0D, },  // ''
++    { 0x1F86, 0xCC, 0x0D, },  // ''
++    { 0x1F87, 0xCB, 0x0D, },  // ''
++    { 0x1F88, 0xCA, 0x0D, },  // ''
++    { 0x1F89, 0xC9, 0x0D, },  // ''
++    { 0x1F8A, 0xC8, 0x0D, },  // ''
++    { 0x1F8B, 0xC7, 0x0D, },  // ''
++    { 0x1F8C, 0xC6, 0x0D, },  // ''
++    { 0x1F8D, 0xC5, 0x0D, },  // ''
++    { 0x1F8E, 0xC4, 0x0D, },  // ''
++    { 0x1F8F, 0xC3, 0x0D, },  // ''
++    { 0x1F90, 0xC2, 0x0D, },  // ''
++    { 0x1F91, 0xC1, 0x0D, },  // ''
++    { 0x1F92, 0xC0, 0x0D, },  // ''
++    { 0x1F93, 0xBF, 0x0D, },  // ''
++    { 0x1F94, 0xBE, 0x0D, },  // ''
++    { 0x1F95, 0xBD, 0x0D, },  // ''
++    { 0x1F96, 0xBC, 0x0D, },  // ''
++    { 0x1F97, 0xBB, 0x0D, },  // ''
++    { 0x1F98, 0xBA, 0x0D, },  // ''
++    { 0x1F99, 0xB9, 0x0D, },  // ''
++    { 0x1F9A, 0xB8, 0x0D, },  // ''
++    { 0x1F9B, 0xB7, 0x0D, },  // ''
++    { 0x1F9C, 0xB6, 0x0D, },  // ''
++    { 0x1F9D, 0xB5, 0x0D, },  // ''
++    { 0x1F9E, 0xB4, 0x0D, },  // ''
++    { 0x1F9F, 0xB3, 0x0D, },  // ''
++    { 0x1FA0, 0xB2, 0x0D, },  // ''
++    { 0x1FA1, 0xB1, 0x0D, },  // ''
++    { 0x1FA2, 0xB0, 0x0D, },  // ''
++    { 0x1FA3, 0xAF, 0x0D, },  // ''
++    { 0x1FA4, 0xAE, 0x0D, },  // ''
++    { 0x1FA5, 0xAD, 0x0D, },  // ''
++    { 0x1FA6, 0xAC, 0x0D, },  // ''
++    { 0x1FA7, 0xAB, 0x0D, },  // ''
++    { 0x1FA8, 0xAA, 0x0D, },  // ''
++    { 0x1FA9, 0xA9, 0x0D, },  // ''
++    { 0x1FAA, 0xA8, 0x0D, },  // ''
++    { 0x1FAB, 0xA7, 0x0D, },  // ''
++    { 0x1FAC, 0xA6, 0x0D, },  // ''
++    { 0x1FAD, 0xA5, 0x0D, },  // ''
++    { 0x1FAE, 0xA4, 0x0D, },  // ''
++    { 0x1FAF, 0xA3, 0x0D, },  // ''
++    { 0x1FB0, 0xA2, 0x0D, },  // ''
++    { 0x1FB1, 0xA1, 0x0D, },  // ''
++    { 0x1FB2, 0xA0, 0x0D, },  // ''
++    { 0x1FB3, 0x9F, 0x0D, },  // ''
++    { 0x1FB4, 0x9E, 0x0D, },  // ''
++    { 0x1FB5, 0x9D, 0x0D, },  // ''
++    { 0x1FB6, 0x9C, 0x0D, },  // ''
++    { 0x1FB7, 0x9B, 0x0D, },  // ''
++    { 0x1FB8, 0x9A, 0x0D, },  // ''
++    { 0x1FB9, 0x99, 0x0D, },  // ''
++    { 0x1FBA, 0x98, 0x0D, },  // ''
++    { 0x1FBB, 0x97, 0x0D, },  // ''
++    { 0x1FBC, 0x96, 0x0D, },  // ''
++    { 0x1FBD, 0x95, 0x0D, },  // ''
++    { 0x1FBE, 0x94, 0x0D, },  // ''
++    { 0x1FBF, 0x93, 0x0D, },  // ''
++    { 0x1FC0, 0x92, 0x0D, },  // ''
++    { 0x1FC1, 0x91, 0x0D, },  // ''
++    { 0x1FC2, 0x90, 0x0D, },  // ''
++    { 0x1FC3, 0x8F, 0x0D, },  // ''
++    { 0x1FC4, 0x8E, 0x0D, },  // ''
++    { 0x1FC5, 0x8D, 0x0D, },  // ''
++    { 0x1FC6, 0x8C, 0x0D, },  // ''
++    { 0x1FC7, 0x8B, 0x0D, },  // ''
++    { 0x1FC8, 0x8A, 0x0D, },  // ''
++    { 0x1FC9, 0x89, 0x0D, },  // ''
++    { 0x1FCA, 0x88, 0x0D, },  // ''
++    { 0x1FCB, 0x87, 0x0D, },  // ''
++    { 0x1FCC, 0x86, 0x0D, },  // ''
++    { 0x1FCD, 0x85, 0x0D, },  // ''
++    { 0x1FCE, 0x84, 0x0D, },  // ''
++    { 0x1FCF, 0x83, 0x0D, },  // ''
++    { 0x1FD0, 0x82, 0x0D, },  // ''
++    { 0x1FD1, 0x81, 0x0D, },  // ''
++    { 0x1FD2, 0x80, 0x0D, },  // ''
++    { 0x1FD3, 0x7F, 0x0D, },  // ''
++    { 0x1FD4, 0x7E, 0x0D, },  // ''
++    { 0x1FD5, 0x7C, 0x0D, },  // ''
++    { 0x1FD6, 0x5F, 0x0D, },  // ''
++    { 0x1FD7, 0x5E, 0x0D, },  // ''
++    { 0x1FD8, 0x5D, 0x0D, },  // ''
++    { 0x1FD9, 0x5C, 0x0D, },  // ''
++    { 0x1FDA, 0x5B, 0x0D, },  // ''
++    { 0x1FDB, 0x40, 0x0D, },  // ''
++    { 0x1FDC, 0x3E, 0x0D, },  // ''
++    { 0x1FDD, 0x3D, 0x0D, },  // ''
++    { 0x1FDE, 0x3B, 0x0D, },  // ''
++    { 0x1FDF, 0x25, 0x0D, },  // ''
++    { 0x1FE0, 0x24, 0x0D, },  // ''
++    { 0x1FE1, 0x1F, 0x0D, },  // ''
++    { 0x1FE2, 0x1E, 0x0D, },  // ''
++    { 0x1FE3, 0x1D, 0x0D, },  // ''
++    { 0x1FE4, 0x1C, 0x0D, },  // ''
++    { 0x1FE5, 0x1B, 0x0D, },  // ''
++    { 0x1FE6, 0x1A, 0x0D, },  // ''
++    { 0x1FE7, 0x19, 0x0D, },  // ''
++    { 0x1FE8, 0x18, 0x0D, },  // ''
++    { 0x1FE9, 0x17, 0x0D, },  // ''
++    { 0x1FEA, 0x16, 0x0D, },  // ''
++    { 0x1FEB, 0x15, 0x0D, },  // ''
++    { 0x1FEC, 0x14, 0x0D, },  // ''
++    { 0x1FED, 0x13, 0x0D, },  // ''
++    { 0x1FEE, 0x12, 0x0D, },  // ''
++    { 0x1FEF, 0x11, 0x0D, },  // ''
++    { 0x1FF0, 0x10, 0x0D, },  // ''
++    { 0x1FF1, 0x0F, 0x0D, },  // ''
++    { 0x1FF2, 0x0E, 0x0D, },  // ''
++    { 0x1FF3, 0x0D, 0x0D, },  // ''
++    { 0x1FF4, 0x0C, 0x0D, },  // ''
++    { 0x1FF5, 0x0B, 0x0D, },  // ''
++    { 0x1FF6, 0x09, 0x0D, },  // ''
++    { 0x1FF7, 0x08, 0x0D, },  // ''
++    { 0x1FF8, 0x07, 0x0D, },  // ''
++    { 0x1FF9, 0x06, 0x0D, },  // ''
++    { 0x1FFA, 0x05, 0x0D, },  // ''
++    { 0x1FFB, 0x04, 0x0D, },  // ''
++    { 0x1FFC, 0x03, 0x0D, },  // ''
++    { 0x1FFD, 0x02, 0x0D, },  // ''
++    { 0x1FFE, 0x01, 0x0D, },  // ''
++    { 0x1FFF, 0x00, 0x0D, },  // ''
+ };
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/avformatdecoder.cpp mythtv-0.18.1-new/libs/libmythtv/avformatdecoder.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/avformatdecoder.cpp	2005-05-10 01:42:33.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/avformatdecoder.cpp	2005-11-19 07:20:36.000000000 -0800
-@@ -1254,7 +1254,7 @@
++++ mythtv-0.18.1-new/libs/libmythtv/avformatdecoder.cpp	2005-12-27 07:23:56.000000000 -0800
+@@ -24,6 +24,13 @@
+ 
+ extern pthread_mutex_t avcodeclock;
+ 
++int get_avf_buffer_xvmc(struct AVCodecContext *c, AVFrame *pic); 
++int get_avf_buffer(struct AVCodecContext *c, AVFrame *pic); 
++void release_avf_buffer(struct AVCodecContext *c, AVFrame *pic); 
++void release_avf_buffer_xvmc(struct AVCodecContext *c, AVFrame *pic); 
++void render_slice_xvmc(struct AVCodecContext *s, const AVFrame *src, 
++                       int offset[4], int y, int type, int height);
++
+ class AvFormatDecoderPrivate
+ {
+   public:
+@@ -1254,7 +1261,7 @@
      
      while ((selectedTrack == -1) && (minChannels >= 0))
      {
@@ -1079,7 +2131,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/avformatdecoder.cpp mythtv-0.18.1-ne
          {
              int tempStream = audioStreams[track];
              AVCodecContext *e = &ic->streams[tempStream]->codec;
-@@ -1279,13 +1279,13 @@
+@@ -1279,13 +1286,13 @@
                  }
              }
          }
@@ -1095,9 +2147,90 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/avformatdecoder.cpp mythtv-0.18.1-ne
      {
          VERBOSE(VB_AUDIO,
                  QString("No suitable audio track exists."));
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/channel.h mythtv-0.18.1-new/libs/libmythtv/channel.h
+--- mythtv-0.18.1-old/libs/libmythtv/channel.h	2005-01-07 16:22:58.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/channel.h	2005-12-27 07:23:56.000000000 -0800
+@@ -34,9 +34,9 @@
+     bool CheckSignal(int msecWait = 5000, 
+                      int requiredSignalPercentage = 65,
+                      int input = 0);
+-    unsigned short *Channel::GetV4L1Field(int attrib, 
++    unsigned short *GetV4L1Field(int attrib, 
+                                           struct video_picture &vid_pic);
+-    int Channel::ChangeColourAttribute(int attrib, const char *name, bool up);
++    int ChangeColourAttribute(int attrib, const char *name, bool up);
+     int ChangeColour(bool up);
+     int ChangeBrightness(bool up);
+     int ChangeContrast(bool up);
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/datadirect.cpp mythtv-0.18.1-new/libs/libmythtv/datadirect.cpp
+--- mythtv-0.18.1-old/libs/libmythtv/datadirect.cpp	2005-05-04 12:40:07.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmythtv/datadirect.cpp	2005-12-27 07:23:56.000000000 -0800
+@@ -171,19 +171,19 @@
+     else if (pqname == "schedule") 
+     {
+         QDateTime endtime = curr_schedule.time.addSecs(
+-                                        QTime().secsTo(curr_schedule.duration));
++            QTime().secsTo(curr_schedule.duration));
+ 
+         query.prepare("INSERT INTO dd_schedule (programid,stationid,"
+-                      "scheduletime,duration,repeat,stereo,subtitled,hdtv,"
++                      "scheduletime,duration,isrepeat,stereo,subtitled,hdtv,"
+                       "closecaptioned,tvrating,partnumber,parttotal,endtime) "
+                       "VALUES(:PROGRAMID,:STATIONID,:TIME,:DURATION,"
+-                      ":REPEAT,:STEREO,:SUBTITLED,:HDTV,:CLOSECAPTIONED,"
++                      ":ISREPEAT,:STEREO,:SUBTITLED,:HDTV,:CLOSECAPTIONED,"
+                       ":TVRATING,:PARTNUMBER,:PARTTOTAL,:ENDTIME);");
+         query.bindValue(":PROGRAMID", curr_schedule.programid);
+         query.bindValue(":STATIONID", curr_schedule.stationid);
+         query.bindValue(":TIME", curr_schedule.time);
+         query.bindValue(":DURATION", curr_schedule.duration);
+-        query.bindValue(":REPEAT", curr_schedule.repeat);
++        query.bindValue(":ISREPEAT", curr_schedule.repeat);
+         query.bindValue(":STEREO", curr_schedule.stereo);
+         query.bindValue(":SUBTITLED", curr_schedule.subtitled);
+         query.bindValue(":HDTV", curr_schedule.hdtv);
+@@ -414,7 +414,7 @@
+                        "syndicatedepisodenumber, tvrating, mpaarating, "
+                        "programid) "
+                        "SELECT chanid, scheduletime, endtime, title, "
+-                       "subtitle, description, year, stars, repeat, stereo, "
++                       "subtitle, description, year, stars, isrepeat, stereo, "
+                        "subtitled, hdtv, closecaptioned, partnumber, "
+                        "parttotal, seriesid, originalairdate, showtype, "
+                        "category_type, colorcode, syndicatedepisodenumber, "
+@@ -617,7 +617,7 @@
+     createATempTable ("dd_v_station", table);
+ 
+     table = "( programid char(12), stationid char(12), scheduletime datetime, "
+-            "duration time, repeat bool, stereo bool, subtitled bool, "
++            "duration time, isrepeat bool, stereo bool, subtitled bool, "
+             "hdtv bool, closecaptioned bool, tvrating char(5), partnumber int, "
+             "parttotal int, endtime datetime, INDEX progidx (programid) )";
+     createATempTable("dd_schedule", table); 
+@@ -635,7 +635,7 @@
+             "endtime datetime, title varchar(128), subtitle varchar(128), "
+             "description text, category varchar(64), "
+             "category_type varchar(64), airdate year, stars float unsigned, "
+-            "previouslyshown tinyint, repeat bool, stereo bool, "
++            "previouslyshown tinyint, isrepeat bool, stereo bool, "
+             "subtitled bool, hdtv bool,  closecaptioned bool, partnumber int, "
+             "parttotal int, seriesid char(12), originalairdate date, "
+             "showtype varchar(30), colorcode varchar(20), "
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/dtvrecorder.h mythtv-0.18.1-new/libs/libmythtv/dtvrecorder.h
+--- mythtv-0.18.1-old/libs/libmythtv/dtvrecorder.h	2005-04-13 20:28:43.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmythtv/dtvrecorder.h	2005-12-27 07:23:56.000000000 -0800
+@@ -16,7 +16,7 @@
+ class DTVRecorder: public RecorderBase
+ {
+   public:
+-    DTVRecorder::DTVRecorder() : 
++    DTVRecorder() : 
+         _first_keyframe(0), _position_within_gop_header(0),
+         _keyframe_seen(false), _last_keyframe_seen(0), _last_gop_seen(0),
+         _last_seq_seen(0), _stream_fd(-1), _error(false),
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbsignalmonitor.h mythtv-0.18.1-new/libs/libmythtv/dvbsignalmonitor.h
 --- mythtv-0.18.1-old/libs/libmythtv/dvbsignalmonitor.h	2005-03-22 22:45:36.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/dvbsignalmonitor.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/dvbsignalmonitor.h	2005-12-27 07:23:56.000000000 -0800
 @@ -1,54 +1,54 @@
 -#ifndef DVBSIGNALMONITOR_H
 -#define DVBSIGNALMONITOR_H
@@ -1209,7 +2342,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbsignalmonitor.h mythtv-0.18.1-new
 +#endif // DVBSIGNALMONITOR_H
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbsiparser.cpp mythtv-0.18.1-new/libs/libmythtv/dvbsiparser.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/dvbsiparser.cpp	2005-01-30 21:49:56.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/dvbsiparser.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/dvbsiparser.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: dvbsiparser.cpp,v 1.2 2005/01/31 05:49:56 ijr Exp $
@@ -1219,7 +2352,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbsiparser.cpp mythtv-0.18.1-new/li
   * DVBSIParser.cpp: Digital Video Broadcast - Section/Table Parser
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.cpp mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.cpp	2005-02-23 11:39:19.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: dvbtransporteditor.cpp,v 1.5 2005/02/23 19:39:19 cpinkham Exp $
@@ -1229,7 +2362,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.cpp mythtv-0.18.1
   * Original Project
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.h mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.h
 --- mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.h	2005-02-22 21:04:36.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/dvbtransporteditor.h	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: dvbtransporteditor.h,v 1.3 2005/02/23 05:04:36 avalanche Exp $
@@ -1237,9 +2370,27 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/dvbtransporteditor.h mythtv-0.18.1-n
   * vim: set expandtab tabstop=4 shiftwidth=4:
   *
   * Original Project
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/firewirerecorder.h mythtv-0.18.1-new/libs/libmythtv/firewirerecorder.h
+--- mythtv-0.18.1-old/libs/libmythtv/firewirerecorder.h	2005-03-11 11:18:51.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/firewirerecorder.h	2005-12-27 07:23:56.000000000 -0800
+@@ -31,10 +31,10 @@
+     void StartRecording(void);
+     bool Open(void); 
+     void ProcessTSPacket(unsigned char *tspacket, int len);
+-    void FirewireRecorder::SetOptionsFromProfile(RecordingProfile *profile,
+-                                         const QString &videodev,
+-                                         const QString &audiodev,
+-                                         const QString &vbidev, int ispip);
++    void SetOptionsFromProfile(RecordingProfile *profile,
++                               const QString &videodev,
++                               const QString &audiodev,
++                               const QString &vbidev, int ispip);
+ 
+     void SetOption(const QString &name, const QString &value);
+     void SetOption(const QString &name, int value);
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/jobqueue.cpp mythtv-0.18.1-new/libs/libmythtv/jobqueue.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/jobqueue.cpp	2005-04-09 22:33:06.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/jobqueue.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/jobqueue.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -422,6 +422,10 @@
                      continue;
                  }
@@ -1264,7 +2415,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/jobqueue.cpp mythtv-0.18.1-new/libs/
                                    .arg(JobText(type))
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro
 --- mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro	2005-05-06 13:19:54.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/libmythtv.pro	2005-12-27 07:23:56.000000000 -0800
 @@ -148,5 +148,6 @@
  
  using_opengl_vsync {
@@ -1274,7 +2425,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/libmythtv.pro mythtv-0.18.1-new/libs
  
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/mpeg/mpegstreamdata.h mythtv-0.18.1-new/libs/libmythtv/mpeg/mpegstreamdata.h
 --- mythtv-0.18.1-old/libs/libmythtv/mpeg/mpegstreamdata.h	2005-01-20 22:55:16.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/mpeg/mpegstreamdata.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/mpeg/mpegstreamdata.h	2005-12-27 07:23:56.000000000 -0800
 @@ -11,6 +11,7 @@
  class HDTVRecorder;
  class PSIPTable;
@@ -1285,7 +2436,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/mpeg/mpegstreamdata.h mythtv-0.18.1-
    public:
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/mpeg/tspacket.cpp mythtv-0.18.1-new/libs/libmythtv/mpeg/tspacket.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/mpeg/tspacket.cpp	2004-12-07 18:04:08.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/mpeg/tspacket.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/mpeg/tspacket.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -14,7 +14,7 @@
  
  QString TSPacket::toString() const {
@@ -1295,9 +2446,83 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/mpeg/tspacket.cpp mythtv-0.18.1-new/
      str.append("raw: 0x%1 0x%2 0x%3 0x%4\n").arg(int(data()[0]),0,16).
          arg(int(data()[1]),0,16).arg(int(data()[2]),0,16).arg(int(data()[3]),0,16);
      str.append("                 inSync: %1\n").arg( HasSync());
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/mpeg/tspacket.h mythtv-0.18.1-new/libs/libmythtv/mpeg/tspacket.h
+--- mythtv-0.18.1-old/libs/libmythtv/mpeg/tspacket.h	2004-12-07 18:04:08.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/mpeg/tspacket.h	2005-12-27 07:23:56.000000000 -0800
+@@ -139,6 +139,7 @@
+ 
+     static const unsigned int SIZE         = 188;
+     static const unsigned int PAYLOAD_SIZE = SIZE-HEADER_SIZE;
++    static const TSPacket    *NULL_PACKET;
+   private:
+     unsigned char _tspayload[184];
+ };
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/nuppeldecoder.h mythtv-0.18.1-new/libs/libmythtv/nuppeldecoder.h
+--- mythtv-0.18.1-old/libs/libmythtv/nuppeldecoder.h	2005-02-22 21:04:36.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/nuppeldecoder.h	2005-12-27 07:23:56.000000000 -0800
+@@ -55,8 +55,8 @@
+     QString GetEncodingType(void);
+ 
+   private:
+-    inline bool NuppelDecoder::ReadFileheader(struct rtfileheader *fileheader);
+-    inline bool NuppelDecoder::ReadFrameheader(struct rtframeheader *frameheader);
++    inline bool ReadFileheader(struct rtfileheader *fileheader);
++    inline bool ReadFrameheader(struct rtframeheader *frameheader);
+ 
+     bool DecodeFrame(struct rtframeheader *frameheader,
+                      unsigned char *lstrm, VideoFrame *frame);
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/NuppelVideoRecorder.h mythtv-0.18.1-new/libs/libmythtv/NuppelVideoRecorder.h
+--- mythtv-0.18.1-old/libs/libmythtv/NuppelVideoRecorder.h	2005-03-18 22:51:41.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/NuppelVideoRecorder.h	2005-12-27 07:23:56.000000000 -0800
+@@ -104,7 +104,7 @@
+     void doVbiThread(void);
+     
+  private:
+-    inline void NuppelVideoRecorder::WriteFrameheader(rtframeheader *fh);
++    inline void WriteFrameheader(rtframeheader *fh);
+ 
+     void InitBuffers(void);
+     void InitFilters(void);   
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/osd.cpp mythtv-0.18.1-new/libs/libmythtv/osd.cpp
+--- mythtv-0.18.1-old/libs/libmythtv/osd.cpp	2005-03-31 18:38:31.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/osd.cpp	2005-12-27 07:23:56.000000000 -0800
+@@ -1794,8 +1794,8 @@
+         if (*i && (*i)->Displaying())
+         {
+             QString name = (*i)->GetName();
+-            if (name != "cc_page" && name != "menu" && name != other && 
+-                (!oset || !oset->CanShowWith(name)))
++            if (name != "cc_page" && name != "menu" && name != "subtitles" &&
++                name != other && (!oset || !oset->CanShowWith(name)))
+             {
+                 (*i)->Hide();
+                 result = true;
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/osdtypes.cpp mythtv-0.18.1-new/libs/libmythtv/osdtypes.cpp
+--- mythtv-0.18.1-old/libs/libmythtv/osdtypes.cpp	2005-05-05 01:05:56.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmythtv/osdtypes.cpp	2005-12-27 07:23:56.000000000 -0800
+@@ -883,8 +883,8 @@
+ 
+     m_isvalid = true;
+ 
+-    int imwidth = (img.width() / 2) * 2;
+-    int imheight = (img.height() / 2) * 2;
++    int imwidth = (img.width() + 1) & ~1;
++    int imheight = (img.height() + 1) & ~1;
+ 
+     m_yuv = new unsigned char[imwidth * imheight * 3 / 2];
+     m_ybuffer = m_yuv;
+@@ -894,7 +894,7 @@
+     m_alpha = new unsigned char[imwidth * imheight];
+ 
+     rgb32_to_yuv420p(m_ybuffer, m_ubuffer, m_vbuffer, m_alpha, img.bits(),
+-                     imwidth, imheight, img.width());
++                     img.width(), img.height(), img.bytesPerLine() / 4);
+ 
+     m_imagesize = QRect(0, 0, imwidth, imheight);
+ }
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/programinfo.cpp mythtv-0.18.1-new/libs/libmythtv/programinfo.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/programinfo.cpp	2005-04-09 22:28:53.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/programinfo.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/programinfo.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -2521,7 +2521,7 @@
                    "editing, bookmark FROM recorded WHERE "
                    "chanid = :CHANID AND starttime = :STARTTIME ;");
@@ -1309,7 +2534,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/programinfo.cpp mythtv-0.18.1-new/li
      {
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/scanwizard.cpp mythtv-0.18.1-new/libs/libmythtv/scanwizard.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/scanwizard.cpp	2005-03-29 03:50:41.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/scanwizard.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/scanwizard.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: scanwizard.cpp,v 1.9 2005/03/29 11:50:41 oscar Exp $
@@ -1319,7 +2544,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/scanwizard.cpp mythtv-0.18.1-new/lib
   * Original Project
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/scanwizard.h mythtv-0.18.1-new/libs/libmythtv/scanwizard.h
 --- mythtv-0.18.1-old/libs/libmythtv/scanwizard.h	2005-03-26 07:16:49.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/scanwizard.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/scanwizard.h	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: scanwizard.h,v 1.5 2005/03/26 15:16:49 taylor Exp $
@@ -1345,7 +2570,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/scanwizard.h mythtv-0.18.1-new/libs/
  {
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/sitypes.cpp mythtv-0.18.1-new/libs/libmythtv/sitypes.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/sitypes.cpp	2005-03-27 10:18:56.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/sitypes.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/sitypes.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: sitypes.cpp,v 1.8 2005/03/27 18:18:56 taylor Exp $
@@ -1355,7 +2580,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/sitypes.cpp mythtv-0.18.1-new/libs/l
   * Original Project
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/sitypes.h mythtv-0.18.1-new/libs/libmythtv/sitypes.h
 --- mythtv-0.18.1-old/libs/libmythtv/sitypes.h	2005-03-27 10:18:56.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/sitypes.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/sitypes.h	2005-12-27 07:23:56.000000000 -0800
 @@ -1,5 +1,5 @@
  /*
 - * $Id: sitypes.h,v 1.5 2005/03/27 18:18:56 taylor Exp $
@@ -1365,7 +2590,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/sitypes.h mythtv-0.18.1-new/libs/lib
  
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.cpp mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.cpp	2005-03-22 22:43:24.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -50,6 +50,7 @@
      last_normal = true;
      last_mask = 2;
@@ -1616,7 +2841,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.cpp mythtv-0.18.1-new/
  }
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.h mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.h
 --- mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.h	2005-02-03 17:38:46.000000000 -0800
-+++ mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.h	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/videoout_ivtv.h	2005-12-27 07:23:56.000000000 -0800
 @@ -21,9 +21,6 @@
  
      void InputChanged(int width, int height, float aspect);
@@ -1648,7 +2873,7 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_ivtv.h mythtv-0.18.1-new/li
  #endif
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_quartz.cpp mythtv-0.18.1-new/libs/libmythtv/videoout_quartz.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/videoout_quartz.cpp	2005-04-07 08:33:50.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/videoout_quartz.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/videoout_quartz.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -17,7 +17,7 @@
   *   a second time, may cause a crash (backtraces appreciated)
   * 
@@ -1658,9 +2883,25 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/videoout_quartz.cpp mythtv-0.18.1-ne
   *
   * = AUTHORS
   * Nigel Pearson, Jeremiah Morris
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/videosource.h mythtv-0.18.1-new/libs/libmythtv/videosource.h
+--- mythtv-0.18.1-old/libs/libmythtv/videosource.h	2005-05-04 12:40:07.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmythtv/videosource.h	2005-12-27 07:23:56.000000000 -0800
+@@ -27,9 +27,9 @@
+     static bool isCardPresent(const QString &strType);
+     static DVB_TYPES cardDVBType(unsigned nVideoDev);
+     static DVB_TYPES cardDVBType(unsigned nVideoDev, QString &name);
+-    static int CardUtil::videoDeviceFromCardID(unsigned nCardID);
+-    static bool CardUtil::isDVB(unsigned nCardID);
+-    static DISEQC_TYPES CardUtil::diseqcType(unsigned nCardID);
++    static int videoDeviceFromCardID(unsigned nCardID);
++    static bool isDVB(unsigned nCardID);
++    static DISEQC_TYPES diseqcType(unsigned nCardID);
+ };
+ 
+ class VideoSource;
 diff -Naur mythtv-0.18.1-old/libs/libmythtv/vsync.cpp mythtv-0.18.1-new/libs/libmythtv/vsync.cpp
 --- mythtv-0.18.1-old/libs/libmythtv/vsync.cpp	2005-04-12 15:08:44.000000000 -0700
-+++ mythtv-0.18.1-new/libs/libmythtv/vsync.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/vsync.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -83,7 +83,10 @@
      TESTVIDEOSYNC(nVidiaVideoSync)
      TESTVIDEOSYNC(DRMVideoSync)
@@ -1673,9 +2914,240 @@ diff -Naur mythtv-0.18.1-old/libs/libmythtv/vsync.cpp mythtv-0.18.1-new/libs/lib
  #endif
  #ifdef __linux__
      TESTVIDEOSYNC(RTCVideoSync)
+diff -Naur mythtv-0.18.1-old/libs/libmythtv/yuv2rgb.cpp mythtv-0.18.1-new/libs/libmythtv/yuv2rgb.cpp
+--- mythtv-0.18.1-old/libs/libmythtv/yuv2rgb.cpp	2005-02-04 05:59:51.000000000 -0800
++++ mythtv-0.18.1-new/libs/libmythtv/yuv2rgb.cpp	2005-12-27 07:23:56.000000000 -0800
+@@ -33,7 +33,9 @@
+ #define CPU_MMXEXT 0
+ #define CPU_MMX 1
+ #endif
++
+ #ifdef HAVE_ALTIVEC
++extern "C" int has_altivec(void);    // in libavcodec/ppc/dsputil_altivec.c
+ #ifdef HAVE_ALTIVEC_H
+ #include <altivec.h>
+ #else
+@@ -463,11 +465,11 @@
+ #define A_II  3
+ #endif
+ 
+-    wrap = width;
++    wrap = (width + 1) & ~1;
+     wrap4 = srcwidth * 4;
+     p = src;
+-    for(y=0;y<height;y+=2) {
+-        for(x=0;x<width;x+=2) {
++    for(y=0;y+1<height;y+=2) {
++        for(x=0;x+1<width;x+=2) {
+             r = p[R_II];
+             g = p[G_II];
+             b = p[B_II];
+@@ -525,10 +527,135 @@
+             lum += -wrap + 2;
+             alpha += -wrap + 2;
+         }
+-        p += wrap4;
++        if (width & 1) {
++            r = p[R_II];
++            g = p[G_II];
++            b = p[B_II];
++            r1 = r;
++            g1 = g;
++            b1 = b;
++            lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g +
++                      FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
++            alpha[0] = p[A_II];
++
++            lum[1] = 16;
++            alpha[1] = 0;
++
++            p += wrap4;
++            lum += wrap;
++            alpha += wrap;
++
++            r = p[R_II];
++            g = p[G_II];
++            b = p[B_II];
++            r1 += r;
++            g1 += g;
++            b1 += b;
++            lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g +
++                      FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
++            alpha[0] = p[A_II];
++
++            lum[1] = 16;
++            alpha[1] = 0;
++
++            cr[0] = ((- FIX(0.16874) * r1 - FIX(0.33126) * g1 +
++                    FIX(0.50000) * b1 + 2 * ONE_HALF - 1) >> (SCALEBITS + 1)) +
++                    128;
++            cb[0] = ((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
++                    FIX(0.08131) * b1 + 2 * ONE_HALF - 1) >> (SCALEBITS + 1)) +
++                    128;
++
++            cb++;
++            cr++;
++            p += -wrap4 + 4;
++            lum += -wrap + 2;
++            alpha += -wrap + 2;
++        }
++        p += wrap4 * 2 - width * 4;
+         lum += wrap;
+         alpha += wrap;
+     }
++    if (height & 1) {
++        for(x=0;x+1<width;x+=2) {
++            r = p[R_II];
++            g = p[G_II];
++            b = p[B_II];
++            r1 = r;
++            g1 = g;
++            b1 = b;
++            lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g +
++                      FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
++            alpha[0] = p[A_II];
++
++            r = p[R_II+4];
++            g = p[G_II+4];
++            b = p[B_II+4];
++            r1 += r;
++            g1 += g;
++            b1 += b;
++            lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g +
++                      FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
++            alpha[1] = p[A_II+4];
++
++            lum += wrap;
++            alpha += wrap;
++
++            lum[0] = 16;
++            alpha[0] = 0;
++
++            lum[1] = 16;
++            alpha[1] = 0;
++
++            cr[0] = ((- FIX(0.16874) * r1 - FIX(0.33126) * g1 +
++                    FIX(0.50000) * b1 + 2 * ONE_HALF - 1) >> (SCALEBITS + 1)) +
++                    128;
++            cb[0] = ((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
++                    FIX(0.08131) * b1 + 2 * ONE_HALF - 1) >> (SCALEBITS + 1)) +
++                    128;
++
++            cb++;
++            cr++;
++            p += 2 * 4;
++            lum += -wrap + 2;
++            alpha += -wrap + 2;
++        }
++        if (width & 1) {
++            r = p[R_II];
++            g = p[G_II];
++            b = p[B_II];
++            r1 = r;
++            g1 = g;
++            b1 = b;
++            lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g +
++                      FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
++            alpha[0] = p[A_II];
++
++            lum[1] = 16;
++            alpha[1] = 0;
++
++            lum += wrap;
++            alpha += wrap;
++
++            lum[0] = 16;
++            alpha[0] = 0;
++
++            lum[1] = 16;
++            alpha[1] = 0;
++
++            cr[0] = ((- FIX(0.16874) * r1 - FIX(0.33126) * g1 +
++                    FIX(0.50000) * b1 + ONE_HALF - 1) >> SCALEBITS) +
++                    128;
++            cb[0] = ((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
++                    FIX(0.08131) * b1 + ONE_HALF - 1) >> SCALEBITS) +
++                    128;
++
++            cb++;
++            cr++;
++            p += 4;
++            lum += -wrap + 2;
++            alpha += -wrap + 2;
++       }
++    }
+ }
+ 
+ static void non_vec_yuv420_2vuy (uint8_t * image, uint8_t * py,
+@@ -655,14 +782,13 @@
+                             vuy_stride, y_stride, uv_stride);
+     }
+ }
+-#endif
+ 
+ yuv2vuy_fun yuv2vuy_init_altivec (void)
+ {
+-#ifdef HAVE_ALTIVEC
+-    return altivec_yuv420_2vuy;
+-#endif
+-    return non_vec_yuv420_2vuy; /* Fallback to C */
++    if (has_altivec())
++        return altivec_yuv420_2vuy;
++    else
++        return non_vec_yuv420_2vuy; /* Fallback to C */
+ }
+ 
+ static void non_vec_2vuy_yuv420 (uint8_t * image, uint8_t * py,
+@@ -699,7 +825,6 @@
+     }
+ }
+ 
+-#ifdef HAVE_ALTIVEC
+ // Altivec code adapted from VLC's i420_yuv2.c (thanks to Titer and Paul Jara) 
+ 
+ #define VEC_READ_LINE(ptr, y, uv)                                           \
+@@ -793,12 +918,12 @@
+                             vuy_stride, y_stride, uv_stride);
+     }
+ }
+-#endif
+ 
+ vuy2yuv_fun vuy2yuv_init_altivec (void)
+ {
+-#ifdef HAVE_ALTIVEC
+-    return altivec_2vuy_yuv420;
+-#endif
+-    return non_vec_2vuy_yuv420; /* Fallback to C */
++    if (has_altivec())
++        return altivec_2vuy_yuv420;
++    else
++        return non_vec_2vuy_yuv420; /* Fallback to C */
+ }
++#endif // HAVE_ALTIVEC
+diff -Naur mythtv-0.18.1-old/libs/libmythui/mythfontproperties.h mythtv-0.18.1-new/libs/libmythui/mythfontproperties.h
+--- mythtv-0.18.1-old/libs/libmythui/mythfontproperties.h	2004-10-13 21:08:10.000000000 -0700
++++ mythtv-0.18.1-new/libs/libmythui/mythfontproperties.h	2005-12-27 07:23:56.000000000 -0800
+@@ -12,7 +12,8 @@
+         color(QColor(Qt::white)),
+         hasShadow(false),
+         shadowAlpha(255),
+-        hasOutline(false) { }
++        hasOutline(false),
++        outlineAlpha(255) { }
+ 
+     QFont   face;
+     QColor  color;
+@@ -25,6 +26,7 @@
+     bool    hasOutline;
+     QColor  outlineColor;
+     int     outlineSize;
++    int     outlineAlpha;
+ };
+ 
+ #endif
 diff -Naur mythtv-0.18.1-old/programs/mythbackend/mainserver.cpp mythtv-0.18.1-new/programs/mythbackend/mainserver.cpp
 --- mythtv-0.18.1-old/programs/mythbackend/mainserver.cpp	2005-04-13 14:04:28.000000000 -0700
-+++ mythtv-0.18.1-new/programs/mythbackend/mainserver.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/programs/mythbackend/mainserver.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -589,6 +589,20 @@
  {
      QStringList retlist = "OK";
@@ -1699,7 +3171,7 @@ diff -Naur mythtv-0.18.1-old/programs/mythbackend/mainserver.cpp mythtv-0.18.1-n
          bool wantevents = commands[3].toInt();
 diff -Naur mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp
 --- mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp	2005-04-13 11:57:11.000000000 -0700
-+++ mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/programs/mythfrontend/globalsettings.cpp	2005-12-27 07:23:56.000000000 -0800
 @@ -2092,6 +2092,19 @@
      return gc;
  }
@@ -1733,7 +3205,7 @@ diff -Naur mythtv-0.18.1-old/programs/mythfrontend/globalsettings.cpp mythtv-0.1
  #endif
 diff -Naur mythtv-0.18.1-old/programs/mythfrontend/mythfrontend.pro mythtv-0.18.1-new/programs/mythfrontend/mythfrontend.pro
 --- mythtv-0.18.1-old/programs/mythfrontend/mythfrontend.pro	2005-01-30 22:14:20.000000000 -0800
-+++ mythtv-0.18.1-new/programs/mythfrontend/mythfrontend.pro	2005-11-19 07:20:37.000000000 -0800
++++ mythtv-0.18.1-new/programs/mythfrontend/mythfrontend.pro	2005-12-27 07:23:56.000000000 -0800
 @@ -52,3 +52,8 @@
  macx {
      RC_FILE += mythfrontend.icns
