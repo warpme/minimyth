@@ -96,4 +96,6 @@ post-install:
 	@ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/luximr.ttf $(DESTDIR)$(datadir)/mythtv/luximr.ttf
 	@rm -rf $(DESTDIR)$(datadir)/mythtv/FreeSans.ttf
 	@ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/luxisr.ttf $(DESTDIR)$(datadir)/mythtv/luxisr.ttf
+	@install -d $(DESTDIR)$(versiondir) 
+	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE19_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
 	@$(MAKECOOKIE)

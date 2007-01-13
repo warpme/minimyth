@@ -1,5 +1,5 @@
 GARNAME = xorg
-GARVERSION = $(XORG_VERSION)
+GARVERSION = mid
 CATEGORIES = xorg-mid
 LICENSE =
 
@@ -13,5 +13,9 @@ DEPENDS = \
 	xorg-mid/libXvMCW \
 	xorg-mid/xf86-video-openchrome
 
-GAR_EXTRA_CONF += xorg-mid/xorg/package-api.mk
 include ../../gar.mk
+
+post-install:
+	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
+	@$(MAKECOOKIE)

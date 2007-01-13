@@ -13,3 +13,8 @@ include ../../gar.mk
 
 $(DESTIMG)_NODEPEND += lang/c++
 export $(DESTIMG)_NODEPEND
+
+post-install:
+	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
+	@$(MAKECOOKIE)

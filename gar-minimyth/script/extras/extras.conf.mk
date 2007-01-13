@@ -19,4 +19,5 @@ extras_oldincludedir  = $(extras_prefix)/include
 extras_mandir         = $(extras_prefix)/man
 extras_docdir         = $(extras_prefix)/share/doc
 extras_sourcedir      = $(extras_prefix)/src
+extras_versiondir     = $(extras_prefix)/versions
 extras_licensedir     = $(extras_prefix)/licenses

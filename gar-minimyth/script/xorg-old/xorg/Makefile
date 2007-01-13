@@ -1,5 +1,5 @@
 GARNAME = xorg
-GARVERSION = $(XORG_VERSION)
+GARVERSION = old
 CATEGORIES = xorg-old
 LICENSE =
 
@@ -13,5 +13,9 @@ DEPENDS = \
 	xorg-old/libXvMCW \
 	xorg-old/unichrome
 
-GAR_EXTRA_CONF += xorg-old/xorg/package-api.mk
 include ../../gar.mk
+
+post-install:
+	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
+	@$(MAKECOOKIE)

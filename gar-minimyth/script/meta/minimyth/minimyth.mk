@@ -251,11 +251,20 @@ mm-make-busybox:
 	@rm -rf $(mm_ROOTFSDIR)/var
 
 mm-copy:
+	@# Copy versions.
+	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)-build
+	@cp -fa $(build_DESTDIR)$(build_versiondir)/* $(mm_ROOTFSDIR)$(versiondir)-build
+	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
+	@cp -fa $(DESTDIR)$(versiondir)/* $(mm_ROOTFSDIR)$(versiondir)
+	@rm -rf $(mm_ROOTFSDIR)$(versiondir)/minimyth
+	@mkdir -p $(mm_ROOTFSDIR)$(extras_versiondir)
+	@cp -fa $(DESTDIR)$(extras_versiondir)/* $(mm_ROOTFSDIR)$(extras_versiondir)
 	@# Copy licenses.
 	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)
 	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
+	@rm -rf $(mm_ROOTFSDIR)$(licensedir)/minimyth
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
-	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
+	@cp -fa $(DESTDIR)$(extras_licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
 	@# Copy QT mysql plugin.
 	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
 	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
@@ -282,9 +291,9 @@ mm-make-conf:
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@rm -rf   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/build
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/conf.d
-	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/build ; )
+	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
+	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
+	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )

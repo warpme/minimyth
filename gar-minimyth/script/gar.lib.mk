@@ -352,6 +352,11 @@ Artistic_LICENSE_TEXT = $(LICENSEDIR)/Artistic.txt
 Clarified_Artistic_LICENSE_TEXT = $(LICENSEDIR)/Clarified-Artistic.txt
 Public_Domain_LICENSE_TEXT = $(LICENSEDIR)/public-domain.txt
 
+install-version:
+	@install -d $(DESTDIR)$(versiondir) 
+	@echo $(GARVERSION) > $(DESTDIR)$(versiondir)/$(GARNAME)
+	@$(MAKECOOKIE)
+
 install-license-%: $($*_LICENSE_TEXT)
 	echo " ==> Installing $* license text"
 	install -d $(DESTDIR)$(licensedir)/$(GARNAME)/
