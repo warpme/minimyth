@@ -58,5 +58,5 @@ clean-all:
 	@rm -rf $(DESTDIR)$(bindir)/myth*
 	@rm -rf $(DESTDIR)$(datadir)/myth*
 	@rm -rf $(DESTDIR)$(includedir)/myth*
-	@rm -rf $(DESTDIR)$(lib)/libmyth*
-	@rm -rf $(DESTDIR)$(lib)/myth*
+	@rm -rf $(DESTDIR)$(libdir)/libmyth*
+	@rm -rf $(DESTDIR)$(libdir)/myth*
