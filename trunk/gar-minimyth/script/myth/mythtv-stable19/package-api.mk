@@ -2,7 +2,7 @@ MYTHTV_STABLE19_VERSION = 0.19
 
 MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
 
-MYTHTV_STABLE19_FIXES_VERSION = 9200
+MYTHTV_STABLE19_FIXES_VERSION = 9250
 
 mythtv-fixes-patch:
 	@mkdir -p $(PARTIALDIR)
@@ -34,5 +34,7 @@ mythtv-fixes-patch:
 		echo "error: cannot write the patch file checksum to the checksum file" ; \
 		exit 1 ; \
 	 fi
+	@sed -i 's%^.*download/$(DISTNAME)-fixes-.*\.patch%%' checksums
+	@cat checksums | grep 'download' > checksums
 	@md5sum files/$(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch >> checksums
 	@sed -i 's%files/\($(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch\)%download/\1%' checksums
