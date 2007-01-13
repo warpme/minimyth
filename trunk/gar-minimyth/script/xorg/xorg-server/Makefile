@@ -3,7 +3,7 @@ GARVERSION = 1.0.1
 CATEGORIES = xorg
 MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/xserver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-drm.patch
+PATCHFILES = $(DISTNAME)-drm.patch $(DISTNAME)-geteuid.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
