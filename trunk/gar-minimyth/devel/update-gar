@@ -40,6 +40,7 @@ main_CXXFLAGS='-march=$(GARCH) -pipe -O3 -fomit-frame-pointer'
 main_LDFLAGS=''
 _PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_x11bindir):$(build_DESTDIR)$(build_qtbindir):$(PATH)'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_x11libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_libdir)/mysql'
+_PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(x11libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
 
 # Replace current GAR files with clean GAR files.
 rm -f ${SCRIPT_DIR}/gar.mk      ; cp ${GAR_LNX_BBC_DIR}/gar.mk ${SCRIPT_DIR}
@@ -198,8 +199,10 @@ sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%\1 = ${_LD_LIBRARY_PATH}%g" ${SCRIPT_DIR}/
 sed -i "s%^\(#*PATCHDIR\) *?=.*$%\1 ?= ${PATCHDIR}%g" ${SCRIPT_DIR}/gar.lib.mk
 
 # Change PATH
-# We include X11 bin dir.
 sed -i "s%^PATH *:=.*$%PATH := ${_PATH}%g" ${SCRIPT_DIR}/gar.mk
+
+# Change PKG_CONFIG_PATH.
+sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_PATH = ${_PKG_CONFIG_PATH}%g" ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i '/^INSTALL_DIRS *=/s%$(sbindir)%$(esbindir) &%' ${SCRIPT_DIR}/gar.mk
 sed -i '/^INSTALL_DIRS *=/s%$(bindir)%$(ebindir) &%' ${SCRIPT_DIR}/gar.mk
