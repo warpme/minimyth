@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp
 --- mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp	2005-04-10 05:33:45.000000000 -0700
-+++ mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp	2005-04-14 19:51:24.587923567 -0700
++++ mythtv-0.17-new/programs/mythfrontend/globalsettings.cpp	2005-04-23 11:26:34.000000000 -0700
 @@ -18,6 +18,10 @@
      HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
  
@@ -31,6 +31,15 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      QDir dev("/dev", "mixer*", QDir::Name, QDir::System);
      gc->fillSelectionsFromDir(dev);
  
+@@ -132,7 +139,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("Deinterlace");
+     gc->setLabel(QObject::tr("Deinterlace playback"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("Make the video look normal on a progressive "
+                     "display (i.e. monitor)."));
+     return gc;
 @@ -144,7 +151,7 @@
      gc->setLabel(QObject::tr("Algorithm"));
      gc->addSelection(QObject::tr("Linear blend"), "linearblend");
@@ -144,6 +153,19 @@ diff -Naur mythtv-0.17-old/programs/mythfrontend/globalsettings.cpp mythtv-0.17-
      gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
                      "will play in a small window on the \"Watch a "
                      "Recording\" menu."));
+@@ -971,11 +983,11 @@
+ {
+     HostComboBox *gc = new HostComboBox("AllowQuitShutdown");
+     gc->setLabel(QObject::tr("System Exit key"));
+-    gc->addSelection(QObject::tr("ESC"), "4");
+     gc->addSelection(QObject::tr("No exit key"), "0");
+     gc->addSelection(QObject::tr("Control-ESC"), "1");
+     gc->addSelection(QObject::tr("Meta-ESC"), "2");
+     gc->addSelection(QObject::tr("Alt-ESC"), "3");
++    gc->addSelection(QObject::tr("ESC"), "4");
+     gc->setHelpText(QObject::tr("MythTV is designed to run continuously. If "
+                     "you wish, you may use the ESC key or the ESC key + a "
+                     "modifier to exit MythTV. Do not choose a key combination "
 @@ -998,7 +1010,7 @@
  {
      HostLineEdit *ge = new HostLineEdit("HaltCommand");
