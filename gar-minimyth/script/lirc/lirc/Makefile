@@ -1,5 +1,5 @@
 GARNAME = lirc
-GARVERSION = 0.8.0pre4
+GARVERSION = 0.8.0
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
