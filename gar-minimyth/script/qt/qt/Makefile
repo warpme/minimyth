@@ -157,3 +157,8 @@ post-install:
 	@sed -i 's% -L$${libdir}% -L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
 	@sed -i 's% -I$${includedir}% -I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(build_DESTDIR)$(build_libdir)/qt
+	@rm -rf $(DESTDIR)$(libdir)/qt
