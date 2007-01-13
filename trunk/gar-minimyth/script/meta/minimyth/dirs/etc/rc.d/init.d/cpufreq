@@ -1,0 +1,42 @@
+#!/bin/sh
+################################################################################
+# cpufreq
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'starting CPU frequency scaling ...'
+
+    for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
+        GOVERNOR_ONDEMAND="no"
+        GOVERNOR_CONSERVATIVE="no"
+	for governor in `cat ${dir}/scaling_available_governors` ; do
+            [ "${governor}" = "ondemand"     ] && GOVERNOR_ONDEMAND="yes"
+            [ "${governor}" = "conservative" ] && GOVERNOR_CONSERVATIVE="yes"
+        done
+        if   [ "${GOVERNOR_ONDEMAND}"     = "yes" ] ; then
+            echo ondemand     > ${dir}/scaling_governor
+        elif [ "${GOVERNOR_CONSERVATIVE}" = "yes" ] ; then
+            echo conservative > ${dir}/scaling_governor
+        fi
+    done
+
+    return 0
+}
+
+stop() {
+    mm_message_output info 'stopping CPU frequency scaling ...'
+
+    for dir in /sys/devices/system/cpu/cpu*/cpufreq ; do
+        echo performance > ${dir}/scaling_governor
+    done
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0
