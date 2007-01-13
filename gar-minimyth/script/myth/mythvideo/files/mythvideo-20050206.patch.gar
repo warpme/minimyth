@@ -1,0 +1,26 @@
+diff -Naur mythvideo-20050128-old/settings.pro mythvideo-20050128-new/settings.pro
+--- mythvideo-20050128-old/settings.pro	2005-01-25 17:29:46.000000000 -0800
++++ mythvideo-20050128-new/settings.pro	2005-01-31 16:32:02.244815086 -0800
+@@ -2,17 +2,17 @@
+ CONFIG += release
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @prefix@
+ }
+ 
+-INCLUDEPATH += $${PREFIX}/include
+-INCLUDEPATH *= $${PREFIX}/include/mythtv
++INCLUDEPATH += @DESTDIR@@includedir@
++INCLUDEPATH *= @DESTDIR@@includedir@/mythtv
+ 
+ DEFINES += _GNU_SOURCE
+ release {
+-        QMAKE_CXXFLAGS_RELEASE = -O3 -march=pentiumpro -fomit-frame-pointer
++        QMAKE_CXXFLAGS_RELEASE = @CXXFLAGS@
+     macx {
+         # Don't use -O3, it causes some Qt moc methods to go missing
+-        QMAKE_CXXFLAGS_RELEASE = -O2
++        QMAKE_CXXFLAGS_RELEASE = @CXXFLAGS@
+     }
+ }
