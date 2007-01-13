@@ -42,7 +42,7 @@ tarball:
 		-jcf $(DIR_TAIL)~/$(TAR_FILE) $(DIR_TAIL)
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; tar -jxf $(TAR_FILE)
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; rm -f    $(TAR_FILE)
-	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; mv $(DIR_TAIL) $(TAR_BASE)
+	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; [ ! "$(DIR_TAIL)" = "$(TAR_BASE)" ] && mv $(DIR_TAIL) $(TAR_BASE) ; [ -d "$(TAR_BASE)" ]
 	@cd $(DIR_HEAD)/$(DIR_TAIL)~ ; tar -jcf $(TAR_FILE) $(TAR_BASE)
 	@cd $(DIR_HEAD) ; mv $(DIR_TAIL)~/$(TAR_FILE) $(DIR_TAIL)/$(TAR_FILE)
 	@rm -rf $(DIR_HEAD)/$(DIR_TAIL)~
