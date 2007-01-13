@@ -3,6 +3,7 @@ GARVERSION = 0.4.3
 CATEGORIES = lirc
 MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-gcc4.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =

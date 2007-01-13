@@ -3,8 +3,8 @@ GARVERSION = 2.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/faac/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-makefile.patch
-#LICENSE = GPL2
+PATCHFILES = $(DISTNAME)-gcc4.patch $(DISTNAME)-makefile.patch
+LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
