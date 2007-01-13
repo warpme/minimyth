@@ -1,7 +1,7 @@
 GARNAME = ffmpeg
-GARVERSION = 20060422
+GARVERSION = 5457
 CATEGORIES = lib
-MASTER_SITES = cvs://anonymous@mplayerhq.hu:/cvsroot/$(GARNAME)/
+MASTER_SITES = svn://svn.mplayerhq.hu/ffmpeg/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
@@ -55,8 +55,8 @@ include ../../gar.mk
 
 CFLAGS += -DHAVE_XVMC
 
-cvs//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
