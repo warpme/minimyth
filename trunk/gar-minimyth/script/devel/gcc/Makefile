@@ -6,6 +6,9 @@ MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+PATCHFILES += $(DISTNAME)-dynamic_linker.patch
+endif
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
@@ -41,11 +44,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-nls \
 	--enable-shared \
 	--enable-threads=posix \
-	--enable-version-specific-runtime-libs
-ifneq ($(DESTIMG),$(CROSSIMG))
-CONFIGURE_ARGS += \
+	--enable-version-specific-runtime-libs \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-endif
 # Bootstrap the native environment compiler.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 BUILD_ARGS     += \
@@ -77,9 +77,6 @@ post-install:
 		$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
 			mv -f $(CROSS_GCC_DIR)/lib64/* $(CROSS_GCC_LIBDIR) ; \
 			rm -rf $(CROSS_GCC_DIR)/lib64 ; \
-		) \
-		$(if $(wildcard $(CROSS_GCC_LIBDIR)/specs), \
-			sed -i 's%/lib64%/lib%' $(DESTDIR)$(CROSS_GCC_LIBDIR)/specs ; \
 		) \
 		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
 		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \

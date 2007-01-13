@@ -20,7 +20,10 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sanity-checks \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
-	--with-headers=$(DESTDIR)$(includedir) 
+	--with-headers=$(DESTDIR)$(includedir) \
+	--disable-add-ons \
+	--without-tls \
+	--without-__thread
 INSTALL_ARGS    = \
 	cross-compiling=yes \
 	install_root=$(DESTDIR)

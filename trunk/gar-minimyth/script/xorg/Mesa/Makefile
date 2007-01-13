@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/expat xorg/libdrm xorg/xproto xorg/libX11 xorg/glproto xorg/xf86vidmodeproto xorg/libXext xorg/libXxf86vm xorg/libXmu xorg/libXi
+DEPENDS   = lang/c++ lib/expat xorg/libdrm xorg/xproto xorg/libX11 xorg/glproto xorg/xf86vidmodeproto xorg/libXext xorg/libXxf86vm xorg/libXmu xorg/libXi
 BUILDDEPS = xorg/makedepend
 
 MESA_CONFIG = $(strip \
@@ -53,9 +53,11 @@ install-custom:
 		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(libdir)/
 	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/dri
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i810_dri.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i810_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
+		$(if $(filter i386,$(GARCH_FAMILY)), \
+			cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i810_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/)
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i830_dri.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i830_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
+		$(if $(filter i386,$(GARCH_FAMILY)), \
+			cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i830_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/)
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/i915_dri.* ; \
 		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/i915_dri.*      $(DESTDIR)$(libdir)/xorg/modules/dri/
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/dri/unichrome_dri.* ; \
