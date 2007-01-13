@@ -162,6 +162,7 @@ mm-copy-x11:
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/fonts   $(mm_DESTDIR)$(x11libdir)/X11
 	@cp -fa $(DESTDIR)$(x11libdir)/X11/rgb.txt $(mm_DESTDIR)$(x11libdir)/X11
 	@mkdir -p $(mm_DESTDIR)$(x11libdir)/X11/xserver
+	@cp -fa $(DESTDIR)$(x11libdir)/X11/xserver/SecurityPolicy $(mm_DESTDIR)$(x11libdir)/X11/xserver
 
 mm-copy-bins:
 	@echo 'copying binaries'
