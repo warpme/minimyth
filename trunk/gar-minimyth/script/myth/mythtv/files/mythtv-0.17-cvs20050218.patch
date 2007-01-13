@@ -1,0 +1,2579 @@
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmyth/audiooutputalsa.cpp mythtv-20050218/libs/libmyth/audiooutputalsa.cpp
+--- mythtv-0.17/libs/libmyth/audiooutputalsa.cpp	2005-01-21 14:57:20.000000000 -0800
++++ mythtv-20050218/libs/libmyth/audiooutputalsa.cpp	2005-02-14 16:03:43.000000000 -0800
+@@ -215,7 +215,7 @@
+     // this should be more like what you want, previously this function
+     // was returning the soundcard buffer size -dag
+ 
+-    snd_pcm_sframes_t delay;
++    snd_pcm_sframes_t delay = 0;
+ 
+     snd_pcm_state_t state = snd_pcm_state(pcm_handle);
+     if (state == SND_PCM_STATE_RUNNING || 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmyth/mythdbcon.cpp mythtv-20050218/libs/libmyth/mythdbcon.cpp
+--- mythtv-0.17/libs/libmyth/mythdbcon.cpp	2005-02-09 13:35:13.000000000 -0800
++++ mythtv-20050218/libs/libmyth/mythdbcon.cpp	2005-02-15 14:21:30.000000000 -0800
+@@ -5,4 +5,4 @@
+     static QMutex prepareLock;
+     QMutexLocker lock(&prepareLock);
+     return QSqlQuery::prepare(query); 
+-}
+\ No newline at end of file
++}
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmyth/themedmenu.cpp mythtv-20050218/libs/libmyth/themedmenu.cpp
+--- mythtv-0.17/libs/libmyth/themedmenu.cpp	2005-02-10 18:37:52.000000000 -0800
++++ mythtv-20050218/libs/libmyth/themedmenu.cpp	2005-02-16 16:03:10.000000000 -0800
+@@ -56,6 +56,7 @@
+ {
+     QPoint pos;
+     QRect  posRect;
++    QRect  paintRect;
+ 
+     ButtonIcon *buttonicon;
+     QPoint iconPos;
+@@ -1564,7 +1565,6 @@
+     {
+         drawTitle = false;
+     }
+-
+     drawInactiveButtons();
+ 
+     if (LCD::Get())
+@@ -1776,7 +1776,8 @@
+             tbutton->posRect = QRect(tbutton->pos.x(), tbutton->pos.y(),
+                                      buttonnormal->width(),
+                                      buttonnormal->height());
+-
++                
++                
+             if (tbutton->buttonicon)
+             {
+                 tbutton->iconPos = tbutton->buttonicon->offset + tbutton->pos;
+@@ -1784,6 +1785,12 @@
+                                           tbutton->iconPos.y(),
+                                           tbutton->buttonicon->icon->width(),
+                                           tbutton->buttonicon->icon->height());
++                
++                tbutton->paintRect = tbutton->posRect.unite(tbutton->iconRect);
++            }
++            else
++            {
++                tbutton->paintRect = tbutton->posRect;
+             }
+             
+             col++;
+@@ -1946,6 +1953,7 @@
+     else
+         cr = tbutton->posRect;
+ 
++    
+     if (!erased)
+     {
+         if (tbutton->status == 1 && activebutton == tbutton)
+@@ -2210,13 +2218,20 @@
+ 
+         if (action == "UP")
+         { 
+-            if (currentrow > 0)
+-                currentrow--;
+-            else if (columns == 1)
+-                currentrow = buttonRows.size() - 1;
+-
+-            if (currentcolumn >= buttonRows[currentrow].numitems)
+-                currentcolumn = buttonRows[currentrow].numitems - 1;
++            if( maxrows > 1)
++            {
++                if (currentrow > 0)
++                    currentrow--;
++                else if (columns == 1)
++                    currentrow = buttonRows.size() - 1;
++    
++                if (currentcolumn >= buttonRows[currentrow].numitems)
++                    currentcolumn = buttonRows[currentrow].numitems - 1;
++            }
++            else
++            {
++                handled = false;
++            }
+         }
+         else if (action == "PAGEUP")
+         {
+@@ -2229,16 +2244,26 @@
+         {
+             if (currentcolumn > 0)
+                 currentcolumn--;
++            else
++                currentcolumn = buttonRows[currentrow].numitems - 1;
++            
+         }
+         else if (action == "DOWN")
+         {
+-            if (currentrow < (int)buttonRows.size() - 1)
+-                currentrow++;
+-            else if (columns == 1)
+-                currentrow = 0;
+-
+-            if (currentcolumn >= buttonRows[currentrow].numitems)
+-                currentcolumn = buttonRows[currentrow].numitems - 1;
++            if( maxrows > 1)
++            {
++                if (currentrow < (int)buttonRows.size() - 1)
++                    currentrow++;
++                else if (columns == 1)
++                    currentrow = 0;
++    
++                if (currentcolumn >= buttonRows[currentrow].numitems)
++                    currentcolumn = buttonRows[currentrow].numitems - 1;
++            }
++            else
++            {
++                handled = false;
++            }
+         }
+         else if (action == "PAGEDOWN")
+         {
+@@ -2252,6 +2277,9 @@
+         {
+             if (currentcolumn < buttonRows[currentrow].numitems - 1)
+                 currentcolumn++;
++            else
++                currentcolumn = 0;
++            
+         }
+         else if (action == "SELECT")
+         {
+@@ -2298,8 +2326,8 @@
+ 
+     parent->update(watermarkRect);
+     if (lastbutton)
+-        parent->update(lastbutton->posRect);
+-    parent->update(activebutton->posRect);
++        parent->update(lastbutton->paintRect);
++    parent->update(activebutton->paintRect);
+ 
+     return true;
+ } 
+@@ -2612,7 +2640,7 @@
+ 
+     for (unsigned int i = 0; i < d->buttonList.size(); i++)
+     {
+-        if (r.intersects(d->buttonList[i].posRect))
++        if (r.intersects(d->buttonList[i].paintRect))
+             d->paintButton(i, &p, e->erased());
+     }
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/avformatdecoder.cpp mythtv-20050218/libs/libmythtv/avformatdecoder.cpp
+--- mythtv-0.17/libs/libmythtv/avformatdecoder.cpp	2005-02-09 23:33:01.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/avformatdecoder.cpp	2005-02-14 20:21:13.000000000 -0800
+@@ -525,6 +525,13 @@
+     fps = 0;
+ 
+     audioStreams.clear();
++    do_ac3_passthru = false;
++    audio_sample_size = -1;
++    audio_sampling_rate = -1;
++    audio_channels = -1;
++    audio_check_1st = 2;
++    audio_sampling_rate_2nd = -1;
++    audio_channels_2nd = -1;
+ 
+     for (int i = 0; i < ic->nb_streams; i++)
+     {
+@@ -687,7 +694,7 @@
+             audioStreams.push_back( i );
+             VERBOSE(VB_AUDIO, QString("Stream #%1 (audio track #%2) is an "
+                     "audio stream with %3 channels.")
+-                              .arg(i).arg(audioStreams.size()).arg(enc->channels));
++                    .arg(i).arg(audioStreams.size() - 1).arg(enc->channels));
+         }
+     }
+ 
+@@ -779,7 +786,22 @@
+     codec = avcodec_find_decoder(enc->codec_id);
+     avcodec_open(enc, codec);
+ 
+-    SetupAudioStream();
++    if (do_ac3_passthru)
++    {
++        // An AC3 stream looks like a 48KHz 2ch audio stream to
++        // the sound card
++        audio_sample_size = 4;
++        audio_sampling_rate = 48000;
++        audio_channels = 2;
++    }
++    else
++    {
++        audio_sample_size = channels * 2;
++        audio_sampling_rate = freq;
++        audio_channels = channels;
++    }
++
++    m_parent->SetAudioParams(16, audio_channels, audio_sampling_rate);
+     m_parent->ReinitAudio();
+     return;
+ }
+@@ -1300,31 +1322,13 @@
+     if (curstream == NULL)
+         return;
+ 
+-    VERBOSE(VB_AUDIO, QString("Initializing audio parms from stream #%1.")
++    VERBOSE(VB_AUDIO, QString("Initializing audio parms from audio track #%1.")
+             .arg(currentAudioTrack));
+ 
+     m_parent->SetEffDsp(curstream->codec.sample_rate * 100);
+ 
+     do_ac3_passthru = curstream->codec.codec_id == CODEC_ID_AC3 &&
+                       gContext->GetNumSetting("AC3PassThru", false);
+-
+-    if (do_ac3_passthru)
+-    {
+-        // An AC3 stream looks like a 48KHz 2ch audio stream to
+-        // the sound card
+-        audio_sample_size = 4;
+-        audio_sampling_rate = 48000;
+-        audio_channels = 2;
+-    }
+-    else
+-    {
+-        audio_sample_size = curstream->codec.channels * 2;
+-        audio_sampling_rate = curstream->codec.sample_rate;
+-        audio_channels = curstream->codec.channels;
+-    }
+-
+-    assert(curstream->codec.sample_fmt == SAMPLE_FMT_S16);
+-    m_parent->SetAudioParams(16, audio_channels, audio_sampling_rate);
+ }
+ 
+ bool AvFormatDecoder::GetFrame(int onlyvideo)
+@@ -1349,6 +1353,8 @@
+         autoSelectAudioTrack();
+     }
+ 
++    bool skipaudio = (lastvpts == 0);
++
+     while (!allowedquit)
+     {
+         if (gotvideo)
+@@ -1473,6 +1479,18 @@
+                         continue;
+                     }
+ 
++                    if (skipaudio)
++                    {
++                        if (lastapts < lastvpts - 30 || lastvpts == 0)
++                        {
++                            ptr += pkt->size;
++                            len -= pkt->size;
++                            continue;
++                        }
++                        else
++                            skipaudio = false;
++                    }
++                        
+                     if (do_ac3_passthru)
+                     {
+                         data_size = pkt->size;
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/avformatdecoder.h mythtv-20050218/libs/libmythtv/avformatdecoder.h
+--- mythtv-0.17/libs/libmythtv/avformatdecoder.h	2005-01-21 11:25:42.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/avformatdecoder.h	2005-02-17 21:40:42.000000000 -0800
+@@ -46,8 +46,8 @@
+     bool isLastFrameKey(void) { return false; }
+ 
+     /// This is a No-op for this class.
+-    void WriteStoredData(RingBuffer *rb, bool storevid)
+-                           { (void)rb; (void)storevid; }
++    void WriteStoredData(RingBuffer *rb, bool storevid, long timecodeOffset)
++                           { (void)rb; (void)storevid; (void)timecodeOffset;}
+ 
+     /// This is a No-op for this class.
+     void SetRawAudioState(bool state) { (void)state; }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/commercial_skip.cpp mythtv-20050218/libs/libmythtv/commercial_skip.cpp
+--- mythtv-0.17/libs/libmythtv/commercial_skip.cpp	2005-02-04 09:31:00.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/commercial_skip.cpp	2005-02-17 22:03:43.000000000 -0800
+@@ -1576,6 +1576,7 @@
+ 
+ void CommDetect::BuildLogoCommList()
+ {
++    GetLogoCommBreakMap(logoCommBreakMap);
+     CondenseMarkMap(logoCommBreakMap, (int)(25 * fps), (int)(30 * fps));
+     ConvertShowMapToCommMap(logoCommBreakMap);
+ 
+@@ -2114,7 +2115,7 @@
+     int maxLoops = 240;
+     EdgeMaskEntry *edgeCounts;
+     int pos, i, x, y, dx, dy;
+-    int edgeDiffs[] = { 5, 7, 10, 0 };
++    int edgeDiffs[] = { 5, 7, 10, 15, 20, 30, 40, 50, 60, 0 };
+ 
+  
+     VERBOSE(VB_COMMFLAG, "Searching for Station Logo");
+@@ -2462,5 +2463,36 @@
+     }
+ }
+ 
++void CommDetect::GetLogoCommBreakMap(QMap<long long, int> &map)
++{
++    VERBOSE(VB_COMMFLAG, "CommDetect::GetLogoCommBreakMap()");
++
++    map.clear();
++
++    int curFrame;
++    bool PrevFrameLogo;
++    bool CurrentFrameLogo;
++    
++    curFrame = 1;    
++    PrevFrameLogo = false;
++    
++    while (curFrame <= framesProcessed)
++    {
++        if (frameInfo[curFrame].flagMask & COMM_FRAME_LOGO_PRESENT)
++            CurrentFrameLogo = true;
++        else
++            CurrentFrameLogo = false;
++
++        if (!PrevFrameLogo && CurrentFrameLogo)
++            map[curFrame] = MARK_START;
++        else if (PrevFrameLogo && !CurrentFrameLogo)
++            map[curFrame] = MARK_END;
++
++        curFrame++;
++        PrevFrameLogo = CurrentFrameLogo;
++    }
++
++}
++
+ 
+ /* vim: set expandtab tabstop=4 shiftwidth=4: */
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/commercial_skip.h mythtv-20050218/libs/libmythtv/commercial_skip.h
+--- mythtv-0.17/libs/libmythtv/commercial_skip.h	2005-01-22 05:46:59.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/commercial_skip.h	2005-02-17 22:03:43.000000000 -0800
+@@ -68,6 +68,7 @@
+     void GetBlankCommBreakMap(QMap<long long, int> &breaks);
+     void GetSceneChangeMap(QMap<long long, int> &scenes,
+                            long long start_frame = -1);
++    void GetLogoCommBreakMap(QMap<long long, int> &map);
+ 
+     void BuildMasterCommList(void);
+     void BuildAllMethodsCommList(void);
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/decoderbase.h mythtv-20050218/libs/libmythtv/decoderbase.h
+--- mythtv-0.17/libs/libmythtv/decoderbase.h	2005-01-07 16:28:14.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/decoderbase.h	2005-02-17 21:40:42.000000000 -0800
+@@ -35,7 +35,9 @@
+     virtual bool DoFastForward(long long desiredFrame, bool doflush = true);
+ 
+     virtual bool isLastFrameKey() = 0;
+-    virtual void WriteStoredData(RingBuffer *rb, bool storevid) = 0;
++    virtual void WriteStoredData(RingBuffer *rb, bool storevid,
++                                 long timecodeOffset) = 0;
++    virtual void ClearStoredData(void) { return; };
+     virtual void SetRawAudioState(bool state) { getrawframes = state; }
+     virtual bool GetRawAudioState(void) { return getrawframes; }
+     virtual void SetRawVideoState(bool state) { getrawvideo = state; }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/hdtvrecorder.cpp mythtv-20050218/libs/libmythtv/hdtvrecorder.cpp
+--- mythtv-0.17/libs/libmythtv/hdtvrecorder.cpp	2005-02-09 23:38:30.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/hdtvrecorder.cpp	2005-02-17 19:53:34.000000000 -0800
+@@ -105,7 +105,7 @@
+ {
+     _atsc_stream_data = new ATSCStreamData(-1, DEFAULT_SUBCHANNEL);
+ 
+-    _buffer_size = TSPacket::SIZE * 128;
++    _buffer_size = TSPacket::SIZE * 1500;
+     if ((_buffer = new unsigned char[_buffer_size])) {
+         // make valgrind happy, initialize buffer memory
+         memset(_buffer, 0xFF, _buffer_size);
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/ivtvdecoder.cpp mythtv-20050218/libs/libmythtv/ivtvdecoder.cpp
+--- mythtv-0.17/libs/libmythtv/ivtvdecoder.cpp	2005-01-28 16:06:57.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/ivtvdecoder.cpp	2005-02-17 20:14:17.000000000 -0800
+@@ -146,9 +146,10 @@
+     else
+     {
+         if (vcap.version < 0x00000109)
+-            cerr << "ivtv driver is version " << hex << vcap.version <<
+-                ", version " << hex <<  0x00000109 << " (or later) " <<
+-                "is required" << endl;
++            VERBOSE(VB_IMPORTANT, QString("IVTV driver is version %1, "
++                                          "version %2 (or later) is required")
++                                          .arg(vcap.version, 0, 16)
++                                          .arg(0x00000109, 0, 16));
+         else if (vcap.capabilities & V4L2_CAP_VIDEO_OUTPUT)
+             ok = true;
+     }
+@@ -337,8 +338,8 @@
+                 }
+                 case PICTURE_START:
+                 {
+-                    //int type = (bufptr[1] >> 3) & 7;
+-                    //if (type >= 1 && type <= 3)
++                    int type = (bufptr[1] >> 3) & 7;
++                    if (type >= 1 && type <= 3)
+                     {
+                         framesScanned++;
+                         if (exitafterdecoded)
+@@ -514,7 +515,8 @@
+ 
+     if (rawframes < lastdequeued)
+     {
+-        cout << "ivtv rawframes descreased!  did the decoder reset?" << endl;
++        VERBOSE(VB_IMPORTANT, QString("IVTV rawframes decreased! "
++                                      "Did the decoder reset?"));
+     }
+     else
+     {
+@@ -522,7 +524,7 @@
+         {
+             if (queuedlist.empty())
+             {
+-                cout << "ivtv framelist is empty!" << endl;
++                VERBOSE(VB_IMPORTANT, QString("IVTV framelist is empty!"));
+                 break;
+             }
+             lastdequeued = queuedlist.front().raw;
+@@ -570,7 +572,9 @@
+             if (tries && !(tries % restep))
+             {
+                 videoout->Pause();
+-                fprintf(stderr, "        extra step %d at %d\n", step, last);
++                VERBOSE(VB_IMPORTANT, QString("  extra step %1 at %2")
++                                              .arg(step)
++                                              .arg(last));
+                 videoout->Step();
+                 usleep(1000);
+             }
+@@ -582,7 +586,8 @@
+ 
+         if (tries >= maxtries)
+         {
+-            cerr << "timed out while stepping, giving up" << endl;
++            VERBOSE(VB_IMPORTANT, QString("IvtvDecoder timed out while "
++                                          "stepping, giving up"));
+             break;
+         }
+         
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/ivtvdecoder.h mythtv-20050218/libs/libmythtv/ivtvdecoder.h
+--- mythtv-0.17/libs/libmythtv/ivtvdecoder.h	2004-12-07 20:23:16.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/ivtvdecoder.h	2005-02-17 21:40:42.000000000 -0800
+@@ -40,8 +40,8 @@
+     bool DoFastForward(long long desiredFrame, bool doflush = true);
+ 
+     bool isLastFrameKey(void) { return false; }
+-    void WriteStoredData(RingBuffer *rb, bool storevid)
+-                           { (void)rb; (void)storevid; }
++    void WriteStoredData(RingBuffer *rb, bool storevid, long timecodeOffset)
++                           { (void)rb; (void)storevid; (long)timecodeOffset;}
+     void SetRawAudioState(bool state) { (void)state; }
+     bool GetRawAudioState(void) { return false; }
+     void SetRawVideoState(bool state) { (void)state; }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/jobqueue.cpp mythtv-20050218/libs/libmythtv/jobqueue.cpp
+--- mythtv-0.17/libs/libmythtv/jobqueue.cpp	2005-02-09 13:35:13.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/jobqueue.cpp	2005-02-17 21:40:42.000000000 -0800
+@@ -180,6 +180,8 @@
+     while (queuePoll)
+     {
+         maxJobs = gContext->GetNumSetting("JobQueueMaxSimultaneousJobs", 3);
++        VERBOSE(VB_JOBQUEUE, QString("JobQueue currently set to run maximum "
++                                     "of %1 job(s)").arg(maxJobs));
+ 
+         job.clear();
+         jobType.clear();
+@@ -1598,6 +1600,18 @@
+         ChangeJobStatus(commthread_db->db(), jobID, JOB_ABORTED,
+                         "Job aborted by user.");
+     }
++    else if (breaksFound == 254)
++    {
++        msg = QString("ERROR in Commercial Flagging for %1, problem opening "
++                      "file or initting decoder, check backend log.")
++                      .arg(logDesc);
++
++        gContext->LogEntry("commflag", LP_WARNING,
++                           "Commercial Flagging ERRORED", msg);
++
++        ChangeJobStatus(commthread_db->db(), jobID, JOB_ERRORED,
++                        "Job ERRORED, unable to open file or init decoder.");
++    }
+     else if (breaksFound >= 200)
+     {
+         msg = QString("Commercial Flagging ERRORED for %1 with result %2.")
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/nuppeldecoder.cpp mythtv-20050218/libs/libmythtv/nuppeldecoder.cpp
+--- mythtv-0.17/libs/libmythtv/nuppeldecoder.cpp	2005-01-21 14:57:20.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/nuppeldecoder.cpp	2005-02-17 21:40:42.000000000 -0800
+@@ -192,9 +192,13 @@
+         }
+     }
+ 
++    if (fileheader.aspect > .999 && fileheader.aspect < 1.001)
++        fileheader.aspect = 4.0 / 3;
++    current_aspect = fileheader.aspect;
++
+     m_parent->SetVideoParams(fileheader.width, fileheader.height,
+                              fileheader.fps, fileheader.keyframedist,
+-                             4.0 / 3, kScan_Detect);
++                             fileheader.aspect, kScan_Detect);
+ 
+     video_width = fileheader.width;
+     video_height = fileheader.height;
+@@ -841,11 +845,13 @@
+     return 0;
+ }
+ 
+-void NuppelDecoder::WriteStoredData(RingBuffer *rb, bool storevid)
++void NuppelDecoder::WriteStoredData(RingBuffer *rb, bool storevid,
++                                    long timecodeOffset)
+ {
+     RawDataList *data;
+     while(! StoredData.isEmpty()) {
+         data = StoredData.first();
++        data->frameheader.timecode -= timecodeOffset;
+         if (storevid || data->frameheader.frametype != 'V')
+         {
+             rb->Write(&(data->frameheader), FRAMEHEADERSIZE);
+@@ -857,6 +863,16 @@
+     }
+ }
+ 
++void NuppelDecoder::ClearStoredData()
++{
++    RawDataList *data;
++    while(!StoredData.isEmpty()) {
++        data = StoredData.first();
++        StoredData.removeFirst();
++        delete data;
++    }
++}
++
+ // avignore = 0  : get audio and video
+ //          = 1  : video only
+ //          = -1 : neither, just parse
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/nuppeldecoder.h mythtv-20050218/libs/libmythtv/nuppeldecoder.h
+--- mythtv-0.17/libs/libmythtv/nuppeldecoder.h	2005-01-08 08:48:12.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/nuppeldecoder.h	2005-02-17 21:40:42.000000000 -0800
+@@ -48,7 +48,8 @@
+     bool GetFrame(int onlyvideo);
+ 
+     bool isLastFrameKey(void) { return (lastKey == framesPlayed); }
+-    void WriteStoredData(RingBuffer *rb, bool writevid);
++    void WriteStoredData(RingBuffer *rb, bool writevid, long timecodeOffset);
++    void ClearStoredData(void);
+ 
+     long UpdateStoredFrameNum(long framenumber);
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-20050218/libs/libmythtv/NuppelVideoPlayer.cpp
+--- mythtv-0.17/libs/libmythtv/NuppelVideoPlayer.cpp	2005-02-10 20:21:24.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/NuppelVideoPlayer.cpp	2005-02-17 21:40:42.000000000 -0800
+@@ -276,8 +276,12 @@
+ 
+     if (!actuallypaused)
+     {
+-        while (!decoderThreadPaused.wait(1000))
++        while (!decoderThreadPaused.wait(4000))
++        {
++            if (eof)
++                return;
+             VERBOSE(VB_IMPORTANT, "Waited too long for decoder to pause");
++        }
+     }
+ 
+     //cout << "stopping other threads" << endl;
+@@ -287,11 +291,14 @@
+     if (ringBuffer)
+         ringBuffer->Pause();
+ 
+-    //cout << "updating frames played" << endl;
+-    if (disablevideo || forceVideoOutput == kVideoOutput_IVTV)
+-        decoder->UpdateFramesPlayed();
+-    else
+-        framesPlayed = videoOutput->GetFramesPlayed();
++    if (decoder && videoOutput)
++    {
++        //cout << "updating frames played" << endl;
++        if (disablevideo || forceVideoOutput == kVideoOutput_IVTV)
++            decoder->UpdateFramesPlayed();
++        else
++            framesPlayed = videoOutput->GetFramesPlayed();
++    }
+ }
+ 
+ bool NuppelVideoPlayer::Play(float speed, bool normal, bool unpauseaudio)
+@@ -334,7 +341,11 @@
+     if (wait && !video_actually_paused)
+     {
+         while (!videoThreadPaused.wait(1000))
++        {
++            if (eof)
++                return;
+             VERBOSE(VB_IMPORTANT, "Waited too long for video out to pause");
++        }
+     }
+ }
+ 
+@@ -2036,6 +2047,8 @@
+         }
+     }
+ 
++    decoderThreadPaused.wakeAll();
++
+     killvideo = true;
+     pthread_join(output_video, NULL);
+ 
+@@ -3424,6 +3437,7 @@
+         decoder->SetRawAudioState(true);
+ 
+     decoder->setExactSeeks(true);
++    decoder->setLowBuffers();
+ }
+ 
+ bool NuppelVideoPlayer::TranscodeGetNextFrame(QMap<long long, int>::Iterator &dm_iter,
+@@ -3449,6 +3463,9 @@
+                 msg += QString(" to %1").arg((int)dm_iter.key());
+                 VERBOSE(VB_GENERAL, msg);
+                 decoder->DoFastForward(dm_iter.key());
++                decoder->ClearStoredData();
++                ClearAfterSeek();
++                decoder->GetFrame(0);
+                 *did_ff = 1;
+             }
+             while((dm_iter.data() == 0) && (dm_iter != deleteMap.end()))
+@@ -3467,11 +3484,12 @@
+ {
+     return decoder->UpdateStoredFrameNum(curFrameNum);
+ }
+-bool NuppelVideoPlayer::WriteStoredData(RingBuffer *outRingBuffer, bool writevideo)
++bool NuppelVideoPlayer::WriteStoredData(RingBuffer *outRingBuffer,
++                                        bool writevideo, long timecodeOffset)
+ {
+     if (writevideo && !decoder->GetRawVideoState())
+         writevideo = false;
+-    decoder->WriteStoredData(outRingBuffer, writevideo);
++    decoder->WriteStoredData(outRingBuffer, writevideo, timecodeOffset);
+     return writevideo;
+ }
+ bool NuppelVideoPlayer::LastFrameIsBlank(void)
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/NuppelVideoPlayer.h mythtv-20050218/libs/libmythtv/NuppelVideoPlayer.h
+--- mythtv-0.17/libs/libmythtv/NuppelVideoPlayer.h	2005-02-03 16:44:37.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/NuppelVideoPlayer.h	2005-02-17 21:40:42.000000000 -0800
+@@ -92,6 +92,7 @@
+ 
+     int GetVideoWidth(void) { return video_width; }
+     int GetVideoHeight(void) { return video_height; }
++    float GetVideoAspect(void) { return video_aspect; }
+     float GetFrameRate(void) { return video_frame_rate; }
+     long long GetTotalFrameCount(void) { return totalFrames; }
+     long long GetFramesPlayed(void) { return framesPlayed; }
+@@ -115,7 +116,8 @@
+     QString GetEncodingType(void);
+     void SetAudioOutput (AudioOutput *ao) { audioOutput = ao; }
+     void FlushTxtBuffers(void) { rtxt = wtxt; }
+-    bool WriteStoredData(RingBuffer *outRingBuffer, bool writevideo);
++    bool WriteStoredData(RingBuffer *outRingBuffer, bool writevideo,
++                         long timecodeOffset);
+     long UpdateStoredFrameNum(long curFrameNum);
+     void InitForTranscode(bool copyaudio, bool copyvideo);
+     bool TranscodeGetNextFrame(QMap<long long, int>::Iterator &dm_iter,
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/NuppelVideoRecorder.cpp mythtv-20050218/libs/libmythtv/NuppelVideoRecorder.cpp
+--- mythtv-0.17/libs/libmythtv/NuppelVideoRecorder.cpp	2005-02-04 18:04:43.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/NuppelVideoRecorder.cpp	2005-02-15 20:01:51.000000000 -0800
+@@ -67,6 +67,7 @@
+     w = 352;
+     h = 240;
+     pip_mode = 0;
++    video_aspect = 1.33333;
+ 
+     skip_btaudio = false;
+ 
+@@ -1677,7 +1678,7 @@
+     fileheader.desiredwidth  = 0;
+     fileheader.desiredheight = 0;
+     fileheader.pimode = 'P';
+-    fileheader.aspect = 1.0;
++    fileheader.aspect = video_aspect;
+     if (ntsc_framerate)
+         fileheader.fps = 29.97;
+     else
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/NuppelVideoRecorder.h mythtv-20050218/libs/libmythtv/NuppelVideoRecorder.h
+--- mythtv-0.17/libs/libmythtv/NuppelVideoRecorder.h	2004-10-23 18:34:46.000000000 -0700
++++ mythtv-20050218/libs/libmythtv/NuppelVideoRecorder.h	2005-02-15 20:01:51.000000000 -0800
+@@ -87,6 +87,7 @@
+     bool SetupAVCodec(void);
+     void SetupRTjpeg(void);
+     int AudioInit(bool skipdevice = false);
++    void SetVideoAspect(float newAspect) {video_aspect = newAspect; };
+     void WriteVideo(VideoFrame *frame, bool skipsync = false, 
+                     bool forcekey = false);
+     void WriteAudio(unsigned char *buf, int fnum, int timecode);
+@@ -151,6 +152,7 @@
+     int quiet;
+     int rawmode;
+     int usebttv;
++    float video_aspect;
+ 
+     CommDetect *commDetect;
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/progfind.cpp mythtv-20050218/libs/libmythtv/progfind.cpp
+--- mythtv-0.17/libs/libmythtv/progfind.cpp	2004-09-06 12:43:59.000000000 -0700
++++ mythtv-20050218/libs/libmythtv/progfind.cpp	2005-02-14 20:56:22.000000000 -0800
+@@ -922,8 +922,10 @@
+                             + showData[t]->startts.toString(dateFormat)
+                             + " " + showData[t]->startts.toString(timeFormat));
+ 
+-                        if (showData[t]->recstatus <= rsWillRecord)
++                        if (showData[t]->recstatus == rsRecording)
+                             ltype->EnableForcedFont(curLabel, "recording");
++                        else if (showData[t]->recstatus == rsWillRecord)
++                            ltype->EnableForcedFont(curLabel, "record");
+ 
+                     }
+                     else
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/proglist.cpp mythtv-20050218/libs/libmythtv/proglist.cpp
+--- mythtv-0.17/libs/libmythtv/proglist.cpp	2004-11-25 13:23:52.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/proglist.cpp	2005-02-14 20:56:22.000000000 -0800
+@@ -1486,8 +1486,10 @@
+ 
+                 if (pi->recstatus == rsConflict)
+                     ltype->EnableForcedFont(i, "conflicting");
+-                else if (pi->recstatus <= rsWillRecord)
++                else if (pi->recstatus == rsRecording)
+                     ltype->EnableForcedFont(i, "recording");
++                else if (pi->recstatus == rsWillRecord)
++                    ltype->EnableForcedFont(i, "record");
+ 
+                 if (i + skip == curItem)
+                     ltype->SetItemCurrent(i);
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/recordingprofile.cpp mythtv-20050218/libs/libmythtv/recordingprofile.cpp
+--- mythtv-0.17/libs/libmythtv/recordingprofile.cpp	2004-10-14 20:06:40.000000000 -0700
++++ mythtv-20050218/libs/libmythtv/recordingprofile.cpp	2005-02-15 09:07:28.000000000 -0800
+@@ -623,6 +623,15 @@
+     };
+ };
+ 
++class TranscodeResize: public CodecParam, public CheckBoxSetting {
++public:
++    TranscodeResize(const RecordingProfile& parent):
++        CodecParam(parent, "transcoderesize") {
++        setLabel(QObject::tr("Resize Video while transcoding"));
++        setValue(false);
++    };
++};
++
+ class ImageSize: public HorizontalConfigurationGroup {
+ public:
+     class Width: public SpinBoxSetting, public CodecParam {
+@@ -689,7 +698,20 @@
+         labelName = profName + "->" + QObject::tr("Profile");
+     profile->setLabel(labelName);
+     profile->addChild(name = new Name(*this));
+-    profile->addChild(new AutoTranscode(*this));
++
++    if (profName != NULL)
++    {
++        if (profName.left(11) == "Transcoders")
++            profile->addChild(new TranscodeResize(*this));
++        else
++            profile->addChild(new AutoTranscode(*this));
++    }
++    else
++    {
++        profile->addChild(new TranscodeResize(*this));
++        profile->addChild(new AutoTranscode(*this));
++    }
++
+     addChild(profile);
+ 
+     QString tvFormat = gContext->GetSetting("TVFormat");
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/RingBuffer.cpp mythtv-20050218/libs/libmythtv/RingBuffer.cpp
+--- mythtv-0.17/libs/libmythtv/RingBuffer.cpp	2005-02-09 23:33:01.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/RingBuffer.cpp	2005-02-14 20:21:13.000000000 -0800
+@@ -1,5 +1,6 @@
+ #include <qapplication.h>
+ #include <qdatetime.h>
++#include <qfileinfo.h>
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -422,6 +423,13 @@
+                     }
+                 }
+             }
++
++            QFileInfo fileInfo(filename);
++            if (fileInfo.lastModified().secsTo(QDateTime::currentDateTime()) >
++                30 * 60)
++            {
++                oldfile = true;
++            }
+         }
+         else
+             remotefile = new RemoteFile(filename);
+@@ -465,6 +473,7 @@
+ 
+ void RingBuffer::Init(void)
+ {
++    oldfile = false; 
+     startreadahead = true;
+ 
+     readaheadrunning = false;
+@@ -587,7 +596,7 @@
+                 break;
+ 
+             zerocnt++;
+-            if (zerocnt >= 50) // 3 second timeout with usleep(60000)
++            if (zerocnt >= ((oldfile) ? 2 : 50)) // 3 second timeout with usleep(60000), or .12 if it's an old, unmodified file.
+             {
+                 break;
+             }
+@@ -951,14 +960,13 @@
+     int avail = ReadBufAvail();
+     readErr = 0;
+     
+-
+     while (avail < count && !stopreads)
+     {
+         availWaitMutex.lock();
+         wanttoread = count;
+-        if (!availWait.wait(&availWaitMutex, 2000))
++        if (!availWait.wait(&availWaitMutex, 4000))
+         {
+-            VERBOSE(VB_IMPORTANT,"Waited 2 seconds for data to become available, waiting "
++            VERBOSE(VB_IMPORTANT,"Waited 4 seconds for data to become available, waiting "
+                     "again...");
+             readErr++;
+             if (readErr > 7)
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/RingBuffer.h mythtv-20050218/libs/libmythtv/RingBuffer.h
+--- mythtv-0.17/libs/libmythtv/RingBuffer.h	2004-11-06 06:51:24.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/RingBuffer.h	2005-02-14 20:21:13.000000000 -0800
+@@ -145,6 +145,8 @@
+     int numfailures;
+ 
+     bool commserror;
++
++    bool oldfile;
+ };
+ 
+ #endif
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/siparser.cpp mythtv-20050218/libs/libmythtv/siparser.cpp
+--- mythtv-0.17/libs/libmythtv/siparser.cpp	2005-02-06 10:15:30.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/siparser.cpp	2005-02-15 08:33:08.000000000 -0800
+@@ -1244,7 +1244,7 @@
+ 
+ #ifdef EIT_DEBUG_SID
+ if (e.ServiceID == EIT_DEBUG_SID) {
+-    fprintf(sdtout,"EIT_DEBUG: sid:%d nid:%04X tid:%04X lseg:%02X ltab:%02X tab:%02X sec:%02X lsec: %02X size:%d\n",
++    fprintf(stdout,"EIT_DEBUG: sid:%d nid:%04X tid:%04X lseg:%02X ltab:%02X tab:%02X sec:%02X lsec: %02X size:%d\n",
+            e.ServiceID,
+            e.NetworkID,
+            e.TransportID,
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/tv_play.cpp mythtv-20050218/libs/libmythtv/tv_play.cpp
+--- mythtv-0.17/libs/libmythtv/tv_play.cpp	2005-02-09 12:27:48.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/tv_play.cpp	2005-02-14 20:21:13.000000000 -0800
+@@ -1195,7 +1195,7 @@
+             updatecheck = 0;
+         }
+ 
+-        if (channelqueued && nvp->GetOSD())
++        if (channelqueued && nvp && nvp->GetOSD())
+         {
+             OSDSet *set = osd->GetSet("channel_number");
+             if ((set && !set->Displaying()) || !set)
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/videoout_xvmc.cpp mythtv-20050218/libs/libmythtv/videoout_xvmc.cpp
+--- mythtv-0.17/libs/libmythtv/videoout_xvmc.cpp	2005-02-09 23:33:01.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/videoout_xvmc.cpp	2005-02-14 22:15:09.000000000 -0800
+@@ -998,7 +998,6 @@
+     //if (field != 3)
+         pthread_mutex_lock(&lock);
+ 
+-/*  Doesn't seem necessary.
+     if (data->p_render_surface_visible && 
+         (data->p_render_surface_visible != showingsurface))
+     {
+@@ -1015,21 +1014,11 @@
+             XvMCGetSurfaceStatus(data->XJ_disp, surf, &status);
+         }
+     }
+-*/
+ 
+     data->p_render_surface_visible = data->p_render_surface_to_show;
+ 
+-    if (data->curosd && data->curosd != osdframe)
+-    {
+-        DiscardFrame(data->curosd);
+-        data->curosd = NULL;
+-    }
+-
+     if (osdframe)
+-    {
+         data->p_render_surface_visible = osdren;
+-        data->curosd = osdframe;
+-    } 
+  
+     if (!m_deinterlacing || (m_deinterlacing && scan != kScan_Interlaced))
+     {
+@@ -1179,6 +1168,12 @@
+     xvmc_render_state_t *render = (xvmc_render_state_t *)frame->buf;
+     render->p_osd_target_surface_render = NULL;
+ 
++    if (data->curosd)
++    {
++        DiscardFrame(data->curosd);
++        data->curosd = NULL;
++    }
++
+     if (osd)
+     {
+         if (data->subpicture_mode == BLEND_SUBPICTURE ||
+@@ -1220,6 +1215,7 @@
+                                      0, 0, XJ_width, XJ_height);
+ 
+                 render->p_osd_target_surface_render = newframe;
++                data->curosd = newframe;
+             }
+             else if (data->subpicture_mode == BACKEND_SUBPICTURE)
+             {
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythtv/videosource.cpp mythtv-20050218/libs/libmythtv/videosource.cpp
+--- mythtv-0.17/libs/libmythtv/videosource.cpp	2005-02-05 05:59:47.000000000 -0800
++++ mythtv-20050218/libs/libmythtv/videosource.cpp	2005-02-11 11:06:14.000000000 -0800
+@@ -1269,9 +1269,9 @@
+         group->addChild(cardid = new CardID(*this));
+         group->addChild(inputname = new InputName(*this));
+         group->addChild(sourceid = new SourceID(*this));
++        group->addChild(new InputPreference(*this));
+         if (!DVB)
+         {
+-            group->addChild(new InputPreference(*this));
+             group->addChild(new ExternalChannelCommand(*this));
+             group->addChild(new PresetTuner(*this));
+         }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythui/libmythui.pro mythtv-20050218/libs/libmythui/libmythui.pro
+--- mythtv-0.17/libs/libmythui/libmythui.pro	2005-01-28 21:21:36.000000000 -0800
++++ mythtv-20050218/libs/libmythui/libmythui.pro	2005-02-17 06:45:46.000000000 -0800
+@@ -7,6 +7,7 @@
+ target.path = $${PREFIX}/lib
+ INSTALLS = target
+ INCLUDEPATH += ../../libs/libmyth
++INCLUDEPATH += ../..
+ LIBS += -L../libmyth -lmyth-$$LIBVERSION
+ VERSION = 0.17.0
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythui/mythlistbutton.cpp mythtv-20050218/libs/libmythui/mythlistbutton.cpp
+--- mythtv-0.17/libs/libmythui/mythlistbutton.cpp	2004-09-04 09:16:09.000000000 -0700
++++ mythtv-20050218/libs/libmythui/mythlistbutton.cpp	2005-02-17 17:27:50.000000000 -0800
+@@ -787,7 +787,14 @@
+         m_itemSelInactPix = painter->GetFormatImage();
+         m_itemSelInactPix->Assign(itemSelInactPix.convertToImage());
+ 
+-        img.setAlphaBuffer(false);
++        for (int y = 0; y < img.height(); y++)
++        {
++            for (int x = 0; x < img.width(); x++)
++            {
++                uint *p = (uint *)img.scanLine(y) + x;
++                *p = qRgba(0, 0, 0, 255);
++            }
++        }
+         
+         QPixmap itemSelActPix = QPixmap(img);
+         p.begin(&itemSelActPix);
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythui/mythpainter_ogl.cpp mythtv-20050218/libs/libmythui/mythpainter_ogl.cpp
+--- mythtv-0.17/libs/libmythui/mythpainter_ogl.cpp	2004-11-18 20:20:19.000000000 -0800
++++ mythtv-20050218/libs/libmythui/mythpainter_ogl.cpp	2005-02-17 14:06:43.000000000 -0800
+@@ -1,4 +1,7 @@
+ #include <cassert>
++#include <iostream>
++
++using namespace std;
+ 
+ #include <qapplication.h>
+ #include <qpixmap.h>
+@@ -7,9 +10,27 @@
+ #include <qcache.h>
+ #include <qintcache.h>
+ 
++#include "config.h"
++#ifdef CONFIG_DARWIN
++#include <OpenGL/glext.h>
++#endif
++
++#include "mythcontext.h"
+ #include "mythpainter_ogl.h"
+ #include "mythfontproperties.h"
+ 
++#ifndef GL_TEXTURE_RECTANGLE_ARB
++#define GL_TEXTURE_RECTANGLE_ARB 0x84F5 
++#endif
++
++#ifndef GL_TEXTURE_RECTANGLE_EXT
++#define GL_TEXTURE_RECTANGLE_EXT 0x84F5
++#endif
++
++#ifndef GL_TEXTURE_RECTANGLE_NV
++#define GL_TEXTURE_RECTANGLE_NV 0x84F5
++#endif
++
+ class StringImageCache : public QCache<MythImage>
+ {
+   public:
+@@ -119,7 +140,34 @@
+     if (init_extensions)
+     {
+         QString extensions(reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS)));
+-        generate_mipmaps = extensions.contains("GL_SGIS_generate_mipmap");
++
++        texture_rects = true;
++        if (extensions.contains("GL_NV_texture_rectangle"))
++        {
++            VERBOSE(VB_GENERAL, "Using NV NPOT texture extension");
++            q_gl_texture = GL_TEXTURE_RECTANGLE_NV;
++        }
++        else if (extensions.contains("GL_ARB_texture_rectangle"))
++        {
++            VERBOSE(VB_GENERAL, "Using ARB NPOT texture extension");
++            q_gl_texture = GL_TEXTURE_RECTANGLE_ARB;
++        }
++        else if (extensions.contains("GL_EXT_texture_rectangle"))
++        {
++            VERBOSE(VB_GENERAL, "Using EXT NPOT texture extension");
++            q_gl_texture = GL_TEXTURE_RECTANGLE_EXT;
++        }
++        else
++        {
++            texture_rects = false;
++            q_gl_texture = GL_TEXTURE_2D;
++        }
++
++        if (!texture_rects)
++            generate_mipmaps = extensions.contains("GL_SGIS_generate_mipmap");
++        else
++            generate_mipmaps = false;
++
+         init_extensions = false;
+     }
+ 
+@@ -130,7 +178,7 @@
+         if (!im->IsChanged())
+         {
+             m_IntImageCache->find(val);
+-            glBindTexture(GL_TEXTURE_2D, val);
++            glBindTexture(q_gl_texture, val);
+             return;
+         }
+         else
+@@ -144,10 +192,18 @@
+     // Scale the pixmap if needed. GL textures needs to have the
+     // dimensions 2^n+2(border) x 2^m+2(border).
+     QImage tx;
+-    int tx_w = NearestGLTextureSize(im->width());
+-    int tx_h = NearestGLTextureSize(im->height());
+-    if (tx_w != im->width() || tx_h !=  im->height())
+-        tx = QGLWidget::convertToGLFormat(im->scale(tx_w, tx_h));
++
++    if (!texture_rects)
++    {
++        // Scale the pixmap if needed. GL textures needs to have the
++        // dimensions 2^n+2(border) x 2^m+2(border).
++        int tx_w = NearestGLTextureSize(im->width());
++        int tx_h = NearestGLTextureSize(im->height());
++        if (tx_w != im->width() || tx_h !=  im->height())
++            tx = QGLWidget::convertToGLFormat(im->scale(tx_w, tx_h));
++        else
++            tx = QGLWidget::convertToGLFormat(*im);
++    }
+     else
+         tx = QGLWidget::convertToGLFormat(*im);
+ 
+@@ -157,15 +213,19 @@
+ 
+     GLuint tx_id;
+     glGenTextures(1, &tx_id);
+-    glBindTexture(GL_TEXTURE_2D, tx_id);
++    glBindTexture(q_gl_texture, tx_id);
++    glTexParameteri(q_gl_texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ 
+     if (generate_mipmaps) 
+     {
+         glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
+-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
++        glTexParameteri(q_gl_texture, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
++        glTexParameterf(q_gl_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+     }
++    else
++        glTexParameterf(q_gl_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+ 
+-    glTexImage2D(GL_TEXTURE_2D, 0, format, tx.width(), tx.height(), 0,
++    glTexImage2D(q_gl_texture, 0, format, tx.width(), tx.height(), 0,
+                  GL_RGBA, GL_UNSIGNED_BYTE, tx.bits());
+ 
+     m_ImageIntMap[im] = tx_id;
+@@ -175,28 +235,37 @@
+ void MythOpenGLPainter::DrawImage(const QRect &r, MythImage *im, 
+                                   const QRect &src, int alpha)
+ {
++    double x1, y1, x2, y2;
++
+     glClearDepth(1.0f);
+ 
+     // see if we have this pixmap cached as a texture - if not cache it
+     BindTextureFromCache(im);
+ 
+-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+-                    GL_LINEAR_MIPMAP_LINEAR);
+     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 
+     glPushAttrib(GL_CURRENT_BIT);
+ 
+     glColor4f(1.0, 1.0, 1.0, alpha / 255.0);
+-    glEnable(GL_TEXTURE_2D);
++    glEnable(q_gl_texture);
+     glEnable(GL_BLEND);
+ 
+     glBegin(GL_QUADS);
+     {
+-        double x1 = src.x() / (double)im->width();
+-        double x2 = x1 + src.width() / (double)im->width();
+-        double y1 = src.y() / (double)im->height();
+-        double y2 = y1 + src.height() / (double)im->height();
++        if (!texture_rects)
++        {
++            x1 = src.x() / (double)im->width();
++            x2 = x1 + src.width() / (double)im->width();
++            y1 = src.y() / (double)im->height();
++            y2 = y1 + src.height() / (double)im->height();
++        }
++        else
++        {
++            x1 = src.x();
++            x2 = src.width();
++            y1 = src.y();
++            y2 = src.height();
++        }
+ 
+         glTexCoord2f(x1, y2); glVertex2f(r.x(), r.y());
+         glTexCoord2f(x2, y2); glVertex2f(r.x() + r.width(), r.y());
+@@ -206,7 +275,7 @@
+     glEnd();
+ 
+     glDisable(GL_BLEND);
+-    glDisable(GL_TEXTURE_2D);
++    glDisable(q_gl_texture);
+     glPopAttrib();
+ }
+ 
+@@ -229,8 +298,18 @@
+ 
+     qApp->lock();
+ 
+-    int w = NearestGLTextureSize(r.width());
+-    int h = NearestGLTextureSize(r.height());
++    int w, h;
++
++    if (!texture_rects)
++    {
++        w = NearestGLTextureSize(r.width());
++        h = NearestGLTextureSize(r.height());
++    }
++    else
++    {
++        w = r.width();
++        h = r.height();
++    }
+ 
+     QPixmap pm(QSize(w, h));
+     pm.fill();
+@@ -263,21 +342,30 @@
+ 
+ void MythOpenGLPainter::ReallyDrawText(QColor color, const QRect &r, int alpha)
+ {
++    double x1, y1, x2, y2;
++
+     glPushAttrib(GL_CURRENT_BIT);
+ 
+     alpha = CalcAlpha(qAlpha(color.rgb()), alpha);
+ 
+     glColor4f(color.red() / 255.0, color.green() / 255.0, color.blue() / 255.0,
+               alpha / 255.0);
+-    glEnable(GL_TEXTURE_2D);
++    glEnable(q_gl_texture);
+     glEnable(GL_BLEND);
+ 
+     glBegin(GL_QUADS);
+     {
+-        double x1 = 0;
+-        double x2 = 1;
+-        double y1 = 0;
+-        double y2 = 1;
++        if (!texture_rects)
++        {
++            x1 = y1 = 0;
++            x2 = y2 = 1;
++        }
++        else
++        {
++            x1 = y1 = 0;
++            x2 = r.width();
++            y2 = r.height();
++        }
+ 
+         glTexCoord2f(x1, y2); glVertex2f(r.x(), r.y());
+         glTexCoord2f(x2, y2); glVertex2f(r.x() + r.width(), r.y());
+@@ -287,7 +375,7 @@
+     glEnd();
+ 
+     glDisable(GL_BLEND);
+-    glDisable(GL_TEXTURE_2D);
++    glDisable(q_gl_texture);
+     glPopAttrib();
+ }
+ 
+@@ -305,9 +393,6 @@
+     // see if we have this pixmap cached as a texture - if not cache it
+     BindTextureFromCache(im, true);
+ 
+-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+-                    GL_LINEAR_MIPMAP_LINEAR);
+     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 
+     QRect newRect = r;
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythui/mythpainter_ogl.h mythtv-20050218/libs/libmythui/mythpainter_ogl.h
+--- mythtv-0.17/libs/libmythui/mythpainter_ogl.h	2004-08-23 22:03:50.000000000 -0700
++++ mythtv-20050218/libs/libmythui/mythpainter_ogl.h	2005-02-17 14:06:43.000000000 -0800
+@@ -43,6 +43,9 @@
+     StringImageCache *m_StringImageCache;
+     IntImageCache *m_IntImageCache;
+     QMap<MythImage *, unsigned int> m_ImageIntMap;
++
++    int q_gl_texture;
++    bool texture_rects;
+ };
+ 
+ #endif
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/libs/libmythui/themedmenu.cpp mythtv-20050218/libs/libmythui/themedmenu.cpp
+--- mythtv-0.17/libs/libmythui/themedmenu.cpp	2005-01-20 22:50:19.000000000 -0800
++++ mythtv-20050218/libs/libmythui/themedmenu.cpp	2005-02-17 19:32:16.000000000 -0800
+@@ -420,7 +420,9 @@
+         {
+             if (info.tagName() == "color")
+             {
+-                attributes.font.shadowColor = QColor(getFirstText(info));
++                // workaround alpha bug with named colors
++                QColor temp(getFirstText(info));
++                attributes.font.shadowColor = QColor(temp.name());
+                 hascolor = true;
+             }
+             else if (info.tagName() == "offset")
+@@ -479,7 +481,9 @@
+         {
+             if (info.tagName() == "color")
+             {
+-                attributes.font.outlineColor = QColor(getFirstText(info));
++                // workaround alpha bug with named colors
++                QColor temp(getFirstText(info));
++                attributes.font.outlineColor = QColor(temp.name());
+                 hascolor = true;
+             }
+             else if (info.tagName() == "size")
+@@ -566,7 +570,9 @@
+             }
+             else if (info.tagName() == "color")
+             {
+-                attributes.font.color = QColor(getFirstText(info));
++                // workaround alpha bug with named colors
++                QColor temp(getFirstText(info));
++                attributes.font.color = QColor(temp.name());
+             }
+             else if (info.tagName() == "centered")
+             {
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythbackend/mainserver.cpp mythtv-20050218/programs/mythbackend/mainserver.cpp
+--- mythtv-0.17/programs/mythbackend/mainserver.cpp	2005-02-09 13:35:13.000000000 -0800
++++ mythtv-20050218/programs/mythbackend/mainserver.cpp	2005-02-16 21:56:19.000000000 -0800
+@@ -1002,20 +1002,6 @@
+     QString name = QString("deleteThread%1%2").arg(getpid()).arg(rand());
+     QFile checkFile(ds->filename);
+ 
+-    if (!checkFile.exists())
+-    {
+-        VERBOSE(VB_ALL, QString("ERROR when trying to delete file: %1. File "
+-                                "doesn't exist.  Database metadata"
+-                                "will not be removed.")
+-                                .arg(ds->filename));
+-        gContext->LogEntry("mythbackend", LP_WARNING, "Delete Recording",
+-                           QString("File %1 does not exist for %2 when trying "
+-                                   "to delete recording.")
+-                                   .arg(ds->filename).arg(logInfo));
+-        deletelock.unlock();
+-        return;
+-    }
+-
+     MythSqlDatabase *delete_db = new MythSqlDatabase(name);
+ 
+     if (!delete_db || !delete_db->isOpen() || !delete_db->db())
+@@ -1040,6 +1026,43 @@
+     pginfo = ProgramInfo::GetProgramFromRecorded(delete_db->db(),
+                                                  ds->chanid,
+                                                  ds->recstartts);
++    if (pginfo == NULL)
++    {
++        QString msg = QString("ERROR retrieving program info when trying to "
++                              "delete program for chanid %1 recorded at %2. "
++							  "Recording will NOT be deleted.")
++                              .arg(ds->chanid).arg(ds->recstartts.toString());
++        VERBOSE(VB_GENERAL, msg);
++        gContext->LogEntry("mythbackend", LP_ERROR, "Delete Recording",
++                           QString("Unable to retrieve program info for %1. "
++                                   "Program will NOT be deleted.")
++                                   .arg(logInfo));
++        if (delete_db)
++            delete delete_db;
++
++        deletelock.unlock();
++        return;
++    }
++
++    // allow deleting files where the recording failed (ie, filesize == 0)
++    if ((!checkFile.exists()) &&
++        (pginfo->filesize > 0))
++    {
++        VERBOSE(VB_ALL, QString("ERROR when trying to delete file: %1. File "
++                                "doesn't exist.  Database metadata"
++                                "will not be removed.")
++                                .arg(ds->filename));
++        gContext->LogEntry("mythbackend", LP_WARNING, "Delete Recording",
++                           QString("File %1 does not exist for %2 when trying "
++                                   "to delete recording.")
++                                   .arg(ds->filename).arg(logInfo));
++        deletelock.unlock();
++
++        pginfo->SetDeleteFlag(false, delete_db->db());
++        delete pginfo;
++        return;
++    }
++
+     JobQueue::DeleteAllJobs(delete_db->db(), ds->chanid, ds->recstartts);
+ 
+     QString filename;
+@@ -1064,11 +1087,9 @@
+         gContext->LogEntry("mythbackend", LP_WARNING, "Delete Recording",
+                            QString("File %1 for %2 could not be deleted.")
+                                    .arg(ds->filename).arg(logInfo));
+-        if (pginfo)
+-        {
+-            pginfo->SetDeleteFlag(false, delete_db->db());
+-            delete pginfo;
+-        }
++
++        pginfo->SetDeleteFlag(false, delete_db->db());
++        delete pginfo;
+ 
+         if (delete_db)
+             delete delete_db;
+@@ -1127,11 +1148,8 @@
+ 
+     ScheduledRecording::signalChange(0);
+ 
+-    if (pginfo)
+-        delete pginfo;
+-
+-    if (delete_db)
+-        delete delete_db;
++    delete pginfo;
++    delete delete_db;
+ 
+     deletelock.unlock();
+ }
+@@ -1440,7 +1458,8 @@
+     QFile checkFile(filename);
+     bool fileExists = checkFile.exists();
+ 
+-    if (fileExists)
++    // allow deleting of files where the recording failed meaning size == 0
++    if ((fileExists) || (pginfo->filesize == 0))
+     {
+         DeleteStruct *ds = new DeleteStruct;
+         ds->ms = this;
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythbackend/scheduler.cpp mythtv-20050218/programs/mythbackend/scheduler.cpp
+--- mythtv-0.17/programs/mythbackend/scheduler.cpp	2005-02-09 13:35:13.000000000 -0800
++++ mythtv-20050218/programs/mythbackend/scheduler.cpp	2005-02-12 21:33:11.000000000 -0800
+@@ -252,14 +252,11 @@
+     VERBOSE(VB_SCHEDULE, "SchedNewRecords...");
+     SchedNewRecords();
+ 
+-    if (schedMoveHigher)
+-    {
+-        VERBOSE(VB_SCHEDULE, "Sort retrylist...");
+-        retrylist.sort(comp_retry);
+-        VERBOSE(VB_SCHEDULE, "MoveHigherRecords...");
+-        MoveHigherRecords();
+-        retrylist.clear();
+-    }
++    VERBOSE(VB_SCHEDULE, "Sort retrylist...");
++    retrylist.sort(comp_retry);
++    VERBOSE(VB_SCHEDULE, "MoveHigherRecords...");
++    MoveHigherRecords();
++    retrylist.clear();
+ 
+     VERBOSE(VB_SCHEDULE, "ClearListMaps...");
+     ClearListMaps();
+@@ -619,7 +616,7 @@
+             MarkOtherShowings(titlelist, p);
+             PrintRec(p, "  +");
+         }
+-        else if (schedMoveHigher)
++        else
+         {
+             for (k++; !FindNextConflict(cardlist, p, k); k++)
+                 ;
+@@ -651,7 +648,8 @@
+         for ( ; FindNextConflict(cardlist, p, k); k++)
+         {
+             RecList &ktitlelist = titlelistmap[(*k)->title];
+-            if (!TryAnotherShowing(ktitlelist, *k))
++            if ((p->recpriority < (*k)->recpriority && !schedMoveHigher) ||
++                !TryAnotherShowing(ktitlelist, *k))
+             {
+                 RestoreRecStatus();
+                 break;
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythcommflag/main.cpp mythtv-20050218/programs/mythcommflag/main.cpp
+--- mythtv-0.17/programs/mythcommflag/main.cpp	2005-01-26 18:26:29.000000000 -0800
++++ mythtv-20050218/programs/mythcommflag/main.cpp	2005-02-15 08:08:17.000000000 -0800
+@@ -33,6 +33,7 @@
+ bool rebuildSeekTable = false;
+ bool beNice = true;
+ bool inJobQueue = false;
++bool copyToCutlist = false;
+ 
+ double fps = 29.97; 
+ 
+@@ -73,6 +74,30 @@
+ 
+ }
+ 
++void CopySkipListToCutList(QSqlDatabase *db, QString chanid, QString starttime)
++{
++    QMap<long long, int> cutlist;
++    QMap<long long, int>::Iterator it;
++
++    ProgramInfo *pginfo =
++        ProgramInfo::GetProgramFromRecorded(db, chanid, starttime);
++
++    if (!pginfo)
++    {
++        cerr << "No program data exists for channel " <<
++            chanid.ascii() << "at " << starttime.ascii() << endl;
++        exit(-1);
++    }
++
++    pginfo->GetCommBreakList(cutlist, db);
++    for (it = cutlist.begin(); it != cutlist.end(); ++it)
++        if (it.data() == MARK_COMM_START)
++            cutlist[it.key()] = MARK_CUT_START;
++        else
++            cutlist[it.key()] = MARK_CUT_END;
++    pginfo->SetCutList(cutlist, db);
++}
++
+ int FlagCommercials(QSqlDatabase *db, QString chanid, QString starttime)
+ {
+     int breaksFound = 0;
+@@ -371,6 +396,10 @@
+             if (!quiet)
+                 showBlanks = true;
+         }
++        else if (!strcmp(a.argv()[argpos], "--gencutlist"))
++        {
++            copyToCutlist = true;
++        }
+         else if (!strcmp(a.argv()[argpos], "--justblanks"))
+         {
+             justBlanks = true;
+@@ -518,6 +547,7 @@
+                     "--video filename             Rebuild the seektable for a video (non-recording) file" << endl <<
+                     "--sleep                      Give up some CPU time after processing" << endl <<
+                     "--rebuild                    Do not flag commercials, just rebuild seektable" << endl <<
++                    "--gencutlist                 Copy the commercial skip list to the cutlist" << endl <<
+                     "                             each frame." << endl <<
+                     "-v OR --verbose debug-level  Prints more information" << endl <<
+                     "                             Accepts any combination (separated by comma)" << endl << 
+@@ -570,6 +600,11 @@
+         exit(12);
+     }
+ 
++    if (copyToCutlist) {
++        CopySkipListToCutList(db, chanid, starttime);
++        exit(0);
++    }
++
+     if (inJobQueue) {
+         int jobQueueCPU = gContext->GetNumSetting("JobQueueCPU", 0);
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/customrecord.cpp mythtv-20050218/programs/mythfrontend/customrecord.cpp
+--- mythtv-0.17/programs/mythfrontend/customrecord.cpp	2005-01-03 18:34:04.000000000 -0800
++++ mythtv-20050218/programs/mythfrontend/customrecord.cpp	2005-02-16 23:33:30.000000000 -0800
+@@ -211,20 +211,23 @@
+ 				   gContext->GetMainWindow(), "proglist");
+     pl->exec();
+     delete pl;
+-    m_description->setFocus();
++
++    m_testButton->setFocus();
+ }
+ 
+ void CustomRecord::recordClicked(void)
+ {
+     QString desc = m_description->text();
+-    // To address possible quoting issues if needed...
+-    //desc.replace("\"", "\\\"");
+ 
+     QSqlDatabase *db = QSqlDatabase::database();
+     ScheduledRecording record;
+     record.loadBySearch(db, kPowerSearch, m_title->text(), desc);
+     record.exec(db);
+-    accept();
++
++    if (record.getRecordID())
++        accept();
++    else
++	m_recordButton->setFocus();
+ }
+ 
+ void CustomRecord::cancelClicked(void)
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/manualschedule.cpp mythtv-20050218/programs/mythfrontend/manualschedule.cpp
+--- mythtv-0.17/programs/mythfrontend/manualschedule.cpp	2004-12-29 13:46:19.000000000 -0800
++++ mythtv-20050218/programs/mythfrontend/manualschedule.cpp	2005-02-14 20:54:55.000000000 -0800
+@@ -35,8 +35,6 @@
+ ManualSchedule::ManualSchedule(MythMainWindow *parent, const char *name)
+               : MythDialog(parent, name)
+ {
+-    int m_index; 
+-
+     m_nowDateTime = QDateTime::currentDateTime();
+     m_startDateTime = m_nowDateTime;
+     daysahead = 0;
+@@ -105,59 +103,46 @@
+     label->setBackgroundOrigin(WindowOrigin);
+     label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+     hbox->addWidget(label);
+-  
+-    m_weekday = new MythComboBox(false, this, "weekday" );
+-    for(m_index = 0; m_index < 7; m_index++) 
+-        m_weekday->insertItem(
+-		m_nowDateTime.addDays(m_index).toString("dddd"));
+-    m_weekday->setBackgroundOrigin(WindowOrigin);
+-    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+-    hbox->addWidget(m_weekday);
+ 
+-    m_startday = new MythSpinBox( this, "startday" );
+-    m_startday->setMinValue(0);
+-    m_startday->setMaxValue(m_nowDateTime.date().daysInMonth() + 1);        
+-    m_startday->setValue(m_nowDateTime.date().day());
+-    m_startday->setBackgroundOrigin(WindowOrigin);
+-    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+-    hbox->addWidget(m_startday);
++    m_startdate = new MythComboBox(false, this, "startdate");
+ 
+-    m_startmonth = new MythComboBox(false, this, "startmonth" );
+-    for(m_index = 0; m_index < 12; m_index++) 
+-        m_startmonth->insertItem(
+-		m_nowDateTime.addMonths(m_index).toString("MMMM"));
+-    m_startmonth->setBackgroundOrigin(WindowOrigin);
+-    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+-    hbox->addWidget(m_startmonth);
+-
+-    m_startyear = m_nowDateTime.date().year();
+-
+-    //Program Time
+-//     hbox = new QHBoxLayout(vbox, (int)(10 * wmult));
++    for(int m_index = 0; m_index <= 60; m_index++)
++    {
++        m_startdate->insertItem(m_nowDateTime.addDays(m_index)
++                              .toString(dateformat));
++        if (m_nowDateTime.addDays(m_index).toString("MMdd") ==
++            m_startDateTime.toString("MMdd"))
++            m_startdate->setCurrentItem(m_startdate->count() - 1);
++    }
++    hbox->addWidget(m_startdate);
+ 
+     QTime thisTime = m_nowDateTime.time();
++    thisTime = thisTime.addSecs((30 - thisTime.minute() % 30) * 60);
++    
++    if (thisTime < QTime::QTime(0,30))
++        m_startdate->setCurrentItem(m_startdate->currentItem() + 1);
+ 
+-    message = tr("Time:");
+-    label = new QLabel(message, this);
+-    label->setBackgroundOrigin(WindowOrigin);
+-    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+-    hbox->addWidget(label);
++    //message = tr("Time:");
++    //label = new QLabel(message, this);
++    //label->setBackgroundOrigin(WindowOrigin);
++    //label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
++    //hbox->addWidget(label);
+ 
+-    m_starthour = new MythSpinBox( this, "starthour" );
++    m_starthour = new MythSpinBox( this, "starthour", true );
+     m_starthour->setBackgroundOrigin(WindowOrigin);
+-    m_starthour->setMinValue(-1);
+-    m_starthour->setMaxValue(24);
++    m_starthour->setMinValue(-4);
++    m_starthour->setMaxValue(28);
++    m_starthour->setLineStep(4);
+     m_starthour->setValue(thisTime.hour());
+     m_starthour->setSuffix(tr("hr"));
+     label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+     hbox->addWidget(m_starthour);
+ 
+-
+     m_startminute = new MythSpinBox( this, "startminute", true );
+     m_startminute->setBackgroundOrigin(WindowOrigin);
+-    m_startminute->setMinValue(-1);
+-    m_startminute->setMaxValue(60);
+-    m_startminute->setLineStep(5);
++    m_startminute->setMinValue(-10);
++    m_startminute->setMaxValue(70);
++    m_startminute->setLineStep(10);
+     m_startminute->setValue(thisTime.minute());
+     m_startminute->setSuffix(tr("min"));
+     label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+@@ -165,8 +150,6 @@
+ 
+ 
+     // Duration spin box
+-    hbox = new QHBoxLayout(vbox, (int)(10 * wmult));
+-
+     message = tr("Duration:");
+     label = new QLabel(message, this);
+     label->setBackgroundOrigin(WindowOrigin);
+@@ -175,9 +158,9 @@
+ 
+     m_duration = new MythSpinBox( this, "duration", true );
+     m_duration->setMinValue(1);
+-    m_duration->setMaxValue(300);
+-    m_duration->setValue(120);
+-    m_duration->setLineStep(5);
++    m_duration->setMaxValue(600);
++    m_duration->setValue(60);
++    m_duration->setLineStep(10);
+     m_duration->setSuffix(tr("min"));
+     m_duration->setBackgroundOrigin(WindowOrigin);
+     hbox->addWidget(m_duration);
+@@ -211,13 +194,13 @@
+     // Description edit box
+     hbox = new QHBoxLayout(vbox, (int)(10 * wmult));
+ 
+-    message = tr("Description:");
+-    label = new QLabel(message, this);
+-    label->setBackgroundOrigin(WindowOrigin);
+-    label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+-    hbox->addWidget(label);
++    //message = tr("Description:");
++    //label = new QLabel(message, this);
++    //label->setBackgroundOrigin(WindowOrigin);
++    //label->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
++    // hbox->addWidget(label);
+ 
+-    m_description = new MythRemoteLineEdit( this, "description" );
++    m_description = new MythRemoteLineEdit(4, this, "description" );
+     m_description->setBackgroundOrigin(WindowOrigin);
+     hbox->addWidget(m_description);
+ 
+@@ -226,24 +209,20 @@
+ 
+     m_exitButton = new MythPushButton( this, "Program" );
+     m_exitButton->setBackgroundOrigin(WindowOrigin);
+-    m_exitButton->setText( tr( "Save this scheduled recording and exit" ) );
++    m_exitButton->setText( tr( "Save and exit" ) );
+     m_exitButton->setEnabled(false);
+ 
+     hbox->addWidget(m_exitButton);
+ 
+     //  Save Button
+-    hbox = new QHBoxLayout(vbox, (int)(10 * wmult));
+-
+     m_saveButton = new MythPushButton( this, "Program" );
+     m_saveButton->setBackgroundOrigin(WindowOrigin);
+-    m_saveButton->setText( tr( "Save this scheduled recording and set another" ) );
++    m_saveButton->setText( tr( "Save and set another" ) );
+     m_saveButton->setEnabled(false);
+ 
+     hbox->addWidget(m_saveButton);
+ 
+     //  Cancel Button
+-    hbox = new QHBoxLayout(vbox, (int)(10 * wmult));
+-
+     m_cancelButton = new MythPushButton( this, "Program" );
+     m_cancelButton->setBackgroundOrigin(WindowOrigin);
+     m_cancelButton->setText( tr( "Cancel" ) );
+@@ -258,11 +237,8 @@
+      
+     connect(m_channel, SIGNAL(activated(int)), this, SLOT(channelChanged(void)));
+     connect(m_channel, SIGNAL(highlighted(int)), this, SLOT(channelChanged(void)));
+-    connect(m_weekday, SIGNAL(activated(int)), this, SLOT(weekdayChanged(void)));
+-    connect(m_weekday, SIGNAL(highlighted(int)), this, SLOT(weekdayChanged(void)));
+-    connect(m_startday, SIGNAL(valueChanged(const QString &)), this, SLOT(dayChanged(void)));
+-    connect(m_startmonth, SIGNAL(highlighted(const QString &)), this, SLOT(monthChanged(void)));
+-    connect(m_startmonth, SIGNAL(activated(const QString &)), this, SLOT(monthChanged(void)));
++    connect(m_startdate, SIGNAL(activated(int)), this, SLOT(dateChanged(void)));
++    connect(m_startdate, SIGNAL(highlighted(int)), this, SLOT(dateChanged(void)));
+     connect(m_starthour, SIGNAL(valueChanged(const QString &)), this, SLOT(hourChanged(void)));
+     connect(m_startminute, SIGNAL(valueChanged(const QString &)), this, SLOT(minuteChanged(void)));
+     connect(m_duration, SIGNAL(valueChanged(const QString &)), this, SLOT(durationChanged(void)));
+@@ -293,82 +269,30 @@
+ 
+ void ManualSchedule::minuteChanged(void)
+ {
+-   if ( atoi(m_startminute->text()) == -1 ) {
+-     m_starthour->stepDown(); 
+-     m_startminute->setValue(55);
+-   }
+-   if ( atoi(m_startminute->text()) == 60 ) {
+-     m_starthour->stepUp(); 
+-     m_startminute->setValue(0);
+-   }
+-   dateChanged();
++    if (m_startminute->value() < 0 ) {
++        m_startminute->setValue(m_startminute->value() + 60);
++        m_starthour->setValue(m_starthour->value() - 1);
++    }
++    if (m_startminute->value() > 59 ) {
++        m_starthour->setValue(m_starthour->value() + 1);
++        m_startminute->setValue(m_startminute->value() - 60);
++    }
++    dateChanged();
+ }
+ 
+ void ManualSchedule::hourChanged(void)
+ {
+-   if ( atoi(m_starthour->text()) == -1 ) {
+-     m_startday->stepDown(); 
+-     m_starthour->setValue(23);
++   if (m_starthour->value() < 0 ) { 
++       m_starthour->setValue(m_starthour->value() + 24);
++       m_startdate->setCurrentItem(m_startdate->currentItem() - 1);
+    }
+-   if ( atoi(m_starthour->text()) == 24 ) {
+-     m_startday->stepUp(); 
+-     m_starthour->setValue(0);
++   if (m_starthour->value() > 23 ) {
++       m_startdate->setCurrentItem(m_startdate->currentItem() + 1);
++       m_starthour->setValue(m_starthour->value() - 24);
+    }
+-
+    dateChanged();
+ }
+ 
+-void ManualSchedule::dayChanged(void)
+-{
+-   if ( atoi(m_startday->text()) == 0 ) {
+-     m_startDateTime = m_startDateTime.addDays(-1);
+-     m_startmonth->setCurrentText(m_startDateTime.date().toString("MMMM"));
+-     m_startday->setMaxValue(m_startDateTime.date().daysInMonth() + 1);
+-     m_startday->setValue(m_startDateTime.date().day());
+-   }
+-   if ( atoi(m_startday->text()) == m_startday->maxValue() ) {
+-     m_startDateTime = m_startDateTime.addDays(1);
+-     m_startmonth->setCurrentText(m_startDateTime.date().toString("MMMM"));
+-     m_startday->setValue(1);
+-     m_startday->setMaxValue(m_startDateTime.date().daysInMonth() + 1);
+-   }
+-
+-   dateChanged();
+-}
+-
+-void ManualSchedule::weekdayChanged(void)
+-{
+-    if (m_startDateTime.toString("dddd") ==
+-	m_weekday->currentText() ) {
+- 	// That's OK, weekdate and startdate already synched
+-	prev_weekday = 99;
+-	return;
+-    }
+-
+-    prev_weekday = m_startDateTime.date().dayOfWeek() -
+-	m_nowDateTime.date().dayOfWeek();
+-    if (prev_weekday < 0)
+-	prev_weekday = 7 + prev_weekday;
+-
+-    if ((prev_weekday + 1 == m_weekday->currentItem()) ||
+-       ((prev_weekday == 6 ) && (m_weekday->currentItem()==0))) {
+-        // It's going forward
+-	m_startday->stepUp();
+-        return;
+-    }
+-
+-    if ((prev_weekday == m_weekday->currentItem() + 1 ) ||
+-       ((prev_weekday == 0 ) && (m_weekday->currentItem()==6))) {
+-        // It's going backwards
+-	m_startday->stepDown();
+-        return;
+-    }
+-
+-    m_startday->setValue(
+-       m_startDateTime.addDays(
+-              m_weekday->currentItem()-prev_weekday).date().day());
+-}
+-
+ void ManualSchedule::channelChanged(void)
+ {
+ //  if edited, preserves user entered text
+@@ -380,7 +304,7 @@
+         if (m_title->text().length() > m_lastChannel.length() &&
+             (!m_lastChannel.isEmpty() && !m_title->text().isEmpty()) )
+             user_text = m_title->text().right(
+-		m_title->text().length() - m_lastChannel.length());
++                m_title->text().length() - m_lastChannel.length());
+         m_lastChannel = m_channel->currentText();
+         m_title->setText( m_channel->currentText() + user_text ); 
+     }
+@@ -398,57 +322,38 @@
+       if (!userText.isEmpty())
+         m_description->setText( m_startDateTime.toString(dateformat) + 
+                         " - (" +
+-			m_duration->text() +
+-			") - " +
+-			userText );
++                        m_duration->text() +
++                        ") - " +
++                        userText );
+       
+    } else
+    m_description->setText( m_startDateTime.toString(dateformat) + " - (" +
+-			m_duration->text() +
+-			") - " +
+-			tr("Manual recording") );
+-}
+-
+-void ManualSchedule::monthChanged(void)
+-{ 
+-   if ((m_startmonth->currentItem() + m_nowDateTime.date().month() ) > 12 )
+-     m_startyear = m_nowDateTime.date().year() + 1;
+-   else
+-     m_startyear = m_nowDateTime.date().year();
++                        m_duration->text() +
++                        ") - " +
++                        tr("Manual recording") );
+ }
+ 
+ void ManualSchedule::dateChanged(void)
+ {
+-   QDate thisDate;
+-
+-   thisDate.setYMD(
+-     m_startyear,
+-     m_nowDateTime.addMonths(m_startmonth->currentItem()).date().month(),
+-     atoi(m_startday->text()) );
+-
+-   m_startDateTime.setDate(thisDate);
++   daysahead = m_startdate->currentItem();
++   m_startDateTime.setDate(m_nowDateTime.addDays(daysahead).date());
+    
+-   daysahead = m_nowDateTime.date().daysTo(m_startDateTime.date());
+-
+-   m_weekday->setCurrentText(thisDate.toString("dddd"));
+ 
+    m_startDateTime.setTime(QTime(00,00));
+-   m_startDateTime = m_startDateTime.addSecs( (atoi(m_starthour->text()) * 3600)
+-					+ (atoi(m_startminute->text()) * 60) );
+-					 
++   m_startDateTime = m_startDateTime.addSecs((m_starthour->value() * 3600) +
++                                             (m_startminute->value() * 60));
++
++   VERBOSE(VB_SCHEDULE, QString("Start Date Time: %1")
++                                .arg(m_startDateTime.toString()));
+ 
+ // don't know how to record the past, do you? :P
+    if (m_startDateTime < m_nowDateTime)
+    {
+-        QDate thisDate = m_nowDateTime.date();
+-        m_startyear = thisDate.year();
+-        m_startmonth->setCurrentItem(thisDate.month() -
+-		m_nowDateTime.date().month() );
+-        m_startday->setValue(thisDate.day());
+-	QTime thisTime = m_nowDateTime.time();
++        QTime thisTime = m_nowDateTime.time();
+         m_starthour->setValue(thisTime.hour());
+-        m_startminute->setValue(thisTime.minute());
+-	m_startDateTime = m_nowDateTime;
++        m_startDateTime.setDate(m_nowDateTime.date());
++        m_startDateTime.setTime(QTime(m_starthour->value(),
++                                      m_startminute->value()));
+   } 
+     
+ //  if edited, preserves user entered text
+@@ -460,9 +365,9 @@
+         if (m_subtitle->text().length() > m_lastSubtitle.length() &&
+             (!m_lastSubtitle.isEmpty() && !m_subtitle->text().isEmpty()) )
+             user_text = m_subtitle->text().right(
+-		m_subtitle->text().length() - m_lastSubtitle.length());
++                m_subtitle->text().length() - m_lastSubtitle.length());
+         m_lastSubtitle = m_startDateTime.toString("yyyy/MM/dd") + " " +
+-			m_startDateTime.toString(timeformat);
++                        m_startDateTime.toString(timeformat);
+         m_subtitle->setText( m_lastSubtitle + user_text ); 
+     }
+     textChanged();
+@@ -473,6 +378,8 @@
+ {
+     ProgramInfo progInfo;
+     
++    // int dayOffset = chooseDay->currentItem() - 1;
++    // searchTime.setDate(startTime.addDays(dayOffset).date());
+     progInfo.startts = m_startDateTime;
+ 
+     progInfo.endts = progInfo.startts.addSecs(m_duration->value() * 60);
+@@ -510,7 +417,7 @@
+                  << " at "
+                  << progInfo.startts.toString("yyyy/MM/dd hh:mm") 
+                  << " to "
+-	         << progInfo.endts.toString("hh:mm") << endl;
++                 << progInfo.endts.toString("hh:mm") << endl;
+ 
+             progInfo.Save(db);
+         }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/manualschedule.h mythtv-20050218/programs/mythfrontend/manualschedule.h
+--- mythtv-0.17/programs/mythfrontend/manualschedule.h	2004-04-25 12:23:06.000000000 -0700
++++ mythtv-20050218/programs/mythfrontend/manualschedule.h	2005-02-14 20:54:55.000000000 -0800
+@@ -31,11 +31,8 @@
+ 
+   protected slots:
+     void textChanged(void);
+-    void weekdayChanged(void);
+-    void monthChanged(void);
+     void hourChanged(void);
+     void minuteChanged(void);
+-    void dayChanged(void);
+     void channelChanged(void);
+     void durationChanged(void);
+     void dateChanged(void);
+@@ -60,10 +57,7 @@
+     MythPushButton *m_saveButton;
+     MythPushButton *m_exitButton;
+     MythPushButton *m_cancelButton;
+-    MythComboBox *m_weekday;
+-    MythSpinBox *m_startday;
+-    MythComboBox *m_startmonth;
+-    int m_startyear;
++    MythComboBox *m_startdate;
+     MythSpinBox *m_starthour;
+     MythSpinBox *m_startminute;
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/playbackbox.cpp mythtv-20050218/programs/mythfrontend/playbackbox.cpp
+--- mythtv-0.17/programs/mythfrontend/playbackbox.cpp	2005-02-07 10:28:43.000000000 -0800
++++ mythtv-20050218/programs/mythfrontend/playbackbox.cpp	2005-02-15 08:39:44.000000000 -0800
+@@ -2264,7 +2264,7 @@
+             jobHost = gContext->GetHostName();
+ 
+         JobQueue::QueueJob(db, JOB_TRANSCODE, curitem->chanid, curitem->startts,
+-                           jobHost, "", "", JOB_USE_CUTLIST);
++                           "", "", jobHost, JOB_USE_CUTLIST);
+     }
+ }
+ 
+@@ -2300,7 +2300,7 @@
+             jobHost = tmpItem->hostname;
+ 
+         JobQueue::QueueJob(db, JOB_COMMFLAG, curitem->chanid, curitem->startts,
+-                           jobHost);
++                           "", "", jobHost);
+     }
+ 
+     update(listRect);
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/programrecpriority.cpp mythtv-20050218/programs/mythfrontend/programrecpriority.cpp
+--- mythtv-0.17/programs/mythfrontend/programrecpriority.cpp	2005-01-30 18:30:17.000000000 -0800
++++ mythtv-20050218/programs/mythfrontend/programrecpriority.cpp	2005-02-15 03:22:42.000000000 -0800
+@@ -1031,7 +1031,7 @@
+                             progInfo->recstatus == rsInactive)
+                             ltype->EnableForcedFont(cnt, "inactive");
+                         else if (recMatch[progInfo->recordid] > 0)
+-                            ltype->EnableForcedFont(cnt, "recording");
++                            ltype->EnableForcedFont(cnt, "record");
+                         // else if (listMatch[progInfo->recordid] < 1)
+                         //    ltype->EnableForcedFont(cnt, "dormant");
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/statusbox.cpp mythtv-20050218/programs/mythfrontend/statusbox.cpp
+--- mythtv-0.17/programs/mythfrontend/statusbox.cpp	2005-01-27 15:43:13.000000000 -0800
++++ mythtv-20050218/programs/mythfrontend/statusbox.cpp	2005-02-17 22:47:27.000000000 -0800
+@@ -34,6 +34,7 @@
+ #include "tv.h"
+ #include "jobqueue.h"
+ #include "util.h"
++#include "mythdbcon.h"
+ 
+ StatusBox::StatusBox(MythMainWindow *parent, const char *name)
+          : MythDialog(parent, name)
+@@ -337,12 +338,11 @@
+                                  QObject::tr("Yes"), QObject::tr("No"), 0);
+                 if (retval == 0)
+                 {
+-                    QString query = QString("UPDATE mythlog "
+-                                            "SET acknowledged = 1 "
+-                                            "WHERE priority <= %1")
+-                                            .arg(min_level);
+-                    QSqlDatabase *db = QSqlDatabase::database();
+-                    db->exec(query);
++                    MSqlQuery query(QString::null, QSqlDatabase::database());
++                    query.prepare("UPDATE mythlog SET acknowledged = 1 "
++                                  "WHERE priority <= :PRIORITY ;");
++                    query.bindValue(":PRIORITY", min_level);
++                    query.exec();
+                     doLogEntries();
+                 }
+             }
+@@ -494,11 +494,11 @@
+                                    QObject::tr("Yes"), QObject::tr("No"), 0);
+             if (retval == 0)
+             {
+-                QString query = QString("UPDATE mythlog SET acknowledged = 1 "
+-                                        "WHERE logid = %1")
+-                                        .arg(contentData[contentPos]);
+-                QSqlDatabase *db = QSqlDatabase::database();
+-                db->exec(query);
++                MSqlQuery query(QString::null, QSqlDatabase::database());
++                query.prepare("UPDATE mythlog SET acknowledged = 1 "
++                              "WHERE logid = :LOGID ;");
++                query.bindValue(":LOGID", contentData[contentPos]);
++                query.exec();
+                 doLogEntries();
+             }
+         }
+@@ -616,7 +616,6 @@
+     QString querytext, DataDirectMessage;
+     int DaysOfData;
+     QDateTime qdtNow, GuideDataThrough;
+-    QSqlDatabase *db = QSqlDatabase::database();
+     int count = 0;
+ 
+     contentLines.clear();
+@@ -625,9 +624,10 @@
+     doScroll = false;
+ 
+     qdtNow = QDateTime::currentDateTime();
+-    querytext = QString("SELECT max(endtime) FROM program;");
+ 
+-    QSqlQuery query = db->exec(querytext);
++    MSqlQuery query(QString::null, QSqlDatabase::database());
++    query.prepare("SELECT max(endtime) FROM program;");
++    query.exec();
+ 
+     if (query.isActive() && query.numRowsAffected())
+     {
+@@ -699,9 +699,9 @@
+     int count = 0;
+     doScroll = true;
+ 
+-    QString querytext = QString("SELECT cardid FROM capturecard;");
+-    QSqlDatabase *db = QSqlDatabase::database();
+-    QSqlQuery query = db->exec(querytext);
++    MSqlQuery query(QString::null, QSqlDatabase::database());
++    query.prepare("SELECT cardid FROM capturecard;");
++    query.exec();
+ 
+     contentLines.clear();
+     contentDetail.clear();
+@@ -770,36 +770,33 @@
+     QString Status = QObject::tr("Details of DVB error statistics for last 48 "
+                                  "hours:\n");
+ 
+-    QString outerqry =
+-        "SELECT starttime,endtime FROM recorded "
+-        "WHERE starttime >= DATE_SUB(NOW(), INTERVAL 48 HOUR) "
+-        "ORDER BY starttime;";
+ 
+-    QSqlDatabase *db = QSqlDatabase::database();
+-    QSqlQuery oquery = db->exec(outerqry);
++    MSqlQuery oquery(QString::null, QSqlDatabase::database());
++    oquery.prepare("SELECT starttime,endtime FROM recorded "
++                  "WHERE starttime >= DATE_SUB(NOW(), INTERVAL 48 HOUR) "
++                  "ORDER BY starttime;");
++    oquery.exec();
+ 
+     if (oquery.isActive() && oquery.numRowsAffected())
+     {
+-        querytext = QString("SELECT cardid,"
+-                            "max(fe_ss),min(fe_ss),avg(fe_ss),"
+-                            "max(fe_snr),min(fe_snr),avg(fe_snr),"
+-                            "max(fe_ber),min(fe_ber),avg(fe_ber),"
+-                            "max(fe_unc),min(fe_unc),avg(fe_unc),"
+-                            "max(myth_cont),max(myth_over),max(myth_pkts) "
+-                            "FROM dvb_signal_quality "
+-                            "WHERE sampletime BETWEEN ? AND ? "
+-                            "GROUP BY cardid");
+-
+-        QSqlQuery query = db->exec(NULL);
+-        query.prepare(querytext);
++        MSqlQuery query(QString::null, QSqlDatabase::database());
++        query.prepare("SELECT cardid,"
++                      "max(fe_ss),min(fe_ss),avg(fe_ss),"
++                      "max(fe_snr),min(fe_snr),avg(fe_snr),"
++                      "max(fe_ber),min(fe_ber),avg(fe_ber),"
++                      "max(fe_unc),min(fe_unc),avg(fe_unc),"
++                      "max(myth_cont),max(myth_over),max(myth_pkts) "
++                      "FROM dvb_signal_quality "
++                      "WHERE sampletime BETWEEN :STARTTIME AND :ENDTIME "
++                      "GROUP BY cardid");
+         
+         while (oquery.next())
+         {
+             QDateTime t_start = oquery.value(0).toDateTime();
+             QDateTime t_end = oquery.value(1).toDateTime();
+ 
+-            query.bindValue(0, t_start);
+-            query.bindValue(1, t_end);
++            query.bindValue(":STARTTIME", t_start);
++            query.bindValue(":ENDTIME", t_end);
+ 
+             if (!query.exec())
+                 cout << query.lastError().databaseText() << "\r\n" 
+@@ -854,14 +851,14 @@
+     contentFont.clear();
+     contentData.clear();
+ 
+-    QSqlDatabase *db = QSqlDatabase::database();
+-    QString thequery;
++    MSqlQuery query(QString::null, QSqlDatabase::database());
++    query.prepare("SELECT logid, module, priority, logdate, host, "
++                  "message, details "
++                  "FROM mythlog WHERE acknowledged = 0 "
++                  "AND priority <= :PRIORITY ORDER BY logdate DESC;");
++    query.bindValue(":PRIORITY", min_level);
++    query.exec();
+ 
+-    thequery = QString("SELECT logid, module, priority, logdate, host, "
+-                       "message, details "
+-                       "FROM mythlog WHERE acknowledged = 0 AND priority <= %1 "
+-                       "ORDER BY logdate DESC;").arg(min_level);
+-    QSqlQuery query = db->exec(thequery);
+     if (query.isActive())
+     {
+         while (query.next())
+@@ -1074,8 +1071,6 @@
+ 
+ void StatusBox::doMachineStatus()
+ {
+-    QSqlDatabase *db(QSqlDatabase::database());
+-
+     int           count(0);
+     int           totalM, usedM, freeM;    // Physical memory
+     int           totalS, usedS, freeS;    // Virtual  memory (swap)
+@@ -1166,22 +1161,26 @@
+     // get free disk space
+     contentLines[count++] = QString(QObject::tr("Disk space:"));
+ 
+-    if (db && isBackend)
++    if (isBackend)
+     {
+         QString str;
+ 
+-        // Perform the database queries
+-        QSqlQuery path = db->exec("SELECT * FROM settings"
+-                                  " where value=\"RecordFilePrefix\";");
+-
+         contentLines[count] = "   " + QString(QObject::tr("Recordings")) + ": ";
+ 
++        // Perform the database queries
++        MSqlQuery query(QString::null, QSqlDatabase::database());
++        query.prepare("SELECT * FROM settings "
++                      "WHERE value=\"RecordFilePrefix\" "
++                      "AND hostname = :HOSTNAME ;");
++        query.bindValue(":HOSTNAME", gContext->GetHostName());
++        query.exec();
++
+         // did we get results?
+-        if (path.isActive() && path.numRowsAffected())
++        if (query.isActive() && query.numRowsAffected())
+         {
+             // skip to first result
+-            path.next();
+-            str = diskUsageStr(path.value(1).toCString());
++            query.next();
++            str = diskUsageStr(query.value(1).toCString());
+         }
+         else
+             str = QString(QObject::tr("DB error - RecordFilePrefix unknown"));
+@@ -1189,12 +1188,16 @@
+ 
+         // Ditto for the second path
+         contentLines[count] = "   " + QString(QObject::tr("TV buffer")) + ": ";
+-        path = db->exec("SELECT * FROM settings"
+-                        " where value=\"LiveBufferDir\";");
+-        if (path.isActive() && path.numRowsAffected())
++
++        query.prepare("SELECT * FROM settings "
++                      "WHERE value=\"LiveBufferDir\" "
++                      "AND hostname = :HOSTNAME ;");
++        query.bindValue(":HOSTNAME", gContext->GetHostName());
++        query.exec();
++        if (query.isActive() && query.numRowsAffected())
+         {
+-            path.next();
+-            str = diskUsageStr(path.value(1).toCString());
++            query.next();
++            str = diskUsageStr(query.value(1).toCString());
+         }
+         else
+             str = QString(QObject::tr("DB error - LiveBufferDir unknown"));
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythfrontend/viewscheduled.cpp mythtv-20050218/programs/mythfrontend/viewscheduled.cpp
+--- mythtv-0.17/programs/mythfrontend/viewscheduled.cpp	2004-10-29 18:26:08.000000000 -0700
++++ mythtv-20050218/programs/mythfrontend/viewscheduled.cpp	2005-02-14 20:56:22.000000000 -0800
+@@ -352,9 +352,11 @@
+                     ltype->EnableForcedFont(i, "recording");
+                 else if (p->recstatus == rsConflict)
+                     ltype->EnableForcedFont(i, "conflictingrecording");
+-                else if (p->recstatus > rsWillRecord || 
+-                         p->recstatus < rsRecording)
+-                    ltype->EnableForcedFont(i, "disabledrecording");
++                else if (p->recstatus == rsWillRecord)
++                    ltype->EnableForcedFont(i, "record");
++                else if (p->recstatus <= rsEarlierShowing ||
++                         p->recstatus == rsRepeat)
++                    ltype->EnableForcedFont(i, "disabledrecording"); 
+             }
+         }
+     }
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythtranscode/main.cpp mythtv-20050218/programs/mythtranscode/main.cpp
+--- mythtv-0.17/programs/mythtranscode/main.cpp	2004-10-12 18:49:55.000000000 -0700
++++ mythtv-20050218/programs/mythtranscode/main.cpp	2005-02-16 23:17:01.000000000 -0800
+@@ -257,10 +257,19 @@
+             return -1;
+         }
+ 
+-        QString fileprefix = gContext->GetFilePrefix();
+-        infile = pginfo->GetRecordFilename(fileprefix);
++        infile = pginfo->GetPlaybackURL();
+     }
+-    QString tmpfile = infile + ".tmp";
++
++    QString tmpfile;
++    if (infile.left(7) == "myth://") {
++        VERBOSE(VB_IMPORTANT, QString("Attempted to transcode %1. "
++               "Mythtranscode is currently unable to transcode remote "
++               "files.")
++               .arg(infile));
++        exit(0);
++    }
++
++    tmpfile = infile + ".tmp";
+ 
+     int jobID = -1;
+     if (use_db)
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythtranscode/transcode.cpp mythtv-20050218/programs/mythtranscode/transcode.cpp
+--- mythtv-0.17/programs/mythtranscode/transcode.cpp	2005-01-29 20:21:27.000000000 -0800
++++ mythtv-20050218/programs/mythtranscode/transcode.cpp	2005-02-17 21:40:42.000000000 -0800
+@@ -21,6 +21,10 @@
+ #include "mythcontext.h"
+ #include "jobqueue.h"
+ 
++extern "C" {
++#include "../libavcodec/avcodec.h"
++}
++
+ // This class is to act as a fake audio output device to store the data
+ // for reencoding.
+ 
+@@ -184,7 +188,6 @@
+         // Do nothing
+         return MUTE_OFF;
+     }
+-    
+ 
+     int bufsize;
+     unsigned char *audiobuffer;
+@@ -306,7 +309,11 @@
+                                    m_proginfo->startts);
+ 
+         if (jobID < 0)
++        {
++            VERBOSE(VB_IMPORTANT, "ERROR, Transcode called from JobQueue but "
++                                  "no jobID found!");
+             return REENCODE_ERROR;
++        }
+ 
+         JobQueue::ChangeJobComment(m_db, jobID,
+                                    "0% " + QObject::tr("Completed"));
+@@ -320,7 +327,10 @@
+     if (honorCutList && m_proginfo)
+     {
+         if (m_proginfo->IsEditing(m_db) || m_proginfo->IsCommProcessing(m_db))
++        {
++            VERBOSE(VB_IMPORTANT, "Transcoding aborted, cutlist changed");
+             return REENCODE_CUTLIST_CHANGE;
++        }
+         m_proginfo->SetMarkupFlag(MARK_UPDATED_CUT, false, m_db);
+         curtime = curtime.addSecs(60);
+     }
+@@ -339,7 +349,10 @@
+     nvp->SetAudioOutput(audioOutput);
+ 
+     if (nvp->OpenFile(false) < 0)
++    {
++        VERBOSE(VB_IMPORTANT, "Transcoding aborted, error opening file.");
+         return REENCODE_ERROR;
++    }
+ 
+     nvp->ReinitAudio();
+     QString encodingType = nvp->GetEncodingType();
+@@ -349,26 +362,40 @@
+ 
+     int video_width = nvp->GetVideoWidth();
+     int video_height = nvp->GetVideoHeight();
++    float video_aspect = nvp->GetVideoAspect();
+     float video_frame_rate = nvp->GetFrameRate();
+     long long total_frame_count = nvp->GetTotalFrameCount();
++    int newWidth = video_width;
++    int newHeight = video_height;
+ 
+     kfa_table = new QPtrList<struct kfatable_entry>;
+ 
+     if (fifodir == NULL)
+     {
+         if (!GetProfile(profileName, encodingType)) {
++            VERBOSE(VB_IMPORTANT, "Transcoding aborted, no profile found.");
+             return REENCODE_ERROR;
+         }
+         vidsetting = profile.byName("videocodec")->getValue();
+         if (vidsetting == "MPEG-2")
++        {
++            VERBOSE(VB_IMPORTANT, "Transcoding aborted, need MPEG-2.");
+             return REENCODE_MPEG2TRANS;
++        }
+         // Recorder setup
+         nvr->SetFrameRate(video_frame_rate);
+ 
+         // this is ripped from tv_rec SetupRecording. It'd be nice to merge
+         nvr->SetOption("inpixfmt", FMT_YV12);
+-        nvr->SetOption("width", video_width);
+-        nvr->SetOption("height", video_height);
++
++        if (profile.byName("transcoderesize")->getValue().toInt())
++        {
++            newWidth = profile.byName("width")->getValue().toInt();
++            newHeight = profile.byName("height")->getValue().toInt();
++        }
++
++        nvr->SetOption("width", newWidth);
++        nvr->SetOption("height", newHeight);
+ 
+         nvr->SetOption("tvformat", gContext->GetSetting("TVFormat"));
+         nvr->SetOption("vbiformat", gContext->GetSetting("VbiFormat"));
+@@ -418,6 +445,7 @@
+         }
+ 
+         nvr->AudioInit(true);
++        nvr->SetVideoAspect(video_aspect);
+ 
+         outRingBuffer = new RingBuffer(outputname, true, false);
+         nvr->SetRingBuffer(outRingBuffer);
+@@ -426,7 +454,8 @@
+     }
+ 
+     if (vidsetting == encodingType && !framecontrol &&
+-        fifodir == NULL && honorCutList)
++        fifodir == NULL && honorCutList &&
++        video_width == newWidth && video_height == newHeight)
+     {
+         copyvideo = true;
+         VERBOSE(VB_GENERAL, "Reencoding video in 'raw' mode");
+@@ -443,9 +472,9 @@
+ 
+     VideoFrame frame;
+     frame.codec = FMT_YV12;
+-    frame.width = video_width;
+-    frame.height = video_height;
+-    frame.size = video_width * video_height * 3 / 2;
++    frame.width = newWidth;
++    frame.height = newHeight;
++    frame.size = newWidth * newHeight * 3 / 2;
+ 
+     if (fifodir != NULL)
+     {
+@@ -486,6 +515,7 @@
+     long totalAudio = 0;
+     int dropvideo = 0;
+     long long lasttimecode = 0;
++    long long timecodeOffset = 0;
+ 
+     float rateTimeConv = arb->eff_audiorate * arb->bytes_per_sample / 1000.0;
+     float vidFrameTime = 1000.0 / video_frame_rate;
+@@ -493,6 +523,17 @@
+     VideoOutput *videoOutput = nvp->getVideoOutput();
+     bool is_key = 0;
+     bool first_loop = true;
++    unsigned char *newFrame = new unsigned char[newWidth * newHeight * 3 / 2];
++
++    frame.buf = newFrame;
++    AVPicture imageIn, imageOut;
++    ImgReSampleContext *scontext;
++
++    if (video_width != newWidth || video_height != newHeight)
++        VERBOSE(VB_GENERAL, QString("Resizing video from %1x%2 to %3x%4")
++                                    .arg(video_width).arg(video_height)
++                                    .arg(newWidth).arg(newHeight));
++
+     while (nvp->TranscodeGetNextFrame(dm_iter, &did_ff, &is_key, honorCutList))
+     {
+         if (first_loop)
+@@ -501,15 +542,15 @@
+             first_loop = false;
+         }
+         VideoFrame *lastDecode = videoOutput->GetLastDecodedFrame();
+-        frame.buf = lastDecode->buf;
++
+         frame.timecode = lastDecode->timecode;
+ 
+         if (frame.timecode < lasttimecode)
+             frame.timecode = (long long)(lasttimecode + vidFrameTime);
+-        lasttimecode = frame.timecode;
+ 
+         if (fifow)
+         {
++            frame.buf = lastDecode->buf;
+             totalAudio += arb->audiobuffer_len;
+             int audbufTime = (int)(totalAudio / rateTimeConv);
+             int auddelta = arb->last_audiotime - audbufTime;
+@@ -583,6 +624,7 @@
+             videoOutput->DoneDisplayingFrame();
+             audioOutput->Reset();
+             nvp->FlushTxtBuffers();
++            lasttimecode = frame.timecode;
+         }
+         else if (copyaudio)
+         {
+@@ -592,6 +634,9 @@
+             {
+                 // The Raw state changed during decode.  This is not good
+                 unlink(outputname);
++                delete newFrame;
++                VERBOSE(VB_IMPORTANT, "Transcoding aborted, NuppelVideoPlayer "
++                                      "is not in raw audio mode.");
+                 return REENCODE_ERROR;
+             }
+ 
+@@ -620,7 +665,16 @@
+                 }
+             }
+ 
+-            if (! nvp->WriteStoredData(outRingBuffer, (did_ff == 0)))
++            if (did_ff == 1)
++            {
++                timecodeOffset +=
++                    (frame.timecode - lasttimecode - (int)vidFrameTime);
++            }
++            lasttimecode = frame.timecode;
++            frame.timecode -= timecodeOffset;
++
++            if (! nvp->WriteStoredData(outRingBuffer, (did_ff == 0),
++                                       timecodeOffset))
+             {
+                 if (did_ff == 1)
+                 {
+@@ -628,6 +682,23 @@
+                   did_ff = 2;
+                   writekeyframe = true;
+                 }
++
++                if ((video_width == newWidth) && (video_height == newHeight))
++                {
++                    frame.buf = lastDecode->buf;
++                }
++                else
++                {
++                    avpicture_fill(&imageIn, lastDecode->buf, PIX_FMT_YUV420P,
++                                   video_width, video_height);
++                    avpicture_fill(&imageOut, frame.buf, PIX_FMT_YUV420P,
++                                   newWidth, newHeight);
++                    scontext = img_resample_init(newWidth, newHeight,
++                                                 video_width, video_height);
++                    img_resample(scontext, &imageOut, &imageIn);
++                    img_resample_close(scontext);
++                }
++
+                 nvr->WriteVideo(&frame, true, writekeyframe);
+             }
+             audioOutput->Reset();
+@@ -635,22 +706,50 @@
+         } 
+         else 
+         {
++            if (did_ff == 1)
++            {
++                did_ff = 2;
++                timecodeOffset +=
++                    (frame.timecode - lasttimecode - (int)vidFrameTime);
++            }
++
++            if ((video_width == newWidth) && (video_height == newHeight))
++            {
++                frame.buf = lastDecode->buf;
++            }
++            else
++            {
++                avpicture_fill(&imageIn, lastDecode->buf, PIX_FMT_YUV420P,
++                               video_width, video_height);
++                avpicture_fill(&imageOut, frame.buf, PIX_FMT_YUV420P,
++                               newWidth, newHeight);
++                scontext = img_resample_init(newWidth, newHeight,
++                                             video_width, video_height);
++                img_resample(scontext, &imageOut, &imageIn);
++                img_resample_close(scontext);
++            }
++
+             // audio is fully decoded, so we need to reencode it
+             audioframesize = arb->audiobuffer_len;
+             if (audioframesize > 0)
+             {
+                 nvr->SetOption("audioframesize", audioframesize);
+                 int starttime = audioOutput->GetAudiotime();
+-                nvr->WriteAudio(arb->audiobuffer, audioFrame++, starttime);
++                nvr->WriteAudio(arb->audiobuffer, audioFrame++,
++                                starttime - timecodeOffset);
+                 if (nvr->IsErrored()) {
+                     VERBOSE(VB_IMPORTANT, "Transcode: Encountered "
+                             "irrecoverable error in NVR::WriteAudio");
++                    delete newFrame;
+                     return REENCODE_ERROR;
+                 }
+                 arb->audiobuffer_len = 0;
+             }
+             nvp->TranscodeWriteText(&TranscodeWriteText, (void *)(nvr));
+ 
++            lasttimecode = frame.timecode;
++            frame.timecode -= timecodeOffset;
++
+             if (forceKeyFrames)
+                 nvr->WriteVideo(&frame, true, true);
+             else
+@@ -670,6 +769,8 @@
+                 m_proginfo->CheckMarkupFlag(MARK_UPDATED_CUT, m_db)) 
+             {
+                 unlink(outputname);
++                delete newFrame;
++                VERBOSE(VB_IMPORTANT, "Transcoding aborted, cutlist updated");
+                 return REENCODE_CUTLIST_CHANGE;
+             }
+ 
+@@ -678,6 +779,8 @@
+                 if (JobQueue::GetJobCmd(m_db, jobID) == JOB_STOP)
+                 {
+                     unlink(outputname);
++                    delete newFrame;
++                    VERBOSE(VB_IMPORTANT, "Transcoding STOPped by JobQueue");
+                     return REENCODE_STOPPED;
+                 }
+                 int percentage = curFrameNum * 100 / total_frame_count;
+@@ -701,6 +804,7 @@
+     } else {
+         fifow->FIFODrain();
+     }
++    delete newFrame;
+     return REENCODE_OK;
+ }
+ 
+diff -Nur --exclude=CVS --exclude=docs --exclude=i18n --exclude=themes mythtv-0.17/programs/mythuitest/mythuitest.pro mythtv-20050218/programs/mythuitest/mythuitest.pro
+--- mythtv-0.17/programs/mythuitest/mythuitest.pro	2005-01-30 22:14:20.000000000 -0800
++++ mythtv-20050218/programs/mythuitest/mythuitest.pro	2005-02-17 06:44:28.000000000 -0800
+@@ -11,7 +11,7 @@
+ isEmpty(QMAKE_EXTENSION_LIB) {
+   QMAKE_EXTENSION_LIB=a
+ }
+-TARGETDEPS += ../../libs/libmyth/libmythui-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
++TARGETDEPS += ../../libs/libmythui/libmythui-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ 
+ macx {
+     # OS X complains about indirectly linked libraries
