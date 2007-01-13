@@ -4,7 +4,7 @@ CATEGORIES = myth
 MASTER_SITES  = http://www.mythtv.org/mc/
 MASTER_SITES += svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-20051022.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
+PATCHFILES = $(DISTNAME)-fixes-20051115.patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-remove_import_menu_items.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -79,6 +79,8 @@ configure-%/mythtv:
 	@$(MAKECOOKIE)
 
 install-source:
-	@mkdir -p $(DESTDIR)$(sourcedir)
-	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/mythtv
+	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@mkdir -p $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@$(MAKECOOKIE)

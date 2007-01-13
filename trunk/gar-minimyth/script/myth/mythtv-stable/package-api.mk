@@ -1,3 +1,3 @@
 MYTHTV_VERSION = 0.18.1
 
-MYTHTV_SOURCEDIR=$(mm_HOME)/script/myth/mythtv/$(WORKDIR)/mythtv-$(MYTHTV_VERSION)
+MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
