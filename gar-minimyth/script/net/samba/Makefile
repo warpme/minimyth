@@ -33,6 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 post-patch:
+	@cd $(WORKDIR)/$(DISTNAME) ; patch -p1 < packaging/Debian/debian-stable/patches/smbmount-nomtab.patch
 	@#Hack to allow configure to work. This works because we are not really cross compiling.
 	@sed -i 's%\("$$cross_compiling" *= *\)yes%\1gar%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
