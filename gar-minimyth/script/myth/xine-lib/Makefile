@@ -33,7 +33,9 @@ CONFIGURE_ARGS = $(DIRPATHS) \
 	--disable-libFLACtest \
 	--with-gnu-ld \
 	--with-x \
-	--with-xxmc-lib=viaXvMC
+	--with-xxmc-lib=viaXvMC \
+	--with-libFLAC-includes=$(DESTDIR)$(includedir) \
+	--with-libFLAC-libraries=$(DESTDIR)$(libdir)
 
 include ../../gar.mk
 
