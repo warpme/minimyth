@@ -5,8 +5,23 @@ WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
 GAR_EXTRA_CONF += kernel/linux/package-api.mk devel/build-system-bins/package-api.mk
 include ../../gar.mk
 
-mm_ROOTFSDIR := $(PWD)/$(WORKSRC)/rootfs.d
-mm_EXTRASDIR := $(PWD)/$(WORKSRC)/extras.d
+mm_NAME       := minimyth-$(mm_VERSION)
+
+mm_KERNELNAME := kernel
+mm_ROOTFSNAME := rootfs
+mm_EXTRASNAME := extras
+mm_EXTRASNAME := themes
+
+# Directory where files are initaially assembled.
+mm_STAGEDIR := $(WORKSRC)/stage
+# Directory containing files that are for local (private) use (directories with extras).
+mm_LOCALDIR := $(WORKSRC)/local
+# Directory containing files that are for shared (public) use (tarballs without extras).
+mm_SHAREDIR := $(WORKSRC)/share
+
+mm_ROOTFSDIR := $(mm_STAGEDIR)/rootfs
+mm_EXTRASDIR := $(mm_STAGEDIR)/extras
+mm_THEMESDIR := $(mm_STAGEDIR)/themes
 
 MM_BIN_FILES    := $(strip \
 	$(if $(wildcard               minimyth-bin-list   ),               minimyth-bin-list   ) \
@@ -147,7 +162,7 @@ COPY_FILES = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-extras mm-make-initrd mm-make-distro
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-make-distro
 
 mm-check:
 	@if [ "`id -u`" = "0" ] ; then \
@@ -156,6 +171,14 @@ mm-check:
 	fi
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
 		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
+		exit 1 ; \
+	fi
+	@if [ -n "$(mm_INSTALL_CRAMFS)" ] ; then \
+		echo "error: mm_INSTALL_CRAMFS should be replaced with mm_INSTALL_TFTP_ROOT." ; \
+		exit 1 ; \
+	fi
+	@if [ -n "$(mm_INSTALL_NFS)" ] ; then \
+		echo "error: mm_INSTALL_NFS should be replaced with mm_INSTALL_NFS_ROOT." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -173,23 +196,23 @@ mm-check:
 		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qtprefix))))\"."; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! "$(mm_INSTALL_CRAMFS)" = "no" ] ; then \
-		echo "error: mm_INSTALL_CRAMFS=\"$(mm_INSTALL_CRAMFS)\" is an invalid value." ; \
+	@if [ ! "$(mm_INSTALL_TFTP_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_TFTP_BOOT)" = "no" ] ; then \
+		echo "error: mm_INSTALL_TFTPBOOT=\"$(mm_INSTALL_TFTPBOOT)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_INSTALL_NFS)" = "yes" ] && [ ! "$(mm_INSTALL_NFS)" = "no" ] ; then \
+	@if [ ! "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_NFS_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_NFS=\"$(mm_INSTALL_NFS)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ "$(mm_INSTALL_CRAMFS)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+	@if [ "$(mm_INSTALL_TFTP_BOOT)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+	@if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@if [ "$(mm_INSTALL_NFS)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
+	@if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ ! -d "$(mm_NFS_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
@@ -205,7 +228,7 @@ mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
 mm-make-busybox:
-	@main_DESTDIR=$(mm_ROOTFSDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
+	@main_DESTDIR=$(PWD)/$(mm_ROOTFSDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_ROOTFSDIR)/var
 
 mm-copy:
@@ -214,9 +237,6 @@ mm-copy:
 	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
 	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
-	@# Copy kernel.
-	@mkdir -p $(WORKSRC)
-	@cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(WORKSRC)/$(mm_KERNELNAME)
 	@# Copy QT mysql plugin.
 	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
 	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
@@ -249,8 +269,9 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
-	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.lircrc
+	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/X11/xinit/xinitrc $(mm_ROOTFSDIR)/root/.xinitrc
 	@mkdir -p $(mm_ROOTFSDIR)$(datadir)/X11 ; \
 		rm -rf $(mm_ROOTFSDIR)$(datadir)/X11/app-defaults ; \
 		cp -r ./dirs/usr/share/X11/app-defaults $(mm_ROOTFSDIR)$(datadir)/X11
@@ -337,12 +358,50 @@ mm-make-udev:
 		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d/$(file) ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
 
+mm-make-other:
+	@# Get version.
+	@mkdir -p $(mm_STAGEDIR)
+	@rm -rf $(mm_STAGEDIR)/version
+	@echo "$(mm_VERSION)" > $(mm_STAGEDIR)/version
+	@# Get docs.
+	@rm -rf   $(mm_STAGEDIR)/docs
+	@mkdir -p $(mm_STAGEDIR)/docs
+	@cp $(mm_HOME)/docs/readme.txt      $(mm_STAGEDIR)/docs/readme.txt
+	@cp $(mm_HOME)/docs/changelog.txt   $(mm_STAGEDIR)/docs/changelog.txt
+	@cp $(mm_HOME)/docs/minimyth.conf   $(mm_STAGEDIR)/docs/minimyth.conf
+	@# Get scripts
+	@rm -rf   $(mm_STAGEDIR)/scripts
+	@mkdir -p $(mm_STAGEDIR)/scripts
+	@cp ./files/mm_local_install        $(mm_STAGEDIR)/scripts/mm_local_install
+	@cp ./files/mm_local_update         $(mm_STAGEDIR)/scripts/mm_local_update
+	@cp ./files/mm_local_helper         $(mm_STAGEDIR)/scripts/mm_local_helper
+	@# Get kernel.
+	@rm -rf $(mm_STAGEDIR)/kernel
+	@cp $(DESTDIR)/$(KERNEL_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
+	@# Get local helper.
+	@rm -rf   $(mm_STAGEDIR)/helper
+	@mkdir -p $(mm_STAGEDIR)/helper
+	@cp ./files/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
+	@cd ${mm_STAGEDIR}/helper ; md5sum mm_local_helper > mm_local_helper.md5
+	@# Get /usr/bin MiniMyth scripts.
+	@cp ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@chmod 755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@cp ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
+
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
 	@mv $(mm_ROOTFSDIR)/$(extras_rootdir)/* $(mm_EXTRASDIR)
 	@rm -rf $(mm_ROOTFSDIR)/$(extras_rootdir) ; mkdir -p $(mm_ROOTFSDIR)/$(extras_rootdir)
 
-mm-make-initrd:
+mm-make-themes:
+	@rm -rf   $(mm_THEMESDIR) 
+	@mkdir -p $(mm_THEMESDIR)
+	@mv       $(mm_ROOTFSDIR)/usr/share/mythtv/themes/* $(mm_THEMESDIR)
+	@rm -rf   $(mm_ROOTFSDIR)/usr/share/mythtv/themes
+	@mkdir -p $(mm_ROOTFSDIR)/usr/share/mythtv/themes
+	@mv       $(mm_THEMESDIR)/default*                  $(mm_ROOTFSDIR)/usr/share/mythtv/themes/
+
+mm-make-rootfs:
 	@if test -e $(mm_ROOTFSDIR).ro ; then rm -rf $(mm_ROOTFSDIR).ro ; fi
 	@mv $(mm_ROOTFSDIR) $(mm_ROOTFSDIR).ro
 	@mkdir -p                           $(mm_ROOTFSDIR)
@@ -362,137 +421,215 @@ mm-make-initrd:
 
 mm-make-distro:
 	@echo 'making minimyth distribution'
-	@rm -rf $(WORKSRC)/version
-	@echo "$(mm_NAME)" > $(WORKSRC)/version
-	@# Make root file system squashfs image and tarball files.
-	@rm -rf $(WORKSRC)/$(mm_ROOTFSNAME)
-	@rm -rf $(WORKSRC)/$(mm_ROOTFSNAME).bz2
-	@rm -rf $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
-	@mkdir -p $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev
-	@fakeroot sh -c                                                                     " \
-		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/console c 5 1     ; \
-		mknod -m 600 $(WORKSRC)/rootfs.d/rootfs-ro/$(rootdir)/dev/initctl p         ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/rootfs.d      ; \
-		chmod -R go-w $(WORKSRC)/rootfs.d                                           ; \
-		mksquashfs $(WORKSRC)/rootfs.d $(WORKSRC)/$(mm_ROOTFSNAME) > /dev/null 2>&1 ; \
-		tar -C $(WORKSRC)/rootfs.d -jcf $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 .       "
-	@chmod 644 $(WORKSRC)/$(mm_ROOTFSNAME)
-	@chmod 644 $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2
-	@# Make extras squashfs image and tarball files.
-	@rm -rf $(WORKSRC)/$(mm_EXTRASNAME).sfs
-	@rm -rf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
-	@fakeroot sh -c                                                                         " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(WORKSRC)/extras.d          ; \
-		chmod -R go-w $(WORKSRC)/rootfs.d                                               ; \
-		mksquashfs $(WORKSRC)/extras.d $(WORKSRC)/$(mm_EXTRASNAME).sfs > /dev/null 2>&1 ; \
-		tar -C $(WORKSRC)/extras.d -jcf $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2 .           "
-	@chmod 644 $(WORKSRC)/$(mm_EXTRASNAME).sfs
-	@chmod 644 $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2
+	@rm -rf   $(mm_LOCALDIR)
+	@mkdir -p $(mm_LOCALDIR)
+	@mkdir -p $(mm_LOCALDIR)/sfs-$(mm_NAME)
+	@mkdir -p $(mm_LOCALDIR)/tar-$(mm_NAME)
+	@# Get version.
+	@cp -r $(mm_STAGEDIR)/version $(mm_LOCALDIR)/
+	@cp -r $(mm_STAGEDIR)/version $(mm_LOCALDIR)/sfs-$(mm_NAME)/
+	@cp -r $(mm_STAGEDIR)/version $(mm_LOCALDIR)/tar-$(mm_NAME)/
+	@# Get docs.
+	@cp -r $(mm_STAGEDIR)/docs $(mm_LOCALDIR)/
+	@cp -r $(mm_STAGEDIR)/docs $(mm_LOCALDIR)/sfs-$(mm_NAME)/
+	@cp -r $(mm_STAGEDIR)/docs $(mm_LOCALDIR)/tar-$(mm_NAME)/
+	@# Get scripts
+	@cp -r $(mm_STAGEDIR)/scripts $(mm_LOCALDIR)/
+	@cp -r $(mm_STAGEDIR)/scripts $(mm_LOCALDIR)/sfs-$(mm_NAME)/
+	@cp -r $(mm_STAGEDIR)/scripts $(mm_LOCALDIR)/tar-$(mm_NAME)/
+	@# Get kernel.
+	@cp -r $(mm_STAGEDIR)/kernel $(mm_LOCALDIR)/sfs-$(mm_NAME)/
+	@cp -r $(mm_STAGEDIR)/kernel $(mm_LOCALDIR)/tar-$(mm_NAME)/
 	@# Make source tarball file.
-	@rm -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2
-	@cd $(mm_HOME) ; make tarball
-	@mv -f $(mm_HOME)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
-	@chmod 644 $(WORKSRC)/$(mm_SOURCENAME).tar.bz2
-	@# Make version and checksums.
-	@cd $(WORKSRC) ; md5sum version                  > version.md5
-	@cd $(WORKSRC) ; md5sum $(mm_SOURCENAME).tar.bz2 > ${mm_SOURCENAME}.tar.bz2.md5
-	@cd $(WORKSRC) ; md5sum $(mm_KERNELNAME)         > ${mm_KERNELNAME}.md5
-	@cd $(WORKSRC) ; md5sum $(mm_ROOTFSNAME)         > ${mm_ROOTFSNAME}.md5
-	@cd $(WORKSRC) ; md5sum $(mm_ROOTFSNAME).tar.bz2 > ${mm_ROOTFSNAME}.tar.bz2.md5
-	@cd $(WORKSRC) ; md5sum $(mm_EXTRASNAME).sfs     > ${mm_EXTRASNAME}.sfs.md5
-	@cd $(WORKSRC) ; md5sum $(mm_EXTRASNAME).tar.bz2 > ${mm_EXTRASNAME}.tar.bz2.md5
-	@# Make public distribution files
-	@rm -rf $(WORKSRC)/distro.d
-	@mkdir -p $(WORKSRC)/distro.d
-	@echo "$(mm_NAME)"                       > $(WORKSRC)/distro.d/version
-	@cp -f $(WORKSRC)/$(mm_SOURCENAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_SOURCENAME).tar.bz2
-	@cp -f $(WORKSRC)/$(mm_KERNELNAME)         $(WORKSRC)/distro.d/$(mm_KERNELNAME)
-	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME)         $(WORKSRC)/distro.d/$(mm_ROOTFSNAME)
-	@cp -f $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2 $(WORKSRC)/distro.d/$(mm_ROOTFSNAME).tar.bz2
-	@cp -f $(mm_HOME)/docs/minimyth.conf       $(WORKSRC)/distro.d/minimyth.conf
-	@cp -f $(mm_HOME)/docs/minimyth.script     $(WORKSRC)/distro.d/minimyth.script
-	@cp -f $(mm_HOME)/docs/changelog.txt       $(WORKSRC)/distro.d/changelog.txt
-	@cp -f $(mm_HOME)/docs/readme.txt          $(WORKSRC)/distro.d/readme.txt
-	@cp -f ./files/mkflashboot                 $(WORKSRC)/distro.d/mkflashboot
-	@cd $(WORKSRC)/distro.d ; md5sum version                  > version.md5
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_SOURCENAME).tar.bz2 > ${mm_SOURCENAME}.tar.bz2.md5
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_KERNELNAME)         > ${mm_KERNELNAME}.md5
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME)         > ${mm_ROOTFSNAME}.md5
-	@cd $(WORKSRC)/distro.d ; md5sum $(mm_ROOTFSNAME).tar.bz2 > ${mm_ROOTFSNAME}.tar.bz2.md5
-	@cd $(WORKSRC)/distro.d ; md5sum minimyth.conf            > minimyth.conf.md5
-	@cd $(WORKSRC)/distro.d ; md5sum minimyth.script          > minimyth.script.md5
-	@cd $(WORKSRC)/distro.d ; md5sum changelog.txt            > changelog.txt.md5
-	@cd $(WORKSRC)/distro.d ; md5sum readme.txt               > readme.txt.md5
-	@cd $(WORKSRC)/distro.d ; md5sum mkflashboot              > mkflashboot.md5
+	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)           \
+		SOURCE_DIR_HEAD=`echo $(mm_HOME)  | sed 's%/[^/]*$$%%g'` \
+		SOURCE_DIR_TAIL=`echo  $(mm_HOME) | sed 's%[^/]*/%%g'`
+	@cp $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
+	@chmod 644 $(mm_LOCALDIR)/$(mm_SOURCENAME).tar.bz2
+	# Make helper tarball file.
+	@rm -rf $(mm_LOCALDIR)/helper.tar.bz2
+	@fakeroot sh -c                                                                  " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/helper ; \
+		chmod -R go-w $(mm_STAGEDIR)/helper                                      ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_LOCALDIR)/helper.tar.bz2 helper          "
+	@chmod 644 $(mm_LOCALDIR)/helper.tar.bz2
+	@# Make root file system squashfs image file.
+	@rm -rf $(mm_LOCALDIR)/sfs-$(mm_NAME)/rootfs
+	@fakeroot sh -c                                                                          " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)               ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
+		mksquashfs $(mm_ROOTFSDIR) $(mm_LOCALDIR)/sfs-$(mm_NAME)/rootfs > /dev/null 2>&1 "
+	@chmod 644 $(mm_LOCALDIR)/sfs-$(mm_NAME)/rootfs
+	@# Make root file system tarball.
+	@rm -rf $(mm_LOCALDIR)/tar-$(mm_NAME)/rootfs.tar.bz2
+	@fakeroot sh -c                                                                        " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)             ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_LOCALDIR)/tar-$(mm_NAME)/rootfs.tar.bz2 rootfs "
+	@chmod 644 $(mm_LOCALDIR)/tar-$(mm_NAME)/rootfs.tar.bz2
+	@# Make extras squashfs image file.
+	@rm -rf $(mm_LOCALDIR)/sfs-$(mm_NAME)/extras.sfs
+	@fakeroot sh -c                                                                              " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)                   ; \
+		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
+		mksquashfs $(mm_EXTRASDIR) $(mm_LOCALDIR)/sfs-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
+	@chmod 644 $(mm_LOCALDIR)/sfs-$(mm_NAME)/extras.sfs
+	@# Make extras tarball file.
+	@rm -rf $(mm_LOCALDIR)/tar-$(mm_NAME)/extras.tar.bz2
+	@fakeroot sh -c                                                                        " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)             ; \
+		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_LOCALDIR)/tar-$(mm_NAME)/extras.tar.bz2 extras "
+	@chmod 644 $(mm_LOCALDIR)/tar-$(mm_NAME)/extras.tar.bz2
+	@# Make themes squashfs image files.
+	@rm -rf    $(mm_LOCALDIR)/sfs-$(mm_NAME)/themes
+	@mkdir -p  $(mm_LOCALDIR)/sfs-$(mm_NAME)/themes
+	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
+		fakeroot sh -c                                                                                                   "   \
+			chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_THEMESDIR)/$${theme}                             ;   \
+			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_LOCALDIR)/sfs-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
+		chmod 644 $(mm_LOCALDIR)/sfs-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
+	done
+	@# Make themes tarball file.
+	@rm -rf $(mm_LOCALDIR)/tar-$(mm_NAME)/themes.tar.bz2
+	@fakeroot sh -c                                                                        " \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_THEMESDIR)             ; \
+		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_LOCALDIR)/tar-$(mm_NAME)/themes.tar.bz2 themes "
+	@chmod 644 $(mm_LOCALDIR)/tar-$(mm_NAME)/themes.tar.bz2
+	@# Generate checksums.
+	@rm -rf $(mm_LOCALDIR)/helper.tar.bz2.md5
+	@rm -rf $(mm_LOCALDIR)/version.md5
+	@rm -rf $(mm_LOCALDIR)/sfs-$(mm_NAME)/minimyth.md5
+	@rm -rf $(mm_LOCALDIR)/tar-$(mm_NAME)/minimyth.md5
+	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2 > helper.tar.bz2.md5
+	@cd $(mm_LOCALDIR) ; md5sum version        > version.md5
+	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG) \
+		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/sfs-$(mm_NAME) \
+		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
+	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG) \
+		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/tar-$(mm_NAME) \
+		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
+	@# Make public distribution.
+	@rm -rf $(mm_SHAREDIR)
+	@cp -r  $(mm_LOCALDIR) $(mm_SHAREDIR)
+	@cp -r ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
+	@rm -rf $(mm_SHAREDIR)/sfs-$(mm_NAME)/extras.sfs
+	@rm -rf $(mm_SHAREDIR)/tar-$(mm_NAME)/extras.tar.bz2
+	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
+		_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/sfs-$(mm_NAME) \
+		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
+	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
+		_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/tar-$(mm_NAME) \
+		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
+	@tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/sfs-$(mm_NAME).tar.bz2 sfs-$(mm_NAME)
+	@tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/tar-$(mm_NAME).tar.bz2 tar-$(mm_NAME)
+	@rm -rf $(mm_SHAREDIR)/sfs-$(mm_NAME)
+	@rm -rf $(mm_SHAREDIR)/tar-$(mm_NAME)
+	@cd $(mm_SHAREDIR) ; md5sum sfs-$(mm_NAME).tar.bz2 > sfs-$(mm_NAME).tar.bz2.md5
+	@cd $(mm_SHAREDIR) ; md5sum tar-$(mm_NAME).tar.bz2 > tar-$(mm_NAME).tar.bz2.md5
+
+mm-make-source:
+	@rm -rf   $(mm_STAGEDIR)/source
+	@mkdir -p $(mm_STAGEDIR)/source
+	@tar  -C $(SOURCE_DIR_HEAD) \
+		--exclude '$(SOURCE_DIR_TAIL)/images/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/source/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/cookies' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/cookies/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/download' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/download/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/tmp' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/tmp/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/work' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/work/*' \
+		--exclude '$(SOURCE_DIR_TAIL)/*.log' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*.log' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*.log' \
+		--exclude '$(SOURCE_DIR_TAIL)/script/*/*/*.log' \
+		-jcf $(mm_STAGEDIR)/source/$(SOURCE_DIR_TAIL).tar.bz2 \
+		$(SOURCE_DIR_TAIL)
+	@cd $(mm_STAGEDIR)/source ; tar -jxf $(SOURCE_DIR_TAIL).tar.bz2
+	@cd $(mm_STAGEDIR)/source ; test "$(SOURCE_DIR_TAIL)" = "gar-$(mm_NAME)" || mv $(SOURCE_DIR_TAIL) gar-$(mm_NAME)
+	@tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)
+	@rm -fr $(mm_STAGEDIR)/source
+	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
+
+mm-checksum-create:
+	@rm -rf $(_MM_CHECKSUM_CREATE_BASE)/$(_MM_CHECKSUM_CREATE_FILE)              ; \
+	for file in `cd $(_MM_CHECKSUM_CREATE_BASE) ; ls -1` ; do                      \
+		make -f minimyth.mk DESTIMG=$(DESTIMG)                                 \
+			mm-$${file}/checksum-create                                    \
+				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)   \
+				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE) ; \
+	done
+
+mm-%/checksum-create:
+	@if   test -d $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                     \
+		for file in `cd $(_MM_CHECKSUM_CREATE_BASE)/$* ; ls -1` ; do                    \
+			make -f minimyth.mk mm-$*/$${file}/checksum-create DESTIMG=$(DESTIMG)   \
+				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)            \
+				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE)          ; \
+		done                                                                          ; \
+	elif test -f $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                      \
+		cd $(_MM_CHECKSUM_CREATE_BASE)                                                ; \
+		md5sum $* >> $(_MM_CHECKSUM_CREATE_FILE)                                      ; \
+	fi
 
 mm-install: mm-check
-	@rm -rf $(mm_DESTDIR)
+	@rm -rf   $(mm_DESTDIR)
 	@mkdir -p $(mm_DESTDIR)
-	@cp -f  $(WORKSRC)/version                      $(mm_DESTDIR)/version
-	@cp -f  $(WORKSRC)/version.md5                  $(mm_DESTDIR)/version.md5
-	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2     $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_SOURCENAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_SOURCENAME).tar.bz2.md5
-	@cp -f  $(WORKSRC)/$(mm_KERNELNAME)             $(mm_DESTDIR)/$(mm_KERNELNAME)
-	@cp -f  $(WORKSRC)/$(mm_KERNELNAME).md5         $(mm_DESTDIR)/$(mm_KERNELNAME).md5
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME)             $(mm_DESTDIR)/$(mm_ROOTFSNAME)
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).md5         $(mm_DESTDIR)/$(mm_ROOTFSNAME).md5
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2     $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_ROOTFSNAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2.md5
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs         $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).sfs.md5     $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs.md5
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2     $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2
-	@cp -f  $(WORKSRC)/$(mm_EXTRASNAME).tar.bz2.md5 $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2.md5
-	@cp -rf $(WORKSRC)/distro.d                     $(mm_DESTDIR)/distro.d
-	@if [ $(mm_INSTALL_CRAMFS) = yes ] || [ $(mm_INSTALL_NFS) = yes ] ; then \
+	@cp -rf $(mm_LOCALDIR) $(mm_DESTDIR)/
+	@cp -rf $(mm_SHAREDIR) $(mm_DESTDIR)/
+	@if [ $(mm_INSTALL_TFTP_BOOT) = yes ] || [ $(mm_INSTALL_NFS_BOOT) = yes ] ; then \
 		su -c " \
-			if [ $(mm_INSTALL_CRAMFS) = yes ] ; then \
-				mkdir -p $(mm_TFTPDIR) ; \
-				\
-				rm -rf $(mm_TFTPDIR)/version ; \
-				cp -r $(mm_DESTDIR)/version $(mm_TFTPDIR)/version ; \
-				rm -rf $(mm_TFTPDIR)/version.md5 ; \
-				cp -r $(mm_DESTDIR)/version.md5 $(mm_TFTPDIR)/version.md5 ; \
-				\
-				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
-				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME).md5 $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
-				\
-				mkdir -p $(mm_TFTPDIR) ; \
-				\
-				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
-				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME) $(mm_TFTPDIR)/$(mm_ROOTFSNAME) ; \
-				rm -rf $(mm_TFTPDIR)/$(mm_ROOTFSNAME).md5 ; \
-				cp -r $(mm_DESTDIR)/$(mm_ROOTFSNAME).md5 $(mm_TFTPDIR)/$(mm_ROOTFSNAME).md5 ; \
-				\
-				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
-				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs ; \
-				rm -rf $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs.md5 ; \
-				cp -r $(mm_DESTDIR)/$(mm_EXTRASNAME).sfs.md5 $(mm_TFTPDIR)/$(mm_EXTRASNAME).sfs.md5 ; \
+			if [ "$(mm_INSTALL_TFTP_BOOT)" = "yes" ] ; then \
+				rm -rf   $(mm_TFTP_ROOT)/version                                              ; \
+				rm -rf   $(mm_TFTP_ROOT)/version.md5                                          ; \
+				rm -rf   $(mm_TFTP_ROOT)/helper.tar.bz2                                       ; \
+				rm -rf   $(mm_TFTP_ROOT)/helper.tar.bz2.md5                                   ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME)                                           ; \
+				mkdir -p $(mm_TFTP_ROOT)                                                      ; \
+				cp -r    $(mm_LOCALDIR)/version            $(mm_TFTP_ROOT)/version            ; \
+				cp -r    $(mm_LOCALDIR)/version.md5        $(mm_TFTP_ROOT)/version.md5        ; \
+				cp -r    $(mm_LOCALDIR)/helper.tar.bz2     $(mm_TFTP_ROOT)/helper.tar.bz2     ; \
+				cp -r    $(mm_LOCALDIR)/helper.tar.bz2.md5 $(mm_TFTP_ROOT)/helper.tar.bz2.md5 ; \
+				cp -r    $(mm_LOCALDIR)/sfs-$(mm_NAME)     $(mm_TFTP_ROOT)/$(mm_NAME)         ; \
 			fi ; \
 			\
-			if [ $(mm_INSTALL_NFS) = yes ] ; then \
-				mkdir -p $(mm_TFTPDIR) ; \
+			if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] ; then \
+				rm -rf   $(mm_TFTP_ROOT)/version                                              ; \
+				rm -rf   $(mm_TFTP_ROOT)/version.md5                                          ; \
+				rm -rf   $(mm_TFTP_ROOT)/helper.tar.bz2                                       ; \
+				rm -rf   $(mm_TFTP_ROOT)/helper.tar.bz2.md5                                   ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME)                                           ; \
+				mkdir -p $(mm_TFTP_ROOT)                                                      ; \
+				cp -r    $(mm_LOCALDIR)/version            $(mm_TFTP_ROOT)/version            ; \
+				cp -r    $(mm_LOCALDIR)/version.md5        $(mm_TFTP_ROOT)/version.md5        ; \
+				cp -r    $(mm_LOCALDIR)/helper.tar.bz2     $(mm_TFTP_ROOT)/helper.tar.bz2     ; \
+				cp -r    $(mm_LOCALDIR)/helper.tar.bz2.md5 $(mm_TFTP_ROOT)/helper.tar.bz2.md5 ; \
+				cp -r    $(mm_LOCALDIR)/sfs-$(mm_NAME)     $(mm_TFTP_ROOT)/$(mm_NAME)         ; \
 				\
-				rm -rf $(mm_TFTPDIR)/version ; \
-				cp -r $(mm_DESTDIR)/version $(mm_TFTPDIR)/version ; \
-				\
-				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME) $(mm_TFTPDIR)/$(mm_KERNELNAME) ; \
-				rm -rf $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
-				cp -r $(mm_DESTDIR)/$(mm_KERNELNAME).md5 $(mm_TFTPDIR)/$(mm_KERNELNAME).md5 ; \
-				\
-				mkdir -p $(mm_NFSDIR) ; \
-				\
-				rm -rf $(mm_NFSDIR)/$(mm_NFSNAME) ; \
-				mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME) ; \
-				tar -C $(mm_NFSDIR)/$(mm_NFSNAME) \
-					-jxf $(mm_DESTDIR)/$(mm_ROOTFSNAME).tar.bz2 ; \
-				\
-				rm -rf $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
-				mkdir -p $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) ; \
-				tar -C $(mm_NFSDIR)/$(mm_NFSNAME)/rootfs-ro/$(extras_rootdir) \
-					-jxf $(mm_DESTDIR)/$(mm_EXTRASNAME).tar.bz2 ; \
+				rm -rf   $(mm_NFS_ROOT)/$(mm_NAME)                                                                                   ; \
+				rm -rf   $(mm_NFS_ROOT)/$(mm_NAME).tmp                                                                               ; \
+				mkdir -p $(mm_NFS_ROOT)                                                                                              ; \
+				mkdir -p $(mm_NFS_ROOT)/$(mm_NAME).tmp                                                                               ; \
+				tar -jxf $(mm_LOCALDIR)/tar-$(mm_NAME)/rootfs.tar.bz2  -C $(mm_NFS_ROOT)/$(mm_NAME).tmp                              ; \
+				tar -jxf $(mm_LOCALDIR)/tar-$(mm_NAME)/extras.tar.bz2  -C $(mm_NFS_ROOT)/$(mm_NAME).tmp                              ; \
+				tar -jxf $(mm_LOCALDIR)/tar-$(mm_NAME)/themes.tar.bz2  -C $(mm_NFS_ROOT)/$(mm_NAME).tmp                              ; \
+				mv       $(mm_NFS_ROOT)/$(mm_NAME).tmp/rootfs            $(mm_NFS_ROOT)/$(mm_NAME)                                   ; \
+				mv       $(mm_NFS_ROOT)/$(mm_NAME).tmp/extras/*          $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)       ; \
+				mv       $(mm_NFS_ROOT)/$(mm_NAME).tmp/themes/*          $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/usr/share/mythtv/themes ; \
+				rm -rf   $(mm_NFS_ROOT)/$(mm_NAME).tmp                                                                               ; \
 			fi ; \
 			\
 		" ; \

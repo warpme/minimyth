@@ -1,5 +1,5 @@
 GARNAME = m4
-GARVERSION = 1.4.5
+GARVERSION = 1.4.6
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
