@@ -1,7 +1,7 @@
 # Values in this file can be overridden by including
 # the desired vaule in $(HOME)/.minimyth/minimyth.conf.mk
 
-mm_VERSION     ?= 0.0.4
+mm_VERSION     ?= 0.0.5
 
 mm_HOME        ?= $(P4ROOT)/gar-minimyth
 # Valid values mm_GARCH are c3 and c3-2
