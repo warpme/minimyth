@@ -7,8 +7,8 @@ diff -Naur mythplugins-0.18.1-old/configure mythplugins-0.18.1-new/configure
          #  echo "LIBS += -lrfftw -lfftw" >> ./mythdvd/mythdvd/config.pro
 -        #  echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
 -        #  echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
-+        #  echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
-+        #  echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
++        #  echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
++        #  echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythdvd/mythdvd/config.pro
      fi
  
      if test "$transcode" = "no" ; then
@@ -19,9 +19,9 @@ diff -Naur mythplugins-0.18.1-old/configure mythplugins-0.18.1-new/configure
 -        echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
 -        echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
 -        echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@DESTDIR@/@bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_RELEASE += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_DEBUG += `@DESTDIR@/@bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL           support will not be included in MythMusic"
@@ -33,7 +33,7 @@ diff -Naur mythplugins-0.18.1-old/settings.pro mythplugins-0.18.1-new/settings.p
  
  isEmpty( PREFIX ) {
 -    PREFIX = /usr/local
-+    PREFIX = @prefix@
++    PREFIX = @GAR_prefix@
  }
  
  LIBVERSION = 0.18.1
@@ -41,12 +41,12 @@ diff -Naur mythplugins-0.18.1-old/settings.pro mythplugins-0.18.1-new/settings.p
 -INCLUDEPATH += $${PREFIX}/include
 -#INCLUDEPATH += /usr/include/cdda
 -#INCLUDEPATH += /usr/include/FLAC
-+INCLUDEPATH += @DESTDIR@/@includedir@
-+#INCLUDEPATH += @DESTDIR@/@includedir@/cdda
-+#INCLUDEPATH += @DESTDIR@/@includedir@/FLAC
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/cdda
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/FLAC
  
 -LIBS *= -L$${PREFIX}/lib
-+LIBS *= -L@DESTDIR@/@libdir@
++LIBS *= -L@GAR_DESTDIR@@GAR_libdir@
  
  DEFINES += _GNU_SOURCE
  DEFINES += PREFIX=\"$${PREFIX}\"
@@ -55,13 +55,13 @@ diff -Naur mythplugins-0.18.1-old/settings.pro mythplugins-0.18.1-new/settings.p
  
  release {
 -    QMAKE_CXXFLAGS_RELEASE = -O3 -march=pentiumpro -fomit-frame-pointer
-+    QMAKE_CXXFLAGS_RELEASE = @CXXFLAGS@
++    QMAKE_CXXFLAGS_RELEASE = @GAR_CXXFLAGS@
      macx {
          # Don't use -O3, it causes some Qt moc methods to go missing
          QMAKE_CXXFLAGS_RELEASE = -O2
      }
 -    QMAKE_CFLAGS_RELEASE = $${QMAKE_CXXFLAGS_RELEASE}
-+    QMAKE_CFLAGS_RELEASE = @CFLAGS@
++    QMAKE_CFLAGS_RELEASE = @GAR_CFLAGS@
  }
  
  macx {

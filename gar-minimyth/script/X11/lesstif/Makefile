@@ -3,6 +3,7 @@ GARVERSION = 0.94.4
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE =
 
 DESCRIPTION =
