@@ -53,6 +53,7 @@ main_mandir = $(main_rootdir)/usr/share/man
 main_docdir = $(main_rootdir)/usr/share/doc
 main_sourcedir = $(main_rootdir)/usr/src
 main_licensedir = $(main_rootdir)/usr/licenses
+main_versiondir = $(main_rootdir)/usr/versions
 
 # Directory config for the "build" image
 build_rootdir ?= $(mm_HOME)/images/build
@@ -82,6 +83,7 @@ build_mandir = $(build_rootdir)/usr/share/man
 build_docdir = $(build_rootdir)/usr/share/doc
 build_sourcedir = $(build_rootdir)/usr/src
 build_licensedir = $(build_rootdir)/usr/licenses
+build_versiondir = $(build_rootdir)/usr/versions
 
 # the DESTDIR is used at INSTALL TIME ONLY to determine what the
 # filesystem root should be.  Each different DESTIMG has its own

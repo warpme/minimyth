@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/ffmpeg/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
-LICENSE = GPL2
+LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB

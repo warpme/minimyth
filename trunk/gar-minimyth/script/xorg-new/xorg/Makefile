@@ -1,5 +1,5 @@
 GARNAME = xorg
-GARVERSION = $(mm_XORG_VERSION)
+GARVERSION = new
 CATEGORIES = xorg-new
 LICENSE =
 
@@ -32,3 +32,8 @@ DEPENDS = \
 	xorg-new/libXres
 
 include ../../gar.mk
+
+post-install:
+	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
+	@$(MAKECOOKIE)

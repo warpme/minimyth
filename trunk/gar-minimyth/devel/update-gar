@@ -67,6 +67,13 @@ sed -i '/main_[^ ]* = $(prefix)/ { s%$(prefix)%$(main_prefix)%g }' ${SCRIPT_DIR}
 sed -i '/main_[^ ]* = $(exec_prefix)/ { s%$(exec_prefix)%$(main_exec_prefix)%g }' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%# Extra configuration for the lnx-bbc build%# Extra confs to include after gar.conf.mk%g' ${SCRIPT_DIR}/gar.conf.mk
 
+# Add install-version.
+sed -i 's%^INSTALL_TARGETS *= *\(.*\)$%INSTALL_TARGETS = \1 install-version%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^install-license%install-version:\n\t@install -d $(DESTDIR)$(versiondir) \n\t@echo $(GARVERSION) > \$(DESTDIR)$(versiondir)/$(GARNAME)\n\t@\$(MAKECOOKIE)\n\ninstall-license%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^\(build\|main\)_licensedir *=.*$%&\n\1_versiondir = $(\1_exec_prefix)/versions%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_licensedir *?= *$(main_licensedir)%&\n$(DESTIMG)_versiondir ?= $(main_versiondir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^licensedir *= *$($(DESTIMG)_licensedir)%&\nversiondir = $($(DESTIMG)_versiondir)%g' ${SCRIPT_DIR}/gar.mk
+
 # Add the --oldincludedir directory path.
 sed -i 's%^\(build\|main\)_includedir *=.*$%&\n\1_oldincludedir = $(\1_exec_prefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_includedir *?= *$(main_includedir)%&\n$(DESTIMG)_oldincludedir ?= $(main_oldincludedir)%g' ${SCRIPT_DIR}/gar.mk

@@ -2,6 +2,7 @@
 
 include ../../extras/extras.conf.mk
 
+versiondir := $(extras_versiondir)
 licensedir := $(extras_licensedir)
 
 CPPFLAGS := -I$(DESTDIR)$(extras_includedir) $(CPPFLAGS)
@@ -54,5 +55,6 @@ install-extrasdirs:
 	@mkdir -p $(extras_mandir)
 	@mkdir -p $(extras_docdir)
 	@mkdir -p $(extras_sourcedir)
+	@mkdir -p $(extras_versiondir)
 	@mkdir -p $(extras_licensedir)
 	@$(MAKECOOKIE)

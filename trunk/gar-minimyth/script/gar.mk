@@ -63,6 +63,7 @@ $(DESTIMG)_mandir ?= $(main_mandir)
 $(DESTIMG)_docdir ?= $(main_docdir)
 $(DESTIMG)_sourcedir ?= $(main_sourcedir)
 $(DESTIMG)_licensedir ?= $(main_licensedir)
+$(DESTIMG)_versiondir ?= $(main_versiondir)
 
 $(DESTIMG)_DESTDIR ?= $(main_DESTDIR)
 
@@ -120,6 +121,7 @@ mandir = $($(DESTIMG)_mandir)
 docdir = $($(DESTIMG)_docdir)
 sourcedir = $($(DESTIMG)_sourcedir)
 licensedir = $($(DESTIMG)_licensedir)
+versiondir = $($(DESTIMG)_versiondir)
 
 DESTDIR = $($(DESTIMG)_DESTDIR)
 
@@ -394,7 +396,7 @@ strip: build pre-strip $(addprefix strip-,$(STRIP_SCRIPTS)) post-strip
 	@echo "$@ NOT IMPLEMENTED YET"
 
 # install		- Install the results of a build.
-INSTALL_TARGETS = $(addprefix install-,$(INSTALL_SCRIPTS)) $(addprefix install-license-,$(subst /, ,$(LICENSE)))
+INSTALL_TARGETS = $(addprefix install-,$(INSTALL_SCRIPTS)) $(addprefix install-license-,$(subst /, ,$(LICENSE))) install-version
 
 install: build $(addprefix dep-$(GARDIR)/,$(INSTALLDEPS)) $(INSTALL_DIRS) pre-install $(INSTALL_TARGETS) post-install $(DO_BUILD_CLEAN)
 	$(DONADA)

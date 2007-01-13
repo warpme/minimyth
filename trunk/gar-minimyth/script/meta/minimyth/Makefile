@@ -1,6 +1,8 @@
 GARNAME = minimyth
 GARVERSION = $(mm_VERSION)
 CATEGORIES = meta
+LICENSE = minimyth
+minimyth_LICENSE_TEXT = $(mm_HOME)/html/minimyth/license.txt
 
 DESCRIPTION =
 define BLURB
