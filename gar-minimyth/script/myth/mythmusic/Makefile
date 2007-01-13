@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/libcdaudio lib/cdparanoia
+DEPENDS = lang/c myth/mythtv lib/libmad lib/libid3tag lib/libvorbis lib/flac lib/libcdaudio lib/cdparanoia X11/sdl
 
 CONFIGURE_SCRIPTS += $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
