@@ -2,9 +2,6 @@
 
 . /etc/minimyth.d/minimyth.functions
 
-export PATH=@PATH@
-export HOME=/root
-
 # Set up basic file system.
 mount -n -t sysfs              /sys     /sys
 mount -n -t proc               /proc    /proc
@@ -15,10 +12,10 @@ mkdir /var/run
 mkdir /var/lock
 mkdir /var/log
 # Start device file system.
-sh /etc/minimyth.d/devfs.script
+execute_and_log "sh /etc/minimyth.d/devfs.script"
 # Start logging.
-execute_and_log syslogd
-execute_and_log klogd
+execute_and_log "syslogd"
+execute_and_log "klogd"
 # Create the shadow directories.
 execute_and_log "sh /etc/minimyth.d/shadow.script"
 # Create ld.conf.cache
@@ -47,5 +44,5 @@ execute_and_log "sh /etc/minimyth.d/lirc.script"
 . /etc/minimyth.d/env.script
 # Start X (if not debugging)
 if [ -z ${MM_DEBUG} ] && [ -z ${MM_NO_X} ] ; then
-	execute_and_log "xinit" &
+	xinit &
 fi

@@ -8,7 +8,7 @@ if [ -z ${MM_NO_XWM} ] ; then
 	sleep 5
 fi
 if [ -z ${MM_DEBUG} ] ; then
-	mythfrontend        > ${MM_LOGFILE} 2>&1
+	mythfrontend        >> ${MM_LOGFILE} 2>&1
 else
-	mythfrontend -v all > ${MM_LOGFILE} 2>&1
+	mythfrontend -v all >> ${MM_LOGFILE} 2>&1
 fi

@@ -244,8 +244,8 @@ mm-%/strip:
 mm-conf:
 	rm -rf $(mm_BASEDIR)/$(mm_KERNELNAME) ; cp -f $(DESTDIR)$(KERNEL_DIR)/vmlinuz $(mm_BASEDIR)/$(mm_KERNELNAME)
 	cp -r ./dirs/etc/* $(mm_DESTDIR)$(sysconfdir)
-	sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%g' $(mm_DESTDIR)$(sysconfdir)/rc
-	sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
+	sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%' $(mm_DESTDIR)$(sysconfdir)/minimyth.d/env.script
+	sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_DESTDIR)/$(sysconfdir)/minimyth.d/extras.script
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.conf
 	$(foreach dir, $(libdirs), echo $(dir) >> $(mm_DESTDIR)$(sysconfdir)/ld.so.conf ; )
 	rm -f $(mm_DESTDIR)$(sysconfdir)/ld.so.cache{,~}
