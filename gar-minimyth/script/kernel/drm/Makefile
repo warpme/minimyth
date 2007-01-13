@@ -12,7 +12,7 @@ endef
 DEPENDS   = lang/c kernel/linux
 BUILDDEPS = kernel/module-init-tools
 
-WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-2.6
+WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-core
 
 DRM_MODULES = via
 
