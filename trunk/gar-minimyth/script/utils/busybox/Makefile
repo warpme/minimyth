@@ -1,5 +1,5 @@
 GARNAME = busybox
-GARVERSION = 1.1.0
+GARVERSION = 1.1.1
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
