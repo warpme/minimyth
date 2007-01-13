@@ -45,11 +45,11 @@ start() {
 		grep '^WOLSqlCommand=' | \
 		sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1
-        while [ ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} ] && [ ! mm_mythdb_command_run ] ; do
+        while [ ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} ] && [ mm_mythdb_command_run -ne 0 ] ; do
             mm_message_output info 'waking Myth database (${WOLSqlConnectAttempt}) ...'
             ${WOLSqlCommand}
             sleep ${WOLSqlReconnectWaitTime}
-            WOLSqlConnectAttempt=$((WOLSqlConnectAttempt-1))
+            WOLSqlConnectAttempt=$((WOLSqlConnectAttempt+1))
         done
     fi
 
