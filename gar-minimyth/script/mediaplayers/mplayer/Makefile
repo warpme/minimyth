@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 20016.6412
+GARVERSION = 20249.6701
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
