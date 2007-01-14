@@ -1,18 +1,18 @@
 GARNAME = mythstream
-GARVERSION = v0.16_5
+GARVERSION = v0.17_2
 CATEGORIES = myth
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-font.patch $(DISTNAME)-c++.patch $(DISTNAME)-x86_64.patch
+PATCHFILES = $(DISTNAME)-parser_copy.patch $(DISTNAME).patch.gar $(DISTNAME)-parser_exec.patch $(DISTNAME)-font.patch $(DISTNAME)-x86_64.patch $(DISTNAME)-mythtv_0.19.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv-stable19 lib/fftw
+DEPENDS = lang/c qt/qt myth/mythtv-stable19 lib/fftw
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.16_5
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.17_2
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -35,12 +35,7 @@ INSTALL_ARGS  = \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv-stable19/package-api.mk
 include ../../gar.mk
-
-pre-configure:
-	@ln -sf $(DESTDIR)$(MYTHTV_SOURCEDIR)/libs/libmyth $(WORKSRC)/mythstream/mythtv
-	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
