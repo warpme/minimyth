@@ -1,0 +1,41 @@
+GARNAME = xf86-video-vmware
+GARVERSION = 10.14.0
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c \
+	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/randrproto \
+	$(CATEGORY)/renderproto \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xineramaproto \
+	$(CATEGORY)/xorg-server \
+	$(CATEGORY)/xproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld
+
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
+include ../../gar.mk
+
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
+as_valid=
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/vmware_drv.la
+	@$(MAKECOOKIE)

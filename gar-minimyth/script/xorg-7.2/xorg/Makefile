@@ -33,6 +33,7 @@ DEPENDS = \
 	$(CATEGORY)/xf86-input-mouse \
 	$(CATEGORY)/xf86-video-i810 \
 	$(CATEGORY)/xf86-video-openchrome \
+	$(CATEGORY)/xf86-video-vmware \
 	$(CATEGORY)/xinit \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xset \
