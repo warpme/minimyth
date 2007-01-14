@@ -1,0 +1,25 @@
+This patch reverts the fix to the key stutter problem,
+because the fix makes the remote too responsive.
+
+diff -Naur lirc-0.8.1pre2-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-0.8.1pre2-new/drivers/lirc_mceusb2/lirc_mceusb2.c
+--- lirc-0.8.1pre2-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2006-09-21 20:18:22.000000000 -0700
++++ lirc-0.8.1pre2-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2006-10-14 21:23:13.000000000 -0700
+@@ -374,6 +374,10 @@
+ 		if ((ir->buf_in[0]==MCE_PACKET_HEADER)) {
+ 
+ 		    int i,keycode,pulse;
++			
++			/* buffer exhausted? */
++			if (ir->lirccnt>(LIRCBUF_SIZE-MCE_CODE_LENGTH))
++				send_packet_to_lirc(ir);
+ 
+ 		    for(i=0;i<MCE_PACKET_SIZE;i++) {
+ 			pulse = 0;
+@@ -401,7 +405,6 @@
+ 			    ir->last_space += keycode;
+ 			}
+ 		    }
+-		    send_packet_to_lirc(ir);
+ 		}
+ 	    }
+ 	    else {

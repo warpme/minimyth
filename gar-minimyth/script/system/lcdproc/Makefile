@@ -1,5 +1,5 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.0
+GARVERSION = 0.5.1
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
