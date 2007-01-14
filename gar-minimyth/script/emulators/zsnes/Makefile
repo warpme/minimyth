@@ -3,7 +3,7 @@ GARVERSION = 1.42
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))src.tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch
+PATCHFILES = $(DISTNAME).patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -31,3 +31,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x
 
 include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC)/src ; aclocal --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
+	@cd $(WORKSRC)/src ; autoconf --verbose --force
+	@$(MAKECOOKIE)
