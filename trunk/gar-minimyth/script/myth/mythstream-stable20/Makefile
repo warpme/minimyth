@@ -38,7 +38,7 @@ INSTALL_ARGS  = \
 include ../../gar.mk
 
 post-patch:
-	# Remove unused perl based parsers.
+	@# Remove unused perl based parsers.
 	@rm -rf $(WORKSRC)/parsers/*
 	@$(MAKECOOKIE)
 
