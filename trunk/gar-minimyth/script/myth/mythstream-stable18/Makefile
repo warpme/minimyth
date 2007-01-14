@@ -3,7 +3,7 @@ GARVERSION = v0.16_5
 CATEGORIES = myth
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-fontsize.patch $(DISTNAME)-c++.patch $(DISTNAME)-x86_64.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-font.patch $(DISTNAME)-c++.patch $(DISTNAME)-x86_64.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
