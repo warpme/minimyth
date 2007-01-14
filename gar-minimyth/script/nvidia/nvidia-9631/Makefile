@@ -1,7 +1,7 @@
 GARNAME = nvidia
 GARVERSION = $(MAJOR_VERSION).$(MINOR_VERSION)-$(TEENY_VERSION)
 CATEGORIES = kernel
-MASTER_SITES = http://download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
+MASTER_SITES = http://us.download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
 DISTFILES = $(DISTFILE).run
 LICENSE = nvidia
 nvidia_LICENSE_TEXT=$(WORKSRC)/LICENSE
@@ -18,7 +18,7 @@ SUPER_VERSION = $(strip \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
 MAJOR_VERSION = 1
 MINOR_VERSION = 0
-TEENY_VERSION = 9629
+TEENY_VERSION = 9631
 EXTRA_VERSION = $(strip \
 	$(if $(filter x86,   $(SUPER_VERSION)),pkg1) \
 	$(if $(filter x86_64,$(SUPER_VERSION)),pkg2))

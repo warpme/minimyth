@@ -1,4 +1,4 @@
-XORG_VERSION      = 7.2-RC1
+XORG_VERSION      = 7.2-RC3
 XORG_MASTER_SITES = \
 	$(foreach                                                           \
 		dir,                                                        \

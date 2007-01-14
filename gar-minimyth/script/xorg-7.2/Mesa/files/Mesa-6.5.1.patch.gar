@@ -1,6 +1,18 @@
 diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
 --- Mesa-6.5.1-old/bin/mklib	2006-04-20 18:03:51.000000000 -0700
-+++ Mesa-6.5.1-new/bin/mklib	2006-11-13 07:25:38.000000000 -0800
++++ Mesa-6.5.1-new/bin/mklib	2006-12-05 15:39:33.000000000 -0800
+@@ -186,9 +186,9 @@
+ 	if [ "x$LINK" = "x" ] ; then
+ 	    # -linker was not specified so set default link command now
+             if [ $CPLUSPLUS = 1 ] ; then
+-                LINK=g++
++                LINK="${CXX:-'g++'}"
+             else
+-                LINK=gcc
++                LINK="${CC:-'gcc'}"
+             fi
+ 	fi
+ 
 @@ -214,11 +214,11 @@
          elif [ $STATIC = 1 ] ; then
  	    LIBNAME="lib${LIBNAME}"     # prefix with "lib"
@@ -24,6 +36,50 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    LIBNAME="lib${LIBNAME}.so"
+@@ -290,24 +290,24 @@
+ 		# -linker was not specified, choose default linker now
+ 		if [ $CPLUSPLUS = 1 ] ; then
+ 		    # determine linker and options for C++ code
+-		    if [ `which c++` ] ; then
++		    if [ `which ${CXX:-'c++'}` ] ; then
+ 			# use Sun c++
+-			LINK="c++"
+-		    elif [ `type g++` ] ; then
++			LINK="{CXX:-'c++'}"
++		    elif [ `type ${CXX:-'g++'}` ] ; then
+ 			# use g++
+-			LINK="g++"
++			LINK="${CXX:-'g++'}"
+ 		    else
+ 			echo "mklib: warning: can't find C++ comiler, trying CC."
+-			LINK="CC"
++			LINK="${CC:-'CC'}"
+ 		    fi
+ 		else
+ 		    # use native Sun linker for C code
+-		    LINK="ld"
++		    LINK="${LD:-'ld'}"
+ 		fi
+ 	    fi
+ 
+ 	    # linker options
+-	    if [ ${LINK} = "ld" -o ${LINK} = "cc" -o ${LINK} = "CC" ] ; then
++	    if [ ${LINK} = "${LD:-'ld'}" -o ${LINK} = "${CC:-'cc'}" -o ${LINK} = "${CC:-'CC'}" ] ; then
+ 		# SunOS tools, -G to make shared libs
+ 		OPTS="-G"
+ 	    else
+@@ -346,9 +346,9 @@
+ 	if [ "x$LINK" = "x" ] ; then
+ 	    # -linker was not specified so set default link command now
+             if [ $CPLUSPLUS = 1 ] ; then
+-                LINK=g++
++                LINK="${CXX:-'g++'}"
+             else
+-                LINK=gcc
++                LINK="${CC:-'gcc'}"
+             fi
+ 	fi
+ 
 @@ -363,8 +363,8 @@
  	    STLIB="lib${LIBNAME}.a"
  	    echo "mklib: Making FreeBSD static library: " ${STLIB}
@@ -55,6 +111,18 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    LIBNAME="lib${LIBNAME}.so"  # prefix with "lib", suffix with ".so"
+@@ -423,9 +423,9 @@
+ 	    fi
+ 
+ 	    if [ $CPLUSPLUS = 1 ] ; then
+-		LINK="CC"
++		LINK="${CC:-'CC'}"
+ 	    else
+-		LINK="ld"
++		LINK="${LD:-'ld'}"
+ 	    fi
+ 
+ 	    echo "mklib: Making IRIX " ${ABI} " shared library: " ${LIBNAME}
 @@ -438,7 +438,7 @@
  	LIBNAME="lib${LIBNAME}.a"
  	echo "mklib: Making linux-cygwin library: " ${LIBNAME}
@@ -100,6 +168,18 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    VERSION="${MAJOR}.${MINOR}"
+@@ -535,9 +535,9 @@
+ 	    echo "mklib: Making OSF/1 shared library: " ${LIBNAME}
+ 	    if [ "x$LINK" = "x" ] ; then
+ 		if [ $CPLUSPLUS = 1 ] ; then
+-		    LINK=cxx
++		    LINK="${CXX:-'cxx'}"
+ 		else
+-		    LINK=cc
++		    LINK="${CC:-'cc'}"
+ 		fi
+ 	    fi
+ 	    rm -f ${LIBNAME}.${VERSION}
 @@ -551,7 +551,7 @@
          if [ $STATIC = 1 ] ; then
              LIBNAME="lib${LIBNAME}.a"
@@ -109,6 +189,18 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
              OPTS="-ruvs"
              ${LINK} ${OPTS} ${LIBNAME} ${OBJECTS}
              FINAL_LIBS=${LIBNAME}
+@@ -583,9 +583,9 @@
+ 
+ 	    # determine linker
+ 	    if [ $CPLUSPLUS = 1 ] ; then
+-		LINK="g++"
++		LINK="${CXX:-'g++'}"
+ 	    else
+-		LINK="cc"
++		LINK="${CC:-'cc'}"
+ 	    fi
+ 
+             echo "mklib: Making Darwin shared library: " ${LIBNAME}
 @@ -599,7 +599,7 @@
  	LIBNAME="lib${LIBNAME}.a"
  	echo "mklib: Making LynxOS static library: " ${LIBNAME}
@@ -128,7 +220,7 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
  	    LIBNAME="lib${LIBNAME}.so"
  	    echo "mklib: Making BeOS shared library: " ${LIBNAME}
 -	    gcc -nostart -Xlinker "-soname=${LIBNAME}" -L/Be/develop/lib/x86 -lbe ${DEPS} ${OBJECTS} -o "${LIBNAME}"
-+	    gcc -nostart -Xlinker "-soname=${LIBNAME}" -lbe ${DEPS} ${OBJECTS} -o "${LIBNAME}"
++	    ${CC:-'gcc'} -nostart -Xlinker "-soname=${LIBNAME}" -lbe ${DEPS} ${OBJECTS} -o "${LIBNAME}"
  	    mimeset -f "${LIBNAME}"
  	    # XXX remove the Mesa3D stuff here since mklib isn't mesa-specific.
  	    setversion "${LIBNAME}" -app ${MAJOR} ${MINOR} ${PATCH} -short "Powered by Mesa3D!" -long "Powered by Mesa3D!"
@@ -150,6 +242,18 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
              OPTS="-ruv"
              # make lib
              ${LINK} ${OPTS} ${LIBNAME}.a ${OBJECTS}
+@@ -657,9 +657,9 @@
+             echo "mklib: Making Intel ICC shared library: " ${LIBNAME}.so.${VERSION}
+ 
+             if [ $CPLUSPLUS = 1 ] ; then
+-                LINK="icpc"
++                LINK="${CXX:-'icpc'}"
+             else
+-                LINK="icc"
++                LINK="${CC:-'icc'}"
+             fi
+             # rm any old libs
+             rm -f ${LIBNAME}.so.${VERSION}
 @@ -681,7 +681,7 @@
  	    LIBNAME="lib${LIBNAME}.a"
  	    echo "mklib: Making AIX GCC static library: " ${LIBNAME}
@@ -182,6 +286,18 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
              # finish up
              FINAL_LIBS=${LIBNAME}.a
          else
+@@ -727,9 +727,9 @@
+             echo "mklib: Making" $ARCH "shared library: " ${LIBNAME}-${MAJOR}.dll
+ 
+             if [ $CPLUSPLUS = 1 ] ; then
+-                LINK="g++"
++                LINK="${CXX:-'g++'}"
+             else
+-                LINK="gcc"
++                LINK="${GCC:-'gcc'}"
+             fi
+ 
+             # rm any old libs
 @@ -755,7 +755,7 @@
  	    LIBNAME="lib${LIBNAME}.a"
  	    echo "mklib: Making static library for example arch: " ${LIBNAME}
@@ -193,7 +309,7 @@ diff -Naur Mesa-6.5.1-old/bin/mklib Mesa-6.5.1-new/bin/mklib
  	    LIBNAME="lib${LIBNAME}.so"  # prefix with "lib", suffix with ".so"
 diff -Naur Mesa-6.5.1-old/configs/darwin Mesa-6.5.1-new/configs/darwin
 --- Mesa-6.5.1-old/configs/darwin	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/darwin	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/darwin	2006-12-05 15:39:33.000000000 -0800
 @@ -7,8 +7,8 @@
  # Compiler and flags
  CC = cc
@@ -224,7 +340,7 @@ diff -Naur Mesa-6.5.1-old/configs/darwin Mesa-6.5.1-new/configs/darwin
  SRC_DIRS = mesa glu glut/glx
 diff -Naur Mesa-6.5.1-old/configs/darwin-static Mesa-6.5.1-new/configs/darwin-static
 --- Mesa-6.5.1-old/configs/darwin-static	2006-04-11 13:47:33.000000000 -0700
-+++ Mesa-6.5.1-new/configs/darwin-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/darwin-static	2006-12-05 15:39:33.000000000 -0800
 @@ -5,8 +5,8 @@
  CONFIG_NAME = darwin-static
  
@@ -244,7 +360,7 @@ diff -Naur Mesa-6.5.1-old/configs/darwin-static Mesa-6.5.1-new/configs/darwin-st
 +APP_LIB_DEPS = -Wl,-search_paths_first -L$(TOP)/lib -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXmu -lXt -lXi -lstdc++ -lgcc_s.1 -lm
 diff -Naur Mesa-6.5.1-old/configs/darwin-static-x86ppc Mesa-6.5.1-new/configs/darwin-static-x86ppc
 --- Mesa-6.5.1-old/configs/darwin-static-x86ppc	2006-04-20 18:03:51.000000000 -0700
-+++ Mesa-6.5.1-new/configs/darwin-static-x86ppc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/darwin-static-x86ppc	2006-12-05 15:39:33.000000000 -0800
 @@ -6,9 +6,9 @@
  
  # Compiler and flags
@@ -265,7 +381,7 @@ diff -Naur Mesa-6.5.1-old/configs/darwin-static-x86ppc Mesa-6.5.1-new/configs/da
 +APP_LIB_DEPS = -Wl,-search_paths_first -L$(TOP)/lib -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXmu -lXt -lXi -lstdc++ -lgcc_s.1 -lm
 diff -Naur Mesa-6.5.1-old/configs/darwin-x86ppc Mesa-6.5.1-new/configs/darwin-x86ppc
 --- Mesa-6.5.1-old/configs/darwin-x86ppc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/darwin-x86ppc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/darwin-x86ppc	2006-12-05 15:39:33.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = cc
@@ -297,7 +413,7 @@ diff -Naur Mesa-6.5.1-old/configs/darwin-x86ppc Mesa-6.5.1-new/configs/darwin-x8
  SRC_DIRS = mesa glu glut/glx
 diff -Naur Mesa-6.5.1-old/configs/default Mesa-6.5.1-new/configs/default
 --- Mesa-6.5.1-old/configs/default	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/default	2006-11-13 07:40:27.000000000 -0800
++++ Mesa-6.5.1-new/configs/default	2006-12-05 15:39:33.000000000 -0800
 @@ -79,9 +79,9 @@
  
  
@@ -313,7 +429,7 @@ diff -Naur Mesa-6.5.1-old/configs/default Mesa-6.5.1-new/configs/default
  
 diff -Naur Mesa-6.5.1-old/configs/default-bp Mesa-6.5.1-new/configs/default-bp
 --- Mesa-6.5.1-old/configs/default-bp	2005-05-07 09:30:50.000000000 -0700
-+++ Mesa-6.5.1-new/configs/default-bp	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/default-bp	2006-12-05 15:39:33.000000000 -0800
 @@ -53,7 +53,7 @@
  
  # Directories
@@ -325,7 +441,7 @@ diff -Naur Mesa-6.5.1-old/configs/default-bp Mesa-6.5.1-new/configs/default-bp
  DRIVER_DIRS = x11 osmesa
 diff -Naur Mesa-6.5.1-old/configs/diffs Mesa-6.5.1-new/configs/diffs
 --- Mesa-6.5.1-old/configs/diffs	2006-04-12 20:09:10.000000000 -0700
-+++ Mesa-6.5.1-new/configs/diffs	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/diffs	2006-12-05 15:39:33.000000000 -0800
 @@ -16,14 +16,14 @@
  ---
  > CXXFLAGS = -O3 -tpp6 -axK -DPTHREADS
@@ -347,7 +463,7 @@ diff -Naur Mesa-6.5.1-old/configs/diffs Mesa-6.5.1-new/configs/diffs
  < 
 diff -Naur Mesa-6.5.1-old/configs/diffs~ Mesa-6.5.1-new/configs/diffs~
 --- Mesa-6.5.1-old/configs/diffs~	2006-04-12 19:48:09.000000000 -0700
-+++ Mesa-6.5.1-new/configs/diffs~	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/diffs~	2006-12-05 15:39:33.000000000 -0800
 @@ -97,27 +97,27 @@
  retrieving revision 1.2
  diff -r1.2 darwin-static
@@ -460,7 +576,7 @@ diff -Naur Mesa-6.5.1-old/configs/diffs~ Mesa-6.5.1-new/configs/diffs~
  RCS file: /cvs/mesa/Mesa/configs/irix6-64,v
 diff -Naur Mesa-6.5.1-old/configs/freebsd Mesa-6.5.1-new/configs/freebsd
 --- Mesa-6.5.1-old/configs/freebsd	2006-08-17 07:09:02.000000000 -0700
-+++ Mesa-6.5.1-new/configs/freebsd	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/freebsd	2006-12-05 15:39:33.000000000 -0800
 @@ -18,7 +18,7 @@
  DEFINES = -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_BSD_SOURCE -DUSE_XSHM \
  	-DHZ=100 -DHAVE_POSIX_MEMALIGN
@@ -479,7 +595,7 @@ diff -Naur Mesa-6.5.1-old/configs/freebsd Mesa-6.5.1-new/configs/freebsd
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) $(EXTRA_LIB_PATH) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-6.5.1-old/configs/freebsd-dri Mesa-6.5.1-new/configs/freebsd-dri
 --- Mesa-6.5.1-old/configs/freebsd-dri	2006-08-17 07:09:02.000000000 -0700
-+++ Mesa-6.5.1-new/configs/freebsd-dri	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/freebsd-dri	2006-12-05 15:41:05.000000000 -0800
 @@ -11,8 +11,8 @@
  WARN_FLAGS = -Wall
  OPT_FLAGS = -O
@@ -497,11 +613,12 @@ diff -Naur Mesa-6.5.1-old/configs/freebsd-dri Mesa-6.5.1-new/configs/freebsd-dri
  LIBDRM_LIB = `pkg-config --libs libdrm`
 -DRI_LIB_DEPS = -L/usr/local/lib -lm -lpthread -lexpat $(LIBDRM_LIB)
 -GL_LIB_DEPS = -L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lm -lpthread $(LIBDRM_LIB)
-+DRI_LIB_DEPS = -lm -lpthread -lexpat $(LIBDRM_LIB)
-+GL_LIB_DEPS = -lX11 -lXext -lXxf86vm -lm -lpthread $(LIBDRM_LIB)
- 
+-
 -GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -L/usr/X11R6/lib -lGLU -lGL -lX11 -lXmu -lXt -lXi -lm
 -GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -L/usr/X11R6/lib -lGL -lXt -lXm -lX11
++DRI_LIB_DEPS = -lm -lpthread -lexpat $(LIBDRM_LIB)
++GL_LIB_DEPS = -lX11 -lXext -lXxf86vm -lm -lpthread $(LIBDRM_LIB)
++ 
 +GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lGLU -lGL -lX11 -lXmu -lXt -lXi -lm
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lGL -lXt -lXm -lX11
  
@@ -509,7 +626,7 @@ diff -Naur Mesa-6.5.1-old/configs/freebsd-dri Mesa-6.5.1-new/configs/freebsd-dri
  # Directories
 diff -Naur Mesa-6.5.1-old/configs/hpux10 Mesa-6.5.1-new/configs/hpux10
 --- Mesa-6.5.1-old/configs/hpux10	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux10	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux10	2006-12-05 15:39:59.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -522,7 +639,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux10 Mesa-6.5.1-new/configs/hpux10
 +APP_LIB_DEPS = -$(TOP)/$(LIB_DIR) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-6.5.1-old/configs/hpux10-gcc Mesa-6.5.1-new/configs/hpux10-gcc
 --- Mesa-6.5.1-old/configs/hpux10-gcc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux10-gcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux10-gcc	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = gcc
  CXX = g++
@@ -537,7 +654,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux10-gcc Mesa-6.5.1-new/configs/hpux10-gcc
  
 diff -Naur Mesa-6.5.1-old/configs/hpux10-static Mesa-6.5.1-new/configs/hpux10-static
 --- Mesa-6.5.1-old/configs/hpux10-static	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux10-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux10-static	2006-12-05 15:39:59.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -557,7 +674,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux10-static Mesa-6.5.1-new/configs/hpux10-st
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lX11 -lm -lstdc++
 diff -Naur Mesa-6.5.1-old/configs/hpux11-32 Mesa-6.5.1-new/configs/hpux11-32
 --- Mesa-6.5.1-old/configs/hpux11-32	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-32	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-32	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -581,7 +698,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-32 Mesa-6.5.1-new/configs/hpux11-32
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-6.5.1-old/configs/hpux11-32-static Mesa-6.5.1-new/configs/hpux11-32-static
 --- Mesa-6.5.1-old/configs/hpux11-32-static	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-32-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-32-static	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -603,7 +720,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-32-static Mesa-6.5.1-new/configs/hpux11
  
 diff -Naur Mesa-6.5.1-old/configs/hpux11-32-static-nothreads Mesa-6.5.1-new/configs/hpux11-32-static-nothreads
 --- Mesa-6.5.1-old/configs/hpux11-32-static-nothreads	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-32-static-nothreads	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-32-static-nothreads	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -624,7 +741,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-32-static-nothreads Mesa-6.5.1-new/conf
 +APP_LIB_DEPS = -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-6.5.1-old/configs/hpux11-64 Mesa-6.5.1-new/configs/hpux11-64
 --- Mesa-6.5.1-old/configs/hpux11-64	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-64	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-64	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -648,7 +765,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-64 Mesa-6.5.1-new/configs/hpux11-64
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-6.5.1-old/configs/hpux11-64-static Mesa-6.5.1-new/configs/hpux11-64-static
 --- Mesa-6.5.1-old/configs/hpux11-64-static	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-64-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-64-static	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -669,7 +786,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-64-static Mesa-6.5.1-new/configs/hpux11
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXt -lXi -lX11 -lm -lpthread -lCsup -lcl
 diff -Naur Mesa-6.5.1-old/configs/hpux11-ia64 Mesa-6.5.1-new/configs/hpux11-ia64
 --- Mesa-6.5.1-old/configs/hpux11-ia64	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-ia64	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-ia64	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -693,7 +810,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-ia64 Mesa-6.5.1-new/configs/hpux11-ia64
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-6.5.1-old/configs/hpux11-ia64-static Mesa-6.5.1-new/configs/hpux11-ia64-static
 --- Mesa-6.5.1-old/configs/hpux11-ia64-static	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux11-ia64-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux11-ia64-static	2006-12-05 15:39:59.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -714,7 +831,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux11-ia64-static Mesa-6.5.1-new/configs/hpux
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lXt -lX11 -lpthread -lm -lCsup -lcl
 diff -Naur Mesa-6.5.1-old/configs/hpux9 Mesa-6.5.1-new/configs/hpux9
 --- Mesa-6.5.1-old/configs/hpux9	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux9	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux9	2006-12-05 15:39:59.000000000 -0800
 @@ -9,8 +9,8 @@
  # XXX fix this
  CXX = c++
@@ -729,7 +846,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux9 Mesa-6.5.1-new/configs/hpux9
  
 diff -Naur Mesa-6.5.1-old/configs/hpux9-gcc Mesa-6.5.1-new/configs/hpux9-gcc
 --- Mesa-6.5.1-old/configs/hpux9-gcc	2006-09-11 14:35:46.000000000 -0700
-+++ Mesa-6.5.1-new/configs/hpux9-gcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/hpux9-gcc	2006-12-05 15:39:59.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -742,7 +859,7 @@ diff -Naur Mesa-6.5.1-old/configs/hpux9-gcc Mesa-6.5.1-new/configs/hpux9-gcc
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-6.5.1-old/configs/linux Mesa-6.5.1-new/configs/linux
 --- Mesa-6.5.1-old/configs/linux	2006-08-24 16:37:59.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux	2006-12-05 15:39:59.000000000 -0800
 @@ -20,7 +20,7 @@
  	-D_BSD_SOURCE -D_GNU_SOURCE \
  	-DPTHREADS -DUSE_XSHM -DHAVE_POSIX_MEMALIGN
@@ -760,7 +877,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux Mesa-6.5.1-new/configs/linux
 +EXTRA_LIB_PATH =
 diff -Naur Mesa-6.5.1-old/configs/linux-alpha Mesa-6.5.1-new/configs/linux-alpha
 --- Mesa-6.5.1-old/configs/linux-alpha	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-alpha	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-alpha	2006-12-05 15:39:59.000000000 -0800
 @@ -11,8 +11,8 @@
  CXXFLAGS = -O3 -mcpu=ev5 -ansi -mieee -pedantic -fPIC -D_XOPEN_SOURCE
  GLUT_CFLAGS = -fexceptions
@@ -775,7 +892,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-alpha Mesa-6.5.1-new/configs/linux-alpha
  
 diff -Naur Mesa-6.5.1-old/configs/linux-alpha-static Mesa-6.5.1-new/configs/linux-alpha-static
 --- Mesa-6.5.1-old/configs/linux-alpha-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-alpha-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-alpha-static	2006-12-05 15:39:59.000000000 -0800
 @@ -21,7 +21,7 @@
  OSMESA_LIB_NAME = libOSMesa.a
  
@@ -790,7 +907,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-alpha-static Mesa-6.5.1-new/configs/linu
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm -lX11 -lm
 diff -Naur Mesa-6.5.1-old/configs/linux-dri Mesa-6.5.1-new/configs/linux-dri
 --- Mesa-6.5.1-old/configs/linux-dri	2006-08-17 07:09:02.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-dri	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-dri	2006-12-05 15:39:59.000000000 -0800
 @@ -9,7 +9,7 @@
  CC = gcc
  CXX = g++
@@ -820,7 +937,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-dri Mesa-6.5.1-new/configs/linux-dri
  LIBDRM_LIB = `pkg-config --libs libdrm`
 diff -Naur Mesa-6.5.1-old/configs/linux-dri-bp Mesa-6.5.1-new/configs/linux-dri-bp
 --- Mesa-6.5.1-old/configs/linux-dri-bp	2005-05-04 15:07:43.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-dri-bp	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-dri-bp	2006-12-05 15:39:59.000000000 -0800
 @@ -9,7 +9,7 @@
  CC = gcc
  CXX = g++
@@ -850,7 +967,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-dri-bp Mesa-6.5.1-new/configs/linux-dri-
  GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lm -lpthread -ldl
 diff -Naur Mesa-6.5.1-old/configs/linux-dri-x86-64 Mesa-6.5.1-new/configs/linux-dri-x86-64
 --- Mesa-6.5.1-old/configs/linux-dri-x86-64	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-dri-x86-64	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-dri-x86-64	2006-12-05 15:39:59.000000000 -0800
 @@ -14,7 +14,7 @@
  LIB_DIR = lib64
  
@@ -862,7 +979,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-dri-x86-64 Mesa-6.5.1-new/configs/linux-
  # the new interface.  i810 are missing because there is no x86-64
 diff -Naur Mesa-6.5.1-old/configs/linux-dri-xcb Mesa-6.5.1-new/configs/linux-dri-xcb
 --- Mesa-6.5.1-old/configs/linux-dri-xcb	2006-08-17 07:09:02.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-dri-xcb	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-dri-xcb	2006-12-05 15:39:59.000000000 -0800
 @@ -9,7 +9,7 @@
  CC = gcc
  CXX = g++
@@ -874,7 +991,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-dri-xcb Mesa-6.5.1-new/configs/linux-dri
  
 diff -Naur Mesa-6.5.1-old/configs/linux-glide Mesa-6.5.1-new/configs/linux-glide
 --- Mesa-6.5.1-old/configs/linux-glide	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-glide	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-glide	2006-12-05 15:39:59.000000000 -0800
 @@ -8,13 +8,13 @@
  CC = gcc
  CXX = g++
@@ -896,7 +1013,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-glide Mesa-6.5.1-new/configs/linux-glide
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lglide3x -lm
 diff -Naur Mesa-6.5.1-old/configs/linux-ia64-icc Mesa-6.5.1-new/configs/linux-ia64-icc
 --- Mesa-6.5.1-old/configs/linux-ia64-icc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-ia64-icc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-ia64-icc	2006-12-05 15:39:59.000000000 -0800
 @@ -7,14 +7,14 @@
  # Compiler and flags
  CC = icc
@@ -918,7 +1035,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-ia64-icc Mesa-6.5.1-new/configs/linux-ia
  
 diff -Naur Mesa-6.5.1-old/configs/linux-ia64-icc-static Mesa-6.5.1-new/configs/linux-ia64-icc-static
 --- Mesa-6.5.1-old/configs/linux-ia64-icc-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-ia64-icc-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-ia64-icc-static	2006-12-05 15:39:59.000000000 -0800
 @@ -7,8 +7,8 @@
  # Compiler and flags
  CC = icc
@@ -939,7 +1056,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-ia64-icc-static Mesa-6.5.1-new/configs/l
  
 diff -Naur Mesa-6.5.1-old/configs/linux-icc Mesa-6.5.1-new/configs/linux-icc
 --- Mesa-6.5.1-old/configs/linux-icc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-icc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-icc	2006-12-05 15:39:59.000000000 -0800
 @@ -7,13 +7,13 @@
  # Compiler and flags
  CC = icc
@@ -959,7 +1076,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-icc Mesa-6.5.1-new/configs/linux-icc
  ASM_SOURCES = $(X86_SOURCES)
 diff -Naur Mesa-6.5.1-old/configs/linux-icc-static Mesa-6.5.1-new/configs/linux-icc-static
 --- Mesa-6.5.1-old/configs/linux-icc-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-icc-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-icc-static	2006-12-05 15:39:59.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = icc
@@ -980,7 +1097,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-icc-static Mesa-6.5.1-new/configs/linux-
  ASM_API = $(X86_API)
 diff -Naur Mesa-6.5.1-old/configs/linux-indirect Mesa-6.5.1-new/configs/linux-indirect
 --- Mesa-6.5.1-old/configs/linux-indirect	2006-08-17 07:09:02.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-indirect	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-indirect	2006-12-05 15:39:59.000000000 -0800
 @@ -10,7 +10,7 @@
  CC = gcc
  CXX = g++
@@ -1010,7 +1127,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-indirect Mesa-6.5.1-new/configs/linux-in
  GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lm -lpthread -ldl
 diff -Naur Mesa-6.5.1-old/configs/linux-osmesa16 Mesa-6.5.1-new/configs/linux-osmesa16
 --- Mesa-6.5.1-old/configs/linux-osmesa16	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-osmesa16	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-osmesa16	2006-12-05 15:39:59.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1022,7 +1139,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-osmesa16 Mesa-6.5.1-new/configs/linux-os
  
 diff -Naur Mesa-6.5.1-old/configs/linux-osmesa16-static Mesa-6.5.1-new/configs/linux-osmesa16-static
 --- Mesa-6.5.1-old/configs/linux-osmesa16-static	2004-03-26 07:16:35.000000000 -0800
-+++ Mesa-6.5.1-new/configs/linux-osmesa16-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-osmesa16-static	2006-12-05 15:39:59.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1034,7 +1151,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-osmesa16-static Mesa-6.5.1-new/configs/l
  
 diff -Naur Mesa-6.5.1-old/configs/linux-osmesa32 Mesa-6.5.1-new/configs/linux-osmesa32
 --- Mesa-6.5.1-old/configs/linux-osmesa32	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-osmesa32	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-osmesa32	2006-12-05 15:39:59.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1046,7 +1163,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-osmesa32 Mesa-6.5.1-new/configs/linux-os
  
 diff -Naur Mesa-6.5.1-old/configs/linux-profile Mesa-6.5.1-new/configs/linux-profile
 --- Mesa-6.5.1-old/configs/linux-profile	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-profile	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-profile	2006-12-05 15:39:59.000000000 -0800
 @@ -8,16 +8,16 @@
  CC = gcc
  CXX = g++
@@ -1071,7 +1188,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-profile Mesa-6.5.1-new/configs/linux-pro
  MKLIB_OPTIONS = -static
 diff -Naur Mesa-6.5.1-old/configs/linux-tcc Mesa-6.5.1-new/configs/linux-tcc
 --- Mesa-6.5.1-old/configs/linux-tcc	2006-01-22 21:45:41.000000000 -0800
-+++ Mesa-6.5.1-new/configs/linux-tcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-tcc	2006-12-05 15:39:59.000000000 -0800
 @@ -10,13 +10,13 @@
  
  TCC_DIR=/home/progs/tcc-0.9.20
@@ -1092,7 +1209,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-tcc Mesa-6.5.1-new/configs/linux-tcc
  APP_LIB_DEPS = -L$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-6.5.1-old/configs/linux-x86-64 Mesa-6.5.1-new/configs/linux-x86-64
 --- Mesa-6.5.1-old/configs/linux-x86-64	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-x86-64	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-x86-64	2006-12-05 15:39:59.000000000 -0800
 @@ -11,4 +11,4 @@
  ASM_FLAGS = -DUSE_X86_64_ASM
  
@@ -1101,7 +1218,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-x86-64 Mesa-6.5.1-new/configs/linux-x86-
 +EXTRA_LIB_PATH =
 diff -Naur Mesa-6.5.1-old/configs/linux-x86-glide Mesa-6.5.1-new/configs/linux-x86-glide
 --- Mesa-6.5.1-old/configs/linux-x86-glide	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/linux-x86-glide	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/linux-x86-glide	2006-12-05 15:39:59.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = gcc
  CXX = g++
@@ -1125,7 +1242,7 @@ diff -Naur Mesa-6.5.1-old/configs/linux-x86-glide Mesa-6.5.1-new/configs/linux-x
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lglide3x -lm
 diff -Naur Mesa-6.5.1-old/configs/netbsd Mesa-6.5.1-new/configs/netbsd
 --- Mesa-6.5.1-old/configs/netbsd	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/netbsd	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/netbsd	2006-12-05 15:39:59.000000000 -0800
 @@ -7,8 +7,8 @@
  # Compiler and flags
  CC = gcc
@@ -1139,7 +1256,7 @@ diff -Naur Mesa-6.5.1-old/configs/netbsd Mesa-6.5.1-new/configs/netbsd
  
 diff -Naur Mesa-6.5.1-old/configs/openbsd Mesa-6.5.1-new/configs/openbsd
 --- Mesa-6.5.1-old/configs/openbsd	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/openbsd	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/openbsd	2006-12-05 15:39:59.000000000 -0800
 @@ -7,12 +7,12 @@
  # Compiler and flags
  CC = gcc
@@ -1160,7 +1277,7 @@ diff -Naur Mesa-6.5.1-old/configs/openbsd Mesa-6.5.1-new/configs/openbsd
  
 diff -Naur Mesa-6.5.1-old/configs/solaris-x86 Mesa-6.5.1-new/configs/solaris-x86
 --- Mesa-6.5.1-old/configs/solaris-x86	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/solaris-x86	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/solaris-x86	2006-12-05 15:39:59.000000000 -0800
 @@ -6,10 +6,10 @@
  
  # Compiler and flags
@@ -1176,7 +1293,7 @@ diff -Naur Mesa-6.5.1-old/configs/solaris-x86 Mesa-6.5.1-new/configs/solaris-x86
  GLU_LIB_NAME = libGLU.a
 diff -Naur Mesa-6.5.1-old/configs/solaris-x86-gcc Mesa-6.5.1-new/configs/solaris-x86-gcc
 --- Mesa-6.5.1-old/configs/solaris-x86-gcc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/solaris-x86-gcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/solaris-x86-gcc	2006-12-05 15:39:59.000000000 -0800
 @@ -7,11 +7,11 @@
  # Compiler and flags
  CC = gcc
@@ -1195,7 +1312,7 @@ diff -Naur Mesa-6.5.1-old/configs/solaris-x86-gcc Mesa-6.5.1-new/configs/solaris
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm -lX11 -lXext -lXi -lXmu
 diff -Naur Mesa-6.5.1-old/configs/solaris-x86-gcc-static Mesa-6.5.1-new/configs/solaris-x86-gcc-static
 --- Mesa-6.5.1-old/configs/solaris-x86-gcc-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/solaris-x86-gcc-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/solaris-x86-gcc-static	2006-12-05 15:39:59.000000000 -0800
 @@ -7,15 +7,15 @@
  # Compiler and flags
  CC = gcc
@@ -1218,7 +1335,7 @@ diff -Naur Mesa-6.5.1-old/configs/solaris-x86-gcc-static Mesa-6.5.1-new/configs/
  GLU_LIB_NAME = libGLU.a
 diff -Naur Mesa-6.5.1-old/configs/sunos4 Mesa-6.5.1-new/configs/sunos4
 --- Mesa-6.5.1-old/configs/sunos4	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos4	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos4	2006-12-05 15:39:59.000000000 -0800
 @@ -6,7 +6,7 @@
  
  # Compiler and flags
@@ -1231,7 +1348,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos4 Mesa-6.5.1-new/configs/sunos4
  
 diff -Naur Mesa-6.5.1-old/configs/sunos4-gcc Mesa-6.5.1-new/configs/sunos4-gcc
 --- Mesa-6.5.1-old/configs/sunos4-gcc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos4-gcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos4-gcc	2006-12-05 15:39:59.000000000 -0800
 @@ -7,9 +7,9 @@
  # Compiler and flags
  CC = gcc
@@ -1247,7 +1364,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos4-gcc Mesa-6.5.1-new/configs/sunos4-gcc
  
 diff -Naur Mesa-6.5.1-old/configs/sunos4-static Mesa-6.5.1-new/configs/sunos4-static
 --- Mesa-6.5.1-old/configs/sunos4-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos4-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos4-static	2006-12-05 15:39:59.000000000 -0800
 @@ -22,4 +22,4 @@
  GLU_LIB_DEPS = 
  GLUT_LIB_DEPS = 
@@ -1256,7 +1373,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos4-static Mesa-6.5.1-new/configs/sunos4-st
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXext -lXmu -lXt -lXi -lpthread -lm
 diff -Naur Mesa-6.5.1-old/configs/sunos5 Mesa-6.5.1-new/configs/sunos5
 --- Mesa-6.5.1-old/configs/sunos5	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5	2006-12-05 15:39:59.000000000 -0800
 @@ -7,12 +7,12 @@
  # Compiler and flags
  CC = cc
@@ -1276,7 +1393,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5 Mesa-6.5.1-new/configs/sunos5
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lCrun -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-6.5.1-old/configs/sunos5-gcc Mesa-6.5.1-new/configs/sunos5-gcc
 --- Mesa-6.5.1-old/configs/sunos5-gcc	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-gcc	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-gcc	2006-12-05 15:39:59.000000000 -0800
 @@ -21,15 +21,14 @@
  ASM_FLAGS = -DUSE_SPARC_ASM
  
@@ -1298,7 +1415,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-gcc Mesa-6.5.1-new/configs/sunos5-gcc
  GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-6.5.1-old/configs/sunos5-smp Mesa-6.5.1-new/configs/sunos5-smp
 --- Mesa-6.5.1-old/configs/sunos5-smp	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-smp	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-smp	2006-12-05 15:39:59.000000000 -0800
 @@ -7,13 +7,13 @@
  # Compiler and flags
  CC = cc
@@ -1319,7 +1436,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-smp Mesa-6.5.1-new/configs/sunos5-smp
  
 diff -Naur Mesa-6.5.1-old/configs/sunos5-v8 Mesa-6.5.1-new/configs/sunos5-v8
 --- Mesa-6.5.1-old/configs/sunos5-v8	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-v8	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-v8	2006-12-05 15:39:59.000000000 -0800
 @@ -7,12 +7,12 @@
  # Compiler and flags
  CC = cc
@@ -1339,7 +1456,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-v8 Mesa-6.5.1-new/configs/sunos5-v8
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-6.5.1-old/configs/sunos5-v8-static Mesa-6.5.1-new/configs/sunos5-v8-static
 --- Mesa-6.5.1-old/configs/sunos5-v8-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-v8-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-v8-static	2006-12-05 15:39:59.000000000 -0800
 @@ -9,8 +9,8 @@
  # Compiler and flags
  CC = cc
@@ -1354,7 +1471,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-v8-static Mesa-6.5.1-new/configs/sunos5
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 diff -Naur Mesa-6.5.1-old/configs/sunos5-v9 Mesa-6.5.1-new/configs/sunos5-v9
 --- Mesa-6.5.1-old/configs/sunos5-v9	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-v9	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-v9	2006-12-05 15:39:59.000000000 -0800
 @@ -11,13 +11,13 @@
  # Compiler and flags
  CC = cc
@@ -1375,7 +1492,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-v9 Mesa-6.5.1-new/configs/sunos5-v9
  
 diff -Naur Mesa-6.5.1-old/configs/sunos5-v9-static Mesa-6.5.1-new/configs/sunos5-v9-static
 --- Mesa-6.5.1-old/configs/sunos5-v9-static	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/configs/sunos5-v9-static	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/configs/sunos5-v9-static	2006-12-05 15:39:59.000000000 -0800
 @@ -11,8 +11,8 @@
  # Compiler and flags
  CC = cc
@@ -1390,7 +1507,7 @@ diff -Naur Mesa-6.5.1-old/configs/sunos5-v9-static Mesa-6.5.1-new/configs/sunos5
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 diff -Naur Mesa-6.5.1-old/docs/README.LYNXOS Mesa-6.5.1-new/docs/README.LYNXOS
 --- Mesa-6.5.1-old/docs/README.LYNXOS	1999-01-13 19:13:11.000000000 -0800
-+++ Mesa-6.5.1-new/docs/README.LYNXOS	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/docs/README.LYNXOS	2006-12-05 15:39:59.000000000 -0800
 @@ -35,12 +35,11 @@
  
  FILES = your_app.x
@@ -1408,7 +1525,7 @@ diff -Naur Mesa-6.5.1-old/docs/README.LYNXOS Mesa-6.5.1-new/docs/README.LYNXOS
  
 diff -Naur Mesa-6.5.1-old/docs/README.QUAKE Mesa-6.5.1-new/docs/README.QUAKE
 --- Mesa-6.5.1-old/docs/README.QUAKE	1998-08-23 08:26:26.000000000 -0700
-+++ Mesa-6.5.1-new/docs/README.QUAKE	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/docs/README.QUAKE	2006-12-05 15:39:59.000000000 -0800
 @@ -60,7 +60,7 @@
  > /usr/lib for programs linked against glibc.
  > 
@@ -1435,7 +1552,7 @@ diff -Naur Mesa-6.5.1-old/docs/README.QUAKE Mesa-6.5.1-new/docs/README.QUAKE
  
 diff -Naur Mesa-6.5.1-old/progs/util/sampleMakefile Mesa-6.5.1-new/progs/util/sampleMakefile
 --- Mesa-6.5.1-old/progs/util/sampleMakefile	1999-08-18 17:55:42.000000000 -0700
-+++ Mesa-6.5.1-new/progs/util/sampleMakefile	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/progs/util/sampleMakefile	2006-12-05 15:39:59.000000000 -0800
 @@ -20,7 +20,7 @@
  
  INCDIRS = -I. -I../include
@@ -1447,7 +1564,7 @@ diff -Naur Mesa-6.5.1-old/progs/util/sampleMakefile Mesa-6.5.1-new/progs/util/sa
  
 diff -Naur Mesa-6.5.1-old/src/glw/Makefile Mesa-6.5.1-new/src/glw/Makefile
 --- Mesa-6.5.1-old/src/glw/Makefile	2006-07-12 19:43:20.000000000 -0700
-+++ Mesa-6.5.1-new/src/glw/Makefile	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/src/glw/Makefile	2006-12-05 15:39:59.000000000 -0800
 @@ -7,7 +7,7 @@
  MINOR = 0
  TINY = 0
@@ -1459,7 +1576,7 @@ diff -Naur Mesa-6.5.1-old/src/glw/Makefile Mesa-6.5.1-new/src/glw/Makefile
  OBJECTS = $(GLW_SOURCES:.c=.o)
 diff -Naur Mesa-6.5.1-old/src/glx/x11/dri_glx.c Mesa-6.5.1-new/src/glx/x11/dri_glx.c
 --- Mesa-6.5.1-old/src/glx/x11/dri_glx.c	2006-08-17 07:09:03.000000000 -0700
-+++ Mesa-6.5.1-new/src/glx/x11/dri_glx.c	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/src/glx/x11/dri_glx.c	2006-12-05 15:39:59.000000000 -0800
 @@ -58,7 +58,7 @@
  
  #ifndef DEFAULT_DRIVER_DIR
@@ -1471,7 +1588,7 @@ diff -Naur Mesa-6.5.1-old/src/glx/x11/dri_glx.c Mesa-6.5.1-new/src/glx/x11/dri_g
  static __DRIdriver *Drivers = NULL;
 diff -Naur Mesa-6.5.1-old/src/mesa/drivers/dri/i965/brw_hal.c Mesa-6.5.1-new/src/mesa/drivers/dri/i965/brw_hal.c
 --- Mesa-6.5.1-old/src/mesa/drivers/dri/i965/brw_hal.c	2006-08-09 12:14:05.000000000 -0700
-+++ Mesa-6.5.1-new/src/mesa/drivers/dri/i965/brw_hal.c	2006-11-13 07:23:23.000000000 -0800
++++ Mesa-6.5.1-new/src/mesa/drivers/dri/i965/brw_hal.c	2006-12-05 15:39:59.000000000 -0800
 @@ -41,7 +41,7 @@
  	char *brw_hal_name = getenv ("INTEL_HAL");
      
