@@ -28,8 +28,7 @@ start() {
 
     # Start LCDproc LCDd daemon and Myth LCD server.
     if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
-        /usr/bin/test -e /usr/sbin/LCDd         && /usr/sbin/LCDd -c /etc/LCDd.conf
-        /usr/bin/test -e /usr/bin/mythlcdserver && /usr/bin/mythlcdserver -d -l /var/log/mythlcdserver.log
+        /usr/bin/test -e /usr/sbin/LCDd && /usr/sbin/LCDd -c /etc/LCDd.conf
     fi
 
     return 0
@@ -39,8 +38,7 @@ start() {
 stop() {
     mm_message_output info 'stopping LCD/VFD display ...'
 
-    /usr/bin/test -n "`/bin/pidof mythlcdserver`" && /usr/bin/killall mythlcdserver
-    /usr/bin/test -n "`/bin/pidof LCDd`"          && /usr/bin/killall LCDd
+    /usr/bin/test -n "`/bin/pidof LCDd`" && /usr/bin/killall LCDd
 
     return 0
 }
