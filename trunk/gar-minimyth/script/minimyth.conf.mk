@@ -119,7 +119,6 @@ mm_CFLAGS            ?= $(strip \
                          )
 mm_CXXFLAGS          ?= $(mm_CFLAGS)
 mm_DESTDIR           ?= $(mm_HOME)/images/mm
-mm_SOURCENAME        ?= gar-minimyth-$(mm_VERSION)
 
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.

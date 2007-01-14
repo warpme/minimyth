@@ -6,7 +6,7 @@ GAR_EXTRA_CONF += kernel/linux/package-api.mk devel/build-system-bins/package-ap
 include ../../gar.mk
 
 mm_NAME       := minimyth-$(mm_VERSION)
-
+mm_SOURCENAME := gar-minimyth-$(mm_VERSION)
 mm_KERNELNAME := kernel
 mm_ROOTFSNAME := rootfs
 mm_EXTRASNAME := extras
@@ -151,6 +151,7 @@ mm-all:
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-make-distro
 
 mm-check:
+	@# Check build environment.
 	@for bin in $(build_system_bins) ; do \
 		which $${bin} > /dev/null 2>&1 ; \
 		if [ ! "$$?" = "0" ] ; then \
@@ -171,10 +172,7 @@ mm-check:
 			exit 1 ; \
 		fi ; \
 	done
-	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
-		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
-		exit 1 ; \
-	fi
+	@# Check for obsolete parameters and parameter values.
 	@if [ -n "$(mm_INSTALL_TFTP_BOOT)" ] ; then \
 		echo "error: mm_INSTALL_TFTP_BOOT should be replaced with mm_INSTALL_RAM_BOOT." ; \
 		exit 1 ; \
@@ -185,6 +183,19 @@ mm-check:
 	fi
 	@if [ -n "$(mm_INSTALL_NFS)" ] ; then \
 		echo "error: mm_INSTALL_NFS should be replaced with mm_INSTALL_NFS_BOOT." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_XORG_VERSION)" = "old" ] ; then \
+		echo "error: mm_XORG_VERSION=\"old\" should be replaced with mm_XORG_VERSION=\"6.8\"." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_XORG_VERSION)" = "new" ] ; then \
+		echo "error: mm_XORG_VERSION=\"new\" should be replaced with mm_XORG_VERSION=\"7.0\"." ; \
+		exit 1 ; \
+	fi
+	@# Check build parameters.
+	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
+		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
@@ -202,12 +213,39 @@ mm-check:
 		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qtprefix))))\"."; \
 		exit 1 ; \
 	fi
+	@if [ ! "$(mm_DEBUG)" = "yes" ] && [ ! "$(mm_DEBUG)" = "no" ] ; then \
+		echo "error: mm_DEBUG=\"$(mm_DEBUG)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_MYTH_VERSION)" = "stable18" ] && \
+	@if [ ! "$(mm_MYTH_VERSION)" = "stable19" ] && \
+	@if [ ! "$(mm_MYTH_VERSION)" = "stable20" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "svn"      ] ; then \
+		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "8178" ] && \
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "8774" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9625" ] ; then \
+		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_XORG_VERSION)" = "6.8" ] && \
+	    [ ! "$(mm_XORG_VERSION)" = "7.0" ] ; then \
+		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@# Check install parameters.
 	@if [ ! "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_RAM_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_RAM_BOOT=\"$(mm_INSTALL_RAM_BOOT)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_NFS_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_NFS_BOOT=\"$(mm_INSTALL_NFS_BOOT)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_INSTALL_LATEST)"   = "yes" ] && [ ! "$(mm_INSTALL_LATEST)"   = "no" ] ; then \
+		echo "error: mm_INSTALL_LATEST=\"$(mm_INSTALL_LATEST)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
@@ -222,7 +260,7 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@if [ "$(mm_INSTALL_LATEST)"           = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
+	@if [ "$(mm_INSTALL_LATEST)"   = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
