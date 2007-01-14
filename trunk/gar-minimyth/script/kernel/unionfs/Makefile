@@ -1,5 +1,7 @@
 GARNAME = unionfs
-GARVERSION = 1.3
+GARVERSION = $(strip \
+	$(if $(filter $(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION).$(KERNEL_TEENY_VERSION),2.6.17),1.3) \
+	$(if $(filter $(KERNEL_MAJOR_VERSION).$(KERNEL_MINOR_VERSION).$(KERNEL_TEENY_VERSION),2.6.18),1.4) )
 CATEGORIES = kernel
 MASTER_SITES  = ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/
 MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/snapshots/
