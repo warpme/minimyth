@@ -1,7 +1,7 @@
 GARNAME = fceu
 GARVERSION = 0.98.12
 CATEGORIES = emulators
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/fceutra/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/fceultra/
 DISTFILES = $(DISTNAME).src.tar.bz2
 PATCHFILES = $(DISTNAME)-sdl_sound.patch
 LICENSE = GPL2
