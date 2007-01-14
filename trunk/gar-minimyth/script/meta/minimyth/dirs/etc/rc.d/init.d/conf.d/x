@@ -80,6 +80,12 @@ conf_check_x() {
         mm_message_output err "error: MM_X_SCREENSAVER='${MM_X_SCREENSAVER}' is not valid."
         exit 1
     fi
+    if /usr/bin/test ! -z "${MM_X_SCREENSAVER_HACK}"                 && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "blank"       &&
+       /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "glslideshow" ; then
+        mm_message_output err "error: MM_X_SCREENSAVER_HACK='${MM_X_SCREENSAVER_HACK}' is not valid."
+        exit 1
+    fi
 
     # We do not check the X output variables
     # (MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA, MM_X_OUTPUT_TV, MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN)
@@ -376,17 +382,20 @@ conf_default_x() {
     esac
 
     # X application variables.
-    if /usr/bin/test -z "${MM_X_ENABLED}"     ; then
+    if /usr/bin/test -z "${MM_X_ENABLED}"          ; then
         MM_X_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_WM_ENABLED}"  ; then
+    if /usr/bin/test -z "${MM_X_WM_ENABLED}"       ; then
         MM_X_WM_ENABLED='no'
     fi
-    if /usr/bin/test -z "${MM_X_VNC_ENABLED}" ; then
+    if /usr/bin/test -z "${MM_X_VNC_ENABLED}"      ; then
         MM_X_VNC_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_SCREENSAVER}" ; then
+    if /usr/bin/test -z "${MM_X_SCREENSAVER}"      ; then
         MM_X_SCREENSAVER='none'
+    fi
+    if /usr/bin/test -z "${MM_X_SCREENSAVER_HACK}" ; then
+        MM_X_SCREENSAVER_HACK='blank'
     fi
 
     # X display variables.
@@ -608,33 +617,34 @@ conf_default_x() {
 conf_write_x() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_X_DRIVER      "${MM_X_DRIVER}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER           "${MM_X_DRIVER}"
 
-    conf_variable_write "${conf_file}" MM_X_ENABLED     "${MM_X_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_WM_ENABLED  "${MM_X_WM_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED "${MM_X_VNC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_SCREENSAVER "${MM_X_SCREENSAVER}"
+    conf_variable_write "${conf_file}" MM_X_ENABLED          "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_WM_ENABLED       "${MM_X_WM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED      "${MM_X_VNC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_SCREENSAVER      "${MM_X_SCREENSAVER}"
+    conf_variable_write "${conf_file}" MM_X_SCREENSAVER_HACK "${MM_X_SCREENSAVER_HACK}"
 
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI  "${MM_X_OUTPUT_DVI}"
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA  "${MM_X_OUTPUT_VGA}"
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_TV   "${MM_X_OUTPUT_TV}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI       "${MM_X_OUTPUT_DVI}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA       "${MM_X_OUTPUT_VGA}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_TV        "${MM_X_OUTPUT_TV}"
 
-    conf_variable_write "${conf_file}" MM_X_TV_TYPE     "${MM_X_TV_TYPE}"
-    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT   "${MM_X_TV_OUTPUT}"
-    conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN "${MM_X_TV_OVERSCAN}"
+    conf_variable_write "${conf_file}" MM_X_TV_TYPE          "${MM_X_TV_TYPE}"
+    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT        "${MM_X_TV_OUTPUT}"
+    conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN      "${MM_X_TV_OVERSCAN}"
 
-    conf_variable_write "${conf_file}" MM_X_SYNC        "${MM_X_SYNC}"
-    conf_variable_write "${conf_file}" MM_X_REFRESH     "${MM_X_REFRESH}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION  "${MM_X_RESOLUTION}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE    "${MM_X_MODELINE}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE_0  "${MM_X_MODELINE_0}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE_1  "${MM_X_MODELINE_1}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE_2  "${MM_X_MODELINE_2}"
-    conf_variable_write "${conf_file}" MM_X_MODE        "${MM_X_MODE}"
-    conf_variable_write "${conf_file}" MM_X_MODE_0      "${MM_X_MODE_0}"
-    conf_variable_write "${conf_file}" MM_X_MODE_1      "${MM_X_MODE_1}"
-    conf_variable_write "${conf_file}" MM_X_MODE_2      "${MM_X_MODE_2}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE "${MM_X_DISPLAYSIZE}"
+    conf_variable_write "${conf_file}" MM_X_SYNC             "${MM_X_SYNC}"
+    conf_variable_write "${conf_file}" MM_X_REFRESH          "${MM_X_REFRESH}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION       "${MM_X_RESOLUTION}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE         "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_0       "${MM_X_MODELINE_0}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_1       "${MM_X_MODELINE_1}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_2       "${MM_X_MODELINE_2}"
+    conf_variable_write "${conf_file}" MM_X_MODE             "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_MODE_0           "${MM_X_MODE_0}"
+    conf_variable_write "${conf_file}" MM_X_MODE_1           "${MM_X_MODE_1}"
+    conf_variable_write "${conf_file}" MM_X_MODE_2           "${MM_X_MODE_2}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE      "${MM_X_DISPLAYSIZE}"
 
     return 0
 }

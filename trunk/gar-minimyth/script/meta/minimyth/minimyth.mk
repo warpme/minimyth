@@ -105,6 +105,7 @@ bindirs := \
 	$(extras_bindir)
 libdirs_base := \
 	$(elibdir) \
+	$(libexecdir) \
 	$(libdir) \
 	$(libdir)/mysql \
 	$(qtlibdir) \
