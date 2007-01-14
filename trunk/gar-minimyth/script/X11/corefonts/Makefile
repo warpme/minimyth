@@ -16,7 +16,8 @@ FONTFILES = \
 	verdan32.exe \
 	wd97vwr32.exe \
 	webdin32.exe
-DISTFILES = $(FONTFILES) eula.htm
+LICENSEFILE = eula.htm
+DISTFILES = $(FONTFILES) $(LICENSEFILE)
 LICENSE = corefonts
 corefonts_LICENSE_TEXT = $(WORKSRC)/eula.htm
 
@@ -27,7 +28,7 @@ endef
 DEPENDS   = lang/c
 BUILDDEPS = utils/cabextract
 
-BUILD_SCRIPTS   = custom
+BUILD_SCRIPTS   = extract rename delete
 INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
@@ -42,12 +43,19 @@ extract-%.htm:
 	@cp -f $(DOWNLOADDIR)/$*.htm $(WORKSRC)
 	@$(MAKECOOKIE)
 
-build-custom:
+build-extract:
 	@cd $(WORKSRC) ; $(foreach file, $(FONTFILES), cabextract $(file) ; )
+	@$(MAKECOOKIE)
+
+build-rename:
+	@cd $(WORKSRC) ; $(foreach file, $(shell cd $(WORKSRC) ; ls -1 | sed 's%^[^A-Z]*$$%%'), mv $(file) $(shell echo $(file) | tr '[A-Z]' '[a-z]') ; )
+	@$(MAKECOOKIE)
+
+build-delete:
+	@$(foreach file, $(filter-out $(wildcard $(WORKSRC)/*.ttf) $(WORKSRC)/$(LICENSEFILE),$(wildcard $(WORKSRC)/*)), rm -fr $(file) ; )
 	@$(MAKECOOKIE)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)/X11/fonts/TTF
 	@cp $(WORKSRC)/*.ttf $(DESTDIR)$(libdir)/X11/fonts/TTF
-	@cp $(WORKSRC)/*.TTF $(DESTDIR)$(libdir)/X11/fonts/TTF
 	@$(MAKECOOKIE)
