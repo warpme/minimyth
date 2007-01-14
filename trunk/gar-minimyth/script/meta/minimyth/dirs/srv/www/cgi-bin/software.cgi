@@ -117,12 +117,40 @@ if /usr/bin/test -d /usr/local/versions ; then
     /bin/echo "              </ul>"
 fi
 /bin/echo "            </li>"
+/bin/echo "            <li>"
+/bin/echo "            build (natively compiled software used for cross compiling and assembling MiniMyth):"
+if /usr/bin/test -d /usr/versions-build ; then
+    /bin/echo "            <ul>"
+    for software in `cd /usr/versions-build ; ls -1` ; do
+        if /usr/bin/test ! "${software}" = "minimyth"         &&
+           /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
+            version=`/bin/cat /usr/versions-build/${software}`
+            if /usr/bin/test "${version}" = "none" ; then
+                version=
+            fi
+            license_list=
+            if /usr/bin/test -d /usr/licenses-build/${software} ; then
+                license_list=`cd /usr/licenses-build/${software} ; ls -1`
+            fi
+            /bin/echo "                <li>"
+            /bin/echo "                  <strong>${software}</strong>"
+            /bin/echo "                  ${version}"
+            /bin/echo "                  ;"
+            for license in ${license_list} ; do
+                /bin/echo "                  <a href=\"http://${server}:8080/usr/licenses-build/${software}/${license}\" type=\"text/plain\">license</a>"
+            done
+            /bin/echo "                </li>"
+        fi
+    done
+    /bin/echo "              </ul>"
+fi
+/bin/echo "            </li>"
 /bin/echo "          </ul>"
 /bin/echo "        </div>"
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"footer\">"
 /bin/echo "        <hr />"
-/bin/echo "        Last Updated: 2006-09-30 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "        Last Updated: 2006-12-28 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
 /bin/echo "  </body>"

@@ -304,6 +304,8 @@ mm-copy:
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_versiondir)
 	@cp -fa $(DESTDIR)$(extras_versiondir)/* $(mm_ROOTFSDIR)$(extras_versiondir)
 	@# Copy licenses.
+	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)-build
+	@cp -fa $(build_DESTDIR)$(build_licensedir)/* $(mm_ROOTFSDIR)$(licensedir)-build
 	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)
 	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
 	@rm -rf $(mm_ROOTFSDIR)$(licensedir)/minimyth

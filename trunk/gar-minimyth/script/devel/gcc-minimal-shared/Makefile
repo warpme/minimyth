@@ -35,6 +35,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
         --enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c \
+	--disable-libgomp \
 	--disable-libmudflap \
 	--disable-libssp \
 	--disable-multilib \
