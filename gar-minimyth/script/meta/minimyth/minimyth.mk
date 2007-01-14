@@ -422,7 +422,7 @@ mm-gen-files:
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
 	@rm -rf $(mm_ROOTFSDIR)$(datadir)/mythtv/*.{TTF,ttf}
-	@for font in `cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf}` ; do \
+	@for font in `cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
 		ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/$${font} $(mm_ROOTFSDIR)$(datadir)/mythtv/$${font} ; \
 	done
 
