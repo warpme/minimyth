@@ -33,7 +33,12 @@ include ../../gar.mk
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
-x-post-install:
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libxcb.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libxcb.pc
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@$(foreach dir, $(wildcard $(DESTDIR)$(libdir)/$(GARNAME)-*.la), rm -f $(dir) ; )
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xcb.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xcb.pc
+	@$(foreach dir, $(wildcard $(DESTDIR)$(libdir)/pkgconfig/xcb-*.pc), sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g' $(dir) ; )
+	@$(foreach dir, $(wildcard $(DESTDIR)$(libdir)/pkgconfig/xcb-*.pc), sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(dir) ; )
 	@$(MAKECOOKIE)
+

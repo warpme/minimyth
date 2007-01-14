@@ -491,10 +491,6 @@ mm_splash_running_test() {
 }
 
 mm_splash_init() {
-    # Initialize progress variables.
-    mm_splash_progress_val=0
-    mm_splash_progress_max=$1
-
     local DEPTH
     local GEOMETRY
     local LOGLEVEL
@@ -550,6 +546,8 @@ mm_splash_init() {
         mm_splash_command "repaint"
     fi
 
+    mm_splash_progress_set 0 1
+
     return 0
 }
 
@@ -572,6 +570,17 @@ mm_splash_message_output() {
     local MESSAGE=$1
 
     mm_splash_command "set message ${MESSAGE}"
+    mm_splash_command "repaint"
+
+    return 0
+}
+
+mm_splash_progress_set() {
+    mm_splash_progress_val=$1
+    mm_splash_progress_max=$2
+ 
+    /usr/bin/test ${mm_splash_progress_val} -gt ${mm_splash_progress_max} && mm_splash_progress_val=${mm_splash_progress_max}
+    mm_splash_command "progress $(( 65535 * ${mm_splash_progress_val} / ${mm_splash_progress_max} ))"
     mm_splash_command "repaint"
 
     return 0
