@@ -16,6 +16,18 @@ conf_check_x() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
         exit 1
     fi
+    if /usr/bin/test ! -z "${MM_DVI_ENABLED}"     ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DVI_ENABLED" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_VGA_ENABLED}"     ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_VGA_ENABLED" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_TV_ENABLED}"      ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV_ENABLED" is obsolete.'
+        exit 1
+    fi
     if /usr/bin/test ! -z "${MM_TV}"              ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
@@ -61,22 +73,25 @@ conf_check_x() {
     fi
 
     # Check X output variables.
-    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"          && \
-       /usr/bin/test !    "${MM_X_DVI_ENABLED}" = "yes"  && \
-       /usr/bin/test !    "${MM_X_DVI_ENABLED}" = "no"   ; then
-        mm_message_output err "error: MM_X_DVI_ENABLED='${MM_X_DVI_ENABLED}' is not valid."
+    if /usr/bin/test ! -z "${MM_X_OUTPUT_DVI}"                                           && \
+       /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_DVI='${MM_X_OUTPUT_DVI}' is not valid."
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"          && \
-       /usr/bin/test !    "${MM_X_VGA_ENABLED}" = "yes"  && \
-       /usr/bin/test !    "${MM_X_VGA_ENABLED}" = "no"   ; then
-        mm_message_output err "error: MM_X_VGA_ENABLED='${MM_X_VGA_ENABLED}' is not valid."
+    if /usr/bin/test ! -z "${MM_X_OUTPUT_VGA}"                                           && \
+       /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_VGA='${MM_X_OUTPUT_VGA}' is not valid."
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"          && \
-       /usr/bin/test !    "${MM_X_TV_ENABLED}" = "yes"  && \
-       /usr/bin/test !    "${MM_X_TV_ENABLED}" = "no"   ; then
-        mm_message_output err "error: MM_X_TV_ENABLED='${MM_X_TV_ENABLED}' is not valid."
+    if /usr/bin/test ! -z "${MM_X_OUTPUT_TV}"                                           && \
+       /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_TV} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_TV='${MM_X_OUTPUT_TV}' is not valid."
         exit 1
     fi
     
@@ -286,14 +301,20 @@ conf_default_x() {
     fi
 
     # X output variables.
-    if /usr/bin/test -z "${MM_X_DVI_ENABLED}"         ; then
-        MM_X_DVI_ENABLED='no'
+    if /usr/bin/test -z "${MM_X_OUTPUT_DVI}"          ; then
+        MM_X_OUTPUT_DVI='none'
     fi
-    if /usr/bin/test -z "${MM_X_VGA_ENABLED}"         ; then
-        MM_X_VGA_ENABLED='no'
+    if /usr/bin/test -z "${MM_X_OUTPUT_VGA}"          ; then
+        MM_X_OUTPUT_VGA='none'
     fi
-    if /usr/bin/test -z "${MM_X_TV_ENABLED}"          ; then
-        MM_X_TV_ENABLED='yes'
+    if /usr/bin/test -z "${MM_X_OUTPUT_TV}"           ; then
+        MM_X_OUTPUT_TV='none'
+    fi
+    if /usr/bin/test "${MM_X_OUTPUT_DVI}" = "none" &&
+       /usr/bin/test "${MM_X_OUTPUT_VGA}" = "none" &&
+       /usr/bin/test "${MM_X_OUTPUT_TV}"  = "none" ; then
+        mm_message_output err "error: MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV cannot all be 'none'."
+        exit 1
     fi
     if /usr/bin/test -z "${MM_X_TV_OVERSCAN}"         ; then
         MM_X_TV_OVERSCAN='0.0'
@@ -357,34 +378,33 @@ conf_default_x() {
     # Auto-configure MM_X_MODE.
     if /usr/bin/test -z "${MM_X_MODE}" ; then
         MM_X_MODE=
-        case ${MM_X_TV_ENABLED}:${MM_X_VGA_ENABLED}:${MM_X_DVI_ENABLED} in
-            # TV only so we will use minimal TV resolutions
-            # The openChrome driver has special TV resolutions that produce nicer output.
-            yes:no:no)
-                case ${MM_X_TV_TYPE} in
-                    NTSC)
-                        case ${MM_X_DRIVER} in
-                            via|via_pro) MM_X_MODE='720x480Noscale' ;;
-                            *)           MM_X_MODE='720x480'        ;;
-                        esac
-                        ;;
-                    PAL)
-                        case ${MM_X_DRIVER} in
-                            via|via_pro) MM_X_MODE='720x576Noscale' ;;
-                            *)           MM_X_MODE='720x576'        ;;
-                        esac
-                        ;;
-                    *)
-                        mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
-                        exit 1
-                        ;;
-                esac
-                ;;
-            # Not TV only, so we will use minimal computer resolutions.
-            *)
-                MM_X_MODE='640x480'
-                ;;
-        esac
+        if   /usr/bin/test ! "${MM_X_OUTPUT_DVI}" != "none" ; then
+            # Use minimal computer resolutions.
+            MM_X_MODE='640x480'
+        elif /usr/bin/test ! "${MM_X_OUTPUT_VGA}" != "none" ; then
+            # Use minimal computer resolutions.
+            MM_X_MODE='640x480'
+        elif /usr/bin/test ! "${MM_X_OUTPUT_TV}"  != "none" ; then
+            # Use minimal television resolutions.
+            case ${MM_X_TV_TYPE} in
+                NTSC)
+                    case ${MM_X_DRIVER} in
+                        via|via_pro) MM_X_MODE='720x480Noscale' ;;
+                        *)           MM_X_MODE='720x480'        ;;
+                    esac
+                    ;;
+                PAL)
+                    case ${MM_X_DRIVER} in
+                        via|via_pro) MM_X_MODE='720x576Noscale' ;;
+                        *)           MM_X_MODE='720x576'        ;;
+                    esac
+                    ;;
+                *)
+                    mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
+                    exit 1
+                    ;;
+            esac
+        fi
     fi
 
     # Auto-configure MM_X_RESOLUTION based on MM_X_MODE.
@@ -465,9 +485,10 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_VNC_ENABLED         "${MM_X_VNC_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_SCREENSAVER_ENABLED "${MM_X_SCREENSAVER_ENABLED}"
 
-    conf_variable_write "${conf_file}" MM_X_DVI_ENABLED         "${MM_X_DVI_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VGA_ENABLED         "${MM_X_VGA_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_TV_ENABLED          "${MM_X_TV_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI          "${MM_X_OUTPUT_DVI}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA          "${MM_X_OUTPUT_VGA}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_TV           "${MM_X_OUTPUT_TV}"
+
     conf_variable_write "${conf_file}" MM_X_TV_TYPE             "${MM_X_TV_TYPE}"
     conf_variable_write "${conf_file}" MM_X_TV_OUTPUT           "${MM_X_TV_OUTPUT}"
     conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN         "${MM_X_TV_OVERSCAN}"
