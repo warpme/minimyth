@@ -502,17 +502,21 @@ conf_default_x() {
 
     # Convert single valued MM_X_SYNC values to small range.
     if /bin/echo ${MM_X_SYNC} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+        if /bin/echo ${MM_X_SYNC} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+            MM_X_SYNC="${MM_X_SYNC}.0"
+        fi
         MM_X_SYNC_M=`/bin/echo ${MM_X_SYNC} | /usr/bin/cut -d . -f 1`
         MM_X_SYNC_N=`/bin/echo ${MM_X_SYNC} | /usr/bin/cut -d . -f 2`
-        MM_X_SYNC_N=${MM_X_SYNC_N:-'0'}
         MM_X_SYNC="$((${MM_X_SYNC_M}-1)).${MM_X_SYNC_N}-$((${MM_X_SYNC_M}+1)).${MM_X_SYNC_N}"
     fi
 
     # Convert single valued MM_X_REFRESH values to small range.
     if /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+        if /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+            MM_X_REFRESH="${MM_X_REFRESH}.0"
+        fi
         MM_X_REFRESH_M=`/bin/echo ${MM_X_REFRESH} | /usr/bin/cut -d . -f 1`
         MM_X_REFRESH_N=`/bin/echo ${MM_X_REFRESH} | /usr/bin/cut -d . -f 2`
-        MM_X_REFRESH_N=${MM_X_REFRESH_N:-'0'}
         MM_X_REFRESH="$((${MM_X_REFRESH_M}-1)).${MM_X_REFRESH_N}-$((${MM_X_REFRESH_M}+1)).${MM_X_REFRESH_N}"
     fi
 
