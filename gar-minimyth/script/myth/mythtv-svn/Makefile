@@ -36,7 +36,7 @@ CONFIGURE_ARGS = \
 	--enable-mmx \
 	--disable-iwmmxt \
 	--disable-altivec \
-	--disable-audio-oss \
+	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
@@ -84,6 +84,12 @@ INSTALL_ENV   = \
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
+
+# The are problems with libmythfreemheg, gcc and the -0s option.
+# This problem is fixed in gcc 4.1.1, so these two lines should be removed
+# once the build system is using gcc >= 4.1.0.
+CFLAGS   := $(patsubst -Os,-O2,$(CFLAGS)  )
+CXXFLAGS := $(patsubst -Os,-O2,$(CXXFLAGS))
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
