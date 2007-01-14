@@ -60,6 +60,7 @@ DEPENDS = \
 	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
+	X11/xmacro \
 	X11/xscreensaver \
 	xorg/xorg \
 	mediaplayers/xine-ui \
