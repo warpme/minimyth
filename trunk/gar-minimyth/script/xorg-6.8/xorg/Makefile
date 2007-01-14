@@ -8,10 +8,11 @@ define BLURB
 endef
 
 DEPENDS = \
-	xorg-6.8/X11 \
-	xorg-6.8/Mesa \
+	xorg-6.8/cvt \
 	xorg-6.8/libXvMCW \
-	xorg-6.8/unichrome
+	xorg-6.8/Mesa \
+	xorg-6.8/unichrome \
+	xorg-6.8/X11
 
 include ../../gar.mk
 

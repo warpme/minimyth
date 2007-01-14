@@ -1,7 +1,7 @@
 GARNAME = xf86-video-openchrome
 GARVERSION = 227
-CATEGORIES = xorg-7.0
-MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -9,7 +9,21 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg-7.0/libdrm xorg-7.0/Mesa xorg-7.0/xorg-server xorg-7.0/xproto xorg-7.0/libXvMC xorg-7.0/xf86driproto xorg-7.0/libXft
+DEPENDS = lang/c \
+	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/glproto \
+	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXvMC \
+	$(CATEGORY)/randrproto \
+	$(CATEGORY)/renderproto \
+	$(CATEGORY)/videoproto \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86driproto \
+	$(CATEGORY)/xorg-server \
+	$(CATEGORY)/xproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

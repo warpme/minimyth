@@ -1,6 +1,6 @@
 GARNAME = Mesa
 GARVERSION = 6.4.2
-CATEGORIES = xorg-7.0
+CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
 PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
@@ -10,10 +10,20 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c++ lib/expat xorg-7.0/libdrm xorg-7.0/xproto xorg-7.0/libX11 xorg-7.0/glproto xorg-7.0/xf86vidmodeproto xorg-7.0/libXext xorg-7.0/libXxf86vm xorg-7.0/libXmu xorg-7.0/libXi
-BUILDDEPS = xorg-7.0/makedepend
+DEPENDS   = lang/c++ lib/expat \
+	$(CATEGORY)/glproto \
+	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXi \
+	$(CATEGORY)/libXmu \
+	$(CATEGORY)/libXxf86vm \
+	$(CATEGORY)/xf86vidmodeproto \
+	$(CATEGORY)/xproto
+BUILDDEPS = $(CATEGORY)/makedepend
 
 PWD := $(shell pwd)
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 MESA_CONFIG = $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),linux-dri-x86   ) \

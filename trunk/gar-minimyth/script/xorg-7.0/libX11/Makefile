@@ -1,11 +1,9 @@
 GARNAME = libX11
 GARVERSION = X11R$(XORG_VERSION)-1.0.0
-CATEGORIES = xorg-7.0
-MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-ifneq ($(DESTIMG),build)
-PATCHFILES += $(DISTNAME)-cross.patch
-endif
+PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -13,17 +11,23 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg-7.0/bigreqsproto xorg-7.0/xproto xorg-7.0/xextproto xorg-7.0/xtrans xorg-7.0/libXau xorg-7.0/xcmiscproto xorg-7.0/libXdmcp xorg-7.0/kbproto xorg-7.0/inputproto
-ifneq ($(DESTIMG),build)
-BUILDDEPS += xorg-7.0/libX11
-endif
+DEPENDS = lang/c \
+	$(CATEGORY)/bigreqsproto \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/kbproto \
+	$(CATEGORY)/libXau \
+	$(CATEGORY)/libXdmcp \
+	$(CATEGORY)/xcmiscproto \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
+	$(CATEGORY)/xproto \
+	$(CATEGORY)/xtrans
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
-ifeq ($(DESTIMG),build)
-INSTALL_SCRIPTS   += build
-endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
@@ -36,20 +40,21 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xf86bigfont \
 	--enable-xkb \
 	--disable-man-pages \
+	--enable-malloc0returnsnull \
 	--enable-unix-transport \
 	--enable-tcp-transport \
 	--disable-ipv6 \
-	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
-GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
-install-build:
-	install -D $(WORKSRC)/src/util/makekeys $(DESTDIR)$(bindir)/xorg-libX11-makekeys
+pre-configure:
+	@cd $(WORKSRC) ; autoconf     --verbose
+	@cd $(WORKSRC) ; automake-1.7 --verbose
 	@$(MAKECOOKIE)
 
 post-install:

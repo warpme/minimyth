@@ -1,7 +1,7 @@
 GARNAME = libXrender
 GARVERSION = X11R$(XORG_VERSION)-0.9.0.2
-CATEGORIES = xorg-7.0
-MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/lib/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -10,7 +10,11 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg-7.0/libX11 xorg-7.0/renderproto
+DEPENDS = lang/c \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/renderproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -20,7 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
-GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2

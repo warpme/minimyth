@@ -186,8 +186,7 @@ include ../../gar.mk
 pre-configure: pre-configure-$(GARVERSION)
 
 pre-configure-1.1.1:
-	@# Regenerate configure since configure.ac was patched.
-	@cd $(WORKSRC) ; autoconf
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
@@ -207,8 +206,7 @@ pre-configure-1.1.1:
 	@$(MAKECOOKIE)
 
 pre-configure-1.1.2:
-	@# Regenerate configure since configure.ac was patched.
-	@cd $(WORKSRC) ; autoconf
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.

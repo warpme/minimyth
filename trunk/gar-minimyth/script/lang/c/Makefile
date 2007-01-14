@@ -23,6 +23,7 @@ BUILDDEPS += \
 	devel/gettext \
 	utils/bash \
 	devel/autoconf \
+	devel/automake-1.7 \
 	devel/automake \
 	devel/libtool \
 	devel/pkg-config \

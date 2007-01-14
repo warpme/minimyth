@@ -225,14 +225,15 @@ mm-check:
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "8178" ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "8774" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "8776" ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "9625" ] ; then \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9629" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9742" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_XORG_VERSION)" = "6.8" ] && \
-	    [ ! "$(mm_XORG_VERSION)" = "7.0" ] ; then \
+	    [ ! "$(mm_XORG_VERSION)" = "7.0" ] && \
+	    [ ! "$(mm_XORG_VERSION)" = "7.2" ] ; then \
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
