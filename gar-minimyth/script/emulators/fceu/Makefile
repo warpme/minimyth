@@ -27,13 +27,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, https://$*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
