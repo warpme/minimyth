@@ -21,26 +21,11 @@ mm_mythgame_exit_program()
                 # Send exit key sequence to window.
                 /bin/echo -e "${command}" | /usr/bin/xmacroplay -d 100 :0.0 > /dev/null 2>&1
             fi
-        fi
-        if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            mm_message_output error "failed to exit emulator ${program} uning normal exit key sequence."
-        fi
-        # If the program is still running, then kill the program.
-        if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            /usr/bin/killall ${program} > /dev/null 2>&1
-        fi
-        if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            mm_message_output error "failed to exit emulator ${program} using 'killall'."
-        fi
-        # If the program is still running, then kill the program.
-        if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            for pid in `/bin/pidof ${program}` ; do
-                /bin/kill -9 ${pid} > /dev/null 2>&1
-            done
-        fi
-        if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            mm_message_output error "failed to exit eumulator ${program} using 'kill -9'."
-            mm_message_output error "failed to exit eumulator ${program}."
+            if /usr/bin/test -n "`/bin/pidof ${program}`" ; then
+                mm_message_output error "failed to exit emulator '${program}'."
+            fi
+        else
+            mm_message_output error "cannot exit emulator '${program}' without X window manager enabled."
         fi
     fi
 }

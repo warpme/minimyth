@@ -1,8 +1,9 @@
 GARNAME = ncurses
-GARVERSION = 5.5
+GARVERSION = 5.6
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch
 LICENSE = MIT
 
 DESCRIPTION =
@@ -29,11 +30,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-ada-compiler
 
 include ../../gar.mk
-
-pre-configure:
-	@sed -i '/[ \t]*CPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
-	@sed -i '/[ \t]*ACPPFLAGS=/s% *-I\\$$(includedir)%%g' $(WORKSRC)/configure
-	@$(MAKECOOKIE)
 
 post-install:
 	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
