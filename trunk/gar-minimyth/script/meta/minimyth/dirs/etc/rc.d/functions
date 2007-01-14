@@ -105,18 +105,27 @@ mm_url_conf_get() {
     /bin/rm -f "${TMP_FILE}"
     FILE_GOT=
     if /usr/bin/test -d "/minimyth" ; then
-        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" && /usr/bin/test -e "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}" &&
-	    /bin/cp          "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}"                "${TMP_FILE}"                     && 
+        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" && 
+            /usr/bin/test -e "/minimyth/conf-rw/`/bin/hostname`+${REMOTE_FILE}" &&
+	    /bin/cp          "/minimyth/conf-rw/`/bin/hostname`+${REMOTE_FILE}"                "${TMP_FILE}"                     && 
 	    FILE_GOT="'file:/minimyth/conf/`hostname`/${REMOTE_FILE}' retrieved."
-        /usr/bin/test -z "${FILE_GOT}" &&                             /usr/bin/test -e "/minimyth/conf/default/${REMOTE_FILE}"         &&
-	    /bin/cp          "/minimyth/conf/default/${REMOTE_FILE}"                        "${TMP_FILE}"                     &&
+        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" &&
+            /usr/bin/test -e "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}"    &&
+	    /bin/cp          "/minimyth/conf/`/bin/hostname`/${REMOTE_FILE}"                   "${TMP_FILE}"                     && 
+	    FILE_GOT="'file:/minimyth/conf/`hostname`/${REMOTE_FILE}' retrieved."
+        /usr/bin/test -z "${FILE_GOT}" &&
+            /usr/bin/test -e "/minimyth/conf/default/${REMOTE_FILE}"            &&
+	    /bin/cp          "/minimyth/conf/default/${REMOTE_FILE}"                           "${TMP_FILE}"                     &&
 	    FILE_GOT="'file:/minimyth/conf/default/${REMOTE_FILE}' retrieved."
     else
         /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" &&
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/`/bin/hostname`/${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
+            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf-rw/`/bin/hostname`+${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
+	    FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/`hostname`+${REMOTE_FILE}' retrieved."
+        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "`/bin/hostname`" &&
+            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/`/bin/hostname`/${REMOTE_FILE}"    -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
 	    FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf/`hostname`/${REMOTE_FILE}' retrieved."
         /usr/bin/test -z "${FILE_GOT}" && 
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}"         -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
+            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}"            -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
 	    FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}' retrieved."
     fi
     if /usr/bin/test -n "${FILE_GOT}" ; then
@@ -194,6 +203,133 @@ mm_conf_get() {
     local LOCAL_FILE=$2
 
     mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}"
+}
+
+mm_conf_put() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    local HOSTNAME=`/bin/hostname`
+
+    if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
+        /usr/bin/logger -t minimyth -p "local0.error"  \
+            "cannot post conf file '${LOCAL_FILE}' because file not found."
+        /bin/false
+        return
+    fi
+    if /usr/bin/test -z "${HOSTNAME}" ; then
+        /usr/bin/logger -t minimyth -p "local0.error"  \
+            "cannot post conf file '${LOCAL_FILE}' because hostname is unknown."
+        /bin/false
+        return
+    fi
+
+    if /usr/bin/test -d "/minimyth" ; then
+        mkdir -p "/minimyth/conf-rw"
+        if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}"                     ; then
+            /usr/bin/logger -t minimyth -p "local0.info"  \
+                "'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
+        else
+            /usr/bin/logger -t minimyth -p "local0.error" \
+                "'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}' failed to post."
+            /bin/false
+            return
+        fi
+    else
+       if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}" "${MM_TFTP_SERVER}" ; then
+            /usr/bin/logger -t minimyth -p "local0.info"  \
+                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
+       else
+            /usr/bin/logger -t minimyth -p "local0.error" \
+                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}' failed to post."
+            /bin/false
+            return
+       fi
+    fi
+}
+
+mm_game_restore() {
+
+    local REMOTE_FILE
+    local LOCAL_FILE
+
+    REMOTE_FILE="game.tar"
+    LOCAL_FILE="/home/minimyth/game.tar~"
+
+    /bin/rm -f "${LOCAL_FILE}"
+
+    mm_conf_get "${REMOTE_FILE}" "${LOCAL_FILE}"
+
+    if /usr/bin/test -n "${LOCAL_FILE}" ; then
+        cd /home/minimyth
+        /bin/tar -xf "${LOCAL_FILE}"
+        /bin/rm -f "${LOCAL_FILE}"
+    fi
+
+    /bin/rm -f "${LOCAL_FILE}"
+}
+
+mm_game_save() {
+
+    local LOCAL_FILE
+    local REMOTE_FILE
+
+    LOCAL_FILE="/home/minimyth/game.tar~"
+    REMOTE_FILE="game.tar"
+
+    local LOCAL_DIR
+    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
+    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
+
+    # Enumerate all the files to be saved.
+    local IFS_SAVE
+    local GAME_SAVE_FULL
+    local GAME_SAVE_LIST
+    local GAME_SAVE_ITEM
+    local GAME_SAVE
+    GAME_SAVE_FULL=`/bin/echo ":${MM_GAME_SAVE_LIST}" \
+        | /bin/sed -e 's%:%:/home/minimyth/%g'        \
+        | /bin/sed -e 's%^:%%'`
+    IFS_SAVE=${IFS}
+    IFS=:
+    for GAME_SAVE_ITEM in ${GAME_SAVE_FULL}; do
+        if /usr/bin/test -e "${GAME_SAVE_ITEM}" ; then
+            GAME_SAVE=`echo "${GAME_SAVE_ITEM}" \
+                | /bin/sed -e 's%^/home/minimyth/%%'`
+            GAME_SAVE_LIST="${GAME_SAVE_LIST}|${GAME_SAVE}"
+        fi
+    done
+    IFS=${IFS_SAVE}
+    GAME_SAVE_LIST=`/bin/echo ${GAME_SAVE_LIST} \
+        | /bin/sed -e 's%^|%%'                  \
+        | /bin/sed -e 's%|%:%g'`
+
+    /bin/rm -f "${LOCAL_FILE}"
+    if /usr/bin/test -n "${GAME_SAVE_LIST}" ; then
+	/bin/mkdir -p /home/minimyth
+        cd /home/minimyth
+        local IFS_SAVE
+        IFS_SAVE=${IFS}
+        IFS=:${IFS}
+        /bin/tar -cf "${LOCAL_FILE}" ${GAME_SAVE_LIST} || /bin/rm -f "${LOCAL_FILE}"
+        IFS=${IFS_SAVE}
+        if /usr/bin/test ! -e "${LOCAL_FILE}" ; then
+            /usr/bin/logger -t minimyth -p "local0.error" \
+                "failed to create game configuration files tarball."
+            /bin/false
+            return
+        fi
+        mm_conf_put "${REMOTE_FILE}" "${LOCAL_FILE}"
+        if /usr/bin/test $? -ne 0 ; then
+            /bin/rm -f "${LOCAL_FILE}"
+            /bin/false
+            return
+        else
+            /bin/rm -f "${LOCAL_FILE}"
+        fi
+    fi
 }
 
 mm_message_output() {
