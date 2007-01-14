@@ -3,7 +3,7 @@ GARVERSION = 0.20
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-changeset-11327.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
