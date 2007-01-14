@@ -6,8 +6,10 @@ conf_check_plugin() {
     # Reset the variables.
     conf_reset \
        'MM_MYTHTV_OPTICAL_DISK_ENABLED' \
+       'MM_MYTHAUDIO_ENABLED' \
        'MM_MYTHDVD_ENABLED' \
        'MM_MYTHGALLERY_ENABLED' \
+       'MM_MYTHGAME_ENABLED' \
        'MM_MYTHMUSIC_ENABLED' \
        'MM_MYTHNEWS_ENABLED' \
        'MM_MYTHSTREAM_ENABLED' \
@@ -18,6 +20,12 @@ conf_check_plugin() {
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_MYTHTV_OPTICAL_DISK_ENABLED='${MM_MYTHTV_OPTICAL_DISK_ENABLED}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_MYTHAUDIO_ENABLED}"          && \
+       /usr/bin/test !    "${MM_MYTHAUDIO_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_MYTHAUDIO_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_MYTHAUDIO_ENABLED='${MM_MYTHAUDIO_ENABLED}' is not valid."
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_MYTHDVD_ENABLED}"          && \
@@ -77,6 +85,7 @@ conf_default_plugin() {
     # Reset the variables.
     conf_reset \
        'MM_MYTHTV_OPTICAL_DISK_ENABLED' \
+       'MM_MYTHAUDIO_ENABLED' \
        'MM_MYTHDVD_ENABLED' \
        'MM_MYTHGALLERY_ENABLED' \
        'MM_MYTHGAME_ENABLED' \
@@ -88,6 +97,9 @@ conf_default_plugin() {
 
     if /usr/bin/test -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" ; then
         MM_MYTHTV_OPTICAL_DISK_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_MYTHAUDIO_ENABLED}"           ; then
+        MM_MYTHAUDIO_ENABLED='yes'
     fi
     if /usr/bin/test -z "${MM_MYTHDVD_ENABLED}"             ; then
         MM_MYTHDVD_ENABLED='yes'
@@ -121,6 +133,7 @@ conf_write_plugin() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHAUDIO_ENABLED           "${MM_MYTHAUDIO_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHGAME_ENABLED            "${MM_MYTHGAME_ENABLED}"
