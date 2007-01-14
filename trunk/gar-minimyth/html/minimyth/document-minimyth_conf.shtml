@@ -79,9 +79,11 @@
               <dt><a href="#MM_X_TV_OVERSCAN">MM_X_TV_OVERSCAN</a></dt>
               <dt><a href="#MM_X_SYNC">MM_X_SYNC</a></dt>
               <dt><a href="#MM_X_REFRESH">MM_X_REFRESH</a></dt>
-              <dt><a href="#MM_X_MODE">MM_X_MODE</a></dt>
-              <dt><a href="#MM_X_MODELINE">MM_X_MODELINE</a></dt>
               <dt><a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a></dt>
+              <dt><a href="#MM_X_MODELINE">MM_X_MODELINE</a></dt>
+              <dt><a href="#MM_X_MODE">MM_X_MODE</a></dt>
+              <dt><a href="#MM_X_MODELINE_n">MM_X_MODELINE_0, MM_X_MODELINE_1 and MM_X_MODELINE_2</a></dt>
+              <dt><a href="#MM_X_MODE_n">MM_X_MODE_0, MM_X_MODE_1 and MM_X_MODE_2</a></dt>
             </dl></dd>
             <dt><a href="#MM_MYTH">Myth master backend database configuration variables</a></dt>
             <dd><dl>
@@ -534,15 +536,29 @@
             The X display configuration variables configure the parameters of the X display.
           </p>
           <p>
-            X needs a mode line in order to work.
-            The X display configuration variables provide three methods for specifying the mode line.
+            X needs at least one mode line in order to work.
+            The X display configuration variables provide three methods for specifying the main mode line.
             '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>',
             '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>' and
             '<a href="#MM_X_MODE">MM_X_MODE</a>'.
-            Since these are mutually exclusive, you must only set one of them in your MiniMyth configuration file.
+            Since these are mutually exclusive, you must only set one of them 
+            ('<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>',
+            '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>' or
+            '<a href="#MM_X_MODE">MM_X_MODE</a>')
+            in your MiniMyth configuration file.
             If you do not set one of them, then MiniMyth will pick a default for
             '<a href="#MM_X_MODE">MM_X_MODE</a>'
             that may not be optimal but should work.
+          </p>
+          <p>
+            In addition to the main mode line,
+            the X display configuration variables provide two methods for specifying up to three additional mode lines.
+            <a href="#MM_X_RESOLUTION_n">'MM_X_RESOLUTION_0', 'MM_X_RESOLUTION_1' and 'MM_X_RESOLUTION_2'</a>, and
+            <a href="#MM_X_MODELINE_n">'MM_X_MODE_0', 'MM_X_MODE_1' and 'MM_X_MODE_2'</a>.
+            Since these are mutually exclusive, you must only set one of them
+            (either '<a href="#MM_X_RESOLUTION_n">MM_X_RESOLUTION_n</a> or
+            '<a href="#MM_X_MODELINE_n">'MM_X_MODE_n</a>')
+            for each additional mode line you want to specify.
           </p>
           <p>
             While the X display configuration variables allow you set the X variables related to the mode,
@@ -763,7 +779,10 @@
             <dd>
               <p>
                 Specify the horizontal sync rate that X will use.
-                The value can be a horizontal sync rate value, a horizontal sync rate range or 'auto', with 'auto' being the default.
+                The value can be a horizontal sync rate value,
+                a horizontal sync rate range,
+                a comma separated list of sync rate values and ranges
+                or 'auto', with 'auto' being the default.
               </p>
               <p>
                 If the value is 'auto' then the horizontal sync rate will be auto-configured to
@@ -779,7 +798,10 @@
             <dd>
               <p>
                 Specify the vertical refresh rate that X will use.
-                The value can be a vertical refresh rate value, a vertical refresh rate range or 'auto', with 'auto' being the default.
+                The value can be a vertical refresh rate value,
+                a vertical refresh rate range,
+                a comma separated list of vertical refresh values and ranges
+                 or 'auto', with 'auto' being the default.
               </p>
               <p>
                 If the value is 'auto' then the vertical refresh rate will be auto-configured based on
@@ -793,14 +815,14 @@
               <p>
                 If
                 '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
-                is set, then the value cannot be a range.
+                is set, then the value cannot be a range or a list.
               </p>
             </dd>
             <dt id="MM_X_RESOLUTION"><strong>MM_X_RESOLUTION</strong></dt>
             <dd>
               <p>
                 Specify the screen resolution (in pixels).
-                The screen resolution has the form 'HxV' (e.g. '1024x768'), where H and V are the horizontal and vertical resolution in pixels.
+                The screen resolution must have the form 'HxV' (e.g. '1024x768'), where H and V are the horizontal and vertical resolution in pixels.
               </p>
               <p>
                 MiniMyth will use 'MM_X_RESOLUTION' along with
@@ -870,6 +892,32 @@
                 '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
                 and
                 '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>'
+                must not be set.
+              </p>
+            </dd>
+            <dt id="MM_X_MODELINE_n"><strong>MM_X_MODELINE_0, MM_X_MODELINE_1 and MM_X_MODELINE_2</strong></dt>
+            <dd>
+              <p>
+                Specify up to three additional screen mode lines the X will use.
+                These screen mode lines must have the same form as 
+                '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'.
+              </p>
+              <p>
+                If 'MM_X_MODELINE_n' is set, then
+                '<a href="#MM_X_MODE_n">MM_X_MODE_n</a>'
+                must not be set.
+              </p>
+            </dd>
+            <dt id="MM_X_MODE_n"><strong>MM_X_MODE_0, MM_X_MODE_1 and MM_X_MODE_2</strong></dt>
+            <dd>
+              <p>
+                Specify up to three additional built in screen modes that X will use.
+                These screen modes must have the same form as 
+                '<a href="#MM_X_MODE">MM_X_MODE</a>'.
+              </p>
+              <p>
+                If 'MM_X_MODE_n' is set, then
+                '<a href="#MM_X_MODELINE_n">MM_X_MODELINE_n</a>'
                 must not be set.
               </p>
             </dd>
@@ -1710,7 +1758,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-01-07 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-01-09 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
