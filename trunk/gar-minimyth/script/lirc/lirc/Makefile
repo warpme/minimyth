@@ -1,10 +1,10 @@
 GARNAME = lirc
-GARVERSION = 0.8.0
+GARVERSION = 0.8.1pre2
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-linux_2.6.16.patch $(DISTNAME)-linux_2.6.17.patch
+PATCHFILES = $(DISTNAME)-lirc_mceusb2_key_stutter_fix_revert.patch
 LICENSE = GPL2
 
 DESCRIPTION =
