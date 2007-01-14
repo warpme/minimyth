@@ -1,5 +1,5 @@
 GARNAME = gettext
-GARVERSION = 0.15
+GARVERSION = 0.16
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
