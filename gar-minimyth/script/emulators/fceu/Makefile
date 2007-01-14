@@ -1,5 +1,5 @@
 GARNAME = fceu
-GARVERSION = 0.98.12
+GARVERSION = 0.98.13-pre
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/fceultra/
 DISTFILES = $(DISTNAME).src.tar.bz2
@@ -20,6 +20,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sdltest \
+	--without-debugger \
 	--without-nativewin32 \
 	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
 	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)" \
