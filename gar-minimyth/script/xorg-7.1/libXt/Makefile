@@ -29,6 +29,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
+CONFIGURE_ENV = \
+	CC_FOR_BUILD="$(build_CC)" \
+	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
+	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
+	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
+
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
@@ -36,7 +42,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@cd $(WORKSRC) ; ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 post-install:
