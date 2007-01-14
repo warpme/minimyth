@@ -1,12 +1,12 @@
 GARNAME = MPlayer
-GARVERSION = 20249.6701
+GARVERSION = 1.0rc1
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-openchrome_xvmc_vld.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib lib/fontconfig lib/freetype xorg/xorg lib/SDL lirc/lirc
+DEPENDS = lang/c kernel/linux lib/alsa-lib lib/cdparanoia lib/faad2 lib/fontconfig lib/freetype lib/libdvdread lib/libdts lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib lirc/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -52,6 +52,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-winsock2 \
 	--disable-smb \
 	--disable-live \
+	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-mpdvdkit \
 	--enable-cdparanoia \
@@ -82,6 +83,7 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-xanim \
 	--enable-real \
 	--disable-tremor-internal \
+	--disable-tremor-external \
 	--enable-libvorbis \
 	--enable-theora \
 	--disable-faad-internal \
@@ -139,6 +141,7 @@ CONFIGURE_ARGS_AUDIO = \
 	--disable-select
 CONFIGURE_ARGS_MISC = \
 	--enable-runtime-cpudetection \
+	--enable-cross-compile \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \

@@ -16,20 +16,20 @@ conf_check_x() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_DVI_ENABLED}"     ; then
+    if /usr/bin/test ! -z "${MM_X_TV}"            ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DVI_ENABLED" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_VGA_ENABLED}"     ; then
+    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_VGA_ENABLED" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_TV_ENABLED}"      ; then
+    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"    ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV_ENABLED" is obsolete.'
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_TV}"              ; then
-        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}" ; then
@@ -72,31 +72,9 @@ conf_check_x() {
         exit 1
     fi
 
-    # Check X output variables.
-    if /usr/bin/test ! -z "${MM_X_OUTPUT_DVI}"                                           && \
-       /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "none"                                  && \
-       /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "auto"                                  && \
-       ! /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: MM_X_OUTPUT_DVI='${MM_X_OUTPUT_DVI}' is not valid."
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_X_OUTPUT_VGA}"                                           && \
-       /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "none"                                  && \
-       /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "auto"                                  && \
-       ! /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: MM_X_OUTPUT_VGA='${MM_X_OUTPUT_VGA}' is not valid."
-        exit 1
-    fi
-    if /usr/bin/test ! -z "${MM_X_OUTPUT_TV}"                                           && \
-       /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "none"                                  && \
-       /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "auto"                                  && \
-       ! /bin/echo ${MM_X_OUTPUT_TV} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: MM_X_OUTPUT_TV='${MM_X_OUTPUT_TV}' is not valid."
-        exit 1
-    fi
-    
-    # We do not check MM_X_TV_TYPE, MM_X_TV_OUTPUT or MM_X_TV_OVERSCAN in this routine,
-    # because they depend on the value of MM_X_DRIVER,
+    # We do not check the X output variables
+    # (MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA, MM_X_OUTPUT_TV, MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN)
+    # in this routine, because they depend on the value of MM_X_DRIVER,
     # which is configured when 'conf_default_x' is run.
     # Thefore, we check them in the 'conf_default_x' routine.
 
@@ -181,6 +159,59 @@ conf_default_x() {
         fi
     fi
 
+    # Default and check MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV now that we know the X driver.
+    if /usr/bin/test -z "${MM_X_OUTPUT_DVI}" ; then
+        MM_X_OUTPUT_DVI='none'
+    fi
+    if /usr/bin/test -z "${MM_X_OUTPUT_VGA}" ; then
+        MM_X_OUTPUT_VGA='none'
+    fi
+    if /usr/bin/test -z "${MM_X_OUTPUT_TV}"  ; then
+        MM_X_OUTPUT_TV='none'
+    fi
+    if /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_DVI='${MM_X_OUTPUT_DVI}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_VGA='${MM_X_OUTPUT_VGA}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "none"                                  && \
+       /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "auto"                                  && \
+       ! /bin/echo ${MM_X_OUTPUT_TV} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+        mm_message_output err "error: MM_X_OUTPUT_TV='${MM_X_OUTPUT_TV}' is not valid."
+        exit 1
+    fi
+    if /usr/bin/test "${MM_X_OUTPUT_DVI}" = "none" &&
+       /usr/bin/test "${MM_X_OUTPUT_VGA}" = "none" &&
+       /usr/bin/test "${MM_X_OUTPUT_TV}"  = "none" ; then
+        mm_message_output err "error: one of MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV must be active." 
+        exit 1
+    fi
+    case ${MM_X_DRIVER} in
+        nvidia)
+            # Make sure no more than one output is enabled.
+            output_count=`echo "${MM_X_OUTPUT_DVI} ${MM_X_OUTPUT_VGA} ${MM_X_OUTPUT_TV}" | sed 's%none%%g' | wc -w`
+            if /usr/bin/test ${output_count} -gt 1 ; then
+                mm_message_output err "error: only one of MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV can be active."
+                exit 1
+            fi
+            ;;
+        via|via_pro)
+            # Make sure that DVI and TV outputs are not enabled at the same time.
+            if /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" &&
+               /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
+                mm_message_output err "error: only one of MM_X_OUTPUT_DVI and MM_X_OUTPUT_TV can be active."
+                exit 1
+            fi
+            ;;
+    esac
+
     # Default and check MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN now that we know the X driver.
     case ${MM_X_DRIVER} in
         nvidia)
@@ -209,7 +240,7 @@ conf_default_x() {
                 exit 1
             fi
             ;;
-        via|via_pro|via_pro_nodma)
+        via|via_pro)
             if /usr/bin/test -z "${MM_X_TV_TYPE}" ; then
                 MM_X_TV_TYPE='NTSC';
             fi
@@ -241,7 +272,7 @@ conf_default_x() {
                 exit 1
             fi
             ;;
-        via|via_pro|via_pro_nodma)
+        via|via_pro)
             if /usr/bin/test -z "${MM_X_TV_OUTPUT}" ; then
                 MM_X_TV_OUTPUT='Composite'
             fi
@@ -300,52 +331,99 @@ conf_default_x() {
         MM_X_SCREENSAVER_ENABLED='no'
     fi
 
-    # X output variables.
-    if /usr/bin/test -z "${MM_X_OUTPUT_DVI}"          ; then
-        MM_X_OUTPUT_DVI='none'
-    fi
-    if /usr/bin/test -z "${MM_X_OUTPUT_VGA}"          ; then
-        MM_X_OUTPUT_VGA='none'
-    fi
-    if /usr/bin/test -z "${MM_X_OUTPUT_TV}"           ; then
-        MM_X_OUTPUT_TV='none'
-    fi
-    if /usr/bin/test "${MM_X_OUTPUT_DVI}" = "none" &&
-       /usr/bin/test "${MM_X_OUTPUT_VGA}" = "none" &&
-       /usr/bin/test "${MM_X_OUTPUT_TV}"  = "none" ; then
-        mm_message_output err "error: MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV cannot all be 'none'."
-        exit 1
-    fi
-    if /usr/bin/test -z "${MM_X_TV_OVERSCAN}"         ; then
-        MM_X_TV_OVERSCAN='0.0'
-    fi
-
     # X display variables.
-    # X sync rate.
-    if /usr/bin/test -z "${MM_X_SYNC}"                ; then
-        MM_X_SYNC='20.0-80.0'
-    fi
-    # X refresh rate.
-    if /usr/bin/test -z "${MM_X_REFRESH}"             ; then
+    # Auto-configure MM_X_SYNC, MM_X_REFRESH and MM_X_MODE.
+    if   /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" ; then
+        # Use default MythTV size.
+        case ${MM_VIDEO_ASPECT_RATIO} in
+            4:3)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='800x600'
+                ;;
+            16:9)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
+                ;;
+            *)
+                mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
+                exit 1
+                ;;
+        esac
+    elif /usr/bin/test ! "${MM_X_OUTPUT_VGA}" = "none" ; then
+        # Use default MythTV size.
+        case ${MM_VIDEO_ASPECT_RATIO} in
+            4:3)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='800x600'
+                ;;
+            16:9)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
+                ;;
+            *)
+                mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
+                exit 1
+                ;;
+        esac
+    elif /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
         MM_X_REFRESH=
         case "${MM_X_TV_TYPE}" in
             NTSC|NTSC-J|NTSC-M)
-                MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}" &&
+                    case ${MM_X_DRIVER} in
+                        via|via_pro) MM_X_MODE='720x480Noscale' ;;
+                        *)           MM_X_MODE='720x480'        ;;
+                    esac
                 ;;
             PAL|PAL-B|PAL-D|PAL-G|PAL-H|PAL-I|PAL-K1|PAL-M|PAL-N|PAL-NC)
-                MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_MODE}" &&
+                    case ${MM_X_DRIVER} in
+                        via|via_pro) MM_X_MODE='720x576Noscale' ;;
+                        *)           MM_X_MODE='720x576'        ;;
+                    esac
                 ;;
-            HD480i|HD1080i)
-                MM_X_REFRESH='60.0'
+            HD480i)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='720x480'
                 ;;
-            HD480p|HD720p|HD1080p)
-                MM_X_REFRESH='60.0'
+            HD480p)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='720x480'
+                ;;
+            HD720p)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
+                ;;
+            HD1080i)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1920x1080'
+                ;;
+            HD1080p)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1920x1080'
                 ;;
             HD576i)
-                MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='852x576'
                 ;;
             HD576p)
-                MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='20.0-80.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='50.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='852x576'
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
@@ -354,7 +432,16 @@ conf_default_x() {
         esac
     fi
 
-    # Auto-configure MM_X_MODELINE based on MM_X_RESOLUTION.
+    # Auto-configure (or override) MM_X_MODE based on MM_X_MODELINE.
+    if /usr/bin/test -n "${MM_X_MODELINE}" ; then
+        if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
+            exit 1
+        fi
+        MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
+    fi
+
+    # Auto-configure (or override) MM_X_MODE and MM_X_MODELINE based on MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
         if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
@@ -364,47 +451,7 @@ conf_default_x() {
         X_RESOLUTION_Y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\).*%\2%'`
         MM_X_MODELINE=`/usr/bin/gtf ${X_RESOLUTION_X} ${X_RESOLUTION_Y} ${MM_X_REFRESH} | /bin/sed 's% *#.*%%'`
         MM_X_MODELINE=`/bin/echo ${MM_X_MODELINE}`
-    fi
-
-    # Auto-configure MM_X_MODE based on MM_X_MODELINE.
-    if /usr/bin/test -n "${MM_X_MODELINE}" ; then
-        if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
-            mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
-            exit 1
-        fi
         MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
-    fi
-
-    # Auto-configure MM_X_MODE.
-    if /usr/bin/test -z "${MM_X_MODE}" ; then
-        MM_X_MODE=
-        if   /usr/bin/test ! "${MM_X_OUTPUT_DVI}" != "none" ; then
-            # Use minimal computer resolutions.
-            MM_X_MODE='640x480'
-        elif /usr/bin/test ! "${MM_X_OUTPUT_VGA}" != "none" ; then
-            # Use minimal computer resolutions.
-            MM_X_MODE='640x480'
-        elif /usr/bin/test ! "${MM_X_OUTPUT_TV}"  != "none" ; then
-            # Use minimal television resolutions.
-            case ${MM_X_TV_TYPE} in
-                NTSC)
-                    case ${MM_X_DRIVER} in
-                        via|via_pro) MM_X_MODE='720x480Noscale' ;;
-                        *)           MM_X_MODE='720x480'        ;;
-                    esac
-                    ;;
-                PAL)
-                    case ${MM_X_DRIVER} in
-                        via|via_pro) MM_X_MODE='720x576Noscale' ;;
-                        *)           MM_X_MODE='720x576'        ;;
-                    esac
-                    ;;
-                *)
-                    mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
-                    exit 1
-                    ;;
-            esac
-        fi
     fi
 
     # Auto-configure MM_X_RESOLUTION based on MM_X_MODE.

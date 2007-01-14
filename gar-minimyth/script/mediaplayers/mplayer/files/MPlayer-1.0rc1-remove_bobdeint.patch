@@ -1,0 +1,135 @@
+diff -Naur MPlayer-1.0rc1-old/DOCS/man/de/mplayer.1 MPlayer-1.0rc1-new/DOCS/man/de/mplayer.1
+--- MPlayer-1.0rc1-old/DOCS/man/de/mplayer.1	2006-10-22 18:52:10.000000000 -0700
++++ MPlayer-1.0rc1-new/DOCS/man/de/mplayer.1	2006-10-22 19:08:33.000000000 -0700
+@@ -3190,10 +3190,6 @@
+ Benötigt für einwandfreies Benchmarking von Treibern, die den Bildpuffer nur
+ bei einem Monitor-Retrace ändern (nVidia).
+ Voreinstellung ist, die Bildwiedergabe nicht zu deaktivieren (nobenchmark).
+-.IPs (no)bobdeint
+-Sehr einfacher Deinterlacer.
+-Sieht möglicherweise nicht besser als \-vf tfields=1 aus, ist aber
+-der einzige Deinterlacer, der mit xvmc funktioniert (Standard: nobobdeint).
+ .IPs (no)queue
+ Frames werden in einer Queue angeordnet, um der Videohardware weitergehendes
+ paralleles Arbeiten zu ermöglichen.
+diff -Naur MPlayer-1.0rc1-old/DOCS/man/en/mplayer.1 MPlayer-1.0rc1-new/DOCS/man/en/mplayer.1
+--- MPlayer-1.0rc1-old/DOCS/man/en/mplayer.1	2006-10-22 18:52:10.000000000 -0700
++++ MPlayer-1.0rc1-new/DOCS/man/en/mplayer.1	2006-10-22 19:08:33.000000000 -0700
+@@ -3049,10 +3049,6 @@
+ Necessary for proper benchmarking of drivers that change
+ image buffers on monitor retrace only (nVidia).
+ Default is not to disable image display (nobenchmark).
+-.IPs (no)bobdeint
+-Very simple deinterlacer.
+-Might not look better than \-vf tfields=1,
+-but it is the only deinterlacer for xvmc (default: nobobdeint).
+ .IPs (no)queue
+ Queue frames for display to allow more parallel work of the video hardware.
+ May add a small (not noticeable) constant A/V desync (default: noqueue).
+diff -Naur MPlayer-1.0rc1-old/DOCS/man/fr/mplayer.1 MPlayer-1.0rc1-new/DOCS/man/fr/mplayer.1
+--- MPlayer-1.0rc1-old/DOCS/man/fr/mplayer.1	2006-10-22 18:52:10.000000000 -0700
++++ MPlayer-1.0rc1-new/DOCS/man/fr/mplayer.1	2006-10-22 19:08:34.000000000 -0700
+@@ -3225,10 +3225,6 @@
+ mettent à jour leurs tampons d'affichage uniquement lors du rafraîchissement
+ de l'écran (nVidia).
+ Par défaut les images sont affichées (nobenchmark).
+-.IPs (no)bobdeint
+-Dé-entrelaceur très simple.
+-Peut ne pas donner un résultat plus joli que \-vf tfields=1, mais c'est
+-le seul désentrelaceur disponible pour xvmc (par défaut\ : nobobdeint).
+ .IPs (no)queue
+ Met plusieurs trames dans queue d'affichage pour permettre aux circuits
+ matériels de les traiter en parallèle.
+diff -Naur MPlayer-1.0rc1-old/DOCS/man/hu/mplayer.1 MPlayer-1.0rc1-new/DOCS/man/hu/mplayer.1
+--- MPlayer-1.0rc1-old/DOCS/man/hu/mplayer.1	2006-10-22 18:52:10.000000000 -0700
++++ MPlayer-1.0rc1-new/DOCS/man/hu/mplayer.1	2006-10-22 19:08:34.000000000 -0700
+@@ -3056,10 +3056,6 @@
+ Szükséges az olyan vezérlõk megfelelõ sebességméréséhez, amik a kép
+ buffert a monitorokon csak retrace-re állítják (nVidia).
+ Alapértelmezett a képek megjelenítése (nobenchmark).
+-.IPs (no)bobdeint
+-Nagyon egyszerû deinterlacer.
+-Nem néz ki jobban, mint a \-vf tfields=1,
+-de ez az egyetlen deinterlacer az xvmc-hez (alapértelmezett: nobobdeint).
+ .IPs (no)queue
+ A megjelenítendõ képkockák sorba állítása a videó hardver párhuzamos
+ mûködtetéséhez. Egy kicsi (nem észrevehetõ) konstans A/V deszinkronizációt
+diff -Naur MPlayer-1.0rc1-old/DOCS/man/it/mplayer.1 MPlayer-1.0rc1-new/DOCS/man/it/mplayer.1
+--- MPlayer-1.0rc1-old/DOCS/man/it/mplayer.1	2006-10-22 18:52:10.000000000 -0700
++++ MPlayer-1.0rc1-new/DOCS/man/it/mplayer.1	2006-10-22 19:08:34.000000000 -0700
+@@ -3193,10 +3193,6 @@
+ cambiano i buffer delle immagini solo sul ritracciamento verticale del
+ monitor (nVidia).
+ Il default non disabilita la visualizzazione dell'immagine (nobenchmark).
+-.IPs (no)bobdeint
+-Deinterlacciatore molto semplice.
+-Potrebbe non risultare migliore di \-vf tfields=1, ma è l'unico
+-deinterlacciatore per xvmc (default: nobobdeint).
+ .IPs (no)queue
+ Mette in coda i fotogrammi da visualizzare per permettere un miglior lavoro
+ in parallelo dell'hardware video.
+diff -Naur MPlayer-1.0rc1-old/libvo/vo_xvmc.c MPlayer-1.0rc1-new/libvo/vo_xvmc.c
+--- MPlayer-1.0rc1-old/libvo/vo_xvmc.c	2006-10-22 18:52:24.000000000 -0700
++++ MPlayer-1.0rc1-new/libvo/vo_xvmc.c	2006-10-22 19:08:34.000000000 -0700
+@@ -55,8 +55,6 @@
+ static int first_frame;//draw colorkey on first frame
+ static int use_queue;
+ static int xv_port_request = 0;
+-static int bob_deinterlace;
+-static int top_field_first;
+ 
+ static int image_width,image_height;
+ static uint32_t  drwX,drwY;
+@@ -367,7 +365,6 @@
+ // the surface have passed vf system without been skiped, it will be displayed
+    rndr->state |= MP_XVMC_STATE_DISPLAY_PENDING;
+    p_render_surface_to_show = rndr;
+-   top_field_first = mpi->fields & MP_IMGFIELD_TOP_FIRST;
+    return VO_TRUE;
+ }
+ 
+@@ -386,7 +383,6 @@
+   {  "benchmark", OPT_ARG_BOOL, &benchmark,       NULL },
+   {  "sleep",     OPT_ARG_BOOL, &use_sleep,       NULL },
+   {  "queue",     OPT_ARG_BOOL, &use_queue,       NULL },
+-  {  "bobdeint",  OPT_ARG_BOOL, &bob_deinterlace, NULL },
+   {  NULL }
+ };
+ 
+@@ -429,7 +425,6 @@
+    benchmark = 0; //disable PutImageto allow faster display than screen refresh
+    use_sleep = 0;
+    use_queue = 0;
+-   bob_deinterlace = 0;
+ 
+    /* parse suboptions */
+    if ( subopt_parse( arg, subopts ) != 0 )
+@@ -1055,7 +1050,6 @@
+ static void put_xvmc_image(xvmc_render_state_t * p_render_surface, int draw_ck){
+ int rez;
+ int clipX,clipY,clipW,clipH;
+-int i;
+ 
+    if(p_render_surface == NULL)
+       return;
+@@ -1071,19 +1065,15 @@
+    if(benchmark)
+       return;
+ 
+-   for (i = 1; i <= bob_deinterlace + 1; i++) {
+-   int field = top_field_first ? i : i ^ 3;
+    rez = XvMCPutSurface(mDisplay, p_render_surface->p_surface, 
+                         vo_window,
+                         0, 0, image_width, image_height,
+                         clipX, clipY, clipW, clipH,
+-                        bob_deinterlace ? field : 3);
+-                        //p_render_surface_to_show->display_flags);
++                        3);//p_render_surface_to_show->display_flags);
+    if(rez != Success){
+       printf("vo_xvmc: PutSurface failer, critical error %d!\n",rez);
+       assert(0);
+    }
+-   }
+    XFlush(mDisplay);
+ }
+ 

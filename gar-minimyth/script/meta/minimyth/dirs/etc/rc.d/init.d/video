@@ -62,7 +62,7 @@ start() {
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /root/.mplayer/config
             mm_mythdb_setting_set "UseChromaKeyOSD" "1"
             ;;
-        via_pro|via_pro_nodma)
+        via_pro)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
             PREFERRED_MPEG2_DECODER='xvmc-vld'
             /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /root/.xine/config
@@ -117,7 +117,7 @@ start() {
         mm_mythdb_setting_update Deinterlace 0
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /root/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /root/.xine/config
-        /bin/sed -i "s%@DEINT_BOB@%%"               /root/.mplayer/config
+        /bin/sed -i "s%@BOBDEINT@%%"                /root/.mplayer/config
     elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
         case ${PREFERRED_MPEG2_DECODER} in
             ffmpeg)
@@ -152,7 +152,7 @@ start() {
         mm_mythdb_setting_update DeinterlaceFilter ${DEINTERLACE_FILTER}
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /root/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /root/.xine/config
-        /bin/sed -i "s%@DEINT_BOB@%:deint-bob%"     /root/.mplayer/config
+        /bin/sed -i "s%@BOBDEINT@%:bobdeint%"       /root/.mplayer/config
     else
         mm_message_output err "error: something is very wrong in the 'video' init script."
         exit 1
