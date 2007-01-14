@@ -3,6 +3,7 @@ GARVERSION = 0.4.4
 CATEGORIES = lirc
 MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-makefile.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -17,10 +18,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
-BUILD_OVERRIDE_DIRS   = prefix exec_prefix bindir sbindir libdir sysconfdir includedir
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir sbindir libdir sysconfdir includedir
-
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -fPIC
