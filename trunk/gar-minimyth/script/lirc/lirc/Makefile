@@ -1,10 +1,10 @@
 GARNAME = lirc
-GARVERSION = 0.8.1pre2
+GARVERSION = 20061202Z
 CATEGORIES = lirc
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
+MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-lirc_mceusb2_key_stutter_fix_revert.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -35,6 +35,13 @@ INSTALL_ENV   = $(KERNEL_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
+
+cvs//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
