@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /etc/rc.d/functions
+
 mm_mythgame_exit_program()
 {
     program="${1}"
@@ -20,15 +22,25 @@ mm_mythgame_exit_program()
                 /bin/echo -e "${command}" | /usr/bin/xmacroplay -d 100 :0.0 > /dev/null 2>&1
             fi
         fi
+        if /usr/bin/test -n `/bin/pidof ${program}` ; then
+            mm_message_output error "failed to exit emulator ${program} uning normal exit key sequence."
+        fi
         # If the program is still running, then kill the program.
         if /usr/bin/test -n `/bin/pidof ${program}` ; then
-            /usr/bin/killall zsnes > /dev/null 2>&1
+            /usr/bin/killall ${program} > /dev/null 2>&1
+        fi
+        if /usr/bin/test -n `/bin/pidof ${program}` ; then
+            mm_message_output error "failed to exit emulator ${program} using 'killall'."
         fi
         # If the program is still running, then kill the program.
         if /usr/bin/test -n `/bin/pidof ${program}` ; then
             for pid in `/bin/pidof ${program}` ; do
-                /usr/bin/kill -9 ${pid} > /dev/null 2>&1
+                /bin/kill -9 ${pid} > /dev/null 2>&1
             done
+        fi
+        if /usr/bin/test -n `/bin/pidof ${program}` ; then
+            mm_message_output error "failed to exit eumulator ${program} using 'kill -9'."
+            mm_message_output error "failed to exit eumulator ${program}."
         fi
     fi
 }
