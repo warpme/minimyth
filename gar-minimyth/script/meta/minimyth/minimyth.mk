@@ -113,7 +113,6 @@ libdirs_base := \
 libdirs := \
 	$(libdir)/xorg/modules \
 	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia) \
-	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia/xorg/modules) \
 	$(libdirs_base)
 etcdirs :=  \
 	$(extras_sysconfdir) \
