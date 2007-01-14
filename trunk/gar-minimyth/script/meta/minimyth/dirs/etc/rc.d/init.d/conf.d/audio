@@ -31,13 +31,35 @@ conf_default_audio() {
         MM_AUDIO_TYPE='analog'
     fi
 
+    if /usr/bin/test "${MM_AUDIO_CARD_NUMBER}" = "auto" ; then
+        MM_AUDIO_CARD_NUMBER=''
+    fi
+    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
+        MM_AUDIO_CARD_NUMBER="`mm_hardware_motherboard2audio_card_number_map`"
+    fi
+    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
+        MM_AUDIO_CARD_NUMBER='0'
+    fi
+
+    if /usr/bin/test "${MM_AUDIO_CARD_NUMBER}" = "auto" ; then
+        MM_AUDIO_CARD_NUMBER=''
+    fi
+    if /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
+        MM_AUDIO_DEVICE_NUMBER="`mm_hardware_motherboard2audio_device_number_map`"
+    fi
+    if /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
+        MM_AUDIO_DEVICE_NUMBER='0'
+    fi
+
     return 0
 }
 
 conf_write_audio() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_AUDIO_TYPE "${MM_AUDIO_TYPE}"
+    conf_variable_write "${conf_file}" MM_AUDIO_TYPE          "${MM_AUDIO_TYPE}"
+    conf_variable_write "${conf_file}" MM_AUDIO_CARD_NUMBER   "${MM_AUDIO_CARD_NUMBER}"
+    conf_variable_write "${conf_file}" MM_AUDIO_DEVICE_NUMBER "${MM_AUDIO_DEVICE_NUMBER}"
 
     return 0
 }

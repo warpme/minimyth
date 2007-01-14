@@ -22,6 +22,10 @@ start() {
         exit 1
     fi
 
+    # Set audio card number and audio card device.
+    /bin/sed -i "s%@MM_AUDIO_CARD_NUMBER@%${MM_AUDIO_CARD_NUMBER}%"     /etc/asound.conf
+    /bin/sed -i "s%@MM_AUDIO_DEVICE_NUMBER@%${MM_AUDIO_DEVICE_NUMBER}%" /etc/asound.conf
+    
     # Unmute audio.
     if /usr/bin/amixer > /dev/null 2>&1 ; then
         control=

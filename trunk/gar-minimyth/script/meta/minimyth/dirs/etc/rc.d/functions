@@ -1305,7 +1305,7 @@ mm_hardware_motherboard2kernel_map() {
                     map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                 fi
                 if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known."
+                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. manual kernel modules should be loaded."
                     /bin/echo ${map_kernel_modules}
                     return 0
                 fi
@@ -1314,5 +1314,83 @@ mm_hardware_motherboard2kernel_map() {
 	return 0
     fi
     /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. some kernel modules may not be loaded."
+    return 0
+}
+
+mm_hardware_motherboard2audio_card_number_map() {
+
+    local vendor
+    local product
+    local vendor_clean
+    local product_clean
+    local map
+    local map_audio_card_number
+
+    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
+    product=`/usr/sbin/dmidecode -s baseboard-product-name`
+    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
+    product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
+
+    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+
+    if /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor_clean},${product_clean}"                                                      \
+        | {
+            while read map ; do
+                map_audio_card_number=
+                if /usr/bin/test -n "${map}" ; then
+                    map_audio_card_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                fi
+                if /usr/bin/test -z "${found}" ; then
+                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. audio card number should be correct."
+                    /bin/echo ${map_audio_card_number}
+                    return 0
+                fi
+            done
+        }
+	return 0
+    fi
+    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. audio card number may be incorrect."
+    return 0
+}
+
+mm_hardware_motherboard2audio_device_number_map() {
+
+    local vendor
+    local product
+    local vendor_clean
+    local product_clean
+    local map
+    local map_sound_device_number
+
+    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
+    product=`/usr/sbin/dmidecode -s baseboard-product-name`
+    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
+    product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
+
+    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+
+    if /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor_clean},${product_clean}"                                                      \
+        | {
+            while read map ; do
+                map_audio_device_number=
+                if /usr/bin/test -n "${map}" ; then
+                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                fi
+                if /usr/bin/test -z "${found}" ; then
+                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. audio device number should be correct."
+                    /bin/echo ${map_audio_device_number}
+                    return 0
+                fi
+            done
+        }
+	return 0
+    fi
+    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. audio device number may be incorrect."
     return 0
 }
