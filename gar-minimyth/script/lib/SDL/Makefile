@@ -24,7 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-audio \
 	--enable-video \
 	--enable-events \
-	--disable-joystick \
+	--enable-joystick \
 	--disable-cdrom \
 	--enable-threads \
 	--enable-timers \
