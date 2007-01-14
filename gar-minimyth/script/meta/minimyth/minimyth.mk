@@ -325,19 +325,14 @@ mm-make-conf:
 	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
-	@cp -r  $(mm_HOME)/html/css/*             $(mm_ROOTFSDIR)/srv/www/css/
+	@cp -r  $(mm_HOME)/html/css/*                    $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
-	@cp -r  $(mm_HOME)/html/include/*         $(mm_ROOTFSDIR)/srv/www/include/
+	@cp -r  $(mm_HOME)/html/include/*                $(mm_ROOTFSDIR)/srv/www/include/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
-	@cp -r  $(mm_HOME)/html/script/*          $(mm_ROOTFSDIR)/srv/www/script/
-	@cp -r  $(mm_HOME)/html/minimyth          $(mm_ROOTFSDIR)/srv/www/
-	@ln -sf $(sysconfdir)/lircrc              $(mm_ROOTFSDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc              $(mm_ROOTFSDIR)/root/.mythtv/lircrc
-	@ln -sf $(sysconfdir)/X11/xinit/xinitrc   $(mm_ROOTFSDIR)/root/.xinitrc
-	@ln -sf $(sysconfdir)/X11/xinit/xserverrc $(mm_ROOTFSDIR)/root/.xserverrc
-	@mkdir -p $(mm_ROOTFSDIR)$(datadir)/X11 ; \
-		rm -rf $(mm_ROOTFSDIR)$(datadir)/X11/app-defaults ; \
-		cp -r ./dirs/usr/share/X11/app-defaults $(mm_ROOTFSDIR)$(datadir)/X11
+	@cp -r  $(mm_HOME)/html/script/*                 $(mm_ROOTFSDIR)/srv/www/script/
+	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/root/.lircrc
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/root/.mythtv/lircrc
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
