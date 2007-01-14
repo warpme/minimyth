@@ -32,7 +32,7 @@ CONFIGURE_ARGS = \
 	--enable-proc-opt \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-mmx,--disable-mmx) \
 	--disable-altivec \
-	--disable-audio-oss \
+	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
