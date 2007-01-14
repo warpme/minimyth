@@ -80,6 +80,8 @@ install-x11:
 		$(DESTDIR)$(libdir)/nvidia
 	@install $(WORKSRC)/usr/lib/libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		$(DESTDIR)$(libdir)/nvidia
+	@install $(WORKSRC)/usr/X11R6/lib/modules/libnvidia-wfb.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
+		$(DESTDIR)$(libdir)/nvidia/xorg/modules
 	@install $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so \
 		$(DESTDIR)$(libdir)/nvidia/xorg/modules/drivers
 	@install $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
@@ -109,6 +111,15 @@ install-x11:
 		       libGLcore.so.$(MAJOR_VERSION) ; \
 		ln -sf libGLcore.so.$(MAJOR_VERSION) \
 		       libGLcore.so
+	@cd $(DESTDIR)$(libdir)/nvidia/xorg/modules; \
+		ln -sf libnvidia-wfb.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
+		       libnvidia-wfb.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
+		ln -sf libnvidia-wfb.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
+		       libnvidia-wfb.so.$(MAJOR_VERSION) ; \
+		ln -sf libnvidia-wfb.so.$(MAJOR_VERSION) \
+		       libnvidia-wfb.so ; \
+		ln -sf libnvidia-wfb.so \
+		       libwfb.so
 	@cd $(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions; \
 		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
 		       libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
