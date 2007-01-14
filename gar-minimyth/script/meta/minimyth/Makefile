@@ -57,6 +57,7 @@ DEPENDS = \
 	xorg/xorg \
 	mediaplayers/xine-ui \
 	system/zoneinfo \
+	emulators/zsnes \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
 	$(mm_USER_PACKAGES)
 BUILDDEPS = \

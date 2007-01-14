@@ -33,6 +33,7 @@ CONFIGURE_ARGS = \
 	--enable-mythgallery \
 		--enable-exif \
 		--enable-new-exif \
+	--enable-mythgame \
 	--enable-mythmusic \
 		--enable-fftw \
 		--enable-sdl \
