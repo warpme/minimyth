@@ -3,7 +3,7 @@ GARVERSION = 0.18.1
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE18_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-gant.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE18_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-xvmc_vld.patch $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
