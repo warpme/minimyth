@@ -19,6 +19,7 @@ DEPENDS = \
         X11/corefonts \
 	utils/dmidecode \
 	utils/ethtool \
+	devel/fakeroot \
 	emulators/fceu \
 	devel/gdb \
 	disk/hdparm \
