@@ -34,9 +34,6 @@ extract-config.cache.$(GARCH_FAMILY):
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@#cd $(WORKSRC) ; aclocal
-	@#cd $(WORKSRC) ; libtoolize --copy --force
-	@#cd $(WORKSRC) ; autoconf
 	@$(MAKECOOKIE)
 
 post-install:

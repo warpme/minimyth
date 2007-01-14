@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS   = lang/c \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
@@ -22,6 +22,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
+BUILDDEPS = $(CATEGORY)/util-macros
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -55,8 +56,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
-	@cd $(WORKSRC) ; autoconf     --verbose
-	@cd $(WORKSRC) ; automake-1.9 --verbose
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.

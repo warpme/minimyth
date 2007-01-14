@@ -11,11 +11,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS   = lang/c \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libSM \
 	$(CATEGORY)/xproto
+BUILDDEPS = $(CATEGORY)/util-macros
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -35,8 +36,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
-	@cd $(WORKSRC) ; autoconf     --verbose
-	@cd $(WORKSRC) ; automake-1.9 --verbose
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 post-install:
