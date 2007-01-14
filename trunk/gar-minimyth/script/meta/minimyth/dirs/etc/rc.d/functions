@@ -167,11 +167,12 @@ mm_url_dist_get() {
 
     /bin/rm -f "${TMP_FILE}"
     FILE_GOT=
-    if /usr/bin/test -n "${initrd}" ; then
-        REMOTE_DIR=` /bin/echo ${initrd} | /bin/sed 's%[^/]*$%%'`
+    if /usr/bin/test -n "${MM_ROOTFS_IMAGE}" ; then
+        REMOTE_DIR=` /bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%//*%/%g'`
         if /usr/bin/test -d "/minimyth" ; then
+            /usr/bin/test -e "/minimyth/${REMOTE_DIR}${REMOTE_FILE}" &&
 	    /bin/cp          "/minimyth/${REOMTE_DIR}${REMOTE_FILE}"                "${TMP_FILE}"                     &&
-	    FILE_GOT="'file://minimyth/${REMOTE_DIR}${REMOTE_FILE}' retrieved."
+	    FILE_GOT="'file:/minimyth/${REMOTE_DIR}${REMOTE_FILE}' retrieved."
         else
             /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/${REMOTE_DIR}${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
 	    FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_DIR}${REMOTE_FILE}' retrieved."
@@ -241,7 +242,7 @@ mm_conf_put() {
         | /bin/sed -e 's%/%+%'`
 
     if /usr/bin/test -d "/minimyth" ; then
-        mkdir -p "/minimyth/conf-rw"
+        /bin/mkdir -p "/minimyth/conf-rw"
         if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}"                     ; then
             /usr/bin/logger -s -t minimyth -p "local0.info"  \
                 "'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
