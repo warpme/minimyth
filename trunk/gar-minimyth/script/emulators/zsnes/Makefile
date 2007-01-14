@@ -1,8 +1,9 @@
 GARNAME = zsnes
-GARVERSION = 4132
+GARVERSION = 1.50
 CATEGORIES = emulators
-MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://superb-east.dl.sourceforge.net/sourceforge/$(GARNAME)/
+#MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
+DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))src.tar.bz2
 PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
@@ -12,6 +13,8 @@ endef
 
 DEPENDS   = lang/c lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
+
+WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/src/configure
 BUILD_SCRIPTS     = $(WORKSRC)/src/Makefile
@@ -42,13 +45,6 @@ CONFIGURE_ENV = \
 	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
 
 include ../../gar.mk
-
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, https://$*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal
