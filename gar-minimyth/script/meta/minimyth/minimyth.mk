@@ -511,9 +511,9 @@ mm-make-distro:
 	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Make source tarball file.
 	@echo "  making source tarball file"
-	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)           \
-		SOURCE_DIR_HEAD=`echo $(mm_HOME)  | sed 's%/[^/]*$$%%g'` \
-		SOURCE_DIR_TAIL=`echo  $(mm_HOME) | sed 's%[^/]*/%%g'`
+	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
+		SOURCE_DIR_HEAD=`echo $(mm_HOME) | sed 's%/[^/]*$$%/%'` \
+		SOURCE_DIR_TAIL=`echo $(mm_HOME) | sed 's%^.*/%%'`
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
 	@# Make documentation tarball file.
 	@echo "  making documentation tarball file"
