@@ -37,6 +37,11 @@ INSTALL_ARGS  = \
 
 include ../../gar.mk
 
+post-patch:
+	# Remove unused perl based parsers.
+	@rm -rf $(WORKSRC)/parsers/*
+	@$(MAKECOOKIE)
+
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
