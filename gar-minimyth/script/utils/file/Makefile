@@ -1,5 +1,5 @@
 GARNAME = file
-GARVERSION = 4.17
+GARVERSION = 4.18
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.astron.com/pub/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz

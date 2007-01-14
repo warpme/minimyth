@@ -44,7 +44,7 @@ CONFIGURE_ARGS = \
 	--enable-lirc \
 	--disable-joystick-menu \
 	--disable-firewire \
-	--disable-freebox \
+	--disable-iptv \
 	--disable-dbox2 \
 	--disable-hdhomerun \
 	--disable-crciprec \
@@ -63,7 +63,8 @@ CONFIGURE_ARGS = \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \
-	--disable-directx
+	--disable-directx \
+	--without-bindings="perl"
 
 CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
