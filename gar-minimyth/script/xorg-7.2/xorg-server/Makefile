@@ -25,6 +25,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXau \
+	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
@@ -67,7 +68,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xvmc \
 	--enable-dga \
 	--enable-screensaver \
-	--disable-xdmcp \
+	--enable-xdmcp \
 	--disable-xdm-auth-1 \
 	--enable-glx \
 	--disable-aiglx \
