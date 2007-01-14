@@ -25,6 +25,12 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
+CONFIGURE_ENV = \
+	CC_FOR_BUILD="$(build_CC)" \
+	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
+	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
+	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
+
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
