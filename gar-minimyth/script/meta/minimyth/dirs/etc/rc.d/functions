@@ -1028,12 +1028,8 @@ mm_mythdb_settings_set() {
 
     HOSTNAME=`/bin/hostname`
 
-    DATA_CURRENT=`mm_mythdb_settings_get "${VALUE}"`
-    if /usr/bin/test -z "${DATA_CURRENT}" ; then
-        mm_mythdb_command_run "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
-    elif /usr/bin/test "${DATA_CURRENT}" != "${DATA}" ; then
-        mm_mythdb_settings_update "${VALUE}" "${DATA}"
-    fi
+    mm_mythdb_settings_delete "${VALUE}"
+    mm_mythdb_command_run "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
 }
 
 mm_mythdb_settings_get() {

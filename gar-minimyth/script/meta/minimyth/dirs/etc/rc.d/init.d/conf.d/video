@@ -1,6 +1,10 @@
 ################################################################################
 # Video configuration variables.
 ################################################################################
+conf_clean_video() {
+    /bin/rm -rf /tmp/init.conf.video
+}
+
 conf_check_video() {
 
     # Reset the variables.
@@ -24,11 +28,21 @@ conf_check_video() {
         mm_message_output err "error: MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}' is not valid."
         exit 1
     fi
+    if /usr/bin/test ! -z "${MM_VIDEO_RESIZE_ENABLED}"          && \
+       /usr/bin/test !    "${MM_VIDEO_RESIZE_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_VIDEO_RESIZE_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_VIDEO_RESIZE_ENABLED='${MM_VIDEO_RESIZE_ENABLED}' is not valid."
+        exit 1
+    fi
 
     return 0
 }
 
 conf_default_video() {
+
+    if /usr/bin/test -e '/tmp/init.conf.video/conf_default_video' ; then
+        return 0
+    fi
 
     # Reset the variables.
     conf_reset 'MM_VIDEO_'
@@ -43,6 +57,9 @@ conf_default_video() {
         MM_VIDEO_FONT_SCALE='100'
     fi
 
+    mkdir -p '/tmp/init.conf.video'
+    touch    '/tmp/init.conf.video/conf_default_video'
+
     return 0
 }
 
@@ -52,6 +69,7 @@ conf_write_video() {
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO        "${MM_VIDEO_ASPECT_RATIO}"
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACE_ENABLED "${MM_VIDEO_DEINTERLACE_ENABLED}"
     conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE          "${MM_VIDEO_FONT_SCALE}"
+    conf_variable_write "${conf_file}" MM_VIDEO_RESIZE_ENABLED      "${MM_VIDEO_RESIZE_ENABLED}"
 
     return 0
 }
