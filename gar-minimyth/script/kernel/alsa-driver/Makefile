@@ -1,7 +1,8 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.13
+GARVERSION = 1.0.14rc1
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.alsa-project.org/pub/driver/
+MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
+MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1

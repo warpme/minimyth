@@ -22,7 +22,7 @@ DEPENDS = \
 	devel/gdb \
 	disk/hdparm \
 	system/lcdproc \
-	kernel/linux kernel/alsa-driver kernel/drm kernel/imon_vfd kernel/unionfs kernel/vt1211 \
+	kernel/linux kernel/alsa-driver kernel/drm kernel/imon_vfd \
 	lirc/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
