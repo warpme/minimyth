@@ -3,26 +3,32 @@
 # mm_mount
 #
 # This script takes four parameters:
-#   device:
-#      The path to the device to be mounted/unmounted.
-#   mount_point:
-#      The mount point where ${device} is to be mounted/unmounted.
 #   action:
 #      The action to be taken.
 #      Valid values are:
 #        add:    create mount point and (optionally) mount device.
 #        remove: unmount device and remove mount point.
+#   device:
+#      The path to the device to be mounted/unmounted.
 #   mount:
 #      Whether or not to mount the device or just create the mount point.
 #      Valid values are:
 #        0: create mount point
 #        1: create mount point and mount device
+#   mount_point:
+#      The mount point where ${device} is to be mounted/unmounted.
+#   mount_fstype:
+#      The file system type to use when mounting the device.
+#   mount_options:
+#      Mount options.
 ################################################################################
 
-device="$1"
-mount_point="$2"
-action="$3"
-mount="$4"
+action="$1"
+device="$2"
+mount="$3"
+mount_point="$4"
+mount_fstype="$5"
+mount_options="$6"
 
 device_get()
 {
@@ -44,10 +50,19 @@ case ${action} in
             /bin/mkdir -p ${mount_point}
             /usr/bin/logger -t minimyth -p "local0.info" "created mount point '${mount_point}'."
         fi
+        if /usr/bin/test "${mount_fstype}" = "msdos"  ||
+           /usr/bin/test "${mount_fstype}" = "umsdos" ||
+           /usr/bin/test "${mount_fstype}" = "vfat"   ; then
+            mount_options="uid=0,gid=0,umask=0000,dmask=0000,fmask=0000,${mount_options}"
+        fi
         if /usr/bin/test ${mount} -ne 0 ; then
-            if /usr/bin/test -d ${mount_point} ; then
-                if  /usr/bin/test -z "`device ${mount_point}`" ; then
-                    /bin/mount -t auto ${device} ${mount_point} > /dev/null 2>&1 || /bin/true
+            if /usr/bin/test -e "${device}" && /usr/bin/test -d "${mount_point}" && /usr/bin/test -n "${mount_fstype}" ; then
+                if  /usr/bin/test -z "`device_get ${mount_point}`" ; then
+                    if /usr/bin/test -z "${mount_options}" ; then
+                        /bin/mount -t ${mount_fstype}                     ${device} ${mount_point} > /dev/null 2>&1 || /bin/true
+                    else
+                        /bin/mount -t ${mount_fstype} -o ${mount_options} ${device} ${mount_point} > /dev/null 2>&1 || /bin/true
+                    fi
                     /usr/bin/logger -t minimyth -p "local0.info" "mounted device '${device}' at mount point '${mount_point}'."
                 fi
             fi
