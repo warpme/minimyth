@@ -62,6 +62,7 @@ rm -f ${SCRIPT_DIR}/category.mk ; cp ${GAR_LNX_BBC_DIR}/category.mk ${SCRIPT_DIR
 rm -f ${SCRIPT_DIR}/Makefile    ; cp ${GAR_LNX_BBC_DIR}/Makefile ${SCRIPT_DIR}
 
 # Fix bugs.
+sed -i 's%^STAGE_EXPORTS *+= *CPPFLAGS .*%& CXXFLAGS%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^STAGE_EXPORTS *+= *CC .*%& LD%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i '/main_[^ ]* = $(prefix)/ { s%$(prefix)%$(main_prefix)%g }' ${SCRIPT_DIR}/gar.conf.mk
 sed -i '/main_[^ ]* = $(exec_prefix)/ { s%$(exec_prefix)%$(main_exec_prefix)%g }' ${SCRIPT_DIR}/gar.conf.mk
