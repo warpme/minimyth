@@ -1,0 +1,48 @@
+diff -Naur mysql-5.0.27-old/extra/Makefile.am mysql-5.0.27-new/extra/Makefile.am
+--- mysql-5.0.27-old/extra/Makefile.am	2006-10-20 17:22:54.000000000 -0700
++++ mysql-5.0.27-new/extra/Makefile.am	2006-12-15 06:24:31.000000000 -0800
+@@ -30,7 +30,7 @@
+ 
+ # This will build mysqld_error.h and sql_state.h
+ $(top_builddir)/include/mysqld_error.h: comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++	mysql-comp_err \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
+diff -Naur mysql-5.0.27-old/extra/Makefile.in mysql-5.0.27-new/extra/Makefile.in
+--- mysql-5.0.27-old/extra/Makefile.in	2006-10-20 17:23:47.000000000 -0700
++++ mysql-5.0.27-new/extra/Makefile.in	2006-12-15 06:24:31.000000000 -0800
+@@ -888,7 +888,7 @@
+ 
+ # This will build mysqld_error.h and sql_state.h
+ $(top_builddir)/include/mysqld_error.h: comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++	mysql-comp_err$(EXEEXT) \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
+diff -Naur mysql-5.0.27-old/sql/Makefile.am mysql-5.0.27-new/sql/Makefile.am
+--- mysql-5.0.27-old/sql/Makefile.am	2006-10-20 17:22:52.000000000 -0700
++++ mysql-5.0.27-new/sql/Makefile.am	2006-12-15 06:29:33.000000000 -0800
+@@ -154,7 +154,7 @@
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # For testing of udf_example.so
+ noinst_LTLIBRARIES= udf_example.la
+diff -Naur mysql-5.0.27-old/sql/Makefile.in mysql-5.0.27-new/sql/Makefile.in
+--- mysql-5.0.27-old/sql/Makefile.in	2006-10-20 17:24:17.000000000 -0700
++++ mysql-5.0.27-new/sql/Makefile.in	2006-12-15 06:27:08.000000000 -0800
+@@ -1214,7 +1214,7 @@
+ 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+ 
+ lex_hash.h:	gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # Don't update the files from bitkeeper
+ %::SCCS/s.%

@@ -6,6 +6,9 @@ MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
 MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-configure.patch
+ifneq ($(DESTIMG),build)
+PATCHFILES += $(DISTNAME)-cross.patch
+endif
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -54,6 +57,7 @@ pre-configure:
 
 install-cross:
 	cp -f $(WORKSRC)/extra/comp_err   $(DESTDIR)$(bindir)/mysql-comp_err
+	cp -f $(WORKSRC)/sql/gen_lex_hash $(DESTDIR)$(bindir)/mysql-gen_lex_hash
 	@$(MAKECOOKIE)
 
 post-install:
