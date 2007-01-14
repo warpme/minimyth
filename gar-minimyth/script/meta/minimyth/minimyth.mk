@@ -69,6 +69,27 @@ MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | s
 MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(MM_SHARE_DEBUG)  $(mm_USER_SHARE_LIST))
 MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
 
+MM_INIT_START := \
+    mysql \
+    codecs \
+    extras \
+    sensors \
+    acpi \
+    cpufreq \
+    time \
+    web \
+    mount \
+    audio \
+    video \
+    lirc \
+    lcdproc \
+    mythtv \
+    x
+MM_INIT_KILL := \
+    audio \
+    time \
+    telnet
+
 build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(GARDIR)/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
 
 bindirs := \
@@ -335,6 +356,9 @@ mm-make-conf:
 	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.lircrc
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
+	@index=10 ; $(foreach file, $(MM_INIT_START), index=$$((index+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
+	@index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$((index+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.

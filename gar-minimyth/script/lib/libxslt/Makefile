@@ -1,5 +1,5 @@
 GARNAME = libxslt
-GARVERSION = 1.1.19
+GARVERSION = 1.1.17
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/libxslt/
 DISTFILES = $(DISTNAME).tar.gz
