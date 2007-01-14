@@ -16,6 +16,7 @@ DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
 	utils/busybox \
+	X11/cvt \
 	utils/dmidecode \
 	utils/ethtool \
 	devel/gdb \

@@ -1,0 +1,98 @@
+diff -Naur MPlayer-1.0rc1-old/libvo/vo_xvmc.c MPlayer-1.0rc1-new/libvo/vo_xvmc.c
+--- MPlayer-1.0rc1-old/libvo/vo_xvmc.c	2006-10-22 19:08:34.000000000 -0700
++++ MPlayer-1.0rc1-new/libvo/vo_xvmc.c	2006-10-22 19:17:28.000000000 -0700
+@@ -55,6 +55,9 @@
+ static int first_frame;//draw colorkey on first frame
+ static int use_queue;
+ static int xv_port_request = 0;
++static int use_deint_bob; /* non-zero if we're doing bob de-interlacing */
++static int use_deint_one; /* non-zero if we're doing one field de-interlacing */
++static int use_tv_clip;   /* non-zero if we're clipping the top couple of lines */
+ 
+ static int image_width,image_height;
+ static uint32_t  drwX,drwY;
+@@ -383,6 +386,9 @@
+   {  "benchmark", OPT_ARG_BOOL, &benchmark,       NULL },
+   {  "sleep",     OPT_ARG_BOOL, &use_sleep,       NULL },
+   {  "queue",     OPT_ARG_BOOL, &use_queue,       NULL },
++  {  "deint-bob", OPT_ARG_BOOL, &use_deint_bob,   NULL },
++  {  "deint-one", OPT_ARG_BOOL, &use_deint_one,   NULL },
++  {  "tv-clip",   OPT_ARG_BOOL, &use_tv_clip,     NULL },  
+   {  NULL }
+ };
+ 
+@@ -425,6 +431,9 @@
+    benchmark = 0; //disable PutImageto allow faster display than screen refresh
+    use_sleep = 0;
+    use_queue = 0;
++   use_deint_bob = 0;
++   use_deint_one = 0;
++   use_tv_clip = 0;
+ 
+    /* parse suboptions */
+    if ( subopt_parse( arg, subopts ) != 0 )
+@@ -1048,8 +1057,9 @@
+ }
+ 
+ static void put_xvmc_image(xvmc_render_state_t * p_render_surface, int draw_ck){
+-int rez;
++int rez,field;
+ int clipX,clipY,clipW,clipH;
++int srcY=0,srcH=image_height;
+ 
+    if(p_render_surface == NULL)
+       return;
+@@ -1065,11 +1075,51 @@
+    if(benchmark)
+       return;
+ 
++   if (use_tv_clip) {
++    /*
++     Clip top few lines off to get rid of annoying flicker
++     when using bob de-interlacing on TV sourced video.
++    */
++     srcY+=4;
++     srcH-=4;
++   }
++   
++   if (use_deint_bob || use_deint_one) {
++  /*
++   Passing  XVMC_TOP_FIELD then XVMC_BOTTOM_FIELD turns on
++   bob de-interlacing in the unichrome driver. Just passing
++   XVMC_TOP_FIELD through just does 1 field de-interlacing.
++  */
++     field=p_render_surface->flags ? XVMC_TOP_FIELD : XVMC_BOTTOM_FIELD;
++   }
++   else field=XVMC_FRAME_PICTURE; /* no de-interlacing */
++      
+    rez = XvMCPutSurface(mDisplay, p_render_surface->p_surface, 
+                         vo_window,
+-                        0, 0, image_width, image_height,
++                        0, srcY, image_width, srcH,
+                         clipX, clipY, clipW, clipH,
+-                        3);//p_render_surface_to_show->display_flags);
++                        field);
++
++   if (use_deint_bob && rez == Success) {
++ /*
++   Pause before we do the next putsurface - I guess this is to
++   allow the hardware to complete whatever it needs to do before
++   we hit it with more data, and cause something to spin on a lock
++   Adding this reduces CPU usage from about 20% to 10% on a 1GHz CPU.
++   Xine actually does this:
++     unsigned  ms_per_field = 500 * frame->vo_frame.duration / 90000 - 2;
++   I can't see how to get frame duration in mplayer, so we use an
++   abitrary pause of 10ms - seems to work ok.
++ */
++     usleep(10*1000);
++     rez = XvMCPutSurface(mDisplay, p_render_surface->p_surface, 
++                          vo_window,
++                          0,srcY,image_width,srcH,
++                          clipX, clipY, clipW, clipH,
++                          (field & XVMC_TOP_FIELD) ? XVMC_BOTTOM_FIELD : XVMC_TOP_FIELD);
++   }
++   
++
+    if(rez != Success){
+       printf("vo_xvmc: PutSurface failer, critical error %d!\n",rez);
+       assert(0);
