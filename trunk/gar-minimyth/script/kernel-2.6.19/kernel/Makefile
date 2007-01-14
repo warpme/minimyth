@@ -13,6 +13,8 @@ DEPENDS = \
 	kernel-2.6.19/imon_vfd \
 	kernel-2.6.19/linux \
 	kernel-2.6.19/linux-headers \
+	kernel-2.6.19/unionfs \
+	kernel-2.6.19/xbox360
 
 GAR_EXTRA_CONF += kernel-2.6.19/linux/package-api.mk
 include ../../gar.mk
@@ -28,6 +30,8 @@ clean-all:
 	@$(MAKE) clean     -C ../imon_vfd
 	@$(MAKE) clean     -C ../kernel
 	@$(MAKE) clean     -C ../linux
+	@$(MAKE) clean     -C ../unionfs
+	@$(MAKE) clean     -C ../xbox360
 	@$(MAKE) clean     -C ../../lirc
 	@$(MAKE) clean-all -C ../../nvidia
 	@rm -rf $(DESTDIR)$(LINUX_DIR)

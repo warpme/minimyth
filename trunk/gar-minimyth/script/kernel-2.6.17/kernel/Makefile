@@ -14,7 +14,8 @@ DEPENDS = \
 	kernel-2.6.17/linux \
 	kernel-2.6.17/linux-headers \
 	kernel-2.6.17/unionfs \
-	kernel-2.6.17/vt1211
+	kernel-2.6.17/vt1211 \
+	kernel-2.6.17/xbox360
 
 GAR_EXTRA_CONF += kernel-2.6.17/linux/package-api.mk
 include ../../gar.mk
@@ -32,6 +33,7 @@ clean-all:
 	@$(MAKE) clean     -C ../linux
 	@$(MAKE) clean     -C ../unionfs
 	@$(MAKE) clean     -C ../vt1211
+	@$(MAKE) clean     -C ../xbox360
 	@$(MAKE) clean     -C ../../lirc
 	@$(MAKE) clean-all -C ../../nvidia
 	@rm -rf $(DESTDIR)$(LINUX_DIR)
