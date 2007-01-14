@@ -1048,16 +1048,6 @@
                 having the name 'extras.sfs'.
                 That is, MiniMyth will assume MM_EXTRAS_URL='hunt:extras.sfs'.
               </p>
-              <p>
-                MiniMyth contains a script 'mm_squashfs_extras_make' to help with creating an extras squashfs image (*.sfs).
-                Once you have all the files you want in the extras directory on your MiniMyth frontend.
-                Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_extras_make'.
-                The script will create the extras squashfs image,
-                put the image in the root directory (/) and
-                tell you the name of the image.
-                You can then download the image from your MiniMyth frontend through the web interface
-                to the MiniMyth file system 'http://{frontend}:8080/'.
-              </p>
             </dd>
           </dl>
           <p>
@@ -1096,17 +1086,28 @@
                 That is, MiniMyth will assume MM_CODECS_URL='hunt:codecs.sfs'.
               </p>
               <p>
-                MiniMyth contains a script 'mm_squashfs_codecs_make' to help with creating a CODECs squashfs image (*.sfs).
-                Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_codecs_make'.
-                If there is no CODECs directory or the CODECs directory is empty,
-                then the script will download the
-                <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential CODECs tarball</a>
-                from the Internet,
-                create the CODECs directory and put the downloaded CODECs in the CODECs directory.
-                After that, the script will create the CODECs squashfs image,
-                put the image in the root directory (/) and tell you the name of the image.
-                You can then download the image from your MiniMyth frontend through the web interface
-                to the MiniMyth file system 'http://{frontend}:8080/'.
+                The MythTV frontend menus contain the 'MiniMyth&nbsp;Tools' menu
+                (under the 'Utilities&nbsp;/&nbsp;Setup' menu in a regular theme and under the main menu in a classic theme).
+                The 'MiniMyth&nbsp;Tools' menu contains the menu item 'Fetch&nbsp;and&nbsp;Save&nbsp;Codecs'
+                to help with creating a CODECs squashfs image (*.sfs).
+                The 'Fetch&nbsp;and&nbsp;Save&nbsp;Codecs' menu item does the following:
+              </p>
+              <ol>
+                <li>fetches the
+                  <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential CODECs tarball</a>
+                  from the Internet,</li>
+                <li>creates a temporary CODECs directory,</li>
+                <li>puts the downloaded CODECs in the temporary CODECs directory,</li>
+                <li>creates the CODECs squashfs image from the temporary CODECSs directory, and</li>
+                <li>saves the CODECs squashfs image in the
+                  <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>.</li>
+              </ol>
+              <p>
+                During the time that it takes MiniMyth to fetch, create and save the CODECs squashfs image,
+                MiniMyth will display a terminal window with status information.
+              </p>
+              <p>
+                For these newly downloaded CODECs to take effect, you must reboot your MiniMyth frontend.
               </p>
             </dd>
           </dl>
@@ -1212,16 +1213,27 @@
                 where {GuiWidth} is the MythTV GUI width and {GuiHeight} is the MythTV GUI height.
               </p>
               <p>
-                MiniMyth contains a script 'mm_squashfs_themecache_make' to help with
-                creating a themecache squashfs image (*.sfs).
-                Telnet into your MiniMyth frontend and run the script by typing 'mm_squashfs_themecache_make'.
-                If there is a themecache directory with exactly on cached theme,
-                then the script will create the themecache squashfs image of the themecache directory,
-                put the image in the root directory (/) and tell you the name of the image.
-                The name of the image will be "${MM_THEME_NAME}.{GuiWidth}.{GuiHeight}.sfs",
+                The MythTV frontend menus contain the 'MiniMyth&nbsp;Tools' menu
+                (under the 'Utilities&nbsp;/&nbsp;Setup' menu in a regular theme and under the main menu in a classic theme).
+                The 'MiniMyth&nbsp;Tools' menu contains the menu item 'Save&nbsp;Themecache'
+                to help with creating a themecache squashfs image (*.sfs).
+                The 'Save&nbsp;Themecache' menu item does the following:
+              </p>
+              <ol>
+                <li>fetches the
+                  <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential CODECs tarball</a>
+                  from the Internet,</li>
+                <li>creates the themecache squashfs image from the one cached theme in the themecache directory, and</li>
+                <li>saves the themecache squashfs image in the
+                  <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>.</li>
+              </ol>
+              <p>
+                During the time that it takes MiniMyth to create and save the themecache squashfs image,
+                MiniMyth will display a terminal window with status information.
+              </p>
+              <p>
+                The name of the themecache squashfs image will be "${MM_THEME_NAME}.{GuiWidth}.{GuiHeight}.sfs",
                 where {GuiWidth} is the MythTV GUI width and {GuiHeight} is the MythTV GUI height.
-                You can then download the image from your MiniMyth frontend through
-                the web interface to the MiniMyth file system 'http://{frontend}:8080/'.
               </p>
             </dd>
           </dl>
@@ -1307,7 +1319,7 @@
             <dt id="MM_GAME_SAVE_ENABLE"><strong>MM_GAME_SAVE_ENABLE</strong></dt>
             <dd>
               <p>
-                Specify whether or not to enable saving of game configuration files.
+                Specify whether or not to enable saving of game settings.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
               <p>
@@ -1318,11 +1330,29 @@
               </p>
               <p>
                 If you set MM_GAME_SAVE_ENABLE='yes',
-                then MiniMyth will save the game configurations files and game state in 'game.tar' in the
+                then MiniMyth will save the game settings 'game.tar' in the
                 <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>
                 during shut down
-                and will restore the game configuration files and game state from 'game.gar' during start up.
+                and will restore the game settings from 'game.gar' during start up.
+                Also, if you set MM_GAME_SAVE_ENABLE='yes' and you are running the game emulator using 'mm_mythgame_start',
+                then MiniMyth will save the game settings 'game.tar' in the
+                <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>
+                on game emulator exit.
               </p>
+              <p>
+                In addition, the MythTV frontend menus contain the 'MiniMyth&nbsp;Tools' menu
+                (under the 'Utilities&nbsp;/&nbsp;Setup' menu in a regular theme and under the main menu in a classic theme).
+                The 'MiniMyth&nbsp;Tools' menu contains the menu items
+                'Save&nbsp;Game&nbsp;Settings' and 'Restore&nbsp;Game&nbsp;Settings'
+                to manually save and restore the game settings.
+                During the time that it takes MiniMyth to save or restore the game settings 
+                MiniMyth will display a terminal window with status information.
+              </p>
+              <ol>
+                <li>fetches the
+                  <a href="http://www1.mplayerhq.hu/MPlayer/releases/codecs/">essential CODECs tarball</a>
+                  from the Internet,</li>
+                <li>creates a temporary CODECs directory,</li>
             </dd>
             <dt id="MM_GAME_SAVE_LIST"><strong>MM_GAME_SAVE_LIST</strong></dt>
             <dd>
@@ -1652,7 +1682,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2006-12-29 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2006-12-30 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
