@@ -4,7 +4,7 @@ CATEGORIES = emulators
 MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch
-LICENSE = LGPL2
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB

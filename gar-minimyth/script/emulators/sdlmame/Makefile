@@ -1,0 +1,29 @@
+GARNAME = sdlmame
+GARVERSION = 0.111
+CATEGORIES = emulators
+DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).zip
+PATCHFILES = $(DISTNAME).patch.gar
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c lib/expat lib/SDL lib/zlib xorg/xorg
+
+WORKSRC = $(WORKDIR)/$(GARNAME)$(subst .,,$(GARVERSION))
+
+BUILD_SCRIPTS   = $(WORKSRC)/makefile
+INSTALL_SCRIPTS = custom
+
+BUILD_ARGS = \
+	CC_FOR_BUILD="$(build_CC)" \
+	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
+	CFLAGS_FOR_TARGET="$(CFLAGS)"
+
+include ../../gar.mk
+
+install-custom:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/mamecli $(DESTDIR)$(bindir)/mame
+	@$(MAKECOOKIE)
