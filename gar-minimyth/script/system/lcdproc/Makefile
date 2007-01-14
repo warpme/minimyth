@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncurses lib/libusb
+DEPENDS = lang/c lirc/libirman lirc/lirc lib/ncurses lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -17,6 +17,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
-	--enable-drivers=all
+	--enable-drivers=all \
+	--with-libusb-libraries="$(DESTDIR)$(libdir)"
 
 include ../../gar.mk
