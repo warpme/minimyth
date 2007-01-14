@@ -1,6 +1,6 @@
 diff -Naur zsnes-4077-old/src/acinclude.m4 zsnes-4077-new/src/acinclude.m4
 --- zsnes-4077-old/src/acinclude.m4	2006-12-15 20:44:58.000000000 -0800
-+++ zsnes-4077-new/src/acinclude.m4	2006-12-17 08:44:06.000000000 -0800
++++ zsnes-4077-new/src/acinclude.m4	2006-12-20 14:46:27.000000000 -0800
 @@ -90,7 +90,7 @@
    with_zlib=yes,
    with_zlib=no,
@@ -21,7 +21,7 @@ diff -Naur zsnes-4077-old/src/acinclude.m4 zsnes-4077-new/src/acinclude.m4
    if test x$with_libpng != x; then
 diff -Naur zsnes-4077-old/src/configure.in zsnes-4077-new/src/configure.in
 --- zsnes-4077-old/src/configure.in	2006-12-15 20:44:58.000000000 -0800
-+++ zsnes-4077-new/src/configure.in	2006-12-17 08:57:10.000000000 -0800
++++ zsnes-4077-new/src/configure.in	2006-12-20 14:46:27.000000000 -0800
 @@ -7,20 +7,76 @@
  
  VERSION=1.50
@@ -103,7 +103,7 @@ diff -Naur zsnes-4077-old/src/configure.in zsnes-4077-new/src/configure.in
    nasm_prefix="$withval",
 diff -Naur zsnes-4077-old/src/Makefile.in zsnes-4077-new/src/Makefile.in
 --- zsnes-4077-old/src/Makefile.in	2006-12-15 20:44:58.000000000 -0800
-+++ zsnes-4077-new/src/Makefile.in	2006-12-17 10:07:22.000000000 -0800
++++ zsnes-4077-new/src/Makefile.in	2006-12-20 14:46:27.000000000 -0800
 @@ -104,6 +104,7 @@
  	rm -f version.o
  
@@ -130,3 +130,21 @@ diff -Naur zsnes-4077-old/src/Makefile.in zsnes-4077-new/src/Makefile.in
  
  include makefile.dep
  makefile.dep: $(TOOL_D)/depbuild Makefile
+@@ -139,12 +142,12 @@
+ 	./autogen.sh --recheck
+ 
+ install:
+-	@INSTALL@ -d -m 0755 $(DESTDIR)/@prefix@/bin
+-	@INSTALL@ -m 0755 @ZSNESEXE@ $(DESTDIR)/@prefix@/bin
+-	@INSTALL@ -d -m 0755 $(DESTDIR)/@prefix@/man/man1
+-	@INSTALL@ -m 0644 linux/zsnes.1 $(DESTDIR)/@prefix@/man/man1
++	@INSTALL@ -d -m 0755 $(DESTDIR)/@bindir@
++	@INSTALL@ -m 0755 @ZSNESEXE@ $(DESTDIR)/@bindir@
++	@INSTALL@ -d -m 0755 $(DESTDIR)/@mandir@/man1
++	@INSTALL@ -m 0644 linux/zsnes.1 $(DESTDIR)/@mandir@/man1
+ uninstall:
+-	rm -f @prefix@/bin/$(notdir @ZSNESEXE@) @prefix@/man/man1/zsnes.1
++	rm -f $(DESTDIR)/@bindir@/$(notdir @ZSNESEXE@) $(DESTDIR)/@mandir@/man1/zsnes.1
+ 
+ clean:
+ 	rm -f $(Z_OBJS) $(PSR) $(PSR_H) @ZSNESEXE@
