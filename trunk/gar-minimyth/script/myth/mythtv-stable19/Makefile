@@ -42,7 +42,7 @@ CONFIGURE_ARGS = \
 	--enable-frontend \
 	--enable-backend \
 	--enable-lirc \
-	--disable-joystick-menu \
+	--enable-joystick-menu \
 	--disable-firewire \
 	--disable-dbox2 \
 	--disable-v4l \

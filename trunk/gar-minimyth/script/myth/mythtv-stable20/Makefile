@@ -42,7 +42,7 @@ CONFIGURE_ARGS = \
 	--disable-audio-jack \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
 	--enable-lirc \
-	--disable-joystick-menu \
+	--enable-joystick-menu \
 	--disable-firewire \
 	--disable-freebox \
 	--disable-dbox2 \
