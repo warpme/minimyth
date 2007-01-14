@@ -1,0 +1,35 @@
+diff -Naur xmacro-pre0.3-20000911-old/Makefile xmacro-pre0.3-20000911-new/Makefile
+--- xmacro-pre0.3-20000911-old/Makefile	2000-09-11 11:25:10.000000000 -0700
++++ xmacro-pre0.3-20000911-new/Makefile	2006-12-19 16:33:31.000000000 -0800
+@@ -1,15 +1,18 @@
+ VERSION=0.3
+ 
++DESTDIR ?=
++bindir ?= /usr/bin
++
+ all: xmacroplay xmacrorec xmacrorec2
+ 
+ xmacroplay: xmacroplay.cpp chartbl.h
+-	g++ -O2  -I/usr/X11R6/include -Wall -pedantic -DVERSION=$(VERSION) xmacroplay.cpp -o xmacroplay -L/usr/X11R6/lib -lXtst -lX11
++	$(CXX) $(CXXFLAGS) -DVERSION=$(VERSION) xmacroplay.cpp -o xmacroplay -lX11 -lXtst
+ 
+ xmacrorec: xmacrorec.cpp
+-	g++ -O2  -I/usr/X11R6/include -Wall -pedantic -DVERSION=$(VERSION) xmacrorec.cpp -o xmacrorec -L/usr/X11R6/lib -lXtst -lX11
++	$(CXX) $(CXXFLAGS) -DVERSION=$(VERSION) xmacrorec.cpp -o xmacrorec -lX11 -lXtst
+ 
+ xmacrorec2: xmacrorec2.cpp
+-	g++ -O2  -I/usr/X11R6/include -Wall -pedantic -DVERSION=$(VERSION) xmacrorec2.cpp -o xmacrorec2 -L/usr/X11R6/lib -lXtst -lX11
++	$(CXX) $(CXXFLAGS) -DVERSION=$(VERSION) xmacrorec2.cpp -o xmacrorec2 -lX11 -lXtst
+ 
+ clean:
+ 	rm xmacrorec xmacroplay xmacrorec2
+@@ -19,3 +22,9 @@
+ 
+ rpm:
+ 	umask 022 && epm -f rpm -nsm xmacro
++
++install:
++	install -c -d -m 0755 $(DESTDIR)$(bindir)
++	install -c -m 0755 xmacroplay $(DESTDIR)$(bindir)
++	install -c -m 0755 xmacrorec $(DESTDIR)$(bindir)
++	install -c -m 0755 xmacrorec2 $(DESTDIR)$(bindir)
