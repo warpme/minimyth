@@ -218,14 +218,14 @@ mm-check:
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_MYTH_VERSION)" = "stable18" ] && \
-	@if [ ! "$(mm_MYTH_VERSION)" = "stable19" ] && \
-	@if [ ! "$(mm_MYTH_VERSION)" = "stable20" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "stable19" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "stable20" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "svn"      ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "8178" ] && \
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "8774" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "8774" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9625" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
