@@ -3,7 +3,7 @@ GARVERSION = 1.1.99.903
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-drm.patch $(DISTNAME)-mipmap.patch
+PATCHFILES = $(DISTNAME)-drm.patch $(DISTNAME)-mesa-6.5.2.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -34,6 +34,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/resourceproto \
 	$(CATEGORY)/scrnsaverproto \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
@@ -121,6 +122,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
@@ -130,7 +132,7 @@ pre-configure:
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_sys_linker_h=no"                                                                >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:

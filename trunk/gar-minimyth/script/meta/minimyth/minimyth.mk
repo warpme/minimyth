@@ -440,7 +440,7 @@ mm-strip:
 	fi
 
 mm-gen-files:
-	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
 	@for font in `cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
@@ -470,7 +470,7 @@ mm-make-other:
 	@cp ./files/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
 	@# Get kernel.
 	@rm -rf $(mm_STAGEDIR)/kernel
-	@cp $(DESTDIR)/$(KERNEL_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
+	@cp $(DESTDIR)/$(LINUX_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
 	@# Get local helper.
 	@rm -rf   $(mm_STAGEDIR)/helper
 	@mkdir -p $(mm_STAGEDIR)/helper

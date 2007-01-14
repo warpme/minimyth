@@ -152,7 +152,7 @@ build_GARCH_FAMILY := $(strip $(subst x86-64,x86-64, \
     )))
 
 # Don't build these packages as in the build image
-build_NODEPEND += kernel/linux-libc-headers devel/glibc
+build_NODEPEND += kernel/linux-headers devel/glibc
 
 # This is for foo-config chaos
 PKG_CONFIG_PATH = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig

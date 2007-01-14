@@ -24,15 +24,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-sandboxed \
 	--with-gnu-ld \
 	--without-x \
-	--with-kerneldir="$(DESTDIR)$(KERNEL_SOURCEDIR)" \
-	--with-moduledir="$(KERNEL_MODULESDIR)/misc/lirc" \
+	--with-kerneldir="$(DESTDIR)$(LINUX_SOURCEDIR)" \
+	--with-moduledir="$(LINUX_MODULESDIR)/misc/lirc" \
 	--with-driver=all
-BUILD_ARGS     = $(KERNEL_MAKE_ARGS)
-INSTALL_ARGS   = $(KERNEL_MAKE_ARGS)
+BUILD_ARGS     = $(LINUX_MAKE_ARGS)
+INSTALL_ARGS   = $(LINUX_MAKE_ARGS)
 
-CONFIGURE_ENV = $(KERNEL_MAKE_ENV) LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
-BUILD_ENV     = $(KERNEL_MAKE_ENV)
-INSTALL_ENV   = $(KERNEL_MAKE_ENV)
+CONFIGURE_ENV = $(LINUX_MAKE_ENV) LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
+BUILD_ENV     = $(LINUX_MAKE_ENV)
+INSTALL_ENV   = $(LINUX_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -57,12 +57,12 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liblirc_client.la
-	@depmod -b $(DESTDIR) -v $(KERNEL_FULL_VERSION)
+	@depmod -b $(DESTDIR) -v $(LINUX_FULL_VERSION)
 	@$(MAKECOOKIE)
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(KERNEL_MODULESDIR)/misc/lirc
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/lirc
 	@rm -rf $(DESTDIR)$(bindir)/lirc*
 	@rm -rf $(DESTDIR)$(sbindir)/lirc*
 	@rm -rf $(DESTDIR)$(includedir)/lirc

@@ -20,19 +20,19 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-cross="$(compiler_prefix)" \
-	--with-kernel="$(DESTDIR)$(KERNEL_BUILDDIR)" \
-	--with-build="$(DESTDIR)$(KERNEL_BUILDDIR)" \
+	--with-kernel="$(DESTDIR)$(LINUX_BUILDDIR)" \
+	--with-build="$(DESTDIR)$(LINUX_BUILDDIR)" \
 	--with-redhat=no \
 	--with-suse=no \
-	--with-moddir="$(KERNEL_MODULESDIR)/misc/alsa" \
+	--with-moddir="$(LINUX_MODULESDIR)/misc/alsa" \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
 	--with-cards="ens1371,hda-intel,intel8x0,usb-audio,via82xx"
 
-CONFIGURE_ENV = $(KERNEL_MAKE_ENV)
-BUILD_ENV     = $(KERNEL_MAKE_ENV)
-INSTALL_ENV   = $(KERNEL_MAKE_ENV) IUSER="$(IUSER)" IGROUP="$(IGROUP)"
+CONFIGURE_ENV = $(LINUX_MAKE_ENV)
+BUILD_ENV     = $(LINUX_MAKE_ENV)
+INSTALL_ENV   = $(LINUX_MAKE_ENV) IUSER="$(IUSER)" IGROUP="$(IGROUP)"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -47,4 +47,4 @@ IGROUP := `id -g`
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/alsa/"
+	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/alsa/"

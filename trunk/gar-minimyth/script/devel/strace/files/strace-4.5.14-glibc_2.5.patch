@@ -1,16 +1,12 @@
-This allows strace to compile under glibc 2.5 in the same manner that it
-compiles under glibc 2.4. However, the changes in glibc 2.5 may require more
-changes than this simple patch in order to work correctly.
-
 diff -Naur strace-4.5.14-old/strace.c strace-4.5.14-new/strace.c
---- strace-4.5.14-old/strace.c	2006-01-12 01:50:49.000000000 -0800
-+++ strace-4.5.14-new/strace.c	2006-10-02 18:49:36.000000000 -0700
+--- strace-4.5.14-old/strace.c	2006-12-10 07:08:30.000000000 -0800
++++ strace-4.5.14-new/strace.c	2006-12-10 07:10:24.000000000 -0800
 @@ -2251,7 +2251,7 @@
  			if (!cflag
  			    && (qual_flags[WSTOPSIG(status)] & QUAL_SIGNAL)) {
  				unsigned long addr = 0, pc = 0;
 -#ifdef PT_GETSIGINFO
-+#if defined PT_GETSIGINFO && defined PT_CR_IPSR && defined PT_CR_IIP
++#if defined(PT_CR_IPSR) && defined(PT_CR_IIP) && defined(PT_GETSIGINFO)
  #				define PSR_RI	41
  				struct siginfo si;
  				unsigned long psr;

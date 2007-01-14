@@ -18,23 +18,23 @@ BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
 
 DEFAULT_ARGS = \
-	$(KERNEL_MAKE_ARGS)
+	$(LINUX_MAKE_ARGS)
 BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)
 
-BUILD_ENV   = $(KERNEL_MAKE_ENV)
-INSTALL_ENV = $(KERNEL_MAKE_ENV)
+BUILD_ENV   = $(LINUX_MAKE_ENV)
+INSTALL_ENV = $(LINUX_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 build-custom:
-	@cd $(WORKSRC) ; $(BUILD_ENV) make -C $(DESTDIR)$(KERNEL_SOURCEDIR) SUBDIRS=`pwd` modules $(BUILD_ARGS)
+	@cd $(WORKSRC) ; $(BUILD_ENV) make -C $(DESTDIR)$(LINUX_SOURCEDIR) SUBDIRS=`pwd` modules $(BUILD_ARGS)
 	@$(MAKECOOKIE)
 
 install-custom:
-	@rm -rf $(DESTDIR)$(KERNEL_MODULESDIR)/misc/$(GARNAME)
-	@mkdir -p $(DESTDIR)$(KERNEL_MODULESDIR)/misc/$(GARNAME)
-	@cp $(WORKSRC)/$(GARNAME).ko $(DESTDIR)$(KERNEL_MODULESDIR)/misc/$(GARNAME)
-	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@cp $(WORKSRC)/$(GARNAME).ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)

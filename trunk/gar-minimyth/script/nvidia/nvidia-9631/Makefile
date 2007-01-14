@@ -31,14 +31,14 @@ INSTALL_SCRIPTS = kernel x11
 
 BUILD_ARGS = \
 	module \
-	$(KERNEL_MAKE_ARGS) \
+	$(LINUX_MAKE_ARGS) \
 	HOST_CC=$(build_CC) \
-	SYSSRC=$(DESTDIR)$(KERNEL_SOURCEDIR) \
-	SYSOUT=$(DESTDIR)$(KERNEL_BUILDDIR) \
-	MODULE_ROOT=$(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
+	SYSSRC=$(DESTDIR)$(LINUX_SOURCEDIR) \
+	SYSOUT=$(DESTDIR)$(LINUX_BUILDDIR) \
+	MODULE_ROOT=$(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia
 
 BUILD_ENV = \
-	$(KERNEL_MAKE_ENV)
+	$(LINUX_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -56,9 +56,9 @@ build-%/makefile:
 	@$(MAKECOOKIE)
 
 install-kernel:
-	@mkdir -p $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
-	@cp $(WORKSRC)/usr/src/nv/nvidia.ko $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia/nvidia.ko
-	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia
+	@cp $(WORKSRC)/usr/src/nv/nvidia.ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia/nvidia.ko
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
 
 install-x11:
@@ -136,7 +136,7 @@ clean-all: clean-all-kernel clean-all-x11
 	@$(MAKE) clean
 
 clean-all-kernel:
-	@mkdir -p $(DESTDIR)$(KERNEL_MODULESDIR)/misc/nvidia
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia
 
 clean-all-x11:
 	@rm -rf $(DESTDIR)$(bindir)/nvidia*

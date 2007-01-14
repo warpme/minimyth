@@ -11,13 +11,14 @@ endef
 WORKSRC = $(WORKDIR)/glibc-$(GARVERSION)
 WORKBLD = $(WORKSRC)_build
 
-DEPENDS = lang/c kernel/linux-libc-headers
+DEPENDS = lang/c kernel/linux-headers
 
 CONFIGURE_SCRIPTS = custom
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sanity-checks \
+	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
 	--with-headers=$(DESTDIR)$(includedir) \

@@ -19,9 +19,9 @@ DRM_MODULES = i810 i830 i915 via
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
 
-BUILD_ARGS = $(KERNEL_MAKE_ARGS) LINUXDIR="$(DESTDIR)$(KERNEL_SOURCEDIR)" DRM_MODULES="$(DRM_MODULES)"
+BUILD_ARGS = $(LINUX_MAKE_ARGS) LINUXDIR="$(DESTDIR)$(LINUX_SOURCEDIR)" DRM_MODULES="$(DRM_MODULES)"
 
-BUILD_ENV = $(KERNEL_MAKE_ENV)
+BUILD_ENV = $(LINUX_MAKE_ENV)
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
@@ -34,11 +34,11 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
-	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
-	@depmod -b "$(DESTDIR)$(rootdir)" "$(KERNEL_FULL_VERSION)"
+	@mkdir -p "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"
+	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf "$(DESTDIR)$(KERNEL_MODULESDIR)/misc/drm/"
+	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"

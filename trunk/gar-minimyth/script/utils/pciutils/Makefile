@@ -24,7 +24,7 @@ BUILD_ARGS   = \
 	IDSDIR="${datadir}" \
 	MANDIR="${mandir}" \
 	HOST="$(GARHOST)" \
-	RELEASE="$(KERNEL_VERSION)" \
+	RELEASE="$(LINUX_VERSION)" \
 	ZLIB="no"
 INSTALL_ARGS = \
 	OPT="$(CFLAGS)" \
@@ -35,7 +35,7 @@ INSTALL_ARGS = \
 	IDSDIR="${datadir}" \
 	MANDIR="${mandir}" \
 	HOST="$(GARHOST)" \
-	RELEASE="$(KERNEL_VERSION)" \
+	RELEASE="$(LINUX_VERSION)" \
 	ZLIB="no"
 
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
