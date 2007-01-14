@@ -1,5 +1,5 @@
 GARNAME = findutils
-GARVERSION = 4.2.28
+GARVERSION = 4.2.29
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz

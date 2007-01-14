@@ -47,7 +47,6 @@ CONFIGURE_ARGS = \
 	--disable-iptv \
 	--disable-dbox2 \
 	--disable-hdhomerun \
-	--disable-crciprec \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \

@@ -33,7 +33,7 @@ CONFIGURE_ARGS = \
 	--enable-mmx \
 	--disable-iwmmxt \
 	--disable-altivec \
-	--disable-audio-oss \
+	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
