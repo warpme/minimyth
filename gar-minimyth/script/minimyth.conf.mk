@@ -6,7 +6,6 @@
 # The version of MiniMyth.
 mm_VERSION           ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH      ?= $(strip \
-                            $(if $(filter stable18,$(mm_MYTH_VERSION)),0.18.2                   ) \
                             $(if $(filter stable19,$(mm_MYTH_VERSION)),0.19                     ) \
                             $(if $(filter stable20,$(mm_MYTH_VERSION)),0.20                     ) \
                             $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
@@ -63,7 +62,7 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT          ?= /home/public/minimyth
 # The version of Myth to use.
-# Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
+# Valid values are 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable20
 # The version of xorg to use.
 # Valid values are '7.0'' and '7.2' (7.2-RC3).
