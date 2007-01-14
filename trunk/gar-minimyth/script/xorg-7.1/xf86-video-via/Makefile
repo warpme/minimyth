@@ -1,9 +1,10 @@
-GARNAME = xf86-video-openchrome
-GARVERSION = 231
+GARNAME = xf86-video-via
+GARVERSION = 0.2.1
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = MIT
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
 DESCRIPTION = 
 define BLURB
@@ -11,13 +12,11 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
-	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
-	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xorg-server \
@@ -34,25 +33,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"        >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"  >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"      >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/xf86Module.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
