@@ -33,6 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
         --enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c \
+	--disable-libgomp \
 	--disable-libmudflap \
 	--disable-libssp \
 	--disable-multilib \
@@ -58,6 +59,11 @@ CPPFLAGS :=
 CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
+
+# Do not link to libc.so, because it is not available yet.
+pre-configure:
+	@sed -i '/^SHLIB_LC = /s%-lc%%' $(WORKSRC)/gcc/config/t-slibgcc-elf-ver
+	@$(MAKECOOKIE)
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
