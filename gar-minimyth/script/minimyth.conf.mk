@@ -117,6 +117,7 @@ mm_CFLAGS            ?= $(strip \
                             $(if $(filter c3-2        ,$(mm_GARCH)),-Os -mfpmath=sse) \
                             $(if $(filter pentium-mmx ,$(mm_GARCH)),-Os             ) \
                             -ffast-math                                               \
+                            -fomit-frame-pointer                                      \
                             $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)            \
                             $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)            \
                             $(if $(filter yes,$(mm_DEBUG)),-g)                        \
