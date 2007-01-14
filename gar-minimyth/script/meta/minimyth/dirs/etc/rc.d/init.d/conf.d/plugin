@@ -32,6 +32,12 @@ conf_check_plugin() {
         mm_message_output err "error: MM_MYTHGALLERY_ENABLED='${MM_MYTHGALLERY_ENABLED}' is not valid."
         exit 1
     fi
+    if /usr/bin/test ! -z "${MM_MYTHGAME_ENABLED}"          && \
+       /usr/bin/test !    "${MM_MYTHGAME_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_MYTHGAME_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_MYTHGAME_ENABLED='${MM_MYTHGAME_ENABLED}' is not valid."
+        exit 1
+    fi
     if /usr/bin/test ! -z "${MM_MYTHMUSIC_ENABLED}"          && \
        /usr/bin/test !    "${MM_MYTHMUSIC_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_MYTHMUSIC_ENABLED}" = "no"   ; then
@@ -73,6 +79,7 @@ conf_default_plugin() {
        'MM_MYTHTV_OPTICAL_DISK_ENABLED' \
        'MM_MYTHDVD_ENABLED' \
        'MM_MYTHGALLERY_ENABLED' \
+       'MM_MYTHGAME_ENABLED' \
        'MM_MYTHMUSIC_ENABLED' \
        'MM_MYTHNEWS_ENABLED' \
        'MM_MYTHSTREAM_ENABLED' \
@@ -87,6 +94,9 @@ conf_default_plugin() {
     fi
     if /usr/bin/test -z "${MM_MYTHGALLERY_ENABLED}"         ; then
         MM_MYTHGALLERY_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_MYTHGAME_ENABLED}"            ; then
+        MM_MYTHGAME_ENABLED='yes'
     fi
     if /usr/bin/test -z "${MM_MYTHMUSIC_ENABLED}"           ; then
         MM_MYTHMUSIC_ENABLED='yes'
@@ -113,6 +123,7 @@ conf_write_plugin() {
     conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHGAME_ENABLED            "${MM_MYTHGAME_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHMUSIC_ENABLED           "${MM_MYTHMUSIC_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHNEWS_ENABLED            "${MM_MYTHNEWS_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHSTREAM_ENABLED          "${MM_MYTHSTREAM_ENABLED}"
