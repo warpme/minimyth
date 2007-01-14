@@ -3,9 +3,12 @@
 . /etc/conf
 
 /usr/bin/xsetroot -solid black
-/usr/bin/xset -dpms s off
+/usr/bin/xset -dpms
 if /usr/bin/test "${MM_X_SCREENSAVER_ENABLED}" = "yes" ; then
-    /usr/bin/xscreensaver &
+    /usr/bin/xset s on
+    /usr/bin/xset s 120
+else
+    /usr/bin/xset s off
 fi
 if /usr/bin/test "${MM_X_VNC_ENABLED}" = "yes" ; then
     /usr/bin/x11vnc
