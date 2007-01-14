@@ -66,11 +66,11 @@ mm_NFS_ROOT          ?= /home/public/minimyth
 # Valid values are 'stable18', 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable20
 # The version of xorg to use.
-# Valid values are '6.8', '7.0', '7.1' and '7.2' (7.2RC1+).
-mm_XORG_VERSION      ?= 7.0
+# Valid values are '6.8', '7.0', '7.1' and '7.2' (7.2-RC3).
+mm_XORG_VERSION      ?= 7.2
 # The version of the NVIDIA driver.
 # Valid values are '8178', '8776', '9631' and '9742' (beta).
-mm_NVIDIA_VERSION    ?= 8178
+mm_NVIDIA_VERSION    ?= 9631
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
 mm_MYTH_SVN_VERSION  ?= 12156
