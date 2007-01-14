@@ -1,5 +1,5 @@
 GARNAME = zsnes
-GARVERSION = 4077
+GARVERSION = 4132
 CATEGORIES = emulators
 MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -51,6 +51,6 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
-	@cd $(WORKSRC)/src ; aclocal --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
+	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal
 	@cd $(WORKSRC)/src ; autoconf --verbose --force
 	@$(MAKECOOKIE)

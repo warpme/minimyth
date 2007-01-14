@@ -24,11 +24,19 @@ mm_mythgame_exit_program()
         if /usr/bin/test -n `/bin/pidof ${program}` ; then
             /usr/bin/killall zsnes > /dev/null 2>&1
         fi
+        # If the program is still running, then kill the program.
+        if /usr/bin/test -n `/bin/pidof ${program}` ; then
+            for pid in `/bin/pidof ${program}` ; do
+                /usr/bin/kill -9 ${pid} > /dev/null 2>&1
+            done
+        fi
     fi
 }
 
 mm_mythgame_exit_program 'fceu'             'KeyStr Escape\n'
 mm_mythgame_exit_program 'jzintv'           'KeyStr F1\n'
+mm_mythgame_exit_program 'mame'             'KeyStr Escape\n'
+mm_mythgame_exit_program 'mess'             'KeyStr Escape\n'
 mm_mythgame_exit_program 'stella'           'KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n'
 mm_mythgame_exit_program 'VisualBoyAdvance' 'KeyStr Escape\n'
 mm_mythgame_exit_program 'zsnes'            'KeyStr Escape\n KeyStr Q\n KeyStr Return\n'

@@ -60,10 +60,10 @@ DEPENDS = \
 	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
-	X11/xmacro \
-	X11/xscreensaver \
-	xorg/xorg \
 	mediaplayers/xine-ui \
+	X11/xmacro \
+	xorg/xorg \
+	X11/xscreensaver \
 	system/zoneinfo \
 	emulators/zsnes \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \

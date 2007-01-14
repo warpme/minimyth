@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 2.2
+GARVERSION = 2.3
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libpng lib/SDL lib/zlib xorg/xorg
+DEPENDS   = lang/c lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -24,15 +24,12 @@ CONFIGURE_ARGS = \
 	--datadir="$(datadir)" \
 	--enable-gl \
 	--enable-sound \
-	--disable-developer \
-	--enable-snapshot \
+	--enable-debugger \
 	--enable-joystick \
 	--enable-cheats \
+	--disable-atarivox \
 	--enable-shared \
-	--disable-static \
 	--disable-profile \
-	--enable-zlib \
-	--enable-png \
 	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
 	--enable-nasm \
 	--x-libraries="$(DESTDIR)$(libdir)"
