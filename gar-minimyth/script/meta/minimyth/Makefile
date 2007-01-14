@@ -25,11 +25,11 @@ DEPENDS = \
 	disk/hdparm \
 	emulators/jzintv \
 	system/lcdproc \
-	kernel/linux kernel/alsa-driver kernel/drm kernel/imon_vfd \
+	kernel/kernel \
 	lirc/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
-	kernel/module-init-tools \
+	utils/module-init-tools \
 	net/mount.cifs \
 	mediaplayers/mplayer \
 	myth/mythplugins-$(mm_MYTH_VERSION) \

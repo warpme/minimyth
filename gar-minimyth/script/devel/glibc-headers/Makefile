@@ -11,7 +11,7 @@ endef
 WORKSRC = $(WORKDIR)/glibc-$(GARVERSION)
 WORKBLD = $(WORKSRC)_build
 
-DEPENDS = lang/c kernel/linux-headers
+DEPENDS = lang/c kernel-$(mm_KERNEL_VERSION)/linux-headers
 
 CONFIGURE_SCRIPTS = custom
 INSTALL_SCRIPTS   = custom
