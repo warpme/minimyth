@@ -72,7 +72,7 @@ mm_XORG_VERSION      ?= 7.0
 mm_NVIDIA_VERSION    ?= 8178
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_SVN_VERSION  ?= 11599
+mm_MYTH_SVN_VERSION  ?= 11625
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES     ?=
 # Lists additional binaries to include in the MiniMyth image
