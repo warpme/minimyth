@@ -537,54 +537,47 @@ mm-make-distro:
 	@# Make documentation tarball file.
 	@echo "  making documentation tarball file"
 	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
-	@fakeroot sh -c                                                                " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/html ; \
-		chmod -R go-w $(mm_STAGEDIR)/html                                      ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html            "
+	@fakeroot sh -c                                                     " \
+		chmod -R go-w $(mm_STAGEDIR)/html                           ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html "
 	@chmod 644 $(mm_STAGEDIR)/html.tar.bz2
 	@# Make helper tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
-	@fakeroot sh -c                                                                  " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_STAGEDIR)/helper ; \
-		chmod -R go-w $(mm_STAGEDIR)/helper                                      ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper          "
+	@fakeroot sh -c                                                         " \
+		chmod -R go-w $(mm_STAGEDIR)/helper                             ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
 	@chmod 644 $(mm_STAGEDIR)/helper.tar.bz2
 	@# Make root file system squashfs image file.
 	@echo "  making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
-	@fakeroot sh -c                                                                                        " \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                                ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1                            ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                                ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)                             ; \
-		chown -R $(call GET_UID,mythtv):$(call GET_GID,mythtv) $(mm_ROOTFSDIR)/rootfs-ro/home/minimyth ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                                  ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                                   ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                                            ; \
-		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1               "
+	@fakeroot sh -c                                                                          " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                     ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
+		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@# Make root file system tarball.
 	@echo "  making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
-	@fakeroot sh -c                                                                                        " \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                                ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1                            ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                                ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)                             ; \
-		chown -R $(call GET_UID,mythtv):$(call GET_GID,mythtv) $(mm_ROOTFSDIR)/rootfs-ro/home/minimyth ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                                  ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                                   ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                                            ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs                 "
+	@fakeroot sh -c                                                                        " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                   ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@# Make extras squashfs image file.
 	@echo "  making extras squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@fakeroot sh -c                                                                              " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)                   ; \
 		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
 		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
@@ -592,7 +585,6 @@ mm-make-distro:
 	@echo "  making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_EXTRASDIR)             ; \
 		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
@@ -602,7 +594,6 @@ mm-make-distro:
 	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
 	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
 		fakeroot sh -c                                                                                                   "   \
-			chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_THEMESDIR)/$${theme}                             ;   \
 			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
 			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
 		chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
@@ -611,7 +602,6 @@ mm-make-distro:
 	@echo "  making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_THEMESDIR)             ; \
 		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
