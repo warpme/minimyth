@@ -39,8 +39,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-nls \
 	--disable-shared \
         --enable-threads=no \
-        --enable-version-specific-runtime-libs \
+        --enable-version-specific-runtime-libs
+# Avoid sysroot for minimal native compiler because linker may not have sysroot support.
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+CONFIGURE_ARGS += \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
+endif
+# Bootstrap the native environment compiler.
+ifeq  ("$(DESTIMG)+$(CROSSIMG)","build+build")
+BUILD_ARGS      = \
+	bootstrap
+endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk

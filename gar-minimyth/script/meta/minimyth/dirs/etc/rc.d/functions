@@ -614,7 +614,7 @@ mm_mythdb_command_run() {
     return ${RETURN}
 }
 
-mm_mythdb_jumppoint_delete() {
+mm_mythdb_jumpoints_delete() {
     local DESTINATION=$1
 
     local HOSTNAME
@@ -630,7 +630,7 @@ mm_mythdb_jumppoint_delete() {
     fi
 }
 
-mm_mythdb_jumppoint_dump() {
+mm_mythdb_jumpoints_dump() {
     local DESTINATION=$1
 
     local HOSTNAME
@@ -646,7 +646,7 @@ mm_mythdb_jumppoint_dump() {
     fi
 }
 
-mm_mythdb_jumppoint_update() {
+mm_mythdb_jumpoints_update() {
     local DESTINATION=$1
     local KEYLIST=$2
 
@@ -658,7 +658,7 @@ mm_mythdb_jumppoint_update() {
         WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
 }
 
-mm_mythdb_keybinding_delete() {
+mm_mythdb_keybindings_delete() {
     local CONTEXT=$1
     local ACTION=$2
 
@@ -678,7 +678,7 @@ mm_mythdb_keybinding_delete() {
     fi
 }
 
-mm_mythdb_keybinding_dump() {
+mm_mythdb_keybindings_dump() {
     local CONTEXT=$1
     local ACTION=$2
 
@@ -698,7 +698,7 @@ mm_mythdb_keybinding_dump() {
     fi
 }
 
-mm_mythdb_keybinding_update() {
+mm_mythdb_keybindings_update() {
     local CONTEXT=$1
     local ACTION=$2
     local KEYLIST=$3
@@ -733,7 +733,7 @@ mm_mythdb_musicplaylist_scope() {
     esac
 }
 
-mm_mythdb_setting_delete() {
+mm_mythdb_settings_delete() {
     local VALUE=$1
 
     local HOSTNAME
@@ -747,7 +747,7 @@ mm_mythdb_setting_delete() {
     fi
 }
 
-mm_mythdb_setting_dump() {
+mm_mythdb_settings_dump() {
     local VALUE=$1
 
     local HOSTNAME
@@ -761,7 +761,7 @@ mm_mythdb_setting_dump() {
     fi
 }
 
-mm_mythdb_setting_update() {
+mm_mythdb_settings_update() {
     local VALUE=$1
     local DATA=$2
 
@@ -772,7 +772,7 @@ mm_mythdb_setting_update() {
     mm_mythdb_command_run "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
 }
 
-mm_mythdb_setting_set() {
+mm_mythdb_settings_set() {
     local VALUE=$1
     local DATA=$2
 
@@ -781,20 +781,20 @@ mm_mythdb_setting_set() {
 
     HOSTNAME=`/bin/hostname`
 
-    DATA_CURRENT=`mm_mythdb_setting_get "${VALUE}"`
+    DATA_CURRENT=`mm_mythdb_settings_get "${VALUE}"`
     if /usr/bin/test -z "${DATA_CURRENT}" ; then
         mm_mythdb_command_run "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
     elif /usr/bin/test "${DATA_CURRENT}" != "${DATA}" ; then
-        mm_mythdb_setting_update "${VALUE}" "${DATA}"
+        mm_mythdb_settings_update "${VALUE}" "${DATA}"
     fi
 }
 
-mm_mythdb_setting_get() {
+mm_mythdb_settings_get() {
     local VALUE=$1
 
     local DATA
 
-    DATA=`mm_mythdb_setting_dump "$1" | /bin/grep -e "$1" |  /usr/bin/cut -f 2`
+    DATA=`mm_mythdb_settings_dump "$1" | /bin/grep -e "$1" |  /usr/bin/cut -f 2`
 
     /bin/echo "${DATA}"
 }

@@ -341,6 +341,8 @@ mm-make-conf:
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
+	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv
+	@cp -r  ./dirs/usr/share/mythtv/*                $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
@@ -352,7 +354,9 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
 	@cp -r  $(mm_HOME)/html/script/*                 $(mm_ROOTFSDIR)/srv/www/script/
 	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
+	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.lircrc
+	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	@index=10 ; $(foreach file, $(MM_INIT_START), index=$$((index+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )

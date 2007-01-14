@@ -3,6 +3,18 @@
 ################################################################################
 conf_check_mythdb() {
     # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_MYTHDB_JUMPOINT}"   ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_JUMPPOINT" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_MYTHDB_KEYBINDING}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_KEYBINDING" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_MYTHDB_SETTING}"    ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING" is obsolete.'
+        exit 1
+    fi
     if /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -q '^MM_MYTHDB_SETTING_' ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_MYTHDB_SETTING_<setting>" is obsolete.'
         exit 1

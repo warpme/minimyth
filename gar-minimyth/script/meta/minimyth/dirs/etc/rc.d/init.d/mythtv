@@ -8,27 +8,27 @@
 
 start() {
 
-    local jumpoint
-    local jumppoint_destination
-    local jumppoint_keylist
-    local keybinding
-    local keybinding_action
-    local keybinding_context
-    local keybinding_keylist
-    local setting
-    local setting_data
-    local setting_value
+    local jumppoints
+    local jumppoints_destination
+    local jumppoints_keylist
+    local keybindings
+    local keybindings_actions
+    local keybindings_context
+    local keybindings_keylist
+    local settings
+    local settings_data
+    local settings_value
     local TRANSCODE
 
     mm_message_output info 'configuring MythTV ...'
 
     # Set OSD fonts.
-    mm_mythdb_setting_update "OSDFont"   "FreeSans.ttf"
-    mm_mythdb_setting_update "OSDCCFont" "FreeSans.ttf"
+    mm_mythdb_settings_update "OSDFont"   "FreeSans.ttf"
+    mm_mythdb_settings_update "OSDCCFont" "FreeSans.ttf"
 
     # Set the MythTV theme.
     if /usr/bin/test -n "${MM_THEME_NAME}" ; then
-        mm_mythdb_setting_update "Theme" "${MM_THEME_NAME}"
+        mm_mythdb_settings_update "Theme" "${MM_THEME_NAME}"
     fi
     # Mount MythTV theme directory.
     if /usr/bin/test -n "${MM_THEME_URL}" ; then
@@ -40,7 +40,7 @@ start() {
 
     # Set the MythTV OSD theme.
     if /usr/bin/test -n "${MM_THEMEOSD_NAME}" ; then
-        mm_mythdb_setting_update "OSDTheme" "${MM_THEMEOSD_NAME}"
+        mm_mythdb_settings_update "OSDTheme" "${MM_THEMEOSD_NAME}"
     fi
     # Mount MythTV OSD theme directory.
     if /usr/bin/test -n "${MM_THEMEOSD_URL}" ; then
@@ -61,45 +61,45 @@ start() {
             /bin/mkdir -p /mnt/dvd/mythdvd/temp
         fi
         if /usr/bin/test -d /mnt/dvd/mythdvd/temp && /usr/bin/test -w /mnt/dvd/mythdvd/temp  ; then
-            mm_mythdb_setting_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
+            mm_mythdb_settings_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
             TRANSCODE=`which transcode`
-            mm_mythdb_setting_update "TranscodeCommand" "${TRANSCODE}"
+            mm_mythdb_settings_update "TranscodeCommand" "${TRANSCODE}"
             /usr/bin/mtd --daemon
         fi
     fi
 
     # Configure Myth database jumppoints to match MiniMyth frontend.
-    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_JUMPPOINT=' | /bin/sed -e 's%^MM_MYTHDB_JUMPPOINT=%%' | \
+    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_JUMPPOINTS=' | /bin/sed -e 's%^MM_MYTHDB_JUMPPOINTS=%%' | \
         /bin/sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
         /bin/sed -e 's%^"%%'    -e 's%"$%%'    | \
-        /bin/sed -e "s%^'%%"    -e "s%'$%%"    |
-    while read jumppoint ; do
-        jumppoint_destination=`/bin/echo ${jumppoint} | /usr/bin/cut -d '~' -f 1`
-        jumppoint_keylist=`/bin/echo ${jumppoint} | /usr/bin/cut -d '~' -f 2`
-        mm_mythdb_jumppoint_update "${jumppoint_destination}" "${jumppoint_keylist}"
+        /bin/sed -e "s%^'%%"    -e "s%'$%%"    | \
+    while read jumppoints ; do
+        jumppoints_destination=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 1`
+        jumppoints_keylist=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 2`
+        mm_mythdb_jumppoints_update "${jumppoints_destination}" "${jumppoints_keylist}"
     done
 
     # Configure Myth database keybindings to match MiniMyth frontend.
-    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_KEYBINDING=' | /bin/sed -e 's%^MM_MYTHDB_KEYBINDING=%%' | \
+    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_KEYBINDINGS=' | /bin/sed -e 's%^MM_MYTHDB_KEYBINDINGS=%%' | \
         /bin/sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
         /bin/sed -e 's%^"%%'    -e 's%"$%%'    | \
-        /bin/sed -e "s%^'%%"    -e "s%'$%%"    |
-    while read keybinding ; do
-        keybinding_context=`/bin/echo ${keybinding} | /usr/bin/cut -d '~' -f 1`
-        keybinding_action=`/bin/echo ${keybinding} | /usr/bin/cut -d '~' -f 2`
-        keybinding_keylist=`/bin/echo ${keybinding} | /usr/bin/cut -d '~' -f 3`
-        mm_mythdb_keybinding_update "${keybinding_context}" "${keybinding_action}" "${keybinding_keylist}"
+        /bin/sed -e "s%^'%%"    -e "s%'$%%"    | \
+    while read keybindings ; do
+        keybindings_context=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 1`
+        keybindings_action=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 2`
+        keybindings_keylist=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 3`
+        mm_mythdb_keybindings_update "${keybindings_context}" "${keybindings_action}" "${keybindings_keylist}"
     done
 
     # Configure Myth database settings to match MiniMyth frontend.
-    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_SETTING=' | /bin/sed -e 's%^MM_MYTHDB_SETTING=%%' | \
+    /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep '^MM_MYTHDB_SETTINGS=' | /bin/sed -e 's%^MM_MYTHDB_SETTINGS=%%' | \
         /bin/sed -e 's%^[ ]*%%' -e 's%[ ]*$%%' | \
         /bin/sed -e 's%^"%%'    -e 's%"$%%'    | \
-        /bin/sed -e "s%^'%%"    -e "s%'$%%"    |
-    while read setting ; do
-        setting_value=`/bin/echo ${setting} | /usr/bin/cut -d '~' -f 1`
-        setting_data=`/bin/echo ${setting} | /usr/bin/cut -d '~' -f 2`
-        mm_mythdb_setting_update "${setting_value}" "${setting_data}"
+        /bin/sed -e "s%^'%%"    -e "s%'$%%"    | \
+    while read settings ; do
+        settings_value=`/bin/echo ${settings} | /usr/bin/cut -d '~' -f 1`
+        settings_data=`/bin/echo ${settings} | /usr/bin/cut -d '~' -f 2`
+        mm_mythdb_settings_update "${settings_value}" "${settings_data}"
     done
 
     # Delete disabled plugins.
