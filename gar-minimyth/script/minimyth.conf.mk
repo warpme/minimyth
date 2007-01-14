@@ -10,7 +10,7 @@ mm_VERSION_MYTH      ?= $(strip \
                             $(if $(filter stable20,$(mm_MYTH_VERSION)),0.20                     ) \
                             $(if $(filter svn     ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                          )
-mm_VERSION_MINIMYTH  ?= 20
+mm_VERSION_MINIMYTH  ?= 21
 mm_VERSION_EXTRA     ?= $(strip \
                             $(if $(filter yes,$(mm_DEBUG)),-debug) \
                          )
