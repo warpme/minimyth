@@ -66,7 +66,6 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@# libssp.la and libssp_nonshared.la are installed by 4.1.x.
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp_nonshared.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la

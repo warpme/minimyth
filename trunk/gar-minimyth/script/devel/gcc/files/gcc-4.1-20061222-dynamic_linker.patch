@@ -1,0 +1,135 @@
+diff -Naur gcc-4.1-20061222-old/gcc/config/i386/linux64.h gcc-4.1-20061222-new/gcc/config/i386/linux64.h
+--- gcc-4.1-20061222-old/gcc/config/i386/linux64.h	2005-08-10 10:53:01.000000000 -0700
++++ gcc-4.1-20061222-new/gcc/config/i386/linux64.h	2006-12-26 16:27:46.000000000 -0800
+@@ -61,7 +61,7 @@
+     %{!static: \
+       %{rdynamic:-export-dynamic} \
+       %{m32:%{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2}} \
+-      %{!m32:%{!dynamic-linker:-dynamic-linker /lib64/ld-linux-x86-64.so.2}}} \
++      %{!m32:%{!dynamic-linker:-dynamic-linker /lib/ld-linux-x86-64.so.2}}} \
+     %{static:-static}}"
+ 
+ /* Similar to standard Linux, but adding -ffast-math support.  */
+diff -Naur gcc-4.1-20061222-old/gcc/config/mips/iris6.h gcc-4.1-20061222-new/gcc/config/mips/iris6.h
+--- gcc-4.1-20061222-old/gcc/config/mips/iris6.h	2005-06-24 18:22:41.000000000 -0700
++++ gcc-4.1-20061222-new/gcc/config/mips/iris6.h	2006-12-26 16:30:59.000000000 -0800
+@@ -62,19 +62,19 @@
+      %{mabi=32:%{pg:gcrt1.o%s} \
+        %{!pg:%{p:mcrt1.o%s libprof1.a%s}%{!p:crt1.o%s}}} \
+      %{mabi=n32: \
+-       %{mips4:%{pg:/usr/lib32/mips4/gcrt1.o%s} \
+-         %{!pg:%{p:/usr/lib32/mips4/mcrt1.o%s /usr/lib32/mips4/libprof1.a%s} \
+-           %{!p:/usr/lib32/mips4/crt1.o%s}}} \
+-       %{!mips4:%{pg:/usr/lib32/mips3/gcrt1.o%s} \
+-         %{!pg:%{p:/usr/lib32/mips3/mcrt1.o%s /usr/lib32/mips3/libprof1.a%s} \
+-           %{!p:/usr/lib32/mips3/crt1.o%s}}}} \
++       %{mips4:%{pg:/usr/lib/mips4/gcrt1.o%s} \
++         %{!pg:%{p:/usr/lib/mips4/mcrt1.o%s /usr/lib/mips4/libprof1.a%s} \
++           %{!p:/usr/lib/mips4/crt1.o%s}}} \
++       %{!mips4:%{pg:/usr/lib/mips3/gcrt1.o%s} \
++         %{!pg:%{p:/usr/lib/mips3/mcrt1.o%s /usr/lib/mips3/libprof1.a%s} \
++           %{!p:/usr/lib/mips3/crt1.o%s}}}} \
+      %{mabi=64: \
+-       %{mips4:%{pg:/usr/lib64/mips4/gcrt1.o} \
+-         %{!pg:%{p:/usr/lib64/mips4/mcrt1.o /usr/lib64/mips4/libprof1.a} \
+-           %{!p:/usr/lib64/mips4/crt1.o}}} \
+-       %{!mips4:%{pg:/usr/lib64/mips3/gcrt1.o} \
+-         %{!pg:%{p:/usr/lib64/mips3/mcrt1.o /usr/lib64/mips3/libprof1.a} \
+-           %{!p:/usr/lib64/mips3/crt1.o}}}}} \
++       %{mips4:%{pg:/usr/lib/mips4/gcrt1.o} \
++         %{!pg:%{p:/usr/lib/mips4/mcrt1.o /usr/lib/mips4/libprof1.a} \
++           %{!p:/usr/lib/mips4/crt1.o}}} \
++       %{!mips4:%{pg:/usr/lib/mips3/gcrt1.o} \
++         %{!pg:%{p:/usr/lib/mips3/mcrt1.o /usr/lib/mips3/libprof1.a} \
++           %{!p:/usr/lib/mips3/crt1.o}}}}} \
+   irix-crti.o%s crtbegin.o%s"
+ 
+ #ifdef IRIX_USING_GNU_LD
+@@ -87,10 +87,10 @@
+ 
+ #undef LIB_SPEC
+ #define LIB_SPEC \
+-  "%{mabi=n32: %{mips4:-L/usr/lib32/mips4} %{!mips4:-L/usr/lib32/mips3} \
+-     -L/usr/lib32} \
+-   %{mabi=64: %{mips4:-L/usr/lib64/mips4} %{!mips4:-L/usr/lib64/mips3} \
+-     -L/usr/lib64} \
++  "%{mabi=n32: %{mips4:-L/usr/lib/mips4} %{!mips4:-L/usr/lib/mips3} \
++     -L/usr/lib} \
++   %{mabi=64: %{mips4:-L/usr/lib/mips4} %{!mips4:-L/usr/lib/mips3} \
++     -L/usr/lib} \
+    %{!shared:" \
+      SUBTARGET_DONT_WARN_UNUSED_SPEC \
+      " %{p:libprof1.a%s}%{pg:libprof1.a%s} -lc " \
+@@ -106,9 +106,9 @@
+   "crtend.o%s irix-crtn.o%s \
+    %{!shared: \
+      %{mabi=32:crtn.o%s}\
+-     %{mabi=n32:%{mips4:/usr/lib32/mips4/crtn.o%s}\
+-       %{!mips4:/usr/lib32/mips3/crtn.o%s}}\
+-     %{mabi=64:%{mips4:/usr/lib64/mips4/crtn.o%s}\
+-       %{!mips4:/usr/lib64/mips3/crtn.o%s}}}"
++     %{mabi=n32:%{mips4:/usr/lib/mips4/crtn.o%s}\
++       %{!mips4:/usr/lib/mips3/crtn.o%s}}\
++     %{mabi=64:%{mips4:/usr/lib/mips4/crtn.o%s}\
++       %{!mips4:/usr/lib/mips3/crtn.o%s}}}"
+ 
+ #define MIPS_TFMODE_FORMAT mips_extended_format
+diff -Naur gcc-4.1-20061222-old/gcc/config/mips/linux64.h gcc-4.1-20061222-new/gcc/config/mips/linux64.h
+--- gcc-4.1-20061222-old/gcc/config/mips/linux64.h	2005-06-24 18:22:41.000000000 -0700
++++ gcc-4.1-20061222-new/gcc/config/mips/linux64.h	2006-12-26 16:27:46.000000000 -0800
+@@ -47,8 +47,8 @@
+       %{!static: \
+         %{rdynamic:-export-dynamic} \
+         %{!dynamic-linker: \
+-	  %{mabi=n32: -dynamic-linker /lib32/ld.so.1} \
+-	  %{mabi=64: -dynamic-linker /lib64/ld.so.1} \
++	  %{mabi=n32: -dynamic-linker /lib/ld.so.1} \
++	  %{mabi=64: -dynamic-linker /lib/ld.so.1} \
+ 	  %{mabi=32: -dynamic-linker /lib/ld.so.1}}} \
+       %{static:-static}}} \
+ %{mabi=n32:-melf32%{EB:b}%{EL:l}tsmipn32} \
+diff -Naur gcc-4.1-20061222-old/gcc/config/rs6000/linux64.h gcc-4.1-20061222-new/gcc/config/rs6000/linux64.h
+--- gcc-4.1-20061222-old/gcc/config/rs6000/linux64.h	2006-02-10 12:58:33.000000000 -0800
++++ gcc-4.1-20061222-new/gcc/config/rs6000/linux64.h	2006-12-26 16:27:46.000000000 -0800
+@@ -343,7 +343,7 @@
+ 
+ #define LINK_OS_LINUX_SPEC64 "-m elf64ppc %{!shared: %{!static: \
+   %{rdynamic:-export-dynamic} \
+-  %{!dynamic-linker:-dynamic-linker /lib64/ld64.so.1}}}"
++  %{!dynamic-linker:-dynamic-linker /lib/ld64.so.1}}}"
+ 
+ #undef  TOC_SECTION_ASM_OP
+ #define TOC_SECTION_ASM_OP \
+diff -Naur gcc-4.1-20061222-old/gcc/config/sparc/linux64.h gcc-4.1-20061222-new/gcc/config/sparc/linux64.h
+--- gcc-4.1-20061222-old/gcc/config/sparc/linux64.h	2006-02-11 00:38:51.000000000 -0800
++++ gcc-4.1-20061222-new/gcc/config/sparc/linux64.h	2006-12-26 16:32:06.000000000 -0800
+@@ -171,12 +171,12 @@
+         %{static:-static}}} \
+ "
+ 
+-#define LINK_ARCH64_SPEC "-m elf64_sparc -Y P,/usr/lib64 %{shared:-shared} \
++#define LINK_ARCH64_SPEC "-m elf64_sparc -Y P,/usr/lib %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+         %{rdynamic:-export-dynamic} \
+-        %{!dynamic-linker:-dynamic-linker /lib64/ld-linux.so.2}} \
++        %{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2}} \
+         %{static:-static}}} \
+ "
+ 
+@@ -252,12 +252,12 @@
+ #else /* !SPARC_BI_ARCH */
+ 
+ #undef LINK_SPEC
+-#define LINK_SPEC "-m elf64_sparc -Y P,/usr/lib64 %{shared:-shared} \
++#define LINK_SPEC "-m elf64_sparc -Y P,/usr/lib %{shared:-shared} \
+   %{!shared: \
+     %{!ibcs: \
+       %{!static: \
+         %{rdynamic:-export-dynamic} \
+-        %{!dynamic-linker:-dynamic-linker /lib64/ld-linux.so.2}} \
++        %{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2}} \
+         %{static:-static}}} \
+ %{mlittle-endian:-EL} \
+ %{!mno-relax:%{!r:-relax}} \

@@ -60,7 +60,7 @@ start() {
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
-            mm_mythdb_setting_set "UseChromaKeyOSD" "1"
+            mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         via_pro)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
@@ -70,7 +70,7 @@ start() {
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
-            mm_mythdb_setting_set "UseChromaKeyOSD" "1"
+            mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         vmware)
             PREFERRED_MPEG2_DECODER='ffmpeg'
@@ -84,21 +84,21 @@ start() {
 
     case "${PREFERRED_MPEG2_DECODER}" in
         ffmpeg)
-            mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         libmpeg2)
-            mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         xvmc)
-            mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         xvmc-vld)
-            mm_mythdb_setting_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
     esac
 
     if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
-        mm_mythdb_setting_update Deinterlace 0
+        mm_mythdb_settings_update Deinterlace 0
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /home/minimyth/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /home/minimyth/.xine/config
         /bin/sed -i "s%@BOBDEINT@%%"                /home/minimyth/.mplayer/config
@@ -132,8 +132,8 @@ start() {
                 fi
                 ;;
         esac
-        mm_mythdb_setting_update Deinterlace 1
-        mm_mythdb_setting_update DeinterlaceFilter ${DEINTERLACE_FILTER}
+        mm_mythdb_settings_update Deinterlace 1
+        mm_mythdb_settings_update DeinterlaceFilter ${DEINTERLACE_FILTER}
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /home/minimyth/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /home/minimyth/.xine/config
         /bin/sed -i "s%@BOBDEINT@%:bobdeint%"       /home/minimyth/.mplayer/config
