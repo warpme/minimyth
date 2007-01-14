@@ -3,6 +3,7 @@ GARVERSION = 2.16
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-broken.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
