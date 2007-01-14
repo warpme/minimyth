@@ -4,47 +4,51 @@
 
 conf_check_x() {
     # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_NO_VNC}"          ; then
+    if /usr/bin/test ! -z "${MM_NO_VNC}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_NO_X}"            ; then
+    if /usr/bin/test ! -z "${MM_NO_X}"                  ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_NO_XWM}"          ; then
+    if /usr/bin/test ! -z "${MM_NO_XWM}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_TV}"            ; then
+    if /usr/bin/test ! -z "${MM_X_SCREENSAVER_ENABLED}" ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_SCREENSAVER_ENABLED" is obsolete.'
+        exit 1
+    fi
+    if /usr/bin/test ! -z "${MM_X_TV}"                  ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"   ; then
+    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DVI_ENABLED" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"   ; then
+    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_VGA_ENABLED" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"    ; then
+    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV_ENABLED" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}" ; then
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}"       ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_X" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}" ; then
+    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}"       ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_Y" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"  ; then
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_X" is obsolete.'
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"  ; then
+    if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_Y" is obsolete.'
         exit 1
     fi
@@ -65,10 +69,11 @@ conf_check_x() {
         mm_message_output err "error: MM_X_VNC_ENABLED='${MM_X_VNC_ENABLED}' is not valid."
         exit 1
     fi
-    if /usr/bin/test ! -z "${MM_X_SCREENSAVER_ENABLED}"          && \
-       /usr/bin/test !    "${MM_X_SCREENSAVER_ENABLED}" = "yes"  && \
-       /usr/bin/test !    "${MM_X_SCREENSAVER_ENABLED}" = "no"   ; then
-        mm_message_output err "error: MM_X_SCREENSAVER_ENABLED='${MM_X_SCREENSAVER_ENABLED}' is not valid."
+    if /usr/bin/test ! -z "${MM_X_SCREENSAVER}"                  && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER}" = "none"         && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER}" = "xorg"         && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER}" = "xscreensaver" ; then
+        mm_message_output err "error: MM_X_SCREENSAVER='${MM_X_SCREENSAVER}' is not valid."
         exit 1
     fi
 
@@ -318,17 +323,17 @@ conf_default_x() {
     esac
 
     # X application variables.
-    if /usr/bin/test -z "${MM_X_ENABLED}"             ; then
+    if /usr/bin/test -z "${MM_X_ENABLED}"     ; then
         MM_X_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_WM_ENABLED}"          ; then
+    if /usr/bin/test -z "${MM_X_WM_ENABLED}"  ; then
         MM_X_WM_ENABLED='no'
     fi
-    if /usr/bin/test -z "${MM_X_VNC_ENABLED}"         ; then
+    if /usr/bin/test -z "${MM_X_VNC_ENABLED}" ; then
         MM_X_VNC_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_SCREENSAVER_ENABLED}" ; then
-        MM_X_SCREENSAVER_ENABLED='no'
+    if /usr/bin/test -z "${MM_X_SCREENSAVER}" ; then
+        MM_X_SCREENSAVER='none'
     fi
 
     # X display variables.
@@ -529,27 +534,27 @@ conf_default_x() {
 conf_write_x() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_X_DRIVER              "${MM_X_DRIVER}"
+    conf_variable_write "${conf_file}" MM_X_DRIVER      "${MM_X_DRIVER}"
 
-    conf_variable_write "${conf_file}" MM_X_ENABLED             "${MM_X_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_WM_ENABLED          "${MM_X_WM_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED         "${MM_X_VNC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_X_SCREENSAVER_ENABLED "${MM_X_SCREENSAVER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_ENABLED     "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_WM_ENABLED  "${MM_X_WM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_VNC_ENABLED "${MM_X_VNC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_SCREENSAVER "${MM_X_SCREENSAVER}"
 
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI          "${MM_X_OUTPUT_DVI}"
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA          "${MM_X_OUTPUT_VGA}"
-    conf_variable_write "${conf_file}" MM_X_OUTPUT_TV           "${MM_X_OUTPUT_TV}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI  "${MM_X_OUTPUT_DVI}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA  "${MM_X_OUTPUT_VGA}"
+    conf_variable_write "${conf_file}" MM_X_OUTPUT_TV   "${MM_X_OUTPUT_TV}"
 
-    conf_variable_write "${conf_file}" MM_X_TV_TYPE             "${MM_X_TV_TYPE}"
-    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT           "${MM_X_TV_OUTPUT}"
-    conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN         "${MM_X_TV_OVERSCAN}"
+    conf_variable_write "${conf_file}" MM_X_TV_TYPE     "${MM_X_TV_TYPE}"
+    conf_variable_write "${conf_file}" MM_X_TV_OUTPUT   "${MM_X_TV_OUTPUT}"
+    conf_variable_write "${conf_file}" MM_X_TV_OVERSCAN "${MM_X_TV_OVERSCAN}"
 
-    conf_variable_write "${conf_file}" MM_X_SYNC                "${MM_X_SYNC}"
-    conf_variable_write "${conf_file}" MM_X_REFRESH             "${MM_X_REFRESH}"
-    conf_variable_write "${conf_file}" MM_X_RESOLUTION          "${MM_X_RESOLUTION}"
-    conf_variable_write "${conf_file}" MM_X_MODELINE            "${MM_X_MODELINE}"
-    conf_variable_write "${conf_file}" MM_X_MODE                "${MM_X_MODE}"
-    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE         "${MM_X_DISPLAYSIZE}"
+    conf_variable_write "${conf_file}" MM_X_SYNC        "${MM_X_SYNC}"
+    conf_variable_write "${conf_file}" MM_X_REFRESH     "${MM_X_REFRESH}"
+    conf_variable_write "${conf_file}" MM_X_RESOLUTION  "${MM_X_RESOLUTION}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE    "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_MODE        "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE "${MM_X_DISPLAYSIZE}"
 
     return 0
 }

@@ -4,11 +4,14 @@
 
 /usr/bin/xsetroot -solid black
 /usr/bin/xset -dpms
-if /usr/bin/test "${MM_X_SCREENSAVER_ENABLED}" = "yes" ; then
+/usr/bin/xset s off
+if   /usr/bin/test "${MM_X_SCREENSAVER}" = "none"         ; then
+    :
+elif /usr/bin/test "${MM_X_SCREENSAVER}" = "xorg"         ; then
     /usr/bin/xset s on
     /usr/bin/xset s 120
-else
-    /usr/bin/xset s off
+elif /usr/bin/test "${MM_X_SCREENSAVER}" = "xscreensaver" ; then
+    /usr/bin/xscreensaver &
 fi
 if /usr/bin/test "${MM_X_VNC_ENABLED}" = "yes" ; then
     /usr/bin/x11vnc
