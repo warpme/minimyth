@@ -10,6 +10,8 @@ LABEL="begin"
 
   # For CDROMs and DVDs, create device symbolic link and create/delete mount points.
   ENV{ID_CDROM}!="?*"                                                         , GOTO="end-cdrom"
+    # Take care of permissions.
+    OWNER="root", GROUP="cdrom", MODE="0666"
     # Take care of DVDs mount points.
     ENV{ID_CDROM_DVD}!="?*"                                                   , GOTO="end-cdrom-dvd"
       ACTION!="add"                                                           , GOTO="end-cdrom-dvd-add"

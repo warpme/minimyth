@@ -19,35 +19,35 @@ start() {
     MM_MYTH_WOL_BROADCAST=`/sbin/ifconfig eth0 | /bin/grep ' Bcast:' | /bin/sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
 
     # Configure mysql.txt file.
-    /bin/sed -i "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%"                                   /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_DBUSERNAME@%${MM_MYTH_DBUSERNAME}%"                           /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_DBPASSWORD@%${MM_MYTH_DBPASSWORD}%"                           /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_DBNAME@%${MM_MYTH_DBNAME}%"                                   /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_SERVER@%${MM_MYTH_SERVER}%"                                   /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_DBUSERNAME@%${MM_MYTH_DBUSERNAME}%"                           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_DBPASSWORD@%${MM_MYTH_DBPASSWORD}%"                           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_DBNAME@%${MM_MYTH_DBNAME}%"                                   /home/minimyth/.mythtv/mysql.txt
     if /usr/bin/test "${MM_MYTH_WOL_ENABLED}" = "yes" ; then
-        /bin/sed -i "s%@MM_MYTH_WOL_FALSE@%\#%"                                           /root/.mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MYTH_WOL_TRUE@%%"                                              /root/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MYTH_WOL_FALSE@%\#%"                                           /home/minimyth/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MYTH_WOL_TRUE@%%"                                              /home/minimyth/.mythtv/mysql.txt
     else
-        /bin/sed -i "s%@MM_MYTH_WOL_FALSE@%%"                                             /root/.mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MYTH_WOL_TRUE@%\#%"                                            /root/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MYTH_WOL_FALSE@%%"                                             /home/minimyth/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MYTH_WOL_TRUE@%\#%"                                            /home/minimyth/.mythtv/mysql.txt
     fi
-    /bin/sed -i "s%@MM_MYTH_WOLSQLRECONNECTWAITTIME@%${MM_MYTH_WOLSQLRECONNECTWAITTIME}%" /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_WOLSQLCONNECTRETRY@%${MM_MYTH_WOLSQLCONNECTRETRY}%"           /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_WOLSQLCOMMAND@%${MM_MYTH_WOLSQLCOMMAND}%"                     /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_WOL_BROADCAST@%${MM_MYTH_WOL_BROADCAST}%"                     /root/.mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MYTH_WOL_MAC@%${MM_MYTH_WOL_MAC}%"                                 /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_WOLSQLRECONNECTWAITTIME@%${MM_MYTH_WOLSQLRECONNECTWAITTIME}%" /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_WOLSQLCONNECTRETRY@%${MM_MYTH_WOLSQLCONNECTRETRY}%"           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_WOLSQLCOMMAND@%${MM_MYTH_WOLSQLCOMMAND}%"                     /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_WOL_BROADCAST@%${MM_MYTH_WOL_BROADCAST}%"                     /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MYTH_WOL_MAC@%${MM_MYTH_WOL_MAC}%"                                 /home/minimyth/.mythtv/mysql.txt
 
     # If using wake-on-lan, then make sure that the Myth database is awake.
     if /usr/bin/test "${MM_MYTH_WOL_ENABLED}" = "yes" ; then
         WOLSqlConnectRetry=` \
-		/bin/cat /root/.mythtv/mysql.txt | \
+		/bin/cat /home/minimyth/.mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlConnectRetry=' | \
 		/bin/sed 's%WOLSqlConnectRetry=%%'`
         WOLSqlReconnectWaitTime=` \
-		/bin/cat /root/.mythtv/mysql.txt | \
+		/bin/cat /home/minimyth/.mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlReconnectWaitTime=' | \
 		/bin/sed 's%WOLSqlReconnectWaitTime=%%'`
         WOLSqlCommand=` \
-		/bin/cat /root/.mythtv/mysql.txt | \
+		/bin/cat /home/minimyth/.mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlCommand=' | \
 		/bin/sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1

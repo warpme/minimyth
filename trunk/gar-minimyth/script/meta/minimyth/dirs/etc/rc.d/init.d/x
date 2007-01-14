@@ -150,9 +150,12 @@ start() {
     # Turn off splash screen.
     mm_splash_halt
 
+    /bin/chown -R minimyth:minimyth /home/minimyth
+
     # Start X.
     if /usr/bin/test "${MM_X_ENABLED}" = "yes" ; then
-        /usr/bin/xinit &
+        /bin/su -c /usr/bin/xinit - minimyth &
+        #/usr/bin/xinit &
     fi
 
     return 0
