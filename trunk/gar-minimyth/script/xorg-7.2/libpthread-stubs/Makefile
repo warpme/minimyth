@@ -1,5 +1,5 @@
-GARNAME = libxcb
-GARVERSION = 1.0
+GARNAME = libpthread-stubs
+GARVERSION = 0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,12 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c \
-	$(CATEGORY)/libpthread-stubs \
-	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
-	$(CATEGORY)/xcb-proto
-BUILDDEPS = lib/libxslt
+DEPENDS = lang/c
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -24,7 +19,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-build-docs \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
@@ -34,6 +28,6 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 x-post-install:
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libxcb.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libxcb.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/pthread-stubs.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/pthread-stubs.pc
 	@$(MAKECOOKIE)
