@@ -1,0 +1,33 @@
+diff -Naur mythstream-0.17_2-old/mythstream/main.cpp mythstream-0.17_2-new/mythstream/main.cpp
+--- mythstream-0.17_2-old/mythstream/main.cpp	2006-10-08 15:55:35.000000000 -0700
++++ mythstream-0.17_2-new/mythstream/main.cpp	2006-10-13 16:43:09.000000000 -0700
+@@ -36,7 +36,7 @@
+ #include <mythtv/mythdialogs.h>
+ #include <mythtv/mythmedia.h>
+ #include <mythtv/mythplugin.h>
+-#include <mythtv/libmythui/myththemedmenu.h>
++#include <mythtv/themedmenu.h>
+ 
+ using namespace std;
+ 
+@@ -73,8 +73,8 @@
+ 
+ void runMenu(QString themedir, const QString &which_menu)
+ {
+-    MythThemedMenu *diag = new MythThemedMenu( themedir.ascii(), which_menu,
+-					gContext->GetMainWindow()->GetMainStack( ), "stream menu");
++    ThemedMenu *diag = new ThemedMenu(themedir.ascii(), which_menu,
++				       gContext->GetMainWindow(), "stream menu");
+ 
+     QString data;
+ 
+@@ -83,7 +83,8 @@
+ 
+     if (diag->foundTheme())
+     {
+-        GetMythMainWindow()->GetMainStack()->AddScreen(diag);
++        diag->exec();
++        delete diag;
+     }
+     else
+         cerr << "Couldn't find theme " << themedir << endl;
