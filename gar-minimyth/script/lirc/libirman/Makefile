@@ -23,6 +23,8 @@ INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir sbindir libdir sysconfdir incl
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
+CFLAGS := $(CFLAGS) -fPIC
+
 post-install:
 	@cp $(WORKSRC)/test_io   $(DESTDIR)/$(bindir)
 	@cp $(WORKSRC)/test_name $(DESTDIR)/$(bindir)
