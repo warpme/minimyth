@@ -1,8 +1,8 @@
 GARNAME = libdts
 GARVERSION = 0.0.2
 CATEGORIES = lib
-MASTER_SITES = http://debian.unnet.nl/pub/videolan/$(GARNAME)/$(GARVERSION)/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://download.videolan.org/pub/videolan/libdca/$(GARVERSION)/
+DISTFILES = libdca-$(GARVERSION).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 
