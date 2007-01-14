@@ -60,6 +60,11 @@ start() {
         . /etc/rc.d/init.d/conf.d/${file}
     done
 
+    # Clean configuration processing file state.
+    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+        conf_clean_${file}
+    done
+
     # Check MiniMyth configuration variables.
     for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
         conf_check_${file}
@@ -74,6 +79,11 @@ start() {
     /bin/rm -rf '/etc/conf.d/minimyth'
     for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
         conf_write_${file} '/etc/conf.d/minimyth'
+    done
+
+    # Clean configuration processing file state.
+    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+        conf_clean_${file}
     done
 
     return 0

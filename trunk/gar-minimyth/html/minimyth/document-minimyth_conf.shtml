@@ -64,6 +64,7 @@
               <dt><a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a></dt>
               <dt><a href="#MM_VIDEO_DEINTERLACE_ENABLED">MM_VIDEO_DEINTERLACE_ENABLED</a></dt>
               <dt><a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a></dt>
+              <dt><a href="#MM_VIDEO_RESIZE_ENABLED">MM_VIDEO_RESIZE_ENABLED</a></dt>
             </dl></dd>
             <dt><a href="#MM_X">X configuration variables</a></dt>
             <dd><dl>
@@ -526,6 +527,30 @@
                 resulting in smaller or larger MythTV fonts.
               </p>
             </dd>
+            <dt id="MM_VIDEO_RESIZE_ENABLED"><strong>MM_VIDEO_RESIZE_ENABLED</strong></dt>
+            <dd>
+              <p>
+                Specify whether or not you want to enable MythTV's video resizing (mode switching) based on the video.
+                Valid values are 'yes', 'no' and '', with '' being the default.
+              </p>
+              <p>
+                A value of 'yes' means that video resizing is enabled.
+                If video resizing is enabled,
+                then MiniMyth will enable MythTV's video resizing and configure MythTV's video resizing fields based on the values of
+                <a href="#MM_MODE">MM_MODE</a>,
+                <a href="#MM_MODE_0">MM_MODE_0</a>,
+                <a href="#MM_MODE_1">MM_MODE_1</a> and
+                <a href="#MM_MODE_2">MM_MODE_2</a>.
+              </p>
+              <p>
+                A value of 'no' means that video resizing is disabled.
+                If video resizing is disabled, then
+                then MiniMyth will disable MythTV's video resizing and delete MythTV's video resizing fields.
+              </p>
+              <p>
+                A value of '' means that MiniMyth will not change MythTV's video resizing fields.
+              </p>
+            </dd>
           </dl>
         </div>
         <div id="MM_X" class="section">
@@ -923,13 +948,28 @@
             <dd>
               <p>
                 Specify up to three additional built in screen modes that X will use.
+                The value can be the screen mode or 'auto' or 'none', with 'auto' being the default.
                 These screen modes must have the same form as 
                 '<a href="#MM_X_MODE">MM_X_MODE</a>'.
+              </p>
+              <p>
+                If the value is 'auto' and <a href="#MM_VIDEO_RESIZE_ENABLED">MM_VIDEO_RESIZE_ENABLED</a>='yes',
+                then the value will bet set based on
+                '<a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a>' and
+                '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>'.
+                Otherwise, if the value is 'auto', then the value will be set to 'none'.
               </p>
               <p>
                 If 'MM_X_MODE_n' is set, then
                 '<a href="#MM_X_MODELINE_n">MM_X_MODELINE_n</a>'
                 must not be set.
+                MiniMyth will derive the appropriate value for 'MM_X_MODE_n' based on
+                '<a href="#MM_X_MODELINE_n">MM_X_MODELINE_n</a>'.
+              </p>
+              <p>
+                If
+                <a href="#MM_VIDEO_RESIZE_ENABLED">MM_VIDEO_RESIZE_ENABLED</a>='yes',
+                then MiniMyth will use the 'MM_X_MODE_n' values to fill out MythTV's video resizing fields.
               </p>
             </dd>
           </dl>

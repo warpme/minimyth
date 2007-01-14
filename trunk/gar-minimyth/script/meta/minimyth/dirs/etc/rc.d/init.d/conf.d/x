@@ -1,6 +1,9 @@
 ################################################################################
 # X configuration variables.
 ################################################################################
+conf_clean_x() {
+    /bin/rm -rf /tmp/init.conf.x
+}
 
 conf_check_x() {
     local X_SYNC_ITEM
@@ -140,6 +143,18 @@ conf_check_x() {
         mm_message_output err "error: both 'MM_X_MODELINE' and 'MM_X_MODE' cannot be set."
         exit 1
     fi
+    if /usr/bin/test -n "${MM_X_MODELINE_0}" && /usr/bin/test -n "${MM_X_MODE_0}"   ; then
+        mm_message_output err "error: both 'MM_X_MODELINE_0' and 'MM_X_MODE_0' cannot be set."
+        exit 1
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_1}" && /usr/bin/test -n "${MM_X_MODE_1}"   ; then
+        mm_message_output err "error: both 'MM_X_MODELINE_1' and 'MM_X_MODE_1' cannot be set."
+        exit 1
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_2}" && /usr/bin/test -n "${MM_X_MODE_2}"   ; then
+        mm_message_output err "error: both 'MM_X_MODELINE_2' and 'MM_X_MODE_2' cannot be set."
+        exit 1
+    fi
     # Check the format of MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
         if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*$' > /dev/null 2>&1 ; then
@@ -173,25 +188,25 @@ conf_check_x() {
         fi
     fi
     # Check the format of MM_X_MODE.
-    if /usr/bin/test -n "${MM_X_MODE}" ; then
+    if /usr/bin/test -n "${MM_X_MODE}"   && /usr/bin/test ! "${MM_X_MODE}"   = "auto"; then
         if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
             exit 1
         fi
     fi
-    if /usr/bin/test -n "${MM_X_MODE_0}" ; then
+    if /usr/bin/test -n "${MM_X_MODE_0}" && /usr/bin/test ! "${MM_X_MODE_0}" = "auto" && /usr/bin/test ! "${MM_X_MODE_0}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_0} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_0' format is not valid'
             exit 1
         fi
     fi
-    if /usr/bin/test -n "${MM_X_MODE_1}" ; then
+    if /usr/bin/test -n "${MM_X_MODE_1}" && /usr/bin/test ! "${MM_X_MODE_1}" = "auto" && /usr/bin/test ! "${MM_X_MODE_1}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_1} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_1' format is not valid'
             exit 1
         fi
     fi
-    if /usr/bin/test -n "${MM_X_MODE_2}" ; then
+    if /usr/bin/test -n "${MM_X_MODE_2}" && /usr/bin/test ! "${MM_X_MODE_2}" = "auto" && /usr/bin/test ! "${MM_X_MODE_2}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_2} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_2' format is not valid'
             exit 1
@@ -205,8 +220,14 @@ conf_default_x() {
 
     local X_RESOLUTION_X
     local X_RESOLUTION_Y
+    local X_VIRTUAL_X
+    local X_VIRTUAL_Y
     local X_DISPLAYSIZE_X
     local X_DISPLAYSIZE_Y
+
+    if /usr/bin/test -e '/tmp/init.conf.x/conf_default_x' ; then
+        return 0
+    fi
 
     # The routine relies on MM_VIDEO_* variables.
     conf_default_video
@@ -400,6 +421,70 @@ conf_default_x() {
 
     # X display variables.
     # Auto-configure MM_X_SYNC, MM_X_REFRESH and MM_X_MODE.
+    /usr/bin/test "${MM_X_MODE}"   = "auto" && MM_X_MODE=''
+    /usr/bin/test "${MM_X_MODE_0}" = "auto" && MM_X_MODE_0=''
+    /usr/bin/test "${MM_X_MODE_1}" = "auto" && MM_X_MODE_1=''
+    /usr/bin/test "${MM_X_MODE_2}" = "auto" && MM_X_MODE_2=''
+    if /usr/bin/test "${MM_VIDEO_RESIZE_ENABLED}" = "yes" ; then
+        case "${MM_VIDEO_ASPECT_RATIO}" in
+            4:3)
+                ;;
+            16:9)
+                case "${MM_X_TV_TYPE}" in
+                    NTSC|NTSC-J|NTSC-M)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="1920x1080"
+                        ;;
+                    PAL|PAL-B|PAL-D|PAL-G|PAL-H|PAL-I|PAL-K1|PAL-M|PAL-N|PAL-NC)
+                        ;;
+                    HD480i)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="none"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
+                        ;;
+                    HD480p)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="none"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
+                        ;;
+                    HD720p)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
+                        ;;
+                    HD1080i)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="1920x1080"
+                        ;;
+                    HD1080p)
+                        /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
+                        /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
+                        /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="1280x720"
+                        /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="1920x1080"
+                        ;;
+                    HD576i)
+                        ;;
+                    HD576p)
+                        ;;
+                esac
+                ;;
+            *)
+                ;;
+        esac
+    fi
     if   /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" ; then
         # Use default MythTV size.
         case ${MM_VIDEO_ASPECT_RATIO} in
@@ -551,14 +636,58 @@ conf_default_x() {
         MM_X_RESOLUTION=`/bin/echo ${MM_X_MODE} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1x\2%'`
     fi
 
-    # Auto-configure MM_X_DISPLAYSIZE based on MM_X_RESOLUTION.
-    if /usr/bin/test -z "${MM_X_DISPLAYSIZE}"         || /usr/bin/test "${MM_X_DISPLAYSIZE}"         = "auto" ; then
-        if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
-            mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
-            exit 1
+    # Auto-configure MM_X_VIRTUAL based on MM_X_MODE.
+    if /usr/bin/test -z "${MM_X_VIRTUAL}" ; then
+        X_VIRTUAL_X=0
+        X_VIRTUAL_Y=0
+        if /usr/bin/test ! -z "${MM_X_MODE}"   && /usr/bin/test ! "${MM_X_MODE}"   = "none" ; then
+            X_RESOLUTION_X=`/bin/echo ${MM_X_MODE}     | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1%'`
+            X_RESOLUTION_Y=`/bin/echo ${MM_X_MODE}     | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\2%'`
+            if /usr/bin/test ${X_VIRTUAL_X} -lt ${X_RESOLUTION_X} ; then
+                X_VIRTUAL_X=${X_RESOLUTION_X}
+            fi
+            if /usr/bin/test ${X_VIRTUAL_Y} -lt ${X_RESOLUTION_Y} ; then
+                X_VIRTUAL_Y=${X_RESOLUTION_Y}
+            fi
         fi
-        X_RESOLUTION_X=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\)$%\1%'`
-        X_RESOLUTION_Y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\)$%\2%'`
+        if /usr/bin/test ! -z "${MM_X_MODE_0}" && /usr/bin/test ! "${MM_X_MODE_0}" = "none" ; then
+            X_RESOLUTION_X=`/bin/echo ${MM_X_MODE_0} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1%'`
+            X_RESOLUTION_Y=`/bin/echo ${MM_X_MODE_0} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\2%'`
+            if /usr/bin/test ${X_VIRTUAL_X} -lt ${X_RESOLUTION_X} ; then
+                X_VIRTUAL_X=${X_RESOLUTION_X}
+            fi
+            if /usr/bin/test ${X_VIRTUAL_Y} -lt ${X_RESOLUTION_Y} ; then
+                X_VIRTUAL_Y=${X_RESOLUTION_Y}
+            fi
+        fi
+        if /usr/bin/test ! -z "${MM_X_MODE_1}" && /usr/bin/test ! "${MM_X_MODE_1}" = "none" ; then
+            X_RESOLUTION_X=`/bin/echo ${MM_X_MODE_1} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1%'`
+            X_RESOLUTION_Y=`/bin/echo ${MM_X_MODE_1} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\2%'`
+            if /usr/bin/test ${X_VIRTUAL_X} -lt ${X_RESOLUTION_X} ; then
+                X_VIRTUAL_X=${X_RESOLUTION_X}
+            fi
+            if /usr/bin/test ${X_VIRTUAL_Y} -lt ${X_RESOLUTION_Y} ; then
+                X_VIRTUAL_Y=${X_RESOLUTION_Y}
+            fi
+        fi
+        if /usr/bin/test ! -z "${MM_X_MODE_2}" && /usr/bin/test ! "${MM_X_MODE_2}" = "none" ; then
+            X_RESOLUTION_X=`/bin/echo ${MM_X_MODE_2} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1%'`
+            X_RESOLUTION_Y=`/bin/echo ${MM_X_MODE_2} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\2%'`
+            if /usr/bin/test ${X_VIRTUAL_X} -lt ${X_RESOLUTION_X} ; then
+                X_VIRTUAL_X=${X_RESOLUTION_X}
+            fi
+            if /usr/bin/test ${X_VIRTUAL_Y} -lt ${X_RESOLUTION_Y} ; then
+                X_VIRTUAL_Y=${X_RESOLUTION_Y}
+            fi
+        fi
+        MM_X_VIRTUAL="${X_VIRTUAL_X}x${X_VIRTUAL_Y}"
+    fi
+
+    # Auto-configure MM_X_DISPLAYSIZE based on MM_X_VIRTUAL.
+    if /usr/bin/test -z "${MM_X_DISPLAYSIZE}" || /usr/bin/test "${MM_X_DISPLAYSIZE}" = "auto" ; then
+        X_VIRTUAL_X=`/bin/echo ${MM_X_VIRTUAL} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1%'`
+        X_VIRTUAL_Y=`/bin/echo ${MM_X_VIRTUAL} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\2%'`
+
         # MythTV is reported to work best at 100dots/inch.
         # (100dots/inch) / (25.4inch/mm) ~ 4dots/mm
         # Y in mm = (Y in dots) / (4dots/mm)
@@ -572,12 +701,12 @@ conf_default_x() {
         fi
         case ${MM_VIDEO_ASPECT_RATIO} in
             4:3)
-                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 3)) * 3))
+                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 3)) * 3))
                 X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} *  4 / 3))
                 MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
                 ;;
             16:9)
-                X_DISPLAYSIZE_Y=$(($(($((${X_RESOLUTION_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 9)) * 9))
+                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 9)) * 9))
                 X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 / 9))
                 MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
                 ;;
@@ -610,6 +739,9 @@ conf_default_x() {
 
     MM_X_SYNC="HorizSync ${MM_X_SYNC}"
     MM_X_REFRESH="VertRefresh ${MM_X_REFRESH}"
+
+    mkdir -p '/tmp/init.conf.x'
+    touch    '/tmp/init.conf.x/conf_default_x'
 
     return 0
 }
@@ -644,6 +776,7 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_MODE_0           "${MM_X_MODE_0}"
     conf_variable_write "${conf_file}" MM_X_MODE_1           "${MM_X_MODE_1}"
     conf_variable_write "${conf_file}" MM_X_MODE_2           "${MM_X_MODE_2}"
+    conf_variable_write "${conf_file}" MM_X_VIRTUAL          "${MM_X_VIRTUAL}"
     conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE      "${MM_X_DISPLAYSIZE}"
 
     return 0
