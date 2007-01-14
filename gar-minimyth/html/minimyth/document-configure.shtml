@@ -83,11 +83,24 @@
         <div id="location" class="section">
           <div class="heading">Location of configuration files</div>
           <p>
-            MiniMyth looks for configuration files and scripts in the MiniMyth configuration directory.
-            The MiniMyth configuration directory is named 'conf'.
+            MiniMyth looks for configuration files and scripts in the MiniMyth configuration directories.
+            There are two MiniMyth configuration directories:
+            the read-only configuration directory and the read-write configuration directory.
           </p>
           <p>
-            MiniMyth looks for the MiniMyth configuration directory in the MiniMyth boot directory.
+            The read-only MiniMyth configuration directory is named 'conf' and is required.
+            This directory (actually a sub-directory of this directory) is where you would put configuration files that you create.
+            This directory may be read-only.
+          </p>
+          <p>
+            The read-write MiniMyth configuration directory is named 'conf-rw' and is optional.
+            This directory is where MiniMyth put files that it creates.
+            For example, when MiniMyth saves game configurations it saves them in this directory.
+            This directory is only required when you are using a MiniMyth feature that saves files across reboot.
+            This directory must be read-write.
+          </p>
+          <p>
+            MiniMyth looks for the MiniMyth configuration directories in the MiniMyth boot directory.
             MiniMyth 'guesses' the location of the boot directory as follows.
             If the file system contains the directory '/minimyth', then MiniMyth assumes that '/minimyth' is the boot directory.
             Otherwise, MiniMyth assumes the boot directory is the directory on the TFTP server that contains the boot loader.
@@ -95,18 +108,20 @@
           <p>
             In practice, this means that
             if you network boot MiniMyth
-            then you put the MiniMyth configuration directory in the same directory on the TFTP server as the network boot loader
+            then you put the MiniMyth configuration directories in the same directory on the TFTP server as the network boot loader
             (called 'pxelinux.0' when using PXELinux), and that
             if you local boot MiniMyth,
-            then you put the MiniMyth configuration directory at the root of the partition labeled 'minimyth',
+            then you put the MiniMyth configuration directories at the root of the partition labeled 'minimyth',
             which MiniMyth will automatically mount at the mount point '/minimyth'.
           </p>
           <p>
             Once MiniMyth has 'guessed' the boot directory (lets call it '{boot}'),
             then MiniMyth looks for configuration files
-            first in the directory '{boot}/conf/{hostname}' and
-            second in the directory '{boot}/conf/default',
-            where '{hostname}' is the hostname of the MiniMyth frontend.
+            first as the file '{boot}/conf/{hostname}+{file}'
+            second as the file '{boot}/conf/{hostname}/{file}' and
+            third as the file '{boot}/conf/default/{file}',
+            where '{hostname}' is the hostname of the MiniMyth frontend
+            and '{file}' is the name of the configuration file.
           </p>
         </div>
         <div id="minimyth_conf" class="section">
@@ -186,7 +201,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2006-12-06 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2006-12-29 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
