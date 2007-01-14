@@ -56,8 +56,6 @@ clean-all:
 	@$(MAKE) clean     -C ../drm
 	@$(MAKE) clean     -C ../imon_vfd
 	@$(MAKE) clean     -C ../linux
-	@$(MAKE) clean     -C ../unionfs
-	@$(MAKE) clean     -C ../vt1211
 	@$(MAKE) clean     -C ../../lirc
 	@$(MAKE) clean-all -C ../../nvidia
 	@rm -rf $(DESTDIR)$(LINUX_DIR)
