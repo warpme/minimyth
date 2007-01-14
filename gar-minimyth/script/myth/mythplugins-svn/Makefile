@@ -12,11 +12,11 @@ endef
 
 DEPENDS  = lang/c myth/mythtv-svn
 # mythdvd
-DEPENDS += lib/libdvdread
-# mythgallery
 DEPENDS += lib/libexif lib/libtiff
 # mythmusic
 DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
+# mythvideo (mtd)
+DEPENDS += lib/libdvdread
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -28,7 +28,6 @@ CONFIGURE_ARGS = \
 	--libdir-name="lib" \
 	--disable-all \
 	--enable-opengl \
-	--enable-mythdvd \
 	--enable-mythgallery \
 		--enable-exif \
 		--enable-new-exif \
