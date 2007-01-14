@@ -226,7 +226,7 @@ mm-check:
 	fi
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "8178" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "8776" ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "9629" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9631" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9742" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \

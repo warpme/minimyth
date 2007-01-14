@@ -69,7 +69,7 @@ mm_MYTH_VERSION      ?= stable20
 # Valid values are '6.8', '7.0', '7.1' and '7.2' (7.2RC1+).
 mm_XORG_VERSION      ?= 7.0
 # The version of the NVIDIA driver.
-# Valid values are '8178', '8776', '9629' and '9742' (beta).
+# Valid values are '8178', '8776', '9631' and '9742' (beta).
 mm_NVIDIA_VERSION    ?= 8178
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
