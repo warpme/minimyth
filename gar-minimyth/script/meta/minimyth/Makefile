@@ -54,7 +54,7 @@ DEPENDS = \
 	utils/transcode \
 	system/udev \
 	utils/usbutils \
-	utils/util-linux \
+	utils/util-linux-ng \
 	devel/valgrind \
 	emulators/VisualBoyAdvance \
 	net/wakelan \
@@ -75,7 +75,7 @@ BUILDDEPS = \
 	utils/findutils \
 	utils/squashfs \
 	utils/tar \
-	utils/util-linux \
+	utils/util-linux-ng \
 	xorg/xorg
 
 BUILD_SCRIPTS   = custom

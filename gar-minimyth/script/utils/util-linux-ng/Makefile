@@ -1,8 +1,7 @@
-GARNAME = util-linux
-GARVERSION = 2.13-pre7
+GARNAME = util-linux-ng
+GARVERSION = v2.13-pre7
 CATEGORIES = utils
-MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/
-MASTER_SITES += ftp://ftp.kernel.org/pub/linux/utils/util-linux/testing/
+MASTER_SITES = git://git.kernel.org/pub/scm/utils/util-linux-ng/util-linux-ng.git/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-swap_configure.patch
 LICENSE = BSD/GPL2
@@ -40,3 +39,15 @@ usrsbinexecdir := $(sbindir)
 bindir         := $(ebindir)
 sbindir        := $(esbindir)
 libdir         := $(elibdir)
+
+git//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@rm -f $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
