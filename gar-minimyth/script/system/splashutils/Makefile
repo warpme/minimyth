@@ -42,5 +42,5 @@ include ../../gar.mk
 
 configure-kernel:
 	@rm -rf $(WORKSRC)/linux
-	@ln -s $(DESTDIR)$(KERNEL_SOURCEDIR) $(WORKSRC)/linux
+	@ln -s $(DESTDIR)$(LINUX_SOURCEDIR) $(WORKSRC)/linux
 	@$(MAKECOOKIE)

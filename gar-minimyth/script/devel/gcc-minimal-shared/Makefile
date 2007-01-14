@@ -13,7 +13,7 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-$(CROSSIMG)_DEPENDS = kernel/linux-libc-headers devel/glibc-crtobjs
+$(CROSSIMG)_DEPENDS = kernel/linux-headers devel/glibc-crtobjs
 DEPENDS = lang/c devel/binutils
 endif
 

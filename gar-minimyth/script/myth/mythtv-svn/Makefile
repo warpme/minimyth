@@ -50,7 +50,7 @@ CONFIGURE_ARGS = \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
-	--dvb-path="$(DESTDIR)$(KERNEL_SOURCEDIR)/include" \
+	--dvb-path="$(DESTDIR)$(LINUX_SOURCEDIR)/include" \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \

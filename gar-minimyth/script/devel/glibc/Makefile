@@ -15,7 +15,7 @@ ifeq ($(DESTIMG),build)
 DEPENDS   = lang/c
 BUILDDEPS = devel/binutils devel/gcc
 else
-DEPENDS   = lang/c kernel/linux-libc-headers devel/glibc-headers
+DEPENDS   = lang/c kernel/linux-headers devel/glibc-headers
 BUILDDEPS = devel/binutils devel/gcc-minimal-shared
 endif
 
@@ -38,6 +38,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-profile \
 	--enable-omitfp \
 	--enable-bind-now \
+	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
@@ -58,6 +59,7 @@ endif
 INSTALL_ARGS    = \
 	install_root=$(DESTDIR)
 
+GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))

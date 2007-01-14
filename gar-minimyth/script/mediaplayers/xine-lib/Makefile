@@ -179,7 +179,7 @@ CONFIGURE_ARGS_1.1.2 = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-sdl-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
-	--with-linux-path="$(KERNEL_SOURCEDIR)" \
+	--with-linux-path="$(LINUX_SOURCEDIR)" \
 	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
 	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
 	--with-alsa-prefix="$(DESTDIR)$(prefix)" \
@@ -255,7 +255,7 @@ CONFIGURE_ARGS_1.1.3 = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-dxheaders \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
-	--with-linux-path="$(KERNEL_SOURCEDIR)" \
+	--with-linux-path="$(LINUX_SOURCEDIR)" \
 	--with-vorbis \
 	--with-theora \
 	--without-speex \

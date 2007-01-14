@@ -1,14 +1,11 @@
 GARNAME = mysql
-GARVERSION = 4.1.22
+GARVERSION = 5.0.27
 CATEGORIES = db
-MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-4.1/
-MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-4.1/
-MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-4.1/
+MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
+MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
+MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-configure.patch
-ifneq ($(DESTIMG),build)
-PATCHFILES += $(DISTNAME)-cross.patch
-endif
 LICENSE = GPL2
 
 DESCRIPTION = 

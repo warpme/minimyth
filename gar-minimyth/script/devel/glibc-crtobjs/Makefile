@@ -8,7 +8,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux-libc-headers
+DEPENDS = lang/c kernel/linux-headers
 BUILDDEPS = devel/binutils devel/gcc-minimal-static
 
 # If this is the build image and the system is using linuxthreads, then we need to use linux threads.
@@ -31,6 +31,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-profile \
 	--enable-omitfp \
 	--enable-bind-now \
+	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \

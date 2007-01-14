@@ -1,0 +1,21 @@
+diff -Naur strace-4.5.14-old/system.c strace-4.5.14-new/system.c
+--- strace-4.5.14-old/system.c	2006-12-10 07:09:11.000000000 -0800
++++ strace-4.5.14-new/system.c	2006-12-10 07:12:22.000000000 -0800
+@@ -60,6 +60,7 @@
+ #include <arpa/inet.h>
+ 
+ #include <sys/syscall.h>
++#include <linux/version.h>
+ 
+ #ifdef SYS_capget
+ #include <linux/capability.h>
+@@ -1578,7 +1579,9 @@
+ 	{ CTL_KERN, "CTL_KERN" },
+ 	{ CTL_VM, "CTL_VM" },
+ 	{ CTL_NET, "CTL_NET" },
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,18)
+ 	{ CTL_PROC, "CTL_PROC" },
++#endif
+ 	{ CTL_FS, "CTL_FS" },
+ 	{ CTL_DEBUG, "CTL_DEBUG" },
+ 	{ CTL_DEV, "CTL_DEV" },
