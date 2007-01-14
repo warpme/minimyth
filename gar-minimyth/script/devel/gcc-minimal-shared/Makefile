@@ -28,7 +28,7 @@ CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
@@ -41,11 +41,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-nls \
 	--enable-shared \
         --enable-threads=no \
-        --enable-version-specific-runtime-libs \
+        --enable-version-specific-runtime-libs
+# Avoid sysroot for minimal native compiler because linker may not have sysroot support.
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+CONFIGURE_ARGS += \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
+endif
 # Bootstrap the native environment compiler.
-ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-BUILD_ARGS     = \
+ifeq  ("$(DESTIMG)+$(CROSSIMG)","build+build")
+BUILD_ARGS      = \
 	bootstrap
 endif
 

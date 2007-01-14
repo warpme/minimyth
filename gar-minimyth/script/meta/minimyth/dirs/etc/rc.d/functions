@@ -453,17 +453,17 @@ mm_squashfs_themecache_make() {
 
     local FILE
 
-    if /usr/bin/test ! -d /root/.mythtv/themecache ; then
+    if /usr/bin/test ! -d /home/minimyth/.mythtv/themecache ; then
         /bin/echo "error: the MythTV themecache directory does not exist."
         return 1
     fi
-    if /usr/bin/test ! "`cd /root/.mythtv/themecache ; ls -1 | /bin/grep -c *`" = "1" ; then
+    if /usr/bin/test ! "`cd /home/minimyth/.mythtv/themecache ; ls -1 | /bin/grep -c *`" = "1" ; then
         /bin/echo "error: the MythTV themecache directory does not contain exactly one cached theme."
         return 1
     fi
 
-    FILE=/`cd /root/.mythtv/themecache ; ls`.sfs
-    /usr/bin/mksquashfs /root/.mythtv/themecache ${FILE} > /dev/null 2>&1
+    FILE=/`cd /home/minimyth/.mythtv/themecache ; ls`.sfs
+    /usr/bin/mksquashfs /home/minimyth/.mythtv/themecache ${FILE} > /dev/null 2>&1
     if /usr/bin/test $? -ne 0 ; then
         /bin/rm -f ${FILE}
         /bin/echo "error: mksquashfs failed."

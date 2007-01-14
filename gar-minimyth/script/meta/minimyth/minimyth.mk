@@ -323,8 +323,9 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
+	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
 	@cp -r  $(mm_HOME)/html/css/*                    $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
@@ -332,8 +333,8 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
 	@cp -r  $(mm_HOME)/html/script/*                 $(mm_ROOTFSDIR)/srv/www/script/
 	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
-	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/root/.lircrc
-	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/root/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.lircrc
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -530,26 +531,32 @@ mm-make-distro:
 	@# Make root file system squashfs image file.
 	@echo "  making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
-	@fakeroot sh -c                                                                          " \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)               ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
-		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
+	@fakeroot sh -c                                                                                        " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                                ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1                            ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                                ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)                             ; \
+		chown -R $(call GET_UID,mythtv):$(call GET_GID,mythtv) $(mm_ROOTFSDIR)/rootfs-ro/home/minimyth ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                                  ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                                   ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                                            ; \
+		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1               "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@# Make root file system tarball.
 	@echo "  making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
-	@fakeroot sh -c                                                                        " \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
-		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)             ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
+	@fakeroot sh -c                                                                                        " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                                ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                              ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1                            ; \
+		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                                ; \
+		chown -R $(call GET_UID,root):$(call GET_GID,root) $(mm_ROOTFSDIR)                             ; \
+		chown -R $(call GET_UID,mythtv):$(call GET_GID,mythtv) $(mm_ROOTFSDIR)/rootfs-ro/home/minimyth ; \
+		chmod -R go-w $(mm_ROOTFSDIR)                                                                  ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                                   ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                                            ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs                 "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@# Make extras squashfs image file.
 	@echo "  making extras squashfs image file"
