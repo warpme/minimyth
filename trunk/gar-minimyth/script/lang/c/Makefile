@@ -30,9 +30,10 @@ BUILDDEPS += \
 	devel/patch \
 	utils/which \
 	utils/file \
-	utils/gzip \
+	utils/tar \
 	utils/bzip2 \
-	utils/tar
+	utils/gzip \
+	utils/unzip
 
 include ../../gar.mk
 
