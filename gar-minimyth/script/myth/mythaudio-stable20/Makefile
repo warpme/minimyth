@@ -19,9 +19,12 @@ endef
 DEPENDS  = lang/c myth/mythtv-stable20
 DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 CONFIGURE_ENV = \
 	DESTDIR="$(DESTDIR)" \
@@ -62,6 +65,10 @@ dir/%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
