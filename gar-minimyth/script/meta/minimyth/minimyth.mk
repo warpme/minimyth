@@ -698,6 +698,7 @@ mm-make-source:
 		$(SOURCE_DIR_TAIL)
 	@cd $(mm_STAGEDIR)/source ; tar -jxf $(SOURCE_DIR_TAIL).tar.bz2
 	@cd $(mm_STAGEDIR)/source ; test "$(SOURCE_DIR_TAIL)" = "gar-$(mm_NAME)" || mv $(SOURCE_DIR_TAIL) gar-$(mm_NAME)
+	@cd $(mm_STAGEDIR)/source/gar-$(mm_NAME) ; rm -rf `find -name .svn`
 	@tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)
 	@rm -fr $(mm_STAGEDIR)/source
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2

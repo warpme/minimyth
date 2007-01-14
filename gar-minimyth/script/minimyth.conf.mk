@@ -51,7 +51,7 @@ mm_INSTALL_NFS_BOOT  ?= no
 # Valid values for mm_INSTALL_LATEST are 'yes' and 'no'.
 mm_INSTALL_LATEST    ?= no
 # Indicates the directory where the GAR MiniMyth build system is installed.
-mm_HOME              ?= $(P4ROOT)/gar-minimyth
+mm_HOME              ?= $(HOME)/svnroot/minimyth/gar-minimyth
 # Indicates the pxeboot TFTP directory.
 # The MiniMyth kernel, the MiniMyth file system image and MiniMyth themes are
 # installed in this directory. The files will be installed in a subdirectory
