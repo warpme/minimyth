@@ -25,6 +25,8 @@ CONFIGURE_ARGS = \
 	--libdir-name="lib" \
 	--disable-ccache \
 	--disable-distcc \
+	--cross-prefix="$(compiler_prefix)" \
+	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
 	--cpu=$(GARCH) \
