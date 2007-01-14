@@ -3,6 +3,10 @@
 ################################################################################
 
 conf_check_x() {
+    local X_SYNC_ITEM
+    local X_REFRESH_ITEM
+    local IFS_SAVE
+
     # Check for obsolete variables.
     if /usr/bin/test ! -z "${MM_NO_VNC}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
@@ -85,23 +89,36 @@ conf_check_x() {
 
     # Check X display variables.
     # Check MM_X_SYNC.
-    if /usr/bin/test ! -z "${MM_X_SYNC}"                                                                                      && \
-       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
-       ! /bin/echo ${MM_X_SYNC}    | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
-        exit 1
+    if /usr/bin/test ! -z "${MM_X_SYNC}" ; then
+        IFS_SAVE=${IFS}
+        IFS=,
+        for X_SYNC_ITEM in ${MM_X_SYNC} ; do 
+            if ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
+               ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+                mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
+                exit 1
+            fi
+        done
+        IFS=${IFS_SAVE}
     fi
     # Check MM_X_REFRESH.
-    if /usr/bin/test ! -z "${MM_X_REFRESH}"                                                                                   && \
-       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
-       ! /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
-        exit 1
+    if /usr/bin/test ! -z "${MM_X_REFRESH}" ; then
+        IFS_SAVE=${IFS}
+        IFS=,
+        for X_REFRESH_ITEM in ${MM_X_REFRESH} ; do 
+
+            if ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
+               ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
+                mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
+                exit 1
+            fi
+        done
+        IFS=${IFS_SAVE}
     fi
-    # Make sure that MM_X_REFRESH is not a range when MM_X_RESOLUTION is set.
-    if /usr/bin/test -n "${MM_X_RESOLUTION}"                                                                                && \
-       /bin/echo ${MM_X_REFRESH} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
-        mm_message_output err "error: 'MM_X_REFRESH' cannot be set to a range when 'MM_X_RESOLUTION' is set."
+    # Make sure that MM_X_REFRESH is not a range or a list when MM_X_RESOLUTION is set.
+    if /usr/bin/test -n "${MM_X_RESOLUTION}"                                                       && \
+       /usr/bin/test `/bin/echo ${MM_X_REFRESH} | /bin/sed -e 's%[^-,]%%g' | /usr/bin/wc -c` -ne 0 ; then
+        mm_message_output err "error: 'MM_X_REFRESH' cannot be set to a range or a list when 'MM_X_RESOLUTION' is set."
         exit 1
     fi
     # Make sure that only one of MM_X_RESOLUTION, MM_X_MODELINE and MM_X_MODE is set.
@@ -131,10 +148,46 @@ conf_check_x() {
             exit 1
         fi
     fi
+    if /usr/bin/test -n "${MM_X_MODELINE_0}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_0} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_0' format is not valid'
+            exit 1
+        fi
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_1}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_1} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_1' format is not valid'
+            exit 1
+        fi
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_2}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_2} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_2' format is not valid'
+            exit 1
+        fi
+    fi
     # Check the format of MM_X_MODE.
     if /usr/bin/test -n "${MM_X_MODE}" ; then
         if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
+            exit 1
+        fi
+    fi
+    if /usr/bin/test -n "${MM_X_MODE_0}" ; then
+        if ! /bin/echo ${MM_X_MODE_0} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODE_0' format is not valid'
+            exit 1
+        fi
+    fi
+    if /usr/bin/test -n "${MM_X_MODE_1}" ; then
+        if ! /bin/echo ${MM_X_MODE_1} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODE_1' format is not valid'
+            exit 1
+        fi
+    fi
+    if /usr/bin/test -n "${MM_X_MODE_2}" ; then
+        if ! /bin/echo ${MM_X_MODE_2} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODE_2' format is not valid'
             exit 1
         fi
     fi
@@ -445,6 +498,27 @@ conf_default_x() {
         fi
         MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
     fi
+    if /usr/bin/test -n "${MM_X_MODELINE_0}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_0} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_0' format is not valid'
+            exit 1
+        fi
+        MM_X_MODE_0=`/bin/echo ${MM_X_MODELINE_0} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_1}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_1} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_1' format is not valid'
+            exit 1
+        fi
+        MM_X_MODE_1=`/bin/echo ${MM_X_MODELINE_1} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
+    fi
+    if /usr/bin/test -n "${MM_X_MODELINE_2}" ; then
+        if ! /bin/echo ${MM_X_MODELINE_2} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
+            mm_message_output err 'error: 'MM_X_MODELINE_2' format is not valid'
+            exit 1
+        fi
+        MM_X_MODE_2=`/bin/echo ${MM_X_MODELINE_2} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
+    fi
 
     # Auto-configure (or override) MM_X_MODE and MM_X_MODELINE based on MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
@@ -553,7 +627,13 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_REFRESH     "${MM_X_REFRESH}"
     conf_variable_write "${conf_file}" MM_X_RESOLUTION  "${MM_X_RESOLUTION}"
     conf_variable_write "${conf_file}" MM_X_MODELINE    "${MM_X_MODELINE}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_0  "${MM_X_MODELINE_0}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_1  "${MM_X_MODELINE_1}"
+    conf_variable_write "${conf_file}" MM_X_MODELINE_2  "${MM_X_MODELINE_2}"
     conf_variable_write "${conf_file}" MM_X_MODE        "${MM_X_MODE}"
+    conf_variable_write "${conf_file}" MM_X_MODE_0      "${MM_X_MODE_0}"
+    conf_variable_write "${conf_file}" MM_X_MODE_1      "${MM_X_MODE_1}"
+    conf_variable_write "${conf_file}" MM_X_MODE_2      "${MM_X_MODE_2}"
     conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE "${MM_X_DISPLAYSIZE}"
 
     return 0

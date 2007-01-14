@@ -129,6 +129,12 @@ start() {
             ;;
     esac
 
+    # Add quotes to variables that cannot be quoted directly in xorg.conf
+    /usr/bin/test -n "${MM_X_MODE}"   && MM_X_MODE="\"${MM_X_MODE}\""
+    /usr/bin/test -n "${MM_X_MODE_0}" && MM_X_MODE_0="\"${MM_X_MODE_0}\""
+    /usr/bin/test -n "${MM_X_MODE_1}" && MM_X_MODE_1="\"${MM_X_MODE_1}\""
+    /usr/bin/test -n "${MM_X_MODE_2}" && MM_X_MODE_2="\"${MM_X_MODE_2}\""
+    
     /bin/sed -i "s%@MM_X_DRIVER@%${MM_X_DRIVER}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_NVIDIA@%${MM_X_DEVICE_NVIDIA}%" /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_VIA@%${MM_X_DEVICE_VIA}%"       /etc/X11/xorg.conf
@@ -138,7 +144,13 @@ start() {
     /bin/sed -i "s%@MM_X_SYNC@%${MM_X_SYNC}%"                   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_REFRESH@%${MM_X_REFRESH}%"             /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_MODELINE@%${MM_X_MODELINE}%"           /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODELINE_0@%${MM_X_MODELINE_0}%"       /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODELINE_1@%${MM_X_MODELINE_1}%"       /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODELINE_2@%${MM_X_MODELINE_2}%"       /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_MODE@%${MM_X_MODE}%"                   /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODE_0@%${MM_X_MODE_0}%"               /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODE_1@%${MM_X_MODE_1}%"               /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MODE_2@%${MM_X_MODE_2}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DISPLAYSIZE@%${MM_X_DISPLAYSIZE}%"     /etc/X11/xorg.conf
     /bin/sed -i "s%@DRI_TRUE@%${DRI_TRUE}%"                     /etc/X11/xorg.conf
     /bin/sed -i "s%@NVIDIA_TRUE@%${NVIDIA_TRUE}%"               /etc/X11/xorg.conf
