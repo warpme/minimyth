@@ -19,7 +19,8 @@ INSTALL_SCRIPTS = custom
 BUILD_ENV = \
 	CC_FOR_BUILD="$(build_CC)" \
 	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
-	CFLAGS_FOR_TARGET="$(CFLAGS)"
+	CFLAGS_FOR_TARGET="$(CFLAGS)" \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),PTR64="1")
 
 include ../../gar.mk
 

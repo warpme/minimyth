@@ -33,7 +33,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x
 
 CONFIGURE_ENV = \
-	force_arch="$(GARCH)"
+	force_arch="$(GARCH)" \
+	CC_FOR_BUILD="$(build_CC)" \
+	CXX_FOR_BUILD="$(build_CXX)" \
+	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
+	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
+	CXXFLAGS_FOR_BUILD="$(build_CXXFLAGS)" \
+	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
 
 include ../../gar.mk
 

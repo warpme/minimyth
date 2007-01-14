@@ -3,6 +3,7 @@ GARVERSION = 2.2
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION = 
