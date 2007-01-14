@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = X11R7.1-1.1.0
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -142,7 +142,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/fonts/libtype1.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libafb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb16.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb24.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb32.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libddc.la
@@ -150,7 +149,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libi2c.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/liblayer.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libmfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libpcidata.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/librac.la
@@ -165,7 +163,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf4bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_32bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_32wid.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libdrm.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libfbdevhw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
