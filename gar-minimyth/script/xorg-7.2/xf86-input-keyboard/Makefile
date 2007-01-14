@@ -11,6 +11,9 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/kbproto \
+	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 

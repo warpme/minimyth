@@ -1,5 +1,5 @@
 GARNAME = libXdamage
-GARVERSION = X11R$(XORG_VERSION)-1.0.2.2
+GARVERSION = X11R7.0-1.0.2.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -24,7 +24,10 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-gnu-ld
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
+	--with-gnu-ld \
+	--with-x
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk

@@ -1,0 +1,42 @@
+GARNAME = libXdamage
+GARVERSION = X11R7.1-1.0.3
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c \
+	$(CATEGORY)/damageproto \
+	$(CATEGORY)/fixesproto \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXfixes \
+	$(CATEGORY)/xextproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
+	--with-gnu-ld \
+	--with-x
+
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
+include ../../gar.mk
+
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xdamage.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xdamage.pc
+	@$(MAKECOOKIE)

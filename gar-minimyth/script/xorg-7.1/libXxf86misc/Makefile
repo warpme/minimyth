@@ -1,0 +1,40 @@
+GARNAME = libXxf86misc
+GARVERSION = X11R7.1-1.0.1
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86miscproto \
+	$(CATEGORY)/xproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-malloc0returnsnull \
+	--with-gnu-ld
+
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
+include ../../gar.mk
+
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xxf86misc.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xxf86misc.pc
+	@$(MAKECOOKIE)

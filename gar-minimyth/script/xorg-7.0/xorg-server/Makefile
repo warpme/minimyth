@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = X11R$(XORG_VERSION)-1.0.1
+GARVERSION = X11R7.0-1.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -28,10 +28,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
-	$(CATEGORY)/libXi \
 	$(CATEGORY)/libxkbfile \
-	$(CATEGORY)/libXmu \
-	$(CATEGORY)/libXrender \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \
