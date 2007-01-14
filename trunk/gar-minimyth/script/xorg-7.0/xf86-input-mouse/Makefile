@@ -1,5 +1,5 @@
 GARNAME = xf86-input-mouse
-GARVERSION = X11R$(XORG_VERSION)-1.0.3.1
+GARVERSION = X11R7.0-1.0.3.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,6 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 

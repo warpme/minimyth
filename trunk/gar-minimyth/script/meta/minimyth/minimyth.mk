@@ -233,6 +233,7 @@ mm-check:
 	fi
 	@if [ ! "$(mm_XORG_VERSION)" = "6.8" ] && \
 	    [ ! "$(mm_XORG_VERSION)" = "7.0" ] && \
+	    [ ! "$(mm_XORG_VERSION)" = "7.1" ] && \
 	    [ ! "$(mm_XORG_VERSION)" = "7.2" ] ; then \
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \

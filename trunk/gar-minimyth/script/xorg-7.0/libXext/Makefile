@@ -1,5 +1,5 @@
 GARNAME = libXext
-GARVERSION = X11R$(XORG_VERSION)-1.0.0
+GARVERSION = X11R7.0-1.0.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,6 +12,7 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXau \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
 

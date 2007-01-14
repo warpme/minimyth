@@ -1,5 +1,5 @@
 GARNAME = xf86-input-keyboard
-GARVERSION = X11R$(XORG_VERSION)-1.0.1.3
+GARVERSION = X11R7.0-1.0.1.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,6 +11,9 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/kbproto \
+	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 

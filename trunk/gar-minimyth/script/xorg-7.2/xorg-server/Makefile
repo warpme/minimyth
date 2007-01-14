@@ -27,10 +27,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
-	$(CATEGORY)/libXi \
 	$(CATEGORY)/libxkbfile \
-	$(CATEGORY)/libXmu \
-	$(CATEGORY)/libXrender \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \

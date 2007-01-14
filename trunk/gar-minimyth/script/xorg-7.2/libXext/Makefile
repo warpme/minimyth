@@ -11,8 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/libXau \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXau \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
 

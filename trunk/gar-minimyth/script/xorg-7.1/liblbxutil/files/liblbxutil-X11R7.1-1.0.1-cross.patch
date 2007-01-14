@@ -1,0 +1,44 @@
+diff -Naur liblbxutil-X11R7.1-1.0.1-old/configure.ac liblbxutil-X11R7.1-1.0.1-new/configure.ac
+--- liblbxutil-X11R7.1-1.0.1-old/configure.ac	2006-05-19 11:36:46.000000000 -0700
++++ liblbxutil-X11R7.1-1.0.1-new/configure.ac	2006-11-11 15:52:01.000000000 -0800
+@@ -26,6 +26,9 @@
+ AC_PREREQ([2.57])
+ 
+ AC_INIT(lbxutil, 1.0.1, [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg], liblbxutil)
++AC_CANONICAL_BUILD
++AC_CANONICAL_HOST
++
+ AM_INIT_AUTOMAKE([dist-bzip2])
+ AM_MAINTAINER_MODE
+ 
+@@ -35,6 +38,15 @@
+ AC_PROG_CC
+ AC_PROG_LIBTOOL
+ 
++AC_MSG_CHECKING([for CC_FOR_BUILD])
++if test x$host != x$build ; then
++    CC_FOR_BUILD=${CC_FOR_BUILD-gcc}
++else
++    CC_FOR_BUILD=${CC}
++fi
++AC_MSG_RESULT([$CC_FOR_BUILD])
++AC_SUBST(CC_FOR_BUILD)
++
+ # Check for X
+ PKG_CHECK_MODULES(LBXUTIL, xextproto xproto)
+ 
+diff -Naur liblbxutil-X11R7.1-1.0.1-old/src/Makefile.am liblbxutil-X11R7.1-1.0.1-new/src/Makefile.am
+--- liblbxutil-X11R7.1-1.0.1-old/src/Makefile.am	2006-03-20 11:46:29.000000000 -0800
++++ liblbxutil-X11R7.1-1.0.1-new/src/Makefile.am	2006-11-11 15:51:35.000000000 -0800
+@@ -28,6 +28,11 @@
+ 
+ $(srcdir)/image/dfaxg42d.c: g3states.h
+ 
++mkg3states: $(mkg3states_SOURCES)
++	$(CC_FOR_BUILD) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
++	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
++	$(AM_LDFLAGS) $(LDFLAGS) -o $@ $<
++
+ g3states.h: mkg3states
+ 	-rm -f g3states.h
+ 	./mkg3states -c > g3states.h_ && mv g3states.h_ g3states.h
