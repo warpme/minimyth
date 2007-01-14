@@ -69,9 +69,9 @@
               <dt><a href="#MM_X_WM_ENABLED">MM_X_VM_ENABLED</a></dt>
               <dt><a href="#MM_X_VNC_ENABLED">MM_X_VNC_ENABLED</a></dt>
               <dt><a href="#MM_X_SCREENSAVER_ENABLED">MM_X_SCREENSAVER_ENABLED</a></dt>
-              <dt><a href="#MM_X_DVI_ENABLED">MM_X_DVI_ENABLED</a></dt>
-              <dt><a href="#MM_X_VGA_ENABLED">MM_X_VGA_ENABLED</a></dt>
-              <dt><a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a></dt>
+              <dt><a href="#MM_X_OUTPUT_DVI">MM_X_OUTPUT_DVI</a></dt>
+              <dt><a href="#MM_X_OUTPUT_VGA">MM_X_OUTPUT_VGA</a></dt>
+              <dt><a href="#MM_X_OUTPUT_TV">MM_X_OUTPUT_TV</a></dt>
               <dt><a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a></dt>
               <dt><a href="#MM_X_TV_OUTPUT">MM_X_TV_OUTPUT</a></dt>
               <dt><a href="#MM_X_TV_OVERSCAN">MM_X_TV_OVERSCAN</a></dt>
@@ -490,12 +490,12 @@
           <p>
             X needs a mode line in order to work.
             The X display configuration variables provide three methods for specifying the mode line.
-            <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>,
-            <a href="#MM_X_MODELINE">MM_X_MODELINE</a> and
-            <a href="#MM_X_MODE">MM_X_MODE</a>.
+            '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>',
+            '<a href="#MM_X_MODELINE">MM_X_MODELINE</a>' and
+            '<a href="#MM_X_MODE">MM_X_MODE</a>'.
             Since these are mutually exclusive, you must only set one of them in your MiniMyth configuration file.
             If you do not set one of them, then MiniMyth will pick a default for
-            <a href="#MM_X_MODE">MM_X_MODE</a>
+            '<a href="#MM_X_MODE">MM_X_MODE</a>'
             that may not be optimal but should work.
           </p>
           <p>
@@ -508,7 +508,7 @@
             Instead, it is optimized for 100 dots per inch.
             Therefore, MiniMyth calculates the physical display size so that the vertical dots per inch is 100.
             If this results in fonts that are too small or too large, then you can adjust the font size using
-            <a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a>.
+            '<a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a>'.
           </p>
           <p>
             The X application configuration variables are:
@@ -610,27 +610,84 @@
              The X output configuration variables are:
           </p>
           <dl>
-            <dt id="MM_X_DVI_ENABLED"><strong>MM_X_DVI_ENABLED</strong></dt>
+            <dt id="MM_X_OUTPUT_DVI"><strong>MM_X_OUTPUT_DVI</strong></dt>
             <dd>
               <p>
-                Specify whether or not to enable the DVI output.
-                Valid values are 'yes' and 'no', with 'no' being the default.
+                Specify the DVI-D output to use.
+                Valid values are 'none', 'auto' or DVI-D diplay number, with 'none' being the default.
+              </p>
+              <p>
+                If the value is 'none', then a DVD-D output will not be enabled.
+              </p>
+              <p>
+                If the value is 'auto', then a DVD-D output will be enabled and the driver will decide which DVD-D output to use.
+                Usually, the driver will pick the DVD-D output that it considers the first DVD-D output.
+              </p>
+              <p>
+                If the value is a number, then DVD-D output specified by the number will be enabled.
+                DVD-D outputs are numbered starting from '0'.
               </p>
             </dd>
-            <dt id="MM_X_VGA_ENABLED"><strong>MM_X_VGA_ENABLED</strong></dt>
+
+            <dt id="MM_X_OUTPUT_VGA"><strong>MM_X_OUTPUT_VGA</strong></dt>
             <dd>
               <p>
-                Specify whether or not to enable the VGA output.
-                Valid values are 'yes' and 'no', with 'no' being the default.
+                Specify the VGA (or DVI-A) output to use.
+                Valid values are 'none', 'auto' or VGA output number, with 'none' being the default.
+              </p>
+              <p>
+                If the value is 'none', then a VGA output will not be enabled.
+              </p>
+              <p>
+                If the value is 'auto', then a VGA output will be enabled and the driver will decide which VGA output to use.
+                Usually, the driver will pick the VGA output that it considers the first VGA output.
+              </p>
+              <p>
+                If the value is a number, then VGA output specified by the number will be enabled.
+                VGA outputs are numbered starting from '0'.
+              </p>
+              <p>
+                'MM_X_OUTPUT_VGA' is lower priority than
+                '<a href="#MM_X_OUTPUT_DVI">MM_X_OUTPUT_DVI</a>'.
+                Therefore, if
+                '<a href="#MM_X_OUTPUT_DVI">MM_X_OUTPUT_DVI</a>'
+                is not set to 'none' and
+                your frontend's X driver does not support connecting multiple outputs,
+                then this value will be ignored.
               </p>
             </dd>
-            <dt id="MM_X_TV_ENABLED"><strong>MM_X_TV_ENABLED</strong></dt>
+
+            <dt id="MM_X_OUTPUT_TV"><strong>MM_X_OUTPUT_TV</strong></dt>
             <dd>
               <p>
-                Specify whether or not to enable the TV output.
-                Valid values are 'yes' and 'no', with 'yes' being the default.
+                Specify the TV output to use.
+                Valid values are 'none', 'auto' or TV output number, with 'none' being the default.
+              </p>
+              <p>
+                If the value is 'none', then a TV output will not be enabled.
+              </p>
+              <p>
+                If the value is 'auto', then a TV output will be enabled and the driver will decide which TV output to use.
+                Usually, the driver will pick the TV output that it considers the first TV output.
+              </p>
+              <p>
+                If the value is a number, then TV output specified by the number will be enabled.
+                TV outputs are numbered starting from '0'.
+              </p>
+              <p>
+                'MM_X_OUTPUT_TV' is lower priority than
+                '<a href="#MM_X_OUTPUT_VGA">MM_X_OUTPUT_VGA</a>'.
+                Therefore, if either
+                '<a href="#MM_X_OUTPUT_DVI">MM_X_OUTPUT_DVI</a>'
+                or
+                '<a href="#MM_X_OUTPUT_VGA">MM_X_OUTPUT_VGA</a>
+                is not set to 'none' and
+                your frontend's X driver does not support connecting multiple outputs,
+                then this value will be ignored.
               </p>
             </dd>
+          </dl>
+          <dl>
             <dt id="MM_X_TV_TYPE"><strong>MM_X_TV_TYPE</strong></dt>
             <dd>
               <p>
@@ -708,7 +765,7 @@
               </p>
               <p>
                 If
-                <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>
+                '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'
                 is set, then the value cannot be a range.
               </p>
             </dd>
@@ -770,12 +827,12 @@
               </p>
               <p>
                 If the value is 'auto' then the screen mode will be auto-configured based on
-                <a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a>,
-                <a href="#MM_X_DVI_ENABLED">MM_X_DVI_ENABLED</a>,
-                <a href="#MM_X_VGA_ENABLED">MM_X_VGA_ENABLED</a>,
-                <a href="#MM_X_TV_ENABLED">MM_X_TV_ENABLED</a>,
-                <a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a> and
-                <a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>.
+                '<a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a>',
+                '<a href="#MM_X_OUTPUT_DVI">MM_X_OUTPUT_DVI</a>',
+                '<a href="#MM_X_OUTPUT_VGA">MM_X_OUTPUT_VGA</a>',
+                '<a href="#MM_X_OUTPUT_TV">MM_X_OUTPUT_TV</a>',
+                '<a href="#MM_X_TV_TYPE">MM_X_TV_TYPE</a>' and
+                '<a href="#MM_X_RESOLUTION">MM_X_RESOLUTION</a>'.
               </p>
               <p>
                 For VIA graphcis hardware, some popular modes for connecting to a standard definition televsion are
@@ -1506,7 +1563,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2006-10-20 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2006-10-21 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

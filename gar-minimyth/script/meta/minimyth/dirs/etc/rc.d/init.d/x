@@ -23,21 +23,50 @@ start() {
 
     MM_X_DEVICE_NVIDIA=""
     MM_X_DEVICE_VIA=""
-    if /usr/bin/test "${MM_X_TV_ENABLED}"  = yes ; then
-        MM_X_DEVICE_NVIDIA="TV"
-        /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
-        MM_X_DEVICE_VIA="TV${MM_X_DEVICE_VIA}"
-    fi
-    if /usr/bin/test "${MM_X_VGA_ENABLED}" = yes ; then
-        MM_X_DEVICE_NVIDIA="CRT"
-        /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
-        MM_X_DEVICE_VIA="CRT${MM_X_DEVICE_VIA}"
-    fi
-    if /usr/bin/test "${MM_X_DVI_ENABLED}" = yes ; then
-        MM_X_DEVICE_NVIDIA="DFP"
-        /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
-        MM_X_DEVICE_VIA="LCD${MM_X_DEVICE_VIA}"
-    fi
+    case "${MM_X_DRIVER}" in
+        intel_i810|intel_i830|intel_915)
+            ;;
+        nvidia)
+            if /bin/echo ${MM_X_OUTPUT_TV}  | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_NVIDIA="TV-${MM_X_OUTPUT_TV}"
+            elif /usr/bin/test "${MM_X_OUTPUT_TV}"  = "auto" ; then
+                MM_X_DEVICE_NVIDIA="TV"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_NVIDIA="CRT-${MM_X_OUTPUT_VGA}"
+            elif /usr/bin/test "${MM_X_OUTPUT_VGA}" = "auto" ; then
+                MM_X_DEVICE_NVIDIA="CRT"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_NVIDIA="DFP-${MM_X_OUTPUT_DVI}"
+            elif /usr/bin/test "${MM_X_OUTPUT_DVI}" = "auto" ; then
+                MM_X_DEVICE_NVIDIA="DFP"
+            fi
+            ;;
+        via|via_pro|via_pro_nodma)
+            if /bin/echo ${MM_X_OUTPUT_TV}  | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="TV${MM_X_DEVICE_VIA}"
+            elif /usr/bin/test "${MM_X_OUTPUT_TV}"  = "auto" ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="TV${MM_X_DEVICE_VIA}"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="CRT${MM_X_DEVICE_VIA}"
+            elif /usr/bin/test "${MM_X_OUTPUT_VGA}" = "auto" ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="CRT${MM_X_DEVICE_VIA}"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="LCD${MM_X_DEVICE_VIA}"
+            elif /usr/bin/test "${MM_X_OUTPUT_DVI}" = "auto" ; then
+                /usr/bin/test -n "${MM_X_DEVICE_VIA}" && MM_X_DEVICE_VIA=",${MM_X_DEVICE_VIA}"
+                MM_X_DEVICE_VIA="LCD${MM_X_DEVICE_VIA}"
+            fi
+            ;;
+    esac
 
     case "${MM_X_DRIVER}" in
         nvidia)
