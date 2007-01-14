@@ -3,7 +3,7 @@ GARVERSION = 0.4.4
 CATEGORIES = lirc
 MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-makefile.patch
+PATCHFILES = $(DISTNAME)-autoconf.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -21,6 +21,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -fPIC
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
 
 post-install:
 	@cp $(WORKSRC)/test_io   $(DESTDIR)/$(bindir)
