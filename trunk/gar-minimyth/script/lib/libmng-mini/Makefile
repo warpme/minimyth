@@ -30,10 +30,7 @@ include ../../gar.mk
 pre-configure:
 	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
 	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
-	@cd $(WORKSRC) ; aclocal
-	@cd $(WORKSRC) ; libtoolize --automake
-	@cd $(WORKSRC) ; automake --foreign --add-missing
-	@cd $(WORKSRC) ; autoconf
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 install-custom:

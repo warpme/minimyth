@@ -1,0 +1,99 @@
+diff -Naur mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.cpp
+--- mythtv-0.19-old/libs/libmythtv/NuppelVideoPlayer.cpp	2006-11-18 11:38:11.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/NuppelVideoPlayer.cpp	2006-11-18 11:38:35.000000000 -0800
+@@ -2471,6 +2471,12 @@
+         // Use realtime prio for decoder thread as well
+         //gContext->addPrivRequest(MythPrivRequest::MythRealtime, &decoder_thread);
+     }
++    else 
++    {
++        OSD *osd = GetOSD();
++        if (osd)
++            osd->HideSet("interactive");
++    }
+ 
+     if (bookmarkseek > 30)
+     {
+diff -Naur mythtv-0.19-old/libs/libmythtv/osd.cpp mythtv-0.19-new/libs/libmythtv/osd.cpp
+--- mythtv-0.19-old/libs/libmythtv/osd.cpp	2006-11-18 11:38:11.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osd.cpp	2006-11-18 11:38:35.000000000 -0800
+@@ -2136,6 +2136,11 @@
+     totalfadetime = 0;
+ }
+ 
++OSDSurface *OSD::GetDisplaySurface(void)
++{
++    return drawSurface;
++}
++
+ OSDSurface *OSD::Display(void)
+ {
+     bool anytodisplay = false;
+@@ -2212,7 +2217,7 @@
+ 
+     m_setsvisible = anytodisplay;
+ 
+-    if (m_setsvisible)
++    if (m_setsvisible && !drawSurface->IsClear())
+         return drawSurface;
+ 
+     return NULL;
+diff -Naur mythtv-0.19-old/libs/libmythtv/osd.h mythtv-0.19-new/libs/libmythtv/osd.h
+--- mythtv-0.19-old/libs/libmythtv/osd.h	2006-01-09 11:24:13.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osd.h	2006-11-18 11:38:35.000000000 -0800
+@@ -57,6 +57,8 @@
+ 
+     OSDSurface *Display(void);
+ 
++    OSDSurface *GetDisplaySurface(void);
++
+     void ClearAll(const QString &name);
+     void ClearAllText(const QString &name);
+     void SetText(const QString &name, QMap<QString, QString> &infoMap,
+diff -Naur mythtv-0.19-old/libs/libmythtv/osdsurface.cpp mythtv-0.19-new/libs/libmythtv/osdsurface.cpp
+--- mythtv-0.19-old/libs/libmythtv/osdsurface.cpp	2006-02-07 13:56:06.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/osdsurface.cpp	2006-11-18 11:38:35.000000000 -0800
+@@ -131,6 +131,11 @@
+     usedRegions = QRegion();
+ }
+ 
++bool OSDSurface::IsClear(void)
++{
++    return (usedRegions == QRegion());
++}
++
+ bool OSDSurface::IntersectsDrawn(QRect &newrect)
+ {
+     QMemArray<QRect> rects = usedRegions.rects();
+@@ -798,7 +803,7 @@
+ 
+         if (startline < 0) startline = 0;
+         if (endline >= height) endline = height - 1;
+-        if (startcol < 0) endcol = 0;
++        if (startcol < 0) startcol = 0;
+         if (endcol >= width) endcol = width - 1;
+ 
+         unsigned char *src;
+diff -Naur mythtv-0.19-old/libs/libmythtv/osdsurface.h mythtv-0.19-new/libs/libmythtv/osdsurface.h
+--- mythtv-0.19-old/libs/libmythtv/osdsurface.h	2005-10-24 16:06:36.000000000 -0700
++++ mythtv-0.19-new/libs/libmythtv/osdsurface.h	2006-11-18 11:38:35.000000000 -0800
+@@ -23,6 +23,7 @@
+ 
+     void Clear(void);
+     void ClearUsed(void);
++    bool IsClear();
+ 
+     bool IntersectsDrawn(QRect &newrect);
+     void AddRect(QRect &newrect);
+diff -Naur mythtv-0.19-old/libs/libmythtv/videoout_xv.cpp mythtv-0.19-new/libs/libmythtv/videoout_xv.cpp
+--- mythtv-0.19-old/libs/libmythtv/videoout_xv.cpp	2006-11-18 11:38:11.000000000 -0800
++++ mythtv-0.19-new/libs/libmythtv/videoout_xv.cpp	2006-11-18 11:38:35.000000000 -0800
+@@ -2774,7 +2774,7 @@
+         VideoFrame *osdframe = NULL;
+         int ret = DisplayOSD(xvmc_osd->OSDFrame(), osd, -1,
+                              xvmc_osd->GetRevision());
+-        OSDSurface *osdsurf = osd->Display();
++        OSDSurface *osdsurf = osd->GetDisplaySurface();
+         if (osdsurf)
+             xvmc_osd->SetRevision(osdsurf->GetRevision());
+         if (ret >= 0 && xvmc_osd->NeedFrame())

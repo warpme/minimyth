@@ -1,5 +1,5 @@
 GARNAME = automake
-GARVERSION = 1.7.9
+GARVERSION = 1.9.6
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--program-suffix="-1.7"
+	--program-suffix="-1.9"
 
 include ../../gar.mk
