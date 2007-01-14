@@ -162,7 +162,7 @@ PKG_CONFIG_PATH = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig
 STAGE_EXPORTS = DESTDIR prefix exec_prefix bindir sbindir libexecdir datadir
 STAGE_EXPORTS += sysconfdir sharedstatedir localstatedir libdir infodir lispdir
 STAGE_EXPORTS += includedir oldincludedir mandir docdir sourcedir
-STAGE_EXPORTS += CPPFLAGS CFLAGS LDFLAGS
+STAGE_EXPORTS += CPPFLAGS CFLAGS LDFLAGS CXXFLAGS
 STAGE_EXPORTS += CC CXX LD CPP AR AS NM RANLIB STRIP OBJCOPY OBJDUMP
 
 CONFIGURE_ENV += $(foreach TTT,$(STAGE_EXPORTS),$(TTT)="$($(TTT))")
