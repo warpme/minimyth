@@ -12,8 +12,10 @@ CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 $(CROSSIMG)_DEPENDS = kernel/linux-libc-headers devel/glibc-crtobjs
 DEPENDS = lang/c devel/binutils
+endif
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -41,6 +43,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
         --enable-threads=no \
         --enable-version-specific-runtime-libs \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
+# Bootstrap the native environment compiler.
+ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+BUILD_ARGS     = \
+	bootstrap
+endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk

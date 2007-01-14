@@ -1,5 +1,5 @@
 GARNAME = binutils
-GARVERSION = 2.16.1
+GARVERSION = $(BINUTILS_VERSION)
 CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
@@ -14,6 +14,12 @@ CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
 DEPENDS = lang/c
+ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+# If the build system's binutils version is not older than our binutils version,
+# then build a minimal gcc before binutils,
+# since the build system's gcc may depend on features in the build system's newer binutils.
+BUILDDEPS = $(if $(filter $(BINUTILS_BUILD_UP_TO_DATE),yes),devel/gcc-minimal-shared)
+endif
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
