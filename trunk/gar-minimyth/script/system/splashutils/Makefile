@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/libjpeg lib/zlib lib/freetype
+DEPENDS = lang/c kernel/kernel lib/libjpeg lib/zlib lib/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure kernel
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -37,7 +37,7 @@ BUILD_ARGS = \
 	usrbindir="$(bindir)" \
 	mandir="$(mandir)"
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 configure-kernel:

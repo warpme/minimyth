@@ -37,7 +37,7 @@ main_DESTDIR='$(mm_HOME)/images/main'
 main_rootdir='/'
 GARCHIVEROOT='$(mm_HOME)/source'
 PATCHDIR='$(WORKSRC)'
-GAR_EXTRA_CONF='$(HOME)/.minimyth/minimyth.conf.mk minimyth.conf.mk extras/extras.conf.mk devel/gcc/package-api.mk'
+GAR_EXTRA_CONF='extras/extras.conf.mk devel/gcc/package-api.mk'
 GAR_EXTRA_LIBS='minimyth.lib.mk'
 MASTER_SITES='http://linpvr.org/minimyth/download/garchive/'
 build_NODEPEND='kernel/linux-headers devel/glibc'
@@ -170,6 +170,8 @@ sed -i "s%^\(#*GARCHIVEROOT\) *?=.*$%\1 ?= ${GARCHIVEROOT}%g" ${SCRIPT_DIR}/gar.
 sed -i "s%^\(#*build_NODEPEND\) *=.*$%\1 += ${build_NODEPEND}%g" ${SCRIPT_DIR}/gar.conf.mk
 sed -i "s%^\(#*MASTER_SITES\) *+=.*$%\1 += ${MASTER_SITES}%g" ${SCRIPT_DIR}/gar.conf.mk
 
+#sed -i 's%^\(include \$(GARDIR)/gar.conf.mk\)%\1\n-include $(HOME)/.minimyth/minimyth.conf.mk\ninclude $(GARDIR)/minimyth.conf.mk%' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^\(include \$(GARDIR)/gar.conf.mk\)%include $(GARDIR)/minimyth.conf.mk\n\1%' ${SCRIPT_DIR}/gar.mk
 sed -i "s%^\(#*GAR_EXTRA_CONF\) *+=.*$%\1 +=%g" ${SCRIPT_DIR}/gar.conf.mk
 sed -i '$!N; /^\(GAR_EXTRA_CONF +=.*\)\n\1$/!P; D' ${SCRIPT_DIR}/gar.conf.mk
 sed -i "s%^GAR_EXTRA_CONF +=.*$%GAR_EXTRA_CONF += ${GAR_EXTRA_CONF}%g" ${SCRIPT_DIR}/gar.conf.mk

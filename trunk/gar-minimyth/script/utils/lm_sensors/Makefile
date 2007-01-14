@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/linux lib/sysfsutils
+DEPENDS = lang/c kernel/kernel lib/sysfsutils
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
@@ -35,7 +35,7 @@ ARGS = \
 BUILD_ARGS   = $(ARGS) user
 INSTALL_ARGS = $(ARGS)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:

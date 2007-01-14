@@ -2,6 +2,7 @@
 # Values in this file can be overridden by including the desired value in
 # '$(HOME)/.minimyth/minimyth.conf.mk'.
 #-------------------------------------------------------------------------------
+-include $(HOME)/.minimyth/minimyth.conf.mk
 
 # The version of MiniMyth.
 mm_VERSION           ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
@@ -61,15 +62,18 @@ mm_TFTP_ROOT         ?= /var/tftpboot/minimyth
 # file system for mounting using NFS. The MiniMyth root file system will be
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT          ?= /home/public/minimyth
+# The version of kernel to use.
+# Valid values are '2.6.17' and '2.6.19'.
+mm_KERNEL_VERSION    ?= 2.6.19
 # The version of Myth to use.
 # Valid values are 'stable19', 'stable20' and 'svn'.
 mm_MYTH_VERSION      ?= stable20
+# The version of the NVIDIA driver.
+# Valid values are '8178', '8776', '9631' and '9746'.
+mm_NVIDIA_VERSION    ?= 9746
 # The version of xorg to use.
 # Valid values are '7.2' (7.2-RC3).
 mm_XORG_VERSION      ?= 7.2
-# The version of the NVIDIA driver.
-# Valid values are '9631' and '9746'.
-mm_NVIDIA_VERSION    ?= 9746
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
 mm_MYTH_SVN_VERSION  ?= 12353

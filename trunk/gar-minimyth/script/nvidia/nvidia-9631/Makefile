@@ -1,6 +1,6 @@
 GARNAME = nvidia
 GARVERSION = $(MAJOR_VERSION).$(MINOR_VERSION)-$(TEENY_VERSION)
-CATEGORIES = kernel
+CATEGORIES = nvidia
 MASTER_SITES = http://us.download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
 DISTFILES = $(DISTFILE).run
 LICENSE = nvidia
@@ -10,8 +10,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c kernel/linux xorg/xorg
-BUILDDEPS = kernel/module-init-tools
+DEPENDS   = lang/c kernel/kernel xorg/xorg
+BUILDDEPS = utils/module-init-tools
 
 SUPER_VERSION = $(strip \
 	$(if $(filter i386,  $(GARCH_FAMILY)),x86   ) \
@@ -40,7 +40,7 @@ BUILD_ARGS = \
 BUILD_ENV = \
 	$(LINUX_MAKE_ENV)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 extract-%.run:

@@ -2,7 +2,7 @@ PWD := `pwd`
 
 WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
 
-GAR_EXTRA_CONF += kernel/linux/package-api.mk devel/build-system-bins/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk devel/build-system-bins/package-api.mk
 include ../../gar.mk
 
 mm_NAME       := minimyth-$(mm_VERSION)
@@ -241,6 +241,11 @@ mm-check:
 		echo "error: mm_DEBUG=\"$(mm_DEBUG)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
+	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.17" ] && \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.19" ] ; then \
+		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
 	@if [ ! "$(mm_MYTH_VERSION)" = "stable18" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable19" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable20" ] && \
@@ -248,7 +253,9 @@ mm-check:
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "9631" ] && \
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "8178" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "8776" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9631" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9746" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
