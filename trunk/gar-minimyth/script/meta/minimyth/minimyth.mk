@@ -355,7 +355,7 @@ mm-remove-post:
 mm-copy-libs:
 	@# Copy dependent libraries.
 	@echo 'copying dependent libraries'
-	new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
+	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
 	pass=0 ; \
 	lib_count=1 ; \
 	bin_list="`find $(mm_ROOTFSDIR) -exec file '{}' \; \
@@ -387,6 +387,12 @@ mm-copy-libs:
 		new_list=`echo $${new_list} | sed -e 's%  *% %g' | sed -e 's%^  *%%' | sed -e 's%  *$$%%'` ; \
 		lib_count=`echo "$${new_list}" | wc -w` ; \
 		echo "  pass $${pass} found $${lib_count} libraries to copy" ; \
+		if test "$(mm_DEBUG_BUILD)" = "yes" ; then \
+			echo "    bin_list : $${bin_list}" ; \
+			echo "    lib_list : $${lib_list}" ; \
+			echo "    old_list : $${old_list}" ; \
+			echo "    new_list : $${new_list}" ; \
+		fi ; \
 		if test $${lib_count} -gt 0 ; then \
 		        new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
 		        new_filter="$${new_filter_path}/$${new_filter_file}" ; \

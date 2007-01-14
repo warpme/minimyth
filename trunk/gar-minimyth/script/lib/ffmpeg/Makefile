@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 6412
+GARVERSION = 6701
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/ffmpeg/trunk/
 DISTFILES = $(DISTNAME).tar.bz2

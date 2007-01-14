@@ -19,9 +19,12 @@ mm_VERSION_EXTRA     ?= $(strip \
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
-# Indicates whether or not to build with debugging enabled.
+# Indicates whether or not to enable debugging in the image.
 # Valid values for mm_DEBUG are 'yes' and 'no'.
 mm_DEBUG             ?= no
+# Indicates whether or not to enable debugging in the build system.
+# Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
+mm_DEBUG_BUILD       ?= no
 # Lists the chipset families supported.
 # Valid values for mm_CHIPSETS are one or more of 'intel', 'nvidia' and 'via'.
 mm_CHIPSETS          ?= intel nvidia via other
