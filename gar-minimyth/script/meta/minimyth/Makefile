@@ -45,6 +45,7 @@ DEPENDS = \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
+        utils/SDL-Test \
 	emulators/sdlmame \
 	emulators/sdlmess \
 	system/splashutils \

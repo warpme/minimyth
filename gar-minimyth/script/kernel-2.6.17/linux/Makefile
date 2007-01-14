@@ -6,6 +6,7 @@ MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-squashfs_3.1.patch
+PATCHFILES += $(DISTNAME)-xpad.patch
 PATCHFILES += $(DISTNAME)-longhaul_ide_lockup.patch $(DISTNAME)-via_irq_quirk.patch $(DISTNAME)-via_rhine_pxeboot.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
