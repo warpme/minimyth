@@ -19,8 +19,10 @@ DEPENDS = \
         X11/corefonts \
 	utils/dmidecode \
 	utils/ethtool \
+	emulators/fceu \
 	devel/gdb \
 	disk/hdparm \
+	emulators/jzintv \
 	system/lcdproc \
 	kernel/linux kernel/alsa-driver kernel/drm kernel/imon_vfd \
 	lirc/lirc \
@@ -42,8 +44,11 @@ DEPENDS = \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
+	emulators/sdlmame \
+	emulators/sdlmess \
 	system/splashutils \
 	utils/squashfs \
+	emulators/stella \
 	devel/strace \
 	system/sysvinit \
 	utils/transcode \

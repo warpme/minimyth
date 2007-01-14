@@ -1,0 +1,39 @@
+GARNAME = fceu
+GARVERSION = 0.98.12
+CATEGORIES = emulators
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/fceutra/
+DISTFILES = $(DISTNAME).src.tar.bz2
+PATCHFILES = $(DISTNAME)-sdl_sound.patch
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c lib/SDL
+
+WORKSRC = $(WORKDIR)/$(GARNAME)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-sdltest \
+	--without-nativewin32 \
+	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
+	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)" \
+	--with-opengl
+
+include ../../gar.mk
+
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, https://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)

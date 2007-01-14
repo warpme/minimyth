@@ -1,0 +1,192 @@
+diff -Naur sdlmame0111-old/makefile sdlmame0111-new/makefile
+--- sdlmame0111-old/makefile	2006-12-11 18:50:30.000000000 -0800
++++ sdlmame0111-new/makefile	2006-12-16 20:07:15.000000000 -0800
+@@ -73,7 +73,7 @@
+ # ATHLON = 1
+ # I686 = 1
+ # P4 = 1
+-PM = 1
++# PM = 1
+ # AMD64 = 1
+ # G4 = 1
+ # G5 = 1
+@@ -149,11 +149,13 @@
+ 
+ 
+ # compiler, linker and utilities
+-AR = @ar
+-CC = @gcc
+-LD = @gcc
+-MD = -mkdir
+-RM = @rm -f
++AR ?= ar
++CC ?= gcc
++LD = $(CC)
++MD = mkdir -p
++RM = rm -f
++CC_FOR_BUILD ?= $(CC)
++LD_FOR_BUILD = $(CC_FOR_BUILD)
+ 
+ 
+ 
+@@ -166,7 +168,7 @@
+ endif
+ 
+ # by default, don't compile for a specific target CPU
+-NAME = $(PREFIX)$(TARGET)
++NAME = $(PREFIX)$(TARGET)cli
+ ARCH = 
+ 
+ # architecture-specific builds get extra options
+@@ -439,14 +441,18 @@
+ 
+ $(EMULATOR): $(COREOBJS) $(OSOBJS) $(CPULIB) $(SOUNDLIB) $(DRVLIBS) $(EXPAT) $(ZLIB) $(OSDBGOBJS)
+ # always recompile the version string
+-	$(CC) $(CDEFS) $(CFLAGS) -c src/version.c -o $(OBJ)/version.o
++	$(CC) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_TARGET) -c src/version.c -o $(OBJ)/version.o
+ 	@echo Linking $@...
+ 	$(LD) $(CFLAGS) $(LDFLAGS) $(OSDBGLDFLAGS) $^ $(LIBS) -o $@ $(MAPFLAGS)
+ 
+ file2str$(EXE): $(OBJ)/file2str.o $(OSDBGOBJS) $(ZLIB)
+ 	@echo Linking $@...
+-	$(LD) $(LDFLAGS) $^ $(ZLIB) $(LIBS) -o $@
++	$(LD_FOR_BUILD) $^ -o $@
+ 
++$(OBJ)/file2str.o: src/file2str.c
++	@echo Compiling $<...
++	$(CC_FOR_BUILD) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_BUILD) -c $< -o $@
++ 
+ romcmp$(EXE): $(OBJ)/romcmp.o $(OBJ)/unzip.o $(OBJ)/mamecore.o $(ZLIB) $(OSDBGOBJS)
+ 	@echo Linking $@...
+ 	$(LD) $(LDFLAGS) $^ $(ZLIB) $(LIBS) -o $@
+@@ -486,23 +492,23 @@
+ 
+ $(OBJ)/$(MAMEOS)/%.o: src/$(MAMEOS)/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGSOSDEPEND) -c $< -o $@
++	$(CC) $(CDEFS) $(CFLAGSOSDEPEND) $(CFLAGS_FOR_TARGET) -c $< -o $@
+ 
+ $(OBJ)/%.o: src/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -c $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_TARGET) -c $< -o $@
+ 
+ $(OBJ)/%.pp: src/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -E $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_TARGET) -E $< -o $@
+ 
+ $(OBJ)/%.s: src/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -S $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_TARGET) -S $< -o $@
+ 
+ $(OBJ)/%.o: src/%.m
+ 	@echo Objective-C compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -c $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) $(CFLAGS_FOR_TARGET) -c $< -o $@
+ 
+ $(OBJ)/%.lh: src/%.lay file2str$(EXE)
+ 	@echo Converting $<...
+diff -Naur sdlmame0111-old/src/cpu/cpu.mak sdlmame0111-new/src/cpu/cpu.mak
+--- sdlmame0111-old/src/cpu/cpu.mak	2006-12-11 18:53:04.000000000 -0800
++++ sdlmame0111-new/src/cpu/cpu.mak	2006-12-16 20:25:14.000000000 -0800
+@@ -701,12 +701,12 @@
+ # when we compile source files we need to include generated files from the OBJ directory
+ $(OBJ)/cpu/m68000/%.o: src/cpu/m68000/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -I$(OBJ)/cpu/m68000 -c $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) -I$(OBJ)/cpu/m68000 $(CFLAGS_FOR_TARGET) -c $< -o $@
+ 
+ # when we compile generated files we need to include stuff from the src directory
+ $(OBJ)/cpu/m68000/%.o: $(OBJ)/cpu/m68000/%.c
+ 	@echo Compiling $<...
+-	$(CC) $(CDEFS) $(CFLAGS) -Isrc/cpu/m68000 -c $< -o $@
++	$(CC) $(CDEFS) $(CFLAGS) -Isrc/cpu/m68000 -c $(CFLAGS_FOR_TARGET) $< -o $@
+ 
+ # rule to generate the C files
+ $(OBJ)/cpu/m68000/m68kops.c: $(OBJ)/cpu/m68000/m68kmake$(EXE) m68k_in.c
+@@ -716,7 +716,11 @@
+ # rule to build the generator
+ $(OBJ)/cpu/m68000/m68kmake$(EXE): $(OBJ)/cpu/m68000/m68kmake.o $(OSDBGOBJS)
+ 	@echo Linking $@...
+-	$(LD) $(LDFLAGS) $(OSDBGLDFLAGS) $^ $(LIBS) -o $@
++	$(LD_FOR_BUILD) $^ -o $@
++
++$(OBJ)/cpu/m68000/m68kmake.o: src/cpu/m68000/m68kmake.c
++	@echo Compiling $<...
++	$(CC_FOR_BUILD) $(CDEFS) $(CFLAGS) -I$(OBJ)/cpu/m68000 $(CFLAGS_FOR_BUILD) -c $< -o $@
+ 
+ # rule to ensure we build the header before building the core CPU file
+ $(OBJ)/cpu/m68000/m68kcpu.o: $(OBJ)/cpu/m68000/m68kops.c
+diff -Naur sdlmame0111-old/src/sdl/sdl.mak sdlmame0111-new/src/sdl/sdl.mak
+--- sdlmame0111-old/src/sdl/sdl.mak	2006-11-27 19:22:14.000000000 -0800
++++ sdlmame0111-new/src/sdl/sdl.mak	2006-12-16 20:03:37.000000000 -0800
+@@ -34,7 +34,7 @@
+ OSOBJS += $(OBJ)/sdl/debugwin.o $(OBJ)/sdl/dview.o $(OBJ)/sdl/debug-sup.o $(OBJ)/sdl/debug-intf.o
+ endif
+ 
+-LIBS += `sdl-config --libs` -lGL -lXinerama
++LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs` -lGL -lXinerama
+ 
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ ifdef DEBUG
+@@ -50,7 +50,7 @@
+ OSOBJS += $(OBJ)/sdl/debugwin.o $(OBJ)/sdl/dview.o $(OBJ)/sdl/debug-sup.o $(OBJ)/sdl/debug-intf.o
+ endif
+ 
+-LIBS += `sdl11-config --libs` -lGL -lXinerama
++LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl11-config --libs` -lGL -lXinerama
+ 
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ ifdef DEBUG
+diff -Naur sdlmame0111-old/src/zlib/Makefile sdlmame0111-new/src/zlib/Makefile
+--- sdlmame0111-old/src/zlib/Makefile	2006-12-11 18:53:05.000000000 -0800
++++ sdlmame0111-new/src/zlib/Makefile	2006-12-16 19:39:42.000000000 -0800
+@@ -73,7 +73,7 @@
+ 
+ match.o: match.S
+ 	$(CPP) match.S > _match.s
+-	$(CC) -c _match.s
++	$(CC) $(CFLAGS_FOR_TARGET) -c _match.s
+ 	mv _match.o match.o
+ 	rm -f _match.s
+ 
+@@ -84,10 +84,10 @@
+ 	ln -s $@ $(SHAREDLIBM)
+ 
+ example$(EXE): example.o $(LIBS)
+-	$(CC) $(CFLAGS) -o $@ example.o $(LDFLAGS)
++	$(CC) $(CFLAGS) $(CFLAGS_FOR_TARGET) -o $@ example.o $(LDFLAGS)
+ 
+ minigzip$(EXE): minigzip.o $(LIBS)
+-	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
++	$(CC) $(CFLAGS) $(CFLAGS_FOR_TARGET) -o $@ minigzip.o $(LDFLAGS)
+ 
+ install: $(LIBS)
+ 	-@if [ ! -d $(exec_prefix) ]; then mkdir -p $(exec_prefix); fi
+diff -Naur sdlmame0111-old/src/zlib/Makefile.in sdlmame0111-new/src/zlib/Makefile.in
+--- sdlmame0111-old/src/zlib/Makefile.in	2006-12-11 18:53:05.000000000 -0800
++++ sdlmame0111-new/src/zlib/Makefile.in	2006-12-16 19:39:17.000000000 -0800
+@@ -73,7 +73,7 @@
+ 
+ match.o: match.S
+ 	$(CPP) match.S > _match.s
+-	$(CC) -c _match.s
++	$(CC) $(CFLAGS_FOR_TARGET) -c _match.s
+ 	mv _match.o match.o
+ 	rm -f _match.s
+ 
+@@ -84,10 +84,10 @@
+ 	ln -s $@ $(SHAREDLIBM)
+ 
+ example$(EXE): example.o $(LIBS)
+-	$(CC) $(CFLAGS) -o $@ example.o $(LDFLAGS)
++	$(CC) $(CFLAGS) $(CFLAGS_FOR_TARGET) -o $@ example.o $(LDFLAGS)
+ 
+ minigzip$(EXE): minigzip.o $(LIBS)
+-	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
++	$(CC) $(CFLAGS) $(CFLAGS_FOR_TARGET) -o $@ minigzip.o $(LDFLAGS)
+ 
+ install: $(LIBS)
+ 	-@if [ ! -d $(exec_prefix) ]; then mkdir -p $(exec_prefix); fi
