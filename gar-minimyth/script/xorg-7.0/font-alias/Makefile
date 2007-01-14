@@ -1,7 +1,7 @@
 GARNAME = font-alias
 GARVERSION = X11R$(XORG_VERSION)-1.0.1
-CATEGORIES = xorg-7.0
-MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/font/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -12,13 +12,15 @@ endef
 
 DEPENDS = lang/c
 
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
-GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2

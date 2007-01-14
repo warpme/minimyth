@@ -1,0 +1,24 @@
+diff -Naur zoneinfo-2006o-old/Makefile zoneinfo-2006o-new/Makefile
+--- zoneinfo-2006o-old/Makefile	2006-11-06 06:17:47.000000000 -0800
++++ zoneinfo-2006o-new/Makefile	2006-11-06 10:02:20.000000000 -0800
+@@ -346,16 +346,14 @@
+ 
+ $(TZLIB):	$(LIBOBJS)
+ 		-mkdir $(TOPDIR) $(LIBDIR)
+-		ar ru $@ $(LIBOBJS)
+-		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
+-			then ranlib $@ ; fi
++		$(AR) ru $@ $(LIBOBJS)
++		$(RANLIB) $@
+ 
+ # We use the system's logwtmp in preference to ours if available.
+ 
+ date:		$(DATEOBJS)
+-		ar r ,lib.a logwtmp.o
+-		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
+-			then ranlib ,lib.a ; fi
++		$(AR) r ,lib.a logwtmp.o
++		$(RANLIB) ,lib.a
+ 		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
+ 			$(LDLIBS) -lc ,lib.a -o $@
+ 		rm -f ,lib.a

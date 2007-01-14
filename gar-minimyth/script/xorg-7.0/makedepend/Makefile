@@ -1,7 +1,7 @@
 GARNAME = makedepend
 GARVERSION = X11R$(XORG_VERSION)-1.0.0
-CATEGORIES = xorg-7.0
-MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/util/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-includedir.patch
 LICENSE = $(GARNAME)
@@ -11,7 +11,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg-7.0/xproto
+DEPENDS = lang/c \
+	$(CATEGORY)/xproto
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -19,7 +22,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
-GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2

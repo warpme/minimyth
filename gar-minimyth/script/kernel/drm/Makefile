@@ -1,7 +1,7 @@
 GARNAME = drm
-GARVERSION = 20060712Z
+GARVERSION = d51e1bb56ca2f7858cdeac6f61a7b747c1e15b1e
 CATEGORIES = kernel
-MASTER_SITES = cvs://anonymous@dri.freedesktop.org/cvs/dri/
+MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -26,8 +26,8 @@ BUILD_ENV = $(KERNEL_MAKE_ENV)
 GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
-cvs//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

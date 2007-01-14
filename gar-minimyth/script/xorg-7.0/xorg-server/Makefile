@@ -1,7 +1,7 @@
 GARNAME = xorg-server
 GARVERSION = X11R$(XORG_VERSION)-1.0.1
-CATEGORIES = xorg-7.0
-MASTER_SITES = http://xorg.freedesktop.org/releases/X11R$(XORG_VERSION)/src/xserver/
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-geteuid.patch $(DISTNAME)-mitri.patch
 PATCHFILES += $(DISTNAME)-drm.patch
@@ -13,36 +13,44 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	xorg-7.0/libdrm \
-	xorg-7.0/Mesa \
-	xorg-7.0/xf86driproto \
-	xorg-7.0/randrproto \
-	xorg-7.0/renderproto \
-	xorg-7.0/fixesproto \
-	xorg-7.0/damageproto \
-	xorg-7.0/xcmiscproto \
-	xorg-7.0/xextproto \
-	xorg-7.0/libXfont \
-	xorg-7.0/xproto \
-	xorg-7.0/xtrans \
-	xorg-7.0/libXau \
-	xorg-7.0/xf86miscproto \
-	xorg-7.0/xf86vidmodeproto \
-	xorg-7.0/xf86bigfontproto \
-	xorg-7.0/scrnsaverproto \
-	xorg-7.0/bigreqsproto \
-	xorg-7.0/resourceproto \
-	xorg-7.0/libfontenc \
-	xorg-7.0/fontsproto \
-	xorg-7.0/videoproto \
-	xorg-7.0/compositeproto \
-	xorg-7.0/recordproto \
-	xorg-7.0/xineramaproto \
-	xorg-7.0/evieext \
-	xorg-7.0/libxkbfile \
-	xorg-7.0/glproto \
-	xorg-7.0/xf86dgaproto \
-	xorg-7.0/liblbxutil
+	$(CATEGORY)/bigreqsproto \
+	$(CATEGORY)/compositeproto \
+	$(CATEGORY)/damageproto \
+	$(CATEGORY)/evieext \
+	$(CATEGORY)/fixesproto \
+	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/glproto \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libfontenc \
+	$(CATEGORY)/liblbxutil \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXau \
+	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfont \
+	$(CATEGORY)/libXi \
+	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/libXmu \
+	$(CATEGORY)/libXrender \
+	$(CATEGORY)/Mesa \
+	$(CATEGORY)/randrproto \
+	$(CATEGORY)/recordproto \
+	$(CATEGORY)/renderproto \
+	$(CATEGORY)/resourceproto \
+	$(CATEGORY)/scrnsaverproto \
+	$(CATEGORY)/videoproto \
+	$(CATEGORY)/xcmiscproto \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
+	$(CATEGORY)/xf86dgaproto \
+	$(CATEGORY)/xf86driproto \
+	$(CATEGORY)/xf86miscproto \
+	$(CATEGORY)/xf86vidmodeproto \
+	$(CATEGORY)/xineramaproto \
+	$(CATEGORY)/xproto \
+	$(CATEGORY)/xtrans
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -50,7 +58,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	$(if $(filter yes,$(mm_DEBUG)),--enable-debug) \
 	--disable-builddocs \
+	--enable-install-libxf86config \
 	--enable-composite \
 	--enable-shm \
 	--disable-xres \
@@ -83,23 +93,29 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xwin \
 	--disable-xprint \
 	--disable-install-setuid \
-	--enable-unix-transport \
-	--enable-tcp-transport \
-	--disable-ipv6 \
 	--disable-secure-rpc \
 	--disable-xorgcfg \
 	--disable-kbd_mode \
+	--enable-unix-transport \
+	--enable-tcp-transport \
+	--disable-ipv6 \
 	--with-gnu-ld \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa"
 
-
-GAR_EXTRA_CONF += xorg-7.0/xorg/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
+	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
+	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
+	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
+	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
+	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
+	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
+	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_sys_linker_h=no"                                                                >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
