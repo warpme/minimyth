@@ -1,7 +1,7 @@
-diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
---- mythtv-12265-old/configure	2006-12-15 23:17:51.000000000 -0800
-+++ mythtv-12265-new/configure	2006-12-15 23:19:10.000000000 -0800
-@@ -1248,26 +1248,7 @@
+diff -Naur mythtv-12353-old/configure mythtv-12353-new/configure
+--- mythtv-12353-old/configure	2006-12-29 09:46:44.000000000 -0800
++++ mythtv-12353-new/configure	2006-12-29 09:57:23.000000000 -0800
+@@ -1253,26 +1253,7 @@
  
  has_library()
  {
@@ -29,7 +29,7 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-@@ -1280,9 +1261,7 @@
+@@ -1285,9 +1266,7 @@
  
  has_header()
  {
@@ -40,7 +40,7 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
  
      HAS_IT="no"
      for HPATH in $HPATHS ; do
-@@ -2122,9 +2101,9 @@
+@@ -2127,9 +2106,9 @@
  
  freetype2=no
  if test "x$targetos" != "xBeOS"; then
@@ -53,7 +53,7 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
        check_ld <<EOF && freetype2=yes
  #include <ft2build.h>
  int main( void ) { return (int) FT_Init_FreeType(0); }
-@@ -2138,7 +2117,7 @@
+@@ -2143,7 +2122,7 @@
  
  sdl_too_old=no
  sdl=no
@@ -62,7 +62,7 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
  #if ("${SDL_CONFIG}" --version) >/dev/null 2>&1 ; then
  #    temp_cflags `"${SDL_CONFIG}" --cflags`
  #    temp_extralibs `"${SDL_CONFIG}" --libs`
-@@ -2243,9 +2222,9 @@
+@@ -2248,9 +2227,9 @@
  EOF
  
  audio_arts=no
@@ -75,7 +75,22 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
      if $cc -o $TMPE $TMPC $audio_arts_tmp $audio_arts_libs > /dev/null 2>&1; then
          audio_arts_cflags=`echo $audio_arts_tmp`
          audio_arts=yes
-@@ -2597,10 +2576,10 @@
+@@ -2591,21 +2570,21 @@
+ # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
+ # not to overwrite the headers installed from Mesa, etc. We need to
+ # add that path to include paths if that's the case. 
+-if test -d /usr/share/doc/nvidia-glx-dev/include; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/doc/nvidia-glx-dev/include"
++if test -d @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include"
+ fi
+ 
+ # Same for Debian Sid.
+-if test -d /usr/share/nvidia/include/GL; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/nvidia/include"
++if test -d @GAR_DESTDIR@@GAR_sharedstatedir@/nvidia/include/GL; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_sharedstatedir@/nvidia/include"
+ fi
  
  if test x"$direct_fb" = x"yes" ; then
      direct_fb="no"
@@ -89,7 +104,7 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
      fi
  fi
  
-@@ -2935,8 +2914,8 @@
+@@ -2940,8 +2919,8 @@
  fi
  if test "$freetype2" = "yes" ; then
    echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
@@ -100,9 +115,9 @@ diff -Naur mythtv-12265-old/configure mythtv-12265-new/configure
  fi
  if test "$lmsensors" = "yes" ; then
    CCONFIG="$CCONFIG using_lmsensors"
-diff -Naur mythtv-12265-old/contrib/mythnotify/cidbcast/Makefile mythtv-12265-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-12265-old/contrib/mythnotify/cidbcast/Makefile	2006-12-15 23:17:50.000000000 -0800
-+++ mythtv-12265-new/contrib/mythnotify/cidbcast/Makefile	2006-12-15 23:19:10.000000000 -0800
+diff -Naur mythtv-12353-old/contrib/mythnotify/cidbcast/Makefile mythtv-12353-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-12353-old/contrib/mythnotify/cidbcast/Makefile	2006-12-29 09:46:42.000000000 -0800
++++ mythtv-12353-new/contrib/mythnotify/cidbcast/Makefile	2006-12-29 09:47:54.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -112,9 +127,9 @@ diff -Naur mythtv-12265-old/contrib/mythnotify/cidbcast/Makefile mythtv-12265-ne
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-12265-old/contrib/mythnotify/mythudprelay/Makefile mythtv-12265-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-12265-old/contrib/mythnotify/mythudprelay/Makefile	2006-12-15 23:17:50.000000000 -0800
-+++ mythtv-12265-new/contrib/mythnotify/mythudprelay/Makefile	2006-12-15 23:19:10.000000000 -0800
+diff -Naur mythtv-12353-old/contrib/mythnotify/mythudprelay/Makefile mythtv-12353-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-12353-old/contrib/mythnotify/mythudprelay/Makefile	2006-12-29 09:46:42.000000000 -0800
++++ mythtv-12353-new/contrib/mythnotify/mythudprelay/Makefile	2006-12-29 09:47:54.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -132,21 +147,9 @@ diff -Naur mythtv-12265-old/contrib/mythnotify/mythudprelay/Makefile mythtv-1226
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-12265-old/programs/mythfrontend/mythfrontend.pro mythtv-12265-new/programs/mythfrontend/mythfrontend.pro
---- mythtv-12265-old/programs/mythfrontend/mythfrontend.pro	2006-12-15 23:17:48.000000000 -0800
-+++ mythtv-12265-new/programs/mythfrontend/mythfrontend.pro	2006-12-15 23:19:10.000000000 -0800
-@@ -33,7 +33,7 @@
- 
- macx {
-     RC_FILE += mythfrontend.icns
--    LIBS += `freetype-config --libs`
-+    LIBS += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
- 
-     using_mac_accel : LIBS += -lobjc
- 
-diff -Naur mythtv-12265-old/programs/mythtranscode/Makefile.standlone mythtv-12265-new/programs/mythtranscode/Makefile.standlone
---- mythtv-12265-old/programs/mythtranscode/Makefile.standlone	2006-12-15 23:17:48.000000000 -0800
-+++ mythtv-12265-new/programs/mythtranscode/Makefile.standlone	2006-12-15 23:19:10.000000000 -0800
+diff -Naur mythtv-12353-old/programs/mythtranscode/Makefile.standlone mythtv-12353-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-12353-old/programs/mythtranscode/Makefile.standlone	2006-12-29 09:46:39.000000000 -0800
++++ mythtv-12353-new/programs/mythtranscode/Makefile.standlone	2006-12-29 09:47:54.000000000 -0800
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -156,9 +159,9 @@ diff -Naur mythtv-12265-old/programs/mythtranscode/Makefile.standlone mythtv-122
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-12265-old/settings.pro mythtv-12265-new/settings.pro
---- mythtv-12265-old/settings.pro	2006-12-15 23:17:51.000000000 -0800
-+++ mythtv-12265-new/settings.pro	2006-12-15 23:19:10.000000000 -0800
+diff -Naur mythtv-12353-old/settings.pro mythtv-12353-new/settings.pro
+--- mythtv-12353-old/settings.pro	2006-12-29 09:46:44.000000000 -0800
++++ mythtv-12353-new/settings.pro	2006-12-29 09:47:54.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
