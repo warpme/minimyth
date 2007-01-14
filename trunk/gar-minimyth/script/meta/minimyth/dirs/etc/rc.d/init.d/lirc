@@ -56,7 +56,7 @@ start() {
             exit 1
         fi
 
-        LIRC_DRIVER=`/usr/sbin/lircd --driver=help 2>&1 | /bin/grep -i "${MM_LIRC_DRIVER}" | /bin/sed 's%[[:cntrl:]]%%g'`
+        LIRC_DRIVER=`/usr/sbin/lircd --driver=help 2>&1 | /bin/sed -e 's%[[:cntrl:]]%%g' | /bin/grep -i -e "^${MM_LIRC_DRIVER}$"`
         /usr/bin/test -z "${LIRC_DRIVER}" && LIRC_DRIVER="default"
 
         /usr/sbin/lircd --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
