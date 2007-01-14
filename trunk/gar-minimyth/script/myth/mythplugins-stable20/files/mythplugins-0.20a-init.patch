@@ -1,21 +1,12 @@
 diff -Naur mythplugins-0.20-old/mythdvd/mythdvd/settings.cpp mythplugins-0.20-new/mythdvd/mythdvd/settings.cpp
 --- mythplugins-0.20-old/mythdvd/mythdvd/settings.cpp	2006-09-12 06:51:46.000000000 -0700
 +++ mythplugins-0.20-new/mythdvd/mythdvd/settings.cpp	2006-09-12 06:53:56.000000000 -0700
-@@ -79,7 +79,7 @@
-     HostLineEdit *gc = new HostLineEdit("mythdvd.DVDPlayerCommand");
-     gc->setLabel(QObject::tr("DVD Player Command"));
- //    gc->setValue("mplayer dvd:// -dvd-device %d -fs -zoom -vo xv");
--    gc->setValue("Internal");
-+    gc->setValue("xine -pfhq --no-splash dvd://");
-     gc->setHelpText(
-         QObject::tr("This can be any command to launch a DVD player "
-                     "(e.g. MPlayer, ogle, etc.). If present, %d will "
 @@ -91,7 +91,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("VCDPlayerCommand");
      gc->setLabel(QObject::tr("VCD Player Command"));
 -    gc->setValue("mplayer vcd:// -cdrom-device %d -fs -zoom -vo xv");
-+    gc->setValue("xine -pfhq --no-splash vcd://");
++    gc->setValue("mplayer vcd:// -cdrom-device %d -fs -zoom -quiet");
      gc->setHelpText(QObject::tr("This can be any command to launch a VCD player "
                      "(e.g. MPlayer, xine, etc.). If present, %d will "
                      "be substituted for the VCD device (e.g. /dev/cdrom)."));
@@ -36,7 +27,7 @@ diff -Naur mythplugins-0.20-old/mythgallery/mythgallery/gallerysettings.cpp myth
      HostLineEdit *gc = new HostLineEdit("GalleryMoviePlayerCmd");
      gc->setLabel(QObject::tr("Command run to display movie files"));
 -    gc->setValue("mplayer -fs %s");
-+    gc->setValue("xine -pfhq --no-splash --loop");
++    gc->setValue("mplayer -fs -zoom -quiet %s");
      gc->setHelpText(QObject::tr("This command is executed whenever a movie "
                      "file is selected"));
      return gc;
@@ -170,7 +161,7 @@ diff -Naur mythplugins-0.20-old/mythvideo/mythvideo/globalsettings.cpp mythplugi
      HostLineEdit *gc = new HostLineEdit("VideoDefaultPlayer");
      gc->setLabel(QObject::tr("Default Player"));
 -    gc->setValue("mplayer -fs -zoom -quiet -vo xv %s");
-+    gc->setValue("xine -pfhq --no-splash --loop");
++    gc->setValue("mplayer -fs -zoom -quiet %s");
      gc->setHelpText(QObject::tr("This is the command used for any file "
                      "that the extension is not specifically defined. "
                      "You may also enter the name of one of the playback "
