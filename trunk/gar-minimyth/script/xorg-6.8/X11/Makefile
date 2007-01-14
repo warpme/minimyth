@@ -136,7 +136,7 @@ configure-compiler:
 
 configure-installed_hardware:
 	@$(call CONFIG_FILE_HEADER, Installed hardware.)
-	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , i810)
+	@$(call CONFIG_FILE_APPEND, XF86CardDrivers           , i810 vmware)
 	@$(call CONFIG_FILE_APPEND, DriDrivers                , )
 	@$(call CONFIG_FILE_APPEND, BuildDevelDRIDrivers      , YES)
 	@$(call CONFIG_FILE_APPEND, DevelDRIDrivers           , )
