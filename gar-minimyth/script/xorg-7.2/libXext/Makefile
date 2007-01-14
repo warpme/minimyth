@@ -1,4 +1,4 @@
-GARNAME = libXvMC
+GARNAME = libXext
 GARVERSION = 1.0.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
@@ -12,10 +12,9 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
-	$(CATEGORY)/libXext \
-	$(CATEGORY)/libXv \
-	$(CATEGORY)/videoproto \
-	$(CATEGORY)/xextproto
+	$(CATEGORY)/libXau \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -33,11 +32,8 @@ include ../../gar.mk
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
-sysconfdir := $(subst //,/,$(sysconfdir))
-
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@rm -f $(DESTDIR)$(libdir)/libXvMCW.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xvmc.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xvmc.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xext.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xext.pc
 	@$(MAKECOOKIE)
