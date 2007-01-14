@@ -1,6 +1,6 @@
 MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
 
-MYTHTV_STABLE20_FIXES_VERSION = 11568
+MYTHTV_STABLE20_FIXES_VERSION = 11600
 
 mythtv-fixes-patch:
 	@mkdir -p $(PARTIALDIR)
@@ -18,7 +18,7 @@ mythtv-fixes-patch:
 	@cd $(WORKDIR)/fixes-patch ; \
 		mv $(GARNAME)-$(MYTHTV_STABLE20_FIXES_VERSION) $(DISTNAME)-new
 	@cd $(WORKDIR)/fixes-patch ; \
-		diff -Naur $(DISTNAME)-old $(DISTNAME)-new > $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch || true
+		diff -Naur -x 'mytharchive' $(DISTNAME)-old $(DISTNAME)-new > $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch || true
 	@if [ -w files/$(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch ] ; then \
 		rm -f files/$(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch ; \
 	 fi
