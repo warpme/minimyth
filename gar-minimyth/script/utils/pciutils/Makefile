@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c kernel/linux
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
@@ -22,7 +22,10 @@ BUILD_ARGS   = \
 	SBINDIR="${sbindir}" \
 	SHAREDIR="${sharedstatedir}" \
 	IDSDIR="${datadir}" \
-	MANDIR="${mandir}"
+	MANDIR="${mandir}" \
+	HOST="$(GARHOST)" \
+	RELEASE="$(KERNEL_VERSION)" \
+	ZLIB="no"
 INSTALL_ARGS = \
 	OPT="$(CFLAGS)" \
 	DESTDIR="${DESTDIR}" \
@@ -30,8 +33,12 @@ INSTALL_ARGS = \
 	SBINDIR="${sbindir}" \
 	SHAREDIR="${sharedstatedir}" \
 	IDSDIR="${datadir}" \
-	MANDIR="${mandir}"
+	MANDIR="${mandir}" \
+	HOST="$(GARHOST)" \
+	RELEASE="$(KERNEL_VERSION)" \
+	ZLIB="no"
 
+GAR_EXTRA_CONF += kernel/linux/package-api.mk
 include ../../gar.mk
 
 extract-pci.ids:

@@ -74,6 +74,10 @@ build_system_bins_coreutils = \
 	uname \
 	uniq \
 	wc
+# This is included because of 'chown' problem described in 'utils/coreutils/Makefile'.
+# Once the described problem is fixed, it can be removed.
+build_system_bins_coreutils += \
+	chown
 
 build_system_bins_cvs = \
 	cvs
