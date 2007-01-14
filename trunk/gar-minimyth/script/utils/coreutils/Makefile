@@ -24,7 +24,4 @@ include ../../gar.mk
 post-install:
 	@# We need to use the system's 'su', because it must be suid.
 	@$(if $(filter build,$(DESTIMG)),rm -f $(DESTDIR)$(bindir)/su)
-	@# We need to use the system's 'chown', because this 'chown' does not work on Fedora Core 6.
-	@# Since it should work, at some point we need to track down the problem.
-	@$(if $(filter build,$(DESTIMG)),rm -f $(DESTDIR)$(bindir)/chown)
 	@$(MAKECOOKIE)
