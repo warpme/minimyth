@@ -1,8 +1,8 @@
 GARNAME = ed
-GARVERSION = 0.2
+GARVERSION = 0.3
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -15,15 +15,12 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = --prefix=$(prefix) --exec-prefix=$(exec_prefix) --build=$(GARBUILD) --host=$(GARHOST)
-BUILD_ARGS     = \
-	AR="$(AR)"
-INSTALL_ARGS   = \
-	AR="$(AR)"
-
-BUILD_OVERRIDE_DIRS   = prefix exec_prefix bindir infordir mandir
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir infordir mandir
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	CC="$(CC)" \
+	CXX="$(CXX)" \
+	CPPFLAGS="$(CPPFLAGS)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(CFLAGS)"
 
 include ../../gar.mk
-
-mandir := $(mandir)/man1
