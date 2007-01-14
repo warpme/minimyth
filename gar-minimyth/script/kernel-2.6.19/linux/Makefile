@@ -5,8 +5,7 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = $(DISTNAME)-squashfs_3.1.patch $(DISTNAME)-unionfs.patch
-PATCHFILES += $(DISTNAME)-xpad.patch
+PATCHFILES  = $(DISTNAME)-squashfs_3.1.patch
 PATCHFILES += $(DISTNAME)-longhaul_ide_lockup.patch $(DISTNAME)-via_rhine_pxeboot.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
@@ -51,13 +50,3 @@ install-custom:
 	@cp $(WORKSRC)/System.map                           $(DESTDIR)$(LINUX_DIR)/System.map
 	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) modules_install
 	@$(MAKECOOKIE)
-
-clean-all:
-	@$(MAKE) clean     -C ../alsa-driver
-	@$(MAKE) clean     -C ../drm
-	@$(MAKE) clean     -C ../imon_vfd
-	@$(MAKE) clean     -C ../linux
-	@$(MAKE) clean     -C ../../lirc
-	@$(MAKE) clean-all -C ../../nvidia
-	@rm -rf $(DESTDIR)$(LINUX_DIR)
-	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)
