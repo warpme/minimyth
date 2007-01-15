@@ -1,9 +1,9 @@
 GARNAME = xvidcore
-GARVERSION = 1.1.0
+GARVERSION = 1.1.2
 CATEGORIES = lib
-MASTER_SITES  = http://downloads.xvid.org/downloads/
-MASTER_SITES += http://ftp.osuosl.org/pub/blfs/svn/x/
+MASTER_SITES = http://downloads.xvid.org/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -27,4 +27,4 @@ API_MINOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MINOR
 post-install:
 	@ln -sf libxvidcore.so.$(API_MAJOR).$(API_MINOR) $(DESTDIR)$(libdir)/libxvidcore.so.$(API_MAJOR)
 	@ln -sf libxvidcore.so.$(API_MAJOR)              $(DESTDIR)$(libdir)/libxvidcore.so
-	
+	@$(MAKECOOKIE)
