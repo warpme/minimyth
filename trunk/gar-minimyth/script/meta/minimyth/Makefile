@@ -46,8 +46,6 @@ DEPENDS = \
 	utils/regionset \
 	X11/rxvt \
         utils/SDL-Test \
-	emulators/sdlmame \
-	emulators/sdlmess \
 	system/splashutils \
 	utils/squashfs \
 	emulators/stella \
