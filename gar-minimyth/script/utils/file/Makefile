@@ -2,7 +2,7 @@ GARNAME = file
 GARVERSION = 4.19
 CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.astron.com/pub/$(GARNAME)/
-MASTER_SITES  = ftp://ftp.gw.com/mirrors/pub/unix/$(GARNAME)/
+MASTER_SITES += ftp://ftp.gw.com/mirrors/pub/unix/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
