@@ -143,23 +143,20 @@ configure-%/configure:
 	@$(MAKECOOKIE)
 
 post-configure:
+	@# Work around bug in qmake.
+	@desired=`echo /$(qtprefix)/ | sed -e 's%//*%/%g'` ; \
+	 if [ -e "$${desired}" ] ; then \
+		actual=`cd $${desired} ; pwd -P` ; \
+		actual=`echo /$${actual}/ | sed -e 's%//%/%g'` ; \
+		if [ "$${actual}" != "$${desired}" ] ; then \
+			sed -i -e "s%\$$(INSTALL_ROOT)$${actual}%\$$(INSTALL_ROOT)$${desired}%g" `find $(WORKSRC) -name Makefile` ; \
+		fi ; \
+	 fi
+	@# 
 	@$(call USE_BUILD_BIN, uic)
 	@$(MAKECOOKIE)
 
 post-install:
-	@# Work around bug in qmake.
-	@desired=$(qtprefix) ; \
-	 if [ -e "$${desired}" ] ; then \
-		actual=`cd $${desired} ; pwd -P` ; \
-		if [ -e $(DESTDIR)/$${actual} ] ; then \
-			if [ "$${actual}" != "$${desired}" ] ; then \
-				mkdir -p $(DESTDIR)/$${desired} ; \
-				cp -rf $(DESTDIR)/$${actual}/* $(DESTDIR)/$${desired} ; \
-				rm -rf $(DESTDIR)/$${actual} ; \
-			fi ; \
-		fi ; \
-	 fi
-	@# 
 	@rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
