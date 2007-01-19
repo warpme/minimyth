@@ -1283,12 +1283,14 @@ mm_hardware_motherboard2kernel_map() {
     local map
     local map_kernel_modules
 
+    /usr/bin/logger -t minimyth -p "local0.info" "manual kernel module detection:"
+
     vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
     vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
     product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
 
-    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
 
     if /usr/bin/test -n "${product}" ; then
         /bin/cat /etc/hardware.d/motherboard2kernel.map                                                         \
@@ -1301,15 +1303,17 @@ mm_hardware_motherboard2kernel_map() {
                     map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                 fi
                 if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. manual kernel modules should be loaded."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    appropriate manual kernel modules should be loaded."
                     /bin/echo ${map_kernel_modules}
                     return 0
                 fi
             done
         }
-	return 0
+        return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. some kernel modules may not be loaded."
+    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
+    /usr/bin/logger -t minimyth -p "local0.error" "    some kernel modules may not be loaded."
     return 0
 }
 
@@ -1322,12 +1326,14 @@ mm_hardware_motherboard2audio_card_number_map() {
     local map
     local map_audio_card_number
 
+    /usr/bin/logger -t minimyth -p "local0.info" "audio card number detection:"
+
     vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
     vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
     product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
 
-    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
 
     if /usr/bin/test -n "${product}" ; then
         /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
@@ -1340,15 +1346,17 @@ mm_hardware_motherboard2audio_card_number_map() {
                     map_audio_card_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                 fi
                 if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. audio card number should be correct."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    audio card number should be correct."
                     /bin/echo ${map_audio_card_number}
                     return 0
                 fi
             done
         }
-	return 0
+        return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. audio card number may be incorrect."
+    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
+    /usr/bin/logger -t minimyth -p "local0.error" "    audio card number may be incorrect."
     return 0
 }
 
@@ -1361,12 +1369,14 @@ mm_hardware_motherboard2audio_device_number_map() {
     local map
     local map_sound_device_number
 
+    /usr/bin/logger -t minimyth -p "local0.info" "audio device number detection:"
+
     vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
     vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
     product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
 
-    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' detected."
+    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
 
     if /usr/bin/test -n "${product}" ; then
         /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
@@ -1379,14 +1389,16 @@ mm_hardware_motherboard2audio_device_number_map() {
                     map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
                 fi
                 if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "motherboard vendor='${vendor}', product='${product}' known. audio device number should be correct."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
+                    /usr/bin/logger -t minimyth -p "local0.info" "    audio device number should be correct."
                     /bin/echo ${map_audio_device_number}
                     return 0
                 fi
             done
         }
-	return 0
+        return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.error" "motherboard vendor='${vendor}', product='${product}' unknown. audio device number may be incorrect."
+    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
+    /usr/bin/logger -t minimyth -p "local0.error" "    audio device number may be incorrect."
     return 0
 }

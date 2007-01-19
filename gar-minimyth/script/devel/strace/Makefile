@@ -1,9 +1,8 @@
 GARNAME = strace
-GARVERSION = 4.5.14
+GARVERSION = 4.5.15
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-subcall400.patch $(DISTNAME)-glibc_2.5.patch $(DISTNAME)-linux_2.6.18.patch
 LICENSE = BSD
 
 DESCRIPTION =

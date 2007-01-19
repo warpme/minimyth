@@ -1,5 +1,5 @@
 GARNAME = squashfs
-GARVERSION = 3.1-r2
+GARVERSION = 3.2-r2
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
