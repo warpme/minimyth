@@ -264,6 +264,23 @@ mm-check:
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
+	@# Check distribution parameters.
+	@if [ ! "$(mm_DISTRIBUTION_RAM)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_RAM)" = "no" ] ; then \
+		echo "error: mm_DISTRIBUTION_RAM=\"$(mm_DISTRIBUTION_RAM)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_DISTRIBUTION_NFS)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_NFS)" = "no" ] ; then \
+		echo "error: mm_DISTRIBUTION_NFS=\"$(mm_DISTRIBUTION_NFS)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_DISTRIBUTION_LOCAL)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_LOCAL)" = "no" ] ; then \
+		echo "error: mm_DISTRIBUTION_LOCAL=\"$(mm_DISTRIBUTION_LOCAL)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@if [ ! "$(mm_DISTRIBUTION_SHARE)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_SHARE)" = "no" ] ; then \
+		echo "error: mm_DISTRIBUTION_SHARE=\"$(mm_DISTRIBUTION_SHARE)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
 	@# Check install parameters.
 	@if [ ! "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_RAM_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_RAM_BOOT=\"$(mm_INSTALL_RAM_BOOT)\" is an invalid value." ; \
@@ -291,6 +308,22 @@ mm-check:
 	fi
 	@if [ "$(mm_INSTALL_LATEST)"   = "yes" ] && [ ! -d "$(mm_TFTP_ROOT)" ] ; then \
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_RAM)" = "no" ] ; then \
+		echo "error: mm_INSTALL_RAM_ROOT=\"yes\" but mm_DISTRIBUTION_RAM=\"no\"." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_NFS)" = "no" ] ; then \
+		echo "error: mm_INSTALL_NFS_ROOT=\"yes\" but mm_DISTRIBUTION_NFS=\"no\"." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_LOCAL)" = "no" ] ; then \
+		echo "error: mm_INSTALL_RAM_ROOT=\"yes\" but mm_DISTRIBUTION_LOCAL=\"no\"." ; \
+		exit 1 ; \
+	fi
+	@if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_LOCAL)" = "no" ] ; then \
+		echo "error: mm_INSTALL_NFS_ROOT=\"yes\" but mm_DISTRIBUTION_LOCAL=\"no\"." ; \
 		exit 1 ; \
 	fi
 
@@ -523,24 +556,8 @@ mm-make-rootfs:
 	@ln -s ../rootfs-ro/bin/sh          $(mm_ROOTFSDIR)/bin/sh
 	@cp -r ./dirs/initrd/sbin/init      $(mm_ROOTFSDIR)/sbin/init
 
-mm-make-distro:
+mm-make-distro-base:
 	@echo 'making minimyth distribution'
-	@rm -rf   $(mm_STAGEDIR)/ram-$(mm_NAME)
-	@rm -rf   $(mm_STAGEDIR)/nfs-$(mm_NAME)
-	@mkdir -p $(mm_STAGEDIR)/ram-$(mm_NAME)
-	@mkdir -p $(mm_STAGEDIR)/nfs-$(mm_NAME)
-	@# Get version.
-	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
-	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
-	@# Get documentation 
-	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
-	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
-	@# Get scripts
-	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/ram-$(mm_NAME)/
-	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/nfs-$(mm_NAME)/
-	@# Get kernel.
-	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/ram-$(mm_NAME)/
-	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Make source tarball file.
 	@echo "  making source tarball file"
 	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
@@ -561,8 +578,22 @@ mm-make-distro:
 		chmod -R go-w $(mm_STAGEDIR)/helper                             ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
 	@chmod 644 $(mm_STAGEDIR)/helper.tar.bz2
+
+mm-make-distro-ram:
+	@# Make RAM root file system distribution
+	@echo "  making RAM root file system distribution"
+	@rm -rf   $(mm_STAGEDIR)/ram-$(mm_NAME)
+	@mkdir -p $(mm_STAGEDIR)/ram-$(mm_NAME)
+	@# Get version.
+	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@# Get documentation 
+	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@# Get scripts
+	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@# Get kernel.
+	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@# Make root file system squashfs image file.
-	@echo "  making root file system squashfs image file"
+	@echo "    making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@fakeroot sh -c                                                                          " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
@@ -574,8 +605,38 @@ mm-make-distro:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
 		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
-	@# Make root file system tarball.
-	@echo "  making root file system tarball file"
+	@# Make extras squashfs image file.
+	@echo "    making extras squashfs image file"
+	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
+	@fakeroot sh -c                                                                              " \
+		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
+		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
+	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
+	@# Make themes squashfs image files.
+	@echo "    making themes squashfs image files"
+	@rm -rf    $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
+	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
+	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
+		fakeroot sh -c                                                                                                   "   \
+			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
+		chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
+	done
+
+mm-make-distro-nfs:
+	@# Make NFS root file system distribution
+	@echo "  making NFS root file system distribution"
+	@rm -rf   $(mm_STAGEDIR)/nfs-$(mm_NAME)
+	@mkdir -p $(mm_STAGEDIR)/nfs-$(mm_NAME)
+	@# Get version.
+	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@# Get documentation 
+	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@# Get scripts
+	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@# Get kernel.
+	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@echo "    making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
@@ -587,94 +648,101 @@ mm-make-distro:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
-	@# Make extras squashfs image file.
-	@echo "  making extras squashfs image file"
-	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
-	@fakeroot sh -c                                                                              " \
-		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
-		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
-	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@# Make extras tarball file.
-	@echo "  making extras tarball file"
+	@echo "    making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
-	@# Make themes squashfs image files.
-	@echo "  making themes squashfs image files"
-	@rm -rf    $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
-	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
-	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
-		fakeroot sh -c                                                                                                   "   \
-			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
-			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
-		chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
-	done
 	@# Make themes tarball file.
-	@echo "  making themes tarball file"
+	@echo "    making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@# Make local (private) distribution
+
+mm-make-distro-local:
+	@# Make local (private) distribution
 	@echo "  making local (private) distribution"
 	@rm -rf   $(mm_LOCALDIR)
 	@mkdir -p $(mm_LOCALDIR)
-	@cp -r  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_LOCALDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
-	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)         $(mm_LOCALDIR)/ram-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)         $(mm_LOCALDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_LOCALDIR)/scripts
-	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
-		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
-		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
-	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
-		_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/nfs-$(mm_NAME) \
-		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
-	@tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME)
-	@tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME)
-	@rm -rf $(mm_LOCALDIR)/ram-$(mm_NAME)
-	@rm -rf $(mm_LOCALDIR)/nfs-$(mm_NAME)
-	@cd $(mm_LOCALDIR) ; md5sum version                > version.md5
-	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
-	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2 > gar-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_LOCALDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
+	@cd $(mm_LOCALDIR) ; md5sum version                        > version.md5
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_LOCALDIR)/html.tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2                   > html.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2                 > helper.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2         > gar-$(mm_NAME).tar.bz2.md5
+	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
+		echo "    making RAM root file system part of the distribution"                 ; \
+		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_LOCALDIR)/ram-$(mm_NAME)             ; \
+		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
+			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
+		tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME) ; \
+		rm -rf $(mm_LOCALDIR)/ram-$(mm_NAME)                                            ; \
+		cd $(mm_LOCALDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5  ; \
+	 fi
+	@if [ -e $(mm_STAGEDIR)/nfs-$(mm_NAME) ] ; then \
+		echo "    making NFS root file system part of the distribution"                 ; \
+		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_LOCALDIR)/nfs-$(mm_NAME)             ; \
+		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/nfs-$(mm_NAME) \
+			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
+		tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME) ; \
+		rm -rf $(mm_LOCALDIR)/nfs-$(mm_NAME)                                            ; \
+		cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
+	 fi
+
+mm-make-distro-share:
 	@# Make share (public) distribution
 	@echo "  making share (public) distribution"
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
-	@cp -r  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_SHAREDIR)/html.tar.bz2
-	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
-	@cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)         $(mm_SHAREDIR)/ram-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)         $(mm_SHAREDIR)/nfs-$(mm_NAME)
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
 	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_SHAREDIR)/scripts
-	@rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs
-	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2
-	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
-		_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/ram-$(mm_NAME) \
-		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
-	@make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)     \
-		_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/nfs-$(mm_NAME) \
-		_MM_CHECKSUM_CREATE_FILE=minimyth.md5
-	@tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME)
-	@tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME)
-	@rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)
-	@rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)
-	@cd $(mm_SHAREDIR) ; md5sum version                > version.md5
-	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2         > helper.tar.bz2.md5
-	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2 > gar-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_SHAREDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5
-	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2           > html.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
+	@cd $(mm_SHAREDIR) ; md5sum version                        > version.md5
+	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_SHAREDIR)/html.tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2                   > html.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2                 > helper.tar.bz2.md5
+	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2         > gar-$(mm_NAME).tar.bz2.md5
+	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
+		echo "    making RAM root file system part of the distribution"                 ; \
+		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_SHAREDIR)/ram-$(mm_NAME)             ; \
+		rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs                                 ; \
+		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/ram-$(mm_NAME) \
+			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
+		tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME) ; \
+		rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)                                            ; \
+		cd $(mm_SHAREDIR) ; md5sum ram-$(mm_NAME).tar.bz2 > ram-$(mm_NAME).tar.bz2.md5  ; \
+	 fi
+	@if [ -e $(mm_STAGEDIR)/nfs-$(mm_NAME) ] ; then \
+		echo "    making NFS root file system part of the distribution"                 ; \
+		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_SHAREDIR)/nfs-$(mm_NAME)             ; \
+		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2                             ; \
+		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/nfs-$(mm_NAME) \
+			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
+		tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME) ; \
+		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)                                            ; \
+		cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
+	 fi
 	@cp -r ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
+
+mm-make-distro: \
+	mm-make-distro-base \
+	$(if $(filter yes,$(mm_DISTRIBUTION_RAM)),  mm-make-distro-ram   ) \
+	$(if $(filter yes,$(mm_DISTRIBUTION_NFS)),  mm-make-distro-nfs   ) \
+	$(if $(filter yes,$(mm_DISTRIBUTION_LOCAL)),mm-make-distro-local ) \
+	$(if $(filter yes,$(mm_DISTRIBUTION_SHARE)),mm-make-distro-share )
 
 mm-make-source:
 	@rm -rf   $(mm_STAGEDIR)/source
@@ -727,8 +795,12 @@ mm-%/checksum-create:
 mm-install: mm-check
 	@rm -rf   $(mm_DESTDIR)
 	@mkdir -p $(mm_DESTDIR)
-	@cp -rf $(mm_LOCALDIR) $(mm_DESTDIR)/
-	@cp -rf $(mm_SHAREDIR) $(mm_DESTDIR)/
+	@if [ -e $(mm_LOCALDIR) ] ; then \
+		cp -rf $(mm_LOCALDIR) $(mm_DESTDIR)/ ; \
+	 fi
+	@if [ -e $(mm_SHAREDIR) ] ; then \
+		cp -rf $(mm_SHAREDIR) $(mm_DESTDIR)/ ; \
+	 fi
 	@if [ $(mm_INSTALL_RAM_BOOT) = yes ] || [ $(mm_INSTALL_NFS_BOOT) = yes ] || [ $(mm_INSTALL_LATEST) = yes ] ; then \
 		su -c " \
 			if [ $(mm_INSTALL_RAM_BOOT) = yes ] ; then \
