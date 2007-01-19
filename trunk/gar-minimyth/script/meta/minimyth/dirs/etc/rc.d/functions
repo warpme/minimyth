@@ -1088,6 +1088,53 @@ mm_hardware_pci_process() {
     | mm_uniq
 }
 
+mm_hardware_pci2audio_map() {
+    local class=$1
+    local vendor=$2
+    local device=$3
+    local revision=$4
+    local class_prog=$5
+    local subvendor=$6
+    local subdevice=$7
+
+    local found
+    local map
+    local map_device
+    local map_subvendor
+    local map_subdevice
+    local map_revision
+    local map_audio_card_number
+    local map_audio_device_number
+
+    if /usr/bin/test -n "${class}" ; then
+        /bin/cat /etc/hardware.d/pci2audio.map                                                                  \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${class},${class_prog},${vendor},"                                                     \
+        | {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_device=`             /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    map_subvendor=`          /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
+                    map_subdevice=`          /bin/echo ${map} | /usr/bin/cut -d ',' -f 6`
+                    map_revision=`           /bin/echo ${map} | /usr/bin/cut -d ',' -f 7`
+                    map_audio_card_number=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 8`
+                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 9`
+                    if ( /usr/bin/test -z "${map_device}"    || /usr/bin/test "${map_device}"    = "${device}"     ) &&
+                       ( /usr/bin/test -z "${map_subvendor}" || /usr/bin/test "${map_subvendor}" = "${subvendor}"  ) &&
+                       ( /usr/bin/test -z "${map_subdevice}" || /usr/bin/test "${map_subdevice}" = "${subdevice}"  ) &&
+                       ( /usr/bin/test -z "${map_revision}"  || /usr/bin/test "${map_revision}"  = "${revision}"   ) ; then
+                        if /usr/bin/test -z "${found}" ; then
+                            found=1
+                            /bin/echo ${map_audio_card_number},${map_audio_device_number}
+                        fi
+                    fi
+                fi
+            done
+        }
+    fi
+}
+
 mm_hardware_pci2x_map() {
     local class=$1
     local vendor=$2
@@ -1099,26 +1146,20 @@ mm_hardware_pci2x_map() {
 
     local found
     local map
-    local map_class_prog
     local map_device
-    local map_vendor
     local map_x_driver
 
     if /usr/bin/test -n "${class}" ; then
         /bin/cat /etc/hardware.d/pci2x.map                                                                      \
         | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${class},"                                                                             \
+        | /bin/grep -e "^${class},${class_prog},${vendor},"                                                     \
         | {
             found=
             while read map ; do
                 if /usr/bin/test -n "${map}" ; then
-                    map_class_prog=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
-                    map_vendor=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                     map_device=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
                     map_x_driver=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                    if ( /usr/bin/test -z "${map_class_prog}" || /usr/bin/test "${map_class_prog}" = "${class_prog}" ) &&
-                       ( /usr/bin/test -z "${map_vendor}"     || /usr/bin/test "${map_vendor}"     = "${vendor}"     ) &&
-                       ( /usr/bin/test -z "${map_device}"     || /usr/bin/test "${map_device}"     = "${device}"     ) ; then
+                    if ( /usr/bin/test -z "${map_device}" || /usr/bin/test "${map_device}" = "${device}" ) ; then
                         if /usr/bin/test -z "${found}" ; then
                             found=1
                             /bin/echo ${map_x_driver}
@@ -1176,6 +1217,37 @@ mm_hardware_usb_process() {
         /bin/echo `${usb_process_function} ${bus} ${device} ${vendor} ${product}`
     done \
     | mm_uniq
+}
+
+mm_hardware_usb2audio_map() {
+    local bus=$1
+    local device=$2
+    local vendor=$3
+    local product=$4
+
+    local found
+    local map
+    local map_audio_card_number
+    local map_audio_device_number
+
+    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
+        /bin/cat /etc/hardware.d/usb2audio.map                                                                  \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor},${product},"                                                                 \
+        | {
+            found=
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_audio_card_number=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    if /usr/bin/test -z "${found}" ; then
+                        found=1
+                        /bin/echo ${map_audio_card_number},${map_audio_device_number}
+                    fi
+                fi
+            done
+        }
+    fi
 }
 
 mm_hardware_usb2lirc_driver_map() {
@@ -1314,91 +1386,5 @@ mm_hardware_motherboard2kernel_map() {
     fi
     /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
     /usr/bin/logger -t minimyth -p "local0.error" "    some kernel modules may not be loaded."
-    return 0
-}
-
-mm_hardware_motherboard2audio_card_number_map() {
-
-    local vendor
-    local product
-    local vendor_clean
-    local product_clean
-    local map
-    local map_audio_card_number
-
-    /usr/bin/logger -t minimyth -p "local0.info" "audio card number detection:"
-
-    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
-    product=`/usr/sbin/dmidecode -s baseboard-product-name`
-    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
-    product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
-
-    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
-
-    if /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor_clean},${product_clean}"                                                      \
-        | {
-            while read map ; do
-                map_audio_card_number=
-                if /usr/bin/test -n "${map}" ; then
-                    map_audio_card_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                fi
-                if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
-                    /usr/bin/logger -t minimyth -p "local0.info" "    audio card number should be correct."
-                    /bin/echo ${map_audio_card_number}
-                    return 0
-                fi
-            done
-        }
-        return 0
-    fi
-    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
-    /usr/bin/logger -t minimyth -p "local0.error" "    audio card number may be incorrect."
-    return 0
-}
-
-mm_hardware_motherboard2audio_device_number_map() {
-
-    local vendor
-    local product
-    local vendor_clean
-    local product_clean
-    local map
-    local map_sound_device_number
-
-    /usr/bin/logger -t minimyth -p "local0.info" "audio device number detection:"
-
-    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
-    product=`/usr/sbin/dmidecode -s baseboard-product-name`
-    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
-    product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
-
-    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
-
-    if /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/motherboard2audio.map                                                          \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor_clean},${product_clean}"                                                      \
-        | {
-            while read map ; do
-                map_audio_device_number=
-                if /usr/bin/test -n "${map}" ; then
-                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                fi
-                if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
-                    /usr/bin/logger -t minimyth -p "local0.info" "    audio device number should be correct."
-                    /bin/echo ${map_audio_device_number}
-                    return 0
-                fi
-            done
-        }
-        return 0
-    fi
-    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
-    /usr/bin/logger -t minimyth -p "local0.error" "    audio device number may be incorrect."
     return 0
 }
