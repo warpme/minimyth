@@ -28,6 +28,10 @@ conf_check_audio() {
 
 conf_default_audio() {
 
+    local AUDIO
+    local AUDIO_CARD_NUMBER
+    local AUDIO_DEVICE_NUMBER
+
     # Reset the variables.
     conf_reset 'MM_AUDIO_'
 
@@ -38,20 +42,35 @@ conf_default_audio() {
     if /usr/bin/test "${MM_AUDIO_CARD_NUMBER}" = "auto" ; then
         MM_AUDIO_CARD_NUMBER=''
     fi
-    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
-        MM_AUDIO_CARD_NUMBER="`mm_hardware_motherboard2audio_card_number_map`"
-    fi
-    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
-        MM_AUDIO_CARD_NUMBER='0'
+    if /usr/bin/test "${MM_AUDIO_DEVICE_NUMBER}" = "auto" ; then
+        MM_AUDIO_DEVICE_NUMBER=''
     fi
 
-    if /usr/bin/test "${MM_AUDIO_CARD_NUMBER}" = "auto" ; then
-        MM_AUDIO_CARD_NUMBER=''
+    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" || /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
+        AUDIO=''
+        if /usr/bin/test -z "${AUDIO}" ; then
+            AUDIO="`mm_hardware_pci_process mm_hardware_pci2audio_map`"
+        fi
+        if /usr/bin/test -z "${AUDIO}" ; then
+            AUDIO="`mm_hardware_usb_process mm_hardware_usb2audio_map`"
+        fi
+        if /usr/bin/test -n "${AUDIO}" ; then
+            AUDIO_CARD_NUMBER="`  /bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 1`"
+            AUDIO_DEVICE_NUMBER="`/bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 2`"
+            if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
+                MM_AUDIO_CARD_NUMBER=${AUDIO_CARD_NUMBER}
+            fi
+            if /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
+                MM_AUDIO_DEVICE_NUMBER=${AUDIO_DEVICE_NUMBER}
+            fi
+        fi
+    fi
+    if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" ; then
+        /usr/bin/logger -t minimyth -p "local0.warn" "unknown audio card. assuming audio card number is '0'."
+        MM_AUDIO_CARD_NUMBER='0'
     fi
     if /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
-        MM_AUDIO_DEVICE_NUMBER="`mm_hardware_motherboard2audio_device_number_map`"
-    fi
-    if /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
+        /usr/bin/logger -t minimyth -p "local0.warn" "assumed audio card. assuming audio device number is '0'."
         MM_AUDIO_DEVICE_NUMBER='0'
     fi
 
