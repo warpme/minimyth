@@ -79,7 +79,7 @@ mm_MYTH_VERSION       ?= stable20
 # Valid values are '8178', '8776', '9631' and '9746'.
 mm_NVIDIA_VERSION     ?= 9746
 # The version of xorg to use.
-# Valid values are '7.2' (7.2-RC3).
+# Valid values are '7.0' and '7.2' (7.2-RC3).
 mm_XORG_VERSION       ?= 7.2
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
