@@ -399,8 +399,8 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
-	@index=10 ; $(foreach file, $(MM_INIT_START), index=$$((index+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
-	@index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$((index+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
+	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
+	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -419,7 +419,7 @@ mm-remove-post:
 mm-copy-libs:
 	@# Copy dependent libraries.
 	@echo 'copying dependent libraries'
-	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
+	new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
 	pass=0 ; \
 	lib_count=1 ; \
 	bin_list="`find $(mm_ROOTFSDIR) -exec file '{}' \; \
@@ -427,7 +427,7 @@ mm-copy-libs:
 		| sed -e 's%:.*%%'`" ; \
 	bin_list=`echo $${bin_list}` ; \
 	while test $${lib_count} -gt 0 ; do \
-		pass=$$((pass+1)) ; \
+		pass=$$(($${pass}+1)) ; \
 		lib_list="`find $(mm_ROOTFSDIR) -exec file '{}' \; \
 			| grep -i 'ELF ..-bit LSB shared object' \
 			| sed -e 's%:.*%%'`" ; \
