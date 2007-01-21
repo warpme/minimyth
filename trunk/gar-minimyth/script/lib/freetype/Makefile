@@ -17,9 +17,11 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
-BUILD_ARGS     = \
-	CCexe="$(build_CC) $(build_CFLAGS)"
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld
+
+CONFIGURE_ENV  = \
+	CC_BUILD="$(build_CC) $(build_CFLAGS)"
 
 include ../../gar.mk
 

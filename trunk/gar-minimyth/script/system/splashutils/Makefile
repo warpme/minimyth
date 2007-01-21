@@ -3,7 +3,7 @@ GARVERSION = 1.3
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-config_opt.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -25,7 +25,7 @@ CONFIGURE_ARGS = \
 	--with-ttf \
 	--with-ttfkern
 BUILD_ARGS = \
-	QUIET="true" \
+	QUIET="false" \
 	KLCC="$(CC)" \
 	CC="$(CC)" \
 	CFLAGS="$(CFLAGS)" \
