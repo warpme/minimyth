@@ -10,6 +10,7 @@ endef
 DEPENDS = \
 	kernel-2.6.17/alsa-driver \
 	kernel-2.6.17/drm \
+	kernel-2.6.17/k8temp \
 	kernel-2.6.17/imon_vfd \
 	kernel-2.6.17/linux \
 	kernel-2.6.17/linux-headers \
@@ -28,6 +29,7 @@ post-install:
 clean-all:
 	@$(MAKE) clean     -C ../alsa-driver
 	@$(MAKE) clean     -C ../drm
+	@$(MAKE) clean     -C ../k8temp
 	@$(MAKE) clean     -C ../imon_vfd
 	@$(MAKE) clean     -C ../kernel
 	@$(MAKE) clean     -C ../linux
