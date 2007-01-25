@@ -10,17 +10,46 @@ conf_check_media() {
 }
 
 conf_default_media() {
+    # Reset the variables.
+    conf_reset \
+        'MM_MYTHDVD_MOUNTPOINT'
+        'MM_MYTHGALLERY_MOUNTPOINT'
+        'MM_MYTHGAME_MOUNTPOINT'
+        'MM_MYTHMUSIC_MOUNTPOINT'
+        'MM_MYTHVIDEO_MOUNTPOINT'
+
+    if /usr/bin/test -z "${MM_MYTHDVD_MOUNTPOINT}"     ; then
+        MM_MYTHDVD_MOUNTPOINT='/mnt/dvd'
+    fi
+    if /usr/bin/test -z "${MM_MYTHGALLERY_MOUNTPOINT}" ; then
+        MM_MYTHGALLERY_MOUNTPOINT='/mnt/gallery'
+    fi
+    if /usr/bin/test -z "${MM_MYTHGAME_MOUNTPOINT}"    ; then
+        MM_MYTHGAME_MOUNTPOINT='/mnt/game'
+    fi
+    if /usr/bin/test -z "${MM_MYTHMUSIC_MOUNTPOINT}"   ; then
+        MM_MYTHMUSIC_MOUNTPOINT='/mnt/music'
+    fi
+    if /usr/bin/test -z "${MM_MYTHVIDEO_MOUNTPOINT}"   ; then
+        MM_MYTHVIDEO_MOUNTPOINT='/mnt/video'
+    fi
+
     return 0
 }
 
 conf_write_media() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_MYTHDVD_URL     "${MM_MYTHDVD_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHGALLERY_URL "${MM_MYTHGALLERY_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHGAME_URL    "${MM_MYTHGAME_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHMUSIC_URL   "${MM_MYTHMUSIC_URL}"
-    conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL   "${MM_MYTHVIDEO_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHDVD_MOUNTPOINT     "${MM_MYTHDVD_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MYTHDVD_URL            "${MM_MYTHDVD_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHGALLERY_MOUNTPOINT "${MM_MYTHGALLERY_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MYTHGALLERY_URL        "${MM_MYTHGALLERY_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHGAME_MOUNTPOINT    "${MM_MYTHGAME_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MYTHGAME_URL           "${MM_MYTHGAME_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHMUSIC_MOUNTPOINT   "${MM_MYTHMUSIC_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MYTHMUSIC_URL          "${MM_MYTHMUSIC_URL}"
+    conf_variable_write "${conf_file}" MM_MYTHVIDEO_MOUNTPOINT   "${MM_MYTHVIDEO_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL          "${MM_MYTHVIDEO_URL}"
 
     return 0
 }

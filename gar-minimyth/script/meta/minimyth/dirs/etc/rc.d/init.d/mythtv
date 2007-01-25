@@ -57,11 +57,12 @@ start() {
 
     # Configure MythDVD ripping.
     if /usr/bin/test "${MM_MYTHDVD_ENABLED}" = "yes" ; then
-        if /usr/bin/test -d /mnt/dvd && /usr/bin/test -w /mnt/dvd ; then
-            /bin/mkdir -p /mnt/dvd/mythdvd/temp
+        if /usr/bin/test -d "${MM_MYTHDVD_MOUNTPOINT}" && /usr/bin/test -w "${MM_MYTHDVD_MOUNTPOINT}" ; then
+            /bin/mkdir -p "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp"
         fi
-        if /usr/bin/test -d /mnt/dvd/mythdvd/temp && /usr/bin/test -w /mnt/dvd/mythdvd/temp  ; then
-            mm_mythdb_settings_update "DVDRipLocation" "/mnt/dvd/mythdvd/temp"
+        if /usr/bin/test -d "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp" && \
+           /usr/bin/test -w "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp" ; then
+            mm_mythdb_settings_update "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp"
             TRANSCODE=`which transcode`
             mm_mythdb_settings_update "TranscodeCommand" "${TRANSCODE}"
             /usr/bin/mtd --daemon
