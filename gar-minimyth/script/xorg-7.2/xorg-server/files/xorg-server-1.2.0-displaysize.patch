@@ -1,0 +1,17 @@
+diff -Naur xorg-server-1.2.0-old/hw/xfree86/ddc/ddcProperty.c xorg-server-1.2.0-new/hw/xfree86/ddc/ddcProperty.c
+--- xorg-server-1.2.0-old/hw/xfree86/ddc/ddcProperty.c	2007-01-22 21:39:16.000000000 -0800
++++ xorg-server-1.2.0-new/hw/xfree86/ddc/ddcProperty.c	2007-01-24 19:29:18.000000000 -0800
+@@ -313,8 +313,11 @@
+ 
+     preferred = PREFERRED_TIMING_MODE(DDC->features.msc);
+ 
+-    Monitor->widthmm = 10 * DDC->features.hsize;
+-    Monitor->heightmm = 10 * DDC->features.vsize;
++    /* Set display size if it was not specified in the config file */
++    if (Monitor->widthmm <= 0)
++        Monitor->widthmm = 10 * DDC->features.hsize;
++    if (Monitor->heightmm <= 0)
++        Monitor->heightmm = 10 * DDC->features.vsize;
+     
+     /* If this is a digital display, then we can use reduced blanking */
+     if (DDC->features.input_type) 
