@@ -10,19 +10,19 @@ start() {
     mm_message_output info 'mounting media shares ...'
 
     if /usr/bin/test -n "${MM_MYTHDVD_URL}"     ; then
-        mm_url_mount "${MM_MYTHDVD_URL}"     "/mnt/dvd"
+        mm_url_mount "${MM_MYTHDVD_URL}"     "${MM_MYTHDVD_MOUNTPOINT}"
     fi
     if /usr/bin/test -n "${MM_MYTHGALLERY_URL}" ; then
-        mm_url_mount "${MM_MYTHGALLERY_URL}" "/mnt/gallery"
+        mm_url_mount "${MM_MYTHGALLERY_URL}" "${MM_MYTHGALLERY_MOUNTPOINT}"
     fi
     if /usr/bin/test -n "${MM_MYTHGAME_URL}"    ; then
-        mm_url_mount "${MM_MYTHGAME_URL}"    "/mnt/game"
+        mm_url_mount "${MM_MYTHGAME_URL}"    "${MM_MYTHGAME_MOUNTPOINT}"
     fi
     if /usr/bin/test -n "${MM_MYTHMUSIC_URL}"   ; then
-        mm_url_mount "${MM_MYTHMUSIC_URL}"   "/mnt/music"
+        mm_url_mount "${MM_MYTHMUSIC_URL}"   "${MM_MYTHMUSIC_MOUNTPOINT}"
     fi
     if /usr/bin/test -n "${MM_MYTHVIDEO_URL}"   ; then
-        mm_url_mount "${MM_MYTHVIDEO_URL}"   "/mnt/video"
+        mm_url_mount "${MM_MYTHVIDEO_URL}"   "${MM_MYTHVIDEO_MOUNTPOINT}"
     fi
 
     return 0
@@ -31,20 +31,20 @@ start() {
 stop() {
     mm_message_output info 'unmounting media shares ...'
 
-    if /usr/bin/test -n "${MM_MYTHVIDEO_URL}"   && /usr/bin/test -d /mnt/video   ; then
-        /bin/umount /mnt/video
+    if /usr/bin/test -n "${MM_MYTHVIDEO_URL}"   && /usr/bin/test -d "${MM_MYTHVIDEO_MOUNTPOINT}"   ; then
+        /bin/umount "${MM_MYTHVIDEO_MOUNTPOINT}"
     fi
-    if /usr/bin/test -n "${MM_MYTHMUSIC_URL}"   && /usr/bin/test -d /mnt/music   ; then
-        /bin/umount /mnt/music
+    if /usr/bin/test -n "${MM_MYTHMUSIC_URL}"   && /usr/bin/test -d "${MM_MYTHMUSIC_MOUNTPOINT}"   ; then
+        /bin/umount "${MM_MYTHMUSIC_MOUNTPOINT}"
     fi
-    if /usr/bin/test -n "${MM_MYTHGALLERY_URL}" && /usr/bin/test -d /mnt/gallery ; then
-        /bin/umount /mnt/gallery
+    if /usr/bin/test -n "${MM_MYTHGAME_URL}"    && /usr/bin/test -d "${MM_MYTHGAME_MOUNTPOINT}"    ; then
+        /bin/umount "${MM_MYTHGAME_MOUNTPOINT}"
     fi
-    if /usr/bin/test -n "${MM_MYTHGAME_URL}"    && /usr/bin/test -d /mnt/game    ; then
-        /bin/umount /mnt/game
+    if /usr/bin/test -n "${MM_MYTHGALLERY_URL}" && /usr/bin/test -d "${MM_MYTHGALLERY_MOUNTPOINT}" ; then
+        /bin/umount "${MM_MYTHGALLERY_MOUNTPOINT}"
     fi
-    if /usr/bin/test -n "${MM_MYTHDVD_URL}"     && /usr/bin/test -d /mnt/dvd     ; then
-        /bin/umount /mnt/dvd
+    if /usr/bin/test -n "${MM_MYTHDVD_URL}"     && /usr/bin/test -d "${MM_MYTHDVD_MOUNTPOINT}"     ; then
+        /bin/umount "${MM_MYTHDVD_MOUNTPOINT}"
     fi
 
     return 0
