@@ -3,6 +3,7 @@ GARVERSION = 1.4.1
 CATEGORIES = X11
 MASTER_SITES = http://savannah.nongnu.org/download/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-staticgravity.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -18,7 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--disable-debug \
+	--enable-debug \
 	--disable-history \
 	--with-xterm=rxvt \
 	--with-x
