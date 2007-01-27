@@ -1,5 +1,5 @@
 GARNAME = zsnes
-GARVERSION = 1.50
+GARVERSION = 1.51
 CATEGORIES = emulators
 MASTER_SITES = http://superb-east.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/

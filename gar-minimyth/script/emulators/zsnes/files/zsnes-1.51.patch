@@ -1,7 +1,7 @@
-diff -Naur zsnes_1_50-old/src/acinclude.m4 zsnes_1_50-new/src/acinclude.m4
---- zsnes_1_50-old/src/acinclude.m4	2006-12-21 17:59:54.000000000 -0800
-+++ zsnes_1_50-new/src/acinclude.m4	2006-12-23 16:45:12.000000000 -0800
-@@ -90,7 +90,7 @@
+diff -Naur zsnes_1_51-old/src/acinclude.m4 zsnes_1_51-new/src/acinclude.m4
+--- zsnes_1_51-old/src/acinclude.m4	2006-12-27 02:59:22.000000000 -0800
++++ zsnes_1_51-new/src/acinclude.m4	2007-01-26 19:48:48.000000000 -0800
+@@ -107,7 +107,7 @@
    with_zlib=yes,
    with_zlib=no,
    [AC_MSG_RESULT(cross-compiling)
@@ -10,7 +10,7 @@ diff -Naur zsnes_1_50-old/src/acinclude.m4 zsnes_1_50-new/src/acinclude.m4
    AC_MSG_WARN(Assuming zlib is available)])
  
  if test x$with_zlib != x; then
-@@ -224,7 +224,7 @@
+@@ -239,7 +239,7 @@
    with_libpng=yes,
    with_libpng=no,
    [AC_MSG_RESULT(cross-compiling)
@@ -19,12 +19,12 @@ diff -Naur zsnes_1_50-old/src/acinclude.m4 zsnes_1_50-new/src/acinclude.m4
    AC_MSG_WARN(Assuming libpng is available)])
  
    if test x$with_libpng != x; then
-diff -Naur zsnes_1_50-old/src/configure.in zsnes_1_50-new/src/configure.in
---- zsnes_1_50-old/src/configure.in	2006-12-21 17:59:54.000000000 -0800
-+++ zsnes_1_50-new/src/configure.in	2006-12-23 16:45:12.000000000 -0800
-@@ -7,20 +7,76 @@
+diff -Naur zsnes_1_51-old/src/configure.in zsnes_1_51-new/src/configure.in
+--- zsnes_1_51-old/src/configure.in	2007-01-20 10:30:31.000000000 -0800
++++ zsnes_1_51-new/src/configure.in	2007-01-26 19:48:48.000000000 -0800
+@@ -26,20 +26,76 @@
  
- VERSION=1.50
+ VERSION=1.51
  
 -CFLAGS="$CFLAGS -pipe -I. -I/usr/local/include -I/usr/include"
 +CFLAGS="$CFLAGS -pipe -I."
@@ -101,18 +101,19 @@ diff -Naur zsnes_1_50-old/src/configure.in zsnes_1_50-new/src/configure.in
  AC_ARG_WITH(nasm-prefix,
    [  --with-nasm-prefix=PFX  Prefix where nasm is installed (optional)],
    nasm_prefix="$withval",
-diff -Naur zsnes_1_50-old/src/Makefile.in zsnes_1_50-new/src/Makefile.in
---- zsnes_1_50-old/src/Makefile.in	2006-12-21 17:59:54.000000000 -0800
-+++ zsnes_1_50-new/src/Makefile.in	2006-12-23 16:45:12.000000000 -0800
-@@ -104,6 +104,7 @@
+diff -Naur zsnes_1_51-old/src/Makefile.in zsnes_1_51-new/src/Makefile.in
+--- zsnes_1_51-old/src/Makefile.in	2007-01-24 12:54:12.000000000 -0800
++++ zsnes_1_51-new/src/Makefile.in	2007-01-26 19:49:54.000000000 -0800
+@@ -104,7 +104,7 @@
  	rm -f version.o
  
  $(PSR): parsegen.cpp
-+	@CXX_FOR_BUILD@ @CXXFLAGS_FOR_BUILD@ -o $@ $<
+-	@CXX@ @CXXFLAGS@ -o $@ $< -lz
++	@CXX_FOR_BUILD@ @CXXFLAGS_FOR_BUILD@ -o $@ $< -lz
  
  TOOLSEXE=$(TOOL_D)/archopt $(TOOL_D)/cutrtype $(TOOL_D)/extraext\
  	$(TOOL_D)/macroll $(TOOL_D)/minwhite $(TOOL_D)/nreplace\
-@@ -114,7 +115,7 @@
+@@ -115,7 +115,7 @@
  $(TOOL_D)/cutrtype: $(TOOL_D)/cutrtype.cpp $(TOOL_O)
  	@CXX@ @CXXFLAGS@ -o $@ $@.cpp $(TOOL_O)
  $(TOOL_D)/depbuild: $(TOOL_D)/depbuild.cpp $(TOOL_O)
@@ -121,7 +122,7 @@ diff -Naur zsnes_1_50-old/src/Makefile.in zsnes_1_50-new/src/Makefile.in
  $(TOOL_D)/extraext: $(TOOL_D)/extraext.cpp $(TOOL_O)
  	@CXX@ @CXXFLAGS@ -o $@ $@.cpp $(TOOL_O)
  $(TOOL_D)/macroll: $(TOOL_D)/macroll.cpp $(TOOL_O)
-@@ -129,6 +130,8 @@
+@@ -130,6 +130,8 @@
  	@CXX@ @CXXFLAGS@ -o $@ $@.cpp $(TOOL_D)/fileutil.o
  $(TOOL_D)/varrep: $(TOOL_D)/varrep.cpp $(TOOL_O)
  	@CXX@ @CXXFLAGS@ -o $@ $@.cpp $(TOOL_O)
@@ -130,7 +131,7 @@ diff -Naur zsnes_1_50-old/src/Makefile.in zsnes_1_50-new/src/Makefile.in
  
  include makefile.dep
  makefile.dep: $(TOOL_D)/depbuild Makefile
-@@ -141,12 +144,12 @@
+@@ -142,12 +144,12 @@
  	./autogen.sh --recheck
  
  install:
