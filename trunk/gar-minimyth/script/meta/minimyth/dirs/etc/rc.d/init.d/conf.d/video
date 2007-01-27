@@ -6,10 +6,6 @@ conf_clean_video() {
 }
 
 conf_check_video() {
-
-    # Reset the variables.
-    conf_reset 'MM_VIDEO_'
-
     if /usr/bin/test ! -z "${MM_VIDEO_ASPECT_RATIO}"          && \
        /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  && \
        /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "16:9" ; then
@@ -39,13 +35,9 @@ conf_check_video() {
 }
 
 conf_default_video() {
-
     if /usr/bin/test -e '/tmp/init.conf.video/conf_default_video' ; then
         return 0
     fi
-
-    # Reset the variables.
-    conf_reset 'MM_VIDEO_'
 
     if /usr/bin/test -z "${MM_VIDEO_ASPECT_RATIO}"        ; then
         MM_VIDEO_ASPECT_RATIO='4:3'

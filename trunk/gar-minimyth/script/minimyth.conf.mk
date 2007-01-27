@@ -16,6 +16,9 @@ mm_VERSION_EXTRA      ?= $(strip \
                             $(if $(filter yes,$(mm_DEBUG)),-debug) \
                           )
 
+# Configuration file (minimyth.conf) version.
+mm_CONF_VERSION       ?= 1
+
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
 #-------------------------------------------------------------------------------
