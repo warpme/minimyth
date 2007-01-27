@@ -1,0 +1,613 @@
+diff -Naur mythtv-0.20-old/configure mythtv-0.20-new/configure
+--- mythtv-0.20-old/configure	2006-08-28 09:18:08.000000000 -0700
++++ mythtv-0.20-new/configure	2006-10-05 06:59:39.000000000 -0700
+@@ -447,17 +447,17 @@
+ fi
+ 
+ # Mac OS X equivalent
+-if test -f /usr/bin/hostinfo ; then 
++if test -f @GAR_DESTDIR@@GAR_bindir@/hostinfo ; then 
+     if test x"$processor" = x"" -o x"$processor" = x"$cpu_raw" -o \
+             x"$processor" = x"unknown" -o x"$processor" = x"powerpc" ; then 
+-        processor=`/usr/bin/hostinfo | grep "Processor type:"` 
++        processor=`@GAR_DESTDIR@@GAR_bindir@/hostinfo | grep "Processor type:"` 
+         processor=${processor#Processor type: *} 
+         processor=${processor% (*} 
+         if test x"`echo $processor | cut -c1-3`" = x"ppc" ; then
+             tune=$processor 
+         else 
+-            processor=`/usr/sbin/sysctl -n machdep.cpu.model_string` 
+-            processor_flags=`/usr/sbin/sysctl -n machdep.cpu.features` 
++            processor=`@GAR_DESTDIR@@GAR_sbindir@/sysctl -n machdep.cpu.model_string` 
++            processor_flags=`@GAR_DESTDIR@@GAR_sbindir@/sysctl -n machdep.cpu.features` 
+             processor_flags=`echo $processor_flags | tr "[A-Z]" "[a-z]"` 
+         fi 
+     fi 
+@@ -1225,26 +1225,7 @@
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
+-    fi
+-
+-    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ | sed s/'\/ '/' '/g` "
+ 
+     HAS_IT="no"
+     for LIBPATH in $LIBPATHS ; do
+@@ -1257,9 +1238,7 @@
+ 
+ has_header()
+ {
+-    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
+-    INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+-    HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@"
+ 
+     HAS_IT="no"
+     for HPATH in $HPATHS ; do
+@@ -2092,9 +2071,9 @@
+ 
+ freetype2=no
+ if test "x$targetos" != "xBeOS"; then
+-  if (freetype-config --version) >/dev/null 2>&1 ; then
+-      temp_cflags `freetype-config --cflags`
+-      temp_extralibs `freetype-config --libs`
++  if (@GAR_DESTDIR@@GAR_bindir@/freetype-config --version) >/dev/null 2>&1 ; then
++      temp_cflags `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++      temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+       check_ld <<EOF && freetype2=yes
+ #include <ft2build.h>
+ int main( void ) { return (int) FT_Init_FreeType(0); }
+@@ -2108,7 +2087,7 @@
+ 
+ sdl_too_old=no
+ sdl=no
+-#SDL_CONFIG="${cross_prefix}sdl-config"
++#SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
+ #if ("${SDL_CONFIG}" --version) >/dev/null 2>&1 ; then
+ #    temp_cflags `"${SDL_CONFIG}" --cflags`
+ #    temp_extralibs `"${SDL_CONFIG}" --libs`
+@@ -2213,9 +2192,9 @@
+ EOF
+ 
+ audio_arts=no
+-if (artsc-config --version) > /dev/null 2>&1; then
+-    audio_arts_libs=`artsc-config --libs`
+-    audio_arts_tmp=`artsc-config --cflags`
++if (@GAR_DESTDIR@@GAR_bindir@/artsc-config --version) > /dev/null 2>&1; then
++    audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`
++    audio_arts_tmp=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags`
+     if $cc -o $TMPE $TMPC $audio_arts_tmp $audio_arts_libs > /dev/null 2>&1; then
+         audio_arts_cflags=`echo $audio_arts_tmp`
+         audio_arts=yes
+@@ -2319,10 +2298,10 @@
+         fi
+         dvb="yes"
+     else
+-        dvb_path="/usr/src/linux/include"
+-        KERNEL_RELEASE=`uname -r 2>/dev/null`
++        dvb_path="@GAR_DESTDIR@@GAR_sourcedir@/linux/include"
++        KERNEL_RELEASE=
+         if test x"$KERNEL_RELEASE" != x"" ; then
+-            dvb_path="/usr/src/linux-$KERNEL_RELEASE/include"
++            dvb_path="@GAR_DESTDIR@@GAR_sourcedir@/linux-$KERNEL_RELEASE/include"
+         fi
+ 
+         if test -f "$dvb_path"/linux/dvb/frontend.h ; then
+@@ -2500,21 +2479,21 @@
+ # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
+ # not to overwrite the headers installed from Mesa, etc. We need to
+ # add that path to include paths if that's the case. 
+-if test -d /usr/share/doc/nvidia-glx-dev/include; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/doc/nvidia-glx-dev/include"
++if test -d @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include"
+ fi
+ 
+ # Same for Debian Sid.
+-if test -d /usr/share/nvidia/include/GL; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/nvidia/include"
++if test -d @GAR_DESTDIR@@GAR_datadir@/nvidia/include/GL; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH GAR_DESTDIR@@GAR_datadir@/nvidia/include"
+ fi
+ 
+ if test x"$direct_fb" = x"yes" ; then
+     direct_fb="no"
+-    if test x`which directfb-config 2> /dev/null` != x"" ; then
++    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
+         direct_fb="yes"
+-        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
+-        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
++        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
++        CONFIG_DIRECTFB_CXXFLAGS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --cflags`
+     fi
+ fi
+ 
+@@ -2850,8 +2829,8 @@
+ fi
+ if test "$freetype2" = "yes" ; then
+   echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
+-  echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
+-  echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
++  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
++  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
+ fi
+ if test "$lmsensors" = "yes" ; then
+   CCONFIG="$CCONFIG using_lmsensors"
+diff -Naur mythtv-0.20-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.20-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-0.20-old/contrib/mythnotify/cidbcast/Makefile	2003-11-07 00:01:44.000000000 -0800
++++ mythtv-0.20-new/contrib/mythnotify/cidbcast/Makefile	2006-10-05 06:53:56.000000000 -0700
+@@ -15,7 +15,7 @@
+ # Libraries
+ 
+ STDLIBS    = -lm
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
+ PROGRAM    = cidbcast
+ 
+ #################################################################################
+diff -Naur mythtv-0.20-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.20-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-0.20-old/contrib/mythnotify/mythudprelay/Makefile	2003-11-07 00:01:44.000000000 -0800
++++ mythtv-0.20-new/contrib/mythnotify/mythudprelay/Makefile	2006-10-05 06:53:56.000000000 -0700
+@@ -9,13 +9,13 @@
+ RM       =  rm 
+ RM_FLAGS =  -f
+ 
+-CFLAGS  	= -g -Wall `xml2-config --cflags` -O
++CFLAGS  	= -g -Wall `@GAR_DESTDIR@@GAR_bindir@/xml2-config --cflags` -O
+ CDEFS   	= -DDEBUG
+ 
+ # Libraries
+ 
+-STDLIBS    = -lm `xml2-config --libs` -lxslt
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
+ PROGRAM = mythudprelay
+ 
+ #################################################################################
+diff -Naur mythtv-0.20-old/out mythtv-0.20-new/out
+--- mythtv-0.20-old/out	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.20-new/out	2006-10-05 07:00:29.000000000 -0700
+@@ -0,0 +1,379 @@
++bindings/perl/MythTV.pm:    my @mysql = ('/usr/local/share/mythtv/mysql.txt',
++bindings/perl/MythTV.pm:                 '/usr/share/mythtv/mysql.txt',
++bindings/perl/MythTV.pm:                 '/usr/local/etc/mythtv/mysql.txt',
++bindings/perl/MythTV.pm:            $ENV{'PATH'} ||= '/usr/local/bin:/usr/bin:/bin';
++bindings/perl/Makefile.PL:#!/usr/bin/perl -w
++configfiles/mythfilldatabasecron:export QTDIR=/usr/lib/qt3
++configfiles/mythfilldatabasecron:/usr/local/bin/mythfilldatabase
++configure:        exec /usr/xpg4/bin/sh "$0" "$@"
++configure:PREFIX="/usr/local"
++configure:dvb_path="/usr/include"
++configure:x11_include_path="/usr/X11R6/include"
++contrib/iso_play:#            Put this into /usr/local/bin then set it as the default player for 
++contrib/channel_changers/d10control.pl:#!/usr/bin/perl
++contrib/channel_changers/sa3250ch-README:      # cp sa3250ch /usr/local/bin
++contrib/channel_changers/sa3250ch-README:program and adding to "/usr/local/bin/sa3250ch" to the "External channel
++contrib/channel_changers/red_eye-README:        $ cp ./red_eye /usr/local/bin/red_eye
++contrib/channel_changers/red_eye-README:        $ chown root:root /usr/local/bin/red_eye
++contrib/channel_changers/red_eye-README:        $ chmod 0555 /usr/local/bin/red_eye
++contrib/channel_changers/6200ch-README:      # cp 6200ch /usr/local/bin
++contrib/channel_changers/6200ch-README:program and adding to "/usr/local/bin/6200ch" to the "External channel
++contrib/channel_changers/change-channel-lirc.pl:#!/usr/bin/perl
++contrib/osx-packager.pl:#!/usr/bin/perl
++contrib/osx-packager.pl:$ENV{'PATH'} = "$PREFIX/bin:/sw/bin:/bin:/usr/bin:$svnpath";
++contrib/osx-packager.pl:$ENV{'LD_LIBRARY_PATH'} = "/usr/local/lib";
++contrib/osx-packager.pl:$ENV{'LDFLAGS'} = "-Z -F/System/Library/Frameworks -L/usr/lib -L$PREFIX/lib";
++contrib/osx-packager.pl:our $standard_make = '/usr/bin/make';
++contrib/osx-packager.pl:my $cmd = "/usr/bin/hostinfo | grep 'processors\$'";
++contrib/osx-packager.pl:    unless (&Syscall([ '/usr/bin/curl', $url, '>', $filename ],
++contrib/osx-packager.pl:      &Syscall([ '/usr/bin/tar', '-xzf', $filename ]) or die;
++contrib/osx-packager.pl:      &Syscall([ '/usr/bin/tar', '-xjf', $filename ]) or die;
++contrib/osx-packager.pl:    &Syscall([ '/usr/bin/touch', '.osx-config' ]) or die;
++contrib/osx-packager.pl:    &Syscall([ '/usr/bin/touch', '.osx-built' ]) or die;
++contrib/osx-packager.pl:    'LIBS+=-L/usr/lib -L"' . $PREFIX . '/lib"'
++contrib/osx-packager.pl:  &Syscall([ '/usr/bin/install_name_tool',
++contrib/osx-packager.pl:      # Paths like /usr/lib/libstdc++ contain quantifiers that must be escaped
++contrib/osx-packager.pl:               $dep =~ m|^/usr/lib|);
++contrib/osx-packager.pl:      &Syscall([ '/usr/bin/install_name_tool',
++contrib/mythmail:#!/usr/bin/perl -w
++contrib/mythmail:	'configfile'	=> '/usr/local/share/mythtv/mysql.txt',
++contrib/optimize_mythdb.pl:#!/usr/bin/perl -w
++contrib/optimize_mythdb.pl:    my @mysql = ('/usr/local/share/mythtv/mysql.txt',
++contrib/optimize_mythdb.pl:                 '/usr/share/mythtv/mysql.txt',
++contrib/optimize_mythdb.pl:                 '/usr/local/etc/mythtv/mysql.txt',
++contrib/myth_archive_job.pl:#!/usr/bin/perl -w
++contrib/myth_archive_job.pl:	"/usr2/video/archive/1/:3072",
++contrib/myth_archive_job.pl:	"/usr2/video/archive/2/:3072",
++contrib/myth_archive_job.pl:	"/usr2/video/archive/3/:3072",
++contrib/mythrename.pl:#!/usr/bin/perl -w
++contrib/mythrename.pl:    my @mysql = ('/usr/local/share/mythtv/mysql.txt',
++contrib/mythrename.pl:                 '/usr/share/mythtv/mysql.txt',
++contrib/mythrename.pl:                 '/usr/local/etc/mythtv/mysql.txt',
++contrib/mplayernetwork.pl:#!/usr/bin/perl 
++contrib/mplayernetwork.pl:# chmod a+x mplayernetwork.pl and copy it to /usr/local/bin
++contrib/mplayernetwork.pl:# /usr/local/bin/mplayer {options} with /usr/local/bin/mplayernetwork.pl %s
++contrib/mplayernetwork.pl:$pid = open(WRITEME, "| /usr/local/bin/mplayer -nolirc -display :0.0 -slave '$ARGV[0]' ");
++contrib/mkiconmap.pl:#!/usr/bin/perl
++contrib/mythname.pl:#!/usr/bin/perl
++contrib/mythname.pl:	my @mysql = ('/usr/local/share/mythtv/mysql.txt',
++contrib/mythname.pl:		'/usr/share/mythtv/mysql.txt',
++contrib/mythname.pl:		'/usr/local/etc/mythtv/mysql.txt',
++contrib/mythmaillog.pl:#!/usr/bin/perl
++contrib/mythmaillog.pl:$sendmail = "/usr/sbin/sendmail";
++contrib/mythencode.pl:#!/usr/bin/perl
++contrib/mythencode.pl:use constant mythname => '/usr/local/bin/mythname.pl -s -rep=. ';
++contrib/mythencode.pl:use constant mencoder => '/usr/local/bin/mencoder';
++contrib/myth.rebuilddatabase.pl:#!/usr/bin/perl
++contrib/etc.sysconfig.mythbackend:# Directory holding the mythbackend binary (Default: /usr/local/bin/)
++contrib/etc.sysconfig.mythbackend:# MBE_LOCATION="/usr/local/bin/"
++contrib/etc.init.d.mythbackend.lsb:if test -x /usr/bin/mythbackend
++contrib/etc.init.d.mythbackend.lsb:        MBE=/usr/bin/mythbackend
++contrib/etc.init.d.mythbackend.lsb:	basedir=/usr
++contrib/etc.init.d.mythbackend.lsb:	bindir=/usr/bin
++contrib/etc.init.d.mythbackend.lsb:elif test -x /usr/local/bin/mythbackend
++contrib/etc.init.d.mythbackend.lsb:        MBE=/usr/local/bin/mythbackend
++contrib/etc.init.d.mythbackend.lsb:	basedir=/usr/local
++contrib/etc.init.d.mythbackend.lsb:	bindir=/usr/local/bin
++contrib/trailer.pl:#!/usr/bin/perl -w
++contrib/etc.rc.d.init.d.mythbackend:MBE_LOCATION="/usr/local/bin/"
++contrib/etc.rc.d.init.d.mythbackend:	    # /usr/local/bin/mythbackend -d -l /some/log/file
++docs/mythtv-HOWTO-24.html:the VG into individual chunks, like /usr, /var/video, etc.</LI>
++docs/mythtv-HOWTO-24.html:# cd /usr/src
++docs/mythtv-HOWTO-24.html:# cp utils/szap/azap /usr/local/bin
++docs/mythtv-HOWTO-24.html:# cp ~/dvb-fe-nxt2002.fw /usr/lib/hotplug/firmware
++docs/mythtv-HOWTO-24.html:$ cd /usr/src/dvb-apps/util/szap/channels-conf/atsc
++docs/mythtv-HOWTO-24.html:$ /usr/local/bin/azap wsvn
++docs/mythtv-HOWTO-24.html:/usr/sbin/base-config new
++docs/mythtv-HOWTO-16.html:in <CODE>/usr/local/share/xmame</CODE>: hiscore, roms, and snaps.</P>
++docs/mythtv-HOWTO-16.html:$ mkdir -p /usr/local/share/xmame/{highscore,roms,snaps}
++docs/mythtv-HOWTO-16.html:# mv /usr/local/bin/xmame.x11 /usr/local/bin/xmame-0.103.x11
++docs/mythtv-HOWTO-16.html:rompath                         /usr/local/share/xmame/roms
++docs/mythtv-HOWTO-16.html:snapshot_directory              /usr/local/share/xmame/snaps
++docs/mythtv-HOWTO-16.html:cheat_file                      /usr/local/share/xmame/cheat.dat
++docs/mythtv-HOWTO-16.html:hiscore_file                    /usr/local/share/xmame/hiscore.dat
++docs/mythtv-HOWTO-16.html:hiscore_directory               /usr/local/share/xmame/hiscore
++docs/mythtv-HOWTO-16.html:history_file                    /usr/local/share/xmame/history.dat
++docs/mythtv-HOWTO-16.html:mameinfo_file                   /usr/local/share/xmame/mameinfo.dat
++docs/mythtv-HOWTO-16.html:your ROM in the <CODE>/usr/local/share/xmame/roms</CODE> directory you created
++docs/mythtv-HOWTO-16.html:into <CODE>/usr/local/share/xmame</CODE></P>
++docs/mythtv-HOWTO-16.html:Unzip and place them in <CODE>/usr/local/share/xmame/snaps</CODE></P>
++docs/mythtv-HOWTO-16.html:Rom Path:       /usr/local/share/xmame/roms     (This tells MythGame what directories to scan for roms to be used with this emulator)
++docs/mythtv-HOWTO-16.html:ScreenShots:    /usr/local/share/xmame/snaps    (This tells MythGame what directories to scan for snapshots to be used with these roms)
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/src/linux/Documentation/video4linux/bttv</CODE> for a partial
++docs/mythtv-HOWTO-singlehtml.html:<P>See <CODE>/usr/share/doc/<I>packagename</I>/README.Debian</CODE> for more
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/share/doc/mythtv-doc</CODE>.</P>
++docs/mythtv-HOWTO-singlehtml.html:shared libraries in <CODE>/usr/local/lib</CODE>, that directory needs to be
++docs/mythtv-HOWTO-singlehtml.html:# echo /usr/local/lib >> /etc/ld.so.conf
++docs/mythtv-HOWTO-singlehtml.html:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/usr/games:/usr/lib/qt3/bin:/home/mythtv/bin:/usr/lib/qt3/bin
++docs/mythtv-HOWTO-singlehtml.html:/usr/lib/qt3
++docs/mythtv-HOWTO-singlehtml.html:/usr/lib/qt3/bin/qmake
++docs/mythtv-HOWTO-singlehtml.html:<P>For Mandriva, you should see a value like <CODE>/usr/lib/qt3</CODE> for
++docs/mythtv-HOWTO-singlehtml.html:<CODE>QTDIR</CODE> and <CODE>/usr/lib/qt3/bin</CODE> should be in $PATH.</P>
++docs/mythtv-HOWTO-singlehtml.html:<P>For Gentoo, you should see a value like <CODE>/usr/qt/3</CODE> for <CODE>QTDIR</CODE> 
++docs/mythtv-HOWTO-singlehtml.html:and <CODE>/usr/qt/3/bin</CODE> should be in $PATH.</P>
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/lib/qt3/mkspecs</CODE> (<CODE>/usr/share/qt3/mkspecs</CODE> for Debian)
++docs/mythtv-HOWTO-singlehtml.html:export QTDIR=/usr/lib/qt3
++docs/mythtv-HOWTO-singlehtml.html:export PATH=$PATH:/usr/lib/qt3/bin
++docs/mythtv-HOWTO-singlehtml.html:# ls -l /usr/local/lib
++docs/mythtv-HOWTO-singlehtml.html:# chmod a+s /usr/local/bin/mythfrontend /usr/local/bin/mythtv
++docs/mythtv-HOWTO-singlehtml.html:# mysql &lt; /usr/share/mythtv/database/mc.sql
++docs/mythtv-HOWTO-singlehtml.html:$ cd /usr/src
++docs/mythtv-HOWTO-singlehtml.html:# ln -s linux-2.4 /usr/src/linux
++docs/mythtv-HOWTO-singlehtml.html:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/share/lirc-remotes</CODE>. If you find one your remotes either on the
++docs/mythtv-HOWTO-singlehtml.html:website or in <CODE>/usr/share</CODE>, download or copy the file, name it
++docs/mythtv-HOWTO-singlehtml.html:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO-singlehtml.html:/usr/local/sbin/lircd
++docs/mythtv-HOWTO-singlehtml.html:/usr/local/sbin/lircd
++docs/mythtv-HOWTO-singlehtml.html:$ cd /usr/local/bin
++docs/mythtv-HOWTO-singlehtml.html:/usr/local/bin/channel.pl $1 &amp;
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/local/bin/</CODE></P>
++docs/mythtv-HOWTO-singlehtml.html:master backend.  Modify the <CODE>/usr/local/share/mythtv/mysql.txt</CODE> file
++docs/mythtv-HOWTO-singlehtml.html:should add <CODE>/usr/local/bin/changechannel</CODE> to your Input Connections in the
++docs/mythtv-HOWTO-singlehtml.html:works, copy it to <CODE>/usr/local/bin/changechannel</CODE>.</P>
++docs/mythtv-HOWTO-singlehtml.html:mythwake stream tcp nowait mythtv /usr/sbin/tcpd /usr/local/bin/mythwake
++docs/mythtv-HOWTO-singlehtml.html:        server          = /usr/local/bin/mythwake
++docs/mythtv-HOWTO-singlehtml.html:<P>Finally, <CODE>/usr/local/bin/mythwake</CODE> looks like:
++docs/mythtv-HOWTO-singlehtml.html:WAKECMD="#!/bin/sh\n /usr/local/bin/wakeMBE"
++docs/mythtv-HOWTO-singlehtml.html:in <CODE>/usr/local/share/xmame</CODE>: hiscore, roms, and snaps.</P>
++docs/mythtv-HOWTO-singlehtml.html:$ mkdir -p /usr/local/share/xmame/{highscore,roms,snaps}
++docs/mythtv-HOWTO-singlehtml.html:# mv /usr/local/bin/xmame.x11 /usr/local/bin/xmame-0.103.x11
++docs/mythtv-HOWTO-singlehtml.html:rompath                         /usr/local/share/xmame/roms
++docs/mythtv-HOWTO-singlehtml.html:snapshot_directory              /usr/local/share/xmame/snaps
++docs/mythtv-HOWTO-singlehtml.html:cheat_file                      /usr/local/share/xmame/cheat.dat
++docs/mythtv-HOWTO-singlehtml.html:hiscore_file                    /usr/local/share/xmame/hiscore.dat
++docs/mythtv-HOWTO-singlehtml.html:hiscore_directory               /usr/local/share/xmame/hiscore
++docs/mythtv-HOWTO-singlehtml.html:history_file                    /usr/local/share/xmame/history.dat
++docs/mythtv-HOWTO-singlehtml.html:mameinfo_file                   /usr/local/share/xmame/mameinfo.dat
++docs/mythtv-HOWTO-singlehtml.html:your ROM in the <CODE>/usr/local/share/xmame/roms</CODE> directory you created
++docs/mythtv-HOWTO-singlehtml.html:into <CODE>/usr/local/share/xmame</CODE></P>
++docs/mythtv-HOWTO-singlehtml.html:Unzip and place them in <CODE>/usr/local/share/xmame/snaps</CODE></P>
++docs/mythtv-HOWTO-singlehtml.html:Rom Path:       /usr/local/share/xmame/roms     (This tells MythGame what directories to scan for roms to be used with this emulator)
++docs/mythtv-HOWTO-singlehtml.html:ScreenShots:    /usr/local/share/xmame/snaps    (This tells MythGame what directories to scan for snapshots to be used with these roms)
++docs/mythtv-HOWTO-singlehtml.html:# cd /usr/lib
++docs/mythtv-HOWTO-singlehtml.html:"/usr/local/include"
++docs/mythtv-HOWTO-singlehtml.html:<P>If you get an error like <CODE>/usr/bin/ld: cannot find -lXext</CODE>, the
++docs/mythtv-HOWTO-singlehtml.html:<H3><A NAME="mkspecs_error"></A> make: *** No rule to make target /usr/lib/qt3/mkspecs/default/qmake.conf', needed by Makefile'.  Stop.</H3>
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/lib/qt3/mkspecs</CODE> directory.  There are two ways to fix this
++docs/mythtv-HOWTO-singlehtml.html:# cd /usr/lib/qt3/mkspecs
++docs/mythtv-HOWTO-singlehtml.html:<P>You didn't add <CODE>/usr/local/lib</CODE> to <CODE>/etc/ld.so.conf</CODE>.  See the
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/local/share/mythtv</CODE>, but a copy placed into <CODE>~/.mythtv</CODE>
++docs/mythtv-HOWTO-singlehtml.html:/usr/local/share/mythtv/mysql.txt
++docs/mythtv-HOWTO-singlehtml.html:<CODE>/usr/local/share/mythtv/</CODE> . Make sure to use fonts large enough
++docs/mythtv-HOWTO-singlehtml.html:the VG into individual chunks, like /usr, /var/video, etc.</LI>
++docs/mythtv-HOWTO-singlehtml.html:# cd /usr/src
++docs/mythtv-HOWTO-singlehtml.html:# cp utils/szap/azap /usr/local/bin
++docs/mythtv-HOWTO-singlehtml.html:# cp ~/dvb-fe-nxt2002.fw /usr/lib/hotplug/firmware
++docs/mythtv-HOWTO-singlehtml.html:$ cd /usr/src/dvb-apps/util/szap/channels-conf/atsc
++docs/mythtv-HOWTO-singlehtml.html:$ /usr/local/bin/azap wsvn
++docs/mythtv-HOWTO-singlehtml.html:/usr/sbin/base-config new
++docs/doxygen-architecture-document.cpp:your compiled kernel is in /usr/src/linux, issue this command:
++docs/doxygen-architecture-document.cpp:  opcontrol --vmlinux=/usr/src/linux/vmlinux
++docs/doxygen-architecture-document.cpp:  opcontrol --image=/usr/local/bin/mythfrontend
++docs/doxygen-architecture-document.cpp:  opreport --merge tgid -l --image-path=/usr/local/bin > report.txt
++docs/mythtv-HOWTO-3.html:<CODE>/usr/src/linux/Documentation/video4linux/bttv</CODE> for a partial
++docs/mythtv-HOWTO-3.html:<P>See <CODE>/usr/share/doc/<I>packagename</I>/README.Debian</CODE> for more
++docs/mythtv-HOWTO-3.html:<CODE>/usr/share/doc/mythtv-doc</CODE>.</P>
++docs/mythtv-HOWTO-5.html:# ls -l /usr/local/lib
++docs/mythtv-HOWTO-5.html:# chmod a+s /usr/local/bin/mythfrontend /usr/local/bin/mythtv
++docs/mythtv-HOWTO-9.html:master backend.  Modify the <CODE>/usr/local/share/mythtv/mysql.txt</CODE> file
++docs/mythtv-HOWTO.txt:        22.1.3 make: *** No rule to make target /usr/lib/qt3/mkspecs/default/qmake.conf', needed by Makefile'.  Stop.
++docs/mythtv-HOWTO.txt:  /usr/src/linux/Documentation/video4linux/bttv for a partial listing;
++docs/mythtv-HOWTO.txt:  See /usr/share/doc/[4mpackagename[24m/README.Debian for more information,
++docs/mythtv-HOWTO.txt:  contains a copy of this HOWTO in /usr/share/doc/mythtv-doc.
++docs/mythtv-HOWTO.txt:  /usr/local/lib, that directory needs to be added to the list of
++docs/mythtv-HOWTO.txt:       # echo /usr/local/lib >> /etc/ld.so.conf
++docs/mythtv-HOWTO.txt:       /usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/usr/games:/usr/lib/qt3/bin:/home/mythtv/bin:/usr/lib/qt3/bin
++docs/mythtv-HOWTO.txt:       /usr/lib/qt3
++docs/mythtv-HOWTO.txt:       /usr/lib/qt3/bin/qmake
++docs/mythtv-HOWTO.txt:  For Mandriva, you should see a value like /usr/lib/qt3 for QTDIR and
++docs/mythtv-HOWTO.txt:  /usr/lib/qt3/bin should be in $PATH.
++docs/mythtv-HOWTO.txt:  For Gentoo, you should see a value like /usr/qt/3 for QTDIR and
++docs/mythtv-HOWTO.txt:  /usr/qt/3/bin should be in $PATH.
++docs/mythtv-HOWTO.txt:  Also, check that there has been a link created in /usr/lib/qt3/mkspecs
++docs/mythtv-HOWTO.txt:  (/usr/share/qt3/mkspecs for Debian) called default. If not, you'll get
++docs/mythtv-HOWTO.txt:       export QTDIR=/usr/lib/qt3
++docs/mythtv-HOWTO.txt:       export PATH=$PATH:/usr/lib/qt3/bin
++docs/mythtv-HOWTO.txt:       # ls -l /usr/local/lib
++docs/mythtv-HOWTO.txt:       # chmod a+s /usr/local/bin/mythfrontend /usr/local/bin/mythtv
++docs/mythtv-HOWTO.txt:       # mysql < /usr/share/mythtv/database/mc.sql
++docs/mythtv-HOWTO.txt:  $ cd /usr/src
++docs/mythtv-HOWTO.txt:  # ln -s linux-2.4 /usr/src/linux
++docs/mythtv-HOWTO.txt:       # /usr/local/sbin/lircd
++docs/mythtv-HOWTO.txt:  /usr/share/lirc-remotes. If you find one your remotes either on the
++docs/mythtv-HOWTO.txt:  website or in /usr/share, download or copy the file, name it
++docs/mythtv-HOWTO.txt:       # /usr/local/sbin/lircd
++docs/mythtv-HOWTO.txt:       /usr/local/sbin/lircd
++docs/mythtv-HOWTO.txt:       /usr/local/sbin/lircd
++docs/mythtv-HOWTO.txt:       $ cd /usr/local/bin
++docs/mythtv-HOWTO.txt:       /usr/local/bin/channel.pl $1 &
++docs/mythtv-HOWTO.txt:  /usr/local/bin/
++docs/mythtv-HOWTO.txt:  /usr/local/share/mythtv/mysql.txt file on all slave backends to ensure
++docs/mythtv-HOWTO.txt:  box, you should add /usr/local/bin/changechannel to your Input
++docs/mythtv-HOWTO.txt:  works, copy it to /usr/local/bin/changechannel.
++docs/mythtv-HOWTO.txt:       mythwake stream tcp nowait mythtv /usr/sbin/tcpd /usr/local/bin/mythwake
++docs/mythtv-HOWTO.txt:               server          = /usr/local/bin/mythwake
++docs/mythtv-HOWTO.txt:  Finally, /usr/local/bin/mythwake looks like:
++docs/mythtv-HOWTO.txt:  WAKECMD="#!/bin/sh\n /usr/local/bin/wakeMBE"
++docs/mythtv-HOWTO.txt:  to use in /usr/local/share/xmame: hiscore, roms, and snaps.
++docs/mythtv-HOWTO.txt:       $ mkdir -p /usr/local/share/xmame/{highscore,roms,snaps}
++docs/mythtv-HOWTO.txt:       # mv /usr/local/bin/xmame.x11 /usr/local/bin/xmame-0.103.x11
++docs/mythtv-HOWTO.txt:       rompath                         /usr/local/share/xmame/roms
++docs/mythtv-HOWTO.txt:       snapshot_directory              /usr/local/share/xmame/snaps
++docs/mythtv-HOWTO.txt:       cheat_file                      /usr/local/share/xmame/cheat.dat
++docs/mythtv-HOWTO.txt:       hiscore_file                    /usr/local/share/xmame/hiscore.dat
++docs/mythtv-HOWTO.txt:       hiscore_directory               /usr/local/share/xmame/hiscore
++docs/mythtv-HOWTO.txt:       history_file                    /usr/local/share/xmame/history.dat
++docs/mythtv-HOWTO.txt:       mameinfo_file                   /usr/local/share/xmame/mameinfo.dat
++docs/mythtv-HOWTO.txt:  ROM in the /usr/local/share/xmame/roms directory you created earlier.
++docs/mythtv-HOWTO.txt:  into /usr/local/share/xmame
++docs/mythtv-HOWTO.txt:  Unzip and place them in /usr/local/share/xmame/snaps
++docs/mythtv-HOWTO.txt:       Rom Path:       /usr/local/share/xmame/roms     (This tells MythGame what directories to scan for roms to be used with this emulator)
++docs/mythtv-HOWTO.txt:       ScreenShots:    /usr/local/share/xmame/snaps    (This tells MythGame what directories to scan for snapshots to be used with these roms)
++docs/mythtv-HOWTO.txt:       # cd /usr/lib
++docs/mythtv-HOWTO.txt:       "/usr/local/include"
++docs/mythtv-HOWTO.txt:  If you get an error like /usr/bin/ld: cannot find -lXext, the compiler
++docs/mythtv-HOWTO.txt:  [1m/usr/lib/qt3/mkspecs/default/qmake.conf', needed by Makefile'.  Stop.[0m
++docs/mythtv-HOWTO.txt:  /usr/lib/qt3/mkspecs directory.  There are two ways to fix this error:
++docs/mythtv-HOWTO.txt:       # cd /usr/lib/qt3/mkspecs
++docs/mythtv-HOWTO.txt:  You didn't add /usr/local/lib to /etc/ld.so.conf.  See the section on
++docs/mythtv-HOWTO.txt:  installed to /usr/local/share/mythtv, but a copy placed into ~/.mythtv
++docs/mythtv-HOWTO.txt:       /usr/local/share/mythtv/mysql.txt
++docs/mythtv-HOWTO.txt:  files under /usr/local/share/mythtv/ . Make sure to use fonts large
++docs/mythtv-HOWTO.txt:     the VG into individual chunks, like /usr, /var/video, etc.
++docs/mythtv-HOWTO.txt:       # cd /usr/src
++docs/mythtv-HOWTO.txt:       # cp utils/szap/azap /usr/local/bin
++docs/mythtv-HOWTO.txt:       # cp ~/dvb-fe-nxt2002.fw /usr/lib/hotplug/firmware
++docs/mythtv-HOWTO.txt:       $ cd /usr/src/dvb-apps/util/szap/channels-conf/atsc
++docs/mythtv-HOWTO.txt:       $ /usr/local/bin/azap wsvn
++docs/mythtv-HOWTO.txt:       /usr/sbin/base-config new
++docs/mythtv-HOWTO-11.html:should add <CODE>/usr/local/bin/changechannel</CODE> to your Input Connections in the
++docs/mythtv-HOWTO-11.html:works, copy it to <CODE>/usr/local/bin/changechannel</CODE>.</P>
++docs/mythtv-HOWTO-11.html:mythwake stream tcp nowait mythtv /usr/sbin/tcpd /usr/local/bin/mythwake
++docs/mythtv-HOWTO-11.html:        server          = /usr/local/bin/mythwake
++docs/mythtv-HOWTO-11.html:<P>Finally, <CODE>/usr/local/bin/mythwake</CODE> looks like:
++docs/mythtv-HOWTO-11.html:WAKECMD="#!/bin/sh\n /usr/local/bin/wakeMBE"
++docs/mythtv-HOWTO-23.html:<CODE>/usr/local/share/mythtv/</CODE> . Make sure to use fonts large enough
++docs/mythtv-HOWTO-17.html:# cd /usr/lib
++docs/mythtv-HOWTO.sgml:<tt>/usr/src/linux/Documentation/video4linux/bttv</tt> for a partial
++docs/mythtv-HOWTO.sgml:<p>See <tt>/usr/share/doc/<it>packagename</it>/README.Debian</tt> for more
++docs/mythtv-HOWTO.sgml:<tt>/usr/share/doc/mythtv-doc</tt>.
++docs/mythtv-HOWTO.sgml:shared libraries in <tt>/usr/local/lib</tt>, that directory needs to be
++docs/mythtv-HOWTO.sgml:# echo /usr/local/lib >> /etc/ld.so.conf
++docs/mythtv-HOWTO.sgml:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/usr/games:/usr/lib/qt3/bin:/home/mythtv/bin:/usr/lib/qt3/bin
++docs/mythtv-HOWTO.sgml:/usr/lib/qt3
++docs/mythtv-HOWTO.sgml:/usr/lib/qt3/bin/qmake
++docs/mythtv-HOWTO.sgml:For Mandriva, you should see a value like <tt>/usr/lib/qt3</tt> for
++docs/mythtv-HOWTO.sgml:<tt>QTDIR</tt> and <tt>/usr/lib/qt3/bin</tt> should be in $PATH.
++docs/mythtv-HOWTO.sgml:For Gentoo, you should see a value like <tt>/usr/qt/3</tt> for <tt>QTDIR</tt> 
++docs/mythtv-HOWTO.sgml:and <tt>/usr/qt/3/bin</tt> should be in $PATH.
++docs/mythtv-HOWTO.sgml:<tt>/usr/lib/qt3/mkspecs</tt> (<tt>/usr/share/qt3/mkspecs</tt> for Debian)
++docs/mythtv-HOWTO.sgml:export QTDIR=/usr/lib/qt3
++docs/mythtv-HOWTO.sgml:export PATH=$PATH:/usr/lib/qt3/bin
++docs/mythtv-HOWTO.sgml:# ls -l /usr/local/lib
++docs/mythtv-HOWTO.sgml:# chmod a+s /usr/local/bin/mythfrontend /usr/local/bin/mythtv
++docs/mythtv-HOWTO.sgml:# mysql < /usr/share/mythtv/database/mc.sql
++docs/mythtv-HOWTO.sgml:$ cd /usr/src
++docs/mythtv-HOWTO.sgml:# ln -s linux-2.4 /usr/src/linux
++docs/mythtv-HOWTO.sgml:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO.sgml:<tt>/usr/share/lirc-remotes</tt>. If you find one your remotes either on the
++docs/mythtv-HOWTO.sgml:website or in <tt>/usr/share</tt>, download or copy the file, name it
++docs/mythtv-HOWTO.sgml:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO.sgml:/usr/local/sbin/lircd
++docs/mythtv-HOWTO.sgml:/usr/local/sbin/lircd
++docs/mythtv-HOWTO.sgml:$ cd /usr/local/bin
++docs/mythtv-HOWTO.sgml:/usr/local/bin/channel.pl $1 &
++docs/mythtv-HOWTO.sgml:<tt>/usr/local/bin/</tt>
++docs/mythtv-HOWTO.sgml:master backend.  Modify the <tt>/usr/local/share/mythtv/mysql.txt</tt> file
++docs/mythtv-HOWTO.sgml:should add <tt>/usr/local/bin/changechannel</tt> to your Input Connections in the
++docs/mythtv-HOWTO.sgml:works, copy it to <tt>/usr/local/bin/changechannel</tt>.
++docs/mythtv-HOWTO.sgml:mythwake stream tcp nowait mythtv /usr/sbin/tcpd /usr/local/bin/mythwake
++docs/mythtv-HOWTO.sgml:	server          = /usr/local/bin/mythwake
++docs/mythtv-HOWTO.sgml:Finally, <tt>/usr/local/bin/mythwake</tt> looks like:
++docs/mythtv-HOWTO.sgml:WAKECMD="#!/bin/sh\n /usr/local/bin/wakeMBE"
++docs/mythtv-HOWTO.sgml:in <tt>/usr/local/share/xmame</tt>: hiscore, roms, and snaps.
++docs/mythtv-HOWTO.sgml:$ mkdir -p /usr/local/share/xmame/{highscore,roms,snaps}
++docs/mythtv-HOWTO.sgml:# mv /usr/local/bin/xmame.x11 /usr/local/bin/xmame-0.103.x11
++docs/mythtv-HOWTO.sgml:rompath                         /usr/local/share/xmame/roms
++docs/mythtv-HOWTO.sgml:snapshot_directory              /usr/local/share/xmame/snaps
++docs/mythtv-HOWTO.sgml:cheat_file                      /usr/local/share/xmame/cheat.dat
++docs/mythtv-HOWTO.sgml:hiscore_file			/usr/local/share/xmame/hiscore.dat
++docs/mythtv-HOWTO.sgml:hiscore_directory		/usr/local/share/xmame/hiscore
++docs/mythtv-HOWTO.sgml:history_file			/usr/local/share/xmame/history.dat
++docs/mythtv-HOWTO.sgml:mameinfo_file			/usr/local/share/xmame/mameinfo.dat
++docs/mythtv-HOWTO.sgml:your ROM in the <tt>/usr/local/share/xmame/roms</tt> directory you created
++docs/mythtv-HOWTO.sgml:into <tt>/usr/local/share/xmame</tt>
++docs/mythtv-HOWTO.sgml:Unzip and place them in <tt>/usr/local/share/xmame/snaps</tt>
++docs/mythtv-HOWTO.sgml:Rom Path:       /usr/local/share/xmame/roms     (This tells MythGame what directories to scan for roms to be used with this emulator)
++docs/mythtv-HOWTO.sgml:ScreenShots:    /usr/local/share/xmame/snaps    (This tells MythGame what directories to scan for snapshots to be used with these roms)
++docs/mythtv-HOWTO.sgml:# cd /usr/lib
++docs/mythtv-HOWTO.sgml:"/usr/local/include"
++docs/mythtv-HOWTO.sgml:If you get an error like <tt>/usr/bin/ld: cannot find -lXext</tt>, the
++docs/mythtv-HOWTO.sgml:<sect2>make: *** No rule to make target /usr/lib/qt3/mkspecs/default/qmake.conf', needed by Makefile'.  Stop.
++docs/mythtv-HOWTO.sgml:<tt>/usr/lib/qt3/mkspecs</tt> directory.  There are two ways to fix this
++docs/mythtv-HOWTO.sgml:# cd /usr/lib/qt3/mkspecs
++docs/mythtv-HOWTO.sgml:<p>You didn't add <tt>/usr/local/lib</tt> to <tt>/etc/ld.so.conf</tt>.  See the
++docs/mythtv-HOWTO.sgml:<tt>/usr/local/share/mythtv</tt>, but a copy placed into <tt>~/.mythtv</tt>
++docs/mythtv-HOWTO.sgml:/usr/local/share/mythtv/mysql.txt
++docs/mythtv-HOWTO.sgml:<tt>/usr/local/share/mythtv/</tt> . Make sure to use fonts large enough
++docs/mythtv-HOWTO.sgml:the VG into individual chunks, like /usr, /var/video, etc.
++docs/mythtv-HOWTO.sgml:# cd /usr/src
++docs/mythtv-HOWTO.sgml:# cp utils/szap/azap /usr/local/bin
++docs/mythtv-HOWTO.sgml:# cp ~/dvb-fe-nxt2002.fw /usr/lib/hotplug/firmware
++docs/mythtv-HOWTO.sgml:$ cd /usr/src/dvb-apps/util/szap/channels-conf/atsc
++docs/mythtv-HOWTO.sgml:$ /usr/local/bin/azap wsvn
++docs/mythtv-HOWTO.sgml:/usr/sbin/base-config new
++docs/mythtv-HOWTO-4.html:shared libraries in <CODE>/usr/local/lib</CODE>, that directory needs to be
++docs/mythtv-HOWTO-4.html:# echo /usr/local/lib >> /etc/ld.so.conf
++docs/mythtv-HOWTO-4.html:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/usr/games:/usr/lib/qt3/bin:/home/mythtv/bin:/usr/lib/qt3/bin
++docs/mythtv-HOWTO-4.html:/usr/lib/qt3
++docs/mythtv-HOWTO-4.html:/usr/lib/qt3/bin/qmake
++docs/mythtv-HOWTO-4.html:<P>For Mandriva, you should see a value like <CODE>/usr/lib/qt3</CODE> for
++docs/mythtv-HOWTO-4.html:<CODE>QTDIR</CODE> and <CODE>/usr/lib/qt3/bin</CODE> should be in $PATH.</P>
++docs/mythtv-HOWTO-4.html:<P>For Gentoo, you should see a value like <CODE>/usr/qt/3</CODE> for <CODE>QTDIR</CODE> 
++docs/mythtv-HOWTO-4.html:and <CODE>/usr/qt/3/bin</CODE> should be in $PATH.</P>
++docs/mythtv-HOWTO-4.html:<CODE>/usr/lib/qt3/mkspecs</CODE> (<CODE>/usr/share/qt3/mkspecs</CODE> for Debian)
++docs/mythtv-HOWTO-4.html:export QTDIR=/usr/lib/qt3
++docs/mythtv-HOWTO-4.html:export PATH=$PATH:/usr/lib/qt3/bin
++docs/doxygen-create-developer-docs.cfg:# directories like "/usr/src/myproject". Separate the files or directories 
++docs/doxygen-create-developer-docs.cfg:PERL_PATH              = /usr/bin/perl
++docs/mythtv-HOWTO-6.html:# mysql &lt; /usr/share/mythtv/database/mc.sql
++Binary file docs/mythtv-HOWTO.pdf matches
++docs/mythtv-HOWTO-8.html:$ cd /usr/src
++docs/mythtv-HOWTO-8.html:# ln -s linux-2.4 /usr/src/linux
++docs/mythtv-HOWTO-8.html:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO-8.html:<CODE>/usr/share/lirc-remotes</CODE>. If you find one your remotes either on the
++docs/mythtv-HOWTO-8.html:website or in <CODE>/usr/share</CODE>, download or copy the file, name it
++docs/mythtv-HOWTO-8.html:# /usr/local/sbin/lircd
++docs/mythtv-HOWTO-8.html:/usr/local/sbin/lircd
++docs/mythtv-HOWTO-8.html:/usr/local/sbin/lircd
++docs/mythtv-HOWTO-8.html:$ cd /usr/local/bin
++docs/mythtv-HOWTO-8.html:/usr/local/bin/channel.pl $1 &amp;
++docs/mythtv-HOWTO-8.html:<CODE>/usr/local/bin/</CODE></P>
++docs/mythtv-HOWTO-22.html:"/usr/local/include"
++docs/mythtv-HOWTO-22.html:<P>If you get an error like <CODE>/usr/bin/ld: cannot find -lXext</CODE>, the
++docs/mythtv-HOWTO-22.html:<H3><A NAME="mkspecs_error"></A> make: *** No rule to make target /usr/lib/qt3/mkspecs/default/qmake.conf', needed by Makefile'.  Stop.</H3>
++docs/mythtv-HOWTO-22.html:<CODE>/usr/lib/qt3/mkspecs</CODE> directory.  There are two ways to fix this
++docs/mythtv-HOWTO-22.html:# cd /usr/lib/qt3/mkspecs
++docs/mythtv-HOWTO-22.html:<P>You didn't add <CODE>/usr/local/lib</CODE> to <CODE>/etc/ld.so.conf</CODE>.  See the
++docs/mythtv-HOWTO-22.html:<CODE>/usr/local/share/mythtv</CODE>, but a copy placed into <CODE>~/.mythtv</CODE>
++docs/mythtv-HOWTO-22.html:/usr/local/share/mythtv/mysql.txt
++i18n/mythfrontend_sv.ts:        <translation>Sökväg (inklusive program) till mythfilldatabase (ex. /usr/local/bin/mythfilldatabase).</translation>
++libs/libmythtv/libmythtv.pro:        # Recent versions of this framework use /usr/lib/libstdc++.6.dylib
++libs/libmythtv/libmythtv.pro:        # which may clash with symbols in /usr/lib/gcc/darwin/3.3/libstdc++.a
++libs/libmythtv/docs/README:bender(root) # chmod +s /usr/local/bin/nuvrec
++libs/libmythtv/vbitext/vbi.c:/* #include "/usr/src/linux/include/linux/videodev2.h" */
++libs/libmyth/mythmedia.cpp:static const QString PATHTO_PMOUNT("/usr/bin/pmount");
++libs/libmyth/mythmedia.cpp:static const QString PATHTO_PUMOUNT("/usr/bin/pumount");
++programs/mythtranscode/replex/Makefile.standalone:DESTDIR = /usr/local
++programs/mythtranscode/Makefile.standlone:#INCLUDES += -I/usr/src/DVB/include
++programs/mythshutdown/main.cpp:                     "/usr/bin/nvram-wakeup");
++programs/mythwelcome/README:                        "/usr/sbin/nvram-wakeup"
++programs/mythwelcome/README:                        "/usr/sbin/nvram-wakeup -A -I aopen_ax37"
++programs/mythwelcome/README:                        "/usr/sbin/nvram-wakeup -A -C /etc/nvram-wakeup.conf"
++programs/mythwelcome/README:mythtv localhost = NOPASSWD: /usr/bin/mythshutdown
++programs/mythwelcome/welcomesettings.cpp:    gc->setValue("/usr/bin/nvram-wakeup");
++README:look at the .xml files in the /usr/local/share/mythtv/themes/[themename]
++UPGRADING:be deleted from /usr/local/share/mythtv/ and ~/.mythtv/
++UPGRADING:The channel icons were moved from /usr/local/share/mythtv/ to ~/.mythtv/channels
++UPGRADING:all the .jpg and .gif files from the /usr/local/share/mythtv/ directory, if
+diff -Naur mythtv-0.20-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20-new/programs/mythfrontend/mythfrontend.pro
+--- mythtv-0.20-old/programs/mythfrontend/mythfrontend.pro	2006-06-06 15:24:02.000000000 -0700
++++ mythtv-0.20-new/programs/mythfrontend/mythfrontend.pro	2006-10-05 06:53:56.000000000 -0700
+@@ -33,7 +33,7 @@
+ 
+ macx {
+     RC_FILE += mythfrontend.icns
+-    LIBS += `freetype-config --libs`
++    LIBS += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+ 
+     using_mac_accel : LIBS += -lobjc
+ 
+diff -Naur mythtv-0.20-old/programs/mythtranscode/Makefile.standlone mythtv-0.20-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-0.20-old/programs/mythtranscode/Makefile.standlone	2006-01-07 21:08:33.000000000 -0800
++++ mythtv-0.20-new/programs/mythtranscode/Makefile.standlone	2006-10-05 06:53:56.000000000 -0700
+@@ -4,7 +4,7 @@
+ TOOL = mpeg2fix
+ 
+ 
+-INCLUDES = -I./libavformat -I./libavcodec -I./libavutil -I./libmpeg2 -I./replex -I/usr/include/qt3
++INCLUDES = -I./libavformat -I./libavcodec -I./libavutil -I./libmpeg2 -I./replex
+ #INCLUDES += -I/usr/src/DVB/include
+ 
+ OBJS = $(TOOL).o helper.o replex/libreplex.a
+diff -Naur mythtv-0.20-old/settings.pro mythtv-0.20-new/settings.pro
+--- mythtv-0.20-old/settings.pro	2006-08-28 13:47:26.000000000 -0700
++++ mythtv-0.20-new/settings.pro	2006-10-05 06:53:56.000000000 -0700
+@@ -1,7 +1,7 @@
+ CONFIG += $$CCONFIG
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @GAR_prefix@
+ }
+ 
+ LIBVERSION = 0.20
+@@ -18,7 +18,7 @@
+     }
+ }
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
+ INCLUDEPATH += $$CONFIG_INCLUDEPATH
+ 
+ # figure out compile flags based on qmake info

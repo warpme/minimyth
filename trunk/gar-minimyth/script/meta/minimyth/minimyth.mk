@@ -246,10 +246,10 @@ mm-check:
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_MYTH_VERSION)" = "stable18" ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "stable19" ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "stable20" ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "svn"      ] ; then \
+	@if [ ! "$(mm_MYTH_VERSION)" = "stable19"    ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "stable20p30" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "stable20"    ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "svn"         ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
