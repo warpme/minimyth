@@ -6,27 +6,6 @@
 ################################################################################
 . /etc/rc.d/functions
 
-conf_reset() {
-
-    local tempfile
-    local filter
-
-    tempfile=`/bin/mktemp /tmp/minimyth.conf.XXXXXX`
-
-    rm -rf ${tempfile}
-    for filter in "$@" ; do
-        if /bin/echo ${filter} | /bin/grep -q -e '_$' > /dev/null 2>&1 ; then
-            set                                    | /bin/grep -e "^${filter}"  | /bin/sed -e 's%=.*%=%' >> ${tempfile}
-            /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -e "^${filter}"                           >> ${tempfile}
-        else
-            set                                    | /bin/grep -e "^${filter}=" | /bin/sed -e 's%=.*%=%' >> ${tempfile}
-            /bin/cat /etc/minimyth.d/minimyth.conf | /bin/grep -e "^${filter}="                          >> ${tempfile}
-        fi
-    done
-    . ${tempfile}
-    rm -rf ${tempfile}
-}
-
 conf_variable_write() {
     /bin/echo -n "$2=" >> $1
     /bin/echo -n "'"   >> $1
@@ -59,6 +38,18 @@ start() {
         mm_message_output err 'error: MiniMyth configuration file not readable.'
         exit 1
     fi
+
+    # Unset variables set by the processed MiniMyth configuration file.
+    if /usr/bin/test -e /etc/conf.d/minimyth ; then
+        cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | sed -e 's%=.*$%%' | \
+        while read variable ; do
+            set ${variable}=''
+        done
+    fi
+
+    # Read core and dhcp configuration files.
+    /usr/bin/test -e /etc/conf.d/core && . /etc/conf.d/core
+    /usr/bin/test -e /etc/conf.d/dhcp && . /etc/conf.d/dhcp
 
     # Read MiniMyth configuration file.
     . /etc/minimyth.d/minimyth.conf

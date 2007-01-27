@@ -6,18 +6,9 @@ conf_clean_theme() {
 }
 
 conf_check_theme() {
-
     local RESOLUTION_X
     local RESOLUTION_Y
     local THEMECACHE_NAME
-
-    # Reset the variables.
-    conf_reset \
-        'MM_THEME_NAME' \
-        'MM_THEMEOSD_NAME' \
-        'MM_THEME_URL' \
-        'MM_THEMEOSD_URL' \
-        'MM_THEMECACHE_URL'
 
     # Check for obsolete variables.
     if /usr/bin/test "${MM_THEMECACHE_URL}" = "default" ; then
@@ -68,17 +59,8 @@ conf_check_theme() {
 }
 
 conf_default_theme() {
-
     # The routine relies on MM_X_* variables.
     conf_default_x
-
-    # Reset the variables.
-    conf_reset \
-        'MM_THEME_NAME' \
-        'MM_THEMEOSD_NAME' \
-        'MM_THEME_URL' \
-        'MM_THEMEOSD_URL' \
-        'MM_THEMECACHE_URL'
 
     if /usr/bin/test -z "${MM_THEME_URL}" ; then
         MM_THEME_URL='auto'
@@ -121,8 +103,6 @@ conf_default_theme() {
         fi
     fi
 
-    # /usr/bin/test
-
     # Convert 'none' to empty.
     if /usr/bin/test "${MM_THEME_URL}" = "none" ; then
         MM_THEME_URL=
@@ -133,7 +113,6 @@ conf_default_theme() {
     if /usr/bin/test "${MM_THEMECACHE_URL}" = "none" ; then
         MM_THEMECACHE_URL=
     fi
-
 
     return 0
 }
