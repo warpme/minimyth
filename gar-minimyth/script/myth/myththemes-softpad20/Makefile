@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c myth/mythtv-stable20p30
+DEPENDS = lang/c myth/mythtv-softpad20
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -31,7 +31,7 @@ INSTALL_ENV   = \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
-GAR_EXTRA_CONF += myth/mythtv-stable20p30/package-api.mk
+GAR_EXTRA_CONF += myth/mythtv-softpad20/package-api.mk
 include ../../gar.mk
 
 configure-%/mythtv:
