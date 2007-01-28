@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c qt/qt myth/mythtv-stable20p30 lib/fftw
+DEPENDS = lang/c qt/qt myth/mythtv-softpad20 lib/fftw
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-0.17_2
 
