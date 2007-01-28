@@ -40,6 +40,10 @@ start() {
 
     # Set time.
     /usr/bin/ntpdate ${NTP_SERVER}
+    if /usr/bin/test $? -ne 0 ; then
+        mm_message_output err "error: 'ntpdate' failed to synchronize with '${NTP_SERVER}'."
+        exit 1
+    fi
 
     # Start NTP daemon.
     /usr/bin/ntpd
