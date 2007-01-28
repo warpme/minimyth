@@ -247,8 +247,8 @@ mm-check:
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_MYTH_VERSION)" = "stable19"    ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "stable20p30" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable20"    ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "softpad20"   ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "svn"         ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
