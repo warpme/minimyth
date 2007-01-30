@@ -35,3 +35,14 @@ pre-configure:
 	@echo "ac_cv_path_AALIB_CONFIG=no" >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_CACA_CONFIG=no"  >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) -C ../xine-lib clean
+	@$(MAKE) -C ../xine-ui  clean
+	@rm -rf $(DESTDIR)$(bindir)/xine-config
+	@rm -rf $(DESTDIR)$(includedir)/xine
+	@rm -rf $(DESTDIR)$(includedir)/xine.h
+	@rm -rf $(DESTDIR)$(libdir)/xine
+	@rm -rf $(DESTDIR)$(libdir)/libxine.*
+	@rm -rf $(DESTDIR)$(datadir)/xine
+	@rm -rf $(DESTDIR)$(docdir)/xine
