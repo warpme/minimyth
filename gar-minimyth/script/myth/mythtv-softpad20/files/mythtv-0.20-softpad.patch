@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/libmythtv/programinfo.cpp
---- mythtv-0.20-old/libs/libmythtv/programinfo.cpp	2007-01-28 08:20:43.000000000 -0800
-+++ mythtv-0.20-new/libs/libmythtv/programinfo.cpp	2007-01-28 08:21:21.000000000 -0800
+--- mythtv-0.20-old/libs/libmythtv/programinfo.cpp	2007-01-30 09:46:50.000000000 -0800
++++ mythtv-0.20-new/libs/libmythtv/programinfo.cpp	2007-01-30 09:47:20.000000000 -0800
 @@ -90,6 +90,8 @@
      endts = startts;
      recstartts = startts;
@@ -19,25 +19,25 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      lastmodified = other.lastmodified;
      spread = other.spread;
      startCol = other.startCol;
-@@ -309,6 +313,8 @@
-     INT_TO_LIST(hasAirDate)     
+@@ -310,6 +314,8 @@
      STR_TO_LIST((playgroup != "") ? playgroup : "Default")
      INT_TO_LIST(recpriority2)
+     INT_TO_LIST(parentid)
 +    INT_TO_LIST(softstart)
 +    INT_TO_LIST(softend)
  }
  
  /** \fn ProgramInfo::FromStringList(QStringList&,int)
-@@ -407,6 +413,8 @@
-     INT_FROM_LIST(hasAirDate);
+@@ -409,6 +415,8 @@
      STR_FROM_LIST(playgroup)
      INT_FROM_LIST(recpriority2)
+     INT_FROM_LIST(parentid)
 +    INT_FROM_LIST(softstart)
 +    INT_FROM_LIST(softend)
  
      return true;
  }
-@@ -433,6 +441,7 @@
+@@ -435,6 +443,7 @@
  
      QString length;
      int hours, minutes, seconds;
@@ -45,7 +45,7 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      
      progMap["title"] = title;
      progMap["subtitle"] = subtitle;
-@@ -441,6 +450,7 @@
+@@ -443,6 +452,7 @@
      progMap["callsign"] = chansign;
      progMap["commfree"] = chancommfree;
      progMap["outputfilters"] = chanOutputFilters;
@@ -53,7 +53,7 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      if (isVideo)
      {
          progMap["starttime"] = "";
-@@ -462,6 +472,8 @@
+@@ -464,6 +474,8 @@
              progMap["startdate"] = startts.toString("yyyy");
              progMap["recstartdate"] = startts.toString("yyyy");
          }
@@ -62,7 +62,7 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      }
      else
      {
-@@ -473,7 +485,18 @@
+@@ -475,7 +487,18 @@
          progMap["recstartdate"] = recstartts.toString(shortDateFormat);
          progMap["recendtime"] = recendts.toString(timeFormat);
          progMap["recenddate"] = recendts.toString(shortDateFormat);
@@ -81,7 +81,7 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      
      progMap["lastmodifiedtime"] = lastmodified.toString(timeFormat);
      progMap["lastmodifieddate"] = lastmodified.toString(dateFormat);
-@@ -544,14 +567,18 @@
+@@ -546,14 +569,18 @@
      progMap["playgroup"] = playgroup;
      progMap["programflags"] = programflags;
  
@@ -103,18 +103,9 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.cpp mythtv-0.20-new/libs/l
      progMap["time"] = timeNow.time().toString(timeFormat);
  
 diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.h mythtv-0.20-new/libs/libmythtv/programinfo.h
---- mythtv-0.20-old/libs/libmythtv/programinfo.h	2006-07-14 12:31:24.000000000 -0700
-+++ mythtv-0.20-new/libs/libmythtv/programinfo.h	2007-01-28 08:21:21.000000000 -0800
-@@ -13,7 +13,7 @@
- typedef QMap<long long, long long> frm_pos_map_t;
- typedef QMap<long long, int> frm_dir_map_t;
- 
--#define NUMPROGRAMLINES 41
-+#define NUMPROGRAMLINES 43
- 
- typedef enum {
-     MARK_UNSET = -10,
-@@ -267,6 +267,8 @@
+--- mythtv-0.20-old/libs/libmythtv/programinfo.h	2007-01-30 09:46:50.000000000 -0800
++++ mythtv-0.20-new/libs/libmythtv/programinfo.h	2007-01-30 09:47:20.000000000 -0800
+@@ -268,6 +268,8 @@
      QDateTime endts;
      QDateTime recstartts;
      QDateTime recendts;
@@ -125,7 +116,7 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/programinfo.h mythtv-0.20-new/libs/lib
      
 diff -Naur mythtv-0.20-old/libs/libmythtv/viewschdiff.cpp mythtv-0.20-new/libs/libmythtv/viewschdiff.cpp
 --- mythtv-0.20-old/libs/libmythtv/viewschdiff.cpp	2006-02-20 14:25:27.000000000 -0800
-+++ mythtv-0.20-new/libs/libmythtv/viewschdiff.cpp	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/libs/libmythtv/viewschdiff.cpp	2007-01-30 09:47:20.000000000 -0800
 @@ -452,6 +452,9 @@
  
  void ViewScheduleDiff::updateList(QPainter *p)
@@ -151,8 +142,8 @@ diff -Naur mythtv-0.20-old/libs/libmythtv/viewschdiff.cpp mythtv-0.20-new/libs/l
                           (p->recstatus != rsDontRecord &&
                            p->recstatus <= rsEarlierShowing))
 diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.cpp mythtv-0.20-new/programs/mythbackend/scheduler.cpp
---- mythtv-0.20-old/programs/mythbackend/scheduler.cpp	2006-09-08 21:20:38.000000000 -0700
-+++ mythtv-0.20-new/programs/mythbackend/scheduler.cpp	2007-01-28 08:21:21.000000000 -0800
+--- mythtv-0.20-old/programs/mythbackend/scheduler.cpp	2007-01-30 09:46:50.000000000 -0800
++++ mythtv-0.20-new/programs/mythbackend/scheduler.cpp	2007-01-30 09:47:20.000000000 -0800
 @@ -152,16 +152,27 @@
          return a->startts < b->startts;
      if (a->endts != b->endts)
@@ -305,7 +296,7 @@ diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.cpp mythtv-0.20-new/pr
              {
                  RestoreRecStatus();
                  break;
-@@ -1934,6 +1944,9 @@
+@@ -1942,6 +1952,9 @@
  
  void Scheduler::AddNewRecords(void) 
  {
@@ -315,7 +306,7 @@ diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.cpp mythtv-0.20-new/pr
      struct timeval dbstart, dbend;
  
      QMap<RecordingType, int> recTypeRecPriorityMap;
-@@ -2254,7 +2267,7 @@
+@@ -2262,7 +2275,7 @@
              if (p->IsSameTimeslot(*r))
              {
                  if (r->inputid == p->inputid &&
@@ -324,7 +315,7 @@ diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.cpp mythtv-0.20-new/pr
                      (r->recordid == p->recordid ||
                       p->rectype == kOverrideRecord))
                      ChangeRecordingEnd(r, p);
-@@ -2306,6 +2319,43 @@
+@@ -2314,6 +2327,43 @@
              p->recstatus = rsMissed;
  
          tmpList.push_back(p);
@@ -370,7 +361,7 @@ diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.cpp mythtv-0.20-new/pr
      VERBOSE(VB_SCHEDULE, " +-- Cleanup...");
 diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.h mythtv-0.20-new/programs/mythbackend/scheduler.h
 --- mythtv-0.20-old/programs/mythbackend/scheduler.h	2006-03-02 11:09:38.000000000 -0800
-+++ mythtv-0.20-new/programs/mythbackend/scheduler.h	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/programs/mythbackend/scheduler.h	2007-01-30 09:47:20.000000000 -0800
 @@ -83,7 +83,7 @@
      void MarkShowingsList(RecList &showinglist, ProgramInfo *p);
      void BackupRecStatus(void);
@@ -382,7 +373,7 @@ diff -Naur mythtv-0.20-old/programs/mythbackend/scheduler.h mythtv-0.20-new/prog
      void PruneRedundants(void);
 diff -Naur mythtv-0.20-old/programs/mythfrontend/globalsettings.cpp mythtv-0.20-new/programs/mythfrontend/globalsettings.cpp
 --- mythtv-0.20-old/programs/mythfrontend/globalsettings.cpp	2006-09-04 14:00:39.000000000 -0700
-+++ mythtv-0.20-new/programs/mythfrontend/globalsettings.cpp	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/programs/mythfrontend/globalsettings.cpp	2007-01-30 09:47:20.000000000 -0800
 @@ -645,6 +645,34 @@
      return bs;
  }
@@ -429,7 +420,7 @@ diff -Naur mythtv-0.20-old/programs/mythfrontend/globalsettings.cpp mythtv-0.20-
      general2->addChild(ATSCCheckSignalWait());
 diff -Naur mythtv-0.20-old/programs/mythfrontend/viewscheduled.cpp mythtv-0.20-new/programs/mythfrontend/viewscheduled.cpp
 --- mythtv-0.20-old/programs/mythfrontend/viewscheduled.cpp	2006-08-11 15:22:12.000000000 -0700
-+++ mythtv-0.20-new/programs/mythfrontend/viewscheduled.cpp	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/programs/mythfrontend/viewscheduled.cpp	2007-01-30 09:47:20.000000000 -0800
 @@ -313,6 +313,9 @@
  
  void ViewScheduled::updateList(QPainter *p)
@@ -461,7 +452,7 @@ diff -Naur mythtv-0.20-old/programs/mythfrontend/viewscheduled.cpp mythtv-0.20-n
                            p->recstatus <= rsEarlierShowing))
 diff -Naur mythtv-0.20-old/themes/blue/theme.xml mythtv-0.20-new/themes/blue/theme.xml
 --- mythtv-0.20-old/themes/blue/theme.xml	2006-05-09 01:28:56.000000000 -0700
-+++ mythtv-0.20-new/themes/blue/theme.xml	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/themes/blue/theme.xml	2007-01-30 09:47:20.000000000 -0800
 @@ -59,7 +59,11 @@
      <font name="list-inactive" base="list-active">
        <color>#aaaaee</color>
@@ -477,7 +468,7 @@ diff -Naur mythtv-0.20-old/themes/blue/theme.xml mythtv-0.20-new/themes/blue/the
      </font>
 diff -Naur mythtv-0.20-old/themes/blue/ui.xml mythtv-0.20-new/themes/blue/ui.xml
 --- mythtv-0.20-old/themes/blue/ui.xml	2006-06-07 19:47:00.000000000 -0700
-+++ mythtv-0.20-new/themes/blue/ui.xml	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/themes/blue/ui.xml	2007-01-30 09:47:20.000000000 -0800
 @@ -290,6 +290,7 @@
          <fcnfont name="list-norecord" function="disabledrecording"></fcnfont>
          <fcnfont name="list-active" function="active"></fcnfont>
@@ -514,7 +505,7 @@ diff -Naur mythtv-0.20-old/themes/blue/ui.xml mythtv-0.20-new/themes/blue/ui.xml
        <textarea name="subdescr" draworder="6">
 diff -Naur mythtv-0.20-old/themes/G.A.N.T./ui.xml mythtv-0.20-new/themes/G.A.N.T./ui.xml
 --- mythtv-0.20-old/themes/G.A.N.T./ui.xml	2006-06-07 19:47:00.000000000 -0700
-+++ mythtv-0.20-new/themes/G.A.N.T./ui.xml	2007-01-28 08:21:21.000000000 -0800
++++ mythtv-0.20-new/themes/G.A.N.T./ui.xml	2007-01-30 09:47:20.000000000 -0800
 @@ -352,6 +352,13 @@
        <bold>yes</bold>
      </font>
