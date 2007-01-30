@@ -321,7 +321,7 @@ mm_game_save() {
     IFS=:
     for GAME_SAVE_ITEM in ${GAME_SAVE_FULL}; do
         if /usr/bin/test -e "${GAME_SAVE_ITEM}" ; then
-            GAME_SAVE=`echo "${GAME_SAVE_ITEM}" \
+            GAME_SAVE=`/bin/echo "${GAME_SAVE_ITEM}" \
                 | /bin/sed -e 's%^/home/minimyth/%%'`
             GAME_SAVE_LIST="${GAME_SAVE_LIST}|${GAME_SAVE}"
         fi
@@ -395,7 +395,7 @@ mm_codecs_fetch_and_save() {
     /bin/tar -jxf "${CODECS_FILE}"
     /bin/rm -f "${CODECS_FILE}"
 
-    if /usr/bin/test ! -d "${LOCAL_DIR}/${CODECS_BASE}" || /usr/bin/test `ls -1 "${LOCAL_DIR}/${CODECS_BASE}" | /usr/bin/wc -l` -eq 0 ; then
+    if /usr/bin/test ! -d "${LOCAL_DIR}/${CODECS_BASE}" || /usr/bin/test `/bin/ls -1 "${LOCAL_DIR}/${CODECS_BASE}" | /usr/bin/wc -l` -eq 0 ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
             "failed to create the codecs file because retrieved codecs file was empty."
         cd "${HOME}"
@@ -447,7 +447,7 @@ mm_extras_save() {
         /bin/false
         return
     fi
-    if /usr/bin/test `ls -1 /usr/local | /usr/bin/wc -l` -eq 0 ; then
+    if /usr/bin/test `/bin/ls -1 /usr/local | /usr/bin/wc -l` -eq 0 ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
             "failed to create the extras file because the extras directory is empty."
         /bin/false
@@ -496,7 +496,7 @@ mm_themecache_save() {
         /bin/false
         return
     fi
-    if /usr/bin/test ! "`cd /home/minimyth/.mythtv/themecache ; ls -1 | /bin/grep -c *`" = "1" ; then
+    if /usr/bin/test ! "`cd /home/minimyth/.mythtv/themecache ; /bin/ls -1 | /bin/grep -c *`" = "1" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
             "failed to create the MythTV themecache file because the MythTV themecache directory does not contain exactly one cached theme."
         /bin/false
@@ -508,7 +508,7 @@ mm_themecache_save() {
     local LOCAL_DIR
     local LOCAL_FILE
 
-    FILE=`cd /home/minimyth/.mythtv/themecache ; ls`.sfs
+    FILE=`cd /home/minimyth/.mythtv/themecache ; /bin/ls`.sfs
     REMOTE_FILE="themecaches/${FILE}"
     LOCAL_DIR="${HOME}/tmp"
     LOCAL_FILE="${LOCAL_DIR}/${FILE}"
