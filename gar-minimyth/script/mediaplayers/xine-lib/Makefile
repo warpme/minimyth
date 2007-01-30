@@ -1,8 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.3
+GARVERSION = 1.1.4
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
@@ -24,6 +24,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-rpath \
 	--enable-nls \
+	--enable-ffmpeg-uncommon-codecs \
+	--enable-ffmpeg-popular-codecs \
 	--disable-altivec \
 	--disable-vis \
 	--disable-mlib \
@@ -46,10 +48,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-libfametest \
 	--disable-vidix \
 	--disable-dha-kmod \
-	--enable-flac \
 	--disable-libFLACtest \
 	--enable-a52dec \
 	--enable-mad \
+	--disable-musepack \
 	--enable-mng \
 	--disable-oss \
 	--disable-artstest \
@@ -65,15 +67,21 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-modplug \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
 	--enable-mmap \
+	--enable-antialiasing \
 	--enable-largefile \
 	--enable-optimizations \
 	--with-gnu-ld \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
+	--without-pthread-prefix \
 	--without-external-ffmpeg \
 	--with-x \
-	--with-xvmc-lib=XvMCW \
+	--without-zlib-prefix \
+	--without-xv-path \
+	--without-xxmc-path \
 	--with-xxmc-lib=XvMCW \
+	--without-xvmc-path \
+	--with-xvmc-lib=XvMCW \
 	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
 	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--without-caca \
@@ -82,14 +90,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-dxheaders \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
-	--with-linux-path="$(LINUX_SOURCEDIR)" \
+	--with-linux-path="$(DESTDIR)$(LINUX_SOURCEDIR)" \
 	--with-vorbis \
 	--with-theora \
 	--without-speex \
+	--enable-flac \
+	--with-libFLAC-prefix="$(DESTDIR)$(prefix)" \
 	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
 	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
 	--without-external-a52dec \
 	--without-external-libmad \
+	--without-external-libmpcdec \
 	--without-imagemagick \
 	--with-freetype \
 	--with-fontconfig \
@@ -99,7 +110,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-fusionsound \
 	--with-internal-vcdlibs \
 	--without-external-libdts \
+	--without-wavpack \
 	--with-w32-path="$(libdir)/codecs"
+
+CONFIGURE_ENV = \
+	lt_cv_path_MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
 
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
@@ -122,11 +137,4 @@ post-install:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(bindir)/xine-config
-	@rm -rf $(DESTDIR)$(includedir)/xine
-	@rm -rf $(DESTDIR)$(includedir)/xine.h
-	@rm -rf $(DESTDIR)$(libdir)/xine
-	@rm -rf $(DESTDIR)$(libdir)/libxine.*
-	@rm -rf $(DESTDIR)$(datadir)/xine
-	@rm -rf $(DESTDIR)$(docdir)/xine
+	@$(MAKE) -C ../xine-ui clean-all
