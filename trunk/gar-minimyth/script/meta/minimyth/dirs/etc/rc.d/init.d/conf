@@ -41,7 +41,7 @@ start() {
 
     # Unset variables set by the processed MiniMyth configuration file.
     if /usr/bin/test -e /etc/conf.d/minimyth ; then
-        cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | sed -e 's%=.*$%%' | \
+        /bin/cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | /bin/sed -e 's%=.*$%%' | \
         while read variable ; do
             set ${variable}=''
         done
@@ -55,33 +55,33 @@ start() {
     . /etc/minimyth.d/minimyth.conf
 
     # Read MiniMyth configuration processing files
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         . /etc/rc.d/init.d/conf.d/${file}
     done
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_clean_${file}
     done
 
     # Check MiniMyth configuration variables.
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_check_${file}
     done
 
     # Set default MiniMyth configuration variable values.
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_default_${file}
     done
 
     # Write processed MiniMyth configuration file.
     /bin/rm -rf '/etc/conf.d/minimyth'
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_write_${file} '/etc/conf.d/minimyth'
     done
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_clean_${file}
     done
 

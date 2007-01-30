@@ -2,8 +2,8 @@
 
 . /etc/conf
 
-page_host=`hostname`
-page_date=`date +'%Y-%m-%d %H:%M:%S %Z'`
+page_host=`/bin/hostname`
+page_date=`/bin/date +'%Y-%m-%d %H:%M:%S %Z'`
 
 server=${HTTP_HOST:-${SERVER_ADDR}}
 
@@ -65,7 +65,7 @@ fi
 /bin/echo "            base ('/' and '/usr'):"
 if /usr/bin/test -d /usr/versions ; then
     /bin/echo "            <ul>"
-    for software in `cd /usr/versions ; ls -1` ; do
+    for software in `cd /usr/versions ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
             version=`/bin/cat /usr/versions/${software}`
@@ -74,7 +74,7 @@ if /usr/bin/test -d /usr/versions ; then
             fi
             license_list=
             if /usr/bin/test -d /usr/licenses/${software} ; then
-                license_list=`cd /usr/licenses/${software} ; ls -1`
+                license_list=`cd /usr/licenses/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"
@@ -93,7 +93,7 @@ fi
 /bin/echo "            extras ('/usr/local'):"
 if /usr/bin/test -d /usr/local/versions ; then
     /bin/echo "              <ul>"
-    for software in `cd /usr/local/versions ; ls -1` ; do
+    for software in `cd /usr/local/versions ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
             version=`/bin/cat /usr/local/versions/${software}`
@@ -102,7 +102,7 @@ if /usr/bin/test -d /usr/local/versions ; then
             fi
             license_list=
             if /usr/bin/test -d /usr/local/licenses/${software} ; then
-                license_list=`cd /usr/local/licenses/${software} ; ls -1`
+                license_list=`cd /usr/local/licenses/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"
@@ -121,7 +121,7 @@ fi
 /bin/echo "            build (natively compiled software used for cross compiling and assembling MiniMyth):"
 if /usr/bin/test -d /usr/versions-build ; then
     /bin/echo "            <ul>"
-    for software in `cd /usr/versions-build ; ls -1` ; do
+    for software in `cd /usr/versions-build ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
             version=`/bin/cat /usr/versions-build/${software}`
@@ -130,7 +130,7 @@ if /usr/bin/test -d /usr/versions-build ; then
             fi
             license_list=
             if /usr/bin/test -d /usr/licenses-build/${software} ; then
-                license_list=`cd /usr/licenses-build/${software} ; ls -1`
+                license_list=`cd /usr/licenses-build/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"

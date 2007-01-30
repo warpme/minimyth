@@ -2,8 +2,8 @@
 
 . /etc/conf
 
-page_host=`hostname`
-page_date=`date +'%Y-%m-%d %H:%M:%S %Z'`
+page_host=`/bin/hostname`
+page_date=`/bin/date +'%Y-%m-%d %H:%M:%S %Z'`
 
 server=${HTTP_HOST:-${SERVER_ADDR}}
 
