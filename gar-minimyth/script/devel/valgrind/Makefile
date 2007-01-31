@@ -1,5 +1,5 @@
 GARNAME = valgrind
-GARVERSION = 3.2.2
+GARVERSION = 3.2.3
 CATEGORIES = devel
 MASTER_SITES = http://valgrind.org/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
