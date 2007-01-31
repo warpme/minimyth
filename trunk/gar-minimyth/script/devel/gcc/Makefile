@@ -5,6 +5,7 @@ MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)/
 MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/snapshots/$(GCC_VERSION)/
+MASTER_SITES += ftp://gcc.gnu.org/pub/gcc/prerelease-$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
