@@ -43,9 +43,7 @@ start() {
 	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
     done
 
-    # Restart udev with the additional udev rules that handle detected hardware.
-    /usr/bin/test -n "`/bin/pidof udevd`" && killall udevd
-    /sbin/udevd -d
+    # Trigger udev with the additional udev rules that handle detected hardware.
     /sbin/udevtrigger
     /sbin/udevsettle --timeout=60
 
