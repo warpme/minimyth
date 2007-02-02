@@ -72,9 +72,9 @@ start() {
     # Configure Myth database jumppoints to match MiniMyth frontend.
     set | /bin/grep -e '^MM_MYTHDB_JUMPPOINTS_[^=]*=' | /bin/sed -e 's%^MM_MYTHDB_JUMPPOINTS_[^=]*=%%' -e "s%^'%%" -e "s%'$%%" | \
     while read jumppoints ; do
-        jumppoints_name=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 1`
-        jumppoints_value=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 2`
-        conf_variable_write "${conf_file}" "${jumpoints_name}" "${jumppoints_value}"
+        jumppoints_destination=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 1`
+        jumppoints_keylist=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 2`
+        mm_mythdb_jumppoints_update "${jumppoints_destination}" "${jumppoints_keylist}"
     done
 
     # Configure Myth database keybindings to match MiniMyth frontend.
@@ -83,7 +83,7 @@ start() {
         keybindings_context=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 1`
         keybindings_action=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 2`
         keybindings_keylist=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 3`
-        conf_variable_write "${conf_file}" "${jumpoints_name}" "${MM_MYTHDVD_MOUNTPOINT}"
+        mm_mythdb_keybindings_update "${keybindings_context}" "${keybindings_action}" "${keybindings_keylist}"
     done
 
     # Configure Myth database settings to match MiniMyth frontend.
