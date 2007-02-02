@@ -476,9 +476,8 @@ mm-copy-kernel-modules:
 	@# Copy dependent kernel modules.
 	@echo 'copying dependent kernel modules'
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
-	find $(mm_ROOTFSDIR)$(LINUX_MODULESDIR) -name '*.ko' | sed -e 's%^$(mm_ROOTFSDIR)%/%' -e 's%//*%/%g' | \
+	@find $(mm_ROOTFSDIR)$(LINUX_MODULESDIR) -name '*.ko' | sed -e 's%^$(mm_ROOTFSDIR)%/%' -e 's%//*%/%g' | \
 	while read module ; do \
-		echo $${module} ; \
 		module_deps=`cat $(DESTDIR)$(LINUX_MODULESDIR)/modules.dep | grep -e "^$${module}:" | sed -e 's%[^:]*: *%%'` ; \
 		for module_dep in $${module_deps} ; do \
 			if [ ! -e $(mm_ROOTFSDIR)$${module_dep} ] ; then \
