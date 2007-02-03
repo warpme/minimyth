@@ -83,27 +83,27 @@ start() {
 
     case "${PREFERRED_MPEG2_DECODER}" in
         ffmpeg)
-            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         libmpeg2)
-            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         xvmc)
-            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
         xvmc-vld)
-            mm_mythdb_settings_update PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
             ;;
     esac
 
     if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
-        mm_mythdb_settings_update Deinterlace 0
+        mm_mythdb_settings_set Deinterlace 0
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /home/minimyth/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /home/minimyth/.xine/config
         /bin/sed -i "s%@BOBDEINT@%%"                /home/minimyth/.mplayer/config
     elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
-        mm_mythdb_settings_update Deinterlace 1
-        mm_mythdb_settings_update DeinterlaceFilter "bobdeint"
+        mm_mythdb_settings_set Deinterlace 1
+        mm_mythdb_settings_set DeinterlaceFilter "bobdeint"
         /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /home/minimyth/.xine/config
         /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /home/minimyth/.xine/config
         /bin/sed -i "s%@BOBDEINT@%:bobdeint%"       /home/minimyth/.mplayer/config

@@ -931,6 +931,19 @@ mm_mythdb_jumpoints_update() {
         WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
 }
 
+mm_mythdb_jumpoints_set() {
+    local DESTINATION=$1
+    local KEYLIST=$2
+
+    local HOSTNAME
+
+    HOSTNAME=`/bin/hostname`
+
+    mm_mythdb_jumppoints_delete "${VALUE}"
+    mm_mythdb_command_run "UPDATE jumppoints SET keylist=\"${KEYLIST}\" \
+        WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
+}
+
 mm_mythdb_keybindings_delete() {
     local CONTEXT=$1
     local ACTION=$2
@@ -980,6 +993,20 @@ mm_mythdb_keybindings_update() {
 
     HOSTNAME=`/bin/hostname`
 
+    mm_mythdb_command_run "UPDATE keybindings SET keylist=\"${KEYLIST}\" \
+        WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
+}
+
+mm_mythdb_keybindings_set() {
+    local CONTEXT=$1
+    local ACTION=$2
+    local KEYLIST=$3
+
+    local HOSTNAME
+
+    HOSTNAME=`/bin/hostname`
+
+    mm_mythdb_keybindings_delete "${VALUE}" "${ACTION}"
     mm_mythdb_command_run "UPDATE keybindings SET keylist=\"${KEYLIST}\" \
         WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
 }
