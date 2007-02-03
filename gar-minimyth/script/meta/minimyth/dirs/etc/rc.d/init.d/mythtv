@@ -23,12 +23,12 @@ start() {
     mm_message_output info 'configuring MythTV ...'
 
     # Set OSD fonts.
-    mm_mythdb_settings_update "OSDFont"   "FreeSans.ttf"
-    mm_mythdb_settings_update "OSDCCFont" "FreeSans.ttf"
+    mm_mythdb_settings_set "OSDFont"   "FreeSans.ttf"
+    mm_mythdb_settings_set "OSDCCFont" "FreeSans.ttf"
 
     # Set the MythTV theme.
     if /usr/bin/test -n "${MM_THEME_NAME}" ; then
-        mm_mythdb_settings_update "Theme" "${MM_THEME_NAME}"
+        mm_mythdb_settings_set "Theme" "${MM_THEME_NAME}"
     fi
     # Mount MythTV theme directory.
     if /usr/bin/test -n "${MM_THEME_URL}" ; then
@@ -40,7 +40,7 @@ start() {
 
     # Set the MythTV OSD theme.
     if /usr/bin/test -n "${MM_THEMEOSD_NAME}" ; then
-        mm_mythdb_settings_update "OSDTheme" "${MM_THEMEOSD_NAME}"
+        mm_mythdb_settings_set "OSDTheme" "${MM_THEMEOSD_NAME}"
     fi
     # Mount MythTV OSD theme directory.
     if /usr/bin/test -n "${MM_THEMEOSD_URL}" ; then
@@ -62,9 +62,9 @@ start() {
         fi
         if /usr/bin/test -d "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp" && \
            /usr/bin/test -w "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp" ; then
-            mm_mythdb_settings_update "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp"
+            mm_mythdb_settings_set "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/mythdvd/temp"
             TRANSCODE=`/usr/bin/which transcode`
-            mm_mythdb_settings_update "TranscodeCommand" "${TRANSCODE}"
+            mm_mythdb_settings_set "TranscodeCommand" "${TRANSCODE}"
             /usr/bin/mtd --daemon
         fi
     fi
@@ -74,7 +74,7 @@ start() {
     while read jumppoints ; do
         jumppoints_destination=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 1`
         jumppoints_keylist=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 2`
-        mm_mythdb_jumppoints_update "${jumppoints_destination}" "${jumppoints_keylist}"
+        mm_mythdb_jumppoints_set "${jumppoints_destination}" "${jumppoints_keylist}"
     done
 
     # Configure Myth database keybindings to match MiniMyth frontend.
@@ -83,7 +83,7 @@ start() {
         keybindings_context=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 1`
         keybindings_action=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 2`
         keybindings_keylist=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 3`
-        mm_mythdb_keybindings_update "${keybindings_context}" "${keybindings_action}" "${keybindings_keylist}"
+        mm_mythdb_keybindings_set "${keybindings_context}" "${keybindings_action}" "${keybindings_keylist}"
     done
 
     # Configure Myth database settings to match MiniMyth frontend.
@@ -91,7 +91,7 @@ start() {
     while read settings ; do
         settings_value=`/bin/echo ${settings} | /usr/bin/cut -d '~' -f 1`
         settings_data=`/bin/echo ${settings} | /usr/bin/cut -d '~' -f 2`
-        mm_mythdb_settings_update "${settings_value}" "${settings_data}"
+        mm_mythdb_settings_set "${settings_value}" "${settings_data}"
     done
 
     # Delete disabled plugins.
