@@ -33,7 +33,8 @@ BUILDDEPS += \
 	utils/tar \
 	utils/bzip2 \
 	utils/gzip \
-	utils/unzip
+	utils/unzip \
+	doc/texinfo
 
 include ../../gar.mk
 

@@ -31,6 +31,13 @@ start() {
         /usr/bin/test -e /usr/sbin/LCDd && /usr/sbin/LCDd -c /etc/LCDd.conf
     fi
 
+    # Enable LCD in MythTV.
+    if /usr/bin/test -n "`/bin/pidof LCDd`" ; then
+        mm_mythdb_settings_set "LCDEnable" "1"
+    else
+        mm_mythdb_settings_set "LCDEnable" "0"
+    fi
+
     return 0
 }
 
