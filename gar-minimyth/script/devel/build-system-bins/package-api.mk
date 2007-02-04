@@ -22,6 +22,7 @@ build_system_bins = $(strip $(sort \
 	$(build_system_bins_sed) \
 	$(build_system_bins_subversion) \
 	$(build_system_bins_tar) \
+	$(build_system_bins_texinfo) \
 	$(build_system_bins_wget) \
 ))
 
@@ -100,6 +101,7 @@ build_system_bins_flex = \
 
 # Overridden by binaries from package utils/gawk.
 build_system_bins_gawk = \
+	awk \
 	gawk
 
 # Overridden by binaries from package devel/gcc.
@@ -153,6 +155,10 @@ build_system_bins_subversion = \
 # Overridden by binaries from package utils/tar.
 build_system_bins_tar = \
 	tar
+
+# Overridden by binaries from package doc/texinfo.
+build_system_bins_texinfo = \
+	makeinfo
 
 build_system_bins_wget = \
 	wget
