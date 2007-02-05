@@ -489,7 +489,7 @@ static int xbox360_probe(struct usb_interface *intf, const struct usb_device_id 
 		goto fail;
 	}
 
-	xbox360->idata = usb_buffer_alloc(udev, XPAD_PKT_LEN, SLAB_ATOMIC, &xbox360->idata_dma);
+	xbox360->idata = usb_buffer_alloc(udev, XPAD_PKT_LEN, GFP_ATOMIC, &xbox360->idata_dma);
 	if (!xbox360->idata) {
 		goto fail;
 	}
