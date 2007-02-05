@@ -74,13 +74,13 @@ mm_TFTP_ROOT          ?= /var/tftpboot/minimyth
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT           ?= /home/public/minimyth
 # The version of kernel to use.
-# Valid values are '2.6.17', '2.6.19' and '2.6.20'.
+# Valid values are '2.6.17' and '2.6.20'.
 mm_KERNEL_VERSION     ?= 2.6.17
 # The version of Myth to use.
 # Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
 mm_MYTH_VERSION       ?= stable20
 # The version of the NVIDIA driver.
-# Valid values are '8178', '8776', '9631' and '9746'.
+# Valid values are '9746'.
 mm_NVIDIA_VERSION     ?= 9746
 # The version of xorg to use.
 # Valid values are '7.0' and '7.2' (7.2-RC3).

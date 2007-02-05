@@ -11,7 +11,7 @@ define BLURB
 endef
 
 #DEPENDS   = lang/c
-BUILDDEPS = utils/unifdef
+#BUILDDEPS = utils/unifdef
 
 WORKSRC = $(WORKDIR)/linux-$(GARVERSION)
 
