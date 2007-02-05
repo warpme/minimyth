@@ -1,6 +1,6 @@
 GARNAME = drm
 GARVERSION = 6c04185857694b2293046b7ea1d4515404a740c3
-CATEGORIES = kernel-2.6.19
+CATEGORIES = kernel-2.6.20
 MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c kernel-2.6.19/linux
+DEPENDS   = lang/c kernel-2.6.20/linux
 BUILDDEPS = utils/module-init-tools
 
 WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-core
@@ -23,7 +23,7 @@ BUILD_ARGS = $(LINUX_MAKE_ARGS) LINUXDIR="$(DESTDIR)$(LINUX_SOURCEDIR)" DRM_MODU
 
 BUILD_ENV = $(LINUX_MAKE_ENV)
 
-GAR_EXTRA_CONF += kernel-2.6.19/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-2.6.20/linux/package-api.mk
 include ../../gar.mk
 
 git//%$(DISTNAME).tar.bz2:

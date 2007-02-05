@@ -74,7 +74,7 @@ mm_TFTP_ROOT          ?= /var/tftpboot/minimyth
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT           ?= /home/public/minimyth
 # The version of kernel to use.
-# Valid values are '2.6.17' and '2.6.19'.
+# Valid values are '2.6.17', '2.6.19' and '2.6.20'.
 mm_KERNEL_VERSION     ?= 2.6.17
 # The version of Myth to use.
 # Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
