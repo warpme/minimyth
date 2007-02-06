@@ -32,8 +32,8 @@ MESA_LIBDIR = $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),lib  ) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),lib64))
 DRI_DIRS    = $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i830 i915 unichrome) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),          i915 unichrome))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i830 i915 r128 r200 r300 radeon unichrome) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),          i915 r128 r200 r300 radeon unichrome))
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile $(WORKSRC)/progs/xdemos/Makefile
