@@ -30,8 +30,8 @@ mm_DEBUG              ?= no
 # Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
 mm_DEBUG_BUILD        ?= no
 # Lists the chipset families supported.
-# Valid values for mm_CHIPSETS are one or more of 'intel', 'nvidia', 'via',
-# 'vmware' and 'other'.
+# Valid values for mm_CHIPSETS are one or more of 'ati', 'intel', 'nvidia',
+# 'via', 'vmware' and 'other'.
 mm_CHIPSETS           ?= intel nvidia via vmware other
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
