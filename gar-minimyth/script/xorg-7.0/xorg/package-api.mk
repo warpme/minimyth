@@ -7,6 +7,6 @@ XORG_MASTER_SITES = \
 	) \
 	$(foreach                                                           \
 		dir,                                                        \
-		app data doc driver exerything font lib proto util xserver, \
+		app data doc driver everything font lib proto util xserver, \
 		http://xorg.freedesktop.org/releases/X11R7.0/src/$(dir)/    \
 	)
