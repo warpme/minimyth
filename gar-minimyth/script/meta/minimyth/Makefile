@@ -64,6 +64,7 @@ DEPENDS = \
 	X11/xmacro \
 	xorg/xorg \
 	X11/xscreensaver \
+	X11/xvattr \
 	system/zoneinfo \
 	emulators/zsnes \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \

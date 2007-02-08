@@ -19,14 +19,14 @@ start() {
     fi
 
     # Load the LIRC configuration files.
-    if /usr/bin/test -n "${MM_LIRC_REMOTE}" ; then
-        if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
-            if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
-                /bin/cp -f /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} /etc/lircd.conf
-            fi
+    if /usr/bin/test -n "${MM_LIRC_REMOTE}" && /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
+        if /usr/bin/test -e /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
+            /bin/rm -f /etc/lircd.conf
+            /bin/cat /etc/lirc.d/lircd.conf.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} >> /etc/lircd.conf
         fi
-        if /usr/bin/test -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} ; then
-            /bin/cp -f /etc/lirc.d/lircrc.${MM_LIRC_REMOTE} /etc/lircrc
+        if /usr/bin/test -e /etc/lirc.d/lircrc.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} ; then
+            /bin/rm -f /etc/lircrc
+            /bin/cat /etc/lirc.d/lircrc.${MM_LIRC_REMOTE}.${MM_LIRC_DRIVER} >> /etc/lircrc
         fi
     fi
 
@@ -59,7 +59,26 @@ start() {
         LIRC_DRIVER=`/usr/sbin/lircd --driver=help 2>&1 | /bin/sed -e 's%[[:cntrl:]]%%g' | /bin/grep -i -e "^${MM_LIRC_DRIVER}$"`
         /usr/bin/test -z "${LIRC_DRIVER}" && LIRC_DRIVER="default"
 
-        /usr/sbin/lircd --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE}
+        /usr/sbin/lircd \
+            --driver=${LIRC_DRIVER} --device=${MM_LIRC_DEVICE} \
+            --output=/dev/lircd1 --pidfile=/var/run/lircd1.pid \
+            --listen=$((8765 -1 + 1))
+        /usr/sbin/lircd \
+            --driver=null \
+            --output=/dev/lircd  --pidfile=/var/run/lircd.pid  \
+            --connect=localhost:$((8765 -1 + 1))
+    fi
+
+    # Auto-configure usage of 'irexec'.
+    if /usr/bin/test "${MM_LIRC_IREXEC_ENABLED}" = "auto" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" "MM_LIRC_IREXEC_ENABLED is 'auto'. attempting to auto-configure usage of 'irexec'."
+        MM_LIRC_IREXEC_ENABLED='no'
+        if /usr/bin/test -e /etc/lircrc ; then
+            if /bin/cat /etc/lircrc | /bin/grep -q -e '^ *prog *= *irexec' ; then
+                MM_LIRC_IREXEC_ENABLED='yes'
+            fi
+        fi
+        /usr/bin/logger -t minimyth -p "local0.info" "auto-configured usage of 'irexec' as '${MM_LIRC_IREXEC_ENABLED}'."
     fi
 
     # Auto-configure usage of 'irexec'.
