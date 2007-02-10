@@ -1,9 +1,8 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 292
+GARVERSION = 294
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vt1625.patch
 LICENSE = MIT
 
 DESCRIPTION = 
