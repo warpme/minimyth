@@ -153,6 +153,7 @@
             </dl></dd>
             <dt><a href="#MM_LIRC">LIRC configuration variables</a></dt>
             <dd><dl>
+              <dt><a href="#MM_LIRC_AUTO_ENABLED">MM_LIRC_AUTO_ENABLED</a></dt>
               <dt><a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a></dt>
               <dt><a href="#MM_LIRC_REMOTE">MM_LIRC_REMOTE</a></dt>
               <dt><a href="#MM_LIRC_DEVICE">MM_LIRC_DEVICE</a></dt>
@@ -1669,35 +1670,54 @@
             The LIRC configuration variables are:
           </p>
           <dl>
-            <dt id="MM_LIRC_DRIVER"><strong>MM_LIRC_DRIVER</strong></dt>
+            <dt id="MM_LIRC_AUTO_ENABLED"><strong>MM_LIRC_AUTO_ENABLED</strong></dt>
             <dd>
               <p>
-                The name of the lircd driver (e.g. irman).
-                Valid values are the name of the lircd driver, 'none' and 'auto', with 'auto' being the default.
-                'MM_LIRC_DRIVER' is used to determine what LIRC driver to use and to pick a built-in 'lircd.conf' file.
+                Specifies whether or not to auto-detect remote control receivers (and remote controls).
+                Valid values are 'yes' and 'no', with the default depending on '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>'.
+                If '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>' is 'none', then the default value is 'yes'.
+                Otherwise, the default value is 'no'.
               </p>
               <p>
-                If the value is 'none,' then no lircd driver will be set and the lircd daemon will not be started.
-              </p>
-              <p>
-                If the value is 'auto', then MiniMyth will attempt to auto-configure your lircd driver.
-                If you use a remote control receiver that connects using USB,
-                then MiniMyth will attempt to determine the value for 'MM_LIRC_DRIVER'
-                using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
+                Auto-detection of a remote control reciever is done
+                using the remote control receiver's USB vendor and product identifiers
+                in conjuction with the '/lib/modules/*/modules.*' file.
                 If your remote control receiver is not auto-configured and you believe that it should have been auto-configured,
                 then please file a
                 <a href="http://linpvr.org/bugs/">bug report</a>
                 that contains the remote control receiver vendor and model, the LIRC driver used and
                 the output of the command 'lsusb' with the remote control receiver connected.
               </p>
+              <p>
+                If a remote control is bundled with the remote control receiver,
+                then auto-detection of the remote control is done
+                using the remote control receiver's USB vendor and product identifiers
+                in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
+                If your remote control is not auto-autoconfigured and you believe that it should have been auto-configured,
+                then please file a
+                <a href="http://linpvr.org/bugs/">bug report</a>
+                that contains the remote control / remote control receiver vendor and model, the LIRC driver used, 
+                the output of the command 'lsusb' with the remote control receiver connected and (if you have them)
+                'lircd.conf' and 'lircrc' files that work with MiniMyth.
+              </p>
+            </dd>
+            <dt id="MM_LIRC_DRIVER"><strong>MM_LIRC_DRIVER</strong></dt>
+            <dd>
+              <p>
+                The name of the lircd driver (e.g. irman).
+                Valid values are the name of the lircd driver and 'none', with 'none' being the default.
+                'MM_LIRC_DRIVER' is used to determine what LIRC driver to use and to pick a built-in 'lircd.conf' and 'lircrc' files.
+              </p>
+              <p>
+                If the value is 'none,' then no lircd driver will be set.
+              </p>
             </dd>
             <dt id="MM_LIRC_REMOTE"><strong>MM_LIRC_REMOTE</strong></dt>
             <dd>
               <p>
                 The remote control that you are using.
-                Valid values are the remote control name, 'none' and 'auto', with 'auto' being the default.
+                Valid values are the remote control name and 'none', with 'none' being the default.
                 'MM_LIRC_REMOTE' is used to pick built-in 'lircd.conf' and 'lircrc' files.
-                While 'lircrc' is depends on the remote control, 'lircd.conf' depends on the remote control and the remote control receiver.
                 Currently understood remote control names:
               </p>
               <p>
@@ -1715,18 +1735,6 @@
               </p>
               <p>
                 If the value is 'none,' then no remote control will be set.
-              </p>
-              <p>
-                If the value is 'auto', then MiniMyth will attempt to auto-configure your remote control.
-                If you use a remote control that comes bundled with a remote control receiver that connects using USB,
-                then MiniMyth will attempt to determine the value for 'MM_LIRC_REMOTE'
-                using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lirc.map' file.
-                If your remote control is not auto-autoconfigured and you believe that it should have been auto-configured,
-                then please file a
-                <a href="http://linpvr.org/bugs/">bug report</a>
-                that contains the remote control / remote control receiver vendor and model, the LIRC driver used, 
-                the output of the command 'lspusb' with the remote control receiver connected and (if you have them)
-                'lircd.conf' and 'lircrc' files that work with MiniMyth.
               </p>
             </dd>
             <dt id="MM_LIRC_DEVICE"><strong>MM_LIRC_DEVICE</strong></dt>
@@ -1801,7 +1809,9 @@
             If you do this, when you run lircd, you need to specify
             the driver using the '--driver' command line option and
             the device using the '--device' command line option.
-            If the 'lirc' init script detects that lircd is already running, then it will exit immediately.
+            If '<a href="#MM_LIRC_AUTO_ENABLED">MM_LIRC_AUTO_ENABLED</a>' is 'no' and
+            '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>' is 'none',
+            then MiniMyth will not start lircd on its own.
           </p>
         </div>
         <div id="MM_LCDPROC" class="section">
@@ -1934,7 +1944,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-02-03 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-02-09 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

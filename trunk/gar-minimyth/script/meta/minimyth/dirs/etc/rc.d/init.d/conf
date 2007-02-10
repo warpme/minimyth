@@ -16,14 +16,6 @@ conf_variable_write() {
 }
 
 start() {
-    # Local booting, so there should be a '/minimyth' directory.
-    if /usr/bin/test "${MM_BOOT_TYPE}" = "local" ; then
-        while /usr/bin/test ! -e /minimyth ; do
-            mm_message_output info 'waiting for directory /minimyth to mount ...'
-            sleep 1
-         done
-    fi
-
     mm_message_output info 'processing configuration ...'
 
     # Get MiniMyth configuration file.
@@ -78,6 +70,11 @@ start() {
     /bin/rm -rf '/etc/conf.d/minimyth'
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_write_${file} '/etc/conf.d/minimyth'
+    done
+
+    # Fetch user files.
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+        conf_fetch_${file}
     done
 
     # Clean configuration processing file state.

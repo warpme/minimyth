@@ -1,0 +1,43 @@
+#!/bin/sh
+################################################################################
+# autoconf
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+
+    local file
+    local file_old
+    local file_new
+    local kernel_module
+
+    mm_message_output info 'auto-configuring ...'
+
+    # Enable udev rules that handle lirc.
+    if /usr/bin/test -e /etc/conf.d/minimyth ; then
+        if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
+            for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-lirc.rules.disabled 2> /dev/null` ; do
+                file_old=`/bin/echo ${file}`
+                file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
+	        /bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
+            done
+        fi
+    fi
+
+    # Trigger udev with the additional udev rules that handle detected hardware.
+    /sbin/udevtrigger
+    /sbin/udevsettle --timeout=60
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

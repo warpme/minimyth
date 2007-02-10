@@ -1,8 +1,10 @@
 ################################################################################
-# Remote media directory configuration variables.
+# Remote media directory configuration variables and files.
 ################################################################################
 conf_clean_media() {
     /bin/rm -rf /tmp/init.conf.media
+
+    return 0
 }
 
 conf_check_media() {
@@ -11,7 +13,7 @@ conf_check_media() {
 
 conf_default_media() {
     if /usr/bin/test -z "${MM_MYTHAUDIO_MOUNTPOINT}"   ; then
-        MM_MYTHDVD_MOUNTPOINT='/mnt/audio'
+        MM_MYTHAUDIO_MOUNTPOINT='/mnt/audio'
     fi
     if /usr/bin/test -z "${MM_MYTHDVD_MOUNTPOINT}"     ; then
         MM_MYTHDVD_MOUNTPOINT='/mnt/dvd'
@@ -48,5 +50,9 @@ conf_write_media() {
     conf_variable_write "${conf_file}" MM_MYTHVIDEO_MOUNTPOINT   "${MM_MYTHVIDEO_MOUNTPOINT}"
     conf_variable_write "${conf_file}" MM_MYTHVIDEO_URL          "${MM_MYTHVIDEO_URL}"
 
+    return 0
+}
+
+conf_fetch_media() {
     return 0
 }

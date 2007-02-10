@@ -1,0 +1,37 @@
+#!/bin/sh
+################################################################################
+# local
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+
+    local file
+    local file_old
+    local file_new
+
+    if /usr/bin/test ! "${MM_BOOT_TYPE}" = "local" ; then
+        return 0
+    fi
+
+    # Local booting, so there should be a '/minimyth' directory.
+    if /usr/bin/test "${MM_BOOT_TYPE}" = "local" ; then
+        while /usr/bin/test ! -e /minimyth ; do
+            mm_message_output info 'waiting for directory /minimyth to mount ...'
+            sleep 1
+         done
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

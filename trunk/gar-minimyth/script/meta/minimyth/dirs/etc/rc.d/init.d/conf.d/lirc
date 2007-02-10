@@ -1,12 +1,18 @@
 ################################################################################
-# LIRC configuration variables.
+# LIRC configuration variables and files.
 ################################################################################
 conf_clean_lirc() {
     /bin/rm -rf /tmp/init.conf.lirc
+
+    return 0
 }
 
 conf_check_lirc() {
     # Check for obsolete variables.
+    if /usr/bin/test "${MM_LIRC_DEVICE}"        = "auto"           ; then
+        mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DEVICE=auto" is obsolete.'
+        exit 1
+    fi
     if /usr/bin/test "${MM_LIRC_DRIVER}"        = "mceusbnew"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DRIVER=mceusbnew" is obsolete.'
         exit 1
@@ -19,25 +25,46 @@ conf_check_lirc() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_REMOTE=mceusbnew" is obsolete.'
         exit 1
     fi
-
-    return 0
+    if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_REMOTE}"                ; then
+        mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_REMOTE is set.'
+        exit 1
+    fi
+    if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_DRIVER}"                ; then
+        mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_DRIVER is set.'
+        exit 1
+    fi
+    if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_KERNEL_MODULE}"         ; then
+        mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_KERNEL_MODULE is set.'
+        exit 1
+    fi
+    if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ; then
+        mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_KERNEL_MODULE_OPTIONS is set.'
+        exit 1
+    fi
+    if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_LIRC_IREXEC_ENABLED}"   ; then
+        mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_IREXEC_ENABLED is set.'
+        exit 1
+    fi
 }
 
 conf_default_lirc() {
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
-        MM_LIRC_DRIVER='auto'
-    fi
-    if /usr/bin/test -z "${MM_LIRC_REMOTE}" ; then
-        MM_LIRC_REMOTE='auto'
-    fi
-    if /usr/bin/test -z "${MM_LIRC_IREXEC_ENABLED}" ; then
-        MM_LIRC_IREXEC_ENABLED='auto'
+        MM_LIRC_DRIVER='none'
     fi
 
-    if /usr/bin/test "${MM_LIRC_DRIVER}" = "auto" ; then
-        MM_LIRC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lirc_driver_map`
-        if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
-            MM_LIRC_DRIVER='none'
+    if /usr/bin/test -z "${MM_LIRC_AUTO_ENABLED}" ; then
+        if /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
+            MM_LIRC_AUTO_ENABLED='yes'
+        else
+            MM_LIRC_AUTO_ENABLED='no'
+        fi
+    fi
+
+    if /usr/bin/test -z "${MM_LIRC_IREXEC_ENABLED}" ; then
+        if /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
+           MM_LIRC_IREXEC_ENABLED='no'
+        else
+           MM_LIRC_IREXEC_ENABLED='auto'
         fi
     fi
 
@@ -67,14 +94,6 @@ conf_default_lirc() {
        fi
     fi
 
-    # Auto-configure remote control receiver.
-    if /usr/bin/test "${MM_LIRC_REMOTE}" = "auto" ; then
-        MM_LIRC_REMOTE=`mm_hardware_usb_process mm_hardware_usb2lirc_remote_map`
-        if /usr/bin/test -z "${MM_LIRC_REMOTE}" ; then
-            MM_LIRC_REMOTE='none'
-        fi
-    fi
-
     # Convert 'none' to empty.
     if /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
         MM_LIRC_DRIVER=
@@ -88,7 +107,7 @@ conf_default_lirc() {
     if /usr/bin/test "${MM_LIRC_KERNEL_MODULE}" = "none" ; then
         MM_LIRC_KERNEL_MODULE=
     fi
-    if /usr/bin/test "${MM_LIRC_KERNLE_MODULE_OPTIONS}" = "none" ; then
+    if /usr/bin/test "${MM_LIRC_KERNEL_MODULE_OPTIONS}" = "none" ; then
         MM_LIRC_KERNLE_MODULE_OPTIONS=
     fi
 
@@ -98,12 +117,20 @@ conf_default_lirc() {
 conf_write_lirc() {
     local conf_file=$1
 
+    conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED          "${MM_LIRC_AUTO_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
     conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
+
+    return 0
+}
+
+conf_fetch_lirc() {
+    mm_conf_get /lircd.conf /etc/lircd.conf
+    mm_conf_get /lircrc /etc/lircrc
 
     return 0
 }
