@@ -1,8 +1,10 @@
 ################################################################################
-# X configuration variables.
+# X configuration variables and files.
 ################################################################################
 conf_clean_x() {
     /bin/rm -rf /tmp/init.conf.x
+
+    return 0
 }
 
 conf_check_x() {
@@ -786,6 +788,13 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_DISPLAYSIZE                 "${MM_X_DISPLAYSIZE}"
 
     conf_variable_write "${conf_file}" MM_X_HACK_HIDE_BLUE_LINE_ENABLED "${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}"
+
+    return 0
+}
+
+conf_fetch_x() {
+    mm_conf_get /xorg.conf /etc/X11/xorg.conf
+    mm_conf_get /xinitrc /home/minimyth/.xinitrc
 
     return 0
 }

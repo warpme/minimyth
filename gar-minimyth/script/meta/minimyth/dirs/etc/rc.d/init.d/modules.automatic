@@ -37,7 +37,14 @@ start() {
     /sbin/modprobe ppdev
 
     # Enable udev rules that handle detected hardware.
-    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *.rules.disabled 2> /dev/null` ; do
+    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-hardware.rules.disabled 2> /dev/null` ; do
+        file_old=`/bin/echo ${file}`
+        file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
+	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
+    done
+
+    # Enable udev rules that handle detected disks.
+    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-disk.rules.disabled 2> /dev/null` ; do
         file_old=`/bin/echo ${file}`
         file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
 	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}

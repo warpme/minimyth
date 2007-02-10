@@ -32,16 +32,22 @@ Extended minimyth.conf
         MM_MYTHVIDEO_MOUNTPOINT to specify the mount points for the media
         shares.
     Added MM_X_HACK_HIDE_BLUELINE_ENABLED to enable the hide blue line hack.
+    Added MM_LIRC_AUTO_ENABLED to control whether or not LIRC auto-detection
+        is done.
 
 Modified init
     Moved PATH and DISPLAY variables from /etc/conf.d/core to /etc/profile.
     Added LANG='en_US.UTF-8' to /etc/profile.
-    Set PATH='' in /etc/conf.d/conre so that init should fail when full
-        paths are not used in init scripts.
+    Changed how lircd is run to enable running multiple lircd daemons.
+    Moved LIRC auto-detection from init scripts to udev rules/scripts.
+    Moved fetching of configuration files from their respective init scripts
+        to their respective conf scripts. This was needed to move LIRC
+        auto-detection to udev rules/scripts.
 
 Modified udev
     Changed the default for DMA on IDE devices to be off.
     Changed udev rults to enable DMA on IDE DVD devices.
+    Added rules and script for LIRC auto-detection.
 
 Improved build system
     Added ATI kernel Xorg driver support, but they are not included in
