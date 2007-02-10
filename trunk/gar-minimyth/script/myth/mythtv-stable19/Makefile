@@ -3,7 +3,7 @@ GARVERSION = 0.19
 CATEGORIES = myth
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch $(DISTNAME)-changeset-11610.patch $(DISTNAME)-lcdproc.patch $(DISTNAME)-xvmc_surfaces.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch $(DISTNAME)-changeset-11610.patch $(DISTNAME)-avformat_asf_utf8.patch $(DISTNAME)-lcdproc.patch $(DISTNAME)-xvmc_surfaces.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
