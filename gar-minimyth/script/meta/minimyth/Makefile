@@ -25,6 +25,7 @@ DEPENDS = \
 	disk/hdparm \
 	emulators/jzintv \
 	system/lcdproc \
+	system/kbdd \
 	kernel/kernel \
 	lirc/lirc \
 	utils/lm_sensors \
