@@ -42,14 +42,12 @@ start() {
             ;;
         nvidia)
             /bin/sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
-            # this should really be the more efficient 'libmpeg2',
-            # but it causes stalls during when fast forwarding and rewinding.
-            PREFERRED_MPEG2_DECODER='ffmpeg'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.mplayer/config
+            PREFERRED_MPEG2_DECODER='xvmc'
+            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"              /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
             ;;
         via)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
