@@ -79,7 +79,7 @@ MM_INIT_START := \
     cpufreq \
     time \
     web \
-    mount \
+    media \
     audio \
     video \
     lirc \
