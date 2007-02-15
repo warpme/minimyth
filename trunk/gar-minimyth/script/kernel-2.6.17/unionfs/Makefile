@@ -1,9 +1,9 @@
 GARNAME = unionfs
 GARVERSION = 1.3
 CATEGORIES = kernel-2.6.17
-MASTER_SITES  = ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/
-MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/snapshots/
-MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/snapshots/old/
+MASTER_SITES  = ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/$(GARNAME)-1.x/
+MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/$(GARNAME)-1.x/snapshots/
+MASTER_SITES += ftp://ftp.fsl.cs.sunysb.edu/pub/$(GARNAME)/$(GARNAME)-1.x/snapshots/old/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-gar.patch
 LICENSE = GPL2
