@@ -1,14 +1,20 @@
 GARNAME = mythaudio
 GARVERSION = \
-	$(strip $(if $(MYTHAUDIO_DEVEL_VERSION), \
-		$(MYTHAUDIO_DEVEL_VERSION), \
-		0.0.0 \
-	))
+	$(strip \
+		$(if $(MYTHAUDIO_DEVEL_PATH), \
+			$(if $(MYTHAUDIO_DEVEL_VERSION), \
+				$(MYTHAUDIO_DEVEL_VERSION), \
+				0.0.0 \
+			), \
+			29 \
+		) \
+	)
 CATEGORIES = myth
-MASTER_SITES = \
+MASTER_SITES  = \
 	$(strip $(if $(MYTHAUDIO_DEVEL_PATH), \
 		dir:/$(MYTHAUDIO_DEVEL_PATH) \
 	))
+MASTER_SITES += svn://mythaudio.googlecode.com/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -62,6 +68,10 @@ FETCH_DIR = \
 
 dir/%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_DIR, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
