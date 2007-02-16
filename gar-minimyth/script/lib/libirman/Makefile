@@ -1,6 +1,6 @@
 GARNAME = libirman
 GARVERSION = 0.4.4
-CATEGORIES = lirc
+CATEGORIES = lib
 MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-autoconf.patch

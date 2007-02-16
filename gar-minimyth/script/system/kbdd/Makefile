@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lirc/lirc
+DEPENDS = lang/c system/lirc
 
 BUILD_SCRIPTS    = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS  = custom

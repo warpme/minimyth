@@ -36,8 +36,8 @@ clean-all:
 	@$(MAKE) clean     -C ../unionfs
 	@$(MAKE) clean     -C ../vt1211
 	@$(MAKE) clean     -C ../xbox360
-	@$(MAKE) clean     -C ../../lirc
-	@$(MAKE) clean     -C ../../X11/IEGD
+	@$(MAKE) clean-all -C ../../system/lirc
 	@$(MAKE) clean-all -C ../../nvidia
+	@$(MAKE) clean     -C ../../X11/IEGD
 	@rm -rf $(DESTDIR)$(LINUX_DIR)
 	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)

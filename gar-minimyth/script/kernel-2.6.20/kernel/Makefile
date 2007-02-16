@@ -30,8 +30,8 @@ clean-all:
 	@$(MAKE) clean     -C ../kernel
 	@$(MAKE) clean     -C ../linux
 	@$(MAKE) clean     -C ../xbox360
-	@$(MAKE) clean     -C ../../lirc
-	@$(MAKE) clean     -C ../../X11/IEGD
 	@$(MAKE) clean-all -C ../../nvidia
+	@$(MAKE) clean-all -C ../../system/lirc
+	@$(MAKE) clean     -C ../../X11/IEGD
 	@rm -rf $(DESTDIR)$(LINUX_DIR)
 	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)
