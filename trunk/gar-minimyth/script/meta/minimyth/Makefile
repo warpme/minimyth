@@ -27,7 +27,7 @@ DEPENDS = \
 	system/lcdproc \
 	system/kbdd \
 	kernel/kernel \
-	lirc/lirc \
+	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
 	utils/module-init-tools \
