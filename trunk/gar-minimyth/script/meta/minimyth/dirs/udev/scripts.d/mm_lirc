@@ -4,19 +4,30 @@
 ################################################################################
 
 case ${SUBSYSTEM} in
-    lirc)
+    lirc|usb)
         case ${ACTION} in
             add)
                 idVendor=$1
                 idProduct=$2
                 serial=$3
 
+                devname=`/bin/echo ${DEVNAME} | /bin/sed -e 's%//*%/%g'`
+                devbase=`/usr/bin/basename ${devname}`
+
+                # If we do not have a device, then exit.
+                if /usr/bin/test -z "${devname}" || /usr/bin/test -z "${devbase}" ; then
+                    exit 0
+                fi
                 # If we do not have the USB device information, then exit.
                 if /usr/bin/test -z "${idVendor}" || /usr/bin/test -z "${idProduct}" ; then
                     exit 0
                 fi
+                # If USB device information is 0000, then exit.
+                if /usr/bin/test "${idVendor}" = "0000" && /usr/bin/test "${idProduct}" = "0000" ; then
+                    exit 0
+                fi
                 # If the device already has a running lircd daemon, then exit.
-                if /usr/bin/test -e "/var/log/lircd*.`/usr/bin/basename ${DEVNAME}`.pid" ; then
+                if /usr/bin/test -n "`/bin/ls /var/run/lircd*.${devbase}.pid 2> /dev/null`" ; then
                     exit 0
                 fi
                 # If there is no lircrc file, then create it.
@@ -32,11 +43,11 @@ case ${SUBSYSTEM} in
                 fi
                 # If the aggregating lircd daemon is not running, then start it.
                 # It can aggregate up to four lircd daemons.
-                if /usr/bin/test ! -e "/var/run/lird.pid" ; then
+                if /usr/bin/test ! -e "/var/run/lircd.pid" ; then
                     # If the lircd device exists, then delete it.
                     /bin/rm -f /dev/lircd
                     # Start daemon.
-                    /usr/sbin/lircd \
+                    command="/usr/sbin/lircd \
                         --driver=null \
                         --output=/dev/lircd \
                         --pidfile=/var/run/lircd.pid \
@@ -44,11 +55,14 @@ case ${SUBSYSTEM} in
                         --connect=localhost:$((8765 -1 + 1)) \
                         --connect=localhost:$((8765 -1 + 2)) \
                         --connect=localhost:$((8765 -1 + 3)) \
-                        --connect=localhost:$((8765 -1 + 4))   
+                        --connect=localhost:$((8765 -1 + 4)) "
+                    command="`/bin/echo ${command} | /bin/sed -e 's%  *% %g'`"
+                    ${command}
+                    /usr/bin/logger -t minimyth -p "local0.info" "started '${command}'"
                 fi
                 # Determine the next available lircd device.
                 index=1
-                while /usr/bin/test -e "/var/run/lircd${index}.*" ; do
+                while /usr/bin/test -n "`/bin/ls /var/run/lircd${index}.* 2> /dev/null`" ; do
                     index=$((${index} + 1))
                 done
                 # Determine the lircd.conf file.
@@ -71,24 +85,42 @@ case ${SUBSYSTEM} in
                 else
                     config_file="/etc/lircd.conf"
                 fi
+                lirc_driver=`/usr/sbin/lircd --driver=help 2>&1 \
+                    | /bin/sed -e 's%[[:cntrl:]]%%g' \
+                    | /bin/grep -i -e "^${lirc_driver}$"`
+                /usr/bin/test -z "${lirc_driver}" && lirc_driver="default"
                 # If the lircd device exists, then delete it.
                 /bin/rm -f /dev/lircd${index}
-                pidfile="/var/run/lircd${index}.`/usr/bin/basename ${DEVNAME}`.pid"
-                /usr/sbin/lircd \
-                    --driver=default \
-                    --device=${DEVNAME} \
+                pidfile="/var/run/lircd${index}.${devbase}.pid"
+                command="/usr/sbin/lircd \
+                    --driver=${lirc_driver} \
+                    --device=${devname} \
                     --output=/dev/lircd${index} \
                     --pidfile=${pidfile} \
-                    --logfile=/var/log/lircd.log \
+                    --logfile=/dev/null \
                     --listen=$((8765 -1 + ${index})) \
-                    ${config_file}
+                    ${config_file}"
+                command="`/bin/echo ${command} | /bin/sed -e 's%  *% %g'`"
+                ${command}
+                /usr/bin/logger -t minimyth -p "local0.info" "started '${command}'"
                 ;;
             remove)
-                pidfile="/bin/ls /var/run/lircd*.`/usr/bin/basename ${DEVNAME}`.pid 2> /dev/null"
-                if /usr/bin/test ! -e "${pidfile}" ; then
+                idVendor=$1
+                idProduct=$2
+                serial=$3
+
+                devname=`/bin/echo ${DEVNAME} | /bin/sed -e 's%//*%/%g'`
+                devbase=`/usr/bin/basename ${devname}`
+
+                # If we do not have a device, then exit.
+                if /usr/bin/test -z "${devname}" || /usr/bin/test -z "${devbase}" ; then
+                    exit 0
+                fi
+                pidfiles="`/bin/ls /var/run/lircd*.${devbase}.pid 2> /dev/null`"
+                for pidfile in ${pidfiles} ; do
                     /bin/kill `/bin/cat "${pidfile}"`
                     /bin/rm -f /dev/`/bin/echo ${pidfile} | /bin/sed -e 's%^/var/run/lircd%%' -e 's%[.].*%%'`
-                fi
+                done
                 ;;
         esac
     ;;
