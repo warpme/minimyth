@@ -1,5 +1,5 @@
 GARNAME = alsa-utils
-GARVERSION = 1.0.13
+GARVERSION = 1.0.14rc2
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-alsatest
+	--disable-rpath \
+	--disable-alsatest \
+	--with-gnu-ld
 
 include ../../gar.mk
