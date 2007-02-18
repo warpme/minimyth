@@ -41,6 +41,9 @@ conf_default_dhcp() {
     if /usr/bin/test -z "${MM_LOG_SERVERS}" ; then
         MM_LOG_SERVERS="${MM_DHCP_LOG_SERVERS}"
     fi
+    if /usr/bin/test -z "${MM_TZ}" ; then
+        MM_TZ="${MM_DHCP_TZ}"
+    fi
 
     # Convert 'none' to empty.
     if /usr/bin/test "${MM_DOMAIN}" = "none" ; then
@@ -61,6 +64,7 @@ conf_write_dhcp() {
     conf_variable_write "${conf_file}" MM_DNS_SERVERS "${MM_DNS_SERVERS}"
     conf_variable_write "${conf_file}" MM_NTP_SERVERS "${MM_NTP_SERVERS}"
     conf_variable_write "${conf_file}" MM_LOG_SERVERS "${MM_LOG_SERVERS}"
+    conf_variable_write "${conf_file}" MM_TZ          "${MM_TZ}"
 
     return 0
 }
