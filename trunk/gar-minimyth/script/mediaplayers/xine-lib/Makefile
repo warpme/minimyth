@@ -1,8 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.4
+GARVERSION = 1.1.3
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
