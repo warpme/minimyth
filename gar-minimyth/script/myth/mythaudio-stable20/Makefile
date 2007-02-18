@@ -6,7 +6,7 @@ GARVERSION = \
 				$(MYTHAUDIO_DEVEL_VERSION), \
 				0.0.0 \
 			), \
-			29 \
+			31 \
 		) \
 	)
 CATEGORIES = myth
