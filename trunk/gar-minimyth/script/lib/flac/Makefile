@@ -29,11 +29,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Libtool insists on relinking during install and including -L$(libdir) when relinking.
-# This causes -L$(DESTDIR)$(libdir) to appear first so the right libraries get linked during relinking.
-#CFLAGS  += -L$(DESTDIR)$(libdir)
-#LDFLAGS += -L$(DESTDIR)$(libdir)
-
 pre-configure:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
@@ -44,9 +39,7 @@ pre-configure:
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
-x-post-install:
+post-install:
 	@rm -f $(DESTDIR)$(libdir)/libFLAC.la
 	@rm -f $(DESTDIR)$(libdir)/libFLAC++.la
-	@rm -f $(DESTDIR)$(libdir)/libOggFLAC.la
-	@rm -f $(DESTDIR)$(libdir)/libOggFLAC++.la
 	@$(MAKECOOKIE)
