@@ -49,7 +49,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 configure-custom:
-	@echo "CC = $(CC) -Wl,-z,noexecstack"                      >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "MKDEP = $(build_DESTDIR)$(build_bindir)/makedepend" >> $(WORKSRC)/configs/$(MESA_CONFIG)
