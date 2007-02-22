@@ -15,16 +15,13 @@ conf_check_theme() {
     # Check for obsolete variables.
     if /usr/bin/test "${MM_THEMECACHE_URL}" = "default" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_THEMECACHE_URL=default" is obsolete.'
-        exit 1
     fi
 
     if /usr/bin/test ! -n "${MM_THEME_NAME}" ; then
         mm_message_output err "error: 'MM_THEME_NAME' must be set."
-        exit 1
     fi
     if /usr/bin/test ! -n "${MM_THEMEOSD_NAME}" ; then
         mm_message_output err "error: 'MM_THEMEOSD_NAME' must be set."
-        exit 1
     fi
 
     if /usr/bin/test ! -z "${MM_THEME_URL}"          && \
@@ -32,7 +29,6 @@ conf_check_theme() {
        /usr/bin/test !    "${MM_THEME_URL}" = "auto" ; then
         if /usr/bin/test -e "/usr/share/mythtv/themes/${MM_THEME_NAME}" ; then
             mm_message_output err "error: MythTV theme directory '${MM_THEME_NAME}' already exists."
-            exit 1
         fi
     fi
     if /usr/bin/test ! -z "${MM_THEMEOSD_URL}"          && \
@@ -40,20 +36,17 @@ conf_check_theme() {
        /usr/bin/test !    "${MM_THEMEOSD_URL}" = "auto" ; then
         if /usr/bin/test -e "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}" ; then
             mm_message_output err "error: MythTV theme directory '${MM_THEMEOSD_NAME}' already exists."
-            exit 1
         fi
     fi
 
     if /usr/bin/test "${MM_THEME_URL}" = "none" ; then
         if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEME_NAME}" ; then
             mm_message_output err "error: MythTV theme directory '${MM_THEME_NAME}' does not exist."
-            exit 1
         fi
     fi
     if /usr/bin/test "${MM_THEMEOSD_URL}" = "none" ; then
         if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}" ; then
             mm_message_output err "error: MythTV theme directory '${MM_THEMEOSD_NAME}' does not exist."
-            exit 1
         fi
     fi
 
@@ -114,6 +107,13 @@ conf_default_theme() {
     fi
     if /usr/bin/test "${MM_THEMECACHE_URL}" = "none" ; then
         MM_THEMECACHE_URL=
+    fi
+
+    if /usr/bin/test -z "${MM_THEME_NAME}" ; then
+        mm_message_output err "error: 'MM_THEME_NAME' is not set."
+    fi
+    if /usr/bin/test -z "${MM_THEMEOSD_NAME}" ; then
+        mm_message_output err "error: 'MM_THEMEOSD_NAME' is not set."
     fi
 
     return 0

@@ -11,15 +11,12 @@ conf_check_dhcp() {
     # Check for obsolete variables.
     if /usr/bin/test ! -z "${MM_NAME_SERVER}"   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NAME_SERVER" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_SYSLOG_SERVER}" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_SYSLOG_SERVER" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_TIME_SERVER}"   ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
-        exit 1
     fi
 
     return 0
@@ -51,6 +48,19 @@ conf_default_dhcp() {
     fi
     if /usr/bin/test "${MM_LOG_SERVERS}" = "none" ; then
         MM_LOG_SERVERS=
+    fi
+
+    if /usr/bin/test -z "${MM_HOSTNAME}" ; then
+        mm_message_output err "error: 'MM_HOSTNAME' is not set."
+    fi
+    if /usr/bin/test -z "${MM_DNS_SERVERS}" ; then
+        mm_message_output err "error: 'MM_DNS_SERVERS' is not set."
+    fi
+    if /usr/bin/test -z "${MM_NTP_SERVERS}" ; then
+        mm_message_output err "error: 'MM_NTP_SERVERS' is not set."
+    fi
+    if /usr/bin/test -z "${MM_TZ}" ; then
+        mm_message_output err "error: 'MM_TZ' is not set."
     fi
 
     return 0
