@@ -1,0 +1,252 @@
+################################################################################
+# DNS-SD for the mythtv-db service.
+################################################################################
+
+. /etc/rc.d/functions
+
+DNSSD_CONF='/etc/conf.d/dnssd'
+
+conf_variable_write() {
+    /bin/echo -n "${2}=" >> ${1}
+    /bin/echo -n "'"     >> ${1}
+    /bin/echo -n "${3}"  >> ${1}
+    /bin/echo    "'"     >> ${1}
+    return 0
+}
+
+dnssd_service_host_get() {
+    local Service=$1
+    local Proto=$2
+
+    local Name
+    local Weight
+    local Weight_best
+    local Priority
+    local Priority_best
+    local Port
+    local Port_best
+    local IFS_SAVE
+
+    Name=`/bin/hostname -d`
+    if /usr/bin/test $? -ne 0 ; then
+        return 1
+    fi
+    if /usr/bin/test -z "${Name}" ; then
+        return 1
+    fi
+    if ! `/usr/bin/adnshost --qc-query --type srv _${Service}._${Proto}.${Name} > /dev/null 2>&1` ; then
+        return 1
+    fi
+
+    Weight_best=
+    Priority_best=
+    Port_best=
+    Target_best=
+    IFS_SAVE=${IFS}
+    IFS="
+"
+    for srv in `/usr/bin/adnshost --qc-query --type srv _${Service}._${Proto}.${Name} 2> /dev/null | /usr/bin/cut -d ' ' -f 3-6` ; do
+        IFS=${IFS_SAVE}
+        Weight=`  /bin/echo -E ${srv} | /usr/bin/cut -d ' ' -f 1`
+        Priority=`/bin/echo -E ${srv} | /usr/bin/cut -d ' ' -f 2`
+        Port=`    /bin/echo -E ${srv} | /usr/bin/cut -d ' ' -f 3`
+        Target=`  /bin/echo -E ${srv} | /usr/bin/cut -d ' ' -f 4`
+        if /usr/bin/test "${Target}" = "." ; then
+            return 1
+        fi
+        if   /usr/bin/test -z "${Weight_best}" || /usr/bin/test ${Weight} -lt ${Weight_best} ; then
+            Weight_best=${Weight}
+            Priority_best=${Priority}
+            Port_best=${Port}
+            Target_best=${Target}
+        elif /usr/bin/test -n "${Weight_best}" && /usr/bin/test ${Weight} -eq ${Weight_best} ; then
+            if /usr/bin/test ${Priority} -gt 0 && /usr/bin/test ${RANDOM} -le $(( (${Priority} * (1 << 16)) / (${Priority} + ${Priority_best}) )) ; then
+                Weight_best=${Weight}
+                Priority_best=$(( ${Priority} + ${Priority_best} ))
+                Port_best=${Port}
+                Target_best=${Target}
+	    fi
+        fi
+        IFS="
+"
+    done
+    IFS=${IFS_SAVE}
+    if /usr/bin/test -z "${Port_best}" ; then
+        return 1
+    fi
+    if /usr/bin/test -z "${Target_best}" ; then
+        return 1
+    fi
+
+    /bin/echo "${Target_best}:${Port_best}"
+
+    return 0
+}
+
+dnssd_service_keys_get() {
+    local Service=$1
+    local Proto=$2
+    local txtvers=$3
+
+    local Name
+    local keys_found
+    local vers_found
+    local IFS_SAVE
+
+    Name=`/bin/hostname -d`
+    if /usr/bin/test $? -ne 0 ; then
+        return 1
+    fi
+    if /usr/bin/test -z "${Name}" ; then
+        return 1
+    fi
+    if ! `/usr/bin/adnshost --qc-query --type txt _${Service}._${Proto}.${Name} > /dev/null 2>&1` ; then
+        return 1
+    fi
+
+    keys_found=0
+    IFS_SAVE=${IFS}
+    IFS="
+"
+    for txt in `/usr/bin/adnshost --qc-query --type txt _${Service}._${Proto}.${Name} 2> /dev/null | /usr/bin/cut -d ' ' -f 3- | /bin/sed -e 's%^"%%' -e 's%"$%%'` ; do
+        IFS=${IFS_SAVE}
+        vers_found=0
+        if /usr/bin/test -z "${txtvers}" ; then
+            vers_found=1
+        fi
+        while /usr/bin/test -n "${txt}" ;  do
+            len_u=`/bin/echo -E ${txt} | /usr/bin/cut -b 3-3`
+            len_l=`/bin/echo -E ${txt} | /usr/bin/cut -b 4-4`
+            len=0
+            case ${len_u} in
+                0|1|2|3|4|5|6|7|8|9) len=$(( ${len} * 16 + ${len_u} )) ;;
+                a|A)                 len=$(( ${len} * 16 + 10       )) ;;
+                b|B)                 len=$(( ${len} * 16 + 11       )) ;;
+                c|C)                 len=$(( ${len} * 16 + 12       )) ;;
+                d|D)                 len=$(( ${len} * 16 + 13       )) ;;
+                e|E)                 len=$(( ${len} * 16 + 14       )) ;;
+                f|F)                 len=$(( ${len} * 16 + 15       )) ;;
+            esac
+            case ${len_l} in
+                0|1|2|3|4|5|6|7|8|9) len=$(( ${len} * 16 + ${len_l} )) ;;
+                a|A)                 len=$(( ${len} * 16 + 10       )) ;;
+                b|B)                 len=$(( ${len} * 16 + 11       )) ;;
+                c|C)                 len=$(( ${len} * 16 + 12       )) ;;
+                d|D)                 len=$(( ${len} * 16 + 13       )) ;;
+                e|E)                 len=$(( ${len} * 16 + 14       )) ;;
+                f|F)                 len=$(( ${len} * 16 + 15       )) ;;
+            esac
+            len=$(( ${len} + 4 ))
+            key_label=`/bin/echo -E ${txt} \
+                | /usr/bin/cut -b 5-${len} \
+                | /usr/bin/cut -d '=' -f 1 \
+                | /bin/sed -e 'y/abcdefghijklmnopqrstuvwxys/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
+            key_value=`/bin/echo -E ${txt} \
+                | /usr/bin/cut -b 5-${len} \
+                | /usr/bin/cut -d '=' -f 2-`
+            len=$(( ${len} + 1 ))
+            txt=`/bin/echo -E ${txt} \
+                | /usr/bin/cut -b ${len}-`
+            case ${key_label} in
+                TXTVERS)
+                     :
+                    if /usr/bin/test "${key_value}" = "${txtvers}" ; then
+                        keys_found=1
+                        vers_found=1
+                    else
+                        break
+                    fi
+                    ;;
+                *)
+                    if /usr/bin/test ${vers_found} = 0 ; then
+                        break
+                    fi
+                    keys_found=1
+                    /bin/echo -E "${key_label}=${key_value}"
+                    ;;
+            esac
+        done
+        if /usr/bin/test ${keys_found} = 1 ; then
+            break
+        fi
+        IFS="
+"
+    done
+    IFS=${IFS_SAVE}
+
+    if /usr/bin/test ${keys_found} = 0 ; then
+        return 1
+    fi
+
+    return 0
+}
+
+mythtv_db_write()
+{
+    local conf_file=$1
+
+    local host
+    local IFS_SAVE
+    local key
+    local key_label
+    local key_name
+
+    host=`dnssd_service_host_get "mythtv-db" "tcp"`
+    if /usr/bin/test $? -ne 0 ; then
+        return 1
+    fi
+    host=`/bin/echo ${host} | /usr/bin/cut -d ':' -f 1`
+
+    conf_variable_write "${conf_file}" "MM_DNSSD_MYTH_DBHOSTNAME" "${host}"
+
+    IFS_SAVE=${IFS}
+    IFS="
+"
+    for key in `dnssd_service_keys_get "mythtv-db" "tcp" "000"` ; do
+        IFS=${IFS_SAVE}
+        key_label=`/bin/echo -E ${key} | /usr/bin/cut -d '=' -f 1`
+        key_value=`/bin/echo -E ${key} | /usr/bin/cut -d '=' -f 2-`
+        conf_variable_write "${conf_file}" "MM_DNSSD_MYTH_${key_label}" "${key_value}"
+        IFS="
+"
+    done
+    IFS=${IFS_SAVE}
+}
+
+ntp_write()
+{
+    local conf_file=$1
+
+    local host
+
+    host=`dnssd_service_host_get "ntp" "udp"`
+    if /usr/bin/test $? -ne 0 ; then
+        return 1
+    fi
+    host=`/bin/echo ${host} | /usr/bin/cut -d ':' -f 1`
+
+    conf_variable_write "${conf_file}" "MM_DNSSD_NTP_SERVERS" "${host}"
+}
+
+start()
+{
+    /bin/rm -f "${DNSSD_CONF}"
+    mm_message_output info 'looking for DNS-SD service mythtv-db'
+    mythtv_db_write "${DNSSD_CONF}"
+    mm_message_output info 'looking for DNS-SD service ntp'
+    ntp_write "${DNSSD_CONF}"
+
+    return 0
+}
+
+stop()
+{
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0
