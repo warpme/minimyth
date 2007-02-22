@@ -15,51 +15,39 @@ conf_check_x() {
     # Check for obsolete variables.
     if /usr/bin/test ! -z "${MM_NO_VNC}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_VNC" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_NO_X}"                  ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_X" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_NO_XWM}"                ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_NO_XWM" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_SCREENSAVER_ENABLED}" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_SCREENSAVER_ENABLED" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_TV}"                  ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DVI_ENABLED" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"         ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_VGA_ENABLED" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"          ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_TV_ENABLED" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}"       ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_X" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}"       ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_DISPLAYSIZE_Y" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_X" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"        ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_X_RESOLUTION_Y" is obsolete.'
-        exit 1
     fi
 
     # Check X application variables.
@@ -67,26 +55,22 @@ conf_check_x() {
        /usr/bin/test !    "${MM_X_WM_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_X_WM_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_X_WM_ENABLED='${MM_X_WM_ENABLED}' is not valid."
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_VNC_ENABLED}"          && \
        /usr/bin/test !    "${MM_X_VNC_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_X_VNC_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_X_VNC_ENABLED='${MM_X_VNC_ENABLED}' is not valid."
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_SCREENSAVER}"                  && \
        /usr/bin/test !    "${MM_X_SCREENSAVER}" = "none"         && \
        /usr/bin/test !    "${MM_X_SCREENSAVER}" = "xorg"         && \
        /usr/bin/test !    "${MM_X_SCREENSAVER}" = "xscreensaver" ; then
         mm_message_output err "error: MM_X_SCREENSAVER='${MM_X_SCREENSAVER}' is not valid."
-        exit 1
     fi
     if /usr/bin/test ! -z "${MM_X_SCREENSAVER_HACK}"                 && \
        /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "blank"       &&
        /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "glslideshow" ; then
         mm_message_output err "error: MM_X_SCREENSAVER_HACK='${MM_X_SCREENSAVER_HACK}' is not valid."
-        exit 1
     fi
 
     # We do not check the X output variables
@@ -104,7 +88,6 @@ conf_check_x() {
             if ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
                ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
-                exit 1
             fi
         done
         IFS=${IFS_SAVE}
@@ -118,7 +101,6 @@ conf_check_x() {
             if ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
                ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_REFRESH='${MM_X_REFRESH}' is not valid."
-                exit 1
             fi
         done
         IFS=${IFS_SAVE}
@@ -127,88 +109,72 @@ conf_check_x() {
     if /usr/bin/test -n "${MM_X_RESOLUTION}"                                                          && \
        /usr/bin/test `/bin/echo -n ${MM_X_REFRESH} | /bin/sed -e 's%[^-,]%%g' | /usr/bin/wc -c` -ne 0 ; then
         mm_message_output err "error: 'MM_X_REFRESH' cannot be set to a range or a list when 'MM_X_RESOLUTION' is set."
-        exit 1
     fi
     # Make sure that only one of MM_X_RESOLUTION, MM_X_MODELINE and MM_X_MODE is set.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_MODE}"     ; then
         mm_message_output err "error: both 'MM_X_RESOLUTION' and 'MM_X_MODE' cannot be set."
-        exit 1
     fi
     if /usr/bin/test -n "${MM_X_RESOLUTION}" && /usr/bin/test -n "${MM_X_MODELINE}" ; then
         mm_message_output err "error: both 'MM_X_RESOLUTION' and 'MM_X_MODELINE' cannot be set."
-        exit 1
     fi
     if /usr/bin/test -n "${MM_X_MODELINE}"   && /usr/bin/test -n "${MM_X_MODE}"     ; then
         mm_message_output err "error: both 'MM_X_MODELINE' and 'MM_X_MODE' cannot be set."
-        exit 1
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_0}" && /usr/bin/test -n "${MM_X_MODE_0}"   ; then
         mm_message_output err "error: both 'MM_X_MODELINE_0' and 'MM_X_MODE_0' cannot be set."
-        exit 1
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_1}" && /usr/bin/test -n "${MM_X_MODE_1}"   ; then
         mm_message_output err "error: both 'MM_X_MODELINE_1' and 'MM_X_MODE_1' cannot be set."
-        exit 1
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_2}" && /usr/bin/test -n "${MM_X_MODE_2}"   ; then
         mm_message_output err "error: both 'MM_X_MODELINE_2' and 'MM_X_MODE_2' cannot be set."
-        exit 1
     fi
     # Check the format of MM_X_RESOLUTION.
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
         if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*$' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
-            exit 1
         fi
     fi
     # Check the format of MM_X_MODELINE.
     if /usr/bin/test -n "${MM_X_MODELINE}" ; then
         if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_0}" ; then
         if ! /bin/echo ${MM_X_MODELINE_0} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_0' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_1}" ; then
         if ! /bin/echo ${MM_X_MODELINE_1} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_1' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_2}" ; then
         if ! /bin/echo ${MM_X_MODELINE_2} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_2' format is not valid'
-            exit 1
         fi
     fi
     # Check the format of MM_X_MODE.
     if /usr/bin/test -n "${MM_X_MODE}"   && /usr/bin/test ! "${MM_X_MODE}"   = "auto"; then
         if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODE_0}" && /usr/bin/test ! "${MM_X_MODE_0}" = "auto" && /usr/bin/test ! "${MM_X_MODE_0}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_0} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_0' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODE_1}" && /usr/bin/test ! "${MM_X_MODE_1}" = "auto" && /usr/bin/test ! "${MM_X_MODE_1}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_1} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_1' format is not valid'
-            exit 1
         fi
     fi
     if /usr/bin/test -n "${MM_X_MODE_2}" && /usr/bin/test ! "${MM_X_MODE_2}" = "auto" && /usr/bin/test ! "${MM_X_MODE_2}" = "none" ; then
         if ! /bin/echo ${MM_X_MODE_2} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE_2' format is not valid'
-            exit 1
         fi
     fi
 
@@ -217,7 +183,6 @@ conf_check_x() {
        /usr/bin/test !    "${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_X_HACK_HIDE_BLUE_LINE_ENABLED='${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}' is not valid."
-        exit 1
     fi
 
     return 0
@@ -243,7 +208,6 @@ conf_default_x() {
         MM_X_DRIVER="`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`"
         if /usr/bin/test -z "${MM_X_DRIVER}" ; then
             mm_message_output err "error: no supported video hardware found."
-            exit 1
         fi
     fi
 
@@ -261,25 +225,21 @@ conf_default_x() {
        /usr/bin/test !    "${MM_X_OUTPUT_DVI}" = "auto"                                  && \
        ! /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_OUTPUT_DVI='${MM_X_OUTPUT_DVI}' is not valid."
-        exit 1
     fi
     if /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "none"                                  && \
        /usr/bin/test !    "${MM_X_OUTPUT_VGA}" = "auto"                                  && \
        ! /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_OUTPUT_VGA='${MM_X_OUTPUT_VGA}' is not valid."
-        exit 1
     fi
     if /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "none"                                  && \
        /usr/bin/test !    "${MM_X_OUTPUT_TV}" = "auto"                                  && \
        ! /bin/echo ${MM_X_OUTPUT_TV} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
         mm_message_output err "error: MM_X_OUTPUT_TV='${MM_X_OUTPUT_TV}' is not valid."
-        exit 1
     fi
     if /usr/bin/test "${MM_X_OUTPUT_DVI}" = "none" &&
        /usr/bin/test "${MM_X_OUTPUT_VGA}" = "none" &&
        /usr/bin/test "${MM_X_OUTPUT_TV}"  = "none" ; then
         mm_message_output err "error: one of MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV must be active." 
-        exit 1
     fi
     case ${MM_X_DRIVER} in
         nvidia)
@@ -287,7 +247,6 @@ conf_default_x() {
             output_count=`/bin/echo "${MM_X_OUTPUT_DVI} ${MM_X_OUTPUT_VGA} ${MM_X_OUTPUT_TV}" | /bin/sed 's%none%%g' | /usr/bin/wc -w`
             if /usr/bin/test ${output_count} -gt 1 ; then
                 mm_message_output err "error: only one of MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA and MM_X_OUTPUT_TV can be active."
-                exit 1
             fi
             ;;
         via|via_pro)
@@ -295,7 +254,6 @@ conf_default_x() {
             if /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" &&
                /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
                 mm_message_output err "error: only one of MM_X_OUTPUT_DVI and MM_X_OUTPUT_TV can be active."
-                exit 1
             fi
             ;;
     esac
@@ -325,7 +283,6 @@ conf_default_x() {
                /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD576i"  &&
                /usr/bin/test ! "${MM_X_TV_TYPE}" = "HD576p"  ; then
                 mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
         via|via_pro)
@@ -335,7 +292,6 @@ conf_default_x() {
             if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"  &&
                /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC" ; then
                 mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
         *)
@@ -345,7 +301,6 @@ conf_default_x() {
             if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"  &&
                /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC" ; then
                 mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
     esac
@@ -357,7 +312,6 @@ conf_default_x() {
             if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "COMPOSITE" &&
                /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SVIDEO"    ; then
                 mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
         via|via_pro)
@@ -370,7 +324,6 @@ conf_default_x() {
                /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "RGP"       && \
                /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "YCbCr"     ; then
                 mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
         *)
@@ -379,7 +332,6 @@ conf_default_x() {
             fi
             if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "Composite" ; then
                 mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
     esac
@@ -391,7 +343,6 @@ conf_default_x() {
             if ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.[0-9]*\)\?$' > /dev/null 2>&1 &&
                ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^1\(\.0*\)\?$'     > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
         *)
@@ -400,7 +351,6 @@ conf_default_x() {
             fi
             if ! /bin/echo ${MM_X_TV_OVERSCAN} | /bin/grep -q -e '^0\(\.0*\)\?$' > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_OVERSCAN='${MM_X_TV_OVERSCAN}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
-                exit 1
             fi
             ;;
     esac
@@ -503,7 +453,6 @@ conf_default_x() {
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
-                exit 1
                 ;;
         esac
     elif /usr/bin/test ! "${MM_X_OUTPUT_VGA}" = "none" ; then
@@ -521,7 +470,6 @@ conf_default_x() {
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
-                exit 1
                 ;;
         esac
     elif /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
@@ -582,7 +530,6 @@ conf_default_x() {
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_X_TV_TYPE='${MM_X_TV_TYPE}'."
-                exit 1
                 ;;
         esac
     fi
@@ -591,28 +538,24 @@ conf_default_x() {
     if /usr/bin/test -n "${MM_X_MODELINE}" ; then
         if ! /bin/echo ${MM_X_MODELINE} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE' format is not valid'
-            exit 1
         fi
         MM_X_MODE=`/bin/echo ${MM_X_MODELINE} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_0}" ; then
         if ! /bin/echo ${MM_X_MODELINE_0} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_0' format is not valid'
-            exit 1
         fi
         MM_X_MODE_0=`/bin/echo ${MM_X_MODELINE_0} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_1}" ; then
         if ! /bin/echo ${MM_X_MODELINE_1} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_1' format is not valid'
-            exit 1
         fi
         MM_X_MODE_1=`/bin/echo ${MM_X_MODELINE_1} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
     fi
     if /usr/bin/test -n "${MM_X_MODELINE_2}" ; then
         if ! /bin/echo ${MM_X_MODELINE_2} | /bin/grep -q -e '^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"[0-9][0-9]*[Xx][0-9][^"]*".*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODELINE_2' format is not valid'
-            exit 1
         fi
         MM_X_MODE_2=`/bin/echo ${MM_X_MODELINE_2} | /bin/sed 's%^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee]  *"\([0-9][0-9]*[Xx][0-9][^"]*\)".*%\1%'`
     fi
@@ -621,7 +564,6 @@ conf_default_x() {
     if /usr/bin/test -n "${MM_X_RESOLUTION}" ; then
         if ! /bin/echo ${MM_X_RESOLUTION} | /bin/grep -q -e '^[0-9][0-9]*x[0-9][0-9]*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_RESOLUTION' format is not valid'
-            exit 1
         fi
         X_RESOLUTION_X=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\)$%\1%'`
         X_RESOLUTION_Y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%^\([0-9][0-9]*\)x\([0-9][0-9]*\)$%\2%'`
@@ -634,7 +576,6 @@ conf_default_x() {
     if /usr/bin/test -z "${MM_X_RESOLUTION}" ; then
         if ! /bin/echo ${MM_X_MODE} | /bin/grep -q -e '^[0-9][0-9]*[Xx][0-9].*' > /dev/null 2>&1 ; then
             mm_message_output err 'error: 'MM_X_MODE' format is not valid'
-            exit 1
         fi
         MM_X_RESOLUTION=`/bin/echo ${MM_X_MODE} | /bin/sed -e 's%^\([0-9][0-9]*\)[Xx]\([0-9][0-9]*\).*%\1x\2%'`
     fi
@@ -700,7 +641,6 @@ conf_default_x() {
         MM_X_DISPLAYSIZE=
         if /usr/bin/test ! ${MM_VIDEO_FONT_SCALE} -gt 0 ; then
             mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}'."
-            exit 1
         fi
         case ${MM_VIDEO_ASPECT_RATIO} in
             4:3)
@@ -715,7 +655,6 @@ conf_default_x() {
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
-                exit 1
                 ;;
         esac
     fi
@@ -808,14 +747,12 @@ conf_fetch_x() {
         mm_conf_get /xinitrc /etc/X11/xinit/xinitrc
         if /usr/bin/test ! -e /etc/X11/xinit/xinitrc ; then
             mm_message_output err "error: failed to fetch 'minimyth.script' file."
-            exit 1
         fi
     fi
     if /usr/bin/test "${MM_X_FETCH_XORG_CONF}" = "yes" ; then
         mm_conf_get /xorg.conf /etc/X11/xorg.conf
         if /usr/bin/test ! -e /etc/X11/xorg.conf ; then
             mm_message_output err "error: failed to fetch 'minimyth.script' file."
-            exit 1
         fi
     fi
 

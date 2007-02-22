@@ -547,6 +547,23 @@ mm_message_output() {
     else
         /usr/bin/logger -s -t minimyth -p "local0.${LEVEL}" "${MESSAGE}"
     fi
+    
+    if /usr/bin/test "${LEVEL}" = "err"  ; then
+        /bin/mkdir -p /var/log
+        /bin/touch    /var/log/minimyth.err.log
+        if /usr/bin/test -w /var/log/minimyth.err.log ; then
+            /bin/echo -E "${MESSAGE}" >> /var/log/minimyth.err.log
+            /bin/chmod 666 /var/log/minimyth.err.log
+        fi
+    fi
+    if /usr/bin/test "${LEVEL}" = "warn" ; then
+        /bin/mkdir -p /var/log
+        /bin/touch    /var/log/minimyth.warn.log
+        if /usr/bin/test -w /var/log/minimyth.warn.log ; then
+            /bin/echo -E "${MESSAGE}" >> /var/log/minimyth.warn.log
+            /bin/chmod 666 /var/log/minimyth.warn.log
+        fi
+    fi
 }
 
 mm_uniq() {

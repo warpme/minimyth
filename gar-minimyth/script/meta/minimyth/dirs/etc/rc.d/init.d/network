@@ -21,6 +21,15 @@ start() {
     else
         /sbin/udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
     fi
+    if /usr/bin/test $? -ne 0 ; then
+        mm_message_output err "error: DHCP failed."
+        exit 1
+    fi
+    ip=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+    if /usr/bin/test -z "$ip" ; then
+        mm_message_output err "error: DHCP failed."
+        exit 1
+    fi
 
     # Start portmap on local interface.
     /sbin/portmap -l

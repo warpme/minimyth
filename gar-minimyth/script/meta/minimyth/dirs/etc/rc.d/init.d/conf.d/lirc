@@ -11,39 +11,30 @@ conf_check_lirc() {
     # Check for obsolete variables.
     if /usr/bin/test "${MM_LIRC_DEVICE}"        = "auto"           ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DEVICE=auto" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test "${MM_LIRC_DRIVER}"        = "mceusbnew"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_DRIVER=mceusbnew" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_KERNEL_MODULE=lirc_mceusbnew" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test "${MM_LIRC_REMOTE}"        = "mceusbnew"      ; then
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_LIRC_REMOTE=mceusbnew" is obsolete.'
-        exit 1
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_REMOTE}"                ; then
         mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_REMOTE is set.'
-        exit 1
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_DRIVER}"                ; then
         mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_DRIVER is set.'
-        exit 1
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_KERNEL_MODULE}"         ; then
         mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_KERNEL_MODULE is set.'
-        exit 1
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_KERNEL_MODULE_OPTIONS}" ; then
         mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_KERNEL_MODULE_OPTIONS is set.'
-        exit 1
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" && /usr/bin/test ! -z "${MM_LIRC_LIRC_IREXEC_ENABLED}"   ; then
         mm_message_output err 'error: MM_LIRC_DEVICE must be set when MM_LIRC_IREXEC_ENABLED is set.'
-        exit 1
     fi
 }
 
@@ -142,14 +133,12 @@ conf_fetch_lirc() {
         mm_conf_get /lircd.conf /etc/lircd.conf
         if /usr/bin/test ! -e /etc/lircd.conf ; then
             mm_message_output err "error: failed to fetch 'lircd.conf' file."
-            exit 1
         fi
     fi
     if /usr/bin/test "${MM_LIRC_FETCH_LIRCRC}"     = "yes" ; then
         mm_conf_get /lircrc /etc/lircrc
         if /usr/bin/test ! -e /etc/lircrc ; then
             mm_message_output err "error: failed to fetch 'lircrc' file."
-            exit 1
         fi
     fi
 
