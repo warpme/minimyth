@@ -537,32 +537,6 @@ mm_themecache_save() {
     /bin/true
 }
 
-mm_include() {
-    local REMOTE_FILE=$1
-    
-    local LOCAL_FILE
-
-    LOCAL_FILE=`/bin/mktemp /tmp/mm_include.XXXXXX`
-
-    /bin/rm -f "${LOCAL_FILE}"
-    if   /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
-        /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/${REMOTE_FILE}" -l "${LOCAL_FILE}" "${MM_TFTP_SERVER}"
-    elif /usr/bin/test "${MM_BOOT_TYPE}" = "local"   ; then
-        /usr/bin/test -e "/minimyth/${REMOTE_FILE}" &&
-        /bin/cp          "/minimyth/${REMOTE_FILE}"                "${LOCAL_FILE}"
-    fi
-    if /usr/bin/test -e "${LOCAL_FILE}" ; then
-        . ${LOCAL_FILE}
-        /bin/rm -f "${LOCAL_FILE}"
-    else
-        /usr/bin/logger -s -t minimyth -p "local0.error" \
-            "failed to include file '${REMOTE_FILE}'."
-        /bin/false
-        return
-    fi
-    /bin/true
-}
-
 mm_message_output() {
     local LEVEL=$1
     local MESSAGE=$2
