@@ -67,10 +67,13 @@ start() {
     done
 
     # Write processed MiniMyth configuration file.
-    /bin/rm -rf '/etc/conf.d/minimyth'
+    /bin/rm -rf '/etc/conf.d/minimyth~'
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
-        conf_write_${file} '/etc/conf.d/minimyth'
+        conf_write_${file} '/etc/conf.d/minimyth~'
     done
+    /bin/rm -rf '/etc/conf.d/minimyth'
+    /usr/bin/sort '/etc/conf.d/minimyth~' > '/etc/conf.d/minimyth'
+    /bin/rm -rf '/etc/conf.d/minimyth~'
 
     # Fetch user files.
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do

@@ -751,6 +751,14 @@ conf_default_x() {
         MM_X_HACK_HIDE_BLUE_LINE_ENABLED='no'
     fi
 
+    # Default fetch variables.
+    if /usr/bin/test -z "${MM_X_FETCH_XINITRC}"   ; then
+        MM_X_FETCH_XINITRC='no'
+    fi
+    if /usr/bin/test -z "${MM_X_FETCH_XORG_CONF}" ; then
+        MM_X_FETCH_XORG_CONF='no'
+    fi
+
     return 0
 }
 
@@ -789,12 +797,27 @@ conf_write_x() {
 
     conf_variable_write "${conf_file}" MM_X_HACK_HIDE_BLUE_LINE_ENABLED "${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}"
 
+    conf_variable_write "${conf_file}" MM_X_FETCH_XINITRC               "${MM_X_FETCH_XINITRC}"
+    conf_variable_write "${conf_file}" MM_X_FETCH_XORG_CONF             "${MM_X_FETCH_XORG_CONF}"
+
     return 0
 }
 
 conf_fetch_x() {
-    mm_conf_get /xorg.conf /etc/X11/xorg.conf
-    mm_conf_get /xinitrc /home/minimyth/.xinitrc
+    if /usr/bin/test "${MM_X_FETCH_XINITRC}"   = "yes" ; then
+        mm_conf_get /xinitrc /etc/X11/xinit/xinitrc
+        if /usr/bin/test ! -e /etc/X11/xinit/xinitrc ; then
+            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+            exit 1
+        fi
+    fi
+    if /usr/bin/test "${MM_X_FETCH_XORG_CONF}" = "yes" ; then
+        mm_conf_get /xorg.conf /etc/X11/xorg.conf
+        if /usr/bin/test ! -e /etc/X11/xorg.conf ; then
+            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+            exit 1
+        fi
+    fi
 
     return 0
 }
