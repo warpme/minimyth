@@ -12,15 +12,29 @@ conf_check_minimyth() {
 }
 
 conf_default_minimyth() {
+    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" ; then
+        MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT='no'
+    fi
+
     return 0
 }
 
 conf_write_minimyth() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"
+
     return 0
 }
 
 conf_fetch_minimyth() {
-    mm_conf_get /minimyth.script /etc/minimyth.d/minimyth.script
+    if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" = "yes" ; then
+        mm_conf_get /minimyth.script /etc/minimyth.d/minimyth.script
+        if /usr/bin/test ! -e /etc/minimyth.d/minimyth.script ; then
+            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+            exit 1
+        fi
+    fi
 
     return 0
 }

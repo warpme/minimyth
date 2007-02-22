@@ -68,6 +68,13 @@ conf_default_lirc() {
         fi
     fi
 
+    if /usr/bin/test -z "${MM_LIRC_FETCH_LIRCD_CONF}" ; then
+        MM_LIRC_FETCH_LIRCD_CONF='no'
+    fi
+    if /usr/bin/test -z "${MM_LIRC_FETCH_LIRCRC}"     ; then
+        MM_LIRC_FETCH_LIRCRC='no'
+    fi
+
     # Read LIRC driver specific configuration file,
     # but do not allow the values to override values in the MiniMyth configuration file.
     if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ; then
@@ -124,13 +131,27 @@ conf_write_lirc() {
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF      "${MM_LIRC_FETCH_LIRCD_CONF}"
+    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC          "${MM_LIRC_FETCH_LIRCRC}"
 
     return 0
 }
 
 conf_fetch_lirc() {
-    mm_conf_get /lircd.conf /etc/lircd.conf
-    mm_conf_get /lircrc /etc/lircrc
+    if /usr/bin/test "${MM_LIRC_FETCH_LIRCD_CONF}" = "yes" ; then
+        mm_conf_get /lircd.conf /etc/lircd.conf
+        if /usr/bin/test ! -e /etc/lircd.conf ; then
+            mm_message_output err "error: failed to fetch 'lircd.conf' file."
+            exit 1
+        fi
+    fi
+    if /usr/bin/test "${MM_LIRC_FETCH_LIRCRC}"     = "yes" ; then
+        mm_conf_get /lircrc /etc/lircrc
+        if /usr/bin/test ! -e /etc/lircrc ; then
+            mm_message_output err "error: failed to fetch 'lircrc' file."
+            exit 1
+        fi
+    fi
 
     return 0
 }
