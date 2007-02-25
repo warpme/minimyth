@@ -164,25 +164,194 @@
               </dl>
             </li>
             <li>
-              MiniMyth variables:
+              MiniMyth debug variables:
               <dl>
                 <dt id="MM_DEBUG"><strong>MM_DEBUG</strong></dt>
                 <dd>
                   Enables MiniMyth debug logging.
                   Valid values are "yes".
                 </dd>
-                <dt id="MM_DHCP_HOSTNAME"><strong>MM_DCHP_HOSTNAME</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a></dd>
-                <dt id="MM_DHCP_DOMAIN"><strong>MM_DCHP_DOMAIN</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_DOMAIN">MM_DOMAIN</a></dd>
-                <dt id="MM_DHCP_DNS_SERVERS"><strong>MM_DCHP_DNS_SERVERS</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_DNS_SERVERS">MM_DNS_SERVERS</a></dd>
-                <dt id="MM_DHCP_NTP_SERVERS"><strong>MM_DCHP_NTP_SERVERS</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_NTP_SERVERS">MM_NTP_SERVERS</a></dd>
-                <dt id="MM_DHCP_LOG_SERVERS"><strong>MM_DCHP_LOG_SERVERS</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_LOG_SERVERS">MM_LOG_SERVERS</a></dd>
+              </dl>
+            </li>
+            <li>
+              MiniMyth DHCP override variables:
+              <dl>
+                <dt id="MM_DHCP_HOSTNAME"><strong>MM_DHCP_HOSTNAME</strong></dt>
+                <dd>
+                  <p>
+                    The MiniMyth frontend's
+                    <a href="http://en.wikipedia.org/wiki/Hostname">hostname</a>.
+                    MiniMyth requires a hostname for storing/retrieving the MythTV frontend settings in/from the MythTV's database.
+                    Therefore, if MiniMyth does not obtain a hostname,
+                    then MiniMyth will abort its boot process and output an error.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is 0x0c, which is supported by
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>.
+                    Therefore, if your DHCP server is
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>,
+                    then you should enable the 'use-host-decl-names' option and set the 'host' and 'hardware' options in your dhcpd.conf file,
+                    and not set either 'MM_DHCP_HOSTNAME' or
+                    '<a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a>'.
+                  </p>
+                  <p>
+                    In addition to using the hostname when making MythTV database accesses,
+                    MiniMyth can use the hostname when retrieving host specific configuration files.
+                    For this to work for the 'minimyth.conf' file,
+                    the hostname must be set prior to retrieving the 'minimyth.conf' file.
+                    Setting parameters on the
+                    <a href="document-boot.shtml#bootline">boot line</a>
+                    makes them available at the beginning of the boot process.
+                    Therefore, if your DHCP server does not provide the hostname,
+                    then you should consider using the
+                    <a href="document-boot.shtml#bootline">boot line's</a>
+                    'MM_DHCP_HOSTNAME' variable rather than the MiniMyth configuration file's
+                    '<a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a>'
+                    variable.
+                  </p>
+                </dd>
+                <dt id="MM_DHCP_DOMAIN"><strong>MM_DHCP_DOMAIN</strong></dt>
+                <dd>
+                  <p>
+                    The MiniMyth frontend's
+                    <a href="http://en.wikipedia.org/wiki/Domain_name">domain</a>.
+                    The value can be a domain name or 'none'.
+                    MiniMyth does not require a domain name,
+                    but it can be useful when using DNS to resolve local network hostnames to IP addresses.
+                  </p>
+                  <p>
+                    If the value is 'none', then any domain obtained through DHCP will be ignored.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_DOMAIN">MM_DOMAIN</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is 0x0f, which is support by
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>.
+                    Therefore, if your DHCP server is
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>,
+                    then you should set the 'domain-name' option in your dhcpd.conf file,
+                    and not set either 'MM_DHCP_DOMAIN' or
+                    '<a href="document-minimyth_conf.shtml#MM_DOMAIN">MM_DOMAIN</a>'.
+                  </p>
+                </dd>
+                <dt id="MM_DHCP_DNS_SERVERS"><strong>MM_DHCP_DNS_SERVERS</strong></dt>
+                <dd>
+                  <p>
+                    A space separated list of
+                    <a href="http://en.wikipedia.org/wiki/Domain_name_system">Domain Name System (DNS)</a>
+                    server IP addresses that the MiniMyth frontend will use to resolve DNS names.
+                    MiniMyth needs a DNS server to resolve Internet host name to Internet Protocol addresses.
+                    Therefore, if MiniMyth does not obtain a DNS server address,
+                    then MiniMyth will abort its boot process and output an error message.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_DNS_SERVERS">MM_DNS_SERVERS</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is 0x06, which is supported by
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>.
+                    Therefore, if your DHCP server is
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>,
+                    then you should set the 'domain-name-servers' option in your dhcpd.conf file,
+                    and not set either 'MM_DHCP_DNS_SERVERS' or
+                    '<a href="document-minimyth_conf.shtml#MM_DNS_SERVERS">MM_DNS_SERVERS</a>'.
+                  </p>
+                </dd>
+                <dt id="MM_DHCP_NTP_SERVERS"><strong>MM_DHCP_NTP_SERVERS</strong></dt>
+                <dd>
+                  <p>
+                    A space separated list of
+                    <a href="http://en.wikipedia.org/wiki/Network_Time_Protocol">Network Time Protocol (NTP)</a>
+                    server DNS names or IP addresses that the MiniMyth frontend will use to synchronize its clock.
+                    MiniMyth's clock needs to be synchronized to the MythTV backend's clock or fastforward, rewind and commercial skip will fail.
+                    Therefore, if MiniMyth does not obtain an NTP server address,
+                    then MiniMyth will abort its boot process and output an error message.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_NTP_SERVERS">MM_NTP_SERVERS</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is 0x2a, which is supported by
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>.
+                    Therefore, if your DHCP server is
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>,
+                    then you should set the 'ntp-servers' option in your dhcpd.conf file,
+                    and not set either 'MM_DHCP_NTP_SERVERS' or
+                    '<a href="document-minimyth_conf.shtml#MM_NTP_SERVERS">MM_NTP_SERVERS</a>'.
+                  </p>
+                </dd>
+                <dt id="MM_DHCP_LOG_SERVERS"><strong>MM_DHCP_LOG_SERVERS</strong></dt>
+                <dd>
+                  <p>
+                    A space separated list of
+                    <a href="http://en.wikipedia.org/wiki/Syslog">syslog</a>
+                    server DNS names or IP addresses to which MiniMyth will log.
+                    The value can be a list of log servers or 'none'.
+                    MiniMyth will log to the first log server in the list.
+                    If MiniMyth does not obtain a log server address,
+                    then MiniMyth will log locally.
+                  </p>
+                  <p>
+                    If the value is 'none', then any log servers obtained through DHCP will be ignored.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_LOG_SERVERS">MM_LOG_SERVERS</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is 0x07, which is supported by
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>.
+                    Therefore, if your DHCP server is
+                    <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>,
+                    then you should set the 'log-servers' option in your dhcpd.conf file,
+                    and not set either 'MM_DHCP_LOG_SERVERS' or
+                    '<a href="document-minimyth_conf.shtml#MM_LOG_SERVERS">MM_LOG_SERVERS</a>'.
+                  </p>
+                </dd>
                 <dt id="MM_DHCP_TZ"><strong>MM_TZ</strong></dt>
-                <dd>See <a href="document-minimyth_conf.shtml#MM_TZ">MM_TZ</a></dd>
+                <dd>
+                  <p>
+                    The tz database
+                    (a.k.a. the <a href="http://en.wikipedia.org/wiki/Zoneinfo">zoneinfo</a> database)
+                    name of your MiniMyth frontend's
+                    <a href="http://en.wikipedia.org/wiki/Time_zone">time zone</a>.
+                    MiniMyth's time zone needs to be correct or fastforward, rewind and commercial skip will fail.
+                    Therefore, if MiniMyth does not obtain time zone,
+                    then MiniMyth will abort its boot process and output an error message.
+                  </p>
+                  <p>
+                    The corresponding
+                    <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
+                    variable is
+                    '<a href="document-minimyth_conf.shtml#MM_TZ">MM_TZ</a>'.
+                  </p>
+                  <p>
+                    The corresponding DHCP option is defined in
+                    "<a href="ftp://ftp.rfc-editor.org/in-notes/internet-drafts/draft-ietf-dhc-timezone-option-05.txt">A Timezone Option for DHCP</a>"
+                    and is
+                    <a href="http://www.rfc-editor.org/queue.html">awaiting an IANA assigned DHCP option code</a>.
+                    Once IANA assigns a DHCP option code, MiniMyth will use it.
+                    Until then, MiniMyth uses the site specific DHCP option code 254 instead.
+                  </p>
+                </dd>
               </dl>
             </li>
           </ul>
@@ -679,7 +848,7 @@ LABEL minimyth-ram
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-02-18 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-02-22 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
