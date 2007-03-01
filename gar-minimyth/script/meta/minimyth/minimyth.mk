@@ -550,8 +550,19 @@ mm-make-themes:
 	@mv       $(mm_ROOTFSDIR)/usr/share/mythtv/themes/* $(mm_THEMESDIR)
 	@rm -rf   $(mm_ROOTFSDIR)/usr/share/mythtv/themes
 	@mkdir -p $(mm_ROOTFSDIR)/usr/share/mythtv/themes
-	@mv       $(mm_THEMESDIR)/classic                   $(mm_ROOTFSDIR)/usr/share/mythtv/themes/
-	@mv       $(mm_THEMESDIR)/default*                  $(mm_ROOTFSDIR)/usr/share/mythtv/themes/
+	@# Include all the menu themes in the root file system.
+	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do \
+		if test -e $(mm_THEMESDIR)/$${theme}/mainmenu.xml ; then \
+			mv $(mm_THEMESDIR)/$${theme} $(mm_ROOTFSDIR)/usr/share/mythtv/themes/ ; \
+		fi ; \
+	done
+	@# Include the default themes in the root file system because other themes depend on them.
+	@if test -e $(mm_THEMESDIR)/default ; then \
+		mv $(mm_THEMESDIR)/default $(mm_ROOTFSDIR)/usr/share/mythtv/themes/ ; \
+	fi
+	@if test -e $(mm_THEMESDIR)/default-wide ; then \
+		mv $(mm_THEMESDIR)/default-wide $(mm_ROOTFSDIR)/usr/share/mythtv/themes/ ; \
+	fi
 
 mm-make-rootfs:
 	@if test -e $(mm_ROOTFSDIR).ro ; then rm -rf $(mm_ROOTFSDIR).ro ; fi
