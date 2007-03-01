@@ -550,6 +550,7 @@ mm-make-themes:
 	@mv       $(mm_ROOTFSDIR)/usr/share/mythtv/themes/* $(mm_THEMESDIR)
 	@rm -rf   $(mm_ROOTFSDIR)/usr/share/mythtv/themes
 	@mkdir -p $(mm_ROOTFSDIR)/usr/share/mythtv/themes
+	@mv       $(mm_THEMESDIR)/classic                   $(mm_ROOTFSDIR)/usr/share/mythtv/themes/
 	@mv       $(mm_THEMESDIR)/default*                  $(mm_ROOTFSDIR)/usr/share/mythtv/themes/
 
 mm-make-rootfs:
