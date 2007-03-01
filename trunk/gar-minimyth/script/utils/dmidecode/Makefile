@@ -1,5 +1,5 @@
 GARNAME = dmidecode
-GARVERSION =  2.8
+GARVERSION =  2.9
 CATEGORIES = utils
 MASTER_SITES = http://download.savannah.gnu.org/releases/dmidecode/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,8 +11,8 @@ endef
 
 DEPENDS = lang/c
 
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+BUILD_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 BUILD_ARGS = \
 	CC="$(CC)" \
