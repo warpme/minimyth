@@ -72,6 +72,11 @@ conf_check_x() {
        /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "glslideshow" ; then
         mm_message_output err "error: MM_X_SCREENSAVER_HACK='${MM_X_SCREENSAVER_HACK}' is not valid."
     fi
+    if /usr/bin/test ! -z "${MM_X_MYTH_PROGRAM}"                  && \
+       /usr/bin/test !    "${MM_X_MYTH_PROGRAM}" = "mythfrontend" && \
+       /usr/bin/test !    "${MM_X_MYTH_PROGRAM}" = "mythwelcome"  ; then
+        mm_message_output err "error: MM_X_MYTH_PROGRAM='${MM_X_MYTH_PROGRAM}' is not valid."
+    fi
 
     # We do not check the X output variables
     # (MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA, MM_X_OUTPUT_TV, MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN)
@@ -370,6 +375,9 @@ conf_default_x() {
     fi
     if /usr/bin/test -z "${MM_X_SCREENSAVER_HACK}" ; then
         MM_X_SCREENSAVER_HACK='blank'
+    fi
+    if /usr/bin/test -z "${MM_X_MYTH_PROGRAM}"     ; then
+        MM_X_MYTH_PROGRAM='mythfrontend'
     fi
 
     # X display variables.
@@ -711,6 +719,7 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_VNC_ENABLED                 "${MM_X_VNC_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_SCREENSAVER                 "${MM_X_SCREENSAVER}"
     conf_variable_write "${conf_file}" MM_X_SCREENSAVER_HACK            "${MM_X_SCREENSAVER_HACK}"
+    conf_variable_write "${conf_file}" MM_X_MYTH_PROGRAM                "${MM_X_MYTH_PROGRAM}"
 
     conf_variable_write "${conf_file}" MM_X_OUTPUT_DVI                  "${MM_X_OUTPUT_DVI}"
     conf_variable_write "${conf_file}" MM_X_OUTPUT_VGA                  "${MM_X_OUTPUT_VGA}"
