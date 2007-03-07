@@ -33,9 +33,10 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 # I do not know what '=' does at the beginning of the path name. However, the correct libraries are not found without it.
 # For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
+# Libraries are located in /lib and /usr/lib. On some systems, x86_64 libraries are located in /lib64 and /usr/lib64.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \
-	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):/lib:/usr/lib"
+	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):/lib:/usr/lib:/lib64:/usr/lib64"
 else
 CONFIGURE_ARGS += \
 	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir)"
