@@ -39,3 +39,23 @@ mythtv-fixes-patch:
 	@md5sum files/$(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch >> checksums
 	@sed -i 's%files/\($(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch\)%download/\1%' checksums
 	@rm -rf $(WORKDIR)/fixes-patch
+
+mythtv-fixes-patch-all:
+	@cd ../$(subst mythtv-,mythtv-,$(shell basename `pwd`))      ; \
+		$(MAKE) clean                                        ; \
+		svn delete files/myth*-*-fixes-*.patch               ; \
+		$(MAKE) mythtv-fixes-patch                           ; \
+		svn add files/myth*-*fixes-*.patch                   ; \
+		$(MAKE) clean
+	@cd ../$(subst mythtv-,mythplugins-,$(shell basename `pwd`)) ; \
+		$(MAKE) clean                                        ; \
+		svn delete files/myth*-*-fixes-*.patch               ; \
+		$(MAKE) mythtv-fixes-patch                           ; \
+		svn add files/myth*-*fixes-*.patch                   ; \
+		$(MAKE) clean
+	@cd ../$(subst mythtv-,myththemes-,$(shell basename `pwd`))  ; \
+		$(MAKE) clean                                        ; \
+		svn delete files/myth*-*-fixes-*.patch               ; \
+		$(MAKE) mythtv-fixes-patch                           ; \
+		svn add files/myth*-*fixes-*.patch                   ; \
+		$(MAKE) clean
