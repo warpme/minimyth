@@ -1,5 +1,5 @@
 GARNAME = ntp
-GARVERSION = 4.2.4
+GARVERSION = 4.2.4p0
 CATEGORIES = net
 MASTER_SITES = http://www.eecis.udel.edu/~$(GARNAME)/$(GARNAME)_spool/$(GARNAME)4/$(GARNAME)-4.2/
 DISTFILES = $(DISTNAME).tar.gz
@@ -35,5 +35,5 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 install-cross:
-	cp -f $(WORKSRC)/ntpdc/ntpdc-layout $(DESTDIR)$(bindir)/ntp-ntpdc-layout
+	@cp -f $(WORKSRC)/ntpdc/ntpdc-layout $(DESTDIR)$(bindir)/ntp-ntpdc-layout
 	@$(MAKECOOKIE)

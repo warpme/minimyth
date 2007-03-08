@@ -253,7 +253,8 @@ mm-check:
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "9746" ] ; then \
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "9746" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9755" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
