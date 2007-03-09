@@ -1,5 +1,5 @@
 GARNAME = qt-x11-free
-GARVERSION = 3.3.8
+GARVERSION = 3.3.7
 CATEGORIES = qt
 MASTER_SITES = ftp://ftp.trolltech.com/qt/source/
 DISTFILES = $(DISTNAME).tar.gz
