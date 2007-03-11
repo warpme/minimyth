@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 5.0.27
+GARVERSION = 5.0.37
 CATEGORIES = db
 MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
@@ -56,8 +56,8 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 install-cross:
-	cp -f $(WORKSRC)/extra/comp_err   $(DESTDIR)$(bindir)/mysql-comp_err
-	cp -f $(WORKSRC)/sql/gen_lex_hash $(DESTDIR)$(bindir)/mysql-gen_lex_hash
+	@if test -e $(WORKSRC)/extra/comp_err   ; then cp -f $(WORKSRC)/extra/comp_err   $(DESTDIR)$(bindir)/mysql-comp_err     ; fi
+	@if test -e $(WORKSRC)/sql/gen_lex_hash ; then cp -f $(WORKSRC)/sql/gen_lex_hash $(DESTDIR)$(bindir)/mysql-gen_lex_hash ; fi
 	@$(MAKECOOKIE)
 
 post-install:

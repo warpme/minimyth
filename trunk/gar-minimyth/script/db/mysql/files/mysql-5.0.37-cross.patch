@@ -1,0 +1,48 @@
+diff -Naur mysql-5.0.37-old/extra/Makefile.am mysql-5.0.37-new/extra/Makefile.am
+--- mysql-5.0.37-old/extra/Makefile.am	2007-03-10 10:28:07.000000000 -0800
++++ mysql-5.0.37-new/extra/Makefile.am	2007-03-10 10:30:42.000000000 -0800
+@@ -33,7 +33,7 @@
+ $(top_builddir)/include/mysqld_error.h: comp_err.c \
+ 			$(top_srcdir)/sql/share/errmsg.txt
+ 	$(MAKE) $(AM_MAKEFLAGS) comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++	mysql-comp_err \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
+diff -Naur mysql-5.0.37-old/extra/Makefile.in mysql-5.0.37-new/extra/Makefile.in
+--- mysql-5.0.37-old/extra/Makefile.in	2007-03-10 10:28:07.000000000 -0800
++++ mysql-5.0.37-new/extra/Makefile.in	2007-03-10 10:32:13.000000000 -0800
+@@ -895,7 +895,7 @@
+ $(top_builddir)/include/mysqld_error.h: comp_err.c \
+ 			$(top_srcdir)/sql/share/errmsg.txt
+ 	$(MAKE) $(AM_MAKEFLAGS) comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++	mysql-comp_err$(EXEEXT) \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
+diff -Naur mysql-5.0.37-old/sql/Makefile.am mysql-5.0.37-new/sql/Makefile.am
+--- mysql-5.0.37-old/sql/Makefile.am	2007-03-10 10:28:07.000000000 -0800
++++ mysql-5.0.37-new/sql/Makefile.am	2007-03-10 10:33:19.000000000 -0800
+@@ -165,7 +165,7 @@
+ # this avoid the rebuild of the built files in a source dist
+ lex_hash.h:	gen_lex_hash.cc lex.h
+ 		$(MAKE) $(AM_MAKEFLAGS) gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # For testing of udf_example.so
+ noinst_LTLIBRARIES= udf_example.la
+diff -Naur mysql-5.0.37-old/sql/Makefile.in mysql-5.0.37-new/sql/Makefile.in
+--- mysql-5.0.37-old/sql/Makefile.in	2007-03-10 10:28:07.000000000 -0800
++++ mysql-5.0.37-new/sql/Makefile.in	2007-03-10 10:33:44.000000000 -0800
+@@ -1222,7 +1222,7 @@
+ # this avoid the rebuild of the built files in a source dist
+ lex_hash.h:	gen_lex_hash.cc lex.h
+ 		$(MAKE) $(AM_MAKEFLAGS) gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@
++		mysql-gen_lex_hash > $@
+ 
+ # Don't update the files from bitkeeper
+ %::SCCS/s.%
