@@ -1378,8 +1378,8 @@ mm_hardware_motherboard2kernel_map() {
 
     vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
-    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%,%_%g'`
-    product_clean=`/bin/echo ${product} | /bin/sed -e 's%,%_%g'`
+    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
+    product_clean=`/bin/echo ${product} | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
 
     /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
 
