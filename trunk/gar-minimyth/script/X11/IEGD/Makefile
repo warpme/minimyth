@@ -23,7 +23,7 @@ X_DRIVER=$(strip \
 	  )
 
 BUILD_SCRIPTS    = $(if $(filter i386,$(mm_GARCH_FAMILY)),$(WORKDIR)/IEGD_Patches/Drm/Makefile)
-INSTALL_SCRIPTS  = $(if $(filter i386,$(mm_GARCH_FAMILY)),$(WORKDIR)/IEGD_Patches/Drm/Makefile)
+INSTALL_SCRIPTS  = $(if $(filter i386,$(mm_GARCH_FAMILY)),$(WORKDIR)/IEGD_Patches/Drm/Makefile custom-drm)
 INSTALL_SCRIPTS += $(if $(filter i386,$(mm_GARCH_FAMILY)),custom)
 
 BUILD_ARGS = \
@@ -47,6 +47,10 @@ include ../../gar.mk
 
 pre-install:
 	mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/iegd/drivers/char/drm
+	@$(MAKECOOKIE)
+
+install-custom-drm:
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
 
 install-custom:
