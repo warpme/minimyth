@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c kernel/kernel xorg/xorg
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
