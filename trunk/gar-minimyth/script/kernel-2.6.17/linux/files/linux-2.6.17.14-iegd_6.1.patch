@@ -1,0 +1,737 @@
+diff -Naur linux-2.6.17.14-old/drivers/char/agp/intel-agp.c linux-2.6.17.14-new/drivers/char/agp/intel-agp.c
+--- linux-2.6.17.14-old/drivers/char/agp/intel-agp.c	2006-10-13 11:55:04.000000000 -0700
++++ linux-2.6.17.14-new/drivers/char/agp/intel-agp.c	2007-03-11 08:33:49.000000000 -0700
+@@ -156,15 +156,15 @@
+ }
+ 
+ /* Exists to support ARGB cursors */
+-static void *i8xx_alloc_pages(void)
++static void *i8xx_alloc_pages(size_t pg_count, unsigned int order)
+ {
+ 	struct page * page;
+ 
+-	page = alloc_pages(GFP_KERNEL, 2);
++	page = alloc_pages(GFP_KERNEL, order);
+ 	if (page == NULL)
+ 		return NULL;
+ 
+-	if (change_page_attr(page, 4, PAGE_KERNEL_NOCACHE) < 0) {
++	if (change_page_attr(page, pg_count, PAGE_KERNEL_NOCACHE) < 0) {
+ 		global_flush_tlb();
+ 		__free_page(page);
+ 		return NULL;
+@@ -176,7 +176,7 @@
+ 	return page_address(page);
+ }
+ 
+-static void i8xx_destroy_pages(void *addr)
++static void i8xx_destroy_pages(void *addr, size_t pg_count, unsigned int order)
+ {
+ 	struct page *page;
+ 
+@@ -184,11 +184,11 @@
+ 		return;
+ 
+ 	page = virt_to_page(addr);
+-	change_page_attr(page, 4, PAGE_KERNEL);
++	change_page_attr(page, pg_count, PAGE_KERNEL);
+ 	global_flush_tlb();
+ 	put_page(page);
+ 	unlock_page(page);
+-	free_pages((unsigned long)addr, 2);
++	free_pages((unsigned long)addr, order);
+ 	atomic_dec(&agp_bridge->current_memory_agp);
+ }
+ 
+@@ -264,22 +264,27 @@
+ {
+ 	struct agp_memory *new;
+ 	void *addr;
++	unsigned int order, i;
+ 
+-	if (pg_count != 1 && pg_count != 4)
+-		return NULL;
+-
++	/* To support RGBA hardware cursor which may require contiguous physical
++	 * memory to be allocated with either 1, 4 or 8 pages. 8 pages is
++	 * the worst case for 830 which requires 4 pages and 4 page alignment.
++	 */
+ 	switch (pg_count) {
+-	case 1: addr = agp_bridge->driver->agp_alloc_page(agp_bridge);
+-		global_flush_tlb();
++	case 1:
++		order = 0;   /* pg_count = 1 => 2 ^ 0 */
+ 		break;
+ 	case 4:
+-		/* kludge to get 4 physical pages for ARGB cursor */
+-		addr = i8xx_alloc_pages();
++		order = 2;   /* pg_count = 4 => 2 ^ 2 */
++		break;
++	case 8:
++		order = 3;   /* pg_count = 8 => 2 ^ 3 */
+ 		break;
+ 	default:
+ 		return NULL;
+ 	}
+ 
++	addr = i8xx_alloc_pages(pg_count, order);
+ 	if (addr == NULL)
+ 		return NULL;
+ 
+@@ -288,11 +293,8 @@
+ 		return NULL;
+ 
+ 	new->memory[0] = virt_to_gart(addr);
+-	if (pg_count == 4) {
+-		/* kludge to get 4 physical pages for ARGB cursor */
+-		new->memory[1] = new->memory[0] + PAGE_SIZE;
+-		new->memory[2] = new->memory[1] + PAGE_SIZE;
+-		new->memory[3] = new->memory[2] + PAGE_SIZE;
++	for (i = 1; i < pg_count; i++) {
++		new->memory[i] = new->memory[i-1] + PAGE_SIZE;
+ 	}
+ 	new->page_count = pg_count;
+ 	new->num_scratch_pages = pg_count;
+@@ -327,15 +329,27 @@
+ 
+ static void intel_i810_free_by_type(struct agp_memory *curr)
+ {
++	unsigned int order;
++
++	switch (curr->page_count) {
++	case 1:
++		order = 0;   /* pg_count = 1 => 2 ^ 0 */
++		break;
++	case 4:
++		order = 2;   /* pg_count = 4 => 2 ^ 2 */
++		break;
++	case 8:
++		order = 3;   /* pg_count = 8 => 2 ^ 3 */
++		break;
++	default:
++		/* This case should never happen */
++		return;
++	}
++
+ 	agp_free_key(curr->key);
+ 	if (curr->type == AGP_PHYS_MEMORY) {
+-		if (curr->page_count == 4)
+-			i8xx_destroy_pages(gart_to_virt(curr->memory[0]));
+-		else {
+-			agp_bridge->driver->agp_destroy_page(
+-				 gart_to_virt(curr->memory[0]));
+-			global_flush_tlb();
+-		}
++		i8xx_destroy_pages(gart_to_virt(curr->memory[0]), curr->page_count,
++			order);
+ 		vfree(curr->memory);
+ 	}
+ 	kfree(curr);
+@@ -354,6 +368,16 @@
+ 	/* The 64M mode still requires a 128k gatt */
+ 	{64, 16384, 5},
+ 	{256, 65536, 6},
++	{512, 131072, 7},
++};
++
++static struct aper_size_info_fixed intel_i965_sizes[] =
++{
++	/* VBIOS always allocates enough space for 512MB aperture */
++	{128, 131072, 7},
++	{64, 131072, 7},
++	{256, 131072, 7},
++	{512, 131072, 7},
+ };
+ 
+ static struct _intel_i830_private {
+@@ -366,17 +390,41 @@
+ static void intel_i830_init_gtt_entries(void)
+ {
+ 	u16 gmch_ctrl;
++	u32 iegd_scratch, iegd_scratch2;
+ 	int gtt_entries;
+ 	u8 rdct;
+ 	int local = 0;
+ 	static const int ddt[4] = { 0, 16, 32, 64 };
+ 	int size;
++	int gtt_enabled = FALSE;
+ 
+ 	pci_read_config_word(agp_bridge->dev,I830_GMCH_CTRL,&gmch_ctrl);
+ 
+-	/* We obtain the size of the GTT, which is also stored (for some
++	gtt_enabled = readl(intel_i830_private.registers + I810_PGETBL_CTL) &
++		I810_PGETBL_ENABLED;
++
++	/* A note on stolen memory:
++	 *  Intel chipsets set aside a small area at the top of system memory
++	 *  for VGA framebuffers etc. When the Intel device is the VGA
++	 *  device, this memory is used to contain the GTT itself, and a scratch
++	 *  memory page. Therefore the actual available memory already populated
++	 *  in the GTT is the stolen memory minus the 4k scratch page minus the
++	 *  128 page table.
++	 *
++	 *  Additionally, the embedded firmware may further alter this amount.
++	 *  It can either allocate additional memory to be placed in the GTT
++	 *  or use some stolen memory for data. If the IEGD vBIOS has altered
++	 *  the amount we can detect it by reading a well-defined scratch
++	 *  register.
++	 *
++	 *  When the Intel Graphics Device is not the VGA device, i.e.
++	 *  the system boots with a PCI card, then this driver discards
++	 *  the stolen memory.
++	 *
++	 * We obtain the size of the GTT, which is also stored (for some
+ 	 * reason) at the top of stolen memory. Then we add 4KB to that
+ 	 * for the video BIOS popup, which is also stored in there. */
++
+ 	size = agp_bridge->driver->fetch_size() + 4;
+ 
+ 	if (agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82830_HB ||
+@@ -423,7 +471,11 @@
+ 			if (agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82915G_HB ||
+ 			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82915GM_HB ||
+ 			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945G_HB ||
+-			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945GM_HB)
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945GM_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82965G_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_G965_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_Q965_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_946GZ_HB)
+ 				gtt_entries = MB(48) - KB(size);
+ 			else
+ 				gtt_entries = 0;
+@@ -433,7 +485,11 @@
+ 			if (agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82915G_HB ||
+ 			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82915GM_HB ||
+ 			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945G_HB ||
+-			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945GM_HB)
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82945GM_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_82965G_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_G965_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_Q965_HB ||
++			    agp_bridge->dev->device == PCI_DEVICE_ID_INTEL_946GZ_HB)
+ 				gtt_entries = MB(64) - KB(size);
+ 			else
+ 				gtt_entries = 0;
+@@ -442,6 +498,39 @@
+ 			break;
+ 		}
+ 	}
++
++	printk(KERN_INFO PFX
++		"intel_i830_init_gtt_entries() gtt_enalbed = %d.\n",
++		gtt_enabled);
++
++	/* if GTT is not enabled, then initialize gtt entries to 0 */
++	if (!gtt_enabled) {
++		printk(KERN_INFO PFX "IGD not primary, throwing away stolen memory.\n");
++
++		/* Update the scratch registers to say that we have no stolen memory */
++		writel((0xE1DF << 16), intel_i830_private.registers + 0x71410);
++
++		iegd_scratch = readl(intel_i830_private.registers + 0x71410);
++		iegd_scratch |= 0x4;
++
++		writel(iegd_scratch, intel_i830_private.registers + 0x71410);
++
++		/* say that we have 0 stolen memory regardless of what was
++		 * really in there */
++		writel(0, intel_i830_private.registers + 0x71418);
++
++		gtt_entries = 0;
++	}
++
++	iegd_scratch = readl(intel_i830_private.registers + 0x71410);
++
++	if(((iegd_scratch>>16) == 0xE1DF) && (iegd_scratch & 0x4)) {
++		printk(KERN_INFO PFX "IEGD Firmware Detected\n");
++		/* IEGD firmware found, and Mem Reservation Flag present */
++		iegd_scratch2 = readl(intel_i830_private.registers + 0x71418);
++		gtt_entries = (iegd_scratch2 & 0xFFFF) * 4096;
++	}
++
+ 	if (gtt_entries > 0)
+ 		printk(KERN_INFO PFX "Detected %dK %s memory.\n",
+ 		       gtt_entries / KB(1), local ? "local" : "stolen");
+@@ -453,39 +542,70 @@
+ 	intel_i830_private.gtt_entries = gtt_entries;
+ }
+ 
+-/* The intel i830 automatically initializes the agp aperture during POST.
+- * Use the memory already set aside for in the GTT.
+- */
+ static int intel_i830_create_gatt_table(struct agp_bridge_data *bridge)
+ {
+-	int page_order;
+-	struct aper_size_info_fixed *size;
+-	int num_entries;
+-	u32 temp;
++	int  num_entries          = 0;
++	int  i830_gtt_page_order  = 0;
++	u32  gtt_bus_addr         = 0;
++	u32  mmio_bus_addr        = 0;
++	char *gtt_table           = NULL;
++	char *gtt_table_end       = NULL;
++	char *current_entry       = NULL;
++	int  gtt_enabled          = FALSE;
++	struct page *gtt_table_page            = NULL;
++	struct aper_size_info_fixed *aper_size = NULL;
+ 
+-	size = agp_bridge->current_size;
+-	page_order = size->page_order;
+-	num_entries = size->num_entries;
+ 	agp_bridge->gatt_table_real = NULL;
++	agp_bridge->gatt_table      = NULL;
++	aper_size = (struct aper_size_info_fixed *) agp_bridge->current_size;
+ 
+-	pci_read_config_dword(intel_i830_private.i830_dev,I810_MMADDR,&temp);
+-	temp &= 0xfff80000;
++	/* Find and save the address of the MMIO registers */
++	pci_read_config_dword(intel_i830_private.i830_dev, I810_MMADDR,
++		&mmio_bus_addr);
++	mmio_bus_addr &= 0xFFF80000;
++
++	intel_i830_private.registers = (volatile u8 *)
++		ioremap(mmio_bus_addr, 128 * 4096);
+ 
+-	intel_i830_private.registers = ioremap(temp,128 * 4096);
+ 	if (!intel_i830_private.registers)
+-		return -ENOMEM;
++		return (-ENOMEM);
+ 
+-	temp = readl(intel_i830_private.registers+I810_PGETBL_CTL) & 0xfffff000;
+-	global_cache_flush();	/* FIXME: ?? */
++	/* Get value on the control register */
++	gtt_bus_addr = readl(intel_i830_private.registers+I810_PGETBL_CTL) &
++		0xFFFFF000;
++	gtt_enabled  = readl(intel_i830_private.registers+I810_PGETBL_CTL) &
++		I810_PGETBL_ENABLED;
++	global_cache_flush();
+ 
+-	/* we have to call this as early as possible after the MMIO base address is known */
++	/* we have to call this as early as possible after the MMIO base address
++	 * is known */
+ 	intel_i830_init_gtt_entries();
+ 
+-	agp_bridge->gatt_table = NULL;
+-
+-	agp_bridge->gatt_bus_addr = temp;
++	/* If GTT does not exist, which can happen if a PCI graphics card is the
++	 * boot-up display device, then we will have to allocate the GTT table
++	 * ourselves
++	 */
++	if (!gtt_enabled) {
++		i830_gtt_page_order = aper_size->page_order;
++		num_entries = aper_size->num_entries;
++		gtt_table  = (char *) __get_free_pages(GFP_KERNEL, i830_gtt_page_order);
++		gtt_table_end = gtt_table + ((PAGE_SIZE * (1<<i830_gtt_page_order))-1);
++
++		/* Make sure allocation was successful */
++		if (NULL == gtt_table) {
++			return -ENOMEM;
++		}
+ 
+-	return 0;
++		for (current_entry = gtt_table; current_entry < gtt_table_end;
++			current_entry += PAGE_SIZE) {
++			gtt_table_page = virt_to_page(current_entry);
++			set_bit(PG_reserved, &gtt_table_page->flags);
++		}
++		agp_bridge->gatt_bus_addr = virt_to_phys(gtt_table);
++	} else {
++	  agp_bridge->gatt_bus_addr = gtt_bus_addr;
++	}
++	return(0);
+ }
+ 
+ /* Return the gatt table to a sane state. Use the top of stolen
+@@ -650,11 +770,16 @@
+ 	gmch_ctrl |= I830_GMCH_ENABLED;
+ 	pci_write_config_word(agp_bridge->dev,I830_GMCH_CTRL,gmch_ctrl);
+ 
+-	writel(agp_bridge->gatt_bus_addr|I810_PGETBL_ENABLED, intel_i830_private.registers+I810_PGETBL_CTL);
++	global_cache_flush();
++	agp_bridge->driver->tlb_flush(0);
++
++	writel(agp_bridge->gatt_bus_addr|I810_PGETBL_ENABLED,
++		intel_i830_private.registers+I810_PGETBL_CTL);
+ 	readl(intel_i830_private.registers+I810_PGETBL_CTL);	/* PCI Posting. */
+ 
+ 	if (agp_bridge->driver->needs_scratch_page) {
+-		for (i = intel_i830_private.gtt_entries; i < current_size->num_entries; i++) {
++		for (i = intel_i830_private.gtt_entries;
++			i < current_size->num_entries; i++) {
+ 			writel(agp_bridge->scratch_page, intel_i830_private.gtt+i);
+ 			readl(intel_i830_private.gtt+i);	/* PCI Posting. */
+ 		}
+@@ -680,8 +805,9 @@
+ 	num_entries = A_SIZE_FIX(temp)->num_entries;
+ 
+ 	if (pg_start < intel_i830_private.gtt_entries) {
+-		printk (KERN_DEBUG PFX "pg_start == 0x%.8lx,intel_i830_private.gtt_entries == 0x%.8x\n",
+-				pg_start,intel_i830_private.gtt_entries);
++		printk (KERN_DEBUG PFX
++			"pg_start == 0x%.8lx,intel_i830_private.gtt_entries == 0x%.8x\n",
++			pg_start,intel_i830_private.gtt_entries);
+ 
+ 		printk (KERN_INFO PFX "Trying to insert into local/stolen memory\n");
+ 		return -EINVAL;
+@@ -699,6 +825,7 @@
+ 		return -EINVAL;
+ 
+ 	global_cache_flush();
++	agp_bridge->driver->tlb_flush(mem);
+ 
+ 	for (i = 0, j = pg_start; i < mem->page_count; i++, j++) {
+ 		writel(agp_bridge->driver->mask_memory(agp_bridge,
+@@ -717,6 +844,7 @@
+ 	int i;
+ 
+ 	global_cache_flush();
++	agp_bridge->driver->tlb_flush(mem);
+ 
+ 	if (pg_start < intel_i830_private.gtt_entries) {
+ 		printk (KERN_INFO PFX "Trying to disable local/stolen memory\n");
+@@ -751,45 +879,75 @@
+ 	return values[offset].size;
+ }
+ 
+-/* The intel i915 automatically initializes the agp aperture during POST.
+- * Use the memory already set aside for in the GTT.
+- */
+ static int intel_i915_create_gatt_table(struct agp_bridge_data *bridge)
+ {
+-	int page_order;
+-	struct aper_size_info_fixed *size;
++	const u32 i915_gtt_table_order = 6;
++
++	int i;
+ 	int num_entries;
+-	u32 temp, temp2;
++	u32 gtt_bus_addr;
++	u32 mmio_bus_addr, temp2;
++	u32 gtt_enabled    = FALSE;
++	u32 gtt_table_size = (1 << i915_gtt_table_order) * PAGE_SIZE - 1;
++	u32 gtt_pgctl_reg;
++	char *gtt_table, *gtt_table_end, *current_entry;
++	struct page *gtt_table_page;
+ 
+-	size = agp_bridge->current_size;
+-	page_order = size->page_order;
+-	num_entries = size->num_entries;
+ 	agp_bridge->gatt_table_real = NULL;
+ 
+-	pci_read_config_dword(intel_i830_private.i830_dev, I915_MMADDR, &temp);
++	/* Find and save the address of the MMIO register */
++	pci_read_config_dword(intel_i830_private.i830_dev, I915_MMADDR,
++		&mmio_bus_addr);
++	mmio_bus_addr &= 0xFFF80000;
++
++	intel_i830_private.registers =(volatile u8 *) ioremap(mmio_bus_addr,
++		128 * 4096);
++	if (!intel_i830_private.registers)
++		return (-ENOMEM);
++
+ 	pci_read_config_dword(intel_i830_private.i830_dev, I915_PTEADDR,&temp2);
+ 
+-	intel_i830_private.gtt = ioremap(temp2, 256 * 1024);
++	intel_i830_private.gtt =(volatile u32 *) ioremap(temp2, 256 * 1024);
+ 	if (!intel_i830_private.gtt)
+-		return -ENOMEM;
++		return (-ENOMEM);
++
++	/* Extract the content of the control register */
++	gtt_pgctl_reg = readl(intel_i830_private.registers + I810_PGETBL_CTL);
++	global_cache_flush();
++	gtt_bus_addr  = gtt_pgctl_reg & 0xFFFFF000;
++	gtt_enabled   = gtt_pgctl_reg & I810_PGETBL_ENABLED;
+ 
+-	temp &= 0xfff80000;
++	/* Call this as early as possible after the MMIO base address is known */
++	intel_i830_init_gtt_entries();
+ 
+-	intel_i830_private.registers = ioremap(temp,128 * 4096);
+-	if (!intel_i830_private.registers)
+-		return -ENOMEM;
++	if (!gtt_enabled) {
++		num_entries = intel_i830_sizes[0].num_entries;
++		gtt_table   = (char *)__get_free_pages(GFP_KERNEL,i915_gtt_table_order);
++		gtt_table_end = gtt_table + gtt_table_size;
++
++		/* Make sure allocation was successful */
++		if (NULL == gtt_table) {
++			return (-ENOMEM);
++		}
+ 
+-	temp = readl(intel_i830_private.registers+I810_PGETBL_CTL) & 0xfffff000;
+-	global_cache_flush();	/* FIXME: ? */
++		for (current_entry = gtt_table; current_entry < gtt_table_end;
++			current_entry += PAGE_SIZE) {
++			gtt_table_page = virt_to_page(current_entry);
++			set_bit(PG_reserved, &gtt_table_page->flags);
++		}
+ 
+-	/* we have to call this as early as possible after the MMIO base address is known */
+-	intel_i830_init_gtt_entries();
++		agp_bridge->gatt_bus_addr = virt_to_phys(gtt_table);
+ 
+-	agp_bridge->gatt_table = NULL;
++		for (i = 0; i < num_entries; i++) {
++			gtt_table[i] = (unsigned long) agp_bridge->scratch_page;
++		}
++	} else {
++		agp_bridge->gatt_bus_addr = gtt_bus_addr;
++	}
+ 
+-	agp_bridge->gatt_bus_addr = temp;
++	agp_bridge->gatt_table = NULL;
+ 
+-	return 0;
++	return(0);
+ }
+ 
+ static int intel_fetch_size(void)
+@@ -850,6 +1008,116 @@
+ 	return __intel_8xx_fetch_size(temp);
+ }
+ 
++static void intel_i965_tlbflush(struct agp_memory *mem)
++{
++	/* Gen4 must flush the GTT or simple 2D rendering will lock the engine. */
++	writel(0, intel_i830_private.registers+0x2170);
++	writel(0, intel_i830_private.registers+0x2174);
++	return;
++}
++
++static void intel_i965_cleanup(void)
++{
++	iounmap(intel_i830_private.registers);
++}
++
++static int intel_i965_create_gatt_table(struct agp_bridge_data *bridge)
++{
++	const u32 i965_gtt_table_order = 7;
++
++	int i;
++	int num_entries;
++	u32 gtt_bus_addr;
++	u32 mmio_bus_addr;
++	u32 gtt_enabled    = FALSE;
++	u32 gtt_table_size = (1 << i965_gtt_table_order) * PAGE_SIZE - 1;
++	u32 gtt_pgctl_reg;
++	char *gtt_table, *gtt_table_end, *current_entry;
++	struct page *gtt_table_page;
++
++	agp_bridge->gatt_table_real = NULL;
++
++	/* Find and save the address of the MMIO register */
++	pci_read_config_dword(intel_i830_private.i830_dev, I915_MMADDR, &mmio_bus_addr);
++	mmio_bus_addr &= 0xfff80000;
++
++	intel_i830_private.registers =(volatile u8 *) ioremap(mmio_bus_addr,1024 * 4096);
++	if (!intel_i830_private.registers)
++		return (-ENOMEM);
++
++	/* GTT is mapped 512KB after the registers */
++	intel_i830_private.gtt = (u32 __iomem *)((u32)intel_i830_private.registers + 
++		512*1024);
++
++	/* Extract the content of the control register */
++	gtt_pgctl_reg = readl(intel_i830_private.registers+I810_PGETBL_CTL);
++	gtt_bus_addr  = gtt_pgctl_reg & 0xfffff000;
++	gtt_enabled   = gtt_pgctl_reg & I810_PGETBL_ENABLED;
++
++	global_cache_flush();
++	agp_bridge->driver->tlb_flush(0);
++
++	/* we have to call this as early as possible after the MMIO base address is known */
++	intel_i830_init_gtt_entries();
++
++	if( !gtt_enabled ) {
++		num_entries   = intel_i830_sizes[0].num_entries;
++		gtt_table     = (char *) __get_free_pages(GFP_KERNEL, i965_gtt_table_order);
++		gtt_table_end = gtt_table + gtt_table_size;
++
++		/* Make sure allocation was successful */
++		if( NULL == gtt_table ) {
++			return (-ENOMEM);
++		}
++
++		for( current_entry = gtt_table; current_entry < gtt_table_end;
++		     current_entry += PAGE_SIZE ) {
++		        gtt_table_page = virt_to_page( current_entry );
++			set_bit( PG_reserved, &gtt_table_page->flags );
++		}
++
++		agp_bridge->gatt_bus_addr = virt_to_phys( gtt_table );
++
++		for( i = 0; i < num_entries; i++ ) {
++		  gtt_table[i] = (unsigned long) agp_bridge->scratch_page;
++		}
++	}
++	else {
++		agp_bridge->gatt_bus_addr = gtt_bus_addr;
++	}
++
++	agp_bridge->gatt_table = NULL;
++
++	return(0);
++}
++
++static int intel_i965_fetch_size(void)
++{
++	struct aper_size_info_fixed *values;
++	u32 offset = 0;
++	u8 temp;
++
++#define I965_GMCH_MSAC 0x62
++
++	values = A_SIZE_FIX(agp_bridge->driver->aperture_sizes);
++
++	pci_read_config_byte(intel_i830_private.i830_dev, I965_GMCH_MSAC, &temp);
++	switch (temp & 6) {
++	case 0:
++		offset = 0;	/* 128MB aperture */
++		break;
++	case 2:
++		offset = 2;	/* 256MB aperture */
++		break;
++	case 6:
++		offset = 3;	/* 512MB aperture */
++		break;
++	}
++	agp_bridge->previous_size = agp_bridge->current_size =
++		(void *)(values + offset);
++	return values[offset].size;
++}
++
+ static void intel_tlbflush(struct agp_memory *mem)
+ {
+ 	pci_write_config_dword(agp_bridge->dev, INTEL_AGPCTRL, 0x2200);
+@@ -1489,6 +1757,29 @@
+ 	.agp_destroy_page	= agp_generic_destroy_page,
+ };
+ 
++static struct agp_bridge_driver intel_965_driver = {
++	.owner			= THIS_MODULE,
++	.aperture_sizes		= intel_i965_sizes,
++	.size_type		= FIXED_APER_SIZE,
++	.num_aperture_sizes	= 4,
++	.needs_scratch_page	= TRUE,
++	.configure		= intel_i915_configure,
++	.fetch_size		= intel_i965_fetch_size,
++	.cleanup		= intel_i965_cleanup,
++	.tlb_flush		= intel_i965_tlbflush,
++	.mask_memory		= intel_i810_mask_memory,
++	.masks			= intel_i810_masks,
++	.agp_enable		= intel_i810_agp_enable,
++	.cache_flush		= global_cache_flush,
++	.create_gatt_table	= intel_i965_create_gatt_table,
++	.free_gatt_table	= intel_i830_free_gatt_table,
++	.insert_memory		= intel_i915_insert_entries,
++	.remove_memory		= intel_i915_remove_entries,
++	.alloc_by_type		= intel_i830_alloc_by_type,
++	.free_by_type		= intel_i810_free_by_type,
++	.agp_alloc_page		= agp_generic_alloc_page,
++	.agp_destroy_page	= agp_generic_destroy_page,
++};
+ 
+ static struct agp_bridge_driver intel_7505_driver = {
+ 	.owner			= THIS_MODULE,
+@@ -1549,6 +1840,8 @@
+ 	u8 cap_ptr = 0;
+ 	struct resource *r;
+ 
++	printk(KERN_INFO PFX "Patch to support IEGD on FC5.\n");
++
+ 	cap_ptr = pci_find_capability(pdev, PCI_CAP_ID_AGP);
+ 
+ 	bridge = agp_alloc_bridge();
+@@ -1684,6 +1977,38 @@
+ 			bridge->driver = &intel_845_driver;
+ 		name = "945GM";
+ 		break;
++	case PCI_DEVICE_ID_INTEL_82965G_HB:
++		if (find_i830(PCI_DEVICE_ID_INTEL_82965G_IG)) {
++			bridge->driver = &intel_965_driver;
++		} else {
++			bridge->driver = &intel_845_driver;
++		}
++		name = "965G";
++		break;
++	case PCI_DEVICE_ID_INTEL_946GZ_HB:
++		if (find_i830(PCI_DEVICE_ID_INTEL_946GZ_IG)) {
++			bridge->driver = &intel_965_driver;
++		} else {
++			bridge->driver = &intel_845_driver;
++		}
++		name = "946GZ";
++		break;
++	case PCI_DEVICE_ID_INTEL_G965_HB:
++		if (find_i830(PCI_DEVICE_ID_INTEL_G965_IG)) {
++			bridge->driver = &intel_965_driver;
++		} else {
++			bridge->driver = &intel_845_driver;
++		}
++		name = "G965";
++		break;
++	case PCI_DEVICE_ID_INTEL_Q965_HB:
++		if (find_i830(PCI_DEVICE_ID_INTEL_Q965_IG)) {
++			bridge->driver = &intel_965_driver;
++		} else {
++			bridge->driver = &intel_845_driver;
++		}
++		name = "Q963/Q965";
++		break;
+ 	case PCI_DEVICE_ID_INTEL_7505_0:
+ 		bridge->driver = &intel_7505_driver;
+ 		name = "E7505";
+@@ -1766,6 +2091,11 @@
+ 	agp_put_bridge(bridge);
+ }
+ 
++static int agp_intel_suspend(struct pci_dev *dev, pm_message_t state)
++{
++	return 0;
++}
++
+ static int agp_intel_resume(struct pci_dev *pdev)
+ {
+ 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
+@@ -1825,6 +2155,10 @@
+ 	ID(PCI_DEVICE_ID_INTEL_82915GM_HB),
+ 	ID(PCI_DEVICE_ID_INTEL_82945G_HB),
+ 	ID(PCI_DEVICE_ID_INTEL_82945GM_HB),
++	ID(PCI_DEVICE_ID_INTEL_82965G_HB),
++	ID(PCI_DEVICE_ID_INTEL_946GZ_HB),
++	ID(PCI_DEVICE_ID_INTEL_G965_HB),
++	ID(PCI_DEVICE_ID_INTEL_Q965_HB),
+ 	{ }
+ };
+ 
+@@ -1835,6 +2169,7 @@
+ 	.id_table	= agp_intel_pci_table,
+ 	.probe		= agp_intel_probe,
+ 	.remove		= __devexit_p(agp_intel_remove),
++	.suspend	= agp_intel_suspend,
+ 	.resume		= agp_intel_resume,
+ };
+ 
+diff -Naur linux-2.6.17.14-old/include/linux/pci_ids.h linux-2.6.17.14-new/include/linux/pci_ids.h
+--- linux-2.6.17.14-old/include/linux/pci_ids.h	2006-10-13 11:55:04.000000000 -0700
++++ linux-2.6.17.14-new/include/linux/pci_ids.h	2007-03-11 08:30:11.000000000 -0700
+@@ -2113,6 +2113,14 @@
+ #define PCI_DEVICE_ID_INTEL_82945G_IG	0x2772
+ #define PCI_DEVICE_ID_INTEL_82945GM_HB	0x27A0
+ #define PCI_DEVICE_ID_INTEL_82945GM_IG	0x27A2
++#define PCI_DEVICE_ID_INTEL_946GZ_HB	0x2970
++#define PCI_DEVICE_ID_INTEL_946GZ_IG	0x2972
++#define PCI_DEVICE_ID_INTEL_82965G_HB	0x2980
++#define PCI_DEVICE_ID_INTEL_82965G_IG	0x2982
++#define PCI_DEVICE_ID_INTEL_Q965_HB	0x2990
++#define PCI_DEVICE_ID_INTEL_Q965_IG	0x2992
++#define PCI_DEVICE_ID_INTEL_G965_HB	0x29A0
++#define PCI_DEVICE_ID_INTEL_G965_IG	0x29A2
+ #define PCI_DEVICE_ID_INTEL_ICH6_0	0x2640
+ #define PCI_DEVICE_ID_INTEL_ICH6_1	0x2641
+ #define PCI_DEVICE_ID_INTEL_ICH6_2	0x2642
