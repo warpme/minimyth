@@ -23,6 +23,7 @@ DEPENDS = \
 	emulators/fceu \
 	devel/gdb \
 	disk/hdparm \
+	X11/IEGD \
 	emulators/jzintv \
 	system/lcdproc \
 	system/kbdd \
