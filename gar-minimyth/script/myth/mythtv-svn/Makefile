@@ -85,6 +85,8 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+CFLAGS += -DUSE_HACK_FOR_BROKEN_I420_SUPPORT_IN_DRIVER
+
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)

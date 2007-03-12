@@ -85,6 +85,8 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+CFLAGS += -DUSE_ATI_PROPRIETARY_DRIVER_XVIDEO_HACK
+
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
