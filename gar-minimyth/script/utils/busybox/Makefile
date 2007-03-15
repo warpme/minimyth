@@ -1,10 +1,17 @@
 GARNAME = busybox
-GARVERSION = 1.2.2.1
+GARVERSION = 1.4.1
 CATEGORIES = utils
-MASTER_SITES = http://www.busybox.net/downloads/
+MASTER_SITES  = http://www.busybox.net/downloads/
+MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES = $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
+PATCHFILES  = \
+	$(DISTNAME)-binhex.patch \
+	$(DISTNAME)-iproute.patch \
+	$(DISTNAME)-tar_t.patch \
+	$(DISTNAME)-tftp.patch \
+	$(DISTNAME)-wgetSEGV.patch
+PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -17,46 +24,40 @@ CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
-CONFIGURE_ARGS = \
-	TARGET_ARCH="$(GARCH_FAMILY)" \
-	oldconfig
-BUILD_ARGS = \
-	TARGET_ARCH="$(GARCH_FAMILY)" \
-	CC="$(CC)" \
-	AR="$(AR)" \
-	AS="$(AS)" \
-	LD="$(LD)" \
-	NM="$(NM)" \
-	STRIP="$(STRIP)" \
-	CPP="$(CPP)" \
-	OPTIMIZATIONS="$(CFLAGS)" \
-	LDFLAGS="$(LDFLAGS)" \
+DEFAULT_ARGS = \
+	ARCH="$(GARCH_FAMILY)" \
 	HOSTCC="$(build_CC)" \
-	HOSTCFLAGS="$(build_CFLAGS)"
-INSTALL_ARGS =
-BUILD_OVERRIDE_DIRS = PREFIX
-INSTALL_OVERRIDE_DIRS = PREFIX
+	HOSTCXX="$(build_CXX)" \
+	HOSTCFLAGS="$(build_CFLAGS)" \
+	HOSTCXXFLAGS="$(build_CXXFLAGS)" \
+	CROSS_COMPILE="$(compiler_prefix)" \
+	KBUILD_VERBOSE="1"
 
-PREFIX=$(prefix)
-
-ifeq ($(DESTIMG),build)
-USING_CROSS_COMPILER = n
-else
-USING_CROSS_COMPILER = y
-endif
+CONFIGURE_ARGS = $(DEFAULT_ARGS)
+BUILD_ARGS     = $(DEFAULT_ARGS)
+INSTALL_ARGS   = $(DEFAULT_ARGS)
 
 include ../../gar.mk
 
 extract-$(CONFIGFILE):
 	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
-		| sed -e 's%@USING_CROSS_COMPILER@%$(USING_CROSS_COMPILER)%g' \
 		| sed -e 's%@GAR_rootdir@%$(rootdir)%g' \
-		> $(WORKSRC)/.config
+		> $(WORKDIR)/$(CONFIGFILE)
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@rm -rf   $(WORKSRC)/arch/$(GARCH_FAMILY)
+	@mkdir -p $(WORKSRC)/arch/$(GARCH_FAMILY)
+	@echo "CPPFLAGS += $(CPPFLAGS)" >> $(WORKSRC)/arch/$(GARCH_FAMILY)/Makefile
+	@echo "CFLAGS   += $(CFLAGS)"   >> $(WORKSRC)/arch/$(GARCH_FAMILY)/Makefile
 	@$(MAKECOOKIE)
 
 configure-custom:
-	@$(CONFIGURE_ENV) $(MAKE) -C $(WORKSRC) $(CONFIGURE_ARGS)
+	@$(CONFIGURE_ENV) $(MAKE) $(CONFIGURE_ARGS) -C $(WORKSRC) mrproper
+	@cp $(WORKDIR)/$(CONFIGFILE) $(WORKSRC)/.config
+	@$(CONFIGURE_ENV) $(MAKE) $(CONFIGURE_ARGS) -C $(WORKSRC) oldconfig
+	@$(CONFIGURE_ENV) $(MAKE) $(CONFIGURE_ARGS) -C $(WORKSRC) clean
 	@$(MAKECOOKIE)
 
 install-custom:
-	@$(INSTALL_ENV) $(MAKE) -C $(WORKSRC) PREFIX=$(DESTDIR)$(rootdir) install
+	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) CONFIG_PREFIX="$(DESTDIR)$(rootdir)" install
