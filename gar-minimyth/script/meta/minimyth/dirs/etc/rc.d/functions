@@ -19,20 +19,24 @@ mm_command_run() {
     if /usr/bin/test "${MM_DEBUG}" = "yes" ; then
         LOG_DIR="/var/log"
         LOG_FILE="/var/log/minimyth.log"
+        if /usr/bin/test ! -e "${LOG_FILE}" && /usr/bin/test -w "${LOG_DIR}" ; then
+            /bin/touch "${LOG_FILE}"
+            /bin/chmod 666 "${LOG_FILE}"
+        fi
     else
         LOG_DIR="/dev"
         LOG_FILE="/dev/null"
     fi
 
     RETURN=0
-    if /usr/bin/test -w "${LOG_FILE}" || /usr/bin/test -w "${LOG_DIR}" ; then
+    if /usr/bin/test -w "${LOG_FILE}" ; then
         /bin/echo "--- execution start: ${COMMAND}"  >> "${LOG_FILE}" 2>&1
-        ${COMMAND}                              >> "${LOG_FILE}" 2>&1
+        ${COMMAND}                                   >> "${LOG_FILE}" 2>&1
         RETURN=$?
         /bin/echo "--- execution end  : ${COMMAND}"  >> "${LOG_FILE}" 2>&1
     else
         /bin/echo "--- execution start: ${COMMAND}"                   2>&1
-        ${COMMAND}                              2>&1
+        ${COMMAND}                                                    2>&1
         RETURN=$?
         /bin/echo "--- execution end  : ${COMMAND}"                   2>&1
     fi
