@@ -1,0 +1,33 @@
+################################################################################
+# debug configuration variables and files.
+################################################################################
+conf_clean_debug() {
+    /bin/rm -rf /tmp/init.conf.debug
+
+    return 0
+}
+
+conf_check_debug() {
+    if /usr/bin/test ! -z "${MM_DEBUG}"         &&
+       /usr/bin/test !    "${MM_DEBUG}" = "yes" ; then
+        mm_message_output err "error: MM_DEBUG='${MM_DEBUG}' is not valid."
+    fi
+
+    return 0
+}
+
+conf_default_debug() {
+    return 0
+}
+
+conf_write_debug() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_DEBUG "${MM_DEBUG}"
+
+    return 0
+}
+
+conf_fetch_debug() {
+    return 0
+}

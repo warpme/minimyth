@@ -31,11 +31,14 @@ start() {
         exit 1
     fi
 
-    # Unset variables set by the processed MiniMyth configuration file.
+    # Unset variables set by the processed MiniMyth configuration file, except MM_DEBUG.
+    # This is a hack for testing. It should never get invoked during normal boot.
     if /usr/bin/test -e /etc/conf.d/minimyth ; then
         /bin/cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | /bin/sed -e 's%=.*$%%' | \
         while read variable ; do
-            set ${variable}=''
+            if /usr/bin/test ! "${variable}" = "MM_DEBUG" ; then
+                set ${variable}=''
+            fi
         done
     fi
 
