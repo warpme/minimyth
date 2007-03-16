@@ -23,11 +23,11 @@ start() {
         fi
     fi
 
-    /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
-
-    # Start LCDproc LCDd daemon and Myth LCD server.
-    if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
-        /usr/bin/test -e /usr/sbin/LCDd && /usr/sbin/LCDd -c /etc/LCDd.conf
+    if /usr/bin/test -e /etc/LCDd.conf ; then
+        # Set the driver.
+        /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
+        # Start LCDproc LCDd daemon and Myth LCD server.
+        /usr/sbin/LCDd -c /etc/LCDd.conf
     fi
 
     # Enable LCD in MythTV.
