@@ -312,10 +312,13 @@ conf_default_x() {
     case ${MM_X_DRIVER} in
         nvidia)
             if /usr/bin/test -z "${MM_X_TV_OUTPUT}" ; then
-                MM_X_TV_OUTPUT='COMPOSITE'
+                MM_X_TV_OUTPUT='AUTOSELECT'
             fi
-            if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "COMPOSITE" &&
-               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SVIDEO"    ; then
+            if /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "AUTOSELECT" &&
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "COMPOSITE"  &&
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SVIDEO"     &&
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "COMPONENT"  &&
+               /usr/bin/test ! "${MM_X_TV_OUTPUT}" = "SCART"      ; then
                 mm_message_output err "error: MM_X_TV_OUTPUT='${MM_X_TV_OUTPUT}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
             fi
             ;;
