@@ -1,6 +1,6 @@
 GARNAME = linux-headers
 GARVERSION = $(LINUX_HEADERS_VERSION)
-CATEGORIES = kernel-2.6.20
+CATEGORIES = kernel-headers
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/testing/
 DISTFILES = linux-$(GARVERSION).tar.bz2

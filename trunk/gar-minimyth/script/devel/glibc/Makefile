@@ -15,7 +15,7 @@ ifeq ($(DESTIMG),build)
 DEPENDS   = lang/c
 BUILDDEPS = devel/binutils devel/gcc
 else
-DEPENDS   = lang/c kernel-$(mm_KERNEL_VERSION)/linux-headers devel/glibc-headers
+DEPENDS   = lang/c kernel-headers/linux-headers devel/glibc-headers
 BUILDDEPS = devel/binutils devel/gcc-minimal-shared
 endif
 

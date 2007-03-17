@@ -12,7 +12,7 @@ CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
-$(CROSSIMG)_DEPENDS = kernel-$(mm_KERNEL_VERSION)/linux-headers devel/glibc-headers
+$(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-headers
 DEPENDS = lang/c devel/binutils
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
