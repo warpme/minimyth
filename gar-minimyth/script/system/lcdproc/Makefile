@@ -3,6 +3,7 @@ GARVERSION = 0.5.1
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-blank_goodbye.patch
 LICENSE = GPL2
 
 DESCRIPTION =
