@@ -12,7 +12,6 @@ DEPENDS = \
 	kernel-2.6.20/drm \
 	kernel-2.6.20/imon_vfd \
 	kernel-2.6.20/linux \
-	kernel-2.6.20/linux-headers \
 	kernel-2.6.20/xbox360
 
 GAR_EXTRA_CONF += kernel-2.6.20/linux/package-api.mk

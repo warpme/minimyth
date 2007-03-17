@@ -13,7 +13,6 @@ DEPENDS = \
 	kernel-2.6.17/k8temp \
 	kernel-2.6.17/imon_vfd \
 	kernel-2.6.17/linux \
-	kernel-2.6.17/linux-headers \
 	kernel-2.6.17/unionfs \
 	kernel-2.6.17/vt1211 \
 	kernel-2.6.17/xbox360

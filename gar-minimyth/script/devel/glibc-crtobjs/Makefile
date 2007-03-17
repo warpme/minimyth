@@ -8,7 +8,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel-$(mm_KERNEL_VERSION)/linux-headers
+DEPENDS = lang/c kernel-headers/linux-headers
 BUILDDEPS = devel/binutils devel/gcc-minimal-static
 
 # If this is the build image and the system is using linuxthreads, then we need to use linux threads.
