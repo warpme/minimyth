@@ -258,8 +258,7 @@ mm-check:
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_XORG_VERSION)" = "7.0" ] && \
-	    [ ! "$(mm_XORG_VERSION)" = "7.2" ] ; then \
+	@if [ ! "$(mm_XORG_VERSION)" = "7.2" ] ; then \
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
