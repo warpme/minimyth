@@ -8,7 +8,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	$(foreach dir,$(filter-out ../Makefile ../myth,$(wildcard ../*)),$(subst ../,$(CATEGORY)/,$(dir)) )
+	$(foreach dir,$(filter-out ../Makefile ../myth ../mythaudio ../theme-blootubelite-wide ../theme-blootube-osd,$(wildcard ../*)),$(subst ../,$(CATEGORY)/,$(dir)) )
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
