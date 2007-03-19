@@ -34,10 +34,7 @@ DEPENDS = \
 	utils/module-init-tools \
 	net/mount.cifs \
 	mediaplayers/mplayer \
-	myth/mythplugins-$(mm_MYTH_VERSION) \
-	myth/mythstream-$(mm_MYTH_VERSION) \
-	myth/myththemes-$(mm_MYTH_VERSION) \
-	myth/mythtv-$(mm_MYTH_VERSION) \
+	myth-$(mm_MYTH_VERSION)/myth \
 	net/ntp \
 	nvidia/nvidia-$(mm_NVIDIA_VERSION) \
 	utils/pciutils \
