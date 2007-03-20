@@ -7,27 +7,25 @@
 start() {
     mm_message_output info 'starting LCD/VFD ...'
 
-    # LCDd is already running, so return.
-    if /usr/bin/test -n "`/bin/pidof LCDd`" ; then
-        return
-    fi
-
-    # Load the LCDproc configuration file.
-    if /usr/bin/test ! -e /etc/LCDd.conf ; then
-        if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
-            if /usr/bin/test -e /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} ; then
-                cp /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} /etc/LCDd.conf
-            else
-                cp /etc/lcdproc.d/LCDd.conf                      /etc/LCDd.conf
+    # Only start the LCDd daemon when one is not running already.
+    if /usr/bin/test -z "`/bin/pidof LCDd`" ; then
+        # Load the LCDproc configuration file.
+        if /usr/bin/test ! -e /etc/LCDd.conf ; then
+            if /usr/bin/test -n "${MM_LCDPROC_DRIVER}" ; then
+                if /usr/bin/test -e /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} ; then
+                    cp /etc/lcdproc.d/LCDd.conf.${MM_LCDPROC_DRIVER} /etc/LCDd.conf
+                else
+                    cp /etc/lcdproc.d/LCDd.conf                      /etc/LCDd.conf
+                fi
             fi
         fi
-    fi
 
-    if /usr/bin/test -e /etc/LCDd.conf ; then
-        # Set the driver.
-        /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
-        # Start LCDproc LCDd daemon and Myth LCD server.
-        /usr/sbin/LCDd -c /etc/LCDd.conf
+        if /usr/bin/test -e /etc/LCDd.conf ; then
+            # Set the driver.
+            /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
+            # Start LCDproc LCDd daemon and Myth LCD server.
+            /usr/sbin/LCDd -c /etc/LCDd.conf
+        fi
     fi
 
     # Enable LCD in MythTV.
