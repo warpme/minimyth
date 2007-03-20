@@ -41,21 +41,21 @@ mythtv-fixes-patch:
 	@rm -rf $(WORKDIR)/fixes-patch
 
 mythtv-fixes-patch-all:
-	@cd ../$(subst mythtv-,mythtv-,$(shell basename `pwd`))      ; \
-		$(MAKE) clean                                        ; \
-		svn delete files/myth*-*-fixes-*.patch               ; \
-		$(MAKE) mythtv-fixes-patch                           ; \
-		svn add files/myth*-*fixes-*.patch                   ; \
+	@cd ../mythtv                                  ; \
+		$(MAKE) clean                          ; \
+		svn delete files/myth*-*-fixes-*.patch ; \
+		$(MAKE) mythtv-fixes-patch             ; \
+		svn add files/myth*-*fixes-*.patch     ; \
 		$(MAKE) clean
-	@cd ../$(subst mythtv-,mythplugins-,$(shell basename `pwd`)) ; \
-		$(MAKE) clean                                        ; \
-		svn delete files/myth*-*-fixes-*.patch               ; \
-		$(MAKE) mythtv-fixes-patch                           ; \
-		svn add files/myth*-*fixes-*.patch                   ; \
+	@cd ../mythplugins                             ; \
+		$(MAKE) clean                          ; \
+		svn delete files/myth*-*-fixes-*.patch ; \
+		$(MAKE) mythtv-fixes-patch             ; \
+		svn add files/myth*-*fixes-*.patch     ; \
 		$(MAKE) clean
-	@cd ../$(subst mythtv-,myththemes-,$(shell basename `pwd`))  ; \
-		$(MAKE) clean                                        ; \
-		svn delete files/myth*-*-fixes-*.patch               ; \
-		$(MAKE) mythtv-fixes-patch                           ; \
-		svn add files/myth*-*fixes-*.patch                   ; \
+	@cd ../myththemes                              ; \
+		$(MAKE) clean                          ; \
+		svn delete files/myth*-*-fixes-*.patch ; \
+		$(MAKE) mythtv-fixes-patch             ; \
+		svn add files/myth*-*fixes-*.patch     ; \
 		$(MAKE) clean
