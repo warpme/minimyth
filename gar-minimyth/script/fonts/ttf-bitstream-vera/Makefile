@@ -1,6 +1,6 @@
 GARNAME = ttf-bitstream-vera
 GARVERSION = 1.10
-CATEGORIES = X11
+CATEGORIES = fonts
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
@@ -10,15 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg
-
-BUILD_SCRIPTS   = rename
 INSTALL_SCRIPTS = custom
-
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(includedir) \
-	--x-libraries=$(DESTDIR)$(libdir) \
-	--with-x
 
 include ../../gar.mk
 

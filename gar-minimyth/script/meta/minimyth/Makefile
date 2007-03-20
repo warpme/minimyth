@@ -16,11 +16,13 @@ DEPENDS = \
 	system/acpid \
  	utils/alsa-utils \
 	utils/busybox \
-        X11/corefonts \
+        fonts/corefonts \
 	utils/dmidecode \
+	net/dropbear \
 	utils/ethtool \
 	devel/fakeroot \
 	emulators/fceu \
+	fonts/freefont \
 	devel/gdb \
 	disk/hdparm \
 	X11/IEGD \
@@ -51,7 +53,7 @@ DEPENDS = \
 	devel/strace \
 	system/sysvinit \
 	utils/transcode \
-	X11/ttf-bitstream-vera \
+	fonts/ttf-bitstream-vera \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \

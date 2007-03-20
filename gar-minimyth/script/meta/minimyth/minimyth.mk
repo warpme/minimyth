@@ -501,6 +501,7 @@ mm-gen-files:
 	@depmod -b "$(mm_ROOTFSDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
 	@cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
+	@rm -f $(mm_ROOTFSDIR)$(datadir)/mythtv/*{TTF,ttf}
 	@for font in `cd $(mm_ROOTFSDIR)$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
 		ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/$${font} $(mm_ROOTFSDIR)$(datadir)/mythtv/$${font} ; \
 	done
