@@ -27,7 +27,7 @@ endef
 
 BUILDDEPS = utils/cabextract
 
-BUILD_SCRIPTS   = extract
+BUILD_SCRIPTS   = extract lowercase
 INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
@@ -46,8 +46,11 @@ build-extract:
 	@cd $(WORKSRC) ; $(foreach file, $(FONTFILES), cabextract $(file) ; )
 	@$(MAKECOOKIE)
 
+build-lowercase:
+	@cd $(WORKSRC) ; $(foreach file, $(shell cd $(WORKSRC) ; ls -1 | sed 's%^[^A-Z]*$$%%'), mv $(file) $(shell echo $(file) | tr '[A-Z]' '[a-z]') ; )
+	@$(MAKECOOKIE)
+
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)/X11/fonts/TTF
-	@cp $(WORKSRC)/*.TTF $(DESTDIR)$(libdir)/X11/fonts/TTF
 	@cp $(WORKSRC)/*.ttf $(DESTDIR)$(libdir)/X11/fonts/TTF
 	@$(MAKECOOKIE)

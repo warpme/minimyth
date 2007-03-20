@@ -22,7 +22,6 @@ DEPENDS = \
 	utils/ethtool \
 	devel/fakeroot \
 	emulators/fceu \
-	fonts/freefont \
 	devel/gdb \
 	disk/hdparm \
 	X11/IEGD \
