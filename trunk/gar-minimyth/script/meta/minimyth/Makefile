@@ -51,6 +51,7 @@ DEPENDS = \
 	devel/strace \
 	system/sysvinit \
 	utils/transcode \
+	X11/ttf-bitstream-vera \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \
