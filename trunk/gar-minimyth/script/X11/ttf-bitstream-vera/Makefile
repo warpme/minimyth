@@ -4,7 +4,7 @@ CATEGORIES = X11
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
-$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/copyright.txt
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYRIGHT.TXT
 
 DESCRIPTION =
 define BLURB
@@ -21,10 +21,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x
 
 include ../../gar.mk
-
-build-rename:
-	@cd $(WORKSRC) ; $(foreach file, $(shell cd $(WORKSRC) ; ls -1 | sed 's%^[^A-Z]*$$%%'), mv $(file) $(shell echo $(file) | tr '[A-Z]' '[a-z]') ; )
-	@$(MAKECOOKIE)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)/X11/fonts/TTF
