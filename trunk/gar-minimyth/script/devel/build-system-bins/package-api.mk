@@ -114,6 +114,7 @@ build_system_bins_git = \
 
 build_system_bins_glibc = \
 	getconf \
+	iconv \
 	ldconfig
 
 # Overridden by binaries from package utils/grep.
