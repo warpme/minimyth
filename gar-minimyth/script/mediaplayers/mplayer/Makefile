@@ -146,7 +146,8 @@ CONFIGURE_ARGS_MISC = \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
 	--target="$(GARCH_FAMILY)-linux" \
-	--charset=noconv
+	--charset="UTF-8" \
+	--language="all"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
 	--enable-mmxext \
