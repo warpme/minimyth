@@ -24,7 +24,7 @@ DEPENDS = \
 	emulators/fceu \
 	devel/gdb \
 	disk/hdparm \
-	X11/IEGD \
+	$(if $(filter 2.6.17,$(mm_KERNEL_VERION)),X11/IEGD) \
 	emulators/jzintv \
 	system/lcdproc \
 	system/kbdd \
