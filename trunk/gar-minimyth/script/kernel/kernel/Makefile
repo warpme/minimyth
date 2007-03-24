@@ -17,5 +17,5 @@ post-install:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(foreach dir, $(wildcard ../../kernel-*), $(MAKE) clean-all -C $(dir)/kernel ; )
+	@$(foreach dir, $(wildcard ../../kernel-2.*), $(MAKE) clean-all -C $(dir)/kernel ; )
 	@$(MAKE) clean
