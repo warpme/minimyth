@@ -105,7 +105,7 @@
               <dt><a href="#MM_MYTH_WOLSQLCONNECTRETRY">MM_MYTH_WOLSQLCONNECTRETRY</a></dt>
               <dt><a href="#MM_MYTH_WOLSQLCOMMAND">MM_MYTH_WOLSQLCOMMAND</a></dt>
             </dl></dd>
-            <dt><a href="#MM_MYTHPLUGIN">Mmyth plugin configuration variables</a></dt>
+            <dt><a href="#MM_MYTHPLUGIN">Myth plugin configuration variables</a></dt>
             <dd><dl>
               <dt><a href="#MM_MYTHTV_OPTICAL_DISK_ENABLED">MM_MYTHTV_OPTICAL_DISK_ENABLED</a></dt>
               <dt><a href="#MM_MYTHAUDIO_ENABLED">MM_MYTHAUDIO_ENABLED</a></dt>
@@ -172,6 +172,13 @@
             <dd><dl>
               <dt><a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a></dt>
               <dt><a href="#MM_LCDPROC_FETCH_LCDD_CONF">MM_LCDPROC_FETCH_LCDD_CONF</a></dt>
+            </dl></dd>
+            <dt><a href="#MM_SSH">SSH remote command execution configuration variables</a></dt>
+            <dd><dl>
+              <dt><a href="#MM_SSH_HOST">MM_SSH_HOST</a></dt>
+              <dt><a href="#MM_SSH_USER">MM_SSH_USER</a></dt>
+              <dt><a href="#MM_SSH_PREFIX_MAP">MM_SSH_PREFIX_MAP</a></dt>
+              <dt><a href="#MM_SSH_FETCH_ID_RSA">MM_SSH_FETCH_ID_RSA</a></dt>
             </dl></dd>
             <dt><a href="#MM_MYTHDB">Myth frontend configuration variables</a></dt>
             <dd><dl>
@@ -1797,6 +1804,86 @@
             If the 'lcdproc' init script detects that LCDd is already running, then it will exit immediately.
           </p>
         </div>
+        <div id="MM_SSH" class="section">
+          <div class="heading">SSH remote command execution configuration variables</div>
+          <p>
+            MiniMyth does not include Perl, because Perl takes too much space.
+            As a result, MiniMyth cannot execute the Perl scripts used by some MythTV plugins such as MythVideo.
+          </p>
+          <p>
+            However, MiniMyth can execute commands on a remote host using
+            <a href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a>.
+            This enables MythTV plugins running on the MiniMyth frontend
+            to transparently execute their Perl scripts on a remote computer,
+            assuming their Perl scripts are installed on the remote computer.
+          </p>
+          <p>
+            If you want MiniMyth to remotely execute a locally unsupported command (e.g. '/usr/share/mythtv/mythvideo/imdb.pl'),
+            replace the local command with a symbolic link to the file '/usr/bin/mm_ssh_remote_command_execute',
+            configure the SSH remote command execution configuration variables,
+            make sure the command is availabe on the remote host, and
+            make sure the command can be executed by the remote user over SSH.
+          </p>
+          <p>
+            MiniMyth already replaces some MythTV plugin Perl scripts with symbolic links.
+            If there are others that should be replaced,
+            then please file a
+            <a href="http://linpvr.org/bugs/">bug report.</a>.
+          </p>
+          <p>
+            If you decide to use this, be sure that you know what you are doing.
+            Since neither TFTP server's access nor MiniMyth frontend's access is secure,
+            you should assume that anyone with access to your network
+            has access the specified remote user's private RSA identity file and
+            is able to use SSH to access the specified remote host as the specified remote user.
+            Therefore, you should not use the key in the remote user's private RSA identity file for anything else,
+            and your should make sure that the specified remote user has very limited rights on the specified remote server.
+          </p>
+          <p>
+            The SSH remote command execution configuration variables are:
+          </p>
+          <dl>
+            <dt id="MM_SSH_HOST"><strong>MM_SSH_HOST</strong></dt>
+            <dd>
+              <p>
+                The remote host on which to execute the command.
+                If not specified, it defaults to the Myth master backend server
+                ('<a href="#MM_MYTH_SERVER">MM_MYTH_SERVER</a>').
+              </p>
+            </dd>
+            <dt id="MM_SSH_USER"><strong>MM_SSH_USER</strong></dt>
+            <dd>
+              <p>
+                The name of the user on the remote host under which the command will be run.
+                If not specified, it defaults to 'minimyth'.
+              </p>
+            </dd>
+            <dt id="MM_SSH_PREFIX_MAP"><strong>MM_SSH_PREFIX_MAP</strong></dt>
+            <dd>
+              <p>
+                The map from the local prefix to the remote prefix.
+                The format is '{local-prefix}:{remote-prefix}'.
+                If not specified, then no prefix mapping will be done.
+              </p>
+              <p>
+                This variable provides a map from the prefix local MiniMyth frontend to the prefix on the remote host.
+                This is useful when MythTV (or its associated Perl scripts) are installed in a different location
+                on the local MiniMyth frontend and the remote host.
+                For example, if MythTV is installed on the remote host in '/usr/local',
+                then you would set MM_SSH_PREFIX_MAP='/usr:/usr/local'.
+                Alternatively, if the MythTV Perl script are installed in the local user's home directory,
+                then you might set MM_SSH_PREFIX_MAP="/usr:/home/${MM_SSH_USER}/usr".
+              </p>
+            </dd>
+            <dt id="MM_SSH_FETCH_ID_RSA"><strong>MM_SSH_FETCH_ID_RSA</strong></dt>
+            <dd>
+              <p>
+                Indicates whether or not to fetch the 'id_rsa' file from the frontend's MiniMyth configuration directory.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+            </dd>
+          </dl>
+        </div>
         <div id="MM_MYTHDB" class="section">
           <div class="heading">Myth frontend configuration variables</div>
           <p>
@@ -1862,7 +1949,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-03-24 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-03-25 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

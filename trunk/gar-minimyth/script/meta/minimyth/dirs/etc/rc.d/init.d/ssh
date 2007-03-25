@@ -1,0 +1,29 @@
+#!/bin/sh
+################################################################################
+# ssh
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info 'configuring ssh client ...'
+
+    if /usr/bin/test -e /etc/ssh/id_rsa ; then
+        /bin/mkdir -p /etc/dropbear
+        /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa /etc/dropbear/id_rsa
+        /bin/chmod 644 /etc/dropbear/id_rsa
+    fi
+
+    return 0
+}
+
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

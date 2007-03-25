@@ -79,6 +79,7 @@ MM_INIT_START := \
     cpufreq \
     time \
     web \
+    ssh \
     media \
     audio \
     video \
@@ -172,7 +173,7 @@ COPY_FILES = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-make-distro
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
 
 mm-check:
 	@# Check build environment.
@@ -384,6 +385,7 @@ mm-make-conf:
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv
 	@cp -r  ./dirs/usr/share/mythtv/*                $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
+	@$(foreach script, $(wildcard $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/mythvideo/scripts/*.pl), rm -f $(script) ; ln -s /usr/bin/mm_ssh_remote_command_execute $(script) ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
@@ -581,6 +583,9 @@ mm-make-rootfs:
 	@ln -s ../rootfs-ro/sbin/pivot_root $(mm_ROOTFSDIR)/sbin/pivot_root
 	@ln -s ../rootfs-ro/bin/sh          $(mm_ROOTFSDIR)/bin/sh
 	@cp -r ./dirs/initrd/sbin/init      $(mm_ROOTFSDIR)/sbin/init
+
+mm-remove-svn:
+	@find $(mm_STAGEDIR) -name .svn -exec rm -rf '{}' +
 
 mm-make-distro-base:
 	@echo 'making minimyth distribution'
@@ -792,7 +797,7 @@ mm-make-source:
 		$(SOURCE_DIR_TAIL)
 	@cd $(mm_STAGEDIR)/source ; tar -jxf $(SOURCE_DIR_TAIL).tar.bz2
 	@cd $(mm_STAGEDIR)/source ; test "$(SOURCE_DIR_TAIL)" = "gar-$(mm_NAME)" || mv $(SOURCE_DIR_TAIL) gar-$(mm_NAME)
-	@cd $(mm_STAGEDIR)/source/gar-$(mm_NAME) ; rm -rf `find -name .svn`
+	@find $(mm_STAGEDIR)/source/gar-$(mm_NAME) -name .svn -exec rm -rf '{}' +
 	@tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)
 	@rm -fr $(mm_STAGEDIR)/source
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
