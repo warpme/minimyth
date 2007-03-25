@@ -1,0 +1,58 @@
+################################################################################
+# SSH configuration variables and files.
+################################################################################
+conf_clean_ssh() {
+    /bin/rm -rf /tmp/init.conf.ssh
+
+    return 0
+}
+
+conf_check_ssh() {
+    return 0
+}
+
+conf_default_ssh() {
+    local AUDIO
+    local AUDIO_CARD_NUMBER
+    local AUDIO_DEVICE_NUMBER
+
+    if /usr/bin/test -z "${MM_SSH_USER}" ; then
+        MM_SSH_USER='minimyth'
+    fi
+    if /usr/bin/test -z "${MM_SSH_HOST}" ; then
+        MM_SSH_HOST="${MM_MYTH_SERVER}"
+    fi
+    if /usr/bin/test -z "${MM_SSH_HOST}" ; then
+        MM_SSH_HOST="${MM_TFTP_SERVER}"
+    fi
+    if /usr/bin/test -z "${MM_SSH_FETCH_ID_RSA}" ; then
+        MM_SSH_FETCH_ID_RSA='no'
+    fi
+    if /usr/bin/test -z "${MM_SSH_PREFIX_MAP}" ; then
+        MM_SSH_PREFIX_MAP=''
+    fi
+
+    return 0
+}
+
+conf_write_ssh() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_SSH_USER         "${MM_SSH_USER}"
+    conf_variable_write "${conf_file}" MM_SSH_HOST         "${MM_SSH_HOST}"
+    conf_variable_write "${conf_file}" MM_SSH_FETCH_ID_RSA "${MM_SSH_FETCH_ID_RSA}"
+    conf_variable_write "${conf_file}" MM_SSH_PREFIX_MAP   "${MM_SSH_PREFIX_MAP}"
+
+    return 0
+}
+
+conf_fetch_ssh() {
+    if /usr/bin/test "${MM_SSH_FETCH_ID_RSA}"   = "yes" ; then
+        /bin/rm -f /etc/ssh/id_rsa
+        mm_conf_get /id_rsa /etc/ssh/id_rsa
+        if /usr/bin/test ! -e /etc/ssh/id_rsa ; then
+            mm_message_output err "error: failed to fetch 'id_rsa' file."
+        fi
+    fi
+    return 0
+}
