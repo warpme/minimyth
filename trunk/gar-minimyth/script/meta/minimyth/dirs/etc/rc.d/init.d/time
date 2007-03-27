@@ -8,6 +8,7 @@ start() {
 
     local NTP_CONF
     local NTP_SERVER
+    local NTP_SUCCESS
 
     mm_message_output info 'configuring time ...'
 
@@ -33,16 +34,27 @@ start() {
     done
     /bin/mv -f ${NTP_CONF}~ ${NTP_CONF}
 
-    NTP_SERVER=`/bin/echo ${MM_NTP_SERVERS} | /usr/bin/cut -d ' ' -f 1`
-
     # Set localtime file.
     /bin/cp /usr/share/zoneinfo/${MM_TZ} /etc/localtime
 
     # Set time.
-    /usr/bin/ntpdate ${NTP_SERVER}
-    if /usr/bin/test $? -ne 0 ; then
-        mm_message_output err "error: 'ntpdate' failed to synchronize with '${NTP_SERVER}'."
-        exit 1
+    NTP_SUCCESS=0
+    for NTP_SERVER in ${MM_NTP_SERVERS} ; do
+        /usr/bin/ntpdate ${NTP_SERVER}
+        if /usr/bin/test $? -eq 0 ; then
+            NTP_SUCCESS=1
+            break
+        fi
+    done
+    if /usr/bin/test ${NTP_SUCCESS} -eq 0 ; then
+        mm_message_output err "error: 'ntpdate' failed to synchronize with any NTP server." 
+        case ${MM_NTP_FAILURE_ACTION} in
+            stop)
+                exit 1
+                ;;
+            continue)
+                ;;
+        esac
     fi
 
     # Start NTP daemon.

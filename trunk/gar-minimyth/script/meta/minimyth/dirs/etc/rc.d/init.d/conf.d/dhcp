@@ -19,6 +19,12 @@ conf_check_dhcp() {
         mm_message_output err 'error: "minimyth.conf" is out of date. "MM_TIME_SERVER" is obsolete.'
     fi
 
+    if /usr/bin/test ! -z "${MM_NTP_FAILURE_ACTION}"              && \
+       /usr/bin/test !    "${MM_NTP_FAILURE_ACTION}" = "stop"     && \
+       /usr/bin/test !    "${MM_NTP_FAILURE_ACTION}" = "continue" ; then
+        mm_message_output err "error: MM_NTP_FAILURE_ACTION='${MM_NTP_FAILURE_ACTION}' is not valid."
+    fi
+
     return 0
 }
 
@@ -40,6 +46,9 @@ conf_default_dhcp() {
     fi
     if /usr/bin/test -z "${MM_TZ}" ; then
         MM_TZ="${MM_DHCP_TZ}"
+    fi
+    if /usr/bin/test -z "${MM_NTP_FAILURE_ACTION}" ; then
+        MM_NTP_FAILURE_ACTION='stop'
     fi
 
     # Convert '.' to empty.
@@ -69,12 +78,13 @@ conf_default_dhcp() {
 conf_write_dhcp() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_HOSTNAME    "${MM_HOSTNAME}"
-    conf_variable_write "${conf_file}" MM_DOMAIN      "${MM_DOMAIN}"
-    conf_variable_write "${conf_file}" MM_DNS_SERVERS "${MM_DNS_SERVERS}"
-    conf_variable_write "${conf_file}" MM_NTP_SERVERS "${MM_NTP_SERVERS}"
-    conf_variable_write "${conf_file}" MM_LOG_SERVERS "${MM_LOG_SERVERS}"
-    conf_variable_write "${conf_file}" MM_TZ          "${MM_TZ}"
+    conf_variable_write "${conf_file}" MM_HOSTNAME           "${MM_HOSTNAME}"
+    conf_variable_write "${conf_file}" MM_DOMAIN             "${MM_DOMAIN}"
+    conf_variable_write "${conf_file}" MM_DNS_SERVERS        "${MM_DNS_SERVERS}"
+    conf_variable_write "${conf_file}" MM_NTP_SERVERS        "${MM_NTP_SERVERS}"
+    conf_variable_write "${conf_file}" MM_LOG_SERVERS        "${MM_LOG_SERVERS}"
+    conf_variable_write "${conf_file}" MM_TZ                 "${MM_TZ}"
+    conf_variable_write "${conf_file}" MM_NTP_FAILURE_ACTION "${MM_NTP_FAILURE_ACTION}"
 
     return 0
 }
