@@ -50,6 +50,7 @@
               <dt><a href="#MM_NTP_SERVERS">MM_NTP_SERVERS</a></dt>
               <dt><a href="#MM_LOG_SERVERS">MM_LOG_SERVERS</a></dt>
               <dt><a href="#MM_TZ">MM_TZ</a></dt>
+              <dt><a href="#MM_NTP_FAILURE_ACTION">MM_NTP_FAILURE_ACTION</a></dt>
             </dl></dd>
             <dt><a href="#MM_CPUFREQ">CPU frequency scaling variables</a></dt>
             <dd><dl>
@@ -266,11 +267,18 @@
             However, most of the DHCP servers found in off-the-shelf home routers do not support some or all of these parameters.
             If your DHCP server does not support certain parameters
             (or provides incorrect values for certain parameters),
+            then you can use
             <a href="document-boot.shtml#bootline">boot line</a> DHCP override parameters
             or these DHCP override variables to override the parameter values provided by the DHCP server.
           </p>
           <p>
-            The DHCP override variables are:
+            In addition, under some conditions, it is appropriate to ignore particular initialization failures
+            that result from DHCP provided configuration parameters.
+            If you need to ignore particular initialization failures that result from DHCP provided configuration parameters,
+            then you can use these DHCP override variables to override the default initialization failure behavior.
+          </p>
+          <p>
+            The DHCP override variables that override DHCP provided parameters:
           </p>
           <dl>
             <dt id="MM_HOSTNAME"><strong>MM_HOSTNAME</strong></dt>
@@ -285,6 +293,41 @@
             <dd>See <a href="document-configure.shtml#dhcp-log-server">Log Server</a>.</dd>
             <dt id="MM_TZ"><strong>MM_TZ</strong></dt>
             <dd>See <a href="document-configure.shtml#dhcp-tcode">TCode</a>.</dd>
+          </dl>
+          <p>
+            The DHCP override variables that override initialization failure related to DHCP provided parameters:
+          </p>
+          <dl>
+            <dt id="MM_NTP_FAILURE_ACTION"><strong>MM_NTP_FAILURE_ACTION</strong></dt>
+            <dd>
+              <p>
+                Set the action to take when NTP (secifically the 'ntpdate' command) fails during initialization.
+                Valid values are 'stop' and 'continue', with 'stop' being the default.
+              </p>
+              <p>
+                Use this variable with caution.
+                If you decide to override the default behaviour, then be sure you know what you are doing.
+              </p>
+              <p>
+                If either the timezone or time on either the backend or frontend are incorrect,
+                then MythTV will not work correctly.
+                In particular, forward, rewind and commercial skip will not work correctly.
+                Therefore, it is very important that the timezone and time be correct.
+              </p>
+              <p>
+                In order to ensure that it has the correct time, MiniMyth uses NTP.
+                During initialization, if NTP (specifically the 'ntpdate' command) fails,
+                then MiniMyth outputs an error message and stops.
+                This ensures that MiniMyth will only run when it has the correct time.
+              </p>
+              <p>
+                While NTP (specifically the 'ntpdate' command) may fail during initialization,
+                this should only occur because the NTP server(s) being used are temporarily unavailable.
+                As a result, The NTP daemon (ntpd) will be started, even when 'MM_NTP_FAILURE_ACTION' is set to 'continue'.
+                Therefore, setting 'MM_NTP_FAILURE_ACTION' to 'continue'
+                does not elliminate the need to provide at least one NTP server address.
+              </p>
+            </dd>
           </dl>
         </div>
         <div id="MM_CPUFREQ" class="section">
@@ -1949,7 +1992,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-03-25 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-03-27 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
