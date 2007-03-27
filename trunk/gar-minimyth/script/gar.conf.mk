@@ -26,7 +26,7 @@ ALL_DESTIMGS = main build
 # /usr/etc or /usr/var
 
 # Directory config for the "main" image
-main_rootdir ?= /
+main_rootdir ?= 
 # Warning: any changes to these paths will cause certain packages to break.
 main_prefix = $(main_rootdir)/usr
 main_exec_prefix = $(main_rootdir)/usr
