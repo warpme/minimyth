@@ -1,8 +1,8 @@
 GARNAME = flex
-GARVERSION = 2.5.4
+GARVERSION = 2.5.33
 CATEGORIES = devel
-MASTER_SITES = ftp://ftp.gnu.org/non-gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME)a.tar.gz
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = BSD
 
 DESCRIPTION =
@@ -15,13 +15,9 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = --build=$(GARBUILD) --host=$(GARHOST) \
-	--prefix=$(prefix) \
-	--exec_prefix=$(exec_prefix)
-
-BUILD_OVERRIDE_DIRS   = prefix exec_prefix bindir libdir includedir mandir
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir libdir includedir mandir
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-rpath \
+	--with-gnu-ld
 
 include ../../gar.mk
 
-mandir := $(mandir)/man1
