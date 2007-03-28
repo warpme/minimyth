@@ -39,6 +39,7 @@ DEPENDS = \
 	net/ntp \
 	nvidia/nvidia-$(mm_NVIDIA_VERSION) \
 	utils/pciutils \
+	utils/pmount \
 	net/portmap \
 	system/powernowd \
 	qt/qt \
