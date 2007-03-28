@@ -19,6 +19,7 @@ start() {
     local settings_data
     local settings_value
     local TRANSCODE
+    local file
 
     mm_message_output info 'configuring MythTV ...'
 
@@ -152,6 +153,13 @@ start() {
         /bin/rm -rf /usr/share/mythtv/weather*
         /bin/rm -rf /usr/share/mythtv/mythweather*
     fi
+
+    # Enable MythTV to detect the addition and removal of storage devices.
+    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-mythtv.rules.disabled 2> /dev/null` ; do
+        file_old=`/bin/echo ${file}`
+        file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
+	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
+    done
 
     return 0
 }

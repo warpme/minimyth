@@ -632,10 +632,9 @@ mm-make-distro-ram:
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/mount                         ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/mount.cifs                   ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                         ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                     ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/umount                        ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
 		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
 	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
@@ -678,10 +677,9 @@ mm-make-distro-nfs:
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/mount                       ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/mount.cifs                 ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                   ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/umount                      ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                      ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
 	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
