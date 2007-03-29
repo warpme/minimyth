@@ -38,7 +38,7 @@ start() {
     /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /usr/share/mythtv/mysql.txt
 
     # If using wake-on-lan, then make sure that the MythTV master backend is awake.
-    if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" ; then
+    if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" && ! mm_mythdb_command_run > /dev/null 2>&1 ; then
         WOLSqlConnectRetry=` \
 		/bin/cat /usr/share/mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlConnectRetry=' | \
@@ -52,8 +52,7 @@ start() {
 		/bin/grep '^WOLSqlCommand=' | \
 		/bin/sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1
-        while /usr/bin/test ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} && \
-              ! mm_mythdb_command_run > /dev/null 2>&1                        ; do
+        while /usr/bin/test ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} && ! mm_mythdb_command_run > /dev/null 2>&1 ; do
             mm_message_output info "waking MythTV master backend database (${WOLSqlConnectAttempt} attempt(s)) ..."
             ${WOLSqlCommand}
             /bin/sleep ${WOLSqlReconnectWaitTime}
