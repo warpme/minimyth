@@ -15,8 +15,11 @@ start() {
     # unmount any remaining network file systems.
     /bin/cat /proc/mounts | while read mountline; do
         mountpoint=`/bin/echo ${mountline} | /usr/bin/cut -d ' ' -f 2`
+        mountpointdir=`/usr/bin/dirname ${mountpoint}`
         mounttype=`/bin/echo  ${mountline} | /usr/bin/cut -d ' ' -f 3`
-        if /usr/bin/test "${mounttype}" = "cifs"  ||
+        if   /usr/bin/test "${mountpointdir}" = "/media" ; then
+            /bin/umount -r ${mountpoint}
+        elif /usr/bin/test "${mounttype}" = "cifs"  ||
            /usr/bin/test "${mounttype}" = "nfs"   ||
            /usr/bin/test "${mounttype}" = "smbfs" ; then
             /bin/umount -r ${mountpoint}

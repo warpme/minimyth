@@ -4,7 +4,7 @@ CATEGORIES = utils
 MASTER_SITES = http://www.piware.de/projects/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-umountprog.patch $(DISTNAME)-install.patch
-LICENSE = BSD
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB

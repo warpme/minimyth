@@ -726,16 +726,6 @@ mm_url_mount() {
         /usr/bin/test -n "${MOUNT_OPTIONS}" && OPTIONS="${OPTIONS} -o ${MOUNT_OPTIONS}"
         /bin/mount -n -t "${MOUNT_VFSTYPE}" ${OPTIONS} "${MOUNT_DEVICE}" "${MOUNT_DIR}" || return
     fi
-
-    # Update fstab.
-    case "${MOUNT_VFSTYPE}" in
-        cifs)
-            /bin/echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
-            ;;
-        nfs)
-            /bin/echo "${MOUNT_DEVICE} ${MOUNT_DIR} ${MOUNT_VFSTYPE} ${MOUNT_OPTIONS} 0 0" >> /etc/fstab
-            ;;
-    esac
 }
 
 mm_var_get() {
