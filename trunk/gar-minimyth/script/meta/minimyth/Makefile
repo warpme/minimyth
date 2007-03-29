@@ -19,6 +19,7 @@ DEPENDS = \
         fonts/corefonts \
 	utils/dmidecode \
 	net/dropbear \
+	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
 	emulators/fceu \
