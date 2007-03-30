@@ -36,9 +36,9 @@ DEPENDS = \
 	utils/module-init-tools \
 	net/mount.cifs \
 	mediaplayers/mplayer \
-	myth-$(mm_MYTH_VERSION)/myth \
+	myth/myth \
 	net/ntp \
-	nvidia/nvidia-$(mm_NVIDIA_VERSION) \
+	nvidia/nvidia \
 	utils/pciutils \
 	utils/pmount \
 	net/portmap \

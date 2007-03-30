@@ -1,13 +1,13 @@
-GARNAME = myth
-GARVERSION = $(mm_MYTH_VERSION)
-CATEGORIES = myth
+GARNAME = nvidia
+GARVERSION = $(mm_NVIDIA_VERSION)
+CATEGORIES = nvidia
 LICENSE =
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = myth-$(mm_MYTH_VERSION)/myth
+DEPENDS = nvidia/nvidia-$(mm_NVIDIA_VERSION)
 
 include ../../gar.mk
 
@@ -17,5 +17,5 @@ post-install:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(foreach dir, $(wildcard ../../myth-*), $(MAKE) clean-all -C $(dir)/myth ; )
+	@$(foreach dir, $(wildcard ../nvidia-*), $(MAKE) clean-all -C $(dir) ; )
 	@$(MAKE) clean
