@@ -53,7 +53,7 @@ start() {
 		/bin/sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1
         while /usr/bin/test ${WOLSqlConnectAttempt} -le ${WOLSqlConnectRetry} && ! mm_mythdb_command_run > /dev/null 2>&1 ; do
-            mm_message_output info "waking MythTV master backend database (${WOLSqlConnectAttempt} attempt(s)) ..."
+            mm_message_output info "waking MythTV master backend database (${WOLSqlConnectAttempt} of ${WOLSqlConnectRetry} attempts) ..."
             ${WOLSqlCommand}
             /bin/sleep ${WOLSqlReconnectWaitTime}
             WOLSqlConnectAttempt=$((WOLSqlConnectAttempt+1))
@@ -62,7 +62,7 @@ start() {
         if mm_mythdb_command_run > /dev/null 2>&1 ; then
             WOL_Additional_Delay=0
             while /usr/bin/test ${WOL_Additional_Delay} -le ${MM_MASTER_WOL_ADDITIONAL_DELAY} ; do
-                mm_message_output info "waiting ${MM_MASTER_WOL_ADDITIONAL_DELAY} seconds for MythTV backend to wake (${WOL_Additional_Delay}) ..."
+                mm_message_output info "waiting while MythTV master backend wakes (${WOL_Additional_Delay} of ${MM_MASTER_WOL_ADDITIONAL_DELAY} seconds) ..."
                 /bin/sleep 1
                 WOL_Additional_Delay=$((WOL_Additional_Delay+1))
             done
