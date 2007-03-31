@@ -31,9 +31,9 @@ CONFIGURE_ARGS = \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
-	--cpu=$(GARCH) \
-	--tune=$(GARCH) \
 	--arch=$(GARCH) \
+	--tune=$(GARCH) \
+	--cpu=$(GARCH) \
 	--enable-proc-opt \
 	--enable-mmx \
 	--disable-iwmmxt \
