@@ -42,4 +42,6 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libFLAC.la
 	@rm -f $(DESTDIR)$(libdir)/libFLAC++.la
+	@rm -f $(DESTDIR)$(libdir)/libOggFLAC.la
+	@rm -f $(DESTDIR)$(libdir)/libOggFLAC++.la
 	@$(MAKECOOKIE)
