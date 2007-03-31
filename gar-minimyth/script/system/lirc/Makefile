@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/libirman lib/libusb
+DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/libirman lib/libusb xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -21,7 +21,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-sandboxed \
 	--with-gnu-ld \
-	--without-x \
+	--with-x \
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
 	--with-kerneldir="$(DESTDIR)$(LINUX_SOURCEDIR)" \
 	--with-moduledir="$(LINUX_MODULESDIR)/misc/lirc" \
 	--with-driver=all
