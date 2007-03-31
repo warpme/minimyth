@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-minimyth.patch $(GARNAME)-gant.patch $(GARNAME)-fadeaway.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
