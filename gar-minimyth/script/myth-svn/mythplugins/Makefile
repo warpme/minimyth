@@ -11,10 +11,10 @@ define BLURB
 endef
 
 DEPENDS  = lang/c $(CATEGORY)/mythtv
-# mythdvd
+# mythgallery
 DEPENDS += lib/libexif lib/libtiff
 # mythmusic
-DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
+DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libmad lib/libvorbis lib/SDL lib/taglib
 # mythvideo (mtd)
 DEPENDS += lib/libdvdread
 

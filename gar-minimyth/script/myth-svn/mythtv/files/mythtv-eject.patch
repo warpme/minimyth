@@ -1,6 +1,6 @@
-diff -Naur mythtv-13045-old/libs/libmyth/mythcdrom-linux.cpp mythtv-13045-new/libs/libmyth/mythcdrom-linux.cpp
---- mythtv-13045-old/libs/libmyth/mythcdrom-linux.cpp	2007-03-17 22:02:23.000000000 -0700
-+++ mythtv-13045-new/libs/libmyth/mythcdrom-linux.cpp	2007-03-29 10:13:25.000000000 -0700
+diff -Naur mythtv-13153-old/libs/libmyth/mythcdrom-linux.cpp mythtv-13153-new/libs/libmyth/mythcdrom-linux.cpp
+--- mythtv-13153-old/libs/libmyth/mythcdrom-linux.cpp	2007-03-31 13:23:59.000000000 -0700
++++ mythtv-13153-new/libs/libmyth/mythcdrom-linux.cpp	2007-03-31 13:27:59.000000000 -0700
 @@ -7,8 +7,17 @@
  #include <linux/iso_fs.h>
  #include <unistd.h>
@@ -19,12 +19,15 @@ diff -Naur mythtv-13045-old/libs/libmyth/mythcdrom-linux.cpp mythtv-13045-new/li
  class MythCDROMLinux: public MythCDROM
  {
  public:
-@@ -34,9 +43,28 @@
+@@ -34,12 +43,31 @@
  
  MediaError MythCDROMLinux::eject(bool open_close)
  {
 +    QString MountCommand;
 +
+     if (!isDeviceOpen())
+         openDevice();
+ 
      if (open_close)
 -        return (ioctl(m_DeviceHandle, CDROMEJECT) == 0) ? MEDIAERR_OK
 -                                                        : MEDIAERR_FAILED;
@@ -48,5 +51,5 @@ diff -Naur mythtv-13045-old/libs/libmyth/mythcdrom-linux.cpp mythtv-13045-new/li
 +        }
 +    }
      else
-         return (ioctl(m_DeviceHandle, CDROMCLOSETRAY) == 0) ? MEDIAERR_OK
-                                                             : MEDIAERR_FAILED;
+     {
+         // If the tray is empty, this will fail (Input/Output error)
