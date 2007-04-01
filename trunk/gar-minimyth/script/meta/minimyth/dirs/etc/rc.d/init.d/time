@@ -10,19 +10,7 @@ start() {
     local NTP_SERVER
     local NTP_SUCCESS
 
-    mm_message_output info 'configuring time ...'
-
-    # Check for timezone.
-    if /usr/bin/test -z "${MM_TZ}" ; then
-        mm_message_output err 'error: "MM_TZ" not present.'
-        exit 1
-    fi
-
-    # Check for NTP time servers.
-    if /usr/bin/test -z "$MM_NTP_SERVERS}" ; then
-        mm_message_output err 'error: no NTP server(s) provided.'
-        exit 1
-    fi
+    mm_message_output info "configuring time ..."
 
     NTP_CONF='/etc/ntp.conf'
 
@@ -64,7 +52,7 @@ start() {
 }
 
 stop() {
-    mm_message_output info 'saving time ...'
+    mm_message_output info "saving time ..."
 
     if /usr/bin/test -n "`/bin/pidof ntpd`" ; then
         /usr/bin/killall ntpd
