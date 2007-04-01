@@ -1,7 +1,7 @@
 MiniMyth Changelog
 
 --------------------------------------------------------------------------------
-Changes since 22 (2007-03-30):
+Changes since 22 (2007-04-01):
 
 Current MythTV versions
     MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
@@ -17,30 +17,40 @@ Current MythTV versions
     MythTV svn:       version svn12904, trunk svn 13153.
 
 Changed removable disk handling
-    - Changed udev rules so that udev does not mount removable disks.
-    - Changed udev rules so that MythTV receives removable disk events.
-    - Renamed removable device file system names so that they are more user
-      friendly.
-    - Patched MythTV so that it uses the 'eject' command rather than its
-      internal command when the 'eject' command is present. The 'eject'
-      command works around problems that can prevent some CDs and DVDs from
-      ejecting.
+    Changed udev rules so that udev does not mount removable disks.
+    Added udev rules and script  so that MythTV receives removable disk events.
+    Renamed removable device file system names so that they are more user
+        friendly.
+    Patched MythTV so that it uses the 'eject' command rather than its
+        internal command when the 'eject' command is present. The 'eject'
+        command works around problems that can prevent some CDs and DVDs from
+        ejecting.
 
 Added SSH remote command execution
-    - Intended to allow the mythfrontend to run MythTV plugin Perl scripts
-      on a remote host.
-    - Added /usr/bin/mm_ssh_remote_command_execute for running remote
-      commands.
-    - Added MM_SSH_HOST, MM_SSH_USER, MM_SSH_COMMAND_PREFIX and
-      MM_SSH_FETCH_ID_RSA for configuring the SSH client and the command
-      prefix.
+    Intended to allow the mythfrontend to run MythTV plugin Perl scripts
+        on a remote host.
+    Added /usr/bin/mm_ssh_remote_command_execute for running remote
+        commands.
+    Added MM_SSH_HOST, MM_SSH_USER, MM_SSH_COMMAND_PREFIX and
+        MM_SSH_FETCH_ID_RSA for configuring the SSH client and the command
+        prefix.
 
 Extended minimyth.conf
-    - Added MM_NTP_FAILURE_ACTION to control the action taken when NTP
-      fails during MiniMyth initialization.
-    - Renamed MM_MYTH_* variables from MM_MYTH_* to MM_MASTER_*.
-    - Added MM_MASTER_WOL_ADDITIONAL_DELAY to allow for additional delay
-      after WOL wakes the Myth master backend.
+    Added MM_NTP_FAILURE_ACTION to control the action taken when NTP
+        fails during MiniMyth initialization.
+    Renamed MM_MYTH_* variables from MM_MYTH_* to MM_MASTER_*.
+    Added MM_MASTER_WOL_ADDITIONAL_DELAY to allow for additional delay
+        after WOL wakes the Myth master backend.
+
+Modified init
+    Changed how the LIRC daemon is run so that the 'master' LIRC daemon is used
+        only when there are more than one LIRC devices.
+    Moved LIRC auto-detection from udev rules/scripts to init scripts.
+
+Modified udev
+    Changed udev rules so that udev does not mount removable disks.
+    Added udev rules and script  so that MythTV receives removable disk events.
+    Remoted rules and script for LIRC auto-detection.
 
 Removed pakages
     Removed xorg-7.0/*.
@@ -145,7 +155,7 @@ Modified init
 
 Modified udev
     Changed the default for DMA on IDE devices to be off.
-    Changed udev rults to enable DMA on IDE DVD devices.
+    Changed udev rules to enable DMA on IDE DVD devices.
     Added rules and script for LIRC auto-detection.
 
 Improved build system
