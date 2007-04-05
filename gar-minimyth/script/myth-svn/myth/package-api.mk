@@ -1,0 +1,18 @@
+MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
+
+MYTHTV_CONFIGURE_ENV = \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
+	OPTFLAGS="$(CFLAGS)"
+MYTHTV_BUILD_ENV     = \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
+	OPTFLAGS="$(CFLAGS)"
+MYTHTV_INSTALL_ENV   = \
+	DESTDIR="$(DESTDIR)" \
+	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QMAKESPEC="default" \
+	OPTFLAGS="$(CFLAGS)" \
+	INSTALL_ROOT="$(DESTDIR)"

@@ -7,9 +7,6 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = \
-	$(foreach dir,$(filter-out ../Makefile ../myth,$(wildcard ../*)),$(subst ../,$(CATEGORY)/,$(dir)) )
-
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 include ../../gar.mk
@@ -20,10 +17,10 @@ post-install:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(foreach dir,$(filter-out ../Makefile,$(wildcard ../*)),$(MAKE) -C $(dir) clean ; )
 	@rm -rf $(DESTDIR)$(bindir)/mtd
 	@rm -rf $(DESTDIR)$(bindir)/myth*
 	@rm -rf $(DESTDIR)$(datadir)/myth*
 	@rm -rf $(DESTDIR)$(includedir)/myth*
 	@rm -rf $(DESTDIR)$(libdir)/libmyth*
 	@rm -rf $(DESTDIR)$(libdir)/myth*
+	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )
