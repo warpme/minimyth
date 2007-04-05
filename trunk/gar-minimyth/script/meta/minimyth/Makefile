@@ -31,7 +31,10 @@ DEPENDS = \
 	utils/lsdvd \
 	utils/module-init-tools \
 	net/mount.cifs \
-	myth/myth \
+	myth-$(mm_MYTH_VERSION)/myththemes \
+	myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd \
+	myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide \
+	myth-$(mm_MYTH_VERSION)/mythtv \
 	net/ntp \
 	utils/pciutils \
 	utils/pmount \
@@ -61,12 +64,31 @@ DEPENDS = \
 		$(if $(filter 2.6.17,$(mm_KERNEL_VERSION)),X11/IEGD)) \
 	$(if $(filter nvidia,$(mm_CHIPSETS)), \
 		nvidia/nvidia) \
+	$(if $(filter mythaudio,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythaudio),myth-$(mm_MYTH_VERSION)/mythaudio)) \
+	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythbrowser),myth-$(mm_MYTH_VERSION)/mythbrowser)) \
+	$(if $(filter mythdvd,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythdvd),myth-$(mm_MYTH_VERSION)/mythdvd)) \
+	$(if $(filter mythgallery,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythgallery),myth-$(mm_MYTH_VERSION)/mythgallery)) \
 	$(if $(filter mythgame,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythgame),myth-$(mm_MYTH_VERSION)/mythgame) \
 		emulators/fceu \
 		emulators/jzintv \
 		emulators/stella \
 		emulators/VisualBoyAdvance \
 		emulators/zsnes) \
+	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythmusic),myth-$(mm_MYTH_VERSION)/mythmusic)) \
+	$(if $(filter mythnews,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythnews),myth-$(mm_MYTH_VERSION)/mythnews)) \
+	$(if $(filter mythstream,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream)) \
+	$(if $(filter mythvideo,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo)) \
+	$(if $(filter mythweather,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather)) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \
@@ -79,7 +101,7 @@ DEPENDS = \
 		devel/valgrind) \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
 	$(mm_USER_PACKAGES)
-		
+
 BUILDDEPS = \
 	utils/coreutils \
 	devel/fakeroot \

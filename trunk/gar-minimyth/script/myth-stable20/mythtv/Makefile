@@ -12,9 +12,9 @@ endef
 
 DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdts lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc utils/lm_sensors
 
-PWD := $(shell pwd)
-
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+PWD := $(shell pwd)
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -67,24 +67,11 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx
 
-CONFIGURE_ENV = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
-INSTALL_ENV   = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)" \
-	INSTALL_ROOT="$(DESTDIR)"
+CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
+BUILD_ENV     = $(MYTHTV_BUILD_ENV)
+INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 CFLAGS += -DUSE_ATI_PROPRIETARY_DRIVER_XVIDEO_HACK

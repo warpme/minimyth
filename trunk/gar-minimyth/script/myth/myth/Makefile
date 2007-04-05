@@ -1,13 +1,11 @@
 GARNAME = myth
-GARVERSION = $(mm_MYTH_VERSION)
+GARVERSION =
 CATEGORIES = myth
 LICENSE =
 
 DESCRIPTION = 
 define BLURB
 endef
-
-DEPENDS = myth-$(mm_MYTH_VERSION)/myth
 
 include ../../gar.mk
 

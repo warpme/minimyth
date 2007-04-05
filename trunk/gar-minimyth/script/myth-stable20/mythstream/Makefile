@@ -20,23 +20,11 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ENV = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
-BUILD_ENV     = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
-INSTALL_ARGS  = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)" \
-	INSTALL_ROOT="$(DESTDIR)"
+CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
+BUILD_ENV     = $(MYTHTV_BUILD_ENV)
+INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
+GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 post-patch:
