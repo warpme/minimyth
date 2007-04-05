@@ -38,3 +38,7 @@ configure-%/Configure:
 	@cd $* && $(CONFIGURE_ENV) ./Configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)
 
+post-install:
+	@chmod u+w $(DESTDIR)$(libdir)/libcrypto.so.*
+	@chmod u+w $(DESTDIR)$(libdir)/libssl.so.*
+	@$(MAKECOOKIE)
