@@ -18,7 +18,7 @@ mm_VERSION_EXTRA      ?= $(strip \
                           )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION       ?= 4
+mm_CONF_VERSION       ?= 5
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -30,9 +30,16 @@ mm_DEBUG              ?= no
 # Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
 mm_DEBUG_BUILD        ?= no
 # Lists the chipset families supported.
-# Valid values for mm_CHIPSETS are one or more of 'ati', 'intel', 'nvidia',
-# 'via', 'vmware' and 'other'.
+# Valid values for mm_CHIPSETS are one or more of 'ati', 'iegd' 'intel',
+# 'nvidia', 'via', 'vmware' and 'other'.
 mm_CHIPSETS           ?= intel nvidia via other
+# Lists the software to be supported.
+# Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
+# 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythstream',
+# 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode', and 'debug'.
+mm_SOFTWARE           ?= mythaudio mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythstream mythvideo mythweather \
+                         mplayer xine \
+                         $(if $(filter yes,$(mm_DEBUG)),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH              ?= pentium-mmx

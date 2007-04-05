@@ -24,24 +24,29 @@ mm_EXTRASDIR := $(mm_STAGEDIR)/extras
 mm_THEMESDIR := $(mm_STAGEDIR)/themes
 
 MM_BIN_FILES    := $(strip \
-	$(if $(wildcard               minimyth-bin-list   ),               minimyth-bin-list   ) \
+	$(if $(wildcard         lists/minimyth-bin-list   ),         lists/minimyth-bin-list   ) \
 	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ) \
-	$(filter $(patsubst %,minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-bin-list.*)))
+	$(filter $(patsubst %,lists/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-bin-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
 MM_LIB_FILES    := $(strip \
-	$(if $(wildcard               minimyth-lib-list   ),               minimyth-lib-list   ) \
+	$(if $(wildcard         lists/minimyth-lib-list   ),         lists/minimyth-lib-list   ) \
 	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ) \
-	$(filter $(patsubst %,minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-lib-list.*)))
+	$(filter $(patsubst %,lists/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-lib-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
 MM_ETC_FILES    := $(strip \
-	$(if $(wildcard               minimyth-etc-list   ),               minimyth-etc-list   ) \
+	$(if $(wildcard         lists/minimyth-etc-list   ),         lists/minimyth-etc-list   ) \
 	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ) \
-	$(filter $(patsubst %,minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-etc-list.*)))
+	$(filter $(patsubst %,lists/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-etc-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
 MM_SHARE_FILES  := $(strip \
-	$(if $(wildcard               minimyth-share-list ),               minimyth-share-list ) \
+	$(if $(wildcard         lists/minimyth-share-list ),         lists/minimyth-share-list ) \
 	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ) \
-	$(filter $(patsubst %,minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-share-list.*)))
+	$(filter $(patsubst %,lists/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-share-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
-	$(if $(wildcard               minimyth-remove-list),               minimyth-remove-list) \
-	$(filter-out $(patsubst %,minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard minimyth-remove-list.*)))
+	$(if $(wildcard         lists/minimyth-remove-list),         lists/minimyth-remove-list) \
+	$(filter-out $(patsubst %,lists/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-remove-list.*)) \
+	$(filter-out $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
 
 MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	gdb \
@@ -97,30 +102,33 @@ MM_INIT_KILL := \
 build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(GARDIR)/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
 
 bindirs := \
+	$(extras_sbindir) \
+	$(extras_bindir) \
 	$(esbindir) \
 	$(ebindir) \
 	$(sbindir) \
 	$(bindir) \
 	$(qtbindir) \
-	$(extras_sbindir) \
-	$(extras_bindir)
+	$(kdebindir)
 libdirs_base := \
+	$(extras_libdir) \
 	$(elibdir) \
 	$(libexecdir) \
 	$(libdir) \
 	$(libdir)/mysql \
 	$(qtlibdir) \
-	$(extras_libdir)
+	$(kdelibdir)
 libdirs := \
+	$(libdirs_base) \
 	$(libdir)/xorg/modules \
-	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia) \
-	$(libdirs_base)
-etcdirs :=  \
+	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia)
+etcdirs := \
 	$(extras_sysconfdir) \
 	$(sysconfdir)
-sharedirs :=  \
-	$(extras_sharedstatedir) \
-	$(sharedstatedir)
+sharedirs := \
+	$(extras_datadir) \
+	$(datadir) \
+	$(kdedatadir)
 
 MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))

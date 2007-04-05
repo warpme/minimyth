@@ -59,6 +59,10 @@ patch-%.gar: gar-patch-%.gar
 gar-patch-%:
 	@echo " ==> Applying patch $(DOWNLOADDIR)/$*"
 	@cat $(DOWNLOADDIR)/$* \
+		| sed 's%@GAR_build_DESTDIR@%$(build_DESTDIR)%g' \
+		| sed 's%@GAR_build_bindir@%$(build_bindir)%g' \
+		| sed 's%@GAR_build_qtbindir@%$(build_qtbindir)%g' \
+		| sed 's%@GAR_build_kdebindir@%$(build_kdebindir)%g' \
 		| sed 's%@GAR_DESTDIR@%$(DESTDIR)%g' \
 		| sed 's%@GAR_prefix@%$(prefix)%g' \
 		| sed 's%@GAR_bindir@%$(bindir)%g' \
@@ -74,7 +78,18 @@ gar-patch-%:
 		| sed 's%@GAR_sbindir@%$(sbindir)%g' \
 		| sed 's%@GAR_sourcedir@%$(sourcedir)%g' \
 		| sed 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
+		| sed 's%@GAR_qtprefix@%$(qtprefix)%g' \
+		| sed 's%@GAR_qtbindir@%$(qtbindir)%g' \
+		| sed 's%@GAR_qtincludedir@%$(qtincludedir)%g' \
+		| sed 's%@GAR_qtlibdir@%$(qtlibdir)%g' \
+		| sed 's%@GAR_kdeprefix@%$(kdeprefix)%g' \
+		| sed 's%@GAR_kdebindir@%$(kdebindir)%g' \
+		| sed 's%@GAR_kdedatadir@%$(kdedatadir)%g' \
+		| sed 's%@GAR_kdeincludedir@%$(kdeincludedir)%g' \
+		| sed 's%@GAR_kdelibdir@%$(kdelibdir)%g' \
+		| sed 's%@GAR_CPPLAGS@%$(CPPFLAGS)%g' \
 		| sed 's%@GAR_CFLAGS@%$(CFLAGS)%g' \
-		| sed 's%@GAR_CXXFLAGS@%$(CFLAGS)%g' \
+		| sed 's%@GAR_CXXFLAGS@%$(CXXFLAGS)%g' \
+		| sed 's%@GAR_LDFLAGS@%$(LDFLAGS)%g' \
 		| $(GARPATCH)
 	@$(MAKECOOKIE)

@@ -1,0 +1,133 @@
+diff -Naur openssl-0.9.8e-old/Configure openssl-0.9.8e-new/Configure
+--- openssl-0.9.8e-old/Configure	2006-11-30 06:01:38.000000000 -0800
++++ openssl-0.9.8e-new/Configure	2007-04-03 20:10:19.000000000 -0700
+@@ -317,7 +317,7 @@
+ "linux-ppc",	"gcc:-DB_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::linux_ppc32.o::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ #### IA-32 targets...
+ "linux-ia32-icc",	"icc:-DL_ENDIAN -DTERMIO -O2 -no_cpprt::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-KPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+-"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall @GAR_CFLAGS@::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-aout",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -march=i486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_out_asm}",
+ ####
+ "linux-generic64","gcc:-DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+@@ -326,7 +326,7 @@
+ "linux-ia64",	"gcc:-DL_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-ia64-ecc","ecc:-DL_ENDIAN -DTERMIO -O2 -Wall -no_cpprt::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-ia64-icc","icc:-DL_ENDIAN -DTERMIO -O2 -Wall -no_cpprt::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+-"linux-x86_64",	"gcc:-m64 -DL_ENDIAN -DTERMIO -O3 -Wall -DMD32_REG_T=int::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK BF_PTR2 DES_INT DES_UNROLL:${x86_64_asm}:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-x86_64",	"gcc:-m64 -DL_ENDIAN -DTERMIO -O3 -Wall -DMD32_REG_T=int @GAR_CFLAGS@::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK BF_PTR2 DES_INT DES_UNROLL:${x86_64_asm}:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ #### SPARC Linux setups
+ # Ray Miller <ray.miller@computing-services.oxford.ac.uk> has patiently
+ # assisted with debugging of following two configs.
+diff -Naur openssl-0.9.8e-old/Makefile openssl-0.9.8e-new/Makefile
+--- openssl-0.9.8e-old/Makefile	2007-02-23 04:44:42.000000000 -0800
++++ openssl-0.9.8e-new/Makefile	2007-04-03 20:27:07.000000000 -0700
+@@ -301,7 +301,8 @@
+ 	done
+ 
+ libcrypto.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -310,11 +311,12 @@
+ 	    echo 'Description: OpenSSL cryptography library'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
+ 
+ libssl.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -323,11 +325,12 @@
+ 	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
+ 
+ openssl.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -336,8 +339,8 @@
+ 	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
+ 
+ Makefile: Makefile.org Configure config
+ 	@echo "Makefile is older than Makefile.org, Configure or config."
+diff -Naur openssl-0.9.8e-old/Makefile.org openssl-0.9.8e-new/Makefile.org
+--- openssl-0.9.8e-old/Makefile.org	2006-06-09 08:42:08.000000000 -0700
++++ openssl-0.9.8e-new/Makefile.org	2007-04-03 20:26:45.000000000 -0700
+@@ -299,7 +299,8 @@
+ 	done
+ 
+ libcrypto.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -308,11 +309,12 @@
+ 	    echo 'Description: OpenSSL cryptography library'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
+ 
+ libssl.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -321,11 +323,12 @@
+ 	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
+ 
+ openssl.pc: Makefile
+-	@ ( echo 'prefix=$(INSTALLTOP)'; \
++	@ ( echo 'DESTDIR=@GAR_DESTDIR@'; \
++	    echo 'prefix=$(INSTALLTOP)'; \
+ 	    echo 'exec_prefix=$${prefix}'; \
+ 	    echo 'libdir=$${exec_prefix}/lib'; \
+ 	    echo 'includedir=$${prefix}/include'; \
+@@ -334,8 +337,8 @@
+ 	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
+ 	    echo 'Version: '$(VERSION); \
+ 	    echo 'Requires: '; \
+-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
++	    echo 'Libs: -L$${DESTDIR}$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
++	    echo 'Cflags: -I$${DESTDIR}$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
+ 
+ Makefile: Makefile.org Configure config
+ 	@echo "Makefile is older than Makefile.org, Configure or config."

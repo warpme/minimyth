@@ -27,7 +27,8 @@ BUILD_ARGS   = \
 	bindir="$(bindir)" \
 	libdir="$(libdir)" \
 	includedir="$(includedir)" \
-	mandir="$(mandir)"
+	mandir="$(mandir)" \
+	libbz2.a bzip2 bzip2recover
 INSTALL_ARGS = \
 	CC="$(CC)" \
 	AR="$(AR)" \
@@ -42,3 +43,5 @@ INSTALL_ARGS = \
 	mandir="$(mandir)"
 
 include ../../gar.mk
+
+CFLAGS += -fpic -fPIC -Wall -Winline -D_FILE_OFFSET_BITS=64

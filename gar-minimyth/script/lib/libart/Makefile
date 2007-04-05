@@ -1,0 +1,41 @@
+GARNAME = libart_lgpl
+GARVERSION = 2.3.19
+CATEGORIES = lib
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/2.3/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES  = $(DISTNAME)-cplusplus.patch $(DISTNAME).patch.gar
+ifneq ($(DESTIMG),build)
+PATCHFILES += $(DISTNAME)-cross.patch
+endif
+LICENSE = LGPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS   = lang/c
+ifneq ($(DESTIMG),build)
+BUILDDEPS = lib/libart
+endif
+
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+ifeq ($(DESTIMG),build)
+INSTALL_SCRIPTS   += cross
+endif
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld
+
+include ../../gar.mk
+
+install-cross:
+	@if test -e $(WORKSRC)/gen_art_config ; then cp -f $(WORKSRC)/gen_art_config $(DESTDIR)$(bindir)/libart-gen_art_config ; fi
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libart_lgpl_2.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libart-2.0.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libart-2.0.pc
+	@$(MAKECOOKIE)

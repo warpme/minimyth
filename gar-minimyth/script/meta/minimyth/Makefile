@@ -14,19 +14,15 @@ DESTIMG = $(MINIMYTHIMG)
 
 DEPENDS = \
 	system/acpid \
- 	utils/alsa-utils \
+	utils/alsa-utils \
 	utils/busybox \
-        fonts/corefonts \
+	fonts/corefonts \
 	utils/dmidecode \
 	net/dropbear \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
-	emulators/fceu \
-	devel/gdb \
 	disk/hdparm \
-	$(if $(filter 2.6.17,$(mm_KERNEL_VERSION)),X11/IEGD) \
-	emulators/jzintv \
 	system/lcdproc \
 	system/kbdd \
 	kernel/kernel \
@@ -35,10 +31,8 @@ DEPENDS = \
 	utils/lsdvd \
 	utils/module-init-tools \
 	net/mount.cifs \
-	mediaplayers/mplayer \
 	myth/myth \
 	net/ntp \
-	nvidia/nvidia \
 	utils/pciutils \
 	utils/pmount \
 	net/portmap \
@@ -47,31 +41,45 @@ DEPENDS = \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
-        utils/SDL-Test \
+	utils/SDL-Test \
 	system/splashutils \
 	utils/squashfs \
-	emulators/stella \
-	devel/strace \
 	system/sysvinit \
-	utils/transcode \
 	fonts/ttf-bitstream-vera \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \
-	devel/valgrind \
-	emulators/VisualBoyAdvance \
 	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
-	mediaplayers/xine-ui \
 	X11/xmacro \
 	xorg/xorg \
 	X11/xscreensaver \
 	X11/xvattr \
 	system/zoneinfo \
-	emulators/zsnes \
+	$(if $(filter iegd,$(mm_CHIPSETS)), \
+		$(if $(filter 2.6.17,$(mm_KERNEL_VERSION)),X11/IEGD)) \
+	$(if $(filter nvidia,$(mm_CHIPSETS)), \
+		nvidia/nvidia) \
+	$(if $(filter mythgame,$(mm_SOFTWARE)), \
+		emulators/fceu \
+		emulators/jzintv \
+		emulators/stella \
+		emulators/VisualBoyAdvance \
+		emulators/zsnes) \
+	$(if $(filter mplayer,$(mm_SOFTWARE)), \
+		mediaplayers/mplayer) \
+	$(if $(filter xine,$(mm_SOFTWARE)), \
+		mediaplayers/xine-ui) \
+	$(if $(filter transcode,$(mm_SOFTWARE)), \
+		utils/transcode) \
+	$(if $(filter debug,$(mm_SOFTWARE)), \
+		devel/gdb \
+		devel/strace \
+		devel/valgrind) \
 	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
 	$(mm_USER_PACKAGES)
+		
 BUILDDEPS = \
 	utils/coreutils \
 	devel/fakeroot \

@@ -3,7 +3,7 @@ GARVERSION = 0.20a
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-mythbrowser_https.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -11,6 +11,8 @@ define BLURB
 endef
 
 DEPENDS  = lang/c $(CATEGORY)/mythtv
+# mythbrowser
+DEPENDS += kde/kdelibs
 # mythdvd
 DEPENDS += lib/libdvdread
 # mythgallery
@@ -30,6 +32,7 @@ CONFIGURE_ARGS = \
 	--libdir-name="lib" \
 	--disable-all \
 	--enable-opengl \
+	--enable-mythbrowser \
 	--enable-mythdvd \
 	--enable-mythgallery \
 		--enable-exif \

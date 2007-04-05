@@ -1,0 +1,186 @@
+diff -Naur kdelibs-3.5.6-old/acinclude.m4 kdelibs-3.5.6-new/acinclude.m4
+--- kdelibs-3.5.6-old/acinclude.m4	2007-01-24 00:52:47.000000000 -0800
++++ kdelibs-3.5.6-new/acinclude.m4	2007-04-02 21:07:25.000000000 -0700
+@@ -371,7 +371,7 @@
+   fi
+ 
+ AC_MSG_CHECKING([for KDE libraries installed])
+-ac_link='$LIBTOOL_SHELL --silent --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
++ac_link='$LIBTOOL_SHELL --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
+ 
+ if AC_TRY_EVAL(ac_link) && test -s conftest; then
+   AC_MSG_RESULT(yes)
+@@ -1879,13 +1879,13 @@
+ if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes"  || test "$kde_includes" = "/usr/include"; then
+  KDE_INCLUDES=""
+ else
+- KDE_INCLUDES="-I$kde_includes"
++ KDE_INCLUDES="-I$DESTDIR$kde_includes"
+  all_includes="$KDE_INCLUDES $all_includes"
+ fi
+ 
+ KDE_DEFAULT_CXXFLAGS="-DQT_CLEAN_NAMESPACE -DQT_NO_ASCII_CAST -DQT_NO_STL -DQT_NO_COMPAT -DQT_NO_TRANSLATION"
+  
+-KDE_LDFLAGS="-L$kde_libraries"
++KDE_LDFLAGS="-L$DESTDIR$kde_libraries"
+ if test ! "$kde_libraries" = "$x_libraries" && test ! "$kde_libraries" = "$qt_libraries" ; then 
+  all_libraries="$KDE_LDFLAGS $all_libraries"
+ fi
+@@ -2542,7 +2542,7 @@
+ 
+ dnl then search the headers (can't use simply AC_TRY_xxx, as jpeglib.h
+ dnl requires system dependent includes loaded before it)
+-jpeg_incdirs="$includedir /usr/include /usr/local/include $kde_extra_includes"
++jpeg_incdirs="@GAR_DESTDIR@@GAR_includedir@"
+ AC_FIND_FILE(jpeglib.h, $jpeg_incdirs, jpeg_incdir)
+ test "x$jpeg_incdir" = xNO && jpeg_incdir=
+ 
+@@ -3485,7 +3485,7 @@
+ AC_LIBTOOL_CXX
+ 
+ LIBTOOL_SHELL="/bin/sh ./libtool"
+-#  LIBTOOL="$LIBTOOL --silent"
++#  LIBTOOL="$LIBTOOL"
+ KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_NO_UNDEFINED) \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
+ AC_SUBST(KDE_PLUGIN)
+ 
+@@ -6053,7 +6053,7 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool --silent'
++LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+ AC_SUBST(LIBTOOL)dnl
+ 
+ # Prevent multiple expansion
+diff -Naur kdelibs-3.5.6-old/admin/acinclude.m4.in kdelibs-3.5.6-new/admin/acinclude.m4.in
+--- kdelibs-3.5.6-old/admin/acinclude.m4.in	2007-01-15 15:25:45.000000000 -0800
++++ kdelibs-3.5.6-new/admin/acinclude.m4.in	2007-04-02 21:07:51.000000000 -0700
+@@ -371,7 +371,7 @@
+   fi
+ 
+ AC_MSG_CHECKING([for KDE libraries installed])
+-ac_link='$LIBTOOL_SHELL --silent --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
++ac_link='$LIBTOOL_SHELL --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
+ 
+ if AC_TRY_EVAL(ac_link) && test -s conftest; then
+   AC_MSG_RESULT(yes)
+@@ -1879,13 +1879,13 @@
+ if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes"  || test "$kde_includes" = "/usr/include"; then
+  KDE_INCLUDES=""
+ else
+- KDE_INCLUDES="-I$kde_includes"
++ KDE_INCLUDES="-I$DESTDIR$kde_includes"
+  all_includes="$KDE_INCLUDES $all_includes"
+ fi
+ 
+ KDE_DEFAULT_CXXFLAGS="-DQT_CLEAN_NAMESPACE -DQT_NO_ASCII_CAST -DQT_NO_STL -DQT_NO_COMPAT -DQT_NO_TRANSLATION"
+  
+-KDE_LDFLAGS="-L$kde_libraries"
++KDE_LDFLAGS="-L$DESTDIR$kde_libraries"
+ if test ! "$kde_libraries" = "$x_libraries" && test ! "$kde_libraries" = "$qt_libraries" ; then 
+  all_libraries="$KDE_LDFLAGS $all_libraries"
+ fi
+@@ -2542,7 +2542,7 @@
+ 
+ dnl then search the headers (can't use simply AC_TRY_xxx, as jpeglib.h
+ dnl requires system dependent includes loaded before it)
+-jpeg_incdirs="$includedir /usr/include /usr/local/include $kde_extra_includes"
++jpeg_incdirs="@GAR_DESTDIR@@GAR_includedir@"
+ AC_FIND_FILE(jpeglib.h, $jpeg_incdirs, jpeg_incdir)
+ test "x$jpeg_incdir" = xNO && jpeg_incdir=
+ 
+@@ -3485,7 +3485,7 @@
+ AC_LIBTOOL_CXX
+ 
+ LIBTOOL_SHELL="/bin/sh ./libtool"
+-#  LIBTOOL="$LIBTOOL --silent"
++#  LIBTOOL="$LIBTOOL"
+ KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_NO_UNDEFINED) \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
+ AC_SUBST(KDE_PLUGIN)
+ 
+diff -Naur kdelibs-3.5.6-old/admin/libtool.m4.in kdelibs-3.5.6-new/admin/libtool.m4.in
+--- kdelibs-3.5.6-old/admin/libtool.m4.in	2007-01-15 15:25:45.000000000 -0800
++++ kdelibs-3.5.6-new/admin/libtool.m4.in	2007-04-02 21:06:25.000000000 -0700
+@@ -82,7 +82,7 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool --silent'
++LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+ AC_SUBST(LIBTOOL)dnl
+ 
+ # Prevent multiple expansion
+diff -Naur kdelibs-3.5.6-old/configure kdelibs-3.5.6-new/configure
+--- kdelibs-3.5.6-old/configure	2007-01-24 00:54:16.000000000 -0800
++++ kdelibs-3.5.6-new/configure	2007-04-02 21:08:28.000000000 -0700
+@@ -23848,7 +23848,7 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool --silent'
++LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+ 
+ # Prevent multiple expansion
+ 
+@@ -23886,7 +23886,7 @@
+ 
+ 
+ LIBTOOL_SHELL="/bin/sh ./libtool"
+-#  LIBTOOL="$LIBTOOL --silent"
++#  LIBTOOL="$LIBTOOL"
+ KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_NO_UNDEFINED) \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
+ 
+ 
+@@ -38023,7 +38023,7 @@
+ 
+ 
+ 
+-jpeg_incdirs="$includedir /usr/include /usr/local/include $kde_extra_includes"
++jpeg_incdirs="@GAR_DESTDIR@@GAR_includedir@"
+ 
+ jpeg_incdir=NO
+ for i in $jpeg_incdirs;
+@@ -39307,13 +39307,13 @@
+ if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes"  || test "$kde_includes" = "/usr/include"; then
+  KDE_INCLUDES=""
+ else
+- KDE_INCLUDES="-I$kde_includes"
++ KDE_INCLUDES="-I$DESTDIR$kde_includes"
+  all_includes="$KDE_INCLUDES $all_includes"
+ fi
+ 
+ KDE_DEFAULT_CXXFLAGS="-DQT_CLEAN_NAMESPACE -DQT_NO_ASCII_CAST -DQT_NO_STL -DQT_NO_COMPAT -DQT_NO_TRANSLATION"
+ 
+-KDE_LDFLAGS="-L$kde_libraries"
++KDE_LDFLAGS="-L$DESTDIR$kde_libraries"
+ if test ! "$kde_libraries" = "$x_libraries" && test ! "$kde_libraries" = "$qt_libraries" ; then
+  all_libraries="$KDE_LDFLAGS $all_libraries"
+ fi
+@@ -40012,7 +40012,7 @@
+ 
+ { echo "$as_me:$LINENO: checking for KDE libraries installed" >&5
+ echo $ECHO_N "checking for KDE libraries installed... $ECHO_C" >&6; }
+-ac_link='$LIBTOOL_SHELL --silent --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
++ac_link='$LIBTOOL_SHELL --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
+ 
+ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+   (eval $ac_link) 2>&5
+@@ -40314,7 +40314,7 @@
+ 
+ { echo "$as_me:$LINENO: checking for KDE libraries installed" >&5
+ echo $ECHO_N "checking for KDE libraries installed... $ECHO_C" >&6; }
+-ac_link='$LIBTOOL_SHELL --silent --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
++ac_link='$LIBTOOL_SHELL --mode=link ${CXX-g++} -o conftest $CXXFLAGS $all_includes $CPPFLAGS $LDFLAGS $all_libraries conftest.$ac_ext $LIBS -lkdecore $LIBQT $KDE_TEST_RPATH 1>&5'
+ 
+ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+   (eval $ac_link) 2>&5
+@@ -53485,7 +53485,7 @@
+ 
+ 
+ 
+-jpeg_incdirs="$includedir /usr/include /usr/local/include $kde_extra_includes"
++jpeg_incdirs="@GAR_DESTDIR@@GAR_includedir@"
+ 
+ jpeg_incdir=NO
+ for i in $jpeg_incdirs;
