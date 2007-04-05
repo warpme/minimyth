@@ -37,7 +37,7 @@ mm_CHIPSETS           ?= intel nvidia via other
 # Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
 # 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythstream',
 # 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode', and 'debug'.
-mm_SOFTWARE           ?= mythaudio mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythstream mythvideo mythweather \
+mm_SOFTWARE           ?= mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythstream mythvideo mythweather \
                          mplayer xine \
                          $(if $(filter yes,$(mm_DEBUG)),debug)
 # Indicates the microprocessor architecture.

@@ -26,26 +26,26 @@ mm_THEMESDIR := $(mm_STAGEDIR)/themes
 MM_BIN_FILES    := $(strip \
 	$(if $(wildcard         lists/minimyth-bin-list   ),         lists/minimyth-bin-list   ) \
 	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ) \
-	$(filter $(patsubst %,lists/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-bin-list.*)) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-bin-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
 MM_LIB_FILES    := $(strip \
 	$(if $(wildcard         lists/minimyth-lib-list   ),         lists/minimyth-lib-list   ) \
 	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ) \
-	$(filter $(patsubst %,lists/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-lib-list.*)) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-lib-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
 MM_ETC_FILES    := $(strip \
 	$(if $(wildcard         lists/minimyth-etc-list   ),         lists/minimyth-etc-list   ) \
 	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ) \
-	$(filter $(patsubst %,lists/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-etc-list.*)) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-etc-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
 MM_SHARE_FILES  := $(strip \
 	$(if $(wildcard         lists/minimyth-share-list ),         lists/minimyth-share-list ) \
 	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ) \
-	$(filter $(patsubst %,lists/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-share-list.*)) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-share-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard         lists/minimyth-remove-list),         lists/minimyth-remove-list) \
-	$(filter-out $(patsubst %,lists/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/minimyth-remove-list.*)) \
+	$(filter-out $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
 	$(filter-out $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
 
 MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
@@ -250,6 +250,41 @@ mm-check:
 		echo "error: mm_DEBUG=\"$(mm_DEBUG)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
+	@if [ ! "$(mm_DEBUG_BUILD)" = "yes" ] && [ ! "$(mm_DEBUG_BUILD)" = "no" ] ; then \
+		echo "error: mm_DEBUG_BUILD=\"$(mm_DEBUG_BUILD)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
+	@for chipset in $(mm_CHIPSETS) ; do \
+		if [ ! "$${chipset}" = "ati"    ] && \
+		   [ ! "$${chipset}" = "iegd"   ] && \
+		   [ ! "$${chipset}" = "intel"  ] && \
+		   [ ! "$${chipset}" = "nvidia" ] && \
+		   [ ! "$${chipset}" = "via"    ] && \
+		   [ ! "$${chipset}" = "vmware" ] && \
+		   [ ! "$${chipset}" = "other"  ] ; then \
+			echo "error: mm_CHIPSETS=\"$$(chipset)\" is an invalid value." ; \
+			exit 1 ; \
+		fi ; \
+	done
+	@for software in $(mm_SOFTWARE) ; do \
+		if [ ! "$${software}" = "mythaudio"   ] && \
+		   [ ! "$${software}" = "mythbrowser" ] && \
+		   [ ! "$${software}" = "mythdvd"     ] && \
+		   [ ! "$${software}" = "mythgallery" ] && \
+		   [ ! "$${software}" = "mythgame"    ] && \
+		   [ ! "$${software}" = "mythmusic"   ] && \
+		   [ ! "$${software}" = "mythnews"    ] && \
+		   [ ! "$${software}" = "mythstream"  ] && \
+		   [ ! "$${software}" = "mythvideo"   ] && \
+		   [ ! "$${software}" = "mythweather" ] && \
+		   [ ! "$${software}" = "mplayer"     ] && \
+		   [ ! "$${software}" = "xine"        ] && \
+		   [ ! "$${software}" = "transcode"   ] && \
+		   [ ! "$${software}" = "debug"       ] ; then \
+			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
+			exit 1 ; \
+		fi ; \
+	done
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.17" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.20" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
