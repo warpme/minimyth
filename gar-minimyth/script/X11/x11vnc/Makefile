@@ -18,6 +18,36 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--with-x
+	--without-filetransfer \
+	--with-24bpp \
+	--without-ffmpeg \
+	--with-x \
+	--with-xkeyboard \
+	--with-xinerama \
+	--with-xrandr \
+	--with-xfixes \
+	--with-xdamage \
+	--without-xtrap \
+	--with-xrecord \
+	--without-fbpm \
+	--with-dpms \
+	--without-v4l \
+	--without-fbdev \
+	--with-uinput \
+	--without-macosx-native \
+	--without-crypt \
+	--without-crypto \
+	--without-ssl \
+	--with-jpeg \
+	--with-jpeg=$(DESTDIR)$(prefix) \
+	--with-libz \
+	--with-zlib=$(DESTDIR)$(prefix) \
+	--with-pthread
+
+CONFIGURE_ENV = \
+	ac_cv_func_fork_works=yes \
+	ac_cv_func_lstat_dereferences_slashed_symlink=yes \
+	ac_cv_func_memcmp_working=yes \
+	ac_cv_func_stat_empty_string_bug=no
 
 include ../../gar.mk
