@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-init.patch
+PATCHFILES = $(GARNAME)-mythbrowser_https.patch $(GARNAME).patch.gar $(GARNAME)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

@@ -12,6 +12,7 @@ DEPENDS = \
 	$(CATEGORY)/font-bh-ttf \
 	$(CATEGORY)/font-cursor-misc \
 	$(CATEGORY)/font-misc-misc \
+	$(CATEGORY)/iceauth \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXdamage \
 	$(CATEGORY)/libXext \

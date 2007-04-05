@@ -30,10 +30,6 @@ main_rootdir ?=
 # Warning: any changes to these paths will cause certain packages to break.
 main_prefix = $(main_rootdir)/usr
 main_exec_prefix = $(main_rootdir)/usr
-main_qtprefix = $(main_libdir)/qt
-main_qtbindir = $(main_qtprefix)/bin
-main_qtincludedir = $(main_qtprefix)/include
-main_qtlibdir = $(main_qtprefix)/lib
 main_ebindir = $(main_rootdir)/bin
 main_bindir = $(main_rootdir)/usr/bin
 main_esbindir = $(main_rootdir)/sbin
@@ -54,16 +50,21 @@ main_docdir = $(main_rootdir)/usr/share/doc
 main_sourcedir = $(main_rootdir)/usr/src
 main_licensedir = $(main_rootdir)/usr/licenses
 main_versiondir = $(main_rootdir)/usr/versions
+main_qtprefix = $(main_libdir)/qt
+main_qtbindir = $(main_qtprefix)/bin
+main_qtincludedir = $(main_qtprefix)/include
+main_qtlibdir = $(main_qtprefix)/lib
+main_kdeprefix = $(main_prefix)/kde
+main_kdebindir = $(main_kdeprefix)/bin
+main_kdedatadir = $(main_kdeprefix)/share
+main_kdeincludedir = $(main_kdeprefix)/include
+main_kdelibdir = $(main_kdeprefix)/lib
 
 # Directory config for the "build" image
 build_rootdir ?= $(mm_HOME)/images/build
 # Warning: any changes to these paths will cause certain packages to break.
 build_prefix = $(build_rootdir)/usr
 build_exec_prefix = $(build_rootdir)/usr
-build_qtprefix = $(build_libdir)/qt
-build_qtbindir = $(build_qtprefix)/bin
-build_qtincludedir = $(build_qtprefix)/include
-build_qtlibdir = $(build_qtprefix)/lib
 build_ebindir = $(build_rootdir)/bin
 build_bindir = $(build_rootdir)/usr/bin
 build_esbindir = $(build_rootdir)/sbin
@@ -84,6 +85,15 @@ build_docdir = $(build_rootdir)/usr/share/doc
 build_sourcedir = $(build_rootdir)/usr/src
 build_licensedir = $(build_rootdir)/usr/licenses
 build_versiondir = $(build_rootdir)/usr/versions
+build_qtprefix = $(build_libdir)/qt
+build_qtbindir = $(build_qtprefix)/bin
+build_qtincludedir = $(build_qtprefix)/include
+build_qtlibdir = $(build_qtprefix)/lib
+build_kdeprefix = $(build_prefix)/kde
+build_kdebindir = $(build_kdeprefix)/bin
+build_kdedatadir = $(build_kdeprefix)/share
+build_kdeincludedir = $(build_kdeprefix)/include
+build_kdelibdir = $(build_kdeprefix)/lib
 
 # the DESTDIR is used at INSTALL TIME ONLY to determine what the
 # filesystem root should be.  Each different DESTIMG has its own

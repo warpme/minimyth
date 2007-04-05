@@ -1,0 +1,33 @@
+diff -Naur mythplugins-0.20a-old/mythbrowser/mythbookmarkmanager/bookmarkmanager.cpp mythplugins-0.20a-new/mythbrowser/mythbookmarkmanager/bookmarkmanager.cpp
+--- mythplugins-0.20a-old/mythbrowser/mythbookmarkmanager/bookmarkmanager.cpp	2005-10-25 14:14:28.000000000 -0700
++++ mythplugins-0.20a-new/mythbrowser/mythbookmarkmanager/bookmarkmanager.cpp	2007-04-04 17:19:01.000000000 -0700
+@@ -398,7 +398,7 @@
+     QString *descStr = new QString(desc);
+     QString *urlStr = new QString(url);
+     urlStr->stripWhiteSpace();
+-    if( urlStr->find("http://") == -1 && urlStr->find("file:/") == -1 )
++    if( urlStr->find("http://") == -1 && urlStr->find("https://") == -1 && urlStr->find("file:/") == -1 )
+         urlStr->prepend("http://");
+ 
+     if(groupStr->isEmpty() || urlStr->isEmpty())
+diff -Naur mythplugins-0.20a-old/mythbrowser/mythbrowser/tabview.cpp mythplugins-0.20a-new/mythbrowser/mythbrowser/tabview.cpp
+--- mythplugins-0.20a-old/mythbrowser/mythbrowser/tabview.cpp	2006-03-22 11:20:22.000000000 -0800
++++ mythplugins-0.20a-new/mythbrowser/mythbrowser/tabview.cpp	2007-04-04 17:20:33.000000000 -0700
+@@ -319,7 +319,7 @@
+     QString descStr = QString(desc);
+     QString urlStr = QString(url);
+     urlStr.stripWhiteSpace();
+-    if( urlStr.find("http://") == -1 && urlStr.find("file:/") == -1)
++    if( urlStr.find("http://") == -1 && urlStr.find("https://") == -1 && urlStr.find("file:/") == -1)
+         urlStr.prepend("http://");
+ 
+     if(groupStr.isEmpty() || urlStr.isEmpty())
+@@ -375,7 +375,7 @@
+     if (res == 0)
+     {
+         QString sURL = editor->text();
+-        if (!sURL.startsWith("http://") && !sURL.startsWith("file:/"))
++        if (!sURL.startsWith("http://") && !sURL.startsWith("https://") && !sURL.startsWith("file:/"))
+             sURL = "http://" + sURL;
+ 
+         newPage(sURL);
