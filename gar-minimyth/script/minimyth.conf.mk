@@ -18,7 +18,7 @@ mm_VERSION_EXTRA      ?= $(strip \
                           )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION       ?= 5
+mm_CONF_VERSION       ?= 6
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -35,9 +35,10 @@ mm_DEBUG_BUILD        ?= no
 mm_CHIPSETS           ?= intel nvidia via other
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
-# 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythstream',
-# 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode', and 'debug'.
-mm_SOFTWARE           ?= mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythstream mythvideo mythweather \
+# 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone',
+# 'mythstream', 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode', and
+# 'debug'.
+mm_SOFTWARE           ?= mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythphone mythstream mythvideo mythweather \
                          mplayer xine \
                          $(if $(filter yes,$(mm_DEBUG)),debug)
 # Indicates the microprocessor architecture.

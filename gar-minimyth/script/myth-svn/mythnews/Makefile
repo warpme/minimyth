@@ -33,8 +33,3 @@ include ../../gar.mk
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake mythplugins.pro
 	@$(MAKECOOKIE)
-
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE20_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
-	@$(MAKECOOKIE)

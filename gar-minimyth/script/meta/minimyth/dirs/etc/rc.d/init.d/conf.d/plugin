@@ -48,6 +48,11 @@ conf_check_plugin() {
        /usr/bin/test !    "${MM_MYTHNEWS_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_MYTHNEWS_ENABLED='${MM_MYTHNEWS_ENABLED}' is not valid."
     fi
+    if /usr/bin/test ! -z "${MM_MYTHPHONE_ENABLED}"          && \
+       /usr/bin/test !    "${MM_MYTHPHONE_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_MYTHPHONE_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_MYTHPHONE_ENABLED='${MM_MYTHPHONE_ENABLED}' is not valid."
+    fi
     if /usr/bin/test ! -z "${MM_MYTHSTREAM_ENABLED}"          && \
        /usr/bin/test !    "${MM_MYTHSTREAM_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_MYTHSTREAM_ENABLED}" = "no"   ; then
@@ -92,6 +97,9 @@ conf_default_plugin() {
     if /usr/bin/test -z "${MM_MYTHNEWS_ENABLED}"            ; then
         MM_MYTHNEWS_ENABLED='yes'
     fi
+    if /usr/bin/test -z "${MM_MYTHPHONE_ENABLED}"           ; then
+        MM_MYTHPHONE_ENABLED='yes'
+    fi
     if /usr/bin/test -z "${MM_MYTHSTREAM_ENABLED}"          ; then
         MM_MYTHSTREAM_ENABLED='yes'
     fi
@@ -116,6 +124,7 @@ conf_write_plugin() {
     conf_variable_write "${conf_file}" MM_MYTHGAME_ENABLED            "${MM_MYTHGAME_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHMUSIC_ENABLED           "${MM_MYTHMUSIC_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHNEWS_ENABLED            "${MM_MYTHNEWS_ENABLED}"
+    conf_variable_write "${conf_file}" MM_MYTHPHONE_ENABLED           "${MM_MYTHPHONE_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHSTREAM_ENABLED          "${MM_MYTHSTREAM_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHVIDEO_ENABLED           "${MM_MYTHVIDEO_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHWEATHER_ENABLED         "${MM_MYTHWEATHER_ENABLED}"
