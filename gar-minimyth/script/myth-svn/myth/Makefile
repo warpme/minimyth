@@ -23,4 +23,4 @@ clean-all:
 	@rm -rf $(DESTDIR)$(includedir)/myth*
 	@rm -rf $(DESTDIR)$(libdir)/libmyth*
 	@rm -rf $(DESTDIR)$(libdir)/myth*
-	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )
+	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth/* ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )

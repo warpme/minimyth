@@ -101,7 +101,7 @@ DEPENDS = \
 		devel/gdb \
 		devel/strace \
 		devel/valgrind) \
-	$(addprefix extras/,$(filter-out Makefile extras-% extras.%, $(shell cd ../../extras ; ls))) \
+	$(filter-out %/Makefile extras/extras-% extras/extras.%,$(subst ../../,,$(wildcard ../../extras/*))) \
 	$(mm_USER_PACKAGES)
 
 BUILDDEPS = \

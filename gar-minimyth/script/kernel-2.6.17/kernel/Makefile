@@ -8,14 +8,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	kernel-2.6.17/alsa-driver \
-	kernel-2.6.17/drm \
-	kernel-2.6.17/k8temp \
-	kernel-2.6.17/imon_vfd \
-	kernel-2.6.17/linux \
-	kernel-2.6.17/unionfs \
-	kernel-2.6.17/vt1211 \
-	kernel-2.6.17/xbox360
+	$(filter-out %/Makefile %/kernel,$(subst ../../,,$(wildcard ../../kernel-2.6.17/*)))
 
 GAR_EXTRA_CONF += kernel-2.6.17/linux/package-api.mk
 include ../../gar.mk
@@ -26,17 +19,9 @@ post-install:
 	@$(MAKECOOKIE)
 
 clean-all:
-	@$(MAKE) clean     -C ../alsa-driver
-	@$(MAKE) clean     -C ../drm
-	@$(MAKE) clean     -C ../k8temp
-	@$(MAKE) clean     -C ../imon_vfd
-	@$(MAKE) clean     -C ../kernel
-	@$(MAKE) clean     -C ../linux
-	@$(MAKE) clean     -C ../unionfs
-	@$(MAKE) clean     -C ../vt1211
-	@$(MAKE) clean     -C ../xbox360
+	@rm -rf $(DESTDIR)$(LINUX_DIR)
+	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)
 	@$(MAKE) clean-all -C ../../system/lirc
 	@$(MAKE) clean-all -C ../../nvidia
 	@$(MAKE) clean     -C ../../X11/IEGD
-	@rm -rf $(DESTDIR)$(LINUX_DIR)
-	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)
+	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../kernel/* ../../kernel-2.*/*)),$(MAKE) -C $(dir) clean ; )
