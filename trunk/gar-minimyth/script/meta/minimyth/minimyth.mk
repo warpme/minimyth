@@ -274,6 +274,7 @@ mm-check:
 		   [ ! "$${software}" = "mythgame"    ] && \
 		   [ ! "$${software}" = "mythmusic"   ] && \
 		   [ ! "$${software}" = "mythnews"    ] && \
+		   [ ! "$${software}" = "mythphone"   ] && \
 		   [ ! "$${software}" = "mythstream"  ] && \
 		   [ ! "$${software}" = "mythvideo"   ] && \
 		   [ ! "$${software}" = "mythweather" ] && \

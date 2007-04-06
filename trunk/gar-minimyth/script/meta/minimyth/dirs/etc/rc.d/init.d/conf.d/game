@@ -8,14 +8,18 @@ conf_clean_game() {
 }
 
 conf_check_game() {
+    if /usr/bin/test ! -z "${MM_GAME_SAVE_ENABLE}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_GAME_SAVE_ENABLE' is obsolete."
+    fi
+
     return 0
 }
 
 conf_default_game() {
-    if /usr/bin/test -z "${MM_GAME_SAVE_ENABLE}" ; then
-        MM_GAME_SAVE_ENABLE='no'
+    if /usr/bin/test -z "${MM_GAME_SAVE_ENABLED}" ; then
+        MM_GAME_SAVE_ENABLED='no'
     fi
-    if /usr/bin/test -z "${MM_GAME_SAVE_LIST}"   ; then
+    if /usr/bin/test -z "${MM_GAME_SAVE_LIST}"    ; then
         MM_GAME_SAVE_LIST="${MM_GAME_SAVE_LIST}:.fceultra"
         MM_GAME_SAVE_LIST="${MM_GAME_SAVE_LIST}:.jzintv"
         MM_GAME_SAVE_LIST="${MM_GAME_SAVE_LIST}:.stella"
@@ -41,10 +45,10 @@ conf_default_game() {
 conf_write_game() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_GAME_SAVE_ENABLE "${MM_GAME_SAVE_ENABLE}"
-    conf_variable_write "${conf_file}" MM_GAME_SAVE_LIST   "${MM_GAME_SAVE_LIST}"
-    conf_variable_write "${conf_file}" MM_GAME_BIOS_ROOT   "${MM_GAME_BIOS_ROOT}"
-    conf_variable_write "${conf_file}" MM_GAME_GAME_ROOT   "${MM_GAME_GAME_ROOT}"
+    conf_variable_write "${conf_file}" MM_GAME_SAVE_ENABLED "${MM_GAME_SAVE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_GAME_SAVE_LIST    "${MM_GAME_SAVE_LIST}"
+    conf_variable_write "${conf_file}" MM_GAME_BIOS_ROOT    "${MM_GAME_BIOS_ROOT}"
+    conf_variable_write "${conf_file}" MM_GAME_GAME_ROOT    "${MM_GAME_GAME_ROOT}"
 
     return 0
 }
