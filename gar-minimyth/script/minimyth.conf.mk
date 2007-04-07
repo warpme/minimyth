@@ -36,8 +36,8 @@ mm_CHIPSETS           ?= intel nvidia via other
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
 # 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone',
-# 'mythstream', 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode', and
-# 'debug'.
+# 'mythstream', 'mythvideo', 'mythweather', 'mplayer', 'xine', 'transcode',
+# 'mame' and 'debug'.
 mm_SOFTWARE           ?= mythbrowser mythdvd mythgallery mythgame mythmusic mythnews mythphone mythstream mythvideo mythweather \
                          mplayer xine \
                          $(if $(filter yes,$(mm_DEBUG)),debug)
