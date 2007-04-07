@@ -281,6 +281,7 @@ mm-check:
 		   [ ! "$${software}" = "mplayer"     ] && \
 		   [ ! "$${software}" = "xine"        ] && \
 		   [ ! "$${software}" = "transcode"   ] && \
+		   [ ! "$${software}" = "mame"        ] && \
 		   [ ! "$${software}" = "debug"       ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \

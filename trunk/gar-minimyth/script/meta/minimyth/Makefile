@@ -77,6 +77,7 @@ DEPENDS = \
 		emulators/fceu \
 		emulators/jzintv \
 		emulators/stella \
+		$(if $(filter mame,$(mm_SOFTWARE)),emulators/sdlmame) \
 		emulators/VisualBoyAdvance \
 		emulators/zsnes) \
 	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
