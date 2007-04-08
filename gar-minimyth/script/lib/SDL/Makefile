@@ -10,8 +10,11 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/alsa-lib xorg/xorg
-BUILDDEPS = devel/nasm
+DEPENDS    = lang/c xorg/xorg
+ifneq ($(DESTIMG),build)
+DEPENDS   += lib/alsa-lib
+endif
+BUILDDEPS  = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
