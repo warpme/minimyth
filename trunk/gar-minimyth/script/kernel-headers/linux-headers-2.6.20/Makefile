@@ -1,17 +1,17 @@
-GARNAME = linux-headers
+GARNAME = linux
 GARVERSION = $(LINUX_HEADERS_VERSION)
 CATEGORIES = kernel-headers
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/testing/
-DISTFILES = linux-$(GARVERSION).tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-#DEPENDS   = lang/c
-#BUILDDEPS = utils/unifdef
+DEPENDS   = lang/c
+BUILDDEPS = utils/unifdef
 
 WORKSRC = $(WORKDIR)/linux-$(GARVERSION)
 
