@@ -4,11 +4,36 @@
 ################################################################################
 . /etc/rc.d/functions
 
+conf_variable_write() {
+    /bin/echo -n "${2}=" >> ${1}
+    /bin/echo -n "'"     >> ${1}
+    /bin/echo -n "${3}"  >> ${1}
+    /bin/echo    "'"     >> ${1}
+
+    return 0
+}
+
 start() {
 
+    local DHCP_CONF
     local ip
 
     mm_message_output info "starting network ..."
+
+    set > /etc/conf.d/env
+
+    # Write DCHP override parameters to the DHCP override file.
+    DHCP_CONF=/etc/conf.d/dhcp.override
+    /bin/rm -f ${DHCP_CONF}~
+    /bin/touch ${DHCP_CONF}~
+    /usr/bin/test -n "${MM_DHCP_HOSTNAME}"    && conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME    ${MM_DHCP_HOSTNAME}
+    /usr/bin/test -n "${MM_DHCP_DOMAIN}"      && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN      ${MM_DHCP_DOMAIN}
+    /usr/bin/test -n "${MM_DHCP_DNS_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS ${MM_DHCP_DNS_SERVERS}
+    /usr/bin/test -n "${MM_DHCP_NTP_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS ${MM_DHCP_NTP_SERVERS}
+    /usr/bin/test -n "${MM_DHCP_LOG_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS ${MM_DHCP_LOG_SERVERS}
+    /usr/bin/test -n "${MM_DHCP_TZ}"          && conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          ${MM_DHCP_TZ}
+    /usr/bin/test -n "${MM_BOOT_TYPE}"        && conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        ${MM_BOOT_TYPE}
+    /bin/mv -f ${DHCP_CONF}~ ${DHCP_CONF}
 
     # Bring up the local (loopback) interface.
     /sbin/ifconfig lo 127.0.0.1
