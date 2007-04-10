@@ -12,7 +12,7 @@ mm_VERSION_MYTH       ?= $(strip \
                             $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                ) \
                             $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                           )
-mm_VERSION_MINIMYTH   ?= 23
+mm_VERSION_MINIMYTH   ?= 24
 mm_VERSION_EXTRA      ?= $(strip \
                             $(if $(filter yes,$(mm_DEBUG)),-debug) \
                           )
@@ -88,7 +88,7 @@ mm_KERNEL_VERSION     ?= 2.6.17
 # Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
 mm_MYTH_VERSION       ?= stable20
 # The version of the NVIDIA driver.
-# Valid values are '7184', '9746' and '9755'.
+# Valid values are '7184', '9631', '9746' and '9755'.
 mm_NVIDIA_VERSION     ?= 9755
 # The version of xorg to use.
 # Valid values are '7.2'.
