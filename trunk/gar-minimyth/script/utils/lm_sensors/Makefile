@@ -30,7 +30,8 @@ ARGS = \
 	SBINDIR="$(sbindir)" \
 	INCLUDEDIR="$(includedir)" \
 	MANDIR="$(mandir)" \
-	MACHINE="$(GARCH)"
+	MACHINE="$(GARCH)" \
+	LIBICONV=""
 
 BUILD_ARGS   = $(ARGS) user
 INSTALL_ARGS = $(ARGS)
