@@ -1,0 +1,52 @@
+diff -Naur xine-lib-1.1.5-old/configure.ac xine-lib-1.1.5-new/configure.ac
+--- xine-lib-1.1.5-old/configure.ac	2007-04-08 09:31:32.000000000 -0700
++++ xine-lib-1.1.5-new/configure.ac	2007-04-11 16:57:17.000000000 -0700
+@@ -291,30 +291,7 @@
+ dnl ---------------------------------------------
+ 
+ AC_MSG_CHECKING([libdir name])
+-case $host in
+-*-*-linux*)
+- # Test if the compiler is 64bit
+- echo 'int i;' > conftest.$ac_ext
+- xine_cv_cc_64bit_output=no
+- if AC_TRY_EVAL(ac_compile); then
+- case `"$MAGIC_CMD" conftest.$ac_objext` in
+- *"ELF 64"*)
+-   xine_cv_cc_64bit_output=yes
+-   ;;
+- esac
+- fi
+- rm -rf conftest*
+- ;;
+-esac
+-
+-case $host_cpu:$xine_cv_cc_64bit_output in
+-powerpc64:yes | s390x:yes | sparc64:yes | x86_64:yes)
+- XINE_LIBNAME="lib64"
+- ;;
+-*:*)
+- XINE_LIBNAME="lib"
+- ;;
+-esac
++XINE_LIBNAME="lib"
+ AC_MSG_RESULT([$XINE_LIBNAME])
+ 
+ 
+diff -Naur xine-lib-1.1.5-old/misc/xine-config.in xine-lib-1.1.5-new/misc/xine-config.in
+--- xine-lib-1.1.5-old/misc/xine-config.in	2007-04-04 15:18:00.000000000 -0700
++++ xine-lib-1.1.5-new/misc/xine-config.in	2007-04-11 16:57:55.000000000 -0700
+@@ -100,11 +100,11 @@
+ fi
+ 
+ if test "$echo_cflags" = "yes"; then
+-      echo -I@includedir@ @PTHREAD_CFLAGS@
++      echo -I@GAR_DESTDIR@@includedir@ @PTHREAD_CFLAGS@
+ fi
+ 
+ if test "$echo_libs" = "yes"; then
+-      echo -L@libdir@ -lxine @ZLIB_LIBS@ @NET_LIBS@ @PTHREAD_LIBS@ @LIBICONV@ @RT_LIBS@
++      echo -L@GAR_DESTDIR@@libdir@ -lxine @ZLIB_LIBS@ @NET_LIBS@ @PTHREAD_LIBS@ @LIBICONV@ @RT_LIBS@
+ fi      
+ if test "$echo_plugindir" = "yes"; then
+       echo "@XINE_PLUGINPATH@"

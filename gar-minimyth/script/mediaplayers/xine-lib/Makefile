@@ -1,9 +1,9 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.3
+GARVERSION = 1.1.5
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-flac.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -23,6 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--disable-rpath \
+	--enable-iconvtest \
 	--enable-nls \
 	--enable-ffmpeg-uncommon-codecs \
 	--enable-ffmpeg-popular-codecs \
@@ -55,7 +56,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-mng \
 	--disable-oss \
 	--disable-artstest \
-	--disable-jack \
 	--disable-gnomevfs \
 	--disable-gdkpixbuf \
 	--disable-samba \
@@ -65,15 +65,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-faad \
 	--enable-dts \
 	--disable-modplug \
-	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
+	--enable-real-codecs \
 	--enable-mmap \
 	--enable-antialiasing \
 	--enable-largefile \
 	--enable-optimizations \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
 	--with-gnu-ld \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
-	--without-pthread-prefix \
 	--without-external-ffmpeg \
 	--with-x \
 	--without-zlib-prefix \
@@ -82,10 +82,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xxmc-lib=XvMCW \
 	--without-xvmc-path \
 	--with-xvmc-lib=XvMCW \
+	--without-xcb \
 	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
 	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--without-caca \
 	--with-sdl \
+	--without-libstk \
 	--without-pulseaudio \
 	--without-dxheaders \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
@@ -108,10 +110,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-esound \
 	--without-arts \
 	--without-fusionsound \
+	--disable-jack \
 	--with-internal-vcdlibs \
 	--without-external-libdts \
 	--without-wavpack \
-	--with-w32-path="$(libdir)/codecs"
+	--with-w32-path="$(libdir)/codecs" \
+	--with-gnu-as
 
 CONFIGURE_ENV = \
 	lt_cv_path_MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
