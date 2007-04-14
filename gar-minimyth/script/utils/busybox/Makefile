@@ -7,7 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-hdparm.patch \
-	$(DISTNAME)-ps.patch
+	$(DISTNAME)-ps.patch \
+	$(DISTNAME)-sed.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
 
