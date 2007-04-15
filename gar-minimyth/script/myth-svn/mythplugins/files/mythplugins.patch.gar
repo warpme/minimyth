@@ -1,6 +1,6 @@
-diff -Naur mythplugins-13153-old/configure mythplugins-13153-new/configure
---- mythplugins-13153-old/configure	2007-03-31 13:34:12.000000000 -0700
-+++ mythplugins-13153-new/configure	2007-04-04 17:46:31.000000000 -0700
+diff -Naur mythplugins-13228-old/configure mythplugins-13228-new/configure
+--- mythplugins-13228-old/configure	2007-04-15 12:07:06.000000000 -0700
++++ mythplugins-13228-new/configure	2007-04-15 13:28:31.000000000 -0700
 @@ -298,27 +298,7 @@
  
  has_library()
@@ -86,7 +86,18 @@ diff -Naur mythplugins-13153-old/configure mythplugins-13153-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL            support will not be included in MythMusic"
-@@ -836,10 +809,9 @@
+@@ -817,7 +790,9 @@
+     fi
+ 
+     if test "$taglib" = "yes" ; then
+-        echo "INCLUDEPATH += `taglib-config --prefix`/include/taglib" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `@GAR_DESTDIR@/@GAR_bindir@/taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
+     fi
+ fi
+ 
+@@ -840,10 +815,9 @@
      if test "$festival" = "yes" ; then
          echo "        FESTIVAL       support will be included in MythPhone"
          echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
@@ -95,13 +106,13 @@ diff -Naur mythplugins-13153-old/configure mythplugins-13153-new/configure
          echo "DEFINES += FESTIVAL_HOME=\\\"\$\${FESTIVALDIR}\\\"" >> ./mythphone/mythphone/config.pro
 -        echo "INCLUDEPATH += /usr/include/festival /usr/include/speech_tools" >> ./mythphone/mythphone/config.pro
 -        echo "INCLUDEPATH += /usr/local/include/festival /usr/local/include/speech_tools" >> ./mythphone/mythphone/config.pro
-+        echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/festival @GAR_DESTDIR@@GAR_includedir/speech_tools" >> ./mythphone/mythphone/config.pro
++        echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/festival @GAR_DESTDIR@@GAR_includedir@/speech_tools" >> ./mythphone/mythphone/config.pro
          echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
      fi
  
-diff -Naur mythplugins-13153-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-13153-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
---- mythplugins-13153-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2007-03-31 13:33:59.000000000 -0700
-+++ mythplugins-13153-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2007-04-04 17:42:13.000000000 -0700
+diff -Naur mythplugins-13228-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-13228-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
+--- mythplugins-13228-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2007-04-15 12:06:53.000000000 -0700
++++ mythplugins-13228-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2007-04-15 13:26:36.000000000 -0700
 @@ -1,8 +1,7 @@
  include ( ../../mythconfig.mak )
  include ( ../../settings.pro )
@@ -112,9 +123,9 @@ diff -Naur mythplugins-13153-old/mythbrowser/mythbookmarkmanager/mythbookmarkman
  
  TEMPLATE = lib
  CONFIG += plugin thread warn_on debug
-diff -Naur mythplugins-13153-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-13153-new/mythbrowser/mythbrowser/mythbrowser.pro
---- mythplugins-13153-old/mythbrowser/mythbrowser/mythbrowser.pro	2007-03-31 13:33:59.000000000 -0700
-+++ mythplugins-13153-new/mythbrowser/mythbrowser/mythbrowser.pro	2007-04-04 17:42:13.000000000 -0700
+diff -Naur mythplugins-13228-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-13228-new/mythbrowser/mythbrowser/mythbrowser.pro
+--- mythplugins-13228-old/mythbrowser/mythbrowser/mythbrowser.pro	2007-04-15 12:06:53.000000000 -0700
++++ mythplugins-13228-new/mythbrowser/mythbrowser/mythbrowser.pro	2007-04-15 13:26:36.000000000 -0700
 @@ -1,8 +1,7 @@
  include (../../mythconfig.mak )
  include (../../settings.pro )
@@ -134,21 +145,21 @@ diff -Naur mythplugins-13153-old/mythbrowser/mythbrowser/mythbrowser.pro mythplu
  
  # Input
  HEADERS += webpage.h tabview.h
-diff -Naur mythplugins-13153-old/mythmusic/mythmusic/mythmusic.pro mythplugins-13153-new/mythmusic/mythmusic/mythmusic.pro
---- mythplugins-13153-old/mythmusic/mythmusic/mythmusic.pro	2007-03-31 13:33:29.000000000 -0700
-+++ mythplugins-13153-new/mythmusic/mythmusic/mythmusic.pro	2007-04-04 17:42:13.000000000 -0700
+diff -Naur mythplugins-13228-old/mythmusic/mythmusic/mythmusic.pro mythplugins-13228-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-13228-old/mythmusic/mythmusic/mythmusic.pro	2007-04-15 12:06:23.000000000 -0700
++++ mythplugins-13228-new/mythmusic/mythmusic/mythmusic.pro	2007-04-15 13:26:36.000000000 -0700
 @@ -6,7 +6,7 @@
     error(Missing config.pro: please run the configure script)
  }
  
--INCLUDEPATH *= /usr/include/cdda /usr/include/taglib
-+INCLUDEPATH *= @GAR_DESTDIR@@GAR_includedir@/cdda @GAR_DESTDIR@@GAR_includedir@/taglib
+-INCLUDEPATH *= /usr/include/cdda
++INCLUDEPATH *= @GAR_DESTDIR@@GAR_includedir@/cdda
  TEMPLATE = lib
  CONFIG += plugin thread
  TARGET = mythmusic
-diff -Naur mythplugins-13153-old/settings.pro mythplugins-13153-new/settings.pro
---- mythplugins-13153-old/settings.pro	2007-03-31 13:34:12.000000000 -0700
-+++ mythplugins-13153-new/settings.pro	2007-04-04 17:42:13.000000000 -0700
+diff -Naur mythplugins-13228-old/settings.pro mythplugins-13228-new/settings.pro
+--- mythplugins-13228-old/settings.pro	2007-04-15 12:07:06.000000000 -0700
++++ mythplugins-13228-new/settings.pro	2007-04-15 13:26:36.000000000 -0700
 @@ -6,19 +6,18 @@
      KDEDIR = /usr/kde/3.3
  }
