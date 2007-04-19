@@ -1,8 +1,9 @@
 GARNAME = transcode
-GARVERSION = 1.0.2
+GARVERSION = 1.0.3
 CATEGORIES = utils
-MASTER_SITES = http://www.kraymer.mynetcologne.de/
-DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
+MASTER_SITES  = http://fromani.exit1.org/
+MASTER_SITES += http://www.kraymer.mynetcologne.de/
+DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
@@ -10,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ffmpeg lib/lame lib/mpeg2dec lib/xvidcore xorg/xorg
+DEPENDS = lang/c lib/ffmpeg lib/freetype lib/lame lib/mpeg2dec lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -66,6 +67,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-iconv \
 	--disable-xio \
 	--disable-warnings-as-errors \
+	--with-gnu-ld \
+	--with-x \
 	--with-libavcodec-prefix=$(DESTDIR)$(prefix) \
 	--with-libavcodec-includes=$(DESTDIR)$(includedir) \
 	--with-libavcodec-libs=$(DESTDIR)$(libdir) \
