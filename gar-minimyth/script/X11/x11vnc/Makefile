@@ -26,7 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xinerama \
 	--with-xrandr \
 	--with-xfixes \
-	--with-xdamage \
+	--without-xdamage \
 	--without-xtrap \
 	--with-xrecord \
 	--without-fbpm \
