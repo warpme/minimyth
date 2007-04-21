@@ -8,7 +8,7 @@
 mm_VERSION            ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH       ?= $(strip \
                             $(if $(filter stable19  ,$(mm_MYTH_VERSION)),0.19                     ) \
-                            $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20                     ) \
+                            $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20.1                   ) \
                             $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                ) \
                             $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                           )
