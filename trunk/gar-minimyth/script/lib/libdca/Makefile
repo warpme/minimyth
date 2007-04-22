@@ -1,8 +1,8 @@
 GARNAME = libdca
-GARVERSION = 0.0.2
+GARVERSION = 0.0.5
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/videolan/libdca/$(GARVERSION)/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -10,8 +10,6 @@ define BLURB
 endef
 
 DEPENDS = lang/c
-
-WORKSRC = $(WORKDIR)/libdts-$(GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -26,14 +24,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-al-audio \
 	--disable-win \
 	--disable-warnings \
-	--disable-gprof
+	--disable-gprof \
+	--with-gnu-ld
 
 include ../../gar.mk
 
 post-install:
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdca.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdca.pc
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
-	@if [ -e $(DESTDIR)$(libdir)/libdts_pic.a ] ; then \
-		mv -f $(DESTDIR)$(libdir)/libdts_pic.a $(DESTDIR)$(libdir)/libdts.a ; \
-	 fi
+	@rm -rf $(DESTDIR)$(libdir)/libdts.a
+	@ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a"
 	@$(MAKECOOKIE)
