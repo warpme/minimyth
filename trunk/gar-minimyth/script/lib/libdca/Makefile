@@ -30,10 +30,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libdca.la
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdca.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdca.pc
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
-	@rm -rf $(DESTDIR)$(libdir)/libdts.a
+	@rm -f $(DESTDIR)$(libdir)/libdts.a
 	@ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a"
 	@$(MAKECOOKIE)
