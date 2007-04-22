@@ -1,8 +1,8 @@
-GARNAME = libdts
+GARNAME = libdca
 GARVERSION = 0.0.2
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/videolan/libdca/$(GARVERSION)/
-DISTFILES = libdca-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -10,6 +10,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c
+
+WORKSRC = $(WORKDIR)/libdts-$(GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
