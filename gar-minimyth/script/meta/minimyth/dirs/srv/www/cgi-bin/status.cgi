@@ -26,7 +26,7 @@ fi
 status_loads_head="Loads (output of command \"cat /proc/loadavg\")"
 status_loads_body=`/bin/cat /proc/loadavg`
 
-/bin/echo "Content-Type"content="text/html; charset=UTF-8"
+/bin/echo "Content-Type: text/html; charset=UTF-8"
 /bin/echo
 /bin/echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">"
 /bin/echo "<html>"
