@@ -28,6 +28,8 @@ DEPENDS = \
 	$(CATEGORY)/libXtst \
 	$(CATEGORY)/libXxf86dga \
 	$(CATEGORY)/Mesa \
+	$(CATEGORY)/mkfontdir \
+	$(CATEGORY)/mkfontscale \
 	$(CATEGORY)/rgb \
 	$(CATEGORY)/xdpyinfo \
 	$(CATEGORY)/xf86-input-keyboard \
