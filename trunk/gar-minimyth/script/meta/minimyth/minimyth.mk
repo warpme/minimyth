@@ -92,6 +92,7 @@ MM_INIT_START := \
     lirc \
     lcdproc \
     mythtv \
+    font \
     x
 MM_INIT_KILL := \
     x \
