@@ -67,90 +67,187 @@ fi
 
 case ${game_console} in
     a2600)
-        args=
-        args="${args} -video gl"
-        args="${args} -gl_fsmax 1"
-        args="${args} -fullscreen 1"
-        args="${args} -scale_tia zoom1x"
-        args="${args} -scale_ui zoom1x"
-        args="${args} -center 1"
-        args="${args} -sound 1"
-        args="${args} -channels 2"
-        args="${args} -freq 48000"
-        args="${args} -volume 100"
-        args="${args} -clipvol 1"
-        args="${args} -accurate 1"
-        /usr/bin/stella ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/stella ; then
+            args=
+            args="${args} -video gl"
+            args="${args} -gl_fsmax 1"
+            args="${args} -fullscreen 1"
+            args="${args} -scale_tia zoom1x"
+            args="${args} -scale_ui zoom1x"
+            args="${args} -center 1"
+            args="${args} -sound 1"
+            args="${args} -channels 2"
+            args="${args} -freq 48000"
+            args="${args} -volume 100"
+            args="${args} -clipvol 1"
+            args="${args} -accurate 1"
+            /usr/bin/stella ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     cgb)
-        args=
-        args="${args} --fullscreen"
-        args="${args} --no-debug"
-        /usr/bin/VisualBoyAdvance ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/mednafen ; then
+            resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
+            resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
+            args=
+            args="${args} -fs 1"
+            args="${args} -gba.stretch 1"
+            args="${args} -gba.xres ${resolution_x}"
+            args="${args} -gba.yres ${resolution_y}"
+            /usr/bin/mednafen ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        elif /usr/bin/test -e /usr/bin/VisualBoyAdvance ; then
+            args=
+            args="${args} --fullscreen"
+            args="${args} --no-debug"
+            /usr/bin/VisualBoyAdvance ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     gb)
-        args=
-        args="${args} --fullscreen"
-        args="${args} --no-debug"
-        /usr/bin/VisualBoyAdvance ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/mednafen ; then
+            resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
+            resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
+            args=
+            args="${args} -fs 1"
+            args="${args} -gba.stretch 1"
+            args="${args} -gba.xres ${resolution_x}"
+            args="${args} -gba.yres ${resolution_y}"
+            /usr/bin/mednafen ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        elif /usr/bin/test -e /usr/bin/VisualBoyAdvance ; then
+            args=
+            args="${args} --fullscreen"
+            args="${args} --no-debug"
+            /usr/bin/VisualBoyAdvance ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     gba)
-        args=
-        args="${args} --fullscreen"
-        args="${args} --no-debug"
-        /usr/bin/VisualBoyAdvance ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/mednafen ; then
+            resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
+            resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
+            args=
+            args="${args} -fs 1"
+            args="${args} -gba.stretch 1"
+            args="${args} -gba.xres ${resolution_x}"
+            args="${args} -gba.yres ${resolution_y}"
+            /usr/bin/mednafen ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        elif /usr/bin/test -e /usr/bin/VisualBoyAdvance ; then
+            args=
+            args="${args} --fullscreen"
+            args="${args} --no-debug"
+            /usr/bin/VisualBoyAdvance ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     intv)
-        args=
-        /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/exec.bin && args="${args} --execimg=${MM_GAME_BIOS_ROOT}/intv/exec.bin"
-        /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/grom.bin && args="${args} --gromimg=${MM_GAME_BIOS_ROOT}/intv/grom.bin"
-        /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/ecs.bin  && args="${args} --ecsimg=${MM_GAME_BIOS_ROOT}/intv/ecs.bin"
-        args="${args} --fullscreen=1"
-        /usr/bin/test -e ${HOME}/.jzintv/kbdhackfile        && args="${args} --kbdhackfile=${HOME}/.jzintv/kbdhackfile"
-        /usr/bin/jzintv ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/jzintv ; then
+            args=
+            /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/exec.bin && args="${args} --execimg=${MM_GAME_BIOS_ROOT}/intv/exec.bin"
+            /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/grom.bin && args="${args} --gromimg=${MM_GAME_BIOS_ROOT}/intv/grom.bin"
+            /usr/bin/test -e ${MM_GAME_BIOS_ROOT}/intv/ecs.bin  && args="${args} --ecsimg=${MM_GAME_BIOS_ROOT}/intv/ecs.bin"
+            args="${args} --fullscreen=1"
+            /usr/bin/test -e ${HOME}/.jzintv/kbdhackfile        && args="${args} --kbdhackfile=${HOME}/.jzintv/kbdhackfile"
+            /usr/bin/jzintv ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     nes)
-        resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
-        resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
-        args=
-        args="${args} -xres ${resolution_x}"
-        args="${args} -yres ${resolution_y}"
-        args="${args} -stretchx 1"
-        args="${args} -stretchy 1"
-        args="${args} -opengl 1"
-        args="${args} -fs 1"
-        args="${args} -sound 1"
-        args="${args} -soundrate 48000"
-        args="${args} -soundvol 100"
-        args="${args} -soundq 1"
-        args="${args} -soundbufsize 24"
-        args="${args} -input1 gamepad"
-        args="${args} -input2 gamepad"
-        /usr/bin/fceu ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/mednafen ; then
+            resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
+            resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
+            args=
+            args="${args} -fs 1"
+            args="${args} -nes.stretch 1"
+            args="${args} -nes.xres ${resolution_x}"
+            args="${args} -nes.yres ${resolution_y}"
+            /usr/bin/mednafen ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        elif /usr/bin/test -e /usr/bin/fceu ; then
+            resolution_x=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\1%'`
+            resolution_y=`/bin/echo ${MM_X_RESOLUTION} | /bin/sed -e 's%\([0-9][0-9]*\)x\([0-9][0-9]*\)%\2%'`
+            args=
+            args="${args} -xres ${resolution_x}"
+            args="${args} -yres ${resolution_y}"
+            args="${args} -stretchx 1"
+            args="${args} -stretchy 1"
+            args="${args} -opengl 1"
+            args="${args} -fs 1"
+            args="${args} -sound 1"
+            args="${args} -soundrate 48000"
+            args="${args} -soundvol 100"
+            args="${args} -soundq 1"
+            args="${args} -soundbufsize 24"
+            args="${args} -input1 gamepad"
+            args="${args} -input2 gamepad"
+            /usr/bin/fceu ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     snes)
-        args=
-        /usr/bin/zsnes ${args} "${game_file}"
-        if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
-            /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+        if /usr/bin/test -e /usr/bin/zsnes ; then
+            args=
+            /usr/bin/zsnes ${args} "${game_file}"
+            if /usr/bin/test "${MM_GAME_SAVE_ENABLED}" = "yes" ; then
+                /usr/bin/mm_run_in_terminal_window /usr/bin/mm_command game_save
+            fi
+        else
+            /bin/echo ""
+            /bin/echo "error: console name ${game_console} has no valid emulator."
+            /bin/echo ""
+            exit 1
         fi
         ;;
     *)
