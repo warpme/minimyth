@@ -294,8 +294,12 @@ conf_default_x() {
             if /usr/bin/test -z "${MM_X_TV_TYPE}" ; then
                 MM_X_TV_TYPE='NTSC';
             fi
-            if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"  &&
-               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC" ; then
+            if /usr/bin/test ! "${MM_X_TV_TYPE}" = "PAL"   &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "NTSC"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "480P"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "575P"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "720P"  &&
+               /usr/bin/test ! "${MM_X_TV_TYPE}" = "1080I" ; then
                 mm_message_output err "error: MM_X_TV_TYPE='${MM_X_TV_TYPE}' is not valid for MM_X_DRIVER='${MM_X_DRIVER}'."
             fi
             ;;
@@ -411,21 +415,21 @@ conf_default_x() {
                         /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="none"
                         /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
                         ;;
-                    HD480p)
+                    480P|HD480p)
                         /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
                         /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="720x480"
                         /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
                         /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="none"
                         /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
                         ;;
-                    HD720p)
+                    720P|HD720p)
                         /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
                         /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
                         /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
                         /usr/bin/test -z "${MM_X_MODE_1}"  && MM_X_MODE_1="1280x720"
                         /usr/bin/test -z "${MM_X_MODE_2}"  && MM_X_MODE_2="none"
                         ;;
-                    HD1080i)
+                    1080I|HD1080i)
                         /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='58.0-62.0,118.0-122.0'
                         /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE="1280x720"
                         /usr/bin/test -z "${MM_X_MODE_0}"  && MM_X_MODE_0="720x480"
@@ -441,7 +445,7 @@ conf_default_x() {
                         ;;
                     HD576i)
                         ;;
-                    HD576p)
+                    576P|HD576p)
                         ;;
                 esac
                 ;;
@@ -509,17 +513,21 @@ conf_default_x() {
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='720x480'
                 ;;
-            HD480p)
+            480P|HD480p)
                 /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
-                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='720x480'
+                /usr/bin/test -z "${MM_X_MODE}"    &&
+                    case ${MM_X_DRIVER} in
+                        via|via_pro) MM_X_MODE='720x480Fit' ;;
+                        *)           MM_X_MODE='720x480'    ;;
+                    esac
                 ;;
-            HD720p)
+            720P|HD720p)
                 /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
                 ;;
-            HD1080i)
+            1080I|HD1080i)
                 /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1920x1080'
@@ -534,7 +542,7 @@ conf_default_x() {
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='50.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='852x576'
                 ;;
-            HD576p)
+            576P|HD576p)
                 /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='50.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='852x576'
