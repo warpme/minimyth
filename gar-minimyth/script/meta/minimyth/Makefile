@@ -74,12 +74,10 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythgallery),myth-$(mm_MYTH_VERSION)/mythgallery)) \
 	$(if $(filter mythgame,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythgame),myth-$(mm_MYTH_VERSION)/mythgame) \
-		emulators/fceu \
 		emulators/jzintv \
 		emulators/mednafen \
 		emulators/stella \
 		$(if $(filter mame,$(mm_SOFTWARE)),emulators/sdlmame) \
-		emulators/VisualBoyAdvance \
 		emulators/zsnes) \
 	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythmusic),myth-$(mm_MYTH_VERSION)/mythmusic)) \
