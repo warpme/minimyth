@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/flac lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/zlib lib/freetype xorg/xorg lib/SDL
+DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/vcdimager lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -101,7 +101,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
 	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
 	--without-external-a52dec \
-	--without-external-libmad \
+	--with-external-libmad \
 	--without-external-libmpcdec \
 	--without-imagemagick \
 	--with-freetype \
@@ -111,7 +111,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-arts \
 	--without-fusionsound \
 	--disable-jack \
-	--with-internal-vcdlibs \
+	--without-internal-vcdlibs \
 	--without-external-libdts \
 	--without-wavpack \
 	--with-w32-path="$(libdir)/codecs" \
