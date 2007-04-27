@@ -6,7 +6,7 @@ GARVERSION = \
 				$(MYTHAUDIO_DEVEL_VERSION), \
 				0.0.0 \
 			), \
-			31 \
+			34 \
 		) \
 	)
 CATEGORIES = $(CATEGORY)
@@ -16,6 +16,7 @@ MASTER_SITES  = \
 	))
 MASTER_SITES += svn://mythaudio.googlecode.com/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(GARNAME)-cdio.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -23,7 +24,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c $(CATEGORY)/mythtv
-DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
+DEPENDS += lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
