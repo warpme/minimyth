@@ -1,0 +1,35 @@
+GARNAME = vcdimager
+GARVERSION = 0.7.23
+CATEGORIES = lib
+MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-nm.patch $(DISTNAME)-cross.patch
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c lib/libcdio-mini
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-xml-test \
+	--without-cli-frontend \
+	--without-xml-frontend \
+	--with-gnu-ld
+
+include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libvcdinfo.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libvcdinfo.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libvcdinfo.pc
+	@$(MAKECOOKIE)

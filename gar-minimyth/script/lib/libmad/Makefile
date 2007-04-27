@@ -3,6 +3,7 @@ GARVERSION = 0.15.1b
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mad/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-mad_pc.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -21,6 +22,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@touch $(WORKSRC)/AUTHORS
+	@touch $(WORKSRC)/ChangeLog
+	@touch $(WORKSRC)/NEWS
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libmad.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/mad.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/mad.pc
 	@$(MAKECOOKIE)
