@@ -1,5 +1,5 @@
 GARNAME = mount.cifs
-GARVERSION = 21840
+GARVERSION = 22526
 CATEGORIES = net
 MASTER_SITES = svn://svnanon.samba.org/samba/branches/SAMBA_3_0/source/client/
 DISTFILES = $(DISTNAME).tar.bz2 $(MAKEFILE)
