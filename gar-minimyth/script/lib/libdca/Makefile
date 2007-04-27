@@ -3,6 +3,7 @@ GARVERSION = 0.0.5
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/videolan/libdca/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-configure_c++.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -29,6 +30,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdca.la
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libdca.pc
@@ -37,4 +42,6 @@ post-install:
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libdts.pc
 	@rm -f $(DESTDIR)$(libdir)/libdts.a
 	@ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a"
+	@rm -f $(DESTDIR)$(libdir)/libdts.so
+	@ln -sf "libdca.so" "$(DESTDIR)$(libdir)/libdts.so"
 	@$(MAKECOOKIE)
