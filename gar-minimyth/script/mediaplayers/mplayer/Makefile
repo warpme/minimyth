@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/cdparanoia lib/faad2 lib/fontconfig lib/freetype lib/libdca lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -55,7 +55,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-mpdvdkit \
-	--enable-cdparanoia \
+	--disable-cdparanoia \
 	--enable-freetype \
 	--enable-unrarlib \
 	--enable-menu \
@@ -76,7 +76,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
 	--enable-jpeg \
-	--disable-libcdio \
+	--enable-libcdio \
 	--disable-liblzo \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32,--disable-win32) \
 	--disable-qtx \

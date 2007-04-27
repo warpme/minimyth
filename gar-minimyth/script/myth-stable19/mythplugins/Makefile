@@ -3,7 +3,7 @@ GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch $(DISTNAME)-changeset-12811.patch $(DISTNAME)-changeset-12824.patch $(DISTNAME)-changeset-12853.patch $(DISTNAME)-mythbrowser_https.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-musicplaylist.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE19_FIXES_VERSION).patch $(DISTNAME)-changeset-12811.patch $(DISTNAME)-changeset-12824.patch $(DISTNAME)-changeset-12853.patch $(DISTNAME)-mythbrowser_https.patch $(DISTNAME)-mythmusic_cdio.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-musicplaylist.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

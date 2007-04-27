@@ -9,7 +9,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c $(CATEGORY)/mythtv
-DEPENDS += lib/cdparanoia lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libmad lib/libvorbis lib/SDL lib/taglib
+DEPENDS += lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libcdio lib/libmad lib/libvorbis lib/SDL lib/taglib
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
