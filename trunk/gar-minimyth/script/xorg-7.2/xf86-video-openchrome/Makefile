@@ -3,7 +3,7 @@ GARVERSION = 318
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ticket-78-20070308.patch
+PATCHFILES = $(DISTNAME)-vt1625_ntsc_modes.patch $(DISTNAME)-ticket-78-20070308.patch
 LICENSE = MIT
 
 DESCRIPTION = 
