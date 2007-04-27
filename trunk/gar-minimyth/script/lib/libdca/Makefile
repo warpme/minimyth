@@ -3,7 +3,7 @@ GARVERSION = 0.0.5
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/videolan/libdca/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-configure_c++.patch
+PATCHFILES = $(DISTNAME)-configure_optimization.patch $(DISTNAME)-configure_c++.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -29,6 +29,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+CFLAGS += -O2
+CXXFLAGS += -O2
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
