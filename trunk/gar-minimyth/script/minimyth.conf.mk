@@ -88,10 +88,10 @@ mm_KERNEL_VERSION     ?= 2.6.17
 # Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
 mm_MYTH_VERSION       ?= stable20
 # The version of the NVIDIA driver.
-# Valid values are '7185' (legacy), '9631' (legacy), '9755', '100.14.03' (beta)
+# Valid values are '7185' (legacy), '9631' (legacy), '9755' and '100.14.03' (beta)
 mm_NVIDIA_VERSION     ?= 9755
 # The version of xorg to use.
-# Valid values are '7.2'.
+# Valid values are '7.2' and '7.3' (pre-release).
 mm_XORG_VERSION       ?= 7.2
 # Myth SVN version built. If the version changes too much then the patches may
 # no longer work.
