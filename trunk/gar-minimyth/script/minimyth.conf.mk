@@ -84,6 +84,10 @@ mm_NFS_ROOT           ?= /home/public/minimyth
 # The version of kernel to use.
 # Valid values are '2.6.17' and '2.6.20'.
 mm_KERNEL_VERSION     ?= 2.6.17
+# The kernel configuration file to use.
+# When set, the kernel configuration file $(HOME)/.minimyth/$(mm_KERNEL_CONFIG) will be used.
+# When not set, a built-in kernel configuration file will be used.
+mm_KERNEL_CONFIG      ?=
 # The version of Myth to use.
 # Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
 mm_MYTH_VERSION       ?= stable20
