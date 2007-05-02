@@ -1,7 +1,8 @@
 GARNAME = gspcav1
 GARVERSION = 20070110
 CATEGORIES = kernel-2.6.20
-MASTER_SITES = http://mxhaard.free.fr/spca50x/Download/
+MASTER_SITES  = http://mxhaard.free.fr/spca50x/Download/
+MASTER_SITES += http://mxhaard.free.fr/spca50x/Download/oldrelease/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
