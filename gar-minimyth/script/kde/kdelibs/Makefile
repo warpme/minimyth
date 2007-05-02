@@ -77,7 +77,8 @@ CONFIGURE_ENV  = \
 	PCRE_CONFIG=$(DESTDIR)$(bindir)/pcre-config \
 	UIC_PATH=$(build_DESTDIR)$(build_qtbindir)/uic \
 	XML_CONFIG=$(DESTDIR)$(bindir)/xml2-config \
-	XSLT_CONFIG=$(DESTDIR)$(bindir)/xslt-config
+	XSLT_CONFIG=$(DESTDIR)$(bindir)/xslt-config \
+	LD_RUN_PATH="$(LD_LIBRARY_PATH)"
 BUILD_ENV      = \
 	$(CONFIGURE_ENV)
 
