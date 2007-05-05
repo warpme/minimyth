@@ -24,16 +24,16 @@ start() {
 
     # Write DCHP override parameters to the DHCP override file.
     DHCP_CONF=/etc/conf.d/dhcp.override
-    /bin/rm -f ${DHCP_CONF}~
-    /bin/touch ${DHCP_CONF}~
-    /usr/bin/test -n "${MM_DHCP_HOSTNAME}"    && conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME    ${MM_DHCP_HOSTNAME}
-    /usr/bin/test -n "${MM_DHCP_DOMAIN}"      && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN      ${MM_DHCP_DOMAIN}
-    /usr/bin/test -n "${MM_DHCP_DNS_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS ${MM_DHCP_DNS_SERVERS}
-    /usr/bin/test -n "${MM_DHCP_NTP_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS ${MM_DHCP_NTP_SERVERS}
-    /usr/bin/test -n "${MM_DHCP_LOG_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS ${MM_DHCP_LOG_SERVERS}
-    /usr/bin/test -n "${MM_DHCP_TZ}"          && conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          ${MM_DHCP_TZ}
-    /usr/bin/test -n "${MM_BOOT_TYPE}"        && conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        ${MM_BOOT_TYPE}
-    /bin/mv -f ${DHCP_CONF}~ ${DHCP_CONF}
+    /bin/rm -f "${DHCP_CONF}~"
+    /bin/touch "${DHCP_CONF}~"
+    /usr/bin/test -n "${MM_DHCP_HOSTNAME}"    && conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME    "${MM_DHCP_HOSTNAME}"
+    /usr/bin/test -n "${MM_DHCP_DOMAIN}"      && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN      "${MM_DHCP_DOMAIN}"
+    /usr/bin/test -n "${MM_DHCP_DNS_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS "${MM_DHCP_DNS_SERVERS}"
+    /usr/bin/test -n "${MM_DHCP_NTP_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS "${MM_DHCP_NTP_SERVERS}"
+    /usr/bin/test -n "${MM_DHCP_LOG_SERVERS}" && conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS "${MM_DHCP_LOG_SERVERS}"
+    /usr/bin/test -n "${MM_DHCP_TZ}"          && conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          "${MM_DHCP_TZ}"
+    /usr/bin/test -n "${MM_BOOT_TYPE}"        && conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        "${MM_BOOT_TYPE}"
+    /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
 
     # Bring up the local (loopback) interface.
     /sbin/ifconfig lo 127.0.0.1
@@ -41,18 +41,24 @@ start() {
     # Get the IP address and other IP parameters.
     # If an IP address was already obtained then request the same address.
     ip=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
-    if /usr/bin/test -z "$ip" ; then
-        /sbin/udhcpc -s /etc/udhcpc.script -i eth0         >> /dev/null 2>&1
+    if /usr/bin/test -z "${ip}" ; then
+        /sbin/udhcpc -s /etc/udhcpc.script -i eth0           > /var/log/udhcpc 2>&1
     else
-        /sbin/udhcpc -s /etc/udhcpc.script -i eth0 -r $ip  >> /dev/null 2>&1
+        /sbin/udhcpc -s /etc/udhcpc.script -i eth0 -r ${ip}  > /var/log/udhcpc 2>&1
     fi
     if /usr/bin/test $? -ne 0 ; then
         mm_message_output err "error: DHCP failed."
+        if /usr/bin/test -n "${MM_DEBUG}" ; then
+            /bin/cat /var/log/udhcpc
+        fi
         exit 1
     fi
     ip=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
-    if /usr/bin/test -z "$ip" ; then
+    if /usr/bin/test -z "${ip}" ; then
         mm_message_output err "error: DHCP failed."
+        if /usr/bin/test -n "${MM_DEBUG}" ; then
+            /bin/cat /var/log/udhcpc
+        fi
         exit 1
     fi
 
