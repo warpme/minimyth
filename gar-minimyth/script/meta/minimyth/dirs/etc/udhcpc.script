@@ -3,9 +3,12 @@
 # udhcpc.script
 ################################################################################
 
+/usr/bin/test -r /etc/conf.d/env           && . /etc/conf.d/env
 /usr/bin/test -r /etc/conf.d/core          && . /etc/conf.d/core
 /usr/bin/test -r /etc/conf.d/dhcp.override && . /etc/conf.d/dhcp.override
 /usr/bin/test -r /etc/conf.d/minimyth      && . /etc/conf.d/minimyth
+
+/usr/bin/test -n "${MM_DEBUG}" && set -x
 
 DHCP_CONF='/etc/conf.d/dhcp'
 
@@ -41,18 +44,18 @@ case "${1}" in
             /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='local'
         fi
 
-        /bin/rm -f ${DHCP_CONF}~
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS     ${MM_DHCP_ADDRESS}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME    ${MM_DHCP_HOSTNAME}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN      ${MM_DHCP_DOMAIN}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS ${MM_DHCP_DNS_SERVERS}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS ${MM_DHCP_NTP_SERVERS}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS ${MM_DHCP_LOG_SERVERS}
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          ${MM_DHCP_TZ}
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER      ${MM_TFTP_SERVER}
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR     ${MM_TFTP_ROOTDIR}
-        conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        ${MM_BOOT_TYPE}
-        /bin/mv -f ${DHCP_CONF}~ ${DHCP_CONF}
+        /bin/rm -f "${DHCP_CONF}~"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS     "${MM_DHCP_ADDRESS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME    "${MM_DHCP_HOSTNAME}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN      "${MM_DHCP_DOMAIN}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS "${MM_DHCP_DNS_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS "${MM_DHCP_NTP_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS "${MM_DHCP_LOG_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          "${MM_DHCP_TZ}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER      "${MM_TFTP_SERVER}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR     "${MM_TFTP_ROOTDIR}"
+        conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        "${MM_BOOT_TYPE}"
+        /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
 
         /usr/bin/test -n "${broadcast}" && BROADCAST="broadcast ${broadcast}"
         /usr/bin/test -n "${subnet}"    && NETMASK="netmask ${subnet}"
