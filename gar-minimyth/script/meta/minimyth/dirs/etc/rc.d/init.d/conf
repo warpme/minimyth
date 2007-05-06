@@ -60,16 +60,19 @@ start() {
     done
 
     # Check MiniMyth configuration variables.
+    mm_message_output info "processing configuration: checking variables ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_check_${file}
     done
 
     # Set default MiniMyth configuration variable values.
+    mm_message_output info "processing configuration: defaulting variables ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_default_${file}
     done
 
     # Write processed MiniMyth configuration file.
+    mm_message_output info "processing configuration: writing variables ..."
     /bin/rm -rf '/etc/conf.d/minimyth~'
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_write_${file} '/etc/conf.d/minimyth~'
@@ -79,6 +82,7 @@ start() {
     /bin/rm -rf '/etc/conf.d/minimyth~'
 
     # Fetch user files.
+    mm_message_output info "processing configuration: fetching additional files ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         conf_fetch_${file}
     done
