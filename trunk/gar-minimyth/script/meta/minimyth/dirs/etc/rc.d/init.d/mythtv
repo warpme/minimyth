@@ -20,6 +20,8 @@ start() {
     local settings_value
     local TRANSCODE
     local file
+    local dir
+    local found
 
     mm_message_output info "configuring MythTV ..."
 
@@ -164,6 +166,23 @@ start() {
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythweather.so
         /bin/rm -rf /usr/share/mythtv/weather*
         /bin/rm -rf /usr/share/mythtv/mythweather*
+    fi
+
+    # Check for libdvdcss.so.2
+    if /usr/bin/test "${MM_MYTHDVD_ENABLED}"     = "yes" || \
+       /usr/bin/test "${MM_MYTHVIDEO_ENABLED}"   = "yes" ; then
+        found=0
+        if /usr/bin/test -e "/etc/ld.so.conf" ; then
+            for dir in `/bin/cat /etc/ld.so.conf` ; do
+                if /usr/bin/test -e "${dir}/libdvdcss.so.2" ; then
+                    found=1
+                fi
+            done
+        fi
+        if /usr/bin/test ${found} -eq 0 ; then
+            /usr/bin/logger -t minimyth -p "local0.warn" \
+                "warning: 'certain DVDs may not play. see <http://${MM_DHCP_ADDRESS}/minimyth/document-faq.shtml#dvd>"
+        fi
     fi
 
     # Enable MythTV to detect the addition and removal of storage devices.
