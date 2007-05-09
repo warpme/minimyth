@@ -93,6 +93,8 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo)) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather)) \
+	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \

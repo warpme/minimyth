@@ -269,22 +269,23 @@ mm-check:
 		fi ; \
 	done
 	@for software in $(mm_SOFTWARE) ; do \
-		if [ ! "$${software}" = "mythaudio"   ] && \
-		   [ ! "$${software}" = "mythbrowser" ] && \
-		   [ ! "$${software}" = "mythdvd"     ] && \
-		   [ ! "$${software}" = "mythgallery" ] && \
-		   [ ! "$${software}" = "mythgame"    ] && \
-		   [ ! "$${software}" = "mythmusic"   ] && \
-		   [ ! "$${software}" = "mythnews"    ] && \
-		   [ ! "$${software}" = "mythphone"   ] && \
-		   [ ! "$${software}" = "mythstream"  ] && \
-		   [ ! "$${software}" = "mythvideo"   ] && \
-		   [ ! "$${software}" = "mythweather" ] && \
-		   [ ! "$${software}" = "mplayer"     ] && \
-		   [ ! "$${software}" = "xine"        ] && \
-		   [ ! "$${software}" = "transcode"   ] && \
-		   [ ! "$${software}" = "mame"        ] && \
-		   [ ! "$${software}" = "debug"       ] ; then \
+		if [ ! "$${software}" = "mythaudio"      ] && \
+		   [ ! "$${software}" = "mythbrowser"    ] && \
+		   [ ! "$${software}" = "mythdvd"        ] && \
+		   [ ! "$${software}" = "mythgallery"    ] && \
+		   [ ! "$${software}" = "mythgame"       ] && \
+		   [ ! "$${software}" = "mythmusic"      ] && \
+		   [ ! "$${software}" = "mythnews"       ] && \
+		   [ ! "$${software}" = "mythphone"      ] && \
+		   [ ! "$${software}" = "mythstream"     ] && \
+		   [ ! "$${software}" = "mythvideo"      ] && \
+		   [ ! "$${software}" = "mythweather"    ] && \
+		   [ ! "$${software}" = "mythzoneminder" ] && \
+		   [ ! "$${software}" = "mplayer"        ] && \
+		   [ ! "$${software}" = "xine"           ] && \
+		   [ ! "$${software}" = "transcode"      ] && \
+		   [ ! "$${software}" = "mame"           ] && \
+		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
