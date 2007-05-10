@@ -18,7 +18,7 @@ mm_VERSION_EXTRA      ?= $(strip \
                           )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION       ?= 7
+mm_CONF_VERSION       ?= 8
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -38,11 +38,20 @@ mm_CHIPSETS           ?= intel nvidia via other
 # 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone',
 # 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine',
 # 'transcode', 'mame' and 'debug'.
-mm_SOFTWARE           ?= mythbrowser mythdvd mythgallery mythgame mythmusic \
-                         mythnews mythphone mythstream mythvideo mythweather \
-                         mythzoneminder \
-                         mplayer xine \
-                         $(if $(filter yes,$(mm_DEBUG)),debug)
+mm_SOFTWARE           ?= mythbrowser \
+                         $(if $(filter $(mm_MYTH_VERSION),stable19 stable20 softpad20),mythdvd) \
+                         mythgallery \
+                         mythgame \
+                         mythmusic \
+                         mythnews \
+                         mythphone \
+                         mythstream \
+                         mythvideo \
+                         mythweather \
+                         $(if $(filter $(mm_MYTH_VERSION),svn),mythzoneminder) \
+                         mplayer \
+                         xine \
+                         $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
 mm_GARCH              ?= pentium-mmx

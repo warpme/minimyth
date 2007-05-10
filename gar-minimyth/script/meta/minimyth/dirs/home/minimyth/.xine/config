@@ -8,10 +8,12 @@
 
 # Enable deinterlacing by default
 # bool, default: 0
+#gui.deinterlace_by_default:0
 gui.deinterlace_by_default:@DEINTERLACE_BY_DEFAULT@
 
 # Configuration experience level
 # { Beginner  Advanced  Expert  Master of the known universe }, default: 0
+#gui.experience_level:Beginner
 gui.experience_level:Master of the known universe
 
 # Enable OSD support
@@ -43,11 +45,12 @@ gui.experience_level:Master of the known universe
 #gui.smart_mode:1
 
 # Snapshot location
-# string, default: /root
-#gui.snapshotdir:/root
+# string, default: /home/minimyth
+#gui.snapshotdir:/home/minimyth
 
 # Display splash screen
 # bool, default: 1
+#gui.splash:1
 gui.splash:0
 
 # Subtitle autoloading
@@ -56,6 +59,7 @@ gui.splash:0
 
 # Visual animation style
 # { None  Post Plugin  Stream Animation }, default: 1
+#gui.visual_anim:Post Plugin
 gui.visual_anim:None
 
 # Windows stacking (more)
@@ -77,11 +81,7 @@ gui.visual_anim:None
 # Deinterlace plugin.
 # string, default: tvtime:method=LinearBlend,cheap_mode=1,pulldown=0,use_progressive_frame_flag=1
 #gui.deinterlace_plugin:tvtime:method=LinearBlend,cheap_mode=1,pulldown=0,use_progressive_frame_flag=1
-@XVMC_TRUE@gui.deinterlace_plugin:none
-
-# Warn user when too much frames are dropped.
-# bool, default: 1
-gui.dropped_frames_warning:0
+gui.deinterlace_plugin:@DEINTERLACE_PLUGIN@
 
 # Event sender behavior
 # bool, default: 1
@@ -139,9 +139,9 @@ gui.dropped_frames_warning:0
 # bool, default: 0
 #gui.zoom_small_stream:0
 
-# Logo mrl
-# string, default: file://usr/share/xine/skins/xine-ui_logo.mpv
-#gui.logo_mrl:file://usr/share/xine/skins/xine-ui_logo.mpv
+# Logo MRL
+# string, default: file:/usr/share/xine/skins/xine-ui_logo.mpv
+#gui.logo_mrl:file:/usr/share/xine/skins/xine-ui_logo.mpv
 
 # use XVidModeExtension when switching to fullscreen
 # bool, default: 0
@@ -153,33 +153,20 @@ gui.dropped_frames_warning:0
 
 # gui panel visibility
 # bool, default: 1
+#gui.panel_visible:1
 gui.panel_visible:0
 
 # numeric, default: 200
-gui.panel_x:60
+gui.panel_x:201
 
 # numeric, default: 100
-gui.panel_y:190
+gui.panel_y:101
 
-# brightness value
-# [0..65535], default: -1
-#gui.vo_brightness:-1
+# numeric, default: 80
+gui.setup_x:81
 
-# contrast value
-# [0..65535], default: -1
-#gui.vo_contrast:-1
-
-# hue value
-# [0..65535], default: -1
-#gui.vo_hue:-1
-
-# saturation value
-# [0..65535], default: -1
-#gui.vo_saturation:-1
-
-gui.setup_x:70
-
-gui.setup_y:1
+# numeric, default: 80
+gui.setup_y:81
 
 # color specification yuv-opacity
 # string, default: 8080c0-f
@@ -246,7 +233,8 @@ gui.setup_y:1
 #audio.alsa_hw_mixer:1
 
 # audio driver to use
-# { auto  null  alsa  oss  file  none }, default: 0
+# { auto  null  alsa  none  file }, default: 0
+#audio.driver:auto
 audio.driver:alsa
 
 # use A/52 dynamic range compression
@@ -267,6 +255,7 @@ audio.driver:alsa
 
 # device used for stereo output
 # string, default: plug:front:default
+#audio.device.alsa_front_device:plug:front:default
 audio.device.alsa_front_device:default
 
 # alsa mixer device
@@ -291,11 +280,16 @@ audio.device.alsa_front_device:default
 
 # speaker arrangement
 # { Mono 1.0  Stereo 2.0  Headphones 2.0  Stereo 2.1  Surround 3.0  Surround 4.0  Surround 4.1  Surround 5.0  Surround 5.1  Surround 6.0  Surround 6.1  Surround 7.1  Pass Through }, default: 1
+#audio.output.speaker_arrangement:Stereo 2.0
 audio.output.speaker_arrangement:@SPEAKER_ARRANGEMENT@
 
 # offset for digital passthrough
 # numeric, default: 0
 #audio.synchronization.passthrough_offset:0
+
+# play audio even on slow/fast speeds
+# bool, default: 0
+#audio.synchronization.slow_fast_audio:0
 
 # method to sync audio and video
 # { metronom feedback  resample }, default: 0
@@ -318,36 +312,13 @@ audio.output.speaker_arrangement:@SPEAKER_ARRANGEMENT@
 #audio.volume.remember_volume:0
 
 # video driver to use
-# { auto  xv  xshm  none  xxmc  sdl  xvmc }, default: 0
+# { auto  xv  opengl  xshm  xxmc  none  sdl  xvmc }, default: 0
+#video.driver:auto
 video.driver:@VIDEO_DRIVER@
-
-# Unichrome cpu save
-# bool, default: 0
-#video.device.unichrome_cpu_save:0
 
 # pitch alignment workaround
 # bool, default: 0
 #video.device.xv_pitch_alignment:0
-
-# Use bob as accelerated deinterlace method.
-# bool, default: 0
-@XVMC_TRUE@video.device.xvmc_bob_deinterlacing:@XVMC_BOB_DEINTERLACING@
-
-# Make XvMC allocate more frames for better buffering.
-# bool, default: 0
-#video.device.xvmc_more_frames:0
-
-# Fix buggy NVIDIA XvMC subpicture colors
-# bool, default: 0
-#video.device.xvmc_nvidia_color_fix:0
-
-# autopaint colour key
-# bool, default: 1
-#video.device.xv_autopaint_colorkey:1
-
-# video overlay colour key
-# [0..16777215], default: 2081
-#video.device.xv_colorkey:2081
 
 # disable exact alpha blending of overlays
 # bool, default: 0
@@ -365,6 +336,11 @@ video.driver:@VIDEO_DRIVER@
 # [0..100], default: 50
 #video.output.vertical_position:50
 
+# deinterlace method (deprecated)
+# { none  bob  weave  greedy  onefield  onefield_xv  linearblend }, default: 4
+#video.output.xv_deinterlace_method:onefield
+video.output.xv_deinterlace_method:none
+
 # MPEG-4 postprocessing quality
 # [0..6], default: 3
 #video.processing.ffmpeg_pp_quality:3
@@ -375,6 +351,7 @@ video.driver:@VIDEO_DRIVER@
 
 # slow down disc drive to this speed factor
 # numeric, default: 4
+#media.audio_cd.drive_slowdown:4
 media.audio_cd.drive_slowdown:1
 
 # query CDDB
@@ -382,8 +359,8 @@ media.audio_cd.drive_slowdown:1
 #media.audio_cd.use_cddb:1
 
 # CDDB cache directory
-# string, default: /root/.xine/cddbcache
-#media.audio_cd.cddb_cachedir:/root/.xine/cddbcache
+# string, default: /home/minimyth/.xine/cddbcache
+#media.audio_cd.cddb_cachedir:/home/minimyth/.xine/cddbcache
 
 # CDDB server port
 # numeric, default: 8880
@@ -446,12 +423,13 @@ media.audio_cd.drive_slowdown:1
 #media.dvd.skip_behaviour:skip program
 
 # path to the title key cache
-# string, default: /root/.dvdcss/
-#media.dvd.css_cache_path:/root/.dvdcss/
+# string, default: /home/minimyth/.dvdcss/
+#media.dvd.css_cache_path:/home/minimyth/.dvdcss/
 
 # file browsing start location
-# string, default: /root/.xine
-#media.files.origin_path:/root/.xine
+# string, default: /home/minimyth
+#media.files.origin_path:/home/minimyth
+media.files.origin_path:@MEDIA_FILES_ORIGIN_PATH@
 
 # list hidden files
 # bool, default: 0
@@ -460,6 +438,10 @@ media.audio_cd.drive_slowdown:1
 # network bandwidth
 # { 14.4 Kbps (Modem)  19.2 Kbps (Modem)  28.8 Kbps (Modem)  33.6 Kbps (Modem)  34.4 Kbps (Modem)  57.6 Kbps (Modem)  115.2 Kbps (ISDN)  262.2 Kbps (Cable/DSL)  393.2 Kbps (Cable/DSL)  524.3 Kbps (Cable/DSL)  1.5 Mbps (T1)  10.5 Mbps (LAN) }, default: 10
 #media.network.bandwidth:1.5 Mbps (T1)
+
+# Timeout for network stream reading (in seconds)
+# numeric, default: 30
+#media.network.timeout:30
 
 # Domains for which to ignore the HTTP proxy
 # string, default: 
@@ -485,29 +467,45 @@ media.audio_cd.drive_slowdown:1
 # { auto  TCP  HTTP }, default: 0
 #media.network.mms_protocol:auto
 
-# device used for VCD playback
-# string, default: /dev/cdrom
-#media.vcd.device:/dev/cdrom
+# automatically advance VCD track/entry
+# bool, default: 1
+#media.vcd.autoadvance:1
 
-# v4l radio device
-# string, default: /dev/v4l/radio0
-#media.video4linux.radio_device:/dev/v4l/radio0
+# VCD default type to use on autoplay
+# { MPEG track  entry  segment  playback-control item }, default: 3
+#media.vcd.autoplay:playback-control item
 
-# v4l video device
-# string, default: /dev/v4l/video0
-#media.video4linux.video_device:/dev/v4l/video0
+# CD-ROM drive used for VCD when none given
+# string, default: 
+#media.vcd.device:
 
-# device used for WinTV-PVR 250/350 (pvr plugin)
-# string, default: /dev/video0
-#media.wintv_pvr.device:/dev/video0
+# VCD position slider range
+# { auto  track  entry }, default: 0
+#media.vcd.length_reporting:auto
+
+# show 'rejected' VCD LIDs
+# bool, default: 0
+#media.vcd.show_rejected:0
+
+# VCD format string for stream comment field
+# string, default: %P - Track %T
+#media.vcd.comment_format:%P - Track %T
+
+# VCD debug flag mask
+# numeric, default: 0
+#media.vcd.debug:0
+
+# VCD format string for display banner
+# string, default: %F - %I %N%L%S, disk %c of %C - %v %A
+#media.vcd.title_format:%F - %I %N%L%S, disk %c of %C - %v %A
 
 # path to RealPlayer codecs
 # string, default: 
 #decoder.external.real_codecs_path:
 
 # path to Win32 codecs
-# string, default: //usr/lib/codecs
-#decoder.external.win32_codecs_path://usr/lib/codecs
+# string, default: /usr/lib/codecs
+#decoder.external.win32_codecs_path:/usr/lib/codecs
 
 # subtitle size
 # { tiny  small  normal  large  very large  huge }, default: 1
@@ -520,6 +518,14 @@ media.audio_cd.drive_slowdown:1
 # font for subtitles
 # string, default: sans
 #subtitles.separate.font:sans
+
+# font for subtitles
+# string, default: 
+#subtitles.separate.font_freetype:
+
+# whether to use a freetype font
+# bool, default: 0
+#subtitles.separate.font_use_freetype:0
 
 # encoding of the subtitles
 # string, default: iso-8859-1
@@ -553,6 +559,10 @@ media.audio_cd.drive_slowdown:1
 # numeric, default: 500
 #engine.buffers.video_num_buffers:500
 
+# default number of video frames
+# numeric, default: 15
+#engine.buffers.video_num_frames:15
+
 # priority for a/52 decoder
 # numeric, default: 0
 #engine.decoder_priorities.a/52:0
@@ -577,6 +587,10 @@ media.audio_cd.drive_slowdown:1
 # numeric, default: 0
 #engine.decoder_priorities.ffmpeg-wmv8:0
 
+# priority for ffmpeg-wmv9 decoder
+# numeric, default: 0
+#engine.decoder_priorities.ffmpeg-wmv9:0
+
 # priority for ffmpegaudio decoder
 # numeric, default: 0
 #engine.decoder_priorities.ffmpegaudio:0
@@ -585,10 +599,6 @@ media.audio_cd.drive_slowdown:1
 # numeric, default: 0
 #engine.decoder_priorities.ffmpegvideo:0
 
-# priority for flacdec decoder
-# numeric, default: 0
-#engine.decoder_priorities.flacdec:0
-
 # priority for gsm610 decoder
 # numeric, default: 0
 #engine.decoder_priorities.gsm610:0
@@ -596,10 +606,6 @@ media.audio_cd.drive_slowdown:1
 # priority for mad decoder
 # numeric, default: 0
 #engine.decoder_priorities.mad:0
-
-# priority for mpc decoder
-# numeric, default: 0
-#engine.decoder_priorities.mpc:0
 
 # priority for mpeg2 decoder
 # numeric, default: 0
@@ -621,13 +627,13 @@ media.audio_cd.drive_slowdown:1
 # numeric, default: 0
 #engine.decoder_priorities.qtv:0
 
-# priority for real decoder
-# numeric, default: 0
-#engine.decoder_priorities.real:0
-
 # priority for realadec decoder
 # numeric, default: 0
 #engine.decoder_priorities.realadec:0
+
+# priority for realvdec decoder
+# numeric, default: 0
+#engine.decoder_priorities.realvdec:0
 
 # priority for rgb decoder
 # numeric, default: 0
@@ -652,6 +658,10 @@ media.audio_cd.drive_slowdown:1
 # priority for sputext decoder
 # numeric, default: 0
 #engine.decoder_priorities.sputext:0
+
+# priority for theora decoder
+# numeric, default: 0
+#engine.decoder_priorities.theora:0
 
 # priority for vorbis decoder
 # numeric, default: 0
