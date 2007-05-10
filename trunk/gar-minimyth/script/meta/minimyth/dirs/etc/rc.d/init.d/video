@@ -9,7 +9,6 @@
 start() {
 
     local kernel_module
-    local PREFERRED_MPEG2_DECODER
     local DEINTERLACE_FILTER
     local X_RESOLUTION
     local X_RESOLUTION_X
@@ -21,56 +20,36 @@ start() {
 
     mm_message_output info "configuring video ..."
 
-    PREFERRED_MPEG2_DECODER=''
     case "${MM_X_DRIVER}" in
         intel_810)
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc'
             /bin/sed -i "s%@MM_XVMC_LIB@%I810XvMC%"           /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER='xvmc'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"              /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
             ;;
         intel_915)
-            PREFERRED_MPEG2_DECODER='ffmpeg'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.mplayer/config
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
             ;;
         nvidia)
             /bin/sed -i "s%@MM_XVMC_LIB@%XvMCNVIDIA_dynamic%" /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER='ffmpeg'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.mplayer/config
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
             ;;
         via)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMC%"            /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER='xvmc-vld'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
             mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         via_pro)
             /bin/sed -i "s%@MM_XVMC_LIB@%viaXvMCPro%"         /etc/X11/XvMCConfig
-            PREFERRED_MPEG2_DECODER='xvmc-vld'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"              /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"                     /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"                  /home/minimyth/.mplayer/config
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
             mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         vmware)
-            PREFERRED_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.xine/config
@@ -79,36 +58,79 @@ start() {
             ;;
     esac
 
-    case "${PREFERRED_MPEG2_DECODER}" in
+    case "${MM_VIDEO_MPEG2_DECODER}" in
         ffmpeg)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
+media.files.origin_path:@MEDIA_FILES_ORIGIN_PATH@
             ;;
         libmpeg2)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
             ;;
         xvmc)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
             ;;
         xvmc-vld)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${PREFERRED_MPEG2_DECODER}
+            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
+            ;;
+        *)
+            mm_message_output err "error: something is very wrong in the 'video' init script."
+            exit 1
             ;;
     esac
 
-    if   /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "no"  ; then
-        mm_mythdb_settings_set Deinterlace 0
-        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%" /home/minimyth/.xine/config
-        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%0%" /home/minimyth/.xine/config
-        /bin/sed -i "s%@BOBDEINT@%%"                /home/minimyth/.mplayer/config
-    elif /usr/bin/test "${MM_VIDEO_DEINTERLACE_ENABLED}" = "yes" ; then
-        mm_mythdb_settings_set Deinterlace 1
-        mm_mythdb_settings_set DeinterlaceFilter "bobdeint"
-        /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%" /home/minimyth/.xine/config
-        /bin/sed -i "s%@XVMC_BOB_DEINTERLACING@%1%" /home/minimyth/.xine/config
-        /bin/sed -i "s%@BOBDEINT@%:bobdeint%"       /home/minimyth/.mplayer/config
-    else
-        mm_message_output err "error: something is very wrong in the 'video' init script."
-        exit 1
-    fi
+    case "${MM_VIDEO_DEINTERLACER}" in
+        none)
+            mm_mythdb_settings_set Deinterlace 0
+            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%none%"                      /home/minimyth/.xine/config
+            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            ;;
+        bob)
+            mm_mythdb_settings_set Deinterlace 1
+            mm_mythdb_settings_set DeinterlaceFilter "bobdeint"
+            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=ScalerBob%"   /home/minimyth/.xine/config
+            /bin/sed -i "s%@BOBDEINT@%:bobdeint%"                           /home/minimyth/.mplayer/config
+            ;;
+        kernel)
+            mm_mythdb_settings_set Deinterlace 1
+            mm_mythdb_settings_set DeinterlaceFilter "kerneldeint"
+            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=LinearBlend%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            ;;
+        linear-blend)
+            mm_mythdb_settings_set Deinterlace 1
+            mm_mythdb_settings_set DeinterlaceFilter "linearblend"
+            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=LinearBlend%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            ;;
+        one-field)
+            mm_mythdb_settings_set Deinterlace 1
+            mm_mythdb_settings_set DeinterlaceFilter "onefield"
+            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
+            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=LinearBlend%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            ;;
+        *)
+            mm_message_output err "error: something is very wrong in the 'video' init script."
+            exit 1
+            ;;
+    esac
 
     if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"  ; then
         /bin/sed -i "s%@MONITORASPECT@%4:3%"  /home/minimyth/.mplayer/config
