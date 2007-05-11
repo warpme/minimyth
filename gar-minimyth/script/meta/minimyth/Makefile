@@ -63,7 +63,7 @@ DEPENDS = \
 	$(if $(filter iegd,$(mm_CHIPSETS)), \
 		$(if $(filter 2.6.17,$(mm_KERNEL_VERSION)),X11/IEGD)) \
 	$(if $(filter nvidia,$(mm_CHIPSETS)), \
-		nvidia/nvidia) \
+		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
 	$(if $(filter mythaudio,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythaudio),myth-$(mm_MYTH_VERSION)/mythaudio)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
