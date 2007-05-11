@@ -1,5 +1,5 @@
 GARNAME = xf86-input-evtouch
-GARVERSION = 0.8.4
+GARVERSION = 0.8.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.stz-softwaretechnik.de/~ke/touchscreen/
 DISTFILES = $(DISTNAME).tar.bz2
