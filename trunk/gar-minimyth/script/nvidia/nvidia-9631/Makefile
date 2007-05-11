@@ -133,6 +133,8 @@ install-x11:
 	@$(MAKECOOKIE)
 
 clean-all: clean-all-kernel clean-all-x11
+	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
 	@$(MAKE) clean
 
 clean-all-kernel:
