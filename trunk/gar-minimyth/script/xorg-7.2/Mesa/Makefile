@@ -1,9 +1,9 @@
 GARNAME = Mesa
-GARVERSION = 6.5.2
+GARVERSION = 6.5.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar $(DISTNAME)-xdemos.patch
+PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
