@@ -12,6 +12,10 @@ start() {
     local X_VIRTUAL_Y
     local DRI_TRUE
     local LIB_PATH
+    local LIB_PATHS
+    local LIB
+    local LIBS
+    local INTEL_IEGD_TRUE
     local NVIDIA_TRUE
 
     mm_message_output info "starting X ..."
@@ -98,47 +102,66 @@ start() {
             ;;
     esac
 
-    # Hacks to deal with the fact that the proprietary NVIDIA GL libraries
-    # conflict with the Open Source Mesa GL libraries.
-    DRI_TRUE=
-    NVIDIA_TRUE=
+    # Hacks to deal with the fact that the names for proprietary drivers and
+    # open source drivers conflict.
+    #   the proprietary IEGD X drivers confict with the Open Source Intel X drivers.
+    #   the proprietary NVIDIA GL libraries conflict with the Open Source Mesa GL libraries.
+    DRI_TRUE=""
+    INTEL_IEGD_TRUE="#"
+    NVIDIA_TRUE="#"
     case "${MM_X_DRIVER}" in
         intel_810)
-            DRI_TRUE=""
-            NVIDIA_TRUE="#"
             ;;
         intel_915)
-            DRI_TRUE=""
-            NVIDIA_TRUE="#"
+            ;;
+        intel_iegd)
+            DRI_TRUE="#"
+            INTEL_IEGD_TRUE=""
+            # Include path to proprietary libraries.
+            LIB_PATHS=`/bin/cat /etc/ld.so.conf`
+            LIB_PATHS="/usr/lib/${MM_X_DRIVER} ${LIB_PATHS}"
+            /bin/echo -n > /etc/ld.so.conf
+            /bin/rm -f /usr/lib/xorg/
+            for LIB_PATH in ${LIB_PATHS} ; do
+                /bin/echo "${LIB_PATH}" >> /etc/ld.so.conf
+            done
+            # Remove Open Source libraries that conflict with proprietary libraries.
+            LIBS=`/usr/bin/find /usr/lib/${MM_X_DRIVER} -type f | /bin/sed -e "s%^.*/%%"`
+            for LIB in ${LIBS} ; do
+                LIB_PATH=`/usr/bin/find /usr/lib -name ${LIB} | /bin/sed -e "s%^/usr/lib/${MM_X_DRIVER}/.*\$%%"`
+                if /usr/bin/test -n "${LIB_PATH}" ; then
+                    /bin/rm -f ${LIB_PATH}
+                fi
+            done
+            # Rebuild library cache.
+            /sbin/ldconfig
             ;;
         nvidia)
             DRI_TRUE="#"
             NVIDIA_TRUE=""
-            # Include path to proprietary NVIDIA libraries.
+            # Include path to proprietary libraries.
             LIB_PATHS=`/bin/cat /etc/ld.so.conf`
             LIB_PATHS="/usr/lib/${MM_X_DRIVER} ${LIB_PATHS}"
             /bin/echo -n > /etc/ld.so.conf
             for LIB_PATH in ${LIB_PATHS} ; do
                 /bin/echo "${LIB_PATH}" >> /etc/ld.so.conf
             done
-            # Remove Open Source libraries that conflict with NVIDIA libraries.
-            /bin/rm -f /usr/lib/libGL.*
-            /bin/rm -f /usr/lib/xorg/modules/extensions/libGLcore.*
-            /bin/rm -f /usr/lib/xorg/modules/extensions/libglx.*
+            # Remove Open Source libraries that conflict with proprietary libraries.
+            LIBS=`/usr/bin/find /usr/lib/${MM_X_DRIVER} -type f | /bin/sed -e "s%^.*/%%"`
+            for LIB in ${LIBS} ; do
+                LIB_PATH=`/usr/bin/find /usr/lib -name ${LIB} | /bin/sed -e "s%^/usr/lib/${MM_X_DRIVER}/.*\$%%"`
+                if /usr/bin/test -n "${LIB_PATH}" ; then
+                    /bin/rm -f ${LIB_PATH}
+                fi
+            done
             # Rebuild library cache.
             /sbin/ldconfig
             ;;
         via)
-            DRI_TRUE=""
-            NVIDIA_TRUE="#"
             ;;
         via_pro)
-            DRI_TRUE=""
-            NVIDIA_TRUE="#"
             ;;
         vmware)
-            DRI_TRUE=""
-            NVIDIA_TRUE="#"
             ;;
     esac
 
@@ -173,6 +196,7 @@ start() {
     /bin/sed -i "s%@X_VIRTUAL_X@%${X_VIRTUAL_X}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@X_VIRTUAL_Y@%${X_VIRTUAL_Y}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@DRI_TRUE@%${DRI_TRUE}%"                     /etc/X11/xorg.conf
+    /bin/sed -i "s%@INTEL_IEGD_TRUE@%${INTEL_IEGD_TRUE}%"       /etc/X11/xorg.conf
     /bin/sed -i "s%@NVIDIA_TRUE@%${NVIDIA_TRUE}%"               /etc/X11/xorg.conf
 
     # Turn off splash screen.

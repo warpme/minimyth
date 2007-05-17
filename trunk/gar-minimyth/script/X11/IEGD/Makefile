@@ -30,12 +30,12 @@ BUILD_ARGS = \
 	modules \
 	$(LINUX_MAKE_ARGS) \
 	KERNELDIR=$(DESTDIR)$(LINUX_BUILDDIR) \
-	INSTALL_MOD_PATH=$(DESTDIR)$(LINUX_MODULESDIR)/misc/iegd
+	INSTALL_MOD_PATH=$(DESTDIR)$(LINUX_MODULESDIR)/misc/intel_iegd
 INSTALL_ARGS = \
 	modules \
 	$(LINUX_MAKE_ARGS) \
 	KERNELDIR=$(DESTDIR)$(LINUX_BUILDDIR) \
-	INSTALL_MOD_PATH=$(DESTDIR)$(LINUX_MODULESDIR)/misc/iegd
+	INSTALL_MOD_PATH=$(DESTDIR)$(LINUX_MODULESDIR)/misc/intel_iegd
 
 BUILD_ENV   = \
 	$(LINUX_MAKE_ENV)
@@ -46,7 +46,7 @@ GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 pre-install:
-	mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/iegd/drivers/char/drm
+	mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/intel_iegd/drivers/char/drm
 	@$(MAKECOOKIE)
 
 install-custom-drm:
@@ -57,16 +57,16 @@ install-custom:
 	@mkdir -p $(DESTDIR)$(includedir)/X11
 	@install $(WORKSRC)/Driver/$(X_DRIVER)/intel_escape.h \
 		$(DESTDIR)$(includedir)/X11
-	@mkdir -p $(DESTDIR)$(libdir)
+	@mkdir -p $(DESTDIR)$(libdir)/intel_iegd
 	@install $(WORKSRC)/Driver/$(X_DRIVER)/libXiegd_escape.so.2.0.0 \
-		$(DESTDIR)$(libdir)
-	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/
+		$(DESTDIR)$(libdir)/intel_iegd
+	@mkdir -p $(DESTDIR)$(libdir)/intel_iegd/xorg/modules/
 	@install $(WORKSRC)/Driver/$(X_DRIVER)/fs454.so \
-		$(DESTDIR)$(libdir)/xorg/modules
-	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/drivers
+		$(DESTDIR)$(libdir)/intel_iegd/xorg/modules
+	@mkdir -p $(DESTDIR)$(libdir)/intel_iegd/xorg/modules/drivers
 	@install $(WORKSRC)/Driver/$(X_DRIVER)/intel_drv.so \
-		$(DESTDIR)$(libdir)/xorg/modules/drivers
-	@cd $(DESTDIR)$(libdir) ; \
+		$(DESTDIR)$(libdir)/intel_iegd/xorg/modules/drivers/intel_drv.so
+	@cd $(DESTDIR)$(libdir)/intel_iegd ; \
 		ln -sf libXiegd_escape.so.2.0.0 \
 		       libXiegd_escape.so.2.0 ; \
 		ln -sf libXiegd_escape.so.2.0 \
@@ -78,5 +78,5 @@ install-custom:
 		$(DESTDIR)$(mandir)/man3
 	@mkdir -p $(DESTDIR)$(mandir)/man4
 	@install $(WORKSRC)/Documents/Xorg-X11/intel.4 \
-		$(DESTDIR)$(mandir)/man4
+		$(DESTDIR)$(mandir)/man4/iegd.4
 	@$(MAKECOOKIE)
