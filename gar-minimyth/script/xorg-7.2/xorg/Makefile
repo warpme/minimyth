@@ -36,7 +36,7 @@ DEPENDS = \
 	$(CATEGORY)/xf86-input-keyboard \
 	$(CATEGORY)/xf86-input-mouse \
 	$(CATEGORY)/xf86-video-ati \
-	$(CATEGORY)/xf86-video-i810 \
+	$(CATEGORY)/xf86-video-intel \
 	$(CATEGORY)/xf86-video-openchrome \
 	$(CATEGORY)/xf86-video-vmware \
 	$(CATEGORY)/xinit \
