@@ -62,12 +62,14 @@ start() {
     # Check MiniMyth configuration variables.
     mm_message_output info "processing configuration: checking variables ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+        /usr/bin/logger -s -t minimyth -p "local0.info" "    checking variables for ${file}"
         conf_check_${file}
     done
 
     # Set default MiniMyth configuration variable values.
     mm_message_output info "processing configuration: defaulting variables ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+        /usr/bin/logger -s -t minimyth -p "local0.info" "    defaulting variables for ${file}"
         conf_default_${file}
     done
 
@@ -75,6 +77,7 @@ start() {
     mm_message_output info "processing configuration: writing variables ..."
     /bin/rm -rf '/etc/conf.d/minimyth~'
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+        /usr/bin/logger -s -t minimyth -p "local0.info" "    writing variables for ${file}"
         conf_write_${file} '/etc/conf.d/minimyth~'
     done
     /bin/rm -rf '/etc/conf.d/minimyth'
@@ -84,6 +87,7 @@ start() {
     # Fetch user files.
     mm_message_output info "processing configuration: fetching additional files ..."
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+        /usr/bin/logger -s -t minimyth -p "local0.info" "    fetching additional files for ${file}"
         conf_fetch_${file}
     done
 

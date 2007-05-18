@@ -1374,6 +1374,8 @@ mm_hardware_motherboard2kernel_map() {
     product=`/usr/sbin/dmidecode -s baseboard-product-name`
     vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
     product_clean=`/bin/echo ${product} | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
+vendor_clean=''
+product_clean=''
 
     /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
 
@@ -1397,7 +1399,7 @@ mm_hardware_motherboard2kernel_map() {
         }
         return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.error" "    motherboard vendor='${vendor}', product='${product}' unknown."
-    /usr/bin/logger -t minimyth -p "local0.error" "    some kernel modules may not be loaded."
+    /usr/bin/logger -t minimyth -p "local0.warn" "    motherboard vendor='${vendor}', product='${product}' unknown."
+    /usr/bin/logger -t minimyth -p "local0.warn" "    some kernel modules may not be loaded."
     return 0
 }
