@@ -307,7 +307,7 @@ mm-check:
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9631"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9746"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9755"      ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "100.14.03" ] ; then \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "100.14.06" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
