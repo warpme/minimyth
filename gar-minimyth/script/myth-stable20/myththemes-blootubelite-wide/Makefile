@@ -1,5 +1,5 @@
 GARNAME = blootubelite-wide
-GARVERSION = 20070311
+GARVERSION = 20070521
 CATEGORIES = $(CATEGORY)
 MASTER_SITE = http://www.mythtvtalk.com/juski/
 DISTFILES = $(DISTNAME).tar.bz2
