@@ -1,5 +1,5 @@
 GARNAME = drm
-GARVERSION = 2bb7703698bef1f599295126ca3834d37a8596c0
+GARVERSION = 056c2f249a61ba7078bae3d767a59f2be4c6556e
 CATEGORIES = kernel-2.6.20
 MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
