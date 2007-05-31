@@ -304,7 +304,7 @@ mm-check:
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "7185"      ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "9631"      ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "9639"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9746"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9755"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "100.14.06" ] ; then \
