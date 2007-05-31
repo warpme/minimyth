@@ -18,7 +18,7 @@ SUPER_VERSION = $(strip \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
 MAJOR_VERSION = 1
 MINOR_VERSION = 0
-TEENY_VERSION = 9631
+TEENY_VERSION = 9639
 EXTRA_VERSION = $(strip \
 	$(if $(filter x86,   $(SUPER_VERSION)),pkg1) \
 	$(if $(filter x86_64,$(SUPER_VERSION)),pkg2))
