@@ -45,8 +45,8 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2 -fno-strict-aliasing
+CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2 -fno-strict-aliasing
 
 configure-custom:
 	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
