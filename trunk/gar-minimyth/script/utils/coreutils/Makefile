@@ -3,7 +3,7 @@ GARVERSION = 6.9
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-sysinfo.patch
+PATCHFILES = $(DISTNAME)-sysinfo.patch $(DISTNAME)-futimens.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
