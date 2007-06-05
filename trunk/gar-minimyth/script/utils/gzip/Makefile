@@ -3,6 +3,7 @@ GARVERSION = 1.3.12
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-futimens.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
