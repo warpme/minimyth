@@ -1,5 +1,5 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.14rc4
+GARVERSION = 1.0.14
 CATEGORIES = kernel-2.6.20
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
