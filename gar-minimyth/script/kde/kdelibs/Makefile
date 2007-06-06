@@ -13,9 +13,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c xorg/xorg qt/qt lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
+DEPENDS    = lang/c xorg/xorg qt/qt lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
 ifneq ($(DESTIMG),build)
-BUILDDEPS = kde/kdelibs devel/valgrind
+DEPENDS   += devel/valgrind
+BUILDDEPS  = kde/kdelibs
 endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
