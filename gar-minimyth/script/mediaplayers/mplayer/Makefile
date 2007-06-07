@@ -6,7 +6,7 @@ MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-asmrules_fix_20061231.patch $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-asmrules_fix_20061231.patch $(DISTNAME)-cddb_fix_20070605.patch $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
