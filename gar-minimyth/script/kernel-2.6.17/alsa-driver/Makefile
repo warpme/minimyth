@@ -28,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
-	--with-cards="ens1371,hda-intel,intel8x0,atiixp,usb-audio,via82xx"
+	--with-cards="ens1371,hda-intel,ice1712,intel8x0,atiixp,usb-audio,via82xx"
 
 CONFIGURE_ENV = $(LINUX_MAKE_ENV)
 BUILD_ENV     = $(LINUX_MAKE_ENV)
@@ -44,6 +44,10 @@ LDFLAGS  :=
 
 IUSER  := `id -u`
 IGROUP := `id -g`
+
+post-install:
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
+	@$(MAKECOOKIE)
 
 clean-all:
 	@$(MAKE) clean
