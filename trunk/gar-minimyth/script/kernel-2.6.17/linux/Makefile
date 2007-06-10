@@ -7,7 +7,6 @@ CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-squashfs_3.2.patch
 PATCHFILES += $(DISTNAME)-iegd_6.1.patch
-PATCHFILES += $(DISTNAME)-interrupt_300hz.patch
 PATCHFILES += $(DISTNAME)-it87.patch $(DISTNAME)-longhaul_ide_lockup.patch $(DISTNAME)-via_irq_quirk.patch $(DISTNAME)-via_rhine_pxeboot.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
