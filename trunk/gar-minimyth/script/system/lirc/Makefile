@@ -1,11 +1,10 @@
 GARNAME = lirc
-GARVERSION = 0.8.2pre3
+GARVERSION = 0.8.2
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-device_link.patch $(DISTNAME)-SLAB_ATOMIC.patch $(DISTNAME)-readdata.patch $(DISTNAME)-module_device_table.patch
 PATCHFILES = $(DISTNAME)-module_device_table.patch
 LICENSE = GPL2
 
