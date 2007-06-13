@@ -292,7 +292,8 @@ mm-check:
 		fi ; \
 	done
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.17" ] && \
-	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.20" ] ; then \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.20" ] && \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.21" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
