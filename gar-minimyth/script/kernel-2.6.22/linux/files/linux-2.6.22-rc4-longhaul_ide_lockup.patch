@@ -1,0 +1,45 @@
+diff -Naur linux-2.6.22-rc4-old/arch/i386/kernel/cpu/cpufreq/longhaul.c linux-2.6.22-rc4-new/arch/i386/kernel/cpu/cpufreq/longhaul.c
+--- linux-2.6.22-rc4-old/arch/i386/kernel/cpu/cpufreq/longhaul.c	2007-06-13 19:50:46.000000000 -0700
++++ linux-2.6.22-rc4-new/arch/i386/kernel/cpu/cpufreq/longhaul.c	2007-06-13 19:52:45.000000000 -0700
+@@ -29,6 +29,8 @@
+ #include <linux/pci.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
++#include <linux/ide.h>
++#include <linux/delay.h>
+ 
+ #include <asm/msr.h>
+ #include <asm/timex.h>
+@@ -110,6 +112,24 @@
+ }
+ #endif
+ 
++static void ide_idle(void)
++{
++	int i;
++	ide_hwif_t *hwif = ide_hwifs;
++	ide_drive_t *drive;
++
++	i = 0;
++	do {
++		drive = &hwif->drives[i];
++		i++;
++		if (strncmp(drive->name,"hd",2) == 0) {
++			while (drive->waiting_for_dma)
++			udelay(10);
++		} else {
++			i = 0;
++		}
++	} while (i != 0);
++}
+ 
+ static unsigned int calc_speed(int mult)
+ {
+@@ -278,6 +298,7 @@
+ 			fsb, mult/10, mult%10, print_speed(speed/1000));
+ 
+ 	preempt_disable();
++	ide_idle(); /* avoid ide timeouts when bus master off */
+ 	local_irq_save(flags);
+ 
+ 	pic2_mask = inb(0xA1);
