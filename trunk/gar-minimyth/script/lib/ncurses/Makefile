@@ -17,17 +17,18 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--without-cxx-binding \
+	--without-ada \
+	--without-ada-compiler \
 	--with-build-cc="$(build_CC)" \
 	--with-build-cppflags="$(build_CPPFLAGS)" \
 	--with-build-cflags="$(build_CFLAGS)" \
 	--with-build-ldflags="$(build_LDFLAGS)" \
 	--with-build-libs="" \
-	--disable-static \
 	--enable-termcap \
 	--with-shared \
-	--without-cxx-binding \
-	--without-ada \
-	--without-ada-compiler
+	--disable-rpath \
+	--enable-widec
 
 include ../../gar.mk
 
