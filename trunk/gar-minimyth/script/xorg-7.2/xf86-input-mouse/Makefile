@@ -15,6 +15,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
+BUILDDEPS = \
+	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -34,7 +36,7 @@ CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/X11/sgml/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
