@@ -47,6 +47,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
+BUILDDEPS = \
+	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -132,8 +134,8 @@ pre-configure:
 	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@rm -f $(WORKSRC)/config.cache
-	@echo "ac_cv_sys_linker_h=no"                                                                >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=no" >> $(WORKSRC)/config.cache
+	@echo "ac_cv_sys_linker_h=no"                                                                 >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:

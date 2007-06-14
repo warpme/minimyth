@@ -1,5 +1,5 @@
 GARNAME = libX11
-GARVERSION = 1.1.1
+GARVERSION = 1.1.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -47,7 +47,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-tcp-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
-	--without-xcb
+	--without-xcb \
+	--without-lint
 
 CONFIGURE_ENV = \
 	CC_FOR_BUILD="$(build_CC)" \
