@@ -33,5 +33,5 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 post-install:
-	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
+	@cd $(DESTDIR)$(libdir) && ln -sf libncursesw.so libtermcap.so
 	@$(MAKECOOKIE)
