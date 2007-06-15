@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME)-libdca.patch $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-mythstream.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -34,10 +34,7 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--enable-proc-opt \
 	--enable-mmx \
-	--disable-iwmmxt \
-	--disable-altivec \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
@@ -45,6 +42,7 @@ CONFIGURE_ARGS = \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
 	--enable-lirc \
 	--enable-joystick-menu \
+	--enable-lmsensors \
 	--disable-firewire \
 	--disable-iptv \
 	--disable-dbox2 \
@@ -62,9 +60,11 @@ CONFIGURE_ARGS = \
 	--disable-xvmc-opengl \
 	--xvmc-lib=XvMCW \
 	--disable-mac-accel \
+	--enable-libdts \
 	--enable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx \
+	--disable-mac-bundle \
 	--without-bindings="perl"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)

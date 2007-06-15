@@ -1,7 +1,22 @@
-diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
---- mythtv-13303-old/configure	2007-04-21 16:54:20.000000000 -0700
-+++ mythtv-13303-new/configure	2007-04-21 16:55:11.000000000 -0700
-@@ -1530,26 +1530,7 @@
+diff -Naur mythtv-13691-old/configure mythtv-13691-new/configure
+--- mythtv-13691-old/configure	2007-06-14 20:43:25.000000000 -0700
++++ mythtv-13691-new/configure	2007-06-14 20:53:38.000000000 -0700
+@@ -593,11 +593,11 @@
+     func=$4
+     shift 4
+     disable $cfg
+-    check_cmd ${pkg}-config --version
++    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
+     err=$?
+     if test "$err" = 0; then
+-        temp_cflags `${pkg}-config --cflags`
+-        temp_extralibs `${pkg}-config --libs`
++        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
++        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
+         check_lib "$@" $header $func && enable $cfg
+     fi
+     return $err
+@@ -1588,26 +1588,7 @@
  
  has_library()
  {
@@ -17,7 +32,7 @@ diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
 -    # recurse down just one level, should be enough in most cases
 -    if test -f /etc/ld.so.conf ; then
 -        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
--        SRCH=`echo "$INCL" | sed 's/^include \//\//; s/^include /\/etc\//'`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
 -        for x in $SRCH ; do
 -            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
 -            LIBPATHS="$LIBPATHS $LP_APPEND"
@@ -29,7 +44,7 @@ diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-@@ -1562,9 +1543,7 @@
+@@ -1620,9 +1601,7 @@
  
  has_header()
  {
@@ -40,42 +55,27 @@ diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
  
      HAS_IT="no"
      for HPATH in $HPATHS ; do
-@@ -2424,9 +2403,9 @@
- 
- freetype2=no
- if test "x$targetos" != "xBeOS"; then
--  if (freetype-config --version) >/dev/null 2>&1 ; then
--      temp_cflags `freetype-config --cflags`
--      temp_extralibs `freetype-config --libs`
-+  if (@GAR_DESTDIR@@GAR_bindir@/freetype-config --version) >/dev/null 2>&1 ; then
-+      temp_cflags `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
-+      temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
-       check_ld <<EOF && freetype2=yes
- #include <ft2build.h>
- int main( void ) { return (int) FT_Init_FreeType(0); }
-@@ -2440,7 +2419,7 @@
+@@ -2400,7 +2379,7 @@
  
  sdl_too_old=no
  sdl=no
 -#SDL_CONFIG="${cross_prefix}sdl-config"
 +#SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
- #if ("${SDL_CONFIG}" --version) >/dev/null 2>&1 ; then
- #    temp_cflags `"${SDL_CONFIG}" --cflags`
- #    temp_extralibs `"${SDL_CONFIG}" --libs`
-@@ -2545,9 +2524,9 @@
- EOF
+ if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
+     sdl_cflags=`"${SDL_CONFIG}" --cflags`
+     temp_cflags $sdl_cflags
+@@ -2461,8 +2440,8 @@
+ # aRts probe
+ ! disabled audio_arts &&
+     check_foo_config arts artsc artsc.h arts_init &&
+-    audio_arts_libs=`artsc-config --libs`  &&
+-    audio_arts_cflags=`artsc-config --cflags` &&
++    audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`  &&
++    audio_arts_cflags=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags` &&
+     enable  audio_arts ||
+     disable audio_arts
  
- audio_arts=no
--if (artsc-config --version) > /dev/null 2>&1; then
--    audio_arts_libs=`artsc-config --libs`
--    audio_arts_tmp=`artsc-config --cflags`
-+if (@GAR_DESTDIR@@GAR_bindir@/artsc-config --version) > /dev/null 2>&1; then
-+    audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`
-+    audio_arts_tmp=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags`
-     if $cc -o $TMPE $TMPC $audio_arts_tmp $audio_arts_libs > /dev/null 2>&1; then
-         audio_arts_cflags=`echo $audio_arts_tmp`
-         audio_arts=yes
-@@ -2915,21 +2894,21 @@
+@@ -2695,21 +2674,21 @@
  # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
  # not to overwrite the headers installed from Mesa, etc. We need to
  # add that path to include paths if that's the case. 
@@ -92,11 +92,11 @@ diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
 +    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_sharedstatedir@/nvidia/include"
  fi
  
- if test x"$direct_fb" = x"yes" ; then
-     direct_fb="no"
+ if enabled directfb; then
+     directfb="no"
 -    if test x`which directfb-config 2> /dev/null` != x"" ; then
 +    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
-         direct_fb="yes"
+         directfb="yes"
 -        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
 -        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
 +        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
@@ -104,20 +104,20 @@ diff -Naur mythtv-13303-old/configure mythtv-13303-new/configure
      fi
  fi
  
-@@ -3212,8 +3191,8 @@
+@@ -3022,8 +3001,8 @@
  fi
- if test "$freetype2" = "yes" ; then
+ if enabled freetype2; then
    echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
 -  echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
 -  echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
 +  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
 +  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
  fi
- if test "$lmsensors" = "yes" ; then
-   CCONFIG="$CCONFIG using_lmsensors"
-diff -Naur mythtv-13303-old/contrib/mythnotify/cidbcast/Makefile mythtv-13303-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-13303-old/contrib/mythnotify/cidbcast/Makefile	2007-04-21 16:54:20.000000000 -0700
-+++ mythtv-13303-new/contrib/mythnotify/cidbcast/Makefile	2007-04-21 16:55:11.000000000 -0700
+ if enabled sdl; then
+     echo "SDL_LIBS=`"${SDL_CONFIG}" --libs`" >> $MYTH_CONFIG_MAK
+diff -Naur mythtv-13691-old/contrib/mythnotify/cidbcast/Makefile mythtv-13691-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-13691-old/contrib/mythnotify/cidbcast/Makefile	2007-06-14 20:43:25.000000000 -0700
++++ mythtv-13691-new/contrib/mythnotify/cidbcast/Makefile	2007-06-14 20:44:46.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -127,9 +127,9 @@ diff -Naur mythtv-13303-old/contrib/mythnotify/cidbcast/Makefile mythtv-13303-ne
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-13303-old/contrib/mythnotify/mythudprelay/Makefile mythtv-13303-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-13303-old/contrib/mythnotify/mythudprelay/Makefile	2007-04-21 16:54:20.000000000 -0700
-+++ mythtv-13303-new/contrib/mythnotify/mythudprelay/Makefile	2007-04-21 16:55:11.000000000 -0700
+diff -Naur mythtv-13691-old/contrib/mythnotify/mythudprelay/Makefile mythtv-13691-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-13691-old/contrib/mythnotify/mythudprelay/Makefile	2007-06-14 20:43:25.000000000 -0700
++++ mythtv-13691-new/contrib/mythnotify/mythudprelay/Makefile	2007-06-14 20:44:46.000000000 -0700
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -147,9 +147,9 @@ diff -Naur mythtv-13303-old/contrib/mythnotify/mythudprelay/Makefile mythtv-1330
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-13303-old/programs/mythtranscode/Makefile.standlone mythtv-13303-new/programs/mythtranscode/Makefile.standlone
---- mythtv-13303-old/programs/mythtranscode/Makefile.standlone	2007-04-21 16:54:20.000000000 -0700
-+++ mythtv-13303-new/programs/mythtranscode/Makefile.standlone	2007-04-21 16:55:11.000000000 -0700
+diff -Naur mythtv-13691-old/programs/mythtranscode/Makefile.standlone mythtv-13691-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-13691-old/programs/mythtranscode/Makefile.standlone	2007-06-14 20:43:25.000000000 -0700
++++ mythtv-13691-new/programs/mythtranscode/Makefile.standlone	2007-06-14 20:44:46.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -159,9 +159,9 @@ diff -Naur mythtv-13303-old/programs/mythtranscode/Makefile.standlone mythtv-133
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-13303-old/settings.pro mythtv-13303-new/settings.pro
---- mythtv-13303-old/settings.pro	2007-04-21 16:54:19.000000000 -0700
-+++ mythtv-13303-new/settings.pro	2007-04-21 16:55:11.000000000 -0700
+diff -Naur mythtv-13691-old/settings.pro mythtv-13691-new/settings.pro
+--- mythtv-13691-old/settings.pro	2007-06-14 20:43:25.000000000 -0700
++++ mythtv-13691-new/settings.pro	2007-06-14 20:44:46.000000000 -0700
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
