@@ -3,7 +3,7 @@ GARVERSION = v2.13-pre7
 CATEGORIES = utils
 MASTER_SITES = git://git.kernel.org/pub/scm/utils/util-linux-ng/util-linux-ng.git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-swap_configure.patch $(DISTNAME)-libncursesw.patch
+PATCHFILES = $(DISTNAME)-swap_configure.patch
 LICENSE = BSD/GPL2
 
 DESCRIPTION =
