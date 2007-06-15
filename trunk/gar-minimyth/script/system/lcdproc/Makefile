@@ -1,9 +1,8 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.1
+GARVERSION = 0.5.2
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-blank_goodbye.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -18,6 +17,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
+	--disable-ldap \
 	--enable-drivers=all \
 	--with-libusb-libraries="$(DESTDIR)$(libdir)"
 
