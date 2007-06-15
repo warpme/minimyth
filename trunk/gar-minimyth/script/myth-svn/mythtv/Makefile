@@ -39,6 +39,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
+	--enable-libdts \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
 	--enable-lirc \
 	--enable-joystick-menu \
@@ -56,11 +57,11 @@ CONFIGURE_ARGS = \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-xvmc \
+	--enable-xvmcw \
 	--enable-xvmc-pro \
 	--disable-xvmc-opengl \
 	--xvmc-lib=XvMCW \
 	--disable-mac-accel \
-	--enable-libdts \
 	--enable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx \
