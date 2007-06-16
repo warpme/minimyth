@@ -1,9 +1,8 @@
 GARNAME = libexif
-GARVERSION = 0.6.13
+GARVERSION = 0.6.16
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-doxygen.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION =
@@ -17,6 +16,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-docs \
+	--disable-internal-docs \
+	--enable-nls \
 	--disable-rpath \
 	--with-gnu-ld \
 	--with-doc-dir="$(docdir)"
