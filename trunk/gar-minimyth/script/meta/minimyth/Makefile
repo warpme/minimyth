@@ -81,7 +81,7 @@ DEPENDS = \
 		emulators/stella \
 		$(if $(filter mame,$(mm_SOFTWARE)),emulators/sdlmame) \
 		emulators/VisualBoyAdvance \
-		emulators/zsnes) \
+		$(if $(filter i386,$(mm_GARCH_FAMILY)),emulators/zsnes)) \
 	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythmusic),myth-$(mm_MYTH_VERSION)/mythmusic)) \
 	$(if $(filter mythnews,$(mm_SOFTWARE)), \
