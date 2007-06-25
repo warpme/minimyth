@@ -1,5 +1,5 @@
 GARNAME = x11vnc
-GARVERSION = 0.9
+GARVERSION = 0.9.2
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/
 DISTFILES = $(DISTNAME).tar.gz
@@ -22,6 +22,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-24bpp \
 	--without-ffmpeg \
 	--with-x \
+	--without-system-libvncserver \
+	--with-x11vnc \
 	--with-xkeyboard \
 	--with-xinerama \
 	--with-xrandr \
@@ -41,7 +43,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-avahi \
 	--with-jpeg \
 	--with-jpeg=$(DESTDIR)$(prefix) \
-	--with-libz \
+	--with-zlib \
 	--with-zlib=$(DESTDIR)$(prefix) \
 	--with-pthread
 
