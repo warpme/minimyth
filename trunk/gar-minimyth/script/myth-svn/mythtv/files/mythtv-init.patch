@@ -1,18 +1,16 @@
-diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-13691-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-13691-old/programs/mythfrontend/globalsettings.cpp	2007-06-14 20:44:30.000000000 -0700
-+++ mythtv-13691-new/programs/mythfrontend/globalsettings.cpp	2007-06-14 20:55:04.000000000 -0700
-@@ -26,6 +26,10 @@
-     HostComboBox *gc = new HostComboBox("AudioOutputDevice", true);
- 
-     gc->setLabel(QObject::tr("Audio output device"));
-+
-+    gc->addSelection(QObject::tr("ALSA:default"), "ALSA:default", true);
-+    gc->addSelection(QObject::tr("ALSA:iec958"), "ALSA:iec958");
-+
-     QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
-     gc->fillSelectionsFromDir(dev);
-     dev.setNameFilter("adsp*");
-@@ -62,7 +66,7 @@
+diff -Naur mythtv-13773-old/programs/mythfrontend/globalsettings.cpp mythtv-13773-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-13773-old/programs/mythfrontend/globalsettings.cpp	2007-06-27 19:41:40.000000000 -0700
++++ mythtv-13773-new/programs/mythfrontend/globalsettings.cpp	2007-06-27 19:54:39.000000000 -0700
+@@ -42,7 +42,7 @@
+     }
+ #endif
+ #ifdef USING_ALSA
+-    gc->addSelection("ALSA:default", "ALSA:default");
++    gc->addSelection("ALSA:default", "ALSA:default", true);
+ #endif
+ #ifdef USING_ARTS
+     gc->addSelection("ARTS:", "ARTS:");
+@@ -74,7 +74,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("MythControlsVolume");
      gc->setLabel(QObject::tr("Use internal volume controls"));
@@ -21,17 +19,16 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("MythTV can control the PCM and master "
                      "mixer volume.  If you prefer to use an external mixer "
                      "program, then disable this option."));
-@@ -74,6 +78,9 @@
-     HostComboBox *gc = new HostComboBox("MixerDevice", true);
+@@ -97,7 +97,7 @@
+     }
+ #endif
+ #ifdef USING_ALSA
+-    gc->addSelection("ALSA:default", "ALSA:default");
++    gc->addSelection("ALSA:default", "ALSA:default", true);
+ #endif
  
-     gc->setLabel(QObject::tr("Mixer Device"));
-+
-+    gc->addSelection(QObject::tr("default"), "default", true);
-+
-     QDir dev("/dev", "mixer*", QDir::Name, QDir::System);
-     gc->fillSelectionsFromDir(dev);
- 
-@@ -181,7 +188,7 @@
+     return gc;
+@@ -198,7 +198,7 @@
      gc->setLabel(QObject::tr("Algorithm"));
      gc->addSelection(QObject::tr("Linear blend"), "linearblend");
      gc->addSelection(QObject::tr("Kernel (less motion blur)"), "kerneldeint");
@@ -40,7 +37,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->addSelection(QObject::tr("One field"), "onefield");
      gc->setHelpText(QObject::tr("Deinterlace algorithm.") + " " +
                      QObject::tr("'Kernel' requires SSE CPU support.") + " " +
-@@ -224,7 +231,7 @@
+@@ -241,7 +241,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("DecodeExtraAudio");
      gc->setLabel(QObject::tr("Extra audio buffering"));
@@ -49,7 +46,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("Enable this setting if MythTV is playing "
                      "\"crackly\" audio and you are using hardware encoding. "
                      "This setting will have no effect "
-@@ -738,7 +745,7 @@
+@@ -755,7 +755,7 @@
      gc->setLabel(QObject::tr("Sort Episodes"));
      gc->addSelection(QObject::tr("Record date"), "Date");
      gc->addSelection(QObject::tr("Original Air date"), "OrigAirDate");
@@ -58,7 +55,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("Selects how to sort a shows episodes"));
      return gc;
  }
-@@ -747,7 +754,7 @@
+@@ -764,7 +764,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("StickyKeys");
      gc->setLabel(QObject::tr("Sticky keys"));
@@ -67,7 +64,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("If enabled, fast forward and rewind "
                      "continue after the key is released.  Pressing the key "
                      "again increases the fast forward or rewind speed.  The "
-@@ -1266,7 +1273,7 @@
+@@ -1283,7 +1283,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -76,7 +73,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->addSelection(QObject::tr("Always prompt (excluding Live TV)"), "1");
      gc->addSelection(QObject::tr("Always prompt (including Live TV)"), "4");
      gc->addSelection(QObject::tr("Prompt for Live TV only"), "8");
-@@ -1281,7 +1288,7 @@
+@@ -1298,7 +1298,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("EndOfRecordingExitPrompt");
      gc->setLabel(QObject::tr("Prompt at end of recording"));
@@ -85,7 +82,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("If set, a menu will be displayed allowing "
                      "you to delete the recording when it has finished "
                      "playing."));
-@@ -1353,7 +1360,7 @@
+@@ -1370,7 +1370,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
      gc->setLabel(QObject::tr("Display live preview of recordings"));
@@ -94,7 +91,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->setHelpText(QObject::tr("When enabled, a preview of the recording "
                      "will play in a small window on the \"Watch a "
                      "Recording\" menu."));
-@@ -1412,7 +1419,7 @@
+@@ -1429,7 +1429,7 @@
      HostComboBox *gc = new HostComboBox("AllowQuitShutdown");
      gc->setLabel(QObject::tr("System Exit key"));
      gc->addSelection(QObject::tr("ESC"), "4");
@@ -103,7 +100,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      gc->addSelection(QObject::tr("Control-ESC"), "1");
      gc->addSelection(QObject::tr("Meta-ESC"), "2");
      gc->addSelection(QObject::tr("Alt-ESC"), "3");
-@@ -1438,7 +1445,7 @@
+@@ -1455,7 +1455,7 @@
  {
      HostLineEdit *ge = new HostLineEdit("HaltCommand");
      ge->setLabel(QObject::tr("Halt command"));
@@ -112,7 +109,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      ge->setHelpText(QObject::tr("If you have configured an exit key using the "
                      "System Shutdown option, you will be given the opportunity "
                      "to exit MythTV or halt the system completely. "
-@@ -2110,7 +2117,7 @@
+@@ -2127,7 +2127,7 @@
      GlobalCheckBox *bc = new GlobalCheckBox("LastFreeCard");
      bc->setLabel(QObject::tr("Avoid conflicts between live TV and "
                   "scheduled shows."));
@@ -121,7 +118,7 @@ diff -Naur mythtv-13691-old/programs/mythfrontend/globalsettings.cpp mythtv-1369
      bc->setHelpText(QObject::tr("If enabled, live TV will choose a tuner card "
                      "that is less likely to have scheduled recordings "
                      "rather than the best card available."));
-@@ -2176,7 +2183,8 @@
+@@ -2193,7 +2193,8 @@
      gc->addSelection(QObject::tr("Blender - Transparent (CPU Usage - Middle)"),
                       QString::number((int)UIGuideType::Dense));
      gc->addSelection(QObject::tr("Eco - Transparent (CPU Usage - Low)"),
