@@ -42,7 +42,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
+	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
 	--disable-firewire \

@@ -104,8 +104,7 @@ DEPENDS = \
 		utils/transcode) \
 	$(if $(filter debug,$(mm_SOFTWARE)), \
 		devel/gdb \
-		devel/strace \
-		devel/valgrind) \
+		devel/strace) \
 	$(filter-out %/Makefile extras/extras-% extras/extras.%,$(subst ../../,,$(wildcard ../../extras/*))) \
 	$(mm_USER_PACKAGES)
 
