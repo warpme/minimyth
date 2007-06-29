@@ -13,10 +13,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c xorg/xorg qt/qt lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
+DEPENDS   = lang/c xorg/xorg qt/qt lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
 ifneq ($(DESTIMG),build)
-DEPENDS   += devel/valgrind
-BUILDDEPS  = kde/kdelibs
+BUILDDEPS = kde/kdelibs
 endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -27,7 +26,6 @@ INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--cache-file=config.cache \
 	--disable-debug \
 	--enable-final \
 	--enable-libsuffic=none \

@@ -40,7 +40,7 @@ CONFIGURE_ARGS = \
 	--disable-audio-arts \
 	--disable-audio-jack \
 	--enable-libdts \
-	$(if $(filter yes,$(mm_DEBUG)),--enable-valgrind,--disable-valgrind) \
+	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
 	--enable-lmsensors \
