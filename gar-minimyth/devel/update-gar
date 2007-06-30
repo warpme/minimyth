@@ -245,7 +245,7 @@ sed -i "s%^PATH *:= *%GAR_SYSTEM_PATH := ${GAR_SYSTEM_PATH}\nPATH := %g" ${SCRIP
 sed -i "s%^PATH *:=.*$%PATH := \$(if \$(wildcard \$(build_DESTDIR)\$(build_rootdir)/bin-build-system),\$(GAR_SYSTEM_PATH),\$(GAR_SYSTEM_PATH):\$(BUILD_SYSTEM_PATH))%g" ${SCRIPT_DIR}/gar.mk
 sed -i "s%^export PATH%export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH%g" ${SCRIPT_DIR}/gar.conf.mk
 
-# Change PKG_CONFIG_PATH.
+# Change PKG_CONFIG_PATH
 sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_PATH = ${_PKG_CONFIG_PATH}%g" ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i '/^INSTALL_DIRS *=/s%$(sbindir)%$(esbindir) &%' ${SCRIPT_DIR}/gar.mk
@@ -254,3 +254,6 @@ sed -i '/^INSTALL_DIRS *=/s%$(libdir)%$(elibdir) &%' ${SCRIPT_DIR}/gar.mk
 
 # Change build_DEPENDS
 sed -i "s%^build_DEPENDS *+= *\(.*\)$%build_DEPENDS += devel/build-system-bins \1%g" ${SCRIPT_DIR}/gar.lib.mk
+
+# Add additional licenses
+sed -i 's%^\(GPL2_LICENSE_TEXT *=.*\)$%\1\nGPL3_LICENSE_TEXT = \$(LICENSEDIR)/GPL3.txt%' ${SCRIPT_DIR}/gar.lib.mk
