@@ -1,0 +1,35 @@
+diff -Naur e2fsprogs-1.40-old/lib/Makefile.elf-lib e2fsprogs-1.40-new/lib/Makefile.elf-lib
+--- e2fsprogs-1.40-old/lib/Makefile.elf-lib	2006-03-10 15:37:57.000000000 -0800
++++ e2fsprogs-1.40-new/lib/Makefile.elf-lib	2007-06-30 10:20:46.000000000 -0700
+@@ -45,7 +45,7 @@
+ 	@echo "	SYMLINK $(ELF_INSTALL_DIR)/$(ELF_SONAME)"
+ 	@$(LN_S) -f $(ELF_LIB) $(DESTDIR)$(ELF_INSTALL_DIR)/$(ELF_SONAME)
+ 	@echo "	SYMLINK $(libdir)/$(ELF_IMAGE).so"
+-	@$(LN_S) -f $(ELF_INSTALL_DIR)/$(ELF_SONAME) \
++	@$(LN_S) -f $(ELF_SONAME) \
+ 		$(DESTDIR)$(libdir)/$(ELF_IMAGE).so
+ 	@echo "	LDCONFIG"
+ 	@-$(LDCONFIG)
+diff -Naur e2fsprogs-1.40-old/misc/Makefile.in e2fsprogs-1.40-new/misc/Makefile.in
+--- e2fsprogs-1.40-old/misc/Makefile.in	2007-05-01 05:10:14.000000000 -0700
++++ e2fsprogs-1.40-new/misc/Makefile.in	2007-06-30 10:20:46.000000000 -0700
+@@ -235,7 +235,7 @@
+ 		$(DESTDIR)$(root_sbindir) $(DESTDIR)$(bindir) \
+ 		$(DESTDIR)$(man1dir) $(DESTDIR)$(man8dir) \
+ 		$(DESTDIR)$(man1dir) $(DESTDIR)$(man5dir) \
+-		$(DESTDIR)$(libdir) $(DESTDIR)/etc
++		$(DESTDIR)$(libdir) $(DESTDIR)$(root_sysconfdir)
+ 
+ install: all $(SMANPAGES) $(UMANPAGES) installdirs
+ 	@for i in $(SPROGS); do \
+@@ -343,8 +343,8 @@
+ 	for i in $(FMANPAGES); do \
+ 		$(RM) -f $(DESTDIR)$(man5dir)/$$i; \
+ 	done
+-	if cmp -s $(srcdir)/mke2fs.conf $(DESTDIR)/etc/mke2fs.conf; then \
+-		$(RM) $(DESTDIR)/etc/mke2fs.conf; \
++	if cmp -s $(srcdir)/mke2fs.conf $(DESTDIR)$(root_sysconfdir)/mke2fs.conf; then \
++		$(RM) $(DESTDIR)$(root_sysconfdir)/mke2fs.conf; \
+ 	fi
+ 
+ clean:
