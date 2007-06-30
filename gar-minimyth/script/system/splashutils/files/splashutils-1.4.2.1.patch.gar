@@ -1,33 +1,33 @@
-diff -Naur splashutils-1.3.1-old/Makefile splashutils-1.3.1-new/Makefile
---- splashutils-1.3.1-old/Makefile	2007-03-24 09:11:46.000000000 -0700
-+++ splashutils-1.3.1-new/Makefile	2007-03-24 09:17:33.000000000 -0700
-@@ -51,7 +51,6 @@
+diff -Naur splashutils-1.4.2.1-old/Makefile splashutils-1.4.2.1-new/Makefile
+--- splashutils-1.4.2.1-old/Makefile	2007-06-29 18:05:45.000000000 -0700
++++ splashutils-1.4.2.1-new/Makefile	2007-06-29 18:06:05.000000000 -0700
+@@ -54,7 +54,6 @@
  
  # Flags for the kernel utilities
- K_CFLAGS = -w -ffunction-sections -fdata-sections $(MISCINCS) \
+ K_CFLAGS = -Os -w -ffunction-sections -fdata-sections $(MISCINCS) \
 -		-I$(ROOT)/$(ZLIBSRC) -I$(ROOT)/$(FT2SRC)/include -I$(ROOT)/$(OBJDIR)/jpeglib \
  		-DWITH_ERRLIST -DTARGET_KERNEL -DTT_CONFIG_OPTION_BYTECODE_INTERPRETER
  
  PNGDEFS = -DPNG_NO_WRITE_TIME -DPNG_NO_FLOATING_POINT_SUPPORTED -DPNG_NO_WRITE_SUPPORTED -DPNG_NO_READ_iTXt \
-@@ -59,7 +58,7 @@
+@@ -62,7 +61,7 @@
  		-DPNG_NO_ERROR_NUMBERS -DPNG_READ_GRAY_TO_RGB_SUPPORTED -DPNG_READ_16_TO_8_SUPPORTED \
  		-DPNG_READ_STRIP_ALPHA_SUPPORTED -DPNG_NO_INFO_IMAGE -DPNG_NO_READ_TRANSFORMS -DPNG_NO_READ_ANCILLARY_CHUNKS
  
 -K_LDLIBS = $(OBJDIR)/jpeglib/libjpeg.a
 +K_LDLIBS = @GAR_DESTDIR@@GAR_libdir@/libjpeg.a
- K_OBJS 	 = $(KOUT)/kernel.o $(KOUT)/dev.o $(KOUT)/parse.o $(KOUT)/render.o $(KOUT)/image.o \
- 		   $(KOUT)/cmd.o $(KOUT)/common.o $(KOUT)/list.o $(KOUT)/effects.o
+ K_OBJS 	 = $(KOUT)/kernel.o $(KOUT)/parse.o $(KOUT)/render.o $(KOUT)/image.o \
+ 		   $(KOUT)/cmd.o $(KOUT)/common.o $(KOUT)/list.o $(KOUT)/effects.o $(KOUT)/libsplash.o
  K_DEPS   =
-@@ -71,7 +70,7 @@
+@@ -74,7 +73,7 @@
  
  # Include the klibc header files so that we can compile against fb.h
  # from a kernel thee patched with fbsplash.
--INCLUDES = -I/usr/include/freetype2 -idirafter /usr/lib/klibc/include/linux
-+INCLUDES = -I$(ROOT)/linux/include -I@GAR_DESTDIR@@GAR_includedir@/freetype2
+-INCLUDES = -I/usr/include/freetype2 -idirafter /usr/$(LIB)/klibc/include/linux
++INCLUDES = -I@GAR_DESTDIR@@GAR_includedir@/freetype2
  OBJS     = $(OBJDIR)/splash.o $(OBJDIR)/parse.o $(OBJDIR)/render.o $(OBJDIR)/image.o \
  		   $(OBJDIR)/cmd.o $(OBJDIR)/common.o $(OBJDIR)/daemon.o $(OBJDIR)/daemon_cmd.o \
- 	       $(OBJDIR)/list.o $(OBJDIR)/effects.o
-@@ -90,13 +89,13 @@
+ 	       $(OBJDIR)/list.o $(OBJDIR)/effects.o $(OBJDIR)/libsplash.o
+@@ -93,13 +92,13 @@
  endif
  
  ifeq ($(call config_opt,CONFIG_TTF_KERNEL),true)
@@ -43,7 +43,7 @@ diff -Naur splashutils-1.3.1-old/Makefile splashutils-1.3.1-new/Makefile
  	K_DEPS	 += libpng
  	LDLIBS	 += -lpng -lz -lm
  endif
-@@ -203,7 +202,7 @@
+@@ -222,7 +221,7 @@
  	if ! make -q CFLAGS="$(K_CFLAGS)" library; then $(call infmsg,MAKE,freetype2) ; fi ; \
  	make CFLAGS="-c $(K_CFLAGS)" library > $(OUTPUT)
  
@@ -52,10 +52,22 @@ diff -Naur splashutils-1.3.1-old/Makefile splashutils-1.3.1-new/Makefile
  
  $(OBJDIR)/$(SP_HELPER): $(K_OBJS)
  	@$(call infmsg,LD,$@)
-diff -Naur splashutils-1.3.1-old/splash.h splashutils-1.3.1-new/splash.h
---- splashutils-1.3.1-old/splash.h	2007-03-24 09:09:02.000000000 -0700
-+++ splashutils-1.3.1-new/splash.h	2007-03-24 09:24:24.000000000 -0700
-@@ -18,27 +18,7 @@
+diff -Naur splashutils-1.4.2.1-old/splash.h splashutils-1.4.2.1-new/splash.h
+--- splashutils-1.4.2.1-old/splash.h	2007-06-09 09:11:36.000000000 -0700
++++ splashutils-1.4.2.1-new/splash.h	2007-06-29 18:06:05.000000000 -0700
+@@ -33,7 +33,7 @@
+ #define DEFAULT_FONT	"luxisri.ttf"
+ #define DEFAULT_THEME	"default"
+ #define DAEMON_NAME		"splash_util"
+-#define TTF_DEFAULT		THEME_DIR"/"DEFAULT_FONT
++#define TTF_DEFAULT	"@GAR_libdir@/X11/fonts/TTF""/"DEFAULT_FONT
+ 
+ #define SYSMSG_DEFAULT  "Initializing the kernel..."
+ #define SYSMSG_BOOTUP	"Booting the system ($progress%)... Press F2 for verbose mode."
+diff -Naur splashutils-1.4.2.1-old/util.h splashutils-1.4.2.1-new/util.h
+--- splashutils-1.4.2.1-old/util.h	2007-06-09 09:11:36.000000000 -0700
++++ splashutils-1.4.2.1-new/util.h	2007-06-29 18:06:20.000000000 -0700
+@@ -23,27 +23,7 @@
  	#include <sys/vt.h>
  #endif
  
@@ -82,14 +94,5 @@ diff -Naur splashutils-1.3.1-old/splash.h splashutils-1.3.1-new/splash.h
 -#endif
 +#include <linux/fb.h>
  
- /*
-  * Necessary to avoid compilation errors when fbsplash support is
-@@ -65,7 +45,7 @@
- #define DEFAULT_MESSAGE "Initializing the kernel..."
- #define DEFAULT_FONT 	"luxisri.ttf"
- #define DEFAULT_THEME	"default"
--#define TTF_DEFAULT		THEME_DIR "/" DEFAULT_FONT
-+#define TTF_DEFAULT	"@GAR_libdir@/X11/fonts/TTF" "/" DEFAULT_FONT
- 
- /*
-  * Settings that shouldn't be changed
+ /* Necessary to avoid compilation errors when fbsplash support is
+    disabled. */

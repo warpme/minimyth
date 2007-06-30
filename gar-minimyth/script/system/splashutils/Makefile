@@ -1,5 +1,5 @@
 GARNAME = splashutils
-GARVERSION = 1.3.1
+GARVERSION = 1.4.2.1
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -17,8 +17,11 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
+	--without-deprecated \
 	--without-fbsplash \
 	--with-fifo="$(localstatedir)/cache/splash/fifo" \
+	--without-gentoo \
+	--without-gpm \
 	--without-mng \
 	--without-png \
 	--with-themedir="$(sysconfdir)/splash" \
@@ -26,14 +29,16 @@ CONFIGURE_ARGS = \
 	--with-ttfkern
 BUILD_ARGS = \
 	QUIET="false" \
-	KLCC="$(CC)" \
 	CC="$(CC)" \
+	KLCC="$(CC)" \
+	LIB="usr/lib" \
 	INSTALL="install" \
 	CFLAGS="$(CFLAGS)" \
 	LDFLAGS="$(LDFLAGS)" \
 	STRIP="$(STRIP)" \
 	prefix="$(prefix)" \
 	sbindir="$(esbindir)" \
+	libdir="$(libdir)" \
 	usrbindir="$(bindir)" \
 	mandir="$(mandir)"
 
