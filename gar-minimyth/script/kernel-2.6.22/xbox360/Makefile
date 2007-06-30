@@ -36,7 +36,7 @@ extract-xbox360.c:
 	@$(MAKECOOKIE)
 
 build-custom:
-	@cd $(WORKSRC) ; $(BUILD_ENV) make -C $(DESTDIR)$(LINUX_SOURCEDIR) SUBDIRS=`pwd` modules $(BUILD_ARGS)
+	@cd $(WORKSRC) ; $(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) -C $(DESTDIR)$(LINUX_SOURCEDIR) SUBDIRS=`pwd` modules $(BUILD_ARGS)
 	@$(MAKECOOKIE)
 
 install-custom:

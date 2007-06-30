@@ -33,6 +33,8 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+PARALLELMFLAGS := -j1
+
 configure-%/Configure: 
 	@echo " ==> Running Configure in $*"
 	@cd $* && $(CONFIGURE_ENV) ./Configure $(CONFIGURE_ARGS)
