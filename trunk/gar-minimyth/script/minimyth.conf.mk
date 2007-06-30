@@ -174,3 +174,7 @@ export LANGUAGE
 # Stop attempts to check out patches from perforce.
 PATCH_GET=0
 export PATCH_GET
+
+# Set the number of parallel makes to the number of processors.
+PARALLELMFLAGS=-j`cat /proc/cpuinfo | grep -c '^processor[[:cntrl:]]*:'`
+export PARALLELMFLAGS

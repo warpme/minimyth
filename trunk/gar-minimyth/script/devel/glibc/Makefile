@@ -64,6 +64,8 @@ include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 
+PARALLELMFLAGS := -j1
+
 pre-configure:
 	echo $(RANLIB)
 	@mkdir -p $(WORKBLD)

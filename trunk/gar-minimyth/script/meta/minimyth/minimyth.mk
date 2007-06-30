@@ -392,7 +392,7 @@ mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
 mm-make-busybox:
-	@main_DESTDIR=$(PWD)/$(mm_ROOTFSDIR) make -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
+	@main_DESTDIR=$(PWD)/$(mm_ROOTFSDIR) $(MAKE) -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_ROOTFSDIR)/var
 
 mm-copy:
@@ -653,7 +653,7 @@ mm-make-distro-base:
 	@echo 'making minimyth distribution'
 	@# Make source tarball file.
 	@echo "  making source tarball file"
-	@make -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
+	@$(MAKE) -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
 		SOURCE_DIR_HEAD=`echo $(mm_HOME) | sed 's%/[^/]*$$%/%'` \
 		SOURCE_DIR_TAIL=`echo $(mm_HOME) | sed 's%^.*/%%'`
 	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
@@ -778,7 +778,7 @@ mm-make-distro-local:
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
 		echo "    making RAM root file system part of the distribution"                 ; \
 		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_LOCALDIR)/ram-$(mm_NAME)             ; \
-		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
 		tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME) ; \
@@ -788,7 +788,7 @@ mm-make-distro-local:
 	@if [ -e $(mm_STAGEDIR)/nfs-$(mm_NAME) ] ; then \
 		echo "    making NFS root file system part of the distribution"                 ; \
 		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_LOCALDIR)/nfs-$(mm_NAME)             ; \
-		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/nfs-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
 		tar -C $(mm_LOCALDIR) -jcf $(mm_LOCALDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME) ; \
@@ -814,7 +814,7 @@ mm-make-distro-share:
 		echo "    making RAM root file system part of the distribution"                 ; \
 		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_SHAREDIR)/ram-$(mm_NAME)             ; \
 		rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs                                 ; \
-		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/ram-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
 		tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/ram-$(mm_NAME).tar.bz2 ram-$(mm_NAME) ; \
@@ -825,7 +825,7 @@ mm-make-distro-share:
 		echo "    making NFS root file system part of the distribution"                 ; \
 		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_SHAREDIR)/nfs-$(mm_NAME)             ; \
 		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2                             ; \
-		make -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
+		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/nfs-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
 		tar -C $(mm_SHAREDIR) -jcf $(mm_SHAREDIR)/nfs-$(mm_NAME).tar.bz2 nfs-$(mm_NAME) ; \
@@ -871,7 +871,7 @@ mm-make-source:
 mm-checksum-create:
 	@rm -rf $(_MM_CHECKSUM_CREATE_BASE)/$(_MM_CHECKSUM_CREATE_FILE)              ; \
 	for file in `cd $(_MM_CHECKSUM_CREATE_BASE) ; ls -1` ; do                      \
-		make -f minimyth.mk DESTIMG=$(DESTIMG)                                 \
+		$(MAKE) -f minimyth.mk DESTIMG=$(DESTIMG)                                 \
 			mm-$${file}/checksum-create                                    \
 				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)   \
 				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE) ; \
@@ -880,7 +880,7 @@ mm-checksum-create:
 mm-%/checksum-create:
 	@if   test -d $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                     \
 		for file in `cd $(_MM_CHECKSUM_CREATE_BASE)/$* ; ls -1` ; do                    \
-			make -f minimyth.mk mm-$*/$${file}/checksum-create DESTIMG=$(DESTIMG)   \
+			$(MAKE) -f minimyth.mk mm-$*/$${file}/checksum-create DESTIMG=$(DESTIMG)   \
 				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)            \
 				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE)          ; \
 		done                                                                          ; \
