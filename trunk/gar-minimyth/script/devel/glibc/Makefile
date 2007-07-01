@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-sync_file_range.patch $(DISTNAME).patch $(DISTNAME)-ldd.patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-ldd.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
