@@ -293,14 +293,12 @@ mm-check:
 	done
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.12" ] && \
 	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.20" ] && \
-	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.21" ] && \
 	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.22" ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION=\"$(mm_KERNEL_HEADERS_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.17" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.20" ] && \
-	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.21" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.22" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
