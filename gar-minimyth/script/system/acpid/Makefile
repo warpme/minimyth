@@ -1,9 +1,8 @@
 GARNAME = acpid
-GARVERSION = 1.0.4
+GARVERSION = 1.0.6
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-gcc4.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -15,13 +14,14 @@ DEPENDS = lang/c
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
-BINDIR     = $(bindir)
-SBINDIR    = $(sbindir)
-MAN8DIR    = $(mandir)/man8
-
+BUILD_OVERRIDE_DIRS   = BINDIR SBINDIR MAN8DIR
 INSTALL_OVERRIDE_DIRS = BINDIR SBINDIR MAN8DIR
 
 include ../../gar.mk
+
+BINDIR  := $(bindir)
+SBINDIR := $(sbindir)
+MAN8DIR := $(mandir)/man8
 
 post-install:
 	@chmod 755 $(DESTDIR)$(sbindir)/acpid
