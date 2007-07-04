@@ -303,6 +303,11 @@ mm-check:
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
+	if [ `echo ${mm_KERNEL_HEADERS_VERSION} | sed 's%2\.6\.\(.*\)%\1%'` -gt \
+	     `echo ${mm_KERNEL_VERSION}         | sed 's%2\.6\.\(.*\)%\1%'`     ] ; then \
+		echo "error: mm_KERNEL_HEADERS_VERSION is greater than mm_KERNEL_VERSION." ; \
+		exit 1 ; \
+	fi
 	@if [ ! "$(mm_MYTH_VERSION)" = "stable19"    ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable20"    ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "softpad20"   ] && \
