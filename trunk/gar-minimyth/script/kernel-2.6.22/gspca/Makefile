@@ -20,8 +20,8 @@ DEFAULT_ARGS = \
 	$(LINUX_MAKE_ARGS) \
 	KERNEL_VERSION="$(LINUX_VERSION)" \
 	KERNELDIR="$(DESTDIR)$(LINUX_BUILDDIR)" \
-	MODULE_INSTALLDIR="$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/usb/media/" \
-	MODULE_INSTALLDIR2="$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/media/video/"
+	MODULE_INSTALLDIR="$(DESTDIR)$(LINUX_MODULESDIR)/misc/gspca/" \
+	MODULE_INSTALLDIR2="$(DESTDIR)$(LINUX_MODULESDIR)/misc/gspca/"
 BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)
 
@@ -36,3 +36,7 @@ include ../../gar.mk
 post-install:
 	depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/gspca

@@ -51,4 +51,4 @@ post-install:
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/alsa/"
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)

@@ -38,3 +38,7 @@ install-custom:
 	@cp $(WORKSRC)/$(GARNAME).ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)

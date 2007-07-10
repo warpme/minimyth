@@ -19,7 +19,7 @@ DEFAULT_ARGS = \
 	$(LINUX_MAKE_ARGS) \
 	KERNEL_VERSION="$(LINUX_VERSION)" \
 	KERNEL_DIR="$(DESTDIR)$(LINUX_BUILDDIR)" \
-	INSTALL_MOD_DIR="kernel/drivers/usb/media" \
+	INSTALL_MOD_DIR="misc/uvc" \
 	INSTALL_MOD_PATH="$(DESTDIR)"
 BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)
@@ -42,3 +42,7 @@ checksum-$(DISTNAME).tar.bz2:
 post-install:
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
