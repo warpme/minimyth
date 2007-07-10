@@ -40,8 +40,12 @@ build-custom:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@rm -f $(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/usb/input/xbox360.*
-	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/usb/input
-	@cp $(WORKSRC)/xbox360.ko $(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/usb/input/
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@cp $(WORKSRC)/$(GARNAME).ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
