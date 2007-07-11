@@ -53,7 +53,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              xine \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
-# Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'athlon64'.
+# Valid values for mm_GARCH are 'athlon64', 'c3', 'c3-2' and 'pentium-mmx'.
 mm_GARCH                  ?= pentium-mmx
 # Indicates whether or not to create the RAM based part of the distribution.
 mm_DISTRIBUTION_RAM       ?= yes
@@ -142,9 +142,9 @@ mm_GARCH_FAMILY           ?= $(strip \
                                 $(if $(filter pentium-mmx,$(mm_GARCH)),i386  ) \
                               )
 mm_GARHOST                ?= $(strip \
-                            $(if $(filter athlon64   ,$(mm_GARCH)),               \
-                                $(if $(filter i386  ,$(mm_GARCH_FAMILY)),i686  )  \
-                                $(if $(filter x86_64,$(mm_GARCH_FAMILY)),x86_64)) \
+                                $(if $(filter athlon64   ,$(mm_GARCH)),               \
+                                    $(if $(filter i386  ,$(mm_GARCH_FAMILY)),i686  )  \
+                                    $(if $(filter x86_64,$(mm_GARCH_FAMILY)),x86_64)) \
                                 $(if $(filter c3         ,$(mm_GARCH)),      i586  )  \
                                 $(if $(filter c3-2       ,$(mm_GARCH)),      i586  )  \
                                 $(if $(filter pentium-mmx,$(mm_GARCH)),      i586  )  \
