@@ -1,5 +1,5 @@
 GARNAME = splashutils
-GARVERSION = 1.4.2.1
+GARVERSION = 1.4.3
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
