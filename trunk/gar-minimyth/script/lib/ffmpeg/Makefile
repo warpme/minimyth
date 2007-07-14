@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 8760.23025
+GARVERSION = 9633.23777
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
+	--log=yes \
 	--prefix=$(prefix) \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
@@ -28,7 +29,6 @@ CONFIGURE_ARGS = \
 	--enable-pp \
 	--disable-swscaler \
 	--disable-beosthreads \
-	--disable-os2threads \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
@@ -36,7 +36,8 @@ CONFIGURE_ARGS = \
 	--disable-liba52 \
 	--disable-liba52bin \
 	--disable-avisynth \
-	--disable-libdts \
+	--disable-libamr-nb \
+	--disable-libamr-wb \
 	--disable-libfaac \
 	--disable-libfaad \
 	--disable-libfaadbin \
@@ -46,16 +47,17 @@ CONFIGURE_ARGS = \
 	--disable-libogg \
 	--disable-libtheora \
 	--disable-libvorbis \
-	--disable-x264 \
-	--disable-xvid \
-	--disable-amr-nb \
-	--disable-amr-nb-fixed \
-	--disable-amr-wb \
+	--disable-libx264 \
+	--disable-libxvid \
 	--cross-prefix=$(compiler_prefix) \
 	--cross-compile \
+	--target-os="linux" \
 	--cc="gcc" \
+	--make="$(MAKE)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LD_FLAGS)" \
+	--extra-libs="" \
+	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
 	--cpu=$(GARCH) \
 	--disable-powerpc-perf \
@@ -76,20 +78,29 @@ CONFIGURE_ARGS = \
 	--disable-vhook \
 	--disable-debug \
 	--disable-mpegaudio-hp \
-	--disable-protocols \
 	--enable-ffmpeg \
 	--disable-ffserver \
 	--disable-ffplay \
 	--enable-small \
 	--disable-memalign-hack \
+	--enable-encoders \
+	--enable-decoders \
+	--enable-muxers \
+	--enable-demuxers \
+	--enable-parsers \
+	--enable-bsfs \
+	--disable-protocols \
 	--disable-gprof \
-	--disable-extra-warnings
+	--disable-extra-warnings \
+	--disable-strip
 INSTALL_ARGS   = \
 	LDCONFIG="true"
 
 include ../../gar.mk
 
 CFLAGS += -DHAVE_XVMC
+
+PARALLELMFLAGS := -j1
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))

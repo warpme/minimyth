@@ -1,0 +1,32 @@
+diff -Naur ffmpeg-9633.23777-old/configure ffmpeg-9633.23777-new/configure
+--- ffmpeg-9633.23777-old/configure	2007-07-13 12:57:45.000000000 -0700
++++ ffmpeg-9633.23777-new/configure	2007-07-13 13:02:44.000000000 -0700
+@@ -546,8 +546,8 @@
+     check_cmd ${pkg}-config --version
+     err=$?
+     if test "$err" = 0; then
+-        temp_cflags `${pkg}-config --cflags`
+-        temp_extralibs `${pkg}-config --libs`
++        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
++        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
+         check_lib "$@" $header $func && enable $cfg
+     fi
+     return $err
+@@ -997,7 +997,7 @@
+   x86_64|amd64)
+     arch="x86_32"
+     enable fast_unaligned
+-    canon_arch="`$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
++    canon_arch="`$cross_prefix$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
+     if [ x"$canon_arch" = x"x86_64" -o x"$canon_arch" = x"amd64" ]; then
+       if [ -z "`echo $CFLAGS | grep -- -m32`"  ]; then
+         arch="x86_64"
+@@ -1629,7 +1629,7 @@
+ 
+ sdl_too_old=no
+ sdl=no
+-SDL_CONFIG="${cross_prefix}sdl-config"
++SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
+ if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
+     sdl_cflags=`"${SDL_CONFIG}" --cflags`
+     temp_cflags $sdl_cflags

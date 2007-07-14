@@ -1,0 +1,42 @@
+diff -Naur sdlmame0117-old/makefile sdlmame0117-new/makefile
+--- sdlmame0117-old/makefile	2007-06-28 10:55:46.000000000 -0700
++++ sdlmame0117-new/makefile	2007-07-12 20:28:24.000000000 -0700
+@@ -99,10 +99,10 @@
+ # PTR64 = 1
+ 
+ # uncomment next line to build expat as part of MAME build
+-BUILD_EXPAT = 1
++# BUILD_EXPAT = 1
+ 
+ # uncomment next line to build zlib as part of MAME build
+-BUILD_ZLIB = 1
++# BUILD_ZLIB = 1
+ 
+ # uncomment next line to include the symbols
+ # SYMBOLS = 1
+@@ -156,11 +156,11 @@
+ endif
+ 
+ # compiler, linker and utilities
+-AR = @ar
+-CC = @gcc
+-LD = @gcc
+-MD = -mkdir$(EXE)
+-RM = @rm -f
++AR ?= ar
++CC ?= gcc
++LD = $(CC)
++MD = mkdir$(EXE) -p
++RM = rm -f
+ 
+ 
+ 
+@@ -338,7 +338,7 @@
+ # only -Werror if not PTR64 and not DEBUG
+ ifndef PTR64
+ ifndef DEBUG
+-CFLAGS += -Werror
++#CFLAGS += -Werror
+ endif	# !DEBUG
+ endif	# !PTR64
+ endif	# neq OPTIMIZE
