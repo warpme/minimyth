@@ -57,5 +57,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ivch.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/sil164.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/tfp410.la
 	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@$(MAKECOOKIE)
