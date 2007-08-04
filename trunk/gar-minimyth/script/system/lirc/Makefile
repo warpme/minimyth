@@ -1,11 +1,11 @@
 GARNAME = lirc
-GARVERSION = 0.8.2
+GARVERSION = 20070801
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-lirc_i2c.patch $(DISTNAME)-module_device_table.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES = $(DISTNAME)-module_device_table.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_i2cuser.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -37,11 +37,13 @@ INSTALL_ENV   = $(LINUX_MAKE_ENV)
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+PARALLELMFLAGS := -j1
+
 cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:

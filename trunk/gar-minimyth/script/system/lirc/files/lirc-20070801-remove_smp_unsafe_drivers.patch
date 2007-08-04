@@ -1,7 +1,7 @@
-diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
---- lirc-0.8.2-old/configure.in	2007-06-09 11:54:09.000000000 -0700
-+++ lirc-0.8.2-new/configure.in	2007-06-25 18:14:41.000000000 -0700
-@@ -175,7 +175,6 @@
+diff -Naur lirc-20070801-old/configure.ac lirc-20070801-new/configure.ac
+--- lirc-20070801-old/configure.ac	2007-08-04 07:02:34.000000000 -0700
++++ lirc-20070801-new/configure.ac	2007-08-04 07:05:56.000000000 -0700
+@@ -177,7 +177,6 @@
  	(lirc_dev lirc_it87) \
  	(lirc_dev lirc_mceusb) \
  	(lirc_dev lirc_mceusb2) \
@@ -9,16 +9,26 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  	(lirc_dev lirc_sasem) \
  	(lirc_dev lirc_serial) \
  	(lirc_dev lirc_sir) \
-@@ -275,7 +274,7 @@
-                           livedrive_midi, livedrive_seq, logitech,
-                           lptX, macmini, mceusb, mceusb2, mediafocusI,
-                           mouseremote, mouseremote_ps2, mp3anywhere,
+@@ -301,9 +300,6 @@
+ AH_TEMPLATE([LIRC_SYSLOG],
+ 	[syslog facility to use])
+ 
+-AH_TEMPLATE([LIRC_TIMER],
+-	[Set the timer for the parallel port driver])
+-
+ AH_TEMPLATE([LOCALSTATEDIR],
+ 	[modifiable single-machine data])
+ 
+@@ -418,7 +414,7 @@
+                           livedrive_seq, logitech, lptX, macmini,
+                           mceusb, mceusb2, mediafocusI, mouseremote,
+                           mouseremote_ps2, mp3anywhere,
 -                          nslu2,packard_bell, parallel, pcmak,
-+                          nslu2,packard_bell,  pcmak,
++                          nslu2,packard_bell, pcmak,
                            pcmak_usb, pctv, pixelview_bt878,
                            pixelview_pak, pixelview_pro, provideo,
                            realmagic, remotemaster, sa1100, sasem,
-@@ -411,8 +410,6 @@
+@@ -557,8 +553,6 @@
  		;;
  	lirc_dev-lirc_mceusb2)
  		;;
@@ -27,7 +37,7 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  	lirc_dev-lirc_sasem)
  		;;
  	lirc_dev-lirc_serial)
-@@ -885,18 +882,6 @@
+@@ -1037,18 +1031,6 @@
    lircmd_conf="logitech/lircmd.conf.logitech"
  fi
  
@@ -46,7 +56,7 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  if test "$driver" = "macmini"; then
    lirc_driver="none"
    hw_module="hw_hiddev.o"
-@@ -953,10 +938,6 @@
+@@ -1105,10 +1087,6 @@
    lircd_conf="packard_bell/lircd.conf.packard_bell"
  fi
  
@@ -57,7 +67,7 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  if test "$driver" = "pcmak" -o "$driver" = "pcmak_usb"; then
    lirc_driver="none"
    hw_module="hw_pcmak.o serial.o"
-@@ -1217,7 +1198,6 @@
+@@ -1369,7 +1347,6 @@
  	lirc_it87 \
  	lirc_mceusb \
  	lirc_mceusb2 \
@@ -65,7 +75,7 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  	lirc_sasem \
  	lirc_serial \
  	lirc_sir \
-@@ -1286,10 +1266,6 @@
+@@ -1438,10 +1415,6 @@
  irq=${withval}
  )
  
@@ -76,17 +86,7 @@ diff -Naur lirc-0.8.2-old/configure.in lirc-0.8.2-new/configure.in
  dnl I dont think libirman  will accept this at the moment
  AC_ARG_WITH(tty,
  [  --with-tty=file         specify the tty to use (Irman, RemoteMaster, etc.)],
-@@ -1403,9 +1379,6 @@
- if test "$irq" != ""; then
-   AC_DEFINE_UNQUOTED(LIRC_IRQ, $irq)
- fi
--if test "$timer" != ""; then
--  AC_DEFINE_UNQUOTED(LIRC_TIMER, $timer)
--fi
- AC_DEFINE_UNQUOTED(LIRC_IRTTY, "$irtty")
- AC_DEFINE_UNQUOTED(LIRC_SYSLOG, $facility)
- 
-@@ -1428,7 +1401,6 @@
+@@ -1630,7 +1603,6 @@
    drivers/lirc_it87/Makefile
    drivers/lirc_mceusb/Makefile
    drivers/lirc_mceusb2/Makefile
