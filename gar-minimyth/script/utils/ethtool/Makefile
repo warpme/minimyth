@@ -1,5 +1,5 @@
 GARNAME = ethtool
-GARVERSION = 5
+GARVERSION = 6
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/gkernel/
 DISTFILES = $(DISTNAME).tar.gz
