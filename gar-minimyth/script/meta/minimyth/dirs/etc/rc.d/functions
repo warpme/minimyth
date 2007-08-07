@@ -856,17 +856,91 @@ mm_splash_progress_update() {
 #===============================================================================
 # mythdb functions.
 #===============================================================================
-mm_mythdb_command_run() {
+mm_mythdb_buffer_write() {
+    local FLUSH=$1
+    local COMMAND=$2
+
+    local RETURN
+
+    RETURN=0
+
+    # If buffering is not enabled, then enable flush.
+    if /usr/bin/test ! -e /var/cache/mythdb/buffer.enable ; then
+        FLUSH=1
+    fi
+
+    # If mythdb cache directory does not exist, then create it.
+    if /usr/bin/test ! -e /var/cache/mythdb/ ; then
+        /bin/mkdir -p /var/cache/mythdb/
+    fi
+
+    # If there is a command, then write it to the buffer.
+    if /usr/bin/test -n "${COMMAND}" ; then
+        /bin/echo "${COMMAND}" >> /var/cache/mythdb/buffer.sql
+    fi
+
+    # If flush enabled and there is a buffer, then flush the buffer.
+    if /usr/bin/test ${FLUSH} -ne 0 ; then
+        if /usr/bin/test -e /var/cache/mythdb/buffer.sql ; then
+            /usr/bin/mysql \
+                --host=${MM_MASTER_SERVER} \
+                --user=${MM_MASTER_DBUSERNAME} \
+                --password=${MM_MASTER_DBPASSWORD} \
+                --database=${MM_MASTER_DBNAME} \
+                < /var/cache/mythdb/buffer.sql
+            RETURN=$?
+            /bin/rm -f /var/cache/mythdb/buffer.sql
+        fi
+    fi
+
+    return ${RETURN}
+}
+
+mm_mythdb_buffer_create() {
+    /bin/mkdir -p /var/cache/mythdb/
+    /bin/touch /var/cache/mythdb/buffer.enable
+
+    return 0
+}
+
+mm_mythdb_buffer_delete() {
+
+    local RETURN
+
+    mm_mythdb_buffer_write 1
+    RETURN=$?
+    /bin/rm -f /var/cache/mythdb/buffer.enable
+
+    return ${RETURN}
+}
+
+mm_mythdb_test() {
+
+    local RETURN
+
+    mm_mythdb_buffer_write 1 ";"
+    RETURN=$?
+
+    return ${RETURN}
+}
+
+mm_mythdb_get() {
     local COMMAND=$1
 
     local RETURN
 
-    /usr/bin/mysql \
-        --host=${MM_MASTER_SERVER} \
-        --user=${MM_MASTER_DBUSERNAME} \
-        --password=${MM_MASTER_DBPASSWORD} \
-        --database=${MM_MASTER_DBNAME} \
-        --execute="${COMMAND} ;"
+    mm_mythdb_buffer_write 1 "${COMMAND} ;"
+    RETURN=$?
+
+    return ${RETURN}
+}
+
+mm_mythdb_set() {
+    local COMMAND=$1
+
+    local RETURN
+
+    mm_mythdb_buffer_write 0 "${COMMAND} ;"
     RETURN=$?
 
     return ${RETURN}
@@ -880,10 +954,10 @@ mm_mythdb_jumppoints_delete() {
     HOSTNAME=`/bin/hostname`
 
     if /usr/bin/test -n "${DESTINATION}" ; then
-        mm_mythdb_command_run "DELETE FROM jumppoints \
+        mm_mythdb_set "DELETE FROM jumppoints \
             WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
     else
-        mm_mythdb_command_run "DELETE FROM jumppoints \
+        mm_mythdb_set "DELETE FROM jumppoints \
             WHERE hostname=\"${HOSTNAME}\""
     fi
 }
@@ -896,10 +970,10 @@ mm_mythdb_jumppoints_dump() {
     HOSTNAME=`/bin/hostname`
 
     if /usr/bin/test -n "${DESTINATION}" ; then
-        mm_mythdb_command_run "SELECT * FROM jumppoints \
+        mm_mythdb_get "SELECT * FROM jumppoints \
             WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
     else
-        mm_mythdb_command_run "SELECT * FROM jumppoints \
+        mm_mythdb_get "SELECT * FROM jumppoints \
             WHERE hostname=\"${HOSTNAME}\""
     fi
 }
@@ -912,7 +986,7 @@ mm_mythdb_jumppoints_update() {
 
     HOSTNAME=`/bin/hostname`
 
-    mm_mythdb_command_run "UPDATE jumppoints SET keylist=\"${KEYLIST}\" \
+    mm_mythdb_set "UPDATE jumppoints SET keylist=\"${KEYLIST}\" \
         WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
 }
 
@@ -925,13 +999,13 @@ mm_mythdb_keybindings_delete() {
     HOSTNAME=`/bin/hostname`
 
     if   /usr/bin/test -n "${CONTEXT}" && /usr/bin/test -n "${ACTION}" ; then
-        mm_mythdb_command_run "DELETE FROM keybindings \
+        mm_mythdb_set "DELETE FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
     elif /usr/bin/test -n "${CONTEXT}" ; then
-        mm_mythdb_command_run "DELETE FROM keybindings \
+        mm_mythdb_set "DELETE FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\""
     else
-        mm_mythdb_command_run "DELETE FROM keybindings \
+        mm_mythdb_set "DELETE FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\""
     fi
 }
@@ -945,13 +1019,13 @@ mm_mythdb_keybindings_dump() {
     HOSTNAME=`/bin/hostname`
 
     if   /usr/bin/test -n "${CONTEXT}" && /usr/bin/test -n "${ACTION}" ; then
-        mm_mythdb_command_run "SELECT * FROM keybindings \
+        mm_mythdb_get "SELECT * FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
     elif /usr/bin/test -n "${CONTEXT}" ; then
-        mm_mythdb_command_run "SELECT * FROM keybindings \
+        mm_mythdb_get "SELECT * FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\""
     else
-        mm_mythdb_command_run "SELECT * FROM keybindings \
+        mm_mythdb_get "SELECT * FROM keybindings \
             WHERE hostname=\"${HOSTNAME}\""
     fi
 }
@@ -965,12 +1039,12 @@ mm_mythdb_keybindings_update() {
 
     HOSTNAME=`/bin/hostname`
 
-    mm_mythdb_command_run "UPDATE keybindings SET keylist=\"${KEYLIST}\" \
+    mm_mythdb_set "UPDATE keybindings SET keylist=\"${KEYLIST}\" \
         WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
 }
 
 mm_mythdb_musicplaylist_dump() {
-    mm_mythdb_command_run "SELECT * FROM musicplaylist"
+    mm_mythdb_set "SELECT * FROM musicplaylist"
 }
 
 mm_mythdb_musicplaylist_scope() {
@@ -983,10 +1057,10 @@ mm_mythdb_musicplaylist_scope() {
 
     case "${SCOPE}" in
         local)
-            mm_mythdb_command_run "UPDATE musicplaylist SET hostname=\"${HOSTNAME}\" WHERE name=\"${MUSICPLAYLIST}\""
+            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"${HOSTNAME}\" WHERE name=\"${MUSICPLAYLIST}\""
             ;;
         global)
-            mm_mythdb_command_run "UPDATE musicplaylist SET hostname=\"\"            WHERE name=\"${MUSICPLAYLIST}\""
+            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"\"            WHERE name=\"${MUSICPLAYLIST}\""
             ;;
     esac
 }
@@ -999,9 +1073,9 @@ mm_mythdb_settings_delete() {
     HOSTNAME=`/bin/hostname`
 
     if /usr/bin/test -n "${VALUE}" ; then
-        mm_mythdb_command_run "DELETE FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+        mm_mythdb_set "DELETE FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
     else
-        mm_mythdb_command_run "DELETE FROM settings WHERE hostname=\"${HOSTNAME}\""
+        mm_mythdb_set "DELETE FROM settings WHERE hostname=\"${HOSTNAME}\""
     fi
 }
 
@@ -1013,9 +1087,9 @@ mm_mythdb_settings_dump() {
     HOSTNAME=`/bin/hostname`
 
     if /usr/bin/test -n "${VALUE}" ; then
-        mm_mythdb_command_run "SELECT * FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+        mm_mythdb_get "SELECT * FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
     else
-        mm_mythdb_command_run "SELECT * FROM settings WHERE hostname=\"${HOSTNAME}\""
+        mm_mythdb_get "SELECT * FROM settings WHERE hostname=\"${HOSTNAME}\""
     fi
 }
 
@@ -1027,7 +1101,7 @@ mm_mythdb_settings_update() {
 
     HOSTNAME=`/bin/hostname`
 
-    mm_mythdb_command_run "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+    mm_mythdb_set "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
 }
 
 mm_mythdb_settings_set() {
@@ -1040,9 +1114,7 @@ mm_mythdb_settings_set() {
     HOSTNAME=`/bin/hostname`
 
     mm_mythdb_settings_delete "${VALUE}"
-    mm_mythdb_command_run                                                                           \
-        " DELETE FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\"              ; \
-          INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\" ; "
+    mm_mythdb_set "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
 }
 
 mm_mythdb_settings_get() {
