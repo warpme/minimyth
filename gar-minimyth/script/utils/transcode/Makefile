@@ -1,5 +1,5 @@
 GARNAME = transcode
-GARVERSION = 1.0.4rc0
+GARVERSION = 1.0.4rc4
 CATEGORIES = utils
 MASTER_SITES  = http://fromani.exit1.org/
 MASTER_SITES += http://www.kraymer.mynetcologne.de/
