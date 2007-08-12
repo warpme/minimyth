@@ -1,11 +1,13 @@
 GARNAME = busybox
-GARVERSION = 1.5.1
+GARVERSION = 1.6.1
 CATEGORIES = utils
 MASTER_SITES  = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  =
+PATCHFILES  = \
+	$(DISTNAME)-adduser.patch \
+	$(DISTNAME)-init.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
 
