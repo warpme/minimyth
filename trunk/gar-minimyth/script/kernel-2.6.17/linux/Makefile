@@ -8,7 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-compressed_kernel.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.2.patch
 PATCHFILES += $(DISTNAME)-iegd_6.1.patch
-PATCHFILES += $(DISTNAME)-it87.patch $(DISTNAME)-longhaul_ide_lockup.patch $(DISTNAME)-via_irq_quirk.patch $(DISTNAME)-via_rhine_pxeboot.patch $(DISTNAME)-dma_blacklist.patch
+PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch $(DISTNAME)-it87.patch $(DISTNAME)-longhaul_ide_lockup.patch $(DISTNAME)-via_irq_quirk.patch $(DISTNAME)-via_rhine_pxeboot.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
 
