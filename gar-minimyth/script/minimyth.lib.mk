@@ -64,6 +64,7 @@ gar-patch-%:
 		| sed 's%@GAR_build_qtbindir@%$(build_qtbindir)%g' \
 		| sed 's%@GAR_build_kdebindir@%$(build_kdebindir)%g' \
 		| sed 's%@GAR_DESTDIR@%$(DESTDIR)%g' \
+		| sed 's%@GAR_rootdir@%$(rootdir)%g' \
 		| sed 's%@GAR_prefix@%$(prefix)%g' \
 		| sed 's%@GAR_bindir@%$(bindir)%g' \
 		| sed 's%@GAR_datadir@%$(datadir)%g' \
