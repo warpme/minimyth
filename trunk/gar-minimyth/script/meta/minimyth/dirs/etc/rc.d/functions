@@ -671,16 +671,16 @@ mm_url_mount() {
     if   /usr/bin/test "${URL_PROTOCOL}" = "nfs" ; then
         MOUNT_VFSTYPE="nfs"
         MOUNT_DEVICE="${URL_SERVER}:${URL_PATH}"
-        MOUNT_OPTIONS="${MOUNT_OPTIONS}"
+        MOUNT_OPTIONS="nolock,${MOUNT_OPTIONS}"
     elif /usr/bin/test "${URL_PROTOCOL}" = "cifs" ; then
         MOUNT_VFSTYPE="cifs"
         EXTRA_OPTIONS="-n"
         MOUNT_DEVICE="//${URL_SERVER}${URL_PATH}"
-        if /usr/bin/test ! "${URL_USERNAME}" = "" ; then
-            MOUNT_OPTIONS="${MOUNT_OPTIONS},username=${URL_USERNAME}"
-        fi
         if /usr/bin/test ! "${URL_PASSWORD}" = "" ; then
-            MOUNT_OPTIONS="${MOUNT_OPTIONS},password=${URL_PASSWORD}"
+            MOUNT_OPTIONS="password=${URL_PASSWORD},${MOUNT_OPTIONS}"
+        fi
+        if /usr/bin/test ! "${URL_USERNAME}" = "" ; then
+            MOUNT_OPTIONS="username=${URL_USERNAME},${MOUNT_OPTIONS}"
         fi
     elif ( /usr/bin/test "${URL_PROTOCOL}" = "http"                                   ) ||
          ( /usr/bin/test "${URL_PROTOCOL}" = "tftp"                                   ) ||
@@ -722,6 +722,7 @@ mm_url_mount() {
     if /usr/bin/test -n "${MOUNT_VFSTYPE}" ; then
         OPTIONS=""
         MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%^,%%'`
+        MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%,$%%'`
         /usr/bin/test -n "${EXTRA_OPTIONS}" && OPTIONS="${EXTRA_OPTIONS}"
         /usr/bin/test -n "${MOUNT_OPTIONS}" && OPTIONS="${OPTIONS} -o ${MOUNT_OPTIONS}"
         /bin/mount -n -t "${MOUNT_VFSTYPE}" ${OPTIONS} "${MOUNT_DEVICE}" "${MOUNT_DIR}" || return
