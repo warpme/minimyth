@@ -699,6 +699,7 @@ mm-make-distro-ram:
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                          ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                         ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                        ; \
@@ -744,6 +745,7 @@ mm-make-distro-nfs:
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
 		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                   ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                      ; \
