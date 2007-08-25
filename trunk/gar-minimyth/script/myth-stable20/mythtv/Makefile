@@ -1,5 +1,5 @@
 GARNAME = mythtv
-GARVERSION = 0.20
+GARVERSION = 0.20.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
