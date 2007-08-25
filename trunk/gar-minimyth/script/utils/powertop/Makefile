@@ -1,5 +1,5 @@
 GARNAME = powertop
-GARVERSION = 1.7
+GARVERSION = 1.8
 CATEGORIES = utils
 MASTER_SITES = http://www.linuxpowertop.org/download/
 DISTFILES = $(DISTNAME).tar.gz

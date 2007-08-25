@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 2.3.5
+GARVERSION = 2.4
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -23,12 +23,14 @@ CONFIGURE_ARGS = \
 	--docdir="$(docdir)/stella" \
 	--datadir="$(datadir)" \
 	--enable-gl \
+	--enable-windowed \
 	--enable-sound \
 	--enable-debugger \
 	--enable-joystick \
 	--enable-cheats \
 	--disable-atarivox \
 	--enable-shared \
+	--disable-static \
 	--disable-profile \
 	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
 	--enable-nasm \
