@@ -1,9 +1,8 @@
 GARNAME = dropbear
-GARVERSION = 0.49
+GARVERSION = 0.50
 CATEGORIES = net
 MASTER_SITES = http://matt.ucc.asn.au/dropbear/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-urandom.patch
 LICENSE = GPL2
 
 DESCRIPTION =
