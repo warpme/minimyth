@@ -36,7 +36,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-unix-transport \
 	--enable-tcp-transport \
 	--disable-ipv6 \
-	--enable-local-transport \
+	--disable-local-transport \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
