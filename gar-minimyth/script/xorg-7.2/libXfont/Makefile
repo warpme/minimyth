@@ -1,5 +1,5 @@
 GARNAME = libXfont
-GARVERSION = 1.2.7
+GARVERSION = 1.3.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -30,11 +30,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-pcfformat \
 	--disable-bdfformat \
 	--disable-snfformat \
+	--enable-loadable-font-modules \
 	--disable-fontcache \
 	--enable-fc \
 	--enable-unix-transport \
 	--enable-tcp-transport \
 	--disable-ipv6 \
+	--disable-local-transport \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
