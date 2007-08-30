@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = GPL2/LGPL2
+LICENSE = GPL3/GPL2/LGPL2
 
 DESCRIPTION =
 define BLURB
