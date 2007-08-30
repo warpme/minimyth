@@ -7,7 +7,6 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter stable19  ,$(mm_MYTH_VERSION)),0.19                     ) \
                                 $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20.2                   ) \
                                 $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                ) \
                                 $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
@@ -39,7 +38,7 @@ mm_CHIPSETS               ?= intel nvidia via other
 # 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine',
 # 'transcode', 'mame' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
-                             $(if $(filter $(mm_MYTH_VERSION),stable19 stable20 softpad20),mythdvd) \
+                             $(if $(filter $(mm_MYTH_VERSION),stable20 softpad20),mythdvd) \
                              mythgallery \
                              mythgame \
                              mythmusic \
@@ -103,7 +102,7 @@ mm_KERNEL_VERSION         ?= 2.6.21
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are 'stable19', 'stable20', 'softpad20' and 'svn'.
+# Valid values are 'stable20', 'softpad20' and 'svn'.
 mm_MYTH_VERSION           ?= stable20
 # The version of the NVIDIA driver.
 # Valid values are '7185' (legacy), '9639' (legacy), '9746', '9755' and '100.14.11'.

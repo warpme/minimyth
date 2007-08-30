@@ -310,10 +310,9 @@ mm-check:
 		echo "error: mm_KERNEL_HEADERS_VERSION is greater than mm_KERNEL_VERSION." ; \
 		exit 1 ; \
 	fi
-	@if [ ! "$(mm_MYTH_VERSION)" = "stable19"    ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "stable20"    ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "softpad20"   ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "svn"         ] ; then \
+	@if [ ! "$(mm_MYTH_VERSION)" = "stable20"  ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "softpad20" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "svn"       ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi

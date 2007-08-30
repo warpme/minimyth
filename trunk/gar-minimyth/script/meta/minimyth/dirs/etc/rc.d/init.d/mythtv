@@ -99,16 +99,8 @@ start() {
 
     # Delete disabled plugins.
     if /usr/bin/test "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no" ; then
-        case ${MM_VERSION_MYTH} in
-            0.19)
-                /bin/sed -i -e 's%<depends>mythmusic mythdvd</depends>%<depends>disabled</depends>%' \
-                    /usr/share/mythtv/mainmenu.xml
-                ;;
-            *)
-                /bin/sed -i -e 's%<depends>mythmusic mythdvd mytharchive mythburn</depends>%<depends>disabled</depends>%' \
-                    /usr/share/mythtv/mainmenu.xml
-                ;;
-        esac
+        /bin/sed -i -e 's%<depends>mythmusic mythdvd mytharchive mythburn</depends>%<depends>disabled</depends>%' \
+            /usr/share/mythtv/mainmenu.xml
     fi
     if /usr/bin/test "${MM_MYTHAUDIO_ENABLED}"       = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythaudio.so
