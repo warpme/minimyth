@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.3.99.0
+GARVERSION = 1.3.99.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -30,6 +30,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
 	$(CATEGORY)/Mesa \
+	$(CATEGORY)/pixman \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \
 	$(CATEGORY)/renderproto \
@@ -58,23 +59,28 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--enable-largefile \
+	--disable-werror \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-debug) \
 	--disable-builddocs \
 	--enable-install-libxf86config \
+	--disable-builtin-fonts \
+	--disable-null-root-cursor \
+	--disable-aiglx \
+	--disable-glx-tls \
 	--enable-composite \
 	--enable-shm \
 	--disable-xres \
 	--disable-xtrap \
 	--enable-record \
 	--enable-xv \
+	--disable-quartz \
 	--enable-xvmc \
 	--enable-dga \
 	--enable-screensaver \
 	--enable-xdmcp \
 	--disable-xdm-auth-1 \
 	--enable-glx \
-	--disable-aiglx \
-	--disable-glx-tls \
 	--enable-dri \
 	--enable-xinerama \
 	--enable-xf86vidmode \
@@ -92,6 +98,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dbe \
 	--enable-xf86bigfont \
 	--enable-dpms \
+	--disable-config-dbus \
+	--disable-config-hal \
 	--enable-xinput \
 	--enable-xfree86-utils \
 	--enable-xorg \
@@ -103,9 +111,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xgl \
 	--disable-xglx \
 	--disable-xegl \
+	--enable-mfb \
+	--enable-cfb \
+	--enable-afb \
 	--disable-kdrive \
 	--disable-xephyr \
 	--disable-xsdl \
+	--disable-xfake \
+	--disable-xfbdev \
+	--disable-kdrive-vesa \
 	--disable-freetype \
 	--disable-install-setuid \
 	--disable-secure-rpc \

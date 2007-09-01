@@ -1,9 +1,8 @@
-GARNAME = xf86-input-keyboard
-GARVERSION = 1.2.0
+GARNAME = libpciaccess
+GARVERSION = 0.9.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-missing_files.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -12,10 +11,10 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/inputproto \
-	$(CATEGORY)/kbproto \
-	$(CATEGORY)/randrproto \
-	$(CATEGORY)/xorg-server \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXt \
+	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -25,8 +24,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-depkbd \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-pciids-path=$(datadir)
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
@@ -34,11 +33,8 @@ include ../../gar.mk
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
-pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)
-
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/kbd_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/keyboard_drv.la
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/pciaccess.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/pciaccess.pc
 	@$(MAKECOOKIE)
