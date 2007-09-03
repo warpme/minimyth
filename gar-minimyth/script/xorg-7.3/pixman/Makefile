@@ -41,7 +41,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@rm -f $(DESTDIR)$(libdir)/libpixman-1.la
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/pixman-1.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/pixman-1.pc
 	@$(MAKECOOKIE)
