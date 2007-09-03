@@ -164,20 +164,18 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libafb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb32.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libddc.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libi2c.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libmfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libpcidata.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/librac.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libramdac.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libscanpci.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadowfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadow.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvbe.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf1bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf4bpp.la
