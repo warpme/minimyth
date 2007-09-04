@@ -3,7 +3,7 @@ GARVERSION = 0.99.5
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xlib_h.patch $(DISTNAME)-xtest_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -31,9 +31,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@echo "ac_cv_path_CURL_CONFIG=no"  >  $(WORKSRC)/config.cache
-	@echo "ac_cv_path_AALIB_CONFIG=no" >> $(WORKSRC)/config.cache
-	@echo "ac_cv_path_CACA_CONFIG=no"  >> $(WORKSRC)/config.cache
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@echo "`echo ac_cv_file_$(DESTDIR)$(libdir)/liblirc_client.a | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >  $(WORKSRC)/config.cache
+	@echo "ac_cv_path_CURL_CONFIG=no"                                                                >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_AALIB_CONFIG=no"                                                               >> $(WORKSRC)/config.cache
+	@echo "ac_cv_path_CACA_CONFIG=no"                                                                >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 clean-all:
