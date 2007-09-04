@@ -1,9 +1,7 @@
 GARNAME = pixman
-# Version 0.9.5
-GARVERSION = 3e74bc431908dd42775d8e82ca2e4d589de820cb
+GARVERSION = 0.9.5
 CATEGORIES = $(CATEGORY)
-#MASTER_SITES = $(XORG_MASTER_SITES)
-MASTER_SITES = git://anongit.freedesktop.org/git/pixman/
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -28,13 +26,6 @@ include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
-
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
