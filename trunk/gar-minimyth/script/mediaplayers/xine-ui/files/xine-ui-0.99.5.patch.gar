@@ -1,29 +1,24 @@
-diff -Naur xine-ui-0.99.5-old/configure xine-ui-0.99.5-new/configure
---- xine-ui-0.99.5-old/configure	2007-04-30 15:51:18.000000000 -0700
-+++ xine-ui-0.99.5-new/configure	2007-05-05 08:49:03.000000000 -0700
-@@ -14418,14 +14418,14 @@
+diff -Naur xine-ui-0.99.5-old/configure.ac xine-ui-0.99.5-new/configure.ac
+--- xine-ui-0.99.5-old/configure.ac	2007-04-15 09:05:21.000000000 -0700
++++ xine-ui-0.99.5-new/configure.ac	2007-09-04 15:30:57.000000000 -0700
+@@ -640,7 +640,7 @@
+ dnl
+ dnl Some include paths ( !!! DO NOT REMOVE !!! )
+ dnl
+-INCLUDES='-I$(top_srcdir) -I$(top_builddir) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/common -I$(top_builddir)/src/common -I$(top_srcdir)/src/xitk/xine-toolkit -I$(top_builddir)/src/xitk/xine-toolkit -I$(prefix)/include $(INTLDIR)'
++INCLUDES='-I$(top_srcdir) -I$(top_builddir) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/common -I$(top_builddir)/src/common -I$(top_srcdir)/src/xitk/xine-toolkit -I$(top_builddir)/src/xitk/xine-toolkit -I@GAR_DESTDIR@@GAR_includedir@ $(INTLDIR)'
+ AC_SUBST(INCLUDES)
+ 
+ AC_DEFINE(NEED_MRLBROWSER,,[Define this to add mrl browser into xitk lib])
+diff -Naur xine-ui-0.99.5-old/m4/_xine.m4 xine-ui-0.99.5-new/m4/_xine.m4
+--- xine-ui-0.99.5-old/m4/_xine.m4	2006-06-30 19:26:26.000000000 -0700
++++ xine-ui-0.99.5-new/m4/_xine.m4	2007-09-04 15:29:51.000000000 -0700
+@@ -39,7 +39,7 @@
             lirc_libprefix="$LIRC_PREFIX/lib"
    	   LIRC_INCLUDE="-I$LIRC_PREFIX/include"
          fi
 -        for llirc in $lirc_libprefix /lib /usr/lib /usr/local/lib; do
 +        for llirc in $lirc_libprefix @GAR_DESTDIR@@GAR_libdir@ ; do
-           as_ac_File=`echo "ac_cv_file_"$llirc/liblirc_client.a"" | $as_tr_sh`
- echo "$as_me:$LINENO: checking for \"$llirc/liblirc_client.a\"" >&5
- echo $ECHO_N "checking for \"$llirc/liblirc_client.a\"... $ECHO_C" >&6
- if eval "test \"\${$as_ac_File+set}\" = set"; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
- else
--  test "$cross_compiling" = yes &&
-+  test "$cross_compiling" = gar &&
-   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
- echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-    { (exit 1); exit 1; }; }
-@@ -15135,7 +15135,7 @@
- SYSCONF_DIR=`makeexpand "$sysconfdir"`
- 
- 
--INCLUDES='-I$(top_srcdir) -I$(top_builddir) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/common -I$(top_builddir)/src/common -I$(top_srcdir)/src/xitk/xine-toolkit -I$(top_builddir)/src/xitk/xine-toolkit -I$(prefix)/include $(INTLDIR)'
-+INCLUDES='-I$(top_srcdir) -I$(top_builddir) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/common -I$(top_builddir)/src/common -I$(top_srcdir)/src/xitk/xine-toolkit -I$(top_builddir)/src/xitk/xine-toolkit -I@GAR_DESTDIR@@GAR_includedir@ $(INTLDIR)'
- 
- 
- 
+           AC_CHECK_FILE(["$llirc/liblirc_client.a"],
+              [LIRC_LIBS="$llirc/liblirc_client.a"]
+              AC_DEFINE([HAVE_LIRC],,[Define this if you have LIRC (liblir_client) installed]),,)
