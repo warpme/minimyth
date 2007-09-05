@@ -70,6 +70,7 @@ CONFIGURE_ENV  = \
 	kde_cv_shortsetgroups=no \
 	lt_cv_dlopen_self=yes \
 	lt_cv_dlopen_self_static=yes \
+	PKG_CONFIG=$(build_DESTDIR)$(build_bindir)/pkg-config \
 	KDEINIT_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config \
 	LIBART_CONFIG=$(DESTDIR)$(bindir)/libart2-config \
 	MOC=$(build_DESTDIR)$(build_qtbindir)/moc \
