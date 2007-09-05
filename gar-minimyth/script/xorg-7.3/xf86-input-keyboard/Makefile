@@ -1,9 +1,8 @@
 GARNAME = xf86-input-keyboard
-GARVERSION = 1.2.0
+GARVERSION = 1.2.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-missing_files.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -33,10 +32,6 @@ include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
-
-pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/kbd_drv.la
