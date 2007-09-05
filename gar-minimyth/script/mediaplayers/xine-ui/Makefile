@@ -3,7 +3,7 @@ GARVERSION = 0.99.5
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xlib_h.patch $(DISTNAME)-xtest_disable.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xtest_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =
