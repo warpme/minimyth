@@ -3,7 +3,7 @@ GARVERSION = 0.8.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.stz-softwaretechnik.de/~ke/touchscreen/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-dbg.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
