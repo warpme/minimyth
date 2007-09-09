@@ -267,7 +267,7 @@ mm-check:
 		   [ ! "$${chipset}" = "via"    ] && \
 		   [ ! "$${chipset}" = "vmware" ] && \
 		   [ ! "$${chipset}" = "other"  ] ; then \
-			echo "error: mm_CHIPSETS=\"$$(chipset)\" is an invalid value." ; \
+			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
 	done
