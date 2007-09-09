@@ -13,7 +13,8 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-headers
-DEPENDS = lang/c devel/binutils
+DEPENDS  = lang/c devel/binutils
+DEPENDS += lib/gmp lib/mpfr
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -40,7 +41,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-nls \
 	--disable-shared \
         --enable-threads=no \
-        --enable-version-specific-runtime-libs
+        --enable-version-specific-runtime-libs \
+	--with-mpfr-include=$(DESTDIR)$(includedir) \
+	--with-mpfr-lib=$(DESTDIR)$(libdir) \
+	--with-gmp-include=$(DESTDIR)$(includedir) \
+	--with-gmp-lib=$(DESTDIR)$(libdir)
 # Avoid sysroot for minimal native compiler because linker may not have sysroot support.
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \

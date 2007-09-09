@@ -62,6 +62,7 @@ build_system_bins_coreutils = \
 	md5sum \
 	mkdir \
 	mv \
+	od \
 	rm \
 	rmdir \
 	sleep \
