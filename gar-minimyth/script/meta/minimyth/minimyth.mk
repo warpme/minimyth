@@ -264,6 +264,7 @@ mm-check:
 		   [ ! "$${chipset}" = "iegd"   ] && \
 		   [ ! "$${chipset}" = "intel"  ] && \
 		   [ ! "$${chipset}" = "nvidia" ] && \
+		   [ ! "$${chipset}" = "sis"    ] && \
 		   [ ! "$${chipset}" = "via"    ] && \
 		   [ ! "$${chipset}" = "vmware" ] && \
 		   [ ! "$${chipset}" = "other"  ] ; then \
