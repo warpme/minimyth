@@ -39,6 +39,7 @@ DEPENDS = \
 	$(CATEGORY)/xf86-video-ati \
 	$(CATEGORY)/xf86-video-intel \
 	$(CATEGORY)/xf86-video-openchrome \
+	$(CATEGORY)/xf86-video-sis \
 	$(CATEGORY)/xf86-video-vmware \
 	$(CATEGORY)/xinit \
 	$(CATEGORY)/xorg-server \

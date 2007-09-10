@@ -14,7 +14,7 @@ BUILDDEPS = utils/module-init-tools
 
 WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-core
 
-DRM_MODULES = i810 i830 i915 r128 radeon via
+DRM_MODULES = i810 i830 i915 r128 radeon sis via
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
