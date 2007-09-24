@@ -193,7 +193,7 @@ mm-check:
 	@for bin in $(build_system_bins) ; do \
 		which $${bin} > /dev/null 2>&1 ; \
 		if [ ! "$$?" = "0" ] ; then \
-			echo "error: the build system does not contain the program '$${bin}'." ; \
+			echo "error: your system does not contain the program '$${bin}'." ; \
 			exit 1 ; \
 		fi ; \
 	done
