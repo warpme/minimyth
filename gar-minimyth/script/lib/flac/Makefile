@@ -1,9 +1,9 @@
 GARNAME = flac
-GARVERSION = 1.2.0
+GARVERSION = 1.2.1
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = GPL2/xiph
+LICENSE = GPL2/LGPL2_1/FDL1_2/xiph
 xiph_LICENSE_TEXT = $(WORKSRC)/COPYING.Xiph
 
 DESCRIPTION =
