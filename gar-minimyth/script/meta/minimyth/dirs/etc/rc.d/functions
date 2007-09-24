@@ -738,11 +738,18 @@ mm_var_get() {
 #===============================================================================
 # splash screen functions
 #===============================================================================
+mm_splash_command='/sbin/fbsplashd'
+mm_splash_command_path=`/bin/echo ${mm_splash_command} | /usr/bin/cut -d ' ' -f 1`
+mm_splash_command_dir=`/usr/bin/dirname ${mm_splash_command_path}`
+mm_splash_command_base=`/usr/bin/basename ${mm_splash_command_path}`
+mm_splash_fifo='/lib/splash/cache/.splash'
+mm_splash_fifo_dir=`/usr/bin/dirname ${mm_splash_fifo}`
+mm_splash_fifo_base=`/usr/bin/basename ${mm_splash_fifo}`
 mm_splash_progress_val=1
 mm_splash_progress_max=1
 
 mm_splash_running_test() {
-    if /usr/bin/test -n "`/bin/pidof splash_util`" && /usr/bin/test -e /var/cache/splash/fifo ; then
+    if /usr/bin/test -n "`/bin/pidof ${mm_splash_command_base}`" && /usr/bin/test -e ${mm_splash_fifo} ; then
         return 0
     else
         return 1
@@ -797,8 +804,8 @@ mm_splash_init() {
 
     if /usr/bin/test "${SPLASH_ENABLE}" = "yes" ; then
         /usr/bin/chvt 1
-        /bin/mkdir -p "/var/cache/splash"
-        /sbin/splash_util --daemon --theme="MythTV"
+        /bin/mkdir -p "${mm_splash_fifo_dir}"
+        ${mm_splash_command} --theme="MythTV"
         mm_splash_command "set mode silent"
         mm_splash_command "progress 0"
         mm_splash_command "set message starting splash screen ..."
@@ -811,16 +818,22 @@ mm_splash_init() {
 }
 
 mm_splash_halt() {
-    /usr/bin/test -n "`/bin/pidof -s splash_util`" && /usr/bin/killall splash_util
+    if /usr/bin/test -e "${mm_splash_fifo}" ; then
+        /bin/echo "setmode off" >> ${mm_splash_fifo}
+    fi
 
-    /usr/bin/test -e "/var/cache/splash" && /bin/rm -rf "/var/cache/spalsh"
+    /usr/bin/test -n "`/bin/pidof -s ${mm_splash_command_base}`" && /usr/bin/killall ${mm_splash_command_base}
+
+    if /usr/bin/test -e "${mm_splash_fifo}" ; then
+        /bin/rm -rf ${mm_splash_fifo}
+    fi
 
     return 0
 }
 
 mm_splash_command()
 {
-    /usr/bin/test `mm_splash_running_test ; /bin/echo $?` -eq 0 && /bin/echo "$1" >> "/var/cache/splash/fifo"
+    /usr/bin/test `mm_splash_running_test ; /bin/echo $?` -eq 0 && /bin/echo "$1" >> "${mm_splash_fifo}"
 
     return 0
 }

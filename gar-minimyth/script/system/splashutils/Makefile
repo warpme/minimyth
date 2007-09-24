@@ -1,9 +1,11 @@
 GARNAME = splashutils
-GARVERSION = 1.4.3
+GARVERSION = 1.5.2.1
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-makefile.patch $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-1_autotools_part_1.patch \
+	$(DISTNAME)-2_autotools_part_2.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -12,40 +14,34 @@ endef
 
 DEPENDS = lang/c kernel/kernel lib/libjpeg lib/zlib lib/freetype
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure kernel
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = \
-	--without-deprecated \
-	--without-fbsplash \
-	--with-fifo="$(localstatedir)/cache/splash/fifo" \
-	--without-gentoo \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-debug \
+	--disable-quiet \
+	--disable-deprecated \
+	--enable-fbcondecor \
+	--disable-helper \
+	--disable-misc \
+	--disable-test \
 	--without-gpm \
 	--without-mng \
 	--without-png \
-	--with-themedir="$(sysconfdir)/splash" \
-	--with-ttf \
-	--with-ttfkern
-BUILD_ARGS = \
-	QUIET="false" \
-	CC="$(CC)" \
-	KLCC="$(CC)" \
-	LIB="usr/lib" \
-	INSTALL="install" \
-	CFLAGS="$(CFLAGS)" \
-	LDFLAGS="$(LDFLAGS)" \
-	STRIP="$(STRIP)" \
-	prefix="$(prefix)" \
-	sbindir="$(esbindir)" \
-	libdir="$(libdir)" \
-	usrbindir="$(bindir)" \
-	mandir="$(mandir)"
+	--with-ttf
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
-configure-kernel:
-	@rm -rf $(WORKSRC)/linux
-	@ln -s $(DESTDIR)$(LINUX_SOURCEDIR) $(WORKSRC)/linux
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libfbsplash.la
+	@rm -f $(DESTDIR)$(libdir)/libfbsplashrender.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libfbsplash.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libfbsplash.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libfbsplashrender.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libfbsplashrender.pc
 	@$(MAKECOOKIE)
