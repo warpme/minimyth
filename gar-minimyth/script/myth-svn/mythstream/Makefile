@@ -1,5 +1,5 @@
 GARNAME = mythstream
-GARVERSION = v0.17_2
+GARVERSION = v0.18
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
@@ -14,7 +14,7 @@ DEPENDS = lang/c qt/qt $(CATEGORY)/mythtv lib/fftw
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.17_2
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.18
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
