@@ -33,8 +33,8 @@ BUILD_ARGS = \
 	module \
 	$(LINUX_MAKE_ARGS) \
 	HOST_CC=$(build_CC) \
-	SYSSRC=$(DESTDIR)$(LINUX_SOURCEDIR) \
-	SYSOUT=$(DESTDIR)$(LINUX_BUILDDIR) \
+	SYSSRC=$(shell readlink -f $(DESTDIR)$(LINUX_SOURCEDIR)) \
+	SYSOUT=$(shell readlink -f $(DESTDIR)$(LINUX_BUILDDIR)) \
 	MODULE_ROOT=$(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia
 
 BUILD_ENV = \
