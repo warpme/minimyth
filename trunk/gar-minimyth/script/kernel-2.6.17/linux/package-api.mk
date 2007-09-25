@@ -12,8 +12,8 @@ LINUX_DIR           = $(rootdir)/boot
 LINUX_DIR           = $(rootdir)/boot
 LINUX_MODULESPREFIX = $(rootdir)/lib/modules
 LINUX_MODULESDIR    = $(LINUX_MODULESPREFIX)/$(LINUX_FULL_VERSION)
-LINUX_SOURCEDIR     = $(LINUX_MODULESDIR)/source
-LINUX_BUILDDIR      = $(LINUX_MODULESDIR)/build
+LINUX_SOURCEDIR     = $(shell readlink -f $(LINUX_MODULESDIR)/source)
+LINUX_BUILDDIR      = $(shell readlink -f $(LINUX_MODULESDIR)/build)
 
 LINUX_MAKE_ARGS = \
 	ARCH="$(GARCH_FAMILY)" \
