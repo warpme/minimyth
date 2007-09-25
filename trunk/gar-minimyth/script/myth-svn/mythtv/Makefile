@@ -34,6 +34,7 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
+	--disable-proc-opt \
 	--enable-mmx \
 	--enable-audio-oss \
 	--enable-audio-alsa \
@@ -61,6 +62,7 @@ CONFIGURE_ARGS = \
 	--enable-xvmc-pro \
 	--disable-xvmc-opengl \
 	--xvmc-lib=XvMCW \
+	--disable-opengl-video \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \
