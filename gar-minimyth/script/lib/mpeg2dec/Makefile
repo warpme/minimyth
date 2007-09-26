@@ -9,8 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL xorg/xorg
-BUILDDEPS = devel/nasm
+DEPENDS = lang/c lib/SDL xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
