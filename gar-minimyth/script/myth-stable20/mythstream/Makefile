@@ -1,9 +1,9 @@
 GARNAME = mythstream
-GARVERSION = v0.18
+GARVERSION = v0.18_1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-parser_copy.patch $(DISTNAME).patch.gar $(DISTNAME)-parser_exec.patch $(DISTNAME)-font.patch
+PATCHFILES = $(DISTNAME)-parser_copy.patch $(DISTNAME).patch.gar $(DISTNAME)-parser_exec.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -14,7 +14,7 @@ DEPENDS = lang/c qt/qt $(CATEGORY)/mythtv lib/fftw
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.18
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.18_1
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
