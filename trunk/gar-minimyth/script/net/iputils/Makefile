@@ -4,7 +4,7 @@ CATEGORIES = net
 MASTER_SITES = http://www.skbuff.net/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch
-LICENSE = BSD
+LICENSE = BSD_4_Clause
 
 DESCRIPTION =
 define BLURB

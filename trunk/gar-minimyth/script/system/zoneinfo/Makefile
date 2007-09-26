@@ -4,7 +4,7 @@ CATEGORIES = system
 MASTER_SITES = ftp://elsie.nci.nih.gov/pub/
 DISTFILES = tzcode$(GARVERSION).tar.gz tzdata$(GARVERSION).tar.gz
 PATCHFILES = $(DISTNAME).patch
-LICENSE =
+LICENSE = Public_Domain
 
 DESCRIPTION =
 define BLURB

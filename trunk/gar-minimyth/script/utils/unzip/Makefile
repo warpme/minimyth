@@ -3,7 +3,8 @@ GARVERSION = 5.52
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/infozip/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).tar.gz
-LICENSE = BSD
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT=$(WORKSRC)/LICENSE
 
 DESCRIPTION = 
 define BLURB
