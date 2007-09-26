@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = devel/nasm
+BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/build/generic/configure
 BUILD_SCRIPTS     = $(WORKSRC)/build/generic/Makefile

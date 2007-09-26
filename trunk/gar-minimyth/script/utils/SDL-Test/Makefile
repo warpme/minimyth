@@ -9,8 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL
-BUILDDEPS = devel/nasm
+DEPENDS = lang/c lib/SDL
 
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile

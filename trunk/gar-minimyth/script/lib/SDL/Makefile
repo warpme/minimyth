@@ -14,7 +14,7 @@ DEPENDS    = lang/c xorg/xorg
 ifneq ($(DESTIMG),build)
 DEPENDS   += lib/alsa-lib
 endif
-BUILDDEPS  = devel/nasm
+BUILDDEPS  = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
