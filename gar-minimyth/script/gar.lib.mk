@@ -352,8 +352,8 @@ MIT_LICENSE_TEXT = $(LICENSEDIR)/MIT.txt
 MIT_X_LICENSE_TEXT = $(LICENSEDIR)/MIT.txt
 MPL_LICENSE_TEXT = $(LICENSEDIR)/MPL.txt
 Artistic_LICENSE_TEXT = $(LICENSEDIR)/Artistic.txt
-Clarified_Artistic_LICENSE_TEXT = $(LICENSEDIR)/Clarified-Artistic.txt
-Public_Domain_LICENSE_TEXT = $(LICENSEDIR)/public-domain.txt
+Clarified_Artistic_LICENSE_TEXT = $(LICENSEDIR)/Clarified_Artistic.txt
+Public_Domain_LICENSE_TEXT = $(LICENSEDIR)/Public_Domain.txt
 
 install-version:
 	@install -d $(DESTDIR)$(versiondir) 
