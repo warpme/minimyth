@@ -5,7 +5,15 @@ MASTER_SITES  = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  =
+PATCHFILES  = \
+	$(DISTNAME)-chcon.patch \
+	$(DISTNAME)-fdisk.patch \
+	$(DISTNAME)-find.patch \
+	$(DISTNAME)-httpd.patch \
+	$(DISTNAME)-install.patch \
+	$(DISTNAME)-login.patch \
+	$(DISTNAME)-runsvdir.patch \
+	$(DISTNAME)-setfiles.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
 
