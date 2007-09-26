@@ -3,7 +3,8 @@ GARVERSION = 2.5.33
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = BSD
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT=$(WORKSRC)/COPYING
 
 DESCRIPTION =
 define BLURB

@@ -7,7 +7,7 @@ PATCHFILES = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch.gar
 endif
-LICENSE = BSD/GPL2/LGPL2
+LICENSE = BSD_2_Clause/FDL1_2/GPL2/LGPL2
 
 DESCRIPTION = 
 define BLURB
