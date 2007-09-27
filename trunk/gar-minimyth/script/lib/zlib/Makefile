@@ -3,8 +3,8 @@ GARVERSION = 1.2.3
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libpng/
 DISTFILES = $(DISTNAME).tar.gz license
-LICENSE = zlib
-zlib_LICENSE_TEXT = $(WORKDIR)/license
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKDIR)/license
 
 DESCRIPTION =
 define BLURB

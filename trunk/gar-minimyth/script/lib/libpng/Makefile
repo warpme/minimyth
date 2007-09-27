@@ -4,8 +4,8 @@ CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch.gar
-LICENSE = png
-png_LICENSE_TEXT = $(WORKSRC)/LICENSE
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
 DESCRIPTION = 
 define BLURB

@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch
-LICENSE = MIT
+LICENSE = MIT_Modified
 
 DESCRIPTION =
 define BLURB

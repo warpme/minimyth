@@ -3,7 +3,7 @@ GARVERSION = 2.6.30
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = MIT/MIT_Modified
 
 DESCRIPTION = 
 define BLURB
