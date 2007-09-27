@@ -1,11 +1,11 @@
 GARNAME = lirc
-GARVERSION = 20070801
+GARVERSION = 20070926
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-module_device_table.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_i2cuser.patch
+PATCHFILES = $(DISTNAME)-module_device_table.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 LICENSE = GPL2
 
 DESCRIPTION =
