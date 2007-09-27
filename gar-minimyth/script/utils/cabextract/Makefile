@@ -3,7 +3,7 @@ GARVERSION = 1.2
 CATEGORIES = utils
 MASTER_SITES = http://www.kyz.uklinux.net/downloads/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB

@@ -3,7 +3,7 @@ GARVERSION = 1.1.22
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/libxml2/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE =
+LICENSE = MIT_Modified
 
 DESCRIPTION = 
 define BLURB
