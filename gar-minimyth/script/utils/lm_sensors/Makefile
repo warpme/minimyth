@@ -4,6 +4,7 @@ CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-i2c_dev_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
