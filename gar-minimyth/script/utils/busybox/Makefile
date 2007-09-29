@@ -11,6 +11,7 @@ PATCHFILES  = \
 	$(DISTNAME)-find.patch \
 	$(DISTNAME)-httpd.patch \
 	$(DISTNAME)-install.patch \
+	$(DISTNAME)-lineedit.patch \
 	$(DISTNAME)-login.patch \
 	$(DISTNAME)-runsvdir.patch \
 	$(DISTNAME)-setfiles.patch
