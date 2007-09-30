@@ -1,0 +1,148 @@
+#!/bin/sh
+################################################################################
+#
+################################################################################
+
+. /etc/rc.d/functions
+
+logfile="${HOME}/tmp/mm_perl.log"
+
+tmp_remote="tmp/minimyth/${MM_HOSTNAME}/perl"
+
+# Create local log file.
+logdir=`/usr/bin/dirname ${logfile}`
+/bin/mkdir -p ${logdir}
+if /usr/bin/test ! -d ${logdir} ; then
+    /usr/bin/logger -t minimyth -p "local0.error" \
+         "mm_perl: failed to create local log directory '${logdir}'."
+    exit 1
+fi
+/bin/rm -f ${logfile}
+/bin/touch ${logfile}
+if /usr/bin/test ! -d ${file} ; then
+    /usr/bin/logger -t minimyth -p "local0.error" \
+         "mm_perl: failed to create local log file '${logfile}'."
+    exit 1
+fi
+/bin/echo ""                              >> ${logfile}
+/bin/echo "log file for /usr/bin/mm_perl" >> ${logfile}
+/bin/echo ""                              >> ${logfile}
+
+# Create tmp directory on remote system.
+/bin/echo "/usr/bin/mm_ssh ${MM_SSH_USER}@${MM_SSH_HOST} \"mkdir -p ${tmp_remote}\"" >> ${logfile}
+/usr/bin/mm_ssh ${MM_SSH_USER}@${MM_SSH_HOST} "mkdir -p ${tmp_remote}" 2>> ${logfile}
+if /usr/bin/test $? -ne 0 ; then
+    /bin/echo "mm_perl: failed to create tmp directory on remote system." >> ${logfile}
+    /usr/bin/logger -t minimyth -p "local0.error" \
+         "mm_perl: failed to create tmp directory on remote system."
+    exit 1
+fi
+
+# Process arguments.
+argnumber=0
+arglist=
+mythstream='no'
+for arg in "$@" ; do
+    # First argument is the perl script, which need to be copied to the remote
+    # system so that it can be exectuted.
+    if   /usr/bin/test ${argnumber} -eq 0 ; then
+        file_local="${arg}"
+        # Convert local file to absolute path.
+        file_local_base=`/usr/bin/basename "${file_local}"`
+        file_local_dir=`/usr/bin/dirname "${file_local}"`
+        file_local_dir=`cd "${file_local_dir}" ; pwd`
+        file_local="${file_local_dir}/${file_local_base}"
+        if /usr/bin/test ! -e "${file_local}" ; then
+            /bin/echo "mm_perl: perl script '${file_local}' does not exist." >> ${logfile}
+            /usr/bin/logger -t minimyth -p "local0.error" \
+                "mm_perl: perl script '${file_local}' does not exist."
+            exit 1
+        fi
+
+        # Check whether or not the perl script is a mythstream parser.
+        /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythstream/parsers/" 2> /dev/null
+        if /usr/bin/test $? -eq 0 ; then
+            mythstream='yes'
+        fi
+        /bin/echo ${file_local} | /bin/grep -q -e "^${HOME}/.mythtv/mythstream/parsers/" 2> /dev/null
+        if /usr/bin/test $? -eq 0 ; then
+            mythstream='yes'
+        fi
+
+	# Determine remote file name.
+        file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
+        file_remote="${tmp_remote}/${file_remote}"
+
+	# Copy local file to remote server.
+        /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_USER}@${MM_SSH_HOST}:${file_remote}" >> ${logfile}
+        /usr/bin/mm_scp ${file_local} ${MM_SSH_USER}@${MM_SSH_HOST}:${file_remote} 2>> ${logfile}
+        if /usr/bin/test $? -ne 0 ; then
+            /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
+            /usr/bin/logger -t minimyth -p "local0.error" \
+                "mm_perl: failed to copy perl script to remote system."
+            exit 1
+        fi
+
+	# Replace argument with remote file name.
+        arg="${file_remote}"
+    elif /usr/bin/test ${argnumber} -eq 1 ; then
+        # Perl script is mythstream parser, so this argument is a file.
+        if /usr/bin/test "${mythstream}" = "yes" ; then
+            file_local="${arg}"
+            # Convert local file to absolute path.
+            file_local_base=`/usr/bin/basename "${file_local}"`
+            file_local_dir=`/usr/bin/dirname "${file_local}"`
+            file_local_dir=`cd "${file_local_dir}" ; pwd`
+            file_local="${file_local_dir}/${file_local_base}"
+            if /usr/bin/test ! -e "${file_local}" ; then
+                /bin/echo "mm_perl: file '${file_local}' does not exist." >> ${logfile}
+                /usr/bin/logger -t minimyth -p "local0.error" \
+                    "mm_perl: file '${file_local}' does not exist."
+                exit 1
+            fi
+	    # Determine remote file name.
+            file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
+            file_remote="${tmp_remote}/${file_remote}"
+
+	    # Copy local file to remote server.
+            /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_USER}@${MM_SSH_HOST}:${file_remote}" >> ${logfile}
+            /usr/bin/mm_scp ${file_local} ${MM_SSH_USER}@${MM_SSH_HOST}:${file_remote} 2>> ${logfile}
+            if /usr/bin/test $? -ne 0 ; then
+                /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
+                /usr/bin/logger -t minimyth -p "local0.error" \
+                    "mm_perl: failed to copy perl script to remote system."
+                exit 1
+            fi
+
+	    # Replace argument with remote file name.
+            arg="${file_remote}"
+        fi
+    fi
+    
+    if /usr/bin/test -z "${arglist}" ; then
+        arglist="'${arg}'"
+    else
+        arglist="${arglist} '${arg}'"
+    fi
+    argnumber=$((${argnumber} + 1))
+done
+
+# Check argument count.
+if /usr/bin/test ${argnumber} -lt 1 ; then
+    /bin/echo "mm_perl: too few arguments.." >> ${logfile}
+    /usr/bin/logger -t minimyth -p "local0.error" \
+        "mm_perl: too few arguments.."
+    exit 1
+fi
+
+# Run command with arguments on remote machine using ssh.
+/bin/echo "/usr/bin/mm_ssh ${MM_SSH_USER}@${MM_SSH_HOST} perl ${arglist}" >> ${logfile}
+/usr/bin/mm_ssh ${MM_SSH_USER}@${MM_SSH_HOST} perl ${arglist} 2>> ${logfile}
+if /usr/bin/test $? -ne 0 ; then
+    /bin/echo "mm_perl: remote command execution failed: perl ${arglist}." >> ${logfile}
+    /usr/bin/logger -t minimyth -p "local0.error" \
+        "mm_perl: remote command execution failed: perl ${arglist}."
+   exit 1
+fi
+
+exit 0
