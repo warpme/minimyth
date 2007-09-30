@@ -17,4 +17,10 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
+DEFAULT_ENV   = \
+	PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp"
+CONFIGURE_ENV = $(DEFAULT_ENV)
+BUILD_ENV     = $(DEFAULT_ENV)
+INSTALL_ENV   = $(DEFAULT_ENV)
+
 include ../../gar.mk
