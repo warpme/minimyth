@@ -454,7 +454,6 @@ mm-make-conf:
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv
 	@cp -r  ./dirs/usr/share/mythtv/*                $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
-	@$(foreach script, $(wildcard $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/mythvideo/scripts/*.pl), rm -f $(script) ; ln -s /usr/bin/mm_ssh_remote_command_execute $(script) ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)

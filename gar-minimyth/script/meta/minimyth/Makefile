@@ -47,6 +47,7 @@ DEPENDS = \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
+	utils/perl-stub \
 	utils/SDL-Test \
 	system/splashutils \
 	utils/squashfs \
