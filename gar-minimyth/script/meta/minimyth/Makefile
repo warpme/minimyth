@@ -17,6 +17,7 @@ DEPENDS = \
 	utils/alsa-utils \
 	utils/busybox \
 	fonts/corefonts \
+	utils/coreutils \
 	utils/dmidecode \
 	net/dropbear \
 	disk/eject \
