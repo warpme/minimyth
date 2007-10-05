@@ -3,7 +3,7 @@ GARVERSION = 0.9.8e
 CATEGORIES = lib
 MASTER_SITES = http://www.openssl.org/source/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-gcc_4_2.patch $(DISTNAME).patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -20,20 +20,29 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = \
 	--prefix=$(prefix) \
 	--install_prefix=$(DESTDIR) \
+	--openssldir=$(sysconfdir)/ssl \
 	shared \
 	no-krb5 \
-	zlib-dynamic \
-	$(if $(filter i386,  $(GARCH_FAMILY)),linux-elf) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),linux-x86_64)
+	zlib \
+	no-idea \
+	no-mdc2 \
+	no-rc5 \
+	no-ec \
+	no-ecdh \
+	no-ecdsa \
+	$(if $(filter i386,  $(GARCH_FAMILY)),no-asm 386 linux-elf) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),           linux-x86_64)
 
 BUILD_ARGS = \
 	CC="$(CC)" \
 	AR="$(AR) r" \
-	RANLIB="$(RANLIB)"
+	RANLIB="$(RANLIB)" \
+	depend all build-shared
 
 include ../../gar.mk
 
 PARALLELMFLAGS := -j1
+CFLAGS := -ggdb
 
 configure-%/Configure: 
 	@echo " ==> Running Configure in $*"

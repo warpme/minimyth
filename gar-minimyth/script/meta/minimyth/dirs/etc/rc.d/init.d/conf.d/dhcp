@@ -29,6 +29,10 @@ conf_check_dhcp() {
 }
 
 conf_default_dhcp() {
+    if /usr/bin/test -e '/tmp/init.conf.dhcp/conf_default_dhcp' ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_HOSTNAME}"    ; then
         MM_HOSTNAME="${MM_DHCP_HOSTNAME}"
     fi
@@ -71,6 +75,9 @@ conf_default_dhcp() {
     if /usr/bin/test -z "${MM_TZ}" ; then
         mm_message_output err "error: 'MM_TZ' is not set."
     fi
+
+    /bin/mkdir -p '/tmp/init.conf.dhcp'
+    /bin/touch    '/tmp/init.conf.dhcp/conf_default_dhcp'
 
     return 0
 }

@@ -2,11 +2,11 @@
 ################################################################################
 # This command maps a local command to a remote command and runs the command on
 # remote host using SSH. The local command must be a symbolic link to this shell
-# script (mm_ssh_remote_command_execute). SSH runs on computer "${MM_SSH_HOST}"
-# as user "${MM_SSH_USER}" who is identified using '/etc/dropbear/id_rsa'. If
-# the prefix of the local command's full path and the remote command's full
-# path are different, then the prefix can be remapped using
-# "${MM_SSH_PREFIX_MAP}".
+# script (mm_ssh_remote_command_execute). SSH runs on computer
+# "${MM_SSH_REMOTE_HOST}" as user "${MM_SSH_REMOTE_USER}" who is identified
+# using '/etc/dropbear/id_rsa'. If the prefix of the local command's full path
+# and the remote command's full path are different, then the prefix can be
+# remapped using "${MM_SSH_REMOTE_PREFIX_MAP}".
 ################################################################################
 
 . /etc/rc.d/functions
@@ -45,9 +45,9 @@ if /usr/bin/test ! -e "${command}" ; then
 fi
 
 # Convert local command to remote command.
-if /usr/bin/test -n "${MM_SSH_PREFIX_MAP}" ; then
-    prefix_local=` /bin/echo ${MM_SSH_PREFIX_MAP} | /usr/bin/cut -d ':' -f 1`
-    prefix_remote=`/bin/echo ${MM_SSH_PREFIX_MAP} | /usr/bin/cut -d ':' -f 2`
+if /usr/bin/test -n "${MM_SSH_REMOTE_PREFIX_MAP}" ; then
+    prefix_local=` /bin/echo ${MM_SSH_REMOTE_PREFIX_MAP} | /usr/bin/cut -d ':' -f 1`
+    prefix_remote=`/bin/echo ${MM_SSH_REMOTE_PREFIX_MAP} | /usr/bin/cut -d ':' -f 2`
     command=`/bin/echo "${command}" | /bin/sed -e "s%^${prefix_local}%${prefix_remote}%"`
 fi
 
@@ -65,7 +65,7 @@ done
 # Run command with arguments on remote machine using ssh.
 /usr/bin/logger -t minimyth -p "local0.info" \
    "mm_ssh_remote_command_execute: executing remote command: ${command} ${arglist}."
-/usr/bin/dbclient -y -i /etc/dropbear/id_rsa ${MM_SSH_USER}@${MM_SSH_HOST} ${command} ${arglist} 2> /dev/null
+mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} ${command} ${arglist} 2> /dev/null
 if /usr/bin/test $? -ne 0 ; then
     /usr/bin/logger -t minimyth -p "local0.error" \
         "mm_ssh_command_execute: remote command execution failed: ${command} ${arglist}."

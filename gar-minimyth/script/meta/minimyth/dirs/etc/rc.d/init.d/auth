@@ -1,0 +1,59 @@
+#!/bin/sh
+################################################################################
+# auth
+#
+# The script configures the authorization.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    local MM_AUTH_LDAP_TLS_CHECKPEER
+
+    if /usr/bin/test "${MM_AUTH_TYPE}" = "ldap" ; then
+        if /usr/bin/test -e /etc/ssl/cert.pem ; then
+            MM_AUTH_LDAP_TLS_CHECKPEER='yes'
+        else
+            MM_AUTH_LDAP_TLS_CHECKPEER='no'
+        fi
+        /bin/sed -e "s%@MM_AUTH_LDAP_SERVER@%${MM_AUTH_LDAP_SERVER}%"               -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_BINDDN@%binddn ${MM_AUTH_LDAP_BINDDN}%"        -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_BINDPW@%bindpw ${MM_AUTH_LDAP_BINDPW}%"        -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_BASE@%${MM_AUTH_LDAP_BASE}%"                   -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_BASE_USERS@%${MM_AUTH_LDAP_BASE_USERS}%"       -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_BASE_GROUPS@%${MM_AUTH_LDAP_BASE_GROUPS}%"     -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_PAM_GROUPDN@%${MM_AUTH_LDAP_PAM_GROUPDN}%"     -i /etc/ldap.conf
+        /bin/sed -e "s%@MM_AUTH_LDAP_TLS_CHECKPEER@%${MM_AUTH_LDAP_TLS_CHECKPEER}%" -i /etc/ldap.conf
+        /bin/cp -f /etc/auth.d/nsswitch.conf.ldap /etc/nsswitch.conf
+        /bin/cp -f /etc/auth.d/pam.conf.ldap      /etc/pam.conf
+        /bin/cp -f /etc/auth.d/passwd.ldap        /etc/passwd
+        /bin/cp -f /etc/auth.d/group.ldap         /etc/group
+    else
+        /bin/cp -f /etc/auth.d/nsswitch.conf.file /etc/nsswitch.conf
+        /bin/cp -f /etc/auth.d/pam.conf.file      /etc/pam.conf
+        /bin/cp -f /etc/auth.d/passwd.file        /etc/passwd
+        /bin/cp -f /etc/auth.d/group.file         /etc/group
+    fi
+    /bin/chown root:root /etc/ldap.conf
+    /bin/chmod 644       /etc/ldap.conf
+    /bin/chown root:root /etc/nsswitch.conf
+    /bin/chmod 644       /etc/nsswitch.conf
+    /bin/chown root:root /etc/pam.conf
+    /bin/chmod 644       /etc/pam.conf
+    /bin/chown root:root /etc/passwd
+    /bin/chmod 644       /etc/passwd
+    /bin/chown root:root /etc/group
+    /bin/chmod 644       /etc/group
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

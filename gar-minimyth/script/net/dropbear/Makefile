@@ -3,19 +3,31 @@ GARVERSION = 0.50
 CATEGORIES = net
 MASTER_SITES = http://matt.ucc.asn.au/dropbear/releases/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-disable_x11forwarding.patch \
+	$(DISTNAME)-enable_pam.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib
+DEPENDS = lang/c lib/zlib system/pam
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-pam \
+	--disable-lastlog \
+	--disable-utmp \
+	--disable-utmpx \
+	--disable-wtmp \
+	--disable-wtmpx \
+	--disable-loginfunc \
+	--disable-pututline \
+	--disable-pututxline
 
 DEFAULT_ENV   = \
 	PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp"

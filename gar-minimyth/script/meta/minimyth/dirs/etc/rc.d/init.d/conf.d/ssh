@@ -8,29 +8,60 @@ conf_clean_ssh() {
 }
 
 conf_check_ssh() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_SSH_USER}"       ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_USER' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_SSH_HOST}"       ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_HOST' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_SSH_PREFIX_MAP}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_PREFIX' is obsolete."
+    fi
+
+    if /usr/bin/test ! -z "${MM_SSH_SERVER_ENABLED}"         && \
+       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' is not valid."
+    fi
+    if /usr/bin/test ! -z "${MM_SSH_REMOTE_ENABLED}"         && \
+       /usr/bin/test !    "${MM_SSH_REMOTE_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_SSH_REMOTE_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_SSH_REMOTE_ENABLED='${MM_SSH_REMOTE_ENABLED}' is not valid."
+    fi
+
     return 0
 }
 
 conf_default_ssh() {
-    local AUDIO
-    local AUDIO_CARD_NUMBER
-    local AUDIO_DEVICE_NUMBER
+    if /usr/bin/test -e '/tmp/init.conf.ssh/conf_default_ssh' ; then
+        return 0
+    fi
 
-    if /usr/bin/test -z "${MM_SSH_USER}" ; then
-        MM_SSH_USER='minimyth'
+    if /usr/bin/test -z "${MM_SSH_SERVER_ENABLED}" ; then
+        MM_SSH_SERVER_ENABLED='no'
     fi
-    if /usr/bin/test -z "${MM_SSH_HOST}" ; then
-        MM_SSH_HOST="${MM_MASTER_SERVER}"
+    if /usr/bin/test -z "${MM_SSH_REMOTE_ENABLED}" ; then
+        MM_SSH_REMOTE_ENABLED='no'
     fi
-    if /usr/bin/test -z "${MM_SSH_HOST}" ; then
-        MM_SSH_HOST="${MM_TFTP_SERVER}"
+    if /usr/bin/test -z "${MM_SSH_REMOTE_USER}" ; then
+        MM_SSH_REMOTE_USER='minimyth'
+    fi
+    if /usr/bin/test -z "${MM_SSH_REMOTE_HOST}" ; then
+        MM_SSH_REMOTE_HOST="${MM_MASTER_SERVER}"
+    fi
+    if /usr/bin/test -z "${MM_SSH_REMOTE_HOST}" ; then
+        MM_SSH_REMOTE_HOST="${MM_TFTP_SERVER}"
+    fi
+    if /usr/bin/test -z "${MM_SSH_REMOTE_PREFIX_MAP}" ; then
+        MM_SSH_REMOTE_PREFIX_MAP=''
     fi
     if /usr/bin/test -z "${MM_SSH_FETCH_ID_RSA}" ; then
         MM_SSH_FETCH_ID_RSA='no'
     fi
-    if /usr/bin/test -z "${MM_SSH_PREFIX_MAP}" ; then
-        MM_SSH_PREFIX_MAP=''
-    fi
+
+    /bin/mkdir -p '/tmp/init.conf.ssh'
+    /bin/touch    '/tmp/init.conf.ssh/conf_default_ssh'
 
     return 0
 }
@@ -38,10 +69,12 @@ conf_default_ssh() {
 conf_write_ssh() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_SSH_USER         "${MM_SSH_USER}"
-    conf_variable_write "${conf_file}" MM_SSH_HOST         "${MM_SSH_HOST}"
-    conf_variable_write "${conf_file}" MM_SSH_FETCH_ID_RSA "${MM_SSH_FETCH_ID_RSA}"
-    conf_variable_write "${conf_file}" MM_SSH_PREFIX_MAP   "${MM_SSH_PREFIX_MAP}"
+    conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED    "${MM_SSH_SERVER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SSH_REMOTE_ENABLED    "${MM_SSH_REMOTE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SSH_REMOTE_USER       "${MM_SSH_REMOTE_USER}"
+    conf_variable_write "${conf_file}" MM_SSH_REMOTE_HOST       "${MM_SSH_REMOTE_HOST}"
+    conf_variable_write "${conf_file}" MM_SSH_REMOTE_PREFIX_MAP "${MM_SSH_REMOTE_PREFIX_MAP}"
+    conf_variable_write "${conf_file}" MM_SSH_FETCH_ID_RSA      "${MM_SSH_FETCH_ID_RSA}"
 
     return 0
 }
@@ -52,6 +85,8 @@ conf_fetch_ssh() {
         mm_conf_get /id_rsa /etc/ssh/id_rsa
         if /usr/bin/test ! -e /etc/ssh/id_rsa ; then
             mm_message_output err "error: failed to fetch 'id_rsa' file."
+        else
+            /bin/chmod 600 /etc/ssh/id_rsa
         fi
     fi
     return 0

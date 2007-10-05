@@ -41,13 +41,18 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "        <div class=\"heading\">MiniMyth Frontend Filesystem</div>"
 /bin/echo "        <div class=\"section\">"
 /bin/echo "          <p>"
-/bin/echo "            You can use the URL <a href=\"http://${server}:8080/\">http://${server}:8080/</a> to access your MiniMyth frontend's filesystem."
+if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" ; then
+    /bin/echo "            You can use the URL <a href=\"http://${server}:8080/\">http://${server}:8080/</a> to access your MiniMyth frontend's filesystem."
+else
+    /bin/echo "            Your MiniMyth frontend has security enabled."
+    /bin/echo "            Therefore, you cannot access your MiniMyth frontend's filesystem."
+fi
 /bin/echo "          </p>"
 /bin/echo "        </div>"
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"footer\">"
 /bin/echo "        <hr />"
-/bin/echo "        Last Updated: 2006-09-30 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "        Last Updated: 2007-10-04 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
 /bin/echo "  </body>"
