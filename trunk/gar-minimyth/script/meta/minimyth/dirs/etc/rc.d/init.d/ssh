@@ -5,23 +5,34 @@
 . /etc/rc.d/functions
 
 start() {
-    mm_message_output info "configuring ssh ..."
+    if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
+        mm_message_output info "configuring ssh remote command execution ..."
 
-    if /usr/bin/test -e /etc/ssh/id_rsa ; then
-        /bin/mkdir -p /etc/dropbear
-        /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa /etc/dropbear/id_rsa
-        /bin/chmod 640 /etc/dropbear/id_rsa
-        /bin/chown root:ssh /etc/dropbear/id_rsa
+        if /usr/bin/test -e /etc/ssh/id_rsa_remote ; then
+            /bin/mkdir -p /etc/dropbear
+            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_remote /etc/dropbear/id_rsa_remote
+            /bin/chmod 640 /etc/dropbear/id_rsa_remote
+            /bin/chown root:ssh /etc/dropbear/id_rsa_remote
+        fi
     fi
 
     if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
+        mm_message_output info "configuring ssh server ..."
+
+        if /usr/bin/test -e /etc/ssh/id_rsa_server ; then
+            /bin/mkdir -p /etc/dropbear
+            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_server /etc/dropbear/id_rsa_server
+            /bin/chmod 600 /etc/dropbear/id_rsa_server
+            /bin/chown root:ssh /etc/dropbear/id_rsa_server
+        fi
+
         if /usr/bin/test ! -n "`/bin/pidof dropbear`" ; then
             mm_message_output info "starting ssh server ..."
-            if /usr/bin/test ! -e /etc/dropbear/id_rsa ; then
+            if /usr/bin/test ! -e /etc/dropbear/id_rsa_server ; then
                 mm_message_output err "error: cannot not start ssh server: no host key."
                 exit 1
             fi
-            /usr/sbin/dropbear -r /etc/dropbear/id_rsa
+            /usr/sbin/dropbear -r /etc/dropbear/id_rsa_server
         fi
     fi
 
