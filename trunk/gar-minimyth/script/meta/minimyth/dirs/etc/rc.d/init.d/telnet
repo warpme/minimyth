@@ -5,17 +5,24 @@
 . /etc/rc.d/functions
 
 start() {
-    mm_message_output info "starting telnet ..."
 
-    /usr/sbin/telnetd -l /bin/login
+    # Run telnet server on machines that are not secure.
+    if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" ; then
+        if /usr/bin/test ! -n "`/bin/pidof telnetd`" ; then
+            mm_message_output info "starting telnet server ..."
+            /usr/sbin/telnetd -l /bin/login
+        fi
+    fi
 
     return 0
 }
 
 stop() {
-    mm_message_output info "stopping telnet ..."
 
-    /usr/bin/test -n "`/bin/pidof telnetd`" && /usr/bin/killall telnetd
+    if /usr/bin/test   -n "`/bin/pidof telnetd`" ; then
+        mm_message_output info "stopping telnet server ..."
+        /usr/bin/killall telnetd
+    fi
 
     return 0
 }

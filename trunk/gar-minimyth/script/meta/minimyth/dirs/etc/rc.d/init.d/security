@@ -1,0 +1,35 @@
+#!/bin/sh
+################################################################################
+# security
+#
+# The script configures the security.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+
+    if /usr/bin/test -e /etc/ssl/certs/ca-bundle.crt ; then
+        # Set permissions.
+        /bin/chmod 644 /etc/ssl/certs/ca-bundle.crt
+        # Link to the default name.
+        /bin/rm -f /etc/ssl/cert.pem
+        /bin/ln -fs certs/ca-bundle.crt /etc/ssl/cert.pem
+        # Add KSSL's bundle.
+        if /usr/bin/test -w /usr/kde/share/apps/kssl/ca-bundle.crt ; then
+            /bin/cat /etc/ssl/certs/ca-bundle.crt >> /usr/kde/share/apps/kssl/ca-bundle.crt
+        fi
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

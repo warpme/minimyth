@@ -1,0 +1,60 @@
+################################################################################
+# Security configuration variables and files.
+################################################################################
+conf_clean_security() {
+    /bin/rm -rf /tmp/init.conf.security
+
+    return 0
+}
+
+conf_check_security() {
+
+    if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}"         && \
+       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "no" ; then
+        mm_message_output err "error: MM_SECURITY_ENABLED='${MM_SECURITY_ENABLED}' is not valid."
+    fi
+    if /usr/bin/test ! -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"         && \
+       /usr/bin/test !    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "yes" && \
+       /usr/bin/test !    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "no"  ; then
+        mm_message_output err "error: MM_SECURITY_FETCH_CA_BUNDLE_CRT='${MM_SECURITY_FETCH_CA_BUNDLE_CRT}' is not valid."
+    fi
+
+
+    return 0
+}
+
+conf_default_security() {
+
+    if /usr/bin/test -z "${MM_SECURITY_ENABLED}" ; then
+        MM_SECURITY_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" ; then
+        MM_SECURITY_FETCH_CA_BUNDLE_CRT='no'
+    fi
+
+    return 0
+}
+
+conf_write_security() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_SECURITY_ENABLED             "${MM_SECURITY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SECURITY_FETCH_CA_BUNDLE_CRT "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"
+
+    return 0
+}
+
+conf_fetch_security() {
+
+    if /usr/bin/test "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "yes" ; then
+        /bin/mkdir -p /etc/ssl/certs
+        /bin/rm -f /etc/ssl/certs/ca-bundle.crt
+        mm_conf_get /ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
+        if /usr/bin/test ! -e /etc/ssl/certs/ca-bundle.crt ; then
+            mm_message_output err "error: failed to fetch 'ca-bundle.crt' file."
+        fi
+    fi
+
+    return 0
+}

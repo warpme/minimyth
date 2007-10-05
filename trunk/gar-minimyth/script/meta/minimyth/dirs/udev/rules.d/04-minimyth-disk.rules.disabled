@@ -24,6 +24,8 @@ LABEL="begin"
 
   # Allow cdrom users raw access to CD/DVD drives.
   ENV{ID_CDROM}=="?*", OWNER="root", GROUP="cdrom", MODE="0660"
+  # Allow disk users raw access to all other drives.
+  ENV{ID_CDROM}=="?*", OWNER="root", GROUP="disk" , MODE="0660"
 
   # Enable DMA on IDE DVD drives.
   ENV{ID_CDROM}=="?*", ENV{ID_CDROM_DVD}=="?*", SUBSYSTEMS=="ide", RUN+="/usr/sbin/hdparm -d1 /dev/%k"
