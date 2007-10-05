@@ -57,7 +57,7 @@
               <dt><a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a></dt>
               <dt><a href="#MM_SECURITY_FETCH_CA_BUNDLE_CRT">MM_SECURITY_FETCH_CA_BUNDLE_CRT</a></dt>
             </dl></dd>
-            <dt><a href="#MM_AUTH">Authentication variables</a></dt>
+            <dt><a href="#MM_AUTH">Authentication and Authorization variables</a></dt>
             <dd><dl>
               <dt><a href="#MM_AUTH_TYPE">MM_AUTH_TYPE</a></dt>
               <dt><a href="#MM_AUTH_LDAP_SERVER">MM_AUTH_LDAP_SERVER</a></dt>
@@ -199,14 +199,19 @@
               <dt><a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a></dt>
               <dt><a href="#MM_LCDPROC_FETCH_LCDD_CONF">MM_LCDPROC_FETCH_LCDD_CONF</a></dt>
             </dl></dd>
-            <dt><a href="#MM_SSH">SSH configuration variables</a></dt>
+            <dt><a href="#MM_SSH_REMOTE">SSH remote command exectution configuration variables</a></dt>
             <dd><dl>
-              <dt><a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a></dt>
               <dt><a href="#MM_SSH_REMOTE_ENABLED">MM_SSH_REMOTE_ENABLED</a></dt>
               <dt><a href="#MM_SSH_REMOTE_HOST">MM_SSH_REMOTE_HOST</a></dt>
+              <dt><a href="#MM_SSH_REMOTE_PORT">MM_SSH_REMOTE_PORT</a></dt>
               <dt><a href="#MM_SSH_REMOTE_USER">MM_SSH_REMOTE_USER</a></dt>
               <dt><a href="#MM_SSH_REMOTE_PREFIX_MAP">MM_SSH_REMOTE_PREFIX_MAP</a></dt>
-              <dt><a href="#MM_SSH_FETCH_ID_RSA">MM_SSH_FETCH_ID_RSA</a></dt>
+              <dt><a href="#MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE">MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE</a></dt>
+            </dl></dd>
+            <dt><a href="#MM_SSH_SERVER">SSH server configuration variables</a></dt>
+            <dd><dl>
+              <dt><a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a></dt>
+              <dt><a href="#MM_SSH_SERVER_FETCH_ID_RSA_SERVER">MM_SSH_SERVER_FETCH_ID_RSA_SERVER</a></dt>
             </dl></dd>
             <dt><a href="#MM_CRON">Cron configuration variables</a></dt>
             <dd><dl>
@@ -248,7 +253,9 @@
             <dt id="MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT"><strong>MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'minimyth.script' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#minimyth_script">minimyth.script</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -370,17 +377,69 @@
             <dt id="MM_SECURITY_ENABLED"><strong>MM_SECURITY_ENABLED</strong></dt>
             <dd>
               <p>
+                Indicates whether or not to enable security.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+              <p>
+                When security is enabled, MiniMyth disables less secure behaviours,
+                including the telnet server and the web server's ability to browse the file system.
+                Since the telnet server is started before 'minimyth.conf' is retrieved and processed,
+                'MM_SECURITY_ENABLED' should be set on the
+                <a href="document-configure.shtml#bootline">boot line</a>
+                when security is desired.
               </p>
             </dd>
             <dt id="MM_SECURITY_FETCH_CA_BUNDLE_CRT"><strong>MM_SECURITY_FETCH_CA_BUNDLE_CRT</strong></dt>
             <dd>
               <p>
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#ca_bundle_crt">ca-bundle.crt</a>'
+                file from the frontend's MiniMyth configuration directory.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+              <p>
+                When LDAP
+                <a href="#MM_AUTH">authentication and authorization</a>
+                is enabled,
+                MiniMyth uses this bundle of certificate authority digital certificates to check the identity of the LDAP server.
+                When KDE libraries are included (for use my MythBrowser),
+                MiniMyth includes this bundle of certificate authority digital certificates in
+                the list of certificate authorities trusted by KDE (and, therefore, MythBrowser).
               </p>
             </dd>
           </dl>
         </div>
         <div id="MM_AUTH" class="section">
-          <div class="heading">Authentication variables</div>
+          <div class="heading">Authentication and Authorization variables</div>
+          <p>
+            MiniMyth uses
+            <a href="http://www.kernel.org/pub/linux/libs/pam/">Linux-PAM</a>:
+            the implementation of the Plugable Authentication Modules (PAM) framework.
+            Using Linux-PAM, MiniMyth supports for authentication and authorization
+            using local password/group files (/etc/passwd and /etc/group) and
+            using a remote LDAP server.
+          </p>
+          <p>
+            When using local password/group files, MiniMyth does not support shadow passwords (/etc/shadow).
+            Since passwords will be either passwords shipped with MiniMyth or passwords retrieved from TFTP server,
+            there is little reason for the added password security provided by shadow passwords.
+          </p>
+          <p>
+            When using a remote LDAP server, MiniMyth uses
+            <a href="http://www.padl.com/">PADL Software's</a>
+            <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
+            and
+            <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+            modules.
+            The 
+            <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
+            module is compiled and configured to support the more fexible but expired draft for
+            <a href="http://linpvr.org/minimyth/download/garchive/draft-howard-rfc2307bis-01.txt">RFC 2307bis</a>.
+          </p>
+          <p>
+            MiniMyth LDAP support is somewhat limited.
+            In particular, it does not contain support for either SASL or Kerberos.
+          </p>
           <p>
             The Authentication variables are:
           </p>
@@ -388,40 +447,100 @@
             <dt id="MM_AUTH_TYPE"><strong>MM_AUTH_TYPE</strong></dt>
             <dd>
               <p>
+                Set authentication and authorization type.
+                Valid values are 'file' and 'ldap', with 'file' being the default.
               </p>
             <dt id="MM_AUTH_LDAP_SERVER"><strong>MM_AUTH_LDAP_SERVER</strong></dt>
             <dd>
               <p>
+                The DNS name or IP address of the LDAP server used when
+                <a href="#MM_AUTH_TYPE">MM_AUTH_TYPE</a>='ldap'.
+                The default is 'ldap.{<a href="#MM_DOMAIN">MM_DOMAIN</a>}'.
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_BINDDN"><strong>MM_AUTH_LDAP_BINDDN</strong></dt>
             <dd>
               <p>
+                The Distingueshed Name (DN) used when binding with the LDAP server specified by
+                <a href="#MM_AUTH_LDAP_SERVER">MM_AUTH_LDAP_SERVER</a>.
+                The default is ''.
+              </p>
+              <p>
+                If the value is not set,
+                then MiniMyth assumes that the user and group information needed by
+                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+                and
+                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
+                can be retrieved using anonymous bind.
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_BINDPW"><strong>MM_AUTH_LDAP_BINDPW</strong></dt>
             <dd>
               <p>
+                The password to use when binding as 
+                <a href="#MM_AUTH_LDAP_BINDDN">MM_AUTH_LDAP_BINDDN</a>.
+                The default is ''.
+              </p>
+              <p>
+                Since this password is retrieved from a TFTP server,
+                the distinguished name authenticated by this password should have very limited access rights.
+                In particular, it should no LDAP write access rights, should have LDAP read access rights to only the objects and fields
+                needed by
+                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+                and
+                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>,
+                and should not have LDAP read access rights to any passwords or personal information.
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_BASE"><strong>MM_AUTH_LDAP_BASE</strong></dt>
             <dd>
               <p>
+               The base Distinguished Name (DN) used by 
+                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+                and
+                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>.
+                The default is 'dc={<a href="#MM_DOMAIN">MM_DOMAIN</a>}'.
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_BASE_USERS"><strong>MM_AUTH_LDAP_BASE_USERS</strong></dt>
             <dd>
               <p>
+                The base Distinguished Name (DN) used  by
+                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+                and
+                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
+                when looking up users.
+                The default is 'ou=users,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
+              </p>
+              <p>
+                MiniMyth assumes that the users are not nested and, therefore, can be found using a search of type
+                '{MM_AUTH_LDAP_BASE_USERS}?one'
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_BASE_GROUPS"><strong>MM_AUTH_LDAP_BASE_GROUPS</strong></dt>
             <dd>
               <p>
+                The base Distinguished Name (DN) used by
+                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
+                and
+                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
+                when looking up groups.
+                The default is 'ou=groups,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
+              </p>
+              </p>
+              <p>
+                MiniMyth assumes that the groups are not nested and, therefore, can be found using a search of type
+                '{MM_AUTH_LDAP_BASE_GROUPS}?one'
               </p>
             </dd>
             <dt id="MM_AUTH_LDAP_PAM_GROUPDN"><strong>MM_AUTH_LDAP_PAM_GROUPDN</strong></dt>
             <dd>
               <p>
+                The Distinguished Name (DN) of the group to which users must belong in order to login into the MiniMyth frontend.
+                The default is 'cn=users-minimyth,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
+              </p>
+              <p>
+                MiniMyth assumes 'uniqueMember' field of this object contains the DN of valid MiniMyth frontend users.
               </p>
             </dd>
           </dl>
@@ -1036,7 +1155,9 @@
             <dt id="MM_X_FETCH_XINITRC"><strong>MM_X_FETCH_XINITRC</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'xinitrc' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#xinitrc">xinitrc</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -1045,7 +1166,9 @@
             <dt id="MM_X_FETCH_XORG_CONF"><strong>MM_X_FETCH_XORG_CONF</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'xorg.conf' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#xorg_conf">xorg.conf</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -1932,14 +2055,18 @@
             <dt id="MM_LIRC_FETCH_LIRCD_CONF"><strong>MM_LIRC_FETCH_LIRCD_CONF</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'lircd.conf' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#lircd_conf">lircd.conf</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
             <dt id="MM_LIRC_FETCH_LIRCRC"><strong>MM_LIRC_FETCH_LIRCRC</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'lircrc' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#lircrc">lircrc</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2016,7 +2143,9 @@
             <dt id="MM_LCDPROC_FETCH_LCDD_CONF"><strong>MM_LCDPROC_FETCH_LCDD_CONF</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'LCDd.conf' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#LCDd_conf">LCDd.conf</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2026,7 +2155,7 @@
             If the 'lcdproc' init script detects that LCDd is already running, then it will exit immediately.
           </p>
         </div>
-        <div id="MM_SSH" class="section">
+        <div id="MM_SSH_REMOTE" class="section">
           <div class="heading">SSH remote command execution configuration variables</div>
           <p>
             MiniMyth does not include Perl, because Perl takes too much space.
@@ -2036,8 +2165,8 @@
             However, MiniMyth can execute commands on a remote host using
             <a href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a>.
             This enables MythTV plugins running on the MiniMyth frontend
-            to transparently execute their Perl scripts on a remote computer,
-            assuming their Perl scripts are installed on the remote computer.
+            to transparently execute their Perl scripts on a remote host,
+            assuming their Perl scripts are installed on the remote host.
           </p>
           <p>
             If you want MiniMyth to remotely execute a locally unsupported command (e.g. '/usr/share/mythtv/mythvideo/imdb.pl'),
@@ -2053,34 +2182,38 @@
             <a href="http://linpvr.org/bugs/">bug report.</a>.
           </p>
           <p>
-            If you decide to use this, be sure that you know what you are doing.
-            Since neither TFTP server's access nor MiniMyth frontend's access is secure,
-            you should assume that anyone with access to your network
-            has access the specified remote user's private RSA identity file and
+            If you decide to use remote command execution, be sure that you know what you are doing.
+            Since the TFTP server's access is not secure,
+            you should assume that anyone with access to your network has access the SSH private RSA identity file and
             is able to use SSH to access the specified remote host as the specified remote user.
-            Therefore, you should not use the key in the remote user's private RSA identity file for anything else,
-            and your should make sure that the specified remote user has very limited rights on the specified remote server.
+            Therefore, you should make sure that the specified remote user has very limited rights on the specified remote host.
+            Ideally, the remote host should a real or virtual host dedicated to running remote commands for this remote user.
+            Then, when the remote host is compromised, the damage will be more easily contained and reversed.
           </p>
           <p>
-            The SSH configuration variables are:
+            The SSH remote command execution configuration variables are:
           </p>
           <dl>
-            <dt id="MM_SSH_SERVER_ENABLED"><strong>MM_SSH_SERVER_ENABLED</strong></dt>
-            <dd>
-              <p>
-              </p>
-            </dd>
             <dt id="MM_SSH_REMOTE_ENABLED"><strong>MM_SSH_REMOTE_ENABLED</strong></dt>
             <dd>
               <p>
+                Specify whether or not you want to enable MiniMyth's SSH remote command execution support.
+                Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
             <dt id="MM_SSH_REMOTE_HOST"><strong>MM_SSH_REMOTE_HOST</strong></dt>
             <dd>
               <p>
-                The remote host on which to execute the command.
+                The remote host on which to execute remote commands.
                 If not specified, it defaults to the MythTV master backend server
                 ('<a href="#MM_MASTER_SERVER">MM_MASTER_SERVER</a>').
+              </p>
+            </dd>
+            <dt id="MM_SSH_REMOTE_PORT"><strong>MM_SSH_REMOTE_PORT</strong></dt>
+            <dd>
+              <p>
+                The port on which the remote host's SSH server is running.
+                Valid values are any TCP/IP port number, with '22' being the default.
               </p>
             </dd>
             <dt id="MM_SSH_REMOTE_USER"><strong>MM_SSH_REMOTE_USER</strong></dt>
@@ -2107,10 +2240,49 @@
                 then you might set MM_SSH_REMOTE_PREFIX_MAP="/usr:/home/${MM_SSH_REMOTE_USER}/usr".
               </p>
             </dd>
-            <dt id="MM_SSH_FETCH_ID_RSA"><strong>MM_SSH_FETCH_ID_RSA</strong></dt>
+            <dt id="MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE"><strong>MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'id_rsa' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#id_rsa_remote">id_rsa_remote</a>'
+                file from the frontend's MiniMyth configuration directory.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+            </dd>
+          </dl>
+        </div>
+        <div id="MM_SSH_SERVER" class="section">
+          <div class="heading">SSH server configuration variables</div>
+          <p>
+            MiniMyth supports running an SSH server.
+            If you are not securing the MiniMyth frontend, then there is little reason to run an SSH server.
+            However, if you are securing the frontend, then using an SSH server rather than a telnet server
+            will secure sensitive information (such as passwords) when you connect to the frontend.
+          </p>
+          <p>
+            If you decide to enable the SSH server, be sure that you know what you are doing.
+            Since the TFTP server's access is not secure,
+            you should assume that anything with access to your network has access the SSH private RSA identity file 
+            and can impersonate the SSH server.
+            Therefore, you should not assume that an SSH server using this identity file is your SSH server.
+          </p>
+          <p>
+            The SSH server configuration variables are:
+          </p>
+          <dl>
+            <dt id="MM_SSH_SERVER_ENABLED"><strong>MM_SSH_SERVER_ENABLED</strong></dt>
+            <dd>
+              <p>
+                Specify whether or not you want to enable MiniMyth's SSH server.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+            </dd>
+            <dt id="MM_SSH_SERVER_FETCH_ID_RSA_SERVER"><strong>MM_SSH_SERVER_FETCH_ID_RSA_SERVER</strong></dt>
+            <dd>
+              <p>
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#id_rsa_server">id_rsa_server</a>'
+                file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2121,6 +2293,7 @@
           <p>
             The cron configuration variables are:
           </p>
+          <dl>
             <dt id="MM_CRON_FETCH_CRONTAB"><strong>MM_CRON_FETCH_CRONTAB</strong></dt>
             <dd>
               <p>
@@ -2195,7 +2368,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-10-04 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-10-05 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
