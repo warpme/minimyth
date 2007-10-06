@@ -3,6 +3,7 @@ GARVERSION = 2.3.38
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/
 DISTFILES = $(DISTNAME).tgz
+PATCHFILES = $(DISTNAME)-disable_install_strip.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
