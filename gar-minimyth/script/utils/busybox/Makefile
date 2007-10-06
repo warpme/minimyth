@@ -1,20 +1,13 @@
 GARNAME = busybox
-GARVERSION = 1.7.1
+GARVERSION = 1.7.2
 CATEGORIES = utils
 MASTER_SITES  = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
-	$(DISTNAME)-chcon.patch \
-	$(DISTNAME)-fdisk.patch \
-	$(DISTNAME)-find.patch \
-	$(DISTNAME)-httpd.patch \
-	$(DISTNAME)-install.patch \
-	$(DISTNAME)-lineedit.patch \
-	$(DISTNAME)-login.patch \
-	$(DISTNAME)-runsvdir.patch \
-	$(DISTNAME)-setfiles.patch
+	$(DISTNAME)-logger.patch \
+	$(DISTNAME)-tail.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
 
@@ -22,7 +15,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS = lang/c
+DEPENDS = lang/c system/pam
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
