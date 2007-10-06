@@ -3,6 +3,7 @@ GARVERSION = 0.99.8.1
 CATEGORIES = system
 MASTER_SITES = http://www.kernel.org/pub/linux/libs/pam/pre/library/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-disable_specs.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
