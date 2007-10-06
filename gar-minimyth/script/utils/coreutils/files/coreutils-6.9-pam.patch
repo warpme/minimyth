@@ -1,6 +1,44 @@
+diff -Naur coreutils-6.9-old/configure coreutils-6.9-new/configure
+--- coreutils-6.9-old/configure	2007-03-22 14:20:28.000000000 -0700
++++ coreutils-6.9-new/configure	2007-10-05 21:34:12.000000000 -0700
+@@ -925,6 +925,7 @@
+ LIBOBJS
+ LIB_FDATASYNC
+ SEQ_LIBM
++LIB_PAM
+ LIB_CRYPT
+ USE_NLS
+ MSGFMT
+@@ -1539,6 +1540,7 @@
+   --disable-assert        turn off assertions
+   --disable-rpath         do not hardcode runtime library paths
+   --disable-largefile     omit support for large files
++  --enable-pam              Enable use of the PAM libraries
+   --disable-nls           do not use Native Language Support
+ 
+ Optional Packages:
+@@ -49838,6 +49840,18 @@
+ fi
+ 
+ 
++# Check whether --enable-pam was given.
++if test "${enable_pam+set}" = set; then
++  enableval=$enable_pam;
++cat >>confdefs.h <<\_ACEOF
++#define USE_PAM 1
++_ACEOF
++
++LIB_PAM="-ldl -lpam -lpam_misc"
++
++fi
++
++
+ 
+ for ac_func in uname
+ do
 diff -Naur coreutils-6.9-old/configure.ac coreutils-6.9-new/configure.ac
 --- coreutils-6.9-old/configure.ac	2007-03-22 14:19:37.000000000 -0700
-+++ coreutils-6.9-new/configure.ac	2007-10-05 16:07:21.000000000 -0700
++++ coreutils-6.9-new/configure.ac	2007-10-05 21:33:56.000000000 -0700
 @@ -41,6 +41,13 @@
  
  AC_FUNC_FORK
@@ -15,9 +53,53 @@ diff -Naur coreutils-6.9-old/configure.ac coreutils-6.9-new/configure.ac
  AC_CHECK_FUNCS(uname,
  	OPTIONAL_BIN_PROGS="$OPTIONAL_BIN_PROGS uname\$(EXEEXT)"
  	MAN="$MAN uname.1")
+diff -Naur coreutils-6.9-old/doc/Makefile.in coreutils-6.9-new/doc/Makefile.in
+--- coreutils-6.9-old/doc/Makefile.in	2007-03-22 14:20:21.000000000 -0700
++++ coreutils-6.9-new/doc/Makefile.in	2007-10-05 21:34:13.000000000 -0700
+@@ -392,6 +392,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/lib/Makefile.in coreutils-6.9-new/lib/Makefile.in
+--- coreutils-6.9-old/lib/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/lib/Makefile.in	2007-10-05 21:34:13.000000000 -0700
+@@ -414,6 +414,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/Makefile.in coreutils-6.9-new/Makefile.in
+--- coreutils-6.9-old/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -400,6 +400,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/man/Makefile.in coreutils-6.9-new/man/Makefile.in
+--- coreutils-6.9-old/man/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/man/Makefile.in	2007-10-05 21:34:13.000000000 -0700
+@@ -375,6 +375,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
 diff -Naur coreutils-6.9-old/src/Makefile.am coreutils-6.9-new/src/Makefile.am
 --- coreutils-6.9-old/src/Makefile.am	2007-03-20 00:24:27.000000000 -0700
-+++ coreutils-6.9-new/src/Makefile.am	2007-10-05 16:07:22.000000000 -0700
++++ coreutils-6.9-new/src/Makefile.am	2007-10-05 21:33:56.000000000 -0700
 @@ -102,7 +102,7 @@
  # If necessary, add -lm to resolve use of pow in lib/strtod.c.
  uptime_LDADD = $(LDADD) $(POW_LIB) $(GETLOADAVG_LIBS)
@@ -27,9 +109,38 @@ diff -Naur coreutils-6.9-old/src/Makefile.am coreutils-6.9-new/src/Makefile.am
  
  dir_LDADD += $(LIB_ACL_TRIVIAL) $(LIB_ACL)
  ls_LDADD += $(LIB_ACL_TRIVIAL) $(LIB_ACL)
+diff -Naur coreutils-6.9-old/src/Makefile.in coreutils-6.9-new/src/Makefile.in
+--- coreutils-6.9-old/src/Makefile.in	2007-03-22 14:23:20.000000000 -0700
++++ coreutils-6.9-new/src/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -882,6 +882,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+@@ -1070,7 +1071,7 @@
+ 
+ # If necessary, add -lm to resolve use of pow in lib/strtod.c.
+ uptime_LDADD = $(LDADD) $(POW_LIB) $(GETLOADAVG_LIBS)
+-su_LDADD = $(LDADD) $(LIB_CRYPT)
++su_LDADD = $(LDADD) $(LIB_CRYPT) @LIB_PAM@
+ SUFFIXES = .sh
+ 
+ # Get the release year from ../lib/version-etc.c.
+@@ -1200,7 +1201,7 @@
+ 	done
+ 
+ clean-binPROGRAMS:
+-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS) > /dev/null 2>&1 || /bin/rm -f $(bin_PROGRAMS)
++	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+ 
+ clean-noinstPROGRAMS:
+ 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 diff -Naur coreutils-6.9-old/src/su.c coreutils-6.9-new/src/su.c
 --- coreutils-6.9-old/src/su.c	2007-03-18 14:36:43.000000000 -0700
-+++ coreutils-6.9-new/src/su.c	2007-10-05 16:08:22.000000000 -0700
++++ coreutils-6.9-new/src/su.c	2007-10-05 21:33:56.000000000 -0700
 @@ -38,6 +38,16 @@
     restricts who can su to UID 0 accounts.  RMS considers that to
     be fascist.
@@ -367,3 +478,487 @@ diff -Naur coreutils-6.9-old/src/su.c coreutils-6.9-new/src/su.c
 -  run_shell (shell, command, argv + optind, MAX (0, argc - optind));
 +  run_shell (shell, command, argv + optind, MAX (0, argc - optind), pw);
  }
+diff -Naur coreutils-6.9-old/tests/chgrp/Makefile.in coreutils-6.9-new/tests/chgrp/Makefile.in
+--- coreutils-6.9-old/tests/chgrp/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/tests/chgrp/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/chmod/Makefile.in coreutils-6.9-new/tests/chmod/Makefile.in
+--- coreutils-6.9-old/tests/chmod/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/tests/chmod/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/chown/Makefile.in coreutils-6.9-new/tests/chown/Makefile.in
+--- coreutils-6.9-old/tests/chown/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/tests/chown/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/cp/Makefile.in coreutils-6.9-new/tests/cp/Makefile.in
+--- coreutils-6.9-old/tests/cp/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/cp/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -370,6 +370,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/cut/Makefile.in coreutils-6.9-new/tests/cut/Makefile.in
+--- coreutils-6.9-old/tests/cut/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/cut/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/dd/Makefile.in coreutils-6.9-new/tests/dd/Makefile.in
+--- coreutils-6.9-old/tests/dd/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/dd/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/dircolors/Makefile.in coreutils-6.9-new/tests/dircolors/Makefile.in
+--- coreutils-6.9-old/tests/dircolors/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/dircolors/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/du/Makefile.in coreutils-6.9-new/tests/du/Makefile.in
+--- coreutils-6.9-old/tests/du/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/du/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -370,6 +370,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/expr/Makefile.in coreutils-6.9-new/tests/expr/Makefile.in
+--- coreutils-6.9-old/tests/expr/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/expr/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/factor/Makefile.in coreutils-6.9-new/tests/factor/Makefile.in
+--- coreutils-6.9-old/tests/factor/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/factor/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/fmt/Makefile.in coreutils-6.9-new/tests/fmt/Makefile.in
+--- coreutils-6.9-old/tests/fmt/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/fmt/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/head/Makefile.in coreutils-6.9-new/tests/head/Makefile.in
+--- coreutils-6.9-old/tests/head/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/head/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/install/Makefile.in coreutils-6.9-new/tests/install/Makefile.in
+--- coreutils-6.9-old/tests/install/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/install/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/join/Makefile.in coreutils-6.9-new/tests/join/Makefile.in
+--- coreutils-6.9-old/tests/join/Makefile.in	2007-03-22 14:20:23.000000000 -0700
++++ coreutils-6.9-new/tests/join/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/ln/Makefile.in coreutils-6.9-new/tests/ln/Makefile.in
+--- coreutils-6.9-old/tests/ln/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/ln/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/ls/Makefile.in coreutils-6.9-new/tests/ls/Makefile.in
+--- coreutils-6.9-old/tests/ls/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/ls/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -370,6 +370,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/ls-2/Makefile.in coreutils-6.9-new/tests/ls-2/Makefile.in
+--- coreutils-6.9-old/tests/ls-2/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/ls-2/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/Makefile.in coreutils-6.9-new/tests/Makefile.in
+--- coreutils-6.9-old/tests/Makefile.in	2007-03-22 14:20:22.000000000 -0700
++++ coreutils-6.9-new/tests/Makefile.in	2007-10-05 21:34:14.000000000 -0700
+@@ -363,6 +363,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/md5sum/Makefile.in coreutils-6.9-new/tests/md5sum/Makefile.in
+--- coreutils-6.9-old/tests/md5sum/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/md5sum/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/misc/Makefile.in coreutils-6.9-new/tests/misc/Makefile.in
+--- coreutils-6.9-old/tests/misc/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/misc/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -370,6 +370,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/mkdir/Makefile.in coreutils-6.9-new/tests/mkdir/Makefile.in
+--- coreutils-6.9-old/tests/mkdir/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/mkdir/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/mv/Makefile.in coreutils-6.9-new/tests/mv/Makefile.in
+--- coreutils-6.9-old/tests/mv/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/mv/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -371,6 +371,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/od/Makefile.in coreutils-6.9-new/tests/od/Makefile.in
+--- coreutils-6.9-old/tests/od/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/od/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/pr/Makefile.in coreutils-6.9-new/tests/pr/Makefile.in
+--- coreutils-6.9-old/tests/pr/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/pr/Makefile.in	2007-10-05 21:34:15.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/readlink/Makefile.in coreutils-6.9-new/tests/readlink/Makefile.in
+--- coreutils-6.9-old/tests/readlink/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/readlink/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/rm/Makefile.in coreutils-6.9-new/tests/rm/Makefile.in
+--- coreutils-6.9-old/tests/rm/Makefile.in	2007-03-22 14:20:24.000000000 -0700
++++ coreutils-6.9-new/tests/rm/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -371,6 +371,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/rmdir/Makefile.in coreutils-6.9-new/tests/rmdir/Makefile.in
+--- coreutils-6.9-old/tests/rmdir/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/rmdir/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/seq/Makefile.in coreutils-6.9-new/tests/seq/Makefile.in
+--- coreutils-6.9-old/tests/seq/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/seq/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/sha1sum/Makefile.in coreutils-6.9-new/tests/sha1sum/Makefile.in
+--- coreutils-6.9-old/tests/sha1sum/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/sha1sum/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/shred/Makefile.in coreutils-6.9-new/tests/shred/Makefile.in
+--- coreutils-6.9-old/tests/shred/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/shred/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/sort/Makefile.in coreutils-6.9-new/tests/sort/Makefile.in
+--- coreutils-6.9-old/tests/sort/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/sort/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/stty/Makefile.in coreutils-6.9-new/tests/stty/Makefile.in
+--- coreutils-6.9-old/tests/stty/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/stty/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/sum/Makefile.in coreutils-6.9-new/tests/sum/Makefile.in
+--- coreutils-6.9-old/tests/sum/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/sum/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tac/Makefile.in coreutils-6.9-new/tests/tac/Makefile.in
+--- coreutils-6.9-old/tests/tac/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/tac/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tail/Makefile.in coreutils-6.9-new/tests/tail/Makefile.in
+--- coreutils-6.9-old/tests/tail/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/tail/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tail-2/Makefile.in coreutils-6.9-new/tests/tail-2/Makefile.in
+--- coreutils-6.9-old/tests/tail-2/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/tail-2/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -371,6 +371,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tee/Makefile.in coreutils-6.9-new/tests/tee/Makefile.in
+--- coreutils-6.9-old/tests/tee/Makefile.in	2007-03-22 14:20:25.000000000 -0700
++++ coreutils-6.9-new/tests/tee/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/test/Makefile.in coreutils-6.9-new/tests/test/Makefile.in
+--- coreutils-6.9-old/tests/test/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/test/Makefile.in	2007-10-05 21:34:16.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/touch/Makefile.in coreutils-6.9-new/tests/touch/Makefile.in
+--- coreutils-6.9-old/tests/touch/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/touch/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -370,6 +370,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tr/Makefile.in coreutils-6.9-new/tests/tr/Makefile.in
+--- coreutils-6.9-old/tests/tr/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/tr/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/tsort/Makefile.in coreutils-6.9-new/tests/tsort/Makefile.in
+--- coreutils-6.9-old/tests/tsort/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/tsort/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/unexpand/Makefile.in coreutils-6.9-new/tests/unexpand/Makefile.in
+--- coreutils-6.9-old/tests/unexpand/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/unexpand/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -351,6 +351,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/uniq/Makefile.in coreutils-6.9-new/tests/uniq/Makefile.in
+--- coreutils-6.9-old/tests/uniq/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/uniq/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
+diff -Naur coreutils-6.9-old/tests/wc/Makefile.in coreutils-6.9-new/tests/wc/Makefile.in
+--- coreutils-6.9-old/tests/wc/Makefile.in	2007-03-22 14:20:26.000000000 -0700
++++ coreutils-6.9-new/tests/wc/Makefile.in	2007-10-05 21:34:17.000000000 -0700
+@@ -373,6 +373,7 @@
+ LIB_FDATASYNC = @LIB_FDATASYNC@
+ LIB_GETHRXTIME = @LIB_GETHRXTIME@
+ LIB_NANOSLEEP = @LIB_NANOSLEEP@
++LIB_PAM = @LIB_PAM@
+ LN_S = @LN_S@
+ LTLIBICONV = @LTLIBICONV@
+ LTLIBINTL = @LTLIBINTL@
