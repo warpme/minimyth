@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.7
+GARVERSION = 1.1.8
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
@@ -96,7 +96,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-vorbis \
 	--with-theora \
 	--without-speex \
-	--enable-flac \
+	--with-libflac \
 	--with-libFLAC-prefix="$(DESTDIR)$(prefix)" \
 	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
 	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \

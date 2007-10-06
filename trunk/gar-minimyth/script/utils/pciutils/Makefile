@@ -1,5 +1,5 @@
 GARNAME = pciutils
-GARVERSION = 2.2.6
+GARVERSION = 2.2.7
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/software/utils/pciutils/
 DISTFILES = $(DISTNAME).tar.gz pci.ids
@@ -16,6 +16,8 @@ BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 BUILD_ARGS   = \
+	AR="$(AR)" \
+	RANLIB="$(RANLIB)" \
 	OPT="$(CFLAGS)" \
 	DESTDIR="${DESTDIR}" \
 	PREFIX="${prefix}" \
@@ -27,6 +29,8 @@ BUILD_ARGS   = \
 	RELEASE="$(LINUX_VERSION)" \
 	ZLIB="no"
 INSTALL_ARGS = \
+	AR="$(AR)" \
+	RANLIB="$(RANLIB)" \
 	OPT="$(CFLAGS)" \
 	DESTDIR="${DESTDIR}" \
 	PREFIX="${prefix}" \
@@ -37,6 +41,8 @@ INSTALL_ARGS = \
 	HOST="$(GARHOST)" \
 	RELEASE="$(LINUX_VERSION)" \
 	ZLIB="no"
+
+BUILD_ENV = \
 
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
