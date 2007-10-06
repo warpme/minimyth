@@ -23,13 +23,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-pre-configure:
-	@cd $(WORKSRC) ; aclocal -I m4
-	@cd $(WORKSRC) ; autoconf --force
-	@cd $(WORKSRC) ; automake --copy --add-missing
-	@#cd $(WORKSRC) ; autoreconf --verbose --install --force -I m4
-	@$(MAKECOOKIE)
-	
 install-su:
 	@install -m 755 -D $(WORKSRC)/src/su $(DESTDIR)$(bindir)/su
 	@$(MAKECOOKIE)
