@@ -17,7 +17,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
-	--disable-ldap \
 	--enable-drivers=all \
 	--with-libusb-libraries="$(DESTDIR)$(libdir)"
 
