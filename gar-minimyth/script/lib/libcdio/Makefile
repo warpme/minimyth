@@ -3,21 +3,30 @@ GARVERSION = $(LIBCDIO_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.rpath
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-ac_arg_enable.patch $(DISTNAME).patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libcddb lib/vcdimager
+DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-cddb \
+	--disable-vcd-info \
 	--disable-rpath \
+	--without-cd-drive \
+	--without-cd-info \
+	--with-cd-paranoia \
+	--without-cdda-player \
+	--without-cd-read \
+	--without-iso-info \
+	--without-iso-read \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -30,6 +39,8 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
+# For some reason, the Makefile.am has not be constructed to install
+# libcdio++.pc, libiso9600++.pc or libudf.pc.
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcdio.la
 	@rm -f $(DESTDIR)$(libdir)/libcdio++.la
