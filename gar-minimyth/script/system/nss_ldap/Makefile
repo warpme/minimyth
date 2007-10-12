@@ -3,7 +3,7 @@ GARVERSION = 257
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.padl.com/pub/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-pw_override.patch
+PATCHFILES = $(DISTNAME)-pw_override.patch $(DISTNAME)-mkhomedir.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
