@@ -17,13 +17,16 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-cddb \
+	--disable-vcd-info \
+	--disable-rpath \
 	--without-cd-drive \
 	--without-cd-info \
+	--with-cd-paranoia \
 	--without-cdda-player \
 	--without-cd-read \
 	--without-iso-info \
 	--without-iso-read \
-	--disable-rpath \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += lib/libcdio/package-api.mk
@@ -33,6 +36,8 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
+# For some reason, the Makefile.am has not be constructed to install
+# libcdio++.pc, libiso9600++.pc or libudf.pc.
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcdio.la
 	@rm -f $(DESTDIR)$(libdir)/libcdio++.la
