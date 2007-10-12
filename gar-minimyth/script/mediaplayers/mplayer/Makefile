@@ -1,12 +1,12 @@
 GARNAME = MPlayer
-GARVERSION = 1.0rc1
+GARVERSION = 1.0rc2
 CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-asmrules_fix_20061231.patch $(DISTNAME)-cddb_fix_20070605.patch $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdread lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -27,11 +27,16 @@ CONFIGURE_ARGS_DIR = \
 	--datadir="$(datadir)/mplayer" \
 	--mandir="$(mandir)" \
 	--confdir="$(sysconfdir)/mplayer" \
-	--libdir="$(libdir)"
+	--libdir="$(libdir)" \
+	--codecsdir="$(libdir)/codecs"
 # Optional features
+# --enable-fontconfig must be auto or cflags and libs will not be determined correctly.
+# Support for external dvdread appears to be broken.
 CONFIGURE_ARGS_OPTIONAL = \
 	--disable-mencoder \
+	--enable-mplayer \
 	--disable-gui \
+	--disable-gtk1 \
 	--enable-largefiles \
 	--disable-linux-devfs \
 	--disable-termcap \
@@ -41,21 +46,32 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-lirc \
 	--disable-lircc \
 	--disable-joystick \
+	--disable-apple-remote \
 	--enable-vm \
 	--enable-xf86keysym \
+	--disable-radio \
+	--disable-radio-capture \
+	--disable-radio-v4l2 \
+	--disable-radio-bsdbt848 \
 	--disable-tv \
 	--disable-tv-v4l1 \
 	--disable-tv-v4l2 \
 	--disable-tv-bsdbt848 \
+	--disable-tv-teletext \
+	--disable-pvr \
 	--enable-rtc \
 	--enable-network \
 	--disable-winsock2 \
 	--disable-smb \
 	--disable-live \
+	--disable-nemesi \
 	--disable-dvdnav \
 	--enable-dvdread \
-	--disable-mpdvdkit \
+	--enable-dvdread-internal \
+	--disable-libdvdcss-internal \
 	--disable-cdparanoia \
+	--disable-cddb \
+	--disable-bitmap-font \
 	--enable-freetype \
 	--enable-unrarlib \
 	--enable-menu \
@@ -63,6 +79,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-fribidi \
 	--disable-enca \
 	--disable-macosx \
+	--disable-maemo \
 	--disable-macosx-finder-support \
 	--disable-macosx-bundle \
 	--disable-inet6 \
@@ -70,30 +87,52 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-ftp \
 	--disable-vstream \
 	--enable-pthreads \
+	--disable-w32threads \
+	--enable-ass \
 	--disable-rpath
 # Codecs
+# --enable-libcdio must be auto or cflags and libs will not be determined correctly.
+# --enable-theora must be auto or cflags and libs will not be determined correctly.
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
 	--enable-jpeg \
-	--enable-libcdio \
 	--disable-liblzo \
-	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32,--disable-win32) \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32dll,--disable-win32dll) \
 	--disable-qtx \
 	--enable-xanim \
 	--enable-real \
+	--disable-xvid \
+	--disable-x264 \
+	--disable-libnut \
 	--disable-tremor-internal \
+	--disable-tremor-low \
 	--disable-tremor-external \
 	--enable-libvorbis \
-	--enable-theora \
+	--disable-speex \
+	--enable-faad-internal \
 	--disable-faad-internal \
-	--enable-mad
+	--disable-faad-fixed \
+	--disable-faac \
+	--disable-ladspa \
+	--disable-libdv \
+	--enable-mad \
+	--disable-twolame \
+	--disable-xmms \
+	--enable-libdca \
+	--enable-mp3lib \
+	--enable-liba52 \
+	--enable-libmpeg2 \
+	--disable-musepack \
+	--disable-libamr_nb \
+	--disable-libamr_wb
 # Video output: enable xv (requires x11 and vm) and xvmc
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix-internal \
 	--disable-vidix-external \
 	--enable-gl \
-	--disable-dga \
+	--disable-dga2 \
+	--disable-dga1 \
 	--disable-vesa \
 	--disable-svga \
 	--enable-sdl \
@@ -104,6 +143,8 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-directx \
 	--disable-dxr2 \
 	--disable-dxr3 \
+	--disable-ivtv \
+	--disable-v4l2 \
 	--disable-dvb \
 	--disable-dvbhead \
 	--disable-mga \
@@ -113,6 +154,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--enable-vm \
 	--enable-xinerama \
 	--enable-x11 \
+	--disable-xshape \
 	--disable-fbdev \
 	--disable-mlib \
 	--disable-3dfx \
@@ -122,6 +164,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-zr \
 	--disable-bl \
 	--disable-tdfxvid \
+	--disable-xvr100 \
 	--disable-tga \
 	--disable-pnm \
 	--disable-md5sum
@@ -145,6 +188,8 @@ CONFIGURE_ARGS_MISC = \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
+	--ar="$(AR)" \
+	--ranlib="$(RANLIB)" \
 	--target="$(GARCH_FAMILY)-linux" \
 	--charset="UTF-8" \
 	--language="all"
@@ -155,8 +200,12 @@ CONFIGURE_ARGS_ADVANCED = \
 	--enable-3dnowext \
 	--enable-sse \
 	--enable-sse2 \
+	--enable-ssse3 \
 	--enable-shm \
 	--disable-altivec \
+	--disable-armv5te \
+	--disable-armv6 \
+	--disable-iwmmxt \
 	--enable-fastmemcpy \
 	--disable-big-endian \
 	--disable-debug \
@@ -165,10 +214,6 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-crash-debug \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
-	--with-extraincdir="$(DESTDIR)$(includedir)" \
-	--with-extralibdir="$(DESTDIR)$(libdir)" \
-	--with-x11libdir="$(DESTDIR)$(libdir)" \
-	--with-codecsdir="$(libdir)/codecs" \
 	--with-xvmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
 	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config"
