@@ -6,7 +6,10 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
+	$(DISTNAME)-ash.patch \
+	$(DISTNAME)-iptun.patch \
 	$(DISTNAME)-logger.patch \
+	$(DISTNAME)-login.patch \
 	$(DISTNAME)-tail.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch
 LICENSE = GPL2
