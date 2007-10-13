@@ -1,9 +1,9 @@
 GARNAME = openssl
-GARVERSION = 0.9.8e
+GARVERSION = 0.9.8f
 CATEGORIES = lib
 MASTER_SITES = http://www.openssl.org/source/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-gcc_4_2.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
@@ -42,7 +42,6 @@ BUILD_ARGS = \
 include ../../gar.mk
 
 PARALLELMFLAGS := -j1
-CFLAGS := -ggdb
 
 configure-%/Configure: 
 	@echo " ==> Running Configure in $*"
