@@ -768,12 +768,12 @@ mm_splash_init() {
 
     SPLASH_ENABLE=yes
 
-    # Disable splash screen when more than kernel errors are logged to the console.
-    # That is when the loglevel is greater than 4.
+    # Disable splash screen when more than kernel critical messages are logged to the console.
+    # That is when the loglevel is greater than 3.
     if /usr/bin/test "${SPLASH_ENABLE}" = "yes" ; then
         LOGLEVEL=`/bin/cat /proc/sys/kernel/printk | /usr/bin/cut -f 1`
         /usr/bin/test -z "${LOGLEVEL}" && SPLASH_ENABLE='no'
-        /usr/bin/test -n "${LOGLEVEL}" && /usr/bin/test ${LOGLEVEL} -gt 4 && SPLASH_ENABLE='no'
+        /usr/bin/test -n "${LOGLEVEL}" && /usr/bin/test ${LOGLEVEL} -gt 3 && SPLASH_ENABLE='no'
     fi
 
     # Disable splash screen when there is no framebuffer device.
