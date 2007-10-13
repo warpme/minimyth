@@ -1,5 +1,5 @@
 GARNAME = ratpoison
-GARVERSION = 1.4.1
+GARVERSION = 1.4.2
 CATEGORIES = X11
 MASTER_SITES = http://savannah.nongnu.org/download/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
