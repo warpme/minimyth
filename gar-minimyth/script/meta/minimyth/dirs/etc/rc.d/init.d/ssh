@@ -4,18 +4,35 @@
 ################################################################################
 . /etc/rc.d/functions
 
-start() {
-    if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
-        mm_message_output info "configuring ssh remote command execution ..."
+__ssh_copy_to_remote() {
+    local dir=$1
 
-        if /usr/bin/test -e /etc/ssh/id_rsa_remote ; then
-            /bin/mkdir -p /etc/dropbear
-            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_remote /etc/dropbear/id_rsa_remote
-            /bin/chmod 640 /etc/dropbear/id_rsa_remote
-            /bin/chown root:ssh /etc/dropbear/id_rsa_remote
-        fi
+    local dir_local=/usr/share/mythtv/${dir}
+    local dir_remote=tmp/minimyth/${MM_HOSTNAME}/${dir}
+    local dir_remote_dir=`/usr/bin/dirname ${dir_remote}`
+
+    /usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} "rm -fr ${dir_remote}" 2> /dev/null
+    if /usr/bin/test $? -ne 0 ; then
+        mm_message_output err "error: failed to delete remote directory '${dir_remote}'."
+        exit 1
     fi
+    if /usr/bin/test -e ${dir_local} ; then
+        /usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} "mkdir -p ${dir_remote_dir}" 2> /dev/null
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err "error: failed to create remote directory '${dir_remote_dir}'."
+            exit 1
+        fi
+        /usr/bin/mm_scp -r ${dir_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${dir_remote} 2> /dev/null
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err "error: failed to copy local directory '${dir_local}' to remote directory '${dir_remote}'."
+            exit 1
+        fi
+    else
+        mm_message_output warn "warning: local directory '${dir_local}' does not exist."
+    fi
+}
 
+start() {
     if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
         mm_message_output info "configuring ssh server ..."
 
@@ -36,12 +53,28 @@ start() {
         fi
     fi
 
+    if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
+        mm_message_output info "configuring ssh remote command execution ..."
+
+        if /usr/bin/test -e /etc/ssh/id_rsa_remote ; then
+            /bin/mkdir -p /etc/dropbear
+            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_remote /etc/dropbear/id_rsa_remote
+            /bin/chmod 640 /etc/dropbear/id_rsa_remote
+            /bin/chown root:ssh /etc/dropbear/id_rsa_remote
+
+            if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}" = "yes" ; then
+                __ssh_copy_to_remote 'mythstream/parsers'
+            fi
+            if /usr/bin/test "${MM_MYTHVIDEO_ENABLED}" = "yes" ; then
+                __ssh_copy_to_remote 'mythvideo/scripts'
+            fi
+        fi
+    fi
+
     return 0
 }
 
-
 stop() {
- 
     if /usr/bin/test -n "`/bin/pidof dropbear`" ; then
         mm_message_output info "stopping ssh server ..."
         /usr/bin/killall dropbear

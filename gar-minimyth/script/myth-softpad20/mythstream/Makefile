@@ -3,7 +3,7 @@ GARVERSION = v0.18_1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-parser_copy.patch $(DISTNAME).patch.gar $(DISTNAME)-parser_exec.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-disable_local_parsers.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -26,11 +26,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
-
-post-patch:
-	@# Remove unused perl based parsers.
-	@rm -rf $(WORKSRC)/parsers/*
-	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
