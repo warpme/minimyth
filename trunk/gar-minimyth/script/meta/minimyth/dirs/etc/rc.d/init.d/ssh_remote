@@ -1,6 +1,6 @@
 #!/bin/sh
 ################################################################################
-# ssh
+# ssh remote command execution
 ################################################################################
 . /etc/rc.d/functions
 
@@ -33,26 +33,6 @@ __ssh_copy_to_remote() {
 }
 
 start() {
-    if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
-        mm_message_output info "configuring ssh server ..."
-
-        if /usr/bin/test -e /etc/ssh/id_rsa_server ; then
-            /bin/mkdir -p /etc/dropbear
-            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_server /etc/dropbear/id_rsa_server
-            /bin/chmod 600 /etc/dropbear/id_rsa_server
-            /bin/chown root:ssh /etc/dropbear/id_rsa_server
-        fi
-
-        if /usr/bin/test ! -n "`/bin/pidof dropbear`" ; then
-            mm_message_output info "starting ssh server ..."
-            if /usr/bin/test ! -e /etc/dropbear/id_rsa_server ; then
-                mm_message_output err "error: cannot not start ssh server: no host key."
-                exit 1
-            fi
-            /usr/sbin/dropbear -w -g -j -k -r /etc/dropbear/id_rsa_server
-        fi
-    fi
-
     if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
         mm_message_output info "configuring ssh remote command execution ..."
 
@@ -75,11 +55,6 @@ start() {
 }
 
 stop() {
-    if /usr/bin/test -n "`/bin/pidof dropbear`" ; then
-        mm_message_output info "stopping ssh server ..."
-        /usr/bin/killall dropbear
-    fi
-
     return 0
 }
 

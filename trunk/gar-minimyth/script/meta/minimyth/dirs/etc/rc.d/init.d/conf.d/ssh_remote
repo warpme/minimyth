@@ -1,13 +1,13 @@
 ################################################################################
-# SSH configuration variables and files.
+# SSH remote command execution configuration variables and files.
 ################################################################################
-conf_clean_ssh() {
-    /bin/rm -rf /tmp/init.conf.ssh
+conf_clean_ssh_remote() {
+    /bin/rm -rf /tmp/init.conf.ssh_remote
 
     return 0
 }
 
-conf_check_ssh() {
+conf_check_ssh_remote() {
     # Check for obsolete variables.
     if /usr/bin/test ! -z "${MM_SSH_USER}"       ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_USER' is obsolete."
@@ -31,19 +31,12 @@ conf_check_ssh() {
         mm_message_output err "error: MM_SSH_REMOTE_ENABLED='${MM_SSH_REMOTE_ENABLED}' is not valid."
     fi
 
-    if /usr/bin/test ! -z "${MM_SSH_SERVER_ENABLED}"         && \
-       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "yes" && \
-       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "no"  ; then
-        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' is not valid."
-    fi
-
     return 0
 }
 
-conf_default_ssh() {
-    if /usr/bin/test -e '/tmp/init.conf.ssh/conf_default_ssh' ; then
-        return 0
-    fi
+conf_default_ssh_remote() {
+    # The routine relies on MM_MASTER_* variables.
+    conf_default_master
 
     if /usr/bin/test -z "${MM_SSH_REMOTE_ENABLED}" ; then
         MM_SSH_REMOTE_ENABLED='no'
@@ -67,20 +60,10 @@ conf_default_ssh() {
         MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE='no'
     fi
 
-    if /usr/bin/test -z "${MM_SSH_SERVER_ENABLED}" ; then
-        MM_SSH_SERVER_ENABLED='no'
-    fi
-    if /usr/bin/test -z "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}" ; then
-        MM_SSH_SERVER_FETCH_ID_RSA_SERVER='no'
-    fi
-
-    /bin/mkdir -p '/tmp/init.conf.ssh'
-    /bin/touch    '/tmp/init.conf.ssh/conf_default_ssh'
-
     return 0
 }
 
-conf_write_ssh() {
+conf_write_ssh_remote() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_SSH_REMOTE_ENABLED             "${MM_SSH_REMOTE_ENABLED}"
@@ -89,13 +72,10 @@ conf_write_ssh() {
     conf_variable_write "${conf_file}" MM_SSH_REMOTE_USER                "${MM_SSH_REMOTE_USER}"
     conf_variable_write "${conf_file}" MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE "${MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE}"
 
-    conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED             "${MM_SSH_SERVER_ENABLED}"
-    conf_variable_write "${conf_file}" MM_SSH_SERVER_FETCH_ID_RSA_SERVER "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}"
-
     return 0
 }
 
-conf_fetch_ssh() {
+conf_fetch_ssh_remote() {
     if /usr/bin/test "${MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE}" = "yes" ; then
         /bin/rm -f /etc/ssh/id_rsa_remote
         mm_conf_get /id_rsa_remote /etc/ssh/id_rsa_remote
@@ -103,16 +83,6 @@ conf_fetch_ssh() {
             mm_message_output err "error: failed to fetch 'id_rsa_remote' file."
         else
             /bin/chmod 600 /etc/ssh/id_rsa_remote
-        fi
-    fi
-
-    if /usr/bin/test "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}" = "yes" ; then
-        /bin/rm -f /etc/ssh/id_rsa_server
-        mm_conf_get /id_rsa_server /etc/ssh/id_rsa_server
-        if /usr/bin/test ! -e /etc/ssh/id_rsa_server ; then
-            mm_message_output err "error: failed to fetch 'id_rsa_server' file."
-        else
-            /bin/chmod 600 /etc/ssh/id_rsa_server
         fi
     fi
 

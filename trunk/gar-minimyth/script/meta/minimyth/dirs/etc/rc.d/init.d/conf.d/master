@@ -40,6 +40,10 @@ conf_check_master() {
 }
 
 conf_default_master() {
+    if /usr/bin/test -e '/tmp/init.conf.master/conf_default_master' ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_MASTER_SERVER}" ; then
         MM_MASTER_SERVER="${MM_TFTP_SERVER}"
     fi
@@ -70,6 +74,9 @@ conf_default_master() {
     if /usr/bin/test -z "${MM_MASTER_WOL_ADDITIONAL_DELAY}" ; then
         MM_MASTER_WOL_DELAY='0'
     fi
+
+    /bin/mkdir -p '/tmp/init.conf.master'
+    /bin/touch    '/tmp/init.conf.master/conf_default_master'
 
     return 0
 }
