@@ -205,7 +205,6 @@
               <dt><a href="#MM_SSH_REMOTE_HOST">MM_SSH_REMOTE_HOST</a></dt>
               <dt><a href="#MM_SSH_REMOTE_PORT">MM_SSH_REMOTE_PORT</a></dt>
               <dt><a href="#MM_SSH_REMOTE_USER">MM_SSH_REMOTE_USER</a></dt>
-              <dt><a href="#MM_SSH_REMOTE_PREFIX_MAP">MM_SSH_REMOTE_PREFIX_MAP</a></dt>
               <dt><a href="#MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE">MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE</a></dt>
             </dl></dd>
             <dt><a href="#MM_SSH_SERVER">SSH server configuration variables</a></dt>
@@ -2159,27 +2158,21 @@
           <div class="heading">SSH remote command execution configuration variables</div>
           <p>
             MiniMyth does not include Perl, because Perl takes too much space.
-            As a result, MiniMyth cannot execute the Perl scripts used by some MythTV plugins such as MythVideo.
+            As a result, MiniMyth cannot execute the Perl scripts used by some MythTV plugins such as MythStream and MythVideo.
           </p>
           <p>
             However, MiniMyth can execute commands on a remote host using
             <a href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a>.
             This enables MythTV plugins running on the MiniMyth frontend
             to transparently execute their Perl scripts on a remote host,
-            assuming their Perl scripts are installed on the remote host.
+            assuming the server's Perl installation meets all the scripts dependencies.
           </p>
           <p>
-            If you want MiniMyth to remotely execute a locally unsupported command (e.g. '/usr/share/mythtv/mythvideo/imdb.pl'),
-            replace the local command with a symbolic link to the file '/usr/bin/mm_ssh_remote_command_execute',
-            configure the SSH remote command execution configuration variables,
-            make sure the command is availabe on the remote host, and
-            make sure the command can be executed by the remote user over SSH.
-          </p>
-          <p>
-            MiniMyth already replaces some MythTV plugin Perl scripts with symbolic links.
-            If there are others that should be replaced,
-            then please file a
-            <a href="http://linpvr.org/bugs/">bug report.</a>.
+            MiniMyth accompishes this by using several executables.
+            It uses a stub perl binary ('/usr/bin/perl') to enable the perl shebang to work.
+            This stub perl binary calls a shell script ('/usr/bin/mm_perl') to handle the remote exection.
+            This shell script calls two shell scripts ('/usr/bin/mm_scp' and /usr/bin/mm_ssh') to copy perl scripts and
+            configuration files to the remote host and to execute the perl scripts on the remote host.
           </p>
           <p>
             If you decide to use remote command execution, be sure that you know what you are doing.
@@ -2221,23 +2214,6 @@
               <p>
                 The name of the user on the remote host under which the command will be run.
                 If not specified, it defaults to 'minimyth'.
-              </p>
-            </dd>
-            <dt id="MM_SSH_REMOTE_PREFIX_MAP"><strong>MM_SSH_REMOTE_PREFIX_MAP</strong></dt>
-            <dd>
-              <p>
-                The map from the local prefix to the remote prefix.
-                The format is '{local-prefix}:{remote-prefix}'.
-                If not specified, then no prefix mapping will be done.
-              </p>
-              <p>
-                This variable provides a map from the prefix local MiniMyth frontend to the prefix on the remote host.
-                This is useful when MythTV (or its associated Perl scripts) are installed in a different location
-                on the local MiniMyth frontend and the remote host.
-                For example, if MythTV is installed on the remote host in '/usr/local',
-                then you would set MM_SSH_REMOTE_PREFIX_MAP='/usr:/usr/local'.
-                Alternatively, if the MythTV Perl script are installed in the local user's home directory,
-                then you might set MM_SSH_REMOTE_PREFIX_MAP="/usr:/home/${MM_SSH_REMOTE_USER}/usr".
               </p>
             </dd>
             <dt id="MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE"><strong>MM_SSH_REMOTE_FETCH_ID_RSA_REMOTE</strong></dt>
@@ -2373,7 +2349,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-10-05 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-10-14 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

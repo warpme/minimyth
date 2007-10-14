@@ -1,0 +1,69 @@
+diff -Naur mythstream-0.18_1-old/libs/harvester.cpp mythstream-0.18_1-new/libs/harvester.cpp
+--- mythstream-0.18_1-old/libs/harvester.cpp	2007-09-25 15:58:20.000000000 -0700
++++ mythstream-0.18_1-new/libs/harvester.cpp	2007-10-14 11:31:44.000000000 -0700
+@@ -1429,14 +1429,6 @@
+ 
+     if ( parserName[0] == '*') parserName.remove(0,1); //change: remove standalone parser token *
+ 
+-    QFileInfo fileInfo( parsersPath + parserName );
+-
+-    if ( fileInfo.isFile() && fileInfo.isReadable() )
+-    {
+-        parserName = parsersPath + parserName;
+-        return parserName;
+-    }
+-
+     QFileInfo ifileInfo( parsersPath_install + parserName );
+ 
+     if ( ifileInfo.isFile() && ifileInfo.isReadable() )
+@@ -1463,16 +1455,6 @@
+ 
+     if ( parserName[0] == '*') parserName.remove(0,1); //change: remove standalone parser token *
+ 
+-    QFileInfo fileInfo( parsersPath + parserName );
+-
+-    if ( fileInfo.isFile() && fileInfo.isReadable() )
+-    {
+-        parserName = parsersPath + parserName;
+-        parser = parserName;
+-        path = parsersPath;
+-        return;
+-    }
+-
+     QFileInfo ifileInfo( parsersPath_install + parserName );
+ 
+     if ( ifileInfo.isFile() && ifileInfo.isReadable() )
+diff -Naur mythstream-0.18_1-old/libs/streamstorage.cpp mythstream-0.18_1-new/libs/streamstorage.cpp
+--- mythstream-0.18_1-old/libs/streamstorage.cpp	2007-09-23 11:26:15.000000000 -0700
++++ mythstream-0.18_1-new/libs/streamstorage.cpp	2007-10-14 11:30:38.000000000 -0700
+@@ -191,30 +191,6 @@
+       dir.mkdir(dir.homeDirPath() + "/."SUBPATH"/parsers", true);
+     }
+      
+-    // parser source and destination dirs
+-    QString source = QString(PREFIX"/share/"SUBPATH"/parsers");
+-    QString dest   = home + "/."SUBPATH"/parsers";
+-
+-    // only update once, use file parserupdateVERSION_done as flag
+-    if ( !QFile::exists(home + "/."SUBPATH"/parserupdate"VERSION"_done") ) // parser update pending
+-    {
+-      if (!copyFiles(source, dest) )
+-      {
+-          cerr << "error: cannot copy files from" << source << " to " << dest << endl;
+-          exit(-1);
+-      }
+-
+-      QFile checkFile(home + "/."SUBPATH"/parserupdate"VERSION"_done");
+-      if ( !checkFile.open(IO_ReadWrite) )
+-        cerr << "MythStream error: cannot create file " << home << "/."SUBPATH"/parserupdate"VERSION"_done" << endl;
+-      else
+-      {
+-        QString txt = "this file stops mythstream version "VERSION" from updating the ./parsers directory\n";
+-        checkFile.writeBlock( txt, txt.length() );
+-        checkFile.close();
+-      } 
+-    }
+-
+    // check download dir:
+     dir = QDir( home + "/."SUBPATH"/downloads" );
+ 

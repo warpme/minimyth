@@ -41,90 +41,98 @@ fi
 # Process arguments.
 argnumber=0
 arglist=
-mythstream='no'
+perlflag='true'
+script_type='unknown'
 for arg in "$@" ; do
-    # First argument is the perl script, which need to be copied to the remote
-    # system so that it can be exectuted.
-    if   /usr/bin/test ${argnumber} -eq 0 ; then
-        file_local="${arg}"
-        # Convert local file to absolute path.
-        file_local_base=`/usr/bin/basename "${file_local}"`
-        file_local_dir=`/usr/bin/dirname "${file_local}"`
-        file_local_dir=`cd "${file_local_dir}" ; pwd`
-        file_local="${file_local_dir}/${file_local_base}"
-        if /usr/bin/test ! -e "${file_local}" ; then
-            /bin/echo "mm_perl: perl script '${file_local}' does not exist." >> ${logfile}
-            /usr/bin/logger -t minimyth -p "local0.error" \
-                "mm_perl: perl script '${file_local}' does not exist."
-            exit 1
+    # Discard perl flags since they came from the perl shebang.
+    if /usr/bin/test "${perlflag}" = "true" ; then
+        if ! /bin/echo ${arg} | /bin/grep -q -e "^-" 2> /dev/null ; then
+            perlflag='false'
         fi
-
-        # Check whether or not the perl script is a mythstream parser.
-        /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythstream/parsers/" 2> /dev/null
-        if /usr/bin/test $? -eq 0 ; then
-            mythstream='yes'
-        fi
-        /bin/echo ${file_local} | /bin/grep -q -e "^${HOME}/.mythtv/mythstream/parsers/" 2> /dev/null
-        if /usr/bin/test $? -eq 0 ; then
-            mythstream='yes'
-        fi
-
-	# Determine remote file name.
-        file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
-        file_remote="${tmp_remote}/${file_remote}"
-
-	# Copy local file to remote server.
-        /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
-        /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
-        if /usr/bin/test $? -ne 0 ; then
-            /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
-            /usr/bin/logger -t minimyth -p "local0.error" \
-                "mm_perl: failed to copy perl script to remote system."
-            exit 1
-        fi
-
-	# Replace argument with remote file name.
-        arg="${file_remote}"
-    elif /usr/bin/test ${argnumber} -eq 1 ; then
-        # Perl script is mythstream parser, so this argument is a file.
-        if /usr/bin/test "${mythstream}" = "yes" ; then
+    fi
+    if /usr/bin/test "${perlflag}" = "false" ; then
+        # First argument is the perl script, which need to be copied to the remote
+        # system so that it can be exectuted.
+        if   /usr/bin/test ${argnumber} -eq 0 ; then
             file_local="${arg}"
+            file_local=`/bin/echo ${file_local} | /bin/sed -e "s%//*%/%g`
             # Convert local file to absolute path.
             file_local_base=`/usr/bin/basename "${file_local}"`
             file_local_dir=`/usr/bin/dirname "${file_local}"`
             file_local_dir=`cd "${file_local_dir}" ; pwd`
             file_local="${file_local_dir}/${file_local_base}"
             if /usr/bin/test ! -e "${file_local}" ; then
-                /bin/echo "mm_perl: file '${file_local}' does not exist." >> ${logfile}
+                /bin/echo "mm_perl: perl script '${file_local}' does not exist." >> ${logfile}
                 /usr/bin/logger -t minimyth -p "local0.error" \
-                    "mm_perl: file '${file_local}' does not exist."
+                    "mm_perl: perl script '${file_local}' does not exist."
                 exit 1
             fi
-	    # Determine remote file name.
-            file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
-            file_remote="${tmp_remote}/${file_remote}"
 
-	    # Copy local file to remote server.
-            /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
-            /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
-            if /usr/bin/test $? -ne 0 ; then
-                /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
-                /usr/bin/logger -t minimyth -p "local0.error" \
-                    "mm_perl: failed to copy perl script to remote system."
-                exit 1
+	    # Determine script type and remote file name.
+            if   /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythstream/parsers/" 2> /dev/null ; then
+                script_type='mythstream'
+                file_remote=`/bin/echo "${file_local}" | \
+                    /bin/sed -e "s%^/usr/share/mythtv/mythstream/parsers/%tmp/minimyth/${MM_HOSTNAME}/mythstream/parsers/%"`
+            elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythvideo/scripts/" 2> /dev/null ; then
+                script_type='mythvideo'
+                file_remote=`/bin/echo "${file_local}" | \
+                    /bin/sed -e "s%^/usr/share/mythtv/mythvideo/scripts/%tmp/minimyth/${MM_HOSTNAME}/mythvideo/scripts/%"`
+            else
+                script_type='unknown'
+                file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
+                file_remote="${tmp_remote}/${file_remote}"
+
+	        # Copy local file to remote server.
+                /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
+                /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
+                if /usr/bin/test $? -ne 0 ; then
+                    /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
+                    /usr/bin/logger -t minimyth -p "local0.error" \
+                        "mm_perl: failed to copy perl script to remote system."
+                    exit 1
+                fi
             fi
 
 	    # Replace argument with remote file name.
             arg="${file_remote}"
+        elif /usr/bin/test ${argnumber} -eq 1 ; then
+            # Perl script is mythstream parser, so this argument is a file that must be copied to the remote server.
+            if /usr/bin/test "${script_type}" = "mythstream" ; then
+                file_local="${arg}"
+                # Convert local file to absolute path.
+                file_local_base=`/usr/bin/basename "${file_local}"`
+                file_local_dir=`/usr/bin/dirname "${file_local}"`
+                file_local_dir=`cd "${file_local_dir}" ; pwd`
+                file_local="${file_local_dir}/${file_local_base}"
+
+	        # Determine remote file name.
+                file_remote=`/bin/echo ${file_local} | /bin/sed -e 's%/%~%g'`
+                file_remote="${tmp_remote}/${file_remote}"
+
+	        # Copy local file to remote server.
+                if /usr/bin/test -e "${file_local}" ; then
+                    /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
+                    /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
+                    if /usr/bin/test $? -ne 0 ; then
+                        /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
+                        /usr/bin/logger -t minimyth -p "local0.error" \
+                            "mm_perl: failed to copy perl script to remote system."
+                        exit 1
+                    fi
+                fi
+
+	        # Replace argument with remote file name.
+                arg="${file_remote}"
+            fi
         fi
+        arg=`/bin/echo ${arg} | /bin/sed -e 's%^"%%g' -e 's%"$%%g'`
+        if /usr/bin/test -z "${arglist}" ; then
+            arglist="\"${arg}\""
+        else
+            arglist="${arglist} \"${arg}\""
+        fi
+        argnumber=$((${argnumber} + 1))
     fi
-    
-    if /usr/bin/test -z "${arglist}" ; then
-        arglist="'${arg}'"
-    else
-        arglist="${arglist} '${arg}'"
-    fi
-    argnumber=$((${argnumber} + 1))
 done
 
 # Check argument count.
