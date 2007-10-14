@@ -78,7 +78,7 @@ MM_INIT_START := \
     telnet \
     security \
     auth \
-    ssh \
+    ssh_server \
     mythdb.buffer.create \
     cron \
     game \
@@ -95,6 +95,7 @@ MM_INIT_START := \
     video \
     lirc \
     lcdproc \
+    ssh_remote \
     mythtv \
     font \
     mythdb.buffer.delete \

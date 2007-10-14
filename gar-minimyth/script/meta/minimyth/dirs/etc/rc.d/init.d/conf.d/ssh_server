@@ -1,0 +1,52 @@
+################################################################################
+# SSH server configuration variables and files.
+################################################################################
+conf_clean_ssh_server() {
+    /bin/rm -rf /tmp/init.conf.ssh_server
+
+    return 0
+}
+
+conf_check_ssh_server() {
+    if /usr/bin/test ! -z "${MM_SSH_SERVER_ENABLED}"         && \
+       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' is not valid."
+    fi
+
+    return 0
+}
+
+conf_default_ssh_server() {
+    if /usr/bin/test -z "${MM_SSH_SERVER_ENABLED}" ; then
+        MM_SSH_SERVER_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}" ; then
+        MM_SSH_SERVER_FETCH_ID_RSA_SERVER='no'
+    fi
+
+    return 0
+}
+
+conf_write_ssh_server() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED             "${MM_SSH_SERVER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SSH_SERVER_FETCH_ID_RSA_SERVER "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}"
+
+    return 0
+}
+
+conf_fetch_ssh_server() {
+    if /usr/bin/test "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}" = "yes" ; then
+        /bin/rm -f /etc/ssh/id_rsa_server
+        mm_conf_get /id_rsa_server /etc/ssh/id_rsa_server
+        if /usr/bin/test ! -e /etc/ssh/id_rsa_server ; then
+            mm_message_output err "error: failed to fetch 'id_rsa_server' file."
+        else
+            /bin/chmod 600 /etc/ssh/id_rsa_server
+        fi
+    fi
+
+    return 0
+}
