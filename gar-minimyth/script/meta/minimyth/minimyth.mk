@@ -79,7 +79,7 @@ MM_INIT_START := \
     security \
     auth \
     ssh_server \
-    mythdb.buffer.create \
+    mythdb_buffer_create \
     cron \
     game \
     master \
@@ -98,7 +98,7 @@ MM_INIT_START := \
     ssh_remote \
     mythtv \
     font \
-    mythdb.buffer.delete \
+    mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
     x \
