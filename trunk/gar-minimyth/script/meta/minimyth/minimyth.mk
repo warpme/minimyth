@@ -162,7 +162,11 @@ COPY_FILES = \
 		for dir in $(strip $(3)) ; do \
 			file_list="" ; \
 			if test -e $(DESTDIR)/$${dir} ; then \
-				file_list=`cd $(DESTDIR)/$${dir} ; ls -1d $${file_item} 2> /dev/null` ; \
+				if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type d 2> /dev/null` ; \
+				else \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type f 2> /dev/null` ; \
+				fi; \
 			fi ; \
 			for file in $${file_list} ; do \
 				if test -e $(DESTDIR)/$${dir}/$${file} ; then \
