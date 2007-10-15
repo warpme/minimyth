@@ -109,19 +109,22 @@ MM_INIT_KILL := \
 
 build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(GARDIR)/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
 
-bindirs := \
+bindirs_base := \
 	$(extras_sbindir) \
 	$(extras_bindir) \
 	$(esbindir) \
 	$(ebindir) \
 	$(sbindir) \
 	$(bindir) \
+	$(libexecdir) \
 	$(qtbindir) \
 	$(kdebindir)
+bindirs := \
+	$(bindirs_base) \
+	$(libexecdir)
 libdirs_base := \
 	$(extras_libdir) \
 	$(elibdir) \
-	$(libexecdir) \
 	$(libdir) \
 	$(libdir)/mysql \
 	$(qtlibdir) \
@@ -453,7 +456,7 @@ mm-make-conf:
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs))%'          $(mm_ROOTFSDIR)$(sysconfdir)/profile
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%'     $(mm_ROOTFSDIR)$(sysconfdir)/profile
 	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
 	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
