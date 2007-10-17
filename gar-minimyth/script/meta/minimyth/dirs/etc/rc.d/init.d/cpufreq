@@ -7,18 +7,19 @@
 start() {
 
     local dir
+    local driver_path
+    local driver
 
     mm_message_output info "starting CPU frequency scaling ..."
 
     if /usr/bin/test ! "${MM_CPUFREQ_GOVERNOR}" = "performance" ; then
-        case "${MM_HARDWARE_CPU}" in
-            athlon64)
-                /sbin/modprobe powernow-k8
-                ;;
-            c3|c3-2)
-                /sbin/modprobe longhaul
-                ;;
-        esac
+        # Load cpufreq processor driver.
+        # Drivers that do not support the CPU should fail to load.
+        /bin/ls /lib/modules/*/kernel/arch/*/kernel/cpu/cpufreq/ \
+        | while read driver_path ; do
+            driver=`/usr/bin/basename "${driver_path}" '.ko'`
+            /sbin/modprobe ${driver} || /bin/true
+        done
 
         case "${MM_CPUFREQ_GOVERNOR}" in
             performance)
@@ -34,7 +35,7 @@ start() {
                 ;;
             userspace)
                 /sbin/modprobe cpufreq-userspace
-                powernowd
+                /usr/sbin/powernowd
                 ;;
         esac
         /sbin/modprobe cpufreq-stats
