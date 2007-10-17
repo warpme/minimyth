@@ -61,7 +61,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-largefile \
 	--disable-werror \
-	$(if $(filter yes,$(mm_DEBUG)),--enable-debug) \
+	--disable-debug \
 	--disable-builddocs \
 	--enable-install-libxf86config \
 	--disable-builtin-fonts \

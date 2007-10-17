@@ -58,7 +58,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
-	$(if $(filter yes,$(mm_DEBUG)),--enable-debug) \
+	--disable-debug \
 	--disable-builddocs \
 	--enable-install-libxf86config \
 	--enable-composite \
