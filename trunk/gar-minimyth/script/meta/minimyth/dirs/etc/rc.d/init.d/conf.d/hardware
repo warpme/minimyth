@@ -15,6 +15,9 @@ conf_check_hardware() {
     if /usr/bin/test ! -z "${MM_HARDWARE_CHIPSET}"     ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_HARDWARE_CHIPSET' is obsolete."
     fi
+    if /usr/bin/test ! -z "${MM_HARDWARE_CPU}"         ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_HARDWARE_CPU' is obsolete."
+    fi
     if /usr/bin/test ! -z "${MM_HARDWARE_LAN}"         ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_HARDWARE_LAN' is obsolete."
     fi
@@ -41,10 +44,6 @@ conf_default_hardware() {
     # The routine relies on MM_X_* variables.
     conf_default_x
 
-    if /usr/bin/test -z "${MM_HARDWARE_CPU}" ; then
-        MM_HARDWARE_CPU="`mm_hardware_cpu_get`"
-    fi
-
     MM_HARDWARE_KERNEL_MODULES="${MM_HARDWARE_KERNEL_MODULES} `mm_hardware_motherboard2kernel_map`"
     MM_HARDWARE_KERNEL_MODULES="${MM_HARDWARE_KERNEL_MODULES} `mm_hardware_x2kernel_map ${MM_X_DRIVER}`"
 
@@ -56,7 +55,6 @@ conf_default_hardware() {
 conf_write_hardware() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_HARDWARE_CPU            "${MM_HARDWARE_CPU}"
     conf_variable_write "${conf_file}" MM_HARDWARE_KERNEL_MODULES "${MM_HARDWARE_KERNEL_MODULES}"
 
     return 0
