@@ -23,22 +23,22 @@ start() {
         /bin/sed -e "s%@MM_AUTH_LDAP_BASE_GROUPS@%${MM_AUTH_LDAP_BASE_GROUPS}%"     -i /etc/ldap.conf
         /bin/sed -e "s%@MM_AUTH_LDAP_PAM_GROUPDN@%${MM_AUTH_LDAP_PAM_GROUPDN}%"     -i /etc/ldap.conf
         /bin/sed -e "s%@MM_AUTH_LDAP_TLS_CHECKPEER@%${MM_AUTH_LDAP_TLS_CHECKPEER}%" -i /etc/ldap.conf
-        /bin/cp -f /etc/auth.d/nsswitch.conf.ldap /etc/nsswitch.conf
-        /bin/cp -f /etc/auth.d/pam.conf.ldap      /etc/pam.conf
-        /bin/cp -f /etc/auth.d/passwd.ldap        /etc/passwd
-        /bin/cp -f /etc/auth.d/group.ldap         /etc/group
+        /bin/cp -f /etc/auth.d/nsswitch.conf.ldap     /etc/nsswitch.conf
+        /bin/cp -f /etc/auth.d/pam.d/system-auth.ldap /etc/pam.d/system-auth
+        /bin/cp -f /etc/auth.d/passwd.ldap            /etc/passwd
+        /bin/cp -f /etc/auth.d/group.ldap             /etc/group
     else
-        /bin/cp -f /etc/auth.d/nsswitch.conf.file /etc/nsswitch.conf
-        /bin/cp -f /etc/auth.d/pam.conf.file      /etc/pam.conf
-        /bin/cp -f /etc/auth.d/passwd.file        /etc/passwd
-        /bin/cp -f /etc/auth.d/group.file         /etc/group
+        /bin/cp -f /etc/auth.d/nsswitch.conf.file     /etc/nsswitch.conf
+        /bin/cp -f /etc/auth.d/pam.d/system-auth.file /etc/pam.d/system-auth
+        /bin/cp -f /etc/auth.d/passwd.file            /etc/passwd
+        /bin/cp -f /etc/auth.d/group.file             /etc/group
     fi
     /bin/chown root:root /etc/ldap.conf
     /bin/chmod 644       /etc/ldap.conf
     /bin/chown root:root /etc/nsswitch.conf
     /bin/chmod 644       /etc/nsswitch.conf
-    /bin/chown root:root /etc/pam.conf
-    /bin/chmod 644       /etc/pam.conf
+    /bin/chown root:root /etc/pam.d/system-auth
+    /bin/chmod 644       /etc/pam.d/system-auth
     /bin/chown root:root /etc/passwd
     /bin/chmod 644       /etc/passwd
     /bin/chown root:root /etc/group
