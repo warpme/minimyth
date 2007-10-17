@@ -13,8 +13,9 @@ start() {
     # Web page.
     /usr/bin/webfsd -s -u www -g www -4 -p 80   -j -r /srv/www -x /cgi-bin -f index.shtml
     # Allow web access to the file system on machines that are not secure.
+    # It is run as root in order to provide access to all files.
     if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" ; then
-        /usr/bin/webfsd -s -u www -g www -4 -p 8080    -r /
+        /usr/bin/webfsd -s -u root -g root -4 -p 8080    -r /
     fi
 
     return 0
