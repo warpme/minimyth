@@ -1,5 +1,5 @@
 GARNAME = alsa-utils
-GARVERSION = 1.0.14
+GARVERSION = 1.0.15
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
