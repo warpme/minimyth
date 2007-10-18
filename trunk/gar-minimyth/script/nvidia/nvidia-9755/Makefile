@@ -3,6 +3,7 @@ GARVERSION = $(MAJOR_VERSION).$(MINOR_VERSION)-$(TEENY_VERSION)
 CATEGORIES = nvidia
 MASTER_SITES = http://us.download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
 DISTFILES = $(DISTFILE).run
+PATCHFILES = $(if $(filter $(mm_KERNEL_VERSION),2.6.23),$(DISTFILE)-kernel_2.6.23.patch)
 LICENSE = nvidia
 nvidia_LICENSE_TEXT=$(WORKSRC)/LICENSE
 

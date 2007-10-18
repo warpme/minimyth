@@ -5,7 +5,8 @@ MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES  = $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.23),$(DISTNAME)-remove_gpio.patch)
 LICENSE = GPL2
 
 DESCRIPTION =
