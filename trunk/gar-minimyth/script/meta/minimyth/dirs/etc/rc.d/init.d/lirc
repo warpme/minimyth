@@ -86,10 +86,10 @@ device_item_create() {
     lircd_conf=
     if   /usr/bin/test -e /etc/lircd.conf ; then
         lircd_conf="/etc/lircd.conf"
-    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.driver.remote.d/lircd.conf.${driver}.${remote} ; then
-        lircd_conf="/etc/lirc.d/lircd.conf.driver.remote.d/lircd.conf.${driver}.${remote}"
-    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.driver.remote.d/lircd.conf.${driver} ; then
-        lircd_conf="/etc/lirc.d/lircd.conf.driver.remote.d/lircd.conf.${driver}"
+    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.d/lircd.conf.${driver}.${remote} ; then
+        lircd_conf="/etc/lirc.d/lircd.conf.d/lircd.conf.${driver}.${remote}"
+    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.d/lircd.conf.${driver} ; then
+        lircd_conf="/etc/lirc.d/lircd.conf.d/lircd.conf.${driver}"
     else
         lircd_conf=
     fi
@@ -222,7 +222,7 @@ start() {
         if /usr/bin/test "${MM_LIRC_SLEEP_ENABLED}" = "yes" ; then
             /bin/echo "include /etc/lirc.d/lircrc.power.sleep" >> /etc/lircrc
         fi
-        for file in `/bin/ls /etc/lirc.d/lircrc.remote.d/lircrc.* 2> /dev/null` ; do
+        for file in `/bin/ls /etc/lirc.d/lircrc.d/lircrc.* 2> /dev/null` ; do
             /bin/echo "include ${file}" >> /etc/lircrc
         done
     fi
