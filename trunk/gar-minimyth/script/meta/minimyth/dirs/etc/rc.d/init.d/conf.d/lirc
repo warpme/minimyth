@@ -59,6 +59,12 @@ conf_default_lirc() {
     if /usr/bin/test -z "${MM_LIRC_IREXEC_ENABLED}" ; then
         MM_LIRC_IREXEC_ENABLED='auto'
     fi
+    if /usr/bin/test -z "${MM_LIRC_SLEEP_ENABLED}" ; then
+        MM_LIRC_SLEEP_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_LIRC_WAKEUP_ENABLED}" ; then
+        MM_LIRC_WAKEUP_ENABLED='yes'
+    fi
 
     if /usr/bin/test -z "${MM_LIRC_FETCH_LIRCD_CONF}" ; then
         MM_LIRC_FETCH_LIRCD_CONF='no'
@@ -76,9 +82,9 @@ conf_default_lirc() {
 
     # Read LIRC driver specific configuration file,
     # but do not allow the values to override values in the MiniMyth configuration file.
-    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf ; then
+    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.conf.d/driver.${MM_LIRC_DRIVER}.conf ; then
         /bin/rm -rf /tmp/driver.${MM_LIRC_DRIVER}.conf~
-        /bin/cat /etc/lirc.d/driver.${MM_LIRC_DRIVER}.conf \
+        /bin/cat /etc/lirc.d/driver.conf.d/driver.${MM_LIRC_DRIVER}.conf \
             | /bin/sed -e 's%#.*$%%g' \
             | /bin/sed -e 's%^  *%%'  \
             | /bin/sed -e 's%^\(.*\)$%local _\1%' \
@@ -138,6 +144,8 @@ conf_write_lirc() {
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_SLEEP_ENABLED         "${MM_LIRC_SLEEP_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_ENABLED        "${MM_LIRC_WAKEUP_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF      "${MM_LIRC_FETCH_LIRCD_CONF}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC          "${MM_LIRC_FETCH_LIRCRC}"
 
