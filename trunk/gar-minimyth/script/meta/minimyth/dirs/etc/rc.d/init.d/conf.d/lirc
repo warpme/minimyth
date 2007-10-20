@@ -82,15 +82,15 @@ conf_default_lirc() {
 
     # Read LIRC driver specific configuration file,
     # but do not allow the values to override values in the MiniMyth configuration file.
-    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.conf.d/driver.${MM_LIRC_DRIVER}.conf ; then
-        /bin/rm -rf /tmp/driver.${MM_LIRC_DRIVER}.conf~
-        /bin/cat /etc/lirc.d/driver.conf.d/driver.${MM_LIRC_DRIVER}.conf \
+    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.conf.d/driver.conf.${MM_LIRC_DRIVER} ; then
+        /bin/rm -rf /tmp/driver.conf.${MM_LIRC_DRIVER}~
+        /bin/cat /etc/lirc.d/driver.conf.d/driver.conf.${MM_LIRC_DRIVER} \
             | /bin/sed -e 's%#.*$%%g' \
             | /bin/sed -e 's%^  *%%'  \
             | /bin/sed -e 's%^\(.*\)$%local _\1%' \
-            > /tmp/driver.${MM_LIRC_DRIVER}.conf~
-        . /tmp/driver.${MM_LIRC_DRIVER}.conf~
-        /bin/rm -rf /tmp/driver.${MM_LIRC_DRIVER}.conf~
+            > /tmp/driver.conf.${MM_LIRC_DRIVER}~
+        . /tmp/driver.conf.${MM_LIRC_DRIVER}~
+        /bin/rm -rf /tmp/driver.conf.${MM_LIRC_DRIVER}~
      
        if /usr/bin/test "${MM_LIRC_DEVICE}" = "auto" ; then
            MM_LIRC_DEVICE="${_MM_LIRC_DEVICE}"
