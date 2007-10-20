@@ -1,0 +1,25 @@
+diff -Naur pciutils-2.2.8-old/lib/Makefile pciutils-2.2.8-new/lib/Makefile
+--- pciutils-2.2.8-old/lib/Makefile	2007-10-19 02:17:40.000000000 -0700
++++ pciutils-2.2.8-new/lib/Makefile	2007-10-19 14:44:55.000000000 -0700
+@@ -3,6 +3,9 @@
+ 
+ include config.mk
+ 
++AR ?= ar
++RANLIB ?= ranlib
++
+ OBJS=access.o generic.o dump.o names.o filter.o
+ INCL=internal.h pci.h config.h header.h sysdep.h types.h
+ 
+diff -Naur pciutils-2.2.8-old/Makefile pciutils-2.2.8-new/Makefile
+--- pciutils-2.2.8-old/Makefile	2007-10-19 03:12:24.000000000 -0700
++++ pciutils-2.2.8-new/Makefile	2007-10-19 14:44:55.000000000 -0700
+@@ -65,7 +65,7 @@
+ install: all
+ # -c is ignored on Linux, but required on FreeBSD
+ 	$(DIRINSTALL) -m 755 $(DESTDIR)$(SBINDIR) $(DESTDIR)$(IDSDIR) $(DESTDIR)$(MANDIR)/man8
+-	$(INSTALL) -c -m 755 -s lspci setpci $(DESTDIR)$(SBINDIR)
++	$(INSTALL) -c -m 755 lspci setpci $(DESTDIR)$(SBINDIR)
+ 	$(INSTALL) -c -m 755 update-pciids $(DESTDIR)$(SBINDIR)
+ 	$(INSTALL) -c -m 644 $(PCI_IDS) $(DESTDIR)$(IDSDIR)
+ 	$(INSTALL) -c -m 644 lspci.8 setpci.8 update-pciids.8 $(DESTDIR)$(MANDIR)/man8
