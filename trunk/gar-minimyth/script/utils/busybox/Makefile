@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
+	$(DISTNAME)-httpd.patch \
 	$(DISTNAME)-iptun.patch \
 	$(DISTNAME)-logger.patch \
 	$(DISTNAME)-login.patch \
