@@ -5,7 +5,7 @@ MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-imonlcd_0.1.patch
+PATCHFILES  = $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imonlcd_0.1.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.23),$(DISTNAME)-remove_gpio.patch)
 LICENSE = GPL2
 
