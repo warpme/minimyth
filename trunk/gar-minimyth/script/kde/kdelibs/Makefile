@@ -1,9 +1,9 @@
 GARNAME = kdelibs
-GARVERSION = 3.5.7
+GARVERSION = 3.5.8
 CATEGORIES = kde
 MASTER_SITES = http://mirrors.isc.org/pub/kde/stable/$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-ldflags.patch $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch.gar
 endif
@@ -66,8 +66,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir)
 
 CONFIGURE_ENV  = \
-	ac_cv_path_path_su=$(ebindir)/su \
+	ac_cv_path_path_su=$(bindir)/su \
 	kde_cv_shortsetgroups=no \
+	libltdl_cv_sys_search_path="$(subst :, ,$(LD_LIBRARY_PATH))" \
 	lt_cv_dlopen_self=yes \
 	lt_cv_dlopen_self_static=yes \
 	PKG_CONFIG=$(build_DESTDIR)$(build_bindir)/pkg-config \
