@@ -7,11 +7,11 @@
 start() {
     mm_message_output info "starting web server ..."
 
-    /bin/chmod -R g-w,o-rwx /srv/www
-    /bin/chown -R root:www  /srv/www
+    /bin/chmod -R g-w,o-rwx  /srv/www
+    /bin/chown -R root:httpd /srv/www
 
     # Web page.
-    /usr/bin/webfsd -s -u www -g www -4 -p 80   -j -r /srv/www -x /cgi-bin -f index.shtml
+    /usr/bin/webfsd -s -u httpd -g httpd -4 -p 80   -j -r /srv/www -x /cgi-bin -f index.shtml
     # Allow web access to the file system on machines that are not secure.
     # It is run as root in order to provide access to all files.
     if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" ; then

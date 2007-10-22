@@ -19,7 +19,6 @@ DEPENDS = \
 	fonts/corefonts \
 	utils/coreutils \
 	utils/dmidecode \
-	net/dropbear \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
@@ -40,6 +39,7 @@ DEPENDS = \
 	net/nfs-utils \
 	system/nss_ldap \
 	net/ntp \
+	net/openssh \
 	system/pam \
 	system/pam_ldap \
 	utils/pciutils \
