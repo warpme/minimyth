@@ -5,6 +5,18 @@
 
 . /etc/rc.d/functions
 
+if /usr/bin/test ! "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
+    /usr/bin/logger -t minimyth -p "local0.error" \
+         "mm_perl: ssh remote command execution has not been enabled."
+    exit 1
+fi
+
+if /usr/bin/test ! -r ${HOME}/.ssh/id_rsa ; then
+    /usr/bin/logger -t minimyth -p "local0.error" \
+         "mm_perl: user '${USER}' does not have access to the ssh remote command execution identity."
+    exit 1
+fi
+
 logfile="${HOME}/tmp/mm_perl.log"
 
 tmp_remote="tmp/minimyth/${MM_HOSTNAME}/perl"
@@ -29,8 +41,8 @@ fi
 /bin/echo ""                              >> ${logfile}
 
 # Create tmp directory on remote system.
-/bin/echo "/usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} \"mkdir -p ${tmp_remote}\"" >> ${logfile}
-/usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} "mkdir -p ${tmp_remote}" 2>> ${logfile}
+/bin/echo "/usr/bin/ssh ${MM_SSH_REMOTE_HOST} \"mkdir -p ${tmp_remote}\"" >> ${logfile}
+/usr/bin/ssh ${MM_SSH_REMOTE_HOST} "mkdir -p ${tmp_remote}" 2>> ${logfile}
 if /usr/bin/test $? -ne 0 ; then
     /bin/echo "mm_perl: failed to create tmp directory on remote system." >> ${logfile}
     /usr/bin/logger -t minimyth -p "local0.error" \
@@ -83,8 +95,8 @@ for arg in "$@" ; do
                 file_remote="${tmp_remote}/${file_remote}"
 
 	        # Copy local file to remote server.
-                /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
-                /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
+                /bin/echo "/usr/bin/scp ${file_local} ${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
+                /usr/bin/scp ${file_local} ${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
                 if /usr/bin/test $? -ne 0 ; then
                     /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
                     /usr/bin/logger -t minimyth -p "local0.error" \
@@ -111,8 +123,8 @@ for arg in "$@" ; do
 
 	        # Copy local file to remote server.
                 if /usr/bin/test -e "${file_local}" ; then
-                    /bin/echo "/usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
-                    /usr/bin/mm_scp ${file_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
+                    /bin/echo "/usr/bin/scp ${file_local} ${MM_SSH_REMOTE_HOST}:${file_remote}" >> ${logfile}
+                    /usr/bin/scp ${file_local} ${MM_SSH_REMOTE_HOST}:${file_remote} 2>> ${logfile}
                     if /usr/bin/test $? -ne 0 ; then
                         /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
                         /usr/bin/logger -t minimyth -p "local0.error" \
@@ -144,8 +156,8 @@ if /usr/bin/test ${argnumber} -lt 1 ; then
 fi
 
 # Run command with arguments on remote machine using ssh.
-/bin/echo "/usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} perl ${arglist}" >> ${logfile}
-/usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} perl ${arglist} 2>> ${logfile}
+/bin/echo "/usr/bin/ssh ${MM_SSH_REMOTE_HOST} perl ${arglist}" >> ${logfile}
+/usr/bin/ssh ${MM_SSH_REMOTE_HOST} perl ${arglist} 2>> ${logfile}
 if /usr/bin/test $? -ne 0 ; then
     /bin/echo "mm_perl: remote command execution failed: perl ${arglist}." >> ${logfile}
     /usr/bin/logger -t minimyth -p "local0.error" \

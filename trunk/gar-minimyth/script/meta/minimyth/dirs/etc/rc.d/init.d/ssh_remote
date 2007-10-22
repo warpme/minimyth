@@ -13,18 +13,18 @@ __ssh_copy_to_remote() {
     local dir_remote=tmp/minimyth/${MM_HOSTNAME}/${dir}
     local dir_remote_dir=`/usr/bin/dirname ${dir_remote}`
 
-    /usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} "rm -fr ${dir_remote}" 2> /dev/null
+    /usr/bin/ssh ${MM_SSH_REMOTE_HOST} "rm -fr ${dir_remote}" 2> /dev/null
     if /usr/bin/test $? -ne 0 ; then
         mm_message_output err "error: failed to delete remote directory '${dir_remote}'."
         exit 1
     fi
     if /usr/bin/test -e ${dir_local} ; then
-        /usr/bin/mm_ssh ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST} "mkdir -p ${dir_remote_dir}" 2> /dev/null
+        /usr/bin/ssh ${MM_SSH_REMOTE_HOST} "mkdir -p ${dir_remote_dir}" 2> /dev/null
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to create remote directory '${dir_remote_dir}'."
             exit 1
         fi
-        /usr/bin/mm_scp -r ${dir_local} ${MM_SSH_REMOTE_USER}@${MM_SSH_REMOTE_HOST}:${dir_remote} 2> /dev/null
+        /usr/bin/scp -r ${dir_local} ${MM_SSH_REMOTE_HOST}:${dir_remote} 2> /dev/null
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to copy local directory '${dir_local}' to remote directory '${dir_remote}'."
             exit 1
@@ -35,21 +35,38 @@ __ssh_copy_to_remote() {
 }
 
 start() {
+    mm_message_output info "configuring ssh remote command execution ..."
+
+    if /usr/bin/test -e /etc/ssh/ssh_config ; then
+        /bin/chmod 644 /etc/ssh/ssh_config
+        /bin/chown root:minimyth /etc/ssh/ssh_config
+
+        /bin/sed -i "s%@MM_SSH_REMOTE_HOST@%${MM_SSH_REMOTE_HOST}%" /etc/ssh/ssh_config
+        /bin/sed -i "s%@MM_SSH_REMOTE_PORT@%${MM_SSH_REMOTE_PORT}%" /etc/ssh/ssh_config
+        /bin/sed -i "s%@MM_SSH_REMOTE_USER@%${MM_SSH_REMOTE_USER}%" /etc/ssh/ssh_config
+    fi
+
+    if /usr/bin/test -e /etc/ssh/id_rsa ; then
+        /bin/chmod 600 /etc/ssh/id_rsa
+        /bin/chown root:root /etc/ssh/id_rsa
+
+        /bin/mkdir -p /root/.ssh
+        /bin/cp /etc/ssh/id_rsa /root/.ssh/id_rsa
+        /bin/chmod 600 /root/.ssh/id_rsa
+        /bin/chown root:root /root/.ssh/id_rsa
+
+        /bin/mkdir -p /home/minimyth/.ssh
+        /bin/cp /etc/ssh/id_rsa /home/minimyth/.ssh/id_rsa
+        /bin/chmod 600 /home/minimyth/.ssh/id_rsa
+        /bin/chown root:root /home/minimyth/.ssh/id_rsa
+    fi
+
     if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
-        mm_message_output info "configuring ssh remote command execution ..."
-
-        if /usr/bin/test -e /etc/ssh/id_rsa_remote ; then
-            /bin/mkdir -p /etc/dropbear
-            /usr/bin/dropbearconvert openssh dropbear /etc/ssh/id_rsa_remote /etc/dropbear/id_rsa_remote
-            /bin/chmod 640 /etc/dropbear/id_rsa_remote
-            /bin/chown root:ssh /etc/dropbear/id_rsa_remote
-
-            if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}" = "yes" ; then
-                __ssh_copy_to_remote 'mythstream/parsers'
-            fi
-            if /usr/bin/test "${MM_MYTHVIDEO_ENABLED}" = "yes" ; then
-                __ssh_copy_to_remote 'mythvideo/scripts'
-            fi
+        if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}" = "yes" ; then
+            __ssh_copy_to_remote 'mythstream/parsers'
+        fi
+        if /usr/bin/test "${MM_MYTHVIDEO_ENABLED}" = "yes" ; then
+            __ssh_copy_to_remote 'mythvideo/scripts'
         fi
     fi
 
