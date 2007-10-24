@@ -50,6 +50,7 @@ build_system_bins_coreutils = \
 	cp \
 	cut \
 	date \
+	dirname \
 	echo \
 	env \
 	expr \
@@ -86,7 +87,8 @@ build_system_bins_cvs = \
 
 # Overridden by binaries from package utils/diffutils.
 build_system_bins_diffutils = \
-	cmp
+	cmp \
+	diff
 
 # Overridden by binaries from package utils/file.
 build_system_bins_file = \
