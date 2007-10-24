@@ -23,7 +23,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-ldap-secret-file=$(sysconfdir)/ldap.secret
 
 INSTALL_ARGS = \
-	INST_UID=$(shell id -u) \
-	INST_GID=$(shell id -g)
+	INST_UID="$(INST_UID)" \
+	INST_GID="$(INST_GID)" \
+	LIBC_VERS="$(LIBC_VERS)" \
+	NSS_VERS="$(NSS_VERS)"
 
 include ../../gar.mk
+
+INST_UID  := $(shell id -u)
+INST_GID  := $(shell id -g)
+LIBC_VERS := $(shell ls $(DESTDIR)$(elibdir)/libc-*.so | tail -n 1 | sed -e 's|.*libc-\(.*\)\.so|\1|')
+NSS_VERS  := $(shell ls $(DESTDIR)$(elibdir)/libnss_files.so.? | tail -n 1 | sed -e 's|.*libnss_files\.so\.\(.*\)|\1|')
