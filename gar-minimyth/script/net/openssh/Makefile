@@ -20,6 +20,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-strip \
 	--disable-lastlog \
 	--disable-utmp \
 	--disable-utmpx \
