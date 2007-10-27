@@ -18,9 +18,12 @@ start() {
     local INTEL_IEGD_TRUE
     local NVIDIA_TRUE
 
-    mm_message_output info "starting X ..."
+    mm_message_output info "configuring X ..."
 
-    if   /usr/bin/test "${MM_X_SCREENSAVER_HACK}" = "blank"       ; then
+    if   /usr/bin/test "${MM_X_SCREENSAVER_HACK}" = "sleep"       ; then
+        /bin/sed -i 's%@MODE@%blank%' /home/minimyth/.xscreensaver
+        /bin/sed -i 's%@SELECTED@%0%' /home/minimyth/.xscreensaver
+    elif /usr/bin/test "${MM_X_SCREENSAVER_HACK}" = "blank"       ; then
         /bin/sed -i 's%@MODE@%blank%' /home/minimyth/.xscreensaver
         /bin/sed -i 's%@SELECTED@%0%' /home/minimyth/.xscreensaver
     elif /usr/bin/test "${MM_X_SCREENSAVER_HACK}" = "glslideshow" ; then
@@ -201,23 +204,22 @@ start() {
     /bin/sed -i "s%@INTEL_IEGD_TRUE@%${INTEL_IEGD_TRUE}%"       /etc/X11/xorg.conf
     /bin/sed -i "s%@NVIDIA_TRUE@%${NVIDIA_TRUE}%"               /etc/X11/xorg.conf
 
-    # Turn off splash screen.
-    mm_splash_halt
-
+    # Make sure that the file ownership is correct.
     /bin/chown -R minimyth:minimyth /home/minimyth
 
-    # Start X.
-    if /usr/bin/test "${MM_X_ENABLED}" = "yes" ; then
-        /usr/bin/su -c /usr/bin/xinit - minimyth &
-    fi
+    mm_message_output info "starting X ..."
+    mm_x_start
 
     return 0
 }
 
 stop() {
-    mm_message_output info "stopping X ..."
 
-    /usr/bin/test -n "`/bin/pidof X`" && /usr/bin/killall X
+    mm_message_output info "stopping X ..."
+    if /usr/bin/test -n "`/bin/pidof mm_sleep_on_xscreensaver`" ; then
+        /bin/kill `/bin/pidof mm_sleep_on_xscreensaver`
+    fi
+    mm_x_stop
 
     return 0
 }

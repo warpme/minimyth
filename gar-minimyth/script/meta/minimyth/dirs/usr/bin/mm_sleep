@@ -3,7 +3,7 @@
 . /etc/rc.d/functions
 
 # If MPlayer is running, then exit it.
-mm_xmacroplay 'xine' 'KeyStr Escape\n'
+mm_x_xmacroplay 'xine' 'KeyStr Escape\n'
 if /usr/bin/test -n "`/bin/pidof mplayer`" ; then
     /bin/kill `/bin/pidof mplayer`
 fi
@@ -12,7 +12,7 @@ while /usr/bin/test -n "`/bin/pidof mplayer`" ; do
 done
 
 # If Xine is running, then exit it.
-mm_xmacroplay 'xine' 'KeyStr Q\n'
+mm_x_xmacroplay 'xine' 'KeyStr Q\n'
 if /usr/bin/test -n "`/bin/pidof xine`" ; then
     /bin/kill `/bin/pidof xine`
 fi
@@ -32,7 +32,7 @@ if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
     MainMenuJumpPoint=`mm_mythdb_jumppoints_get "Main Menu"`
 
     if /usr/bin/test ${NetworkControlEnabled} -eq 1 ; then
-        /usr/bin/nc localhost ${NetworkControlPort} << EOF
+        /usr/bin/nc localhost ${NetworkControlPort} > /dev/null 2>&1 << EOF
 jump mainmenu
 EOF
     elif /usr/bin/test ! -z "${MainMenuJumpPoint}" && /usr/bin/test ! "x${MainMenuJumpPoint}" = "xNULL" ; then
@@ -54,60 +54,26 @@ EOF
             key_index=$((${key_index} + 1))
         done
         # Send command sequence to mythfrontend using XMacroPlay.
-        mm_xmacroplay 'mythfrontend' "${key_press}${key_release}"
+        mm_x_xmacroplay 'mythfrontend' "${key_press}${key_release}"
     fi
+fi
+
+# Stop X
+if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
+    /usr/bin/mm_x_stop
+fi
+
+if `type -t user_sleep_enter > /dev/null 2>&1` ; then
+    user_sleep_enter
 fi
 
 /bin/echo 3 > /proc/acpi/sleep
 
-# Restart X
-# Ideally, we would stop X before sleeping and start X after waking.
-# However, it does not appear to work.
-if /usr/bin/test "x${MM_LIRC_SLEEP_X_RESTART_ENABLED}" = "xyes" ; then
-    # Stop X
-    # Stop all known programs that could be keeping X running.
-    # Stop mythfrontend first because it may have been started by mythwelcome.
-    if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
-        /bin/kill `/bin/pidof mythfrontend`
-    fi
-    if /usr/bin/test -n "`/bin/pidof mythwelcome`" ; then
-        /bin/kill `/bin/pidof mythwelcome`
-    fi
-    if /usr/bin/test ! -n "`/bin/pidof ${MM_X_MYTH_PROGRAM}`" ; then
-        /bin/kill `/bin/pidof ${MM_X_MYTH_PROGRAM}`
-    fi
-    # Make sure that X and has stopped by waiting for all the known X programs to die
-    # Clearly, this is overkill, but we want to be certain.
-    while /usr/bin/test -n "`/bin/pidof rxvt`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof xterm`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof xine`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof mythfrontend`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof mythwelcome`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof ${MM_X_MYTH_PROGRAM}`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof x11vnc`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof ratpoison`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof X`" ; do
-        /bin/sleep 1
-    done
-    while /usr/bin/test -n "`/bin/pidof xinit`" ; do
-        /bin/sleep 1
-    done
-    # Start X
-    /usr/bin/su -c /usr/bin/xinit - minimyth &
+if `type -t user_sleep_leave > /dev/null 2>&1` ; then
+    user_sleep_leave
+fi
+
+# Start X
+if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
+    /usr/bin/mm_x_start
 fi

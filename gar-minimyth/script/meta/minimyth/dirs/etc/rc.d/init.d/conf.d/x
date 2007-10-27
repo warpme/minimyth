@@ -51,6 +51,11 @@ conf_check_x() {
     fi
 
     # Check X application variables.
+    if /usr/bin/test ! -z "${MM_X_RESTART_ON_SLEEP_ENABLED}"         && \
+       /usr/bin/test !    "${MM_X_RESTART_ON_SLEEP_ENABLED}" = "yes" &&
+       /usr/bin/test !    "${MM_X_RESTART_ON_SLEEP_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_X_RESTART_ON_SLEEP_ENABLED='${MM_X_RESTART_ON_SLEEP_ENABLED}' is not valid."
+    fi
     if /usr/bin/test ! -z "${MM_X_WM_ENABLED}"          && \
        /usr/bin/test !    "${MM_X_WM_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_X_WM_ENABLED}" = "no"   ; then
@@ -68,6 +73,7 @@ conf_check_x() {
         mm_message_output err "error: MM_X_SCREENSAVER='${MM_X_SCREENSAVER}' is not valid."
     fi
     if /usr/bin/test ! -z "${MM_X_SCREENSAVER_HACK}"                 && \
+       /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "sleep"       &&
        /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "blank"       &&
        /usr/bin/test !    "${MM_X_SCREENSAVER_HACK}" = "glslideshow" ; then
         mm_message_output err "error: MM_X_SCREENSAVER_HACK='${MM_X_SCREENSAVER_HACK}' is not valid."
@@ -368,22 +374,25 @@ conf_default_x() {
     esac
 
     # X application variables.
-    if /usr/bin/test -z "${MM_X_ENABLED}"          ; then
+    if /usr/bin/test -z "${MM_X_ENABLED}"                  ; then
         MM_X_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_WM_ENABLED}"       ; then
+    if /usr/bin/test -z "${MM_X_RESTART_ON_SLEEP_ENABLED}" ; then
+        MM_X_ENABLED='yes'
+    fi
+    if /usr/bin/test -z "${MM_X_WM_ENABLED}"               ; then
         MM_X_WM_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_VNC_ENABLED}"      ; then
+    if /usr/bin/test -z "${MM_X_VNC_ENABLED}"              ; then
         MM_X_VNC_ENABLED='yes'
     fi
-    if /usr/bin/test -z "${MM_X_SCREENSAVER}"      ; then
+    if /usr/bin/test -z "${MM_X_SCREENSAVER}"              ; then
         MM_X_SCREENSAVER='none'
     fi
-    if /usr/bin/test -z "${MM_X_SCREENSAVER_HACK}" ; then
+    if /usr/bin/test -z "${MM_X_SCREENSAVER_HACK}"         ; then
         MM_X_SCREENSAVER_HACK='blank'
     fi
-    if /usr/bin/test -z "${MM_X_MYTH_PROGRAM}"     ; then
+    if /usr/bin/test -z "${MM_X_MYTH_PROGRAM}"             ; then
         MM_X_MYTH_PROGRAM='mythfrontend'
     fi
 
@@ -726,6 +735,7 @@ conf_write_x() {
     conf_variable_write "${conf_file}" MM_X_DRIVER                      "${MM_X_DRIVER}"
 
     conf_variable_write "${conf_file}" MM_X_ENABLED                     "${MM_X_ENABLED}"
+    conf_variable_write "${conf_file}" MM_X_RESTART_ON_SLEEP_ENABLED    "${MM_X_RESTART_ON_SLEEP_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_WM_ENABLED                  "${MM_X_WM_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_VNC_ENABLED                 "${MM_X_VNC_ENABLED}"
     conf_variable_write "${conf_file}" MM_X_SCREENSAVER                 "${MM_X_SCREENSAVER}"

@@ -75,9 +75,9 @@ MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | s
 MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
 
 MM_INIT_START := \
-    telnet \
-    security \
     auth \
+    security \
+    telnet \
     ssh_server \
     mythdb_buffer_create \
     cron \
@@ -102,10 +102,22 @@ MM_INIT_START := \
     x
 MM_INIT_KILL := \
     x \
+    lcdproc \
+    lirc \
     audio \
+    media \
+    web \
     time \
+    cpufreq \
+    acpi \
     game \
-    telnet
+    cron \
+    ssh_server \
+    localboot \
+    log \
+    telnet \
+    modules_manual \
+    modules_automatic
 
 build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(GARDIR)/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
 
@@ -410,7 +422,7 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_INTALL_LATEST"
+	@echo "checking: distribution parameters: mm_INSTALL_LATEST"
 	@if [ ! "$(mm_INSTALL_LATEST)"   = "yes" ] && [ ! "$(mm_INSTALL_LATEST)"   = "no" ] ; then \
 		echo "error: mm_INSTALL_LATEST=\"$(mm_INSTALL_LATEST)\" is an invalid value." ; \
 		exit 1 ; \

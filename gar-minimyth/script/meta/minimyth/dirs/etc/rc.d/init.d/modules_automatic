@@ -67,6 +67,17 @@ start() {
 }
 
 stop() {
+
+    local module
+    local modules
+
+    mm_message_output info "unloading kernel modules (automatic) ..."
+
+    modules=`/bin/lsmod | /bin/sed -e 's%  *% %g' | /usr/bin/cut -d ' ' -f 1 | /bin/grep -v Module`
+    for module in ${modules} ; do
+        /sbin/modprobe -r ${module}
+    done
+
     return 0
 }
 

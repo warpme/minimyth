@@ -9,6 +9,9 @@ conf_clean_lirc() {
 
 conf_check_lirc() {
     # Check for obsolete variables.
+    if /usr/bin/test ! -n "${MM_LIRC_SLEEP_X_RESTART_ENABLED}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_SLEEP_X_RESTART_ENABLED is obsolete."
+    fi
     if /usr/bin/test "${MM_LIRC_DRIVER}"        = "auto"           ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_DRIVER='auto' is obsolete."
     fi
@@ -24,6 +27,7 @@ conf_check_lirc() {
     if /usr/bin/test "${MM_LIRC_REMOTE}"        = "mceusbnew"      ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_REMOTE='mceusbnew' is obsolete."
     fi
+
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" || /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
         if /usr/bin/test ! -z "${MM_LIRC_REMOTE}" && /usr/bin/test ! "${MM_LIRC_REMOTE}" = "none" ; then
             mm_message_output err "error: 'MM_LIRC_DRIVER' must be set when 'MM_LIRC_REMOTE is set."
@@ -61,9 +65,6 @@ conf_default_lirc() {
     fi
     if /usr/bin/test -z "${MM_LIRC_SLEEP_ENABLED}" ; then
         MM_LIRC_SLEEP_ENABLED='yes'
-    fi
-    if /usr/bin/test -z "${MM_LIRC_SLEEP_X_RESTART_ENABLED}" ; then
-        MM_LIRC_SLEEP_X_RESTART_ENABLED='no'
     fi
     if /usr/bin/test -z "${MM_LIRC_WAKEUP_ENABLED}" ; then
         MM_LIRC_WAKEUP_ENABLED='yes'
@@ -140,18 +141,17 @@ conf_default_lirc() {
 conf_write_lirc() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED            "${MM_LIRC_AUTO_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_DRIVER                  "${MM_LIRC_DRIVER}"
-    conf_variable_write "${conf_file}" MM_LIRC_REMOTE                  "${MM_LIRC_REMOTE}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE                  "${MM_LIRC_DEVICE}"
-    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE           "${MM_LIRC_KERNEL_MODULE}"
-    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS   "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
-    conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED          "${MM_LIRC_IREXEC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_SLEEP_ENABLED           "${MM_LIRC_SLEEP_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_SLEEP_X_RESTART_ENABLED "${MM_LIRC_SLEEP_X_RESTART_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_ENABLED          "${MM_LIRC_WAKEUP_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF        "${MM_LIRC_FETCH_LIRCD_CONF}"
-    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC            "${MM_LIRC_FETCH_LIRCRC}"
+    conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED          "${MM_LIRC_AUTO_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
+    conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
+    conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
+    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
+    conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
+    conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_SLEEP_ENABLED         "${MM_LIRC_SLEEP_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_ENABLED        "${MM_LIRC_WAKEUP_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF      "${MM_LIRC_FETCH_LIRCD_CONF}"
+    conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC          "${MM_LIRC_FETCH_LIRCRC}"
 
     return 0
 }
