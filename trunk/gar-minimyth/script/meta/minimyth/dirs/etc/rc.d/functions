@@ -6,6 +6,8 @@
 
 . /etc/conf
 
+/usr/bin/test -r /etc/minimyth.d/minimyth.func && . /etc/minimyth.d/minimyth.func
+
 #===============================================================================
 # general functions.
 #===============================================================================
@@ -738,18 +740,18 @@ mm_var_get() {
 #===============================================================================
 # splash screen functions
 #===============================================================================
-mm_splash_command='/sbin/fbsplashd'
-mm_splash_command_path=`/bin/echo ${mm_splash_command} | /usr/bin/cut -d ' ' -f 1`
-mm_splash_command_dir=`/usr/bin/dirname ${mm_splash_command_path}`
-mm_splash_command_base=`/usr/bin/basename ${mm_splash_command_path}`
-mm_splash_fifo='/lib/splash/cache/.splash'
-mm_splash_fifo_dir=`/usr/bin/dirname ${mm_splash_fifo}`
-mm_splash_fifo_base=`/usr/bin/basename ${mm_splash_fifo}`
-mm_splash_progress_val=1
-mm_splash_progress_max=1
+_mm_var_splash_command='/sbin/fbsplashd'
+_mm_var_splash_command_path=`/bin/echo ${_mm_var_splash_command} | /usr/bin/cut -d ' ' -f 1`
+_mm_var_splash_command_dir=`/usr/bin/dirname ${_mm_var_splash_command_path}`
+_mm_var_splash_command_base=`/usr/bin/basename ${_mm_var_splash_command_path}`
+_mm_var_splash_fifo='/lib/splash/cache/.splash'
+_mm_var_splash_fifo_dir=`/usr/bin/dirname ${_mm_var_splash_fifo}`
+_mm_var_splash_fifo_base=`/usr/bin/basename ${_mm_var_splash_fifo}`
+_mm_var_splash_progress_val=1
+_mm_var_splash_progress_max=1
 
 mm_splash_running_test() {
-    if /usr/bin/test -n "`/bin/pidof ${mm_splash_command_base}`" && /usr/bin/test -e ${mm_splash_fifo} ; then
+    if /usr/bin/test -n "`/bin/pidof ${_mm_var_splash_command_base}`" && /usr/bin/test -e ${_mm_var_splash_fifo} ; then
         return 0
     else
         return 1
@@ -757,6 +759,10 @@ mm_splash_running_test() {
 }
 
 mm_splash_init() {
+    local type=$1
+
+    local message
+
     local DEPTH
     local GEOMETRY
     local LOGLEVEL
@@ -803,12 +809,18 @@ mm_splash_init() {
     fi
 
     if /usr/bin/test "${SPLASH_ENABLE}" = "yes" ; then
+        case "${type}" in
+            bootup)   message="starting system ..."      ;;
+            shutdown) message="shutting down system ..." ;;
+            reboot)   message="restarting system ..."    ;;
+            *)        message=""                         ;;
+        esac
+        /usr/bin/logger -t minimyth -p "local0.info" "starting splash screen"
         /usr/bin/chvt 1
-        /bin/mkdir -p "${mm_splash_fifo_dir}"
-        ${mm_splash_command} --theme="MythTV"
+        /bin/mkdir -p "${_mm_var_splash_fifo_dir}"
+        mm_splash_command "exit"
+        ${_mm_var_splash_command} --theme="MythTV" --progress="0" --mesg="${message}" --type="${type}"
         mm_splash_command "set mode silent"
-        mm_splash_command "progress 0"
-        mm_splash_command "set message starting splash screen ..."
         mm_splash_command "repaint"
     fi
 
@@ -818,22 +830,17 @@ mm_splash_init() {
 }
 
 mm_splash_halt() {
-    if /usr/bin/test -e "${mm_splash_fifo}" ; then
-        /bin/echo "setmode off" >> ${mm_splash_fifo}
-    fi
 
-    /usr/bin/test -n "`/bin/pidof -s ${mm_splash_command_base}`" && /usr/bin/killall ${mm_splash_command_base}
+    /usr/bin/logger -t minimyth -p "local0.info" "stopping splash screen"
 
-    if /usr/bin/test -e "${mm_splash_fifo}" ; then
-        /bin/rm -rf ${mm_splash_fifo}
-    fi
+    mm_splash_command "exit"
 
     return 0
 }
 
 mm_splash_command()
 {
-    /usr/bin/test `mm_splash_running_test ; /bin/echo $?` -eq 0 && /bin/echo "$1" >> "${mm_splash_fifo}"
+    /usr/bin/test `mm_splash_running_test ; /bin/echo $?` -eq 0 && /bin/echo "$1" >> "${_mm_var_splash_fifo}"
 
     return 0
 }
@@ -848,20 +855,20 @@ mm_splash_message_output() {
 }
 
 mm_splash_progress_set() {
-    mm_splash_progress_val=$1
-    mm_splash_progress_max=$2
+    _mm_var_splash_progress_val=$1
+    _mm_var_splash_progress_max=$2
  
-    /usr/bin/test ${mm_splash_progress_val} -gt ${mm_splash_progress_max} && mm_splash_progress_val=${mm_splash_progress_max}
-    mm_splash_command "progress $(( 65535 * ${mm_splash_progress_val} / ${mm_splash_progress_max} ))"
+    /usr/bin/test ${_mm_var_splash_progress_val} -gt ${_mm_var_splash_progress_max} && _mm_var_splash_progress_val=${_mm_var_splash_progress_max}
+    mm_splash_command "progress $(( 65535 * ${_mm_var_splash_progress_val} / ${_mm_var_splash_progress_max} ))"
     mm_splash_command "repaint"
 
     return 0
 }
 
 mm_splash_progress_update() {
-    mm_splash_progress_val=$((mm_splash_progress_val + 1))
-    /usr/bin/test ${mm_splash_progress_val} -gt ${mm_splash_progress_max} && mm_splash_progress_val=${mm_splash_progress_max}
-    mm_splash_command "progress $(( 65535 * ${mm_splash_progress_val} / ${mm_splash_progress_max} ))"
+    _mm_var_splash_progress_val=$((_mm_var_splash_progress_val + 1))
+    /usr/bin/test ${_mm_var_splash_progress_val} -gt ${_mm_var_splash_progress_max} && _mm_var_splash_progress_val=${_mm_var_splash_progress_max}
+    mm_splash_command "progress $(( 65535 * ${_mm_var_splash_progress_val} / ${_mm_var_splash_progress_max} ))"
     mm_splash_command "repaint"
 
     return 0
@@ -1490,9 +1497,9 @@ mm_hardware_motherboard2kernel_map() {
 }
 
 #===============================================================================
-# xmacro functions.
+# X functions.
 #===============================================================================
-mm_xmacroplay() {
+mm_x_xmacroplay() {
     program="$1"
     command="$2"
 
@@ -1517,14 +1524,176 @@ mm_xmacroplay() {
     fi
 }
 
-mm_xmacroplay_exit_program() {
+mm_x_xmacroplay_exit_program() {
     program="$1"
     command="$2"
 
     if /usr/bin/test -n "`/bin/pidof ${program}`" ; then
-        mm_xmacroplay "${program}" "${command}"
+        mm_x_xmacroplay "${program}" "${command}"
         if /usr/bin/test -n "`/bin/pidof ${program}`" ; then
             mm_message_output error "failed to exit '${program}'."
         fi
     fi
+}
+
+# Kill all applications in the list.
+mm_x_applications_kill() {
+    local applications="$@"
+
+    local application
+
+    for application in ${applications} ; do
+        pids="`/bin/pidof ${application}`"
+        for pid in ${pids} ; do
+            /bin/kill -SIGTERM ${pid} > /dev/null 2>&1
+        done
+    done
+
+    return 0
+}
+
+# Wait for all applications in the list to die.
+mm_x_applications_die() {
+    local applications="$@"
+
+    local application
+    local dead
+
+    dead=0
+    while /usr/bin/test ${dead} -eq 0 ; do
+        dead=1
+        for application in ${applications} ; do
+            if /usr/bin/test -n "`/bin/pidof ${application}`" ; then
+                dead=0
+                /bin/sleep 1
+            fi
+        done
+    done
+
+    return 0
+}
+
+# Start X.
+mm_x_start() {
+    /usr/bin/logger -t minimyth -p "local0.info" \
+        "starting X"
+
+    # Only root start X.
+    if /usr/bin/test ! `/usr/bin/id -u` -eq 0 ; then
+        /usr/bin/logger -t minimyth -p "local0.info" \
+            "X not started because uid=`/usr/bin/id -u` is not 'root'."
+        return 0
+    fi
+
+    # Only start X if X is enabled.
+    if /usr/bin/test ! "${MM_X_ENABLED}" = "yes" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" \
+            "X not started because X not enabled in minimyth.conf."
+        return 0
+    fi
+
+    # Only start X if X is not already running.
+    if /usr/bin/test -n "`/bin/pidof X`" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" \
+            "X not started because X is already running."
+        return 0
+    fi
+ 
+    /usr/bin/su -c "/usr/bin/nohup /usr/bin/xinit > /dev/null 2>&1 &" - minimyth
+
+    if /usr/bin/test -n "`/bin/pidof mm_sleep_on_xss`" ; then
+        /usr/bin/killall mm_sleep_on_ss
+    fi
+    if /usr/bin/test "${MM_X_SCREENSAVER_HACK}" = "sleep" ; then
+        /usr/bin/mm_sleep_on_ss &
+    fi
+
+    return 0
+}
+
+# Stop X.
+mm_x_stop() {
+
+    local applications
+
+    /usr/bin/logger -t minimyth -p "local0.info" \
+        "stopping X"
+
+    # Only users root and minimyth can stop X.
+    if /usr/bin/test ! `/usr/bin/id -u` -eq 0 ; then
+        /usr/bin/logger -t minimyth -p "local0.info" \
+            "X not stopped because uid=`/usr/bin/id -u` is not 'root'."
+        return 0
+    fi
+
+    if /usr/bin/test -n "`/bin/pidof mm_sleep_on_ss`" ; then
+        /usr/bin/killall mm_sleep_on_ss
+    fi
+
+    # Only sotp X if X is running.
+    if /usr/bin/test ! -n "`/bin/pidof X`" ; then
+        /usr/bin/logger -t minimyth -p "local0.info" \
+            "X not stopped because X is not running."
+        return 0
+    fi
+
+    # Create the list of known X applications.
+    applications="${applications} ${MM_X_MYTH_PROGRAM}"
+    applications="${applications} fceu"
+    applications="${applications} jzintv"
+    applications="${applications} mame"
+    applications="${applications} mednafen"
+    applications="${applications} mplayer"
+    applications="${applications} mythbrowser"
+    applications="${applications} mythfrontend"
+    applications="${applications} mythtv"
+    applications="${applications} mythwelcome"
+    applications="${applications} ratpoison"
+    applications="${applications} rxvt"
+    applications="${applications} stella"
+    applications="${applications} VisualBoyAdvance"
+    applications="${applications} X"
+    applications="${applications} x11vnc"
+    applications="${applications} xine"
+    applications="${applications} xinit"
+    applications="${applications} xscreensaver"
+    applications="${applications} zsnes"
+
+    # Create the list of known X applications not keeping X alive, kill them and wait for them to die
+    applications=`/bin/echo "${applications}" \
+        | /bin/sed -e 's%  *% %g'             \
+        | /bin/sed -e 's% %\n%g'              \
+        | /usr/bin/sort                       \
+        | /usr/bin/uniq                       \
+        | /bin/grep -v 'xinit'                \
+        | /bin/grep -v 'X'                    \
+        | /bin/grep -v "${MM_X_MYTH_PROGRAM}"`
+    mm_x_applications_kill ${applications}
+    mm_x_applications_die  ${applications}
+
+    # Create the list of xlsclients X applications not keeping X alive, kill them and wait for them to die
+    #   All of these should have been killed when we killed the list of known X applications not keeping X alive.
+    #   However, there may be some unknown X applications not keeping X alive that we need to kill.
+    applications=`/usr/bin/xlsclients -display 0:0 -a 2> /dev/null \
+        | /bin/sed -e 's%  *% %g'                                  \
+        | /usr/bin/cut -d ' ' -f 2                                 \
+        | /bin/sed -e 's%^.*/%%'                                   \
+        | /usr/bin/sort                                            \
+        | /usr/bin/uniq                                            \
+        | /bin/grep -v 'xinit'                                     \
+        | /bin/grep -v 'X'                                         \
+        | /bin/grep -v "${MM_X_MYTH_PROGRAM}"`
+    mm_x_applications_kill ${applications}
+    mm_x_applications_die  ${applications}
+
+    # Create the list of the known X application keeping X alive, kill them and wait for them to die.
+    applications="${MM_X_MYTH_PROGRAM}"
+    mm_x_applications_kill ${applications}
+    mm_x_applications_die  ${applications}
+
+    # Create the list of remaining known X applications and wait for them to die.
+    applications="xinit X"
+    mm_x_applications_die  ${applications}
+
+    return 0
 }
