@@ -1,5 +1,5 @@
 GARNAME = openldap
-GARVERSION = 2.3.38
+GARVERSION = 2.3.39
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/
 DISTFILES = $(DISTNAME).tgz
