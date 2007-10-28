@@ -12,10 +12,10 @@ conf_check_minimyth() {
 }
 
 conf_default_minimyth() {
-    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_FUNC}"   ; then
-        MM_MINIMYTH_FETCH_MINIMYTH_FUNC='no'
+    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER}" ; then
+        MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER='no'
     fi
-    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" ; then
+    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"  ; then
         MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT='no'
     fi
 
@@ -25,18 +25,18 @@ conf_default_minimyth() {
 conf_write_minimyth() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_MINIMYTH_FETCH_MINIMYTH_FUNC   "${MM_MINIMYTH_FETCH_MINIMYTH_FUNC}"
-    conf_variable_write "${conf_file}" MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"
+    conf_variable_write "${conf_file}" MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER "${MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER}"
+    conf_variable_write "${conf_file}" MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT  "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"
 
     return 0
 }
 
 conf_fetch_minimyth() {
-    if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_FUNC}" = "yes" ; then
-        /bin/rm -f /etc/minimyth.d/minimyth.func
-        mm_conf_get /minimyth.func /etc/minimyth.d/minimyth.func
-        if /usr/bin/test ! -e /etc/minimyth.d/minimyth.func; then
-            mm_message_output err "error: failed to fetch 'minimyth.func' file."
+    if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER}" = "yes" ; then
+        /bin/rm -f /etc/minimyth.d/minimyth.trigger
+        mm_conf_get /minimyth.trigger /etc/minimyth.d/minimyth.trigger
+        if /usr/bin/test ! -e /etc/minimyth.d/minimyth.trigger; then
+            mm_message_output err "error: failed to fetch 'minimyth.trigger' file."
         fi
     fi
 
