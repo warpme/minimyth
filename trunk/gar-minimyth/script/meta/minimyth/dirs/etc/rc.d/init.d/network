@@ -43,9 +43,9 @@ start() {
     # If an IP address was already obtained then request the same address.
     ip=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
     if /usr/bin/test -z "${ip}" ; then
-        /sbin/udhcpc -s /etc/udhcpc.script -i eth0           > /var/log/udhcpc 2>&1
+        /sbin/udhcpc -S -s /etc/udhcpc.script -i eth0           > /var/log/udhcpc 2>&1
     else
-        /sbin/udhcpc -s /etc/udhcpc.script -i eth0 -r ${ip}  > /var/log/udhcpc 2>&1
+        /sbin/udhcpc -S -s /etc/udhcpc.script -i eth0 -r ${ip}  > /var/log/udhcpc 2>&1
     fi
     if /usr/bin/test $? -ne 0 ; then
         mm_message_output err "error: DHCP failed."
