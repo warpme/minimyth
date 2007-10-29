@@ -63,15 +63,11 @@ if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     /usr/bin/mm_x_stop
 fi
 
-if `type -t mm_trigger_sleep_enter > /dev/null 2>&1` ; then
-    mm_trigger_sleep_enter
-fi
+/usr/bin/mm_external power_off
 
 /bin/echo 3 > /proc/acpi/sleep
 
-if `type -t mm_trigger_sleep_leave > /dev/null 2>&1` ; then
-    mm_trigger_sleep_leave
-fi
+/usr/bin/mm_external power_on
 
 # Start X
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then

@@ -222,6 +222,11 @@ start() {
         if /usr/bin/test "${MM_LIRC_SLEEP_ENABLED}" = "yes" ; then
             /bin/echo "include /etc/lirc.d/lircrc.power.sleep" >> /etc/lircrc
         fi
+        if /usr/bin/test "${MM_EXTERNAL_VOLUME_ENABLED}" = "yes" ; then
+            /bin/echo "include /etc/lirc.d/lircrc.volume.external" >> /etc/lircrc
+        else
+            /bin/echo "include /etc/lirc.d/lircrc.volume.internal" >> /etc/lircrc
+        fi
         for file in `/bin/ls /etc/lirc.d/lircrc.d/lircrc.* 2> /dev/null` ; do
             /bin/echo "include ${file}" >> /etc/lircrc
         done
