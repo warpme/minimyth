@@ -1,5 +1,5 @@
 GARNAME = nss_ldap
-GARVERSION = 258
+GARVERSION = 259
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.padl.com/pub/
 DISTFILES = $(DISTNAME).tar.gz
