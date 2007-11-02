@@ -44,54 +44,9 @@ mm_command_run() {
     return ${RETURN}
 }
 
-mm_url_file_get() {
-    local LOCAL_FILE=$1
-    local REMOTE_FILE=$2
-
-    local LOCAL_DIR
-
-    /usr/bin/test -e "${REMOTE_FILE}" || return
-
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
-
-    /bin/cp -f "${REMOTE_FILE}" "${LOCAL_FILE}" || return
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' retrieved."
-}
-
-mm_url_http_get() {
-    local LOCAL_FILE=$1
-    local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
-
-    local LOCAL_DIR
-
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
-
-    /usr/bin/wget "http://${REMOTE_SERVER}/${REMOTE}" -O "${LOCAL_FILE}" || return
-
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
-}
-
-mm_url_tftp_get() {
-    local LOCAL_FILE=$1
-    local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
-
-    local LOCAL_DIR
-
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
-
-    /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
-
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
-}
-
+#===============================================================================
+# mm_url_*_get functions.
+#===============================================================================
 mm_url_conf_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
@@ -173,6 +128,36 @@ mm_url_dist_get() {
     fi
 }
 
+mm_url_file_get() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+
+    local LOCAL_DIR
+
+    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
+    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
+
+    /bin/cp -f "${REMOTE_FILE}" "${LOCAL_FILE}" || return
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' retrieved."
+}
+
+mm_url_http_get() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+    local REMOTE_SERVER=$3
+
+    local LOCAL_DIR
+
+    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
+    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
+
+    /usr/bin/wget "http://${REMOTE_SERVER}/${REMOTE}" -O "${LOCAL_FILE}" || return
+
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
+}
+
 mm_url_hunt_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
@@ -184,16 +169,28 @@ mm_url_hunt_get() {
     return
 }
 
-mm_conf_get() {
-    local REMOTE_FILE=$1
-    local LOCAL_FILE=$2
+mm_url_tftp_get() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+    local REMOTE_SERVER=$3
 
-    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}"
+    local LOCAL_DIR
+
+    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
+    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
+
+    /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
+
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
 }
 
-mm_conf_put() {
-    local REMOTE_FILE=$1
-    local LOCAL_FILE=$2
+#===============================================================================
+# mm_url_*_put functions.
+#===============================================================================
+mm_url_conf_put() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
 
     local HOSTNAME
     local REMOTE_FILE_0
@@ -223,29 +220,87 @@ mm_conf_put() {
     fi
 
     if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ; then
-            /usr/bin/logger -s -t minimyth -p "local0.info"  \
-                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}' posted."
-        else
-            /usr/bin/logger -s -t minimyth -p "local0.error" \
-                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}' failed to post."
-            /bin/false
-            return
-        fi
+        mm_url_tftp_put "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}"
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        /bin/mkdir -p "/minimyth/conf-rw"
-        if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/${REMOTE_FILE_0}"                      ; then
-            /usr/bin/logger -s -t minimyth -p "local0.info"  \
-                "'file:/minimyth/${REMOTE_FILE_0}' posted."
-        else
-            /usr/bin/logger -s -t minimyth -p "local0.error" \
-                "'file:/minimyth/${REMOTE_FILE_0}' failed to post."
-            /bin/false
-            return
-        fi
+        mm_url_file_put "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}"
     fi
 }
 
+mm_url_file_put() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+
+    local REMOTE_DIR
+
+    if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.error"  \
+            "cannot post conf file '${LOCAL_FILE}' because file not found."
+        /bin/false
+        return
+    fi
+
+    REMOTE_DIR=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
+    /usr/bin/test -n "${REMOTE_DIR}" && /bin/mkdir -p "${REMOTE_DIR}"
+    /usr/bin/test -n "${REMOTE_DIR}" && /usr/bin/test ! -d "${REMOTE_DIR}" && return
+
+    if /bin/cp -f "${LOCAL_FILE}" "${REMOTE_FILE}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.info"  \
+            "'file:${REMOTE_FILE}' posted."
+        /bin/true
+        return
+    else
+        /usr/bin/logger -s -t minimyth -p "local0.error" \
+            "'file:${REMOTE_FILE}' failed to post."
+        /bin/false
+        return
+    fi
+}
+
+mm_url_tftp_put() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+    local REMOTE_SERVER=$3
+
+    if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.error"  \
+            "cannot post conf file '${LOCAL_FILE}' because file not found."
+        /bin/false
+        return
+    fi
+
+    if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${REMOTE_FILE}" "${REMOTE_SERVER}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.info"  \
+            "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' posted."
+        /bin/true
+        return
+    else
+        /usr/bin/logger -s -t minimyth -p "local0.error" \
+            "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' failed to post."
+        /bin/false
+        return
+    fi
+}
+
+#===============================================================================
+# mm_conf_* functions.
+#===============================================================================
+mm_conf_get() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}"
+}
+
+mm_conf_put() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    mm_url_conf_put "${LOCAL_FILE}" "${REMOTE_FILE}"
+}
+
+#===============================================================================
+#
+#===============================================================================
 mm_game_restore() {
 
     local FILE
