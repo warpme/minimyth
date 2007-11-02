@@ -43,9 +43,10 @@ start() {
 	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
     done
 
-    # Enable udev rules to detect and mount local boot partition (/minimyth).
+    # Enable udev rules to detect and mount local MiniMyth local boot/conf partition (/minimyth).
     if /usr/bin/test "${MM_BOOT_TYPE}" = "local" ; then
-        for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-localboot.rules.disabled 2> /dev/null` ; do
+       /usr/bin/test "${MM_CONF_TYPE}" = "local" ; then
+        for file in `cd /etc/udev/rules.d ; /bin/ls -1 *-minimyth-local.rules.disabled 2> /dev/null` ; do
             file_old=`/bin/echo ${file}`
             file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
 	    /bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}

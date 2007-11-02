@@ -10,12 +10,14 @@ start() {
     local file_old
     local file_new
 
-    if /usr/bin/test ! "${MM_BOOT_TYPE}" = "local" ; then
+    if /usr/bin/test ! "${MM_BOOT_TYPE}" = "local" &&
+       /usr/bin/test ! "${MM_CONF_TYPE}" = "local" ; then
         return 0
     fi
 
-    # Local booting, so there should be a '/minimyth' directory.
-    if /usr/bin/test "${MM_BOOT_TYPE}" = "local" ; then
+    # Using local boot or local conf, so there should be a '/minimyth' directory.
+    if /usr/bin/test "${MM_BOOT_TYPE}" = "local" ||
+       /usr/bin/test "${MM_CONF_TYPE}" = "local" ; then
         while /usr/bin/test ! -e /minimyth ; do
             mm_message_output info "waiting for directory /minimyth to mount ..."
             sleep 1

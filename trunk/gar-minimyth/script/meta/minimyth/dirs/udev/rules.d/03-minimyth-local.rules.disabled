@@ -1,7 +1,7 @@
 # Identify and mount/unmount the MiniMyth local boot device.
 
-# mm_localboot_device signals other udev rules that this device is the MiniMyth local boot device.
-#ENV{minimyth_localboot_device}=""
+# minimyth_local_device signals other udev rules that this device is the MiniMyth local boot/conf device.
+#ENV{minimyth_local_device}=""
 
 SUBSYSTEM!="block"                                                          , GOTO="end"
 KERNEL=="hd[a-z]*"                                                          , GOTO="begin"
@@ -12,7 +12,7 @@ LABEL="begin"
 
   IMPORT{program}="/lib/udev/vol_id --export $tempnode"
 
-  ENV{ID_FS_LABEL_SAFE}=="minimyth", ENV{minimyth_localboot_device}="1"
+  ENV{ID_FS_LABEL_SAFE}=="minimyth", ENV{minimyth_local_device}="1"
  
   ENV{ID_FS_LABEL_SAFE}!="minimyth"                                         , GOTO="end-minimyth_boot_directory"
     ENV{minimyth_localboot_device}="1"
