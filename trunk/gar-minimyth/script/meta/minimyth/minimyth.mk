@@ -113,7 +113,7 @@ MM_INIT_KILL := \
     game \
     cron \
     ssh_server \
-    localboot \
+    local \
     log \
     telnet \
     modules_manual \
