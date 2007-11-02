@@ -9,10 +9,15 @@ conf_clean_security() {
 
 conf_check_security() {
 
-    if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}"         && \
-       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "yes" && \
-       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "no" ; then
-        mm_message_output err "error: MM_SECURITY_ENABLED='${MM_SECURITY_ENABLED}' is not valid."
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SECURITY_ENABLED' is obsolete."
+    fi
+
+    if /usr/bin/test ! -z "${MM_SECURITY_LEVEL}"       && \
+       /usr/bin/test !    "${MM_SECURITY_LEVEL}" = "0" && \
+       /usr/bin/test !    "${MM_SECURITY_LEVEL}" = "1" ; then
+        mm_message_output err "error: MM_SECURITY_LEVEL='${MM_SECURITY_LEVEL}' is not valid."
     fi
     if /usr/bin/test ! -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"         && \
        /usr/bin/test !    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "yes" && \
@@ -26,8 +31,8 @@ conf_check_security() {
 
 conf_default_security() {
 
-    if /usr/bin/test -z "${MM_SECURITY_ENABLED}" ; then
-        MM_SECURITY_ENABLED='no'
+    if /usr/bin/test -z "${MM_SECURITY_LEVEL}" ; then
+        MM_SECURITY_LEVEL='0'
     fi
     if /usr/bin/test -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" ; then
         MM_SECURITY_FETCH_CA_BUNDLE_CRT='no'
@@ -39,7 +44,7 @@ conf_default_security() {
 conf_write_security() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_SECURITY_ENABLED             "${MM_SECURITY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SECURITY_LEVEL               "${MM_SECURITY_LEVEL}"
     conf_variable_write "${conf_file}" MM_SECURITY_FETCH_CA_BUNDLE_CRT "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"
 
     return 0
