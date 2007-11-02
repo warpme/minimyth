@@ -44,6 +44,13 @@ case "${1}" in
         else
             /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='local'
         fi
+        if   /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
+            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='tftp'
+        elif /usr/bin/test "${MM_BOOT_TYPE}" = "local"   ; then
+            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='file'
+        else
+            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='unknown'
+        fi
 
         /bin/rm -f "${DHCP_CONF}~"
         conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS     "${MM_DHCP_ADDRESS}"
@@ -56,6 +63,7 @@ case "${1}" in
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER      "${MM_TFTP_SERVER}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR     "${MM_TFTP_ROOTDIR}"
         conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        "${MM_BOOT_TYPE}"
+        conf_variable_write ${DHCP_CONF}~ MM_CONF_TYPE        "${MM_CONF_TYPE}"
         /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
 
         /usr/bin/test -n "${broadcast}" && BROADCAST="broadcast ${broadcast}"
