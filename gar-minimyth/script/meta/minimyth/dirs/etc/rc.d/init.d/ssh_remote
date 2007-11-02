@@ -13,18 +13,18 @@ __ssh_copy_to_remote() {
     local dir_remote=tmp/minimyth/${MM_HOSTNAME}/${dir}
     local dir_remote_dir=`/usr/bin/dirname ${dir_remote}`
 
-    /usr/bin/ssh ${MM_SSH_REMOTE_HOST} "rm -fr ${dir_remote}" 2> /dev/null
+    mm_ssh_remote_run /dev/null "rm -fr ${dir_remote}"
     if /usr/bin/test $? -ne 0 ; then
         mm_message_output err "error: failed to delete remote directory '${dir_remote}'."
         exit 1
     fi
     if /usr/bin/test -e ${dir_local} ; then
-        /usr/bin/ssh ${MM_SSH_REMOTE_HOST} "mkdir -p ${dir_remote_dir}" 2> /dev/null
+        mm_ssh_remote_run /dev/null "mkdir -p ${dir_remote_dir}"
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to create remote directory '${dir_remote_dir}'."
             exit 1
         fi
-        /usr/bin/scp -r ${dir_local} ${MM_SSH_REMOTE_HOST}:${dir_remote} 2> /dev/null
+        mm_ssh_remote_put /dev/null ${dir_local} ${dir_remote}
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: failed to copy local directory '${dir_local}' to remote directory '${dir_remote}'."
             exit 1
@@ -36,15 +36,6 @@ __ssh_copy_to_remote() {
 
 start() {
     mm_message_output info "configuring ssh remote command execution ..."
-
-    if /usr/bin/test -e /etc/ssh/ssh_config ; then
-        /bin/chmod 644 /etc/ssh/ssh_config
-        /bin/chown root:minimyth /etc/ssh/ssh_config
-
-        /bin/sed -i "s%@MM_SSH_REMOTE_HOST@%${MM_SSH_REMOTE_HOST}%" /etc/ssh/ssh_config
-        /bin/sed -i "s%@MM_SSH_REMOTE_PORT@%${MM_SSH_REMOTE_PORT}%" /etc/ssh/ssh_config
-        /bin/sed -i "s%@MM_SSH_REMOTE_USER@%${MM_SSH_REMOTE_USER}%" /etc/ssh/ssh_config
-    fi
 
     if /usr/bin/test -e /etc/ssh/id_rsa ; then
         /bin/chmod 600 /etc/ssh/id_rsa
