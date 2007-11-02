@@ -47,16 +47,17 @@ mm_command_run() {
 mm_url_file_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
 
     local LOCAL_DIR
+
+    /usr/bin/test -e "${REMOTE_FILE}" || return
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /bin/cp "${REMOTE_FILE}" "${LOCAL_FILE}" || return
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:/${REMOTE_FILE}' retrieved."
+    /bin/cp -f "${REMOTE_FILE}" "${LOCAL_FILE}" || return
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' retrieved."
 }
 
 mm_url_http_get() {
@@ -94,60 +95,48 @@ mm_url_tftp_get() {
 mm_url_conf_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
 
     local HOSTNAME
-    local FILE_GOT
-    local LOCAL_DIR
-    local REMOTE_FILE_ALT
-    local TMP_FILE
+    local REMOTE_FILE_0
+    local REMOTE_FILE_1
+    local REMOTE_FILE_2
 
     HOSTNAME=`/bin/hostname`
 
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
+    if /usr/bin/test -n "${HOSTNAME}" ; then
+        REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
+            | /bin/sed -e 's%^/*%%'             \
+            | /bin/sed -e 's%/*$%%'             \
+            | /bin/sed -e 's%//*%/%g'           \
+            | /bin/sed -e 's%/%+%'`
+        REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
+        REMOTE_FILE_1="conf/${HOSTNAME}/${REMOTE_FILE}"
+    fi
+    REMOTE_FILE_2="conf/default/${REMOTE_FILE}"
 
-    REMOTE_FILE_ALT=`/bin/echo ${REMOTE_FILE} \
-        | /bin/sed -e 's%^/*%%'               \
-        | /bin/sed -e 's%/*$%%'               \
-        | /bin/sed -e 's%//*%/%g'             \
-        | /bin/sed -e 's%/%+%'`
-
-    TMP_FILE="${LOCAL_FILE}~"
-    
-    /bin/rm -f "${TMP_FILE}"
-    FILE_GOT=
+    /bin/rm -f "${LOCAL_FILE}"
     if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" &&
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-            FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}' retrieved."
-        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" &&
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/${HOSTNAME}/${REMOTE_FILE}"        -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-            FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf/${HOSTNAME}/${REMOTE_FILE}' retrieved."
-        /usr/bin/test -z "${FILE_GOT}" && 
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}"            -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-            FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}' retrieved."
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) ||
+        ( /usr/bin/test -n "${REMOTE_FILE_1}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_1}" "${MM_TFTP_SERVER}" ) ||
+        ( /usr/bin/test -n "${REMOTE_FILE_2}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_2}" "${MM_TFTP_SERVER}" ) ||
+        /bin/rm -f "${LOCAL_FILE}"
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" && 
-            /usr/bin/test -e "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}" &&
-            /bin/cp          "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}"                "${TMP_FILE}"                     && 
-            FILE_GOT="'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}' retrieved."
-        /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" &&
-            /usr/bin/test -e "/minimyth/conf/${HOSTNAME}/${REMOTE_FILE}"    &&
-            /bin/cp          "/minimyth/conf/${HOSTNAME}/${REMOTE_FILE}"                       "${TMP_FILE}"                     && 
-            FILE_GOT="'file:/minimyth/conf/${HOSTNAME}/${REMOTE_FILE}' retrieved."
-        /usr/bin/test -z "${FILE_GOT}" &&
-            /usr/bin/test -e "/minimyth/conf/default/${REMOTE_FILE}"            &&
-            /bin/cp          "/minimyth/conf/default/${REMOTE_FILE}"                           "${TMP_FILE}"                     &&
-            FILE_GOT="'file:/minimyth/conf/default/${REMOTE_FILE}' retrieved."
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && 
+              mm_url_tftp_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) ||
+        ( /usr/bin/test -n "${REMOTE_FILE_1}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_1}" ) ||
+        ( /usr/bin/test -n "${REMOTE_FILE_2}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_2}" ) ||
+        /bin/rm -f "${LOCAL_FILE}"
     fi
-    if /usr/bin/test -n "${FILE_GOT}" ; then
-        /bin/mv -f "${TMP_FILE}" "${LOCAL_FILE}"
-        /usr/bin/logger -s -t minimyth -p "local0.info" "${FILE_GOT}"
-    fi
-    /bin/rm -f "${TMP_FILE}"
-    if /usr/bin/test -z "${FILE_GOT}" ; then
+
+    if /usr/bin/test -e "${LOCAL_FILE}" ; then
+        /bin/true
+        return
+    else
         /bin/false
         return
     fi
@@ -156,38 +145,29 @@ mm_url_conf_get() {
 mm_url_dist_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
 
-    local FILE_GOT
-    local LOCAL_DIR
-    local REMOTE_DIR
-    local TMP_FILE
+    local REMOTE_FILE_0
 
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
-
-    TMP_FILE="${LOCAL_FILE}~"
-
-    /bin/rm -f "${TMP_FILE}"
-    FILE_GOT=
     if /usr/bin/test -n "${MM_ROOTFS_IMAGE}" ; then
-        REMOTE_DIR=` /bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%//*%/%g'`
-        if   /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
-            /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/${REMOTE_DIR}${REMOTE_FILE}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
-            FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_DIR}${REMOTE_FILE}' retrieved."
-        elif /usr/bin/test "${MM_BOOT_TYPE}" = "local"   ; then
-            /usr/bin/test -e "/minimyth/${REMOTE_DIR}${REMOTE_FILE}" &&
-            /bin/cp          "/minimyth/${REMOTE_DIR}${REMOTE_FILE}"                "${TMP_FILE}"                     &&
-            FILE_GOT="'file:/minimyth/${REMOTE_DIR}${REMOTE_FILE}' retrieved."
-        fi
+        REMOTE_FILE_0=` /bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%//*%/%g'`
+        REMOTE_FILE_0="${REMOTE_FILE_0}${REMOTE_FILE}"
     fi
-    if /usr/bin/test -n "${FILE_GOT}" ; then
-        /bin/mv -f "${TMP_FILE}" "${LOCAL_FILE}"
-        /usr/bin/logger -s -t minimyth -p "local0.info" "${FILE_GOT}"
+
+    /bin/rm -f "${LOCAL_FILE}"
+    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" &&
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) ||
+        /bin/rm -f "${LOCAL_FILE}"
+    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && 
+              mm_url_tftp_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) ||
+        /bin/rm -f "${LOCAL_FILE}"
     fi
-    /bin/rm -f "${TMP_FILE}"
-    if /usr/bin/test -z "${FILE_GOT}" ; then
+
+    if /usr/bin/test -e "${LOCAL_FILE}" ; then
+        /bin/true
+        return
+    else
         /bin/false
         return
     fi
@@ -196,21 +176,12 @@ mm_url_dist_get() {
 mm_url_hunt_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
-    local REMOTE_SERVER=$3
 
-    local LOCAL_DIR
+    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}" ||
+    mm_url_dist_get "${LOCAL_FILE}" "${REMOTE_FILE}" ||
+    return
 
-    LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
-    /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
-    /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
-
-    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}"
-    if /usr/bin/test $? -ne 0 ; then
-        mm_url_dist_get "${LOCAL_FILE}" "${REMOTE_FILE}"
-    fi
-    if /usr/bin/test $? -ne 0 ; then
-        return
-    fi
+    return
 }
 
 mm_conf_get() {
@@ -224,7 +195,10 @@ mm_conf_put() {
     local REMOTE_FILE=$1
     local LOCAL_FILE=$2
 
-    local HOSTNAME=`/bin/hostname`
+    local HOSTNAME
+    local REMOTE_FILE_0
+
+    HOSTNAME=`/bin/hostname`
 
     if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
@@ -239,30 +213,33 @@ mm_conf_put() {
         return
     fi
 
-    REMOTE_FILE=`/bin/echo ${REMOTE_FILE} \
-        | /bin/sed -e 's%^/*%%'           \
-        | /bin/sed -e 's%/*$%%'           \
-        | /bin/sed -e 's%//*%/%g'         \
-        | /bin/sed -e 's%/%+%'`
+    if /usr/bin/test -n "${HOSTNAME}" ; then
+        REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
+            | /bin/sed -e 's%^/*%%'             \
+            | /bin/sed -e 's%/*$%%'             \
+            | /bin/sed -e 's%//*%/%g'           \
+            | /bin/sed -e 's%/%+%'`
+        REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
+    fi
 
     if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}" "${MM_TFTP_SERVER}" ; then
+        if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ; then
             /usr/bin/logger -s -t minimyth -p "local0.info"  \
-                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
+                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}' posted."
         else
             /usr/bin/logger -s -t minimyth -p "local0.error" \
-                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}' failed to post."
+                "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}' failed to post."
             /bin/false
             return
         fi
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
         /bin/mkdir -p "/minimyth/conf-rw"
-        if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}"                      ; then
+        if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/${REMOTE_FILE_0}"                      ; then
             /usr/bin/logger -s -t minimyth -p "local0.info"  \
-                "'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
+                "'file:/minimyth/${REMOTE_FILE_0}' posted."
         else
             /usr/bin/logger -s -t minimyth -p "local0.error" \
-                "'file:/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}' failed to post."
+                "'file:/minimyth/${REMOTE_FILE_0}' failed to post."
             /bin/false
             return
         fi
