@@ -118,7 +118,7 @@ mm_url_conf_get() {
     
     /bin/rm -f "${TMP_FILE}"
     FILE_GOT=
-    if   /usr/bin/test "${MM_CONF_TYPE}" = "tftp" ; then
+    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
         /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" &&
             /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}" -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
             FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}' retrieved."
@@ -128,7 +128,7 @@ mm_url_conf_get() {
         /usr/bin/test -z "${FILE_GOT}" && 
             /usr/bin/tftp -g -r "${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}"            -l "${TMP_FILE}" "${MM_TFTP_SERVER}" &&
             FILE_GOT="'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf/default/${REMOTE_FILE}' retrieved."
-    elif /usr/bin/test "${MM_CONF_TYPE}" = "file" ; then
+    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
         /usr/bin/test -z "${FILE_GOT}" && /usr/bin/test -n "${HOSTNAME}" && 
             /usr/bin/test -e "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}" &&
             /bin/cp          "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE_ALT}"                "${TMP_FILE}"                     && 
@@ -245,7 +245,7 @@ mm_conf_put() {
         | /bin/sed -e 's%//*%/%g'         \
         | /bin/sed -e 's%/%+%'`
 
-    if   /usr/bin/test "${MM_CONF_TYPE}" = "tftp" ; then
+    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
         if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}" "${MM_TFTP_SERVER}" ; then
             /usr/bin/logger -s -t minimyth -p "local0.info"  \
                 "'tftp://${MM_TFTP_SERVER}/${MM_TFTP_ROOTDIR}/conf-rw/${HOSTNAME}+${REMOTE_FILE}' posted."
@@ -255,7 +255,7 @@ mm_conf_put() {
             /bin/false
             return
         fi
-    elif /usr/bin/test "${MM_CONF_TYPE}" = "file" ; then
+    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
         /bin/mkdir -p "/minimyth/conf-rw"
         if /bin/cp -f         "${LOCAL_FILE}"             "/minimyth/conf-rw/${HOSTNAME}+${REMOTE_FILE}"                      ; then
             /usr/bin/logger -s -t minimyth -p "local0.info"  \
@@ -1493,6 +1493,36 @@ mm_hardware_motherboard2kernel_map() {
     /usr/bin/logger -t minimyth -p "local0.warn" "    motherboard vendor='${vendor}', product='${product}' unknown."
     /usr/bin/logger -t minimyth -p "local0.warn" "    some kernel modules may not be loaded."
     return 0
+}
+
+#===============================================================================
+# mm_ssh_remote_* functions.
+#===============================================================================
+mm_ssh_remote_run() {
+    local logfile="$1"
+    local command="$2"
+
+    local host="${MM_SSH_REMOTE_HOST}"
+    local port="${MM_SSH_REMOTE_PORT}"
+    local user="${MM_SSH_REMOTE_USER}"
+    local identity="${HOME}/.ssh/id_rsa"
+
+    /bin/echo "/usr/bin/ssh -p ${port} -i ${identity} ${user}@${host} \"${command}\""  >> ${logfile}
+    /usr/bin/ssh -p ${port} -i ${identity} ${user}@${host} "${command}"               2>> ${logfile}
+}
+
+mm_ssh_remote_put() {
+    local logfile="$1"
+    local file_local="$2"
+    local file_remote="$3"
+
+    local host="${MM_SSH_REMOTE_HOST}"
+    local port="${MM_SSH_REMOTE_PORT}"
+    local user="${MM_SSH_REMOTE_USER}"
+    local identity="${HOME}/.ssh/id_rsa"
+
+    /bin/echo "/usr/bin/scp -r -P ${port} -i ${identity} ${file_local} ${user}@${host}:${file_remote}"  >> ${logfile}
+    /usr/bin/scp -r -P ${port} -i ${identity} ${file_local} ${user}@${host}:${file_remote}             2>> ${logfile}
 }
 
 #===============================================================================
