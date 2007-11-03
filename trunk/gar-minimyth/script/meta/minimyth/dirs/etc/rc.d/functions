@@ -41,7 +41,8 @@ mm_command_run() {
         /bin/echo "--- execution end  : ${COMMAND}"                   2>&1
     fi
 
-    return ${RETURN}
+    /usr/bin/test ${RETURN} -eq 0
+    return
 }
 
 #===============================================================================
@@ -77,7 +78,7 @@ mm_url_conf_get() {
               mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_1}" "${MM_TFTP_SERVER}" ) || \
         ( /usr/bin/test -n "${REMOTE_FILE_2}" && \
               mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_2}" "${MM_TFTP_SERVER}" ) || \
-        /bin/rm -f "${LOCAL_FILE}"
+        return
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
         ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
               mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
@@ -85,16 +86,10 @@ mm_url_conf_get() {
               mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_1}" ) || \
         ( /usr/bin/test -n "${REMOTE_FILE_2}" && \
               mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_2}" ) || \
-        /bin/rm -f "${LOCAL_FILE}"
+        return
     fi
 
-    if /usr/bin/test -e "${LOCAL_FILE}" ; then
-        /bin/true
-        return
-    else
-        /bin/false
-        return
-    fi
+    return
 }
 
 mm_url_dist_get() {
@@ -112,20 +107,14 @@ mm_url_dist_get() {
     if   /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
         ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
               mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        /bin/rm -f "${LOCAL_FILE}"
+        return
     elif /usr/bin/test "${MM_BOOT_TYPE}" = "local"   ; then
         ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
               mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        /bin/rm -f "${LOCAL_FILE}"
+        return
     fi
 
-    if /usr/bin/test -e "${LOCAL_FILE}" ; then
-        /bin/true
-        return
-    else
-        /bin/false
-        return
-    fi
+    return
 }
 
 mm_url_file_get() {
@@ -139,7 +128,10 @@ mm_url_file_get() {
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
     /bin/cp -f "${REMOTE_FILE}" "${LOCAL_FILE}" || return
+
     /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' retrieved."
+
+    return
 }
 
 mm_url_http_get() {
@@ -156,6 +148,8 @@ mm_url_http_get() {
     /usr/bin/wget "http://${REMOTE_SERVER}/${REMOTE}" -O "${LOCAL_FILE}" || return
 
     /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
+
+    return
 }
 
 mm_url_hunt_get() {
@@ -183,6 +177,8 @@ mm_url_tftp_get() {
     /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
 
     /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
+
+    return
 }
 
 #===============================================================================
@@ -220,10 +216,16 @@ mm_url_conf_put() {
     fi
 
     if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        mm_url_tftp_put "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}"
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
+            mm_url_tftp_put "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
+        return
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        mm_url_file_put "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}"
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
+            mm_url_file_put "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
+        return
     fi
+
+    return
 }
 
 mm_url_file_put() {
@@ -254,6 +256,8 @@ mm_url_file_put() {
         /bin/false
         return
     fi
+
+    return
 }
 
 mm_url_tftp_put() {
@@ -279,6 +283,8 @@ mm_url_tftp_put() {
         /bin/false
         return
     fi
+
+    return
 }
 
 #===============================================================================
@@ -288,14 +294,18 @@ mm_conf_get() {
     local REMOTE_FILE=$1
     local LOCAL_FILE=$2
 
-    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}"
+    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}" || return
+
+    return
 }
 
 mm_conf_put() {
     local REMOTE_FILE=$1
     local LOCAL_FILE=$2
 
-    mm_url_conf_put "${LOCAL_FILE}" "${REMOTE_FILE}"
+    mm_url_conf_put "${LOCAL_FILE}" "${REMOTE_FILE}" || return
+
+    return
 }
 
 #===============================================================================
@@ -715,11 +725,11 @@ mm_url_mount() {
         if /usr/bin/test ! "${URL_USERNAME}" = "" ; then
             MOUNT_OPTIONS="username=${URL_USERNAME},${MOUNT_OPTIONS}"
         fi
-    elif ( /usr/bin/test "${URL_PROTOCOL}" = "http"                                   ) ||
-         ( /usr/bin/test "${URL_PROTOCOL}" = "tftp"                                   ) ||
-         ( /usr/bin/test "${URL_PROTOCOL}" = "conf"                                   ) ||
-         ( /usr/bin/test "${URL_PROTOCOL}" = "dist"                                   ) ||
-         ( /usr/bin/test "${URL_PROTOCOL}" = "hunt"                                   ) ||
+    elif ( /usr/bin/test "${URL_PROTOCOL}" = "http"                                   ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "tftp"                                   ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "conf"                                   ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "dist"                                   ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "hunt"                                   ) || \
          ( /usr/bin/test "${URL_PROTOCOL}" = "file" && /usr/bin/test -f "${URL_PATH}" ) ; then
         if   /usr/bin/test "${URL_EXT1}" = "sfs" ; then
             DIR="/initrd/rw/loopfs/`/bin/echo ${MOUNT_DIR} | /bin/sed 's%//*%~%g'`"
@@ -1267,9 +1277,9 @@ mm_hardware_pci2audio_map() {
                     map_revision=`           /bin/echo ${map} | /usr/bin/cut -d ',' -f 7`
                     map_audio_card_number=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 8`
                     map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 9`
-                    if ( /usr/bin/test -z "${map_device}"    || /usr/bin/test "${map_device}"    = "${device}"     ) &&
-                       ( /usr/bin/test -z "${map_subvendor}" || /usr/bin/test "${map_subvendor}" = "${subvendor}"  ) &&
-                       ( /usr/bin/test -z "${map_subdevice}" || /usr/bin/test "${map_subdevice}" = "${subdevice}"  ) &&
+                    if ( /usr/bin/test -z "${map_device}"    || /usr/bin/test "${map_device}"    = "${device}"     ) && \
+                       ( /usr/bin/test -z "${map_subvendor}" || /usr/bin/test "${map_subvendor}" = "${subvendor}"  ) && \
+                       ( /usr/bin/test -z "${map_subdevice}" || /usr/bin/test "${map_subdevice}" = "${subdevice}"  ) && \
                        ( /usr/bin/test -z "${map_revision}"  || /usr/bin/test "${map_revision}"  = "${revision}"   ) ; then
                         if /usr/bin/test -z "${found}" ; then
                             found=1
