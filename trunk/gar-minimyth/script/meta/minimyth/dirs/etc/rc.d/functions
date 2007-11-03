@@ -21,7 +21,7 @@ mm_command_run() {
         LOG_FILE="/var/log/minimyth.log"
         if /usr/bin/test ! -e "${LOG_FILE}" && /usr/bin/test -w "${LOG_DIR}" ; then
             /bin/touch "${LOG_FILE}"
-            /bin/chmod 666 "${LOG_FILE}"
+            /bin/chmod 0666 "${LOG_FILE}"
         fi
     else
         LOG_DIR="/dev"
@@ -452,9 +452,9 @@ mm_codecs_fetch_and_save() {
 
     cd "${LOCAL_DIR}"
     /bin/chown `/usr/bin/id -u`:`/usr/bin/id -g` ${LOCAL_DIR}/${CODECS_BASE}
-    /bin/chmod 755                               ${LOCAL_DIR}/${CODECS_BASE}
+    /bin/chmod 0755                              ${LOCAL_DIR}/${CODECS_BASE}
     /bin/chown `/usr/bin/id -u`:`/usr/bin/id -g` ${LOCAL_DIR}/${CODECS_BASE}/*
-    /bin/chmod 644                               ${LOCAL_DIR}/${CODECS_BASE}/*
+    /bin/chmod 0644                              ${LOCAL_DIR}/${CODECS_BASE}/*
 
     /bin/rm -f "${LOCAL_FILE}"
     /usr/bin/fakeroot /usr/bin/mksquashfs "${LOCAL_DIR}/${CODECS_BASE}" ${LOCAL_FILE} > /dev/null 2>&1
@@ -599,7 +599,7 @@ mm_message_output() {
         /bin/touch    /var/log/minimyth.err.log
         if /usr/bin/test -w /var/log/minimyth.err.log ; then
             /bin/echo -E "${MESSAGE}" >> /var/log/minimyth.err.log
-            /bin/chmod 666 /var/log/minimyth.err.log
+            /bin/chmod 0666 /var/log/minimyth.err.log
         fi
     fi
     if /usr/bin/test "${LEVEL}" = "warn" ; then
@@ -607,7 +607,7 @@ mm_message_output() {
         /bin/touch    /var/log/minimyth.warn.log
         if /usr/bin/test -w /var/log/minimyth.warn.log ; then
             /bin/echo -E "${MESSAGE}" >> /var/log/minimyth.warn.log
-            /bin/chmod 666 /var/log/minimyth.warn.log
+            /bin/chmod 0666 /var/log/minimyth.warn.log
         fi
     fi
 }
