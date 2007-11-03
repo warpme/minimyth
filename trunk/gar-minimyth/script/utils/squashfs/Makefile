@@ -1,5 +1,5 @@
 GARNAME = squashfs
-GARVERSION = 3.2-r2
+GARVERSION = 3.3
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -23,7 +23,7 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-CFLAGS := $(CFLAGS) -I. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+CFLAGS := $(CFLAGS) -I. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)

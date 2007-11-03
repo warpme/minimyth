@@ -1,6 +1,6 @@
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/00-INDEX linux-2.6.23.1-new/Documentation/filesystems/00-INDEX
---- linux-2.6.23.1-old/Documentation/filesystems/00-INDEX	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/Documentation/filesystems/00-INDEX	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/Documentation/filesystems/00-INDEX	2007-11-02 18:17:53.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/00-INDEX	2007-11-02 18:19:55.000000000 -0700
 @@ -86,6 +86,8 @@
  	- info and mount options for the UDF filesystem.
  ufs.txt
@@ -12,7 +12,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/00-INDEX linux-2.6.23.1-
  vfs.txt
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,10 @@
 +00-INDEX
 +	- this file.
@@ -26,7 +26,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX linux-2
 +	- Usage information and examples.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,181 @@
 +Unionfs 2.1 CONCEPTS:
 +=====================
@@ -211,7 +211,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt lin
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,24 @@
 +KNOWN Unionfs 2.1 ISSUES:
 +=========================
@@ -239,7 +239,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt linux
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,31 @@
 +Rename is a complex beast. The following table shows which rename(2) operations
 +should succeed and which should fail.
@@ -274,8 +274,8 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt linux
 +
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,98 @@
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,115 @@
 +Unionfs is a stackable unification file system, which can appear to merge
 +the contents of several directories (branches), while keeping their physical
 +content separate.  Unionfs is useful for unified source tree management,
@@ -352,6 +352,23 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt linux-
 +
 +# mount -t unionfs -o remount,mode=/foo=rw,mode=/bar=ro none MOUNTPOINT
 +
++Note: in Unionfs 2.x, you cannot set the leftmost branch to readonly because
++then Unionfs won't have any writable place for copyups to take place.
++Moreover, the VFS can get confused when it tries to modify something in a
++file system mounted read-write, but isn't permitted to write to it.
++Instead, you should set the whole union as readonly, as described above.
++If, however, you must set the leftmost branch as readonly, perhaps so you
++can get a snapshot of it at a point in time, then you should insert a new
++writable top-level branch, and mark the one you want as readonly.  This can
++be accomplished as follows, assuming that /foo is your current leftmost
++branch:
++
++# mount -t tmpfs -o size=NNN /new
++# mount -t unionfs -o remount,add=/new,mode=/foo=ro none MOUNTPOINT
++<do what you want safely in /foo>
++# mount -t unionfs -o remount,del=/new,mode=/foo=rw none MOUNTPOINT
++<check if there's anything in /new you want to preserve>
++# umount /new
 +
 +CACHE CONSISTENCY
 +=================
@@ -375,8 +392,8 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt linux-
 +
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/fs/drop_caches.c linux-2.6.23.1-new/fs/drop_caches.c
---- linux-2.6.23.1-old/fs/drop_caches.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/drop_caches.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/drop_caches.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/drop_caches.c	2007-11-02 18:19:55.000000000 -0700
 @@ -3,6 +3,7 @@
   */
  
@@ -403,8 +420,8 @@ diff -Naur linux-2.6.23.1-old/fs/drop_caches.c linux-2.6.23.1-new/fs/drop_caches
  void drop_pagecache(void)
  {
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/dentry.c linux-2.6.23.1-new/fs/ecryptfs/dentry.c
---- linux-2.6.23.1-old/fs/ecryptfs/dentry.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/dentry.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/dentry.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/dentry.c	2007-11-02 18:19:55.000000000 -0700
 @@ -62,7 +62,7 @@
  		struct inode *lower_inode =
  			ecryptfs_inode_to_lower(dentry->d_inode);
@@ -415,8 +432,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/dentry.c linux-2.6.23.1-new/fs/ecryptf
  out:
  	return rc;
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/inode.c linux-2.6.23.1-new/fs/ecryptfs/inode.c
---- linux-2.6.23.1-old/fs/ecryptfs/inode.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/inode.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/inode.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/inode.c	2007-11-02 18:19:55.000000000 -0700
 @@ -601,9 +601,9 @@
  			lower_new_dir_dentry->d_inode, lower_new_dentry);
  	if (rc)
@@ -439,8 +456,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/inode.c linux-2.6.23.1-new/fs/ecryptfs
  }
  
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/main.c linux-2.6.23.1-new/fs/ecryptfs/main.c
---- linux-2.6.23.1-old/fs/ecryptfs/main.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/main.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/main.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/main.c	2007-11-02 18:19:55.000000000 -0700
 @@ -151,7 +151,7 @@
  		d_add(dentry, inode);
  	else
@@ -451,8 +468,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/main.c linux-2.6.23.1-new/fs/ecryptfs/
  	 * other metadata */
  	fsstack_copy_inode_size(inode, lower_inode);
 diff -Naur linux-2.6.23.1-old/fs/Kconfig linux-2.6.23.1-new/fs/Kconfig
---- linux-2.6.23.1-old/fs/Kconfig	2007-10-22 11:25:21.000000000 -0700
-+++ linux-2.6.23.1-new/fs/Kconfig	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/Kconfig	2007-11-02 18:18:03.000000000 -0700
++++ linux-2.6.23.1-new/fs/Kconfig	2007-11-02 18:19:55.000000000 -0700
 @@ -1027,6 +1027,47 @@
  
  endmenu
@@ -521,16 +538,16 @@ diff -Naur linux-2.6.23.1-old/fs/Kconfig linux-2.6.23.1-new/fs/Kconfig
  	tristate "Apple Macintosh file system support (EXPERIMENTAL)"
  	depends on BLOCK && EXPERIMENTAL
 diff -Naur linux-2.6.23.1-old/fs/Makefile linux-2.6.23.1-new/fs/Makefile
---- linux-2.6.23.1-old/fs/Makefile	2007-10-22 11:25:21.000000000 -0700
-+++ linux-2.6.23.1-new/fs/Makefile	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/Makefile	2007-11-02 18:18:03.000000000 -0700
++++ linux-2.6.23.1-new/fs/Makefile	2007-11-02 18:19:55.000000000 -0700
 @@ -119,3 +119,4 @@
  obj-$(CONFIG_DEBUG_FS)		+= debugfs/
  obj-$(CONFIG_OCFS2_FS)		+= ocfs2/
  obj-$(CONFIG_GFS2_FS)           += gfs2/
 +obj-$(CONFIG_UNION_FS)		+= unionfs/
 diff -Naur linux-2.6.23.1-old/fs/namei.c linux-2.6.23.1-new/fs/namei.c
---- linux-2.6.23.1-old/fs/namei.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/namei.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/namei.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/namei.c	2007-11-02 18:19:55.000000000 -0700
 @@ -374,6 +374,7 @@
  	else
  		fput(nd->intent.open.file);
@@ -540,8 +557,8 @@ diff -Naur linux-2.6.23.1-old/fs/namei.c linux-2.6.23.1-new/fs/namei.c
  static inline struct dentry *
  do_revalidate(struct dentry *dentry, struct nameidata *nd)
 diff -Naur linux-2.6.23.1-old/fs/stack.c linux-2.6.23.1-new/fs/stack.c
---- linux-2.6.23.1-old/fs/stack.c	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/fs/stack.c	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/fs/stack.c	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/fs/stack.c	2007-11-02 18:19:55.000000000 -0700
 @@ -1,8 +1,20 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -597,8 +614,8 @@ diff -Naur linux-2.6.23.1-old/fs/stack.c linux-2.6.23.1-new/fs/stack.c
  EXPORT_SYMBOL_GPL(fsstack_copy_attr_all);
 diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unionfs/commonfops.c
 --- linux-2.6.23.1-old/fs/unionfs/commonfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/commonfops.c	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,843 @@
++++ linux-2.6.23.1-new/fs/unionfs/commonfops.c	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,839 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -1270,10 +1287,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +
 +	lower_file = unionfs_lower_file(file);
 +
-+	err = security_file_ioctl(lower_file, cmd, arg);
-+	if (err)
-+		goto out;
-+
 +	err = -ENOTTY;
 +	if (!lower_file || !lower_file->f_op)
 +		goto out;
@@ -1444,7 +1457,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/copyup.c linux-2.6.23.1-new/fs/unionfs/copyup.c
 --- linux-2.6.23.1-old/fs/unionfs/copyup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/copyup.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/copyup.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,897 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -2345,8 +2358,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/copyup.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/debug.c
 --- linux-2.6.23.1-old/fs/unionfs/debug.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/debug.c	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,530 @@
++++ linux-2.6.23.1-new/fs/unionfs/debug.c	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,536 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2005-2007 Josef 'Jeff' Sipek
@@ -2398,6 +2411,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/d
 +	sb = inode->i_sb;
 +	istart = ibstart(inode);
 +	iend = ibend(inode);
++	/* don't check inode if no lower branches */
++	if (istart < 0 && iend < 0)
++		return;
 +	if (unlikely(istart > iend)) {
 +		PRINT_CALLER(fname, fxn, line);
 +		pr_debug(" Ci0: inode=%p istart/end=%d:%d\n",
@@ -2570,6 +2586,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/d
 +		return;
 +	istart = ibstart(inode);
 +	iend = ibend(inode);
++	/* don't check inode if no lower branches */
++	if (istart < 0 && iend < 0)
++		return;
 +	BUG_ON(istart > iend);
 +	if (unlikely((istart == -1 && iend != -1) ||
 +		     (istart != -1 && iend == -1))) {
@@ -2879,7 +2898,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/d
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/dentry.c
 --- linux-2.6.23.1-old/fs/unionfs/dentry.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dentry.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/dentry.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,492 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -3375,7 +3394,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dirfops.c linux-2.6.23.1-new/fs/unionfs/dirfops.c
 --- linux-2.6.23.1-old/fs/unionfs/dirfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dirfops.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/dirfops.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,282 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -3661,7 +3680,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dirfops.c linux-2.6.23.1-new/fs/unionfs
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dirhelper.c linux-2.6.23.1-new/fs/unionfs/dirhelper.c
 --- linux-2.6.23.1-old/fs/unionfs/dirhelper.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dirhelper.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/dirhelper.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,272 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -3937,7 +3956,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dirhelper.c linux-2.6.23.1-new/fs/union
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/fanout.h linux-2.6.23.1-new/fs/unionfs/fanout.h
 --- linux-2.6.23.1-old/fs/unionfs/fanout.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/fanout.h	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/fanout.h	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,355 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -4296,7 +4315,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/fanout.h linux-2.6.23.1-new/fs/unionfs/
 +#endif	/* not _FANOUT_H */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/file.c
 --- linux-2.6.23.1-old/fs/unionfs/file.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/file.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/file.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,257 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -4557,8 +4576,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/inode.c
 --- linux-2.6.23.1-old/fs/unionfs/inode.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/inode.c	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,1157 @@
++++ linux-2.6.23.1-new/fs/unionfs/inode.c	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,1131 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -4651,6 +4670,23 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +			err = vfs_unlink(lower_dir_dentry->d_inode, wh_dentry);
 +			unlock_dir(lower_dir_dentry);
 +
++			/*
++			 * Whiteouts are special files and should be deleted
++			 * no matter what (as if they never existed), in
++			 * order to allow this create operation to succeed.
++			 * This is especially important in sticky
++			 * directories: a whiteout may have been created by
++			 * one user, but the newly created file may be
++			 * created by another user.  Therefore, in order to
++			 * maintain Unix semantics, if the vfs_unlink above
++			 * ailed, then we have to try to directly unlink the
++			 * whiteout.  Note: in the ODF version of unionfs,
++			 * whiteout are handled much more cleanly.
++			 */
++			if (err == -EPERM) {
++				struct inode *inode = lower_dir_dentry->d_inode;
++				err = inode->i_op->unlink(inode, wh_dentry);
++			}
 +			if (err) {
 +				printk(KERN_ERR "unionfs: create: could not "
 +				       "unlink whiteout, err = %d\n", err);
@@ -5009,10 +5045,11 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +			if (!lower_dentry || IS_ERR(lower_dentry)) {
 +				if (IS_ERR(lower_dentry))
 +					err = PTR_ERR(lower_dentry);
-+
-+				printk(KERN_ERR "unionfs: lower dentry "
-+				       "NULL (or error) for bindex = %d\n",
-+				       bindex);
++				if (!IS_COPYUP_ERR(err))
++					printk(KERN_ERR
++					       "unionfs: create_parents for "
++					       "symlink failed: bindex=%d "
++					       "err=%d\n", bindex, err);
 +				continue;
 +			}
 +		}
@@ -5458,59 +5495,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +}
 +
 +/*
-+ * Basically copied from the kernel vfs permission(), but we've changed
-+ * the following:
-+ *   (1) the IS_RDONLY check is skipped, and
-+ *   (2) We return 0 (success) if the non-leftmost branch is mounted
-+ *       readonly, to allow copyup to work.
-+ *   (3) we do call security_inode_permission, and therefore security inside
-+ *       SELinux, etc. are performed.
-+ *
-+ * @inode: the lower inode we're checking permission on
-+ */
-+static int inode_permission(struct super_block *sb, struct inode *inode,
-+			    int mask, struct nameidata *nd, int bindex)
-+{
-+	int retval, submask;
-+
-+	if (mask & MAY_WRITE) {
-+		umode_t mode = inode->i_mode;
-+		/* The first branch is allowed to be really readonly. */
-+		if (bindex == 0 &&
-+		    IS_RDONLY(inode) &&
-+		    (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode)))
-+			return -EROFS;
-+		/*
-+		 * Nobody gets write access to an immutable file.
-+		 */
-+		if (IS_IMMUTABLE(inode))
-+			return -EACCES;
-+		/*
-+		 * For all other branches than the first one, we ignore
-+		 * EROFS or if the branch is mounted as readonly, to let
-+		 * copyup take place.
-+		 */
-+		if (bindex > 0 &&
-+		    is_robranch_super(sb, bindex) &&
-+		    (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode)))
-+			return 0;
-+	}
-+
-+	/* Ordinary permission routines do not understand MAY_APPEND. */
-+	submask = mask & ~MAY_APPEND;
-+	if (inode->i_op && inode->i_op->permission)
-+		retval = inode->i_op->permission(inode, submask, nd);
-+	else
-+		retval = generic_permission(inode, submask, NULL);
-+
-+	if (retval && retval != -EROFS)	/* ignore EROFS */
-+		return retval;
-+
-+	retval = security_inode_permission(inode, mask, nd);
-+	return ((retval == -EROFS) ? 0 : retval);	/* ignore EROFS */
-+}
-+
-+/*
 + * Don't grab the superblock read-lock in unionfs_permission, which prevents
 + * a deadlock with the branch-management "add branch" code (which grabbed
 + * the write lock).  It is safe to not grab the read lock here, because even
@@ -5555,11 +5539,20 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +			continue;
 +
 +		/*
-+		 * We use our own special version of permission, such that
-+		 * only the first branch returns -EROFS.
++		 * We check basic permissions, but we ignore any conditions
++		 * such as readonly file systems or branches marked as
++		 * readonly, because those conditions should lead to a
++		 * copyup taking place later on.
 +		 */
-+		err = inode_permission(inode->i_sb, lower_inode, mask, nd,
-+				       bindex);
++		err = permission(lower_inode, mask, nd);
++		if (err && bindex > 0) {
++			umode_t mode = lower_inode->i_mode;
++			if (is_robranch_super(inode->i_sb, bindex) &&
++			    (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode)))
++				err = 0;
++			if (IS_COPYUP_ERR(err))
++				err = 0;
++		}
 +
 +		/*
 +		 * The permissions are an intersection of the overall directory
@@ -5718,7 +5711,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/lookup.c linux-2.6.23.1-new/fs/unionfs/lookup.c
 --- linux-2.6.23.1-old/fs/unionfs/lookup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/lookup.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/lookup.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,652 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -6374,7 +6367,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/lookup.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/main.c linux-2.6.23.1-new/fs/unionfs/main.c
 --- linux-2.6.23.1-old/fs/unionfs/main.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/main.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/main.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,783 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -7161,9 +7154,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/main.c linux-2.6.23.1-new/fs/unionfs/ma
 +module_exit(exit_unionfs_fs);
 diff -Naur linux-2.6.23.1-old/fs/unionfs/Makefile linux-2.6.23.1-new/fs/unionfs/Makefile
 --- linux-2.6.23.1-old/fs/unionfs/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/Makefile	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/Makefile	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,17 @@
-+UNIONFS_VERSION="2.1.7 (for 2.6.23.1)"
++UNIONFS_VERSION="2.1.8 (for 2.6.23.1)"
 +
 +EXTRA_CFLAGS += -DUNIONFS_VERSION=\"$(UNIONFS_VERSION)\"
 +
@@ -7182,8 +7175,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/Makefile linux-2.6.23.1-new/fs/unionfs/
 +endif
 diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mmap.c
 --- linux-2.6.23.1-old/fs/unionfs/mmap.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/mmap.c	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,404 @@
++++ linux-2.6.23.1-new/fs/unionfs/mmap.c	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,362 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -7206,12 +7199,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +#include "union.h"
 +
 +/*
-+ * Unionfs doesn't implement ->writepages, which is OK with the VFS and
-+ * keeps our code simpler and smaller.  Nevertheless, somehow, our own
-+ * ->writepage must be called so we can sync the upper pages with the lower
-+ * pages: otherwise data changed at the upper layer won't get written to the
-+ * lower layer.
-+ *
 + * Some lower file systems (e.g., NFS) expect the VFS to call its writepages
 + * only, which in turn will call generic_writepages and invoke each of the
 + * lower file system's ->writepage.  NFS in particular uses the
@@ -7244,89 +7231,97 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	struct inode *inode;
 +	struct inode *lower_inode;
 +	struct page *lower_page;
-+	char *kaddr, *lower_kaddr;
 +	int saved_for_writepages = wbc->for_writepages;
++	struct address_space *lower_mapping; /* lower inode mapping */
++	gfp_t mask;
 +
 +	inode = page->mapping->host;
 +	lower_inode = unionfs_lower_inode(inode);
++	lower_mapping = lower_inode->i_mapping;
 +
 +	/*
 +	 * find lower page (returns a locked page)
 +	 *
-+	 * NOTE: we used to call grab_cache_page(), but that was unnecessary
-+	 * as it would have tried to create a new lower page if it didn't
-+	 * exist, leading to deadlocks (esp. under memory-pressure
-+	 * conditions, when it is really a bad idea to *consume* more
-+	 * memory).  Instead, we assume the lower page exists, and if we can
-+	 * find it, then we ->writepage on it; if we can't find it, then it
-+	 * couldn't have disappeared unless the kernel already flushed it,
-+	 * in which case we're still OK.  This is especially correct if
-+	 * wbc->sync_mode is WB_SYNC_NONE (as per
-+	 * Documentation/filesystems/vfs.txt).  If we can't flush our page
-+	 * because we can't find a lower page, then at least we re-mark our
-+	 * page as dirty, and return AOP_WRITEPAGE_ACTIVATE as the VFS
-+	 * expects us to.  (Note, if in the future it'd turn out that we
-+	 * have to find a lower page no matter what, then we'd have to
-+	 * resort to RAIF's page pointer flipping trick.)
++	 * We turn off __GFP_FS while we look for or create a new lower
++	 * page.  This prevents a recursion into the file system code, which
++	 * under memory pressure conditions could lead to a deadlock.  This
++	 * is similar to how the loop driver behaves (see loop_set_fd in
++	 * drivers/block/loop.c).  If we can't find the lower page, we
++	 * redirty our page and return "success" so that the VM will call us
++	 * again in the (hopefully near) future.
 +	 */
-+	lower_page = find_lock_page(lower_inode->i_mapping, page->index);
++	mask = mapping_gfp_mask(lower_mapping) & ~(__GFP_FS);
++	lower_page = find_or_create_page(lower_mapping, page->index, mask);
 +	if (!lower_page) {
-+		err = AOP_WRITEPAGE_ACTIVATE;
++		err = 0;
 +		set_page_dirty(page);
 +		goto out;
 +	}
 +
-+	/* get page address, and encode it */
-+	kaddr = kmap(page);
-+	lower_kaddr = kmap(lower_page);
++	/* copy page data from our upper page to the lower page */
++	copy_highpage(lower_page, page);
 +
-+	memcpy(lower_kaddr, kaddr, PAGE_CACHE_SIZE);
-+
-+	kunmap(page);
-+	kunmap(lower_page);
-+
-+	BUG_ON(!lower_inode->i_mapping->a_ops->writepage);
-+
++	/*
++	 * Call lower writepage (expects locked page).  However, if we are
++	 * called with wbc->for_reclaim, then the VFS/VM just wants to
++	 * reclaim our page.  Therefore, we don't need to call the lower
++	 * ->writepage: just copy our data to the lower page (already done
++	 * above), then mark the lower page dirty and unlock it, and return
++	 * success.
++	 */
++	if (wbc->for_reclaim) {
++		set_page_dirty(lower_page);
++		unlock_page(lower_page);
++		goto out_release;
++	}
 +	/* workaround for some lower file systems: see big comment on top */
 +	if (wbc->for_writepages && !wbc->fs_private)
 +		wbc->for_writepages = 0;
 +
-+	/* call lower writepage (expects locked page) */
++	BUG_ON(!lower_mapping->a_ops->writepage);
 +	clear_page_dirty_for_io(lower_page); /* emulate VFS behavior */
-+	err = lower_inode->i_mapping->a_ops->writepage(lower_page, wbc);
++	err = lower_mapping->a_ops->writepage(lower_page, wbc);
 +	wbc->for_writepages = saved_for_writepages; /* restore value */
-+
-+	/* b/c find_lock_page locked it and ->writepage unlocks on success */
-+	if (err)
-+		unlock_page(lower_page);
-+	/* b/c grab_cache_page increased refcnt */
-+	page_cache_release(lower_page);
-+
 +	if (err < 0) {
 +		ClearPageUptodate(page);
-+		goto out;
++		goto out_release;
 +	}
++
++	/*
++	 * Lower file systems such as ramfs and tmpfs, may return
++	 * AOP_WRITEPAGE_ACTIVATE so that the VM won't try to (pointlessly)
++	 * write the page again for a while.  But those lower file systems
++	 * also set the page dirty bit back again.  Since we successfully
++	 * copied our page data to the lower page, then the VM will come
++	 * back to the lower page (directly) and try to flush it.  So we can
++	 * save the VM the hassle of coming back to our page and trying to
++	 * flush too.  Therefore, we don't re-dirty our own page, and we
++	 * never return AOP_WRITEPAGE_ACTIVATE back to the VM (we consider
++	 * this a success).
++	 *
++	 * We also unlock the lower page if the lower ->writepage returned
++	 * AOP_WRITEPAGE_ACTIVATE.  (This "anomalous" behaviour may be
++	 * addressed in future shmem/VM code.)
++	 */
 +	if (err == AOP_WRITEPAGE_ACTIVATE) {
-+		/*
-+		 * Lower file systems such as ramfs and tmpfs, may return
-+		 * AOP_WRITEPAGE_ACTIVATE so that the VM won't try to
-+		 * (pointlessly) write the page again for a while.  But
-+		 * those lower file systems also set the page dirty bit back
-+		 * again.  So we mimic that behaviour here.
-+		 */
-+		if (PageDirty(lower_page))
-+			set_page_dirty(page);
-+		goto out;
++		err = 0;
++		unlock_page(lower_page);
 +	}
 +
 +	/* all is well */
 +	SetPageUptodate(page);
-+	/* lower mtimes has changed: update ours */
++	/* lower mtimes have changed: update ours */
 +	unionfs_copy_attr_times(inode);
 +
-+	unlock_page(page);
-+
++out_release:
++	/* b/c find_or_create_page increased refcnt */
++	page_cache_release(lower_page);
 +out:
++	/*
++	 * We unlock our page unconditionally, because we never return
++	 * AOP_WRITEPAGE_ACTIVATE.
++	 */
++	unlock_page(page);
 +	return err;
 +}
 +
@@ -7344,9 +7339,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	if (!mapping_cap_writeback_dirty(lower_inode->i_mapping))
 +		goto out;
 +
-+	/* Note: generic_writepages may return AOP_WRITEPAGE_ACTIVATE */
 +	err = generic_writepages(mapping, wbc);
-+	if (err == 0)
++	if (!err)
 +		unionfs_copy_attr_times(inode);
 +out:
 +	return err;
@@ -7538,59 +7532,16 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	return err;		/* assume all is ok */
 +}
 +
-+static void unionfs_sync_page(struct page *page)
-+{
-+	struct inode *inode;
-+	struct inode *lower_inode;
-+	struct page *lower_page;
-+	struct address_space *mapping;
-+
-+	inode = page->mapping->host;
-+	lower_inode = unionfs_lower_inode(inode);
-+
-+	/*
-+	 * Find lower page (returns a locked page).
-+	 *
-+	 * NOTE: we used to call grab_cache_page(), but that was unnecessary
-+	 * as it would have tried to create a new lower page if it didn't
-+	 * exist, leading to deadlocks.  All our sync_page method needs to
-+	 * do is ensure that pending I/O gets done.
-+	 */
-+	lower_page = find_lock_page(lower_inode->i_mapping, page->index);
-+	if (!lower_page) {
-+		printk(KERN_ERR "unionfs: find_lock_page failed\n");
-+		goto out;
-+	}
-+
-+	/* do the actual sync */
-+	mapping = lower_page->mapping;
-+	/*
-+	 * XXX: can we optimize ala RAIF and set the lower page to be
-+	 * discarded after a successful sync_page?
-+	 */
-+	if (mapping && mapping->a_ops && mapping->a_ops->sync_page)
-+		mapping->a_ops->sync_page(lower_page);
-+
-+	/* b/c find_lock_page locked it */
-+	unlock_page(lower_page);
-+	/* b/c find_lock_page increased refcnt */
-+	page_cache_release(lower_page);
-+
-+out:
-+	return;
-+}
-+
 +struct address_space_operations unionfs_aops = {
 +	.writepage	= unionfs_writepage,
 +	.writepages	= unionfs_writepages,
 +	.readpage	= unionfs_readpage,
 +	.prepare_write	= unionfs_prepare_write,
 +	.commit_write	= unionfs_commit_write,
-+	.sync_page	= unionfs_sync_page,
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/rdstate.c linux-2.6.23.1-new/fs/unionfs/rdstate.c
 --- linux-2.6.23.1-old/fs/unionfs/rdstate.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/rdstate.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/rdstate.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,282 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -7876,7 +7827,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rdstate.c linux-2.6.23.1-new/fs/unionfs
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/rename.c
 --- linux-2.6.23.1-old/fs/unionfs/rename.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/rename.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/rename.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,533 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -7921,7 +7872,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/
 +				       bindex);
 +		if (IS_ERR(lower_new_dentry)) {
 +			err = PTR_ERR(lower_new_dentry);
-+			if (err == -EROFS)
++			if (IS_COPYUP_ERR(err))
 +				goto out;
 +			printk(KERN_ERR "unionfs: error creating directory "
 +			       "tree for rename, bindex=%d err=%d\n",
@@ -8413,7 +8364,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.c linux-2.6.23.1-new/fs/unionfs/sioq.c
 --- linux-2.6.23.1-old/fs/unionfs/sioq.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/sioq.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/sioq.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,119 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -8536,7 +8487,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.c linux-2.6.23.1-new/fs/unionfs/si
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.h linux-2.6.23.1-new/fs/unionfs/sioq.h
 --- linux-2.6.23.1-old/fs/unionfs/sioq.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/sioq.h	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/sioq.h	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,92 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -8632,8 +8583,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.h linux-2.6.23.1-new/fs/unionfs/si
 +#endif /* not _SIOQ_H */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/subr.c linux-2.6.23.1-new/fs/unionfs/subr.c
 --- linux-2.6.23.1-old/fs/unionfs/subr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/subr.c	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,224 @@
++++ linux-2.6.23.1-new/fs/unionfs/subr.c	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,228 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -8697,8 +8648,12 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/subr.c linux-2.6.23.1-new/fs/unionfs/su
 +						      dentry->d_name.name,
 +						      bindex);
 +			if (!lower_dentry || IS_ERR(lower_dentry)) {
-+				printk(KERN_ERR "unionfs: create_parents "
-+				       "failed for bindex = %d\n", bindex);
++				int ret = PTR_ERR(lower_dentry);
++				if (!IS_COPYUP_ERR(ret))
++					printk(KERN_ERR
++					       "unionfs: create_parents for "
++					       "whiteout failed: bindex=%d "
++					       "err=%d\n", bindex, ret);
 +				continue;
 +			}
 +		}
@@ -8860,7 +8815,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/subr.c linux-2.6.23.1-new/fs/unionfs/su
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/super.c
 --- linux-2.6.23.1-old/fs/unionfs/super.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/super.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/super.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,1016 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -9880,8 +9835,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/s
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/union.h
 --- linux-2.6.23.1-old/fs/unionfs/union.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/union.h	2007-10-22 11:26:08.000000000 -0700
-@@ -0,0 +1,567 @@
++++ linux-2.6.23.1-new/fs/unionfs/union.h	2007-11-02 18:19:55.000000000 -0700
+@@ -0,0 +1,594 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -10026,15 +9981,22 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +	 * This rwsem is used to make sure that a branch management
 +	 * operation...
 +	 *   1) will not begin before all currently in-flight operations
-+	 *      complete
++	 *      complete.
 +	 *   2) any new operations do not execute until the currently
-+	 *      running branch management operation completes
++	 *      running branch management operation completes.
++	 *
++	 * The write_lock_owner records the PID of the task which grabbed
++	 * the rw_sem for writing.  If the same task also tries to grab the
++	 * read lock, we allow it.  This prevents a self-deadlock when
++	 * branch-management is used on a pivot_root'ed union, because we
++	 * have to ->lookup paths which belong to the same union.
 +	 */
 +#ifdef CONFIG_PREEMPT_RT
 +	struct compat_rw_semaphore rwsem;
 +#else /* not CONFIG_PREEMPT_RT */
 +	struct rw_semaphore rwsem;
 +#endif /* not CONFIG_PREEMPT_RT */
++	pid_t write_lock_owner;	/* PID of rw_sem owner (write lock) */
 +	int high_branch_id;	/* last unique branch ID given */
 +	struct unionfs_data *data;
 +};
@@ -10122,10 +10084,30 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +	return tmp;
 +}
 +
-+#define unionfs_read_lock(sb)	 down_read(&UNIONFS_SB(sb)->rwsem)
-+#define unionfs_read_unlock(sb)	 up_read(&UNIONFS_SB(sb)->rwsem)
-+#define unionfs_write_lock(sb)	 down_write(&UNIONFS_SB(sb)->rwsem)
-+#define unionfs_write_unlock(sb) up_write(&UNIONFS_SB(sb)->rwsem)
++static inline void unionfs_read_lock(struct super_block *sb)
++{
++	if (UNIONFS_SB(sb)->write_lock_owner &&
++	    UNIONFS_SB(sb)->write_lock_owner == current->pid)
++		return;
++	down_read(&UNIONFS_SB(sb)->rwsem);
++}
++static inline void unionfs_read_unlock(struct super_block *sb)
++{
++	if (UNIONFS_SB(sb)->write_lock_owner &&
++	    UNIONFS_SB(sb)->write_lock_owner == current->pid)
++		return;
++	up_read(&UNIONFS_SB(sb)->rwsem);
++}
++static inline void unionfs_write_lock(struct super_block *sb)
++{
++	down_write(&UNIONFS_SB(sb)->rwsem);
++	UNIONFS_SB(sb)->write_lock_owner = current->pid;
++}
++static inline void unionfs_write_unlock(struct super_block *sb)
++{
++	up_write(&UNIONFS_SB(sb)->rwsem);
++	UNIONFS_SB(sb)->write_lock_owner = 0;
++}
 +
 +static inline void unionfs_double_lock_dentry(struct dentry *d1,
 +					      struct dentry *d2)
@@ -10451,7 +10433,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +#endif	/* not _UNION_H_ */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/unlink.c linux-2.6.23.1-new/fs/unionfs/unlink.c
 --- linux-2.6.23.1-old/fs/unionfs/unlink.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/unlink.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/unlink.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,196 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10651,7 +10633,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/unlink.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/xattr.c
 --- linux-2.6.23.1-old/fs/unionfs/xattr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/xattr.c	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/xattr.c	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,153 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10807,8 +10789,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/x
 +	return err;
 +}
 diff -Naur linux-2.6.23.1-old/include/linux/fs_stack.h linux-2.6.23.1-new/include/linux/fs_stack.h
---- linux-2.6.23.1-old/include/linux/fs_stack.h	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/fs_stack.h	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/fs_stack.h	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/fs_stack.h	2007-11-02 18:19:55.000000000 -0700
 @@ -1,17 +1,28 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -10844,8 +10826,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/fs_stack.h linux-2.6.23.1-new/includ
  /* inlines */
  static inline void fsstack_copy_attr_atime(struct inode *dest,
 diff -Naur linux-2.6.23.1-old/include/linux/magic.h linux-2.6.23.1-new/include/linux/magic.h
---- linux-2.6.23.1-old/include/linux/magic.h	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/magic.h	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/magic.h	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/magic.h	2007-11-02 18:19:55.000000000 -0700
 @@ -35,6 +35,8 @@
  #define REISER2FS_SUPER_MAGIC_STRING	"ReIsEr2Fs"
  #define REISER2FS_JR_SUPER_MAGIC_STRING	"ReIsEr3Fs"
@@ -10856,8 +10838,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/magic.h linux-2.6.23.1-new/include/l
  #define USBDEVICE_SUPER_MAGIC	0x9fa2
  
 diff -Naur linux-2.6.23.1-old/include/linux/mm.h linux-2.6.23.1-new/include/linux/mm.h
---- linux-2.6.23.1-old/include/linux/mm.h	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/mm.h	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/mm.h	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/mm.h	2007-11-02 18:19:55.000000000 -0700
 @@ -20,6 +20,7 @@
  struct file_ra_state;
  struct user_struct;
@@ -10875,8 +10857,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/mm.h linux-2.6.23.1-new/include/linu
  void drop_slab(void);
  
 diff -Naur linux-2.6.23.1-old/include/linux/namei.h linux-2.6.23.1-new/include/linux/namei.h
---- linux-2.6.23.1-old/include/linux/namei.h	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/namei.h	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/namei.h	2007-11-02 18:17:46.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/namei.h	2007-11-02 18:19:55.000000000 -0700
 @@ -3,6 +3,7 @@
  
  #include <linux/dcache.h>
@@ -10904,7 +10886,7 @@ diff -Naur linux-2.6.23.1-old/include/linux/namei.h linux-2.6.23.1-new/include/l
  #endif /* _LINUX_NAMEI_H */
 diff -Naur linux-2.6.23.1-old/include/linux/union_fs.h linux-2.6.23.1-new/include/linux/union_fs.h
 --- linux-2.6.23.1-old/include/linux/union_fs.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/include/linux/union_fs.h	2007-10-22 11:26:08.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/union_fs.h	2007-11-02 18:19:55.000000000 -0700
 @@ -0,0 +1,22 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10929,8 +10911,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/union_fs.h linux-2.6.23.1-new/includ
 +#endif /* _LINUX_UNIONFS_H */
 +
 diff -Naur linux-2.6.23.1-old/MAINTAINERS linux-2.6.23.1-new/MAINTAINERS
---- linux-2.6.23.1-old/MAINTAINERS	2007-10-12 09:43:44.000000000 -0700
-+++ linux-2.6.23.1-new/MAINTAINERS	2007-10-22 11:26:08.000000000 -0700
+--- linux-2.6.23.1-old/MAINTAINERS	2007-11-02 18:17:48.000000000 -0700
++++ linux-2.6.23.1-new/MAINTAINERS	2007-11-02 18:19:55.000000000 -0700
 @@ -3740,6 +3740,15 @@
  W:	http://www.kernel.dk
  S:	Maintained
