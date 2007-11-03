@@ -663,7 +663,7 @@ mm-make-other:
 	@cd ${mm_STAGEDIR}/helper ; md5sum mm_local_helper > mm_local_helper.md5
 	@# Get /usr/bin MiniMyth scripts.
 	@cp ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
-	@chmod 755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@cp ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
 
 mm-make-extras:
@@ -719,21 +719,21 @@ mm-make-distro-base:
 	@$(MAKE) -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
 		SOURCE_DIR_HEAD=`echo $(mm_HOME) | sed 's%/[^/]*$$%/%'` \
 		SOURCE_DIR_TAIL=`echo $(mm_HOME) | sed 's%^.*/%%'`
-	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
 	@# Make documentation tarball file.
 	@echo "  making documentation tarball file"
 	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
 	@fakeroot sh -c                                                     " \
 		chmod -R go-w $(mm_STAGEDIR)/html                           ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html "
-	@chmod 644 $(mm_STAGEDIR)/html.tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/html.tar.bz2
 	@# Make helper tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
 	@fakeroot sh -c                                                         " \
 		chmod -R go-w $(mm_STAGEDIR)/helper                             ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
-	@chmod 644 $(mm_STAGEDIR)/helper.tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/helper.tar.bz2
 
 mm-make-distro-ram:
 	@# Make RAM root file system distribution
@@ -761,17 +761,17 @@ mm-make-distro-ram:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                  ; \
+		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1             ; \
+		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                 ; \
 		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
-	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
+	@chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@# Make extras squashfs image file.
 	@echo "    making extras squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@fakeroot sh -c                                                                              " \
 		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
 		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
-	@chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
+	@chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@# Make themes squashfs image files.
 	@echo "    making themes squashfs image files"
 	@rm -rf    $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
@@ -780,7 +780,7 @@ mm-make-distro-ram:
 		fakeroot sh -c                                                                                                   "   \
 			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
 			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
-		chmod 644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
+		chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
 	done
 
 mm-make-distro-nfs:
@@ -808,24 +808,24 @@ mm-make-distro-nfs:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1            ; \
-		mknod -m 600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                ; \
+		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1           ; \
+		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p               ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
-	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@# Make extras tarball file.
 	@echo "    making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
-	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@# Make themes tarball file.
 	@echo "    making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
-	@chmod 644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@# Make local (private) distribution
 
 mm-make-distro-local:
@@ -933,7 +933,7 @@ mm-make-source:
 	@find $(mm_STAGEDIR)/source/gar-$(mm_NAME) -name .svn -exec rm -rf '{}' +
 	@tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)
 	@rm -fr $(mm_STAGEDIR)/source
-	@chmod 644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
+	@chmod 0644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
 
 mm-checksum-create:
 	@rm -rf $(_MM_CHECKSUM_CREATE_BASE)/$(_MM_CHECKSUM_CREATE_FILE)              ; \
