@@ -23,6 +23,7 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = \
 	$(MYTHPLUGINS_CONFIGURE_ARGS) \
 	--enable-mythmusic \
+		--disable-libvisual \
 		--enable-fftw \
 		--enable-sdl \
 		--enable-aac

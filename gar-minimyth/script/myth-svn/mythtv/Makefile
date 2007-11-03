@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdca lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc utils/lm_sensors
+DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdca lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -44,7 +44,6 @@ CONFIGURE_ARGS = \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
-	--enable-lmsensors \
 	--disable-firewire \
 	--disable-iptv \
 	--disable-dbox2 \
