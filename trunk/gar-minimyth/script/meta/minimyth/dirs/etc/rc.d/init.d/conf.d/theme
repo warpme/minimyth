@@ -54,6 +54,9 @@ conf_check_theme() {
 }
 
 conf_default_theme() {
+    # The routine relies on MM_VERSION_* variables.
+    conf_default_version
+
     # The routine relies on MM_X_* variables.
     conf_default_x
 
@@ -117,10 +120,13 @@ conf_default_theme() {
     fi
 
     # Test for renamed 'G.A.N.T.' theme.
-    if /usr/bin/test "${MM_THEME_NAME}" = "G.A.N.T." &&
-       /usr/bin/test ! "${MM_VERSION_MYTH}" = "0.20.2" ; then
-        mm_message_output warn "warning: theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update 'MM_THEME_NAME'."
-        MM_THEME_NAME="G.A.N.T"
+    if /usr/bin/test "${MM_THEME_NAME}" = "G.A.N.T." ; then
+       if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
+          ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
+            /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
+            mm_message_output warn "warning: theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update 'MM_THEME_NAME'."
+            MM_THEME_NAME="G.A.N.T"
+       fi
     fi
 
     return 0
