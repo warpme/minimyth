@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--sbindir=$(esbindir) \
 	--libdir=$(elibdir) \
 	--disable-rpath \
+	--enable-arch \
 	--disable-use-tty-group \
 	--with-fsprobe=volume_id \
 	--with-gnu-ld
