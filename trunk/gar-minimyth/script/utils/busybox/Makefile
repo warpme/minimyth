@@ -1,5 +1,5 @@
 GARNAME = busybox
-GARVERSION = 1.7.3
+GARVERSION = 1.8.0
 CATEGORIES = utils
 MASTER_SITES  = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
