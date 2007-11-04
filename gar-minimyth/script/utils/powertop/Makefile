@@ -1,7 +1,7 @@
 GARNAME = powertop
 GARVERSION = 1.9
 CATEGORIES = utils
-MASTER_SITES = http://www.linuxpowertop.org/download/
+MASTER_SITES = http://www.lesswatts.org/projects/powertop/download/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
