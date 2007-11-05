@@ -214,14 +214,16 @@ mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre m
 mm-check:
 	@# Check build environment.
 	@echo "checking: build system binaries"
-	@for bin in $(build_system_bins) ; do \
-		echo "checking: build system binaries: $${bin}" ; \
-		which $${bin} > /dev/null 2>&1 ; \
-		if [ ! "$$?" = "0" ] ; then \
-			echo "error: your system does not contain the program '$${bin}'." ; \
-			exit 1 ; \
-		fi ; \
-	done
+	@$(foreach pkg,$(build_system_bins), \
+		$(foreach bin,$(sort $(build_system_bins_$(subst -,_,$(pkg)))), \
+			echo "checking: build system binaries: '$(bin)' (from package '$(pkg)')" ; \
+			which $(bin) > /dev/null 2>&1 ; \
+			if [ ! "$$?" = "0" ] ; then \
+				echo "error: your system does not contain the program '$(bin)' (from package '$(pkg)')." ; \
+				exit 1 ; \
+			fi ; \
+		) \
+	)
 	@echo "checking: build user uid and gid"
 	@if [ `id -u` -eq 0 ] || [ `id -g` -eq 0 ] ; then \
 		echo "error: gar-minimyth cannot be run by the user 'root'." ; \

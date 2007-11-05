@@ -22,16 +22,18 @@ export $(PATH)
 install-bins:
 	@rm -rf   $(DESTDIR)$(rootdir)/bin-build-system
 	@mkdir -p $(DESTDIR)$(rootdir)/bin-build-system
-	@for bin in $(build_system_bins) ; do \
-		which $${bin} > /dev/null 2>&1 ; \
-		if [ ! "$$?" = "0" ] ; then \
-			echo "error: the build system does not contain the program '$${bin}'." ; \
-			exit 1 ; \
-		fi ; \
-		if [ ! -e $(DESTDIR)$(rootdir)/bin-build-system/$${bin} ] ; then \
-			ln -s `which $${bin}` $(DESTDIR)$(rootdir)/bin-build-system/$${bin} ; \
-		fi ; \
-	done
+	@$(foreach pkg,$(build_system_bins), \
+		$(foreach bin,$(sort $(build_system_bins_$(subst -,_,$(pkg)))), \
+			which $(bin) > /dev/null 2>&1 ; \
+			if [ ! "$$?" = "0" ] ; then \
+				echo "error: your system does not contain the program '$(bin)' (from package '$(pkg)')." ; \
+				exit 1 ; \
+			fi ; \
+			if [ ! -e $(DESTDIR)$(rootdir)/bin-build-system/$(bin) ] ; then \
+				ln -s `which $(bin)` $(DESTDIR)$(rootdir)/bin-build-system/$(bin) ; \
+			fi ; \
+		) \
+	)
 	@$(MAKECOOKIE)
 
 install-error:
