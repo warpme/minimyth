@@ -32,5 +32,5 @@ include ../../gar.mk
 
 INST_UID  := $(shell id -u)
 INST_GID  := $(shell id -g)
-LIBC_VERS := $(shell ls $(DESTDIR)$(elibdir)/libc-*.so | tail -n 1 | sed -e 's|.*libc-\(.*\)\.so|\1|')
-NSS_VERS  := $(shell ls $(DESTDIR)$(elibdir)/libnss_files.so.? | tail -n 1 | sed -e 's|.*libnss_files\.so\.\(.*\)|\1|')
+LIBC_VERS := $(shell ls $(DESTDIR)$(elibdir)/libc-*.so         2> /dev/null | tail -n 1 | sed -e 's|.*libc-\(.*\)\.so|\1|')
+NSS_VERS  := $(shell ls $(DESTDIR)$(elibdir)/libnss_files.so.? 2> /dev/null | tail -n 1 | sed -e 's|.*libnss_files\.so\.\(.*\)|\1|')
