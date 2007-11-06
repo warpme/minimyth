@@ -1,6 +1,23 @@
+diff -Naur mythtv-0.20.2-old/libs/libmyth/mythmediamonitor.cpp mythtv-0.20.2-new/libs/libmyth/mythmediamonitor.cpp
+--- mythtv-0.20.2-old/libs/libmyth/mythmediamonitor.cpp	2007-04-13 00:03:31.000000000 -0700
++++ mythtv-0.20.2-new/libs/libmyth/mythmediamonitor.cpp	2007-11-05 10:22:44.000000000 -0800
+@@ -383,6 +383,13 @@
+         return false;
+     }
+ 
++    // If the disk is the local MiniMyth disk/conf device, stop now:
++    if (pDevice->getDevicePath() == "/dev/disk-minimyth")
++    {
++        VERBOSE(VB_MEDIA, "Ignoring device: " + pDevice->getDevicePath());
++        return false;
++    }
++
+     dev_t new_rdev;
+     struct stat sb;
+ 
 diff -Naur mythtv-0.20.2-old/programs/mythfrontend/minimyth_tools.xml mythtv-0.20.2-new/programs/mythfrontend/minimyth_tools.xml
 --- mythtv-0.20.2-old/programs/mythfrontend/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20.2-new/programs/mythfrontend/minimyth_tools.xml	2007-08-25 09:14:55.000000000 -0700
++++ mythtv-0.20.2-new/programs/mythfrontend/minimyth_tools.xml	2007-11-05 10:24:27.000000000 -0800
 @@ -0,0 +1,27 @@
 +<mythmenu name="MINIMYTH_TOOLS">
 +
@@ -30,8 +47,8 @@ diff -Naur mythtv-0.20.2-old/programs/mythfrontend/minimyth_tools.xml mythtv-0.2
 +
 +</mythmenu>
 diff -Naur mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20.2-new/programs/mythfrontend/mythfrontend.pro
---- mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro	2007-08-25 09:14:10.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythfrontend/mythfrontend.pro	2007-08-25 09:14:55.000000000 -0700
+--- mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro	2007-11-05 09:59:37.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfrontend/mythfrontend.pro	2007-11-05 10:24:27.000000000 -0800
 @@ -16,6 +16,7 @@
  setting.files += recpriorities_settings.xml tv_search.xml tv_lists.xml
  setting.files += library.xml manage_recordings.xml optical_menu.xml tvmenu.xml
@@ -41,8 +58,8 @@ diff -Naur mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20.
  
  INSTALLS += setting
 diff -Naur mythtv-0.20.2-old/programs/mythfrontend/util_menu.xml mythtv-0.20.2-new/programs/mythfrontend/util_menu.xml
---- mythtv-0.20.2-old/programs/mythfrontend/util_menu.xml	2007-08-25 09:14:10.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythfrontend/util_menu.xml	2007-08-25 09:14:55.000000000 -0700
+--- mythtv-0.20.2-old/programs/mythfrontend/util_menu.xml	2006-09-04 13:11:00.000000000 -0700
++++ mythtv-0.20.2-new/programs/mythfrontend/util_menu.xml	2007-11-05 10:24:27.000000000 -0800
 @@ -1,6 +1,12 @@
  <mythmenu name="UTIL">
  
@@ -57,8 +74,8 @@ diff -Naur mythtv-0.20.2-old/programs/mythfrontend/util_menu.xml mythtv-0.20.2-n
        <text>Music Tools</text>
        <text lang="DE">Musik verwalten</text>
 diff -Naur mythtv-0.20.2-old/themes/classic/mainmenu.xml mythtv-0.20.2-new/themes/classic/mainmenu.xml
---- mythtv-0.20.2-old/themes/classic/mainmenu.xml	2007-08-25 09:14:27.000000000 -0700
-+++ mythtv-0.20.2-new/themes/classic/mainmenu.xml	2007-08-25 09:14:55.000000000 -0700
+--- mythtv-0.20.2-old/themes/classic/mainmenu.xml	2007-11-05 10:00:41.000000000 -0800
++++ mythtv-0.20.2-new/themes/classic/mainmenu.xml	2007-11-05 10:24:27.000000000 -0800
 @@ -298,6 +298,12 @@
     </button>
  
@@ -74,7 +91,7 @@ diff -Naur mythtv-0.20.2-old/themes/classic/mainmenu.xml mythtv-0.20.2-new/theme
       <text lang="IT">Impostazioni</text>
 diff -Naur mythtv-0.20.2-old/themes/classic/minimyth_tools.xml mythtv-0.20.2-new/themes/classic/minimyth_tools.xml
 --- mythtv-0.20.2-old/themes/classic/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20.2-new/themes/classic/minimyth_tools.xml	2007-08-25 09:14:55.000000000 -0700
++++ mythtv-0.20.2-new/themes/classic/minimyth_tools.xml	2007-11-05 10:24:28.000000000 -0800
 @@ -0,0 +1,27 @@
 +<mythmenu name="MINIMYTH_TOOLS">
 +

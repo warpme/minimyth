@@ -1,28 +1,16 @@
-# Identify and mount/unmount the MiniMyth local boot device.
+# Handle the MiniMyth local boot/conf device.
+#   Identify it based on it being a block disk drive/partition with the label 'minimyth'.
+#   Change its device name to 'disk-minimyth' so that the MiniMyth patched MythTV will ignore it.
+#   Mount is as '/minimyth' so that MiniMyth can find it.
 
-# minimyth_local_device signals other udev rules that this device is the MiniMyth local boot/conf device.
-#ENV{minimyth_local_device}=""
 
-SUBSYSTEM!="block"                                                          , GOTO="end"
-KERNEL=="hd[a-z]*"                                                          , GOTO="begin"
-KERNEL=="sd[a-z]*"                                                          , GOTO="begin"
-KERNEL=="sr[0-9]*"                                                          , GOTO="begin"
-GOTO="end"
-LABEL="begin"
+SUBSYSTEM=="block", KERNEL=="hd[a-z]*|sd[a-z]*|sr[0-9]*", \
+	IMPORT{program}="/lib/udev/vol_id --export $tempnode"
 
-  IMPORT{program}="/lib/udev/vol_id --export $tempnode"
+SUBSYSTEM=="block", KERNEL=="hd[a-z]*|sd[a-z]*|sr[0-9]*", ENV{ID_FS_LABEL_SAFE}=="minimyth", \
+	NAME="disk-minimyth", SYMLINK+="%k"
 
-  ENV{ID_FS_LABEL_SAFE}=="minimyth", ENV{minimyth_local_device}="1"
- 
-  ENV{ID_FS_LABEL_SAFE}!="minimyth"                                         , GOTO="end-minimyth_boot_directory"
-    ENV{minimyth_localboot_device}="1"
-    ACTION!="add"                                                           , GOTO="end-minimyth_boot_directory-add"
-      RUN+="/lib/udev/mm_mount add $env{DEVNAME} 1 /minimyth $env{ID_FS_TYPE}"
-      GOTO="end"
-    LABEL="end-minimyth_boot_directory-add"
-    ACTION!="remove"                                                        , GOTO="end-minimyth_boot_directory-remove"
-      RUN+="/lib/udev/mm_mount remove $env{DEVNAME}" , GOTO="end"
-    LABEL="end-minimyth_boot_directory-remove"
-    GOTO="end"
-  LABEL="end-minimyth_boot_directory"
-LABEL="end"
+NAME=="disk-minimyth", ACTION=="add", \
+	RUN+="/lib/udev/mm_mount add $env{DEVNAME} 1 /minimyth $env{ID_FS_TYPE}"
+NAME=="disk-minimyth", ACTION=="delete", \
+	RUN+="/lib/udev/mm_mount remove $env{DEVNAME}"
