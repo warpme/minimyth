@@ -212,11 +212,12 @@ mm-all:
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
 
 mm-check:
+	@echo "checking ..."
 	@# Check build environment.
-	@echo "checking: build system binaries"
+	@echo "  build system binaries ..."
 	@$(foreach pkg,$(build_system_bins), \
 		$(foreach bin,$(sort $(build_system_bins_$(subst -,_,$(pkg)))), \
-			echo "checking: build system binaries: '$(bin)' (from package '$(pkg)')" ; \
+			echo "    '$(bin)' (from package '$(pkg)')" ; \
 			which $(bin) > /dev/null 2>&1 ; \
 			if [ ! "$$?" = "0" ] ; then \
 				echo "error: your system does not contain the program '$(bin)' (from package '$(pkg)')." ; \
@@ -224,12 +225,12 @@ mm-check:
 			fi ; \
 		) \
 	)
-	@echo "checking: build user uid and gid"
+	@echo "  build user uid and gid"
 	@if [ `id -u` -eq 0 ] || [ `id -g` -eq 0 ] ; then \
 		echo "error: gar-minimyth cannot be run by the user 'root'." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: / and /usr directory access"
+	@echo "  / and /usr directory access"
 	@for dir in /          /lib                              /bin           /sbin \
 	            /usr       /usr/lib       /usr/libexec       /usr/bin       /usr/sbin \
 	            /usr/local /usr/local/lib /usr/local/libexec /usr/local/bin /usr/local/sbin\
@@ -239,41 +240,43 @@ mm-check:
 			exit 1 ; \
 		fi ; \
 	done
+	@echo "  build system binaries ... done"
 	@# Check for obsolete parameters and parameter values.
-	@echo "checking: obsolete parameters and parameter values"
-	@echo "checking: obsolete parameters and parameter values: mm_INSTALL_TFTP_BOOT"
+	@echo "  obsolete parameters and parameter values ..."
+	@echo "    mm_INSTALL_TFTP_BOOT"
 	@if [ -n "$(mm_INSTALL_TFTP_BOOT)" ] ; then \
 		echo "error: mm_INSTALL_TFTP_BOOT should be replaced with mm_INSTALL_RAM_BOOT." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: obsolete parameters and parameter values: mm_INSTALL_CRAMFS"
+	@echo "    mm_INSTALL_CRAMFS"
 	@if [ -n "$(mm_INSTALL_CRAMFS)" ] ; then \
 		echo "error: mm_INSTALL_CRAMFS should be replaced with mm_INSTALL_RAM_BOOT." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: obsolete parameters and parameter values: mm_INSTALL_NFS"
+	@echo "    mm_INSTALL_NFS"
 	@if [ -n "$(mm_INSTALL_NFS)" ] ; then \
 		echo "error: mm_INSTALL_NFS should be replaced with mm_INSTALL_NFS_BOOT." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: obsolete parameters and parameter values: mm_XORG_VERSION='old'"
+	@echo "    mm_XORG_VERSION='old'"
 	@if [ "$(mm_XORG_VERSION)" = "old" ] ; then \
 		echo "error: mm_XORG_VERSION=\"old\" should be replaced with mm_XORG_VERSION=\"6.8\"." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: obsolete parameters and parameter values: mm_XORG_VERSION='new'"
+	@echo "    mm_XORG_VERSION='new'"
 	@if [ "$(mm_XORG_VERSION)" = "new" ] ; then \
 		echo "error: mm_XORG_VERSION=\"new\" should be replaced with mm_XORG_VERSION=\"7.0\"." ; \
 		exit 1 ; \
 	fi
+	@echo "  obsolete parameters and parameter values ... done"
 	@# Check build parameters.
-	@echo "checking: build parameters"
-	@echo "checking: build parameters: HOME"
+	@echo "  build parameters ..."
+	@echo "    HOME"
 	@if [ ! -e $(HOME)/.minimyth/minimyth.conf.mk ] ; then \
 		echo "error: configuration file '$(HOME)/.minimyth/minimyth.conf.mk' is missing." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_GARCH"
+	@echo "    mm_GARCH"
 	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
 	    [ ! "$(mm_GARCH)" = "c3"          ] && \
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
@@ -281,7 +284,7 @@ mm-check:
 		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_HOME"
+	@echo "    mm_HOME"
 	@if [ ! "$(mm_HOME)" = "`cd $(GARDIR)/.. ; pwd`" ] ; then \
 		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
@@ -290,17 +293,17 @@ mm-check:
 		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qtprefix))))\"."; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_DEBUG"
+	@echo "    mm_DEBUG"
 	@if [ ! "$(mm_DEBUG)" = "yes" ] && [ ! "$(mm_DEBUG)" = "no" ] ; then \
 		echo "error: mm_DEBUG=\"$(mm_DEBUG)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_DEBUG_BUILD"
+	@echo "    mm_DEBUG_BUILD"
 	@if [ ! "$(mm_DEBUG_BUILD)" = "yes" ] && [ ! "$(mm_DEBUG_BUILD)" = "no" ] ; then \
 		echo "error: mm_DEBUG_BUILD=\"$(mm_DEBUG_BUILD)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_CHIPSETS"
+	@echo "    mm_CHIPSETS"
 	@for chipset in $(mm_CHIPSETS) ; do \
 		if [ ! "$${chipset}" = "ati"    ] && \
 		   [ ! "$${chipset}" = "iegd"   ] && \
@@ -314,7 +317,7 @@ mm-check:
 			exit 1 ; \
 		fi ; \
 	done
-	@echo "checking: build parameters: mm_SOFTWARE"
+	@echo "    mm_SOFTWARE"
 	@for software in $(mm_SOFTWARE) ; do \
 		if [ ! "$${software}" = "mythaudio"      ] && \
 		   [ ! "$${software}" = "mythbrowser"    ] && \
@@ -337,32 +340,32 @@ mm-check:
 			exit 1 ; \
 		fi ; \
 	done
-	@echo "checking: build parameters: mm_KERNEL_HEADERS_VERSION"
+	@echo "    mm_KERNEL_HEADERS_VERSION"
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.12" ] && \
 	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.23" ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION=\"$(mm_KERNEL_HEADERS_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_KERNEL_VERSION"
+	@echo "    mm_KERNEL_VERSION"
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.17" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.23" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_KERNEL_VERSION >= mm_KERNEL_HEADERS_VERISON"
+	@echo "    mm_KERNEL_VERSION >= mm_KERNEL_HEADERS_VERISON"
 	@if [ `echo ${mm_KERNEL_HEADERS_VERSION} | sed 's%2\.6\.\(.*\)%\1%'` -gt \
 	      `echo ${mm_KERNEL_VERSION}         | sed 's%2\.6\.\(.*\)%\1%'`     ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION is greater than mm_KERNEL_VERSION." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_MYTH_VERSION"
+	@echo "    mm_MYTH_VERSION"
 	@if [ ! "$(mm_MYTH_VERSION)" = "stable20"  ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "softpad20" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "svn"       ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_NVIDIA_VERSION"
+	@echo "    mm_NVIDIA_VERSION"
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "7185"      ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "9639"      ] && \
@@ -374,35 +377,36 @@ mm-check:
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: build parameters: mm_XORG_VERSION"
+	@echo "    mm_XORG_VERSION"
 	@if [ ! "$(mm_XORG_VERSION)" = "7.2" ] && \
 	    [ ! "$(mm_XORG_VERSION)" = "7.3" ] ; then \
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
+	@echo "  build parameters ... done"
 	@# Check distribution parameters.
-	@echo "checking: distribution parameters"
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_RAM"
+	@echo "  distribution parameters ..."
+	@echo "    mm_DISTRIBUTION_RAM"
 	@if [ ! "$(mm_DISTRIBUTION_RAM)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_RAM)" = "no" ] ; then \
 		echo "error: mm_DISTRIBUTION_RAM=\"$(mm_DISTRIBUTION_RAM)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_NFS"
+	@echo "    mm_DISTRIBUTION_NFS"
 	@if [ ! "$(mm_DISTRIBUTION_NFS)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_NFS)" = "no" ] ; then \
 		echo "error: mm_DISTRIBUTION_NFS=\"$(mm_DISTRIBUTION_NFS)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_LOCAL"
+	@echo "    mm_DISTRIBUTION_LOCAL"
 	@if [ ! "$(mm_DISTRIBUTION_LOCAL)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_LOCAL)" = "no" ] ; then \
 		echo "error: mm_DISTRIBUTION_LOCAL=\"$(mm_DISTRIBUTION_LOCAL)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_SHARE"
+	@echo "    mm_DISTRIBUTION_SHARE"
 	@if [ ! "$(mm_DISTRIBUTION_SHARE)" = "yes" ] && [ ! "$(mm_DISTRIBUTION_SHARE)" = "no" ] ; then \
 		echo "error: mm_DISTRIBUTION_SHARE=\"$(mm_DISTRIBUTION_SHARE)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_INSTALL_RAM_BOOT"
+	@echo "    mm_INSTALL_RAM_BOOT"
 	@# Check install parameters.
 	@if [ ! "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_RAM_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_RAM_BOOT=\"$(mm_INSTALL_RAM_BOOT)\" is an invalid value." ; \
@@ -412,7 +416,7 @@ mm-check:
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_INSTALL_NFS_BOOT"
+	@echo "    mm_INSTALL_NFS_BOOT"
 	@if [ ! "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ ! "$(mm_INSTALL_NFS_BOOT)" = "no" ] ; then \
 		echo "error: mm_INSTALL_NFS_BOOT=\"$(mm_INSTALL_NFS_BOOT)\" is an invalid value." ; \
 		exit 1 ; \
@@ -425,7 +429,7 @@ mm-check:
 		echo "error: the directory specified by mm_NFS_ROOT=\"$(mm_NFS_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_INSTALL_LATEST"
+	@echo "    mm_INSTALL_LATEST"
 	@if [ ! "$(mm_INSTALL_LATEST)"   = "yes" ] && [ ! "$(mm_INSTALL_LATEST)"   = "no" ] ; then \
 		echo "error: mm_INSTALL_LATEST=\"$(mm_INSTALL_LATEST)\" is an invalid value." ; \
 		exit 1 ; \
@@ -434,17 +438,17 @@ mm-check:
 		echo "error: the directory specified by mm_TFTP_ROOT=\"$(mm_TFTP_ROOT)\" does not exist." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_RAM"
+	@echo "    mm_DISTRIBUTION_RAM"
 	@if [ "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_RAM)" = "no" ] ; then \
 		echo "error: mm_INSTALL_RAM_ROOT=\"yes\" but mm_DISTRIBUTION_RAM=\"no\"." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_NFS"
+	@echo "    mm_DISTRIBUTION_NFS"
 	@if [ "$(mm_INSTALL_NFS_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_NFS)" = "no" ] ; then \
 		echo "error: mm_INSTALL_NFS_ROOT=\"yes\" but mm_DISTRIBUTION_NFS=\"no\"." ; \
 		exit 1 ; \
 	fi
-	@echo "checking: distribution parameters: mm_DISTRIBUTION_LOCAL"
+	@echo "    mm_DISTRIBUTION_LOCAL"
 	@if [ "$(mm_INSTALL_RAM_BOOT)" = "yes" ] && [ "$(mm_DISTRIBUTION_LOCAL)" = "no" ] ; then \
 		echo "error: mm_INSTALL_RAM_ROOT=\"yes\" but mm_DISTRIBUTION_LOCAL=\"no\"." ; \
 		exit 1 ; \
@@ -453,6 +457,8 @@ mm-check:
 		echo "error: mm_INSTALL_NFS_ROOT=\"yes\" but mm_DISTRIBUTION_LOCAL=\"no\"." ; \
 		exit 1 ; \
 	fi
+	@echo "  distribution parameters ... done"
+	@echo "checking ... done"
 
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
