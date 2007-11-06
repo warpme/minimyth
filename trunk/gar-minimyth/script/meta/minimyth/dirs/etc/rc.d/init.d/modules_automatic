@@ -36,12 +36,8 @@ start() {
     /sbin/modprobe parport_pc
     /sbin/modprobe ppdev
 
-    # Enable disabled udev rules.
-    for file in `cd /etc/udev/rules.d ; /bin/ls -1 *.rules.disabled 2> /dev/null` ; do
-        file_old=`/bin/echo ${file}`
-        file_new=`/bin/echo ${file} | /bin/sed -e 's%\.disabled\$%%'`
-	/bin/mv -f /etc/udev/rules.d/${file_old} /etc/udev/rules.d/${file_new}
-    done
+    # Enable modeprobe udev rules.
+    /bin/mv -f /etc/udev/rules.d/01-minimyth-modprobe.rules.disabled /etc/udev/rules.d/01-minimyth-modprobe.rules
 
     # Trigger udev with the additional udev rules that handle detected hardware.
     /sbin/udevtrigger
