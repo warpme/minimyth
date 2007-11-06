@@ -1,0 +1,49 @@
+################################################################################
+# Handle disk devices.
+#   On add
+#     Import disk information.
+#     Enable DMA and IDE DVD drives.
+#     Configure disk access rights.
+#       Group 'cdrom' gets rw access to CD/DVD drives.
+#       Group 'disk'  gets rw access to other driver.
+#     Identify and name MiniMyth local boot/conf device.
+#     Identify and name each removable device.
+#     Mount MiniMyth local boot/conf device.
+#   On delete
+#     Unmount device.
+################################################################################
+SUBSYSTEM=="block", KERNEL=="hd[a-z]*|sd[a-z]*|sr[0-9]*", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+  ACTION=="add", GOTO="begin-add"
+  GOTO="end-add"
+  LABEL="begin-add"
+    IMPORT{program}="/lib/udev/cdrom_id --export $tempnode"
+    IMPORT{program}="/lib/udev/vol_id --export $tempnode"
+    ENV{ID_CDROM_DVD}=="?*", SUBSYSTEMS=="ide", RUN+="/usr/sbin/hdparm -d1 /dev/%k"
+    LABEL="begin-add-access"
+      ENV{ID_CDROM}=="?*", OWNER="root", GROUP="cdrom", MODE="0660", GOTO="end-add-access"
+      ENV{ID_CDROM}!="?*", OWNER="root", GROUP="disk" , MODE="0660", GOTO="end-add-access"
+    LABEL="end-add-access"
+    LABEL="begin-add-name"
+      ENV{ID_FS_LABEL_SAFE}=="minimyth", NAME="disk-minimyth", SYMLINK+="%k",           GOTO="end-add-name"
+      ATTR{removable}=="1", GOTO="begin-add-name-removable"
+      GOTO="end-add-name-removable"
+      LABEL="begin-add-name-removable"
+        ENV{ID_CDROM_DVD}=="?*",         NAME="dvd-%k",        SYMLINK+="%k cdrom dvd", GOTO="end-add-name"
+        ENV{ID_CDROM}=="?*",             NAME="cdrom-%k",      SYMLINK+="%k cdrom",     GOTO="end-add-name"
+        ENV(ID_CDROM)!="?*",             NAME="disk-%k",       SYMLINK+="%k",           GOTO="end-add-name"
+      LABEL="end-add-name-removable"
+    LABEL="end-add-name"
+    LABEL="begin-add-mount"
+      NAME=="disk-minimyth", RUN+="/lib/udev/mm_mount add $env{DEVNAME} 1 /minimyth $env{ID_FS_TYPE}", GOTO="end-add-mount"
+    LABEL="end-add-mount"
+  LABEL="end-add"
+  ACTION=="delete", GOTO="begin-delete"
+  GOTO="end-delete"
+  LABEL="begin-delete"
+    LABEL="begin-delete-unmount"
+      RUN+="/lib/udev/mm_mount remove $env{DEVNAME}", GOTO="end-delete-unmount"
+    LABEL="end-delete-unmount"
+  LABEL="end-delete"
+LABEL="end"
