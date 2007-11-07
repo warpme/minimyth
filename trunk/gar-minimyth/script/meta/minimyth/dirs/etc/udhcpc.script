@@ -41,9 +41,12 @@ case "${1}" in
         MM_TFTP_ROOTDIR=`/bin/echo ${boot_file} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%/$%%'`
         if /usr/bin/test -n "${boot_file}" ; then
             /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='network'
-            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='network'
         else
             /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='local'
+        fi
+        if /usr/bin/test -n "${MM_BOOT_TYPE}" ; then
+            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='network'
+        else
             /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='local'
         fi
 
