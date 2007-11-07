@@ -1,7 +1,7 @@
 GARNAME = cabextract
 GARVERSION = 1.2
 CATEGORIES = utils
-MASTER_SITES = http://www.kyz.uklinux.net/downloads/
+MASTER_SITES = http://www.cabextract.org.uk/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
