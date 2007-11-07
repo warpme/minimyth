@@ -3,14 +3,14 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libdca.patch $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdca lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
+DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -40,7 +40,6 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	--enable-libdts \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
