@@ -716,7 +716,6 @@ mm_url_mount() {
         MOUNT_OPTIONS="nolock,${MOUNT_OPTIONS}"
     elif /usr/bin/test "${URL_PROTOCOL}" = "cifs" ; then
         MOUNT_VFSTYPE="cifs"
-        EXTRA_OPTIONS="-n"
         MOUNT_DEVICE="//${URL_SERVER}${URL_PATH}"
         MOUNT_OPTIONS="uid=root,gid=disk,file_mode=0660,dir_mode=0770,${MOUNT_OPTIONS}"
         if /usr/bin/test ! "${URL_PASSWORD}" = "" ; then
@@ -766,8 +765,12 @@ mm_url_mount() {
         OPTIONS=""
         MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%^,%%'`
         MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%,$%%'`
+        MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%^  *%%'`
+        MOUNT_OPTIONS=`/bin/echo ${MOUNT_OPTIONS} | /bin/sed 's%  *$%%'`
         /usr/bin/test -n "${EXTRA_OPTIONS}" && OPTIONS="${EXTRA_OPTIONS}"
         /usr/bin/test -n "${MOUNT_OPTIONS}" && OPTIONS="${OPTIONS} -o ${MOUNT_OPTIONS}"
+        OPTIONS=`/bin/echo ${OPTIONS} | /bin/sed 's%^  *%%'`
+        OPTIONS=`/bin/echo ${OPTIONS} | /bin/sed 's%  *$%%'`
         /bin/mount -n -t "${MOUNT_VFSTYPE}" ${OPTIONS} "${MOUNT_DEVICE}" "${MOUNT_DIR}" || return
     fi
 }
