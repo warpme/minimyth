@@ -67,7 +67,6 @@ CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 PARALLELMFLAGS := -j1
 
 pre-configure:
-	echo $(RANLIB)
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
