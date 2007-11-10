@@ -22,7 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-ada \
 	--without-ada-compiler \
 	--with-build-cc="$(build_CC)" \
-	--with-build-cppflags="$(build_CPPFLAGS)" \
+	--with-build-cppflags="$(build_CPPFLAGS) -include wchar.h" \
 	--with-build-cflags="$(build_CFLAGS)" \
 	--with-build-ldflags="$(build_LDFLAGS)" \
 	--with-build-libs="" \
