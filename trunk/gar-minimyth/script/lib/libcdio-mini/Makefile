@@ -17,9 +17,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-cxx \
+	--disable-cpp-progs \
+	--enable-joliet \
+	--disable-rpath \
+	--enable-rock \
 	--disable-cddb \
 	--disable-vcd-info \
-	--disable-rpath \
 	--without-cd-drive \
 	--without-cd-info \
 	--with-cd-paranoia \
