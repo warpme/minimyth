@@ -1,5 +1,5 @@
 GARNAME = mednafen
-GARVERSION = 0.8.1
+GARVERSION = 0.8.4
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -32,6 +32,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-ngp \
 	--enable-pce \
 	--enable-pcfx \
+	--enable-sms \
 	--enable-wswan \
 	--enable-alsa \
 	--disable-alsatest \
@@ -40,9 +41,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	--without-libiconv-prefix \
 	--without-libpth-prefix \
-	--without-libintl-prefix \
-	--with-alsa-prefix="$(DESTDIR)$(prefix)" \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
-	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)"
+	--without-libintl-prefix
+
+CONFIGURE_ENV = \
+	SDL_CONFIG=$(DESTDIR)$(bindir)/sdl-config
 	
 include ../../gar.mk
