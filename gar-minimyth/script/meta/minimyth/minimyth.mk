@@ -144,7 +144,7 @@ libdirs_base := \
 libdirs := \
 	$(libdirs_base) \
 	$(libdir)/xorg/modules \
-	$(if $(filter $(mm_CHIPSETS),iegd),$(libdir)/intel_iegd) \
+	$(if $(filter $(mm_CHIPSETS),iegd),$(libdir)/iegd) \
 	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia)
 etcdirs := \
 	$(extras_sysconfdir) \
