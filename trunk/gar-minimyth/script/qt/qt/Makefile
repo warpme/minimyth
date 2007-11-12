@@ -1,8 +1,9 @@
 GARNAME = qt-x11-free
-GARVERSION = 3.3.7
+GARVERSION = 3.3.8
 CATEGORIES = qt
 MASTER_SITES = ftp://ftp.trolltech.com/qt/source/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-mysql.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
