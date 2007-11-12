@@ -12,7 +12,7 @@
 #   On delete
 #     Unmount device.
 ################################################################################
-SUBSYSTEM=="block", KERNEL=="hd[a-z]*|sd[a-z]*|sr[0-9]*", GOTO="begin"
+SUBSYSTEM=="block", KERNEL=="sd[a-z]*|sr[0-9]*", GOTO="begin"
 GOTO="end"
 LABEL="begin"
   ACTION=="add", GOTO="begin-add"
@@ -20,7 +20,6 @@ LABEL="begin"
   LABEL="begin-add"
     IMPORT{program}="/lib/udev/cdrom_id --export $tempnode"
     IMPORT{program}="/lib/udev/vol_id --export $tempnode"
-    ENV{ID_CDROM_DVD}=="?*", SUBSYSTEMS=="ide", RUN+="/usr/sbin/hdparm -d1 /dev/%k"
     LABEL="begin-add-access"
       ENV{ID_CDROM}=="?*", OWNER="root", GROUP="cdrom", MODE="0660", GOTO="end-add-access"
       ENV{ID_CDROM}!="?*", OWNER="root", GROUP="disk" , MODE="0660", GOTO="end-add-access"
