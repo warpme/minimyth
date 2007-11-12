@@ -1,9 +1,8 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 400
+GARVERSION = 425
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vt1625_ntsc_modes.patch $(DISTNAME)-ticket-78-20070308.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -57,7 +56,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/via_drv.la
-	@rm -f $(DESTDIR)$(libdir)/libviaXvMC.la
-	@rm -f $(DESTDIR)$(libdir)/libviaXvMCPro.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/openchrome_drv.la
+	@rm -f $(DESTDIR)$(libdir)/libchromeXvMC.la
+	@rm -f $(DESTDIR)$(libdir)/libchromeXvMCPro.la
 	@$(MAKECOOKIE)
