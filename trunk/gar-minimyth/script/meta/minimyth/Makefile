@@ -18,7 +18,6 @@ DEPENDS = \
 	utils/busybox \
 	fonts/corefonts \
 	utils/coreutils \
-	utils/dmidecode \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
