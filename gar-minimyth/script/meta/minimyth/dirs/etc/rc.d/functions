@@ -1499,26 +1499,27 @@ mm_hardware_usb2lcdproc_map() {
 
 mm_hardware_motherboard2kernel_map() {
 
-    local vendor
-    local product
-    local vendor_clean
-    local product_clean
+    local board_vendor
+    local board_name
+    local board_vendor_clean
+    local board_name_clean
     local map
     local map_kernel_modules
 
     /usr/bin/logger -t minimyth -p "local0.info" "manual kernel module detection:"
 
-    vendor=`/usr/sbin/dmidecode -s baseboard-manufacturer`
-    product=`/usr/sbin/dmidecode -s baseboard-product-name`
-    vendor_clean=`/bin/echo ${vendor}   | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
-    product_clean=`/bin/echo ${product} | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
+    board_vendor=`/bin/cat /sys/class/dmi/id/board_vendor`
+    board_name=`/bin/cat /sys/class/dmi/id/board_name`
+    board_vendor_clean=`/bin/echo ${board_vendor} | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
+    board_name_clean=`/bin/echo ${board_name} | /bin/sed -e 's%  *% %g' | /bin/sed -e 's%,%_%g'`
 
-    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' detected."
+    /usr/bin/logger -t minimyth -p "local0.info" \
+        "    motherboard board_vendor='${board_vendor}', board_name='${board_name}' detected."
 
-    if /usr/bin/test -n "${product}" ; then
+    if /usr/bin/test -n "${board_name}" ; then
         /bin/cat /etc/hardware.d/motherboard2kernel.map                                                         \
         | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor_clean},${product_clean},"                                                     \
+        | /bin/grep -e "^${board_vendor_clean},${board_name_clean},"                                            \
         | {
             while read map ; do
                 map_kernel_modules=
@@ -1526,8 +1527,10 @@ mm_hardware_motherboard2kernel_map() {
                     map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
                 fi
                 if /usr/bin/test -z "${found}" ; then
-                    /usr/bin/logger -t minimyth -p "local0.info" "    motherboard vendor='${vendor}', product='${product}' known."
-                    /usr/bin/logger -t minimyth -p "local0.info" "    appropriate manual kernel modules should be loaded."
+                    /usr/bin/logger -t minimyth -p "local0.info" \
+                        "    motherboard board_vendor='${board_vendor}', board_name='${board_name}' known."
+                    /usr/bin/logger -t minimyth -p "local0.info" \
+                        "    appropriate manual kernel modules should be loaded."
                     /bin/echo ${map_kernel_modules}
                     return 0
                 fi
@@ -1535,8 +1538,10 @@ mm_hardware_motherboard2kernel_map() {
         }
         return 0
     fi
-    /usr/bin/logger -t minimyth -p "local0.warn" "    motherboard vendor='${vendor}', product='${product}' unknown."
-    /usr/bin/logger -t minimyth -p "local0.warn" "    some kernel modules may not be loaded."
+    /usr/bin/logger -t minimyth -p "local0.warn" \
+        "    motherboard board_vendor='${board_vendor}', board_name='${board_name}' unknown."
+    /usr/bin/logger -t minimyth -p "local0.warn" \
+        "    some kernel modules may not be loaded."
     return 0
 }
 
