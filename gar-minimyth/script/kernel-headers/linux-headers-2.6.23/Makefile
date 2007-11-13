@@ -1,9 +1,7 @@
 GARNAME = linux-headers
 GARVERSION = $(LINUX_HEADERS_VERSION)
 CATEGORIES = kernel-headers
-MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/
-MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION)/testing/
-DISTFILES = linux-$(GARVERSION).tar.bz2
+SOURCEPKG = kernel-$(LINUX_HEADERS_MAJOR_VERSION).$(LINUX_HEADERS_MINOR_VERSION).$(LINUX_HEADERS_TEENY_VERSION)/linux
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -21,7 +19,6 @@ INSTALL_ARGS = $(LINUX_MAKE_ARGS)
 
 INSTALL_ENV = $(LINUX_MAKE_ENV)
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 install-custom:
