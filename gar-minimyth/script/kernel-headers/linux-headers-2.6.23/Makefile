@@ -19,6 +19,7 @@ INSTALL_ARGS = $(LINUX_MAKE_ARGS)
 
 INSTALL_ENV = $(LINUX_MAKE_ENV)
 
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 install-custom:
