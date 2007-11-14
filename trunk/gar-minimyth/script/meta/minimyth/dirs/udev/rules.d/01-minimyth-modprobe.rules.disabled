@@ -1,8 +1,2 @@
 # Load the appropriate kernel modules using module aliases.
-ACTION=="add", SUBSYSTEM=="?*",          ENV{MODALIAS}=="?*",   RUN+="/sbin/modprobe -q $env{MODALIAS}"
-
-# SCSI device types do not have module aliases, so we recognize them by SCSI device type.
-#   sd: 0 TYPE_DISK, 7 TYPE_MOD, 14 TYPE_RBC
-#   sr: 4 TYPE_WORM, 5 TYPE_ROM
-ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="0|7|14", RUN+="/sbin/modprobe -q sd_mod"
-ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="4|5",    RUN+="/sbin/modprobe -q sr_mod"
+ACTION=="add", SUBSYSTEM=="?*", ENV{MODALIAS}=="?*", RUN+="/sbin/modprobe -q $env{MODALIAS}"
