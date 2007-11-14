@@ -1,7 +1,8 @@
 GARNAME = module-init-tools
-GARVERSION = 3.2.2
+GARVERSION = 3.4
 CATEGORIES = utils
-MASTER_SITES  = http://www.kerneltools.org/pub/downloads/$(GARNAME)/
+MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/people/jcm/$(GARNAME)/
+MASTER_SITES += http://www.kerneltools.org/pub/downloads/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/utils/kernel/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/utils/kernel/$(GARNAME)/old/
 DISTFILES = $(DISTNAME).tar.bz2
