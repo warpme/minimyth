@@ -1,6 +1,6 @@
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/00-INDEX linux-2.6.23.1-new/Documentation/filesystems/00-INDEX
---- linux-2.6.23.1-old/Documentation/filesystems/00-INDEX	2007-11-02 18:17:53.000000000 -0700
-+++ linux-2.6.23.1-new/Documentation/filesystems/00-INDEX	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/Documentation/filesystems/00-INDEX	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/00-INDEX	2007-11-13 09:10:39.000000000 -0800
 @@ -86,6 +86,8 @@
  	- info and mount options for the UDF filesystem.
  ufs.txt
@@ -12,7 +12,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/00-INDEX linux-2.6.23.1-
  vfs.txt
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/00-INDEX	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,10 @@
 +00-INDEX
 +	- this file.
@@ -26,8 +26,8 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/00-INDEX linux-2
 +	- Usage information and examples.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,181 @@
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/concepts.txt	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,199 @@
 +Unionfs 2.1 CONCEPTS:
 +=====================
 +
@@ -207,11 +207,29 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/concepts.txt lin
 +->file_revalidate (similarly to dentry->d_revalidate) that will be called
 +before each VFS op that has a "struct file" in it.
 +
++Certain file systems have micro-second granularity (or better) for inode
++times, and asynchronous actions could cause those times to change with some
++small delay.  In such cases, Unionfs may see a changed inode time that only
++differs by a tiny fraction of a second: such a change may be a false
++positive indication that the lower object has changed, whereas if unionfs
++waits a little longer, that false indication will not be seen.  (These false
++positives are harmless, because they would at most cause unionfs to
++re-validate an object that may need no revalidation, and print a debugging
++message that clutters the console/logs.)  Therefore, to minimize the chances
++of these situations, we delay the detection of changed times by a small
++factor of a few seconds, called UNIONFS_MIN_CC_TIME (which defaults to 3
++seconds, as does NFS).  This means that we will detect the change, only a
++couple of seconds later, if indeed the time change persists in the lower
++file object.  This delayed detection has an added performance benefit: we
++reduce the number of times that unionfs has to revalidate objects, in case
++there's a lot of concurrent activity on both the upper and lower objects,
++for the same file(s).  Lastly, this delayed time attribute detection is
++similar to how NFS clients operate (e.g., acregmin).
 +
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/issues.txt	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,24 @@
 +KNOWN Unionfs 2.1 ISSUES:
 +=========================
@@ -239,7 +257,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/issues.txt linux
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/rename.txt	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,31 @@
 +Rename is a complex beast. The following table shows which rename(2) operations
 +should succeed and which should fail.
@@ -274,7 +292,7 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/rename.txt linux
 +
 diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt
 --- linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/Documentation/filesystems/unionfs/usage.txt	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,115 @@
 +Unionfs is a stackable unification file system, which can appear to merge
 +the contents of several directories (branches), while keeping their physical
@@ -392,8 +410,8 @@ diff -Naur linux-2.6.23.1-old/Documentation/filesystems/unionfs/usage.txt linux-
 +
 +For more information, see <http://unionfs.filesystems.org/>.
 diff -Naur linux-2.6.23.1-old/fs/drop_caches.c linux-2.6.23.1-new/fs/drop_caches.c
---- linux-2.6.23.1-old/fs/drop_caches.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/drop_caches.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/drop_caches.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/drop_caches.c	2007-11-13 09:10:39.000000000 -0800
 @@ -3,6 +3,7 @@
   */
  
@@ -420,8 +438,8 @@ diff -Naur linux-2.6.23.1-old/fs/drop_caches.c linux-2.6.23.1-new/fs/drop_caches
  void drop_pagecache(void)
  {
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/dentry.c linux-2.6.23.1-new/fs/ecryptfs/dentry.c
---- linux-2.6.23.1-old/fs/ecryptfs/dentry.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/dentry.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/dentry.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/dentry.c	2007-11-13 09:10:39.000000000 -0800
 @@ -62,7 +62,7 @@
  		struct inode *lower_inode =
  			ecryptfs_inode_to_lower(dentry->d_inode);
@@ -432,8 +450,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/dentry.c linux-2.6.23.1-new/fs/ecryptf
  out:
  	return rc;
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/inode.c linux-2.6.23.1-new/fs/ecryptfs/inode.c
---- linux-2.6.23.1-old/fs/ecryptfs/inode.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/inode.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/inode.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/inode.c	2007-11-13 09:10:39.000000000 -0800
 @@ -601,9 +601,9 @@
  			lower_new_dir_dentry->d_inode, lower_new_dentry);
  	if (rc)
@@ -456,8 +474,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/inode.c linux-2.6.23.1-new/fs/ecryptfs
  }
  
 diff -Naur linux-2.6.23.1-old/fs/ecryptfs/main.c linux-2.6.23.1-new/fs/ecryptfs/main.c
---- linux-2.6.23.1-old/fs/ecryptfs/main.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/ecryptfs/main.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/ecryptfs/main.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/ecryptfs/main.c	2007-11-13 09:10:39.000000000 -0800
 @@ -151,7 +151,7 @@
  		d_add(dentry, inode);
  	else
@@ -468,8 +486,8 @@ diff -Naur linux-2.6.23.1-old/fs/ecryptfs/main.c linux-2.6.23.1-new/fs/ecryptfs/
  	 * other metadata */
  	fsstack_copy_inode_size(inode, lower_inode);
 diff -Naur linux-2.6.23.1-old/fs/Kconfig linux-2.6.23.1-new/fs/Kconfig
---- linux-2.6.23.1-old/fs/Kconfig	2007-11-02 18:18:03.000000000 -0700
-+++ linux-2.6.23.1-new/fs/Kconfig	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/Kconfig	2007-11-13 09:09:48.000000000 -0800
++++ linux-2.6.23.1-new/fs/Kconfig	2007-11-13 09:10:39.000000000 -0800
 @@ -1027,6 +1027,47 @@
  
  endmenu
@@ -538,16 +556,16 @@ diff -Naur linux-2.6.23.1-old/fs/Kconfig linux-2.6.23.1-new/fs/Kconfig
  	tristate "Apple Macintosh file system support (EXPERIMENTAL)"
  	depends on BLOCK && EXPERIMENTAL
 diff -Naur linux-2.6.23.1-old/fs/Makefile linux-2.6.23.1-new/fs/Makefile
---- linux-2.6.23.1-old/fs/Makefile	2007-11-02 18:18:03.000000000 -0700
-+++ linux-2.6.23.1-new/fs/Makefile	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/Makefile	2007-11-13 09:09:48.000000000 -0800
++++ linux-2.6.23.1-new/fs/Makefile	2007-11-13 09:10:39.000000000 -0800
 @@ -119,3 +119,4 @@
  obj-$(CONFIG_DEBUG_FS)		+= debugfs/
  obj-$(CONFIG_OCFS2_FS)		+= ocfs2/
  obj-$(CONFIG_GFS2_FS)           += gfs2/
 +obj-$(CONFIG_UNION_FS)		+= unionfs/
 diff -Naur linux-2.6.23.1-old/fs/namei.c linux-2.6.23.1-new/fs/namei.c
---- linux-2.6.23.1-old/fs/namei.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/namei.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/namei.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/namei.c	2007-11-13 09:10:39.000000000 -0800
 @@ -374,6 +374,7 @@
  	else
  		fput(nd->intent.open.file);
@@ -557,8 +575,8 @@ diff -Naur linux-2.6.23.1-old/fs/namei.c linux-2.6.23.1-new/fs/namei.c
  static inline struct dentry *
  do_revalidate(struct dentry *dentry, struct nameidata *nd)
 diff -Naur linux-2.6.23.1-old/fs/stack.c linux-2.6.23.1-new/fs/stack.c
---- linux-2.6.23.1-old/fs/stack.c	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/fs/stack.c	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/fs/stack.c	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/fs/stack.c	2007-11-13 09:10:39.000000000 -0800
 @@ -1,8 +1,20 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -614,8 +632,8 @@ diff -Naur linux-2.6.23.1-old/fs/stack.c linux-2.6.23.1-new/fs/stack.c
  EXPORT_SYMBOL_GPL(fsstack_copy_attr_all);
 diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unionfs/commonfops.c
 --- linux-2.6.23.1-old/fs/unionfs/commonfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/commonfops.c	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,839 @@
++++ linux-2.6.23.1-new/fs/unionfs/commonfops.c	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,832 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -690,7 +708,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	dput(tmp_dentry);
 +
 +	err = copyup_named_file(dentry->d_parent->d_inode, file, name, bstart,
-+				bindex, file->f_path.dentry->d_inode->i_size);
++				bindex,
++				i_size_read(file->f_path.dentry->d_inode));
 +	if (err) {
 +		if (unlikely(err == -EEXIST))
 +			goto retry;
@@ -817,7 +836,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	struct dentry *dentry = file->f_path.dentry;
 +	struct inode *parent_inode = dentry->d_parent->d_inode;
 +	struct super_block *sb = dentry->d_sb;
-+	size_t inode_size = dentry->d_inode->i_size;
 +
 +	bstart = dbstart(dentry);
 +	bend = dbend(dentry);
@@ -826,7 +844,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	if (willwrite && IS_WRITE_FLAG(file->f_flags) && is_robranch(dentry)) {
 +		for (bindex = bstart - 1; bindex >= 0; bindex--) {
 +			err = copyup_file(parent_inode, file, bstart, bindex,
-+					  inode_size);
++					  i_size_read(dentry->d_inode));
 +			if (!err)
 +				break;
 +		}
@@ -861,7 +879,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	int bindex, bstart, bend, err = 0;
 +	struct dentry *dentry = file->f_path.dentry;
 +	struct inode *parent_inode = dentry->d_parent->d_inode;
-+	loff_t inode_size = dentry->d_inode->i_size;
 +
 +	bstart = fbstart(file);
 +	bend = fbend(file);
@@ -873,7 +890,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	for (bindex = bstart - 1; bindex >= 0; bindex--) {
 +		if (!d_deleted(dentry))
 +			err = copyup_file(parent_inode, file, bstart,
-+					  bindex, inode_size);
++					  bindex,
++					  i_size_read(dentry->d_inode));
 +		else
 +			err = copyup_deleted_file(file, dentry, bstart,
 +						  bindex);
@@ -1169,9 +1187,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	bstart = fbstart(file) = dbstart(dentry);
 +	bend = fbend(file) = dbend(dentry);
 +
-+	/* increment, so that we can flush appropriately */
-+	atomic_inc(&UNIONFS_I(dentry->d_inode)->totalopens);
-+
 +	/*
 +	 * open all directories and make the unionfs file struct point to
 +	 * these lower file structs
@@ -1183,7 +1198,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +
 +	/* freeing the allocated resources, and fput the opened files */
 +	if (err) {
-+		atomic_dec(&UNIONFS_I(dentry->d_inode)->totalopens);
 +		for (bindex = bstart; bindex <= bend; bindex++) {
 +			lower_file = unionfs_lower_file_idx(file, bindex);
 +			if (!lower_file)
@@ -1195,6 +1209,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +		}
 +	}
 +
++	/* XXX: should this unlock be moved to the function bottom? */
 +	unionfs_unlock_dentry(dentry);
 +
 +out:
@@ -1204,12 +1219,12 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +		kfree(UNIONFS_F(file));
 +	}
 +out_nofree:
-+	unionfs_read_unlock(inode->i_sb);
 +	unionfs_check_inode(inode);
 +	if (!err) {
 +		unionfs_check_file(file);
 +		unionfs_check_dentry(file->f_path.dentry->d_parent);
 +	}
++	unionfs_read_unlock(inode->i_sb);
 +	return err;
 +}
 +
@@ -1224,6 +1239,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	struct unionfs_file_info *fileinfo;
 +	struct unionfs_inode_info *inodeinfo;
 +	struct super_block *sb = inode->i_sb;
++	struct dentry *dentry = file->f_path.dentry;
 +	int bindex, bstart, bend;
 +	int fgen, err = 0;
 +
@@ -1246,6 +1262,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	bstart = fbstart(file);
 +	bend = fbend(file);
 +
++	unionfs_lock_dentry(dentry);
 +	for (bindex = bstart; bindex <= bend; bindex++) {
 +		lower_file = unionfs_lower_file_idx(file, bindex);
 +
@@ -1253,7 +1270,15 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +			fput(lower_file);
 +			branchput(sb, bindex);
 +		}
++
++		/* if there are no more refs to the dentry, dput it */
++		if (d_deleted(dentry)) {
++			dput(unionfs_lower_dentry_idx(dentry, bindex));
++			unionfs_set_lower_dentry_idx(dentry, bindex, NULL);
++		}
 +	}
++	unionfs_unlock_dentry(dentry);
++
 +	kfree(fileinfo->lower_files);
 +	kfree(fileinfo->saved_branch_ids);
 +
@@ -1398,8 +1423,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	}
 +
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -1417,11 +1442,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +		goto out;
 +	unionfs_check_file(file);
 +
-+	if (!atomic_dec_and_test(&UNIONFS_I(dentry->d_inode)->totalopens))
-+		goto out;
-+
-+	unionfs_lock_dentry(dentry);
-+
 +	bstart = fbstart(file);
 +	bend = fbend(file);
 +	for (bindex = bstart; bindex <= bend; bindex++) {
@@ -1431,14 +1451,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +		    lower_file->f_op->flush) {
 +			err = lower_file->f_op->flush(lower_file, id);
 +			if (err)
-+				goto out_lock;
-+
-+			/* if there are no more refs to the dentry, dput it */
-+			if (d_deleted(dentry)) {
-+				dput(unionfs_lower_dentry_idx(dentry, bindex));
-+				unionfs_set_lower_dentry_idx(dentry, bindex,
-+							     NULL);
-+			}
++				goto out;
 +		}
 +
 +	}
@@ -1448,16 +1461,14 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/commonfops.c linux-2.6.23.1-new/fs/unio
 +	/* parent time could have changed too (async) */
 +	unionfs_copy_attr_times(dentry->d_parent->d_inode);
 +
-+out_lock:
-+	unionfs_unlock_dentry(dentry);
 +out:
-+	unionfs_read_unlock(dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/copyup.c linux-2.6.23.1-new/fs/unionfs/copyup.c
 --- linux-2.6.23.1-old/fs/unionfs/copyup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/copyup.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/copyup.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,897 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -2358,7 +2369,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/copyup.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/debug.c
 --- linux-2.6.23.1-old/fs/unionfs/debug.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/debug.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/debug.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,536 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -2661,7 +2672,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/d
 +	 * be NULL.  But, check that all three are NULL: lower dentry, mnt,
 +	 * and inode.
 +	 */
-+	if (S_ISDIR(inode->i_mode))
++	if (dstart >= 0 && dend >= 0 && S_ISDIR(inode->i_mode))
 +		for (bindex = dstart+1; bindex < dend; bindex++) {
 +			lower_inode = unionfs_lower_inode_idx(inode, bindex);
 +			lower_dentry = unionfs_lower_dentry_idx(dentry,
@@ -2898,8 +2909,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/debug.c linux-2.6.23.1-new/fs/unionfs/d
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/dentry.c
 --- linux-2.6.23.1-old/fs/unionfs/dentry.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dentry.c	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,492 @@
++++ linux-2.6.23.1-new/fs/unionfs/dentry.c	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,499 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -3094,6 +3105,16 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/
 +/*
 + * Determine if the lower inode objects have changed from below the unionfs
 + * inode.  Return true if changed, false otherwise.
++ *
++ * We check if the mtime or ctime have changed.  However, the inode times
++ * can be changed by anyone without much protection, including
++ * asynchronously.  This can sometimes cause unionfs to find that the lower
++ * file system doesn't change its inode times quick enough, resulting in a
++ * false positive indication (which is harmless, it just makes unionfs do
++ * extra work in re-validating the objects).  To minimize the chances of
++ * these situations, we delay the detection of changed times by
++ * UNIONFS_MIN_CC_TIME (which defaults to 3 seconds, as with NFS's
++ * acregmin).
 + */
 +bool is_newer_lower(const struct dentry *dentry)
 +{
@@ -3113,26 +3134,23 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/
 +		lower_inode = unionfs_lower_inode_idx(inode, bindex);
 +		if (!lower_inode)
 +			continue;
-+		/*
-+		 * We may want to apply other tests to determine if the
-+		 * lower inode's data has changed, but checking for changed
-+		 * ctime and mtime on the lower inode should be enough.
-+		 */
-+		if (unlikely(timespec_compare(&inode->i_mtime,
-+					      &lower_inode->i_mtime) < 0)) {
++
++		/* check if mtime/ctime have changed */
++		if (unlikely((lower_inode->i_mtime.tv_sec -
++			      inode->i_mtime.tv_sec) > UNIONFS_MIN_CC_TIME)) {
 +			pr_info("unionfs: new lower inode mtime "
 +				"(bindex=%d, name=%s)\n", bindex,
 +				dentry->d_name.name);
 +			show_dinode_times(dentry);
-+			return true; /* mtime changed! */
++			return true;
 +		}
-+		if (unlikely(timespec_compare(&inode->i_ctime,
-+					      &lower_inode->i_ctime) < 0)) {
++		if (unlikely((lower_inode->i_ctime.tv_sec -
++			      inode->i_ctime.tv_sec) > UNIONFS_MIN_CC_TIME)) {
 +			pr_info("unionfs: new lower inode ctime "
 +				"(bindex=%d, name=%s)\n", bindex,
 +				dentry->d_name.name);
 +			show_dinode_times(dentry);
-+			return true; /* ctime changed! */
++			return true;
 +		}
 +	}
 +	return false;		/* default: lower is not newer */
@@ -3328,11 +3346,11 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/
 +
 +	unionfs_lock_dentry(dentry);
 +	err = __unionfs_d_revalidate_chain(dentry, nd, false);
-+	unionfs_unlock_dentry(dentry);
 +	if (likely(err > 0)) { /* true==1: dentry is valid */
 +		unionfs_check_dentry(dentry);
 +		unionfs_check_nd(nd);
 +	}
++	unionfs_unlock_dentry(dentry);
 +
 +	unionfs_read_unlock(dentry->d_sb);
 +
@@ -3394,7 +3412,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dentry.c linux-2.6.23.1-new/fs/unionfs/
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dirfops.c linux-2.6.23.1-new/fs/unionfs/dirfops.c
 --- linux-2.6.23.1-old/fs/unionfs/dirfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dirfops.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/dirfops.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,282 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -3680,7 +3698,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dirfops.c linux-2.6.23.1-new/fs/unionfs
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/dirhelper.c linux-2.6.23.1-new/fs/unionfs/dirhelper.c
 --- linux-2.6.23.1-old/fs/unionfs/dirhelper.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/dirhelper.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/dirhelper.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,272 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -3956,7 +3974,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/dirhelper.c linux-2.6.23.1-new/fs/union
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/fanout.h linux-2.6.23.1-new/fs/unionfs/fanout.h
 --- linux-2.6.23.1-old/fs/unionfs/fanout.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/fanout.h	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/fanout.h	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,355 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -4315,8 +4333,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/fanout.h linux-2.6.23.1-new/fs/unionfs/
 +#endif	/* not _FANOUT_H */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/file.c
 --- linux-2.6.23.1-old/fs/unionfs/file.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/file.c	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,257 @@
++++ linux-2.6.23.1-new/fs/unionfs/file.c	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,249 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -4350,13 +4368,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +
 +	err = do_sync_read(file, buf, count, ppos);
 +
-+	if (err >= 0)
-+		touch_atime(unionfs_lower_mnt(file->f_path.dentry),
-+			    unionfs_lower_dentry(file->f_path.dentry));
-+
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -4377,13 +4391,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +	if (err == -EIOCBQUEUED)
 +		err = wait_on_sync_kiocb(iocb);
 +
-+	if (err >= 0)
-+		touch_atime(unionfs_lower_mnt(file->f_path.dentry),
-+			    unionfs_lower_dentry(file->f_path.dentry));
-+
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -4454,13 +4464,13 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +	}
 +
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	if (!err) {
 +		/* copyup could cause parent dir times to change */
 +		unionfs_copy_attr_times(file->f_path.dentry->d_parent->d_inode);
 +		unionfs_check_file(file);
 +		unionfs_check_dentry(file->f_path.dentry->d_parent);
 +	}
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -4507,8 +4517,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +	unionfs_copy_attr_times(inode);
 +
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -4553,8 +4563,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +	unionfs_copy_attr_times(inode);
 +
 +out:
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;
 +}
 +
@@ -4576,8 +4586,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/file.c linux-2.6.23.1-new/fs/unionfs/fi
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/inode.c
 --- linux-2.6.23.1-old/fs/unionfs/inode.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/inode.c	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,1131 @@
++++ linux-2.6.23.1-new/fs/unionfs/inode.c	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,1132 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -4738,8 +4748,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +
 +	if (!err)
 +		unionfs_postcopyup_setmnt(dentry);
-+	unionfs_unlock_dentry(dentry);
-+	unionfs_read_unlock(dentry->d_sb);
 +
 +	unionfs_check_inode(parent);
 +	if (!err) {
@@ -4747,6 +4755,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +		unionfs_check_nd(nd);
 +	}
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
++	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
 +
@@ -4786,13 +4796,14 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +			dentry = ret;
 +		/* parent times may have changed */
 +		unionfs_copy_attr_times(dentry->d_parent->d_inode);
-+		unionfs_unlock_dentry(dentry);
 +	}
 +
 +	unionfs_check_inode(parent);
 +	unionfs_check_dentry(dentry);
 +	unionfs_check_dentry(dentry->d_parent);
 +	unionfs_check_nd(nd);
++	if (!IS_ERR(ret))
++		unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return ret;
@@ -4892,7 +4903,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +					    old_dentry, old_bstart,
 +					    bindex, old_dentry->d_name.name,
 +					    old_dentry->d_name.len, NULL,
-+					    old_dentry->d_inode->i_size);
++					    i_size_read(old_dentry->d_inode));
 +			if (!err) {
 +				lower_new_dentry =
 +					create_parents(dir, new_dentry,
@@ -4936,12 +4947,12 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +	if (!err)
 +		unionfs_postcopyup_setmnt(new_dentry);
 +
-+	unionfs_unlock_dentry(new_dentry);
-+	unionfs_unlock_dentry(old_dentry);
-+
 +	unionfs_check_inode(dir);
 +	unionfs_check_dentry(new_dentry);
 +	unionfs_check_dentry(old_dentry);
++
++	unionfs_unlock_dentry(new_dentry);
++	unionfs_unlock_dentry(old_dentry);
 +	unionfs_read_unlock(old_dentry->d_sb);
 +
 +	return err;
@@ -5102,10 +5113,10 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +	kfree(name);
 +	if (!err)
 +		unionfs_postcopyup_setmnt(dentry);
-+	unionfs_unlock_dentry(dentry);
 +
 +	unionfs_check_inode(dir);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return err;
@@ -5255,9 +5266,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +
 +	if (!err)
 +		unionfs_copy_attr_times(dentry->d_inode);
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_inode(parent);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return err;
@@ -5385,10 +5396,10 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +
 +	if (!err)
 +		unionfs_postcopyup_setmnt(dentry);
-+	unionfs_unlock_dentry(dentry);
 +
 +	unionfs_check_inode(dir);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return err;
@@ -5423,8 +5434,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +					lower_dentry->d_inode);
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return err;
@@ -5486,11 +5497,11 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +	if (unlikely(!__unionfs_d_revalidate_chain(dentry, nd, false)))
 +		printk(KERN_ERR
 +		       "unionfs: put_link failed to revalidate dentry\n");
-+	unionfs_unlock_dentry(dentry);
 +
 +	unionfs_check_dentry(dentry);
 +	unionfs_check_nd(nd);
 +	kfree(nd_get_link(nd));
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +}
 +
@@ -5616,7 +5627,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +				continue;
 +			/* Only if its the leftmost file, copyup the file */
 +			for (i = bstart - 1; i >= 0; i--) {
-+				loff_t size = dentry->d_inode->i_size;
++				loff_t size = i_size_read(dentry->d_inode);
 +				if (ia->ia_valid & ATTR_SIZE)
 +					size = ia->ia_size;
 +				err = copyup_dentry(dentry->d_parent->d_inode,
@@ -5663,9 +5674,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +	/* if setattr succeeded, then parent dir may have changed */
 +	unionfs_copy_attr_times(dentry->d_parent->d_inode);
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
 +	unionfs_check_dentry(dentry->d_parent);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +
 +	return err;
@@ -5711,7 +5722,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/inode.c linux-2.6.23.1-new/fs/unionfs/i
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/lookup.c linux-2.6.23.1-new/fs/unionfs/lookup.c
 --- linux-2.6.23.1-old/fs/unionfs/lookup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/lookup.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/lookup.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,652 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -6367,7 +6378,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/lookup.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/main.c linux-2.6.23.1-new/fs/unionfs/main.c
 --- linux-2.6.23.1-old/fs/unionfs/main.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/main.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/main.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,783 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -7154,9 +7165,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/main.c linux-2.6.23.1-new/fs/unionfs/ma
 +module_exit(exit_unionfs_fs);
 diff -Naur linux-2.6.23.1-old/fs/unionfs/Makefile linux-2.6.23.1-new/fs/unionfs/Makefile
 --- linux-2.6.23.1-old/fs/unionfs/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/Makefile	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/Makefile	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,17 @@
-+UNIONFS_VERSION="2.1.8 (for 2.6.23.1)"
++UNIONFS_VERSION="2.1.9 (for 2.6.23.1)"
 +
 +EXTRA_CFLAGS += -DUNIONFS_VERSION=\"$(UNIONFS_VERSION)\"
 +
@@ -7175,8 +7186,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/Makefile linux-2.6.23.1-new/fs/unionfs/
 +endif
 diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mmap.c
 --- linux-2.6.23.1-old/fs/unionfs/mmap.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/mmap.c	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,362 @@
++++ linux-2.6.23.1-new/fs/unionfs/mmap.c	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,343 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -7235,6 +7246,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	struct address_space *lower_mapping; /* lower inode mapping */
 +	gfp_t mask;
 +
++	BUG_ON(!PageUptodate(page));
 +	inode = page->mapping->host;
 +	lower_inode = unionfs_lower_inode(inode);
 +	lower_mapping = lower_inode->i_mapping;
@@ -7260,6 +7272,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +
 +	/* copy page data from our upper page to the lower page */
 +	copy_highpage(lower_page, page);
++	flush_dcache_page(lower_page);
++	SetPageUptodate(lower_page);
 +
 +	/*
 +	 * Call lower writepage (expects locked page).  However, if we are
@@ -7279,13 +7293,12 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +		wbc->for_writepages = 0;
 +
 +	BUG_ON(!lower_mapping->a_ops->writepage);
++	set_page_dirty(lower_page);
 +	clear_page_dirty_for_io(lower_page); /* emulate VFS behavior */
 +	err = lower_mapping->a_ops->writepage(lower_page, wbc);
 +	wbc->for_writepages = saved_for_writepages; /* restore value */
-+	if (err < 0) {
-+		ClearPageUptodate(page);
++	if (err < 0)
 +		goto out_release;
-+	}
 +
 +	/*
 +	 * Lower file systems such as ramfs and tmpfs, may return
@@ -7309,7 +7322,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	}
 +
 +	/* all is well */
-+	SetPageUptodate(page);
++
 +	/* lower mtimes have changed: update ours */
 +	unionfs_copy_attr_times(inode);
 +
@@ -7346,21 +7359,21 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	return err;
 +}
 +
-+/*
-+ * readpage is called from generic_page_read and the fault handler.
-+ * If your file system uses generic_page_read for the read op, it
-+ * must implement readpage.
-+ *
-+ * Readpage expects a locked page, and must unlock it.
-+ */
-+static int unionfs_do_readpage(struct file *file, struct page *page)
++/* Readpage expects a locked page, and must unlock it */
++static int unionfs_readpage(struct file *file, struct page *page)
 +{
-+	int err = -EIO;
++	int err;
 +	struct file *lower_file;
 +	struct inode *inode;
 +	mm_segment_t old_fs;
 +	char *page_data = NULL;
 +	loff_t offset;
++
++	unionfs_read_lock(file->f_path.dentry->d_sb);
++	err = unionfs_file_revalidate(file, false);
++	if (unlikely(err))
++		goto out;
++	unionfs_check_file(file);
 +
 +	if (!UNIONFS_F(file)) {
 +		err = -ENOENT;
@@ -7388,7 +7401,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	err = vfs_read(lower_file, page_data, PAGE_CACHE_SIZE,
 +		       &lower_file->f_pos);
 +	set_fs(old_fs);
-+
++	if (err >= 0 && err < PAGE_CACHE_SIZE)
++		memset(page_data + err, 0, PAGE_CACHE_SIZE - err);
 +	kunmap(page);
 +
 +	if (err < 0)
@@ -7400,39 +7414,17 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +
 +	flush_dcache_page(page);
 +
-+out:
-+	if (err == 0)
-+		SetPageUptodate(page);
-+	else
-+		ClearPageUptodate(page);
-+
-+	return err;
-+}
-+
-+static int unionfs_readpage(struct file *file, struct page *page)
-+{
-+	int err;
-+
-+	unionfs_read_lock(file->f_path.dentry->d_sb);
-+	err = unionfs_file_revalidate(file, false);
-+	if (unlikely(err))
-+		goto out;
-+	unionfs_check_file(file);
-+
-+	err = unionfs_do_readpage(file, page);
-+
-+	if (!err) {
-+		touch_atime(unionfs_lower_mnt(file->f_path.dentry),
-+			    unionfs_lower_dentry(file->f_path.dentry));
-+		unionfs_copy_attr_times(file->f_path.dentry->d_inode);
-+	}
-+
 +	/*
 +	 * we have to unlock our page, b/c we _might_ have gotten a locked
 +	 * page.  but we no longer have to wakeup on our page here, b/c
 +	 * UnlockPage does it
 +	 */
 +out:
++	if (err == 0)
++		SetPageUptodate(page);
++	else
++		ClearPageUptodate(page);
++
 +	unlock_page(page);
 +	unionfs_check_file(file);
 +	unionfs_read_unlock(file->f_path.dentry->d_sb);
@@ -7527,8 +7519,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +	if (err < 0)
 +		ClearPageUptodate(page);
 +
-+	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	unionfs_check_file(file);
++	unionfs_read_unlock(file->f_path.dentry->d_sb);
 +	return err;		/* assume all is ok */
 +}
 +
@@ -7541,7 +7533,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/mmap.c linux-2.6.23.1-new/fs/unionfs/mm
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/rdstate.c linux-2.6.23.1-new/fs/unionfs/rdstate.c
 --- linux-2.6.23.1-old/fs/unionfs/rdstate.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/rdstate.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/rdstate.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,282 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -7621,10 +7613,10 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rdstate.c linux-2.6.23.1-new/fs/unionfs
 +		if (!lower_inode)
 +			continue;
 +
-+		if (lower_inode->i_size == DENTPAGE)
++		if (i_size_read(lower_inode) == DENTPAGE)
 +			hashsize += DENTPERONEPAGE;
 +		else
-+			hashsize += (lower_inode->i_size / DENTPAGE) *
++			hashsize += (i_size_read(lower_inode) / DENTPAGE) *
 +				DENTPERPAGE;
 +	}
 +
@@ -7827,7 +7819,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rdstate.c linux-2.6.23.1-new/fs/unionfs
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/rename.c
 --- linux-2.6.23.1-old/fs/unionfs/rename.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/rename.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/rename.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,533 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -8065,8 +8057,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/
 +			err = copyup_dentry(old_dentry->d_parent->d_inode,
 +					    old_dentry, old_bstart, bindex,
 +					    old_dentry->d_name.name,
-+					    old_dentry->d_name.len,
-+					    NULL, old_dentry->d_inode->i_size);
++					    old_dentry->d_name.len, NULL,
++					    i_size_read(old_dentry->d_inode));
 +			/* if copyup failed, try next branch to the left */
 +			if (err)
 +				continue;
@@ -8364,7 +8356,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/rename.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.c linux-2.6.23.1-new/fs/unionfs/sioq.c
 --- linux-2.6.23.1-old/fs/unionfs/sioq.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/sioq.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/sioq.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,119 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -8487,7 +8479,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.c linux-2.6.23.1-new/fs/unionfs/si
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.h linux-2.6.23.1-new/fs/unionfs/sioq.h
 --- linux-2.6.23.1-old/fs/unionfs/sioq.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/sioq.h	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/sioq.h	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,92 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -8583,7 +8575,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/sioq.h linux-2.6.23.1-new/fs/unionfs/si
 +#endif /* not _SIOQ_H */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/subr.c linux-2.6.23.1-new/fs/unionfs/subr.c
 --- linux-2.6.23.1-old/fs/unionfs/subr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/subr.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/subr.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,228 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -8815,7 +8807,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/subr.c linux-2.6.23.1-new/fs/unionfs/su
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/super.c
 --- linux-2.6.23.1-old/fs/unionfs/super.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/super.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/super.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,1016 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -8888,7 +8880,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/s
 + */
 +static void unionfs_delete_inode(struct inode *inode)
 +{
-+	inode->i_size = 0;	/* every f/s seems to do that */
++	i_size_write(inode, 0);	/* every f/s seems to do that */
 +
 +	if (inode->i_data.nrpages)
 +		truncate_inode_pages(&inode->i_data, 0);
@@ -8972,8 +8964,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/s
 +	memset(&buf->f_spare, 0, sizeof(buf->f_spare));
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(sb);
 +	return err;
 +}
@@ -9616,8 +9608,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/s
 +	kfree(new_data);
 +	kfree(new_lower_inodes);
 +out_error:
-+	unionfs_write_unlock(sb);
 +	unionfs_check_dentry(sb->s_root);
++	unionfs_write_unlock(sb);
 +	return err;
 +}
 +
@@ -9835,8 +9827,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/super.c linux-2.6.23.1-new/fs/unionfs/s
 +};
 diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/union.h
 --- linux-2.6.23.1-old/fs/unionfs/union.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/union.h	2007-11-02 18:19:55.000000000 -0700
-@@ -0,0 +1,594 @@
++++ linux-2.6.23.1-new/fs/unionfs/union.h	2007-11-13 09:10:39.000000000 -0800
+@@ -0,0 +1,595 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -9902,6 +9894,9 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +/* maximum number of branches we support, to avoid memory blowup */
 +#define UNIONFS_MAX_BRANCHES	128
 +
++/* minimum time (seconds) required for time-based cache-coherency */
++#define UNIONFS_MIN_CC_TIME	3
++
 +/* Operations vectors defined in specific files. */
 +extern struct file_operations unionfs_main_fops;
 +extern struct file_operations unionfs_dir_fops;
@@ -9941,8 +9936,6 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +
 +	/* The lower inodes */
 +	struct inode **lower_inodes;
-+	/* to keep track of reads/writes for unlinks before closes */
-+	atomic_t totalopens;
 +
 +	struct inode vfs_inode;
 +};
@@ -10433,7 +10426,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/union.h linux-2.6.23.1-new/fs/unionfs/u
 +#endif	/* not _UNION_H_ */
 diff -Naur linux-2.6.23.1-old/fs/unionfs/unlink.c linux-2.6.23.1-new/fs/unionfs/unlink.c
 --- linux-2.6.23.1-old/fs/unionfs/unlink.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/unlink.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/unlink.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,196 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10633,7 +10626,7 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/unlink.c linux-2.6.23.1-new/fs/unionfs/
 +}
 diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/xattr.c
 --- linux-2.6.23.1-old/fs/unionfs/xattr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/fs/unionfs/xattr.c	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/fs/unionfs/xattr.c	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,153 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10695,8 +10688,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/x
 +	err = vfs_getxattr(lower_dentry, (char *) name, value, size);
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
@@ -10725,8 +10718,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/x
 +			   size, flags);
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
@@ -10753,8 +10746,8 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/x
 +	err = vfs_removexattr(lower_dentry, (char *) name);
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
@@ -10783,14 +10776,14 @@ diff -Naur linux-2.6.23.1-old/fs/unionfs/xattr.c linux-2.6.23.1-new/fs/unionfs/x
 +	err = vfs_listxattr(lower_dentry, encoded_list, size);
 +
 +out:
-+	unionfs_unlock_dentry(dentry);
 +	unionfs_check_dentry(dentry);
++	unionfs_unlock_dentry(dentry);
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
 diff -Naur linux-2.6.23.1-old/include/linux/fs_stack.h linux-2.6.23.1-new/include/linux/fs_stack.h
---- linux-2.6.23.1-old/include/linux/fs_stack.h	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/fs_stack.h	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/fs_stack.h	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/fs_stack.h	2007-11-13 09:10:39.000000000 -0800
 @@ -1,17 +1,28 @@
 +/*
 + * Copyright (c) 2006-2007 Erez Zadok
@@ -10826,8 +10819,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/fs_stack.h linux-2.6.23.1-new/includ
  /* inlines */
  static inline void fsstack_copy_attr_atime(struct inode *dest,
 diff -Naur linux-2.6.23.1-old/include/linux/magic.h linux-2.6.23.1-new/include/linux/magic.h
---- linux-2.6.23.1-old/include/linux/magic.h	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/magic.h	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/magic.h	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/magic.h	2007-11-13 09:10:39.000000000 -0800
 @@ -35,6 +35,8 @@
  #define REISER2FS_SUPER_MAGIC_STRING	"ReIsEr2Fs"
  #define REISER2FS_JR_SUPER_MAGIC_STRING	"ReIsEr3Fs"
@@ -10838,8 +10831,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/magic.h linux-2.6.23.1-new/include/l
  #define USBDEVICE_SUPER_MAGIC	0x9fa2
  
 diff -Naur linux-2.6.23.1-old/include/linux/mm.h linux-2.6.23.1-new/include/linux/mm.h
---- linux-2.6.23.1-old/include/linux/mm.h	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/mm.h	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/mm.h	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/mm.h	2007-11-13 09:10:39.000000000 -0800
 @@ -20,6 +20,7 @@
  struct file_ra_state;
  struct user_struct;
@@ -10857,8 +10850,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/mm.h linux-2.6.23.1-new/include/linu
  void drop_slab(void);
  
 diff -Naur linux-2.6.23.1-old/include/linux/namei.h linux-2.6.23.1-new/include/linux/namei.h
---- linux-2.6.23.1-old/include/linux/namei.h	2007-11-02 18:17:46.000000000 -0700
-+++ linux-2.6.23.1-new/include/linux/namei.h	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/include/linux/namei.h	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/namei.h	2007-11-13 09:10:39.000000000 -0800
 @@ -3,6 +3,7 @@
  
  #include <linux/dcache.h>
@@ -10886,7 +10879,7 @@ diff -Naur linux-2.6.23.1-old/include/linux/namei.h linux-2.6.23.1-new/include/l
  #endif /* _LINUX_NAMEI_H */
 diff -Naur linux-2.6.23.1-old/include/linux/union_fs.h linux-2.6.23.1-new/include/linux/union_fs.h
 --- linux-2.6.23.1-old/include/linux/union_fs.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.23.1-new/include/linux/union_fs.h	2007-11-02 18:19:55.000000000 -0700
++++ linux-2.6.23.1-new/include/linux/union_fs.h	2007-11-13 09:10:39.000000000 -0800
 @@ -0,0 +1,22 @@
 +/*
 + * Copyright (c) 2003-2007 Erez Zadok
@@ -10911,8 +10904,8 @@ diff -Naur linux-2.6.23.1-old/include/linux/union_fs.h linux-2.6.23.1-new/includ
 +#endif /* _LINUX_UNIONFS_H */
 +
 diff -Naur linux-2.6.23.1-old/MAINTAINERS linux-2.6.23.1-new/MAINTAINERS
---- linux-2.6.23.1-old/MAINTAINERS	2007-11-02 18:17:48.000000000 -0700
-+++ linux-2.6.23.1-new/MAINTAINERS	2007-11-02 18:19:55.000000000 -0700
+--- linux-2.6.23.1-old/MAINTAINERS	2007-10-12 09:43:44.000000000 -0700
++++ linux-2.6.23.1-new/MAINTAINERS	2007-11-13 09:10:39.000000000 -0800
 @@ -3740,6 +3740,15 @@
  W:	http://www.kernel.dk
  S:	Maintained
