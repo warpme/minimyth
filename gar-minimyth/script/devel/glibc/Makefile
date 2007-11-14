@@ -35,8 +35,6 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-profile \
-	--enable-omitfp \
 	--enable-bind-now \
 	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
