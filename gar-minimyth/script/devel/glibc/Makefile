@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch $(DISTNAME)-ldd.patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-ldd.patch $(DISTNAME)-mem_chk.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -61,6 +61,7 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
+CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
 
 PARALLELMFLAGS := -j1
 
