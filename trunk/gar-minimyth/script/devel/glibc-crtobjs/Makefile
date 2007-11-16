@@ -65,6 +65,9 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
+CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
+
+PARALLELMFLAGS := -j1
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
