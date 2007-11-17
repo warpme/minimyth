@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-inetd.patch \
+	$(DISTNAME)-lash.patch \
 	$(DISTNAME)-tar_z.patch \
 	$(DISTNAME)-tr.patch \
 	$(DISTNAME)-trylink.patch
