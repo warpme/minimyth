@@ -1,6 +1,6 @@
 diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Channel.pm mythtv-0.20.2-new/bindings/perl/MythTV/Channel.pm
 --- mythtv-0.20.2-old/bindings/perl/MythTV/Channel.pm	2006-04-16 01:05:27.000000000 -0700
-+++ mythtv-0.20.2-new/bindings/perl/MythTV/Channel.pm	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/bindings/perl/MythTV/Channel.pm	2007-11-18 10:28:35.000000000 -0800
 @@ -3,8 +3,8 @@
  #
  # Object containing info about a particular MythTV channel.
@@ -14,7 +14,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Channel.pm myth
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Program.pm mythtv-0.20.2-new/bindings/perl/MythTV/Program.pm
 --- mythtv-0.20.2-old/bindings/perl/MythTV/Program.pm	2006-11-18 21:37:30.000000000 -0800
-+++ mythtv-0.20.2-new/bindings/perl/MythTV/Program.pm	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/bindings/perl/MythTV/Program.pm	2007-11-18 10:28:35.000000000 -0800
 @@ -3,8 +3,8 @@
  #
  # Object containing info about a particular MythTV program.
@@ -28,7 +28,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Program.pm myth
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Recording.pm mythtv-0.20.2-new/bindings/perl/MythTV/Recording.pm
 --- mythtv-0.20.2-old/bindings/perl/MythTV/Recording.pm	2006-10-07 23:48:26.000000000 -0700
-+++ mythtv-0.20.2-new/bindings/perl/MythTV/Recording.pm	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/bindings/perl/MythTV/Recording.pm	2007-11-18 10:28:35.000000000 -0800
 @@ -3,8 +3,8 @@
  #
  # Object containing info about a particular MythTV recording.
@@ -42,7 +42,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV/Recording.pm my
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV.pm mythtv-0.20.2-new/bindings/perl/MythTV.pm
 --- mythtv-0.20.2-old/bindings/perl/MythTV.pm	2006-10-04 22:46:03.000000000 -0700
-+++ mythtv-0.20.2-new/bindings/perl/MythTV.pm	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/bindings/perl/MythTV.pm	2007-11-18 10:28:35.000000000 -0800
 @@ -1,8 +1,8 @@
  #
  # MythTV bindings for perl.
@@ -56,7 +56,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/bindings/perl/MythTV.pm mythtv-0.20.
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/configfiles/lircrc.native.example.mceusb2 mythtv-0.20.2-new/configfiles/lircrc.native.example.mceusb2
 --- mythtv-0.20.2-old/configfiles/lircrc.native.example.mceusb2	2006-06-11 22:18:38.000000000 -0700
-+++ mythtv-0.20.2-new/configfiles/lircrc.native.example.mceusb2	2007-11-15 20:33:53.000000000 -0800
++++ mythtv-0.20.2-new/configfiles/lircrc.native.example.mceusb2	2007-11-18 10:28:23.000000000 -0800
 @@ -2,7 +2,7 @@
  # lircrc config file for the Microsoft Media Center Edition Remote, model 1039
  #
@@ -66,9 +66,191 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/configfiles/lircrc.native.example.mc
  # @version   $Revision: 10187 $
  # @author    $Author: xris $
  #
+diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/channel_changers/6200ch.c mythtv-0.20.2-new/contrib/channel_changers/6200ch.c
+--- mythtv-0.20.2-old/contrib/channel_changers/6200ch.c	2006-08-12 15:49:00.000000000 -0700
++++ mythtv-0.20.2-new/contrib/channel_changers/6200ch.c	2007-11-18 10:28:36.000000000 -0800
+@@ -25,10 +25,28 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <stdlib.h>
++#include <limits.h> //for LLONG_MAX
++#include <getopt.h>
+ #include <unistd.h> // for usleep
+ 
+-// Motorola DCT-6200 IDs
+-// Note: there are at least eleven different vendor IDs for the 6200
++// Vendor and Model IDs.
++// NOTE: Some Models have more than one possible Vendor ID
++// WARNING: Please update firewiredevice.cpp when adding to this list.
++
++#define DCH3200_VENDOR_ID1 0x00001c11
++#define DCH3200_MODEL_ID1  0x0000d330
++
++#define DCT3412_VENDOR_ID1 0x0000159a
++#define DCT3412_MODEL_ID1  0x000034cb
++
++#define DCT3416_VENDOR_ID1 0x000016b5
++#define DCT3416_VENDOR_ID2 0x00001bdd
++#define DCT3416_MODEL_ID1  0x0000346b
++#define DCT3416_MODEL_ID2  0x0000b630
++
++#define DCT5100_VENDOR_ID1 0x000017ee
++#define DCT5100_MODEL_ID1  0x0000620a
++
+ #define DCT6200_VENDOR_ID1 0x00000ce5
+ #define DCT6200_VENDOR_ID2 0x00000e5c
+ #define DCT6200_VENDOR_ID3 0x00001225
+@@ -40,12 +58,22 @@
+ #define DCT6200_VENDOR_ID9 0x000014e8
+ #define DCT6200_VENDOR_ID10 0x000016b5
+ #define DCT6200_VENDOR_ID11 0x00001371
++#define DCT6200_VENDOR_ID12 0x000019a6
++#define DCT6200_VENDOR_ID13 0x00001aad
++#define DCT6200_VENDOR_ID14 0x00000b06
+ #define DCT6200_SPEC_ID    0x00005068
+ #define DCT6200_SW_VERSION 0x00010101
+ #define DCT6200_MODEL_ID1  0x0000620a
+ #define DCT6200_MODEL_ID2  0x00006200
++
+ #define DCT6412_VENDOR_ID1 0x00000f9f
++#define DCT6412_VENDOR_ID2 0x0000152f
+ #define DCT6412_MODEL_ID1  0x000064ca
++#define DCT6412_MODEL_ID2  0x000064cb
++
++#define DCT6416_VENDOR_ID1 0x000017ee
++#define DCT6416_VENDOR_ID2 0x00001a66 
++#define DCT6416_MODEL_ID1  0x0000646b
+ 
+ #define AVC1394_SUBUNIT_TYPE_6200 (9 << 19)  /* uses a reserved subunit type */ 
+ 
+@@ -161,8 +189,13 @@
+       if (verbose) 
+          printf("node %d: vendor_id = 0x%08x model_id = 0x%08x\n", 
+                  i, dir.vendor_id, dir.model_id); 
+-		
+-      if ( ((dir.vendor_id == DCT6200_VENDOR_ID1) || 
++
++      if ( ((dir.vendor_id == DCH3200_VENDOR_ID1) ||
++            (dir.vendor_id == DCT3412_VENDOR_ID1) || 
++            (dir.vendor_id == DCT3416_VENDOR_ID1) || 
++            (dir.vendor_id == DCT3416_VENDOR_ID2) || 
++            (dir.vendor_id == DCT5100_VENDOR_ID1) ||
++            (dir.vendor_id == DCT6200_VENDOR_ID1) ||
+             (dir.vendor_id == DCT6200_VENDOR_ID2) ||
+             (dir.vendor_id == DCT6200_VENDOR_ID3) ||
+             (dir.vendor_id == DCT6200_VENDOR_ID4) ||
+@@ -173,10 +206,23 @@
+             (dir.vendor_id == DCT6200_VENDOR_ID9) ||
+             (dir.vendor_id == DCT6200_VENDOR_ID10) ||
+             (dir.vendor_id == DCT6200_VENDOR_ID11) ||
+-            (dir.vendor_id == DCT6412_VENDOR_ID1)) &&
+-           ((dir.model_id == DCT6200_MODEL_ID1) ||
++            (dir.vendor_id == DCT6200_VENDOR_ID12) ||
++            (dir.vendor_id == DCT6200_VENDOR_ID13) ||
++            (dir.vendor_id == DCT6200_VENDOR_ID14) ||
++            (dir.vendor_id == DCT6412_VENDOR_ID1) ||
++            (dir.vendor_id == DCT6412_VENDOR_ID2) ||
++            (dir.vendor_id == DCT6416_VENDOR_ID1) || 
++            (dir.vendor_id == DCT6416_VENDOR_ID2)) &&
++           ((dir.model_id == DCH3200_MODEL_ID1) ||
++            (dir.model_id == DCT3412_MODEL_ID1) ||
++            (dir.model_id == DCT3416_MODEL_ID1) ||
++            (dir.model_id == DCT3416_MODEL_ID2) ||
++            (dir.model_id == DCT5100_MODEL_ID1) ||
++            (dir.model_id == DCT6200_MODEL_ID1) ||
+             (dir.model_id == DCT6200_MODEL_ID2) ||
+-            (dir.model_id == DCT6412_MODEL_ID1)) ) {
++            (dir.model_id == DCT6412_MODEL_ID1) ||
++            (dir.model_id == DCT6412_MODEL_ID2) ||
++            (dir.model_id == DCT6416_MODEL_ID1)) ) {
+             if (dir.unit_spec_id != DCT6200_SPEC_ID)
+                fprintf(stderr, "Warning: Unit Spec ID different.\n");
+             if (dir.unit_sw_version != DCT6200_SW_VERSION)
+diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/channel_changers/sa3250ch.c mythtv-0.20.2-new/contrib/channel_changers/sa3250ch.c
+--- mythtv-0.20.2-old/contrib/channel_changers/sa3250ch.c	2006-08-12 15:47:19.000000000 -0700
++++ mythtv-0.20.2-new/contrib/channel_changers/sa3250ch.c	2007-11-18 10:28:36.000000000 -0800
+@@ -31,12 +31,16 @@
+ #include <string.h>
+ 
+ /* SA3250HD IDs */
+-#define SA3250HD_VENDOR_ID1     0x000011e6
+-#define SA3250HD_VENDOR_ID2     0x000014f8
+-#define SA3250HD_VENDOR_ID3     0x00001692
++#define SA_VENDOR_ID1           0x000011e6
++#define SA_VENDOR_ID2           0x000014f8
++#define SA_VENDOR_ID3           0x00001692
++#define SA_VENDOR_ID4           0x00001947
++#define SA_VENDOR_ID5           0x00000f21
++#define SA_VENDOR_ID6           0x00001ac3
++#define SA_VENDOR_ID7           0x00000a73
+ #define SA3250HD_MODEL_ID1      0x00000be0
+-#define SA4200HD_VENDOR_ID1     0x000014f8
+ #define SA4200HD_MODEL_ID1      0x00001072
++#define SA4250HDC_MODEL_ID1     0x000010cc
+ 
+ #define AVC1394_SA3250_COMMAND_CHANNEL 0x000007c00   /* subunit command */
+ #define AVC1394_SA3250_OPERAND_KEY_PRESS 0xe7
+@@ -53,7 +57,8 @@
+ {
+    fprintf(stderr, "Usage: sa3250ch [-v] [-s] <channel_num>\n");
+    fprintf(stderr, "  -v : Verbose Mode\n");
+-   fprintf(stderr, "  -s : Send command as single digit (for SA4200 and some SA3250s)\n");
++   fprintf(stderr, "  -s : Send command as single digit "
++           "(for SA4200 and some SA3250s and SA4200HD's)\n");
+    exit(1);
+ }
+ 
+@@ -123,19 +128,36 @@
+          printf("node %d: vendor_id = 0x%08x model_id = 0x%08x\n", 
+                  i, dir.vendor_id, dir.model_id); 
+ 		
+-      if ( ((dir.vendor_id == SA4200HD_VENDOR_ID1) &&
+-	    (dir.model_id == SA4200HD_MODEL_ID1))  ||
+-          (((dir.vendor_id == SA3250HD_VENDOR_ID1) ||
+-            (dir.vendor_id == SA3250HD_VENDOR_ID2) ||
+-            (dir.vendor_id == SA3250HD_VENDOR_ID3)) &&
+-            (dir.model_id == SA3250HD_MODEL_ID1))) {
+-            device = i;
+-            break;
++      /* WARNING: Please update firewiredevice.cpp when adding to this list. */
++      if (((dir.vendor_id == SA_VENDOR_ID1) ||
++           (dir.vendor_id == SA_VENDOR_ID2) ||
++           (dir.vendor_id == SA_VENDOR_ID3) ||
++           (dir.vendor_id == SA_VENDOR_ID4) ||
++           (dir.vendor_id == SA_VENDOR_ID5) ||
++           (dir.vendor_id == SA_VENDOR_ID6) ||
++           (dir.vendor_id == SA_VENDOR_ID7)) &&
++          ((dir.model_id == SA3250HD_MODEL_ID1)  ||
++           (dir.model_id == SA4200HD_MODEL_ID1)  ||
++           (dir.model_id == SA4250HDC_MODEL_ID1)))
++      {
++          if (dir.model_id == SA4250HDC_MODEL_ID1)
++          {
++              fprintf(stderr, "Ignoring SA 4250HDC on node %d -- "
++                      "sorry not supported yet\n", i);
++          }
++          else
++          {
++              device = i;
++              break;
++          }
+       }
+    }
+-    
+-   if (device == -1) {
+-        fprintf(stderr, "Could not find SA3250HD on the 1394 bus.\n");
++
++   if (device == -1)
++   {
++        fprintf(stderr, "Could not find SA3250HD or SA4200HD "
++                "on the IEEE 1394 bus.\n");
++
+         raw1394_destroy_handle(handle);
+         exit(1);
+    }
 diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/mythrename.pl mythtv-0.20.2-new/contrib/mythrename.pl
 --- mythtv-0.20.2-old/contrib/mythrename.pl	2006-02-27 23:40:08.000000000 -0800
-+++ mythtv-0.20.2-new/contrib/mythrename.pl	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/contrib/mythrename.pl	2007-11-18 10:28:36.000000000 -0800
 @@ -1,6 +1,6 @@
  #!/usr/bin/perl -w
  #
@@ -79,7 +261,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/mythrename.pl mythtv-0.20.2-
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/optimize_mythdb.pl mythtv-0.20.2-new/contrib/optimize_mythdb.pl
 --- mythtv-0.20.2-old/contrib/optimize_mythdb.pl	2006-08-05 14:51:46.000000000 -0700
-+++ mythtv-0.20.2-new/contrib/optimize_mythdb.pl	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/contrib/optimize_mythdb.pl	2007-11-18 10:28:36.000000000 -0800
 @@ -1,6 +1,6 @@
  #!/usr/bin/perl -w
  #
@@ -90,7 +272,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/optimize_mythdb.pl mythtv-0.
  #
 diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/osx-packager.pl mythtv-0.20.2-new/contrib/osx-packager.pl
 --- mythtv-0.20.2-old/contrib/osx-packager.pl	2006-09-09 04:52:38.000000000 -0700
-+++ mythtv-0.20.2-new/contrib/osx-packager.pl	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/contrib/osx-packager.pl	2007-11-18 10:28:36.000000000 -0800
 @@ -4,6 +4,9 @@
  ### Tool for automating frontend builds on Mac OS X.
  ### Run "osx-packager.pl -man" for full documentation.
@@ -595,7 +777,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/contrib/osx-packager.pl mythtv-0.20.
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/docs/doxygen-architecture-document.cpp mythtv-0.20.2-new/docs/doxygen-architecture-document.cpp
 --- mythtv-0.20.2-old/docs/doxygen-architecture-document.cpp	2006-08-28 14:07:20.000000000 -0700
-+++ mythtv-0.20.2-new/docs/doxygen-architecture-document.cpp	2007-11-15 20:33:53.000000000 -0800
++++ mythtv-0.20.2-new/docs/doxygen-architecture-document.cpp	2007-11-18 10:28:23.000000000 -0800
 @@ -1,5 +1,5 @@
  /**
 -\mainpage %MythTV Architecture
@@ -623,7 +805,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/docs/doxygen-architecture-document.c
  Two libraries libmythmpeg2 and libmythsamplerate appear redundant, but
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libavcodec/libavcodec.pro mythtv-0.20.2-new/libs/libavcodec/libavcodec.pro
 --- mythtv-0.20.2-old/libs/libavcodec/libavcodec.pro	2007-08-20 17:59:15.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libavcodec/libavcodec.pro	2007-11-15 20:34:03.000000000 -0800
++++ mythtv-0.20.2-new/libs/libavcodec/libavcodec.pro	2007-11-18 10:28:33.000000000 -0800
 @@ -17,7 +17,7 @@
      QMAKE_CFLAGS_SHLIB = 
  }
@@ -635,7 +817,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libavcodec/libavcodec.pro mytht
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libavutil/libavutil.pro mythtv-0.20.2-new/libs/libavutil/libavutil.pro
 --- mythtv-0.20.2-old/libs/libavutil/libavutil.pro	2006-08-22 22:43:47.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libavutil/libavutil.pro	2007-11-15 20:34:03.000000000 -0800
++++ mythtv-0.20.2-new/libs/libavutil/libavutil.pro	2007-11-18 10:28:33.000000000 -0800
 @@ -18,7 +18,7 @@
      QMAKE_CFLAGS_SHLIB = 
  }
@@ -647,7 +829,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libavutil/libavutil.pro mythtv-
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythcontext.cpp mythtv-0.20.2-new/libs/libmyth/mythcontext.cpp
 --- mythtv-0.20.2-old/libs/libmyth/mythcontext.cpp	2007-08-23 09:09:51.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmyth/mythcontext.cpp	2007-11-15 20:33:59.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmyth/mythcontext.cpp	2007-11-18 10:28:29.000000000 -0800
 @@ -237,6 +237,7 @@
      // Dimensions of the theme
      int m_baseWidth, m_baseHeight;
@@ -672,7 +854,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythcontext.cpp mythtv-
  QString MythContext::GetFilePrefix(void)
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythcontext.h mythtv-0.20.2-new/libs/libmyth/mythcontext.h
 --- mythtv-0.20.2-old/libs/libmyth/mythcontext.h	2007-08-23 09:09:51.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmyth/mythcontext.h	2007-11-15 20:33:59.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmyth/mythcontext.h	2007-11-18 10:28:28.000000000 -0800
 @@ -23,8 +23,8 @@
  
  using namespace std;
@@ -686,7 +868,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythcontext.h mythtv-0.
  class Settings;
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythsocket.cpp mythtv-0.20.2-new/libs/libmyth/mythsocket.cpp
 --- mythtv-0.20.2-old/libs/libmyth/mythsocket.cpp	2006-08-18 08:23:03.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmyth/mythsocket.cpp	2007-11-15 20:33:59.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmyth/mythsocket.cpp	2007-11-18 10:28:28.000000000 -0800
 @@ -689,7 +689,6 @@
  {
      VERBOSE(VB_SOCKET, "MythSocket: readyread thread start");
@@ -709,7 +891,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmyth/mythsocket.cpp mythtv-0
              VERBOSE(VB_SOCKET, "MythSocket: select returned error");
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythmpeg2/cpu_accel.c mythtv-0.20.2-new/libs/libmythmpeg2/cpu_accel.c
 --- mythtv-0.20.2-old/libs/libmythmpeg2/cpu_accel.c	2006-03-17 16:56:27.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythmpeg2/cpu_accel.c	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythmpeg2/cpu_accel.c	2007-11-18 10:28:26.000000000 -0800
 @@ -190,7 +190,7 @@
  	accel |= MPEG2_ACCEL_SPARC_VIS;
  
@@ -721,7 +903,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythmpeg2/cpu_accel.c mythtv
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.cpp	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -733,7 +915,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.cpp 
  // $Id: AAFilter.cpp 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.h mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/AAFilter.h	2007-11-18 10:28:26.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -745,7 +927,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/AAFilter.h my
  // $Id: AAFilter.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/BPMDetect.h mythtv-0.20.2-new/libs/libmythsoundtouch/BPMDetect.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/BPMDetect.h	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/BPMDetect.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/BPMDetect.h	2007-11-18 10:28:26.000000000 -0800
 @@ -26,7 +26,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -757,7 +939,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/BPMDetect.h m
  // $Id: BPMDetect.h 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect.h mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect.h	2006-03-16 02:00:28.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect.h	2007-11-18 10:28:26.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -769,7 +951,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect.h 
  // $Id: cpu_detect.h 9376 2006-03-16 10:00:28Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/cpu_detect_x86_gcc.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -12,7 +12,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -781,7 +963,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/cpu_detect_x8
  // $Id: cpu_detect_x86_gcc.cpp 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -793,7 +975,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuf
  // $Id: FIFOSampleBuffer.cpp 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuffer.h mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuffer.h	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSampleBuffer.h	2007-11-18 10:28:26.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -805,7 +987,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSampleBuf
  // $Id: FIFOSampleBuffer.h 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSamplePipe.h mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSamplePipe.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSamplePipe.h	2005-05-23 13:39:12.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIFOSamplePipe.h	2007-11-18 10:28:26.000000000 -0800
 @@ -17,7 +17,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -817,7 +999,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIFOSamplePip
  // $Id: FIFOSamplePipe.h 6468 2005-05-23 20:39:12Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.cpp	2006-03-31 22:19:12.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -11,7 +11,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -829,7 +1011,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.cpp
  // $Id: FIRFilter.cpp 9588 2006-04-01 06:19:12Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.h mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/FIRFilter.h	2007-11-18 10:28:26.000000000 -0800
 @@ -11,7 +11,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -841,7 +1023,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/FIRFilter.h m
  // $Id: FIRFilter.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/mmx_gcc.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/mmx_gcc.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/mmx_gcc.cpp	2006-05-23 12:14:24.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/mmx_gcc.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/mmx_gcc.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -15,7 +15,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -853,7 +1035,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/mmx_gcc.cpp m
  // $Id: mmx_gcc.cpp 9998 2006-05-23 19:14:24Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/RateTransposer.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/RateTransposer.cpp	2006-05-23 12:14:24.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -10,7 +10,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -865,7 +1047,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/RateTranspose
  // $Id: RateTransposer.cpp 9998 2006-05-23 19:14:24Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/RateTransposer.h mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/RateTransposer.h	2004-11-13 14:29:45.000000000 -0800
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/RateTransposer.h	2007-11-18 10:28:26.000000000 -0800
 @@ -14,7 +14,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -877,7 +1059,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/RateTranspose
  // $Id: RateTransposer.h 4714 2004-11-13 22:29:45Z ijr $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.cpp	2006-05-24 03:48:15.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -41,7 +41,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -889,7 +1071,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.cp
  // $Id: SoundTouch.cpp 10003 2006-05-24 10:48:15Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.h mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.h	2006-05-23 10:40:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/SoundTouch.h	2007-11-18 10:28:26.000000000 -0800
 @@ -41,7 +41,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -901,7 +1083,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/SoundTouch.h 
  // $Id: SoundTouch.h 9996 2006-05-23 17:40:36Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/STTypes.h mythtv-0.20.2-new/libs/libmythsoundtouch/STTypes.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/STTypes.h	2006-05-24 07:56:37.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/STTypes.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/STTypes.h	2007-11-18 10:28:26.000000000 -0800
 @@ -8,7 +8,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -913,7 +1095,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/STTypes.h myt
  // $Id: STTypes.h 10005 2006-05-24 14:56:37Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.cpp mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.cpp
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.cpp	2006-05-23 12:14:24.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -925,7 +1107,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.cpp
  // $Id: TDStretch.cpp 9998 2006-05-23 19:14:24Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.h mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.h
 --- mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.h	2006-05-23 12:14:24.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythsoundtouch/TDStretch.h	2007-11-18 10:28:26.000000000 -0800
 @@ -13,7 +13,7 @@
  ///
  ////////////////////////////////////////////////////////////////////////////////
@@ -937,7 +1119,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythsoundtouch/TDStretch.h m
  // $Id: TDStretch.h 9998 2006-05-23 19:14:24Z danielk $
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/cardutil.h mythtv-0.20.2-new/libs/libmythtv/cardutil.h
 --- mythtv-0.20.2-old/libs/libmythtv/cardutil.h	2006-08-07 10:55:36.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/cardutil.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/cardutil.h	2007-11-18 10:28:26.000000000 -0800
 @@ -104,6 +104,18 @@
              (rawtype == "CRC_IP");
      }
@@ -959,7 +1141,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/cardutil.h mythtv-0.2
      static uint         GetChildCardID(uint cardid);
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/datadirect.cpp mythtv-0.20.2-new/libs/libmythtv/datadirect.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/datadirect.cpp	2007-08-23 15:39:10.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/datadirect.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/datadirect.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -168,14 +168,8 @@
          curr_schedule.duration = QTime(durstr.mid(2, 2).toInt(), 
                                         durstr.mid(5, 2).toInt(), 0, 0);
@@ -1124,7 +1306,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/datadirect.cpp mythtv
          "  stationname varchar(40),      affiliate varchar(25), "
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/datadirect.h mythtv-0.20.2-new/libs/libmythtv/datadirect.h
 --- mythtv-0.20.2-old/libs/libmythtv/datadirect.h	2007-08-23 15:39:10.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/datadirect.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/datadirect.h	2007-11-18 10:28:26.000000000 -0800
 @@ -215,7 +215,7 @@
  {
    public:
@@ -1145,7 +1327,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/datadirect.h mythtv-0
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dbcheck.cpp mythtv-0.20.2-new/libs/libmythtv/dbcheck.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/dbcheck.cpp	2007-08-20 14:10:34.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/dbcheck.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/dbcheck.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -428,6 +428,17 @@
      if (!gContext->GetNumSetting("MythFillFixProgramIDsHasRunOnce", 0))
          DataDirectProcessor::FixProgramIDs();
@@ -1166,7 +1348,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dbcheck.cpp mythtv-0.
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/decoderbase.cpp mythtv-0.20.2-new/libs/libmythtv/decoderbase.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/decoderbase.cpp	2007-07-30 10:45:45.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/decoderbase.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/decoderbase.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -599,6 +599,7 @@
      // Do any Extra frame-by-frame seeking for exactseeks mode
      // And flush pre-seek frame if we are allowed to and need to..
@@ -1177,7 +1359,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/decoderbase.cpp mytht
      if (discardFrames)
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.cpp mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.cpp	2007-08-22 11:59:21.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -40,6 +40,7 @@
        detectedNetworkID(0), detectedTransportID(0),
        programNumber(-1),
@@ -1245,7 +1427,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.cpp 
  }
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.h mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.h
 --- mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.h	2006-07-18 05:35:04.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/dtvsignalmonitor.h	2007-11-18 10:28:26.000000000 -0800
 @@ -131,6 +131,8 @@
      uint               detectedTransportID;
      // MPEG/DVB/ATSC tuning info
@@ -1257,7 +1439,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/dtvsignalmonitor.h my
      QString            error;
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/eithelper.cpp mythtv-0.20.2-new/libs/libmythtv/eithelper.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/eithelper.cpp	2007-07-24 12:27:09.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/eithelper.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/eithelper.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -579,11 +579,6 @@
      fix[ 774LL << 32 | 8468 << 16 | 16392] = EITFixUp::kEFixPro7Sat; //DVB-T Berlin dsf
      fix[ 772LL << 32 | 8468 << 16 | 16387] = EITFixUp::kEFixPro7Sat; //DVB-T Berlin HSE/MonA TV
@@ -1272,7 +1454,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/eithelper.cpp mythtv-
  }
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/hdhrsignalmonitor.cpp mythtv-0.20.2-new/libs/libmythtv/hdhrsignalmonitor.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/hdhrsignalmonitor.cpp	2006-07-03 12:12:30.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/hdhrsignalmonitor.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/hdhrsignalmonitor.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -47,7 +47,7 @@
  
      _channel->DelAllPIDs();
@@ -1284,7 +1466,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/hdhrsignalmonitor.cpp
  }
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypes.cpp mythtv-0.20.2-new/libs/libmythtv/osdtypes.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/osdtypes.cpp	2006-09-14 23:27:02.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/osdtypes.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/osdtypes.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -644,10 +644,18 @@
  
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -1582,7 +1764,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypes.cpp mythtv-0
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypes.h mythtv-0.20.2-new/libs/libmythtv/osdtypes.h
 --- mythtv-0.20.2-old/libs/libmythtv/osdtypes.h	2006-06-30 20:15:32.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/osdtypes.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/osdtypes.h	2007-11-18 10:28:26.000000000 -0800
 @@ -163,7 +163,7 @@
      void Hide(bool hidden = true) { m_hidden = hidden; }
      bool isHidden(void) { return m_hidden; }
@@ -1639,7 +1821,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypes.h mythtv-0.2
      bool MoveCursor(int dir);
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypeteletext.cpp mythtv-0.20.2-new/libs/libmythtv/osdtypeteletext.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/osdtypeteletext.cpp	2006-08-15 08:54:51.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/osdtypeteletext.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/osdtypeteletext.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -953,7 +953,7 @@
                  endbox = true;
                  goto ctrl;
@@ -1651,7 +1833,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/osdtypeteletext.cpp m
              case 0x0c: // normal height
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/programinfo.cpp mythtv-0.20.2-new/libs/libmythtv/programinfo.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/programinfo.cpp	2007-06-29 07:39:26.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/programinfo.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/programinfo.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -3172,7 +3172,7 @@
      if (record == NULL && recordid)
      {
@@ -1663,7 +1845,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/programinfo.cpp mytht
      if (filesize > 0)
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/sourceutil.cpp mythtv-0.20.2-new/libs/libmythtv/sourceutil.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/sourceutil.cpp	2007-08-23 15:39:10.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/sourceutil.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/sourceutil.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -114,6 +114,93 @@
      return list;
  }
@@ -1769,7 +1951,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/sourceutil.cpp mythtv
      for (; it != types.end(); ++it)
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/sourceutil.h mythtv-0.20.2-new/libs/libmythtv/sourceutil.h
 --- mythtv-0.20.2-old/libs/libmythtv/sourceutil.h	2007-08-23 15:39:10.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/sourceutil.h	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/sourceutil.h	2007-11-18 10:28:26.000000000 -0800
 @@ -14,6 +14,8 @@
      static bool    GetListingsLoginData(uint sourceid,
                                          QString &grabber, QString &userid,
@@ -1781,7 +1963,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/sourceutil.h mythtv-0
      static bool    UpdateChannelsFromListings(
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/tv_rec.cpp mythtv-0.20.2-new/libs/libmythtv/tv_rec.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/tv_rec.cpp	2007-04-13 22:04:11.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/tv_rec.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/tv_rec.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -2057,8 +2057,9 @@
  /** \fn QString add_spacer(const QString&, const QString&)
   *  \brief Adds the spacer before the last character in chan.
@@ -1879,7 +2061,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/tv_rec.cpp mythtv-0.2
      return true;
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videoout_quartz.cpp mythtv-0.20.2-new/libs/libmythtv/videoout_quartz.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/videoout_quartz.cpp	2007-03-15 15:34:28.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/videoout_quartz.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/videoout_quartz.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -17,7 +17,7 @@
   *   a second time, may cause a crash (backtraces appreciated)
   * 
@@ -1907,7 +2089,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videoout_quartz.cpp m
              // scale width up, leave height alone
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videoout_xv.cpp mythtv-0.20.2-new/libs/libmythtv/videoout_xv.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/videoout_xv.cpp	2007-07-22 23:36:34.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/videoout_xv.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/videoout_xv.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -418,11 +418,7 @@
              .arg(w).arg(h).arg(window_w).arg(window_h));
  
@@ -1923,7 +2105,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videoout_xv.cpp mytht
      // Only print warning if this isn't Xinerama, we will fix Xinerama later.
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videosource.cpp mythtv-0.20.2-new/libs/libmythtv/videosource.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/videosource.cpp	2007-08-20 14:10:34.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/videosource.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/videosource.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -24,6 +24,7 @@
  // MythTV headers
  #include "mythconfig.h"
@@ -2012,7 +2194,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/videosource.cpp mytht
          if (!CardUtil::IsUnscanable(cardtype) &&
 diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/vsync.cpp mythtv-0.20.2-new/libs/libmythtv/vsync.cpp
 --- mythtv-0.20.2-old/libs/libmythtv/vsync.cpp	2006-10-25 10:00:42.000000000 -0700
-+++ mythtv-0.20.2-new/libs/libmythtv/vsync.cpp	2007-11-15 20:33:56.000000000 -0800
++++ mythtv-0.20.2-new/libs/libmythtv/vsync.cpp	2007-11-18 10:28:26.000000000 -0800
 @@ -444,9 +444,9 @@
      OpenGLVideoSyncPrivate()
      {
@@ -2047,7 +2229,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/libs/libmythtv/vsync.cpp mythtv-0.20
          {
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/filetransfer.cpp mythtv-0.20.2-new/programs/mythbackend/filetransfer.cpp
 --- mythtv-0.20.2-old/programs/mythbackend/filetransfer.cpp	2006-06-09 11:05:49.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/filetransfer.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/filetransfer.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -37,11 +37,14 @@
  
  void FileTransfer::UpRef(void)
@@ -2078,7 +2260,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/filetransfer.cp
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/filetransfer.h mythtv-0.20.2-new/programs/mythbackend/filetransfer.h
 --- mythtv-0.20.2-old/programs/mythbackend/filetransfer.h	2006-06-09 11:05:49.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/filetransfer.h	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/filetransfer.h	2007-11-18 10:28:35.000000000 -0800
 @@ -53,6 +53,7 @@
  
      vector<char> requestBuffer;
@@ -2089,7 +2271,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/filetransfer.h 
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/housekeeper.cpp mythtv-0.20.2-new/programs/mythbackend/housekeeper.cpp
 --- mythtv-0.20.2-old/programs/mythbackend/housekeeper.cpp	2006-10-05 21:59:01.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/housekeeper.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/housekeeper.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -179,7 +179,8 @@
                      {
                          result.prepare("SELECT COUNT(*) FROM videosource "
@@ -2102,7 +2284,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/housekeeper.cpp
                              (result.isActive()) &&
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/mainserver.cpp mythtv-0.20.2-new/programs/mythbackend/mainserver.cpp
 --- mythtv-0.20.2-old/programs/mythbackend/mainserver.cpp	2007-08-23 09:09:51.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/mainserver.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/mainserver.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -789,6 +789,7 @@
  
          // Make a local copy of the list, upping the refcount as we go..
@@ -2350,7 +2532,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/mainserver.cpp 
  /* vim: set expandtab tabstop=4 shiftwidth=4: */
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/mainserver.h mythtv-0.20.2-new/programs/mythbackend/mainserver.h
 --- mythtv-0.20.2-old/programs/mythbackend/mainserver.h	2007-08-23 09:09:51.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/mainserver.h	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/mainserver.h	2007-11-18 10:28:35.000000000 -0800
 @@ -162,6 +162,7 @@
  
      MythServer *mythserver;
@@ -2361,7 +2543,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/mainserver.h my
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/playbacksock.cpp mythtv-0.20.2-new/programs/mythbackend/playbacksock.cpp
 --- mythtv-0.20.2-old/programs/mythbackend/playbacksock.cpp	2006-06-09 11:05:49.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/playbacksock.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/playbacksock.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -43,11 +43,14 @@
  
  void PlaybackSock::UpRef(void)
@@ -2379,7 +2561,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/playbacksock.cp
      {
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/playbacksock.h mythtv-0.20.2-new/programs/mythbackend/playbacksock.h
 --- mythtv-0.20.2-old/programs/mythbackend/playbacksock.h	2006-06-09 11:05:49.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythbackend/playbacksock.h	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythbackend/playbacksock.h	2007-11-18 10:28:35.000000000 -0800
 @@ -72,6 +72,7 @@
      bool blockshutdown;
      bool backend;
@@ -2390,7 +2572,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythbackend/playbacksock.h 
      bool expectingreply;
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfilldatabase/filldata.cpp mythtv-0.20.2-new/programs/mythfilldatabase/filldata.cpp
 --- mythtv-0.20.2-old/programs/mythfilldatabase/filldata.cpp	2007-08-23 15:39:10.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythfilldatabase/filldata.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfilldatabase/filldata.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -1372,6 +1372,7 @@
  ProgInfo *parseProgram(QDomElement &element, int localTimezoneOffset)
  {
@@ -2449,7 +2631,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfilldatabase/filldata.c
                  {
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfrontend/globalsettings.cpp mythtv-0.20.2-new/programs/mythfrontend/globalsettings.cpp
 --- mythtv-0.20.2-old/programs/mythfrontend/globalsettings.cpp	2006-09-04 14:00:39.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythfrontend/globalsettings.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfrontend/globalsettings.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -3638,7 +3638,7 @@
  
      VerticalConfigurationGroup* screen = new VerticalConfigurationGroup(false);
@@ -2461,7 +2643,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfrontend/globalsettings
          screen->addChild(XineramaMonitorAspectRatio());
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfrontend/library.xml mythtv-0.20.2-new/programs/mythfrontend/library.xml
 --- mythtv-0.20.2-old/programs/mythfrontend/library.xml	2007-08-07 07:41:51.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythfrontend/library.xml	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfrontend/library.xml	2007-11-18 10:28:35.000000000 -0800
 @@ -108,7 +108,7 @@
     <button>
       <type>STREAM</type>
@@ -2473,7 +2655,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythfrontend/library.xml my
  
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythtranscode/replex/replex.pro mythtv-0.20.2-new/programs/mythtranscode/replex/replex.pro
 --- mythtv-0.20.2-old/programs/mythtranscode/replex/replex.pro	2006-08-29 14:19:12.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythtranscode/replex/replex.pro	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythtranscode/replex/replex.pro	2007-11-18 10:28:35.000000000 -0800
 @@ -20,8 +20,8 @@
  INCLUDEPATH += ../../../libs/libavutil  ../../../libs/libmythmpeg2
  
@@ -2486,7 +2668,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythtranscode/replex/replex
    QMAKE_EXTENSION_SHLIB=so
 diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythtranscode/transcode.cpp mythtv-0.20.2-new/programs/mythtranscode/transcode.cpp
 --- mythtv-0.20.2-old/programs/mythtranscode/transcode.cpp	2006-08-23 15:20:59.000000000 -0700
-+++ mythtv-0.20.2-new/programs/mythtranscode/transcode.cpp	2007-11-15 20:34:05.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythtranscode/transcode.cpp	2007-11-18 10:28:35.000000000 -0800
 @@ -593,7 +593,7 @@
      VideoOutput *videoOutput = nvp->getVideoOutput();
      bool is_key = 0;
@@ -2514,7 +2696,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/programs/mythtranscode/transcode.cpp
                  avpicture_fill(&imageOut, frame.buf, PIX_FMT_YUV420P,
 diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./theme.xml mythtv-0.20.2-new/themes/G.A.N.T./theme.xml
 --- mythtv-0.20.2-old/themes/G.A.N.T./theme.xml	2006-05-21 23:59:54.000000000 -0700
-+++ mythtv-0.20.2-new/themes/G.A.N.T./theme.xml	2007-11-15 20:33:47.000000000 -0800
++++ mythtv-0.20.2-new/themes/G.A.N.T./theme.xml	2007-11-18 10:28:17.000000000 -0800
 @@ -212,12 +212,6 @@
      <offset>0,0</offset>
    </buttondef>
@@ -2583,7 +2765,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./theme.xml mythtv-0.2
  </myththeme>
 diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/archive.png mythtv-0.20.2-new/themes/G.A.N.T./watermark/archive.png
 --- mythtv-0.20.2-old/themes/G.A.N.T./watermark/archive.png	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/archive.png	2007-11-15 20:33:46.000000000 -0800
++++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/archive.png	2007-11-18 10:28:16.000000000 -0800
 @@ -0,0 +1,306 @@
 +‰PNG
 +
@@ -2894,7 +3076,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/archive.pn
 \ No newline at end of file
 diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/dvd.png mythtv-0.20.2-new/themes/G.A.N.T./watermark/dvd.png
 --- mythtv-0.20.2-old/themes/G.A.N.T./watermark/dvd.png	2005-06-21 20:12:51.000000000 -0700
-+++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/dvd.png	2007-11-15 20:33:46.000000000 -0800
++++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/dvd.png	2007-11-18 10:28:16.000000000 -0800
 @@ -1,222 +1,304 @@
  ‰PNG
  
@@ -3424,7 +3606,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/dvd.png my
 \ No newline at end of file
 diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/eject.png mythtv-0.20.2-new/themes/G.A.N.T./watermark/eject.png
 --- mythtv-0.20.2-old/themes/G.A.N.T./watermark/eject.png	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/eject.png	2007-11-15 20:33:46.000000000 -0800
++++ mythtv-0.20.2-new/themes/G.A.N.T./watermark/eject.png	2007-11-18 10:28:16.000000000 -0800
 @@ -0,0 +1,292 @@
 +‰PNG
 +
@@ -3721,7 +3903,7 @@ diff -Naur -x mytharchive mythtv-0.20.2-old/themes/G.A.N.T./watermark/eject.png 
 \ No newline at end of file
 diff -Naur -x mytharchive mythtv-0.20.2-old/version.pro mythtv-0.20.2-new/version.pro
 --- mythtv-0.20.2-old/version.pro	2007-07-28 05:40:56.000000000 -0700
-+++ mythtv-0.20.2-new/version.pro	2007-11-15 20:34:06.000000000 -0800
++++ mythtv-0.20.2-new/version.pro	2007-11-18 10:28:36.000000000 -0800
 @@ -6,7 +6,7 @@
  ############################################################
  
