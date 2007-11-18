@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 9633.23777
+GARVERSION = 11050.25080
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,8 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+#
+#	--disable-sunmlib
 CONFIGURE_ARGS = \
 	--log=yes \
 	--prefix=$(prefix) \
@@ -32,19 +34,18 @@ CONFIGURE_ARGS = \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
-	--disable-dc1394 \
 	--disable-liba52 \
 	--disable-liba52bin \
 	--disable-avisynth \
 	--disable-libamr-nb \
 	--disable-libamr-wb \
+	--disable-libdc1394 \
 	--disable-libfaac \
 	--disable-libfaad \
 	--disable-libfaadbin \
 	--disable-libgsm \
 	--disable-libmp3lame \
 	--disable-libnut \
-	--disable-libogg \
 	--disable-libtheora \
 	--disable-libvorbis \
 	--disable-libx264 \
@@ -55,7 +56,7 @@ CONFIGURE_ARGS = \
 	--cc="gcc" \
 	--make="$(MAKE)" \
 	--extra-cflags="$(CFLAGS)" \
-	--extra-ldflags="$(LD_FLAGS)" \
+	--extra-ldflags="$(LDFLAGS)" \
 	--extra-libs="" \
 	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
@@ -66,18 +67,13 @@ CONFIGURE_ARGS = \
 	--disable-armv6 \
 	--disable-iwmmxt \
 	--disable-altivec \
-	--disable-audio-oss \
-	--disable-audio-beos \
-	--disable-v4l \
-	--disable-v4l2 \
-	--disable-bktr \
-	--disable-dv1394 \
 	--enable-network \
 	--disable-ipv6 \
 	--enable-zlib \
 	--disable-vhook \
 	--disable-debug \
 	--disable-mpegaudio-hp \
+	--enable-gray \
 	--enable-ffmpeg \
 	--disable-ffserver \
 	--disable-ffplay \
@@ -91,8 +87,10 @@ CONFIGURE_ARGS = \
 	--enable-bsfs \
 	--disable-protocols \
 	--disable-gprof \
+	--enable-optimizations \
 	--disable-extra-warnings \
 	--disable-strip
+
 INSTALL_ARGS   = \
 	LDCONFIG="true"
 
@@ -133,4 +131,6 @@ post-install:
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libavutil.pc
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libpostproc.pc
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libpostproc.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libswscale.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libswscale.pc
 	@$(MAKECOOKIE)
