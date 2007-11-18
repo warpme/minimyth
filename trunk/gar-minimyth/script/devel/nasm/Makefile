@@ -1,5 +1,5 @@
 GARNAME = nasm
-GARVERSION = 0.98.39
+GARVERSION = 2.00rc1
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
