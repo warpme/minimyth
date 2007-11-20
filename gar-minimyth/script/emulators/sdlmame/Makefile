@@ -1,5 +1,5 @@
 GARNAME = sdlmame
-GARVERSION = 0.120a
+GARVERSION = 0.121
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).zip
 PATCHFILES  = $(DISTNAME).patch.gar
