@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
-PATCHFILES  = $(DISTNAME)-harvester_cpp.patch $(DISTNAME).patch.gar $(DISTNAME)-disable_local_parsers.patch
+PATCHFILES  = $(DISTNAME)-mythpopupbox_delete.patch $(DISTNAME)-harvester_cpp.patch $(DISTNAME).patch.gar $(DISTNAME)-disable_local_parsers.patch
 #PATCHFILES += $(DISTNAME)-use_exec_parsers.patch
 
 DESCRIPTION = 
