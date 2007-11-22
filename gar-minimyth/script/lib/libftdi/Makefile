@@ -1,0 +1,31 @@
+GARNAME = libftdi
+GARVERSION = 0.10
+CATEGORIES = lib
+MASTER_SITES = http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME).patch.gar
+LICENSE = LGPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c lib/libusb
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld
+
+CONFIGURE_ENV = \
+	ac_cv_path_HAVELIBUSB=$(DESTDIR)$(bindir)/libusb-config
+
+include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libftdi.la
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libftdi.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libftdi.pc
+	@$(MAKECOOKIE)
