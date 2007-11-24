@@ -1,5 +1,5 @@
 GARNAME = nvidia
-GARVERSION = $(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION)
+GARVERSION = $(word 1,$(VERSION_LIST))
 CATEGORIES = nvidia
 MASTER_SITES = http://us.download.nvidia.com/XFree86/Linux-$(SUPER_VERSION)/$(GARVERSION)/
 DISTFILES = $(DISTFILE).run
@@ -22,6 +22,37 @@ TEENY_VERSION = 01
 EXTRA_VERSION = $(strip \
 	$(if $(filter x86,   $(SUPER_VERSION)),pkg1) \
 	$(if $(filter x86_64,$(SUPER_VERSION)),pkg2))
+	
+FILE_LIST_BIN     = $(strip \
+		nvidia-bug-report.sh:/usr/bin:$(bindir) \
+		nvidia-settings:/usr/bin:$(bindir) \
+		nvidia-xconfig:/usr/bin:$(bindir) \
+	)
+FILE_LIST_LIB_DRV = $(strip \
+		nvidia_drv.so:/usr/X11R6/lib/modules/drivers:$(libdir)/nvidia/xorg/modules/drivers \
+	)
+FILE_LIST_LIB_A   = $(strip \
+		libXvMCNVIDIA.a:/usr/X11R6/lib:$(libdir)/nvidia \
+	)
+FILE_LIST_LIB_SO  = $(strip \
+		libGL.so:/usr/lib:$(libdir)/nvidia \
+		libGLcore.so:/usr/lib:$(libdir)/nvidia \
+		libnvidia-cfg.so:/usr/lib:$(libdir)/nvidia \
+		libnvidia-tls.so:/usr/lib/tls:$(libdir)/nvidia \
+		libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia \
+		libglx.so:/usr/X11R6/lib/modules/extensions:$(libdir)/nvidia/xorg/modules/extensions \
+	)
+VERSION_LIST  = $(strip \
+	$(if $(MAJOR_VERSION), \
+		$(if $(MINOR_VERSION), \
+			$(if $(TEENY_VERSION), \
+				$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
+			) \
+			$(MAJOR_VERSION).$(MINOR_VERSION) \
+		) \
+		$(MAJOR_VERSION) \
+	))
+
 DISTFILE      = NVIDIA-Linux-$(SUPER_VERSION)-$(GARVERSION)-$(EXTRA_VERSION)
 
 WORKSRC = $(WORKDIR)/$(DISTFILE)
@@ -63,73 +94,47 @@ install-kernel:
 
 install-x11:
 	@rm -rf $(DESTDIR)$(bindir)/nvidia*
-	@mkdir -p $(DESTDIR)$(bindir)
-	@install $(WORKSRC)/usr/bin/nvidia-bug-report.sh \
-		$(DESTDIR)$(bindir)/nvidia-bug-report.sh
-	@install $(WORKSRC)/usr/bin/nvidia-xconfig \
-		$(DESTDIR)$(bindir)/nvidia-xconfig
+	@$(foreach entry,$(FILE_LIST_BIN), \
+		install -D \
+		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
+	)
 	@rm -rf $(DESTDIR)$(libdir)/nvidia
-	@mkdir -p $(DESTDIR)$(libdir)/nvidia
-	@mkdir -p $(DESTDIR)$(libdir)/nvidia/xorg/modules/drivers
-	@mkdir -p $(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions
-	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.a \
-		$(DESTDIR)$(libdir)/nvidia/libXvMCNVIDIA.a
-	@install $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia
-	@install $(WORKSRC)/usr/lib/libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia
-	@install $(WORKSRC)/usr/lib/libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia
-	@install $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so \
-		$(DESTDIR)$(libdir)/nvidia/xorg/modules/drivers
-	@install $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions
-	@install $(WORKSRC)/usr/lib/tls/libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia
-	@install $(WORKSRC)/usr/lib/libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		$(DESTDIR)$(libdir)/nvidia
-	@cd $(DESTDIR)$(libdir)/nvidia ; \
-		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libXvMCNVIDIA.so.$(MAJOR_VERSION) ; \
-		ln -sf libXvMCNVIDIA.so.$(MAJOR_VERSION) \
-		       libXvMCNVIDIA.so
-	@cd $(DESTDIR)$(libdir)/nvidia ; \
-		ln -sf libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libGL.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libGL.so.$(MAJOR_VERSION) ; \
-		ln -sf libGL.so.$(MAJOR_VERSION) \
-		       libGL.so
-	@cd $(DESTDIR)$(libdir)/nvidia ; \
-		ln -sf libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libGLcore.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libGLcore.so.$(MAJOR_VERSION) ; \
-		ln -sf libGLcore.so.$(MAJOR_VERSION) \
-		       libGLcore.so
-	@cd $(DESTDIR)$(libdir)/nvidia/xorg/modules/extensions; \
-		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libglx.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libglx.so.$(MAJOR_VERSION) ; \
-		ln -sf libglx.so.$(MAJOR_VERSION) \
-		       libglx.so
-	@cd $(DESTDIR)$(libdir)/nvidia ; \
-		ln -sf libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libnvidia-tls.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libnvidia-tls.so.$(MAJOR_VERSION) ; \
-		ln -sf libnvidia-tls.so.$(MAJOR_VERSION) \
-		       libnvidia-tls.so
-	@cd $(DESTDIR)$(libdir)/nvidia ; \
-		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION).$(TEENY_VERSION) \
-		       libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION); \
-		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION).$(MINOR_VERSION) \
-		       libnvidia-cfg.so.$(MAJOR_VERSION) ; \
-		ln -sf libnvidia-cfg.so.$(MAJOR_VERSION) \
-		       libnvidia-cfg.so
+	@$(foreach entry,$(FILE_LIST_LIB_DRV), \
+		install -D \
+		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
+	)
+	@$(foreach entry,$(FILE_LIST_LIB_A), \
+		install -D \
+		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
+	)
+	@$(foreach entry,$(FILE_LIST_LIB_SO), \
+		install -D \
+		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).$(word 1,$(VERSION_LIST)) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).$(word 1,$(VERSION_LIST)) ; \
+	)
+	@$(foreach entry,$(FILE_LIST_LIB_SO), $(if $(word 2,$(VERSION_LIST)), \
+		ln -sf \
+		    $(word 1,$(subst :, ,$(entry))).$(word 1,$(VERSION_LIST)) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).$(word 2,$(VERSION_LIST)) ; \
+	))
+	@$(foreach entry,$(FILE_LIST_LIB_SO), $(if $(word 3,$(VERSION_LIST)), \
+		ln -sf \
+		    $(word 1,$(subst :, ,$(entry))).$(word 2,$(VERSION_LIST)) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).$(word 3,$(VERSION_LIST)) ; \
+	))
+	@$(foreach entry,$(FILE_LIST_LIB_SO), \
+		ln -sf \
+		    $(word 1,$(subst :, ,$(entry))).$(word $(words $(VERSION_LIST)),$(VERSION_LIST)) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
+	)
+	@$(foreach entry,$(FILE_LIST_LIB_SO), \
+		ln -sf \
+		    $(word 1,$(subst :, ,$(entry))).$(word $(words $(VERSION_LIST)),$(VERSION_LIST)) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).1 ; \
+	)
 	@$(MAKECOOKIE)
 
 clean-all: clean-all-kernel clean-all-x11
