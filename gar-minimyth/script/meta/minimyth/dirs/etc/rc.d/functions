@@ -123,6 +123,9 @@ mm_url_file_get() {
 
     local LOCAL_DIR
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
@@ -140,6 +143,9 @@ mm_url_http_get() {
     local REMOTE_SERVER=$3
 
     local LOCAL_DIR
+
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
@@ -169,6 +175,9 @@ mm_url_tftp_get() {
     local REMOTE_SERVER=$3
 
     local LOCAL_DIR
+
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
@@ -234,6 +243,9 @@ mm_url_file_put() {
 
     local REMOTE_DIR
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+
     if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
             "cannot post conf file '${LOCAL_FILE}' because file not found."
@@ -264,6 +276,9 @@ mm_url_tftp_put() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
     local REMOTE_SERVER=$3
+
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
 
     if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
