@@ -53,7 +53,7 @@ NVIDIA_FILE_LIST_LIB_DRV = $(strip \
 			nvidia_drv.so:/usr/X11R6/lib/modules/drivers:$(libdir)/nvidia/xorg/modules/drivers) \
 	)
 NVIDIA_FILE_LIST_LIB_A   = $(strip \
-		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCVIDIA.a), \
+		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.a), \
 			libXvMCNVIDIA.a:/usr/X11R6/lib:$(libdir)/nvidia) \
 	)
 NVIDIA_FILE_LIST_LIB_SO  = $(strip \
@@ -67,7 +67,7 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 			libnvidia-cfg.so:/usr/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/lib/tls/libnvidia-tls.so.*), \
 			libnvidia-tls.so:/usr/lib/tls:$(libdir)/nvidia) \
-		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCVIDIA.so.*), \
+		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.*), \
 			libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/libnvidia-wfb.so.*), \
 			libnvidia-wfb.so:/usr/X11R6/lib/modules:$(libdir)/nvidia/xorg/modules) \
