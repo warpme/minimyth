@@ -1,11 +1,8 @@
 GARNAME = splashutils
-GARVERSION = 1.5.2.1
+GARVERSION = 1.5.3
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = \
-	$(DISTNAME)-1_autotools_part_1.patch \
-	$(DISTNAME)-2_autotools_part_2.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -20,22 +17,27 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
-	--disable-quiet \
 	--disable-deprecated \
 	--enable-fbcondecor \
 	--disable-helper \
 	--disable-misc \
 	--disable-test \
+	--with-gnu-ld \
 	--without-gpm \
 	--without-mng \
 	--without-png \
-	--with-ttf
+	--with-ttf \
+	--with-ttf-kernel \
+	--with-essential-prefix="$(if $(rootdir),$(rootdir),/)" \
+	--with-essential-bindir="$(ebindir)" \
+	--with-eseential-sbindir="$(esbindir)" \
+	--with-essential-libdir="$(elibdir)" \
+	--with-themedir="$(sysconfdir)/splash"
+
+BUILD_ENV = \
+	QUIET=false
 
 include ../../gar.mk
-
-pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfbsplash.la
