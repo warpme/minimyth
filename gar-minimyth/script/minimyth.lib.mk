@@ -4,7 +4,7 @@ FETCH_CVS = \
 	cd $(PARTIALDIR)                                                                        ; \
 	rm -rf $(strip $(4))                                                                    ; \
 	rm -rf $(strip $(4)).tar.bz2                                                            ; \
-	cvs -z9 -d:pserver:$(strip $(1)) co -D $(strip $(3)) -d $(strip $(4)) $(strip $(2))     ; \
+	echo cvs -z9 -d:pserver:$(strip $(1)) co -D $(strip $(3)) -d $(strip $(4)) $(strip $(2))     ; \
 	if [ ! -d $(strip $(4)) ] ; then                                                          \
 		rm -rf $(strip $(4))                                                            ; \
 		rm -rf $(strip $(4)).tar.bz2                                                    ; \
