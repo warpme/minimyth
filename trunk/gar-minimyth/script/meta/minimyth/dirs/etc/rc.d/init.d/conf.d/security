@@ -30,6 +30,9 @@ conf_check_security() {
 }
 
 conf_default_security() {
+    if /usr/bin/test -e '/tmp/init.conf.security/conf_default_security' ; then
+        return 0
+    fi
 
     if /usr/bin/test -z "${MM_SECURITY_LEVEL}" ; then
         MM_SECURITY_LEVEL='0'
@@ -37,6 +40,9 @@ conf_default_security() {
     if /usr/bin/test -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" ; then
         MM_SECURITY_FETCH_CA_BUNDLE_CRT='no'
     fi
+
+    /bin/mkdir -p '/tmp/init.conf.security'
+    /bin/touch    '/tmp/init.conf.security/conf_default_security'
 
     return 0
 }

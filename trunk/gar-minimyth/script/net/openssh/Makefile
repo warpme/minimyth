@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/openssl lib/zlib system/pam
+DEPENDS = lang/c lib/openssl lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -28,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-wtmpx \
 	--without-rpath \
 	--with-ssl-engine \
-	--with-pam
+	--without-pam
 
 include ../../gar.mk
 
