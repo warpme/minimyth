@@ -9,10 +9,30 @@ conf_clean_auth() {
 
 conf_check_auth() {
 
-    if /usr/bin/test ! -z "${MM_AUTH_TYPE}"          && \
-       /usr/bin/test !    "${MM_AUTH_TYPE}" = "file" && \
-       /usr/bin/test !    "${MM_AUTH_TYPE}" = "ldap" ; then
-        mm_message_output err "error: MM_AUTH_TYPE='${MM_AUTH_TYPE}' is not valid."
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_AUTH_TYPE}"             ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_TYPE' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_SERVER}"      ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_SERVER' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_BINDDN}"      ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_BINDDN' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_BINDPW}"      ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_BINDPW' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_BASE}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_BASE' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_BASE_USERS}"  ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_BASE_USERS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_BASE_GROUPS}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_BASE_GROUPS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_AUTH_LDAP_PAM_GROUPDN}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_AUTH_LDAP_PAM_GROUPDN' is obsolete."
     fi
 
     return 0
@@ -20,54 +40,11 @@ conf_check_auth() {
 
 conf_default_auth() {
 
-    # The routine relies on the MM_DOMAIN variable.
-    conf_default_dhcp
-
-    if /usr/bin/test -z "${MM_AUTH_TYPE}" ; then
-        MM_AUTH_TYPE='file'
-    fi
-    if /usr/bin/test "${MM_AUTH_TYPE}" = "ldap" ; then
-        if /usr/bin/test -z "${MM_AUTH_LDAP_SERVER}" ; then
-            if /usr/bin/test -n "${MM_DOMAIN}" ; then
-                MM_AUTH_LDAP_SERVER="ldap.${MM_DOMAIN}"
-            fi
-        fi
-        if /usr/bin/test -z "${MM_AUTH_LDAP_BASE}" ; then
-            if /usr/bin/test -n "${MM_DOMAIN}" ; then
-                MM_AUTH_LDAP_BASE="dc=${MM_DOMAIN}"
-            fi
-        fi
-        if /usr/bin/test -z "${MM_AUTH_LDAP_BASE_USERS}" ; then
-            if /usr/bin/test -n "${MM_AUTH_LDAP_BASE}" ; then
-                MM_AUTH_LDAP_BASE_USERS="ou=users,${MM_AUTH_LDAP_BASE}"
-            fi
-        fi
-        if /usr/bin/test -z "${MM_AUTH_LDAP_BASE_GROUPS}" ; then
-            if /usr/bin/test -n "${MM_AUTH_LDAP_BASE}" ; then
-                MM_AUTH_LDAP_BASE_GROUPS="ou=groups,${MM_AUTH_LDAP_BASE}"
-            fi
-        fi
-        if /usr/bin/test -z "${MM_AUTH_LDAP_PAM_GROUPDN}" ; then
-            if /usr/bin/test -n "${MM_AUTH_LDAP_BASE_GROUPS}" ; then
-                MM_AUTH_LDAP_PAM_GROUPDN="cn=users-minimyth,${MM_AUTH_LDAP_BASE_GROUPS}"
-            fi
-        fi
-    fi
-
     return 0
 }
 
 conf_write_auth() {
     local conf_file=$1
-
-    conf_variable_write "${conf_file}" MM_AUTH_TYPE             "${MM_AUTH_TYPE}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_SERVER      "${MM_AUTH_LDAP_SERVER}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_BINDDN      "${MM_AUTH_LDAP_BINDDN}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_BINDPW      "${MM_AUTH_LDAP_BINDPW}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_BASE        "${MM_AUTH_LDAP_BASE}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_BASE_USERS  "${MM_AUTH_LDAP_BASE_USERS}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_BASE_GROUPS "${MM_AUTH_LDAP_BASE_GROUPS}"
-    conf_variable_write "${conf_file}" MM_AUTH_LDAP_PAM_GROUPDN "${MM_AUTH_LDAP_PAM_GROUPDN}"
 
     return 0
 }

@@ -58,17 +58,6 @@
               <dt><a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a></dt>
               <dt><a href="#MM_SECURITY_FETCH_CA_BUNDLE_CRT">MM_SECURITY_FETCH_CA_BUNDLE_CRT</a></dt>
             </dl></dd>
-            <dt><a href="#MM_AUTH">Authentication and Authorization variables</a></dt>
-            <dd><dl>
-              <dt><a href="#MM_AUTH_TYPE">MM_AUTH_TYPE</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_SERVER">MM_AUTH_LDAP_SERVER</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_BINDDN">MM_AUTH_LDAP_BINDDN</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_BINDPW">MM_AUTH_LDAP_BINDPW</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_BASE_USERS">MM_AUTH_LDAP_BASE_USERS</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_BASE_GROUPS">MM_AUTH_LDAP_BASE_GROUPS</a></dt>
-              <dt><a href="#MM_AUTH_LDAP_PAM_GROUPDN">MM_AUTH_LDAP_PAM_GROUPDN</a></dt>
-            </dl></dd>
             <dt><a href="#MM_CPUFREQ">CPU frequency scaling variables</a></dt>
             <dd><dl>
               <dt><a href="#MM_CPUFREQ_GOVERNOR">MM_CPUFREQ_GOVERNOR</a></dt>
@@ -428,149 +417,9 @@
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
               <p>
-                When LDAP
-                <a href="#MM_AUTH">authentication and authorization</a>
-                is enabled,
-                MiniMyth uses this bundle of certificate authority digital certificates to check the identity of the LDAP server.
                 When KDE libraries are included (for use my MythBrowser),
                 MiniMyth includes this bundle of certificate authority digital certificates in
                 the list of certificate authorities trusted by KDE (and, therefore, MythBrowser).
-              </p>
-            </dd>
-          </dl>
-        </div>
-        <div id="MM_AUTH" class="section">
-          <div class="heading">Authentication and Authorization variables</div>
-          <p>
-            MiniMyth uses
-            <a href="http://www.kernel.org/pub/linux/libs/pam/">Linux-PAM</a>:
-            the implementation of the Plugable Authentication Modules (PAM) framework.
-            Using Linux-PAM, MiniMyth supports for authentication and authorization
-            using local password/group files (/etc/passwd and /etc/group) and
-            using a remote LDAP server.
-          </p>
-          <p>
-            When using local password/group files, MiniMyth does not support shadow passwords (/etc/shadow).
-            Since passwords will be either passwords shipped with MiniMyth or passwords retrieved from TFTP server,
-            there is little reason for the added password security provided by shadow passwords.
-          </p>
-          <p>
-            When using a remote LDAP server, MiniMyth uses
-            <a href="http://www.padl.com/">PADL Software's</a>
-            <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
-            and
-            <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-            modules.
-            The 
-            <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
-            module is compiled and configured to support the more fexible but expired draft for
-            <a href="http://linpvr.org/minimyth/download/garchive/draft-howard-rfc2307bis-01.txt">RFC 2307bis</a>.
-          </p>
-          <p>
-            MiniMyth LDAP support is somewhat limited.
-            In particular, it does not contain support for either SASL or Kerberos.
-          </p>
-          <p>
-            The Authentication variables are:
-          </p>
-          <dl>
-            <dt id="MM_AUTH_TYPE"><strong>MM_AUTH_TYPE</strong></dt>
-            <dd>
-              <p>
-                Set authentication and authorization type.
-                Valid values are 'file' and 'ldap', with 'file' being the default.
-              </p>
-            <dt id="MM_AUTH_LDAP_SERVER"><strong>MM_AUTH_LDAP_SERVER</strong></dt>
-            <dd>
-              <p>
-                The DNS name or IP address of the LDAP server used when
-                <a href="#MM_AUTH_TYPE">MM_AUTH_TYPE</a>='ldap'.
-                The default is 'ldap.{<a href="#MM_DOMAIN">MM_DOMAIN</a>}'.
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_BINDDN"><strong>MM_AUTH_LDAP_BINDDN</strong></dt>
-            <dd>
-              <p>
-                The Distingueshed Name (DN) used when binding with the LDAP server specified by
-                <a href="#MM_AUTH_LDAP_SERVER">MM_AUTH_LDAP_SERVER</a>.
-                The default is ''.
-              </p>
-              <p>
-                If the value is not set,
-                then MiniMyth assumes that the user and group information needed by
-                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-                and
-                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
-                can be retrieved using anonymous bind.
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_BINDPW"><strong>MM_AUTH_LDAP_BINDPW</strong></dt>
-            <dd>
-              <p>
-                The password to use when binding as 
-                <a href="#MM_AUTH_LDAP_BINDDN">MM_AUTH_LDAP_BINDDN</a>.
-                The default is ''.
-              </p>
-              <p>
-                Since this password is retrieved from a TFTP server,
-                the distinguished name authenticated by this password should have very limited access rights.
-                In particular, it should no LDAP write access rights, should have LDAP read access rights to only the objects and fields
-                needed by
-                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-                and
-                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>,
-                and should not have LDAP read access rights to any passwords or personal information.
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_BASE"><strong>MM_AUTH_LDAP_BASE</strong></dt>
-            <dd>
-              <p>
-               The base Distinguished Name (DN) used by 
-                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-                and
-                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>.
-                The default is 'dc={<a href="#MM_DOMAIN">MM_DOMAIN</a>}'.
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_BASE_USERS"><strong>MM_AUTH_LDAP_BASE_USERS</strong></dt>
-            <dd>
-              <p>
-                The base Distinguished Name (DN) used  by
-                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-                and
-                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
-                when looking up users.
-                The default is 'ou=users,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
-              </p>
-              <p>
-                MiniMyth assumes that the users are not nested and, therefore, can be found using a search of type
-                '{MM_AUTH_LDAP_BASE_USERS}?one'
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_BASE_GROUPS"><strong>MM_AUTH_LDAP_BASE_GROUPS</strong></dt>
-            <dd>
-              <p>
-                The base Distinguished Name (DN) used by
-                <a href="http://www.padl.com/OSS/pam_ldap.html">pam ldap</a>
-                and
-                <a href="http://www.padl.com/OSS/nss_ldap.html">nss_ldap</a>
-                when looking up groups.
-                The default is 'ou=groups,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
-              </p>
-              </p>
-              <p>
-                MiniMyth assumes that the groups are not nested and, therefore, can be found using a search of type
-                '{MM_AUTH_LDAP_BASE_GROUPS}?one'
-              </p>
-            </dd>
-            <dt id="MM_AUTH_LDAP_PAM_GROUPDN"><strong>MM_AUTH_LDAP_PAM_GROUPDN</strong></dt>
-            <dd>
-              <p>
-                The Distinguished Name (DN) of the group to which users must belong in order to login into the MiniMyth frontend.
-                The default is 'cn=users-minimyth,{<a href="#MM_AUTH_LDAP_BASE">MM_AUTH_LDAP_BASE</a>}'.
-              </p>
-              <p>
-                MiniMyth assumes 'uniqueMember' field of this object contains the DN of valid MiniMyth frontend users.
               </p>
             </dd>
           </dl>
@@ -2407,9 +2256,7 @@
             will secure sensitive information (such as passwords) when you connect to the frontend.
           </p>
           <p>
-            The SSH server does not allow root login.
-            If you need root access,
-            then SSH in as a non-root user and then su to root.
+            The SSH server is configured such that it allows only public key authentication.
           </p>
           <p>
             If you decide to enable the SSH server, be sure that you know what you are doing.
@@ -2426,7 +2273,9 @@
             <dd>
               <p>
                 Specify whether or not you want to enable MiniMyth's SSH server.
-                Valid values are 'yes' and 'no', with 'no' being the default.
+                Valid values are 'yes' and 'no',
+                with 'no' being the default when '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is '0', and
+                with 'yes' being the default when '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is greater than '0'.
               </p>
             </dd>
             <dt id="MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY"><strong>MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY</strong></dt>
@@ -2435,7 +2284,9 @@
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#ssh_host_rsa_key">ssh_host_rsa_key</a>'
                 file from the frontend's MiniMyth configuration directory.
-                Valid values are 'yes' and 'no', with 'no' being the default.
+                Valid values are 'yes' and 'no',
+                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'no', and
+                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes'.
               </p>
             </dd>
             <dt id="MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS"><strong>MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS</strong></dt>
@@ -2444,7 +2295,13 @@
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#authorized_keys">authorized_keys</a>'
                 file from the frontend's MiniMyth configuration directory.
-                Valid values are 'yes' and 'no', with 'no' being the default.
+                Valid values are 'yes' and 'no',
+                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'no', and
+                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes'.
+              </p>
+              <p>
+                This file will be places in the directory '/root/.ssh' enabling the user 'root' to connect
+                using one of the keys in this file.
               </p>
             </dd>
           </dl>
@@ -2529,7 +2386,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-11-14 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-11-27 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

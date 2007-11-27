@@ -100,6 +100,10 @@ start() {
     # If there are any errors, then do not continue
     if /usr/bin/test -e /var/log/minimyth.err.log &&
        /usr/bin/test `/bin/cat /var/log/minimyth.err.log | /usr/bin/wc -l` -gt 0 ; then
+        # If telnet is not running, then start it so that the user can check the error logs.
+        if /usr/bin/test -z "`/bin/pidof telnetd`" ; then
+            /usr/sbin/telnetd -l /bin/login
+        done
         mm_message_output err "error: check '/var/log/minimyth.err.log' for details."
         exit 1
     fi

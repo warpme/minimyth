@@ -31,8 +31,16 @@ conf_check_ssh_server() {
 }
 
 conf_default_ssh_server() {
+
+    # The routine relies on MM_SECURITY_LEVEL.
+    conf_default_security
+
     if /usr/bin/test -z "${MM_SSH_SERVER_ENABLED}" ; then
-        MM_SSH_SERVER_ENABLED='no'
+        if /usr/bin/test ${MM_SECURITY_LEVEL} -gt 0 ; then
+            MM_SSH_SERVER_ENABLED='yes'
+        else
+            MM_SSH_SERVER_ENABLED='no'
+        fi
     fi
     if /usr/bin/test -z "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" ; then
         if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then

@@ -36,11 +36,8 @@ DEPENDS = \
 	myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide \
 	myth-$(mm_MYTH_VERSION)/mythtv \
 	net/nfs-utils \
-	system/nss_ldap \
 	net/ntp \
 	net/openssh \
-	system/pam \
-	system/pam_ldap \
 	utils/pciutils \
 	utils/pmount \
 	net/portmap \
