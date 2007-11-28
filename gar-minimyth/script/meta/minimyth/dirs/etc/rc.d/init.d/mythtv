@@ -67,17 +67,17 @@ start() {
        ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq 0  && \
          /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -eq 21 && \
          /usr/bin/test "${MM_MYTHVIDEO_ENABLED}" = "yes"         ) ; then
-        if /usr/bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            if /usr/bin/su -c "/usr/bin/test -w ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-                /usr/bin/su -c "/bin/mkdir -p ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth
+        if /bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
+            if /bin/su -c "/usr/bin/test -w ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
+                /bin/su -c "/bin/mkdir -p ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth
             fi
         fi
-        if /usr/bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            if /usr/bin/su -c "/usr/bin/test -w ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
+        if /bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
+            if /bin/su -c "/usr/bin/test -w ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
                 mm_mythdb_settings_set "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/.mtd"
                 TRANSCODE=`/usr/bin/which transcode`
                 mm_mythdb_settings_set "TranscodeCommand" "${TRANSCODE}"
-                /usr/bin/su -c "/usr/bin/mtd --daemon" - minimyth
+                /bin/su -c "/usr/bin/mtd --daemon" - minimyth
             fi
         fi
     fi

@@ -757,11 +757,11 @@ mm-make-distro-ram:
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@fakeroot sh -c                                                                          " \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                          ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                         ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                        ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/su                             ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
@@ -804,11 +804,11 @@ mm-make-distro-nfs:
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
+		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                   ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                      ; \
-		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/su                           ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
