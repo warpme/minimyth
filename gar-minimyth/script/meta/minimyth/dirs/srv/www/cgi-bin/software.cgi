@@ -53,8 +53,8 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "                <li>"
 /bin/echo "                  <strong>minimyth</strong>"
 /bin/echo "                  ${MM_VERSION}"
-if /usr/bin/test -f /usr/versions/minimyth.conf.mk ; then
-    /bin/echo "                  (<a href=\"http://${server}:8080/usr/versions/minimyth.conf.mk\" type=\"text/plain\">minimyth.conf.mk</a>)"
+if /usr/bin/test -f /srv/www/software/base/versions/minimyth.conf.mk ; then
+    /bin/echo "                  (<a href=\"../software/base/versions/minimyth.conf.mk\" type=\"text/plain\">minimyth.conf.mk</a>)"
 fi
 /bin/echo "                  ;"
 /bin/echo "                  <a href=\"../minimyth/license.txt\" type=\"text/plain\">license</a>"
@@ -63,25 +63,25 @@ fi
 /bin/echo "            </li>"
 /bin/echo "            <li>"
 /bin/echo "            base ('/' and '/usr'):"
-if /usr/bin/test -d /usr/versions ; then
+if /usr/bin/test -d /srv/www/software/base/versions ; then
     /bin/echo "            <ul>"
-    for software in `cd /usr/versions ; /bin/ls -1` ; do
+    for software in `cd /srv/www/software/base/versions ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
-            version=`/bin/cat /usr/versions/${software}`
+            version=`/bin/cat /srv/www/software/base/versions/${software}`
             if /usr/bin/test "${version}" = "none" ; then
                 version=
             fi
             license_list=
-            if /usr/bin/test -d /usr/licenses/${software} ; then
-                license_list=`cd /usr/licenses/${software} ; /bin/ls -1`
+            if /usr/bin/test -d /srv/www/software/base/licenses/${software} ; then
+                license_list=`cd /srv/www/software/base/licenses/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"
             /bin/echo "                  ${version}"
             /bin/echo "                  ;"
             for license in ${license_list} ; do
-                /bin/echo "                  <a href=\"http://${server}:8080/usr/licenses/${software}/${license}\" type=\"text/plain\">license</a>"
+                /bin/echo "                  <a href=\"../software/base/licenses/${software}/${license}\" type=\"text/plain\">license</a>"
             done
             /bin/echo "                </li>"
         fi
@@ -91,25 +91,25 @@ fi
 /bin/echo "            </li>"
 /bin/echo "            <li>"
 /bin/echo "            extras ('/usr/local'):"
-if /usr/bin/test -d /usr/local/versions ; then
+if /usr/bin/test -d /srv/www/software/extras/versions ; then
     /bin/echo "              <ul>"
-    for software in `cd /usr/local/versions ; /bin/ls -1` ; do
+    for software in `cd /srv/www/software/extras/versions ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
-            version=`/bin/cat /usr/local/versions/${software}`
+            version=`/bin/cat /srv/www/software/extras/versions/${software}`
             if /usr/bin/test "${version}" = "none" ; then
                 version=
             fi
             license_list=
-            if /usr/bin/test -d /usr/local/licenses/${software} ; then
-                license_list=`cd /usr/local/licenses/${software} ; /bin/ls -1`
+            if /usr/bin/test -d /srv/www/software/extras/licenses/${software} ; then
+                license_list=`cd /srv/www/software/extras/licenses/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"
             /bin/echo "                  ${version}"
             /bin/echo "                  ;"
             for license in ${license_list} ; do
-                /bin/echo "                  <a href=\"http://${server}:8080/usr/local/licenses/${software}/${license}\" type=\"text/plain\">license</a>"
+                /bin/echo "                  <a href=\"../software/extras/licenses/${software}/${license}\" type=\"text/plain\">license</a>"
             done
             /bin/echo "                </li>"
         fi
@@ -119,25 +119,25 @@ fi
 /bin/echo "            </li>"
 /bin/echo "            <li>"
 /bin/echo "            build (natively compiled software used for cross compiling and assembling MiniMyth):"
-if /usr/bin/test -d /usr/versions-build ; then
+if /usr/bin/test -d /srv/www/software/build/versions ; then
     /bin/echo "            <ul>"
-    for software in `cd /usr/versions-build ; /bin/ls -1` ; do
+    for software in `cd /srv/www/software/build/versions ; /bin/ls -1` ; do
         if /usr/bin/test ! "${software}" = "minimyth"         &&
            /usr/bin/test ! "${software}" = "minimyth.conf.mk" ; then
-            version=`/bin/cat /usr/versions-build/${software}`
+            version=`/bin/cat /srv/www/software/build/versions/${software}`
             if /usr/bin/test "${version}" = "none" ; then
                 version=
             fi
             license_list=
-            if /usr/bin/test -d /usr/licenses-build/${software} ; then
-                license_list=`cd /usr/licenses-build/${software} ; /bin/ls -1`
+            if /usr/bin/test -d /srv/www/software/build/licenses/${software} ; then
+                license_list=`cd /srv/www/software/build/licenses/${software} ; /bin/ls -1`
             fi
             /bin/echo "                <li>"
             /bin/echo "                  <strong>${software}</strong>"
             /bin/echo "                  ${version}"
             /bin/echo "                  ;"
             for license in ${license_list} ; do
-                /bin/echo "                  <a href=\"http://${server}:8080/usr/licenses-build/${software}/${license}\" type=\"text/plain\">license</a>"
+                /bin/echo "                  <a href=\"../software/build/licenses/${software}/${license}\" type=\"text/plain\">license</a>"
             done
             /bin/echo "                </li>"
         fi
@@ -150,7 +150,7 @@ fi
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"footer\">"
 /bin/echo "        <hr />"
-/bin/echo "        Last Updated: 2006-12-28 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "        Last Updated: 2007-11-28 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
 /bin/echo "  </body>"
