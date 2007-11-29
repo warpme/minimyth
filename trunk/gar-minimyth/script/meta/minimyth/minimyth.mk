@@ -526,6 +526,16 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
 	@cp -r  $(mm_HOME)/html/script/*                 $(mm_ROOTFSDIR)/srv/www/script/
 	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
+	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/build
+	@ln -s $(versiondir)                             $(mm_ROOTFSDIR)/srv/www/software/base/versions
+	@ln -s $(licensedir)                             $(mm_ROOTFSDIR)/srv/www/software/base/licenses
+	@ln -s $(extras_versiondir)                      $(mm_ROOTFSDIR)/srv/www/software/extras/versions
+	@ln -s $(extras_licensedir)                      $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
+	@ln -s $(versiondir)-build                       $(mm_ROOTFSDIR)/srv/www/software/build/versions
+	@ln -s $(licensedir)-build                       $(mm_ROOTFSDIR)/srv/www/software/build/licenses
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth
 	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
