@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch $(DISTNAME)-ldd.patch $(DISTNAME)-mem_chk.patch
+PATCHFILES = $(DISTNAME).patch $(DISTNAME)-ldd.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -35,6 +35,8 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-profile \
+	--enable-omitfp \
 	--enable-bind-now \
 	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
@@ -61,7 +63,6 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
-CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
 
 PARALLELMFLAGS := -j1
 
