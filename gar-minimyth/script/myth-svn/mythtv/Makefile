@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-startplayer_maxwait.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -34,7 +34,8 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--disable-proc-opt \
+	--enable-proc-opt \
+	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-mmx \
 	--enable-audio-oss \
 	--enable-audio-alsa \
