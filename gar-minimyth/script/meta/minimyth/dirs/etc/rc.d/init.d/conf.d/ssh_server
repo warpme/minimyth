@@ -9,8 +9,14 @@ conf_clean_ssh_server() {
 
 conf_check_ssh_server() {
     # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}"       ; then
+    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}"    ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_ID_RSA_SERVER' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}"  ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS' is obsolete."
     fi
 
     if /usr/bin/test ! -z "${MM_SSH_SERVER_ENABLED}"         && \
@@ -18,15 +24,7 @@ conf_check_ssh_server() {
        /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "no"  ; then
         mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' is not valid."
     fi
-    if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" && /usr/bin/test "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" = "no" ; then
-        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' but MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY='${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}'."
-    fi
-    if /usr/bin/test ! "${MM_SSH_SERVER_ENABLED}" = "yes" && /usr/bin/test "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" = "yes" ; then
-        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' but MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY='${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}'."
-    fi
-    if /usr/bin/test ! "${MM_SSH_SERVER_ENABLED}" = "yes" && /usr/bin/test "${MM_SSH_SERVER_FETCH_AUTHHORIZED_KEYS}" = "yes" ; then
-        mm_message_output err "error: MM_SSH_SERVER_ENABLED='${MM_SSH_SERVER_ENABLED}' but MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS='${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}'."
-    fi
+
     return 0
 }
 
@@ -42,20 +40,6 @@ conf_default_ssh_server() {
             MM_SSH_SERVER_ENABLED='no'
         fi
     fi
-    if /usr/bin/test -z "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" ; then
-        if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
-            MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY='yes'
-        else
-            MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY='no'
-        fi
-    fi
-    if /usr/bin/test -z "${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}" ; then
-        if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
-            MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS='yes'
-        else
-            MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS='no'
-        fi
-    fi
 
     return 0
 }
@@ -63,15 +47,13 @@ conf_default_ssh_server() {
 conf_write_ssh_server() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED                "${MM_SSH_SERVER_ENABLED}"
-    conf_variable_write "${conf_file}" MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}"
-    conf_variable_write "${conf_file}" MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS  "${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}"
+    conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED "${MM_SSH_SERVER_ENABLED}"
 
     return 0
 }
 
 conf_fetch_ssh_server() {
-    if /usr/bin/test "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" = "yes" ; then
+    if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
         /bin/rm -f /etc/ssh/ssh_host_rsa_key
         mm_confro_get /ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
         if /usr/bin/test ! -e /etc/ssh/ssh_host_rsa_key ; then
@@ -79,9 +61,6 @@ conf_fetch_ssh_server() {
         else
             /bin/chmod 0600 /etc/ssh/ssh_host_rsa_key
         fi
-    fi
-
-    if /usr/bin/test "${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}" = "yes" ; then
         /bin/rm -f /etc/ssh/authorized_keys
         mm_confro_get /authorized_keys /etc/ssh/authorized_keys
         if /usr/bin/test ! -e /etc/ssh/authorized_keys ; then
