@@ -260,7 +260,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#minimyth_func">minimyth.func</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -269,7 +269,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#minimyth_script">minimyth.script</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -438,7 +438,7 @@
             <dd>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#credentials_cifs">credentials_cifs</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
             </dd>
             <p>
                MiniMyth saves this file as '/etc/cifs/credentials_cifs' on the MiniMyth frontend.
@@ -450,7 +450,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#ca_bundle_crt">ca-bundle.crt</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
               <p>
@@ -473,7 +473,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#ca_bundle_crt">ca-bundle.crt</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
               <p>
@@ -1125,7 +1125,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#xinitrc">xinitrc</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -1136,7 +1136,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#xorg_conf">xorg.conf</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -1151,7 +1151,7 @@
             <dd>
               <p>
                 A list of TrueType font (TTF) files to add.
-                These font files will be fetched from the frontend's MiniMyth configuration directory.
+                These font files will be fetched from the frontend's MiniMyth read-only configuration directory.
               </p>
               <p>
                 The main reason for needing to add additional fonts is that
@@ -1389,22 +1389,23 @@
           <p>
             nfs://server.home/home/public/music<br/>
             cifs://user:pass@server.home/music?domain=home<br/>
-            conf:themecaches/G.A.N.T..1024.768.cmg<br/>
+            confro:themecaches/G.A.N.T..1024.768.cmg<br/>
           </p>
           <p>
-            The valid protocol values are: 'nfs', 'cifs', 'http', 'tftp', 'conf', 'dist', 'hunt' and 'file'.
+            The valid protocol values are: 'nfs', 'cifs', 'http', 'tftp', 'confro', 'confrw', 'dist', 'hunt' and 'file'.
             For 'nfs' and 'cifs' the URL points to a remote directory.
-            For 'http', 'tftp', 'conf', 'dist' and 'hunt', the URL points to a remote file.
+            For 'http', 'tftp', 'confro', 'confrw', 'dist' and 'hunt', the URL points to a remote file.
             For 'file', the URL point to a local directory or file.
             A directory will be mounted at the mount point.
             A file, which can be a squashfs image (*.sfs.), cramfs image (*.cmg) or a tarball file (*.tar.bz2)
             will be retrieved and mounted at (for *.sfs and *.cmg files) or retrieved at expanded into (for *.tar.bz2 files) the mount point.
-            The 'conf', 'dist' and 'hunt' are special MiniMyth specific URLs.
+            The 'confro', 'confrw', 'dist' and 'hunt' are special MiniMyth specific URLs.
             A 'dist' URL causes MiniMyth to look for the file in the MiniMyth distribution directory
             (the directory with the MiniMyth root file system squashfs image).
-            A 'conf' URL causes MiniMyth to look for the MiniMyth configuration directory.
-            A 'hunt' URL causes MiniMyth to look first in the MiniMyth distributiion directory and
-            second in the MiniMyth configuration directory.
+            A 'confro' URL causes MiniMyth to look for the MiniMyth read-only configuration directory.
+            A 'confrw' URL causes MiniMyth to look for the MiniMyth read-write configuration directory.
+            A 'hunt' URL causes MiniMyth to look first in the MiniMyth distribution directory and
+            second in the MiniMyth read-only configuration directory.
           </p>
           <p>
             The extras directory configuration variables are:
@@ -1423,7 +1424,7 @@
               <p>
                 If the value is 'auto',
                 then MiniMyth will assume that the extras are in a squashfs image file
-                located in either MiniMyth distribution directory or the MiniMyth configuration directory and
+                located in either the MiniMyth distribution directory or the MiniMyth read-only configuration directory and
                 having the name 'extras.sfs'.
                 That is, MiniMyth will assume MM_EXTRAS_URL='hunt:extras.sfs'.
               </p>
@@ -1460,9 +1461,8 @@
               <p>
                 If the value is 'auto',
                 then MiniMyth will assume that the CODECs are in a squashfs image file
-                located in either MiniMyth distribution directory or the MiniMyth configuration directory and
-                having the name 'codecs.sfs'.
-                That is, MiniMyth will assume MM_CODECS_URL='hunt:codecs.sfs'.
+                located in the MiniMyth read-write configuration directory and having the name 'codecs.sfs'.
+                That is, MiniMyth will assume MM_CODECS_URL='confrw:codecs.sfs'.
               </p>
               <p>
                 The MythTV frontend menus contain the 'MiniMyth&nbsp;Tools' menu
@@ -1479,7 +1479,7 @@
                 <li>puts the downloaded CODECs in the temporary CODECs directory,</li>
                 <li>creates the CODECs squashfs image from the temporary CODECSs directory, and</li>
                 <li>saves the CODECs squashfs image in the
-                  <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>.</li>
+                  <a href="document-configure.shtml#location">MiniMyth read-write configuration directory</a>.</li>
               </ol>
               <p>
                 During the time that it takes MiniMyth to fetch, create and save the CODECs squashfs image,
@@ -1592,10 +1592,10 @@
               </p>
               <p>
                 If the value is 'auto',
-                then MiniMyth will use a 'hunt' URL to look for a squashfs image file
+                then MiniMyth will use a 'confrw' URL to look for a squashfs image file
                 named for the themecache name and located in the directory 'themecaches'.
                 That is, MiniMyth will assume
-                MM_THEMECACHE_URL="hunt:themecaches/${<a href="#MM_THEME_NAME">MM_THEME_NAME</a>}.{GuiWidth}.{GuiHeight}.sfs",
+                MM_THEMECACHE_URL="confrw:themecaches/${<a href="#MM_THEME_NAME">MM_THEME_NAME</a>}.{GuiWidth}.{GuiHeight}.sfs",
                 where {GuiWidth} is the MythTV GUI width and {GuiHeight} is the MythTV GUI height.
               </p>
               <p>
@@ -1608,7 +1608,7 @@
               <ol>
                 <li>creates the themecache squashfs image from the one cached theme in the themecache directory, and</li>
                 <li>saves the themecache squashfs image in the
-                  <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>.</li>
+                  <a href="document-configure.shtml#location">MiniMyth read-write configuration directory</a>.</li>
               </ol>
               <p>
                 During the time that it takes MiniMyth to create and save the themecache squashfs image,
@@ -1798,12 +1798,12 @@
               <p>
                 If you set MM_GAME_SAVE_ENABLED='yes',
                 then MiniMyth will save the game settings 'game.tar' in the
-                <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>
+                <a href="document-configure.shtml#location">MiniMyth read-write configuration directory</a>
                 during shut down
                 and will restore the game settings from 'game.gar' during start up.
                 Also, if you set MM_GAME_SAVE_ENABLED='yes' and you are running the game emulator using 'mm_game_start',
                 then MiniMyth will save the game settings 'game.tar' in the
-                <a href="document-configure.shtml#location">read-write MiniMyth configuration directory</a>
+                <a href="document-configure.shtml#location">MiniMyth read-write configuration directory</a>
                 on game emulator exit.
               </p>
               <p>
@@ -1957,7 +1957,7 @@
               <p>
                 If MiniMyth does not have built-in LIRC configuration files
                 or you do not want to use the built-in configuration files,
-                then you can place your 'lircd.conf' and 'lircrc' files in the MiniMyth configuration directory.
+                then you can place your 'lircd.conf' and 'lircrc' files in the MiniMyth read-only configuration directory.
                 In the 'lircrc' file, each record's 'prog' attribute must be set to the name of the program being controlled
                 (i.e. 'mythtv', 'mplayer' or 'xine') not to 'irxevent'.
               </p>
@@ -2077,7 +2077,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#lircd_conf">lircd.conf</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2086,7 +2086,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#lircrc">lircrc</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2137,7 +2137,7 @@
                 then the generic LCDd.conf file is used.
                 Currently, there are no built-in 'LCDd.conf' files.
                 If your LCD or VFD does not have a built-in 'LCDd.conf' file or you do not want to use the built-in 'LCDd.conf' file,
-                then you can place your own 'LCDd.conf' file in the MiniMyth configuration directory.
+                then you can place your own 'LCDd.conf' file in the MiniMyth read-only configuration directory.
                 You can find an example 'LCDd.conf' file in '/etc/lcd.d/LCDd.conf' on your MiniMyth frontend,
                 which you can download through the web interface to the MiniMyth file system 'http://{frontend}:8080/'.
                 If you do use your own 'LCDd.conf' file because none is included in MiniMyth,
@@ -2165,7 +2165,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#LCDd_conf">LCDd.conf</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2301,7 +2301,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#id_rsa">id_rsa</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>
@@ -2343,7 +2343,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#ssh_host_rsa_key">ssh_host_rsa_key</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no',
                 with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes', and
                 with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is not 'yes'.
@@ -2354,7 +2354,7 @@
               <p>
                 Indicates whether or not to fetch the
                 '<a href="document-configure.shtml#authorized_keys">authorized_keys</a>'
-                file from the frontend's MiniMyth configuration directory.
+                file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no',
                 with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes', and
                 with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is not 'yes'.
@@ -2375,7 +2375,7 @@
             <dt id="MM_CRON_FETCH_CRONTAB"><strong>MM_CRON_FETCH_CRONTAB</strong></dt>
             <dd>
               <p>
-                Indicates whether or not to fetch the 'crontab' file from the frontend's MiniMyth configuration directory.
+                Indicates whether or not to fetch the 'crontab' file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
             </dd>

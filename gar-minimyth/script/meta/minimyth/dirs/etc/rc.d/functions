@@ -52,10 +52,52 @@ mm_url_conf_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
+    /usr/bin/logger -s -t minimyth -p "local0.error" \
+        "function 'mm_url_conf_get' is no longer supported. use 'mm_url_confro_get' or 'mm_url_confrw_get' instead."
+
+    /bin/false
+    return
+}
+
+mm_url_confro_get() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+
     local HOSTNAME
     local REMOTE_FILE_0
     local REMOTE_FILE_1
-    local REMOTE_FILE_2
+
+    HOSTNAME=`/bin/hostname`
+
+    if /usr/bin/test -n "${HOSTNAME}" ; then
+        REMOTE_FILE_0="conf/${HOSTNAME}/${REMOTE_FILE}"
+    fi
+    REMOTE_FILE_1="conf/default/${REMOTE_FILE}"
+
+    /bin/rm -f "${LOCAL_FILE}"
+    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
+        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
+              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_1}" "${MM_TFTP_SERVER}" ) || \
+        return
+    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
+        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
+              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
+        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
+              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_1}" ) || \
+        return
+    fi
+
+    return
+}
+
+mm_url_confrw_get() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+
+    local HOSTNAME
+    local REMOTE_FILE_0
 
     HOSTNAME=`/bin/hostname`
 
@@ -66,26 +108,16 @@ mm_url_conf_get() {
             | /bin/sed -e 's%//*%/%g'           \
             | /bin/sed -e 's%/%+%'`
         REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
-        REMOTE_FILE_1="conf/${HOSTNAME}/${REMOTE_FILE}"
     fi
-    REMOTE_FILE_2="conf/default/${REMOTE_FILE}"
 
     /bin/rm -f "${LOCAL_FILE}"
     if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
         ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
               mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_1}" "${MM_TFTP_SERVER}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_2}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_2}" "${MM_TFTP_SERVER}" ) || \
         return
     elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
         ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
               mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_1}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_2}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_2}" ) || \
         return
     fi
 
@@ -162,8 +194,8 @@ mm_url_hunt_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
-    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}" || \
-    mm_url_dist_get "${LOCAL_FILE}" "${REMOTE_FILE}" || \
+    mm_url_dist_get   "${LOCAL_FILE}" "${REMOTE_FILE}" || \
+    mm_url_confro_get "${LOCAL_FILE}" "${REMOTE_FILE}" || \
     return
 
     return
@@ -194,6 +226,17 @@ mm_url_tftp_get() {
 # mm_url_*_put functions.
 #===============================================================================
 mm_url_conf_put() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+
+    /usr/bin/logger -s -t minimyth -p "local0.error" \
+        "function 'mm_url_conf_put' is no longer supported. use 'mm_url_confrw_put' instead."
+
+    /bin/false
+    return
+}
+
+mm_url_confrw_put() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
@@ -309,7 +352,27 @@ mm_conf_get() {
     local REMOTE_FILE=$1
     local LOCAL_FILE=$2
 
-    mm_url_conf_get "${LOCAL_FILE}" "${REMOTE_FILE}" || return
+    /usr/bin/logger -s -t minimyth -p "local0.error" \
+        "function 'mm_conf_get' is no longer supported. use 'mm_confro_get' or 'mm_confrw_get' instead."
+
+    /bin/false
+    return
+}
+
+mm_confro_get() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    mm_url_confro_get "${LOCAL_FILE}" "${REMOTE_FILE}" || return
+
+    return
+}
+
+mm_confrw_get() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    mm_url_confrw_get "${LOCAL_FILE}" "${REMOTE_FILE}" || return
 
     return
 }
@@ -318,7 +381,18 @@ mm_conf_put() {
     local REMOTE_FILE=$1
     local LOCAL_FILE=$2
 
-    mm_url_conf_put "${LOCAL_FILE}" "${REMOTE_FILE}" || return
+    /usr/bin/logger -s -t minimyth -p "local0.error" \
+        "function 'mm_conf_put' is no longer supported. use 'mm_confrw_put' instead."
+
+    /bin/false
+    return
+}
+
+mm_confrw_put() {
+    local REMOTE_FILE=$1
+    local LOCAL_FILE=$2
+
+    mm_url_confrw_put "${LOCAL_FILE}" "${REMOTE_FILE}" || return
 
     return
 }
@@ -343,7 +417,7 @@ mm_game_restore() {
 
     /bin/rm -f "${LOCAL_FILE}"
 
-    mm_conf_get "${REMOTE_FILE}" "${LOCAL_FILE}"
+    mm_confrw_get "${REMOTE_FILE}" "${LOCAL_FILE}"
 
     if /usr/bin/test -n "${LOCAL_FILE}" ; then
         cd /home/minimyth
@@ -407,7 +481,7 @@ mm_game_save() {
             /bin/false
             return
         fi
-        mm_conf_put "${REMOTE_FILE}" "${LOCAL_FILE}"
+        mm_confrw_put "${REMOTE_FILE}" "${LOCAL_FILE}"
         if /usr/bin/test $? -ne 0 ; then
             /bin/rm -f "${LOCAL_FILE}"
             /bin/false
@@ -483,7 +557,7 @@ mm_codecs_fetch_and_save() {
         return
     fi
 
-    mm_conf_put "${REMOTE_FILE}" "${LOCAL_FILE}"
+    mm_confrw_put "${REMOTE_FILE}" "${LOCAL_FILE}"
     if /usr/bin/test $? -ne 0 ; then
         cd "${HOME}"
         /bin/rm -rf "${LOCAL_DIR}/${CODECS_BASE}"
@@ -536,7 +610,7 @@ mm_extras_save() {
         return
     fi
 
-    mm_conf_put "${REMOTE_FILE}" "${LOCAL_FILE}"
+    mm_confrw_put "${REMOTE_FILE}" "${LOCAL_FILE}"
     if /usr/bin/test $? -ne 0 ; then
         /bin/rm -f ${LOCAL_FILE}
         /usr/bin/logger -s -t minimyth -p "local0.error" \
@@ -585,7 +659,7 @@ mm_themecache_save() {
         return
     fi
 
-    mm_conf_put "${REMOTE_FILE}" "${LOCAL_FILE}"
+    mm_confrw_put "${REMOTE_FILE}" "${LOCAL_FILE}"
     if /usr/bin/test $? -ne 0 ; then
         /bin/rm -f ${LOCAL_FILE}
         /usr/bin/logger -s -t minimyth -p "local0.error" \
@@ -658,22 +732,25 @@ mm_uniq() {
 #         For example:
 #             nfs://server.home/home/public/music
 #             cifs://user:pass@server.home/home/public/music,domain=home
-#             conf:themecache.tar.bz2
-#         The valid protocol values are: 'nfs', 'cifs', 'http', 'tftp', 'conf',
-#         'dist', 'hunt' and 'file'. For 'nfs' and 'cifs' the URL points to a
-#         remote directory. For 'http', 'tftp', 'conf', 'dist' and 'hunt', the
-#         URL points to a remote file. For 'file', the URL point to a local
-#         directory or file. A directory will be mounted at the mount point.
-#         A file, which can be a squashfs image (*.sfs.), cramfs image (*.cmg)
-#         or a tarball file (*.tar.bz2) will be retrieved and mounted at (for
-#         *.sfs and *.cmg files) or retrieved at expanded into (for *.tar.bz2
-#         files) the mount point. The 'conf', 'dist' and 'hunt' are special
-#         MiniMyth specific URLs. A 'dist' URL causes MiniMyth to look for the
-#         file in the MiniMyth distribution directory (the directory with the
-#         MiniMyth root file system squashfs image). A 'conf' URL causes MiniMyth
-#         to look for the MiniMyth configuration directory. A 'hunt' URL causes
-#         MiniMyth to look first in the MiniMyth distributiion directory and
-#         second in the MiniMyth configuration directory.
+#             confro:themecache.tar.bz2
+#         The valid protocol values are: 'nfs', 'cifs', 'http', 'tftp',
+#         'confro', 'confrw', 'dist', 'hunt' and 'file'. For 'nfs' and 'cifs'
+#         the URL points to a remote directory. For 'http', 'tftp', 'confro',
+#         'confrw', 'dist' and 'hunt', the URL points to a remote file. For
+#         'file', the URL point to a local directory or file. A directory will
+#         be mounted at the mount point. A file, which can be a squashfs image
+#         (*.sfs.), cramfs image (*.cmg) or a tarball file (*.tar.bz2) will be
+#         retrieved and mounted at (for *.sfs and *.cmg files) or retrieved at
+#         expanded into (for *.tar.bz2 files) the mount point. The 'confro',
+#         'confrw', 'dist' and 'hunt' are special MiniMyth specific URLs. A
+#         'dist' URL causes MiniMyth to look for the file in the MiniMyth
+#         distribution directory (the directory with the MiniMyth root file
+#         system squashfs image). A 'confro' URL causes MiniMyth to look for
+#         the MiniMyth read-only configuration directory. A 'confrw' URL causes
+#         MiniMyth to look for the MiniMyth read-write configuration directory.
+#         A 'hunt' URL causes MiniMyth to look first in the MiniMyth
+#         distribution directory and second in the MiniMyth read-only
+#         configuration directory.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
@@ -741,7 +818,8 @@ mm_url_mount() {
         fi
     elif ( /usr/bin/test "${URL_PROTOCOL}" = "http"                                   ) || \
          ( /usr/bin/test "${URL_PROTOCOL}" = "tftp"                                   ) || \
-         ( /usr/bin/test "${URL_PROTOCOL}" = "conf"                                   ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "confro"                                 ) || \
+         ( /usr/bin/test "${URL_PROTOCOL}" = "confrw"                                 ) || \
          ( /usr/bin/test "${URL_PROTOCOL}" = "dist"                                   ) || \
          ( /usr/bin/test "${URL_PROTOCOL}" = "hunt"                                   ) || \
          ( /usr/bin/test "${URL_PROTOCOL}" = "file" && /usr/bin/test -f "${URL_PATH}" ) ; then
@@ -774,6 +852,11 @@ mm_url_mount() {
         fi
     elif ( /usr/bin/test "${URL_PROTOCOL}" = "file" && /usr/bin/test -d "${URL_PATH}" ) ; then
         /bin/mount --rbind "${URL_PATH}" "${MOUNT_DIR}"
+    else
+        /usr/bin/logger -s -t minimyth -p "local0.error" \
+            "mm_url_mount: protocol'${URL_PROTOCOL}' is not supported."
+        /bin/false
+        return
     fi
 
     if /usr/bin/test -n "${MOUNT_VFSTYPE}" ; then
@@ -788,6 +871,8 @@ mm_url_mount() {
         OPTIONS=`/bin/echo ${OPTIONS} | /bin/sed 's%  *$%%'`
         /bin/mount -n -t "${MOUNT_VFSTYPE}" ${OPTIONS} "${MOUNT_DEVICE}" "${MOUNT_DIR}" || return
     fi
+
+    return
 }
 
 mm_var_get() {
