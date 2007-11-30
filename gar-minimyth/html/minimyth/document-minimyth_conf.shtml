@@ -55,7 +55,10 @@
             </dl></dd>
             <dt><a href="#MM_SECURITY">Security variables</a></dt>
             <dd><dl>
-              <dt><a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a></dt>
+              <dt><a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a></dt>
+              <dt><a href="#MM_SECURITY_USER_MINIMYTH_UID">MM_SECURITY_USER_MINIMYTH_UID</a></dt>
+              <dt><a href="#MM_SECURITY_USER_MINIMYTH_GID">MM_SECURITY_USER_MINIMYTH_GID</a></dt>
+              <dt><a href="#MM_SECURITY_FETCH_CREDENTIALS_CIFS">MM_SECURITY_FETCH_CREDENTIALS_CIFS</a></dt>
               <dt><a href="#MM_SECURITY_FETCH_CA_BUNDLE_CRT">MM_SECURITY_FETCH_CA_BUNDLE_CRT</a></dt>
             </dl></dd>
             <dt><a href="#MM_CPUFREQ">CPU frequency scaling variables</a></dt>
@@ -385,17 +388,21 @@
             The security variables are:
           </p>
           <dl>
-            <dt id="MM_SECURITY_LEVEL"><strong>MM_SECURITY_LEVEL</strong></dt>
+            <dt id="MM_SECURITY_ENABLED"><strong>MM_SECURITY_ENABLED</strong></dt>
             <dd>
               <p>
-                Indicates the security level, larger values indicating higher security.
-                Valid values are '0' and '1', with '0' being the default.
+                Indicates whether or not security is enabled.
+                Valid values are 'yes' and 'no', with 'no' being the default.
               </p>
               <p>
-                When the security level greater than '0', MiniMyth disables less secure network access.
+                When security is enabled, MiniMyth disables less secure access.
                 That is, MiniMyth disables
               </p>
               <ul>
+                <li>user 'root' password login (when
+                '<a href="document-configure.shtml#MM_DEBUG">MM_DEBUG</a>' is not enabled),</li>
+                <li>user 'minimyth' password login (when
+                '<a href="document-configure.shtml#MM_DEBUG">MM_DEBUG</a>' is not enabled),</li>
                 <li>telnet access (when
                 '<a href="document-configure.shtml#MM_DEBUG">MM_DEBUG</a>' is not enabled),</li>
                 <li>web access to the file system and</li>
@@ -403,10 +410,63 @@
               </ul>
               <p>
                 Since the telnet server is started before 'minimyth.conf' is retrieved and processed,
-                'MM_SECURITY_LEVEL' should be set on the
+                'MM_SECURITY_ENABLED' should be set on the
                 <a href="document-configure.shtml#bootline">boot line</a>
                 when security is desired.
               </p>
+            </dd>
+            <dt id="MM_SECURITY_USER_MINIMYTH_UID"><strong>MM_SECURITY_USER_MINIMYTH_UID</strong></dt>
+            <dd>
+              <p>
+                Specifies the UID for the user 'minimyth'.
+                Valid values are integers between 200 and 32767, with the default being '1000'.
+              </p>
+              <p>
+                If you have configured MiniMyth to mount NFS network shares, then being able to specify the UID for the user 'minimyth' can be useful.
+                Since the MiniMyth GUI runs as user 'minimyth', it access network shares as user 'minimyth'.
+                Being able to set the UID for the user 'minimyth' enables it to be set to a UID that has the desired access permissions on the NFS network shares.
+              </p>
+            </dd>
+            <dt id="MM_SECURITY_USER_MINIMYTH_GID"><strong>MM_SECURITY_USER_MINIMYTH_GID</strong></dt>
+            <dd>
+              <p>
+                Specifies the GID for the user 'minimyth'.
+                Valid values are integers between 200 and 32767, with the default being '1000'.
+              </p>
+            </dd>
+            <dt id="MM_SECURITY_FETCH_CREDENTIALS_CIFS"><strong>MM_SECURITY_FETCH_CREDENTIALS_CIFS</strong></dt>
+            <dd>
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#credentials_cifs">credentials_cifs</a>'
+                file from the frontend's MiniMyth configuration directory.
+            </dd>
+            <p>
+               MiniMyth saves this file as '/etc/cifs/credentials_cifs' on the MiniMyth frontend.
+               Therefore, in order to use this file credentials file when mount CIFS shares,
+               you need to add the mount option credentials='/etc/cifs/credentials_cifs'.
+            </p>
+            <dt id="MM_SECURITY_FETCH_CA_BUNDLE_CRT"><strong>MM_SECURITY_FETCH_CA_BUNDLE_CRT</strong></dt>
+            <dd>
+              <p>
+                Indicates whether or not to fetch the
+                '<a href="document-configure.shtml#ca_bundle_crt">ca-bundle.crt</a>'
+                file from the frontend's MiniMyth configuration directory.
+                Valid values are 'yes' and 'no', with 'no' being the default.
+              </p>
+              <p>
+                When KDE libraries are included (for use my MythBrowser),
+                MiniMyth includes this bundle of certificate authority digital certificates in
+                the list of certificate authorities trusted by KDE (and, therefore, MythBrowser).
+              </p>
+            </dd>
+          </dl>
+        </div>
+        <div id="MM_CPUFREQ" class="section">
+          <div class="heading">CPU frequency scaling variables</div>
+          <p>
+            </dd>
+            <dt id="MM_SECURITY_FETCH_CREDENTIALS_CIFS"><strong>MM_SECURITY_FETCH_CREDENTIALS_CIFS</strong></dt>
+            <dd>
             </dd>
             <dt id="MM_SECURITY_FETCH_CA_BUNDLE_CRT"><strong>MM_SECURITY_FETCH_CA_BUNDLE_CRT</strong></dt>
             <dd>
@@ -711,14 +771,14 @@
                 Therefore, the MiniMyth VNC server serves the real X display and not virtual X displays.
               </p>
               <p>
-                When '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is greater than '0',
+                When '<a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>' is 'yes',
                 the VNC server listens on and allows connections from localhost (127.0.0.1) only.
                 To connect to the VNC server,
                 you will need to enable the SSH server (<a href="#MM_SSH_SERVER">MM_SSH_SERVER</a>) and
                 <a href="http://www.karlrunge.com/x11vnc/#tunnelling">tunnel VNC over SSH</a>.
               </p>
               <p>
-                When '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is '0',
+                When '<a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>' is not 'yes',
                 the VNC server listens on and allows connections from all IP addresses.
               </p>
               <p>
@@ -2274,8 +2334,8 @@
               <p>
                 Specify whether or not you want to enable MiniMyth's SSH server.
                 Valid values are 'yes' and 'no',
-                with 'no' being the default when '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is '0', and
-                with 'yes' being the default when '<a href="#MM_SECURITY_LEVEL">MM_SECURITY_LEVEL</a>' is greater than '0'.
+                with 'yes' being the default when '<a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>' is 'yes', and
+                with 'no' being the default when '<a href="#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>' is not 'yes'.
               </p>
             </dd>
             <dt id="MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY"><strong>MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY</strong></dt>
@@ -2285,8 +2345,8 @@
                 '<a href="document-configure.shtml#ssh_host_rsa_key">ssh_host_rsa_key</a>'
                 file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no',
-                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'no', and
-                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes'.
+                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes', and
+                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is not 'yes'.
               </p>
             </dd>
             <dt id="MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS"><strong>MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS</strong></dt>
@@ -2296,8 +2356,8 @@
                 '<a href="document-configure.shtml#authorized_keys">authorized_keys</a>'
                 file from the frontend's MiniMyth configuration directory.
                 Valid values are 'yes' and 'no',
-                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'no', and
-                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes'.
+                with 'yes' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is 'yes', and
+                with 'no' being the default when '<a href="#MM_SSH_SERVER_ENABLED">MM_SSH_SERVER_ENABLED</a>' is not 'yes'.
               </p>
               <p>
                 This file will be places in the directory '/root/.ssh' enabling the user 'root' to connect
@@ -2386,7 +2446,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-11-27 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-11-30 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

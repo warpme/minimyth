@@ -17,7 +17,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 15
+mm_CONF_VERSION           ?= 16
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
