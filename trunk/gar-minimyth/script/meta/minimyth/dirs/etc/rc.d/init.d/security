@@ -8,6 +8,16 @@
 
 start() {
 
+    /bin/sed -e "s%^minimyth::1000:1000:%minimyth:x:${MM_SECURITY_USER_MINIMYTH_UID}:${MM_SECURITY_USER_MINIMYTH_GID}:%" -i /etc/passwd
+    /bin/sed -e "s%^minimyth:1000:%minimyth:${MM_SECURITY_USER_MINIMYTH_GID}:%"                                          -i /etc/group
+
+    # When security is enabled and debugging is disabled, disable login for user's 'root' and 'minimyth'.
+    if /usr/bin/test   "${MM_SECURITY_ENABLED}" = "yes" && \
+       /usr/bin/test ! "${MM_DEBUG}"            = "yes" ; then
+        /bin/sed -e 's%^root::%root:x:%'         -i /etc/passwd
+        /bin/sed -e 's%^minimyth::%minimyth:x:%' -i /etc/passwd
+    fi
+
     if /usr/bin/test -e /etc/ssl/certs/ca-bundle.crt ; then
         # Set permissions.
         /bin/chmod 0644 /etc/ssl/certs/ca-bundle.crt
@@ -18,6 +28,11 @@ start() {
         if /usr/bin/test -w /usr/kde/share/apps/kssl/ca-bundle.crt ; then
             /bin/cat /etc/ssl/certs/ca-bundle.crt >> /usr/kde/share/apps/kssl/ca-bundle.crt
         fi
+    fi
+
+    if /usr/bin/test -e /etc/cifs/credentials_cifs ; then
+        # Set permissions.
+        /bin/chmod 0600 /etc/cifs/credentials_cifs
     fi
 
     return 0

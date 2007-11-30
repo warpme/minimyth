@@ -10,21 +10,25 @@ conf_clean_security() {
 conf_check_security() {
 
     # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SECURITY_ENABLED' is obsolete."
+    if /usr/bin/test ! -z "${MM_SECURITY_LEVEL}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SECURITY_LEVEL' is obsolete."
     fi
 
-    if /usr/bin/test ! -z "${MM_SECURITY_LEVEL}"       && \
-       /usr/bin/test !    "${MM_SECURITY_LEVEL}" = "0" && \
-       /usr/bin/test !    "${MM_SECURITY_LEVEL}" = "1" ; then
-        mm_message_output err "error: MM_SECURITY_LEVEL='${MM_SECURITY_LEVEL}' is not valid."
+    if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}"         && \
+       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_SECURITY_ENABLED='${MM_SECURITY_ENABLED}' is not valid."
+    fi
+    if /usr/bin/test ! -z "${MM_SECRRITY_FETCH_CREDENTIALS_CIFS}"         && \
+       /usr/bin/test !    "${MM_SECURITY_FETCH_CREDENTIALS_CIFS}" = "yes" && \
+       /usr/bin/test !    "${MM_SECURITY_FETCH_CREDENTIALS_CIFS}" = "no" ; then
+        mm_message_output err "error: MM_SECURITY_FETCH_CREDENTIALS_CIFS='${MM_SECURITY_FETCH_CREDENTIALS_CIFS}' is not valid."
     fi
     if /usr/bin/test ! -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"         && \
        /usr/bin/test !    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "yes" && \
        /usr/bin/test !    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "no"  ; then
         mm_message_output err "error: MM_SECURITY_FETCH_CA_BUNDLE_CRT='${MM_SECURITY_FETCH_CA_BUNDLE_CRT}' is not valid."
     fi
-
 
     return 0
 }
@@ -34,8 +38,17 @@ conf_default_security() {
         return 0
     fi
 
-    if /usr/bin/test -z "${MM_SECURITY_LEVEL}" ; then
-        MM_SECURITY_LEVEL='0'
+    if /usr/bin/test -z "${MM_SECURITY_ENABLED}" ; then
+        MM_SECURITY_ENABLED='no'
+    fi
+    if /usr/bin/test -z "${MM_SECURITY_USER_MINIMYTH_UID}" ; then
+        MM_SECURITY_USER_MINIMYTH_UID='1000'
+    fi
+    if /usr/bin/test -z "${MM_SECURITY_USER_MINIMYTH_GID}" ; then
+        MM_SECURITY_USER_MINIMYTH_GID='1000'
+    fi
+    if /usr/bin/test -z "${MM_SECURITY_FETCH_CREDENTIALS_CIFS}" ; then
+        MM_SECURITY_FETCH_CREDENTIALS_CIFS='no'
     fi
     if /usr/bin/test -z "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" ; then
         MM_SECURITY_FETCH_CA_BUNDLE_CRT='no'
@@ -50,8 +63,11 @@ conf_default_security() {
 conf_write_security() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_SECURITY_LEVEL               "${MM_SECURITY_LEVEL}"
-    conf_variable_write "${conf_file}" MM_SECURITY_FETCH_CA_BUNDLE_CRT "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"
+    conf_variable_write "${conf_file}" MM_SECURITY_ENABLED                "${MM_SECURITY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_SECURITY_USER_MINIMYTH_UID      "${MM_SECURITY_USER_MINIMYTH_UID}"
+    conf_variable_write "${conf_file}" MM_SECURITY_USER_MINIMYTH_GID      "${MM_SECURITY_USER_MINIMYTH_GID}"
+    conf_variable_write "${conf_file}" MM_SECURITY_FETCH_CREDENTIALS_CIFS "${MM_SECURITY_FETCH_CREDENTIALS_CIFS}"
+    conf_variable_write "${conf_file}" MM_SECURITY_FETCH_CA_BUNDLE_CRT    "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}"
 
     return 0
 }
@@ -64,6 +80,15 @@ conf_fetch_security() {
         mm_conf_get /ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
         if /usr/bin/test ! -e /etc/ssl/certs/ca-bundle.crt ; then
             mm_message_output err "error: failed to fetch 'ca-bundle.crt' file."
+        fi
+    fi
+
+    if /usr/bin/test "${MM_SECURITY_FETCH_CREDENTIALS_CIFS}" = "yes" ; then
+        /bin/mkdir -p /etc/cifs
+        /bin/rm -f /etc/cifs
+        mm_conf_get /credentials_cifs /etc/cifs/credentials_cifs
+        if /usr/bin/test ! -e /etc/cifs/credentials_cifs ; then
+            mm_message_output err "error: failed to fetch 'credentials_cifs' file."
         fi
     fi
 
