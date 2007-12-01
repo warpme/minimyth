@@ -45,6 +45,7 @@ DEPENDS = \
 	qt/qt \
 	X11/ratpoison \
 	utils/regionset \
+	net/rsync \
 	X11/rxvt \
 	utils/perl-stub \
 	utils/SDL-Test \
