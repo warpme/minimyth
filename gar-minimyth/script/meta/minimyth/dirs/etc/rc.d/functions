@@ -1600,31 +1600,46 @@ mm_hardware_usb2lcdproc_map() {
 #===============================================================================
 # mm_ssh_remote_* functions.
 #===============================================================================
-mm_ssh_remote_run() {
+mm_ssh_remote_file_map() {
     local logfile="$1"
-    local command="$2"
+    local file_local="$2"
 
-    local host="${MM_SSH_REMOTE_HOST}"
-    local port="${MM_SSH_REMOTE_PORT}"
-    local user="${MM_SSH_REMOTE_USER}"
-    local identity="${HOME}/.ssh/id_rsa"
+    local prefix_remote
 
-    /bin/echo "/usr/bin/ssh -p ${port} -i ${identity} ${user}@${host} \"${command}\""  >> ${logfile}
-    /usr/bin/ssh -p ${port} -i ${identity} ${user}@${host} "${command}"               2>> ${logfile}
+    prefix_remote="tmp/minimyth/${MM_HOSTNAME}"
+
+    /bin/echo "tmp/minimyth/${MM_HOSTNAME}${file_local}"
+}
+
+mm_ssh_remote_perl() {
+    local logfile="$1"
+    local perl_args="$2"
+
+    local ssh
+
+    ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
+
+    /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"perl ${perl_args}\""  >> ${logfile}
+    ${ssh} ${MM_SSH_REMOTE_HOST} "perl ${perl_args}"               2>> ${logfile}
 }
 
 mm_ssh_remote_put() {
     local logfile="$1"
     local file_local="$2"
-    local file_remote="$3"
 
-    local host="${MM_SSH_REMOTE_HOST}"
-    local port="${MM_SSH_REMOTE_PORT}"
-    local user="${MM_SSH_REMOTE_USER}"
-    local identity="${HOME}/.ssh/id_rsa"
+    local prefix_remote
+    local ssh
+    local rsync
 
-    /bin/echo "/usr/bin/scp -r -P ${port} -i ${identity} ${file_local} ${user}@${host}:${file_remote}"  >> ${logfile}
-    /usr/bin/scp -r -P ${port} -i ${identity} ${file_local} ${user}@${host}:${file_remote}             2>> ${logfile}
+    prefix_remote="tmp/minimyth/${MM_HOSTNAME}"
+    ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
+    rsync="/usr/bin/rsync -rtR --delete --force"
+
+    /bin/echo "${ssh} ${MM_SSH_REMOTE_USER} \"mkdir -p ${prefix_remote}\""  >> ${logfile}
+    ${ssh} ${MM_SSH_REMOTE_HOST} "mkdir -p ${prefix_remote}"               2>> ${logfile}
+
+    /bin/echo "${rsync} -e \"${ssh}\" ${file_local} ${MM_SSH_REMOTE_HOST}:${prefix_remote}"  >> ${logfile}
+    ${rsync} -e "${ssh}" ${file_local} ${MM_SSH_REMOTE_HOST}:${prefix_remote}               2>> ${logfile}
 }
 
 #===============================================================================

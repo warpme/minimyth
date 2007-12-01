@@ -6,34 +6,6 @@
 ################################################################################
 . /etc/rc.d/functions
 
-__ssh_copy_to_remote() {
-    local dir=$1
-
-    local dir_local=/usr/share/mythtv/${dir}
-    local dir_remote=tmp/minimyth/${MM_HOSTNAME}/${dir}
-    local dir_remote_dir=`/usr/bin/dirname ${dir_remote}`
-
-    mm_ssh_remote_run /dev/null "rm -fr ${dir_remote}"
-    if /usr/bin/test $? -ne 0 ; then
-        mm_message_output err "error: failed to delete remote directory '${dir_remote}'."
-        exit 1
-    fi
-    if /usr/bin/test -e ${dir_local} ; then
-        mm_ssh_remote_run /dev/null "mkdir -p ${dir_remote_dir}"
-        if /usr/bin/test $? -ne 0 ; then
-            mm_message_output err "error: failed to create remote directory '${dir_remote_dir}'."
-            exit 1
-        fi
-        mm_ssh_remote_put /dev/null ${dir_local} ${dir_remote}
-        if /usr/bin/test $? -ne 0 ; then
-            mm_message_output err "error: failed to copy local directory '${dir_local}' to remote directory '${dir_remote}'."
-            exit 1
-        fi
-    else
-        mm_message_output warn "warning: local directory '${dir_local}' does not exist."
-    fi
-}
-
 start() {
     mm_message_output info "configuring ssh remote command execution ..."
 
@@ -53,11 +25,11 @@ start() {
     fi
 
     if /usr/bin/test "${MM_SSH_REMOTE_ENABLED}" = "yes" ; then
-#        if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}" = "yes" ; then
-#            __ssh_copy_to_remote 'mythstream/parsers'
-#        fi
+        if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}" = "yes" ; then
+            mm_ssh_remote_put /dev/null /usr/share/mythtv/mythstream/parsers
+        fi
         if /usr/bin/test "${MM_MYTHVIDEO_ENABLED}" = "yes" ; then
-            __ssh_copy_to_remote 'mythvideo/scripts'
+            mm_ssh_remote_put /dev/null /usr/share/mythtv/mythvideo/scripts
         fi
     fi
 
