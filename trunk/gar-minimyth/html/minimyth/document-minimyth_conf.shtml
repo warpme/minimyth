@@ -2261,6 +2261,126 @@
             Ideally, the remote host should a real or virtual host dedicated to running remote commands for this remote user.
           </p>
           <p>
+            Before MiniMyth can run commands on the remote host, you must enable SSH access to the remote host.
+            Below is a brief description of how to do this.
+          <p>
+          <ol>
+            <li>
+              <p>
+                Log in to the remote host as the user 'root'.
+              </p>
+            </li>
+            <li>
+              <p>
+                Install and configure the required software.
+              </p>
+              <p>
+                If you have not already done so,
+                install the ssh server, rsync and perl.
+                If you have not already done so,
+                configure and enable the ssh server.
+                Software installation and configuration of this software is distribution specific and
+                is not covered here.
+              </p>
+            </li>
+            <li>
+              <p>
+                Create a new user.
+              </p>
+              <p>
+                You can create a new user using the command
+              </p>
+<pre>adduser -m -c 'MiniMyth user' minimyth</pre>
+              </p>
+              <p>
+                where 'minimyth' is the name of the user.
+                You can use anything for the name of the user.
+                If you do not use the name 'minimyth',
+                then you will need to tell MiniMyth the name using
+                <a href="MM_SSH_REMOTE_USER">MM_SSH_REMOTE_USER</a>.
+              </p>
+              <p>
+                You will want to lock down this user as much as possible.
+                As a minimum, this user
+                should not have a password
+                should not have write permission outside its home directory, and
+                should have limits on home directory size and processor usage.
+                In addition to these minimal security measures,
+                there are additional security measures that you can take in order to limit the damage that this user can do.
+                Configuring all these security measures is not covered here.
+              </p>
+            </li>
+            <li>
+              <p>
+                Become the new user.
+              </p>
+              <p>
+                Become the user created in the previous step.
+                You can do this using the command
+             </p>
+<pre>su - minimyth</pre>
+              <p>
+                If you created a user other than 'minimyth' in the previous step,
+                then replace 'minimyth' in the above command with the name of the user that you created.
+              </p>
+            </li>
+            <li>
+              <p>
+                Generate an ssh key.
+              </p>
+              <p>
+                You can generate the ssh key using the commands
+              </p>
+<pre>ssh-keygen -t rsa -C "{hostname} minimyth client ssh key" -f ~/.ssh/{hostname}_ssh_client_rsa
+chmod 0600 ~/.ssh/{hostname}_ssh_client_rsa
+chmod 0600 ~/.ssh/{hostname}_ssh_client_rsa.pub</pre>
+              <p>
+                where
+                '~/.ssh/{hosthname}_ssh_client_rsa' is the private key file,
+                '~/.ssh/{hosthname}_ssh_client_rsa.pub' is the public key file, and
+                {hostname} is the hostname of MiniMyth frontend that will be using the SSH key.
+                You can use anything for
+                the key file comment (set with the -C option) anf the key file name (set with the -f option).
+                I chose the above comment and filename, because they allow me to distiguish
+                the different SSH keys used by different MiniMyth frontends
+                as well as
+                the different SSH keys used by each MiniMyth frontend function.
+              </p>
+              <p>
+                You will need to copy the private key file into the
+                <a href="document-configure.shtml#location">MiniMyth read-only configuration directory</a>
+                for this MiniMyth frontend,
+                rename this copied file to
+                <a href="document-configure.shtml#id_rsa">id_rsa</a> and
+                set this copied file's permissions such that the file is readable by the TFTP server.
+              </p>
+            </li>
+            <li>
+              <p>
+                Authorize ssh access as the new user using the new ssh key.
+              </p>
+              <p>
+                You can do this using the following command
+              </p>
+<pre>cat ~/.ssh/{hostname}_ssh_client_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0644 ~/.ssh/authorized_keys</pre>
+              <p>
+                Using '~/.ssh/authorized_keys', you can further restrict access on a per-key basis.
+                For example, you can require access to originate from the MiniMyth frontend for which the key was generated.
+                You can find out how to do this in the
+                <a href="http://www.openbsd.org/cgi-bin/man.cgi?query=sshd">sshd man page</a>.
+              </p>
+            </li>
+          </ol>
+          <p>
+            When MiniMyth copies the files to the server during init,
+            it creates the log file '/var/log/init_ssh_remote.log'.
+            If you encouter problems with SSH remote command execution during init, look in this log file for help.
+            When MiniMyth runs perl remotely, it creates the log file '/home/minimyth/log/mm_perl.log'.
+            If you have problems with SSH remote perl execution, look in this log file for help.
+            Common problems are incorrect remote host file permissions, incorrect keys and missing perl modules.
+          </p>
+          <p>
             The SSH remote command execution configuration variables are:
           </p>
           <dl>
@@ -2319,7 +2439,8 @@
             when you are network booting,
             you should assume that anything with access to your network has access the SSH private RSA identity file 
             and can impersonate the SSH server.
-            Therefore, when you are network booting, you should not assume that an SSH server using this identity file is your SSH server.
+            Therefore, when you are network booting,
+            you should not assume that an SSH server using this identity file is your SSH server.
           </p>
           <p>
             The SSH server configuration variables are:
@@ -2425,7 +2546,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-11-30 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-12-02 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

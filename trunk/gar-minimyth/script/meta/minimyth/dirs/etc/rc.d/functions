@@ -1609,6 +1609,8 @@ mm_ssh_remote_file_map() {
     prefix_remote="tmp/minimyth/${MM_HOSTNAME}"
 
     /bin/echo "tmp/minimyth/${MM_HOSTNAME}${file_local}"
+
+    return
 }
 
 mm_ssh_remote_perl() {
@@ -1621,6 +1623,12 @@ mm_ssh_remote_perl() {
 
     /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"perl ${perl_args}\""  >> ${logfile}
     ${ssh} ${MM_SSH_REMOTE_HOST} "perl ${perl_args}"               2>> ${logfile}
+    if /usr/bin/test $? -ne 0 ; then
+         /bin/false
+         return
+    fi
+
+    return
 }
 
 mm_ssh_remote_put() {
@@ -1637,9 +1645,19 @@ mm_ssh_remote_put() {
 
     /bin/echo "${ssh} ${MM_SSH_REMOTE_USER} \"mkdir -p ${prefix_remote}\""  >> ${logfile}
     ${ssh} ${MM_SSH_REMOTE_HOST} "mkdir -p ${prefix_remote}"               2>> ${logfile}
+    if /usr/bin/test $? -ne 0 ; then
+         /bin/false
+         return
+    fi
 
     /bin/echo "${rsync} -e \"${ssh}\" ${file_local} ${MM_SSH_REMOTE_HOST}:${prefix_remote}"  >> ${logfile}
     ${rsync} -e "${ssh}" ${file_local} ${MM_SSH_REMOTE_HOST}:${prefix_remote}               2>> ${logfile}
+    if /usr/bin/test $? -ne 0 ; then
+         /bin/false
+         return
+    fi
+
+    return
 }
 
 #===============================================================================
