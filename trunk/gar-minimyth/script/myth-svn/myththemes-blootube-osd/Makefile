@@ -1,7 +1,7 @@
 GARNAME = blootube-osd
-GARVERSION = 20070107
+GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITE = http://www.mythtvtalk.com/juski/
+MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-font.patch $(DISTNAME)-fadeaway.patch
 LICENSE = GPL2
@@ -24,6 +24,13 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 build-custom:
 	@rm -rf $(WORKSRC)/*.ttf
 	@$(MAKECOOKIE)
@@ -33,15 +40,3 @@ install-custom:
 	@rm -rf $(DESTDIR)$(datadir)/mythtv/themes/$(GARNAME)
 	@cp -af $(WORKSRC) $(DESTDIR)$(datadir)/mythtv/themes/$(GARNAME)
 	@$(MAKECOOKIE)
-
-theme-tarball:
-	@$(MAKE) clean
-	@mkdir -p $(PARTIALDIR)
-	@wget -c -P $(PARTIALDIR) $(MASTER_SITE)/$(GARNAME).tar.bz2
-	@mkdir -p $(DOWNLOADDIR)
-	@mv $(PARTIALDIR)/$(GARNAME).tar.bz2 $(DOWNLOADDIR)/$(GARNAME).tar.bz2
-	@mkdir -p $(WORKDIR)
-	@tar -C $(WORKDIR) -jxf $(DOWNLOADDIR)/$(GARNAME).tar.bz2
-	@rm -f $(DOWNLOADDIR)/$(GARNAME).tar.bz2
-	@mv $(WORKDIR)/$(GARNAME) $(WORKDIR)/$(DISTNAME)
-	@tar -C $(WORKDIR) -jcf $(DOWNLOADDIR)/$(DISTNAME).tar.bz2 $(DISTNAME)
