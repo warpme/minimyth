@@ -10,7 +10,7 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "Content-Type: text/html; charset=UTF-8"
 /bin/echo
 /bin/echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">"
-/bin/echo "<html>"
+/bin/echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">"
 /bin/echo "  <head>"
 /bin/echo "    <meta name=\"author\" content=\"Paul Bender\" />"
 /bin/echo "    <meta name=\"copyright\" content=\"2006 Paul Bender &amp; LinPVR.org\" />"
@@ -150,7 +150,7 @@ fi
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"footer\">"
 /bin/echo "        <hr />"
-/bin/echo "        Last Updated: 2007-11-28 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "        Last Updated: 2007-12-04 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
 /bin/echo "  </body>"
