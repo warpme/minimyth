@@ -34,11 +34,12 @@
           <dl>
             <dt><a href="#general">General</a></dt>
             <dt><a href="#control">Control</a></dt>
-            <dt><a href="#control-remote">Control using a romote control</a></dt>
+            <dt><a href="#control-remote">Control using a remote control</a></dt>
             <dt><a href="#control-vnc">Control using vnc</a></dt>
             <dt><a href="#access">Access</a></dt>
             <dt><a href="#access-http">Access using http</a></dt>
             <dt><a href="#access-telnet">Access using telnet</a></dt>
+            <dt><a href="#access-ssh">Access using ssh</a></dt>
           </dl>
         </div>
         <div id="general" class="section">
@@ -64,7 +65,7 @@
           <div class="heading">Control using vnc</div>
           <p>
             For some of the entries in the Myth setup menus, it is easier to use a keyboard than a remote control.
-            While MiniMyth supports connecting a keyboard and mouse, it is aften physically difficult to do so.
+            While MiniMyth supports connecting a keyboard and mouse, it is often physically difficult to do so.
             Therefore, MiniMyth support controlling the MiniMyth GUI using VNC.
           </p>
           <p>
@@ -73,6 +74,11 @@
             By connecting to a virtual X display, a VNC client can have its own X session.
             Since MiniMyth uses VNC as a method for remotely controlling the frontend,
             MiniMyth uses a VNC server that connects the VNC client to the real X display.
+          </p>
+          <p>
+            If you have enabled security
+            (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
+            then VNC is only available over SSH.
           </p>
         </div>
         <div id="access" class="section">
@@ -95,6 +101,11 @@
           <p>
             The MiniMyth file system is accessable by connecting to port 8080 using HTTP.
             This allows you to view any file using a web browswer (e.g. Firefox) or download any file using a web download client (e.g. wget).
+          </p>
+          <p>
+            If you have enabled security
+            (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
+            then the MiniMyth file system is not accessable using HTTP.
           </p>
         </div>
         <div id="access-telnet" class="section">
@@ -119,6 +130,28 @@
             The user 'root' is the root user.
             You may wish to log in as the user 'root' when you need access beyond the access allowed the user 'minimyth'.
             For example, some files can only be written or read as the user 'root'.
+          </p>
+        </div>
+        <div id="access-ssh" class="section">
+          <div class="heading">Access using ssh</div>
+          <p>
+            If you have enabled the
+            <a href="document-minimyth_conf.shtml#MM_SSH_SERVER">SSH server</a>,
+            then MiniMyth provides access using ssh.
+            During normal operation, there is no reason to need ssh access to MiniMyth.
+            However, ssh access can be very useful when customizing or debugging MiniMyth.
+          </p>
+          <p>
+            There is one user that can connect using ssh: 'root'.
+            When connecting as user 'root',
+            you must present a identity file authorized in the
+            <a href="document-configure.shtml#authorized_keys">authorized_keys</a>
+            configuration file.
+          </p>
+          <p>
+            If you need to perform a task as the user 'minimyth' (e.g. restart X),
+            then you will need to su to the user 'minimyth' using the command
+            'su&nbsp;-&nbsp;minimyth'.
           </p>
         </div>
       </div>

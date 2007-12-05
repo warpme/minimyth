@@ -62,7 +62,10 @@
           <p>
             The primary combination is network boot with a RAM root file system.
             Network boot with an NFS root file system was added to make development and debugging easier.
-            Local boot was added to support networks that use a DHCP server that cannot be configured to support network boot.
+            Local boot was added
+            to support networks thatuse a DHCP server that cannot be configured to support network boot, and
+            to support installations that desire more security than can be provided when the kernel, root file system
+            and configuration files are downloaded from a TFTP server.
           </p>
         </div>
         <div id="sequence" class="section">
@@ -97,7 +100,7 @@
             because the kernel contains all the functionality required of an initial root file system.
             For example, when all the kernel modules needed to retrieve the final root file system are compiled into the kernel,
             there is no need for an initial root file system to contain and load the needed kernel modules.
-            Eseentially, in these cases, the kernel is the initial root file system.
+            Essentially, in these cases, the kernel is the initial root file system.
           </p>
           <p>
             For MiniMyth using an NFS root file system, the NFS root file system is a final root file system.
@@ -153,12 +156,14 @@
         <div id="network" class="section">
           <div class="heading">Network Boot</div>
           <p>
-            For network boot,
-            you must be able to support the boot file name option (option 67) in the DHCP server that is serving your network.
-            Most Windows, MacOS, Linux and BSD based DHCP servers support the boot file name option.
-            However, most DHCP servers found in off-the-shelf home routers do not support the boot file name option.
-            Therefore, if you are running a computer based DHCP server you will likely be able to add the file system option.
-            However, if you are running an off-the-shelf home router based DHCP server, then you will likely not be able to add the file system option.
+            MiniMyth makes the 'guess' based on whether or not the boot file name is contained in DHCP's DHCPOFFER message
+            For network boot, you must be able to send boot file name n the DHCP's DHCPOFFER message.
+            Most Windows, MacOS, Linux and BSD based DHCP servers support sending the boot file name.
+            However, most DHCP servers found in off-the-shelf home routers do not support sending the boot file name.
+            Therefore, if you are running a computer based DHCP server,
+            then you will likely be able to configure and send the boot file name.
+            However, if you are running an off-the-shelf home router based DHCP server,
+            then you will likely not be able to configure and send the boot file name.
           </p>
           <p>
             In addition, for network boot,
@@ -223,8 +228,8 @@
           <p>
             Givin that most people run their MythTV backend on Linux,
             the most common scenerio for network boot is a network running the
-            <a href="http://www.isc.org/index.pl?/sw/bind/">ISC BIND</a>
-            DHCP server, running a Linux TFTP server and
+            <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>
+            server, running a Linux TFTP server and
             using PXELINUX.
             There are numerous guides on the Internet for setting up this network boot configuration.
             I think that the one created for
@@ -248,7 +253,7 @@
             <a href="#network">network boot</a> section.
           </p>
           <p>
-            Your PXELINUX configuration file should contain the following, where '{version}' is the version of the MiniMyth distribution (e.g. 0.19-19):
+            Your PXELINUX configuration file should contain the following, where '{version}' is the version of the MiniMyth distribution (e.g. 0.20.2-32):
           </p>
           <pre>
 DEFAULT minimyth-ram
@@ -308,7 +313,7 @@ LABEL minimyth-ram
           </p>
           <p>
             Your PXELINUX configuration file should contain the following, where
-             '{version}' is the version of the MiniMyth distribution (e.g. 0.19-19),
+             '{version}' is the version of the MiniMyth distribution (e.g. 0.20.2-32),
             '{nfs-server}' is the IPv4 address of the NFS server and
             '{nfs-directory}/minimyth-{version}' is the MiniMyth root file system shared by the NFS server:
           </p>
@@ -448,7 +453,7 @@ LABEL minimyth-nfs
             This leaves us with local boot with a RAM root file system.
           </p>
           <p>
-            Givin that most people run their MythTV backend on Linux,
+            Given that most people run their MythTV backend on Linux,
             most people should have a computer running Linux.
             Therefore, we will give instructions for installing local boot MiniMyth using a computer running Linux.
           </p>
