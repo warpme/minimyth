@@ -70,7 +70,7 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.*), \
 			libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/libnvidia-wfb.so.*), \
-			libnvidia-wfb.so:/usr/X11R6/lib/modules:$(libdir)/nvidia/xorg/modules) \
+			libnvidia-wfb.so:/usr/X11R6/lib/modules:$(libdir)/nvidia/xorg/modules:libwfb.so) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.*), \
 			libglx.so:/usr/X11R6/lib/modules/extensions:$(libdir)/nvidia/xorg/modules/extensions) \
 	)
@@ -149,6 +149,11 @@ install-nvidia-x11:
 		ln -sf \
 		    $(word 1,$(subst :, ,$(entry))).$(word $(words $(NVIDIA_VERSION_LIST)),$(NVIDIA_VERSION_LIST)) \
 		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))).1 ; \
+	))
+	@$(foreach entry,$(NVIDIA_FILE_LIST_LIB_SO), $(if $(word 4,$(subst :, ,$(entry))), \
+		ln -sf \
+		    $(word 1,$(subst :, ,$(entry))) \
+		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 4,$(subst :, ,$(entry))) ; \
 	))
 	@$(MAKECOOKIE)
 
