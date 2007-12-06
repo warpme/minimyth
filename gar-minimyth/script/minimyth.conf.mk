@@ -107,7 +107,7 @@ mm_MYTH_VERSION           ?= stable20
 # The version of the NVIDIA driver.
 # Valid values are '7185' (legacy), '71.86.01' (legacy), '9639' (legacy), '96.43.01' (legacy),
 # '9746', '100.14.19' and '169.04' (beta).
-mm_NVIDIA_VERSION         ?= 9746
+mm_NVIDIA_VERSION         ?= 169.04
 # The version of xorg to use.
 # Valid values are '7.2' and '7.3'.
 mm_XORG_VERSION           ?= 7.2
