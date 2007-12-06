@@ -766,6 +766,8 @@ mm-make-distro-ram:
 	@echo "    making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@fakeroot sh -c                                                                          " \
+		chmod -R -s   $(mm_ROOTFSDIR)                                                    ; \
+		chmod -R -t   $(mm_ROOTFSDIR)                                                    ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                          ; \
@@ -813,6 +815,8 @@ mm-make-distro-nfs:
 	@echo "    making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
+		chmod -R -s   $(mm_ROOTFSDIR)                                                  ; \
+		chmod -R -t   $(mm_ROOTFSDIR)                                                  ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                        ; \
