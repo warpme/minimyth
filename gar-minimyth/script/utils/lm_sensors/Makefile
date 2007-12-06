@@ -1,10 +1,9 @@
 GARNAME = lm_sensors
-GARVERSION = 2.10.5
+GARVERSION = 3.0.0
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-i2c_dev_h.patch
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -14,30 +13,28 @@ endef
 DEPENDS = lang/c kernel/kernel lib/sysfsutils
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = custom
+INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 ARGS = \
-	KERNELVERSION="$(LINUX_FULL_VERSION)" \
-	LINUX="$(DESTDIR)$(LINUX_BUILDDIR)" \
-	I2C_HEADERS="$(DESTDIR)$(includedir)" \
 	DESTDIR="$(DESTDIR)" \
 	PREFIX="$(prefix)" \
 	CC="$(CC)" \
-	MODPREF="$(DESTDIR)$(LINUX_MODULESDIR)" \
 	ETCDIR="$(sysconfdir)" \
 	LIBDIR="$(libdir)" \
 	EXLDFLAGS="" \
 	BINDIR="$(bindir)" \
 	SBINDIR="$(sbindir)" \
 	INCLUDEDIR="$(includedir)" \
+	LIBINCLUDEDIR="$(includedir)/sensors" \
 	MANDIR="$(mandir)" \
 	MACHINE="$(GARCH)" \
-	LIBICONV=""
+	CFLAGS="$(CFLAGS)" \
+	CPPFLAGS="$(CPPFLAGS)" \
+	AR="$(AR)"
 
-BUILD_ARGS   = $(ARGS) user
+BUILD_ARGS   = $(ARGS)
 INSTALL_ARGS = $(ARGS)
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
@@ -48,9 +45,5 @@ x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-install:
-	@rm -rf $(DESTDIR)/$(sysconfdir)/sensors.conf
-	@$(MAKECOOKIE)
-
-install-custom:
-	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $(WORKSRC) $(INSTALL_ARGS) user_install
+	@rm -rf $(DESTDIR)/$(sysconfdir)/sensors3.conf
 	@$(MAKECOOKIE)
