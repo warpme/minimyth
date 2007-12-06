@@ -6,7 +6,7 @@ MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-squashfs_3.3.patch $(DISTNAME)-unionfs_2.1.10.patch
-PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch $(DISTNAME)-via_rhine_pxeboot.patch
+PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
 
