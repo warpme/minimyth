@@ -19,7 +19,7 @@ fi
 
 logfile="${HOME}/log/mm_perl.log"
 
-# Create local log file.
+# Create local log file directory.
 logdir=`/usr/bin/dirname ${logfile}`
 /bin/mkdir -p ${logdir}
 if /usr/bin/test ! -d ${logdir} ; then
@@ -27,6 +27,21 @@ if /usr/bin/test ! -d ${logdir} ; then
          "mm_perl: failed to create local log directory '${logdir}'."
     exit 1
 fi
+# Rotate log files.
+logfile_indexes=`/bin/ls -1 ${logfile}.* 2> /dev/null | /bin/sed -e 's%^.*\.%%' | /usr/bin/sort -n -r`
+for logfile_index in logfile_indexes ; do
+    if ${logfile_index} -lt 9 ; then
+        /bin/rm -f ${logfile}.$((${logfile_index}+1))
+        /bin/mv ${logfile}.${logfile_index} ${logfile}.$((${logfile_index}+1))
+    else
+        /bin/rm -f ${logfile}.${logfile_index}
+    fi
+done
+if /usr/bin/test -e ${logfile} ; then
+    /bin/rm -f ${logfile}.1
+    /bin/mv ${logfile} ${logfile}.1
+fi
+# Create log file.
 /bin/rm -f ${logfile}
 /bin/touch ${logfile}
 if /usr/bin/test ! -d ${file} ; then
@@ -73,20 +88,19 @@ for arg in "$@" ; do
                 script_type='mythstream'
             elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythvideo/scripts/" 2> /dev/null ; then
                 script_type='mythvideo'
+            elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythweather/scripts/" 2> /dev/null ; then
+                script_type='mythweather'
             else
                 script_type='unknown'
+                mm_ssh_remote_put ${logfile} ${file_local}
+                if /usr/bin/test $? -ne 0 ; then
+                    /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
+                    /usr/bin/logger -t minimyth -p "local0.error" \
+                        "mm_perl: failed to copy perl script to remote system."
+                    exit 1
+                fi
             fi
 
-	    # Sync local file and remote file.
-            mm_ssh_remote_put ${logfile} ${file_local}
-            if /usr/bin/test $? -ne 0 ; then
-                /bin/echo "mm_perl: failed to copy perl script to remote system." >> ${logfile}
-                /usr/bin/logger -t minimyth -p "local0.error" \
-                    "mm_perl: failed to copy perl script to remote system."
-                exit 1
-            fi
-
-	    # Replace argument with remote file name.
             arg="`mm_ssh_remote_file_map ${logfile} ${file_local}`"
         elif /usr/bin/test ${argnumber} -eq 1 ; then
             # Perl script is mythstream parser, so this argument is a file that must be copied to the remote server.
@@ -109,9 +123,6 @@ for arg in "$@" ; do
                         exit 1
                     fi
                 fi
-
-	       # Replace argument with remote file name.
-                arg="`mm_ssh_remote_file_map ${logfile} ${file_local}`"
             fi
         fi
         arg=`/bin/echo ${arg} | /bin/sed -e 's%^"%%g' -e 's%"$%%g'`

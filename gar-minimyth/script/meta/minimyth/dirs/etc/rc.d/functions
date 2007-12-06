@@ -1606,7 +1606,7 @@ mm_ssh_remote_file_map() {
 
     local prefix_remote
 
-    prefix_remote="var/cache/minimyth/${MM_HOSTNAME}"
+    prefix_remote="\${HOME}/var/cache/minimyth/${MM_HOSTNAME}"
 
     /bin/echo "${prefix_remote}${file_local}"
 
@@ -1617,12 +1617,16 @@ mm_ssh_remote_perl() {
     local logfile="$1"
     local perl_args="$2"
 
+    local prefix_remote
+    local pwd_remote
     local ssh
 
+    prefix_remote="var/cache/minimyth/${MM_HOSTNAME}"
+    pwd_remote="${prefix_remote}`pwd`"
     ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
 
-    /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"perl ${perl_args}\""  >> ${logfile}
-    ${ssh} ${MM_SSH_REMOTE_HOST} "perl ${perl_args}"               2>> ${logfile}
+    /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"cd ${pwd_remote} ; perl ${perl_args}\""  >> ${logfile}
+    ${ssh} ${MM_SSH_REMOTE_HOST} "cd ${pwd_remote} ; perl ${perl_args}"               2>> ${logfile}
     if /usr/bin/test $? -ne 0 ; then
          /bin/false
          return
