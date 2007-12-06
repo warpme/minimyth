@@ -3,14 +3,14 @@ GARVERSION = 0.20.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.mythtv.org/mc/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-ticket-3035-20070207.patch $(DISTNAME)-avformat_asf_utf8.patch $(DISTNAME)-eject.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythaudio.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-alphapulse.patch $(DISTNAME)-startplayer_maxwait.patch $(DISTNAME)-preserve_timestamps.patch
+PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-ticket-3035-20070207.patch $(DISTNAME)-avformat_asf_utf8.patch $(DISTNAME)-eject.patch $(DISTNAME)-lm_sensors_detect.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythaudio.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-alphapulse.patch $(DISTNAME)-startplayer_maxwait.patch $(DISTNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdca lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc utils/lm_sensors
+DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/libdca lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
