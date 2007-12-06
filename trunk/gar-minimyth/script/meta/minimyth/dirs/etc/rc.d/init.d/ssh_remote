@@ -41,6 +41,18 @@ start() {
                 exit 1
             fi
         fi
+        if /usr/bin/test "${MM_MYTHWEATHER_ENABLED}" = "yes" ; then
+            if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
+               ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
+                 /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
+                mkdir -p /var/log
+                mm_ssh_remote_put /var/log/init_ssh_remote.log /usr/share/mythtv/mythweather/scripts
+                if /usr/bin/test $? -ne 0 ; then
+                    mm_message_output err "error: failed to copy MythWeather scripts to remote host. see /var/log/init_ssh_remote.log for more details."
+                    exit 1
+                fi
+            fi
+        fi
     fi
 
     return 0
