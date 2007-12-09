@@ -34,11 +34,7 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"
-	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"
+	@mkdir -p "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
+	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
-
-clean-all:
-	@$(MAKE) clean
-	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/drm/"
