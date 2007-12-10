@@ -29,7 +29,7 @@ if /usr/bin/test ! -d ${logdir} ; then
 fi
 # Rotate log files.
 logfile_indexes=`/bin/ls -1 ${logfile}.* 2> /dev/null | /bin/sed -e 's%^.*\.%%' | /usr/bin/sort -n -r`
-for logfile_index in logfile_indexes ; do
+for logfile_index in ${logfile_indexes} ; do
     if ${logfile_index} -lt 9 ; then
         /bin/rm -f ${logfile}.$((${logfile_index}+1))
         /bin/mv ${logfile}.${logfile_index} ${logfile}.$((${logfile_index}+1))
