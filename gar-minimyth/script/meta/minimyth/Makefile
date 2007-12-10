@@ -38,6 +38,7 @@ DEPENDS = \
 	net/ntp \
 	net/openssh \
 	utils/pciutils \
+	utils/perl-stub \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
@@ -47,7 +48,6 @@ DEPENDS = \
 	utils/regionset \
 	net/rsync \
 	X11/rxvt \
-	utils/perl-stub \
 	utils/SDL-Test \
 	system/splashutils \
 	utils/squashfs \
