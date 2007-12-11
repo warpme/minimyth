@@ -1,5 +1,5 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.14
+GARVERSION = 1.0.15
 CATEGORIES = kernel-2.6.22
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
@@ -24,11 +24,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-build="$(DESTDIR)$(LINUX_BUILDDIR)" \
 	--with-redhat=no \
 	--with-suse=no \
-	--with-moddir="$(LINUX_MODULESDIR)/kernel/sound" \
+	--with-moddir="$(LINUX_MODULESDIR)/misc/alsa" \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
-	--with-cards="cmipci,ens1371,hda-intel,ice1724,intel8x0,atiixp,usb-audio,via82xx"
+	--with-cards="atiixp,cmipci,ens1371,hda-intel,ice1724,intel8x0,intel8x0m,usb-audio,via82xx"
 
 CONFIGURE_ENV = $(LINUX_MAKE_ENV)
 BUILD_ENV     = $(LINUX_MAKE_ENV)
@@ -48,3 +48,7 @@ IGROUP := `id -g`
 post-install:
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/alsa

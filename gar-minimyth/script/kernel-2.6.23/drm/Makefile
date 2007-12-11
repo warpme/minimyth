@@ -1,5 +1,5 @@
 GARNAME = drm
-GARVERSION = 309b2c4c05d02a7e7311a9491b74044f6c7f06a4
+GARVERSION = c78e610fa42c8122ed6bc504222ef650f5693d22
 CATEGORIES = kernel-2.6.23
 MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -34,7 +34,12 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
-	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)"
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)"
