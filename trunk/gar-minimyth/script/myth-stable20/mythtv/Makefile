@@ -35,7 +35,6 @@ CONFIGURE_ARGS = \
 	--tune=$(GARCH) \
 	--arch=$(GARCH) \
 	--enable-proc-opt \
-	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-mmx \
 	--disable-iwmmxt \
 	--disable-altivec \
