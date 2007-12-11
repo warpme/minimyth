@@ -16,7 +16,7 @@ ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-crtobjs
 DEPENDS  = lang/c devel/binutils
 endif
-DEPENDS += lib/gmp lib/mpfr
+DEPENDS += $(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)),lib/gmp lib/mpfr)
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -33,7 +33,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
-        --enable-__cxa_atexit \
+	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c \
 	--disable-libgomp \
@@ -42,12 +42,15 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-multilib \
 	--disable-nls \
 	--enable-shared \
-        --enable-threads=no \
-        --enable-version-specific-runtime-libs \
-	--with-mpfr-include=$(DESTDIR)$(includedir) \
-	--with-mpfr-lib=$(DESTDIR)$(libdir) \
-	--with-gmp-include=$(DESTDIR)$(includedir) \
-	--with-gmp-lib=$(DESTDIR)$(libdir)
+	--enable-threads=no \
+	--enable-version-specific-runtime-libs \
+	$(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)), \
+		--with-mpfr-include=$(DESTDIR)$(includedir) \
+		--with-mpfr-lib=$(DESTDIR)$(libdir) \
+		--with-gmp-include=$(DESTDIR)$(includedir) \
+		--with-gmp-lib=$(DESTDIR)$(libdir) \
+	)
+	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 # Avoid sysroot for minimal native compiler because linker may not have sysroot support.
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \
