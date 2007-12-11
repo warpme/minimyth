@@ -1,5 +1,5 @@
 GARNAME = drm
-GARVERSION = 19b7cc34443889fc73de2e10462e1c0f9fa38041
+GARVERSION = c78e610fa42c8122ed6bc504222ef650f5693d22
 CATEGORIES = kernel-2.6.22
 MASTER_SITES = git://anongit.freedesktop.org/git/mesa/drm/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -14,7 +14,7 @@ BUILDDEPS = utils/module-init-tools
 
 WORKSRC = $(WORKDIR)/$(DISTNAME)/linux-core
 
-DRM_MODULES = i810 i830 i915 r128 radeon via
+DRM_MODULES = i810 i830 i915 r128 radeon sis via
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
@@ -34,7 +34,12 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 install-custom:
-	@mkdir -p "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
-	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/char/drm/"
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@cp $(WORKSRC)/*.ko "$(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)"
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf "$(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)"
