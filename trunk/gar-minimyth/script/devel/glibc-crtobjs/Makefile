@@ -28,6 +28,8 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-profile \
+	--enable-omitfp \
 	--enable-bind-now \
 	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
@@ -55,6 +57,10 @@ INSTALL_ARGS    = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
+
+PARALLELMFLAGS := -j1
+
 pre-configure:
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
@@ -63,11 +69,6 @@ pre-configure:
 	@echo "libc_cv_forced_unwind=yes" >> $(WORKBLD)/config.cache
 	@echo "libc_cv_c_cleanup=yes"     >> $(WORKBLD)/config.cache
 	@$(MAKECOOKIE)
-
-CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
-CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
-
-PARALLELMFLAGS := -j1
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
