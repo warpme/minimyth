@@ -35,7 +35,6 @@ CONFIGURE_ARGS = \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
 	--enable-proc-opt \
-	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-mmx \
 	--enable-audio-oss \
 	--enable-audio-alsa \
