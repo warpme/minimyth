@@ -30,7 +30,7 @@ fi
 # Rotate log files.
 logfile_indexes=`/bin/ls -1 ${logfile}.* 2> /dev/null | /bin/sed -e 's%^.*\.%%' | /usr/bin/sort -n -r`
 for logfile_index in ${logfile_indexes} ; do
-    if ${logfile_index} -lt 9 ; then
+    if /usr/bin/test ${logfile_index} -lt 9 ; then
         /bin/rm -f ${logfile}.$((${logfile_index}+1))
         /bin/mv ${logfile}.${logfile_index} ${logfile}.$((${logfile_index}+1))
     else
@@ -84,9 +84,17 @@ for arg in "$@" ; do
             fi
 
 	    # Determine script type.
-            if   /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythstream/parsers/" 2> /dev/null ; then
+            if   /bin/echo ${file_local} | /bin/grep -q -e "^${HOME}/.mythtv/mythstream/parsers/"    2> /dev/null || \
+                 /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythstream/parsers/"  2> /dev/null ; then
                 script_type='mythstream'
-            elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythvideo/scripts/" 2> /dev/null ; then
+                mm_ssh_remote_put ${logfile} ${HOME}/.mythtv/mythstream/parsers
+                if /usr/bin/test $? -ne 0 ; then
+                    /bin/echo "mm_perl: failed to synchronize '${HOME}/.mythtv/mythstream/parsers'." >> ${logfile}
+                    /usr/bin/logger -t minimyth -p "local0.error" \
+                        "mm_perl: failed to synchronize '${HOME}/.mythtv/mythstream/parsers'."
+                    exit 1
+                fi
+            elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythvideo/scripts/"   2> /dev/null ; then
                 script_type='mythvideo'
             elif /bin/echo ${file_local} | /bin/grep -q -e "^/usr/share/mythtv/mythweather/scripts/" 2> /dev/null ; then
                 script_type='mythweather'
@@ -102,28 +110,6 @@ for arg in "$@" ; do
             fi
 
             arg="`mm_ssh_remote_file_map ${logfile} ${file_local}`"
-        elif /usr/bin/test ${argnumber} -eq 1 ; then
-            # Perl script is mythstream parser, so this argument is a file that must be copied to the remote server.
-            if /usr/bin/test "${script_type}" = "mythstream" ; then
-                file_local="${arg}"
-
-                # Convert local file to absolute path.
-                file_local_base=`/usr/bin/basename "${file_local}"`
-                file_local_dir=`/usr/bin/dirname "${file_local}"`
-                file_local_dir=`cd "${file_local_dir}" ; pwd`
-                file_local="${file_local_dir}/${file_local_base}"
-
-                if /usr/bin/test -e "${file_local}" ; then
-	            # Sync local file and remote file.
-                    mm_ssh_remote_put ${logfile} ${file_local}
-                    if /usr/bin/test $? -ne 0 ; then
-                        /bin/echo "mm_perl: failed to synchronize local file and remote file." >> ${logfile}
-                        /usr/bin/logger -t minimyth -p "local0.error" \
-                            "mm_perl: failed to synchronize local file and remote file."
-                        exit 1
-                    fi
-                fi
-            fi
         fi
         arg=`/bin/echo ${arg} | /bin/sed -e 's%^"%%g' -e 's%"$%%g'`
         if /usr/bin/test -z "${arglist}" ; then

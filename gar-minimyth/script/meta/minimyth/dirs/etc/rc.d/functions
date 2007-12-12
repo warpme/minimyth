@@ -1625,8 +1625,8 @@ mm_ssh_remote_perl() {
     pwd_remote="${prefix_remote}`pwd`"
     ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
 
-    /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"cd ${pwd_remote} ; perl ${perl_args}\""  >> ${logfile}
-    ${ssh} ${MM_SSH_REMOTE_HOST} "cd ${pwd_remote} ; perl ${perl_args}"               2>> ${logfile}
+    /bin/echo "${ssh} ${MM_SSH_REMOTE_HOST} \"mkdir -p ${pwd_remote} && cd ${pwd_remote} && perl ${perl_args}\""  >> ${logfile}
+    ${ssh} ${MM_SSH_REMOTE_HOST} "mkdir -p ${pwd_remote} && cd ${pwd_remote} && perl ${perl_args}"               2>> ${logfile}
     if /usr/bin/test $? -ne 0 ; then
          /bin/false
          return
