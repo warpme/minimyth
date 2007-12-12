@@ -1,6 +1,6 @@
-diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
---- mythtv-14921-old/configure	2007-11-22 10:26:16.000000000 -0800
-+++ mythtv-14921-new/configure	2007-11-22 10:27:03.000000000 -0800
+diff -Naur mythtv-15142-old/configure mythtv-15142-new/configure
+--- mythtv-15142-old/configure	2007-12-12 08:48:49.000000000 -0800
++++ mythtv-15142-new/configure	2007-12-12 08:49:35.000000000 -0800
 @@ -669,11 +669,11 @@
      func=$4
      shift 4
@@ -16,7 +16,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
          check_lib "$@" $header $func && enable $cfg
      fi
      return $err
-@@ -1633,27 +1633,7 @@
+@@ -1645,27 +1645,7 @@
  
  has_library()
  {
@@ -45,7 +45,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-@@ -1666,10 +1646,8 @@
+@@ -1678,10 +1658,8 @@
  
  has_header()
  {
@@ -58,7 +58,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
      HAS_IT="no"
      for HPATH in $HPATHS ; do
          if test x`ls $HPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
-@@ -2378,7 +2356,7 @@
+@@ -2414,7 +2392,7 @@
  
  disable sdl_too_old
  disable sdl
@@ -67,7 +67,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
  if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
      sdl_cflags=`"${SDL_CONFIG}" --cflags`
      temp_cflags $sdl_cflags
-@@ -2458,8 +2436,8 @@
+@@ -2494,8 +2472,8 @@
  # aRts probe
  ! disabled audio_arts &&
      check_foo_config arts artsc artsc.h arts_init &&
@@ -78,7 +78,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
      enable  audio_arts ||
      disable audio_arts
  
-@@ -2708,21 +2686,21 @@
+@@ -2745,21 +2723,21 @@
  # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
  # not to overwrite the headers installed from Mesa, etc. We need to
  # add that path to include paths if that's the case. 
@@ -107,7 +107,7 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
      fi
  fi
  
-@@ -3034,8 +3012,8 @@
+@@ -3078,8 +3056,8 @@
  fi
  if enabled freetype2; then
    echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
@@ -116,11 +116,11 @@ diff -Naur mythtv-14921-old/configure mythtv-14921-new/configure
 +  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
 +  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
  fi
- if enabled sdl; then
-   echo "SDL_LIBS=`"${SDL_CONFIG}" --libs`" >> $MYTH_CONFIG_MAK
-diff -Naur mythtv-14921-old/contrib/mythnotify/cidbcast/Makefile mythtv-14921-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-14921-old/contrib/mythnotify/cidbcast/Makefile	2007-11-22 10:26:16.000000000 -0800
-+++ mythtv-14921-new/contrib/mythnotify/cidbcast/Makefile	2007-11-22 10:27:03.000000000 -0800
+ if enabled fribidi; then
+   echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
+diff -Naur mythtv-15142-old/contrib/mythnotify/cidbcast/Makefile mythtv-15142-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-15142-old/contrib/mythnotify/cidbcast/Makefile	2007-12-12 08:48:49.000000000 -0800
++++ mythtv-15142-new/contrib/mythnotify/cidbcast/Makefile	2007-12-12 08:49:35.000000000 -0800
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -130,9 +130,9 @@ diff -Naur mythtv-14921-old/contrib/mythnotify/cidbcast/Makefile mythtv-14921-ne
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-14921-old/contrib/mythnotify/mythudprelay/Makefile mythtv-14921-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-14921-old/contrib/mythnotify/mythudprelay/Makefile	2007-11-22 10:26:16.000000000 -0800
-+++ mythtv-14921-new/contrib/mythnotify/mythudprelay/Makefile	2007-11-22 10:27:03.000000000 -0800
+diff -Naur mythtv-15142-old/contrib/mythnotify/mythudprelay/Makefile mythtv-15142-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-15142-old/contrib/mythnotify/mythudprelay/Makefile	2007-12-12 08:48:49.000000000 -0800
++++ mythtv-15142-new/contrib/mythnotify/mythudprelay/Makefile	2007-12-12 08:49:35.000000000 -0800
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -150,9 +150,9 @@ diff -Naur mythtv-14921-old/contrib/mythnotify/mythudprelay/Makefile mythtv-1492
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-14921-old/programs/mythtranscode/Makefile.standlone mythtv-14921-new/programs/mythtranscode/Makefile.standlone
---- mythtv-14921-old/programs/mythtranscode/Makefile.standlone	2007-11-22 10:26:16.000000000 -0800
-+++ mythtv-14921-new/programs/mythtranscode/Makefile.standlone	2007-11-22 10:27:03.000000000 -0800
+diff -Naur mythtv-15142-old/programs/mythtranscode/Makefile.standlone mythtv-15142-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-15142-old/programs/mythtranscode/Makefile.standlone	2007-12-12 08:48:49.000000000 -0800
++++ mythtv-15142-new/programs/mythtranscode/Makefile.standlone	2007-12-12 08:49:35.000000000 -0800
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -162,9 +162,9 @@ diff -Naur mythtv-14921-old/programs/mythtranscode/Makefile.standlone mythtv-149
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-14921-old/settings.pro mythtv-14921-new/settings.pro
---- mythtv-14921-old/settings.pro	2007-11-22 10:26:16.000000000 -0800
-+++ mythtv-14921-new/settings.pro	2007-11-22 10:27:03.000000000 -0800
+diff -Naur mythtv-15142-old/settings.pro mythtv-15142-new/settings.pro
+--- mythtv-15142-old/settings.pro	2007-12-12 08:48:49.000000000 -0800
++++ mythtv-15142-new/settings.pro	2007-12-12 08:49:35.000000000 -0800
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
@@ -174,7 +174,7 @@ diff -Naur mythtv-14921-old/settings.pro mythtv-14921-new/settings.pro
  }
  
  LIBVERSION = 0.20
-@@ -31,7 +31,7 @@
+@@ -50,7 +50,7 @@
  # and we do that in their Makefiles if CONFIG has mac_bundle
  macx: CONFIG += console
  
