@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-font.patch $(DISTNAME)-fadeaway.patch
+PATCHFILES = $(GARNAME)-font.patch $(GARNAME)-fadeaway.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

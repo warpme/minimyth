@@ -1,6 +1,6 @@
-diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
---- mythplugins-14921-old/configure	2007-11-22 10:35:32.000000000 -0800
-+++ mythplugins-14921-new/configure	2007-11-22 10:36:37.000000000 -0800
+diff -Naur mythplugins-15142-old/configure mythplugins-15142-new/configure
+--- mythplugins-15142-old/configure	2007-12-12 08:58:48.000000000 -0800
++++ mythplugins-15142-new/configure	2007-12-12 08:59:56.000000000 -0800
 @@ -316,27 +316,7 @@
  
  has_library()
@@ -50,7 +50,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
          sdl="yes"
      fi
  fi
-@@ -493,7 +471,7 @@
+@@ -492,7 +470,7 @@
      fi
  
      taglib="no"
@@ -59,7 +59,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
          taglib="yes"
      else
          echo "MythMusic requires taglib 1.4."
-@@ -543,12 +521,7 @@
+@@ -542,12 +520,7 @@
  if test "$browser" != "no" ; then
      hasit="no"
      if has_library libkhtml ; then
@@ -73,7 +73,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
              hasit="yes"
          fi
      fi
-@@ -596,11 +569,11 @@
+@@ -595,11 +568,11 @@
  ###########################################################
  
  # bring in mythtv config
@@ -88,7 +88,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
    echo "Did you make AND install MythTV first?"
    echo "Are you using the correct prefix ($prefix)?"
    echo "Bailing out!!"
-@@ -868,7 +841,7 @@
+@@ -867,7 +840,7 @@
          if test "$sdl" = "yes" ; then
              echo "        libvisual      support will be included in MythMusic"
              echo "#define LIBVISUAL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
@@ -97,7 +97,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
              echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
          else
              echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
-@@ -897,9 +870,9 @@
+@@ -896,9 +869,9 @@
      if test "$sdl" = "yes" ; then
          echo "        SDL            support will be included in MythMusic"
          echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
@@ -110,7 +110,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL            support will not be included in MythMusic"
-@@ -918,7 +891,9 @@
+@@ -917,7 +890,9 @@
      fi
  
      if test "$taglib" = "yes" ; then
@@ -121,7 +121,7 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
      fi
  fi
  
-@@ -941,10 +916,9 @@
+@@ -940,10 +915,9 @@
      if test "$festival" = "yes" ; then
          echo "        FESTIVAL       support will be included in MythPhone"
          echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
@@ -134,11 +134,11 @@ diff -Naur mythplugins-14921-old/configure mythplugins-14921-new/configure
          echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
      fi
  
-diff -Naur mythplugins-14921-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-14921-new/mythbrowser/mythbrowser/mythbrowser.pro
---- mythplugins-14921-old/mythbrowser/mythbrowser/mythbrowser.pro	2007-11-22 10:35:19.000000000 -0800
-+++ mythplugins-14921-new/mythbrowser/mythbrowser/mythbrowser.pro	2007-11-22 10:36:37.000000000 -0800
-@@ -2,8 +2,7 @@
- include (../../settings.pro )
+diff -Naur mythplugins-15142-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-15142-new/mythbrowser/mythbrowser/mythbrowser.pro
+--- mythplugins-15142-old/mythbrowser/mythbrowser/mythbrowser.pro	2007-12-12 08:56:54.000000000 -0800
++++ mythplugins-15142-new/mythbrowser/mythbrowser/mythbrowser.pro	2007-12-12 09:01:08.000000000 -0800
+@@ -3,8 +3,7 @@
+ include (../../programs-libs.pro )
  
  KDEPREFIX = $$SYSTEM(kde-config --prefix)
 -INCLUDEPATH += $${KDEPREFIX}/include
@@ -148,30 +148,30 @@ diff -Naur mythplugins-14921-old/mythbrowser/mythbrowser/mythbrowser.pro mythplu
  TEMPLATE = app
  CONFIG += thread opengl
 @@ -17,7 +16,7 @@
+ 
  INSTALLS += installimages
  
- LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION $$EXTRA_LIBS
 -LIBS += -L$$SYSTEM(kde-config --expandvars --install lib) -lkhtml
 +LIBS += -L@GAR_DESTDIR@@GAR_kdelibdir@ -Wl,-rpath,@GAR_DESTDIR@@GAR_kdelibdir@ -lkhtml
  
  # Input
  HEADERS += webpage.h tabview.h
-diff -Naur mythplugins-14921-old/mythmusic/mythmusic/mythmusic.pro mythplugins-14921-new/mythmusic/mythmusic/mythmusic.pro
---- mythplugins-14921-old/mythmusic/mythmusic/mythmusic.pro	2007-11-22 10:35:32.000000000 -0800
-+++ mythplugins-14921-new/mythmusic/mythmusic/mythmusic.pro	2007-11-22 10:36:37.000000000 -0800
+diff -Naur mythplugins-15142-old/mythmusic/mythmusic/mythmusic.pro mythplugins-15142-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-15142-old/mythmusic/mythmusic/mythmusic.pro	2007-12-12 08:57:06.000000000 -0800
++++ mythplugins-15142-new/mythmusic/mythmusic/mythmusic.pro	2007-12-12 09:01:56.000000000 -0800
 @@ -6,7 +6,7 @@
     error(Missing config.pro: please run the configure script)
  }
- 
+  
 -INCLUDEPATH *= /usr/include/cdda
 +INCLUDEPATH *= @GAR_DESTDIR@@GAR_includedir@/cdda
  TEMPLATE = lib
  CONFIG += plugin thread
  TARGET = mythmusic
-diff -Naur mythplugins-14921-old/settings.pro mythplugins-14921-new/settings.pro
---- mythplugins-14921-old/settings.pro	2007-11-22 10:35:19.000000000 -0800
-+++ mythplugins-14921-new/settings.pro	2007-11-22 10:36:37.000000000 -0800
-@@ -2,16 +2,16 @@
+diff -Naur mythplugins-15142-old/settings.pro mythplugins-15142-new/settings.pro
+--- mythplugins-15142-old/settings.pro	2007-12-12 08:56:54.000000000 -0800
++++ mythplugins-15142-new/settings.pro	2007-12-12 09:04:02.000000000 -0800
+@@ -2,11 +2,11 @@
  
  LIBVERSION = 0.20
  
@@ -185,6 +185,9 @@ diff -Naur mythplugins-14921-old/settings.pro mythplugins-14921-new/settings.pro
 -LIBS *= -L$${PREFIX}/lib
 +LIBS *= -L@GAR_DESTDIR@@GAR_libdir@
  
+ isEmpty(TARGET_OS) : win32 {
+     CONFIG += mingw
+@@ -17,7 +17,7 @@
  DEFINES += _GNU_SOURCE
  DEFINES += PREFIX=\"$${PREFIX}\"
  
@@ -193,7 +196,7 @@ diff -Naur mythplugins-14921-old/settings.pro mythplugins-14921-new/settings.pro
  INCLUDEPATH += $$CONFIG_INCLUDEPATH
  
  # Prevent building .app bundles everywhere.
-@@ -27,7 +27,6 @@
+@@ -33,7 +33,6 @@
  
  profile:CONFIG += release
  
