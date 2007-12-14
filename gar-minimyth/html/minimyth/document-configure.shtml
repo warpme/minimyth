@@ -121,6 +121,9 @@
                 <dd>See <a href="#dhcp-log-server">Log Server</a>.</dd>
                 <dt id="MM_DHCP_TZ"><strong>MM_DHCP_TZ</strong></dt>
                 <dd>See <a href="#dhcp-tcode">TCode</a>.</dd>
+                <dt id="MM_DHCP_BOOT_URL"><strong>MM_DHCP_BOOT_URL</strong></dt>
+                <dd>See <a href="#dhcp-boot-url">Boot Directory</a>.</dd>
+              </dl>
               </dl>
             </li>
           </ul>
@@ -328,17 +331,67 @@
                 this new option is defined by adding the following line to
                 <a href="http://www.linuxmanpages.com/man5/dhcpd.conf.5.php">dhcpd.conf</a>:
               </p>
-              <pre>
-                option tcode code 101 = text;
-              </pre>
+<pre>option tcode code 101 = text;</pre>
               <p>
                 After that, you can use 'tcode' as you would any other option,
                 with the option value being the tz database name for your time zone.
                 For example:
               </p>
-              <pre>
-                option tcode "America/Los_Angeles";
-              </pre>
+<pre>option tcode "America/Los_Angeles";</pre>
+            </dd>
+            <dt id="dhcp-boot-url"><strong>Boot Directory</strong></dt>
+            <dd>
+              <p>
+                The boot directory.
+                MiniMyth needs to know the boot directory because the
+                <a href="#location">location of configure files</a>
+                is relative to the boot directory.
+              </p>
+              <p>
+                MiniMyth 'guesses' the boot directory using DHCP provided information as described in the
+                <a href="#location">location of configure files</a>
+                section.
+                However, you may want to override the guessed boot directory
+                when MiniMyth 'guesses' the wrong boot directory or
+                when MiniMyth 'guesses' the right boot directory
+                but you want to use a different protocol to access the boot directory.
+              </p>
+              <p>
+                For example,
+                I do not like to use the TFTP protocol because it can be slow and unreliable.
+                Therefore, I make my TFTP root directory (/var/tftpboot) available as a virtual web host (tftp.home) as well,
+                allowing my to access the the configuration files using the root directory URL 'http://tftp.home/minimyth/'.
+                Below is section of my Apache Web Server configuration file
+                that makes my TFTP root directory available as a virtual web host.
+              </p>
+<pre>&lt;VirtualHost 192.168.0.1:80&gt;
+    DocumentRoot /var/tftpboot
+    ServerName tftp.home
+    ServerAdmin webmaster@www.home
+    &lt;Directory /var/tftpboot&gt;
+        AllowOverride None
+    &lt;/Directory&gt;
+    &lt;Location /&gt;
+        Order Deny,Allow
+        Deny from all 
+        Dav Off
+        &lt;LimitExcept GET&gt;
+        &lt;/LimitExcept&gt;
+    &lt;/Location&gt;
+    &lt;Location /minimyth&gt;
+        Order Deny,Allow
+        Deny from all 
+        Allow from myth-livingroom.home
+        Allow from myth-parents.home
+        Allow from myth-sp8000e.home
+    &lt;/Location&gt;
+    &lt;Location /minimyth/conf-rw&gt;
+        Dav On
+        FileETag None
+        &lt;LimitExcept GET PUT&gt;
+        &lt;/LimitExcept&gt;
+    &lt;/Location&gt;
+&lt;/VirtualHost&gt;</pre>
             </dd>
           </dl>
         </div>
@@ -369,13 +422,17 @@
             If MiniMyth 'guesses' that
             <a href="document-boot.shtml#network">network boot</a>
             was used,
-            then MiniMyth assumes that the boot directory is the directory on the TFTP server that contains the boot loader.
+            then MiniMyth assumes that the boot directory is the directory on the TFTP server that contains the boot loader
+            (i.e. url="tftp://${MM_TFTP_SERVER}${MM_TFTP_ROOTDIR)/").
             If MiniMyth 'guesses' that
             <a href="document-boot.shtml#local">local boot</a>
             was used,
-            then MiniMyth assumes that the boot directory is the directory on the local file system name '/minimyth'.
+            then MiniMyth assumes that the boot directory is the directory on the local file system name '/minimyth'
+            (i.e. url="file:/minimyth/").
             MiniMyth makes the 'guess' based on whether or not the boot file name is contained in DHCP's DHCPOFFER message
             (using either the 'file' field or the 'bootfile' option).
+            You can override MiniMyth's guess using the
+            <a href="#MM_DHCP_BOOT_URL">MM_DHCP_BOOT_URL</a> variable.
           </p>
           <p>
             In practice, this means that
@@ -576,7 +633,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-12-04 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-12-13 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

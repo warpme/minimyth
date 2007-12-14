@@ -11,6 +11,7 @@
 /usr/bin/test -n "${MM_DEBUG}" && set -x
 
 DHCP_CONF='/etc/conf.d/dhcp'
+RESOLV_CONF='/etc/resolv.conf'
 
 conf_variable_write() {
     /bin/echo -n ${2} >> ${1}
@@ -38,17 +39,14 @@ case "${1}" in
         MM_DHCP_LOG_SERVERS=${MM_DHCP_LOG_SERVERS:-${logsrv}}
         MM_DHCP_TZ=${MM_DHCP_TZ:-${tcode}}
         MM_TFTP_SERVER=${siaddr}
-        MM_TFTP_ROOTDIR=`/bin/echo ${boot_file} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%/$%%'`
+        MM_TFTP_ROOTDIR=`/bin/echo ${boot_file} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%^/%%' | /bin/sed 's%/$%%'`
+        MM_TFTP_ROOTDIR="/${MM_TFTP_ROOTDIR}"
         if /usr/bin/test -n "${boot_file}" ; then
-            /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='network'
+            MM_BOOT_URL="tftp://${MM_TFTP_SERVER}${MM_TFTP_ROOTDIR}/"
         else
-            /usr/bin/test -z "${MM_BOOT_TYPE}" && MM_BOOT_TYPE='local'
+            MM_BOOT_URL="file:/minimyth/"
         fi
-        if /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
-            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='network'
-        else
-            /usr/bin/test -z "${MM_CONF_TYPE}" && MM_CONF_TYPE='local'
-        fi
+        MM_BOOT_URL=${MM_DHCP_BOOT_URL:-${MM_BOOT_URL}}
 
         /bin/rm -f "${DHCP_CONF}~"
         conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS     "${MM_DHCP_ADDRESS}"
@@ -60,8 +58,7 @@ case "${1}" in
         conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ          "${MM_DHCP_TZ}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER      "${MM_TFTP_SERVER}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR     "${MM_TFTP_ROOTDIR}"
-        conf_variable_write ${DHCP_CONF}~ MM_BOOT_TYPE        "${MM_BOOT_TYPE}"
-        conf_variable_write ${DHCP_CONF}~ MM_CONF_TYPE        "${MM_CONF_TYPE}"
+        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL         "${MM_BOOT_URL}"
         /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
 
         /usr/bin/test -n "${broadcast}" && BROADCAST="broadcast ${broadcast}"
@@ -80,6 +77,16 @@ case "${1}" in
         HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
         if /usr/bin/test -n "${HOSTNAME}" ; then
             /bin/hostname ${HOSTNAME}
+        fi
+
+        if /usr/bin/test ! -e ${RESOLV_CONF} ; then
+            DNS_SERVERS=${MM_DNS_SERVERS:-${MM_DHCP_DNS_SERVERS}}
+            for DNS_SERVER in ${DNS_SERVERS} ; do
+                if /usr/bin/test -n "${DNS_SERVER}" ; then
+                    /bin/echo nameserver ${DNS_SERVER} >> ${RESOLV_CONF}~
+                fi
+            done
+            /bin/mv -f ${RESOLV_CONF}~ ${RESOLV_CONF}
         fi
 
         ;;
