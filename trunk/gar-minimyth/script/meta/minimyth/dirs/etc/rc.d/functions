@@ -75,19 +75,15 @@ mm_url_confro_get() {
     REMOTE_FILE_1="conf/default/${REMOTE_FILE}"
 
     /bin/rm -f "${LOCAL_FILE}"
-    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_1}" "${MM_TFTP_SERVER}" ) || \
-        return
-    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        ( /usr/bin/test -n "${REMOTE_FILE_1}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_1}" ) || \
-        return
-    fi
+    ( /usr/bin/test -n "${REMOTE_FILE_0}" \
+          && /usr/bin/curl -s -f ${MM_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_BOOT_URL}${REMOTE_FILE_0}' downloaded." || /bin/true ) \
+    ) || \
+    ( /usr/bin/test -n "${REMOTE_FILE_1}" \
+          && /usr/bin/curl -s -f ${MM_BOOT_URL}${REMOTE_FILE_1} --create-dirs -o ${LOCAL_FILE} \
+          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_BOOT_URL}${REMOTE_FILE_1}' downloaded." || /bin/true ) \
+    ) || \
+    return
 
     return
 }
@@ -111,15 +107,11 @@ mm_url_confrw_get() {
     fi
 
     /bin/rm -f "${LOCAL_FILE}"
-    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        return
-    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        return
-    fi
+    ( /usr/bin/test -n "${REMOTE_FILE_0}" \
+          && /usr/bin/curl -s -f ${MM_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_BOOT_URL}${REMOTE_FILE_0}' downloaded." || /bin/true ) \
+    ) || \
+    return
 
     return
 }
@@ -136,15 +128,11 @@ mm_url_dist_get() {
     fi
 
     /bin/rm -f "${LOCAL_FILE}"
-    if   /usr/bin/test "${MM_BOOT_TYPE}" = "network" ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_tftp_get "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        return
-    elif /usr/bin/test "${MM_BOOT_TYPE}" = "local"   ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-              mm_url_file_get "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        return
-    fi
+    ( /usr/bin/test -n "${REMOTE_FILE_0}" \
+          && /usr/bin/curl -s -f ${MM_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_BOOT_URL}${REMOTE_FILE_0}' downloaded." || /bin/true ) \
+    ) || \
+    return
 
     return
 }
@@ -164,7 +152,7 @@ mm_url_file_get() {
 
     /bin/cp -f "${REMOTE_FILE}" "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' retrieved."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'file:${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -177,15 +165,16 @@ mm_url_http_get() {
     local LOCAL_DIR
 
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/wget "http://${REMOTE_SERVER}/${REMOTE}" -O "${LOCAL_FILE}" || return
+    /usr/bin/curl -s -f "http://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -209,15 +198,16 @@ mm_url_tftp_get() {
     local LOCAL_DIR
 
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
+    /usr/bin/curl -s -f "tftp://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' retrieved."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -267,15 +257,11 @@ mm_url_confrw_put() {
         REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
     fi
 
-    if   /usr/bin/test "${MM_CONF_TYPE}" = "network" ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-            mm_url_tftp_put "${LOCAL_FILE}" "${MM_TFTP_ROOTDIR}/${REMOTE_FILE_0}" "${MM_TFTP_SERVER}" ) || \
-        return
-    elif /usr/bin/test "${MM_CONF_TYPE}" = "local"   ; then
-        ( /usr/bin/test -n "${REMOTE_FILE_0}" && \
-            mm_url_file_put "${LOCAL_FILE}" "/minimyth/${REMOTE_FILE_0}" ) || \
-        return
-    fi
+    ( /usr/bin/test -n "${REMOTE_FILE_0}" \
+          && /usr/bin/curl -s -f -T ${LOCAL_FILE} ${MM_BOOT_URL}${REMOTE_FILE_0} \
+          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_BOOT_URL}${REMOTE_FILE_0}' uploaded." || /bin/true ) \
+    ) || \
+    return
 
     return
 }
@@ -315,13 +301,14 @@ mm_url_file_put() {
     return
 }
 
-mm_url_tftp_put() {
+mm_url_http_put() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
     local REMOTE_SERVER=$3
 
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
 
     if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
@@ -330,14 +317,45 @@ mm_url_tftp_put() {
         return
     fi
 
-    if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${REMOTE_FILE}" "${REMOTE_SERVER}" ; then
+    if /usr/bin/curl -s -f -T "${LOCAL_FILE}" "http://${REMOTE_SERVER}${REMOTE_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.info"  \
-            "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' posted."
+            "'http://${REMOTE_SERVER}${REMOTE_FILE}' posted."
         /bin/true
         return
     else
         /usr/bin/logger -s -t minimyth -p "local0.error" \
-            "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' failed to post."
+            "'http://${REMOTE_SERVER}${REMOTE_FILE}' failed to post."
+        /bin/false
+        return
+    fi
+
+    return
+}
+
+mm_url_tftp_put() {
+    local LOCAL_FILE=$1
+    local REMOTE_FILE=$2
+    local REMOTE_SERVER=$3
+
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
+
+    if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.error"  \
+            "cannot post conf file '${LOCAL_FILE}' because file not found."
+        /bin/false
+        return
+    fi
+
+    if /usr/bin/curl -s -f -T "${LOCAL_FILE}" "tftp://${REMOTE_SERVER}${REMOTE_FILE}" ; then
+        /usr/bin/logger -s -t minimyth -p "local0.info"  \
+            "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' posted."
+        /bin/true
+        return
+    else
+        /usr/bin/logger -s -t minimyth -p "local0.error" \
+            "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' failed to post."
         /bin/false
         return
     fi
@@ -517,10 +535,10 @@ mm_codecs_fetch_and_save() {
     /bin/rm -rf "${LOCAL_DIR}/${CODECS_BASE}"
     /bin/rm -f "${LOCAL_DIR}/${CODECS_FILE}"
     cd "${LOCAL_DIR}"
-    /usr/bin/wget "${CODECS_URL}" -O "${CODECS_FILE}"
+    /usr/bin/curl -s -f "${CODECS_URL}" -o "${CODECS_FILE}"
     if /usr/bin/test $? -ne 0 ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
-            "failed to create the codecs file because no codecs were retrieved."
+            "failed to create the codecs file because no codecs were downloaded."
         cd "${HOME}"
         /bin/rm -rf "${LOCAL_DIR}/${CODECS_BASE}"
         /bin/rm -f "${LOCAL_DIR}/${CODECS_FILE}"
@@ -532,7 +550,7 @@ mm_codecs_fetch_and_save() {
 
     if /usr/bin/test ! -d "${LOCAL_DIR}/${CODECS_BASE}" || /usr/bin/test `/bin/ls -1 "${LOCAL_DIR}/${CODECS_BASE}" | /usr/bin/wc -l` -eq 0 ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
-            "failed to create the codecs file because retrieved codecs file was empty."
+            "failed to create the codecs file because downloaded codecs file was empty."
         cd "${HOME}"
         /bin/rm -rf "${LOCAL_DIR}/${CODECS_BASE}"
         /bin/false
@@ -740,8 +758,8 @@ mm_uniq() {
 #         'file', the URL point to a local directory or file. A directory will
 #         be mounted at the mount point. A file, which can be a squashfs image
 #         (*.sfs.), cramfs image (*.cmg) or a tarball file (*.tar.bz2) will be
-#         retrieved and mounted at (for *.sfs and *.cmg files) or retrieved at
-#         expanded into (for *.tar.bz2 files) the mount point. The 'confro',
+#         downloaded and mounted at (for *.sfs and *.cmg files) or downloaded
+#         and expanded into (for *.tar.bz2 files) the mount point. The 'confro',
 #         'confrw', 'dist' and 'hunt' are special MiniMyth specific URLs. A
 #         'dist' URL causes MiniMyth to look for the file in the MiniMyth
 #         distribution directory (the directory with the MiniMyth root file
