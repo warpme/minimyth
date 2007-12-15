@@ -1,0 +1,131 @@
+#!/bin/sh
+
+/usr/bin/test -r /etc/conf.d/env           && . /etc/conf.d/env
+/usr/bin/test -r /etc/conf.d/core          && . /etc/conf.d/core
+/usr/bin/test -r /etc/conf.d/dhcp.override && . /etc/conf.d/dhcp.override
+/usr/bin/test -r /etc/conf.d/minimyth      && . /etc/conf.d/minimyth
+
+/usr/bin/test -n "${MM_DEBUG}" && set -x
+
+DHCP_CONF='/etc/conf.d/dhcp'
+RESOLV_CONF='/etc/resolv.conf'
+
+conf_variable_write() {
+    /bin/echo -n ${2} >> ${1}
+    /bin/echo -n "="  >> ${1}
+    /bin/echo -n "'"  >> ${1}
+    /bin/echo -n ${3} >> ${1}
+    /bin/echo    "'"  >> ${1}
+
+    return 0
+}
+
+case "${reason}" in
+    PREINIT)
+        if /usr/bin/test ! "x${alias_ip_address}" = "x" ; then
+          /sbin/ifconfig ${interface} inet 0
+        fi
+        /sbin/ifconfig ${interface} 0 up
+        /bin/sleep 1
+        exit 0
+        ;;
+    BOUND|REBIND|REBOOT|RENEW)
+        if   /usr/bin/test ! "x${new_tftp_server_name}" = "x" ; then
+            MM_TFTP_SERVER=${new_tftp_server_name}
+        elif /usr/bin/test ! "x${new_next_server}" = "x" ; then
+            MM_TFTP_SERVER=${new_next_server}
+        else
+            MM_TFTP_SERVER=
+        fi
+        if   /usr/bin/test ! "x${new_filename}" = "x" ; then
+            MM_TFTP_ROOTDIR=`/bin/echo ${new_filename} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%^/%%' | /bin/sed 's%/$%%'`
+            MM_TFTP_ROOTDIR="/${MM_TFTP_ROOTDIR}"
+        else
+            MM_TFTP_ROOTDIR=
+        fi
+
+        MM_DHCP_ADDRESS=${new_ip_address}
+        MM_DHCP_HOSTNAME=${MM_DHCP_HOSTNAME:-${new_host_name}}
+        MM_DHCP_DOMAIN=${MM_DHCP_DOMAIN:-${new_domain_name}}
+        MM_DHCP_DNS_SERVERS=${MM_DHCP_DNS_SERVERS:-${new_domain_name_servers}}
+        MM_DHCP_NTP_SERVERS=${MM_DHCP_NTP_SERVERS:-${new_ntp_servers}}
+        MM_DHCP_LOG_SERVERS=${MM_DHCP_LOG_SERVERS:-${new_log_servers}}
+        MM_DHCP_TZ=${MM_DHCP_TZ:-${new_tcode}}
+        MM_DHCP_BOOT_URL=${MM_DHCP_BOOT_URL:-${new_minimyth_conf_base_url}}
+        if /usr/bin/test "x${MM_DHCP_BOOT_URL}" = "x" ; then
+            if /usr/bin/test ! "x${MM_TFTP_SERVER}" = "x" &&
+               /usr/bin/test ! "x${MM_TFTP_ROOTDIR}" = "x" ; then
+                MM_DHCP_BOOT_URL="tftp://${MM_TFTP_SERVER}${MM_TFTP_ROOTDIR}/"
+            else
+                MM_DHCP_BOOT_URL="file:/minimyth/"
+            fi
+        fi
+	if /usr/bin/test "x${new_minimyth_security_enabled}" = "xtrue" ; then
+            MM_DHCP_SECURITY_ENABLED=${MM_DHCP_SECURITY_ENABLED:-'yes'}
+        fi
+	if /usr/bin/test "x${new_minimyth_security_enabled}" = "xfalse" ; then
+            MM_DHCP_SECURITY_ENABLED=${MM_DHCP_SECURITY_ENABLED:-'no'}
+        fi
+
+        /bin/rm -f "${DHCP_CONF}~"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER           "${MM_TFTP_SERVER}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR          "${MM_TFTP_ROOTDIR}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS          "${MM_DHCP_ADDRESS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME         "${MM_DHCP_HOSTNAME}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN           "${MM_DHCP_DOMAIN}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS      "${MM_DHCP_DNS_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS      "${MM_DHCP_NTP_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS      "${MM_DHCP_LOG_SERVERS}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ               "${MM_DHCP_TZ}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_BOOT_URL         "${MM_DHCP_BOOT_URL}"
+        conf_variable_write ${DHCP_CONF}~ MM_DHCP_SECURITY_ENABLED "${MM_DHCP_SECURITY_ENABLED}"
+        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL              "${MM_DHCP_BOOT_URL}"
+        conf_variable_write ${DHCP_CONF}~ MM_SECURITY_ENABLED      "${MM_DHCP_SECURITY_ENABLED}"
+        /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
+
+        /usr/bin/test -n "${new_broadcast_address}" && BROADCAST="broadcast ${new_broadcast_address}"
+        /usr/bin/test -n "${new_subnet_mask}"       && NETMASK="netmask ${new_subnet_mask}"
+        /sbin/ifconfig ${interface} ${new_ip_address} ${BROADCAST} ${NETMASK}
+        while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
+            :
+        done
+        for router in ${new_routers} ; do
+            /sbin/route add default gw ${router} dev ${interface}
+        done
+
+        HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
+        if /usr/bin/test -n "${HOSTNAME}" ; then
+            /bin/hostname ${HOSTNAME}
+        fi
+
+        if /usr/bin/test ! -e ${RESOLV_CONF} ; then
+            /bin/rm -f ${RESOLV_CONF}~
+            /bin/touch ${RESOLV_CONF}~
+            /bin/chmod 644 ${RESOLV_CONF}~
+            DOMAIN=${MM_DOMAIN:-${MM_DHCP_DOMAIN}}
+            if /usr/bin/test -n "${DOMAIN}" ; then
+                /bin/echo search ${DOMAIN} >> ${RESOLV_CONF}~
+            fi
+            /bin/echo search ${new_domain_name} >> ${RESOLV_CONF}~
+            DNS_SERVERS=${MM_DNS_SERVERS:-${MM_DHCP_DNS_SERVERS}}
+            for DNS_SERVER in ${DNS_SERVERS} ; do
+                if /usr/bin/test -n "${DNS_SERVER}" ; then
+                    /bin/echo nameserver ${DNS_SERVER} >> ${RESOLV_CONF}~
+                fi
+            done
+            /bin/mv -f ${RESOLV_CONF}~ ${RESOLV_CONF}
+        fi
+
+        exit 0
+        ;;
+    EXPIRE|FAIL|RELEASE|STOP)
+        /sbin/ifconfig ${interface} down
+        exit 0
+        ;;
+    TIMEOUT)
+        /sbin/ifconfig ${interface} down
+        exit 1
+        ;;
+esac
+
+exit 0
