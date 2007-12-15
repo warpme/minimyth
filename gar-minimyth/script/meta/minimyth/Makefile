@@ -17,6 +17,7 @@ DEPENDS = \
 	utils/alsa-utils \
 	utils/busybox \
 	fonts/corefonts \
+	net/curl \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
