@@ -17,7 +17,11 @@ conf_variable_write() {
 }
 
 start() {
-    mm_message_output info "processing configuration ..."
+
+    local dhcp_override
+    local dhcp_overrides
+
+    mm_message_output info "downloading configuration ..."
 
     # Get MiniMyth configuration file.
     mm_confro_get /minimyth.conf /etc/minimyth.d/minimyth.conf
@@ -34,6 +38,15 @@ start() {
 
     # Unset variables set by the processed MiniMyth configuration file, except MM_DEBUG.
     # This is a hack for testing. It should never get invoked during normal boot.
+    if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+        /bin/cat /etc/conf.d/dhcp.override | /bin/grep -e '^MM_[^=]*=' | /bin/sed -e 's%=.*$%%' | \
+        while read variable ; do
+            if /usr/bin/test ! "${variable}" = "MM_DEBUG" ; then
+                set ${variable}=''
+            fi
+        done
+        /bin/rm -rf '/etc/conf.d/dhcp.override'
+    fi
     if /usr/bin/test -e /etc/conf.d/minimyth ; then
         /bin/cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | /bin/sed -e 's%=.*$%%' | \
         while read variable ; do
@@ -41,6 +54,7 @@ start() {
                 set ${variable}=''
             fi
         done
+        /bin/rm -rf '/etc/conf.d/minimyth'
     fi
 
     # Read core and dhcp configuration files.
@@ -50,10 +64,24 @@ start() {
     # Read MiniMyth configuration file.
     . /etc/minimyth.d/minimyth.conf
 
+    mm_message_output info "processing configuration ..."
+
     # Read MiniMyth configuration processing files
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         . /etc/rc.d/init.d/conf.d/${file}
     done
+
+    # Process the DHCP override configuration variables first,
+    # creating the dhcp.override file that is used by DHCP.
+    conf_clean_dhcp
+    conf_check_dhcp
+    conf_default_dhcp
+    conf_write_dhcp '/etc/conf.d/dhcp.override~'
+    /usr/bin/sort '/etc/conf.d/dhcp.override~' > '/etc/conf.d/dhcp.override'
+    /bin/rm -rf '/etc/conf.d/dhcp.override~'
+
+    # Restart DHCP (if needed) in order to pick up the processed DHCP override variables.
+    /etc/rc.d/init.d/dhcp start
 
     # Clean configuration processing file state.
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
@@ -100,11 +128,11 @@ start() {
     # If there are any errors, then do not continue
     if /usr/bin/test -e /var/log/minimyth.err.log &&
        /usr/bin/test `/bin/cat /var/log/minimyth.err.log | /usr/bin/wc -l` -gt 0 ; then
+        mm_message_output err "error: check '/var/log/minimyth.err.log' for details."
         # If telnet is not running, then start it so that the user can check the error logs.
         if /usr/bin/test -z "`/bin/pidof telnetd`" ; then
             /usr/sbin/telnetd -l /bin/login
         fi
-        mm_message_output err "error: check '/var/log/minimyth.err.log' for details."
         exit 1
     fi
 

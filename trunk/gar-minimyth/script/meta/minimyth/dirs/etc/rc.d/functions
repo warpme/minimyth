@@ -63,14 +63,14 @@ mm_url_confro_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
-    local HOSTNAME
+    local HOST_NAME
     local REMOTE_FILE_0
     local REMOTE_FILE_1
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
-    if /usr/bin/test -n "${HOSTNAME}" ; then
-        REMOTE_FILE_0="conf/${HOSTNAME}/${REMOTE_FILE}"
+    if /usr/bin/test -n "${HOST_NAME}" ; then
+        REMOTE_FILE_0="conf/${HOST_NAME}/${REMOTE_FILE}"
     fi
     REMOTE_FILE_1="conf/default/${REMOTE_FILE}"
 
@@ -92,18 +92,18 @@ mm_url_confrw_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
-    local HOSTNAME
+    local HOST_NAME
     local REMOTE_FILE_0
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
-    if /usr/bin/test -n "${HOSTNAME}" ; then
+    if /usr/bin/test -n "${HOST_NAME}" ; then
         REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
             | /bin/sed -e 's%^/*%%'             \
             | /bin/sed -e 's%/*$%%'             \
             | /bin/sed -e 's%//*%/%g'           \
             | /bin/sed -e 's%/%+%'`
-        REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
+        REMOTE_FILE_0="conf-rw/${HOST_NAME}+${REMOTE_FILE_0}"
     fi
 
     /bin/rm -f "${LOCAL_FILE}"
@@ -230,10 +230,10 @@ mm_url_confrw_put() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
 
-    local HOSTNAME
+    local HOST_NAME
     local REMOTE_FILE_0
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if /usr/bin/test ! -f "${LOCAL_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
@@ -241,20 +241,20 @@ mm_url_confrw_put() {
         /bin/false
         return
     fi
-    if /usr/bin/test -z "${HOSTNAME}" ; then
+    if /usr/bin/test -z "${HOST_NAME}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.error"  \
             "cannot post conf file '${LOCAL_FILE}' because hostname is unknown."
         /bin/false
         return
     fi
 
-    if /usr/bin/test -n "${HOSTNAME}" ; then
+    if /usr/bin/test -n "${HOST_NAME}" ; then
         REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
             | /bin/sed -e 's%^/*%%'             \
             | /bin/sed -e 's%/*$%%'             \
             | /bin/sed -e 's%//*%/%g'           \
             | /bin/sed -e 's%/%+%'`
-        REMOTE_FILE_0="conf-rw/${HOSTNAME}+${REMOTE_FILE_0}"
+        REMOTE_FILE_0="conf-rw/${HOST_NAME}+${REMOTE_FILE_0}"
     fi
 
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
@@ -1132,32 +1132,32 @@ mm_mythdb_set() {
 mm_mythdb_jumppoints_delete() {
     local DESTINATION=$1
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if /usr/bin/test -n "${DESTINATION}" ; then
         mm_mythdb_set "DELETE FROM jumppoints \
-            WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
+            WHERE hostname=\"${HOST_NAME}\" AND destination=\"${DESTINATION}\""
     else
         mm_mythdb_set "DELETE FROM jumppoints \
-            WHERE hostname=\"${HOSTNAME}\""
+            WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
 mm_mythdb_jumppoints_dump() {
     local DESTINATION=$1
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if /usr/bin/test -n "${DESTINATION}" ; then
         mm_mythdb_get "SELECT * FROM jumppoints \
-            WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
+            WHERE hostname=\"${HOST_NAME}\" AND destination=\"${DESTINATION}\""
     else
         mm_mythdb_get "SELECT * FROM jumppoints \
-            WHERE hostname=\"${HOSTNAME}\""
+            WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
@@ -1165,12 +1165,12 @@ mm_mythdb_jumppoints_update() {
     local DESTINATION=$1
     local KEYLIST=$2
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     mm_mythdb_set "UPDATE jumppoints SET keylist=\"${KEYLIST}\" \
-        WHERE hostname=\"${HOSTNAME}\" AND destination=\"${DESTINATION}\""
+        WHERE hostname=\"${HOST_NAME}\" AND destination=\"${DESTINATION}\""
 }
 
 mm_mythdb_jumppoints_get() {
@@ -1187,19 +1187,19 @@ mm_mythdb_keybindings_delete() {
     local CONTEXT=$1
     local ACTION=$2
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if   /usr/bin/test -n "${CONTEXT}" && /usr/bin/test -n "${ACTION}" ; then
         mm_mythdb_set "DELETE FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
+            WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
     elif /usr/bin/test -n "${CONTEXT}" ; then
         mm_mythdb_set "DELETE FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\""
+            WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\""
     else
         mm_mythdb_set "DELETE FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\""
+            WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
@@ -1207,19 +1207,19 @@ mm_mythdb_keybindings_dump() {
     local CONTEXT=$1
     local ACTION=$2
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if   /usr/bin/test -n "${CONTEXT}" && /usr/bin/test -n "${ACTION}" ; then
         mm_mythdb_get "SELECT * FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
+            WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
     elif /usr/bin/test -n "${CONTEXT}" ; then
         mm_mythdb_get "SELECT * FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\""
+            WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\""
     else
         mm_mythdb_get "SELECT * FROM keybindings \
-            WHERE hostname=\"${HOSTNAME}\""
+            WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
@@ -1228,12 +1228,12 @@ mm_mythdb_keybindings_update() {
     local ACTION=$2
     local KEYLIST=$3
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     mm_mythdb_set "UPDATE keybindings SET keylist=\"${KEYLIST}\" \
-        WHERE hostname=\"${HOSTNAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
+        WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
 }
 
 mm_mythdb_musicplaylist_dump() {
@@ -1244,13 +1244,13 @@ mm_mythdb_musicplaylist_scope() {
     local MUSICPLAYLIST=$1
     local SCOPE=$2
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     case "${SCOPE}" in
         local)
-            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"${HOSTNAME}\" WHERE name=\"${MUSICPLAYLIST}\""
+            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"${HOST_NAME}\" WHERE name=\"${MUSICPLAYLIST}\""
             ;;
         global)
             mm_mythdb_set "UPDATE musicplaylist SET hostname=\"\"            WHERE name=\"${MUSICPLAYLIST}\""
@@ -1261,28 +1261,28 @@ mm_mythdb_musicplaylist_scope() {
 mm_mythdb_settings_delete() {
     local VALUE=$1
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if /usr/bin/test -n "${VALUE}" ; then
-        mm_mythdb_set "DELETE FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+        mm_mythdb_set "DELETE FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOST_NAME}\""
     else
-        mm_mythdb_set "DELETE FROM settings WHERE hostname=\"${HOSTNAME}\""
+        mm_mythdb_set "DELETE FROM settings WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
 mm_mythdb_settings_dump() {
     local VALUE=$1
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     if /usr/bin/test -n "${VALUE}" ; then
-        mm_mythdb_get "SELECT * FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+        mm_mythdb_get "SELECT * FROM settings WHERE value=\"${VALUE}\" AND hostname=\"${HOST_NAME}\""
     else
-        mm_mythdb_get "SELECT * FROM settings WHERE hostname=\"${HOSTNAME}\""
+        mm_mythdb_get "SELECT * FROM settings WHERE hostname=\"${HOST_NAME}\""
     fi
 }
 
@@ -1290,24 +1290,24 @@ mm_mythdb_settings_update() {
     local VALUE=$1
     local DATA=$2
 
-    local HOSTNAME
+    local HOST_NAME
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
-    mm_mythdb_set "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOSTNAME}\""
+    mm_mythdb_set "UPDATE settings SET data=\"${DATA}\" WHERE value=\"${VALUE}\" AND hostname=\"${HOST_NAME}\""
 }
 
 mm_mythdb_settings_set() {
     local VALUE=$1
     local DATA=$2
 
-    local HOSTNAME
+    local HOST_NAME
     local DATA_CURRENT
 
-    HOSTNAME=`/bin/hostname`
+    HOST_NAME=`/bin/hostname`
 
     mm_mythdb_settings_delete "${VALUE}"
-    mm_mythdb_set "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOSTNAME}\""
+    mm_mythdb_set "INSERT INTO settings SET data=\"${DATA}\", value=\"${VALUE}\", hostname=\"${HOST_NAME}\""
 }
 
 mm_mythdb_settings_get() {
@@ -1623,8 +1623,11 @@ mm_ssh_remote_file_map() {
     local file_local="$2"
 
     local prefix_remote
+    local HOST_NAME
 
-    prefix_remote="\${HOME}/var/cache/minimyth/${MM_HOSTNAME}"
+    HOST_NAME=`/bin/hostname`
+
+    prefix_remote="\${HOME}/var/cache/minimyth/${HOST_NAME}"
 
     /bin/echo "${prefix_remote}${file_local}"
 
@@ -1638,8 +1641,11 @@ mm_ssh_remote_perl() {
     local prefix_remote
     local pwd_remote
     local ssh
+    local HOST_NAME
 
-    prefix_remote="var/cache/minimyth/${MM_HOSTNAME}"
+    HOST_NAME=`/bin/hostname`
+
+    prefix_remote="var/cache/minimyth/${HOST_NAME}"
     pwd_remote="${prefix_remote}`pwd`"
     ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
 
@@ -1660,8 +1666,11 @@ mm_ssh_remote_put() {
     local prefix_remote
     local ssh
     local rsync
+    local HOST_NAME
 
-    prefix_remote="var/cache/minimyth/${MM_HOSTNAME}"
+    HOST_NAME=`/bin/hostname`
+
+    prefix_remote="var/cache/minimyth/${HOST_NAME}"
     ssh="/usr/bin/ssh -p ${MM_SSH_REMOTE_PORT} -l ${MM_SSH_REMOTE_USER} -i ${HOME}/.ssh/id_rsa"
     rsync="/usr/bin/rsync -rtR --delete --force"
 

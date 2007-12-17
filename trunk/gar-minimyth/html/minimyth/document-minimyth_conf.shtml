@@ -43,13 +43,13 @@
             </dl></dd>
             <dt><a href="#MM_DHCP">DHCP override variables</a></dt>
             <dd><dl>
-              <dt><a href="#MM_HOSTNAME">MM_HOSTNAME</a></dt>
-              <dt><a href="#MM_DOMAIN">MM_DOMAIN</a></dt>
-              <dt><a href="#MM_DNS_SERVERS">MM_DNS_SERVERS</a></dt>
-              <dt><a href="#MM_NTP_SERVERS">MM_NTP_SERVERS</a></dt>
-              <dt><a href="#MM_LOG_SERVERS">MM_LOG_SERVERS</a></dt>
-              <dt><a href="#MM_TZ">MM_TZ</a></dt>
-              <dt><a href="#MM_NTP_FAILURE_ACTION">MM_NTP_FAILURE_ACTION</a></dt>
+              <dt><a href="#MM_DHCP_HOST_NAME">MM_DHCP_HOST_NAME</a></dt>
+              <dt><a href="#MM_DHCP_DOMAIN_NAME">MM_DHCP_DOMAIN_NAME</a></dt>
+              <dt><a href="#MM_DCHP_DOMAIN_NAME_SERVERS">MM_DCHP_DOMAIN_NAME_SERVERS</a></dt>
+              <dt><a href="#MM_DHCP_NTP_SERVERS">MM_DHCP_NTP_SERVERS</a></dt>
+              <dt><a href="#MM_DHCP_LOG_SERVERS">MM_DHCP_LOG_SERVERS</a></dt>
+              <dt><a href="#MM_DHCP_TCODE">MM_DHCP_TCODE</a></dt>
+              <dt><a href="#MM_DHCP_MINIMYTH_BOOT_URL">MM_DHCP_MINIMYTH_BOOT_URL</a></dt>
             </dl></dd>
             <dt><a href="#MM_SECURITY">Security variables</a></dt>
             <dd><dl>
@@ -303,67 +303,26 @@
             However, most of the DHCP servers found in off-the-shelf home routers do not support some or all of these parameters.
             If your DHCP server does not support certain parameters
             (or provides incorrect values for certain parameters),
-            then you can use
-            <a href="document-configure.shtml#bootline">boot line</a> DHCP override parameters
-            or these DHCP override variables to override the parameter values provided by the DHCP server.
+            then you can use these DHCP override variables to override the parameter values provided by the DHCP server.
           </p>
           <p>
-            In addition, under some conditions, it is appropriate to ignore particular initialization failures
-            that result from DHCP provided configuration parameters.
-            If you need to ignore particular initialization failures that result from DHCP provided configuration parameters,
-            then you can use these DHCP override variables to override the default initialization failure behavior.
-          </p>
-          <p>
-            The DHCP override variables that override DHCP provided parameters:
+            The DHCP override variables are:
           </p>
           <dl>
-            <dt id="MM_HOSTNAME"><strong>MM_HOSTNAME</strong></dt>
-            <dd>See <a href="document-configure.shtml#dhcp-hostname">Hostname</a>.</dd>
-            <dt id="MM_DOMAIN"><strong>MM_DOMAIN</strong></dt>
+            <dt id="MM_DHCP_HOST_NAME"><strong>MM_DHCP_HOST_NAME</strong></dt>
+            <dd>See <a href="document-configure.shtml#dhcp-host-name">Host Name</a>.</dd>
+            <dt id="MM_DHCP_DOMAIN_NAME"><strong>MM_DHCP_DOMAIN_NAME</strong></dt>
             <dd>See <a href="document-configure.shtml#dhcp-domain-name">Domain Name</a>.</dd>
-            <dt id="MM_DNS_SERVERS"><strong>MM_DNS_SERVERS</strong></dt>
-            <dd>See <a href="document-configure.shtml#dhcp-domain-server">Domain Server</a>.</dd>
-            <dt id="MM_NTP_SERVERS"><strong>MM_NTP_SERVERS</strong></dt>
+            <dt id="MM_DCHP_DOMAIN_NAME_SERVERS"><strong>MM_DCHP_DOMAIN_NAME_SERVERS</strong></dt>
+            <dd>See <a href="document-configure.shtml#dhcp-domain-name-servers">Domain Name Servers</a>.</dd>
+            <dt id="MM_DHCP_NTP_SERVERS"><strong>MM_DHCP_NTP_SERVERS</strong></dt>
             <dd>See <a href="document-configure.shtml#dhcp-ntp-servers">NTP Servers</a>.</dd>
-            <dt id="MM_LOG_SERVERS"><strong>MM_LOG_SERVERS</strong></dt>
-            <dd>See <a href="document-configure.shtml#dhcp-log-server">Log Server</a>.</dd>
-            <dt id="MM_TZ"><strong>MM_TZ</strong></dt>
+            <dt id="MM_DHCP_LOG_SERVERS"><strong>MM_DHCP_LOG_SERVERS</strong></dt>
+            <dd>See <a href="document-configure.shtml#dhcp-log-servers">Log Servers</a>.</dd>
+            <dt id="MM_DHCP_TCODE"><strong>MM_DHCP_TCODE</strong></dt>
             <dd>See <a href="document-configure.shtml#dhcp-tcode">TCode</a>.</dd>
-          </dl>
-          <p>
-            The DHCP override variables that override initialization failure related to DHCP provided parameters:
-          </p>
-          <dl>
-            <dt id="MM_NTP_FAILURE_ACTION"><strong>MM_NTP_FAILURE_ACTION</strong></dt>
-            <dd>
-              <p>
-                Set the action to take when NTP (secifically the 'ntpdate' command) fails during initialization.
-                Valid values are 'stop' and 'continue', with 'stop' the default.
-              </p>
-              <p>
-                Use this variable with caution.
-                If you decide to override the default behaviour, then be sure you know what you are doing.
-              </p>
-              <p>
-                If either the timezone or time on either the backend or frontend are incorrect,
-                then MythTV will not work correctly.
-                In particular, fastforward, rewind and commercial skip will not work correctly.
-                Therefore, it is very important that the timezone and time be correct.
-              </p>
-              <p>
-                In order to ensure that it has the correct time, MiniMyth uses NTP.
-                During initialization, if NTP (specifically the 'ntpdate' command) fails,
-                then MiniMyth outputs an error message and stops.
-                This ensures that MiniMyth will only run when it has the correct time.
-              </p>
-              <p>
-                While NTP (specifically the 'ntpdate' command) may fail during initialization,
-                this should only occur because the NTP server(s) being used are temporarily unavailable.
-                As a result, The NTP daemon (ntpd) will be started, even when 'MM_NTP_FAILURE_ACTION' is set to 'continue'.
-                Therefore, setting 'MM_NTP_FAILURE_ACTION' to 'continue'
-                does not elliminate the need to provide at least one NTP server address.
-              </p>
-            </dd>
+            <dt id="MM_DHCP_MINIMYTH_BOOT_URL"><strong>MM_DHCP_MINIMYTH_BOOT_URL</strong></dt>
+            <dd>See <a href="document-configure.shtml#dhcp-minimyth-boot-url">MiniMyth Boot Directory URL</a>.</dd>
           </dl>
         </div>
         <div id="MM_SECURITY" class="section">
@@ -2524,7 +2483,7 @@ chmod 0644 ~/.ssh/authorized_keys</pre>
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-12-04 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-12-17 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

@@ -1,0 +1,119 @@
+#!/bin/sh
+################################################################################
+# dhcp
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+
+    local DHCLIENT_CONF
+    local IP_ADDRESS
+
+    DHCLIENT_CONF='/etc/dhclient.conf'
+
+    # Create a new DHCP 'dhclient.conf' file by starting with the base file and
+    # then adding additional statements based on the DHCP override variables.
+    /bin/rm -f "${DHCLIENT_CONF}~"
+    /bin/mkdir -p "`/usr/bin/dirname ${DHCLIENT_CONF}~`"
+    /bin/touch "${DHCLIENT_CONF}~"
+    /bin/chmod 644 "${DHCLIENT_CONF}~"
+    /usr/bin/test -e "${DHCLIENT_CONF}.base" && /bin/cat "${DHCLIENT_CONF}.base" >> "${DHCLIENT_CONF}~"
+    if   /usr/bin/test -z "${MM_DHCP_HOST_NAME}" ; then
+        /bin/echo "also request host-name ;"                          >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_HOST_NAME}" ; then
+        /bin/echo "supersede    host-name \"${MM_DHCP_HOST_NAME}\" ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_DOMAIN_NAME}" ; then
+        /bin/echo "also request domain-name ;"                            >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_DOMAIN_NAME}"      && \
+         /usr/bin/test "x${MM_DHCP_DOMAIN_NAME}" = "x!" ; then
+        /bin/echo "supersede    domain-name \"${MM_DHCP_DOMAIN_NAME}\" ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_TCODE}" ; then
+        /bin/echo "also request tcode ;"                      >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_TCODE}" ; then
+        /bin/echo "supersede    tcode \"${MM_DHCP_TCODE}\" ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_DOMAIN_NAME_SERVERS}" ; then
+        /bin/echo "also request domain-name-servers ;"                                >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_DOMAIN_NAME_SERVERS}" ; then
+        MM_DHCP_DOMAIN_NAME_SERVERS=`/bin/echo ${MM_DHCP_DOMAIN_NAME_SERVERS} | /bin/sed -e 's%  *% , %g'`
+        /bin/echo "supersede    domain-name-servers ${MM_DHCP_DOMAIN_NAME_SERVERS} ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_NTP_SERVERS}" ; then
+        /bin/echo "also request ntp-servers ;"                        >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_NTP_SERVERS}" ; then
+        MM_DHCP_NTP_SERVERS=`/bin/echo ${MM_DHCP_NTP_SERVERS} | /bin/sed -e 's%  *% , %g'`
+        /bin/echo "supersede    ntp-servers ${MM_DHCP_NTP_SERVERS} ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_LOG_SERVERS}" ; then
+        /bin/echo "also request log-servers ;"                        >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_LOG_SERVERS}"        && \
+         /usr/bin/test ! "x${MM_DHCP_LOG_SERVERS}" = "x!" ; then
+        MM_DHCP_LOG_SERVERS=`/bin/echo ${MM_DHCP_LOG_SERVERS} | /bin/sed -e 's%  *% , %g'`
+        /bin/echo "supersede    log-servers ${MM_DHCP_LOG_SERVERS} ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_MINIMYTH_BOOT_URL}" ; then
+        /bin/echo "also request vendor-encapsulated-options ;" >> "${DHCLIENT_CONF}~"
+    fi
+    if   /usr/bin/test -z "${MM_DHCP_MINIMYTH_BOOT_URL}" ; then
+        /bin/echo "also request minimyth.boot-url ;"                                  >> "${DHCLIENT_CONF}~"
+    elif /usr/bin/test -n "${MM_DHCP_MINIMYTH_BOOT_URL}"        && \
+         /usr/bin/test ! "x${MM_DHCP_MINIMYTH_BOOT_URL}" = "x!" ; then
+        /bin/echo "supersede    minimyth.boot-url \"${MM_DHCP_MINIMYTH_BOOT_URL}\" ;" >> "${DHCLIENT_CONF}~"
+    fi
+
+    # If 'dhclient' is not running,
+    # then we need to start 'dhclient' using the new 'dhclient.conf' file.
+    if /usr/bin/test -z "`/bin/pidof dhclient`" ; then
+        mm_message_output info "starting DHCP client ..."
+        /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
+    else
+        # If the new 'dhclient.conf' file does not match the existing 'dhclient.conf' file,
+        # then we need to restart 'dhclient' using the new 'dhclient.conf' file.
+        /usr/bin/cmp -s "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}" 2> /dev/null
+        if /usr/bin/test $? -ne 0 ; then
+            while /usr/bin/test -n "`/bin/pidof dhclient`" ; do
+                /usr/bin/killall dhclient
+            done
+            mm_message_output info "restarting DHCP client ..."
+            /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
+        else
+            /bin/rm -f "${DHCLIENT_CONF}~"
+        fi
+    fi
+
+    # Start 'dhclient'.
+    if /usr/bin/test -z "`/bin/pidof dhclient`" ; then
+        /bin/mkdir -p /var/db
+        /usr/sbin/dhclient eth0
+        if /usr/bin/test $? -ne 0 ; then
+            mm_message_output err "error: DHCP failed."
+            exit 1
+        fi
+    fi
+
+    # Make sure we got an IP address.
+    IP_ADDRESS=`/sbin/ifconfig eth0 | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+    if /usr/bin/test -z "${IP_ADDRESS}" ; then
+        mm_message_output err "error: DHCP failed."
+        exit 1
+    fi
+
+    return 0
+}
+
+stop() {
+
+    mm_message_output info "stopping DHCP client ..."
+    /usr/bin/test -n "`/bin/pidof dhclient`" && /usr/bin/killall dhclient
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

@@ -6,28 +6,22 @@
 
 start() {
 
-    local NTP_CONF
     local NTP_SERVER
+    local NTP_SERVERS
     local NTP_SUCCESS
 
-    mm_message_output info "configuring time ..."
-
-    NTP_CONF='/etc/ntp.conf'
-
-    /bin/rm -f ${NTP_CONF}~
-    for NTP_SERVER in ${MM_NTP_SERVERS}; do
-        if /usr/bin/test -n "${NTP_SERVER}" ; then
-            /bin/echo server ${NTP_SERVER} >> ${NTP_CONF}~
-        fi
-    done
-    /bin/mv -f ${NTP_CONF}~ ${NTP_CONF}
-
-    # Set localtime file.
-    /bin/cp /usr/share/zoneinfo/${MM_TZ} /etc/localtime
-
     # Set time.
+    mm_message_output info "setting time ..."
     NTP_SUCCESS=0
-    for NTP_SERVER in ${MM_NTP_SERVERS} ; do
+    NTP_SERVERS=
+    if /usr/bin/test -e /etc/ntp.conf ; then
+        NTP_SERVERS=`/bin/cat /etc/ntp.conf \
+                         | /bin/grep -e '^server '         \
+                         | /bin/sed -e 's%[[:cntrl:]]% %g' \
+                         | /bin/sed -e 's%  *% %g'         \
+                         | /usr/bin/cut -d ' ' -f 2`
+    fi
+    for NTP_SERVER in ${NTP_SERVERS} ; do
         /usr/bin/ntpdate ${NTP_SERVER}
         if /usr/bin/test $? -eq 0 ; then
             NTP_SUCCESS=1
@@ -35,17 +29,11 @@ start() {
         fi
     done
     if /usr/bin/test ${NTP_SUCCESS} -eq 0 ; then
-        mm_message_output err "error: 'ntpdate' failed to synchronize with any NTP server." 
-        case ${MM_NTP_FAILURE_ACTION} in
-            stop)
-                exit 1
-                ;;
-            continue)
-                ;;
-        esac
+        mm_message_output warn "warning: 'ntpdate' failed to synchronize with any NTP server." 
     fi
 
     # Start NTP daemon.
+    mm_message_output info "starting NTP daemon ..."
     /usr/bin/ntpd
 
     return 0
