@@ -1,14 +1,50 @@
 #!/bin/sh
 
-/usr/bin/test -r /etc/conf.d/env           && . /etc/conf.d/env
-/usr/bin/test -r /etc/conf.d/core          && . /etc/conf.d/core
-/usr/bin/test -r /etc/conf.d/dhcp.override && . /etc/conf.d/dhcp.override
-/usr/bin/test -r /etc/conf.d/minimyth      && . /etc/conf.d/minimyth
+/usr/bin/test -r /etc/conf.d/core && . /etc/conf.d/core
 
 /usr/bin/test -n "${MM_DEBUG}" && set -x
 
+case "${reason}" in
+    PREINIT)
+        if /usr/bin/test ! "${MM_ROOTFS_TYPE}" = "nfs" ; then
+            /sbin/ifconfig ${interface} 0 up
+        fi
+	break
+        ;;
+    BOUND|REBIND|REBOOT|RENEW)
+        if /usr/bin/test ! "x${new_ip_address}"        = "x${old_ip_address}"        || \
+           /usr/bin/test ! "x${new_subnet_mask}"       = "x${old_subnet_mask}"       || \
+           /usr/bin/test ! "x${new_broadcast_address}" = "x${old_broadcast_address}" ; then
+            /usr/bin/test -n "${new_broadcast_address}" && BROADCAST="broadcast ${new_broadcast_address}"
+            /usr/bin/test -n "${new_subnet_mask}"       && NETMASK="netmask ${new_subnet_mask}"
+            /sbin/ifconfig ${interface} ${new_ip_address} ${BROADCAST} ${NETMASK}
+        fi
+        if /usr/bin/test ! "x${new_routers}" = "x${old_routers}" ; then
+            while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
+                :
+            done
+            for router in ${new_routers} ; do
+                /sbin/route add default gw ${router} dev ${interface}
+            done
+        fi
+	break
+        ;;
+    EXPIRE|FAIL|RELEASE|STOP)
+        /sbin/ifconfig ${interface} down
+	break
+        ;;
+    TIMEOUT)
+        /sbin/ifconfig ${interface} down
+        exit 1
+        ;;
+esac
+
 DHCP_CONF='/etc/conf.d/dhcp'
+HOSTS_CONF='/etc/hosts'
+LOG_CONF='/etc/log.conf'
+NTP_CONF='/etc/ntp.conf'
 RESOLV_CONF='/etc/resolv.conf'
+TZ_CONF='/etc/localtime'
 
 conf_variable_write() {
     /bin/echo -n ${2} >> ${1}
@@ -21,110 +57,163 @@ conf_variable_write() {
 }
 
 case "${reason}" in
-    PREINIT)
-        if /usr/bin/test ! "x${alias_ip_address}" = "x" ; then
-          /sbin/ifconfig ${interface} inet 0
-        fi
-        /sbin/ifconfig ${interface} 0 up
-        /bin/sleep 1
-        exit 0
-        ;;
     BOUND|REBIND|REBOOT|RENEW)
-        if   /usr/bin/test ! "x${new_tftp_server_name}" = "x" ; then
-            MM_TFTP_SERVER=${new_tftp_server_name}
-        elif /usr/bin/test ! "x${new_next_server}" = "x" ; then
-            MM_TFTP_SERVER=${new_next_server}
-        else
-            MM_TFTP_SERVER=
+        # Set host name.
+        CUR_HOST_NAME=`/bin/hostname`
+        if /usr/bin/test ! "x${new_host_name}" = "x${CUR_HOST_NAME}" ; then
+            /bin/hostname "${new_host_name}"
         fi
-        if   /usr/bin/test ! "x${new_filename}" = "x" ; then
-            MM_TFTP_ROOTDIR=`/bin/echo ${new_filename} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%^/%%' | /bin/sed 's%/$%%'`
-            MM_TFTP_ROOTDIR="/${MM_TFTP_ROOTDIR}"
-        else
-            MM_TFTP_ROOTDIR=
-        fi
-
-        MM_DHCP_ADDRESS=${new_ip_address}
-        MM_DHCP_HOSTNAME=${MM_DHCP_HOSTNAME:-${new_host_name}}
-        MM_DHCP_DOMAIN=${MM_DHCP_DOMAIN:-${new_domain_name}}
-        MM_DHCP_DNS_SERVERS=${MM_DHCP_DNS_SERVERS:-${new_domain_name_servers}}
-        MM_DHCP_NTP_SERVERS=${MM_DHCP_NTP_SERVERS:-${new_ntp_servers}}
-        MM_DHCP_LOG_SERVERS=${MM_DHCP_LOG_SERVERS:-${new_log_servers}}
-        MM_DHCP_TZ=${MM_DHCP_TZ:-${new_tcode}}
-        MM_DHCP_BOOT_URL=${MM_DHCP_BOOT_URL:-${new_minimyth_conf_base_url}}
-        if /usr/bin/test "x${MM_DHCP_BOOT_URL}" = "x" ; then
-            if /usr/bin/test ! "x${MM_TFTP_SERVER}" = "x" &&
-               /usr/bin/test ! "x${MM_TFTP_ROOTDIR}" = "x" ; then
-                MM_DHCP_BOOT_URL="tftp://${MM_TFTP_SERVER}${MM_TFTP_ROOTDIR}/"
-            else
-                MM_DHCP_BOOT_URL="file:/minimyth/"
+        if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+            if /usr/bin/test ! -n "`/bin/hostname`" ; then
+                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                    "error: 'Host Name' (host-name) not configured."
             fi
         fi
-	if /usr/bin/test "x${new_minimyth_security_enabled}" = "xtrue" ; then
-            MM_DHCP_SECURITY_ENABLED=${MM_DHCP_SECURITY_ENABLED:-'yes'}
-        fi
-	if /usr/bin/test "x${new_minimyth_security_enabled}" = "xfalse" ; then
-            MM_DHCP_SECURITY_ENABLED=${MM_DHCP_SECURITY_ENABLED:-'no'}
-        fi
 
-        /bin/rm -f "${DHCP_CONF}~"
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER           "${MM_TFTP_SERVER}"
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_ROOTDIR          "${MM_TFTP_ROOTDIR}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_ADDRESS          "${MM_DHCP_ADDRESS}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_HOSTNAME         "${MM_DHCP_HOSTNAME}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DOMAIN           "${MM_DHCP_DOMAIN}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_DNS_SERVERS      "${MM_DHCP_DNS_SERVERS}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_NTP_SERVERS      "${MM_DHCP_NTP_SERVERS}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_LOG_SERVERS      "${MM_DHCP_LOG_SERVERS}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_TZ               "${MM_DHCP_TZ}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_BOOT_URL         "${MM_DHCP_BOOT_URL}"
-        conf_variable_write ${DHCP_CONF}~ MM_DHCP_SECURITY_ENABLED "${MM_DHCP_SECURITY_ENABLED}"
-        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL              "${MM_DHCP_BOOT_URL}"
-        conf_variable_write ${DHCP_CONF}~ MM_SECURITY_ENABLED      "${MM_DHCP_SECURITY_ENABLED}"
-        /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
-
-        /usr/bin/test -n "${new_broadcast_address}" && BROADCAST="broadcast ${new_broadcast_address}"
-        /usr/bin/test -n "${new_subnet_mask}"       && NETMASK="netmask ${new_subnet_mask}"
-        /sbin/ifconfig ${interface} ${new_ip_address} ${BROADCAST} ${NETMASK}
-        while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
-            :
-        done
-        for router in ${new_routers} ; do
-            /sbin/route add default gw ${router} dev ${interface}
-        done
-
-        HOSTNAME=${MM_HOSTNAME:-${MM_DHCP_HOSTNAME}}
-        if /usr/bin/test -n "${HOSTNAME}" ; then
-            /bin/hostname ${HOSTNAME}
+        # Create local hosts file.
+        if /usr/bin/test ! "x${new_ip_address}"  = "x${old_ip_address}"  || \
+           /usr/bin/test ! "x${new_host_name}"   = "x${old_host_name}"   || \
+           /usr/bin/test ! "x${new_domain_name}" = "x${old_domain_name}" || \
+           /usr/bin/test ! -e "${HOSTS_CONF}"                            ; then
+            /bin/rm -f ${HOSTS_CONF}~
+            /bin/touch ${HOSTS_CONF}~
+            /bin/chmod 644 ${HOSTS_CONF}~
+            /bin/echo "127.0.0.1 localhost.localdomain localhost"       >> ${HOSTS_CONF}~
+            if /usr/bin/test -n "${new_host_name}" ; then
+                /bin/echo -n "${new_ip_address}"                        >> ${HOSTS_CONF}~
+                if /usr/bin/test -n "${new_domain_name}" ; then
+                    /bin/echo -n " ${new_host_name}.${new_domain_name}" >> ${HOSTS_CONF}~
+                fi
+                /bin/echo -n " ${new_host_name}"                        >> ${HOSTS_CONF}~
+            fi
+            /bin/mv -f ${HOSTS_CONF}~ ${HOSTS_CONF}
         fi
 
-        if /usr/bin/test ! -e ${RESOLV_CONF} ; then
+        # Set time zone.
+        if   /usr/bin/test   "x${new_tcode}" = "x" ; then
+            /bin/rm -f ${NTP_CONF}
+        elif /usr/bin/test ! "x${new_tcode}" = "x${old_tcode}" || \
+             /usr/bin/test ! -e "${TZ_CONF}"                   ; then
+            if /usr/bin/test -n "${new_tcode}" ; then
+                if /usr/bin/test -r /usr/share/zoneinfo/${new_tcode} ; then
+                    /bin/cp -f /usr/share/zoneinfo/${new_tcode} ${TZ_CONF}
+                else
+                    /bin/rm -f ${TZ_CONF}
+                    /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                        "error: TCode (tcode) not valid."
+                fi
+            fi
+        fi
+        if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+            if /usr/bin/test ! -e /etc/localtime ; then
+                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                    "error: 'TCode' (tcode) not configured."
+            fi
+        fi
+
+        # Create domain name resolution file.
+        if   /usr/bin/test   "x${new_domain_name_servers}" = "x" ; then
+            /bin/rm -f ${RESOLV_CONF}~
+            /bin/touch ${RESOLV_CONF}~
+            /bin/chmod 644 ${NTP_CONF}~
+            /bin/mv -f ${NTP_CONF}~ ${NTP_CONF}
+        elif /usr/bin/test ! "x${new_domain_name_servers}" = "x${old_domain_name_servers}" || \
+             /usr/bin/test ! "x${new_domain_name}"         = "x${old_domain_name}"         || \
+             /usr/bin/test ! -e "${RESOLV_CONF}"                                           ; then
             /bin/rm -f ${RESOLV_CONF}~
             /bin/touch ${RESOLV_CONF}~
             /bin/chmod 644 ${RESOLV_CONF}~
-            DOMAIN=${MM_DOMAIN:-${MM_DHCP_DOMAIN}}
-            if /usr/bin/test -n "${DOMAIN}" ; then
-                /bin/echo search ${DOMAIN} >> ${RESOLV_CONF}~
+            if /usr/bin/test -n "${new_domain_name}" ; then
+                /bin/echo search ${new_domain_name} >> ${RESOLV_CONF}~
             fi
-            /bin/echo search ${new_domain_name} >> ${RESOLV_CONF}~
-            DNS_SERVERS=${MM_DNS_SERVERS:-${MM_DHCP_DNS_SERVERS}}
-            for DNS_SERVER in ${DNS_SERVERS} ; do
-                if /usr/bin/test -n "${DNS_SERVER}" ; then
-                    /bin/echo nameserver ${DNS_SERVER} >> ${RESOLV_CONF}~
+            for DOMAIN_NAME_SERVER in ${new_domain_name_servers} ; do
+                if /usr/bin/test -n "${DOMAIN_NAME_SERVER}" ; then
+                    /bin/echo nameserver ${DOMAIN_NAME_SERVER} >> ${RESOLV_CONF}~
                 fi
             done
             /bin/mv -f ${RESOLV_CONF}~ ${RESOLV_CONF}
         fi
+        if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+            /bin/grep -q -e '^nameserver ' /etc/resolv.conf 2> /dev/null
+            if /usr/bin/test ! $? -eq 0 ; then
+                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                    "error: 'Domain Name Servers' (domain-name-servers) not configured."
+            fi
+        fi
 
-        exit 0
-        ;;
-    EXPIRE|FAIL|RELEASE|STOP)
-        /sbin/ifconfig ${interface} down
-        exit 0
-        ;;
-    TIMEOUT)
-        /sbin/ifconfig ${interface} down
-        exit 1
+        # Create NTP configuration file.
+        if   /usr/bin/test   "x${new_ntp_servers}" = "x" ; then
+            /bin/rm -f ${NTP_CONF}~
+            /bin/touch ${NTP_CONF}~
+            /bin/chmod 644 ${NTP_CONF}~
+            /bin/mv -f ${NTP_CONF}~ ${NTP_CONF}
+        elif /usr/bin/test ! "x${new_ntp_servers}" = "x${old_ntp_servers}" || \
+             /usr/bin/test ! -e "${NTP_CONF}"                              ; then
+            /bin/rm -f ${NTP_CONF}~
+            /bin/touch ${NTP_CONF}~
+            /bin/chmod 644 ${NTP_CONF}~
+            for NTP_SERVER in ${new_ntp_servers}; do
+                if /usr/bin/test -n "${NTP_SERVER}" ; then
+                    /bin/echo server ${NTP_SERVER} >> ${NTP_CONF}~
+                fi
+            done
+            /bin/mv -f ${NTP_CONF}~ ${NTP_CONF}
+        fi
+        if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+            /bin/grep -q -e '^server ' /etc/ntp.conf 2> /dev/null
+            if /usr/bin/test ! $? -eq 0 ; then
+                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                    "error: 'NTP Servers' (ntp-servers) not configured."
+            fi
+        fi
+
+        # Create log server configuration file.
+        if   /usr/bin/test   "x${new_log_servers}" = "x" ; then
+            /bin/rm -f ${LOG_CONF}~
+            /bin/touch ${LOG_CONF}~
+            /bin/chmod 644 ${LOG_CONF}~
+            /bin/mv -f ${LOG_CONF}~ ${LOG_CONF}
+        elif /usr/bin/test ! "x${new_log_servers}" = "x${old_log_servers}" || \
+             /usr/bin/test ! -e "${LOG_CONF}"                              ; then
+            /bin/rm -f ${LOG_CONF}~
+            /bin/touch ${LOG_CONF}~
+            /bin/chmod 644 ${LOG_CONF}~
+            for LOG_SERVER in ${new_log_servers}; do
+                if /usr/bin/test -n "${LOG_SERVER}" ; then
+                    /bin/echo server ${LOG_SERVER} >> ${LOG_CONF}~
+                fi
+            done
+            /bin/mv -f ${LOG_CONF}~ ${LOG_CONF}
+        fi
+
+	TFTP_SERVER=
+	TFTP_SERVER=${TFTP_SERVER:-${new_server_name}}
+	TFTP_SERVER=${TFTP_SERVER:-${new_tftp_server_name}}
+	TFTP_SERVER=${TFTP_SERVER:-${new_next_server}}
+
+        BOOT_URL=${new_minimyth_boot_url}
+        if /usr/bin/test "x${BOOT_URL}" = "x" ; then
+	    TFTP_BOOTFILE=
+	    TFTP_BOOTFILE=${TFTP_BOOTFILE:-${new_filename}}
+	    TFTP_BOOTFILE=${TFTP_BOOTFILE:-${new_bootfile_name}}
+            if /usr/bin/test ! "x${TFTP_SERVER}" = "x" &&
+               /usr/bin/test ! "x${TFTP_BOOTFILE}" = "x" ; then
+                TFTP_ROOTDIR=`/bin/echo ${TFTP_BOOTFILE} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%^/%%' | /bin/sed 's%/$%%'`
+                TFTP_ROOTDIR="/${TFTP_ROOTDIR}"
+                BOOT_URL="tftp://${TFTP_SERVER}${TFTP_ROOTDIR}/"
+            else
+                BOOT_URL="file:/minimyth/"
+            fi
+        fi
+        BOOT_URL=`/bin/echo ${BOOT_URL} | /bin/sed -e 's%/$%%'`
+        BOOT_URL="${BOOT_URL}/"
+
+        /bin/rm -f "${DHCP_CONF}~"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER "${TFTP_SERVER}"
+        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL    "${BOOT_URL}"
+        /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
+
+        break
         ;;
 esac
 

@@ -77,68 +77,61 @@
               <dl>
                 <dt id="debug"><strong>debug</strong></dt>
                 <dd>
-                   Enables kernel debug logging and disables the boot splash screen.
+                  <p>
+                    Enables kernel debug logging and disables the boot splash screen.
+                  </p>
                 </dd>
                 <dt id="irqpoll"><strong>irqpoll</strong></dt>
                 <dd>
-                  Works around IRQ problems with the ASUS A8N-VM CSM motherboard
-                  that can cause a a kernel oops when the nvidia kernel driver is loaded,
-                  resulting in X not starting correctly.
+                  <p>
+                    Works around IRQ problems with the ASUS A8N-VM CSM motherboard
+                    that can cause a a kernel oops when the nvidia kernel driver is loaded,
+                    resulting in X not starting correctly.
+                  </p>
                 </dd>
               </dl>
             </li>
             <li>
-              MiniMyth debug variables:
+              MiniMyth variables:
               <dl>
                 <dt id="MM_DEBUG"><strong>MM_DEBUG</strong></dt>
                 <dd>
-                  Enables MiniMyth debug logging.
-                  Valid values are "yes".
+                  <p>
+                    Enables MiniMyth debug logging.
+                    Valid values are "yes".
+                  </p>
                 </dd>
               </dl>
-            </li>
-            <li>
-            <li>
-              MiniMyth DHCP override variables:
-              <dl>
-                <dt id="MM_DHCP_HOSTNAME"><strong>MM_DHCP_HOSTNAME</strong></dt>
-                <dd>See <a href="#dhcp-hostname">Hostname</a>.</dd>
-                <dt id="MM_DHCP_DOMAIN"><strong>MM_DHCP_DOMAIN</strong></dt>
-                <dd>See <a href="#dhcp-domain-name">Domain Name</a>.</dd>
-                <dt id="MM_DHCP_DNS_SERVERS"><strong>MM_DHCP_DNS_SERVERS</strong></dt>
-                <dd>See <a href="#dhcp-domain-server">Domain Server</a>.</dd>
-                <dt id="MM_DHCP_NTP_SERVERS"><strong>MM_DHCP_NTP_SERVERS</strong></dt>
-                <dd>See <a href="#dhcp-ntp-servers">NTP Servers</a>.</dd>
-                <dt id="MM_DHCP_LOG_SERVERS"><strong>MM_DHCP_LOG_SERVERS</strong></dt>
-                <dd>See <a href="#dhcp-log-server">Log Server</a>.</dd>
-                <dt id="MM_DHCP_TZ"><strong>MM_DHCP_TZ</strong></dt>
-                <dd>See <a href="#dhcp-tcode">TCode</a>.</dd>
-                <dt id="MM_DHCP_BOOT_URL"><strong>MM_DHCP_BOOT_URL</strong></dt>
-                <dd>See <a href="#dhcp-minimyth-boot-url">MiniMyth Boot Directory</a>.</dd>
-                <dt id="MM_DHCP_SECURITY_ENABLED"><strong>MM_DHCP_SECURITY_ENABLED</strong></dt>
-                <dd>See <a href="#dhcp-minimyth-security-enabled">MiniMyth Security Enabled</a>.</dd>
-              </dl>
-              </dl>
+              <p>
+                In addition to
+                <a href="MM_DEBUG">MM_DEBUG</a>,
+                you can include any variables found in the
+                <a href="document-minimyth_conf.shtml">MiniMyth Configuration File</a>
+                on the boot line.
+                However, with the exception of some of the
+                <a href="document-minimyth_conf.shtml#MM_DHCP">DHCP override variables</a>,
+                there is little reason to include these variables on the boot line.
+              </p>
+              <p>
+                Unlike in the MiniMyth configuration file where MiniMyth variable values should be single quoted ('),
+                MiniMyth variable values on the boot line must either be unquoted or double quoted (").
+              </p>
             </li>
           </ul>
-          <p>
-            Unlike in the MiniMyth configuration file where MiniMyth variable values should be single quoted ('),
-            MiniMyth variable values on the boot line must either be unquoted or double quoted (").
-          </p>
         </div>
         <div id="dhcp" class="section">
           <div class="heading">Configuration obtained from the DHCP server</div>
           <p>
-            MiniMyth can obtain configuration from the DHCP server.
+            MiniMyth obtains some configuration from the DHCP server.
           </p>
           <dl>
-            <dt id="dhcp-hostname"><strong>Hostname</strong></dt>
+            <dt id="dhcp-host-name"><strong>Host Name</strong></dt>
             <dd>
               <p>
                 The MiniMyth frontend's
-                <a href="http://en.wikipedia.org/wiki/Hostname">hostname</a>.
-                MiniMyth requires a hostname for storing/retrieving the MythTV frontend settings in/from the MythTV's database.
-                Therefore, if MiniMyth does not obtain a hostname,
+                <a href="http://en.wikipedia.org/wiki/Hostname">host name</a>.
+                MiniMyth requires a host name for storing/retrieving the MythTV frontend settings in/from the MythTV's database.
+                Therefore, if MiniMyth does not obtain a host name,
                 then MiniMyth will abort its boot process and output an error.
               </p>
               <p>
@@ -148,39 +141,29 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should enable the 'use-host-decl-names' option and set the 'host' and 'hardware' options in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
-                <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_HOSTNAME">MM_DHCP_HOSTNAME</a>')
-                or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a>').
+                then you should enable the 'use-host-decl-names' option and set the 'host' and 'hardware' options in your dhcpd.conf file
               </p>
               <p>
-                In addition to using the hostname when making MythTV database accesses,
-                MiniMyth can use the hostname when retrieving host specific configuration files.
-                For this to work for the 'minimyth.conf' file,
-                the hostname must be set prior to retrieving the 'minimyth.conf' file.
-                Setting parameters on the
+                In addition to using the host name when making MythTV database accesses,
+                MiniMyth can use the host name when retrieving host specific configuration files.
+              </p>
+              <p>
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_HOST_NAME">MM_DHCP_HOST_NAME</a>
+                DHCP override variable either on the
                 <a href="#bootline">boot line</a>
-                makes them available at the beginning of the boot process.
-                Therefore, if your DHCP server does not provide the hostname,
-                then you should consider using the DHCP override variable on the
-                <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_HOSTNAME">MM_DHCP_HOSTNAME</a>')
-                and not the DHCP override variable in the
                 or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_HOSTNAME">MM_HOSTNAME</a>').
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
               </p>
             </dd>
             <dt id="dhcp-domain-name"><strong>Domain Name</strong></dt>
             <dd>
               <p>
                 The MiniMyth frontend's
-                <a href="http://en.wikipedia.org/wiki/Domain_name">domain</a>.
+                <a href="http://en.wikipedia.org/wiki/Domain_name">domain name</a>.
                 MiniMyth does not require a domain name,
-                but it can be useful when using DNS to resolve local network hostnames to IP addresses.
+                but it can be useful when using DNS to resolve local network hostnames to IPv4 addresses.
               </p>
               <p>
                 The
@@ -189,25 +172,24 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should set the 'domain-name' option in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
-                <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_DOMAIN">MM_DHCP_DOMAIN</a>')
-                or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_DOMAIN">MM_DOMAIN</a>').
+                then you should set the 'domain-name' option in your dhcpd.conf file.
               </p>
               <p>
-                There is a special value of '.'.
-                After override processing, if the value is '.', then it is treated as though no value was provided.
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_DOMAIN_NAME">MM_DHCP_DOMAIN_NAME</a>
+                DHCP override variable either on the
+                <a href="#bootline">boot line</a>
+                or in the
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
               </p>
             </dd>
-            <dt id="dhcp-domain-server"><strong>Domain Server</strong></dt>
+            <dt id="dhcp-domain-name-servers"><strong>Domain Name Servers</strong></dt>
             <dd>
               <p>
                 A space separated list of
                 <a href="http://en.wikipedia.org/wiki/Domain_name_system">Domain Name System (DNS)</a>
-                server IP addresses that the MiniMyth frontend will use to resolve DNS names.
+                server IPv4 addresses that the MiniMyth frontend will use to resolve DNS names.
                 MiniMyth needs a DNS server to resolve Internet host name to Internet Protocol addresses.
                 Therefore, if MiniMyth does not obtain a DNS server address,
                 then MiniMyth will abort its boot process and output an error message.
@@ -219,13 +201,16 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should set the 'domain-name-servers' option in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
+                then you should set the 'domain-name-servers' option in your dhcpd.conf file.
+              </p>
+              <p>
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_DOMAIN_NAME_SERVERS">MM_DHCP_DOMAIN_NAME_SERVERS</a>
+                DHCP override variable either on the
                 <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_DNS_SERVERS">MM_DHCP_DNS_SERVERS</a>')
                 or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_DNS_SERVERS">MM_DNS_SERVERS</a>').
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
               </p>
             </dd>
             <dt id="dhcp-ntp-servers"><strong>NTP Servers</strong></dt>
@@ -233,8 +218,9 @@
               <p>
                 A space separated list of
                 <a href="http://en.wikipedia.org/wiki/Network_Time_Protocol">Network Time Protocol (NTP)</a>
-                server DNS names or IP addresses that the MiniMyth frontend will use to synchronize its clock.
-                MiniMyth's clock needs to be synchronized to the MythTV backend's clock or fastforward, rewind and commercial skip will fail.
+                server IPv4 addresses that the MiniMyth frontend will use to synchronize its clock.
+                MiniMyth's clock needs to be synchronized to the MythTV backend's clock or
+                fastforward, rewind and commercial skip will fail.
                 Therefore, if MiniMyth does not obtain an NTP server address,
                 then MiniMyth will abort its boot process and output an error message.
               </p>
@@ -245,22 +231,36 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should set the 'ntp-servers' option in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
+                then you should set the 'ntp-servers' option in your dhcpd.conf file.
+              </p>
+              <p>
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_NTP_SERVERS">MM_DHCP_NTP_SERVERS</a>
+                DHCP override variable either on the
                 <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_NTP_SERVERS">MM_DHCP_NTP_SERVERS</a>')
                 or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_NTP_SERVERS">MM_NTP_SERVERS</a>').
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
+                If you specify 
+                <a href="document-minimyth_conf.shtml#MM_DHCP_NTP_SERVERS">MM_DHCP_NTP_SERVERS</a>
+                in your 
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                and if either your DHCP server returns a valid list of Domain Name Servers
+                or you specify
+                <a href="document-minimyth_conf.shtml#MM_DHCP_DOMAIN_NAME_SERVERS">MM_DHCP_DOMAIN_NAME_SERVERS</a>
+                on the
+                <a href="#bootline">boot line</a>,
+                then
+                <a href="document-minimyth_conf.shtml#MM_DHCP_NTP_SERVERS">MM_DHCP_NTP_SERVERS</a>
+                may contain either IPv4 addresses or fully qualified domain names.
               </p>
             </dd>
-            <dt id="dhcp-log-server"><strong>Log Server</strong></dt>
+            <dt id="dhcp-log-servers"><strong>Log Servers</strong></dt>
             <dd>
               <p>
-                A space separated list of
+                A list of
                 <a href="http://en.wikipedia.org/wiki/Syslog">syslog</a>
-                server DNS names or IP addresses to which MiniMyth will log.
-                The value can be a list of log servers or 'none'.
+                server IPv4 addresses to which MiniMyth will log.
                 MiniMyth will log to the first log server in the list.
                 If MiniMyth does not obtain a log server address,
                 then MiniMyth will log locally.
@@ -272,17 +272,28 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should set the 'log-servers' option in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
-                <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_LOG_SERVERS">MM_DHCP_LOG_SERVERS</a>')
-                or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_LOG_SERVERS">MM_LOG_SERVERS</a>').
+                then you should set the 'log-servers' option in your dhcpd.conf file.
               </p>
               <p>
-                There is a special value of '.'.
-                After override processing, if the value is '.', then it is treated as though no value was provided.
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_LOG_SERVERS">MM_DHCP_LOG_SERVERS</a>
+                DHCP override variable either on the
+                <a href="#bootline">boot line</a>
+                or in the
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
+                If you specify 
+                <a href="document-minimyth_conf.shtml#MM_DHCP_LOG_SERVERS">MM_DHCP_LOG_SERVERS</a>
+                in your 
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                and if either your DHCP server returns a valid list of Domain Name Servers
+                or you specify
+                <a href="document-minimyth_conf.shtml#MM_DHCP_DOMAIN_NAME_SERVERS">MM_DHCP_DOMAIN_NAME_SERVERS</a>
+                on the
+                <a href="#bootline">boot line</a>,
+                then
+                <a href="document-minimyth_conf.shtml#MM_DHCP_LOG_SERVERS">MM_DHCP_LOG_SERVERS</a>
+                may contain either IPv4 addresses or fully qualified domain names.
               </p>
             </dd>
             <dt id="dhcp-tcode"><strong>TCode</strong></dt>
@@ -303,13 +314,7 @@
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>.
                 Therefore, if your DHCP server is
                 <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you should define and set the 'tcode' option in your dhcpd.conf file,
-                and not set the corresponding DHCP override variable either on the
-                <a href="#bootline">boot line</a>
-                ('<a href="#MM_DHCP_TZ">MM_DHCP_TZ</a>')
-                or in the
-                <a href="document-minimyth_conf.shtml">MiniMyth configuration file</a>
-                ('<a href="document-minimyth_conf.shtml#MM_TZ">MM_TZ</a>').
+                then you should define and set the 'tcode' option in your dhcpd.conf file.
               </p>
               <p>
                 As mentioned above,
@@ -332,18 +337,59 @@
                 For example:
               </p>
 <pre>option tcode "America/Los_Angeles";</pre>
+              <p>
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_TCODE">MM_DHCP_TCODE</a>
+                DHCP override variable either on the
+                <a href="#bootline">boot line</a>
+                or in the
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
+              </p>
             </dd>
-            <dt id="dhcp-minimyth-boot-url"><strong>MiniMyth Boot Directory</strong></dt>
+            <dt id="dhcp-minimyth-boot-url"><strong>MiniMyth Boot Directory URL</strong></dt>
             <dd>
               <p>
                 The MiniMyth boot directory.
                 MiniMyth needs to know the boot directory because the
-                <a href="#location">location of configure files</a>
+                <a href="#location">location of configuration files</a>
                 is relative to the boot directory.
               </p>
               <p>
-                MiniMyth 'guesses' the boot directory using DHCP provided information as described in the
-                <a href="#location">location of configure files</a>
+                The DHCP option is the Encapsulated Vendor Specific Information option 1 (0x01).
+                MiniMyth uses the Vendor Class Identifier
+                (<a href="http://www.iana.org/assignments/bootp-dhcp-parameters">DHCP option</a> 60 (0x3c))
+                with with the value 'miniyth' to identify itself.
+              </p>
+              <p>
+                if you want to use the 'minimyth.boot-url' vendor specific information option in
+                <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
+                then you will need to define it in your dhcpd.conf file.
+                The 'minimyth.boot-url' vendor specific information option is a string identified by the tag 1 (0x01).
+                As explained in the
+                <a href="http://www.linuxmanpages.com/man5/dhcp-options.5.php">dhcp-options</a>
+                man page,
+                this new option is defined by adding the following line to
+                <a href="http://www.linuxmanpages.com/man5/dhcpd.conf.5.php">dhcpd.conf</a>:
+              </p>
+<pre>option space minimyth
+option minimyth.boot-url code 1 = text;</pre>
+              <p>
+                After that, you can use 'minimyth.boot-url' as you would any other vendor specific information option,
+                with the option value being a URL pointing to the MiniMyth boot directory.
+                For example:
+              </p>
+<pre>class "vendor-classes" {
+    match option vendor-class-identifier;
+}
+subclass "vendor-classes" "minimyth" {
+    vendor-option-space minimyth;
+}
+option minimyth.boot-url "http://tftp.home/minimyth/"</pre>
+              <p>
+                If MiniMyth does not receive this option from the DHCP server,
+                MiniMyth 'guesses' the MiniMyth boot directory using other DHCP provided information as described in the
+                <a href="#location">location of configuration files</a>
                 section.
                 However, you may want to override the guessed boot directory
                 when MiniMyth 'guesses' the wrong boot directory or
@@ -386,9 +432,15 @@
         &lt;/LimitExcept&gt;
     &lt;/Location&gt;
 &lt;/VirtualHost&gt;</pre>
-            </dd>
-            <dt id="dhcp-minimyth-security-enabled"><strong>MiniMyth Security Enabled</strong></dt>
-            <dd>
+              <p>
+                If you DHCP server does not support this option, then you can use the
+                <a href="document-minimyth_conf.shtml#MM_DHCP_MINIMYTH_BOOT_URL">MM_DHCP_MINIMYTH_BOOT_URL</a>
+                DHCP override variable either on the
+                <a href="#bootline">boot line</a>
+                or in the
+                <a href="#minimyth_conf">MiniMyth configuration file</a>
+                instead.
+              </p>
             </dd>
           </dl>
         </div>
@@ -415,7 +467,10 @@
           </p>
           <p>
             MiniMyth looks for the MiniMyth configuration directories in the MiniMyth boot directory.
-            MiniMyth 'guesses' the location of the boot directory as follows.
+            If the DHCP server does not provide the
+            <a href="#dhcp-minimyth-boot-url">MiniMyth Boot Directory URL</a>
+            option,
+            then MiniMyth 'guesses' the location of the boot directory as follows.
             If MiniMyth 'guesses' that
             <a href="document-boot.shtml#network">network boot</a>
             was used,
@@ -428,8 +483,6 @@
             (i.e. url="file:/minimyth/").
             MiniMyth makes the 'guess' based on whether or not the boot file name is contained in DHCP's DHCPOFFER message
             (using either the 'file' field or the 'bootfile' option).
-            You can override MiniMyth's guess using the
-            <a href="#MM_DHCP_BOOT_URL">MM_DHCP_BOOT_URL</a> variable.
           </p>
           <p>
             In practice, this means that
@@ -441,7 +494,7 @@
             which MiniMyth will automatically mount at the mount point '/minimyth'.
           </p>
           <p>
-            Once MiniMyth has 'guessed' the boot directory (lets call it '{boot}'),
+            Once MiniMyth has determined the boot directory (lets call it '{boot}'),
             then MiniMyth looks for read-only configuration files
             first as the file '{boot}/conf/{hostname}/{file}' and
             second as the file '{boot}/conf/default/{file}',
@@ -630,7 +683,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2007-12-14 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2007-12-17 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">

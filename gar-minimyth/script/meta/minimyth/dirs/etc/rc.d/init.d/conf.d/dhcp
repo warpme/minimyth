@@ -8,90 +8,86 @@ conf_clean_dhcp() {
 }
 
 conf_check_dhcp() {
+
     # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_NAME_SERVER}"   ; then
+    if /usr/bin/test ! -z "${MM_DHCP_DNS_SERVERS}"   ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DHCP_DNS_SERVERS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_DHCP_HOSTNAME}"      ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DHCP_HOSTNAME' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_DHCP_DOMAIN}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DHCP_DOMAIN' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_DHCP_TZ}"            ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DHCP_TZ' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_DNS_SERVERS}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DNS_SERVERS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_DOMAIN}"             ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_DOMAIN' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_HOSTNAME}"           ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_HOSTNAME' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_LOG_SERVERS}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_LOG_SERVERS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_NAME_SERVER}"        ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NAME_SERVER' is obsolete."
     fi
-    if /usr/bin/test ! -z "${MM_SYSLOG_SERVER}" ; then
+    if /usr/bin/test ! -z "${MM_NTP_FAILURE_ACTION}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NTP_FAILURE_ACTION' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_NTP_SERVERS}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NTP_SERVERS' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_SYSLOG_SERVER}"      ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SYSLOG_SERVER' is obsolete."
     fi
-    if /usr/bin/test ! -z "${MM_TIME_SERVER}"   ; then
+    if /usr/bin/test ! -z "${MM_TIME_SERVER}"        ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_TIME_SERVER' is obsolete."
     fi
+    if /usr/bin/test ! -z "${MM_TZ}"                 ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_TZ' is obsolete."
+    fi
 
-    if /usr/bin/test ! -z "${MM_NTP_FAILURE_ACTION}"              && \
-       /usr/bin/test !    "${MM_NTP_FAILURE_ACTION}" = "stop"     && \
-       /usr/bin/test !    "${MM_NTP_FAILURE_ACTION}" = "continue" ; then
-        mm_message_output err "error: MM_NTP_FAILURE_ACTION='${MM_NTP_FAILURE_ACTION}' is not valid."
+    # If the DCHP override file exists, then DHCP should be completely configured.
+    if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
+        if /usr/bin/test ! -n "`/bin/hostname`" ; then
+            mm_message_output err "error: 'Host Name' not configured."
+        fi
+        if /usr/bin/test ! -e /etc/localtime ; then
+            mm_message_output err "error: 'TCode' not configured."
+        fi
+        /bin/grep -q -e '^nameserver ' /etc/resolv.conf 2> /dev/null
+        if /usr/bin/test ! $? -eq 0 ; then
+            mm_message_output err "error: 'Domain Name Servers' not configured."
+        fi
+        /bin/grep -q -e '^server ' /etc/ntp.conf 2> /dev/null
+        if /usr/bin/test ! $? -eq 0 ; then
+            mm_message_output err "error: 'NTP Servers' not configured."
+        fi
     fi
 
     return 0
 }
 
 conf_default_dhcp() {
-    if /usr/bin/test -e '/tmp/init.conf.dhcp/conf_default_dhcp' ; then
-        return 0
-    fi
-
-    if /usr/bin/test -z "${MM_HOSTNAME}"    ; then
-        MM_HOSTNAME="${MM_DHCP_HOSTNAME}"
-    fi
-    if /usr/bin/test -z "${MM_DOMAIN}"      ; then
-        MM_DOMAIN="${MM_DHCP_DOMAIN}"
-    fi
-    if /usr/bin/test -z "${MM_DNS_SERVERS}" ; then
-        MM_DNS_SERVERS="${MM_DHCP_DNS_SERVERS}"
-    fi
-    if /usr/bin/test -z "${MM_NTP_SERVERS}" ; then
-        MM_NTP_SERVERS="${MM_DHCP_NTP_SERVERS}"
-    fi
-    if /usr/bin/test -z "${MM_LOG_SERVERS}" ; then
-        MM_LOG_SERVERS="${MM_DHCP_LOG_SERVERS}"
-    fi
-    if /usr/bin/test -z "${MM_TZ}" ; then
-        MM_TZ="${MM_DHCP_TZ}"
-    fi
-    if /usr/bin/test -z "${MM_NTP_FAILURE_ACTION}" ; then
-        MM_NTP_FAILURE_ACTION='stop'
-    fi
-
-    # Convert '.' to empty.
-    if /usr/bin/test "${MM_DOMAIN}" = "." ; then
-        MM_DOMAIN=
-    fi
-    if /usr/bin/test "${MM_LOG_SERVERS}" = "." ; then
-        MM_LOG_SERVERS=
-    fi
-
-    if /usr/bin/test -z "${MM_HOSTNAME}" ; then
-        mm_message_output err "error: 'MM_HOSTNAME' is not set."
-    fi
-    if /usr/bin/test -z "${MM_DNS_SERVERS}" ; then
-        mm_message_output err "error: 'MM_DNS_SERVERS' is not set."
-    fi
-    if /usr/bin/test -z "${MM_NTP_SERVERS}" ; then
-        mm_message_output err "error: 'MM_NTP_SERVERS' is not set."
-    fi
-    if /usr/bin/test -z "${MM_TZ}" ; then
-        mm_message_output err "error: 'MM_TZ' is not set."
-    fi
-
-    /bin/mkdir -p '/tmp/init.conf.dhcp'
-    /bin/touch    '/tmp/init.conf.dhcp/conf_default_dhcp'
-
     return 0
 }
 
 conf_write_dhcp() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_HOSTNAME           "${MM_HOSTNAME}"
-    conf_variable_write "${conf_file}" MM_DOMAIN             "${MM_DOMAIN}"
-    conf_variable_write "${conf_file}" MM_DNS_SERVERS        "${MM_DNS_SERVERS}"
-    conf_variable_write "${conf_file}" MM_NTP_SERVERS        "${MM_NTP_SERVERS}"
-    conf_variable_write "${conf_file}" MM_LOG_SERVERS        "${MM_LOG_SERVERS}"
-    conf_variable_write "${conf_file}" MM_TZ                 "${MM_TZ}"
-    conf_variable_write "${conf_file}" MM_NTP_FAILURE_ACTION "${MM_NTP_FAILURE_ACTION}"
+    conf_variable_write "${conf_file}" MM_DHCP_HOST_NAME           "${MM_DHCP_HOST_NAME}"
+    conf_variable_write "${conf_file}" MM_DHCP_DOMAIN_NAME         "${MM_DHCP_DOMAIN_NAME}"
+    conf_variable_write "${conf_file}" MM_DHCP_TCODE               "${MM_DHCP_TCODE}"
+    conf_variable_write "${conf_file}" MM_DHCP_DOMAIN_NAME_SERVERS "${MM_DHCP_DOMAIN_NAME_SERVERS}"
+    conf_variable_write "${conf_file}" MM_DHCP_NTP_SERVERS         "${MM_DHCP_NTP_SERVERS}"
+    conf_variable_write "${conf_file}" MM_DHCP_LOG_SERVERS         "${MM_DHCP_LOG_SERVERS}"
+    conf_variable_write "${conf_file}" MM_DHCP_MINIMYTH_BOOT_URL   "${MM_DHCP_MINIMYTH_BOOT_URL}"
 
     return 0
 }
