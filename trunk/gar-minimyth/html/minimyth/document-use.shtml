@@ -34,12 +34,13 @@
           <dl>
             <dt><a href="#general">General</a></dt>
             <dt><a href="#control">Control</a></dt>
-            <dt><a href="#control-remote">Control using a remote control</a></dt>
-            <dt><a href="#control-vnc">Control using vnc</a></dt>
+            <dt><a href="#control-remote">Control using a Remote Control</a></dt>
+            <dt><a href="#control-vnc">Control using VNC</a></dt>
             <dt><a href="#access">Access</a></dt>
-            <dt><a href="#access-http">Access using http</a></dt>
-            <dt><a href="#access-telnet">Access using telnet</a></dt>
-            <dt><a href="#access-ssh">Access using ssh</a></dt>
+            <dt><a href="#access-vt">Access using a Virtual Terminal</a></dt>
+            <dt><a href="#access-telnet">Access using Telnet</a></dt>
+            <dt><a href="#access-ssh">Access using SSH</a></dt>
+            <dt><a href="#access-http">Access using HHTP</a></dt>
           </dl>
         </div>
         <div id="general" class="section">
@@ -53,7 +54,7 @@
           </p>
         </div>
         <div id="control-remote" class="section">
-          <div class="heading">Control using a remote control</div>
+          <div class="heading">Control using a Remote Control</div>
           <p>
             The normal method for controlling MiniMyth is through a remote control.
             If you have not already done so, please the
@@ -62,7 +63,7 @@
           </p>
         </div>
         <div id="control-vnc" class="section">
-          <div class="heading">Control using vnc</div>
+          <div class="heading">Control using VNC</div>
           <p>
             For some of the entries in the Myth setup menus, it is easier to use a keyboard than a remote control.
             While MiniMyth supports connecting a keyboard and mouse, it is often physically difficult to do so.
@@ -76,9 +77,10 @@
             MiniMyth uses a VNC server that connects the VNC client to the real X display.
           </p>
           <p>
-            If you have enabled security
+            When security is enabled
             (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
-            then VNC is only available over SSH.
+            then VNC is available on localhost but not on any other address.
+            Therefore, when security is enabled, VNC can only be accessed by port forwarding over SSH.
           </p>
         </div>
         <div id="access" class="section">
@@ -86,37 +88,17 @@
           <p>
           </p>
         </div>
-        <div id="access-http" class="section">
-          <div class="heading">Access using http</div>
+        <div id="access-vt" class="section">
+          <div class="heading">Access using a Virtual Terminal</div>
           <p>
-            MiniMyth provides access to the MiniMyth web pages and the MiniMyth file system using HTTP.
+            Normally, MiniMyth does not start a virtual terminal.
+            However, when MiniMyth detects an error when booting (i.e. during init),
+            MiniMyth starts a virtual terminal to ease debugging.
+            If you have a keyboard connected,
+            then you can switch to the virtual terminal using the key sequence 'Ctrl+Alt+F1'.
           </p>
           <p>
-            The MiniMyth web pages are accessable by connecting to port 80 (the default HTTP port) using HTTP.
-            These web pages include status infomation, software version information and MiniMyth documentation.
-            Unlike the MiniMyth documentation on
-            <a href="http://linpvr.org">LinPVR.org</a>,
-            the MiniMyth documentation available through the MiniMyth web pages is sure to correspond to the version of MiniMyth that is running.
-          </p>
-          <p>
-            The MiniMyth file system is accessable by connecting to port 8080 using HTTP.
-            This allows you to view any file using a web browswer (e.g. Firefox) or download any file using a web download client (e.g. wget).
-          </p>
-          <p>
-            If you have enabled security
-            (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
-            then the MiniMyth file system is not accessable using HTTP.
-          </p>
-        </div>
-        <div id="access-telnet" class="section">
-          <div class="heading">Access using telnet</div>
-          <p>
-            MiniMyth provides access using telnet.
-            During normal operation, there is no reason to need telnet access to MiniMyth.
-            However, telnet access can be very useful when customizing or debugging MiniMyth.
-          </p>
-          <p>
-            There are two users that can connect using telnet: 'minimyth' and 'root'.
+            There are two users that can connect using the virtual terminal: 'minimyth' and 'root'.
             Neither user requires a password.
           </p>
           <p>
@@ -132,8 +114,23 @@
             For example, some files can only be written or read as the user 'root'.
           </p>
         </div>
+        <div id="access-telnet" class="section">
+          <div class="heading">Access using Telnet</div>
+          <p>
+            Normally, MiniMyth does not start a telnet server.
+            However, when MiniMyth detects an error when booting (i.e. during init),
+            MiniMyth starts a telnet server to ease debugging.
+            In addition, when security is disabled
+            (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
+            MiniMyth starts a telent server.
+          </p>
+          <p>
+            There are two users that can connect using telnet: 'minimyth' and 'root'.
+            Neither user requires a password.
+          </p>
+        </div>
         <div id="access-ssh" class="section">
-          <div class="heading">Access using ssh</div>
+          <div class="heading">Access using SSH</div>
           <p>
             If you have enabled the
             <a href="document-minimyth_conf.shtml#MM_SSH_SERVER">SSH server</a>,
@@ -152,6 +149,24 @@
             If you need to perform a task as the user 'minimyth' (e.g. restart X),
             then you will need to su to the user 'minimyth' using the command
             'su&nbsp;-&nbsp;minimyth'.
+          </p>
+        </div>
+        <div id="access-http" class="section">
+          <div class="heading">Access using HTTP</div>
+          <p>
+            MiniMyth provides access to the MiniMyth web pages using HTTP.
+            The MiniMyth web pages are accessable by connecting to port 80 (the default HTTP port) using HTTP.
+            These web pages include status infomation, software version information and MiniMyth documentation.
+            Unlike the MiniMyth documentation on
+            <a href="http://linpvr.org">LinPVR.org</a>,
+            the MiniMyth documentation available through the MiniMyth web pages is sure to correspond to the version of MiniMyth that is running.
+          </p>
+          <p>
+            When security is disabled
+            (see '<a href="document-minimyth_conf.shtml#MM_SECURITY_ENABLED">MM_SECURITY_ENABLED</a>'),
+            MiniMyth provides access to the MiniMyth file system using HTTP.
+            The MiniMyth file system is accessable by connecting to port 8080 using HTTP.
+            This allows you to view any file using a web browswer (e.g. Firefox)or download any file using a web download client (e.g. wget).
           </p>
         </div>
       </div>

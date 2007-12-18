@@ -7,7 +7,6 @@
 script_list_start="\
     ld \
     loopback \
-    telnet \
     dhcp \
     modules_automatic \
     local \
@@ -38,7 +37,14 @@ rc_script_list_run() {
     fi
     for script in ${script_list} ; do
         mm_command_run "${script} ${action}"
+        # An error occured, so start a virtual console login and a telnet login.
+        # This is a serious security hole, but users have difficulty debugging
+        # when they cannot connect.
         if /usr/bin/test $? -ne 0 ; then
+            if /usr/bin/test -z "`/bin/pidof telnetd`" ; then
+                /usr/sbin/telnetd
+            fi
+            /sbin/agetty 9600 tty1 &
             exit $?
         fi
         mm_splash_progress_update

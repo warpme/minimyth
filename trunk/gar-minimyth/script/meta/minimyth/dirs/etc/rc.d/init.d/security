@@ -8,15 +8,10 @@
 
 start() {
 
-    /bin/sed -e "s%^minimyth::1000:1000:%minimyth::${MM_SECURITY_USER_MINIMYTH_UID}:${MM_SECURITY_USER_MINIMYTH_GID}:%" -i /etc/passwd
-    /bin/sed -e "s%^minimyth:x:1000:%minimyth:x:${MM_SECURITY_USER_MINIMYTH_GID}:%"                                     -i /etc/group
-
-    # When security is enabled and debugging is disabled, disable login for user's 'root' and 'minimyth'.
-    if /usr/bin/test   "${MM_SECURITY_ENABLED}" = "yes" && \
-       /usr/bin/test ! "${MM_DEBUG}"            = "yes" ; then
-        /bin/sed -e 's%^root::%root:x:%'         -i /etc/passwd
-        /bin/sed -e 's%^minimyth::%minimyth:x:%' -i /etc/passwd
-    fi
+    /bin/sed -e "s%^minimyth::1000:1000:%minimyth::${MM_SECURITY_USER_MINIMYTH_UID}:${MM_SECURITY_USER_MINIMYTH_GID}:%" \
+             -i /etc/passwd
+    /bin/sed -e "s%^minimyth:x:1000:%minimyth:x:${MM_SECURITY_USER_MINIMYTH_GID}:%" \
+             -i /etc/group
 
     if /usr/bin/test -e /etc/ssl/certs/ca-bundle.crt ; then
         # Set permissions.

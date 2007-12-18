@@ -41,7 +41,7 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "        <div class=\"heading\">MiniMyth Frontend Filesystem</div>"
 /bin/echo "        <div class=\"section\">"
 /bin/echo "          <p>"
-if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" ; then
+if /usr/bin/test "${MM_SECURITY_ENABLED}" = "no" ; then
     /bin/echo "            You can use the URL <a href=\"http://${server}:8080/\">http://${server}:8080/</a> to access your MiniMyth frontend's filesystem."
 else
     /bin/echo "            Your MiniMyth frontend has security enabled."
