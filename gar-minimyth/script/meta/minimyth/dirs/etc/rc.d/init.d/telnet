@@ -6,12 +6,11 @@
 
 start() {
 
-    # Run telnet server on machines that are not secure or when debugging.
-    if /usr/bin/test ! "${MM_SECURITY_ENABLED}" = "yes" || \
-       /usr/bin/test   "${MM_DEBUG}"            = "yes" ; then
+    # Run telnet server on machines that have security disabled.
+    if /usr/bin/test "${MM_SECURITY_ENABLED}" = "no" ; then
         if /usr/bin/test ! -n "`/bin/pidof telnetd`" ; then
             mm_message_output info "starting telnet server ..."
-            /usr/sbin/telnetd -l /bin/login
+            /usr/sbin/telnetd
         fi
     # Otherwise, stop the telnet server.
     else
