@@ -24,7 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-build="$(DESTDIR)$(LINUX_BUILDDIR)" \
 	--with-redhat=no \
 	--with-suse=no \
-	--with-moddir="$(LINUX_MODULESDIR)/misc/alsa" \
+	--with-moddir="$(LINUX_MODULESDIR)/kernel/sound" \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=no \
@@ -48,7 +48,3 @@ IGROUP := `id -g`
 post-install:
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
-
-clean-all:
-	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/alsa
