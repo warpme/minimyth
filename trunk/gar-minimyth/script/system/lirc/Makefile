@@ -1,12 +1,13 @@
 GARNAME = lirc
-GARVERSION = 0.8.3pre1
+GARVERSION = 20071217Z
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
-MASTER_SITES += cvs://$(GARNAME).cvs.sourceforge.net/cvsroot/$(GARNAME)/
+MASTER_SITES += cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imonlcd_0.1.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.23),$(DISTNAME)-remove_gpio.patch)
+PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.24),$(DISTNAME)-remove_gpio.patch)
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -45,7 +46,7 @@ cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
