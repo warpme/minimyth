@@ -367,15 +367,27 @@ mm-check:
 		exit 1 ; \
 	fi
 	@echo "    mm_NVIDIA_VERSION"
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "7185"      ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "9639"      ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "96.43.01"  ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "9746"      ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "100.14.19" ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "169.04"    ] ; then \
-		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
-		exit 1 ; \
+	@if [ "$(mm_KERNEL_VERSION)" = "2.6.22" ] || \
+	    [ "$(mm_KERNEL_VERSION)" = "2.6.23" ] ; then \
+		if [ ! "$(mm_NVIDIA_VERSION)" = "7185"      ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "9639"      ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "96.43.01"  ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "9746"      ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "100.14.19" ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "169.04"    ] ; then \
+			echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
+			exit 1 ; \
+		fi ; \
+	fi
+	@if [ "$(mm_KERNEL_VERSION)" = "2.6.24" ] ; then \
+		if [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "96.43.01"  ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "100.14.19" ] && \
+		   [ ! "$(mm_NVIDIA_VERSION)" = "169.04"    ] ; then \
+			echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
+			exit 1 ; \
+		fi ; \
 	fi
 	@echo "    mm_XORG_VERSION"
 	@if [ ! "$(mm_XORG_VERSION)" = "7.2" ] && \
