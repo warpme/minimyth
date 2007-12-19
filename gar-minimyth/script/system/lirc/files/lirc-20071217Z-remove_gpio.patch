@@ -1,15 +1,15 @@
-diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
---- lirc-0.8.3pre1-old/configure.ac	2007-10-17 18:41:23.000000000 -0700
-+++ lirc-0.8.3pre1-new/configure.ac	2007-10-17 18:45:24.000000000 -0700
-@@ -169,7 +169,6 @@
+diff -Naur lirc-20071217Z-old/configure.ac lirc-20071217Z-new/configure.ac
+--- lirc-20071217Z-old/configure.ac	2007-12-18 08:12:39.000000000 -0800
++++ lirc-20071217Z-new/configure.ac	2007-12-18 08:13:44.000000000 -0800
+@@ -155,7 +155,6 @@
  	(lirc_dev lirc_atiusb) \
  	(lirc_dev lirc_bt829) \
- 	(lirc_dev lirc_cmdir) \
+ 	(lirc_dev commandir lirc_cmdir) \
 -	(lirc_dev lirc_gpio) \
  	(lirc_dev lirc_i2c) \
  	(lirc_dev lirc_igorplugusb) \
  	(lirc_dev lirc_ttusbir) \
-@@ -399,24 +398,23 @@
+@@ -411,24 +410,23 @@
                            all, none, userspace, accent, act200l,
                            act220l, adaptec, alsa_usb, animax, asusdh,
                            atilibusb, atiusb, audio, audio_alsa
@@ -39,9 +39,9 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
                            realmagic, remotemaster, sa1100, sasem,
                            sb0540, serial, silitek, sir, slinke,
                            streamzap, tekram, tekram_bt829, tira,
-@@ -535,9 +533,6 @@
+@@ -547,9 +545,6 @@
  		;;
- 	lirc_dev-lirc_cmdir)
+ 	lirc_dev-commandir-lirc_cmdir)
  		;;
 -	lirc_dev-lirc_gpio)
 -		#lirc_driver="${lirc_driver} lirc_dev lirc_gpio"
@@ -49,7 +49,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  	lirc_dev-lirc_i2c)
  		#lirc_driver="${lirc_driver} lirc_dev lirc_i2c"
  		;;
-@@ -561,8 +556,6 @@
+@@ -573,8 +568,6 @@
  		;;
  	lirc_dev-lirc_streamzap)
  		;;
@@ -58,7 +58,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  	livedrive_midi)
  		hw_module="${hw_module} hw_livedrive_common.o hw_livedrive_midi.o"
  		;;
-@@ -713,36 +706,6 @@
+@@ -725,36 +718,6 @@
    alsa_lib=-lasound
  fi
  
@@ -95,7 +95,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  if test "$driver" = "breakoutbox"; then
    lirc_driver="lirc_dev lirc_i2c"
    lircd_conf="creative/lircd.conf.breakoutbox"
-@@ -773,12 +736,6 @@
+@@ -785,12 +748,6 @@
  #  lircmd_conf="caraca/lircmd.conf.caraca"
  fi
  
@@ -106,9 +106,9 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
 -fi
 -
  if test "$driver" = "cmdir"; then
-   lirc_driver="lirc_dev lirc_cmdir"
+   lirc_driver="lirc_dev commandir lirc_cmdir"
  fi
-@@ -807,12 +764,6 @@
+@@ -819,12 +776,6 @@
    irq=3
  fi
  
@@ -121,7 +121,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  if test "$driver" = "creative"; then
    lirc_driver="none"
    hw_module="hw_creative.o serial.o"
-@@ -868,18 +819,6 @@
+@@ -880,18 +831,6 @@
  #  lircmd_conf="creative/lircmd.conf.exaudio"
  fi
  
@@ -140,7 +140,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  if test "$driver" = "hauppauge"; then
    lirc_driver="lirc_dev lirc_i2c"
    lircd_conf="hauppauge/lircd.conf.hauppauge"
-@@ -983,24 +922,6 @@
+@@ -991,24 +930,6 @@
  #  lircmd_conf="knc_one/lircmd.conf.knc_one"
  fi
  
@@ -165,7 +165,7 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  if test "$driver" = "leadtek_pvr2000"; then
    lirc_driver="lirc_dev lirc_i2c"
    lircd_conf="leadtek/lircd.conf.PVR2000"
-@@ -1109,19 +1030,6 @@
+@@ -1117,19 +1038,6 @@
  #  lircmd_conf="pixelview/lircmd.conf.pixelview_bt878"
  fi
  
@@ -185,15 +185,15 @@ diff -Naur lirc-0.8.3pre1-old/configure.ac lirc-0.8.3pre1-new/configure.ac
  if test "$driver" = "provideo"; then
    lirc_driver="lirc_dev lirc_i2c"
    lircd_conf="provideo/lircd.conf.pv951"
-@@ -1339,7 +1247,6 @@
+@@ -1356,7 +1264,6 @@
  	lirc_atiusb \
  	lirc_bt829 \
  	lirc_cmdir \
 -	lirc_gpio \
  	lirc_i2c \
  	lirc_igorplugusb \
- 	lirc_ttusbir \
-@@ -1595,7 +1502,6 @@
+ 	lirc_imon \
+@@ -1626,7 +1533,6 @@
    drivers/lirc_bt829/Makefile
    drivers/lirc_cmdir/Makefile
    drivers/lirc_dev/Makefile
