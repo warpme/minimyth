@@ -1,5 +1,5 @@
 GARNAME = gspcav1
-GARVERSION = 20071214
+GARVERSION = 20071220
 CATEGORIES = kernel-2.6.24
 MASTER_SITES  = http://mxhaard.free.fr/spca50x/Download/
 MASTER_SITES += http://mxhaard.free.fr/spca50x/Download/oldrelease/
