@@ -369,9 +369,7 @@ mm-check:
 	@echo "    mm_NVIDIA_VERSION"
 	@if [ "$(mm_KERNEL_VERSION)" = "2.6.22" ] || \
 	    [ "$(mm_KERNEL_VERSION)" = "2.6.23" ] ; then \
-		if [ ! "$(mm_NVIDIA_VERSION)" = "7185"      ] && \
-		   [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
-		   [ ! "$(mm_NVIDIA_VERSION)" = "9639"      ] && \
+		if [ ! "$(mm_NVIDIA_VERSION)" = "71.86.01"  ] && \
 		   [ ! "$(mm_NVIDIA_VERSION)" = "96.43.01"  ] && \
 		   [ ! "$(mm_NVIDIA_VERSION)" = "9746"      ] && \
 		   [ ! "$(mm_NVIDIA_VERSION)" = "169.07"    ] ; then \
