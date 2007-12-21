@@ -69,6 +69,9 @@ mm_url_confro_get() {
 
     HOST_NAME=`/bin/hostname`
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
     if /usr/bin/test -n "${HOST_NAME}" ; then
         REMOTE_FILE_0="conf/${HOST_NAME}/${REMOTE_FILE}"
     fi
@@ -97,11 +100,11 @@ mm_url_confrw_get() {
 
     HOST_NAME=`/bin/hostname`
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
     if /usr/bin/test -n "${HOST_NAME}" ; then
         REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
-            | /bin/sed -e 's%^/*%%'             \
-            | /bin/sed -e 's%/*$%%'             \
-            | /bin/sed -e 's%//*%/%g'           \
             | /bin/sed -e 's%/%+%'`
         REMOTE_FILE_0="conf-rw/${HOST_NAME}+${REMOTE_FILE_0}"
     fi
@@ -122,9 +125,12 @@ mm_url_dist_get() {
 
     local REMOTE_FILE_0
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
     if /usr/bin/test -n "${MM_ROOTFS_IMAGE}" ; then
-        REMOTE_FILE_0=`/bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%//*%/%g'`
-        REMOTE_FILE_0="${REMOTE_FILE_0}${REMOTE_FILE}"
+        REMOTE_FILE_0=`/bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%/$%%'`
+        REMOTE_FILE_0="${REMOTE_FILE_0}/${REMOTE_FILE}"
     fi
 
     /bin/rm -f "${LOCAL_FILE}"
@@ -143,8 +149,8 @@ mm_url_file_get() {
 
     local LOCAL_DIR
 
-    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g'`
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
@@ -164,17 +170,17 @@ mm_url_http_get() {
 
     local LOCAL_DIR
 
-    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
-    REMOTE_FILE="/${REMOTE_FILE}"
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/curl -s -f "http://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
+    /usr/bin/curl -s -f "http://${REMOTE_SERVER}/${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -197,17 +203,17 @@ mm_url_tftp_get() {
 
     local LOCAL_DIR
 
-    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g'`
-    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%^/%%'`
-    REMOTE_FILE="/${REMOTE_FILE}"
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/curl -s -f "tftp://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
+    /usr/bin/curl -s -f "tftp://${REMOTE_SERVER}/${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -248,11 +254,11 @@ mm_url_confrw_put() {
         return
     fi
 
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+    REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
     if /usr/bin/test -n "${HOST_NAME}" ; then
         REMOTE_FILE_0=`/bin/echo ${REMOTE_FILE} \
-            | /bin/sed -e 's%^/*%%'             \
-            | /bin/sed -e 's%/*$%%'             \
-            | /bin/sed -e 's%//*%/%g'           \
             | /bin/sed -e 's%/%+%'`
         REMOTE_FILE_0="conf-rw/${HOST_NAME}+${REMOTE_FILE_0}"
     fi
