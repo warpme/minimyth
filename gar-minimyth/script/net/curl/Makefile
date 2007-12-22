@@ -48,3 +48,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-libidn
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libcurl.la
+	@$(MAKECOOKIE)
