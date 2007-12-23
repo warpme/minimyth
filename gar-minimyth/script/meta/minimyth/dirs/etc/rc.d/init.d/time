@@ -12,29 +12,14 @@ start() {
 
     # Set time.
     mm_message_output info "setting time ..."
-    NTP_SUCCESS=0
-    NTP_SERVERS=
-    if /usr/bin/test -e /etc/ntp.conf ; then
-        NTP_SERVERS=`/bin/cat /etc/ntp.conf \
-                         | /bin/grep -e '^server '         \
-                         | /bin/sed -e 's%[[:cntrl:]]% %g' \
-                         | /bin/sed -e 's%  *% %g'         \
-                         | /usr/bin/cut -d ' ' -f 2`
-    fi
-    for NTP_SERVER in ${NTP_SERVERS} ; do
-        /usr/bin/ntpdate ${NTP_SERVER}
-        if /usr/bin/test $? -eq 0 ; then
-            NTP_SUCCESS=1
-            break
-        fi
-    done
-    if /usr/bin/test ${NTP_SUCCESS} -eq 0 ; then
-        mm_message_output warn "warning: 'ntpdate' failed to synchronize with any NTP server." 
+    /usr/bin/ntpd -p /var/run/ntpd.pid -q -g
+    if /usr/bin/test $? -eq 0 ; then
+        mm_message_output warn "warning: 'ntpd' failed to synchronize with any NTP server." 
     fi
 
     # Start NTP daemon.
     mm_message_output info "starting NTP daemon ..."
-    /usr/bin/ntpd
+    /usr/bin/ntpd -p /var/run/ntpd.pid
 
     return 0
 }
