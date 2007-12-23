@@ -186,6 +186,8 @@ case "${reason}" in
             /bin/mv -f ${LOG_CONF}~ ${LOG_CONF}
         fi
 
+        NETWORK_INTERFACE=${interface}
+
 	TFTP_SERVER=
 	TFTP_SERVER=${TFTP_SERVER:-${new_server_name}}
 	TFTP_SERVER=${TFTP_SERVER:-${new_tftp_server_name}}
@@ -209,8 +211,9 @@ case "${reason}" in
         BOOT_URL="${BOOT_URL}/"
 
         /bin/rm -f "${DHCP_CONF}~"
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER "${TFTP_SERVER}"
-        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL    "${BOOT_URL}"
+        conf_variable_write ${DHCP_CONF}~ MM_NETWORK_INTERFACE "${NETWORK_INTERFACE}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER       "${TFTP_SERVER}"
+        conf_variable_write ${DHCP_CONF}~ MM_BOOT_URL          "${BOOT_URL}"
         /bin/mv -f "${DHCP_CONF}~" "${DHCP_CONF}"
 
         break
