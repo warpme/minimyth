@@ -23,6 +23,7 @@ DEPENDS = \
 	utils/ethtool \
 	devel/fakeroot \
 	disk/hdparm \
+	net/ifplugd \
 	net/iputils \
 	system/lcdproc \
 	system/kbdd \
