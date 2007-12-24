@@ -11,7 +11,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                ) \
                                 $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                               )
-mm_VERSION_MINIMYTH       ?= 33
+mm_VERSION_MINIMYTH       ?= 34
 mm_VERSION_EXTRA          ?= $(strip \
                                 $(if $(filter yes,$(mm_DEBUG)),-debug) \
                               )
