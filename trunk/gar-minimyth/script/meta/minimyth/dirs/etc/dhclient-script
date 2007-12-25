@@ -65,7 +65,7 @@ case "${reason}" in
         fi
         if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
             if /usr/bin/test ! -n "`/bin/hostname`" ; then
-                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                /usr/bin/logger -s -t dhclient -p "daemon.err" \
                     "error: 'Host Name' (host-name) not configured."
             fi
         fi
@@ -99,14 +99,14 @@ case "${reason}" in
                     /bin/cp -f /usr/share/zoneinfo/${new_tcode} ${TZ_CONF}
                 else
                     /bin/rm -f ${TZ_CONF}
-                    /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                    /usr/bin/logger -s -t dhclient -p "daemon.err" \
                         "error: TCode (tcode) '${new_tcode}' not valid."
                 fi
             fi
         fi
         if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
             if /usr/bin/test ! -e /etc/localtime ; then
-                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                /usr/bin/logger -s -t dhclient -p "daemon.err" \
                     "error: 'TCode' (tcode) not configured."
             fi
         fi
@@ -136,7 +136,7 @@ case "${reason}" in
         if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
             /bin/grep -q -e '^nameserver ' /etc/resolv.conf 2> /dev/null
             if /usr/bin/test ! $? -eq 0 ; then
-                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                /usr/bin/logger -s -t dhclient -p "daemon.err" \
                     "error: 'Domain Name Servers' (domain-name-servers) not configured."
             fi
         fi
@@ -162,7 +162,7 @@ case "${reason}" in
         if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
             /bin/grep -q -e '^server ' /etc/ntp.conf 2> /dev/null
             if /usr/bin/test ! $? -eq 0 ; then
-                /usr/bin/logger -s -t minimyth -p "dhclient.err" \
+                /usr/bin/logger -s -t dhclient -p "daemon.err" \
                     "error: 'NTP Servers' (ntp-servers) not configured."
             fi
         fi
