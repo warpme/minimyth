@@ -72,18 +72,11 @@ start() {
         mm_message_output info "starting DHCP client ..."
         /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
     else
-        # If the new 'dhclient.conf' file does not match the existing 'dhclient.conf' file,
-        # then we need to restart 'dhclient' using the new 'dhclient.conf' file.
-        /usr/bin/cmp -s "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}" 2> /dev/null
-        if /usr/bin/test $? -ne 0 ; then
-            while /usr/bin/test -n "`/bin/pidof dhclient`" ; do
-                /usr/bin/killall dhclient
-            done
-            mm_message_output info "restarting DHCP client ..."
-            /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
-        else
-            /bin/rm -f "${DHCLIENT_CONF}~"
-        fi
+        mm_message_output info "restarting DHCP client ..."
+        /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
+        while /usr/bin/test -n "`/bin/pidof dhclient`" ; do
+            /usr/bin/killall dhclient
+        done
     fi
 
     # Start 'dhclient'.
