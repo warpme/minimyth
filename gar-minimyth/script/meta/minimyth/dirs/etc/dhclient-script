@@ -4,49 +4,6 @@
 
 /usr/bin/test -n "${MM_DEBUG}" && set -x
 
-case "${reason}" in
-    PREINIT)
-        # If we have an IP address, then do not reset the interface, because
-        # (1) resetting the interface on NFS boot is fatal and
-        # (2) resetting the interface on DHCP restart is not needed.
-        IP_ADDRESS=`/sbin/ifconfig ${interface} | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
-        if /usr/bin/test -z "${IP_ADDRESS}" ; then
-            /sbin/ifconfig ${interface} 0 up
-        fi
-	break
-        ;;
-    BOUND|REBIND|REBOOT|RENEW)
-        if /usr/bin/test   "x${reason}"                = "xBOUND"                    || \
-           /usr/bin/test   "x${reason}"                = "xREBOOT"                   || \
-           /usr/bin/test ! "x${new_ip_address}"        = "x${old_ip_address}"        || \
-           /usr/bin/test ! "x${new_subnet_mask}"       = "x${old_subnet_mask}"       || \
-           /usr/bin/test ! "x${new_broadcast_address}" = "x${old_broadcast_address}" ; then
-            /usr/bin/test -n "${new_broadcast_address}" && BROADCAST="broadcast ${new_broadcast_address}"
-            /usr/bin/test -n "${new_subnet_mask}"       && NETMASK="netmask ${new_subnet_mask}"
-            /sbin/ifconfig ${interface} ${new_ip_address} ${BROADCAST} ${NETMASK}
-        fi
-        if /usr/bin/test   "x${reason}"      = "xBOUND"          || \
-           /usr/bin/test   "x${reason}"      = "xREBOOT"         || \
-           /usr/bin/test ! "x${new_routers}" = "x${old_routers}" ; then
-            while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
-                :
-            done
-            for router in ${new_routers} ; do
-                /sbin/route add default gw ${router} dev ${interface}
-            done
-        fi
-	break
-        ;;
-    EXPIRE|FAIL|RELEASE|STOP)
-        /sbin/ifconfig ${interface} down
-	break
-        ;;
-    TIMEOUT)
-        /sbin/ifconfig ${interface} down
-        exit 1
-        ;;
-esac
-
 DHCP_CONF='/etc/conf.d/dhcp'
 DHCP_OVERRIDE_CONF='/etc/conf.d/dhcp.override'
 HOSTS_CONF='/etc/hosts'
@@ -66,7 +23,40 @@ conf_variable_write() {
 }
 
 case "${reason}" in
+    PREINIT)
+        # If we have an IP address, then do not reset the interface, because
+        # (1) resetting the interface on NFS boot is fatal and
+        # (2) resetting the interface on DHCP restart is not needed.
+        IP_ADDRESS=`/sbin/ifconfig ${interface} | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+        if /usr/bin/test -z "${IP_ADDRESS}" ; then
+            /sbin/ifconfig ${interface} 0.0.0.0 broadcast 255.255.255.255 up
+        fi
+	break
+        ;;
     BOUND|REBIND|REBOOT|RENEW)
+        # Configure interface basics.
+        if /usr/bin/test   "x${reason}"                = "xBOUND"                    || \
+           /usr/bin/test   "x${reason}"                = "xREBOOT"                   || \
+           /usr/bin/test ! "x${new_ip_address}"        = "x${old_ip_address}"        || \
+           /usr/bin/test ! "x${new_subnet_mask}"       = "x${old_subnet_mask}"       || \
+           /usr/bin/test ! "x${new_broadcast_address}" = "x${old_broadcast_address}" ; then
+            /usr/bin/test -n "${new_broadcast_address}" && BROADCAST="broadcast ${new_broadcast_address}"
+            /usr/bin/test -n "${new_subnet_mask}"       && NETMASK="netmask ${new_subnet_mask}"
+            /sbin/ifconfig ${interface} ${new_ip_address} ${BROADCAST} ${NETMASK}
+        fi
+
+        # Configure default gateways.
+        if /usr/bin/test   "x${reason}"      = "xBOUND"          || \
+           /usr/bin/test   "x${reason}"      = "xREBOOT"         || \
+           /usr/bin/test ! "x${new_routers}" = "x${old_routers}" ; then
+            while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
+                :
+            done
+            for router in ${new_routers} ; do
+                /sbin/route add default gw ${router} dev ${interface}
+            done
+        fi
+
         # Set host name.
         CUR_HOST_NAME=`/bin/hostname`
         if /usr/bin/test ! "x${new_host_name}" = "x${CUR_HOST_NAME}" ; then
