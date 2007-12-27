@@ -18,9 +18,6 @@ conf_variable_write() {
 
 start() {
 
-    local dhcp_override
-    local dhcp_overrides
-
     mm_message_output info "downloading configuration ..."
 
     # Get MiniMyth configuration file.
@@ -45,7 +42,7 @@ start() {
                 set ${variable}=''
             fi
         done
-        /bin/rm -rf '/etc/conf.d/dhcp.override'
+        /bin/rm -f '/etc/conf.d/dhcp.override'
     fi
     if /usr/bin/test -e /etc/conf.d/minimyth ; then
         /bin/cat /etc/conf.d/minimyth | /bin/grep -e '^MM_[^=]*=' | /bin/sed -e 's%=.*$%%' | \
@@ -54,7 +51,7 @@ start() {
                 set ${variable}=''
             fi
         done
-        /bin/rm -rf '/etc/conf.d/minimyth'
+        /bin/rm -f '/etc/conf.d/minimyth'
     fi
 
     # Read core and dhcp configuration files.
@@ -73,12 +70,18 @@ start() {
 
     # Process the DHCP override configuration variables first,
     # creating the dhcp.override file that is used by DHCP.
+    /bin/rm -f '/etc/conf.d/dhcp.override~'
+    /bin/touch '/etc/conf.d/dhcp.override~'
+    /bin/chmod 644 '/etc/conf.d/dhcp.override~'
     conf_clean_dhcp
     conf_check_dhcp
     conf_default_dhcp
     conf_write_dhcp '/etc/conf.d/dhcp.override~'
+    /bin/rm -f '/etc/conf.d/dhcp.override'
+    /bin/touch '/etc/conf.d/dhcp.override'
+    /bin/chmod 644 '/etc/conf.d/dhcp.override'
     /usr/bin/sort '/etc/conf.d/dhcp.override~' > '/etc/conf.d/dhcp.override'
-    /bin/rm -rf '/etc/conf.d/dhcp.override~'
+    /bin/rm -f '/etc/conf.d/dhcp.override~'
 
     # Restart DHCP (if needed) in order to pick up the processed DHCP override variables.
     /etc/rc.d/init.d/dhcp start
@@ -104,14 +107,18 @@ start() {
 
     # Write processed MiniMyth configuration file.
     mm_message_output info "processing configuration: writing variables ..."
-    /bin/rm -rf '/etc/conf.d/minimyth~'
+    /bin/rm -f '/etc/conf.d/minimyth~'
+    /bin/touch '/etc/conf.d/minimyth~'
+    /bin/chmod 644 '/etc/conf.d/minimyth~'
     for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
         /usr/bin/logger -s -t minimyth -p "local0.info" "    writing variables for ${file}"
         conf_write_${file} '/etc/conf.d/minimyth~'
     done
-    /bin/rm -rf '/etc/conf.d/minimyth'
+    /bin/rm -f '/etc/conf.d/minimyth'
+    /bin/touch '/etc/conf.d/minimyth'
+    /bin/chmod 644 '/etc/conf.d/minimyth'
     /usr/bin/sort '/etc/conf.d/minimyth~' > '/etc/conf.d/minimyth'
-    /bin/rm -rf '/etc/conf.d/minimyth~'
+    /bin/rm -f '/etc/conf.d/minimyth~'
 
     # Fetch user files.
     mm_message_output info "processing configuration: fetching additional files ..."
