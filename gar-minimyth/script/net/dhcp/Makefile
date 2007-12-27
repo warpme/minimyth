@@ -3,7 +3,7 @@ GARVERSION =  4.0.0
 CATEGORIES = net
 MASTER_SITES = http://ftp.isc.org/isc/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-next_server.patch
+PATCHFILES = $(DISTNAME)-vendor_universe_name.patch $(DISTNAME)-next_server.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
