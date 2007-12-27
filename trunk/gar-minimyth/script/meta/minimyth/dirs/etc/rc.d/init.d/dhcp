@@ -12,68 +12,48 @@ start() {
     local INTERFACE_LIST
     local IP_ADDRESS
 
+    dhcp_global_options='
+        host-name
+        domain-name
+        tcode
+        domain-name-servers
+        ntp-servers
+        log-servers'
+    dhcp_vendor_options='
+        minimyth.boot-url'
+
     DHCLIENT_CONF='/etc/dhclient.conf'
 
-    # Create a new DHCP 'dhclient.conf' file by starting with the base file and
+    # Create a 'dhclient.conf' file by starting with the base file and
     # then adding additional statements based on the DHCP override variables.
     /bin/rm -f "${DHCLIENT_CONF}~"
     /bin/mkdir -p "`/usr/bin/dirname ${DHCLIENT_CONF}~`"
     /bin/touch "${DHCLIENT_CONF}~"
     /bin/chmod 644 "${DHCLIENT_CONF}~"
     /usr/bin/test -e "${DHCLIENT_CONF}.base" && /bin/cat "${DHCLIENT_CONF}.base" >> "${DHCLIENT_CONF}~"
-    if   /usr/bin/test -z "${MM_DHCP_HOST_NAME}" ; then
-        /bin/echo "also request host-name ;"                       >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_HOST_NAME}" ; then
-        /bin/echo "supersede host-name \"${MM_DHCP_HOST_NAME}\" ;" >> "${DHCLIENT_CONF}~"
+    for dhcp_option in ${dhcp_global_options} ${dhcp_vendor_options} ; do
+        variable_name=MM_DHCP_`/bin/echo ${dhcp_option} \
+            | /bin/sed -e 's/[.-]/_/g' \
+            | /bin/sed -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
+        variable_value=`set | /bin/grep -e "^${variable_name}" | /bin/sed -e "s%^${variable_name}='\(.*\)'$%\1%"`
+        if   /usr/bin/test -z "${variable_value}"        ; then
+            /bin/echo "also request ${dhcp_option} ;"                            >> "${DHCLIENT_CONF}~"
+        elif /usr/bin/test -n "${variable_value}"        && \
+             /usr/bin/test ! "x${variable_value}" = "x!" ; then
+            /bin/echo "supersede ${dhcp_option} \"${variable_value}\" ;"         >> "${DHCLIENT_CONF}~"
+        fi
+    done
+    if /usr/bin/test -n "${dhcp_vendor_options}" ; then
+        /bin/echo "also request vendor-encapsulated-options ;"                   >> "${DHCLIENT_CONF}~"
     fi
-    if   /usr/bin/test -z "${MM_DHCP_DOMAIN_NAME}" ; then
-        /bin/echo "also request domain-name ;"                         >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_DOMAIN_NAME}"      && \
-         /usr/bin/test "x${MM_DHCP_DOMAIN_NAME}" = "x!" ; then
-        /bin/echo "supersede domain-name \"${MM_DHCP_DOMAIN_NAME}\" ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_TCODE}" ; then
-        /bin/echo "also request tcode ;"                   >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_TCODE}" ; then
-        /bin/echo "supersede tcode \"${MM_DHCP_TCODE}\" ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_DOMAIN_NAME_SERVERS}" ; then
-        /bin/echo "also request domain-name-servers ;"                             >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_DOMAIN_NAME_SERVERS}" ; then
-        MM_DHCP_DOMAIN_NAME_SERVERS=`/bin/echo ${MM_DHCP_DOMAIN_NAME_SERVERS} | /bin/sed -e 's%  *% , %g'`
-        /bin/echo "supersede domain-name-servers ${MM_DHCP_DOMAIN_NAME_SERVERS} ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_NTP_SERVERS}" ; then
-        /bin/echo "also request ntp-servers ;"                     >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_NTP_SERVERS}" ; then
-        MM_DHCP_NTP_SERVERS=`/bin/echo ${MM_DHCP_NTP_SERVERS} | /bin/sed -e 's%  *% , %g'`
-        /bin/echo "supersede ntp-servers ${MM_DHCP_NTP_SERVERS} ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_LOG_SERVERS}" ; then
-        /bin/echo "also request log-servers ;"                     >> "${DHCLIENT_CONF}~"
-    elif /usr/bin/test -n "${MM_DHCP_LOG_SERVERS}"        && \
-         /usr/bin/test ! "x${MM_DHCP_LOG_SERVERS}" = "x!" ; then
-        MM_DHCP_LOG_SERVERS=`/bin/echo ${MM_DHCP_LOG_SERVERS} | /bin/sed -e 's%  *% , %g'`
-        /bin/echo "supersede log-servers ${MM_DHCP_LOG_SERVERS} ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_MINIMYTH_BOOT_URL}" ; then
-        /bin/echo "also request vendor-encapsulated-options ;" >> "${DHCLIENT_CONF}~"
-    fi
-    if   /usr/bin/test -z "${MM_DHCP_MINIMYTH_BOOT_URL}" ; then
-        :
-    elif /usr/bin/test -n "${MM_DHCP_MINIMYTH_BOOT_URL}"        && \
-         /usr/bin/test ! "x${MM_DHCP_MINIMYTH_BOOT_URL}" = "x!" ; then
-        /bin/echo "supersede minimyth.boot-url \"${MM_DHCP_MINIMYTH_BOOT_URL}\" ;" >> "${DHCLIENT_CONF}~"
-    fi
+    /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
 
     # If 'dhclient' is not running,
     # then we need to start 'dhclient' using the new 'dhclient.conf' file.
     if /usr/bin/test -z "`/bin/pidof dhclient`" ; then
         mm_message_output info "starting DHCP client ..."
-        /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
     else
         mm_message_output info "restarting DHCP client ..."
-        /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
         while /usr/bin/test -n "`/bin/pidof dhclient`" ; do
             /usr/bin/killall dhclient
         done
