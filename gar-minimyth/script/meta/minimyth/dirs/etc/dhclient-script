@@ -49,7 +49,7 @@ case "${reason}" in
         if /usr/bin/test   "x${reason}"      = "xBOUND"          || \
            /usr/bin/test   "x${reason}"      = "xREBOOT"         || \
            /usr/bin/test ! "x${new_routers}" = "x${old_routers}" ; then
-            while /sbin/route del default gw 0.0.0.0 dev ${interface} ; do
+            while /sbin/route del default gw 0.0.0.0 dev ${interface} 2> /dev/null ; do
                 :
             done
             for router in ${new_routers} ; do
@@ -111,7 +111,6 @@ case "${reason}" in
                 /bin/touch ${TZ_CONF}~
                 /bin/chmod 644 ${TZ_CONF}~
                 /bin/cat /usr/share/zoneinfo/${new_tcode} > ${TZ_CONF}~
-                /bin/mv -f ${TZ_CONF}~ ${TZ_CONF}
                 /usr/bin/cmp -s "${TZ_CONF}~" "${TZ_CONF}" 2> /dev/null
                 if /usr/bin/test $? -ne 0 ; then
                     /bin/mv -f ${TZ_CONF}~ ${TZ_CONF}
