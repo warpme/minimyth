@@ -11,19 +11,20 @@ Current MythTV versions
                                         softpad branch svn 11261 (updated).
     MythTV svn:       version svn15142, trunk svn 15142.
 
-Improved DHCP support
-    - Changed /etc/hdclient-config so that it does not bring down the
-      interface on EXPIRE, FAIL, RELEASE, STOP or TIMEOUT. While this is not
-      very robust, it make dhclient and udhcpc behave more similarly.
-    - Changed /etc/dhclient-config so that dhclient and udhcpc output an
-      MM_TFTP_SERVER values that are the same (or at least more samilar).
-    - Changed /etc/dhclient-config so that it does not reset the interface when
-      the interface has an IP address.
-    - Changed /etc/dhclient-config so that it does not rewrite configuration
-      files that have not changed.
-    - Changed /etc/rc.d/init.d/dhcp so that it always restarts dhclient, even
-      when /etc/dhclient.conf has not changed, resulting in better error
-      checking.
+Changed DHCP support
+    - Switched from dhclient to udhcpc.
+        - Could not make it request the address obtained during NFS boot.
+        - Found bugs in dhclient that could cause memory corruption.
+        - Unfortunately we no longer have vendor specific attributes so we
+          no longer have minimyth.boot-url.
+    - Obsoleted MM_DHCP_MINIMYTH_BOOT_URL
+        - Replaced with MM_MINIMYTH_BOOT_URL.
+    - Changed /etc/rc.d/init.d/dhcp so that it always restarts the udhcpc, even
+      when /etc/udhcpc.conf has not changed, resulting in more predictable
+      behavior.
+
+Removed packages
+    Removed net/dhcp.
 
 Updated packages
     Updated kernel-2.6.23/gspca.
