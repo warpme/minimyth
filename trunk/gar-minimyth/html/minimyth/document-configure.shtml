@@ -347,101 +347,6 @@
                 instead.
               </p>
             </dd>
-            <dt id="dhcp-minimyth-boot-url"><strong>MiniMyth Boot Directory URL</strong></dt>
-            <dd>
-              <p>
-                The MiniMyth boot directory.
-                MiniMyth needs to know the boot directory because the
-                <a href="#location">location of configuration files</a>
-                is relative to the boot directory.
-              </p>
-              <p>
-                The DHCP option is the Encapsulated Vendor Specific Information option 1 (0x01).
-                MiniMyth uses the Vendor Class Identifier
-                (<a href="http://www.iana.org/assignments/bootp-dhcp-parameters">DHCP option</a> 60 (0x3c))
-                with with the value 'miniyth' to identify itself.
-              </p>
-              <p>
-                if you want to use the 'minimyth.boot-url' vendor specific information option in
-                <a href="http://www.isc.org/index.pl?/sw/dhcp/">ISC DHCP</a>,
-                then you will need to define it in your dhcpd.conf file.
-                The 'minimyth.boot-url' vendor specific information option is a string identified by the tag 1 (0x01).
-                As explained in the
-                <a href="http://www.linuxmanpages.com/man5/dhcp-options.5.php">dhcp-options</a>
-                man page,
-                this new option is defined by adding the following line to
-                <a href="http://www.linuxmanpages.com/man5/dhcpd.conf.5.php">dhcpd.conf</a>:
-              </p>
-<pre>option space minimyth
-option minimyth.boot-url code 1 = text;</pre>
-              <p>
-                After that, you can use 'minimyth.boot-url' as you would any other vendor specific information option,
-                with the option value being a URL pointing to the MiniMyth boot directory.
-                For example:
-              </p>
-<pre>class "vendor-classes" {
-    match option vendor-class-identifier;
-}
-subclass "vendor-classes" "minimyth" {
-    vendor-option-space minimyth;
-}
-option minimyth.boot-url "http://tftp.home/minimyth/"</pre>
-              <p>
-                If MiniMyth does not receive this option from the DHCP server,
-                MiniMyth 'guesses' the MiniMyth boot directory using other DHCP provided information as described in the
-                <a href="#location">location of configuration files</a>
-                section.
-                However, you may want to override the guessed boot directory
-                when MiniMyth 'guesses' the wrong boot directory or
-                when MiniMyth 'guesses' the right boot directory
-                but you want to use a different protocol to access the boot directory.
-              </p>
-              <p>
-                For example,
-                I do not like to use the TFTP protocol because it can be slow and unreliable.
-                Therefore, I make my TFTP root directory (/var/tftpboot) available as a virtual web host (tftp.home) as well,
-                allowing my to access the the configuration files using the root directory URL 'http://tftp.home/minimyth/'.
-                Below is section of my Apache Web Server configuration file
-                that makes my TFTP root directory available as a virtual web host.
-              </p>
-<pre>&lt;VirtualHost 192.168.0.1:80&gt;
-    DocumentRoot /var/tftpboot
-    ServerName tftp.home
-    ServerAdmin webmaster@www.home
-    &lt;Directory /var/tftpboot&gt;
-        AllowOverride None
-    &lt;/Directory&gt;
-    &lt;Location /&gt;
-        Order Deny,Allow
-        Deny from all 
-        Dav Off
-        &lt;LimitExcept GET&gt;
-        &lt;/LimitExcept&gt;
-    &lt;/Location&gt;
-    &lt;Location /minimyth&gt;
-        Order Deny,Allow
-        Deny from all 
-        Allow from myth-livingroom.home
-        Allow from myth-parents.home
-        Allow from myth-sp8000e.home
-    &lt;/Location&gt;
-    &lt;Location /minimyth/conf-rw&gt;
-        Dav On
-        FileETag None
-        &lt;LimitExcept GET PUT&gt;
-        &lt;/LimitExcept&gt;
-    &lt;/Location&gt;
-&lt;/VirtualHost&gt;</pre>
-              <p>
-                If you DHCP server does not support this option, then you can use the
-                <a href="document-minimyth_conf.shtml#MM_DHCP_MINIMYTH_BOOT_URL">MM_DHCP_MINIMYTH_BOOT_URL</a>
-                DHCP override variable either on the
-                <a href="#bootline">boot line</a>
-                or in the
-                <a href="#minimyth_conf">MiniMyth configuration file</a>
-                instead.
-              </p>
-            </dd>
           </dl>
         </div>
         <div id="location" class="section">
@@ -467,9 +372,12 @@ option minimyth.boot-url "http://tftp.home/minimyth/"</pre>
           </p>
           <p>
             MiniMyth looks for the MiniMyth configuration directories in the MiniMyth boot directory.
-            If the DHCP server does not provide the
-            <a href="#dhcp-minimyth-boot-url">MiniMyth Boot Directory URL</a>
-            option,
+            If neither the
+            <a href="#bootline">boot line</a>
+            nor the
+            <a href="#minimyth_conf">MiniMyth configuration file</a>
+            provide
+            '<a href="document-minimyth_conf.shtml#MM_MINIMYTH_BOOT_URL">MM_MINIMYTH_BOOT_URL</a>',
             then MiniMyth 'guesses' the location of the boot directory as follows.
             If MiniMyth 'guesses' that
             <a href="document-boot.shtml#network">network boot</a>

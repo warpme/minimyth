@@ -12,55 +12,27 @@ start() {
     local INTERFACE_LIST
     local IP_ADDRESS
 
-    dhcp_global_options='
-        host-name
-        domain-name
-        tcode
-        domain-name-servers
-        ntp-servers
-        log-servers'
-    dhcp_vendor_options='
-        minimyth.boot-url'
+    UDHCPC_CONF='/etc/udhcpc.conf'
 
-    DHCLIENT_CONF='/etc/dhclient.conf'
+    # Create a 'udhcpc.conf' file.
+    /bin/rm -f "${UDHCPC_CONF}~"
+    /bin/mkdir -p "`/usr/bin/dirname ${UDHCPC_CONF}~`"
+    /bin/touch "${UDHCPC_CONF}~"
+    /bin/chmod 644 "${UDHCPC_CONF}~"
+    set | /bin/grep -e '^MM_DHCP_' > "${UDHCPC_CONF}"
+    /bin/mv -f "${UDHCPC_CONF}~" "${UDHCPC_CONF}"
 
-    # Create a 'dhclient.conf' file by starting with the base file and
-    # then adding additional statements based on the DHCP override variables.
-    /bin/rm -f "${DHCLIENT_CONF}~"
-    /bin/mkdir -p "`/usr/bin/dirname ${DHCLIENT_CONF}~`"
-    /bin/touch "${DHCLIENT_CONF}~"
-    /bin/chmod 644 "${DHCLIENT_CONF}~"
-    /usr/bin/test -e "${DHCLIENT_CONF}.base" && /bin/cat "${DHCLIENT_CONF}.base" >> "${DHCLIENT_CONF}~"
-    for dhcp_option in ${dhcp_global_options} ${dhcp_vendor_options} ; do
-        variable_name=MM_DHCP_`/bin/echo ${dhcp_option} \
-            | /bin/sed -e 's/[.-]/_/g' \
-            | /bin/sed -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
-        variable_value=`set | /bin/grep -e "^${variable_name}" | /bin/sed -e "s%^${variable_name}='\(.*\)'$%\1%"`
-        if   /usr/bin/test -z "${variable_value}"        ; then
-            /bin/echo "also request ${dhcp_option} ;"                            >> "${DHCLIENT_CONF}~"
-        elif /usr/bin/test -n "${variable_value}"        && \
-             /usr/bin/test ! "x${variable_value}" = "x!" ; then
-            /bin/echo "supersede ${dhcp_option} \"${variable_value}\" ;"         >> "${DHCLIENT_CONF}~"
-        fi
-    done
-    if /usr/bin/test -n "${dhcp_vendor_options}" ; then
-        /bin/echo "also request vendor-encapsulated-options ;"                   >> "${DHCLIENT_CONF}~"
-    fi
-    /bin/mv -f "${DHCLIENT_CONF}~" "${DHCLIENT_CONF}"
-
-    # If 'dhclient' is not running,
-    # then we need to start 'dhclient' using the new 'dhclient.conf' file.
-    if /usr/bin/test -z "`/bin/pidof dhclient`" ; then
-        mm_message_output info "starting DHCP client ..."
-    else
-        mm_message_output info "restarting DHCP client ..."
-        while /usr/bin/test -n "`/bin/pidof dhclient`" ; do
-            /usr/bin/killall dhclient
+    # If 'udhcpc' is running, then stop it.
+    if /usr/bin/test -n "`/bin/pidof udhcpc`" ; then
+        mm_message_output info "stopping DHCP client ..."
+        while /usr/bin/test -n "`/bin/pidof udhcpc`" 2> /dev/null ; do
+            /usr/bin/killall udhcpc
         done
     fi
 
-    # Start 'dhclient'.
-    if /usr/bin/test -z "`/bin/pidof dhclient`" ; then
+    # Start 'udhcpc'.
+    if /usr/bin/test -z "`/bin/pidof udhcpc`" ; then
+        mm_message_output info "starting DHCP client ..."
         INTERFACE=${MM_NETWORK_INTERFACE}
         if /usr/bin/test -z "${INTERFACE}" ; then
             # Locate a connected network interface.
@@ -84,8 +56,12 @@ start() {
         fi
 
         # Start DHCP on the interface.
-        /bin/mkdir -p /var/db
-        /usr/sbin/dhclient ${INTERFACE}
+        IP_ADDRESS=`/sbin/ifconfig ${INTERFACE} | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
+        if /usr/bin/test -z "${IP_ADDRESS}" ; then
+            /sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i ${INTERFACE}                  > /var/log/udhcpc 2>&1
+        else
+            /sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i ${INTERFACE} -r ${IP_ADDRESS} > /var/log/udhcpc 2>&1
+        fi
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: DHCP on interface '${INTERFACE}' failed."
             exit 1
@@ -105,7 +81,7 @@ start() {
 stop() {
 
     mm_message_output info "stopping DHCP client ..."
-    /usr/bin/test -n "`/bin/pidof dhclient`" && /usr/bin/killall dhclient
+    /usr/bin/test -n "`/bin/pidof udhcpc`" && /usr/bin/killall udhcpc
 
     return 0
 }
