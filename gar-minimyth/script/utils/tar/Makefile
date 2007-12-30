@@ -20,3 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+# Needed to compile with GCC 4.3 and GLIBC 2.6.1.
+CFLAGS   := $(CFLAGS)   -fgnu89-inline
+CXXFLAGS := $(CXXFLAGS) -fgnu89-inline

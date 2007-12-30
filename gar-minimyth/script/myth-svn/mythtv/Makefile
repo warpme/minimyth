@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ kernel/kernel lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -50,7 +50,7 @@ CONFIGURE_ARGS = \
 	--disable-v4l \
 	--disable-ivtv \
 	--disable-dvb \
-	--dvb-path="$(DESTDIR)$(LINUX_SOURCEDIR)/include" \
+	--dvb-path="/dev/null" \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
@@ -72,7 +72,7 @@ CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 CFLAGS += -DUSE_HACK_FOR_BROKEN_I420_SUPPORT_IN_DRIVER
