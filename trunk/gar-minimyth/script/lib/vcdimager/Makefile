@@ -10,7 +10,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libcdio-mini
+DEPENDS   = lang/c lib/libcdio-mini
+BUILDDEPS = lib/libxml2
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
