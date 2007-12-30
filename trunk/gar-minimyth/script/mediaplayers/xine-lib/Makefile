@@ -3,7 +3,7 @@ GARVERSION = 1.1.8
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-linux_2.6.23.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
