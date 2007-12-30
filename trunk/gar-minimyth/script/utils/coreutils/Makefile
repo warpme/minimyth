@@ -30,3 +30,7 @@ post-install:
 	@# We need to use the system's 'su', because it must be suid.
 	@$(if $(filter build,$(DESTIMG)),rm -f $(DESTDIR)$(bindir)/su)
 	@$(MAKECOOKIE)
+
+# Needed to compile with GCC 4.3 and GLIBC 2.6.1.
+CFLAGS   := $(CFLAGS)   -fgnu89-inline
+CXXFLAGS := $(CXXFLAGS) -fgnu89-inline
