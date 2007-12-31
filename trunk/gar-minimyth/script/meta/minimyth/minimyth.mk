@@ -172,14 +172,22 @@ COPY_FILES = \
 		mkdir -p $(mm_ROOTFSDIR)$${dir} ; \
 	done ; \
 	for file_item in $(strip $(4)) ; do \
+		arg_count=`echo -n $${file_item} | sed -e 's%[^:]%%g' | wc -c` ; \
+		arg_count=$$(( $${arg_count} + 1 )) ; \
+		file_name=`echo -n $${file_item} | cut -d ':' -f 1` ; \
+		if test $${arg_count} -ge 2 ; then \
+			copy_flags=`echo -n $${file_item} | cut -d ':' -f 2` ; \
+		else \
+			copy_flags='' ; \
+		fi ; \
 		found="" ; \
 		for dir in $(strip $(3)) ; do \
 			file_list="" ; \
 			if test -e $(DESTDIR)/$${dir} ; then \
 				if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
-					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type d 2> /dev/null` ; \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_name} -maxdepth 0 -type d 2> /dev/null` ; \
 				else \
-					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type f 2> /dev/null` ; \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_name} -maxdepth 0 -type f 2> /dev/null` ; \
 				fi; \
 			fi ; \
 			for file in $${file_list} ; do \
@@ -191,11 +199,11 @@ COPY_FILES = \
 						if test -d $${source_file} ; then \
                                        			target_dir=`dirname $${target_file}` ; \
                                        			mkdir -p $${target_dir} ; \
-							cp -fa  $${source_file} $${target_file} ; \
+							cp -fa$${copy_flags} $${source_file} $${target_file} ; \
 						else \
                                        			target_dir=`dirname $${target_file}` ; \
                                        			mkdir -p $${target_dir} ; \
-							cp -f  $${source_file} $${target_file} ; \
+							cp -f$${copy_flags}  $${source_file} $${target_file} ; \
 						fi ; \
 					fi ; \
 				fi ; \
