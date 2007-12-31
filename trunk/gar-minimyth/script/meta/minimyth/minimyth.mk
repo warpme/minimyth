@@ -199,11 +199,11 @@ COPY_FILES = \
 						if test -d $${source_file} ; then \
                                        			target_dir=`dirname $${target_file}` ; \
                                        			mkdir -p $${target_dir} ; \
-							cp -fa$${copy_flags} $${source_file} $${target_file} ; \
+							cp -fa $${copy_flags} $${source_file} $${target_file} ; \
 						else \
                                        			target_dir=`dirname $${target_file}` ; \
                                        			mkdir -p $${target_dir} ; \
-							cp -f$${copy_flags}  $${source_file} $${target_file} ; \
+							cp -f  $${copy_flags} $${source_file} $${target_file} ; \
 						fi ; \
 					fi ; \
 				fi ; \
