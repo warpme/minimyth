@@ -51,6 +51,12 @@ pre-install:
 	@$(MAKECOOKIE)
 
 post-install:
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevtrigger
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevsettle
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevcontrol
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(sbindir)))$(esbindir)/udevadm $(DESTDIR)$(sbindir)/udevmonitor
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevinfo
+	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevtest
 	@rm -f $(DESTDIR)$(libdir)/libvolume_id.so
 	ln -s .$(call DIRSTODOTS,$(libdir))$(elibdir)/libvolume_id.so.0 $(DESTDIR)$(libdir)/libvolume_id.so
 	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libvolume_id.pc
