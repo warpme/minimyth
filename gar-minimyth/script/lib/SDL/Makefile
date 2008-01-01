@@ -1,5 +1,5 @@
 GARNAME = SDL
-GARVERSION = 1.2.12
+GARVERSION = 1.2.13
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
