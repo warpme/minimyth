@@ -205,9 +205,15 @@ COPY_FILES = \
 								sed -e 's%^.* %%' -e 's%^.%%' -e 's%.$$%%'`" ; \
 							source_file="`dirname $${source_file}`/$${link}" ; \
 							target_file="`dirname $${target_file}`/$${link}" ; \
-                                       			target_dir=`dirname $${target_file}` ; \
-                                       			mkdir -p $${target_dir} ; \
-							cp $${cp_flags} $${source_file} $${target_file} ; \
+							if test ! -e $${source_file} ; then \
+								echo "error: $${source_file} not found." ; \
+								exit 1 ; \
+							fi ; \
+							if test ! -e $${target_file} ; then \
+                                       				target_dir=`dirname $${target_file}` ; \
+                                       				mkdir -p $${target_dir} ; \
+								cp $${cp_flags} $${source_file} $${target_file} ; \
+							fi ; \
 						done ; \
 					fi ; \
 				fi ; \
