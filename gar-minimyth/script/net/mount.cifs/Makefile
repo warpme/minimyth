@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel
+DEPENDS = lang/c
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom

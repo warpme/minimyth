@@ -10,10 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c xorg/xorg
-ifneq ($(DESTIMG),build)
-DEPENDS   += lib/alsa-lib
-endif
+DEPENDS    = lang/c lib/alsa-lib xorg/xorg
 BUILDDEPS  = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

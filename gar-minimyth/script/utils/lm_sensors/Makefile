@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/sysfsutils
+DEPENDS = lang/c lib/sysfsutils
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile

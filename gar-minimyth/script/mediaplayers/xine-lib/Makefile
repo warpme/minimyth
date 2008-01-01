@@ -10,12 +10,14 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/vcdimager lib/zlib xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/vcdimager lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+# Linux is only used for dha-kmod, which is disabled.
+# Therefore, --with-linux-path is set to '/dev/null'.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -92,7 +94,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-dxheaders \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
-	--with-linux-path="$(DESTDIR)$(LINUX_SOURCEDIR)" \
+	--with-linux-path="/dev/null" \
 	--with-vorbis \
 	--with-theora \
 	--without-speex \
@@ -120,7 +122,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 CONFIGURE_ENV = \
 	lt_cv_path_MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 pre-configure:
