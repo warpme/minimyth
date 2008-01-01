@@ -172,22 +172,14 @@ COPY_FILES = \
 		mkdir -p $(mm_ROOTFSDIR)$${dir} ; \
 	done ; \
 	for file_item in $(strip $(4)) ; do \
-		arg_count=`echo -n $${file_item} | sed -e 's%[^:]%%g' | wc -c` ; \
-		arg_count=$$(( $${arg_count} + 1 )) ; \
-		file_name=`echo -n $${file_item} | cut -d ':' -f 1` ; \
-		if test $${arg_count} -ge 2 ; then \
-			copy_flags=`echo -n $${file_item} | cut -d ':' -f 2` ; \
-		else \
-			copy_flags='' ; \
-		fi ; \
 		found="" ; \
 		for dir in $(strip $(3)) ; do \
 			file_list="" ; \
 			if test -e $(DESTDIR)/$${dir} ; then \
 				if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
-					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_name} -maxdepth 0 -type d 2> /dev/null` ; \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type d 2> /dev/null` ; \
 				else \
-					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_name} -maxdepth 0 -type f 2> /dev/null` ; \
+					file_list=`cd $(DESTDIR)/$${dir} ; find -L $${file_item} -maxdepth 0 -type f 2> /dev/null` ; \
 				fi; \
 			fi ; \
 			for file in $${file_list} ; do \
@@ -196,15 +188,27 @@ COPY_FILES = \
 					source_file="$(DESTDIR)/$${dir}/$${file}" ; \
 					target_file="$(mm_ROOTFSDIR)/$${dir}/$${file}" ; \
 					if test ! -e $${target_file} ; then \
-						if test -d $${source_file} ; then \
-                                       			target_dir=`dirname $${target_file}` ; \
-                                       			mkdir -p $${target_dir} ; \
-							cp -fa$${copy_flags} $${source_file} $${target_file} ; \
-						else \
-                                       			target_dir=`dirname $${target_file}` ; \
-                                       			mkdir -p $${target_dir} ; \
-							cp -f$${copy_flags}  $${source_file} $${target_file} ; \
+						cp_flags=""                ; \
+						cp_flags="$${cp_flags} -p" ; \
+						file -L $${source_file} | grep -i -q 'ELF ..-bit LSB shared object' ; \
+						if test $$? -ne 0 ; then \
+							cp_flags="$${cp_flags} -d" ; \
 						fi ; \
+						if test -d $${source_file} ; then \
+							cp_flags="$${cp_flags} -R" ; \
+						fi ; \
+                                       		target_dir=`dirname $${target_file}` ; \
+                                       		mkdir -p $${target_dir} ; \
+						cp $${cp_flags} $${source_file} $${target_file} ; \
+						while file $${target_file} | grep -i -q 'symbolic link to' ; do \
+							link="`file $${source_file} | \
+								sed -e 's%^.* %%' -e 's%^.%%' -e 's%.$$%%'`" ; \
+							source_file="`dirname $${source_file}`/$${link}" ; \
+							target_file="`dirname $${target_file}`/$${link}" ; \
+                                       			target_dir=`dirname $${target_file}` ; \
+                                       			mkdir -p $${target_dir} ; \
+							cp $${cp_flags} $${source_file} $${target_file} ; \
+						done ; \
 					fi ; \
 				fi ; \
 			done ; \
@@ -483,25 +487,25 @@ mm-make-busybox:
 mm-copy:
 	@# Copy versions.
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)-build
-	@cp -fa $(build_DESTDIR)$(build_versiondir)/* $(mm_ROOTFSDIR)$(versiondir)-build
+	@cp -pdR $(build_DESTDIR)$(build_versiondir)/* $(mm_ROOTFSDIR)$(versiondir)-build
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
-	@cp -fa $(DESTDIR)$(versiondir)/* $(mm_ROOTFSDIR)$(versiondir)
+	@cp -pdR $(DESTDIR)$(versiondir)/* $(mm_ROOTFSDIR)$(versiondir)
 	@rm -rf $(mm_ROOTFSDIR)$(versiondir)/minimyth
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_versiondir)
-	@cp -fa $(DESTDIR)$(extras_versiondir)/* $(mm_ROOTFSDIR)$(extras_versiondir)
+	@cp -pdR $(DESTDIR)$(extras_versiondir)/* $(mm_ROOTFSDIR)$(extras_versiondir)
 	@# Copy licenses.
 	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)-build
-	@cp -fa $(build_DESTDIR)$(build_licensedir)/* $(mm_ROOTFSDIR)$(licensedir)-build
+	@cp -pdR $(build_DESTDIR)$(build_licensedir)/* $(mm_ROOTFSDIR)$(licensedir)-build
 	@mkdir -p $(mm_ROOTFSDIR)$(licensedir)
-	@cp -fa $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
+	@cp -pdR $(DESTDIR)$(licensedir)/* $(mm_ROOTFSDIR)$(licensedir)
 	@rm -rf $(mm_ROOTFSDIR)$(licensedir)/minimyth
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
-	@cp -fa $(DESTDIR)$(extras_licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
+	@cp -pdR $(DESTDIR)$(extras_licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
 	@# Copy QT mysql plugin.
 	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
-	@cp -fa $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
+	@cp -pdR $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
 	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
-	@cp -fa ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
+	@cp -pdR ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
 	@# Copy binaries, etcs, shares, and libraries.
 	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
@@ -518,7 +522,7 @@ mm-make-conf:
 	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@cp -r ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
+	@cp -pdR ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
@@ -527,22 +531,22 @@ mm-make-conf:
 	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
 	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'  $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv
-	@cp -r  ./dirs/usr/share/mythtv/*                $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
+	@cp -pdR  ./dirs/usr/share/mythtv/*              $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
-	@cp -r  $(mm_HOME)/html/css/*                    $(mm_ROOTFSDIR)/srv/www/css/
+	@cp -pdR  $(mm_HOME)/html/css/*                  $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
-	@cp -r  $(mm_HOME)/html/include/*                $(mm_ROOTFSDIR)/srv/www/include/
+	@cp -pdR  $(mm_HOME)/html/include/*              $(mm_ROOTFSDIR)/srv/www/include/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
-	@cp -r  $(mm_HOME)/html/script/*                 $(mm_ROOTFSDIR)/srv/www/script/
-	@cp -r  $(mm_HOME)/html/minimyth                 $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdR  $(mm_HOME)/html/script/*               $(mm_ROOTFSDIR)/srv/www/script/
+	@cp -pdR  $(mm_HOME)/html/minimyth               $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
@@ -623,7 +627,7 @@ mm-copy-libs:
 			for lib in $${new_list} ; do \
 				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
 				mkdir -p $(mm_ROOTFSDIR)/$${dir} ; \
-				cp -f $(DESTDIR)/$${lib} $(mm_ROOTFSDIR)/$${dir} ; \
+				cp -p $(DESTDIR)/$${lib} $(mm_ROOTFSDIR)/$${dir} ; \
 			done ; \
 		fi ; \
 		bin_list= ; \
@@ -640,7 +644,7 @@ mm-copy-kernel-modules:
 		for module_dep in $${module_deps} ; do \
 			if [ ! -e $(mm_ROOTFSDIR)$${module_dep} ] ; then \
 				mkdir -p `dirname $(mm_ROOTFSDIR)$${module_dep}` ; \
-				cp $(DESTDIR)$${module_dep} $(mm_ROOTFSDIR)$${module_dep} ; \
+				cp -pd $(DESTDIR)$${module_dep} $(mm_ROOTFSDIR)$${module_dep} ; \
 			fi ; \
 		done ; \
 	done
@@ -677,25 +681,25 @@ mm-make-other:
 	@echo "$(mm_VERSION)" > $(mm_STAGEDIR)/version
 	@# Get html documentation.
 	@rm -rf $(mm_STAGEDIR)/html
-	@cp -r $(mm_HOME)/html $(mm_STAGEDIR)
+	@cp -pdR $(mm_HOME)/html $(mm_STAGEDIR)
 	@# Get scripts
 	@rm -rf   $(mm_STAGEDIR)/scripts
 	@mkdir -p $(mm_STAGEDIR)/scripts
-	@cp ./files/mm_local_install $(mm_STAGEDIR)/scripts/mm_local_install
-	@cp ./files/mm_local_update  $(mm_STAGEDIR)/scripts/mm_local_update
-	@cp ./files/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
+	@cp  -pd ./files/mm_local_install $(mm_STAGEDIR)/scripts/mm_local_install
+	@cp  -pd ./files/mm_local_update  $(mm_STAGEDIR)/scripts/mm_local_update
+	@cp  -pd ./files/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
 	@# Get kernel.
 	@rm -rf $(mm_STAGEDIR)/kernel
 	@cp $(DESTDIR)/$(LINUX_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
 	@# Get local helper.
 	@rm -rf   $(mm_STAGEDIR)/helper
 	@mkdir -p $(mm_STAGEDIR)/helper
-	@cp ./files/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
+	@cp  -pd ./files/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
 	@cd ${mm_STAGEDIR}/helper ; md5sum mm_local_helper > mm_local_helper.md5
 	@# Get /usr/bin MiniMyth scripts.
-	@cp ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@cp  -pd ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
-	@cp ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
+	@cp  -pd ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
@@ -738,7 +742,7 @@ mm-make-rootfs:
 	@ln -s ../rootfs-ro/bin/mount       $(mm_ROOTFSDIR)/bin/mount
 	@ln -s ../rootfs-ro/sbin/pivot_root $(mm_ROOTFSDIR)/sbin/pivot_root
 	@ln -s ../rootfs-ro/bin/sh          $(mm_ROOTFSDIR)/bin/sh
-	@cp -r ./dirs/initrd/sbin/init      $(mm_ROOTFSDIR)/sbin/init
+	@cp -pdR ./dirs/initrd/sbin/init    $(mm_ROOTFSDIR)/sbin/init
 
 mm-remove-svn:
 	@find $(mm_STAGEDIR) -name .svn -exec rm -rf '{}' +
@@ -772,13 +776,13 @@ mm-make-distro-ram:
 	@rm -rf   $(mm_STAGEDIR)/ram-$(mm_NAME)
 	@mkdir -p $(mm_STAGEDIR)/ram-$(mm_NAME)
 	@# Get version.
-	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/version $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@# Get documentation 
-	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@# Get scripts
-	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@# Get kernel.
-	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/ram-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/ram-$(mm_NAME)/
 	@# Make root file system squashfs image file.
 	@echo "    making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
@@ -822,13 +826,13 @@ mm-make-distro-nfs:
 	@rm -rf   $(mm_STAGEDIR)/nfs-$(mm_NAME)
 	@mkdir -p $(mm_STAGEDIR)/nfs-$(mm_NAME)
 	@# Get version.
-	@cp -r $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/version $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Get documentation 
-	@cp -r $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/html    $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Get scripts
-	@cp -r $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/scripts $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@# Get kernel.
-	@cp -r $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
+	@cp -pdR $(mm_STAGEDIR)/kernel  $(mm_STAGEDIR)/nfs-$(mm_NAME)/
 	@echo "    making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
@@ -868,18 +872,18 @@ mm-make-distro-local:
 	@echo "  making local (private) distribution"
 	@rm -rf   $(mm_LOCALDIR)
 	@mkdir -p $(mm_LOCALDIR)
-	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_LOCALDIR)/scripts
-	@cp -r  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
-	@cd $(mm_LOCALDIR) ; md5sum version                        > version.md5
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_LOCALDIR)/html.tar.bz2
-	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2                   > html.tar.bz2.md5
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
-	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2                 > helper.tar.bz2.md5
-	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
-	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2         > gar-$(mm_NAME).tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/scripts                $(mm_LOCALDIR)/scripts
+	@cp -pdR  $(mm_STAGEDIR)/version                $(mm_LOCALDIR)/version
+	@cd $(mm_LOCALDIR) ; md5sum version                          > version.md5
+	@cp -pdR  $(mm_STAGEDIR)/html.tar.bz2           $(mm_LOCALDIR)/html.tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2                     > html.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2                   > helper.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
 		echo "    making RAM root file system part of the distribution"                 ; \
-		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_LOCALDIR)/ram-$(mm_NAME)             ; \
+		cp -pdR  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_LOCALDIR)/ram-$(mm_NAME)           ; \
 		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/ram-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
@@ -889,7 +893,7 @@ mm-make-distro-local:
 	 fi
 	@if [ -e $(mm_STAGEDIR)/nfs-$(mm_NAME) ] ; then \
 		echo "    making NFS root file system part of the distribution"                 ; \
-		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_LOCALDIR)/nfs-$(mm_NAME)             ; \
+		cp -pdR  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_LOCALDIR)/nfs-$(mm_NAME)           ; \
 		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_LOCALDIR)/nfs-$(mm_NAME) \
 			_MM_CHECKSUM_CREATE_FILE=minimyth.md5                                   ; \
@@ -903,18 +907,18 @@ mm-make-distro-share:
 	@echo "  making share (public) distribution"
 	@rm -rf   $(mm_SHAREDIR)
 	@mkdir -p $(mm_SHAREDIR)
-	@cp -r  $(mm_STAGEDIR)/scripts                $(mm_SHAREDIR)/scripts
-	@cp -r  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
-	@cd $(mm_SHAREDIR) ; md5sum version                        > version.md5
-	@cp -r  $(mm_STAGEDIR)/html.tar.bz2           $(mm_SHAREDIR)/html.tar.bz2
-	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2                   > html.tar.bz2.md5
-	@cp -r  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
-	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2                 > helper.tar.bz2.md5
-	@cp -r  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
-	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2         > gar-$(mm_NAME).tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/scripts                $(mm_SHAREDIR)/scripts
+	@cp -pdR  $(mm_STAGEDIR)/version                $(mm_SHAREDIR)/version
+	@cd $(mm_SHAREDIR) ; md5sum version                          > version.md5
+	@cp -pdR  $(mm_STAGEDIR)/html.tar.bz2           $(mm_SHAREDIR)/html.tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2                     > html.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2                   > helper.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
 		echo "    making RAM root file system part of the distribution"                 ; \
-		cp -r  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_SHAREDIR)/ram-$(mm_NAME)             ; \
+		cp -pdR  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_SHAREDIR)/ram-$(mm_NAME)           ; \
 		rm -rf $(mm_SHAREDIR)/ram-$(mm_NAME)/extras.sfs                                 ; \
 		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/ram-$(mm_NAME) \
@@ -925,7 +929,7 @@ mm-make-distro-share:
 	 fi
 	@if [ -e $(mm_STAGEDIR)/nfs-$(mm_NAME) ] ; then \
 		echo "    making NFS root file system part of the distribution"                 ; \
-		cp -r  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_SHAREDIR)/nfs-$(mm_NAME)             ; \
+		cp -pdR  $(mm_STAGEDIR)/nfs-$(mm_NAME)  $(mm_SHAREDIR)/nfs-$(mm_NAME)           ; \
 		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)/extras.tar.bz2                             ; \
 		$(MAKE) -f minimyth.mk mm-checksum-create DESTIMG=$(DESTIMG)      \
 			_MM_CHECKSUM_CREATE_BASE=$(mm_SHAREDIR)/nfs-$(mm_NAME) \
@@ -934,7 +938,7 @@ mm-make-distro-share:
 		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)                                            ; \
 		cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
 	 fi
-	@cp -r ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
+	@cp -pdR ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
 
 mm-make-distro: \
 	mm-make-distro-base \
@@ -995,10 +999,10 @@ mm-install: mm-check
 	@rm -rf   $(mm_DESTDIR)
 	@mkdir -p $(mm_DESTDIR)
 	@if [ -e $(mm_LOCALDIR) ] ; then \
-		cp -rf $(mm_LOCALDIR) $(mm_DESTDIR)/ ; \
+		cp -pdR $(mm_LOCALDIR) $(mm_DESTDIR)/ ; \
 	 fi
 	@if [ -e $(mm_SHAREDIR) ] ; then \
-		cp -rf $(mm_SHAREDIR) $(mm_DESTDIR)/ ; \
+		cp -pdR $(mm_SHAREDIR) $(mm_DESTDIR)/ ; \
 	 fi
 	@if [ $(mm_INSTALL_RAM_BOOT) = yes ] || [ $(mm_INSTALL_NFS_BOOT) = yes ] || [ $(mm_INSTALL_LATEST) = yes ] ; then \
 		su -c " \
@@ -1022,11 +1026,11 @@ mm-install: mm-check
 				tar -jxf $(mm_LOCALDIR)/ram-$(mm_NAME).tar.bz2 -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                        ; \
 				\
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                                                     ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version    $(mm_TFTP_ROOT)/$(mm_NAME)/version    ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/kernel     $(mm_TFTP_ROOT)/$(mm_NAME)/kernel     ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/rootfs     $(mm_TFTP_ROOT)/$(mm_NAME)/rootfs     ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/themes     $(mm_TFTP_ROOT)/$(mm_NAME)/themes     ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/extras.sfs $(mm_TFTP_ROOT)/$(mm_NAME)/extras.sfs ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version    $(mm_TFTP_ROOT)/$(mm_NAME)/version    ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/kernel     $(mm_TFTP_ROOT)/$(mm_NAME)/kernel     ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/rootfs     $(mm_TFTP_ROOT)/$(mm_NAME)/rootfs     ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/themes     $(mm_TFTP_ROOT)/$(mm_NAME)/themes     ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/extras.sfs $(mm_TFTP_ROOT)/$(mm_NAME)/extras.sfs ; \
 				\
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                                                                 ; \
 			fi ; \
@@ -1039,8 +1043,8 @@ mm-install: mm-check
 				\
 				mkdir -p $(mm_TFTP_ROOT)/                                                                                    ; \
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                                                          ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/version $(mm_TFTP_ROOT)/$(mm_NAME)/version            ; \
-				cp -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/kernel  $(mm_TFTP_ROOT)/$(mm_NAME)/kernel             ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/version $(mm_TFTP_ROOT)/$(mm_NAME)/version            ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/kernel  $(mm_TFTP_ROOT)/$(mm_NAME)/kernel             ; \
 				\
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/rootfs.tar.bz2  -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp     ; \
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/extras.tar.bz2  -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp     ; \
@@ -1055,7 +1059,7 @@ mm-install: mm-check
 			\
 			if [ $(mm_INSTALL_LATEST)  = yes ] ; then \
 				mkdir -p $(mm_TFTP_ROOT)/latest                    ; \
-				cp -rf   $(mm_LOCALDIR)/* $(mm_TFTP_ROOT)/latest/  ; \
+				cp -pdR  $(mm_LOCALDIR)/* $(mm_TFTP_ROOT)/latest/  ; \
 			fi ; \
 		" ; \
 	fi
