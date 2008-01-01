@@ -18,6 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-static \
 	--enable-shared \
+	--disable-python \
 	--with-gnu-ld \
 	--with-tmpdir="$(rootdir)/tmp" \
 	--with-alsa-devdir="$(rootdir)/dev/snd" \
