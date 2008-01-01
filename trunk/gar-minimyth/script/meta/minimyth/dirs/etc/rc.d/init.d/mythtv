@@ -70,6 +70,10 @@ start() {
         if /bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
             if /bin/su -c "/usr/bin/test -w ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
                 /bin/su -c "/bin/mkdir -p ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth
+            else
+                /usr/bin/logger -t minimyth -p "local0.err" \
+                    "error: '${MM_MYTHDVD_MOUNTPOINT}' exists but is not writable by user 'minimyth'."
+                exit 1
             fi
         fi
         if /bin/su -c "/usr/bin/test -d ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
@@ -78,7 +82,15 @@ start() {
                 TRANSCODE=`/usr/bin/which transcode`
                 mm_mythdb_settings_set "TranscodeCommand" "${TRANSCODE}"
                 /bin/su -c "/usr/bin/mtd --daemon" - minimyth
+            else
+                /usr/bin/logger -t minimyth -p "local0.err" \
+                    "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' exists but is not writable by user 'minimyth'."
+                exit 1
             fi
+        else
+            /usr/bin/logger -t minimyth -p "local0.err" \
+                "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' exists but is not a directory."
+            exit 1
         fi
     fi
 
@@ -188,7 +200,7 @@ start() {
         fi
         if /usr/bin/test ${found} -eq 0 ; then
             /usr/bin/logger -t minimyth -p "local0.warn" \
-                "warning: 'certain DVDs may not play. see <http://`/bin/hostname`/minimyth/document-faq.shtml#dvd>"
+                "warning: certain DVDs may not play. see <http://`/bin/hostname`/minimyth/document-faq.shtml#dvd>"
         fi
     fi
 
