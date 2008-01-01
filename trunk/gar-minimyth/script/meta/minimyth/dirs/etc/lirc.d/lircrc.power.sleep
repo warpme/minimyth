@@ -1,44 +1,8 @@
 ################################################################################
 # lircrc file for enabling the power button to put the frontend sleep.
-#
-# The power button toggles the frontend in to and out of sleep. Unfortunately,
-# because it is LIRC that puts the frontend to sleep and it is the motherboard
-# that brings the frontend out of sleep, it is possible for the motherboard to
-# bring the frontend out of sleep and LIRC to put the frontend back to sleep
-# with a single press of the power button. To work around this potential
-# problem, the MiniMyth implements the following restriction. After putting the
-# frontend to sleep with the power button, you cannot put the frontend to sleep
-# with the power button again until either the frontend has been awake for 10
-# seconds or a button other than the power button has been pressed. The Rube
-# Goldberg contraption below implements this restriction.
 ################################################################################
-# Set flag power button active flag.
 begin
     prog = irexec
     button = KEY_POWER
-    config = /bin/sh -c 'base=/var/cache/lircrc/button.key_power ; /bin/mkdir -p `/usr/bin/dirname ${base}` ; /bin/touch ${base}.active'
-end
-
-# If power button disabled flag is not set and mm_sleep is not running, then
-# then set the power button disabled flag, run mm_sleep, wait for 10 seconds and
-# clear the power button disabled flag.
-# The power button disabled flag includes the pid so that each call sets and
-# clears its own power button disabled flag.
-begin
-    prog = irexec
-    button = KEY_POWER
-    config = /bin/sh -c 'base=/var/cache/lircrc/button.key_power ; /usr/bin/test ! -e ${base}.disabled.* && /usr/bin/test -z `/bin/pidof mm_sleep` && /bin/mkdir -p `/usr/bin/dirname ${base}` && /bin/touch ${base}.disabled.$$ && /usr/bin/mm_sleep && /bin/sleep 10 && /bin/rm -f ${base}.disabled.$$' &
-end
-
-# If power button active flag is not set, then clear the power button disabled flag.
-# Therefore, some other button must be pushed between power button pushes for sleep to reactivate.
-begin
-    prog = irexec
-    config = /bin/sh -c 'base=/var/cache/lircrc/button.key_power ; /usr/bin/test ! -e ${base}.active && /bin/rm -f ${base}.disabled.*'
-end
-
-# Clear flag indicating power button is active
-begin
-    prog = irexec
-    config = /bin/sh -c 'base=/var/cache/lircrc/button.key_power ; /bin/rm -f ${base}.active'
+    config = /usr/bin/mm_sleep &
 end

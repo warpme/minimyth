@@ -1,6 +1,17 @@
 #!/bin/sh
 
+# Only allow one running instance of mm_sleep.
+pids=`/bin/pidof mm_sleep`
+instances=`/bin/echo ${pids} | /usr/bin/wc -w`
+if /usr/bin/test ${instances} -ne 1 ; then
+    exit 1
+fi
+
 . /etc/rc.d/functions
+
+# Create the state directory for mm_sleep.
+/bin/rm -fr   /var/lib/mm_sleep.$$
+/bin/mkdir -p /var/lib/mm_sleep.$$
 
 # If MPlayer is running, then exit it.
 mm_x_xmacroplay 'xine' 'KeyStr Escape\n'
@@ -58,6 +69,14 @@ EOF
     fi
 fi
 
+# If we allow the remote power button to wake up the frontend,
+# then stop irexec.
+# button press used to for wake up.
+while /usr/bin/test -n "`/bin/pidof irexec`" ; do
+    /bin/touch /var/lib/mm_sleep.$$/irexec
+    /usr/bin/killall irexec 2> /dev/null
+done
+
 # Stop X
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_stop
@@ -73,3 +92,11 @@ fi
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_start
 fi
+
+if /usr/bin/test -e /var/lib/mm_sleep.$$/irexec ; then
+    /usr/bin/test -z `/bin/pidof irexec` && /usr/bin/irexec -d /etc/lircrc
+    /bin/rm -f /var/lib/mm_sleep.$$/irexec
+fi
+
+# Remove the state directory for mm_sleep.
+/bin/rm -fr   /var/lib/mm_sleep.$$
