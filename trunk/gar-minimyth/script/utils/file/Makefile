@@ -1,5 +1,5 @@
 GARNAME = file
-GARVERSION = 4.22
+GARVERSION = 4.23
 CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.astron.com/pub/$(GARNAME)/
 MASTER_SITES += ftp://ftp.gw.com/mirrors/pub/unix/$(GARNAME)/
