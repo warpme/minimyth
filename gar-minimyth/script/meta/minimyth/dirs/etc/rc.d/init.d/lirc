@@ -8,8 +8,11 @@
 
 # Find USB devices associated with each LIRC device and enable ACPI wakeup.
 remote_wakeup_enable() {
+    local device_list="$1"
+
     local lirc_list
     local lirc
+    local name
     local busnum
     local serial
     local entry
@@ -25,6 +28,13 @@ remote_wakeup_enable() {
         if /usr/bin/test -z "${lirc}" ; then
             continue
         fi
+
+        name="/dev/`/sbin/udevadm info --query=name --path=/sys/class/lirc/${lirc}`"
+        /bin/echo " ${device_list}" | grep -q " ${name},"
+        if /usr/bin/test $? -ne 0 ; then
+            continue
+        fi
+
         if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/busnum" ; then
             continue
         fi
@@ -294,7 +304,7 @@ start() {
 
     # Enable wakeup on remote.
     if /usr/bin/test "${MM_LIRC_WAKEUP_ENABLED}" = "yes" ; then
-        remote_wakeup_enable
+        remote_wakeup_enable "${device_list}"
     fi
 }
 
