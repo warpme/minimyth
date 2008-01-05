@@ -69,9 +69,14 @@ EOF
     fi
 fi
 
-# If we allow the remote power button to wake up the frontend,
-# then stop irexec.
-# button press used to for wake up.
+# Stop LCDd because it can stop working as a result of suspend.
+while /usr/bin/test -n "`/bin/pidof LCDd`" ; do
+    /bin/touch /var/lib/mm_sleep.$$/LCDd
+    /usr/bin/killall LCDd 2> /dev/null
+done
+
+# Stop irexec so that the remote button press used to wake up the frontend
+# does not suspend the frontend.
 while /usr/bin/test -n "`/bin/pidof irexec`" ; do
     /bin/touch /var/lib/mm_sleep.$$/irexec
     /usr/bin/killall irexec 2> /dev/null
@@ -93,9 +98,16 @@ if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_start
 fi
 
+# If irexec was running before suspend, then restart it.
 if /usr/bin/test -e /var/lib/mm_sleep.$$/irexec ; then
     /usr/bin/test -z `/bin/pidof irexec` && /usr/bin/irexec -d /etc/lircrc
     /bin/rm -f /var/lib/mm_sleep.$$/irexec
+fi
+
+# If LCDd was running before suspend, then restart it.
+if /usr/bin/test -e /var/lib/mm_sleep.$$/LCDd ; then
+    /usr/bin/test -z `/bin/pidof irexec` && /etc/LCDd -c /etc/LCDd.conf
+    /bin/rm -f /var/lib/mm_sleep.$$/LCDd
 fi
 
 # Remove the state directory for mm_sleep.
