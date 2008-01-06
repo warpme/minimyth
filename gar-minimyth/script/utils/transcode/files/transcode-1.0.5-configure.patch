@@ -1,9 +1,9 @@
-diff -Naur transcode-1.0.4-old/configure.in transcode-1.0.4-new/configure.in
---- transcode-1.0.4-old/configure.in	2007-09-09 12:35:51.000000000 -0700
-+++ transcode-1.0.4-new/configure.in	2007-09-23 16:10:34.000000000 -0700
+diff -Naur transcode-1.0.5-old/configure.in transcode-1.0.5-new/configure.in
+--- transcode-1.0.5-old/configure.in	2008-01-05 06:37:14.000000000 -0800
++++ transcode-1.0.5-new/configure.in	2008-01-05 12:14:42.000000000 -0800
 @@ -612,7 +612,7 @@
    [enable_libavcodec_static=no])
- LIBAVCODEC_EXTRA_LIBS="$LIBAVCODEC_EXTRA_LIBS -lm -lz $PTHREAD_LIBS"
+ LIBAVCODEC_EXTRA_LIBS="$LIBAVCODEC_EXTRA_LIBS $($PKG_CONFIG --libs libavcodec)"
  TC_PKG_CHECK(libavcodec, required, LIBAVCODEC, no, [ffmpeg/avcodec.h],
 - avcodec, avcodec_thread_init, FFMpeg, [http://www.ffmpeg.org/])
 + avcodec, avcodec_thread_init, libavcodec, [http://www.ffmpeg.org/])
@@ -12,14 +12,14 @@ diff -Naur transcode-1.0.4-old/configure.in transcode-1.0.4-new/configure.in
    CPPFLAGS="$CPPFLAGS $LIBAVCODEC_CFLAGS"
 @@ -674,7 +674,7 @@
  dnl
- LIBMPEG2_EXTRA_LIBS="$LIBMPEG2_EXTRA_LIBS -lmpeg2convert"
+ LIBMPEG2_EXTRA_LIBS="$LIBMPEG2_EXTRA_LIBS $($PKG_CONFIG --libs libmpeg2convert)"
  TC_PKG_CHECK(libmpeg2, required, LIBMPEG2, no, mpeg2dec/mpeg2.h,
 -  mpeg2, mpeg2_init, mpeg2dec, [http://libmpeg2.sourceforge.net/])
 +  mpeg2, mpeg2_init, libmpeg2, [http://libmpeg2.sourceforge.net/])
  TC_PKG_HAVE(libmpeg2, LIBMPEG2)
  
  
-@@ -870,8 +870,9 @@
+@@ -898,8 +898,9 @@
  ],
      [lame_version="`./conftest$ac_exeext`"],
      [TC_PKG_ERROR(lame, lame.h, yes, lame, [http://www.mp3dev.org/],
@@ -31,16 +31,16 @@ diff -Naur transcode-1.0.4-old/configure.in transcode-1.0.4-new/configure.in
    CFLAGS="$ac_save_CFLAGS"
    LIBS="$ac_save_LIBS"
  
-@@ -1119,7 +1120,7 @@
+@@ -1147,7 +1148,7 @@
  dnl
- LIBXML2_EXTRA_LIBS="$LIBXML2_EXTRA_LIBS -lz -lm"
+ LIBXML2_EXTRA_LIBS="$LIBXML2_EXTRA_LIBS $($PKG_CONFIG --libs libxml-2.0)"
  TC_PKG_CHECK(libxml2, no, LIBXML2, xml2-config, [libxml/parser.h],
 - xml2, xmlStrcmp, libxml-2.0, [http://xmlsoft.org])
 + xml2, xmlStrcmp, libXML, [http://xmlsoft.org])
  TC_PKG_HAVE(libxml2, LIBXML2)
  
  dnl
-@@ -1154,7 +1155,7 @@
+@@ -1182,7 +1183,7 @@
  dnl
  dnl SDL
  dnl
