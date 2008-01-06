@@ -49,6 +49,11 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2 -fno-strict-aliasing
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2 -fno-strict-aliasing
 
 configure-custom:
+	@# Inclusion of assembly code causes the unichome_dri driver to segfault.
+	@# Disabling assembly code is a performance hit, but we do not need top GL performance for Myth.
+	@echo "ASM_FLAGS ="                                        >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "ASM_SOURCES ="                                      >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "ASM_API ="                                          >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
@@ -84,5 +89,6 @@ install-custom:
 
 install-source:
 	@mkdir -p $(DESTDIR)$(sourcedir)
+	@rm -f $(DESTDIR)$(sourcedir)/Mesa
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/Mesa
 	@$(MAKECOOKIE)
