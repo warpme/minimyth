@@ -28,6 +28,7 @@ CONFIGURE_ARGS = \
 	--disable-ccache \
 	--disable-distcc \
 	--cross-prefix="$(compiler_prefix)" \
+	--target-os="linux" \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
