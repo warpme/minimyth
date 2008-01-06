@@ -59,6 +59,11 @@
               <dt><a href="#MM_SECURITY_FETCH_CREDENTIALS_CIFS">MM_SECURITY_FETCH_CREDENTIALS_CIFS</a></dt>
               <dt><a href="#MM_SECURITY_FETCH_CA_BUNDLE_CRT">MM_SECURITY_FETCH_CA_BUNDLE_CRT</a></dt>
             </dl></dd>
+            <dt><a href="#MM_ACPI">ACPI variables</a></dt>
+            <dd><dl>
+              <dt><a href="#MM_ACPI_EVENT_BUTTON_POWER">MM_ACPI_EVENT_BUTTON_POWER</a></dt>
+              <dt><a href="#MM_ACPI_VIDEO_FLAGS">MM_ACPI_VIDEO_FLAGS</a></dt>
+            </dl></dd>
             <dt><a href="#MM_CPUFREQ">CPU frequency scaling variables</a></dt>
             <dd><dl>
               <dt><a href="#MM_CPUFREQ_GOVERNOR">MM_CPUFREQ_GOVERNOR</a></dt>
@@ -468,6 +473,46 @@
             </dd>
           </dl>
         </div>
+        <div id="MM_ACPI" class="section">
+          <div class="heading">ACPI variables</div>
+          <p>
+            The ACPI variables are:
+          </p>
+          <dl>
+            <dt id="MM_ACPI_EVENT_BUTTON_POWER"><strong>MM_ACPI_EVENT_BUTTON_POWER</strong></dt>
+            <dd>
+              <p>
+                Set the action to use when the frontend's power button is pushed.
+                Valid values are 'off' and 'sleep', with 'off' being the default.
+              </p>
+            </dd>
+            <dt id="MM_ACPI_VIDEO_FLAGS"><strong>MM_ACPI_VIDEO_FLAGS</strong></dt>
+            <dd>
+              <p>
+                Set the ACPI video flags ('/proc/sys/kernel/acpi_video_flags').
+                Valid values are '0', '1', '2' and '3', with '0' being the default.
+              </p>
+              <p>
+                This variable equivalent to the kernel parameter 'acpi_sleep',
+                where
+              </p>
+              <ul>
+                <li>'0' corresponds to acpi_sleep="",</li>
+                <li>'1' corresponds to acpi_sleep="s3_bios",</li>
+                <li>'2' corresponds to acpi_sleep="s3_mode", and</li>
+                <li>'3' corresponds to acpi_sleep="s3_bios,s3_mode".</li>
+              </ul>
+              <p>
+                Setting this variable to one of the non-zero values can sometimes enable
+                broken video hardware to wake up from sleep (S3) correctly.
+                For example, setting MM_ACPI_VIDEO_FLAGS='2' enables the VIA SP8000E video to wake from sleep (S3) correctly.
+              </p>
+              <p>
+                If this variable fails to solve the problem, then try
+                <a href="@MM_X_RESTART_ON_SLEEP_ENABLED">MM_X_RESTART_ON_SLEEP_ENABLED</a>.
+              </p>
+            </dd>
+          </dl>
         <div id="MM_CPUFREQ" class="section">
           <div class="heading">CPU frequency scaling variables</div>
           <p>
@@ -707,6 +752,10 @@
                 X hangs when returning from sleep.
                 If you are using sleep and X hangs when returning from sleep,
                 then setting this variable to 'yes' may help.
+              </p>
+              <p>
+                Before trying this variable, try
+                <a href="#MM_ACPI_VIDEO_FLAGS">MM_ACPI_VIDEO_FLAGS</a>.
               </p>
             </dd>
             <dt id="MM_X_WM_ENABLED"><strong>MM_X_WM_ENABLED</strong></dt>
@@ -2545,7 +2594,7 @@ chmod 0644 ~/.ssh/authorized_keys</pre>
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2008-01-01 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2008-01-05 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
