@@ -1,9 +1,9 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.8
+GARVERSION = 1.1.9
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-linux_2.6.23.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -16,6 +16,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+# --without-external-dvdnav must be auto or internal dvdnav will work.
 # Linux is only used for dha-kmod, which is disabled.
 # Therefore, --with-linux-path is set to '/dev/null'.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
@@ -64,6 +65,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-dvdnavtest \
 	--enable-vcd \
 	--enable-asf \
+	--enable-nosefart \
 	--enable-faad \
 	--enable-dts \
 	--disable-modplug \
@@ -112,10 +114,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-esound \
 	--without-arts \
 	--without-fusionsound \
-	--disable-jack \
+	--without-jack \
 	--without-internal-vcdlibs \
 	--without-external-libdts \
 	--without-wavpack \
+	--with-real-codecs-path="$(libdir)/codecs" \
 	--with-w32-path="$(libdir)/codecs" \
 	--with-gnu-as
 
