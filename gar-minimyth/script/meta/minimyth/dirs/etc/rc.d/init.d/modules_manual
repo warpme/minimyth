@@ -17,6 +17,14 @@ start() {
         fi
     done
 
+    # MythPhone uses OSS not ALSA.
+    if /usr/bin/test "${MM_MYTHPHONE_ENABLED}" = "yes" ; then
+        kernel_module='snd-pcm-oss'
+        if ! /sbin/modprobe ${kernel_module} > /dev/null 2>&1 ; then
+            mm_message_output warn "warning: failed to load kernel module: ${kernel_module}"
+        fi
+    fi
+
     return 0
 }
 
