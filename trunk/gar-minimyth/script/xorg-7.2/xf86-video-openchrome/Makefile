@@ -1,9 +1,9 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 382
+GARVERSION = 0.2.901
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.openchrome.org/svn/trunk/
+MASTER_SITES  = http://www.openchrome.org/releases/
+MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vt1625_ntsc_modes.patch $(DISTNAME)-ticket-78-20070308.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -44,11 +44,11 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@#cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"        >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"  >> $(WORKSRC)/config.cache
@@ -57,7 +57,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/via_drv.la
-	@rm -f $(DESTDIR)$(libdir)/libviaXvMC.la
-	@rm -f $(DESTDIR)$(libdir)/libviaXvMCPro.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/openchrome_drv.la
+	@rm -f $(DESTDIR)$(libdir)/libchromeXvMC.la
+	@rm -f $(DESTDIR)$(libdir)/libchromeXvMCPro.la
 	@$(MAKECOOKIE)
