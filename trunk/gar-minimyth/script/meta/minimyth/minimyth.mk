@@ -52,14 +52,8 @@ MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	gdb \
 	strace \
 	xdpyinfo \
-	valgrind \
-	valgrind-listener \
-	cg_annotate \
-	callgrind_control \
-	callgrind_annotate \
 	))
 MM_LIB_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
-	valgrind \
 	))
 MM_ETC_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	))
