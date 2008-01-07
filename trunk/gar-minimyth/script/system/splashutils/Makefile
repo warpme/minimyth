@@ -3,6 +3,7 @@ GARVERSION = 1.5.3.3
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-libadd.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -38,6 +39,10 @@ BUILD_ENV = \
 	QUIET=false
 
 include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfbsplash.la
