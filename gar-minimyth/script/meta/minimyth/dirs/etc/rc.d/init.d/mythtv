@@ -65,39 +65,33 @@ start() {
         MTD=`/usr/bin/which mtd`
         TRANSCODE=`/usr/bin/which transcode`
         if /usr/bin/test -z "${MTD}" ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: 'mtd' not found."
+            mm_message_output err "error: 'mtd' not found."
             exit 1
         fi
         if /bin/su -c "/usr/bin/test ! -e ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}' does not exist."
+            mm_message_output err "error: mount of 'MM_THEME_URL=${MM_THEME_URL}' failed."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' does not exist."
             exit 1
         fi
         if /bin/su -c "/usr/bin/test ! -d ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}' is not a directory."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' is not a directory."
             exit 1
         fi
         if /bin/su -c "/usr/bin/test ! -w ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}' is not writable by user 'minimyth'."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' is not writable by user 'minimyth'."
             exit 1
         fi
         /bin/su -c "/bin/mkdir -p ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth
         if /bin/su -c "/usr/bin/test ! -e ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' does not exist."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' does not exist."
             exit 1
         fi
         if /bin/su -c "/usr/bin/test ! -d ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not a directory."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not a directory."
             exit 1
         fi
         if /bin/su -c "/usr/bin/test ! -w ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            /usr/bin/logger -t minimyth -p "local0.err" \
-                "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not writable by user 'minimyth'."
+            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not writable by user 'minimyth'."
             exit 1
         fi
         mm_mythdb_settings_set "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/.mtd"
