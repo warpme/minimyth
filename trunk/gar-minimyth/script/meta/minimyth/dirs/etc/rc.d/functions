@@ -48,6 +48,39 @@ mm_command_run() {
 #===============================================================================
 # mm_url_*_get functions.
 #===============================================================================
+mm_url_get() {
+    local URL=$1
+    local LOCAL_FILE=$2
+
+    local REMOTE_PROTOCOL
+    local REMOTE_SERVER
+    local REMOTE_FILE
+
+    REMOTE_PROTOCOL=`/bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /usr/bin/cut -d: -f1`
+    REMOTE_SERVER=`  /bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /bin/sed 's%^[^:]*:%%' \
+                                        | /bin/sed 's%^//%%' \
+                                        | /bin/sed 's%^[^@]*@%%' \
+                                        | /bin/sed 's%/[^/]*%%g'`
+    REMOTE_FILE=`    /bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /bin/sed 's%^[^:]*:%%' \
+                                        | /bin/sed 's%^//[^/]*/%/%'`
+
+    case "${REMOTE_PROTOCOL}" in
+        conf|confro|confrw|dist|file|http|hunt|tftp)
+            mm_url_${REMOTE_PROTOCOL}_get "${LOCAL_FILE}" "${REMOTE_FILE}" "${REMOTE_SERVER}" || return
+            ;;
+        *)
+            /usr/bin/logger -s -t minimyth -p "local0.info" "mm_url_get: protocol '${REMOTE_PROTOCOL}' is not supported."
+            /bin/false || return
+            ;;
+    esac
+
+    /bin/true
+    return
+}
+
 mm_url_conf_get() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
@@ -79,13 +112,13 @@ mm_url_confro_get() {
 
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
-          && /usr/bin/curl -s -f ${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
           && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
                    || /bin/true \
              ) \
     ) || \
     ( /usr/bin/test -n "${REMOTE_FILE_1}" \
-          && /usr/bin/curl -s -f ${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_1} --create-dirs -o ${LOCAL_FILE} \
+          && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_1}" "${LOCAL_FILE}" \
           && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_1}' downloaded." \
                    || /bin/true \
              ) \
@@ -115,7 +148,7 @@ mm_url_confrw_get() {
 
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
-          && /usr/bin/curl -s -f ${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
           && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
                    || /bin/true \
              ) \
@@ -141,7 +174,7 @@ mm_url_dist_get() {
 
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
-          && /usr/bin/curl -s -f ${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0} --create-dirs -o ${LOCAL_FILE} \
+          && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
           && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
                    || /bin/true \
              ) \
@@ -219,7 +252,7 @@ mm_url_tftp_get() {
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/curl -s -f "tftp://${REMOTE_SERVER}/${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
+    /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
 
     /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' downloaded."
 
@@ -229,6 +262,39 @@ mm_url_tftp_get() {
 #===============================================================================
 # mm_url_*_put functions.
 #===============================================================================
+mm_url_put() {
+    local URL=$1
+    local LOCAL_FILE=$2
+
+    local REMOTE_PROTOCOL
+    local REMOTE_SERVER
+    local REMOTE_FILE
+
+    REMOTE_PROTOCOL=`/bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /usr/bin/cut -d: -f1`
+    REMOTE_SERVER=`  /bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /bin/sed 's%^[^:]*:%%' \
+                                        | /bin/sed 's%^//%%' \
+                                        | /bin/sed 's%^[^@]*@%%' \
+                                        | /bin/sed 's%/[^/]*%%g'`
+    REMOTE_FILE=`    /bin/echo "${URL}" | /usr/bin/cut -d? -f1 \
+                                        | /bin/sed 's%^[^:]*:%%' \
+                                        | /bin/sed 's%^//[^/]*/%/%'`
+
+    case "${REMOTE_PROTOCOL}" in
+        conf|confrw|file|http|tftp)
+            mm_url_${REMOTE_PROTOCOL}_put "${LOCAL_FILE}" "${REMOTE_FILE}" "${REMOTE_SERVER}" || return
+            ;;
+        *)
+            /usr/bin/logger -s -t minimyth -p "local0.info" "mm_url_put: protocol '${REMOTE_PROTOCOL}' is not supported."
+            /bin/false || return
+            ;;
+    esac
+
+    /bin/true
+    return
+}
+
 mm_url_conf_put() {
     local LOCAL_FILE=$1
     local REMOTE_FILE=$2
@@ -272,7 +338,7 @@ mm_url_confrw_put() {
     fi
 
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
-          && /usr/bin/curl -s -f -T ${LOCAL_FILE} ${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0} \
+          && mm_url_put "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
           && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' uploaded." \
                    || /bin/true \
              ) \
@@ -364,7 +430,7 @@ mm_url_tftp_put() {
         return
     fi
 
-    if /usr/bin/curl -s -f -T "${LOCAL_FILE}" "tftp://${REMOTE_SERVER}${REMOTE_FILE}" ; then
+    if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${REMOTE_FILE}" "${REMOTE_SERVER}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.info"  \
             "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' posted."
         /bin/true
@@ -551,7 +617,7 @@ mm_codecs_fetch_and_save() {
     /bin/rm -rf "${LOCAL_DIR}/${CODECS_BASE}"
     /bin/rm -f "${LOCAL_DIR}/${CODECS_FILE}"
     cd "${LOCAL_DIR}"
-    /usr/bin/curl -s -f "${CODECS_URL}" -o "${CODECS_FILE}"
+    mm_url_get "${CODECS_URL}" "${CODECS_FILE}"
     if /usr/bin/test $? -ne 0 ; then
         /usr/bin/logger -s -t minimyth -p "local0.error" \
             "failed to create the codecs file because no codecs were downloaded."
@@ -888,7 +954,7 @@ mm_url_mount() {
         /bin/mount --rbind "${URL_PATH}" "${MOUNT_DIR}"
     else
         /usr/bin/logger -s -t minimyth -p "local0.error" \
-            "mm_url_mount: protocol'${URL_PROTOCOL}' is not supported."
+            "mm_url_mount: protocol '${URL_PROTOCOL}' is not supported."
         /bin/false
         return
     fi
