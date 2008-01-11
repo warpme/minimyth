@@ -1,11 +1,12 @@
 GARNAME = lirc
-GARVERSION = 20071217Z
+GARVERSION = 20080109Z
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
 MASTER_SITES += cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-lircd_conf_include.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imonlcd_0.1.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES  = $(DISTNAME)-spin_lock_unlocked_deprecated.patch $(DISTNAME)-lirc_dev_use_kthread.patch $(DISTNAME)-make_unifdef_happier.patch $(DISTNAME)-another_checkpatch_cleanup.patch
+PATCHFILES += $(DISTNAME)-lircd_conf_include.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imonlcd_0.1.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.23),$(DISTNAME)-remove_gpio.patch)
 PATCHFILES += $(if $(filter $(mm_KERNEL_VERSION),2.6.24),$(DISTNAME)-remove_gpio.patch)
 LICENSE = GPL2

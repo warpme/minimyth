@@ -1,0 +1,93 @@
+diff -Naur lirc-20080109Z-old/drivers/kcompat.h lirc-20080109Z-new/drivers/kcompat.h
+--- lirc-20080109Z-old/drivers/kcompat.h	2007-12-15 09:28:00.000000000 -0800
++++ lirc-20080109Z-new/drivers/kcompat.h	2008-01-10 13:34:24.000000000 -0800
+@@ -224,14 +224,15 @@
+ #endif
+ #endif
+ 
+-#if KERNEL_VERSION(2, 4, 0) <= LINUX_VERSION_CODE \
+-	&& LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 22)
++#if KERNEL_VERSION(2, 4, 0) <= LINUX_VERSION_CODE
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 22)
+ #include <linux/pci.h>
+ static inline char *pci_name(struct pci_dev *pdev)
+ {
+ 	return pdev->slot_name;
+ }
+-#endif /* 2.4.0 <= kernel < 2.4.22 */
++#endif /* kernel < 2.4.22 */
++#endif /* kernel >= 2.4.0 */
+ 
+ /*************************** I2C specific *****************************/
+ #include <linux/i2c.h>
+@@ -324,10 +325,11 @@
+ 
+ /******************************* pm.h *********************************/
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) && \
+-	LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 11)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 11)
+ typedef u32 pm_message_t;
+-#endif
++#endif /* kernel < 2.6.11 */
++#endif /* kernel >= 2.6.0 */
+ 
+ /*************************** interrupt.h ******************************/
+ /* added in 2.6.18, old defines removed in 2.6.24 */
+diff -Naur lirc-20080109Z-old/drivers/lirc_cmdir/commandir.c lirc-20080109Z-new/drivers/lirc_cmdir/commandir.c
+--- lirc-20080109Z-old/drivers/lirc_cmdir/commandir.c	2007-11-08 13:27:29.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_cmdir/commandir.c	2008-01-10 13:34:24.000000000 -0800
+@@ -148,10 +148,11 @@
+ static DECLARE_MUTEX(minor_table_mutex);
+ 
+ static struct file_operations cmdir_fops = {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) \
+-	&& LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
+ 	.owner		= THIS_MODULE,
+-#endif
++#endif /* kernel < 2.6.16 */
++#endif /* kernel >= 2.6.0 */
+ 	.read		= cmdir_file_read,
+ 	.write		= cmdir_file_write,
+ 	.ioctl		= cmdir_ioctl,
+@@ -185,10 +186,11 @@
+ #define to_skel_dev(d) container_of(d, struct usb_skel, kref)
+ 
+ static struct file_operations cmdir_fops = {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) \
+-	&& LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
+ 	.owner =	THIS_MODULE,
+-#endif
++#endif /* kernel < 2.6.16 */
++#endif /* kernel >= 2.6.0 */
+ 	.read =		cmdir_file_read,
+ 	.write =	cmdir_file_write,
+ 	.open =		cmdir_open,
+@@ -206,17 +208,18 @@
+ };
+ 
+ static struct usb_driver cmdir_driver = {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) \
+-	&& LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
+ 	.owner =	THIS_MODULE,
+-#endif
++#endif /* kernel < 2.6.16 */
++#endif /* kernel >= 2.6.0 */
+ 	.name =		"commandir",
+ 	.probe =	cmdir_probe,
+ 	.disconnect =	cmdir_disconnect,
+ 	.id_table =	cmdir_table,
+ };
+ 
+-#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0) */
++#endif /* kernel < 2.6.0 */
+ 
+ static int lcd_device;
+ static int rx_device;

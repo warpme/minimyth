@@ -1,0 +1,707 @@
+diff -Naur lirc-20080109Z-old/drivers/lirc_atiusb/lirc_atiusb.c lirc-20080109Z-new/drivers/lirc_atiusb/lirc_atiusb.c
+--- lirc-20080109Z-old/drivers/lirc_atiusb/lirc_atiusb.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_atiusb/lirc_atiusb.c	2008-01-10 13:35:42.000000000 -0800
+@@ -567,7 +567,8 @@
+ 	mode = buf[0];
+ 
+ 	/* Squash the mode indicator if unique wasn't set non-zero */
+-	if (!unique) buf[0] = 0;
++	if (!unique)
++		buf[0] = 0;
+ 
+ 	if (iep->ep->bEndpointAddress == EP_KEYS_ADDR) {
+ 		/* ignore mouse navigation indicator key and
+@@ -575,7 +576,8 @@
+ 		if (buf[2] == RW2_MODENAV_KEYCODE) {
+ 			if (emit_modekeys >= 2) /* emit raw */
+ 				buf[0] = mode;
+-			else if (emit_modekeys == 1) { /* translate */
++			else if (emit_modekeys == 1) {
++				/* translate */
+ 				buf[0] = mode;
+ 				if (ir->mode != mode) {
+ 					buf[1] = 0x03;
+@@ -791,7 +793,8 @@
+ {
+ 	struct irctl *ir;
+ 	dprintk(DRIVER_NAME ": free_in_endpt(%p, %d)\n", iep, mem_failure);
+-	if (!iep) return;
++	if (!iep)
++		return;
+ 
+ 	ir = iep->ir;
+ 	if (!ir) {
+@@ -1094,7 +1097,7 @@
+ 		mem_failure = 2;
+ 		goto new_irctl_failure_check;
+ 	}
+-	
++
+ 	memset(plugin, 0, sizeof(*plugin));
+ 	ir->p = plugin;
+ 	plugin->rbuf = kmalloc(sizeof(*(plugin->rbuf)), GFP_KERNEL);
+diff -Naur lirc-20080109Z-old/drivers/lirc_bt829/lirc_bt829.c lirc-20080109Z-new/drivers/lirc_bt829/lirc_bt829.c
+--- lirc-20080109Z-old/drivers/lirc_bt829/lirc_bt829.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_bt829/lirc_bt829.c	2008-01-10 13:35:42.000000000 -0800
+@@ -61,7 +61,8 @@
+ static int debug;
+ #define dprintk(fmt, args...)					\
+ 	do {							\
+-		if (debug) printk(KERN_DEBUG fmt, ## args);	\
++		if (debug)					\
++			printk(KERN_DEBUG fmt, ## args);	\
+ 	} while (0)
+ 
+ static int atir_minor;
+diff -Naur lirc-20080109Z-old/drivers/lirc_cmdir/commandir.c lirc-20080109Z-new/drivers/lirc_cmdir/commandir.c
+--- lirc-20080109Z-old/drivers/lirc_cmdir/commandir.c	2008-01-10 13:34:24.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_cmdir/commandir.c	2008-01-10 13:35:42.000000000 -0800
+@@ -115,8 +115,7 @@
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
+ 
+ /* Structure to hold all of our device specific stuff */
+-struct usb_skel
+-{
++struct usb_skel {
+ 	struct usb_device *udev; /* save off the usb device pointer */
+ 	struct usb_interface *interface; /* the interface for this device */
+ 	devfs_handle_t devfs; /* devfs device node */
+@@ -173,8 +172,7 @@
+ #else /* kernel >= 2.6 */
+ 
+ /* Structure to hold all of our device specific stuff */
+-struct usb_skel
+-{
++struct usb_skel {
+ 	struct usb_device *udev; /* the usb device for this device */
+ 	struct usb_interface *interface; /* the interface for this device */
+ 	unsigned char *bulk_in_buffer; /* the buffer to receive data */
+@@ -203,7 +201,7 @@
+ 	.name =		"usb/commandir%d",
+ 	.fops =		&cmdir_fops,
+ 	/* .mode =	S_IFCHR | S_IRUSR | S_IWUSR |
+-	 * 		S_IRGRP | S_IWGRP | S_IROTH, */
++	 *		S_IRGRP | S_IWGRP | S_IROTH, */
+ 	.minor_base =	USB_CMDIR_MINOR_BASE,
+ };
+ 
+@@ -526,7 +524,8 @@
+ 
+ 	/* check whether minor already includes base */
+ 	minor = interface->minor;
+-	if (minor >= USB_CMDIR_MINOR_BASE) minor = minor-USB_CMDIR_MINOR_BASE;
++	if (minor >= USB_CMDIR_MINOR_BASE)
++		minor = minor-USB_CMDIR_MINOR_BASE;
+ 
+ 	/* let the user know what node this device is now attached to */
+ 	info("CommandIR USB device now attached to commandir%d", minor);
+@@ -636,7 +635,8 @@
+ #endif
+ 
+ 	/* check whether minor already includes base */
+-	if (minor >= USB_CMDIR_MINOR_BASE) minor = minor-USB_CMDIR_MINOR_BASE;
++	if (minor >= USB_CMDIR_MINOR_BASE)
++		minor = minor-USB_CMDIR_MINOR_BASE;
+ 
+ 	info("CommandIR #%d now disconnected", minor);
+ 
+@@ -645,7 +645,8 @@
+ 		/* decrement until find next valid device */
+ 		while (rx_device > 0) {
+ 			rx_device--;
+-			if (cmdir_check(rx_device) == 0) break;
++			if (cmdir_check(rx_device) == 0)
++				break;
+ 		}
+ 		if (minor > 0)
+ 			info("Active Receiver is on CommandIR #%d", rx_device);
+@@ -803,19 +804,22 @@
+ 	}
+ 	if (transmitters & (multiplier*0x02)) {
+ 		cmdir_var[next_pos] = '2';
+-		if (next_comma > 0) cmdir_var[next_pos-2] = ',';
++		if (next_comma > 0)
++			cmdir_var[next_pos-2] = ',';
+ 		next_pos += 3;
+ 		next_comma++;
+ 	}
+ 	if (transmitters & (multiplier*0x04)) {
+ 		cmdir_var[next_pos] = '3';
+-		if (next_comma > 0) cmdir_var[next_pos-2] = ',';
++		if (next_comma > 0)
++			cmdir_var[next_pos-2] = ',';
+ 		next_pos += 3;
+ 		next_comma++;
+ 	}
+ 	if (transmitters & (multiplier*0x08)) {
+ 		cmdir_var[next_pos] = '4';
+-		if (next_comma > 0) cmdir_var[next_pos-2] = ',';
++		if (next_comma > 0)
++			cmdir_var[next_pos-2] = ',';
+ 		next_pos += 3;
+ 		next_comma++;
+ 	}
+@@ -1141,7 +1145,8 @@
+ 			/* start it up: */
+ 
+ 			last_sent = nexttosend - 1;
+-			if (last_sent < 0) last_sent = QUEUELENGTH - 1;
++			if (last_sent < 0)
++				last_sent = QUEUELENGTH - 1;
+ 			/* Final check - is it TIME to send this packet yet? */
+ 			/* if (wait_to_tx(waitusecs[last_sent]) == 0) { */
+ 			/* always send if there's room,
+@@ -1202,8 +1207,10 @@
+ 	 * for non-zero last_tx's. */
+ 	int wait_until_sec = 0, wait_until_usec = 0;
+ 	int now_sec = 0, now_usec = 0;
+-	if (debug_commandir == 1) printk(KERN_INFO "waittotx(%d)\n", usecs);
+-	if (usecs == 0) return 0;
++	if (debug_commandir == 1)
++		printk(KERN_INFO "waittotx(%d)\n", usecs);
++	if (usecs == 0)
++		return 0;
+ 
+ 	if (!(last_tx_sec == 0 && last_tx_usec == 0)) {
+ 		/* calculate wait time: */
+@@ -1483,7 +1490,8 @@
+ 	struct usb_skel *dev;
+ 	dev = (struct usb_skel *)urb->context;
+ 	send_status = SEND_IDLE;
+-	if (debug_commandir == 1) printk(KERN_INFO "callback()\n");
++	if (debug_commandir == 1)
++		printk(KERN_INFO "callback()\n");
+ 	/* free up our allocated buffer */
+ 
+ 	usb_buffer_free(urb->dev, urb->transfer_buffer_length,
+diff -Naur lirc-20080109Z-old/drivers/lirc_cmdir/lirc_cmdir.c lirc-20080109Z-new/drivers/lirc_cmdir/lirc_cmdir.c
+--- lirc-20080109Z-old/drivers/lirc_cmdir/lirc_cmdir.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_cmdir/lirc_cmdir.c	2008-01-10 13:35:42.000000000 -0800
+@@ -53,11 +53,11 @@
+ static int debug;
+ #define dprintk(fmt, args...)					\
+ 	do {							\
+-		if (debug) printk(KERN_DEBUG fmt, ## args);	\
++		if (debug)					\
++			printk(KERN_DEBUG fmt, ## args);	\
+ 	} while (0)
+ 
+-struct lirc_cmdir
+-{
++struct lirc_cmdir {
+ 	int features;
+ };
+ 
+@@ -243,7 +243,8 @@
+ 	memcpy((unsigned char *)tmp_int_buffer, tmp_char_buffer,
+ 						(num_data_values*4));
+ 
+-	if (orig_rxbuffer[5] < 255) { /* space */
++	if (orig_rxbuffer[5] < 255) {
++		/* space */
+ 		final_data_buffer[0] = get_time_value(last_mc_time,
+ 						tmp_int_buffer[0],
+ 						orig_rxbuffer[5]);
+@@ -411,7 +412,8 @@
+ 			num_bytes_already_sent += MAX_PACKET;
+ 			time_elapse = 0;
+ 
+-			if ((i + 1) < count) { /* still more to send: */
++			if ((i + 1) < count) {
++				/* still more to send: */
+ 				cmdir_char[0] =	TX_HEADER;  /* Next Packet */
+ 				cmdir_char[1] = signal_num;
+ 				cmdir_cnt = 2; /* reset the count */
+diff -Naur lirc-20080109Z-old/drivers/lirc_i2c/lirc_i2c.c lirc-20080109Z-new/drivers/lirc_i2c/lirc_i2c.c
+--- lirc-20080109Z-old/drivers/lirc_i2c/lirc_i2c.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_i2c/lirc_i2c.c	2008-01-10 13:35:42.000000000 -0800
+@@ -80,8 +80,9 @@
+ 
+ #define dprintk(fmt, args...)						\
+ 	do {								\
+-		if (debug) printk(KERN_DEBUG DEVICE_NAME ": " fmt,	\
+-				 ## args);				\
++		if (debug)						\
++			printk(KERN_DEBUG DEVICE_NAME ": " fmt,		\
++			       ## args);				\
+ 	} while (0)
+ 
+ /* ----------------------------------------------------------------------- */
+@@ -480,7 +481,7 @@
+ 
+ 	/* register device */
+ 	err = i2c_attach_client(&ir->c);
+-	if(err) {
++	if (err) {
+ 		kfree(ir);
+ 		return err;
+ 	}
+diff -Naur lirc-20080109Z-old/drivers/lirc_igorplugusb/lirc_igorplugusb.c lirc-20080109Z-new/drivers/lirc_igorplugusb/lirc_igorplugusb.c
+--- lirc-20080109Z-old/drivers/lirc_igorplugusb/lirc_igorplugusb.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_igorplugusb/lirc_igorplugusb.c	2008-01-10 13:35:42.000000000 -0800
+@@ -515,7 +515,7 @@
+ 	plugin->minor = -1;
+ 	plugin->code_length = bytes_in_key*8; /* in bits */
+ 	plugin->features = LIRC_CAN_REC_MODE2;
+-	plugin->data = ir; 
++	plugin->data = ir;
+ 	plugin->rbuf = rbuf;
+ 	plugin->set_use_inc = &set_use_inc;
+ 	plugin->set_use_dec = &set_use_dec;
+@@ -523,7 +523,7 @@
+ 	plugin->add_to_buf = &usb_remote_poll;
+ #ifdef LIRC_HAVE_SYSFS
+ 	plugin->dev = &dev->dev;
+-#endif  
++#endif
+ 	plugin->owner = THIS_MODULE;
+ 
+ 	init_MUTEX(&ir->lock);
+diff -Naur lirc-20080109Z-old/drivers/lirc_imon/lirc_imon.c lirc-20080109Z-new/drivers/lirc_imon/lirc_imon.c
+--- lirc-20080109Z-old/drivers/lirc_imon/lirc_imon.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_imon/lirc_imon.c	2008-01-10 13:35:42.000000000 -0800
+@@ -273,7 +273,8 @@
+ 	kfree(context->plugin);
+ 	kfree(context);
+ 
+-	if (debug) info("%s: context deleted", __FUNCTION__);
++	if (debug)
++		info("%s: context deleted", __FUNCTION__);
+ }
+ 
+ static inline void deregister_from_lirc(struct imon_context *context)
+@@ -800,8 +801,7 @@
+ 
+ 	/* iMON 2.4G associate frame */
+ 	if (buf[0] == 0x00 &&
+-	    /* REFID */
+-	    buf[2] == 0xFF &&
++	    buf[2] == 0xFF &&				/* REFID */
+ 	    buf[3] == 0xFF &&
+ 	    buf[4] == 0xFF &&
+ 	    buf[5] == 0xFF &&				/* iMON 2.4G */
+@@ -1286,14 +1286,13 @@
+ 	if (!context->ir_isopen)
+ 		deregister_from_lirc(context);
+ 
+-	if (context->vfd_supported) {
++	if (context->vfd_supported)
+ #ifdef KERNEL_2_5
+ 		usb_deregister_dev(interface, &imon_class);
+ #else
+ 		if (context->devfs)
+ 			devfs_unregister(context->devfs);
+ #endif
+-	}
+ 
+ 	UNLOCK_CONTEXT;
+ 
+diff -Naur lirc-20080109Z-old/drivers/lirc_it87/lirc_it87.c lirc-20080109Z-new/drivers/lirc_it87/lirc_it87.c
+--- lirc-20080109Z-old/drivers/lirc_it87/lirc_it87.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_it87/lirc_it87.c	2008-01-10 13:35:42.000000000 -0800
+@@ -1,7 +1,7 @@
+ /*
+  * LIRC driver for ITE IT8712/IT8705 CIR port
+  *
+- * Copyright (C) 2001 Hans-Günter Lütke Uphues <hg_lu@web.de>
++ * Copyright (C) 2001 Hans-Gunter Lutke Uphues <hg_lu@web.de>
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License as
+@@ -274,7 +274,7 @@
+ 	unsigned long value = 0;
+ 	unsigned int ivalue;
+ 	unsigned long hw_flags;
+-	
++
+ 	if (cmd == LIRC_GET_FEATURES)
+ 		value = LIRC_CAN_SEND_PULSE |
+ 			LIRC_CAN_SET_SEND_CARRIER |
+@@ -344,7 +344,8 @@
+ 
+ 	/* statistically pulses are ~TIME_CONST/2 too long: we could
+ 	   maybe make this more exactly but this is good enough */
+-	if (flag) /* pulse */ {
++	if (flag) {
++		/* pulse */
+ 		if (newval > TIME_CONST / 2)
+ 			newval -= TIME_CONST / 2;
+ 		else /* should not ever happen */
+@@ -983,7 +984,7 @@
+ }
+ 
+ MODULE_DESCRIPTION("LIRC driver for ITE IT8712/IT8705 CIR port");
+-MODULE_AUTHOR("Hans-Günter Lütke Uphues");
++MODULE_AUTHOR("Hans-Gunter Lutke Uphues");
+ MODULE_LICENSE("GPL");
+ 
+ module_param(io, int, 0444);
+diff -Naur lirc-20080109Z-old/drivers/lirc_mceusb/lirc_mceusb.c lirc-20080109Z-new/drivers/lirc_mceusb/lirc_mceusb.c
+--- lirc-20080109Z-old/drivers/lirc_mceusb/lirc_mceusb.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_mceusb/lirc_mceusb.c	2008-01-10 13:35:42.000000000 -0800
+@@ -612,7 +612,7 @@
+ 			keys_to_copy = dev->lirccnt;
+ 
+ 		lirc_buffer_write_n(buf,
+-			(unsigned char *) & (dev->lircdata[dev->lircidx]),
++			(unsigned char *) &(dev->lircdata[dev->lircidx]),
+ 			keys_to_copy);
+ 		dev->lircidx += keys_to_copy;
+ 		dev->lirccnt -= keys_to_copy;
+@@ -756,7 +756,8 @@
+ 			}
+ 		}
+ 
+-		if (((endpoint->bEndpointAddress & USB_ENDPOINT_DIR_MASK) == 0x00)
++		if (((endpoint->bEndpointAddress & USB_ENDPOINT_DIR_MASK)
++		    == 0x00)
+ 		    && ((endpoint->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) ==
+ 		    USB_ENDPOINT_XFER_BULK)) {
+ 			dprintk("we found a bulk out endpoint");
+diff -Naur lirc-20080109Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20080109Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c
+--- lirc-20080109Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2008-01-10 13:35:42.000000000 -0800
+@@ -123,7 +123,7 @@
+ #define VENDOR_SHUTTLE		0x1308
+ #define VENDOR_MITSUMI		0x03ee
+ #define VENDOR_TOPSEED		0x1784
+-#define VENDOR_RICAVISION       0x179d
++#define VENDOR_RICAVISION	0x179d
+ #define VENDOR_ITRON		0x195d
+ #define VENDOR_FIC		0x1509
+ #define VENDOR_LG		0x043e
+@@ -645,7 +645,7 @@
+ 	      ir->usbdev->descriptor.idProduct == 0x0334)) ||
+ 	    (ir->usbdev->descriptor.idVendor == VENDOR_TOPSEED &&
+ 	     (ir->usbdev->descriptor.idProduct == 0x0001 ||
+-              ir->usbdev->descriptor.idProduct == 0x0007 ||
++	      ir->usbdev->descriptor.idProduct == 0x0007 ||
+ 	      ir->usbdev->descriptor.idProduct == 0x0008)))
+ 		ir->transmitter_mask = mask;
+ 	else
+diff -Naur lirc-20080109Z-old/drivers/lirc_parallel/lirc_parallel.c lirc-20080109Z-new/drivers/lirc_parallel/lirc_parallel.c
+--- lirc-20080109Z-old/drivers/lirc_parallel/lirc_parallel.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_parallel/lirc_parallel.c	2008-01-10 13:35:42.000000000 -0800
+@@ -131,7 +131,7 @@
+  *************************   Interne Funktionen  ***********************
+  ***********************************************************************/
+ 
+-static unsigned int __inline__ in(int offset)
++static inline unsigned int in(int offset)
+ {
+ 	switch (offset) {
+ 	case LIRC_LP_BASE:
+@@ -144,7 +144,7 @@
+ 	return 0; /* make compiler happy */
+ }
+ 
+-static void __inline__ out(int offset, int value)
++static inline void out(int offset, int value)
+ {
+ 	switch (offset) {
+ 	case LIRC_LP_BASE:
+@@ -160,22 +160,22 @@
+ 	}
+ }
+ 
+-static unsigned int __inline__ lirc_get_timer(void)
++static inline unsigned int lirc_get_timer(void)
+ {
+ 	return (in(LIRC_PORT_TIMER)&LIRC_PORT_TIMER_BIT);
+ }
+ 
+-static unsigned int __inline__  lirc_get_signal(void)
++static inline  unsigned int lirc_get_signal(void)
+ {
+ 	return (in(LIRC_PORT_SIGNAL)&LIRC_PORT_SIGNAL_BIT);
+ }
+ 
+-static void __inline__ lirc_on(void)
++static inline void lirc_on(void)
+ {
+ 	out(LIRC_PORT_DATA, tx_mask);
+ }
+ 
+-static void __inline__ lirc_off(void)
++static inline void lirc_off(void)
+ {
+ 	out(LIRC_PORT_DATA, 0);
+ }
+@@ -257,7 +257,8 @@
+ 	unsigned int nwptr;
+ 
+ 	nwptr = (wptr + 1) & (RBUF_SIZE - 1);
+-	if (nwptr == rptr) { /* no new signals will be accepted */
++	if (nwptr == rptr) {
++		/* no new signals will be accepted */
+ 		lost_irqs++;
+ 		printk(KERN_NOTICE "%s: buffer overrun\n", LIRC_DRIVER_NAME);
+ 		return;
+@@ -299,18 +300,20 @@
+ 		do_gettimeofday(&tv);
+ 
+ 		signal = tv.tv_sec - lasttv.tv_sec;
+-		if (signal > 15) {
+-			data = PULSE_MASK;  /* really long time */
+-		} else
++		if (signal > 15)
++			/* really long time */
++			data = PULSE_MASK;
++		else
+ 			data = (lirc_t) (signal*1000000 +
+ 					 tv.tv_usec - lasttv.tv_usec +
+ 					 LIRC_SFH506_DELAY);
+ 
+ 		rbuf_write(data); /* space */
+ 	} else {
+-		if (timer == 0) { /* wake up; we'll lose this signal
+-				   * but it will be garbage if the device
+-				   * is turned on anyway */
++		if (timer == 0) {
++			/* wake up; we'll lose this signal
++			 * but it will be garbage if the device
++			 * is turned on anyway */
+ 			timer = init_lirc_timer();
+ 			/* enable_irq(irq); */
+ 			return;
+@@ -328,7 +331,8 @@
+ 		level = newlevel;
+ 
+ 		/* giving up */
+-		if (signal > timeout || (check_pselecd && (in(1) & LP_PSELECD))) {
++		if (signal > timeout
++		    || (check_pselecd && (in(1) & LP_PSELECD))) {
+ 			signal = 0;
+ 			printk(KERN_NOTICE "%s: timeout\n", LIRC_DRIVER_NAME);
+ 			break;
+@@ -438,7 +442,8 @@
+ 		return -EFAULT;
+ 
+ #ifdef LIRC_TIMER
+-	if (timer == 0) { /* try again if device is ready */
++	if (timer == 0) {
++		/* try again if device is ready */
+ 		timer = init_lirc_timer();
+ 		if (timer == 0)
+ 			return(-EIO);
+diff -Naur lirc-20080109Z-old/drivers/lirc_serial/lirc_serial.c lirc-20080109Z-new/drivers/lirc_serial/lirc_serial.c
+--- lirc-20080109Z-old/drivers/lirc_serial/lirc_serial.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_serial/lirc_serial.c	2008-01-10 13:35:42.000000000 -0800
+@@ -140,8 +140,7 @@
+ 
+ #define LIRC_DRIVER_NAME "lirc_serial"
+ 
+-struct lirc_serial
+-{
++struct lirc_serial {
+ 	int signal_pin;
+ 	int signal_pin_change;
+ 	int on;
+@@ -399,7 +398,8 @@
+ static inline unsigned int sinp(int offset)
+ {
+ #if defined(LIRC_ALLOW_MMAPPED_IO)
+-	if (iommap != 0) { /* the register is memory-mapped */
++	if (iommap != 0) {
++		/* the register is memory-mapped */
+ 		offset <<= ioshift;
+ 		return readb(io + offset);
+ 	}
+@@ -410,7 +410,8 @@
+ static inline void soutp(int offset, int value)
+ {
+ #if defined(LIRC_ALLOW_MMAPPED_IO)
+-	if (iommap != 0) { /* the register is memory-mapped */
++	if (iommap != 0) {
++		/* the register is memory-mapped */
+ 		offset <<= ioshift;
+ 		writeb(value, io + offset);
+ 	}
+@@ -516,10 +517,10 @@
+  * IE multiplied by 256. */
+ 	if (256*1000000L/new_freq*new_duty_cycle/100 <=
+ 	    LIRC_SERIAL_TRANSMITTER_LATENCY)
+-		return(-EINVAL);
++		return -EINVAL;
+ 	if (256*1000000L/new_freq*(100-new_duty_cycle)/100 <=
+ 	    LIRC_SERIAL_TRANSMITTER_LATENCY)
+-		return(-EINVAL);
++		return -EINVAL;
+ 	duty_cycle = new_duty_cycle;
+ 	freq = new_freq;
+ 	period = 256*1000000L/freq;
+@@ -677,7 +678,8 @@
+ 
+ static inline void rbwrite(lirc_t l)
+ {
+-	if (lirc_buffer_full(&rbuf)) { /* no new signals will be accepted */
++	if (lirc_buffer_full(&rbuf)) {
++		/* no new signals will be accepted */
+ 		dprintk("Buffer overrun\n");
+ 		return;
+ 	}
+@@ -806,7 +808,8 @@
+ 				data = PULSE_MASK;
+ 			} else if (deltv > 15) {
+ 				data = PULSE_MASK; /* really long time */
+-				if (!(dcd^sense)) { /* sanity check */
++				if (!(dcd^sense)) {
++					/* sanity check */
+ 					printk(KERN_WARNING LIRC_DRIVER_NAME
+ 					       ": AIEEEE: "
+ 					       "%d %d %lx %lx %lx %lx\n",
+@@ -849,8 +852,8 @@
+ 	sinp(UART_MSR);
+ 
+ #if defined(LIRC_SERIAL_NSLU2)
+-	if (type == LIRC_NSLU2) { /* Setup NSLU2 UART */
+-		/* Enable UART */
++	if (type == LIRC_NSLU2) {
++		/* Setup NSLU2 UART */
+ 		soutp(UART_IER, sinp(UART_IER) | UART_IE_IXP42X_UUE);
+ 		/* Disable Receiver data Time out interrupt */
+ 		soutp(UART_IER, sinp(UART_IER) & ~UART_IE_IXP42X_RTOIE);
+@@ -916,7 +919,7 @@
+ 		       ": or compile the serial port driver as module and\n");
+ 		printk(KERN_WARNING LIRC_DRIVER_NAME
+ 		       ": make sure this module is loaded first\n");
+-		return(-EBUSY);
++		return -EBUSY;
+ 	}
+ 
+ 	hardware_init_port();
+@@ -1025,12 +1028,15 @@
+ 	long delta = 0;
+ 
+ 	if (!(hardware[type].features&LIRC_CAN_SEND_PULSE))
+-		return(-EBADF);
++		return -EBADF;
+ 
+-	if (n%sizeof(lirc_t)) return(-EINVAL);
+-	count = n/sizeof(lirc_t);
+-	if (count > WBUF_LEN || count%2 == 0) return(-EINVAL);
+-	if (copy_from_user(wbuf, buf, n)) return -EFAULT;
++	if (n % sizeof(lirc_t))
++		return -EINVAL;
++	count = n / sizeof(lirc_t);
++	if (count > WBUF_LEN || count % 2 == 0)
++		return -EINVAL;
++	if (copy_from_user(wbuf, buf, n))
++		return -EFAULT;
+ 	local_irq_save(flags);
+ 	if (type == LIRC_IRDEO) {
+ 		/* DTR, RTS down */
+@@ -1044,7 +1050,7 @@
+ 	}
+ 	off();
+ 	local_irq_restore(flags);
+-	return(n);
++	return n;
+ }
+ 
+ static int lirc_ioctl(struct inode *node, struct file *filep, unsigned int cmd,
+@@ -1057,7 +1063,7 @@
+ 	switch (cmd) {
+ 	case LIRC_GET_SEND_MODE:
+ 		if (!(hardware[type].features&LIRC_CAN_SEND_MASK))
+-			return(-ENOIOCTLCMD);
++			return -ENOIOCTLCMD;
+ 
+ 		result = put_user(LIRC_SEND2MODE
+ 				  (hardware[type].features&LIRC_CAN_SEND_MASK),
+@@ -1068,7 +1074,7 @@
+ 
+ 	case LIRC_SET_SEND_MODE:
+ 		if (!(hardware[type].features&LIRC_CAN_SEND_MASK))
+-			return(-ENOIOCTLCMD);
++			return -ENOIOCTLCMD;
+ 
+ 		result = get_user(value, (unsigned long *) arg);
+ 		if (result)
+diff -Naur lirc-20080109Z-old/drivers/lirc_sir/lirc_sir.c lirc-20080109Z-new/drivers/lirc_sir/lirc_sir.c
+--- lirc-20080109Z-old/drivers/lirc_sir/lirc_sir.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_sir/lirc_sir.c	2008-01-10 13:35:42.000000000 -0800
+@@ -121,8 +121,7 @@
+ 
+ /******************************* SA1100 ********************************/
+ #ifdef LIRC_ON_SA1100
+-struct sa1100_ser2_registers
+-{
++struct sa1100_ser2_registers {
+ 	/* HSSP control register */
+ 	unsigned char hscr0;
+ 	/* UART registers */
+@@ -208,7 +207,8 @@
+ static int debug;
+ #define dprintk(fmt, args...)						\
+ 	do {								\
+-		if (debug) printk(KERN_DEBUG LIRC_DRIVER_NAME ": "	\
++		if (debug)						\
++			printk(KERN_DEBUG LIRC_DRIVER_NAME ": "		\
+ 				fmt, ## args);				\
+ 	} while (0)
+ 
+@@ -489,7 +489,8 @@
+ 
+ 	/* statistically pulses are ~TIME_CONST/2 too long: we could
+ 	   maybe make this more exactly but this is good enough */
+-	if (flag) { /* pulse */
++	if (flag) {
++		/* pulse */
+ 		if (newval > TIME_CONST/2)
+ 			newval -= TIME_CONST/2;
+ 		else /* should not ever happen */
+diff -Naur lirc-20080109Z-old/drivers/lirc_streamzap/lirc_streamzap.c lirc-20080109Z-new/drivers/lirc_streamzap/lirc_streamzap.c
+--- lirc-20080109Z-old/drivers/lirc_streamzap/lirc_streamzap.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_streamzap/lirc_streamzap.c	2008-01-10 13:35:42.000000000 -0800
+@@ -93,8 +93,7 @@
+ /* number of samples buffered */
+ #define STREAMZAP_BUFFER_SIZE 128
+ 
+-enum StreamzapDecoderState
+-{
++enum StreamzapDecoderState {
+ 	PulseSpace,
+ 	FullPulse,
+ 	FullSpace,
+@@ -274,7 +273,8 @@
+ 			dprintk("buffer overflow\n", sz->plugin.minor);
+ 		}
+ 	}
+-	if (!empty) wake_up(&sz->lirc_buf.wait_poll);
++	if (!empty)
++		wake_up(&sz->lirc_buf.wait_poll);
+ }
+ 
+ static inline void push(struct usb_streamzap *sz, unsigned char *data)
+diff -Naur lirc-20080109Z-old/drivers/lirc_ttusbir/lirc_ttusbir.c lirc-20080109Z-new/drivers/lirc_ttusbir/lirc_ttusbir.c
+--- lirc-20080109Z-old/drivers/lirc_ttusbir/lirc_ttusbir.c	2008-01-10 13:34:02.000000000 -0800
++++ lirc-20080109Z-new/drivers/lirc_ttusbir/lirc_ttusbir.c	2008-01-10 13:35:42.000000000 -0800
+@@ -87,8 +87,7 @@
+ };
+ 
+ /* USB device definition */
+-struct ttusbir_device
+-{
++struct ttusbir_device {
+ 	struct usb_driver *driver;
+ 	struct usb_device *udev;
+ 	struct usb_interface *interf;
+@@ -138,7 +137,7 @@
+  */
+ 
+ /* This mapping table is used to do a very simple filtering of the
+- * input signal 
++ * input signal.
+  * For a value with at least 4 bits set it returns 0xFF otherwise
+  * 0x00.  For faster IR signals this can not be used. But for RC-5 we
+  * still have about 14 samples per pulse/space, i.e. we sample with 14
+@@ -241,7 +240,7 @@
+ 		(sizeof(struct urb *) * num_urbs) +
+ 		(sizeof(char *) * num_urbs) +
+ 		(num_urbs * 128);
+-	ttusbir = (struct ttusbir_device *) kmalloc(struct_size, GFP_KERNEL);
++	ttusbir = kmalloc(struct_size, GFP_KERNEL);
+ 	if (!ttusbir)
+ 		return -ENOMEM;
+ 	memset(ttusbir, 0, struct_size);
