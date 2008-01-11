@@ -28,8 +28,6 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-profile \
-	--enable-omitfp \
 	--enable-bind-now \
 	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
@@ -58,6 +56,7 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
+CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
 
 PARALLELMFLAGS := -j1
 
