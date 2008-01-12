@@ -70,6 +70,7 @@ MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | s
 
 MM_INIT_START := \
     security \
+    cpu \
     telnet \
     ssh_server \
     mythdb_buffer_create \
@@ -80,7 +81,6 @@ MM_INIT_START := \
     extras \
     sensors \
     acpi \
-    cpufreq \
     time \
     web \
     media \
@@ -101,14 +101,14 @@ MM_INIT_KILL := \
     media \
     web \
     time \
-    cpufreq \
     acpi \
     game \
     cron \
     ssh_server \
+    telnet \
+    cpu \
     local \
     log \
-    telnet \
     modules_manual \
     modules_automatic
 
