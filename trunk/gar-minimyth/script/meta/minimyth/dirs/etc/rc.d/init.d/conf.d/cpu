@@ -16,6 +16,9 @@ conf_check_cpu() {
     if /usr/bin/test ! -z "${MM_CPUFREQ_GOVERNOR}" ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_CPUFREQ_GOVERNOR' is obsolete."
     fi
+    if /usr/bin/test ! -z "${MM_CPU_MICROCODE_DAT_FETCH}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_CPU_MICROCODE_DAT_FETCH' is obsolete."
+    fi
 
     if /usr/bin/test ! -z "${MM_CPU_FREQUENCY_GOVERNOR}"                  && \
        /usr/bin/test !    "${MM_CPU_FREQUENCY_GOVERNOR}" = "performance"  && \
@@ -25,21 +28,21 @@ conf_check_cpu() {
        /usr/bin/test !    "${MM_CPU_FREQUENCY_GOVERNOR}" = "userspace"    ; then
         mm_message_output err "error: MM_CPU_FREQUENCY_GOVERNOR='${MM_CPU_FREQUENCY_GOVERNOR}' is not valid."
     fi
-    if /usr/bin/test ! -z "${MM_CPU_MICROCODE_DAT_FETCH}"         && \
-       /usr/bin/test !    "${MM_CPU_MICROCODE_DAT_FETCH}" = "yes" && \
-       /usr/bin/test !    "${MM_CPU_MICROCODE_DAT_FETCH}" = "no"  ; then
-        mm_message_output err "error: MM_CPU_MICROCODE_DAT_FETCH='${MM_CPU_MICROCODE_DAT_FETCH}' is not valid."
+    if /usr/bin/test ! -z "${MM_CPU_FETCH_MICROCODE_DAT}"         && \
+       /usr/bin/test !    "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" && \
+       /usr/bin/test !    "${MM_CPU_FETCH_MICROCODE_DAT}" = "no"  ; then
+        mm_message_output err "error: MM_CPU_FETCH_MICROCODE_DAT='${MM_CPU_FETCH_MICROCODE_DAT}' is not valid."
     fi
 
-    if /usr/bin/test "${MM_CPU_MICROCODE_DAT_FETCH}" = "yes" ; then
+    if /usr/bin/test "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" ; then
         vendor=`/bin/grep "^vendor_id" /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
         if /usr/bin/test ! "${vendor}" = "GenuineIntel" ; then
-            mm_message_output err "error: MM_CPU_MICROCODE_DAT_FETCH='yes' only supported on Intel processors."
+            mm_message_output err "error: MM_CPU_FETCH_MICROCODE_DAT='yes' only supported on Intel processors."
         else
             family=`/bin/grep "^cpu family" /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
             if /usr/bin/test ! ${family} -ge 6 ; then
                 mm_message_output err \
-                    "error: MM_CPU_MICROCODE_DAT_FETCH='yes' only supported on Intel processors not older than 686."
+                    "error: MM_CPU_FETCH_MICROCODE_DAT='yes' only supported on Intel processors not older than 686."
             fi
         fi
     fi
@@ -51,8 +54,8 @@ conf_default_cpu() {
     if /usr/bin/test -z "${MM_CPU_FREQUENCY_GOVERNOR}" ; then
         MM_CPU_FREQUENCY_GOVERNOR='performance'
     fi
-    if /usr/bin/test -z "${MM_CPU_MICROCODE_DAT_FETCH}" ; then
-        MM_CPU_MICROCODE_DAT_FETCH='no'
+    if /usr/bin/test -z "${MM_CPU_FETCH_MICROCODE_DAT}" ; then
+        MM_CPU_FETCH_MICROCODE_DAT='no'
     fi
 
     return 0
@@ -62,13 +65,13 @@ conf_write_cpu() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_CPU_FREQUENCY_GOVERNOR  "${MM_CPU_FREQUENCY_GOVERNOR}"
-    conf_variable_write "${conf_file}" MM_CPU_MICROCODE_DAT_FETCH "${MM_CPU_MICROCODE_DAT_FETCH}"
+    conf_variable_write "${conf_file}" MM_CPU_FETCH_MICROCODE_DAT "${MM_CPU_FETCH_MICROCODE_DAT}"
 
     return 0
 }
 
 conf_fetch_cpu() {
-    if /usr/bin/test "${MM_CPU_MICROCODE_DAT_FETCH}" = "yes" ; then
+    if /usr/bin/test "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" ; then
         /bin/mkdir -p /etc/firmware
         /bin/rm -f /etc/firmware/microcode.dat
         mm_confro_get microcode.dat /etc/firmware/microcode.dat
