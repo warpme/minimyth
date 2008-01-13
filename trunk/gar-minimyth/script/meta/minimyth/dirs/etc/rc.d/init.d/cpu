@@ -10,7 +10,7 @@ start() {
     local kernel_module_path
     local dir
 
-    if /usr/bin/test "${MM_CPU_FETCH_MICROCODE}" = "yes" ; then
+    if /usr/bin/test "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" ; then
         mm_message_output info "loading CPU microcode ..."
 
         if /usr/bin/test ! -e /etc/firmware/microcode.dat ; then
@@ -28,7 +28,7 @@ start() {
             mm_message_output err "error: '/dev/cpu/microcode' does not exist."
             exit 1
         fi
-        if /usr/bin/test -e /usr/sbin/microcode_ctl ; then
+        if /usr/bin/test ! -e /usr/sbin/microcode_ctl ; then
             mm_message_output err "error: '/usr/sbin/microcode_ctl' does not exist."
             exit 1
         fi
