@@ -30,6 +30,7 @@ DEPENDS = \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
+	utils/microcode_ctl \
 	utils/module-init-tools \
 	net/mount.cifs \
 	myth-$(mm_MYTH_VERSION)/myththemes \
