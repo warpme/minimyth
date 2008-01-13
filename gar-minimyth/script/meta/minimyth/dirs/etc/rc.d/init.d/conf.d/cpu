@@ -35,15 +35,12 @@ conf_check_cpu() {
     fi
 
     if /usr/bin/test "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" ; then
-        vendor=`/bin/grep "^vendor_id" /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
-        if /usr/bin/test ! "${vendor}" = "GenuineIntel" ; then
+        vendor=`/bin/grep "^vendor_id[[:cntrl:]]*:"  /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
+        family=`/bin/grep "^cpu family[[:cntrl:]]*:" /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
+        if   /usr/bin/test ! "${vendor}" = "GenuineIntel"  ; then
             mm_message_output err "error: MM_CPU_FETCH_MICROCODE_DAT='yes' only supported on Intel processors."
-        else
-            family=`/bin/grep "^cpu family" /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
-            if /usr/bin/test ! ${family} -ge 6 ; then
-                mm_message_output err \
-                    "error: MM_CPU_FETCH_MICROCODE_DAT='yes' only supported on Intel processors not older than 686."
-            fi
+        elif /usr/bin/test ! ${family} -ge 6 ; then
+            mm_message_output err "error: MM_CPU_FETCH_MICROCODE_DAT='yes' only supported on Intel processors not older than 686."
         fi
     fi
 
