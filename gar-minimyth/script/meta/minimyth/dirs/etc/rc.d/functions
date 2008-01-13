@@ -113,15 +113,9 @@ mm_url_confro_get() {
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
           && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
-          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
-                   || /bin/true \
-             ) \
     ) || \
     ( /usr/bin/test -n "${REMOTE_FILE_1}" \
           && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_1}" "${LOCAL_FILE}" \
-          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_1}' downloaded." \
-                   || /bin/true \
-             ) \
     ) || \
     return
 
@@ -149,9 +143,6 @@ mm_url_confrw_get() {
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
           && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
-          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
-                   || /bin/true \
-             ) \
     ) || \
     return
 
@@ -175,9 +166,6 @@ mm_url_dist_get() {
     /bin/rm -f "${LOCAL_FILE}"
     ( /usr/bin/test -n "${REMOTE_FILE_0}" \
           && mm_url_get "${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}" "${LOCAL_FILE}" \
-          && ( /usr/bin/logger -s -t minimyth -p "local0.info" "'${MM_MINIMYTH_BOOT_URL}${REMOTE_FILE_0}' downloaded." \
-                   || /bin/true \
-             ) \
     ) || \
     return
 
@@ -1408,6 +1396,50 @@ mm_mythdb_settings_get() {
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
+mm_hardware_cpu_process() {
+    local cpu_process_function=$1
+
+    local vendor
+    local family
+    local model
+
+    # We only check the first CPU.
+    # Thus, wea are assuming all other CPU are the same as the first.
+    vendor=`/bin/grep '^vendor_id[[:cntrl:]]*:'  /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
+    family=`/bin/grep '^cpu family[[:cntrl:]]*:' /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
+    model=` /bin/grep '^model[[:cntrl:]]*:'      /proc/cpuinfo | /usr/bin/head -n1 | /usr/bin/awk -F ": " '{ print $2 }'`
+
+    /bin/echo `${cpu_process_function} ${vendor} ${family} ${model}` | mm_uniq
+}
+
+mm_hardware_cpu2kernel_map() {
+    local vendor=$1
+    local family=$2
+    local model=$3
+
+    local map
+    local map_kernel_modules
+
+    if /usr/bin/test -n "${vendor}" ; then
+        /bin/cat /etc/hardware.d/cpu2kernel.map                                                                 \
+        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
+        | /bin/grep -e "^${vendor},"                                                                            \
+        | {
+            while read map ; do
+                if /usr/bin/test -n "${map}" ; then
+                    map_family=`        /bin/echo ${map} | /usr/bin/cut -d ',' -f 2`
+                    map_model=`         /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+                    map_kernel_modules=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
+                    if ( /usr/bin/test -z "${map_family}" || /usr/bin/test "${map_family}" = "${family}" ) && \
+                       ( /usr/bin/test -z "${map_model}"  || /usr/bin/test "${map_model}"  = "${model}"  ) ; then
+                        /bin/echo ${map_kernel_modules}
+                    fi
+                fi
+            done
+        }
+    fi
+}
+
 mm_hardware_pci_process() {
     local pci_process_function=$1
 
