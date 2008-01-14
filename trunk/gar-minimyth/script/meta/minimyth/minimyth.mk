@@ -527,7 +527,7 @@ mm-make-conf:
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%'     $(mm_ROOTFSDIR)$(sysconfdir)/profile
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%'     $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
 	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
