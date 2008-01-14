@@ -13,6 +13,9 @@ fi
 /bin/rm -fr   /var/lib/mm_sleep.$$
 /bin/mkdir -p /var/lib/mm_sleep.$$
 
+# Turn off any external equipment.
+/usr/bin/mm_external power_off
+
 # If MPlayer is running, then exit it.
 mm_x_xmacroplay 'xine' 'KeyStr Escape\n'
 if /usr/bin/test -n "`/bin/pidof mplayer`" ; then
@@ -87,11 +90,7 @@ if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_stop
 fi
 
-/usr/bin/mm_external power_off
-
 /bin/echo mem > /sys/power/state
-
-/usr/bin/mm_external power_on
 
 # Start X
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
@@ -109,6 +108,9 @@ if /usr/bin/test -e /var/lib/mm_sleep.$$/LCDd ; then
     /usr/bin/test -z `/bin/pidof irexec` && /etc/LCDd -c /etc/LCDd.conf
     /bin/rm -f /var/lib/mm_sleep.$$/LCDd
 fi
+
+# Turn on any external equipment.
+/usr/bin/mm_external power_on
 
 # Remove the state directory for mm_sleep.
 /bin/rm -fr   /var/lib/mm_sleep.$$
