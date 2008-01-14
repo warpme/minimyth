@@ -32,8 +32,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-thread-safe-client \
 	--with-gnu-ld \
 	--without-debug \
-	--without-server \
-	--without-extra-tools \
+	--with-server \
+	--with-extra-tools \
 	--without-docs \
 	--without-bench
 
