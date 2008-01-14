@@ -46,6 +46,21 @@ mm_command_run() {
 }
 
 #===============================================================================
+# minimyth.conf functions.
+#===============================================================================
+mm_minimyth_conf_include() {
+    local REMOTE_FILE=$1
+
+    local LOCAL_FILE
+
+    LOCAL_FILE="/etc/minimyth.d/${REMOTE_FILE}"
+    LOCAL_FILE=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
+
+    /usr/bin/test ! -e "${LOCAL_FILE}" && mm_confro_get "${REMOTE_FILE}" "${LOCAL_FILE}"
+    /usr/bin/test   -e "${LOCAL_FILE}" && . "${LOCAL_FILE}"
+}
+
+#===============================================================================
 # mm_url_*_get functions.
 #===============================================================================
 mm_url_get() {
@@ -434,7 +449,7 @@ mm_url_tftp_put() {
 }
 
 #===============================================================================
-# mm_conf_* functions.
+# mm_confro_* and mm_confrw_* functions.
 #===============================================================================
 mm_conf_get() {
     local REMOTE_FILE=$1
