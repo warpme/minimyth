@@ -139,6 +139,7 @@ start() {
     local idVendor
     local idProduct
     local index
+    local instance
     local lircd_conf
     local map
     local remote
@@ -262,9 +263,10 @@ start() {
         remote=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f3`
         daemon=
         if /usr/bin/test -n "${daemon_master}" ; then
+            instance=`/bin/echo ${device} | /bin/sed -e 's%//*%-%g' | /bin/sed -e 's%^-dev-%%'`
             daemon="/usr/sbin/lircd"
             daemon="${daemon} --device=${device} --driver=${driver}"
-            daemon="${daemon} --output=/dev/lircd${index} --pidfile=/var/run/lircd${index}.pid"
+            daemon="${daemon} --output=/dev/lircd-${instance} --pidfile=/var/run/lircd-${instance}.pid"
             daemon="${daemon} --listen=$((8765 + ${index} - 1))"
         else
             daemon="/usr/sbin/lircd"
