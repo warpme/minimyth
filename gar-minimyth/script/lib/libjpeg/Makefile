@@ -3,6 +3,7 @@ GARVERSION = 6b
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.uu.net/graphics/$(GARNAME)/
 DISTFILES = jpegsrc.v$(GARVERSION).tar.gz
+PATCHFILES = $(DISTNAME)-jconfig_h.patch
 LICENSE = jpeg
 jpeg_LICENSE_TEXT = $(WORKSRC)/README
 DESCRIPTION = 
