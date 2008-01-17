@@ -9,6 +9,7 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
+PATCHFILES += $(DISTNAME)-libstdc++-v3_config.patch
 endif
 LICENSE = GPL2/LGPL2_1
 
