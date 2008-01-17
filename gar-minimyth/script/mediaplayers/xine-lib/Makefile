@@ -76,6 +76,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-optimizations \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
 	--with-gnu-ld \
+	$(if $(filter i386,$(GARCH_FAMILY)),--without-pic) \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
 	--without-external-ffmpeg \
