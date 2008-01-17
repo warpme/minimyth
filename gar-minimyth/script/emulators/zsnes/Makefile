@@ -4,7 +4,7 @@ CATEGORIES = emulators
 MASTER_SITES = http://superb-east.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))src.tar.bz2
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-gcc_4.3.patch $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION = 
