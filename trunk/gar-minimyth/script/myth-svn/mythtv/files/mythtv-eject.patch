@@ -1,9 +1,9 @@
-diff -Naur mythtv-15333-old/libs/libmyth/mythcdrom-linux.cpp mythtv-15333-new/libs/libmyth/mythcdrom-linux.cpp
---- mythtv-15333-old/libs/libmyth/mythcdrom-linux.cpp	2008-01-04 12:57:18.000000000 -0800
-+++ mythtv-15333-new/libs/libmyth/mythcdrom-linux.cpp	2008-01-04 12:58:38.000000000 -0800
-@@ -12,8 +12,17 @@
- #define LOC QString("mythcdrom-linux: ")
- #define LOC_ERR QString("mythcdrom-linux, Error: ")
+diff -Naur mythtv-15447-old/libs/libmyth/mythcdrom-linux.cpp mythtv-15447-new/libs/libmyth/mythcdrom-linux.cpp
+--- mythtv-15447-old/libs/libmyth/mythcdrom-linux.cpp	2008-01-16 19:50:50.000000000 -0800
++++ mythtv-15447-new/libs/libmyth/mythcdrom-linux.cpp	2008-01-16 19:56:12.000000000 -0800
+@@ -12,16 +12,24 @@
+ #include <linux/iso_fs.h>
+ #include <unistd.h>
  
 +// Qt Headers
 +#include <qfile.h>
@@ -12,14 +12,22 @@ diff -Naur mythtv-15333-old/libs/libmyth/mythcdrom-linux.cpp mythtv-15333-new/li
 +// MythTV headers
 +#include "util.h"
 +
+ #define LOC     QString("MythCDROMLinux:")
+ #define LOC_ERR QString("mythcdrom-linux, Error: ")
+ 
++#define PATHTO_EJECT QString("/usr/bin/eject")
++
+ // On a mixed-mode disc (audio+data), set this to 0 to mount the data portion:
  #define ASSUME_WANT_AUDIO 1
  
-+static const QString PATHTO_EJECT("/usr/bin/eject");
-+
- class MythCDROMLinux: public MythCDROM
- {
- public:
-@@ -41,12 +50,31 @@
+ // This class is verbose enough, but if you really need more output:
+ //#define EXTRA_VERBOSITY   1
+ 
+-
+ // Some features cannot be detected (reliably) using the standard
+ // Linux ioctl()s, so we use some direct low-level device queries.
+ 
+@@ -282,12 +290,31 @@
  
  MediaError MythCDROMLinux::eject(bool open_close)
  {
