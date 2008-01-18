@@ -23,7 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-nasm \
 	--with-gnu-ld \
-	--with-gtk-prefix="$(DESTDIR)$(prefix)"
+	--with-gtk-prefix="$(DESTDIR)$(prefix)" \
 	--with-gtk-exec-prefix="$(DESTDIR)$(exec_prefix)"
 
 include ../../gar.mk
