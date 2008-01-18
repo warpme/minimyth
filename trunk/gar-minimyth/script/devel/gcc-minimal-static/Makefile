@@ -12,9 +12,11 @@ CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-headers
 DEPENDS  = lang/c devel/binutils
-DEPENDS += $(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)),lib/gmp lib/mpfr)
+endif
+DEPENDS += lib/gmp lib/mpfr
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -42,12 +44,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-shared \
 	--enable-threads=no \
 	--enable-version-specific-runtime-libs \
-	$(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)), \
-		--with-mpfr-include=$(DESTDIR)$(includedir) \
-		--with-mpfr-lib=$(DESTDIR)$(libdir) \
-		--with-gmp-include=$(DESTDIR)$(includedir) \
-		--with-gmp-lib=$(DESTDIR)$(libdir) \
-	)
+	--with-mpfr-include=$(DESTDIR)$(includedir) \
+	--with-mpfr-lib=$(DESTDIR)$(libdir) \
+	--with-gmp-include=$(DESTDIR)$(includedir) \
+	--with-gmp-lib=$(DESTDIR)$(libdir)
 # Avoid sysroot for minimal native compiler because linker may not have sysroot support.
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \
