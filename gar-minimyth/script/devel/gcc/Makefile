@@ -22,8 +22,7 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = devel/glibc
-DEPENDS  = lang/c
-DEPENDS += $(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)),lib/gmp lib/mpfr)
+DEPENDS  = lang/c lib/gmp lib/mpfr
 BUILDDEPS = devel/make devel/binutils
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -49,12 +48,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--enable-shared \
 	--enable-threads=posix \
 	--enable-version-specific-runtime-libs \
-	$(if $(filter 4.3,$(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION)), \
-		--with-mpfr-include=$(DESTDIR)$(includedir) \
-		--with-mpfr-lib=$(DESTDIR)$(libdir) \
-		--with-gmp-include=$(DESTDIR)$(includedir) \
-		--with-gmp-lib=$(DESTDIR)$(libdir) \
-	) \
+	--with-mpfr-include=$(DESTDIR)$(includedir) \
+	--with-mpfr-lib=$(DESTDIR)$(libdir) \
+	--with-gmp-include=$(DESTDIR)$(includedir) \
+	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 # Bootstrap the native environment compiler.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
