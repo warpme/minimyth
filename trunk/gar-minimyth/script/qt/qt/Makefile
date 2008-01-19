@@ -85,9 +85,13 @@ PLATFORM_DEFAULT_PATH  = $(DESTDIR)$(qtprefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
 QMAKE_INCLUDES     = \
 	$(filter  -I%, $($(strip $(1))CPPFLAGS)) \
 	-I$($(strip $(1))DESTDIR)$($(strip $(1))includedir)/mysql
+QMAKE_NONINCLUDES  = \
+	$(filter-out  -I%, $($(strip $(1))CPPFLAGS))
 QMAKE_LIBS         = \
 	$(filter  -L%, $($(strip $(1))LDFLAGS)) \
 	-L$($(strip $(1))DESTDIR)$($(strip $(1))libdir)/mysql
+QMAKE_NONLIBS      = \
+	$(filter-out  -L%, $($(strip $(1))LDFLAGS))
 QMAKE_RPATH        = \
 	-Wl,-rpath-link,
 QMAKE_RPATHS       = \
@@ -95,7 +99,7 @@ QMAKE_RPATHS       = \
 QMAKE_CFLAGS       = \
 	$(call QMAKE_INCLUDES, $(1)) $(call QMAKE_LIBS, $(1))
 QMAKE_LFLAGS       = \
-	$(call QMAKE_LIBS, $(1)) $(call QMAKE_RPATHS, $(1))
+	$(call QMAKE_NONLIBS, $(1)) $(call QMAKE_LIBS, $(1)) $(call QMAKE_RPATHS, $(1))
 
 UPDATE_PLATFORM   = sed -i 's%^\($(strip $(2))[ \t]*=\).*%\1 $(strip $(3))%g' $(strip $(1))/qmake.conf 
 # We should not need to provide QMAKE_INCDIR or QMAKE_LIBDIR since they are compiled into the compiler and linker.
