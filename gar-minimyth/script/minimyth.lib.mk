@@ -88,6 +88,13 @@ gar-patch-%:
 		| sed 's%@GAR_kdedatadir@%$(kdedatadir)%g' \
 		| sed 's%@GAR_kdeincludedir@%$(kdeincludedir)%g' \
 		| sed 's%@GAR_kdelibdir@%$(kdelibdir)%g' \
+		| sed 's%@GAR_CPP@%$(CPP)%g' \
+		| sed 's%@GAR_CC@%$(CC)%g' \
+		| sed 's%@GAR_CXX@%$(CXX)%g' \
+		| sed 's%@GAR_LD@%$(LD)%g' \
+		| sed 's%@GAR_AS@%$(AS)%g' \
+		| sed 's%@GAR_AR@%$(AR)%g' \
+		| sed 's%@GAR_RANLIB@%$(RANLIB)%g' \
 		| sed 's%@GAR_CPPLAGS@%$(CPPFLAGS)%g' \
 		| sed 's%@GAR_CFLAGS@%$(CFLAGS)%g' \
 		| sed 's%@GAR_CXXFLAGS@%$(CXXFLAGS)%g' \
