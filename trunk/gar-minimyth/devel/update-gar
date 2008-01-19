@@ -68,6 +68,18 @@ sed -i '/main_[^ ]* = $(prefix)/ { s%$(prefix)%$(main_prefix)%g }' ${SCRIPT_DIR}
 sed -i '/main_[^ ]* = $(exec_prefix)/ { s%$(exec_prefix)%$(main_exec_prefix)%g }' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%# Extra configuration for the lnx-bbc build%# Extra confs to include after gar.conf.mk%g' ${SCRIPT_DIR}/gar.conf.mk
 
+# Add additional licenses.
+
+sed -i 's%Clarified-Artistic.txt%Clarified_Artistic.txt%g' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%public-domain.txt%Public_Domain.txt%g' ${SCRIPT_DIR}/gar.lib.mk
+
+sed -i 's%^GPL_LICENSE_TEXT *=%FDL_LICENSE_TEXT = $(LICENSEDIR)/FDL.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^GPL_LICENSE_TEXT *=%FDL1_2_LICENSE_TEXT = $(LICENSEDIR)/FDL1_2.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^GPL_LICENSE_TEXT *=%BSD_2_Clause_LICENSE_TEXT = $(LICENSEDIR)/BSD_2_Clause.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^GPL_LICENSE_TEXT *=%BSD_3_Clause_LICENSE_TEXT = $(LICENSEDIR)/BSD_3_Clause.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^GPL_LICENSE_TEXT *=%BSD_4_Clause_LICENSE_TEXT = $(LICENSEDIR)/BSD_4_Clause.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^GPL_LICENSE_TEXT *=%MIT_Modified_LICENSE_TEXT = $(LICENSEDIR)/MIT_Modified.txt\nGPL_LICENSE_TEXT =%' ${SCRIPT_DIR}/gar.lib.mk
+
 # Add install-version.
 sed -i 's%^INSTALL_TARGETS *= *\(.*\)$%INSTALL_TARGETS = \1 install-version%g' ${SCRIPT_DIR}/gar.mk
 sed -i 's%^install-license%install-version:\n\t@install -d $(DESTDIR)$(versiondir) \n\t@echo $(GARVERSION) > \$(DESTDIR)$(versiondir)/$(GARNAME)\n\t@\$(MAKECOOKIE)\n\ninstall-license%' ${SCRIPT_DIR}/gar.lib.mk
