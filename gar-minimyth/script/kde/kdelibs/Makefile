@@ -27,6 +27,7 @@ endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
+	--enable-new-ldflags \
 	--enable-final \
 	--enable-libsuffic=none \
 	--disable-rpath \
