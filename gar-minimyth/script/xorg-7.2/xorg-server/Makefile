@@ -178,8 +178,9 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'                  $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g'          $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%-I$${moduledir}%-I$(DESTDIR)$${moduledir}%g'            $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
-	@sed -i 's%^sdkdir=$(includedir)%sdkdir=$(DESTDIR)$(includedir)%g' $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%^sdkdir=$(includedir)%sdkdir=$${includedir}%g'            $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'                    $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g'            $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%-I$${moduledir}%-I$(DESTDIR)$${moduledir}%g'              $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@sed -i 's%^sdkdir=$${includedir}%sdkdir=$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
 	@$(MAKECOOKIE)
