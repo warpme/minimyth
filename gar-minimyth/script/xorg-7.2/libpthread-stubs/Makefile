@@ -28,6 +28,5 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 x-post-install:
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/pthread-stubs.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/pthread-stubs.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,pthread-stubs)
 	@$(MAKECOOKIE)

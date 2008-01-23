@@ -59,6 +59,6 @@ pre-install:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfontconfig.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/fontconfig.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/fontconfig.pc
+	@sed -i 's%-L$(DESTDIR)$(libdir)%-L$${libdir}%g' $(DESTDIR)$(libdir)/pkgconfig/fontconfig.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,fontconfig)
 	@$(MAKECOOKIE)

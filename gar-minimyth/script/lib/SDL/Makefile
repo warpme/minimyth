@@ -99,6 +99,5 @@ include ../../gar.mk
 
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libSDL.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/sdl.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/sdl.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,sdl)
 	@$(MAKECOOKIE)

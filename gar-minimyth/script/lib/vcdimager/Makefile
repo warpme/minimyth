@@ -31,6 +31,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libvcdinfo.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libvcdinfo.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libvcdinfo.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libvcdinfo)
 	@$(MAKECOOKIE)

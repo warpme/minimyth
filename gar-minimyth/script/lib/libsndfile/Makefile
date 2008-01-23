@@ -24,6 +24,5 @@ include ../../gar.mk
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libsndfile.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/sndfile.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/sndfile.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,sndfile)
 	@$(MAKECOOKIE)

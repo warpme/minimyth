@@ -47,6 +47,19 @@ FETCH_SVN = \
 	tar --exclude '*/.svn' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
 	rm -rf $(strip $(3))
 
+CREATE_PKG_CONFIG_UNINSTALLED = \
+	echo "DESTDIR=$(DESTDIR)"                                             \
+		>  $(DESTDIR)$(1)/$(2)-uninstalled.pc                       ; \
+	cat $(DESTDIR)$(1)/$(2).pc                                            \
+		| sed -e 's%-L$${libdir}%-L$${DESTDIR}$${libdir}%g'           \
+		| sed -e 's%-I$${includedir}%-I$${DESTDIR}$${includedir}%g'   \
+		| sed -e 's%=$${libdir}%=$${DESTDIR}$${libdir}%g'             \
+		| sed -e 's%=$${includedir}%=$${DESTDIR}$${includedir}%g'     \
+		| sed -e 's%=$${datadir}%=$${DESTDIR}$${datadir}%g'           \
+		| sed -e 's%=$${moduledir}%=$${DESTDIR}$${moduledir}%g'       \
+		| sed -e 's%-I$${moduledir}%-I$${DESTDIR}$${moduledir}%g'     \
+		>> $(DESTDIR)$(1)/$(2)-uninstalled.pc
+
 clean-image:
 	@rm -rf $(COOKIEROOTDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d
