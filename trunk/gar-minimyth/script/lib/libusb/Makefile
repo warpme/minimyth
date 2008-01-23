@@ -37,6 +37,5 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libusb.la
 	@rm -f $(DESTDIR)$(libdir)/libusbpp.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libusb.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libusb.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libusb)
 	@$(MAKECOOKIE)

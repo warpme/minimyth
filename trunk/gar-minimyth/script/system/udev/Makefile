@@ -59,6 +59,5 @@ post-install:
 	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevtest
 	@rm -f $(DESTDIR)$(libdir)/libvolume_id.so
 	ln -s .$(call DIRSTODOTS,$(libdir))$(elibdir)/libvolume_id.so.0 $(DESTDIR)$(libdir)/libvolume_id.so
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/libvolume_id.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/libvolume_id.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libvolume_id)
 	@$(MAKECOOKIE)
