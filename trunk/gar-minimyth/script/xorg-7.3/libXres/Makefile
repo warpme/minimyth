@@ -34,6 +34,5 @@ CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libXRes.la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xres.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xres.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xres)
 	@$(MAKECOOKIE)

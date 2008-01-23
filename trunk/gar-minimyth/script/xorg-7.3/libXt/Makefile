@@ -47,6 +47,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@sed -i 's%-L$${libdir}%-L$(DESTDIR)$${libdir}%g'         $(DESTDIR)$(libdir)/pkgconfig/xt.pc
-	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xt.pc
+	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xt)
 	@$(MAKECOOKIE)
