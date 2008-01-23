@@ -3,6 +3,7 @@ GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -16,6 +17,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
+	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -32,6 +35,11 @@ include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
+pre-configure:
+	@rm -f $(WORKSRC)/acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/void_drv.la
