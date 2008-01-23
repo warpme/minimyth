@@ -3,6 +3,7 @@ GARVERSION = 2.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -13,7 +14,6 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
-	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
@@ -24,6 +24,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
+	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -44,6 +46,8 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
+	@rm -f $(WORKSRC)/acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"       >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"     >> $(WORKSRC)/config.cache

@@ -53,7 +53,8 @@ main_CXXFLAGS='$(main_CFLAGS)'
 main_LDFLAGS='-Wl,--as-needed'
 GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql'
-_PKG_CONFIG_PATH='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
+_PKG_CONFIG_LIBDIR='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
+_PKG_CONFIG_SYSROOT_DIR='$(DESTDIR)'
 
 # Replace current GAR files with clean GAR files.
 rm -f ${SCRIPT_DIR}/gar.mk      ; cp ${GAR_LNX_BBC_DIR}/gar.mk ${SCRIPT_DIR}
@@ -257,8 +258,9 @@ sed -i "s%^PATH *:= *%GAR_SYSTEM_PATH := ${GAR_SYSTEM_PATH}\nPATH := %g" ${SCRIP
 sed -i "s%^PATH *:=.*$%PATH := \$(if \$(wildcard \$(build_DESTDIR)\$(build_rootdir)/bin-build-system),\$(GAR_SYSTEM_PATH),\$(GAR_SYSTEM_PATH):\$(BUILD_SYSTEM_PATH))%g" ${SCRIPT_DIR}/gar.mk
 sed -i "s%^export PATH%export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH%g" ${SCRIPT_DIR}/gar.conf.mk
 
-# Change PKG_CONFIG_PATH
-sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_PATH = ${_PKG_CONFIG_PATH}%g" ${SCRIPT_DIR}/gar.conf.mk
+# Remove PKG_CONFIG_PATH and add PKG_CONFIG_LIBDIR and PKG_CONFIG_SYSROOT_DIR
+sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_LIBDIR = ${_PKG_CONFIG_LIBDIR}\nPKG_CONFIG_SYSROOT_DIR = ${_PKG_CONFIG_SYSROOT_DIR}%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^export  *PKG_CONFIG_PATH$%export PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR%g" ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i '/^INSTALL_DIRS *=/s%$(sbindir)%$(esbindir) &%' ${SCRIPT_DIR}/gar.mk
 sed -i '/^INSTALL_DIRS *=/s%$(bindir)%$(ebindir) &%' ${SCRIPT_DIR}/gar.mk

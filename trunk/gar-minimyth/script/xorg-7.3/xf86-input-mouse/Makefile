@@ -3,6 +3,7 @@ GARVERSION = 1.2.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -16,6 +17,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
+	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -35,6 +38,8 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
+	@rm -f $(WORKSRC)/acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)

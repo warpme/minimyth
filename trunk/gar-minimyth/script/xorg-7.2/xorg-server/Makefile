@@ -3,7 +3,7 @@ GARVERSION = 1.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-mesa_6.5.3.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-mesa_6.5.3.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -35,7 +35,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/resourceproto \
 	$(CATEGORY)/scrnsaverproto \
-	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
@@ -48,6 +47,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
 BUILDDEPS = \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -178,6 +178,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
-	@sed -i 's%^sdkdir=$(includedir)%sdkdir=$${includedir}%g' $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
 	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,$(GARNAME))
 	@$(MAKECOOKIE)

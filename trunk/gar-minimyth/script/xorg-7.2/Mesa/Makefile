@@ -3,7 +3,7 @@ GARVERSION = 7.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
@@ -14,7 +14,9 @@ DEPENDS   = lang/c++ lib/expat \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXdamage \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/libXi \
 	$(CATEGORY)/libXmu \
 	$(CATEGORY)/libXxf86vm \
@@ -54,6 +56,7 @@ configure-custom:
 	@echo "ASM_FLAGS ="                                        >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "ASM_SOURCES ="                                      >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "ASM_API ="                                          >> $(WORKSRC)/configs/$(MESA_CONFIG)
+	@echo "PKG_CONFIG = pkg-config"                            >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
 	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)

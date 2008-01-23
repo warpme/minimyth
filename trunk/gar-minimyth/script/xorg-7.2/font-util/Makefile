@@ -27,6 +27,5 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 post-install:
-	@sed -i 's%^mapdir=$(libdir)%mapdir=$${libdir}%g' $(DESTDIR)$(libdir)/pkgconfig/fontutil.pc
 	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,fontutil)
 	@$(MAKECOOKIE)

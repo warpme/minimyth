@@ -3,6 +3,7 @@ GARVERSION = 1.0.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -36,11 +37,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-iso8859-15 \
 	--disable-iso8859-16 \
 	--disable-koi8-r \
-	--disable-jisx0201 \
-	MAPFILES_PATH='$$(PKG_CONFIG_PATH="$(build_DESTDIR)$(build_libdir)/pkgconfig" pkg-config --variable=mapdir fontutil)'
+	--disable-jisx0201
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
+
+pre-configure:
+	@rm -f $(WORKSRC)/acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)

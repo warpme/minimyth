@@ -1,0 +1,21 @@
+diff -Naur xf86-input-evtouch-0.8.7-old/configure.ac xf86-input-evtouch-0.8.7-new/configure.ac
+--- xf86-input-evtouch-0.8.7-old/configure.ac	2007-09-09 09:23:03.000000000 -0700
++++ xf86-input-evtouch-0.8.7-new/configure.ac	2008-01-22 15:11:44.000000000 -0800
+@@ -39,6 +39,7 @@
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
+ AM_PROG_CC_C_O
++PKG_PROG_PKG_CONFIG
+ 
+ AH_TOP([#include "xorg-server.h"])
+ 
+@@ -90,7 +91,8 @@
+ fi
+ 
+ dnl AC_MSG_RESULT([yes])
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ EVTOUCH_CFLAGS="$CFLAGS $XORG_CFLAGS "
+ AC_SUBST(EVTOUCH_CFLAGS)

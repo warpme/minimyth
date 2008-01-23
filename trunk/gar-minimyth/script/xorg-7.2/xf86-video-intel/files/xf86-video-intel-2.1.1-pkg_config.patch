@@ -1,0 +1,21 @@
+diff -Naur xf86-video-intel-2.1.1-old/configure.ac xf86-video-intel-2.1.1-new/configure.ac
+--- xf86-video-intel-2.1.1-old/configure.ac	2007-08-13 22:26:25.000000000 -0700
++++ xf86-video-intel-2.1.1-new/configure.ac	2008-01-22 17:23:24.000000000 -0800
+@@ -39,6 +39,7 @@
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
+ AM_PROG_CC_C_O
++PKG_PROG_PKG_CONFIG
+ 
+ AC_CHECK_PROG(gen4asm, [intel-gen4asm], yes, no)
+ AM_CONDITIONAL(HAVE_GEN4ASM, test x$gen4asm = xyes)
+@@ -76,7 +77,8 @@
+ 
+ # Checks for pkg-config packages
+ PKG_CHECK_MODULES(XORG, [xorg-server xproto xvmc fontsproto $REQUIRED_MODULES])
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.5.0], have_pciaccess=yes, have_pciaccess=no)
+ AM_CONDITIONAL(HAVE_PCIACCESS, test "x$have_pciaccess" = xyes)

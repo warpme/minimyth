@@ -3,7 +3,7 @@ GARVERSION = 0.8.7
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.stz-softwaretechnik.de/~ke/touchscreen/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -15,6 +15,10 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
+BUILDDEPS = \
+	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xorg-server \
+	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -34,6 +38,11 @@ include ../../gar.mk
 
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  )
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS))
+
+pre-configure:
+	@rm -f $(WORKSRC)/acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/evtouch_drv.la
