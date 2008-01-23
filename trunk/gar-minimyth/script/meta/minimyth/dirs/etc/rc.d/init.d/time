@@ -12,8 +12,16 @@ start() {
 
     # Set time.
     mm_message_output info "setting time ..."
-    /usr/bin/ntpd -p /var/run/ntpd.pid -q -g
-    if /usr/bin/test $? -ne 0 ; then
+    NTP_SERVERS=`/bin/cat /etc/ntp.conf | /bin/grep '^server ' | /bin/sed 's%^server  *%%'`
+    NTP_SUCCESS=0
+    for NTP_SERVER in ${NTP_SERVERS} ; do
+        /usr/bin/ntpdate -b -s "${NTP_SERVER}"
+        if /usr/bin/test $? -eq 0 ; then
+            NTP_SUCCESS=1
+            continue
+        fi
+    done
+    if /usr/bin/test ${NTP_SUCCESS} -eq 0 ; then
         mm_message_output warn "warning: 'ntpd' failed to synchronize with any NTP server." 
     fi
 
