@@ -36,8 +36,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdca.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libdca)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libdts)
 	@rm -f $(DESTDIR)$(libdir)/libdts.a
 	@ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a"
 	@rm -f $(DESTDIR)$(libdir)/libdts.so

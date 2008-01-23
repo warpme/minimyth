@@ -47,6 +47,4 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfbsplash.la
 	@rm -f $(DESTDIR)$(libdir)/libfbsplashrender.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libfbsplash)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libfbsplashrender)
 	@$(MAKECOOKIE)

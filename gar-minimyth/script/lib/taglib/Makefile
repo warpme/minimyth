@@ -24,5 +24,4 @@ include ../../gar.mk
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libtag.la
 	@rm -f $(DESTDIR)$(libdir)/libtag_c.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,taglib)
 	@$(MAKECOOKIE)

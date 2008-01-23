@@ -47,8 +47,6 @@ FETCH_SVN = \
 	tar --exclude '*/.svn' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
 	rm -rf $(strip $(3))
 
-CREATE_PKG_CONFIG_UNINSTALLED = true
-
 clean-image:
 	@rm -rf $(COOKIEROOTDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d

@@ -121,11 +121,3 @@ checksum-$(DISTNAME).tar.bz2:
 post-configure:
 	@echo "HAVE_XVMC_ACCEL=yes" >> $(WORKSRC)/config.mak
 	@$(MAKECOOKIE)
-
-post-install:
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libavcodec)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libavformat)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libavutil)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libpostproc)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libswscale)
-	@$(MAKECOOKIE)

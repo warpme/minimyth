@@ -40,6 +40,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpcre.la
 	@rm -f $(DESTDIR)$(libdir)/libpcrecpp.la
 	@rm -f $(DESTDIR)$(libdir)/libpcreposix.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libpcre)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libpcrecpp)
 	@$(MAKECOOKIE)

@@ -40,8 +40,6 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
-# For some reason, the Makefile.am has not be constructed to install
-# libcdio++.pc, libiso9600++.pc or libudf.pc.
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcdio.la
 	@rm -f $(DESTDIR)$(libdir)/libcdio++.la
@@ -50,11 +48,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libiso9660.la
 	@rm -f $(DESTDIR)$(libdir)/libiso9660++.la
 	@rm -f $(DESTDIR)$(libdir)/libudf.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libcdio)
-	@#$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libcdio++)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libcdio_cdda)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libcdio_paranoia)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libiso9660)
-	@#$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libiso9660++)
-	@#$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libudf)
 	@$(MAKECOOKIE)

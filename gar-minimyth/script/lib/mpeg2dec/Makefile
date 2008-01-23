@@ -42,6 +42,4 @@ pre-configure:
 post-install:
 	rm -f $(DESTDIR)$(libdir)/libmpeg2.la
 	rm -f $(DESTDIR)$(libdir)/libmpeg2convert.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libmpeg2)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libmpeg2convert)
 	@$(MAKECOOKIE)

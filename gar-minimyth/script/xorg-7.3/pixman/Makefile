@@ -33,5 +33,4 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpixman-1.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,pixman-1)
 	@$(MAKECOOKIE)

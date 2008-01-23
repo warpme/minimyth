@@ -39,5 +39,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/smixer/smixer-sbase.la
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/smixer/smixer-ac97.la
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/smixer/smixer-hda.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,alsa)
 	@$(MAKECOOKIE)

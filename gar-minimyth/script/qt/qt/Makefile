@@ -172,7 +172,6 @@ post-install:
 	@$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
 	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
 	@sed -e 's%-L$(DESTDIR)$(libdir)%-L$${libdir}%g'         -i $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(qtlibdir)/pkgconfig,qt-mt)
 	@$(MAKECOOKIE)
 
 clean-all:

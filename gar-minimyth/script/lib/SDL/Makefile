@@ -99,5 +99,4 @@ include ../../gar.mk
 
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libSDL.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,sdl)
 	@$(MAKECOOKIE)

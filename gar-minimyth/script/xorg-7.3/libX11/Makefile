@@ -81,5 +81,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlibi18n.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlocale.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xomGeneric.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,x11)
 	@$(MAKECOOKIE)
