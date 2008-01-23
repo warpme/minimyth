@@ -32,5 +32,4 @@ CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xrender)
 	@$(MAKECOOKIE)

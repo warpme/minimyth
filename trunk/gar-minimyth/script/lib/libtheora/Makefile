@@ -34,5 +34,4 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libtheora.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,theora)
 	@$(MAKECOOKIE)

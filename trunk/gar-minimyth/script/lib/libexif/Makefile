@@ -27,5 +27,4 @@ include ../../gar.mk
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libexif.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libexif)
 	@$(MAKECOOKIE)

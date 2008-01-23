@@ -141,7 +141,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxine.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libxine)
 	@$(MAKECOOKIE)
 
 clean-all:

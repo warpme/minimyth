@@ -51,7 +51,4 @@ configure-%/Configure:
 post-install:
 	@chmod u+w $(DESTDIR)$(libdir)/libcrypto.so.*
 	@chmod u+w $(DESTDIR)$(libdir)/libssl.so.*
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libcrypto)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libssl)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,openssl)
 	@$(MAKECOOKIE)

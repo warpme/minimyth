@@ -38,5 +38,4 @@ sysconfdir := $(subst //,/,$(sysconfdir))
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@rm -f $(DESTDIR)$(libdir)/libXvMCW.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xvmc)
 	@$(MAKECOOKIE)

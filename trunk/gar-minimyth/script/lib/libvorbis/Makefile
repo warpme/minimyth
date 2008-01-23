@@ -37,7 +37,4 @@ post-install:
 	rm -f $(DESTDIR)$(libdir)/libvorbis.la
 	rm -f $(DESTDIR)$(libdir)/libvorbisenc.la
 	rm -f $(DESTDIR)$(libdir)/libvorbisfile.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,vorbis)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,vorbisenc)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,vorbisfile)
 	@$(MAKECOOKIE)

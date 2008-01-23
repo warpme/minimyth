@@ -30,6 +30,4 @@ extract-config.cache.$(GARCH_FAMILY):
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpng12.la
 	@rm -f $(DESTDIR)$(libdir)/libpng.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libpng12)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libpng)
 	@$(MAKECOOKIE)

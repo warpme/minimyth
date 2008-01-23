@@ -36,5 +36,4 @@ install-cross:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libart_lgpl_2.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,libart-2.0)
 	@$(MAKECOOKIE)

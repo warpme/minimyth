@@ -37,6 +37,4 @@ CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@rm -f $(DESTDIR)$(libdir)/libXmuu.la
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xmu)
-	@$(call CREATE_PKG_CONFIG_UNINSTALLED,$(libdir)/pkgconfig,xmuu)
 	@$(MAKECOOKIE)
