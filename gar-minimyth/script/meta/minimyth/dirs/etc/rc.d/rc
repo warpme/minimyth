@@ -44,7 +44,9 @@ rc_script_list_run() {
             if /usr/bin/test -z "`/bin/pidof telnetd`" ; then
                 /usr/sbin/telnetd
             fi
-            /sbin/agetty 9600 tty1 &
+            if /usr/bin/test -z "`/bin/pidof agetty`" ; then
+                /sbin/agetty 9600 tty1 &
+            fi
             exit $?
         fi
         mm_splash_progress_update
