@@ -71,6 +71,7 @@ MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | s
 MM_INIT_START := \
     security \
     cpu \
+    console \
     telnet \
     ssh_server \
     mythdb_buffer_create \
