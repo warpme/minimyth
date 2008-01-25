@@ -328,10 +328,16 @@ mm-check:
 			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
+		if [ "$(mm_KERNEL_VERSION)" = "2.6.24" ] ; then \
+			if [ "$${chipset}" = "iegd" ] ; then \
+				echo "warning: mm_CHIPSETS=\"$${chipset}\" is an invalid value for mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\"." ; \
+			fi ; \
+		fi ; \
 	done
 	@echo "    mm_SOFTWARE"
 	@for software in $(mm_SOFTWARE) ; do \
-		if [ ! "$${software}" = "mythaudio"      ] && \
+		if [ ! "$${software}" = "mythappearance" ] && \
+		   [ ! "$${software}" = "mythaudio"      ] && \
 		   [ ! "$${software}" = "mythbrowser"    ] && \
 		   [ ! "$${software}" = "mythdvd"        ] && \
 		   [ ! "$${software}" = "mythgallery"    ] && \
@@ -350,6 +356,18 @@ mm-check:
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
+		fi ; \
+		if [ "$(mm_MYTH_VERSION)" = "softpad20" ] || \
+		   [ "$(mm_MYTH_VERSION)" = "stable20"  ] ; then \
+			if [ "$${software}" = "mythappearance" ] || \
+			   [ "$${software}" = "mythzoneminder" ] ; then \
+				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
+			fi ; \
+		fi ; \
+		if [ "$(mm_MYTH_VERSION)" = "svn" ] ; then \
+			if [ "$${software}" = "mythdvd" ] ; then \
+				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
+			fi ; \
 		fi ; \
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"
