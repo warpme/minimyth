@@ -461,6 +461,8 @@ conf_default_x() {
                         ;;
                 esac
                 ;;
+            16:10)
+                ;;
             *)
                 ;;
         esac
@@ -478,6 +480,11 @@ conf_default_x() {
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
                 ;;
+            16:10)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1440x900'
+                ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
                 ;;
@@ -494,6 +501,11 @@ conf_default_x() {
                 /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
                 /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
                 /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1280x720'
+                ;;
+            16:10)
+                /usr/bin/test -z "${MM_X_SYNC}"    && MM_X_SYNC='10.0-70.0'
+                /usr/bin/test -z "${MM_X_REFRESH}" && MM_X_REFRESH='60.0'
+                /usr/bin/test -z "${MM_X_MODE}"    && MM_X_MODE='1440x900'
                 ;;
             *)
                 mm_message_output err "error: the 'x' init script does not understand MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}'."
@@ -666,7 +678,7 @@ conf_default_x() {
         # MythTV is reported to work best at 100dots/inch.
         # (100dots/inch) / (25.4inch/mm) ~ 4dots/mm
         # Y in mm = (Y in dots) / (4dots/mm)
-        # Make Y a multiple of 3 (for 4:3) or 9 (for 16:9) so that X will be a whole number.
+        # Make Y a multiple of 3 (for 4:3), 9 (for 16:9) or 10 (for 16:10) so that X will be a whole number.
         X_DISPLAYSIZE_Y=
         X_DISPLAYSIZE_X=
         MM_X_DISPLAYSIZE=
@@ -675,13 +687,18 @@ conf_default_x() {
         fi
         case ${MM_VIDEO_ASPECT_RATIO} in
             4:3)
-                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 3)) * 3))
-                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} *  4 / 3))
+                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) /  3)) *  3))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} *  4 /  3))
                 MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
                 ;;
             16:9)
-                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 9)) * 9))
-                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 / 9))
+                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) /  9)) *  9))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 /  9))
+                MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
+                ;;
+            16:10)
+                X_DISPLAYSIZE_Y=$(($(($((${X_VIRTUAL_Y} * 100 / ${MM_VIDEO_FONT_SCALE} / 4)) / 10)) * 10))
+                X_DISPLAYSIZE_X=$((${X_DISPLAYSIZE_Y} * 16 / 10))
                 MM_X_DISPLAYSIZE=${X_DISPLAYSIZE_X}x${X_DISPLAYSIZE_Y}
                 ;;
             *)
