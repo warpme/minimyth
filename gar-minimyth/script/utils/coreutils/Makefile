@@ -1,9 +1,9 @@
 GARNAME = coreutils
-GARVERSION = 6.9
+GARVERSION = 6.10
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-sysinfo.patch $(DISTNAME)-futimens.patch $(DISTNAME)-disable_man.patch
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-sysinfo.patch $(DISTNAME)-disable_man.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
