@@ -94,10 +94,10 @@ mm_TFTP_ROOT              ?= /var/tftpboot/minimyth
 mm_NFS_ROOT               ?= /home/public/minimyth
 # The version of kernel headers to use.
 # Valid values are '2.6.23' and '2.6.24'.
-mm_KERNEL_HEADERS_VERSION ?= 2.6.23
+mm_KERNEL_HEADERS_VERSION ?= 2.6.24
 # The version of kernel to use.
 # Valid values are '2.6.23' and '2.6.24'.
-mm_KERNEL_VERSION         ?= 2.6.23
+mm_KERNEL_VERSION         ?= 2.6.24
 # The kernel configuration file to use.
 # When set, the kernel configuration file $(HOME)/.minimyth/$(mm_KERNEL_CONFIG) will be used.
 # When not set, a built-in kernel configuration file will be used.
