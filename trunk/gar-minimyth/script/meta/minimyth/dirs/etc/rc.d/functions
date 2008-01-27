@@ -2020,3 +2020,57 @@ mm_x_stop() {
 
     return 0
 }
+
+#===============================================================================
+# mythfrontend functions.
+#===============================================================================
+mm_mythfrontend_networkcontrol() {
+    local command=$1
+
+    local failed
+    local response
+
+    local host
+    local port
+    local enabled
+
+    failed=1
+    response=''
+
+    host='localhost'
+    port=`mm_mythdb_settings_get NetworkControlPort`
+    enabled=1
+    if /usr/bin/test `mm_mythdb_settings_get NetworkControlEnabled` -eq 0 ; then
+        enabled=0
+    fi
+    if /usr/bin/test -z "`/bin/pidof mythfrontend`" ; then
+        enabled=0
+    fi
+
+    if /usr/bin/test ${enabled} -eq 1 ; then
+        response=`/bin/echo -e "${command}\nexit" \
+                  | /usr/bin/hose ${host} ${port} --out --in \
+                    /bin/sh -c "/bin/cat <&3 & \
+                                /bin/grep '^#' \
+                                | /bin/sed 's%[[:cntrl:]]% %' \
+                                | /bin/grep -v '^# *$' \
+                                | /bin/sed 's%^#%%' \
+                                | /bin/sed 's%  *% %' \
+                                | /bin/sed 's%^ %%' \
+                                | /bin/sed 's% $%%' >&4" \
+                    3<&0 4>&1`
+        if /usr/bin/test $? -eq 0 ; then
+            failed=0
+        fi
+    fi
+
+    /bin/echo ${response}
+
+    if /usr/bin/test ${failed} -eq 1 ; then
+        /bin/false
+        return
+    else
+        /bin/true
+        return
+    fi
+}
