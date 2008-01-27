@@ -46,9 +46,7 @@ if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
     MainMenuJumpPoint=`mm_mythdb_jumppoints_get "Main Menu"`
 
     if /usr/bin/test ${NetworkControlEnabled} -eq 1 ; then
-        /usr/bin/nc localhost ${NetworkControlPort} > /dev/null 2>&1 << EOF
-jump mainmenu
-EOF
+        mm_mythfrontend_networkcontrol "jump mainmenu" > /dev/null 2>&1
     elif /usr/bin/test ! -z "${MainMenuJumpPoint}" && /usr/bin/test ! "x${MainMenuJumpPoint}" = "xNULL" ; then
         # Convert MythTV JumpPoint key sequence to an XMacroPlay command sequence.
         key_count=`/bin/echo ${MainMenuJumpPoint} | /bin/sed -e 's%[^+][^+]*%%g' | /usr/bin/wc -c`

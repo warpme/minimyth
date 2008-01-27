@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /etc/rc.d/functions
+
 if /usr/bin/test `/usr/bin/id -u` -ne 0 ; then
     exit 1
 fi
@@ -10,9 +12,14 @@ if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
     /usr/bin/xscreensaver-command -watch 2> /dev/null | while read watch ; do
         state=`/bin/echo ${watch} | /bin/sed -e 's%  *% %g' | /usr/bin/cut -d ' ' -f 1`
         if /usr/bin/test "${state}" = "BLANK" ; then
-            /usr/bin/mm_sleep
-            if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
-                /usr/bin/xscreensaver-command -deactivate > /dev/null 2>&1
+            # Do not sleep when in MythMusic or MythStream.
+            mythfrontend_location=`mm_mythfrontend_networkcontrol "query location"`
+            if /usr/bin/test ! "${mythfrontend_location}" = "playmusic"  && \
+               /usr/bin/test ! "${mythfrontend_location}" = "mythstream" ; then
+                /usr/bin/mm_sleep
+                if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
+                    /usr/bin/xscreensaver-command -deactivate > /dev/null 2>&1
+                fi
             fi
         fi
     done
