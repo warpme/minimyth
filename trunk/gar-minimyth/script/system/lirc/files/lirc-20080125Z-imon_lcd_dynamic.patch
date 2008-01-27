@@ -1,0 +1,74 @@
+diff -Naur lirc-20080125Z-old/drivers/lirc_imon/lirc_imon.c lirc-20080125Z-new/drivers/lirc_imon/lirc_imon.c
+--- lirc-20080125Z-old/drivers/lirc_imon/lirc_imon.c	2008-01-26 10:26:57.000000000 -0800
++++ lirc-20080125Z-new/drivers/lirc_imon/lirc_imon.c	2008-01-26 10:42:11.000000000 -0800
+@@ -123,8 +123,12 @@
+ static ssize_t vfd_write(struct file *file, const char *buf,
+ 				size_t n_bytes, loff_t *pos);
+ 
+-/* LCD file_operations override function prototypes */
+-static ssize_t lcd_write(struct file *file, const char *buf,
++/* VFD display */
++static ssize_t vfd_write_vfd(struct file *file, const char *buf,
++				size_t n_bytes, loff_t *pos);
++
++/* LCD display */
++static ssize_t vfd_write_lcd(struct file *file, const char *buf,
+ 				size_t n_bytes, loff_t *pos);
+ 
+ /* LIRC plugin function prototypes */
+@@ -572,6 +576,23 @@
+ #endif
+ 
+ 
++/**
++ * Writes data to the VFD.
++ */
++static ssize_t vfd_write(struct file *file, const char *buf,
++			 size_t n_bytes, loff_t *pos)
++{
++	/**
++	 * We SHOULD detect this now, rather than just doing whatever our module
++	 * parameters tells us...
++	 */
++	if (is_lcd) {
++		return vfd_write_lcd(file, buf, n_bytes, pos);
++	} else {
++		return vfd_write_vfd(file, buf, n_bytes, pos);
++	}
++}
++ 
+ 
+ /**
+  * Writes data to the VFD.  The IMON VFD is 2x16 characters
+@@ -584,7 +605,7 @@
+  * than 32 bytes are provided spaces will be appended to
+  * generate a full screen.
+  */
+-static ssize_t vfd_write(struct file *file, const char *buf,
++static ssize_t vfd_write_vfd(struct file *file, const char *buf,
+ 			 size_t n_bytes, loff_t *pos)
+ {
+ 	int i;
+@@ -671,7 +692,7 @@
+  * display whatever diacritics you need, and so on), but it's also
+  * a lot more complicated than most LCDs...
+  */
+-static ssize_t lcd_write(struct file *file, const char *buf,
++static ssize_t vfd_write_lcd(struct file *file, const char *buf,
+ 			 size_t n_bytes, loff_t *pos)
+ {
+ 	int retval = SUCCESS;
+@@ -1041,13 +1062,6 @@
+ 
+ 	info("%s: found IMON device", __FUNCTION__);
+ 
+-	/*
+-	 * If it's the LCD, as opposed to the VFD, we just need to replace
+-	 * the "write" file op.
+-	 */
+-	if (is_lcd)
+-		vfd_fops.write = &lcd_write;
+-
+ #if !defined(KERNEL_2_5)
+ 	for (subminor = 0; subminor < MAX_DEVICES; ++subminor) {
+ 		if (minor_table[subminor] == NULL)

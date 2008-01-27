@@ -1,0 +1,36 @@
+diff -Naur lirc-20080125Z-old/drivers/lirc_imon/lirc_imon.c lirc-20080125Z-new/drivers/lirc_imon/lirc_imon.c
+--- lirc-20080125Z-old/drivers/lirc_imon/lirc_imon.c	2008-01-19 02:06:46.000000000 -0800
++++ lirc-20080125Z-new/drivers/lirc_imon/lirc_imon.c	2008-01-26 10:56:02.000000000 -0800
+@@ -241,11 +241,11 @@
+ /* to prevent races between open() and disconnect() */
+ static DECLARE_MUTEX(disconnect_sem);
+ 
+-static int debug;
++static int debug = 0;
+ #ifdef LIRC_IMON_LCD
+ static int is_lcd = 1;
+ #else
+-static int is_lcd; /* If LIRC_IMON_LCD not defined, default to non-LCD */
++static int is_lcd = 0; /* If LIRC_IMON_LCD not defined, default to non-LCD */
+ #endif
+ 
+ #if !defined(KERNEL_2_5)
+@@ -274,15 +274,15 @@
+ MODULE_LICENSE("GPL");
+ MODULE_DEVICE_TABLE(usb, imon_usb_id_table);
+ 
+-module_param(debug, int, 0);
++module_param(debug, int, 0644);
+ MODULE_PARM_DESC(debug, "Debug messages: 0=no, 1=yes(default: no)");
+ 
+ #ifdef LIRC_IMON_LCD
+-module_param(is_lcd, int, 1);
++module_param(is_lcd, int, 0644);
+ MODULE_PARM_DESC(is_lcd, "The device is an LCD: 0=no (it's a VFD), "
+ 		 "1=yes (default:yes)");
+ #else
+-module_param(is_lcd, int, 0);
++module_param(is_lcd, int, 0644);
+ MODULE_PARM_DESC(is_lcd, "The device is an LCD: 0=no (it's a VFD), "
+ 		 "1=yes (default:no)");
+ #endif
