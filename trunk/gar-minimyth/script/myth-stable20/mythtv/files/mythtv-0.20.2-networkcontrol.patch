@@ -1,0 +1,65 @@
+diff -Naur mythtv-0.20.2-old/programs/mythfrontend/main.cpp mythtv-0.20.2-new/programs/mythfrontend/main.cpp
+--- mythtv-0.20.2-old/programs/mythfrontend/main.cpp	2008-01-27 17:20:15.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfrontend/main.cpp	2008-01-27 19:42:55.000000000 -0800
+@@ -1203,13 +1203,24 @@
+     if (gContext->GetNumSetting("NetworkControlEnabled", 0))
+     {
+         int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
+-        networkControl = new NetworkControl(networkPort);
++        networkControl = new NetworkControl(QHostAddress((Q_UINT32)0x00000000L), networkPort);
+         if (!networkControl->ok())
+             VERBOSE(VB_IMPORTANT,
+                     QString("NetworkControl failed to bind to port %1.")
+                     .arg(networkPort));
+     }
+ 
++    NetworkControl *localControl = NULL;
++    if (1)
++    {
++        int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545) + 1;
++        localControl = new NetworkControl(QHostAddress((Q_UINT32)0x7f000001L), networkPort);
++        if (!localControl->ok())
++            VERBOSE(VB_IMPORTANT,
++                    QString("NetworkControl failed to bind to port %1.")
++                    .arg(networkPort));
++    }
++
+     gContext->addCurrentLocation("MainMenu");
+ 
+     int exitstatus = NO_EXIT;
+@@ -1254,6 +1265,9 @@
+     if (networkControl)
+         delete networkControl;
+ 
++    if (localControl)
++        delete localControl;
++
+     DestroyMythMainWindow();
+     delete themeBase;
+     delete gContext;
+diff -Naur mythtv-0.20.2-old/programs/mythfrontend/networkcontrol.cpp mythtv-0.20.2-new/programs/mythfrontend/networkcontrol.cpp
+--- mythtv-0.20.2-old/programs/mythfrontend/networkcontrol.cpp	2008-01-27 17:19:51.000000000 -0800
++++ mythtv-0.20.2-new/programs/mythfrontend/networkcontrol.cpp	2008-01-27 18:27:35.000000000 -0800
+@@ -19,8 +19,8 @@
+ const int kNetworkControlDataReadyEvent = 35671;
+ const int kNetworkControlCloseEvent     = 35672;
+ 
+-NetworkControl::NetworkControl(int port)
+-          : QServerSocket(port, 1),
++NetworkControl::NetworkControl(const QHostAddress & address, int port)
++          : QServerSocket(address, port, 1),
+             prompt("# "),
+             gotAnswer(false), answer(""),
+             client(NULL), cs(NULL)
+diff -Naur mythtv-0.20.2-old/programs/mythfrontend/networkcontrol.h mythtv-0.20.2-new/programs/mythfrontend/networkcontrol.h
+--- mythtv-0.20.2-old/programs/mythfrontend/networkcontrol.h	2006-07-15 13:13:46.000000000 -0700
++++ mythtv-0.20.2-new/programs/mythfrontend/networkcontrol.h	2008-01-27 18:28:02.000000000 -0800
+@@ -18,7 +18,7 @@
+ {
+     Q_OBJECT
+   public:
+-    NetworkControl(int port);
++    NetworkControl(const QHostAddress & address, int port);
+     ~NetworkControl();
+ 
+     void newConnection(int socket);
