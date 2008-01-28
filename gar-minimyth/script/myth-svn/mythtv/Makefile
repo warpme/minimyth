@@ -61,7 +61,7 @@ CONFIGURE_ARGS = \
 	--enable-xvmc-pro \
 	--disable-xvmc-opengl \
 	--xvmc-lib=XvMCW \
-	--disable-opengl-video \
+	--enable-opengl-video \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \
