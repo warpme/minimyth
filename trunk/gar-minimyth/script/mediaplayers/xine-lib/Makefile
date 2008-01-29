@@ -1,16 +1,16 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.9.1
+GARVERSION = 1.1.10
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/vcdimager lib/zlib xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmad lib/libmng lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/vcdimager lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
