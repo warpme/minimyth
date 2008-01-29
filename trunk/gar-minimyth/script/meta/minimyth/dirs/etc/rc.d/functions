@@ -2032,23 +2032,16 @@ mm_mythfrontend_networkcontrol() {
 
     local host
     local port
-    local enabled
 
     failed=1
     response=''
 
-    host='localhost'
-    port=`mm_mythdb_settings_get NetworkControlPort`
-    port=$((${port} + 1))
-    enabled=1
-    if /usr/bin/test `mm_mythdb_settings_get NetworkControlEnabled` -eq 0 ; then
-        enabled=0
-    fi
-    if /usr/bin/test -z "`/bin/pidof mythfrontend`" ; then
-        enabled=0
-    fi
 
-    if /usr/bin/test ${enabled} -eq 1 ; then
+    if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
+        host='localhost'
+        port=`mm_mythdb_settings_get NetworkControlPort`
+        port=$((${port} + 1))
+
         response=`/bin/echo -e "${command}\nexit" \
                   | /usr/bin/hose ${host} ${port} --out --in \
                     /bin/sh -c "/bin/cat <&3 & \
