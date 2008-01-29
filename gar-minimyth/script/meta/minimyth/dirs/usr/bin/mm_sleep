@@ -37,37 +37,15 @@ done
 # If any game emulators are running, then exit them.
 /usr/bin/mm_game_exit
 
-# If mythfrontend is running, then return it to the main menu using the 'Main Menu' JumpPoint.
-# If the Network Interface interface is enabled, then use it.
-# Else, if the JumpPoint key sequence is set, then use it.
+# If mythfrontend is running, then return it to the Main Menu using the Network Control interface.
 if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
-    NetworkControlEnabled=`mm_mythdb_settings_get NetworkControlEnabled`
-    NetworkControlPort=`mm_mythdb_settings_get NetworkControlPort`
-    MainMenuJumpPoint=`mm_mythdb_jumppoints_get "Main Menu"`
-
-    if /usr/bin/test ${NetworkControlEnabled} -eq 1 ; then
-        mm_mythfrontend_networkcontrol "jump mainmenu" > /dev/null 2>&1
-    elif /usr/bin/test ! -z "${MainMenuJumpPoint}" && /usr/bin/test ! "x${MainMenuJumpPoint}" = "xNULL" ; then
-        # Convert MythTV JumpPoint key sequence to an XMacroPlay command sequence.
-        key_count=`/bin/echo ${MainMenuJumpPoint} | /bin/sed -e 's%[^+][^+]*%%g' | /usr/bin/wc -c`
-        key_index=1
-        key_press=""
-        key_release=""
-        while /usr/bin/test ${key_index} -le ${key_count} ; do
-            key=`/bin/echo ${MainMenuJumpPoint} | /usr/bin/cut -d '+' -f ${key_index}`
-            case  "${key}" in
-                ALT|Alt)     key="Alt_L"     ;;
-                CTRL|Ctrl)   key="Control_L" ;;
-                META|Meta)   key="Meta_L"    ;;
-                SHIFT|Shift) key="Shift_L"   ;;
-            esac
-            key_press="${key_press}KeyStrPress ${key}\n "
-            key_release="KyeStrRelease ${key}\n ${key_release}"
-            key_index=$((${key_index} + 1))
-        done
-        # Send command sequence to mythfrontend using XMacroPlay.
-        mm_x_xmacroplay 'mythfrontend' "${key_press}${key_release}"
-    fi
+    timeout=10
+    while /usr/bin/test ${timeout} -gt 0 && \
+          /usr/bin/test ! "`mm_mythfrontend_networkcontrol 'query location'`" = "MainMenu" ; do
+        mm_mythfrontend_networkcontrol "jump MainMenu" > /dev/null 2>&1
+        /bin/sleep 1
+        timeout=$((${timeout} - 1))
+    done
 fi
 
 # Stop LCDd because it can stop working as a result of suspend.
