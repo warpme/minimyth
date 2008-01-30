@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION =  7.17.1
+GARVERSION =  7.18.0
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/openssl
+DEPENDS = lang/c lib/openssl lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
