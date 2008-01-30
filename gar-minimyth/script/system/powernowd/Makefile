@@ -1,5 +1,5 @@
 GARNAME = powernowd
-GARVERSION = 0.97
+GARVERSION = 1.00
 CATEGORIES = system
 MASTER_SITES = http://www.deater.net/john/
 DISTFILES = $(DISTNAME).tar.gz
