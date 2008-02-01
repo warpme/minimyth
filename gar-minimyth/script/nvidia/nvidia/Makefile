@@ -8,7 +8,3 @@ define BLURB
 endef
 
 include ../../gar.mk
-
-x-clean-all:
-	@$(foreach dir, $(wildcard ../nvidia-*), $(MAKE) clean-all -C $(dir) ; )
-	@$(MAKE) clean
