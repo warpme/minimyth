@@ -87,6 +87,7 @@ MM_INIT_START := \
     media \
     audio \
     video \
+    wiimote \
     lirc \
     lcdproc \
     ssh_remote \
@@ -98,6 +99,7 @@ MM_INIT_KILL := \
     x \
     lcdproc \
     lirc \
+    wiimote \
     audio \
     media \
     web \
@@ -353,6 +355,7 @@ mm-check:
 		   [ ! "$${software}" = "xine"           ] && \
 		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
+		   [ ! "$${software}" = "wiimote"        ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \

@@ -111,6 +111,9 @@ DEPENDS = \
 		mediaplayers/xine-ui) \
 	$(if $(filter transcode,$(mm_SOFTWARE)), \
 		utils/transcode) \
+	$(if $(filter wiimote,$(mm_SOFTWARE)), \
+		utils/cwiid \
+		utils/bluez-utils) \
 	$(if $(filter debug,$(mm_SOFTWARE)), \
 		devel/gdb \
 		devel/strace) \

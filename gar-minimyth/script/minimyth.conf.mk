@@ -17,7 +17,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 21
+mm_CONF_VERSION           ?= 22
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -36,7 +36,7 @@ mm_CHIPSETS               ?= intel nvidia via other
 # Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythappearance',
 # 'mythbrowser', 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews',
 # 'mythphone', 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder',
-# 'mplayer', 'xine', 'transcode', 'mame' and 'debug'.
+# 'mplayer', 'xine', 'transcode', 'mame', 'wiimote' and 'debug'.
 mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),svn),mythappearance) \
                              mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),stable20 softpad20),mythdvd) \
