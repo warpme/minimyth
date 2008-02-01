@@ -200,6 +200,11 @@
               <dt><a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a></dt>
               <dt><a href="#MM_LCDPROC_FETCH_LCDD_CONF">MM_LCDPROC_FETCH_LCDD_CONF</a></dt>
             </dl></dd>
+            <dt><a href="#MM_WIIMOTE">Wii remote control configuration variables</a></dt>
+            <dd><dl>
+              <dt><a href="#MM_WIIMOTE_ENABLED">MM_WIIMOTE_ENABLED</a></dt>
+              <dt><a href="#MM_WIIMOTE_ADDRESS_n">MM_WIIMOTE_ADDRESS_0, MM_WIIMOTE_ADDRESS_1, MM_WIIMOTE_ADDRESS_2 and MM_WIIMOTE_ADDRESS_3</a></dt>
+            </dl></dd>
             <dt><a href="#MM_EXTERNAL">External equipment control variables</a></dt>
             <dd><dl>
               <dt><a href="#MM_EXTERNAL_POWER_OFF">MM_EXTERNAL_POWER_OFF</a></dt>
@@ -2244,6 +2249,44 @@
             If the 'lcdproc' init script detects that LCDd is already running, then it will exit immediately.
           </p>
         </div>
+        <div id="MM_WIIMOTE" class="section">
+          <div class="heading">Wii remote control configuration variables</div>
+          <p>
+            The Wii remote control configuration variables are:
+          </p>
+          <dl>
+            <dt id="MM_WIIMOTE_ENABLED"><strong>MM_WIIMOTE_ENABLED</strong></dt>
+            <dd>
+              <p>
+                Indicate whether or not you want to enable use of a Wii remote control.
+                Valid values are 'yes' and 'no', with the default being either 'yes' or 'no' depending on whether or not
+                any of the '<a href="#MM_WIIMOTE_ADDRESS_n">MM_WIIMOTE_ADDRESS_n</a>'
+                variables are set.
+              </p>
+            </dd>
+            <dt id="MM_WIIMOTE_ADDRESS_n"><strong>MM_WIIMOTE_ADDRESS_0, MM_WIIMOTE_ADDRESS_1 MM_WIIMOTE_ADDRESS_2 and MM_WIIMOTE_ADDRESS_3</strong></dt>
+            <dd>
+              <p>
+                MiniMyth uses the
+                <a href="http://abstrakraft.org/cwiid/">CWiid</a>'s
+                <a href="http://abstrakraft.org/cwiid/wiki/wminput">wminput</a>
+                user space driver in conjuction with the uinput kernel driver
+                to map Wii remote control inputs to Linux input device events.
+                For Wii remote control number n={0,1,2,3},
+                 MiniMyth prefers the input mapping file '/etc/cwiid/wminput/default_n'.
+                If this mapping file is not present,
+                then MiniMyth falls back to the input mapping file '/etc/cwiid/wminput/default'.
+              </p>
+              <p>
+                Provide the address(es) of the Wii remote control(s).
+                If '<a href="#MM_WIIMOTE_ENABLED">MM_WIIMOTE_ENABLED</a>' is 'yes'
+                and no Wii remote control addresses are provided,
+                then MiniMyth uses the first Wii remote control that it finds.
+                In this case, MiniMyth uses the input mapping file '/etc/cwiid/wminput/default'.
+              </p>
+            </dd>
+          </dl>
+        </div>
         <div id="MM_EXTERNAL" class="section">
           <div class="heading">External equipment control configuration variables</div>
           <p>
@@ -2620,7 +2663,7 @@ chmod 0644 ~/.ssh/authorized_keys</pre>
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2008-01-24 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2008-01-31 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
