@@ -1,3 +1,16 @@
+# Input devices
+# If we can, then give the input device a predictable names using the mm_input script.
+# Otherwise, give the input device whatever name the kernel gives it.
+KERNEL=="mice",                                               NAME="input/%k"
+KERNEL=="mouse*", PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/mouse-$result"
+KERNEL=="mouse*",                                             NAME="input/%k"
+KERNEL=="event*", PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/event-$result"
+KERNEL=="event*",                                             NAME="input/%k"
+KERNEL=="js*"   , PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/js-$result"
+KERNEL=="js*",                                                NAME="input/%k"
+KERNEL=="ts*"   , PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/ts-$result"
+KERNEL=="ts*",                                                NAME="input/%k"
+
 # DRI devices always go into a subdirectory (as per the LSB spec)
 KERNEL=="card*",                       NAME="dri/card%n"
 
@@ -8,13 +21,6 @@ KERNEL=="pcm[CD0-9cp]*",               NAME="snd/%k"
 KERNEL=="midiC[D0-9]*",                NAME="snd/%k"
 KERNEL=="timer",                       NAME="snd/%k"
 KERNEL=="seq",                         NAME="snd/%k"
-
-# input devices
-KERNEL=="mice",                        NAME="input/%k"
-KERNEL=="mouse*",                      NAME="input/%k"
-KERNEL=="event*",                      NAME="input/%k"
-KERNEL=="js*",                         NAME="input/%k"
-KERNEL=="ts*",                         NAME="input/%k"
 
 # USB devices
 KERNEL=="hiddev*",                     NAME="usb/%k"
