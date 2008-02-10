@@ -1,19 +1,19 @@
-diff -Naur libX11-1.1.1-old/configure.ac libX11-1.1.1-new/configure.ac
---- libX11-1.1.1-old/configure.ac	2006-11-30 17:50:11.000000000 -0800
-+++ libX11-1.1.1-new/configure.ac	2008-02-04 09:17:03.000000000 -0800
-@@ -7,6 +7,9 @@
-         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
-         libX11)
- AC_CONFIG_SRCDIR([Makefile.am])
+diff -Naur libXt-1.0.5-old/configure.ac libXt-1.0.5-new/configure.ac
+--- libXt-1.0.5-old/configure.ac	2007-01-27 22:27:22.000000000 -0800
++++ libXt-1.0.5-new/configure.ac	2007-11-12 17:25:29.000000000 -0800
+@@ -28,6 +28,9 @@
+ dnl
+ dnl
+ AC_INIT(libXt, 1.0.5, [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg], libXt)
 +AC_CANONICAL_BUILD
 +AC_CANONICAL_HOST
 +
- AM_INIT_AUTOMAKE([dist-bzip2 foreign])
- 
+ AM_INIT_AUTOMAKE([dist-bzip2])
  AM_MAINTAINER_MODE
-@@ -18,6 +21,42 @@
- AC_PROG_LIBTOOL
+ 
+@@ -37,6 +40,42 @@
  AC_PROG_CC
+ AC_PROG_LIBTOOL
  
 +AC_MSG_CHECKING([for CC_FOR_BUILD])
 +if test x$host != x$build ; then
@@ -51,32 +51,22 @@ diff -Naur libX11-1.1.1-old/configure.ac libX11-1.1.1-new/configure.ac
 +AC_MSG_RESULT([$LDFLAGS_FOR_BUILD])
 +AC_SUBST(LDFLAGS_FOR_BUILD)
 +
- XORG_PROG_RAWCPP
+ PKG_CHECK_MODULES(XT, sm x11 xproto kbproto)
  
- # Build with XCB support?
-@@ -204,7 +243,7 @@
- #
- KEYSYMDEF=""
- AC_MSG_CHECKING([keysymdef.h])
--for flag in $XPROTO_CFLAGS -I/usr/include; do
-+for flag in $XPROTO_CFLAGS -I$DESTDIR$includedir; do
- 	case "$KEYSYMDEF" in
- 	"")
- 		case "$flag" in
-diff -Naur libX11-1.1.1-old/src/util/Makefile.am libX11-1.1.1-new/src/util/Makefile.am
---- libX11-1.1.1-old/src/util/Makefile.am	2006-10-04 10:43:17.000000000 -0700
-+++ libX11-1.1.1-new/src/util/Makefile.am	2008-02-04 08:53:43.000000000 -0800
-@@ -5,7 +5,12 @@
- makekeys_CFLAGS=$(X11_CFLAGS)
+ # Needed for including Xalloca.h
+diff -Naur libXt-1.0.5-old/util/Makefile.am libXt-1.0.5-new/util/Makefile.am
+--- libXt-1.0.5-old/util/Makefile.am	2006-07-11 11:05:55.000000000 -0700
++++ libXt-1.0.5-new/util/Makefile.am	2007-11-12 17:24:51.000000000 -0800
+@@ -13,6 +13,12 @@
+ makestrs_CFLAGS = $(XT_CFLAGS)
+ makestrs_SOURCES = makestrs.c
  
- #override CC = gcc
--LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 +COMPILE = $(CC_FOR_BUILD) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 +	$(AM_CPPFLAGS) $(CPPFLAGS_FOR_BUILD) $(AM_CFLAGS) $(CFLAGS_FOR_BUILD)
 +LINK = $(CC_FOR_BUILD) $(AM_CFLAGS) $(CFLAGS_FOR_BUILD) $(AM_LDFLAGS) $(LDFLAGS_FOR_BUILD) -o $@
 +
-+$(srcdir)/makekeys-makekeys.o:
++$(srcdir)/makestrs-makestrs.o:
 +	$(COMPILE) -c $< -o $@
  
- EXTRA_DIST = mkks.sh
- 
+ # Man page
+ appmandir = $(APP_MAN_DIR)

@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.2.0
+GARVERSION = 1.3.0.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -58,6 +58,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-werror \
 	--disable-debug \
 	--disable-builddocs \
 	--enable-install-libxf86config \
@@ -150,15 +151,11 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libafb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb32.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libddc.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libi2c.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libmfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libpcidata.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/librac.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libramdac.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libscanpci.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadowfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadow.la
@@ -169,7 +166,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf4bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_32bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libdrm.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libfbdevhw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
