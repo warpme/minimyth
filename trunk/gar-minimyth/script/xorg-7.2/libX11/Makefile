@@ -16,6 +16,7 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
+	$(CATEGORY)/libxcb \
 	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
@@ -47,7 +48,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-tcp-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
-	--without-xcb \
+	--with-xcb \
 	--without-lint
 
 CONFIGURE_ENV = \
@@ -75,6 +76,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@rm -f $(DESTDIR)$(libdir)/libX11-xcb.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/ximcp.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcUTF8Load.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcDef.la
