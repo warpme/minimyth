@@ -1,5 +1,5 @@
 GARNAME = libXmu
-GARVERSION = 1.0.3
+GARVERSION = 1.0.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,7 +26,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-unix-transport \
 	--enable-tcp-transport \
 	--disable-ipv6 \
-	--with-gnu-ld
+	--enable-local-transport \
+	--with-gnu-ld \
+	--without-lint
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
