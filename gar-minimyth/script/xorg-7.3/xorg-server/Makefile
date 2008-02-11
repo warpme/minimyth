@@ -190,4 +190,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
+	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
 	@$(MAKECOOKIE)
