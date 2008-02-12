@@ -1,0 +1,185 @@
+diff -Naur mythtv-15941-old/configure mythtv-15941-new/configure
+--- mythtv-15941-old/configure	2008-02-12 09:18:41.000000000 -0800
++++ mythtv-15941-new/configure	2008-02-12 09:20:04.000000000 -0800
+@@ -669,11 +669,11 @@
+     func=$4
+     shift 4
+     disable $cfg
+-    check_cmd ${pkg}-config --version
++    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
+     err=$?
+     if test "$err" = 0; then
+-        temp_cflags `${pkg}-config --cflags`
+-        temp_extralibs `${pkg}-config --libs`
++        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
++        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
+         check_lib "$@" $header $func && enable $cfg
+     fi
+     return $err
+@@ -1669,27 +1669,7 @@
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
+-
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
+-    fi
+-
+-    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_qtlibdir@ @GAR_DESTDIR@@GAR_kdelibdir@ | sed s/'\/ '/' '/g` "
+ 
+     HAS_IT="no"
+     for LIBPATH in $LIBPATHS ; do
+@@ -1702,10 +1682,8 @@
+ 
+ has_header()
+ {
+-    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
+-    INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+-    HPATHS="$HPATHS "$(echo $INCL | sed "s/$libdir_name/include/g")
+-
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_qtincludedir@ @GAR_DESTDIR@@GAR_kdeincludedir@"
++  
+     HAS_IT="no"
+     for HPATH in $HPATHS ; do
+         if test x`ls $HPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
+@@ -2438,7 +2416,7 @@
+ 
+ disable sdl_too_old
+ disable sdl
+-#SDL_CONFIG="${cross_prefix}sdl-config"
++#SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
+ if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
+     sdl_cflags=`"${SDL_CONFIG}" --cflags`
+     temp_cflags $sdl_cflags
+@@ -2518,8 +2496,8 @@
+ # aRts probe
+ ! disabled audio_arts &&
+     check_foo_config arts artsc artsc.h arts_init &&
+-    audio_arts_libs=`artsc-config --libs`  &&
+-    audio_arts_cflags=`artsc-config --cflags` &&
++    audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`  &&
++    audio_arts_cflags=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags` &&
+     enable  audio_arts ||
+     disable audio_arts
+ 
+@@ -2736,21 +2714,21 @@
+ # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
+ # not to overwrite the headers installed from Mesa, etc. We need to
+ # add that path to include paths if that's the case. 
+-if test -d /usr/share/doc/nvidia-glx-dev/include; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/doc/nvidia-glx-dev/include"
++if test -d @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_docdir@/nvidia-glx-dev/include"
+ fi
+ 
+ # Same for Debian Sid.
+-if test -d /usr/share/nvidia/include/GL; then 
+-    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH /usr/share/nvidia/include"
++if test -d @GAR_DESTDIR@@GAR_sharedstatedir@/nvidia/include/GL; then 
++    CONFIG_INCLUDEPATH="$CONFIG_INCLUDEPATH @GAR_DESTDIR@@GAR_sharedstatedir@/nvidia/include"
+ fi
+ 
+ if enabled directfb; then
+     directfb="no"
+-    if test x`which directfb-config 2> /dev/null` != x"" ; then
++    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
+         directfb="yes"
+-        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
+-        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
++        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
++        CONFIG_DIRECTFB_CXXFLAGS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --cflags`
+     fi
+ fi
+ 
+@@ -3072,8 +3050,8 @@
+ fi
+ if enabled freetype2; then
+   echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
+-  echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
+-  echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
++  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
++  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
+ fi
+ if enabled fribidi; then
+   echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
+diff -Naur mythtv-15941-old/contrib/mythnotify/cidbcast/Makefile mythtv-15941-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-15941-old/contrib/mythnotify/cidbcast/Makefile	2008-02-12 09:18:34.000000000 -0800
++++ mythtv-15941-new/contrib/mythnotify/cidbcast/Makefile	2008-02-12 09:20:04.000000000 -0800
+@@ -15,7 +15,7 @@
+ # Libraries
+ 
+ STDLIBS    = -lm
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
+ PROGRAM    = cidbcast
+ 
+ #################################################################################
+diff -Naur mythtv-15941-old/contrib/mythnotify/mythudprelay/Makefile mythtv-15941-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-15941-old/contrib/mythnotify/mythudprelay/Makefile	2008-02-12 09:18:34.000000000 -0800
++++ mythtv-15941-new/contrib/mythnotify/mythudprelay/Makefile	2008-02-12 09:20:04.000000000 -0800
+@@ -9,13 +9,13 @@
+ RM       =  rm 
+ RM_FLAGS =  -f
+ 
+-CFLAGS  	= -g -Wall `xml2-config --cflags` -O
++CFLAGS  	= -g -Wall `@GAR_DESTDIR@@GAR_bindir@/xml2-config --cflags` -O
+ CDEFS   	= -DDEBUG
+ 
+ # Libraries
+ 
+-STDLIBS    = -lm `xml2-config --libs` -lxslt
+-X11LIBS    =  -L/usr/X11R6/lib -lX11
++STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
++X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
+ PROGRAM = mythudprelay
+ 
+ #################################################################################
+diff -Naur mythtv-15941-old/programs/mythtranscode/Makefile.standlone mythtv-15941-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-15941-old/programs/mythtranscode/Makefile.standlone	2008-02-12 09:18:34.000000000 -0800
++++ mythtv-15941-new/programs/mythtranscode/Makefile.standlone	2008-02-12 09:20:04.000000000 -0800
+@@ -4,7 +4,7 @@
+ TOOL = mpeg2fix
+ 
+ 
+-INCLUDES = -I./libavformat -I./libavcodec -I./libavutil -I./libmpeg2 -I./replex -I/usr/include/qt3
++INCLUDES = -I./libavformat -I./libavcodec -I./libavutil -I./libmpeg2 -I./replex
+ #INCLUDES += -I/usr/src/DVB/include
+ 
+ OBJS = $(TOOL).o helper.o replex/libreplex.a
+diff -Naur mythtv-15941-old/settings.pro mythtv-15941-new/settings.pro
+--- mythtv-15941-old/settings.pro	2008-02-12 09:18:34.000000000 -0800
++++ mythtv-15941-new/settings.pro	2008-02-12 09:20:04.000000000 -0800
+@@ -1,7 +1,7 @@
+ CONFIG += $$CCONFIG
+ 
+ isEmpty( PREFIX ) {
+-    PREFIX = /usr/local
++    PREFIX = @GAR_prefix@
+ }
+ 
+ LIBVERSION = 0.21
+@@ -50,7 +50,7 @@
+ # and we do that in their Makefiles if CONFIG has mac_bundle
+ macx: CONFIG += console
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
+ INCLUDEPATH += $$CONFIG_INCLUDEPATH
+ 
+ # remove warn_{on|off} from CONFIG since we set it in our CFLAGS
