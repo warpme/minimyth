@@ -1,5 +1,5 @@
 GARNAME = pciutils
-GARVERSION = 2.2.9
+GARVERSION = 2.2.10
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/software/utils/pciutils/
 DISTFILES = $(DISTNAME).tar.gz pci.ids
