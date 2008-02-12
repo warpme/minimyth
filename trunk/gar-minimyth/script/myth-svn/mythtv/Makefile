@@ -3,7 +3,7 @@ GARVERSION = $(mm_MYTH_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-audiooutputdigitalencoder_ccp.patch $(GARNAME)-ticket-1104-mythtv_ac3.47.patch $(GARNAME)-gcc_4.3.patch $(GARNAME)-link_xvmc_lib.patch $(GARNAME)-networkcontrol.patch $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-startplayer_maxwait.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES = $(GARNAME)-gcc_4.3.patch $(GARNAME)-openchrome.patch $(GARNAME)-networkcontrol.patch $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-startplayer_maxwait.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
