@@ -1,8 +1,11 @@
 GARNAME = Mesa
-GARVERSION = 7.0.1
+GARVERSION = 7.0.3-rc1
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
-DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
+#MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
+#DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
+#PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-dri_xcb.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+MASTER_SITES = http://mesa3d.org/beta/
+DISTFILES = MesaLib-$(GARVERSION).tar.gz MesaGLUT-$(GARVERSION).tar.gz MesaDemos-$(GARVERSION).tar.gz
 PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-dri_xcb.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2/MIT
 
