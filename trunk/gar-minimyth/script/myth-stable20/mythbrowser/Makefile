@@ -16,7 +16,7 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 WORKSRC = $(WORKDIR)/mythplugins-$(MYTHPLUGINS_VERSION)
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-#CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
+CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
