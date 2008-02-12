@@ -338,8 +338,7 @@ mm-check:
 	done
 	@echo "    mm_SOFTWARE"
 	@for software in $(mm_SOFTWARE) ; do \
-		if [ ! "$${software}" = "mythappearance" ] && \
-		   [ ! "$${software}" = "mythaudio"      ] && \
+		if [ ! "$${software}" = "mythaudio"      ] && \
 		   [ ! "$${software}" = "mythbrowser"    ] && \
 		   [ ! "$${software}" = "mythdvd"        ] && \
 		   [ ! "$${software}" = "mythgallery"    ] && \
@@ -362,8 +361,7 @@ mm-check:
 		fi ; \
 		if [ "$(mm_MYTH_VERSION)" = "softpad20" ] || \
 		   [ "$(mm_MYTH_VERSION)" = "stable20"  ] ; then \
-			if [ "$${software}" = "mythappearance" ] || \
-			   [ "$${software}" = "mythzoneminder" ] ; then \
+			if [ "$${software}" = "mythzoneminder" ] ; then \
 				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
 			fi ; \
 		fi ; \

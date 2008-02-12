@@ -27,3 +27,4 @@ checksum-$(DISTNAME).tar.bz2:
 post-install:
 	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)
 	@rm -rf $(DESTDIR)$(licensedir)/$(GARNAME)
+	@$(MAKECOOKIE)

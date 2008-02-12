@@ -72,8 +72,6 @@ DEPENDS = \
 		$(if $(filter 2.6.23,$(mm_KERNEL_VERSION)),X11/IEGD)) \
 	$(if $(filter nvidia,$(mm_CHIPSETS)), \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
-	$(if $(filter mythappearance,$(mm_SOFTWARE)), \
-		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythappearance),myth-$(mm_MYTH_VERSION)/mythappearance)) \
 	$(if $(filter mythaudio,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythaudio),myth-$(mm_MYTH_VERSION)/mythaudio)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
