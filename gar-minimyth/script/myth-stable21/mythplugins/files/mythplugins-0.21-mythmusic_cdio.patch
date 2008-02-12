@@ -1,0 +1,137 @@
+diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
+--- mythplugins-15941-old/configure	2008-02-12 09:23:53.000000000 -0800
++++ mythplugins-15941-new/configure	2008-02-12 09:25:59.000000000 -0800
+@@ -463,6 +463,15 @@
+     fi
+ 
+     paranoia="no"
++    cdio="no"
++    if test "$paranoia" = "no" ; then
++        if has_library libcdio_paranoia && has_library libcdio_cdda ; then
++            if has_header cdio/paranoia.h && has_header cdio/cdda.h ; then
++                paranoia="yes"
++                cdio="yes"
++            fi
++        fi
++    fi
+     if has_library libcdda_paranoia && has_library libcdda_interface ; then
+         if has_header cdda_paranoia.h ; then
+             paranoia="yes"
+@@ -825,6 +834,14 @@
+       echo "#undef  HAVE_STDINT_H" >> ./mythmusic/mythmusic/config.h
+     fi
+ 
++    if test "$cdio" = "yes" ; then
++        echo "#define HAVE_CDIO 1" >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lcdio_paranoia -lcdio_cdda"      >> ./mythmusic/mythmusic/config.pro
++    else
++        echo "#undef  HAVE_CDIO"   >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lcdda_paranoia -lcdda_interface" >> ./mythmusic/mythmusic/config.pro
++    fi
++
+     if test "$cdaudio" = "yes" ; then
+       echo "#define HAVE_CDAUDIO 1" >> ./mythmusic/mythmusic/config.h
+       echo "CONFIG += cdaudio" >> ./mythmusic/mythmusic/config.pro
+diff -Naur mythplugins-15941-old/mythmusic/mythmusic/cddecoder.cpp mythplugins-15941-new/mythmusic/mythmusic/cddecoder.cpp
+--- mythplugins-15941-old/mythmusic/mythmusic/cddecoder.cpp	2008-02-12 09:23:53.000000000 -0800
++++ mythplugins-15941-new/mythmusic/mythmusic/cddecoder.cpp	2008-02-12 09:25:59.000000000 -0800
+@@ -168,7 +168,11 @@
+     setOutput(0);
+ }
+ 
++#ifdef HAVE_CDIO
++static void paranoia_cb(long int inpos, paranoia_cb_mode_t function)
++#else
+ static void paranoia_cb(long inpos, int function)
++#endif
+ {       
+     inpos = inpos; function = function;
+ }
+diff -Naur mythplugins-15941-old/mythmusic/mythmusic/cddecoder.h mythplugins-15941-new/mythmusic/mythmusic/cddecoder.h
+--- mythplugins-15941-old/mythmusic/mythmusic/cddecoder.h	2008-02-12 09:23:53.000000000 -0800
++++ mythplugins-15941-new/mythmusic/mythmusic/cddecoder.h	2008-02-12 09:25:59.000000000 -0800
+@@ -12,11 +12,22 @@
+ #ifdef __linux__
+ #include <cdaudio.h>
+ extern "C" {
+-#include <cdda_interface.h>
+-#include <cdda_paranoia.h>
++#ifdef HAVE_CDIO
++#  include <cdio/cdda.h>
++#  include <cdio/paranoia.h>
++#else
++#  include <cdda_interface.h>
++#  include <cdda_paranoia.h>
++#endif
+ }
+ #endif
+ 
++#ifdef HAVE_CDIO
++#  define CD_FRAMESIZE_RAW CDIO_CD_FRAMESIZE_RAW
++#  define cdrom_drive cdrom_drive_t
++#  define cdrom_paranoia cdrom_paranoia_t
++#endif
++
+ class Metadata;
+ 
+ class CdDecoder : public Decoder
+diff -Naur mythplugins-15941-old/mythmusic/mythmusic/cdrip.cpp mythplugins-15941-new/mythmusic/mythmusic/cdrip.cpp
+--- mythplugins-15941-old/mythmusic/mythmusic/cdrip.cpp	2008-02-12 09:23:53.000000000 -0800
++++ mythplugins-15941-new/mythmusic/mythmusic/cdrip.cpp	2008-02-12 09:25:59.000000000 -0800
+@@ -1,3 +1,5 @@
++#include "config.h"
++
+ // ANSI C includes
+ #include <cstdio>
+ #include <cstring>
+@@ -13,8 +15,13 @@
+ #ifdef HAVE_CDAUDIO
+ #include <cdaudio.h>
+ extern "C" {
+-#include <cdda_interface.h>
+-#include <cdda_paranoia.h>
++#ifdef HAVE_CDIO
++#  include <cdio/cdda.h>
++#  include <cdio/paranoia.h>
++#else
++#  include <cdda_interface.h>
++#  include <cdda_paranoia.h>
++#endif
+ }
+ #endif
+ 
+@@ -46,6 +53,11 @@
+ #include "genres.h"
+ #include "editmetadata.h"
+ 
++#ifdef HAVE_CDIO
++#  define CD_FRAMESIZE_RAW CDIO_CD_FRAMESIZE_RAW
++#  define cdrom_drive cdrom_drive_t
++#  define cdrom_paranoia cdrom_paranoia_t
++#endif
+ 
+ CDScannerThread::CDScannerThread(Ripper *ripper)
+ {
+@@ -102,7 +114,11 @@
+     return 0;
+ }
+ 
++#ifdef HAVE_CDIO
++static void paranoia_cb(long int inpos, paranoia_cb_mode_t function)
++#else
+ static void paranoia_cb(long inpos, int function)
++#endif
+ {
+     inpos = inpos; function = function;
+ }
+diff -Naur mythplugins-15941-old/mythmusic/mythmusic/mythmusic.pro mythplugins-15941-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-15941-old/mythmusic/mythmusic/mythmusic.pro	2008-02-12 09:23:53.000000000 -0800
++++ mythplugins-15941-new/mythmusic/mythmusic/mythmusic.pro	2008-02-12 09:25:59.000000000 -0800
+@@ -23,7 +23,6 @@
+ LIBS += -lmad -ltag -logg -lvorbisfile -lvorbis -lvorbisenc -lFLAC -lmp3lame
+ 
+ cdaudio: LIBS += -lcdaudio
+-paranoia:LIBS += -lcdda_paranoia -lcdda_interface
+ 
+ # Input
+ HEADERS += cddecoder.h cdrip.h constants.h databasebox.h

@@ -1,0 +1,174 @@
+diff -Naur mythplugins-15941-old/mythgallery/mythgallery/gallerysettings.cpp mythplugins-15941-new/mythgallery/mythgallery/gallerysettings.cpp
+--- mythplugins-15941-old/mythgallery/mythgallery/gallerysettings.cpp	2008-02-12 09:28:08.000000000 -0800
++++ mythplugins-15941-new/mythgallery/mythgallery/gallerysettings.cpp	2008-02-12 09:30:56.000000000 -0800
+@@ -18,7 +18,7 @@
+ #ifdef Q_WS_MACX
+     gc->setValue(QDir::homeDirPath() + "/Pictures");
+ #else
+-    gc->setValue("/var/lib/pictures");
++    gc->setValue("/mnt/gallery");
+ #endif
+     gc->setHelpText(QObject::tr("This directory must exist and "
+                        "MythGallery needs to have read permission."));
+@@ -51,7 +51,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("GalleryMoviePlayerCmd");
+     gc->setLabel(QObject::tr("Command run to display movie files"));
+-    gc->setValue("mplayer -fs %s");
++    gc->setValue("mplayer -fs -zoom -quiet -loop 0 %s");
+     gc->setHelpText(QObject::tr("This command is executed whenever a movie "
+                     "file is selected"));
+     return gc;
+@@ -71,7 +71,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("GalleryImportDirs");
+     gc->setLabel(QObject::tr("Paths to import images from"));
+-    gc->setValue("/mnt/cdrom:/mnt/camera");
++    gc->setValue("");
+     gc->setHelpText(QObject::tr("This is a colon separated list of paths. "
+                     "If the path in the list is a directory, its contents will "
+                     "be copied. If it is an executable, it will be run."));
+diff -Naur mythplugins-15941-old/mythmusic/mythmusic/globalsettings.cpp mythplugins-15941-new/mythmusic/mythmusic/globalsettings.cpp
+--- mythplugins-15941-old/mythmusic/mythmusic/globalsettings.cpp	2008-02-12 09:28:08.000000000 -0800
++++ mythplugins-15941-new/mythmusic/mythmusic/globalsettings.cpp	2008-02-12 09:30:56.000000000 -0800
+@@ -31,7 +31,7 @@
+ #ifdef Q_WS_MACX
+     gc->setValue(QDir::homeDirPath() + "/Music");
+ #else
+-    gc->setValue("/mnt/store/music/");
++    gc->setValue("/mnt/music/");
+ #endif
+     gc->setHelpText(QObject::tr("This directory must exist, and the user "
+                     "running MythMusic needs to have write permission "
+@@ -44,6 +44,10 @@
+     HostComboBox *gc = new HostComboBox("MusicAudioDevice", true);
+     gc->setLabel(QObject::tr("Audio device"));
+     gc->addSelection(QObject::tr("default"), "default");
++
++    gc->addSelection(QObject::tr("ALSA:default"), "ALSA:default");
++    gc->addSelection(QObject::tr("ALSA:iec958"), "ALSA:iec958");
++
+     QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
+     gc->fillSelectionsFromDir(dev);
+     dev.setNameFilter("adsp*");
+@@ -80,7 +84,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("TreeLevels", true);
+     gc->setLabel(QObject::tr("Tree Sorting"));
+-    gc->setValue("splitartist artist album title");
++    gc->setValue("directory");
+     gc->setHelpText(QObject::tr("Order in which to sort the Music "
+                     "Tree. Possible values are a space-separated list of "
+                     "genre, splitartist, splitartist1, artist, album, and "
+@@ -103,7 +107,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("NonID3FileNameFormat");
+     gc->setLabel(QObject::tr("Filename Format"));
+-    gc->setValue("GENRE/ARTIST/ALBUM/TRACK_TITLE");
++    gc->setValue("ARTIST/YEAR - ALBUM/TRACK - TITLE");
+     gc->setHelpText(QObject::tr("Directory and filename Format used to grab "
+                     "information if no ID3 information is found. Accepts "
+                     "GENRE, ARTIST, ALBUM, TITLE, ARTIST_TITLE and "
+@@ -208,7 +212,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("FilenameTemplate");
+     gc->setLabel(QObject::tr("File storage location"));
+-    gc->setValue("ARTIST/ALBUM/TRACK-TITLE"); // Don't translate
++    gc->setValue("ARTIST/YEAR-ALBUM/TRACK-TITLE"); // Don't translate
+     gc->setHelpText(QObject::tr("Defines the location/name for new songs. "
+                     "Valid tokens are: GENRE, ARTIST, ALBUM, "
+                     "TRACK, TITLE, YEAR"));
+@@ -332,7 +336,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("ListAsShuffled");
+     gc->setLabel(QObject::tr("List as Shuffled"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("List songs on the playback screen "
+                     "in the order they will be played."));
+     return gc;
+@@ -342,7 +346,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("ShowWholeTree");
+     gc->setLabel(QObject::tr("Show entire music tree"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("If selected, you can navigate your entire "
+                     "music tree from the playing screen. N.B. Does not work "
+                     "with accelerated buttons disabled"));
+@@ -467,7 +471,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("CDWriterEnabled");
+     gc->setLabel(QObject::tr("Enable CD Writing."));
+-    gc->setValue(true);
++    gc->setValue(false);
+     gc->setHelpText(QObject::tr("Requires a SCSI or an IDE-SCSI CD Writer."));
+     return gc;
+ };
+diff -Naur mythplugins-15941-old/mythvideo/mythvideo/globals.cpp mythplugins-15941-new/mythvideo/mythvideo/globals.cpp
+--- mythplugins-15941-old/mythvideo/mythvideo/globals.cpp	2008-02-12 09:28:08.000000000 -0800
++++ mythplugins-15941-new/mythvideo/mythvideo/globals.cpp	2008-02-12 09:30:56.000000000 -0800
+@@ -30,5 +30,5 @@
+ #ifdef Q_WS_MACX
+ const QString DEFAULT_VIDEOSTARTUP_DIR = QDir::homeDirPath() + "/Movies";
+ #else
+-const QString DEFAULT_VIDEOSTARTUP_DIR = "/share/Movies/dvd";
++const QString DEFAULT_VIDEOSTARTUP_DIR = "/mnt/video";
+ #endif
+diff -Naur mythplugins-15941-old/mythvideo/mythvideo/globalsettings.cpp mythplugins-15941-new/mythvideo/mythvideo/globalsettings.cpp
+--- mythplugins-15941-old/mythvideo/mythvideo/globalsettings.cpp	2008-02-12 09:28:08.000000000 -0800
++++ mythplugins-15941-new/mythvideo/mythvideo/globalsettings.cpp	2008-02-12 09:30:56.000000000 -0800
+@@ -39,7 +39,7 @@
+     gc->addSelection(QObject::tr("Browser"),
+                      QString::number(VideoDialog::DLG_BROWSER));
+     gc->addSelection(QObject::tr("Listings"),
+-                     QString::number(VideoDialog::DLG_TREE));
++                     QString::number(VideoDialog::DLG_TREE), true);
+     gc->setHelpText(QObject::tr("The default view for MythVideo. "
+                     "Other views can be reached via the popup menu available "
+                     "via the MENU key."));
+@@ -132,7 +132,7 @@
+ {
+     HostCheckBox *gc = new HostCheckBox("VideoTreeNoDB");
+     gc->setLabel(QObject::tr("Video List browses files"));
+-    gc->setValue(false);
++    gc->setValue(true);
+     gc->setHelpText(QObject::tr("If set, this will cause the Video List "
+                     "screen to show all relevant files below "
+                     "the MythVideo starting directory whether "
+@@ -265,7 +265,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("VideoDefaultPlayer");
+     gc->setLabel(QObject::tr("Default Video Player"));
+-    gc->setValue("mplayer -fs -zoom -quiet -vo xv %s");
++    gc->setValue("mplayer -fs -zoom -quiet -loop 0 %s");
+     gc->setHelpText(QObject::tr("This is the command used for any file "
+                     "that the extension is not specifically defined. "
+                     "You may also enter the name of one of the playback "
+@@ -408,7 +408,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("mythdvd.DVDPlayerCommand");
+     gc->setLabel(QObject::tr("DVD Player Command"));
+-//    gc->setValue("mplayer dvd:// -dvd-device %d -fs -zoom -vo xv");
++//    gc->setValue("mplayer dev:// -cdrom-device %d -fs -zoom -quiet");
+     gc->setValue("Internal");
+     gc->setHelpText(QObject::tr("This can be any command to launch a DVD "
+                     " player (e.g. MPlayer, ogle, etc.). If present, %d will "
+@@ -420,7 +420,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("VCDPlayerCommand");
+     gc->setLabel(QObject::tr("VCD Player Command"));
+-    gc->setValue("mplayer vcd:// -cdrom-device %d -fs -zoom -vo xv");
++    gc->setValue("mplayer vcd:// -cdrom-device %d -fs -zoom -quiet");
+     gc->setHelpText(QObject::tr("This can be any command to launch a VCD "
+                     "player (e.g. MPlayer, xine, etc.). If present, %d will "
+                     "be substituted for the VCD device (e.g. /dev/cdrom)."));
+@@ -448,7 +448,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("TitlePlayCommand");
+     gc->setLabel(QObject::tr("Title Playing Command"));
+-    gc->setValue("mplayer dvd://%t -dvd-device %d -fs -zoom -vo xv -aid %a "
++    gc->setValue("mplayer dvd://%t -dvd-device %d -fs -zoom -quiet -aid %a "
+                  "-channels %c");
+     gc->setHelpText(QObject::tr("This is a command used to preview a given "
+                     "title on a DVD. If present %t will be set "
