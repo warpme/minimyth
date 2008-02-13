@@ -174,12 +174,9 @@ case "${1}" in
         TFTP_BOOT_URL=
         if /usr/bin/test ! "x${TFTP_SERVER}" = "x" &&
            /usr/bin/test ! "x${TFTP_BOOT_FILE}" = "x" ; then
-            TFTP_BOOT_DIR=`/bin/echo ${TFTP_BOOT_FILE} | /bin/sed 's%[^/]*$%%' | /bin/sed 's%^/%%' | /bin/sed 's%/$%%'`
-            TFTP_BOOT_DIR="/${TFTP_BOOT_DIR}"
-            TFTP_BOOT_URL="tftp://${TFTP_SERVER}${TFTP_BOOT_DIR}/"
+            TFTP_BOOT_DIR="`/bin/echo "/${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%//*%/%g'`"
+            TFTP_BOOT_URL="tftp://${TFTP_SERVER}${TFTP_BOOT_DIR}"
         fi
-        MINIMYTH_BOOT_URL=`/bin/echo ${MINIMYTH_BOOT_URL} | /bin/sed -e 's%/$%%'`
-        MINIMYTH_BOOT_URL="${MINIMYTH_BOOT_URL}/"
         conf_variable_write ${DHCP_CONF}~ MM_NETWORK_INTERFACE "${NETWORK_INTERFACE}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER       "${TFTP_SERVER}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_BOOT_URL     "${TFTP_BOOT_URL}"
