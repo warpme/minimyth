@@ -4,11 +4,9 @@ CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  =
-PATCHFILES += \
-	$(if $(filter-out $(build_GARCH_FAMILY),$(GARCH_FAMILY)), \
-		$(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar \
-		$(DISTNAME)-cross.patch.gar \
-	)
+ifneq ($(DESTIMG),build)
+PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.patch.gar
+endif
 LICENSE = 
 
 DESCRIPTION = 
@@ -27,15 +25,52 @@ CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/makefile miniperl
 
-CONFIGURE_ARGS = $(PERL_CONFIGURE_ARGS)
+ifneq ($(DESTIMG),build)
+CONFIGURE_ARGS = \
+	-e \
+	-S
+else
+CONFIGURE_ARGS = \
+	-d \
+	-e \
+	-Dprefix="$(prefix)" \
+	-Dman1dir='$(mandir)/man1' \
+	-Dman3dir='$(mandir)/man3' \
+	-Dpager='/bin/less -isR' \
+	-Darchname="$(GARCH_FAMILY)-linux" \
+	-Dusrinc="$(DESTDIR)$(includedir)" \
+	-Dlibpth="$(PERL_libpth)" \
+	-Dglibpth="$(PERL_libpth)" \
+	-Dcpp="$(CPP)" \
+	-Dcc="$(CC)" \
+	-Dld="$(CC)" \
+	-Dar="$(AR)" \
+	-Dnm="$(NM)" \
+	-Dranlib="$(RANLIB)" \
+	-Dccflags="$(CFLAGS)" \
+	-Dldflags="$(LDFLAGS)" \
+	-Dusethreads \
+	-Adefine:cf_by=' ' \
+	-Adefine:cf_email=' ' \
+	-Adefine:locincpth=' ' \
+	-Adefine:loclibpth=' ' \
+	-Adefine:mydomain=' ' \
+	-Adefine:myhostname=' ' \
+	-Adefine:myuname=' ' \
+	-Adefine:optimize=' '
+endif
 
-GAR_EXTRA_CONF += perl/perl/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(filter-out -O% -march=%,$(CFLAGS))   -O2 -mtune=generic
 CXXFLAGS := $(filter-out -O% -march=%,$(CXXFLAGS)) -O2 -mtune=generic
 
-build_PERLLIB = $(build_DESTDIR)$(build_libdir)/perl5/$(GARVERSION)/$(build_GARCH_FAMILY)-linux-thread-multi/
+PERL_libpth = `$(CC) -print-search-dirs \
+	| grep '^libraries' \
+	| sed -e 's%^libraries: *%%' -e 's%:% %g' -e 's%=%%g' -e 's%//*%/%g' -e 's%/ % %g' -e 's%/$$%%' \
+	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g' \
+	`
+PERL_build_archlib = $(build_DESTDIR)$(build_libdir)/perl5/$(GARVERSION)/$(build_GARCH_FAMILY)-linux-thread-multi
 
 pre-configure:
 	@ln -sf Configure $(WORKSRC)/configure
@@ -49,13 +84,13 @@ post-configure:
 	@$(MAKECOOKIE)
 
 pre-install:
-	@mkdir -p $(build_PERLLIB)
-	@cp -f $(WORKSRC)/lib/Config.pm       $(build_PERLLIB)/Config-$(GARHOST).pm
-	@cp -f $(WORKSRC)/lib/Config.pod      $(build_PERLLIB)/Config-$(GARHOST).pod
-	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(build_PERLLIB)/Config_heavy-$(GARHOST).pl
-	@ln -sf Config-$(GARHOST).pm          $(build_PERLLIB)/Config.pm
-	@ln -sf Config-$(GARHOST).pod         $(build_PERLLIB)/Config.pod
-	@ln -sf Config_heavy-$(GARHOST).pl    $(build_PERLLIB)/Config_heavy.pl
+	@mkdir -p $(PERL_build_archlib)
+	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_build_archlib)/Config-$(GARHOST).pm
+	@cp -f $(WORKSRC)/lib/Config.pod      $(PERL_build_archlib)/Config-$(GARHOST).pod
+	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_build_archlib)/Config_heavy-$(GARHOST).pl
+	@ln -sf Config-$(GARHOST).pm          $(PERL_build_archlib)/Config.pm
+	@ln -sf Config-$(GARHOST).pod         $(PERL_build_archlib)/Config.pod
+	@ln -sf Config_heavy-$(GARHOST).pl    $(PERL_build_archlib)/Config_heavy.pl
 	@$(MAKECOOKIE)
 
 install-miniperl:
@@ -64,7 +99,7 @@ install-miniperl:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(build_PERLLIB)/Config.pm
-	@rm -f $(build_PERLLIB)/Config.pod
-	@rm -f $(build_PERLLIB)/Config_heavy.pl
+	@rm -f $(PERL_build_archlib)/Config.pm
+	@rm -f $(PERL_build_archlib)/Config.pod
+	@rm -f $(PERL_build_archlib)/Config_heavy.pl
 	@$(MAKECOOKIE)
