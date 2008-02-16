@@ -95,6 +95,8 @@ gar-patch-%:
 		| sed 's%@GAR_AS@%$(AS)%g' \
 		| sed 's%@GAR_AR@%$(AR)%g' \
 		| sed 's%@GAR_RANLIB@%$(RANLIB)%g' \
+		| sed 's%@GAR_NM@%$(NM)%g' \
+		| sed 's%@GAR_STRIP@%$(STRIP)%g' \
 		| sed 's%@GAR_CPPLAGS@%$(CPPFLAGS)%g' \
 		| sed 's%@GAR_CFLAGS@%$(CFLAGS)%g' \
 		| sed 's%@GAR_CXXFLAGS@%$(CXXFLAGS)%g' \
