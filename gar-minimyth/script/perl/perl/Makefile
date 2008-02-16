@@ -3,83 +3,68 @@ GARVERSION = 5.8.8
 CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-destdir.patch $(DISTNAME)-cross.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(if $(filter-out $(build_GARCH_FAMILY),$(GARCH_FAMILY)), \
+		$(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar \
+		$(DISTNAME)-cross.patch.gar \
+	)
 LICENSE = 
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c
+PWD = `pwd`
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+DEPENDS    = lang/c
+BUILDDEPS  =
+ifneq ($(DESTIMG),build)
+BUILDDEPS += perl/perl
+endif
 
-CONFIGURE_ARGS = \
-	-d \
-	-e \
-	-Dcastflags='0' \
-	-Dprefix="$(prefix)" \
-	-Dinstallprefix="$(DESTDIR)$(prefix)" \
-	-Dman1dir='$(mandir)/man1' \
-	-Dman3dir='$(mandir)/man3' \
-	-Dpager='/bin/less -isR' \
-	-Darchname="$(word 1,$(subst -, ,$(GARHOST)))-linux" \
-	-Dusrinc="$(DESTDIR)$(includedir)" \
-	-Dlibpth="$(DESTDIR)$(elibdir) $(DESTDIR)$(libdir)" \
-	-Dcpp="$(CPP)" \
-	-Dcc="$(CC)" \
-	-Dld="$(CC)" \
-	-Dar="$(AR)" \
-	-Dnm="$(NM)" \
-	-Dranlib="$(RANLIB)" \
-	-Dccflags="$(CFLAGS)" \
-	-Dldflags="$(LDFLAGS)" \
-	-Dusethreads \
-	-Dgccversion="$(GCC_VERSION)" \
-	-Dgnulibc_version="$(GLIBC_VERSION)" \
-	-Dlibc="$(DESTDIR)$(elibdir)/libc-$(GLIBC_VERSION).so" \
-	-Dso="so" \
-	$(CONFIGURE_ARGS_$(GARCH_FAMILY))
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/makefile miniperl
 
-CONFIGURE_ARGS_$(GARCH_FAMILY) = \
-	-Dalignbytes='4' \
-	-Dbyteorder='1234' \
-	-Dcharsize='1' \
-	-Ddoublesize='8' \
-	-Dfpossize='16' \
-	-Dfpostype='fpos_t' \
-	-Dintsize='4' \
-	-Dlongdblsize='12' \
-	-Dlonglongsize='8' \
-	-Dlongsize='4' \
-	-Dlseeksize='8' \
-	-Dlseektype='off_t' \
-	-Dnv_preserves_uv_bits='32' \
-	-Dshortsize='2' \
-	-DsPRIEUldbl='"LE"' \
-	-DsPRIFUldbl='"LF"' \
-	-DsPRIGUldbl='"LG"' \
-	-DsPRIXU64='"LX"' \
-	-DsPRId64='"Ld"' \
-	-DsPRIeldbl='"Le"' \
-	-DsPRIfldbl='"Lf"' \
-	-DsPRIgldbl='"Lg"' \
-	-DsPRIi64='"Li"' \
-	-DsPRIo64='"Lo"' \
-	-DsPRIu64='"Lu"' \
-	-DsPRIx64='"Lx"' \
-	-DsSCNfldbl='"Lf"'
+CONFIGURE_ARGS = $(PERL_CONFIGURE_ARGS)
 
-GAR_EXTRA_CONF += devel/gcc/package-api.mk
-GAR_EXTRA_CONF += devel/glibc/package-api.mk
+GAR_EXTRA_CONF += perl/perl/package-api.mk
 include ../../gar.mk
+
+CFLAGS   := $(filter-out -O% -march=%,$(CFLAGS))   -O2 -mtune=generic
+CXXFLAGS := $(filter-out -O% -march=%,$(CXXFLAGS)) -O2 -mtune=generic
+
+build_PERLLIB = $(build_DESTDIR)$(build_libdir)/perl5/$(GARVERSION)/$(build_GARCH_FAMILY)-linux-thread-multi/
 
 pre-configure:
 	@ln -sf Configure $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
 post-configure:
-	@cd $(WORKSRC) ; sed -e 's%^[^:]*: *<command-line>$$%%' -i makefile
+	@$(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") -C $(WORKSRC) $(BUILD_ARGS) depend
+	@for file in `find $(WORKSRC) -name makefile` ; do \
+		sed -i 's%^[^:]*: *<command-line>$$%%' $${file} ; \
+	 done
+	@$(MAKECOOKIE)
+
+pre-install:
+	@mkdir -p $(build_PERLLIB)
+	@cp -f $(WORKSRC)/lib/Config.pm       $(build_PERLLIB)/Config-$(GARHOST).pm
+	@cp -f $(WORKSRC)/lib/Config.pod      $(build_PERLLIB)/Config-$(GARHOST).pod
+	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(build_PERLLIB)/Config_heavy-$(GARHOST).pl
+	@ln -sf Config-$(GARHOST).pm          $(build_PERLLIB)/Config.pm
+	@ln -sf Config-$(GARHOST).pod         $(build_PERLLIB)/Config.pod
+	@ln -sf Config_heavy-$(GARHOST).pl    $(build_PERLLIB)/Config_heavy.pl
+	@$(MAKECOOKIE)
+
+install-miniperl:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(build_PERLLIB)/Config.pm
+	@rm -f $(build_PERLLIB)/Config.pod
+	@rm -f $(build_PERLLIB)/Config_heavy.pl
 	@$(MAKECOOKIE)
