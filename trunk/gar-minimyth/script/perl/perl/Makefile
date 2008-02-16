@@ -83,6 +83,16 @@ post-configure:
 	 done
 	@$(MAKECOOKIE)
 
+install-miniperl:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
+	@$(MAKECOOKIE)
+
+# This is a hack. Perl along with the perl Config package are used to install
+# perl. However, when installing the cross compiled version, the cross version
+# not the native version of the perl Config package must be used. Thefore,
+# we temporarily use links to the cross version of the perl Config package
+# during installation. We need a cleaner way to do this.
 pre-install:
 	@mkdir -p $(PERL_build_archlib)
 	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_build_archlib)/Config-$(GARHOST).pm
@@ -93,13 +103,9 @@ pre-install:
 	@ln -sf Config_heavy-$(GARHOST).pl    $(PERL_build_archlib)/Config_heavy.pl
 	@$(MAKECOOKIE)
 
-install-miniperl:
-	@mkdir -p $(DESTDIR)$(bindir)
-	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
-	@$(MAKECOOKIE)
-
 post-install:
-	@rm -f $(PERL_build_archlib)/Config.pm
-	@rm -f $(PERL_build_archlib)/Config.pod
-	@rm -f $(PERL_build_archlib)/Config_heavy.pl
+	@mkdir -p $(PERL_build_archlib)
+	@ln -sf Config-$(GARBUILD).pm         $(PERL_build_archlib)/Config.pm
+	@ln -sf Config-$(GARBUILD).pod        $(PERL_build_archlib)/Config.pod
+	@ln -sf Config_heavy-$(GARBUILD).pl   $(PERL_build_archlib)/Config_heavy.pl
 	@$(MAKECOOKIE)
