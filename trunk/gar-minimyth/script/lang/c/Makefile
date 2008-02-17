@@ -34,7 +34,8 @@ BUILDDEPS += \
 	utils/bzip2 \
 	utils/gzip \
 	utils/unzip \
-	doc/texinfo
+	doc/texinfo \
+	perl/perl
 
 include ../../gar.mk
 
