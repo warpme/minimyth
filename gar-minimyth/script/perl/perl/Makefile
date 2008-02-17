@@ -24,8 +24,8 @@ BUILDDEPS += $(CATEGORY)/$(GARNAME)
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-BUILD_SCRIPTS      = $(WORKSRC)/makefile
-INSTALL_SCRIPTS    = config miniperl $(WORKSRC)/makefile
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile libperl miniperl
 
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS = \
@@ -43,6 +43,9 @@ CONFIGURE_ARGS = \
 	-Dusrinc="$(DESTDIR)$(includedir)" \
 	-Dlibpth="$(PERL_libpth)" \
 	-Dglibpth="$(PERL_libpth)" \
+	-Dldlibpthname='none' \
+	-Dshrpenv=' ' \
+	-Duseshrplib='true' \
 	-Dcpp="$(CPP)" \
 	-Dcc="$(CC)" \
 	-Dld="$(CC)" \
@@ -94,8 +97,11 @@ install-config:
 	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_configdir)
 	@$(MAKECOOKIE)
 
+install-libperl:
+	@cd $(DESTDIR)$(libdir) ; mv -f perl5/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi/CORE/libperl.so libperl.so
+	@$(MAKECOOKIE)
+
 install-miniperl:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
 	@$(MAKECOOKIE)
-
