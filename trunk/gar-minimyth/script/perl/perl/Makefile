@@ -7,7 +7,7 @@ PATCHFILES  = $(DISTNAME)-perl5lib.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.patch.gar
 else
-PATCHFILES += $(DISTNAME)-errno.patch
+PATCHFILES += $(DISTNAME)-dynaloader.patch $(DISTNAME)-errno.patch
 endif
 LICENSE = 
 
