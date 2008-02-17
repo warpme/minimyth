@@ -662,12 +662,28 @@ mm-copy-kernel-modules:
 
 mm-strip:
 	@if test ! $(mm_DEBUG) == yes ; then \
+		chmod -R u+w $(mm_ROOTFSDIR) ; \
 		echo 'stripping binaries' ; \
 		$(STRIP) --strip-all -R .note -R .comment \
 			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB executable'    | sed -e 's%:.*%%'` ; \
 		echo 'stripping shared libraries' ; \
 		$(STRIP) --strip-all -R .note -R .comment \
 			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB shared object' | sed -e 's%:.*%%'` ; \
+	fi
+
+mm-strip-perl:
+	cd $(mm_ROOTFSDIR) ; \
+	if test -d $(libdir)/perl5 ; then \
+		chmod -R u+w . ; \
+		echo 'stripping perl files' ; \
+		perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$(libdir)/perl5 > /dev/null ; \
+		rm -f PerlSharpLog.txt ; \
+		revert=`find ./$(libdir)/perl5 -name *.ERR | sed -e 's%^\./*%%' -e 's%\.ERR$$%%'` ; \
+		echo "  reverting perl files: $${revert}" ; \
+		for file in $${revert} ; do \
+			rm -f $${file}.ERR ; \
+			cp -f $(DESTDIR)/$${file} $${file} ; \
+		done ; \
 	fi
 
 mm-gen-files:
