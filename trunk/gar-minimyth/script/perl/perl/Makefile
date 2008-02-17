@@ -1,11 +1,13 @@
 GARNAME = perl
-GARVERSION = 5.8.8
-CATEGORIES = perl
+GARVERSION = $(PERL_VERSION)
+CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  =
+PATCHFILES  = $(DISTNAME)-perl5lib.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.patch.gar
+else
+PATCHFILES += $(DISTNAME)-errno.patch
 endif
 LICENSE = 
 
@@ -13,17 +15,17 @@ DESCRIPTION =
 define BLURB
 endef
 
-PWD = `pwd`
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-BUILDDEPS += perl/perl
+BUILDDEPS += $(CATEGORY)/$(GARNAME)
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/makefile
-INSTALL_SCRIPTS    = $(WORKSRC)/makefile miniperl
+INSTALL_SCRIPTS    = config miniperl $(WORKSRC)/makefile
 
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS = \
@@ -60,17 +62,19 @@ CONFIGURE_ARGS = \
 	-Adefine:optimize=' '
 endif
 
+CONFIGURE_ENV = $(PERL_PACKAGE_DEFAULT_ENV)
+BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
+INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
+
 include ../../gar.mk
 
 CFLAGS   := $(filter-out -O% -march=%,$(CFLAGS))   -O2 -mtune=generic
 CXXFLAGS := $(filter-out -O% -march=%,$(CXXFLAGS)) -O2 -mtune=generic
 
-PERL_libpth = `$(CC) -print-search-dirs \
+PERL_libpth := `$(CC) -print-search-dirs \
 	| grep '^libraries' \
 	| sed -e 's%^libraries: *%%' -e 's%:% %g' -e 's%=%%g' -e 's%//*%/%g' -e 's%/ % %g' -e 's%/$$%%' \
-	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g' \
-	`
-PERL_build_archlib = $(build_DESTDIR)$(build_libdir)/perl5/$(GARVERSION)/$(build_GARCH_FAMILY)-linux-thread-multi
+	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g'`
 
 pre-configure:
 	@ln -sf Configure $(WORKSRC)/configure
@@ -83,29 +87,15 @@ post-configure:
 	 done
 	@$(MAKECOOKIE)
 
+install-config:
+	@mkdir -p $(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config.pod      $(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_configdir)
+	@$(MAKECOOKIE)
+
 install-miniperl:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
 	@$(MAKECOOKIE)
 
-# This is a hack. Perl along with the perl Config package are used to install
-# perl. However, when installing the cross compiled version, the cross version
-# not the native version of the perl Config package must be used. Thefore,
-# we temporarily use links to the cross version of the perl Config package
-# during installation. We need a cleaner way to do this.
-pre-install:
-	@mkdir -p $(PERL_build_archlib)
-	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_build_archlib)/Config-$(GARHOST).pm
-	@cp -f $(WORKSRC)/lib/Config.pod      $(PERL_build_archlib)/Config-$(GARHOST).pod
-	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_build_archlib)/Config_heavy-$(GARHOST).pl
-	@ln -sf Config-$(GARHOST).pm          $(PERL_build_archlib)/Config.pm
-	@ln -sf Config-$(GARHOST).pod         $(PERL_build_archlib)/Config.pod
-	@ln -sf Config_heavy-$(GARHOST).pl    $(PERL_build_archlib)/Config_heavy.pl
-	@$(MAKECOOKIE)
-
-post-install:
-	@mkdir -p $(PERL_build_archlib)
-	@ln -sf Config-$(GARBUILD).pm         $(PERL_build_archlib)/Config.pm
-	@ln -sf Config-$(GARBUILD).pod        $(PERL_build_archlib)/Config.pod
-	@ln -sf Config_heavy-$(GARBUILD).pl   $(PERL_build_archlib)/Config_heavy.pl
-	@$(MAKECOOKIE)
