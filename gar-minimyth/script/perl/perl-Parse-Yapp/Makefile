@@ -3,7 +3,7 @@ GARVERSION = 1.05
 CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/authors/id/F/FD/FDESAR/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = 
+LICENSE = Artistic
 
 DESCRIPTION = 
 define BLURB

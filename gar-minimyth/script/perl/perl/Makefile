@@ -9,7 +9,7 @@ PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.
 else
 PATCHFILES += $(DISTNAME)-dynaloader.patch $(DISTNAME)-errno.patch
 endif
-LICENSE = 
+LICENSE = Artistic
 
 DESCRIPTION = 
 define BLURB

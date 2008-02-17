@@ -3,7 +3,7 @@ GARVERSION = 3.10
 CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/authors/id/P/PE/PETDANCE/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = 
+LICENSE = Artistic
 
 DESCRIPTION = 
 define BLURB

@@ -4,7 +4,7 @@ CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/authors/id/P/PA/PAJAS/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-disable_have_library.patch
-LICENSE = 
+LICENSE = Artistic
 
 DESCRIPTION = 
 define BLURB
