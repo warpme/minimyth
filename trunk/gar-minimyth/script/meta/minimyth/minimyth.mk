@@ -352,6 +352,7 @@ mm-check:
 		   [ ! "$${software}" = "mythzoneminder" ] && \
 		   [ ! "$${software}" = "mplayer"        ] && \
 		   [ ! "$${software}" = "xine"           ] && \
+		   [ ! "$${software}" = "perl"           ] && \
 		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \

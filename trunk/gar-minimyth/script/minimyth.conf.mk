@@ -37,7 +37,7 @@ mm_CHIPSETS               ?= intel nvidia via other
 # Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
 # 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone',
 # 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine',
-# 'transcode', 'mame', 'wiimote' and 'debug'.
+# 'perl', 'transcode', 'mame', 'wiimote' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),softpad20 stable20),mythdvd) \
                              mythgallery \
@@ -51,6 +51,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),svn),mythzoneminder) \
                              mplayer \
                              xine \
+                             perl \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'athlon64', 'c3', 'c3-2' and 'pentium-mmx'.

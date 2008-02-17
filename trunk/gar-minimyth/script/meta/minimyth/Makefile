@@ -42,7 +42,6 @@ DEPENDS = \
 	net/ntp \
 	net/openssh \
 	utils/pciutils \
-	utils/perl-stub \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
@@ -96,11 +95,33 @@ DEPENDS = \
 	$(if $(filter mythphone,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythphone),myth-$(mm_MYTH_VERSION)/mythphone)) \
 	$(if $(filter mythstream,$(mm_SOFTWARE)), \
-		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream)) \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream) \
+		$(if $(filter perl,$(mm_SOFTWARE)), \
+			perl/perl \
+			perl/perl-Data-Dumper \
+			perl/perl-HTML-Parser \
+			perl/perl-libwww-perl \
+			perl/perl-XML-DOM \
+			perl/perl-XML-XQL)) \
 	$(if $(filter mythvideo,$(mm_SOFTWARE)), \
-		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo)) \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo) \
+		$(if $(filter perl,$(mm_SOFTWARE)), \
+			perl/perl \
+			perl/perl-HTML-Parser \
+			perl/perl-libwww-perl \
+			perl/perl-URI)) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
-		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather)) \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
+		$(if $(filter perl,$(mm_SOFTWARE)), \
+			perl/perl \
+			perl/perl-Data-Dumper \
+			perl/perl-Date-Manip \
+			perl/perl-Image-Size \
+			perl/perl-libwww-perl \
+			perl/perl-SOAP-Lite \
+			perl/perl-XML-Parser \
+			perl/perl-XML-SAX \
+			perl/perl-XML-Simple)) \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
@@ -126,7 +147,8 @@ BUILDDEPS = \
 	utils/squashfs \
 	utils/tar \
 	utils/util-linux-ng \
-	xorg/xorg
+	xorg/xorg \
+	perl/perlsharp
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
