@@ -1,5 +1,5 @@
 GARNAME = hdparm
-GARVERSION = 7.7
+GARVERSION = 8.1
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
