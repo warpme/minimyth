@@ -1,0 +1,31 @@
+GARNAME = Parse-Yapp
+GARVERSION = 1.05
+CATEGORIES = perl
+MASTER_SITES = http://www.cpan.org/authors/id/F/FD/FDESAR/
+DISTFILES = $(DISTNAME).tar.gz
+LICENSE = 
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-XML-Parser perl/perl-Date-Manip perl/perl-libwww-perl perl/perl-XML-DOM
+BUILDDEPS = $(PERL_PACKAGE_BUILDDEPS)
+
+CONFIGURE_SCRIPTS = perl-package
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS =
+BUILD_ARGS     = $(PERL_PACKAGE_DEFAULT_ARGS)
+INSTALL_ARGS   = $(PERL_PACKAGE_DEFAULT_ARGS)
+
+CONFIGURE_ENV = $(PERL_PACKAGE_DEFAULT_ENV)
+BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
+INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
+
+GAR_EXTRA_CONF += perl/perl/package-api.mk
+include ../../gar.mk
+
+CFLAGS   := $(PERL_CFLAGS)
+CXXFLAGS := $(PERL_CXXFLAGS)
