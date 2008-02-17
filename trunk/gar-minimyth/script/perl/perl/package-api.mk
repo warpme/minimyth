@@ -14,6 +14,7 @@ PERL5LIB = \
 		$(PERL_configdir) \
 		$(PERL_libdir)/site_perl/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi \
 		$(PERL_libdir)/site_perl/$(PERL_VERSION) \
+		$(PERL_libdir)/site_perl/ \
 	)))
 
 PERL_PACKAGE_DEFAULT_ARGS = \
