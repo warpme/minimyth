@@ -142,6 +142,7 @@ build_system_bins_make = \
 build_system_bins_patch = \
 	patch
 
+# Overridden by binaries from package perl/perl.
 build_system_bins_perl = \
 	perl
 
