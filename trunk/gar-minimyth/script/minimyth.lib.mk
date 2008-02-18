@@ -88,6 +88,7 @@ gar-patch-%:
 		| sed 's%@GAR_kdedatadir@%$(kdedatadir)%g' \
 		| sed 's%@GAR_kdeincludedir@%$(kdeincludedir)%g' \
 		| sed 's%@GAR_kdelibdir@%$(kdelibdir)%g' \
+		| sed 's%@GAR_GARCH_FAMILY@%$(GARCH_FAMILY)%g' \
 		| sed 's%@GAR_CPP@%$(CPP)%g' \
 		| sed 's%@GAR_CC@%$(CC)%g' \
 		| sed 's%@GAR_CXX@%$(CXX)%g' \
