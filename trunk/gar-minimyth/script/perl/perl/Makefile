@@ -1,6 +1,6 @@
 GARNAME = perl
 GARVERSION = $(PERL_VERSION)
-CATEGORIES = $(CATEGORY)
+CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = $(DISTNAME)-perl5lib.patch
@@ -15,12 +15,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
-
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-BUILDDEPS += $(CATEGORY)/$(GARNAME)
+BUILDDEPS += perl/perl
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
@@ -69,15 +67,32 @@ CONFIGURE_ENV = $(PERL_PACKAGE_DEFAULT_ENV)
 BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
 INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
 
+GAR_EXTRA_CONF += devel/gcc/package-api.mk
+GAR_EXTRA_CONF += devel/glibc/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
 CFLAGS   := $(filter-out -O% -march=%,$(CFLAGS))   -O2 -mtune=generic
 CXXFLAGS := $(filter-out -O% -march=%,$(CXXFLAGS)) -O2 -mtune=generic
 
+PERL_config_sh_check=$(if $(filter-out $(PERL_config_sh_$(2)),$($(2))), \
+	echo "warning: config.sh was generated using $(1) $(PERL_config_sh_$(2)) but you are using $(1) $($(2)).")
+PERL_config_sh_var=$(shell cat files/$(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar \
+	| grep -e "^+$(1)=" | sed -e "s%^+$(1)='\(.*\)'%\1%")
+PERL_config_sh_GCC_VERSION=$(call PERL_config_sh_var,gccversion)
+PERL_config_sh_GLIBC_VERSION=$(call PERL_config_sh_var,gnulibc_version)
+PERL_config_sh_LINUX_VERSION=$(call PERL_config_sh_var,osvers)
+
 PERL_libpth := `$(CC) -print-search-dirs \
 	| grep '^libraries' \
 	| sed -e 's%^libraries: *%%' -e 's%:% %g' -e 's%=%%g' -e 's%//*%/%g' -e 's%/ % %g' -e 's%/$$%%' \
 	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g'`
+
+pre-fetch:
+	@$(call PERL_config_sh_check,gcc,GCC_VERSION)
+	@$(call PERL_config_sh_check,glibc,GLIBC_VERSION)
+	@$(call PERL_config_sh_check,linux,LINUX_VERSION)
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@ln -sf Configure $(WORKSRC)/configure
