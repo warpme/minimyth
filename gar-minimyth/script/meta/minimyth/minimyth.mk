@@ -706,6 +706,8 @@ mm-make-other:
 	@mkdir -p $(mm_STAGEDIR)
 	@rm -rf $(mm_STAGEDIR)/version
 	@echo "$(mm_VERSION)" > $(mm_STAGEDIR)/version
+	@# Get changelog.
+	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_STAGEDIR)/changelog.txt
 	@# Get html documentation.
 	@rm -rf $(mm_STAGEDIR)/html
 	@cp -pdR $(mm_HOME)/html $(mm_STAGEDIR)
@@ -928,6 +930,7 @@ mm-make-distro-local:
 		rm -rf $(mm_LOCALDIR)/nfs-$(mm_NAME)                                            ; \
 		cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
 	 fi
+	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_LOCALDIR)/changelog.txt
 
 mm-make-distro-share:
 	@# Make share (public) distribution
@@ -965,7 +968,8 @@ mm-make-distro-share:
 		rm -rf $(mm_SHAREDIR)/nfs-$(mm_NAME)                                            ; \
 		cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
 	 fi
-	@cp -pdR ./files/share-readme.txt $(mm_SHAREDIR)/readme.txt
+	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_SHAREDIR)/changelog.txt
+	@cp -pdR ./files/share-readme.txt                        $(mm_SHAREDIR)/readme.txt
 
 mm-make-distro: \
 	mm-make-distro-base \
