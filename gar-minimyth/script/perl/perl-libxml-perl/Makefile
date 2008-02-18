@@ -1,7 +1,7 @@
-GARNAME = XML-DOM
-GARVERSION = 1.44
+GARNAME = libxml-perl
+GARVERSION = 0.08
 CATEGORIES = perl
-MASTER_SITES = http://www.cpan.org/authors/id/T/TJ/TJMATHER/
+MASTER_SITES = http://www.cpan.org/authors/id/K/KM/KMACLEOD/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = Artistic
 
@@ -9,14 +9,14 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-XML-Parser perl/perl-libwww-perl perl/perl-XML-RegExp perl/perl-libxml-perl
+DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-XML-Parser
 BUILDDEPS = $(PERL_PACKAGE_BUILDDEPS)
 
 CONFIGURE_SCRIPTS = perl-package
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS =
+CONFIGURE_ARGS = -n
 BUILD_ARGS     = $(PERL_PACKAGE_DEFAULT_ARGS)
 INSTALL_ARGS   = $(PERL_PACKAGE_DEFAULT_ARGS)
 
