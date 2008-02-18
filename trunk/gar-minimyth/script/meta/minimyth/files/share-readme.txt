@@ -1,6 +1,12 @@
 Directory listing
     + readme.txt
         This file.
+    + changelog.txt
+        A text file containing the changes to MiniMyth.
+        Be sure to read the changes before you use the new version as some
+        changes will cause your system to fail during boot.
+        This file is included in 'ram-minimyth-<version>.tar.bz2' and
+        'nfs-minimyth-<version>.tar.bz2' as well.
     + version
         A text file containing the the version of MiniMyth in this directory.
         This file is included in 'ram-minimyth-<version>.tar.bz2' and
