@@ -90,7 +90,6 @@ MM_INIT_START := \
     wiimote \
     lirc \
     lcdproc \
-    ssh_remote \
     mythtv \
     font \
     mythdb_buffer_delete \
