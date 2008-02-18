@@ -22,8 +22,11 @@ BUILDDEPS += perl/perl
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+ifneq ($(DESTIMG),build)
+CONFIGURE_SCRIPTS += check-version
+endif
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile libperl miniperl
+INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile miniperl
 
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS = \
@@ -72,8 +75,10 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
-CFLAGS   := $(filter-out -O% -march=%,$(CFLAGS))   -O2 -mtune=generic
-CXXFLAGS := $(filter-out -O% -march=%,$(CXXFLAGS)) -O2 -mtune=generic
+CPPFLAGS := $(PERL_CPPFLAGS)
+CFLAGS   := $(PERL_CFLAGS)
+CXXFLAGS := $(PERL_CXXFLAGS)
+LDFLAGS  := $(PERL_LDFLAGS)
 
 PERL_config_sh_check=$(if $(filter-out $(PERL_config_sh_$(2)),$($(2))), \
 	echo "warning: config.sh was generated using $(1) $(PERL_config_sh_$(2)) but you are using $(1) $($(2)).")
@@ -88,14 +93,14 @@ PERL_libpth := `$(CC) -print-search-dirs \
 	| sed -e 's%^libraries: *%%' -e 's%:% %g' -e 's%=%%g' -e 's%//*%/%g' -e 's%/ % %g' -e 's%/$$%%' \
 	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g'`
 
-pre-fetch:
+pre-configure:
+	@ln -sf Configure $(WORKSRC)/configure
+	@$(MAKECOOKIE)
+
+configure-check-version:
 	@$(call PERL_config_sh_check,gcc,GCC_VERSION)
 	@$(call PERL_config_sh_check,glibc,GLIBC_VERSION)
 	@$(call PERL_config_sh_check,linux,LINUX_VERSION)
-	@$(MAKECOOKIE)
-
-pre-configure:
-	@ln -sf Configure $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
 post-configure:
@@ -105,6 +110,9 @@ post-configure:
 	 done
 	@$(MAKECOOKIE)
 
+pre-install:
+	@cd $(DESTDIR)$(libdir) ; rm -f libperl.so
+
 install-config:
 	@mkdir -p $(PERL_configdir)
 	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_configdir)
@@ -112,11 +120,11 @@ install-config:
 	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_configdir)
 	@$(MAKECOOKIE)
 
-install-libperl:
-	@cd $(DESTDIR)$(libdir) ; mv -f perl5/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi/CORE/libperl.so libperl.so
-	@$(MAKECOOKIE)
-
 install-miniperl:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
+	@$(MAKECOOKIE)
+
+post-install:
+	@cd $(DESTDIR)$(libdir) ; mv -f perl5/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi/CORE/libperl.so libperl.so
 	@$(MAKECOOKIE)

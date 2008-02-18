@@ -27,5 +27,7 @@ INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
 GAR_EXTRA_CONF += perl/perl/package-api.mk
 include ../../gar.mk
 
+CPPFLAGS := $(PERL_CPPFLAGS)
 CFLAGS   := $(PERL_CFLAGS)
 CXXFLAGS := $(PERL_CXXFLAGS)
+LDFLAGS  := $(PERL_LDFLAGS)
