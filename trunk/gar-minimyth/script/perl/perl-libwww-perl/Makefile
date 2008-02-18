@@ -3,6 +3,7 @@ GARVERSION = 5.808
 CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/authors/id/G/GA/GAAS/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-useragent.patch
 LICENSE = Artistic
 
 DESCRIPTION = 
