@@ -4,7 +4,6 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-harvester_cpp.patch $(DISTNAME).patch.gar
-#PATCHFILES += $(DISTNAME)-use_exec_parsers.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -27,11 +26,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
-
-x-post-patch:
-	@# Remove unused perl based parsers.
-	@rm -rf $(WORKSRC)/parsers/*
-	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
