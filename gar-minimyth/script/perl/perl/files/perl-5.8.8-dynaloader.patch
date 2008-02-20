@@ -1,6 +1,6 @@
 diff -Naur perl-5.8.8-old/ext/DynaLoader/DynaLoader_pm.PL perl-5.8.8-new/ext/DynaLoader/DynaLoader_pm.PL
 --- perl-5.8.8-old/ext/DynaLoader/DynaLoader_pm.PL	2004-11-22 07:32:13.000000000 -0800
-+++ perl-5.8.8-new/ext/DynaLoader/DynaLoader_pm.PL	2008-02-16 23:08:10.000000000 -0800
++++ perl-5.8.8-new/ext/DynaLoader/DynaLoader_pm.PL	2008-02-19 15:20:54.000000000 -0800
 @@ -260,7 +260,7 @@
  		       "(auto/$modpname/$modfname.$dl_dlext)\n")
  	if $dl_debug;
@@ -10,3 +10,15 @@ diff -Naur perl-5.8.8-old/ext/DynaLoader/DynaLoader_pm.PL perl-5.8.8-new/ext/Dyn
  	chop($_ = VMS::Filespec::unixpath($_)) if $Is_VMS;
  	my $dir;
  	if ($Is_MacOS) {
+diff -Naur perl-5.8.8-old/ext/DynaLoader/XSLoader_pm.PL perl-5.8.8-new/ext/DynaLoader/XSLoader_pm.PL
+--- perl-5.8.8-old/ext/DynaLoader/XSLoader_pm.PL	2005-10-16 06:50:05.000000000 -0700
++++ perl-5.8.8-new/ext/DynaLoader/XSLoader_pm.PL	2008-02-19 15:21:26.000000000 -0800
+@@ -47,7 +47,7 @@
+     my $b = "$module\::bootstrap";
+     goto &$b if defined &$b;
+ 
+-    goto retry unless $module and defined &dl_load_file;
++    goto retry;
+ 
+     my @modparts = split(/::/,$module);
+     my $modfname = $modparts[-1];

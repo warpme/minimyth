@@ -1,33 +1,6 @@
-GARNAME = IO-Compress-Zlib
-GARVERSION = 2.008
-CATEGORIES = perl
+GARNAME      = perl-IO-Compress-Zlib
+GARVERSION   = 2.008
 MASTER_SITES = http://www.cpan.org/authors/id/P/PM/PMQS/
-DISTFILES = $(DISTNAME).tar.gz
-LICENSE = Artistic
+DEPENDS      = perl/perl-IO-Compress-Base
 
-DESCRIPTION = 
-define BLURB
-endef
-
-DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-IO-Compress-Base
-BUILDDEPS = $(PERL_PACKAGE_BUILDDEPS)
-
-CONFIGURE_SCRIPTS = perl-package
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
-
-CONFIGURE_ARGS =
-BUILD_ARGS     = $(PERL_PACKAGE_DEFAULT_ARGS)
-INSTALL_ARGS   = $(PERL_PACKAGE_DEFAULT_ARGS)
-
-CONFIGURE_ENV = $(PERL_PACKAGE_DEFAULT_ENV)
-BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
-INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
-
-GAR_EXTRA_CONF += perl/perl/package-api.mk
-include ../../gar.mk
-
-CPPFLAGS := $(PERL_CPPFLAGS)
-CFLAGS   := $(PERL_CFLAGS)
-CXXFLAGS := $(PERL_CXXFLAGS)
-LDFLAGS  := $(PERL_LDFLAGS)
+include ../../perl/perl/perl-module.mk
