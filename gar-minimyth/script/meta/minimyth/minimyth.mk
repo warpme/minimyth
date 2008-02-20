@@ -45,8 +45,8 @@ MM_SHARE_FILES  := $(strip \
 	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard         lists/minimyth-remove-list),         lists/minimyth-remove-list) \
-	$(filter-out $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
-	$(filter-out $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
+	$(filter $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
 
 MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	gdb \
@@ -579,15 +579,49 @@ mm-make-conf:
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
 	@echo 'removing unwanted files'
-	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
-		rm -rf $${remove} ; \
+	@for file_item in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
+		if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if test -d $${file} ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		else \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if test -f $${file} ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		fi ; \
 	done
+	@if test -e $(mm_ROOTFSDIR)$(libdir)/perl5 ; then \
+		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '.*'` ; \
+		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.e2x'` ; \
+		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.h'` ; \
+		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.pod'` ; \
+	fi
 
 mm-remove-post:
 	@# Remove unwanted binaries, etc, shares and libraries.
 	@echo 'removing unwanted files'
-	@for remove in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
-		rm -rf $${remove} ; \
+	@for file_item in $(addprefix $(mm_ROOTFSDIR),$(MM_REMOVES)) ; do \
+		if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if test -d $${file} ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		else \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if test -f $${file} ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		fi ; \
 	done
 
 mm-copy-libs:
@@ -670,18 +704,35 @@ mm-strip:
 		$(STRIP) --strip-all -R .note -R .comment \
 			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB shared object' | sed -e 's%:.*%%'` ; \
 	fi
+	@if test ! $(mm_DEBUG) == yes ; then \
+		echo 'stripping perl' ; \
+		dirs='$(libdir)/perl5 $(datadir)/mythtv' ; \
+		for dir in $${dirs} ; do \
+			echo "  stripping $${dir}" ; \
+			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r $(mm_ROOTFSDIR)$${dir} > /dev/null 2>&1 ; \
+			rm -f PerlSharpLog.txt ; \
+			revert_list=`find $(mm_ROOTFSDIR)$${dir} -name *.ERR \
+				| sed -e 's%^$(mm_ROOTFSDIR)%%' -e 's%\.ERR$$%%'` ; \
+			for revert in $${revert_list} ; do \
+				echo "    reverting $${revert}" ; \
+				rm -f $(mm_ROOTFSDIR)$${revert}.ERR ; \
+				cp -f $(DESTDIR)$${revert} $(mm_ROOTFSDIR)$${revert} ; \
+			done ; \
+		done ; \
+	fi
 
 mm-strip-perl:
 	cd $(mm_ROOTFSDIR) ; \
 	if test -d $(libdir)/perl5 ; then \
 		chmod -R u+w . ; \
 		echo 'stripping perl files' ; \
-		perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$(libdir)/perl5 > /dev/null ; \
+		perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$(libdir)/perl5 > /dev/null 2>&1 ; \
 		rm -f PerlSharpLog.txt ; \
 		revert=`find ./$(libdir)/perl5 -name *.ERR | sed -e 's%^\./*%%' -e 's%\.ERR$$%%'` ; \
 		echo "  reverting perl files: $${revert}" ; \
 		for file in $${revert} ; do \
 			rm -f $${file}.ERR ; \
+			rm -f $${file}.LOG ; \
 			cp -f $(DESTDIR)/$${file} $${file} ; \
 		done ; \
 	fi

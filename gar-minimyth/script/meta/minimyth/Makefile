@@ -37,6 +37,7 @@ DEPENDS = \
 	myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd \
 	myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide \
 	myth-$(mm_MYTH_VERSION)/mythtv \
+	lib/ncurses \
 	net/netpipes \
 	net/nfs-utils \
 	net/ntp \
