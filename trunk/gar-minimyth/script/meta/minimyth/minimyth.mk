@@ -707,16 +707,16 @@ mm-strip:
 	@if test ! $(mm_DEBUG) == yes ; then \
 		echo 'stripping perl' ; \
 		dirs='$(libdir)/perl5 $(datadir)/mythtv' ; \
+		cd $(mm_ROOTFSDIR) ; \
 		for dir in $${dirs} ; do \
 			echo "  stripping $${dir}" ; \
-			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r $(mm_ROOTFSDIR)$${dir} > /dev/null 2>&1 ; \
+			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
 			rm -f PerlSharpLog.txt ; \
-			revert_list=`find $(mm_ROOTFSDIR)$${dir} -name *.ERR \
-				| sed -e 's%^$(mm_ROOTFSDIR)%%' -e 's%\.ERR$$%%'` ; \
+			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
 			for revert in $${revert_list} ; do \
 				echo "    reverting $${revert}" ; \
-				rm -f $(mm_ROOTFSDIR)$${revert}.ERR ; \
-				cp -f $(DESTDIR)$${revert} $(mm_ROOTFSDIR)$${revert} ; \
+				rm -f ./$${revert}.ERR ; \
+				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
 			done ; \
 		done ; \
 	fi
