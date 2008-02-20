@@ -1,33 +1,8 @@
-GARNAME = XML-SAX
-GARVERSION = 0.16
-CATEGORIES = perl
+GARNAME      = perl-XML-SAX
+GARVERSION   = 0.16
 MASTER_SITES = http://www.cpan.org/authors/id/G/GR/GRANTM/
-DISTFILES = $(DISTNAME).tar.gz
-LICENSE = Artistic
+DEPENDS      = perl/perl-File-Temp perl/perl-XML-NamespaceSupport
 
-DESCRIPTION = 
-define BLURB
-endef
+include ../../perl/perl/perl-module.mk
 
-DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-File-Temp perl/perl-XML-NamespaceSupport
-BUILDDEPS = $(PERL_PACKAGE_BUILDDEPS)
-
-CONFIGURE_SCRIPTS = perl-package
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
-
-CONFIGURE_ARGS =
-BUILD_ARGS     = $(PERL_PACKAGE_DEFAULT_ARGS)
-INSTALL_ARGS   = $(PERL_PACKAGE_DEFAULT_ARGS)
-
-CONFIGURE_ENV = echo Y | $(PERL_PACKAGE_DEFAULT_ENV)
-BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
-INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
-
-GAR_EXTRA_CONF += perl/perl/package-api.mk
-include ../../gar.mk
-
-CPPFLAGS := $(PERL_CPPFLAGS)
-CFLAGS   := $(PERL_CFLAGS)
-CXXFLAGS := $(PERL_CXXFLAGS)
-LDFLAGS  := $(PERL_LDFLAGS)
+CONFIGURE_ENV := echo Y | $(CONFIGURE_ENV)

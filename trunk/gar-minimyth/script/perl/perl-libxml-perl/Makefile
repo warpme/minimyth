@@ -1,33 +1,7 @@
-GARNAME = libxml-perl
-GARVERSION = 0.08
-CATEGORIES = perl
+GARNAME      = perl-libxml-perl
+GARVERSION   = 0.08
 MASTER_SITES = http://www.cpan.org/authors/id/K/KM/KMACLEOD/
-DISTFILES = $(DISTNAME).tar.gz
-LICENSE = Artistic
+DEPENDS      = perl/perl-XML-Parser
 
-DESCRIPTION = 
-define BLURB
-endef
+include ../../perl/perl/perl-module.mk
 
-DEPENDS   = $(PERL_PACKAGE_DEPENDS)   perl/perl-XML-Parser
-BUILDDEPS = $(PERL_PACKAGE_BUILDDEPS)
-
-CONFIGURE_SCRIPTS = perl-package
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
-
-CONFIGURE_ARGS = -n
-BUILD_ARGS     = $(PERL_PACKAGE_DEFAULT_ARGS)
-INSTALL_ARGS   = $(PERL_PACKAGE_DEFAULT_ARGS)
-
-CONFIGURE_ENV = $(PERL_PACKAGE_DEFAULT_ENV)
-BUILD_ENV     = $(PERL_PACKAGE_DEFAULT_ENV)
-INSTALL_ENV   = $(PERL_PACKAGE_DEFAULT_ENV)
-
-GAR_EXTRA_CONF += perl/perl/package-api.mk
-include ../../gar.mk
-
-CPPFLAGS := $(PERL_CPPFLAGS)
-CFLAGS   := $(PERL_CFLAGS)
-CXXFLAGS := $(PERL_CXXFLAGS)
-LDFLAGS  := $(PERL_LDFLAGS)
