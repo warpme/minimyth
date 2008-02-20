@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-cxx-binding \
 	--without-ada \
 	--without-ada-compiler \
+	--without-progs \
 	--with-build-cc="$(build_CC)" \
 	--with-build-cppflags="$(build_CPPFLAGS)" \
 	--with-build-cflags="$(build_CFLAGS)" \
