@@ -597,10 +597,16 @@ mm-remove-pre:
 		fi ; \
 	done
 	@if test -e $(mm_ROOTFSDIR)$(libdir)/perl5 ; then \
-		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '.*'` ; \
-		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.e2x'` ; \
-		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.h'` ; \
-		rm -f `find $(mm_ROOTFSDIR)$(libdir)/perl5 -name '*.pod'` ; \
+		cd $(mm_ROOTFSDIR)$(libdir)/perl5 ; \
+		rm -f `find . -type f -name '.*'`    ; \
+		rm -f `find . -type f -name '*.bs'`  ; \
+		rm -f `find . -type f -name '*.e2x'` ; \
+		rm -f `find . -type f -name '*.eg'`  ; \
+		rm -f `find . -type f -name '*.h'`   ; \
+		rm -f `find . -type f -name '*.pod'` ; \
+		while test `find . -type d -empty | wc -l` -gt 0 ; do \
+			rm -rf `find . -type d -empty` ; \
+		done ; \
 	fi
 
 mm-remove-post:
