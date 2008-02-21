@@ -716,24 +716,9 @@ mm-strip:
 			for revert in $${revert_list} ; do \
 				echo "    reverting $${revert}" ; \
 				rm -f ./$${revert}.ERR ; \
+				rm -f ./$${revert}.LOG ; \
 				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
 			done ; \
-		done ; \
-	fi
-
-mm-strip-perl:
-	cd $(mm_ROOTFSDIR) ; \
-	if test -d $(libdir)/perl5 ; then \
-		chmod -R u+w . ; \
-		echo 'stripping perl files' ; \
-		perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$(libdir)/perl5 > /dev/null 2>&1 ; \
-		rm -f PerlSharpLog.txt ; \
-		revert=`find ./$(libdir)/perl5 -name *.ERR | sed -e 's%^\./*%%' -e 's%\.ERR$$%%'` ; \
-		echo "  reverting perl files: $${revert}" ; \
-		for file in $${revert} ; do \
-			rm -f $${file}.ERR ; \
-			rm -f $${file}.LOG ; \
-			cp -f $(DESTDIR)/$${file} $${file} ; \
 		done ; \
 	fi
 
