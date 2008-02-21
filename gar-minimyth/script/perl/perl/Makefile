@@ -46,7 +46,7 @@ CONFIGURE_ARGS = \
 	-Dglibpth="$(PERL_libpth)" \
 	-Dldlibpthname='none' \
 	-Dshrpenv=' ' \
-	-Duseshrplib='true' \
+	-Duseshrplib='false' \
 	-Dcpp="$(CPP)" \
 	-Dcc="$(CC)" \
 	-Dld="$(CC)" \
@@ -123,8 +123,4 @@ install-config:
 install-miniperl:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
-	@$(MAKECOOKIE)
-
-post-install:
-	@cd $(DESTDIR)$(libdir) ; mv -f perl5/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi/CORE/libperl.so libperl.so
 	@$(MAKECOOKIE)
