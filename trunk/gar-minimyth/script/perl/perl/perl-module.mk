@@ -33,9 +33,9 @@ endif
 endif
 
 ifeq ($(PERL_MODULE_STYLE),Makefile.PL)
-CONFIGURE_SCRIPTS = $(WORKSRC)/Makefile.PL
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile.PL,)
+BUILD_SCRIPTS     = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile,)
+INSTALL_SCRIPTS   = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile,)
 
 CONFIGURE_ARGS =
 BUILD_ARGS     = DESTDIR="$(DESTDIR)"
@@ -47,9 +47,9 @@ INSTALL_ENV   = PERL5LIB="$(PERL5LIB)"
 endif
 
 ifeq ($(PERL_MODULE_STYLE),Build.PL)
-CONFIGURE_SCRIPTS = $(WORKSRC)/Build.PL
-BUILD_SCRIPTS     = $(WORKSRC)/Build
-INSTALL_SCRIPTS   = $(WORKSRC)/Build
+CONFIGURE_SCRIPTS = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Build.PL,)
+BUILD_SCRIPTS     = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Build,)
+INSTALL_SCRIPTS   = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Build,)
 
 CONFIGURE_ARGS =
 BUILD_ARGS     =
@@ -74,7 +74,7 @@ configure-%/Makefile.PL:
 	@for file in `find $* -name Makefile` ; do \
 		sed -i 's%^PERL_INC *= *%PERL_INC = $$(DESTDIR)%' $${file} ; \
 		sed -i 's%^PERL_ARCHLIB *= *%PERL_ARCHLIB = $$(DESTDIR)%' $${file} ; \
-		sed -i 's% \($(PERL_privdir)/ExtUtils/typemap\)% $$(DESTDIR)\1%' $${file} ; \
+		sed -i 's% \($(PERL_privlib)/ExtUtils/typemap\)% $$(DESTDIR)\1%' $${file} ; \
 	 done
 	@$(MAKECOOKIE)
 
