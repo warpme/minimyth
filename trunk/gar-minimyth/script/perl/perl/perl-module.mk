@@ -67,3 +67,28 @@ CPPFLAGS := $(PERL_CPPFLAGS)
 CFLAGS   := $(PERL_CFLAGS)
 CXXFLAGS := $(PERL_CXXFLAGS)
 LDFLAGS  := $(PERL_LDFLAGS)
+
+configure-%/Makefile.PL:
+	@echo " ==> Running 'perl Makefile.PL' in $*"
+	@cd $* ; $(CONFIGURE_ENV) perl Makefile.PL $(CONFIGURE_ARGS)
+	@for file in `find $* -name Makefile` ; do \
+		sed -i 's%^PERL_INC *= *%PERL_INC = $$(DESTDIR)%' $${file} ; \
+		sed -i 's%^PERL_ARCHLIB *= *%PERL_ARCHLIB = $$(DESTDIR)%' $${file} ; \
+		sed -i 's% \($(libdir)/perl5/$(PERL_VERSION)/ExtUtils/typemap\)% $$(DESTDIR)\1%' $${file} ; \
+	 done
+	@$(MAKECOOKIE)
+
+configure-%/Build.PL:
+	@echo " ==> Running 'perl Build.PL' in $*"
+	@cd $* ; $(CONFIGURE_ENV) perl Build.PL $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
+
+build-%/Build:
+	@echo " ==> Running './Build' in $*"
+	@cd $* ; $(BUILD_ENV) ./Build $(BUILD_ARGS)
+	@$(MAKECOOKIE)
+
+install-%/Build:
+	@echo " ==> Running './Build install' in $*"
+	@cd $* ; $(INSTALL_ENV) ./Build $(INSTALL_ARGS) install
+	@$(MAKECOOKIE)
