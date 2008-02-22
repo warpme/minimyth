@@ -3,7 +3,7 @@ GARVERSION = 1.3.0.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-mesa_6.5.3.patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-mesa_6.5.3.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 

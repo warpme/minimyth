@@ -4,7 +4,9 @@ CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(GARNAME)32-001
+PATCHFILES  = $(DISTNAME)-perl.patch.gar
+PATCHFILES += \
+	$(GARNAME)32-001
 LICENSE = GPL2
 
 DESCRIPTION = 

@@ -3,7 +3,7 @@ GARVERSION = 1.0.4
 CATEGORIES = utils
 MASTER_SITES = http://www.bzip.org/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).patch
 LICENSE = bzip2
 bzip2_LICENSE_TEXT = $(WORKSRC)/LICENSE
 

@@ -7,6 +7,7 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES += $(DISTNAME)-perl.patch.gar
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
 PATCHFILES += $(DISTNAME)-libstdc++-v3_config.patch

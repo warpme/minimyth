@@ -3,6 +3,7 @@ GARVERSION = 4.11
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 

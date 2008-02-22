@@ -3,7 +3,7 @@ GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
