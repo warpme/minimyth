@@ -1,5 +1,5 @@
 GARNAME = kdelibs
-GARVERSION = 3.5.8
+GARVERSION = 3.5.9
 CATEGORIES = kde
 MASTER_SITES = http://mirrors.isc.org/pub/kde/stable/$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.bz2
