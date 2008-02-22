@@ -40,6 +40,7 @@ configure-%/Makefile.PL:
 	@for file in `find $* -name Makefile` ; do \
 		sed -i 's%^PERL_INC *= *%PERL_INC = $$(DESTDIR)%' $${file} ; \
 		sed -i 's%^PERL_ARCHLIB *= *%PERL_ARCHLIB = $$(DESTDIR)%' $${file} ; \
+		sed -i 's% \($(libdir)/perl5/$(PERL_VERSION)/ExtUtils/typemap\)% $$(DESTDIR)\1%' $${file} ; \
 	 done
 	@$(MAKECOOKIE)
 
