@@ -15,7 +15,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS    = lang/c
+DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += perl/perl
