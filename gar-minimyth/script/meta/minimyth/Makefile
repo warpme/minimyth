@@ -99,7 +99,6 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream) \
 		$(if $(filter perl,$(mm_SOFTWARE)), \
 			perl/perl \
-			perl/perl-Data-Dumper \
 			perl/perl-HTML-Parser \
 			perl/perl-libwww-perl \
 			perl/perl-XML-DOM \
@@ -115,7 +114,6 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
 		$(if $(filter perl,$(mm_SOFTWARE)), \
 			perl/perl \
-			perl/perl-Data-Dumper \
 			perl/perl-Date-Manip \
 			perl/perl-Image-Size \
 			perl/perl-libwww-perl \
