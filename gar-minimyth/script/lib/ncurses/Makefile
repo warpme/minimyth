@@ -3,7 +3,7 @@ GARVERSION = $(NCURSES_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).patch
 LICENSE = MIT_Modified
 
 DESCRIPTION =
@@ -16,11 +16,10 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-cxx-binding \
 	--without-ada \
 	--without-ada-compiler \
-	--without-progs \
 	--with-build-cc="$(build_CC)" \
 	--with-build-cppflags="$(build_CPPFLAGS)" \
 	--with-build-cflags="$(build_CFLAGS)" \
@@ -30,6 +29,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath \
 	--disable-widec \
 	--enable-termcap
+ifneq ($(DESTIMG),build)
+CONFIGURE_ARGS += \
+	--without-progs
+endif
 
 include ../../gar.mk
 

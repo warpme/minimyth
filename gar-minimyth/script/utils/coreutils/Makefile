@@ -3,7 +3,7 @@ GARVERSION = 6.10
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-sysinfo.patch $(DISTNAME)-disable_man.patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-sysinfo.patch $(DISTNAME)-disable_man.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

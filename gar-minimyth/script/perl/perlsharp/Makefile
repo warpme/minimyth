@@ -2,6 +2,7 @@ GARNAME = PerlSharp
 GARVERSION =
 CATEGORIES = perl
 DISTFILES = PerlSharp.cgi
+PATCHFILES = $(DISTNAME)-extensions.patch
 LICENSE =
 
 DESCRIPTION = 
@@ -10,7 +11,7 @@ endef
 
 DEPENDS = perl/perl perl/perl-Perl-Tidy
 
-WORKSRC = $(WORKDIR)/$(GARNAME)
+DISTNAME = $(GARNAME)
 
 INSTALL_SCRIPTS = custom
 

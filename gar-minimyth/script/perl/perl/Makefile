@@ -3,7 +3,7 @@ GARVERSION = $(PERL_VERSION)
 CATEGORIES = perl
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  = $(DISTNAME)-perl5lib.patch
+PATCHFILES  = $(DISTNAME)-perl.patch.gar $(DISTNAME)-path.patch $(DISTNAME)-perl5lib.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.patch.gar
 else
@@ -15,7 +15,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c
+#DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += perl/perl

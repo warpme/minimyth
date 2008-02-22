@@ -17,7 +17,6 @@ build_system_bins = $(strip $(sort \
 	m4 \
 	make \
 	patch \
-	perl \
 	sed \
 	subversion \
 	tar \
@@ -141,10 +140,6 @@ build_system_bins_make = \
 # Overridden by binaries from package devel/patch.
 build_system_bins_patch = \
 	patch
-
-# Overridden by binaries from package perl/perl.
-build_system_bins_perl = \
-	perl
 
 # Overridden by binaries from package utils/sed.
 build_system_bins_sed = \
