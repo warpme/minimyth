@@ -47,6 +47,7 @@ build_system_bins_coreutils = \
 	cat \
 	chmod \
 	cp \
+	comm \
 	cut \
 	date \
 	dirname \
@@ -67,6 +68,7 @@ build_system_bins_coreutils = \
 	rmdir \
 	sleep \
 	sort \
+	split \
 	su \
 	tail \
 	test \
