@@ -2,7 +2,7 @@ PWD := `pwd`
 
 WORKSRC = $(WORKDIR)/minimyth-$(mm_VERSION)
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk devel/build-system-bins/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk devel/build-system-bins/package-api.mk perl/perl/package-api.mk
 include ../../gar.mk
 
 mm_NAME       := minimyth-$(mm_VERSION)
@@ -596,18 +596,21 @@ mm-remove-pre:
 			done ; \
 		fi ; \
 	done
-	@if test -e $(mm_ROOTFSDIR)$(libdir)/perl5 ; then \
-		cd $(mm_ROOTFSDIR)$(libdir)/perl5 ; \
-		rm -f `find . -type f -name '.*'`    ; \
-		rm -f `find . -type f -name '*.bs'`  ; \
-		rm -f `find . -type f -name '*.e2x'` ; \
-		rm -f `find . -type f -name '*.eg'`  ; \
-		rm -f `find . -type f -name '*.h'`   ; \
-		rm -f `find . -type f -name '*.pod'` ; \
-		while test `find . -type d -empty | wc -l` -gt 0 ; do \
-			rm -rf `find . -type d -empty` ; \
-		done ; \
-	fi
+	@dirs='$(PERL_privlib) $(PERL_archlib) $(PERL_sitelib) $(PERL_sitearch)' ; \
+	for dir in $${dirs} ; do \
+		if test -e $(mm_ROOTFSDIR)$${dir} ; then \
+			cd $(mm_ROOTFSDIR)$${dir} ; \
+			rm -f `find . -type f -name '.*'`    ; \
+			rm -f `find . -type f -name '*.bs'`  ; \
+			rm -f `find . -type f -name '*.e2x'` ; \
+			rm -f `find . -type f -name '*.eg'`  ; \
+			rm -f `find . -type f -name '*.h'`   ; \
+			rm -f `find . -type f -name '*.pod'` ; \
+			while test `find . -type d -empty | wc -l` -gt 0 ; do \
+				rm -rf `find . -type d -empty` ; \
+			done ; \
+		fi ; \
+	done
 
 mm-remove-post:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -712,15 +715,15 @@ mm-strip:
 	fi
 	@if test ! $(mm_DEBUG) == yes ; then \
 		echo 'stripping perl' ; \
-		dirs='$(libdir)/perl5 $(datadir)/mythtv' ; \
+		dirs='$(PERL_privlib) $(PERL_archlib) $(PERL_sitelib) $(PERL_sitearch) $(datadir)/mythtv' ; \
 		cd $(mm_ROOTFSDIR) ; \
 		for dir in $${dirs} ; do \
-			echo "  stripping $${dir}" ; \
+			echo "  stripping [...]$${dir}" ; \
 			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
 			rm -f PerlSharpLog.txt ; \
 			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
 			for revert in $${revert_list} ; do \
-				echo "    reverting $${revert}" ; \
+				echo "    not stripping perl file [...]$${revert}" ; \
 				rm -f ./$${revert}.ERR ; \
 				rm -f ./$${revert}.LOG ; \
 				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
