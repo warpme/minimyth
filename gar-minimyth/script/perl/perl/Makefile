@@ -18,7 +18,7 @@ endef
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-BUILDDEPS += perl/perl
+#BUILDDEPS += perl/perl
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
@@ -26,7 +26,7 @@ ifneq ($(DESTIMG),build)
 CONFIGURE_SCRIPTS += check-version
 endif
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile miniperl
+INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile miniperl generate_uudmap
 
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS = \
@@ -122,5 +122,14 @@ install-config:
 
 install-miniperl:
 	@mkdir -p $(DESTDIR)$(bindir)
-	@cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl
+	@if test -e $(WORKSRC)/miniperl ; then \
+		cp -f $(WORKSRC)/miniperl $(DESTDIR)$(bindir)/perl-miniperl ; \
+	fi
+	@$(MAKECOOKIE)
+
+install-generate_uudmap:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@if test -e $(WORKSRC)/generate_uudmap ; then \
+		cp -f $(WORKSRC)/generate_uudmap $(DESTDIR)$(bindir)/perl-generate_uudmap ; \
+	fi
 	@$(MAKECOOKIE)

@@ -1,6 +1,16 @@
+diff -Naur perl-5.10.0-old/installman perl-5.10.0-new/installman
+--- perl-5.10.0-old/installman	2007-12-18 02:47:07.000000000 -0800
++++ perl-5.10.0-new/installman	2008-02-22 12:04:54.000000000 -0800
+@@ -1,5 +1,5 @@
+ #!./perl -w
+-BEGIN { @INC = qw(lib) }
++#BEGIN { @INC = qw(lib) }
+ use strict;
+ 
+ BEGIN {
 diff -Naur perl-5.10.0-old/installperl perl-5.10.0-new/installperl
 --- perl-5.10.0-old/installperl	2007-12-18 02:47:07.000000000 -0800
-+++ perl-5.10.0-new/installperl	2008-02-22 10:48:05.000000000 -0800
++++ perl-5.10.0-new/installperl	2008-02-22 11:40:52.000000000 -0800
 @@ -1,10 +1,10 @@
 -#!./perl
 +#!perl
@@ -25,8 +35,8 @@ diff -Naur perl-5.10.0-old/installperl perl-5.10.0-new/installperl
  	    print "# file '$file' skipped\n" if $verbose;
  	}
 diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
---- perl-5.10.0-old/Makefile.SH	2008-02-22 10:49:31.000000000 -0800
-+++ perl-5.10.0-new/Makefile.SH	2008-02-22 10:48:25.000000000 -0800
+--- perl-5.10.0-old/Makefile.SH	2008-02-22 11:40:26.000000000 -0800
++++ perl-5.10.0-new/Makefile.SH	2008-02-22 11:51:42.000000000 -0800
 @@ -45,9 +45,9 @@
  	# $ldlibpth so that ./perl finds *this* shared libperl.
  	case "$LD_LIBRARY_PATH" in
@@ -39,39 +49,47 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  	esac
  
  	pldlflags="$cccdlflags"
-@@ -634,6 +634,7 @@
+@@ -483,6 +483,7 @@
+ 
+ generate_uudmap\$(EXE_EXT): generate_uudmap\$(OBJ_EXT)
+ 	\$(CC) -o generate_uudmap \$(LDFLAGS) generate_uudmap\$(OBJ_EXT) \$(libs)
++	cp `which perl-generate_uudmap` generate_uudmap
+ 
+ !GROK!THIS!
+ $spitshell >>Makefile <<'!NO!SUBS!'
+@@ -634,6 +635,7 @@
  	$(CC) -o miniperl $(CLDFLAGS) \
  	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
  	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(libs)
-+	cp `which miniperl` miniperl
++	cp `which perl-miniperl` miniperl
  	$(LDLIBPTH) $(RUN) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
  !NO!SUBS!
  		;;
-@@ -642,6 +643,7 @@
+@@ -642,6 +644,7 @@
  miniperl: $& miniperlmain$(OBJ_EXT) $(obj) opmini$(OBJ_EXT)
  	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
  	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(libs)
-+	cp `which miniperl` miniperl
++	cp `which perl-miniperl` miniperl
  	$(LDLIBPTH) $(RUN) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
  !NO!SUBS!
  		;;
-@@ -664,6 +666,7 @@
+@@ -664,6 +667,7 @@
  	$(CC) $(CLDFLAGS) $(NAMESPACEFLAGS) -o miniperl \
  	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
  	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(libs)
-+	cp `which miniperl` miniperl
++	cp `which perl-miniperl` miniperl
  	$(LDLIBPTH) $(RUN) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
  !NO!SUBS!
  		;;
-@@ -674,6 +677,7 @@
+@@ -674,6 +678,7 @@
  	$(LDLIBPTH) $(CC) $(CLDFLAGS) -o miniperl \
  	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
  	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(libs)
-+	cp `which miniperl` miniperl
++	cp `which perl-miniperl` miniperl
  	$(LDLIBPTH) $(RUN) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
  !NO!SUBS!
  		;;
-@@ -705,7 +709,7 @@
+@@ -705,7 +710,7 @@
  	@grep "^usemymalloc="    config.sh
  	@grep "^usemymalloc='n'" config.sh >/dev/null || exit 1
  	@echo "And of course you have to have valgrind..."
@@ -80,7 +98,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  # Third Degree Perl (Tru64 only)
  
-@@ -886,13 +890,13 @@
+@@ -886,13 +891,13 @@
  	-@test -f pod/perl5100delta.pod && cd pod && $(LNS) perl5100delta.pod perldelta.pod && cd .. && echo "pod/perldelta.pod" >> extra.pods # See buildtoc
  
  extras.make: perl$(EXE_EXT)
@@ -97,7 +115,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  .PHONY: install install-strip install-all install-verbose install-silent \
  	no-install install.perl install.man install.html
-@@ -919,17 +923,17 @@
+@@ -919,17 +924,17 @@
  INSTALL_DEPENDENCE = all
  
  install.perl:	$(INSTALL_DEPENDENCE) installperl
@@ -118,7 +136,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
        --podroot=. --podpath=. --recurse  \
        --htmldir=$(privlib)/html   \
        --htmlroot=$(privlib)/html  \
-@@ -1043,7 +1047,7 @@
+@@ -1043,7 +1048,7 @@
  
  .PHONY: printconfig
  printconfig:
@@ -127,7 +145,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  .PHONY: clean _tidy _mopup _cleaner1 _cleaner2 \
  	realclean _realcleaner clobber _clobber \
-@@ -1195,7 +1199,7 @@
+@@ -1195,7 +1200,7 @@
  test_prep_pre: preplibrary utilities $(nonxs_ext)
  
  test_prep: test_prep_pre miniperl$(EXE_EXT) $(unidatafiles) perl$(EXE_EXT) $(dynamic_ext) $(TEST_PERL_DLL)
@@ -136,7 +154,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  _test_tty:
  	cd t && $(PERL_DEBUG) $(LDLIBPTH) $(PERL) $(TESTFILE) $(TEST_ARGS) $(TEST_FILES) </dev/tty
-@@ -1220,19 +1224,19 @@
+@@ -1220,19 +1225,19 @@
  	@echo "Ran tests" > t/rantests
  
  test check: test_prep
@@ -161,7 +179,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  test-prep:	test_prep
  
-@@ -1243,60 +1247,60 @@
+@@ -1243,60 +1248,60 @@
  # Torture testing
  
  test.torture torturetest:	test_prep
@@ -237,7 +255,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  minitest.prep:
  	-@test -f lib/lib.pm && test -f lib/Config.pm || \
-@@ -1310,15 +1314,15 @@
+@@ -1310,15 +1315,15 @@
  # is crashing.
  minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
  	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
@@ -256,7 +274,7 @@ diff -Naur perl-5.10.0-old/Makefile.SH perl-5.10.0-new/Makefile.SH
  
  # Handy way to run perlbug -ok without having to install and run the
  # installed perlbug. We don't re-run the tests here - we trust the user.
-@@ -1328,28 +1332,28 @@
+@@ -1328,28 +1333,28 @@
  .PHONY: ok okfile oknack okfilenack nok nokfile noknack nokfilenack
  
  ok:	utilities
