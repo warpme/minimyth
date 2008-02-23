@@ -596,7 +596,7 @@ mm-remove-pre:
 			done ; \
 		fi ; \
 	done
-	@dirs='$(PERL_privlib) $(PERL_archlib) $(PERL_sitelib) $(PERL_sitearch)' ; \
+	@dirs='$(PERL_libdir)' ; \
 	for dir in $${dirs} ; do \
 		if test -e $(mm_ROOTFSDIR)$${dir} ; then \
 			cd $(mm_ROOTFSDIR)$${dir} ; \
@@ -715,7 +715,7 @@ mm-strip:
 	fi
 	@if test ! $(mm_DEBUG) == yes ; then \
 		echo 'stripping perl' ; \
-		dirs='$(PERL_privlib) $(PERL_archlib) $(PERL_sitelib) $(PERL_sitearch) $(datadir)/mythtv' ; \
+		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
 		cd $(mm_ROOTFSDIR) ; \
 		for dir in $${dirs} ; do \
 			echo "  stripping [...]$${dir}" ; \
