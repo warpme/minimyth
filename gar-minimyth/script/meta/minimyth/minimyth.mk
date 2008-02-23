@@ -541,7 +541,7 @@ mm-make-conf:
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%'     $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
 	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
-	@$(foreach build_var,$(build_vars),echo "$(build_var)='$($(build_var))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
+	@$(foreach build_var,$(build_vars),echo "$(build_var)='$(strip $($(build_var)))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
