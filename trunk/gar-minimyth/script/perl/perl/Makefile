@@ -18,7 +18,7 @@ endef
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-#BUILDDEPS += perl/perl
+BUILDDEPS += perl/perl
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
