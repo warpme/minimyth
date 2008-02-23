@@ -4,3 +4,5 @@ MASTER_SITES = http://www.cpan.org/authors/id/G/GA/GAAS/
 DEPENDS      = perl/perl-Compress-Zlib perl/perl-HTML-Parser perl/perl-URI
 
 include ../../perl/perl/perl-module.mk
+
+CONFIGURE_ARGS += -n
