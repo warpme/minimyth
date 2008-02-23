@@ -7,6 +7,9 @@
 # PERL_MODULE_SO:
 #    - Indicates whether or not the installed module contains a shared object.
 #    - Valid values: 'true' or 'false' with 'false' being the default.
+# PERL_NOT_NEEDED:
+#    - Indicates versions of perl for which this module is not needed, usually
+#      due to the module being included in perl.
 ################################################################################
 
 PERL_MODULE_STYLE ?= Makefile.PL
@@ -15,6 +18,7 @@ PERL_MODULE_SO    ?= false
 CATEGORIES = perl
 DISTFILES = $(PERL_MODULE_DISTNAME).tar.gz
 PATCHFILES = $(addprefix $(PERL_MODULE_DISTNAME)-,$(PERL_MODULE_PATCHES))
+LICENSE = Artistic
 
 PERL_MODULE_GARNAME = $(patsubst perl-%,%,$(GARNAME))
 PERL_MODULE_DISTNAME = $(PERL_MODULE_GARNAME)-$(GARVERSION)
