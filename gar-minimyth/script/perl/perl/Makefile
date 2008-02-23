@@ -21,12 +21,15 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += perl/perl
 endif
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 ifneq ($(DESTIMG),build)
-CONFIGURE_SCRIPTS += check-version
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure check-version
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = config $(WORKSRC)/Makefile
+else
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = config $(WORKSRC)/Makefile miniperl generate_uudmap
 endif
-BUILD_SCRIPTS      = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS    = config $(WORKSRC)/Makefile miniperl generate_uudmap
 
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS = \
