@@ -58,11 +58,11 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ati_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/mach64_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/r128_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/radeon_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre_detect_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre200_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ati_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/atimisc_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/r128_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/radeon_drv.la
 	@$(MAKECOOKIE)
