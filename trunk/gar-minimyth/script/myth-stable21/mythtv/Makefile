@@ -67,7 +67,7 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx \
 	--disable-mac-bundle \
-	--without-bindings="perl"
+	--without-bindings="perl,python"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
