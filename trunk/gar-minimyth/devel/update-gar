@@ -260,8 +260,8 @@ sed -i "s%^PATH *:=.*$%PATH := \$(if \$(wildcard \$(build_DESTDIR)\$(build_rootd
 sed -i "s%^export PATH%export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH%g" ${SCRIPT_DIR}/gar.conf.mk
 
 # Remove PKG_CONFIG_PATH and add PKG_CONFIG_LIBDIR and PKG_CONFIG_SYSROOT_DIR
-sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_LIBDIR = ${_PKG_CONFIG_LIBDIR}\nPKG_CONFIG_SYSROOT_DIR = ${_PKG_CONFIG_SYSROOT_DIR}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^export  *PKG_CONFIG_PATH$%export PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^PKG_CONFIG_PATH *=.*$%PKG_CONFIG_LIBDIR = ${_PKG_CONFIG_LIBDIR}\nPKG_CONFIG_SYSROOT_DIR = ${_PKG_CONFIG_SYSROOT_DIR}\nPERLLIB = \nPERL5LIB =%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^export  *PKG_CONFIG_PATH$%export PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR\nexport PERLLIB PERL5LIB%g" ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i '/^INSTALL_DIRS *=/s%$(sbindir)%$(esbindir) &%' ${SCRIPT_DIR}/gar.mk
 sed -i '/^INSTALL_DIRS *=/s%$(bindir)%$(ebindir) &%' ${SCRIPT_DIR}/gar.mk
