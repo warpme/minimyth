@@ -19,7 +19,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -115,8 +115,8 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-tremor-external \
 	--enable-libvorbis \
 	--disable-speex \
-	--disable-faad-external \
-	--enable-faad-internal \
+	--enable-faad-external \
+	--disable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \
 	--disable-ladspa \
