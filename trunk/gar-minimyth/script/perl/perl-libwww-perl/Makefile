@@ -1,7 +1,7 @@
 GARNAME      = perl-libwww-perl
 GARVERSION   = 5.808
 MASTER_SITES = http://www.cpan.org/authors/id/G/GA/GAAS/
-DEPENDS      = perl/perl-Compress-Zlib perl/perl-HTML-Parser perl/perl-URI
+DEPENDS      = perl/perl-HTML-Parser perl/perl-URI
 
 include ../../perl/perl/perl-module.mk
 
