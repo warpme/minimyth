@@ -50,7 +50,6 @@ DEPENDS = \
 	qt/qt \
 	X11/ratpoison \
 	utils/regionset \
-	net/rsync \
 	X11/rxvt \
 	utils/SDL-Test \
 	system/splashutils \
