@@ -1,5 +1,5 @@
 GARNAME = uvc
-GARVERSION = 188
+GARVERSION = 189
 CATEGORIES = kernel-2.6.24
 MASTER_SITES = svn://svn.berlios.de/linux-uvc/linux-uvc/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
