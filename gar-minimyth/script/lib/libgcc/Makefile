@@ -21,15 +21,25 @@ build-custom:
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(elibdir)
-	@$(if $(wildcard $(CROSS_GCC_LIBDIR)), \
-		cp -af $(CROSS_GCC_LIBDIR)/libgcc*    $(DESTDIR)$(elibdir) ; \
-	)
-	@$(if $(wildcard $(CROSS_GCC_DIR)/lib32), \
-		cp -af $(CROSS_GCC_DIR)/lib32/libgcc* $(DESTDIR)$(elibdir) ; \
-	)
-	@$(if $(wildcard $(CROSS_GCC_DIR)/lib64), \
-		cp -af $(CROSS_GCC_DIR)/lib64/libgcc* $(DESTDIR)$(elibdir) ; \
-	)
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgcc.a        ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgcc_s.so     ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgcc_s.so.*   ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgcc.a     ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgcc_s.so  ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgcc_s.so.*),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgcc.a     ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgcc_s.so  ),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgcc_s.so.*),cp -af $(file) $(DESTDIR)$(elibdir) ; )
+	@mkdir -p $(DESTDIR)$(libdir)
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgomp.a      ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgomp.so     ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgomp.so.*   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgomp.a   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgomp.so  ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libgomp.so.*),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgomp.a   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgomp.so  ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libgomp.so.*),cp -af $(file) $(DESTDIR)$(libdir) ; )
 	@$(MAKECOOKIE)
 
 CROSSIMG = $(DESTIMG)
