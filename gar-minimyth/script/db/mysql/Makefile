@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 5.0.51
+GARVERSION = 5.0.51a
 CATEGORIES = db
 MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
