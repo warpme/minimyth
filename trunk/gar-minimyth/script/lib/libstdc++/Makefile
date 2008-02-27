@@ -21,9 +21,15 @@ build-custom:
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)
-	@$(if $(wildcard $(CROSS_GCC_LIBDIR)), \
-		cp -af $(CROSS_GCC_LIBDIR)/lib*c++* $(DESTDIR)$(libdir) ; \
-	)
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libstdc++.a      ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libstdc++.so     ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libstdc++.so.*   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libstdc++.a   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libstdc++.so  ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib32/libstdc++.so.*),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libstdc++.a   ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libstdc++.so  ),cp -af $(file) $(DESTDIR)$(libdir) ; )
+	@$(foreach file,$(wildcard $(CROSS_GCC_DIR)/lib64/libstdc++.so.*),cp -af $(file) $(DESTDIR)$(libdir) ; )
 	@$(MAKECOOKIE)
 
 CROSSIMG = $(DESTIMG)
