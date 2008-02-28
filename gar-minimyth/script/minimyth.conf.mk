@@ -12,13 +12,13 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter stable21  ,$(mm_MYTH_VERSION)),0.21.0                   ) \
                                 $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
                               )
-mm_VERSION_MINIMYTH       ?= 38
+mm_VERSION_MINIMYTH       ?= 39
 mm_VERSION_EXTRA          ?= $(strip \
                                 $(if $(filter yes,$(mm_DEBUG)),-debug) \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 22
+mm_CONF_VERSION           ?= 23
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
