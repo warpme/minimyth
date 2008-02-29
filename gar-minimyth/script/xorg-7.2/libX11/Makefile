@@ -64,7 +64,7 @@ CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
-	@cd $(WORKSRC) ; ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf --verbose --install --force
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
