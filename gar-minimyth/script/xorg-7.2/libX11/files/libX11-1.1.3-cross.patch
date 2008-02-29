@@ -1,6 +1,6 @@
 diff -Naur libX11-1.1.3-old/configure.ac libX11-1.1.3-new/configure.ac
 --- libX11-1.1.3-old/configure.ac	2007-08-01 11:35:46.000000000 -0700
-+++ libX11-1.1.3-new/configure.ac	2008-02-04 10:41:34.000000000 -0800
++++ libX11-1.1.3-new/configure.ac	2008-02-28 20:12:12.000000000 -0800
 @@ -7,6 +7,9 @@
          [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
          libX11)
@@ -65,18 +65,17 @@ diff -Naur libX11-1.1.3-old/configure.ac libX11-1.1.3-new/configure.ac
  		case "$flag" in
 diff -Naur libX11-1.1.3-old/src/util/Makefile.am libX11-1.1.3-new/src/util/Makefile.am
 --- libX11-1.1.3-old/src/util/Makefile.am	2007-05-16 08:34:44.000000000 -0700
-+++ libX11-1.1.3-new/src/util/Makefile.am	2008-02-04 10:40:10.000000000 -0800
-@@ -5,7 +5,12 @@
- makekeys_CFLAGS=$(X11_CFLAGS)
- 
++++ libX11-1.1.3-new/src/util/Makefile.am	2008-02-28 20:14:16.000000000 -0800
+@@ -7,6 +7,12 @@
  #override CC = gcc
--LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-+COMPILE = $(CC_FOR_BUILD) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-+	$(AM_CPPFLAGS) $(CPPFLAGS_FOR_BUILD) $(AM_CFLAGS) $(CFLAGS_FOR_BUILD)
-+LINK = $(CC_FOR_BUILD) $(AM_CFLAGS) $(CFLAGS_FOR_BUILD) $(AM_LDFLAGS) $(LDFLAGS_FOR_BUILD) -o $@
-+
-+$(srcdir)/makekeys-makekeys.o:
-+	$(COMPILE) -c $< -o $@
+ LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
  
++CC = @CC_FOR_BUILD@
++CCLD = @CC_FOR_BUILD@
++CPPFLAGS = @CPPFLAGS_FOR_BUILD@
++CFLAGS = @CFLAGS_FOR_BUILD@
++LDFLAGS = @LDFLAGS_FOR_BUILD@
++
  EXTRA_DIST = mkks.sh
  
+ if LINT
