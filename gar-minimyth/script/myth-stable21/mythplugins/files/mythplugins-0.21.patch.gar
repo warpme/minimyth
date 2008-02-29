@@ -1,6 +1,6 @@
-diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
---- mythplugins-15941-old/configure	2008-02-12 09:25:59.000000000 -0800
-+++ mythplugins-15941-new/configure	2008-02-12 09:28:16.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/configure mythplugins-0.21-16317-new/configure
+--- mythplugins-0.21-16317-old/configure	2008-02-29 13:41:12.000000000 -0800
++++ mythplugins-0.21-16317-new/configure	2008-02-29 13:43:43.000000000 -0800
 @@ -317,27 +317,7 @@
  
  has_library()
@@ -54,12 +54,12 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
      fi
  
      taglib="no"
--    if has_library libtag && has_header taglib/fileref.h && test `taglib-config --version` = "1.4"; then
-+    if has_library libtag && has_header taglib/fileref.h && test `@GAR_DESTDIR@@GAR_bindir@/taglib-config --version` = "1.4"; then
+-    taglib_minor=`taglib-config --version | cut -d. -f2`
++    taglib_minor=`@GAR_DESTDIR@@GAR_bindir@/taglib-config --version | cut -d. -f2`
+     if has_library libtag && has_header taglib/fileref.h && test $taglib_minor -ge 4 ; then
          taglib="yes"
      else
-         echo "MythMusic requires taglib 1.4."
-@@ -544,12 +522,7 @@
+@@ -545,12 +523,7 @@
  if test "$browser" != "no" ; then
      hasit="no"
      if has_library libkhtml ; then
@@ -73,7 +73,7 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
              hasit="yes"
          fi
      fi
-@@ -597,11 +570,11 @@
+@@ -598,11 +571,11 @@
  ###########################################################
  
  # bring in mythtv config
@@ -88,7 +88,7 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
    echo "Did you make AND install MythTV first?"
    echo "Are you using the correct prefix ($prefix)?"
    echo "Bailing out!!"
-@@ -870,7 +843,7 @@
+@@ -871,7 +844,7 @@
          if test "$sdl" = "yes" ; then
              echo "        libvisual      support will be included in MythMusic"
              echo "#define LIBVISUAL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
@@ -97,7 +97,7 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
              echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
          else
              echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
-@@ -899,9 +872,9 @@
+@@ -900,9 +873,9 @@
      if test "$sdl" = "yes" ; then
          echo "        SDL            support will be included in MythMusic"
          echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
@@ -110,18 +110,18 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
      fi
      if test "$sdl" = "no" ; then
          echo "        SDL            support will not be included in MythMusic"
-@@ -920,7 +893,9 @@
+@@ -921,7 +894,9 @@
      fi
  
      if test "$taglib" = "yes" ; then
 -        echo "INCLUDEPATH += `taglib-config --prefix`/include/taglib" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@GAR_DESTDIR@/@GAR_bindir@/taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
 +        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
 +        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
      fi
  fi
  
-@@ -943,10 +918,9 @@
+@@ -944,10 +919,9 @@
      if test "$festival" = "yes" ; then
          echo "        FESTIVAL       support will be included in MythPhone"
          echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
@@ -134,9 +134,9 @@ diff -Naur mythplugins-15941-old/configure mythplugins-15941-new/configure
          echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
      fi
  
-diff -Naur mythplugins-15941-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-15941-new/mythbrowser/mythbrowser/mythbrowser.pro
---- mythplugins-15941-old/mythbrowser/mythbrowser/mythbrowser.pro	2008-02-12 09:24:41.000000000 -0800
-+++ mythplugins-15941-new/mythbrowser/mythbrowser/mythbrowser.pro	2008-02-12 09:28:17.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-0.21-16317-new/mythbrowser/mythbrowser/mythbrowser.pro
+--- mythplugins-0.21-16317-old/mythbrowser/mythbrowser/mythbrowser.pro	2008-02-29 13:41:00.000000000 -0800
++++ mythplugins-0.21-16317-new/mythbrowser/mythbrowser/mythbrowser.pro	2008-02-29 13:41:40.000000000 -0800
 @@ -3,8 +3,7 @@
  include (../../programs-libs.pro )
  
@@ -156,9 +156,9 @@ diff -Naur mythplugins-15941-old/mythbrowser/mythbrowser/mythbrowser.pro mythplu
  
  # Input
  HEADERS += webpage.h tabview.h
-diff -Naur mythplugins-15941-old/mythcontrols/mythcontrols/mythcontrols.pro mythplugins-15941-new/mythcontrols/mythcontrols/mythcontrols.pro
---- mythplugins-15941-old/mythcontrols/mythcontrols/mythcontrols.pro	2008-02-12 09:24:41.000000000 -0800
-+++ mythplugins-15941-new/mythcontrols/mythcontrols/mythcontrols.pro	2008-02-12 09:28:17.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/mythcontrols/mythcontrols/mythcontrols.pro mythplugins-0.21-16317-new/mythcontrols/mythcontrols/mythcontrols.pro
+--- mythplugins-0.21-16317-old/mythcontrols/mythcontrols/mythcontrols.pro	2008-02-29 13:41:00.000000000 -0800
++++ mythplugins-0.21-16317-new/mythcontrols/mythcontrols/mythcontrols.pro	2008-02-29 13:41:40.000000000 -0800
 @@ -7,7 +7,7 @@
  target.path = $${LIBDIR}/mythtv/plugins
  INSTALLS += target
@@ -168,9 +168,9 @@ diff -Naur mythplugins-15941-old/mythcontrols/mythcontrols/mythcontrols.pro myth
  
  uifiles.path = $${PREFIX}/share/mythtv/themes/default
  uifiles.files = controls-ui.xml ../images/kb-button-on.png ../images/kb-button-off.png
-diff -Naur mythplugins-15941-old/mythmusic/mythmusic/mythmusic.pro mythplugins-15941-new/mythmusic/mythmusic/mythmusic.pro
---- mythplugins-15941-old/mythmusic/mythmusic/mythmusic.pro	2008-02-12 09:25:59.000000000 -0800
-+++ mythplugins-15941-new/mythmusic/mythmusic/mythmusic.pro	2008-02-12 09:28:17.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/mythmusic/mythmusic/mythmusic.pro mythplugins-0.21-16317-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-0.21-16317-old/mythmusic/mythmusic/mythmusic.pro	2008-02-29 13:41:12.000000000 -0800
++++ mythplugins-0.21-16317-new/mythmusic/mythmusic/mythmusic.pro	2008-02-29 13:41:40.000000000 -0800
 @@ -6,7 +6,7 @@
     error(Missing config.pro: please run the configure script)
  }
@@ -180,20 +180,20 @@ diff -Naur mythplugins-15941-old/mythmusic/mythmusic/mythmusic.pro mythplugins-1
  TEMPLATE = lib
  CONFIG += plugin thread
  TARGET = mythmusic
-diff -Naur mythplugins-15941-old/programs-libs.pro mythplugins-15941-new/programs-libs.pro
---- mythplugins-15941-old/programs-libs.pro	2008-02-12 09:24:41.000000000 -0800
-+++ mythplugins-15941-new/programs-libs.pro	2008-02-12 09:28:17.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/programs-libs.pro mythplugins-0.21-16317-new/programs-libs.pro
+--- mythplugins-0.21-16317-old/programs-libs.pro	2008-02-29 13:41:00.000000000 -0800
++++ mythplugins-0.21-16317-new/programs-libs.pro	2008-02-29 13:42:16.000000000 -0800
 @@ -1,6 +1,6 @@
  INCLUDEPATH += $${PREFIX}/include/mythtv
  
 -LIBS += -L$${PREFIX}/lib $$EXTRA_LIBS
 +LIBS += -L@GAR_DESTDIR@@GAR_libdir@ $$EXTRA_LIBS
+ LIBS += -lmythavutil-$$LIBVERSION -lmythavcodec-$$LIBVERSION
  LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION -lmythupnp-$$LIBVERSION
  
- mac:using_firewire:using_backend:LIBS += -F$${CONFIG_MAC_AVC} -framework AVCVideoServices
-diff -Naur mythplugins-15941-old/settings.pro mythplugins-15941-new/settings.pro
---- mythplugins-15941-old/settings.pro	2008-02-12 09:24:41.000000000 -0800
-+++ mythplugins-15941-new/settings.pro	2008-02-12 09:28:17.000000000 -0800
+diff -Naur mythplugins-0.21-16317-old/settings.pro mythplugins-0.21-16317-new/settings.pro
+--- mythplugins-0.21-16317-old/settings.pro	2008-02-29 13:41:00.000000000 -0800
++++ mythplugins-0.21-16317-new/settings.pro	2008-02-29 13:41:40.000000000 -0800
 @@ -2,22 +2,22 @@
  
  LIBVERSION = 0.21

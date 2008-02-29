@@ -1,20 +1,42 @@
 GARNAME = mythtv
 GARVERSION = 0.21
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://www.mythtv.org/mc/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-openchrome.patch $(DISTNAME)-networkcontrol.patch $(DISTNAME)-eject.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-alphapulse.patch $(DISTNAME)-startplayer_maxwait.patch $(DISTNAME)-preserve_timestamps.patch
+MASTER_SITES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	http://www.mythtv.org/mc/, \
+	svn://svn.mythtv.org/svn/branches/release-0-21-fixes/$(GARNAME)/))
+DISTFILES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(DISTNAME).tar.bz2, \
+	$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2))
+PATCHFILES  =
+PATCHFILES += $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch, \
+	))
+PATCHFILES += \
+	$(DISTNAME)-ticket-4792.patch \
+	$(DISTNAME)-networkcontrol.patch \
+	$(DISTNAME)-eject.patch \
+	$(DISTNAME).patch.gar \
+	$(DISTNAME)-init.patch \
+	$(DISTNAME)-minimyth.patch \
+	$(DISTNAME)-programid.patch \
+	$(DISTNAME)-alphapulse.patch \
+	$(DISTNAME)-startplayer_maxwait.patch \
+	$(DISTNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/fftw3f lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 PWD := $(shell pwd)
+
+WORKSRC = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(WORKDIR)/$(DISTNAME), \
+	$(WORKDIR)/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION)))
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -32,6 +54,8 @@ CONFIGURE_ARGS = \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
+	--extra-ldflags="$(LDFLAGS)" \
+	--enable-symbol-visibility \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
@@ -77,6 +101,13 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 CFLAGS += -DUSE_HACK_FOR_BROKEN_I420_SUPPORT_IN_DRIVER
+
+svn//%/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+	$(call FETCH_SVN, http://$*, $(MYTHTV_STABLE21_FIXES_VERSION), $(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
