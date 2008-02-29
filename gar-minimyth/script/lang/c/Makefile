@@ -24,7 +24,6 @@ BUILDDEPS += \
 	devel/flex \
 	devel/gettext \
 	devel/autoconf \
-	devel/automake-1.9 \
 	devel/automake \
 	devel/libtool \
 	devel/pkg-config \
