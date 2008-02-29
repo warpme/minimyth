@@ -34,6 +34,10 @@ include ../../gar.mk
 CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
 CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxcb.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-composite.la
