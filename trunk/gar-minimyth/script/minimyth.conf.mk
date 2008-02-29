@@ -7,10 +7,10 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                ) \
-                                $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20.2                   ) \
-                                $(if $(filter stable21  ,$(mm_MYTH_VERSION)),0.21.0                   ) \
-                                $(if $(filter svn       ,$(mm_MYTH_VERSION)),svn$(mm_MYTH_SVN_VERSION)) \
+                                $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                     ) \
+                                $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20.2                        ) \
+                                $(if $(filter stable21  ,$(mm_MYTH_VERSION)),0.21.0                        ) \
+                                $(if $(filter trunk     ,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 39
 mm_VERSION_EXTRA          ?= $(strip \
@@ -112,9 +112,9 @@ mm_NVIDIA_VERSION         ?= 169.12
 # The version of xorg to use.
 # Valid values are '7.2' and '7.3'.
 mm_XORG_VERSION           ?= 7.3
-# Myth SVN version built. If the version changes too much then the patches may
+# Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_SVN_VERSION       ?= 16133
+mm_MYTH_TRUNK_VERSION       ?= 16133
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image

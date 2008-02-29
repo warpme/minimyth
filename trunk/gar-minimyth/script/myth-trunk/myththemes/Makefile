@@ -1,8 +1,9 @@
-GARNAME = blootubelite-wide
-GARVERSION = $(mm_MYTH_SVN_VERSION)
+GARNAME = myththemes
+GARVERSION = $(mm_MYTH_TRUNK_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(GARNAME).patch.gar $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -13,7 +14,12 @@ DEPENDS = lang/c $(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-INSTALL_SCRIPTS  = custom
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = \
+	--prefix="$(prefix)"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
@@ -29,8 +35,6 @@ svn//%/$(DISTNAME).tar.bz2:
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
-install-custom:
-	@mkdir -p $(DESTDIR)$(datadir)/mythtv/themes
-	@rm -rf $(DESTDIR)$(datadir)/mythtv/themes/$(GARNAME)
-	@cp -af $(WORKSRC) $(DESTDIR)$(datadir)/mythtv/themes/$(GARNAME)
+configure-%/mythtv:
+	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)

@@ -271,6 +271,10 @@ mm-check:
 		echo "error: mm_INSTALL_NFS should be replaced with mm_INSTALL_NFS_BOOT." ; \
 		exit 1 ; \
 	fi
+	@if [ -n "$(mm_MYTH_SVN_VERSION)" ] ; then \
+		echo "error: mm_MYTH_SVN_VERSION should be replaced with mm_MYTH_TRUNK_VERSION." ; \
+		exit 1 ; \
+	fi
 	@echo "    mm_XORG_VERSION='old'"
 	@if [ "$(mm_XORG_VERSION)" = "old" ] ; then \
 		echo "error: mm_XORG_VERSION=\"old\" should be replaced with mm_XORG_VERSION=\"6.8\"." ; \
