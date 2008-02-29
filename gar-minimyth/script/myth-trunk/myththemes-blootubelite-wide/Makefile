@@ -1,9 +1,8 @@
-GARNAME = blootube-osd
-GARVERSION = $(mm_MYTH_SVN_VERSION)
+GARNAME = blootubelite-wide
+GARVERSION = $(mm_MYTH_TRUNK_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-font.patch $(GARNAME)-fadeaway.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -14,8 +13,7 @@ DEPENDS = lang/c $(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-BUILD_SCRIPTS   = custom
-INSTALL_SCRIPTS = custom
+INSTALL_SCRIPTS  = custom
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
@@ -29,10 +27,6 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-build-custom:
-	@rm -rf $(WORKSRC)/*.ttf
 	@$(MAKECOOKIE)
 
 install-custom:
