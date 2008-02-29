@@ -1,9 +1,9 @@
 GARNAME = blootube-osd
-GARVERSION = $(MYTHTV_STABLE21_FIXES_VERSION)
+GARVERSION = 0.21-$(MYTHTV_STABLE21_FIXES_VERSION)
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-font.patch $(GARNAME)-fadeaway.patch
+PATCHFILES = $(GARNAME)-font.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -25,7 +25,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_STABLE21_FIXES_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

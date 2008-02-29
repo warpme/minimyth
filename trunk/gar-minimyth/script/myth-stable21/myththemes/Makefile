@@ -1,9 +1,20 @@
 GARNAME = myththemes
 GARVERSION = 0.21
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://www.mythtv.org/mc/
-#DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
+MASTER_SITES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	http://www.mythtv.org/mc/, \
+	svn://svn.mythtv.org/svn/branches/release-0-21-fixes/$(GARNAME)/))
+DISTFILES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(DISTNAME).tar.bz2, \
+	$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2))
+PATCHFILES  =
+PATCHFILES += $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch, \
+	))
+PATCHFILES += \
+	$(DISTNAME).patch.gar \
+	$(DISTNAME)-programid.patch \
+	$(DISTNAME)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -13,6 +24,10 @@ endef
 DEPENDS = lang/c $(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+WORKSRC = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
+	$(WORKDIR)/$(DISTNAME), \
+	$(WORKDIR)/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION)))
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -27,6 +42,13 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
+
+svn//%/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+	$(call FETCH_SVN, http://$*, $(MYTHTV_STABLE21_FIXES_VERSION), $(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+	@$(MAKECOOKIE)
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
