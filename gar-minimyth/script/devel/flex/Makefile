@@ -1,5 +1,5 @@
 GARNAME = flex
-GARVERSION = 2.5.34
+GARVERSION = 2.5.35
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
