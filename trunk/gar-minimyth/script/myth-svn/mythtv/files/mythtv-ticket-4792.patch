@@ -1,0 +1,15 @@
+diff -Naur mythtv-16133-old/libs/libmythtv/videoout_xv.cpp mythtv-16133-new/libs/libmythtv/videoout_xv.cpp
+--- mythtv-16133-old/libs/libmythtv/videoout_xv.cpp	2008-02-18 07:46:30.000000000 -0800
++++ mythtv-16133-new/libs/libmythtv/videoout_xv.cpp	2008-02-29 08:54:25.000000000 -0800
+@@ -1520,7 +1520,10 @@
+         for (; it != renderers.end(); ++it)
+             tmp += *it + ",";
+ 
+-        renderer = renderers[0];
++        if ((renderer == "xvmc-blit") && (renderers.contains("xv-blit")))
++            renderer = "xv-blit" ;
++        else
++            renderer = renderers[0];
+         VERBOSE(VB_IMPORTANT, LOC + QString(
+                     "Desired video renderer '%1' not available.\n\t\t\t"
+                     "codec '%2' makes '%3' available, using '%4' instead.")
