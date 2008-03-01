@@ -8,13 +8,18 @@ conf_clean_media() {
 }
 
 conf_check_media() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_MYTHAUDIO_MOUNTPOINT}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_MOUNTPOINT' is obsolete."
+    fi
+    if /usr/bin/test ! -z "${MM_MYTHAUDIO_URL}"        ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_URL' is obsolete."
+    fi
+
     return 0
 }
 
 conf_default_media() {
-    if /usr/bin/test -z "${MM_MYTHAUDIO_MOUNTPOINT}"   ; then
-        MM_MYTHAUDIO_MOUNTPOINT='/mnt/audio'
-    fi
     if /usr/bin/test -z "${MM_MYTHDVD_MOUNTPOINT}"     ; then
         MM_MYTHDVD_MOUNTPOINT='/mnt/dvd'
     fi
@@ -37,8 +42,6 @@ conf_default_media() {
 conf_write_media() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_MYTHAUDIO_MOUNTPOINT   "${MM_MYTHAUDIO_MOUNTPOINT}"
-    conf_variable_write "${conf_file}" MM_MYTHAUDIO_URL          "${MM_MYTHAUDIO_URL}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_MOUNTPOINT     "${MM_MYTHDVD_MOUNTPOINT}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_URL            "${MM_MYTHDVD_URL}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_MOUNTPOINT "${MM_MYTHGALLERY_MOUNTPOINT}"
