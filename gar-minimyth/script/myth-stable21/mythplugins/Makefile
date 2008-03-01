@@ -23,7 +23,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

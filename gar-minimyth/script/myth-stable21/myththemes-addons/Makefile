@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-x_DEPENDS = lang/c $(CATEGORY)/mythtv
+DEPENDS = lang/c $(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -48,7 +48,5 @@ configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake themes.pro
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

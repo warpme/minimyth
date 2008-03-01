@@ -22,3 +22,8 @@ MYTHTV_INSTALL_ENV   = \
 	QMAKESPEC="default" \
 	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
+
+post-install-mythtv-version:
+	@install -d $(DESTDIR)$(versiondir) 
+	@echo "$(GARVERSION_SHORT) through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+	@$(MAKECOOKIE)

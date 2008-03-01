@@ -1,4 +1,4 @@
-GARNAME = mythweather
+GARNAME = mythzoneminder
 GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
 SOURCEPKG = $(CATEGORY)/mythplugins
@@ -11,8 +11,6 @@ endef
 DEPENDS  = lang/c $(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
-
-WORKSRC = $(WORKDIR)/mythplugins-$(MYTHPLUGINS_VERSION)
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -33,4 +31,7 @@ include ../../gar.mk
 
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake mythplugins.pro
+	@$(MAKECOOKIE)
+
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

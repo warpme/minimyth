@@ -33,7 +33,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
@@ -43,7 +43,5 @@ configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

@@ -43,3 +43,6 @@ checksum-$(DISTNAME).tar.bz2:
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
+
+post-install: post-install-mythtv-version
+	@$(MAKECOOKIE)
