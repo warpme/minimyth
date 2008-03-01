@@ -1,9 +1,14 @@
 GARNAME = myththemes
-GARVERSION = 0.20.2
+GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://www.mythtv.org/mc/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME).patch.gar $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-preserve_timestamps.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-fadeaway.patch \
+	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -28,11 +33,16 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE20_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

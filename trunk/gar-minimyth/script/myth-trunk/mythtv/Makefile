@@ -13,7 +13,6 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
 	$(DISTNAME_SHORT)-programid.patch \
-	$(DISTNAME_SHORT)-fadeaway.patch \
 	$(DISTNAME_SHORT)-alphapulse.patch \
 	$(DISTNAME_SHORT)-startplayer_maxwait.patch \
 	$(DISTNAME_SHORT)-preserve_timestamps.patch
@@ -50,7 +49,6 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--enable-proc-opt \
 	--enable-mmx \
 	--enable-audio-oss \
 	--enable-audio-alsa \

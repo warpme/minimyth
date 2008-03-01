@@ -34,10 +34,10 @@ mm_DEBUG_BUILD            ?= no
 # 'nvidia', 'sis', 'via', 'vmware' and 'other'.
 mm_CHIPSETS               ?= intel nvidia via other
 # Lists the software to be supported.
-# Valid values for MM_SOFTWARE are zero or more of 'mythaudio', 'mythbrowser',
-# 'mythdvd', 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone',
-# 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine',
-# 'perl', 'transcode', 'mame', 'wiimote' and 'debug'.
+# Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythdvd',
+# 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream',
+# 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine', 'perl',
+# 'transcode', 'mame', 'wiimote' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),softpad20 stable20),mythdvd) \
                              mythgallery \

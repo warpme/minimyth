@@ -1,9 +1,15 @@
 GARNAME = mythplugins
 GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://www.mythtv.org/mc/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-mythweather_weather_com.patch $(DISTNAME)-mythmusic_cdio.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-mythweather_weather_com.patch \
+	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -16,6 +22,13 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
+
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -rf $(DESTDIR)$(versiondir)/$(GARNAME)

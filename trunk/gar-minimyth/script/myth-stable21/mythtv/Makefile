@@ -48,7 +48,6 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--enable-proc-opt \
 	--enable-mmx \
 	--enable-audio-oss \
 	--enable-audio-alsa \

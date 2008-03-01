@@ -13,8 +13,6 @@ DEPENDS += lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libcdio lib/libid3tag 
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/mythplugins-$(MYTHPLUGINS_VERSION)
-
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
@@ -38,7 +36,5 @@ configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake mythplugins.pro
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE20_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)
