@@ -7,10 +7,10 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter softpad20 ,$(mm_MYTH_VERSION)),softpad20                     ) \
-                                $(if $(filter stable20  ,$(mm_MYTH_VERSION)),0.20.2                        ) \
-                                $(if $(filter stable21  ,$(mm_MYTH_VERSION)),0.21.0                        ) \
-                                $(if $(filter trunk     ,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
+                                $(if $(filter 0.20        ,$(mm_MYTH_VERSION)),0.20.2                        ) \
+                                $(if $(filter 0.20-softpad,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
+                                $(if $(filter 0.21        ,$(mm_MYTH_VERSION)),0.21.0                        ) \
+                                $(if $(filter trunk       ,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 39
 mm_VERSION_EXTRA          ?= $(strip \
@@ -39,7 +39,7 @@ mm_CHIPSETS               ?= intel nvidia via other
 # 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine', 'perl',
 # 'transcode', 'mame', 'wiimote' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
-                             $(if $(filter $(mm_MYTH_VERSION),softpad20 stable20),mythdvd) \
+                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
                              mythgame \
                              mythmusic \
@@ -48,7 +48,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythstream \
                              mythvideo \
                              mythweather \
-                             $(if $(filter $(mm_MYTH_VERSION),svn),mythzoneminder) \
+                             $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
                              mplayer \
                              xine \
                              perl \
@@ -104,8 +104,8 @@ mm_KERNEL_VERSION         ?= 2.6.24
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are 'softpad20', 'stable20', 'stable21', and 'svn'.
-mm_MYTH_VERSION           ?= stable20
+# Valid values are '0.20', '0.20-softpad', '0.21', and 'trunk'.
+mm_MYTH_VERSION           ?= 0.20
 # The version of the NVIDIA driver.
 # Valid values are '71.86.04' (legacy), '96.43.05' (legacy), '169.09' and '169.12'.
 mm_NVIDIA_VERSION         ?= 169.12
