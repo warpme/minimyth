@@ -21,7 +21,16 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
+DEPENDS = \
+	lang/c++ \
+	db/mysql \
+	lib/alsa-lib \
+	lib/freetype \
+	lib/lame \
+	lib/zlib \
+	qt/qt \
+	system/lirc \
+	xorg/xorg
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
