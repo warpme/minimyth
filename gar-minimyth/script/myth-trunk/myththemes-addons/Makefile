@@ -7,7 +7,6 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-font.patch \
-	$(DISTNAME_SHORT)-fadeaway.patch \
 	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 

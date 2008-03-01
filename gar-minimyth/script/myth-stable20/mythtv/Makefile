@@ -1,9 +1,28 @@
 GARNAME = mythtv
-GARVERSION = 0.20.2
+GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://www.mythtv.org/mc/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes-$(MYTHTV_STABLE20_FIXES_VERSION).patch $(DISTNAME)-ticket-3035-20070207.patch $(DISTNAME)-ticket-4225-20071220.patch $(DISTNAME)-avformat_asf_utf8.patch $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-link_xvmc_lib.patch $(DISTNAME)-networkcontrol.patch $(DISTNAME)-eject.patch $(DISTNAME)-lm_sensors_detect.patch $(DISTNAME).patch.gar $(DISTNAME)-init.patch $(DISTNAME)-mythaudio.patch $(DISTNAME)-mythstream.patch $(DISTNAME)-minimyth.patch $(DISTNAME)-programid.patch $(DISTNAME)-fadeaway.patch $(DISTNAME)-alphapulse.patch $(DISTNAME)-startplayer_maxwait.patch $(DISTNAME)-preserve_timestamps.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(DISTNAME_SHORT)-ticket-3035-20070207.patch \
+	$(DISTNAME_SHORT)-ticket-4225-20071220.patch \
+	$(DISTNAME_SHORT)-avformat_asf_utf8.patch \
+	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-link_xvmc_lib.patch \
+	$(DISTNAME_SHORT)-networkcontrol.patch \
+	$(DISTNAME_SHORT)-eject.patch \
+	$(DISTNAME_SHORT)-lm_sensors_detect.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch \
+	$(DISTNAME_SHORT)-mythaudio.patch \
+	$(DISTNAME_SHORT)-mythstream.patch \
+	$(DISTNAME_SHORT)-minimyth.patch \
+	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-fadeaway.patch \
+	$(DISTNAME_SHORT)-alphapulse.patch \
+	$(DISTNAME_SHORT)-startplayer_maxwait.patch \
+	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -76,6 +95,13 @@ include ../../gar.mk
 
 CFLAGS += -DUSE_ATI_PROPRIETARY_DRIVER_XVIDEO_HACK
 
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
@@ -87,7 +113,5 @@ install-source:
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE20_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

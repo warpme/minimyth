@@ -33,11 +33,9 @@ DEPENDS = \
 	utils/microcode_ctl \
 	utils/module-init-tools \
 	net/mount.cifs \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes),myth-$(mm_MYTH_VERSION)/myththemes) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd),myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide),myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-addons),myth-$(mm_MYTH_VERSION)/myththemes-addons) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythtv),myth-$(mm_MYTH_VERSION)/mythtv) \
+	myth-$(mm_MYTH_VERSION)/myththemes \
+	myth-$(mm_MYTH_VERSION)/myththemes-addons \
+	myth-$(mm_MYTH_VERSION)/mythtv \
 	lib/ncursesw \
 	net/netpipes \
 	net/nfs-utils \
@@ -72,8 +70,6 @@ DEPENDS = \
 		$(if $(filter 2.6.23,$(mm_KERNEL_VERSION)),X11/IEGD)) \
 	$(if $(filter nvidia,$(mm_CHIPSETS)), \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
-	$(if $(filter mythaudio,$(mm_SOFTWARE)), \
-		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythaudio),myth-$(mm_MYTH_VERSION)/mythaudio)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythbrowser),myth-$(mm_MYTH_VERSION)/mythbrowser)) \
 	$(if $(filter mythdvd,$(mm_SOFTWARE)), \

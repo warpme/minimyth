@@ -1,12 +1,13 @@
-GARNAME = myththemes
-GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
+GARNAME = myththemes-addons
+GARVERSION = $(GARVERSION_SHORT)-14914
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
-	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-font.patch \
+	$(DISTNAME_SHORT)-fadeaway.patch \
 	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 
@@ -33,14 +34,19 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, 14914, $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
+pre-configure:
+	@echo "themes.files  ="                   >> $(WORKSRC)/themes.pro
+	@echo "themes.files += blootube-osd"      >> $(WORKSRC)/themes.pro
+	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
+
 configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
+	@cd $* ; $(CONFIGURE_ENV) qmake themes.pro
 	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
