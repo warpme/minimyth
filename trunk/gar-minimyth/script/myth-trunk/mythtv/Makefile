@@ -1,9 +1,22 @@
 GARNAME = mythtv
-GARVERSION = $(mm_MYTH_TRUNK_VERSION)
+GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-ticket-4792.patch $(GARNAME)-gcc_4.3.patch $(GARNAME)-networkcontrol.patch $(GARNAME)-eject.patch $(GARNAME).patch.gar $(GARNAME)-init.patch $(GARNAME)-minimyth.patch $(GARNAME)-programid.patch $(GARNAME)-fadeaway.patch $(GARNAME)-alphapulse.patch $(GARNAME)-startplayer_maxwait.patch $(GARNAME)-preserve_timestamps.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(DISTNAME_SHORT)-ticket-4792.patch \
+	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-networkcontrol.patch \
+	$(DISTNAME_SHORT)-eject.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch \
+	$(DISTNAME_SHORT)-minimyth.patch \
+	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-fadeaway.patch \
+	$(DISTNAME_SHORT)-alphapulse.patch \
+	$(DISTNAME_SHORT)-startplayer_maxwait.patch \
+	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -79,7 +92,7 @@ include ../../gar.mk
 CFLAGS += -DUSE_HACK_FOR_BROKEN_I420_SUPPORT_IN_DRIVER
 
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
