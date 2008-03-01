@@ -34,8 +34,8 @@ DEPENDS = \
 	utils/module-init-tools \
 	net/mount.cifs \
 	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes),myth-$(mm_MYTH_VERSION)/myththemes) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-Xblootube-osd),myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd) \
-	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-Xblootubelite-wide),myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide) \
+	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd),myth-$(mm_MYTH_VERSION)/myththemes-blootube-osd) \
+	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide),myth-$(mm_MYTH_VERSION)/myththemes-blootubelite-wide) \
 	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/myththemes-addons),myth-$(mm_MYTH_VERSION)/myththemes-addons) \
 	$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythtv),myth-$(mm_MYTH_VERSION)/mythtv) \
 	lib/ncursesw \
