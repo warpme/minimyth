@@ -1,27 +1,20 @@
 GARNAME = mythtv
-GARVERSION = 0.21
+GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	http://www.mythtv.org/mc/, \
-	svn://svn.mythtv.org/svn/branches/release-0-21-fixes/$(GARNAME)/))
-DISTFILES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	$(DISTNAME).tar.bz2, \
-	$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2))
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
-PATCHFILES += $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	$(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch, \
-	))
 PATCHFILES += \
-	$(DISTNAME)-ticket-4792.patch \
-	$(DISTNAME)-networkcontrol.patch \
-	$(DISTNAME)-eject.patch \
-	$(DISTNAME).patch.gar \
-	$(DISTNAME)-init.patch \
-	$(DISTNAME)-minimyth.patch \
-	$(DISTNAME)-programid.patch \
-	$(DISTNAME)-alphapulse.patch \
-	$(DISTNAME)-startplayer_maxwait.patch \
-	$(DISTNAME)-preserve_timestamps.patch
+	$(DISTNAME_SHORT)-ticket-4792.patch \
+	$(DISTNAME_SHORT)-networkcontrol.patch \
+	$(DISTNAME_SHORT)-eject.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch \
+	$(DISTNAME_SHORT)-minimyth.patch \
+	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-alphapulse.patch \
+	$(DISTNAME_SHORT)-startplayer_maxwait.patch \
+	$(DISTNAME_SHORT)-preserve_timestamps.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -33,10 +26,6 @@ DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype x
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 PWD := $(shell pwd)
-
-WORKSRC = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	$(WORKDIR)/$(DISTNAME), \
-	$(WORKDIR)/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION)))
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
@@ -102,11 +91,11 @@ include ../../gar.mk
 
 CFLAGS += -DUSE_HACK_FOR_BROKEN_I420_SUPPORT_IN_DRIVER
 
-svn//%/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
-	$(call FETCH_SVN, http://$*, $(MYTHTV_STABLE21_FIXES_VERSION), $(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION))
+svn//%/$(DISTNAME).tar.bz2:
+	$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
@@ -122,5 +111,5 @@ install-source:
 
 post-install:
 	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE21_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
 	@$(MAKECOOKIE)

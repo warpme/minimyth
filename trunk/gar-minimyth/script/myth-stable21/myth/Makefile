@@ -1,5 +1,5 @@
 GARNAME = myth
-GARVERSION = 0.21
+GARVERSION = $(GARVERSION_SHORT)
 CATEGORIES = $(CATEGORY)
 LICENSE =
 
@@ -24,23 +24,3 @@ clean-all:
 	@rm -rf $(DESTDIR)$(libdir)/libmyth*
 	@rm -rf $(DESTDIR)$(libdir)/myth*
 	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth/* ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )
-
-mythtv-fixes-patch-all:
-	@cd ../mythtv                                  ; \
-		$(MAKE) clean                          ; \
-		svn delete files/myth*-*-fixes-*.patch ; \
-		$(MAKE) mythtv-fixes-patch             ; \
-		svn add files/myth*-*fixes-*.patch     ; \
-		$(MAKE) clean
-	@cd ../mythplugins                             ; \
-		$(MAKE) clean                          ; \
-		svn delete files/myth*-*-fixes-*.patch ; \
-		$(MAKE) mythtv-fixes-patch             ; \
-		svn add files/myth*-*fixes-*.patch     ; \
-		$(MAKE) clean
-	@cd ../myththemes                              ; \
-		$(MAKE) clean                          ; \
-		svn delete files/myth*-*-fixes-*.patch ; \
-		$(MAKE) mythtv-fixes-patch             ; \
-		svn add files/myth*-*fixes-*.patch     ; \
-		$(MAKE) clean
