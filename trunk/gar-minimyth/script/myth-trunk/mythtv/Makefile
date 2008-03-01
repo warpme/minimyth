@@ -23,7 +23,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/c++ lib/alsa-lib lib/fftw3f lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
+DEPENDS = lang/c lang/c++ lib/alsa-lib lib/lame lib/zlib db/mysql lib/freetype xorg/xorg qt/qt system/lirc
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -45,6 +45,8 @@ CONFIGURE_ARGS = \
 	--cc="gcc" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
+	--extra-ldflags="$(LDFLAGS)" \
+	--enable-symbol-visibility \
 	--arch=$(GARCH) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
@@ -107,4 +109,7 @@ install-source:
 	@mkdir -p $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@$(MAKECOOKIE)
+
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

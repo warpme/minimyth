@@ -1,4 +1,4 @@
-GARNAME = mythweather
+GARNAME = mythzoneminder
 GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
 SOURCEPKG = $(CATEGORY)/mythplugins
@@ -33,7 +33,5 @@ configure-%/mythtv:
 	@cd $* ; $(CONFIGURE_ENV) qmake mythplugins.pro
 	@$(MAKECOOKIE)
 
-post-install:
-	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

@@ -5,3 +5,5 @@ MYTHPLUGINS_CONFIGURE_ARGS = \
 	--libdir-name="lib" \
 	--disable-all \
 	--enable-opengl
+
+WORKSRC = $(WORKDIR)/mythplugins-$(MYTHPLUGINS_VERSION)
