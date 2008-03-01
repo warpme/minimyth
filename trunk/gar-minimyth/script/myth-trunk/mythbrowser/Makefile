@@ -8,8 +8,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c $(CATEGORY)/mythtv
-DEPENDS += kde/kdelibs
+DEPENDS = \
+	lang/c++ \
+	$(CATEGORY)/mythtv \
+	kde/kdelibs
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

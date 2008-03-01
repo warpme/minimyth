@@ -8,8 +8,18 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c $(CATEGORY)/mythtv
-DEPENDS += lib/faad2 lib/flac lib/fftw lib/libcdaudio lib/libcdio lib/libid3tag lib/libmad lib/libvorbis lib/SDL
+DEPENDS = \
+	lang/c++ \
+	$(CATEGORY)/mythtv \
+	lib/faad2 \
+	lib/flac \
+	lib/fftw \
+	lib/libcdaudio \
+	lib/libcdio \
+	lib/libid3tag \
+	lib/libmad \
+	lib/libvorbis \
+	lib/SDL
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

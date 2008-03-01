@@ -24,7 +24,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c qt/qt $(CATEGORY)/mythtv lib/fftw
+DEPENDS = \
+	lang/c++ \
+	$(CATEGORY)/mythtv \
+	lib/fftw
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

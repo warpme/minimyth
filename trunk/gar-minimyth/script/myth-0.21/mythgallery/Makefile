@@ -8,8 +8,11 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c $(CATEGORY)/mythtv
-DEPENDS += lib/libexif lib/libtiff
+DEPENDS = \
+	lang/c++ \
+	$(CATEGORY)/mythtv \
+	lib/libexif \
+	lib/libtiff
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
