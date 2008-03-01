@@ -1,21 +1,14 @@
 GARNAME = mythplugins
 GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	http://www.mythtv.org/mc/, \
-	svn://svn.mythtv.org/svn/branches/release-0-21-fixes/$(GARNAME)/))
-DISTFILES = $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	$(DISTNAME).tar.bz2, \
-	$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2))
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
-PATCHFILES += $(strip $(if $(filter yes,$(MYTHTV_USE_RELEASE_TARBALL)), \
-	$(DISTNAME)-fixes-$(MYTHTV_STABLE21_FIXES_VERSION).patch, \
-	))
 PATCHFILES += \
-	$(DISTNAME)-gcc_4.3.patch \
-	$(DISTNAME)-mythmusic_cdio.patch \
-	$(DISTNAME).patch.gar \
-	$(DISTNAME)-init.patch
+	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -29,11 +22,11 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
-svn//%/$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
-	$(call FETCH_SVN, http://$*, $(MYTHTV_STABLE21_FIXES_VERSION), $(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION))
+svn//%/$(DISTNAME).tar.bz2:
+	$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME)-$(MYTHTV_STABLE21_FIXES_VERSION).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 post-install:

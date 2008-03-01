@@ -35,5 +35,5 @@ configure-%/mythtv:
 
 post-install:
 	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(GARVERSION) with fixes through SVN $(MYTHTV_STABLE21_FIXES_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
 	@$(MAKECOOKIE)
