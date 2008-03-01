@@ -1,9 +1,14 @@
 GARNAME = mythplugins
 GARVERSION = $(MYTHPLUGINS_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/trunk/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-gcc_4.3.patch $(GARNAME)-mythmusic_cdio.patch $(GARNAME).patch.gar $(GARNAME)-init.patch
+PATCHFILES  =
+PATCHFILES += \
+	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
+	$(DISTNAME_SHORT).patch.gar \
+	$(DISTNAME_SHORT)-init.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -18,7 +23,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:

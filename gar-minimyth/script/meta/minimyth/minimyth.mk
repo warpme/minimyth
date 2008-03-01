@@ -398,7 +398,7 @@ mm-check:
 	@if [ ! "$(mm_MYTH_VERSION)" = "softpad20" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable20"  ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "stable21"  ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "svn"       ] ; then \
+	    [ ! "$(mm_MYTH_VERSION)" = "trunk"     ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
