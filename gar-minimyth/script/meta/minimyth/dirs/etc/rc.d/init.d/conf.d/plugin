@@ -8,15 +8,15 @@ conf_clean_plugin() {
 }
 
 conf_check_plugin() {
+    # Check for obsolete variables.
+    if /usr/bin/test ! -z "${MM_MYTHAUDIO_ENABLED}" ; then
+        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_ENABLED' is obsolete."
+    fi
+
     if /usr/bin/test ! -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"          && \
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_MYTHTV_OPTICAL_DISK_ENABLED='${MM_MYTHTV_OPTICAL_DISK_ENABLED}' is not valid."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTHAUDIO_ENABLED}"          && \
-       /usr/bin/test !    "${MM_MYTHAUDIO_ENABLED}" = "yes"  && \
-       /usr/bin/test !    "${MM_MYTHAUDIO_ENABLED}" = "no"   ; then
-        mm_message_output err "error: MM_MYTHAUDIO_ENABLED='${MM_MYTHAUDIO_ENABLED}' is not valid."
     fi
     if /usr/bin/test ! -z "${MM_MYTHBROWSER_ENABLED}"          && \
        /usr/bin/test !    "${MM_MYTHBROWSER_ENABLED}" = "yes"  && \
@@ -80,13 +80,6 @@ conf_check_plugin() {
 conf_default_plugin() {
     if /usr/bin/test -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" ; then
         MM_MYTHTV_OPTICAL_DISK_ENABLED='yes'
-    fi
-    if /usr/bin/test -z "${MM_MYTHAUDIO_ENABLED}"           ; then
-        if /usr/bin/test -e /usr/lib/mythtv/plugins/libmythaudio.so ; then
-            MM_MYTHAUDIO_ENABLED='yes'
-        else
-            MM_MYTHAUDIO_ENABLED='no'
-        fi
     fi
     if /usr/bin/test -z "${MM_MYTHBROWSER_ENABLED}"         ; then
         if /usr/bin/test -e /usr/lib/mythtv/plugins/libmythbookmarkmanager.so ; then
@@ -173,7 +166,6 @@ conf_write_plugin() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
-    conf_variable_write "${conf_file}" MM_MYTHAUDIO_ENABLED           "${MM_MYTHAUDIO_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHBROWSER_ENABLED         "${MM_MYTHBROWSER_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHDVD_ENABLED             "${MM_MYTHDVD_ENABLED}"
     conf_variable_write "${conf_file}" MM_MYTHGALLERY_ENABLED         "${MM_MYTHGALLERY_ENABLED}"
