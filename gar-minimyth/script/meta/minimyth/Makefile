@@ -42,6 +42,7 @@ DEPENDS = \
 	net/ntp \
 	net/openssh \
 	utils/pciutils \
+	perl/perl \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
@@ -93,7 +94,6 @@ DEPENDS = \
 	$(if $(filter mythstream,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream) \
 		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl \
 			perl/perl-HTML-Parser \
 			perl/perl-libwww-perl \
 			perl/perl-XML-DOM \
@@ -101,14 +101,12 @@ DEPENDS = \
 	$(if $(filter mythvideo,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo) \
 		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl \
 			perl/perl-HTML-Parser \
 			perl/perl-libwww-perl \
 			perl/perl-URI)) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
 		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl \
 			perl/perl-Date-Manip \
 			perl/perl-Image-Size \
 			perl/perl-libwww-perl \
