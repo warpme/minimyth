@@ -28,6 +28,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+CFLAGS   += -D_GNU_SOURCE
+CXXFLAGS += -D_GNU_SOURCE
+
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_have_abstract_sockets=yes" >> $(WORKSRC)/config.cache
