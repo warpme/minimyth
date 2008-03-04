@@ -3,6 +3,7 @@ GARVERSION = 3.27
 CATEGORIES = utils
 MASTER_SITES = http://bluez.sf.net/download/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-limits_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
