@@ -1,6 +1,6 @@
 GARNAME = texinfo
 GARVERSION = 4.11
-CATEGORIES = utils
+CATEGORIES = doc
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-perl.patch.gar
