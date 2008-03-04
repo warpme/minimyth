@@ -21,7 +21,6 @@ build_system_bins = $(strip $(sort \
 	subversion \
 	tar \
 	texinfo \
-	util-linux \
 	wget \
 ))
 
@@ -157,10 +156,6 @@ build_system_bins_tar = \
 # Overridden by binaries from package doc/texinfo.
 build_system_bins_texinfo = \
 	makeinfo
-
-# Overridden by binaries from package utils/util-linux.
-build_system_bins_util_linux = \
-	arch
 
 build_system_bins_wget = \
 	wget
