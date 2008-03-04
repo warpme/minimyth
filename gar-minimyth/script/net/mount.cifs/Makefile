@@ -3,6 +3,7 @@ GARVERSION = 22982
 CATEGORIES = net
 MASTER_SITES = svn://svnanon.samba.org/samba/branches/SAMBA_3_0/source/client/
 DISTFILES = $(DISTNAME).tar.bz2 $(MAKEFILE)
+PATCHFILES = $(DISTNAME)-limits_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
