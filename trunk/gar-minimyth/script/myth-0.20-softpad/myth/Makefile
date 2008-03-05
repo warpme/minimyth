@@ -24,3 +24,13 @@ clean-all:
 	@rm -rf $(DESTDIR)$(libdir)/libmyth*
 	@rm -rf $(DESTDIR)$(libdir)/myth*
 	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth/* ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )
+
+myth-update:
+	@$(MAKE) -C ../mythtv            myth-update-source
+	@$(MAKE) -C ../mythplugins       myth-update-source
+	@$(MAKE) -C ../myththemes        myth-update-source
+	@$(MAKE) -C ../myththemes-addons myth-update-source
+	@$(MAKE) -C ../mythtv            myth-update-patches
+	@$(MAKE) -C ../mythplugins       myth-update-patches
+	@$(MAKE) -C ../myththemes        myth-update-patches
+	@$(MAKE) -C ../myththemes-addons myth-update-patches
