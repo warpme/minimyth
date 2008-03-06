@@ -1,46 +1,18 @@
 ################################################################################
-# MythTV master backend communication configuration variables and files.
+# MM_MASTER configuration variables and files.
 ################################################################################
-conf_clean_master() {
+conf_clean_MM_MASTER() {
     /bin/rm -rf /tmp/init.conf.master
 
     return 0
 }
 
-conf_check_master() {
-    if /usr/bin/test ! -z "${MM_MYTH_SERVER}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_SERVER' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_DBUSERNAME}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_DBUSERNAME' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_DBPASSWORD}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_DBPASSWORD' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_DBNAME}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_DBNAME' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_WOL_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_WOL_ENABLED' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_WOL_MAC}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_WOL_MAC' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_WOLSQLRECONNECTWAITTIME}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_WOLSQLRECONNECTIONWAITTIME' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_WOLSQLCONNECTRETRY}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_WOLSQLCONNECTRETRY' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTH_WOLSQLCOMMAND}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTH_WOLSQLCOMMAND' is obsolete."
-    fi
-
+conf_check_MM_MASTER() {
     return 0
 }
 
-conf_default_master() {
-    if /usr/bin/test -e '/tmp/init.conf.master/conf_default_master' ; then
+conf_default_MM_MASTER() {
+    if /usr/bin/test -e '/tmp/init.conf.master/conf_default_MM_MASTER' ; then
         return 0
     fi
 
@@ -76,12 +48,12 @@ conf_default_master() {
     fi
 
     /bin/mkdir -p '/tmp/init.conf.master'
-    /bin/touch    '/tmp/init.conf.master/conf_default_master'
+    /bin/touch    '/tmp/init.conf.master/conf_default_MM_MASTER'
 
     return 0
 }
 
-conf_write_master() {
+conf_write_MM_MASTER() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MASTER_SERVER                  "${MM_MASTER_SERVER}"
@@ -98,6 +70,6 @@ conf_write_master() {
     return 0
 }
 
-conf_fetch_master() {
+conf_fetch_MM_MASTER() {
     return 0
 }

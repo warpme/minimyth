@@ -1,18 +1,13 @@
 ################################################################################
-# Myth plugin configuration variables and files.
+# MM_PLUGIN configuration variables and files.
 ################################################################################
-conf_clean_plugin() {
+conf_clean_MM_PLUGIN() {
     /bin/rm -rf /tmp/init.conf.plugin
 
     return 0
 }
 
-conf_check_plugin() {
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_MYTHAUDIO_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_ENABLED' is obsolete."
-    fi
-
+conf_check_MM_PLUGIN() {
     if /usr/bin/test ! -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"          && \
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no"   ; then
@@ -77,7 +72,7 @@ conf_check_plugin() {
     return 0
 }
 
-conf_default_plugin() {
+conf_default_MM_PLUGIN() {
     if /usr/bin/test -z "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" ; then
         MM_MYTHTV_OPTICAL_DISK_ENABLED='yes'
     fi
@@ -162,7 +157,7 @@ conf_default_plugin() {
     return 0
 }
 
-conf_write_plugin() {
+conf_write_MM_PLUGIN() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MYTHTV_OPTICAL_DISK_ENABLED "${MM_MYTHTV_OPTICAL_DISK_ENABLED}"
@@ -181,6 +176,6 @@ conf_write_plugin() {
     return 0
 }
 
-conf_fetch_plugin() {
+conf_fetch_MM_PLUGIN() {
     return 0
 }

@@ -1,18 +1,13 @@
 ################################################################################
-# Security configuration variables and files.
+# MM_SECURITY configuration variables and files.
 ################################################################################
-conf_clean_security() {
+conf_clean_MM_SECURITY() {
     /bin/rm -rf /tmp/init.conf.security
 
     return 0
 }
 
-conf_check_security() {
-
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_SECURITY_LEVEL}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SECURITY_LEVEL' is obsolete."
-    fi
+conf_check_MM_SECURITY() {
 
     if /usr/bin/test ! -z "${MM_SECURITY_ENABLED}"         && \
        /usr/bin/test !    "${MM_SECURITY_ENABLED}" = "yes" && \
@@ -33,8 +28,8 @@ conf_check_security() {
     return 0
 }
 
-conf_default_security() {
-    if /usr/bin/test -e '/tmp/init.conf.security/conf_default_security' ; then
+conf_default_MM_SECURITY() {
+    if /usr/bin/test -e '/tmp/init.conf.security/conf_default_MM_SECURITY' ; then
         return 0
     fi
 
@@ -55,12 +50,12 @@ conf_default_security() {
     fi
 
     /bin/mkdir -p '/tmp/init.conf.security'
-    /bin/touch    '/tmp/init.conf.security/conf_default_security'
+    /bin/touch    '/tmp/init.conf.security/conf_default_MM_SECURITY'
 
     return 0
 }
 
-conf_write_security() {
+conf_write_MM_SECURITY() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_SECURITY_ENABLED                "${MM_SECURITY_ENABLED}"
@@ -72,7 +67,7 @@ conf_write_security() {
     return 0
 }
 
-conf_fetch_security() {
+conf_fetch_MM_SECURITY() {
 
     if /usr/bin/test "${MM_SECURITY_FETCH_CA_BUNDLE_CRT}" = "yes" ; then
         /bin/mkdir -p /etc/ssl/certs

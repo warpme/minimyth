@@ -1,17 +1,17 @@
 ################################################################################
-# cron configuration variables and files.
+# MM_CRON configuration variables and files.
 ################################################################################
-conf_clean_cron() {
+conf_clean_MM_CRON() {
     /bin/rm -rf /tmp/init.conf.cron
 
     return 0
 }
 
-conf_check_cron() {
+conf_check_MM_CRON() {
     return 0
 }
 
-conf_default_cron() {
+conf_default_MM_CRON() {
     if /usr/bin/test -z "${MM_CRON_FETCH_CRONTAB}" ; then
         MM_CRON_FETCH_CRONTAB='no'
     fi
@@ -19,7 +19,7 @@ conf_default_cron() {
     return 0
 }
 
-conf_write_cron() {
+conf_write_MM_CRON() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_CRON_FETCH_CRONTAB "${MM_CRON_FETCH_CRONTAB}"
@@ -27,7 +27,7 @@ conf_write_cron() {
     return 0
 }
 
-conf_fetch_cron() {
+conf_fetch_MM_CRON() {
     if /usr/bin/test "${MM_CRON_FETCH_CRONTAB}" = "yes" ; then
         /bin/rm -f /var/spool/cron/crontabs/root
         mm_confro_get crontab /var/spool/cron/crontabs/root

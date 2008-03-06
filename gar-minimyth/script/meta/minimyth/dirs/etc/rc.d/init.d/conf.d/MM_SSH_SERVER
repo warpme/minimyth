@@ -1,24 +1,13 @@
 ################################################################################
-# SSH server configuration variables and files.
+# MM_SSH_SERVER configuration variables and files.
 ################################################################################
-conf_clean_ssh_server() {
+conf_clean_MM_SSH_SERVER() {
     /bin/rm -rf /tmp/init.conf.ssh_server
 
     return 0
 }
 
-conf_check_ssh_server() {
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_ID_RSA_SERVER}"    ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_ID_RSA_SERVER' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_SSH_HOST_RSA_KEY' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS}"  ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS' is obsolete."
-    fi
-
+conf_check_MM_SSH_SERVER() {
     if /usr/bin/test ! -z "${MM_SSH_SERVER_ENABLED}"         && \
        /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "yes" && \
        /usr/bin/test !    "${MM_SSH_SERVER_ENABLED}" = "no"  ; then
@@ -28,7 +17,7 @@ conf_check_ssh_server() {
     return 0
 }
 
-conf_default_ssh_server() {
+conf_default_MM_SSH_SERVER() {
 
     # The routine relies on MM_SECURITY_ENABLED.
     conf_default_security
@@ -44,7 +33,7 @@ conf_default_ssh_server() {
     return 0
 }
 
-conf_write_ssh_server() {
+conf_write_MM_SSH_SERVER() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_SSH_SERVER_ENABLED "${MM_SSH_SERVER_ENABLED}"
@@ -52,7 +41,7 @@ conf_write_ssh_server() {
     return 0
 }
 
-conf_fetch_ssh_server() {
+conf_fetch_MM_SSH_SERVER() {
     if /usr/bin/test "${MM_SSH_SERVER_ENABLED}" = "yes" ; then
         /bin/rm -f /etc/ssh/ssh_host_rsa_key
         mm_confro_get /ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
