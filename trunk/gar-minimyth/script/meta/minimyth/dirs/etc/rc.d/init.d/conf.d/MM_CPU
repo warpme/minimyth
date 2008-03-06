@@ -1,24 +1,16 @@
 ################################################################################
-# CPU variables and files.
+# MM_CPU configuration variables and files.
 ################################################################################
-conf_clean_cpu() {
+conf_clean_MM_CPU() {
     /bin/rm -rf /tmp/init.conf.cpu
 
     return 0
 }
 
-conf_check_cpu() {         
+conf_check_MM_CPU() {         
 
     local vendor
     local family
-
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_CPUFREQ_GOVERNOR}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_CPUFREQ_GOVERNOR' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_CPU_MICROCODE_DAT_FETCH}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_CPU_MICROCODE_DAT_FETCH' is obsolete."
-    fi
 
     if /usr/bin/test ! -z "${MM_CPU_FREQUENCY_GOVERNOR}"                  && \
        /usr/bin/test !    "${MM_CPU_FREQUENCY_GOVERNOR}" = "performance"  && \
@@ -47,7 +39,7 @@ conf_check_cpu() {
     return 0
 }
 
-conf_default_cpu() {
+conf_default_MM_CPU() {
     if /usr/bin/test -z "${MM_CPU_FREQUENCY_GOVERNOR}" ; then
         MM_CPU_FREQUENCY_GOVERNOR='performance'
     fi
@@ -58,7 +50,7 @@ conf_default_cpu() {
     return 0
 }
 
-conf_write_cpu() {
+conf_write_MM_CPU() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_CPU_FREQUENCY_GOVERNOR  "${MM_CPU_FREQUENCY_GOVERNOR}"
@@ -67,7 +59,7 @@ conf_write_cpu() {
     return 0
 }
 
-conf_fetch_cpu() {
+conf_fetch_MM_CPU() {
     if /usr/bin/test "${MM_CPU_FETCH_MICROCODE_DAT}" = "yes" ; then
         /bin/mkdir -p /etc/firmware
         /bin/rm -f /etc/firmware/microcode.dat

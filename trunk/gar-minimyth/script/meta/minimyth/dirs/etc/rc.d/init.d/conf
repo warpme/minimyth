@@ -63,8 +63,15 @@ start() {
 
     mm_message_output info "processing configuration ..."
 
+    mm_message_output info "checking for obsolete variables ..."
+    /bin/cat /etc/rc.d/init.d/conf.d/obsolete | while read variable ; do
+        if set | /bin/grep -q "^${variable}=" ; then
+             mm_message_output err "error: 'minimyth.conf' is out of date. '${variable}' is obsolete."
+        fi
+    done
+
     # Read MiniMyth configuration processing files
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
         . /etc/rc.d/init.d/conf.d/${file}
     done
 
@@ -73,9 +80,9 @@ start() {
     /bin/rm -f '/etc/conf.d/dhcp.override~'
     /bin/touch '/etc/conf.d/dhcp.override~'
     /bin/chmod 644 '/etc/conf.d/dhcp.override~'
-    conf_clean_dhcp
-    conf_check_dhcp
-    conf_default_dhcp
+    conf_clean_MM_DHCP
+    conf_check_MM_DHCP
+    conf_default_MM_DHCP
     conf_write_dhcp '/etc/conf.d/dhcp.override~'
     /bin/rm -f '/etc/conf.d/dhcp.override~~'
     /bin/touch '/etc/conf.d/dhcp.override~~'
@@ -88,21 +95,21 @@ start() {
     /etc/rc.d/init.d/dhcp start
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
         conf_clean_${file}
     done
 
     # Check MiniMyth configuration variables.
     mm_message_output info "processing configuration: checking variables ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
-        /usr/bin/logger -s -t minimyth -p "local0.info" "    checking variables for ${file}"
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+        mm_message_output info "processing configuration: checking variables '${file}'"
         conf_check_${file}
     done
 
     # Set default MiniMyth configuration variable values.
     mm_message_output info "processing configuration: defaulting variables ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
-        /usr/bin/logger -s -t minimyth -p "local0.info" "    defaulting variables for ${file}"
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+        mm_message_output info "processing configuration: defaulting variables '${file}'"
         conf_default_${file}
     done
 
@@ -111,8 +118,8 @@ start() {
     /bin/rm -f '/etc/conf.d/minimyth~'
     /bin/touch '/etc/conf.d/minimyth~'
     /bin/chmod 644 '/etc/conf.d/minimyth~'
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
-        /usr/bin/logger -s -t minimyth -p "local0.info" "    writing variables for ${file}"
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+        mm_message_output info "processing configuration: writing variables '${file}'"
         conf_write_${file} '/etc/conf.d/minimyth~'
     done
     /bin/rm -f '/etc/conf.d/minimyth~~'
@@ -124,13 +131,13 @@ start() {
 
     # Fetch user files.
     mm_message_output info "processing configuration: fetching additional files ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
-        /usr/bin/logger -s -t minimyth -p "local0.info" "    fetching additional files for ${file}"
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+        mm_message_output info "processing configuration: fetching additional files '${file}'"
         conf_fetch_${file}
     done
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1` ; do
+    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
         conf_clean_${file}
     done
 

@@ -1,18 +1,13 @@
 ################################################################################
-# Video configuration variables and files.
+# MM_VIDEO configuration variables and files.
 ################################################################################
-conf_clean_video() {
+conf_clean_MM_VIDEO() {
     /bin/rm -rf /tmp/init.conf.video
 
     return 0
 }
 
-conf_check_video() {
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_VIDEO_DEINTERLACE_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_VIDEO_DEINTERLACE_ENABLED' is obsolete."
-    fi
-
+conf_check_MM_VIDEO() {
     if /usr/bin/test ! -z "${MM_VIDEO_ASPECT_RATIO}"           && \
        /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "4:3"   && \
        /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "16:9"  && \
@@ -50,8 +45,8 @@ conf_check_video() {
     return 0
 }
 
-conf_default_video() {
-    if /usr/bin/test -e '/tmp/init.conf.video/conf_default_video' ; then
+conf_default_MM_VIDEO() {
+    if /usr/bin/test -e '/tmp/init.conf.video/conf_default_MM_VIDEO' ; then
         return 0
     fi
 
@@ -72,12 +67,12 @@ conf_default_video() {
     fi
 
     /bin/mkdir -p '/tmp/init.conf.video'
-    /bin/touch    '/tmp/init.conf.video/conf_default_video'
+    /bin/touch    '/tmp/init.conf.video/conf_default_MM_VIDEO'
 
     return 0
 }
 
-conf_write_video() {
+conf_write_MM_VIDEO() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO   "${MM_VIDEO_ASPECT_RATIO}"
@@ -89,6 +84,6 @@ conf_write_video() {
     return 0
 }
 
-conf_fetch_video() {
+conf_fetch_MM_VIDEO() {
     return 0
 }

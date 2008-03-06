@@ -1,54 +1,16 @@
 ################################################################################
-# X configuration variables and files.
+# MM_X configuration variables and files.
 ################################################################################
-conf_clean_x() {
+conf_clean_MM_X() {
     /bin/rm -rf /tmp/init.conf.x
 
     return 0
 }
 
-conf_check_x() {
+conf_check_MM_X() {
     local X_SYNC_ITEM
     local X_REFRESH_ITEM
     local IFS_SAVE
-
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_NO_VNC}"                ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NO_VNC' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_NO_X}"                  ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NO_X' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_NO_XWM}"                ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_NO_XWM' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_SCREENSAVER_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_SCREENSAVER_ENABLED' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_TV}"                  ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_TV' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_DVI_ENABLED}"         ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_DVI_ENABLED' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_VGA_ENABLED}"         ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_VGA_ENABLED' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_TV_ENABLED}"          ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_TV_ENABLED' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_X}"       ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_DISPLAYSIZE_X' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_DISPLAYSIZE_Y}"       ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_DISPLAYSIZE_Y' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_RESOLUTION_X}"        ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_RESOLUTION_X' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_X_RESOLUTION_Y}"        ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_X_RESOLUTION_Y' is obsolete."
-    fi
 
     # Check X application variables.
     if /usr/bin/test ! -z "${MM_X_RESTART_ON_SLEEP_ENABLED}"         && \
@@ -92,8 +54,8 @@ conf_check_x() {
     # We do not check the X output variables
     # (MM_X_OUTPUT_DVI, MM_X_OUTPUT_VGA, MM_X_OUTPUT_TV, MM_X_TV_TYPE, MM_X_TV_OUTPUT and MM_X_TV_OVERSCAN)
     # in this routine, because they depend on the value of MM_X_DRIVER,
-    # which is configured when 'conf_default_x' is run.
-    # Thefore, we check them in the 'conf_default_x' routine.
+    # which is configured when 'conf_default_MM_X' is run.
+    # Thefore, we check them in the 'conf_default_MM_X' routine.
 
     # Check X display variables.
     # Check MM_X_SYNC.
@@ -204,7 +166,7 @@ conf_check_x() {
     return 0
 }
 
-conf_default_x() {
+conf_default_MM_X() {
     local X_RESOLUTION_X
     local X_RESOLUTION_Y
     local X_VIRTUAL_X
@@ -212,7 +174,7 @@ conf_default_x() {
     local X_DISPLAYSIZE_X
     local X_DISPLAYSIZE_Y
 
-    if /usr/bin/test -e '/tmp/init.conf.x/conf_default_x' ; then
+    if /usr/bin/test -e '/tmp/init.conf.x/conf_default_MM_X' ; then
         return 0
     fi
 
@@ -749,12 +711,12 @@ conf_default_x() {
     fi
 
     /bin/mkdir -p '/tmp/init.conf.x'
-    /bin/touch    '/tmp/init.conf.x/conf_default_x'
+    /bin/touch    '/tmp/init.conf.x/conf_default_MM_X'
 
     return 0
 }
 
-conf_write_x() {
+conf_write_MM_X() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_X_DRIVER                      "${MM_X_DRIVER}"
@@ -798,7 +760,7 @@ conf_write_x() {
     return 0
 }
 
-conf_fetch_x() {
+conf_fetch_MM_X() {
     if /usr/bin/test "${MM_X_FETCH_XINITRC}"   = "yes" ; then
         /bin/rm -f /etc/X11/xinit/xinitrc
         mm_confro_get /xinitrc /etc/X11/xinit/xinitrc

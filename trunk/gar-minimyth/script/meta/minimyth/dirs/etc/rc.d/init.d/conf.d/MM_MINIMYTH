@@ -1,22 +1,17 @@
 ################################################################################
-# Minimyth configuration variables and files.
+# MM_MINIMYTH configuration variables and files.
 ################################################################################
-conf_clean_minimyth() {
+conf_clean_MM_MINIMYTH() {
     /bin/rm -rf /tmp/init.conf.minimyth
 
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MINIMYTH_FETCH_MINIMYTH_TRIGGER' is obsolete."
-    fi
-
     return 0
 }
 
-conf_check_minimyth() {
+conf_check_MM_MINIMYTH() {
     return 0
 }
 
-conf_default_minimyth() {
+conf_default_MM_MINIMYTH() {
     if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"  ; then
         MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT='no'
     fi
@@ -24,7 +19,7 @@ conf_default_minimyth() {
     return 0
 }
 
-conf_write_minimyth() {
+conf_write_MM_MINIMYTH() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MINIMYTH_BOOT_URL              "${MM_MINIMYTH_BOOT_URL}"
@@ -33,7 +28,7 @@ conf_write_minimyth() {
     return 0
 }
 
-conf_fetch_minimyth() {
+conf_fetch_MM_MINIMYTH() {
     if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" = "yes" ; then
         /bin/rm -f /etc/minimyth.d/minimyth.script
         mm_confro_get /minimyth.script /etc/minimyth.d/minimyth.script

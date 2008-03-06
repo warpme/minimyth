@@ -1,25 +1,17 @@
 ################################################################################
-# Remote media directory configuration variables and files.
+# MM_MEDIA configuration variables and files.
 ################################################################################
-conf_clean_media() {
+conf_clean_MM_MEDIA() {
     /bin/rm -rf /tmp/init.conf.media
 
     return 0
 }
 
-conf_check_media() {
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_MYTHAUDIO_MOUNTPOINT}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_MOUNTPOINT' is obsolete."
-    fi
-    if /usr/bin/test ! -z "${MM_MYTHAUDIO_URL}"        ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. 'MM_MYTHAUDIO_URL' is obsolete."
-    fi
-
+conf_check_MM_MEDIA() {
     return 0
 }
 
-conf_default_media() {
+conf_default_MM_MEDIA() {
     if /usr/bin/test -z "${MM_MYTHDVD_MOUNTPOINT}"     ; then
         MM_MYTHDVD_MOUNTPOINT='/mnt/dvd'
     fi
@@ -39,7 +31,7 @@ conf_default_media() {
     return 0
 }
 
-conf_write_media() {
+conf_write_MM_MEDIA() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_MYTHDVD_MOUNTPOINT     "${MM_MYTHDVD_MOUNTPOINT}"
@@ -56,6 +48,6 @@ conf_write_media() {
     return 0
 }
 
-conf_fetch_media() {
+conf_fetch_MM_MEDIA() {
     return 0
 }

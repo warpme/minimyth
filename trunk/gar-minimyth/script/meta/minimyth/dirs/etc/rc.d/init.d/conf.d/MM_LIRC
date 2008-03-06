@@ -1,17 +1,14 @@
 ################################################################################
-# LIRC configuration variables and files.
+# MM_LIRC configuration variables and files.
 ################################################################################
-conf_clean_lirc() {
+conf_clean_MM_LIRC() {
     /bin/rm -rf /tmp/init.conf.lirc
 
     return 0
 }
 
-conf_check_lirc() {
-    # Check for obsolete variables.
-    if /usr/bin/test ! -z "${MM_LIRC_SLEEP_X_RESTART_ENABLED}" ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_SLEEP_X_RESTART_ENABLED is obsolete."
-    fi
+conf_check_MM_LIRC() {
+    # Check for obsolete value.
     if /usr/bin/test "${MM_LIRC_DRIVER}"        = "auto"           ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_DRIVER='auto' is obsolete."
     fi
@@ -44,7 +41,7 @@ conf_check_lirc() {
     fi
 }
 
-conf_default_lirc() {
+conf_default_MM_LIRC() {
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         MM_LIRC_DRIVER='none'
     fi
@@ -138,7 +135,7 @@ conf_default_lirc() {
     return 0
 }
 
-conf_write_lirc() {
+conf_write_MM_LIRC() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED          "${MM_LIRC_AUTO_ENABLED}"
@@ -156,7 +153,7 @@ conf_write_lirc() {
     return 0
 }
 
-conf_fetch_lirc() {
+conf_fetch_MM_LIRC() {
     if /usr/bin/test "${MM_LIRC_FETCH_LIRCD_CONF}" = "yes" ; then
         /bin/rm -f /etc/lircd.conf
         mm_confro_get /lircd.conf /etc/lircd.conf
