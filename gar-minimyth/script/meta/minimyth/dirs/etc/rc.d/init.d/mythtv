@@ -61,40 +61,40 @@ start() {
     # Configure MythDVD ripping.
     # Since mythfrontend is run as user 'minimyth', mtd is run as user 'minimyth'.
     # As a result, it is user 'minimyth' that must have the required read-write access.
-    if /usr/bin/test -n "${MM_MYTHDVD_MOUNTPOINT}" && /usr/bin/test -n "${MM_MYTHDVD_URL}" ; then
+    if /usr/bin/test -n "${MM_MEDIA_DVD_RIP_MOUNTPOINT}" && /usr/bin/test -n "${MM_MEDIA_DVD_RIP_URL}" ; then
         MTD=`/usr/bin/which mtd`
         TRANSCODE=`/usr/bin/which transcode`
         if /usr/bin/test -z "${MTD}" ; then
             mm_message_output err "error: 'mtd' not found."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -e ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
+        if /bin/su -c "/usr/bin/test ! -e ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" - minimyth ; then
             mm_message_output err "error: mount of 'MM_THEME_URL=${MM_THEME_URL}' failed."
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' does not exist."
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' does not exist."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -d ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' is not a directory."
+        if /bin/su -c "/usr/bin/test ! -d ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' is not a directory."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -w ${MM_MYTHDVD_MOUNTPOINT}" - minimyth ; then
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}' is not writable by user 'minimyth'."
+        if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' is not writable by user 'minimyth'."
             exit 1
         fi
-        /bin/su -c "/bin/mkdir -p ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth
-        if /bin/su -c "/usr/bin/test ! -e ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' does not exist."
+        /bin/su -c "/bin/mkdir -p ${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd" - minimyth
+        if /bin/su -c "/usr/bin/test ! -e ${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd' does not exist."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -d ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not a directory."
+        if /bin/su -c "/usr/bin/test ! -d ${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd' is not a directory."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -w ${MM_MYTHDVD_MOUNTPOINT}/.mtd" - minimyth ; then
-            mm_message_output err "error: '${MM_MYTHDVD_MOUNTPOINT}/.mtd' is not writable by user 'minimyth'."
+        if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd' is not writable by user 'minimyth'."
             exit 1
         fi
-        mm_mythdb_settings_set "DVDRipLocation" "${MM_MYTHDVD_MOUNTPOINT}/.mtd"
+        mm_mythdb_settings_set "DVDRipLocation" "${MM_MEDIA_DVD_RIP_MOUNTPOINT}/.mtd"
         mm_mythdb_settings_set "TranscodeCommand" "${TRANSCODE}"
         /bin/su -c "${MTD} --daemon" - minimyth
     fi
@@ -125,71 +125,71 @@ start() {
     done
 
     # Delete disabled plugins.
-    if /usr/bin/test "${MM_MYTHTV_OPTICAL_DISK_ENABLED}" = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "no" ; then
         /bin/sed -i -e 's%<depends>mythmusic mythdvd mytharchive mythburn</depends>%<depends>disabled</depends>%' \
             /usr/share/mythtv/mainmenu.xml
     fi
-    if /usr/bin/test "${MM_MYTHBROWSER_ENABLED}"     = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_BROWSER_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythbookmarkmanager.so
         /bin/rm -rf /usr/share/mythtv/bookmark*
         /bin/rm -rf /usr/share/mythtv/mythbookmarkmanager*
         /bin/rm -rf /usr/share/mythtv/browser*
         /bin/rm -rf /usr/share/mythtv/mythbrowser*
     fi
-    if /usr/bin/test "${MM_MYTHDVD_ENABLED}"         = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"         = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythdvd.so
         /bin/rm -rf /usr/share/mythtv/dvd*
         /bin/rm -rf /usr/share/mythtv/mythdvd*
     fi
-    if /usr/bin/test "${MM_MYTHGALLERY_ENABLED}"     = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_GALLERY_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythgallery.so
         /bin/rm -rf /usr/share/mythtv/gallery*
         /bin/rm -rf /usr/share/mythtv/mythgallery*
     fi
-    if /usr/bin/test "${MM_MYTHGAME_ENABLED}"        = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_GAME_ENABLED}"        = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythgame.so
         /bin/rm -rf /usr/share/mythtv/game*
         /bin/rm -rf /usr/share/mythtv/mythgame*
     fi
-    if /usr/bin/test "${MM_MYTHMUSIC_ENABLED}"       = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_MUSIC_ENABLED}"       = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythmusic.so
         /bin/rm -rf /usr/share/mythtv/music*
         /bin/rm -rf /usr/share/mythtv/mythmusic*
     fi
-    if /usr/bin/test "${MM_MYTHNEWS_ENABLED}"        = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_NEWS_ENABLED}"        = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythnews.so
         /bin/rm -rf /usr/share/mythtv/news*
         /bin/rm -rf /usr/share/mythtv/mythnews*
     fi
-    if /usr/bin/test "${MM_MYTHPHONE_ENABLED}"       = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_PHONE_ENABLED}"       = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythphone.so
         /bin/rm -rf /usr/share/mythtv/phone*
         /bin/rm -rf /usr/share/mythtv/mythphone*
     fi
-    if /usr/bin/test "${MM_MYTHSTREAM_ENABLED}"      = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_STREAM_ENABLED}"      = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythstream.so
         /bin/rm -rf /usr/share/mythtv/stream*
         /bin/rm -rf /usr/share/mythtv/mythstream*
     fi
-    if /usr/bin/test "${MM_MYTHVIDEO_ENABLED}"       = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}"       = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythvideo.so
         /bin/rm -rf /usr/share/mythtv/video*
         /bin/rm -rf /usr/share/mythtv/mythvideo*
     fi
-    if /usr/bin/test "${MM_MYTHWEATHER_ENABLED}"     = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_WEATHER_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythweather.so
         /bin/rm -rf /usr/share/mythtv/weather*
         /bin/rm -rf /usr/share/mythtv/mythweather*
     fi
-    if /usr/bin/test "${MM_MYTHZONEMINDER_ENABLED}"  = "no" ; then
+    if /usr/bin/test "${MM_PLUGIN_ZONEMINDER_ENABLED}"  = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythzoneminder.so
         /bin/rm -rf /usr/share/mythtv/zoneminder*
         /bin/rm -rf /usr/share/mythtv/mythzoneminder*
     fi
 
     # Check for libdvdcss.so.2
-    if /usr/bin/test "${MM_MYTHDVD_ENABLED}"     = "yes" || \
-       /usr/bin/test "${MM_MYTHVIDEO_ENABLED}"   = "yes" ; then
+    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"     = "yes" || \
+       /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}"   = "yes" ; then
         found=0
         if /usr/bin/test -e "/etc/ld.so.conf" ; then
             for dir in `/bin/cat /etc/ld.so.conf` ; do
