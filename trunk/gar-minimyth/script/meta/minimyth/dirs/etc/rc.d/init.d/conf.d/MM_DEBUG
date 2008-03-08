@@ -9,7 +9,8 @@ conf_clean_MM_DEBUG() {
 
 conf_check_MM_DEBUG() {
     if /usr/bin/test ! -z "${MM_DEBUG}"         &&
-       /usr/bin/test !    "${MM_DEBUG}" = "yes" ; then
+       /usr/bin/test !    "${MM_DEBUG}" = "yes" &&
+       /usr/bin/test !    "${MM_DEBUG}" = "no"  ; then
         mm_message_output err "error: MM_DEBUG='${MM_DEBUG}' is not valid."
     fi
 
@@ -17,6 +18,9 @@ conf_check_MM_DEBUG() {
 }
 
 conf_default_MM_DEBUG() {
+    if /usr/bin/test -z "${MM_DEBUG}" ; then
+        MM_DEBUG='no'
+    fi
     return 0
 }
 
