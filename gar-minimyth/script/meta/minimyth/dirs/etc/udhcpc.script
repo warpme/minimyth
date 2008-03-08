@@ -172,10 +172,15 @@ case "${1}" in
         TFTP_SERVER=${siaddr}
         TFTP_BOOT_FILE=${boot_file}
         TFTP_BOOT_URL=
-        if /usr/bin/test ! "x${TFTP_SERVER}" = "x" &&
-           /usr/bin/test ! "x${TFTP_BOOT_FILE}" = "x" ; then
-            TFTP_BOOT_DIR="`/bin/echo "/${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%//*%/%g'`"
-            TFTP_BOOT_URL="tftp://${TFTP_SERVER}${TFTP_BOOT_DIR}"
+        if /usr/bin/test ! "x${TFTP_BOOT_FILE}" = "x" ; then
+            if /bin/echo ${TFTP_BOOT_FILE} | /bin/grep -q '://' ; then
+                TFTP_BOOT_URL=`/bin/echo "${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%[^/]*/$%%'`
+            else
+                if /usr/bin/test ! "x${TFTP_SERVER}" = "x" ; then
+                    TFTP_BOOT_DIR=`/bin/echo "/${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%//*%/%g'`
+                    TFTP_BOOT_URL="tftp://${TFTP_SERVER}${TFTP_BOOT_DIR}"
+                fi
+            fi
         fi
         conf_variable_write ${DHCP_CONF}~ MM_NETWORK_INTERFACE "${NETWORK_INTERFACE}"
         conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER       "${TFTP_SERVER}"
