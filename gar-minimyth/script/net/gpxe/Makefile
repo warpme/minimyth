@@ -12,7 +12,7 @@ endef
 DEPENDS   = lang/c
 
 BUILD_SCRIPTS   = $(WORKSRC)/src/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/src/Makefile
+INSTALL_SCRIPTS = custom
 
 BUILD_ARGS = \
 	HOST_CC="$(build_CC)" \
@@ -30,6 +30,7 @@ CXXFLAGS :=
 LDFLAGS  :=
 
 install-custom:
-	@mkdir -p $(DESTDIR)$(rootdir)/srv/tftpboot/gpxe
-	@cp -f $(WORKSRC)/src/bin/undionly.kpxe $(DESTDIR)$(rootdir)/srv/tftpboot/gpxe
+	@mkdir -p $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth
+	@cp -f $(WORKSRC)/src/bin/undionly.kpxe $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0
+	@mkdir -p $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.cfg
 	@$(MAKECOOKIE)
