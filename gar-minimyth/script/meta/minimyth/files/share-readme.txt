@@ -33,6 +33,10 @@ Directory listing
         'ram-minimyth-<version>.tar.bz2'.
     + nfs-minimyth-<version>.tar.bz2.md5
         The MD5 checksum for the file 'nfs-minimyth-<version>.tar.bz2'
+    + pxe-minimyth-<version>.tar.bz2
+        A tarball of the files that help with PXE booting MiniMyth.
+    + pxe-minimyth-<version>.tar.bz2.md5
+        The MD5 checksum for the file 'pxe-minimyth-<version>.tar.bz2'
     + html.tar.bz2
         A tarball of the MiniMyth documentation files in HTML (XHTML 1.1 + CSS 1)
         format. These files are included in 'ram-minimyth-<version>.tar.bz2' and

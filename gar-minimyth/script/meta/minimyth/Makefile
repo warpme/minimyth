@@ -21,6 +21,7 @@ DEPENDS = \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
+	net/gpxe \
 	disk/hdparm \
 	net/ifplugd \
 	net/iputils \
@@ -53,6 +54,7 @@ DEPENDS = \
 	utils/SDL-Test \
 	system/splashutils \
 	utils/squashfs \
+	net/syslinux \
 	system/sysvinit \
 	fonts/ttf-bitstream-vera \
 	system/udev \

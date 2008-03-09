@@ -778,6 +778,16 @@ mm-make-other:
 	@cp  -pd ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@cp  -pd ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth
+	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.0
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.cfg
+	@cat ./files/gpxe.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.cfg/default
+	@cp  -pd ./files/gpxe.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.dhcpd.conf
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth
+	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.0
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.cfg
+	@cat ./files/pxelinux.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.cfg/default
+	@cp  -pd ./files/pxelinux.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.dhcpd.conf
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
@@ -847,6 +857,13 @@ mm-make-distro-base:
 		chmod -R go-w $(mm_STAGEDIR)/helper                             ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
 	@chmod 0644 $(mm_STAGEDIR)/helper.tar.bz2
+	@# Make PXE tarball file.
+	@echo "  making helper tarball file"
+	@rm -rf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
+	@fakeroot sh -c                                                                         " \
+		chmod -R go-w $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2 pxe-$(mm_NAME) "
+	@chmod 0644 $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
 
 mm-make-distro-ram:
 	@# Make RAM root file system distribution
@@ -957,6 +974,8 @@ mm-make-distro-local:
 	@cd $(mm_LOCALDIR) ; md5sum html.tar.bz2                     > html.tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_LOCALDIR)/helper.tar.bz2
 	@cd $(mm_LOCALDIR) ; md5sum helper.tar.bz2                   > helper.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/pxe-$(mm_NAME).tar.bz2
+	@cd $(mm_LOCALDIR) ; md5sum pxe-$(mm_NAME).tar.bz2           > pxe-$(mm_NAME).tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
 	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
@@ -993,6 +1012,8 @@ mm-make-distro-share:
 	@cd $(mm_SHAREDIR) ; md5sum html.tar.bz2                     > html.tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/helper.tar.bz2         $(mm_SHAREDIR)/helper.tar.bz2
 	@cd $(mm_SHAREDIR) ; md5sum helper.tar.bz2                   > helper.tar.bz2.md5
+	@cp -pdR  $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/pxe-$(mm_NAME).tar.bz2
+	@cd $(mm_SHAREDIR) ; md5sum pxe-$(mm_NAME).tar.bz2           > pxe-$(mm_NAME).tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
 	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
