@@ -778,16 +778,18 @@ mm-make-other:
 	@cp  -pd ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@cp  -pd ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth
-	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.0
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.cfg
-	@cat ./files/gpxe.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.cfg/default
-	@cp  -pd ./files/gpxe.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/gpxe.dhcpd.conf
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth
-	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.0
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.cfg
-	@cat ./files/pxelinux.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.cfg/default
-	@cp  -pd ./files/pxelinux.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/tftpboot/minimyth/pxelinux.dhcpd.conf
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)
+	@cp  -pd ./files/pxe.readme.txt $(mm_STAGEDIR)/pxe-$(mm_NAME)/readme.txt
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth
+	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.0
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg
+	@cat ./files/pxe.gpxe.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
+	@cp  -pd ./files/pxe.gpxe.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/dhcpd.conf
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth
+	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.0
+	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg
+	@cat ./files/pxe.pxelinux.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
+	@cp  -pd ./files/pxe.pxelinux.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/dhcpd.conf
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
