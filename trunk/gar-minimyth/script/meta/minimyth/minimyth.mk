@@ -708,7 +708,7 @@ mm-copy-kernel-modules:
 	done
 
 mm-strip:
-	@if test ! $(mm_DEBUG) == yes ; then \
+	@if test ! $(mm_DEBUG) = yes ; then \
 		chmod -R u+w $(mm_ROOTFSDIR) ; \
 		echo 'stripping binaries' ; \
 		$(STRIP) --strip-all -R .note -R .comment \
@@ -717,7 +717,7 @@ mm-strip:
 		$(STRIP) --strip-all -R .note -R .comment \
 			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB shared object' | sed -e 's%:.*%%'` ; \
 	fi
-	@if test ! $(mm_DEBUG) == yes ; then \
+	@if test ! $(mm_DEBUG) = yes ; then \
 		echo 'stripping perl' ; \
 		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
 		cd $(mm_ROOTFSDIR) ; \
