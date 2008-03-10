@@ -17,16 +17,6 @@ conf_check_MM_THEME() {
         mm_message_output err "error: 'minimyth.conf' is out of date. MM_THEMECACHE_URL='default' is obsolete."
     fi
 
-    # Test for renamed 'G.A.N.T.' theme.
-    if /usr/bin/test "${MM_THEME_NAME}" = "G.A.N.T." ; then
-       if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
-          ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
-            /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
-            mm_message_output warn "warning: theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update 'MM_THEME_NAME'."
-            MM_THEME_NAME="G.A.N.T"
-       fi
-    fi
-
     if /usr/bin/test ! -n "${MM_THEME_NAME}" ; then
         mm_message_output err "error: 'MM_THEME_NAME' must be set."
     fi
@@ -65,10 +55,10 @@ conf_check_MM_THEME() {
 
 conf_default_MM_THEME() {
     # The routine relies on MM_VERSION_* variables.
-    conf_default_version
+    conf_default_MM_VERSION
 
     # The routine relies on MM_X_* variables.
-    conf_default_x
+    conf_default_MM_X
 
     # Test for renamed 'G.A.N.T.' theme.
     if /usr/bin/test "${MM_THEME_NAME}" = "G.A.N.T." ; then
