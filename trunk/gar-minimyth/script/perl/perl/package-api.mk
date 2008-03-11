@@ -19,12 +19,12 @@ PERL_CXXFLAGS = \
 	)
 PERL_LDFLAGS  = -Wl,--as-needed
 
-PERL_configdir = $(build_DESTDIR)$(build_libdir)/perl5/Config/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi
 PERL_libdir    = $(libdir)/perl5
 PERL_privlib   = $(PERL_libdir)/$(PERL_VERSION)
 PERL_archlib   = $(PERL_libdir)/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi
 PERL_sitelib   = $(PERL_libdir)/site_perl/$(PERL_VERSION)
 PERL_sitearch  = $(PERL_libdir)/site_perl/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi
+PERL_configdir = $(PERL_libdir)/config/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-thread-multi
 
 # This is a hack for cross compilation, but it should does not break native compilation.
 # Ensure that packages being built have the highest chance of finding the installed packages.
@@ -32,7 +32,7 @@ PERL_sitearch  = $(PERL_libdir)/site_perl/$(PERL_VERSION)/$(GARCH_FAMILY)-linux-
 # last when looking for *.so files, making it less likely to break perl module execution.
 PERL_PERL5LIB = \
 	$(patsubst %:,%,$(subst : ,:,$(patsubst %,%:,\
-		$(PERL_configdir) \
+		$(DESTDIR)$(PERL_configdir) \
 		$(DESTDIR)$(PERL_sitearch) \
 		$(DESTDIR)$(PERL_sitelib) \
 	)))

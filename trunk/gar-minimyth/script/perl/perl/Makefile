@@ -117,10 +117,10 @@ pre-install:
 	@cd $(DESTDIR)$(libdir) ; rm -f libperl.so
 
 install-config:
-	@mkdir -p $(PERL_configdir)
-	@cp -f $(WORKSRC)/lib/Config.pm       $(PERL_configdir)
-	@cp -f $(WORKSRC)/lib/Config.pod      $(PERL_configdir)
-	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(PERL_configdir)
+	@mkdir -p $(DESTDIR)$(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config.pm       $(DESTDIR)$(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config.pod      $(DESTDIR)$(PERL_configdir)
+	@cp -f $(WORKSRC)/lib/Config_heavy.pl $(DESTDIR)$(PERL_configdir)
 	@$(MAKECOOKIE)
 
 install-miniperl:
