@@ -17,8 +17,9 @@ start() {
 
     case "${MM_X_DRIVER}" in
         intel_810)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE=''
             XVMC_LIB='/usr/lib/libI810XvMC.so.1'  && \
                 /usr/bin/test -e ${XVMC_LIB}      && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
@@ -27,8 +28,9 @@ start() {
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             ;;
         intel_915)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE=''
             XVMC_LIB='/usr/lib/libI810XvMC.so.1'  && \
                 /usr/bin/test -e ${XVMC_LIB}      && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
@@ -37,8 +39,9 @@ start() {
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             ;;
         nvidia)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE=''
             XVMC_LIB='/usr/lib/nvidia/libXvMCNVIDIA.so.1'         && \
                 /usr/bin/test -e ${XVMC_LIB}                      && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
@@ -47,59 +50,103 @@ start() {
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             ;;
         sis)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE='VIA Video'
             ;;
         openchrome)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE='VIA Video'
             XVMC_LIB='/usr/lib/libchromeXvMC.so.1' && \
                 /usr/bin/test -e ${XVMC_LIB}       && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         openchrome_pro)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE='VIA Video'
             XVMC_LIB='/usr/lib/libchromeXvMCPro.so.1' && \
                 /usr/bin/test -e ${XVMC_LIB}          && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             mm_mythdb_settings_set "UseChromaKeyOSD" "1"
             ;;
         vmware)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bob'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"                /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"                   /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"                    /home/minimyth/.mplayer/config
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"     = "auto" && MM_VIDEO_DEINTERLACER='bob'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}"    = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
+            /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "auto" && MM_VIDEO_PLAYBACK_PROFILE=''
             ;;
     esac
     /bin/sed -i "s%@MM_XVMC_LIB@%%" /etc/X11/XvMCConfig
 
+    if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
+       ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
+         /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
+#        mm_mythdb_settings_set DefaultVideoPlaybackProfile ${MM_VIDEO_VIDEO_PLAYBACK_PROFILE}
+    else
+        case "${MM_VIDEO_MPEG2_DECODER}" in
+            ffmpeg)
+                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                ;;
+            libmpeg2)
+                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                ;;
+            xvmc)
+                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                ;;
+            xvmc-vld)
+                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                ;;
+            *)
+                mm_message_output err "error: something is very wrong in the 'video' init script."
+                exit 1
+                ;;
+        esac
+        case "${MM_VIDEO_DEINTERLACER}" in
+            none)
+                mm_mythdb_settings_set Deinterlace 0
+                ;;
+            bob)
+                mm_mythdb_settings_set Deinterlace 1
+                mm_mythdb_settings_set DeinterlaceFilter "bobdeint"
+                ;;
+            kernel)
+                mm_mythdb_settings_set Deinterlace 1
+                mm_mythdb_settings_set DeinterlaceFilter "kerneldeint"
+                ;;
+            linear-blend)
+                mm_mythdb_settings_set Deinterlace 1
+                mm_mythdb_settings_set DeinterlaceFilter "linearblend"
+                ;;
+            one-field)
+                mm_mythdb_settings_set Deinterlace 1
+                mm_mythdb_settings_set DeinterlaceFilter "onefield"
+                ;;
+            *)
+                mm_message_output err "error: something is very wrong in the 'video' init script."
+                exit 1
+                ;;
+        esac
+    fi
+
     case "${MM_VIDEO_MPEG2_DECODER}" in
         ffmpeg)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
             ;;
         libmpeg2)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
             /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
             ;;
         xvmc)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
             /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%" /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
             ;;
         xvmc-vld)
-            mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
             /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%" /home/minimyth/.xine/config
             /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
             /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
