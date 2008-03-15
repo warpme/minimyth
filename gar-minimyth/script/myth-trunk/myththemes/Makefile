@@ -6,8 +6,7 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
-	$(DISTNAME_SHORT)-programid.patch \
-	$(DISTNAME_SHORT)-preserve_timestamps.patch
+	$(DISTNAME_SHORT)-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
