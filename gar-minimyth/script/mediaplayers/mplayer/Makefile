@@ -11,6 +11,7 @@ PATCHFILES = \
 	$(DISTNAME)-demux_mov_fix_20080129.patch \
 	$(DISTNAME)-url_fix_20080120.patch \
 	$(DISTNAME)-stream_cddb_fix_20080120.patch
+PATCHFILES += $(DISTNAME)-dvdnav.patch
 PATCHFILES += $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
@@ -19,7 +20,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -70,7 +71,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-smb \
 	--disable-live \
 	--disable-nemesi \
-	--disable-dvdnav \
+	--enable-dvdnav \
 	--enable-dvdread \
 	--enable-dvdread-internal \
 	--disable-libdvdcss-internal \
@@ -221,7 +222,8 @@ CONFIGURE_ARGS_ADVANCED = \
 CONFIGURE_ARGS_WITH = \
 	--with-xvmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
-	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config"
+	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config" \
+	--with-dvdnav-config="$(DESTDIR)$(bindir)/dvdnav-config"
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \
 	$(CONFIGURE_ARGS_OPTIONAL) \

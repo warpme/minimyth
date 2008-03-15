@@ -50,7 +50,6 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythweather \
                              $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
                              mplayer \
-                             xine \
                              perl \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
