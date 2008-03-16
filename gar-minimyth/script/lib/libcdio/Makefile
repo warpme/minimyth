@@ -3,7 +3,7 @@ GARVERSION = $(LIBCDIO_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.rpath
-PATCHFILES = $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-have_joliet.patch $(DISTNAME)-ac_arg_enable.patch $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-help2man.patch $(DISTNAME)-ac_arg_enable.patch $(DISTNAME).patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
