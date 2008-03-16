@@ -53,4 +53,5 @@ pre-configure:
 
 post-configure:
 	@sed -e 's%^DESTDIR *= *.*$$%DESTDIR=$(DESTDIR)%' -i $(WORKSRC)/config.mak
+	@sed -e 's%^dvdread_incdir *= *.*$$%dvdread_incdir=$$(DESTDIR)$(includedir)/dvdread%' -i $(WORKSRC)/config.mak
 	@$(MAKECOOKIE)
