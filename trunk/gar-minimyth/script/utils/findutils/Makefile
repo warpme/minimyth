@@ -1,10 +1,10 @@
 GARNAME = findutils
-GARVERSION = 4.2.33
+GARVERSION = 4.4.0
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES= $(DISTNAME)-perl.patch.gar
-LICENSE = GPL2
+LICENSE = GPL3
 
 DESCRIPTION = 
 define BLURB
