@@ -1,6 +1,6 @@
-diff -Naur libcdio-0.79-old/configure.ac libcdio-0.79-new/configure.ac
---- libcdio-0.79-old/configure.ac	2007-10-26 21:02:36.000000000 -0700
-+++ libcdio-0.79-new/configure.ac	2007-10-27 15:02:50.000000000 -0700
+diff -Naur libcdio-0.80-old/configure.ac libcdio-0.80-new/configure.ac
+--- libcdio-0.80-old/configure.ac	2008-03-15 17:45:28.000000000 -0700
++++ libcdio-0.80-new/configure.ac	2008-03-15 17:49:21.000000000 -0700
 @@ -84,7 +84,7 @@
  AM_CONDITIONAL([ENABLE_CXX_BINDINGS], [test "x$enable_cxx" != "xno"])
  
@@ -9,31 +9,8 @@ diff -Naur libcdio-0.79-old/configure.ac libcdio-0.79-new/configure.ac
 +	AC_HELP_STRING([--disable-cpp-progs], [make C++ example programs (default enabled)]))
  AM_CONDITIONAL(ENABLE_CPP, test x"$enable_cpp_progs" = "xyes")
  
- dnl We use C 
-@@ -540,13 +540,16 @@
-    AC_MSG_RESULT($has_tzname)
- fi
- 
--if test x$enable_joliet = x; then
- AC_ARG_ENABLE(joliet,
--	[  --enable-joliet         include Joliet extension support (default enabled)],
--		enable_joliet=yes,
--		enable_joliet=no)
--fi
--if test "${enable_joliet}" != "no" ; then
-+	AC_HELP_STRING([--disable-joliet], [include Joliet extension support (default enabled)]),
-+	[
-+		AS_CASE(["$enableval"],
-+			[yes], [enable_joliet="yes"],
-+			[no],  [enable_joliet="no"],
-+			       [AC_MSG_ERROR([bad value '${enableval}' for --enable-joliet])])
-+	],
-+	enable_joliet="yes")
-+if test "x$enable_joliet" != "xno" ; then
-   AM_ICONV
-   AM_LANGINFO_CODESET
-   if test "$am_cv_func_iconv" = yes ; then 
-@@ -560,14 +563,17 @@
+ AC_ARG_ENABLE(example_progs,
+@@ -563,14 +563,17 @@
  fi
  AC_SUBST(HAVE_JOLIET)
  
@@ -58,7 +35,7 @@ diff -Naur libcdio-0.79-old/configure.ac libcdio-0.79-new/configure.ac
     AC_DEFINE(HAVE_ROCK, [1], 
     [Define 1 if you want ISO-9660 Rock-Ridge extension support.])
     HAVE_ROCK=1
-@@ -575,13 +581,16 @@
+@@ -578,13 +581,16 @@
  AC_SUBST(HAVE_ROCK)
  AM_CONDITIONAL(ENABLE_ROCK, test x"$enable_rock" = "xyes")
  
@@ -82,7 +59,7 @@ diff -Naur libcdio-0.79-old/configure.ac libcdio-0.79-new/configure.ac
     PKG_CHECK_MODULES(CDDB, libcddb >= 1.0.1, [
      HAVE_CDDB=yes 
      AC_DEFINE(HAVE_CDDB, [], [Define this if you have libcddb installed])
-@@ -611,13 +620,16 @@
+@@ -614,13 +620,16 @@
  AM_CONDITIONAL(BUILD_CDDA_PLAYER, test "x$enable_cdda_player" = "xyes")
  AC_SUBST(CDDA_PLAYER_LIBS)
  
