@@ -219,14 +219,15 @@ mm_url_http_get() {
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/curl -s -f "http://${REMOTE_SERVER}/${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
+    /usr/bin/curl -s -f "http://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}/${REMOTE_FILE}' downloaded."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
     return
 }
@@ -252,6 +253,7 @@ mm_url_tftp_get() {
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
+    REMOTE_FILE="/${REMOTE_FILE}"
 
     LOCAL_DIR=`/bin/echo "${LOCAL_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%/$%%'`
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
@@ -259,7 +261,7 @@ mm_url_tftp_get() {
 
     /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
 
-    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}/${REMOTE_FILE}' downloaded."
+    /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
     return
 }
