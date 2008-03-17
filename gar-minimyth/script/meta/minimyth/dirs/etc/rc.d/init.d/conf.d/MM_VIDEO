@@ -50,20 +50,27 @@ conf_default_MM_VIDEO() {
         return 0
     fi
 
-    if /usr/bin/test -z "${MM_VIDEO_ASPECT_RATIO}"   ; then
+    if /usr/bin/test -z "${MM_VIDEO_ASPECT_RATIO}"     ; then
         MM_VIDEO_ASPECT_RATIO='4:3'
     fi
-    if /usr/bin/test -z "${MM_VIDEO_DEINTERLACER}"   ; then
+    if /usr/bin/test -z "${MM_VIDEO_DEINTERLACER}"     ; then
         MM_VIDEO_DEINTERLACER='none'
     fi
-    if /usr/bin/test -z "${MM_VIDEO_FONT_SCALE}"     ; then
+    if /usr/bin/test -z "${MM_VIDEO_FONT_SCALE}"       ; then
         MM_VIDEO_FONT_SCALE='100'
     fi
-    if /usr/bin/test -z "${MM_VIDEO_MPEG2_DECODER}"  ; then
+    if /usr/bin/test -z "${MM_VIDEO_MPEG2_DECODER}"    ; then
         MM_VIDEO_MPEG2_DECODER='auto'
     fi
-    if /usr/bin/test -z "${MM_VIDEO_RESIZE_ENABLED}" ; then
+    if /usr/bin/test -z "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
+        MM_VIDEO_PLAYBACK_PROFILE='MiniMyth'
+    fi
+    if /usr/bin/test -z "${MM_VIDEO_RESIZE_ENABLED}"   ; then
         MM_VIDEO_RESIZE_ENABLED='no'
+    fi
+
+    if /usr/bin/test "${MM_VIDEO_PLAYBACK_PROFILE}" = "none" ; then
+        MM_VIDEO_VIDEO_PLAYBACK_PROFILE=''
     fi
 
     /bin/mkdir -p '/tmp/init.conf.video'
@@ -75,11 +82,12 @@ conf_default_MM_VIDEO() {
 conf_write_MM_VIDEO() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO   "${MM_VIDEO_ASPECT_RATIO}"
-    conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACER   "${MM_VIDEO_DEINTERLACER}"
-    conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE     "${MM_VIDEO_FONT_SCALE}"
-    conf_variable_write "${conf_file}" MM_VIDEO_MPEG2_DECODER  "${MM_VIDEO_MPEG2_DECODER}"
-    conf_variable_write "${conf_file}" MM_VIDEO_RESIZE_ENABLED "${MM_VIDEO_RESIZE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO     "${MM_VIDEO_ASPECT_RATIO}"
+    conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACER     "${MM_VIDEO_DEINTERLACER}"
+    conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE       "${MM_VIDEO_FONT_SCALE}"
+    conf_variable_write "${conf_file}" MM_VIDEO_MPEG2_DECODER    "${MM_VIDEO_MPEG2_DECODER}"
+    conf_variable_write "${conf_file}" MM_VIDEO_PLAYBACK_PROFILE "${MM_VIDEO_PLAYBACK_PROFILE}"
+    conf_variable_write "${conf_file}" MM_VIDEO_RESIZE_ENABLED   "${MM_VIDEO_RESIZE_ENABLED}"
 
     return 0
 }
