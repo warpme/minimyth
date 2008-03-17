@@ -8,10 +8,22 @@
 
 start() {
 
-    local XVMC_LIB
+    local hostname
+    local pref_cmp0
+    local pref_decoder
+    local pref_max_cpus
+    local pref_osdfade
+    local pref_osdrenderer
+    local pref_videorenderer
+    local pref_deint0
+    local pref_deint1
+    local pref_filters
+    local profilegroupid
+    local profileid
     local X_RESOLUTION
     local X_RESOLUTION_X
     local X_RESOLUTION_Y
+    local XVMC_LIB
 
     mm_message_output info "configuring video ..."
 
@@ -76,20 +88,153 @@ start() {
     if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
        ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
          /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
-        :
+        if /usr/bin/test -n "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
+            pref_max_cpus=`cat /proc/cpuinfo | grep -c '^processor[[:cntrl:]]*:'`
+            pref_cmp0='> 0 0'
+            pref_cmp1=''
+            pref_decoder=''
+            pref_videorenderer=''
+            pref_osdrenderer=''
+            pref_osdfade=''
+            case "${MM_VIDEO_MPEG2_DECODER}" in
+                ffmpeg)
+                    pref_decoder='ffmpeg'
+                    pref_videorenderer='xv-blit'
+                    pref_osdrenderer='softblend'
+                    pref_osdfade='0'
+                    ;;
+                libmpeg2)
+                    pref_decoder='libmpeg2'
+                    pref_videorenderer='xv-blit'
+                    pref_osdrenderer='softblend'
+                    pref_osdfade='0'
+                    ;;
+                xvmc)
+                    pref_decoder='xvmc'
+                    pref_videorenderer='xvmc-blit'
+                    pref_osdrenderer='ia44blend'
+                    pref_osdfade='0'
+                    ;;
+                xvmc-vld)
+                    pref_decoder='xvmc-vld'
+                    pref_videorenderer='chromakey'
+                    pref_osdfade='0'
+                    ;;
+                *)
+                    mm_message_output err "error: something is very wrong in the 'video' init script."
+                    exit 1
+                    ;;
+            esac
+            pref_deint0=''
+            pref_deint1=''
+            pref_filters=''
+            case "${MM_VIDEO_DEINTERLACER}" in
+                none)
+                    pref_deint0='none'
+                    pref_deint1='none'
+                    pref_filters=''
+                    ;;
+                bob)
+                    pref_deint0='bobdeint'
+                    pref_deint1='none'
+                    pref_filters=''
+                    ;;
+                kernel)
+                    pref_deint0='kerneldeint'
+                    pref_deint1='none'
+                    pref_filters=''
+                    ;;
+                linear-blend)
+                    pref_deint0='linearblend'
+                    pref_deint1='none'
+                    pref_filters=''
+                    ;;
+                one-field)
+                    pref_deint0='onefield'
+                    pref_deint1='none'
+                    pref_filters=''
+                    ;;
+                *)
+                    mm_message_output err "error: something is very wrong in the 'video' init script."
+                    exit 1
+                    ;;
+            esac
+            hostname=`/bin/hostname`
+            profilegroupid=
+            if /usr/bin/test -n "${hostname}" ; then
+                profilegroupid=`mm_mythdb_get \
+                    "SELECT profilegroupid \
+                     FROM displayprofilegroups \
+                     WHERE name=\"MiniMyth\" \
+                     AND hostname=\"${hostname}\" \
+                    ;" | grep -v 'profilegroupid'`
+            fi
+            profileid=
+            if /usr/bin/test -n "${profilegroupid}" ; then
+                profileid=`mm_mythdb_get \
+                    "SELECT profileid \
+                     FROM displayprofiles \
+                     WHERE profilegroupid=\"${profilegroupid}\" \
+                     AND value=\"pref_priority\" \
+                     AND data=\"1\" \
+                    ;" | grep -v 'profileid'`
+            fi
+            if /usr/bin/test -n "${profilegroupid}" ; then
+                mm_mythdb_set \
+                    "DELETE FROM displayprofiles \
+                    WHERE profilegroupid=\"${profilegroupid}\" ; "
+            fi
+            if /usr/bin/test -n "${profilegroupid}" && \
+               /usr/bin/test -n "${profileid}"      ; then
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_priority\", data=\"1\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_cmp0\", data=\"${pref_cmp0}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_cmp1\", data=\"${pref_cmp1}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_max_cpus\", data=\"${pref_max_cpus}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_decoder\", data=\"${pref_decoder}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_videorenderer\", data=\"${pref_videorenderer}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_osdrenderer\", data=\"${pref_osdrenderer}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_osdfade\", data=\"${pref_osdfade}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_deint0\", data=\"${pref_deint0}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_deint1\", data=\"${pref_deint1}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\",
+                     value=\"pref_filters\", data=\"${pref_filters}\" ; "
+            fi
+            mm_mythdb_settings_set DefaultVideoPlaybackProfile "${MM_VIDEO_PLAYBACK_PROFILE}"
+        fi
     else
         case "${MM_VIDEO_MPEG2_DECODER}" in
             ffmpeg)
-                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                mm_mythdb_settings_set PreferredMPEG2Decoder "${MM_VIDEO_MPEG2_DECODER}"
                 ;;
             libmpeg2)
-                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                mm_mythdb_settings_set PreferredMPEG2Decoder "${MM_VIDEO_MPEG2_DECODER}"
                 ;;
             xvmc)
-                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                mm_mythdb_settings_set PreferredMPEG2Decoder "${MM_VIDEO_MPEG2_DECODER}"
                 ;;
             xvmc-vld)
-                mm_mythdb_settings_set PreferredMPEG2Decoder ${MM_VIDEO_MPEG2_DECODER}
+                mm_mythdb_settings_set PreferredMPEG2Decoder "${MM_VIDEO_MPEG2_DECODER}"
                 ;;
             *)
                 mm_message_output err "error: something is very wrong in the 'video' init script."
