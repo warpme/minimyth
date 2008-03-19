@@ -142,7 +142,7 @@ configure-%/configure:
 	@$(MAKECOOKIE)
 
 pre-install:
-	@$(foreach dir, $(filter-out %/Makefile %/qt4,$(subst ../../,,$(wildcard ../../qt/*))), $(MAKE) clean-all -C $(dir))
+	@$(foreach dir, $(filter-out %/Makefile %/qt4,$(wildcard ../*)), $(MAKE) clean-all -C $(dir) ; )
 	@rm -rf $(DESTDIR)$(qtprefix)
 	@$(MAKECOOKIE)
 
