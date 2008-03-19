@@ -37,7 +37,7 @@ DEPENDS = \
 	lib/lame \
 	lib/libdca \
 	lib/zlib \
-	qt/qt3 \
+	qt/qt$(MYTH_QT_VERSION) \
 	system/lirc \
 	xorg/xorg
 
