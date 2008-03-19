@@ -151,13 +151,13 @@ post-install:
 	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC      , , $(build_DESTDIR)$(build_qtbindir)/moc)
 	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_UIC      , , $(build_DESTDIR)$(build_qtbindir)/uic)
 	@#$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
-	files=`ls -1 $(DESTDIR)$(qtlibdir)/pkgconfig/*.pc` ; \
-	for file in $${files} ; do \
+	@files=`ls -1 $(DESTDIR)$(qtlibdir)/pkgconfig/*.pc` ; \
+	 for file in $${files} ; do \
 		sed -e 's%-I$(DESTDIR)$(includedir)%-I$(includedir)%g'   -i $${file} ; \
 		sed -e 's%-L$(DESTDIR)$(libdir)%-L$(libdir)%g'           -i $${file} ; \
 		sed -e 's%-I$(DESTDIR)$(qtincludedir)%-I$(includedir)%g' -i $${file} ; \
 		sed -e 's%-L$(DESTDIR)$(qtlibdir)%-L$(qtlibdir)%g'       -i $${file} ; \
-	done
+	 done
 	@$(MAKECOOKIE)
 
 clean-all:
