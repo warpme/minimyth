@@ -163,16 +163,6 @@ mm_CFLAGS                 ?= $(strip \
                               )
 mm_CXXFLAGS               ?= $(mm_CFLAGS)
 mm_DESTDIR                ?= $(mm_HOME)/images/mm
-mm_QT_VERSION             ?= $(strip \
-                                 $(if $(filter 0.20        ,$(mm_MYTH_VERSION)),3) \
-                                 $(if $(filter 0.20-softpad,$(mm_MYTH_VERSION)),3) \
-                                 $(if $(filter 0.21        ,$(mm_MYTH_VERSION)),3) \
-                                 $(if $(filter trunk       ,$(mm_MYTH_VERSION)), \
-                                     $(shell [ $(mm_MYTH_TRUNK_VERSION) -lt 100000 ] && echo 3) \
-                                     $(shell [ $(mm_MYTH_TRUNK_VERSION) -gt 100000 ] && echo 4) \
-                                 ) \
-                              )
-
 
 #-------------------------------------------------------------------------------
 # Variables that you cannot override.

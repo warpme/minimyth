@@ -38,7 +38,7 @@ DEPENDS = \
 	lib/lame \
 	lib/libdca \
 	lib/zlib \
-	qt/qt \
+	qt/qt3 \
 	system/lirc \
 	xorg/xorg
 

@@ -12,7 +12,7 @@ endef
 DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql lib/freetype lib/fontconfig xorg/xorg
 BUILDDEPS  = devel/bison devel/flex
 ifneq ($(DESTIMG),build)
-BUILDDEPS += qt/qt
+BUILDDEPS += qt/qt3
 endif
 
 PWD := $(shell pwd)
@@ -160,6 +160,11 @@ post-configure:
 	@$(call USE_BUILD_BIN, uic)
 	@$(MAKECOOKIE)
 
+pre-install:
+	@$(foreach dir, $(filter-out %/Makefile %/qt3,$(subst ../../,,$(wildcard ../../qt*))), $(MAKE) clean-all -C $(dir))
+	@rm -rf $(DESTDIR)$(qtprefix)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
@@ -176,5 +181,4 @@ post-install:
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(build_DESTDIR)$(build_libdir)/qt
-	@rm -rf $(DESTDIR)$(libdir)/qt
+	@rm -rf $(DESTDIR)$(qtprefix)

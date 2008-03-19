@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c xorg/xorg qt/qt lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
+DEPENDS   = lang/c xorg/xorg qt/qt3 lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
 ifneq ($(DESTIMG),build)
 BUILDDEPS = kde/kdelibs
 endif
@@ -95,8 +95,6 @@ DIRPATHS := \
 	--includedir=$(kdeincludedir)
 
 pre-configure:
-	@# Test Qt version.
-	@$(if (filter-out 3,$(mm_QT_VERSION)),echo "error: $(DISTDIR) requires Qt 3.x" ; exit 1,)
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/acinclude.m4
