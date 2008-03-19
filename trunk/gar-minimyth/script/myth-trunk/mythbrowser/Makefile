@@ -11,7 +11,7 @@ endef
 DEPENDS = \
 	lang/c++ \
 	$(CATEGORY)/mythtv \
-	kde/kdelibs
+	$(if $(filter 3,$(MYTH_QT_VERSION)),kde/kdelibs,)
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

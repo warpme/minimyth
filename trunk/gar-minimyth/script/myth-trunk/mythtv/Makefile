@@ -27,7 +27,7 @@ DEPENDS = \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
-	$(if $(shell [ $(mm_MYTH_TRUNK_VERSION) -lt 100000 ] && echo true),qt/qt3,qt/qt4) \
+	qt/qt$(MYTH_QT_VERSION)
 	system/lirc \
 	xorg/xorg
 

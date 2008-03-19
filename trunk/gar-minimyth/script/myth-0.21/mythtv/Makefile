@@ -28,7 +28,7 @@ DEPENDS = \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
-	qt/qt3 \
+	qt/qt$(MYTH_QT_VERSION) \
 	system/lirc \
 	xorg/xorg
 
