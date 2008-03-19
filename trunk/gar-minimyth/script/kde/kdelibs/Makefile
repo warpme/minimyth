@@ -95,6 +95,8 @@ DIRPATHS := \
 	--includedir=$(kdeincludedir)
 
 pre-configure:
+	@# Test Qt version.
+	@$(if (filter-out 3,$(mm_QT_VERSION)),echo "error: $(DISTDIR) requires Qt 3.x" ; exit 1,)
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/acinclude.m4
