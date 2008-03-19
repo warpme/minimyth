@@ -28,7 +28,7 @@ DEPENDS = \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
-	qt/qt \
+	qt/qt3 \
 	system/lirc \
 	xorg/xorg
 

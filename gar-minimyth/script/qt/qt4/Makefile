@@ -141,6 +141,11 @@ configure-%/configure:
 	@cd $* && $(CONFIGURE_ENV) echo "yes" | ./configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)
 
+pre-install:
+	@$(foreach dir, $(filter-out %/Makefile %/qt4,$(subst ../../,,$(wildcard ../../qt/*))), $(MAKE) clean-all -C $(dir))
+	@rm -rf $(DESTDIR)$(qtprefix)
+	@$(MAKECOOKIE)
+
 post-install:
 	@#rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/*.la
@@ -162,5 +167,4 @@ post-install:
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(build_DESTDIR)$(build_libdir)/qt
-	@rm -rf $(DESTDIR)$(libdir)/qt
+	@rm -rf $(DESTDIR)$(qtprefix)
