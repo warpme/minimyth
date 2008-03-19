@@ -47,7 +47,6 @@ DEPENDS = \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
-	qt/qt \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
