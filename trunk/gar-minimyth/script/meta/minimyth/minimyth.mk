@@ -333,7 +333,7 @@ mm-check:
 			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
-		if [ "$(mm_KERNEL_VERSION)" = "2.6.24" ] ; then \
+		if [ ! "$(mm_KERNEL_VERSION)" = "2.6.23" ] ; then \
 			if [ "$${chipset}" = "iegd" ] ; then \
 				echo "warning: mm_CHIPSETS=\"$${chipset}\" is an invalid value for mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\"." ; \
 			fi ; \
@@ -378,13 +378,15 @@ mm-check:
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.23" ] && \
-	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.24" ] ; then \
+	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.24" ] && \
+	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.25" ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION=\"$(mm_KERNEL_HEADERS_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@echo "    mm_KERNEL_VERSION"
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.23" ] && \
-	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.24" ] ; then \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.24" ] && \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.25" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
