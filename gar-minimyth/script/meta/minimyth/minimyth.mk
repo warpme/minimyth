@@ -109,7 +109,6 @@ MM_INIT_KILL := \
     ssh_server \
     telnet \
     cpu \
-    local \
     log \
     modules_manual \
     modules_automatic
