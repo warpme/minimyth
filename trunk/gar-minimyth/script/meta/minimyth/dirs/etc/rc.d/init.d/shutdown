@@ -6,23 +6,33 @@
 
 start() {
 
-    local mountline
+    local script
     local mountpoint
-    local mounttype
+    local mountpoints
+    local retry
 
     mm_message_output info "finishing shutdown ..."
 
+    # mountpoint awk script.
+    # finds mountpoints in /proc/mounts that are to be unmounted.
+    script='$2 ~ /^(\/|\/initrd)$/ {next}
+            $2 ~ /^\/media\//      {print $2 ; next}
+            $2 ~ /^\/\/minimyth$/  {print $2 ; next}
+            $3 ~ /^cifs$/          {print $2 ; next}
+            $3 ~ /^nfs$/           {print $2 ; next}'
+
     # unmount any remaining file systems.
-    /bin/cat /proc/mounts | while read mountline; do
-        mountpoint=`/bin/echo ${mountline} | /usr/bin/cut -d ' ' -f 2`
-        mountpointdir=`/usr/bin/dirname ${mountpoint}`
-        mounttype=`/bin/echo  ${mountline} | /usr/bin/cut -d ' ' -f 3`
-        if   /usr/bin/test "${mountpointdir}" = "/media" ; then
-            /bin/umount -r ${mountpoint}
-        elif /usr/bin/test "${mounttype}" = "cifs"  ||
-             /usr/bin/test "${mounttype}" = "nfs"   ||
-             /usr/bin/test "${mounttype}" = "smbfs" ; then
-            /bin/umount -r ${mountpoint}
+    mountpoints=`LANG=C /usr/bin/awk "${script}" '/proc/mounts' | /usr/bin/sort -r`
+    retry=3
+    while /usr/bin/test -n "${mountpoints}" && /usr/bin/test ${retry} -gt 0 ; do
+        for mountpoint in ${mountpoints} ; do
+            mm_message_output info "unmounting ${mountpoint}"
+            /bin/umount -f ${mountpoint}
+        done
+        mountpoints=`LANG=C /usr/bin/awk "${script}" '/proc/mounts' | /usr/bin/sort -r`
+        retry=$(( ${retry} - 1 ))
+        if /usr/bin/test -n "${mountpoints}" && /usr/bin/test ${retry} -gt 0 ; then
+            sleep 1
         fi
     done
 
