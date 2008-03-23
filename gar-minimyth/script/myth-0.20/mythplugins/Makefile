@@ -8,6 +8,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-gcc_4.3.patch \
 	$(DISTNAME_SHORT)-mythweather_weather_com.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
+	$(DISTNAME_SHORT)-mythmusic_fftw3.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch
 LICENSE = GPL2
