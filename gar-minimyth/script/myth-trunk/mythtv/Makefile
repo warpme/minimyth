@@ -25,6 +25,7 @@ DEPENDS = \
 	db/mysql \
 	lib/alsa-lib \
 	lib/faad2 \
+	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
@@ -62,6 +63,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
+	--enable-libfftw3 \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \

@@ -1,0 +1,204 @@
+diff -Naur mythplugins-trunk-16747-old/configure mythplugins-trunk-16747-new/configure
+--- mythplugins-trunk-16747-old/configure	2008-03-23 11:56:49.000000000 -0700
++++ mythplugins-trunk-16747-new/configure	2008-03-23 11:57:32.000000000 -0700
+@@ -29,7 +29,9 @@
+ opengl="yes"
+ visual="yes"
+ fftw_lib="yes"
++fftw_lib3f="yes"
+ fftw_lib3="yes"
++fftw_lib3l="yes"
+ sdl="yes"
+ aac="no"          # compile fails w/libfaad v2.0
+ exif="yes"
+@@ -382,13 +384,29 @@
+     fi
+ fi
+ 
++if test "$fftw_lib3f" != "no" ; then
++    fftw_lib3f="no"
++    if has_library libfftw3f ; then
++        if has_header fftw3.h ; then
++            fftw_lib3f="yes"
++        fi
++    fi
++fi
++
+ if test "$fftw_lib3" != "no" ; then
+     fftw_lib3="no"
+-    if has_library libfftw3f_threads ; then
+-        if has_library libfftw3_threads ; then
+-            if has_header fftw3.h ; then
+-                fftw_lib3="yes"
+-            fi
++    if has_library libfftw3 ; then
++        if has_header fftw3.h ; then
++            fftw_lib3="yes"
++        fi
++    fi
++fi
++
++if test "$fftw_lib3l" != "no" ; then
++    fftw_lib3l="no"
++    if has_library libfftw3 ; then
++        if has_header fftw3.h ; then
++            fftw_lib3l="yes"
+         fi
+     fi
+ fi
+@@ -882,11 +900,21 @@
+         echo "        libvisual      support will not be included in MythMusic"
+     fi
+ 
+-    if test "$fftw_lib3" = "yes" ; then
++    if test "$fftw_lib3f" = "yes" ; then
++        echo "        FFTW v.3       support will be included in MythMusic"
++        echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
++        echo "#define FFTW3_SUPPORT_FFTWF 1" >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lfftw3f -lm" >> ./mythmusic/mythmusic/config.pro
++    elif test "$fftw_lib3" = "yes" ; then
++        echo "        FFTW v.3       support will be included in MythMusic"
++        echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
++        echo "#define FFTW3_SUPPORT_FFTW 1" >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lfftw3 -lm" >> ./mythmusic/mythmusic/config.pro
++    elif test "$fftw_lib3l" = "yes" ; then
+         echo "        FFTW v.3       support will be included in MythMusic"
+         echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+-        echo "LIBS += -lfftw3 -lm" >> \
+-             ./mythmusic/mythmusic/config.pro
++        echo "#define FFTW3_SUPPORT_FFTWL 1" >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lfftw3d -lm" >> ./mythmusic/mythmusic/config.pro
+     elif test "$fftw_lib" = "yes" ; then
+         echo "        FFTW v.2       support will be included in MythMusic"
+         echo "#define FFTW2_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+diff -Naur mythplugins-trunk-16747-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-16747-new/mythmusic/mythmusic/visualize.cpp
+--- mythplugins-trunk-16747-old/mythmusic/mythmusic/visualize.cpp	2008-03-22 14:21:24.000000000 -0700
++++ mythplugins-trunk-16747-new/mythmusic/mythmusic/visualize.cpp	2008-03-23 11:57:32.000000000 -0700
+@@ -60,8 +60,8 @@
+     rout = (myth_fftw_complex*)
+         av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
+ 
+-    lplan = fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*)lout, FFTW_MEASURE);
+-    rplan = fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*)rout, FFTW_MEASURE);
++    lplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*)lout, FFTW_MEASURE);
++    rplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*)rout, FFTW_MEASURE);
+ #elif FFTW2_SUPPORT
+     lin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
+     rin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
+@@ -88,8 +88,8 @@
+         av_free(rout);
+ #endif
+ #ifdef FFTW3_SUPPORT
+-    fftw_destroy_plan(lplan);
+-    fftw_destroy_plan(rplan);
++    myth_fftw_destroy_plan(lplan);
++    myth_fftw_destroy_plan(rplan);
+ #elif FFTW2_SUPPORT
+     rfftw_destroy_plan(plan);
+ #endif
+@@ -153,8 +153,8 @@
+     fast_reals_set(lin + i, rin + i, 0, FFTW_N - i);
+ 
+ #ifdef FFTW3_SUPPORT
+-    fftw_execute(lplan);
+-    fftw_execute(rplan);
++    myth_fftw_execute(lplan);
++    myth_fftw_execute(rplan);
+ #elif FFTW2_SUPPORT
+     rfftw_one(plan, lin, lout);
+     rfftw_one(plan, rin, rout);
+@@ -767,8 +767,8 @@
+     rout = (myth_fftw_complex*)
+         av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
+ 
+-    lplan = fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*) lout, FFTW_MEASURE);
+-    rplan = fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*) rout, FFTW_MEASURE);
++    lplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*) lout, FFTW_MEASURE);
++    rplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*) rout, FFTW_MEASURE);
+ #elif FFTW2_SUPPORT
+     lin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
+     rin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
+@@ -798,8 +798,8 @@
+         av_free(rout);
+ #endif
+ #ifdef FFTW3_SUPPORT
+-    fftw_destroy_plan(lplan);
+-    fftw_destroy_plan(rplan);
++    myth_fftw_destroy_plan(lplan);
++    myth_fftw_destroy_plan(rplan);
+ #elif FFTW2_SUPPORT
+     rfftw_destroy_plan(plan);
+ #endif
+@@ -857,8 +857,8 @@
+ 
+     fast_reals_set(lin + i, rin + i, 0, FFTW_N - i);
+ #ifdef FFTW3_SUPPORT
+-    fftw_execute(lplan);
+-    fftw_execute(rplan);
++    myth_fftw_execute(lplan);
++    myth_fftw_execute(rplan);
+ #elif FFTW2_SUPPORT
+     rfftw_one(plan, lin, lout);
+     rfftw_one(plan, rin, rout);
+diff -Naur mythplugins-trunk-16747-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-16747-new/mythmusic/mythmusic/visualize.h
+--- mythplugins-trunk-16747-old/mythmusic/mythmusic/visualize.h	2008-03-22 14:21:24.000000000 -0700
++++ mythplugins-trunk-16747-new/mythmusic/mythmusic/visualize.h	2008-03-23 11:57:32.000000000 -0700
+@@ -22,16 +22,35 @@
+ extern "C" {
+ #ifdef FFTW3_SUPPORT
+ #include <fftw3.h>
+-#define myth_fftw_float double /* need to use different plan function to change */
+-#define fftw_real myth_fftw_float
++#if ! defined (FFTW3_SUPPORT_FFTW) && ! defined (FFTW3_SUPPORT_FFTWF) && ! defined (FFTW3_SUPPORT_FFTWL)
++#define FFTW3_SUPPORT_FFTW
++#endif
++#if defined (FFTW3_SUPPORT_FFTW)
++#define myth_fftw_float double
+ #define myth_fftw_complex std::complex<myth_fftw_float>
+-#if (myth_fftw_float == double)
+ #define myth_fftw_complex_cast fftw_complex
+-#elif (myth_fftw_float == float)
++#define myth_fftw_plan fftw_plan
++#define myth_fftw_destroy_plan(a) fftw_destroy_plan(a)
++#define myth_fftw_execute(a) fftw_execute(a)
++#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftw_plan_dft_r2c_1d(a,b,c,d)
++#elif defined (FFTW3_SUPPORT_FFTWF)
++#define myth_fftw_float float
++#define myth_fftw_complex std::complex<myth_fftw_float>
+ #define myth_fftw_complex_cast fftwf_complex
+-#elif (myth_fftw_float == long double)
++#define myth_fftw_plan fftwf_plan
++#define myth_fftw_destroy_plan(a) fftwf_destroy_plan(a)
++#define myth_fftw_execute(a) fftwf_execute(a)
++#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftwf_plan_dft_r2c_1d(a,b,c,d)
++#elif defined (FFTW3_SUPPORT_FFTWL)
++#define myth_fftw_float long double
++#define myth_fftw_complex std::complex<myth_fftw_float>
+ #define myth_fftw_complex_cast fftwl_complex
++#define myth_fftw_plan fftwl_plan
++#define myth_fftw_destroy_plan(a) fftwl_destroy_plan(a)
++#define myth_fftw_execute(a) fftwl_execute(a)
++#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftwl_plan_dft_r2c_1d(a,b,c,d)
+ #endif
++#define fftw_real myth_fftw_float
+ #elif	FFTW2_SUPPORT
+ #include <rfftw.h>
+ #include <fftw.h>
+@@ -69,7 +88,7 @@
+     int analyzerBarWidth;
+ 
+ #ifdef FFTW3_SUPPORT
+-    fftw_plan lplan, rplan;
++    myth_fftw_plan lplan, rplan;
+     myth_fftw_float *lin, *rin;
+     myth_fftw_complex *lout, *rout;
+ #elif FFTW2_SUPPORT
+@@ -166,7 +185,7 @@
+     GLfloat angle, view_roty;
+ 
+ #ifdef FFTW3_SUPPORT
+-    fftw_plan lplan, rplan;
++    myth_fftw_plan lplan, rplan;
+     myth_fftw_float *lin, *rin;
+     myth_fftw_complex *lout, *rout;
+ #elif FFTW2_SUPPORT
