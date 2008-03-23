@@ -117,6 +117,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ipv6 \
 	--with-gnu-ld \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa" \
+	--with-fontdir="$(libdir)/X11/fonts" \
+	--with-default-font-path="$(libdir)/X11/fonts/TTF,$(libdir)/X11/fonts/misc" \
+	--with-xkb-path="$(datadir)/X11/xkb" \
+	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
+	--with-rgb-path="$(datadir)/X11/rgb" \
+	--with-serverconfig-path="$(libdir)/xserver" \
 	--with-dri-driver-path="$(libdir)/xorg/modules/dri"
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
