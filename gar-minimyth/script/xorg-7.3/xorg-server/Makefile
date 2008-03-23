@@ -3,7 +3,7 @@ GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch
+PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -129,6 +129,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-tcp-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
+	--with-fontdir="$(libdir)/X11/fonts" \
+	--with-default-font-path="$(libdir)/X11/fonts/TTF,$(libdir)/X11/fonts/misc" \
+	--with-xkb-path="$(datadir)/X11/xkb" \
+	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
+	--with-rgb-path="$(datadir)/X11/rgb" \
+	--with-serverconfig-path="$(libdir)/xserver" \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa" \
 	--with-dri-driver-path="$(libdir)/xorg/modules/dri"
 
