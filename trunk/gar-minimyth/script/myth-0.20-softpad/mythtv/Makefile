@@ -34,6 +34,7 @@ DEPENDS = \
 	lang/c++ \
 	db/mysql \
 	lib/alsa-lib \
+	lib/faad2 \
 	lib/freetype \
 	lib/lame \
 	lib/libdca \
@@ -95,7 +96,8 @@ CONFIGURE_ARGS = \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
 	--disable-directfb \
-	--disable-directx
+	--disable-directx \
+	--enable-faad
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)

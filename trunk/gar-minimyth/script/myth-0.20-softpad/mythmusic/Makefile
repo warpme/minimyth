@@ -13,7 +13,7 @@ DEPENDS = \
 	$(CATEGORY)/mythtv \
 	lib/faad2 \
 	lib/flac \
-	lib/fftw \
+	lib/fftw3f \
 	lib/libcdaudio \
 	lib/libcdio \
 	lib/libid3tag \
