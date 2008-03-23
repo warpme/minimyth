@@ -25,6 +25,7 @@ DEPENDS = \
 	lang/c++ \
 	db/mysql \
 	lib/alsa-lib \
+	lib/faad2 \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
@@ -88,7 +89,8 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx \
 	--disable-mac-bundle \
-	--without-bindings="perl,python"
+	--without-bindings="perl,python" \
+	--enable-libfaad
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
