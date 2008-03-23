@@ -8,8 +8,9 @@ PATCHFILES += \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-mythpopupbox_delete.patch \
 	$(DISTNAME)-harvester_cpp.patch \
-	$(DISTNAME).patch.gar \
-	$(DISTNAME)-parser_youtube_fix.patch
+	$(DISTNAME)-parser_youtube_fix.patch \
+	$(DISTNAME)-fftw3f.patch \
+	$(DISTNAME).patch.gar
 PARSERS = \
 	belegger \
 	dailymotion-2 \
@@ -27,7 +28,7 @@ endef
 DEPENDS = \
 	lang/c++ \
 	$(CATEGORY)/mythtv \
-	lib/fftw
+	lib/fftw3f
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
