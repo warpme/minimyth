@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.0.2
+GARVERSION = 7.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
