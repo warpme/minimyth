@@ -91,7 +91,7 @@ CONFIGURE_ARGS = \
 	--disable-directx \
 	--disable-mac-bundle \
 	--without-bindings="perl,python" \
-	--with-libfaad
+	--enable-libfaad
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
