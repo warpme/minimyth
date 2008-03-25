@@ -6,7 +6,6 @@ MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-gcc_4.3.patch
-PATCHFILES += $(DISTNAME)-remove_if_addrlabel_h.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-alsa_1.0.16.patch $(DISTNAME)-jetway_j9f2_hdmi.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.3.patch $(DISTNAME)-unionfs_2.2.4.patch
