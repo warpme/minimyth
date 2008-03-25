@@ -29,6 +29,22 @@ start() {
     mm_mythdb_settings_set "OSDFont"   "FreeSans.ttf"
     mm_mythdb_settings_set "OSDCCFont" "FreeSans.ttf"
 
+    # Disable MythTV's use of OpenGL for unstable drivers.
+    case "${MM_X_DRIVER}" in
+        # unichrome_dri.so is unstable.
+        openchrome)
+            mm_mythdb_settings_set "SlideshowUseOpenGL" "0"
+            mm_mythdb_settings_set "ThemePainter" "qt"
+            mm_mythdb_settings_set "UseOpenGLVSync" "0"
+            ;;
+        # unichrome_dri.so is unstable.
+        openchrome_pro)
+            mm_mythdb_settings_set "SlideshowUseOpenGL" "0"
+            mm_mythdb_settings_set "ThemePainter" "qt"
+            mm_mythdb_settings_set "UseOpenGLVSync" "0"
+            ;;
+    esac
+
     # Set the MythTV theme.
     if /usr/bin/test -n "${MM_THEME_NAME}" ; then
         mm_mythdb_settings_set "Theme" "${MM_THEME_NAME}"
