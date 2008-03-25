@@ -52,11 +52,11 @@ $(DOWNLOADDIR)/%:
 
 # download an http URL (colons omitted)
 http//%: 
-	@wget -c -P $(PARTIALDIR) http://$*
+	@cd $(PARTIALDIR) ; wget -c http://$*
 
 # download an ftp URL (colons omitted)
 ftp//%: 
-	@wget -c --passive-ftp -P $(PARTIALDIR) ftp://$*
+	@cd $(PARTIALDIR) ; wget -c --passive-ftp ftp://$*
 
 # link to a local copy of the file
 # (absolute path)
