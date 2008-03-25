@@ -272,3 +272,7 @@ sed -i "s%^build_DEPENDS *+= *\(.*\)$%build_DEPENDS += devel/build-system-bins \
 
 # Add additional licenses
 sed -i 's%^\(GPL2_LICENSE_TEXT *=.*\)$%\1\nGPL3_LICENSE_TEXT = \$(LICENSEDIR)/GPL3.txt%' ${SCRIPT_DIR}/gar.lib.mk
+
+# Fixed wget dependent fetches
+sed -i 's%^\t@wget -c -P \$(PARTIALDIR) http://\$\*$%\t@cd \$(PARTIALDIR) ; wget -c http://\$\*%' ${SCRIPT_DIR}/gar.lib.mk
+sed -i 's%^\t@wget -c --passive-ftp -P \$(PARTIALDIR) ftp://\$\*$%\t@cd \$(PARTIALDIR) ; wget -c --passive-ftp ftp://\$\*%' ${SCRIPT_DIR}/gar.lib.mk
