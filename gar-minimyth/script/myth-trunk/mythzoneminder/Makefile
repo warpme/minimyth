@@ -14,10 +14,9 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-BUILD_SCRIPTS      = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	$(MYTHPLUGINS_CONFIGURE_ARGS) \
@@ -30,10 +29,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk $(CATEGORY)/mythplugins/package-api.mk
 include ../../gar.mk
-
-configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake mythplugins.pro
-	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

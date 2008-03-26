@@ -2,6 +2,7 @@ MYTHPLUGINS_VERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 
 MYTHPLUGINS_CONFIGURE_ARGS = \
 	--prefix="$(prefix)" \
+	--qmake="$(DESTDIR)$(qtbindir)/qmake" \
 	--libdir-name="lib" \
 	--disable-all \
 	--enable-opengl

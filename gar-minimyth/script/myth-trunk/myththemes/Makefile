@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-qmake.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-programid.patch
 LICENSE = GPL2
@@ -19,12 +20,12 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	--prefix="$(prefix)"
+	--prefix="$(prefix)" \
+	--qmake="$(DESTDIR)$(qtbindir)/qmake"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
@@ -38,10 +39,6 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
