@@ -6,23 +6,12 @@ MYTHTV_SVN_BRANCH = branches/release-0-20-fixes
 GARVERSION_SHORT = 0.20
 DISTNAME_SHORT   = $(GARNAME)-$(GARVERSION_SHORT)
 
-MYTHTV_QT_VERSION = 3
-
 MYTHTV_CONFIGURE_ENV = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
+	QTDIR="$(DESTDIR)$(qtprefix)"
 MYTHTV_BUILD_ENV     = \
-	DESTDIR="$(DESTDIR)" \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)"
+	QTDIR="$(DESTDIR)$(qtprefix)"
 MYTHTV_INSTALL_ENV   = \
-	DESTDIR="$(DESTDIR)" \
 	QTDIR="$(DESTDIR)$(qtprefix)" \
-	QMAKESPEC="default" \
-	OPTFLAGS="$(CFLAGS)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
 post-install-mythtv-version:
