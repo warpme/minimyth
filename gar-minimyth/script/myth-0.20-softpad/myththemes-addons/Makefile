@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/trunk/themes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-qmake.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-font.patch \
 	$(DISTNAME_SHORT)-fadeaway.patch \
@@ -21,9 +22,8 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)"
@@ -35,10 +35,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, 14914, $(DISTNAME))
-	@$(MAKECOOKIE)
-
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
@@ -46,10 +42,6 @@ pre-configure:
 	@echo "themes.files  ="                   >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootube-osd"      >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
-
-configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake themes.pro
-	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

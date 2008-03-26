@@ -30,7 +30,7 @@ DEPENDS = \
 	lib/freetype \
 	lib/lame \
 	lib/zlib \
-	qt/qt$(MYTHTV_QT_VERSION) \
+	qt/qt3 \
 	system/lirc \
 	xorg/xorg
 
@@ -38,10 +38,9 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 PWD := $(shell pwd)
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-BUILD_SCRIPTS      = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
@@ -106,10 +105,6 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake $(GARNAME).pro
 	@$(MAKECOOKIE)
 
 install-source:
