@@ -10,6 +10,7 @@ endef
 
 DEPENDS = \
 	lang/c++ \
+	db/mysql \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
