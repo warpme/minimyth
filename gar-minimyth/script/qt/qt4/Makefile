@@ -21,9 +21,12 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	-prefix $(qtprefix) \
+	-hostprefix $(DESTDIR)$(qtprefix) \
 	-bindir $(qtbindir) \
 	-libdir $(qtlibdir) \
 	-headerdir $(qtincludedir) \
+	-examplesdir $(DESTDIR)$(qtprefix)/examples \
+	-demosdir $(DESTDIR)$(qtprefix)/demos \
 	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
 	-shared \
 	-qt-gif \
@@ -44,6 +47,8 @@ CONFIGURE_ARGS = \
 	-system-libmng \
 	-system-libjpeg \
 	-openssl \
+	-nomake demos \
+	-nomake examples \
 	-no-rpath \
 	-no-nas-sound \
 	-opengl \
@@ -67,8 +72,6 @@ else
 CONFIGURE_ARGS += \
 	-xplatform $(PLATFORM_GARHOST_NAME)
 endif
-INSTALL_ARGS = \
-	INSTALL_ROOT="$(DESTDIR)"
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
@@ -147,15 +150,10 @@ pre-install:
 	@$(MAKECOOKIE)
 
 post-install:
-	@#rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
 	@rm -f $(DESTDIR)$(qtlibdir)/*.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
 	@ln -sf $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
-	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_INCDIR_QT, , $(DESTDIR)$(qtincludedir))
-	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_LIBDIR_QT, , $(DESTDIR)$(qtlibdir))
-	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC      , , $(build_DESTDIR)$(build_qtbindir)/moc)
-	@#$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_UIC      , , $(build_DESTDIR)$(build_qtbindir)/uic)
-	@#$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
+	@$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
 	@files=`ls -1 $(DESTDIR)$(qtlibdir)/pkgconfig/*.pc` ; \
 	 for file in $${files} ; do \
 		sed -e 's%-I$(DESTDIR)$(includedir)%-I$(includedir)%g'   -i $${file} ; \
