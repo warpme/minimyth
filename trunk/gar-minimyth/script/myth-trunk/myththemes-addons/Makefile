@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/themes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-qmake.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-font.patch \
 	$(DISTNAME_SHORT)-preserve_timestamps.patch
@@ -20,12 +21,12 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
-CONFIGURE_SCRIPTS += $(WORKSRC)/mythtv
-INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	--prefix="$(prefix)"
+	--prefix="$(prefix)" \
+	--qmake="$(DESTDIR)$(qtbindir)/qmake"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
@@ -45,10 +46,6 @@ pre-configure:
 	@echo "themes.files  ="                   >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootube-osd"      >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
-
-configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) qmake themes.pro
-	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

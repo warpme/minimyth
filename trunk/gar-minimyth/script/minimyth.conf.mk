@@ -38,14 +38,14 @@ mm_CHIPSETS               ?= intel nvidia via other
 # 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream',
 # 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'xine', 'perl',
 # 'transcode', 'mame', 'wiimote' and 'debug'.
-mm_SOFTWARE               ?= mythbrowser \
+mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 0.21),mythbrowser) \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
                              mythgame \
                              mythmusic \
                              mythnews \
                              mythphone \
-                             mythstream \
+                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 0.21),mythstream) \
                              mythvideo \
                              mythweather \
                              $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
@@ -114,7 +114,7 @@ mm_NVIDIA_VERSION         ?= 169.12
 mm_XORG_VERSION           ?= 7.3
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 16747
+mm_MYTH_TRUNK_VERSION     ?= 16798
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
