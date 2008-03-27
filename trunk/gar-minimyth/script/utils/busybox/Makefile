@@ -7,7 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-tail.patch \
-	$(DISTNAME)-taskset.patch
+	$(DISTNAME)-taskset.patch \
+	$(DISTNAME)-udhcp.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
