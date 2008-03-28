@@ -246,3 +246,7 @@ post-install:
 		echo "libdir='$(shell dirname `echo $(pathname) | sed -e 's%^$(DESTDIR)%%'`)'"  \
 			>> $(patsubst %.so,%.la,$(pathname)) ;)
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(kdeprefix)
