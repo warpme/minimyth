@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 2.4.2
+GARVERSION = 2.5
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL lib/zlib xorg/xorg
-BUILDDEPS = devel/nasm
+DEPENDS = lang/c lib/SDL lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -33,7 +32,7 @@ CONFIGURE_ARGS = \
 	--disable-static \
 	--disable-profile \
 	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
-	--enable-nasm \
+	--with-zlib-prefix="$(DESTDIR)$(prefix)" \
 	--x-libraries="$(DESTDIR)$(libdir)"
 
 include ../../gar.mk

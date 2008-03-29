@@ -1,20 +1,21 @@
-diff -Naur stella-2.4.2-old/configure stella-2.4.2-new/configure
---- stella-2.4.2-old/configure	2007-06-20 09:33:22.000000000 -0700
-+++ stella-2.4.2-new/configure	2007-09-23 17:08:55.000000000 -0700
-@@ -30,9 +30,10 @@
+diff -Naur stella-2.5-old/configure stella-2.5-new/configure
+--- stella-2.5-old/configure	2008-03-09 08:32:09.000000000 -0700
++++ stella-2.5-new/configure	2008-03-28 18:22:42.000000000 -0700
+@@ -30,10 +30,10 @@
  _build_atarivox=no
  
  # more defaults
 -_ranlib=ranlib
 +_ranlib="${RANLIB:-'ranlib'}"
-+_strip="${STRIP:-'strip'}"
  _install=install
 -_ar="ar cru"
+-_strip=strip
 +_ar="${AR:-'ar'} cru"
++_strip="${STRIP:-'strip'}"
  _mkdir="mkdir -p"
  _echo=printf
  _cat=cat
-@@ -101,7 +102,7 @@
+@@ -100,7 +100,7 @@
  	# In cross-compiling mode, we cannot run the result
  	eval "$1 -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
  else
@@ -23,18 +24,10 @@ diff -Naur stella-2.4.2-old/configure stella-2.4.2-new/configure
  fi
  }
  
-@@ -914,6 +915,7 @@
- LD := $LD
- LIBS += $LIBS
- RANLIB := $_ranlib
-+STRIP := $_strip
- INSTALL := $_install
- AR := $_ar
- MKDIR := $_mkdir
-diff -Naur stella-2.4.2-old/Makefile stella-2.4.2-new/Makefile
---- stella-2.4.2-old/Makefile	2007-08-16 09:42:46.000000000 -0700
-+++ stella-2.4.2-new/Makefile	2007-09-23 17:08:55.000000000 -0700
-@@ -169,7 +169,7 @@
+diff -Naur stella-2.5-old/Makefile stella-2.5-new/Makefile
+--- stella-2.5-old/Makefile	2008-03-09 10:52:40.000000000 -0700
++++ stella-2.5-new/Makefile	2008-03-28 18:19:20.000000000 -0700
+@@ -163,7 +163,7 @@
  
  install: all
  	$(INSTALL) -d "$(DESTDIR)$(BINDIR)"
@@ -43,12 +36,3 @@ diff -Naur stella-2.4.2-old/Makefile stella-2.4.2-new/Makefile
  	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)"
  	$(INSTALL) -c -m 644 "$(srcdir)/Announce.txt" "$(srcdir)/Changes.txt" "$(srcdir)/Copyright.txt" "$(srcdir)/License.txt" "$(srcdir)/README-SDL.txt" "$(srcdir)/Readme.txt" "$(srcdir)/Todo.txt" "$(srcdir)/docs/index.html" "$(srcdir)/docs/debugger.html" "$(DESTDIR)$(DOCDIR)/"
  	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
-@@ -184,7 +184,7 @@
- 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/large"
- 
- install-strip: install
--	strip stella$(EXEEXT)
-+	$(STRIP) stella$(EXEEXT)
- 
- uninstall:
- 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
