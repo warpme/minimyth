@@ -6,7 +6,7 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT)-ticket-4792.patch \
-	$(DISTNAME_SHORT)-processevents.patch \
+	$(DISTNAME_SHORT)-ticket-5066.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT).patch.gar \
