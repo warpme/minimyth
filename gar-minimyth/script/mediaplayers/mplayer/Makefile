@@ -20,7 +20,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libogg lib/libpng lib/libtheora lib/libvorbis lib/SDL lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -98,7 +98,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-rpath
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
-# --enable-theora must be auto or cflags and libs will not be determined correctly.
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
@@ -114,8 +113,9 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-tremor-internal \
 	--disable-tremor-low \
 	--disable-tremor-external \
-	--enable-libvorbis \
+	--disable-libvorbis \
 	--disable-speex \
+	--disable-theora \
 	--enable-faad-external \
 	--disable-faad-internal \
 	--disable-faad-fixed \
@@ -141,7 +141,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-dga1 \
 	--disable-vesa \
 	--disable-svga \
-	--enable-sdl \
+	--disable-sdl \
 	--disable-aa \
 	--disable-caca \
 	--disable-ggi \
@@ -222,7 +222,6 @@ CONFIGURE_ARGS_ADVANCED = \
 CONFIGURE_ARGS_WITH = \
 	--with-xvmclib=XvMCW \
 	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
-	--with-sdl-config="$(DESTDIR)$(bindir)/sdl-config" \
 	--with-dvdnav-config="$(DESTDIR)$(bindir)/dvdnav-config"
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \
