@@ -9,6 +9,7 @@ PATCHFILES  = \
 	$(DISTNAME)-fuser.patch \
 	$(DISTNAME)-tail.patch \
 	$(DISTNAME)-taskset.patch \
+	$(DISTNAME)-tcpudp.patch \
 	$(DISTNAME)-udhcp.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
