@@ -7,8 +7,7 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT)-qmake.patch \
 	$(DISTNAME_SHORT).patch.gar \
-	$(DISTNAME_SHORT)-font.patch \
-	$(DISTNAME_SHORT)-preserve_timestamps.patch
+	$(DISTNAME_SHORT)-font.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
