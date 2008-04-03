@@ -53,6 +53,9 @@ clean-image:
 	@rm -rf $(SCRATCHDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d
 
+garchive-touch:
+	@$(if $(strip $(ALLFILES)), touch $(GARCHIVEDIR))
+
 patch-%.gar: gar-patch-%.gar
 	@$(MAKECOOKIE)
 
