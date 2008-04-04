@@ -1,5 +1,5 @@
 GARNAME = dbus
-GARVERSION = 1.0.3
+GARVERSION = 1.2.1
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
@@ -28,12 +28,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-CFLAGS   += -D_GNU_SOURCE
-CXXFLAGS += -D_GNU_SOURCE
-
 pre-configure:
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_have_abstract_sockets=yes" >> $(WORKSRC)/config.cache
+	@echo "dbus_cv_va_val_copy=no"          >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
