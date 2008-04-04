@@ -61,7 +61,7 @@ CONFIGURE_ARGS = \
 	-xrender \
 	-fontconfig \
 	-no-tablet \
-	-no-xkb \
+	-xkb \
 	-no-separate-debug-info \
 	-no-glib \
 	-little-endian
