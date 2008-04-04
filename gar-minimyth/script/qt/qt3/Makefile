@@ -57,7 +57,7 @@ CONFIGURE_ARGS = \
 	-xrender \
 	-xft \
 	-no-tablet \
-	-no-xkb \
+	-xkb \
 	-no-dlopen-opengl
 ifeq ($(DESTIMG),build)
 BUILD_ENV = \
