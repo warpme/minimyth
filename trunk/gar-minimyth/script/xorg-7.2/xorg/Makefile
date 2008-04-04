@@ -42,7 +42,7 @@ DEPENDS = \
 	$(CATEGORY)/xf86-video-sis \
 	$(CATEGORY)/xf86-video-vmware \
 	$(CATEGORY)/xinit \
-	$(CATEGORY)/xkbdcomp \
+	$(CATEGORY)/xkbcomp \
 	$(CATEGORY)/xkeyboard-config \
 	$(CATEGORY)/xlsclients \
 	$(CATEGORY)/xorg-server \
