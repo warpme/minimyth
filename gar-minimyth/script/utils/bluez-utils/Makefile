@@ -1,5 +1,5 @@
 GARNAME = bluez-utils
-GARVERSION = 3.29
+GARVERSION = 3.30
 CATEGORIES = utils
 MASTER_SITES = http://bluez.sf.net/download/
 DISTFILES = $(DISTNAME).tar.gz
@@ -64,4 +64,8 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_ctl_bluetooth.la
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_pcm_bluetooth.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libaudio.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libinput.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libnetwork.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libserial.la
 	@$(MAKECOOKIE)
