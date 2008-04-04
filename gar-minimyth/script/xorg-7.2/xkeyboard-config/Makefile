@@ -11,6 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c
+BUILDDEPS = \
+	perl/perl-XML-Parser
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
