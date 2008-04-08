@@ -3,8 +3,8 @@ GARVERSION = 3.0.1
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-virtual_device.patch $(DISTNAME)-perl.patch.gar
+DISTFILES  = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-changeset-5169.patch $(DISTNAME)-virtual_device.patch $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
