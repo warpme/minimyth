@@ -1,16 +1,15 @@
 GARNAME = mythstream
-GARVERSION = v0.18_1
+GARVERSION = 0.18_qt4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME)-gcc_4.3.patch \
-	$(DISTNAME)-mythpopupbox_delete.patch \
-	$(DISTNAME)-harvester_cpp.patch \
+	$(DISTNAME)-qtopengl.patch \
 	$(DISTNAME)-parser_youtube_fix.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
+
 PARSERS = \
 	belegger \
 	dailymotion-2 \
@@ -32,7 +31,7 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.18_1
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.18_qt4
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
