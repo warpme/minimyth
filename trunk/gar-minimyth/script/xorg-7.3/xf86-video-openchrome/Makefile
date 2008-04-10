@@ -1,5 +1,5 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 0.2.901
+GARVERSION = 0.2.902
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
 MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
