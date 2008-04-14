@@ -1,9 +1,9 @@
 GARNAME = libart_lgpl
-GARVERSION = 2.3.19
+GARVERSION = 2.3.20
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/2.3/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-cplusplus.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
