@@ -8,6 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-fuser.patch \
 	$(DISTNAME)-init.patch \
+	$(DISTNAME)-less.patch \
 	$(DISTNAME)-nameif.patch \
 	$(DISTNAME)-tail.patch \
 	$(DISTNAME)-taskset.patch \
