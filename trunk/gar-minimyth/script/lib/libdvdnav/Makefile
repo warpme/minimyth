@@ -1,8 +1,8 @@
 GARNAME = libdvdnav
-GARVERSION = 997
+GARVERSION = 4.1.2
 CATEGORIES = lib
-MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/libdvdnav/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/dvdnav/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -40,18 +40,10 @@ include ../../gar.mk
 
 PARALLELMFLAGS := -j1
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
 pre-configure:
 	@cd $(WORKSRC) ; ln -s configure2 configure
 	@$(MAKECOOKIE)
 
 post-configure:
-	@sed -e 's%^DESTDIR *= *.*$$%DESTDIR=$(DESTDIR)%' -i $(WORKSRC)/config.mak
-	@sed -e 's%^dvdread_incdir *= *.*$$%dvdread_incdir=$$(DESTDIR)$(includedir)/dvdread%' -i $(WORKSRC)/config.mak
+	@sed -e 's%^dvdread_incdir *= *.*$$%dvdread_incdir=$(includedir)/dvdread%' -i $(WORKSRC)/config.mak
 	@$(MAKECOOKIE)
