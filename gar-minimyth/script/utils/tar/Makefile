@@ -1,8 +1,8 @@
 GARNAME = tar
-GARVERSION = 1.19
+GARVERSION = 1.20
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL3
 
 DESCRIPTION = 
@@ -20,7 +20,3 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
-
-# Needed to compile with GCC 4.3 and GLIBC 2.6.1.
-CFLAGS   := $(CFLAGS)   -fgnu89-inline
-CXXFLAGS := $(CXXFLAGS) -fgnu89-inline
