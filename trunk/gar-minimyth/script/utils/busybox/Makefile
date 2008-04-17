@@ -13,6 +13,7 @@ PATCHFILES  = \
 	$(DISTNAME)-tail.patch \
 	$(DISTNAME)-taskset.patch \
 	$(DISTNAME)-tcpudp.patch \
+	$(DISTNAME)-top.patch \
 	$(DISTNAME)-udhcp.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
