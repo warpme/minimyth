@@ -1,5 +1,5 @@
 GARNAME = yasm
-GARVERSION = 0.6.2
+GARVERSION = 0.7.0
 CATEGORIES = devel
 MASTER_SITES = http://www.tortall.net/projects/yasm/releases/
 DISTFILES = $(DISTNAME).tar.gz
@@ -22,6 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-profiling \
 	--disable-gcov \
 	--disable-python \
+	--disable-python-bindings \
 	--enable-nls \
 	--disable-rpath \
 	--without-dmalloc \
