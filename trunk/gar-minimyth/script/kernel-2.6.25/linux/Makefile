@@ -5,7 +5,6 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = $(DISTNAME)-gcc_4.3.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-squashfs_3.3.patch $(DISTNAME)-unionfs_2.3.2.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
