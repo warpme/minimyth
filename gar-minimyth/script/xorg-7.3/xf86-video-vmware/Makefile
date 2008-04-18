@@ -1,5 +1,5 @@
 GARNAME = xf86-video-vmware
-GARVERSION = 10.16.0
+GARVERSION = 10.16.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -15,6 +15,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
+	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
