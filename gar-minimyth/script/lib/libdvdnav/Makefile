@@ -3,6 +3,7 @@ GARVERSION = 4.1.2
 CATEGORIES = lib
 MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/dvdnav/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-dirpaths.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
