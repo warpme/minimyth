@@ -1,5 +1,5 @@
 GARNAME = coreutils
-GARVERSION = 6.10
+GARVERSION = 6.11
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -30,7 +30,3 @@ post-install:
 	@# We need to use the system's 'su', because it must be suid.
 	@$(if $(filter build,$(DESTIMG)),rm -f $(DESTDIR)$(bindir)/su)
 	@$(MAKECOOKIE)
-
-# Needed to compile with GCC 4.3 and GLIBC 2.6.1.
-CFLAGS   := $(CFLAGS)   -fgnu89-inline
-CXXFLAGS := $(CXXFLAGS) -fgnu89-inline
