@@ -21,7 +21,7 @@ DEPENDS = \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
-	net/gpxe \
+	$(if $(filter i386,$(mm_GARCH_FAMILY)),net/gpxe) \
 	disk/hdparm \
 	net/ifplugd \
 	net/iputils \
