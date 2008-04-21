@@ -792,7 +792,10 @@ mm-make-other:
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)
 	@cp  -pd ./files/pxe.readme.txt $(mm_STAGEDIR)/pxe-$(mm_NAME)/readme.txt
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth
-	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.0
+	@if test -e $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 ; then \
+		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 \
+		       $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.0 ; \
+	fi
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg
 	@cat ./files/pxe.gpxe.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
 	@cp  -pd ./files/pxe.gpxe.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/dhcpd.conf
