@@ -19,7 +19,6 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
-	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
 BUILDDEPS = $(CATEGORY)/util-macros
@@ -34,11 +33,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
-	--enable-xthreads \
-	--enable-xcms \
+	--disable-xthreads \
+	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
-	--enable-xf86bigfont \
+	--disable-xf86bigfont \
 	--enable-xkb \
 	--disable-man-pages \
 	--disable-composecache \
@@ -46,6 +45,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-malloc0returnsnull \
 	--enable-unix-transport \
 	--enable-tcp-transport \
+	--disable-local-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
 	--without-xcb \
@@ -60,9 +60,6 @@ CONFIGURE_ENV = \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
