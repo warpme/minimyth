@@ -29,9 +29,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
-
 pre-configure:
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure

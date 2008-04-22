@@ -3,7 +3,7 @@ GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
+PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -13,7 +13,6 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/bigreqsproto \
-	$(CATEGORY)/compositeproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/evieext \
 	$(CATEGORY)/fixesproto \
@@ -25,7 +24,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
@@ -39,7 +37,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
-	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xf86miscproto \
@@ -68,7 +65,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-null-root-cursor \
 	--disable-aiglx \
 	--disable-glx-tls \
-	--enable-composite \
+	--disable-composite \
 	--enable-shm \
 	--disable-xres \
 	--disable-xtrap \
@@ -78,25 +75,25 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xvmc \
 	--enable-dga \
 	--enable-screensaver \
-	--enable-xdmcp \
+	--disable-xdmcp \
 	--disable-xdm-auth-1 \
 	--enable-glx \
 	--enable-dri \
 	--enable-xinerama \
 	--enable-xf86vidmode \
 	--enable-xf86misc \
-	--enable-xace \
-	--enable-xcsecurity \
-	--enable-appgroup \
+	--disable-xace \
+	--disable-xcsecurity \
+	--disable-appgroup \
 	--disable-xcalibrate \
 	--disable-tslib \
-	--enable-xevie \
-	--enable-cup \
-	--enable-evi \
+	--disable-xevie \
+	--disable-cup \
+	--disable-evi \
 	--disable-multibuffer \
 	--disable-fontcache \
 	--enable-dbe \
-	--enable-xf86bigfont \
+	--disable-xf86bigfont \
 	--enable-dpms \
 	--disable-config-dbus \
 	--disable-config-hal \
@@ -104,16 +101,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xfree86-utils \
 	--enable-xorg \
 	--disable-dmx \
-	--enable-xvfb \
+	--disable-xvfb \
 	--disable-xnest \
 	--disable-xwin \
 	--disable-xprint \
 	--disable-xgl \
 	--disable-xglx \
 	--disable-xegl \
-	--enable-mfb \
-	--enable-cfb \
-	--enable-afb \
+	--disable-mfb \
+	--disable-cfb \
+	--disable-afb \
 	--disable-kdrive \
 	--disable-xephyr \
 	--disable-xsdl \
@@ -128,6 +125,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-unix-transport \
 	--enable-tcp-transport \
 	--disable-ipv6 \
+	--disable-local-transport \
 	--with-gnu-ld \
 	--with-fontdir="$(libdir)/X11/fonts" \
 	--with-default-font-path="$(libdir)/X11/fonts/TTF,$(libdir)/X11/fonts/misc" \
@@ -140,9 +138,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
@@ -167,14 +162,9 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/fonts/libfreetype.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/fonts/libtype1.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libafb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb32.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libcfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libi2c.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libmfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libpcidata.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libscanpci.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadowfb.la
@@ -183,11 +173,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf1bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf4bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_32bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libdrm.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libfbdevhw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
