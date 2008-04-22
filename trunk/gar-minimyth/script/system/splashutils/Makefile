@@ -1,5 +1,5 @@
 GARNAME = splashutils
-GARVERSION = 1.5.4
+GARVERSION = 1.5.4.1
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -42,6 +42,12 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
+pre-install:
+	@rm -f $(DESTDIR)$(esbindir)/fbcondecor_ctl.static
+	@rm -f $(DESTDIR)$(esbindir)/fbsplashd.static
+	@rm -f $(DESTDIR)$(esbindir)/splash_util.static
 	@$(MAKECOOKIE)
 
 post-install:
