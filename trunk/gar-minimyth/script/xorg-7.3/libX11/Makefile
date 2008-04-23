@@ -3,7 +3,7 @@ GARVERSION = 1.1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-x11_extra_deps.patch $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -12,12 +12,9 @@ define BLURB
 endef
 
 DEPENDS   = lang/c \
-	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
-	$(CATEGORY)/libXau \
 	$(CATEGORY)/libxcb \
-	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
