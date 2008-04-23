@@ -4,7 +4,7 @@ CATEGORIES = kernel-2.6.24
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-asus_pundit_p1_ah2.patch $(DISTNAME)-jetway_j9f2_hdmi.patch $(DISTNAME)-depmod.patch
+PATCHFILES = $(DISTNAME)-jetway_j9f2_hdmi.patch $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
