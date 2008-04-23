@@ -1,0 +1,41 @@
+diff -Naur xorg-server-1.4-old/os/osdep.h xorg-server-1.4-new/os/osdep.h
+--- xorg-server-1.4-old/os/osdep.h	2007-08-31 15:54:06.000000000 -0700
++++ xorg-server-1.4-new/os/osdep.h	2008-04-23 06:47:56.000000000 -0700
+@@ -56,7 +56,9 @@
+ #define BUFSIZE 4096
+ #define BUFWATERMARK 8192
+ 
++#if defined(XDMCP) || defined(HASXDMAUTH)
+ #include <X11/Xdmcp.h>
++#endif
+ 
+ #ifndef sgi	    /* SGI defines OPEN_MAX in a useless way */
+ #ifndef X_NOT_POSIX
+@@ -122,9 +124,11 @@
+ 
+ #include <stddef.h>
+ 
++#if defined(XDMCP) || defined(HASXDMAUTH)
+ typedef Bool (*ValidatorFunc)(ARRAY8Ptr Auth, ARRAY8Ptr Data, int packet_type);
+ typedef Bool (*GeneratorFunc)(ARRAY8Ptr Auth, ARRAY8Ptr Data, int packet_type);
+ typedef Bool (*AddAuthorFunc)(unsigned name_length, char *name, unsigned data_length, char *data);
++#endif
+ 
+ typedef struct _connectionInput {
+     struct _connectionInput *next;
+@@ -260,6 +264,7 @@
+ /* in secauth.c */
+ extern XID AuthSecurityCheck (AuthCheckArgs);
+ 
++#ifdef XDMCP
+ /* in xdmcp.c */
+ extern void XdmcpUseMsg (void);
+ extern int XdmcpOptions(int argc, char **argv, int i);
+@@ -284,6 +289,7 @@
+ 
+ struct sockaddr_in;
+ extern void XdmcpRegisterBroadcastAddress (struct sockaddr_in *addr);
++#endif
+ 
+ #ifdef HASXDMAUTH
+ extern void XdmAuthenticationInit (char *cookie, int cookie_length);

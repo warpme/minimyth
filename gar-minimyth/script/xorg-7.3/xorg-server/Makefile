@@ -3,7 +3,7 @@ GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
+PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-xdmcp.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
