@@ -123,7 +123,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xorgcfg \
 	--disable-kbd_mode \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld \

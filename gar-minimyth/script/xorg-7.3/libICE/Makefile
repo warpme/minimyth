@@ -22,7 +22,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld
