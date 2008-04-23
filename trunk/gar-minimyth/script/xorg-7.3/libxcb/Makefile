@@ -14,7 +14,6 @@ endef
 DEPENDS   = lang/c \
 	$(CATEGORY)/libpthread-stubs \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/xcb-proto
 BUILDDEPS = lib/libxslt
 

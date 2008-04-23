@@ -16,7 +16,7 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
+	$(CATEGORY)/libxcb \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto \
@@ -33,7 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
-	--disable-xthreads \
+	--enable-xthreads \
 	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
@@ -44,11 +44,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-lint-library \
 	--enable-malloc0returnsnull \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-local-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
-	--without-xcb \
+	--with-xcb \
 	--without-launchd \
 	--without-lint
 
@@ -74,6 +74,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)-xcb.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/ximcp.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcUTF8Load.la
 	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcDef.la
