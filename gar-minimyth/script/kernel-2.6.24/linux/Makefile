@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-gcc_4.3.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES += $(DISTNAME)-alsa_1.0.16.patch $(DISTNAME)-jetway_j9f2_hdmi.patch
 PATCHFILES += $(DISTNAME)-nforce430_hpet.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.3.patch $(DISTNAME)-unionfs_2.3.2.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
