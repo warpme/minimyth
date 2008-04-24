@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.2.1
+GARVERSION = 2.3.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -54,11 +54,12 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
+	@rm -f $(DESTDIR)$(libdir)/libIntelXvMC.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7017.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7xxx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ivch.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/sil164.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/tfp410.la
-	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@$(MAKECOOKIE)
