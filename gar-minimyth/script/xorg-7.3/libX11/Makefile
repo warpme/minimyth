@@ -3,7 +3,7 @@ GARVERSION = 1.1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-x11_extra_deps.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-xdmcp.patch $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -12,9 +12,12 @@ define BLURB
 endef
 
 DEPENDS   = lang/c \
+	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
+	$(CATEGORY)/libXau \
 	$(CATEGORY)/libxcb \
+	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
@@ -30,7 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
-	--enable-xthreads \
+	--disable-xthreads \
 	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
@@ -45,7 +48,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-local-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
-	--with-xcb \
+	--without-xcb \
 	--without-launchd \
 	--without-lint
 
