@@ -37,6 +37,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xf86miscproto \
@@ -93,7 +94,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-multibuffer \
 	--disable-fontcache \
 	--enable-dbe \
-	--disable-xf86bigfont \
+	--enable-xf86bigfont \
 	--enable-dpms \
 	--disable-config-dbus \
 	--disable-config-hal \

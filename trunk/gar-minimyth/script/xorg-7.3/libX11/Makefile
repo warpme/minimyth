@@ -18,6 +18,7 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
 BUILDDEPS = $(CATEGORY)/util-macros
@@ -36,7 +37,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
-	--disable-xf86bigfont \
+	--enable-xf86bigfont \
 	--enable-xkb \
 	--disable-man-pages \
 	--disable-composecache \
