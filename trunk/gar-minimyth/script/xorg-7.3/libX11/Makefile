@@ -16,7 +16,6 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libxcb \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto \
