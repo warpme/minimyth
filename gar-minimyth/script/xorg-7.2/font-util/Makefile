@@ -2,7 +2,8 @@ GARNAME = font-util
 GARVERSION = 1.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
-DISTFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -22,6 +23,3 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2

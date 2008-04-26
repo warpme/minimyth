@@ -36,9 +36,6 @@ CONFIGURE_ENV = \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  )
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS))
-
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force

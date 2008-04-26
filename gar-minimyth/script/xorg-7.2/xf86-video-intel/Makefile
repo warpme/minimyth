@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.2.0
+GARVERSION = 2.3.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -42,9 +42,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
-
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
@@ -57,11 +54,12 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
+	@rm -f $(DESTDIR)$(libdir)/libIntelXvMC.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7017.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7xxx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ivch.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/sil164.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/tfp410.la
-	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@$(MAKECOOKIE)
