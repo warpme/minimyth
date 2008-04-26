@@ -3,7 +3,14 @@ GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-xdmcp.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-remove_moduledefaults.patch
+PATCHFILES = \
+	$(DISTNAME)-composite.patch \
+	$(DISTNAME)-xdmcp.patch \
+	$(DISTNAME)-perl.patch.gar \
+	$(DISTNAME)-pkg_config.patch \
+	$(DISTNAME)-drm.patch \
+	$(DISTNAME)-displaysize.patch \
+	$(DISTNAME)-remove_moduledefaults.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -139,6 +146,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
