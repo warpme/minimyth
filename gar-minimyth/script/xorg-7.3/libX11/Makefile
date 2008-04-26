@@ -45,8 +45,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-malloc0returnsnull \
 	--enable-unix-transport \
 	--disable-tcp-transport \
-	--disable-local-transport \
 	--disable-ipv6 \
+	--disable-local-transport \
 	--with-gnu-ld \
 	--without-xcb \
 	--without-launchd \
