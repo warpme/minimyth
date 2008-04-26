@@ -28,6 +28,7 @@ DEPENDS = \
 	system/lcdproc \
 	system/kbdd \
 	kernel/kernel \
+	system/irserver \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
