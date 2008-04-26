@@ -1,0 +1,28 @@
+diff -Naur xorg-server-dd6b0de38d649617600a8357e576955c9b831328-old/configure.ac xorg-server-dd6b0de38d649617600a8357e576955c9b831328-new/configure.ac
+--- xorg-server-dd6b0de38d649617600a8357e576955c9b831328-old/configure.ac	2008-04-25 15:42:57.000000000 -0700
++++ xorg-server-dd6b0de38d649617600a8357e576955c9b831328-new/configure.ac	2008-04-25 15:43:46.000000000 -0700
+@@ -1926,7 +1926,8 @@
+ 	AC_SUBST(XORGCFG_DEP_CFLAGS)
+ 	AC_SUBST(XORGCFG_DEP_LIBS)
+ 
+-	APPDEFAULTDIR=$(pkg-config --variable=appdefaultdir xt)
++        m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++	APPDEFAULTDIR=$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=appdefaultdir xt)
+ 	AC_SUBST(APPDEFAULTDIR)
+ fi
+ AM_CONDITIONAL(BUILD_XORGCFG, [test x$XORGCFG = xyes])
+diff -Naur xorg-server-dd6b0de38d649617600a8357e576955c9b831328-old/xorg-server.m4 xorg-server-dd6b0de38d649617600a8357e576955c9b831328-new/xorg-server.m4
+--- xorg-server-dd6b0de38d649617600a8357e576955c9b831328-old/xorg-server.m4	2008-04-25 15:42:57.000000000 -0700
++++ xorg-server-dd6b0de38d649617600a8357e576955c9b831328-new/xorg-server.m4	2008-04-25 15:43:46.000000000 -0700
+@@ -29,8 +29,10 @@
+ # is defined, then add $1 to $REQUIRED_MODULES.
+ 
+ AC_DEFUN([XORG_DRIVER_CHECK_EXT],[
++	AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+ 	SAVE_CFLAGS="$CFLAGS"
+-	CFLAGS="$CFLAGS -I`pkg-config --variable=sdkdir xorg-server`"
++	m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++	CFLAGS="$CFLAGS -I$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=sdkdir xorg-server`"
+ 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include "xorg-server.h"
+ #if !defined $1
