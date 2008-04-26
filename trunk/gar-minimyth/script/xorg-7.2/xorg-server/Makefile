@@ -3,7 +3,13 @@ GARVERSION = 1.3.0.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-pkg_config.patch $(DISTNAME)-drm.patch $(DISTNAME)-displaysize.patch $(DISTNAME)-mesa_6.5.3.patch
+PATCHFILES = \
+	$(DISTNAME)-xdmcp.patch \
+	$(DISTNAME)-perl.patch.gar \
+	$(DISTNAME)-pkg_config.patch \
+	$(DISTNAME)-drm.patch \
+	$(DISTNAME)-displaysize.patch \
+	$(DISTNAME)-mesa_6.5.3.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -13,7 +19,6 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/bigreqsproto \
-	$(CATEGORY)/compositeproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/evieext \
 	$(CATEGORY)/fixesproto \
@@ -25,7 +30,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
@@ -62,7 +66,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-builddocs \
 	--enable-install-libxf86config \
-	--enable-composite \
+	--disable-composite \
 	--enable-shm \
 	--disable-xres \
 	--disable-xtrap \
@@ -71,7 +75,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xvmc \
 	--enable-dga \
 	--enable-screensaver \
-	--enable-xdmcp \
+	--disable-xdmcp \
 	--disable-xdm-auth-1 \
 	--enable-glx \
 	--disable-aiglx \
@@ -80,14 +84,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xinerama \
 	--enable-xf86vidmode \
 	--enable-xf86misc \
-	--enable-xace \
-	--enable-xcsecurity \
-	--enable-appgroup \
+	--disable-xace \
+	--disable-xcsecurity \
+	--disable-appgroup \
 	--disable-xcalibrate \
 	--disable-tslib \
-	--enable-xevie \
-	--enable-cup \
-	--enable-evi \
+	--disable-xevie \
+	--disable-cup \
+	--disable-evi \
 	--disable-multibuffer \
 	--disable-fontcache \
 	--enable-dbe \
@@ -97,7 +101,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xfree86-utils \
 	--enable-xorg \
 	--disable-dmx \
-	--enable-xvfb \
+	--disable-xvfb \
 	--disable-xnest \
 	--disable-xwin \
 	--disable-xprint \
@@ -113,7 +117,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xorgcfg \
 	--disable-kbd_mode \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-ipv6 \
 	--with-gnu-ld \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa" \
@@ -127,9 +131,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force

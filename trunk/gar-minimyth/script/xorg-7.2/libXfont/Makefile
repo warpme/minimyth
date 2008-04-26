@@ -34,16 +34,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-fontcache \
 	--enable-fc \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la

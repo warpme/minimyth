@@ -3,7 +3,7 @@ GARVERSION = 1.1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-xdmcp.patch $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -16,7 +16,6 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXdmcp \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86bigfontproto \
@@ -34,8 +33,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
-	--enable-xthreads \
-	--enable-xcms \
+	--disable-xthreads \
+	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
 	--enable-xf86bigfont \
@@ -45,8 +44,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-lint-library \
 	--enable-malloc0returnsnull \
 	--enable-unix-transport \
-	--enable-tcp-transport \
+	--disable-tcp-transport \
 	--disable-ipv6 \
+	--disable-local-transport \
 	--with-gnu-ld \
 	--without-xcb \
 	--without-launchd \
@@ -60,9 +60,6 @@ CONFIGURE_ENV = \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(patsubst -O%,,$(CFLAGS)  ) -O2
-CXXFLAGS := $(patsubst -O%,,$(CXXFLAGS)) -O2
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
