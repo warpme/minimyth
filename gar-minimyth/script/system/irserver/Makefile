@@ -27,9 +27,9 @@ BUILD_ARGS = \
 include ../../gar.mk
 
 install-custom:
-	@mkdir -p $(DESTDIR)$(bindir)
-	@rm -rf $(DESTDIR)$(bindir)/irserver
-	@cp $(WORKSRC)/irserver $(DESTDIR)$(bindir)
+	@mkdir -p $(DESTDIR)$(sbindir)
+	@rm -rf $(DESTDIR)$(sbindir)/irserver
+	@cp $(WORKSRC)/irserver $(DESTDIR)$(sbindir)
 	@mkdir -p $(DESTDIR)$(datadir)/irtrans
 	@rm -rf $(DESTDIR)$(datadir)/irtrans/remotes
 	@cp -r $(WORKSRC)/remotes  $(DESTDIR)$(datadir)/irtrans
