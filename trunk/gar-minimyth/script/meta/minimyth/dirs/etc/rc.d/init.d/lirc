@@ -5,7 +5,6 @@
 # This script configures and starts LIRC.
 ################################################################################
 . /etc/rc.d/functions
-. /lib/minimyth/mm_lirc
 
 remote_wakeup_enable() {
     local wakeup_device_list="$1"
@@ -48,7 +47,6 @@ start() {
     local device
     local device_count
     local device_item
-    local device_list
     local driver
     local file
     local index
@@ -58,24 +56,9 @@ start() {
     local remote
     local wakeup
 
-    # Determine LIRC devices.
-    # First, write state for manually configured LIRC device (if any).
-    #   The 'irtrans' device is skipped because it is handled by the irtrans init.
-    # Second, read any manual state.
-    # Third, if auto is enabled, then read any automatic state.
-    if /usr/bin/test -n "${MM_LIRC_DRIVER}"             && \
-       /usr/bin/test  ! "${MM_LIRC_DRIVER}" = "irtrans" ; then
-        mm_lirc_state_put 'manual' "${MM_LIRC_DEVICE}" "${MM_LIRC_DRIVER}" "${MM_LIRC_REMOTE}" ""
-    fi
-    device_list=
-    device_list="${device_list} `mm_lirc_state_get 'manual'`"
-    if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
-        device_list="${device_list} `mm_lirc_state_get 'automatic'`"
-    fi
-
     # Count the LIRC devices.
     device_count=0
-    for device in ${device_list} ; do
+    for device_item in ${MM_LIRC_DEVICE_LIST} ; do
         device_count=$((${device_count}+1))
     done
 
@@ -150,7 +133,7 @@ start() {
     # First start an LIRC daemon for the device.
     # Second enable wake-up for the device if enabled and supported.
     index=1
-    for device_item in ${device_list} ; do
+    for device_item in ${MM_LIRC_DEVICE_LIST} ; do
         device=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f1`
         driver=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f2`
         remote=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f3`
