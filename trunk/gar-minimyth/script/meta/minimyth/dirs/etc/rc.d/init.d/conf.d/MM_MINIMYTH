@@ -15,7 +15,7 @@ conf_default_MM_MINIMYTH() {
     if /usr/bin/test -z "${MM_MINIMYTH_UPDATE_URL}" ; then
         MM_MINIMYTH_UPDATE_URL='http://linpvr.org/minimyth/download/stable/latest/'
     fi
-    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}"  ; then
+    if /usr/bin/test -z "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" ; then
         MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT='no'
     fi
 
@@ -33,13 +33,8 @@ conf_write_MM_MINIMYTH() {
 }
 
 conf_fetch_MM_MINIMYTH() {
-    if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" = "yes" ; then
-        /bin/rm -f /etc/minimyth.d/minimyth.script
-        mm_confro_get /minimyth.script /etc/minimyth.d/minimyth.script
-        if /usr/bin/test ! -e /etc/minimyth.d/minimyth.script ; then
-            mm_message_output err "error: failed to fetch 'minimyth.script' file."
-        fi
-    fi
+    # 'minimyth.script' is special and is fetched by '/etc/rc.d/init.d/conf'.
+    # rather than by this function.
 
     return 0
 }

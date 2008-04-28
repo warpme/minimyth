@@ -18,6 +18,10 @@ conf_variable_write() {
 
 start() {
 
+    local file
+    local file_list
+    local variable
+
     # Unset variables set by the processed MiniMyth configuration file.
     # This is a hack for testing that should never get invoked during normal boot.
     if /usr/bin/test -e /etc/conf.d/dhcp.override ; then
@@ -78,16 +82,12 @@ start() {
         fi
     done
 
-    # Read MiniMyth configuration processing files
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
-        . /etc/rc.d/init.d/conf.d/${file}
-    done
-
-    # Process the DHCP override configuration variables,
+    # Process the DHCP override configuration variables
     # so that they are available to the DHCP client.
     /bin/rm -f '/etc/conf.d/dhcp.override~'
     /bin/touch '/etc/conf.d/dhcp.override~'
     /bin/chmod 644 '/etc/conf.d/dhcp.override~'
+    . /etc/rc.d/init.d/conf.d/MM_DHCP
     conf_clean_MM_DHCP
     conf_check_MM_DHCP
     conf_default_MM_DHCP
@@ -99,24 +99,51 @@ start() {
     /bin/mv -f '/etc/conf.d/dhcp.override~~' '/etc/conf.d/dhcp.override~'
     /bin/mv -f '/etc/conf.d/dhcp.override~' '/etc/conf.d/dhcp.override'
 
+    # Fetch and run 'minimyth.script'.
+    if /usr/bin/test "${MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT}" = "yes" ; then
+        /bin/rm -f /etc/minimyth.d/minimyth.script
+        mm_confro_get /minimyth.script /etc/minimyth.d/minimyth.script
+        if /usr/bin/test ! -e /etc/minimyth.d/minimyth.script ; then
+            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+        fi
+    fi
+    if /usr/bin/test -f /etc/minimyth.d/minimyth.script ; then
+        mm_message_output info "running minimyth.script ..."
+        /bin/sh /etc/minimyth.d/minimyth.script
+    fi
+
+    # Enable configuration auto-detection udev rules.
+    /bin/mv -f /etc/udev/rules.d/04-minimyth-detect.rules.disabled /etc/udev/rules.d/04-minimyth-detect.rules
+
+    # Trigger udev with the additional udev rules that handle configuration auto-detection.
+    /sbin/udevadm trigger
+    /sbin/udevadm settle --timeout=60
+
+    file_list=`cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*`
+
+    # Read MiniMyth configuration processing files
+    for file in ${file_list} ; do
+        . /etc/rc.d/init.d/conf.d/${file}
+    done
+
     # Restart the DHCP client in order to pick up the processed DHCP override variables.
     /etc/rc.d/init.d/dhcp start
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         conf_clean_${file}
     done
 
     # Check MiniMyth configuration variables.
     mm_message_output info "processing configuration: checking variables ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         /usr/bin/logger -s -t minimyth -p "local0.info" "processing configuration: checking variables '${file}'"
         conf_check_${file}
     done
 
     # Set default MiniMyth configuration variable values.
     mm_message_output info "processing configuration: defaulting variables ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         /usr/bin/logger -s -t minimyth -p "local0.info" "processing configuration: defaulting variables '${file}'"
         conf_default_${file}
     done
@@ -126,7 +153,7 @@ start() {
     /bin/rm -f '/etc/conf.d/minimyth~'
     /bin/touch '/etc/conf.d/minimyth~'
     /bin/chmod 644 '/etc/conf.d/minimyth~'
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         /usr/bin/logger -s -t minimyth -p "local0.info" "processing configuration: writing variables '${file}'"
         conf_write_${file} '/etc/conf.d/minimyth~'
     done
@@ -139,13 +166,13 @@ start() {
 
     # Fetch user files.
     mm_message_output info "processing configuration: fetching additional files ..."
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         /usr/bin/logger -s -t minimyth -p "local0.info" "processing configuration: fetching additional files '${file}'"
         conf_fetch_${file}
     done
 
     # Clean configuration processing file state.
-    for file in `cd /etc/rc.d/init.d/conf.d ; /bin/ls -1 MM_*` ; do
+    for file in ${file_list} ; do
         conf_clean_${file}
     done
 
