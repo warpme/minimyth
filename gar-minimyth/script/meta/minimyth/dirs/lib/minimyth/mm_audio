@@ -1,0 +1,37 @@
+#!/bin/sh
+################################################################################
+# mm_audio
+#
+# Audio related functions.
+################################################################################
+. /lib/minimyth/mm_state
+
+mm_audio_state_get() {
+    local type="$1"
+
+    mm_state_get 'audio' "${type}"
+}
+
+mm_audio_state_put() {
+    local type="$1"
+    local name="$2"
+    local audio_card="$3"
+    local audio_device="$4"
+
+    local state
+
+    if /usr/bin/test -n "${name}" ; then
+        state="${audio_card},${audio_device}"
+
+        mm_state_put 'audio' "${type}" "${name}" "${state}"
+    fi
+}
+
+mm_audio_state_delete() {
+    local type="$1"
+    local name="$2"
+
+    if /usr/bin/test -n "${name}" ; then
+        mm_state_delete 'audio' "${type}" "${name}"
+    fi
+}

@@ -1,0 +1,39 @@
+#-------------------------------------------------------------------------------
+# Detect audio devices.
+#
+# The sound cards are assumed to be in the sound with the name cardN.
+# The modalias is the modalias of the sound card's device. That is, if the
+# card is card0, then the modalias is /sys/class/sound/card0/device/modalias.
+#-------------------------------------------------------------------------------
+ACTION=="add|remove", SUBSYSTEM=="sound", KERNEL=="card[0-9]*", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+#-------------------------------------------------------------------------------
+# Intel
+#-------------------------------------------------------------------------------
+
+# ATTRS{modalias}=="pci:v00008086d000027D8sv000016F3sd0000806Ebc04sc03i00", RUN+="/lib/udev/mm_audio %k %n"   # Jetway J9F2-Extreme
+# ATTRS{modalias}=="pci:v00008086d0000284Bsv00008086sd00002503bc04sc03i00", RUN+="/lib/udev/mm_audio %k %n"   # Intel DG965OT
+# ATTRS{modalias}=="pci:v00008086d0000293Esv00001043sd00008277bc04sc03i00", RUN+="/lib/udev/mm_audio %k %n"   # ASUS P5E-VM HDMI
+
+#-------------------------------------------------------------------------------
+# NVIDIA
+#-------------------------------------------------------------------------------
+
+  ATTRS{modalias}=="pci:v000010DEd0000006Bsv00001043sd00000C11bc04sc01i00", RUN+="/lib/udev/mm_audio %k %n 2" # ASUS A7N8X-E
+# ATTRS{modalias}=="pci:v000010DEd0000006Asv00001043sd00008095bc04sc01i00", RUN+="/lib/udev/mm_audio %k %n 2" # ASUS A7N8X-E
+  ATTRS{modalias}=="pci:v000010DEd0000026Csv00001043sd000081CBbc04sc03i00", RUN+="/lib/udev/mm_audio %k %n 0" # ASUS M2NPV-VM
+  ATTRS{modalias}=="pci:v000010DEd0000026Csv000010DEsd0000CB84bc04sc03i00", RUN+="/lib/udev/mm_audio %k %n 0" # ASUS A8N-VM CSM
+
+#-------------------------------------------------------------------------------
+# VIA
+#-------------------------------------------------------------------------------
+
+  ATTRS{modalias}=="pci:v00001106d00003059sv00001106sd0000AA01bc04sc01i00", RUN+="/lib/udev/mm_audio %k %n 0" # VIA EPIA PD10000 and
+                                                                                                              # VIA EPIA ME6000
+  ATTRS{modalias}=="pci:v00001106d00003059sv00001106sd0000AA01bc04sc01i00", RUN+="/lib/udev/mm_audio %k %n 0" # VIA EPIA SP8000E
+# ATTRS{modalias}=="pci:v00001106d00003288sv00001106sd0000AA09bc04sc03i00", RUN+="/lib/udev/mm_audio %k %n"   # VIA EPIA NX15000G
+# ATTRS{modalias}=="pci:v00001412d00001724sv00001412sd00001724bc04sc01i00", RUN+="/lib/udev/mm_audio %k %n"   # Albatron PX865PE
+
+LABEL="end"

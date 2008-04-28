@@ -1,6 +1,8 @@
 ################################################################################
 # MM_AUDIO configuration variables and files.
 ################################################################################
+. /lib/minimyth/mm_audio
+
 conf_clean_MM_AUDIO() {
     /bin/rm -rf /tmp/init.conf.audio
 
@@ -35,13 +37,7 @@ conf_default_MM_AUDIO() {
     fi
 
     if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" || /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
-        AUDIO=''
-        if /usr/bin/test -z "${AUDIO}" ; then
-            AUDIO="`mm_hardware_pci_process mm_hardware_pci2audio_map`"
-        fi
-        if /usr/bin/test -z "${AUDIO}" ; then
-            AUDIO="`mm_hardware_usb_process mm_hardware_usb2audio_map`"
-        fi
+        AUDIO=`mm_audio_state_get 'automatic' | /usr/bin/cut -d ' ' -f 1`
         if /usr/bin/test -n "${AUDIO}" ; then
             AUDIO_CARD_NUMBER="`  /bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 1`"
             AUDIO_DEVICE_NUMBER="`/bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 2`"

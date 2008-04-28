@@ -1498,53 +1498,6 @@ mm_hardware_pci_process() {
     | mm_uniq
 }
 
-mm_hardware_pci2audio_map() {
-    local class=$1
-    local vendor=$2
-    local device=$3
-    local revision=$4
-    local class_prog=$5
-    local subvendor=$6
-    local subdevice=$7
-
-    local found
-    local map
-    local map_device
-    local map_subvendor
-    local map_subdevice
-    local map_revision
-    local map_audio_card_number
-    local map_audio_device_number
-
-    if /usr/bin/test -n "${class}" ; then
-        /bin/cat /etc/hardware.d/pci2audio.map                                                                  \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${class},${class_prog},${vendor},"                                                     \
-        | {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_device=`             /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    map_subvendor=`          /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                    map_subdevice=`          /bin/echo ${map} | /usr/bin/cut -d ',' -f 6`
-                    map_revision=`           /bin/echo ${map} | /usr/bin/cut -d ',' -f 7`
-                    map_audio_card_number=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 8`
-                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 9`
-                    if ( /usr/bin/test -z "${map_device}"    || /usr/bin/test "${map_device}"    = "${device}"     ) && \
-                       ( /usr/bin/test -z "${map_subvendor}" || /usr/bin/test "${map_subvendor}" = "${subvendor}"  ) && \
-                       ( /usr/bin/test -z "${map_subdevice}" || /usr/bin/test "${map_subdevice}" = "${subdevice}"  ) && \
-                       ( /usr/bin/test -z "${map_revision}"  || /usr/bin/test "${map_revision}"  = "${revision}"   ) ; then
-                        if /usr/bin/test -z "${found}" ; then
-                            found=1
-                            /bin/echo ${map_audio_card_number},${map_audio_device_number}
-                        fi
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
 mm_hardware_pci2x_map() {
     local class=$1
     local vendor=$2
@@ -1627,37 +1580,6 @@ mm_hardware_usb_process() {
         /bin/echo `${usb_process_function} ${bus} ${device} ${vendor} ${product}`
     done \
     | mm_uniq
-}
-
-mm_hardware_usb2audio_map() {
-    local bus=$1
-    local device=$2
-    local vendor=$3
-    local product=$4
-
-    local found
-    local map
-    local map_audio_card_number
-    local map_audio_device_number
-
-    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2audio.map                                                                  \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor},${product},"                                                                 \
-        | {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_audio_card_number=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                    map_audio_device_number=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_audio_card_number},${map_audio_device_number}
-                    fi
-                fi
-            done
-        }
-    fi
 }
 
 #===============================================================================

@@ -113,7 +113,10 @@ start() {
     fi
 
     # Enable configuration auto-detection udev rules.
-    /bin/mv -f /etc/udev/rules.d/04-minimyth-detect.rules.disabled /etc/udev/rules.d/04-minimyth-detect.rules
+    file_list=`/bin/ls -1 /etc/udev/rules.d/04-minimyth-*.rules.disabled | /bin/sed -e 's%\.disabled%%'`
+    for file in ${file_list} ; do
+        /bin/mv -f ${file}.disabled ${file}
+    done
 
     # Trigger udev with the additional udev rules that handle configuration auto-detection.
     /sbin/udevadm trigger
