@@ -1,0 +1,51 @@
+#!/bin/sh
+################################################################################
+# mm_lirc
+#
+# LIRC related functions.
+################################################################################
+. /lib/minimyth/mm_state
+
+mm_lirc_driver_convert() {
+    local driver="$1"
+
+    if /usr/bin/test -n "${driver}" ; then
+        driver=`/usr/sbin/lircd --driver=help 2>&1 | /bin/sed -e 's%[[:cntrl:]]%%g' | /bin/grep -i -e "^${driver}$"`
+        if /usr/bin/test -z "${driver}" ; then
+            driver="default"
+        fi
+    fi
+ 
+    /bin/echo "${driver}"
+}
+
+mm_lirc_state_get() {
+    local type="$1"
+
+    mm_state_get 'lirc' "${type}"
+}
+
+mm_lirc_state_put() {
+    local type="$1"
+    local device="$2"
+    local driver="$3"
+    local remote="$4"
+    local wakeup="$5"
+
+    local state
+
+    if /usr/bin/test -n "${device}" ; then
+        state="${device},${driver},${remote},${wakeup}"
+
+        mm_state_put 'lirc' "${type}" "${device}" "${state}"
+    fi
+}
+
+mm_lirc_state_delete() {
+    local type="$1"
+    local device="$2"
+
+    if /usr/bin/test -n "${device}" ; then
+        mm_state_delete 'lirc' "${type}" "${device}"
+    fi
+}

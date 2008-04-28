@@ -45,8 +45,16 @@ Modified Linux kernel
     - Updated unionfs to 2.3.3.
 
 Modified init
-    - Moved some LIRC init functionality from its init script to its conf script,
-      making the information easier to reuse in other init scripts.
+    - Moved LIRC auto-detection to udev.
+        - If you use 'minimyth.script' to modify '/etc/hardware.d/usb2lirc.map'
+          then you will need to run
+              /sbin/udevadm trigger
+              /sbin/udevadm settle --timeout=60
+          at the end of your 'minimyth.script' to re-run udev processing.
+    - Removed function
+          mm_hardware_usb2lirc_driver_map and
+          mm_hardware_usb2lirc_remote_map
+      because they are no longer used anywhere.
 
 Fixed bugs
     - Fixed typo that caused MM_VIDEO_PLAYBACK_PROFILE='none' to behave

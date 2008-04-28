@@ -1660,64 +1660,6 @@ mm_hardware_usb2audio_map() {
     fi
 }
 
-mm_hardware_usb2lirc_driver_map() {
-    local bus=$1
-    local device=$2
-    local vendor=$3
-    local product=$4
-
-    local found
-    local map
-    local map_driver
-
-    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2lirc.map                                                                   \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor},${product},"                                                                 \
-        | {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_driver}
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
-mm_hardware_usb2lirc_remote_map() {
-    local bus=$1
-    local device=$2
-    local vendor=$3
-    local product=$4
-
-    local found
-    local map
-    local map_remote
-
-    if /usr/bin/test -n "${vendor}" && /usr/bin/test -n "${product}" ; then
-        /bin/cat /etc/hardware.d/usb2lirc.map                                                                   \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${vendor},${product},"                                                                 \
-        | {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_remote=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    if /usr/bin/test -z "${found}" ; then
-                        found=1
-                        /bin/echo ${map_remote}
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
 mm_hardware_usb2lcdproc_map() {
     local bus=$1
     local device=$2

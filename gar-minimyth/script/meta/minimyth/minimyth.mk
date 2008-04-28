@@ -533,6 +533,8 @@ mm-copy:
 	@cp -pdR $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
 	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
 	@cp -pdR ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
+	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)
+	@cp -pdR ./dirs//lib/*                            $(mm_ROOTFSDIR)$(elibdir)
 	@# Copy binaries, etcs, shares, and libraries.
 	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
