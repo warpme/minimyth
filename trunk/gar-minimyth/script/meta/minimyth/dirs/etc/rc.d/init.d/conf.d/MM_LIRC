@@ -1,116 +1,6 @@
 ################################################################################
 # MM_LIRC configuration variables and files.
 ################################################################################
-_MM_LIRC_wakeup_device_list_create() {
-    local lirc_device_list="$1"
-
-    local lirc_list
-    local lirc
-    local name
-    local busnum
-    local serial
-    local entry
-    local device
-    local wakeup_device_list
-
-    if /usr/bin/test ! -r "/sys/class/lirc" ; then
-        return
-    fi
-    lirc_list=`cd /sys/class/lirc ; ls -1`
-    
-    for lirc in ${lirc_list} ; do
-        if /usr/bin/test -z "${lirc}" ; then
-            continue
-        fi
-
-        name="/dev/`/sbin/udevadm info --query=name --path=/sys/class/lirc/${lirc}`"
-        /bin/echo " ${lirc_device_list}" | grep -q " ${name},"
-        if /usr/bin/test $? -ne 0 ; then
-            continue
-        fi
-
-        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/busnum" ; then
-            continue
-        fi
-        busnum=`/bin/cat "/sys/class/lirc/${lirc}/device/busnum" 2> /dev/null`
-        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${busnum}" ; then
-            continue
-        fi
-    
-        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial" ; then
-            continue
-        fi
-        serial=`/bin/cat "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial"`
-        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${busnum}" ; then
-            continue
-        fi
-
-        if /usr/bin/test ! -r "/proc/acpi/wakeup" ; then
-            continue
-        fi
-        entry=`/bin/cat /proc/acpi/wakeup | /bin/grep -e "${serial}\$" | /bin/sed -e 's%  *% %g'`
-        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${entry}" ; then
-            continue
-        fi
-
-        device=`/bin/echo ${entry} | /usr/bin/cut -d ' ' -f 1`
-        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${device}" ; then
-            continue
-        fi
-
-        wakeup_device_list="${wakeup_device_list} ${device}"
-    done
-
-    wakeup_device_list=`/bin/echo "${wakeup_device_list}" | mm_uniq`
-
-    /bin/echo "${wakeup_device_list}"
-}
-
-
-_MM_LIRC_lirc_device_item_create() {
-    local device=$1
-    local driver=$2
-    local remote=$3
-
-    local device_item
-
-    local details
-
-    details="device='${device}', driver='${driver}' and remote='${remote}'"
-
-    # Determine 'lircd.conf' file.
-    lircd_conf=
-    if   /usr/bin/test -e /etc/lircd.conf ; then
-        lircd_conf="/etc/lircd.conf"
-    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.d/lircd.conf.${driver}.${remote} ; then
-        lircd_conf="/etc/lirc.d/lircd.conf.d/lircd.conf.${driver}.${remote}"
-    elif /usr/bin/test -e /etc/lirc.d/lircd.conf.d/lircd.conf.${driver} ; then
-        lircd_conf="/etc/lirc.d/lircd.conf.d/lircd.conf.${driver}"
-    else
-        lircd_conf=
-    fi
-
-    # If there is no 'lircd.conf' file, then there do not use the LIRC device.
-    if /usr/bin/test -z "${lircd_conf}" ; then
-        /usr/bin/logger -t minimyth -p "local0.warn" "warning: 'lircd.conf' file not found for remote control device: ${details}."
-        return
-    fi
-
-    details="${details} lircd.conf='${lircd_conf}'"
-
-    # Convert driver to the the lirc daemon appropriate driver.
-    driver=`/usr/sbin/lircd --driver=help 2>&1 | /bin/sed -e 's%[[:cntrl:]]%%g' | /bin/grep -i -e "^${driver}$"`
-    if /usr/bin/test -z "${driver}" ; then
-        driver="default"
-    fi
-
-    /usr/bin/logger -t minimyth -p "local0.info" "using remote control device: ${details}."
-
-    device_item="${device},${driver},${remote},${lircd_conf}"
-
-    /bin/echo ${device_item}
-}
-
 conf_clean_MM_LIRC() {
     /bin/rm -rf /tmp/init.conf.lirc
 
@@ -249,65 +139,6 @@ conf_default_MM_LIRC() {
         MM_LIRC_KERNEL_MODULE_OPTIONS=
     fi
 
-    # Create LIRC device list.
-    # First, add user configured LIRC device.
-    # Second, add autodetected LIRC device(s).
-    MM_LIRC_DEVICE_LIST=
-    if /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
-        MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `_MM_LIRC_lirc_device_item_create ${MM_LIRC_DEVICE} ${MM_LIRC_DRIVER} ${MM_LIRC_REMOTE}`"
-    fi
-    if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
-        if /usr/bin/test -d /sys/class/lirc ; then
-            for device in `cd /sys/class/lirc ; ls -1` ; do
-                idVendor=
-                idProcuct=
-                driver=
-                remote=
-                if /usr/bin/test -e /sys/class/lirc/${device}/device/idVendor  ; then
-                    idVendor=`/bin/cat /sys/class/lirc/${device}/device/idVendor`
-                fi
-                if /usr/bin/test -e /sys/class/lirc/${device}/device/idProduct ; then
-                    idProduct=`/bin/cat /sys/class/lirc/${device}/device/idProduct`
-                fi
-                if /usr/bin/test ! -z "${idVendor}"  && /usr/bin/test ! "${idVendor}"  = "0000"  || \
-                   /usr/bin/test ! -z "${idProduct}" && /usr/bin/test ! "${idProduct}" = "0000" ; then
-                    map=`/bin/cat /etc/hardware.d/usb2lirc.map \
-                        | /bin/sed -e 's%#.*$%%g' -e 's%^ *%%' -e 's% *$%%' -e 's% *, *%,%g' \
-                        | grep -e "^${idVendor},${idProduct}"`
-                    if /usr/bin/test -n "${map}" ; then
-                        driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-                        remote=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    fi
-                fi
-                MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `_MM_LIRC_lirc_device_item_create /dev/${device} ${driver} ${remote}`"
-            done
-        fi
-    fi
-    MM_LIRC_DEVICE_LIST=`/bin/echo ${MM_LIRC_DEVICE_LIST} | /bin/sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
-
-    # Count the LIRC devices.
-    MM_LIRC_DEVICE_COUNT=0
-    for device in ${MM_LIRC_DEVICE_LIST} ; do
-        MM_LIRC_DEVICE_COUNT=$((${MM_LIRC_DEVICE_COUNT}+1))
-    done
-
-    if /usr/bin/test ${MM_LIRC_DEVICE_COUNT} -eq 0 ; then
-        /usr/bin/logger -t minimyth -p "local0.warn" \
-            "no remote control device was found."
-    fi
-
-    if /usr/bin/test "${MM_LIRC_WAKEUP_ENABLED}" = "yes" ; then
-        MM_LIRC_WAKEUP_DEVICE_LIST=`_MM_LIRC_wakeup_device_list_create ${MM_LIRC_DEVICE_LIST}`
-        MM_LIRC_WAKEUP_DEVICE_COUNT=0
-        for device in ${MM_LIRC_WAKEUP_DEVICE_LIST} ; do
-            MM_LIRC_WAKEUP_DEVICE_COUNT=$((${MM_LIRC_WAKEUP_DEVICE_COUNT}+1))
-        done
-        if /usr/bin/test ${MM_LIRC_WAKEUP_DEVICE_COUNT} -eq 0 ; then
-            /usr/bin/logger -t minimyth -p "local0.warn" \
-                "no remote control wakeup device was found."
-        fi
-    fi
-
     return 0
 }
 
@@ -318,15 +149,11 @@ conf_write_MM_LIRC() {
     conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
     conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_LIST           "${MM_LIRC_DEVICE_LIST}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_COUNT          "${MM_LIRC_DEVICE_COUNT}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_SLEEP_ENABLED         "${MM_LIRC_SLEEP_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_ENABLED        "${MM_LIRC_WAKEUP_ENABLED}"
-    conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_DEVICE_LIST    "${MM_LIRC_WAKEUP_DEVICE_LIST}"
-    conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_DEVICE_COUNT   "${MM_LIRC_WAKEUP_DEVICE_COUNT}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF      "${MM_LIRC_FETCH_LIRCD_CONF}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC          "${MM_LIRC_FETCH_LIRCRC}"
 

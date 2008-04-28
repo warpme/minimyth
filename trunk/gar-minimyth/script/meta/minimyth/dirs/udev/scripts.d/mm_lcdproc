@@ -1,0 +1,40 @@
+#!/bin/sh
+
+. /lib/minimyth/mm_lcdproc
+
+device="${DEVNAME}"
+idVendor=$1
+idProduct=$2
+
+case "${ACTION}" in
+    add)
+        if /usr/bin/test -z "${device}"    || \
+           /usr/bin/test -z "${idVendor}"  || \
+           /usr/bin/test -z "${idProduct}" ; then
+            exit 0
+        fi
+
+        # Determine driver and remote.
+        driver=
+        map=`/bin/cat /etc/hardware.d/usb2lcdproc.map                            \
+            | /bin/sed -e 's%#.*$%%g' -e 's%^ *%%' -e 's% *$%%' -e 's% *, *%,%g' \
+            | grep -e "^${idVendor},${idProduct}"`
+        if /usr/bin/test -n "${map}" ; then
+            driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
+        fi
+        if /usr/bin/test -z "${driver}" ; then
+            exit 0
+        fi
+
+        mm_lcdproc_state_put 'automatic' "${device}" "${driver}"
+        ;;
+    remove)
+        if /usr/bin/test -z "${device}" ; then
+            exit 0
+        fi
+
+        mm_lcdproc_state_delete 'automatic' "${device}"
+        ;;
+esac
+
+exit 0
