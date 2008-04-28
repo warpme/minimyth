@@ -1,6 +1,8 @@
 ################################################################################
 # MM_LCDPROC configuration variables and files.
 ################################################################################
+. /lib/minimyth/mm_lcdproc
+
 conf_clean_MM_LCDPROC() {
     /bin/rm -rf /tmp/init.conf.lcdproc
 
@@ -12,15 +14,27 @@ conf_check_MM_LCDPROC() {
 }
 
 conf_default_MM_LCDPROC() {
+
+    local device_item
+    local device_list
+
     if /usr/bin/test -z "${MM_LCDPROC_DRIVER}" ; then
         MM_LCDPROC_DRIVER='auto'
     fi
 
     # Auto-configure LCD/VFD display.
     if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "auto" ; then
-        MM_LCDPROC_DRIVER=`mm_hardware_usb_process mm_hardware_usb2lcdproc_map`
+        MM_LCDPROC_DRIVER=
+        MM_LCDPROC_DEVICE=
+        device_list=`mm_lcdproc_state_get 'automatic'`
+        for device_item in ${device_list} ; do
+            MM_LCDPROC_DEVICE=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f1`
+            MM_LCDPROC_DRIVER=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f2`
+            
+        done
         if /usr/bin/test -z "${MM_LCDPROC_DRIVER}" ; then
             MM_LCDPROC_DRIVER='none'
+            MM_LCDPROC_DEVICE='none'
         fi
     fi
 
@@ -32,6 +46,9 @@ conf_default_MM_LCDPROC() {
     if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "none" ; then
         MM_LCDPROC_DRIVER=
     fi
+    if /usr/bin/test "${MM_LCDPROC_DEVICE}" = "none" ; then
+        MM_LCDPROC_DEVICE=
+    fi
 
     return 0
 }
@@ -40,6 +57,7 @@ conf_write_MM_LCDPROC() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_LCDPROC_DRIVER          "${MM_LCDPROC_DRIVER}"
+    conf_variable_write "${conf_file}" MM_LCDPROC_DEVICE          "${MM_LCDPROC_DEVICE}"
     conf_variable_write "${conf_file}" MM_LCDPROC_FETCH_LCDD_CONF "${MM_LCDPROC_FETCH_LCDD_CONF}"
 
     return 0
