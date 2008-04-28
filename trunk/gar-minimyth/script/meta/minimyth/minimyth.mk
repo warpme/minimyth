@@ -88,6 +88,7 @@ MM_INIT_START := \
     audio \
     video \
     wiimote \
+    irtrans \
     lcdproc \
     lirc \
     mythtv \
@@ -98,6 +99,7 @@ MM_INIT_KILL := \
     x \
     lirc \
     lcdproc \
+    irtrans \
     wiimote \
     audio \
     media \
