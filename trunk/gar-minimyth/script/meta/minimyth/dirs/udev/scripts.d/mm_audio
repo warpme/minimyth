@@ -8,7 +8,7 @@
 #     audio_device: The audio device number that supports audio playback.
 ################################################################################
 
-. /lib/minimyth/mm_audio
+. /lib/minimyth/mm_state
 
 name=$1
 audio_card=$2
@@ -20,14 +20,14 @@ case "${ACTION}" in
             exit 0
         fi
 
-        mm_audio_state_put 'automatic' "${name}" "${audio_card}" "${audio_device}"
+        mm_state_put 'audio' 'automatic' "${name}" "${audio_card},${audio_device}"
         ;;
     remove)
         if /usr/bin/test -z "${name}" ; then
             exit 0
         fi
 
-        mm_audio_state_delete 'automatic' "${name}"
+        mm_state_delete 'audio' 'automatic' "${name}"
         ;;
 esac
 

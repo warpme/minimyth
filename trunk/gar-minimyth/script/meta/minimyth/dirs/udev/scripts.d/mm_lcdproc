@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /lib/minimyth/mm_lcdproc
+. /lib/minimyth/mm_state
 
 name="${1}"
 driver="${2}"
@@ -15,14 +15,14 @@ case "${ACTION}" in
             exit 0
         fi
 
-        mm_lcdproc_state_put 'automatic' "${name}" "${device}" "${driver}"
+        mm_state_put 'lcdproc' 'automatic' "${name}" "${device},${driver}"
         ;;
     remove)
         if /usr/bin/test -z "${name}"   ; then
             exit 0
         fi
 
-        mm_lcdproc_state_delete 'automatic' "${name}"
+        mm_state_delete 'lcdproc' 'automatic' "${name}"
         ;;
 esac
 

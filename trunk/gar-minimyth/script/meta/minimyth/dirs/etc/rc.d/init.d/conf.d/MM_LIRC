@@ -1,7 +1,7 @@
 ################################################################################
 # MM_LIRC configuration variables and files.
 ################################################################################
-. /lib/minimyth/mm_lirc
+. /lib/minimyth/mm_state
 
 conf_clean_MM_LIRC() {
     /bin/rm -rf /tmp/init.conf.lirc
@@ -142,7 +142,7 @@ conf_default_MM_LIRC() {
     fi
 
     # Write state for manually configured LIRC device and driver.
-    mm_lirc_state_put 'manual' "${MM_LIRC_DEVICE}" "${MM_LIRC_DRIVER}" "${MM_LIRC_REMOTE}" ""
+    mm_state_put 'lirc' 'manual' '_manual_' "${MM_LIRC_DEVICE},${MM_LIRC_DRIVER},${MM_LIRC_REMOTE},"
 
     # If the manual LIRC driver is not 'irtrans',
     # then create LIRC devcie list.
@@ -151,9 +151,9 @@ conf_default_MM_LIRC() {
     # so no LIRCE device list is created.
     MM_LIRC_DEVICE_LIST=
     if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "irtrans" ; then
-        MM_LIRC_DEVICE_LIST="${device_list} `mm_lirc_state_get 'manual'`"
+        MM_LIRC_DEVICE_LIST="${device_list} `mm_state_get 'lirc' 'manual'`"
         if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
-            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_lirc_state_get 'automatic'`"
+            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_state_get 'lirc' 'automatic'`"
         fi
     fi
 
