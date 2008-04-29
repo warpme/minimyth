@@ -6,20 +6,18 @@
 ################################################################################
 mm_detect_state_file_get() {
     local group="${1:-'null'}"
-    local type="${2:-'null'}"
-    local name="${3:-'null'}"
+    local name="${2:-'null'}"
 
     local state_file;
 
-    state_file=`/bin/echo ${name} | /bin/sed -e 's%^/*%%' -e 's%/%~%g'`
-    state_file="/var/cache/minimyth/state/${group}/${type}/${state_file}"
+    group=`/bin/echo ${group} | /bin/sed -e 's%^/*%%' -e 's%/%~%g'`
+    name=`/bin/echo ${name} | /bin/sed -e 's%^/*%%' -e 's%/%~%g'`
 
-    /bin/echo "${state_file}"
+    /bin/echo "/var/cache/minimyth/detect/${group}/${name}"
 }
 
 mm_detect_state_get() {
     local group="$1"
-    local type="$2"
 
     local state_dir
     local state_file
@@ -27,7 +25,7 @@ mm_detect_state_get() {
     local state_item
     local state_list
 
-    state_file=`mm_detect_state_file_get "${group}" "${type}" 'null'`
+    state_file=`mm_detect_state_file_get "${group}" 'null'`
     state_dir=`/usr/bin/dirname "${state_file}"`
     state_file_list=`/bin/ls ${state_dir}/* 2> /dev/null`
     state_list=
@@ -40,17 +38,16 @@ mm_detect_state_get() {
     /bin/echo "${state_list}"
 }
 
-mm_detect_state_put() {
+mm_detect_state_set() {
     local group="$1"
-    local type="$2"
-    local name="$3"
-    local state="$4"
+    local name="$2"
+    local state="$3"
 
     local state_dir
     local state_file
 
     # Write state.
-    state_file=`mm_detect_state_file_get "${group}" "${type}" "${name}"`
+    state_file=`mm_detect_state_file_get "${group}" "${name}"`
     state_dir=`/usr/bin/dirname "${state_file}"`
     if /usr/bin/test ! -e "${state_dir}" ; then
         /bin/mkdir -p        "${state_dir}"
@@ -64,13 +61,12 @@ mm_detect_state_put() {
     /bin/echo "${state}" >> "${state_file}"
 }
 
-mm_detect_state_delete() {
+mm_detect_state_unset() {
     local group="$1"
-    local type="$2"
-    local name="$3"
+    local name="$2"
 
     if /usr/bin/test -n "${name}" ; then
-        state_file=`mm_detect_state_file_get "${group}" "${type}" "${name}"`
+        state_file=`mm_detect_state_file_get "${group}" "${name}"`
         /bin/rm -f "${state_file}"
     fi
 }
