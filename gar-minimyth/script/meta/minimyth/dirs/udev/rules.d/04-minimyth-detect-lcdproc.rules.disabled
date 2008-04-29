@@ -1,5 +1,14 @@
 #-------------------------------------------------------------------------------
 # Detect LCDproc devices.
+#
+# The LCDproc devices are assumed to be USB devices in the lcd or tty subsystem.
+# mm_hardware_id has the following format:
+#     usb:<idVendor>:<idProduct>
+# mm_detect_state has the following format:
+#     <device_name>,<driver>
+# where
+#     <device_name>: The LCDproc device name. $env{DEVNAME} should work.
+#     <driver>     : The LCDproc driver.
 #-------------------------------------------------------------------------------
 ACTION=="add|remove", SUBSYSTEM=="lcd", SUBSYSTEMS=="usb", GOTO="begin"
 ACTION=="add|remove", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", GOTO="begin"
@@ -9,12 +18,18 @@ LABEL="begin"
 # Import mm_hardware_id.
 IMPORT{program}="/lib/udev/mm_hardware_id"
 
+# Initialize state
+ENV{mm_detect_state}=""
+
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-  ENV{mm_hardware_id}=="usb:0403:fa01", RUN+="/lib/udev/mm_lcdproc %k MtxOrb"
-  ENV{mm_hardware_id}=="usb:0403:fc0d", RUN+="/lib/udev/mm_lcdproc %k CFontzPacket"
-  ENV{mm_hardware_id}=="usb:0403:fd60", RUN+="/lib/udev/mm_lcdproc %k irtrans"
-  ENV{mm_hardware_id}=="usb:15c2:ffdc", RUN+="/lib/udev/mm_lcdproc %k imon"
+  ENV{mm_hardware_id}=="usb:0403:fa01", ENV{mm_detect_state}="$env{DEVNAME},MtxOrb"
+  ENV{mm_hardware_id}=="usb:0403:fc0d", ENV{mm_detect_state}="$env{DEVNAME},CFontzPacket"
+  ENV{mm_hardware_id}=="usb:0403:fd60", ENV{mm_detect_state}="$env{DEVNAME},irtrans"
+  ENV{mm_hardware_id}=="usb:15c2:ffdc", ENV{mm_detect_state}="$env{DEVNAME},imon"
+
+# The state has been set, so save it.
+ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state}"
 
 LABEL="end"

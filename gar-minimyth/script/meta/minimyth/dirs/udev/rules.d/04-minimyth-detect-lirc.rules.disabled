@@ -1,5 +1,12 @@
 #-------------------------------------------------------------------------------
 # Detect LIRC devices.
+#
+# mm_detect_state has the following format:
+#     <device_name>,<driver>
+# where
+#     <device_name>: The LIRC device name. $env{DEVNAME} should work.
+#     <driver>     : The LIRC driver.
+#     <remote>     : The LIRC remote.
 #-------------------------------------------------------------------------------
 ACTION=="add|remove", SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
@@ -8,32 +15,38 @@ LABEL="begin"
 # Import mm_hardware_id.
 IMPORT{program}="/lib/udev/mm_hardware_id"
 
+# Initialize state
+ENV{mm_detect_state}=""
+
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-  ENV{mm_hardware_id}=="usb:03eb:0002", RUN+="/lib/udev/mm_lirc %k igorplugusb"
-  ENV{mm_hardware_id}=="usb:045e:006d", RUN+="/lib/udev/mm_lirc %k mceusb mceusb"
-  ENV{mm_hardware_id}=="usb:0471:0602", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0471:0603", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0471:0815", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
-  ENV{mm_hardware_id}=="usb:0609:031d", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
-  ENV{mm_hardware_id}=="usb:0bc7:0002", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0003", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0004", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0005", RUN+="/lib/udev/mm_lirc %k atiusb x10_or23e"
-  ENV{mm_hardware_id}=="usb:0bc7:0006", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0007", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0008", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:0009", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000a", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000b", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000c", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000d", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000e", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0bc7:000f", RUN+="/lib/udev/mm_lirc %k atiusb"
-  ENV{mm_hardware_id}=="usb:0e9c:0000", RUN+="/lib/udev/mm_lirc %k streamzap streamzap"
-  ENV{mm_hardware_id}=="usb:0fe9:9010", RUN+="/lib/udev/mm_lirc %k dvico usb_0fe9_9010"
-  ENV{mm_hardware_id}=="usb:1460:9150", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
-  ENV{mm_hardware_id}=="usb:15c2:ffdc", RUN+="/lib/udev/mm_lirc %k imon imon_pad"
+  ENV{mm_hardware_id}=="usb:03eb:0002", ENV{mm_detect_state}="$env{DEVNAME},igorplugusb"
+  ENV{mm_hardware_id}=="usb:045e:006d", ENV{mm_detect_state}="$env{DEVNAME},mceusb,mceusb"
+  ENV{mm_hardware_id}=="usb:0471:0602", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0471:0603", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0471:0815", ENV{mm_detect_state}="$env{DEVNAME},mceusb2,mceusb2"
+  ENV{mm_hardware_id}=="usb:0609:031d", ENV{mm_detect_state}="$env{DEVNAME},mceusb2,mceusb2"
+  ENV{mm_hardware_id}=="usb:0bc7:0002", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0003", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0004", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0005", ENV{mm_detect_state}="$env{DEVNAME},atiusb,x10_or23e"
+  ENV{mm_hardware_id}=="usb:0bc7:0006", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0007", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0008", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:0009", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000a", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000b", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000c", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000d", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000e", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0bc7:000f", ENV{mm_detect_state}="$env{DEVNAME},atiusb,"
+  ENV{mm_hardware_id}=="usb:0e9c:0000", ENV{mm_detect_state}="$env{DEVNAME},streamzap,streamzap"
+  ENV{mm_hardware_id}=="usb:0fe9:9010", ENV{mm_detect_state}="$env{DEVNAME},dvico,usb_0fe9_9010"
+  ENV{mm_hardware_id}=="usb:1460:9150", ENV{mm_detect_state}="$env{DEVNAME},mceusb2,mceusb2"
+  ENV{mm_hardware_id}=="usb:15c2:ffdc", ENV{mm_detect_state}="$env{DEVNAME},imon,imon_pad"
+
+# The state has been set, so save it.
+ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect lirc %k $env{mm_detect_state}"
 
 LABEL="end"
