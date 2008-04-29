@@ -6,19 +6,61 @@
 ################################################################################
 . /etc/rc.d/functions
 
+# Find USB devices associated with each LIRC device and enable ACPI wakeup.
 remote_wakeup_enable() {
-    local wakeup_device_list="$1"
+    local device_list="$1"
 
+    local lirc_list
+    local lirc
+    local name
+    local busnum
+    local serial
     local entry
     local device
     local status
 
-    for device in ${wakeup_device_list} ; do
+    if /usr/bin/test ! -r "/sys/class/lirc" ; then
+        return
+    fi
+    lirc_list=`cd /sys/class/lirc ; ls -1`
+    
+    for lirc in ${lirc_list} ; do
+        if /usr/bin/test -z "${lirc}" ; then
+            continue
+        fi
+
+        name="/dev/`/sbin/udevadm info --query=name --path=/sys/class/lirc/${lirc}`"
+        /bin/echo " ${device_list}" | grep -q " ${name},"
+        if /usr/bin/test $? -ne 0 ; then
+            continue
+        fi
+
+        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/busnum" ; then
+            continue
+        fi
+        busnum=`/bin/cat "/sys/class/lirc/${lirc}/device/busnum" 2> /dev/null`
+        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${busnum}" ; then
+            continue
+        fi
+    
+        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial" ; then
+            continue
+        fi
+        serial=`/bin/cat "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial"`
+        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${serial}" ; then
+            continue
+        fi
+
         if /usr/bin/test ! -r "/proc/acpi/wakeup" ; then
             continue
         fi
-        entry=`/bin/cat /proc/acpi/wakeup | /bin/grep -e "^${device}" | /bin/sed -e 's%  *% %g'`
+        entry=`/bin/cat /proc/acpi/wakeup | /bin/grep -e "${serial}\$" | /bin/sed -e 's%  *% %g'`
         if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${entry}" ; then
+            continue
+        fi
+
+        device=`/bin/echo ${entry} | /usr/bin/cut -d ' ' -f 1`
+        if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${device}" ; then
             continue
         fi
 
@@ -54,7 +96,6 @@ start() {
     local lircd_conf
     local map
     local remote
-    local wakeup
 
     # Count the LIRC devices.
     device_count=0
@@ -129,15 +170,12 @@ start() {
     /bin/mkdir -p /var/lock
     /bin/mkdir -p /var/run
 
-    # Process each LIRC device
-    # First start an LIRC daemon for the device.
-    # Second enable wake-up for the device if enabled and supported.
+    # Start an LIRC daemon for each device.
     index=1
     for device_item in ${MM_LIRC_DEVICE_LIST} ; do
         device=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f1`
         driver=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f2`
         remote=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f3`
-        wakeup=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f4`
 
         # Convert driver to the the lirc daemon appropriate driver.
         if /usr/bin/test -n "${driver}" ; then
@@ -162,11 +200,6 @@ start() {
         fi
         /usr/bin/logger -t minimyth -p "local0.info" "started '${daemon}'."
         ${daemon}
-
-        # Enabled wake-up.
-        if /usr/bin/test "${MM_LIRC_WAKEUP_ENABLED}" = "yes" && /usr/bin/test -n "${wakeup}" ; then
-            remote_wakeup_enable "${wakeup}"
-        fi
 
         index=$((${index} + 1))
     done
@@ -195,6 +228,11 @@ start() {
     # Start the irexec daemon.
     if /usr/bin/test "${MM_LIRC_IREXEC_ENABLED}" = "yes" ; then
         /usr/bin/irexec -d /etc/lircrc
+    fi
+
+    # Enable wakeup on remote.
+    if /usr/bin/test "${MM_LIRC_WAKEUP_ENABLED}" = "yes" ; then
+        remote_wakeup_enable "${MM_LIRC_DEVICE_LIST}"
     fi
 }
 

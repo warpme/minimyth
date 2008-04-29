@@ -16,28 +16,7 @@ case "${ACTION}" in
             exit 0
         fi
 
-        wakeup=
-        if /usr/bin/test -r /proc/acpi/wakeup ; then
-            physical_path=
-            if /usr/bin/test -e "/sys/${DEVPATH}/device" ; then
-                 physical_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
-                 physical_path=`/usr/bin/dirname "${physical_path}"`
-                 physical_path=`/usr/bin/dirname "${physical_path}"`
-                 if /usr/bin/test -e "${physical_path}/subsystem" ; then
-                     bus_type=`/usr/bin/readlink -f "${physical_path}/subsystem"`
-                     bus_type=`/usr/bin/basename "${bus_type}"`
-                     bus_device=`/usr/bin/basename "${physical_path}"`
-                     if /usr/bin/test -n "${bus_type}" && /usr/bin/test -n "${bus_device}" ; then
-                         wakeup=`/bin/cat /proc/acpi/wakeup                 \
-                             | /bin/grep -e " ${bus_type}:${bus_device}\$"  \
-                             | /bin/sed -e 's%  *% %g'                      \
-                             | /usr/bin/cut -d ' ' -f 1`
-                     fi
-                 fi
-            fi
-        fi
-
-        mm_detect_state_put 'lirc' 'automatic' "${name}" "${device},${driver},${remote},${wakeup}"
+        mm_detect_state_put 'lirc' 'automatic' "${name}" "${device},${driver},${remote}"
         ;;
     remove)
         if /usr/bin/test -z "${name}"   ; then
