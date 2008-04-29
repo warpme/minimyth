@@ -11,9 +11,18 @@
 group=$1
 name=$2
 state=$3
+flags=$4
 
 if /usr/bin/test -z "${group}" || /usr/bin/test -z "${name}"  ; then
     exit 1
+fi
+
+if /bin/echo ",${flags}," | /bin/grep -q -e ',state_prepend_devname,' > /dev/null 2>&1 ; then
+    if /usr/bin/test -z "${state}" ; then
+        state="${DEVNAME}"
+    else
+        state="${DEVNAME},${state}"
+    fi
 fi
 
 case "${ACTION}" in
