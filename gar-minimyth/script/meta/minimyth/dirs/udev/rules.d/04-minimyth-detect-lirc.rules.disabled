@@ -1,2 +1,39 @@
+#-------------------------------------------------------------------------------
 # Detect LIRC devices.
-ACTION=="add|remove", SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", RUN+="/lib/udev/mm_lirc $sysfs{idVendor} $sysfs{idProduct}"
+#-------------------------------------------------------------------------------
+ACTION=="add|remove", SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+# Import mm_hardware_id.
+IMPORT{program}="/lib/udev/mm_hardware_id"
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+  ENV{mm_hardware_id}=="usb:03eb:0002", RUN+="/lib/udev/mm_lirc %k igorplugusb"
+  ENV{mm_hardware_id}=="usb:045e:006d", RUN+="/lib/udev/mm_lirc %k mceusb mceusb"
+  ENV{mm_hardware_id}=="usb:0471:0602", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0471:0603", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0471:0815", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
+  ENV{mm_hardware_id}=="usb:0609:031d", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
+  ENV{mm_hardware_id}=="usb:0bc7:0002", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0003", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0004", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0005", RUN+="/lib/udev/mm_lirc %k atiusb x10_or23e"
+  ENV{mm_hardware_id}=="usb:0bc7:0006", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0007", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0008", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:0009", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000a", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000b", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000c", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000d", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000e", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0bc7:000f", RUN+="/lib/udev/mm_lirc %k atiusb"
+  ENV{mm_hardware_id}=="usb:0e9c:0000", RUN+="/lib/udev/mm_lirc %k streamzap streamzap"
+  ENV{mm_hardware_id}=="usb:0fe9:9010", RUN+="/lib/udev/mm_lirc %k dvico usb_0fe9_9010"
+  ENV{mm_hardware_id}=="usb:1460:9150", RUN+="/lib/udev/mm_lirc %k mceusb2 mceusb2"
+  ENV{mm_hardware_id}=="usb:15c2:ffdc", RUN+="/lib/udev/mm_lirc %k imon imon_pad"
+
+LABEL="end"

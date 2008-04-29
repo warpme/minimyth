@@ -1,3 +1,20 @@
+#-------------------------------------------------------------------------------
 # Detect LCDproc devices.
-ACTION=="add|remove", SUBSYSTEM=="lcd", SUBSYSTEMS=="usb", RUN+="/lib/udev/mm_lcdproc $sysfs{idVendor} $sysfs{idProduct}"
-ACTION=="add|remove", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", RUN+="/lib/udev/mm_lcdproc $sysfs{idVendor} $sysfs{idProduct}"
+#-------------------------------------------------------------------------------
+ACTION=="add|remove", SUBSYSTEM=="lcd", SUBSYSTEMS=="usb", GOTO="begin"
+ACTION=="add|remove", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+# Import mm_hardware_id.
+IMPORT{program}="/lib/udev/mm_hardware_id"
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+  ENV{mm_hardware_id}=="usb:0403:fa01", RUN+="/lib/udev/mm_lcdproc %k MtxOrb"
+  ENV{mm_hardware_id}=="usb:0403:fc0d", RUN+="/lib/udev/mm_lcdproc %k CFontzPacket"
+  ENV{mm_hardware_id}=="usb:0403:fd60", RUN+="/lib/udev/mm_lcdproc %k irtrans"
+  ENV{mm_hardware_id}=="usb:15c2:ffdc", RUN+="/lib/udev/mm_lcdproc %k imon"
+
+LABEL="end"

@@ -2,56 +2,49 @@
 
 . /lib/minimyth/mm_lirc
 
+name="${1}"
+driver="${2}"
+remote="${3}"
+
 device="${DEVNAME}"
-idVendor=$1
-idProduct=$2
 
 case "${ACTION}" in
     add)
-        if /usr/bin/test -z "${device}"    || \
-           /usr/bin/test -z "${idVendor}"  || \
-           /usr/bin/test -z "${idProduct}" ; then
-            exit 0
-        fi
-
-        # Determine driver and remote.
-        driver=
-        remote=
-        map=`/bin/cat /etc/hardware.d/usb2lirc.map \
-            | /bin/sed -e 's%#.*$%%g' -e 's%^ *%%' -e 's% *$%%' -e 's% *, *%,%g' \
-            | grep -e "^${idVendor},${idProduct}"`
-        if /usr/bin/test -n "${map}" ; then
-            driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-            remote=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-        fi
-        if /usr/bin/test -z "${driver}" ; then
+        if /usr/bin/test -z "${name}"   || \
+           /usr/bin/test -z "${device}" || \
+           /usr/bin/test -z "${driver}" ; then
             exit 0
         fi
 
         wakeup=
         if /usr/bin/test -r /proc/acpi/wakeup ; then
-            physical_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
-            physical_path=`/usr/bin/dirname "${physical_path}"`
-            physical_path=`/usr/bin/dirname "${physical_path}"`
-            bus_type=`/usr/bin/readlink -f "${physical_path}/subsystem"`
-            bus_type=`/usr/bin/basename "${bus_type}"`
-            bus_device=`/usr/bin/basename "${physical_path}"`
-            if /usr/bin/test -n "${bus_type}" && /usr/bin/test -n "${bus_device}" ; then
-                wakeup=`/bin/cat /proc/acpi/wakeup                 \
-                    | /bin/grep -e " ${bus_type}:${bus_device}\$"  \
-                    | /bin/sed -e 's%  *% %g'                      \
-                    | /usr/bin/cut -d ' ' -f 1`
+            physical_path=
+            if /usr/bin/test -e "/sys/${DEVPATH}/device" ; then
+                 physical_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
+                 physical_path=`/usr/bin/dirname "${physical_path}"`
+                 physical_path=`/usr/bin/dirname "${physical_path}"`
+                 if /usr/bin/test -e "${physical_path}/subsystem" ; then
+                     bus_type=`/usr/bin/readlink -f "${physical_path}/subsystem"`
+                     bus_type=`/usr/bin/basename "${bus_type}"`
+                     bus_device=`/usr/bin/basename "${physical_path}"`
+                     if /usr/bin/test -n "${bus_type}" && /usr/bin/test -n "${bus_device}" ; then
+                         wakeup=`/bin/cat /proc/acpi/wakeup                 \
+                             | /bin/grep -e " ${bus_type}:${bus_device}\$"  \
+                             | /bin/sed -e 's%  *% %g'                      \
+                             | /usr/bin/cut -d ' ' -f 1`
+                     fi
+                 fi
             fi
         fi
 
-        mm_lirc_state_put 'automatic' "${device}" "${driver}" "${remote}" "${wakeup}"
+        mm_lirc_state_put 'automatic' "${name}" "${device}" "${driver}" "${remote}" "${wakeup}"
         ;;
     remove)
-        if /usr/bin/test -z "${device}" ; then
+        if /usr/bin/test -z "${name}"   ; then
             exit 0
         fi
 
-        mm_lirc_state_delete 'automatic' "${device}"
+        mm_lirc_state_delete 'automatic' "${name}"
         ;;
 esac
 

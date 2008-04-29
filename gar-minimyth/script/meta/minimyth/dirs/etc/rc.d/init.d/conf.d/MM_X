@@ -1,6 +1,8 @@
 ################################################################################
 # MM_X configuration variables and files.
 ################################################################################
+. /lib/minimyth/mm_x
+
 conf_clean_MM_X() {
     /bin/rm -rf /tmp/init.conf.x
 
@@ -183,7 +185,7 @@ conf_default_MM_X() {
 
     # X driver variables.
     if /usr/bin/test -z "${MM_X_DRIVER}"              ; then
-        MM_X_DRIVER="`mm_hardware_pci_process mm_hardware_pci2x_map | /usr/bin/cut -d ' ' -f 1`"
+        MM_X_DRIVER=`mm_x_state_get 'automatic' | /usr/bin/cut -d ' ' -f 1 | /usr/bin/cut -d ',' -f 1`
         if /usr/bin/test -z "${MM_X_DRIVER}" ; then
             mm_message_output err "error: no supported video hardware found."
         fi

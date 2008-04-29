@@ -1,0 +1,35 @@
+#!/bin/sh
+
+hardware_devpath=${1:-"${DEVPATH}/device"}
+
+hardware_path=
+hardware_type=
+if /usr/bin/test -e "/sys${hardware_devpath}" ; then
+    hardware_path=`/usr/bin/readlink -f "/sys${hardware_devpath}"`
+    if /usr/bin/test -e "${hardware_path}/subsystem" ; then
+        hardware_type=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
+        hardware_type=`/usr/bin/basename "${hardware_type}"`
+    fi
+fi
+
+hardware_id=
+case "${hardware_type}" in
+    pci)
+        pci_class=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%..$%%'`
+        pci_prog=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%^....%%'`
+        pci_vendor=`/bin/cat ${hardware_path}/vendor | /bin/sed -e 's%^0x%%'`
+        pci_device=`/bin/cat ${hardware_path}/device | /bin/sed -e 's%^0x%%'`
+        pci_subsystem_vendor=`/bin/cat ${hardware_path}/subsystem_vendor | /bin/sed -e 's%^0x%%'`
+        pci_subsystem_device=`/bin/cat ${hardware_path}/subsystem_device | /bin/sed -e 's%^0x%%'`
+        hardware_id="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
+        ;;
+    usb)
+        usb_idVendor=`/bin/cat ${hardware_path}/idVendor`
+        usb_idProduct=`/bin/cat ${hardware_path}/idProduct`
+        hardware_id="usb:${usb_idVendor}:${usb_idProduct}"
+        ;;
+esac
+
+/bin/echo "mm_hardware_id=${hardware_id}"    
+                                             
+exit 0
