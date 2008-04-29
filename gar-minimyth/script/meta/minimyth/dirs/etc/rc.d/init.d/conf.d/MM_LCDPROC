@@ -1,7 +1,7 @@
 ################################################################################
 # MM_LCDPROC configuration variables and files.
 ################################################################################
-. /lib/minimyth/mm_state
+. /lib/minimyth/mm_detect
 
 conf_clean_MM_LCDPROC() {
     /bin/rm -rf /tmp/init.conf.lcdproc
@@ -26,7 +26,7 @@ conf_default_MM_LCDPROC() {
     if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "auto" ; then
         MM_LCDPROC_DRIVER=
         MM_LCDPROC_DEVICE=
-        device_list=`mm_state_get 'lcdproc' 'automatic'`
+        device_list=`mm_detect_state_get 'lcdproc' 'automatic'`
         for device_item in ${device_list} ; do
             MM_LCDPROC_DEVICE=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f1`
             MM_LCDPROC_DRIVER=`/bin/echo ${device_item} | /usr/bin/cut -d ',' -f2`
