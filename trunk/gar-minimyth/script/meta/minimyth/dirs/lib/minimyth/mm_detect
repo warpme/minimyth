@@ -1,10 +1,10 @@
 #!/bin/sh
 ################################################################################
-# mm_state
+# mm_detect
 #
-# State related functions.
+# Detection related functions.
 ################################################################################
-mm_state_file_get() {
+mm_detect_state_file_get() {
     local group="${1:-'null'}"
     local type="${2:-'null'}"
     local name="${3:-'null'}"
@@ -17,7 +17,7 @@ mm_state_file_get() {
     /bin/echo "${state_file}"
 }
 
-mm_state_get() {
+mm_detect_state_get() {
     local group="$1"
     local type="$2"
 
@@ -27,7 +27,7 @@ mm_state_get() {
     local state_item
     local state_list
 
-    state_file=`mm_state_file_get "${group}" "${type}" 'null'`
+    state_file=`mm_detect_state_file_get "${group}" "${type}" 'null'`
     state_dir=`/usr/bin/dirname "${state_file}"`
     state_file_list=`/bin/ls ${state_dir}/* 2> /dev/null`
     state_list=
@@ -40,7 +40,7 @@ mm_state_get() {
     /bin/echo "${state_list}"
 }
 
-mm_state_put() {
+mm_detect_state_put() {
     local group="$1"
     local type="$2"
     local name="$3"
@@ -50,7 +50,7 @@ mm_state_put() {
     local state_file
 
     # Write state.
-    state_file=`mm_state_file_get "${group}" "${type}" "${name}"`
+    state_file=`mm_detect_state_file_get "${group}" "${type}" "${name}"`
     state_dir=`/usr/bin/dirname "${state_file}"`
     if /usr/bin/test ! -e "${state_dir}" ; then
         /bin/mkdir -p        "${state_dir}"
@@ -64,13 +64,13 @@ mm_state_put() {
     /bin/echo "${state}" >> "${state_file}"
 }
 
-mm_state_delete() {
+mm_detect_state_delete() {
     local group="$1"
     local type="$2"
     local name="$3"
 
     if /usr/bin/test -n "${name}" ; then
-        state_file=`mm_state_file_get "${group}" "${type}" "${name}"`
+        state_file=`mm_detect_state_file_get "${group}" "${type}" "${name}"`
         /bin/rm -f "${state_file}"
     fi
 }
