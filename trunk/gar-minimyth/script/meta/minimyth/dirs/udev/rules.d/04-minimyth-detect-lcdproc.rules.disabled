@@ -5,10 +5,12 @@
 # mm_hardware_id has the following format:
 #     usb:<idVendor>:<idProduct>
 # mm_detect_state has the following format:
-#     <device_name>,<driver>
+#     <driver>
 # where
-#     <device_name>: The LCDproc device name. $env{DEVNAME} should work.
 #     <driver>     : The LCDproc driver.
+# The state requires the LCDproc device name. However, since it is not yet
+# known, it cannot be added be included in mm_detect_state. Therefore, the
+# mm_detect script will prepend the LCDproc device name to the state.
 #-------------------------------------------------------------------------------
 ACTION=="add|remove", SUBSYSTEM=="lcd", SUBSYSTEMS=="usb", GOTO="begin"
 ACTION=="add|remove", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", GOTO="begin"
@@ -24,12 +26,12 @@ ENV{mm_detect_state}=""
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-  ENV{mm_hardware_id}=="usb:0403:fa01", ENV{mm_detect_state}="$env{DEVNAME},MtxOrb"
-  ENV{mm_hardware_id}=="usb:0403:fc0d", ENV{mm_detect_state}="$env{DEVNAME},CFontzPacket"
-  ENV{mm_hardware_id}=="usb:0403:fd60", ENV{mm_detect_state}="$env{DEVNAME},irtrans"
-  ENV{mm_hardware_id}=="usb:15c2:ffdc", ENV{mm_detect_state}="$env{DEVNAME},imon"
+  ENV{mm_hardware_id}=="usb:0403:fa01", ENV{mm_detect_state}="MtxOrb"
+  ENV{mm_hardware_id}=="usb:0403:fc0d", ENV{mm_detect_state}="CFontzPacket"
+  ENV{mm_hardware_id}=="usb:0403:fd60", ENV{mm_detect_state}="irtrans"
+  ENV{mm_hardware_id}=="usb:15c2:ffdc", ENV{mm_detect_state}="imon"
 
 # The state has been set, so save it.
-ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state}"
+ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state} state_prepend_devname"
 
 LABEL="end"
