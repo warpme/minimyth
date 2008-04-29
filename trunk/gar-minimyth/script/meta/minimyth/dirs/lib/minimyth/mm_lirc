@@ -27,25 +27,26 @@ mm_lirc_state_get() {
 
 mm_lirc_state_put() {
     local type="$1"
-    local device="$2"
-    local driver="$3"
-    local remote="$4"
-    local wakeup="$5"
+    local name="$2"
+    local device="$3"
+    local driver="$4"
+    local remote="$5"
+    local wakeup="$6"
 
     local state
 
-    if /usr/bin/test -n "${device}" ; then
+    if /usr/bin/test -n "${name}" ; then
         state="${device},${driver},${remote},${wakeup}"
 
-        mm_state_put 'lirc' "${type}" "${device}" "${state}"
+        mm_state_put 'lirc' "${type}" "${name}" "${state}"
     fi
 }
 
 mm_lirc_state_delete() {
     local type="$1"
-    local device="$2"
+    local name="$2"
 
-    if /usr/bin/test -n "${device}" ; then
-        mm_state_delete 'lirc' "${type}" "${device}"
+    if /usr/bin/test -n "${name}" ; then
+        mm_state_delete 'lirc' "${type}" "${name}"
     fi
 }

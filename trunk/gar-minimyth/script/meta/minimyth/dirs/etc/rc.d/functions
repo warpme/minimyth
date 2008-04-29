@@ -1459,81 +1459,6 @@ mm_hardware_cpu2kernel_map() {
     fi
 }
 
-mm_hardware_pci_process() {
-    local pci_process_function=$1
-
-    local bus
-    local class
-    local class_prog
-    local device
-    local index
-    local pci
-    local revision
-    local subdevice
-    local subvendor
-    local vendor
-
-    /usr/sbin/lspci -mn | /bin/sed -e 's%"%%g' \
-    | while read pci ; do
-        index=1            ; bus=`      /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; class=`    /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; vendor=`   /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; device=`   /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; revision=` /bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        if /usr/bin/test `/bin/echo "${revision}"   | /bin/grep -c -e '^-r'` = "1" ; then
-            revision=`  /bin/echo "${revision}"   | /bin/sed -e 's%^-r%%'`
-        else
-            index=$((index-1)) ; revision='00'
-        fi
-        index=$((index+1)) ; class_prog=`/bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        if /usr/bin/test `/bin/echo "${class_prog}" | /bin/grep -c -e '^-p'` = "1" ; then
-            class_prog=`/bin/echo "${class_prog}" | /bin/sed -e 's%^-p%%'`
-        else
-            index=$((index-1)) ; class_prog='00'
-        fi
-        index=$((index+1)) ; subvendor=`/bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; subdevice=`/bin/echo "${pci}" | /usr/bin/cut -d ' ' -f ${index}`
-        /bin/echo `${pci_process_function} ${class} ${vendor} ${device} ${revision} ${class_prog} ${subvendor} ${subdevice}`
-    done \
-    | mm_uniq
-}
-
-mm_hardware_pci2x_map() {
-    local class=$1
-    local vendor=$2
-    local device=$3
-    local revision=$4
-    local class_prog=$5
-    local subvendor=$6
-    local subdevice=$7
-
-    local found
-    local map
-    local map_device
-    local map_x_driver
-
-    if /usr/bin/test -n "${class}" ; then
-        /bin/cat /etc/hardware.d/pci2x.map                                                                      \
-        | /bin/sed -e 's%#.*$%%g' | /bin/sed -e 's% *, *%,%g' | /bin/sed -e 's%^  *%%' | /bin/sed -e 's%  *$%%' \
-        | /bin/grep -e "^${class},${class_prog},${vendor},"                                                     \
-        | {
-            found=
-            while read map ; do
-                if /usr/bin/test -n "${map}" ; then
-                    map_device=`    /bin/echo ${map} | /usr/bin/cut -d ',' -f 4`
-                    map_x_driver=`  /bin/echo ${map} | /usr/bin/cut -d ',' -f 5`
-                    if ( /usr/bin/test -z "${map_device}" || /usr/bin/test "${map_device}" = "${device}" ) ; then
-                        if /usr/bin/test -z "${found}" ; then
-                            found=1
-                            /bin/echo ${map_x_driver}
-                        fi
-                    fi
-                fi
-            done
-        }
-    fi
-}
-
 mm_hardware_x2kernel_map() {
     local x_driver=$1
 
@@ -1559,27 +1484,6 @@ mm_hardware_x2kernel_map() {
             done
         }
     fi
-}
-
-mm_hardware_usb_process() {
-    local usb_process_function=$1
-
-    local bus
-    local device
-    local index
-    local product
-    local usb
-    local vendor
-
-    /usr/sbin/lsusb | /bin/sed -e 's%Bus \([^ ]*\) Device \([^:]*\): ID \([^:]*\):\([^ ]*\) .*$%\1 \2 \3\ \4%' \
-    | while read usb ; do
-        index=1            ; bus=`    /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; device=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; vendor=` /bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
-        index=$((index+1)) ; product=`/bin/echo ${usb} | /usr/bin/cut -d ' ' -f ${index}`
-        /bin/echo `${usb_process_function} ${bus} ${device} ${vendor} ${product}`
-    done \
-    | mm_uniq
 }
 
 #===============================================================================

@@ -2,38 +2,27 @@
 
 . /lib/minimyth/mm_lcdproc
 
+name="${1}"
+driver="${2}"
+
 device="${DEVNAME}"
-idVendor=$1
-idProduct=$2
 
 case "${ACTION}" in
     add)
-        if /usr/bin/test -z "${device}"    || \
-           /usr/bin/test -z "${idVendor}"  || \
-           /usr/bin/test -z "${idProduct}" ; then
+        if /usr/bin/test -z "${name}"   || \
+           /usr/bin/test -z "${device}" || \
+           /usr/bin/test -z "${driver}" ; then
             exit 0
         fi
 
-        # Determine driver and remote.
-        driver=
-        map=`/bin/cat /etc/hardware.d/usb2lcdproc.map                            \
-            | /bin/sed -e 's%#.*$%%g' -e 's%^ *%%' -e 's% *$%%' -e 's% *, *%,%g' \
-            | grep -e "^${idVendor},${idProduct}"`
-        if /usr/bin/test -n "${map}" ; then
-            driver=`/bin/echo ${map} | /usr/bin/cut -d ',' -f 3`
-        fi
-        if /usr/bin/test -z "${driver}" ; then
-            exit 0
-        fi
-
-        mm_lcdproc_state_put 'automatic' "${device}" "${driver}"
+        mm_lcdproc_state_put 'automatic' "${name}" "${device}" "${driver}"
         ;;
     remove)
-        if /usr/bin/test -z "${device}" ; then
+        if /usr/bin/test -z "${name}"   ; then
             exit 0
         fi
 
-        mm_lcdproc_state_delete 'automatic' "${device}"
+        mm_lcdproc_state_delete 'automatic' "${name}"
         ;;
 esac
 

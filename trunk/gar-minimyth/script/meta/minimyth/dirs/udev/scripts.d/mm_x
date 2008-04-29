@@ -1,0 +1,32 @@
+#!/bin/sh
+################################################################################
+# mm_x
+#
+# Arguments:
+#     name   : The name of the audio device. Use %k.
+#     driver : The X driver.
+################################################################################
+
+. /lib/minimyth/mm_x
+
+name=$1
+driver=$2
+
+case "${ACTION}" in
+    add)
+        if /usr/bin/test -z "${name}" ; then
+            exit 0
+        fi
+
+        mm_x_state_put 'automatic' "${name}" "${driver}"
+        ;;
+    remove)
+        if /usr/bin/test -z "${name}" ; then
+            exit 0
+        fi
+
+        mm_x_state_delete 'automatic' "${name}"
+        ;;
+esac
+
+exit 0
