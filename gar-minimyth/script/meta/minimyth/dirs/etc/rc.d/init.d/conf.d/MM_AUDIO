@@ -1,7 +1,7 @@
 ################################################################################
 # MM_AUDIO configuration variables and files.
 ################################################################################
-. /lib/minimyth/mm_audio
+. /lib/minimyth/mm_state
 
 conf_clean_MM_AUDIO() {
     /bin/rm -rf /tmp/init.conf.audio
@@ -37,7 +37,7 @@ conf_default_MM_AUDIO() {
     fi
 
     if /usr/bin/test -z "${MM_AUDIO_CARD_NUMBER}" || /usr/bin/test -z "${MM_AUDIO_DEVICE_NUMBER}" ; then
-        AUDIO=`mm_audio_state_get 'automatic' | /usr/bin/cut -d ' ' -f 1`
+        AUDIO=`mm_state_get 'audio' 'automatic' | /usr/bin/cut -d ' ' -f 1`
         if /usr/bin/test -n "${AUDIO}" ; then
             AUDIO_CARD_NUMBER="`  /bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 1`"
             AUDIO_DEVICE_NUMBER="`/bin/echo ${AUDIO} | /usr/bin/cut -d ',' -f 2`"
