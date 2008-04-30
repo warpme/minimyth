@@ -17,8 +17,11 @@ ACTION=="add|remove", SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
-# Import mm_hardware_product.
+# Import mm_hardware_product and mm_hardware_instance.
 IMPORT{program}="/lib/udev/mm_hardware_id"
+
+# When possible, give the LIRC device a persistent unique name.
+ENV{mm_hardware_instance}=="?*", NAME="lirc-$env{mm_hardware_instance}"
 
 # Initialize state
 ENV{mm_detect_state}=""

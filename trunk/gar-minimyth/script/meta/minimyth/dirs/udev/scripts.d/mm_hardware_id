@@ -3,10 +3,15 @@
 # mm_hardware_id
 #
 # This script identifies the hardware supporting a device so that it can be
-# used by udev. It outputs the the variable 'mm_hardware_device'.
+# used by udev. It outputs the variables
+# mm_hardware_product : The unique identifier for the hardware product.
+# mm_hardware_instance: The unique identifier for the hardware instance.
 # mm_hardware_product has the following formats:
 #     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>
 #     usb:<idVendor>:<idProduct>
+# mm_hardware_instance has the following formats:
+#     pci:<bus_id>
+#     usb:<idVendor>:<idProduct>:<serial>
 ################################################################################
 
 hardware_devpath=${1:-"${DEVPATH}/device"}
@@ -22,6 +27,7 @@ if /usr/bin/test -e "/sys${hardware_devpath}" ; then
 fi
 
 hardware_product=
+hardware_instance=
 case "${hardware_bus}" in
     pci)
         pci_class=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%..$%%'`
@@ -31,14 +37,25 @@ case "${hardware_bus}" in
         pci_subsystem_vendor=`/bin/cat ${hardware_path}/subsystem_vendor | /bin/sed -e 's%^0x%%'`
         pci_subsystem_device=`/bin/cat ${hardware_path}/subsystem_device | /bin/sed -e 's%^0x%%'`
         hardware_product="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
+
+        pci_bus_id=`/usr/bin/basename "${hardware_path}"`
+        if /usr/bin/test -n "${pci_bus_id}" ; then
+            hardware_instance="pci:${pci_bus_id}"
+        fi
         ;;
     usb)
         usb_idVendor=`/bin/cat ${hardware_path}/idVendor`
         usb_idProduct=`/bin/cat ${hardware_path}/idProduct`
         hardware_product="usb:${usb_idVendor}:${usb_idProduct}"
+
+        usb_serial=`/bin/cat ${hardware_path}/serial`
+        if /usr/bin/test -n "${usb_serial}" ; then
+            hardware_instance="usb:${usb_idVendor}:${usb_idProduct}:${usb_serial}"
+        fi
         ;;
 esac
 
 /bin/echo "mm_hardware_product=${hardware_product}"    
+/bin/echo "mm_hardware_instance=${hardware_instance}"    
                                              
 exit 0
