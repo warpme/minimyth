@@ -7,13 +7,15 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-completion.patch \
+	$(DISTNAME)-echo.patch \
 	$(DISTNAME)-hppa.patch \
 	$(DISTNAME)-ioctl.patch \
 	$(DISTNAME)-mdev.patch \
 	$(DISTNAME)-proc.patch \
 	$(DISTNAME)-ssd.patch \
 	$(DISTNAME)-tar.patch \
-	$(DISTNAME)-taskset.patch
+	$(DISTNAME)-taskset.patch \
+	$(DISTNAME)-trylink.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
