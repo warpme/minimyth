@@ -2,7 +2,7 @@
 # Detect audio devices.
 #
 # The sound cards are assumed to be in the sound with the name cardN.
-# mm_hardware_id has the following formats:
+# mm_hardware_type has the following formats:
 #     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>
 #     usb:<idVendor>:<idProduct>
 # mm_detect_state has the following format:
@@ -15,7 +15,7 @@ ACTION=="add|remove", SUBSYSTEM=="sound", KERNEL=="card[0-9]*", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
-# Import mm_hardware_id.
+# Import mm_hardware_type.
 IMPORT{program}="/lib/udev/mm_hardware_id"
 
 # Initialize state
@@ -25,27 +25,27 @@ ENV{mm_detect_state}=""
 # Intel
 #-------------------------------------------------------------------------------
 
-# ENV{mm_hardware_id}=="pci:0403:00:8086:27d8:16f3:806e", ENV{mm_detect_state}="%n,"  # Jetway J9F2-Extreme
-# ENV{mm_hardware_id}=="pci:0403:00:8086:284b:8086:2503", ENV{mm_detect_state}="%n,"  # Intel DG965OT
-# ENV{mm_hardware_id}=="pci:0403:00:8086:293e:1043:8277", ENV{mm_detect_state}="%n,"  # ASUS P5E-VM HDMI
+# ENV{mm_hardware_type}=="pci:0403:00:8086:27d8:16f3:806e", ENV{mm_detect_state}="%n,"  # Jetway J9F2-Extreme
+# ENV{mm_hardware_type}=="pci:0403:00:8086:284b:8086:2503", ENV{mm_detect_state}="%n,"  # Intel DG965OT
+# ENV{mm_hardware_type}=="pci:0403:00:8086:293e:1043:8277", ENV{mm_detect_state}="%n,"  # ASUS P5E-VM HDMI
 
 #-------------------------------------------------------------------------------
 # NVIDIA
 #-------------------------------------------------------------------------------
 
-  ENV{mm_hardware_id}=="pci:0401:00:10de:006b:1043:0c11", ENV{mm_detect_state}="%n,2" # ASUS A7N8X-E
-# ENV{mm_hardware_id}=="pci:0401:00:10de:006a:1043:8095", ENV{mm_detect_state}="%n,2" # ASUS A7N8X-E
-  ENV{mm_hardware_id}=="pci:0403:00:10de:026c:1043:81cb", ENV{mm_detect_state}="%n,0" # ASUS M2NPV-VM
-  ENV{mm_hardware_id}=="pci:0403:00:10de:026c:10de:cb84", ENV{mm_detect_state}="%n,0" # ASUS A8N-VM CSM
+  ENV{mm_hardware_type}=="pci:0401:00:10de:006b:1043:0c11", ENV{mm_detect_state}="%n,2" # ASUS A7N8X-E
+# ENV{mm_hardware_type}=="pci:0401:00:10de:006a:1043:8095", ENV{mm_detect_state}="%n,2" # ASUS A7N8X-E
+  ENV{mm_hardware_type}=="pci:0403:00:10de:026c:1043:81cb", ENV{mm_detect_state}="%n,0" # ASUS M2NPV-VM
+  ENV{mm_hardware_type}=="pci:0403:00:10de:026c:10de:cb84", ENV{mm_detect_state}="%n,0" # ASUS A8N-VM CSM
 
 #-------------------------------------------------------------------------------
 # VIA
 #-------------------------------------------------------------------------------
 
-  ENV{mm_hardware_id}=="pci:0401:00:1106:3059:1106:aa01", ENV{mm_detect_state}="%n,0" # VIA EPIA PD10000 and VIA EPIA ME6000
-  ENV{mm_hardware_id}=="pci:0401:00:1106:3059:1106:aa01", ENV{mm_detect_state}="%n,0" # VIA EPIA SP8000E
-# ENV{mm_hardware_id}=="pci:0403:00:1106:3288:1106:aa09", ENV{mm_detect_state}="%n,"  # VIA EPIA NX15000G
-# ENV{mm_hardware_id}=="pci:0401:00:1412:1724:1412:1724", ENV{mm_detect_state}="%n,"  # Albatron PX865PE
+  ENV{mm_hardware_type}=="pci:0401:00:1106:3059:1106:aa01", ENV{mm_detect_state}="%n,0" # VIA EPIA PD10000 and VIA EPIA ME6000
+  ENV{mm_hardware_type}=="pci:0401:00:1106:3059:1106:aa01", ENV{mm_detect_state}="%n,0" # VIA EPIA SP8000E
+# ENV{mm_hardware_type}=="pci:0403:00:1106:3288:1106:aa09", ENV{mm_detect_state}="%n,"  # VIA EPIA NX15000G
+# ENV{mm_hardware_type}=="pci:0401:00:1412:1724:1412:1724", ENV{mm_detect_state}="%n,"  # Albatron PX865PE
 
 # The state has been set, so save it.
 ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect audio %k $env{mm_detect_state}"

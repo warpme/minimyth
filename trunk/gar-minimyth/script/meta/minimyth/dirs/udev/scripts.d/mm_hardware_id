@@ -3,8 +3,8 @@
 # mm_hardware_id
 #
 # This script identifies the hardware supporting a device so that it can be
-# used by udev. It outputs the the variable 'mm_hardware_id'.
-# mm_hardware_id has the following formats:
+# used by udev. It outputs the the variable 'mm_hardware_type'.
+# mm_hardware_type has the following formats:
 #     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>
 #     usb:<idVendor>:<idProduct>
 ################################################################################
@@ -12,17 +12,17 @@
 hardware_devpath=${1:-"${DEVPATH}/device"}
 
 hardware_path=
-hardware_type=
+hardware_bus=
 if /usr/bin/test -e "/sys${hardware_devpath}" ; then
     hardware_path=`/usr/bin/readlink -f "/sys${hardware_devpath}"`
     if /usr/bin/test -e "${hardware_path}/subsystem" ; then
-        hardware_type=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
-        hardware_type=`/usr/bin/basename "${hardware_type}"`
+        hardware_bus=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
+        hardware_bus=`/usr/bin/basename "${hardware_bus}"`
     fi
 fi
 
-hardware_id=
-case "${hardware_type}" in
+hardware_type=
+case "${hardware_bus}" in
     pci)
         pci_class=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%..$%%'`
         pci_prog=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%^....%%'`
@@ -30,15 +30,15 @@ case "${hardware_type}" in
         pci_device=`/bin/cat ${hardware_path}/device | /bin/sed -e 's%^0x%%'`
         pci_subsystem_vendor=`/bin/cat ${hardware_path}/subsystem_vendor | /bin/sed -e 's%^0x%%'`
         pci_subsystem_device=`/bin/cat ${hardware_path}/subsystem_device | /bin/sed -e 's%^0x%%'`
-        hardware_id="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
+        hardware_type="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
         ;;
     usb)
         usb_idVendor=`/bin/cat ${hardware_path}/idVendor`
         usb_idProduct=`/bin/cat ${hardware_path}/idProduct`
-        hardware_id="usb:${usb_idVendor}:${usb_idProduct}"
+        hardware_type="usb:${usb_idVendor}:${usb_idProduct}"
         ;;
 esac
 
-/bin/echo "mm_hardware_id=${hardware_id}"    
+/bin/echo "mm_hardware_type=${hardware_type}"    
                                              
 exit 0
