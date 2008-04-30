@@ -145,14 +145,14 @@ conf_default_MM_LIRC() {
     # then create LIRC devcie list.
     # If the manually configured LIRC driver is 'irtrans',
     # then the IRTrans server will act as the LIRC device
-    # so no LIRCE device list is created.
+    # so no LIRC device list is created.
     MM_LIRC_DEVICE_LIST=
     if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "irtrans" ; then
         if /usr/bin/test -n "${MM_LIRC_DEVICE}" && /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
             MM_LIRC_DEVICE_LIST="${device_list} ${MM_LIRC_DEVICE},${MM_LIRC_DRIVER},${MM_LIRC_REMOTE}"
         fi
         if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
-            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_detect_state_get 'lirc'`"
+            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_detect_state_get 'lirc' | mm_uniq`"
         fi
     fi
 
