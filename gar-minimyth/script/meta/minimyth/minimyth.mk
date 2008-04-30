@@ -89,16 +89,16 @@ MM_INIT_START := \
     video \
     wiimote \
     irtrans \
-    lcdproc \
     lirc \
+    lcdproc \
     mythtv \
     font \
     mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
     x \
-    lirc \
     lcdproc \
+    lirc \
     irtrans \
     wiimote \
     audio \
