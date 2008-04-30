@@ -1,5 +1,5 @@
 GARNAME = libpng
-GARVERSION = 1.2.26
+GARVERSION = 1.2.27
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
@@ -25,6 +25,11 @@ include ../../gar.mk
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+# Needed due to a bug in libpng 1.2.27's libtool.
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
 post-install:
