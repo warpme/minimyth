@@ -3,8 +3,8 @@
 # mm_hardware_id
 #
 # This script identifies the hardware supporting a device so that it can be
-# used by udev. It outputs the the variable 'mm_hardware_type'.
-# mm_hardware_type has the following formats:
+# used by udev. It outputs the the variable 'mm_hardware_device'.
+# mm_hardware_product has the following formats:
 #     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>
 #     usb:<idVendor>:<idProduct>
 ################################################################################
@@ -21,7 +21,7 @@ if /usr/bin/test -e "/sys${hardware_devpath}" ; then
     fi
 fi
 
-hardware_type=
+hardware_product=
 case "${hardware_bus}" in
     pci)
         pci_class=`/bin/cat ${hardware_path}/class | /bin/sed -e 's%^0x%%' -e 's%..$%%'`
@@ -30,15 +30,15 @@ case "${hardware_bus}" in
         pci_device=`/bin/cat ${hardware_path}/device | /bin/sed -e 's%^0x%%'`
         pci_subsystem_vendor=`/bin/cat ${hardware_path}/subsystem_vendor | /bin/sed -e 's%^0x%%'`
         pci_subsystem_device=`/bin/cat ${hardware_path}/subsystem_device | /bin/sed -e 's%^0x%%'`
-        hardware_type="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
+        hardware_product="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
         ;;
     usb)
         usb_idVendor=`/bin/cat ${hardware_path}/idVendor`
         usb_idProduct=`/bin/cat ${hardware_path}/idProduct`
-        hardware_type="usb:${usb_idVendor}:${usb_idProduct}"
+        hardware_product="usb:${usb_idVendor}:${usb_idProduct}"
         ;;
 esac
 
-/bin/echo "mm_hardware_type=${hardware_type}"    
+/bin/echo "mm_hardware_product=${hardware_product}"    
                                              
 exit 0
