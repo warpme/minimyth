@@ -44,6 +44,11 @@ conf_check_MM_LIRC() {
 }
 
 conf_default_MM_LIRC() {
+
+    local device
+    local device_item
+    local device_list
+
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         MM_LIRC_DRIVER='none'
     fi
@@ -148,6 +153,15 @@ conf_default_MM_LIRC() {
             MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_detect_state_get 'lirc' | mm_uniq`"
         fi
     fi
+
+    device_list=
+    for device_item in ${MM_LIRC_DEVICE_LIST} ; do
+        device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+        if ! /bin/echo " ${MM_LIRC_DEVICE_BLACKLIST} " | /bin/grep -q " ${device} " ; then
+            device_list="${device_list} ${device_item}"
+        fi
+    done
+    MM_LIRC_DEVICE_LIST="${device_list}"
     
     return 0
 }
@@ -160,6 +174,7 @@ conf_write_MM_LIRC() {
     conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE_LIST           "${MM_LIRC_DEVICE_LIST}"
+    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_BLACKLIST      "${MM_LIRC_DEVICE_BLACKLIST}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
