@@ -187,8 +187,8 @@ start() {
 
         # Start daemon.
         daemon=
+        instance=`/bin/echo ${device} | /bin/sed -e 's%//*%~%g' | /bin/sed -e 's%^~dev~%%'`
         if /usr/bin/test -n "${daemon_master}" ; then
-            instance=`/bin/echo ${device} | /bin/sed -e 's%//*%-%g' | /bin/sed -e 's%^-dev-%%'`
             daemon="/usr/sbin/lircd"
             daemon="${daemon} --device=${device} --driver=${driver}"
             daemon="${daemon} --output=/dev/lircd-${instance} --pidfile=/var/run/lircd-${instance}.pid"
@@ -197,6 +197,8 @@ start() {
             daemon="/usr/sbin/lircd"
             daemon="${daemon} --device=${device} --driver=${driver}"
             daemon="${daemon} --output=/dev/lircd --pidfile=/var/run/lircd.pid"
+            /bin/ln -s lircd /dev/lircd-${instance}
+            
         fi
         /usr/bin/logger -t minimyth -p "local0.info" "started '${daemon}'."
         ${daemon}
