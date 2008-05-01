@@ -1,0 +1,69 @@
+#!/bin/sh
+################################################################################
+# mm_detect_id
+#
+# This script identifies the hardware supporting a device so that it can be
+# used by udev. It outputs the variable 'mm_detect_id'.
+# mm_detect_id has the following formats:
+#     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>
+#     usb:<idVendor>:<idProduct>
+################################################################################
+
+hardware_path=
+if /usr/bin/test -z "${hardware_path}" ; then
+    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}/device" ; then
+        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
+    fi
+fi
+if /usr/bin/test -z "${hardware_path}" ; then
+    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}" ; then
+        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}"`
+    fi
+fi
+if /usr/bin/test -z "${hardware_path}" ; then
+    exit 1
+fi
+
+hardware_bus=
+if /usr/bin/test -d "${hardware_path}/subsystem" ; then
+    hardware_bus=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
+    hardware_bus=`/usr/bin/basename "${hardware_bus}"`
+fi
+if /usr/bin/test -z "${hardware_bus}" ; then
+    exit 1
+fi
+
+detect_id=
+case "${hardware_bus}" in
+    pci)
+        pci_class=`           /bin/cat ${hardware_path}/class            2> /dev/null | /bin/sed -e 's%^0x%%' -e 's%..$%%'`
+        pci_prog=`            /bin/cat ${hardware_path}/class            2> /dev/null | /bin/sed -e 's%^0x%%' -e 's%^....%%'`
+        pci_vendor=`          /bin/cat ${hardware_path}/vendor           2> /dev/null | /bin/sed -e 's%^0x%%'`
+        pci_device=`          /bin/cat ${hardware_path}/device           2> /dev/null | /bin/sed -e 's%^0x%%'`
+        pci_subsystem_vendor=`/bin/cat ${hardware_path}/subsystem_vendor 2> /dev/null | /bin/sed -e 's%^0x%%'`
+        pci_subsystem_device=`/bin/cat ${hardware_path}/subsystem_device 2> /dev/null | /bin/sed -e 's%^0x%%'`
+        if /usr/bin/test -z "${pci_class}"  || \
+           /usr/bin/test -z "${pci_prog}"   || \
+           /usr/bin/test -z "${pci_vendor}" || \
+           /usr/bin/test -z "${pci_device}" ; then
+            exit 1
+        fi
+        detect_id="pci:${pci_class}:${pci_prog}:${pci_vendor}:${pci_device}:${pci_subsystem_vendor}:${pci_subsystem_device}"
+        ;;
+    usb)
+        usb_idVendor=` /bin/cat ${hardware_path}/idVendor  2> /dev/null`
+        usb_idProduct=`/bin/cat ${hardware_path}/idProduct 2> /dev/null`
+        if /usr/bin/test -z "${usb_idVendor}"  || \
+           /usr/bin/test -z "${usb_idProduct}" ; then
+            exit 1
+        fi
+        detect_id="usb:${usb_idVendor}:${usb_idProduct}"
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+/bin/echo "mm_detect_id=${detect_id}"
+
+exit 0

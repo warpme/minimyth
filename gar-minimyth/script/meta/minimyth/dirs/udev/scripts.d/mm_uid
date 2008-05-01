@@ -1,0 +1,60 @@
+#!/bin/sh
+################################################################################
+# mm_uid
+#
+# This script provides a unique identifier based on hardware information.
+#
+# The output has the formats:
+#     pci:<bus_id>
+#     usb:<idVendor>:<idProduct>:<serial>
+################################################################################
+
+hardware_path=
+if /usr/bin/test -z "${hardware_path}" ; then
+    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}/device" ; then
+        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
+    fi
+fi
+if /usr/bin/test -z "${hardware_path}" ; then
+    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}" ; then
+        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}"`
+    fi
+fi
+if /usr/bin/test -z "${hardware_path}" ; then
+    exit 1
+fi
+
+hardware_bus=
+if /usr/bin/test -d "${hardware_path}/subsystem" ; then
+    hardware_bus=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
+    hardware_bus=`/usr/bin/basename "${hardware_bus}"`
+fi
+if /usr/bin/test -z "${hardware_bus}" ; then
+    exit 1
+fi
+
+hardware_uid=
+case "${hardware_bus}" in
+    pci)
+        pci_bus_id=`/usr/bin/basename "${hardware_path}" 2> /dev/null`
+        if /usr/bin/test -z "${pci_bus_id}" ; then
+            exit 1
+        fi
+        hardware_uid="pci:${pci_bus_id}"
+        ;;
+    usb)
+        usb_idVendor=` /bin/cat ${hardware_path}/idVendor  2> /dev/null`
+        usb_idProduct=`/bin/cat ${hardware_path}/idProduct 2> /dev/null`
+        usb_serial=`   /bin/cat ${hardware_path}/serial    2> /dev/null`
+        if /usr/bin/test -z "${usb_idVendor}"  || \
+           /usr/bin/test -z "${usb_idProduct}" || \
+           /usr/bin/test -z "${usb_serial}"    ; then
+            exit 1
+        fi
+        hardware_uid="usb:${usb_idVendor}:${usb_idProduct}:${usb_serial}"
+        ;;
+esac
+
+/bin/echo "${hardware_uid}"    
+                                             
+exit 0
