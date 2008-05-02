@@ -37,14 +37,9 @@ start() {
         fi
 
         if /usr/bin/test -e /etc/LCDd.conf ; then
-            # Set the driver.
-            if /usr/bin/test -n "${MM_LCDPROC_Driver}" ; then
-                /bin/sed -i "s%^Driver=.*$%Driver=${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
-            fi
-            # Set the device.
-            if /usr/bin/test -n "${MM_LCDPROC_DEVICE}" ; then
-                /bin/sed -i s%^Device=.*$%Device=${MM_LCDPROC_DEVICE} /etc/LCDd.conf
-            fi
+            # Set the driver and device.
+            /bin/sed -i "s%@MM_LCDPROC_DRIVER@%${MM_LCDPROC_DRIVER}%" /etc/LCDd.conf
+            /bin/sed -i "s%@MM_LCDPROC_DEVICE@%${MM_LCDPROC_DEVICE}%" /etc/LCDd.conf
             # Start LCDproc LCDd daemon and Myth LCD server.
             /usr/sbin/LCDd -c /etc/LCDd.conf
         fi
