@@ -33,7 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
-	--disable-xthreads \
+	--enable-xthreads \
 	--disable-xcms \
 	--enable-xlocale \
 	--disable-xlocaledir \
