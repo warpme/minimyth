@@ -90,7 +90,8 @@ conf_default_MM_LIRC() {
 
     # Read LIRC driver specific configuration file,
     # but do not allow the values to override values in the MiniMyth configuration file.
-    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && /usr/bin/test -r /etc/lirc.d/driver.conf.d/driver.conf.${MM_LIRC_DRIVER} ; then
+    if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "none" && \
+       /usr/bin/test -r /etc/lirc.d/driver.conf.d/driver.conf.${MM_LIRC_DRIVER} ; then
         /bin/rm -rf /tmp/driver.conf.${MM_LIRC_DRIVER}~
         /bin/cat /etc/lirc.d/driver.conf.d/driver.conf.${MM_LIRC_DRIVER} \
             | /bin/sed -e 's%#.*$%%g' \
@@ -170,11 +171,10 @@ conf_write_MM_LIRC() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED          "${MM_LIRC_AUTO_ENABLED}"
+    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_BLACKLIST      "${MM_LIRC_DEVICE_BLACKLIST}"
     conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
     conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_LIST           "${MM_LIRC_DEVICE_LIST}"
-    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_BLACKLIST      "${MM_LIRC_DEVICE_BLACKLIST}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
     conf_variable_write "${conf_file}" MM_LIRC_IREXEC_ENABLED        "${MM_LIRC_IREXEC_ENABLED}"
@@ -182,6 +182,7 @@ conf_write_MM_LIRC() {
     conf_variable_write "${conf_file}" MM_LIRC_WAKEUP_ENABLED        "${MM_LIRC_WAKEUP_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCD_CONF      "${MM_LIRC_FETCH_LIRCD_CONF}"
     conf_variable_write "${conf_file}" MM_LIRC_FETCH_LIRCRC          "${MM_LIRC_FETCH_LIRCRC}"
+    conf_variable_write "${conf_file}" MM_LIRC_DEVICE_LIST           "${MM_LIRC_DEVICE_LIST}"
 
     return 0
 }

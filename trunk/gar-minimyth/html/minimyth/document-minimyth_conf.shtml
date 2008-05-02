@@ -2139,7 +2139,10 @@
               <p>
                 If MiniMyth does not have built-in LIRC configuration files
                 or you do not want to use the built-in configuration files,
-                then you can place your 'lircd.conf' and 'lircrc' files in the MiniMyth read-only configuration directory.
+                then you can load your own 'lircd.conf' and 'lircrc' files using
+                '<a href="#MM_LIRC_FETCH_LIRCD_CONF">MM_LIRC_FETCH_LIRCD_CONF</a>'
+                and
+                '<a href="#MM_LIRC_FETCH_LIRCRC">MM_LIRC_FETCH_LIRCRC</a>'.
                 In the 'lircrc' file, each record's 'prog' attribute must be set to the name of the program being controlled
                 (i.e. 'mythtv', 'mplayer' or 'xine') not to 'irxevent'.
               </p>
@@ -2159,7 +2162,7 @@
               <p>
                 If the value is 'auto',
                 then MiniMyth will attempt to pick a reasonable default value based on the value of
-                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>.
+                '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>'.
               </p>
             </dd>
             <dt id="MM_LIRC_KERNEL_MODULE"><strong>MM_LIRC_KERNEL_MODULE</strong></dt>
@@ -2174,13 +2177,14 @@
               <p>
                 If the value is 'auto',
                 then MiniMyth will attempt to pick a reasonable default value based on the value of
-                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>.
+                '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>'.
               </p>
             </dd>
             <dt id="MM_LIRC_KERNEL_MODULE_OPTIONS"><strong>MM_LIRC_KERNEL_MODULE_OPTIONS</strong></dt>
             <dd>
               <p>
-                Set the options for the kernel module specified by 'MM_LIRC_KERNEL_MODULE'.
+                Set the options for the kernel module specified by
+                '<a href="#MM_LIRC_KERNEL_MODULE">MM_LIRC_KERNEL_MODULE</a>'.
                 Valid values are the kernel module options, 'none' and 'auto', with 'auto' the default.
                 For MM_LIRC_KERNEL_MODULE='lirc_serial',
                 you need to use 'MM_LIRC_KERNEL_MODULE_OPTIONS' to specify the parameters for the serial port that you are using.
@@ -2201,7 +2205,7 @@
               <p>
                 If the value is 'auto',
                 then MiniMyth will attempt to pick a reasonable default value based on the value of
-                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>.
+                '<a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>'.
               </p>
             </dd>
             <dt id="MM_LIRC_IREXEC_ENABLED"><strong>MM_LIRC_IREXEC_ENABLED</strong></dt>
@@ -2290,6 +2294,9 @@
           </ul>
           <ul>
             <li><a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a></li>
+            <li><a href="#MM_LCDPROC_DEVICE">MM_LCDPROC_DEVICE</a></li>
+            <li><a href="#MM_LCDPROC_KERNEL_MODULE">MM_LCDPROC_KERNEL_MODULE</a></li>
+            <li><a href="#MM_LCDPROC_KERNEL_MODULE_OPTIONS">MM_LCDPROC_KERNEL_MODULE_OPTIONS</a></li>
             <li><a href="#MM_LCDPROC_FETCH_LCDD_CONF">MM_LCDPROC_FETCH_LCDD_CONF</a></li>
           </ul>
           <dl>
@@ -2325,13 +2332,10 @@
                 If there is no driver specific build-in 'LCDd.conf' file for the LCDd driver,
                 then the generic LCDd.conf file is used.
                 Currently, there are no built-in 'LCDd.conf' files.
-                If your LCD or VFD does not have a built-in 'LCDd.conf' file or you do not want to use the built-in 'LCDd.conf' file,
-                then you can place your own 'LCDd.conf' file in the MiniMyth read-only configuration directory.
-                You can find an example 'LCDd.conf' file in '/etc/lcd.d/LCDd.conf' on your MiniMyth frontend,
-                which you can download through the web interface to the MiniMyth file system 'http://{frontend}:8080/'.
-                If you do use your own 'LCDd.conf' file because none is included in MiniMyth,
-                then please consider contributing your 'LCDd.conf' file to MiniMyth using a
-                <a href="http://linpvr.org/bugs/">bug report</a>.
+                If your LCD or VFD does not have a built-in 'LCDd.conf' file or
+                you do not want to use the built-in 'LCDd.conf' file,
+                then you can load your own 'LCDd.conf' using
+                '<a href="#MM_LCDPROC_FETCH_LCDD_CONF">MM_LCDPROC_FETCH_LCDD_CONF</a>'.
               </p>
               <p>
                 If the value is 'none,' then none will be picked.
@@ -2339,7 +2343,8 @@
               <p>
                 If the value is 'auto', then MiniMyth will attempt to auto-configure your LCD or VFD.
                 If you use an LCD or VFD the connects using USB,
-                then MiniMyth will attempt to determine the value for 'MM_LCDPROC_DRIVER'
+                then MiniMyth will attempt to determine the values for 'MM_LCDPROC_DRIVER' and
+                '<a href="#MM_LCDPROC_DEVICE">MM_LCDPROC_DEVICE</a>'
                 using the USB vendor and product identifiers in conjuction with the '/etc/hardware.d/usb2lcdproc.map' file.
                 If your LCD or VFD is not auto-detected and you believe that it should have been auto-detected,
                 then please file a
@@ -2347,6 +2352,69 @@
                 that contains the LCD or VFD vendor and model, the LCDproc driver used,
                 the output of the command 'lsusb' with the LCD or VFD connected, and (if you have one)
                 an 'LCDd.conf' file that works with MiniMyth.
+              </p>
+            </dd>
+            <dt id="MM_LCDPROC_DEVICE"><strong>MM_LCDPROC_DEVICE</strong></dt>
+            <dd>
+              <p>
+                Set the name of your lirc device (e.g. '/dev/ttyS0').
+                Valid values are the lirc device, 'none' and 'auto', with 'auto' the default.
+              </p>
+              <p>
+                If the value of 
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'
+                is 'auto', then the value of MM_LCDPROC_DEVICE is ignored.
+                Instead, MiniMyth uses the device associated with the auto-configured driver.
+              </p>
+              <p>
+                If the value is 'none,' then no lirc device will be set.
+              </p>
+              <p>
+                If the value is 'auto',
+                then MiniMyth will attempt to pick a reasonable default value based on the value of
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'.
+              </p>
+            </dd>
+            <dt id="MM_LCDPROC_KERNEL_MODULE"><strong>MM_LCDPROC_KERNEL_MODULE</strong></dt>
+            <dd>
+              <p>
+                Set the name of any kernel module that you need to load to support your lirc device (e.g. '8250').
+                Valid values are the kernel module, 'none' and 'auto', with 'auto' the default.
+              </p>
+              <p>
+                If the value of 
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'
+                is 'auto' then MM_LCDPROC_KERNEL_MODULE is ignored.
+                Instead, MiniMyth does not load any additional kernel modules.
+              </p>
+              <p>
+                If the value is 'none,' then no lirc device will be set.
+              </p>
+              <p>
+                If the value is 'auto',
+                then MiniMyth will attempt to pick a reasonable default value based on the value of
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'.
+              </p>
+            </dd>
+            <dt id="MM_LCDPROC_KERNEL_MODULE_OPTIONS"><strong>MM_LCDPROC_KERNEL_MODULE_OPTIONS</strong></dt>
+            <dd>
+              <p>
+                Set the options for the kernel module specified by
+                <a href="#MM_LCDPROC_KERNEL_MODULE">MM_LCDPROC_KERNEL_MODULE</a>.
+                Valid values are the kernel module options, 'none' and 'auto', with 'auto' the default.
+              </p>
+              <p>
+                If the value of 
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'
+                is 'auto' then MM_LCDPROC_KERNEL_MODULE_DRIVERS is ignored.
+              </p>
+              <p>
+                If the value is 'none,' then no lirc device will be set.
+              </p>
+              <p>
+                If the value is 'auto',
+                then MiniMyth will attempt to pick a reasonable default value based on the value of
+                '<a href="#MM_LCDPROC_DRIVER">MM_LCDPROC_DRIVER</a>'.
               </p>
             </dd>
             <dt id="MM_LCDPROC_FETCH_LCDD_CONF"><strong>MM_LCDPROC_FETCH_LCDD_CONF</strong></dt>
