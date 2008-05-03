@@ -29,7 +29,8 @@ include ../../gar.mk
 install-custom:
 	@mkdir -p $(DESTDIR)$(sbindir)
 	@rm -rf $(DESTDIR)$(sbindir)/irserver
-	@cp $(WORKSRC)/irserver $(DESTDIR)$(sbindir)
+	@$(if $(filter i386,  $(GARCH_FAMILY)),cp $(WORKSRC)/irserver   $(DESTDIR)$(sbindir)/irserver)
+	@$(if $(filter x86_64,$(GARCH_FAMILY)),cp $(WORKSRC)/irserver64 $(DESTDIR)$(sbindir)/irserver)
 	@mkdir -p $(DESTDIR)$(datadir)/irtrans
 	@rm -rf $(DESTDIR)$(datadir)/irtrans/remotes
 	@cp -r $(WORKSRC)/remotes  $(DESTDIR)$(datadir)/irtrans
