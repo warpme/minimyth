@@ -4,7 +4,7 @@ CATEGORIES = utils
 MASTER_SITES  = http://fromani.exit1.org/
 MASTER_SITES += http://www.kraymer.mynetcologne.de/
 DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME)-linux_2.6.24.patch $(DISTNAME)-configure.patch
+PATCHFILES = $(DISTNAME)-linux_2.6.24.patch $(DISTNAME)-libavcodec_include.patch $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
