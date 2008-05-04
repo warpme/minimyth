@@ -56,7 +56,7 @@ CONFIGURE_ARGS = \
 	--extra-cxxflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--enable-symbol-visibility \
-	--arch=$(GARCH) \
+	--arch=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
 	--enable-mmx \

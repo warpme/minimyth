@@ -62,7 +62,7 @@ CONFIGURE_ARGS = \
 	--extra-cxxflags="$(CFLAGS)" \
 	--cpu=$(GARCH) \
 	--tune=$(GARCH) \
-	--arch=$(GARCH) \
+	--arch=$(GARCH_FAMILY) \
 	--enable-proc-opt \
 	--enable-mmx \
 	--disable-iwmmxt \
