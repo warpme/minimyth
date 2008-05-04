@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.21-17166-old/configure mythtv-0.21-17166-new/configure
---- mythtv-0.21-17166-old/configure	2008-04-29 13:52:03.000000000 -0700
-+++ mythtv-0.21-17166-new/configure	2008-04-29 13:52:07.000000000 -0700
+--- mythtv-0.21-17166-old/configure	2008-04-29 13:49:03.000000000 -0700
++++ mythtv-0.21-17166-new/configure	2008-05-03 19:04:16.000000000 -0700
 @@ -688,11 +688,11 @@
      func=$4
      shift 4
@@ -16,6 +16,15 @@ diff -Naur mythtv-0.21-17166-old/configure mythtv-0.21-17166-new/configure
          check_lib "$@" $header $func && enable $cfg
      fi
      return $err
+@@ -1475,7 +1475,7 @@
+   x86_64|amd64)
+     arch="x86_32"
+     enable fast_unaligned
+-    canon_arch="`$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
++    canon_arch="`$cross_prefix$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
+     if [ x"$canon_arch" = x"x86_64" -o x"$canon_arch" = x"amd64" ]; then
+       if [ -z "`echo $CFLAGS | grep -- -m32`"  ]; then
+         arch="x86_64"
 @@ -1703,27 +1703,7 @@
  
  has_library()
@@ -119,8 +128,8 @@ diff -Naur mythtv-0.21-17166-old/configure mythtv-0.21-17166-new/configure
  if enabled fribidi; then
    echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
 diff -Naur mythtv-0.21-17166-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.21-17166-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-0.21-17166-old/contrib/mythnotify/cidbcast/Makefile	2008-04-29 13:52:03.000000000 -0700
-+++ mythtv-0.21-17166-new/contrib/mythnotify/cidbcast/Makefile	2008-04-29 13:52:07.000000000 -0700
+--- mythtv-0.21-17166-old/contrib/mythnotify/cidbcast/Makefile	2008-04-29 13:49:02.000000000 -0700
++++ mythtv-0.21-17166-new/contrib/mythnotify/cidbcast/Makefile	2008-05-03 19:03:47.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -131,8 +140,8 @@ diff -Naur mythtv-0.21-17166-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.2
  
  #################################################################################
 diff -Naur mythtv-0.21-17166-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.21-17166-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-0.21-17166-old/contrib/mythnotify/mythudprelay/Makefile	2008-04-29 13:52:03.000000000 -0700
-+++ mythtv-0.21-17166-new/contrib/mythnotify/mythudprelay/Makefile	2008-04-29 13:52:07.000000000 -0700
+--- mythtv-0.21-17166-old/contrib/mythnotify/mythudprelay/Makefile	2008-04-29 13:49:02.000000000 -0700
++++ mythtv-0.21-17166-new/contrib/mythnotify/mythudprelay/Makefile	2008-05-03 19:03:47.000000000 -0700
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -151,8 +160,8 @@ diff -Naur mythtv-0.21-17166-old/contrib/mythnotify/mythudprelay/Makefile mythtv
  
  #################################################################################
 diff -Naur mythtv-0.21-17166-old/programs/mythtranscode/Makefile.standlone mythtv-0.21-17166-new/programs/mythtranscode/Makefile.standlone
---- mythtv-0.21-17166-old/programs/mythtranscode/Makefile.standlone	2008-04-29 13:52:03.000000000 -0700
-+++ mythtv-0.21-17166-new/programs/mythtranscode/Makefile.standlone	2008-04-29 13:52:07.000000000 -0700
+--- mythtv-0.21-17166-old/programs/mythtranscode/Makefile.standlone	2008-04-29 13:49:00.000000000 -0700
++++ mythtv-0.21-17166-new/programs/mythtranscode/Makefile.standlone	2008-05-03 19:03:47.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -163,8 +172,8 @@ diff -Naur mythtv-0.21-17166-old/programs/mythtranscode/Makefile.standlone mytht
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
 diff -Naur mythtv-0.21-17166-old/settings.pro mythtv-0.21-17166-new/settings.pro
---- mythtv-0.21-17166-old/settings.pro	2008-04-29 13:52:03.000000000 -0700
-+++ mythtv-0.21-17166-new/settings.pro	2008-04-29 13:52:07.000000000 -0700
+--- mythtv-0.21-17166-old/settings.pro	2008-04-29 13:49:03.000000000 -0700
++++ mythtv-0.21-17166-new/settings.pro	2008-05-03 19:03:47.000000000 -0700
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  

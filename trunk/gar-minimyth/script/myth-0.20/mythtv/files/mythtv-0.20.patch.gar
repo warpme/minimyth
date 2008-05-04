@@ -1,6 +1,6 @@
-diff -Naur mythtv-0.20.2-old/configure mythtv-0.20.2-new/configure
---- mythtv-0.20.2-old/configure	2008-01-31 18:07:17.000000000 -0800
-+++ mythtv-0.20.2-new/configure	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/configure mythtv-0.20-16082-new/configure
+--- mythtv-0.20-16082-old/configure	2008-05-03 19:11:33.000000000 -0700
++++ mythtv-0.20-16082-new/configure	2008-05-03 19:12:15.000000000 -0700
 @@ -447,17 +447,17 @@
  fi
  
@@ -23,6 +23,15 @@ diff -Naur mythtv-0.20.2-old/configure mythtv-0.20.2-new/configure
              processor_flags=`echo $processor_flags | tr "[A-Z]" "[a-z]"` 
          fi 
      fi 
+@@ -514,7 +514,7 @@
+   ;;
+   x86_64)
+     cpu="x86"
+-    canon_arch="`$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
++    canon_arch="`$cross_prefix$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
+     if [ x"$canon_arch" = x"x86_64" -o x"$canon_arch" = x"amd64" ]; then
+       if [ -z "`echo $CFLAGS | grep -- -m32`"  ]; then
+         cpu="x86_64"
 @@ -1229,26 +1229,7 @@
  
  has_library()
@@ -151,9 +160,9 @@ diff -Naur mythtv-0.20.2-old/configure mythtv-0.20.2-new/configure
  fi
  if test "$lmsensors" = "yes" ; then
    CCONFIG="$CCONFIG using_lmsensors"
-diff -Naur mythtv-0.20.2-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.20.2-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-0.20.2-old/contrib/mythnotify/cidbcast/Makefile	2008-01-31 18:07:04.000000000 -0800
-+++ mythtv-0.20.2-new/contrib/mythnotify/cidbcast/Makefile	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.20-16082-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-0.20-16082-old/contrib/mythnotify/cidbcast/Makefile	2008-02-29 20:16:56.000000000 -0800
++++ mythtv-0.20-16082-new/contrib/mythnotify/cidbcast/Makefile	2008-05-03 19:11:48.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -163,9 +172,9 @@ diff -Naur mythtv-0.20.2-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.20.2-
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-0.20.2-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.20.2-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-0.20.2-old/contrib/mythnotify/mythudprelay/Makefile	2008-01-31 18:07:04.000000000 -0800
-+++ mythtv-0.20.2-new/contrib/mythnotify/mythudprelay/Makefile	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.20-16082-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-0.20-16082-old/contrib/mythnotify/mythudprelay/Makefile	2008-02-29 20:16:56.000000000 -0800
++++ mythtv-0.20-16082-new/contrib/mythnotify/mythudprelay/Makefile	2008-05-03 19:11:48.000000000 -0700
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -183,9 +192,9 @@ diff -Naur mythtv-0.20.2-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.2
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20.2-new/programs/mythfrontend/mythfrontend.pro
---- mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro	2008-01-31 18:07:04.000000000 -0800
-+++ mythtv-0.20.2-new/programs/mythfrontend/mythfrontend.pro	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20-16082-new/programs/mythfrontend/mythfrontend.pro
+--- mythtv-0.20-16082-old/programs/mythfrontend/mythfrontend.pro	2008-02-29 20:16:55.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythfrontend/mythfrontend.pro	2008-05-03 19:11:48.000000000 -0700
 @@ -33,7 +33,7 @@
  
  macx {
@@ -195,9 +204,9 @@ diff -Naur mythtv-0.20.2-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20.
  
      using_mac_accel : LIBS += -lobjc
  
-diff -Naur mythtv-0.20.2-old/programs/mythtranscode/Makefile.standlone mythtv-0.20.2-new/programs/mythtranscode/Makefile.standlone
---- mythtv-0.20.2-old/programs/mythtranscode/Makefile.standlone	2008-01-31 18:07:04.000000000 -0800
-+++ mythtv-0.20.2-new/programs/mythtranscode/Makefile.standlone	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/programs/mythtranscode/Makefile.standlone mythtv-0.20-16082-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-0.20-16082-old/programs/mythtranscode/Makefile.standlone	2008-02-29 20:16:55.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythtranscode/Makefile.standlone	2008-05-03 19:11:48.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -207,9 +216,9 @@ diff -Naur mythtv-0.20.2-old/programs/mythtranscode/Makefile.standlone mythtv-0.
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-0.20.2-old/settings.pro mythtv-0.20.2-new/settings.pro
---- mythtv-0.20.2-old/settings.pro	2008-01-31 18:07:04.000000000 -0800
-+++ mythtv-0.20.2-new/settings.pro	2008-01-31 18:08:21.000000000 -0800
+diff -Naur mythtv-0.20-16082-old/settings.pro mythtv-0.20-16082-new/settings.pro
+--- mythtv-0.20-16082-old/settings.pro	2008-02-29 20:16:56.000000000 -0800
++++ mythtv-0.20-16082-new/settings.pro	2008-05-03 19:11:48.000000000 -0700
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  
