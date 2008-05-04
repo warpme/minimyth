@@ -52,5 +52,5 @@ post-extract:
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
-	@cd $* ; $(CONFIGURE_ENV) $(DESTDIR)$(qtbindir)/qmake QMAKE=$(DESTDIR)$(qtbindir)/qmake $(GARNAME).pro
+	@cd $* ; $(CONFIGURE_ENV) $(DESTDIR)$(qt3bindir)/qmake QMAKE=$(DESTDIR)$(qt3bindir)/qmake $(GARNAME).pro
 	@$(MAKECOOKIE)

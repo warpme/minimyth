@@ -51,9 +51,9 @@ main_CPPFLAGS=''
 main_CFLAGS='$(mm_CFLAGS)'
 main_CXXFLAGS='$(main_CFLAGS)'
 main_LDFLAGS='-Wl,--as-needed'
-GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_qtbindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
-_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qtlibdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql'
-_PKG_CONFIG_LIBDIR='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qtlibdir)/pkgconfig'
+GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
+_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir)$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql'
+_PKG_CONFIG_LIBDIR='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig'
 _PKG_CONFIG_SYSROOT_DIR='$(DESTDIR)'
 
 # Replace current GAR files with clean GAR files.
@@ -139,21 +139,37 @@ sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdeprefix = $(\1_prefix)/kde%g
 sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdeprefix ?= $(main_kdeprefix)%g' ${SCRIPT_DIR}/gar.mk
 sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdeprefix = $($(DESTIMG)_kdeprefix)%g' ${SCRIPT_DIR}/gar.mk
 
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qtlibdir = $(\1_qtprefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qtlibdir ?= $(main_qtlibdir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqtlibdir = $($(DESTIMG)_qtlibdir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt4libdir = $(\1_qt4prefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt4libdir ?= $(main_qt4libdir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt4libdir = $($(DESTIMG)_qt4libdir)%g' ${SCRIPT_DIR}/gar.mk
 
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qtincludedir = $(\1_qtprefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qtincludedir ?= $(main_qtincludedir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqtincludedir = $($(DESTIMG)_qtincludedir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt4includedir = $(\1_qt4prefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt4includedir ?= $(main_qt4includedir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt4includedir = $($(DESTIMG)_qt4includedir)%g' ${SCRIPT_DIR}/gar.mk
 
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qtbindir = $(\1_qtprefix)/bin%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qtbindir ?= $(main_qtbindir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqtbindir = $($(DESTIMG)_qtbindir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt4bindir = $(\1_qt4prefix)/bin%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt4bindir ?= $(main_qt4bindir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt4bindir = $($(DESTIMG)_qt4bindir)%g' ${SCRIPT_DIR}/gar.mk
 
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qtprefix = $(\1_libdir)/qt%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qtprefix ?= $(main_qtprefix)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqtprefix = $($(DESTIMG)_qtprefix)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt4prefix = $(\1_libdir)/qt4%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt4prefix ?= $(main_qt4prefix)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt4prefix = $($(DESTIMG)_qt4prefix)%g' ${SCRIPT_DIR}/gar.mk
+
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt3libdir = $(\1_qt3prefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt3libdir ?= $(main_qt3libdir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt3libdir = $($(DESTIMG)_qt3libdir)%g' ${SCRIPT_DIR}/gar.mk
+
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt3includedir = $(\1_qt3prefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt3includedir ?= $(main_qt3includedir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt3includedir = $($(DESTIMG)_qt3includedir)%g' ${SCRIPT_DIR}/gar.mk
+
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt3bindir = $(\1_qt3prefix)/bin%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt3bindir ?= $(main_qt3bindir)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt3bindir = $($(DESTIMG)_qt3bindir)%g' ${SCRIPT_DIR}/gar.mk
+
+sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt3prefix = $(\1_libdir)/qt3%g' ${SCRIPT_DIR}/gar.conf.mk
+sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt3prefix ?= $(main_qt3prefix)%g' ${SCRIPT_DIR}/gar.mk
+sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nqt3prefix = $($(DESTIMG)_qt3prefix)%g' ${SCRIPT_DIR}/gar.mk
 
 sed -i 's%^\(build\|main\)_libdir *=.*$%\1_elibdir = $(\1_rootdir)/lib\n&%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_libdir *?= *$(main_libdir)%$(DESTIMG)_elibdir ?= $(main_elibdir)\n&%g' ${SCRIPT_DIR}/gar.mk

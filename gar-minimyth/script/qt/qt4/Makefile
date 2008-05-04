@@ -20,13 +20,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	-prefix $(qtprefix) \
-	-hostprefix $(DESTDIR)$(qtprefix) \
-	-bindir $(qtbindir) \
-	-libdir $(qtlibdir) \
-	-headerdir $(qtincludedir) \
-	-examplesdir $(DESTDIR)$(qtprefix)/examples \
-	-demosdir $(DESTDIR)$(qtprefix)/demos \
+	-prefix $(qt4prefix) \
+	-hostprefix $(DESTDIR)$(qt4prefix) \
+	-bindir $(qt4bindir) \
+	-libdir $(qt4libdir) \
+	-headerdir $(qt4includedir) \
+	-examplesdir $(DESTDIR)$(qt4prefix)/examples \
+	-demosdir $(DESTDIR)$(qt4prefix)/demos \
 	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
 	-shared \
 	-qt-gif \
@@ -89,7 +89,7 @@ PLATFORM_GARBUILD_BASE_PATH = $(WORKSRC)/mkspecs/$(PLATFORM_GARBUILD_BASE_NAME)
 PLATFORM_GARHOST_BASE_PATH  = $(WORKSRC)/mkspecs/$(PLATFORM_GARHOST_BASE_NAME)
 PLATFORM_GARBUILD_PATH      = $(WORKSRC)/mkspecs/$(PLATFORM_GARBUILD_NAME)
 PLATFORM_GARHOST_PATH       = $(WORKSRC)/mkspecs/$(PLATFORM_GARHOST_NAME)
-PLATFORM_DEFAULT_PATH       = $(DESTDIR)$(qtprefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
+PLATFORM_DEFAULT_PATH       = $(DESTDIR)$(qt4prefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
 
 QMAKE_INCLUDES    = $(filter  -I%, $($(strip $(1))CPPFLAGS))
 QMAKE_NONINCLUDES = $(filter-out  -I%, $($(strip $(1))CPPFLAGS))
@@ -145,24 +145,26 @@ configure-%/configure:
 	@$(MAKECOOKIE)
 
 pre-install:
-	@$(foreach dir, $(filter-out %/Makefile %/qt4,$(wildcard ../*)), $(MAKE) clean-all -C $(dir) ; )
-	@rm -rf $(DESTDIR)$(qtprefix)
+	@rm -rf $(DESTDIR)$(qt4prefix)
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(qtlibdir)/*.la
+	@rm -f $(DESTDIR)$(qt4libdir)/*.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
 	@ln -sf $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
-	@$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
-	@files=`ls -1 $(DESTDIR)$(qtlibdir)/pkgconfig/*.pc` ; \
+	@$(call GLIBC_ADD_LIB_PATH, $(qt4libdir))
+	@files=`ls -1 $(DESTDIR)$(qt4libdir)/pkgconfig/*.pc` ; \
 	 for file in $${files} ; do \
-		sed -e 's%-I$(DESTDIR)$(includedir)%-I$(includedir)%g'   -i $${file} ; \
-		sed -e 's%-L$(DESTDIR)$(libdir)%-L$(libdir)%g'           -i $${file} ; \
-		sed -e 's%-I$(DESTDIR)$(qtincludedir)%-I$(includedir)%g' -i $${file} ; \
-		sed -e 's%-L$(DESTDIR)$(qtlibdir)%-L$(qtlibdir)%g'       -i $${file} ; \
+		sed -e 's%^prefix=$(DESTDIR)$(qt4prefix)$$%prefix=$(qt4prefix)%g' -i $${file} ; \
+		sed -e 's%-I$(DESTDIR)$(includedir)%-I$(includedir)%g'            -i $${file} ; \
+		sed -e 's%-L$(DESTDIR)$(libdir)%-L$(libdir)%g'                    -i $${file} ; \
+		sed -e 's%-I$(DESTDIR)$(qt4includedir)%-I$(qt4includedir)%g'      -i $${file} ; \
+		sed -e 's%-L$(DESTDIR)$(qt4libdir)%-L$(qt4libdir)%g'              -i $${file} ; \
+		sed -e 's%-I$(DESTDIR)$(qt4prefix)%-I$(qt4prefix)%g'              -i $${file} ; \
+		sed -e 's%-L$(DESTDIR)$(qt4prefix)%-L$(qt4prefix)%g'              -i $${file} ; \
 	 done
 	@$(MAKECOOKIE)
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(qtprefix)
+	@rm -rf $(DESTDIR)$(qt4prefix)

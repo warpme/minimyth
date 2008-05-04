@@ -22,10 +22,10 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	-prefix $(qtprefix) \
-	-bindir $(qtbindir) \
-	-libdir $(qtlibdir) \
-	-headerdir $(qtincludedir) \
+	-prefix $(qt3prefix) \
+	-bindir $(qt3bindir) \
+	-libdir $(qt3libdir) \
+	-headerdir $(qt3includedir) \
 	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
 	-shared \
 	-qt-gif \
@@ -79,7 +79,7 @@ PLATFORM_DEFAULT_NAME  = default
 PLATFORM_INITIAL_PATH  = $(WORKSRC)/mkspecs/$(PLATFORM_INITIAL_NAME)
 PLATFORM_GARBUILD_PATH = $(WORKSRC)/mkspecs/$(PLATFORM_GARBUILD_NAME)
 PLATFORM_GARHOST_PATH  = $(WORKSRC)/mkspecs/$(PLATFORM_GARHOST_NAME)
-PLATFORM_DEFAULT_PATH  = $(DESTDIR)$(qtprefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
+PLATFORM_DEFAULT_PATH  = $(DESTDIR)$(qt3prefix)/mkspecs/$(PLATFORM_DEFAULT_NAME)
 
 QMAKE_INCLUDES     = \
 	$(filter  -I%, $($(strip $(1))CPPFLAGS)) \
@@ -134,7 +134,7 @@ USE_BUILD_BIN =
 else
 USE_BUILD_BIN = \
 	mkdir -p $(WORKSRC)/bin ; \
-	ln -sf $(build_DESTDIR)$(build_qtprefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
+	ln -sf $(build_DESTDIR)$(build_qt3prefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
 endif
 
 pre-configure:
@@ -148,7 +148,7 @@ configure-%/configure:
 
 post-configure:
 	@# Work around bug in qmake.
-	@desired=`echo /$(qtprefix)/ | sed -e 's%//*%/%g'` ; \
+	@desired=`echo /$(qt3prefix)/ | sed -e 's%//*%/%g'` ; \
 	 if [ -e "$${desired}" ] ; then \
 		actual=`cd $${desired} ; pwd -P` ; \
 		actual=`echo /$${actual}/ | sed -e 's%//%/%g'` ; \
@@ -161,24 +161,23 @@ post-configure:
 	@$(MAKECOOKIE)
 
 pre-install:
-	@$(foreach dir, $(filter-out %/Makefile %/qt3,$(wildcard ../*)), $(MAKE) clean-all -C $(dir) ; )
-	@rm -rf $(DESTDIR)$(qtprefix)
+	@rm -rf $(DESTDIR)$(qt3prefix)
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(qtbindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qtbindir)
-	@rm -f $(DESTDIR)$(qtlibdir)/libqt-mt.la
+	@rm -f $(DESTDIR)$(qt3bindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qt3bindir)
+	@rm -f $(DESTDIR)$(qt3libdir)/libqt-mt.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
 	@ln -sf $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)
-	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_INCDIR_QT, $(DESTDIR)$(qtincludedir))
-	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_LIBDIR_QT, $(DESTDIR)$(qtlibdir))
-	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC,       $(build_DESTDIR)$(build_qtbindir)/moc)
-	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_UIC,       $(build_DESTDIR)$(build_qtbindir)/uic)
-	@$(call GLIBC_ADD_LIB_PATH, $(qtlibdir))
-	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
-	@sed -e 's%-L$(DESTDIR)$(libdir)%-L$${libdir}%g'         -i $(DESTDIR)$(qtlibdir)/pkgconfig/qt-mt.pc
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_INCDIR_QT, $(DESTDIR)$(qt3includedir))
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_LIBDIR_QT, $(DESTDIR)$(qt3libdir))
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_MOC,       $(build_DESTDIR)$(build_qt3bindir)/moc)
+	@$(call UPDATE_PLATFORM, $(PLATFORM_DEFAULT_PATH), QMAKE_UIC,       $(build_DESTDIR)$(build_qt3bindir)/uic)
+	@$(call GLIBC_ADD_LIB_PATH, $(qt3libdir))
+	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(qt3libdir)/pkgconfig/qt-mt.pc
+	@sed -e 's%-L$(DESTDIR)$(libdir)%-L$${libdir}%g'         -i $(DESTDIR)$(qt3libdir)/pkgconfig/qt-mt.pc
 	@$(MAKECOOKIE)
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(qtprefix)
+	@rm -rf $(DESTDIR)$(qt3prefix)

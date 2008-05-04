@@ -43,9 +43,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-pcre \
 	--with-gnu-ld \
 	--without-acl \
-	--with-qt-dir=$(DESTDIR)$(qtprefix) \
-	--with-qt-includes=$(DESTDIR)$(qtincludedir) \
-	--with-qt-libraries=$(DESTDIR)$(qtlibdir) \
+	--with-qt-dir=$(DESTDIR)$(qt3prefix) \
+	--with-qt-includes=$(DESTDIR)$(qt3includedir) \
+	--with-qt-libraries=$(DESTDIR)$(qt3libdir) \
 	--without-arts \
 	--with-rgbfile=$(datadir)/X11/rgb.txt \
 	--without-utempter \
@@ -75,9 +75,9 @@ CONFIGURE_ENV  = \
 	PKG_CONFIG=$(build_DESTDIR)$(build_bindir)/pkg-config \
 	KDEINIT_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config \
 	LIBART_CONFIG=$(DESTDIR)$(bindir)/libart2-config \
-	MOC=$(build_DESTDIR)$(build_qtbindir)/moc \
+	MOC=$(build_DESTDIR)$(build_qt3bindir)/moc \
 	PCRE_CONFIG=$(DESTDIR)$(bindir)/pcre-config \
-	UIC_PATH=$(build_DESTDIR)$(build_qtbindir)/uic \
+	UIC_PATH=$(build_DESTDIR)$(build_qt3bindir)/uic \
 	XML_CONFIG=$(DESTDIR)$(bindir)/xml2-config \
 	XSLT_CONFIG=$(DESTDIR)$(bindir)/xslt-config \
 	LD_RUN_PATH="$(LD_LIBRARY_PATH)"
