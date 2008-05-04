@@ -120,6 +120,8 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer) \
+	$(if $(filter vlc,$(mm_SOFTWARE)), \
+		mediaplayers/vlc) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \
 		mediaplayers/xine-ui) \
 	$(if $(filter transcode,$(mm_SOFTWARE)), \
