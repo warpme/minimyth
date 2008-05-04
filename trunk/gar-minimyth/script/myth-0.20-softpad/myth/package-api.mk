@@ -7,11 +7,11 @@ GARVERSION_SHORT = 0.20
 DISTNAME_SHORT   = $(GARNAME)-$(GARVERSION_SHORT)
 
 MYTHTV_CONFIGURE_ENV = \
-	QTDIR="$(DESTDIR)$(qtprefix)"
+	QTDIR="$(DESTDIR)$(qt3prefix)"
 MYTHTV_BUILD_ENV     = \
-	QTDIR="$(DESTDIR)$(qtprefix)"
+	QTDIR="$(DESTDIR)$(qt3prefix)"
 MYTHTV_INSTALL_ENV   = \
-	QTDIR="$(DESTDIR)$(qtprefix)" \
+	QTDIR="$(DESTDIR)$(qt3prefix)" \
 	INSTALL_ROOT="$(DESTDIR)"
 
 post-install-mythtv-version:

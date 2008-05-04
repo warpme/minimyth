@@ -125,7 +125,8 @@ bindirs_base := \
 	$(sbindir) \
 	$(bindir) \
 	$(libexecdir) \
-	$(qtbindir) \
+	$(qt3bindir) \
+	$(qt4bindir) \
 	$(kdebindir)
 bindirs := \
 	$(bindirs_base) \
@@ -135,7 +136,8 @@ libdirs_base := \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
-	$(qtlibdir) \
+	$(qt3libdir) \
+	$(qt4libdir) \
 	$(kdelibdir)
 libdirs := \
 	$(libdirs_base) \
@@ -307,8 +309,12 @@ mm-check:
 		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
-	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qtprefix))))" ] ; then \
-		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qtprefix))))\"."; \
+	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qt3prefix))))" ] ; then \
+		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qt3prefix))))\"."; \
+		exit 1 ; \
+	fi
+	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qt4prefix))))" ] ; then \
+		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qt4prefix))))\"."; \
 		exit 1 ; \
 	fi
 	@echo "    mm_DEBUG"
@@ -530,9 +536,15 @@ mm-copy:
 	@rm -rf $(mm_ROOTFSDIR)$(licensedir)/minimyth
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
 	@cp -pdR $(DESTDIR)$(extras_licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
-	@# Copy QT mysql plugin.
-	@mkdir -p $(mm_ROOTFSDIR)$(qtprefix)/plugins
-	@cp -pdR $(DESTDIR)$(qtprefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qtprefix)/plugins
+	@# Copy the QT mysql plugin needed by MythTV.
+	@$(if $(filter 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), \
+		mkdir -p $(mm_ROOTFSDIR)$(qt3prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qt3prefix)/plugins ; \
+	)
+	@$(if $(filter trunk,$(mm_MYTH_VERSION)), \
+		mkdir -p $(mm_ROOTFSDIR)$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qt4prefix)/plugins ; \
+	)
 	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
 	@cp -pdR ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)

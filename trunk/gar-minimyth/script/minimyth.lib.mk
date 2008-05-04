@@ -64,7 +64,8 @@ gar-patch-%:
 	@cat $(DOWNLOADDIR)/$* \
 		| sed 's%@GAR_build_DESTDIR@%$(build_DESTDIR)%g' \
 		| sed 's%@GAR_build_bindir@%$(build_bindir)%g' \
-		| sed 's%@GAR_build_qtbindir@%$(build_qtbindir)%g' \
+		| sed 's%@GAR_build_qt3bindir@%$(build_qt3bindir)%g' \
+		| sed 's%@GAR_build_qt4bindir@%$(build_qt4bindir)%g' \
 		| sed 's%@GAR_build_kdebindir@%$(build_kdebindir)%g' \
 		| sed 's%@GAR_DESTDIR@%$(DESTDIR)%g' \
 		| sed 's%@GAR_rootdir@%$(rootdir)%g' \
@@ -82,10 +83,14 @@ gar-patch-%:
 		| sed 's%@GAR_sbindir@%$(sbindir)%g' \
 		| sed 's%@GAR_sourcedir@%$(sourcedir)%g' \
 		| sed 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
-		| sed 's%@GAR_qtprefix@%$(qtprefix)%g' \
-		| sed 's%@GAR_qtbindir@%$(qtbindir)%g' \
-		| sed 's%@GAR_qtincludedir@%$(qtincludedir)%g' \
-		| sed 's%@GAR_qtlibdir@%$(qtlibdir)%g' \
+		| sed 's%@GAR_qt3prefix@%$(qt3prefix)%g' \
+		| sed 's%@GAR_qt3bindir@%$(qt3bindir)%g' \
+		| sed 's%@GAR_qt3includedir@%$(qt3includedir)%g' \
+		| sed 's%@GAR_qt3libdir@%$(qt3libdir)%g' \
+		| sed 's%@GAR_qt4prefix@%$(qt4prefix)%g' \
+		| sed 's%@GAR_qt4bindir@%$(qt4bindir)%g' \
+		| sed 's%@GAR_qt4includedir@%$(qt4includedir)%g' \
+		| sed 's%@GAR_qt4libdir@%$(qt4libdir)%g' \
 		| sed 's%@GAR_kdeprefix@%$(kdeprefix)%g' \
 		| sed 's%@GAR_kdebindir@%$(kdebindir)%g' \
 		| sed 's%@GAR_kdedatadir@%$(kdedatadir)%g' \

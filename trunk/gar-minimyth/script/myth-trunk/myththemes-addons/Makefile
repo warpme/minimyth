@@ -25,7 +25,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)" \
-	--qmake="$(DESTDIR)$(qtbindir)/qmake"
+	--qmake="$(DESTDIR)$(qt4bindir)/qmake"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
