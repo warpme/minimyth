@@ -1,31 +1,178 @@
 diff -Naur lirc-0.8.3pre3-old/daemons/config_file.c lirc-0.8.3pre3-new/daemons/config_file.c
---- lirc-0.8.3pre3-old/daemons/config_file.c	2007-07-29 11:20:06.000000000 -0700
-+++ lirc-0.8.3pre3-new/daemons/config_file.c	2008-04-29 13:31:57.000000000 -0700
-@@ -690,7 +690,26 @@
+--- lirc-0.8.3pre3-old/daemons/config_file.c	2008-05-04 08:13:29.000000000 -0700
++++ lirc-0.8.3pre3-new/daemons/config_file.c	2008-05-04 08:16:34.000000000 -0700
+@@ -20,6 +20,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <libgen.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ #include <sys/stat.h>
+@@ -32,6 +33,7 @@
+ #include "config_file.h"
+ 
+ #define LINE_LEN 1024
++#define MAX_INCLUDES 10
+ 
+ int line;
+ int parse_error;
+@@ -643,7 +645,60 @@
+ 	return top;
+ }
+ 
+-struct ir_remote * read_config(FILE *f)
++static const char *lirc_parse_include(char *s)
++{
++	char last;
++	size_t len;
++	
++	len=strlen(s);
++	if(len<2)
++	{
++		return NULL;
++	}
++	last=s[len-1];
++	if(*s!='"' && *s!='<')
++	{
++		return NULL;
++	}
++	if(*s=='"' && last!='"')
++	{
++		return NULL;
++	}
++	else if(*s=='<' && last!='>')
++	{
++		return NULL;
++	}
++	s[len-1]=0;
++	memmove(s, s+1, len-2+1); /* terminating 0 is copied */
++
++	return s;
++}
++
++static char *
++lirc_parse_relative(const char *child, const char *current)
++{
++	char result[FILENAME_MAX+1], *dir;
++	int dirlen;
++
++	if (!current)
++		return NULL;
++
++	/* Not a relative path */
++	if (*child == '/')
++		return NULL;
++
++	memset(&result, 0, FILENAME_MAX+1);
++	dir = strdup(current);
++	strncpy(result, dirname(dir), FILENAME_MAX+1);
++	free(dir);
++	dirlen = strlen(result);
++	strncpy(result+dirlen, "/", 1);
++	strncpy(result+dirlen+1, child, FILENAME_MAX-dirlen);
++
++	return strdup(result);
++}
++
++struct ir_remote * read_config(FILE *f, const char *name, int depth)
+ {
+ 	char buf[LINE_LEN+1], *key, *val, *val2;
+         int len,argc;
+@@ -690,7 +745,50 @@
  		if(val!=NULL){
  			val2=strtok(NULL, " \t");
  			LOGPRINTF(3,"\"%s\" \"%s\"",key,val);
 -                        if (strcasecmp("begin",key)==0){
 +			if (strcasecmp("include",key)==0){
-+                                FILE* childFile = fopen(val, "r");
++                                FILE* childFile;
++				const char *childName;
++				char *fullPath;
++
++				if (depth > MAX_INCLUDES) {
++					logprintf(LOG_ERR,"error opening child file defined at %s:%d",name,line);
++					logprintf(LOG_ERR,"too many files included");
++					parse_error=-1;
++					break;
++				}
++				depth++;
++
++				childName = lirc_parse_include(val);
++				if (!childName){
++					logprintf(LOG_ERR,"error parsing child file value defined at line %d:",line);
++					parse_error=-1;
++					break;
++				}
++
++				fullPath = lirc_parse_relative(childName, name);
++				if (!fullPath)
++					fullPath = strdup(childName);
++
++				childFile = fopen(fullPath, "r");
 +				if (childFile == NULL){
-+					logprintf(LOG_ERR,"error opening child file defined at line %d:",line);
++					logprintf(LOG_ERR,"error opening child file '%s' defined at line %d:",fullPath, line);
 +					logprintf(LOG_ERR,"ignoring this child file for now.");
 +				}
 +				else{
 +					if (!top_rem){
 +						/* create first remote */
 +						LOGPRINTF(2,"creating first remote");
-+						top_rem = rem = read_config(childFile);
++						top_rem = rem = read_config(childFile, childName, depth);
 +					}else{
 +						/* create new remote */
 +						LOGPRINTF(2,"creating next remote");
-+						rem->next=read_config(childFile);
++						rem->next=read_config(childFile, childName, depth);
 +						rem=rem->next;
 +					}
 +					fclose(childFile);
 +				}
++				free(fullPath);
 +			}else if (strcasecmp("begin",key)==0){
  				if (strcasecmp("codes", val)==0){
                                          /* init codes mode */
  					LOGPRINTF(2,"    begin codes");
+diff -Naur lirc-0.8.3pre3-old/daemons/config_file.h lirc-0.8.3pre3-new/daemons/config_file.h
+--- lirc-0.8.3pre3-old/daemons/config_file.h	2008-05-04 08:13:29.000000000 -0700
++++ lirc-0.8.3pre3-new/daemons/config_file.h	2008-05-04 08:16:34.000000000 -0700
+@@ -86,7 +86,7 @@
+ struct ir_ncode * defineCode(char *key, char *val, struct ir_ncode *code);
+ struct ir_code_node *defineNode(struct ir_ncode *code, const char *val);
+ int defineRemote(char * key, char * val, char *val2, struct ir_remote *rem);
+-struct ir_remote *read_config(FILE *f);
++struct ir_remote *read_config(FILE *f, const char *name, int depth);
+ void free_config(struct ir_remote *remotes);
+ 
+ #endif
+diff -Naur lirc-0.8.3pre3-old/daemons/irrecord.c lirc-0.8.3pre3-new/daemons/irrecord.c
+--- lirc-0.8.3pre3-old/daemons/irrecord.c	2008-05-04 08:13:29.000000000 -0700
++++ lirc-0.8.3pre3-new/daemons/irrecord.c	2008-05-04 08:16:34.000000000 -0700
+@@ -311,7 +311,7 @@
+ 				progname, filename, progname);
+ 			exit(EXIT_FAILURE);
+ 		}
+-		remotes=read_config(fin);
++		remotes=read_config(fin, filename, 0);
+ 		fclose(fin);
+ 		if(remotes==(void *) -1 || remotes==NULL)
+ 		{
+@@ -748,7 +748,7 @@
+ 		if(hw.deinit_func) hw.deinit_func();
+ 		exit(EXIT_FAILURE);
+ 	}
+-	remotes=read_config(fin);
++	remotes=read_config(fin,filename,0);
+ 	fclose(fin);
+ 	if(remotes==NULL)
+ 	{
+diff -Naur lirc-0.8.3pre3-old/daemons/lircd.c lirc-0.8.3pre3-new/daemons/lircd.c
+--- lirc-0.8.3pre3-old/daemons/lircd.c	2008-05-04 08:13:29.000000000 -0700
++++ lirc-0.8.3pre3-new/daemons/lircd.c	2008-05-04 08:16:34.000000000 -0700
+@@ -406,7 +406,7 @@
+ 		logperror(LOG_ERR,NULL);
+ 		return;
+ 	}
+-	config_remotes=read_config(fd);
++	config_remotes=read_config(fd, configfile, 0);
+ 	fclose(fd);
+ 	if(config_remotes==(void *) -1)
+ 	{
