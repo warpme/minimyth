@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 11050.25080
+GARVERSION = 13040.26649
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,24 +16,28 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-#
-#	--disable-sunmlib
+#	--enable-devices
 CONFIGURE_ARGS = \
-	--log=yes \
+	--enable-logging \
 	--prefix=$(prefix) \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
-	--incdir=$(includedir)/ffmpeg \
+	--incdir=$(includedir) \
 	--mandir=$(mandir) \
 	--enable-static \
 	--enable-shared \
 	--enable-gpl \
-	--enable-pp \
-	--disable-swscaler \
+	--disable-nonfree \
+	--enable-postproc \
+	--disable-swscale \
+	--disable-avfilter \
+	--disable-avfilter-lavf \
 	--disable-beosthreads \
+	--disable-os2threads \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
+	--disable-mlib \
 	--disable-liba52 \
 	--disable-liba52bin \
 	--disable-avisynth \
@@ -51,10 +55,9 @@ CONFIGURE_ARGS = \
 	--disable-libx264 \
 	--disable-libxvid \
 	--cross-prefix=$(compiler_prefix) \
-	--cross-compile \
+	--enable-cross-compile \
 	--target-os="linux" \
 	--cc="gcc" \
-	--make="$(MAKE)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--extra-libs="" \
@@ -63,8 +66,11 @@ CONFIGURE_ARGS = \
 	--cpu=$(GARCH) \
 	--disable-powerpc-perf \
 	--enable-mmx \
+	--enable-mmx2 \
+	--enable-ssse3 \
 	--disable-armv5te \
 	--disable-armv6 \
+	--disable-armvfp \
 	--disable-iwmmxt \
 	--disable-altivec \
 	--enable-network \
@@ -78,6 +84,7 @@ CONFIGURE_ARGS = \
 	--disable-ffserver \
 	--disable-ffplay \
 	--enable-small \
+	--disable-hardcoded-tables \
 	--disable-memalign-hack \
 	--enable-encoders \
 	--enable-decoders \
@@ -89,14 +96,9 @@ CONFIGURE_ARGS = \
 	--disable-gprof \
 	--enable-optimizations \
 	--disable-extra-warnings \
-	--disable-strip
-
-INSTALL_ARGS   = \
-	LDCONFIG="true"
+	--disable-stripping
 
 include ../../gar.mk
-
-CFLAGS += -DHAVE_XVMC
 
 PARALLELMFLAGS := -j1
 
@@ -119,5 +121,5 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 post-configure:
-	@echo "HAVE_XVMC_ACCEL=yes" >> $(WORKSRC)/config.mak
+	@echo "HAVE_XVMC=yes" >> $(WORKSRC)/config.mak
 	@$(MAKECOOKIE)
