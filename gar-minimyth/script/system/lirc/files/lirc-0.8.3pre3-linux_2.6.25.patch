@@ -1,0 +1,21 @@
+diff -Naur lirc-0.8.3pre3-old/drivers/lirc_i2c/lirc_i2c.c lirc-0.8.3pre3-new/drivers/lirc_i2c/lirc_i2c.c
+--- lirc-0.8.3pre3-old/drivers/lirc_i2c/lirc_i2c.c	2008-01-13 03:13:49.000000000 -0800
++++ lirc-0.8.3pre3-new/drivers/lirc_i2c/lirc_i2c.c	2008-05-04 08:13:54.000000000 -0700
+@@ -329,12 +329,17 @@
+ static int set_use_inc(void *data)
+ {
+ 	struct IR *ir = data;
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 25)
+ 	int ret;
+ 
+ 	/* lock bttv in memory while /dev/lirc is in use  */
+ 	ret = i2c_use_client(&ir->c);
+ 	if (ret != 0)
+ 		return ret;
++#else
++	i2c_use_client(&ir->c);
++#endif
+ 
+ 	MOD_INC_USE_COUNT;
+ 	return 0;
