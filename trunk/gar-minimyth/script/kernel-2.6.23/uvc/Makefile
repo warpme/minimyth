@@ -1,9 +1,8 @@
 GARNAME = uvc
-GARVERSION = 205
+GARVERSION = 207
 CATEGORIES = kernel-2.6.23
 MASTER_SITES = svn://svn.berlios.de/linux-uvc/linux-uvc/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION =
