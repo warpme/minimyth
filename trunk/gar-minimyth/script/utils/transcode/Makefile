@@ -68,6 +68,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-warnings-as-errors \
 	--with-gnu-ld \
 	--with-x \
+	--with-libavcodec-includes=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libavcodec` \
+	--with-libavcodec-libs=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libavcodec` \
+	--with-libpostproc-includes=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libpostproc` \
+	--with-libpostproc-libs=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libpostproc` \
 	--with-default-xvid=xvid4 \
 	--with-lame-prefix=$(DESTDIR)$(prefix) \
 	--with-lame-includes=$(DESTDIR)$(includedir) \

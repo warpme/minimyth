@@ -16,13 +16,15 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-#	--enable-devices
+# The headers files are put in a sub-directory so that the libav*/*.h files
+# do not conflict with the libav*/.h files in MythTV 0.20.
+# --enable-devices is not supported (only --disable-devices).
 CONFIGURE_ARGS = \
 	--enable-logging \
 	--prefix=$(prefix) \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
-	--incdir=$(includedir) \
+	--incdir=$(includedir)/ffmpeg \
 	--mandir=$(mandir) \
 	--enable-static \
 	--enable-shared \
