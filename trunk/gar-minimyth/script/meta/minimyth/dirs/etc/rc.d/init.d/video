@@ -434,6 +434,39 @@ start() {
         fi
     fi
 
+    # Configure CPU features.
+    if /usr/bin/test -e /usr/bin/vlc ; then
+        cpu_flags=`/bin/cat /proc/cpuinfo \
+             | /bin/sed -e 's%[[:cntrl:]]% %g' \
+             | /bin/grep -e '^flags *:' \
+             | /bin/sed -e 's%^flags *:%%' -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
+        if /bin/echo " ${cpu_flags} " | /bin/grep -q ' 3dnow '  > /dev/null 2>&1 ; then
+            /bin/sed -e 's%@MM_VLC_VLCRC_3DN@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+        else
+            /bin/sed -e 's%@MM_VLC_VLCRC_3DN@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+        fi
+        if /bin/echo " ${cpu_flags} " | /bin/grep -q ' mmx '    > /dev/null 2>&1 ; then
+            /bin/sed -e 's%@MM_VLC_VLCRC_MMX@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+        else
+            /bin/sed -e 's%@MM_VLC_VLCRC_MMX@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+        fi
+        if /bin/echo " ${cpu_flags} " | /bin/grep -q ' mmxext ' > /dev/null 2>&1 ; then
+            /bin/sed -e 's%@MM_VLC_VLCRC_MMXEXT@%1%g' -i /home/minimyth/.config/vlc/vlcrc
+        else
+            /bin/sed -e 's%@MM_VLC_VLCRC_MMXEXT@%0%g' -i /home/minimyth/.config/vlc/vlcrc
+        fi
+        if /bin/echo " ${cpu_flags} " | /bin/grep -q ' sse '    > /dev/null 2>&1 ; then
+            /bin/sed -e 's%@MM_VLC_VLCRC_SSE@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+        else
+            /bin/sed -e 's%@MM_VLC_VLCRC_SSE@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+        fi
+        if /bin/echo " ${cpu_flags} " | /bin/grep -q ' sse2 '   > /dev/null 2>&1 ; then
+            /bin/sed -e 's%@MM_VLC_VLCRC_SSE2@%1%g'   -i /home/minimyth/.config/vlc/vlcrc
+        else
+            /bin/sed -e 's%@MM_VLC_VLCRC_SSE2@%0%g'   -i /home/minimyth/.config/vlc/vlcrc
+        fi
+    fi
+
     return 0
 }
 
