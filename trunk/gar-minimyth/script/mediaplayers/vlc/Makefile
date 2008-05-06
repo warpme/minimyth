@@ -13,6 +13,7 @@ endef
 DEPENDS = lang/c \
 	lib/a52dec \
 	lib/alsa-lib \
+	lib/faad2 \
 	lib/ffmpeg \
 	lib/freetype \
 	lib/libcdio \
@@ -24,11 +25,9 @@ DEPENDS = lang/c \
 	lib/libpng \
 	lib/libxml2 \
 	lib/mpeg2dec \
-	lib/SDL \
 	lib/sysfsutils \
 	lib/taglib \
 	lib/zlib \
-	qt/qt4 \
 	system/lirc \
 	xorg/xorg
 
@@ -72,7 +71,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-live555 \
 	--disable-dc1394 \
 	--disable-dv \
-	--enable-dvdread \
+	--disable-dvdread \
 	--enable-dvdnav \
 	--disable-dshow \
 	--disable-bda \
@@ -100,7 +99,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-id3tag \
 	--enable-ffmpeg \
 	--disable-ffmpegaltivec \
-	--disable-faad \
+	--enable-faad \
 	--disable-twolame \
 	--disable-quicktime \
 	--disable-real \
@@ -130,7 +129,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xvmc \
 	--enable-xinerama \
 	--enable-opengl \
-	--enable-sdl \
+	--disable-sdl \
 	--disable-sdl-image \
 	--enable-freetype \
 	--disable-fribidi \
@@ -149,7 +148,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-aa \
 	--disable-caca \
 	--disable-wingdi \
-	--enable-oss \
+	--disable-oss \
 	--disable-esd \
 	--disable-pulse \
 	--disable-portaudio \
@@ -164,7 +163,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-skins2 \
 	--disable-pda \
 	--disable-wxwidgets \
-	--enable-qt4 \
 	--disable-wince \
 	--disable-opie \
 	--disable-macosx \
@@ -209,10 +207,22 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-sdl-config-path=$(DESTDIR)$(bindir) \
 	--with-xml2-config-path=$(DESTDIR)$(bindir)
 
-CONFIGURE_ENV = \
+CONFIGURE_ENV =
+
+# Build VLC with the Qt4 GUI.
+ifdef VLC_GUI_QT4
+DEPENDS += \
+	qt/qt4
+CONFIGURE_ARGS += \
+	--enable-qt4 \
+CONFIGURE_ENV += \
 	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
 	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
 	ac_cv_path_UIC=$(DESTDIR)$(qt4bindir)/uic
+else
+CONFIGURE_ARGS += \
+	--disable-qt4
+endif
 
 include ../../gar.mk
 
