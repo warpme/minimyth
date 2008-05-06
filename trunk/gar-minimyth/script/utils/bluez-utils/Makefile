@@ -1,5 +1,5 @@
 GARNAME = bluez-utils
-GARVERSION = 3.30
+GARVERSION = 3.31
 CATEGORIES = utils
 MASTER_SITES = http://bluez.sf.net/download/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,8 +18,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
+	--disable-pie \
+	--disable-all \
 	--enable-inotify \
-	--enable-expat \
 	--disable-hal \
 	--enable-usb \
 	--enable-alsa \
@@ -28,13 +29,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gstreamer \
 	--enable-audio \
 	--enable-input \
+	--enable-serial \
 	--enable-network \
-	--disable-sync \
-	--enable-echo \
-	--enable-hcid \
-	--enable-sdpd \
 	--enable-hidd \
 	--enable-pand \
+	--enable-dund \
 	--disable-test \
 	--disable-cups \
 	--enable-manpages \
@@ -42,6 +41,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-initscripts \
 	--enable-pcmciarules \
 	--enable-pcmciarules \
+	--enable-tools \
 	--enable-bccmd \
 	--enable-avctrl \
 	--enable-hid2hci \
@@ -68,4 +68,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libinput.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libnetwork.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libserial.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libstorage.la
 	@$(MAKECOOKIE)
