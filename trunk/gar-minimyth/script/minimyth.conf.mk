@@ -51,6 +51,7 @@ mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 
                              mythweather \
                              $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
                              mplayer \
+                             vlc \
                              xine \
                              perl \
                              $(if $(filter $(mm_DEBUG),yes),debug)
