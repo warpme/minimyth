@@ -96,7 +96,8 @@ CONFIGURE_ARGS = \
 	--enable-opengl-vsync \
 	--disable-directfb \
 	--disable-directx \
-	--enable-faad
+	--enable-faad \
+	$(if $(filter -Os,$(CFLAGS)),--enable-small)
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
