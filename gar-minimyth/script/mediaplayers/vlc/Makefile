@@ -1,7 +1,7 @@
 GARNAME = vlc
-GARVERSION = snapshot-20080501
+GARVERSION = snapshot-20080507
 CATEGORIES = mediaplayers
-MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080501-0013/
+MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080507-0014/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-patch.gar
 LICENSE = GPL2
@@ -123,6 +123,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-csri \
 	--disable-asademux \
 	--disable-cmml \
+	--disable-kate \
 	--enable-x11 \
 	--enable-xvideo \
 	--enable-glx \
