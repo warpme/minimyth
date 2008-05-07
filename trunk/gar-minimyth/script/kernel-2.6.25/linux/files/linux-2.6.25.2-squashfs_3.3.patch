@@ -1,7 +1,7 @@
-diff -Naur linux-2.6.24.6-old/fs/Kconfig linux-2.6.24.6-new/fs/Kconfig
---- linux-2.6.24.6-old/fs/Kconfig	2008-05-04 10:10:36.000000000 -0700
-+++ linux-2.6.24.6-new/fs/Kconfig	2008-05-04 10:11:46.000000000 -0700
-@@ -1405,6 +1405,56 @@
+diff -Naur linux-2.6.25.2-old/fs/Kconfig linux-2.6.25.2-new/fs/Kconfig
+--- linux-2.6.25.2-old/fs/Kconfig	2008-05-07 06:54:13.000000000 -0700
++++ linux-2.6.25.2-new/fs/Kconfig	2008-05-07 06:55:25.000000000 -0700
+@@ -1367,6 +1367,56 @@
  
  	  If unsure, say N.
  
@@ -58,10 +58,10 @@ diff -Naur linux-2.6.24.6-old/fs/Kconfig linux-2.6.24.6-new/fs/Kconfig
  config VXFS_FS
  	tristate "FreeVxFS file system support (VERITAS VxFS(TM) compatible)"
  	depends on BLOCK
-diff -Naur linux-2.6.24.6-old/fs/Makefile linux-2.6.24.6-new/fs/Makefile
---- linux-2.6.24.6-old/fs/Makefile	2008-05-04 10:10:36.000000000 -0700
-+++ linux-2.6.24.6-new/fs/Makefile	2008-05-04 10:11:46.000000000 -0700
-@@ -72,6 +72,7 @@
+diff -Naur linux-2.6.25.2-old/fs/Makefile linux-2.6.25.2-new/fs/Makefile
+--- linux-2.6.25.2-old/fs/Makefile	2008-05-07 06:54:13.000000000 -0700
++++ linux-2.6.25.2-new/fs/Makefile	2008-05-07 06:55:25.000000000 -0700
+@@ -73,6 +73,7 @@
  obj-$(CONFIG_JBD2)		+= jbd2/
  obj-$(CONFIG_EXT2_FS)		+= ext2/
  obj-$(CONFIG_CRAMFS)		+= cramfs/
@@ -69,14 +69,14 @@ diff -Naur linux-2.6.24.6-old/fs/Makefile linux-2.6.24.6-new/fs/Makefile
  obj-y				+= ramfs/
  obj-$(CONFIG_HUGETLBFS)		+= hugetlbfs/
  obj-$(CONFIG_CODA_FS)		+= coda/
-diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs/inode.c
---- linux-2.6.24.6-old/fs/squashfs/inode.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/fs/squashfs/inode.c	2008-05-04 10:11:46.000000000 -0700
-@@ -0,0 +1,2192 @@
+diff -Naur linux-2.6.25.2-old/fs/squashfs/inode.c linux-2.6.25.2-new/fs/squashfs/inode.c
+--- linux-2.6.25.2-old/fs/squashfs/inode.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/fs/squashfs/inode.c	2008-05-07 06:55:25.000000000 -0700
+@@ -0,0 +1,2218 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
 + *
-+ * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2007
++ * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2007, 2008
 + * Phillip Lougher <phillip@lougher.demon.co.uk>
 + *
 + * This program is free software; you can redistribute it and/or
@@ -112,7 +112,10 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +
 +int squashfs_cached_blks;
 +
-+static void vfs_read_inode(struct inode *i);
++static struct dentry *squashfs_fh_to_dentry(struct super_block *s,
++		struct fid *fid, int fh_len, int fh_type);
++static struct dentry *squashfs_fh_to_parent(struct super_block *s,
++		struct fid *fid, int fh_len, int fh_type);
 +static struct dentry *squashfs_get_parent(struct dentry *child);
 +static int squashfs_read_inode(struct inode *i, squashfs_inode_t inode);
 +static int squashfs_statfs(struct dentry *, struct kstatfs *);
@@ -153,15 +156,9 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +	.remount_fs = squashfs_remount
 +};
 +
-+static struct super_operations squashfs_export_super_ops = {
-+	.alloc_inode = squashfs_alloc_inode,
-+	.destroy_inode = squashfs_destroy_inode,
-+	.statfs = squashfs_statfs,
-+	.put_super = squashfs_put_super,
-+	.read_inode = vfs_read_inode
-+};
-+
 +static struct export_operations squashfs_export_ops = {
++	.fh_to_dentry = squashfs_fh_to_dentry,
++	.fh_to_parent = squashfs_fh_to_parent,
 +	.get_parent = squashfs_get_parent
 +};
 +
@@ -705,42 +702,72 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +out:
 +	return SQUASHFS_INVALID_BLK;
 +}
-+	
 +
-+static void vfs_read_inode(struct inode *i)
++
++
++static struct dentry *squashfs_export_iget(struct super_block *s,
++	unsigned int inode_number)
 +{
-+	struct squashfs_sb_info *msblk = i->i_sb->s_fs_info;
-+	squashfs_inode_t inode = squashfs_inode_lookup(i->i_sb, i->i_ino);
++	squashfs_inode_t inode;
++	struct inode *i;
++	struct dentry *dentry;
 +
-+	TRACE("Entered vfs_read_inode\n");
++	TRACE("Entered squashfs_export_iget\n");
 +
-+	if(inode != SQUASHFS_INVALID_BLK)
-+		(msblk->read_inode)(i, inode);
++	inode = squashfs_inode_lookup(s, inode_number);
++	if(inode == SQUASHFS_INVALID_BLK) {
++		dentry = ERR_PTR(-ENOENT);
++		goto failure;
++	}
++
++	i = squashfs_iget(s, inode, inode_number);
++	if(i == NULL) {
++		dentry = ERR_PTR(-EACCES);
++		goto failure;
++	}
++
++	dentry = d_alloc_anon(i);
++	if (dentry == NULL) {
++		iput(i);
++		dentry = ERR_PTR(-ENOMEM);
++	}
++
++failure:
++	return dentry;
++}
++
++
++static struct dentry *squashfs_fh_to_dentry(struct super_block *s,
++		struct fid *fid, int fh_len, int fh_type)
++{
++	if((fh_type != FILEID_INO32_GEN && fh_type != FILEID_INO32_GEN_PARENT) ||
++			fh_len < 2)
++		return NULL;
++
++	return squashfs_export_iget(s, fid->i32.ino);
++}
++
++
++static struct dentry *squashfs_fh_to_parent(struct super_block *s,
++		struct fid *fid, int fh_len, int fh_type)
++{
++	if(fh_type != FILEID_INO32_GEN_PARENT || fh_len < 4)
++		return NULL;
++
++	return squashfs_export_iget(s, fid->i32.parent_ino);
 +}
 +
 +
 +static struct dentry *squashfs_get_parent(struct dentry *child)
 +{
 +	struct inode *i = child->d_inode;
-+	struct inode *parent = iget(i->i_sb, SQUASHFS_I(i)->u.s2.parent_inode);
-+	struct dentry *rv;
 +
 +	TRACE("Entered squashfs_get_parent\n");
 +
-+	if(parent == NULL) {
-+		rv = ERR_PTR(-EACCES);
-+		goto out;
-+	}
-+
-+	rv = d_alloc_anon(parent);
-+	if(rv == NULL)
-+		rv = ERR_PTR(-ENOMEM);
-+
-+out:
-+	return rv;
++	return squashfs_export_iget(i->i_sb, SQUASHFS_I(i)->u.s2.parent_inode);
 +}
 +
-+	
++
 +SQSH_EXTERN struct inode *squashfs_iget(struct super_block *s,
 +				squashfs_inode_t inode, unsigned int inode_number)
 +{
@@ -1332,7 +1359,6 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +	if (read_inode_lookup_table(s) == 0)
 +		goto failed_mount;
 +
-+	s->s_op = &squashfs_export_super_ops;
 +	s->s_export_op = &squashfs_export_ops;
 +
 +allocate_root:
@@ -2199,7 +2225,7 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +	if (err)
 +		goto out;
 +
-+	printk(KERN_INFO "squashfs: version 3.3 (2007/10/31) "
++	printk(KERN_INFO "squashfs: version 3.3-CVS (2008/04/04) "
 +		"Phillip Lougher\n");
 +
 +	err = register_filesystem(&squashfs_fs_type);
@@ -2262,12 +2288,12 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/inode.c linux-2.6.24.6-new/fs/squashfs
 +
 +module_init(init_squashfs_fs);
 +module_exit(exit_squashfs_fs);
-+MODULE_DESCRIPTION("squashfs 3.2-r2-CVS, a compressed read-only filesystem");
++MODULE_DESCRIPTION("squashfs 3.3, a compressed read-only filesystem");
 +MODULE_AUTHOR("Phillip Lougher <phillip@lougher.demon.co.uk>");
 +MODULE_LICENSE("GPL");
-diff -Naur linux-2.6.24.6-old/fs/squashfs/Makefile linux-2.6.24.6-new/fs/squashfs/Makefile
---- linux-2.6.24.6-old/fs/squashfs/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/fs/squashfs/Makefile	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/fs/squashfs/Makefile linux-2.6.25.2-new/fs/squashfs/Makefile
+--- linux-2.6.25.2-old/fs/squashfs/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/fs/squashfs/Makefile	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,7 @@
 +#
 +# Makefile for the linux squashfs routines.
@@ -2276,9 +2302,9 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/Makefile linux-2.6.24.6-new/fs/squashf
 +obj-$(CONFIG_SQUASHFS) += squashfs.o
 +squashfs-y += inode.o
 +squashfs-y += squashfs2_0.o
-diff -Naur linux-2.6.24.6-old/fs/squashfs/squashfs2_0.c linux-2.6.24.6-new/fs/squashfs/squashfs2_0.c
---- linux-2.6.24.6-old/fs/squashfs/squashfs2_0.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/fs/squashfs/squashfs2_0.c	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/fs/squashfs/squashfs2_0.c linux-2.6.25.2-new/fs/squashfs/squashfs2_0.c
+--- linux-2.6.25.2-old/fs/squashfs/squashfs2_0.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/fs/squashfs/squashfs2_0.c	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,740 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -3020,9 +3046,9 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/squashfs2_0.c linux-2.6.24.6-new/fs/sq
 +
 +	return 1;
 +}
-diff -Naur linux-2.6.24.6-old/fs/squashfs/squashfs.h linux-2.6.24.6-new/fs/squashfs/squashfs.h
---- linux-2.6.24.6-old/fs/squashfs/squashfs.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/fs/squashfs/squashfs.h	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/fs/squashfs/squashfs.h linux-2.6.25.2-new/fs/squashfs/squashfs.h
+--- linux-2.6.25.2-old/fs/squashfs/squashfs.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/fs/squashfs/squashfs.h	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,86 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -3110,9 +3136,9 @@ diff -Naur linux-2.6.24.6-old/fs/squashfs/squashfs.h linux-2.6.24.6-new/fs/squas
 +	return 0;
 +}
 +#endif
-diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs.h linux-2.6.24.6-new/include/linux/squashfs_fs.h
---- linux-2.6.24.6-old/include/linux/squashfs_fs.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/include/linux/squashfs_fs.h	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/include/linux/squashfs_fs.h linux-2.6.25.2-new/include/linux/squashfs_fs.h
+--- linux-2.6.25.2-old/include/linux/squashfs_fs.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/include/linux/squashfs_fs.h	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,935 @@
 +#ifndef SQUASHFS_FS
 +#define SQUASHFS_FS
@@ -4049,9 +4075,9 @@ diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs.h linux-2.6.24.6-new/inc
 +
 +#endif
 +#endif
-diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs_i.h linux-2.6.24.6-new/include/linux/squashfs_fs_i.h
---- linux-2.6.24.6-old/include/linux/squashfs_fs_i.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/include/linux/squashfs_fs_i.h	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/include/linux/squashfs_fs_i.h linux-2.6.25.2-new/include/linux/squashfs_fs_i.h
+--- linux-2.6.25.2-old/include/linux/squashfs_fs_i.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/include/linux/squashfs_fs_i.h	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,45 @@
 +#ifndef SQUASHFS_FS_I
 +#define SQUASHFS_FS_I
@@ -4098,9 +4124,9 @@ diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs_i.h linux-2.6.24.6-new/i
 +	struct inode	vfs_inode;
 +};
 +#endif
-diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs_sb.h linux-2.6.24.6-new/include/linux/squashfs_fs_sb.h
---- linux-2.6.24.6-old/include/linux/squashfs_fs_sb.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.24.6-new/include/linux/squashfs_fs_sb.h	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/include/linux/squashfs_fs_sb.h linux-2.6.25.2-new/include/linux/squashfs_fs_sb.h
+--- linux-2.6.25.2-old/include/linux/squashfs_fs_sb.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.25.2-new/include/linux/squashfs_fs_sb.h	2008-05-07 06:55:25.000000000 -0700
 @@ -0,0 +1,76 @@
 +#ifndef SQUASHFS_FS_SB
 +#define SQUASHFS_FS_SB
@@ -4178,9 +4204,9 @@ diff -Naur linux-2.6.24.6-old/include/linux/squashfs_fs_sb.h linux-2.6.24.6-new/
 +	int			(*read_fragment_index_table)(struct super_block *s);
 +};
 +#endif
-diff -Naur linux-2.6.24.6-old/init/do_mounts_rd.c linux-2.6.24.6-new/init/do_mounts_rd.c
---- linux-2.6.24.6-old/init/do_mounts_rd.c	2008-05-04 10:10:37.000000000 -0700
-+++ linux-2.6.24.6-new/init/do_mounts_rd.c	2008-05-04 10:11:46.000000000 -0700
+diff -Naur linux-2.6.25.2-old/init/do_mounts_rd.c linux-2.6.25.2-new/init/do_mounts_rd.c
+--- linux-2.6.25.2-old/init/do_mounts_rd.c	2008-05-07 06:54:13.000000000 -0700
++++ linux-2.6.25.2-new/init/do_mounts_rd.c	2008-05-07 06:55:25.000000000 -0700
 @@ -5,6 +5,7 @@
  #include <linux/ext2_fs.h>
  #include <linux/romfs_fs.h>
