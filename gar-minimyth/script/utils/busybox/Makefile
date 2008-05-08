@@ -9,9 +9,10 @@ PATCHFILES  = \
 	$(DISTNAME)-completion.patch \
 	$(DISTNAME)-echo.patch \
 	$(DISTNAME)-hppa.patch \
+	$(DISTNAME)-httpd.patch \
 	$(DISTNAME)-ioctl.patch \
 	$(DISTNAME)-mdev.patch \
-	$(DISTNAME)-proc.patch \
+	$(DISTNAME)-pidof.patch \
 	$(DISTNAME)-ssd.patch \
 	$(DISTNAME)-tar.patch \
 	$(DISTNAME)-taskset.patch \
