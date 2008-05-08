@@ -68,8 +68,6 @@ DEPENDS = \
 	X11/xscreensaver \
 	X11/xvattr \
 	system/zoneinfo \
-	$(if $(filter iegd,$(mm_CHIPSETS)), \
-		$(if $(filter 2.6.23,$(mm_KERNEL_VERSION)),X11/IEGD)) \
 	$(if $(filter nvidia,$(mm_CHIPSETS)), \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \

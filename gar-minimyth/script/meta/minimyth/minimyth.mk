@@ -142,7 +142,6 @@ libdirs_base := \
 libdirs := \
 	$(libdirs_base) \
 	$(libdir)/xorg/modules \
-	$(if $(filter $(mm_CHIPSETS),iegd),$(libdir)/iegd) \
 	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia)
 etcdirs := \
 	$(extras_sysconfdir) \
@@ -330,7 +329,6 @@ mm-check:
 	@echo "    mm_CHIPSETS"
 	@for chipset in $(mm_CHIPSETS) ; do \
 		if [ ! "$${chipset}" = "ati"    ] && \
-		   [ ! "$${chipset}" = "iegd"   ] && \
 		   [ ! "$${chipset}" = "intel"  ] && \
 		   [ ! "$${chipset}" = "nvidia" ] && \
 		   [ ! "$${chipset}" = "sis"    ] && \
@@ -339,11 +337,6 @@ mm-check:
 		   [ ! "$${chipset}" = "other"  ] ; then \
 			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
 			exit 1 ; \
-		fi ; \
-		if [ ! "$(mm_KERNEL_VERSION)" = "2.6.23" ] ; then \
-			if [ "$${chipset}" = "iegd" ] ; then \
-				echo "warning: mm_CHIPSETS=\"$${chipset}\" is an invalid value for mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\"." ; \
-			fi ; \
 		fi ; \
 	done
 	@echo "    mm_SOFTWARE"
