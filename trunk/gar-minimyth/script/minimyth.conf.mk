@@ -30,8 +30,8 @@ mm_DEBUG                  ?= no
 # Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
 mm_DEBUG_BUILD            ?= no
 # Lists the chipset families supported.
-# Valid values for mm_CHIPSETS are one or more of 'ati', 'iegd' 'intel',
-# 'nvidia', 'sis', 'via', 'vmware' and 'other'.
+# Valid values for mm_CHIPSETS are one or more of 'ati', 'intel', 'nvidia',
+# 'sis', 'via', 'vmware' and 'other'.
 mm_CHIPSETS               ?= intel nvidia via other
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythdvd',
