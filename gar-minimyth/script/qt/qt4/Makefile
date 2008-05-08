@@ -1,5 +1,5 @@
 GARNAME = qt-x11-opensource-src
-GARVERSION = 4.3.4
+GARVERSION = 4.4.0
 CATEGORIES = qt
 MASTER_SITES = ftp://ftp.trolltech.com/qt/source/
 DISTFILES = $(DISTNAME).tar.gz

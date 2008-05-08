@@ -215,7 +215,7 @@ ifdef VLC_GUI_QT4
 DEPENDS += \
 	qt/qt4
 CONFIGURE_ARGS += \
-	--enable-qt4 \
+	--enable-qt4
 CONFIGURE_ENV += \
 	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
 	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
