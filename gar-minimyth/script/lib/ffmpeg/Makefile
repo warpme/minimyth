@@ -85,7 +85,7 @@ CONFIGURE_ARGS = \
 	--enable-ffmpeg \
 	--disable-ffserver \
 	--disable-ffplay \
-	--enable-small \
+	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
 	--enable-encoders \
