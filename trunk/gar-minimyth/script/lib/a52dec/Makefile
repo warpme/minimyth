@@ -28,10 +28,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-warnings \
 	--disable-gprof \
 	--with-gnu-ld
-x_BUILD_ARGS = \
-	CFLAGS="$(CFLAGS)"
 
 include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liba52.la
