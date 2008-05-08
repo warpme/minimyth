@@ -109,7 +109,15 @@ start() {
     fi
     if /usr/bin/test -f /etc/minimyth.d/minimyth.script ; then
         mm_message_output info "running minimyth.script ..."
+        # Make unprocessed MiniMyth variables visable to 'minimyth.script'.
+        /bin/rm -f '/etc/conf.d/minimyth.raw'
+        /bin/touch '/etc/conf.d/minimyth.raw'
+        /bin/chmod 644 '/etc/conf.d/minimyth.raw'
+        set | grep '^MM_' >> '/etc/conf.d/minimyth.raw'
+        # Run 'minimyth.script'
         /bin/sh /etc/minimyth.d/minimyth.script
+        # Delete file with unprocessed MiniMyth variables.
+        /bin/rm -f '/etc/conf.d/minimyth.raw'
     fi
 
     # Enable configuration auto-detection udev rules.
