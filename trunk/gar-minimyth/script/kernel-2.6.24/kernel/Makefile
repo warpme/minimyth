@@ -23,6 +23,5 @@ clean-all:
 	@rm -rf $(DESTDIR)$(LINUX_MODULESPREFIX)
 	@$(MAKE) clean-all -C ../../system/lirc
 	@$(MAKE) clean-all -C ../../nvidia
-	@$(MAKE) clean     -C ../../X11/IEGD
 	@$(MAKE) clean     -C ../../kernel/kernel
 	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../kernel/* ../../kernel-2.*/*)),$(MAKE) -C $(dir) clean ; )
