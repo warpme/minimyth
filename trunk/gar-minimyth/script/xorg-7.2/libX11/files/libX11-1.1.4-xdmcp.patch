@@ -1,0 +1,49 @@
+diff -Naur libX11-1.1.4-old/configure.ac libX11-1.1.4-new/configure.ac
+--- libX11-1.1.4-old/configure.ac	2008-03-06 12:48:26.000000000 -0800
++++ libX11-1.1.4-new/configure.ac	2008-04-23 17:41:19.000000000 -0700
+@@ -38,8 +38,18 @@
+ case "$ac_cv_use_xcb" in
+ no)
+ 	X11_REQUIRES="xau xcmiscproto bigreqsproto"
+-	PKG_CHECK_MODULES(XDMCP, xdmcp)
+-	AC_CHECK_LIB(Xdmcp, XdmcpWrap, [xdmauth="yes"], [xdmauth="no"], [$XDMCP_LIBS])
++	X11_EXTRA_DEPS="xau"
++	PKG_CHECK_MODULES(XDMCP, xdmcp,
++		AC_CHECK_LIB(Xdmcp, XdmcpWrap,
++			[
++	        	AC_CHECK_LIB(Xdmcp, XdmcpWrap, [xdmauth="yes"], [xdmauth="no"], [$XDMCP_LIBS])
++	        	X11_EXTRA_DEPS="$X11_EXTRA_DEPS xdmcp"
++			],
++			[
++			XDMCP_CFLAGS=
++			XDMCP_LIBS=
++			], [$XDMCP_LIBS]),
++		[AC_MSG_RESULT(no)])
+ 	AC_DEFINE(USE_XCB, 0, [Use XCB for low-level protocol implementation])
+ 	;;
+ *)
+diff -Naur libX11-1.1.4-old/src/ConnDis.c libX11-1.1.4-new/src/ConnDis.c
+--- libX11-1.1.4-old/src/ConnDis.c	2008-03-06 12:45:06.000000000 -0800
++++ libX11-1.1.4-new/src/ConnDis.c	2008-04-23 17:46:47.000000000 -0700
+@@ -39,7 +39,9 @@
+ #include <X11/Xlibint.h>
+ #include <X11/Xtrans/Xtrans.h>
+ #include <X11/Xauth.h>
++#ifdef HASXDMAUTH
+ #include <X11/Xdmcp.h>
++#endif
+ #include <stdio.h>
+ #include <ctype.h>
+ 
+diff -Naur libX11-1.1.4-old/x11.pc.in libX11-1.1.4-new/x11.pc.in
+--- libX11-1.1.4-old/x11.pc.in	2008-03-06 12:45:06.000000000 -0800
++++ libX11-1.1.4-new/x11.pc.in	2008-04-23 17:34:36.000000000 -0700
+@@ -9,7 +9,7 @@
+ Description: X Library
+ Version: @PACKAGE_VERSION@
+ Requires: xproto @XKBPROTO_REQUIRES@
+-Requires.private: xau xdmcp @X11_EXTRA_DEPS@
++Requires.private: @X11_EXTRA_DEPS@
+ Cflags: -I${includedir} @XTHREAD_CFLAGS@
+ Libs: -L${libdir} -lX11
+ Libs.private: @XTHREADLIB@
