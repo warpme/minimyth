@@ -20,17 +20,8 @@ conf_check_MM_LIRC() {
     if /usr/bin/test "${MM_LIRC_KERNEL_MODULE}" = "lirc_mceusbnew" ; then
         mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_KERNEL_MODULE='lirc_mceusbnew' is obsolete."
     fi
-    if /usr/bin/test "${MM_LIRC_REMOTE}"        = "auto"           ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_REMOTE='auto' is obsolete."
-    fi
-    if /usr/bin/test "${MM_LIRC_REMOTE}"        = "mceusbnew"      ; then
-        mm_message_output err "error: 'minimyth.conf' is out of date. MM_LIRC_REMOTE='mceusbnew' is obsolete."
-    fi
 
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" || /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
-        if /usr/bin/test ! -z "${MM_LIRC_REMOTE}" && /usr/bin/test ! "${MM_LIRC_REMOTE}" = "none" ; then
-            mm_message_output err "error: 'MM_LIRC_DRIVER' must be set when 'MM_LIRC_REMOTE is set."
-        fi
         if /usr/bin/test ! -z "${MM_LIRC_DEVICE}" ; then
             mm_message_output err "error: 'MM_LIRC_DRIVER' must be set when 'MM_LIRC_DEVICE' is set."
         fi
@@ -51,9 +42,6 @@ conf_default_MM_LIRC() {
 
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         MM_LIRC_DRIVER='none'
-    fi
-    if /usr/bin/test -z "${MM_LIRC_REMOTE}" ; then
-        MM_LIRC_REMOTE='none'
     fi
     if /usr/bin/test -z "${MM_LIRC_DEVICE}" ; then
         MM_LIRC_DEVICE='auto'
@@ -127,9 +115,6 @@ conf_default_MM_LIRC() {
     if /usr/bin/test "${MM_LIRC_DRIVER}" = "none" ; then
         MM_LIRC_DRIVER=
     fi
-    if /usr/bin/test "${MM_LIRC_REMOTE}" = "none" ; then
-        MM_LIRC_REMOTE=
-    fi
     if /usr/bin/test "${MM_LIRC_DEVICE}" = "none" ; then
         MM_LIRC_DEVICE=
     fi
@@ -148,7 +133,7 @@ conf_default_MM_LIRC() {
     MM_LIRC_DEVICE_LIST=
     if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "irtrans" ; then
         if /usr/bin/test -n "${MM_LIRC_DEVICE}" && /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
-            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} ${MM_LIRC_DEVICE},${MM_LIRC_DRIVER},${MM_LIRC_REMOTE}"
+            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} ${MM_LIRC_DEVICE},${MM_LIRC_DRIVER}"
         fi
         if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
             MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_detect_state_get 'lirc' | mm_uniq`"
@@ -173,7 +158,6 @@ conf_write_MM_LIRC() {
     conf_variable_write "${conf_file}" MM_LIRC_AUTO_ENABLED          "${MM_LIRC_AUTO_ENABLED}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE_BLACKLIST      "${MM_LIRC_DEVICE_BLACKLIST}"
     conf_variable_write "${conf_file}" MM_LIRC_DRIVER                "${MM_LIRC_DRIVER}"
-    conf_variable_write "${conf_file}" MM_LIRC_REMOTE                "${MM_LIRC_REMOTE}"
     conf_variable_write "${conf_file}" MM_LIRC_DEVICE                "${MM_LIRC_DEVICE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE         "${MM_LIRC_KERNEL_MODULE}"
     conf_variable_write "${conf_file}" MM_LIRC_KERNEL_MODULE_OPTIONS "${MM_LIRC_KERNEL_MODULE_OPTIONS}"
