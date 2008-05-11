@@ -2018,7 +2018,6 @@
             <li><a href="#MM_LIRC_AUTO_ENABLED">MM_LIRC_AUTO_ENABLED</a></li>
             <li><a href="#MM_LIRC_DEVICE_BLACKLIST">MM_LIRC_DEVICE_BLACKLIST</a></li>
             <li><a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a></li>
-            <li><a href="#MM_LIRC_REMOTE">MM_LIRC_REMOTE</a></li>
             <li><a href="#MM_LIRC_DEVICE">MM_LIRC_DEVICE</a></li>
             <li><a href="#MM_LIRC_KERNEL_MODULE">MM_LIRC_KERNEL_MODULE</a></li>
             <li><a href="#MM_LIRC_KERNEL_MODULE_OPTIONS">MM_LIRC_KERNEL_MODULE_OPTIONS</a></li>
@@ -2044,9 +2043,6 @@
               <p>
                 If you are using a remote control receiver that connects using USB,
                 then MiniMyth attempts to auto-detect the remote control receiver.
-                In addition,
-                if you are using a remote control the comes bundled with a remote control receiver that connects using USB,
-                then MiniMyth attempts to auto-detect the remote control as well.
                 However, if MiniMyth is not able to auto-detect your remote control receiver or remote control,
                 then you can configure them using the LIRC configuration variables.
               </p>
@@ -2113,41 +2109,10 @@
                 Set the name of the lircd driver (e.g. irman) as found under the 'configure&nbsp;--with-driver&nbsp;option'
                 <a href="http://www.lirc.org/html/table.html">here</a>.
                 Valid values are the name of the lircd driver and 'none', with 'none' the default.
-                'MM_LIRC_DRIVER' is used to determine what LIRC driver to use and to pick a built-in 'lircd.conf' and 'lircrc' files.
+                'MM_LIRC_DRIVER' is used to determine what LIRC driver to use.
               </p>
               <p>
                 If the value is 'none,' then no lircd driver will be set.
-              </p>
-            </dd>
-            <dt id="MM_LIRC_REMOTE"><strong>MM_LIRC_REMOTE</strong></dt>
-            <dd>
-              <p>
-                Set the remote control that you are using.
-                Valid values are the remote control name and 'none', with 'none' the default.
-                'MM_LIRC_REMOTE' is used to pick built-in 'lircd.conf' and 'lircrc' files.
-                Currently understood remote control names:
-              </p>
-              <p>
-                {various}           with drivers: 'atiusb'<br/>
-                'fusion_remote_mce' with drivers: 'dvico'<br/>
-                'hauppauge_A415'    with drivers: 'irman'<br/>
-                'hauppauge_R808'    with drivers: 'irman' and 'serial'<br/>
-                'mceusb'            with drivers: 'mceusb'<br/>
-                'mceusb2'           with drivers: 'mceusb2'<br/>
-                'streamzap'         with drivers: 'streamzap'.
-              </p>
-              <p>
-                If MiniMyth does not have built-in LIRC configuration files
-                or you do not want to use the built-in configuration files,
-                then you can load your own 'lircd.conf' and 'lircrc' files using
-                '<a href="#MM_LIRC_FETCH_LIRCD_CONF">MM_LIRC_FETCH_LIRCD_CONF</a>'
-                and
-                '<a href="#MM_LIRC_FETCH_LIRCRC">MM_LIRC_FETCH_LIRCRC</a>'.
-                In the 'lircrc' file, each record's 'prog' attribute must be set to the name of the program being controlled
-                (i.e. 'mythtv', 'mplayer' or 'xine') not to 'irxevent'.
-              </p>
-              <p>
-                If the value is 'none,' then no remote control will be set.
               </p>
             </dd>
             <dt id="MM_LIRC_DEVICE"><strong>MM_LIRC_DEVICE</strong></dt>
@@ -2266,6 +2231,39 @@
                 file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' the default.
               </p>
+              <p>
+                MiniMyth includes a limited number of 
+                '<a href="document-configure.shtml#lircd_conf">lircd.conf</a>'
+                files.
+                If MiniMyth does not contain an
+                '<a href="document-configure.shtml#lircd_conf">lircd.conf</a>'
+                file for your receiver+remote combination,
+                then you will need to provide one in order for your remote control to work with MiniMyth.
+              </p>
+              <p>
+                MiniMyth's LIRC configuration files follow the proposed
+                <a href="http://arnaud.quette.free.fr/lirc/lirc-nns.html">LIRC namespace</a>.
+                Therefore, 
+                if you provide an
+                '<a href="document-configure.shtml#lircd_conf">lircd.conf</a>'
+                that conforms to this namespace,
+                then it should work with MiniMyth's included
+                '<a href="document-configure.shtml#lircrc">lircrc</a>'
+                file.
+              </p>
+              <p>
+                Currently includes support for the following receiver+remote combinations:
+              </p>
+              <ul>
+                <li>an 'atiusb' receiver with various remotes</li>
+                <li>a 'dvico' receiver with various remotes</li>
+                <li>an 'irman' receiver with a 'hauppauge_A415' remote</li>
+                <li>an 'irman' receiver with a 'hauppauge_R808' remote</li>
+                <li>an 'mceusb' receiver with an 'mceusb' remote</li>
+                <li>an 'mceusb2' receiver with an 'mceusb2' remote</li>
+                <li>an 'serial' receiver with a 'hauppauge_R808' remote</li>
+                <li>a 'streamzap' receiver with a 'streamzap' remote</li>
+              </ul>
             </dd>
             <dt id="MM_LIRC_FETCH_LIRCRC"><strong>MM_LIRC_FETCH_LIRCRC</strong></dt>
             <dd>
@@ -2274,6 +2272,17 @@
                 '<a href="document-configure.shtml#lircrc">lircrc</a>'
                 file from the frontend's MiniMyth read-only configuration directory.
                 Valid values are 'yes' and 'no', with 'no' the default.
+              </p>
+              <p>
+                MiniMyth includes a general
+                '<a href="document-configure.shtml#lircrc">lircrc</a>'
+                as well as extensions to the general
+                '<a href="document-configure.shtml#lircrc">lircrc</a>'
+                for specific remote controls.
+                If you do not like the mapping provided by the included
+                '<a href="document-configure.shtml#lircrc">lircrc</a>'
+                files,
+                then you can provide your own.
               </p>
             </dd>
           </dl>
@@ -2652,7 +2661,7 @@
       </div>
       <div class="footer">
         <hr />
-        Last Updated: 2008-05-01 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
+        Last Updated: 2008-05-11 &lt;<a href="mailto:info at linpvr.org">webmaster at linpvr.org</a>&gt;
       </div>
     </div>
     <div class="side">
