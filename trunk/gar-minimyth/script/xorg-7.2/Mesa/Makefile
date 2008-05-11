@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.0.3
+GARVERSION = 7.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
@@ -46,6 +46,9 @@ BUILD_ARGS = \
 	BUILD_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
+
+CFLAGS   += -fno-strict-aliasing
+CXXFLAGS += -fno-strict-aliasing
 
 configure-custom:
 	@# Inclusion of assembly code causes the unichome_dri driver to segfault.
