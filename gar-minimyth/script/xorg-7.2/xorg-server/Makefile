@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-fixes.patch \
+	$(DISTNAME)-fix-649e7f82d8d4333443493056b81eb20d6cf022bc.patch \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
