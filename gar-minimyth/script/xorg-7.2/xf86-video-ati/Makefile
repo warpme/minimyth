@@ -1,5 +1,5 @@
 GARNAME = xf86-video-ati
-GARVERSION = 6.6.3
+GARVERSION = 6.8.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -47,6 +47,7 @@ pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@rm -f $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/damage.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"    >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"       >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"     >> $(WORKSRC)/config.cache
@@ -54,11 +55,11 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ati_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/mach64_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/r128_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/radeon_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre_detect_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/theatre200_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ati_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/atimisc_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/r128_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/radeon_drv.la
 	@$(MAKECOOKIE)
