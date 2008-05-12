@@ -47,9 +47,6 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-CFLAGS   += -fno-strict-aliasing
-CXXFLAGS += -fno-strict-aliasing
-
 configure-custom:
 	@# Inclusion of assembly code causes the unichome_dri driver to segfault.
 	@# Disabling assembly code is a performance hit, but we do not need top GL performance for Myth.
