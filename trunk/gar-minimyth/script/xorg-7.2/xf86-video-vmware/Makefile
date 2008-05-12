@@ -1,5 +1,5 @@
 GARNAME = xf86-video-vmware
-GARVERSION = 10.14.1
+GARVERSION = 10.16.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -15,6 +15,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
+	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
@@ -35,8 +36,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-as_valid=
 
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
