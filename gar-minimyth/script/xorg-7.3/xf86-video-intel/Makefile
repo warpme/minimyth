@@ -13,6 +13,7 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXvMC \
