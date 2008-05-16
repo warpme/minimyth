@@ -46,6 +46,7 @@ DEPENDS = \
 	$(CATEGORY)/xkeyboard-config \
 	$(CATEGORY)/xlsclients \
 	$(CATEGORY)/xorg-server \
+	$(CATEGORY)/xrandr \
 	$(CATEGORY)/xset \
 	$(CATEGORY)/xsetroot
 
