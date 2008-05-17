@@ -52,7 +52,7 @@ fi
 /bin/echo "      </div>"
 /bin/echo "      <div class=\"footer\">"
 /bin/echo "        <hr />"
-/bin/echo "        Last Updated: 2008-05-16 &lt;<a href=\"mailto:info at linpvr.org\">webmaster at linpvr.org</a>&gt;"
+/bin/echo "        Last Updated: 2008-05-17 &lt;webmaster at minimyth dot org&gt;"
 /bin/echo "      </div>"
 /bin/echo "    </div>"
 /bin/echo "  </body>"
