@@ -20,7 +20,6 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "    <title>MiniMyth Frontend Filesystem</title>"
 /bin/echo "    <style type=\"text/css\" title=\"main-styles\">"
 /bin/echo "      @import \"../css/minimyth.css\";"
-/bin/echo "      @import \"../css/minimyth-sidebar-hide.css\";"
 /bin/echo "    </style>"
 /bin/echo "  </head>"
 /bin/echo "  <body>"

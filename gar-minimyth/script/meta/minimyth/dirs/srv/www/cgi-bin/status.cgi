@@ -39,7 +39,6 @@ status_loads_body=`/bin/cat /proc/loadavg`
 /bin/echo "    <title>MiniMyth Frontend Status</title>"
 /bin/echo "    <style type=\"text/css\" title=\"main-styles\">"
 /bin/echo "      @import \"../css/minimyth.css\";"
-/bin/echo "      @import \"../css/minimyth-sidebar-hide.css\";"
 /bin/echo "      @import \"../css/status.css\";"
 /bin/echo "    </style>"
 /bin/echo "  </head>"
