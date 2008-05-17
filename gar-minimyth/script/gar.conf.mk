@@ -206,7 +206,7 @@ GARPKGDIR = $(GARPKGROOT)/$(GARNAME)
 FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)/
 
 #append the public archive
-MASTER_SITES += http://linpvr.org/minimyth/download/garchive/
+MASTER_SITES += http://minimyth.org/download/garchive/
 
 # Extra confs to include after gar.conf.mk
 GAR_EXTRA_CONF += extras/extras.conf.mk devel/gcc/package-api.mk
