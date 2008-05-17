@@ -47,7 +47,7 @@ status_loads_body=`/bin/cat /proc/loadavg`
 /bin/echo "      <div class=\"header\">"
 /bin/echo "        <div class=\"heading\">MiniMyth from <a href=\"http://minimyth.org/\">minimyth.org</a></div>"
 /bin/echo "        <div class=\"menu\">"
-/bin/echo "          <span class=\"menuItemFirst\"><a href=\"../index.shtml\">Home</a></span>"
+/bin/echo "          <span class=\"menuItemFirst\"><a href=\"../index.html\">Home</a></span>"
 /bin/echo "          <span class=\"menuItem\"     >Status</span>"
 /bin/echo "        </div>"
 /bin/echo "        <div class=\"note\">"

@@ -574,28 +574,28 @@ mm-make-conf:
 	@cp -pdR  ./dirs/usr/share/mythtv/*              $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
-	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv   $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home  $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
-	@cp -pdR  $(mm_HOME)/html/minimyth/css/*          $(mm_ROOTFSDIR)/srv/www/css/
+	@cp -pdR  $(mm_HOME)/html/minimyth/css/*         $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/image
-	@cp -pdR  $(mm_HOME)/html/minimyth/image/*        $(mm_ROOTFSDIR)/srv/www/image/
-	@cp -pdR  $(mm_HOME)/html/minimyth/document.shtml $(mm_ROOTFSDIR)/srv/www/
-	@cp -pdR  $(mm_HOME)/html/minimyth/document-*     $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdR  $(mm_HOME)/html/minimyth/image/*       $(mm_ROOTFSDIR)/srv/www/image/
+	@cp -pdR  $(mm_HOME)/html/minimyth/document.html $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdR  $(mm_HOME)/html/minimyth/document-*    $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/build
-	@ln -s $(versiondir)                              $(mm_ROOTFSDIR)/srv/www/software/base/versions
-	@ln -s $(licensedir)                              $(mm_ROOTFSDIR)/srv/www/software/base/licenses
-	@ln -s $(extras_versiondir)                       $(mm_ROOTFSDIR)/srv/www/software/extras/versions
-	@ln -s $(extras_licensedir)                       $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
-	@ln -s $(versiondir)-build                        $(mm_ROOTFSDIR)/srv/www/software/build/versions
-	@ln -s $(licensedir)-build                        $(mm_ROOTFSDIR)/srv/www/software/build/licenses
+	@ln -s $(versiondir)                             $(mm_ROOTFSDIR)/srv/www/software/base/versions
+	@ln -s $(licensedir)                             $(mm_ROOTFSDIR)/srv/www/software/base/licenses
+	@ln -s $(extras_versiondir)                      $(mm_ROOTFSDIR)/srv/www/software/extras/versions
+	@ln -s $(extras_licensedir)                      $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
+	@ln -s $(versiondir)-build                       $(mm_ROOTFSDIR)/srv/www/software/build/versions
+	@ln -s $(licensedir)-build                       $(mm_ROOTFSDIR)/srv/www/software/build/licenses
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth
-	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.lircrc
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/lircrc                     $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
 	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
