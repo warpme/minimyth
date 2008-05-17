@@ -577,12 +577,13 @@ mm-make-conf:
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv  $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home $(mm_ROOTFSDIR)
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/css
-	@cp -pdR  $(mm_HOME)/html/css/*                  $(mm_ROOTFSDIR)/srv/www/css/
+	@cp -pdR  $(mm_HOME)/html/minimyth/css/*          $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
-	@cp -pdR  $(mm_HOME)/html/include/*              $(mm_ROOTFSDIR)/srv/www/include/
+	@cp -pdR  $(mm_HOME)/html/minimyth/include/*      $(mm_ROOTFSDIR)/srv/www/include/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
-	@cp -pdR  $(mm_HOME)/html/script/*               $(mm_ROOTFSDIR)/srv/www/script/
-	@cp -pdR  $(mm_HOME)/html/minimyth               $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdR  $(mm_HOME)/html/script/*                $(mm_ROOTFSDIR)/srv/www/script/
+	@cp -pdR  $(mm_HOME)/html/minimyth/document.shtml $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdR  $(mm_HOME)/html/minimyth/document-*     $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
