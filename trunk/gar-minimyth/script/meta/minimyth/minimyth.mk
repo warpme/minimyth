@@ -580,8 +580,6 @@ mm-make-conf:
 	@cp -pdR  $(mm_HOME)/html/minimyth/css/*          $(mm_ROOTFSDIR)/srv/www/css/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/include
 	@cp -pdR  $(mm_HOME)/html/minimyth/include/*      $(mm_ROOTFSDIR)/srv/www/include/
-	@mkdir -p $(mm_ROOTFSDIR)/srv/www/script
-	@cp -pdR  $(mm_HOME)/html/script/*                $(mm_ROOTFSDIR)/srv/www/script/
 	@cp -pdR  $(mm_HOME)/html/minimyth/document.shtml $(mm_ROOTFSDIR)/srv/www/
 	@cp -pdR  $(mm_HOME)/html/minimyth/document-*     $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
