@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 2.5.1
+GARVERSION = 2.6
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -27,7 +27,7 @@ CONFIGURE_ARGS = \
 	--enable-debugger \
 	--enable-joystick \
 	--enable-cheats \
-	--disable-atarivox \
+	--disable-speakjet \
 	--enable-shared \
 	--disable-static \
 	--disable-profile \
