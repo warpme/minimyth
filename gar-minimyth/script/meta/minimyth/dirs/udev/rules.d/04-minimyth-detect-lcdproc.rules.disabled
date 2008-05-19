@@ -4,13 +4,13 @@
 # The LCDproc devices are assumed to be USB devices in the lcd or tty subsystem.
 # mm_detect_id has the following format:
 #     usb:<idVendor>:<idProduct>
-# mm_detect_state has the following format:
+# mm_detect_state_lcdproc has the following format:
 #     <driver>
 # where
 #     <driver>     : The LCDproc driver.
 # The state requires the LCDproc device name. However, since it is not yet
-# known, it cannot be added be included in mm_detect_state. Therefore, the
-# mm_detect script will prepend the LCDproc device name to the state.
+# known, it cannot be added be included in mm_detect_state_lcdproc. Therefore,
+# the mm_detect script will prepend the LCDproc device name to the state.
 #-------------------------------------------------------------------------------
 ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="lcd", GOTO="begin"
 ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="tty", GOTO="begin"
@@ -21,20 +21,20 @@ LABEL="begin"
 IMPORT{program}="/lib/udev/mm_detect_id"
 
 # Initialize state
-ENV{mm_detect_state}=""
+ENV{mm_detect_state_lcdproc}=""
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-  ENV{mm_detect_id}=="usb:0403:fa01", ENV{mm_detect_state}="MtxOrb"
-  ENV{mm_detect_id}=="usb:0403:fc0d", ENV{mm_detect_state}="CFontzPacket"
-  ENV{mm_detect_id}=="usb:0403:fc60", ENV{mm_detect_state}="irtrans"
-  ENV{mm_detect_id}=="usb:15c2:ffdc", ENV{mm_detect_state}="imon"
+  ENV{mm_detect_id}=="usb:0403:fa01", ENV{mm_detect_state_lcdproc}="MtxOrb"
+  ENV{mm_detect_id}=="usb:0403:fc0d", ENV{mm_detect_state_lcdproc}="CFontzPacket"
+  ENV{mm_detect_id}=="usb:0403:fc60", ENV{mm_detect_state_lcdproc}="irtrans"
+  ENV{mm_detect_id}=="usb:15c2:ffdc", ENV{mm_detect_state_lcdproc}="imon"
 
 # The state has ben set, so give the device a persistent unique identifier when possible.
-ENV{mm_detect_state}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="%k"
+ENV{mm_detect_state_lcdproc}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="%k"
 
 # The state has been set, so save it.
-ENV{mm_detect_state}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state} state_prepend_devname"
+ENV{mm_detect_state_lcdproc}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state_lcdproc} state_prepend_devname"
 
 LABEL="end"
