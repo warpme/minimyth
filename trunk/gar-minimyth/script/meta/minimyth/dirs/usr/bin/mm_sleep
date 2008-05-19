@@ -17,11 +17,20 @@ fi
 /usr/bin/mm_external power_off
 
 # If MPlayer is running, then exit it.
-mm_x_xmacroplay 'xine' 'KeyStr Escape\n'
+mm_x_xmacroplay 'mplayer' 'KeyStr Escape\n'
 if /usr/bin/test -n "`/bin/pidof mplayer`" ; then
     /bin/kill `/bin/pidof mplayer`
 fi
 while /usr/bin/test -n "`/bin/pidof mplayer`" ; do
+    /bin/sleep 1
+done
+
+# If VLC is running, then exit it.
+mm_x_xmacroplay 'vlc' 'KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n'
+if /usr/bin/test -n "`/bin/pidof vlc`" ; then
+    /bin/kill `/bin/pidof vlc`
+fi
+while /usr/bin/test -n "`/bin/pidof vlc`" ; do
     /bin/sleep 1
 done
 
