@@ -36,7 +36,11 @@ stop() {
 
     if /usr/bin/test -n "`/bin/pidof irserver`" ; then
         mm_message_output info "stopping IRTrans server ..."
-        /usr/bin/killall irserver
+        if /usr/bin/test -e /usr/sbin/irclient ; then
+            /usr/sbin/irclient localhost -shutdown
+        else
+            /usr/bin/killall irserver
+        fi
     fi
 
     return 0
