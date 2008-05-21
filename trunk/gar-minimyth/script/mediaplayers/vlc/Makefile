@@ -240,7 +240,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libvlc.la
-	@rm -f $(DESTDIR)$(libdir)/libvlc-control.la
+	@rm -f $(DESTDIR)$(libdir)/libvlccore.la
 	@rm -f `find $(DESTDIR)$(libdir)/vlc -name *.la`
 	@$(MAKECOOKIE)
 
