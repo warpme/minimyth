@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 13040.26649
+GARVERSION = 13205.26841
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -46,12 +46,14 @@ CONFIGURE_ARGS = \
 	--disable-libamr-nb \
 	--disable-libamr-wb \
 	--disable-libdc1394 \
+	--disable-libdirac \
 	--disable-libfaac \
 	--disable-libfaad \
 	--disable-libfaadbin \
 	--disable-libgsm \
 	--disable-libmp3lame \
 	--disable-libnut \
+	--disable-libschroedinger \
 	--disable-libtheora \
 	--disable-libvorbis \
 	--disable-libx264 \
@@ -78,6 +80,7 @@ CONFIGURE_ARGS = \
 	--enable-network \
 	--disable-ipv6 \
 	--enable-zlib \
+	--enable-bzlib \
 	--disable-vhook \
 	--disable-debug \
 	--disable-mpegaudio-hp \
