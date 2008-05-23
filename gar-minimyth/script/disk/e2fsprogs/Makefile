@@ -1,10 +1,10 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.40.9
+GARVERSION = 1.40.10
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch $(DISTNAME)-configure.patch
-LICENSE = GPL2
+PATCHFILES = $(DISTNAME).patch
+LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
 define BLURB
