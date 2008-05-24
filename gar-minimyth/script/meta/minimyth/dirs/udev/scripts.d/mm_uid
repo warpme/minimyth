@@ -5,56 +5,109 @@
 # This script provides a unique identifier based on hardware information.
 #
 # The output has the formats:
-#     pci:<bus_id>
+#     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>
 #     usb:<idVendor>:<idProduct>:<serial>
 ################################################################################
 
-hardware_path=
-if /usr/bin/test -z "${hardware_path}" ; then
-    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}/device" ; then
-        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}/device"`
-    fi
-fi
-if /usr/bin/test -z "${hardware_path}" ; then
-    if /usr/bin/test -n "${DEVPATH}" && /usr/bin/test -d "/sys/${DEVPATH}" ; then
-        hardware_path=`/usr/bin/readlink -f "/sys/${DEVPATH}"`
-    fi
-fi
-if /usr/bin/test -z "${hardware_path}" ; then
-    exit 1
-fi
+script='BEGIN
+        {
+            FS="\n"
+            RS=""
+            mm_uid=""
+        }
+        mm_uid !~ /^$/ { next }
+        $1 !~ /^ *looking at / { next }
+        {
+            x = 1
+            subsystem=""
+            while ( x < NF ) {
+                x++
+                if ( $x ~ /^ *SUBSYSTEMS?=="pci"/ ) {
+                    subsystem="pci"
+                    break
+                }
+                if ( $x ~ /^ *SUBSYSTEMS?=="usb"/ ) {
+                    subsystem="usb"
+                    break
+                }
+            }
+            if ( subsystem == "pci" ) {
+                class=""
+                class_prog=""
+                vendor=""
+                device=""
+                subsystem_vendor=""
+                subsystem_device=""
+                bus_id=""
+                while ( x < NF ) {
+                    x++
+                    if ( $x ~ /^ *ATTRS?\{vendor\}==/ ) {
+                        vendor=$x
+                        sub(/^ *ATTRS?\{vendor\}=="0x/, "", vendor)
+                        sub(/"$/, "", vendor)
+                    }
+                    if ( $x ~ /^ *ATTRS?\{device\}==/ ) {
+                        device=$x
+                        sub(/^ *ATTRS?\{device\}=="0x/, "", device)
+                        sub(/"$/, "", device)
+                    }
+                    if ( $x ~ /^ *ATTRS?\{subsystem_vendor\}==/ ) {
+                        subsystem_vendor=$x
+                        sub(/^ *ATTRS?\{subsystem_vendor\}=="0x/, "", subsystem_vendor)
+                        sub(/"$/, "", subsystem_vendor)
+                    }
+                    if ( $x ~ /^ *ATTRS?\{subsystem_device\}==/ ) {
+                        subsystem_device=$x
+                        sub(/^ *ATTRS?\{subsystem_device\}=="0x/, "", subsystem_device)
+                        sub(/"$/, "", subsystem_device)
+                    }
+                    if ( $x ~ /^ *KERNELS?==/ ) {
+                        bus_id=$x
+                        sub(/^ *KERNELS=="/, "", bus_id)
+                        sub(/"$/, "", bus_id)
+                    }
+                }
+                if ( class && class_prog && vendor && device && subsystem_vendor && subsystem_device && bus_id ) {
+                    mm_uid="pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
+                }
+            }
+            if ( subsystem == "usb" ) {
+                idVendor=""
+                idProduct=""
+                serial=""
+                while ( x < NF ) {
+                    x++
+                    if ( $x ~ /^ *ATTRS?\{idVendor\}==/ ) {
+                        idVendor=$x
+                        sub(/^ *ATTRS?\{idVendor\}=="/, "", idVendor)
+                        sub(/"$/, "", idVendor)
+                        if ( idVendor == "0000" ) {
+                            idVendor=""
+                        }
+                    }
+                    if ( $x ~ /^ *ATTRS?\{idProduct\}==/ ) {
+                        idProduct=$x
+                        sub(/^ *ATTRS?\{idProduct\}=="/, "", idProduct)
+                        sub(/"$/, "", idProduct)
+                        if ( idProduct == "0000" ) {
+                            idProduct=""
+                        }
+                    }
+                    if ( $x ~ /^ *ATTRS?\{serial\}==/ ) {
+                        serial=$x
+                        sub(/^ *ATTRS?\{serial\}=="/, "", serial)
+                        sub(/"$/, "", serial)
+                    }
+                }
+                if ( idVendor && idProduct && serial) {
+                    mm_uid="usb:" idVendor ":" idProduct ":" serial
+                }
+            }
+            if ( mm_uid ) {
+                print mm_uid
+            }
+        }'
 
-hardware_bus=
-if /usr/bin/test -d "${hardware_path}/subsystem" ; then
-    hardware_bus=`/usr/bin/readlink -f "${hardware_path}/subsystem"`
-    hardware_bus=`/usr/bin/basename "${hardware_bus}"`
-fi
-if /usr/bin/test -z "${hardware_bus}" ; then
-    exit 1
-fi
+/sbin/udevadm info --attribute-walk --path ${DEVPATH} | /usr/bin/awk "${script}"
 
-hardware_uid=
-case "${hardware_bus}" in
-    pci)
-        pci_bus_id=`/usr/bin/basename "${hardware_path}" 2> /dev/null`
-        if /usr/bin/test -z "${pci_bus_id}" ; then
-            exit 1
-        fi
-        hardware_uid="pci:${pci_bus_id}"
-        ;;
-    usb)
-        usb_idVendor=` /bin/cat ${hardware_path}/idVendor  2> /dev/null`
-        usb_idProduct=`/bin/cat ${hardware_path}/idProduct 2> /dev/null`
-        usb_serial=`   /bin/cat ${hardware_path}/serial    2> /dev/null`
-        if /usr/bin/test -z "${usb_idVendor}"  || \
-           /usr/bin/test -z "${usb_idProduct}" || \
-           /usr/bin/test -z "${usb_serial}"    ; then
-            exit 1
-        fi
-        hardware_uid="usb:${usb_idVendor}:${usb_idProduct}:${usb_serial}"
-        ;;
-esac
-
-/bin/echo "${hardware_uid}"    
-                                             
 exit 0
