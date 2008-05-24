@@ -163,6 +163,7 @@
         AllowOverride None
     &lt;/Directory&gt;
     &lt;Location /&gt;
+        # Do not allow access to the TFTP directory execpt where explicitly granted.
         Order Deny,Allow
         Deny from all
         Dav Off
@@ -170,13 +171,27 @@
         &lt;/LimitExcept&gt;
     &lt;/Location&gt;
     &lt;Location /minimyth&gt;
+        # Restrict access to the MiniMyth frontends.
         Order Deny,Allow
         Deny from all
         Allow from myth-livingroom.home
         Allow from myth-parents.home
         Allow from myth-sp8000e.home
     &lt;/Location&gt;
+    &lt;Location /minimyth/conf&gt;
+        # If the file is not in host specific directory, then redirect to the default directory.
+        # This gets rid of the page failure messages from the logs and should speed things up somewhat.
+        # One downside is that the MiniMyth logs will show that the file came from the host specfic directory
+        # even though the file is located in the default directory.
+        RewriteEngine on
+        RewriteCond %{REQUEST_FILENAME} !^.+/default/[^/]+$
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.+)/[^/]+/([^/]+)$ $1/default/$2 [L]
+    &lt;/Location&gt;
     &lt;Location /minimyth/conf-rw&gt;
+        # Turn on WebDAV sot that MiniMyth can put configuration files.
+        # This will not work unless the mod_dav module is enabled and configured:
+        # <a href="http://httpd.apache.org/docs/2.0/mod/mod_dav.html">http://httpd.apache.org/docs/2.0/mod/mod_dav.html</a>.
         Dav On
         FileETag None
         &lt;LimitExcept GET PUT&gt;
@@ -2666,7 +2681,7 @@
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-05-18
+          Last Updated on 2008-05-24
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
