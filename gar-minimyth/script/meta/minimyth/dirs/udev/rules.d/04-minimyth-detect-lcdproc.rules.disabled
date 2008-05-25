@@ -1,7 +1,11 @@
 #-------------------------------------------------------------------------------
 # Detect LCDproc devices.
 #
-# The LCDproc devices are assumed to be USB devices in the lcd or tty subsystem.
+# An LCDproc device is assumed to
+#     have the name lcd[0-9]* or ttyUSB[0-9]*,
+#     be in the lcd, tty or usb subsystem, and
+#     be a USB device.
+#
 # mm_detect_id has the following format:
 #     usb:<idVendor>:<idProduct>
 # mm_detect_state_lcdproc has the following format:
@@ -12,8 +16,7 @@
 # known, it cannot be added be included in mm_detect_state_lcdproc. Therefore,
 # the mm_detect script will prepend the LCDproc device name to the state.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="lcd", GOTO="begin"
-ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="tty", GOTO="begin"
+ACTION=="add|remove", KERNEL=="lcd[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lcd|tty|usb", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 

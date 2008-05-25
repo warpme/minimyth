@@ -1,14 +1,17 @@
 #-------------------------------------------------------------------------------
 # Detect LIRC devices.
 #
-# The LIRC devices are assumed to be USB devices in the lirc or tty subsystem.
+# An LIRC device is assumed to
+#     have the name lirc[0-9]* or ttyUSB[0-9]*,
+#     be in the lirc or tty subsystem, and
+#     be a USB device.
 #
-# For LIRC devices in the lirc subsystem, the LIRC driver is the default LIRC
+# For an LIRC device in the lirc subsystem, the LIRC driver is the default LIRC
 # driver. As a result, no further detection is needed.
 #
-# For LIRC devices in the tty subsystem, the LIRC driver is not the default
-# LIRC driver. As a result, further detection is needed. For this detection,
-# mm_detect_id is used.
+# For an LIRC device not in the lirc subsystem, the LIRC driver is not the
+# default LIRC driver. As a result, further detection is needed. For this
+# detection, mm_detect_id is used.
 #
 # mm_detect_id has the following format:
 #     usb:<idVendor>:<idProduct>
@@ -20,8 +23,7 @@
 # known, it cannot be added be included in mm_detect_state_lirc. Therefore, the
 # mm_detect script will prepend the LIRC device name to the state.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="lirc", GOTO="begin"
-ACTION=="add|remove", SUBSYSTEMS=="usb", SUBSYSTEM=="tty" , GOTO="begin"
+ACTION=="add|remove", KERNEL=="lirc[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lirc|tty", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
@@ -31,7 +33,7 @@ ENV{mm_detect_state_lirc}="default"
 
 LABEL="end-lirc"
 
-SUBSYSTEM!="tty" , GOTO="end-tty"
+SUBSYSTEM=="lirc", GOTO="end-nonlirc"
 
 # Import mm_detect_id.
 IMPORT{program}="/lib/udev/mm_detect_id"
@@ -40,11 +42,11 @@ IMPORT{program}="/lib/udev/mm_detect_id"
 ENV{mm_detect_state_lirc}=""
 
 #-------------------------------------------------------------------------------
-# tty device list
+# non-lirc device list
 #-------------------------------------------------------------------------------
   ENV{mm_detect_id}=="usb:0fe9:9010", ENV{mm_detect_state_lirc}="dvico"
 
-LABEL="end-tty"
+LABEL="end-nonlirc"
 
 # The state has ben set, so give the device a persistent unique identifier when possible.
 ENV{mm_detect_state_lirc}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="%k"
