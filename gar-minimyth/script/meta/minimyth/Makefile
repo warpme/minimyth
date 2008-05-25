@@ -117,7 +117,8 @@ DEPENDS = \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
-		mediaplayers/mplayer) \
+		mediaplayers/mplayer \
+		mediaplayers/mplayer-resumer) \
 	$(if $(filter vlc,$(mm_SOFTWARE)), \
 		mediaplayers/vlc) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \
