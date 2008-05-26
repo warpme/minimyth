@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/themes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-qmake.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-font.patch
 LICENSE = GPL2
