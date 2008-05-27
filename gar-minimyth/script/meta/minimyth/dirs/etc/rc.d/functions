@@ -1324,11 +1324,11 @@ mm_mythdb_keybindings_update() {
         WHERE hostname=\"${HOST_NAME}\" AND context=\"${CONTEXT}\" AND action=\"${ACTION}\""
 }
 
-mm_mythdb_musicplaylist_dump() {
-    mm_mythdb_set "SELECT * FROM musicplaylist"
+mm_mythdb_music_playlists_dump() {
+    mm_mythdb_set "SELECT * FROM music_playlists"
 }
 
-mm_mythdb_musicplaylist_scope() {
+mm_mythdb_music_playlists_scope() {
     local MUSICPLAYLIST=$1
     local SCOPE=$2
 
@@ -1338,10 +1338,10 @@ mm_mythdb_musicplaylist_scope() {
 
     case "${SCOPE}" in
         local)
-            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"${HOST_NAME}\" WHERE name=\"${MUSICPLAYLIST}\""
+            mm_mythdb_set "UPDATE music_playlists SET hostname=\"${HOST_NAME}\" WHERE playlist_name=\"${MUSICPLAYLIST}\""
             ;;
         global)
-            mm_mythdb_set "UPDATE musicplaylist SET hostname=\"\"            WHERE name=\"${MUSICPLAYLIST}\""
+            mm_mythdb_set "UPDATE music_playlists SET hostname=\"\"             WHERE playlist_name=\"${MUSICPLAYLIST}\""
             ;;
     esac
 }
