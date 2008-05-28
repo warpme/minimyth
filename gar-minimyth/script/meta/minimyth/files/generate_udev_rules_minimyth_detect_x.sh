@@ -17,12 +17,31 @@ script='BEGIN {
             FS="\n"
             RS=""
         }
-        $1 !~ /^\[.*\]$/ { next }
+        $1 !~ /^\[.*\]$/ { 
+            next
+        }
         {
             x = 1
-            driver = $x
-            sub(/^\[/, "", driver)
-            sub(/\]$/, "", driver)
+
+            mm_detect_state_x = $x
+            sub(/^\[/, "", mm_detect_state_x)
+            sub(/\]$/, "", mm_detect_state_x)
+            if ( mm_detect_state_x ~ /^i810$/ ) {
+                mm_detect_state_x = "intel_810"
+            }
+            if ( mm_detect_state_x ~ /^i915$/ ) {
+                mm_detect_state_x = "intel_915"
+            }
+            if ( mm_detect_state_x ~ /^viadrv$/ ) {
+                mm_detect_state_x = "openchrome"
+            }
+            if ( ( mm_detect_state_x !~ /^intel_810$/  ) &&
+                 ( mm_detect_state_x !~ /^intel_915$/  ) &&
+                 ( mm_detect_state_x !~ /^openchrome$/ ) &&
+                 ( mm_detect_state_x !~ /^radeon$/     ) &&
+                 ( mm_detect_state_x !~ /^sis$/        ) ) {
+                next
+            }
 
             while ( x < NF ) {
                 x++
@@ -37,38 +56,6 @@ script='BEGIN {
                 sub(/ .*$/, "", device)
                 sub(/^0x/, "", device)
                 device = tolower(device)
-
-                type = $x
-                sub(/^[^ ]* /, "", type)
-                sub(/^[^ ]* /, "", type)
-                sub(/ .*$/, "", type)
-
-                description = $x
-                sub(/^[^ ]* /, "", description)
-                sub(/^[^ ]* /, "", description)
-                sub(/^[^ ]* /, "", description)
-                sub(/^"/, "", description)
-                sub(/"$/, "", description)
-
-                mm_detect_state_x = driver
-
-                if ( mm_detect_state_x ~ /^i810$/ ) {
-                    mm_detect_state_x = "intel_810"
-                }
-                if ( mm_detect_state_x ~ /^i915$/ ) {
-                    mm_detect_state_x = "intel_915"
-                }
-                if ( mm_detect_state_x ~ /^viadrv$/ ) {
-                    mm_detect_state_x = "openchrome"
-                }
-
-                if ( ( mm_detect_state_x !~ /^intel_810$/  ) &&
-                     ( mm_detect_state_x !~ /^intel_915$/  ) &&
-                     ( mm_detect_state_x !~ /^openchrome$/ ) &&
-                     ( mm_detect_state_x !~ /^radeon$/     ) &&
-                     ( mm_detect_state_x !~ /^sis$/        ) ) {
-                    continue
-                }
 
                 mm_detect_id = "pci:0300:00:" vendor ":" device ":????:????"
                 print "  ENV{mm_detect_id}==" "\"" mm_detect_id "\"" ", " "ENV{mm_detect_state_x}=" "\"" mm_detect_state_x "\""
