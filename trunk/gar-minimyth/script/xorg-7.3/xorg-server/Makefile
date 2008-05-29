@@ -1,7 +1,7 @@
 GARNAME = xorg-server
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	104048501f37b139d4113562ef1711978cc76018 , \
+        ddcca23a81abf5215f906a7ad097f1ed088ed92b , \
 	1.4 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
