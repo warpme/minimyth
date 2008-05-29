@@ -7,6 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-dnsd.patch \
+	$(DISTNAME)-fuser.patch \
+	$(DISTNAME)-hush.patch \
 	$(DISTNAME)-mdev.patch \
 	$(DISTNAME)-semicolon.patch \
 	$(DISTNAME)-syslogd.patch
