@@ -9,6 +9,7 @@ PATCHFILES  = \
 	$(DISTNAME)-dnsd.patch \
 	$(DISTNAME)-fuser.patch \
 	$(DISTNAME)-hush.patch \
+	$(DISTNAME)-ip.patch \
 	$(DISTNAME)-mdev.patch \
 	$(DISTNAME)-semicolon.patch \
 	$(DISTNAME)-syslogd.patch
