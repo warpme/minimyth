@@ -29,6 +29,7 @@ DEPENDS = \
 	system/kbdd \
 	kernel/kernel \
 	system/irserver \
+	fonts/liberation-fonts \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
@@ -56,7 +57,6 @@ DEPENDS = \
 	utils/squashfs \
 	net/syslinux \
 	system/sysvinit \
-	fonts/ttf-bitstream-vera \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \
