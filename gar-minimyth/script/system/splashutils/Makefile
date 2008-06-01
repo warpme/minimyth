@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libjpeg lib/zlib lib/freetype
+DEPENDS = lang/c lib/libjpeg lib/libpng lib/zlib lib/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -25,8 +25,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-test \
 	--with-gnu-ld \
 	--without-gpm \
-	--without-mng \
-	--without-png \
+	--with-mng \
+	--with-png \
 	--with-ttf \
 	--with-ttf-kernel \
 	--with-essential-prefix="$(if $(rootdir),$(rootdir),/)" \
