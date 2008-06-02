@@ -12,7 +12,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.21        ,$(mm_MYTH_VERSION)),0.21.0                        ) \
                                 $(if $(filter trunk       ,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
-mm_VERSION_MINIMYTH       ?= 52
+mm_VERSION_MINIMYTH       ?= 53
 mm_VERSION_EXTRA          ?= $(strip \
                                 $(if $(filter yes,$(mm_DEBUG)),-debug) \
                               )
