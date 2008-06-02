@@ -64,7 +64,7 @@ conf_check_MM_X() {
     if /usr/bin/test ! -z "${MM_X_SYNC}" ; then
         IFS_SAVE=${IFS}
         IFS=,
-        for X_SYNC_ITEM in ${MM_X_SYNC} ; do 
+        for X_SYNC_ITEM in ${MM_X_SYNC} ; do
             if ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
                ! /bin/echo ${X_SYNC_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
                 mm_message_output err "error: MM_X_TV_SYNC='${MM_X_SYNC}' is not valid."
@@ -76,7 +76,7 @@ conf_check_MM_X() {
     if /usr/bin/test ! -z "${MM_X_REFRESH}" ; then
         IFS_SAVE=${IFS}
         IFS=,
-        for X_REFRESH_ITEM in ${MM_X_REFRESH} ; do 
+        for X_REFRESH_ITEM in ${MM_X_REFRESH} ; do
 
             if ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?$'                           > /dev/null 2>&1 && \
                ! /bin/echo ${X_REFRESH_ITEM} | /bin/grep -q -e '^[0-9][0-9]*\(\.[0-9]*\)\?-[0-9][0-9]*\(\.[0-9]*\)\?$' > /dev/null 2>&1 ; then
@@ -219,21 +219,29 @@ conf_default_MM_X() {
     if /usr/bin/test "${MM_X_OUTPUT_DVI}" = "none" &&
        /usr/bin/test "${MM_X_OUTPUT_VGA}" = "none" &&
        /usr/bin/test "${MM_X_OUTPUT_TV}"  = "none" ; then
-        mm_message_output err "error: one of 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' must be active." 
+        mm_message_output err "error: 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are all disabled."
     fi
     case ${MM_X_DRIVER} in
         nvidia)
             # Make sure no more than one output is enabled.
-            output_count=`/bin/echo "${MM_X_OUTPUT_DVI} ${MM_X_OUTPUT_VGA} ${MM_X_OUTPUT_TV}" | /bin/sed 's%none%%g' | /usr/bin/wc -w`
-            if /usr/bin/test ${output_count} -gt 1 ; then
-                mm_message_output err "error: only one of 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' can be active."
+            if /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" &&
+               /usr/bin/test ! "${MM_X_OUTPUT_VGA}" = "none" ; then
+                mm_message_output err "error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_VGA' are both enabled."
+            fi
+            if /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" &&
+               /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
+                mm_message_output err "error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled."
+            fi
+            if /usr/bin/test ! "${MM_X_OUTPUT_VGA}" = "none" &&
+               /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
+                mm_message_output err "error: 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are both enabled."
             fi
             ;;
         openchrome)
             # Make sure that DVI and TV outputs are not enabled at the same time.
             if /usr/bin/test ! "${MM_X_OUTPUT_DVI}" = "none" &&
                /usr/bin/test ! "${MM_X_OUTPUT_TV}"  = "none" ; then
-                mm_message_output err "error: only one of 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' can be active."
+                mm_message_output err "error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled."
             fi
             ;;
     esac
