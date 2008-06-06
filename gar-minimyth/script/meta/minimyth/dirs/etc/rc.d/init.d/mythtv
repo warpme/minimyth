@@ -68,7 +68,7 @@ start() {
         mm_url_mount "${MM_THEMECACHE_URL}" "/home/minimyth/.mythtv/themecache"
     fi
 
-    # Configure MythDVD ripping.
+    # Configure MythVideo DVD ripping.
     # Since mythfrontend is run as user 'minimyth', mtd is run as user 'minimyth'.
     # As a result, it is user 'minimyth' that must have the required read-write access.
     if /usr/bin/test -n "${MM_MEDIA_DVD_RIP_MOUNTPOINT}" && /usr/bin/test -n "${MM_MEDIA_DVD_RIP_URL}" ; then
@@ -136,7 +136,7 @@ start() {
 
     # Delete disabled plugins.
     if /usr/bin/test "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "no" ; then
-        /bin/sed -i -e 's%<depends>mythmusic mythdvd mytharchive mythburn</depends>%<depends>disabled</depends>%' \
+        /bin/sed -i -e 's%<depends>mythmusic mythvideo mytharchive mythburn</depends>%<depends>disabled</depends>%' \
             /usr/share/mythtv/mainmenu.xml
     fi
     if /usr/bin/test "${MM_PLUGIN_BROWSER_ENABLED}"     = "no" ; then
@@ -145,11 +145,6 @@ start() {
         /bin/rm -rf /usr/share/mythtv/mythbookmarkmanager*
         /bin/rm -rf /usr/share/mythtv/browser*
         /bin/rm -rf /usr/share/mythtv/mythbrowser*
-    fi
-    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"         = "no" ; then
-        /bin/rm -rf /usr/lib/mythtv/plugins/libmythdvd.so
-        /bin/rm -rf /usr/share/mythtv/dvd*
-        /bin/rm -rf /usr/share/mythtv/mythdvd*
     fi
     if /usr/bin/test "${MM_PLUGIN_GALLERY_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythgallery.so
@@ -198,8 +193,7 @@ start() {
     fi
 
     # Check for libdvdcss.so.2
-    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"     = "yes" || \
-       /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}"   = "yes" ; then
+    if /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}" = "yes" ; then
         found=0
         if /usr/bin/test -e "/etc/ld.so.conf" ; then
             for dir in `/bin/cat /etc/ld.so.conf` ; do

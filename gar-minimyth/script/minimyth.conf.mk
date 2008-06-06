@@ -7,10 +7,8 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter 0.20        ,$(mm_MYTH_VERSION)),0.20.2                        ) \
-                                $(if $(filter 0.20-softpad,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
-                                $(if $(filter 0.21        ,$(mm_MYTH_VERSION)),0.21.0                        ) \
-                                $(if $(filter trunk       ,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
+                                $(if $(filter 0.21 ,$(mm_MYTH_VERSION)),0.21.0                        ) \
+                                $(if $(filter trunk,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 53
 mm_VERSION_EXTRA          ?= $(strip \
@@ -34,13 +32,12 @@ mm_DEBUG_BUILD            ?= no
 # 'sis', 'via', 'vmware' and 'other'.
 mm_CHIPSETS               ?= ati intel nvidia via other
 # Lists the software to be supported.
-# Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythdvd',
-# 'mythgallery', 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream',
-# 'mythvideo', 'mythweather', 'mythzoneminder', 'mplayer', 'vlc' (experimental
-# and may be removed in the future without warning), 'xine', 'perl',
-# 'transcode', 'mame', 'wiimote' and 'debug'.
-mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 0.21),mythbrowser) \
-                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
+# Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
+# 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
+# 'mythweather', 'mythzoneminder', 'mplayer', 'vlc' (experimental and may be
+# removed in the future without warning), 'xine', 'perl', 'transcode', 'mame',
+# 'wiimote' and 'debug'.
+mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.21),mythbrowser) \
                              mythgallery \
                              mythgame \
                              mythmusic \
@@ -49,7 +46,7 @@ mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 
                              mythstream \
                              mythvideo \
                              mythweather \
-                             $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
+                             mythzoneminder \
                              mplayer \
                              vlc \
                              xine \
@@ -106,7 +103,7 @@ mm_KERNEL_VERSION         ?= 2.6.23
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.20', '0.20-softpad', '0.21', and 'trunk'.
+# Valid values are '0.21', and 'trunk'.
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '71.86.04' (legacy), '96.43.05' (legacy), '169.12' and '173.14.05'.
