@@ -16,46 +16,13 @@ fi
 # Turn off any external equipment.
 /usr/bin/mm_external power_off
 
-# If MPlayer is running, then exit it.
-mm_x_xmacroplay 'mplayer' 'KeyStr Escape\n'
-if /usr/bin/test -n "`/bin/pidof mplayer`" ; then
-    /bin/kill `/bin/pidof mplayer`
-fi
-while /usr/bin/test -n "`/bin/pidof mplayer`" ; do
-    /bin/sleep 1
-done
+# Stop all X applications, except mythfrontend and applications started by xinit.
+mm_x_applications_exit ':everything'
+mm_x_applications_kill ':everything'
+mm_x_applications_dead ':everything'
 
-# If VLC is running, then exit it.
-mm_x_xmacroplay 'vlc' 'KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n'
-if /usr/bin/test -n "`/bin/pidof vlc`" ; then
-    /bin/kill `/bin/pidof vlc`
-fi
-while /usr/bin/test -n "`/bin/pidof vlc`" ; do
-    /bin/sleep 1
-done
-
-# If Xine is running, then exit it.
-mm_x_xmacroplay 'xine' 'KeyStr Q\n'
-if /usr/bin/test -n "`/bin/pidof xine`" ; then
-    /bin/kill `/bin/pidof xine`
-fi
-while /usr/bin/test -n "`/bin/pidof xine`" ; do
-    /bin/sleep 1
-done
-
-# If any game emulators are running, then exit them.
-/usr/bin/mm_game_exit
-
-# If mythfrontend is running, then return it to the Main Menu using the Network Control interface.
-if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
-    timeout=10
-    while /usr/bin/test ${timeout} -gt 0 && \
-          /usr/bin/test ! "`mm_mythfrontend_networkcontrol 'query location'`" = "MainMenu" ; do
-        mm_mythfrontend_networkcontrol "jump mainmenu" > /dev/null 2>&1
-        /bin/sleep 1
-        timeout=$((${timeout} - 1))
-    done
-fi
+# Return mythfrontend to its main menu.
+mm_x_applications_exit 'mythfrontend'
 
 # Stop LCDd because it can stop working as a result of suspend.
 while /usr/bin/test -n "`/bin/pidof LCDd`" ; do

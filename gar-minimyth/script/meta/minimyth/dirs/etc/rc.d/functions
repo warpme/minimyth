@@ -1516,21 +1516,89 @@ mm_x_xmacroplay() {
     fi
 }
 
-mm_x_xmacroplay_exit_program() {
-    program="$1"
-    command="$2"
+# Expand the applications list.
+#
+# The applications list contains names of applications or names of application
+# groups. Application groups are identified by preceeding them with a ':'. The
+# following groups:
+#   :everything
+#   :browser
+#   :game
+#   :player
+#   :terminal
+mm_x_applications_list() {
+    local applications="$@"
 
-    if /usr/bin/test -n "`/bin/pidof ${program}`" ; then
-        mm_x_xmacroplay "${program}" "${command}"
-        if /usr/bin/test -n "`/bin/pidof ${program}`" ; then
-            mm_message_output error "failed to exit '${program}'."
+    applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :everything % :browser :game :player :terminal %g'`
+    applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :browser % mythbrowser %g'`
+    applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :game % fceu jzintv mame mess mednafen stella VisualBoyAdvance zsnes %g'`
+    applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :player % mplayer mythtv vlc xine %g'`
+    applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :terminal % rxvt %g'`
+
+    /bin/echo "${applications}"
+}
+
+# Exit all applications in the list, assuming that we know how.
+mm_x_applications_exit() {
+    local applications=`mm_x_applications_list "$@"`
+
+    local application
+    local timeout
+    local window
+    local xmacro
+
+    for application in ${applications} ; do
+        if /usr/bin/test -n "`/bin/pidof ${application}`" ; then
+            window=""
+            xmacro=""
+            case "${application}" in
+                # Myth
+                mythfrontend)
+                    # If mythfrontend is running, then return it to the Main Menu using the Network Control interface.
+                    if /usr/bin/test -n "`/bin/pidof mythfrontend`" ; then
+                        timeout=10
+                        while /usr/bin/test ${timeout} -gt 0 && \
+                              /usr/bin/test ! "`mm_mythfrontend_networkcontrol 'query location'`" = "MainMenu" ; do
+                            mm_mythfrontend_networkcontrol "jump mainmenu" > /dev/null 2>&1
+                            /bin/sleep 1
+                            timeout=$((${timeout} - 1))
+                        done
+                    fi
+                    ;;
+                # Browsers
+                mythbrowser)      xmacro='KeyStr Escape\n'                                                                     ;;
+                # Players
+                mplayer)          xmacro='KeyStr Escape\n'                                                                     ;;
+                mythtv)           xmacro='KeyStr Escape\n'                                                                     ;;
+# Does not work because the window name is not 'vlc'.
+#               vlc)              xmacro='KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n' ;;
+                xine)             xmacro='KeyStr Q\n'                                                                          ;;
+                # Games
+                fceu)             xmacro='KeyStr Escape\n'                                                                     ;;
+                jzintv)           xmacro='KeyStr F1\n'                                                                         ;;
+                mame)             xmacro='KeyStr Escape\n'                                                                     ;;
+                mess)             xmacro='KeyStr Escape\n'                                                                     ;;
+                mednafen)         xmacro='KeyStr Escape\n'                                                                     ;;
+                stella)           xmacro='KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n' ;;
+                VisualBoyAdvance) xmacro='KeyStr Escape\n'                                                                     ;;
+                zsnes)            xmacro='KeyStr Escape\n KeyStr Q\n KeyStr Return\n'                                          ;;
+                # Terminals
+# Does not work because rxvt does not have a key sequence to quit.  Also, the window is named 'xterm' not 'rxvt'.
+#               rxvt)             xmacro=''                                                                                    ;;
+            esac
+            if /usr/bin/test -n "${xmacro}" ; then
+                mm_x_xmacroplay "${application}" "${xmacro}"
+                if /usr/bin/test -n "`/bin/pidof ${application}`" ; then
+                    mm_message_output error "failed to exit '${application}'."
+                fi
+            fi
         fi
-    fi
+    done
 }
 
 # Kill all applications in the list.
 mm_x_applications_kill() {
-    local applications="$@"
+    local applications=`mm_x_applications_list "$@"`
 
     local application
 
@@ -1544,9 +1612,9 @@ mm_x_applications_kill() {
     return 0
 }
 
-# Wait for all applications in the list to die.
-mm_x_applications_die() {
-    local applications="$@"
+# Wait until all applications in the list are dead.
+mm_x_applications_dead() {
+    local applications=`mm_x_applications_list "$@"`
 
     local application
     local dead
@@ -1629,28 +1697,23 @@ mm_x_stop() {
         return 0
     fi
 
-    # Create the list of known X applications.
+    # Exit X applications that are known not to be started by xinit
+    mm_x_applications_exit ':everything'
+    mm_x_applications_kill ':everything'
+    mm_x_applications_dead ':everything'
+
+    # Return mythfrontend to the main menu
+    mm_x_applications_exit 'mythfrontend'
+
+    # Create the list of X applications that may have been started by xinit.
     applications="${applications} ${MM_X_MYTH_PROGRAM}"
-    applications="${applications} fceu"
-    applications="${applications} jzintv"
-    applications="${applications} mame"
-    applications="${applications} mednafen"
-    applications="${applications} mplayer"
-    applications="${applications} mythbrowser"
     applications="${applications} mythfrontend"
-    applications="${applications} mythtv"
     applications="${applications} mythwelcome"
     applications="${applications} ratpoison"
-    applications="${applications} rxvt"
-    applications="${applications} stella"
-    applications="${applications} VisualBoyAdvance"
-    applications="${applications} vlc"
     applications="${applications} X"
     applications="${applications} x11vnc"
-    applications="${applications} xine"
     applications="${applications} xinit"
     applications="${applications} xscreensaver"
-    applications="${applications} zsnes"
 
     # Create the list of known X applications not keeping X alive, kill them and wait for them to die
     applications=`/bin/echo "${applications}" \
@@ -1662,31 +1725,31 @@ mm_x_stop() {
         | /bin/grep -v 'X'                    \
         | /bin/grep -v "${MM_X_MYTH_PROGRAM}"`
     mm_x_applications_kill ${applications}
-    mm_x_applications_die  ${applications}
+    mm_x_applications_dead ${applications}
 
     # Create the list of xlsclients X applications not keeping X alive, kill them and wait for them to die
     #   All of these should have been killed when we killed the list of known X applications not keeping X alive.
     #   However, there may be some unknown X applications not keeping X alive that we need to kill.
-    applications=`/usr/bin/xlsclients -display 0:0 -a 2> /dev/null \
-        | /bin/sed -e 's%  *% %g'                                  \
-        | /usr/bin/cut -d ' ' -f 2                                 \
-        | /bin/sed -e 's%^.*/%%'                                   \
-        | /usr/bin/sort                                            \
-        | /usr/bin/uniq                                            \
-        | /bin/grep -v 'xinit'                                     \
-        | /bin/grep -v 'X'                                         \
+    applications=`/usr/bin/xlsclients -display ':0.0' -a 2> /dev/null \
+        | /bin/sed -e 's%  *% %g'                                     \
+        | /usr/bin/cut -d ' ' -f 2                                    \
+        | /bin/sed -e 's%^.*/%%'                                      \
+        | /usr/bin/sort                                               \
+        | /usr/bin/uniq                                               \
+        | /bin/grep -v 'xinit'                                        \
+        | /bin/grep -v 'X'                                            \
         | /bin/grep -v "${MM_X_MYTH_PROGRAM}"`
     mm_x_applications_kill ${applications}
-    mm_x_applications_die  ${applications}
+    mm_x_applications_dead ${applications}
 
     # Create the list of the known X application keeping X alive, kill them and wait for them to die.
     applications="${MM_X_MYTH_PROGRAM}"
     mm_x_applications_kill ${applications}
-    mm_x_applications_die  ${applications}
+    mm_x_applications_dead ${applications}
 
     # Create the list of remaining known X applications and wait for them to die.
     applications="xinit X"
-    mm_x_applications_die  ${applications}
+    mm_x_applications_dead ${applications}
 
     return 0
 }
