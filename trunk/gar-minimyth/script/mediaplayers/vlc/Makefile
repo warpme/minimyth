@@ -1,7 +1,7 @@
 GARNAME = vlc
-GARVERSION = snapshot-20080521
+GARVERSION = snapshot-20080606
 CATEGORIES = mediaplayers
-MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080521-0014/
+MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080606-0114/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-patch.gar
 LICENSE = GPL2
