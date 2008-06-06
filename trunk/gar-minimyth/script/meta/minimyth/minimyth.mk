@@ -343,7 +343,6 @@ mm-check:
 	@for software in $(mm_SOFTWARE) ; do \
 		if [ ! "$${software}" = "mythaudio"      ] && \
 		   [ ! "$${software}" = "mythbrowser"    ] && \
-		   [ ! "$${software}" = "mythdvd"        ] && \
 		   [ ! "$${software}" = "mythgallery"    ] && \
 		   [ ! "$${software}" = "mythgame"       ] && \
 		   [ ! "$${software}" = "mythmusic"      ] && \
@@ -364,25 +363,8 @@ mm-check:
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
-		if [ "$(mm_MYTH_VERSION)" = "0.20"         ] || \
-		   [ "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
-			if [ "$${software}" = "mythzoneminder" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-		fi ; \
-		if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
-			if [ "$${software}" = "mythdvd" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-		fi ; \
-		if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] ; then \
+		if [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] ; then \
 			if [ "$${software}" = "mythbrowswer" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-			if [ "$${software}" = "mythstream" ] ; then \
 				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
 			fi ; \
 		fi ; \
@@ -408,9 +390,7 @@ mm-check:
 		exit 1 ; \
 	fi
 	@echo "    mm_MYTH_VERSION"
-	@if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
+	@if [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "trunk"        ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
@@ -530,7 +510,7 @@ mm-copy:
 	@mkdir -p $(mm_ROOTFSDIR)$(extras_licensedir)
 	@cp -pdR $(DESTDIR)$(extras_licensedir)/* $(mm_ROOTFSDIR)$(extras_licensedir)
 	@# Copy the QT mysql plugin needed by MythTV.
-	@$(if $(filter 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), \
+	@$(if $(filter 0.21,$(mm_MYTH_VERSION)), \
 		mkdir -p $(mm_ROOTFSDIR)$(qt3prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qt3prefix)/plugins ; \
 	)
