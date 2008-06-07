@@ -3,6 +3,7 @@ GARVERSION = 2.6.1
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/faac/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-mp4ff.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -28,5 +29,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfaad.la
-	@cp -f $(WORKSRC)/common/mp4ff/mp4ff_int_types.h $(DESTDIR)$(includedir)
+	@rm -f $(DESTDIR)$(libdir)/libmp4ff.la
 	@$(MAKECOOKIE)
