@@ -32,3 +32,5 @@ INSTALL_ARGS   = \
 	usrsbinexecdir=$(sbindir)
 
 include ../../gar.mk
+
+PATH := $(PATH):$(build_DESTDIR)$(build_elibdir)/udev
