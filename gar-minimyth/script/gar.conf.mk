@@ -173,6 +173,7 @@ build_GARCH_FAMILY := $(strip $(subst x86-64,x86-64, \
 build_NODEPEND += kernel/linux-headers devel/glibc
 
 # This is for foo-config chaos
+PKG_CONFIG_PATH = 
 PKG_CONFIG_LIBDIR = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig
 PKG_CONFIG_SYSROOT_DIR = $(DESTDIR)
 PERLLIB = 
@@ -194,7 +195,7 @@ MANIFEST_ENV += $(foreach TTT,$(STAGE_EXPORTS),$(TTT)="$($(TTT))")
 # Global environment
 export GARBUILD
 export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH LD_LIBRARY_PATH #LD_PRELOAD
-export PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR
+export PKG_CONFIG_PATH PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR
 export PERLLIB PERL5LIB
 
 GARCHIVEROOT ?= $(mm_HOME)/source
