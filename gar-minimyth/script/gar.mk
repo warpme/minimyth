@@ -199,7 +199,6 @@ GAR_SYSTEM_PATH := $(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebi
 PATH := $(if $(wildcard $(build_DESTDIR)$(build_rootdir)/bin-build-system),$(GAR_SYSTEM_PATH),$(GAR_SYSTEM_PATH):$(BUILD_SYSTEM_PATH))
 # this causes pain for all involved once glibc is built.
 LD_LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql
-LD_RUN_PATH =
 # or at least it did before we had DESTDIR and fully-munged
 # builddeps.  The following may be more of a hindrance than a
 # help nowadays:
