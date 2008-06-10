@@ -1,5 +1,5 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.14
+GARVERSION = 2.13.1.1
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14/
 DISTFILES = $(DISTNAME).tar.bz2
