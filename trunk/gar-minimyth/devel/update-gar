@@ -264,7 +264,9 @@ sed -i "s%^GARHOST *= *\$(\$(DESTIMG)_GARHOST)%&\nGARCH_FAMILY = \$(\$(DESTIMG)_
 # # We use the Linux From Scratch patches instead.
 # sed -i "s%^LD_LIBRARY_PATH *:=.*$%#&%g" ${SCRIPT_DIR}/gar.mk
 
-sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%\1 = ${_LD_LIBRARY_PATH}%g" ${SCRIPT_DIR}/gar.mk
+# Set LD_LIBRARY_PATH and unset LD_RUN_PATH
+sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%\1 = ${_LD_LIBRARY_PATH}\nLD_RUN_PATH =%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^\(export .* LD_LIBRARY_PATH \)\(.*\)$%\1LD_RUN_PATH \2%" ${SCRIPT_DIR}/gar.conf.mk
 
 # Change PATCHDIR
 sed -i "s%^\(#*PATCHDIR\) *?=.*$%\1 ?= ${PATCHDIR}%g" ${SCRIPT_DIR}/gar.lib.mk
