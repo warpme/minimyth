@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncurses lib/zlib utils/procps disk/e2fsprogs system/udev
+DEPENDS = lang/c lib/ncursesw lib/zlib utils/procps disk/e2fsprogs system/udev
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
