@@ -1,12 +1,7 @@
 GARNAME = xorg-server
-GARVERSION_TYPE = git
-GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	7982aaa7f071f9a21ad402da872d5328bd7e51ff , \
-	1.4 ))
+GARVERSION = 1.4.1
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	git://anongit.freedesktop.org/git/xorg/xserver/ , \
-	$(XORG_MASTER_SITES) ))
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-composite.patch \
@@ -151,13 +146,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
