@@ -1,7 +1,7 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.13.1.1
+GARVERSION = 2.14
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.13/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -24,6 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-use-tty-group \
 	--with-fsprobe=volume_id \
 	--with-gnu-ld
+
 BUILD_ARGS     = \
 	usrbinexecdir=$(bindir) \
 	usrsbinexecdir=$(sbindir)
