@@ -161,13 +161,9 @@ build_GARCH := $(strip $(subst x86_64,x86-64, \
         $(shell arch) \
     )))
 build_GARHOST := $(GARBUILD)
-build_GARCH_FAMILY := $(strip $(subst x86-64,x86-64, \
-    $(if $(filter-out unknown,$(shell uname -i)), \
-        $(shell uname -i) \
-    , \
-        $(if $(filter i386 i486 i586 i686 c3 c3_2,$(shell echo $(build_GARHOST) | cut -d- -f1)),i386  ) \
-        $(if $(filter x86_64 athlon64            ,$(shell echo $(build_GARHOST) | cut -d- -f1)),x86_64) \
-    )))
+build_GARCH_FAMILY := $(strip \
+	$(if $(filter i386 i486 i586 i686,$(build_GARCH)),i386  ) \
+	$(if $(filter x86-64             ,$(build_GARCH)),x86_64))
 
 # Don't build these packages as in the build image
 build_NODEPEND += kernel/linux-headers devel/glibc
