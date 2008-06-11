@@ -1529,11 +1529,19 @@ mm_x_xmacroplay() {
 mm_x_applications_list() {
     local applications="$@"
 
+    # Remove line breaks and convert all control characters to spaces.
+    applications=`/bin/echo  "${applications}"  | /bin/sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'`
+    applications=`/bin/echo  "${applications}"  | /bin/sed -e 's%[[:cntrl:]]% %g'`
+
+    # Convert application groups to application names.
     applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :everything % :browser :game :player :terminal %g'`
     applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :browser % mythbrowser %g'`
     applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :game % fceu jzintv mame mess mednafen stella VisualBoyAdvance zsnes %g'`
     applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :player % mplayer mythtv vlc xine %g'`
     applications=`/bin/echo " ${applications} " | /bin/sed -e 's% :terminal % rxvt %g'`
+
+    # Clean up spaces.
+    applications=`/bin/echo  "${applications}"  | /bin/sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
 
     /bin/echo "${applications}"
 }
