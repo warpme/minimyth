@@ -409,6 +409,13 @@ mm-check:
 		exit 1 ; \
 	fi
 	@echo "  build parameters ... done"
+	@# Check build system parameters.
+	@echo "  build system parameters ..."
+	@if [ ! "$(build_GARCH_FAMILY)" = "i386"   ] && \
+            [ ! "$(build_GARCH_FAMILY)" = "x86_64" ] ; then \
+		echo "error: build_GARCH_FAMILY=\"$(build_GARCH_FAMILY)\" is an invalid value." ; \
+		exit 1 ; \
+	fi
 	@# Check distribution parameters.
 	@echo "  distribution parameters ..."
 	@echo "    mm_DISTRIBUTION_RAM"
