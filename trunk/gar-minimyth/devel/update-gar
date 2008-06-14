@@ -21,13 +21,9 @@ build_GARCH='$(strip $(subst x86_64,x86-64, \\\
     , \\\
         $(shell arch) \\\
     )))'
-build_GARCH_FAMILY='$(strip $(subst x86-64,x86-64, \\\
-    $(if $(filter-out unknown,$(shell uname -i)), \\\
-        $(shell uname -i) \\\
-    , \\\
-        $(if $(filter i386 i486 i586 i686 c3 c3_2,$(shell echo $(build_GARHOST) | cut -d- -f1)),i386  ) \\\
-        $(if $(filter x86_64 athlon64            ,$(shell echo $(build_GARHOST) | cut -d- -f1)),x86_64) \\\
-    )))'
+build_GARCH_FAMILY='$(strip \\\
+    $(if $(filter i386 i486 i586 i686,$(build_GARCH)),i386  ) \\\
+    $(if $(filter x86-64             ,$(build_GARCH)),x86_64))'
 main_GARHOST='$(mm_GARHOST)'
 main_GARCH='$(mm_GARCH)'
 main_GARCH_FAMILY='$(mm_GARCH_FAMILY)'
@@ -53,6 +49,7 @@ main_CXXFLAGS='$(main_CFLAGS)'
 main_LDFLAGS='-Wl,--as-needed'
 GAR_SYSTEM_PATH='$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
 _LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql'
+_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql$(strip $(if $(filter i386,$(build_GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(build_GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))'
 _PKG_CONFIG_LIBDIR='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig'
 _PKG_CONFIG_SYSROOT_DIR='$(DESTDIR)'
 
@@ -255,17 +252,18 @@ sed -i "s%^#*\(main_CXXFLAGS\) *+=.*$%\1 += ${main_CXXFLAGS}%g" ${SCRIPT_DIR}/ga
 sed -i "s%^#*\(main_LDFLAGS\) *+=.*$%\1 += ${main_LDFLAGS}%g" ${SCRIPT_DIR}/gar.conf.mk
 
 # Add GARCH_FAMILY attribute.
-sed -i "s%^build_GARHOST *:=.*$%&\nbuild_GARCH_FAMILY := ${build_GARCH_FAMILY}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^main_GARHOST *?=.*$%&\nmain_GARCH_FAMILY ?= ${main_GARCH_FAMILY}%g" ${SCRIPT_DIR}/gar.conf.mk
-sed -i "s%^\$(DESTIMG)_GARHOST *?= *\$(main_GARHOST)%&\n\$(DESTIMG)_GARCH_FAMILY ?= \$(main_GARCH_FAMILY)%g" ${SCRIPT_DIR}/gar.mk
-sed -i "s%^GARHOST *= *\$(\$(DESTIMG)_GARHOST)%&\nGARCH_FAMILY = \$(\$(DESTIMG)_GARCH_FAMILY)%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^build_GARHOST *:=.*$%build_GARCH_FAMILY := ${build_GARCH_FAMILY}\n&%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^main_GARHOST *?=.*$%main_GARCH_FAMILY ?= ${main_GARCH_FAMILY}\n&%g" ${SCRIPT_DIR}/gar.conf.mk
+sed -i "s%^\$(DESTIMG)_GARHOST *?= *\$(main_GARHOST)%\$(DESTIMG)_GARCH_FAMILY ?= \$(main_GARCH_FAMILY)\n&%g" ${SCRIPT_DIR}/gar.mk
+sed -i "s%^GARHOST *= *\$(\$(DESTIMG)_GARHOST)%GARCH_FAMILY = \$(\$(DESTIMG)_GARCH_FAMILY)\n&%g" ${SCRIPT_DIR}/gar.mk
 
 # # Disable LD_LIBRARY_PATH
 # # We use the Linux From Scratch patches instead.
 # sed -i "s%^LD_LIBRARY_PATH *:=.*$%#&%g" ${SCRIPT_DIR}/gar.mk
 
-# Set LD_LIBRARY_PATH.
-sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%\1 = ${_LD_LIBRARY_PATH}%g" ${SCRIPT_DIR}/gar.mk
+# Set LD_LIBRARY_PATH and LIBRARY_PATH.
+sed -i "s%^\(LD_LIBRARY_PATH\) *:=.*$%LIBRARY_PATH = ${_LIBRARY_PATH}\n\1 = ${_LD_LIBRARY_PATH}%g" ${SCRIPT_DIR}/gar.mk
+sed -i '/^export .* LD_LIBRARY_PATH /s% LD_LIBRARY_PATH % LIBRARY_PATH LD_LIBRARY_PATH %' ${SCRIPT_DIR}/gar.conf.mk
 
 # Change PATCHDIR
 sed -i "s%^\(#*PATCHDIR\) *?=.*$%\1 ?= ${PATCHDIR}%g" ${SCRIPT_DIR}/gar.lib.mk

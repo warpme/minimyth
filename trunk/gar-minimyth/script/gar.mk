@@ -79,8 +79,8 @@ $(DESTIMG)_DESTDIR ?= $(main_DESTDIR)
 
 # Default image architecture
 $(DESTIMG)_GARCH ?= $(main_GARCH)
-$(DESTIMG)_GARHOST ?= $(main_GARHOST)
 $(DESTIMG)_GARCH_FAMILY ?= $(main_GARCH_FAMILY)
+$(DESTIMG)_GARHOST ?= $(main_GARHOST)
 
 # Default image tools
 $(DESTIMG)_compiler_prefix ?= $(main_compiler_prefix)
@@ -146,8 +146,8 @@ DESTDIR = $($(DESTIMG)_DESTDIR)
 
 # Architecture
 GARCH = $($(DESTIMG)_GARCH)
-GARHOST = $($(DESTIMG)_GARHOST)
 GARCH_FAMILY = $($(DESTIMG)_GARCH_FAMILY)
+GARHOST = $($(DESTIMG)_GARHOST)
 
 # GARTARGET may be exported from a package with an arbitrary value to indicate
 # that dependencies of that package which recognize a "target" platform, such
@@ -198,6 +198,7 @@ BUILD_SYSTEM_PATH := $(if $(BUILD_SYSTEM_PATH),$(BUILD_SYSTEM_PATH),$(PATH))
 GAR_SYSTEM_PATH := $(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system
 PATH := $(if $(wildcard $(build_DESTDIR)$(build_rootdir)/bin-build-system),$(GAR_SYSTEM_PATH),$(GAR_SYSTEM_PATH):$(BUILD_SYSTEM_PATH))
 # this causes pain for all involved once glibc is built.
+LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql$(strip $(if $(filter i386,$(build_GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(build_GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))
 LD_LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql
 # or at least it did before we had DESTDIR and fully-munged
 # builddeps.  The following may be more of a hindrance than a

@@ -150,8 +150,8 @@ build_CPP = $(build_compiler_prefix)cpp
 
 # GARCH and GARHOST for main.  Override these for cross-compilation
 main_GARCH ?= $(mm_GARCH)
-main_GARHOST ?= $(mm_GARHOST)
 main_GARCH_FAMILY ?= $(mm_GARCH_FAMILY)
+main_GARHOST ?= $(mm_GARHOST)
 
 # GARCH and GARHOST for build.  Do not change these.
 build_GARCH := $(strip $(subst x86_64,x86-64, \
@@ -160,10 +160,10 @@ build_GARCH := $(strip $(subst x86_64,x86-64, \
     , \
         $(shell arch) \
     )))
-build_GARHOST := $(GARBUILD)
 build_GARCH_FAMILY := $(strip \
-	$(if $(filter i386 i486 i586 i686,$(build_GARCH)),i386  ) \
-	$(if $(filter x86-64             ,$(build_GARCH)),x86_64))
+    $(if $(filter i386 i486 i586 i686,$(build_GARCH)),i386  ) \
+    $(if $(filter x86-64             ,$(build_GARCH)),x86_64))
+build_GARHOST := $(GARBUILD)
 
 # Don't build these packages as in the build image
 build_NODEPEND += kernel/linux-headers devel/glibc
@@ -190,7 +190,7 @@ MANIFEST_ENV += $(foreach TTT,$(STAGE_EXPORTS),$(TTT)="$($(TTT))")
 
 # Global environment
 export GARBUILD
-export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH LD_LIBRARY_PATH #LD_PRELOAD
+export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH LIBRARY_PATH LD_LIBRARY_PATH #LD_PRELOAD
 export PKG_CONFIG_PATH PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR
 export PERLLIB PERL5LIB
 

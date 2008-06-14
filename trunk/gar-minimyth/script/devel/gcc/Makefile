@@ -8,6 +8,7 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
+PATCHFILES += $(DISTNAME)-disable_multilib_i386_linux64.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
