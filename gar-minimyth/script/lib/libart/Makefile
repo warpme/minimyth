@@ -30,6 +30,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
 install-cross:
 	@if test -e $(WORKSRC)/gen_art_config ; then cp -f $(WORKSRC)/gen_art_config $(DESTDIR)$(bindir)/libart-gen_art_config ; fi
 	@$(MAKECOOKIE)
