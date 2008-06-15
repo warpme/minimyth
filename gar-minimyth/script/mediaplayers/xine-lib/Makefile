@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.12
+GARVERSION = 1.1.13
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/flac lib/freetype lib/libcdio lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -79,7 +79,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	$(if $(filter i386,$(GARCH_FAMILY)),--without-pic) \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
-	--without-external-ffmpeg \
+	--with-external-ffmpeg \
 	--with-x \
 	--without-zlib-prefix \
 	--without-xv-path \
