@@ -40,11 +40,12 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--disable-python-bindings \
+	--disable-java-bindings \
 	--enable-nls \
 	--disable-rpath \
 	--disable-hal \
 	--disable-dbus \
-	--disable-old-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
 	--disable-gprof \
@@ -97,8 +98,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gme \
 	--enable-mad \
 	--disable-id3tag \
-	--enable-ffmpeg \
-	--disable-ffmpegaltivec \
+	--enable-avcodec \
+	--enable-avformat \
+	--disable-swscale \
+	--disable-imgresample \
+	--enable-postproc \
 	--enable-faad \
 	--disable-twolame \
 	--disable-quicktime \
@@ -184,26 +188,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vlc \
 	--disable-activex \
 	--disable-mozilla \
-	--disable-python-bindings \
-	--disable-java-bindings \
 	--disable-testsuite \
 	--without-contrib \
 	--with-gnu-ld \
 	--with-x \
 	--with-tuning=$(mm_ARCH) \
 	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
-	--without-ffmpeg-mp3lame \
-	--without-ffmpeg-faac \
-	--without-ffmpeg-dts \
-	--without-ffmpeg-vorbis \
-	--without-ffmpeg-theora \
-	--without-ffmpeg-ogg \
-	--with-ffmpeg-zlib \
-	--without-ffmpeg-amrnb \
-	--without-ffmpeg-amrwb \
-	--without-ffmpeg-x264 \
-	--without-ffmpeg-a52 \
-	--with-ffmpeg-config-path=$(DESTDIR)$(bindir) \
 	--without-a52-fixed \
 	--with-sdl-config-path=$(DESTDIR)$(bindir) \
 	--with-xml2-config-path=$(DESTDIR)$(bindir)
@@ -228,7 +218,6 @@ endif
 include ../../gar.mk
 
 pre-configure:
-	@#cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
 	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
