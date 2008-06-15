@@ -116,6 +116,9 @@ DEPENDS = \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer \
 		mediaplayers/mplayer-resumer) \
+	$(if $(filter mplayer-svn,$(mm_SOFTWARE)), \
+		mediaplayers/mplayer-svn \
+		mediaplayers/mplayer-resumer) \
 	$(if $(filter vlc,$(mm_SOFTWARE)), \
 		mediaplayers/vlc) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \
