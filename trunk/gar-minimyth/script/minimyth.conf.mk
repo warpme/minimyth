@@ -34,7 +34,8 @@ mm_CHIPSETS               ?= ati intel nvidia via other
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'mplayer', 'vlc' (experimental and may be
+# 'mythweather', 'mythzoneminder', 'mplayer', 'mplayer-svn' (experimental and
+# may be removed in the future without warning), 'vlc' (experimental and may be
 # removed in the future without warning), 'xine', 'perl', 'transcode', 'mame',
 # 'wiimote' and 'debug'.
 mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.21),mythbrowser) \
@@ -48,6 +49,7 @@ mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.21),mythbrowser)
                              mythweather \
                              mythzoneminder \
                              mplayer \
+                             mplayer-svn \
                              vlc \
                              xine \
                              perl \
