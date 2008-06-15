@@ -353,6 +353,7 @@ mm-check:
 		   [ ! "$${software}" = "mythweather"    ] && \
 		   [ ! "$${software}" = "mythzoneminder" ] && \
 		   [ ! "$${software}" = "mplayer"        ] && \
+		   [ ! "$${software}" = "mplayer-svn"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \
 		   [ ! "$${software}" = "perl"           ] && \
