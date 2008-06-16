@@ -8,6 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-gcc_4.3.patch
 PATCHFILES += $(DISTNAME)-x86_64_vdso_text_offset.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES += $(DISTNAME)-e1000e.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.3.patch $(DISTNAME)-unionfs_2.3.3.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
