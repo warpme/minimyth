@@ -100,7 +100,7 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-jpeg \
 	--disable-liblzo \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32dll,--disable-win32dll) \
-	--enable-qtx \
+	$(if $(filter i386,$(GARCH_FAMILY)),--enable-qtx     ,--disable-qtx     ) \
 	--enable-xanim \
 	--enable-real \
 	--disable-xvid \
