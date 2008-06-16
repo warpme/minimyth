@@ -39,6 +39,10 @@ FETCH_SVN = \
 	rm -rf $(strip $(3))                                            ; \
 	rm -rf $(strip $(3)).tar.bz2                                    ; \
 	svn co -r $(strip $(2)) $(strip $(1)) $(strip $(3))             ; \
+	if [ $$? -ne 0 ] ; then                                           \
+		rm -rf $(strip $(3))                                    ; \
+	fi                                                              ; \
+	ls -l . ; \
 	if [ ! -d $(strip $(3)) ] ; then                                  \
 		rm -rf $(strip $(3))                                    ; \
 		rm -rf $(strip $(3)).tar.bz2                            ; \
