@@ -3,7 +3,7 @@ GARVERSION = 1.5
 CATEGORIES = lib
 MASTER_SITES = http://developer.kde.org/~wheeler/files/src/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-acinclude_m4.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2
 
 DESCRIPTION = 
