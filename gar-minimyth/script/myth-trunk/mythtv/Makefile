@@ -90,6 +90,7 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx \
 	--disable-mac-bundle \
+	--runtime-prefix="$(prefix)" \
 	--without-bindings="perl,python" \
 	--enable-libfaad \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small)
