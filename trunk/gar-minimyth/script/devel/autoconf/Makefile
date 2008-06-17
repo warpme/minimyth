@@ -1,5 +1,5 @@
 GARNAME = autoconf
-GARVERSION = 2.61
+GARVERSION = 2.62
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -19,5 +19,3 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
-
-PARALLELMFLAGS := -j1

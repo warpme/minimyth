@@ -1,5 +1,5 @@
 GARNAME = gettext
-GARVERSION = 0.16.1
+GARVERSION = 0.17
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -17,7 +17,11 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-rpath \
 	--with-gnu-ld
+
+CONFIGURE_ENV = \
+	gl_cv_func_wcwidth_works="yes"
 
 include ../../gar.mk
 
