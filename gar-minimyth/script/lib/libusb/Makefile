@@ -3,7 +3,7 @@ GARVERSION = 0.1.12
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-bugfixes.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME)-bugfixes.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -26,12 +26,12 @@ include ../../gar.mk
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
+	@#sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
 	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
+	@#sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
 	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
+	@#sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
+	@#sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
 post-install:
