@@ -3,7 +3,7 @@ GARVERSION = 1.5.4.1
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libadd.patch
+PATCHFILES = $(DISTNAME)-autotools_fixes.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -22,7 +22,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-fbcondecor \
 	--disable-helper \
 	--disable-misc \
-	--disable-test \
 	--with-gnu-ld \
 	--without-gpm \
 	--with-mng \
@@ -31,7 +30,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-ttf-kernel \
 	--with-essential-prefix="$(if $(rootdir),$(rootdir),/)" \
 	--with-essential-bindir="$(ebindir)" \
-	--with-eseential-sbindir="$(esbindir)" \
+	--with-essential-sbindir="$(esbindir)" \
 	--with-essential-libdir="$(elibdir)" \
 	--with-themedir="$(sysconfdir)/splash"
 

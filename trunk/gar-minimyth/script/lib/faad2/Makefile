@@ -3,7 +3,7 @@ GARVERSION = 2.6.1
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/faac/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-mp4ff.patch
+PATCHFILES = $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME)-mp4ff.patch
 LICENSE = GPL2
 
 DESCRIPTION =
