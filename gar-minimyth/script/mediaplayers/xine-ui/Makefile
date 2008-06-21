@@ -32,6 +32,7 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@echo "`echo ac_cv_file_$(DESTDIR)$(libdir)/liblirc_client.a | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >  $(WORKSRC)/config.cache
 	@echo "ac_cv_path_CURL_CONFIG=no"                                                                >> $(WORKSRC)/config.cache
 	@echo "ac_cv_path_AALIB_CONFIG=no"                                                               >> $(WORKSRC)/config.cache

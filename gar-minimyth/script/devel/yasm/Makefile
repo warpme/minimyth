@@ -3,7 +3,6 @@ GARVERSION = 0.7.1
 CATEGORIES = devel
 MASTER_SITES = http://www.tortall.net/projects/yasm/releases/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = Artistic/BSD_2_Clause/BSD_3_Clause/LGPL2/GPL2
 
 DESCRIPTION = 
@@ -38,7 +37,3 @@ BUILD_ENV     = $(DEFAULT_ENV)
 INSTALL_ENV   = $(DEFAULT_ENV)
 
 include ../../gar.mk
-
-pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)

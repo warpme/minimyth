@@ -24,6 +24,10 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libfakeroot.la
 	@$(MAKECOOKIE)

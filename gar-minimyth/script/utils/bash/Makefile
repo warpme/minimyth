@@ -29,6 +29,10 @@ include ../../gar.mk
 patch-%: normal-patch-%
 	@$(MAKECOOKIE)
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@ln -fs bash $(DESTDIR)$(bindir)/sh
 	@$(MAKECOOKIE)

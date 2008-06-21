@@ -25,6 +25,10 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libasprintf.la
 	@rm -f $(DESTDIR)$(libdir)/libgettextlib.la

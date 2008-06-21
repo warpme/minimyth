@@ -1,3 +1,90 @@
+# $(call FIX_LIBTOOL_HARDCODE,<file_name>)
+# $(call FIX_LIBTOOL_HARDCODE,<dir_name>,<file_basename>)
+# Libtool hardcodes library paths. sed lines (1) and (2) disable this.
+# Once hardcoding is disabled, libtool uses LD_RUN_PATH. sed ine (3) disables this.
+# If the package is being built for the build environement, then hardcoding is not disabled,
+# since the build environment files are never relocated.
+FIX_LIBTOOL_HARDCODE = \
+	if [ ! "x$(DESTIMG)" = "xbuild" ] ; then                                                             \
+		if [ "x$(strip $(1))" = "x" ] ; then                                                         \
+			exit 1                                                                             ; \
+		fi                                                                                         ; \
+		if [ ! -e $(strip $(1)) ] ; then                                                             \
+			exit 1                                                                             ; \
+		fi                                                                                         ; \
+		if [ ! -f $(strip $(1)) ] && [ ! -d $(strip $(1)) ] ; then                                   \
+			exit 1                                                                             ; \
+		fi                                                                                         ; \
+		if [ -d $(strip $(1)) ] && [ "x$(strip $(2))" = "x" ] ; then                                 \
+			exit 1                                                                             ; \
+		fi                                                                                         ; \
+		file_name_list=''                                                                          ; \
+		if [ -f $(strip $(1)) ] ; then                                                               \
+			file_name_list=$(strip $(1))                                                       ; \
+		fi                                                                                         ; \
+		if [ -d $(strip $(1)) ] ; then                                                               \
+        		file_name_list=`find $(strip $(1)) -name $(strip $(2))`                            ; \
+		fi                                                                                         ; \
+		if [ "x$${file_name_list}" = "x" ] ; then                                                    \
+			exit 1                                                                             ; \
+		fi                                                                                         ; \
+		for file_name in $${file_name_list} ; do                                                     \
+			sed -i 's%^hardcode_into_libs=.*%hardcode_into_libs=no%'             $${file_name} ; \
+			sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $${file_name} ; \
+			sed -i 's%^runpath_var=.*%runpath_var=%'                             $${file_name} ; \
+		done                                                                                       ; \
+	fi
+# $(call FIX_LIBTOOL_LIBPATH,<file_name>)
+# $(call FIX_LIBTOOL_LIBPATH,<dir_name>,<file_basename>)
+# Libtool assumes a library search path that is wrong. sed line (1) fixes this.
+# Libtool assumes a library dlsearch path that is wrong. sed line (2) fixes this.
+FIX_LIBTOOL_LIBPATH = \
+	if [ "x$(strip $(1))" = "x" ] ; then                                                                                \
+		exit 1                                                                                                    ; \
+	fi                                                                                                                ; \
+	if [ ! -e $(strip $(1)) ] ; then                                                                                    \
+		exit 1                                                                                                    ; \
+	fi                                                                                                                ; \
+	if [ ! -f $(strip $(1)) ] && [ ! -d $(strip $(1)) ] ; then                                                          \
+		exit 1                                                                                                    ; \
+	fi                                                                                                                ; \
+	if [ -d $(strip $(1)) ] && [ "x$(strip $(2))" = "x" ] ; then                                                        \
+		exit 1                                                                                                    ; \
+	fi                                                                                                                ; \
+	file_name_list=''                                                                                                 ; \
+	if [ -f $(strip $(1)) ] ; then                                                                                      \
+		file_name_list=$(strip $(1))                                                                              ; \
+	fi                                                                                                                ; \
+	if [ -d $(strip $(1)) ] ; then                                                                                      \
+        	file_name_list=`find $(strip $(1)) -name $(strip $(2))`                                                   ; \
+	fi                                                                                                                ; \
+	if [ "x$${file_name_list}" = "x" ] ; then                                                                           \
+		exit 1                                                                                                    ; \
+	fi                                                                                                                ; \
+	libpath_l=`LANG=C $(CC) -print-search-dirs                                                                          \
+		| grep -e '^libraries:'                                                                                     \
+		| sed -e 's%^libraries: *%%' -e 's%=/%/%g' -e 's%:% %g'`                                                  ; \
+	libpath_l=`echo $${libpath_l} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                       ; \
+	libpath_r=""                                                                                                      ; \
+	libpath_r="$${libpath_r} $(elibdir)"                                                                              ; \
+	libpath_r="$${libpath_r} $(libdir)"                                                                               ; \
+	libpath_r="$${libpath_r} $(qt4libdir)"                                                                            ; \
+	libpath_r="$${libpath_r} $(qt3libdir)"                                                                            ; \
+	libpath_r="$${libpath_r} $(kdelibdir)"                                                                            ; \
+	libpath_r="$${libpath_r} $(libdir)/msql"                                                                          ; \
+	libpath_r="$${libpath_r} $(if $(filter build+i386  ,$(DESTIMG)+$(GARCH_FAMILY)),/lib32 /usr/lib32 /lib /usr/lib)" ; \
+	libpath_r="$${libpath_r} $(if $(filter build+x86_64,$(DESTIMG)+$(GARCH_FAMILY)),/lib64 /usr/lib64 /lib /usr/lib)" ; \
+	libpath_r=`echo $${libpath_r} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                       ; \
+	for file_name in $${file_name_list} ; do                                                                            \
+		sed -i "s%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=\'$${libpath_l}\'%"     $${file_name}     ; \
+		sed -i "s%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=\'$${libpath_r}\'%" $${file_name}     ; \
+	done
+# $(call FIX_LIBTOOL,<file_name>)
+# $(call FIX_LIBTOOL,<dir_name>,<file_basename>)
+FIX_LIBTOOL = \
+	$(call FIX_LIBTOOL_HARDCODE,$(strip $(1)),$(strip $(2))) ; \
+	$(call FIX_LIBTOOL_LIBPATH,$(strip $(1)),$(strip $(2)))
+
 # $(call FETCH_CVS, <cvs_root>, <cvs_module>, <cvs_date>, <file_base>)
 FETCH_CVS = \
 	mkdir -p $(PARTIALDIR)                                                                  ; \

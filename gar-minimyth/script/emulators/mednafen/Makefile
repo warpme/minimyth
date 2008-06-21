@@ -47,3 +47,7 @@ CONFIGURE_ENV = \
 	SDL_CONFIG=$(DESTDIR)$(bindir)/sdl-config
 	
 include ../../gar.mk
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)

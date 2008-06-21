@@ -95,21 +95,9 @@ DIRPATHS := \
 	--includedir=$(kdeincludedir)
 
 pre-configure:
-	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/acinclude.m4
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/admin/libtool.m4.in
-	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/configure
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/acinclude.m4
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/admin/libtool.m4.in
-	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/acinclude.m4
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/admin/libtool.m4.in
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/acinclude.m4
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/admin/libtool.m4.in
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC)/configure)
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC)/acinclude.m4)
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC)/admin/libtool.m4.in)
 	@$(MAKECOOKIE)
 
 install-cross:
