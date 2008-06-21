@@ -3,7 +3,6 @@ GARVERSION = 3.97
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME)-gtk_m4.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -37,7 +36,7 @@ extract-config.cache.$(GARCH_FAMILY):
 	@$(MAKECOOKIE)
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:

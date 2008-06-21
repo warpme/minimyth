@@ -22,6 +22,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
 install-su:
 	@install -m 755 -D $(WORKSRC)/src/su $(DESTDIR)$(bindir)/su
 	@$(MAKECOOKIE)

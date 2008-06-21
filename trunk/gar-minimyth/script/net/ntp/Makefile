@@ -35,6 +35,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
 install-cross:
 	@cp -f $(WORKSRC)/ntpdc/ntpdc-layout $(DESTDIR)$(bindir)/ntp-ntpdc-layout
 	@$(MAKECOOKIE)

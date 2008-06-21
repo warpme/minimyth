@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS = lang/c lib/libjpeg lib/zlib
+DEPENDS = lang/c lib/libjpeg lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -28,6 +28,7 @@ pre-configure:
 	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
 	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:

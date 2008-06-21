@@ -49,6 +49,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcurl.la
 	@$(MAKECOOKIE)

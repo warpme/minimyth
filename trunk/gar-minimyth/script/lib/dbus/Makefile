@@ -29,7 +29,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_have_abstract_sockets=yes" >> $(WORKSRC)/config.cache
 	@echo "dbus_cv_va_val_copy=no"          >> $(WORKSRC)/config.cache

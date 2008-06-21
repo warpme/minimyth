@@ -22,6 +22,9 @@ INSTALL_ENV = $(LINUX_MAKE_ENV)
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+pre-fetch:
+	echo $(PATH)
+
 install-custom:
 	@$(INSTALL_ENV) $(MAKE) $(INSTALL_ARGS) -C $(WORKSRC) headers_install
 	@mkdir -p $(DESTDIR)$(includedir)

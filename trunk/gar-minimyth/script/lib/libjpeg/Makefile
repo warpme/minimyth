@@ -28,14 +28,9 @@ mandir := $(mandir)/man1
 
 pre-configure:
 	@cp -f $(build_DESTDIR)$(build_datadir)/libtool/config/config.sub $(WORKSRC)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/ltconfig)
 	@sed -i 's%^host=.*%host=$(GARHOST)%' $(WORKSRC)/ltconfig
-	@# Libtool wants to hardcode library paths. This stops that unwanted behavior.
-	@sed -i 's%^hardcode_libdir_flag_spec=.*%hardcode_libdir_flag_spec=%' $(WORKSRC)/ltconfig
-	@# Libtool wants to modify the library run path. This stops that unwanted behavior.
-	@sed -i 's%^runpath_var=.*%runpath_var=%' $(WORKSRC)/ltconfig
-	@# Libtool wants search system directories rather than DESTIMG directories. This stops that unwanted behavior.
-	@sed -i 's%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=%' $(WORKSRC)/configure
-	@sed -i 's%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=%' $(WORKSRC)/configure
 	@$(MAKECOOKIE)
 
 install-custom:

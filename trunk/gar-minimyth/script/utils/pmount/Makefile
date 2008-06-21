@@ -28,3 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-cryptsetup-prog="$(esbindir)/cryptsetup"
 
 include ../../gar.mk
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)

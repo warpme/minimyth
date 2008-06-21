@@ -27,6 +27,10 @@ extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpng12.la
 	@rm -f $(DESTDIR)$(libdir)/libpng.la

@@ -97,6 +97,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-configure:
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libSDL.la
 	@$(MAKECOOKIE)

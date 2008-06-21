@@ -35,3 +35,7 @@ INSTALL_ARGS   = \
 include ../../gar.mk
 
 PATH := $(PATH):$(build_DESTDIR)$(build_elibdir)/udev
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)

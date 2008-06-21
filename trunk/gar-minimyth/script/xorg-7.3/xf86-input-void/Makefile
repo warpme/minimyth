@@ -36,6 +36,7 @@ include ../../gar.mk
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:

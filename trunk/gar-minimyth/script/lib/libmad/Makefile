@@ -27,6 +27,7 @@ pre-configure:
 	@touch $(WORKSRC)/ChangeLog
 	@touch $(WORKSRC)/NEWS
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:

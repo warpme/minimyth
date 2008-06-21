@@ -32,6 +32,10 @@ include ../../gar.mk
 
 sysconfdir := $(subst //,/,$(sysconfdir))
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@rm -f $(DESTDIR)$(libdir)/libXvMCW.la

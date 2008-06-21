@@ -1,11 +1,26 @@
 MiniMyth Changelog
 
 --------------------------------------------------------------------------------
-Changes since 55 (2008-06-17):
+Changes since 55 (2008-06-21):
 
 Current MythTV versions
     MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 17466.
     MythTV trunk: version trunk.17482, trunk svn 17482.
+
+Modified build system
+    - Changed how the libtool fix-ups are done.
+        - Created the macro FIX_LIBTOOL_HARDCODE that fixes the library path
+          hardcoding.
+        - Created the macro FIX_LIBTOOL_LIBPATH that fixes the library link
+          and run search paths.
+        - Created the macro FIX_LIBTOOL that is the combination of the macros
+          FIX_LIBTOOL_HARDCODE and FIX_LIBTOOL_LIBPATH.
+        - Stopped running autoreconf to fix library link search path since the
+          FIX_LIBTOOL_LIBPATH macro should fix it.
+            - Packages that patch their autoconf files for other reasons
+              continue to run autoreconf.
+        - Stopped using custom sed lines to fix library path hard coding since
+          the FIX_LIBTOOL_HARCODE macro should fix it.
 
 Fixed build system
     - Fixed bug that caused libtool to search the wrong library directories,
