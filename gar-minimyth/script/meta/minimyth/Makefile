@@ -64,6 +64,7 @@ DEPENDS = \
 	X11/x11vnc \
 	X11/xmacro \
 	xorg/xorg \
+	X11/xosd \
 	X11/xscreensaver \
 	X11/xvattr \
 	system/zoneinfo \
