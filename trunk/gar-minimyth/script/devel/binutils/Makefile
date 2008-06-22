@@ -57,10 +57,6 @@ CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
 
-pre-configure:
-	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
-	@$(MAKECOOKIE)
-
 post-install:
 	@$(if $(filter $(GARHOST), $(GARTARGET)) , \
 		rm -f $(DESTDIR)$(libdir)/libbfd.la , \
