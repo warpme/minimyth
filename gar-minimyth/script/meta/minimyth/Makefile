@@ -32,6 +32,7 @@ DEPENDS = \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
+	utils/lsof \
 	utils/microcode_ctl \
 	utils/module-init-tools \
 	net/mount.cifs \
@@ -48,6 +49,7 @@ DEPENDS = \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
+	utils/procps \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
