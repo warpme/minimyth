@@ -70,10 +70,6 @@ CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
 
-pre-configure:
-	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
-	@$(MAKECOOKIE)
-
 configure-custom:
 	@mkdir -p $(WORKBLD)
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
