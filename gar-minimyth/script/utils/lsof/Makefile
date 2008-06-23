@@ -3,6 +3,7 @@ GARVERSION = 4.80
 CATEGORIES = utils
 MASTER_SITES = ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/
 DISTFILES = $(GARNAME)_$(GARVERSION).tar.bz2
+PATCHFILES = $(DISTNAME)-lsof_ranlib.patch
 LICENSE =
 
 DESCRIPTION =
@@ -22,10 +23,12 @@ CONFIGURE_ARGS = \
 	linux
 
 CONFIGURE_ENV = \
+	LINUX_CLIB="$(LINUX_CLIB)" \
+	LSOF_AR="$(LSOF_AR)" \
 	LSOF_CC="$(LSOF_CC)" \
 	LSOF_CCV="$(LSOF_CCV)" \
+	LSOF_RANLIB="$(LSOF_RANLIB)" \
 	LSOF_VSTR="$(LSOF_VSTR)" \
-	LINUX_CLIB="$(LINUX_CLIB)" \
 	LSOF_INCLUDE="$(LSOF_INCLUDE)"
 
 GAR_EXTRA_CONF += kernel-2.6.23/linux/package-api.mk devel/glibc/package-api.mk
@@ -39,9 +42,11 @@ LINUX_CLIB   := $(strip $(shell \
         else                                                                         \
 		echo "-DGLIBCV=$${major}$${minor}"                                 ; \
         fi                                                                           ))
+LSOF_AR      := $(AR) cr
 LSOF_CC      := $(CC)
 LSOF_CCV     := $(strip $(shell PATH="$(PATH)" LANG=C $(CC) -v 2>&1 | sed -n 's/.*version \(.*\)/\1/p'))
 LSOF_INCLUDE := $(DESTDIR)$(includedir)
+LSOF_RANLIB  := $(RANLIB) \$${LIB}
 LSOF_VSTR    := $(LINUX_VERSION)
 
 extract-$(GARNAME)_$(GARVERSION).tar.bz2:
