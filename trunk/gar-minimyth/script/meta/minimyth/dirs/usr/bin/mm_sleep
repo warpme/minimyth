@@ -37,6 +37,12 @@ while /usr/bin/test -n "`/bin/pidof irexec`" ; do
     /usr/bin/killall irexec 2> /dev/null
 done
 
+# Stop mm_sleep_on_ss so that it does not immediately send the frontend back to sleep.
+while /usr/bin/test -n "`/bin/pidof mm_sleep_on_ss`" ; do
+    /bin/touch /var/lib/mm_sleep.$$/mm_sleep_on_ss
+    /usr/bin/killall mm_sleep_on_ss 2> /dev/null
+done
+
 # Stop X
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_stop
@@ -47,6 +53,12 @@ fi
 # Start X
 if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
     mm_x_start
+fi
+
+# If mm_sleep_on_ss was running before suspend, then restart it.
+if /usr/bin/test -e /var/lib/mm_sleep.$$/mm_sleep_on_ss ; then
+    /usr/bin/test -z `/bin/pidof mm_sleep_on_ss` && /usr/bin/mm_sleep_on_ss &
+    /bin/rm -f /var/lib/mm_sleep.$$/mm_sleep_on_ss
 fi
 
 # If irexec was running before suspend, then restart it.
