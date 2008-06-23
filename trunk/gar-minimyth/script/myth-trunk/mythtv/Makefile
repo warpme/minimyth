@@ -74,8 +74,8 @@ CONFIGURE_ARGS = \
 	--disable-hdhomerun \
 	--disable-v4l \
 	--disable-ivtv \
-	--disable-dvb \
-	--dvb-path="/dev/null" \
+	--enable-dvb \
+	--dvb-path="$(DESTDIR)$(includedir)" \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
