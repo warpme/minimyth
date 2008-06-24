@@ -93,7 +93,7 @@ MM_INIT_START := \
     lcdproc \
     mythtv \
     font \
-    mythbackend \
+    backend \
     mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
