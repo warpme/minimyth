@@ -42,6 +42,9 @@ KERNEL=="raw[0-9]*",                   NAME="raw/%k"
 # CPU microcode device
 KERNEL=="microcode",                   NAME="cpu/%k"
 
+# dvb devices
+SUBSYSTEM=="dvb", PROGRAM="/bin/sh -c 'X=%k; X=$${X#dvb}; A=$${X%%%%.*}; D=$${X#*.}; echo dvb/adapter$$A/$$D'", NAME="%c"
+
 # Non-default device permissions.
 KERNEL=="rtc",          OWNER="root", GROUP="root" , MODE="0644"
 
@@ -51,6 +54,7 @@ SUBSYSTEM=="sound",     OWNER="root", GROUP="audio", MODE="0660"
 
 SUBSYSTEM=="drm",       OWNER="root", GROUP="video", MODE="0660"
 SUBSYSTEM=="graphics",  OWNER="root", GROUP="video", MODE="0660"
+SUBSYSTEM=="dvb",       OWNER="root", GROUP="video", MODE="0660"
 KERNEL=="nvidia[0-9]*", OWNER="root", GROUP="video", MODE="0660"
 KERNEL=="nvidiactl",    OWNER="root", GROUP="video", MODE="0660"
 KERNEL=="video[0-9]*",  OWNER="root", GROUP="video", MODE="0660"
