@@ -93,6 +93,7 @@ MM_INIT_START := \
     lcdproc \
     mythtv \
     font \
+    mythbackend \
     mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
@@ -360,6 +361,7 @@ mm-check:
 		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
+		   [ ! "$${software}" = "backend"        ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
