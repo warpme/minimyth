@@ -1,0 +1,47 @@
+################################################################################
+# MM_BACKEND configuration variables and files.
+################################################################################
+. /lib/minimyth/mm_detect
+
+conf_clean_MM_BACKEND() {
+    /bin/rm -rf /tmp/init.conf.backend
+
+    return 0
+}
+
+conf_check_MM_BACKEND() {
+    if /usr/bin/test ! -z "${MM_BACKEND_ENABLED}"         && \
+       /usr/bin/test !    "${MM_BACKEND_ENABLED}" = "yes" && \
+       /usr/bin/test !    "${MM_BACKEND_ENABLED}" = "no"  ; then
+        mm_message_output err "error: MM_BACKEND_ENABLED='${MM_BACKEND_ENABLED}' is not valid."
+    fi
+
+    return 0
+}
+
+conf_default_MM_BACKEND() {
+    if /usr/bin/test -z "${MM_BACKEND_ENABLED" ; then
+        MM_BACKEND_ENABLED'auto'
+    fi
+
+    if /usrb/bin/test "${MM_BACKEND_ENABLED}" = "auto" ; then
+        MM_BACKEND_ENABLED="no"
+        if `mm_detect_state_get 'backend' | /bin/grep -c '^yes,'` -gt 0 ; then
+            MM_BACKEND_ENABLED="yes"
+        fi
+    fi
+
+    return 0
+}
+
+conf_write_MM_BACKEND() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_BACKEND_ENABLED "${MM_BACKEND_ENABLED}"
+
+    return 0
+}
+
+conf_fetch_MM_BACKEND() {
+    return 0
+}
