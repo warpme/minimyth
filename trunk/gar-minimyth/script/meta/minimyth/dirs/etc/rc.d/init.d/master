@@ -8,6 +8,8 @@
 
 start() {
 
+    local HOSTNAME
+    local MASTER_WOL_BROADCAST
     local WOLSqlConnectRetry
     local WOLSqlReconnectWaitTime
     local WOLSqlCommand
@@ -16,8 +18,17 @@ start() {
 
     mm_message_output info "configuring MythTV master backend communication ..."
 
+    HOSTNAME=`/bin/hostname`
+
     # Determine broadcast address.
-    MM_MASTER_WOL_BROADCAST=`/sbin/ifconfig ${MM_NETWORK_INTERFACE} | /bin/grep ' Bcast:' | /bin/sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
+    MASTER_WOL_BROADCAST=`/sbin/ifconfig ${MM_NETWORK_INTERFACE} | /bin/grep ' Bcast:' | /bin/sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
+
+    # Configure config.xml file.
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /usr/share/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /usr/share/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /usr/share/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /usr/share/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /usr/share/mythtv/config.xml
 
     # Configure mysql.txt file.
     /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /usr/share/mythtv/mysql.txt
@@ -34,7 +45,7 @@ start() {
     /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /usr/share/mythtv/mysql.txt
     /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /usr/share/mythtv/mysql.txt
     /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MM_MASTER_WOL_BROADCAST}%"                     /usr/share/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /usr/share/mythtv/mysql.txt
     /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /usr/share/mythtv/mysql.txt
 
     # If using wake-on-lan, then make sure that the MythTV master backend is awake.
