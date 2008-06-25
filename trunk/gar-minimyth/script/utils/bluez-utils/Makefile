@@ -1,5 +1,5 @@
 GARNAME = bluez-utils
-GARVERSION = 3.33
+GARVERSION = 3.34
 CATEGORIES = utils
 MASTER_SITES = http://bluez.sf.net/download/
 DISTFILES = $(DISTNAME).tar.gz
