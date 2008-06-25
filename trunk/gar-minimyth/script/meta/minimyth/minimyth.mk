@@ -584,6 +584,9 @@ mm-make-conf:
 	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
 	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
+	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
+	@ln -sf $(sharedstatedir)/mythtv/config.xml       $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
+	@ln -sf $(sharedstatedir)/mythtv/mysql.txt        $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
 	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
