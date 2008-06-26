@@ -560,8 +560,6 @@ mm-make-conf:
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
-	@mkdir -p $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv
-	@cp -pdR  ./dirs/usr/share/mythtv/*              $(mm_ROOTFSDIR)$(sharedstatedir)/mythtv/
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
 	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv   $(mm_ROOTFSDIR)
@@ -585,8 +583,8 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
 	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sharedstatedir)/mythtv/config.xml       $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
-	@ln -sf $(sharedstatedir)/mythtv/mysql.txt        $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
+	@ln -sf $(sysconfdir)/mythtv/config.xml           $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
+	@ln -sf $(sysconfdir)/mythtv/mysql.txt            $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
 	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
