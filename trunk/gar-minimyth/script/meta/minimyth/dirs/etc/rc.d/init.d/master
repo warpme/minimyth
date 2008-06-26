@@ -24,43 +24,43 @@ start() {
     MASTER_WOL_BROADCAST=`/sbin/ifconfig ${MM_NETWORK_INTERFACE} | /bin/grep ' Bcast:' | /bin/sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
 
     # Configure config.xml file.
-    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /usr/share/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /usr/share/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /usr/share/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /usr/share/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /usr/share/mythtv/config.xml
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /etc/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /etc/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /etc/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /etc/mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /etc/mythtv/config.xml
 
     # Configure mysql.txt file.
-    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /usr/share/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /etc/mythtv/mysql.txt
     if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" ; then
-        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%\#%"                                             /usr/share/mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%%"                                                /usr/share/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%\#%"                                             /etc/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%%"                                                /etc/mythtv/mysql.txt
     else
-        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%%"                                               /usr/share/mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%\#%"                                              /usr/share/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%%"                                               /etc/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%\#%"                                              /etc/mythtv/mysql.txt
     fi
-    /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /usr/share/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /usr/share/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /etc/mythtv/mysql.txt
 
     # If using wake-on-lan, then make sure that the MythTV master backend is awake.
     if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" && ! mm_mythdb_test ; then
         WOLSqlConnectRetry=` \
-		/bin/cat /usr/share/mythtv/mysql.txt | \
+		/bin/cat /etc/mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlConnectRetry=' | \
 		/bin/sed 's%WOLSqlConnectRetry=%%'`
         WOLSqlReconnectWaitTime=` \
-		/bin/cat /usr/share/mythtv/mysql.txt | \
+		/bin/cat /etc/mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlReconnectWaitTime=' | \
 		/bin/sed 's%WOLSqlReconnectWaitTime=%%'`
         WOLSqlCommand=` \
-		/bin/cat /usr/share/mythtv/mysql.txt | \
+		/bin/cat /etc/mythtv/mysql.txt | \
 		/bin/grep '^WOLSqlCommand=' | \
 		/bin/sed 's%WOLSqlCommand=%%'`
         WOLSqlConnectAttempt=1
