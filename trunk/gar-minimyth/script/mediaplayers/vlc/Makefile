@@ -1,7 +1,7 @@
 GARNAME = vlc
-GARVERSION = snapshot-20080606
+GARVERSION = snapshot-20080627
 CATEGORIES = mediaplayers
-MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080606-0114/
+MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080627-0014/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-patch.gar
 LICENSE = GPL2
@@ -20,6 +20,7 @@ DEPENDS = lang/c \
 	lib/libdvdnav \
 	lib/libdvbpsi \
 	lib/libdca \
+	lib/libgcrypt \
 	lib/libmad \
 	lib/libmatroska \
 	lib/libpng \
@@ -31,7 +32,7 @@ DEPENDS = lang/c \
 	system/lirc \
 	xorg/xorg
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.9.0-git
+WORKSRC = $(WORKDIR)/$(GARNAME)-0.9.0-test1
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -181,8 +182,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-atmo \
 	--disable-bonjour \
 	--enable-lirc \
-	--disable-libcrypt \
+	--enable-libgcrypt \
 	--disable-gnutls \
+	--disable-remoteosd \
 	--disable-update-check \
 	--disable-loader \
 	--enable-vlc \
@@ -196,7 +198,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
 	--without-a52-fixed \
 	--with-sdl-config-path=$(DESTDIR)$(bindir) \
-	--with-xml2-config-path=$(DESTDIR)$(bindir)
+	--with-xml2-config-path=$(DESTDIR)$(bindir) \
+	--with-libgcrypt-prefix=$(DESTDIR)$(prefix)
 
 CONFIGURE_ENV =
 
