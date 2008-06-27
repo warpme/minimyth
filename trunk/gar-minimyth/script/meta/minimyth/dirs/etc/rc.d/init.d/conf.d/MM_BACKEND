@@ -26,7 +26,7 @@ conf_default_MM_BACKEND() {
 
     if /usr/bin/test "${MM_BACKEND_ENABLED}" = "auto" ; then
         MM_BACKEND_ENABLED="no"
-        if `mm_detect_state_get 'backend' | /bin/grep -c '^yes,'` -gt 0 ; then
+        if if mm_detect_state_get 'backend' | /bin/grep -q ',yes$' ; then
             MM_BACKEND_ENABLED="yes"
         fi
     fi
