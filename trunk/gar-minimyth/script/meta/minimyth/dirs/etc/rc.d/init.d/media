@@ -9,20 +9,64 @@
 start() {
     mm_message_output info "mounting media shares ..."
 
-    if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" ; then
+    if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" && /usr/bin/test -n "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
         mm_url_mount "${MM_MEDIA_GALLERY_URL}" "${MM_MEDIA_GALLERY_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
+            mm_message_output err "error: '${MM_MEDIA_GALLERY_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_GALLERY_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_GALLERY_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
     fi
-    if /usr/bin/test -n "${MM_MEDIA_GAME_URL}"    ; then
+    if /usr/bin/test -n "${MM_MEDIA_GAME_URL}"    && /usr/bin/test -n "${MM_MEDIA_GAME_MOUNTPOINT}"    ; then
         mm_url_mount "${MM_MEDIA_GAME_URL}"    "${MM_MEDIA_GAME_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GAME_MOUNTPOINT}"    ; then
+            mm_message_output err "error: '${MM_MEDIA_GAME_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_GAME_MOUNTPOINT}"    - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_GAME_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
     fi
-    if /usr/bin/test -n "${MM_MEDIA_MUSIC_URL}"   ; then
+    if /usr/bin/test -n "${MM_MEDIA_MUSIC_URL}"   && /usr/bin/test -n "${MM_MEDIA_MUSIC_MOUNTPOINT}"   ; then
         mm_url_mount "${MM_MEDIA_MUSIC_URL}"   "${MM_MEDIA_MUSIC_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_MUSIC_MOUNTPOINT}"   ; then
+            mm_message_output err "error: '${MM_MEDIA_MUSIC_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_MUSIC_MOUNTPOINT}"   - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_MUSIC_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
     fi
-    if /usr/bin/test -n "${MM_MEDIA_VIDEO_URL}"   ; then
+    if /usr/bin/test -n "${MM_MEDIA_VIDEO_URL}"   && /usr/bin/test -n "${MM_MEDIA_VIDEO_MOUNTPOINT}"   ; then
         mm_url_mount "${MM_MEDIA_VIDEO_URL}"   "${MM_MEDIA_VIDEO_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_VIDEO_MOUNTPOINT}"   ; then
+            mm_message_output err "error: '${MM_MEDIA_VIDEO_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_VIDEO_MOUNTPOINT}"   - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_VIDEO_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
     fi
-    if /usr/bin/test -n "${MM_MEDIA_DVD_RIP_URL}" ; then
+    if /usr/bin/test -n "${MM_MEDIA_DVD_RIP_URL}" && /usr/bin/test -n "${MM_MEDIA_DVD_RIP_MOUNTPOINT}" ; then
         mm_url_mount "${MM_MEDIA_DVD_RIP_URL}" "${MM_MEDIA_DVD_RIP_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_DVD_RIP_MOUNTPOINT}' is not writable by user 'minimyth'."
+            exit 1
+        fi
     fi
 
     /bin/sed -i "s%@MEDIA_FILES_ORIGIN_PATH@%${MM_MEDIA_VIDEO_MOUNTPOINT}%" /home/minimyth/.xine/config
@@ -34,19 +78,29 @@ stop() {
     mm_message_output info "unmounting media shares ..."
 
     if /usr/bin/test -n "${MM_MEDIA_DVD_RIP_URL}" && /usr/bin/test -d "${MM_MEDIA_DVD_RIP_MOUNTPOINT}" ; then
-        /bin/umount "${MM_MEDIA_DVD_RIP_MOUNTPOINT}"
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_DVD_RIP_MOUNTPOINT}" ; then
+            /bin/umount "${MM_MEDIA_DVD_RIP_MOUNTPOINT}"
+        fi
     fi
     if /usr/bin/test -n "${MM_MEDIA_VIDEO_URL}"   && /usr/bin/test -d "${MM_MEDIA_VIDEO_MOUNTPOINT}"   ; then
-        /bin/umount "${MM_MEDIA_VIDEO_MOUNTPOINT}"
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_VIDEO_MOUNTPOINT}"   ; then
+            /bin/umount "${MM_MEDIA_VIDEO_MOUNTPOINT}"
+        fi
     fi
     if /usr/bin/test -n "${MM_MEDIA_MUSIC_URL}"   && /usr/bin/test -d "${MM_MEDIA_MUSIC_MOUNTPOINT}"   ; then
-        /bin/umount "${MM_MEDIA_MUSIC_MOUNTPOINT}"
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_MUSIC_MOUNTPOINT}"   ; then
+            /bin/umount "${MM_MEDIA_MUSIC_MOUNTPOINT}"
+        fi
     fi
     if /usr/bin/test -n "${MM_MEDIA_GAME_URL}"    && /usr/bin/test -d "${MM_MEDIA_GAME_MOUNTPOINT}"    ; then
-        /bin/umount "${MM_MEDIA_GAME_MOUNTPOINT}"
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GAME_MOUNTPOINT}"    ; then
+            /bin/umount "${MM_MEDIA_GAME_MOUNTPOINT}"
+        fi
     fi
     if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" && /usr/bin/test -d "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
-        /bin/umount "${MM_MEDIA_GALLERY_MOUNTPOINT}"
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
+            /bin/umount "${MM_MEDIA_GALLERY_MOUNTPOINT}"
+        fi
     fi
 
     return 0
