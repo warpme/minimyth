@@ -12,6 +12,9 @@ conf_check_MM_MEDIA() {
 }
 
 conf_default_MM_MEDIA() {
+    if /usr/bin/test -z "${MM_MEDIA_TV_MOUNTPOINT}"      ; then
+        MM_MEDIA_TV_MOUNTPOINT='/mnt/tv'
+    fi
     if /usr/bin/test -z "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
         MM_MEDIA_GALLERY_MOUNTPOINT='/mnt/gallery'
     fi
@@ -34,8 +37,8 @@ conf_default_MM_MEDIA() {
 conf_write_MM_MEDIA() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_MEDIA_GALLERY_MOUNTPOINT "${MM_MEDIA_GALLERY_MOUNTPOINT}"
-    conf_variable_write "${conf_file}" MM_MEDIA_GALLERY_URL        "${MM_MEDIA_GALLERY_URL}"
+    conf_variable_write "${conf_file}" MM_MEDIA_TV_MOUNTPOINT      "${MM_MEDIA_TV_MOUNTPOINT}"
+    conf_variable_write "${conf_file}" MM_MEDIA_TV_URL             "${MM_MEDIA_TV_URL}"
     conf_variable_write "${conf_file}" MM_MEDIA_GAME_MOUNTPOINT    "${MM_MEDIA_GAME_MOUNTPOINT}"
     conf_variable_write "${conf_file}" MM_MEDIA_GAME_URL           "${MM_MEDIA_GAME_URL}"
     conf_variable_write "${conf_file}" MM_MEDIA_MUSIC_MOUNTPOINT   "${MM_MEDIA_MUSIC_MOUNTPOINT}"
