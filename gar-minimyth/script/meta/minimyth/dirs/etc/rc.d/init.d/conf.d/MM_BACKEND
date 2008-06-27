@@ -20,15 +20,22 @@ conf_check_MM_BACKEND() {
 }
 
 conf_default_MM_BACKEND() {
+
+    local device
+    local device_list
+
     if /usr/bin/test -z "${MM_BACKEND_ENABLED}" ; then
         MM_BACKEND_ENABLED='auto'
     fi
 
     if /usr/bin/test "${MM_BACKEND_ENABLED}" = "auto" ; then
-        MM_BACKEND_ENABLED="no"
-        if mm_detect_state_get 'backend' | /bin/grep -q ',yes$' ; then
-            MM_BACKEND_ENABLED="yes"
-        fi
+        MM_BACKEND_ENABLED='no'
+        device_list=`mm_detect_state_get 'backend'`
+        for device in ${device_list} ; do
+            if /bin/echo "${device}" | /bin/grep -q '^yes$' ; then
+                MM_BACKEND_ENABLED='yes'
+            fi
+        done
     fi
 
     return 0
