@@ -9,6 +9,21 @@
 start() {
     mm_message_output info "mounting media shares ..."
 
+    if /usr/bin/test -n "${MM_MEDIA_TV_URL}"      && /usr/bin/test -n "${MM_MEDIA_TV_MOUNTPOINT}"      ; then
+        mm_url_mount "${MM_MEDIA_TV_URL}" "${MM_MEDIA_TV_MOUNTPOINT}"
+        if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_TV_MOUNTPOINT}"      ; then
+            mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' failed to mount."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -r ${MM_MEDIA_TV_MOUNTPOINT}" - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' is not readable by user 'minimyth'."
+            exit 1
+        fi
+        if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_TV_MOUNTPOINT}"      - minimyth ; then
+            mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' is not writable by user 'minimyth'."
+            exit 1
+        fi
+    fi
     if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" && /usr/bin/test -n "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
         mm_url_mount "${MM_MEDIA_GALLERY_URL}" "${MM_MEDIA_GALLERY_MOUNTPOINT}"
         if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
@@ -100,6 +115,11 @@ stop() {
     if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" && /usr/bin/test -d "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
         if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
             /bin/umount "${MM_MEDIA_GALLERY_MOUNTPOINT}"
+        fi
+    fi
+    if /usr/bin/test -n "${MM_MEDIA_TV_URL}"      && /usr/bin/test -d "${MM_MEDIA_TV_MOUNTPOINT}"      ; then
+        if /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${MM_MEDIA_TV_MOUNTPOINT}"      ; then
+            /bin/umount "${MM_MEDIA_TV_MOUNTPOINT}"
         fi
     fi
 
