@@ -5,6 +5,7 @@ MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME)-getthemedir.patch \
 	$(DISTNAME)-qtopengl.patch \
 	$(DISTNAME)-parser_youtube_fix.patch \
 	$(DISTNAME)-fftw3f.patch \
