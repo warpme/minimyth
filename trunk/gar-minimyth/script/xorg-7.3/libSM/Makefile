@@ -1,5 +1,5 @@
 GARNAME = libSM
-GARVERSION = 1.0.3
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,7 +26,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-tcp-transport \
 	--disable-ipv6 \
 	--disable-local-transport \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--without-libuuid
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
