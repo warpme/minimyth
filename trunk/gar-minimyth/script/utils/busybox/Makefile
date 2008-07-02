@@ -10,6 +10,7 @@ PATCHFILES  = \
 	$(DISTNAME)-bunzip2.patch \
 	$(DISTNAME)-ip.patch \
 	$(DISTNAME)-ssd.patch \
+	$(DISTNAME)-uname.patch \
 	$(DISTNAME)-vi.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
