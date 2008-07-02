@@ -57,9 +57,8 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_ctl_bluetooth.la
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_pcm_bluetooth.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libaudio.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libinput.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libnetwork.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libserial.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/libstorage.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/audio.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/input.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/network.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/serial.la
 	@$(MAKECOOKIE)
