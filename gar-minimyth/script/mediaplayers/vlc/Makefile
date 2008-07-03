@@ -1,9 +1,9 @@
 GARNAME = vlc
-GARVERSION = snapshot-20080627
+GARVERSION = 0.9.0-test1
 CATEGORIES = mediaplayers
-MASTER_SITES = http://nightlies.videolan.org/build/source/trunk-20080627-0014/
+MASTER_SITES = http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -31,8 +31,6 @@ DEPENDS = lang/c \
 	lib/zlib \
 	system/lirc \
 	xorg/xorg
-
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.9.0-test1
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
