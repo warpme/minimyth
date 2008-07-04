@@ -11,7 +11,11 @@ start() {
     if /usr/bin/test "${MM_BACKEND_ENABLED}" = "yes" ; then
         mm_message_output info "starting MythTV backend ..."
 
-        /bin/su -c "/usr/bin/mythbackend --daemon" - minimyth
+        if /usr/bin/test -e '/usr/bin/mythbackend' ; then
+            /bin/su -c "/usr/bin/mythbackend --daemon" - minimyth
+        else
+            mm_message_output err "error: '/usr/bin/mythbackend' not found."
+        fi
     fi
 
     return 0
