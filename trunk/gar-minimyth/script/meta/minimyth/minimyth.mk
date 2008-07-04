@@ -561,8 +561,8 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_ROOTFSDIR)/root ; mkdir -p $(mm_ROOTFSDIR)/root
 	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv   $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root  $(mm_ROOTFSDIR)
 	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home  $(mm_ROOTFSDIR)
 	@cp -pdRf $(mm_HOME)/html/minimyth/*              $(mm_ROOTFSDIR)/srv/www/
 	@find $(mm_ROOTFSDIR)/srv/www -name .htaccess -exec rm -rf '{}' +
