@@ -1,5 +1,5 @@
 GARNAME = lame
-GARVERSION = 3.97
+GARVERSION = 398
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
@@ -21,15 +21,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-nasm \
-	--with-gnu-ld \
-	--with-gtk-prefix="$(DESTDIR)$(prefix)" \
-	--with-gtk-exec-prefix="$(DESTDIR)$(exec_prefix)"
+	--disable-cpml \
+	--with-gnu-ld
+
+CONFIGURE_ENV = \
+	GTK_CONFIG='no'
 
 include ../../gar.mk
-
-LDFLAGS += -lm
-
-PARALLELMFLAGS := -j1
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
