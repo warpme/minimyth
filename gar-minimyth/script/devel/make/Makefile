@@ -6,7 +6,7 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-library_search.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
-endef
+endif
 LICENSE = GPL2
 
 DESCRIPTION = 
