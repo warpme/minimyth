@@ -4,7 +4,10 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-multi_os_directory.patch $(DISTNAME)-perl.patch.gar
+PATCHFILES  = $(DISTNAME)-multi_os_directory.patch
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+PATHCFILES += $(DISTNAME)-perl.patch.gar
+endif
 LICENSE = GPL3/GPL2/LGPL2
 
 DESCRIPTION =
