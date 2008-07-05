@@ -4,7 +4,6 @@ CATEGORIES = kernel-2.6.23
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-x_PATCHFILES = $(DISTNAME)-jetway_j9f2_hdmi.patch $(DISTNAME)-depmod.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
