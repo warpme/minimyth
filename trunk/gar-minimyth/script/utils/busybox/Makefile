@@ -9,6 +9,7 @@ PATCHFILES  = \
 	$(DISTNAME)-awk.patch \
 	$(DISTNAME)-bunzip2.patch \
 	$(DISTNAME)-ip.patch \
+	$(DISTNAME)-man.patch \
 	$(DISTNAME)-ssd.patch \
 	$(DISTNAME)-uname.patch \
 	$(DISTNAME)-vi.patch
