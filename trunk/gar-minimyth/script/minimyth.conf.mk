@@ -53,6 +53,7 @@ mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.21),mythbrowser)
                              vlc \
                              xine \
                              perl \
+                             backend \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'athlon64', 'c3', 'c3-2' and 'pentium-mmx'.
