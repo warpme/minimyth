@@ -57,7 +57,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-coverage \
 	--enable-release \
-	--disable-sout \
+	--enable-sout \
 	--disable-switcher \
 	--disable-shout \
 	--disable-lua \
