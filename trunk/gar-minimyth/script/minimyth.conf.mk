@@ -142,6 +142,7 @@ mm_GARCH_FAMILY           ?= $(strip \
                                  $(if $(filter athlon64   ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter c3         ,$(mm_GARCH)),i386  ) \
                                  $(if $(filter c3-2       ,$(mm_GARCH)),i386  ) \
+                                 $(if $(filter core2      ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter pentium-mmx,$(mm_GARCH)),i386  ) \
                               )
 mm_GARHOST                ?= $(strip \
@@ -150,6 +151,7 @@ mm_GARHOST                ?= $(strip \
                                      $(if $(filter x86_64,$(mm_GARCH_FAMILY)),x86_64)) \
                                  $(if $(filter c3         ,$(mm_GARCH)),      i586  )  \
                                  $(if $(filter c3-2       ,$(mm_GARCH)),      i586  )  \
+                                 $(if $(filter core2      ,$(mm_GARCH)),      x86_64)  \
                                  $(if $(filter pentium-mmx,$(mm_GARCH)),      i586  )  \
                               )-minimyth-linux-gnu
 mm_CFLAGS                 ?= $(strip \
@@ -158,6 +160,7 @@ mm_CFLAGS                 ?= $(strip \
                                  $(if $(filter athlon64    ,$(mm_GARCH)),-O3 -mfpmath=sse) \
                                  $(if $(filter c3          ,$(mm_GARCH)),-Os             ) \
                                  $(if $(filter c3-2        ,$(mm_GARCH)),-Os -mfpmath=sse) \
+                                 $(if $(filter core2       ,$(mm_GARCH)),-O3 -mfpmath=sse) \
                                  $(if $(filter pentium-mmx ,$(mm_GARCH)),-Os             ) \
                                  $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)            \
                                  $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)            \
