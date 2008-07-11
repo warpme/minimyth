@@ -49,6 +49,21 @@ start() {
     MM_X_DEVICE_VIA=""
     case "${MM_X_DRIVER}" in
         intel_810|intel_915)
+            if /bin/echo ${MM_X_OUTPUT_TV}  | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_INTEL="TV-${MM_X_OUTPUT_TV}"
+            elif /usr/bin/test "${MM_X_OUTPUT_TV}"  = "auto" ; then
+                MM_X_DEVICE_INTEL="TV"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_VGA} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_INTEL="VGA-${MM_X_OUTPUT_VGA}"
+            elif /usr/bin/test "${MM_X_OUTPUT_VGA}" = "auto" ; then
+                MM_X_DEVICE_INTEL="VGA"
+            fi
+            if /bin/echo ${MM_X_OUTPUT_DVI} | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
+                MM_X_DEVICE_INTEL="TMDS-${MM_X_OUTPUT_DVI}"
+            elif /usr/bin/test "${MM_X_OUTPUT_DVI}" = "auto" ; then
+                MM_X_DEVICE_INTEL="TMDS-1"
+            fi
             ;;
         nvidia)
             if /bin/echo ${MM_X_OUTPUT_TV}  | /bin/grep -q -e '^[0-9][0-9]*$' > /dev/null 2>&1 ; then
@@ -161,6 +176,7 @@ start() {
     /usr/bin/test -n "${MM_X_MODE_2}" && MM_X_MODE_2="\"${MM_X_MODE_2}\""
     
     /bin/sed -i "s%@MM_X_DRIVER@%${MM_X_DRIVER}%"               /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_DEVICE_INTEL@%${MM_X_DEVICE_INTEL}%"   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_NVIDIA@%${MM_X_DEVICE_NVIDIA}%" /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_VIA@%${MM_X_DEVICE_VIA}%"       /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_TV_TYPE@%${MM_X_TV_TYPE}%"             /etc/X11/xorg.conf
