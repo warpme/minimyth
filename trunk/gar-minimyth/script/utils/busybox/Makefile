@@ -7,7 +7,9 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-awk.patch \
+	$(DISTNAME)-buildsystem.patch \
 	$(DISTNAME)-bunzip2.patch \
+	$(DISTNAME)-cpio.patch \
 	$(DISTNAME)-ifupdown.patch \
 	$(DISTNAME)-ip.patch \
 	$(DISTNAME)-man.patch \
