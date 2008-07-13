@@ -56,7 +56,7 @@ mm_SOFTWARE               ?= $(if $(filter $(mm_MYTH_VERSION),0.21),mythbrowser)
                              backend \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
-# Valid values for mm_GARCH are 'athlon64', 'c3', 'c3-2', 'core2' and 'pentium-mmx'.
+# Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
 mm_GARCH                  ?= pentium-mmx
 # Indicates whether or not to create the RAM based part of the distribution.
 mm_DISTRIBUTION_RAM       ?= yes
@@ -139,32 +139,26 @@ mm_USER_SHARE_LIST        ?=
 # Variables that you are not likely to override.
 #-------------------------------------------------------------------------------
 mm_GARCH_FAMILY           ?= $(strip \
-                                 $(if $(filter athlon64   ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter c3         ,$(mm_GARCH)),i386  ) \
                                  $(if $(filter c3-2       ,$(mm_GARCH)),i386  ) \
-                                 $(if $(filter core2      ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter pentium-mmx,$(mm_GARCH)),i386  ) \
+                                 $(if $(filter x86-64     ,$(mm_GARCH)),x86_64) \
                               )
 mm_GARHOST                ?= $(strip \
-                                 $(if $(filter athlon64   ,$(mm_GARCH)),               \
-                                     $(if $(filter i386  ,$(mm_GARCH_FAMILY)),i686  )  \
-                                     $(if $(filter x86_64,$(mm_GARCH_FAMILY)),x86_64)) \
-                                 $(if $(filter c3         ,$(mm_GARCH)),      i586  )  \
-                                 $(if $(filter c3-2       ,$(mm_GARCH)),      i586  )  \
-                                 $(if $(filter core2      ,$(mm_GARCH)),      x86_64)  \
-                                 $(if $(filter pentium-mmx,$(mm_GARCH)),      i586  )  \
+                                 $(if $(filter c3         ,$(mm_GARCH)),i586  )  \
+                                 $(if $(filter c3-2       ,$(mm_GARCH)),i586  )  \
+                                 $(if $(filter pentium-mmx,$(mm_GARCH)),i586  )  \
+                                 $(if $(filter x86-64     ,$(mm_GARCH)),x86_64)  \
                               )-minimyth-linux-gnu
 mm_CFLAGS                 ?= $(strip \
-                                 -pipe                                                     \
-                                 -march=$(mm_GARCH)                                        \
-                                 $(if $(filter athlon64    ,$(mm_GARCH)),-O3 -mfpmath=sse) \
-                                 $(if $(filter c3          ,$(mm_GARCH)),-Os             ) \
-                                 $(if $(filter c3-2        ,$(mm_GARCH)),-Os -mfpmath=sse) \
-                                 $(if $(filter core2       ,$(mm_GARCH)),-O3 -mfpmath=sse) \
-                                 $(if $(filter pentium-mmx ,$(mm_GARCH)),-Os             ) \
-                                 $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)            \
-                                 $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)            \
-                                 $(if $(filter yes,$(mm_DEBUG)),-g)                        \
+                                 -pipe                                                                                       \
+                                 $(if $(filter c3          ,$(mm_GARCH)),-march=c3-2        -mtune=c3      -Os             ) \
+                                 $(if $(filter c3-2        ,$(mm_GARCH)),-march=c3-2        -mtune=c3-2    -Os -mfpmath=sse) \
+                                 $(if $(filter pentium-mmx ,$(mm_GARCH)),-march=pentium-mmx -mtune=generic -Os             ) \
+                                 $(if $(filter x86-64      ,$(mm_GARCH)),-march=x86-64      -mtune=generic -O3 -mfpmath=sse) \
+                                 $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)                                              \
+                                 $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)                                              \
+                                 $(if $(filter yes,$(mm_DEBUG)),-g)                                                          \
                               )
 mm_CXXFLAGS               ?= $(mm_CFLAGS)
 mm_DESTDIR                ?= $(mm_HOME)/images/mm

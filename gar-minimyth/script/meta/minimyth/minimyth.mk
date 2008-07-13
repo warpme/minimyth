@@ -297,11 +297,10 @@ mm-check:
 		exit 1 ; \
 	fi
 	@echo "    mm_GARCH"
-	@if [ ! "$(mm_GARCH)" = "athlon64"    ] && \
-	    [ ! "$(mm_GARCH)" = "c3"          ] && \
+	@if [ ! "$(mm_GARCH)" = "c3"          ] && \
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
-	    [ ! "$(mm_GARCH)" = "core2"       ] && \
-	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] ; then \
+	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] && \
+	    [ ! "$(mm_GARCH)" = "x86-64"      ] ; then \
 		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
