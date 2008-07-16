@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libftdi lib/libirman lib/ncurses lib/libusb system/lirc
+DEPENDS = lang/c lib/libftdi lib/libg15render lib/libirman lib/ncurses lib/libusb system/g15daemon system/lirc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

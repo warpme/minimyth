@@ -90,6 +90,7 @@ MM_INIT_START := \
     wiimote \
     irtrans \
     lirc \
+    g15daemon \
     lcdproc \
     mythtv \
     font \
@@ -99,6 +100,7 @@ MM_INIT_START := \
 MM_INIT_KILL := \
     x \
     lcdproc \
+    g15daemon \
     lirc \
     irtrans \
     wiimote \
