@@ -45,6 +45,7 @@ DEPENDS = \
 	$(CATEGORY)/xkbcomp \
 	$(CATEGORY)/xkeyboard-config \
 	$(CATEGORY)/xlsclients \
+	$(CATEGORY)/xmodmap \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xrandr \
 	$(CATEGORY)/xset \
