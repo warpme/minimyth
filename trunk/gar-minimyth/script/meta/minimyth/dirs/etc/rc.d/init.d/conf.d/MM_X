@@ -165,6 +165,23 @@ conf_check_MM_X() {
         mm_message_output err "error: MM_X_HACK_HIDE_BLUE_LINE_ENABLED='${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}' is not valid."
     fi
 
+    # Check fetch variables.
+    if /usr/bin/test ! -z "${MM_X_FETCH_XINITRC}"           && \
+       /usr/bin/test !    "${MM_X_FETCH_XINITRC}" = "yes"   && \
+       /usr/bin/test !    "${MM_X_FETCH_XINITRC}" = "no"    ; then
+        mm_message_output err "error: MM_X_FETCH_XINITRC='${MM_X_FETCH_XINITRC}' is not valid."
+    fi
+    if /usr/bin/test ! -z "${MM_X_FETCH_XMODMAPRC}"         && \
+       /usr/bin/test !    "${MM_X_FETCH_XMODMAPRC}" = "yes" && \
+       /usr/bin/test !    "${MM_X_FETCH_XMODMAPRC}" = "no"  ; then
+        mm_message_output err "error: MM_X_FETCH_XMODMAPRC='${MM_X_FETCH_XMODMAPRC}' is not valid."
+    fi
+    if /usr/bin/test ! -z "${MM_X_XORG_CONF}"               && \
+       /usr/bin/test !    "${MM_X_XORG_CONF}" = "yes"       && \
+       /usr/bin/test !    "${MM_X_XORG_CONF}" = "no"        ; then
+        mm_message_output err "error: MM_X_XORG_CONF='${MM_X_XORG_CONF}' is not valid."
+    fi
+
     return 0
 }
 
@@ -716,6 +733,9 @@ conf_default_MM_X() {
     if /usr/bin/test -z "${MM_X_FETCH_XINITRC}"   ; then
         MM_X_FETCH_XINITRC='no'
     fi
+    if /usr/bin/test -z "${MM_X_FETCH_XMODMAPRC}" ; then
+        MM_X_FETCH_XMODMAPRC='no'
+    fi
     if /usr/bin/test -z "${MM_X_FETCH_XORG_CONF}" ; then
         MM_X_FETCH_XORG_CONF='no'
     fi
@@ -765,6 +785,7 @@ conf_write_MM_X() {
     conf_variable_write "${conf_file}" MM_X_HACK_HIDE_BLUE_LINE_ENABLED "${MM_X_HACK_HIDE_BLUE_LINE_ENABLED}"
 
     conf_variable_write "${conf_file}" MM_X_FETCH_XINITRC               "${MM_X_FETCH_XINITRC}"
+    conf_variable_write "${conf_file}" MM_X_FETCH_XMODMAPRC             "${MM_X_FETCH_XMODMAPRC}"
     conf_variable_write "${conf_file}" MM_X_FETCH_XORG_CONF             "${MM_X_FETCH_XORG_CONF}"
 
     return 0
@@ -775,14 +796,21 @@ conf_fetch_MM_X() {
         /bin/rm -f /etc/X11/xinit/xinitrc
         mm_confro_get /xinitrc /etc/X11/xinit/xinitrc
         if /usr/bin/test ! -e /etc/X11/xinit/xinitrc ; then
-            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+            mm_message_output err "error: failed to fetch 'xinitrc' file."
+        fi
+    fi
+    if /usr/bin/test "${MM_X_FETCH_XMODMAPRC}"   = "yes" ; then
+        /bin/rm -f /etc/X11/xmodmaprc
+        mm_confro_get /xinitrc /etc/X11/xmodmaprc
+        if /usr/bin/test ! -e /etc/X11/xmodmaprc ; then
+            mm_message_output err "error: failed to fetch 'xmodmaprc' file."
         fi
     fi
     if /usr/bin/test "${MM_X_FETCH_XORG_CONF}" = "yes" ; then
         /bin/rm -f /etc/X11/xorg.conf
         mm_confro_get /xorg.conf /etc/X11/xorg.conf
         if /usr/bin/test ! -e /etc/X11/xorg.conf ; then
-            mm_message_output err "error: failed to fetch 'minimyth.script' file."
+            mm_message_output err "error: failed to fetch 'xorg.conf' file."
         fi
     fi
 
