@@ -1,9 +1,9 @@
 GARNAME = vlc
-GARVERSION = 0.9.0-test1
+GARVERSION = 0.9.0-test2
 CATEGORIES = mediaplayers
 MASTER_SITES = http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-vlm.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
