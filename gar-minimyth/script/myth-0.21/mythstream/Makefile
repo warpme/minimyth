@@ -8,16 +8,16 @@ PATCHFILES += \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-mythpopupbox_delete.patch \
 	$(DISTNAME)-harvester_cpp.patch \
-	$(DISTNAME)-parser_youtube_fix.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
 PARSERS = \
 	belegger \
 	dailymotion-2 \
 	google \
+	omroep-3 \
 	retrovision \
 	yahoo \
-	youtube-3 \
+	youtube-4 \
 	zoomin
 LICENSE = GPL2
 

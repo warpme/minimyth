@@ -7,7 +7,6 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-getthemedir.patch \
 	$(DISTNAME)-qtopengl.patch \
-	$(DISTNAME)-parser_youtube_fix.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
 
@@ -15,9 +14,10 @@ PARSERS = \
 	belegger \
 	dailymotion-2 \
 	google \
+	omroep-3 \
 	retrovision \
 	yahoo \
-	youtube-3 \
+	youtube-4 \
 	zoomin
 LICENSE = GPL2
 
