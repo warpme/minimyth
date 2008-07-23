@@ -1,5 +1,5 @@
 GARNAME = strace
-GARVERSION = 4.5.16
+GARVERSION = 4.5.17
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
