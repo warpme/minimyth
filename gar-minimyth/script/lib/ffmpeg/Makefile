@@ -105,8 +105,6 @@ CONFIGURE_ARGS = \
 
 include ../../gar.mk
 
-PARALLELMFLAGS := -j1
-
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
