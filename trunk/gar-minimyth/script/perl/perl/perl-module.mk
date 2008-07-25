@@ -39,7 +39,7 @@ endif
 ifeq ($(PERL_MODULE_STYLE),Makefile.PL)
 CONFIGURE_SCRIPTS = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile.PL,)
 BUILD_SCRIPTS     = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile,)
-INSTALL_SCRIPTS   = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile,)
+INSTALL_SCRIPTS   = $(if $(filter-out $(PERL_NOT_NEEDED),$(PERL_VERSION)),$(WORKSRC)/Makefile.pure_install,)
 
 CONFIGURE_ARGS =
 BUILD_ARGS     = DESTDIR="$(DESTDIR)"
@@ -95,4 +95,9 @@ build-%/Build:
 install-%/Build:
 	@echo " ==> Running './Build install' in $*"
 	@cd $* ; $(INSTALL_ENV) ./Build $(INSTALL_ARGS) install
+	@$(MAKECOOKIE)
+
+install-%/Makefile.pure_install:
+	@echo " ==> Running make pure_install in $*"
+	@$(INSTALL_ENV) $(MAKE) DESTDIR=$(DESTDIR) $(foreach TTT,$(INSTALL_OVERRIDE_DIRS),$(TTT)="$(DESTDIR)$($(TTT))") -C $* $(INSTALL_ARGS) pure_install
 	@$(MAKECOOKIE)
