@@ -36,8 +36,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += lib/libcdio/package-api.mk
 include ../../gar.mk
 
-PARALLELMFLAGS := -j1
-
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
