@@ -6,5 +6,3 @@ DEPENDS      = perl/perl-File-Temp perl/perl-XML-NamespaceSupport
 include ../../perl/perl/perl-module.mk
 
 CONFIGURE_ENV := echo Y | $(CONFIGURE_ENV)
-
-PARALLELMFLAGS := -j1
