@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-remove_changeset_17891.patch \
 	$(DISTNAME_SHORT)-limits_h.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
 	$(DISTNAME_SHORT)-mythmusic_fftw3.patch \
