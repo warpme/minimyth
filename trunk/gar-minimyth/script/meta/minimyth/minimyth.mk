@@ -402,8 +402,9 @@ mm-check:
 	fi
 	@echo "    mm_NVIDIA_VERSION"
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "71.86.04"  ] && \
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "71.86.06"  ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "71.86.06"  ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "96.43.05"  ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "96.43.07"  ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "169.12"    ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "173.14.09" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
