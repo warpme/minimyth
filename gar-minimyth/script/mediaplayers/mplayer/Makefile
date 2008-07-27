@@ -271,3 +271,10 @@ install-config:
 	@cp $(WORKSRC)/etc/input.conf   $(DESTDIR)$(rootdir)/root/.mplayer
 	@cp $(WORKSRC)/etc/menu.conf    $(DESTDIR)$(rootdir)/root/.mplayer
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(bindir)/mplayer-stable
+	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-stable
+	@rm -f $(DESTDIR)$(bindir)/mplayer
+	@ln -fs mplayer-stable $(DESTDIR)$(bindir)/mplayer
+	@$(MAKECOOKIE)
