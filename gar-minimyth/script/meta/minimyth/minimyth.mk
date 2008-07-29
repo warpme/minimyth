@@ -225,6 +225,15 @@ COPY_FILES = \
 		fi ; \
 	done
 
+# $1 = file/directory
+SET_PERMISSIONS = \
+	chmod -R +r   $(strip $(1))                               ; \
+	chmod -R +w   $(strip $(1))                               ; \
+	find          $(strip $(1)) -type d -exec chmod +x '{}' + ; \
+	chmod -R -s   $(strip $(1))                               ; \
+	chmod -R -t   $(strip $(1))                               ; \
+	chmod -R go-w $(strip $(1))
+
 mm-all:
 
 mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
@@ -720,7 +729,7 @@ mm-copy-kernel-modules:
 
 mm-strip:
 	@if test ! $(mm_DEBUG) = yes ; then \
-		chmod -R u+w $(mm_ROOTFSDIR) ; \
+		$(call SET_PERMISSIONS,$(mm_ROOTFSDIR)) ; \
 		echo 'stripping binaries' ; \
 		$(STRIP) --strip-all -R .note -R .comment \
 			`find $(mm_ROOTFSDIR) -exec file '{}' \; | grep -i 'ELF ..-bit LSB executable'    | sed -e 's%:.*%%'` ; \
@@ -853,6 +862,8 @@ mm-remove-svn:
 
 mm-make-distro-base:
 	@echo 'making minimyth distribution'
+	@# Set staging directory permissions.
+	@$(call SET_PERMISSIONS,$(mm_STAGEDIR))
 	@# Make source tarball file.
 	@echo "  making source tarball file"
 	@$(MAKE) -f minimyth.mk mm-make-source DESTIMG=$(DESTIMG)          \
@@ -862,37 +873,22 @@ mm-make-distro-base:
 	@# Make documentation tarball file.
 	@echo "  making documentation tarball file"
 	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
-	@fakeroot sh -c                                                         " \
-		chmod -R +r   $(mm_STAGEDIR)/html                               ; \
-		chmod -R +w   $(mm_STAGEDIR)/html                               ; \
-		find          $(mm_STAGEDIR)/html -type d -exec chmod +x '{}' + ; \
-		chmod -R -s   $(mm_STAGEDIR)/html                               ; \
-		chmod -R -t   $(mm_STAGEDIR)/html                               ; \
-		chmod -R go-w $(mm_STAGEDIR)/html                               ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html     "
+	@fakeroot sh -c                                                     " \
+		$(call SET_PERMISSIONS,$(mm_STAGEDIR))                      ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html "
 	@chmod 0644 $(mm_STAGEDIR)/html.tar.bz2
 	@# Make helper tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
-	@fakeroot sh -c                                                           " \
-		chmod -R +r   $(mm_STAGEDIR)/helper                               ; \
-		chmod -R +w   $(mm_STAGEDIR)/helper                               ; \
-		find          $(mm_STAGEDIR)/helper -type d -exec chmod +x '{}' + ; \
-		chmod -R -s   $(mm_STAGEDIR)/helper                               ; \
-		chmod -R -t   $(mm_STAGEDIR)/helper                               ; \
-		chmod -R go-w $(mm_STAGEDIR)/helper                               ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper   "
+	@fakeroot sh -c                                                         " \
+		$(call SET_PERMISSIONS,$(mm_STAGEDIR)/helper)                   ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
 	@chmod 0644 $(mm_STAGEDIR)/helper.tar.bz2
 	@# Make PXE tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
 	@fakeroot sh -c                                                                         " \
-		chmod -R +r   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
-		chmod -R +w   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
-		find          $(mm_STAGEDIR)/pxe-$(mm_NAME) -type d -exec chmod +x '{}' +       ; \
-		chmod -R -s   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
-		chmod -R -t   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
-		chmod -R go-w $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
+		$(call SET_PERMISSIONS,$(mm_STAGEDIR)/pxe-$(mm_NAME))                           ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2 pxe-$(mm_NAME) "
 	@chmod 0644 $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
 
@@ -915,12 +911,7 @@ mm-make-distro-ram:
 	@fakeroot sh -c                                                                          " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
-		chmod -R +r   $(mm_ROOTFSDIR)                                                    ; \
-		chmod -R +w   $(mm_ROOTFSDIR)                                                    ; \
-		find          $(mm_ROOTFSDIR) -type d -exec chmod +x '{}' +                      ; \
-		chmod -R -s   $(mm_ROOTFSDIR)                                                    ; \
-		chmod -R -t   $(mm_ROOTFSDIR)                                                    ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
+		$(call SET_PERMISSIONS,$(mm_ROOTFSDIR))                                          ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                       ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                          ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                         ; \
@@ -935,12 +926,7 @@ mm-make-distro-ram:
 	@echo "    making extras squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@fakeroot sh -c                                                                              " \
-		chmod -R +r   $(mm_EXTRASDIR)                                                        ; \
-		chmod -R +w   $(mm_EXTRASDIR)                                                        ; \
-		find          $(mm_EXTRASDIR) -type d -exec chmod +x '{}' +                          ; \
-		chmod -R -s   $(mm_EXTRASDIR)                                                        ; \
-		chmod -R -t   $(mm_EXTRASDIR)                                                        ; \
-		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
+		$(call SET_PERMISSIONS,$(mm_EXTRASDIR))                                              ; \
 		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
 	@chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@# Make themes squashfs image files.
@@ -949,12 +935,7 @@ mm-make-distro-ram:
 	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
 	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
 		fakeroot sh -c                                                                                                   "   \
-			chmod -R +r   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
-			chmod -R +w   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
-			find          $(mm_THEMESDIR)/$${theme} -type d -exec chmod +x '{}' +                                              ;   \
-			chmod -R -s   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
-			chmod -R -t   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
-			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			$(call SET_PERMISSIONS,$(mm_THEMESDIR)/$${theme})                                                        ; \
 			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
 		chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
 	done
@@ -977,12 +958,7 @@ mm-make-distro-nfs:
 	@fakeroot sh -c                                                                        " \
 		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
 		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
-		chmod -R +r   $(mm_ROOTFSDIR)                                                  ; \
-		chmod -R +w   $(mm_ROOTFSDIR)                                                  ; \
-		find          $(mm_ROOTFSDIR) -type d -exec chmod +x '{}' +                    ; \
-		chmod -R -s   $(mm_ROOTFSDIR)                                                  ; \
-		chmod -R -t   $(mm_ROOTFSDIR)                                                  ; \
-		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
+		$(call SET_PERMISSIONS,$(mm_ROOTFSDIR))                                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/busybox                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(ebindir)/ping                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pmount                       ; \
@@ -997,24 +973,14 @@ mm-make-distro-nfs:
 	@echo "    making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
-		chmod -R +r   $(mm_EXTRASDIR)                                                  ; \
-		chmod -R +w   $(mm_EXTRASDIR)                                                  ; \
-		find          $(mm_EXTRASDIR) -type d -exec chmod +x '{}' +                    ; \
-		chmod -R -s   $(mm_EXTRASDIR)                                                  ; \
-		chmod -R -t   $(mm_EXTRASDIR)                                                  ; \
-		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
+		$(call SET_PERMISSIONS,$(mm_EXTRASDIR))                                        ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
 	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@# Make themes tarball file.
 	@echo "    making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
-		chmod -R +r   $(mm_THEMESDIR)                                                  ; \
-		chmod -R +w   $(mm_THEMESDIR)                                                  ; \
-		find          $(mm_THEMESDIR) -type d -exec chmod +x '{}' +                    ; \
-		chmod -R -s   $(mm_THEMESDIR)                                                  ; \
-		chmod -R -t   $(mm_THEMESDIR)                                                  ; \
-		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
+		$(call SET_PERMISSIONS,$(mm_THEMESDIR))                                        ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
 	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@# Make local (private) distribution
@@ -1035,6 +1001,7 @@ mm-make-distro-local:
 	@cd $(mm_LOCALDIR) ; md5sum pxe-$(mm_NAME).tar.bz2           > pxe-$(mm_NAME).tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_LOCALDIR)/gar-$(mm_NAME).tar.bz2
 	@cd $(mm_LOCALDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
+	@$(call SET_PERMISSIONS,$(mm_LOCALDIR))
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
 		echo "    making RAM root file system part of the distribution"                 ; \
 		cp -pdR  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_LOCALDIR)/ram-$(mm_NAME)           ; \
@@ -1056,6 +1023,7 @@ mm-make-distro-local:
 		cd $(mm_LOCALDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
 	 fi
 	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_LOCALDIR)/changelog.txt
+	@$(call SET_PERMISSIONS,$(mm_LOCALDIR))
 
 mm-make-distro-share:
 	@# Make share (public) distribution
@@ -1073,6 +1041,7 @@ mm-make-distro-share:
 	@cd $(mm_SHAREDIR) ; md5sum pxe-$(mm_NAME).tar.bz2           > pxe-$(mm_NAME).tar.bz2.md5
 	@cp -pdR  $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 $(mm_SHAREDIR)/gar-$(mm_NAME).tar.bz2
 	@cd $(mm_SHAREDIR) ; md5sum gar-$(mm_NAME).tar.bz2           > gar-$(mm_NAME).tar.bz2.md5
+	@$(call SET_PERMISSIONS,$(mm_SHAREDIR))
 	@if [ -e $(mm_STAGEDIR)/ram-$(mm_NAME) ] ; then \
 		echo "    making RAM root file system part of the distribution"                 ; \
 		cp -pdR  $(mm_STAGEDIR)/ram-$(mm_NAME)  $(mm_SHAREDIR)/ram-$(mm_NAME)           ; \
@@ -1097,6 +1066,7 @@ mm-make-distro-share:
 	 fi
 	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_SHAREDIR)/changelog.txt
 	@cp -pdR ./files/share-readme.txt                        $(mm_SHAREDIR)/readme.txt
+	@$(call SET_PERMISSIONS,$(mm_SHAREDIR))
 
 mm-make-distro: \
 	mm-make-distro-base \
@@ -1128,7 +1098,10 @@ mm-make-source:
 	@cd $(mm_STAGEDIR)/source ; tar -jxf $(SOURCE_DIR_TAIL).tar.bz2
 	@cd $(mm_STAGEDIR)/source ; test "$(SOURCE_DIR_TAIL)" = "gar-$(mm_NAME)" || mv $(SOURCE_DIR_TAIL) gar-$(mm_NAME)
 	@find $(mm_STAGEDIR)/source/gar-$(mm_NAME) -name .svn -exec rm -rf '{}' +
-	@tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)
+	@$(call SET_PERMISSIONS,$(mm_STAGEDIR)/source)
+	@fakeroot sh -c                                                                               " \
+		$(call SET_PERMISSIONS,$(mm_STAGEDIR)/source)                                         ; \
+		tar -C $(mm_STAGEDIR)/source -jcf $(mm_STAGEDIR)/gar-$(mm_NAME).tar.bz2 gar-$(mm_NAME)"
 	@rm -fr $(mm_STAGEDIR)/source
 	@chmod 0644 $(mm_STAGEDIR)/$(mm_SOURCENAME).tar.bz2
 
@@ -1142,15 +1115,15 @@ mm-checksum-create:
 	done
 
 mm-%/checksum-create:
-	@if   test -d $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                     \
-		for file in `cd $(_MM_CHECKSUM_CREATE_BASE)/$* ; ls -1` ; do                    \
-			$(MAKE) -f minimyth.mk mm-$*/$${file}/checksum-create DESTIMG=$(DESTIMG)   \
-				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)            \
-				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE)          ; \
-		done                                                                          ; \
-	elif test -f $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                      \
-		cd $(_MM_CHECKSUM_CREATE_BASE)                                                ; \
-		md5sum $* >> $(_MM_CHECKSUM_CREATE_FILE)                                      ; \
+	@if   test -d $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                      \
+		for file in `cd $(_MM_CHECKSUM_CREATE_BASE)/$* ; ls -1` ; do                     \
+			$(MAKE) -f minimyth.mk mm-$*/$${file}/checksum-create DESTIMG=$(DESTIMG) \
+				_MM_CHECKSUM_CREATE_BASE=$(_MM_CHECKSUM_CREATE_BASE)             \
+				_MM_CHECKSUM_CREATE_FILE=$(_MM_CHECKSUM_CREATE_FILE)           ; \
+		done                                                                           ; \
+	elif test -f $(_MM_CHECKSUM_CREATE_BASE)/$* ; then                                       \
+		cd $(_MM_CHECKSUM_CREATE_BASE)                                                 ; \
+		md5sum $* >> $(_MM_CHECKSUM_CREATE_FILE)                                       ; \
 	fi
 
 mm-install: mm-check
