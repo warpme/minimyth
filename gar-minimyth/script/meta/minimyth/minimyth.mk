@@ -862,21 +862,36 @@ mm-make-distro-base:
 	@# Make documentation tarball file.
 	@echo "  making documentation tarball file"
 	@rm -rf $(mm_STAGEDIR)/html.tar.bz2
-	@fakeroot sh -c                                                     " \
-		chmod -R go-w $(mm_STAGEDIR)/html                           ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html "
+	@fakeroot sh -c                                                         " \
+		chmod -R +r   $(mm_STAGEDIR)/html                               ; \
+		chmod -R +w   $(mm_STAGEDIR)/html                               ; \
+		find          $(mm_STAGEDIR)/html -type d -exec chmod +x '{}' + ; \
+		chmod -R -s   $(mm_STAGEDIR)/html                               ; \
+		chmod -R -t   $(mm_STAGEDIR)/html                               ; \
+		chmod -R go-w $(mm_STAGEDIR)/html                               ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/html.tar.bz2 html     "
 	@chmod 0644 $(mm_STAGEDIR)/html.tar.bz2
 	@# Make helper tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/helper.tar.bz2
-	@fakeroot sh -c                                                         " \
-		chmod -R go-w $(mm_STAGEDIR)/helper                             ; \
-		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper "
+	@fakeroot sh -c                                                           " \
+		chmod -R +r   $(mm_STAGEDIR)/helper                               ; \
+		chmod -R +w   $(mm_STAGEDIR)/helper                               ; \
+		find          $(mm_STAGEDIR)/helper -type d -exec chmod +x '{}' + ; \
+		chmod -R -s   $(mm_STAGEDIR)/helper                               ; \
+		chmod -R -t   $(mm_STAGEDIR)/helper                               ; \
+		chmod -R go-w $(mm_STAGEDIR)/helper                               ; \
+		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/helper.tar.bz2 helper   "
 	@chmod 0644 $(mm_STAGEDIR)/helper.tar.bz2
 	@# Make PXE tarball file.
 	@echo "  making helper tarball file"
 	@rm -rf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
 	@fakeroot sh -c                                                                         " \
+		chmod -R +r   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
+		chmod -R +w   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
+		find          $(mm_STAGEDIR)/pxe-$(mm_NAME) -type d -exec chmod +x '{}' +       ; \
+		chmod -R -s   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
+		chmod -R -t   $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
 		chmod -R go-w $(mm_STAGEDIR)/pxe-$(mm_NAME)                                     ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2 pxe-$(mm_NAME) "
 	@chmod 0644 $(mm_STAGEDIR)/pxe-$(mm_NAME).tar.bz2
@@ -898,6 +913,11 @@ mm-make-distro-ram:
 	@echo "    making root file system squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs
 	@fakeroot sh -c                                                                          " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		chmod -R +r   $(mm_ROOTFSDIR)                                                    ; \
+		chmod -R +w   $(mm_ROOTFSDIR)                                                    ; \
+		find          $(mm_ROOTFSDIR) -type d -exec chmod +x '{}' +                      ; \
 		chmod -R -s   $(mm_ROOTFSDIR)                                                    ; \
 		chmod -R -t   $(mm_ROOTFSDIR)                                                    ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                    ; \
@@ -907,8 +927,6 @@ mm-make-distro-ram:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                     ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                        ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                              ; \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                  ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
 		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1             ; \
 		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p                 ; \
 		mksquashfs $(mm_ROOTFSDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/rootfs > /dev/null 2>&1 "
@@ -917,6 +935,11 @@ mm-make-distro-ram:
 	@echo "    making extras squashfs image file"
 	@rm -rf $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
 	@fakeroot sh -c                                                                              " \
+		chmod -R +r   $(mm_EXTRASDIR)                                                        ; \
+		chmod -R +w   $(mm_EXTRASDIR)                                                        ; \
+		find          $(mm_EXTRASDIR) -type d -exec chmod +x '{}' +                          ; \
+		chmod -R -s   $(mm_EXTRASDIR)                                                        ; \
+		chmod -R -t   $(mm_EXTRASDIR)                                                        ; \
 		chmod -R go-w $(mm_EXTRASDIR)                                                        ; \
 		mksquashfs $(mm_EXTRASDIR) $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs > /dev/null 2>&1 "
 	@chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/extras.sfs
@@ -926,6 +949,11 @@ mm-make-distro-ram:
 	@mkdir -p  $(mm_STAGEDIR)/ram-$(mm_NAME)/themes
 	@for theme in `cd $(mm_THEMESDIR) ; ls -1` ; do                                                                              \
 		fakeroot sh -c                                                                                                   "   \
+			chmod -R +r   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			chmod -R +w   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			find          $(mm_THEMESDIR)/$${theme} -type d -exec chmod +x '{}' +                                              ;   \
+			chmod -R -s   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
+			chmod -R -t   $(mm_THEMESDIR)/$${theme}                                                                  ;   \
 			chmod -R go-w $(mm_THEMESDIR)/$${theme}                                                                  ;   \
 			mksquashfs $(mm_THEMESDIR)/$${theme} $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs > /dev/null 2>&1 " ; \
 		chmod 0644 $(mm_STAGEDIR)/ram-$(mm_NAME)/themes/$${theme}.sfs                                                       ; \
@@ -947,6 +975,11 @@ mm-make-distro-nfs:
 	@echo "    making root file system tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2
 	@fakeroot sh -c                                                                        " \
+		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
+		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
+		chmod -R +r   $(mm_ROOTFSDIR)                                                  ; \
+		chmod -R +w   $(mm_ROOTFSDIR)                                                  ; \
+		find          $(mm_ROOTFSDIR) -type d -exec chmod +x '{}' +                    ; \
 		chmod -R -s   $(mm_ROOTFSDIR)                                                  ; \
 		chmod -R -t   $(mm_ROOTFSDIR)                                                  ; \
 		chmod -R go-w $(mm_ROOTFSDIR)                                                  ; \
@@ -956,8 +989,6 @@ mm-make-distro-nfs:
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(esbindir)/poweroff                   ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/pumount                      ; \
 		chmod    u+s  $(mm_ROOTFSDIR)/rootfs-ro/$(bindir)/X                            ; \
-		rm -rf $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                                ; \
-		mkdir -p $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev                              ; \
 		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/console c 5 1           ; \
 		mknod -m 0600 $(mm_ROOTFSDIR)/rootfs-ro/$(rootdir)/dev/initctl p               ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/rootfs.tar.bz2 rootfs "
@@ -966,6 +997,11 @@ mm-make-distro-nfs:
 	@echo "    making extras tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
 	@fakeroot sh -c                                                                        " \
+		chmod -R +r   $(mm_EXTRASDIR)                                                  ; \
+		chmod -R +w   $(mm_EXTRASDIR)                                                  ; \
+		find          $(mm_EXTRASDIR) -type d -exec chmod +x '{}' +                    ; \
+		chmod -R -s   $(mm_EXTRASDIR)                                                  ; \
+		chmod -R -t   $(mm_EXTRASDIR)                                                  ; \
 		chmod -R go-w $(mm_EXTRASDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2 extras "
 	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/extras.tar.bz2
@@ -973,6 +1009,11 @@ mm-make-distro-nfs:
 	@echo "    making themes tarball file"
 	@rm -rf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
 	@fakeroot sh -c                                                                        " \
+		chmod -R +r   $(mm_THEMESDIR)                                                  ; \
+		chmod -R +w   $(mm_THEMESDIR)                                                  ; \
+		find          $(mm_THEMESDIR) -type d -exec chmod +x '{}' +                    ; \
+		chmod -R -s   $(mm_THEMESDIR)                                                  ; \
+		chmod -R -t   $(mm_THEMESDIR)                                                  ; \
 		chmod -R go-w $(mm_THEMESDIR)                                                  ; \
 		tar -C $(mm_STAGEDIR) -jcf $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2 themes "
 	@chmod 0644 $(mm_STAGEDIR)/nfs-$(mm_NAME)/themes.tar.bz2
