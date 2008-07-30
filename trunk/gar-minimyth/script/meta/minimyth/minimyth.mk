@@ -766,8 +766,10 @@ mm-gen-files:
 mm-make-udev:
 	$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
 		install -m 755 -D  ./dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
+	@rm -rf   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
+	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
 	$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
-		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d/$(file) ; )
+		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d/$(file) ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
 
 mm-make-other:
