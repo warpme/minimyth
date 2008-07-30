@@ -764,13 +764,17 @@ mm-gen-files:
 	done
 
 mm-make-udev:
-	$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
+	@$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
 		install -m 755 -D  ./dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
 	@rm -rf   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
-	$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
+	@$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
 		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d/$(file) ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
+	@# For some reason udevd generates an error message without these rules
+	@# even though the rules are now in $(elibdir)/udev/rules.d by default.
+	@rm -rf   $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d
 
 mm-make-other:
 	@# Get version.
