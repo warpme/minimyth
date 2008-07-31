@@ -24,29 +24,29 @@ mm_EXTRASDIR := $(mm_STAGEDIR)/extras
 mm_THEMESDIR := $(mm_STAGEDIR)/themes
 
 MM_BIN_FILES    := $(strip \
-	$(if $(wildcard         lists/minimyth-bin-list   ),         lists/minimyth-bin-list   ) \
+	$(if $(wildcard         files/source/lists/minimyth-bin-list   ),         files/source/lists/minimyth-bin-list   ) \
 	$(if $(wildcard    ../../extras/extras-bin-list   ),    ../../extras/extras-bin-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-bin-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
+	$(filter $(patsubst %,files/source/lists/chipsets/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard files/source/lists/chipsets/minimyth-bin-list.*)) \
+	$(filter $(patsubst %,files/source/lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard files/source/lists/software/minimyth-bin-list.*)))
 MM_LIB_FILES    := $(strip \
-	$(if $(wildcard         lists/minimyth-lib-list   ),         lists/minimyth-lib-list   ) \
+	$(if $(wildcard         files/source/lists/minimyth-lib-list   ),         files/source/lists/minimyth-lib-list   ) \
 	$(if $(wildcard    ../../extras/extras-lib-list   ),    ../../extras/extras-lib-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-lib-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
+	$(filter $(patsubst %,files/source/lists/chipsets/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard files/source/lists/chipsets/minimyth-lib-list.*)) \
+	$(filter $(patsubst %,files/source/lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard files/source/lists/software/minimyth-lib-list.*)))
 MM_ETC_FILES    := $(strip \
-	$(if $(wildcard         lists/minimyth-etc-list   ),         lists/minimyth-etc-list   ) \
+	$(if $(wildcard         files/source/lists/minimyth-etc-list   ),         files/source/lists/minimyth-etc-list   ) \
 	$(if $(wildcard    ../../extras/extras-etc-list   ),    ../../extras/extras-etc-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-etc-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
+	$(filter $(patsubst %,files/source/lists/chipsets/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard files/source/lists/chipsets/minimyth-etc-list.*)) \
+	$(filter $(patsubst %,files/source/lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard files/source/lists/software/minimyth-etc-list.*)))
 MM_SHARE_FILES  := $(strip \
-	$(if $(wildcard         lists/minimyth-share-list ),         lists/minimyth-share-list ) \
+	$(if $(wildcard         files/source/lists/minimyth-share-list ),         files/source/lists/minimyth-share-list ) \
 	$(if $(wildcard    ../../extras/extras-share-list ),    ../../extras/extras-share-list ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-share-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
+	$(filter $(patsubst %,files/source/lists/chipsets/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard files/source/lists/chipsets/minimyth-share-list.*)) \
+	$(filter $(patsubst %,files/source/lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard files/source/lists/software/minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
-	$(if $(wildcard         lists/minimyth-remove-list),         lists/minimyth-remove-list) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
+	$(if $(wildcard         files/source/lists/minimyth-remove-list),         files/source/lists/minimyth-remove-list) \
+	$(filter $(patsubst %,files/source/lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard files/source/lists/chipsets/minimyth-remove-list.*)) \
+	$(filter $(patsubst %,files/source/lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard files/source/lists/software/minimyth-remove-list.*)))
 
 MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	gdb \
@@ -158,9 +158,9 @@ MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
 
 GET_UID = \
-	$(shell cat ./dirs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
+	$(shell cat ./files/source/dirs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
 GET_GID = \
-	$(shell cat ./dirs/etc/group  | grep -e '^$1' | cut -d':' -f 3)
+	$(shell cat ./files/source/dirs/etc/group  | grep -e '^$1' | cut -d':' -f 3)
 
 
 # $1 = file type label plural.
@@ -540,9 +540,9 @@ mm-copy:
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qt4prefix)/plugins ; \
 	)
 	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
-	@cp -pdR ./dirs/usr/bin/*                         $(mm_ROOTFSDIR)$(bindir)
+	@cp -pdR ./files/source/dirs/usr/bin/* $(mm_ROOTFSDIR)$(bindir)
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)
-	@cp -pdR ./dirs//lib/*                            $(mm_ROOTFSDIR)$(elibdir)
+	@cp -pdR ./files/source/dirs//lib/*    $(mm_ROOTFSDIR)$(elibdir)
 	@# Copy binaries, etcs, shares, and libraries.
 	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
@@ -559,7 +559,7 @@ mm-make-conf:
 	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@cp -pdR ./dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
+	@cp -pdR ./files/source/dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
@@ -572,30 +572,30 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./dirs/srv   $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./dirs/root  $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./dirs/home  $(mm_ROOTFSDIR)
-	@cp -pdRf $(mm_HOME)/html/minimyth/*              $(mm_ROOTFSDIR)/srv/www/
+	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./files/source/dirs/srv   $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./files/source/dirs/root  $(mm_ROOTFSDIR)
+	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./files/source/dirs/home  $(mm_ROOTFSDIR)
+	@cp -pdRf $(mm_HOME)/html/minimyth/*                           $(mm_ROOTFSDIR)/srv/www/
 	@find $(mm_ROOTFSDIR)/srv/www -name .htaccess -exec rm -rf '{}' +
 	@rm -rf $(mm_ROOTFSDIR)/srv/www/download
-	@cp -pdRf ./dirs/srv/www/*                        $(mm_ROOTFSDIR)/srv/www/
+	@cp -pdRf ./files/source/dirs/srv/www/*                        $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/build
-	@ln -s $(versiondir)                              $(mm_ROOTFSDIR)/srv/www/software/base/versions
-	@ln -s $(licensedir)                              $(mm_ROOTFSDIR)/srv/www/software/base/licenses
-	@ln -s $(extras_versiondir)                       $(mm_ROOTFSDIR)/srv/www/software/extras/versions
-	@ln -s $(extras_licensedir)                       $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
-	@ln -s $(versiondir)-build                        $(mm_ROOTFSDIR)/srv/www/software/build/versions
-	@ln -s $(licensedir)-build                        $(mm_ROOTFSDIR)/srv/www/software/build/licenses
+	@ln -s $(versiondir)                                           $(mm_ROOTFSDIR)/srv/www/software/base/versions
+	@ln -s $(licensedir)                                           $(mm_ROOTFSDIR)/srv/www/software/base/licenses
+	@ln -s $(extras_versiondir)                                    $(mm_ROOTFSDIR)/srv/www/software/extras/versions
+	@ln -s $(extras_licensedir)                                    $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
+	@ln -s $(versiondir)-build                                     $(mm_ROOTFSDIR)/srv/www/software/build/versions
+	@ln -s $(licensedir)-build                                     $(mm_ROOTFSDIR)/srv/www/software/build/licenses
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth
-	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.lircrc
+	@ln -sf $(sysconfdir)/lircrc                                   $(mm_ROOTFSDIR)/home/minimyth/.lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sysconfdir)/lircrc                      $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/lircrc                                   $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
 	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sysconfdir)/mythtv/config.xml           $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
-	@ln -sf $(sysconfdir)/mythtv/mysql.txt            $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
+	@ln -sf $(sysconfdir)/mythtv/config.xml                        $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
+	@ln -sf $(sysconfdir)/mythtv/mysql.txt                         $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
 	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
@@ -764,12 +764,12 @@ mm-gen-files:
 	done
 
 mm-make-udev:
-	@$(foreach file, $(shell cd ./dirs/udev/scripts.d ; ls -1 *      ), \
-		install -m 755 -D  ./dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
+	@$(foreach file, $(shell cd ./files/source/dirs/udev/scripts.d ; ls -1 *      ), \
+		install -m 755 -D  ./files/source/dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
 	@rm -rf   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
-	@$(foreach file, $(shell cd ./dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
-		install -m 644 -D  ./dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d/$(file) ; )
+	@$(foreach file, $(shell cd ./files/source/dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
+		install -m 644 -D  ./files/source/dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d/$(file) ; )
 	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
 	@# For some reason udevd generates an error message without these rules
 	@# even though the rules are now in $(elibdir)/udev/rules.d by default.
@@ -789,36 +789,36 @@ mm-make-other:
 	@# Get scripts
 	@rm -rf   $(mm_STAGEDIR)/scripts
 	@mkdir -p $(mm_STAGEDIR)/scripts
-	@cp  -pd ./files/mm_local_install $(mm_STAGEDIR)/scripts/mm_local_install
-	@cp  -pd ./files/mm_local_update  $(mm_STAGEDIR)/scripts/mm_local_update
-	@cp  -pd ./files/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
+	@cp  -pd ./files/source/mm_local/mm_local_install $(mm_STAGEDIR)/scripts/mm_local_install
+	@cp  -pd ./files/source/mm_local/mm_local_update  $(mm_STAGEDIR)/scripts/mm_local_update
+	@cp  -pd ./files/source/mm_local/mm_local_helper  $(mm_STAGEDIR)/scripts/mm_local_helper
 	@# Get kernel.
 	@rm -rf $(mm_STAGEDIR)/kernel
 	@cp $(DESTDIR)/$(LINUX_DIR)/vmlinuz $(mm_STAGEDIR)/kernel
 	@# Get local helper.
 	@rm -rf   $(mm_STAGEDIR)/helper
 	@mkdir -p $(mm_STAGEDIR)/helper
-	@cp  -pd ./files/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
+	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
 	@cd ${mm_STAGEDIR}/helper ; md5sum mm_local_helper > mm_local_helper.md5
 	@# Get /usr/bin MiniMyth scripts.
-	@cp  -pd ./files/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@cp  -pd ./files/source/mm_local/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
-	@cp  -pd ./files/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
+	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)
-	@cp  -pd ./files/pxe.readme.txt $(mm_STAGEDIR)/pxe-$(mm_NAME)/readme.txt
+	@cp  -pd ./files/source/pxe/readme.txt $(mm_STAGEDIR)/pxe-$(mm_NAME)/readme.txt
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth
 	@if test -e $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 ; then \
 		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 \
 		       $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.0 ; \
 	fi
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg
-	@cat ./files/pxe.gpxe.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
-	@cp  -pd ./files/pxe.gpxe.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/dhcpd.conf
+	@cat ./files/source/pxe/gpxe/default | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
+	@cp  -pd ./files/source/pxe/gpxe/dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/dhcpd.conf
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth
 	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.0
 	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg
-	@cat ./files/pxe.pxelinux.cfg | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
-	@cp  -pd ./files/pxe.pxelinux.dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/dhcpd.conf
+	@cat ./files/source/pxe/pxelinux/default | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
+	@cp  -pd ./files/source/pxe/pxelinux/dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/dhcpd.conf
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
@@ -848,20 +848,20 @@ mm-make-themes:
 mm-make-rootfs:
 	@if test -e $(mm_ROOTFSDIR).ro ; then rm -rf $(mm_ROOTFSDIR).ro ; fi
 	@mv $(mm_ROOTFSDIR) $(mm_ROOTFSDIR).ro
-	@mkdir -p                           $(mm_ROOTFSDIR)
-	@mkdir -p                           $(mm_ROOTFSDIR)/rootfs
-	@mv $(mm_ROOTFSDIR).ro              $(mm_ROOTFSDIR)/rootfs-ro
-	@mkdir -p                           $(mm_ROOTFSDIR)/rw
-	@mkdir -p                           $(mm_ROOTFSDIR)/bin
-	@ln -s rootfs-ro/dev                $(mm_ROOTFSDIR)/dev
-	@ln -s rootfs-ro/lib                $(mm_ROOTFSDIR)/lib
-	@mkdir -p                           $(mm_ROOTFSDIR)/sbin
-	@ln -s ../rootfs-ro/bin/mkdir       $(mm_ROOTFSDIR)/bin/mkdir
-	@ln -s ../rootfs-ro/sbin/modprobe   $(mm_ROOTFSDIR)/sbin/modprobe
-	@ln -s ../rootfs-ro/bin/mount       $(mm_ROOTFSDIR)/bin/mount
-	@ln -s ../rootfs-ro/sbin/pivot_root $(mm_ROOTFSDIR)/sbin/pivot_root
-	@ln -s ../rootfs-ro/bin/sh          $(mm_ROOTFSDIR)/bin/sh
-	@cp -pdR ./dirs/initrd/sbin/init    $(mm_ROOTFSDIR)/sbin/init
+	@mkdir -p                                     $(mm_ROOTFSDIR)
+	@mkdir -p                                     $(mm_ROOTFSDIR)/rootfs
+	@mv $(mm_ROOTFSDIR).ro                        $(mm_ROOTFSDIR)/rootfs-ro
+	@mkdir -p                                     $(mm_ROOTFSDIR)/rw
+	@mkdir -p                                     $(mm_ROOTFSDIR)/bin
+	@ln -s rootfs-ro/dev                          $(mm_ROOTFSDIR)/dev
+	@ln -s rootfs-ro/lib                          $(mm_ROOTFSDIR)/lib
+	@mkdir -p                                     $(mm_ROOTFSDIR)/sbin
+	@ln -s ../rootfs-ro/bin/mkdir                 $(mm_ROOTFSDIR)/bin/mkdir
+	@ln -s ../rootfs-ro/sbin/modprobe             $(mm_ROOTFSDIR)/sbin/modprobe
+	@ln -s ../rootfs-ro/bin/mount                 $(mm_ROOTFSDIR)/bin/mount
+	@ln -s ../rootfs-ro/sbin/pivot_root           $(mm_ROOTFSDIR)/sbin/pivot_root
+	@ln -s ../rootfs-ro/bin/sh                    $(mm_ROOTFSDIR)/bin/sh
+	@cp -pdR ./files/source/dirs/initrd/sbin/init $(mm_ROOTFSDIR)/sbin/init
 
 mm-remove-svn:
 	@find $(mm_STAGEDIR) -name .svn -exec rm -rf '{}' +
@@ -1071,7 +1071,7 @@ mm-make-distro-share:
 		cd $(mm_SHAREDIR) ; md5sum nfs-$(mm_NAME).tar.bz2 > nfs-$(mm_NAME).tar.bz2.md5  ; \
 	 fi
 	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_SHAREDIR)/changelog.txt
-	@cp -pdR ./files/share-readme.txt                        $(mm_SHAREDIR)/readme.txt
+	@cp -pdR ./files/source/share-readme.txt                 $(mm_SHAREDIR)/readme.txt
 	@$(call SET_PERMISSIONS,$(mm_SHAREDIR))
 
 mm-make-distro: \
