@@ -158,9 +158,9 @@ MAKE_PATH = \
 	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
 
 GET_UID = \
-	$(shell cat ./files/source/dirs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
+	$(shell cat ./files/source/rootfs/etc/passwd | grep -e '^$1' | cut -d':' -f 3)
 GET_GID = \
-	$(shell cat ./files/source/dirs/etc/group  | grep -e '^$1' | cut -d':' -f 3)
+	$(shell cat ./files/source/rootfs/etc/group  | grep -e '^$1' | cut -d':' -f 3)
 
 
 # $1 = file type label plural.
@@ -510,13 +510,13 @@ mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
 mm-make-package-rootfs:
-	@find ./files/source/dirs -type d \
+	@find ./files/source/rootfs -type d \
 		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
-		| sed -e 's%^\./files/source/dirs%$(mm_ROOTFSDIR)%' \
+		| sed -e 's%^\./files/source/rootfs%$(mm_ROOTFSDIR)%' \
 		| xargs mkdir -m 0755 -p
-	@find ./files/source/dirs -type f \
+	@find ./files/source/rootfs -type f \
 		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
-		| sed -e 's%^\(\./files/source/dirs\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/\2%' \
+		| sed -e 's%^\(\./files/source/rootfs\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/\2%' \
 		| xargs -n 2 cp -f
 
 mm-make-busybox:
