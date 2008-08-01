@@ -236,7 +236,7 @@ SET_PERMISSIONS = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-package-rootfs mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
+mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-sub mm-make-link mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-gen-files mm-strip mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-make-distro
 
 mm-check:
 	@echo "checking ..."
@@ -509,16 +509,6 @@ mm-check:
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
-mm-make-package-rootfs:
-	@find ./files/source/rootfs -type d \
-		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
-		| sed -e 's%^\./files/source/rootfs%$(mm_ROOTFSDIR)%' \
-		| xargs mkdir -m 0755 -p
-	@find ./files/source/rootfs -type f \
-		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
-		| sed -e 's%^\(\./files/source/rootfs\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/\2%' \
-		| xargs -n 2 cp -f
-
 mm-make-busybox:
 	@main_DESTDIR=$(PWD)/$(mm_ROOTFSDIR) $(MAKE) -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_ROOTFSDIR)/var
@@ -554,53 +544,74 @@ mm-copy:
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
 	@$(call COPY_FILES, "shares"   , "share"  , $(sharedirs), $(MM_SHARES))
 	@$(call COPY_FILES, "libraries", "library", $(libdirs)  , $(MM_LIBS)  )
-
-mm-make-conf:
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/fonts
-	@echo -n                                         >  $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '<?xml version="1.0"?>'                    >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '<fontconfig>'                             >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%'     $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
-	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
-	@mkdir -p $(mm_ROOTFSDIR)$(versiondir)
-	@$(foreach build_var,$(build_vars),echo "$(build_var)='$(strip $($(build_var)))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%' $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
-	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
-	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
-	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@cp -pdRf $(mm_HOME)/html/minimyth/*                           $(mm_ROOTFSDIR)/srv/www/
-	@find $(mm_ROOTFSDIR)/srv/www -name .htaccess -exec rm -rf '{}' +
+	@# Copy HTML files.
+	@find $(mm_HOME)/html/minimyth -type d \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\$(mm_HOME)/html/minimyth%$(mm_ROOTFSDIR)/srv/www%' \
+		| xargs mkdir -m 0755 -p
+	@find $(mm_HOME)/html/minimyth -type f \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| grep -v '/\.htaccess$$' \
+		| sed -e 's%^\(\$(mm_HOME)/html/minimyth\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/srv/www/\2%' \
+		| xargs -n 2 cp -fpd
 	@rm -rf $(mm_ROOTFSDIR)/srv/www/download
-	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
-	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
-	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
-	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/build
-	@ln -s $(versiondir)                                           $(mm_ROOTFSDIR)/srv/www/software/base/versions
-	@ln -s $(licensedir)                                           $(mm_ROOTFSDIR)/srv/www/software/base/licenses
-	@ln -s $(extras_versiondir)                                    $(mm_ROOTFSDIR)/srv/www/software/extras/versions
-	@ln -s $(extras_licensedir)                                    $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
-	@ln -s $(versiondir)-build                                     $(mm_ROOTFSDIR)/srv/www/software/build/versions
-	@ln -s $(licensedir)-build                                     $(mm_ROOTFSDIR)/srv/www/software/build/licenses
-	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth
-	@ln -sf $(sysconfdir)/lircrc                                   $(mm_ROOTFSDIR)/home/minimyth/.lircrc
-	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sysconfdir)/lircrc                                   $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
-	@mkdir -p $(mm_ROOTFSDIR)/home/minimyth/.mythtv
-	@ln -sf $(sysconfdir)/mythtv/config.xml                        $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
-	@ln -sf $(sysconfdir)/mythtv/mysql.txt                         $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
-	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
-	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/udev/
+	@# Copy package rootfs files.
+	@find ./files/source/rootfs -type d \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\./files/source/rootfs%$(mm_ROOTFSDIR)%' \
+		| xargs mkdir -m 0755 -p
+	@find ./files/source/rootfs -type f \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\(\./files/source/rootfs\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/\2%' \
+		| xargs -n 2 cp -fpd
+	@# Copy mm_local scripts.
+	@cp  -pd ./files/source/mm_local/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
+	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
+
+mm-make-sub:
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%g'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%g'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%g' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%g'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%g'     $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
+	@sed -i 's%@GAR_libdir@%$(libdir)%g'                       $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/init.d/extras
+	@rm -rf   $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk
+	@mkdir -m 0755 -p $(mm_ROOTFSDIR)$(versiondir)
+	@$(foreach build_var,$(build_vars), \
+		echo "$(build_var)='$(strip $($(build_var)))'" >> $(mm_ROOTFSDIR)$(versiondir)/minimyth.conf.mk ; )
+	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs_base), \
+		echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
+	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
+
+mm-make-link:
+	@# Make documentation links.
+	@mkdir -m 0755 -p           $(mm_ROOTFSDIR)/srv/www/software/base
+	@ln -s $(versiondir)        $(mm_ROOTFSDIR)/srv/www/software/base/versions
+	@ln -s $(licensedir)        $(mm_ROOTFSDIR)/srv/www/software/base/licenses
+	@mkdir -m 0755 -p           $(mm_ROOTFSDIR)/srv/www/software/extras
+	@ln -s $(extras_versiondir) $(mm_ROOTFSDIR)/srv/www/software/extras/versions
+	@ln -s $(extras_licensedir) $(mm_ROOTFSDIR)/srv/www/software/extras/licenses
+	@mkdir -m 0755 -p           $(mm_ROOTFSDIR)/srv/www/software/build
+	@ln -s $(versiondir)-build  $(mm_ROOTFSDIR)/srv/www/software/build/versions
+	@ln -s $(licensedir)-build  $(mm_ROOTFSDIR)/srv/www/software/build/licenses
+	@# Make user 'minimyth' configuration links.
+	@mkdir -m 0755 -p                       $(mm_ROOTFSDIR)/home/minimyth
+	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/home/minimyth/.lircrc
+	@mkdir -m 0755 -p                       $(mm_ROOTFSDIR)/home/minimyth/.mythtv
+	@ln -sf $(sysconfdir)/lircrc            $(mm_ROOTFSDIR)/home/minimyth/.mythtv/lircrc
+	@ln -sf $(sysconfdir)/mythtv/config.xml $(mm_ROOTFSDIR)/home/minimyth/.mythtv/config.xml
+	@ln -sf $(sysconfdir)/mythtv/mysql.txt  $(mm_ROOTFSDIR)/home/minimyth/.mythtv/mysql.txt
+	@# Make init script links.
+	@mkdir -m 0775 -p                $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
+	index=10 ; $(foreach file, $(MM_INIT_START), \
+		index=$$(($${index}+2)) ; \
+		ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
+	index=10 ; $(foreach file, $(MM_INIT_KILL) , \
+		index=$$(($${index}+2)) ; \
+		ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -774,7 +785,16 @@ mm-make-other:
 	@cp -pdR $(mm_HOME)/html/minimyth/document-changelog.txt $(mm_STAGEDIR)/changelog.txt
 	@# Get html documentation.
 	@rm -rf $(mm_STAGEDIR)/html
-	@cp -pdR $(mm_HOME)/html $(mm_STAGEDIR)
+	@find $(mm_HOME)/html/minimyth -type d \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\$(mm_HOME)/html/minimyth%$(mm_STAGEDIR)/html%' \
+		| xargs mkdir -m 0755 -p
+	@find $(mm_HOME)/html/minimyth -type f \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| grep -v '/\.htaccess$$' \
+		| sed -e 's%^\(\$(mm_HOME)/html/minimyth\)/\(.*\)$$%\1/\2 $(mm_STAGEDIR)/html/\2%' \
+		| xargs -n 2 cp -fpd
+	@rm -rf $(mm_ROOTFSDIR)/srv/www/download
 	@# Get scripts
 	@rm -rf   $(mm_STAGEDIR)/scripts
 	@mkdir -p $(mm_STAGEDIR)/scripts
@@ -789,10 +809,6 @@ mm-make-other:
 	@mkdir -p $(mm_STAGEDIR)/helper
 	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_STAGEDIR)/helper/mm_local_helper
 	@cd ${mm_STAGEDIR}/helper ; md5sum mm_local_helper > mm_local_helper.md5
-	@# Get /usr/bin MiniMyth scripts.
-	@cp  -pd ./files/source/mm_local/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
-	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
-	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
 	@# Get PXE files.
 	@rm -rf $(mm_STAGEDIR)/pxe-$(mm_NAME)
 	@cp -pdR ./files/source/pxe $(mm_STAGEDIR)/pxe-$(mm_NAME)
@@ -847,9 +863,6 @@ mm-make-rootfs:
 	@ln -s ../rootfs-ro/sbin/pivot_root      $(mm_ROOTFSDIR)/sbin/pivot_root
 	@ln -s ../rootfs-ro/bin/sh               $(mm_ROOTFSDIR)/bin/sh
 	@cp -pdR ./files/source/initrd/sbin/init $(mm_ROOTFSDIR)/sbin/init
-
-mm-remove-svn:
-	@find $(mm_STAGEDIR) -name .svn -exec rm -rf '{}' +
 
 mm-make-distro-base:
 	@echo 'making minimyth distribution'
