@@ -236,7 +236,7 @@ SET_PERMISSIONS = \
 
 mm-all:
 
-mm-build: mm-check mm-clean mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-udev mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
+mm-build: mm-check mm-clean mm-make-package-rootfs mm-make-busybox mm-copy mm-make-conf mm-remove-pre mm-copy-libs mm-copy-kernel-modules mm-remove-post mm-strip mm-gen-files mm-make-other mm-make-extras mm-make-themes mm-make-rootfs mm-remove-svn mm-make-distro
 
 mm-check:
 	@echo "checking ..."
@@ -509,6 +509,16 @@ mm-check:
 mm-clean:
 	@rm -rf $(mm_DESTDIR)
 
+mm-make-package-rootfs:
+	@find ./files/source/dirs -type d \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\./files/source/dirs%$(mm_ROOTFSDIR)%' \
+		| xargs mkdir -m 0755 -p
+	@find ./files/source/dirs -type f \
+		| grep -v '/\.svn$$' | grep -v '/\.svn/' \
+		| sed -e 's%^\(\./files/source/dirs\)/\(.*\)$$%\1/\2 $(mm_ROOTFSDIR)/\2%' \
+		| xargs -n 2 cp -f
+
 mm-make-busybox:
 	@main_DESTDIR=$(PWD)/$(mm_ROOTFSDIR) $(MAKE) -C $(GARDIR)/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $(mm_ROOTFSDIR)/var
@@ -539,10 +549,6 @@ mm-copy:
 		mkdir -p $(mm_ROOTFSDIR)$(qt4prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $(mm_ROOTFSDIR)$(qt4prefix)/plugins ; \
 	)
-	@mkdir -p $(mm_ROOTFSDIR)$(bindir)
-	@cp -pdR ./files/source/dirs/usr/bin/* $(mm_ROOTFSDIR)$(bindir)
-	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)
-	@cp -pdR ./files/source/dirs//lib/*    $(mm_ROOTFSDIR)$(elibdir)
 	@# Copy binaries, etcs, shares, and libraries.
 	@$(call COPY_FILES, "binaries" , "binary" , $(bindirs)  , $(MM_BINS)  )
 	@$(call COPY_FILES, "etcs"     , "etc"    , $(etcdirs)  , $(MM_ETCS)  )
@@ -559,7 +565,6 @@ mm-make-conf:
 	@echo '<dir>$(libdir)/X11/fonts/misc</dir>'      >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '<dir>$(libdir)/X11/fonts/TTF</dir>'       >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
 	@echo '</fontconfig>'                            >> $(mm_ROOTFSDIR)$(sysconfdir)/fonts/local.conf
-	@cp -pdR ./files/source/dirs/etc/* $(mm_ROOTFSDIR)$(sysconfdir)
 	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%'                   $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%'         $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%' $(mm_ROOTFSDIR)$(sysconfdir)/conf.d/core
@@ -572,13 +577,9 @@ mm-make-conf:
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf
 	@$(foreach dir, $(libdirs_base), echo $(dir) >> $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.conf ; )
 	@rm -f $(mm_ROOTFSDIR)$(sysconfdir)/ld.so.cache{,~}
-	@rm -rf $(mm_ROOTFSDIR)/srv  ; cp -r ./files/source/dirs/srv   $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/root ; cp -r ./files/source/dirs/root  $(mm_ROOTFSDIR)
-	@rm -rf $(mm_ROOTFSDIR)/home ; cp -r ./files/source/dirs/home  $(mm_ROOTFSDIR)
 	@cp -pdRf $(mm_HOME)/html/minimyth/*                           $(mm_ROOTFSDIR)/srv/www/
 	@find $(mm_ROOTFSDIR)/srv/www -name .htaccess -exec rm -rf '{}' +
 	@rm -rf $(mm_ROOTFSDIR)/srv/www/download
-	@cp -pdRf ./files/source/dirs/srv/www/*                        $(mm_ROOTFSDIR)/srv/www/
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/base
 	@mkdir -p $(mm_ROOTFSDIR)/srv/www/software/extras
@@ -599,6 +600,7 @@ mm-make-conf:
 	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d
 	index=10 ; $(foreach file, $(MM_INIT_START), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
 	index=10 ; $(foreach file, $(MM_INIT_KILL), index=$$(($${index}+2)) ; ln -sf ../init.d/$(file) $(mm_ROOTFSDIR)$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
+	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/udev/
 
 mm-remove-pre:
 	@# Remove unwanted binaries, etc, shares and libraries.
@@ -763,19 +765,6 @@ mm-gen-files:
 		ln -sf ./$(call DIRSTODOTS,$(datadir)/mythtv)/$(libdir)/X11/fonts/TTF/$${font} $(mm_ROOTFSDIR)$(datadir)/mythtv/$${font} ; \
 	done
 
-mm-make-udev:
-	@$(foreach file, $(shell cd ./files/source/dirs/udev/scripts.d ; ls -1 *      ), \
-		install -m 755 -D  ./files/source/dirs/udev/scripts.d/$(file) $(mm_ROOTFSDIR)$(elibdir)/udev/$(file) ; )
-	@rm -rf   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
-	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d
-	@$(foreach file, $(shell cd ./files/source/dirs/udev/rules.d   ; ls -1 *.rules *.rules.disabled), \
-		install -m 644 -D  ./files/source/dirs/udev/rules.d/$(file)   $(mm_ROOTFSDIR)$(elibdir)/udev/rules.d/$(file) ; )
-	@mkdir -p $(mm_ROOTFSDIR)$(elibdir)/udev/devices
-	@# For some reason udevd generates an error message without these rules
-	@# even though the rules are now in $(elibdir)/udev/rules.d by default.
-	@rm -rf   $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d
-	@mkdir -p $(mm_ROOTFSDIR)$(sysconfdir)/udev/rules.d
-
 mm-make-other:
 	@# Get version.
 	@mkdir -p $(mm_STAGEDIR)
@@ -804,21 +793,17 @@ mm-make-other:
 	@cp  -pd ./files/source/mm_local/mm_local_update $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@chmod 0755 $(mm_ROOTFSDIR)/usr/bin/mm_local_update
 	@cp  -pd ./files/source/mm_local/mm_local_helper $(mm_ROOTFSDIR)/usr/bin/mm_local_helper_old
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)
-	@cp  -pd ./files/source/pxe/readme.txt $(mm_STAGEDIR)/pxe-$(mm_NAME)/readme.txt
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth
+	@# Get PXE files.
+	@rm -rf $(mm_STAGEDIR)/pxe-$(mm_NAME)
+	@cp -pdR ./files/source/pxe $(mm_STAGEDIR)/pxe-$(mm_NAME)
+	@sed -e 's%@MM_NAME@%$(mm_NAME)%' -i $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
+	@sed -e 's%@MM_NAME@%$(mm_NAME)%' -i $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
 	@if test -e $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 ; then \
 		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 \
 		       $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.0 ; \
 	fi
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg
-	@cat ./files/source/pxe/gpxe/default | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/tftpboot/minimyth/gpxe.cfg/default
-	@cp  -pd ./files/source/pxe/gpxe/dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/gpxe/dhcpd.conf
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth
-	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.0
-	@mkdir -p $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg
-	@cat ./files/source/pxe/pxelinux/default | sed -e 's%@MM_NAME@%$(mm_NAME)%' > $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
-	@cp  -pd ./files/source/pxe/pxelinux/dhcpd.conf $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/dhcpd.conf
+	@cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 \
+	        $(mm_STAGEDIR)/pxe-$(mm_NAME)/pxelinux/tftpboot/minimyth/pxelinux.0
 
 mm-make-extras:
 	@rm -rf $(mm_EXTRASDIR) ; mkdir -p $(mm_EXTRASDIR)
@@ -848,20 +833,20 @@ mm-make-themes:
 mm-make-rootfs:
 	@if test -e $(mm_ROOTFSDIR).ro ; then rm -rf $(mm_ROOTFSDIR).ro ; fi
 	@mv $(mm_ROOTFSDIR) $(mm_ROOTFSDIR).ro
-	@mkdir -p                                     $(mm_ROOTFSDIR)
-	@mkdir -p                                     $(mm_ROOTFSDIR)/rootfs
-	@mv $(mm_ROOTFSDIR).ro                        $(mm_ROOTFSDIR)/rootfs-ro
-	@mkdir -p                                     $(mm_ROOTFSDIR)/rw
-	@mkdir -p                                     $(mm_ROOTFSDIR)/bin
-	@ln -s rootfs-ro/dev                          $(mm_ROOTFSDIR)/dev
-	@ln -s rootfs-ro/lib                          $(mm_ROOTFSDIR)/lib
-	@mkdir -p                                     $(mm_ROOTFSDIR)/sbin
-	@ln -s ../rootfs-ro/bin/mkdir                 $(mm_ROOTFSDIR)/bin/mkdir
-	@ln -s ../rootfs-ro/sbin/modprobe             $(mm_ROOTFSDIR)/sbin/modprobe
-	@ln -s ../rootfs-ro/bin/mount                 $(mm_ROOTFSDIR)/bin/mount
-	@ln -s ../rootfs-ro/sbin/pivot_root           $(mm_ROOTFSDIR)/sbin/pivot_root
-	@ln -s ../rootfs-ro/bin/sh                    $(mm_ROOTFSDIR)/bin/sh
-	@cp -pdR ./files/source/dirs/initrd/sbin/init $(mm_ROOTFSDIR)/sbin/init
+	@mkdir -p                                $(mm_ROOTFSDIR)
+	@mkdir -p                                $(mm_ROOTFSDIR)/rootfs
+	@mv $(mm_ROOTFSDIR).ro                   $(mm_ROOTFSDIR)/rootfs-ro
+	@mkdir -p                                $(mm_ROOTFSDIR)/rw
+	@mkdir -p                                $(mm_ROOTFSDIR)/bin
+	@ln -s rootfs-ro/dev                     $(mm_ROOTFSDIR)/dev
+	@ln -s rootfs-ro/lib                     $(mm_ROOTFSDIR)/lib
+	@mkdir -p                                $(mm_ROOTFSDIR)/sbin
+	@ln -s ../rootfs-ro/bin/mkdir            $(mm_ROOTFSDIR)/bin/mkdir
+	@ln -s ../rootfs-ro/sbin/modprobe        $(mm_ROOTFSDIR)/sbin/modprobe
+	@ln -s ../rootfs-ro/bin/mount            $(mm_ROOTFSDIR)/bin/mount
+	@ln -s ../rootfs-ro/sbin/pivot_root      $(mm_ROOTFSDIR)/sbin/pivot_root
+	@ln -s ../rootfs-ro/bin/sh               $(mm_ROOTFSDIR)/bin/sh
+	@cp -pdR ./files/source/initrd/sbin/init $(mm_ROOTFSDIR)/sbin/init
 
 mm-remove-svn:
 	@find $(mm_STAGEDIR) -name .svn -exec rm -rf '{}' +
