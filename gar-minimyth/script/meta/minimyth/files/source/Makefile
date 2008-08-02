@@ -1,6 +1,8 @@
+top        = ../
 top_source = ./
 top_build  = ../build/
 
+top        := $(shell cd $(top)        ; pwd)
 top_source := $(shell cd $(top_source) ; pwd)
 top_build  := $(shell cd $(top_build)  ; pwd)
 
@@ -121,7 +123,7 @@ COPY_FILES = \
 			done ; \
 		done ; \
 		if [ -z $${found} ] ; then \
-			echo "warning: $(strip $(2)) \"$${file_item}\" not found." ; \
+			echo "copying $(strip $(1)): warning: $(strip $(2)) \"$${file_item}\" not found." ; \
 		fi ; \
 	done
 
@@ -146,6 +148,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@# Install busybox.
+	@echo "installing busybox"
 	@main_DESTDIR=$@~ $(MAKE) -C $(mm_HOME)/script/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $@~/var
 	@# Copy versions.
@@ -324,7 +327,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			| sed -e "s% $${old_filter} % %g"` ; \
 		new_list=`echo $${new_list} | sed -e 's%  *% %g' | sed -e 's%^  *%%' | sed -e 's%  *$$%%'` ; \
 		lib_count=`echo "$${new_list}" | wc -w` ; \
-		echo "  pass $${pass} found $${lib_count} libraries to copy" ; \
+		echo "copying dependent libraries: pass $${pass} found $${lib_count} libraries to copy" ; \
 		if [ "$(mm_DEBUG_BUILD)" = "yes" ] ; then \
 			echo "    bin_list : $${bin_list}" ; \
 			echo "    lib_list : $${lib_list}" ; \
@@ -414,12 +417,12 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
 		cd $@~ ; \
 		for dir in $${dirs} ; do \
-			echo "  stripping [...]$${dir}" ; \
+			echo "stripping perl: stripping [...]$${dir}" ; \
 			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
 			rm -f PerlSharpLog.txt ; \
 			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
 			for revert in $${revert_list} ; do \
-				echo "    not stripping perl file [...]$${revert}" ; \
+				echo "stripping perl: not stripping perl file [...]$${revert}" ; \
 				rm -f ./$${revert}.ERR ; \
 				rm -f ./$${revert}.LOG ; \
 				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
@@ -430,6 +433,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@mv $@~ $@
 
 $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
+	@echo "making root file system directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -468,7 +472,27 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 	@touch $@~
 	@mv $@~ $@
 
+$(top_build)/stage/image/rootfs.fakeroot: $(top_build)/stage/image/rootfs
+	@echo "making root file system directory fakeroot configuration file"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -s $@~ sh -c                                             " \
+		$(call SET_PERMISSIONS,$<)                                 ; \
+		chmod    u+s     $</rootfs-ro/$(ebindir)/busybox           ; \
+		chmod    u+s     $</rootfs-ro/$(ebindir)/ping              ; \
+		chmod    u+s     $</rootfs-ro/$(bindir)/pmount             ; \
+		chmod    u+s     $</rootfs-ro/$(esbindir)/poweroff         ; \
+		chmod    u+s     $</rootfs-ro/$(bindir)/pumount            ; \
+		chmod    u+s     $</rootfs-ro/$(bindir)/X                  ; \
+		rm -rf           $</rootfs-ro/$(rootdir)/dev               ; \
+		mkdir -m 0755 -p $</rootfs-ro/$(rootdir)/dev               ; \
+		mknod -m 0600    $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
+		mknod -m 0600    $</rootfs-ro/$(rootdir)/dev/initctl p     "
+	@touch $@~
+	@mv $@~ $@
+
 $(top_build)/stage/image/themes: $(top_build)/image/rootfs
+	@echo "making themes file system directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -484,7 +508,17 @@ $(top_build)/stage/image/themes: $(top_build)/image/rootfs
 	@touch $@~
 	@mv $@~ $@
 
+$(top_build)/stage/image/themes.fakeroot: $(top_build)/stage/image/themes
+	@echo "making themes file system directory fakeroot configuration file"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -s $@~ sh -c             " \
+		$(call SET_PERMISSIONS,$<) "
+	@touch $@~
+	@mv $@~ $@
+
 $(top_build)/stage/image/extras: $(top_build)/image/rootfs
+	@echo "making extras file system directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -492,7 +526,17 @@ $(top_build)/stage/image/extras: $(top_build)/image/rootfs
 	@touch $@~
 	@mv $@~ $@
 
+$(top_build)/stage/image/extras.fakeroot: $(top_build)/stage/image/extras
+	@echo "making extras file system directory fakeroot configuration file"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -s $@~ sh -c             " \
+		$(call SET_PERMISSIONS,$<) "
+	@touch $@~
+	@mv $@~ $@
+
 $(top_build)/stage/pxe-$(mm_NAME): $(top_source)/pxe
+	@echo "making PXE directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -512,6 +556,7 @@ $(top_build)/stage/pxe-$(mm_NAME): $(top_source)/pxe
 
 $(top_build)/stage/helper: \
 		$(top_source)/mm_local/mm_local_helper
+	@echo "making helper directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -524,6 +569,7 @@ $(top_build)/stage/helper: \
 	@mv $@~ $@
 
 $(top_build)/stage/html: $(top_source)/html
+	@echo "copying HTML documentation"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $^ $@~
@@ -531,6 +577,7 @@ $(top_build)/stage/html: $(top_source)/html
 	@mv $@~ $@
 
 $(top_build)/stage/version:
+	@echo "making version file"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@touch $@~
@@ -543,6 +590,7 @@ $(top_build)/stage/scripts: \
 		$(top_source)/mm_local/mm_local_install \
 		$(top_source)/mm_local/mm_local_update  \
 		$(top_source)/mm_local/mm_local_helper
+	@echo "making scripts directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -550,15 +598,8 @@ $(top_build)/stage/scripts: \
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/kernel: $(DESTDIR)/$(LINUX_DIR)/vmlinuz
-	@mkdir -m 0755 -p $(@D)
-	@rm -rf $@ $@~
-	@cp -pdR $< $@~
-	@chmod 0644 $@~
-	@touch $@~
-	@mv $@~ $@
-
 $(top_build)/stage/changelog.txt: $(top_source)/html/document-changelog.txt
+	@echo "copying changelog file"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -567,6 +608,7 @@ $(top_build)/stage/changelog.txt: $(top_source)/html/document-changelog.txt
 	@mv $@~ $@
 
 $(top_build)/stage/readme.txt: $(top_source)/share-readme.txt
+	@echo "copying readme file"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -575,96 +617,87 @@ $(top_build)/stage/readme.txt: $(top_source)/share-readme.txt
 	@mv $@~ $@
 
 $(top_build)/stage/gar-$(mm_NAME): $(top_source)/gar-minimyth
+	@echo "copying build system source directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/rootfs: $(top_build)/stage/image/rootfs
+$(top_build)/stage/kernel: $(DESTDIR)/$(LINUX_DIR)/vmlinuz
+	@echo "copying kernel file"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot sh -c                                                 " \
-		rm -rf $</rootfs-ro/$(rootdir)/dev                      ; \
-		mkdir -p $</rootfs-ro/$(rootdir)/dev                    ; \
-		$(call SET_PERMISSIONS,$<)                              ; \
-		chmod    u+s  $</rootfs-ro/$(ebindir)/busybox           ; \
-		chmod    u+s  $</rootfs-ro/$(ebindir)/ping              ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/pmount             ; \
-		chmod    u+s  $</rootfs-ro/$(esbindir)/poweroff         ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/pumount            ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/X                  ; \
-		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/initctl p     ; \
-		mksquashfs $< $@~ > /dev/null 2>&1                      "
+	@cp -pdR $< $@~
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras
+$(top_build)/stage/rootfs: $(top_build)/stage/image/rootfs $(top_build)/stage/image/rootfs.fakeroot
+	@echo "making the squashfs version of the root file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot sh -c                            " \
-		$(call SET_PERMISSIONS,$<)         ; \
+	@fakeroot -i $<.fakeroot sh -c             " \
 		mksquashfs $< $@~ > /dev/null 2>&1 "
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/themes: $(top_build)/stage/image/themes
+$(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras $(top_build)/stage/image/extras.fakeroot
+	@echo "making the squashfs version of the extras file system"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -i $<.fakeroot sh -c             " \
+		mksquashfs $< $@~ > /dev/null 2>&1 "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/themes: $(top_build)/stage/image/themes $(top_build)/stage/image/themes.fakeroot
+	@echo "making the squashfs version of the themes file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@for theme in `cd $< ; ls -1` ; do                                             \
-		fakeroot sh -c                                                     " \
-			$(call SET_PERMISSIONS,$</$${theme})                       ; \
+		fakeroot -i $<.fakeroot sh -c                                      " \
 			mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1 " ; \
 		chmod 0644 $@~/$${theme}.sfs                                         ; \
 	 done
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/rootfs.tar.bz2: $(top_build)/stage/image/rootfs
+$(top_build)/stage/rootfs.tar.bz2: $(top_build)/stage/image/rootfs $(top_build)/stage/image/rootfs.fakeroot
+	@echo "making the tarball version of the root file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot sh -c                                                 " \
-		rm -rf $</rootfs-ro/$(rootdir)/dev                      ; \
-		mkdir -p $</rootfs-ro/$(rootdir)/dev                    ; \
-		$(call SET_PERMISSIONS,$<)                              ; \
-		chmod    u+s  $</rootfs-ro/$(ebindir)/busybox           ; \
-		chmod    u+s  $</rootfs-ro/$(ebindir)/ping              ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/pmount             ; \
-		chmod    u+s  $</rootfs-ro/$(esbindir)/poweroff         ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/pumount            ; \
-		chmod    u+s  $</rootfs-ro/$(bindir)/X                  ; \
-		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/initctl p     ; \
-		tar -C $(<D) -jcf $@~ $(<F)                             "
-	@chmod 0644 $@~
-	@touch $@~
-	@mv $@~ $@
-
-$(top_build)/stage/extras.tar.bz2: $(top_build)/stage/image/extras
-	@mkdir -m 0755 -p $(@D)
-	@rm -rf $@ $@~
-	@fakeroot sh -c                     " \
-		$(call SET_PERMISSIONS,$<)  ; \
+	@fakeroot -i $<.fakeroot sh -c      " \
 		tar -C $(<D) -jcf $@~ $(<F) "
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes
+$(top_build)/stage/extras.tar.bz2: $(top_build)/stage/image/extras $(top_build)/stage/image/extras.fakeroot
+	@echo "making the tarball version of the extras file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot sh -c                     " \
-		$(call SET_PERMISSIONS,$<)  ; \
+	@fakeroot -i $<.fakeroot sh -c      " \
+		tar -C $(<D) -jcf $@~ $(<F) "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes $(top_build)/stage/image/themes.fakeroot
+	@echo "making the tarball version of the themes file system"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -i $<.fakeroot sh -c      " \
 		tar -C $(<D) -jcf $@~ $(<F) "
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
 $(top_build)/stage/%.md5: $(top_build)/stage/%
+	@echo "making the checksum file for $(patsubst $(top)%,[..]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@(cd $(<D) ; find $(<F) -type f -exec md5sum '{}' + | sort -k 2) > $@~
@@ -672,12 +705,22 @@ $(top_build)/stage/%.md5: $(top_build)/stage/%
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/%.tar.bz2: $(top_build)/stage/%
+$(top_build)/stage/%.tar.bz2: $(top_build)/stage/% $(top_build)/stage/%.fakeroot
+	@echo "making the tarball file of $(patsubst $(top)%,[..]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot sh -c                     " \
-		$(call SET_PERMISSIONS,$<)  ; \
+	@fakeroot -i $<.fakeroot sh -c      " \
 		tar -C $(<D) -jcf $@~ $(<F) "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/%.fakeroot: $(top_build)/stage/%
+	@echo "making the tarball file of $(patsubst $(top)%,[..]%,$<)"
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot -s $@~ sh -c             " \
+		$(call SET_PERMISSIONS,$<) " \
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
@@ -686,6 +729,7 @@ $(top_build)/stage/local/ram-$(mm_NAME)  \
 $(top_build)/stage/local/nfs-$(mm_NAME)  \
 $(top_build)/stage/share/ram-$(mm_NAME)  \
 $(top_build)/stage/share/nfs-$(mm_NAME):
+	@echo "making $(patsubst $(top)%,[..]%,$@)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -750,6 +794,7 @@ $(top_build)/local: \
 	@cp -pdR $^ $@~
 	@touch $@~
 	@mv $@~ $@
+	@echo "made local distribution"
 
 $(top_build)/share: \
 		$(top_build)/stage/scripts                                                                      \
@@ -770,6 +815,7 @@ $(top_build)/share: \
 	@cp -pdR $^ $@~
 	@touch $@~
 	@mv $@~ $@
+	@echo "made share distribution"
 
 install: build
 	@rm -rf   $(mm_DESTDIR)
@@ -858,5 +904,3 @@ install: build
 	 fi
 
 .PHONY: all build install
-
-.NOTPARALLEL:
