@@ -2,6 +2,7 @@ GARNAME = minimyth
 GARVERSION = $(mm_VERSION)
 CATEGORIES = meta
 LICENSE = minimyth
+DISTFILES = $(DISTNAME).tar.bz2
 minimyth_LICENSE_TEXT = $(mm_HOME)/html/minimyth/license.txt
 
 DESCRIPTION =
@@ -149,18 +150,24 @@ BUILDDEPS = \
 	xorg/xorg \
 	perl/perlsharp
 
-BUILD_SCRIPTS   = custom
-INSTALL_SCRIPTS = custom
+CONFIGURE_SCRIPTS = custom
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 include ../../gar.mk
 
-pre-fetch:
-	@$(MAKE) -s -f minimyth.mk mm-check DESTIMG=$(DESTIMG)
+pre-everything:
+	@$(MAKE) -f files/check.mk DESTIMG=$(DESTIMG)
+	@# There is no MAKECOOKIE so that this runs every time.
+
+$(DOWNLOADDIR)/$(DISTNAME).tar.bz2:
+	@if [ ! -e $(DOWNLOADDIR)/$(DISTNAME).tar.bz2 ] ; then \
+		$(MAKE) -f files/distfile.mk DESTIMG=$(DESTIMG) ; \
+	fi
+
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
-build-custom:
-	@$(MAKE) -s -f minimyth.mk mm-build DESTIMG=$(DESTIMG)
+configure-custom:
+	@$(MAKE) -f files/configure.mk DESTIMG=$(DESTIMG)
 	@$(MAKECOOKIE)
-
-install-custom:
-	@$(MAKE) -s -f minimyth.mk mm-install DESTIMG=$(DESTIMG)
