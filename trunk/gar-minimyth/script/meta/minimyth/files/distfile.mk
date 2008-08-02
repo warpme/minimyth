@@ -18,7 +18,7 @@ SET_PERMISSIONS = \
 mm-all: $(DOWNLOADDIR)/$(DISTNAME).tar.bz2
 
 $(PARTIALDIR)/$(DISTNAME):
-	@echo 'creating $(DISTNAME).tar.bz2'
+	@echo 'creating $(DISTNAME)'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -26,7 +26,7 @@ $(PARTIALDIR)/$(DISTNAME):
 	@mv $@~ $@
 
 $(PARTIALDIR)/$(DISTNAME)/Makefile: files/Makefile | $(PARTIALDIR)/$(DISTNAME)
-	@echo '  adding $(DISTNAME)/Makefile'
+	@echo 'adding $(DISTNAME)/Makefile'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -35,7 +35,7 @@ $(PARTIALDIR)/$(DISTNAME)/Makefile: files/Makefile | $(PARTIALDIR)/$(DISTNAME)
 	@mv $@~ $@
 
 $(PARTIALDIR)/$(DISTNAME)/source: files/source | $(PARTIALDIR)/$(DISTNAME)
-	@echo '  adding $(DISTNAME)/source'
+	@echo 'adding $(DISTNAME)/source'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -51,7 +51,7 @@ $(PARTIALDIR)/$(DISTNAME)/source/lists/extras: \
 		$(wildcard $(GARDIR)/extras/extras-share-list) \
 		| \
 		$(PARTIALDIR)/$(DISTNAME)/source
-	@echo '  adding $(DISTNAME)/source/lists/extras'
+	@echo 'adding $(DISTNAME)/source/lists/extras'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
@@ -62,7 +62,7 @@ $(PARTIALDIR)/$(DISTNAME)/source/lists/extras: \
 	@mv $@~ $@
 
 $(PARTIALDIR)/$(DISTNAME)/source/html: $(GARDIR)/../html/minimyth | $(PARTIALDIR)/$(DISTNAME)/source
-	@echo '  adding $(DISTNAME)/source/html'
+	@echo 'adding $(DISTNAME)/source/html'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
@@ -73,7 +73,7 @@ $(PARTIALDIR)/$(DISTNAME)/source/html: $(GARDIR)/../html/minimyth | $(PARTIALDIR
 	@mv $@~ $@
 
 $(PARTIALDIR)/$(DISTNAME)/source/gar-minimyth: $(abspath $(GARDIR)/..) | $(PARTIALDIR)/$(DISTNAME)/source
-	@echo '  adding $(DISTNAME)/source/gar-minimyth'
+	@echo 'adding $(DISTNAME)/source/gar-minimyth'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@rm -rf $@~~
@@ -110,7 +110,7 @@ $(DOWNLOADDIR)/$(DISTNAME).tar.bz2: \
 		$(PARTIALDIR)/$(DISTNAME)/source/lists/extras \
 		$(PARTIALDIR)/$(DISTNAME)/source/html \
 		$(PARTIALDIR)/$(DISTNAME)/source/gar-minimyth
-	@echo '  creating tarball'
+	@echo 'creating $(DISTNAME).tar.bz2'
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@tar -C $(<D) -jcf $@~ $(<F)
