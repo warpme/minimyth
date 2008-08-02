@@ -469,6 +469,7 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 	@find $(top_source)/initrd -type f \
 		| sed -e 's%^\(\$(top_source)/initrd\)/\(.*\)$$%\1/\2 $@~/\2%' \
 		| xargs -n 2 cp -fpd
+	@$(call SET_PERMISSIONS,$@~)
 	@touch $@~
 	@mv $@~ $@
 
@@ -477,7 +478,6 @@ $(top_build)/stage/image/rootfs.fakeroot: $(top_build)/stage/image/rootfs
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@fakeroot -s $@~ sh -c                                             " \
-		$(call SET_PERMISSIONS,$<)                                 ; \
 		chmod    u+s     $</rootfs-ro/$(ebindir)/busybox           ; \
 		chmod    u+s     $</rootfs-ro/$(ebindir)/ping              ; \
 		chmod    u+s     $</rootfs-ro/$(bindir)/pmount             ; \
@@ -508,30 +508,12 @@ $(top_build)/stage/image/themes: $(top_build)/image/rootfs
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/image/themes.fakeroot: $(top_build)/stage/image/themes
-	@echo "making themes file system directory fakeroot configuration file"
-	@mkdir -m 0755 -p $(@D)
-	@rm -rf $@ $@~
-	@fakeroot -s $@~ sh -c             " \
-		$(call SET_PERMISSIONS,$<) "
-	@touch $@~
-	@mv $@~ $@
-
 $(top_build)/stage/image/extras: $(top_build)/image/rootfs
 	@echo "making extras file system directory"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $</$(extras_rootdir)/* $@~
-	@touch $@~
-	@mv $@~ $@
-
-$(top_build)/stage/image/extras.fakeroot: $(top_build)/stage/image/extras
-	@echo "making extras file system directory fakeroot configuration file"
-	@mkdir -m 0755 -p $(@D)
-	@rm -rf $@ $@~
-	@fakeroot -s $@~ sh -c             " \
-		$(call SET_PERMISSIONS,$<) "
 	@touch $@~
 	@mv $@~ $@
 
@@ -561,6 +543,7 @@ $(top_build)/stage/helper: \
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $^ $@~
+	@chmod 0644 $@~/*
 	@cd $@~ ; for file in `ls -1` ; do  \
 		md5sum $${file} > $${file}.md5 ; \
 		chmod 0644 $${file}.md5 ; \
@@ -573,6 +556,7 @@ $(top_build)/stage/html: $(top_source)/html
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $^ $@~
+	@$(call SET_PERMISSIONS,$@~)
 	@touch $@~
 	@mv $@~ $@
 
@@ -595,6 +579,7 @@ $(top_build)/stage/scripts: \
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $^ $@~
+	@chmod 0644 $@~/*
 	@touch $@~
 	@mv $@~ $@
 
@@ -621,6 +606,7 @@ $(top_build)/stage/gar-$(mm_NAME): $(top_source)/gar-minimyth
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
+	@$(call SET_PERMISSIONS,$@~)
 	@touch $@~
 	@mv $@~ $@
 
@@ -637,31 +623,28 @@ $(top_build)/stage/rootfs: $(top_build)/stage/image/rootfs $(top_build)/stage/im
 	@echo "making the squashfs version of the root file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c             " \
-		mksquashfs $< $@~ > /dev/null 2>&1 "
+	@fakeroot -i $<.fakeroot sh -c "mksquashfs $< $@~ > /dev/null 2>&1"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras $(top_build)/stage/image/extras.fakeroot
+$(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras
 	@echo "making the squashfs version of the extras file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c             " \
-		mksquashfs $< $@~ > /dev/null 2>&1 "
+	@fakeroot sh -c "mksquashfs $< $@~ > /dev/null 2>&1"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/themes: $(top_build)/stage/image/themes $(top_build)/stage/image/themes.fakeroot
+$(top_build)/stage/themes: $(top_build)/stage/image/themes
 	@echo "making the squashfs version of the themes file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
-	@for theme in `cd $< ; ls -1` ; do                                             \
-		fakeroot -i $<.fakeroot sh -c                                      " \
-			mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1 " ; \
-		chmod 0644 $@~/$${theme}.sfs                                         ; \
+	@for theme in `cd $< ; ls -1` ; do                                                    \
+		fakeroot sh -c "mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1" ; \
+		chmod 0644 $@~/$${theme}.sfs                                                ; \
 	 done
 	@touch $@~
 	@mv $@~ $@
@@ -670,28 +653,25 @@ $(top_build)/stage/rootfs.tar.bz2: $(top_build)/stage/image/rootfs $(top_build)/
 	@echo "making the tarball version of the root file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c      " \
-		tar -C $(<D) -jcf $@~ $(<F) "
+	@fakeroot -i $<.fakeroot sh -c "tar -C $(<D) -jcf $@~ $(<F)"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/extras.tar.bz2: $(top_build)/stage/image/extras $(top_build)/stage/image/extras.fakeroot
+$(top_build)/stage/extras.tar.bz2: $(top_build)/stage/image/extras
 	@echo "making the tarball version of the extras file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c      " \
-		tar -C $(<D) -jcf $@~ $(<F) "
+	@fakeroot sh -c "tar -C $(<D) -jcf $@~ $(<F)"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes $(top_build)/stage/image/themes.fakeroot
+$(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes
 	@echo "making the tarball version of the themes file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c      " \
-		tar -C $(<D) -jcf $@~ $(<F) "
+	@fakeroot sh -c "tar -C $(<D) -jcf $@~ $(<F)"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
@@ -705,22 +685,11 @@ $(top_build)/stage/%.md5: $(top_build)/stage/%
 	@touch $@~
 	@mv $@~ $@
 
-$(top_build)/stage/%.tar.bz2: $(top_build)/stage/% $(top_build)/stage/%.fakeroot
+$(top_build)/stage/%.tar.bz2: $(top_build)/stage/%
 	@echo "making the tarball file of $(patsubst $(top)%,[..]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c      " \
-		tar -C $(<D) -jcf $@~ $(<F) "
-	@chmod 0644 $@~
-	@touch $@~
-	@mv $@~ $@
-
-$(top_build)/stage/%.fakeroot: $(top_build)/stage/%
-	@echo "making the tarball file of $(patsubst $(top)%,[..]%,$<)"
-	@mkdir -m 0755 -p $(@D)
-	@rm -rf $@ $@~
-	@fakeroot -s $@~ sh -c             " \
-		$(call SET_PERMISSIONS,$<) " \
+	@fakeroot sh -c "tar -C $(<D) -jcf $@~ $(<F)"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
