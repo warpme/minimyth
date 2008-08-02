@@ -1,0 +1,862 @@
+top_source = ./
+top_build  = ../build/
+
+top_source := $(shell cd $(top_source) ; pwd)
+top_build  := $(shell cd $(top_build)  ; pwd)
+
+cookiedir  := $(top_build)/cookie
+
+include $(top_build)/config.mk
+
+mm_NAME := minimyth-$(mm_VERSION)
+
+MM_BIN_FILES    := $(strip \
+	$(if $(wildcard                     lists/minimyth-bin-list   ),                     lists/minimyth-bin-list   ) \
+	$(if $(wildcard                lists/extras/extras-bin-list   ),                lists/extras/extras-bin-list   ) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-bin-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
+MM_LIB_FILES    := $(strip \
+	$(if $(wildcard                     lists/minimyth-lib-list   ),                     lists/minimyth-lib-list   ) \
+	$(if $(wildcard                lists/extras/extras-lib-list   ),                lists/extras/extras-lib-list   ) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-lib-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
+MM_ETC_FILES    := $(strip \
+	$(if $(wildcard                     lists/minimyth-etc-list   ),                     lists/minimyth-etc-list   ) \
+	$(if $(wildcard                lists/extras/extras-etc-list   ),                lists/extras/extras-etc-list   ) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-etc-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
+MM_SHARE_FILES  := $(strip \
+	$(if $(wildcard                     lists/minimyth-share-list ),                     lists/minimyth-share-list ) \
+	$(if $(wildcard                lists/extras/extras-share-list ),                lists/extras/extras-share-list ) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-share-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
+MM_REMOVE_FILES := $(strip \
+	$(if $(wildcard                     lists/minimyth-remove-list),                     lists/minimyth-remove-list) \
+	$(filter $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
+	$(filter $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
+
+MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	gdb \
+	strace \
+	xdpyinfo \
+	))
+MM_LIB_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+MM_ETC_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+MM_SHARE_DEBUG  := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+MM_REMOVE_DEBUG := $(strip $(if $(filter yes,$(mm_DEBUG)), \
+	))
+
+MM_BINS    := $(sort $(if $(MM_BIN_FILES),    $(shell cat $(MM_BIN_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_BIN_DEBUG)    $(mm_USER_BIN_LIST))
+MM_LIBS    := $(sort $(if $(MM_LIB_FILES),    $(shell cat $(MM_LIB_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_LIB_DEBUG)    $(mm_USER_LIB_LIST))
+MM_ETCS    := $(sort $(if $(MM_ETC_FILES),    $(shell cat $(MM_ETC_FILES)    | sed 's%[ \t]*\#.*%%')) $(MM_ETC_DEBUG)    $(mm_USER_ETC_LIST))
+MM_SHARES  := $(sort $(if $(MM_SHARE_FILES),  $(shell cat $(MM_SHARE_FILES)  | sed 's%[ \t]*\#.*%%')) $(MM_SHARE_DEBUG)  $(mm_USER_SHARE_LIST))
+MM_REMOVES := $(sort $(if $(MM_REMOVE_FILES), $(shell cat $(MM_REMOVE_FILES) | sed 's%[ \t]*\#.*%%')) $(MM_REMOVE_DEBUG) $(mm_USER_REMOVE_LIST))
+
+MAKE_PATH = \
+	$(patsubst @%@,%,$(subst @ @,:, $(strip $(patsubst %,@%@,$(1)))))
+
+DIRSTODOTS = \
+	$(subst . /,./,$(patsubst %,/..,$(subst /, ,/$(1))))
+
+# $1 = file type label plural.
+# $2 = file type label singular.
+# $3 = source destdir.
+# $4 = target destdir.
+# $5 = file directories.
+# $6 = files.
+COPY_FILES = \
+	echo "copying $(strip $(1))" ; \
+	for dir in $(strip $(5)) ; do \
+		mkdir -p $(strip $(4))/$${dir} ; \
+	done ; \
+	for file_item in $(strip $(6)) ; do \
+		found="" ; \
+		for dir in $(strip $(5)) ; do \
+			file_list="" ; \
+			if [ -e $(3)/$${dir} ] ; then \
+				if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+					file_list=`cd $(3)/$${dir} ; find -L $${file_item} -maxdepth 0 -type d 2> /dev/null` ; \
+				else \
+					file_list=`cd $(3)/$${dir} ; find -L $${file_item} -maxdepth 0 -type f 2> /dev/null` ; \
+				fi; \
+			fi ; \
+			for file in $${file_list} ; do \
+				if [ -e $(3)/$${dir}/$${file} ] ; then \
+					found="true" ; \
+					source_file="$(3)/$${dir}/$${file}" ; \
+					target_file="$(strip $(4))/$${dir}/$${file}" ; \
+					if [ ! -e $${target_file} ] ; then \
+						cp_flags=""                ; \
+						cp_flags="$${cp_flags} -p" ; \
+						file -L $${source_file} | grep -i -q 'ELF ..-bit LSB shared object' ; \
+						if [ $$? -ne 0 ] ; then \
+							cp_flags="$${cp_flags} -d" ; \
+						fi ; \
+						if [ -d $${source_file} ] ; then \
+							cp_flags="$${cp_flags} -R" ; \
+						fi ; \
+                                       		target_dir=`dirname $${target_file}` ; \
+                                       		mkdir -p $${target_dir} ; \
+						cp $${cp_flags} $${source_file} $${target_file} ; \
+						while file $${target_file} | grep -i -q 'symbolic link to' ; do \
+							link="`file $${source_file} | \
+								sed -e 's%^.* %%' -e 's%^.%%' -e 's%.$$%%'`" ; \
+							source_file="`dirname $${source_file}`/$${link}" ; \
+							target_file="`dirname $${target_file}`/$${link}" ; \
+							if [ ! -e $${source_file} ] ; then \
+								echo "error: $${source_file} not found." ; \
+								exit 1 ; \
+							fi ; \
+							if [ ! -e $${target_file} ] ; then \
+                                       				target_dir=`dirname $${target_file}` ; \
+                                       				mkdir -p $${target_dir} ; \
+								cp $${cp_flags} $${source_file} $${target_file} ; \
+							fi ; \
+						done ; \
+					fi ; \
+				fi ; \
+			done ; \
+		done ; \
+		if [ -z $${found} ] ; then \
+			echo "warning: $(strip $(2)) \"$${file_item}\" not found." ; \
+		fi ; \
+	done
+
+# $1 = file/directory
+SET_PERMISSIONS = \
+	chmod -R -s   $(strip $(1))                                           ; \
+	chmod -R -t   $(strip $(1))                                           ; \
+	chmod -R +r   $(strip $(1))                                           ; \
+	chmod -R u+w  $(strip $(1))                                           ; \
+	chmod -R go-w $(strip $(1))                                           ; \
+	find          $(strip $(1)) -type d             -exec chmod +x '{}' + ; \
+	find          $(strip $(1)) -type f -perm /0100 -exec chmod +x '{}' +
+
+all: build
+
+build: \
+	$(if $(filter yes,$(mm_DISTRIBUTION_LOCAL)),$(top_build)/local) \
+	$(if $(filter yes,$(mm_DISTRIBUTION_SHARE)),$(top_build)/share)
+
+$(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir) $(top_source)
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@# Install busybox.
+	@main_DESTDIR=$@~ $(MAKE) -C $(mm_HOME)/script/utils/busybox DESTIMG=$(DESTIMG) install
+	@rm -rf $@~/var
+	@# Copy versions.
+	@mkdir -p $@~$(versiondir)-build
+	@cp -pdR $(build_DESTDIR)$(build_versiondir)/* $@~$(versiondir)-build
+	@mkdir -p $@~$(versiondir)
+	@cp -pdR $(DESTDIR)$(versiondir)/* $@~$(versiondir)
+	@rm -rf $@~$(versiondir)/minimyth
+	@mkdir -p $@~$(extras_versiondir)
+	@cp -pdR $(DESTDIR)$(extras_versiondir)/* $@~$(extras_versiondir)
+	@# Copy licenses.
+	@mkdir -p $@~$(licensedir)-build
+	@cp -pdR $(build_DESTDIR)$(build_licensedir)/* $@~$(licensedir)-build
+	@mkdir -p $@~$(licensedir)
+	@cp -pdR $(DESTDIR)$(licensedir)/* $@~$(licensedir)
+	@rm -rf $@~$(licensedir)/minimyth
+	@mkdir -p $@~$(extras_licensedir)
+	@cp -pdR $(DESTDIR)$(extras_licensedir)/* $@~$(extras_licensedir)
+	@# Copy the QT mysql plugin needed by MythTV.
+	@$(if $(filter 0.21,$(mm_MYTH_VERSION)), \
+		mkdir -p $@~$(qt3prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $@~$(qt3prefix)/plugins ; \
+	 )
+	@$(if $(filter trunk,$(mm_MYTH_VERSION)), \
+		mkdir -p $@~$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $@~$(qt4prefix)/plugins ; \
+	 )
+	@# Copy binaries, etcs, shares, and libraries.
+	@$(call COPY_FILES, "binaries" , "binary" , $(DESTDIR), $@~, $(bindirs)  , $(MM_BINS)  )
+	@$(call COPY_FILES, "etcs"     , "etc"    , $(DESTDIR), $@~, $(etcdirs)  , $(MM_ETCS)  )
+	@$(call COPY_FILES, "shares"   , "share"  , $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
+	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs)  , $(MM_LIBS)  )
+	@# Copy HTML files.
+	@find $(top_source)/html -type d \
+		| sed -e 's%^\$(top_source)/html%$@~/srv/www%' \
+		| xargs mkdir -m 0755 -p
+	@find $(top_source)/html -type f \
+		| sed -e 's%^\(\$(top_source)/html\)/\(.*\)$$%\1/\2 $@~/srv/www/\2%' \
+		| xargs -n 2 cp -fpd
+	@rm -rf $@~/srv/www/download
+	@# Copy package rootfs files.
+	@find $(top_source)/rootfs -type d \
+		| sed -e 's%^\$(top_source)/rootfs%$@~%' \
+		| xargs mkdir -m 0755 -p
+	@find $(top_source)/rootfs -type f \
+		| sed -e 's%^\(\$(top_source)/rootfs\)/\(.*\)$$%\1/\2 $@~/\2%' \
+		| xargs -n 2 cp -fpd
+	@# Copy mm_local scripts.
+	@cp  -pd $(top_source)/mm_local/mm_local_update $@~/usr/bin/mm_local_update
+	@chmod 0755 $@~/usr/bin/mm_local_update
+	@cp  -pd $(top_source)/mm_local/mm_local_helper $@~/usr/bin/mm_local_helper_old
+	@# Substitute values for variables in files
+	@sed -i 's%@MM_VERSION@%$(mm_VERSION)%g'                   $@~$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MYTH@%$(mm_VERSION_MYTH)%g'         $@~$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%g' $@~$(sysconfdir)/conf.d/core
+	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%g'         $@~$(sysconfdir)/conf.d/core
+	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%g'     $@~$(sysconfdir)/conf.d/core
+	@sed -i 's%@GAR_libdir@%$(libdir)%g'                       $@~$(sysconfdir)/fonts/local.conf
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d/init.d/extras
+	@# Create the minimyth build configuration file.
+	@rm -rf   $@~$(versiondir)/minimyth.conf.mk
+	@mkdir -m 0755 -p $@~$(versiondir)
+	@$(foreach build_var,$(build_vars), \
+		echo "$(build_var)='$(strip $($(build_var)))'" >> $@~$(versiondir)/minimyth.conf.mk ; )
+	@# Create the loader configuration file.
+	@rm -f $@~$(sysconfdir)/ld.so.conf
+	@$(foreach dir, $(libdirs_base), \
+		echo $(dir) >> $@~$(sysconfdir)/ld.so.conf ; )
+	@rm -f $@~$(sysconfdir)/ld.so.cache{,~}
+	@# Make documentation links.
+	@mkdir -m 0755 -p $@~/srv/www/software/base
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/base))$(versiondir) \
+	        $@~/srv/www/software/base/versions
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/base))$(licensedir) \
+                $@~/srv/www/software/base/licenses
+	@mkdir -m 0755 -p $@~/srv/www/software/extras
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/extras))$(extras_versiondir) \
+	        $@~/srv/www/software/extras/versions
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/extras))$(extras_licensedir) \
+                $@~/srv/www/software/extras/licenses
+	@mkdir -m 0755 -p $@~/srv/www/software/build
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/versions))$(versiondir)-build \
+                $@~/srv/www/software/build/versions
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/versions))$(licensedir)-build \
+                $@~/srv/www/software/build/licenses
+	@# Make user 'minimyth' configuration links.
+	@mkdir -m 0755 -p $@~/home/minimyth
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth))$(sysconfdir)/lircrc \
+	        $@~/home/minimyth/.lircrc
+	@mkdir -m 0755 -p $@~/home/minimyth/.mythtv
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/lircrc \
+	        $@~/home/minimyth/.mythtv/lircrc
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/mythtv/config.xml \
+	        $@~/home/minimyth/.mythtv/config.xml
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/mythtv/mysql.txt \
+	        $@~/home/minimyth/.mythtv/mysql.txt
+	@# Make init script links.
+	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d/rc.d
+	@index=10 ; $(foreach file, $(MM_INIT_START), \
+		index=$$(($${index}+2)) ; \
+		ln -sf ../init.d/$(file) $@~$(sysconfdir)/rc.d/rc.d/S$${index}$(file) ; )
+	@index=10 ; $(foreach file, $(MM_INIT_KILL) , \
+		index=$$(($${index}+2)) ; \
+		ln -sf ../init.d/$(file) $@~$(sysconfdir)/rc.d/rc.d/K$${index}$(file) ; )
+	@# Make font file links.
+	@for font in `cd $@~$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
+		ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv))$(libdir)/X11/fonts/TTF/$${font} \
+		       $@~$(datadir)/mythtv/$${font} ; \
+	 done
+	@# Remove unneeded perl files.
+	@echo 'removing unneeded perl files'
+	@dirs='$(PERL_libdir)' ; \
+	 for dir in $${dirs} ; do \
+		if [ -e $@~$${dir} ] ; then \
+			cd $@~$${dir} ; \
+			find . -type f -name '.*'    -exec rm -rf '{}' + ; \
+			find . -type f -name '*.bs'  -exec rm -rf '{}' + ; \
+			find . -type f -name '*.e2x' -exec rm -rf '{}' + ; \
+			find . -type f -name '*.eg'  -exec rm -rf '{}' + ; \
+			find . -type f -name '*.h'   -exec rm -rf '{}' + ; \
+			find . -type f -name '*.pod' -exec rm -rf '{}' + ; \
+			while [ `find . -type d -empty | wc -l` -gt 0 ] ; do \
+				find . -type d -empty -exec rm -rf '{}' + ; \
+			done ; \
+		fi ; \
+	 done
+	@# Remove unwanted binaries, etcs, shares and libraries.
+	@echo 'removing unwanted files'
+	@for file_item in $(addprefix $@~,$(MM_REMOVES)) ; do \
+		if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if [ -d $${file} ] ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		else \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if [ -f $${file} ] ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		fi ; \
+	 done
+	@# Copy dependent libraries.
+	@echo 'copying dependent libraries'
+	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
+	 pass=0 ; \
+	 lib_count=1 ; \
+	 bin_list="`find $@~ -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB executable' \
+		| sed -e 's%:.*%%'`" ; \
+	 bin_list=`echo $${bin_list}` ; \
+	 while [ $${lib_count} -gt 0 ] ; do \
+		pass=$$(($${pass}+1)) ; \
+		lib_list="`find $@~ -exec file '{}' \; \
+			| grep -i 'ELF ..-bit LSB shared object' \
+			| sed -e 's%:.*%%'`" ; \
+		lib_list=`echo $${lib_list}` ; \
+		new_list="`$(OBJDUMP) -x $${bin_list} $${lib_list} 2> /dev/null \
+			| grep -e '^ *NEEDED  *' \
+			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
+			| cut -d' ' -f 2 \
+			| sort \
+			| uniq`" ; \
+		new_list=`echo $${new_list}` ; \
+		old_list="`echo $${lib_list} \
+			| sed -e 's%[^ ]*/%%g' \
+			| sort \
+			| uniq`" ; \
+		old_list=`echo $${old_list}` ; \
+		old_filter="\(`echo $${old_list} | sed -e 's%\([.+]\)%\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
+		new_list=`echo " $${new_list} " \
+			| sed -e 's%  *%  %g' \
+			| sed -e "s% $${old_filter} % %g"` ; \
+		new_list=`echo $${new_list} | sed -e 's%  *% %g' | sed -e 's%^  *%%' | sed -e 's%  *$$%%'` ; \
+		lib_count=`echo "$${new_list}" | wc -w` ; \
+		echo "  pass $${pass} found $${lib_count} libraries to copy" ; \
+		if [ "$(mm_DEBUG_BUILD)" = "yes" ] ; then \
+			echo "    bin_list : $${bin_list}" ; \
+			echo "    lib_list : $${lib_list}" ; \
+			echo "    old_list : $${old_list}" ; \
+			echo "    new_list : $${new_list}" ; \
+		fi ; \
+		if [ $${lib_count} -gt 0 ] ; then \
+		        new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
+		        new_filter="$${new_filter_path}/$${new_filter_file}" ; \
+			new_list=`cd $(DESTDIR) ; find * -regex "$${new_filter}"` ; \
+			for lib in $${new_list} ; do \
+				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
+				mkdir -p $@~/$${dir} ; \
+				cp -p $(DESTDIR)/$${lib} $@~/$${dir} ; \
+			done ; \
+		fi ; \
+		bin_list= ; \
+		lib_list= ; \
+	 done
+	@# Copy dependent kernel modules.
+	@echo 'copying dependent kernel modules'
+	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
+	@find $@~$(LINUX_MODULESDIR) -name '*.ko' | sed -e 's%^$@~%/%' -e 's%//*%/%g' | \
+	 while read module ; do \
+		module_deps=`cat $(DESTDIR)$(LINUX_MODULESDIR)/modules.dep | grep -e "^$${module}:" | sed -e 's%[^:]*: *%%'` ; \
+		for module_dep in $${module_deps} ; do \
+			if [ ! -e $@~$${module_dep} ] ; then \
+				mkdir -p `dirname $@~$${module_dep}` ; \
+				cp -pd $(DESTDIR)$${module_dep} $@~$${module_dep} ; \
+			fi ; \
+		done ; \
+	 done
+	@# Remove unwanted binaries, etcs, shares and libraries.
+	@echo 'removing unwanted files'
+	@for file_item in $(addprefix $@~,$(MM_REMOVES)) ; do \
+		if echo $${file_item} | grep -q -e '/$$' > /dev/null 2>&1 ; then \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if [ -d $${file} ] ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		else \
+			file_list=`ls -d1 $${file_item} 2> /dev/null` ; \
+			for file in $${file_list} ; do \
+				if [ -f $${file} ] ; then \
+					rm -rf $${file} ; \
+				fi ; \
+			done ; \
+		fi ; \
+	 done
+	@# Generate kernel files.
+	@depmod -b "$@~$(rootdir)" "$(LINUX_FULL_VERSION)"
+	@# Generate font files.
+	@cd $@~$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
+	@cd $@~$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
+	@# Clean up permissions (at least somewhat)
+	@find $@~ -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB executable' \
+		| sed -e 's%:.*%%' \
+		| xargs chmod 0755
+	@find $@~ -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB shared object' \
+		| sed -e 's%:.*%%' \
+		| grep -v '*' \
+		| grep -v '/libc.so.[0-9]\+$$' \
+		| grep -v '/ld-linux.so.[0-9]\+$$' \
+		| grep -v '/ld-linux-x86_64.so.[0-9]\+$$' \
+		| xargs chmod 0644
+	@$(call SET_PERMISSIONS,$@~)
+	@# Strip executables and shared libraries.
+	@if [ ! $(mm_DEBUG) = yes ] ; then \
+		echo 'stripping binaries' ; \
+		find $@~ -exec file '{}' \; \
+			| grep -i 'ELF ..-bit LSB executable' \
+			| sed -e 's%:.*%%' \
+			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
+		echo 'stripping shared libraries' ; \
+		find $@~ -exec file '{}' \; \
+			| grep -i 'ELF ..-bit LSB shared object' \
+			| sed -e 's%:.*%%' \
+			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
+	 fi
+	@# Strip Perl scripts
+	@if [ ! $(mm_DEBUG) = yes ] ; then \
+		echo 'stripping perl' ; \
+		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
+		cd $@~ ; \
+		for dir in $${dirs} ; do \
+			echo "  stripping [...]$${dir}" ; \
+			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
+			rm -f PerlSharpLog.txt ; \
+			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
+			for revert in $${revert_list} ; do \
+				echo "    not stripping perl file [...]$${revert}" ; \
+				rm -f ./$${revert}.ERR ; \
+				rm -f ./$${revert}.LOG ; \
+				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
+			done ; \
+		done ; \
+	 fi
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@# Create the read-only root file system from the base file system.
+	@# Copy the base file system to the read-only root file system location.
+	@# Remove extras directory items because they is included in the extras file system image.
+	@# Remove the non-menu themes and non-default themes because they are included in the themes file system.
+	@cp -pdR $< $@~/rootfs-ro
+	@rm -rf           $@~/rootfs-ro/$(extras_rootdir)
+	@mkdir -m 0755 -p $@~/rootfs-ro/$(extras_rootdir)
+	@for theme in `cd $@~/rootfs-ro/usr/share/mythtv/themes ; ls -1` ; do \
+		if [ ! -e $@~/rootfs-ro/usr/share/mythtv/themes/$${theme}/mainmenu.xml ] && \
+	           [ ! "$${theme}" = "default"                                         ] && \
+	           [ ! "$${theme}" = "default-wide"                                    ] ; then \
+			rm -rf $@~/rootfs-ro/usr/share/mythtv/themes/$${theme} ; \
+		fi ; \
+	 done
+	@# Create the rest for root file system.
+	@mkdir -m 0755 -p                       $@~/rootfs
+	@mkdir -m 0755 -p                       $@~/rw
+	@mkdir -m 0755 -p                       $@~/bin
+	@ln -s rootfs-ro/dev                    $@~/dev
+	@ln -s rootfs-ro/lib                    $@~/lib
+	@mkdir -m 0755 -p                       $@~/sbin
+	@ln -s ../rootfs-ro/bin/mkdir           $@~/bin/mkdir
+	@ln -s ../rootfs-ro/sbin/modprobe       $@~/sbin/modprobe
+	@ln -s ../rootfs-ro/bin/mount           $@~/bin/mount
+	@ln -s ../rootfs-ro/sbin/pivot_root     $@~/sbin/pivot_root
+	@ln -s ../rootfs-ro/bin/sh              $@~/bin/sh
+	@find $(top_source)/initrd -type d \
+		| sed -e 's%^\$(top_source)/initrd%$@~%' \
+		| xargs mkdir -m 0755 -p
+	@find $(top_source)/initrd -type f \
+		| sed -e 's%^\(\$(top_source)/initrd\)/\(.*\)$$%\1/\2 $@~/\2%' \
+		| xargs -n 2 cp -fpd
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/image/themes: $(top_build)/image/rootfs
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $</usr/share/mythtv/themes/* $@~
+	@# Remove the menu themes and default themes because they are included in the root file system.
+	@for theme in `cd $@~ ; ls -1` ; do \
+		if [ -e $@~/$${theme}/mainmenu.xml ] || \
+	           [ "$${theme}" = "default"       ] || \
+	           [ "$${theme}" = "default-wide"  ] ; then \
+			rm -rf $@~/$${theme} ; \
+		fi ; \
+	 done
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/image/extras: $(top_build)/image/rootfs
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $</$(extras_rootdir)/* $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/pxe-$(mm_NAME): $(top_source)/pxe
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $< $@~
+	@sed -e 's%@MM_NAME@%$(mm_NAME)%' -i $@~/gpxe/tftpboot/minimyth/gpxe.cfg/default
+	@sed -e 's%@MM_NAME@%$(mm_NAME)%' -i $@~/pxelinux/tftpboot/minimyth/pxelinux.cfg/default
+	@if [ -e       $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 ] ; then \
+		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/gpxe.0 \
+		       $@~/gpxe/tftpboot/minimyth/gpxe.0 ; \
+	 fi
+	@if [ -e       $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 ] ; then \
+		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 \
+		       $@~/pxelinux/tftpboot/minimyth/pxelinux.0 ; \
+	 fi
+	@$(call SET_PERMISSIONS,$@~)
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/helper: \
+		$(top_source)/mm_local/mm_local_helper
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $^ $@~
+	@cd $@~ ; for file in `ls -1` ; do  \
+		md5sum $${file} > $${file}.md5 ; \
+		chmod 0644 $${file}.md5 ; \
+	 done
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/html: $(top_source)/html
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $^ $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/version:
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@touch $@~
+	@echo "$(mm_VERSION)" > $@~
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/scripts: \
+		$(top_source)/mm_local/mm_local_install \
+		$(top_source)/mm_local/mm_local_update  \
+		$(top_source)/mm_local/mm_local_helper
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $^ $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/kernel: $(DESTDIR)/$(LINUX_DIR)/vmlinuz
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $< $@~
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/changelog.txt: $(top_source)/html/document-changelog.txt
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $< $@~
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/readme.txt: $(top_source)/share-readme.txt
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $< $@~
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/gar-$(mm_NAME): $(top_source)/gar-minimyth
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@cp -pdR $< $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/rootfs: $(top_build)/stage/image/rootfs
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                                                 " \
+		rm -rf $</rootfs-ro/$(rootdir)/dev                      ; \
+		mkdir -p $</rootfs-ro/$(rootdir)/dev                    ; \
+		$(call SET_PERMISSIONS,$<)                              ; \
+		chmod    u+s  $</rootfs-ro/$(ebindir)/busybox           ; \
+		chmod    u+s  $</rootfs-ro/$(ebindir)/ping              ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/pmount             ; \
+		chmod    u+s  $</rootfs-ro/$(esbindir)/poweroff         ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/pumount            ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/X                  ; \
+		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
+		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/initctl p     ; \
+		mksquashfs $< $@~ > /dev/null 2>&1                      "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                            " \
+		$(call SET_PERMISSIONS,$<)         ; \
+		mksquashfs $< $@~ > /dev/null 2>&1 "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/themes: $(top_build)/stage/image/themes
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@for theme in `cd $< ; ls -1` ; do                                             \
+		fakeroot sh -c                                                     " \
+			$(call SET_PERMISSIONS,$</$${theme})                       ; \
+			mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1 " ; \
+		chmod 0644 $@~/$${theme}.sfs                                         ; \
+	 done
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/rootfs.tar.bz2: $(top_build)/stage/image/rootfs
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                                                 " \
+		rm -rf $</rootfs-ro/$(rootdir)/dev                      ; \
+		mkdir -p $</rootfs-ro/$(rootdir)/dev                    ; \
+		$(call SET_PERMISSIONS,$<)                              ; \
+		chmod    u+s  $</rootfs-ro/$(ebindir)/busybox           ; \
+		chmod    u+s  $</rootfs-ro/$(ebindir)/ping              ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/pmount             ; \
+		chmod    u+s  $</rootfs-ro/$(esbindir)/poweroff         ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/pumount            ; \
+		chmod    u+s  $</rootfs-ro/$(bindir)/X                  ; \
+		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
+		mknod -m 0600 $</rootfs-ro/$(rootdir)/dev/initctl p     ; \
+		tar -C $(<D) -jcf $@~ $(<F)                             "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/extras.tar.bz2: $(top_build)/stage/image/extras
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                     " \
+		$(call SET_PERMISSIONS,$<)  ; \
+		tar -C $(<D) -jcf $@~ $(<F) "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                     " \
+		$(call SET_PERMISSIONS,$<)  ; \
+		tar -C $(<D) -jcf $@~ $(<F) "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/%.md5: $(top_build)/stage/%
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@(cd $(<D) ; find $(<F) -type f -exec md5sum '{}' + | sort -k 2) > $@~
+	@chmod 644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/%.tar.bz2: $(top_build)/stage/%
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@fakeroot sh -c                     " \
+		$(call SET_PERMISSIONS,$<)  ; \
+		tar -C $(<D) -jcf $@~ $(<F) "
+	@chmod 0644 $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/local/ram-$(mm_NAME)  \
+$(top_build)/stage/local/nfs-$(mm_NAME)  \
+$(top_build)/stage/share/ram-$(mm_NAME)  \
+$(top_build)/stage/share/nfs-$(mm_NAME):
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $^ $@~
+	@rm -f $@~/minimyth.md5
+	@rm -f $@~~minimyth.md5~
+	@(cd $@~ ; find -type f -exec md5sum '{}' + | sed -e 's%\./%%' | sort -k 2) > $@~~minimyth.md5~
+	@mv -f $@~~minimyth.md5~ $@~/minimyth.md5
+	@chmod 0644 $@~/minimyth.md5
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/stage/share/ram-$(mm_NAME): \
+		$(top_build)/stage/version \
+		$(top_build)/stage/html    \
+		$(top_build)/stage/scripts \
+		$(top_build)/stage/kernel  \
+		$(top_build)/stage/rootfs  \
+		$(top_build)/stage/themes
+
+$(top_build)/stage/share/nfs-$(mm_NAME): \
+		$(top_build)/stage/version        \
+		$(top_build)/stage/html           \
+		$(top_build)/stage/scripts        \
+		$(top_build)/stage/kernel         \
+		$(top_build)/stage/rootfs.tar.bz2 \
+		$(top_build)/stage/themes.tar.bz2
+
+$(top_build)/stage/local/ram-$(mm_NAME): \
+		$(top_build)/stage/version    \
+		$(top_build)/stage/html       \
+		$(top_build)/stage/scripts    \
+		$(top_build)/stage/kernel     \
+		$(top_build)/stage/rootfs     \
+		$(top_build)/stage/themes     \
+		$(top_build)/stage/extras.sfs
+
+$(top_build)/stage/local/nfs-$(mm_NAME): \
+		$(top_build)/stage/version        \
+		$(top_build)/stage/html           \
+		$(top_build)/stage/scripts        \
+		$(top_build)/stage/kernel         \
+		$(top_build)/stage/rootfs.tar.bz2 \
+		$(top_build)/stage/themes.tar.bz2 \
+		$(top_build)/stage/extras.tar.bz2
+
+$(top_build)/local: \
+		$(top_build)/stage/scripts                                                                      \
+		$(top_build)/stage/version                $(top_build)/stage/version.md5                        \
+		$(top_build)/stage/html.tar.bz2           $(top_build)/stage/html.tar.bz2.md5                   \
+		$(top_build)/stage/helper.tar.bz2         $(top_build)/stage/helper.tar.bz2.md5                 \
+		$(top_build)/stage/pxe-$(mm_NAME).tar.bz2 $(top_build)/stage/pxe-$(mm_NAME).tar.bz2.md5         \
+		$(top_build)/stage/gar-$(mm_NAME).tar.bz2 $(top_build)/stage/gar-$(mm_NAME).tar.bz2.md5         \
+		$(if $(filter yes,$(mm_DISTRIBUTION_RAM)), $(top_build)/stage/local/ram-$(mm_NAME).tar.bz2)     \
+		$(if $(filter yes,$(mm_DISTRIBUTION_RAM)), $(top_build)/stage/local/ram-$(mm_NAME).tar.bz2.md5) \
+		$(if $(filter yes,$(mm_DISTRIBUTION_NFS)), $(top_build)/stage/local/nfs-$(mm_NAME).tar.bz2)     \
+		$(if $(filter yes,$(mm_DISTRIBUTION_NFS)), $(top_build)/stage/local/nfs-$(mm_NAME).tar.bz2.md5) \
+		$(top_build)/stage/changelog.txt
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $^ $@~
+	@touch $@~
+	@mv $@~ $@
+
+$(top_build)/share: \
+		$(top_build)/stage/scripts                                                                      \
+		$(top_build)/stage/version                $(top_build)/stage/version.md5                        \
+		$(top_build)/stage/html.tar.bz2           $(top_build)/stage/html.tar.bz2.md5                   \
+		$(top_build)/stage/helper.tar.bz2         $(top_build)/stage/helper.tar.bz2.md5                 \
+		$(top_build)/stage/pxe-$(mm_NAME).tar.bz2 $(top_build)/stage/pxe-$(mm_NAME).tar.bz2.md5         \
+		$(top_build)/stage/gar-$(mm_NAME).tar.bz2 $(top_build)/stage/gar-$(mm_NAME).tar.bz2.md5         \
+		$(if $(filter yes,$(mm_DISTRIBUTION_RAM)), $(top_build)/stage/share/ram-$(mm_NAME).tar.bz2)     \
+		$(if $(filter yes,$(mm_DISTRIBUTION_RAM)), $(top_build)/stage/share/ram-$(mm_NAME).tar.bz2.md5) \
+		$(if $(filter yes,$(mm_DISTRIBUTION_NFS)), $(top_build)/stage/share/nfs-$(mm_NAME).tar.bz2)     \
+		$(if $(filter yes,$(mm_DISTRIBUTION_NFS)), $(top_build)/stage/share/nfs-$(mm_NAME).tar.bz2.md5) \
+		$(top_build)/stage/changelog.txt                                                                \
+		$(top_build)/stage/readme.txt
+	@mkdir -m 0755 -p $(@D)
+	@rm -rf $@ $@~
+	@mkdir -m 0755 -p $@~
+	@cp -pdR $^ $@~
+	@touch $@~
+	@mv $@~ $@
+
+install: build
+	@rm -rf   $(mm_DESTDIR)
+	@mkdir -p $(mm_DESTDIR)
+	@if [ -e $(top_build)/local ] ; then \
+		cp -pdR $(top_build)/local $(mm_DESTDIR)/ ; \
+	 fi
+	@if [ -e $(top_build)/share ] ; then \
+		cp -pdR $(top_build)/share $(mm_DESTDIR)/ ; \
+	 fi
+	@if [ $(mm_INSTALL_RAM_BOOT) = yes ] || \
+            [ $(mm_INSTALL_NFS_BOOT) = yes ] || \
+            [ $(mm_INSTALL_LATEST)   = yes ] ; then \
+		su -c " \
+			if [ $(mm_INSTALL_RAM_BOOT) = yes ] ; then                                      \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
+			fi                                                                            ; \
+			                                                                                \
+			if [ $(mm_INSTALL_NFS_BOOT) = yes ] ; then                                      \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
+				rm -rf   $(mm_NFS_ROOT)/$(mm_NAME)                                    ; \
+			fi                                                                            ; \
+			                                                                                \
+			if [ $(mm_INSTALL_LATEST)   = yes ] ; then                                      \
+				rm -rf   $(mm_TFTP_ROOT)/latest                                       ; \
+			fi                                                                            ; \
+			                                                                                \
+			if [ $(mm_INSTALL_RAM_BOOT) = yes ] ; then                                      \
+				mkdir -p $(mm_TFTP_ROOT)/                                             ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				tar -jxf $(top_build)/local/ram-$(mm_NAME).tar.bz2                      \
+                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				                                                                        \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version          \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/version                           ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/kernel           \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/kernel                            ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/rootfs           \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/rootfs                            ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/themes           \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/themes                            ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/extras.sfs       \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/extras.sfs                        ; \
+				                                                                        \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+			fi                                                                            ; \
+			                                                                                \
+			if [ $(mm_INSTALL_NFS_BOOT) = yes ] ; then                                      \
+				mkdir -p $(mm_TFTP_ROOT)/                                             ; \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				tar -jxf $(top_build)/local/nfs-$(mm_NAME).tar.bz2                      \
+                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				                                                                        \
+				mkdir -p $(mm_TFTP_ROOT)/                                             ; \
+				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/version          \
+                                         $(mm_TFTP_ROOT)/$(mm_NAME)/version                           ; \
+				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/kernel           \
+                                         $(mm_TFTP_ROOT)/$(mm_NAME)/kernel                            ; \
+				                                                                        \
+				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/rootfs.tar.bz2   \
+				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/extras.tar.bz2   \
+                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/themes.tar.bz2   \
+                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				mkdir -p $(mm_NFS_ROOT)                                               ; \
+				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/rootfs                          \
+                                         $(mm_NFS_ROOT)/$(mm_NAME)                                    ; \
+				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/themes/*                        \
+                                         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/usr/share/mythtv/themes  ; \
+				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/extras/*                        \
+                                         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)        ; \
+				                                                                        \
+				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+			fi                                                                            ; \
+			                                                                                \
+			if [ $(mm_INSTALL_LATEST)   = yes ] ; then                                      \
+				mkdir -p $(mm_TFTP_ROOT)/latest                                       ; \
+				cp -pdR  $(top_build)/local/* $(mm_TFTP_ROOT)/latest/                 ; \
+			fi                                                                            ; \
+		" ; \
+	 fi
+
+.PHONY: all build install
+
+.NOTPARALLEL:
