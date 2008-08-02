@@ -417,7 +417,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
 		cd $@~ ; \
 		for dir in $${dirs} ; do \
-			echo "stripping perl: stripping [...]$${dir}" ; \
+			echo "stripping perl: recursively stripping files in directory [...]$${dir}" ; \
 			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
 			rm -f PerlSharpLog.txt ; \
 			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
@@ -532,7 +532,8 @@ $(top_build)/stage/pxe-$(mm_NAME): $(top_source)/pxe
 		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 \
 		       $@~/pxelinux/tftpboot/minimyth/pxelinux.0 ; \
 	 fi
-	@$(call SET_PERMISSIONS,$@~)
+	@find $@~ -type d -exec chmod 0755 '{}' +
+	@find $@~ -type f -exec chmod 0644 '{}' +
 	@touch $@~
 	@mv $@~ $@
 
@@ -543,11 +544,11 @@ $(top_build)/stage/helper: \
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $^ $@~
-	@chmod 0644 $@~/*
 	@cd $@~ ; for file in `ls -1` ; do  \
 		md5sum $${file} > $${file}.md5 ; \
-		chmod 0644 $${file}.md5 ; \
 	 done
+	@find $@~ -type d -exec chmod 0755 '{}' +
+	@find $@~ -type f -exec chmod 0644 '{}' +
 	@touch $@~
 	@mv $@~ $@
 
@@ -556,7 +557,8 @@ $(top_build)/stage/html: $(top_source)/html
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $^ $@~
-	@$(call SET_PERMISSIONS,$@~)
+	@find $@~ -type d -exec chmod 0755 '{}' +
+	@find $@~ -type f -exec chmod 0644 '{}' +
 	@touch $@~
 	@mv $@~ $@
 
@@ -579,7 +581,8 @@ $(top_build)/stage/scripts: \
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $^ $@~
-	@chmod 0644 $@~/*
+	@find $@~ -type d -exec chmod 0755 '{}' +
+	@find $@~ -type f -exec chmod 0644 '{}' +
 	@touch $@~
 	@mv $@~ $@
 
@@ -644,8 +647,9 @@ $(top_build)/stage/themes: $(top_build)/stage/image/themes
 	@mkdir -m 0755 -p $@~
 	@for theme in `cd $< ; ls -1` ; do                                                    \
 		fakeroot sh -c "mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1" ; \
-		chmod 0644 $@~/$${theme}.sfs                                                ; \
 	 done
+	@find $@~ -type d -exec chmod 0755 '{}' +
+	@find $@~ -type f -exec chmod 0644 '{}' +
 	@touch $@~
 	@mv $@~ $@
 
