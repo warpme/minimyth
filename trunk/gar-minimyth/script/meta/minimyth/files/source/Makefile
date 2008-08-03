@@ -100,8 +100,8 @@ COPY_FILES = \
 						if [ -d $${source_file} ] ; then \
 							cp_flags="$${cp_flags} -R" ; \
 						fi ; \
-                                       		target_dir=`dirname $${target_file}` ; \
-                                       		mkdir -p $${target_dir} ; \
+						target_dir=`dirname $${target_file}` ; \
+						mkdir -p $${target_dir} ; \
 						cp $${cp_flags} $${source_file} $${target_file} ; \
 						while file $${target_file} | grep -i -q 'symbolic link to' ; do \
 							link="`file $${source_file} | \
@@ -113,8 +113,8 @@ COPY_FILES = \
 								exit 1 ; \
 							fi ; \
 							if [ ! -e $${target_file} ] ; then \
-                                       				target_dir=`dirname $${target_file}` ; \
-                                       				mkdir -p $${target_dir} ; \
+								target_dir=`dirname $${target_file}` ; \
+								mkdir -p $${target_dir} ; \
 								cp $${cp_flags} $${source_file} $${target_file} ; \
 							fi ; \
 						done ; \
@@ -223,17 +223,17 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/base))$(versiondir) \
 	        $@~/srv/www/software/base/versions
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/base))$(licensedir) \
-                $@~/srv/www/software/base/licenses
+	        $@~/srv/www/software/base/licenses
 	@mkdir -m 0755 -p $@~/srv/www/software/extras
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/extras))$(extras_versiondir) \
 	        $@~/srv/www/software/extras/versions
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/extras))$(extras_licensedir) \
-                $@~/srv/www/software/extras/licenses
+	        $@~/srv/www/software/extras/licenses
 	@mkdir -m 0755 -p $@~/srv/www/software/build
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/versions))$(versiondir)-build \
-                $@~/srv/www/software/build/versions
+	        $@~/srv/www/software/build/versions
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/versions))$(licensedir)-build \
-                $@~/srv/www/software/build/licenses
+	        $@~/srv/www/software/build/licenses
 	@# Make user 'minimyth' configuration links.
 	@mkdir -m 0755 -p $@~/home/minimyth
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth))$(sysconfdir)/lircrc \
@@ -413,17 +413,17 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# If running a parallel build, then let perlstrip.pl start the same number of threads.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
 		echo 'stripping perl' ; \
-	 	threads="$(patsubst -j%,%,$(filter -j%,$(PARALLELMFLAGS)))" ; \
-	 	[ "$${threads}" = "" ] && threads="1" ; \
-	 	dir_list="$@~$(PERL_libdir) $@~$(datadir)/mythtv" ; \
-	 	perl $(build_DESTDIR)/$(build_bindir)/perlstrip.pl $${threads} $${dir_list} > /dev/null 2>&1 ; \
-	 	revert_list=`find $${dir_list} -name *.ERR | sed -e 's%\.ERR$$%%' -e 's%^$@~%%'` ; \
-	 	for revert in $${revert_list} ; do \
+		threads="$(patsubst -j%,%,$(filter -j%,$(PARALLELMFLAGS)))" ; \
+		[ "$${threads}" = "" ] && threads="1" ; \
+		dir_list="$@~$(PERL_libdir) $@~$(datadir)/mythtv" ; \
+		perl $(build_DESTDIR)/$(build_bindir)/perlstrip.pl $${threads} $${dir_list} > /dev/null 2>&1 ; \
+		revert_list=`find $${dir_list} -name *.ERR | sed -e 's%\.ERR$$%%' -e 's%^$@~%%'` ; \
+		for revert in $${revert_list} ; do \
 			echo "stripping perl: not stripping file [...]$${revert}" ; \
 			rm -f $@~$${revert}.ERR ; \
 			rm -f $@~$${revert}.LOG ; \
 			cp -f $(DESTDIR)$${revert} $@~$${revert} ; \
-	 	done ; \
+		done ; \
 	 fi
 	@touch $@~
 	@mv $@~ $@
@@ -442,8 +442,8 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 	@mkdir -m 0755 -p $@~/rootfs-ro/$(extras_rootdir)
 	@for theme in `cd $@~/rootfs-ro/usr/share/mythtv/themes ; ls -1` ; do \
 		if [ ! -e $@~/rootfs-ro/usr/share/mythtv/themes/$${theme}/mainmenu.xml ] && \
-	           [ ! "$${theme}" = "default"                                         ] && \
-	           [ ! "$${theme}" = "default-wide"                                    ] ; then \
+		   [ ! "$${theme}" = "default"                                         ] && \
+		   [ ! "$${theme}" = "default-wide"                                    ] ; then \
 			rm -rf $@~/rootfs-ro/usr/share/mythtv/themes/$${theme} ; \
 		fi ; \
 	 done
@@ -496,8 +496,8 @@ $(top_build)/stage/image/themes: $(top_build)/image/rootfs
 	@# Remove the menu themes and default themes because they are included in the root file system.
 	@for theme in `cd $@~ ; ls -1` ; do \
 		if [ -e $@~/$${theme}/mainmenu.xml ] || \
-	           [ "$${theme}" = "default"       ] || \
-	           [ "$${theme}" = "default-wide"  ] ; then \
+		   [ "$${theme}" = "default"       ] || \
+		   [ "$${theme}" = "default-wide"  ] ; then \
 			rm -rf $@~/$${theme} ; \
 		fi ; \
 	 done
@@ -796,8 +796,8 @@ install: build
 		cp -pdR $(top_build)/share $(mm_DESTDIR)/ ; \
 	 fi
 	@if [ $(mm_INSTALL_RAM_BOOT) = yes ] || \
-            [ $(mm_INSTALL_NFS_BOOT) = yes ] || \
-            [ $(mm_INSTALL_LATEST)   = yes ] ; then \
+	    [ $(mm_INSTALL_NFS_BOOT) = yes ] || \
+	    [ $(mm_INSTALL_LATEST)   = yes ] ; then \
 		su -c " \
 			if [ $(mm_INSTALL_RAM_BOOT) = yes ] ; then                                      \
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
@@ -839,28 +839,28 @@ install: build
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				tar -jxf $(top_build)/local/nfs-$(mm_NAME).tar.bz2                      \
-                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				                                                                        \
 				mkdir -p $(mm_TFTP_ROOT)/                                             ; \
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
 				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/version          \
-                                         $(mm_TFTP_ROOT)/$(mm_NAME)/version                           ; \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/version                           ; \
 				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/kernel           \
-                                         $(mm_TFTP_ROOT)/$(mm_NAME)/kernel                            ; \
+				         $(mm_TFTP_ROOT)/$(mm_NAME)/kernel                            ; \
 				                                                                        \
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/rootfs.tar.bz2   \
 				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/extras.tar.bz2   \
-                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				tar -jxf $(mm_TFTP_ROOT)/$(mm_NAME).tmp/nfs-$(mm_NAME)/themes.tar.bz2   \
-                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				mkdir -p $(mm_NFS_ROOT)                                               ; \
 				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/rootfs                          \
-                                         $(mm_NFS_ROOT)/$(mm_NAME)                                    ; \
+				         $(mm_NFS_ROOT)/$(mm_NAME)                                    ; \
 				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/themes/*                        \
-                                         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/usr/share/mythtv/themes  ; \
+				         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/usr/share/mythtv/themes  ; \
 				mv       $(mm_TFTP_ROOT)/$(mm_NAME).tmp/extras/*                        \
-                                         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)        ; \
+				         $(mm_NFS_ROOT)/$(mm_NAME)/rootfs-ro/$(extras_rootdir)        ; \
 				                                                                        \
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 			fi                                                                            ; \
