@@ -817,7 +817,7 @@ install: build
 				rm -rf   $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				tar -jxf $(top_build)/local/ram-$(mm_NAME).tar.bz2                      \
-                                      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
+				      -C $(mm_TFTP_ROOT)/$(mm_NAME).tmp                               ; \
 				                                                                        \
 				mkdir -p $(mm_TFTP_ROOT)/$(mm_NAME)                                   ; \
 				cp -pdR  $(mm_TFTP_ROOT)/$(mm_NAME).tmp/ram-$(mm_NAME)/version          \
