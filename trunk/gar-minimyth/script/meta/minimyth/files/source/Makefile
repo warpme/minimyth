@@ -147,10 +147,6 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
-	@# Install busybox.
-	@echo "installing busybox"
-	@main_DESTDIR=$@~ $(MAKE) -C $(mm_HOME)/script/utils/busybox DESTIMG=$(DESTIMG) install
-	@rm -rf $@~/var
 	@# Copy versions.
 	@mkdir -p $@~$(versiondir)-build
 	@cp -pdR $(build_DESTDIR)$(build_versiondir)/* $@~$(versiondir)-build
@@ -167,6 +163,18 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@rm -rf $@~$(licensedir)/minimyth
 	@mkdir -p $@~$(extras_licensedir)
 	@cp -pdR $(DESTDIR)$(extras_licensedir)/* $@~$(extras_licensedir)
+	@# Install busybox.
+	@echo "installing busybox"
+	@main_DESTDIR=$@~ $(MAKE) -C $(mm_HOME)/script/utils/busybox DESTIMG=$(DESTIMG) install
+	@rm -rf $@~/var
+	@# Copy binaries.
+	@$(call COPY_FILES, "binaries" , "binary", $(DESTDIR), $@~, $(bindirs), $(MM_BINS))
+	@# Copy etcs.
+	@$(call COPY_FILES, "etcs", "etc", $(DESTDIR), $@~, $(etcdirs), $(MM_ETCS))
+	@# Copy libraries.
+	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs), $(MM_LIBS))
+	@# Copy shares.
+	@$(call COPY_FILES, "shares" , "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
 	@# Copy the QT mysql plugin needed by MythTV.
 	@$(if $(filter 0.21,$(mm_MYTH_VERSION)), \
 		mkdir -p $@~$(qt3prefix)/plugins ; \
@@ -176,11 +184,6 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		mkdir -p $@~$(qt4prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $@~$(qt4prefix)/plugins ; \
 	 )
-	@# Copy binaries, etcs, shares, and libraries.
-	@$(call COPY_FILES, "binaries" , "binary", $(DESTDIR), $@~, $(bindirs), $(MM_BINS))
-	@$(call COPY_FILES, "etcs", "etc", $(DESTDIR), $@~, $(etcdirs), $(MM_ETCS))
-	@$(call COPY_FILES, "shares" , "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
-	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs), $(MM_LIBS))
 	@# Copy HTML files.
 	@find $(top_source)/html -type d \
 		| sed -e 's%^\$(top_source)/html%$@~/srv/www%' \
