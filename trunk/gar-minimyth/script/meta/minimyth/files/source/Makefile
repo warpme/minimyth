@@ -116,8 +116,10 @@ COPY_FILES = \
 								target_dir=`dirname $${target_file}` ; \
 								mkdir -p $${target_dir} ; \
 								cp $${cp_flags} $${source_file} $${target_file} ; \
+								chmod -R u+w $${target_file} ; \
 							fi ; \
 						done ; \
+						chmod -R u+w $${target_file} ; \
 					fi ; \
 				fi ; \
 			done ; \
@@ -344,6 +346,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
 				mkdir -p $@~/$${dir} ; \
 				cp -p $(DESTDIR)/$${lib} $@~/$${dir} ; \
+				chmod -R u+w $@~/$${lib} ; \
 				lib_list="$${lib_list} $@~/$${lib}" ; \
 			done ; \
 		fi ; \
@@ -385,20 +388,6 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Generate font files.
 	@cd $@~$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
 	@cd $@~$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
-	@# Clean up permissions (at least somewhat)
-	@find $@~ -exec file '{}' \; \
-		| grep -i 'ELF ..-bit LSB executable' \
-		| sed -e 's%:.*%%' \
-		| xargs chmod 0755
-	@find $@~ -exec file '{}' \; \
-		| grep -i 'ELF ..-bit LSB shared object' \
-		| sed -e 's%:.*%%' \
-		| grep -v '*' \
-		| grep -v '/libc.so.[0-9]\+$$' \
-		| grep -v '/ld-linux.so.[0-9]\+$$' \
-		| grep -v '/ld-linux-x86_64.so.[0-9]\+$$' \
-		| xargs chmod 0644
-	@$(call SET_PERMISSIONS,$@~)
 	@# Strip binaries and shared libraries.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
 		echo 'stripping binaries and shared libraries' ; \
@@ -423,6 +412,20 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			cp -f $(DESTDIR)$${revert} $@~$${revert} ; \
 		done ; \
 	 fi
+	@# Clean up permissions (at least somewhat)
+	@find $@~ -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB executable' \
+		| sed -e 's%:.*%%' \
+		| xargs chmod 0755
+	@find $@~ -exec file '{}' \; \
+		| grep -i 'ELF ..-bit LSB shared object' \
+		| sed -e 's%:.*%%' \
+		| grep -v '*' \
+		| grep -v '/libc.so.[0-9]\+$$' \
+		| grep -v '/ld-linux.so.[0-9]\+$$' \
+		| grep -v '/ld-linux-x86_64.so.[0-9]\+$$' \
+		| xargs chmod 0644
+	@$(call SET_PERMISSIONS,$@~)
 	@touch $@~
 	@mv $@~ $@
 
