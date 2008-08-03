@@ -168,13 +168,13 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@main_DESTDIR=$@~ $(MAKE) -C $(mm_HOME)/script/utils/busybox DESTIMG=$(DESTIMG) install
 	@rm -rf $@~/var
 	@# Copy binaries.
-	@$(call COPY_FILES, "binaries" , "binary", $(DESTDIR), $@~, $(bindirs), $(MM_BINS))
+	@$(call COPY_FILES, "binaries", "binary", $(DESTDIR), $@~, $(bindirs), $(MM_BINS))
 	@# Copy etcs.
 	@$(call COPY_FILES, "etcs", "etc", $(DESTDIR), $@~, $(etcdirs), $(MM_ETCS))
 	@# Copy libraries.
 	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs), $(MM_LIBS))
 	@# Copy shares.
-	@$(call COPY_FILES, "shares" , "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
+	@$(call COPY_FILES, "shares", "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
 	@# Copy the QT mysql plugin needed by MythTV.
 	@$(if $(filter 0.21,$(mm_MYTH_VERSION)), \
 		mkdir -p $@~$(qt3prefix)/plugins ; \
