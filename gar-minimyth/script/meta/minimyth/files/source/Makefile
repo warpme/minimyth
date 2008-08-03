@@ -177,10 +177,10 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $@~$(qt4prefix)/plugins ; \
 	 )
 	@# Copy binaries, etcs, shares, and libraries.
-	@$(call COPY_FILES, "binaries" , "binary" , $(DESTDIR), $@~, $(bindirs)  , $(MM_BINS)  )
-	@$(call COPY_FILES, "etcs"     , "etc"    , $(DESTDIR), $@~, $(etcdirs)  , $(MM_ETCS)  )
-	@$(call COPY_FILES, "shares"   , "share"  , $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
-	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs)  , $(MM_LIBS)  )
+	@$(call COPY_FILES, "binaries" , "binary", $(DESTDIR), $@~, $(bindirs), $(MM_BINS))
+	@$(call COPY_FILES, "etcs", "etc", $(DESTDIR), $@~, $(etcdirs), $(MM_ETCS))
+	@$(call COPY_FILES, "shares" , "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
+	@$(call COPY_FILES, "libraries", "library", $(DESTDIR), $@~, $(libdirs), $(MM_LIBS))
 	@# Copy HTML files.
 	@find $(top_source)/html -type d \
 		| sed -e 's%^\$(top_source)/html%$@~/srv/www%' \
@@ -334,8 +334,8 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		fi ; \
 		lib_list="" ; \
 		if [ $${lib_count} -gt 0 ] ; then \
-		        new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
-		        new_filter="$${new_filter_path}/$${new_filter_file}" ; \
+			new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
+			new_filter="$${new_filter_path}/$${new_filter_file}" ; \
 			new_list=`cd $(DESTDIR) ; find * -regex "$${new_filter}"` ; \
 			for lib in $${new_list} ; do \
 				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
@@ -396,16 +396,11 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		| grep -v '/ld-linux-x86_64.so.[0-9]\+$$' \
 		| xargs chmod 0644
 	@$(call SET_PERMISSIONS,$@~)
-	@# Strip executables and shared libraries.
+	@# Strip binaries and shared libraries.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
-		echo 'stripping binaries' ; \
+		echo 'stripping binaries and shared libraries' ; \
 		find $@~ -exec file '{}' \; \
-			| grep -i 'ELF ..-bit LSB executable' \
-			| sed -e 's%:.*%%' \
-			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
-		echo 'stripping shared libraries' ; \
-		find $@~ -exec file '{}' \; \
-			| grep -i 'ELF ..-bit LSB shared object' \
+			| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
 			| sed -e 's%:.*%%' \
 			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
 	 fi
