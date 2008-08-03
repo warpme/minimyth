@@ -299,28 +299,27 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
 	 pass=0 ; \
 	 lib_count=1 ; \
-	 bin_list="`find $@~ -exec file '{}' \; \
-		| grep -i 'ELF ..-bit LSB executable' \
+	 lib_list="`find $@~ -exec file '{}' \; \
+		| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
 		| sed -e 's%:.*%%'`" ; \
-	 bin_list=`echo $${bin_list}` ; \
+	 lib_list=`echo $${lib_list}` ; \
+	 old_list="" ; \
 	 while [ $${lib_count} -gt 0 ] ; do \
 		pass=$$(($${pass}+1)) ; \
-		lib_list="`find $@~ -exec file '{}' \; \
-			| grep -i 'ELF ..-bit LSB shared object' \
-			| sed -e 's%:.*%%'`" ; \
-		lib_list=`echo $${lib_list}` ; \
-		new_list="`$(OBJDUMP) -x $${bin_list} $${lib_list} 2> /dev/null \
+		new_list="`$(OBJDUMP) -x $${lib_list} 2> /dev/null \
 			| grep -e '^ *NEEDED  *' \
 			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
 			| cut -d' ' -f 2 \
 			| sort \
 			| uniq`" ; \
 		new_list=`echo $${new_list}` ; \
-		old_list="`echo $${lib_list} \
-			| sed -e 's%[^ ]*/%%g' \
-			| sort \
-			| uniq`" ; \
+		old_list="$${old_list} `echo $${lib_list} | sed -e 's%[^ ]*/%%g'`" ; \
 		old_list=`echo $${old_list}` ; \
+		old_list=`echo "$${old_list}" | \
+			sed -e 's% %\n%g' | \
+			sort | \
+			uniq | \
+			sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
 		old_filter="\(`echo $${old_list} | sed -e 's%\([.+]\)%\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
 		new_list=`echo " $${new_list} " \
 			| sed -e 's%  *%  %g' \
@@ -329,11 +328,11 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		lib_count=`echo "$${new_list}" | wc -w` ; \
 		echo "copying dependent libraries: pass $${pass} found $${lib_count} libraries to copy" ; \
 		if [ "$(mm_DEBUG_BUILD)" = "yes" ] ; then \
-			echo "    bin_list : $${bin_list}" ; \
 			echo "    lib_list : $${lib_list}" ; \
 			echo "    old_list : $${old_list}" ; \
 			echo "    new_list : $${new_list}" ; \
 		fi ; \
+		lib_list="" ; \
 		if [ $${lib_count} -gt 0 ] ; then \
 		        new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
 		        new_filter="$${new_filter_path}/$${new_filter_file}" ; \
@@ -342,10 +341,9 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
 				mkdir -p $@~/$${dir} ; \
 				cp -p $(DESTDIR)/$${lib} $@~/$${dir} ; \
+				lib_list="$${lib_list} $@~/$${lib}" ; \
 			done ; \
 		fi ; \
-		bin_list= ; \
-		lib_list= ; \
 	 done
 	@# Copy dependent kernel modules.
 	@echo 'copying dependent kernel modules'
@@ -412,22 +410,20 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
 	 fi
 	@# Strip Perl scripts
+	@# If running a parallel build, then let perlstrip.pl start the same number of threads.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
 		echo 'stripping perl' ; \
-		dirs='$(PERL_libdir) $(datadir)/mythtv' ; \
-		cd $@~ ; \
-		for dir in $${dirs} ; do \
-			echo "stripping perl: recursively stripping files in directory [...]$${dir}" ; \
-			perl $(build_DESTDIR)$(build_bindir)/PerlSharp.cgi -r ./$${dir} > /dev/null 2>&1 ; \
-			rm -f PerlSharpLog.txt ; \
-			revert_list=`find ./$${dir} -name *.ERR | sed -e 's%^\.//*%/%' -e 's%\.ERR$$%%'` ; \
-			for revert in $${revert_list} ; do \
-				echo "stripping perl: not stripping perl file [...]$${revert}" ; \
-				rm -f ./$${revert}.ERR ; \
-				rm -f ./$${revert}.LOG ; \
-				cp -f $(DESTDIR)$${revert} ./$${revert} ; \
-			done ; \
-		done ; \
+	 	threads="$(patsubst -j%,%,$(filter -j%,$(PARALLELMFLAGS)))" ; \
+	 	[ "$${threads}" = "" ] && threads="1" ; \
+	 	dir_list="$@~$(PERL_libdir) $@~$(datadir)/mythtv" ; \
+	 	perl $(build_DESTDIR)/$(build_bindir)/perlstrip.pl $${threads} $${dir_list} > /dev/null 2>&1 ; \
+	 	revert_list=`find $${dir_list} -name *.ERR | sed -e 's%\.ERR$$%%' -e 's%^$@~%%'` ; \
+	 	for revert in $${revert_list} ; do \
+			echo "stripping perl: not stripping file [...]$${revert}" ; \
+			rm -f $@~$${revert}.ERR ; \
+			rm -f $@~$${revert}.LOG ; \
+			cp -f $(DESTDIR)$${revert} $@~$${revert} ; \
+	 	done ; \
 	 fi
 	@touch $@~
 	@mv $@~ $@

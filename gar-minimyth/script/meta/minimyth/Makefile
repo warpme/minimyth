@@ -148,7 +148,7 @@ BUILDDEPS = \
 	utils/tar \
 	utils/util-linux-ng \
 	xorg/xorg \
-	perl/perlsharp
+	perl/perlstrip
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
