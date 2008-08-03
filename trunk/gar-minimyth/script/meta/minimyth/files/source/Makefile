@@ -448,17 +448,17 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 		fi ; \
 	 done
 	@# Create the rest for root file system.
-	@mkdir -m 0755 -p                       $@~/rootfs
-	@mkdir -m 0755 -p                       $@~/rw
-	@mkdir -m 0755 -p                       $@~/bin
-	@ln -s rootfs-ro/dev                    $@~/dev
-	@ln -s rootfs-ro/lib                    $@~/lib
-	@mkdir -m 0755 -p                       $@~/sbin
-	@ln -s ../rootfs-ro/bin/mkdir           $@~/bin/mkdir
-	@ln -s ../rootfs-ro/sbin/modprobe       $@~/sbin/modprobe
-	@ln -s ../rootfs-ro/bin/mount           $@~/bin/mount
-	@ln -s ../rootfs-ro/sbin/pivot_root     $@~/sbin/pivot_root
-	@ln -s ../rootfs-ro/bin/sh              $@~/bin/sh
+	@mkdir -m 0755 -p                   $@~/rootfs
+	@mkdir -m 0755 -p                   $@~/rw
+	@mkdir -m 0755 -p                   $@~/bin
+	@ln -s rootfs-ro/dev                $@~/dev
+	@ln -s rootfs-ro/lib                $@~/lib
+	@mkdir -m 0755 -p                   $@~/sbin
+	@ln -s ../rootfs-ro/bin/mkdir       $@~/bin/mkdir
+	@ln -s ../rootfs-ro/sbin/modprobe   $@~/sbin/modprobe
+	@ln -s ../rootfs-ro/bin/mount       $@~/bin/mount
+	@ln -s ../rootfs-ro/sbin/pivot_root $@~/sbin/pivot_root
+	@ln -s ../rootfs-ro/bin/sh          $@~/bin/sh
 	@find $(top_source)/initrd -type d \
 		| sed -e 's%^\$(top_source)/initrd%$@~%' \
 		| xargs mkdir -m 0755 -p
@@ -677,7 +677,7 @@ $(top_build)/stage/themes.tar.bz2: $(top_build)/stage/image/themes
 	@mv $@~ $@
 
 $(top_build)/stage/%.md5: $(top_build)/stage/%
-	@echo "making the checksum file for $(patsubst $(top)%,[..]%,$<)"
+	@echo "making the checksum file for $(patsubst $(top)%,[...]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@(cd $(<D) ; find $(<F) -type f -exec md5sum '{}' + | sort -k 2) > $@~
@@ -686,7 +686,7 @@ $(top_build)/stage/%.md5: $(top_build)/stage/%
 	@mv $@~ $@
 
 $(top_build)/stage/%.tar.bz2: $(top_build)/stage/%
-	@echo "making the tarball file of $(patsubst $(top)%,[..]%,$<)"
+	@echo "making the tarball file of $(patsubst $(top)%,[...]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@fakeroot sh -c "tar -C $(<D) -jcf $@~ $(<F)"
@@ -698,7 +698,7 @@ $(top_build)/stage/local/ram-$(mm_NAME)  \
 $(top_build)/stage/local/nfs-$(mm_NAME)  \
 $(top_build)/stage/share/ram-$(mm_NAME)  \
 $(top_build)/stage/share/nfs-$(mm_NAME):
-	@echo "making $(patsubst $(top)%,[..]%,$@)"
+	@echo "making $(patsubst $(top)%,[...]%,$@)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
