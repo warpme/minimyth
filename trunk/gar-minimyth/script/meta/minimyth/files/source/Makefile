@@ -301,35 +301,29 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	 done
 	@# Copy dependent libraries.
 	@echo 'copying dependent libraries'
-	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' | sed -e 's% /% %g' | sed -e 's%^/%%' | sed -e 's%  *%\\\\|%g'`\)" ; \
+	@new_filter_path="\(`echo $(strip $(libdirs)) | sed -e 's%//*%/%g' -e 's% /% %g' -e 's%^/%%' -e 's%  *%\\\\|%g'`\)" ; \
 	 pass=0 ; \
 	 lib_count=1 ; \
-	 lib_list="`find $@~ -exec file '{}' \; \
-		| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
-		| sed -e 's%:.*%%'`" ; \
-	 lib_list=`echo $${lib_list}` ; \
 	 old_list="" ; \
+	 lib_list=`find $@~ -exec file '{}' \; \
+		| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
+		| sed -e 's%:.*%%' \
+		| sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
 	 while [ $${lib_count} -gt 0 ] ; do \
 		pass=$$(($${pass}+1)) ; \
-		new_list="`$(OBJDUMP) -x $${lib_list} 2> /dev/null \
-			| grep -e '^ *NEEDED  *' \
-			| sed -e 's%^ *%%' -e 's% *$$%%' -e 's%  *% %' \
-			| cut -d' ' -f 2 \
-			| sort \
-			| uniq`" ; \
-		new_list=`echo $${new_list}` ; \
-		old_list="$${old_list} `echo $${lib_list} | sed -e 's%[^ ]*/%%g'`" ; \
-		old_list=`echo $${old_list}` ; \
-		old_list=`echo "$${old_list}" | \
-			sed -e 's% %\n%g' | \
-			sort | \
-			uniq | \
-			sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
+		old_list=`echo $${old_list} $${lib_list} \
+			| sed -e 's%[^ ]*/%%g' \
+			      -e 's% %\n%g' \
+			| sort -u \
+			| sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
 		old_filter="\(`echo $${old_list} | sed -e 's%\([.+]\)%\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
-		new_list=`echo " $${new_list} " \
-			| sed -e 's%  *%  %g' \
-			| sed -e "s% $${old_filter} % %g"` ; \
-		new_list=`echo $${new_list} | sed -e 's%  *% %g' | sed -e 's%^  *%%' | sed -e 's%  *$$%%'` ; \
+		new_list=`$(OBJDUMP) -x $${lib_list} 2> /dev/null \
+			| grep -e '^ *NEEDED  *' \
+			| sort -u \
+			| sed -e 's%^ *NEEDED  *%%' \
+			      -e 's%  *$$%%' \
+			      -e "s%^$${old_filter}$$%%g" \
+			| sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
 		lib_count=`echo "$${new_list}" | wc -w` ; \
 		echo "copying dependent libraries: pass $${pass} found $${lib_count} libraries to copy" ; \
 		if [ "$(mm_DEBUG_BUILD)" = "yes" ] ; then \
