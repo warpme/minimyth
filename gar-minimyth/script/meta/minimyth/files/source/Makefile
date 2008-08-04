@@ -246,10 +246,6 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@mkdir -m 0755 -p $@~/home/minimyth/.mythtv
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/lircrc \
 	        $@~/home/minimyth/.mythtv/lircrc
-	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/mythtv/config.xml \
-	        $@~/home/minimyth/.mythtv/config.xml
-	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/mythtv/mysql.txt \
-	        $@~/home/minimyth/.mythtv/mysql.txt
 	@# Make init script links.
 	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d/rc.d
 	@index=10 ; $(foreach file, $(MM_INIT_START), \

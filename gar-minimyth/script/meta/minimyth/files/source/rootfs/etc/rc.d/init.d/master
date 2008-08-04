@@ -24,30 +24,59 @@ start() {
     MASTER_WOL_BROADCAST=`/sbin/ifconfig ${MM_NETWORK_INTERFACE} | /bin/grep ' Bcast:' | /bin/sed 's%.* Bcast:\([^ ]*\) .*%\1%'`
 
     # Configure config.xml file.
-    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /etc/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /etc/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /etc/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /etc/mythtv/config.xml
-    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /etc/mythtv/config.xml
+    # The frontend runs as user 'minimyth' and the backend runs as user 'root'.
+    # As a result, there is a config.xml file for both 'minimyth' and 'root'.
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /home/minimyth/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /home/minimyth/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /home/minimyth/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /home/minimyth/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /home/minimyth/.mythtv/config.xml
+
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /root/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /root/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /root/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /root/.mythtv/config.xml
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /root/.mythtv/config.xml
 
     # Configure mysql.txt file.
-    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /etc/mythtv/mysql.txt
+    # The frontend runs as user 'minimyth' and the backend runs as user 'root'.
+    # As a result, there is a mysql.txt file for both 'minimyth' and 'root'.
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /home/minimyth/.mythtv/mysql.txt
     if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" ; then
-        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%\#%"                                             /etc/mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%%"                                                /etc/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%\#%"                                             /home/minimyth/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%%"                                                /home/minimyth/.mythtv/mysql.txt
     else
-        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%%"                                               /etc/mythtv/mysql.txt
-        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%\#%"                                              /etc/mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%%"                                               /home/minimyth/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%\#%"                                              /home/minimyth/.mythtv/mysql.txt
     fi
-    /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /etc/mythtv/mysql.txt
-    /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /etc/mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /home/minimyth/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /home/minimyth/.mythtv/mysql.txt
+
+    /bin/sed -i "s%@MM_HOSTNAME@%${HOSTNAME}%"                                                /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_SERVER@%${MM_MASTER_SERVER}%"                                   /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBUSERNAME@%${MM_MASTER_DBUSERNAME}%"                           /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBPASSWORD@%${MM_MASTER_DBPASSWORD}%"                           /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_DBNAME@%${MM_MASTER_DBNAME}%"                                   /root/.mythtv/mysql.txt
+    if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" ; then
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%\#%"                                             /root/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%%"                                                /root/.mythtv/mysql.txt
+    else
+        /bin/sed -i "s%@MM_MASTER_WOL_FALSE@%%"                                               /root/.mythtv/mysql.txt
+        /bin/sed -i "s%@MM_MASTER_WOL_TRUE@%\#%"                                              /root/.mythtv/mysql.txt
+    fi
+    /bin/sed -i "s%@MM_MASTER_WOLSQLRECONNECTWAITTIME@%${MM_MASTER_WOLSQLRECONNECTWAITTIME}%" /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCONNECTRETRY@%${MM_MASTER_WOLSQLCONNECTRETRY}%"           /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOLSQLCOMMAND@%${MM_MASTER_WOLSQLCOMMAND}%"                     /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_BROADCAST@%${MASTER_WOL_BROADCAST}%"                        /root/.mythtv/mysql.txt
+    /bin/sed -i "s%@MM_MASTER_WOL_MAC@%${MM_MASTER_WOL_MAC}%"                                 /root/.mythtv/mysql.txt
+
 
     # If using wake-on-lan, then make sure that the MythTV master backend is awake.
     if /usr/bin/test "${MM_MASTER_WOL_ENABLED}" = "yes" && ! mm_mythdb_test ; then
