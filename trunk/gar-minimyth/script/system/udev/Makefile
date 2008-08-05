@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 125
+GARVERSION = 126
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,42 +11,26 @@ endef
 
 DEPENDS = lang/c
 
-BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-DEFAULT_ARGS = \
-	V=true \
-	INSTALL="install" \
-	HOSTCC="$(build_CC)" \
-	CROSS_COMPILE="$(compiler_prefix)" \
-	CC="$(CC)" \
-	LD="$(CC)" \
-	AR="$(AR)" \
-	STRIP="$(STRIP)" \
-	RANLIB="$(RANLIB)" \
-	DESTDIR="$(DESTDIR)" \
-	OPTFLAGS="$(CFLAGS)" \
-	prefix="$(prefix)" \
-	exec_prefix="$(exec_prefix)" \
-	etcdir="$(sysconfdir)" \
-	sbindir="$(esbindir)" \
-	usrbindir="$(bindir)" \
-	usrsbindir="$(sbindir)" \
-	libudevdir="${elibdir}/udev" \
-	mandir="$(mandir)" \
-	configdir="$(sysconfdir)/udev" \
-	udevdir="$(rootdir)/dev" \
-	includedir="$(includedir)" \
-	libdir="$(elibdir)" \
-	usrlibdir="$(libdir)"
-
-BUILD_ARGS   = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
-INSTALL_ARGS = $(DEFAULT_ARGS) EXTRAS="extras/cdrom_id/ extras/volume_id/"
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--with-gnu-ld \
+	--with-udev-prefix=$(rootdir)
 
 include ../../gar.mk
 
+exec_prefix := $(rootdir)
+sbindir     := $(esbindir)
+libdir      := $(elibdir)
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 pre-install:
-	@rm -rf $(DESTDIR)$(elibdif)/udev
+	@rm -rf $(DESTDIR)$(rootdir)/lib/udev
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@$(MAKECOOKIE)
 
@@ -57,6 +41,4 @@ post-install:
 	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(sbindir)))$(esbindir)/udevadm $(DESTDIR)$(sbindir)/udevmonitor
 	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevinfo
 	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevtest
-	@rm -f $(DESTDIR)$(libdir)/libvolume_id.so
-	ln -s .$(call DIRSTODOTS,$(libdir))$(elibdir)/libvolume_id.so.0 $(DESTDIR)$(libdir)/libvolume_id.so
 	@$(MAKECOOKIE)
