@@ -7,13 +7,13 @@ include ../../gar.mk
 
 # $1 = file/directory
 SET_PERMISSIONS = \
-	chmod -R -s   $(strip $(1))                                            ; \
-	chmod -R -t   $(strip $(1))                                            ; \
-	chmod -R +r   $(strip $(1))                                            ; \
-	chmod -R u+w  $(strip $(1))                                            ; \
-	chmod -R go-w $(strip $(1))                                            ; \
-	find          $(strip $(1)) -type d             -exec chmod +x '{}' \; ; \
-	find          $(strip $(1)) -type f -perm /0100 -exec chmod +x '{}' \;
+	chmod -R -s   $(strip $(1))                                                   ; \
+	chmod -R -t   $(strip $(1))                                                   ; \
+	chmod -R +r   $(strip $(1))                                                   ; \
+	chmod -R u+w  $(strip $(1))                                                   ; \
+	chmod -R go-w $(strip $(1))                                                   ; \
+	find          $(strip $(1)) -depth -type d             -exec chmod +x '{}' \; ; \
+	find          $(strip $(1)) -depth -type f -perm /0100 -exec chmod +x '{}' \;
 
 mm-all: $(DOWNLOADDIR)/$(DISTNAME).tar.bz2
 
@@ -40,7 +40,7 @@ $(PARTIALDIR)/$(DISTNAME)/source: files/source | $(PARTIALDIR)/$(DISTNAME)
 	@rm -rf $@ $@~
 	@cp -pdR $< $@~
 	@$(call SET_PERMISSIONS,$@~)
-	@find $@~ -name .svn -exec rm -rf '{}' \;
+	@find $@~ -depth -name .svn -exec rm -rf '{}' \;
 	@touch $@~
 	@mv $@~ $@
 

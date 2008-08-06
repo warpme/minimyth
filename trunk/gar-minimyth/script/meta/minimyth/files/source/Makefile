@@ -131,13 +131,13 @@ COPY_FILES = \
 
 # $1 = file/directory
 SET_PERMISSIONS = \
-	chmod -R -s   $(strip $(1))                                            ; \
-	chmod -R -t   $(strip $(1))                                            ; \
-	chmod -R +r   $(strip $(1))                                            ; \
-	chmod -R u+w  $(strip $(1))                                            ; \
-	chmod -R go-w $(strip $(1))                                            ; \
-	find          $(strip $(1)) -type d             -exec chmod +x '{}' \; ; \
-	find          $(strip $(1)) -type f -perm /0100 -exec chmod +x '{}' \;
+	chmod -R -s   $(strip $(1))                                                   ; \
+	chmod -R -t   $(strip $(1))                                                   ; \
+	chmod -R +r   $(strip $(1))                                                   ; \
+	chmod -R u+w  $(strip $(1))                                                   ; \
+	chmod -R go-w $(strip $(1))                                                   ; \
+	find          $(strip $(1)) -depth -type d             -exec chmod +x '{}' \; ; \
+	find          $(strip $(1)) -depth -type f -perm /0100 -exec chmod +x '{}' \;
 
 all: build
 
@@ -187,18 +187,18 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $@~$(qt4prefix)/plugins ; \
 	 )
 	@# Copy HTML files.
-	@find $(top_source)/html -type d \
+	@find $(top_source)/html -depth -type d \
 		| sed -e 's%^\$(top_source)/html%$@~/srv/www%' \
 		| xargs -n 1 mkdir -m 0755 -p
-	@find $(top_source)/html -type f \
+	@find $(top_source)/html -depth -type f \
 		| sed -e 's%^\(\$(top_source)/html\)/\(.*\)$$%\1/\2 $@~/srv/www/\2%' \
 		| xargs -n 2 cp -fpd
 	@rm -rf $@~/srv/www/download
 	@# Copy package rootfs files.
-	@find $(top_source)/rootfs -type d \
+	@find $(top_source)/rootfs -depth -type d \
 		| sed -e 's%^\$(top_source)/rootfs%$@~%' \
 		| xargs -n 1 mkdir -m 0755 -p
-	@find $(top_source)/rootfs -type f \
+	@find $(top_source)/rootfs -depth -type f \
 		| sed -e 's%^\(\$(top_source)/rootfs\)/\(.*\)$$%\1/\2 $@~/\2%' \
 		| xargs -n 2 cp -fpd
 	@# Copy mm_local scripts.
@@ -265,14 +265,14 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	 for dir in $${dirs} ; do \
 		if [ -e $@~$${dir} ] ; then \
 			cd $@~$${dir} ; \
-			find . -type f -name '.*'    -exec rm -rf '{}' \; ; \
-			find . -type f -name '*.bs'  -exec rm -rf '{}' \; ; \
-			find . -type f -name '*.e2x' -exec rm -rf '{}' \; ; \
-			find . -type f -name '*.eg'  -exec rm -rf '{}' \; ; \
-			find . -type f -name '*.h'   -exec rm -rf '{}' \; ; \
-			find . -type f -name '*.pod' -exec rm -rf '{}' \; ; \
-			while [ `find . -type d -empty | wc -l` -gt 0 ] ; do \
-				find . -type d -empty -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '.*'    -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.bs'  -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.e2x' -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.eg'  -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.h'   -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.pod' -exec rm -rf '{}' \; ; \
+			while [ `find . -depth -type d -empty | wc -l` -gt 0 ] ; do \
+				find . -depth -type d -empty -exec rm -rf '{}' \; ; \
 			done ; \
 		fi ; \
 	 done
@@ -301,7 +301,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	 pass=0 ; \
 	 lib_count=1 ; \
 	 old_list="" ; \
-	 lib_list=`find $@~ -exec file '{}' \; \
+	 lib_list=`find $@~ -depth -exec file '{}' \; \
 		| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
 		| sed -e 's%:.*%%' \
 		| sed -e :a -e '$!N;s/\n/ /;ta' -e 'P;D'` ; \
@@ -331,7 +331,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		if [ $${lib_count} -gt 0 ] ; then \
 			new_filter_file="\(`echo $${new_list} | sed -e 's%\([.+]\)%\\\\\\1%g' | sed -e 's%  *%\\\\|%g'`\)" ; \
 			new_filter="$${new_filter_path}/$${new_filter_file}" ; \
-			new_list=`cd $(DESTDIR) ; find * -regex "$${new_filter}"` ; \
+			new_list=`cd $(DESTDIR) ; find * -depth -regex "$${new_filter}"` ; \
 			for lib in $${new_list} ; do \
 				dir=`echo $${lib} | sed -e 's%[^/]*$$%%'` ; \
 				mkdir -p $@~/$${dir} ; \
@@ -344,7 +344,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Copy dependent kernel modules.
 	@echo 'copying dependent kernel modules'
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
-	@find $@~$(LINUX_MODULESDIR) -name '*.ko' | sed -e 's%^$@~%/%' -e 's%//*%/%g' | \
+	@find $@~$(LINUX_MODULESDIR) -depth -name '*.ko' | sed -e 's%^$@~%/%' -e 's%//*%/%g' | \
 	 while read module ; do \
 		module_deps=`cat $(DESTDIR)$(LINUX_MODULESDIR)/modules.dep | grep -e "^$${module}:" | sed -e 's%[^:]*: *%%'` ; \
 		for module_dep in $${module_deps} ; do \
@@ -381,7 +381,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Strip binaries and shared libraries.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
 		echo 'stripping binaries and shared libraries' ; \
-		find $@~ -exec file '{}' \; \
+		find $@~ -depth -exec file '{}' \; \
 			| grep -E -i 'ELF ..-bit LSB executable|ELF ..-bit LSB shared object' \
 			| sed -e 's%:.*%%' \
 			| xargs $(STRIP) --strip-all -R .note -R .comment ; \
@@ -394,7 +394,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		[ "$${threads}" = "" ] && threads="1" ; \
 		dir_list="$@~$(PERL_libdir) $@~$(datadir)/mythtv" ; \
 		perl $(build_DESTDIR)/$(build_bindir)/perlstrip.pl $${threads} $${dir_list} > /dev/null 2>&1 ; \
-		revert_list=`find $${dir_list} -name *.ERR | sed -e 's%\.ERR$$%%' -e 's%^$@~%%'` ; \
+		revert_list=`find $${dir_list} -depth -name *.ERR | sed -e 's%\.ERR$$%%' -e 's%^$@~%%'` ; \
 		for revert in $${revert_list} ; do \
 			echo "stripping perl: not stripping file [...]$${revert}" ; \
 			rm -f $@~$${revert}.ERR ; \
@@ -403,11 +403,11 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		done ; \
 	 fi
 	@# Clean up permissions (at least somewhat)
-	@find $@~ -exec file '{}' \; \
+	@find $@~ -depth -exec file '{}' \; \
 		| grep -i 'ELF ..-bit LSB executable' \
 		| sed -e 's%:.*%%' \
 		| xargs chmod 0755
-	@find $@~ -exec file '{}' \; \
+	@find $@~ -depth -exec file '{}' \; \
 		| grep -i 'ELF ..-bit LSB shared object' \
 		| sed -e 's%:.*%%' \
 		| grep -v '*' \
@@ -450,10 +450,10 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 	@ln -s ../rootfs-ro/bin/mount       $@~/bin/mount
 	@ln -s ../rootfs-ro/sbin/pivot_root $@~/sbin/pivot_root
 	@ln -s ../rootfs-ro/bin/sh          $@~/bin/sh
-	@find $(top_source)/initrd -type d \
+	@find $(top_source)/initrd -depth -type d \
 		| sed -e 's%^\$(top_source)/initrd%$@~%' \
 		| xargs -n 1 mkdir -m 0755 -p
-	@find $(top_source)/initrd -type f \
+	@find $(top_source)/initrd -depth -type f \
 		| sed -e 's%^\(\$(top_source)/initrd\)/\(.*\)$$%\1/\2 $@~/\2%' \
 		| xargs -n 2 cp -fpd
 	@$(call SET_PERMISSIONS,$@~)
@@ -519,8 +519,8 @@ $(top_build)/stage/pxe-$(mm_NAME): $(top_source)/pxe
 		cp -pd $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0 \
 		       $@~/pxelinux/tftpboot/minimyth/pxelinux.0 ; \
 	 fi
-	@find $@~ -type d -exec chmod 0755 '{}' \;
-	@find $@~ -type f -exec chmod 0644 '{}' \;
+	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
+	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
 	@touch $@~
 	@mv $@~ $@
 
@@ -534,8 +534,8 @@ $(top_build)/stage/helper: \
 	@cd $@~ ; for file in `ls -1` ; do  \
 		md5sum $${file} > $${file}.md5 ; \
 	 done
-	@find $@~ -type d -exec chmod 0755 '{}' \;
-	@find $@~ -type f -exec chmod 0644 '{}' \;
+	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
+	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
 	@touch $@~
 	@mv $@~ $@
 
@@ -544,8 +544,8 @@ $(top_build)/stage/html: $(top_source)/html
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@cp -pdR $^ $@~
-	@find $@~ -type d -exec chmod 0755 '{}' \;
-	@find $@~ -type f -exec chmod 0644 '{}' \;
+	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
+	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
 	@touch $@~
 	@mv $@~ $@
 
@@ -568,8 +568,8 @@ $(top_build)/stage/scripts: \
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@cp -pdR $^ $@~
-	@find $@~ -type d -exec chmod 0755 '{}' \;
-	@find $@~ -type f -exec chmod 0644 '{}' \;
+	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
+	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
 	@touch $@~
 	@mv $@~ $@
 
@@ -635,8 +635,8 @@ $(top_build)/stage/themes: $(top_build)/stage/image/themes
 	@for theme in `cd $< ; ls -1` ; do                                                    \
 		fakeroot sh -c "mksquashfs $</$${theme} $@~/$${theme}.sfs > /dev/null 2>&1" ; \
 	 done
-	@find $@~ -type d -exec chmod 0755 '{}' \;
-	@find $@~ -type f -exec chmod 0644 '{}' \;
+	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
+	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
 	@touch $@~
 	@mv $@~ $@
 
@@ -671,7 +671,7 @@ $(top_build)/stage/%.md5: $(top_build)/stage/%
 	@echo "making the checksum file for $(patsubst $(top)%,[...]%,$<)"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@(cd $(<D) ; find $(<F) -type f -exec md5sum '{}' \; | sort -k 2) > $@~
+	@(cd $(<D) ; find $(<F) -depth -type f -exec md5sum '{}' \; | sort -k 2) > $@~
 	@chmod 644 $@~
 	@touch $@~
 	@mv $@~ $@
@@ -696,7 +696,7 @@ $(top_build)/stage/share/nfs-$(mm_NAME):
 	@cp -pdR $^ $@~
 	@rm -f $@~/minimyth.md5
 	@rm -f $@~~minimyth.md5~
-	@(cd $@~ ; find -type f -exec md5sum '{}' \; | sed -e 's%\./%%' | sort -k 2) > $@~~minimyth.md5~
+	@(cd $@~ ; find -depth -type f -exec md5sum '{}' \; | sed -e 's%\./%%' | sort -k 2) > $@~~minimyth.md5~
 	@mv -f $@~~minimyth.md5~ $@~/minimyth.md5
 	@chmod 0644 $@~/minimyth.md5
 	@touch $@~
