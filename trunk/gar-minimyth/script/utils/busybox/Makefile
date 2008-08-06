@@ -6,6 +6,7 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
+	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-basename.patch \
 	$(DISTNAME)-modutils.patch \
 	$(DISTNAME)-tar.patch
