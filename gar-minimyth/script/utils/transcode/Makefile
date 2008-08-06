@@ -1,17 +1,17 @@
 GARNAME = transcode
-GARVERSION = 1.0.5
+GARVERSION = 1.0.6
 CATEGORIES = utils
 MASTER_SITES  = http://fromani.exit1.org/
 MASTER_SITES += http://www.kraymer.mynetcologne.de/
 DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME)-linux_2.6.24.patch $(DISTNAME)-libavcodec_include.patch $(DISTNAME)-configure.patch
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ffmpeg lib/freetype lib/lame lib/mpeg2dec lib/xvidcore xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/ffmpeg lib/freetype lib/lame lib/lzo lib/mpeg2dec lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -51,9 +51,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-pvm3 \
 	--disable-libdv \
 	--disable-libquicktime \
-	--disable-lzo \
-	--disable-a52 \
-	--disable-a52-default-decoder \
+	--enable-lzo \
+	--enable-a52 \
+	--enable-a52-default-decoder \
 	--disable-libmpeg3 \
 	--disable-libxml2 \
 	--disable-mjpegtools \
@@ -79,6 +79,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-mod-path=$(libdir)/transcode
 
 include ../../gar.mk
+
+CFLAGS += `pkg-config --cflags libavcodec` `pkg-config --libs libavcodec`
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
