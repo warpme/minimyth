@@ -168,6 +168,9 @@ $(DOWNLOADDIR)/$(DISTNAME).tar.bz2:
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
+$(GARCHIVEDIR)/$(DISTNAME).tar.bz2:
+	@#
+
 configure-custom:
 	@$(MAKE) -f files/configure.mk DESTIMG=$(DESTIMG)
 	@$(MAKECOOKIE)
