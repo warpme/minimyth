@@ -1,5 +1,5 @@
 GARNAME = libdaemon
-GARVERSION = 0.12
+GARVERSION = 0.13
 CATEGORIES = net
 MASTER_SITES = http://0pointer.de/lennart/projects/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
