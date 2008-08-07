@@ -9,6 +9,11 @@ start() {
     if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "g15" ; then
         m_message_output info "starting G15daemon ..."
         /sbin/modprobe uinput
+        # The g15daemon daemon does not create it configuration file, so init
+        # creates it when it does not exist.
+        if /usr/bin/test ! -e /etc/g15daemon.conf ; then
+            /bin/touch /etc/g15daemon.conf
+        fi
         /usr/sbin/g15daemon
     fi
 
