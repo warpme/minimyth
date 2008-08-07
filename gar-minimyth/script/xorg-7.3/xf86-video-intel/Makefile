@@ -3,7 +3,7 @@ GARVERSION = 2.4.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-hardware_overlay.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-ticket_16833.patch $(DISTNAME)-hardware_overlay.patch $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
