@@ -145,10 +145,13 @@ build: \
 	$(if $(filter yes,$(mm_DISTRIBUTION_LOCAL)),$(top_build)/local) \
 	$(if $(filter yes,$(mm_DISTRIBUTION_SHARE)),$(top_build)/share)
 
-$(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir) $(top_source)
+$(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir) $(top_source) $(top_build)/stage/gar-$(mm_NAME).tar.bz2
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
+	@# Copy source.
+	@mkdir -p $@~$(sourcedir)
+	@cp -pdR $(top_build)/stage/gar-$(mm_NAME).tar.bz2 $@~$(sourcedir)/gar-$(mm_NAME).tar.bz2
 	@# Copy versions.
 	@mkdir -p $@~$(versiondir)-build
 	@cp -pdR $(build_DESTDIR)$(build_versiondir)/* $@~$(versiondir)-build
@@ -224,6 +227,9 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		echo $(dir) >> $@~$(sysconfdir)/ld.so.conf ; )
 	@rm -f $@~$(sysconfdir)/ld.so.cache{,~}
 	@# Make documentation links.
+	@mkdir -m 0755 -p $@~/srv/www/software
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software))$(sourcedir)/gar-$(mm_NAME).tar.bz2 \
+		$@~/srv/www/software/gar-$(mm_NAME).tar.bz2
 	@mkdir -m 0755 -p $@~/srv/www/software/base
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/srv/www/software/base))$(versiondir) \
 	        $@~/srv/www/software/base/versions
