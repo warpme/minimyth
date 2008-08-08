@@ -52,11 +52,16 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "                <li>"
 /bin/echo "                  <strong>minimyth</strong>"
 /bin/echo "                  ${MM_VERSION}"
-if /usr/bin/test -f /srv/www/software/base/versions/minimyth.conf.mk ; then
-    /bin/echo "                  (<a href=\"../software/base/versions/minimyth.conf.mk\" type=\"text/plain\">minimyth.conf.mk</a>)"
-fi
 /bin/echo "                  ;"
 /bin/echo "                  <a href=\"../minimyth/license.txt\" type=\"text/plain\">license</a>"
+/bin/echo "                  <ul>"
+if /usr/bin/test -f /srv/www/software/gar-minimyth-${MM_VERSION}.tar.bz2 ; then
+    /bin/echo "                    <li><a href=\"../software/gar-minimyth-${MM_VERSION}.tar.bz2\" type=\"application/x-bzip2\">build system source (gar-minimyth-${MM_VERSION}.tar.bz2)</a></li>"
+fi
+if /usr/bin/test -f /srv/www/software/base/versions/minimyth.conf.mk ; then
+    /bin/echo "                    <li><a href=\"../software/base/versions/minimyth.conf.mk\" type=\"text/plain\">build system configuration (minimyth.conf.mk)</a></li>"
+fi
+/bin/echo "                  </ul>"
 /bin/echo "                </li>"
 /bin/echo "              </ul>"
 /bin/echo "            </li>"
@@ -160,7 +165,7 @@ fi
 /bin/echo "              alt=\"Valid CSS!\"      height=\"31\" width=\"88\" /></a>"
 /bin/echo "        </div>"
 /bin/echo "        <div class=\"version\">"
-/bin/echo "          Last Updated on 2008-05-17"
+/bin/echo "          Last Updated on 2008-08-08"
 /bin/echo "          <br />"
 /bin/echo "          &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;"
 /bin/echo "        </div>"

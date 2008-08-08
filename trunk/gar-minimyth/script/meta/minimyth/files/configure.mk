@@ -153,6 +153,7 @@ MM_CONFIG_VARS = \
 	qt4prefix \
 	rootdir \
 	sharedirs \
+	sourcedir \
 	STRIP \
 	sysconfdir \
 	versiondir
