@@ -53,7 +53,7 @@ server=${HTTP_HOST:-${SERVER_ADDR}}
 /bin/echo "                  <strong>minimyth</strong>"
 /bin/echo "                  ${MM_VERSION}"
 /bin/echo "                  ;"
-/bin/echo "                  <a href=\"../minimyth/license.txt\" type=\"text/plain\">license</a>"
+/bin/echo "                  <a href=\"../license.txt\" type=\"text/plain\">license</a>"
 /bin/echo "                  <ul>"
 if /usr/bin/test -f /srv/www/software/gar-minimyth-${MM_VERSION}.tar.bz2 ; then
     /bin/echo "                    <li><a href=\"../software/gar-minimyth-${MM_VERSION}.tar.bz2\" type=\"application/x-bzip2\">build system source (gar-minimyth-${MM_VERSION}.tar.bz2)</a></li>"
