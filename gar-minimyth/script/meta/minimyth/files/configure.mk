@@ -56,7 +56,7 @@ MM_INIT_KILL := \
     modules_manual \
     modules_automatic
 
-build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(mm_HOME)/scripts/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
+build_vars := $(filter-out mm_HOME mm_TFTP_ROOT mm_NFS_ROOT,$(sort $(shell cat $(mm_HOME)/script/minimyth.conf.mk | grep -e '^mm_' | sed -e 's%[ =].*%%')))
 
 bindirs_base := \
 	$(extras_sbindir) \
