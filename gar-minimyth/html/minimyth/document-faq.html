@@ -29,6 +29,7 @@
             <dt><a href="#minimyth">What is MiniMyth?</a></dt>
             <dt><a href="#download">Where can I download MiniMyth?</a></dt>
             <dt><a href="#memory">How much memory does MiniMyth require?</a></dt>
+            <dt><a href="#cannot-mount-root-fs">Why do I get "cannot mount root fs on block (1,0)"?</a></dt>
             <dt><a href="#dvd">Why can I play some DVDs but not other DVDs?</a></dt>
             <dt><a href="#plugin-missing">Why is my favorite Myth plugin missing from MiniMyth?</a></dt>
             <dt><a href="#sensor">Why are my temperature and fan sensors missing or wrong?</a></dt>
@@ -57,6 +58,34 @@
             The answer to this quesiton can be found in the
             <a href="document-hardware.html#memory">memory section</a>
             of the <a href="document-hardware.html">MiniMyth hardware requirements page</a>.
+          </p>
+        </div>
+        <div id="cannot-mount-root-fs" class="section">
+          <div class="heading">Why do I get "cannot mount root fs on block (1,0)"?</div>
+          <p>
+            There is at least one possible reason.
+          </p>
+          <p>
+            If the memory allocated by the kernel for the RAM root file system is less than the size of the RAM root file system,
+            then the RAM root file system will be incomplete and fail to mount.
+            The 'ramdisk_size' boot line parameter sets the memory allocated by the kernel for the RAM root file system.
+            The value of the 'ramdisk_size' parameter must be at least the size of the RAM root file system.
+            You can find more information
+            <a href="document-boot.html#network-pxelinux-ram">here</a>.
+          </p>
+          <p>
+            Earlier versions of MiniMyth used the 'ramdisk' boot line parameter rather than the 'ramdisk_size' boot line parameter.
+            However, the kernel obsoleted 'ramdisk' in favor of 'ramdisk_size'.
+            Therefore, MiniMyth had to switch from 'ramdisk' to 'ramdisk_size'.
+            If you are using the 'ramdisk' parameter,
+            then you need to switch to using the 'ramdisk_size' parameter or you will see the above error when trying boot.
+          </p>
+          <p>
+            Earlier versions of the MiniMyth root file system fit in 64000kB of memory.
+            As a result, the earlier versions of MiniMyth documentation suggested that 'ramdisk_size' be set to 64000.
+            However, with the addition of new functionality and the increase in the size of MythTV,
+            the MiniMyth root file system no longer fits in 64000kB of memory.
+            Therefore, users need to change 'ramdisk_size' from 64000 to something larger (e.g. 96000).
           </p>
         </div>
         <div id="dvd" class="section">
@@ -194,7 +223,7 @@
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-05-25
+          Last Updated on 2008-08-09
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
