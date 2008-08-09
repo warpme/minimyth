@@ -1,51 +1,44 @@
-GARNAME = bluez-utils
-GARVERSION = 3.36
-CATEGORIES = utils
-MASTER_SITES = http://bluez.sf.net/download/
+GARNAME = bluez
+GARVERSION = 4.1
+CATEGORIES = lib
+MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-gcc_4.3.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/bluez-libs lib/dbus lib/expat lib/libsndfile lib/libusb
+DEPENDS = lang/c lib/alsa-lib lib/dbus lib/expat lib/glib lib/libsndfile lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-debug \
-	--disable-pie \
-	--disable-all \
-	--enable-inotify \
-	--disable-hal \
-	--enable-usb \
-	--enable-alsa \
-	--disable-obex \
-	--disable-glib \
-	--disable-gstreamer \
-	--enable-audio \
-	--enable-input \
-	--enable-serial \
 	--enable-network \
+	--enable-serial \
+	--enable-input \
+	--enable-audio \
+	--disable-gstreamer \
+	--enable-alsa \
+	--enable-usb \
+	--enable-netlink \
+	--enable-tools \
+	--enable-bccmd \
+	--enable-hid2hci \
+	--enable-dfutool \
 	--enable-hidd \
 	--enable-pand \
 	--enable-dund \
-	--disable-test \
 	--disable-cups \
+	--disable-test \
 	--enable-manpages \
 	--enable-configfiles \
 	--enable-initscripts \
 	--enable-pcmciarules \
-	--enable-pcmciarules \
-	--enable-tools \
-	--enable-bccmd \
-	--enable-avctrl \
-	--enable-hid2hci \
-	--enable-dfutool \
-	--enable-dfubabel \
+	--disable-debug \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -61,4 +54,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/input.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/network.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/serial.la
+	@rm -f $(DESTDIR)$(libdir)/libbluetooth.la
 	@$(MAKECOOKIE)
