@@ -131,8 +131,7 @@ DEPENDS = \
 	$(if $(filter transcode,$(mm_SOFTWARE)), \
 		utils/transcode) \
 	$(if $(filter wiimote,$(mm_SOFTWARE)), \
-		utils/cwiid \
-		utils/bluez-utils) \
+		utils/cwiid) \
 	$(if $(filter debug,$(mm_SOFTWARE)), \
 		devel/gdb \
 		devel/strace) \

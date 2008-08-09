@@ -2,14 +2,15 @@ GARNAME = libwiimote
 GARVERSION = 0.4
 CATEGORIES = lib
 MASTER_SITES = http://ovh.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tgz
+DISTFILES = $(DISTNAME).tgz
+PATCHFILES = $(DISTNAME)-hci_remote_name.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/bluez-libs
+DEPENDS = lang/c lib/bluez
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
