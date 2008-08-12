@@ -1,6 +1,7 @@
 package MiniMyth;
 
 use strict;
+use warnings;
 
 require Sys::Hostname;
 require DBI;
@@ -13,19 +14,29 @@ sub new
 
     my $class = ref($proto) || $proto;
 
-    my $self->{
-        'conf_variable' => undef,
-        'mythdb_handle' => undef
-    };
+    my $self;
+    $self->{'conf_variable'} = undef;
+    $self->{'mythdb_handle'} = undef;
 
     bless($self, $class);
 
     return $self;
 }
 
-sub _conf_init
+sub DESTROY
 {
     my $self = shift;
+
+    if ( $self->{'conf_variable'} )
+    {
+        $self->{'mythdb_handle'}->disconnect;
+    }
+}
+
+sub conf
+{
+    my $self = shift;
+    my $name = shift;
 
     if ( ! $self->{'conf_variable'} )
     {
@@ -38,20 +49,11 @@ sub _conf_init
 
         $self->{'conf_variable'} = \%conf_variable;
     }
+
+    return $self->{'conf_variable'}->{$name};
 }
 
-sub conf
-{
-    my $self = shift;
-    my $name = shift;
-
-    $self->{'conf_variable'} || $self->_conf_init();
-
-    my $value = $self->{'conf_variable'}->{$name};
-    return $value;
-}
-
-sub _mythdb_init
+sub mythdb_handle
 {
     my $self = shift;
 
@@ -59,12 +61,10 @@ sub _mythdb_init
     {
         my $mythdb_handle;
 
-        $self->{conf_variable} || $self->_conf_init();
-
-        my $dbhostname = $self->{'conf_variable'}->{'MM_MASTER_SERVER'};
-        my $dbdatabase = $self->{'conf_variable'}->{'MM_MASTER_DBNAME'};
-        my $dbusername = $self->{'conf_variable'}->{'MM_MASTER_DBUSERNAME'};
-        my $dbpassword = $self->{'conf_variable'}->{'MM_MASTER_DBPASSWORD'};
+        my $dbhostname = $self->conf('MM_MASTER_SERVER');
+        my $dbdatabase = $self->conf('MM_MASTER_DBNAME');
+        my $dbusername = $self->conf('MM_MASTER_DBUSERNAME');
+        my $dbpassword = $self->conf('MM_MASTER_DBPASSWORD');
 
         my $dsn = "DBI:mysql:database=$dbdatabase;host=$dbhostname";
 
@@ -72,36 +72,154 @@ sub _mythdb_init
 
         $self->{'mythdb_handle'} = $mythdb_handle;
     }
+
+    return $self->{'mythdb_handle'};
 }
 
-sub mythdb_settings_print
+sub mythdb_x_delete
 {
-    my $self  = shift;
-    my $value = shift;
-
-    $self->{'mythdb_handle'} || $self->_mythdb_init();
+    my $self      = shift;
+    my $table     = shift;
+    my $condition = shift;
 
     my $hostname = Sys::Hostname::hostname();
 
-    my $mythdb_handle = $self->{'mythdb_handle'};
+    my $query = qq(DELETE FROM $table WHERE hostname="$hostname");
+    foreach (keys %{$condition})
+    {
+        $query = $query . qq( AND $_="$condition->{$_}");
+    }
+    $self->mythdb_handle->do($query);
+}
 
-    my $sth;
-    if ( $value )
+sub mythdb_x_get
+{
+    my $self      = shift;
+    my $table     = shift;
+    my $condition = shift;
+    my $field     = shift;
+
+    my $hostname = Sys::Hostname::hostname();
+
+    my $query = qq(SELECT * FROM $table WHERE hostname="$hostname");
+    foreach (keys %{$condition})
     {
-        $sth = $mythdb_handle->prepare(qq(SELECT * FROM settings WHERE hostname="$hostname" AND value="$value"));
+        $query = $query . qq( AND $_="$condition->{$_}");
     }
-    else
-    {
-        $sth = $mythdb_handle->prepare(qq(SELECT * FROM settings WHERE hostname="$hostname"));
-    }
+
+    my $sth = $self->mythdb_handle->prepare($query);
     $sth->execute;
-    print 'value' . "\t|\t" . 'data' . "\n";
-    print '-----' . "\t|\t" . '----' . "\n";
-    while (my $ref = $sth->fetchrow_hashref())
-    {
-        print $ref-{'value'} . "\t|\t" . $ref->${'data'} . "\n";
-    }
+    my $result = $sth->fetchrow_hashref()->{$field};
     $sth->finish();
+
+    return $result;
+}
+
+sub mythdb_x_print
+{
+    my $self      = shift;
+    my $table     = shift;
+    my $condition = shift;
+
+    my $hostname = Sys::Hostname::hostname();
+
+    my $query = qq(SELECT * FROM $table WHERE hostname="$hostname");
+    foreach (keys %{$condition})
+    {
+        $query = $query . qq( AND $_="$condition->{$_}");
+    }
+
+    my $sth = $self->mythdb_handle->prepare($query);
+    $sth->execute;
+    my @rows = ();
+    while (my $row = $sth->fetchrow_hashref())
+    {
+        push(@rows, $row);
+    }
+    my @fields = ();
+    foreach my $field (keys %{$rows[0]})
+    {
+        if ($field !~ m/hostname/)
+        {
+            push(@fields, $field);
+        }
+    }
+    my %lengths;
+    foreach my $field (@fields)
+    {
+        $lengths{$field} = length($field);
+    }
+    foreach my $row (@rows)
+    {
+        foreach my $field (@fields)
+        {
+            if ($lengths{$field} < length($row->{$field}))
+            {
+                $lengths{$field} = length($row->{$field});
+            }
+        }
+    }
+    @rows = sort { uc($a->{$fields[0]}) cmp uc($b->{$fields[0]}) } @rows;
+    sub field_print
+    {
+        my $value  = shift;
+        my $pad    = shift;
+        my $length = shift;
+
+        print "|" . $pad . $value;
+        for ( $length -= length($value) ; $length > 0 ; $length-- )
+        {
+            print $pad;
+        }
+        print $pad;
+    }
+    foreach my $field (@fields) { field_print('-'   , '-', $lengths{$field}); } print "|" . "\n";
+    foreach my $field (@fields) { field_print($field, ' ', $lengths{$field}); } print "|" . "\n";
+    foreach my $field (@fields) { field_print('-'   , '-', $lengths{$field}); } print "|" . "\n";
+    foreach my $row (@rows)
+    {
+        foreach my $field (@fields) { field_print($row->{$field}, ' ', $lengths{$field}); } print "|" . "\n";
+    }
+    foreach my $field (@fields) { field_print('-'   , '-', $lengths{$field}); } print "|" . "\n";
+    $sth->finish();
+}
+
+sub mythdb_x_set {
+    my $self      = shift;
+    my $table     = shift;
+    my $condition = shift;
+    my $field     = shift;
+    my $value     = shift;
+
+    my $hostname = Sys::Hostname::hostname();
+
+    my $query_delete = qq(DELETE FROM $table WHERE hostname="$hostname");
+    my $query_insert = qq(INSERT INTO $table SET $field="$value" , hostname="$hostname");
+    foreach (keys %{$condition})
+    {
+        $query_delete = $query_delete . qq( AND $_="$condition->{$_}");
+        $query_insert = $query_insert . qq( , $_="$condition->{$_}");
+    }
+    $self->mythdb_handle->do($query_delete);
+    $self->mythdb_handle->do($query_insert);
+}
+
+sub mythdb_x_update
+{
+    my $self      = shift;
+    my $table     = shift;
+    my $condition = shift;
+    my $field     = shift;
+    my $value     = shift;
+
+    my $hostname = Sys::Hostname::hostname();
+
+    my $query = qq(INSERT INTO $table SET $field="$value" WHERE hostname="$hostname");
+    foreach (keys %{$condition})
+    {
+        $query = $query . qq( AND $_="$condition->{$_}");
+    }
+    $self->mythdb_handle->do($query);
 }
 
 sub mythdb_settings_delete
@@ -109,35 +227,25 @@ sub mythdb_settings_delete
     my $self  = shift;
     my $value = shift;
 
-    $self->{'mythdb_handle'} || $self->_mythdb_init();
-
-    my $hostname = Sys::Hostname::hostname();
-
-    my $mythdb_handle = $self->{'mythdb_handle'};
-
-    if ( $value )
-    {
-        $mythdb_handle->do(qq(DELETE FROM settings WHERE hostname="$hostname" AND value="$value"));
-    }
-    else
-    {
-        $mythdb_handle->do(qq(DELETE FROM settings WHERE hostname="$hostname"));
-    }
+    if ( $value ) { $self->mythdb_x_update('settings', { 'value' => $value }); }
+    else          { $self->mythdb_x_update('settings', {});                    }
 }
 
-sub mythdb_settings_update
+sub mythdb_settings_get
 {
     my $self  = shift;
     my $value = shift;
-    my $data  = shift;
 
-    $self->{'mythdb_handle'} || $self->_mythdb_init();
+    return $self->mythdb_x_get('settings', { 'value' => $value }, 'data');
+}
 
-    my $hostname = Sys::Hostname::hostname();
+sub mythdb_settings_print
+{
+    my $self  = shift;
+    my $value = shift;
 
-    my $mythdb_handle = $self->{'mythdb_handle'};
-
-    $mythdb_handle->do(qq(UPDATE settings SET data="$data" WHERE hostname="$hostname" value="$value"));
+    if ( $value ) { $self->mythdb_x_print('settings', { 'value' => $value }); }
+    else          { $self->mythdb_x_print('settings', {});                    }
 }
 
 sub mythdb_settings_set
@@ -146,40 +254,16 @@ sub mythdb_settings_set
     my $value = shift;
     my $data  = shift;
 
-    $self->{'mythdb_handle'} || $self->_mythdb_init();
-
-    my $hostname = Sys::Hostname::hostname();
-
-    my $mythdb_handle = $self->{'mythdb_handle'};
-
-    $mythdb_handle->do(qq(DELETE FROM settings WHERE               hostname="$hostname" AND value="$value"));
-    $mythdb_handle->do(qq(INSERT INTO settings SET   data="$data", hostname="$hostname",    value="$value"));
+    $self->mythdb_x_set('settings', { 'value' => $value }, 'data', $data);
 }
 
-sub mythdb_settings_get
+sub mythdb_settings_update
 {
     my $self  = shift;
     my $value = shift;
+    my $data  = shift;
 
-    my $data;
-
-    $self->{'mythdb_handle'} || $self->_mythdb_init();
-
-    my $hostname = Sys::Hostname::hostname();
-
-    my $mythdb_handle = $self->{'mythdb_handle'};
-    my $sth = $mythdb_handle->prepare(qq(SELECT * FROM settings WHERE hostname="$hostname" AND value="$value"));
-    $sth->execute;
-    while (my $ref = $sth->fetchrow_hashref())
-    {
-        if (($ref->{'value'} eq $value) && ($ref->{'hostname'} eq $hostname))
-        {
-            $data = $ref->{'data'};
-        }
-    }
-    $sth->finish();
-
-    return $data;
+    $self->mythdb_x_update('settings', { 'value' => $value }, 'data', $data);
 }
 
 sub mythfrontend_networkcontrol

@@ -10,13 +10,10 @@ endef
 
 DEPENDS = perl/perl perl/perl-DBI perl/perl-DBD-mysql perl/perl-Net-Telnet
 
-INSTALL_SCRIPTS   = MiniMyth.pm
+INSTALL_SCRIPTS = MiniMyth.pm
 
 GAR_EXTRA_CONF += perl/perl/package-api.mk
 include ../../gar.mk
-
-checksum-MiniMyth.pm:
-	@$(MAKECOOKIE)
 
 extract-MiniMyth.pm:
 	@mkdir -p $(WORKSRC)
