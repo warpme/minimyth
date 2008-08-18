@@ -12,6 +12,10 @@ conf_check_MM_MEDIA() {
 }
 
 conf_default_MM_MEDIA() {
+    if /usr/bin/test -e '/tmp/init.conf.media/conf_default_MM_MEDIA' ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_MEDIA_TV_MOUNTPOINT}"      ; then
         MM_MEDIA_TV_MOUNTPOINT='/mnt/tv'
     fi
@@ -30,6 +34,9 @@ conf_default_MM_MEDIA() {
     if /usr/bin/test -z "${MM_MEDIA_DVD_RIP_MOUNTPOINT}" ; then
         MM_MEDIA_DVD_RIP_MOUNTPOINT='/mnt/dvd'
     fi
+
+    /bin/mkdir -p '/tmp/init.conf.media'
+    /bin/touch    '/tmp/init.conf.media/conf_default_MM_MEDIA'
 
     return 0
 }
