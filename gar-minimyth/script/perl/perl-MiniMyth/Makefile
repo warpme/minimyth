@@ -8,7 +8,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = perl/perl perl/perl-DBI perl/perl-DBD-mysql perl/perl-Net-Telnet
+DEPENDS = perl/perl perl/perl-DBD-mysql perl/perl-DBI perl/perl-Net-Telnet perl/perl-WWW-Curl
 
 INSTALL_SCRIPTS = MiniMyth.pm
 
