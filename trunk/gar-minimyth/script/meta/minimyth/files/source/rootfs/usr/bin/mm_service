@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use feature "switch";
+
+my $service = shift;
+my $command = shift;
+
+if ((! defined ($service)) && ($service eq ''))
+{
+    die qq(error: you must specify a service);
+}
+
+if ((! defined ($command)) && ($command eq ''))
+{
+    die qq(error: you must specify an command );
+}
+
+if (! -e "/etc/rc.d.perl/init/$service.pm")
+{
+    die qq(error: unknown service: $service);
+}
+
+require MiniMyth;
+
+my $minimyth = new MiniMyth;
+
+unshift (@INC, '/etc/rc.d.perl');
+
+my $package = "init::$service";
+
+eval "require $package";
+
+given ($command)
+{
+    when (/^start$/) { $package->start($minimyth); }
+    when (/^stop$/ ) { $package->stop($minimyth);  }
+    default          { die qq(error: unknown command: $command); }
+}
+
+1;

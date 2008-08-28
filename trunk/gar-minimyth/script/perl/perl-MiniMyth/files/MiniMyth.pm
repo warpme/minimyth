@@ -175,6 +175,7 @@ sub var_load
     {
         foreach (grep(/^$conf_filter$/, (<FILE>)))
         {
+            chomp;
             if (/^([^=]+)='(.*)'$/)
             {
                 $conf_variable{$1} = $2;
@@ -206,6 +207,7 @@ sub var_save
         chmod(0644, "$conf_file.$$");
         foreach (sort keys %{$self->{'conf_variable'}})
         {
+            chomp;
             if (/^$conf_filter$/)
             {
                 print FILE $_ . "=" . "'" . $self->{'conf_variable'}->{$_} . "'" . "\n";
@@ -393,6 +395,7 @@ sub splash_init
             my $LOGLEVEL;
             while (<FILE>)
             {
+                chomp;
                 ($LOGLEVEL) = split(/[[:cntrl:]]|[ ]/, $_);
             }
             close(FILE);
@@ -415,6 +418,7 @@ sub splash_init
         {
             while (<FILE>)
             {
+                chomp;
                 if (/geometry/)
                 {
                     my (undef, $XRES, $YRES, $VXRES, $VYRES, $DEPTH) = split(/ /, $_);
@@ -1946,9 +1950,14 @@ sub x_xmacroplay
             my $window = '';
             if (open(FILE, '-|', qq(/usr/bin/ratpoison -d :0.0 -c 'info' 2> $devnull)))
             {
-                if (/^.*\(([^()]*)\)$/)
+                while (<FILE>)
                 {
-                    $window = $1;
+                    chomp;
+                    if (/^.*\(([^()]*)\)$/)
+                    {
+                        $window = $1;
+                        last;
+                    }
                 }
                 close(FILE);
             }
@@ -2260,6 +2269,7 @@ sub x_stop
         my %applications = ();
         while (<FILE>)
         {
+            chomp;
             s/^([^ ]+) +([^ ]+)( .*)?$/$2/;
             s/^.*\///;
             $applications{$_} = 1;

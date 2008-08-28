@@ -1,0 +1,169 @@
+#!/usr/bin/perl
+################################################################################
+# MM_THEME configuration variable handlers.
+################################################################################
+package init::conf::MM_THEME;
+
+use strict;
+use warnings;
+
+my %var_list;
+
+sub var_list
+{
+    return \%var_list;
+}
+
+$var_list{'MM_THEMECACHE_URL'} =
+{
+    prerequisite   => ['MM_MASTER_.*', 'MM_THEME_NAME', 'MM_X_MODE'],
+    value_default  => 'auto',
+    value_valid    => 'auto|none|.+',
+    value_obsolete => 'default',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $auto;
+  
+        my $resolution_x = $minimyth->mythdb_settings_get('GuiWidth')  || 0;
+        if ($resolution_x == 0)
+        {
+            $resolution_x = $minimyth->var_get('MM_X_MODE');
+            $resolution_x =~ s/^([0-9]+)x([0-9]+).*$/$1/;
+        }
+        my $resolution_y = $minimyth->mythdb_settings_get('GuiHeight') || 0;
+        if ($resolution_y == 0)
+        {
+            $resolution_y = $minimyth->var_get('MM_X_MODE');
+            $resolution_y =~ s/^([0-9]+)x([0-9]+).*$/$2/;
+        }
+        my $themecache_name = $minimyth->var_get('MM_THEME_NAME') . '.' . $resolution_x . '.' . $resolution_y;
+        if (! -e "/home/minimyth/.mythtv/themecache/$themecache_name")
+        {
+            $auto = "confrw:themecaches/$themecache_name.sfs";
+        }
+        else
+        {
+            $auto = 'none';
+        }
+        return $auto;
+    },
+    value_none     => ''
+};
+$var_list{'MM_THEME_NAME'} =
+{
+    value_default  => '',
+    value_valid    => '.+',
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        if ($minimyth->var_get($name) eq 'G.A.N.T.')
+        {
+            $minimyth->message_output('err', "error: theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update '$name'.");
+        }
+    }
+};
+$var_list{'MM_THEME_URL'} =
+{
+    prerequisite   => ['MM_THEME_NAME'],
+    value_default  => 'auto',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        if ($minimyth->var_get($name) !~ /^auto|none$/)
+        {
+            my $theme_name = $minimyth->var_get('MM_THEME_NAME');
+            if (-e "/usr/share/mythtv/themes/$theme_name")
+            {
+                $minimyth->message_output('err', "error: MythTV theme directory '$theme_name' already exists.");
+                return '';
+            }
+        }
+        if ($minimyth->var_get($name) eq 'none')
+        {
+            my $theme_name = $minimyth->var_get('MM_THEME_NAME');
+            if (! -e "/usr/share/mythtv/themes/$theme_name")
+            {
+                $minimyth->message_output('err', "error: MythTV theme directory '$theme_name' does not exist.");
+                return '';
+            }
+        }
+        return '.+';
+    },
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        my $theme_name = $minimyth->var_get('MM_THEME_NAME');
+        if (! -e "/usr/share/mythtv/themes/$theme_name")
+        {
+            return "hunt:themes/$theme_name.sfs"
+        }
+        else
+        {
+            return 'none';
+        }
+    },
+    value_none     => ''
+};
+$var_list{'MM_THEMEOSD_NAME'} =
+{
+    value_default  => '',
+    value_valid    => '.+',
+};
+$var_list{'MM_THEMEOSD_URL'} =
+{
+    prerequisite   => ['MM_THEMEOSD_NAME'],
+    value_default  => 'auto',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        if ($minimyth->var_get($name) !~ /^auto|none$/)
+        {
+            my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+            if (-e "/usr/share/mythtv/themes/$themeosd_name")
+            {
+                $minimyth->message_output('err', "error: MythTV theme directory '$themeosd_name' already exists.");
+                return '';
+            }
+        }
+        if ($minimyth->var_get($name) eq 'none')
+        {
+            my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+            if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+            {
+                $minimyth->message_output('err', "error: MythTV theme directory '$themeosd_name' does not exist.");
+                return '';
+            }
+        }
+        return '.+';
+    },
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+        if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+        {
+            return "hunt:themes/$themeosd_name.sfs"
+        }
+        else
+        {
+            return 'none';
+        }
+    },
+    value_none     => ''
+};
+
+
+1;
