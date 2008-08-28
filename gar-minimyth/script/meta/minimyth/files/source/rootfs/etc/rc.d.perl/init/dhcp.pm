@@ -55,14 +55,10 @@ sub start
         if ((-x '/sbin/ifconfig') &&
             (open(FILE, '-|', "/sbin/ifconfig $interface")))
         {
-            foreach (grep(/^ *inet addr:/, (<FILE>)))
+            foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
             {
-                chomp;
-                if (/^ *inet addr:([^ ]*) .*/)
-                {
-                    $ip_address = $1;
-                    last;
-                }
+                $ip_address = $_;
+                last;
             }
             close(FILE);
         }
@@ -88,14 +84,10 @@ sub start
         if ((-x '/sbin/ifconfig') &&
             (open(FILE, '-|', "/sbin/ifconfig $interface")))
         {
-            foreach (grep(/^ *inet addr:/, (<FILE>)))
+            foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
             {
-                chomp;
-                if (/^ *inet addr:([^ ]*) .*/)
-                {
-                    $ip_address = $1;
-                    last;
-                }
+                $ip_address = $_;
+                last;
             }
             close(FILE);
         }

@@ -304,10 +304,8 @@ sub start
             push(@lircrc_list, '/etc/lircrc');
             if (open(FILE, '<', '/etc/lircrc'))
             {
-                foreach (grep(/^include /, (<FILE>)))
+                foreach (grep(s/^include +(.*)$/$1/, (<FILE>)))
                 {
-                    chomp;
-                    s/^include +//;
                     push(@lircrc_list, $_);
                 }
                 close(FILE);

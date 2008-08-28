@@ -66,10 +66,8 @@ sub start
         {
             if (open(FILE, '-|', "$amixer_command"))
             {
-                foreach (grep(/^Simple mixer control '([^']*)'(,[0-9]+)?$/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
-                    chomp;
-                    s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/;
                     given ($_)
                     {
                         # General unmuting.
@@ -95,10 +93,8 @@ sub start
         {
             if (open(FILE, '-|', "$amixer_command"))
             {
-                foreach (grep(/^Simple mixer control '([^']*)'(,[0-9]+)?$/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
-                    chomp;
-                    s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/;
                     given ($_)
                     {
                         # General unmuting.
@@ -142,11 +138,8 @@ sub stop
         {
             if (open(FILE, '-|', "$amixer_command"))
             {
-                foreach (grep(/^Simple mixer control'/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
-                    chomp;
-                    s/^[^']*'//;
-                    s/'[^']*$//;
                     given ($_)
                     {
                         # General muting.
@@ -172,11 +165,8 @@ sub stop
         {
             if (open(FILE, '-|', "$amixer_command"))
             {
-                foreach (grep(/^Simple mixer control'/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
-                    chomp;
-                    s/^[^']*'//;
-                    s/'[^']*$//;
                     given ($_)
                     {
                         # General unmuting.

@@ -19,16 +19,10 @@ sub start
     my $log_server = undef;
     if ((-e '/etc/log.conf') && (open(FILE, '<', '/etc/log.conf')))
     {
-        foreach (grep(/^server /, (<FILE>)))
+        foreach (grep(s/^server +([^ ]+) *$/$1/, (<FILE>)))
         {
-            chomp;
-            s/[[:cntrl:]]/ /g;
-            s/  +/ /g;
-            if (/([^ ]+) ([^ ]+)/)
-            {
-                $log_server = $2;
-                last;
-            }
+            $log_server = $_;
+            last;
         }
         close(FILE);
     }
