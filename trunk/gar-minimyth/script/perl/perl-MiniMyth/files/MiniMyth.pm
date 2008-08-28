@@ -157,21 +157,34 @@ sub var_load
     my $self = shift;
     my $args = shift;
 
-    my $conf_file   = ($args && $args->{'file'}  ) || '/etc/conf';
+    my $conf_file   = ($args && $args->{'file'}  ) || '';
     my $conf_filter = ($args && $args->{'filter'}) || 'MM_.*';
 
     my %conf_variable;
 
-    if ((exists($self->{'conf_variable'})) && (defined($self->{'conf_variable'})))    
-    {                                                                                 
-        foreach (keys %{$self->{'conf_variable'}})                                     
-        {                                                                             
+    if ((exists($self->{'conf_variable'})) && (defined($self->{'conf_variable'})))
+    {
+        foreach (keys %{$self->{'conf_variable'}})
+        {
             $conf_variable{$_} = $self->{'conf_variable'}->{$_};
-        }                                                            
-    } 
+        }
+    }
 
-    if ((-x '/bin/sh') && (-r '/etc/rc.d/functions') && (-r $conf_file) && 
-        (open(FILE, '-|', qq(/bin/sh -c '. /etc/rc.d/functions ; . $conf_file ; set'))))
+    my $shell_command = ". /etc/conf";
+    if ($conf_file)
+    {
+        if (-r $conf_file)
+        {
+            $shell_command = $shell_command . " ; . $conf_file";
+        }
+        else
+        {
+            $self->message_log('warn', "var_load: file '$conf_file' does not exist.");
+        }
+    }
+    $shell_command = $shell_command . " ; set";
+
+    if ((-x '/bin/sh') && (open(FILE, '-|', qq(/bin/sh -c '$shell_command'))))
     {
         foreach (grep(/^$conf_filter$/, (<FILE>)))
         {
@@ -180,9 +193,9 @@ sub var_load
             {
                 $conf_variable{$1} = $2;
             }
-        }                   
+        }
         close(FILE);
-    }          
+    }
 
     $self->{'conf_variable'} = \%conf_variable;
 }
@@ -513,7 +526,7 @@ sub splash_progress_set
 
     $var_splash_progress_val = $progress_val;
     $var_splash_progress_max = $progress_max;
- 
+
     ($var_splash_progress_val > $var_splash_progress_max) && ($var_splash_progress_val = $var_splash_progress_max);
 
     my $progress = (65535 * $var_splash_progress_val) / $var_splash_progress_max;
@@ -553,7 +566,7 @@ sub _mythdb_condition
     {
         if (exists $flag->{'condition_hostname'}) { $flag_condition_hostname = $flag->{'condition_hostname'}; }
     }
-    
+
     my $result = '';
 
     if ($flag_condition_hostname == 1)
@@ -1701,7 +1714,7 @@ sub game_save
         {
             unlink ($local_file);
         }
-    
+
         if (! -e $local_file)
         {
             $self->message_log('error', "failed to create game files tarball.");
@@ -1847,7 +1860,7 @@ sub extras_save
     {
         return 0;
     }
- 
+
     if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/usr/local' "$local_file" > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
@@ -1905,7 +1918,7 @@ sub themecache_save
     {
         return 0;
     }
- 
+
     if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
@@ -1946,7 +1959,7 @@ sub x_xmacroplay
             system(qq(/usr/bin/ratpoison -d :0.0 -c "set winname class"));
             # Select the program window.
             system(qq(/usr/bin/ratpoison -d :0.0 -c "select $program"));
-            # Make sure the program window is selected. 
+            # Make sure the program window is selected.
             my $window = '';
             if (open(FILE, '-|', qq(/usr/bin/ratpoison -d :0.0 -c 'info' 2> $devnull)))
             {
@@ -2183,7 +2196,7 @@ sub x_start
         $self->message_log('info', "X not started because X is already running.");
         return 0;
     }
- 
+
     system(qq(/bin/su -c '/usr/bin/nohup /usr/bin/xinit > $devnull 2>&1 &' - minimyth));
 
     if (qx(/bin/pidof mm_sleep_on_ss))
