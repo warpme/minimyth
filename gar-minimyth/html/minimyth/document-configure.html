@@ -31,7 +31,8 @@
             <dt><a href="#dhcp">Configuration obtained from the DHCP server</a></dt>
             <dt><a href="#location">Location of configuration files</a></dt>
             <dt><a href="#minimyth_conf">Configuration obtained from the MiniMyth configuration file</a></dt>
-            <dt><a href="#minimyth_script">Configuration obtained from the MiniMyth configuration script</a></dt>
+            <dt><a href="#minimyth_script">Configuration obtained from the MiniMyth configuration script (sh init)</a></dt>
+            <dt><a href="#minimyth_pm">Configuration obtained from the MiniMyth configuration script (perl init)</a></dt>
             <dt><a href="#misc">Configuration obtained from miscellaneous configuration files</a></dt>
           </dl>
         </div>
@@ -44,7 +45,8 @@
             <li><a href="#bootline">the boot line</a>,</li>
             <li><a href="#dhcp">the DHCP server</a>,</li>
             <li><a href="#minimyth_conf">the MiniMyth configuration file</a>,</li>
-            <li><a href="#minimyth_script">the MiniMyth configuration script</a> and</li>
+            <li><a href="#minimyth_script">the MiniMyth configuration script (sh init)</a> or</li>
+            <li><a href="#minimyth_pm">the MiniMyth configuration script (perl init)</a>, and</li>
             <li><a href="#misc">miscellaneous configuration files</a>.</li>
           </ul>
           <p>
@@ -96,9 +98,21 @@
                   </p>
                 </dd>
               </dl>
+              <dl>
+                <dt id="MM_INIT_TYPE"><strong>MM_INIT_TYPE</strong></dt>
+                <dd>
+                  <p>
+                    Selects the MiniMyth init script type.
+                    Valid values are "sh" and "perl", with "sh" being the default.
+                  </p>
+                </dd>
+              </dl>
+              <p>
               <p>
                 In addition to
-                <a href="MM_DEBUG">MM_DEBUG</a>,
+                <a href="MM_DEBUG">MM_DEBUG</a>
+                and
+                <a href="MM_INIT_TYPE">MM_INIT_TYPE</a>,
                 you can include any variables found in the
                 <a href="document-minimyth_conf.html">MiniMyth Configuration File</a>
                 on the boot line.
@@ -416,8 +430,10 @@
           </p>
         </div>
         <div id="minimyth_script" class="section">
-          <div class="heading">Configuration obtained from the MiniMyth configuration script</div>
+          <div class="heading">Configuration obtained from the MiniMyth configuration script (sh init)</div>
           <p>
+            The MiniMyth configuration script used when MiniMyth is using sh scripted init
+            (see <a href="document-configure.html#MM_INIT_TYPE">MM_INIT_TYPE</a>).
             The MiniMyth configuration script is called 'minimyth.script'.
             The MiniMyth configuration script is optional.
             The MiniMyth configuration script is a shell script that is executed by MiniMyth
@@ -427,6 +443,59 @@
             Whether or not 'minimyth.script' is retrieved depends on
             '<a href="document-minimyth_conf.html#MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT">MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT</a>'.
           </p>
+          <p>
+            As mentioned above 'minimyth.script' is a shell script.
+            The following is a stub for the shell script:
+          </p>
+          <pre>
+#!/bin/sh
+
+. /etc/rc.d/functions
+
+exit 0;
+          </pre>
+        </div>
+        <div id="minimyth_pm" class="section">
+          <div class="heading">Configuration obtained from the MiniMyth configuration script (perl init)</div>
+          <p>
+            The MiniMyth configuration script used when MiniMyth is using perl scripted init
+            (see <a href="document-configure.html#MM_INIT_TYPE">MM_INIT_TYPE</a>).
+            The MiniMyth configuration script is called 'minimyth.pm'.
+            The MiniMyth configuration script is optional.
+            The MiniMyth configuration script is a perl package that is executed by MiniMyth
+            after MiniMyth has retrieved and imported (but not processed) the MiniMyth configuration file and
+            updated DHCP configuration.
+            You can use the MiniMyth configuration script to do things such as change the startup or shutdown scripts.
+            Whether or not 'minimyth.pm' is retrieved depends on
+            '<a href="document-minimyth_conf.html#MM_MINIMYTH_FETCH_MINIMYTH_PM">MM_MINIMYTH_FETCH_MINIMYTH_PM</a>'.
+          </p>
+          <p>
+            As mentioned above, 'minimyth.pm' defines a perl package.
+            The perl package must define the class 'init::minimyth' and
+            the 'init::minimyth' class must contain a method named 'start'
+            that accepts a pointer to the perl class 'MiniMyth'.
+            The following is a stub for the perl package defining 'init::minimyth':
+          </p>
+          <pre>
+#!/usr/bin/perl
+
+package init::minimyth;
+
+use strict;
+use warnings;
+
+require MiniMyth;
+
+sub start
+{
+    $self     = shift;
+    $minimyth = shift;
+
+    return 1;
+}
+
+1;
+          </pre>
         </div>
         <div id="misc" class="section">
           <div class="heading">Configuration obtained from miscellaneous configuration files</div>
@@ -596,7 +665,9 @@
           <p>
             If you want to override any other configuration files,
             then you will need to use the
-            <a href="#minimyth_script">MiniMyth configuration script</a>.
+            <a href="#minimyth_script">MiniMyth configuration script (sh init)</a>
+            or
+            <a href="#minimyth_pm">MiniMyth configuration script (perl init)</a>.
           </p>
         </div>
       </div>
@@ -613,7 +684,7 @@
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-07-15
+          Last Updated on 2008-08-27
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>

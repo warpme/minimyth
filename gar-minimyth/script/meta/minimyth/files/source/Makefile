@@ -216,6 +216,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%g'     $@~$(sysconfdir)/conf.d/core
 	@sed -i 's%@GAR_libdir@%$(libdir)%g'                       $@~$(sysconfdir)/fonts/local.conf
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d/init.d/extras
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d.perl/init/extras.pm
 	@# Create the minimyth build configuration file.
 	@rm -rf   $@~$(versiondir)/minimyth.conf.mk
 	@mkdir -m 0755 -p $@~$(versiondir)

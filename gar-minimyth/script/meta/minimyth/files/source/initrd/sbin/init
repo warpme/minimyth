@@ -8,11 +8,24 @@ cd /rootfs
 /bin/mkdir -p initrd
 /sbin/pivot_root . initrd
 
+/bin/touch                     /init.log
+/bin/echo -n "init start: " >> /init.log
+/bin/date                   >> /init.log
+
+MM_INIT_TYPE=${MM_INIT_TYPE:-'sh'}
+
 # Save boot line options that we need later.
 /bin/mkdir -p /etc/conf.d/
 set | /bin/grep -e '^BOOT_IMAGE=' >> /etc/conf.d/boot
 set | /bin/grep -e '^initrd='     >> /etc/conf.d/boot
 set | /bin/grep -e '^MM_'         >> /etc/conf.d/boot
+
+if /usr/bin/test ${MM_INIT_TYPE} = 'sh'   ; then
+    /bin/ln -s /etc/inittab.sh   /etc/inittab
+fi
+if /usr/bin/test ${MM_INIT_TYPE} = 'perl' ; then
+    /bin/ln -s /etc/inittab.perl /etc/inittab
+fi
 
 # Change root to the read-write root file system and start the real init.
 exec /usr/sbin/chroot . ./bin/sh -c 'exec /sbin/init' <dev/console >dev/console 2>&1
