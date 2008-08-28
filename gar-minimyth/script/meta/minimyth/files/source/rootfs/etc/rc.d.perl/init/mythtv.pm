@@ -254,7 +254,7 @@ sub start
                 chomp;
                 if (-e "$_/libdvdcss.so.2")
                 {
-                    my $found = 1;
+                    $found = 1;
                     last
                 }
             }
