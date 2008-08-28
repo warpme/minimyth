@@ -19,15 +19,9 @@ sub start
     my @ntp_servers = ();
     if ((-e '/etc/ntp.conf') && (open(FILE, '<', '/etc/ntp.conf')))
     {
-        foreach (grep(/^server /, (<FILE>)))
+        foreach (grep(s/^server +([^ ]*) *$/$1/, (<FILE>)))
         {
-            chomp;
-            s/[[:cntrl:]]/ /g;
-            s/  +/ /g;
-            if (/([^ ]+) ([^ ]+)/)
-            {
-                push(@ntp_servers, $2);
-            }
+            push(@ntp_servers, $_);
         }
         close(FILE);
     }

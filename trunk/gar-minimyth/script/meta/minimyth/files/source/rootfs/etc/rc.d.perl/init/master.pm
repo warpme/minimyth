@@ -24,14 +24,10 @@ sub start
     my $master_wol_broadcast = undef;
     if (open(FILE, '-|', "/sbin/ifconfig " . $minimyth->var_get('MM_NETWORK_INTERFACE')))
     {
-        foreach (grep(/ Bcast:'/, (<FILE>)))
+        foreach (grep(s/^.* Bcast:([^ ]*) .*$/$1/, (<FILE>)))
         {
-            chomp;
-            if (/.* Bcast:([^ ]*) .*/)
-            {
-                $master_wol_broadcast = $1;
-                last;
-            }
+            $master_wol_broadcast = $_;
+            last;
         }
         close(FILE);
     }
@@ -69,6 +65,8 @@ sub start
         $wol_false = '';
         $wol_true  = '#';
     }
+    # The WOL broadcast and MAC addresses are replaced separately because
+    # the WOL SQL command includes the WOL broadcasst and MAC addresses as variables.
     $minimyth->file_replace_variable(
         '/home/minimyth/.mythtv/mysql.txt',
         { '@MM_HOSTNAME@'                       => $hostname,
@@ -80,8 +78,10 @@ sub start
           '@MM_MASTER_WOL_TRUE@'                => $wol_true,
           '@MM_MASTER_WOLSQLRECONNECTWAITTIME@' => $minimyth->var_get('MM_MASTER_WOLSQLRECONNECTWAITTIME'),
           '@MM_MASTER_WOLSQLCONNECTRETRY@'      => $minimyth->var_get('MM_MASTER_WOLSQLCONNECTRETRY'),
-          '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND'),
-          '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
+          '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND') });
+    $minimyth->file_replace_variable(
+        '/home/minimyth/.mythtv/mysql.txt',
+        { '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
           '@MM_MASTER_WOL_MAC@'                 => $minimyth->var_get('MM_MASTER_WOL_MAC') });
     $minimyth->file_replace_variable(
         '/root/.mythtv/mysql.txt',
@@ -94,8 +94,10 @@ sub start
           '@MM_MASTER_WOL_TRUE@'                => $wol_true,
           '@MM_MASTER_WOLSQLRECONNECTWAITTIME@' => $minimyth->var_get('MM_MASTER_WOLSQLRECONNECTWAITTIME'),
           '@MM_MASTER_WOLSQLCONNECTRETRY@'      => $minimyth->var_get('MM_MASTER_WOLSQLCONNECTRETRY'),
-          '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND'),
-          '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
+          '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND') });
+    $minimyth->file_replace_variable(
+        '/root/.mythtv/mysql.txt',
+        { '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
           '@MM_MASTER_WOL_MAC@'                 => $minimyth->var_get('MM_MASTER_WOL_MAC') });
  
     # If using wake-on-lan, then make sure that the MythTV master backend is awake.
