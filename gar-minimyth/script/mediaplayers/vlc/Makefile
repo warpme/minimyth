@@ -1,7 +1,7 @@
 GARNAME = vlc
-GARVERSION = 0.9.0-test3
+GARVERSION = 0.9.1
 CATEGORIES = mediaplayers
-MASTER_SITES = http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
+MASTER_SITES = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
@@ -222,7 +222,7 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
-post-build:
+x-post-build:
 	@# Hack to work around libtool relinking issue.
 	@# Only works because FIX_LIBTOOL stops hard linking.
 	@cp -f $(WORKSRC)/src/.libs/vlc $(WORKSRC)/src/vlc
