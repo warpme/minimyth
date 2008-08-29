@@ -171,6 +171,7 @@ sub var_load
     }
 
     my $shell_command = ". /etc/conf";
+    $shell_command = $shell_command . " ; . /lib/minimyth/functions";
     if ($conf_file)
     {
         if (-r $conf_file)
