@@ -26,6 +26,7 @@ sub start
     {
         foreach (grep(s/^.* Bcast:([^ ]*) .*$/$1/, (<FILE>)))
         {
+            chomp;
             $master_wol_broadcast = $_;
             last;
         }
