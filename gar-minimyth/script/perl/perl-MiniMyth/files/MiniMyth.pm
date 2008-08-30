@@ -1786,7 +1786,8 @@ sub codecs_fetch_and_save
         }
     }
 
-    my (undef, undef, $uid, $gid) = getpwnam('minimyth');
+    my $uid = getpwnam('minimyth');
+    my $gid = getgrnam('minimyth');
     File::Find::finddepth(
         sub
         {
