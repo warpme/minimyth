@@ -1,5 +1,5 @@
 GARNAME = mktemp
-GARVERSION = 1.5
+GARVERSION = 1.6
 CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.mktemp.org/pub/$(GARNAME)/
 MASTER_SITES += ftp://ftp.mktemp.org/pub/$(GARNAME)/OLD/
