@@ -1,9 +1,8 @@
 GARNAME = bluez
-GARVERSION = 4.1
+GARVERSION = 4.2
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-gcc_4.3.patch
 LICENSE = GPL2
 
 DESCRIPTION =
