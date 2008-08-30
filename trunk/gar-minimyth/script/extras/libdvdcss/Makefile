@@ -1,5 +1,5 @@
 GARNAME = libdvdcss
-GARVERSION = 1.2.9
+GARVERSION = 1.2.10
 CATEGORIES = extras
 MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
