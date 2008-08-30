@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 27354.14430
+GARVERSION = 27498.15050
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -58,7 +58,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-pvr \
 	--enable-rtc \
 	--enable-network \
-	--disable-winsock2 \
+	--disable-winsock2_h \
 	--disable-smb \
 	--disable-live \
 	--disable-nemesi \
@@ -77,7 +77,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-enca \
 	--disable-macosx \
 	--disable-maemo \
-	--disable-macosx-finder-support \
+	--disable-macosx-finder \
 	--disable-macosx-bundle \
 	--disable-inet6 \
 	--enable-gethostbyname2 \
