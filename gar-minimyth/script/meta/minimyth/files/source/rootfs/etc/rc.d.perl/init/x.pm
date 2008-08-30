@@ -21,10 +21,11 @@ sub start
     $minimyth->message_output('info', "configuring X ...");
 
     {
-        my (undef, undef, $uid, $gid) = getpwnam('root');
+        my $uid = getpwnam('root');
+        my $gid = getgrnam('root');
         rmdir('/tmp/.ICE-unix');
-        mkdir('/tmp/.ICE-unix', 1777);
-        chmod(1777,       '/tmp/.ICE-unix');
+        mkdir('/tmp/.ICE-unix');
+        chmod(01777,      '/tmp/.ICE-unix');
         chown($uid, $gid, '/tmp/.ICE-unix');
     }
 
@@ -291,7 +292,8 @@ sub start
 
     # Make sure that the file ownership is correct.
     {
-        my (undef, undef, $uid, $gid) = getpwnam('minimyth');
+        my $uid = getpwnam('minimyth');
+        my $gid = getgrnam('minimyth');
         File::Find::finddepth(
             sub
             {
