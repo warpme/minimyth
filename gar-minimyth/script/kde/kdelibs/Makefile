@@ -1,9 +1,9 @@
 GARNAME = kdelibs
-GARVERSION = 3.5.9
+GARVERSION = 3.5.10
 CATEGORIES = kde
 MASTER_SITES = http://mirrors.isc.org/pub/kde/stable/$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ldflags.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch.gar
 endif
