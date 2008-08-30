@@ -163,7 +163,7 @@ sub start
     # open source drivers conflict.
     #   the proprietary NVIDIA GL libraries conflict with the Open Source Mesa GL libraries.
     my $dri_true    = '';
-    my $nvidia_true = '';
+    my $nvidia_true = '#';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
         when (/^(intel_810|intel_915)$/)
