@@ -33,10 +33,17 @@ sub start
         unlink('/etc/ssl/cert.pem');
         symlink('/etc/ssl/certs/ca-bundle.crt', '/etc/ssl/cert.pem');
         # Add KSSL's bundle.
-        if ((-w '/usr/kde/share/apps/kssl/ca-bundle.crt') && (open(FILE, '>>', '/usr/kde/share/apps/kssl/ca-bundle.crt')))
+        if ((-w '/usr/kde/share/apps/kssl/ca-bundle.crt') && (open(OFILE, '>>', '/usr/kde/share/apps/kssl/ca-bundle.crt')))
         {
-            print FILE '/etc/ssl/certs/ca-bundle.crt' . "\n";
-            close(FILE);
+            if ((-r '/etc/ssl/certs/ca-bundle.crt') && (open(IFILE, '<', '/etc/ssl/certs/ca-bundle.crt')))
+            {
+                while (<IFILE>)
+                {
+                    print OFILE $_;
+                }
+                close(IFILE);
+            }
+            close(OFILE);
         }
     }
 

@@ -19,7 +19,8 @@ sub start
 
     $minimyth->message_output('info', "configuring ssh server ...");
 
-    my (undef, undef, $uid, $gid) = getpwnam('root');
+    my $uid = getpwnam('root');
+    my $gid = getgrnam('root');
 
     if (-e '/etc/ssh/sshd_config')
     {
