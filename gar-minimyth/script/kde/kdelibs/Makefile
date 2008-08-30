@@ -1,7 +1,7 @@
 GARNAME = kdelibs
 GARVERSION = 3.5.10
 CATEGORIES = kde
-MASTER_SITES = http://mirrors.isc.org/pub/kde/stable/$(GARVERSION)/src/
+MASTER_SITES = ftp://ftp.kde.org/pub/kde/stable/$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
