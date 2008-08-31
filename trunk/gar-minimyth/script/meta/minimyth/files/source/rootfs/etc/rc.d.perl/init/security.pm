@@ -23,7 +23,7 @@ sub start
         { 'minimyth::1000:1000:' => "minimyth::$user_minimyth_uid:$user_minimyth_gid:" });
     $minimyth->file_replace_variable(
         '/etc/group',
-        { 'minimyth:x:1000:' => "minimyth::x:$user_minimyth_gid:" });
+        { 'minimyth:x:1000:' => "minimyth:x:$user_minimyth_gid:" });
 
     if (-e '/etc/ssl/certs/ca-bundle.crt')
     {
