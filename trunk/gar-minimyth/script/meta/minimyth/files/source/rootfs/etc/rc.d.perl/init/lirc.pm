@@ -306,6 +306,7 @@ sub start
             {
                 foreach (grep(s/^include +(.*)$/$1/, (<FILE>)))
                 {
+                    chomp;
                     push(@lircrc_list, $_);
                 }
                 close(FILE);
