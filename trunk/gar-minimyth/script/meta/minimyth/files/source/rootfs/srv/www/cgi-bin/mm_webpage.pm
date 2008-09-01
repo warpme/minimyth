@@ -35,7 +35,7 @@ sub page
     }
 
     my $page_host  = Sys::Hostname::hostname();
-    my $page_date  = qx(/bin/date +'%Y-%m-%d %H:%M:%S %Z');
+    my $page_date  = qx(/bin/date +'%Y-%m-%d %H:%M:%S %Z'); chomp $page_date;
     my $mm_version = $minimyth->var_get('MM_VERSION');
 
     my @page = ();
@@ -78,10 +78,7 @@ sub page
     push(@page,  q(      </div>));
     push(@page,  q(      <div class="middle">));
     push(@page, qq(      <div class="heading">MiniMyth Frontend $title</div>));
-    foreach (@{$middle})
-    {
-        push(@page, '        ' . $_);
-    }
+    push(@page, @{$middle});
     push(@page,  q(      </div>));
     push(@page,  q(      <div class="footer">));
     push(@page,  q(        <hr />));
@@ -96,7 +93,7 @@ sub page
     push(@page,  q(              alt="Valid CSS!"      height="31" width="88" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="version">));
-    push(@page,  q(          Last Updated on 2008-08-31));
+    push(@page,  q(          Last Updated on 2008-09-01));
     push(@page,  q(          <br />));
     push(@page,  q(          &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;));
     push(@page,  q(        </div>));
