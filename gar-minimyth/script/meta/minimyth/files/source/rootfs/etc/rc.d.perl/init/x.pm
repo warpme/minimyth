@@ -314,10 +314,7 @@ sub stop
     my $minimyth = shift;
 
     $minimyth->message_output('info', "stopping X ...");
-    if (qx(/bin/pidof mm_sleep_on_xscreensaver))
-    {
-        system(qq(/usr/bin/killall mm_sleep_on_xscreensaver));
-    }
+    $minimyth->application_stop('mm_sleep_on_xscreensaver');
     $minimyth->x_stop();
 
     return 1;

@@ -47,7 +47,7 @@ sub start
 
     if ($minimyth->var_get('MM_SSH_SERVER_ENABLED') eq 'yes')
     {
-        if (qx(/bin/pidof sshd))
+        if (! $minimyth->application_running('sshd'))
         {
             $minimyth->message_output('info', "starting ssh server ...");
             mkdir('/var/empty', 0755);
@@ -63,11 +63,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof sshd))
-    {
-        $minimyth->message_output('info', "stopping ssh server ...");
-        system(qq(/usr/bin/killall sshd));
-    }
+    $minimyth->application_stop('sshd', "stopping ssh server ...");
 
     return 1;
 }

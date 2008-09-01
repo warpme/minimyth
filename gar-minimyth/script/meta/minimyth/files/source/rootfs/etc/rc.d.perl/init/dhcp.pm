@@ -21,7 +21,7 @@ sub start
     $self->stop($minimyth);
 
     # Start 'udhcpc'.
-    if (! qx(/bin/pidof udhcpc))
+    if (! $minimyth->application_running('udhcpc'))
     {
         $minimyth->message_output('info', "starting DHCP client ...");
 
@@ -106,14 +106,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof udhcpc))
-    {
-        $minimyth->message_output('info', "stopping DHCP client ...");
-        while (qx(/bin/pidof udhcpc))
-        {
-            system(qq(/usr/bin/killall udhcpc));
-        }
-    }
+    $minimyth->application_stop('udhcpc', "stopping DHCP client ...");
 
     return 1;
 }

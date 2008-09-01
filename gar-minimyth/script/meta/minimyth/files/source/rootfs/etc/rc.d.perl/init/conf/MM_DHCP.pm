@@ -24,7 +24,7 @@ $var_list{'MM_DHCP_HOST_NAME'} =
         # If the DCHP override file exists, then DHCP should be completely configured.
         if (-e '/etc/conf.d/dhcp.override')
         {
-            my $hostname = qx(/bin/hostname);
+            my $hostname = $minimyth->hostname();
             if (! $hostname)
             {
                 $minimyth->message_output('err', qq(error: 'Host Name' (or 'MM_DHCP_HOST_NAME') not configured.));

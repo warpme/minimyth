@@ -48,6 +48,7 @@ DEPENDS = \
 	net/openssh \
 	utils/pciutils \
 	perl/perl \
+	perl/perl-Date-Manip \
 	perl/perl-MiniMyth \
 	utils/pmount \
 	net/portmap \

@@ -18,7 +18,7 @@ sub start
     $minimyth->message_output('info', "starting LCD/VFD ...");
 
     # Only start the LCDd daemon when one is not running already.
-    if (! qx(/bin/pidof LCDd))
+    if (! $minimyth->application_running('LCDd'))
     {
         my $device                = $minimyth->var_get('MM_LCDPROC_DEVICE');
         my $driver                = $minimyth->var_get('MM_LCDPROC_DRIVER');
@@ -71,7 +71,7 @@ sub start
     }
 
     # Enable LCD in MythTV.
-    if (qx(/bin/pidof LCDd))
+    if ($minimyth->application_running('LCDd'))
     {
         $minimyth->mythdb_settings_set('LCDEnable', '1');
     }
@@ -88,12 +88,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof LCDd))
-    {
-        $minimyth->message_output('info', "stopping LCD/VFD display ...");
-
-        system(qq(/usr/bin/killall LCDd));
-    }
+    $minimyth->application_stop('LCDd', "stopping LCD/VFD display ...");
 
     return 1;
 }

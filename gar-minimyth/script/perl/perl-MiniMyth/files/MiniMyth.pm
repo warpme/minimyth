@@ -43,45 +43,76 @@ sub DESTROY
 #===============================================================================
 # general functions.
 #===============================================================================
-sub command_run()
+sub application_path()
 {
-    my $self    = shift;
-    my $command = shift;
+    my $self        = shift;
+    my $application = shift;
 
-    my $return = 1;
-
-    my $log_file = File::Spec->devnull;
-    if ($self->var_get('MM_DEBUG') eq 'yes')
+    my $path = '';
+    if (open(FILE, '-|', "/usr/bin/which $application"))
     {
-        $log_file = '/var/log/minimyth.log';
-        if (! -e $log_file)
+        while (<FILE>)
         {
-            my $log_dir = File::Basename::dirname($log_file);
-            if (! -e $log_dir)
-            {
-                File::Path::mkpath($log_dir);
-            }
-            if (-w $log_dir)
-            {
-                open(FILE, '>', $log_file);
-                chmod(0666, $log_file);
-                close(FILE);
-            }
+            $path = $_;
+            last;
         }
+        close(FILE);
     }
 
-    open(STDERR, '>', 'STDOUT');
-    if (-e $log_file)
+    return $path;
+}
+
+sub application_running()
+{
+    my $self        = shift;
+    my $application = shift;
+
+    my $running = 0;
+    if (open(FILE, '-|', "/bin/pidof $application"))
     {
-        open(STDOUT, '>>', $log_file);
+        while (<FILE>)
+        {
+            $running = 1;
+            last;
+        }
+        close(FILE);
     }
-    print qq( --- execution start: $command\n);
-    system(qq($command)) || ($return = 1);
-    print qq( --- execution end:   $command\n);
-    close(STDOUT);
-    close(STDERR);
 
-    return $return;
+    return $running;
+}
+
+sub application_stop()
+{
+    my $self        = shift;
+    my $application = shift;
+    my $message     = shift;
+
+    my $message_show = ((defined($message)) && ($message ne '')) ? 1 : 0;
+
+    if (open(FILE, '-|', "/bin/pidof $application"))
+    {
+        if ($message_show)
+        {
+            $self->message_output('info', $message);
+            $message_show = 0;
+        }
+        while (<FILE>)
+        {
+            system(qq(/bin/kill $_));
+        }
+        close(FILE);
+    }
+
+    return 1;
+}
+
+sub hostname()
+{
+    my $self = shift;
+
+    my $hostname = Sys::Hostname::hostname();
+
+    return $hostname;
 }
 
 #===============================================================================
@@ -383,7 +414,7 @@ sub splash_running_test
     my $self = shift;
 
     my $devnull = File::Spec->devnull;
-    if ((system(qq(/bin/pidof $var_splash_command_base $devnull 2>&1)) == 0) && (-e $var_splash_fifo))
+    if (($self->application_running($var_splash_command_base)) && (-e $var_splash_fifo))
     {
         return 1;
     }
@@ -572,7 +603,7 @@ sub _mythdb_condition
 
     if ($flag_condition_hostname == 1)
     {
-        my $hostname = Sys::Hostname::hostname();
+        my $hostname = $self->hostname();
         if (! $result) { $result .= ' ' . $prefix    . ' '; }
         else           { $result .= ' ' . $separator . ' '; }
         $result = $result . qq(hostname="$hostname");
@@ -859,7 +890,7 @@ sub mythdb_music_playlists_scope
     my $playlist_name = shift;
     my $scope         = shift;
 
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = $self->hostname();
 
     my $query = '';
     if    ($scope eq 'local')
@@ -997,7 +1028,7 @@ sub url_confro_get
     $remote_file =~ s/\/$//g;
     $remote_file =~ s/^\///g;
 
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = $self->hostname();
     my $remote_file_0 = undef;
     my $remote_file_1 = undef;
 
@@ -1036,7 +1067,7 @@ sub url_confrw_get
     $remote_file =~ s/\/$//g;
     $remote_file =~ s/^\///g;
 
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = $self->hostname();
     my $remote_file_0 = undef;
 
     if ($hostname)
@@ -1223,7 +1254,7 @@ sub url_tftp_get
 #    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
 #    my $retcode = $curl->perform;
 #    close($OUT_FILE);
-    my $retcode = qx(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server ; echo $?);
+    my $retcode = system(qq(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server));
     chmod(0600, $local_file);
     if ($retcode == 0)
     {
@@ -1274,7 +1305,7 @@ sub url_confrw_put
     $remote_file =~ s/\/$//g;
     $remote_file =~ s/^\///g;
 
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = $self->hostname();
     my $remote_file_0 = undef;
 
     if ($hostname)
@@ -1418,7 +1449,7 @@ sub url_tftp_put
 #    my $retcode = $curl->perform;
 #    close($IN_FILE);
 #    close($OUT_FILE);
-    my $retcode = qx(/usr/bin/tftp -p -l $local_file -r $remote_file $remote_server ; echo $?);
+    my $retcode = system(qq(/usr/bin/tftp -p -l $local_file -r $remote_file $remote_server));
     if ($retcode == 0)
     {
         $result = $url;
@@ -1952,10 +1983,10 @@ sub x_xmacroplay
     my $devnull = File::Spec->devnull;
 
     # Make sure that the program is running.
-    if (qx(/bin/pidof $program))
+    if ($self->application_running($program))
     {
         # Make sure that the X window manager is running, since we depend on it to select the program window.
-        if (qx(/bin/pidof ratpoison))
+        if ($self->application_running('ratpoison'))
         {
             # Set ratpoison to select window by program name.
             system(qq(/usr/bin/ratpoison -d :0.0 -c "set winname class"));
@@ -2062,7 +2093,7 @@ sub x_applications_exit
 
     foreach my $application (keys %{$applications})
     {
-        if (qx(/bin/pidof $application))
+        if ($self->application_running($application))
         {
             my $xmacro = '';
             given ($application)
@@ -2071,7 +2102,7 @@ sub x_applications_exit
                 when (/^mythfrontend$/)
                 {
                     # If mythfrontend is running, then return it to the Main Menu using the Network Control interface.
-                    if (qx(/bin/pidof mythfrontend))
+                    if ($self->application_running('mythfrontend'))
                     {
                         for (my $timeout = 10 ; $timeout > 0 ; $timeout--)
                         {
@@ -2115,7 +2146,7 @@ sub x_applications_exit
             if ($xmacro)
             {
                 $self->x_xmacroplay($application, $xmacro);
-                if (qx(/bin/pidof $application))
+                if ($self->application_running($application))
                 {
                     $self->message_output('error', "failed to exit '$application'.");
                 }
@@ -2134,11 +2165,14 @@ sub x_applications_kill
 
     foreach my $application (keys %{$applications})
     {
-        my @pids = split(/ +/, qx(/bin/pidof $application));
-        foreach (@pids)
+        if (open(FILE, '-|', "/bin/pidof $application"))
         {
-            my $devnull = File::Spec->devnull;
-            system(qq(/bin/kill -SIGTERM $_ > $devnull 2>&1));
+            while (<FILE>)
+            {
+                my $devnull = File::Spec->devnull;
+                system(qq(/bin/kill -SIGTERM $_ > $devnull 2>&1));
+            }
+            close(FILE);
         }
     }
 
@@ -2157,7 +2191,7 @@ sub x_applications_dead
         $dead = 1;
         foreach (keys %{$applications})
         {
-            if (qx(/bin/pidof $_))
+            if ($self->application_running($_))
             {
                 my $dead = 0;
                 sleep 1;
@@ -2177,8 +2211,18 @@ sub x_start
 
     $self->message_log('info', "starting X");
 
-    # Only root start X.
-    my $user = getpwuid(qx(/usr/bin/id -u));
+    # Only user root can start X.
+    my $user = '';
+    if (open(FILE, '-|', '/usr/bin/id -u'))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $user = getpwuid($_);
+            last;
+        }
+        close(FILE);
+    }
     if ($user ne 'root')
     {
         $self->message_log('info', "X not started because uid=$user is not 'root'.");
@@ -2193,7 +2237,7 @@ sub x_start
     }
 
     # Only start X if X is not already running.
-    if (qx(/bin/pidof X))
+    if ($self->application_running('X'))
     {
         $self->message_log('info', "X not started because X is already running.");
         return 0;
@@ -2201,10 +2245,7 @@ sub x_start
 
     system(qq(/bin/su -c '/usr/bin/nohup /usr/bin/xinit > $devnull 2>&1 &' - minimyth));
 
-    if (qx(/bin/pidof mm_sleep_on_ss))
-    {
-        system(qq(/usr/bin/killall mm_sleep_on_ss));
-    }
+    $self->application_stop('mm_sleep_on_ss');
     if ($self->var_get('MM_X_SCREENSAVER_HACK') eq 'sleep')
     {
         system(qq(/usr/bin/mm_sleep_on_ss &));
@@ -2224,21 +2265,28 @@ sub x_stop
 
     my $log_file = File::Spec->devnull;
 
-    # Only users root and minimyth can stop X.
-    my $user = getpwuid(qx(/usr/bin/id -u));
+    # Only user root can stop X.
+    my $user = '';
+    if (open(FILE, '-|', '/usr/bin/id -u'))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $user = getpwuid($_);
+            last;
+        }
+        close(FILE);
+    }
     if ($user ne 'root')
     {
         $self->message_log('info', "X not stopped because uid=$user is not 'root'.");
         return 0;
     }
 
-    if (qx(/bin/pidof mm_sleep_on_ss))
-    {
-        system(qq(/usr/bin/killall mm_sleep_on_ss));
-    }
+    $self->application_stop('mm_sleep_on_ss');
 
     # Only stop X if X is running.
-    if (! qx(/bin/pidof X))
+    if (! $self->application_running('X'))
     {
         $self->message_log('info', "X not stopped because X is not running.");
         return 0;

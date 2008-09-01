@@ -5,8 +5,8 @@ package mm_webpage;
 use warnings;
 use strict;
 
+require Date::Manip;
 require MiniMyth;
-require Sys::Hostname;
 
 sub page
 {
@@ -34,8 +34,8 @@ sub page
         }
     }
 
-    my $page_host  = Sys::Hostname::hostname();
-    my $page_date  = qx(/bin/date +'%Y-%m-%d %H:%M:%S %Z'); chomp $page_date;
+    my $page_host  = $minimyth->hostname();
+    my $page_date  = Date::Manip::UnixDate(Date::Manip::ParseDate('now'), '%Y-%m-%d %H:%M:%S %Z');
     my $mm_version = $minimyth->var_get('MM_VERSION');
 
     my @page = ();

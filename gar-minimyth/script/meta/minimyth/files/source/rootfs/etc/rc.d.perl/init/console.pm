@@ -17,7 +17,7 @@ sub start
     # Run a virtual console on machines that have security disabled.
     if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
     {
-        if (! qx(/bin/pidof agetty))
+        if (! $minimyth->application_running('agetty'))
         {
             $minimyth->message_output('info', "starting virtual console ...");
             system(qq(/sbin/agetty 9600 tty1 &));
@@ -37,11 +37,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof agetty))
-    {
-        $minimyth->message_output('info', "stopping virtual console ...");
-        system(qq(/usr/bin/killall agetty));
-    }
+    $minimyth->application_stop('agetty', "stopping virtual console ...");
 
     return 1;
 }

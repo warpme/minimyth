@@ -33,10 +33,7 @@ sub stop
     $minimyth->message_output('info', "stopping loopback network interface ...");
 
     # Stop portmap on the local network interface.
-    if (qx(/bin/pidof portmap))
-    {
-        system(qq(/usr/bin/killall portmap));
-    }
+    $minimyth->application_stop('portmap');
 
     # Bring down the loopback network interface.
     system(qq(/sbin/ifconfig lo 0 down));
