@@ -52,10 +52,10 @@ my %type_header = ( 'base'   => q(base ('/' and '/usr'):),
 foreach my $type (@type_name)
 {
     push(@middle,  q(    <li>));
-    push(@middle, qq(    $type_header{$type}));
+    push(@middle, qq(      $type_header{$type}));
     if (-d "/srv/www/software/$type/versions")
     {
-        push(@middle,  q(    <ul>));
+        push(@middle,  q(      <ul>));
         if (opendir(SOFTWAREDIR, "/srv/www/software/$type/versions"))
         {
             foreach my $software (grep((! /^\./) && (! /^minimyth$/) && (! /^minimyth.conf.mk$/), (readdir(SOFTWAREDIR))))
