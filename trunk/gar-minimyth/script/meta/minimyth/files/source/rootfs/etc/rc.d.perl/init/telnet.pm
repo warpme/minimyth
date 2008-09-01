@@ -17,7 +17,7 @@ sub start
     # Run telnet server on machines that have security disabled.
     if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
     {
-        if (! qx(/bin/pidof telnetd))
+        if (! $minimyth->application_running('telnetd'))
         {
             $minimyth->message_output('info', "starting telnet server ...");
             system(qq(/usr/sbin/telnetd));
@@ -37,11 +37,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof telnetd))
-    {
-        $minimyth->message_output('info', "stopping telnet server ...");
-        system(qq(/usr/bin/killall telnetd));
-    }
+    $minimyth->application_stop('telnetd', "stopping telnet server ...");
 
     return 1;
 }

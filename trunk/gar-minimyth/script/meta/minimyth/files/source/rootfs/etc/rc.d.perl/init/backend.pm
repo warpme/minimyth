@@ -36,12 +36,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof mythbackend))
-    {
-        $minimyth->message_output('info', "stopping MythTV backend ...");
-
-        system(qq(/usr/bin/killall mythbackend));
-    }
+    $minimyth->application_stop('mythbackend', "stopping MythTV backend ...");
 
     return 1;
 }

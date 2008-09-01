@@ -49,11 +49,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof acpid))
-    {
-        $minimyth->message_output('info', "stopping ACPI ...");
-        system(qq(/usr/bin/killall acpid));
-    }
+    $minimyth->application_stop('acpid', "stopping ACPI ...");
 
     return 1;
 }

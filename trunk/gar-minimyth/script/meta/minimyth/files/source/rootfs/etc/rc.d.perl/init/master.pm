@@ -8,7 +8,6 @@ use strict;
 use warnings;
 
 require MiniMyth;
-require Sys::Hostname;
 
 sub start
 {
@@ -18,7 +17,7 @@ sub start
     $minimyth->message_output('info', "configuring MythTV master backend communication ...");
  
     # Determine hostname.
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = $minimyth->hostname();
 
     # Determine broadcast address.
     my $master_wol_broadcast = undef;

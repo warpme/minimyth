@@ -51,7 +51,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof g15daemon))
+    if ($minimyth->application_running('g15daemon'))
     {
         $minimyth->message_output('info', "stopping G15daemon ...");
         system(qq(/usr/sbin/g15daemon -k));

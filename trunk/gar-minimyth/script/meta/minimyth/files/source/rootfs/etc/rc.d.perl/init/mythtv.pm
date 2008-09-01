@@ -13,7 +13,6 @@ use feature "switch";
 require File::Basename;
 require File::Path;
 require MiniMyth;
-require Sys::Hostname;
 
 sub start
 {
@@ -96,8 +95,8 @@ sub start
     my $dvd_rip_mountpoint = $minimyth->var_get('MM_MEDIA_DVD_RIP_MOUNTPOINT');
     if (($dvd_rip_url) && ($dvd_rip_mountpoint))
     {
-        my $mtd       = qx(/usr/bin/which mtd);
-        my $transcode = qx(/usr/bin/which transcode);
+        my $mtd       = $minimyth->application_path('mtd');
+        my $transcode = $minimyth->application_path('transcode');
         if ($mtd)
         {
             $minimyth->message_output('err', "error: 'mtd' not found.");
@@ -262,7 +261,7 @@ sub start
         }
         if ($found == 0)
         {
-            my $hostname = Sys::Hostname::hostname();
+            my $hostname = $minimyth->hostname();
             $minimyth->message_log('warn',
                                    "warning: certain DVDs may not play. see <http://$hostname/minimyth/document-faq.html#dvd>");
         }
@@ -276,10 +275,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof mtd))
-    {
-        system(qq(/usr/bin/killall mtd));
-    }
+    $minimyth->application_stop('mtd');
 
     return 1;
 }

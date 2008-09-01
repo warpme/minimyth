@@ -9,6 +9,7 @@ use feature "switch";
 
 require Cwd;
 require File::Basename;
+require File::Spec;
 require MiniMyth;
 
 my @script_list_start =
@@ -90,6 +91,33 @@ sub rc_run
     my $minimyth = new MiniMyth;
 
     $minimyth->var_load();
+
+    # Redirect stderr and stdout to either /dev/null or /var/log/minimyth.log,
+    # depending on the value of MM_DEBUG.
+    my $log_file = File::Spec->devnull;
+    if ((defined($minimyth->var_get('MM_DEBUG'))) && ($minimyth->var_get('MM_DEBUG') eq 'yes'))
+    {
+        $log_file = '/var/log/minimyth.log';
+        if (! -e $log_file)
+        {
+            my $log_dir = File::Basename::dirname($log_file);
+            if (! -e $log_dir)
+            {
+                File::Path::mkpath($log_dir);
+            }
+            if (-w $log_dir)
+            {
+                open(FILE, '>', $log_file);
+                chmod(0666, $log_file);
+                close(FILE);
+            }
+        }
+    }
+    open(STDERR, '>', 'STDOUT');
+    if (-e $log_file)
+    {
+        open(STDOUT, '>>', $log_file);
+    }
 
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
 

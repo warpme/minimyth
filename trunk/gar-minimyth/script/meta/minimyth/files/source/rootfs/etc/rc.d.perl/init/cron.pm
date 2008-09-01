@@ -18,7 +18,7 @@ sub start
 
     # If crond is not running and there is at least one file in the crontabs
     # directory, then start crond.
-    if (! qx(/bin/pidof crond))
+    if (! $minimyth->application_running('crond'))
     {
         if ((-d '/var/spool/cron/crontabs') &&
             (opendir(DIR, '/var/spool/chron/crontabs')))
@@ -40,11 +40,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof crond))
-    {
-        $minimyth->message_output('info', "stopping cron ...");
-        system(qq(/usr/bin/killall crond));
-    }
+    $minimyth->application_stop('crond', "stopping cron ...");
 
     return 1;
 }

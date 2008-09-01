@@ -56,7 +56,7 @@ sub start
         $minimyth->message_output('info', "starting wminput ...");
 
         # wminput is already running, so return.
-        if (qx(/bin/pidof wminput))
+        if ($minimyth->application_running('wminput'))
         {
             return 1;
         }
@@ -174,12 +174,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof wminput))
-    {
-        $minimyth->message_output('info', "stopping wminput ...");
-
-        system(qq(/usr/bin/killall wminput));
-    }
+    $minimyth->application_stop('wminput', "stopping wminput ...");
 
     return 1;
 }

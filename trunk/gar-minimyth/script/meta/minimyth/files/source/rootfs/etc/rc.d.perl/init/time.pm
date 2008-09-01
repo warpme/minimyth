@@ -52,10 +52,10 @@ sub stop
     my $minimyth = shift;
 
     $minimyth->message_output('info', "saving time ...");
-
-    if (qx(/bin/pidof ntpd))
+ 
+    if ($minimyth->application_running('ntpd'))
     {
-        system(qq(/usr/bin/killall ntpd));
+        $minimyth->application_stop('ntpd');
         system(qq(/sbin/hwclock -w -u));
     }
 

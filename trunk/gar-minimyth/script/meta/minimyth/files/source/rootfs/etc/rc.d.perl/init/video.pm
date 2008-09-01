@@ -11,7 +11,6 @@ use warnings;
 use feature "switch";
 
 require MiniMyth;
-require Sys::Hostname;
 
 sub start
 {

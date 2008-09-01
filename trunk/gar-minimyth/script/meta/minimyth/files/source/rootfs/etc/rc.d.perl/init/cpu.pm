@@ -136,10 +136,7 @@ sub stop
 
     $minimyth->message_output('info', "stopping CPU frequency scaling ...");
 
-    if (qx(/bin/pidof powernowd))
-    {
-        system(qq(/usr/bin/killall powernowd));
-    }
+    $minimyth->application_stop('powernowd');
 
     if ((-d '/sys/devices/system/cpu') &&
         (opendir(DIR, '/sys/devices/system/cpu')))

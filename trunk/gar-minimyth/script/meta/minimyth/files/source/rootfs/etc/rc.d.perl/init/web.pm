@@ -43,12 +43,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof webfsd))
-    {
-        $minimyth->message_output('info', "stopping web server ...");
-
-        system(qq(/usr/bin/killall webfsd));
-    }
+    $minimyth->application_stop('webfsd', "stopping web server ...");
 
     return 1;
 }

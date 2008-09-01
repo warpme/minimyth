@@ -51,7 +51,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (qx(/bin/pidof irserver))
+    if ($minimyth->application_running('irserver'))
     {
         $minimyth->message_output('info', "stopping IRTrans server ...");
         if (-e '/usr/sbin/irclient')

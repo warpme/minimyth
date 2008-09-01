@@ -29,21 +29,15 @@ sub start
       
     if (defined($log_server))
     {
-        if (qx(/bin/pidof klogd))
-        {
-            system(qq(/usr/bin/killall klogd));
-        }
-        if (qx(/bin/pidof syslogd))
-        {
-            system(qq(/usr/bin/killall syslogd));
-        }
+        $minimyth->application_stop('klogd');
+        $minimyth->application_stop('syslogd');
         system(qq(/sbin/syslogd -R "$log_server"));
     }
-    if (! qx(/bin/pidof syslogd))
+    if (! $minimyth->application_running('syslogd'))
     {
         system(qq(/sbin/syslogd));
     }
-    if (! qx(/bin/pidof klogd))
+    if (! $minimyth->application_running('klogd'))
     {
         system(qq(/sbin/klogd));
     }
@@ -58,14 +52,8 @@ sub stop
 
     $minimyth->message_output('info', "stopping system logging ...");
 
-    if (qx(/bin/pidof klogd))
-    {
-        system(qq(/usr/bin/killall klogd));
-    }
-    if (qx(/bin/pidof syslogd))
-    {
-        system(qq(/usr/bin/killall syslogd));
-    }
+    $minimyth->application_stop('klogd');
+    $minimyth->application_stop('syslogd');
 
     return 1;
 }

@@ -32,7 +32,17 @@ sub _remote_wakeup_enable
     
     foreach my $lirc (@lirc_list)
     {
-        my $name = '/dev/' . qx(/sbin/udevadm info --query=name --path=/sys/class/lirc/$lirc);
+        my $name = '';
+        if (open(FILE, '-|', "/sbin/udevadm info --query=name --path=/sys/class/lirc/$lirc"))
+        {
+            while (<FILE>)
+            {
+                chomp;
+                $name = "/dev/$_";
+                last;
+            }
+            close(FILE);
+        }
         if (! grep(/^$name$/, @{$device_list}))
         {
             next;
@@ -354,19 +364,12 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if ((qx(/bin/pidof irexec)) || (qx(/bin/pidof lircd)))
+    if (($minimyth->application_running('irexec')) || ($minimyth->application_running('lircd')))
     {
         $minimyth->message_output('info', "stopping remote control ...");
 
-        if (qx(/bin/pidof irexec))
-        {
-            system(qq(/usr/bin/killall irexec));
-        }
-
-        if (qx(/bin/pidof lircd))
-        {
-            system(qq(/usr/bin/killall lircd));
-        }
+        $minimyth->application_stop('irexec');
+        $minimyth->application_stop('lircd');
     }
 
     return 1;
