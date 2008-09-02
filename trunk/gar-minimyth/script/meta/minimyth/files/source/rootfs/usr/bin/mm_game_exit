@@ -1,9 +1,14 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-. /etc/rc.d/functions
+use strict;
+use warnings;
 
-mm_x_applications_exit ':game'
+require MiniMyth;
 
-if /usr/bin/test -n "`/bin/pidof mm_ss_suspend`" ; then
-    /usr/bin/killall mm_ss_suspend
-fi
+my $minimyth = new MiniMyth;
+
+$minimyth->x_applications_exit({ ':game' => 1 });
+
+$minimyth->application_stop('mm_ss_suspend');
+
+1;

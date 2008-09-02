@@ -1,9 +1,20 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-/usr/bin/mm_ss_suspend "`/usr/bin/basename ${0}`" > /dev/null 2>&1 &
+use strict;
+use warnings;
 
-if /usr/bin/test -z "$*" ; then
-    /usr/bin/rxvt -display :0.0 -e /bin/sh
-else
-    /usr/bin/rxvt -display :0.0 -e "$@"
-fi
+require File::Basename;
+require File::Spec;
+
+my $program = File::Basename::basename(__FILE__);
+my @command = @ARGV || ('/bin/sh');
+
+my $devnull = File::Spec->devnull;
+
+system(qq(/usr/bin/mm_ss_suspend $program > $devnull 2>&1 &));
+
+@command = ('/usr/bin/rxvt', '-display', ':0.0', '-e', @command);
+
+system(@command);
+
+1;

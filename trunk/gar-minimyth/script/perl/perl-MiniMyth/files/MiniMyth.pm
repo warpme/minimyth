@@ -1978,7 +1978,7 @@ sub x_xmacroplay
 {
     my $self    = shift;
     my $program = shift;
-    my $command = shift;
+    my $xmacro  = shift;
 
     my $devnull = File::Spec->devnull;
 
@@ -2012,7 +2012,10 @@ sub x_xmacroplay
                 # Send key sequence to window.
                 if (open(FILE, '|-', "/usr/bin/xmacroplay -d 100 :0.0 > $devnull 2>&1"))
                 {
-                    print FILE $command . "\n";
+                    foreach (@{$xmacro})
+                    {
+                        print FILE $_ . "\n";
+                    }
                     close(FILE);
                 }
             }
@@ -2095,7 +2098,7 @@ sub x_applications_exit
     {
         if ($self->application_running($application))
         {
-            my $xmacro = '';
+            my @xmacro = ();
             given ($application)
             {
                 # Myth
@@ -2116,36 +2119,36 @@ sub x_applications_exit
                     }
                 }
                 # Browsers
-                when (/^mythbrowser$/)      { $xmacro = 'KeyStr Escape\n'; }
+                when (/^mythbrowser$/)      { push(@xmacro, 'KeyStr Escape'); }
                 # Players
-                when (/^mplayer$/)          { $xmacro = 'KeyStr Escape\n'; }
-                when (/^mplayer-svn$/)      { $xmacro = 'KeyStr Escape\n'; }
-                when (/^mythtv$/)           { $xmacro = 'KeyStr Escape\n'; }
+                when (/^mplayer$/)          { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mplayer-svn$/)      { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mythtv$/)           { push(@xmacro, 'KeyStr Escape'); }
 # Does not work because the window name is not 'vlc'.
 #               when (/^vlc$/)
-                {
-                    $xmacro='KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n';
-                }
-                when (/^xine$/)             { $xmacro = 'KeyStr Q\n';      }
+#               {
+#                   push(@xmacro, 'KeyStrPress Control_L', 'KeyStrPress Q', 'KeyStrRelease Q', 'KeyStrRelease Control_L');
+#               }
+                when (/^xine$/)             { push(@xmacro, 'KeyStr Q');      }
                 # Games
-                when (/^fceu$/)             { $xmacro = 'KeyStr Escape\n'; }
-                when (/^jzintv$/)           { $xmacro = 'KeyStr F1\n';     }
-                when (/^mame$/)             { $xmacro = 'KeyStr Escape\n'; }
-                when (/^mess$/)             { $xmacro = 'KeyStr Escape\n'; }
-                when (/^mednafen$/)         { $xmacro = 'KeyStr Escape\n'; }
+                when (/^fceu$/)             { push(@xmacro, 'KeyStr Escape'); }
+                when (/^jzintv$/)           { push(@xmacro, 'KeyStr F1');     }
+                when (/^mame$/)             { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mess$/)             { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mednafen$/)         { push(@xmacro, 'KeyStr Escape'); }
                 when (/^stella$/)
                 {
-                    $xmacro = 'KeyStrPress Control_L\n KeyStrPress Q\n KeyStrRelease Q\n KeyStrRelease Control_L\n';
+                    push(@xmacro, 'KeyStrPress Control_L', 'KeyStrPress Q', 'KeyStrRelease Q', 'KeyStrRelease Control_L');
                 }
-                when (/^VisualBoyAdvance$/) { $xmacro = 'KeyStr Escape\n'; }
-                when (/^zsnes$/)            { $xmacro = 'KeyStr Escape\n KeyStr Q\n KeyStr Return\n'; }
+                when (/^VisualBoyAdvance$/) { push(@xmacro, 'KeyStr Escape'); }
+                when (/^zsnes$/)            { push(@xmacro, 'KeyStr Escape', 'KeyStr Q', 'KeyStr Return'); }
                 # Terminals
 # Does not work because rxvt does not have a key sequence to quit.  Also, the window is named 'xterm' not 'rxvt'.
-#               when (/^rxvt$/)             { $xmacro = '';                }
+#               when (/^rxvt$/)             { push(@xmacro, '');              }
             }
-            if ($xmacro)
+            if (@xmacro)
             {
-                $self->x_xmacroplay($application, $xmacro);
+                $self->x_xmacroplay($application, \@xmacro);
                 if ($self->application_running($application))
                 {
                     $self->message_output('error', "failed to exit '$application'.");
