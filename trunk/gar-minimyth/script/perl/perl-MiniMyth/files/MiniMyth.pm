@@ -43,7 +43,7 @@ sub DESTROY
 #===============================================================================
 # general functions.
 #===============================================================================
-sub application_path()
+sub application_path
 {
     my $self        = shift;
     my $application = shift;
@@ -62,7 +62,7 @@ sub application_path()
     return $path;
 }
 
-sub application_running()
+sub application_running
 {
     my $self        = shift;
     my $application = shift;
@@ -81,7 +81,7 @@ sub application_running()
     return $running;
 }
 
-sub application_stop()
+sub application_stop
 {
     my $self        = shift;
     my $application = shift;
@@ -106,7 +106,7 @@ sub application_stop()
     return 1;
 }
 
-sub hostname()
+sub hostname
 {
     my $self = shift;
 
