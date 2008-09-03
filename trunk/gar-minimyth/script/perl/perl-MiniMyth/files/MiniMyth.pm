@@ -211,7 +211,7 @@ sub var_load
         }
         else
         {
-            $self->message_log('warn', "var_load: file '$conf_file' does not exist.");
+            $self->message_log('warn', "MiniMyth::var_load: file '$conf_file' does not exist.");
         }
     }
     $shell_command = $shell_command . " ; set";
@@ -272,11 +272,11 @@ sub var_list
     # If the variables have not been loaded and the processed variables file exists, then autoload variables.
     (! defined $self->{'conf_variable'}) && (-e '/etc/conf.d/minimyth') && $self->var_load();
 
-    (defined $self->{'conf_variable'}) || die 'MiniMyth::var_save: MiniMyth configuration variables have not been loaded.';
+    (defined $self->{'conf_variable'}) || die 'MiniMyth::var_list: MiniMyth configuration variables have not been loaded.';
 
     my $conf_filter = ($args && $args->{'filter'}) || 'MM_.*';
 
-    my @list = grep(/^$conf_filter$/, (keys %{$self->{'conf_variable'}}));
+    my @list = sort(grep(/^$conf_filter$/, (keys %{$self->{'conf_variable'}})));
 
     return \@list;
 }
@@ -316,7 +316,7 @@ sub var_exists
 
     (! defined $self->{'conf_variable'}) && (-e '/etc/conf.d/minimyth') && $self->var_load();
 
-    (defined $self->{'conf_variable'}) || die 'MiniMyth::var_set: MiniMyth configuration variables have not been loaded.';
+    (defined $self->{'conf_variable'}) || die 'MiniMyth::var_exists: MiniMyth configuration variables have not been loaded.';
 
     if (defined $self->{'conf_variable'}->{$name})
     {
@@ -985,7 +985,16 @@ sub url_parse
         = ($1 || '' , $2   , $3   , $4 || '' , $5   , $6 || '' , $7 || '', $8 || '', $9   , $10 || '', $11  , $12 || '')
         if ($url =~ /^([^:]+):(\/\/(([^:@]*)?(:([^@]*))?\@)?([^\/]+))?([^?#]*)(\?([^#]*))?(\#(.*))?$/);
 
-    return ($protocol, $username, $password, $server, $path, $query, $fragment);
+    return
+    {
+        'protocol' => $protocol,
+        'username' => $username,
+        'password' => $password,
+        'server'   => $server,
+        'path'     => $path,
+        'query'    => $query,
+        'fragment' => $fragment
+    };
 }
 
 #===============================================================================
@@ -998,7 +1007,10 @@ sub url_get
     my $local_file = shift;
 
     # Parse the URL.
-    my ($remote_protocol, undef, undef, $remote_server, $remote_file, undef, undef) = $self->url_parse($url);
+    my $url_parsed      = $self->url_parse($url);
+    my $remote_protocol = $url_parsed->{'protocol'};
+    my $remote_server   = $url_parsed->{'server'};
+    my $remote_file     = $url_parsed->{'path'};
 
     my $result = '';
     given ($remote_protocol)
@@ -1278,7 +1290,10 @@ sub url_put
     my $local_file = shift;
 
     # Parse the URL.
-    my ($remote_protocol, undef, undef, $remote_server, $remote_file, undef, undef) = $self->url_parse($url);
+    my $url_parsed      = $self->url_parse($url);
+    my $remote_protocol = $url_parsed->{'protocol'};
+    my $remote_server   = $url_parsed->{'server'};
+    my $remote_file     = $url_parsed->{'path'};
 
     my $result = '';
     given ($remote_protocol)
@@ -1545,7 +1560,13 @@ sub url_mount
     }
 
     # Parse the URL.
-    my ($url_protocol, $url_username, $url_password, $url_server, $url_path, $url_options, undef) = $self->url_parse($url);
+    my $url_parsed   = $self->url_parse($url);
+    my $url_protocol = $url_parsed->{'protocol'};
+    my $url_username = $url_parsed->{'username'};
+    my $url_password = $url_parsed->{'password'};
+    my $url_server   = $url_parsed->{'server'};
+    my $url_path     = $url_parsed->{'path'};
+    my $url_options  = $url_parsed->{'options'};
 
     my $url_file = File::Basename::basename($url_path);
     my $url_ext  = $url_file;
