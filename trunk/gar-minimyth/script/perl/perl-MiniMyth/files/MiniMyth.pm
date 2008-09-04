@@ -62,20 +62,36 @@ sub application_path
     return $path;
 }
 
+sub application_pids
+{
+    my $self        = shift;
+    my $application = shift;
+
+    my @pids = ();
+    if (open(FILE, '-|', "/bin/pidof $application"))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            push(@pids, split(/ +/, $_));
+        }
+        close(FILE);
+    }
+
+    return \@pids;
+}
+
 sub application_running
 {
     my $self        = shift;
     my $application = shift;
 
+    my @pids = @{$self->application_pids($application)};
+
     my $running = 0;
-    if (open(FILE, '-|', "/bin/pidof $application"))
+    if (@pids)
     {
-        while (<FILE>)
-        {
-            $running = 1;
-            last;
-        }
-        close(FILE);
+        $running = 1;
     }
 
     return $running;
@@ -87,20 +103,16 @@ sub application_stop
     my $application = shift;
     my $message     = shift;
 
-    my $message_show = ((defined($message)) && ($message ne '')) ? 1 : 0;
+    my @pids = @{$self->application_pids($application)};
 
-    if (open(FILE, '-|', "/bin/pidof $application"))
+    if ((defined($message)) && ($message) && (@pids))
     {
-        if ($message_show)
-        {
-            $self->message_output('info', $message);
-            $message_show = 0;
-        }
-        while (<FILE>)
-        {
-            system(qq(/bin/kill $_));
-        }
-        close(FILE);
+        $self->message_output('info', $message);
+    }
+  
+    foreach (@pids)
+    {
+        system(qq(/bin/kill $_));
     }
 
     return 1;
@@ -2063,59 +2075,40 @@ sub x_xmacroplay
 sub x_applications_list
 {
     my $self         = shift;
-    my $applications = shift;
+    my @applications = @_;
 
-    # Convert application groups to application names.
-    if ($applications->{':everything'})
+    my @browser    = ( 'mythbrowswer');
+    my @game       = ( 'fceu', 'mame', 'mess', 'mednafen', 'stella', 'VisualBoyAdvance', 'zsnes');
+    my @player     = ( 'mplayer', 'mplayer-stable', 'mplayer-svn', 'mythtv', 'vlc', 'xine' );
+    my @terminal   = ( 'rxvt' );
+    my @everything = ( @browser, @game, @player, @terminal );
+
+    my @expanded = ();
+
+    # Expand application groups to application names.
+    foreach (@applications)
     {
-        $applications->{':browser'} = 1;
-        $applications->{':game'} = 1;
-        $applications->{':player'} = 1;
-        $applications->{':terminal'} = 1;
-        delete $applications->{':everything'};
-    }
-    if ($applications->{':browser'})
-    {
-        $applications->{'mythbrowswer'} = 1;
-        delete $applications->{':browser'};
-    }
-    if ($applications->{':game'})
-    {
-        $applications->{'fceu'} = 1;
-        $applications->{'jzintv'} = 1;
-        $applications->{'mame'} = 1;
-        $applications->{'mess'} = 1;
-        $applications->{'mednafen'} = 1;
-        $applications->{'stella'} = 1;
-        $applications->{'VisualBoyAdvance'} = 1;
-        $applications->{'zsnes'} = 1;
-        delete $applications->{':game'};
-    }
-    if ($applications->{':player'})
-    {
-        $applications->{'mplayer'} = 1;
-        $applications->{'mplayer-svn'} = 1;
-        $applications->{'mythtv'} = 1;
-        $applications->{'vlc'} = 1;
-        $applications->{'xine'} = 1;
-        delete $applications->{':player'};
-    }
-    if ($applications->{':terminal'})
-    {
-        $applications->{'rxvt'} = 1;
-        delete $applications->{':terminal'};
+        given ($_)
+        {
+            when(/^:browser$/)    { push(@expanded, @browser);    }
+            when(/^:game$/)       { push(@expanded, @game);       }
+            when(/^:player$/)     { push(@expanded, @player);     }
+            when(/^:terminal$/)   { push(@expanded, @terminal);   }
+            when(/^:everything$/) { push(@expanded, @everything); }
+            default               { push(@expanded, $_);          }
+        }
     }
 
-    return $applications;
+    return @expanded;
 }
 
 # Exit all applications in the list, assuming that we know how.
 sub x_applications_exit
 {
     my $self         = shift;
-    my $applications = $self->x_applications_list(shift);
+    my @applications = $self->x_applications_list(@_);
 
-    foreach my $application (keys %{$applications})
+    foreach my $application (@applications)
     {
         if ($self->application_running($application))
         {
@@ -2143,6 +2136,7 @@ sub x_applications_exit
                 when (/^mythbrowser$/)      { push(@xmacro, 'KeyStr Escape'); }
                 # Players
                 when (/^mplayer$/)          { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mplayer-stable$/)   { push(@xmacro, 'KeyStr Escape'); }
                 when (/^mplayer-svn$/)      { push(@xmacro, 'KeyStr Escape'); }
                 when (/^mythtv$/)           { push(@xmacro, 'KeyStr Escape'); }
 # Does not work because the window name is not 'vlc'.
@@ -2185,9 +2179,9 @@ sub x_applications_exit
 sub x_applications_kill
 {
     my $self         = shift;
-    my $applications = $self->x_applications_list(shift);
+    my @applications = $self->x_applications_list(@_);
 
-    foreach my $application (keys %{$applications})
+    foreach my $application (@applications)
     {
         if (open(FILE, '-|', "/bin/pidof $application"))
         {
@@ -2207,13 +2201,13 @@ sub x_applications_kill
 sub x_applications_dead
 {
     my $self         = shift;
-    my $applications = $self->x_applications_list(shift);
+    my @applications = $self->x_applications_list(@_);
 
     my $dead = 0;
     while ($dead == 0)
     {
         $dead = 1;
-        foreach (keys %{$applications})
+        foreach (@applications)
         {
             if ($self->application_running($_))
             {
@@ -2327,23 +2321,22 @@ sub x_stop
     # Create the list of X applications that may have been started by xinit but are not keeping X alive,
     # then them and wait for them to die.
     {
-        my %applications = ();
+        my $myth_program = $self->var_get('MM_X_MYTH_PROGRAM');
         # Create a list of all applications that xinit might start.
-        $applications{$self->var_get('MM_X_MYTH_PROGRAM')} = 1;
-        $applications{'mythfrontend'} = 1;
-        $applications{'mythwelcome'} = 1;
-        $applications{'ratpoison'} = 1;
-        $applications{'X'} = 1;
-        $applications{'x11vnc'} = 1;
-        $applications{'xinit'} = 1;
-        $applications{'xscreensaver'} = 1;
+        my @applications = ();
+        push(@applications, $myth_program);
+        push(@applications, 'mythfrontend');
+        push(@applications, 'mythwelcome');
+        push(@applications, 'ratpoison');
+        push(@applications, 'X');
+        push(@applications, 'x11vnc');
+        push(@applications, 'xinit');
+        push(@applications, 'xscreensaver');
         # Remove applications that might be keeping X alive.
-        delete $applications{'xinit'};
-        delete $applications{'X'};
-        delete $applications{$self->var_get('MM_X_MYTH_PROGRAM')};
+        @applications = grep(!/^xinit|X|$myth_program$/, @applications);
         # Kill them and wait for them to die.
-        $self->x_applications_kill(\%applications);
-        $self->x_applications_dead(\%applications);
+        $self->x_applications_kill(@applications);
+        $self->x_applications_dead(@applications);
     }
 
     # Create the list of xlsclients X applications but are not keeping X alive,
@@ -2352,38 +2345,38 @@ sub x_stop
     #   However, there may be some unknown X applications not keeping X alive that we need to kill.
     if (open(FILE, '-|', "/usr/bin/xlsclients -display ':0.0' -a 2> $devnull"))
     {
+        my $myth_program = $self->var_get('MM_X_MYTH_PROGRAM');
         # Create a list of xlsclients X applications.
-        my %applications = ();
+        my @applications = ();
         while (<FILE>)
         {
             chomp;
             s/^([^ ]+) +([^ ]+)( .*)?$/$2/;
             s/^.*\///;
-            $applications{$_} = 1;
+            push(@applications, $_);
         }
         # Remove applications that might be keeping X alive.
-        delete $applications{'xinit'};
-        delete $applications{'X'};
-        delete $applications{$self->var_get('MM_X_MYTH_PROGRAM')};
+        @applications = grep(!/^xinit|X|$myth_program$/, @applications);
         # Kill them and wait for them to die.
-        $self->x_applications_kill(\%applications);
-        $self->x_applications_dead(\%applications);
+        $self->x_applications_kill(@applications);
+        $self->x_applications_dead(@applications);
     }
 
     # Create the list of the known X applications keeping X alive, kill them and wait for them to die.
     {
-        my %applications = ();
-        $applications{$self->var_get('MM_X_MYTH_PROGRAM')} = 1;
-        $self->x_applications_kill(\%applications);
-        $self->x_applications_dead(\%applications);
+        my $myth_program = $self->var_get('MM_X_MYTH_PROGRAM');
+        my @applications = ();
+        push(@applications, $myth_program);
+        $self->x_applications_kill(@applications);
+        $self->x_applications_dead(@applications);
     }
 
     # Create the list of remaining known X applications and wait for them to die.
     {
-        my %applications = ();
-        $applications{'xinit'} = 1;
-        $applications{'X'} = 1;
-        $self->x_applications_dead(\%applications);
+        my @applications = ();
+        push(@applications, 'xinit');
+        push(@applications, 'X');
+        $self->x_applications_dead(@applications);
     }
 
     return 1;
