@@ -15,7 +15,6 @@ require MiniMyth;
 sub _remote_wakeup_enable
 {
     my $self        = shift;
-    my $minimyth    = shift;
     my $device_list = shift;
 
     if ((! -r '/sys/class/lirc') ||
@@ -43,7 +42,7 @@ sub _remote_wakeup_enable
             }
             close(FILE);
         }
-        if (! grep(/^$name$/, @{$device_list}))
+        if (! grep(/^$name,.*$/, @{$device_list}))
         {
             next;
         }
