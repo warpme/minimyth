@@ -1214,14 +1214,23 @@ sub url_http_get
     $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
     my $retcode = $curl->perform;
     close($OUT_FILE);
-    if (($retcode == 0) && ($curl->getinfo(CURLINFO_HTTP_CODE) == 200))
+    if    (! -e $local_file) 
     {
-        $result = $url;
+        $result = '';
+    }
+    elsif ($retcode != 0)
+    {
+        unlink $local_file;
+        $result = '';
+    }
+    elsif ($curl->getinfo(CURLINFO_HTTP_CODE) != 200)
+    {
+        unlink $local_file;
+        $result = '';
     }
     else
     {
-        unlink $local_file;
-        $result = ''
+        $result = $url;
     }
     return $result;
 }
@@ -1279,15 +1288,19 @@ sub url_tftp_get
 #    my $retcode = $curl->perform;
 #    close($OUT_FILE);
     my $retcode = system(qq(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server));
-    chmod(0600, $local_file);
-    if ($retcode == 0)
+    if    (! -e $local_file) 
     {
-        $result = $url;
+        $result = '';
+    }
+    elsif ($retcode != 0)
+    {
+        unlink $local_file;
+        $result = '';
     }
     else
     {
-        unlink $local_file;
-        $result = ''
+        chmod(0600, $local_file);
+        $result = $url;
     }
     return $result;
 }
