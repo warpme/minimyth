@@ -1,23 +1,18 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-. /etc/rc.d/functions
+use strict;
+use warnings;
 
-case $1 in
-    power_off)
-        /usr/bin/test -n "${MM_EXTERNAL_POWER_OFF}"   && eval ${MM_EXTERNAL_POWER_OFF}
-        ;;
-    power_on)
-        /usr/bin/test -n "${MM_EXTERNAL_POWER_ON}"    && eval ${MM_EXTERNAL_POWER_ON}
-        ;;
-    volume_down)
-        /usr/bin/test -n "${MM_EXTERNAL_VOLUME_DOWN}" && eval ${MM_EXTERNAL_VOLUME_DOWN}
-        ;;
-    volume_up)
-        /usr/bin/test -n "${MM_EXTERNAL_VOLUME_UP}"   && eval ${MM_EXTERNAL_VOLUME_UP}
-        ;;
-    volume_mute)
-        /usr/bin/test -n "${MM_EXTERNAL_VOLUME_MUTE}" && eval ${MM_EXTERNAL_VOLUME_MUTE}
-        ;;
-esac
+require MiniMyth;
 
-exit 0
+my $action = shift;
+
+my $minimyth = new MiniMyth;
+
+my $command = $minimyth->var_get('MM_EXTERNAL_' . "\U$action");
+if ((defined($command)) && ($command))
+{
+    system(qq($command));
+}
+
+1;
