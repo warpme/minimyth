@@ -94,8 +94,14 @@ if ((! defined($command)) || (! $command))
     die join("\n", @{usage()}) . "\n";
 }
 
-my $result = $minimyth->$command(@ARGV);
-
-output(0, $result);
+my @result = $minimyth->$command(@ARGV);
+if ($#result == 0)
+{                       
+    output(0, $result[0]);
+}                          
+else     
+{                      
+    output(0, \@result);
+}   
 
 1;
