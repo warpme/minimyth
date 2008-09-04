@@ -1214,7 +1214,7 @@ sub url_http_get
     $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
     my $retcode = $curl->perform;
     close($OUT_FILE);
-    if ($retcode == 0)
+    if (($retcode == 0) && ($curl->getinfo(CURLINFO_HTTP_CODE) == 200))
     {
         $result = $url;
     }
