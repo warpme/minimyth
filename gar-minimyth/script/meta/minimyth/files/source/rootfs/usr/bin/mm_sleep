@@ -1,80 +1,101 @@
-#!/bin/sh
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+require File::Basename;
+require File::Path;
+require MiniMyth;
+
+my $minimyth = new MiniMyth;
 
 # Only allow one running instance of mm_sleep.
-pids=`/bin/pidof mm_sleep`
-instances=`/bin/echo ${pids} | /usr/bin/wc -w`
-if /usr/bin/test ${instances} -ne 1 ; then
-    exit 1
-fi
-
-. /etc/rc.d/functions
+my @pids = $minimyth->application_pids(File::Basename::basename(__FILE__));
+if ($#pids > 0)
+{
+    die;
+}
 
 # Create the state directory for mm_sleep.
-/bin/rm -fr   /var/lib/mm_sleep.$$
-/bin/mkdir -p /var/lib/mm_sleep.$$
+File::Path::rmtree("/var/lib/mm_sleep.$$");
+File::Path::mkpath("/var/lib/mm_sleep.$$");
 
 # Turn off any external equipment.
-/usr/bin/mm_external power_off
+system(qq(/usr/bin/mm_external power_off));
 
 # Stop all X applications, except mythfrontend and applications started by xinit.
-mm_x_applications_exit ':everything'
-mm_x_applications_kill ':everything'
-mm_x_applications_dead ':everything'
+$minimyth->x_applications_exit(':everything');
+$minimyth->x_applications_kill(':everything');
+$minimyth->x_applications_dead(':everything');
 
 # Return mythfrontend to its main menu.
-mm_x_applications_exit 'mythfrontend'
+$minimyth->x_applications_exit('mythfrontend');
 
 # Stop LCDd because it can stop working as a result of suspend.
-while /usr/bin/test -n "`/bin/pidof LCDd`" ; do
-    /bin/touch /var/lib/mm_sleep.$$/LCDd
-    /usr/bin/killall LCDd 2> /dev/null
-done
+while ($minimyth->application_running('LCDd'))
+{
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/LCDd")) { close(FILE); }
+    $minimyth->application_stop('LCDd');
+}
 
 # Stop irexec so that the remote button press used to wake up the frontend
 # does not suspend the frontend.
-while /usr/bin/test -n "`/bin/pidof irexec`" ; do
-    /bin/touch /var/lib/mm_sleep.$$/irexec
-    /usr/bin/killall irexec 2> /dev/null
-done
+while ($minimyth->application_running('irexec'))
+{
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/irexec")) { close(FILE); }
+    $minimyth->application_stop('irexec');
+}
 
 # Stop mm_sleep_on_ss so that it does not immediately send the frontend back to sleep.
-while /usr/bin/test -n "`/bin/pidof mm_sleep_on_ss`" ; do
-    /bin/touch /var/lib/mm_sleep.$$/mm_sleep_on_ss
-    /usr/bin/killall mm_sleep_on_ss 2> /dev/null
-done
+while ($minimyth->application_running('mm_sleep_on_ss'))
+{
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/mm_sleep_on_ss")) { close(FILE); }
+    $minimyth->application_stop('mm_sleep_on_ss');
+}
 
 # Stop X
-if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
-    mm_x_stop
-fi
+if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
+{
+    $minimyth->x_stop();
+}
 
-/bin/echo mem > /sys/power/state
+if (open(FILE, '>', '/sys/power/state'))
+{
+    print FILE "mem\n";
+    close(FILE);
+}
 
 # Start X
-if /usr/bin/test "x${MM_X_RESTART_ON_SLEEP_ENABLED}" = "xyes" ; then
-    mm_x_start
-fi
+if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
+{
+    $minimyth->x_start();
+}
 
 # If mm_sleep_on_ss was running before suspend, then restart it.
-if /usr/bin/test -e /var/lib/mm_sleep.$$/mm_sleep_on_ss ; then
-    /usr/bin/test -z `/bin/pidof mm_sleep_on_ss` && /usr/bin/mm_sleep_on_ss &
-    /bin/rm -f /var/lib/mm_sleep.$$/mm_sleep_on_ss
-fi
+if (-e "/var/lib/mm_sleep.$$/mm_sleep_on_ss")
+{
+    if (! $minimyth->application_running('mm_sleep_on_ss')) { system(qq(/usr/bin/mm_sleep_on_ss &)); }
+    unlink("/var/lib/mm_sleep.$$/mm_sleep_on_ss");
+}
 
 # If irexec was running before suspend, then restart it.
-if /usr/bin/test -e /var/lib/mm_sleep.$$/irexec ; then
-    /usr/bin/test -z `/bin/pidof irexec` && /usr/bin/irexec -d /etc/lircrc
-    /bin/rm -f /var/lib/mm_sleep.$$/irexec
-fi
+if (-e "/var/lib/mm_sleep.$$/irexec")
+{
+    if (! $minimyth->application_running('irexec')) { system(qq(/usr/bin/irexec -d /etc/lircrc)); }
+    unlink("/var/lib/mm_sleep.$$/irexec");
+}
 
 # If LCDd was running before suspend, then restart it.
-if /usr/bin/test -e /var/lib/mm_sleep.$$/LCDd ; then
-    /usr/bin/test -z `/bin/pidof LDCd` && /usr/sbin/LCDd -c /etc/LCDd.conf
-    /bin/rm -f /var/lib/mm_sleep.$$/LCDd
-fi
+if (-e "/var/lib/mm_sleep.$$/LCDd")
+{
+    if (! $minimyth->application_running('LDCd')) { system(qq(/usr/sbin/LCDd -c /etc/LCDd.conf)); }
+    unlink("/var/lib/mm_sleep.$$/LCDd");
+}
 
 # Turn on any external equipment.
-/usr/bin/mm_external power_on
+system(qq(/usr/bin/mm_external power_on));
 
 # Remove the state directory for mm_sleep.
-/bin/rm -fr   /var/lib/mm_sleep.$$
+File::Path::rmtree("/var/lib/mm_sleep.$$");
+
+1;
