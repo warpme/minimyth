@@ -9,13 +9,14 @@ package init::lirc;
 use strict;
 use warnings;
 
+require Cwd;
 require File::Copy;
 require MiniMyth;
 
 sub _remote_wakeup_enable
 {
-    my $self        = shift;
-    my $device_list = shift;
+    my $self   = shift;
+    my $device = shift;
 
     if ((! -r '/sys/class/lirc') ||
         (! opendir(DIR, '/sys/class/lirc')))
@@ -42,7 +43,7 @@ sub _remote_wakeup_enable
             }
             close(FILE);
         }
-        if (! grep(/^$name,.*$/, @{$device_list}))
+        if ($name ne $device)
         {
             next;
         }
@@ -244,13 +245,16 @@ sub start
     mkdir('/var/lock', 0755);
     mkdir('/var/run', 0755);
 
-    # Start an LIRC daemon for each device.
+    # Enable wakeup and start an LIRC daemon for each device.
     my $index = 0;
     foreach my $device_item (@device_list)
     {
         my @device_args = split(/,/, $device_item);
         my $device = $device_args[0];
         my $driver = $device_args[1];
+
+        # Convert device to the actual device rather than the symbolic link.
+        $device = Cwd::abs_path($device);
 
         # Convert driver to the the lirc daemon appropriate driver.
         if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
@@ -266,6 +270,12 @@ sub start
                 }
             }
             $driver = $driver_actual;
+        }
+
+        # Enable wakeup on remote.
+        if ($minimyth->var_get('MM_LIRC_WAKEUP_ENABLED') eq 'yes')
+        {
+            $self->_remote_wakeup_enable($device);
         }
 
         # Start daemon.
@@ -348,12 +358,6 @@ sub start
     if ($irexec_enabled eq 'yes')
     {
         system(qq(/usr/bin/irexec -d /etc/lircrc));
-    }
-
-    # Enable wakeup on remote.
-    if ($minimyth->var_get('MM_LIRC_WAKEUP_ENABLED') eq 'yes')
-    {
-        $self->_remote_wakeup_enable(\@device_list);
     }
 
     return 1;
