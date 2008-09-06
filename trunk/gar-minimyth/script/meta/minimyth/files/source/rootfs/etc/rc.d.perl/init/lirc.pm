@@ -265,6 +265,7 @@ sub start
                     $driver_actual = $_;
                 }
             }
+            $driver = $driver_actual;
         }
 
         # Start daemon.
