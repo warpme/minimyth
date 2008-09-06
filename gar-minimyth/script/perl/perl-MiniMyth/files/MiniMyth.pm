@@ -2020,6 +2020,21 @@ sub themecache_save
 #===============================================================================
 # X functions.
 #===============================================================================
+sub x_screensaver_deactivate
+{
+    my $self = shift;
+
+    my $devnull = File::Spec->devnull;
+
+    system(qq(/usr/bin/xset s reset));
+    if ($self->application_running('xscreensaver'))
+    {
+        system(qq(/usr/bin/xscreensaver-command -deactivate > $devnull 2>&1));
+    }
+
+    return 1;
+}
+
 sub x_xmacroplay
 {
     my $self    = shift;
@@ -2324,12 +2339,12 @@ sub x_stop
     }
 
     # Exit X applications that are known not to be started by xinit
-    $self->x_applications_exit({ ':everything' => 1 });
-    $self->x_applications_kill({ ':everything' => 1 });
-    $self->x_applications_dead({ ':everything' => 1 });
+    $self->x_applications_exit(':everything');
+    $self->x_applications_kill(':everything');
+    $self->x_applications_dead(':everything');
 
     # Return mythfrontend to the main menu
-    $self->x_applications_exit({ 'mythfrontend' => 1 });
+    $self->x_applications_exit('mythfrontend');
 
     # Create the list of X applications that may have been started by xinit but are not keeping X alive,
     # then them and wait for them to die.
