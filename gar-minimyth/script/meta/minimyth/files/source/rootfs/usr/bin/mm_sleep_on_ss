@@ -1,51 +1,126 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-. /etc/rc.d/functions
+use strict;
+use warnings;
 
-trap "_exit_" 0 1 2 3 15
+require File::Spec;
+require MiniMyth;
 
-_exit_()
+my $minimyth = new MiniMyth;
+
+my $devnull = File::Spec->devnull;
+
+$SIG{'HUP'}  = \&clean_up;
+$SIG{'INT'}  = \&clean_up;
+$SIG{'QUIT'} = \&clean_up;
+$SIG{'TERM'} = \&clean_up;
+
+END
 {
-    ps -o ppid,pid,args \
-    | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%' \
-    | grep "^$$ " \
-    | grep '/bin/sleep [^ ]*$' \
-    | cut -d ' ' -f 2 \
-    | while read pid ; do
-        kill $pid
-    done
-
-    ps -o ppid,pid,args \
-    | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%' \
-    | grep "^$$ " \
-    | grep '/usr/bin/xscreensaver-command -watch$' \
-    | cut -d ' ' -f 2 \
-    | while read pid ; do
-        kill $pid
-    done
+    clean_up();
 }
 
-if /usr/bin/test `/usr/bin/id -u` -ne 0 ; then
-    exit 1
-fi
+sub clean_up
+{
+    # Use the ps command to list information needed about each process.
+    my $ps_command = undef;
+    if (open($ps_command, '-|', '/bin/ps ax -o ppid,pid,args'))
+    {
+        # Create two hashes: one containing each PID's parent PID and one containing each PID's arguments.
+        # We will use these hashes to locate the process(es) spawned by this script that we need to kill.
+        my %ppid_hash = ();
+        my %args_hash = ();
+        while (<$ps_command>)
+        {
+            chomp;
+            if (/^ *(\d+) +(\d+) +(.+) *$/)
+            {
+                $ppid_hash{$2} = $1;
+                $args_hash{$2} = $3;
+            }
+        }
+        close($ps_command);
+        $ps_command = undef;
 
-/bin/sleep 10
-if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
-    /usr/bin/xscreensaver-command -deactivate > /dev/null 2>&1
-    /usr/bin/xscreensaver-command -watch 2> /dev/null | while read watch ; do
-        state=`/bin/echo ${watch} | /bin/sed -e 's%  *% %g' | /usr/bin/cut -d ' ' -f 1`
-        if /usr/bin/test "${state}" = "BLANK" ; then
-            # Do not sleep when in MythMusic or MythStream.
-            mythfrontend_location=`mm_mythfrontend_networkcontrol "query location"`
-            if /usr/bin/test ! "${mythfrontend_location}" = "playmusic"  && \
-               /usr/bin/test ! "${mythfrontend_location}" = "mythstream" ; then
-                /usr/bin/mm_sleep
-                if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
-                    /usr/bin/xscreensaver-command -deactivate > /dev/null 2>&1
-                fi
-            fi
-        fi
-    done
-fi
+        # Find the xscreensaver watch command that was spawned by this script and kill it.
+        # This will enable the script to terminate more cleanly.
+        foreach my $pid (keys %args_hash)
+        {
+            if ($args_hash{$pid} eq '/usr/bin/xscreensaver-command -watch')
+            {
+                my $ppid = $pid;
+                while ((exists($ppid_hash{$ppid})) && ($ppid != 0) && ($ppid != $$))
+                {
+                    $ppid = $ppid_hash{$ppid};
+                }
+                if ($ppid eq $$)
+                {
+                    system(qq(/bin/kill $pid));
+                }
+            }
+        }
+    }
+}
 
-exit 0
+# Make sure we are root.
+{
+    my $user = '';
+    if (open(FILE, '-|', '/usr/bin/id -u'))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $user = getpwuid($_);
+            last;
+        }
+        close(FILE);
+    }
+    if ($user ne 'root')
+    {
+        die;
+    }
+}
+
+# Sleep in order to give xscreensaver time to start. What a hack.
+sleep 10;
+
+if ($minimyth->application_running('xscreensaver'))
+{
+    # Deactivate the xscreensaver in case it has already activated.
+    # Otherwise, we would miss the transition to blank and never sleep.
+    $minimyth->x_screensaver_deactivate();
+
+    # Use the xscreensaver watch command to watch for when xscreensaver goes blank.
+    # When the xscreensaver goes blank, go to sleep unless MythMusic or MythStream are running.
+    my $watch_command = undef;
+    if (open($watch_command, '-|', qq(/usr/bin/xscreensaver-command -watch 2> $devnull)))
+    {
+        while (<$watch_command>)
+        {
+            my $state = '';
+            if (/^([^ ]+) +.*$/)
+            {
+                $state = $1;
+            }
+            if ($state eq 'BLANK')
+            {
+                # Do not sleep when in MythMusic or MythStream.
+                my $mythfrontend_location = join("\n", @{$minimyth->mythfrontend_networkcontrol('query location')});
+                if (($mythfrontend_location ne 'playmusic' ) &&
+                    ($mythfrontend_location ne 'mythstream'))
+                {
+                    system(qq(/usr/bin/mm_sleep));
+                    if ($minimyth->application_running('xscreensaver'))
+                    {
+                        # Deactivate the xscreensaver so that we can start all over again.
+                        $minimyth->x_screensaver_deactivate();
+                    }
+                }
+            }
+        }
+        close($watch_command);
+        $watch_command = undef;
+    }
+}
+
+1;
