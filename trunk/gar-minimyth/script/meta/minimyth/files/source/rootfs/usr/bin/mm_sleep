@@ -5,9 +5,12 @@ use warnings;
 
 require File::Basename;
 require File::Path;
+require File::Spec;
 require MiniMyth;
 
 my $minimyth = new MiniMyth;
+
+my $devnull = File::Spec->devnull;
 
 # Only allow one running instance of mm_sleep.
 my @pids = $minimyth->application_pids(File::Basename::basename(__FILE__));
@@ -70,6 +73,9 @@ if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
 {
     $minimyth->x_start();
 }
+
+# Deactivate any screensavers.
+$minimyth->x_screensaver_deactivate();
 
 # If mm_sleep_on_ss was running before suspend, then restart it.
 if (-e "/var/lib/mm_sleep.$$/mm_sleep_on_ss")

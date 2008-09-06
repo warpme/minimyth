@@ -1,27 +1,18 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-trap "_exit_" 0 1 2 3 15
+use strict;
+use warnings;
 
-_exit_()
+require MiniMyth;
+
+my $program = shift;
+
+my $minimyth = new MiniMyth;
+
+while ($minimyth->application_running($program))
 {
-    ps -o ppid,pid,args \
-    | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%' \
-    | grep "^$$ " \
-    | grep '/bin/sleep [^ ]*$' \
-    | cut -d ' ' -f 2 \
-    | while read pid ; do
-        kill $pid
-    done
+    $minimyth->x_screensaver_deactivate();
+    sleep 30;
 }
 
-program=$1
-
-while /usr/bin/test -n "`/bin/pidof ${program}`" ; do
-    /usr/bin/xset s reset
-    if /usr/bin/test -n "`/bin/pidof xscreensaver`" ; then
-        /usr/bin/xscreensaver-command -deactivate
-    fi
-    /bin/sleep 30
-done
-
-exit 0
+1;
