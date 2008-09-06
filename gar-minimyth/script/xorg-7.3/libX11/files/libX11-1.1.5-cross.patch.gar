@@ -1,6 +1,6 @@
-diff -Naur libX11-1.1.4-old/configure.ac libX11-1.1.4-new/configure.ac
---- libX11-1.1.4-old/configure.ac	2008-04-23 17:41:19.000000000 -0700
-+++ libX11-1.1.4-new/configure.ac	2008-04-23 18:10:46.000000000 -0700
+diff -Naur libX11-1.1.5-old/configure.ac libX11-1.1.5-new/configure.ac
+--- libX11-1.1.5-old/configure.ac	2008-09-05 04:24:30.000000000 -0700
++++ libX11-1.1.5-new/configure.ac	2008-09-05 04:26:40.000000000 -0700
 @@ -7,6 +7,9 @@
          [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
          libX11)
@@ -56,16 +56,16 @@ diff -Naur libX11-1.1.4-old/configure.ac libX11-1.1.4-new/configure.ac
  # Build with XCB support?
 @@ -232,7 +271,7 @@
  #
- KEYSYMDEF=""
  AC_MSG_CHECKING([keysymdef.h])
--for flag in $XPROTO_CFLAGS -I/usr/include; do
-+for flag in $XPROTO_CFLAGS -I$DESTDIR$includedir; do
- 	case "$KEYSYMDEF" in
- 	"")
- 		case "$flag" in
-diff -Naur libX11-1.1.4-old/src/util/Makefile.am libX11-1.1.4-new/src/util/Makefile.am
---- libX11-1.1.4-old/src/util/Makefile.am	2008-04-23 17:34:27.000000000 -0700
-+++ libX11-1.1.4-new/src/util/Makefile.am	2008-04-23 18:10:46.000000000 -0700
+ dir=`pkg-config --variable=includedir xproto`
+-KEYSYMDEF="$dir/X11/keysymdef.h"
++KEYSYMDEF="@GAR_DESTDIR@$dir/X11/keysymdef.h"
+ if test -f "$KEYSYMDEF"; then
+         AC_MSG_RESULT([$KEYSYMDEF])
+ else
+diff -Naur libX11-1.1.5-old/src/util/Makefile.am libX11-1.1.5-new/src/util/Makefile.am
+--- libX11-1.1.5-old/src/util/Makefile.am	2007-10-13 06:24:34.000000000 -0700
++++ libX11-1.1.5-new/src/util/Makefile.am	2008-09-05 04:26:40.000000000 -0700
 @@ -7,6 +7,12 @@
  #override CC = gcc
  LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
