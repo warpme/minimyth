@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.2
+GARVERSION = 4.3
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-serial \
 	--enable-input \
 	--enable-audio \
+	--enable-service \
 	--disable-gstreamer \
 	--enable-alsa \
 	--enable-usb \
@@ -53,5 +54,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/input.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/network.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/serial.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/service.la
 	@rm -f $(DESTDIR)$(libdir)/libbluetooth.la
 	@$(MAKECOOKIE)
