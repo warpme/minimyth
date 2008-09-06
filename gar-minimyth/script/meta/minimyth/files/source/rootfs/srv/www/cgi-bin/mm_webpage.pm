@@ -35,7 +35,7 @@ sub page
     }
 
     my $page_host  = $minimyth->hostname();
-    my $page_date  = Date::Manip::UnixDate(Date::Manip::ParseDate('now'), '%Y-%m-%d %H:%M:%S %Z');
+    my $page_date  = Date::Manip::UnixDate('now', '%Y-%m-%d %H:%M:%S %Z');
     my $mm_version = $minimyth->var_get('MM_VERSION');
 
     my @page = ();
