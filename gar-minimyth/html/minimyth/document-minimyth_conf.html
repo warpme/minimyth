@@ -158,7 +158,19 @@
                 configuration file
                 that makes my TFTP root directory available as a virtual web host.
               </p>
-<pre>&lt;VirtualHost 192.168.0.1:80&gt;
+<pre>
+# Load the mod_dav and mod_dav_fs modules needed by the MiniMyth read-write configuration directory.
+LoadModule dav_module modules/mod_dav.so
+LoadModule dav_fs_module modules/mod_dav_fs.so
+
+# Configure the mod_dav_fs module needed by the MiniMyth read-write configuration directory.
+&lt;IfModule mod_dav_fs.c&gt;
+    # Location of the WebDAV lock database.
+    DAVLockDB /var/lib/dav/lockdb
+&lt;/IfModule&gt;
+
+# Configure a virtual host to serve the TFTP directory.
+&lt;VirtualHost 192.168.0.1:80&gt;
     DocumentRoot /var/tftpboot
     ServerName tftp.home
     ServerAdmin webmaster@www.home
@@ -166,7 +178,7 @@
         AllowOverride None
     &lt;/Directory&gt;
     &lt;Location /&gt;
-        # Do not allow access to the TFTP directory execpt where explicitly granted.
+        # Do not allow access to the TFTP directory except where explicitly granted.
         Order Deny,Allow
         Deny from all
         Dav Off
@@ -192,9 +204,11 @@
         RewriteRule ^(.+)/[^/]+/([^/]+)$ $1/default/$2 [L]
     &lt;/Location&gt;
     &lt;Location /minimyth/conf-rw&gt;
-        # Turn on WebDAV sot that MiniMyth can put configuration files.
-        # This will not work unless the mod_dav module is enabled and configured:
-        # <a href="http://httpd.apache.org/docs/2.0/mod/mod_dav.html">http://httpd.apache.org/docs/2.0/mod/mod_dav.html</a>.
+        # Turn on WebDAV so that MiniMyth can put configuration files.
+        # This will not work unless the mod_dav and mod_dav_fs modules are enabled and configured:
+        # <a href="http://httpd.apache.org/docs/2.0/mod/mod_dav.html">http://httpd.apache.org/docs/2.0/mod/mod_dav.html</a>
+        # and
+        # <a href="http://httpd.apache.org/docs/2.0/mod/mod_dav_fs.html">http://httpd.apache.org/docs/2.0/mod/mod_dav_fs.html</a>.
         Dav On
         FileETag None
         &lt;LimitExcept GET PUT&gt;
@@ -2733,7 +2747,7 @@
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-07-27
+          Last Updated on 2008-09-07
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
