@@ -1843,10 +1843,10 @@ sub codecs_fetch_and_save
     system(qq(/bin/tar -C $local_dir -jxf $local_dir/$codecs_file));
     unlink(qq($local_dir/$codecs_file));
 
-    if (! -d $local_dir/$codecs_base)
+    if (! -d "$local_dir/$codecs_base")
     {
         my $file_found = 0;
-        if (opendir(DIR, $local_dir/$codecs_base))
+        if (opendir(DIR, "$local_dir/$codecs_base"))
         {
             foreach (grep(! /^\./, (readdir(DIR))))
             {
@@ -1934,7 +1934,7 @@ sub extras_save
     my $local_file  = $local_dir . '/' . $file;
 
     unlink($local_file);
-    File::Path::mkpath($local_dir, { mode => 700 });
+    File::Path::mkpath($local_dir, { mode => 0700 });
     if (! -d $local_dir)
     {
         return 0;
@@ -1992,7 +1992,7 @@ sub themecache_save
     my $local_file  = $local_dir . '/' . $file;
 
     unlink($local_file);
-    File::Path::mkpath($local_dir, { mode => 700 });
+    File::Path::mkpath($local_dir, { mode => 0700 });
     if (! -d $local_dir)
     {
         return 0;
