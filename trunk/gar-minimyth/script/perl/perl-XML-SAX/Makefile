@@ -1,5 +1,5 @@
 GARNAME      = perl-XML-SAX
-GARVERSION   = 0.16
+GARVERSION   = 0.96
 MASTER_SITES = http://www.cpan.org/authors/id/G/GR/GRANTM/
 DEPENDS      = perl/perl-File-Temp perl/perl-XML-NamespaceSupport
 
