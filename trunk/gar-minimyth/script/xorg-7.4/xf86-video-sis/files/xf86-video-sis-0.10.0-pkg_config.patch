@@ -1,0 +1,21 @@
+diff -Naur xf86-video-sis-0.10.0-old/configure.ac xf86-video-sis-0.10.0-new/configure.ac
+--- xf86-video-sis-0.10.0-old/configure.ac	2008-03-19 12:28:25.000000000 -0700
++++ xf86-video-sis-0.10.0-new/configure.ac	2008-03-22 09:20:06.000000000 -0700
+@@ -39,6 +39,7 @@
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
+ XORG_PROG_RAWCPP
++PKG_PROG_PKG_CONFIG
+ 
+ AH_TOP([#include "xorg-server.h"])
+ 
+@@ -63,7 +64,8 @@
+ 
+ # Checks for pkg-config packages
+ PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901 xproto fontsproto xf86dgaproto $REQUIRED_MODULES])
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ # Checks for libraries.
+ 
