@@ -1,0 +1,21 @@
+diff -Naur xf86-input-void-1.1.1-old/configure.ac xf86-input-void-1.1.1-new/configure.ac
+--- xf86-input-void-1.1.1-old/configure.ac	2007-09-07 12:34:44.000000000 -0700
++++ xf86-input-void-1.1.1-new/configure.ac	2008-01-22 22:18:48.000000000 -0800
+@@ -41,6 +41,7 @@
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
++PKG_PROG_PKG_CONFIG
+ 
+ AH_TOP([#include "xorg-server.h"])
+ 
+@@ -76,7 +77,8 @@
+ 
+ # Checks for pkg-config packages
+ PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901] xproto $REQUIRED_MODULES)
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
+ AC_SUBST([CFLAGS])

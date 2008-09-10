@@ -1,0 +1,233 @@
+diff -Naur Mesa-7.1-old/configs/default.orig Mesa-7.1-new/configs/default.orig
+--- Mesa-7.1-old/configs/default.orig	1969-12-31 16:00:00.000000000 -0800
++++ Mesa-7.1-new/configs/default.orig	2008-08-30 15:16:42.000000000 -0700
+@@ -0,0 +1,102 @@
++# Default/template configuration
++
++# This is included by other config files which may override some
++# of these variables.
++# Think of this as a base class from which configs are derived.
++
++
++CONFIG_NAME = default
++
++# Version info
++MESA_MAJOR=7
++MESA_MINOR=1
++MESA_TINY=0
++MESA_VERSION = $(MESA_MAJOR).$(MESA_MINOR).$(MESA_TINY)
++
++# external projects.  This should be useless now that we use libdrm.
++DRM_SOURCE_PATH=$(TOP)/../drm
++
++# Compiler and flags
++CC = cc
++CXX = CC
++CFLAGS = -O
++CXXFLAGS = -O
++LDFLAGS =
++GLU_CFLAGS = 
++
++# Misc tools and flags
++SHELL = /bin/sh
++MKLIB = $(SHELL) $(TOP)/bin/mklib
++MKLIB_OPTIONS = 
++MKDEP = makedepend
++MKDEP_OPTIONS = -fdepend
++MAKE = make
++INSTALL = $(SHELL) $(TOP)/bin/minstall
++
++# Tools for regenerating glapi (generally only needed by the developers)
++PYTHON2 = python
++PYTHON_FLAGS = -t -O -O
++INDENT = indent
++INDENT_FLAGS = -i4 -nut -br -brs -npcs -ce -T GLubyte -T GLbyte -T Bool
++
++# Library names (base name)
++GL_LIB = GL
++GLU_LIB = GLU
++GLUT_LIB = glut
++GLW_LIB = GLw
++OSMESA_LIB = OSMesa
++
++
++# Library names (actual file names)
++GL_LIB_NAME = lib$(GL_LIB).so
++GLU_LIB_NAME = lib$(GLU_LIB).so
++GLUT_LIB_NAME = lib$(GLUT_LIB).so
++GLW_LIB_NAME = lib$(GLW_LIB).so
++OSMESA_LIB_NAME = lib$(OSMESA_LIB).so
++
++# globs used to install the lib and all symlinks
++GL_LIB_GLOB = $(GL_LIB_NAME)*
++GLU_LIB_GLOB = $(GLU_LIB_NAME)*
++GLUT_LIB_GLOB = $(GLUT_LIB_NAME)*
++GLW_LIB_GLOB = $(GLW_LIB_NAME)*
++OSMESA_LIB_GLOB = $(OSMESA_LIB_NAME)*
++
++# Optional assembly language optimization files for libGL
++ASM_SOURCES = 
++
++# GLw widget sources (Append "GLwMDrawA.c" here and add -lXm to GLW_LIB_DEPS in
++# order to build the Motif widget too)
++GLW_SOURCES = GLwDrawA.c
++MOTIF_CFLAGS = -I/usr/include/Motif1.2
++
++
++# Directories to build
++LIB_DIR = lib
++SRC_DIRS = mesa glu glut/glx glw
++GLU_DIRS = sgi
++DRIVER_DIRS = x11 osmesa
++# Which subdirs under $(TOP)/progs/ to enter:
++PROGRAM_DIRS = demos redbook samples glsl xdemos
++
++
++# Library dependencies
++#EXTRA_LIB_PATH ?=
++GL_LIB_DEPS = $(EXTRA_LIB_PATH) -lX11 -lXext -lm -lpthread
++OSMESA_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB)
++GLU_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lm
++GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(EXTRA_LIB_PATH) -lX11 -lXmu -lXi -lm
++GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(EXTRA_LIB_PATH) -lXt -lX11
++
++# Program dependencies - specific GL/glut libraries added in Makefiles
++APP_LIB_DEPS = -lm
++
++
++# Installation directories (for make install)
++INSTALL_DIR = /usr/local
++INSTALL_LIB_DIR = $(INSTALL_DIR)/$(LIB_DIR)
++INSTALL_INC_DIR = $(INSTALL_DIR)/include
++DRI_DRIVER_INSTALL_DIR = $(INSTALL_LIB_DIR)/dri
++
++# Where libGL will look for DRI hardware drivers
++DRI_DRIVER_SEARCH_DIR = $(DRI_DRIVER_INSTALL_DIR)
++
+diff -Naur Mesa-7.1-old/configs/default.rej Mesa-7.1-new/configs/default.rej
+--- Mesa-7.1-old/configs/default.rej	1969-12-31 16:00:00.000000000 -0800
++++ Mesa-7.1-new/configs/default.rej	2008-08-30 15:16:56.000000000 -0700
+@@ -0,0 +1,16 @@
++***************
++*** 30,35 ****
++  MKDEP_OPTIONS = -fdepend
++  MAKE = make
++  INSTALL = $(TOP)/bin/minstall
++  
++  # Tools for regenerating glapi (generally only needed by the developers)
++  PYTHON2 = python
++--- 30,36 ----
++  MKDEP_OPTIONS = -fdepend
++  MAKE = make
++  INSTALL = $(TOP)/bin/minstall
+++ PKG_CONFIG = pkg-config
++  
++  # Tools for regenerating glapi (generally only needed by the developers)
++  PYTHON2 = python
+diff -Naur Mesa-7.1-old/configs/freebsd-dri Mesa-7.1-new/configs/freebsd-dri
+--- Mesa-7.1-old/configs/freebsd-dri	2008-08-25 07:46:41.000000000 -0700
++++ Mesa-7.1-new/configs/freebsd-dri	2008-08-30 15:16:56.000000000 -0700
+@@ -29,8 +29,8 @@
+ ASM_SOURCES = 
+ 
+ # Library/program dependencies
+-LIBDRM_CFLAGS = `pkg-config --cflags libdrm`
+-LIBDRM_LIB = `pkg-config --libs libdrm`
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS = -L/usr/local/lib -lm -pthread -lexpat $(LIBDRM_LIB)
+ GL_LIB_DEPS = -L/usr/local/lib -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+ 	-lm -pthread $(LIBDRM_LIB)
+diff -Naur Mesa-7.1-old/configs/linux-dri Mesa-7.1-new/configs/linux-dri
+--- Mesa-7.1-old/configs/linux-dri	2008-08-25 07:46:41.000000000 -0700
++++ Mesa-7.1-new/configs/linux-dri	2008-08-30 15:16:56.000000000 -0700
+@@ -43,8 +43,8 @@
+ # Library/program dependencies
+ EXTRA_LIB_PATH=-L/usr/X11R6/lib
+ 
+-LIBDRM_CFLAGS = `pkg-config --cflags libdrm`
+-LIBDRM_LIB = `pkg-config --libs libdrm`
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+ 		-lm -lpthread -ldl $(LIBDRM_LIB)
+diff -Naur Mesa-7.1-old/configs/linux-dri-xcb Mesa-7.1-new/configs/linux-dri-xcb
+--- Mesa-7.1-old/configs/linux-dri-xcb	2008-08-25 07:46:41.000000000 -0700
++++ Mesa-7.1-new/configs/linux-dri-xcb	2008-08-30 15:16:56.000000000 -0700
+@@ -25,7 +25,7 @@
+ 	-DGLX_DIRECT_RENDERING -DGLX_INDIRECT_RENDERING \
+         -DHAVE_ALIAS -DUSE_XCB -DHAVE_POSIX_MEMALIGN
+ 
+-X11_INCLUDES = `pkg-config --cflags-only-I x11` `pkg-config --cflags-only-I xcb` `pkg-config --cflags-only-I x11-xcb` `pkg-config --cflags-only-I xcb-glx`
++X11_INCLUDES = `$(PKG_CONFIG) --cflags-only-I x11` `$(PKG_CONFIG) --cflags-only-I xcb` `$(PKG_CONFIG) --cflags-only-I x11-xcb` `$(PKG_CONFIG) --cflags-only-I xcb-glx`
+ 
+ CFLAGS = -Wall -Wmissing-prototypes $(OPT_FLAGS) $(PIC_FLAGS) $(ARCH_FLAGS) \
+ 	$(DEFINES) $(ASM_FLAGS) -std=c99 -ffast-math 
+@@ -39,14 +39,14 @@
+ ASM_SOURCES = 
+ 
+ # Library/program dependencies
+-EXTRA_LIB_PATH=`pkg-config --libs-only-L x11`
++EXTRA_LIB_PATH=`$(PKG_CONFIG) --libs-only-L x11`
+ 
+-LIBDRM_CFLAGS = `pkg-config --cflags libdrm`
+-LIBDRM_LIB = `pkg-config --libs libdrm`
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+-		-lm -lpthread -ldl $(LIBDRM_LIB) `pkg-config --libs xcb` \
+-		`pkg-config --libs x11-xcb` `pkg-config --libs xcb-glx`
++		-lm -lpthread -ldl $(LIBDRM_LIB) `$(PKG_CONFIG) --libs xcb` \
++		`$(PKG_CONFIG) --libs x11-xcb` `$(PKG_CONFIG) --libs xcb-glx`
+ 
+ 
+ # This is now 0 by default since it seems to confuse the hell out of people
+diff -Naur Mesa-7.1-old/configs/linux-solo Mesa-7.1-new/configs/linux-solo
+--- Mesa-7.1-old/configs/linux-solo	2008-08-25 07:46:41.000000000 -0700
++++ Mesa-7.1-new/configs/linux-solo	2008-08-30 15:16:56.000000000 -0700
+@@ -16,10 +16,10 @@
+ ARCH_FLAGS ?=
+ 
+ # DRM and pciaccess
+-LIBDRM_CFLAGS = `pkg-config --cflags libdrm`
+-LIBDRM_LIB = `pkg-config --libs libdrm`
+-PCIACCESS_CFLAGS = `pkg-config --cflags pciaccess`
+-PCIACCESS_LIB = `pkg-config --libs pciaccess`
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
++PCIACCESS_CFLAGS = `$(PKG_CONFIG) --cflags pciaccess`
++PCIACCESS_LIB = `$(PKG_CONFIG) --libs pciaccess`
+ 
+ 
+ DEFINES = -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE \
+diff -Naur Mesa-7.1-old/src/glut/directfb/Makefile Mesa-7.1-new/src/glut/directfb/Makefile
+--- Mesa-7.1-old/src/glut/directfb/Makefile	2008-08-25 07:46:42.000000000 -0700
++++ Mesa-7.1-new/src/glut/directfb/Makefile	2008-08-30 15:16:57.000000000 -0700
+@@ -9,9 +9,9 @@
+ GLUT_MINOR = 7
+ GLUT_TINY = 1
+ 
+-INCLUDES = -I$(TOP)/include -I$(MARK) $(shell pkg-config --cflags directfb)
++INCLUDES = -I$(TOP)/include -I$(MARK) $(shell $(PKG_CONFIG) --cflags directfb)
+ 
+-GLUT_LIB_DEPS += $(shell pkg-config --libs directfb)
++GLUT_LIB_DEPS += $(shell $(PKG_CONFIG) --libs directfb)
+ 
+ CORE_SOURCES = \
+ 	callback.c \
+diff -Naur Mesa-7.1-old/src/mesa/drivers/directfb/Makefile Mesa-7.1-new/src/mesa/drivers/directfb/Makefile
+--- Mesa-7.1-old/src/mesa/drivers/directfb/Makefile	2008-08-25 07:46:42.000000000 -0700
++++ Mesa-7.1-new/src/mesa/drivers/directfb/Makefile	2008-08-30 15:16:57.000000000 -0700
+@@ -16,8 +16,8 @@
+ 	-I$(TOP)/src/mesa/swrast \
+ 	-I$(TOP)/src/mesa/swrast_setup
+ 
+-DFB_CFLAGS    = $(shell pkg-config --cflags directfb)
+-DFB_MODULEDIR = $(shell pkg-config --variable=moduledir directfb-internal)
++DFB_CFLAGS    = $(shell $(PKG_CONFIG) --cflags directfb)
++DFB_MODULEDIR = $(shell $(PKG_CONFIG) --variable=moduledir directfb-internal)
+ 
+ DIRECTFBGL_MESA_SOURCES = ../common/driverfuncs.c idirectfbgl_mesa.c
+ 

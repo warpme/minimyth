@@ -1,0 +1,184 @@
+GARNAME = xorg-server
+GARVERSION = 1.5.0
+CATEGORIES = $(CATEGORY)
+MASTER_SITES = $(XORG_MASTER_SITES)
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-xdmcp.patch \
+	$(DISTNAME)-perl.patch.gar \
+	$(DISTNAME)-pkg_config.patch \
+	$(DISTNAME)-drm.patch \
+	$(DISTNAME)-remove_moduledefaults.patch
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c lib/openssl \
+	$(CATEGORY)/bigreqsproto \
+	$(CATEGORY)/damageproto \
+	$(CATEGORY)/evieext \
+	$(CATEGORY)/fixesproto \
+	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/glproto \
+	$(CATEGORY)/inputproto \
+	$(CATEGORY)/kbproto \
+	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libfontenc \
+	$(CATEGORY)/libpciaccess \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXau \
+	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfont \
+	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/Mesa \
+	$(CATEGORY)/pixman \
+	$(CATEGORY)/randrproto \
+	$(CATEGORY)/recordproto \
+	$(CATEGORY)/renderproto \
+	$(CATEGORY)/resourceproto \
+	$(CATEGORY)/scrnsaverproto \
+	$(CATEGORY)/videoproto \
+	$(CATEGORY)/xcmiscproto \
+	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
+	$(CATEGORY)/xf86dgaproto \
+	$(CATEGORY)/xf86driproto \
+	$(CATEGORY)/xf86miscproto \
+	$(CATEGORY)/xf86vidmodeproto \
+	$(CATEGORY)/xineramaproto \
+	$(CATEGORY)/xproto \
+	$(CATEGORY)/xtrans
+BUILDDEPS = \
+	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xorg-sgml-doctools
+
+CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
+	--enable-largefile \
+	--disable-werror \
+	--disable-debug \
+	--disable-builddocs \
+	--enable-install-libxf86config \
+	--disable-builtin-fonts \
+	--disable-null-root-cursor \
+	--enable-aiglx \
+	--disable-glx-tls \
+	--enable-registry \
+	--disable-composite \
+	--enable-mitshm \
+	--disable-xres \
+	--disable-xtrap \
+	--enable-record \
+	--enable-xv \
+	--enable-xvmc \
+	--enable-dga \
+	--enable-screensaver \
+	--disable-xdmcp \
+	--disable-xdm-auth-1 \
+	--enable-glx \
+	--enable-dri \
+	--disable-dri2 \
+	--enable-xinerama \
+	--enable-xf86vidmode \
+	--enable-xf86misc \
+	--disable-xace \
+	--disable-xcsecurity \
+	--disable-appgroup \
+	--disable-xcalibrate \
+	--disable-tslib \
+	--disable-xevie \
+	--disable-cup \
+	--disable-evi \
+	--disable-multibuffer \
+	--disable-fontcache \
+	--enable-dbe \
+	--enable-xf86bigfont \
+	--enable-dpms \
+	--disable-config-dbus \
+	--disable-config-hal \
+	--enable-xfree86-utils \
+	--enable-xorg \
+	--disable-dmx \
+	--disable-xvfb \
+	--disable-xnest \
+	--disable-xquartz \
+	--disable-x11app \
+	--disable-xwin \
+	--disable-xprint \
+	--disable-xgl \
+	--disable-xglx \
+	--disable-xegl \
+	--disable-mfb \
+	--disable-cfb \
+	--disable-afb \
+	--disable-kdrive \
+	--disable-xephyr \
+	--disable-xsdl \
+	--disable-xfake \
+	--disable-xfbdev \
+	--disable-kdrive-vesa \
+	--disable-freetype \
+	--disable-install-setuid \
+	--disable-secure-rpc \
+	--disable-xorgcfg \
+	--disable-kbd_mode \
+	--enable-unix-transport \
+	--disable-tcp-transport \
+	--disable-ipv6 \
+	--disable-local-transport \
+	--with-gnu-ld \
+	--with-fontdir="$(libdir)/X11/fonts" \
+	--with-default-font-path="$(libdir)/X11/fonts/TTF,$(libdir)/X11/fonts/misc" \
+	--with-xkb-path="$(datadir)/X11/xkb" \
+	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
+	--with-serverconfig-path="$(libdir)/xserver" \
+	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa" \
+	--with-dri-driver-path="$(libdir)/xorg/modules/dri"
+
+GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
+include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@rm -f $(WORKSRC)/config.cache
+	@echo "ac_cv_sys_linker_h=no"                                                                 >> $(WORKSRC)/config.cache
+	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdbe.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdri.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libextmod.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libglx.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/fonts/libfreetype.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadowfb.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadow.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvbe.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libfbdevhw.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/msp3430_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda8425_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
+	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
+	@$(MAKECOOKIE)
