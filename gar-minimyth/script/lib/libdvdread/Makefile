@@ -1,4 +1,4 @@
-GARNAME = libdvdnav
+GARNAME = libdvdread
 GARVERSION = 4.1.3
 CATEGORIES = lib
 MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/dvdnav/
@@ -10,15 +10,14 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libdvdread
+DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-gnu-ld \
-	--with-dvdread-config="$(DESTDIR)$(bindir)/dvdread-config"
+	--with-gnu-ld
 
 include ../../gar.mk
 
@@ -28,6 +27,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libdvdnav.la
-	@rm -f $(DESTDIR)$(libdir)/libdvdnavmini.la
+	@rm -f $(DESTDIR)$(libdir)/libdvdread.la
 	@$(MAKECOOKIE)
