@@ -1,9 +1,8 @@
 GARNAME = pciutils
-GARVERSION = 3.0.0
+GARVERSION = 3.0.1
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.kernel.org/pub/software/utils/pciutils/
 DISTFILES = $(DISTNAME).tar.bz2 pci.ids
-PATCHFILES = $(DISTNAME)-pci_use_dns.patch
 LICENSE = GPL2
 
 DESCRIPTION =
