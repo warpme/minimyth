@@ -1,0 +1,13 @@
+diff -Naur xf86-video-radeonhd-f1c6cc865d8d0703478c3eedea2e706e911f9965-old/configure.ac xf86-video-radeonhd-f1c6cc865d8d0703478c3eedea2e706e911f9965-new/configure.ac
+--- xf86-video-radeonhd-f1c6cc865d8d0703478c3eedea2e706e911f9965-old/configure.ac	2008-09-11 12:21:22.000000000 -0700
++++ xf86-video-radeonhd-f1c6cc865d8d0703478c3eedea2e706e911f9965-new/configure.ac	2008-09-11 12:21:50.000000000 -0700
+@@ -60,7 +60,8 @@
+ # @@@@ need to check for the right server version once RandR 1.2 is in.
+ # @@@ do we really need fontsproto here?
+ PKG_CHECK_MODULES(XORG, [xorg-server xproto fontsproto $REQUIRED_MODULES])
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ # Header files checks.
+ AC_HEADER_STDC
