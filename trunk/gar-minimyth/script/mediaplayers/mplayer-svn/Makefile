@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -64,7 +64,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-nemesi \
 	--enable-dvdnav \
 	--enable-dvdread \
-	--enable-dvdread-internal \
+	--disable-dvdread-internal \
 	--disable-libdvdcss-internal \
 	--disable-cdparanoia \
 	--disable-cddb \
