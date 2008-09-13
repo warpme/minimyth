@@ -5,6 +5,7 @@ use warnings;
 
 require File::Spec;
 require MiniMyth;
+require POSIX;
 
 my $minimyth = new MiniMyth;
 
@@ -18,6 +19,17 @@ $SIG{'TERM'} = \&clean_up;
 END
 {
     clean_up();
+}
+
+sub daemonize
+{
+    chdir('/')                 or die;
+    open(STDIN, '<', $devnull) or die;
+    open(STDOUT,'>', $devnull) or die;
+    defined(my $pid = fork())  or die;
+    die if $pid;
+    POSIX::setsid()            or die;
+    open(STDERR,'>', $devnull) or die;
 }
 
 sub clean_up
@@ -61,6 +73,8 @@ sub clean_up
         }
     }
 }
+
+daemonize();
 
 # Make sure we are root.
 {

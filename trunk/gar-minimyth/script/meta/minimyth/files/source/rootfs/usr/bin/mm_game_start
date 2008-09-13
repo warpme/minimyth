@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 require File::Basename;
-require File::Spec;
 require MiniMyth;
 
 my $minimyth = new MiniMyth;
@@ -248,10 +247,7 @@ if (! -r $game_file)
     }
 
     # Suspend screen saver while the emulator is running.
-    {
-        my $devnull = File::Spec->devnull;
-        system(qq(/usr/bin/mm_ss_suspend $program > $devnull 2>&1 &));
-    }
+    system(qq(/usr/bin/mm_ss_suspend $program));
 
     # Run the emulator.
     system(join(' ', $emulator->{'program'}, @{$emulator->{'argument'}}, qq('$game_file')));
