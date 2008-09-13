@@ -92,11 +92,17 @@ if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
     $minimyth->x_stop();
 }
 
+# Save system time to the hardware clock.
+system(qq(/sbin/hwclock -w -u));
+
 if (open(FILE, '>', '/sys/power/state'))
 {
     print FILE "mem\n";
     close(FILE);
 }
+
+# Restore system time from the hardware clock.
+system(qq(/sbin/hwclock -r -u));
 
 # Start X
 if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
