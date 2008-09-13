@@ -81,6 +81,31 @@ sub application_pids
     return \@pids;
 }
 
+sub application_cmds
+{
+    my $self        = shift;
+    my $application = shift;
+
+    my $pids = join(',', @{$self->application_pids($application)});
+
+    my @cmds = ();
+
+    if ($pids)
+    {
+        if (open(FILE, '-|', "/bin/ps h -p $pids -o cmd"))
+        {
+            while(<FILE>)
+            {
+                chomp;
+                push(@cmds, $_);
+            }
+            close(FILE);
+        }
+    }
+
+    return \@cmds;
+}
+
 sub application_running
 {
     my $self        = shift;
@@ -2294,7 +2319,7 @@ sub x_start
     $self->application_stop('mm_sleep_on_ss');
     if ($self->var_get('MM_X_SCREENSAVER_HACK') eq 'sleep')
     {
-        system(qq(/usr/bin/mm_sleep_on_ss &));
+        system(qq(/usr/bin/mm_sleep_on_ss));
     }
 
     return 1;

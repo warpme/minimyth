@@ -35,25 +35,55 @@ $minimyth->x_applications_dead(':everything');
 $minimyth->x_applications_exit('mythfrontend');
 
 # Stop LCDd because it can stop working as a result of suspend.
-while ($minimyth->application_running('LCDd'))
+if ($minimyth->application_running('LCDd'))
 {
-    if (open(FILE, '>', "/var/lib/mm_sleep.$$/LCDd")) { close(FILE); }
-    $minimyth->application_stop('LCDd');
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/LCDd"))
+    {
+        foreach (@{$minimyth->application_cmds('LCDd')})
+        {
+            print FILE "$_\n";
+        }
+        close(FILE);
+    }
+    while ($minimyth->application_running('LCDd'))
+    {
+        $minimyth->application_stop('LCDd');
+    }
 }
 
 # Stop irexec so that the remote button press used to wake up the frontend
 # does not suspend the frontend.
-while ($minimyth->application_running('irexec'))
+if ($minimyth->application_running('irexec'))
 {
-    if (open(FILE, '>', "/var/lib/mm_sleep.$$/irexec")) { close(FILE); }
-    $minimyth->application_stop('irexec');
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/irexec"))
+    {
+        foreach (@{$minimyth->application_cmds('irexec')})
+        {
+            print FILE "$_\n";
+        }
+        close(FILE);
+    }
+    while ($minimyth->application_running('irexec'))
+    {
+        $minimyth->application_stop('irexec');
+    }
 }
 
 # Stop mm_sleep_on_ss so that it does not immediately send the frontend back to sleep.
-while ($minimyth->application_running('mm_sleep_on_ss'))
+if ($minimyth->application_running('mm_sleep_on_ss'))
 {
-    if (open(FILE, '>', "/var/lib/mm_sleep.$$/mm_sleep_on_ss")) { close(FILE); }
-    $minimyth->application_stop('mm_sleep_on_ss');
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/mm_sleep_on_ss"))
+    {
+        foreach (@{$minimyth->application_cmds('mm_sleep_on_ss')})
+        {
+            print FILE "$_\n";
+        }
+        close(FILE);
+    }
+    while ($minimyth->application_running('mm_sleep_on_ss'))
+    {
+        $minimyth->application_stop('mm_sleep_on_ss');
+    }
 }
 
 # Stop X
@@ -80,21 +110,54 @@ $minimyth->x_screensaver_deactivate();
 # If mm_sleep_on_ss was running before suspend, then restart it.
 if (-e "/var/lib/mm_sleep.$$/mm_sleep_on_ss")
 {
-    if (! $minimyth->application_running('mm_sleep_on_ss')) { system(qq(/usr/bin/mm_sleep_on_ss &)); }
+    if (! $minimyth->application_running('mm_sleep_on_ss'))
+    {
+        if (open(FILE, '<', "/var/lib/mm_sleep.$$/mm_sleep_on_ss"))
+        {
+            while(<FILE>)
+            {
+                chomp;
+                system($_);
+            }
+            close(FILE);
+        }
+    }
     unlink("/var/lib/mm_sleep.$$/mm_sleep_on_ss");
 }
 
 # If irexec was running before suspend, then restart it.
 if (-e "/var/lib/mm_sleep.$$/irexec")
 {
-    if (! $minimyth->application_running('irexec')) { system(qq(/usr/bin/irexec -d /etc/lircrc)); }
+    if (! $minimyth->application_running('irexec'))
+    {
+        if (open(FILE, '<', "/var/lib/mm_sleep.$$/irexec"))
+        {
+            while(<FILE>)
+            {
+                chomp;
+                system($_);
+            }
+            close(FILE);
+        }
+    }
     unlink("/var/lib/mm_sleep.$$/irexec");
 }
 
 # If LCDd was running before suspend, then restart it.
 if (-e "/var/lib/mm_sleep.$$/LCDd")
 {
-    if (! $minimyth->application_running('LDCd')) { system(qq(/usr/sbin/LCDd -c /etc/LCDd.conf)); }
+    if (! $minimyth->application_running('LDCd'))
+    {
+        if (open(FILE, '<', "/var/lib/mm_sleep.$$/LCDd"))
+        {
+            while(<FILE>)
+            {
+                chomp;
+                system($_);
+            }
+            close(FILE);
+        }
+    }
     unlink("/var/lib/mm_sleep.$$/LCDd");
 }
 

@@ -4,10 +4,24 @@ use strict;
 use warnings;
 
 require MiniMyth;
+require POSIX;
 
 my $program = shift;
 
 my $minimyth = new MiniMyth;
+
+sub daemonize
+{
+    chdir('/')                 or die;
+    open(STDIN, '<', $devnull) or die;
+    open(STDOUT,'>', $devnull) or die;
+    defined(my $pid = fork())  or die;
+    die if $pid;
+    POSIX::setsid()            or die;
+    open(STDERR,'>', $devnull) or die;
+}
+
+daemonize();
 
 while ($minimyth->application_running($program))
 {
