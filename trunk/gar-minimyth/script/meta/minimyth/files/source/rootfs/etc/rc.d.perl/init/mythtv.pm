@@ -225,7 +225,7 @@ sub start
                 if (opendir(DIR, $dir))
                 {
                     my $filter = File::Basename::basename($_);
-                    foreach (grep(/^$filter$/, $_))
+                    foreach (grep(/^$filter$/, readdir(DIR)))
                     {
                         if (-f qq($dir/$_))
                         {
