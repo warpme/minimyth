@@ -23,9 +23,9 @@ DEPENDS = lang/c \
 	lib/libgcrypt \
 	lib/libmad \
 	lib/libmatroska \
+	lib/libmpeg2 \
 	lib/libpng \
 	lib/libxml2 \
-	lib/mpeg2dec \
 	lib/sysfsutils \
 	lib/taglib \
 	lib/zlib \
