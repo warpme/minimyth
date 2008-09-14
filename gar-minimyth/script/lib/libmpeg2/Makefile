@@ -1,5 +1,5 @@
-GARNAME = mpeg2dec
-GARVERSION = 0.4.1
+GARNAME = libmpeg2
+GARVERSION = 0.5.1
 CATEGORIES = lib
 MASTER_SITES = http://libmpeg2.sourceforge.net/files/
 DISTFILES = $(DISTNAME).tar.gz
@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--enable-shared \
 	--enable-static \
+	--enable-sdl \
 	--with-gnu-ld \
 	--with-x \
 	$(if $(filter i386,$(GARCH_FAMILY)),,--disable-accel-detect)

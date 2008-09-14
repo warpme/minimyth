@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/ffmpeg lib/freetype lib/lame lib/lzo lib/mpeg2dec lib/xvidcore xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/ffmpeg lib/freetype lib/lame lib/libmpeg2 lib/lzo lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
