@@ -143,6 +143,10 @@ start() {
     done
 
     # Delete disabled plugins.
+    if /usr/bin/test "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" = "no" ; then
+        /bin/sed -i -e 's%<type>MENU_INFO_CENTER</type>%<type>MENU_INFO_CENTER</type><depends></depends>%' \
+            /usr/share/mythtv/mainmenu.xml
+    fi
     if /usr/bin/test "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "no" ; then
         /bin/sed -i -e 's%<depends>mythmusic mythvideo mytharchive mythburn</depends>%<depends>disabled</depends>%' \
             /usr/share/mythtv/mainmenu.xml

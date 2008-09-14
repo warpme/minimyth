@@ -166,6 +166,12 @@ sub start
     }
 
     # Delete disabled plugins.
+    if ($minimyth->var_get('MM_PLUGIN_INFORMATION_CENTER_ENABLED') eq 'no')
+    {
+        $minimyth->file_replace_variable(
+            '/usr/share/mythtv/mainmenu.xml',
+            { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends></depends>' });
+    }
     if ($minimyth->var_get('MM_PLUGIN_OPTICAL_DISK_ENABLED') eq 'no')
     {
         $minimyth->file_replace_variable(

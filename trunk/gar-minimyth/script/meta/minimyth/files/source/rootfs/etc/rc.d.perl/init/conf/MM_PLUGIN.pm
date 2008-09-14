@@ -14,6 +14,11 @@ sub var_list
     return \%var_list;
 }
 
+$var_list{'MM_PLUGIN_INFORMATION_CENTER_ENABLED'} =
+{
+    value_default  => 'yes',
+    value_valid    => 'no|yes'
+};
 $var_list{'MM_PLUGIN_OPTICAL_DISK_ENABLED'} =
 {
     value_default  => 'yes',

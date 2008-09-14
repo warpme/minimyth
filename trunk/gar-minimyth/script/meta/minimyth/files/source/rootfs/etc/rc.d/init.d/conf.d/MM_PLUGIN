@@ -8,6 +8,11 @@ conf_clean_MM_PLUGIN() {
 }
 
 conf_check_MM_PLUGIN() {
+    if /usr/bin/test ! -z "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}"          && \
+       /usr/bin/test !    "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_PLUGIN_INFORMATION_CENTER_ENABLED='${MM_PLUGIN_INFORMATION_CENTER_ENABLED}' is not valid."
+    fi
     if /usr/bin/test ! -z "${MM_PLUGIN_OPTICAL_DISK_ENABLED}"          && \
        /usr/bin/test !    "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "no"   ; then
@@ -68,6 +73,9 @@ conf_check_MM_PLUGIN() {
 }
 
 conf_default_MM_PLUGIN() {
+    if /usr/bin/test -z "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" ; then
+        MM_PLUGIN_INFORMATION_CENTER_ENABLED='yes'
+    fi
     if /usr/bin/test -z "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" ; then
         MM_PLUGIN_OPTICAL_DISK_ENABLED='yes'
     fi
@@ -148,17 +156,18 @@ conf_default_MM_PLUGIN() {
 conf_write_MM_PLUGIN() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_PLUGIN_OPTICAL_DISK_ENABLED "${MM_PLUGIN_OPTICAL_DISK_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_BROWSER_ENABLED      "${MM_PLUGIN_BROWSER_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_GALLERY_ENABLED      "${MM_PLUGIN_GALLERY_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_GAME_ENABLED         "${MM_PLUGIN_GAME_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_MUSIC_ENABLED        "${MM_PLUGIN_MUSIC_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_NEWS_ENABLED         "${MM_PLUGIN_NEWS_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_PHONE_ENABLED        "${MM_PLUGIN_PHONE_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_STREAM_ENABLED       "${MM_PLUGIN_STREAM_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_VIDEO_ENABLED        "${MM_PLUGIN_VIDEO_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_WEATHER_ENABLED      "${MM_PLUGIN_WEATHER_ENABLED}"
-    conf_variable_write "${conf_file}" MM_PLUGIN_ZONEMINDER_ENABLED   "${MM_PLUGIN_ZONEMINDER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_INFORMATION_CENTER_ENABLED "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_OPTICAL_DISK_ENABLED       "${MM_PLUGIN_OPTICAL_DISK_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_BROWSER_ENABLED            "${MM_PLUGIN_BROWSER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_GALLERY_ENABLED            "${MM_PLUGIN_GALLERY_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_GAME_ENABLED               "${MM_PLUGIN_GAME_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_MUSIC_ENABLED              "${MM_PLUGIN_MUSIC_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_NEWS_ENABLED               "${MM_PLUGIN_NEWS_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_PHONE_ENABLED              "${MM_PLUGIN_PHONE_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_STREAM_ENABLED             "${MM_PLUGIN_STREAM_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_VIDEO_ENABLED              "${MM_PLUGIN_VIDEO_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_WEATHER_ENABLED            "${MM_PLUGIN_WEATHER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_ZONEMINDER_ENABLED         "${MM_PLUGIN_ZONEMINDER_ENABLED}"
 
     return 0
 }
