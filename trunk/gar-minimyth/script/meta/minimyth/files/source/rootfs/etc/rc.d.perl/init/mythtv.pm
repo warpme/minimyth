@@ -81,51 +81,6 @@ sub start
         }
     }
 
-    # Update theme files.
-    foreach (split(/:/, $minimyth->var_get('MM_THEME_FILE_LIST')))
-    {
-        if (/([^ ~]*)~([^ ~]*)/)
-        {
-            if ($1)
-            {
-                my $name_remote = "/$1";
-                my $name_local  = $2 ? "/usr/share/mythtv/$2" : "/usr/share/mythtv/$1";
-
-                $name_remote =~ s/\/\/+/\//g;
-                $name_remote =~ s/^\///;
-
-                $name_local  =~ s/\/\/+/\//g;
-
-                my $result = $minimyth->confro_get($name_remote, $name_local);
-                if (! -e $name_local)
-                {
-                    $minimyth->message_log('err', qq(error: failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
-                    return 1;
-                }
-                else
-                {
-                    $minimyth->message_log('info', qq(fetched MiniMyth read-only configuration file ') . $name_remote . qq('));
-                    $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
-                    $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
-                    chmod(oct('0644'), $name_local);
-                }
-            }
-            else
-            {
-                my $name_local = "/usr/share/mythtv/$2";
-
-                $name_local  =~ s/\/\/+/\//g;
-
-                unlink($name_local);
-                if (-e $name_local)
-                {
-                    $minimyth->message_log('err', qq(error: failed to delete file ') . $name_local . qq('));
-                    return 1;
-                }
-            }
-        }
-    }
-
     my $themecache_url  = $minimyth->var_get('MM_THEMECACHE_URL');
     # Mount themecache directory.
     if ($themecache_url)

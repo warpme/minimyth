@@ -7,6 +7,8 @@ package init::conf::MM_THEME;
 use strict;
 use warnings;
 
+require File::Basename;
+
 my %var_list;
 
 sub var_list
@@ -164,7 +166,7 @@ $var_list{'MM_THEMEOSD_URL'} =
     },
     value_none     => ''
 };
-$var_list{'MM_THEME_FILE_LIST'} =
+$var_list{'MM_THEME_FILE_MENU_ADD'} =
 {
     value_default  => '',
     value_clean    => sub
@@ -173,18 +175,34 @@ $var_list{'MM_THEME_FILE_LIST'} =
         my $name     = shift;
 
         my $value_clean = $minimyth->var_get($name);
-        $value_clean = ":$value_clean:";
-        $value_clean =~ s/[ \t]*~[ \t]*/~/g;
-        $value_clean =~ s/[ \t]*:[ \t]*/:/g;
-        $value_clean =~ s/(:~)+:/:/g;
-        $value_clean =~ s/::+/::/g;
-        $value_clean =~ s/:([^~:]+):/:$1~:/g;
-        $value_clean =~ s/:+/:/g;
-        $value_clean =~ s/^://;
-        $value_clean =~ s/:$//;
+        $value_clean = " $value_clean ";
+        $value_clean =~ s/[ \t]+/ /g;
+        $value_clean =~ s/ ([^ \/])/ \/$1/g;
+        $value_clean =~ s/\/+/\//g;
+        $value_clean =~ s/^ //;
+        $value_clean =~ s/ $//;
         $minimyth->var_set($name, $value_clean);
     },
-    value_valid    => ['', '(([^ ~]+~[^ ~]+)|(~[^ ~]+)|([^ ~]+~))(:(([^ ~]+~[^ ~]+)|(~[^ ~]+)|([^ ~]+~)))*']
+    value_file     => '.+',
+    file           => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @file;
+
+        foreach (split(/ /, $minimyth->var_get($name)))
+        {
+            my $item;
+            $item->{'name_remote'} = "$_";
+            $item->{'name_local'}  = '/home/minimyth/.mythtv/' . File::Basename::basename($_);
+            $item->{'mode_local'}  = '0644';
+
+            push(@file, $item);
+        }
+
+        return \@file;
+    }
 };
 
 1;
