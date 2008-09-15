@@ -124,16 +124,12 @@ conf_default_MM_THEME() {
         mm_message_output err "error: 'MM_THEMEOSD_NAME' is not set."
     fi
 
-    MM_THEME_FILE_LIST=":${MM_THEME_FILE_LIST}:"
-    MM_THEME_FILE_LIST=`/bin/echo ${MM_THEME_FILE_LIST} | /bin/sed \
-	-e 's%[ \t]*:[ \t]*%:%g' \
-	-e 's%[ \t]*~[ \t]*%~%g' \
-        -e 's%\(:~\)\(:~\)*:%:%g' \
-        -e 's%:::*%::%g' \
-        -e 's%:\([^~:][^~:]*\):%:\1~:%g' \
-        -e 's%::*%:%g' \
-        -e 's%^:%%'  \
-        -e 's%:$%%'`
+    MM_THEME_FILE_MENU_ADD=`/bin/echo " ${MM_THEME_FILE_MENU_ADD} " | /bin/sed \
+	-e 's%[ \t][ \t]*% %g' \
+        -e 's% \([^ /]\)% /\1%g' \
+        -e 's%//*%/%g' \
+        -e 's%^ %%' \
+        -e 's% $%%'`
 
     return 0
 }
@@ -141,16 +137,32 @@ conf_default_MM_THEME() {
 conf_write_MM_THEME() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_THEME_NAME      "${MM_THEME_NAME}"
-    conf_variable_write "${conf_file}" MM_THEMEOSD_NAME   "${MM_THEMEOSD_NAME}"
-    conf_variable_write "${conf_file}" MM_THEME_URL       "${MM_THEME_URL}"
-    conf_variable_write "${conf_file}" MM_THEMEOSD_URL    "${MM_THEMEOSD_URL}"
-    conf_variable_write "${conf_file}" MM_THEMECACHE_URL  "${MM_THEMECACHE_URL}"
-    conf_variable_write "${conf_file}" MM_THEME_FILE_LIST "${MM_THEME_FILE_LIST}"
+    conf_variable_write "${conf_file}" MM_THEME_NAME          "${MM_THEME_NAME}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_NAME       "${MM_THEMEOSD_NAME}"
+    conf_variable_write "${conf_file}" MM_THEME_URL           "${MM_THEME_URL}"
+    conf_variable_write "${conf_file}" MM_THEMEOSD_URL        "${MM_THEMEOSD_URL}"
+    conf_variable_write "${conf_file}" MM_THEMECACHE_URL      "${MM_THEMECACHE_URL}"
+    conf_variable_write "${conf_file}" MM_THEME_FILE_MENU_ADD "${MM_THEME_FILE_MENU_ADD}"
 
     return 0
 }
 
 conf_fetch_MM_THEME() {
+    local name_remote
+    local name_local
+
+    if /usr/bin/test -n "${MM_THEME_FILE_MENU_ADD}" ; then
+        /bin/mkdir -p /home/minimyth/.mythtv
+        for name_remote in ${MM_THEME_FILE_MENU_ADD} ; do
+            name_local=`/usr/bin/basename ${name_remote}`
+            name_local="/home/minimyth/.mythtv/${name_local}"
+            /bin/rm -f ${name_local}
+            mm_confro_get ${name_remote} ${name_local}
+            if /usr/bin/test ! -e ${name_local} ; then
+                mm_message_output err "error: failed to fetch '${name_remote}' file."
+            fi
+        done
+    fi
+
     return 0
 }
