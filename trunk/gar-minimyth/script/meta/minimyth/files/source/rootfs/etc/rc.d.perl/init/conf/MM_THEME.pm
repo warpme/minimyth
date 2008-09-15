@@ -164,6 +164,27 @@ $var_list{'MM_THEMEOSD_URL'} =
     },
     value_none     => ''
 };
+$var_list{'MM_THEME_FILE_LIST'} =
+{
+    value_default  => '',
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
 
+        my $value_clean = $minimyth->var_get($name);
+        $value_clean = ":$value_clean:";
+        $value_clean =~ s/[ \t]*~[ \t]*/~/g;
+        $value_clean =~ s/[ \t]*:[ \t]*/:/g;
+        $value_clean =~ s/(:~)+:/:/g;
+        $value_clean =~ s/::+/::/g;
+        $value_clean =~ s/:([^~:]+):/:$1~:/g;
+        $value_clean =~ s/:+/:/g;
+        $value_clean =~ s/^://;
+        $value_clean =~ s/:$//;
+        $minimyth->var_set($name, $value_clean);
+    },
+    value_valid    => ['', '(([^ ~]+~[^ ~]+)|(~[^ ~]+)|([^ ~]+~))(:(([^ ~]+~[^ ~]+)|(~[^ ~]+)|([^ ~]+~)))*']
+};
 
 1;

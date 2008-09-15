@@ -8,6 +8,9 @@
 
 start() {
 
+    local dir
+    local file
+    local found
     local jumppoints
     local jumppoints_destination
     local jumppoints_keylist
@@ -15,13 +18,13 @@ start() {
     local keybindings_actions
     local keybindings_context
     local keybindings_keylist
+    local MTD
+    local name_local
+    local name_remote
     local settings
     local settings_data
     local settings_value
     local TRANSCODE
-    local file
-    local dir
-    local found
 
     mm_message_output info "configuring MythTV ..."
 
@@ -69,6 +72,48 @@ start() {
             mm_message_output err "error: mount of 'MM_THEMEOSD_URL=${MM_THEMEOSD_URL}' failed."
             exit 1
         fi
+    fi
+
+    # Update theme files.
+    if /usr/bin/test -n "${MM_THEME_FILE_LIST}" ; then
+        IFS_SAVE=${IFS}
+        IFS=:
+        for item in ${MM_THEME_FILE_LIST} ; do
+            name_remote=`/bin/echo ${item} | /usr/bin/cut -d '~' -f 1`
+            name_local=`/bin/echo ${item} | /usr/bin/cut -d '~' -f 2`
+            if /usr/bin/test -n "${name_remote}" || /usr/bin/test -n "${name_local}"  ; then
+                if /usr/bin/test -n "${name_remote}" ; then
+                    name_remote="/${name_remote}"
+                    if /usr/bin/test -z "${name_local}" ; then
+                        name_local=${name_remote}
+                    fi
+                    name_local="/usr/share/mythtv/${name_local}"
+
+                    name_remote=`/bin/echo ${name_remote} | /bin/sed -e 's%//*%/%g' -e 's%^//*%/%'`
+
+                    name_local=`/bin/echo ${name_local} | /bin/sed -e 's%//*%/%g'`
+
+                    mm_confro_get ${name_remote} ${name_local}
+                    if /usr/bin/test ! -e ${name_local} ; then
+                        mm_message_output err "error: failed to fetch '${name_remote}' file."
+                        exit 1
+                    else
+                        /bin/chmod 0644 ${name_local}
+                    fi
+                else
+                    name_local="/usr/share/mythtv/${name_local}"
+
+                    name_local=`/bin/echo ${name_local} | /bin/sed -e 's%//*%/%g'`
+
+                    /bin/rm -f ${name_local}
+                    if /usr/bin/test -e ${name_local} ; then
+                        mm_message_output err "error: failed to delete '${name_local}' file."
+                        exit 1
+                    fi
+                fi
+            fi
+        done
+        IFS=${IFS_SAVE}
     fi
 
     # Mount themecache directory.
