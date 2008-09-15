@@ -255,12 +255,32 @@ sub var_load
 
     if ((-x '/bin/sh') && (open(FILE, '-|', qq(/bin/sh -c '$shell_command'))))
     {
-        foreach (grep(/^$conf_filter$/, (<FILE>)))
+        my $name  = '';
+        my $value = '';
+        while (<FILE>)
         {
             chomp;
-            if (/^([^=]+)='(.*)'$/)
+            if (! $name)
             {
-                $conf_variable{$1} = $2;
+                if (/^([^=]+)=('.*)$/)
+                {
+                    $name  = $1;
+                    $value = $2
+                }
+            }
+            else
+            {
+                $value = $value . ' ' . $_;
+            }
+            if (($name) && ($value =~ /^'(.*)'$/))
+            {
+                $value = $1;
+                if ($name =~ /^$conf_filter$/)
+                {
+                    $conf_variable{$name} = $value;
+                }
+                $name  = '';
+                $value = '';
             }
         }
         close(FILE);
