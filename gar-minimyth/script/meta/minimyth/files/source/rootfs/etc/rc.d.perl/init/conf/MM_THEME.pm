@@ -189,7 +189,7 @@ $var_list{'MM_THEME_FILE_MENU_ADD'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my @file;
+        my @file = ();
 
         foreach (split(/ /, $minimyth->var_get($name)))
         {
