@@ -123,6 +123,7 @@ mm-all:
 	@for software in $(mm_SOFTWARE) ; do \
 		if [ ! "$${software}" = "mythaudio"      ] && \
 		   [ ! "$${software}" = "mythbrowser"    ] && \
+		   [ ! "$${software}" = "mythdvd"        ] && \
 		   [ ! "$${software}" = "mythgallery"    ] && \
 		   [ ! "$${software}" = "mythgame"       ] && \
 		   [ ! "$${software}" = "mythmusic"      ] && \
@@ -145,8 +146,15 @@ mm-all:
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
-		if [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] ; then \
-			if [ "$${software}" = "mythbrowswer" ] ; then \
+		if [ "$(mm_MYTH_VERSION)" = "0.20"         ] || \
+		   [ "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
+			if [ "$${software}" = "mythzoneminder" ] ; then \
+				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
+			fi ; \
+		fi ; \
+		if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
+		   [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
+			if [ "$${software}" = "mythdvd" ] ; then \
 				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
 			fi ; \
 		fi ; \
@@ -172,7 +180,9 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_MYTH_VERSION"
-	@if [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
+	@if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "trunk"        ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \

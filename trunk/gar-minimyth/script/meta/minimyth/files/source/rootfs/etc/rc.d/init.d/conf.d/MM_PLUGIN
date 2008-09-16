@@ -23,6 +23,11 @@ conf_check_MM_PLUGIN() {
        /usr/bin/test !    "${MM_PLUGIN_BROWSER_ENABLED}" = "no"   ; then
         mm_message_output err "error: MM_PLUGIN_BROWSER_ENABLED='${MM_PLUGIN_BROWSER_ENABLED}' is not valid."
     fi
+    if /usr/bin/test ! -z "${MM_PLUGIN_DVD_ENABLED}"          && \
+       /usr/bin/test !    "${MM_PLUGIN_DVD_ENABLED}" = "yes"  && \
+       /usr/bin/test !    "${MM_PLUGIN_DVD_ENABLED}" = "no"   ; then
+        mm_message_output err "error: MM_PLUGIN_DVD_ENABLED='${MM_PLUGIN_DVD_ENABLED}' is not valid."
+    fi
     if /usr/bin/test ! -z "${MM_PLUGIN_GALLERY_ENABLED}"          && \
        /usr/bin/test !    "${MM_PLUGIN_GALLERY_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_PLUGIN_GALLERY_ENABLED}" = "no"   ; then
@@ -84,6 +89,13 @@ conf_default_MM_PLUGIN() {
             MM_PLUGIN_BROWSER_ENABLED='yes'
         else
             MM_PLUGIN_BROWSER_ENABLED='no'
+        fi
+    fi
+    if /usr/bin/test -z "${MM_PLUGIN_DVD_ENABLED}"      ; then
+        if /usr/bin/test -e /usr/lib/mythtv/plugins/libmythdvd.so ; then
+            MM_PLUGIN_DVD_ENABLED='yes'
+        else
+            MM_PLUGIN_DVD_ENABLED='no'
         fi
     fi
     if /usr/bin/test -z "${MM_PLUGIN_GALLERY_ENABLED}"      ; then
@@ -159,6 +171,7 @@ conf_write_MM_PLUGIN() {
     conf_variable_write "${conf_file}" MM_PLUGIN_INFORMATION_CENTER_ENABLED "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}"
     conf_variable_write "${conf_file}" MM_PLUGIN_OPTICAL_DISK_ENABLED       "${MM_PLUGIN_OPTICAL_DISK_ENABLED}"
     conf_variable_write "${conf_file}" MM_PLUGIN_BROWSER_ENABLED            "${MM_PLUGIN_BROWSER_ENABLED}"
+    conf_variable_write "${conf_file}" MM_PLUGIN_DVD_ENABLED                "${MM_PLUGIN_DVD_ENABLED}"
     conf_variable_write "${conf_file}" MM_PLUGIN_GALLERY_ENABLED            "${MM_PLUGIN_GALLERY_ENABLED}"
     conf_variable_write "${conf_file}" MM_PLUGIN_GAME_ENABLED               "${MM_PLUGIN_GAME_ENABLED}"
     conf_variable_write "${conf_file}" MM_PLUGIN_MUSIC_ENABLED              "${MM_PLUGIN_MUSIC_ENABLED}"

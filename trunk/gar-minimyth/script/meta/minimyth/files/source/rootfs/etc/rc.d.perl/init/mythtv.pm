@@ -185,6 +185,10 @@ sub start
           '/usr/share/mythtv/mythbookmarkmanager*',
           '/usr/share/mythtv/browser*',
           '/usr/share/mythtv/mythbrowser*' ];
+    $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} =
+        [ '/usr/lib/mythtv/plugins/libmythdvd.so',
+          '/usr/share/mythtv/dvd*',
+          '/usr/share/mythtv/mythdvd*' ];
     $plugin_remove{'MM_PLUGIN_GALLERY_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythgallery.so',
           '/usr/share/mythtv/gallery*',
@@ -249,7 +253,8 @@ sub start
     }
 
     # Check for libdvdcss.so.2
-    if ($minimyth->var_get('MM_PLUGIN_VIDEO_ENABLED') eq 'yes')
+    if ( ($minimyth->var_get('MM_PLUGIN_DVD_ENABLED')   eq 'yes') ||
+         ($minimyth->var_get('MM_PLUGIN_VIDEO_ENABLED') eq 'yes') )
     {
         my $found = 0;
         if ((-e '/etc/ld.so.conf') && (open(FILE, '<', '/etc/ld.so.conf')))

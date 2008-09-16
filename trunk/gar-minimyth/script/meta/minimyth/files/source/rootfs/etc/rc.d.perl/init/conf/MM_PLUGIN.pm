@@ -42,6 +42,24 @@ $var_list{'MM_PLUGIN_BROWSER_ENABLED'} =
     },
     value_valid    => 'no|yes'
 };
+$var_list{'MM_PLUGIN_DVD_ENABLED'} =
+{
+    value_default  => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if (-e '/usr/lib/mythtv/plugins/libmythdvd.so')
+        {
+            return 'yes'
+        }
+        else
+        {
+            return 'no'
+        }
+    },
+    value_valid    => 'no|yes'
+};
 $var_list{'MM_PLUGIN_GALLERY_ENABLED'} =
 {
     value_default  => sub

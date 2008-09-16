@@ -21,25 +21,46 @@ $var_list{'MM_VIDEO_ASPECT_RATIO'} =
 };
 $var_list{'MM_VIDEO_DEINTERLACER'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MAJOR', 'MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => 'none',
-    value_valid    =>       'auto' .
-                      '|' . 'none' .
-                      '|' . 'bobdeint' .
-                      '|' . 'greedyhdeint' .
-                      '|' . 'greedyhdoubleprocessdeint' .
-                      '|' . 'kerneldeint' .
-                      '|' . 'linearblend' .
-                      '|' . 'onefield' .
-                      '|' . 'openglbobdeint' .
-                      '|' . 'opengldoubleratefieldorder' .
-                      '|' . 'opengldoubleratekerneldeint' .
-                      '|' . 'opengldoubleratelinearblend' .
-                      '|' . 'opengldoublerateonefield' .
-                      '|' . 'openglkerneldeint' .
-                      '|' . 'opengllinearblend' .
-                      '|' . 'openglonefield' .
-                      '|' . 'yadifdeint' .
-                      '|' . 'yadifdoubleprocessdeint'
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+        
+        my $value_valid = '';
+        if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+             ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
+        {
+            $value_valid =       'auto' .
+                           '|' . 'none' .
+                           '|' . 'bobdeint' .
+                           '|' . 'kerneldeint' .
+                           '|' . 'linearblend' .
+                           '|' . 'onefield';
+        }
+        else
+        {
+            $value_valid =       'auto' .
+                           '|' . 'none' .
+                           '|' . 'bobdeint' .
+                           '|' . 'greedyhdeint' .
+                           '|' . 'greedyhdoubleprocessdeint' .
+                           '|' . 'kerneldeint' .
+                           '|' . 'linearblend' .
+                           '|' . 'onefield' .
+                           '|' . 'openglbobdeint' .
+                           '|' . 'opengldoubleratefieldorder' .
+                           '|' . 'opengldoubleratekerneldeint' .
+                           '|' . 'opengldoubleratelinearblend' .
+                           '|' . 'opengldoublerateonefield' .
+                           '|' . 'openglkerneldeint' .
+                           '|' . 'opengllinearblend' .
+                           '|' . 'openglonefield' .
+                           '|' . 'yadifdeint' .
+                           '|' . 'yadifdoubleprocessdeint';
+        }
+    }
 };
 $var_list{'MM_VIDEO_FONT_SCALE'} =
 {
@@ -69,7 +90,25 @@ $var_list{'MM_VIDEO_MPEG2_DECODER'} =
 };
 $var_list{'MM_VIDEO_PLAYBACK_PROFILE'} =
 {
-    value_default  => 'MiniMyth',
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MAJOR', 'MM_VERSION_MYTH_BINARY_MINOR'],
+    value_default  => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+        
+        my $value_default = '';
+        if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+             ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
+        {
+            $value_default = 'none';
+        }
+        else
+        {
+            $value_default = 'MiniMyth';
+        }
+
+        return $value_default;
+    },
     value_valid    => 'none|.+',
     value_none     => ''
 };

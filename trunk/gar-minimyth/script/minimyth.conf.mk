@@ -7,8 +7,10 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter 0.21 ,$(mm_MYTH_VERSION)),0.21.0                        ) \
-                                $(if $(filter trunk,$(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
+                                $(if $(filter 0.20 ,        $(mm_MYTH_VERSION)),0.20.2                        ) \
+                                $(if $(filter 0.20-softpad ,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
+                                $(if $(filter 0.21 ,        $(mm_MYTH_VERSION)),0.21.0                        ) \
+                                $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 58
 mm_VERSION_EXTRA          ?= $(strip \
@@ -39,6 +41,7 @@ mm_CHIPSETS               ?= ati intel nvidia via other
 # removed in the future without warning), 'xine', 'perl', 'transcode', 'mame',
 # 'wiimote', 'backend' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
+                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
                              mythgame \
                              mythmusic \
@@ -47,7 +50,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythstream \
                              mythvideo \
                              mythweather \
-                             mythzoneminder \
+                             $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
                              mplayer \
                              mplayer-svn \
                              vlc \
@@ -106,7 +109,7 @@ mm_KERNEL_VERSION         ?= 2.6.23
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.21', and 'trunk'.
+# Valid values are '0.20', '0.20-softpad', '0.21', and 'trunk'.
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '71.86.06' (legacy), '96.43.07' (legacy), '169.12', '173.14.12' and '177.13' (beta).

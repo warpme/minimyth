@@ -1,0 +1,142 @@
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/main.cpp mythtv-0.20-16082-new/programs/mythfrontend/main.cpp
+--- mythtv-0.20-16082-old/programs/mythfrontend/main.cpp	2008-09-15 14:08:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/main.cpp	2008-09-15 14:08:08.000000000 -0700
+@@ -4,6 +4,8 @@
+ #include <qfileinfo.h>
+ #include <qmap.h>
+ #include <unistd.h>
++#include <sys/socket.h>
++#include <netdb.h>
+ #include <qdir.h>
+ #include <qtextcodec.h>
+ #include <qwidget.h>
+@@ -12,6 +14,7 @@
+ #include <pthread.h>
+ 
+ #include <cstdlib>
++#include <cstring>
+ 
+ #include <iostream>
+ using namespace std;
+@@ -1199,15 +1202,71 @@
+     }
+ #endif
+ 
++    // Network control.
++    // Create a separate network control on each address enabling simultaneous local and remote control.
++    QPtrList<NetworkControl> networkControls;
+     NetworkControl *networkControl = NULL;
++    QHostAddress networkAddress;
++    int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
++    // Loopback address.
++    networkAddress.setAddress("127.0.0.1");
++    networkControl = new NetworkControl(networkAddress, networkPort);
++    if (!networkControl->ok())
++        VERBOSE(VB_IMPORTANT,
++                QString("NetworkControl failed to bind to port %1 of address %2.")
++                .arg(networkPort).arg(networkAddress.toString()));
++    networkControls.append(networkControl);
++    // Non-loopback address(es).
+     if (gContext->GetNumSetting("NetworkControlEnabled", 0))
+     {
+-        int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
+-        networkControl = new NetworkControl(networkPort);
+-        if (!networkControl->ok())
++        char hostname[256];
++        if (!gethostname(hostname,256))
++        {
++            struct addrinfo req;
++            struct addrinfo *res = NULL;
++            memset(&req, 0, sizeof(req));
++            req.ai_family = PF_UNSPEC;     // Request both IPv4 and IPv6 addresses.
++            req.ai_socktype = SOCK_STREAM; // Request only one socket type so that we get only one record per address.
++            if (!getaddrinfo(hostname, NULL, &req, &res))
++            {
++                struct addrinfo *cur = res;
++                while (cur != NULL)
++                {
++                    char address[INET_ADDRSTRLEN + INET6_ADDRSTRLEN];
++                    if (!getnameinfo(cur->ai_addr, cur->ai_addrlen,
++                                     address, INET_ADDRSTRLEN + INET6_ADDRSTRLEN,
++                                     NULL, 0,
++                                     NI_NUMERICHOST))
++                    {
++                        networkAddress.setAddress(address);
++                        if ( !(  networkAddress.isNull()                                                               ) &&
++                             !( (networkAddress.isIp4Addr()     == true) && (networkAddress.toString() == "127.0.0.1") ) &&
++                             !( (networkAddress.isIPv6Address() == true) && (networkAddress.toString() == "::1"      ) ) )
++                        {
++                            networkControl = new NetworkControl(networkAddress, networkPort);
++                            if (!networkControl->ok())
++                                VERBOSE(VB_IMPORTANT,
++                                        QString("NetworkControl failed to bind to port %1 of address %2.")
++                                        .arg(networkPort).arg(networkAddress.toString()));
++                            networkControls.append(networkControl);
++                        }
++                    }
++                    cur = cur->ai_next;
++                }
++            }
++            else
++            {
++                VERBOSE(VB_IMPORTANT,
++                        QString("NetworkControl failed to determine network address(es)."));
++            }
++            if (res != NULL)
++                freeaddrinfo(res);
++        }
++        else
++        {
+             VERBOSE(VB_IMPORTANT,
+-                    QString("NetworkControl failed to bind to port %1.")
+-                    .arg(networkPort));
++                   QString("NetworkControl failed to determine host name."));
++        }
+     }
+ 
+     gContext->addCurrentLocation("MainMenu");
+@@ -1251,8 +1310,9 @@
+         pthread_join(priv_thread, &value);
+     }
+ 
+-    if (networkControl)
+-        delete networkControl;
++    networkControls.setAutoDelete(true);
++    while (!networkControls.isEmpty())
++        networkControls.removeLast();
+ 
+     DestroyMythMainWindow();
+     delete themeBase;
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/networkcontrol.cpp mythtv-0.20-16082-new/programs/mythfrontend/networkcontrol.cpp
+--- mythtv-0.20-16082-old/programs/mythfrontend/networkcontrol.cpp	2008-09-15 14:08:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/networkcontrol.cpp	2008-09-15 14:08:08.000000000 -0700
+@@ -19,14 +19,14 @@
+ const int kNetworkControlDataReadyEvent = 35671;
+ const int kNetworkControlCloseEvent     = 35672;
+ 
+-NetworkControl::NetworkControl(int port)
+-          : QServerSocket(port, 1),
++NetworkControl::NetworkControl(const QHostAddress & address, int port)
++          : QServerSocket(address, port, 1),
+             prompt("# "),
+             gotAnswer(false), answer(""),
+             client(NULL), cs(NULL)
+ {
+     VERBOSE(VB_IMPORTANT, LOC +
+-            QString("Listening for remote connections on port %1").arg(port));
++            QString("Listening for remote connections on port %1 of address %2").arg(port).arg(address.toString()));
+ 
+     // Eventually this map should be in the jumppoints table
+     jumpMap["channelpriorities"]     = "Channel Recording Priorities";
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/networkcontrol.h mythtv-0.20-16082-new/programs/mythfrontend/networkcontrol.h
+--- mythtv-0.20-16082-old/programs/mythfrontend/networkcontrol.h	2008-09-15 14:08:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/networkcontrol.h	2008-09-15 14:08:08.000000000 -0700
+@@ -18,7 +18,7 @@
+ {
+     Q_OBJECT
+   public:
+-    NetworkControl(int port);
++    NetworkControl(const QHostAddress & address, int port);
+     ~NetworkControl();
+ 
+     void newConnection(int socket);
