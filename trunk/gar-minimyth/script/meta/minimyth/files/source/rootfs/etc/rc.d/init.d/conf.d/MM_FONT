@@ -27,6 +27,13 @@ conf_default_MM_FONT() {
        MM_FONT_FILE_TTF_DELETE="${font_list}"
     fi
 
+    MM_FONT_FILE_TTF_ADD=`/bin/echo " ${MM_FONT_FILE_TTF_ADD} " | /bin/sed \
+	-e 's%[ \t][ \t]*% %g' \
+        -e 's% \([^ /]\)% /\1%g' \
+        -e 's%//*%/%g' \
+        -e 's%^ %%' \
+        -e 's% $%%'`
+
     return 0
 }
 
@@ -40,15 +47,18 @@ conf_write_MM_FONT() {
 }
 
 conf_fetch_MM_FONT() {
-    local font
+    local name_remote
+    local name_local
 
     if /usr/bin/test -n "${MM_FONT_FILE_TTF_ADD}" ; then
-        /bin/mkdir -p /usr/lib/X11/fonts/TTF
-        for font in ${MM_FONT_FILE_TTF_ADD} ; do
-            /bin/rm -f /usr/lib/X11/fonts/TTF/${font}
-            mm_confro_get ${font} /usr/lib/X11/fonts/TTF/${font}
-            if /usr/bin/test ! -e /usr/lib/X11/fonts/TTF/${font} ; then
-                mm_message_output err "error: failed to fetch '${font}' file."
+        /bin/mkdir -p /home/minimyth/.mythtv
+        for name_remote in ${MM_FONT_FILE_TTF_ADD} ; do
+            name_local=`/usr/bin/basename ${name_remote}`
+            name_local="/usr/lib/X11/fonts/TTF/${name_local}"
+            /bin/rm -f ${name_local}
+            mm_confro_get ${name_remote} ${name_local}
+            if /usr/bin/test ! -e ${name_local} ; then
+                mm_message_output err "error: failed to fetch '${name_remote}' file."
             fi
         done
     fi

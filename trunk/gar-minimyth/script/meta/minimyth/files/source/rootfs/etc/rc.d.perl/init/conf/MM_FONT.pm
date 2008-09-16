@@ -7,6 +7,8 @@ package init::conf::MM_FONT;
 use strict;
 use warnings;
 
+require File::Basename;
+
 my %var_list;
 
 sub var_list
@@ -37,23 +39,34 @@ $var_list{'MM_FONT_FILE_TTF_DELETE'} =
 $var_list{'MM_FONT_FILE_TTF_ADD'} =
 {
     value_default  => '',
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_clean = $minimyth->var_get($name);
+        $value_clean = " $value_clean ";
+        $value_clean =~ s/[ \t]+/ /g;
+        $value_clean =~ s/ ([^ \/])/ \/$1/g;
+        $value_clean =~ s/\/+/\//g;
+        $value_clean =~ s/^ //;
+        $value_clean =~ s/ $//;
+        $minimyth->var_set($name, $value_clean);
+    },
     value_file     => '.+',
     file           => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        my @file;
+        my @file = ();
 
-        foreach (split(/ +/, $minimyth->var_get($name)))
+        foreach (split(/ /, $minimyth->var_get($name)))
         {
-            s/\/\/+/\//g;
-            s/^\///;
-
             my $item;
-            $item->{'name_remote'} = "/$_";
-            $item->{'name_local'}  = "/usr/lib/X11/fonts/TTF/$_";
-            $item->{'mode_local'}  = '644';
+            $item->{'name_remote'} = "$_";
+            $item->{'name_local'}  = '/usr/lib/X11/fonts/TTF/' . File::Basename::basename($_);
+            $item->{'mode_local'}  = '0644';
 
             push(@file, $item);
         }
