@@ -161,6 +161,11 @@ start() {
         /bin/rm -rf /usr/share/mythtv/browser*
         /bin/rm -rf /usr/share/mythtv/mythbrowser*
     fi
+    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"         = "no" ; then
+        /bin/rm -rf /usr/lib/mythtv/plugins/libmythdvd.so
+        /bin/rm -rf /usr/share/mythtv/dvd*
+        /bin/rm -rf /usr/share/mythtv/mythdvd*
+    fi
     if /usr/bin/test "${MM_PLUGIN_GALLERY_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythgallery.so
         /bin/rm -rf /usr/share/mythtv/gallery*
@@ -208,7 +213,8 @@ start() {
     fi
 
     # Check for libdvdcss.so.2
-    if /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}" = "yes" ; then
+    if /usr/bin/test "${MM_PLUGIN_DVD_ENABLED}"   = "yes" || \
+       /usr/bin/test "${MM_PLUGIN_VIDEO_ENABLED}" = "yes" ; then
         found=0
         if /usr/bin/test -e "/etc/ld.so.conf" ; then
             for dir in `/bin/cat /etc/ld.so.conf` ; do

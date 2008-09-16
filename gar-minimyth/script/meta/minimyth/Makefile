@@ -78,6 +78,8 @@ DEPENDS = \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythbrowser),myth-$(mm_MYTH_VERSION)/mythbrowser)) \
+	$(if $(filter mythdvd,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythdvd),myth-$(mm_MYTH_VERSION)/mythdvd)) \
 	$(if $(filter mythgallery,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythgallery),myth-$(mm_MYTH_VERSION)/mythgallery)) \
 	$(if $(filter mythgame,$(mm_SOFTWARE)), \

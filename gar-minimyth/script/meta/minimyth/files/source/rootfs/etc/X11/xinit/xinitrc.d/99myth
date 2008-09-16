@@ -11,7 +11,11 @@ if   /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythfrontend" ; then
     if /usr/bin/test "${MM_DEBUG}" = "yes" ; then
         args="${args} -v all"
     fi
-    args="${args} -d"
+    if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -ge  1    ) || \
+       ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 &&      \
+         /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21    ) ; then
+        args="${args} -d"
+    fi
     /usr/bin/mythfrontend ${args}
 elif /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythwelcome"  ; then
     /usr/bin/mythwelcome

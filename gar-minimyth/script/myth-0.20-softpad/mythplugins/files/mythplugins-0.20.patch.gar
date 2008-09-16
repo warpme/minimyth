@@ -1,0 +1,191 @@
+diff -Naur mythplugins-0.20-16082-old/configure mythplugins-0.20-16082-new/configure
+--- mythplugins-0.20-16082-old/configure	2008-09-15 14:09:36.000000000 -0700
++++ mythplugins-0.20-16082-new/configure	2008-09-15 14:09:36.000000000 -0700
+@@ -291,27 +291,7 @@
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
+-
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
+-    fi
+-
+-    LIBPATHS="`echo $LIBPATHS $prefix/$libdir_name /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_kdelibdir@ | sed s/'\/ '/' '/g` "
+ 
+     HAS_IT="no"
+     for LIBPATH in $LIBPATHS ; do
+@@ -324,9 +304,7 @@
+ 
+ has_header()
+ {
+-    HPATHS="$prefix/include /usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include /"
+-    INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+-    HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
++    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_kdeincludedir@"
+ 
+     HAS_IT="no"
+     for HPATH in $HPATHS ; do
+@@ -387,7 +365,7 @@
+ 
+ if test "$sdl" != "no" ; then
+     sdl="no"
+-    if test x`which sdl-config` != x ; then
++    if test x`which @GAR_DESTDIR@@GAR_bindir@/sdl-config` != x ; then
+         sdl="yes"
+     fi
+ fi
+@@ -490,12 +468,7 @@
+ if test "$browser" != "no" ; then
+     hasit="no"
+     if has_library libkhtml ; then
+-        if has_header kde/khtml_part.h                  || \
+-           has_header /opt/kde3/include/khtml_part.h    || \
+-           has_header /usr/kde/3.3/include/khtml_part.h || \
+-           has_header /usr/kde/3.4/include/khtml_part.h || \
+-           has_header /usr/kde/3.5/include/khtml_part.h || \
+-           has_header khtml_part.h ; then
++        if has_header khtml_part.h ; then
+             hasit="yes"
+         fi
+     fi
+@@ -543,11 +516,11 @@
+ ###########################################################
+ 
+ # bring in mythtv config
+-if [ -e $prefix/include/mythtv/mythconfig.mak ] ; then
++if [ -e @GAR_DESTDIR@@GAR_prefix@/include/mythtv/mythconfig.mak ] ; then
+   rm mythconfig.mak 2> /dev/null
+-  ln -s $prefix/include/mythtv/mythconfig.mak mythconfig.mak
++  ln -s @GAR_DESTDIR@@GAR_prefix@/include/mythtv/mythconfig.mak mythconfig.mak
+ else
+-  echo "ERROR: mythconfig.mak not found at $prefix/include/mythtv/mythconfig.mak"
++  echo "ERROR: mythconfig.mak not found at @GAR_DESTDIR@@GAR_prefix@/include/mythtv/mythconfig.mak"
+   echo "Did you make AND install MythTV first?"
+   echo "Are you using the correct prefix ($prefix)?"
+   echo "Bailing out!!"
+@@ -822,9 +795,9 @@
+     if test "$sdl" = "yes" ; then
+         echo "        SDL           support will be included in MythMusic"
+         echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+-        echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
+-        echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
+-        echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `@GAR_DESTDIR@/@GAR_bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
+     fi
+     if test "$sdl" = "no" ; then
+         echo "        SDL           support will not be included in MythMusic"
+@@ -862,10 +835,9 @@
+     if test "$festival" = "yes" ; then
+         echo "        FESTIVAL      support will be included in MythPhone"
+         echo "#define FESTIVAL_SUPPORT 1" >> ./mythphone/mythphone/config.h
+-        echo "FESTIVALDIR = /home/paul/Build/festival/festival/" >> ./mythphone/mythphone/config.pro
++        echo "FESTIVALDIR = @GAR_prefix@" >> ./mythphone/mythphone/config.pro
+         echo "DEFINES += FESTIVAL_HOME=\\\"\$\${FESTIVALDIR}\\\"" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += /usr/include/festival /usr/include/speech_tools" >> ./mythphone/mythphone/config.pro
+-        echo "INCLUDEPATH += /usr/local/include/festival /usr/local/include/speech_tools" >> ./mythphone/mythphone/config.pro
++        echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/festival @GAR_DESTDIR@@GAR_includedir@/speech_tools" >> ./mythphone/mythphone/config.pro
+         echo "LIBS += -lFestival -lestools -lestbase -leststring -ltermcap" >> ./mythphone/mythphone/config.pro
+     fi
+ 
+diff -Naur mythplugins-0.20-16082-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro mythplugins-0.20-16082-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro
+--- mythplugins-0.20-16082-old/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2008-09-15 14:09:36.000000000 -0700
++++ mythplugins-0.20-16082-new/mythbrowser/mythbookmarkmanager/mythbookmarkmanager.pro	2008-09-15 14:09:36.000000000 -0700
+@@ -1,8 +1,7 @@
+ include ( ../../mythconfig.mak )
+ include ( ../../settings.pro )
+ 
+-INCLUDEPATH += /usr/include/kde
+-INCLUDEPATH += /opt/kde3/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_kdeincludedir@
+ 
+ TEMPLATE = lib
+ CONFIG += plugin thread warn_on debug
+diff -Naur mythplugins-0.20-16082-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-0.20-16082-new/mythbrowser/mythbrowser/mythbrowser.pro
+--- mythplugins-0.20-16082-old/mythbrowser/mythbrowser/mythbrowser.pro	2008-09-15 14:09:36.000000000 -0700
++++ mythplugins-0.20-16082-new/mythbrowser/mythbrowser/mythbrowser.pro	2008-09-15 14:09:36.000000000 -0700
+@@ -1,8 +1,7 @@
+ include (../../mythconfig.mak )
+ include (../../settings.pro )
+ 
+-INCLUDEPATH += /usr/include/kde
+-INCLUDEPATH += /opt/kde3/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_kdeincludedir@
+ 
+ TEMPLATE = app
+ CONFIG += thread opengl
+@@ -16,7 +15,7 @@
+ INSTALLS += installimages
+ 
+ LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION $$EXTRA_LIBS
+-LIBS += -L/opt/kde3/lib -lkhtml
++LIBS += -L@GAR_DESTDIR@@GAR_kdelibdir@ -Wl,-rpath,@GAR_DESTDIR@@GAR_kdelibdir@ -lkhtml
+ 
+ # Input
+ HEADERS += webpage.h tabview.h
+diff -Naur mythplugins-0.20-16082-old/mythmusic/mythmusic/mythmusic.pro mythplugins-0.20-16082-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-0.20-16082-old/mythmusic/mythmusic/mythmusic.pro	2008-09-15 14:09:36.000000000 -0700
++++ mythplugins-0.20-16082-new/mythmusic/mythmusic/mythmusic.pro	2008-09-15 14:09:36.000000000 -0700
+@@ -6,7 +6,7 @@
+    error(Missing config.pro: please run the configure script)
+ }
+ 
+-INCLUDEPATH *= /usr/include/cdda
++INCLUDEPATH *= @GAR_DESTDIR@@GAR_includedir@/cdda
+ TEMPLATE = lib
+ CONFIG += plugin thread
+ TARGET = mythmusic
+diff -Naur mythplugins-0.20-16082-old/settings.pro mythplugins-0.20-16082-new/settings.pro
+--- mythplugins-0.20-16082-old/settings.pro	2008-09-15 14:09:36.000000000 -0700
++++ mythplugins-0.20-16082-new/settings.pro	2008-09-15 14:09:36.000000000 -0700
+@@ -2,18 +2,18 @@
+ 
+ LIBVERSION = 0.20.2
+ 
+-INCLUDEPATH += $${PREFIX}/include
+-#INCLUDEPATH += /usr/include/cdda
+-#INCLUDEPATH += /usr/include/FLAC
+-INCLUDEPATH += /usr/kde/3.3/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/cdda
++#INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/FLAC
++INCLUDEPATH += @GAR_DESTDIR@@GAR_kdeincludedir@
+ 
+-LIBPATH += /usr/kde/3.3/lib
+-LIBS *= -L$${PREFIX}/lib
++LIBPATH += @GAR_DESTDIR@@GAR_kdelibdir@
++LIBS *= -L@GAR_DESTDIR@@GAR_libdir@
+ 
+ DEFINES += _GNU_SOURCE
+ DEFINES += PREFIX=\"$${PREFIX}\"
+ 
+-INCLUDEPATH += $${PREFIX}/include
++INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@
+ INCLUDEPATH += $$CONFIG_INCLUDEPATH
+ 
+ # figure out compile flags based on qmake info
+@@ -26,7 +26,6 @@
+ 
+ profile:CONFIG += release
+ 
+-QMAKE_CXXFLAGS_RELEASE = $$OPTFLAGS -fomit-frame-pointer
+ release:contains( TARGET_ARCH_POWERPC, yes ) {
+     QMAKE_CXXFLAGS_RELEASE = $$OPTFLAGS
+     # Auto-inlining causes some Qt moc methods to go missing

@@ -1,0 +1,159 @@
+diff -Naur mythplugins-0.20-16082-old/configure mythplugins-0.20-16082-new/configure
+--- mythplugins-0.20-16082-old/configure	2008-09-15 14:09:35.000000000 -0700
++++ mythplugins-0.20-16082-new/configure	2008-09-15 14:09:36.000000000 -0700
+@@ -424,15 +424,25 @@
+     fi
+ 
+     paranoia="no"
+-    if has_library libcdda_paranoia && has_library libcdda_interface ; then
+-        if has_header cdda_paranoia.h ; then
+-            paranoia="yes"
++    cdio="no"
++    if test "$paranoia" = "no" ; then
++        if has_library libcdio_paranoia && has_library libcdio_cdda ; then
++            if has_header cdio/paranoia.h && has_header cdio/cdda.h ; then
++                paranoia="yes"
++                cdio="yes"
++            fi
+         fi
+-        if has_header cdda/cdda_paranoia.h ; then
+-            paranoia="yes"
++    fi
++    if test "$paranoia" = "no" ; then
++        if has_library libcdda_paranoia && has_library libcdda_interface ; then
++            if has_header cdda_paranoia.h ; then
++                paranoia="yes"
++            fi
++            if has_header cdda/cdda_paranoia.h ; then
++                paranoia="yes"
++            fi
+         fi
+     fi
+-
+     if test "$paranoia" = "no" ; then
+         echo "MythMusic requires CDDA Paranoia."
+     fi
+@@ -748,6 +758,14 @@
+       echo "#undef  HAVE_STDINT_H" >> ./mythmusic/mythmusic/config.h
+     fi
+ 
++    if test "$cdio" = "yes" ; then
++        echo "#define HAVE_CDIO 1" >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lcdio_paranoia -lcdio_cdda"      >> ./mythmusic/mythmusic/config.pro
++    else
++        echo "#undef  HAVE_CDIO"   >> ./mythmusic/mythmusic/config.h
++        echo "LIBS += -lcdda_paranoia -lcdda_interface" >> ./mythmusic/mythmusic/config.pro
++    fi
++
+     if test "$opengl" = "yes" ; then
+         echo "        OpenGL        support will be included in MythMusic"
+         echo "#define OPENGL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+diff -Naur mythplugins-0.20-16082-old/mythmusic/mythmusic/cddecoder.cpp mythplugins-0.20-16082-new/mythmusic/mythmusic/cddecoder.cpp
+--- mythplugins-0.20-16082-old/mythmusic/mythmusic/cddecoder.cpp	2008-09-15 14:09:35.000000000 -0700
++++ mythplugins-0.20-16082-new/mythmusic/mythmusic/cddecoder.cpp	2008-09-15 14:09:36.000000000 -0700
+@@ -167,7 +167,11 @@
+     setOutput(0);
+ }
+ 
++#ifdef HAVE_CDIO
++static void paranoia_cb(long int inpos, paranoia_cb_mode_t function)
++#else
+ static void paranoia_cb(long inpos, int function)
++#endif
+ {       
+     inpos = inpos; function = function;
+ }
+diff -Naur mythplugins-0.20-16082-old/mythmusic/mythmusic/cddecoder.h mythplugins-0.20-16082-new/mythmusic/mythmusic/cddecoder.h
+--- mythplugins-0.20-16082-old/mythmusic/mythmusic/cddecoder.h	2008-09-15 14:09:35.000000000 -0700
++++ mythplugins-0.20-16082-new/mythmusic/mythmusic/cddecoder.h	2008-09-15 14:09:36.000000000 -0700
+@@ -1,14 +1,26 @@
+ #ifndef CDDECODER_H_
+ #define CDDECODER_H_
+ 
++#include "config.h"
+ #include "decoder.h"
+ 
+ #include <cdaudio.h>
+ extern "C" {
+-#include <cdda_interface.h>
+-#include <cdda_paranoia.h>
++#ifdef HAVE_CDIO
++#  include <cdio/cdda.h>
++#  include <cdio/paranoia.h>
++#else
++#  include <cdda_interface.h>
++#  include <cdda_paranoia.h>
++#endif
+ }
+ 
++#ifdef HAVE_CDIO
++#  define CD_FRAMESIZE_RAW CDIO_CD_FRAMESIZE_RAW
++#  define cdrom_drive cdrom_drive_t
++#  define cdrom_paranoia cdrom_paranoia_t
++#endif
++
+ class Metadata;
+ 
+ class CdDecoder : public Decoder
+diff -Naur mythplugins-0.20-16082-old/mythmusic/mythmusic/cdrip.cpp mythplugins-0.20-16082-new/mythmusic/mythmusic/cdrip.cpp
+--- mythplugins-0.20-16082-old/mythmusic/mythmusic/cdrip.cpp	2008-09-15 14:09:35.000000000 -0700
++++ mythplugins-0.20-16082-new/mythmusic/mythmusic/cdrip.cpp	2008-09-15 14:09:36.000000000 -0700
+@@ -1,3 +1,5 @@
++#include "config.h"
++
+ // ANSI C includes
+ #include <cstdio>
+ #include <cstring>
+@@ -11,8 +13,13 @@
+ // Linux C includes
+ #include <cdaudio.h>
+ extern "C" {
+-#include <cdda_interface.h>
+-#include <cdda_paranoia.h>
++#ifdef HAVE_CDIO
++#  include <cdio/cdda.h>
++#  include <cdio/paranoia.h>
++#else
++#  include <cdda_interface.h>
++#  include <cdda_paranoia.h>
++#endif
+ }
+ 
+ // C++ includes
+@@ -47,6 +54,12 @@
+ #include "lameencoder.h"
+ #include "flacencoder.h"
+ 
++#ifdef HAVE_CDIO
++#  define CD_FRAMESIZE_RAW CDIO_CD_FRAMESIZE_RAW
++#  define cdrom_drive cdrom_drive_t
++#  define cdrom_paranoia cdrom_paranoia_t
++#endif
++
+ Ripper::Ripper(MythMainWindow *parent, const char *name)
+       : MythDialog(parent, name)
+ {
+@@ -837,7 +850,11 @@
+         perror("Failed on cd_init_device");
+ }
+ 
++#ifdef HAVE_CDIO
++static void paranoia_cb(long int inpos, paranoia_cb_mode_t function)
++#else
+ static void paranoia_cb(long inpos, int function)
++#endif
+ {
+     inpos = inpos; function = function;
+ }
+diff -Naur mythplugins-0.20-16082-old/mythmusic/mythmusic/mythmusic.pro mythplugins-0.20-16082-new/mythmusic/mythmusic/mythmusic.pro
+--- mythplugins-0.20-16082-old/mythmusic/mythmusic/mythmusic.pro	2008-09-15 14:09:35.000000000 -0700
++++ mythplugins-0.20-16082-new/mythmusic/mythmusic/mythmusic.pro	2008-09-15 14:09:36.000000000 -0700
+@@ -21,7 +21,7 @@
+ INSTALLS += installfiles uifiles
+ 
+ LIBS += -lmad -lid3tag -logg -lvorbisfile -lvorbis -lvorbisenc -lcdaudio -lFLAC
+-LIBS += -lmp3lame -lcdda_paranoia -lcdda_interface
++LIBS += -lmp3lame
+ 
+ # Input
+ HEADERS += cddecoder.h cdrip.h constants.h databasebox.h

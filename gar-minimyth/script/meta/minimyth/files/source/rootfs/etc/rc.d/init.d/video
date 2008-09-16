@@ -74,112 +74,118 @@ start() {
     esac
     /bin/sed -i "s%@MM_XVMC_LIB@%%" /etc/X11/XvMCConfig
 
-    if /usr/bin/test -n "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
-        pref_max_cpus=`cat /proc/cpuinfo | grep -c '^processor[[:cntrl:]]*:'`
-        pref_cmp0='> 0 0'
-        pref_cmp1=''
-        pref_decoder=''
-        pref_videorenderer=''
-        pref_osdrenderer=''
-        pref_osdfade=''
-        case "${MM_VIDEO_MPEG2_DECODER}" in
-            ffmpeg)
-                pref_decoder='ffmpeg'
-                pref_videorenderer='xv-blit'
-                pref_osdrenderer='softblend'
-                pref_osdfade='0'
-                ;;
-            libmpeg2)
-                pref_decoder='libmpeg2'
-                pref_videorenderer='xv-blit'
-                pref_osdrenderer='softblend'
-                pref_osdfade='0'
-                ;;
-            xvmc)
-                pref_decoder='xvmc'
-                pref_videorenderer='xvmc-blit'
-                pref_osdrenderer='ia44blend'
-                pref_osdfade='0'
-                ;;
-            xvmc-vld)
-                pref_decoder='xvmc-vld'
-                pref_videorenderer='xvmc-blit'
-                pref_osdrenderer='ia44blend'
-                pref_osdfade='0'
-                ;;
-            *)
-                mm_message_output err "error: something is very wrong in the 'video' init script."
-                exit 1
-                ;;
-        esac
-        pref_deint0=''
-        pref_deint1=''
-        pref_filters=''
-        pref_deint0="${MM_VIDEO_DEINTERLACER}"
-        pref_deint1='none'
-        pref_filters=''
-        hostname=`mm_hostname`
-        profilegroupid=
-        if /usr/bin/test -n "${hostname}" ; then
-            profilegroupid=`mm_mythdb_get \
-                "SELECT profilegroupid \
-                 FROM displayprofilegroups \
-                 WHERE name=\"MiniMyth\" \
-                 AND hostname=\"${hostname}\" \
-                ;" | grep -v 'profilegroupid'`
+    if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 && \
+         /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -eq 20    ) ; then
+         mm_mythdb_settings_set 'PreferredMPEG2Decoder' "${MM_VIDEO_MPEG2_DECODER}"
+         mm_mythdb_settings_set 'DeinterlaceFilter'     "${MM_VIDEO_DEINTERLACER}"
+    else
+        if /usr/bin/test -n "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
+            pref_max_cpus=`cat /proc/cpuinfo | grep -c '^processor[[:cntrl:]]*:'`
+            pref_cmp0='> 0 0'
+            pref_cmp1=''
+            pref_decoder=''
+            pref_videorenderer=''
+            pref_osdrenderer=''
+            pref_osdfade=''
+            case "${MM_VIDEO_MPEG2_DECODER}" in
+                ffmpeg)
+                    pref_decoder='ffmpeg'
+                    pref_videorenderer='xv-blit'
+                    pref_osdrenderer='softblend'
+                    pref_osdfade='0'
+                    ;;
+                libmpeg2)
+                    pref_decoder='libmpeg2'
+                    pref_videorenderer='xv-blit'
+                    pref_osdrenderer='softblend'
+                    pref_osdfade='0'
+                    ;;
+                xvmc)
+                    pref_decoder='xvmc'
+                    pref_videorenderer='xvmc-blit'
+                    pref_osdrenderer='ia44blend'
+                    pref_osdfade='0'
+                    ;;
+                xvmc-vld)
+                    pref_decoder='xvmc-vld'
+                    pref_videorenderer='xvmc-blit'
+                    pref_osdrenderer='ia44blend'
+                    pref_osdfade='0'
+                    ;;
+                *)
+                    mm_message_output err "error: something is very wrong in the 'video' init script."
+                    exit 1
+                    ;;
+            esac
+            pref_deint0=''
+            pref_deint1=''
+            pref_filters=''
+            pref_deint0="${MM_VIDEO_DEINTERLACER}"
+            pref_deint1='none'
+            pref_filters=''
+            hostname=`mm_hostname`
+            profilegroupid=
+            if /usr/bin/test -n "${hostname}" ; then
+                profilegroupid=`mm_mythdb_get \
+                    "SELECT profilegroupid \
+                     FROM displayprofilegroups \
+                     WHERE name=\"MiniMyth\" \
+                     AND hostname=\"${hostname}\" \
+                    ;" | grep -v 'profilegroupid'`
+            fi
+            profileid=
+            if /usr/bin/test -n "${profilegroupid}" ; then
+                profileid=`mm_mythdb_get \
+                    "SELECT profileid \
+                     FROM displayprofiles \
+                     WHERE profilegroupid=\"${profilegroupid}\" \
+                     AND value=\"pref_priority\" \
+                     AND data=\"1\" \
+                    ;" | grep -v 'profileid'`
+            fi
+            if /usr/bin/test -n "${profilegroupid}" ; then
+                mm_mythdb_set \
+                    "DELETE FROM displayprofiles \
+                    WHERE profilegroupid=\"${profilegroupid}\" ; "
+            fi
+            if /usr/bin/test -n "${profilegroupid}" && \
+               /usr/bin/test -n "${profileid}"      ; then
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_priority\", data=\"1\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_cmp0\", data=\"${pref_cmp0}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_cmp1\", data=\"${pref_cmp1}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_max_cpus\", data=\"${pref_max_cpus}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_decoder\", data=\"${pref_decoder}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_videorenderer\", data=\"${pref_videorenderer}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_osdrenderer\", data=\"${pref_osdrenderer}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_osdfade\", data=\"${pref_osdfade}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_deint0\", data=\"${pref_deint0}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
+                     value=\"pref_deint1\", data=\"${pref_deint1}\" ; "
+                mm_mythdb_set \
+                    "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\",
+                     value=\"pref_filters\", data=\"${pref_filters}\" ; "
+            fi
+            mm_mythdb_settings_set DefaultVideoPlaybackProfile "${MM_VIDEO_PLAYBACK_PROFILE}"
         fi
-        profileid=
-        if /usr/bin/test -n "${profilegroupid}" ; then
-            profileid=`mm_mythdb_get \
-                "SELECT profileid \
-                 FROM displayprofiles \
-                 WHERE profilegroupid=\"${profilegroupid}\" \
-                 AND value=\"pref_priority\" \
-                 AND data=\"1\" \
-                ;" | grep -v 'profileid'`
-        fi
-        if /usr/bin/test -n "${profilegroupid}" ; then
-            mm_mythdb_set \
-                "DELETE FROM displayprofiles \
-                WHERE profilegroupid=\"${profilegroupid}\" ; "
-        fi
-        if /usr/bin/test -n "${profilegroupid}" && \
-           /usr/bin/test -n "${profileid}"      ; then
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_priority\", data=\"1\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_cmp0\", data=\"${pref_cmp0}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_cmp1\", data=\"${pref_cmp1}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_max_cpus\", data=\"${pref_max_cpus}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_decoder\", data=\"${pref_decoder}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_videorenderer\", data=\"${pref_videorenderer}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_osdrenderer\", data=\"${pref_osdrenderer}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_osdfade\", data=\"${pref_osdfade}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_deint0\", data=\"${pref_deint0}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\", \
-                 value=\"pref_deint1\", data=\"${pref_deint1}\" ; "
-            mm_mythdb_set \
-                "INSERT INTO displayprofiles SET profilegroupid=\"${profilegroupid}\", profileid=\"${profileid}\",
-                 value=\"pref_filters\", data=\"${pref_filters}\" ; "
-        fi
-        mm_mythdb_settings_set DefaultVideoPlaybackProfile "${MM_VIDEO_PLAYBACK_PROFILE}"
     fi
 
     case "${MM_VIDEO_MPEG2_DECODER}" in

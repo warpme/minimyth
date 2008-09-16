@@ -1,0 +1,116 @@
+diff -Naur mythstream-0.18_1-old/INSTALL mythstream-0.18_1-new/INSTALL
+--- mythstream-0.18_1-old/INSTALL	2007-09-12 18:25:37.000000000 -0700
++++ mythstream-0.18_1-new/INSTALL	2008-03-23 12:52:37.000000000 -0700
+@@ -77,11 +77,9 @@
+    xfree86-devel. On Debian Sarge: libqt3-mt-dev, libqt3-headers, libfreetype-dev,
+    libfontconfig1, libpng12-dev, xlibs-dev, libx11-dev (see MythTV docs).
+ 
+-   In addition, you'll need fftw2 (not fftw3) packages. On most distributions 
+-   installing fftw devel or fftw2 devel packages will do. 
+-   On Suse you will have to compile fftw yourself because Suse provides double 
+-   precision fftw (dfftw) packages. You can download the fftw source from 
+-   http://www.fftw.org/download.html (sept 2004: version 2.1.5).
++   In addition, you'll need fftw3 fftw2) packages. On most distributions 
++   installing fftw devel or fftw3 devel packages will do.  You can download the fftw
++   source from http://www.fftw.org/download.html (sept 2004: version 2.1.5).
+ 
+    NOTE: MythStream uses MythTV libraries. If you have a binary MythTV install,
+    download the mythtv development package (Debian: libmyth-[version]-dev). When
+diff -Naur mythstream-0.18_1-old/libs/fft.cpp mythstream-0.18_1-new/libs/fft.cpp
+--- mythstream-0.18_1-old/libs/fft.cpp	2006-11-06 14:50:22.000000000 -0800
++++ mythstream-0.18_1-new/libs/fft.cpp	2008-03-23 13:03:29.000000000 -0700
+@@ -155,7 +155,7 @@
+ {
+   unloadSampler();
+   if (plan)
+-    fftw_destroy_plan(plan);
++    fftwf_destroy_plan(plan);
+   free(in);
+   free(out);
+ }
+@@ -221,17 +221,17 @@
+     for (int i = 0; i < sampleWindow; i++)
+     {
+         // samples are windowed
+-        c_re( in[i] ) = (int) ( lbuf[i] * sin(drad*i) );
+-        //c_re( in[i] ) = 32000 - (i%2)*64000 ;
+-        c_im( in[i] ) = 0;
++        in[i][0] = (int) ( lbuf[i] * sin(drad*i) );
++        //in[i][0] = 32000 - (i%2)*64000 ;
++        in[i][1] = 0;
+     }
+ 
+     // should use real fft...
+-    fftw(plan, 1, in, 1, 0, out, 1, 0);
++    fftwf_execute(plan);
+ 
+     // remove DC offset
+-    c_re(out[0]) = 0;
+-    c_im(out[0]) = 0;
++    out[0][0] = 0;
++    out[0][1] = 0;
+ 
+     // display x-scale: start linear, handover to log function
+     int fftPoint = 0;       // display x-axis
+@@ -252,8 +252,8 @@
+ 
+     for (int i = 0; i < nfreq; i++)
+     {
+-        re = c_re(out[i+1]) / sampleWindow;
+-        im = c_im(out[i+1]) / sampleWindow;
++        re = out[i+1][0] / sampleWindow;
++        im = out[i+1][1] / sampleWindow;
+ 
+         // lin and log display pos:
+         linPos = linCoeff*i;
+@@ -309,10 +309,10 @@
+ 
+ void FFTConverter::init()
+ {
+-    in = (FFTW_COMPLEX*)malloc(sampleWindow * sizeof(FFTW_COMPLEX));
+-    out = (FFTW_COMPLEX*)malloc(sampleWindow * sizeof(FFTW_COMPLEX));
++    in = (fftwf_complex*)malloc(sampleWindow * sizeof(fftwf_complex));
++    out = (fftwf_complex*)malloc(sampleWindow * sizeof(fftwf_complex));
+ 
+-    plan = fftw_create_plan(sampleWindow, FFTW_FORWARD, FFTW_MEASURE);
++    plan = fftwf_plan_dft_1d(sampleWindow, in, out, FFTW_FORWARD, FFTW_MEASURE);
+     if (plan == NULL)
+     {
+        cerr << "FFTConverter: Error creating fft plan" << endl;
+diff -Naur mythstream-0.18_1-old/libs/fft.h mythstream-0.18_1-new/libs/fft.h
+--- mythstream-0.18_1-old/libs/fft.h	2004-12-23 21:31:23.000000000 -0800
++++ mythstream-0.18_1-new/libs/fft.h	2008-03-23 12:52:37.000000000 -0700
+@@ -32,7 +32,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+-#include <fftw.h>
++#include <fftw3.h>
+ #include <stdlib.h>
+ #include <qthread.h>
+ 
+@@ -121,9 +121,9 @@
+     int processIndex; // spectrum queue index to process
+     int displayIndex; // signalled spectrum index to display
+ 
+-    FFTW_COMPLEX *in;
+-    FFTW_COMPLEX *out;
+-    fftw_plan plan;
++    fftwf_complex *in;
++    fftwf_complex *out;
++    fftwf_plan plan;
+ 
+     void init();
+ 
+diff -Naur mythstream-0.18_1-old/mythstream/mythstream.pro mythstream-0.18_1-new/mythstream/mythstream.pro
+--- mythstream-0.18_1-old/mythstream/mythstream.pro	2007-09-25 11:57:55.000000000 -0700
++++ mythstream-0.18_1-new/mythstream/mythstream.pro	2008-03-23 12:52:37.000000000 -0700
+@@ -13,7 +13,7 @@
+ 
+ target.path = $${PREFIX}/lib/mythtv/plugins
+ INSTALLS += target
+-LIBS += -lfftw
++LIBS += -lfftw3f
+ 
+ DEFINES += MYTHTV
+ 

@@ -69,96 +69,105 @@ sub start
         '/etc/X11/XvMCConfig',
         { '@MM_XVMC_LIB@' => $xvmc_lib });
 
-    if ($minimyth->var_get('MM_VIDEO_PLAYBACK_PROFILE'))
+    if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+         ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
     {
-        my %pref = ();
-        $pref{'pref_max_cpus'} = 0;
-        if (open(FILE, '<', '/proc/cpuinfo'))
+         $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', $minimyth->var_get('MM_VIDEO_MPEG2_DECODER'));
+         $minimyth->mythdb_settings_set('DeinterlaceFilter',     $minimyth->var_get('MM_VIDEO_DEINTERLACER') );
+    }
+    else
+    {
+        if ($minimyth->var_get('MM_VIDEO_PLAYBACK_PROFILE'))
         {
-            foreach (grep(/^processor[[:cntrl:]]*:/, (<FILE>)))
+            my %pref = ();
+            $pref{'pref_max_cpus'} = 0;
+            if (open(FILE, '<', '/proc/cpuinfo'))
             {
-                $pref{'pref_max_cpus'} += 1;
+                foreach (grep(/^processor[[:cntrl:]]*:/, (<FILE>)))
+                {
+                    $pref{'pref_max_cpus'} += 1;
+                }
             }
+            if ($pref{'pref_max_cpus'} == 0)
+            {
+                $pref{'pref_max_cpus'} = 1;
+            }
+            $pref{'pref_cmp0'} = '> 0 0';
+            $pref{'pref_cmp1'} = '';
+            given ($mpeg2_decoder)
+            {
+                when (/^ffmpeg$/)
+                {
+                    $pref{'pref_decoder'}       = 'ffmpeg';
+                    $pref{'pref_videorenderer'} = 'xv-blit';
+                    $pref{'pref_osdrenderer'}   = 'softblend';
+                    $pref{'pref_osdfade'}       = '0';
+                }
+                when (/^libmpeg2$/)
+                {
+                    $pref{'pref_decoder'}       = 'libmpeg2';
+                    $pref{'pref_videorenderer'} = 'xv-blit';
+                    $pref{'pref_osdrenderer'}   = 'softblend';
+                    $pref{'pref_osdfade'}       = '0';
+                }
+                when (/^xvmc$/)
+                {
+                    $pref{'pref_decoder'}       = 'xvmc';
+                    $pref{'pref_videorenderer'} = 'xvmc-blit';
+                    $pref{'pref_osdrenderer'}   = 'ia44blend';
+                    $pref{'pref_osdfade'}       = '0';
+                }
+                when (/^xvmc-vld$/)
+                {
+                    $pref{'pref_decoder'}       = 'xvmc-vld';
+                    $pref{'pref_videorenderer'} = 'xvmc-blit';
+                    $pref{'pref_osdrenderer'}   = 'ia44blend';
+                    $pref{'pref_osdfade'}       = '0';
+                }
+                default
+                {
+                    $minimyth->message_output('err', "error: something is very wrong in the 'video' init script.");
+                    return 0;
+                }
+            }
+            $pref{'pref_deint0'}  = $minimyth->var_get('MM_VIDEO_DEINTERLACER');
+            $pref{'pref_deint1'}  = 'none';
+            $pref{'pref_filters'} = '';
+            my $profilegroupid = $minimyth->mythdb_x_get('displayprofilegroups',
+                                                        { 'name' => 'MiniMyth' },
+                                                        'profilegroupid');
+            my $profileid = '';
+            if ($profilegroupid)
+            {
+                $profilegroupid = $minimyth->mythdb_x_get('displayprofiles',
+                                                          { 'profilegroupid' => $profilegroupid,
+                                                            'value'          => 'pref_priority',
+                                                            'data'           => '1' },
+                                                          'profileid',
+                                                          { 'condition_hostname' => 0 });
+            }
+            if ($profilegroupid)
+            {
+                $minimyth->mythdb_x_delete('displayprofiles',
+                                           { 'profilegroupid' => $profilegroupid },
+                                           { 'condition_hostname' => 0 });
+            }
+            if (($profilegroupid) && ($profileid))
+            {
+                $pref{'pref_priority'} = '1';
+                foreach (keys %pref)
+                {
+                    $minimyth->mythdb_x_set('displayprofiles',
+                                            { 'profilegroupid' => $profilegroupid,
+                                              'profileid'      => $profileid,
+                                              'value'          => $_ },
+                                            'data',
+                                            $pref{$_},
+                                            { 'condition_hostname' => 0 });
+                }
+            }
+            $minimyth->mythdb_settings_set('DefaultVideoPlaybackProfile', $minimyth->var_get('MM_VIDEO_PLAYBACK_PROFILE'));
         }
-        if ($pref{'pref_max_cpus'} == 0)
-        {
-            $pref{'pref_max_cpus'} = 1;
-        }
-        $pref{'pref_cmp0'} = '> 0 0';
-        $pref{'pref_cmp1'} = '';
-        given ($mpeg2_decoder)
-        {
-            when (/^ffmpeg$/)
-            {
-                $pref{'pref_decoder'}       = 'ffmpeg';
-                $pref{'pref_videorenderer'} = 'xv-blit';
-                $pref{'pref_osdrenderer'}   = 'softblend';
-                $pref{'pref_osdfade'}       = '0';
-            }
-            when (/^libmpeg2$/)
-            {
-                $pref{'pref_decoder'}       = 'libmpeg2';
-                $pref{'pref_videorenderer'} = 'xv-blit';
-                $pref{'pref_osdrenderer'}   = 'softblend';
-                $pref{'pref_osdfade'}       = '0';
-            }
-            when (/^xvmc$/)
-            {
-                $pref{'pref_decoder'}       = 'xvmc';
-                $pref{'pref_videorenderer'} = 'xvmc-blit';
-                $pref{'pref_osdrenderer'}   = 'ia44blend';
-                $pref{'pref_osdfade'}       = '0';
-            }
-            when (/^xvmc-vld$/)
-            {
-                $pref{'pref_decoder'}       = 'xvmc-vld';
-                $pref{'pref_videorenderer'} = 'xvmc-blit';
-                $pref{'pref_osdrenderer'}   = 'ia44blend';
-                $pref{'pref_osdfade'}       = '0';
-            }
-            default
-            {
-                $minimyth->message_output('err', "error: something is very wrong in the 'video' init script.");
-                return 0;
-            }
-        }
-        $pref{'pref_deint0'}  = $minimyth->var_get('MM_VIDEO_DEINTERLACER');
-        $pref{'pref_deint1'}  = 'none';
-        $pref{'pref_filters'} = '';
-        my $profilegroupid = $minimyth->mythdb_x_get('displayprofilegroups',
-                                                    { 'name' => 'MiniMyth' },
-                                                    'profilegroupid');
-        my $profileid = '';
-        if ($profilegroupid)
-        {
-            $profilegroupid = $minimyth->mythdb_x_get('displayprofiles',
-                                                      { 'profilegroupid' => $profilegroupid,
-                                                        'value'          => 'pref_priority',
-                                                        'data'           => '1' },
-                                                      'profileid',
-                                                      { 'condition_hostname' => 0 });
-        }
-        if ($profilegroupid)
-        {
-            $minimyth->mythdb_x_delete('displayprofiles',
-                                       { 'profilegroupid' => $profilegroupid },
-                                       { 'condition_hostname' => 0 });
-        }
-        if (($profilegroupid) && ($profileid))
-        {
-            $pref{'pref_priority'} = '1';
-            foreach (keys %pref)
-            {
-                $minimyth->mythdb_x_set('displayprofiles',
-                                        { 'profilegroupid' => $profilegroupid,
-                                          'profileid'      => $profileid,
-                                          'value'          => $_ },
-                                        'data',
-                                        $pref{$_},
-                                        { 'condition_hostname' => 0 });
-            }
-        }
-        $minimyth->mythdb_settings_set('DefaultVideoPlaybackProfile', $minimyth->var_get('MM_VIDEO_PLAYBACK_PROFILE'));
     }
 
     my $video_driver;

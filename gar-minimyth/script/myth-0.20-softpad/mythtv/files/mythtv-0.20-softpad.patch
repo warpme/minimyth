@@ -1,0 +1,570 @@
+diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp mythtv-0.20-16082-new/libs/libmythtv/programinfo.cpp
+--- mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.cpp	2008-09-15 14:09:31.000000000 -0700
+@@ -91,6 +91,8 @@
+     endts = startts;
+     recstartts = startts;
+     recendts = startts;
++    softstart = 0;
++    softend = 0;
+     originalAirDate = QDate::QDate (0, 1, 1);
+     lastmodified = startts;
+     lastInUseTime = startts.addSecs(-4 * 60 * 60);
+@@ -180,6 +182,8 @@
+     endts = other.endts;
+     recstartts = other.recstartts;
+     recendts = other.recendts;
++    softstart = other.softstart;
++    softend = other.softend;
+     lastmodified = other.lastmodified;
+     spread = other.spread;
+     startCol = other.startCol;
+@@ -311,6 +315,8 @@
+     STR_TO_LIST((playgroup != "") ? playgroup : "Default")
+     INT_TO_LIST(recpriority2)
+     INT_TO_LIST(parentid)
++    INT_TO_LIST(softstart)
++    INT_TO_LIST(softend)
+ }
+ 
+ /** \fn ProgramInfo::FromStringList(QStringList&,int)
+@@ -410,6 +416,8 @@
+     STR_FROM_LIST(playgroup)
+     INT_FROM_LIST(recpriority2)
+     INT_FROM_LIST(parentid)
++    INT_FROM_LIST(softstart)
++    INT_FROM_LIST(softend)
+ 
+     return true;
+ }
+@@ -436,6 +444,7 @@
+ 
+     QString length;
+     int hours, minutes, seconds;
++    int startoffset, endoffset;
+     
+     progMap["title"] = title;
+     progMap["subtitle"] = subtitle;
+@@ -444,6 +453,7 @@
+     progMap["callsign"] = chansign;
+     progMap["commfree"] = chancommfree;
+     progMap["outputfilters"] = chanOutputFilters;
++
+     if (isVideo)
+     {
+         progMap["starttime"] = "";
+@@ -465,6 +475,8 @@
+             progMap["startdate"] = startts.toString("yyyy");
+             progMap["recstartdate"] = startts.toString("yyyy");
+         }
++        startoffset = 0;
++        endoffset = 0;
+     }
+     else
+     {
+@@ -476,7 +488,18 @@
+         progMap["recstartdate"] = recstartts.toString(shortDateFormat);
+         progMap["recendtime"] = recendts.toString(timeFormat);
+         progMap["recenddate"] = recendts.toString(shortDateFormat);
++        startoffset = recstartts.secsTo(startts) / 60;
++        endoffset = endts.secsTo(recendts) / 60;
+     }
++
++    if (startoffset)
++        progMap["startoffset"].sprintf("%+d", startoffset);
++    else
++        progMap["startoffset"] = "";
++    if (endoffset)
++        progMap["endoffset"].sprintf("%+d", endoffset);
++    else
++        progMap["endoffset"] = "";
+     
+     progMap["lastmodifiedtime"] = lastmodified.toString(timeFormat);
+     progMap["lastmodifieddate"] = lastmodified.toString(dateFormat);
+@@ -547,14 +570,18 @@
+     progMap["playgroup"] = playgroup;
+     progMap["programflags"] = programflags;
+ 
++    QString offsetstr = "";
++    if (startoffset || endoffset)
++        offsetstr.sprintf(" (%+d %+d)", startoffset, endoffset);
++
+     progMap["timedate"] = recstartts.date().toString(dateFormat) + ", " +
+                           recstartts.time().toString(timeFormat) + " - " +
+-                          recendts.time().toString(timeFormat);
++                          recendts.time().toString(timeFormat) + offsetstr;
+ 
+     progMap["shorttimedate"] =
+                           recstartts.date().toString(shortDateFormat) + ", " +
+                           recstartts.time().toString(timeFormat) + " - " +
+-                          recendts.time().toString(timeFormat);
++                          recendts.time().toString(timeFormat) + offsetstr;
+ 
+     progMap["time"] = timeNow.time().toString(timeFormat);
+ 
+diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.h mythtv-0.20-16082-new/libs/libmythtv/programinfo.h
+--- mythtv-0.20-16082-old/libs/libmythtv/programinfo.h	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.h	2008-09-15 14:09:31.000000000 -0700
+@@ -268,6 +268,8 @@
+     QDateTime endts;
+     QDateTime recstartts;
+     QDateTime recendts;
++    int softstart;
++    int softend;
+ 
+     AvailableStatusType availableStatus;
+     
+diff -Naur mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp mythtv-0.20-16082-new/libs/libmythtv/viewschdiff.cpp
+--- mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/viewschdiff.cpp	2008-09-15 14:09:31.000000000 -0700
+@@ -453,6 +453,9 @@
+ 
+ void ViewScheduleDiff::updateList(QPainter *p)
+ {
++    int softStart = gContext->GetNumSetting("SchedSoftStart",0);
++    int softEnd = gContext->GetNumSetting("SchedSoftEnd",0);
++
+     QRect pr = listRect;
+     QPixmap pix(pr.size());
+     pix.fill(this, pr.topLeft());
+@@ -523,7 +526,12 @@
+                          p->recstatus == rsAborted)
+                     ltype->EnableForcedFont(i, "conflictingrecording");
+                 else if (p->recstatus == rsWillRecord)
+-                    ltype->EnableForcedFont(i, "record");
++                {
++                    if (p->softstart != softStart || p->softend != softEnd)
++                        ltype->EnableForcedFont(i, "droppedsoft");
++                    else                
++                        ltype->EnableForcedFont(i, "record");
++                }
+                 else if (p->recstatus == rsRepeat ||
+                          (p->recstatus != rsDontRecord &&
+                           p->recstatus <= rsEarlierShowing))
+diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp mythtv-0.20-16082-new/programs/mythbackend/scheduler.cpp
+--- mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.cpp	2008-09-15 14:09:31.000000000 -0700
+@@ -152,16 +152,27 @@
+         return a->startts < b->startts;
+     if (a->endts != b->endts)
+         return a->endts < b->endts;
+-
+-    // Note: the PruneOverlaps logic depends on the following
+     if (a->title != b->title)
+         return a->title < b->title;
+     if (a->chanid != b->chanid)
+         return a->chanid < b->chanid;
+     if (a->inputid != b->inputid)
+         return a->inputid < b->inputid;
+-    if (a->findid != b->findid)
+-        return a->findid > b->findid;
++
++    // rsRepeat or rsInactive will not be considered for
++    // recording so we penalize these to force them to yield
++    // to a rule that might record.  Otherwise, more specific
++    // record type beats less specific.
++    int apri = RecTypePriority(a->rectype);
++    if (a->recstatus == rsInactive || a->recstatus == rsRepeat)
++        apri += 100;
++    int bpri = RecTypePriority(b->rectype);
++    if (b->recstatus == rsInactive || b->recstatus == rsRepeat)
++        bpri += 100;
++
++    if (apri != bpri)
++        return apri < bpri;
++
+     return a->recordid < b->recordid;
+ }
+ 
+@@ -179,7 +190,12 @@
+         return a->recordid < b->recordid;
+     if (a->chansign != b->chansign)
+         return a->chansign < b->chansign;
+-    return a->recstatus < b->recstatus;
++    if (a->recstatus != b->recstatus)
++        return a->recstatus < b->recstatus;
++
++    int asoft = (a->softstart != 0) + (a->softend != 0);
++    int bsoft = (b->softstart != 0) + (b->softend != 0);
++    return asoft < bsoft;
+ }
+ 
+ static bool comp_recstart(ProgramInfo *a, ProgramInfo *b)
+@@ -480,10 +496,12 @@
+     RecordingType oldrectype = oldp->rectype;
+     int oldrecordid = oldp->recordid;
+     QDateTime oldrecendts = oldp->recendts;
++    int oldsoftend = oldp->softend;
+ 
+     oldp->rectype = newp->rectype;
+     oldp->recordid = newp->recordid;
+     oldp->recendts = newp->recendts;
++    oldp->softend = 0;
+ 
+     if (specsched)
+     {
+@@ -506,6 +524,7 @@
+         oldp->rectype = oldrectype;
+         oldp->recordid = oldrecordid;
+         oldp->recendts = oldrecendts;
++        oldp->softend = oldsoftend;
+     }
+     return rs == rsRecording;
+ }
+@@ -622,25 +641,6 @@
+         }
+         else
+         {
+-            int lpri = RecTypePriority(lastp->rectype);
+-            int cpri = RecTypePriority(p->rectype);
+-
+-            // In cases where two recording rules match the same
+-            // showing, one of them needs to take precedence.
+-            //
+-            // An rsRepeat or rsInactive will not be considered for
+-            // recording so we penalize these to force them to yield
+-            // to a rule that may record. Otherwise, more specific
+-            // record type beats less specific.
+-            if (lastp->recstatus == rsInactive || 
+-                lastp->recstatus == rsRepeat)
+-                lpri += 100;
+-            if (p->recstatus == rsInactive || 
+-                p->recstatus == rsRepeat)
+-                cpri += 100;
+-
+-            if (lpri > cpri)
+-                *lastp = *p;
+             delete p;
+             dreciter = reclist.erase(dreciter);
+         }
+@@ -762,7 +762,7 @@
+     }
+ }
+ 
+-bool Scheduler::TryAnotherShowing(ProgramInfo *p)
++bool Scheduler::TryAnotherShowing(ProgramInfo *p, bool allowmoves)
+ {
+     PrintRec(p, "     >");
+ 
+@@ -790,16 +790,25 @@
+             q->recstatus != rsLaterShowing &&
+             q->recstatus != rsUnknown)
+             continue;
++
+         if (!p->IsSameTimeslot(*q))
+         {
+-            if (!p->IsSameProgram(*q))
++            if (!allowmoves ||
++                p->rectype == kSingleRecord || 
++                p->rectype == kOverrideRecord)
+                 continue;
+-            if ((p->rectype == kSingleRecord || 
+-                 p->rectype == kOverrideRecord))
++            if (!p->IsSameProgram(*q))
+                 continue;
+             if (q->recstartts < schedTime && p->recstartts >= schedTime)
+                 continue;
+         }
++        else
++        {
++            if (!allowmoves && 
++                (p->chanid != q->chanid ||
++                 p->inputid != q->inputid))
++                continue;
++        }
+ 
+         PrintRec(q, "     #");
+         RecList &cardlist = cardlistmap[q->cardid];
+@@ -870,7 +879,7 @@
+ 
+         PrintRec(p, "  ?");
+ 
+-        if (TryAnotherShowing(p))
++        if (TryAnotherShowing(p, true))
+             continue;
+ 
+         BackupRecStatus();
+@@ -881,8 +890,9 @@
+         RecIter k = cardlist.begin();
+         for ( ; FindNextConflict(cardlist, p, k); k++)
+         {
+-            if ((p->recpriority < (*k)->recpriority && !schedMoveHigher) ||
+-                !TryAnotherShowing(*k))
++            bool allowmoves = (schedMoveHigher || 
++                               p->recpriority >= (*k)->recpriority);
++            if (!TryAnotherShowing(*k, allowmoves))
+             {
+                 RestoreRecStatus();
+                 break;
+@@ -1947,6 +1957,9 @@
+ 
+ void Scheduler::AddNewRecords(void) 
+ {
++    int softStart = gContext->GetNumSetting("SchedSoftStart", 0);
++    int softEnd = gContext->GetNumSetting("SchedSoftEnd", 0);
++
+     struct timeval dbstart, dbend;
+ 
+     QMap<RecordingType, int> recTypeRecPriorityMap;
+@@ -2265,7 +2278,7 @@
+             if (p->IsSameTimeslot(*r))
+             {
+                 if (r->inputid == p->inputid &&
+-                    r->recendts != p->recendts &&
++                    (r->recendts.addSecs(-60 * r->softend)) != p->recendts &&
+                     (r->recordid == p->recordid ||
+                      p->rectype == kOverrideRecord))
+                     ChangeRecordingEnd(r, p);
+@@ -2317,6 +2330,43 @@
+             p->recstatus = rsMissed;
+ 
+         tmpList.push_back(p);
++
++        // Add soft candidates
++        if (p->recstatus == rsUnknown)
++        {
++            if (softStart != 0 && 
++                p->recstartts.addSecs(-60 * softStart) < p->recendts)
++            {
++                ProgramInfo *softp = new ProgramInfo(*p);
++                softp->recstartts = p->recstartts.addSecs(-60 * softStart);
++                softp->softstart = softStart;
++                softp->recpriority2 += 1;
++                tmpList.push_back(softp);
++            }
++
++            if (softEnd != 0 && 
++                p->recstartts < p->recendts.addSecs(60 * softEnd))
++            {
++                ProgramInfo *softp = new ProgramInfo(*p);
++                softp->recendts = p->recendts.addSecs(60 * softEnd);
++                softp->softend = softEnd;
++                softp->recpriority2 += 2;
++                tmpList.push_back(softp);
++            }
++
++            if (softStart != 0 && softEnd != 0 && 
++                p->recstartts.addSecs(-60 * softStart) < 
++                    p->recendts.addSecs(60 * softEnd))
++            {
++                ProgramInfo *softp = new ProgramInfo(*p);
++                softp->recstartts = p->recstartts.addSecs(-60 * softStart);
++                softp->recendts = p->recendts.addSecs(60 * softEnd);
++                softp->softstart = softStart;
++                softp->softend = softEnd;
++                softp->recpriority2 += 3;
++                tmpList.push_back(softp);
++            }
++        }
+     }
+ 
+     VERBOSE(VB_SCHEDULE, " +-- Cleanup...");
+diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.h mythtv-0.20-16082-new/programs/mythbackend/scheduler.h
+--- mythtv-0.20-16082-old/programs/mythbackend/scheduler.h	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.h	2008-09-15 14:09:31.000000000 -0700
+@@ -83,7 +83,7 @@
+     void MarkShowingsList(RecList &showinglist, ProgramInfo *p);
+     void BackupRecStatus(void);
+     void RestoreRecStatus(void);
+-    bool TryAnotherShowing(ProgramInfo *p);
++    bool TryAnotherShowing(ProgramInfo *p, bool allowmoves);
+     void SchedNewRecords(void);
+     void MoveHigherRecords(void);
+     void PruneRedundants(void);
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp mythtv-0.20-16082-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/globalsettings.cpp	2008-09-15 14:09:31.000000000 -0700
+@@ -652,6 +652,34 @@
+     return bs;
+ }
+ 
++static GlobalSpinBox *SchedSoftStart()
++{
++    GlobalSpinBox *bs = new GlobalSpinBox("SchedSoftStart", 0, 10, 1, true);
++    bs->setLabel(QObject::tr("Time to schedule before start of show "
++                 "(in minutes)"));
++    bs->setHelpText(QObject::tr("This global setting tells the scheduler "
++                    "to change the start time for all shows. It is only "
++                    "removed when there is no free recorders and for equal "
++                    "or lower priority shows. Reschedule Higher "
++                    "Priorities is need for removal on all shows."));
++    bs->setValue(0);
++    return bs;
++}
++
++static GlobalSpinBox *SchedSoftEnd()
++{
++    GlobalSpinBox *bs = new GlobalSpinBox("SchedSoftEnd", 0, 30, 1, true);
++    bs->setLabel(QObject::tr("Time to schedule past end of show (in minutes)"));
++    bs->setValue(0);
++    bs->setHelpText(QObject::tr("This global setting tells the scheduler "
++                    "to change the end time for all shows. It is only "
++                    "removed when there is no free recorders and for equal "
++                    "or lower priority shows. Reschedule Higher "
++                    "Priorities is need for removal on all shows. This end "
++                    "time is preferred with respect to previous start time."));
++    return bs;
++}
++
+ static GlobalLineEdit *OverTimeCategory()
+ {
+     GlobalLineEdit *ge = new GlobalLineEdit("OverTimeCategory");
+@@ -3569,6 +3597,8 @@
+     general2->setLabel(QObject::tr("General (Advanced)"));
+     general2->addChild(RecordPreRoll());
+     general2->addChild(RecordOverTime());
++    general2->addChild(SchedSoftStart());
++    general2->addChild(SchedSoftEnd());
+     general2->addChild(CategoryOverTimeSettings());
+     general2->addChild(ATSCCheckSignalThreshold());
+     general2->addChild(ATSCCheckSignalWait());
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp mythtv-0.20-16082-new/programs/mythfrontend/viewscheduled.cpp
+--- mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/viewscheduled.cpp	2008-09-15 14:09:31.000000000 -0700
+@@ -314,6 +314,9 @@
+ 
+ void ViewScheduled::updateList(QPainter *p)
+ {
++    int softStart = gContext->GetNumSetting("SchedSoftStart",0);
++    int softEnd = gContext->GetNumSetting("SchedSoftEnd",0);
++
+     QRect pr = listRect;
+     QPixmap pix(pr.size());
+     pix.fill(this, pr.topLeft());
+@@ -375,10 +378,15 @@
+                          p->recstatus == rsAborted)
+                     ltype->EnableForcedFont(i, "conflictingrecording");
+                 else if (p->recstatus == rsWillRecord)
+-                    {
++                {
+                     if (curcard == 0 || p->cardid == curcard)
+-                        ltype->EnableForcedFont(i, "record");
+-                    }
++                    {
++                        if (p->softstart != softStart || p->softend != softEnd)
++                            ltype->EnableForcedFont(i, "droppedsoft");
++                        else
++                            ltype->EnableForcedFont(i, "record");
++                     }
++                }
+                 else if (p->recstatus == rsRepeat ||
+                          (p->recstatus != rsDontRecord &&
+                           p->recstatus <= rsEarlierShowing))
+diff -Naur mythtv-0.20-16082-old/themes/blue/theme.xml mythtv-0.20-16082-new/themes/blue/theme.xml
+--- mythtv-0.20-16082-old/themes/blue/theme.xml	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/themes/blue/theme.xml	2008-09-15 14:09:31.000000000 -0700
+@@ -59,7 +59,11 @@
+     <font name="list-inactive" base="list-active">
+       <color>#aaaaee</color>
+     </font>
+-  
++
++    <font name="list-droppedsoft"  base="list-active">
++      <color>#22aa22</color>
++    </font>
++
+     <font name="list-record" base="list-active">
+       <color>#33ff33</color>
+     </font>
+diff -Naur mythtv-0.20-16082-old/themes/blue/ui.xml mythtv-0.20-16082-new/themes/blue/ui.xml
+--- mythtv-0.20-16082-old/themes/blue/ui.xml	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/themes/blue/ui.xml	2008-09-15 14:09:31.000000000 -0700
+@@ -290,6 +290,7 @@
+         <fcnfont name="list-norecord" function="disabledrecording"></fcnfont>
+         <fcnfont name="list-active" function="active"></fcnfont>
+         <fcnfont name="list-inactive" function="inactive"></fcnfont>
++        <fcnfont name="list-droppedsoft" function="droppedsoft"></fcnfont>
+         <fcnfont name="list-record" function="record"></fcnfont>
+         <fcnfont name="list-recording" function="recording"></fcnfont>
+         <fcnfont name="list-selected" function="selected"></fcnfont>
+@@ -320,7 +321,7 @@
+         <font>info</font>
+       </textarea>
+       <textarea name="timedate" draworder="6">
+-        <area>175,45,420,30</area>
++        <area>175,45,545,30</area>
+         <font>info</font>
+       </textarea>
+       <textarea name="subdescr" draworder="6">
+@@ -392,6 +393,7 @@
+         <fcnfont name="list-norecord" function="disabledrecording"></fcnfont>
+         <fcnfont name="list-active" function="active"></fcnfont>
+         <fcnfont name="list-inactive" function="inactive"></fcnfont>
++        <fcnfont name="list-droppedsoft" function="droppedsoft"></fcnfont>
+         <fcnfont name="list-record" function="record"></fcnfont>
+         <fcnfont name="list-recording" function="recording"></fcnfont>
+         <fcnfont name="list-selected" function="selected"></fcnfont>
+@@ -423,7 +425,7 @@
+         <font>info</font>
+       </textarea>
+       <textarea name="timedate" draworder="6">
+-        <area>175,45,420,30</area>
++        <area>175,45,545,30</area>
+         <font>info</font>
+       </textarea>
+       <textarea name="subdescr" draworder="6">
+diff -Naur mythtv-0.20-16082-old/themes/G.A.N.T./ui.xml mythtv-0.20-16082-new/themes/G.A.N.T./ui.xml
+--- mythtv-0.20-16082-old/themes/G.A.N.T./ui.xml	2008-09-15 14:09:31.000000000 -0700
++++ mythtv-0.20-16082-new/themes/G.A.N.T./ui.xml	2008-09-15 14:09:31.000000000 -0700
+@@ -352,6 +352,13 @@
+       <bold>yes</bold>
+     </font>
+ 
++    <font name="droppedsoft_font" face="Arial">
++      <color>#8F591C</color>
++      <size>16</size>
++      <size:small>11</size:small>
++      <bold>yes</bold>
++    </font>
++
+     <font name="record_font" face="Arial">
+       <color>#F7862B</color>
+       <size>16</size>
+@@ -474,6 +481,7 @@
+         <fcnfont name="norecordfnt" function="disabledrecording"></fcnfont>
+         <fcnfont name="active_font" function="active"></fcnfont>
+         <fcnfont name="inactive_font" function="inactive"></fcnfont>
++        <fcnfont name="droppedsoft_font" function="droppedsoft"></fcnfont>
+         <fcnfont name="record_font" function="record"></fcnfont>
+         <fcnfont name="recording_font" function="recording"></fcnfont>
+         <fcnfont name="active_font" function="selected"></fcnfont>
+@@ -504,7 +512,7 @@
+         <font>info</font>
+       </textarea>
+       <textarea name="timedate" draworder="6">
+-        <area>200,40,420,30</area>
++        <area>200,40,540,30</area>
+         <font>info</font>
+       </textarea>
+       <textarea name="subdescr" draworder="6">
+@@ -564,6 +572,13 @@
+       <size:small>11</size:small>
+       <bold>yes</bold>
+     </font>
++    
++    <font name="droppedsoft_font" face="Arial">
++      <color>#8F591C</color>
++      <size>16</size>
++      <size:small>11</size:small>
++      <bold>yes</bold>
++    </font>
+ 
+     <font name="record_font" face="Arial">
+       <color>#F7862B</color>
+@@ -665,6 +680,7 @@
+         <fcnfont name="norecordfnt" function="disabledrecording"></fcnfont>
+         <fcnfont name="active_font" function="active"></fcnfont>
+         <fcnfont name="inactive_font" function="inactive"></fcnfont>
++        <fcnfont name="droppedsoft_font" function="droppedsoft"></fcnfont>
+         <fcnfont name="record_font" function="record"></fcnfont>
+         <fcnfont name="recording_font" function="recording"></fcnfont>
+         <fcnfont name="active_font" function="selected"></fcnfont>
+@@ -696,7 +712,7 @@
+         <font>info</font>
+       </textarea>
+       <textarea name="timedate" draworder="6">
+-        <area>200,40,420,30</area>
++        <area>200,40,540,30</area>
+         <font>info</font>
+       </textarea>
+       <textarea name="subdescr" draworder="6">
