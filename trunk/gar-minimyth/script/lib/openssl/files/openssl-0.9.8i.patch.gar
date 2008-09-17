@@ -1,6 +1,6 @@
-diff -Naur openssl-0.9.8h-old/Configure openssl-0.9.8h-new/Configure
---- openssl-0.9.8h-old/Configure	2008-05-01 16:11:30.000000000 -0700
-+++ openssl-0.9.8h-new/Configure	2008-05-28 19:39:59.000000000 -0700
+diff -Naur openssl-0.9.8i-old/Configure openssl-0.9.8i-new/Configure
+--- openssl-0.9.8i-old/Configure	2008-09-12 07:47:00.000000000 -0700
++++ openssl-0.9.8i-new/Configure	2008-09-16 21:43:17.000000000 -0700
 @@ -322,7 +322,7 @@
  "linux-ppc",	"gcc:-DB_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::linux_ppc32.o::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  #### IA-32 targets...
@@ -19,7 +19,7 @@ diff -Naur openssl-0.9.8h-old/Configure openssl-0.9.8h-new/Configure
  #### SPARC Linux setups
  # Ray Miller <ray.miller@computing-services.oxford.ac.uk> has patiently
  # assisted with debugging of following two configs.
-@@ -1358,7 +1358,7 @@
+@@ -1360,7 +1360,7 @@
  	s/^OPTIONS=.*$/OPTIONS=$options/;
  	s/^CONFIGURE_ARGS=.*$/CONFIGURE_ARGS=$argvstring/;
  	s/^CC=.*$/CC= $cc/;
@@ -28,9 +28,9 @@ diff -Naur openssl-0.9.8h-old/Configure openssl-0.9.8h-new/Configure
  	s/^CFLAG=.*$/CFLAG= $cflags/;
  	s/^DEPFLAG=.*$/DEPFLAG= $depflags/;
  	s/^PEX_LIBS=.*$/PEX_LIBS= $prelflags/;
-diff -Naur openssl-0.9.8h-old/Makefile openssl-0.9.8h-new/Makefile
---- openssl-0.9.8h-old/Makefile	2008-05-28 01:48:27.000000000 -0700
-+++ openssl-0.9.8h-new/Makefile	2008-05-28 19:41:53.000000000 -0700
+diff -Naur openssl-0.9.8i-old/Makefile openssl-0.9.8i-new/Makefile
+--- openssl-0.9.8i-old/Makefile	2008-09-15 08:27:21.000000000 -0700
++++ openssl-0.9.8i-new/Makefile	2008-09-16 21:45:13.000000000 -0700
 @@ -59,19 +59,19 @@
  # equal 4.
  # PKCS1_CHECK - pkcs1 tests.
@@ -38,27 +38,27 @@ diff -Naur openssl-0.9.8h-old/Makefile openssl-0.9.8h-new/Makefile
 -CC= cc
 +CC= @GAR_CC@
  CFLAG= -O
- DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SEED -DOPENSSL_NO_TLSEXT 
+ DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SEED -DOPENSSL_NO_TLSEXT 
  PEX_LIBS= 
  EX_LIBS= 
  EXE_EXT= 
  ARFLAGS= 
+-AR=ar $(ARFLAGS) r
+-RANLIB= /usr/bin/ranlib
+-PERL= /usr/bin/perl
 +AR=@GAR_AR@ $(ARFLAGS) r
 +RANLIB= @GAR_RANLIB@
 +PERL= perl
- AR=ar $(ARFLAGS) r
--RANLIB= /usr/bin/ranlib
--PERL= /usr/bin/perl
--TAR= tar
+ TAR= tar
  TARFLAGS= --no-recursion
 -MAKEDEPPROG=makedepend
 +MAKEDEPPROG=@GAR_CC@
  
  # We let the C compiler driver to take care of .s files. This is done in
  # order to be excused from maintaining a separate set of architecture
-diff -Naur openssl-0.9.8h-old/Makefile.org openssl-0.9.8h-new/Makefile.org
---- openssl-0.9.8h-old/Makefile.org	2008-04-03 16:03:39.000000000 -0700
-+++ openssl-0.9.8h-new/Makefile.org	2008-05-28 19:39:59.000000000 -0700
+diff -Naur openssl-0.9.8i-old/Makefile.org openssl-0.9.8i-new/Makefile.org
+--- openssl-0.9.8i-old/Makefile.org	2008-04-03 16:03:39.000000000 -0700
++++ openssl-0.9.8i-new/Makefile.org	2008-09-16 21:43:17.000000000 -0700
 @@ -57,19 +57,19 @@
  # equal 4.
  # PKCS1_CHECK - pkcs1 tests.
@@ -83,9 +83,21 @@ diff -Naur openssl-0.9.8h-old/Makefile.org openssl-0.9.8h-new/Makefile.org
  
  # We let the C compiler driver to take care of .s files. This is done in
  # order to be excused from maintaining a separate set of architecture
-diff -Naur openssl-0.9.8h-old/util/domd openssl-0.9.8h-new/util/domd
---- openssl-0.9.8h-old/util/domd	2005-03-30 06:44:50.000000000 -0800
-+++ openssl-0.9.8h-new/util/domd	2008-05-28 19:39:59.000000000 -0700
+diff -Naur openssl-0.9.8i-old/Makefile.shared openssl-0.9.8i-new/Makefile.shared
+--- openssl-0.9.8i-old/Makefile.shared	2008-09-12 07:47:01.000000000 -0700
++++ openssl-0.9.8i-new/Makefile.shared	2008-09-16 21:46:25.000000000 -0700
+@@ -6,7 +6,7 @@
+ # properly
+ 
+ # CC contains the current compiler.  This one MUST be defined
+-CC=cc
++CC=@GAR_CC@
+ CFLAGS=$(CFLAG)
+ # LDFLAGS contains flags to be used when temporary object files (when building
+ # shared libraries) are created, or when an application is linked.
+diff -Naur openssl-0.9.8i-old/util/domd openssl-0.9.8i-new/util/domd
+--- openssl-0.9.8i-old/util/domd	2005-03-30 06:44:50.000000000 -0800
++++ openssl-0.9.8i-new/util/domd	2008-09-16 21:43:17.000000000 -0700
 @@ -14,7 +14,7 @@
  cp Makefile Makefile.save
  # fake the presence of Kerberos
