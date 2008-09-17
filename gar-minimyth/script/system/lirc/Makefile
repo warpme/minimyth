@@ -1,11 +1,11 @@
 GARNAME = lirc
-GARVERSION = 0.8.3
+GARVERSION = 20080915Z
 CATEGORIES = system
-MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+#MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES += http://$(GARNAME).sourceforge.net/software/snapshots/
-#MASTER_SITES += cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+MASTER_SITES += cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-lircd_conf_include.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_gpio.patch
+PATCHFILES = $(DISTNAME)-no_python.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_gpio.patch
 LICENSE = GPL2
 
 DESCRIPTION =
