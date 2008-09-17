@@ -33,12 +33,3 @@ pre-install:
 	@rm -rf $(DESTDIR)$(rootdir)/lib/udev
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@$(MAKECOOKIE)
-
-post-install:
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevtrigger
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevsettle
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(esbindir)/udevadm $(DESTDIR)$(esbindir)/udevcontrol
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(sbindir)))$(esbindir)/udevadm $(DESTDIR)$(sbindir)/udevmonitor
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevinfo
-	@ln -f -s $(patsubst /%,%,$(call DIRSTODOTS,$(bindir)))$(esbindir)/udevadm $(DESTDIR)$(bindir)/udevtest
-	@$(MAKECOOKIE)
