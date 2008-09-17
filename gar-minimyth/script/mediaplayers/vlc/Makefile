@@ -1,5 +1,5 @@
 GARNAME = vlc
-GARVERSION = 0.9.1
+GARVERSION = 0.9.2
 CATEGORIES = mediaplayers
 MASTER_SITES = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -15,6 +15,7 @@ DEPENDS = lang/c \
 	lib/alsa-lib \
 	lib/faad2 \
 	lib/ffmpeg \
+	lib/fontconfig \
 	lib/freetype \
 	lib/libcdio \
 	lib/libdvdnav \
@@ -137,6 +138,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sdl-image \
 	--enable-freetype \
 	--disable-fribidi \
+	--enable-fontconfig \
 	--enable-libxml2 \
 	--disable-svg \
 	--disable-snapshot \

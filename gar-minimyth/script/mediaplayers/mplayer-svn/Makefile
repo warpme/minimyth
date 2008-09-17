@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 27498.15050
+GARVERSION = 27547.15261
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -113,11 +113,11 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libavcodec_mpegaudio_hp \
 	--disable-tremor-internal \
 	--disable-tremor-low \
-	--disable-tremor-external \
+	--disable-tremor \
 	--disable-libvorbis \
 	--disable-speex \
 	--disable-theora \
-	--enable-faad-external \
+	--enable-faad \
 	--disable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \

@@ -9,13 +9,13 @@ PATCHFILES += \
 	$(DISTNAME)-qtopengl.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
-
 PARSERS = \
 	belegger \
 	dailymotion-2 \
 	google \
 	omroep-3 \
 	retrovision \
+	shoutcast-2 \
 	yahoo \
 	youtube-4 \
 	zoomin
@@ -49,7 +49,13 @@ post-extract:
 	@$(foreach PARSER,$(PARSERS), \
 		parser=$(word 1,$(subst -, ,$(PARSER))) ; \
 		rm -rf $(WORKSRC)/parsers/$${parser} ; \
-		mv -f $(WORKDIR)/$${parser} $(WORKSRC)/parsers/ ; )
+		mv -f $(WORKDIR)/$${parser} $(WORKSRC)/parsers/ ; \
+                for file in `cd $(WORKSRC)/parsers/$${parser} ; ls -1` ; do \
+			if [ -e $(WORKSRC)/parsers/$${file} ] ; then \
+				rm -f $(WORKSRC)/parsers/$${file} ; \
+				cp -pd $(WORKSRC)/parsers/$${parser}/$${file} $(WORKSRC)/parsers/$${file} ; \
+			fi ; \
+                done ; )
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
