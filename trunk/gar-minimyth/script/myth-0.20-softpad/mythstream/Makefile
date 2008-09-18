@@ -7,6 +7,7 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-harvester_cpp.patch \
+	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
 PARSERS = \
