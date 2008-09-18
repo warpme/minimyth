@@ -7,6 +7,7 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-getthemedir.patch \
 	$(DISTNAME)-qtopengl.patch \
+	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
 PARSERS = \
