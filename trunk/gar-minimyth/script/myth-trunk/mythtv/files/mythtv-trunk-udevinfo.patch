@@ -1,12 +1,17 @@
-diff -Naur mythtv-trunk-18227-old/libs/libmyth/mediamonitor-unix.cpp mythtv-trunk-18227-new/libs/libmyth/mediamonitor-unix.cpp
---- mythtv-trunk-18227-old/libs/libmyth/mediamonitor-unix.cpp	2008-08-30 08:21:43.000000000 -0700
-+++ mythtv-trunk-18227-new/libs/libmyth/mediamonitor-unix.cpp	2008-09-16 19:40:13.000000000 -0700
-@@ -187,7 +187,7 @@
- {
- #ifdef linux
-     Q3Process udevinfo(this);
--    udevinfo.addArgument("udevinfo");
-+    udevinfo.addArgument("udevadm info");
-     udevinfo.addArgument("-q");
-     udevinfo.addArgument("name");
-     udevinfo.addArgument("-rp");
+diff -Naur mythtv-trunk-18336-old/libs/libmyth/mediamonitor-unix.cpp mythtv-trunk-18336-new/libs/libmyth/mediamonitor-unix.cpp
+--- mythtv-trunk-18336-old/libs/libmyth/mediamonitor-unix.cpp	2008-09-19 03:06:23.000000000 -0700
++++ mythtv-trunk-18336-new/libs/libmyth/mediamonitor-unix.cpp	2008-09-19 03:06:25.000000000 -0700
+@@ -203,11 +203,12 @@
+     QTextStream  stream(udevinfo);
+     QStringList  args;
+ 
++    args << "info";
+     args << "-q";
+     args << "name";
+     args << "-rp";
+     args << sysfs;
+-    udevinfo->start("udevinfo", args);
++    udevinfo->start("udevadm", args);
+ 
+     if (!udevinfo->waitForStarted(2000 /*ms*/))
+     {
