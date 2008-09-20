@@ -1,5 +1,5 @@
 GARNAME = libgcrypt
-GARVERSION = 1.4.2
+GARVERSION = 1.4.3
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnupg.org/gcrypt/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
