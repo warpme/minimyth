@@ -130,7 +130,7 @@ sub start
                     return 0;
                 }
             }
-            $pref{'pref_deint0'}  = $minimyth->var_get('MM_VIDEO_DEINTERLACER');
+            $pref{'pref_deint0'}  = $deinterlacer;
             $pref{'pref_deint1'}  = 'none';
             $pref{'pref_filters'} = '';
             my $profilegroupid = $minimyth->mythdb_x_get('displayprofilegroups',
