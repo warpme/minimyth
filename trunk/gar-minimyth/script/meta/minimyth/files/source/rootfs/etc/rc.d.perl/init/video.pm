@@ -134,17 +134,17 @@ sub start
             $pref{'pref_deint1'}  = 'none';
             $pref{'pref_filters'} = '';
             my $profilegroupid = $minimyth->mythdb_x_get('displayprofilegroups',
-                                                        { 'name' => 'MiniMyth' },
-                                                        'profilegroupid');
+                                                         { 'name' => 'MiniMyth' },
+                                                         'profilegroupid');
             my $profileid = '';
             if ($profilegroupid)
             {
-                $profilegroupid = $minimyth->mythdb_x_get('displayprofiles',
-                                                          { 'profilegroupid' => $profilegroupid,
-                                                            'value'          => 'pref_priority',
-                                                            'data'           => '1' },
-                                                          'profileid',
-                                                          { 'condition_hostname' => 0 });
+                $profileid = $minimyth->mythdb_x_get('displayprofiles',
+                                                     { 'profilegroupid' => $profilegroupid,
+                                                       'value'          => 'pref_priority',
+                                                       'data'           => '1' },
+                                                     'profileid',
+                                                     { 'condition_hostname' => 0 });
             }
             if ($profilegroupid)
             {
