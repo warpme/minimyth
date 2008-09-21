@@ -83,7 +83,7 @@ libdirs_base := \
 libdirs := \
 	$(libdirs_base) \
 	$(libdir)/xorg/modules \
-	$(if $(filter $(mm_CHIPSETS),nvidia),$(libdir)/nvidia)
+	$(if $(filter $(mm_GRAPHICS),nvidia),$(libdir)/nvidia)
 etcdirs := \
 	$(extras_sysconfdir) \
 	$(sysconfdir)
@@ -129,6 +129,7 @@ MM_CONFIG_VARS = \
 	mm_DISTRIBUTION_NFS \
 	mm_DISTRIBUTION_RAM \
 	mm_DISTRIBUTION_SHARE \
+	mm_GRAPHICS \
 	mm_HOME \
 	MM_INIT_KILL \
 	MM_INIT_START \

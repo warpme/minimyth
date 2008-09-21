@@ -29,10 +29,15 @@ mm_DEBUG                  ?= no
 # Indicates whether or not to enable debugging in the build system.
 # Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
 mm_DEBUG_BUILD            ?= no
-# Lists the chipset families supported.
+# Lists the motheboard chipset families supported.
 # Valid values for mm_CHIPSETS are one or more of 'ati', 'intel', 'nvidia',
 # 'savage', 'sis', 'via', 'vmware' and 'other'.
 mm_CHIPSETS               ?= ati intel nvidia via other
+# Lists the graphics drivers supported.
+# Valid values for mm_GRAPHICS are one or more of 'intel', 'nvidia',
+# 'openchrome', 'radeon', 'savage', 'sis', and 'vmware'.
+mm_GRAPHICS               ?= intel nvidia openchrome radeon
+# Lists the software to be supported.
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
