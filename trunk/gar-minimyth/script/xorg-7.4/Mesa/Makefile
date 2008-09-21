@@ -50,8 +50,8 @@ BUILD_ARGS = \
 include ../../gar.mk
 
 DRI_DIRS := $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 radeon sis swrast unichrome) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 radeon sis swrast unichrome))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 radeon savage sis swrast unichrome) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 radeon savage sis swrast unichrome))
 DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:

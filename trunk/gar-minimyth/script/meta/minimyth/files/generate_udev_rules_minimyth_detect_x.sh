@@ -39,6 +39,7 @@ script='BEGIN {
                  ( mm_detect_state_x !~ /^intel_915$/  ) &&
                  ( mm_detect_state_x !~ /^openchrome$/ ) &&
                  ( mm_detect_state_x !~ /^radeon$/     ) &&
+                 ( mm_detect_state_x !~ /^savage$/     ) &&
                  ( mm_detect_state_x !~ /^sis$/        ) ) {
                 next
             }

@@ -111,6 +111,7 @@ mm-all:
 		if [ ! "$${chipset}" = "ati"    ] && \
 		   [ ! "$${chipset}" = "intel"  ] && \
 		   [ ! "$${chipset}" = "nvidia" ] && \
+		   [ ! "$${chipset}" = "savage" ] && \
 		   [ ! "$${chipset}" = "sis"    ] && \
 		   [ ! "$${chipset}" = "via"    ] && \
 		   [ ! "$${chipset}" = "vmware" ] && \
