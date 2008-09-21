@@ -237,6 +237,9 @@ sub start
         when (/^(radeon)$/)
         {
         }
+        when (/^(savage)$/)
+        {
+        }
         when (/^(sis)$/)
         {
         }

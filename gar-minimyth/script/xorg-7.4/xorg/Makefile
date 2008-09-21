@@ -36,8 +36,10 @@ DEPENDS = \
 	$(CATEGORY)/xf86-input-mouse \
 	$(CATEGORY)/xf86-input-void \
 	$(CATEGORY)/xf86-video-ati \
+	$(CATEGORY)/xf86-video-radeonhd \
 	$(CATEGORY)/xf86-video-intel \
 	$(CATEGORY)/xf86-video-openchrome \
+	$(CATEGORY)/xf86-video-savage \
 	$(CATEGORY)/xf86-video-sis \
 	$(CATEGORY)/xf86-video-vmware \
 	$(CATEGORY)/xinit \
