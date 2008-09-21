@@ -31,7 +31,7 @@ mm_DEBUG                  ?= no
 mm_DEBUG_BUILD            ?= no
 # Lists the motheboard chipset families supported.
 # Valid values for mm_CHIPSETS are one or more of 'ati', 'intel', 'nvidia',
-# 'savage', 'sis', 'via', 'vmware' and 'other'.
+# 'sis', 'via', 'vmware' and 'other'.
 mm_CHIPSETS               ?= ati intel nvidia via other
 # Lists the graphics drivers supported.
 # Valid values for mm_GRAPHICS are one or more of 'intel', 'nvidia',
