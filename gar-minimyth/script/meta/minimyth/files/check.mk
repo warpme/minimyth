@@ -108,15 +108,28 @@ mm-all:
 	fi
 	@echo "    mm_CHIPSETS"
 	@for chipset in $(mm_CHIPSETS) ; do \
-		if [ ! "$${chipset}" = "ati"    ] && \
+		if [ ! "$${chipset}" = "amd"    ] && \
+		   [ ! "$${chipset}" = "ati"    ] && \
 		   [ ! "$${chipset}" = "intel"  ] && \
 		   [ ! "$${chipset}" = "nvidia" ] && \
-		   [ ! "$${chipset}" = "savage" ] && \
 		   [ ! "$${chipset}" = "sis"    ] && \
 		   [ ! "$${chipset}" = "via"    ] && \
 		   [ ! "$${chipset}" = "vmware" ] && \
 		   [ ! "$${chipset}" = "other"  ] ; then \
 			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
+			exit 1 ; \
+		fi ; \
+	done
+	@echo "    mm_GRAPHICS"
+	@for graphic in $(mm_GRAPHICS) ; do \
+		if [ ! "$${graphic}" = "intel"      ] && \
+		   [ ! "$${graphic}" = "nvidia"     ] && \
+		   [ ! "$${graphic}" = "openchrome" ] && \
+		   [ ! "$${graphic}" = "radeon"     ] && \
+		   [ ! "$${graphic}" = "savage"     ] && \
+		   [ ! "$${graphic}" = "sis"        ] && \
+		   [ ! "$${graphic}" = "vmware"     ] ; then \
+			echo "error: mm_GRAPHICS=\"$${graphic}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
 	done
