@@ -1,5 +1,5 @@
 GARNAME = lame
-GARVERSION = 398
+GARVERSION = 398-2
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
