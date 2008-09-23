@@ -1,5 +1,5 @@
 GARNAME = texinfo
-GARVERSION = 4.13
+GARVERSION = 4.13a
 CATEGORIES = doc
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -11,6 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c lib/ncurses
+
+WORKSRC = $(WORKDIR)/$(GARNAME)-4.13
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
