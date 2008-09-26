@@ -9,6 +9,7 @@ PATCHFILES  = $(DISTNAME)-gcc_4.3.patch
 PATCHFILES += $(DISTNAME)-x86_64_vdso_text_offset.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-e1000e.patch
+PATCHFILES += $(DISTNAME)-atl2_2.0.4.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.4.patch $(DISTNAME)-unionfs_2.5.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
