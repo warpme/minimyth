@@ -3,7 +3,7 @@ GARVERSION = 27547.15261
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-x11_headers.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 

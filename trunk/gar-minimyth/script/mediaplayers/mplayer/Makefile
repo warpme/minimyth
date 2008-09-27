@@ -12,7 +12,7 @@ PATCHFILES = \
 	$(DISTNAME)-url_fix_20080120.patch \
 	$(DISTNAME)-stream_cddb_fix_20080120.patch
 PATCHFILES += $(DISTNAME)-dvdnav.patch
-PATCHFILES += $(DISTNAME)-openchrome.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES += $(DISTNAME)-openchrome.patch $(DISTNAME)-x11_headers.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
