@@ -38,6 +38,11 @@ mm-all:
 	@echo "  build system binaries ... done"
 	@# Check for obsolete parameters and parameter values.
 	@echo "  obsolete parameters and parameter values ..."
+	@echo "    mm_CHIPSETS"
+	@if [ -n "$(mm_CHIPSETS)" ] ; then \
+		echo "error: mm_CHIPSETS is obsolete." ; \
+		exit 1 ; \
+	fi
 	@echo "    mm_INSTALL_TFTP_BOOT"
 	@if [ -n "$(mm_INSTALL_TFTP_BOOT)" ] ; then \
 		echo "error: mm_INSTALL_TFTP_BOOT should be replaced with mm_INSTALL_RAM_BOOT." ; \
@@ -106,20 +111,6 @@ mm-all:
 		echo "error: mm_DEBUG_BUILD=\"$(mm_DEBUG_BUILD)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
-	@echo "    mm_CHIPSETS"
-	@for chipset in $(mm_CHIPSETS) ; do \
-		if [ ! "$${chipset}" = "amd"    ] && \
-		   [ ! "$${chipset}" = "ati"    ] && \
-		   [ ! "$${chipset}" = "intel"  ] && \
-		   [ ! "$${chipset}" = "nvidia" ] && \
-		   [ ! "$${chipset}" = "sis"    ] && \
-		   [ ! "$${chipset}" = "via"    ] && \
-		   [ ! "$${chipset}" = "vmware" ] && \
-		   [ ! "$${chipset}" = "other"  ] ; then \
-			echo "error: mm_CHIPSETS=\"$${chipset}\" is an invalid value." ; \
-			exit 1 ; \
-		fi ; \
-	done
 	@echo "    mm_GRAPHICS"
 	@for graphic in $(mm_GRAPHICS) ; do \
 		if [ ! "$${graphic}" = "intel"      ] && \
