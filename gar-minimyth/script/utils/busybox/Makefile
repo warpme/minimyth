@@ -8,7 +8,8 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-crontab_vi.patch \
 	$(DISTNAME)-kbdmode.patch \
-	$(DISTNAME)-lineedit.patch
+	$(DISTNAME)-lineedit.patch \
+	$(DISTNAME)-ssd.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
