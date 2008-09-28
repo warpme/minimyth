@@ -128,11 +128,17 @@ sub start
     }
     if (-f '/etc/minimyth.d/minimyth.pm')
     {
-        $minimyth->message_output('info', "running configuration script ...");
         unlink("$dir/minimyth.pm");
         symlink('/etc/minimyth.d/minimyth.pm', "$dir/minimyth.pm");
+    }
+    if (-f "$dir/minimyth.pm")
+    {
         require init::minimyth;
-        init::minimyth->start($minimyth);
+        if (exists(&init::minimyth::start))
+        {
+            $minimyth->message_output('info', "running configuration script ...");
+            init::minimyth->start($minimyth);
+        }
     }
 
     # Enable configuration auto-detection udev rules.
@@ -195,6 +201,19 @@ sub stop
 {
     my $self     = shift;
     my $minimyth = shift;
+
+    my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
+
+    # Run 'minimyth.pm'.
+    if (-f "$dir/minimyth.pm")
+    {
+        require init::minimyth;
+        if (exists(&init::minimyth::stop))
+        {
+            $minimyth->message_output('info', "running configuration script ...");
+            init::minimyth->stop($minimyth);
+        }
+    }
 
     return 1;
 }

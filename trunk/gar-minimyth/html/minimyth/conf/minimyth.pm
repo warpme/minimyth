@@ -64,4 +64,12 @@ sub start
     return 1;
 }
 
+sub stop
+{
+    my $self     = shift;
+    my $minimyth = shift;
+
+    return 1;
+}
+
 1;
