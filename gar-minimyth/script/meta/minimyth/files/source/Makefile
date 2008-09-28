@@ -15,30 +15,25 @@ mm_NAME := minimyth-$(mm_VERSION)
 MM_BIN_FILES    := $(strip \
 	$(if $(wildcard                     lists/minimyth-bin-list   ),                     lists/minimyth-bin-list   ) \
 	$(if $(wildcard                lists/extras/extras-bin-list   ),                lists/extras/extras-bin-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-bin-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-bin-list.*)) \
 	$(filter $(patsubst %,lists/graphics/minimyth-bin-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-bin-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
 MM_LIB_FILES    := $(strip \
 	$(if $(wildcard                     lists/minimyth-lib-list   ),                     lists/minimyth-lib-list   ) \
 	$(if $(wildcard                lists/extras/extras-lib-list   ),                lists/extras/extras-lib-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-lib-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-lib-list.*)) \
 	$(filter $(patsubst %,lists/graphics/minimyth-lib-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-lib-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
 MM_ETC_FILES    := $(strip \
 	$(if $(wildcard                     lists/minimyth-etc-list   ),                     lists/minimyth-etc-list   ) \
 	$(if $(wildcard                lists/extras/extras-etc-list   ),                lists/extras/extras-etc-list   ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-etc-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-etc-list.*)) \
 	$(filter $(patsubst %,lists/graphics/minimyth-etc-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-etc-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
 MM_SHARE_FILES  := $(strip \
 	$(if $(wildcard                     lists/minimyth-share-list ),                     lists/minimyth-share-list ) \
 	$(if $(wildcard                lists/extras/extras-share-list ),                lists/extras/extras-share-list ) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-share-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-share-list.*)) \
 	$(filter $(patsubst %,lists/graphics/minimyth-share-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-share-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
 MM_REMOVE_FILES := $(strip \
 	$(if $(wildcard                     lists/minimyth-remove-list),                     lists/minimyth-remove-list) \
-	$(filter $(patsubst %,lists/chipsets/minimyth-remove-list.%,$(mm_CHIPSETS)),$(wildcard lists/chipsets/minimyth-remove-list.*)) \
 	$(filter $(patsubst %,lists/graphics/minimyth-remove-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-remove-list.*)) \
 	$(filter $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
 
