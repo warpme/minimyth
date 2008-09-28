@@ -74,7 +74,7 @@ DEPENDS = \
 	X11/xscreensaver \
 	X11/xvattr \
 	system/zoneinfo \
-	$(if $(filter nvidia,$(mm_CHIPSETS)), \
+	$(if $(filter nvidia,$(mm_GRAPHICS)), \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
 	$(if $(filter mythbrowser,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythbrowser),myth-$(mm_MYTH_VERSION)/mythbrowser)) \
