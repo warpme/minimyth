@@ -1,5 +1,5 @@
 GARNAME = lm_sensors
-GARVERSION = 3.0.2
+GARVERSION = 3.0.3
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
