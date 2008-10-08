@@ -1,0 +1,32 @@
+diff -Naur lm_sensors-3.0.3-old/CHANGES lm_sensors-3.0.3-new/CHANGES
+--- lm_sensors-3.0.3-old/CHANGES	2008-09-28 08:48:57.000000000 -0700
++++ lm_sensors-3.0.3-new/CHANGES	2008-10-08 14:29:19.000000000 -0700
+@@ -3,6 +3,7 @@
+ 
+ 3.0.3 (2008-09-28)
+   libsensors: Avoid namespace pollution
++  sensors-detect: Fix detection of ADT7463 and LM96000
+   fancontrol: Don't use named pipes when we don't need them (#2319)
+   pwmconfig: Tell the user about gnuplot if it isn't installed
+              Fix MINSTOP and MINSTART test functions
+diff -Naur lm_sensors-3.0.3-old/prog/detect/sensors-detect lm_sensors-3.0.3-new/prog/detect/sensors-detect
+--- lm_sensors-3.0.3-old/prog/detect/sensors-detect	2008-09-19 08:05:28.000000000 -0700
++++ lm_sensors-3.0.3-new/prog/detect/sensors-detect	2008-10-08 14:29:19.000000000 -0700
+@@ -4522,13 +4522,15 @@
+            && $verstep != 0x62;	# LM85 B
+   } elsif ($chip == 1) {
+     return if $vendor != 0x01;	# National Semiconductor
+-    return if $verstep != 0x68;	# LM96000
++    return if $verstep != 0x68	# LM96000
++           && $verstep != 0x69;	# LM96000
+   } elsif ($chip == 2) {
+     return if $vendor != 0x41;	# Analog Devices
+     return if $verstep != 0x60;	# ADM1027
+   } elsif ($chip == 3) {
+     return if $vendor != 0x41;	# Analog Devices
+-    return if $verstep != 0x62;	# ADT7463
++    return if $verstep != 0x62	# ADT7463
++           && $verstep != 0x6a;	# ADT7463 C
+   } elsif ($chip == 4) {
+     return if $vendor != 0x5c;	# SMSC
+     return if $verstep != 0x60	# EMC6D100/101 A0
