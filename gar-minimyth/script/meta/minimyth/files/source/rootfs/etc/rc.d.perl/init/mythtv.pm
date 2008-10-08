@@ -97,7 +97,7 @@ sub start
     {
         my $mtd       = $minimyth->application_path('mtd');
         my $transcode = $minimyth->application_path('transcode');
-        if ($mtd)
+        if (! $mtd)
         {
             $minimyth->message_output('err', "error: 'mtd' not found.");
             return 0;
