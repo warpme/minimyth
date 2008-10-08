@@ -53,6 +53,7 @@ sub application_path
     {
         while (<FILE>)
         {
+            chomp;
             $path = $_;
             last;
         }
