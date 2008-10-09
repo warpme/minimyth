@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.9
+GARVERSION = 4.12
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -52,6 +52,7 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_pcm_bluetooth.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/audio.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/input.la
+	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/hal.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/network.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/serial.la
 	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/service.la

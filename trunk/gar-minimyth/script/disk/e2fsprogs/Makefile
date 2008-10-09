@@ -1,9 +1,9 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.41.1
+GARVERSION = 1.41.2
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-deplibs.patch $(DISTNAME)-verbose.patch $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-verbose.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
