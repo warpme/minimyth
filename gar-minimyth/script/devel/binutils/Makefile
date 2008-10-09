@@ -7,7 +7,7 @@ MASTER_SITES += ftp://sourceware.org/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-multi_os_directory.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-PATHCFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES += $(DISTNAME)-perl.patch.gar
 endif
 LICENSE = GPL3/GPL2/LGPL2
 
