@@ -18,7 +18,7 @@ DEFAULT_ARGS = \
 	$(LINUX_MAKE_ARGS) \
 	KERNEL_VERSION="$(LINUX_VERSION)" \
 	KERNEL_DIR="$(DESTDIR)$(LINUX_BUILDDIR)" \
-	INSTALL_MOD_DIR="misc/uvc" \
+	INSTALL_MOD_DIR="kernel/drivers/media/video/uvc" \
 	INSTALL_MOD_PATH="$(DESTDIR)"
 BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)
@@ -44,4 +44,4 @@ post-install:
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/$(GARNAME)
+	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/kernel/drivers/media/video/uvc"
