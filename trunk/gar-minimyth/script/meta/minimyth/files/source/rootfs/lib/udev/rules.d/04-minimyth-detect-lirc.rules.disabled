@@ -2,8 +2,8 @@
 # Detect LIRC devices.
 #
 # An LIRC device is assumed to
-#     have the name lirc[0-9]*, hiddev[0-9]* or ttyUSB[0-9]*,
-#     be in the lirc, usb or tty subsystem, and
+#     have the name lirc[0-9]*, event[0-9]*, hiddev[0-9]* or ttyUSB[0-9]*,
+#     be in the lirc, input, usb or tty subsystem, and
 #     be a USB device.
 #
 # For an LIRC device in the lirc subsystem, the LIRC driver is the default LIRC
@@ -23,7 +23,7 @@
 # known, it cannot be added be included in mm_detect_state_lirc. Therefore, the
 # mm_detect script will prepend the LIRC device name to the state.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", KERNEL=="lirc[0-9]*|hiddev[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lirc|usb|tty", SUBSYSTEMS=="usb", GOTO="begin"
+ACTION=="add|remove", KERNEL=="lirc[0-9]*|event[0-9]*|hiddev[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lirc|input|usb|tty", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
@@ -45,11 +45,13 @@ ENV{mm_detect_state_lirc}=""
 # non-lirc device list
 #-------------------------------------------------------------------------------
   ENV{mm_detect_id}=="usb:0fe9:9010", ENV{mm_detect_state_lirc}="dvico"
+  ENV{mm_detect_id}=="usb:147a:e02d", ENV{mm_detect_state_lirc}="devinput"
 
 LABEL="end-nonlirc"
 
-# The state has ben set, so give the device a persistent unique identifier when possible.
-ENV{mm_detect_state_lirc}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="%k"
+# The state has been set, so give the device a persistent unique identifier when possible.
+ENV{mm_detect_state_lirc}=="?*", SUBSYSTEM!="input", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="%k"
+ENV{mm_detect_state_lirc}=="?*", SUBSYSTEM=="input", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", NAME="$env{SUBSYSTEM}-$result", SYMLINK+="input/%k"
 
 # The state has been set, so save it.
 ENV{mm_detect_state_lirc}=="?*", RUN+="/lib/udev/mm_detect lirc %k $env{mm_detect_state_lirc} state_prepend_devname"
