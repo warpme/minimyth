@@ -1444,7 +1444,7 @@ sub url_file_put
     (-d $remote_dir) or return $result;
 
     unlink $remote_file;
-    if (! -f $remote_file)
+    if (! -f $local_file)
     {
         $self->message_log('err', qq(MiniMyth::url_file_put: local file ') . $local_file . qq(' not found.));
         return $result;
