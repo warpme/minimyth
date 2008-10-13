@@ -1,8 +1,8 @@
 GARNAME = xf86-video-radeonhd
-GARVERSION_TYPE = git
+GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	f1c6cc865d8d0703478c3eedea2e706e911f9965 , \
-	1.2.1 ))
+	1.2.3 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-radeonhd/ , \
@@ -40,6 +40,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-exa \
+	--enable-dri \
 	--enable-atombios \
 	--enable-atombios-parser \
 	--with-gnu-ld
@@ -52,7 +53,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
