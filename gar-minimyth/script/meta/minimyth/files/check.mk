@@ -117,6 +117,7 @@ mm-all:
 		   [ ! "$${graphic}" = "nvidia"     ] && \
 		   [ ! "$${graphic}" = "openchrome" ] && \
 		   [ ! "$${graphic}" = "radeon"     ] && \
+		   [ ! "$${graphic}" = "radeonhd"   ] && \
 		   [ ! "$${graphic}" = "savage"     ] && \
 		   [ ! "$${graphic}" = "sis"        ] && \
 		   [ ! "$${graphic}" = "vmware"     ] ; then \
