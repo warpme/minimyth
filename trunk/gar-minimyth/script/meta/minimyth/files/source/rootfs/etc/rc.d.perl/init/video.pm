@@ -48,6 +48,11 @@ sub start
             ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
             ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
         }
+        when (/^radeonhd$/)
+        {
+            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
+            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+        }
         when (/^savage$/)
         {
             ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
