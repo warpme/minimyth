@@ -27,8 +27,8 @@ $var_list{'MM_LCDPROC_DRIVER'} =
 
         if ($minimyth->var_get($name) eq 'auto')
         {
-            my $driver = $minimyth->detect_state_get('audio', 0, 'driver') || '';
-            my $device = $minimyth->detect_state_get('audio', 0, 'device') || '';
+            my $driver = $minimyth->detect_state_get('lcdproc', 0, 'driver') || '';
+            my $device = $minimyth->detect_state_get('lcdproc', 0, 'device') || '';
             $minimyth->var_set('MM_LCDPROC_DRIVER', $driver);
             $minimyth->var_set('MM_LCDPROC_DEVICE', $device);
         }
