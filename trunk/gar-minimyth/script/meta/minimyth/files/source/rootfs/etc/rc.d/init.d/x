@@ -105,11 +105,25 @@ start() {
                 MM_X_DEVICE_VIA="LCD${MM_X_DEVICE_VIA}"
             fi
             ;;
+        radeon)
+            ;;
+        radeonhd)
+            ;;
+        savage)
+            ;;
+        sis)
+            ;;
         vmware)
             ;;
     esac
 
     case "${MM_X_DRIVER}" in
+        intel_810|intel_915)
+            if /usr/bin/test ! -n "${MM_X_DEVICE_INTEL}" ; then
+                mm_message_output err "error: no X video output enabled."
+                exit 1
+            fi
+            ;;
         nvidia)
             if /usr/bin/test ! -n "${MM_X_DEVICE_NVIDIA}" ; then
                 mm_message_output err "error: no X video output enabled."
@@ -121,6 +135,16 @@ start() {
                 mm_message_output err "error: no X video output enabled."
                 exit 1
             fi
+            ;;
+        radeon)
+            ;;
+        radeonhd)
+            ;;
+        savage)
+            ;;
+        sis)
+            ;;
+        vmware)
             ;;
     esac
 
@@ -155,6 +179,8 @@ start() {
             # Rebuild library cache.
             /sbin/ldconfig
             ;;
+        openchrome)
+            ;;
         radeon)
             ;;
         radeonhd)
@@ -162,8 +188,6 @@ start() {
         savage)
             ;;
         sis)
-            ;;
-        openchrome)
             ;;
         vmware)
             ;;

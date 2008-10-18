@@ -43,6 +43,12 @@ sub start
             (-e '/usr/lib/nvidia/libXvMCNVIDIA_dynamic.so.1') && ($xvmc_lib = '/usr/lib/nvidia/libXvMCNVIDIA_dynamic.so.1');
             (-e '/usr/lib/nvidia/libXvMCNVIDIA.so.1')         && ($xvmc_lib = '/usr/lib/nvidia/libXvMCNVIDIA.so.1');
         }
+        when (/^openchrome$/)
+        {
+            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
+            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'xvmc-vld');
+            (-e '/usr/lib/libchromeXvMC.so.1') && ($xvmc_lib = '/usr/lib/libchromeXvMC.so.1');
+        }
         when (/^radeon$/)
         {
             ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
@@ -62,12 +68,6 @@ sub start
         {
             ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
             ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
-        }
-        when (/^openchrome$/)
-        {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'xvmc-vld');
-            (-e '/usr/lib/libchromeXvMC.so.1') && ($xvmc_lib = '/usr/lib/libchromeXvMC.so.1');
         }
         when (/^vmware$/)
         {
