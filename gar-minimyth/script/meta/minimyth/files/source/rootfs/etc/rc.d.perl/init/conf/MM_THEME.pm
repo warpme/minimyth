@@ -22,36 +22,7 @@ $var_list{'MM_THEMECACHE_URL'} =
     value_default  => 'auto',
     value_valid    => 'auto|none|.+',
     value_obsolete => 'default',
-    value_auto     => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        my $auto;
-  
-        my $resolution_x = $minimyth->mythdb_settings_get('GuiWidth')  || 0;
-        if ($resolution_x == 0)
-        {
-            $resolution_x = $minimyth->var_get('MM_X_MODE');
-            $resolution_x =~ s/^([0-9]+)x([0-9]+).*$/$1/;
-        }
-        my $resolution_y = $minimyth->mythdb_settings_get('GuiHeight') || 0;
-        if ($resolution_y == 0)
-        {
-            $resolution_y = $minimyth->var_get('MM_X_MODE');
-            $resolution_y =~ s/^([0-9]+)x([0-9]+).*$/$2/;
-        }
-        my $themecache_name = $minimyth->var_get('MM_THEME_NAME') . '.' . $resolution_x . '.' . $resolution_y;
-        if (! -e "/home/minimyth/.mythtv/themecache/$themecache_name")
-        {
-            $auto = "confrw:themecaches/$themecache_name.sfs";
-        }
-        else
-        {
-            $auto = 'none';
-        }
-        return $auto;
-    },
+    value_auto     => 'confrw:themecache.sfs',
     value_none     => ''
 };
 $var_list{'MM_THEME_NAME'} =

@@ -2016,24 +2016,9 @@ sub themecache_save
         $self->message_log('error', qq(failed to create the MythTV themecache file because the MythTV themecache directory does not exist.));
         return 0;
     }
-    my $file = '';
-    my $file_found = 0;
-    if (opendir(DIR, '/home/minimyth/.mythtv/themecache'))
-    {
-        foreach (grep(! /^\./, (readdir(DIR))))
-        {
-            $file = "$_.sfs";
-            $file_found++;
-        }
-        closedir(DIR);
-    }
-    if ($file_found ne 1)
-    {
-        $self->message_log('error', qq(failed to create the MythTV themecache file because the MythTV themecache directory does not contain exactly one cached theme.));
-        return 0;
-    }
 
-    my $remote_file = 'themecaches' . '/' . $file;
+    my $file        = 'themecache.sfs';
+    my $remote_file = $file;
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
