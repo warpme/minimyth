@@ -52,6 +52,13 @@ start() {
                 /usr/bin/test -e ${XVMC_LIB}                      && \
                 /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             ;;
+        openchrome)
+            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
+            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
+            XVMC_LIB='/usr/lib/libchromeXvMC.so.1' && \
+                /usr/bin/test -e ${XVMC_LIB}       && \
+                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+            ;;
         radeon)
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
@@ -67,13 +74,6 @@ start() {
         sis)
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='ffmpeg'
-            ;;
-        openchrome)
-            /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
-            /usr/bin/test "${MM_VIDEO_MPEG2_DECODER}" = "auto" && MM_VIDEO_MPEG2_DECODER='xvmc-vld'
-            XVMC_LIB='/usr/lib/libchromeXvMC.so.1' && \
-                /usr/bin/test -e ${XVMC_LIB}       && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
             ;;
         vmware)
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}"  = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'

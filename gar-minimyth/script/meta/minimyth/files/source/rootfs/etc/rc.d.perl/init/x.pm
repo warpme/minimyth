@@ -102,10 +102,15 @@ sub start
                 when (/^auto$/)     { $device_intel = 'VGA';       }
                 when (/^([0-9]+)$/) { $device_intel = 'VGA-' . $1; }
             }
-            given ($minimyth->var_get('MM_X_OUTPUT_VGA'))
+            given ($minimyth->var_get('MM_X_OUTPUT_DVI'))
             {
                 when (/^auto$/)     { $device_intel = 'TMDS';       }
                 when (/^([0-9]+)$/) { $device_intel = 'TMDS-' . $1; }
+            }
+            if ($device_intel eq '')
+            {
+                $minimyth->message_output('err', "error: no X video output enabled.");
+                return 0;
             }
         }
         when (/^nvidia$/)
@@ -153,6 +158,18 @@ sub start
                 $minimyth->message_output('err', "error: no X video output enabled.");
                 return 0;
             }
+        }
+        when (/^(radeon)$/)
+        {
+        }
+        when (/^(radeonhd)$/)
+        {
+        }
+        when (/^(savage)$/)
+        {
+        }
+        when (/^(sis)$/)
+        {
         }
         when (/^vmware$/)
         {
@@ -234,6 +251,9 @@ sub start
             # Rebuild library cache.
             system(qq(/sbin/ldconfig));
         }
+        when (/^(openchrome)$/)
+        {
+        }
         when (/^(radeon)$/)
         {
         }
@@ -244,9 +264,6 @@ sub start
         {
         }
         when (/^(sis)$/)
-        {
-        }
-        when (/^(openchrome)$/)
         {
         }
         when (/^(vmware)$/)
