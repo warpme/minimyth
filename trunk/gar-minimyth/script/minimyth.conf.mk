@@ -37,10 +37,10 @@ mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'mplayer', 'mplayer-svn' (experimental and
-# may be removed in the future without warning), 'vlc' (experimental and may be
-# removed in the future without warning), 'xine', 'perl', 'transcode', 'mame',
-# 'wiimote', 'backend' and 'debug'.
+# 'mythweather', 'mythzoneminder', 'gnash', 'mplayer',
+# 'mplayer-svn' (experimental and may be removed in the future without warning),
+# 'vlc' (experimental and may be removed in the future without warning),
+# 'xine', 'perl', 'transcode', 'mame', 'wiimote', 'backend' and 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
@@ -120,7 +120,7 @@ mm_NVIDIA_VERSION         ?= 169.12
 mm_XORG_VERSION           ?= 7.3
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 18670
+mm_MYTH_TRUNK_VERSION     ?= 18792
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
