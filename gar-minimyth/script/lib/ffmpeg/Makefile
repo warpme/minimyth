@@ -31,7 +31,7 @@ CONFIGURE_ARGS = \
 	--enable-gpl \
 	--disable-nonfree \
 	--enable-postproc \
-	--disable-swscale \
+	--enable-swscale \
 	--disable-avfilter \
 	--disable-avfilter-lavf \
 	--disable-beosthreads \

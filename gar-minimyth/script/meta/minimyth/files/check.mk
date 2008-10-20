@@ -139,6 +139,7 @@ mm-all:
 		   [ ! "$${software}" = "mythvideo"      ] && \
 		   [ ! "$${software}" = "mythweather"    ] && \
 		   [ ! "$${software}" = "mythzoneminder" ] && \
+		   [ ! "$${software}" = "gnash"          ] && \
 		   [ ! "$${software}" = "mplayer"        ] && \
 		   [ ! "$${software}" = "mplayer-svn"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
