@@ -122,6 +122,8 @@ DEPENDS = \
 			perl/perl-XML-Simple)) \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
+	$(if $(filter gnash,$(mm_SOFTWARE)), \
+		mediaplayers/gnash) \
 	$(if $(filter mplayer,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer \
 		mediaplayers/mplayer-resumer) \
