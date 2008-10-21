@@ -1,6 +1,6 @@
-diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18670-new/programs/mythfrontend/main.cpp
---- mythtv-trunk-18670-old/programs/mythfrontend/main.cpp	2008-10-10 22:35:10.000000000 -0700
-+++ mythtv-trunk-18670-new/programs/mythfrontend/main.cpp	2008-10-10 22:35:11.000000000 -0700
+diff -Naur mythtv-trunk-18806-old/programs/mythfrontend/main.cpp mythtv-trunk-18806-new/programs/mythfrontend/main.cpp
+--- mythtv-trunk-18806-old/programs/mythfrontend/main.cpp	2008-10-20 20:39:55.000000000 -0700
++++ mythtv-trunk-18806-new/programs/mythfrontend/main.cpp	2008-10-20 20:39:58.000000000 -0700
 @@ -1,11 +1,14 @@
  
  #include <unistd.h>
@@ -16,7 +16,7 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
  #include <iostream>
  using namespace std;
  
-@@ -1381,15 +1384,71 @@
+@@ -1383,15 +1386,71 @@
          mainWindow->installEventFilter(mon);
      }
  
@@ -28,8 +28,8 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
 +    int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
 +    // Loopback address.
 +    networkAddress.setAddress("127.0.0.1");
-+    networkControl = new NetworkControl(networkAddress, networkPort);
-+    if (!networkControl->ok())
++    networkControl = new NetworkControl();
++    if (!networkControl->listen(networkAddress, networkPort))
 +        VERBOSE(VB_IMPORTANT,
 +                QString("NetworkControl failed to bind to port %1 of address %2.")
 +                .arg(networkPort).arg(networkAddress.toString()));
@@ -38,8 +38,8 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
      if (gContext->GetNumSetting("NetworkControlEnabled", 0))
      {
 -        int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
--        networkControl = new NetworkControl(networkPort);
--        if (!networkControl->ok())
+-        networkControl = new NetworkControl();
+-        if (!networkControl->listen(QHostAddress::Any,networkPort))
 +        char hostname[256];
 +        if (!gethostname(hostname,256))
 +        {
@@ -64,8 +64,8 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
 +                             !( (networkAddress.isIp4Addr()     == true) && (networkAddress.toString() == "127.0.0.1") ) &&
 +                             !( (networkAddress.isIPv6Address() == true) && (networkAddress.toString() == "::1"      ) ) )
 +                        {
-+                            networkControl = new NetworkControl(networkAddress, networkPort);
-+                            if (!networkControl->ok())
++                            networkControl = new NetworkControl();
++                            if (!networkControl->listen(networkAddress, networkPort))
 +                                VERBOSE(VB_IMPORTANT,
 +                                        QString("NetworkControl failed to bind to port %1 of address %2.")
 +                                        .arg(networkPort).arg(networkAddress.toString()));
@@ -93,9 +93,9 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
      }
  
      gContext->addCurrentLocation("MainMenu");
-@@ -1440,8 +1499,8 @@
- 
-     signal(SIGHUP, SIG_DFL);
+@@ -1438,8 +1497,8 @@
+         pthread_join(priv_thread, NULL);
+     }
  
 -    if (networkControl)
 -        delete networkControl;
@@ -103,37 +103,4 @@ diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/main.cpp mythtv-trunk-18
 +        delete networkControls.takeFirst();
  
      DestroyMythMainWindow();
-     cleanup();
-diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/networkcontrol.cpp mythtv-trunk-18670-new/programs/mythfrontend/networkcontrol.cpp
---- mythtv-trunk-18670-old/programs/mythfrontend/networkcontrol.cpp	2008-10-10 22:35:10.000000000 -0700
-+++ mythtv-trunk-18670-new/programs/mythfrontend/networkcontrol.cpp	2008-10-10 22:35:11.000000000 -0700
-@@ -45,14 +45,14 @@
-         return test.lower() == command.left(test.length()).lower();
- }
  
--NetworkControl::NetworkControl(int port)
--          : Q3ServerSocket(port, 1),
-+NetworkControl::NetworkControl(const QHostAddress & address, int port)
-+          : Q3ServerSocket(address, port, 1),
-             prompt("# "),
-             gotAnswer(false), answer(""),
-             client(NULL), cs(NULL)
- {
-     VERBOSE(VB_IMPORTANT, LOC +
--            QString("Listening for remote connections on port %1").arg(port));
-+            QString("Listening for remote connections on port %1 of address %2").arg(port).arg(address.toString()));
- 
-     // Eventually this map should be in the jumppoints table
-     jumpMap["channelpriorities"]     = "Channel Recording Priorities";
-diff -Naur mythtv-trunk-18670-old/programs/mythfrontend/networkcontrol.h mythtv-trunk-18670-new/programs/mythfrontend/networkcontrol.h
---- mythtv-trunk-18670-old/programs/mythfrontend/networkcontrol.h	2008-10-10 22:35:10.000000000 -0700
-+++ mythtv-trunk-18670-new/programs/mythfrontend/networkcontrol.h	2008-10-10 22:35:11.000000000 -0700
-@@ -17,7 +17,7 @@
- {
-     Q_OBJECT
-   public:
--    NetworkControl(int port);
-+    NetworkControl(const QHostAddress & address, int port);
-     ~NetworkControl();
- 
-     void newConnection(int socket);
