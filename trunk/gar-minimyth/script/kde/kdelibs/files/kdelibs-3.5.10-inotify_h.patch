@@ -1,0 +1,112 @@
+diff -Naur kdelibs-3.5.10-old/configure kdelibs-3.5.10-new/configure
+--- kdelibs-3.5.10-old/configure	2008-08-20 09:06:05.000000000 -0700
++++ kdelibs-3.5.10-new/configure	2008-10-21 13:41:25.000000000 -0700
+@@ -50390,9 +50390,7 @@
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
+ 
+-#include <asm/unistd.h>
+-#define _S390_BITOPS_H
+-#include <linux/inotify.h>
++#include <sys/inotify.h>
+ 
+ int
+ main ()
+@@ -50401,9 +50399,6 @@
+ #ifndef IN_ALL_EVENTS
+ #error no inotify notification
+ #endif
+-#ifndef __NR_inotify_init
+-#error no __NR_inotify_init
+-#endif
+ 
+ 
+   ;
+diff -Naur kdelibs-3.5.10-old/configure.in kdelibs-3.5.10-new/configure.in
+--- kdelibs-3.5.10-old/configure.in	2008-08-20 09:05:03.000000000 -0700
++++ kdelibs-3.5.10-new/configure.in	2008-10-21 13:41:09.000000000 -0700
+@@ -1701,17 +1701,12 @@
+ 
+   AC_TRY_COMPILE(
+   [
+-#include <asm/unistd.h>
+-#define _S390_BITOPS_H
+-#include <linux/inotify.h>
++#include <sys/inotify.h>
+   ],
+   [
+ #ifndef IN_ALL_EVENTS
+ #error no inotify notification
+ #endif
+-#ifndef __NR_inotify_init
+-#error no __NR_inotify_init
+-#endif
+ 
+   ],kde_cv_have_inotify=yes,kde_cv_have_inotify=no)
+ 
+diff -Naur kdelibs-3.5.10-old/kio/kio/configure.in.in kdelibs-3.5.10-new/kio/kio/configure.in.in
+--- kdelibs-3.5.10-old/kio/kio/configure.in.in	2006-07-22 01:16:37.000000000 -0700
++++ kdelibs-3.5.10-new/kio/kio/configure.in.in	2008-10-21 13:40:49.000000000 -0700
+@@ -122,17 +122,12 @@
+ 
+   AC_TRY_COMPILE(
+   [
+-#include <asm/unistd.h>
+-#define _S390_BITOPS_H
+-#include <linux/inotify.h>
++#include <sys/inotify.h>
+   ],
+   [
+ #ifndef IN_ALL_EVENTS
+ #error no inotify notification
+ #endif
+-#ifndef __NR_inotify_init
+-#error no __NR_inotify_init
+-#endif
+ 
+   ],kde_cv_have_inotify=yes,kde_cv_have_inotify=no)
+ 
+diff -Naur kdelibs-3.5.10-old/kio/kio/kdirwatch.cpp kdelibs-3.5.10-new/kio/kio/kdirwatch.cpp
+--- kdelibs-3.5.10-old/kio/kio/kdirwatch.cpp	2006-07-22 01:16:37.000000000 -0700
++++ kdelibs-3.5.10-new/kio/kio/kdirwatch.cpp	2008-10-21 14:30:09.000000000 -0700
+@@ -67,39 +67,7 @@
+ #ifdef HAVE_INOTIFY
+ #include <unistd.h>
+ #include <fcntl.h>
+-#include <sys/syscall.h>
+-#include <linux/types.h>
+-// Linux kernel headers are documented to not compile
+-#define _S390_BITOPS_H
+-#include <linux/inotify.h>
+-
+-static inline int inotify_init (void)
+-{
+-  return syscall (__NR_inotify_init);
+-}
+-
+-static inline int inotify_add_watch (int fd, const char *name, __u32 mask)
+-{
+-  return syscall (__NR_inotify_add_watch, fd, name, mask);
+-}
+-
+-static inline int inotify_rm_watch (int fd, __u32 wd)
+-{
+-  return syscall (__NR_inotify_rm_watch, fd, wd);
+-}
+-
+-#ifndef  IN_ONLYDIR
+-#define  IN_ONLYDIR 0x01000000 
+-#endif
+-
+-#ifndef IN_DONT_FOLLOW
+-#define IN_DONT_FOLLOW 0x02000000
+-#endif
+-
+-#ifndef IN_MOVE_SELF
+-#define IN_MOVE_SELF 0x00000800
+-#endif
+-
++#include <sys/inotify.h>
+ #endif
+ 
+ #include <sys/utsname.h>
