@@ -1947,6 +1947,69 @@ sub codecs_fetch_and_save
     return 1;
 }
 
+sub flash_fetch_and_save
+{
+    my $self = shift;
+
+    my $devnull = File::Spec->devnull;
+
+    my $file        = 'libflashplayer.so';
+    my $remote_file = $file;
+    my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
+    my $local_file  = $local_dir . '/' . $file;
+
+    File::Path::mkpath($local_dir);
+    if (! -d $local_dir)
+    {
+        return 0;
+    }
+
+    my $flash_base = qq(install_flash_player_10_linux);
+    my $flash_file = qq($flash_base.tar.gz);
+    my $flash_url  = qq(http://fpdownload.macromedia.com/get/flashplayer/current/$flash_file);
+    File::Path::rmtree(qq($local_dir/$flash_base));
+    unlink(qq($local_dir/$flash_file));
+    if (! $self->url_get($flash_url, qq($local_dir/$flash_file)))
+    {
+        $self->message_log('error', qq(failed to create the flash player plugin file.));
+        File::Path::rmtree(qq($local_dir/$flash_base));
+        unlink(qq($local_dir/$flash_file));
+        return 0;
+    }
+    system(qq(/bin/tar -C $local_dir -zxf $local_dir/$flash_file));
+    unlink(qq($local_dir/$flash_file));
+
+    if (! -e qq($local_dir/$flash_base/$file))
+    {
+        File::Path::rmtree(qq($local_dir/$flash_base));
+        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        return 0;
+    }
+
+    unlink(qq($local_file));
+    File::Copy::copy(qq($local_dir/$flash_base/$file), qq($local_file));
+    if (! -e qq($local_file))
+    {
+        File::Path::rmtree(qq($local_dir/$flash_base));
+        unlink(qq($local_file));
+        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        return 0;
+    }
+
+    File::Path::rmtree(qq($local_dir/$flash_base));
+
+    if (! $self->confrw_put(qq($remote_file), qq($local_file)))
+    {
+        unlink(qq($local_file));
+        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        return 0;
+    }
+
+    unlink(qq($local_file));
+
+    return 1;
+}
+
 sub extras_save
 {
     my $self = shift;
