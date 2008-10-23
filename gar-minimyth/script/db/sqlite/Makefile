@@ -1,0 +1,41 @@
+GARNAME = sqlite
+GARVERSION = 3.6.4
+CATEGORIES = db
+MASTER_SITES = http://www.sqlite.org/
+DISTFILES = $(DISTNAME).tar.gz
+LICENSE =
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-largefile \
+	--enable-threadsafe \
+	--disable-cross-thread-connections \
+	--disable-threads-override-locks \
+	--disable-releasemode \
+	--enable-tempstore=no \
+	--disable-tcl \
+	--disable-readline \
+	--disable-debug \
+	--enable-amalgamation \
+	--disable-load-extension \
+	--disable-gcov  \
+	--with-gnu-ld
+
+include ../../gar.mk
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libsqlite3.la
+	@$(MAKECOOKIE)

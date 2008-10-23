@@ -37,7 +37,7 @@ mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'gnash', 'mplayer',
+# 'mythweather', 'mythzoneminder', 'flash', 'gnash', 'mplayer',
 # 'mplayer-svn' (experimental and may be removed in the future without warning),
 # 'vlc' (experimental and may be removed in the future without warning),
 # 'xine', 'perl', 'transcode', 'mame', 'wiimote', 'backend' and 'debug'.
