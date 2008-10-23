@@ -1,0 +1,34 @@
+GARNAME = nspr
+GARVERSION = 4.7.1
+CATEGORIES = lib
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v4.7.1/src/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-cross.patch
+LICENSE = MPL1_1/GPL2/LGPL2_1
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS    = lang/c
+BUILDDEPS  =
+ifneq ($(DESTIMG),build)
+BUILDDEPS += lib/nspr
+endif
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/mozilla/nsprpub/configure
+BUILD_SCRIPTS     = $(WORKSRC)/mozilla/nsprpub/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/mozilla/nsprpub/Makefile  nsinstall
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),--enable-64bit)
+
+include ../../gar.mk
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/mozilla/nsprpub/configure)
+	@$(MAKECOOKIE)
+
+install-nsinstall:
+	@cp -f $(WORKSRC)/mozilla/nsprpub/config/nsinstall $(DESTDIR)$(bindir)/nsinstall
+	@$(MAKECOOKIE)
