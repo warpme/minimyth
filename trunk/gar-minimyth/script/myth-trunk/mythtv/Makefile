@@ -5,8 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-keyboardmodifiermask.patch \
-	$(DISTNAME_SHORT)-cast.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-ticket-4792.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
