@@ -21,7 +21,7 @@ sub start
     if (! $minimyth->application_running('crond'))
     {
         if ((-d '/var/spool/cron/crontabs') &&
-            (opendir(DIR, '/var/spool/chron/crontabs')))
+            (opendir(DIR, '/var/spool/cron/crontabs')))
         {
             foreach (grep(! /^\./, (readdir(DIR))))
             {
