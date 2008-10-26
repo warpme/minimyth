@@ -1,7 +1,7 @@
 GARNAME = nspr
-GARVERSION = 4.7.1
+GARVERSION = 4.7.2
 CATEGORIES = lib
-MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v4.7.1/src/
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v4.7.2/src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = MPL1_1/GPL2/LGPL2_1
