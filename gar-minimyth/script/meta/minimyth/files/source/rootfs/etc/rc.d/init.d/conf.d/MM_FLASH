@@ -1,0 +1,55 @@
+################################################################################
+# MM_FLASH configuration variables and files.
+################################################################################
+conf_clean_MM_FLASH() {
+    /bin/rm -rf /tmp/init.conf.flash
+
+    return 0
+}
+
+conf_check_MM_FLASH() {
+    return 0
+}
+
+conf_default_MM_FLASH() {
+    # The routine relies on MM_PLUBIN_* variables.
+    conf_default_MM_PLUGIN
+
+    # The routine relies on MM_VERSION_* variables.
+    conf_default_MM_VERSION
+
+    if /usr/bin/test -z "${MM_FLASH_URL}" ; then
+        MM_FLASH_URL='auto'
+    fi
+
+    if /usr/bin/test "${MM_FLASH_URL}" = "auto" ; then
+        MM_FLASH_URL='none'
+        if /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -gt  0 ||
+           /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -ge 21 ; then
+            if /usr/bin/test "${MM_PLUGIN_BROWSER_ENABLED}" = "yes" ; then
+                if /usr/bin/test -e "/lib/ld-linux.so.2" ; then
+                    MM_FLASH_URL='confrw:libflashplayer.so'
+                fi
+            fi
+        fi
+    fi
+
+    # Convert 'none' to empty.
+    if /usr/bin/test "${MM_COCECS_URL}" = "none" ; then
+        MM_FLASH_URL=
+    fi
+
+    return 0
+}
+
+conf_write_MM_FLASH() {
+    local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_FLASH_URL "${MM_FLASH_URL}"
+
+    return 0
+}
+
+conf_fetch_MM_FLASH() {
+    return 0
+}
