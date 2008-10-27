@@ -1971,7 +1971,7 @@ sub flash_fetch_and_save
     unlink(qq($local_dir/$flash_file));
     if (! $self->url_get($flash_url, qq($local_dir/$flash_file)))
     {
-        $self->message_log('error', qq(failed to create the flash player plugin file.));
+        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
         File::Path::rmtree(qq($local_dir/$flash_base));
         unlink(qq($local_dir/$flash_file));
         return 0;
@@ -1982,7 +1982,7 @@ sub flash_fetch_and_save
     if (! -e qq($local_dir/$flash_base/$file))
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
-        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
 
@@ -1992,7 +1992,7 @@ sub flash_fetch_and_save
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
 
@@ -2001,7 +2001,7 @@ sub flash_fetch_and_save
     if (! $self->confrw_put(qq($remote_file), qq($local_file)))
     {
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save the flash player plugin file.));
+        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
 

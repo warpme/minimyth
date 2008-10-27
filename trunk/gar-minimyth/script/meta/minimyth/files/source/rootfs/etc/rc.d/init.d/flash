@@ -1,0 +1,39 @@
+#!/bin/sh
+################################################################################
+# flash
+#
+# This script installs Adobe Flash Player for MythBrowser.
+################################################################################
+. /etc/rc.d/functions
+
+start() {
+    mm_message_output info "installing Adobe Flaash Player ..."
+
+    if /usr/bin/test -n "${MM_FLASH_URL}" ; then
+        mm_url_get "${MM_FLASH_URL}" "/usr/lib/browser/plugins/libflashplayer.so"
+        if /usr/bin/test -e "/usr/lib/browser/plugins/libflashplayer.so" ; then
+            chmod 0666  "/usr/lib/browser/plugins/libflashplayer.so"
+            if /usr/bin/test -e "/lib/ld-linux.so.2" ; then
+                if ! /lib/ld-linux.so.2 --list "/usr/lib/browser/plugins/libflashplayer.so" > /dev/null 2>&1 ; then
+                    mm_message_output 'error' 'Adobe Flash Player will fail because libraries are missing.'
+                fi
+            fi
+            if /usr/bin/test -e "/lib/ld-linux-x86_64.so.2" ; then
+                mm_message_output 'error' 'Adobe Flash Player will fail because it is a 32-bit library.'
+            fi
+        fi
+    fi
+
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

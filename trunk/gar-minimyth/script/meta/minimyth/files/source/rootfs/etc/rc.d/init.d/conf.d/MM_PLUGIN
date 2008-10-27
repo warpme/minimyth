@@ -78,6 +78,10 @@ conf_check_MM_PLUGIN() {
 }
 
 conf_default_MM_PLUGIN() {
+    if /usr/bin/test -e /tmp/init.conf.plugin/conf_default_MM_PLUGIN ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" ; then
         MM_PLUGIN_INFORMATION_CENTER_ENABLED='yes'
     fi
@@ -161,6 +165,9 @@ conf_default_MM_PLUGIN() {
             MM_PLUGIN_ZONEMINDER_ENABLED='no'
         fi
     fi
+
+    /bin/mkdir -p /tmp/init.conf.plugin
+    /bin/touch    /tmp/init.conf.plugin/conf_default_MM_PLUGIN
 
     return 0
 }

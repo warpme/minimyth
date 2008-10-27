@@ -17,6 +17,7 @@ MM_INIT_START := \
     game \
     master \
     codecs \
+    flash \
     extras \
     sensors \
     acpi \
