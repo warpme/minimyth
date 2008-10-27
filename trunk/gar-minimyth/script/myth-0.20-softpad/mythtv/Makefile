@@ -7,6 +7,7 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT)-ticket-3035-20070207.patch \
 	$(DISTNAME_SHORT)-ticket-4225-20071220.patch \
+	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-avformat_asf_utf8.patch \
 	$(DISTNAME_SHORT)-gcc_4.3.patch \
 	$(DISTNAME_SHORT)-link_xvmc_lib.patch \
