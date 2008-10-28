@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++ lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/glib lib/libjpeg lib/libpng lib/SDL lib/zlib net/curl system/lirc xorg/xorg
+DEPENDS = lang/c++ gtk/gtk+ lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/glib lib/libjpeg lib/libpng lib/libxml2 lib/zlib net/curl system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -29,14 +29,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-write \
 	--disable-cygnal \
 	--disable-i810-lod-bias \
-	--enable-gui=sdl \
+	--enable-gui=gtk \
 	--enable-renderer=agg \
 	--enable-mit-shm \
 	--enable-media=ffmpeg \
 	--enable-lirc \
 	--disable-static \
 	--enable-shared \
-	--disable-atk \
+	--enable-atk \
 	--disable-glext \
 	--disable-cairo \
 	--disable-kparts \
@@ -63,7 +63,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-plugins-install=system \
 	--with-npapi-install=system \
-	--with-npapi-plugindir="$(libdir)/mozilla/plugins" \
+	--with-npapi-plugindir="$(libdir)/browser/plugins" \
 	--with-z-incl="$(DESTDIR)$(includedir)" \
 	--with-z-lib="$(DESTDIR)$(libdir)" \
 	--with-jpeg-incl="$(DESTDIR)$(includedir)" \
