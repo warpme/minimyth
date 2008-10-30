@@ -1,7 +1,7 @@
-diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
---- mythtv-trunk-18885-old/configure	2008-10-26 17:06:44.000000000 -0700
-+++ mythtv-trunk-18885-new/configure	2008-10-26 17:06:45.000000000 -0700
-@@ -692,11 +692,11 @@
+diff -Naur mythtv-trunk-18943-old/configure mythtv-trunk-18943-new/configure
+--- mythtv-trunk-18943-old/configure	2008-10-30 06:49:55.000000000 -0700
++++ mythtv-trunk-18943-new/configure	2008-10-30 06:49:55.000000000 -0700
+@@ -746,11 +746,11 @@
      func=$4
      shift 4
      disable $cfg
@@ -16,17 +16,8 @@ diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
          check_lib "$@" $header $func && enable $cfg
      fi
      return $err
-@@ -1472,7 +1472,7 @@
-   x86_64|amd64)
-     arch="x86_32"
-     enable fast_unaligned
--    canon_arch="`$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
-+    canon_arch="`$cross_prefix$cc -dumpmachine | sed -e 's,\([^-]*\)-.*,\1,'`"
-     if [ x"$canon_arch" = x"x86_64" -o x"$canon_arch" = x"amd64" ]; then
-       if [ -z "`echo $CFLAGS | grep -- -m32`"  ]; then
-         arch="x86_64"
-@@ -1703,27 +1703,7 @@
- 
+@@ -766,27 +766,7 @@
+ #deprecated, use check_lib or check_lib2 instead
  has_library()
  {
 -    if test -f /etc/ld.so.conf ; then
@@ -54,16 +45,16 @@ diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
  
      HAS_IT="no"
      for LIBPATH in $LIBPATHS ; do
-@@ -2522,7 +2502,7 @@
+@@ -2727,7 +2707,7 @@
  
  disable sdl_too_old
  disable sdl
 -#SDL_CONFIG="${cross_prefix}sdl-config"
 +#SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
- if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
+ if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
      sdl_cflags=`"${SDL_CONFIG}" --cflags`
      temp_cflags $sdl_cflags
-@@ -2602,8 +2582,8 @@
+@@ -2811,8 +2791,8 @@
  # aRts probe
  ! disabled audio_arts &&
      check_foo_config arts artsc artsc.h arts_init &&
@@ -74,7 +65,7 @@ diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
      enable  audio_arts ||
      disable audio_arts
  
-@@ -2701,7 +2681,7 @@
+@@ -2915,7 +2895,7 @@
  enabled lirc && check_lib lirc/lirc_client.h lirc_deinit -llirc_client ||
      disable lirc
  
@@ -83,7 +74,7 @@ diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
  disabled QtWebKit_QWebView && echo "Warning! QtWebkit headers not found, MythBrowser will not work."
  
  if enabled firewire; then
-@@ -2810,21 +2790,21 @@
+@@ -3024,21 +3004,21 @@
  # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
  # not to overwrite the headers installed from Mesa, etc. We need to
  # add that path to include paths if that's the case.
@@ -112,20 +103,20 @@ diff -Naur mythtv-trunk-18885-old/configure mythtv-trunk-18885-new/configure
      fi
  fi
  
-@@ -3158,8 +3138,8 @@
+@@ -3409,8 +3389,8 @@
  fi
  if enabled freetype2; then
-   echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
--  echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
--  echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
-+  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
-+  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
+     echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
+-    echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
+-    echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
++    echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
++    echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
  fi
  if enabled fribidi; then
-   echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
-diff -Naur mythtv-trunk-18885-old/contrib/mythnotify/cidbcast/Makefile mythtv-trunk-18885-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-trunk-18885-old/contrib/mythnotify/cidbcast/Makefile	2008-10-26 17:06:44.000000000 -0700
-+++ mythtv-trunk-18885-new/contrib/mythnotify/cidbcast/Makefile	2008-10-26 17:06:45.000000000 -0700
+     echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
+diff -Naur mythtv-trunk-18943-old/contrib/mythnotify/cidbcast/Makefile mythtv-trunk-18943-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-trunk-18943-old/contrib/mythnotify/cidbcast/Makefile	2008-10-30 06:49:47.000000000 -0700
++++ mythtv-trunk-18943-new/contrib/mythnotify/cidbcast/Makefile	2008-10-30 06:49:55.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -135,9 +126,9 @@ diff -Naur mythtv-trunk-18885-old/contrib/mythnotify/cidbcast/Makefile mythtv-tr
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-trunk-18885-old/contrib/mythnotify/mythudprelay/Makefile mythtv-trunk-18885-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-trunk-18885-old/contrib/mythnotify/mythudprelay/Makefile	2008-10-26 17:06:44.000000000 -0700
-+++ mythtv-trunk-18885-new/contrib/mythnotify/mythudprelay/Makefile	2008-10-26 17:06:45.000000000 -0700
+diff -Naur mythtv-trunk-18943-old/contrib/mythnotify/mythudprelay/Makefile mythtv-trunk-18943-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-trunk-18943-old/contrib/mythnotify/mythudprelay/Makefile	2008-10-30 06:49:47.000000000 -0700
++++ mythtv-trunk-18943-new/contrib/mythnotify/mythudprelay/Makefile	2008-10-30 06:49:55.000000000 -0700
 @@ -9,13 +9,13 @@
  RM       =  rm 
  RM_FLAGS =  -f
@@ -155,9 +146,9 @@ diff -Naur mythtv-trunk-18885-old/contrib/mythnotify/mythudprelay/Makefile mytht
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-trunk-18885-old/programs/mythtranscode/Makefile.standlone mythtv-trunk-18885-new/programs/mythtranscode/Makefile.standlone
---- mythtv-trunk-18885-old/programs/mythtranscode/Makefile.standlone	2008-10-26 17:06:44.000000000 -0700
-+++ mythtv-trunk-18885-new/programs/mythtranscode/Makefile.standlone	2008-10-26 17:06:45.000000000 -0700
+diff -Naur mythtv-trunk-18943-old/programs/mythtranscode/Makefile.standlone mythtv-trunk-18943-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-trunk-18943-old/programs/mythtranscode/Makefile.standlone	2008-10-30 06:49:55.000000000 -0700
++++ mythtv-trunk-18943-new/programs/mythtranscode/Makefile.standlone	2008-10-30 06:49:55.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -167,9 +158,9 @@ diff -Naur mythtv-trunk-18885-old/programs/mythtranscode/Makefile.standlone myth
  #INCLUDES += -I/usr/src/DVB/include
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
-diff -Naur mythtv-trunk-18885-old/settings.pro mythtv-trunk-18885-new/settings.pro
---- mythtv-trunk-18885-old/settings.pro	2008-10-26 17:06:44.000000000 -0700
-+++ mythtv-trunk-18885-new/settings.pro	2008-10-26 17:06:45.000000000 -0700
+diff -Naur mythtv-trunk-18943-old/settings.pro mythtv-trunk-18943-new/settings.pro
+--- mythtv-trunk-18943-old/settings.pro	2008-10-30 06:49:47.000000000 -0700
++++ mythtv-trunk-18943-new/settings.pro	2008-10-30 06:49:55.000000000 -0700
 @@ -2,7 +2,7 @@
  
  # Where binaries, includes and runtime assets are installed by 'make install'

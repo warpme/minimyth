@@ -1,5 +1,5 @@
 GARNAME = pango
-GARVERSION = 1.22.1
+GARVERSION = 1.22.2
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.22/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/cairo lib/freetype lib/glib xorg/xorg
+DEPENDS = lang/c gtk/cairo gtk/glib lib/freetype xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

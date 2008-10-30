@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-yasm.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-ticket-4792.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
@@ -46,6 +47,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
 	--prefix="$(prefix)" \
+	--runprefix="$(prefix)" \
 	--libdir-name="lib" \
 	--disable-ccache \
 	--disable-distcc \
@@ -61,6 +63,8 @@ CONFIGURE_ARGS = \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
 	--enable-mmx \
+	--enable-mmx2 \
+	--enable-ssse3 \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
@@ -75,6 +79,7 @@ CONFIGURE_ARGS = \
 	--disable-hdhomerun \
 	--disable-v4l \
 	--disable-ivtv \
+	--disable-hdpvr \
 	--enable-dvb \
 	--dvb-path="$(DESTDIR)$(includedir)" \
 	--enable-x11 \
@@ -92,7 +97,6 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx \
 	--disable-mac-bundle \
-	--runtime-prefix="$(prefix)" \
 	--without-bindings="perl,python" \
 	--enable-libfaad \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small)
