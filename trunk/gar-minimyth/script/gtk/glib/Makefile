@@ -12,7 +12,7 @@ endef
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-BUILDDEPS += lib/glib
+BUILDDEPS += gtk/glib
 endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

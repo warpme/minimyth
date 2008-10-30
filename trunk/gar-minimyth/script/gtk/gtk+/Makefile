@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c gtk/atk gtk/cairo gtk/pango lib/glib lib/libjpeg lib/libpng lib/libtiff xorg/xorg
+DEPENDS    = lang/c gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/gtk+

@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.17a
+GARVERSION = 1.0.18
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(DISTNAME).tar.bz2

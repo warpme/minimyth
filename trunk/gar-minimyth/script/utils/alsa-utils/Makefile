@@ -1,9 +1,9 @@
 GARNAME = alsa-utils
-GARVERSION = 1.0.17
+GARVERSION = 1.0.18
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-disable_xmlto.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 

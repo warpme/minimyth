@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/dbus lib/expat lib/glib lib/libsndfile lib/libusb
+DEPENDS = lang/c gtk/glib lib/alsa-lib lib/dbus lib/expat lib/libsndfile lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
