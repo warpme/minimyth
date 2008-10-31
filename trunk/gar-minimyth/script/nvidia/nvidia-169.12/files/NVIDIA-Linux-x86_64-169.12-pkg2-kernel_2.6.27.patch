@@ -1,0 +1,1559 @@
+diff -Naur NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/nv.c NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/nv.c
+--- NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/nv.c	2008-10-31 11:09:16.000000000 -0700
++++ NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/nv.c	2008-10-31 11:08:51.000000000 -0700
+@@ -611,7 +611,7 @@
+     nv_state_t *nv;
+     nv_linux_state_t *nvl;
+ 
+-    proc_nvidia = create_proc_entry("nvidia", d_flags, proc_root_driver);
++    proc_nvidia = create_proc_entry("driver/nvidia", d_flags, NULL);
+     if (!proc_nvidia)
+         goto failed;
+ 
+@@ -1286,14 +1286,22 @@
+             if (get_cpu() == cpu)
+                 __nv_setup_pat_entries(NULL);
+             else
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++                smp_call_function(__nv_setup_pat_entries, hcpu, 1);
++#else
+                 smp_call_function(__nv_setup_pat_entries, hcpu, 1, 1);
++#endif
+             put_cpu();
+             break;
+         case CPU_DOWN_PREPARE:
+             if (get_cpu() == cpu)
+                 __nv_restore_pat_entries(NULL);
+             else
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++                smp_call_function(__nv_setup_pat_entries, hcpu, 1);
++#else
+                 smp_call_function(__nv_restore_pat_entries, hcpu, 1, 1);
++#endif
+             put_cpu();
+             break;
+     }
+@@ -1813,6 +1821,7 @@
+     }
+ }
+ 
++#if !defined(NV_VM_INSERT_PAGE_PRESENT)
+ struct page *nv_kern_vma_nopage(
+     struct vm_area_struct *vma,
+     unsigned long address,
+@@ -1823,22 +1832,21 @@
+ #endif
+ )
+ {
+-#if !defined(NV_VM_INSERT_PAGE_PRESENT)
+     struct page *page;
+ 
+     page = pfn_to_page(vma->vm_pgoff);
+     get_page(page);
+ 
+     return page;
+-#else
+-    return NOPAGE_SIGBUS;
+-#endif
+ }
++#endif
+ 
+ struct vm_operations_struct nv_vm_ops = {
+     .open   = nv_kern_vma_open,
+     .close  = nv_kern_vma_release,  /* "close" */
++#if !defined(NV_VM_INSERT_PAGE_PRESENT)
+     .nopage = nv_kern_vma_nopage,
++#endif
+ };
+ 
+ static nv_file_private_t *
+diff -Naur NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/nv-linux.h NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/nv-linux.h
+--- NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/nv-linux.h	2008-10-31 11:09:16.000000000 -0700
++++ NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/nv-linux.h	2008-10-31 11:08:51.000000000 -0700
+@@ -104,7 +104,9 @@
+ #endif
+ 
+ #include <linux/spinlock.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 27)
+ #include <asm/semaphore.h>
++#endif
+ #include <linux/completion.h>
+ #include <linux/highmem.h>
+ 
+@@ -658,14 +660,22 @@
+ #if defined(preempt_disable)
+     preempt_disable();
+ #endif
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++    ret = smp_call_function(func, info, 1);
++#else
+     ret = smp_call_function(func, info, 1, 1);
++#endif
+     func(info);
+ #if defined(preempt_enable)
+     preempt_enable();
+ #endif
+ #else
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++    ret = on_each_cpu(func, info, 1);
++#else
+     ret = on_each_cpu(func, info, 1, 1);
+ #endif
++#endif
+     return ret;
+ }
+ 
+diff -Naur NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/os-interface.c NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/os-interface.c
+--- NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/os-interface.c	2008-10-31 11:09:16.000000000 -0700
++++ NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/os-interface.c	2008-10-31 11:08:51.000000000 -0700
+@@ -42,7 +42,11 @@
+     preempt_disable();
+ #endif
+     os_block_on_smp_barrier = 1;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++    ret = smp_call_function(ipi_handler, NULL, 0);
++#else
+     ret = smp_call_function(ipi_handler, NULL, 1, 0);
++#endif
+ #if defined(preempt_enable)
+     preempt_enable();
+ #endif
+@@ -689,7 +693,9 @@
+     U032 sig
+ )
+ {
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 26)
+     return kill_proc(pid, sig, 1) ? RM_ERR_OPERATING_SYSTEM : RM_OK;
++#endif
+ }
+ 
+ /*******************************************************************************/
+diff -Naur NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/os-interface.c.orig NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/os-interface.c.orig
+--- NVIDIA-Linux-x86_64-169.12-pkg2-old/usr/src/nv/os-interface.c.orig	1969-12-31 16:00:00.000000000 -0800
++++ NVIDIA-Linux-x86_64-169.12-pkg2-new/usr/src/nv/os-interface.c.orig	2008-10-31 11:08:04.000000000 -0700
+@@ -0,0 +1,1425 @@
++/* _NVRM_COPYRIGHT_BEGIN_
++ *
++ * Copyright 1999-2001 by NVIDIA Corporation.  All rights reserved.  All
++ * information contained herein is proprietary and confidential to NVIDIA
++ * Corporation.  Any use, reproduction, or disclosure without the written
++ * permission of NVIDIA Corporation is prohibited.
++ *
++ * _NVRM_COPYRIGHT_END_
++ */
++
++
++
++/******************* Operating System Interface Routines *******************\
++*                                                                           *
++* Module: interface.c                                                       *
++*   This is the OS interface module.  All operating system transactions     *
++*   pass through these routines.  No other operating system specific code   *
++*   or data should exist in the source.                                     *
++*                                                                           *
++\***************************************************************************/
++
++#define  __NO_VERSION__
++#include "nv-misc.h"
++
++#include "os-interface.h"
++#include "nv-linux.h"
++
++static volatile int os_block_on_smp_barrier;
++
++#ifdef CONFIG_SMP
++static void ipi_handler(void *info)
++{
++    while(os_block_on_smp_barrier != 0) { barrier(); }
++}
++#endif
++
++RM_STATUS NV_API_CALL os_raise_smp_barrier(void)
++{
++    int ret = 0;
++#if defined(CONFIG_SMP)
++#if defined(preempt_disable)
++    preempt_disable();
++#endif
++    os_block_on_smp_barrier = 1;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
++    ret = smp_call_function(ipi_handler, NULL, 0);
++#else
++    ret = smp_call_function(ipi_handler, NULL, 1, 0);
++#endif
++#if defined(preempt_enable)
++    preempt_enable();
++#endif
++#endif
++    return (ret == 0) ? RM_OK : RM_ERROR;
++}
++
++RM_STATUS NV_API_CALL os_clear_smp_barrier(void)
++{
++    os_block_on_smp_barrier = 0;
++    return RM_OK;
++}
++
++RM_STATUS NV_API_CALL os_disable_console_access(void)
++{
++    NV_ACQUIRE_CONSOLE_SEM();
++    return RM_OK;
++}
++
++RM_STATUS NV_API_CALL os_enable_console_access(void)
++{
++    NV_RELEASE_CONSOLE_SEM();
++    return RM_OK;
++}
++
++//
++// Contents of opaque structure to implement a more feature rich
++// version of counting semaphores below
++//
++typedef struct os_sema_s
++{
++    nv_stack_t        *sp;
++    struct completion  completion;
++    spinlock_t         lock;
++    S032               count;
++} os_sema_t;
++
++//
++// os_alloc_sema - Allocate the global RM semaphore
++//
++//  ppSema - filled in with pointer to opaque structure to semaphore data type
++//
++RM_STATUS NV_API_CALL os_alloc_sema
++(
++    void **ppSema
++)
++{
++    RM_STATUS rmStatus;
++    os_sema_t *os_sema;
++    nv_stack_t *sp = NULL;
++
++    NV_KMEM_CACHE_ALLOC_STACK(sp);
++    if (sp == NULL)
++    {
++        nv_printf(NV_DBG_ERRORS, "NVRM: failed to allocate stack!\n");
++        return RM_ERR_NO_FREE_MEM;
++    }
++
++    rmStatus = os_alloc_mem(ppSema, sizeof(os_sema_t));
++    if (rmStatus != RM_OK)
++    {
++        NV_KMEM_CACHE_FREE_STACK(sp);
++        nv_printf(NV_DBG_ERRORS, "NVRM: failed to allocate semaphore!\n");
++        return rmStatus;
++    }
++
++    os_sema = (os_sema_t *)*ppSema;
++    os_sema->sp = sp;
++    init_completion(&os_sema->completion);
++    spin_lock_init(&os_sema->lock);
++    os_sema->count = 1;
++
++    return RM_OK;
++}
++
++//
++// os_free_sema - Free resources associated with counting semaphore allocated
++//                via os_alloc_sema above.  Semaphore must be free
++//                (no waiting threads).
++//
++//  pSema - Pointer to opaque structure to semaphore data type
++//
++RM_STATUS NV_API_CALL os_free_sema
++(
++    void  *pSema
++)
++{
++    os_sema_t *os_sema = (os_sema_t *)pSema;
++    nv_stack_t *sp;
++
++    sp = os_sema->sp;
++    os_free_mem(pSema);
++    NV_KMEM_CACHE_FREE_STACK(sp);
++
++    return RM_OK;
++}
++
++//
++// os_acquire_sema - Perform a P (acquire) operation on the given semaphore
++//                   If the semaphore is acquired (transitions to 1 to 0)
++//                   clear all device interrupt enables to protect API threads
++//                   from interrupt  handlers.
++//
++//  pSema - Pointer to opaque structure to semaphore data type
++//
++RM_STATUS NV_API_CALL os_acquire_sema
++(
++    void  *pSema
++)
++{
++    os_sema_t *os_sema = (os_sema_t *)pSema;
++    unsigned long old_irq;
++
++    spin_lock_irqsave(&os_sema->lock, old_irq);
++    if (os_sema->count <= 0)
++    {
++        os_sema->count--;
++        spin_unlock_irqrestore(&os_sema->lock, old_irq);
++        wait_for_completion(&os_sema->completion);
++    }
++    else
++    {
++        os_sema->count--;
++        rm_disable_interrupts(os_sema->sp);
++        spin_unlock_irqrestore(&os_sema->lock, old_irq);
++    }
++
++    return RM_OK;
++}
++
++//
++// os_cond_acquire_sema - Perform a P (acquire) operation on the given semaphore
++//                        only if the operation will not fail (sleep).
++//                        If the semaphore is acquired (transitions to 1 to 0)
++//                        clear all device interrupt enables to protect API
++//                        threads from interrupt handlers and return TRUE.
++//
++//  pSema - Pointer to opaque structure to semaphore data type
++//
++BOOL NV_API_CALL os_cond_acquire_sema
++(
++    void  *pSema
++)
++{
++    os_sema_t *os_sema = (os_sema_t *)pSema;
++    unsigned long old_irq;
++
++    spin_lock_irqsave(&os_sema->lock, old_irq);
++    if (os_sema->count <= 0)
++    {
++        spin_unlock_irqrestore(&os_sema->lock, old_irq);
++        return FALSE;
++    }
++    else
++    {
++        os_sema->count--;
++        rm_disable_interrupts(os_sema->sp);
++        spin_unlock_irqrestore(&os_sema->lock, old_irq);
++        return TRUE;
++    }
++
++    return FALSE;
++}
++
++//
++// os_release_sema - Perform a V (release) operation on the given semaphore,
++//                   waking up a single waiting client if at least one is
++//                   waiting. If the semaphore is freed (transitions
++//                   from 0 to 1) re-enable interrupts.
++//
++//  pSema - Pointer to opaque structure to semaphore data type
++//
++RM_STATUS NV_API_CALL os_release_sema
++(
++    void  *pSema
++)
++{
++    os_sema_t *os_sema = (os_sema_t *)pSema;
++    unsigned long old_irq;
++    BOOL doWakeup;
++
++    spin_lock_irqsave(&os_sema->lock, old_irq);
++    if (os_sema->count < 0)
++    {
++        doWakeup = TRUE;
++    }
++    else
++    {
++        doWakeup = FALSE;
++        rm_enable_interrupts(os_sema->sp);
++    }
++    os_sema->count++;
++    spin_unlock_irqrestore(&os_sema->lock, old_irq);
++
++    if (doWakeup)
++        complete(&os_sema->completion);
++
++    return RM_OK;
++}
++
++//
++// os_is_acquired_sema - Return TRUE if semaphore is currently acquired.
++//                       Useful for assertions that a thread currently owns
++//                       the semaphore.
++//
++//  pOS   - OS object
++//  pSema - Pointer to opaque structure to semaphore data type
++//
++BOOL NV_API_CALL os_is_acquired_sema
++(
++    void  *pSema
++)
++{
++    os_sema_t *os_sema = (os_sema_t *)pSema;
++
++    return (os_sema->count < 1);
++}
++
++// return TRUE if the caller is the super-user
++BOOL NV_API_CALL os_is_administrator(
++    PHWINFO pDev
++)
++{
++    return NV_IS_SUSER();
++}
++
++U032 NV_API_CALL os_get_page_size(void)
++{
++    return PAGE_SIZE;
++}
++
++NvU64 NV_API_CALL os_get_page_mask(void)
++{
++    return PAGE_MASK;
++}
++
++NvU64 NV_API_CALL os_get_system_memory_size(void)
++{
++    return ((NvU64) num_physpages * PAGE_SIZE) / RM_PAGE_SIZE;
++}
++
++//
++// Some quick and dirty library functions.
++// This is an OS function because some operating systems supply their
++// own version of this function that they require you to use instead
++// of the C library function.  And some OS code developers may decide to
++// use the actual C library function instead of this code.  In this case,
++// just replace the code within osStringCopy with a call to the C library
++// function strcpy.
++//
++U008* NV_API_CALL os_string_copy(
++    U008 *dst,
++    const U008 *src
++)
++{
++    return strcpy(dst, src);
++}
++
++RM_STATUS NV_API_CALL os_strncpy_from_user(
++    U008 *dst,
++    const U008 *src,
++    U032 n
++)
++{
++    return strncpy_from_user(dst, src, n) ? RM_ERR_INVALID_POINTER : RM_OK;
++}
++
++S032 NV_API_CALL os_string_compare(
++    const U008 *s1,
++    const U008 *s2
++)
++{
++    return strcmp(s1, s2);
++}
++
++U032 NV_API_CALL os_string_length(
++    const U008* str
++)
++{
++    return strlen(str);
++}
++
++U008* NV_API_CALL os_mem_copy(
++    U008 *dst,
++    const U008 *src,
++    U032 length
++)
++{
++    U008 *ret = dst;
++    U032 dwords, bytes;
++    
++    if (length < 128) 
++        ret = memcpy(dst, src, length);
++
++    else 
++    {
++        dwords = length / sizeof(NvU32);
++        bytes = length % sizeof(NvU32);
++
++        while (dwords) 
++        {
++            *(NvU32 *)dst = *(NvU32 *)src;
++            dst += sizeof(NvU32);
++            src += sizeof(NvU32);
++            dwords--;
++        }
++        while (bytes) 
++        {
++            *dst = *src;
++            dst++;
++            src++;
++            bytes--;
++        }
++    }
++    return ret;
++}
++
++RM_STATUS NV_API_CALL os_memcpy_from_user(
++    void *dst,
++    const void* src,
++    U032 length
++)
++{
++    return copy_from_user(dst, src, length) ? RM_ERR_INVALID_POINTER : RM_OK;
++}
++
++RM_STATUS NV_API_CALL os_memcpy_to_user(
++    void *dst,
++    const void* src,
++    U032 length
++)
++{
++    return copy_to_user(dst, src, length) ? RM_ERR_INVALID_POINTER : RM_OK;
++}
++
++void* NV_API_CALL os_mem_set(
++    void* dst,
++    U008 c,
++    U032 length
++)
++{
++    return memset(dst, (int)c, length);
++}
++
++S032 NV_API_CALL os_mem_cmp(
++    const U008 *buf0,
++    const U008* buf1,
++    U032 length
++)
++{
++    return memcmp(buf0, buf1, length);
++}
++
++
++/*
++ * Operating System Memory Functions
++ *
++ * There are 2 interesting aspects of resource manager memory allocations
++ * that need special consideration on Linux:
++ *
++ * 1. They are typically very large, (e.g. single allocations of 164KB)
++ *
++ * 2. The resource manager assumes that it can safely allocate memory in
++ *    interrupt handlers.
++ *
++ * The first requires that we call vmalloc, the second kmalloc. We decide
++ * which one to use at run time, based on the size of the request and the
++ * context. Allocations larger than 128KB require vmalloc, in the context
++ * of an ISR they fail.
++ */
++
++#define KMALLOC_LIMIT 131072
++
++RM_STATUS NV_API_CALL os_alloc_mem(
++    void **address,
++    U032 size
++)
++{
++    NV_MEM_TRACKING_PAD_SIZE(size);
++
++    if (!NV_MAY_SLEEP()) {
++        if (size <= KMALLOC_LIMIT) {
++            /*
++             * The allocation request can be serviced with the Linux slab
++             * allocator; the likelyhood of failure is still fairly high,
++             * since kmalloc can't sleep.
++             */
++            NV_KMALLOC_ATOMIC(*address, size);
++        } else {
++            /*
++             * If the requested amount of memory exceeds kmalloc's limit,
++             * we can't fulfill the request, as vmalloc can not be called
++             * from an interrupt context (bottom-half, ISR).
++             */
++            *address = NULL;
++        }
++    } else {
++        if (size <= KMALLOC_LIMIT)
++        {
++            NV_KMALLOC(*address, size);
++
++            // kmalloc may fail for larger allocations if memory is fragmented
++            // in this case, vmalloc stands a better chance of making the 
++            // allocation, so give it a shot.
++            if (*address == NULL)
++            {
++                NV_VMALLOC(*address, size, 1);
++            }
++        }
++        else
++        {
++            NV_VMALLOC(*address, size, 1);
++        }
++    }
++
++    NV_MEM_TRACKING_HIDE_SIZE(address, size);
++
++    return *address ? RM_OK : RM_ERR_NO_FREE_MEM;
++}
++
++void NV_API_CALL os_free_mem(void *address)
++{
++    unsigned long va;
++    int size;
++
++    NV_MEM_TRACKING_RETRIEVE_SIZE(address, size);
++
++    va = (unsigned long) address;
++    if (va >= VMALLOC_START && va < VMALLOC_END)
++    {
++        NV_VFREE(address, size);
++    }
++    else
++    {
++        NV_KFREE(address, size);
++    }
++}
++
++
++/*****************************************************************************
++*
++*   Name: osGetCurrentTime
++*
++*****************************************************************************/
++
++RM_STATUS NV_API_CALL os_get_current_time(
++    U032 *seconds,
++    U032 *useconds
++)
++{
++    struct timeval tm;
++
++    do_gettimeofday(&tm);
++
++    *seconds = tm.tv_sec;
++    *useconds = tm.tv_usec;
++
++    return RM_OK;
++}
++
++//---------------------------------------------------------------------------
++//
++//  Misc services.
++//
++//---------------------------------------------------------------------------
++
++#define NV_MSECS_PER_JIFFIE         (1000 / HZ)
++#define NV_MSECS_TO_JIFFIES(msec)   ((msec) * HZ / 1000)
++#define NV_USECS_PER_JIFFIE         (1000000 / HZ)
++#define NV_USECS_TO_JIFFIES(usec)   ((usec) * HZ / 1000000)
++
++// #define NV_CHECK_DELAY_ACCURACY 1
++
++/*
++ * It is generally a bad idea to use udelay() to wait for more than
++ * a few milliseconds. Since the caller is most likely not aware of
++ * this, we use mdelay() for any full millisecond to be safe.
++ */
++
++RM_STATUS NV_API_CALL os_delay_us(U032 MicroSeconds)
++{
++    unsigned long mdelay_safe_msec;
++    unsigned long usec;
++
++#ifdef NV_CHECK_DELAY_ACCURACY
++    struct timeval tm1, tm2;
++
++    do_gettimeofday(&tm1);
++#endif
++
++    if (in_irq() && (MicroSeconds > NV_MAX_ISR_DELAY_US))
++        return RM_ERROR;
++    
++    mdelay_safe_msec = MicroSeconds / 1000;
++    if (mdelay_safe_msec)
++        mdelay(mdelay_safe_msec);
++
++    usec = MicroSeconds % 1000;
++    if (usec)
++        udelay(usec);
++
++#ifdef NV_CHECK_DELAY_ACCURACY
++    do_gettimeofday(&tm2);
++    nv_printf(NV_DBG_ERRORS, "NVRM: osDelayUs %d: 0x%x 0x%x\n",
++        MicroSeconds, tm2.tv_sec - tm1.tv_sec, tm2.tv_usec - tm1.tv_usec);
++#endif
++
++    return RM_OK;
++}
++
++/* 
++ * On Linux, a jiffie represents the time passed in between two timer
++ * interrupts. The number of jiffies per second (HZ) varies across the
++ * supported platforms. On i386, where HZ is 100, a timer interrupt is
++ * generated every 10ms; the resolution is a lot better on ia64, where
++ * HZ is 1024. NV_MSECS_TO_JIFFIES should be accurate independent of
++ * the actual value of HZ; any partial jiffies will be 'floor'ed, the
++ * remainder will be accounted for with mdelay().
++ */
++
++RM_STATUS NV_API_CALL os_delay(U032 MilliSeconds)
++{
++    unsigned long MicroSeconds;
++    unsigned long jiffies;
++    unsigned long mdelay_safe_msec;
++    struct timeval tm_end, tm_aux;
++#ifdef NV_CHECK_DELAY_ACCURACY
++    struct timeval tm_start;
++#endif
++
++    do_gettimeofday(&tm_aux);
++#ifdef NV_CHECK_DELAY_ACCURACY
++    tm_start = tm_aux;
++#endif
++
++    if (in_irq() && (MilliSeconds > NV_MAX_ISR_DELAY_MS))
++        return RM_ERROR;
++
++    if (!NV_MAY_SLEEP()) 
++    {
++        mdelay(MilliSeconds);
++        return RM_OK;
++    }
++
++    MicroSeconds = MilliSeconds * 1000;
++    tm_end.tv_usec = MicroSeconds;
++    tm_end.tv_sec = 0;
++    NV_TIMERADD(&tm_aux, &tm_end, &tm_end);
++
++    /* do we have a full jiffie to wait? */
++    jiffies = NV_USECS_TO_JIFFIES(MicroSeconds);
++
++    if (jiffies) 
++    {
++        // if we have at least 1 full jiffy to wait, give up the cpu
++#if !defined(CONFIG_XEN)
++        // but first, make sure we haven't raised the irql level on
++        // this cpu (most likely holding a lock). I'm seeing cases
++        // where we give up the cpu with raised irql, and never get
++        // rescheduled (due to not responding to a later interrupt?)
++        //
++        // XXX this should no longer be necessary, since os_delay()
++        // shouldn't be called from paths that disable interrupts on
++        // the local CPU.
++        if (!NV_IRQL_IS_RAISED())
++        {
++#endif
++            /* give up the cpu */
++            current->state = TASK_INTERRUPTIBLE;
++#if !defined(CONFIG_XEN)
++        }
++        else
++        {
++            nv_printf(NV_DBG_ERRORS, "NVRM: Trying to sleep during raised irql!!\n");
++            nv_printf(NV_DBG_ERRORS, "NVRM:   are we holding a lock?\n");
++            nv_printf(NV_DBG_ERRORS, "NVRM:   skipping os_delay\n");
++            os_dbg_breakpoint();
++            return RM_ERROR;
++        }
++#endif
++        do
++        {
++            schedule_timeout(jiffies);
++            /* catch the remainder, if any */
++            do_gettimeofday(&tm_aux);
++            if (NV_TIMERCMP(&tm_aux, &tm_end, <))
++            {
++                NV_TIMERSUB(&tm_end, &tm_aux, &tm_aux); // tm_aux = tm_end - tm_aux
++                MicroSeconds = tm_aux.tv_usec + tm_aux.tv_sec * 1000000;
++            }
++            else
++                MicroSeconds = 0;
++        } while ((jiffies = NV_USECS_TO_JIFFIES(MicroSeconds)) != 0);
++    }
++
++    if (MicroSeconds > 1000)
++    {
++        mdelay_safe_msec = MicroSeconds / 1000;
++        mdelay(mdelay_safe_msec);
++        MicroSeconds %= 1000;
++    }
++    if (MicroSeconds)
++    {
++        udelay(MicroSeconds);
++    }
++#ifdef NV_CHECK_DELAY_ACCURACY
++    do_gettimeofday(&tm_aux);
++    timersub(&tm_aux, &tm_start, &tm_aux);
++    nv_printf(NV_DBG_ERRORS, "NVRM: osDelay %dmsec: %d.%06dsec\n",
++        MilliSeconds, tm_aux.tv_sec, tm_aux.tv_usec);
++#endif
++
++    return RM_OK;
++}
++
++/* return CPU frequency in MHz */
++#if defined(NVCPU_X86) || defined(NVCPU_X86_64)
++U032 NV_API_CALL os_get_cpu_frequency(void)
++{
++    NvU64 tsc[2];
++    NvU64 tsc_d;
++
++    tsc[0] = nv_rdtsc();
++    mdelay(250);
++    tsc[1] = nv_rdtsc();
++
++    /* we timed 1/4th a second */
++    tsc_d = (tsc[1] - tsc[0]) * 4;
++
++    /* convert from Hz to MHz */
++    do_div(tsc_d, 1000000);
++
++    return (U032)tsc_d;
++}
++#endif
++
++U032 NV_API_CALL os_get_current_process(void)
++{
++    return current->tgid;
++}
++
++RM_STATUS NV_API_CALL os_kill_process(
++    U032 pid,
++    U032 sig
++)
++{
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 26)
++    return kill_proc(pid, sig, 1) ? RM_ERR_OPERATING_SYSTEM : RM_OK;
++#endif
++}
++
++/*******************************************************************************/
++/*                                                                             */
++/* Debug and logging utilities follow                                          */
++/*                                                                             */
++/*******************************************************************************/
++
++
++// The current debug display level (default to maximum debug level)
++U032 cur_debuglevel = 0xffffffff;
++
++
++//
++// this is what actually outputs the data.
++//
++inline void NV_API_CALL out_string(const char *str)
++{
++#if defined(DEBUG)
++    static int was_newline = 0;
++
++    if (NV_NUM_CPUS() > 1 && was_newline)
++    {
++        printk("%d: %s", get_cpu(), str);
++        put_cpu();
++    }
++    else
++#endif
++        printk("%s", str);
++
++#if defined(DEBUG)
++    if (NV_NUM_CPUS() > 1)
++    {
++        int len, i;
++
++        len = strlen(str);
++        if (len > 5) i = 5;
++        else         i = len;
++        was_newline = 0;
++        while (i >= 0)
++        {
++            if (str[len - i] == '\n') was_newline = 1;
++            i--;
++        }
++    }
++#endif
++}    
++
++
++
++#define MAX_ERROR_STRING 512
++
++/*
++ * nv_printf() prints to the "error" log for the driver.
++ * Just like printf, adds no newlines or names
++ * Returns the number of characters written.
++ */
++
++static char nv_error_string[MAX_ERROR_STRING];
++
++int NV_API_CALL nv_printf(
++    U032 debuglevel,
++    const char *printf_format,
++    ...
++  )
++{
++    char *p = nv_error_string;
++    va_list arglist;
++    int chars_written = 0;
++
++    if (debuglevel >= ((cur_debuglevel>>4)&0x3))
++    {
++        va_start(arglist, printf_format);
++        chars_written = vsprintf(p, printf_format, arglist);
++        va_end(arglist);
++        out_string(p);
++    }
++
++    return chars_written;
++}
++
++void NV_API_CALL nv_prints(
++    U032 debuglevel,
++    const char *string
++)
++{
++    char *s = NULL, *p = (char *)string;
++    int l = 0, n = 0;
++
++    if (debuglevel >= ((cur_debuglevel>>4)&0x3))
++    {
++        while ((s = strchr(p, '\n')) != NULL)
++        {
++            sprintf(nv_error_string, "NVRM: ");
++            l = strlen(nv_error_string);
++            n = NV_MIN((s - p) + 2, (MAX_ERROR_STRING - l));
++            snprintf(nv_error_string + l, n, "%s", p);
++            nv_error_string[MAX_ERROR_STRING - 1] = '\0';
++            printk("%s", nv_error_string);
++            p = s + 1;
++        }
++    }
++}
++
++int NV_API_CALL nv_snprintf(char *buf, unsigned int size, const char *fmt, ...)
++{
++    va_list arglist;
++    int chars_written;
++
++    va_start(arglist, fmt);
++    chars_written = vsnprintf(buf, size, fmt, arglist);
++    va_end(arglist);
++    return chars_written;
++}
++
++void NV_API_CALL nv_os_log(int log_level, const char *fmt, void *ap)
++{
++    char    *sys_log_level;
++    int     l;
++
++    switch (log_level) {
++    case NV_DBG_INFO:
++        sys_log_level = KERN_INFO;
++        break;
++    case NV_DBG_SETUP:
++        sys_log_level = KERN_DEBUG;
++        break;
++    case NV_DBG_USERERRORS:
++        sys_log_level = KERN_NOTICE;
++        break;
++    case NV_DBG_WARNINGS:
++        sys_log_level = KERN_WARNING;
++        break;
++    case NV_DBG_ERRORS:
++    default:
++        sys_log_level = KERN_ERR;
++        break;
++    }
++
++    strcpy(nv_error_string, sys_log_level);
++    strcat(nv_error_string, "NVRM: ");
++    l = strlen(nv_error_string);
++    vsnprintf(nv_error_string + l, MAX_ERROR_STRING - l, fmt, ap);
++    nv_error_string[MAX_ERROR_STRING - 1] = 0;
++
++    printk("%s", nv_error_string);
++}
++
++BOOL NV_API_CALL os_pci_device_present(
++    U016 vendor,
++    U016 device
++)
++{
++    struct pci_dev *dev;
++
++    dev = NV_PCI_GET_DEVICE(vendor, device, NULL);
++    if (dev) {
++        NV_PCI_DEV_PUT(dev);
++        return 1;
++    }
++
++    return 0;
++}
++
++#define VERIFY_HANDLE(handle,ret) \
++    if (handle == NULL) { \
++        os_dbg_breakpoint(); \
++        return ret; \
++    }
++
++void* NV_API_CALL os_pci_init_handle(
++    U008 bus,
++    U008 slot,
++    U008 function,
++    U016 *vendor,
++    U016 *device
++)
++{
++    struct pci_dev *dev;
++    unsigned int devfn = PCI_DEVFN(slot, function);
++    dev = NV_PCI_GET_SLOT(bus, devfn);
++    if (dev) {
++        if (vendor) *vendor = dev->vendor;
++        if (device) *device = dev->device;
++        NV_PCI_DEV_PUT(dev); /* XXX Fix me! (hotplug) */
++    }
++    return (void *) dev;
++}
++
++U008 NV_API_CALL os_pci_read_byte(
++    void *handle,
++    U008 offset
++)
++{
++    U008 value;
++    VERIFY_HANDLE(handle,-1);
++    pci_read_config_byte( (struct pci_dev *) handle, offset, &value);
++    return value;
++}
++
++U016 NV_API_CALL os_pci_read_word(
++    void *handle,
++    U008 offset
++)
++{
++    U016 value;
++    VERIFY_HANDLE(handle,-1);
++    pci_read_config_word( (struct pci_dev *) handle, offset, &value);
++    return value;
++}
++
++U032 NV_API_CALL os_pci_read_dword(
++    void *handle,
++    U008 offset
++) 
++{
++    U032 value;
++    VERIFY_HANDLE(handle,-1);
++    pci_read_config_dword( (struct pci_dev *) handle, offset, (u32 *) &value);
++    return value;
++}
++
++void NV_API_CALL os_pci_write_byte(
++    void *handle,
++    U008 offset,
++    U008 value
++)
++{
++    VERIFY_HANDLE(handle,);
++    pci_write_config_byte( (struct pci_dev *) handle, offset, value);
++}
++
++void NV_API_CALL os_pci_write_word(
++    void *handle,
++    U008 offset,
++    U016 value
++)
++{
++    VERIFY_HANDLE(handle,);
++    pci_write_config_word( (struct pci_dev *) handle, offset, value);
++}
++
++void NV_API_CALL os_pci_write_dword(
++    void *handle,
++    U008 offset,
++    U032 value
++)
++{
++    VERIFY_HANDLE(handle,);
++    pci_write_config_dword( (struct pci_dev *) handle, offset, value);
++}
++
++#if defined(NV_STACKWATCH)
++// Apparently a gcc bug.
++// With -finstrument-functions `inb' and friends don't get inlined,
++// when declared `extern inline' (vs. `static inline').
++
++#define outb(val,addr)  nv_outb((val),(addr))
++#define outw(val,addr)  nv_outw((val),(addr))
++#define outl(val,addr)  nv_outl((val),(addr))
++#define inb(addr)       nv_inb(addr)
++#define inw(addr)       nv_inw(addr)
++#define inl(addr)       nv_inl(addr)
++
++static inline void NV_STACKWATCH_CALLBACK nv_outb(unsigned char, unsigned short);
++static inline void NV_STACKWATCH_CALLBACK nv_outw(unsigned short, unsigned short);
++static inline void NV_STACKWATCH_CALLBACK nv_outl(unsigned int, unsigned short);
++
++static inline unsigned char  NV_STACKWATCH_CALLBACK nv_inb(unsigned short);
++static inline unsigned short NV_STACKWATCH_CALLBACK nv_inw(unsigned short);
++static inline unsigned int   NV_STACKWATCH_CALLBACK nv_inl(unsigned short);
++
++static inline
++void NV_STACKWATCH_CALLBACK nv_outb(unsigned char val, unsigned short addr)
++{
++    asm volatile ("outb %b0,%w1" : : "a" (val), "Nd" (addr));
++}
++
++static inline
++void NV_STACKWATCH_CALLBACK nv_outw(unsigned short val, unsigned short addr)
++{
++    asm volatile ("outw %w0,%w1" : : "a" (val), "Nd" (addr));
++}
++
++static inline
++void NV_STACKWATCH_CALLBACK nv_outl(unsigned int val, unsigned short addr)
++{
++    asm volatile ("outl %0,%w1" : : "a" (val), "Nd" (addr));
++}
++
++static inline
++unsigned char NV_STACKWATCH_CALLBACK nv_inb(unsigned short addr)
++{
++    unsigned char   val;
++    asm volatile ("inb %w1,%0" : "=a" (val) : "Nd" (addr));
++    return val;
++}
++
++static inline
++unsigned short NV_STACKWATCH_CALLBACK nv_inw(unsigned short addr)
++{
++    unsigned short  val;
++    asm volatile ("inw %w1,%0" : "=a" (val) : "Nd" (addr));
++    return val;
++}
++
++static inline
++unsigned int NV_STACKWATCH_CALLBACK nv_inl(unsigned short addr)
++{
++    unsigned int    val;
++    asm volatile ("inl %w1,%0" : "=a" (val) : "Nd" (addr));
++    return val;
++}
++
++#endif
++
++void NV_API_CALL os_io_write_byte(
++    PHWINFO pdev,
++    U032 address,
++    U008 value
++)
++{
++    outb(value, address);
++}
++
++void NV_API_CALL os_io_write_word(
++    PHWINFO pdev,
++    U032 address,
++    U016 value
++)
++{
++    outw(value, address);
++}
++
++void NV_API_CALL os_io_write_dword(
++    PHWINFO pdev,
++    U032 address,
++    U032 value
++)
++{
++    outl(value, address);
++}
++
++U008 NV_API_CALL os_io_read_byte(
++    PHWINFO pdev,
++    U032 address
++)
++{
++    return inb(address);
++}
++
++U016 NV_API_CALL os_io_read_word(
++    PHWINFO pdev,
++    U032 address
++)
++{
++    return inw(address);
++}
++
++U032 NV_API_CALL os_io_read_dword(
++    PHWINFO pdev,
++    U032 address
++)
++{
++    return inl(address);
++}
++
++
++#ifdef CONFIG_MTRR
++typedef struct wb_mem_t {
++    unsigned int start;
++    unsigned int size;
++    struct wb_mem_t *next;
++} wb_mem;
++
++static wb_mem *wb_list = NULL;
++
++int save_wb(unsigned int start, unsigned int size)
++{
++    struct wb_mem_t *ptr;
++
++    NV_KMALLOC(ptr, sizeof(struct wb_mem_t));
++    if (ptr == NULL)
++        return 0;
++
++    ptr->start = start;
++    ptr->size  = size;
++    ptr->next  = wb_list;
++    wb_list    = ptr;
++
++    return 1;
++}
++
++int del_wb(unsigned int start, unsigned int size)
++{
++    struct wb_mem_t *ptr;
++    struct wb_mem_t *prev;
++
++    prev = ptr = wb_list;
++
++    while (ptr != NULL) {
++        if (ptr->start == start && ptr->size == size) {
++            if (ptr == wb_list)
++                wb_list = ptr->next;
++            else
++                prev->next = ptr->next;
++
++            NV_KFREE(ptr, sizeof(struct wb_mem_t));
++            return 1;
++        }
++        prev = ptr;
++        ptr = prev->next;
++    }
++
++    return 0;
++}
++#endif
++
++/*
++ * Don't assume MTRR-specific, as we could add support for PATs to 
++ * achieve the same results on a PIII or higher
++ */
++
++RM_STATUS NV_API_CALL os_set_mem_range(
++    U032 start,
++    U032 size,
++    U032 mode
++)
++{
++#ifdef CONFIG_MTRR
++    int err;
++
++    /* for now, we only set memory to write-combined */
++    if (mode != NV_MEMORY_WRITECOMBINED)
++        return RM_ERROR;
++
++    err = mtrr_add(start, size, MTRR_TYPE_WRCOMB, 0x0);
++    if (err < 0)
++    {
++        nv_printf(NV_DBG_ERRORS, "NVRM: cannot write-combine 0x%08x, %dM\n",
++            start, size / (1024 * 1024));
++        return RM_ERROR;
++    }
++
++    save_wb(start, size);
++
++    return RM_OK;
++#endif
++    return RM_ERROR;
++}
++
++RM_STATUS NV_API_CALL os_unset_mem_range(
++    U032 start,
++    U032 size
++)
++{
++#ifdef CONFIG_MTRR
++    if (del_wb(start, size))
++    {
++        mtrr_del(-1, start, size);
++    }
++    return RM_OK;
++#endif
++    return RM_ERROR;
++}
++
++void* NV_API_CALL os_map_kernel_space_high(
++    U032 pfn,
++    U032 size_bytes
++)
++{
++    struct page *page = NULL;
++    if (!NV_MAY_SLEEP())
++    {
++        nv_printf(NV_DBG_ERRORS,
++            "NVRM: os_map_kernel_space_high: 0x%08x, invalid context!\n", pfn);
++        return NULL;
++    }
++    if ((size_bytes == PAGE_SIZE) && (page = pfn_to_page(pfn)) != NULL)
++        return kmap(page);
++    return NULL;
++}
++
++void NV_API_CALL os_unmap_kernel_space_high(
++    void *addr,
++    U032 pfn,
++    U032 size_bytes
++)
++{
++    struct page *page = NULL;
++    if ((page = pfn_to_page(pfn)) != NULL)
++        kunmap(page);
++}
++
++/*
++ * This needs to remap the AGP Aperture from IO space to kernel space,
++ * or at least return a pointer to a kernel space mapping of the Aperture
++ * should this also check for Write-Combining??
++ */
++
++void* NV_API_CALL os_map_kernel_space(
++    NvU64 start,
++    NvU64 size_bytes,
++    U032 mode
++)
++{
++    void *vaddr;
++
++    if (!NV_MAY_SLEEP())
++    {
++        nv_printf(NV_DBG_ERRORS,
++            "NVRM: os_map_kernel_space: can't map 0x%0llx, invalid context!\n", start);
++        os_dbg_breakpoint();
++        return NULL;
++    }
++
++#if defined(NVCPU_X86)
++    if (start > 0xffffffff)
++    {
++        nv_printf(NV_DBG_ERRORS,
++            "NVRM: os_map_kernel_space: can't map > 32-bit address 0x%0llx!\n", start);
++        os_dbg_breakpoint();
++        return NULL;
++    }
++#endif
++
++    if (mode == NV_MEMORY_CACHED) {
++        NV_IOREMAP(vaddr, start, size_bytes);
++    } else {
++        NV_IOREMAP_NOCACHE(vaddr, start, size_bytes);
++    }
++
++    return vaddr;
++}
++
++void NV_API_CALL os_unmap_kernel_space(
++    void *addr,
++    NvU64 size_bytes
++)
++{
++    NV_IOUNMAP(addr, size_bytes);
++}
++
++// flush the cpu's cache, uni-processor version
++RM_STATUS NV_API_CALL os_flush_cpu_cache()
++{
++    CACHE_FLUSH();
++    return RM_OK;
++}
++
++void NV_API_CALL os_flush_cpu_write_combine_buffer()
++{
++    WRITE_COMBINE_FLUSH();
++}
++
++// override initial debug level from registry
++void NV_API_CALL os_dbg_init(void)
++{
++    U032 new_debuglevel;
++    nv_stack_t *sp = NULL;
++
++    NV_KMEM_CACHE_ALLOC_STACK(sp);
++    if (sp == NULL)
++    {
++        nv_printf(NV_DBG_ERRORS, "NVRM: failed to allocate stack!\n");
++        return;
++    }
++
++    if (RM_OK == rm_read_registry_dword(sp, NULL,
++                                        "NVreg",
++                                        "ResmanDebugLevel",
++                                        &new_debuglevel))
++    {
++        if (new_debuglevel != (U032)~0)
++            cur_debuglevel = new_debuglevel;
++    }
++
++    NV_KMEM_CACHE_FREE_STACK(sp);
++}
++
++void NV_API_CALL os_dbg_set_level(U032 new_debuglevel)
++{
++    nv_printf(NV_DBG_SETUP, "NVRM: Changing debuglevel from 0x%x to 0x%x\n",
++        cur_debuglevel, new_debuglevel);
++    cur_debuglevel = new_debuglevel;
++}
++
++/* we used to have a global lock that we had to drop so incoming interrupts
++ * wouldn't hang the machine waiting for the lock. In the switch to finer
++ * grained locking, I've had to remove that code. We don't know which card has
++ * a lock or which threw the breakpoint. I should probably scan the list of
++ * nv_state_t's and drop any held locks before throwing this breakpoint.
++ */
++void NV_API_CALL NV_STACKWATCH_CALLBACK os_dbg_breakpoint(void)
++{
++#ifdef DEBUG
++    out_string("Break\n");
++
++#if defined(CONFIG_X86_REMOTE_DEBUG)
++        __asm__ __volatile__ ("int $3");
++#elif defined(CONFIG_KGDB)
++#if defined(NV_OLD_MM_KGDB_BREAKPOINT_PRESENT)
++        BREAKPOINT;
++#else
++        BREAKPOINT();
++#endif
++#elif defined(CONFIG_KDB)
++    KDB_ENTER();
++#else
++    out_string("Skipping INT 3, we don't like kernel panics\n");
++#endif
++
++#endif /* DEBUG */
++}
++
++
++U032 NV_API_CALL os_get_cpu_count()
++{
++    return NV_NUM_CPUS();
++}
++
++NvU64 NV_API_CALL os_get_current_pdpte(U032 address)
++{
++    NvU64 pdpte = 0;
++#if defined(CONFIG_X86_4G)
++    pgd_t *pgd = NV_PGD_OFFSET(address, FALSE, current->mm);
++    if (NV_PGD_PRESENT(pgd)) pdpte = pgd_val(*pgd);
++#endif
++    return pdpte;
++}
++
++void NV_API_CALL os_register_compatible_ioctl(U032 cmd, U032 size)
++{
++#if defined(NVCPU_X86_64) && defined(CONFIG_IA32_EMULATION) && !defined(HAVE_COMPAT_IOCTL)
++    unsigned int request = _IOWR(NV_IOCTL_MAGIC, cmd, char[size]);
++    register_ioctl32_conversion(request, (void *)sys_ioctl);
++#endif
++}
++
++void NV_API_CALL os_unregister_compatible_ioctl(U032 cmd, U032 size)
++{
++#if defined(NVCPU_X86_64) && defined(CONFIG_IA32_EMULATION) && !defined(HAVE_COMPAT_IOCTL)
++    unsigned int request = _IOWR(NV_IOCTL_MAGIC, cmd, char[size]);
++    unregister_ioctl32_conversion(request);
++#endif
++}
++
++BOOL NV_API_CALL os_pat_supported(void)
++{
++    return nv_pat_enabled;
++}
++
++void NV_API_CALL os_dump_stack()
++{
++#if defined(DEBUG) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 20))
++    dump_stack();
++#endif
++}
++
++RM_STATUS NV_API_CALL os_set_mlock_capability()
++{
++    /*
++     * The NVIDIA driver may require the ability to lock down user
++     * memory with the mlock(2) system call, which is normally only
++     * available to privileged processes. The code below enables
++     * mlock(2) for the current process and adjusts the lock limit
++     * to 'unlimited'.
++     *
++     * If you prefer to manually grant the necessary capability and 
++     * adjust the resource limit, disable the lines below.
++     */
++#if !defined(CONFIG_XEN)
++    struct rlimit *rlim = NV_TASK_STRUCT_RLIM(current);
++    rlim[RLIMIT_MEMLOCK].rlim_cur = RLIM_INFINITY;
++    cap_raise(current->cap_effective, CAP_IPC_LOCK);
++    return RM_OK;
++#endif
++    return RM_ERR_NOT_SUPPORTED;
++}
++
++RM_STATUS NV_API_CALL os_check_process_map_limit(
++    NvU64 proc_max_map_count
++)
++{
++    RM_STATUS status = RM_OK;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 12)
++    unsigned int max_map_count = proc_max_map_count;
++    if (max_map_count == 0) 
++    {
++#if defined(NV_SYSCTL_MAX_MAP_COUNT_PRESENT)
++        max_map_count = sysctl_max_map_count;
++#elif defined(DEFAULT_MAX_MAP_COUNT)
++        max_map_count = DEFAULT_MAX_MAP_COUNT;
++#elif defined(MAX_MAP_COUNT)
++        max_map_count = MAX_MAP_COUNT;
++#else
++        return RM_ERROR;
++#endif
++    }
++    down_read(&current->mm->mmap_sem);
++    if (current->mm->map_count > (int)(max_map_count * 85 / 100))
++        status = RM_ERROR;
++    up_read(&current->mm->mmap_sem);
++#endif
++    return status;
++}
++
++void* NV_API_CALL NV_STACKWATCH_CALLBACK os_get_stack_start(void *stack_pointer)
++{
++    return (void *)((unsigned long)stack_pointer & ~(THREAD_SIZE - 1));
++}
++
++S032 NV_API_CALL os_mlock_user_memory(
++    void *address,
++    U032 length
++)
++{
++    return 0;
++}
++
++S032 NV_API_CALL os_munlock_user_memory(
++    void *address,
++    U032 length
++)
++{
++    return 0;
++}
