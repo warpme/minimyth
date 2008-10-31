@@ -26,8 +26,8 @@ $var_list{'MM_FLASH_URL'} =
 
         my $value_default = 'none';
 
-        if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') >   0) ||
-             ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') >= 21) )
+        if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') >  0) ||
+             ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') > 21) )
         {
             if ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes')
             {
