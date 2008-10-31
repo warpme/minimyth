@@ -39,7 +39,8 @@ $var_list{'MM_FLASH_URL'} =
         }
 
         return $value_default;
-    }
+    },
+    value_none     => ''
 };
 
 1;

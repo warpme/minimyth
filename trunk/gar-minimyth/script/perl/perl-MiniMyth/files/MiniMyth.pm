@@ -1080,7 +1080,7 @@ sub url_get
         when (/^http$/  ) { $result = $self->url_http_get(  $local_file, $remote_file, $remote_server); }
         when (/^hunt$/  ) { $result = $self->url_hunt_get(  $local_file, $remote_file, $remote_server); }
         when (/^tftp$/  ) { $result = $self->url_tftp_get(  $local_file, $remote_file, $remote_server); }
-        default           { $self->message_log('err', qq(error: MiniMyth::url_get: protocol ') . $_ . qq(' is not supported.)); }
+        default           { $self->message_log('err', qq(error: MiniMyth::url_get: protocol ') . $remote_protocol . qq(' is not supported.)); }
     }
     return $result;
 }
