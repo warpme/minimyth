@@ -7,6 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-grep.patch \
+	$(DISTNAME)-lineedit.patch \
+	$(DISTNAME)-login.patch \
 	$(DISTNAME)-modprobe.patch \
 	$(DISTNAME)-standalone.patch \
 	$(DISTNAME)-vi.patch
