@@ -26,6 +26,7 @@ BUILDDEPS += \
 	devel/autoconf \
 	devel/automake \
 	devel/libtool \
+	devel/intltool \
 	devel/pkg-config \
 	devel/patch \
 	utils/which \

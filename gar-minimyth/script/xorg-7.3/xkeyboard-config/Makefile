@@ -12,8 +12,7 @@ endef
 
 DEPENDS = lang/c
 BUILDDEPS = \
-	perl/perl-XML-Parser \
-	devel/intltool
+	perl/perl-XML-Parser
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
