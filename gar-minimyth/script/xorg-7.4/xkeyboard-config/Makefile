@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 1.3
+GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xlibs.freedesktop.org/xkbdesc/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,7 +12,8 @@ endef
 
 DEPENDS = lang/c
 BUILDDEPS = \
-	perl/perl-XML-Parser
+	perl/perl-XML-Parser \
+	devel/intltool
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
