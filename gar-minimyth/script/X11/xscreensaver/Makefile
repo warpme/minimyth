@@ -3,7 +3,7 @@ GARVERSION = 5.07
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-intltool_disable.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION =
@@ -11,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c xorg/xorg lib/libjpeg lib/zlib
-BUILDDEPS = utils/bc
+BUILDDEPS = gtk/glib utils/bc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
