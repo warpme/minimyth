@@ -1637,7 +1637,7 @@ sub url_mount
     my $url_password = $url_parsed->{'password'};
     my $url_server   = $url_parsed->{'server'};
     my $url_path     = $url_parsed->{'path'};
-    my $url_options  = $url_parsed->{'options'};
+    my $url_options  = $url_parsed->{'query'};
 
     my $url_file = File::Basename::basename($url_path);
     my $url_ext  = $url_file;
