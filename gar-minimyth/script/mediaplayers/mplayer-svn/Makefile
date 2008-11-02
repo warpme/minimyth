@@ -1,9 +1,9 @@
 GARNAME = MPlayer
-GARVERSION = 27547.15261
+GARVERSION = 27884.15767
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+PATCHFILES = $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -44,6 +44,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-lircc \
 	--disable-joystick \
 	--disable-apple-remote \
+	--disable-apple-ir \
 	--enable-vm \
 	--enable-xf86keysym \
 	--disable-radio \
@@ -89,11 +90,13 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-rpath
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
-# --enable-libdca
 # --enable-libavutil_so
 # --enable-libavcodec_so
 # --enable-libavformat_so
 # --enable-libpostproc_so
+# --enable-libswscale_so
+# --enable-libdca
+# --enable-liba52
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
@@ -104,12 +107,17 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-xanim \
 	--enable-real \
 	--disable-xvid \
+	--disable-xvid-lavc \
 	--disable-x264 \
+	--disable-x264-lavc \
+	--disable-libdirac-lavc \
+	--disable-libschroedinger-lavc \
 	--disable-libnut \
 	--disable-libavutil_a \
 	--disable-libavcodec_a \
 	--disable-libavformat_a \
 	--disable-libpostproc_a \
+	--disable-libswscale_a \
 	--disable-libavcodec_mpegaudio_hp \
 	--disable-tremor-internal \
 	--disable-tremor-low \
@@ -121,13 +129,17 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \
+	--disable-faac-lavc \
 	--disable-ladspa \
 	--disable-libdv \
 	--enable-mad \
+	--disable-mp3lame \
+	--disable-mp3lame-lavc \
+	--disable-toolame \
 	--disable-twolame \
 	--disable-xmms \
 	--enable-mp3lib \
-	--enable-liba52 \
+	--disable-liba52-internal \
 	--enable-libmpeg2 \
 	--disable-musepack \
 	--disable-libamr_nb \
@@ -163,11 +175,13 @@ CONFIGURE_ARGS_VIDEO = \
 	--enable-xinerama \
 	--enable-x11 \
 	--disable-xshape \
+	--disable-xss \
 	--disable-fbdev \
 	--disable-mlib \
 	--disable-3dfx \
 	--disable-tdfxfb \
 	--disable-s3fb \
+	--disable-wii \
 	--disable-directfb \
 	--disable-zr \
 	--disable-bl \
@@ -175,7 +189,8 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-xvr100 \
 	--disable-tga \
 	--disable-pnm \
-	--disable-md5sum
+	--disable-md5sum \
+	--disable-yuv4mpeg
 # Audio output: enable alsa
 CONFIGURE_ARGS_AUDIO = \
 	--enable-alsa \
@@ -198,9 +213,12 @@ CONFIGURE_ARGS_MISC = \
 	--as="$(AS)" \
 	--ar="$(AR)" \
 	--ranlib="$(RANLIB)" \
+	--windres="false" \
 	--target="$(GARCH_FAMILY)-linux" \
+	--disable-static \
 	--charset="UTF-8" \
-	--language="all"
+	--language="all" \
+	--with-install="$(DESTDIR)$(bindir)"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
 	--enable-mmxext \
@@ -213,6 +231,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-altivec \
 	--disable-armv5te \
 	--disable-armv6 \
+	--disable-armvfp \
 	--disable-iwmmxt \
 	--enable-fastmemcpy \
 	--disable-big-endian \
