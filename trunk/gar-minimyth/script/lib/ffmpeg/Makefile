@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 15261.27547
+GARVERSION = 15767.27884
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -22,6 +22,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = \
 	--enable-logging \
 	--prefix=$(prefix) \
+	--bindir=$(bindir) \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
 	--incdir=$(includedir)/ffmpeg \
@@ -40,8 +41,6 @@ CONFIGURE_ARGS = \
 	--disable-w32threads \
 	--enable-x11grab \
 	--disable-mlib \
-	--disable-liba52 \
-	--disable-liba52bin \
 	--disable-avisynth \
 	--disable-libamr-nb \
 	--disable-libamr-wb \
@@ -54,6 +53,7 @@ CONFIGURE_ARGS = \
 	--disable-libmp3lame \
 	--disable-libnut \
 	--disable-libschroedinger \
+	--disable-libspeex \
 	--disable-libtheora \
 	--disable-libvorbis \
 	--disable-libx264 \
@@ -61,10 +61,11 @@ CONFIGURE_ARGS = \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
 	--target-os="linux" \
-	--cc="gcc" \
+	--cc="$(CC)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--extra-libs="" \
+	--extra-version="" \
 	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
 	--cpu=$(GARCH) \
@@ -82,7 +83,6 @@ CONFIGURE_ARGS = \
 	--enable-zlib \
 	--enable-bzlib \
 	--disable-vhook \
-	--disable-debug \
 	--disable-mpegaudio-hp \
 	--enable-gray \
 	--enable-ffmpeg \
@@ -98,6 +98,8 @@ CONFIGURE_ARGS = \
 	--enable-parsers \
 	--enable-bsfs \
 	--disable-protocols \
+	--enable-filters \
+	--disable-debug \
 	--disable-gprof \
 	--enable-optimizations \
 	--disable-extra-warnings \

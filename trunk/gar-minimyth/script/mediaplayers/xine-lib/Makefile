@@ -3,7 +3,7 @@ GARVERSION = 1.1.15
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-ffmpeg_api_change.patch $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
