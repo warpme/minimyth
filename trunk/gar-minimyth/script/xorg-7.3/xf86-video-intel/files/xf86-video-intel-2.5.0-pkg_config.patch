@@ -1,6 +1,6 @@
-diff -Naur xf86-video-intel-2.4.2-old/configure.ac xf86-video-intel-2.4.2-new/configure.ac
---- xf86-video-intel-2.4.2-old/configure.ac	2008-08-30 12:24:10.000000000 -0700
-+++ xf86-video-intel-2.4.2-new/configure.ac	2008-08-30 12:25:42.000000000 -0700
+diff -Naur xf86-video-intel-2.5.0-old/configure.ac xf86-video-intel-2.5.0-new/configure.ac
+--- xf86-video-intel-2.5.0-old/configure.ac	2008-10-20 17:58:00.000000000 -0700
++++ xf86-video-intel-2.5.0-new/configure.ac	2008-11-02 07:20:39.000000000 -0800
 @@ -40,6 +40,7 @@
  DOLT
  AC_PROG_CC
@@ -9,13 +9,15 @@ diff -Naur xf86-video-intel-2.4.2-old/configure.ac xf86-video-intel-2.4.2-new/co
  
  AC_CHECK_PROG(gen4asm, [intel-gen4asm], yes, no)
  AM_CONDITIONAL(HAVE_GEN4ASM, test x$gen4asm = xyes)
-@@ -84,7 +85,8 @@
- 
- # Checks for pkg-config packages
+@@ -86,8 +87,9 @@
  PKG_CHECK_MODULES(XORG, [xorg-server xproto fontsproto $REQUIRED_MODULES])
+ PKG_CHECK_MODULES(UXA, [xorg-server >= 1.5], [BUILD_UXA=yes], [BUILD_UXA=no])
+ 
 -sdkdir=$(pkg-config --variable=sdkdir xorg-server)
+-drm_cflags=$(pkg-config --cflags libdrm)
 +m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
 +sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
++drm_cflags=$($PKG_CONFIG --cflags libdrm)
  
  # Checks for libraries.
  
