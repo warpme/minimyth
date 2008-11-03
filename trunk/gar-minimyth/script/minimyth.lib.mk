@@ -145,7 +145,7 @@ clean-image:
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d
 
 garchive-touch:
-	@$(if $(strip $(ALLFILES)), touch $(GARCHIVEDIR))
+	@$(if $(strip $(ALLFILES)), $(if $(wildcard $(GARCHIVEDIR)), touch $(GARCHIVEDIR)))
 
 patch-%.gar: gar-patch-%.gar
 	@$(MAKECOOKIE)
