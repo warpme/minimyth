@@ -10,7 +10,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS   = lang/c perl/perl perl/perl-XML-Parser
+BUILDDEPS = perl/perl perl/perl-XML-Parser
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
