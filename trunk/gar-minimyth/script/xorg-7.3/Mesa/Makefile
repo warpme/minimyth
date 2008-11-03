@@ -1,9 +1,11 @@
 GARNAME = Mesa
-GARVERSION = 7.0.4
+GARVERSION = 7.2
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
-DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-ticket-13541.patch $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+MASTER_SITES  = http://www.mesa3d.org/beta/
+MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
+DISTFILES = MesaLib-$(GARVERSION).tar.gz MesaGLUT-$(GARVERSION).tar.gz MesaDemos-$(GARVERSION).tar.gz
+PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
@@ -11,6 +13,8 @@ define BLURB
 endef
 
 DEPENDS   = lang/c++ lib/expat \
+	$(CATEGORY)/dri2proto \
+	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
@@ -27,19 +31,17 @@ BUILDDEPS = $(CATEGORY)/makedepend
 PWD := $(shell pwd)
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-MESA_CONFIG = $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),linux-dri-x86   ) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),linux-dri-x86-64))
-MESA_LIBDIR = $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),lib  ) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),lib64))
-DRI_DIRS    = $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 radeon savage sis unichrome) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 radeon savage sis unichrome))
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile xdemos source
 
-CONFIGURE_SCRIPTS = custom
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile $(WORKSRC)/progs/xdemos/Makefile
-INSTALL_SCRIPTS   = custom source
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
+	--with-driver="dri" \
+	--with-x \
+	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
+	--with-dri-drivers="$(DRI_DIRS)"
 
 BUILD_ARGS = \
 	BUILD_CC="$(build_CC)" \
@@ -47,44 +49,19 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-configure-custom:
-	@# Inclusion of assembly code causes the unichome_dri driver to segfault.
-	@# Disabling assembly code is a performance hit, but we do not need top GL performance for Myth.
-	@echo "ASM_FLAGS ="                                        >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "ASM_SOURCES ="                                      >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "ASM_API ="                                          >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "PKG_CONFIG = pkg-config"                            >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "CC = $(CC)"                                         >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "CXX = $(CXX)"                                       >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "OPT_FLAGS = $(CFLAGS)"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "MKDEP = $(build_DESTDIR)$(build_bindir)/makedepend" >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "DRI_DIRS = $(DRI_DIRS)"                             >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@echo "PROGRAM_DIRS = xdemos"                              >> $(WORKSRC)/configs/$(MESA_CONFIG)
-	@ln -sf $(MESA_CONFIG) $(WORKSRC)/configs/current
+DRI_DIRS := $(strip \
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 radeon savage sis swrast unichrome) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 radeon savage sis swrast unichrome))
+DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
-install-custom:
-	@mkdir -p $(DESTDIR)$(includedir)/GL
-	@cp -fd $(WORKSRC)/include/GL/*.h $(DESTDIR)$(includedir)/GL/
-	@cp -fd $(WORKSRC)/src/glw/*.h    $(DESTDIR)$(includedir)/GL/
-	@mkdir -p $(DESTDIR)$(libdir)
-	@rm -f $(DESTDIR)$(libdir)/libGL.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGL.* $(DESTDIR)$(libdir)/
-	@rm -f $(DESTDIR)$(libdir)/libGLU.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLU.* $(DESTDIR)$(libdir)/
-	@rm -f $(DESTDIR)$(libdir)/libglut.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libglut.* $(DESTDIR)$(libdir)/
-	@rm -f $(DESTDIR)$(libdir)/libGLw.* ; \
-		cp -fd $(WORKSRC)/$(MESA_LIBDIR)/libGLw.* $(DESTDIR)$(libdir)/
-	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/dri
-	@rm -rf $(DESTDIR)$(libdir)/xorg/modules/dri
-	@mkdir -p $(DESTDIR)$(libdir)/xorg/modules/dri
-	@cp -fd $(WORKSRC)/$(MESA_LIBDIR)/*_dri.* $(DESTDIR)$(libdir)/xorg/modules/dri/
+install-xdemos:
 	@mkdir -p $(DESTDIR)$(bindir)
-	@rm -f $(DESTDIR)$(bindir)/glxgears ; \
-		cp -fd $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(bindir)/
-	@rm -f $(DESTDIR)$(bindir)/glxinfo ; \
-		cp -fd $(WORKSRC)/progs/xdemos/glxinfo $(DESTDIR)$(bindir)/
+	@cp -f $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/progs/xdemos/glxinfo  $(DESTDIR)$(bindir)
 	@$(MAKECOOKIE)
 
 install-source:

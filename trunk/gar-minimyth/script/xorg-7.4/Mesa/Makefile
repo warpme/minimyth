@@ -33,7 +33,7 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile xdemos source
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -56,4 +56,16 @@ DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(MAKECOOKIE)
+
+install-xdemos:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/progs/xdemos/glxinfo  $(DESTDIR)$(bindir)
+	@$(MAKECOOKIE)
+
+install-source:
+	@mkdir -p $(DESTDIR)$(sourcedir)
+	@rm -f $(DESTDIR)$(sourcedir)/Mesa
+	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/Mesa
 	@$(MAKECOOKIE)
