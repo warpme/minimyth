@@ -35,6 +35,12 @@ sub start
                 '/etc/acpi/events/power',
                 { '@MM_ACPI_EVENT_BUTTON_POWER@' => '/usr/bin/mm_sleep' });
         }
+        when (/^none$/)
+        {
+            $minimyth->file_replace_variable(
+                '/etc/acpi/events/power',
+                { '@MM_ACPI_EVENT_BUTTON_POWER@' => '/bin/true'         });
+        }
     }
     
     $minimyth->message_output('info', "starting ACPI ...");
