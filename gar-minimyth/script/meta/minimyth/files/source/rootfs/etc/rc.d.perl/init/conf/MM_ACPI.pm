@@ -17,7 +17,7 @@ sub var_list
 $var_list{'MM_ACPI_EVENT_BUTTON_POWER'} =
 {
         value_default => 'off',
-	value_valid   => 'off|sleep'
+	value_valid   => 'off|sleep|none'
 };
 
 $var_list{'MM_ACPI_VIDEO_FLAGS'} =
