@@ -716,11 +716,25 @@ boot
               Disconnect your flash device from the computer and connect it to your MiniMyth frontend.
             </li>
           </ol>
-          If you want to see what was installed on the flash device, you can reconnect it and mount it.
-          Essentially, 'mm_local_install' formatted the flash device as FAT,
-          installed the SYSLINUX boot loader and boot loader configuration file,
-          and installed all the files in the 'ram-minimyth-{version}.tar.bz2' file from the MiniMyth distribution,
-          including the 'minimyth.md5' file, 'kernel' file, the 'rootfs' file and the 'themes' directory.
+          <p>
+            If you want to see what was installed on the flash device, you can reconnect it and mount it.
+            Essentially, 'mm_local_install' formatted the flash device as FAT,
+            installed the SYSLINUX boot loader and boot loader configuration file,
+            and installed all the files in the 'ram-minimyth-{version}.tar.bz2' file from the MiniMyth distribution,
+            including the 'minimyth.md5' file, 'kernel' file, the 'rootfs' file and the 'themes' directory.
+          </p>
+          <p>
+            The 'mm_local_install' script assumes that your sh shell is a working, ash compatible shell.
+            As a result, distributions such as Ubuntu that link sh to the
+            <a href="http://en.wikipedia.org/wiki/Debian_Almquist_shell">dash</a> shell,
+            will have a problem.
+            While the dash shell is a direct descendant of the ash shell,
+            it has a
+            <a href="https://bugs.launchpad.net/ubuntu/+source/dash/+bug/139097">broken implementation of ash's local command</a>.
+            Since the 'mm_local_install' and 'mm_local_helper' scripts make extensive use of ash's local command,
+            they will not work on systems that use bash.
+            In the future, I may work around this glaring bug in the dash shell.
+          </p>
         </div>
         <div id="local-syslinux-ram-manual" class="section">
           <div class="heading">Local Boot using SYSLINUX with a RAM Root File System (manual install)</div>
@@ -860,7 +874,7 @@ LABEL minimyth-ram
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-09-19
+          Last Updated on 2008-11-04
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
