@@ -181,7 +181,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Copy shares.
 	@$(call COPY_FILES, "shares", "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
 	@# Copy the QT mysql plugin needed by MythTV.
-	@$(if $(filter 0.21,$(mm_MYTH_VERSION)), \
+	@$(if $(filter 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), \
 		mkdir -p $@~$(qt3prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $@~$(qt3prefix)/plugins ; \
 	 )
