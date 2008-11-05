@@ -1,10 +1,10 @@
 GARNAME = bison
-GARVERSION = 2.3
+GARVERSION = 2.4
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-perl.patch.gar
-LICENSE = GPL2
+LICENSE = GPL3
 
 DESCRIPTION =
 define BLURB
