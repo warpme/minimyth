@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.5.2
+GARVERSION = 1.5.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,7 +16,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/openssl \
+XDEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/evieext \
@@ -51,7 +51,7 @@ DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
-BUILDDEPS = \
+XBUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-sgml-doctools
 
