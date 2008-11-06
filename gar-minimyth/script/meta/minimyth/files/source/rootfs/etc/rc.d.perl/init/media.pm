@@ -18,10 +18,10 @@ sub start
 
     $minimyth->message_output('info', "mounting media shares ...");
 
-    foreach (('TV', 'GALLERY', 'GAME', 'MUSIC', 'VIDEO', 'DVD_RIP'))
+    foreach my $media (('TV', 'GALLERY', 'GAME', 'MUSIC', 'VIDEO', 'DVD_RIP'))
     {
-        my $url_name        = 'MM_MEDIA_' . $_ . '_URL';
-        my $mountpoint_name = 'MM_MEDIA_' . $_ . '_MOUNTPOINT';
+        my $url_name        = 'MM_MEDIA_' . $media . '_URL';
+        my $mountpoint_name = 'MM_MEDIA_' . $media . '_MOUNTPOINT';
         my $url             = $minimyth->var_get($url_name);
         my $mountpoint      = $minimyth->var_get($mountpoint_name);
         if (($url) && ($mountpoint))
@@ -35,7 +35,7 @@ sub start
                     $mounted = 1;
                 }
                 close(FILE);
-                if ($mounted eq 0)
+                if ($mounted == 0)
                 {
                     $minimyth->message_output('err', "error: '$mountpoint' failed to mount.");
                     return 0;
@@ -72,10 +72,10 @@ sub stop
 
     $minimyth->message_output('info', "unmounting media shares ...");
 
-    foreach (('DVD_RIP', 'VIDEO', 'MUSIC', 'GAME', 'GALLERY', 'TV'))
+    foreach my $media (('DVD_RIP', 'VIDEO', 'MUSIC', 'GAME', 'GALLERY', 'TV'))
     {
-        my $url_name        = 'MM_MEDIA_' . $_ . '_URL';
-        my $mountpoint_name = 'MM_MEDIA_' . $_ . '_MOUNTPOINT';
+        my $url_name        = 'MM_MEDIA_' . $media . '_URL';
+        my $mountpoint_name = 'MM_MEDIA_' . $media . '_MOUNTPOINT';
         my $url             = $minimyth->var_get($url_name);
         my $mountpoint      = $minimyth->var_get($mountpoint_name);
 
@@ -89,7 +89,7 @@ sub stop
                     $mounted = 1;
                 }
                 close(FILE);
-                if ($mounted ne 0)
+                if ($mounted != 0)
                 {
                     system(qq(/bin/umount "$mountpoint"));
                 }
