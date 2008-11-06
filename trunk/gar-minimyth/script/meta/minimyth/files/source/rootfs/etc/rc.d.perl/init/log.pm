@@ -21,6 +21,7 @@ sub start
     {
         foreach (grep(s/^server +([^ ]+) *$/$1/, (<FILE>)))
         {
+            chomp;
             $log_server = $_;
             last;
         }

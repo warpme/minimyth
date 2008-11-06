@@ -21,6 +21,7 @@ sub start
     {
         foreach (grep(s/^server +([^ ]*) *$/$1/, (<FILE>)))
         {
+            chomp;
             push(@ntp_servers, $_);
         }
         close(FILE);
