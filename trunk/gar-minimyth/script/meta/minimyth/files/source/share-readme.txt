@@ -44,7 +44,7 @@ Directory listing
     + html.tar.bz2.md5
         The MD5 checksum for the file 'html.tar.bz2'.
     + scripts/
-        MiniMyth local automation scripts: 'mm_local_install', 'mm_local_update'
-        and 'mm_local_helper'. These files are included in
+        MiniMyth local automation scripts: 'mm_local_install' and
+        'mm_local_helper'. These files are included in
         'ram-minimyth-<version>.tar.bz2' and 'nfs-minimyth-<version>.tar.bz2' as
         well.
