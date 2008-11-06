@@ -46,8 +46,18 @@ sub start
                 $minimyth->message_output('err', "error: '$mountpoint' is not readable by user 'minimyth'.");
                 return 0;
             }
-            if (($mountpoint_name eq 'MM_MEDIA_TV_MOUNTPOINT')      ||
-                ($mountpoint_name eq 'MM_MEDIA_DVD_RIP_MOUNTPOINT'))
+            if ($mountpoint_name eq 'MM_MEDIA_TV_MOUNTPOINT')
+            {
+                if ($minimyth->var_get('MM_BACKEND_ENABLED') eq 'yes')
+                {
+                    if (system(qq(/bin/su -c '/usr/bin/test ! -w $mountpoint' - minimyth)) == 0)
+                    {
+                        $minimyth->message_output('err', "error: '$mountpoint' is not writable by user 'minimyth'.");
+                        return 0;
+                    }
+                }
+            }
+            if ($mountpoint_name eq 'MM_MEDIA_DVD_RIP_MOUNTPOINT')
             {
                 if (system(qq(/bin/su -c '/usr/bin/test ! -w $mountpoint' - minimyth)) == 0)
                 {
