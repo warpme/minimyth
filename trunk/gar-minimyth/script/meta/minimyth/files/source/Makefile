@@ -569,7 +569,6 @@ $(top_build)/stage/version:
 
 $(top_build)/stage/scripts: \
 		$(top_source)/mm_local/mm_local_install \
-		$(top_source)/mm_local/mm_local_update  \
 		$(top_source)/mm_local/mm_local_helper
 	@echo "making scripts directory"
 	@mkdir -m 0755 -p $(@D)
