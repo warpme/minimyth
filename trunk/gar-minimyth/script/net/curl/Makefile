@@ -1,9 +1,9 @@
 GARNAME = curl
-GARVERSION =  7.19.0
+GARVERSION =  7.19.1
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-fixes.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -17,11 +17,18 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-debug \
+	--enable-optimize \
+	--enable-warnings \
+	--enable-largefile \
+	--enable-shared \
+	--disable-static \
 	--enable-http \
 	--enable-ftp \
 	--enable-file \
 	--disable-ldap \
 	--disable-ldaps \
+	--enable-proxy \
 	--disable-dict \
 	--disable-telnet \
 	--enable-tftp \
@@ -33,18 +40,24 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ares \
 	--disable-verbose \
 	--disable-sspi \
-	--disable-debug \
 	--disable-crypto-auth \
 	--disable-cookies \
 	--enable-hidden-symbols \
+	--disable-soname-bump \
 	--with-gnu-ld \
+	--without-ldap \
+	--without-krb4 \
+	--without-spnego \
+	--without-gssapi \
 	--with-ssl \
 	--with-zlib \
 	--without-libssh2 \
-	--with-random=$(rootdir)/dev/urandom \
+	--without-egd-socket \
+	--with-random="$(rootdir)/dev/urandom" \
 	--without-gnutls \
 	--without-nss \
-	--without-ca-bundle \
+	--with-ca-bundle="$(sysconfdir)/ssl/certs/ca-bundle.crt" \
+	--without-ca-path \
 	--without-libidn
 
 include ../../gar.mk
