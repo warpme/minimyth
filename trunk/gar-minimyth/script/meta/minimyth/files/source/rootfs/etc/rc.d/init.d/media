@@ -19,9 +19,11 @@ start() {
             mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' is not readable by user 'minimyth'."
             exit 1
         fi
-        if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_TV_MOUNTPOINT}"      - minimyth ; then
-            mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' is not writable by user 'minimyth'."
-            exit 1
+        if /usr/bin/test "${MM_BACKEND_ENABLED}" = "yes" ; then
+            if /bin/su -c "/usr/bin/test ! -w ${MM_MEDIA_TV_MOUNTPOINT}" - minimyth ; then
+                mm_message_output err "error: '${MM_MEDIA_TV_MOUNTPOINT}' is not writable by user 'minimyth'."
+                exit 1
+            fi
         fi
     fi
     if /usr/bin/test -n "${MM_MEDIA_GALLERY_URL}" && /usr/bin/test -n "${MM_MEDIA_GALLERY_MOUNTPOINT}" ; then
