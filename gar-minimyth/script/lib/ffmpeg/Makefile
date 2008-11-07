@@ -10,7 +10,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/SDL lib/zlib utils/bzip2
+DEPENDS   = lang/c lib/SDL lib/zlib utils/bzip2
+BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
