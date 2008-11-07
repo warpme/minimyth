@@ -82,31 +82,6 @@ sub start
         close(FILE);
     }
 
-    # Fetch and run the deprecated 'minimyth.script'.
-    {
-        my $group = __PACKAGE__ . '::' . 'MM_MINIMYTH';
-        eval "require $group";
-        my $group_var_list = $group->var_list();
-        $self->_run_var($minimyth, $group_var_list, 'MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT');
-    }
-    if ($minimyth->var_get('MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT') eq 'yes')
-    {
-        $minimyth->message_output('info', "fetching the deprecated configuration script ...");
-        unlink('/etc/minimyth.d/minimyth.script');
-        $minimyth->confro_get('/minimyth.script', '/etc/minimyth.d/minimyth.script');
-        if (! -e '/etc/minimyth.d/minimyth.script')
-        {
-            $minimyth->message_output('err', "error: failed to fetch 'minimyth.script' file.");
-        }
-    }
-    if (-f '/etc/minimyth.d/minimyth.script')
-    {
-        $minimyth->message_log('info', "warning: 'minimyth.script' is deprecated.");
-        $minimyth->message_log('info', "use 'minimyth.pm' rather than 'minimyth.script'.");
-        $minimyth->var_save({ 'file' => '/etc/conf.d/minimyth.raw' });
-        system(qq(/etc/minimyth.d/minimyth.script));
-    }
-
     # Fetch and run 'minimyth.pm'.
     {
         my $group = __PACKAGE__ . '::' . 'MM_MINIMYTH';
@@ -116,7 +91,7 @@ sub start
     }
     if ($minimyth->var_get('MM_MINIMYTH_FETCH_MINIMYTH_PM') eq 'yes')
     {
-        $minimyth->message_output('info', "fetching configuration script ...");
+        $minimyth->message_output('info', "fetching configuration package ...");
         unlink('/etc/minimyth.d/minimyth.pm');
         $minimyth->confro_get('/minimyth.pm', '/etc/minimyth.d/minimyth.pm');
         if (! -e '/etc/minimyth.d/minimyth.pm')
@@ -134,7 +109,7 @@ sub start
         require init::minimyth;
         if (exists(&init::minimyth::start))
         {
-            $minimyth->message_output('info', "running configuration script ...");
+            $minimyth->message_output('info', "running configuration package ...");
             init::minimyth->start($minimyth);
         }
     }
@@ -208,7 +183,7 @@ sub stop
         require init::minimyth;
         if (exists(&init::minimyth::stop))
         {
-            $minimyth->message_output('info', "running configuration script ...");
+            $minimyth->message_output('info', "running configuration package ...");
             init::minimyth->stop($minimyth);
         }
     }
