@@ -1,0 +1,38 @@
+#!/bin/sh
+################################################################################
+# g15daemon
+################################################################################
+. /etc/rc.d.sh/functions
+
+start() {
+
+    if /usr/bin/test "${MM_LCDPROC_DRIVER}" = "g15" ; then
+        m_message_output info "starting G15daemon ..."
+        /sbin/modprobe uinput
+        # The g15daemon daemon does not create it configuration file, so init
+        # creates it when it does not exist.
+        if /usr/bin/test ! -e /etc/g15daemon.conf ; then
+            /bin/touch /etc/g15daemon.conf
+        fi
+        /usr/sbin/g15daemon
+    fi
+
+    return 0
+}
+
+stop() {
+
+    if /usr/bin/test -n "`/bin/pidof g15daemon`" ; then
+        mm_message_output info "stopping G15daemon ..."
+        /usr/sbin/g15daemon -k
+    fi
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0

@@ -9,21 +9,21 @@
 id:5:initdefault:
 
 # System initialization.
-si::sysinit:/etc/rc.d/rc.sysinit
+si::sysinit:/etc/rc.d.sh/rc.sysinit
 
-l0:0:wait:/etc/rc.d/rc 0
-l1:1:wait:/etc/rc.d/rc 1
-l2:2:wait:/etc/rc.d/rc 2
-l3:3:wait:/etc/rc.d/rc 3
-l4:4:wait:/etc/rc.d/rc 4
-l5:5:wait:/etc/rc.d/rc 5
-l6:6:wait:/etc/rc.d/rc 6
+l0:0:wait:/etc/rc.d.sh/rc 0
+l1:1:wait:/etc/rc.d.sh/rc 1
+l2:2:wait:/etc/rc.d.sh/rc 2
+l3:3:wait:/etc/rc.d.sh/rc 3
+l4:4:wait:/etc/rc.d.sh/rc 4
+l5:5:wait:/etc/rc.d.sh/rc 5
+l6:6:wait:/etc/rc.d.sh/rc 6
 
 # Run a virtual terminal.
 # Note: X is run on virtual terminal 2.
 # Note: The following virtual terminal is started 
-#       either by /etc/rc.d/rc when an init error occurs.
-#       or by /etc/rc.d/init.d/console when security is disabled.
+#       either by /etc/rc.d.sh/rc when an init error occurs.
+#       or by /etc/rc.d.sh/init.d/console when security is disabled.
 #       Therefore, we do not start it here.
 #1:2345:respawn:/sbin/agetty 9600 tty1
 
