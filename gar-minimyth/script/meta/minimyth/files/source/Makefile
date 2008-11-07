@@ -216,7 +216,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%g'     $@~$(sysconfdir)/conf.d/core
 	@sed -i 's%@GAR_libdir@%$(libdir)%g'                       $@~$(sysconfdir)/fonts/local.conf
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d.sh/init.d/extras
-	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d.perl/init/extras.pm
+	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d/init/extras.pm
 	@# Create the minimyth build configuration file.
 	@rm -rf   $@~$(versiondir)/minimyth.conf.mk
 	@mkdir -m 0755 -p $@~$(versiondir)
@@ -254,15 +254,15 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/lircrc \
 	        $@~/home/minimyth/.mythtv/lircrc
 	@# Make perl init script links.
-	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d.perl/rc
+	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d/rc
 	@index=10 ; $(foreach file, $(MM_INIT_START), \
-		test -e $@~$(sysconfdir)/rc.d.perl/init/$(file).pm && \
+		test -e $@~$(sysconfdir)/rc.d/init/$(file).pm && \
 		index=$$(($${index}+2)) && \
-		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d.perl/rc/S$${index}$(file) ; )
+		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d/rc/S$${index}$(file) ; )
 	@index=10 ; $(foreach file, $(MM_INIT_KILL) , \
-		test -e $@~$(sysconfdir)/rc.d.perl/init/$(file).pm && \
+		test -e $@~$(sysconfdir)/rc.d/init/$(file).pm && \
 		index=$$(($${index}+2)) && \
-		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d.perl/rc/K$${index}$(file) ; )
+		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d/rc/K$${index}$(file) ; )
 	@# Make sh init script links.
 	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d.sh/rc.d
 	@index=10 ; $(foreach file, $(MM_INIT_START), \
