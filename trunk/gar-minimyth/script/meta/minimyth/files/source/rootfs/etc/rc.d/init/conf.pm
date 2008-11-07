@@ -1,8 +1,6 @@
 #!/usr/bin/perl
 ################################################################################
 # conf
-#
-# This script retrieves and processes the MiniMyth configure file.
 ################################################################################
 package init::conf;
 

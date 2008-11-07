@@ -1,8 +1,6 @@
 #!/usr/bin/perl
 ################################################################################
 # extras
-#
-# This script (downloads and) mounts the extras directory tree.
 ################################################################################
 package init::extras;
 
