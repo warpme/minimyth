@@ -1,0 +1,37 @@
+#!/bin/sh
+################################################################################
+# web
+################################################################################
+. /etc/rc.d.sh/functions
+
+start() {
+    mm_message_output info "starting web server ..."
+
+    /bin/chown -Rh root:httpd /srv/www
+
+    # Web page.
+    /usr/bin/webfsd -s -u httpd -g httpd -4 -p 80 -j -r /srv/www -x /cgi-bin -f index.html
+
+    # Allow web access to the file system on machines that have security disabled.
+    # It is run as root in order to provide access to all files.
+    if /usr/bin/test "${MM_SECURITY_ENABLED}" = "no" ; then
+        /usr/bin/webfsd -s -u root -g root -4 -p 8080 -r /
+    fi
+
+    return 0
+}
+
+stop() {
+    mm_message_output info "stopping web server ..."
+
+    /usr/bin/test -n "`/bin/pidof webfsd`" && /usr/bin/killall webfsd
+
+    return 0
+}
+
+case $1 in
+    start) start ;;
+    stop)  stop  ;;
+esac
+
+exit 0
