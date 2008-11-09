@@ -166,6 +166,9 @@ pre-install:
 
 post-install:
 	@rm -f $(DESTDIR)$(qt3bindir)/qmake ; cp $(WORKSRC)/bin/qmake $(DESTDIR)$(qt3bindir)
+	@rm -f $(DESTDIR)$(qt3libdir)/libdesignercore.a
+	@rm -f $(DESTDIR)$(qt3libdir)/libeditor.a
+	@rm -f $(DESTDIR)$(qt3libdir)/libqassistantclient.a
 	@rm -f $(DESTDIR)$(qt3libdir)/libqt-mt.la
 	@rm -f $(PLATFORM_DEFAULT_PATH)
 	@ln -sf $(PLATFORM_GARHOST_NAME) $(PLATFORM_DEFAULT_PATH)

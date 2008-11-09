@@ -22,3 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/liby.a
+	@$(MAKECOOKIE)

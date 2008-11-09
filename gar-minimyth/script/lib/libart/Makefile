@@ -26,6 +26,8 @@ INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--with-gnu-ld
 
 include ../../gar.mk

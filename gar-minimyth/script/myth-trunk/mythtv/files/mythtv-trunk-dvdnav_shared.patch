@@ -1,0 +1,55 @@
+diff -Naur mythtv-trunk-18986-old/libs/libmythdvdnav/libmythdvdnav.pro mythtv-trunk-18986-new/libs/libmythdvdnav/libmythdvdnav.pro
+--- mythtv-trunk-18986-old/libs/libmythdvdnav/libmythdvdnav.pro	2008-11-05 22:25:30.000000000 -0800
++++ mythtv-trunk-18986-new/libs/libmythdvdnav/libmythdvdnav.pro	2008-11-09 07:19:18.000000000 -0800
+@@ -3,7 +3,7 @@
+ 
+ TEMPLATE = lib
+ TARGET = mythdvdnav-$$LIBVERSION
+-CONFIG += thread staticlib warn_off
++CONFIG += thread dll warn_off
+ CONFIG -= qt
+ target.path = $${LIBDIR}
+ 
+diff -Naur mythtv-trunk-18986-old/libs/libmythtv/libmythtv.pro mythtv-trunk-18986-new/libs/libmythtv/libmythtv.pro
+--- mythtv-trunk-18986-old/libs/libmythtv/libmythtv.pro	2008-11-05 22:25:19.000000000 -0800
++++ mythtv-trunk-18986-new/libs/libmythtv/libmythtv.pro	2008-11-09 07:20:44.000000000 -0800
+@@ -50,7 +50,7 @@
+ TARGETDEPS += ../libavcodec/libmythavcodec-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../libavformat/libmythavformat-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${MYTH_LIB_EXT}
+-TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${MYTH_LIB_EXT}
++TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${MYTH_SHLIB_EXT}
+ using_mheg: TARGETDEPS += ../libmythfreemheg/libmythfreemheg-$${MYTH_SHLIB_EXT}
+ using_live: TARGETDEPS += ../libmythlivemedia/libmythlivemedia-$${MYTH_SHLIB_EXT}
+ 
+diff -Naur mythtv-trunk-18986-old/programs/programs-libs.pro mythtv-trunk-18986-new/programs/programs-libs.pro
+--- mythtv-trunk-18986-old/programs/programs-libs.pro	2008-11-05 22:25:32.000000000 -0800
++++ mythtv-trunk-18986-new/programs/programs-libs.pro	2008-11-09 07:22:17.000000000 -0800
+@@ -8,10 +8,12 @@
+ LIBS += -L../../libs/libmythdb
+ LIBS += -L../../libs/libmythui
+ LIBS += -L../../libs/libmythupnp
++LIBS += -L../../libs/libmythdvdnav
+ 
+ LIBS += -lmythtv-$$LIBVERSION -lmythavformat-$$LIBVERSION
+ LIBS += -lmythavutil-$$LIBVERSION -lmythavcodec-$$LIBVERSION 
+ LIBS += -lmythupnp-$$LIBVERSION 
++LIBS += -lmythdvdnav-$$LIBVERSION
+ LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION $$EXTRA_LIBS
+ LIBS += -lmythdb-$$LIBVERSION
+ 
+@@ -30,12 +32,14 @@
+ TARGETDEPS += ../../libs/libavcodec/libmythavcodec-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libavformat/libmythavformat-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libmythupnp/libmythupnp-$${MYTH_SHLIB_EXT}
++TARGETDEPS += ../../libs/libmythdvdnav/libmythdvdnav-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libmythdb/libmythdb-$${MYTH_SHLIB_EXT}
+ using_live: TARGETDEPS += ../../libs/libmythlivemedia/libmythlivemedia-$${MYTH_SHLIB_EXT}
+ 
+ DEPENDPATH += ../.. ../../libs ../../libs/libmyth ../../libs/libmythtv
+ DEPENDPATH += ../../libs/libavutil ../../libs/libavformat ../../libs/libsavcodec
+ DEPENDPATH += ../../libs/libmythupnp ../../libs/libmythui
++DEPENDPATH += ../../libs/libmythdvdnav
+ DEPENDPATH += ../../libs/libmythlivemedia ../../libmythdb
+ 
+ CONFIG += opengl

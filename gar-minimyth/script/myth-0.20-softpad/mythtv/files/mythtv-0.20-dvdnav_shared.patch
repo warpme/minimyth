@@ -1,0 +1,56 @@
+diff -Naur mythtv-0.20-16082-old/libs/libmythdvdnav/libmythdvdnav.pro mythtv-0.20-16082-new/libs/libmythdvdnav/libmythdvdnav.pro
+--- mythtv-0.20-16082-old/libs/libmythdvdnav/libmythdvdnav.pro	2008-09-15 14:05:06.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythdvdnav/libmythdvdnav.pro	2008-11-09 07:06:43.000000000 -0800
+@@ -3,7 +3,7 @@
+ 
+ TEMPLATE = lib
+ TARGET = mythdvdnav-$$LIBVERSION
+-CONFIG += thread staticlib warn_off
++CONFIG += thread dll warn_off
+ target.path = $${LIBDIR}
+ 
+ INCLUDEPATH += ../../
+diff -Naur mythtv-0.20-16082-old/libs/libmythtv/libmythtv.pro mythtv-0.20-16082-new/libs/libmythtv/libmythtv.pro
+--- mythtv-0.20-16082-old/libs/libmythtv/libmythtv.pro	2008-09-15 14:04:57.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/libmythtv.pro	2008-11-09 07:12:29.000000000 -0800
+@@ -49,7 +49,7 @@
+ TARGETDEPS += ../libavcodec/libmythavcodec-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../libavformat/libmythavformat-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
+-TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
++TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../libmythfreemheg/libmythfreemheg-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../libmythlivemedia/libmythlivemedia-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../libmythui/libmythui-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+diff -Naur mythtv-0.20-16082-old/programs/programs-libs.pro mythtv-0.20-16082-new/programs/programs-libs.pro
+--- mythtv-0.20-16082-old/programs/programs-libs.pro	2008-09-15 14:05:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/programs-libs.pro	2008-11-09 07:10:42.000000000 -0800
+@@ -8,12 +8,14 @@
+ LIBS += -L../../libs/libmythfreemheg
+ LIBS += -L../../libs/libmythui
+ LIBS += -L../../libs/libmythupnp
++LIBS += -L../../libs/libmythdvdnav
+ LIBS += -L../../libs/libmythlivemedia
+ 
+ LIBS += -lmythtv-$$LIBVERSION -lmythavformat-$$LIBVERSION
+ LIBS += -lmythavutil-$$LIBVERSION -lmythavcodec-$$LIBVERSION 
+ LIBS += -lmythfreemheg-$$LIBVERSION
+ LIBS += -lmythupnp-$$LIBVERSION 
++LIBS += -lmythdvdnav-$$LIBVERSION
+ LIBS += -lmythlivemedia-$$LIBVERSION
+ LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION $$EXTRA_LIBS
+ 
+@@ -30,11 +32,13 @@
+ TARGETDEPS += ../../libs/libavcodec/libmythavcodec-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../../libs/libavformat/libmythavformat-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../../libs/libmythupnp/libmythupnp-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
++TARGETDEPS += ../../libs/libmythdvdnav/libmythdvdnav-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ TARGETDEPS += ../../libs/libmythlivemedia/libmythlivemedia-$${LIBVERSION}.$${QMAKE_EXTENSION_SHLIB}
+ 
+ DEPENDPATH += ../.. ../../libs ../../libs/libmyth ../../libs/libmythtv
+ DEPENDPATH += ../../libs/libavutil ../../libs/libavformat ../../libs/libsavcodec
+ DEPENDPATH += ../../libs/libmythupnp ../../libs/libmythui
++DEPENDPATH += ../../libs/libmythdvdnav
+ DEPENDPATH += ../../libs/libmythlivemedia
+ 
+ CONFIG += opengl

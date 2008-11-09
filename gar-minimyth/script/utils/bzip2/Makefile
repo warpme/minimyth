@@ -45,3 +45,7 @@ INSTALL_ARGS = \
 include ../../gar.mk
 
 CFLAGS += -fpic -fPIC -Wall -Winline -D_FILE_OFFSET_BITS=64
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libbz2.a
+	@$(MAKECOOKIE)

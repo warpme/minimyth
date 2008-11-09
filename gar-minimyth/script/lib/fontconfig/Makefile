@@ -19,6 +19,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--disable-docs \
 	--with-gnu-ld \
 	--with-arch=$(GARCH) \

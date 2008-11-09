@@ -37,3 +37,7 @@ BUILD_ENV     = $(DEFAULT_ENV)
 INSTALL_ENV   = $(DEFAULT_ENV)
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libyasm.a
+	@$(MAKECOOKIE)

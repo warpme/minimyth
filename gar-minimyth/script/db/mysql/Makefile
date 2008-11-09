@@ -29,6 +29,8 @@ INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--enable-thread-safe-client \
 	--with-gnu-ld \
 	--without-debug \
@@ -54,6 +56,13 @@ install-cross:
 
 post-install:
 	@$(call GLIBC_ADD_LIB_PATH, $(libdir)/mysql)
+	@rm -f $(DESTDIR)$(libdir)/mysql/libdbug.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libheap.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmyisam.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmyisammrg.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmystrings.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmysys.a
+	@rm -f $(DESTDIR)$(libdir)/mysql/libvio.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient_r.la
 	@$(MAKECOOKIE)

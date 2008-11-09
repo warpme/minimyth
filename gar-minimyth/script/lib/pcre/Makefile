@@ -26,6 +26,8 @@ INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--enable-utf8 \
 	--enable-unicode-properties \
 	--with-gnu-ld

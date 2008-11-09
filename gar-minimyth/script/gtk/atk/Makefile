@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-static \
+	--enable-shared \
 	--enable-rebuilds \
 	--disable-glibtest \
 	--disable-gtk-doc \

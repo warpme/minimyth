@@ -27,6 +27,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libirman.a
 	@cp $(WORKSRC)/test_io   $(DESTDIR)/$(bindir)
 	@cp $(WORKSRC)/test_name $(DESTDIR)/$(bindir)
 	@cp $(WORKSRC)/test_func $(DESTDIR)/$(bindir)

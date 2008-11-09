@@ -52,10 +52,6 @@ NVIDIA_FILE_LIST_LIB_DRV = $(strip \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so), \
 			nvidia_drv.so:/usr/X11R6/lib/modules/drivers:$(libdir)/nvidia/xorg/modules/drivers) \
 	)
-NVIDIA_FILE_LIST_LIB_A   = $(strip \
-		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.a), \
-			libXvMCNVIDIA.a:/usr/X11R6/lib:$(libdir)/nvidia) \
-	)
 NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 		$(if $(wildcard $(WORKSRC)/usr/lib/libcuda.so.*), \
 			libcuda.so:/usr/lib:$(libdir)/nvidia) \
@@ -116,11 +112,6 @@ install-nvidia-x11:
 	)
 	@rm -rf $(DESTDIR)$(libdir)/nvidia
 	@$(foreach entry,$(NVIDIA_FILE_LIST_LIB_DRV), \
-		install -D \
-		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
-		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
-	)
-	@$(foreach entry,$(NVIDIA_FILE_LIST_LIB_A), \
 		install -D \
 		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
 		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \

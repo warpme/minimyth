@@ -23,3 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libfl.a
+	@rm -f $(DESTDIR)$(libdir)/libfl_pic.a
+	@$(MAKECOOKIE)

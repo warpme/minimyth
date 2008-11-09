@@ -64,11 +64,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-static \
+	--enable-shared \
 	--enable-largefile \
 	--disable-werror \
 	--disable-debug \
 	--disable-builddocs \
-	--enable-install-libxf86config \
+	--disable-install-libxf86config \
 	--disable-builtin-fonts \
 	--disable-null-root-cursor \
 	--disable-aiglx \

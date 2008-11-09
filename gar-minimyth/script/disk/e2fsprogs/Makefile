@@ -32,6 +32,12 @@ install-custom:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libblkid.a
+	@rm -f $(DESTDIR)$(libdir)/libcom_err.a
+	@rm -f $(DESTDIR)$(libdir)/libe2p.a
+	@rm -f $(DESTDIR)$(libdir)/libext2fs.a
+	@rm -f $(DESTDIR)$(libdir)/libss.a
+	@rm -f $(DESTDIR)$(libdir)/libuuid.a
 	@mv -f $(DESTDIR)$(libdir)/libblkid.* $(DESTDIR)$(elibdir)/
 	@mv -f $(DESTDIR)$(libdir)/libuuid.*  $(DESTDIR)$(elibdir)/
 	@$(MAKECOOKIE)

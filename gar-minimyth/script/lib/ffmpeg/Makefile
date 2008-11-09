@@ -28,7 +28,7 @@ CONFIGURE_ARGS = \
 	--shlibdir=$(libdir) \
 	--incdir=$(includedir)/ffmpeg \
 	--mandir=$(mandir) \
-	--enable-static \
+	--disable-static \
 	--enable-shared \
 	--enable-gpl \
 	--disable-nonfree \

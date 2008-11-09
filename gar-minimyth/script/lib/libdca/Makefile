@@ -18,6 +18,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
+	--enable-shared \
+	--disable-static \
 	--disable-fixed \
 	--disable-double \
 	--disable-oss \
@@ -38,7 +40,7 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdca.la
 	@rm -f $(DESTDIR)$(libdir)/libdts.a
-	@ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a"
+	@$(if $(wildcard $(DESTDIR)$(libdir)/libdca.a), ln -sf "libdca.a" "$(DESTDIR)$(libdir)/libdts.a")
 	@rm -f $(DESTDIR)$(libdir)/libdts.so
-	@ln -sf "libdca.so" "$(DESTDIR)$(libdir)/libdts.so"
+	@$(if $(wildcard $(DESTDIR)$(libdir)/libdca.so), ln -sf "libdca.so" "$(DESTDIR)$(libdir)/libdts.so")
 	@$(MAKECOOKIE)

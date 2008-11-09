@@ -21,7 +21,8 @@ BUILD_ARGS   = \
 	RANLIB="$(RANLIB)" \
 	prefix="$(prefix)" \
 	libdir="$(libdir)" \
-	includedir="$(includedir)/matroska"
+	includedir="$(includedir)/matroska" \
+	sharedlib
 INSTALL_ARGS = \
 	CXX="$(CXX)" \
 	LD="$(CXX)" \
@@ -32,3 +33,7 @@ INSTALL_ARGS = \
 	includedir="$(DESTDIR)$(includedir)/matroska"
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).a
+	@$(MAKECOOKIE)

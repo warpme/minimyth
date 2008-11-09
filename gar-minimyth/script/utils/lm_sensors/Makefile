@@ -51,3 +51,7 @@ x-checksum-$(DISTNAME).tar.bz2:
 pre-install:
 	@rm -rf $(DESTDIR)/$(sysconfdir)/sensors3.conf
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libsensors.a
+	@$(MAKECOOKIE)

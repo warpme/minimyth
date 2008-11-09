@@ -33,3 +33,6 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).a
+	@$(MAKECOOKIE)

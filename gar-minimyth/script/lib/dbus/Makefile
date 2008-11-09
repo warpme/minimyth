@@ -19,6 +19,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--enable-shared \
+	--disable-static \
 	--disable-xml-docs \
 	--disable-doxygen-docs \
 	--disable-selinux \

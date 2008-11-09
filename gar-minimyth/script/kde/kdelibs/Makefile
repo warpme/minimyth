@@ -108,6 +108,7 @@ install-cross:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(kdelibdir)/libkdefakes_nonpic.a
 	@rm -f $(DESTDIR)$(kdelibdir)/kde3/dcopserver.la
 	@rm -f $(DESTDIR)$(kdelibdir)/kde3/kabc_dir.la
 	@rm -f $(DESTDIR)$(kdelibdir)/kde3/kabc_file.la

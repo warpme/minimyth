@@ -63,6 +63,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-static \
+	--enable-shared \
 	--enable-largefile \
 	--disable-werror \
 	--disable-debug \

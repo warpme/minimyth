@@ -33,3 +33,7 @@ include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -fPIC
 AR     := $(AR) -rc
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libz.a
+	@$(MAKECOOKIE)

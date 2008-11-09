@@ -32,3 +32,9 @@ pre-configure:
 install-nsinstall:
 	@cp -f $(WORKSRC)/mozilla/nsprpub/config/nsinstall $(DESTDIR)$(bindir)/nsinstall
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libnspr4.a
+	@rm -f $(DESTDIR)$(libdir)/libplc4.a
+	@rm -f $(DESTDIR)$(libdir)/libplds4.a
+	@$(MAKECOOKIE)

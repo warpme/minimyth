@@ -25,6 +25,7 @@ API_MAJOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MAJOR
 API_MINOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MINOR=' | sed 's%^API_MINOR=%%')
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libxvidcore.a
 	@ln -sf libxvidcore.so.$(API_MAJOR).$(API_MINOR) $(DESTDIR)$(libdir)/libxvidcore.so.$(API_MAJOR)
 	@ln -sf libxvidcore.so.$(API_MAJOR)              $(DESTDIR)$(libdir)/libxvidcore.so
 	@$(MAKECOOKIE)
