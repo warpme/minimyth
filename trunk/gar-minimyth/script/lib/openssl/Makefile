@@ -49,6 +49,8 @@ configure-%/Configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libcrypto.a
+	@rm -f $(DESTDIR)$(libdir)/libssl.a
 	@chmod u+w $(DESTDIR)$(libdir)/libcrypto.so.*
 	@chmod u+w $(DESTDIR)$(libdir)/libssl.so.*
 	@$(MAKECOOKIE)

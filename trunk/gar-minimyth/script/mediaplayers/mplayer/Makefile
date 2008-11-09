@@ -198,6 +198,7 @@ CONFIGURE_ARGS_MISC = \
 	--ar="$(AR)" \
 	--ranlib="$(RANLIB)" \
 	--target="$(GARCH_FAMILY)-linux" \
+	--disable-static \
 	--charset="UTF-8" \
 	--language="all"
 CONFIGURE_ARGS_ADVANCED = \

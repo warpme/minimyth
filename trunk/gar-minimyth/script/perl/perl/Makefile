@@ -136,3 +136,7 @@ install-generate_uudmap:
 		cp -f $(WORKSRC)/generate_uudmap $(DESTDIR)$(bindir)/perl-generate_uudmap ; \
 	fi
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(PERL_archlib)/CORE/libperl.a
+	@$(MAKECOOKIE)

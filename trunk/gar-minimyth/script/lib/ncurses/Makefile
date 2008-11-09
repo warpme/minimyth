@@ -26,6 +26,9 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-build-ldflags="$(build_LDFLAGS)" \
 	--with-build-libs="" \
 	--with-shared \
+	--without-normal \
+	--without-debug \
+	--without-profile \
 	--disable-rpath \
 	--disable-widec \
 	--enable-termcap

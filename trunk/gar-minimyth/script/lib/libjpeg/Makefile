@@ -17,7 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--enable-static \
+	--disable-static \
 	--enable-shared
 
 INSTALL_OVERRIDE_DIRS = prefix exec_prefix bindir libdir includedir mandir

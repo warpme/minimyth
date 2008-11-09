@@ -19,11 +19,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
+	--enable-shared \
+	--disable-static \
 	--enable-sandboxed \
 	--with-gnu-ld \
 	--with-x \
-	--x-includes="$(DESTDIR)$(includedir)" \
-	--x-libraries="$(DESTDIR)$(libdir)" \
 	--with-kerneldir="$(DESTDIR)$(LINUX_SOURCEDIR)" \
 	--with-moduledir="$(LINUX_MODULESDIR)/misc/lirc" \
 	--with-driver=all \

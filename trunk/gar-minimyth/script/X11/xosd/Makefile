@@ -20,6 +20,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--enable-shared \
+	--disable-static \
 	--disable-gtktest \
 	--enable-xinerama \
 	--disable-gdk_pixbuftest \

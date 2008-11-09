@@ -17,6 +17,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--disable-asm \
 	--with-gnu-ld \
 	--with-gpg-error-prefix="$(DESTDIR)$(prefix)" \

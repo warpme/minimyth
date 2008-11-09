@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--with-gnu-ld \
 	--with-libxml-prefix=$(DESTDIR)$(prefix) \
 	--with-libxml-include-prefix=$(DESTDIR)$(includedir) \

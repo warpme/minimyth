@@ -20,6 +20,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--enable-shared \
+	--disable-static \
 	--enable-nasm \
 	--disable-cpml \
 	--with-gnu-ld

@@ -37,3 +37,8 @@ post-configure:
 	@echo "using gcc : $(GCC_VERSION) : $(CXX) ;" >  $(WORKSRC)/user-config.jam
 	@echo "using gcc : $(GCC_VERSION) : $(CXX) ;" >> $(WORKSRC)/tools/build/v2/user-config.jam
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc43-mt.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc43-mt-1_37.a
+	@$(MAKECOOKIE)

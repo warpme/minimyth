@@ -20,6 +20,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--enable-shared \
+	--disable-static \
 	--enable-libc \
 	--enable-audio \
 	--enable-video \
@@ -102,5 +104,6 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -rf $(DESTDIR)$(libdir)/libSDL.la
+	@rm -f $(DESTDIR)$(libdir)/libSDLmain.a
+	@rm -f $(DESTDIR)$(libdir)/libSDL.la
 	@$(MAKECOOKIE)

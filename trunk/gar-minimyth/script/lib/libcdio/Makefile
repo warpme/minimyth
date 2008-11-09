@@ -19,6 +19,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-cxx \
 	--disable-cpp-progs \
+	--enable-shared \
+	--disable-static \
 	--enable-joliet \
 	--disable-rpath \
 	--enable-rock \

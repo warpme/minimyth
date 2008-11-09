@@ -3,7 +3,7 @@ GARVERSION = 1.5.4.2
 CATEGORIES = system
 MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-autotools_fixes.patch
+PATCHFILES = $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -17,6 +17,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--disable-debug \
 	--disable-deprecated \
 	--enable-fbcondecor \
