@@ -12,7 +12,8 @@ cd /rootfs
 /bin/echo -n "start date and time: " >> /init.log
 /bin/date -u +'%Y-%m-%d %H:%M:%S %Z' >> /init.log
 
-if /usr/bin/test ! "${MM_INIT_TYPE}" = 'perl' ; then
+if /usr/bin/test ! "${MM_INIT_TYPE}" = 'perl' && \
+   /usr/bin/test ! "${MM_INIT_TYPE}" = 'sh'   ; then
     MM_INIT_TYPE=${MM_INIT_TYPE:-'perl'}
 fi
 
@@ -22,9 +23,9 @@ set | /bin/grep -e '^BOOT_IMAGE=' >> /etc/conf.d/boot
 set | /bin/grep -e '^initrd='     >> /etc/conf.d/boot
 set | /bin/grep -e '^MM_'         >> /etc/conf.d/boot
 
-if   /usr/bin/test ${MM_INIT_TYPE} = 'perl'        ; then
+if   /usr/bin/test ${MM_INIT_TYPE} = 'perl' ; then
     /bin/ln -s /etc/inittab.perl /etc/inittab
-elif /usr/bin/test ${MM_INIT_TYPE} = 'sh-obsolete' ; then
+elif /usr/bin/test ${MM_INIT_TYPE} = 'sh'   ; then
     /bin/ln -s /etc/inittab.sh   /etc/inittab
 fi
 
