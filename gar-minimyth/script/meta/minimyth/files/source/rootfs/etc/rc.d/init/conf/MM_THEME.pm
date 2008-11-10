@@ -139,7 +139,6 @@ $var_list{'MM_THEMEOSD_URL'} =
 };
 $var_list{'MM_THEME_FILE_MENU_ADD'} =
 {
-    value_default  => '',
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -154,6 +153,7 @@ $var_list{'MM_THEME_FILE_MENU_ADD'} =
         $value_clean =~ s/ $//;
         $minimyth->var_set($name, $value_clean);
     },
+    value_default  => '',
     value_file     => '.+',
     file           => sub
     {

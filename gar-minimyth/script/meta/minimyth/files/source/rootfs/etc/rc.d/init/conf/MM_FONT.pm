@@ -38,7 +38,6 @@ $var_list{'MM_FONT_FILE_TTF_DELETE'} =
 };
 $var_list{'MM_FONT_FILE_TTF_ADD'} =
 {
-    value_default  => '',
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -53,6 +52,7 @@ $var_list{'MM_FONT_FILE_TTF_ADD'} =
         $value_clean =~ s/ $//;
         $minimyth->var_set($name, $value_clean);
     },
+    value_default  => '',
     value_file     => '.+',
     file           => sub
     {
