@@ -329,6 +329,23 @@ sub _run_var
         if ($valid == 0)
         {
             $minimyth->message_output('err', qq(error: $var_name=') . $minimyth->var_get($var_name) . qq(' is not valid.));
+
+            # Replace the invalid value with the default value,
+            # so that dependent variables will get a valid value.
+            $minimyth->var_set($var_name, '');
+            if (defined $value_default)
+            {
+                if ($minimyth->var_get($var_name) eq '')
+                {
+                    # Convert function pointer to its return value.
+                    if (ref($value_default) eq 'CODE')
+                    {
+                        $value_default = &{$value_default}($minimyth, $var_name); 
+                    }
+                    # Set variable to its default value.
+                    $minimyth->var_set($var_name, $value_default);
+                }
+            }
         }
     }
 
