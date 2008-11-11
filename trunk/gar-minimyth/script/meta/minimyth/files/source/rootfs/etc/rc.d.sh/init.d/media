@@ -7,6 +7,11 @@
 . /etc/rc.d.sh/functions
 
 start() {
+
+    local media;
+    local media_mountpoint;
+    local media_url;
+
     mm_message_output info "mounting media shares ..."
 
     if /usr/bin/test -n "${MM_MEDIA_TV_URL}"      && /usr/bin/test -n "${MM_MEDIA_TV_MOUNTPOINT}"      ; then
@@ -85,6 +90,23 @@ start() {
             exit 1
         fi
     fi
+
+    for media in ${MM_MEDIA_GENERIC_LIST} ; do
+        media_url=`/bin/echo ${media} | sed -e 's%^[^=]*=%%'`
+        media_mountpoint=`/bin/echo ${media} | sed -e 's%=.*$%%'`
+
+        if /usr/bin/test -n "${media_url}" && /usr/bin/test -n "${media_mountpoint}" ; then
+            mm_url_mount "${media_url}" "${media_mountpoint}"
+            if ! /bin/cat /proc/mounts | /bin/grep -q -e "^[^ ]* ${media_mountpoint}" ; then
+                mm_message_output err "error: '${media_mountpoint}' failed to mount."
+                exit 1
+            fi
+            if /bin/su -c "/usr/bin/test ! -r ${media_mountpoint}" - minimyth ; then
+                mm_message_output err "error: '${media_mountpoint}' is not readable by user 'minimyth'."
+                exit 1
+            fi
+        fi
+    done
 
     /bin/sed -i "s%@MEDIA_FILES_ORIGIN_PATH@%${MM_MEDIA_VIDEO_MOUNTPOINT}%" /home/minimyth/.xine/config
 
