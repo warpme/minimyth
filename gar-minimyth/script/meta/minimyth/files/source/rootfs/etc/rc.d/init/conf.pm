@@ -321,7 +321,7 @@ sub _run_var
         my $valid = 0;
         foreach (@{$value_valid})
         {
-            if ($minimyth->var_get($var_name) =~ m/^$_$/)
+            if ($minimyth->var_get($var_name) =~ m/^($_)$/)
             {
                 $valid = 1;
             }
@@ -366,7 +366,7 @@ sub _run_var
         my $obsolete = 0;
         foreach (@{$value_obsolete})
         {
-            if ($minimyth->var_get($var_name) =~ m/^$_$/)
+            if ($minimyth->var_get($var_name) =~ m/^($_)$/)
             {
                 $obsolete = 1;
             }
