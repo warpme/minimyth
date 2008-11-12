@@ -1,5 +1,5 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.18
+GARVERSION = 1.0.18a
 CATEGORIES = kernel-2.6.27
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
@@ -46,6 +46,12 @@ IGROUP := `id -g`
 
 post-install:
 	@# In-tree uses 'core' but out-of-tree uses 'acore'.
-	@cd $(DESTDIR)$(LINUX_MODULESDIR)/kernel/sound ; rm -fr core ; mv acore core
+	@cd $(DESTDIR)$(LINUX_MODULESDIR)/kernel/sound ; \
+		rm -fr core ; mv acore core
+	@# In-tree uses 'ac97_bus.ko' but out-of-tree uses 'misc/ac97_bus.ko'.
+	@cd $(DESTDIR)$(LINUX_MODULESDIR)/kernel/sound ; \
+		rm -f ac97_bus.ko ; \
+		mv misc/ac97_bus.ko ac97_bus.ko ; \
+		rmdir --ignore-fail-on-non-empty misc
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
