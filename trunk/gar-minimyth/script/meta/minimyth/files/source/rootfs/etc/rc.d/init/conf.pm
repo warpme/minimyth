@@ -22,23 +22,14 @@ sub start
     unlink('/etc/conf.d/dhcp.override') if (-e '/etc/conf.d/dhcp.override');
     unlink('/etc/conf.d/minimyth')      if (-e '/etc/conf.d/minimyth');
 
-    # Clear configuration variables.
+    # Read core and dhcp configuration files, which are included in '/etc/conf'.
     $minimyth->var_clear();
-
-    # Read core and dhcp configuration files.
-    $minimyth->var_load({ 'file' => '/etc/conf.d/core'}) if (-e '/etc/conf.d/core');
-    $minimyth->var_load({ 'file' => '/etc/conf.d/dhcp'}) if (-e '/etc/conf.d/dhcp');
+    $minimyth->var_load({ 'file' => '/etc/conf' });
 
     $minimyth->message_output('info', "fetching configuration file  ...");
 
     # Determine current boot directory location.
-    {
-        my $group = __PACKAGE__ . '::' . 'MM_MINIMYTH';
-        eval "require $group";
-        my $group_var_list = $group->var_list();
-        $self->_run_var($minimyth, $group_var_list, 'MM_MINIMYTH_BOOT_URL');
-        $minimyth->var_save({ 'file' => '/etc/conf.d/minimyth.raw' });
-    }
+    $self->_run($minimyth, 'MM_MINIMYTH_BOOT_URL');
 
     # Using local configuration files, so there should be a '/minimyth' directory.
     if ($minimyth->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
@@ -65,11 +56,19 @@ sub start
         return 0;
     }
 
+    # Save the current boot directory location so that it is available to the
+    # 'mm_minimyth_conf_include shell' shell function that might be called from
+    # within '/etc/minimyth.d/minimyth.conf' when it is read.
+    $minimyth->var_save({ 'file' => '/etc/conf.d/minimyth.raw', 'filter' => 'MM_MINIMYTH_BOOT_URL' });
+
     # Read MiniMyth configuration file variables.
+    $minimyth->var_clear();
     $minimyth->var_load({ 'file' => '/etc/minimyth.d/minimyth.conf' });
 
+    unlink('/etc/conf.d/minimyth.raw');
+
     $minimyth->message_output('info', "checking for obsolete variables ...");
-    if (open(FILE, '<', "$dir/conf.d/obsolete"))
+    if (open(FILE, '<', "$dir/conf/obsolete"))
     {
         while (<FILE>)
         {
@@ -83,12 +82,7 @@ sub start
     }
 
     # Fetch and run 'minimyth.pm'.
-    {
-        my $group = __PACKAGE__ . '::' . 'MM_MINIMYTH';
-        eval "require $group";
-        my $group_var_list = $group->var_list();
-        $self->_run_var($minimyth, $group_var_list, 'MM_MINIMYTH_FETCH_MINIMYTH_PM');
-    }
+    $self->_run($minimyth, 'MM_MINIMYTH_FETCH_MINIMYTH_PM');
     if ($minimyth->var_get('MM_MINIMYTH_FETCH_MINIMYTH_PM') eq 'yes')
     {
         $minimyth->message_output('info', "fetching configuration package ...");
@@ -130,15 +124,7 @@ sub start
 
     # Process the DHCP override configuration variables
     # so that they are available to the DHCP client.
-    {
-        my $group = __PACKAGE__ . '::' . 'MM_DHCP';
-        eval "require $group";
-        my $group_var_list = $group->var_list();
-        foreach (keys %{$group_var_list})
-        {
-            $self->_run_var($minimyth, $group_var_list, $_);
-        }
-    }
+    $self->_run($minimyth, 'MM_DHCP_.*');
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
     # Restart the DHCP client in order to pick up the processed DHCP override variables.
@@ -146,9 +132,10 @@ sub start
     init::dhcp->start($minimyth);
 
     $minimyth->message_output('info', "processing configuration file ...");
+    $minimyth->var_clear();
+    $minimyth->var_load({ 'file' => '/etc/minimyth.d/minimyth.conf' });
     $self->_run($minimyth);
     $minimyth->var_save();
-    unlink('/etc/conf.d/minimyth.raw');
 
     # If there are any errors, then do not continue
     if ((-e '/var/log/minimyth.err.log') && (open(FILE, '<', '/var/log/minimyth.err.log')))
@@ -218,7 +205,16 @@ sub _run
         closedir(DIR);
     }
 
-    # Run the variable handlers for each variable.
+    # Make sure that all variables (re)initialize.
+    foreach (keys %var_list)
+    {
+        $var_list{$_}->{'complete'} = 0;
+    }
+
+    # Run variable initialization handler for MM_MINIMYTH_BOOT_URL because it is needed when fetching files.
+    $self->_run_var($minimyth, \%var_list, 'MM_MINIMYTH_BOOT_URL');
+
+    # Run the variable initialization handlers for each variable.
     foreach (keys %var_list)
     {
         $self->_run_var($minimyth, \%var_list, $_);
