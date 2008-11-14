@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.5.0
+GARVERSION = 2.5.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -38,6 +38,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-dri \
+	--disable-video-debug \
+	--enable-xvmc \
+	--disable-kms \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
