@@ -12,13 +12,13 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.21 ,        $(mm_MYTH_VERSION)),0.21.0                        ) \
                                 $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
-mm_VERSION_MINIMYTH       ?= 59
+mm_VERSION_MINIMYTH       ?= 60
 mm_VERSION_EXTRA          ?= $(strip \
                                 $(if $(filter yes,$(mm_DEBUG)),-debug) \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 36
+mm_CONF_VERSION           ?= 37
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
