@@ -12,7 +12,6 @@ require File::Find;
 require File::Path;
 require File::Spec;
 require Net::Telnet;
-require Sys::Hostname;
 use     WWW::Curl::Easy;
 
 sub new
@@ -148,7 +147,14 @@ sub hostname
 {
     my $self = shift;
 
-    my $hostname = Sys::Hostname::hostname();
+    my $hostname = `/bin/hostname`;
+
+    chomp $hostname;
+
+    if ($hostname eq '?')
+    {
+        $hostname = '';
+    }
 
     return $hostname;
 }
