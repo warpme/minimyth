@@ -122,7 +122,7 @@ sub start
 
         if ($minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR') eq 'userspace')
         {
-            system(qq(/usr/sbin/powernowd));
+            system(qq(/usr/sbin/powernowd > $devnull 2>&1));
         }
     }
 
