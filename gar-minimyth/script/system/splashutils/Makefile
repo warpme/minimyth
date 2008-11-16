@@ -1,8 +1,8 @@
 GARNAME = splashutils
-GARVERSION = 1.5.4.2
+GARVERSION = 1.5.4.3
 CATEGORIES = system
-MASTER_SITES = http://dev.gentoo.org/~spock/projects/gensplash/archive/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://download.berlios.de/fbsplash/
+DISTFILES = $(GARNAME)-lite-$(GARVERSION).tar.bz2
 PATCHFILES = $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch
 LICENSE = GPL2
 
