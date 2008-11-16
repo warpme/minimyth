@@ -93,31 +93,26 @@ sub rc_run
 
     $minimyth->var_load();
 
-    # Redirect stderr and stdout to either /dev/null or /var/log/minimyth.log,
-    # depending on the value of MM_DEBUG.
-    my $log_file = File::Spec->devnull;
-    if ((defined($minimyth->var_get('MM_DEBUG'))) && ($minimyth->var_get('MM_DEBUG') eq 'yes'))
+    # Redirect stderr and stdout to /var/log/minimyth.log,
+    my $log_file = '/var/log/minimyth.log';
+    if (! -e $log_file)
     {
-        $log_file = '/var/log/minimyth.log';
-        if (! -e $log_file)
+        my $log_dir = File::Basename::dirname($log_file);
+        if (! -e $log_dir)
         {
-            my $log_dir = File::Basename::dirname($log_file);
-            if (! -e $log_dir)
-            {
-                File::Path::mkpath($log_dir);
-            }
-            if (-w $log_dir)
-            {
-                open(FILE, '>', $log_file);
-                chmod(0666, $log_file);
-                close(FILE);
-            }
+            File::Path::mkpath($log_dir);
+        }
+        if (-w $log_dir)
+        {
+            open(FILE, '>', $log_file);
+            chmod(0666, $log_file);
+            close(FILE);
         }
     }
-    open(STDERR, '>', 'STDOUT');
     if (-e $log_file)
     {
         open(STDOUT, '>>', $log_file);
+        open(STDERR, '>&', 'STDOUT');
     }
 
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
