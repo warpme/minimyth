@@ -1,5 +1,5 @@
 GARNAME = cairo
-GARVERSION = 1.8.2
+GARVERSION = 1.8.4
 CATEGORIES = lib
 MASTER_SITES = http://www.cairographics.org/releases/
 DISTFILES = $(DISTNAME).tar.gz
