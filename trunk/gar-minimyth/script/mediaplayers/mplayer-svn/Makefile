@@ -1,9 +1,9 @@
 GARNAME = MPlayer
-GARVERSION = 27884.15767
+GARVERSION = 27942.15845
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(DISTNAME)-nvidia_vdpau_3076399.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc X11/vdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -171,6 +171,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-xmga \
 	--enable-xv \
 	--enable-xvmc \
+	--enable-vdpau \
 	--enable-vm \
 	--enable-xinerama \
 	--enable-x11 \

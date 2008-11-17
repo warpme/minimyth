@@ -1,16 +1,16 @@
 GARNAME = ffmpeg
-GARVERSION = 15767.27884
+GARVERSION = 15845.27942
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-nvidia_vdpau_3076399.patch $(DISTNAME).patch.gar $(DISTNAME)-configure_accel.patch 
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL lib/zlib utils/bzip2
+DEPENDS   = lang/c lib/SDL lib/zlib utils/bzip2 X11/vdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -106,6 +106,10 @@ CONFIGURE_ARGS = \
 	--disable-extra-warnings \
 	--disable-stripping
 
+CONFIGURE_ENV = \
+	xvmc=yes \
+	vdpau=yes
+
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
@@ -124,8 +128,4 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-post-configure:
-	@echo "HAVE_XVMC=yes" >> $(WORKSRC)/config.mak
 	@$(MAKECOOKIE)
