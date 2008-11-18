@@ -1,7 +1,8 @@
 GARNAME = nvidia
 GARVERSION = $(NVIDIA_VERSION)
 CATEGORIES = nvidia
-MASTER_SITES = http://us.download.nvidia.com/XFree86/Linux-$(NVIDIA_SUPER_VERSION)/$(NVIDIA_VERSION)/
+MASTER_SITES  = http://us.download.nvidia.com/XFree86/Linux-$(NVIDIA_SUPER_VERSION)/$(NVIDIA_VERSION)/
+MASTER_SITES += ftp://download.nvidia.com/XFree86/Linux-$(NVIDIA_SUPER_VERSION)/$(NVIDIA_VERSION)/
 DISTFILES = $(DISTFILE).run
 LICENSE = nvidia
 nvidia_LICENSE_TEXT=$(WORKSRC)/LICENSE
