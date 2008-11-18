@@ -730,7 +730,11 @@ sub mythdb_x_get
 
     my $sth = $self->mythdb_handle->prepare($query);
     $sth->execute;
-    my $result = $sth->fetchrow_hashref()->{$field};
+    my $result = undef;
+    if ($sth->fetchrow_hashref())
+    {
+        $result = $sth->fetchrow_hashref()->{$field};
+    }
     $sth->finish();
 
     return $result;
