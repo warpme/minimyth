@@ -729,11 +729,13 @@ sub mythdb_x_get
     my $query = qq(SELECT * FROM $table) . $self->_mythdb_condition('WHERE', 'AND', $condition, $flag);
 
     my $sth = $self->mythdb_handle->prepare($query);
-    $sth->execute;
     my $result = undef;
-    if ($sth->fetchrow_hashref())
+    if ($sth->execute)
     {
-        $result = $sth->fetchrow_hashref()->{$field};
+        if (my $row = $sth->fetchrow_hashref())
+        {
+            $result = $row->{$field};
+        }
     }
     $sth->finish();
 
@@ -750,12 +752,15 @@ sub mythdb_x_print
     my $query = qq(SELECT * FROM $table) . $self->_mythdb_condition('WHERE', 'AND', $condition, $flag);
 
     my $sth = $self->mythdb_handle->prepare($query);
-    $sth->execute;
     my @rows = ();
-    while (my $row = $sth->fetchrow_hashref())
+    if ($sth->execute)
     {
-        push(@rows, $row);
+        while (my $row = $sth->fetchrow_hashref())
+        {
+            push(@rows, $row);
+        }
     }
+    $sth->finish();
     my @fields = ();
     foreach my $field (keys %{$rows[0]})
     {
@@ -801,7 +806,6 @@ sub mythdb_x_print
         foreach my $field (@fields) { field_print($row->{$field}, ' ', $lengths{$field}); } print "|" . "\n";
     }
     foreach my $field (@fields) { field_print('-'   , '-', $lengths{$field}); } print "|" . "\n";
-    $sth->finish();
 }
 
 sub mythdb_x_set
