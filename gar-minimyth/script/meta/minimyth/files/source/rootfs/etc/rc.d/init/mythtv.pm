@@ -137,29 +137,29 @@ sub start
     }
 
     # Configure Myth database jumppoints to match MiniMyth frontend.
-    foreach ($minimyth->var_list({ 'filter' => 'MM_MYTHDB_JUMPPOINTS_.*' }))
+    foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_JUMPPOINTS_.*' })})
     {
-        if (/^([^~]+)~([^~]*)$/)
+        if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]*)$/)
         {
             $minimyth->mythdb_jumppoints_update($1, $2);
         }
     }
 
     # Configure Myth database keybindings to match MiniMyth frontend.
-    foreach ($minimyth->var_list({ 'filter' => 'MM_MYTHDB_KEYBINDINGS_.*' }))
+    foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_KEYBINDINGS_.*' })})
     {
-        if (/^([^~]+)~([^~]+)~([^~]*)$/)
+        if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]+)~([^~]*)$/)
         {
             $minimyth->mythdb_keybindings_update($1, $2, $3);
         }
     }
 
     # Configure Myth database settings to match MiniMyth frontend.
-    foreach ($minimyth->var_list({ 'filter' => 'MM_MYTHDB_SETTINGS_.*' }))
+    foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_SETTINGS_.*' })})
     {
-        if (/^([^~]+)~([^~]*)$/)
+        if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]*)$/)
         {
-            $minimyth->mythdb_settings_update($1, $2);
+            $minimyth->mythdb_settings_set($1, $2);
         }
     }
 
