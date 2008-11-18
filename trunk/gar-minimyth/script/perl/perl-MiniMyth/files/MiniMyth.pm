@@ -880,7 +880,7 @@ sub mythdb_jumppoints_update
     my $destination = shift;
     my $keylist     = shift;
 
-    return $self->mythdb_x_print('jumppoints', { 'destination' => $destination }, 'keylist', $keylist);
+    return $self->mythdb_x_update('jumppoints', { 'destination' => $destination }, 'keylist', $keylist);
 }
 
 sub mythdb_jumppoints_get
