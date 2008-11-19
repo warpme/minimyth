@@ -16,7 +16,8 @@ PATCHFILES = \
 	$(subst -,,$(subst .,,$(DISTNAME)))-009 \
 	$(subst -,,$(subst .,,$(DISTNAME)))-010 \
 	$(subst -,,$(subst .,,$(DISTNAME)))-011 \
-	$(subst -,,$(subst .,,$(DISTNAME)))-012
+	$(subst -,,$(subst .,,$(DISTNAME)))-012 \
+	$(subst -,,$(subst .,,$(DISTNAME)))-013
 LICENSE = GPL2
 
 DESCRIPTION = 
