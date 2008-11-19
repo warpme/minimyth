@@ -1,6 +1,6 @@
 GARNAME = kernel
-GARVERSION = 2.6.27
-CATEGORIES = kernel-2.6.27
+GARVERSION = 2.6.26
+CATEGORIES = kernel-2.6.26
 LICENSE =
 
 DESCRIPTION = 
@@ -8,9 +8,9 @@ define BLURB
 endef
 
 DEPENDS = \
-	$(filter-out %/Makefile %/kernel %/alsa-driver,$(subst ../../,,$(wildcard ../../kernel-2.6.27/*)))
+	$(filter-out %/Makefile %/kernel %/alsa-driver,$(subst ../../,,$(wildcard ../../kernel-2.6.26/*)))
 
-GAR_EXTRA_CONF += kernel-2.6.27/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-2.6.26/linux/package-api.mk
 include ../../gar.mk
 
 post-install:

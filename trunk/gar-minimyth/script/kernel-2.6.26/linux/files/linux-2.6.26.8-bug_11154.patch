@@ -1,0 +1,44 @@
+diff -Naur linux-2.6.26.8-old/net/sunrpc/xprtsock.c linux-2.6.26.8-new/net/sunrpc/xprtsock.c
+--- linux-2.6.26.8-old/net/sunrpc/xprtsock.c	2008-11-10 11:18:24.000000000 -0800
++++ linux-2.6.26.8-new/net/sunrpc/xprtsock.c	2008-11-19 07:05:11.000000000 -0800
+@@ -1129,6 +1129,8 @@
+ 			struct sock_xprt *transport = container_of(xprt,
+ 					struct sock_xprt, xprt);
+ 
++			xprt->reestablish_timeout = 0;
++
+ 			/* Reset TCP record info */
+ 			transport->tcp_offset = 0;
+ 			transport->tcp_reclen = 0;
+@@ -1143,7 +1145,6 @@
+ 	case TCP_FIN_WAIT1:
+ 		/* The client initiated a shutdown of the socket */
+ 		xprt->connect_cookie++;
+-		xprt->reestablish_timeout = 0;
+ 		set_bit(XPRT_CLOSING, &xprt->state);
+ 		smp_mb__before_clear_bit();
+ 		clear_bit(XPRT_CONNECTED, &xprt->state);
+@@ -1757,6 +1758,7 @@
+ {
+ 	struct rpc_xprt *xprt = task->tk_xprt;
+ 	struct sock_xprt *transport = container_of(xprt, struct sock_xprt, xprt);
++	unsigned long timeout;
+ 
+ 	if (xprt_test_and_set_connecting(xprt))
+ 		return;
+@@ -1765,12 +1767,12 @@
+ 		dprintk("RPC:       xs_connect delayed xprt %p for %lu "
+ 				"seconds\n",
+ 				xprt, xprt->reestablish_timeout / HZ);
+-		queue_delayed_work(rpciod_workqueue,
+-				   &transport->connect_worker,
+-				   xprt->reestablish_timeout);
++		timeout = xprt->reestablish_timeout;
+ 		xprt->reestablish_timeout <<= 1;
+ 		if (xprt->reestablish_timeout > XS_TCP_MAX_REEST_TO)
+ 			xprt->reestablish_timeout = XS_TCP_MAX_REEST_TO;
++		queue_delayed_work(rpciod_workqueue,
++				   &transport->connect_worker, timeout);
+ 	} else {
+ 		dprintk("RPC:       xs_connect scheduled xprt %p\n", xprt);
+ 		queue_delayed_work(rpciod_workqueue,

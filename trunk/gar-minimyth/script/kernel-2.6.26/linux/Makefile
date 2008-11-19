@@ -1,6 +1,6 @@
 GARNAME = linux
 GARVERSION = $(LINUX_VERSION)
-CATEGORIES = kernel-2.6.27
+CATEGORIES = kernel-2.6.26
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
