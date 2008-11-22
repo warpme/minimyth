@@ -47,9 +47,14 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
-	--prefix="$(prefix)" \
+	--prefix="$(DESTDIR)$(prefix)" \
 	--runprefix="$(prefix)" \
-	--libdir-name="lib" \
+	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
+	--bindir="$(DESTDIR)$(bindir)" \
+	--libdir="$(DESTDIR)$(libdir)" \
+	--shlibdir="$(DESTDIR)$(libdir)" \
+	--incdir="$(DESTDIR)$(incdir)" \
+	--mandir="$(DESTDIR)$(mandir)" \
 	--disable-ccache \
 	--disable-distcc \
 	--cross-prefix="$(compiler_prefix)" \
