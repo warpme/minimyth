@@ -1,9 +1,9 @@
 GARNAME = MPlayer
-GARVERSION = 27942.15845
+GARVERSION = 27979.15908
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-nvidia_vdpau_3076399.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(DISTNAME)-vdpau_libav.patch $(DISTNAME)-vdpau_mplayer.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
