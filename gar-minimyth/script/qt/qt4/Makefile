@@ -1,5 +1,5 @@
 GARNAME = qt-x11-opensource-src
-GARVERSION = 4.5.0-tp1
+GARVERSION = 4.4.3
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
