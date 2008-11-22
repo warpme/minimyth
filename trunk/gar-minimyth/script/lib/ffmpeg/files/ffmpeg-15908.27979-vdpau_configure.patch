@@ -1,0 +1,37 @@
+diff -Naur ffmpeg-15908.27979-old/configure ffmpeg-15908.27979-new/configure
+--- ffmpeg-15908.27979-old/configure	2008-11-22 11:20:22.000000000 -0800
++++ ffmpeg-15908.27979-new/configure	2008-11-22 11:21:43.000000000 -0800
+@@ -805,6 +805,7 @@
+     mmx2
+     neon
+     ssse3
++    vdpau
+     vis
+ '
+ 
+@@ -980,6 +981,7 @@
+ zmbv_encoder_select="zlib"
+ 
+ # external libraries
++h264_vdpau_decoder_deps="vdpau"
+ libamr_nb_decoder_deps="libamr_nb"
+ libamr_nb_encoder_deps="libamr_nb"
+ libamr_wb_decoder_deps="libamr_wb"
+@@ -1002,6 +1004,9 @@
+ libx264_encoder_deps="libx264"
+ libxvid_encoder_deps="libxvid"
+ mpeg4aac_decoder_deps="libfaad"
++mpeg_vdpau_decoder_deps="vdpau"
++wmv3_vdpau_decoder_deps="vdpau"
++vc1_vdpau_decoder_deps="vdpau"
+ 
+ # demuxers / muxers
+ ac3_demuxer_deps="ac3_parser"
+@@ -1850,6 +1855,7 @@
+                         die "ERROR: libx264 version must be >= 0.65."; }
+ enabled libxvid    && require  libxvid xvid.h xvid_global -lxvidcore
+ enabled mlib       && require  mediaLib mlib_types.h mlib_VectorSub_S16_U8_Mod -lmlib
++enabled vdpau      && require  libvdpau vdpau/vdpau_x11.h vdp_device_create_x11 -lvdpau
+ 
+ # libdc1394 check
+ if enabled libdc1394; then
