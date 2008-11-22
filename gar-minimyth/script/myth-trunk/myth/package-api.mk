@@ -8,8 +8,7 @@ DISTNAME_SHORT   = $(GARNAME)-$(GARVERSION_SHORT)
 
 MYTHTV_CONFIGURE_ENV =
 MYTHTV_BUILD_ENV     =
-MYTHTV_INSTALL_ENV   = \
-	INSTALL_ROOT="$(DESTDIR)"
+MYTHTV_INSTALL_ENV   =
 
 post-install-mythtv-version:
 	@install -d $(DESTDIR)$(versiondir) 
