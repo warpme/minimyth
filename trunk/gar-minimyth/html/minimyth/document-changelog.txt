@@ -1,7 +1,7 @@
 MiniMyth Changelog
 
 --------------------------------------------------------------------------------
-Changes since 60 (2008-11-23):
+Changes since 60 (2008-11-25):
 
 Current MythTV versions
     MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
@@ -22,6 +22,12 @@ Modified kernel
 Modified mediaplayers
     - Added VDPAU support to FFmpeg and MPlayer SVN.
         - VDPAU NVIDIA drivers are not included in the binary image.
+    - Made sure players are not using libFLAC because FFmpeg's FLAC decoder
+      should work.
+    - Made sure players are using libFAAD because FFmpeg's AAC decoder lacks
+      certain capabilities.
+    - Made sure that all are using the shared libdca rather than their
+      internal versions of libdca/libdts.
 
 Modified init
     - Modified init so that it redirects the output of '/usr/sbin/powernowd'
@@ -44,10 +50,14 @@ Fixed bugs
 Modified build system
     - Changed mksquashfs so that it uses more conservative settings. I hope
       that this will reduce the chance of creating bad squashfs images.
+    - Removed FFmpeg's dependency on SDL.
+    - Removed giflib's dependency on X11.
+    - Removed xine-lib's dependency on FLAC.
 
 Fixed build system
     - Fixed bug that caused MythTV trunk to pick up files from the build
       system.
+    - Fixed bug that caused there to be no shared library for bzip2.
 
 Added packages
     Added kernel-2.6.26/*.
@@ -60,12 +70,16 @@ Updated packages
     Updated devel/automake.
     Updated devel/fakeroot.
     Updated gtk/cairo.
+    Updated gtk/glib.
+    Updated gtk/gtk+.
     Updated gtk/pango.
     Updated kernel-2.6.27/linux.
     Updated kernel-headers/linux-headers-2.6.27.
     Updated lib/bluez.
     Updated lib/ffmpeg.
+    Updated lib/libg15.
     Updated mediaplayers/mplayer-svn.
+    Updated net/gpxe.
     Reverted qt/qt4 (4.5.0-tp1 does not install a valid QtWebKit.pc file).
     Updated system/splashutils.
     Updated system/udev.
