@@ -1,5 +1,5 @@
 GARNAME = libg15
-GARVERSION = 1.2.6
+GARVERSION = 1.2.7
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/g15tools/
 DISTFILES = $(DISTNAME).tar.bz2
