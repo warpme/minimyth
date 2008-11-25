@@ -9,22 +9,20 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg
+DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes="$(DESTDIR)$(includedir)" \
-	--x-libraries="$(DESTDIR)$(libdir)" \
 	--enable-shared \
 	--disable-static \
 	--disable-rle \
-	--enable-x11 \
+	--disable-x11 \
 	--disable-gl \
 	--with-gnu-ld \
-	--with-x
+	--without-x
 
 include ../../gar.mk
 
