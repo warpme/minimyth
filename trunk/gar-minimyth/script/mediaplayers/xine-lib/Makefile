@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -101,10 +101,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-vorbis \
 	--without-theora \
 	--without-speex \
-	--with-libflac \
-	--with-libFLAC-prefix="$(DESTDIR)$(prefix)" \
-	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
-	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
+	--without-libflac \
 	--without-external-a52dec \
 	--with-external-libmad \
 	--without-external-libmpcdec \
@@ -117,7 +114,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-fusionsound \
 	--without-jack \
 	--without-internal-vcdlibs \
-	--without-external-libdts \
+	--with-external-libdts \
 	--without-wavpack \
 	--with-real-codecs-path="$(libdir)/codecs" \
 	--with-w32-path="$(libdir)/codecs" \
