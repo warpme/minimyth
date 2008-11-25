@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL lib/zlib utils/bzip2 X11/vdpau
+DEPENDS   = lang/c lib/zlib utils/bzip2 X11/vdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -36,6 +36,7 @@ CONFIGURE_ARGS = \
 	--enable-swscale \
 	--disable-avfilter \
 	--disable-avfilter-lavf \
+	--disable-vhook \
 	--disable-beosthreads \
 	--disable-os2threads \
 	--enable-pthreads \
@@ -43,6 +44,7 @@ CONFIGURE_ARGS = \
 	--enable-x11grab \
 	--disable-mlib \
 	--disable-avisynth \
+	--enable-bzlib \
 	--disable-libamr-nb \
 	--disable-libamr-wb \
 	--disable-libdc1394 \
@@ -59,6 +61,7 @@ CONFIGURE_ARGS = \
 	--disable-libvorbis \
 	--disable-libx264 \
 	--disable-libxvid \
+	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
 	--target-os="linux" \
@@ -71,6 +74,7 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH_FAMILY) \
 	--cpu=$(GARCH) \
 	--disable-powerpc-perf \
+	--disable-altivec \
 	--enable-mmx \
 	--enable-mmx2 \
 	--enable-ssse3 \
@@ -78,20 +82,20 @@ CONFIGURE_ARGS = \
 	--disable-armv6 \
 	--disable-armvfp \
 	--disable-iwmmxt \
-	--disable-altivec \
+	--disable-mmi \
+	--disable-neon \
+	--disable-vis \
 	--enable-network \
 	--disable-ipv6 \
-	--enable-zlib \
-	--enable-bzlib \
-	--disable-vhook \
 	--disable-mpegaudio-hp \
-	--enable-gray \
+	--disable-gray \
 	--enable-ffmpeg \
-	--disable-ffserver \
 	--disable-ffplay \
+	--disable-ffserver \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
+	--disable-beos-netserver \
 	--enable-encoders \
 	--enable-decoders \
 	--enable-muxers \
@@ -99,6 +103,8 @@ CONFIGURE_ARGS = \
 	--enable-parsers \
 	--enable-bsfs \
 	--disable-protocols \
+	--enable-indevs \
+	--enable-outdevs \
 	--enable-filters \
 	--disable-debug \
 	--disable-gprof \
@@ -107,7 +113,8 @@ CONFIGURE_ARGS = \
 	--disable-stripping
 
 CONFIGURE_ENV = \
-	xvmc=yes
+	xvmc=yes \
+	SDL_CONFIG="/bin/false"
 
 include ../../gar.mk
 
