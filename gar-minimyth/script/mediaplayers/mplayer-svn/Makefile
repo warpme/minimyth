@@ -71,7 +71,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-cddb \
 	--disable-bitmap-font \
 	--enable-freetype \
-	--enable-unrarexec \
+	--disable-unrarexec \
 	--enable-menu \
 	--enable-sortsub \
 	--disable-fribidi \
