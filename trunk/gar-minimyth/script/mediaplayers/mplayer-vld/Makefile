@@ -4,7 +4,6 @@ CATEGORIES = mediaplayers
 MASTER_SITES  = http://www1.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www2.mplayerhq.hu/MPlayer/releases/
 MASTER_SITES += http://www4.mplayerhq.hu/MPlayer/releases/
-MASTER_SITES += svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-demux_audio_fix_20080129.patch \
@@ -25,7 +24,7 @@ DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio 
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile config
+INSTALL_SCRIPTS   = custom
 
 # Directories
 CONFIGURE_ARGS_DIR = \
@@ -263,20 +262,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
-install-config:
-	@mkdir -p $(DESTDIR)$(rootdir)/root/.mplayer
-	@cp $(WORKSRC)/etc/codecs.conf  $(DESTDIR)$(rootdir)/root/.mplayer
-	@cp $(WORKSRC)/etc/example.conf $(DESTDIR)$(rootdir)/root/.mplayer
-	@cp $(WORKSRC)/etc/input.conf   $(DESTDIR)$(rootdir)/root/.mplayer
-	@cp $(WORKSRC)/etc/menu.conf    $(DESTDIR)$(rootdir)/root/.mplayer
-	@$(MAKECOOKIE)
-
-post-install:
-	@rm -f $(DESTDIR)$(bindir)/mplayer-vld
-	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-vld
-	@rm -f $(DESTDIR)$(bindir)/mplayer
-	@ln -fs mplayer-vld $(DESTDIR)$(bindir)/mplayer
+install-custom:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp $(WORKSRC)/mplayer $(DESTDIR)$(bindir)/mplayer-vld
 	@$(MAKECOOKIE)

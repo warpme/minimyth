@@ -15,7 +15,7 @@ DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = custom
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile config
 
 # Directories
 CONFIGURE_ARGS_DIR = \
@@ -219,7 +219,7 @@ CONFIGURE_ARGS_MISC = \
 	--disable-static \
 	--charset="UTF-8" \
 	--language="all" \
-	--with-install="$(DESTDIR)$(bindir)"
+	--with-install="$(build_DESTDIR)$(build_bindir)/install"
 CONFIGURE_ARGS_ADVANCED = \
 	--enable-mmx \
 	--enable-mmxext \
@@ -286,7 +286,17 @@ svn//%/$(DISTNAME).tar.bz2:
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
-install-custom:
-	@mkdir -p $(DESTDIR)$(bindir)
-	@cp $(WORKSRC)/mplayer $(DESTDIR)$(bindir)/mplayer-svn
+install-config:
+	@mkdir -p $(DESTDIR)$(rootdir)/root/.mplayer
+	@cp $(WORKSRC)/etc/codecs.conf  $(DESTDIR)$(rootdir)/root/.mplayer
+	@cp $(WORKSRC)/etc/example.conf $(DESTDIR)$(rootdir)/root/.mplayer
+	@cp $(WORKSRC)/etc/input.conf   $(DESTDIR)$(rootdir)/root/.mplayer
+	@cp $(WORKSRC)/etc/menu.conf    $(DESTDIR)$(rootdir)/root/.mplayer
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(bindir)/mplayer-svn
+	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-svn
+	@rm -f $(DESTDIR)$(bindir)/mplayer
+	@ln -fs mplayer-svn $(DESTDIR)$(bindir)/mplayer
 	@$(MAKECOOKIE)
