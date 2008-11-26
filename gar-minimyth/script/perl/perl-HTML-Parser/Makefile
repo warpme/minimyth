@@ -1,5 +1,5 @@
 GARNAME        = perl-HTML-Parser
-GARVERSION     = 3.56
+GARVERSION     = 3.58
 MASTER_SITES   = http://www.cpan.org/authors/id/G/GA/GAAS/
 DEPENDS        = perl/perl-HTML-Tagset
 PERL_MODULE_SO = true
