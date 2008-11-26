@@ -275,8 +275,8 @@ install-config:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(bindir)/mplayer-stable
-	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-stable
+	@rm -f $(DESTDIR)$(bindir)/mplayer-vld
+	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-vld
 	@rm -f $(DESTDIR)$(bindir)/mplayer
-	@ln -fs mplayer-stable $(DESTDIR)$(bindir)/mplayer
+	@ln -fs mplayer-vld $(DESTDIR)$(bindir)/mplayer
 	@$(MAKECOOKIE)

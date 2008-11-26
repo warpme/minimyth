@@ -127,11 +127,11 @@ DEPENDS = \
 		lib/nss) \
 	$(if $(filter gnash,$(mm_SOFTWARE)), \
 		mediaplayers/gnash) \
-	$(if $(filter mplayer,$(mm_SOFTWARE)), \
-		mediaplayers/mplayer \
-		mediaplayers/mplayer-resumer) \
 	$(if $(filter mplayer-svn,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer-svn \
+		mediaplayers/mplayer-resumer) \
+	$(if $(filter mplayer-vld,$(mm_SOFTWARE)), \
+		mediaplayers/mplayer-vld \
 		mediaplayers/mplayer-resumer) \
 	$(if $(filter vlc,$(mm_SOFTWARE)), \
 		mediaplayers/vlc) \

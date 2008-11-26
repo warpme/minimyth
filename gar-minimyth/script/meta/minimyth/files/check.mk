@@ -141,8 +141,8 @@ mm-all:
 		   [ ! "$${software}" = "mythzoneminder" ] && \
 		   [ ! "$${software}" = "flash"          ] && \
 		   [ ! "$${software}" = "gnash"          ] && \
-		   [ ! "$${software}" = "mplayer"        ] && \
 		   [ ! "$${software}" = "mplayer-svn"    ] && \
+		   [ ! "$${software}" = "mplayer-vld"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \
 		   [ ! "$${software}" = "perl"           ] && \
