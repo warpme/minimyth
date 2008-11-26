@@ -178,6 +178,7 @@ sub start
         }
     }
 
+    my $mplayer;
     my $video_driver;
     my $xvmc_true;
     my $xvmc_false;
@@ -185,24 +186,28 @@ sub start
     {
         when (/^ffmpeg$/)
         {
+            $mplayer      = 'mplayer-svn';
             $video_driver = 'xv';
             $xvmc_true    = '#';
             $xvmc_false   = '';
         }
         when (/^libmpeg2$/)
         {
+            $mplayer      = 'mplayer-svn';
             $video_driver = 'xv';
             $xvmc_true    = '#';
             $xvmc_false   = '';
         }
         when (/^xvmc$/)
         {
+            $mplayer      = 'mplayer-svn';
             $video_driver = 'xvmc';
             $xvmc_true    = '';
             $xvmc_false   = '#';
         }
         when (/^xvmc-vld$/)
         {
+            $mplayer      = 'mplayer-vld';
             $video_driver = 'xxmc';
             $xvmc_true    = '';
             $xvmc_false   = '#';
@@ -239,6 +244,11 @@ sub start
         }
     }
     my $monitoraspect = $minimyth->var_get('MM_VIDEO_ASPECT_RATIO');
+
+    if ( (! -e '/usr/bin/mplayer') && (qq(/usr/bin/$mplayer)) )
+    {
+        symlink($mplayer, '/usr/bin/mplayer');
+    }
 
     $minimyth->file_replace_variable(
         '/home/minimyth/.xine/config',

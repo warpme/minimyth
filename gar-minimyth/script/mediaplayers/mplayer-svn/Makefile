@@ -297,6 +297,4 @@ install-config:
 post-install:
 	@rm -f $(DESTDIR)$(bindir)/mplayer-svn
 	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-svn
-	@rm -f $(DESTDIR)$(bindir)/mplayer
-	@ln -fs mplayer-svn $(DESTDIR)$(bindir)/mplayer
 	@$(MAKECOOKIE)
