@@ -37,11 +37,10 @@ mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'flash', 'gnash',
-# 'mplayer-svn' (experimental and may be removed in the future without warning),
-# 'mplayer-vld',
-# 'vlc' (experimental and may be removed in the future without warning),
-# 'xine', 'perl', 'transcode', 'mame', 'wiimote', 'backend' and 'debug'.
+# 'mythweather', 'mythzoneminder', 'flash', 'gnash', 'mplayer-svn',
+# 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
+# warning), 'xine', 'perl', 'transcode', 'mame', 'wiimote', 'backend' and
+# 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
