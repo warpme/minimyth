@@ -3,7 +3,7 @@ GARVERSION = 15908.27979
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libav.patch $(DISTNAME)-vdpau_configure.patch $(DISTNAME)-xvmc_configure.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3139462.patch $(DISTNAME)-vdpau_libavutil_3139462.patch $(DISTNAME)-vdpau_configure_3139462.patch $(DISTNAME)-xvmc_configure.patch $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -68,7 +68,7 @@ CONFIGURE_ARGS = \
 	--cc="$(CC)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
-	--extra-libs="" \
+	--extra-libs="-lvdpau" \
 	--extra-version="" \
 	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
@@ -113,8 +113,7 @@ CONFIGURE_ARGS = \
 	--disable-stripping
 
 CONFIGURE_ENV = \
-	xvmc=yes \
-	SDL_CONFIG="/bin/false"
+	SDL_CONFIG='/bin/false'
 
 include ../../gar.mk
 
