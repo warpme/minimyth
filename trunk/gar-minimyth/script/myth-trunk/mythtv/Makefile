@@ -35,6 +35,7 @@ DEPENDS = \
 	lib/zlib \
 	qt/qt4 \
 	system/lirc \
+	X11/vdpau \
 	xorg/xorg
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -96,6 +97,7 @@ CONFIGURE_ARGS = \
 	--enable-xvmcw \
 	--enable-xvmc-pro \
 	--disable-xvmc-opengl \
+	--enable-vdpau \
 	--xvmc-lib=XvMCW \
 	--enable-opengl-video \
 	--disable-mac-accel \
