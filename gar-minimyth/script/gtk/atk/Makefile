@@ -1,6 +1,6 @@
 GARNAME = atk
 GARVERSION = 1.24.0
-CATEGORIES = lib
+CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/atk/1.24/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
