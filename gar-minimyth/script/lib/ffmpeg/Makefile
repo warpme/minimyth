@@ -68,7 +68,7 @@ CONFIGURE_ARGS = \
 	--cc="$(CC)" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
-	--extra-libs="-lvdpau" \
+	--extra-libs="" \
 	--extra-version="" \
 	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
@@ -85,6 +85,8 @@ CONFIGURE_ARGS = \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
+	--enable-xvmc \
+	--enable-vdpau \
 	--enable-network \
 	--disable-ipv6 \
 	--disable-mpegaudio-hp \
