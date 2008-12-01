@@ -183,7 +183,7 @@ sub start
     # If there is no lircd.conf file, then create it.
     if (! -e '/etc/lircd.conf')
     {
-        my $lircd_conf_path = q(/etc/lirc.d/lircd.conf.d);
+        my $lircd_conf_path = q(/etc/lirc.d/lircd.conf);
         my @lircd_conf_list = ();
         if (opendir(DIR, $lircd_conf_path))
         {
@@ -207,7 +207,7 @@ sub start
     # If there is no lircrc file, then create it.
     if (! -e '/etc/lircrc')
     {
-        my $lircrc_path = q(/etc/lirc.d/lircrc.d);
+        my $lircrc_path = q(/etc/lirc.d/lircrc);
         # Create a list of lircrc applications.
         my @application_path_list = ();
         if (opendir(DIR, $lircrc_path))
