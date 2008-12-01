@@ -61,7 +61,7 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf.d/driver.conf.$driver";
+            my $driver_file = "/etc/lirc.d/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
@@ -91,7 +91,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf.d/driver.conf.$driver";
+            my $driver_file = "/etc/lirc.d/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
@@ -121,7 +121,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE_OPTIONS'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf.d/driver.conf.$driver";
+            my $driver_file = "/etc/lirc.d/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
