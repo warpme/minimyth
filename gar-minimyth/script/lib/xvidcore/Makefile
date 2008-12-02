@@ -1,5 +1,5 @@
 GARNAME = xvidcore
-GARVERSION = 1.1.3
+GARVERSION = 1.2.0
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xvid.org/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,7 +11,9 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = devel/yasm
+BUILDDEPS = devel/nasm
+
+WORKSRC = $(WORKDIR)/$(GARNAME)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/build/generic/configure
 BUILD_SCRIPTS     = $(WORKSRC)/build/generic/Makefile
