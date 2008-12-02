@@ -7,8 +7,6 @@ package init::lirc;
 use strict;
 use warnings;
 
-require Cwd;
-require File::Copy;
 require MiniMyth;
 
 sub _remote_wakeup_enable
@@ -31,12 +29,12 @@ sub _remote_wakeup_enable
     foreach my $lirc (@lirc_list)
     {
         my $name = '';
-        if (open(FILE, '-|', "/sbin/udevadm info --query=name --path=/sys/class/lirc/$lirc"))
+        if (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --path='/sys/class/lirc/$lirc')))
         {
             while (<FILE>)
             {
                 chomp;
-                $name = "/dev/$_";
+                $name = $_;
                 last;
             }
             close(FILE);
@@ -287,9 +285,6 @@ sub start
         my @device_args = split(/,/, $device_item);
         my $device = $device_args[0];
         my $driver = $device_args[1];
-
-        # Convert device to the actual device rather than the symbolic link.
-        $device = Cwd::abs_path($device);
 
         # Convert driver to the the lirc daemon appropriate driver.
         if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
