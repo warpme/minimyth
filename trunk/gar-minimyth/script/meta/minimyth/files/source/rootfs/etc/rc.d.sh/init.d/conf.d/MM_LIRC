@@ -37,8 +37,10 @@ conf_check_MM_LIRC() {
 conf_default_MM_LIRC() {
 
     local device
+    local device_blacklist
     local device_item
     local device_list
+    local driver
 
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         MM_LIRC_DRIVER='none'
@@ -140,14 +142,37 @@ conf_default_MM_LIRC() {
         fi
     fi
 
+    # Convert device symlinks to device names.
     device_list=
     for device_item in ${MM_LIRC_DEVICE_LIST} ; do
         device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
-        if ! /bin/echo " ${MM_LIRC_DEVICE_BLACKLIST} " | /bin/grep -q " ${device} " ; then
-            device_list="${device_list} ${device_item}"
+        driver=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 2`
+        if /usr/bin/test -e "${device}" ; then
+            device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
         fi
+        device_list="${device_list} ${device},${driver}"
     done
     MM_LIRC_DEVICE_LIST="${device_list}"
+
+    # Remove blacklisted devices from the list.
+    if /usr/bin/test -n "${MM_LIRC_DEVICE_BLACKLIST}" ; then
+        # Convert blackisted device symlinks to device names.
+        device_blacklist=
+        for device in ${MM_LIRC_DEVICE_BLACKLIST} ; do
+            if /usr/bin/test -e "${device}" ; then
+                device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+            fi
+            device_blacklist="${device_blacklist} ${device}"
+        done
+        device_list=
+        for device_item in ${MM_LIRC_DEVICE_LIST} ; do
+            device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+            if ! /bin/echo " ${device_blacklist} " | /bin/grep -q " ${device} " ; then
+                device_list="${device_list} ${device_item}"
+            fi
+        done
+        MM_LIRC_DEVICE_LIST="${device_list}"
+    fi
     
     return 0
 }
