@@ -406,7 +406,7 @@ sub detect_state_get
     $map{'audio'}   = [ 'card_number' , 'device_number' ];
     $map{'backend'} = [ 'enabled'];
     $map{'lcdproc'} = [ 'device' , 'driver'];
-    $map{'lirc'}    = [ 'device' , 'driver'];
+    $map{'lirc'}    = [ 'device' , 'driver', 'lircd_conf' ];
     $map{'x'}       = [ 'driver' ];
 
     my @state;

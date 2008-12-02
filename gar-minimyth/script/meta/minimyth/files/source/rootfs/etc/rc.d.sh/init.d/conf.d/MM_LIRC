@@ -135,7 +135,7 @@ conf_default_MM_LIRC() {
     MM_LIRC_DEVICE_LIST=
     if /usr/bin/test ! "${MM_LIRC_DRIVER}" = "irtrans" ; then
         if /usr/bin/test -n "${MM_LIRC_DEVICE}" && /usr/bin/test -n "${MM_LIRC_DRIVER}" ; then
-            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} ${MM_LIRC_DEVICE},${MM_LIRC_DRIVER}"
+            MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} ${MM_LIRC_DEVICE},${MM_LIRC_DRIVER},"
         fi
         if /usr/bin/test "${MM_LIRC_AUTO_ENABLED}" = "yes" ; then
             MM_LIRC_DEVICE_LIST="${MM_LIRC_DEVICE_LIST} `mm_detect_state_get 'lirc' | mm_uniq`"
@@ -143,14 +143,19 @@ conf_default_MM_LIRC() {
     fi
 
     # Convert device symlinks to device names.
+    # Convert lircd_conf files.
     device_list=
     for device_item in ${MM_LIRC_DEVICE_LIST} ; do
         device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
         driver=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 2`
+        lircd_conf=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 3`
         if /usr/bin/test -e "${device}" ; then
             device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
         fi
-        device_list="${device_list} ${device},${driver}"
+        if /usr/bin/test -z "${lircd_conf}" || /usr/bin/test "${MM_LIRC_FETCH_LIRCD_CONF}" = 'yes' ; then
+            lircd_conf='/etc/lircd.conf'
+        fi
+        device_list="${device_list} ${device},${driver},${lircd_conf}"
     done
     MM_LIRC_DEVICE_LIST="${device_list}"
 
