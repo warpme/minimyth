@@ -169,7 +169,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC'} =
 };
 $var_list{'MM_LIRC_DEVICE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DRIVER'],
+    prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DRIVER', 'MM_LIRC_FETCH_LIRCD_CONF'],
     value_default  => 'auto',
     value_valid    => 'auto|.+',
     value_auto     => sub
@@ -204,21 +204,27 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
         # so no LIRC device list is created.
         if ($minimyth->var_get('MM_LIRC_DRIVER') ne 'irtrans')
         {
-            my $device = &{$device_canonicalize}($minimyth->var_get('MM_LIRC_DEVICE'));
-            my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
+            my $device     = &{$device_canonicalize}($minimyth->var_get('MM_LIRC_DEVICE'));
+            my $driver     = $minimyth->var_get('MM_LIRC_DRIVER');
+            my $lircd_conf = q(/etc/lircd.conf);
             if (($device) && ($driver))
             {
-                push(@device_list, "$device,$driver");
+                push(@device_list, "$device,$driver,");
             }
             if ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'yes')
             {
                 foreach my $item (@{$minimyth->detect_state_get('lirc')})
                 {
-                    my $device = &{$device_canonicalize}($item->{'device'});
-                    my $driver = $item->{'driver'};
+                    my $device =     &{$device_canonicalize}($item->{'device'});
+                    my $driver     = $item->{'driver'};
+                    my $lircd_conf = $item->{'lircd_conf'};
+                    if ((! $lircd_conf) || ($minimyth->var_get('MM_LIRC_FETCH_LIRCD_CONF') eq 'yes'))
+                    {
+                        $lircd_conf = q(/etc/lircd.conf);
+                    }
                     if (($device) && ($driver))
                     {
-                        push(@device_list, "$device,$driver");
+                        push(@device_list, "$device,$driver,$lircd_conf");
                     }
                 }
             }

@@ -283,8 +283,9 @@ sub start
     foreach my $device_item (@device_list)
     {
         my @device_args = split(/,/, $device_item);
-        my $device = $device_args[0];
-        my $driver = $device_args[1];
+        my $device     = $device_args[0];
+        my $driver     = $device_args[1];
+        my $lircd_conf = $device_args[2];
 
         # Convert driver to the the lirc daemon appropriate driver.
         if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
@@ -320,12 +321,14 @@ sub start
             $daemon = $daemon . " --device=$device --driver=$driver";
             $daemon = $daemon . " --output=/dev/lircd-$instance --pidfile=/var/run/lircd-$instance.pid";
             $daemon = $daemon . " --listen=$port";
+            $daemon = $daemon . " $lircd_conf";
         }
         else
         {
             $daemon = '/usr/sbin/lircd';
             $daemon = $daemon . " --device=$device --driver=$driver";
             $daemon = $daemon . ' --output=/dev/lircd --pidfile=/var/run/lircd.pid';
+            $daemon = $daemon . " $lircd_conf";
             symlink('/dev/lircd', "/dev/lircd-$instance");
         }
         $minimyth->message_log('info', "started '$daemon'.");
