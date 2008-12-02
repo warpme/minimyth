@@ -435,29 +435,32 @@ sub detect_state_get
         closedir(DIR);
     }
 
-    if (@state)
+
+    if    (defined $field)
     {
-        if (! defined $instance)
+        if (($#state >= $instance) && ($instance >= 0) && ($state[$instance]) && ($state[$instance]->{$field}))
         {
-            return \@state;
+            return $state[$instance]->{$field};
         }
         else
         {
-            if (($instance >= 0) && ($instance <= $#state))
-            {
-                if (! defined $field)
-                {
-                    return $state[$instance];
-                }
-                else
-                {
-                    if ($state[$instance]->{$field})
-                    {
-                        return $state[$instance]->{$field};
-                    }
-                }
-            }
+            return undef;
         }
+    }
+    elsif (defined $instance)
+    {
+        if (($#state >= $instance) && ($instance >= 0) && ($state[$instance]))
+        {
+            return $state[$instance];
+        }
+        else
+        {
+            return undef;
+        }
+    }
+    else
+    {
+        return \@state;
     }
 }
 
