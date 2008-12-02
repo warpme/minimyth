@@ -18,6 +18,8 @@
 # must use IP addresses rather than DNS names when refering to servers.
 ################################################################################
 
+package init::minimyth;
+
 use strict;
 use warnings;
 
