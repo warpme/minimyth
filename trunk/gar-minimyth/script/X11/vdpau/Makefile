@@ -1,5 +1,5 @@
 NVIDIA_MAJOR_VERSION = 180
-NVIDIA_MINOR_VERSION = 08
+NVIDIA_MINOR_VERSION = 11
 NVIDIA_TEENY_VERSION =
 
 INSTALL_SCRIPTS = includes libs
@@ -55,3 +55,7 @@ install-libs:
 		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 4,$(subst :, ,$(entry))) ; \
 	))
 	@$(MAKECOOKIE)
+
+install-version: GARNAME=vdpau
+
+install-license-%: GARNAME=vdpau
