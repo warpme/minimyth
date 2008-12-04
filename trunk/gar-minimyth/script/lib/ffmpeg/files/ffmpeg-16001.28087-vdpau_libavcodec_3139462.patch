@@ -1,6 +1,6 @@
-diff -Naur MPlayer-28048.15948-old/libavcodec/allcodecs.c MPlayer-28048.15948-new/libavcodec/allcodecs.c
---- MPlayer-28048.15948-old/libavcodec/allcodecs.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/allcodecs.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/allcodecs.c ffmpeg-16001.28087-new/libavcodec/allcodecs.c
+--- ffmpeg-16001.28087-old/libavcodec/allcodecs.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/allcodecs.c	2008-12-03 19:36:33.000000000 -0800
 @@ -98,6 +98,7 @@
      REGISTER_DECODER (H263I, h263i);
      REGISTER_ENCODER (H263P, h263p);
@@ -17,7 +17,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/allcodecs.c MPlayer-28048.15948-ne
      REGISTER_ENCDEC  (MPEG1VIDEO, mpeg1video);
      REGISTER_ENCDEC  (MPEG2VIDEO, mpeg2video);
      REGISTER_ENCDEC  (MPEG4, mpeg4);
-@@ -162,6 +164,7 @@
+@@ -163,6 +165,7 @@
      REGISTER_DECODER (ULTI, ulti);
      REGISTER_DECODER (VB, vb);
      REGISTER_DECODER (VC1, vc1);
@@ -25,7 +25,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/allcodecs.c MPlayer-28048.15948-ne
      REGISTER_DECODER (VCR1, vcr1);
      REGISTER_DECODER (VMDVIDEO, vmdvideo);
      REGISTER_DECODER (VMNC, vmnc);
-@@ -174,6 +177,7 @@
+@@ -175,6 +178,7 @@
      REGISTER_ENCDEC  (WMV1, wmv1);
      REGISTER_ENCDEC  (WMV2, wmv2);
      REGISTER_DECODER (WMV3, wmv3);
@@ -33,9 +33,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/allcodecs.c MPlayer-28048.15948-ne
      REGISTER_DECODER (WNV1, wnv1);
      REGISTER_DECODER (XAN_WC3, xan_wc3);
      REGISTER_DECODER (XL, xl);
-diff -Naur MPlayer-28048.15948-old/libavcodec/avcodec.h MPlayer-28048.15948-new/libavcodec/avcodec.h
---- MPlayer-28048.15948-old/libavcodec/avcodec.h	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/avcodec.h	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/avcodec.h ffmpeg-16001.28087-new/libavcodec/avcodec.h
+--- ffmpeg-16001.28087-old/libavcodec/avcodec.h	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/avcodec.h	2008-12-03 19:36:33.000000000 -0800
 @@ -190,6 +190,10 @@
      CODEC_ID_MOTIONPIXELS,
      CODEC_ID_TGV,
@@ -56,10 +56,10 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/avcodec.h MPlayer-28048.15948-new/
  
  //The following defines may change, don't expect compatibility if you use them.
  #define MB_TYPE_INTRA4x4   0x0001
-@@ -2283,6 +2289,13 @@
-      * - decoding: Set by user.
+@@ -2297,6 +2303,13 @@
+      * - decoding: unused.
       */
-     int64_t request_channel_layout;
+     float rc_min_vbv_overflow_use;
 +
 +    /**
 +     * VDPAU Acceleration
@@ -70,9 +70,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/avcodec.h MPlayer-28048.15948-new/
  } AVCodecContext;
  
  /**
-diff -Naur MPlayer-28048.15948-old/libavcodec/h263dec.c MPlayer-28048.15948-new/libavcodec/h263dec.c
---- MPlayer-28048.15948-old/libavcodec/h263dec.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/h263dec.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/h263dec.c ffmpeg-16001.28087-new/libavcodec/h263dec.c
+--- ffmpeg-16001.28087-old/libavcodec/h263dec.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/h263dec.c	2008-12-03 19:36:33.000000000 -0800
 @@ -92,6 +92,8 @@
          break;
      case CODEC_ID_VC1:
@@ -82,15 +82,15 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h263dec.c MPlayer-28048.15948-new/
          s->h263_msmpeg4 = 1;
          s->h263_pred = 1;
          s->msmpeg4_version=6;
-diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/libavcodec/h264.c
---- MPlayer-28048.15948-old/libavcodec/h264.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/h264.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/h264.c ffmpeg-16001.28087-new/libavcodec/h264.c
+--- ffmpeg-16001.28087-old/libavcodec/h264.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/h264.c	2008-12-03 19:36:33.000000000 -0800
 @@ -72,6 +72,9 @@
  static VLC_TYPE run7_vlc_table[96][2];
  static const int run7_vlc_table_size = 96;
  
-+extern int VDPAU_h264_add_data_chunk(H264Context *h, const uint8_t *buf, int buf_size);
-+extern int VDPAU_h264_picture_complete(H264Context *h);
++int VDPAU_h264_add_data_chunk(H264Context *h, const uint8_t *buf, int buf_size);
++int VDPAU_h264_picture_complete(H264Context *h);
 +
  static void svq3_luma_dc_dequant_idct_c(DCTELEM *block, int qp);
  static void svq3_add_idct_c(uint8_t *dst, DCTELEM *block, int stride, int qp, int dc);
@@ -161,18 +161,18 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
  static int frame_start(H264Context *h){
      MpegEncContext * const s = &h->s;
      int i;
-@@ -7125,6 +7165,10 @@
+@@ -7103,6 +7143,10 @@
                 ((const char*[]){"Gray","420","422","444"})[sps->chroma_format_idc]
                 );
      }
 +
 +    if (decode_postinit(h, sps) < 0)
-+        return -1;
++        goto fail;
 +
+     av_free(h->sps_buffers[sps_id]);
+     h->sps_buffers[sps_id]= sps;
      return 0;
- }
- 
-@@ -7257,7 +7301,9 @@
+@@ -7247,7 +7291,9 @@
      H264Context *hx;
      int i;
  
@@ -183,14 +183,14 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
          decode_slice(avctx, &h);
      } else {
          for(i = 1; i < context_count; i++) {
-@@ -7384,8 +7430,26 @@
+@@ -7374,8 +7420,26 @@
                 && (avctx->skip_frame < AVDISCARD_NONREF || hx->nal_ref_idc)
                 && (avctx->skip_frame < AVDISCARD_BIDIR  || hx->slice_type_nos!=FF_B_TYPE)
                 && (avctx->skip_frame < AVDISCARD_NONKEY || hx->slice_type_nos==FF_I_TYPE)
 -               && avctx->skip_frame < AVDISCARD_ALL)
 -                context_count++;
 +               && avctx->skip_frame < AVDISCARD_ALL) {
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +                if (avctx->vdpau_acceleration) {
 +                    if(h->is_avc) {
 +                        static const uint8_t start_code[] = {0x00, 0x00, 0x01};
@@ -212,11 +212,11 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
              break;
          case NAL_DPA:
              init_get_bits(&hx->s.gb, ptr, bit_length);
-@@ -7588,6 +7652,12 @@
+@@ -7578,6 +7642,12 @@
          h->prev_frame_num_offset= h->frame_num_offset;
          h->prev_frame_num= h->frame_num;
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +        if (avctx->vdpau_acceleration) {
 +            VDPAU_h264_picture_complete(h);
 +        }
@@ -225,13 +225,13 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
          /*
           * FIXME: Error handling code does not seem to support interlaced
           * when slices span multiple rows
-@@ -7600,8 +7670,11 @@
+@@ -7590,8 +7660,11 @@
           * past end by one (callers fault) and resync_mb_y != 0
           * causes problems for the first MB line, too.
           */
 -        if (!FIELD_PICTURE)
 -            ff_er_frame_end(s);
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +        if (!avctx->vdpau_acceleration)
 +#endif
 +            if (!FIELD_PICTURE)
@@ -239,11 +239,11 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
  
          MPV_frame_end(s);
  
-@@ -7973,4 +8046,35 @@
+@@ -7963,4 +8036,35 @@
      .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
  };
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +static av_cold int h264_vdpau_decode_init(AVCodecContext *avctx){
 +    if( avctx->thread_count > 1)
 +        return -1;
@@ -275,9 +275,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.c MPlayer-28048.15948-new/lib
 +#endif
 +
  #include "svq3.c"
-diff -Naur MPlayer-28048.15948-old/libavcodec/h264.h MPlayer-28048.15948-new/libavcodec/h264.h
---- MPlayer-28048.15948-old/libavcodec/h264.h	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/h264.h	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/h264.h ffmpeg-16001.28087-new/libavcodec/h264.h
+--- ffmpeg-16001.28087-old/libavcodec/h264.h	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/h264.h	2008-12-03 19:36:33.000000000 -0800
 @@ -63,7 +63,7 @@
   * The maximum number of slices supported by the decoder.
   * must be a power of 2
@@ -287,9 +287,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/h264.h MPlayer-28048.15948-new/lib
  
  #ifdef ALLOW_INTERLACE
  #define MB_MBAFF h->mb_mbaff
-diff -Naur MPlayer-28048.15948-old/libavcodec/imgconvert.c MPlayer-28048.15948-new/libavcodec/imgconvert.c
---- MPlayer-28048.15948-old/libavcodec/imgconvert.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/imgconvert.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/imgconvert.c ffmpeg-16001.28087-new/libavcodec/imgconvert.c
+--- ffmpeg-16001.28087-old/libavcodec/imgconvert.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/imgconvert.c	2008-12-03 19:36:33.000000000 -0800
 @@ -266,6 +266,33 @@
      [PIX_FMT_XVMC_MPEG2_IDCT] = {
          .name = "xvmcidct",
@@ -324,26 +324,26 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/imgconvert.c MPlayer-28048.15948-n
      [PIX_FMT_UYYVYY411] = {
          .name = "uyyvyy411",
          .nb_channels = 1,
-diff -Naur MPlayer-28048.15948-old/libavcodec/Makefile MPlayer-28048.15948-new/libavcodec/Makefile
---- MPlayer-28048.15948-old/libavcodec/Makefile	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/Makefile	2008-11-28 11:28:39.000000000 -0800
-@@ -388,6 +388,7 @@
+diff -Naur ffmpeg-16001.28087-old/libavcodec/Makefile ffmpeg-16001.28087-new/libavcodec/Makefile
+--- ffmpeg-16001.28087-old/libavcodec/Makefile	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/Makefile	2008-12-03 19:36:33.000000000 -0800
+@@ -390,6 +390,7 @@
  OBJS-$(HAVE_W32THREADS)                += w32thread.o
  
  OBJS-$(HAVE_XVMC)                      += xvmcvideo.o
-+OBJS-$(CONFIG_VDPAU)                   += vdpauvideo.o
++OBJS-$(HAVE_VDPAU)                     += vdpauvideo.o
  
  # processor-specific code
  MMX-OBJS-$(CONFIG_CAVS_DECODER)        += i386/cavsdsp_mmx.o
-diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/libavcodec/mpeg12.c
---- MPlayer-28048.15948-old/libavcodec/mpeg12.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/mpeg12.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/mpeg12.c ffmpeg-16001.28087-new/libavcodec/mpeg12.c
+--- ffmpeg-16001.28087-old/libavcodec/mpeg12.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/mpeg12.c	2008-12-03 19:36:33.000000000 -0800
 @@ -68,10 +68,22 @@
- extern void XVMC_pack_pblocks(MpegEncContext *s,int cbp);
- extern void XVMC_init_block(MpegEncContext *s);//set s->block
+ void XVMC_pack_pblocks(MpegEncContext *s,int cbp);
+ void XVMC_init_block(MpegEncContext *s);//set s->block
  
-+extern int VDPAU_mpeg_field_start(MpegEncContext *s);
-+extern void VDPAU_mpeg_picture_complete(MpegEncContext *s, const uint8_t *buf, int buf_size, int slice_count);
++int VDPAU_mpeg_field_start(MpegEncContext *s);
++void VDPAU_mpeg_picture_complete(MpegEncContext *s, const uint8_t *buf, int buf_size, int slice_count);
 +
  static const enum PixelFormat pixfmt_xvmc_mpg2_420[] = {
                                             PIX_FMT_XVMC_MPEG2_IDCT,
@@ -400,7 +400,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
  /* Call this function when we know all parameters.
   * It may be called in different places for MPEG-1 and MPEG-2. */
  static int mpeg_decode_postinit(AVCodecContext *avctx){
-@@ -1288,19 +1332,8 @@
+@@ -1288,24 +1332,16 @@
              }
          }//MPEG-2
  
@@ -422,11 +422,19 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
          //until then pix_fmt may be changed right after codec init
          if( avctx->pix_fmt == PIX_FMT_XVMC_MPEG2_IDCT )
              if( avctx->idct_algo == FF_IDCT_AUTO )
-@@ -1646,6 +1679,11 @@
+                 avctx->idct_algo = FF_IDCT_SIMPLE;
+ 
++        if( avctx->vdpau_acceleration)
++            avctx->idct_algo = FF_IDCT_SIMPLE;
++
+         /* Quantization matrices may need reordering
+          * if DCT permutation is changed. */
+         memcpy(old_permutation,s->dsp.idct_permutation,64*sizeof(uint8_t));
+@@ -1646,6 +1682,11 @@
           XVMC_field_start(s,avctx);
  #endif
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    if(s->avctx->vdpau_acceleration)
 +         VDPAU_mpeg_field_start(s);
 +#endif
@@ -434,19 +442,19 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
      return 0;
  }
  
-@@ -1922,7 +1960,10 @@
+@@ -1922,7 +1963,10 @@
  
          s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_MPEG2;
  
 -        ff_er_frame_end(s);
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +        if(!s->avctx->vdpau_acceleration)
 +#endif
 +            ff_er_frame_end(s);
  
          MPV_frame_end(s);
  
-@@ -2069,11 +2110,7 @@
+@@ -2069,16 +2113,15 @@
      avctx->has_b_frames= 0; //true?
      s->low_delay= 1;
  
@@ -459,12 +467,20 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
  
      if( avctx->pix_fmt == PIX_FMT_XVMC_MPEG2_IDCT )
          if( avctx->idct_algo == FF_IDCT_AUTO )
-@@ -2303,6 +2340,14 @@
+             avctx->idct_algo = FF_IDCT_SIMPLE;
+ 
++    if( avctx->vdpau_acceleration == 1)
++        avctx->idct_algo = FF_IDCT_SIMPLE;
++
+     if (MPV_common_init(s) < 0)
+         return -1;
+     exchange_uv(s);//common init reset pblocks, so we swap them here
+@@ -2303,6 +2346,14 @@
                      for(i=0; i<s->slice_count; i++)
                          s2->error_count += s2->thread_context[i]->error_count;
                  }
 +
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +                if (avctx->vdpau_acceleration) {
 +                    /* Fills mpeg12 picture informations before returing from libavcodec. */
 +                    VDPAU_mpeg_picture_complete(s2, buf, buf_size, s->slice_count);
@@ -474,7 +490,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
                  if (slice_end(avctx, picture)) {
                      if(s2->last_picture_ptr || s2->low_delay) //FIXME merge with the stuff in mpeg_decode_slice
                          *data_size = sizeof(AVPicture);
-@@ -2388,6 +2433,11 @@
+@@ -2388,6 +2439,11 @@
                      return -1;
                  }
  
@@ -486,12 +502,12 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
                  if(avctx->thread_count > 1){
                      int threshold= (s2->mb_height*s->slice_count + avctx->thread_count/2) / avctx->thread_count;
                      if(threshold <= mb_y){
-@@ -2507,3 +2557,37 @@
+@@ -2507,3 +2563,37 @@
  };
  
  #endif
 +
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +static av_cold int mpeg_vdpau_decode_init(AVCodecContext *avctx){
 +    if( avctx->thread_count > 1)
 +        return -1;
@@ -524,31 +540,31 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/mpeg12.c MPlayer-28048.15948-new/l
 +};
 +#endif
 +
-diff -Naur MPlayer-28048.15948-old/libavcodec/mpegvideo.c MPlayer-28048.15948-new/libavcodec/mpegvideo.c
---- MPlayer-28048.15948-old/libavcodec/mpegvideo.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/mpegvideo.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/mpegvideo.c ffmpeg-16001.28087-new/libavcodec/mpegvideo.c
+--- ffmpeg-16001.28087-old/libavcodec/mpegvideo.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/mpegvideo.c	2008-12-03 19:36:33.000000000 -0800
 @@ -58,6 +58,7 @@
- extern void XVMC_field_end(MpegEncContext *s);
- extern void XVMC_decode_mb(MpegEncContext *s);
+ void XVMC_field_end(MpegEncContext *s);
+ void XVMC_decode_mb(MpegEncContext *s);
  
 +extern int VDPAU_mpeg_field_start(MpegEncContext *s);
  
  /* enable all paranoid tests for rounding, overflows, etc... */
  //#define PARANOID
-@@ -954,6 +955,10 @@
+@@ -957,6 +958,10 @@
          XVMC_field_end(s);
      }else
  #endif
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    if(s->avctx->vdpau_acceleration){
 +    }else
 +#endif
      if(s->unrestricted_mv && s->current_picture.reference && !s->intra_only && !(s->flags&CODEC_FLAG_EMU_EDGE)) {
              s->dsp.draw_edges(s->current_picture.data[0], s->linesize  , s->h_edge_pos   , s->v_edge_pos   , EDGE_WIDTH  );
              s->dsp.draw_edges(s->current_picture.data[1], s->uvlinesize, s->h_edge_pos>>1, s->v_edge_pos>>1, EDGE_WIDTH/2);
-diff -Naur MPlayer-28048.15948-old/libavcodec/utils.c MPlayer-28048.15948-new/libavcodec/utils.c
---- MPlayer-28048.15948-old/libavcodec/utils.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/utils.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/utils.c ffmpeg-16001.28087-new/libavcodec/utils.c
+--- ffmpeg-16001.28087-old/libavcodec/utils.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/utils.c	2008-12-03 19:36:33.000000000 -0800
 @@ -644,6 +644,7 @@
  {"context", "context model", OFFSET(context_model), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
  {"slice_flags", NULL, OFFSET(slice_flags), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
@@ -557,9 +573,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/utils.c MPlayer-28048.15948-new/li
  {"mbd", "macroblock decision algorithm (high quality mode)", OFFSET(mb_decision), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E, "mbd"},
  {"simple", "use mbcmp (default)", 0, FF_OPT_TYPE_CONST, FF_MB_DECISION_SIMPLE, INT_MIN, INT_MAX, V|E, "mbd"},
  {"bits", "use fewest bits", 0, FF_OPT_TYPE_CONST, FF_MB_DECISION_BITS, INT_MIN, INT_MAX, V|E, "mbd"},
-diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/libavcodec/vc1.c
---- MPlayer-28048.15948-old/libavcodec/vc1.c	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/vc1.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/vc1.c ffmpeg-16001.28087-new/libavcodec/vc1.c
+--- ffmpeg-16001.28087-old/libavcodec/vc1.c	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/vc1.c	2008-12-03 19:36:33.000000000 -0800
 @@ -41,8 +41,22 @@
  #define MB_INTRA_VLC_BITS 9
  #define DC_VLC_BITS 9
@@ -569,7 +585,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
 +
  static const uint16_t table_mb_intra[64][2];
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +static const enum PixelFormat pixfmt_vdpau_vc1_simple_420[] = {
 +                                           PIX_FMT_VDPAU_VC1_SIMPLE,
 +                                           PIX_FMT_NONE};
@@ -587,7 +603,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
      }
  }
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +static int decode_postinit(VC1Context *v, AVCodecContext *avctx)
 +{
 +    if (avctx->pix_fmt != PIX_FMT_NONE){
@@ -707,7 +723,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
      MpegEncContext *s = &v->s;
      AVFrame *pict = data;
      uint8_t *buf2 = NULL;
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    const uint8_t *buf_vdpau = buf;
 +#endif
  
@@ -717,7 +733,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
          s->current_picture_ptr= &s->picture[i];
      }
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    // pxt_fmt calculation for VDPAU.
 +    if (decode_postinit(v, avctx) < 0)
 +        return -1;
@@ -733,7 +749,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
                  if(size <= 0) continue;
                  switch(AV_RB32(start)){
                  case VC1_CODE_FRAME:
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +                    buf_vdpau = start;
 +#endif
                      buf_size2 = vc1_unescape_buffer(start + 4, size, buf2);
@@ -743,7 +759,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
          return -1;
      }
  
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    // MPV_frame_start() calls to  get_buffer/videoSurfaces. Now we call
 +    // VDPAU_vc1_field_start where picture-parameters are filled.
 +    // VDPAU_vc1_picture_complete calls to vdpau_decoder_render.
@@ -760,7 +776,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
      s->me.qpel_avg= s->dsp.avg_qpel_pixels_tab;
  
 -    ff_er_frame_start(s);
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    if (!avctx->vdpau_acceleration) {
 +#endif
 +        ff_er_frame_start(s);
@@ -774,7 +790,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
  //      return -1;
 -    ff_er_frame_end(s);
 +        ff_er_frame_end(s);
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +    }
 +#endif
  
@@ -785,7 +801,7 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
      .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9"),
  };
 +
-+#ifdef CONFIG_VDPAU
++#ifdef HAVE_VDPAU
 +static av_cold int vc1_vdpau_decode_init(AVCodecContext *avctx){
 +    if( avctx->thread_count > 1)
 +        return -1;
@@ -829,9 +845,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.c MPlayer-28048.15948-new/liba
 +    .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1 VDPAU"),
 +};
 +#endif
-diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.h MPlayer-28048.15948-new/libavcodec/vc1.h
---- MPlayer-28048.15948-old/libavcodec/vc1.h	2008-11-28 11:26:44.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/vc1.h	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/vc1.h ffmpeg-16001.28087-new/libavcodec/vc1.h
+--- ffmpeg-16001.28087-old/libavcodec/vc1.h	2008-12-03 19:28:17.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/vc1.h	2008-12-03 19:36:33.000000000 -0800
 @@ -180,6 +180,7 @@
      int interlace;        ///< Progressive/interlaced (RPTFTM syntax element)
      int tfcntrflag;       ///< TFCNTR present
@@ -840,9 +856,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vc1.h MPlayer-28048.15948-new/liba
      int extended_dmv;     ///< Additional extended dmv range at P/B frame-level
      int color_prim;       ///< 8bits, chroma coordinates of the color primaries
      int transfer_char;    ///< 8bits, Opto-electronic transfer characteristics
-diff -Naur MPlayer-28048.15948-old/libavcodec/vdpau_render.h MPlayer-28048.15948-new/libavcodec/vdpau_render.h
---- MPlayer-28048.15948-old/libavcodec/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/vdpau_render.h	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/vdpau_render.h ffmpeg-16001.28087-new/libavcodec/vdpau_render.h
+--- ffmpeg-16001.28087-old/libavcodec/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/vdpau_render.h	2008-12-03 19:36:33.000000000 -0800
 @@ -0,0 +1,61 @@
 +/*
 + * Video Decode and Presentation API for UNIX (VDPAU) is used for
@@ -905,9 +921,9 @@ diff -Naur MPlayer-28048.15948-old/libavcodec/vdpau_render.h MPlayer-28048.15948
 +} vdpau_render_state_t;
 +
 +#endif /* FFMPEG_VDPAU_RENDER_H */
-diff -Naur MPlayer-28048.15948-old/libavcodec/vdpauvideo.c MPlayer-28048.15948-new/libavcodec/vdpauvideo.c
---- MPlayer-28048.15948-old/libavcodec/vdpauvideo.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28048.15948-new/libavcodec/vdpauvideo.c	2008-11-28 11:28:39.000000000 -0800
+diff -Naur ffmpeg-16001.28087-old/libavcodec/vdpauvideo.c ffmpeg-16001.28087-new/libavcodec/vdpauvideo.c
+--- ffmpeg-16001.28087-old/libavcodec/vdpauvideo.c	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-16001.28087-new/libavcodec/vdpauvideo.c	2008-12-03 19:36:33.000000000 -0800
 @@ -0,0 +1,422 @@
 +/*
 + * Video Decode and Presentation API for UNIX (VDPAU) is used for
