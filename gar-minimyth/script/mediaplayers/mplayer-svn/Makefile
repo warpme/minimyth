@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 28048.15948
+GARVERSION = 28087.16001
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,7 +11,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc X11/vdpau xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib system/lirc X11/vdpau xorg/xorg
+BUILD_DEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -100,6 +101,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
+	--enable-mng \
 	--enable-jpeg \
 	--disable-liblzo \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-win32dll,--disable-win32dll) \
@@ -160,6 +162,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-caca \
 	--disable-ggi \
 	--disable-ggiwmh \
+	--disable-direct3d \
 	--disable-directx \
 	--disable-dxr2 \
 	--disable-dxr3 \
@@ -212,6 +215,8 @@ CONFIGURE_ARGS_MISC = \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
+	--nm="$(NM)" \
+	--yasm=yasm \
 	--ar="$(AR)" \
 	--ranlib="$(RANLIB)" \
 	--windres="false" \

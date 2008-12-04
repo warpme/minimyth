@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 15948.28048
+GARVERSION = 16001.28087
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -90,6 +90,10 @@ CONFIGURE_ARGS = \
 	--enable-network \
 	--disable-ipv6 \
 	--disable-mpegaudio-hp \
+	--enable-aandct \
+	--enable-fft \
+	--enable-golomb \
+	--enable-mdct \
 	--disable-gray \
 	--enable-ffmpeg \
 	--disable-ffplay \
