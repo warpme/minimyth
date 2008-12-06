@@ -14,7 +14,8 @@
 #     <audio_card_number>: The audio card number. %n should work.
 #     <audio_card_device>: The audio device number for audio playback.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", KERNEL=="card[0-9]*", SUBSYSTEM=="sound", GOTO="begin"
+ACTION!="add|change|remove", GOTO="end"
+KERNEL=="card[0-9]*", SUBSYSTEM=="sound", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 

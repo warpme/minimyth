@@ -14,7 +14,8 @@
 #               'Device_' prefix) of the 'Device' section in the
 #               '/etc/xorg.conf' file.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", SUBSYSTEM=="pci", ATTR{class}=="0x0300??", GOTO="begin"
+ACTION!="add|change|remove", GOTO="end"
+SUBSYSTEM=="pci", ATTR{class}=="0x0300??", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 

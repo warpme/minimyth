@@ -14,6 +14,8 @@ script='BEGIN
             FS="\n"
             RS=""
             mm_uid=""
+            phys=""
+            bInterfaceNumber=""
         }
         mm_uid !~ /^$/ { next }
         $1 !~ /^ *looking at / { next }
@@ -22,13 +24,44 @@ script='BEGIN
             subsystem=""
             while ( x < NF ) {
                 x++
+                if ( $x ~ /^ *SUBSYSTEMS?=="acpi"/ ) {
+                    subsystem="acpi"
+                    break
+                }
+                if ( $x ~ /^ *SUBSYSTEMS?=="input"/ ) {
+                    subsystem="input"
+                    break
+                }
                 if ( $x ~ /^ *SUBSYSTEMS?=="pci"/ ) {
                     subsystem="pci"
+                    break
+                }
+                if ( $x ~ /^ *SUBSYSTEMS?=="serio"/ ) {
+                    subsystem="serio"
                     break
                 }
                 if ( $x ~ /^ *SUBSYSTEMS?=="usb"/ ) {
                     subsystem="usb"
                     break
+                }
+            }
+            if ( subsystem == "acpi" ) {
+                while ( x < NF ) {
+                    x++
+                }
+                if ( phys ) {
+                    mm_uid="phys:" phys
+                }
+            }
+            if ( subsystem == "input" ) {
+                while ( x < NF ) {
+                    x++
+                    if ( $x ~ /^ *ATTRS?\{phys\}==/ ) {
+                        phys=$x
+                        sub(/^ *ATTRS?\{phys\}=="/, "", phys)
+                        sub(/"$/, "", phys)
+                        gsub(/\//, ":", phys)
+                    }
                 }
             }
             if ( subsystem == "pci" ) {
@@ -71,10 +104,19 @@ script='BEGIN
                     mm_uid="pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
                 }
             }
+            if ( subsystem == "serio" ) {
+                while ( x < NF ) {
+                    x++
+                }
+                if ( phys ) {
+                    mm_uid="phys:" phys
+                }
+            }
             if ( subsystem == "usb" ) {
                 idVendor=""
                 idProduct=""
                 serial=""
+                manufacturer=""
                 while ( x < NF ) {
                     x++
                     if ( $x ~ /^ *ATTRS?\{idVendor\}==/ ) {
@@ -98,9 +140,14 @@ script='BEGIN
                         sub(/^ *ATTRS?\{serial\}=="/, "", serial)
                         sub(/"$/, "", serial)
                     }
+                    if ( $x ~ /^ *ATTRS?\{bInterfaceNumber\}==/ ) {
+                        bInterfaceNumber=$x
+                        sub(/^ *ATTRS?\{bInterfaceNumber\}=="/, "", bInterfaceNumber)
+                        sub(/"$/, "", bInterfaceNumber)
+                    }
                 }
-                if ( idVendor && idProduct && serial) {
-                    mm_uid="usb:" idVendor ":" idProduct ":" serial
+                if ( idVendor && idProduct ) {
+                    mm_uid="usb:" idVendor ":" idProduct ":" serial ":" bInterfaceNumber
                 }
             }
             if ( mm_uid ) {
