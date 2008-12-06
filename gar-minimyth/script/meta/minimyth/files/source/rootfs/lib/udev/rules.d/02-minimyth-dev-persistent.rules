@@ -1,0 +1,15 @@
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+ACTION!="add|change", GOTO="end"
+KERNEL=="event[0-9]*",  SUBSYSTEM=="input", SUBSYSTEMS=="acpi|serio|usb", GOTO="begin"
+KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb",   SUBSYSTEMS=="usb",            GOTO="begin"
+KERNEL=="lcd[0-9]*",    SUBSYSTEM=="lcd",   SUBSYSTEMS=="usb",            GOTO="begin"
+KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc",  SUBSYSTEMS=="usb",            GOTO="begin"
+KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty",   SUBSYSTEMS=="usb",            GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+PROGRAM="mm_uid", RESULT=="?*", SYMLINK+="persistent/$result"
+
+LABEL="end"

@@ -23,7 +23,11 @@
 # known, it cannot be added be included in mm_detect_state_lirc. Therefore, the
 # mm_detect script will prepend the LIRC device name to the state.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", KERNEL=="lirc[0-9]*|event[0-9]*|hiddev[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lirc|input|usb|tty", SUBSYSTEMS=="usb", GOTO="begin"
+ACTION!="add|change|remove", GOTO="end"
+KERNEL=="event[0-9]*",  SUBSYSTEM=="input", SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb",   SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc",  SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty",   SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
@@ -48,9 +52,6 @@ ENV{mm_detect_state_lirc}=""
   ENV{mm_detect_id}=="usb:147a:e02d", ENV{mm_detect_state_lirc}="devinput,/etc/lirc.d/lircd.conf/optional/devinput.usb_147a_e02d"
 
 LABEL="end-nonlirc"
-
-# The state has been set, so give the device a persistent unique identifier when possible.
-ENV{mm_detect_state_lirc}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", SYMLINK+="minimyth/lirc/$result"
 
 # The state has been set, so save it.
 ENV{mm_detect_state_lirc}=="?*", RUN+="/lib/udev/mm_detect lirc %k $env{mm_detect_state_lirc} state_prepend_devname"

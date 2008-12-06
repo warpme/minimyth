@@ -16,7 +16,9 @@
 # known, it cannot be added be included in mm_detect_state_lcdproc. Therefore,
 # the mm_detect script will prepend the LCDproc device name to the state.
 #-------------------------------------------------------------------------------
-ACTION=="add|remove", KERNEL=="lcd[0-9]*|ttyUSB[0-9]*", SUBSYSTEM=="lcd|tty|usb", SUBSYSTEMS=="usb", GOTO="begin"
+ACTION!="add|change|remove", GOTO="end"
+KERNEL=="lcd[0-9]*",    SUBSYSTEM=="lcd", SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
@@ -36,9 +38,6 @@ ENV{mm_detect_state_lcdproc}=""
   ENV{mm_detect_id}=="usb:15c2:0038", ENV{mm_detect_state_lcdproc}="imonlcd"
   ENV{mm_detect_id}=="usb:15c2:ffdc", ENV{mm_detect_state_lcdproc}="imon"
   ENV{mm_detect_id}=="usb:1b3d:0153", ENV{mm_detect_state_lcdproc}="MtxOrb"
-
-# The state has been set, so give the device a persistent unique identifier when possible.
-ENV{mm_detect_state_lcdproc}=="?*", PROGRAM="/lib/udev/mm_uid", RESULT=="?*", SYMLINK+="minimyth/lcdproc/$result"
 
 # The state has been set, so save it.
 ENV{mm_detect_state_lcdproc}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state_lcdproc} state_prepend_devname"
