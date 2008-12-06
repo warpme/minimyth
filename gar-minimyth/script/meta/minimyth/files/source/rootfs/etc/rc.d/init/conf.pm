@@ -111,7 +111,7 @@ sub start
     # Enable configuration auto-detection udev rules.
     if (opendir(DIR, '/lib/udev/rules.d'))
     {
-        foreach (grep(s/^(04-minimyth-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
+        foreach (grep(s/^(05-minimyth-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
             rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
         }
