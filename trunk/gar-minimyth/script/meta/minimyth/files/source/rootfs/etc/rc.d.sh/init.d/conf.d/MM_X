@@ -186,6 +186,9 @@ conf_check_MM_X() {
 }
 
 conf_default_MM_X() {
+    local device
+    local device_item
+    local device_list
     local X_RESOLUTION_X
     local X_RESOLUTION_Y
     local X_VIRTUAL_X
@@ -197,9 +200,89 @@ conf_default_MM_X() {
         return 0
     fi
 
+    # The routine relies on MM_LIRC_* variables.
+    conf_default_MM_LIRC
+
     # The routine relies on MM_VIDEO_* variables.
     conf_default_MM_VIDEO
 
+    # X device variables
+    if /usr/bin/test -z "${MM_X_KBD_DEVICE}" ; then
+        MM_X_KBD_DEVICE='auto'
+    fi
+    if /usr/bin/test "${MM_X_KBD_DEVICE}" = 'auto' ; then
+        MM_X_KBD_DEVICE="`mm_detect_state_get 'kbd' | mm_uniq`"
+        device_list=
+        for device in ${MM_X_KBD_DEVICE} ; do
+            if /usr/bin/test -e "${device}" ; then
+                device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+            fi
+            device_list="${device_list} ${device}"
+        done
+        MM_X_KBD_DEVICE="${device_list}"
+    
+        if /usr/bin/test -n "${MM_LIRC_DEVICE_LIST}" ; then
+            device_blacklist=
+            for device_item in ${MM_LIRC_DEVICE_LIST} ; do
+                device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+                if /usr/bin/test -e "${device}" ; then
+                    device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+                fi
+                device_blacklist="${device_blacklist} ${device}"
+            done
+            device_list=
+            for device in ${MM_X_KBD_DEVICE} ; do
+                if ! /bin/echo " ${device_blacklist} " | /bin/grep -q " ${device} " ; then
+                    device_list="${device_list} ${device}"
+                fi
+            done
+            MM_X_KBD_DEVICE="${device_list}"
+        fi
+        MM_X_KBD_DEVICE=`/bin/echo "${MM_X_KBD_DEVICE}" | /bin/sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
+        MM_X_KBD_DEVICE=`/bin/echo "${MM_X_KBD_DEVICE}" | /usr/bin/cut -d ' ' -f 1`
+    fi
+    if /usr/bin/test "${MM_X_KBD_DEVICE}" = 'none' ; then
+        MM_X_KBD_DEVICE=''
+    fi
+
+    if /usr/bin/test -z "${MM_X_MOUSE_DEVICE}" ; then
+        MM_X_MOUSE_DEVICE='auto'
+    fi
+    if /usr/bin/test "${MM_X_MOUSE_DEVICE}" = 'auto' ; then
+        MM_X_MOUSE_DEVICE="`mm_detect_state_get 'mouse' | mm_uniq`"
+        device_list=
+        for device in ${MM_X_MOUSE_DEVICE} ; do
+            if /usr/bin/test -e "${device}" ; then
+                device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+            fi
+            device_list="${device_list} ${device}"
+        done
+        MM_X_MOUSE_DEVICE="${device_list}"
+    
+        if /usr/bin/test -n "${MM_LIRC_DEVICE_LIST}" ; then
+            device_blacklist=
+            for device_item in ${MM_LIRC_DEVICE_LIST} ; do
+                device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+                if /usr/bin/test -e "${device}" ; then
+                    device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+                fi
+                device_blacklist="${device_blacklist} ${device}"
+            done
+            device_list=
+            for device in ${MM_X_MOUSE_DEVICE} ; do
+                if ! /bin/echo " ${device_blacklist} " | /bin/grep -q " ${device} " ; then
+                    device_list="${device_list} ${device}"
+                fi
+            done
+            MM_X_MOUSE_DEVICE="${device_list}"
+        fi
+        MM_X_MOUSE_DEVICE=`/bin/echo "${MM_X_MOUSE_DEVICE}" | /bin/sed -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
+        MM_X_MOUSE_DEVICE=`/bin/echo "${MM_X_MOUSE_DEVICE}" | /usr/bin/cut -d ' ' -f 1`
+    fi
+    if /usr/bin/test "${MM_X_MOUSE_DEVICE}" = 'none' ; then
+        MM_X_MOUSE_DEVICE=''
+    fi
+    
     # X driver variables.
     if /usr/bin/test -z "${MM_X_DRIVER}"              ; then
         MM_X_DRIVER=`mm_detect_state_get 'x' | /usr/bin/cut -d ' ' -f 1 | /usr/bin/cut -d ',' -f 1`
@@ -748,6 +831,9 @@ conf_default_MM_X() {
 
 conf_write_MM_X() {
     local conf_file=$1
+
+    conf_variable_write "${conf_file}" MM_X_KBD_DEVICE                  "${MM_X_KBD_DEVICE}"
+    conf_variable_write "${conf_file}" MM_X_MOUSE_DEVICE                "${MM_X_MOUSE_DEVICE}"
 
     conf_variable_write "${conf_file}" MM_X_DRIVER                      "${MM_X_DRIVER}"
 

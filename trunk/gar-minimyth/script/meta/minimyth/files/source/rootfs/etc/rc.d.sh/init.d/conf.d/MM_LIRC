@@ -42,6 +42,10 @@ conf_default_MM_LIRC() {
     local device_list
     local driver
 
+    if /usr/bin/test -e '/tmp/init.conf.lirc/conf_default_MM_LIRC' ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_LIRC_DRIVER}" ; then
         MM_LIRC_DRIVER='none'
     fi
@@ -179,6 +183,9 @@ conf_default_MM_LIRC() {
         MM_LIRC_DEVICE_LIST="${device_list}"
     fi
     
+    /bin/mkdir -p '/tmp/init.conf.lirc'
+    /bin/touch    '/tmp/init.conf.lirc/conf_default_MM_LIRC'
+
     return 0
 }
 
