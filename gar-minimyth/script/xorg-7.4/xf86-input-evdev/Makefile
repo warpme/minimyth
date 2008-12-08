@@ -1,5 +1,5 @@
-GARNAME = xf86-input-keyboard
-GARVERSION = 1.3.1
+GARNAME = xf86-input-evdev
+GARVERSION = 2.0.8
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -13,7 +13,6 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/inputproto \
-	$(CATEGORY)/kbproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
@@ -29,7 +28,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-depkbd \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
@@ -42,6 +40,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/kbd_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/keyboard_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/input/evdev_drv.la
 	@$(MAKECOOKIE)

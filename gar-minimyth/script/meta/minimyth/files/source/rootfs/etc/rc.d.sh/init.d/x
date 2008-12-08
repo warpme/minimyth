@@ -16,6 +16,8 @@ start() {
     local LIB
     local LIBS
     local NVIDIA_TRUE
+    local KBD_TRUE
+    local MOUSE_TRUE
 
     mm_message_output info "configuring X ..."
 
@@ -202,7 +204,20 @@ start() {
     /usr/bin/test -n "${MM_X_MODE_0}" && MM_X_MODE_0="\"${MM_X_MODE_0}\""
     /usr/bin/test -n "${MM_X_MODE_1}" && MM_X_MODE_1="\"${MM_X_MODE_1}\""
     /usr/bin/test -n "${MM_X_MODE_2}" && MM_X_MODE_2="\"${MM_X_MODE_2}\""
+
+    KBD_TRUE='#'
+    if /usr/bin/test -n "${MM_X_KBD_DEVICE}" ; then
+        KBD_TRUE=''
+    fi
+    MOUSE_TRUE='#'
+    if /usr/bin/test -n "${MM_X_MOUSE_DEVICE}" ; then
+        MOUSE_TRUE=''
+    fi
     
+    /bin/sed -i "s%@KBD_TRUE@%${KBD_TRUE}%"                     /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_KBD_DEVICE@%${MM_X_KBD_DEVICE}%"       /etc/X11/xorg.conf
+    /bin/sed -i "s%@MOUSE_TRUE@%${MOUSE_TRUE}%"                 /etc/X11/xorg.conf
+    /bin/sed -i "s%@MM_X_MOUSE_DEVICE@%${MM_X_MOUSE_DEVICE}%"   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DRIVER@%${MM_X_DRIVER}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_INTEL@%${MM_X_DEVICE_INTEL}%"   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_NVIDIA@%${MM_X_DEVICE_NVIDIA}%" /etc/X11/xorg.conf
