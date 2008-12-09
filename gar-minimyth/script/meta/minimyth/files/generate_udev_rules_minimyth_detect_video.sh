@@ -1,16 +1,16 @@
 #!/bin/sh
 ################################################################################
-# generate_udev_rules_minimyth_detect_x.sh
+# generate_udev_rules_minimyth_detect_video.sh
 #
-# This script creates the MiniMyth udev X driver detection rules that are based
-# on the drm_pciids.txt tile.
+# This script creates the MiniMyth udev X video driver detection rules that are
+# based on the drm_pciids.txt tile.
 #
 # First, it downloads the drm_pciids.txt file from the DRM GIT repository using
 # the repository's web interface.
 # Second, it uses AWK to process the drm_pciids.txt it matching rules for the
-# 04-minimyth-detect-x.rules file.
+# 05-minimyth-detect-video.rules file.
 # Third, it outputs the matching rules to the file
-# 04-minimyth-detect-x.rules.generated in the current working directory.
+# 05-minimyth-detect-video.rules.generated in the current working directory.
 ################################################################################
 
 script='BEGIN {
@@ -23,24 +23,24 @@ script='BEGIN {
         {
             x = 1
 
-            mm_detect_state_x = $x
-            sub(/^\[/, "", mm_detect_state_x)
-            sub(/\]$/, "", mm_detect_state_x)
-            if ( mm_detect_state_x ~ /^i810$/ ) {
-                mm_detect_state_x = "intel_810"
+            mm_detect_state_video = $x
+            sub(/^\[/, "", mm_detect_state_video 
+            sub(/\]$/, "", mm_detect_state_video 
+            if ( mm_detect_state_video ~ /^i810$/ ) {
+                mm_detect_state_video = "intel_810"
             }
-            if ( mm_detect_state_x ~ /^i915$/ ) {
-                mm_detect_state_x = "intel_915"
+            if ( mm_detect_state_video ~ /^i915$/ ) {
+                mm_detect_state_video = "intel_915"
             }
-            if ( mm_detect_state_x ~ /^viadrv$/ ) {
-                mm_detect_state_x = "openchrome"
+            if ( mm_detect_state_video ~ /^viadrv$/ ) {
+                mm_detect_state_video = "openchrome"
             }
-            if ( ( mm_detect_state_x !~ /^intel_810$/  ) &&
-                 ( mm_detect_state_x !~ /^intel_915$/  ) &&
-                 ( mm_detect_state_x !~ /^openchrome$/ ) &&
-                 ( mm_detect_state_x !~ /^radeon$/     ) &&
-                 ( mm_detect_state_x !~ /^savage$/     ) &&
-                 ( mm_detect_state_x !~ /^sis$/        ) ) {
+            if ( ( mm_detect_state_video !~ /^intel_810$/  ) &&
+                 ( mm_detect_state_video !~ /^intel_915$/  ) &&
+                 ( mm_detect_state_video !~ /^openchrome$/ ) &&
+                 ( mm_detect_state_video !~ /^radeon$/     ) &&
+                 ( mm_detect_state_video !~ /^savage$/     ) &&
+                 ( mm_detect_state_video !~ /^sis$/        ) ) {
                 next
             }
 
@@ -59,16 +59,16 @@ script='BEGIN {
                 device = tolower(device)
 
                 mm_detect_id = "pci:0300:00:" vendor ":" device ":????:????"
-                print "  ENV{mm_detect_id}==" "\"" mm_detect_id "\"" ", " "ENV{mm_detect_state_x}=" "\"" mm_detect_state_x "\""
+                print "  ENV{mm_detect_id}==" "\"" mm_detect_id "\"" ", " "ENV{mm_detect_state_video =" "\"" mm_detect_state_video "\""
             }
         }'
 
-outfile_udev_rules="04-minimyth-detect-x.rules.generated"
+outfile_udev_rules="05-minimyth-detect-video.rules.generated"
 if test -e ${outfile_udev_rules} ; then
     echo "error: output file ${outfile_udev_rules} already exists."
     exit 1
 fi
-tmpfile_udev_rules="/tmp/$$.04-minimyth-detect-x.rules.generated"
+tmpfile_udev_rules="/tmp/$$.05-minimyth-detect-video.rules.generated"
 if test -e ${tmpfile_udev_rules} ; then
     echo "error: temporary file ${tmpfile_udev_rules} already exists."
     exit 1
