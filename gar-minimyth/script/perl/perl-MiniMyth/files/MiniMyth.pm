@@ -440,7 +440,7 @@ sub detect_state_get
 
     if    (defined $field)
     {
-        if (($#state >= $instance) && ($instance >= 0) && ($state[$instance]) && ($state[$instance]->{$field}))
+        if (($#state >= $instance) && ($instance >= 0) && (defined $state[$instance]) && (defined $state[$instance]->{$field}))
         {
             return $state[$instance]->{$field};
         }
@@ -451,7 +451,7 @@ sub detect_state_get
     }
     elsif (defined $instance)
     {
-        if (($#state >= $instance) && ($instance >= 0) && ($state[$instance]))
+        if (($#state >= $instance) && ($instance >= 0) && (defined $state[$instance]))
         {
             return $state[$instance];
         }
