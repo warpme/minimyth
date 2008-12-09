@@ -24,8 +24,8 @@ script='BEGIN {
             x = 1
 
             mm_detect_state_video = $x
-            sub(/^\[/, "", mm_detect_state_video 
-            sub(/\]$/, "", mm_detect_state_video 
+            sub(/^\[/, "", mm_detect_state_video)
+            sub(/\]$/, "", mm_detect_state_video)
             if ( mm_detect_state_video ~ /^i810$/ ) {
                 mm_detect_state_video = "intel_810"
             }
@@ -59,7 +59,7 @@ script='BEGIN {
                 device = tolower(device)
 
                 mm_detect_id = "pci:0300:00:" vendor ":" device ":????:????"
-                print "  ENV{mm_detect_id}==" "\"" mm_detect_id "\"" ", " "ENV{mm_detect_state_video =" "\"" mm_detect_state_video "\""
+                print "  ENV{mm_detect_id}==" "\"" mm_detect_id "\"" ", " "ENV{mm_detect_state_video}=" "\"" mm_detect_state_video "\""
             }
         }'
 
