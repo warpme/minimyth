@@ -1,7 +1,12 @@
 GARNAME = xf86-video-ati
-GARVERSION = 6.9.0
+GARVERSION_TYPE = git
+GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	c72b732a2f5597cd72bd4ebe207799ae07f2681e , \
+	6.9.0 ))
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(XORG_MASTER_SITES)
+MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-ati/ , \
+	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
@@ -42,6 +47,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
