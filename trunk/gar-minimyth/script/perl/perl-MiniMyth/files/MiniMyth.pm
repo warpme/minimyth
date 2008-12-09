@@ -409,7 +409,7 @@ sub detect_state_get
     $map{'lcdproc'} = [ 'device' , 'driver'];
     $map{'lirc'}    = [ 'device' , 'driver', 'lircd_conf' ];
     $map{'mouse'}   = [ 'device' ];
-    $map{'x'}       = [ 'driver' ];
+    $map{'video'}   = [ 'driver' ];
 
     my @state;
 

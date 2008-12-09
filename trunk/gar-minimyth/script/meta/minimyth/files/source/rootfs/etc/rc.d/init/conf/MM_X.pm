@@ -158,7 +158,7 @@ $var_list{'MM_X_DRIVER'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        return $minimyth->detect_state_get('x', 0, 'driver');
+        return $minimyth->detect_state_get('video', 0, 'driver');
     },
     value_valid   => '.+'
 };
