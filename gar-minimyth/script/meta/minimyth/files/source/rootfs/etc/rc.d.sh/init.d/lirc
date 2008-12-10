@@ -210,7 +210,13 @@ start() {
 
         # Start daemon.
         daemon=
-        instance=`/bin/echo ${device} | /bin/sed -e 's%//*%~%g' | /bin/sed -e 's%^~dev~%%'`
+        instance=${device}
+        for symlink in `/sbin/udevadm info --query=symlink --root --name="${device}"` ; do
+            if /bin/echo "${symlink}" | grep -q -e '^/dev/persistent' > /dev/null 2>&1 ; then
+                instance=${symlink}
+            fi
+        done
+        instance=`/bin/echo ${instance} | /bin/sed -e 's%//*%~%g' | /bin/sed -e 's%^~dev~%%'`
         if /usr/bin/test -n "${daemon_master}" ; then
             daemon="/usr/sbin/lircd"
             daemon="${daemon} --device=${device} --driver=${driver}"
