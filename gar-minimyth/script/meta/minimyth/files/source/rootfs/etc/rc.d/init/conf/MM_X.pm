@@ -75,10 +75,17 @@ $var_list{'MM_X_KBD_DEVICE'} =
                 }
             }
             my $blacklist_filter = join('|', @blacklist);
-            @device_list = grep(! /^($blacklist_filter),.+$/, @device_list);
+            @device_list = grep(! /^($blacklist_filter)$/, @device_list);
         }
 
-        return $device_list[0];
+        if (defined $device_list[0])
+        {
+            return $device_list[0];
+        }
+        else
+        {
+            return 'none';
+        }
     },
     value_none    => ''
 };
@@ -140,10 +147,17 @@ $var_list{'MM_X_MOUSE_DEVICE'} =
                 }
             }
             my $blacklist_filter = join('|', @blacklist);
-            @device_list = grep(! /^($blacklist_filter),.+$/, @device_list);
+            @device_list = grep(! /^($blacklist_filter)$/, @device_list);
         }
 
-        return $device_list[0];
+        if (defined $device_list[0])
+        {
+            return $device_list[0];
+        }
+        else
+        {
+            return 'none';
+        }
     },
     value_none    => ''
 };
