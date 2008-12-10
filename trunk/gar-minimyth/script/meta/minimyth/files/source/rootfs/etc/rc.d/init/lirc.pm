@@ -129,7 +129,7 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    my @device_list = split(/  +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST'));
+    my @device_list = split(/ +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST'));
 
     # There are no remote control devices, so there is no need to continue.
     if (($#device_list + 1) <= 0)
@@ -170,7 +170,7 @@ sub start
     {
         $daemon_master = '/usr/sbin/lircd';
         $daemon_master = $daemon_master . ' --driver=null';
-        $daemon_master = $daemon_master . '--output=/dev/lircd --pidfile=/var/run/lircd.pid';
+        $daemon_master = $daemon_master . ' --output=/dev/lircd --pidfile=/var/run/lircd.pid';
         for (my $index = 0 ; $index <= $#device_list ; $index++)
         {
             my $port = 8765 + $index;
@@ -312,7 +312,7 @@ sub start
         # Start daemon.
         my $daemon = '';
         my $instance = $device;
-        $instance =~ s/\/\/+/~/g;
+        $instance =~ s/\/+/~/g;
         $instance =~ s/^~dev~//;
         if ($daemon_master)
         {

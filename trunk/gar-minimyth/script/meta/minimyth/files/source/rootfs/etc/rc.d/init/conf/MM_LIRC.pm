@@ -209,7 +209,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
             my $lircd_conf = q(/etc/lircd.conf);
             if (($device) && ($driver))
             {
-                push(@device_list, "$device,$driver,");
+                push(@device_list, "$device,$driver,$lircd_conf");
             }
             if ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'yes')
             {
