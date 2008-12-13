@@ -2,13 +2,13 @@ GARNAME = xf86-video-radeonhd
 GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	f1c6cc865d8d0703478c3eedea2e706e911f9965 , \
-	1.2.3 ))
+	1.2.4 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-radeonhd/ , \
 	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-hdmi_support_including_audio.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -16,8 +16,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS = lang/c utils/pciutils \
 	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
