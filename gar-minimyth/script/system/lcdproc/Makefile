@@ -3,7 +3,7 @@ GARVERSION = 0.5.2
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-imonlcd_0.3_with_send_fix.patch $(DISTNAME)-irtrans.patch
+PATCHFILES = $(DISTNAME)-henlar-v0.2.patch $(DISTNAME)-imonlcd_0.3_with_send_fix.patch $(DISTNAME)-irtrans.patch
 LICENSE = GPL2
 
 DESCRIPTION =
