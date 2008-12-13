@@ -3,7 +3,7 @@ GARVERSION = 16006.28089
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3139462.patch $(DISTNAME)-vdpau_libavutil_3139462.patch $(DISTNAME)-vdpau_configure_3139462.patch $(DISTNAME)-xvmc_configure.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3219724.patch $(DISTNAME)-vdpau_libavutil_3219724.patch $(DISTNAME)-vdpau_configure_3219724.patch $(DISTNAME)-xvmc_configure.patch $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 

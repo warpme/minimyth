@@ -1,6 +1,6 @@
 diff -Naur MPlayer-28089.16006-old/codec-cfg.c MPlayer-28089.16006-new/codec-cfg.c
---- MPlayer-28089.16006-old/codec-cfg.c	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/codec-cfg.c	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/codec-cfg.c	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/codec-cfg.c	2008-12-13 07:41:12.000000000 -0800
 @@ -182,6 +182,16 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
@@ -19,8 +19,8 @@ diff -Naur MPlayer-28089.16006-old/codec-cfg.c MPlayer-28089.16006-new/codec-cfg
  	};
  
 diff -Naur MPlayer-28089.16006-old/configure MPlayer-28089.16006-new/configure
---- MPlayer-28089.16006-old/configure	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/configure	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/configure	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/configure	2008-12-13 07:50:40.000000000 -0800
 @@ -382,6 +382,7 @@
    --enable-xmga            enable mga_vid X11 video output [autodetect]
    --enable-xv              enable Xv video output [autodetect]
@@ -74,7 +74,7 @@ diff -Naur MPlayer-28089.16006-old/configure MPlayer-28089.16006-new/configure
 +if test "$_vdpau" = yes ; then
 +  _def_vdpau='#define HAVE_VDPAU 1'
 +  _libs_mplayer="$_libs_mplayer -lvdpau"
-+  _vosrc="$_vosrc vo_vdpau.c"
++  _vomodules="vdpau $_vomodules"
 +else
 +  _def_vdpau='#undef HAVE_VDPAU'
 +  _novomodules="vdpau $_novomodules"
@@ -94,14 +94,14 @@ diff -Naur MPlayer-28089.16006-old/configure MPlayer-28089.16006-new/configure
  IVTV = $_ivtv
  JACK = $_jack
  JOYSTICK = $_joystick
-@@ -8070,6 +8099,7 @@
- XVID4 = $_xvid
- XVIDIX = $xvidix
- XVMC = $_xvmc
+@@ -8038,6 +8067,7 @@
+ UNRAR_EXEC = $_unrar_exec
+ V4L2 = $_v4l2
+ VCD = $_vcd
 +VDPAU = $_vdpau
- YUV4MPEG = $_yuv4mpeg
- ZR = $_zr
- 
+ VESA = $_vesa
+ VIDIX = $_vidix
+ VIDIX_PCIDB = $_vidix_pcidb_val
 @@ -8498,6 +8528,7 @@
  $_def_xss
  $_def_xv
@@ -111,8 +111,8 @@ diff -Naur MPlayer-28089.16006-old/configure MPlayer-28089.16006-new/configure
  $_def_yuv4mpeg
  $_def_zr
 diff -Naur MPlayer-28089.16006-old/etc/codecs.conf MPlayer-28089.16006-new/etc/codecs.conf
---- MPlayer-28089.16006-old/etc/codecs.conf	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/etc/codecs.conf	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/etc/codecs.conf	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/etc/codecs.conf	2008-12-13 07:41:12.000000000 -0800
 @@ -258,6 +258,34 @@
    out IDCT_MPEG2
    out MOCO_MPEG2
@@ -201,8 +201,8 @@ diff -Naur MPlayer-28089.16006-old/etc/codecs.conf MPlayer-28089.16006-new/etc/c
    info "FFmpeg Sorenson Video v3 (SVQ3)"
    status working
 diff -Naur MPlayer-28089.16006-old/help/help_mp-en.h MPlayer-28089.16006-new/help/help_mp-en.h
---- MPlayer-28089.16006-old/help/help_mp-en.h	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/help/help_mp-en.h	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/help/help_mp-en.h	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/help/help_mp-en.h	2008-12-13 07:41:12.000000000 -0800
 @@ -1654,15 +1654,18 @@
  
  // libmpcodecs/vd_ffmpeg.c
@@ -223,8 +223,8 @@ diff -Naur MPlayer-28089.16006-old/help/help_mp-en.h MPlayer-28089.16006-new/hel
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
 diff -Naur MPlayer-28089.16006-old/libmpcodecs/img_format.c MPlayer-28089.16006-new/libmpcodecs/img_format.c
---- MPlayer-28089.16006-old/libmpcodecs/img_format.c	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/libmpcodecs/img_format.c	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/libmpcodecs/img_format.c	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/libmpcodecs/img_format.c	2008-12-13 07:41:12.000000000 -0800
 @@ -67,6 +67,15 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -242,8 +242,8 @@ diff -Naur MPlayer-28089.16006-old/libmpcodecs/img_format.c MPlayer-28089.16006-
      snprintf(unknown_format,20,"Unknown 0x%04x",format);
      return unknown_format;
 diff -Naur MPlayer-28089.16006-old/libmpcodecs/img_format.h MPlayer-28089.16006-new/libmpcodecs/img_format.h
---- MPlayer-28089.16006-old/libmpcodecs/img_format.h	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/libmpcodecs/img_format.h	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/libmpcodecs/img_format.h	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/libmpcodecs/img_format.h	2008-12-13 07:41:12.000000000 -0800
 @@ -107,6 +107,20 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
@@ -266,8 +266,8 @@ diff -Naur MPlayer-28089.16006-old/libmpcodecs/img_format.h MPlayer-28089.16006-
      void* data;
      int size;
 diff -Naur MPlayer-28089.16006-old/libmpcodecs/mp_image.h MPlayer-28089.16006-new/libmpcodecs/mp_image.h
---- MPlayer-28089.16006-old/libmpcodecs/mp_image.h	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/libmpcodecs/mp_image.h	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/libmpcodecs/mp_image.h	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/libmpcodecs/mp_image.h	2008-12-13 07:41:12.000000000 -0800
 @@ -113,6 +113,10 @@
  	mpi->bpp=0;
  	return;
@@ -280,8 +280,8 @@ diff -Naur MPlayer-28089.16006-old/libmpcodecs/mp_image.h MPlayer-28089.16006-ne
  	mpi->bpp=0;
  	return;
 diff -Naur MPlayer-28089.16006-old/libmpcodecs/vd_ffmpeg.c MPlayer-28089.16006-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-28089.16006-old/libmpcodecs/vd_ffmpeg.c	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/libmpcodecs/vd_ffmpeg.c	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/libmpcodecs/vd_ffmpeg.c	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/libmpcodecs/vd_ffmpeg.c	2008-12-13 07:46:41.000000000 -0800
 @@ -30,6 +30,10 @@
  #include "xvmc_render.h"
  #endif
@@ -540,8 +540,8 @@ diff -Naur MPlayer-28089.16006-old/libmpcodecs/vd_ffmpeg.c MPlayer-28089.16006-n
 +#endif
 +
 diff -Naur MPlayer-28089.16006-old/libvo/video_out.c MPlayer-28089.16006-new/libvo/video_out.c
---- MPlayer-28089.16006-old/libvo/video_out.c	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/libvo/video_out.c	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/libvo/video_out.c	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/libvo/video_out.c	2008-12-13 07:45:55.000000000 -0800
 @@ -71,6 +71,7 @@
  extern vo_functions_t video_out_x11;
  extern vo_functions_t video_out_xover;
@@ -562,8 +562,8 @@ diff -Naur MPlayer-28089.16006-old/libvo/video_out.c MPlayer-28089.16006-new/lib
  #endif
 diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libvo/vo_vdpau.c
 --- MPlayer-28089.16006-old/libvo/vo_vdpau.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28089.16006-new/libvo/vo_vdpau.c	2008-12-04 20:27:19.000000000 -0800
-@@ -0,0 +1,1188 @@
++++ MPlayer-28089.16006-new/libvo/vo_vdpau.c	2008-12-13 07:41:12.000000000 -0800
+@@ -0,0 +1,1363 @@
 +/*
 + * VDPAU Renderer for MPlayer.
 + * vo_vdpau.c - VDPAU with X11 interface.
@@ -585,6 +585,18 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 + * You should have received a copy of the GNU General Public License along
 + * with MPlayer; if not, write to the Free Software Foundation, Inc.,
 + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/** 
++ * \defgroup  VDPAU_Presentation VDPAU Presentation
++ * \ingroup Decoder
++ *
++ * Actual decoding and presentation are implemented here.
++ * All necessary frame informations are collected through
++ * "vdpau_render_state_t" structure after parsing all headers
++ * etc in ffmpeg module for different codecs.
++ *
++ * @{
 + */
 +
 +#include <stdio.h>
@@ -642,12 +654,19 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +  }
 +
 +/* Numbers of video and ouput Surfaces */
-+#define NUM_OUTPUT_SURFACES                2
++#define NUM_OUTPUT_SURFACES                3
 +#define NUM_VIDEO_SURFACES_MPEG2           3  // (1 frame being decoded, 2 reference)
 +#define NUM_VIDEO_SURFACES_H264            17 // (1 frame being decoded, up to 16 references) 
 +#define NUM_VIDEO_SURFACES_VC1             3  // (same as MPEG-2)
 +#define NUM_VIDEO_SURFACES_NON_ACCEL_YUV   1  //  surfaces for YV12 etc. 
 +#define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
++
++/* Numbers of palette entires */
++#define PALETTE_SIZE 256
++
++/*
++ * Global variables declaration - VDPAU specific.
++ */
 +
 +/* Declaration for  all varialbles of win_x11_init_vdpau_procs() and 
 + * win_x11_init_vdpau_flip_queue() function. 
@@ -689,6 +708,10 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +VdpPresentationQueueTargetCreateX11 * vdp_presentation_queue_target_create_x11;
 +VdpPresentationQueueQuerySurfaceStatus * vdp_presentation_queue_query_surface_status;
 +
++/* outputSurfaces[2] is used in composite-picture. */
++VdpOutputSurfaceRenderOutputSurface * vdp_output_surface_render_output_surface;
++VdpOutputSurfacePutBitsIndexed * vdp_output_surface_put_bits_indexed;
++
 +VdpDecoderCreate * vdp_decoder_create;
 +VdpDecoderDestroy * vdp_decoder_destroy;
 +VdpDecoderRender * vdp_decoder_render;
@@ -711,7 +734,15 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +static uint32_t num_video_surfaces;
 +extern uint32_t num_reference_surfaces;
 +
-+/* X11 specific */
++/* draw_osd */
++static unsigned char *indexData;
++static int indexData_size;
++static int osd_alloc;
++static uint32_t *palette;
++
++/*
++ * X11 specific.
++ */
 +static int visible_buf = -1;    // -1 means: no buffer was drawn yet
 +
 +static int flip_flag;
@@ -926,6 +957,21 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +        (void *)&vdp_presentation_queue_query_surface_status
 +    );
 +    CHECK_ST
++
++    // Added for draw_osd.
++    vdp_st = vdp_get_proc_address(
++        vdp_device,
++        VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE,
++        (void *)&vdp_output_surface_render_output_surface
++    );
++    CHECK_ST
++
++    vdp_st = vdp_get_proc_address(
++        vdp_device,
++        VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED,
++        (void *)&vdp_output_surface_put_bits_indexed
++    );
++    CHECK_ST
 +}
 +
 +/* Destroy vdpau procs, called from uninit() */
@@ -982,7 +1028,7 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +
 +/*
 + * connect to X server, create and map window, Initialize all
-+ * VDPAU objects, create differnt surfaces etc.
++ * VDPAU objects, create different surfaces etc.
 + */
 +static int config(uint32_t width, uint32_t height, uint32_t d_width,
 +                       uint32_t d_height, uint32_t flags, char *title,
@@ -997,6 +1043,7 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +    int i;
 +    VdpDecoderProfile vdp_decoder_profile;
 +    VdpChromaType vdp_chroma_type;
++    uint32_t max_references;
 +
 +#ifdef HAVE_XF86VM
 +    int vm = 0;
@@ -1213,12 +1260,34 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +    vid_width = width;
 +    vid_height = height;
 +
++    switch (format) {
++    case IMGFMT_VDPAU_H264_MAIN:
++    case IMGFMT_VDPAU_H264_HIGH:
++        {
++            // FIXME: Use "h->sps.ref_frame_count" here instead.
++
++            // Level 4.1 limits:
++            uint32_t round_width = (vid_width + 15) & ~15;
++            uint32_t round_height = (vid_height + 15) & ~15;
++            uint32_t surf_size = (round_width * round_height * 3) / 2;
++            max_references = (12 * 1024 * 1024) / surf_size;
++            if (max_references > 16) {
++                max_references = 16;
++            }
++        }
++        break;
++    default:
++        max_references = 2;
++        break;
++    }
++
 +    if (IMGFMT_IS_VDPAU(image_format)) {
 +        vdp_st = vdp_decoder_create(
 +            vdp_device,
 +            vdp_decoder_profile,
 +            vid_width,
 +            vid_height,
++            max_references,
 +            &decoder
 +        );
 +        CHECK_ST
@@ -1348,13 +1417,106 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +    }
 +}
 +
++static void draw_osd_I8A8(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride)
++{
++    VdpStatus vdp_st;
++    int i, j;
++    int pitch;
++    int indexData_size_required;
++    unsigned char a;
++    VdpRect outputIndexedRectVid;
++    VdpOutputSurfaceRenderBlendState blendState;
++
++    if (w == 0 || h == 0)
++        return;
++
++    indexData_size_required = 2*w*h;
++    if (indexData_size < indexData_size_required) {
++        indexData = (unsigned char *)realloc(indexData, indexData_size_required);
++        indexData_size = indexData_size_required;
++    }
++
++    // indexData creation, component order - I, A, I, A, .....
++    for (i = 0; i < h; i++) {
++        for (j = 0; j < w; j++) {
++            indexData[i*2*w + j*2] = src[i*stride+j]; // index for palette-table
++            a = srca[i*stride+j]; // alpha_data
++            indexData[i*2*w + j*2 + 1] = (a == 0) ? 255 : a;
++        }
++    }
++
++    outputIndexedRectVid.x0 = outRectVid.x0 + x0;
++    outputIndexedRectVid.y0 = outRectVid.y0 + y0;
++    outputIndexedRectVid.x1 = outputIndexedRectVid.x0 + w;
++    outputIndexedRectVid.y1 = outputIndexedRectVid.y0 + h;
++
++    pitch = w*2;
++
++    // write source_data to outputSurfaces[2]. 
++    vdp_st = vdp_output_surface_put_bits_indexed(
++        outputSurfaces[2],
++        VDP_INDEXED_FORMAT_I8A8,
++        (void **)&indexData,
++        &pitch,
++        &outputIndexedRectVid,
++        VDP_COLOR_TABLE_FORMAT_B8G8R8X8,
++        (void *)palette
++    );
++    CHECK_ST
++
++    blendState.struct_version = VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION;
++    blendState.blend_factor_source_color = VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
++    blendState.blend_factor_source_alpha = VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
++    blendState.blend_factor_destination_color = VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_SRC_ALPHA;
++    blendState.blend_factor_destination_alpha = VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_SRC_ALPHA;
++    blendState.blend_equation_color = VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD;
++    blendState.blend_equation_alpha = VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD;
++
++    // compositing outputSurfaces[2] to outputSurface i.e outputSurfaces - 0 or 1.
++    vdp_st = vdp_output_surface_render_output_surface(
++        outputSurface,
++        &outputIndexedRectVid,
++        outputSurfaces[2],
++        &outputIndexedRectVid,
++        NULL,
++        &blendState,
++        VDP_OUTPUT_SURFACE_RENDER_ROTATE_0
++    );
++    CHECK_ST
++}
++
++static void OSD_init()
++{
++    int i;
++
++    if (vid_width == 0 || vid_height == 0)
++        return;
++
++    /* create palette table */
++    palette = (uint32_t *)malloc(PALETTE_SIZE * sizeof(*palette));
++    if (palette == NULL)
++        return;
++
++    // full grayscale palette.
++    for (i = 0; i < PALETTE_SIZE; ++i) {
++        palette[i] = (i << 16) | (i << 8) | i;
++    }
++
++    indexData = NULL;
++    indexData_size = 0;
++    osd_alloc = 1;
++}
++
 +static void draw_osd(void)
 +{
 +#if TRACE_SURFACES
 +    printf("DRAW_OSD\n");
 +#endif
++    if (!osd_alloc) {
++        OSD_init();
++    }
 +
-+   // Not implemented
++    vo_draw_text(vo_dwidth, vo_dheight, draw_osd_I8A8);
 +}
 +
 +static void flip_page(void)
@@ -1662,6 +1824,7 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +    if (!vo_config_count)
 +        return;
 +    visible_buf = -1;
++    osd_alloc = 0;
 +
 +    /* Destroy all vdpau objects */
 +    DestroyVdpauObjects();    
@@ -1674,6 +1837,16 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +    if (surface_render) {
 +        free(surface_render);
 +        surface_render = NULL;
++    }
++
++    if (indexData) {
++        free(indexData);
++        indexData = NULL;
++    }
++
++    if (palette) {
++        free(palette);
++        palette = NULL;
 +    }
 +
 +#ifdef HAVE_XF86VM
@@ -1752,9 +1925,11 @@ diff -Naur MPlayer-28089.16006-old/libvo/vo_vdpau.c MPlayer-28089.16006-new/libv
 +
 +    return VO_NOTIMPL;
 +}
++
++/* @} */
 diff -Naur MPlayer-28089.16006-old/Makefile MPlayer-28089.16006-new/Makefile
---- MPlayer-28089.16006-old/Makefile	2008-12-04 20:26:26.000000000 -0800
-+++ MPlayer-28089.16006-new/Makefile	2008-12-04 20:27:19.000000000 -0800
+--- MPlayer-28089.16006-old/Makefile	2008-12-13 07:40:13.000000000 -0800
++++ MPlayer-28089.16006-new/Makefile	2008-12-13 07:48:54.000000000 -0800
 @@ -617,6 +617,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
@@ -1765,8 +1940,8 @@ diff -Naur MPlayer-28089.16006-old/Makefile MPlayer-28089.16006-new/Makefile
                                   libvo/vosub_vidix.c \
 diff -Naur MPlayer-28089.16006-old/vdpau_render.h MPlayer-28089.16006-new/vdpau_render.h
 --- MPlayer-28089.16006-old/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28089.16006-new/vdpau_render.h	2008-12-04 20:27:19.000000000 -0800
-@@ -0,0 +1,61 @@
++++ MPlayer-28089.16006-new/vdpau_render.h	2008-12-13 07:41:12.000000000 -0800
+@@ -0,0 +1,93 @@
 +/*
 + * Video Decode and Presentation API for UNIX (VDPAU) is used for
 + * HW decode acceleration for MPEG-1/2, H.264 and VC-1.
@@ -1793,6 +1968,26 @@ diff -Naur MPlayer-28089.16006-old/vdpau_render.h MPlayer-28089.16006-new/vdpau_
 +#ifndef FFMPEG_VDPAU_RENDER_H
 +#define FFMPEG_VDPAU_RENDER_H
 +
++/**
++ * \defgroup Decoder VDPAU Decoder and Renderer
++ *
++ * VDPAU HW acceleration has two modules
++ * - VDPAU Decoding
++ * - VDPAU Presentation
++ *
++ * VDPAU decoding module parses all headers using MPlayer
++ * parsing mechanism and uses VDPAU for the actual decoding.
++ *
++ * As per the current implementation, the actual decoding 
++ * and rendering (API calls) are done as part of VDPAU
++ * presentation (vo_vdpau.c) module.
++ *
++ * @{
++ * \defgroup  VDPAU_Decoding VDPAU Decoding
++ * \ingroup Decoder
++ * @{
++ */
++
 +#include "vdpau/vdpau.h"
 +#include "vdpau/vdpau_x11.h"
 +
@@ -1809,22 +2004,34 @@ diff -Naur MPlayer-28089.16006-old/vdpau_render.h MPlayer-28089.16006-new/vdpau_
 +
 +#define MP_VDPAU_RENDER_MAGIC 0x1DC8E14B
 +
++/** 
++ * \brief This structure is used as a CALL-BACK between the ffmpeg 
++ * decoder (vd_) and presentation (vo_) module.
++ * This is used for defining a video-frame containing surface,
++ * picture-parameter, bitstream informations etc which are passed 
++ * between ffmpeg decoder and its clients.
++ */
 +typedef struct {
 +    int  magic;
 +
-+    VdpVideoSurface surface; //used as rendered surface, never changed.
++    VdpVideoSurface surface; /** used as rendered surface, never changed.*/
 +
-+    int state; // Holds MP_VDPAU_STATE_* values
++    int state; /** Holds MP_VDPAU_STATE_* values */
 +
++    /** Picture Parameter information for all supported codecs */
 +    union _VdpPictureInfo {
 +        VdpPictureInfoMPEG1Or2 mpeg;
 +        VdpPictureInfoH264     h264;
 +        VdpPictureInfoVC1       vc1;
 +    } info;
 +
++    /** Describe size/location of the compressed video data */
 +    int bitstreamBuffersAlloced;
 +    int bitstreamBuffersUsed;
 +    VdpBitstreamBuffer *bitstreamBuffers;
 +} vdpau_render_state_t;
++
++/* @}*/
++/* @}*/
 +
 +#endif /* FFMPEG_VDPAU_RENDER_H */
