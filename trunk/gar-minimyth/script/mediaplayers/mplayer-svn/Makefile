@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 28089.16006
+GARVERSION = 28147.16117
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
