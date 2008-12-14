@@ -27,7 +27,7 @@ sub daemonize
     open(STDIN, '<', $devnull) or die;
     open(STDOUT,'>', $devnull) or die;
     defined(my $pid = fork())  or die;
-    die if $pid;
+    exit(0) if $pid;
     POSIX::setsid()            or die;
     open(STDERR,'>', $devnull) or die;
 }
