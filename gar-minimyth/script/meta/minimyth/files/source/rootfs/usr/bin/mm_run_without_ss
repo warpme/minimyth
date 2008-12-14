@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use threads;
+use threads::shared;
+
+my @command = @ARGV;
+
+sub suspend
+{
+    require MiniMyth;
+
+    my $minimyth = new MiniMyth;
+
+    my $timeout = $minimyth->var_get('MM_X_SCREENSAVER_TIMEOUT');
+    if ((! defined($timeout)) || ($timeout <= 0))
+    {
+        $timeout = 1;
+    }
+    $timeout *= 30;
+
+    while (1 == 1)
+    {
+        $minimyth->x_screensaver_deactivate();
+        sleep $timeout;
+    }
+}
+
+my $suspend_thread = undef;
+
+$suspend_thread = threads->create('suspend') || die;
+$suspend_thread->detach();
+
+system(@command);
+
+1;
