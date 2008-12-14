@@ -246,11 +246,8 @@ if (! -r $game_file)
         die join("\n", '', "error: console name $game_console has no valid emulator.",  '', @{usage()}) . "\n";
     }
 
-    # Suspend screen saver while the emulator is running.
-    system(qq(/usr/bin/mm_ss_suspend $program));
-
-    # Run the emulator.
-    system(join(' ', $emulator->{'program'}, @{$emulator->{'argument'}}, qq('$game_file')));
+    # Run the emulator with the screen saver deactivated.
+    system(join(' ', '/usr/bin/mm_run_without_ss', $emulator->{'program'}, @{$emulator->{'argument'}}, qq('$game_file')));
 
     # Save game settings.
     if ($minimyth->var_get('MM_GAME_SAVE_ENABLED') eq 'yes')
