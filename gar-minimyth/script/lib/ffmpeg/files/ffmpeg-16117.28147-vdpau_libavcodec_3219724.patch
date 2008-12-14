@@ -1,6 +1,6 @@
-diff -Naur MPlayer-28089.16006-old/libavcodec/allcodecs.c MPlayer-28089.16006-new/libavcodec/allcodecs.c
---- MPlayer-28089.16006-old/libavcodec/allcodecs.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/allcodecs.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/allcodecs.c ffmpeg-16117.28147-new/libavcodec/allcodecs.c
+--- ffmpeg-16117.28147-old/libavcodec/allcodecs.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/allcodecs.c	2008-12-13 17:11:14.000000000 -0800
 @@ -98,6 +98,7 @@
      REGISTER_DECODER (H263I, h263i);
      REGISTER_ENCODER (H263P, h263p);
@@ -33,9 +33,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/allcodecs.c MPlayer-28089.16006-ne
      REGISTER_DECODER (WNV1, wnv1);
      REGISTER_DECODER (XAN_WC3, xan_wc3);
      REGISTER_DECODER (XL, xl);
-diff -Naur MPlayer-28089.16006-old/libavcodec/avcodec.h MPlayer-28089.16006-new/libavcodec/avcodec.h
---- MPlayer-28089.16006-old/libavcodec/avcodec.h	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/avcodec.h	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/avcodec.h ffmpeg-16117.28147-new/libavcodec/avcodec.h
+--- ffmpeg-16117.28147-old/libavcodec/avcodec.h	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/avcodec.h	2008-12-13 17:11:14.000000000 -0800
 @@ -190,6 +190,10 @@
      CODEC_ID_MOTIONPIXELS,
      CODEC_ID_TGV,
@@ -72,9 +72,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/avcodec.h MPlayer-28089.16006-new/
  } AVCodecContext;
  
  /**
-diff -Naur MPlayer-28089.16006-old/libavcodec/h263dec.c MPlayer-28089.16006-new/libavcodec/h263dec.c
---- MPlayer-28089.16006-old/libavcodec/h263dec.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/h263dec.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/h263dec.c ffmpeg-16117.28147-new/libavcodec/h263dec.c
+--- ffmpeg-16117.28147-old/libavcodec/h263dec.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/h263dec.c	2008-12-13 17:11:14.000000000 -0800
 @@ -92,6 +92,8 @@
          break;
      case CODEC_ID_VC1:
@@ -84,9 +84,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h263dec.c MPlayer-28089.16006-new/
          s->h263_msmpeg4 = 1;
          s->h263_pred = 1;
          s->msmpeg4_version=6;
-diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/libavcodec/h264.c
---- MPlayer-28089.16006-old/libavcodec/h264.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/h264.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/h264.c ffmpeg-16117.28147-new/libavcodec/h264.c
+--- ffmpeg-16117.28147-old/libavcodec/h264.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/h264.c	2008-12-13 17:11:14.000000000 -0800
 @@ -72,6 +72,9 @@
  static VLC_TYPE run7_vlc_table[96][2];
  static const int run7_vlc_table_size = 96;
@@ -151,7 +151,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
  static int frame_start(H264Context *h){
      MpegEncContext * const s = &h->s;
      int i;
-@@ -7103,6 +7137,9 @@
+@@ -7112,6 +7146,9 @@
                 ((const char*[]){"Gray","420","422","444"})[sps->chroma_format_idc]
                 );
      }
@@ -161,7 +161,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
      av_free(h->sps_buffers[sps_id]);
      h->sps_buffers[sps_id]= sps;
      return 0;
-@@ -7247,7 +7284,9 @@
+@@ -7256,7 +7293,9 @@
      H264Context *hx;
      int i;
  
@@ -172,7 +172,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
          decode_slice(avctx, &h);
      } else {
          for(i = 1; i < context_count; i++) {
-@@ -7374,8 +7413,24 @@
+@@ -7383,8 +7422,24 @@
                 && (avctx->skip_frame < AVDISCARD_NONREF || hx->nal_ref_idc)
                 && (avctx->skip_frame < AVDISCARD_BIDIR  || hx->slice_type_nos!=FF_B_TYPE)
                 && (avctx->skip_frame < AVDISCARD_NONKEY || hx->slice_type_nos==FF_I_TYPE)
@@ -199,7 +199,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
              break;
          case NAL_DPA:
              init_get_bits(&hx->s.gb, ptr, bit_length);
-@@ -7578,6 +7633,10 @@
+@@ -7587,6 +7642,10 @@
          h->prev_frame_num_offset= h->frame_num_offset;
          h->prev_frame_num= h->frame_num;
  
@@ -210,7 +210,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
          /*
           * FIXME: Error handling code does not seem to support interlaced
           * when slices span multiple rows
-@@ -7590,8 +7649,9 @@
+@@ -7599,8 +7658,9 @@
           * past end by one (callers fault) and resync_mb_y != 0
           * causes problems for the first MB line, too.
           */
@@ -222,7 +222,7 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
  
          MPV_frame_end(s);
  
-@@ -7963,4 +8023,34 @@
+@@ -7972,4 +8032,34 @@
      .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
  };
  
@@ -257,9 +257,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.c MPlayer-28089.16006-new/lib
 +#endif
 +
  #include "svq3.c"
-diff -Naur MPlayer-28089.16006-old/libavcodec/h264.h MPlayer-28089.16006-new/libavcodec/h264.h
---- MPlayer-28089.16006-old/libavcodec/h264.h	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/h264.h	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/h264.h ffmpeg-16117.28147-new/libavcodec/h264.h
+--- ffmpeg-16117.28147-old/libavcodec/h264.h	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/h264.h	2008-12-13 17:11:14.000000000 -0800
 @@ -63,7 +63,7 @@
   * The maximum number of slices supported by the decoder.
   * must be a power of 2
@@ -269,9 +269,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264.h MPlayer-28089.16006-new/lib
  
  #ifdef ALLOW_INTERLACE
  #define MB_MBAFF h->mb_mbaff
-diff -Naur MPlayer-28089.16006-old/libavcodec/h264_parser.c MPlayer-28089.16006-new/libavcodec/h264_parser.c
---- MPlayer-28089.16006-old/libavcodec/h264_parser.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/h264_parser.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/h264_parser.c ffmpeg-16117.28147-new/libavcodec/h264_parser.c
+--- ffmpeg-16117.28147-old/libavcodec/h264_parser.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/h264_parser.c	2008-12-13 17:11:14.000000000 -0800
 @@ -149,7 +149,8 @@
  
  
@@ -282,10 +282,10 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/h264_parser.c MPlayer-28089.16006-
      sizeof(H264Context),
      NULL,
      h264_parse,
-diff -Naur MPlayer-28089.16006-old/libavcodec/imgconvert.c MPlayer-28089.16006-new/libavcodec/imgconvert.c
---- MPlayer-28089.16006-old/libavcodec/imgconvert.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/imgconvert.c	2008-12-13 07:39:17.000000000 -0800
-@@ -266,6 +266,33 @@
+diff -Naur ffmpeg-16117.28147-old/libavcodec/imgconvert.c ffmpeg-16117.28147-new/libavcodec/imgconvert.c
+--- ffmpeg-16117.28147-old/libavcodec/imgconvert.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/imgconvert.c	2008-12-13 17:11:14.000000000 -0800
+@@ -267,6 +267,33 @@
      [PIX_FMT_XVMC_MPEG2_IDCT] = {
          .name = "xvmcidct",
      },
@@ -319,9 +319,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/imgconvert.c MPlayer-28089.16006-n
      [PIX_FMT_UYYVYY411] = {
          .name = "uyyvyy411",
          .nb_channels = 1,
-diff -Naur MPlayer-28089.16006-old/libavcodec/Makefile MPlayer-28089.16006-new/libavcodec/Makefile
---- MPlayer-28089.16006-old/libavcodec/Makefile	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/Makefile	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/Makefile ffmpeg-16117.28147-new/libavcodec/Makefile
+--- ffmpeg-16117.28147-old/libavcodec/Makefile	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/Makefile	2008-12-13 17:11:14.000000000 -0800
 @@ -390,6 +390,7 @@
  OBJS-$(HAVE_W32THREADS)                += w32thread.o
  
@@ -330,9 +330,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/Makefile MPlayer-28089.16006-new/l
  
  # processor-specific code
  MMX-OBJS-$(CONFIG_CAVS_DECODER)        += i386/cavsdsp_mmx.o
-diff -Naur MPlayer-28089.16006-old/libavcodec/mpeg12.c MPlayer-28089.16006-new/libavcodec/mpeg12.c
---- MPlayer-28089.16006-old/libavcodec/mpeg12.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/mpeg12.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/mpeg12.c ffmpeg-16117.28147-new/libavcodec/mpeg12.c
+--- ffmpeg-16117.28147-old/libavcodec/mpeg12.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/mpeg12.c	2008-12-13 17:11:14.000000000 -0800
 @@ -68,10 +68,22 @@
  void XVMC_pack_pblocks(MpegEncContext *s,int cbp);
  void XVMC_init_block(MpegEncContext *s);//set s->block
@@ -524,9 +524,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/mpeg12.c MPlayer-28089.16006-new/l
 +};
 +#endif
 +
-diff -Naur MPlayer-28089.16006-old/libavcodec/mpegvideo.c MPlayer-28089.16006-new/libavcodec/mpegvideo.c
---- MPlayer-28089.16006-old/libavcodec/mpegvideo.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/mpegvideo.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/mpegvideo.c ffmpeg-16117.28147-new/libavcodec/mpegvideo.c
+--- ffmpeg-16117.28147-old/libavcodec/mpegvideo.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/mpegvideo.c	2008-12-13 17:11:14.000000000 -0800
 @@ -58,6 +58,7 @@
  void XVMC_field_end(MpegEncContext *s);
  void XVMC_decode_mb(MpegEncContext *s);
@@ -549,9 +549,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/mpegvideo.c MPlayer-28089.16006-ne
      }
      emms_c();
  
-diff -Naur MPlayer-28089.16006-old/libavcodec/mpegvideo_parser.c MPlayer-28089.16006-new/libavcodec/mpegvideo_parser.c
---- MPlayer-28089.16006-old/libavcodec/mpegvideo_parser.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/mpegvideo_parser.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/mpegvideo_parser.c ffmpeg-16117.28147-new/libavcodec/mpegvideo_parser.c
+--- ffmpeg-16117.28147-old/libavcodec/mpegvideo_parser.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/mpegvideo_parser.c	2008-12-13 17:11:14.000000000 -0800
 @@ -174,7 +174,9 @@
  }
  
@@ -563,9 +563,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/mpegvideo_parser.c MPlayer-28089.1
      sizeof(ParseContext1),
      NULL,
      mpegvideo_parse,
-diff -Naur MPlayer-28089.16006-old/libavcodec/utils.c MPlayer-28089.16006-new/libavcodec/utils.c
---- MPlayer-28089.16006-old/libavcodec/utils.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/utils.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/utils.c ffmpeg-16117.28147-new/libavcodec/utils.c
+--- ffmpeg-16117.28147-old/libavcodec/utils.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/utils.c	2008-12-13 17:11:14.000000000 -0800
 @@ -644,6 +644,7 @@
  {"context", "context model", OFFSET(context_model), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
  {"slice_flags", NULL, OFFSET(slice_flags), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
@@ -574,9 +574,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/utils.c MPlayer-28089.16006-new/li
  {"mbd", "macroblock decision algorithm (high quality mode)", OFFSET(mb_decision), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E, "mbd"},
  {"simple", "use mbcmp (default)", 0, FF_OPT_TYPE_CONST, FF_MB_DECISION_SIMPLE, INT_MIN, INT_MAX, V|E, "mbd"},
  {"bits", "use fewest bits", 0, FF_OPT_TYPE_CONST, FF_MB_DECISION_BITS, INT_MIN, INT_MAX, V|E, "mbd"},
-diff -Naur MPlayer-28089.16006-old/libavcodec/vc1.c MPlayer-28089.16006-new/libavcodec/vc1.c
---- MPlayer-28089.16006-old/libavcodec/vc1.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/vc1.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/vc1.c ffmpeg-16117.28147-new/libavcodec/vc1.c
+--- ffmpeg-16117.28147-old/libavcodec/vc1.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/vc1.c	2008-12-13 17:11:14.000000000 -0800
 @@ -41,8 +41,22 @@
  #define MB_INTRA_VLC_BITS 9
  #define DC_VLC_BITS 9
@@ -834,9 +834,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/vc1.c MPlayer-28089.16006-new/liba
 +    .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1 VDPAU"),
 +};
 +#endif
-diff -Naur MPlayer-28089.16006-old/libavcodec/vc1.h MPlayer-28089.16006-new/libavcodec/vc1.h
---- MPlayer-28089.16006-old/libavcodec/vc1.h	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/vc1.h	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/vc1.h ffmpeg-16117.28147-new/libavcodec/vc1.h
+--- ffmpeg-16117.28147-old/libavcodec/vc1.h	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/vc1.h	2008-12-13 17:11:14.000000000 -0800
 @@ -180,6 +180,7 @@
      int interlace;        ///< Progressive/interlaced (RPTFTM syntax element)
      int tfcntrflag;       ///< TFCNTR present
@@ -845,9 +845,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/vc1.h MPlayer-28089.16006-new/liba
      int extended_dmv;     ///< Additional extended dmv range at P/B frame-level
      int color_prim;       ///< 8bits, chroma coordinates of the color primaries
      int transfer_char;    ///< 8bits, Opto-electronic transfer characteristics
-diff -Naur MPlayer-28089.16006-old/libavcodec/vc1_parser.c MPlayer-28089.16006-new/libavcodec/vc1_parser.c
---- MPlayer-28089.16006-old/libavcodec/vc1_parser.c	2008-12-04 20:24:38.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/vc1_parser.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/vc1_parser.c ffmpeg-16117.28147-new/libavcodec/vc1_parser.c
+--- ffmpeg-16117.28147-old/libavcodec/vc1_parser.c	2008-12-13 17:07:24.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/vc1_parser.c	2008-12-13 17:11:14.000000000 -0800
 @@ -109,7 +109,8 @@
  }
  
@@ -858,9 +858,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/vc1_parser.c MPlayer-28089.16006-n
      sizeof(ParseContext1),
      NULL,
      vc1_parse,
-diff -Naur MPlayer-28089.16006-old/libavcodec/vdpau_render.h MPlayer-28089.16006-new/libavcodec/vdpau_render.h
---- MPlayer-28089.16006-old/libavcodec/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/vdpau_render.h	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/vdpau_render.h ffmpeg-16117.28147-new/libavcodec/vdpau_render.h
+--- ffmpeg-16117.28147-old/libavcodec/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/vdpau_render.h	2008-12-13 17:11:14.000000000 -0800
 @@ -0,0 +1,93 @@
 +/*
 + * Video Decode and Presentation API for UNIX (VDPAU) is used for
@@ -955,9 +955,9 @@ diff -Naur MPlayer-28089.16006-old/libavcodec/vdpau_render.h MPlayer-28089.16006
 +/* @}*/
 +
 +#endif /* FFMPEG_VDPAU_RENDER_H */
-diff -Naur MPlayer-28089.16006-old/libavcodec/vdpauvideo.c MPlayer-28089.16006-new/libavcodec/vdpauvideo.c
---- MPlayer-28089.16006-old/libavcodec/vdpauvideo.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28089.16006-new/libavcodec/vdpauvideo.c	2008-12-13 07:39:17.000000000 -0800
+diff -Naur ffmpeg-16117.28147-old/libavcodec/vdpauvideo.c ffmpeg-16117.28147-new/libavcodec/vdpauvideo.c
+--- ffmpeg-16117.28147-old/libavcodec/vdpauvideo.c	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-16117.28147-new/libavcodec/vdpauvideo.c	2008-12-13 17:11:14.000000000 -0800
 @@ -0,0 +1,431 @@
 +/*
 + * Video Decode and Presentation API for UNIX (VDPAU) is used for

@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 16006.28089
+GARVERSION = 16117.28147
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -65,7 +65,12 @@ CONFIGURE_ARGS = \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
 	--target-os="linux" \
+	--nm="$(NM)" \
 	--cc="$(CC)" \
+	--host-cc="$(build_CC)" \
+	--host-cflags="$(build_CFLAGS)" \
+	--host-ldflags="$(build_LDFLAGS)" \
+	--host-libs="" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--extra-libs="" \
