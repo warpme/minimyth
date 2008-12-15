@@ -1,4 +1,21 @@
 #!/usr/bin/perl
+################################################################################
+# mm_run_without_ss
+#
+# usage:
+#     mm_run_without_ss {program} [{program} ...]
+#   where:
+#     {program}:     the program to run.
+#     {program-arg}: an argument of the program {program}.
+# description:\n);
+#     Run {program} with the arguments [{program-arg} ...] while keeping
+#     the X screensaver disabled until the program {program} exits.
+# implementation:
+#     First, the script starts a thread that periodically disables the
+#     X screensaver. Next, the script starts {program} with the arguments
+#     [{program-arg} ...]. After {program} exits, the script exits,
+#     resulting in the X screensaver disabling tread exiting.
+################################################################################
 
 use strict;
 use warnings;
@@ -7,6 +24,23 @@ use threads;
 use threads::shared;
 
 my @command = @ARGV;
+
+sub usage
+{
+    my $name = $0;
+    $name =~ s/^.*\///;
+
+    print qq(\n);
+    print qq(usage:\n);
+    print qq(    $name {program} [{program-arg} ...]\n);
+    print qq(  where:\n);
+    print qq(    {program}:     the program to run.\n);
+    print qq(    {program-arg}: an argument of the program {program}.\n);
+    print qq(description:\n);
+    print qq(    Run {program} with the arguments [{program-arg} ...] while keeping\n);
+    print qq(    the X screensaver disabled until the program {program} exits.\n);
+    print qq(\n);
+}
 
 sub suspend
 {
@@ -26,6 +60,12 @@ sub suspend
         $minimyth->x_screensaver_deactivate();
         sleep $timeout;
     }
+}
+
+if (! @command)
+{
+    usage();
+    exit(1);
 }
 
 my $suspend_thread = undef;

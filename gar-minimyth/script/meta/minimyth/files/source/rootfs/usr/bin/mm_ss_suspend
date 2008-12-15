@@ -13,6 +13,24 @@ my $minimyth = new MiniMyth;
 
 my $devnull = File::Spec->devnull;
 
+sub usage
+{
+    my $name = $0;
+    $name =~ s/^.*\///;
+
+    print qq(\n);
+    print qq(usage:\n);
+    print qq(    $name {program}\n);
+    print qq(  where\n);
+    print qq(    {program}: the program to monitor.\n);
+    print qq(description:\n);
+    print qq(    Keep the X screensaver disabled until {program} exits.\n);
+    print qq(warning:\n);
+    print qq(    Use of mm_ss_suspend is deprecated.\n);
+    print qq(    Use mm_run_without_ss instead.\n);
+    print qq(\n);
+}
+
 sub daemonize
 {
     chdir('/')                 or die;
@@ -23,6 +41,15 @@ sub daemonize
     POSIX::setsid()            or die;
     open(STDERR,'>', $devnull) or die;
 }
+
+if (! $program)
+{
+    usage();
+    exit(1);
+}
+
+$minimyth->message_log(q(warn), q(mm_ss_suspend: use of mm_ss_suspend is deprecated.));
+$minimyth->message_log(q(warn), q(mm_ss_suspend: use mm_run_without_ss instead.));
 
 daemonize();
 
