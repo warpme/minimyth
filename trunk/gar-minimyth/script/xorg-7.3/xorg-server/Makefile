@@ -76,7 +76,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-aiglx \
 	--disable-glx-tls \
 	--disable-composite \
-	--enable-shm \
+	--enable-mitshm \
 	--disable-xres \
 	--disable-xtrap \
 	--enable-record \
@@ -107,7 +107,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dpms \
 	--disable-config-dbus \
 	--disable-config-hal \
-	--enable-xinput \
 	--enable-xfree86-utils \
 	--enable-xorg \
 	--disable-dmx \
@@ -146,6 +145,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-mesa-source="$(DESTDIR)$(sourcedir)/Mesa" \
 	--with-dri-driver-path="$(libdir)/xorg/modules/dri"
 
+CONFIGURE_ENV = \
+	xXORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
+
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
@@ -153,8 +155,7 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@rm -f $(WORKSRC)/config.cache
-	@echo "ac_cv_sys_linker_h=no"                                                                 >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(prefix)/share/sgml/X11/defs.ent | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
+	@echo "ac_cv_sys_linker_h=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:

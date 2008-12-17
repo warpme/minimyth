@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 16117.28147
+GARVERSION = 16182.28158
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3219724.patch $(DISTNAME)-vdpau_libavutil_3219724.patch $(DISTNAME)-vdpau_configure_3219724.patch $(DISTNAME)-xvmc_configure.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3219724.patch $(DISTNAME)-vdpau_libavutil_3219724.patch $(DISTNAME)-vdpau_configure_3219724.patch $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -42,6 +42,8 @@ CONFIGURE_ARGS = \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
+	--enable-xvmc \
+	--enable-vdpau \
 	--disable-mlib \
 	--disable-avisynth \
 	--enable-bzlib \
@@ -90,8 +92,6 @@ CONFIGURE_ARGS = \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
-	--enable-xvmc \
-	--enable-vdpau \
 	--enable-network \
 	--disable-ipv6 \
 	--disable-mpegaudio-hp \
