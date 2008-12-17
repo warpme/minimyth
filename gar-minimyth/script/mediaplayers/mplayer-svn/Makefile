@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 28147.16117
+GARVERSION = 28158.16182
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -146,7 +146,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-musepack \
 	--disable-libamr_nb \
 	--disable-libamr_wb
-# Video output: enable xv (requires x11 and vm) and xvmc
+# Video output: enable xv (requires x11 and vm), xvmc and vdpau.
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix \
 	--disable-vidix-pcidb \
