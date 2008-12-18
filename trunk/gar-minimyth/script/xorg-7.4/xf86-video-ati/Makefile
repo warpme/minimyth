@@ -1,7 +1,7 @@
 GARNAME = xf86-video-ati
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	c72b732a2f5597cd72bd4ebe207799ae07f2681e , \
+	2346fd7cbd90dcdce2b361d374a53da064fa6a12 , \
 	6.9.0 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
