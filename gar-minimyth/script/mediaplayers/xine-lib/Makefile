@@ -3,7 +3,7 @@ GARVERSION = 1.1.15
 CATEGORIES = mediaplayers
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ffmpeg_api_change.patch $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-vdpau_svn_94.patch $(DISTNAME)-ffmpeg_api_change.patch $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -87,6 +87,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xxmc-lib=XvMCW \
 	--with-xvmc-path="$(DESTDIR)$(libdir)" \
 	--with-xvmc-lib=XvMCW \
+	--with-vdpau \
 	--without-xcb \
 	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
 	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
