@@ -65,6 +65,7 @@ DEPENDS = \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \
+	X11/vdpinfo \
 	net/wakelan \
 	net/webfs \
 	X11/x11vnc \
