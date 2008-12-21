@@ -1882,7 +1882,24 @@ sub codecs_fetch_and_save
 
     my $devnull = File::Spec->devnull;
 
-    my $file        = 'codecs.sfs';
+    my $file        = undef;
+    my $codecs_base = undef;
+    if    (-e q(/lib/ld-linux.so.2))
+    {
+        $file        = q(codecs.32.sfs);
+        $codecs_base = q(essential-20071007);
+    }
+    elsif (-e q(/lib/ld-linux-x86-64.so.2))
+    {
+        $file        = q(codecs.64.sfs);
+        $codecs_base = qq(essential-amd64-20071007);
+    }
+    else
+    {
+        $self->message_log('error', qq(failed to create binary codecs file because could not determine required file format.));
+        return 0;
+    }
+
     my $remote_file = $file;
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
@@ -1893,14 +1910,14 @@ sub codecs_fetch_and_save
         return 0;
     }
 
-    my $codecs_base = qq(essential-20061022);
     my $codecs_file = qq($codecs_base.tar.bz2);
     my $codecs_url  = qq(http://www.mplayerhq.hu/MPlayer/releases/codecs/$codecs_file);
     File::Path::rmtree(qq($local_dir/$codecs_base));
     unlink(qq($local_dir/$codecs_file));
+    $self->message_log('info', qq(downloading binary codecs file '$codecs_url'.));
     if (! $self->url_get($codecs_url, qq($local_dir/$codecs_file)))
     {
-        $self->message_log('error', qq(failed to create the codecs file because no codecs were downloaded.));
+        $self->message_log('error', qq(failed to create binary codecs file because no codecs were downloaded.));
         File::Path::rmtree(qq($local_dir/$codecs_base));
         unlink(qq($local_dir/$codecs_file));
         return 0;
@@ -1922,7 +1939,7 @@ sub codecs_fetch_and_save
         }
         if (! $file_found)
         {
-            $self->message_log('error', qq(failed to create the codecs file because downloaded codecs file was empty.));
+            $self->message_log('error', qq(failed to create binary codecs file because downloaded codecs file was empty.));
             File::Path::rmtree(qq($local_dir/$codecs_base));
             return 0;
         }
@@ -1950,16 +1967,17 @@ sub codecs_fetch_and_save
     {
         File::Path::rmtree(qq($local_dir/$codecs_base));
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to create the codecs file because squashfs failed.));
+        $self->message_log('error', qq(failed to create binary codecs file because squashfs failed.));
         return 0;
     }
 
     if (! $self->confrw_put($remote_file, $local_file))
     {
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save the codecs file.));
+        $self->message_log('error', qq(failed to save binary codecs file.));
         return 0;
     }
+    $self->message_log('info', qq(saved binary codecs file 'confrw:$remote_file'.));
 
     unlink(qq($local_file));
 
@@ -1972,7 +1990,24 @@ sub flash_fetch_and_save
 
     my $devnull = File::Spec->devnull;
 
-    my $file        = 'libflashplayer.so';
+    my $file       = undef;
+    my $flash_base = undef;
+    if    (-e q(/lib/ld-linux.so.2))
+    {
+        $file       = q(libflashplayer.32.so);
+        $flash_base = q(install_flash_player_10_linux);
+    }
+    elsif (-e q(/lib/ld-linux-x86-64.so.2))
+    {
+        $self->message_log('error', qq(failed to create Adobe Flash player file because 64-bit file format not supported.));
+        return 0;
+    }
+    else
+    {
+        $self->message_log('error', qq(failed to create Adobe Flash player file because could not determine required file format.));
+        return 0;
+    }
+
     my $remote_file = $file;
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
@@ -1983,11 +2018,11 @@ sub flash_fetch_and_save
         return 0;
     }
 
-    my $flash_base = qq(install_flash_player_10_linux);
     my $flash_file = qq($flash_base.tar.gz);
     my $flash_url  = qq(http://fpdownload.macromedia.com/get/flashplayer/current/$flash_file);
     File::Path::rmtree(qq($local_dir/$flash_base));
     unlink(qq($local_dir/$flash_file));
+    $self->message_log('info', qq(downloading Adobe Flash Player file '$flash_url'.));
     if (! $self->url_get($flash_url, qq($local_dir/$flash_file)))
     {
         $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
@@ -1998,20 +2033,20 @@ sub flash_fetch_and_save
     system(qq(/bin/tar -C $local_dir -zxf $local_dir/$flash_file));
     unlink(qq($local_dir/$flash_file));
 
-    if (! -e qq($local_dir/$flash_base/$file))
+    if (! -e qq($local_dir/$flash_base/libflashplayer.so))
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
-        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
+        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
     unlink(qq($local_file));
-    File::Copy::copy(qq($local_dir/$flash_base/$file), qq($local_file));
+    File::Copy::copy(qq($local_dir/$flash_base/libflashplayer.so), qq($local_file));
     if (! -e qq($local_file))
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
+        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
@@ -2023,6 +2058,7 @@ sub flash_fetch_and_save
         $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
+    $self->message_log('info', qq(saved Adobe Flash Player file 'confrw:$remote_file'.));
 
     unlink(qq($local_file));
 

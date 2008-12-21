@@ -24,7 +24,7 @@ $var_list{'MM_FLASH_URL'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my $value_default = 'none';
+        my $value_auto = 'none';
 
         if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') >  0) ||
              ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') > 21) )
@@ -33,12 +33,12 @@ $var_list{'MM_FLASH_URL'} =
             {
                 if (-e '/lib/ld-linux.so.2')
                 {
-                    $value_default = 'confrw:libflashplayer.so';
+                    $value_auto = 'confrw:libflashplayer.32.so';
                 }
             }
         }
 
-        return $value_default;
+        return $value_auto;
     },
     value_none     => ''
 };
