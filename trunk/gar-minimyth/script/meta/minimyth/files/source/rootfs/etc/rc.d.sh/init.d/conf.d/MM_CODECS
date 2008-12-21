@@ -22,7 +22,12 @@ conf_default_MM_CODECS() {
     fi
 
     if /usr/bin/test "${MM_CODECS_URL}" = "auto" ; then
-        MM_CODECS_URL='confrw:codecs.sfs'
+        MM_CODECS_URL='none'
+        if   /usr/bin/test -e '/lib/ld-linux.so.2' ; then
+            MM_CODECS_URL='confrw:codecs.32.sfs'
+        elif /usr/bin/test -e '/lib/ld-linux-x86-64.so.2' ; then
+            MM_CODECS_URL='confrw:codecs.64.sfs'
+        fi
     fi
 
     # Convert 'none' to empty.
