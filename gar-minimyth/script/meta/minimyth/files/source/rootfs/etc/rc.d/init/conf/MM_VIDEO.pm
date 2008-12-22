@@ -29,8 +29,8 @@ $var_list{'MM_VIDEO_DEINTERLACER'} =
         my $name     = shift;
         
         my $value_valid = '';
-        if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
-             ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
+        if    ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+                ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
         {
             $value_valid =       'auto' .
                            '|' . 'none' .
@@ -38,6 +38,28 @@ $var_list{'MM_VIDEO_DEINTERLACER'} =
                            '|' . 'kerneldeint' .
                            '|' . 'linearblend' .
                            '|' . 'onefield';
+        }
+        elsif ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+                ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 21) )
+        {
+            $value_valid =       'auto' .
+                           '|' . 'none' .
+                           '|' . 'bobdeint' .
+                           '|' . 'greedyhdeint' .
+                           '|' . 'greedyhdoubleprocessdeint' .
+                           '|' . 'kerneldeint' .
+                           '|' . 'linearblend' .
+                           '|' . 'onefield' .
+                           '|' . 'openglbobdeint' .
+                           '|' . 'opengldoubleratefieldorder' .
+                           '|' . 'opengldoubleratekerneldeint' .
+                           '|' . 'opengldoubleratelinearblend' .
+                           '|' . 'opengldoublerateonefield' .
+                           '|' . 'openglkerneldeint' .
+                           '|' . 'opengllinearblend' .
+                           '|' . 'openglonefield' .
+                           '|' . 'yadifdeint' .
+                           '|' . 'yadifdoubleprocessdeint';
         }
         else
         {
@@ -57,6 +79,12 @@ $var_list{'MM_VIDEO_DEINTERLACER'} =
                            '|' . 'openglkerneldeint' .
                            '|' . 'opengllinearblend' .
                            '|' . 'openglonefield' .
+                           '|' . 'vdpauadvanced' .
+                           '|' . 'vdpauadvanceddoublerate' .
+                           '|' . 'vdpaubasic' .
+                           '|' . 'vdpaubasicdoublerate' .
+                           '|' . 'vdpaubobdeint' .
+                           '|' . 'vdpauonefield' .
                            '|' . 'yadifdeint' .
                            '|' . 'yadifdoubleprocessdeint';
         }
@@ -84,6 +112,7 @@ $var_list{'MM_VIDEO_MPEG2_DECODER'} =
     value_valid    =>       'auto' .
                       '|' . 'ffmpeg' .
                       '|' . 'libmpeg2' .
+                      '|' . 'vdpau' .
                       '|' . 'xvmc' .
                       '|' . 'xvmc-vld',
     value_none     => ''

@@ -108,6 +108,12 @@ start() {
                     pref_osdrenderer='softblend'
                     pref_osdfade='0'
                     ;;
+                vdpau)
+                    pref_decoder='vdpau'
+                    pref_videorenderer='vdpau'
+                    pref_osdrenderer='vdpau'
+                    pref_osdfade='0'
+                    ;;
                 xvmc)
                     pref_decoder='xvmc'
                     pref_videorenderer='xvmc-blit'
@@ -199,27 +205,43 @@ start() {
     case "${MM_VIDEO_MPEG2_DECODER}" in
         ffmpeg)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"    /home/minimyth/.xine/config
+            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
             ;;
         libmpeg2)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"   /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"    /home/minimyth/.xine/config
+            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
+            ;;
+        vdpau)
+            /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
+            /bin/sed -i "s%@VIDEO_DRIVER@%vdpau%" /home/minimyth/.xine/config
+            /bin/sed -i "s%@VDPAU_TRUE@%%"        /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VDPAU_FALSE@%\#%"     /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
             ;;
         xvmc)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%" /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"  /home/minimyth/.xine/config
+            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"         /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"      /home/minimyth/.mplayer/config
             ;;
         xvmc-vld)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-vld && /bin/ln -s mplayer-vld /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%" /home/minimyth/.xine/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"        /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"     /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"  /home/minimyth/.xine/config
+            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_TRUE@%%"         /home/minimyth/.mplayer/config
+            /bin/sed -i "s%@XVMC_FALSE@%\#%"      /home/minimyth/.mplayer/config
             ;;
         *)
             mm_message_output err "error: something is very wrong in the 'video' init script."
@@ -233,7 +255,7 @@ start() {
             /bin/sed -i "s%@DEINTERLACE_PLUGIN@%none%"                      /home/minimyth/.xine/config
             /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
             ;;
-        bobdeint|openglbobdeint)
+        bobdeint|openglbobdeint|vdpaubobdeint)
             /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
             /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=ScalerBob%"   /home/minimyth/.xine/config
             /bin/sed -i "s%@BOBDEINT@%:bobdeint%"                           /home/minimyth/.mplayer/config

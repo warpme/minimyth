@@ -118,6 +118,13 @@ sub start
                     $pref{'pref_osdrenderer'}   = 'softblend';
                     $pref{'pref_osdfade'}       = '0';
                 }
+                when (/^vdpau$/)
+                {
+                    $pref{'pref_decoder'}       = 'vdpau';
+                    $pref{'pref_videorenderer'} = 'vdpau';
+                    $pref{'pref_osdrenderer'}   = 'vdpau';
+                    $pref{'pref_osdfade'}       = '0';
+                }
                 when (/^xvmc$/)
                 {
                     $pref{'pref_decoder'}       = 'xvmc';
@@ -180,6 +187,8 @@ sub start
 
     my $mplayer;
     my $video_driver;
+    my $vdpau_true;
+    my $vdpau_false;
     my $xvmc_true;
     my $xvmc_false;
     given ($mpeg2_decoder)
@@ -188,6 +197,8 @@ sub start
         {
             $mplayer      = 'mplayer-svn';
             $video_driver = 'xv';
+            $vdpau_true   = '#';
+            $vdpau_false  = '';
             $xvmc_true    = '#';
             $xvmc_false   = '';
         }
@@ -195,6 +206,17 @@ sub start
         {
             $mplayer      = 'mplayer-svn';
             $video_driver = 'xv';
+            $vdpau_true   = '#';
+            $vdpau_false  = '';
+            $xvmc_true    = '#';
+            $xvmc_false   = '';
+        }
+        when (/^vdpau$/)
+        {
+            $mplayer      = 'mplayer-svn';
+            $video_driver = 'vdpau';
+            $vdpau_true   = '';
+            $vdpau_false  = '#';
             $xvmc_true    = '#';
             $xvmc_false   = '';
         }
@@ -202,6 +224,8 @@ sub start
         {
             $mplayer      = 'mplayer-svn';
             $video_driver = 'xvmc';
+            $vdpau_true   = '#';
+            $vdpau_false  = '';
             $xvmc_true    = '';
             $xvmc_false   = '#';
         }
@@ -209,6 +233,8 @@ sub start
         {
             $mplayer      = 'mplayer-vld';
             $video_driver = 'xxmc';
+            $vdpau_true   = '#';
+            $vdpau_false  = '';
             $xvmc_true    = '';
             $xvmc_false   = '#';
         }
@@ -230,7 +256,7 @@ sub start
             $deinterlace_plugin     = 'none';
             $bobdeint               = '';
         }
-        when (/^bobdeint|openglbobdeint$/)
+        when (/^bobdeint|openglbobdeint|vdpaubobdeint$/)
         {
             $deinterlace_by_default = '1';
             $deinterlace_plugin     = 'ScalerBob';
