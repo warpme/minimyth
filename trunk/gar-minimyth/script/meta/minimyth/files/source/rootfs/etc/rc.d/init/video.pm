@@ -17,60 +17,60 @@ sub start
 
     $minimyth->message_output('info', "configuring video ...");
 
-    my $deinterlacer  = $minimyth->var_get('MM_VIDEO_DEINTERLACER');
-    my $mpeg2_decoder = $minimyth->var_get('MM_VIDEO_MPEG2_DECODER');
-    my $xvmc_lib      = '';
+    my $deinterlacer = $minimyth->var_get('MM_VIDEO_DEINTERLACER');
+    my $decoder      = $minimyth->var_get('MM_VIDEO_DECODER');
+    my $xvmc_lib     = '';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
         when (/^intel_810$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'xvmc');
+            ($decoder      eq 'auto') && ($decoder      = 'xvmc');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libI810XvMC.so.1') && ($xvmc_lib = '/usr/lib/libI810XvMC.so.1');
         }
         when (/^intel_915$/)
         {
-            ($deinterlacer eq 'auto' ) && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto' ) && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libIntelXvMC.so.1') && ($xvmc_lib = '/usr/lib/libIntelXvMC.so.1');
         }
         when (/^nvidia$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/nvidia/libXvMCNVIDIA_dynamic.so.1') && ($xvmc_lib = '/usr/lib/nvidia/libXvMCNVIDIA_dynamic.so.1');
             (-e '/usr/lib/nvidia/libXvMCNVIDIA.so.1')         && ($xvmc_lib = '/usr/lib/nvidia/libXvMCNVIDIA.so.1');
         }
         when (/^openchrome$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'xvmc-vld');
+            ($decoder      eq 'auto') && ($decoder      = 'xvmc-vld');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libchromeXvMC.so.1') && ($xvmc_lib = '/usr/lib/libchromeXvMC.so.1');
         }
         when (/^radeon$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
         when (/^radeonhd$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
         when (/^savage$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
         when (/^sis$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
         when (/^vmware$/)
         {
-            ($deinterlacer  eq 'auto') && ($deinterlacer  = 'bobdeint');
-            ($mpeg2_decoder eq 'auto') && ($mpeg2_decoder = 'ffmpeg');
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
     }
     $minimyth->file_replace_variable(
@@ -80,8 +80,8 @@ sub start
     if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
          ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
     {
-         $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', $minimyth->var_get('MM_VIDEO_MPEG2_DECODER'));
-         $minimyth->mythdb_settings_set('DeinterlaceFilter',     $minimyth->var_get('MM_VIDEO_DEINTERLACER') );
+         $minimyth->mythdb_settings_set('DeinterlaceFilter',     $deinterlacer);
+         $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', $decoder);
     }
     else
     {
@@ -102,7 +102,7 @@ sub start
             }
             $pref{'pref_cmp0'} = '> 0 0';
             $pref{'pref_cmp1'} = '';
-            given ($mpeg2_decoder)
+            given ($decoder)
             {
                 when (/^ffmpeg$/)
                 {
@@ -191,7 +191,7 @@ sub start
     my $vdpau_false;
     my $xvmc_true;
     my $xvmc_false;
-    given ($mpeg2_decoder)
+    given ($decoder)
     {
         when (/^ffmpeg$/)
         {
