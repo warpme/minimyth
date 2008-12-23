@@ -3,7 +3,7 @@ GARVERSION = 28176.16263
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3219724.patch $(DISTNAME)-vdpau_libavutil_3219724.patch $(DISTNAME)-vdpau_mplayer_3219724.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3263604.patch $(DISTNAME)-vdpau_libavutil_3263604.patch $(DISTNAME)-vdpau_mplayer_3263604.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
