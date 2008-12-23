@@ -521,9 +521,9 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
           </ul>
           <ul>
             <li><a href="#MM_VIDEO_ASPECT_RATIO">MM_VIDEO_ASPECT_RATIO</a></li>
+            <li><a href="#MM_VIDEO_DECODER">MM_VIDEO_DECODER</a></li>
             <li><a href="#MM_VIDEO_DEINTERLACER">MM_VIDEO_DEINTERLACER</a></li>
             <li><a href="#MM_VIDEO_FONT_SCALE">MM_VIDEO_FONT_SCALE</a></li>
-            <li><a href="#MM_VIDEO_MPEG2_DECODER">MM_VIDEO_MPEG2_DECODER</a></li>
             <li><a href="#MM_VIDEO_PLAYBACK_PROFILE">MM_VIDEO_PLAYBACK_PROFILE</a></li>
             <li><a href="#MM_VIDEO_RESIZE_ENABLED">MM_VIDEO_RESIZE_ENABLED</a></li>
           </ul>
@@ -540,6 +540,31 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 Set video aspect ratio. Valid values are '4:3', '16:9' and '16:10', with '4:3' the default.
               </p>
             </dd>
+            <dt id="MM_VIDEO_DECODER"><strong>MM_VIDEO_DECODER</strong></dt>
+            <dd>
+              <p>
+                Set the decoder to use.
+                Valid values are 'auto', 'ffmpeg', 'libmpeg2', 'vdpau', 'xvmc' and 'xvmc-vld', with 'auto' the default.
+              </p>
+              <p>
+                If the value is 'auto',
+                then MiniMyth will pick the 'best' decoder based on the other MiniMyth configuration settings.
+              </p>
+              <p>
+                While all decoders are supported by MythTV's internal video player,
+                they may not be supported by the external video players (MPlayer, VLC and Xine).
+                If the selected decoder is not supported by a particular particular external video player,
+                then MiniMyth picks a reasonable substitute.
+              </p>
+              <p>
+                Support for the 'vdpau' decoder is experimental.
+                As a result, it is likely to contain bugs.
+                VDPAU decoder support is included in MythTV trunk, MPlayer SVN and Xine.
+                It will not work unless you use the latest NVIDIA 180.x series beta driver
+                (which is not included in the stable MiniMyth build) and
+                have VDPAU capable video hardware.
+              </p>
+            </dd>
             <dt id="MM_VIDEO_DEINTERLACER"><strong>MM_VIDEO_DEINTERLACER</strong></dt>
             <dd>
               <p>
@@ -547,7 +572,8 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 Valid values are 'auto', 'none', 'bobdeint', 'greedyhdeint', 'greedyhdoubleprocessdeint', 'kerneldeint',
                 'linearblend', 'onefield', 'openglbobdeint', 'opengldoubleratefieldorder', 'opengldoubleratekerneldeint',
                 'opengldoubleratelinearblend', 'opengldoublerateonefield', 'openglkerneldeint', 'opengllinearblend',
-                'openglonefield', 'yadifdeint' and 'yadifdoubleprocessdeint', with 'none' the default.
+                'openglonefield', 'vdpauadvanced', 'vdpauadvanceddoublerate', 'vdpaubasic', 'vdpaubasicdoublerate',
+                'vdpaubobdeint', 'vdpauonefield', 'yadifdeint' and 'yadifdoubleprocessdeint', with 'none' the default.
               </p>
               <p>
                 If the value is 'none', then video deinterlacing will be disabled.
@@ -562,6 +588,15 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 If the selected video deinterlacer is not supported by a particular particular external video player,
                 then MiniMyth picks a reasonable substitute.
               </p>
+              <p>
+                Support for the 'vdpau*' deinterlacers is expermimental.
+                As a result, it is likely to contain bugs
+                VDPAU deinterlacer support is included in MythTV trunk.
+                It will not work unless you use the latest NVIDIA 180.x series beta driver
+                (which is not included in the stable MiniMyth build),
+                have VDPAU capable video hardware and
+                have configured MiniMyth to use the VDPAU decoder.
+              </p>
             </dd>
             <dt id="MM_VIDEO_FONT_SCALE"><strong>MM_VIDEO_FONT_SCALE</strong></dt>
             <dd>
@@ -575,23 +610,6 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 By default, MiniMyth configures X so that the vertical dots per inch is 100.
                 Decreasing or increasing 'MM_VIDEO_FONT_SCALE' will decrease or increase the dots per inch,
                 resulting in smaller or larger MythTV fonts.
-              </p>
-            </dd>
-            <dt id="MM_VIDEO_MPEG2_DECODER"><strong>MM_VIDEO_MPEG2_DECODER</strong></dt>
-            <dd>
-              <p>
-                Set the MPEG2 decoder to use.
-                Valid values are 'auto', 'ffmpeg', 'libmpeg2', 'xvmc' and 'xvmc-vld', with 'auto' the default.
-              </p>
-              <p>
-                If the value is 'auto',
-                then MiniMyth will pick the 'best' MPEG2 decoder based on the other MiniMyth configuration settings.
-              </p>
-              <p>
-                While all MPEG2 decoders are supported by MythTV's internal video player,
-                they may not be supported by the external video players (MPlayer, VLC and Xine).
-                If the selected MPEG2 decoder is not supported by a particular particular external video player,
-                then MiniMyth picks a reasonable substitute.
               </p>
             </dd>
             <dt id="MM_VIDEO_PLAYBACK_PROFILE"><strong>MM_VIDEO_PLAYBACK_PROFILE</strong></dt>
@@ -2886,7 +2904,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2008-12-19
+          Last Updated on 2008-12-23
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>

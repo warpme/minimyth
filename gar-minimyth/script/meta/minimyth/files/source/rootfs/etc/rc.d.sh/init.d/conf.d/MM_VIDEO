@@ -14,12 +14,15 @@ conf_check_MM_VIDEO() {
        /usr/bin/test !    "${MM_VIDEO_ASPECT_RATIO}" = "16:10" ; then
         mm_message_output err "error: MM_VIDEO_ASPECT_RATIO='${MM_VIDEO_ASPECT_RATIO}' is not valid."
     fi
-            $value_valid =       'auto' .
-                           '|' . 'none' .
-                           '|' . 'bobdeint' .
-                           '|' . 'kerneldeint' .
-                           '|' . 'linearblend' .
-                           '|' . 'onefield';
+    if /usr/bin/test ! -z "${MM_VIDEO_DECODER}"              && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "auto"     && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "ffmpeg"   && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "libmpeg2" && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "vdpau"    && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "xvmc"     && \
+       /usr/bin/test !    "${MM_VIDEO_DECODER}" = "xvmc-vld" ; then
+        mm_message_output err "error: MM_VIDEO_DECODER='${MM_VIDEO_DECODER}' is not valid."
+    fi
     if /usr/bin/test ! -z "${MM_VIDEO_DEINTERLACER}"                                 && \
        /usr/bin/test !    "${MM_VIDEO_DEINTERLACER}" = "auto"                        && \
        /usr/bin/test !    "${MM_VIDEO_DEINTERLACER}" = "none"                        && \
@@ -52,15 +55,6 @@ conf_check_MM_VIDEO() {
          /usr/bin/test !    "${MM_VIDEO_FONT_SCALE}" -le 400    ) ; then
         mm_message_output err "error: MM_VIDEO_FONT_SCALE='${MM_VIDEO_FONT_SCALE}' is not valid."
     fi
-    if /usr/bin/test ! -z "${MM_VIDEO_MPEG2_DECODER}"              && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "auto"     && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "ffmpeg"   && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "libmpeg2" && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "vdpau"    && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "xvmc"     && \
-       /usr/bin/test !    "${MM_VIDEO_MPEG2_DECODER}" = "xvmc-vld" ; then
-        mm_message_output err "error: MM_VIDEO_MPEG2_DECODER='${MM_VIDEO_MPEG2_DECODER}' is not valid."
-    fi
     if /usr/bin/test ! -z "${MM_VIDEO_RESIZE_ENABLED}"          && \
        /usr/bin/test !    "${MM_VIDEO_RESIZE_ENABLED}" = "yes"  && \
        /usr/bin/test !    "${MM_VIDEO_RESIZE_ENABLED}" = "no"   ; then
@@ -78,14 +72,14 @@ conf_default_MM_VIDEO() {
     if /usr/bin/test -z "${MM_VIDEO_ASPECT_RATIO}"     ; then
         MM_VIDEO_ASPECT_RATIO='4:3'
     fi
+    if /usr/bin/test -z "${MM_VIDEO_DECODER}"          ; then
+        MM_VIDEO_DECODER='auto'
+    fi
     if /usr/bin/test -z "${MM_VIDEO_DEINTERLACER}"     ; then
         MM_VIDEO_DEINTERLACER='none'
     fi
     if /usr/bin/test -z "${MM_VIDEO_FONT_SCALE}"       ; then
         MM_VIDEO_FONT_SCALE='100'
-    fi
-    if /usr/bin/test -z "${MM_VIDEO_MPEG2_DECODER}"    ; then
-        MM_VIDEO_MPEG2_DECODER='auto'
     fi
     if /usr/bin/test -z "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
         MM_VIDEO_PLAYBACK_PROFILE='MiniMyth'
@@ -108,9 +102,9 @@ conf_write_MM_VIDEO() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_VIDEO_ASPECT_RATIO     "${MM_VIDEO_ASPECT_RATIO}"
+    conf_variable_write "${conf_file}" MM_VIDEO_DECODER          "${MM_VIDEO_DECODER}"
     conf_variable_write "${conf_file}" MM_VIDEO_DEINTERLACER     "${MM_VIDEO_DEINTERLACER}"
     conf_variable_write "${conf_file}" MM_VIDEO_FONT_SCALE       "${MM_VIDEO_FONT_SCALE}"
-    conf_variable_write "${conf_file}" MM_VIDEO_MPEG2_DECODER    "${MM_VIDEO_MPEG2_DECODER}"
     conf_variable_write "${conf_file}" MM_VIDEO_PLAYBACK_PROFILE "${MM_VIDEO_PLAYBACK_PROFILE}"
     conf_variable_write "${conf_file}" MM_VIDEO_RESIZE_ENABLED   "${MM_VIDEO_RESIZE_ENABLED}"
 

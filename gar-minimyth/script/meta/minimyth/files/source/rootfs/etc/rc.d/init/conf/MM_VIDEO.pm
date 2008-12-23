@@ -19,6 +19,17 @@ $var_list{'MM_VIDEO_ASPECT_RATIO'} =
     value_default  => '4:3',
     value_valid    => '4:3|16:9|16:10'
 };
+$var_list{'MM_VIDEO_DECODER'} =
+{
+    value_default  => 'auto',
+    value_valid    =>       'auto' .
+                      '|' . 'ffmpeg' .
+                      '|' . 'libmpeg2' .
+                      '|' . 'vdpau' .
+                      '|' . 'xvmc' .
+                      '|' . 'xvmc-vld',
+    value_none     => ''
+};
 $var_list{'MM_VIDEO_DEINTERLACER'} =
 {
     prerequisite   => ['MM_VERSION_MYTH_BINARY_MAJOR', 'MM_VERSION_MYTH_BINARY_MINOR'],
@@ -105,17 +116,6 @@ $var_list{'MM_VIDEO_FONT_SCALE'} =
         return ''       if ($value > 400);
         return '[0-9]+';
     }
-};
-$var_list{'MM_VIDEO_MPEG2_DECODER'} =
-{
-    value_default  => 'auto',
-    value_valid    =>       'auto' .
-                      '|' . 'ffmpeg' .
-                      '|' . 'libmpeg2' .
-                      '|' . 'vdpau' .
-                      '|' . 'xvmc' .
-                      '|' . 'xvmc-vld',
-    value_none     => ''
 };
 $var_list{'MM_VIDEO_PLAYBACK_PROFILE'} =
 {
