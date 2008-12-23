@@ -1,7 +1,7 @@
 GARNAME = ffmpeg
 GARVERSION = 16263.28176
 CATEGORIES = lib
-MASTER_SITES = svn://svn.mplayerhq.hu/
+MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3219724.patch $(DISTNAME)-vdpau_libavutil_3219724.patch $(DISTNAME)-vdpau_configure_3219724.patch $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
