@@ -1,0 +1,202 @@
+#!/usr/bin/perl
+################################################################################
+# mm_external_on_ss
+#
+# When started, this script will run as a deamon.
+#
+# When running, this script will run the external power off commands (as defined
+# by MM_EXTERNAL_POWER_OFF) 30 minutes after the XScreenSaver is activated and
+# and run the external power on commands (as defined by MM_EXTERNAL_POWER_ON)
+# when the XScreenSaver  is deactivated.
+#
+# It does this by using xscreensaver-command to watch for the blank (which
+# corresponds to activate) and unblank (which corresponds to deactivate)
+# XScreenSaver state changes. If it detects a blank, then it sets an alarm for
+# 30 minutes that will queue the external power off commands. If it detects an
+# unblank, then is cancels any pending alarm and queues the external power on
+# commands. The queue is processed in order by a separate thread.
+################################################################################
+
+use strict;
+use warnings;
+
+require File::Spec;
+require MiniMyth;
+require POSIX;
+use threads;
+use threads::shared;
+
+my $minimyth = new MiniMyth;
+
+my $devnull = File::Spec->devnull;
+
+$SIG{'HUP'}  = \&clean_up;
+$SIG{'INT'}  = \&clean_up;
+$SIG{'QUIT'} = \&clean_up;
+$SIG{'TERM'} = \&clean_up;
+
+sub power_off
+{
+    system(qq(/usr/bin/mm_external power_off));
+}
+
+sub power_on
+{
+    system(qq(/usr/bin/mm_external power_on));
+}
+
+my @job_queue :shared = ();
+
+my $job_handler_thread = undef;
+
+sub job_handler
+{
+    while (1 == 1)
+    {
+        my $job = undef;
+        {
+            lock(@job_queue);
+            while ($#job_queue < 0)
+            {
+                cond_wait(@job_queue);
+            }
+            $job = shift(@job_queue);
+        }
+        if (defined($job))
+        {
+            eval($job);
+            $job = undef;
+        }
+    }
+}
+
+sub daemonize
+{
+    chdir('/')                 or die;
+    open(STDIN, '<', $devnull) or die;
+    open(STDOUT,'>', $devnull) or die;
+    defined(my $pid = fork())  or die;
+    exit(0) if $pid;
+    POSIX::setsid()            or die;
+    open(STDERR,'>', $devnull) or die;
+}
+
+sub clean_up
+{
+    my $sig = shift;
+
+    # Use the ps command to list information needed about each process.
+    my $ps_command = undef;
+    if (open($ps_command, '-|', '/bin/ps axh -o ppid,pid,args'))
+    {
+        # Create two hashes: one containing each PID's parent PID and one containing each PID's arguments.
+        # We will use these hashes to locate the process(es) spawned by this script that we need to kill.
+        my %ppid_hash = ();
+        my %args_hash = ();
+        while (<$ps_command>)
+        {
+            chomp;
+            if (/^ *(\d+) +(\d+) +(.+) *$/)
+            {
+                $ppid_hash{$2} = $1;
+                $args_hash{$2} = $3;
+            }
+        }
+        close($ps_command);
+        $ps_command = undef;
+
+        # Find the xscreensaver watch command that was spawned by this script and kill it.
+        # This will enable the script to terminate more cleanly.
+        foreach my $pid (keys %args_hash)
+        {
+            if ($args_hash{$pid} eq '/usr/bin/xscreensaver-command -watch')
+            {
+                my $ppid = $pid;
+                while ((exists($ppid_hash{$ppid})) && ($ppid != 0) && ($ppid != $$))
+                {
+                    $ppid = $ppid_hash{$ppid};
+                }
+                if ($ppid eq $$)
+                {
+                    system(qq(/bin/kill $pid));
+                }
+            }
+        }
+    }
+}
+
+daemonize();
+
+# Make sure we are root.
+{
+    my $user = '';
+    if (open(FILE, '-|', '/usr/bin/id -u'))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $user = getpwuid($_);
+            last;
+        }
+        close(FILE);
+    }
+    if ($user ne 'root')
+    {
+        die;
+    }
+}
+
+$job_handler_thread = threads->create('job_handler') || die;
+$job_handler_thread->detach();
+
+# Sleep in order to give xscreensaver time to start. What a hack.
+sleep 10;
+
+if ($minimyth->application_running('xscreensaver'))
+{
+    # Deactivate the xscreensaver in case it has already activated.
+    # Otherwise, we would miss the transition to blank and never sleep.
+    $minimyth->x_screensaver_deactivate();
+
+    # Use the xscreensaver watch command to watch for when xscreensaver goes blank.
+    # When the xscreensaver goes blank, go to sleep unless MythMusic or MythStream are running.
+    my $watch_command = undef;
+    if (open($watch_command, '-|', qq(/usr/bin/xscreensaver-command -watch 2> $devnull)))
+    {
+        local $SIG{'ALRM'} = sub
+        {
+            lock(@job_queue);
+            push(@job_queue, 'power_off');
+            cond_signal(@job_queue);
+        };
+        while (<$watch_command>)
+        {
+            my $state = '';
+            if (/^([^ ]+) +.*$/)
+            {
+                $state = $1;
+            }
+            if ($state eq 'BLANK')
+            {
+                # Do not sleep when in MythMusic or MythStream.
+                my $mythfrontend_location = join("\n", @{$minimyth->mythfrontend_networkcontrol('query location')});
+                if (($mythfrontend_location ne 'playmusic' ) &&
+                    ($mythfrontend_location ne 'mythstream'))
+                {
+                    alarm 30 * 60;
+                }
+            }
+            if ($state eq 'UNBLANK')
+            {
+                alarm 0;
+                lock(@job_queue);
+                push(@job_queue, 'power_on');
+                cond_signal(@job_queue);
+            }
+        }
+        close($watch_command);
+        $watch_command = undef;
+    }
+}
+
+1;
