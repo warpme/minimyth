@@ -114,14 +114,14 @@ mm_KERNEL_CONFIG          ?=
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '71.86.06' (legacy), '96.43.07' (legacy), '169.12', '173.14.12', '177.82'
-# and '180.11' (beta).
+# and '180.18' (beta).
 mm_NVIDIA_VERSION         ?= 169.12
 # The version of xorg to use.
 # Valid values are '7.3' and '7.4'.
 mm_XORG_VERSION           ?= 7.3
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 19387
+mm_MYTH_TRUNK_VERSION     ?= 19435
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image

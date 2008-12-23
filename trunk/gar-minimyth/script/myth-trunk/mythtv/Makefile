@@ -16,8 +16,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
 	$(DISTNAME_SHORT)-programid.patch \
-	$(DISTNAME_SHORT)-alphapulse.patch \
-	$(DISTNAME_SHORT)-startplayer_maxwait.patch
+	$(DISTNAME_SHORT)-alphapulse.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
