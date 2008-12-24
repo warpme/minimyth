@@ -84,7 +84,11 @@ start() {
 
     if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 && \
          /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -eq 20    ) ; then
-         mm_mythdb_settings_set 'PreferredMPEG2Decoder' "${MM_VIDEO_DECODER}"
+         if /usr/bin/test "${MM_VIDEO_DECODER}" = "vdpau" ; then
+             mm_mythdb_settings_set 'PreferredMPEG2Decoder' "ffmpeg"
+         else
+             mm_mythdb_settings_set 'PreferredMPEG2Decoder' "${MM_VIDEO_DECODER}"
+         fi
          mm_mythdb_settings_set 'DeinterlaceFilter'     "${MM_VIDEO_DEINTERLACER}"
     else
         if /usr/bin/test -n "${MM_VIDEO_PLAYBACK_PROFILE}" ; then
@@ -109,9 +113,16 @@ start() {
                     pref_osdfade='0'
                     ;;
                 vdpau)
-                    pref_decoder='vdpau'
-                    pref_videorenderer='vdpau'
-                    pref_osdrenderer='vdpau'
+                    if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 && \
+                         /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -eq 21    ) ; then
+                        pref_decoder='ffmpeg'
+                        pref_videorenderer='xv-blit'
+                        pref_osdrenderer='softblend'
+                    else
+                        pref_decoder='vdpau'
+                        pref_videorenderer='vdpau'
+                        pref_osdrenderer='vdpau'
+                    fi
                     pref_osdfade='0'
                     ;;
                 xvmc)

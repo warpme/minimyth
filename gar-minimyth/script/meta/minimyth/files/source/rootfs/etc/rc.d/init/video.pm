@@ -31,7 +31,7 @@ sub start
         when (/^intel_915$/)
         {
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
-            ($deinterlacer eq 'auto' ) && ($deinterlacer = 'bobdeint');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libIntelXvMC.so.1') && ($xvmc_lib = '/usr/lib/libIntelXvMC.so.1');
         }
         when (/^nvidia$/)
@@ -81,7 +81,14 @@ sub start
          ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
     {
          $minimyth->mythdb_settings_set('DeinterlaceFilter',     $deinterlacer);
-         $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', $decoder);
+         if ($decoder eq 'vdpau')
+         {
+             $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', 'ffmpeg');
+         }
+         else
+         {
+             $minimyth->mythdb_settings_set('PreferredMPEG2Decoder', $decoder);
+         }
     }
     else
     {
@@ -120,9 +127,19 @@ sub start
                 }
                 when (/^vdpau$/)
                 {
-                    $pref{'pref_decoder'}       = 'vdpau';
-                    $pref{'pref_videorenderer'} = 'vdpau';
-                    $pref{'pref_osdrenderer'}   = 'vdpau';
+                    if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+                         ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 21) )
+                    {
+                        $pref{'pref_decoder'}       = 'ffmpeg';
+                        $pref{'pref_videorenderer'} = 'xv-blit';
+                        $pref{'pref_osdrenderer'}   = 'softblend';
+                    }
+                    else
+                    {
+                        $pref{'pref_decoder'}       = 'vdpau';
+                        $pref{'pref_videorenderer'} = 'vdpau';
+                        $pref{'pref_osdrenderer'}   = 'vdpau';
+                    }
                     $pref{'pref_osdfade'}       = '0';
                 }
                 when (/^xvmc$/)
