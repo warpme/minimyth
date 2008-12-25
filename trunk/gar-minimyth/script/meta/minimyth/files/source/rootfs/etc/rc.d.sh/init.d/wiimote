@@ -42,9 +42,14 @@ start() {
         fi
 
         # Start
-        if ! /sbin/modprobe uinput > /dev/null 2>&1 ; then
-            mm_message_output err "error: failed to load kernel module: uinput"
-            exit 1
+        if /usr/bin/test ! -e '/dev/uninput' ; then
+            if ! /sbin/modprobe uinput > /dev/null 2>&1 ; then
+                mm_message_output err "error: failed to load kernel module: uinput"
+                exit 1
+            fi
+            while /usr/bin/test ! -e '/dev/uninput' ; do
+                sleep 1
+            done
         fi
 
         if /usr/bin/test -z "${MM_WIIMOTE_ADDRESS_0}" &&
