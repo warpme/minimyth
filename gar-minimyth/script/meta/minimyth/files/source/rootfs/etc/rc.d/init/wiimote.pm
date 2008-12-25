@@ -61,11 +61,18 @@ sub start
             return 1;
         }
 
-        # Start
-        if (system(qq(/sbin/modprobe uinput > $devnull 2>&1)) != 0)
+        # Load uinput driver as needed.
+        if (! -e q(/dev/uinput))
         {
-            $minimyth->message_output('err', "error: failed to load kernel module: uinput");
-            return 0;
+            if (system(qq(/sbin/modprobe uinput > $devnull 2>&1)) != 0)
+            {
+                $minimyth->message_output('err', "error: failed to load kernel module: uinput");
+                return 0;
+            }
+            while (! -e q(/dev/uinput))
+            {
+                sleep 1;
+            }
         }
 
         my $address_0 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_0');
