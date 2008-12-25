@@ -3,7 +3,7 @@ GARVERSION = 4
 CATEGORIES = net
 MASTER_SITES = ftp://ftp.porcupine.org/pub/security/
 DISTFILES = $(GARNAME)_$(GARVERSION).tar.gz
-PATCHFILES = portmap-4.0-linux.patch portmap-malloc.patch portmap-4.0-cleanup.patch portmap-4.0-rpc_user.patch portmap-4.0-sigpipe.patch portmap-4.0-errno.patch portmap-4.0-pie.patch portmap-4.0-loopback.patch
+PATCHFILES = portmap-4.0-linux.patch portmap-malloc.patch portmap-4.0-cleanup.patch portmap-4.0-rpc_user.patch portmap-4.0-sigpipe.patch portmap-4.0-errno.patch portmap-4.0-pie.patch portmap-4.0-loopback.patch portmap-4-pic.patch
 LICENSE = BSD_4_Clause
 
 DESCRIPTION =

@@ -3,7 +3,7 @@ GARVERSION = 1.2.10
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-syslog_h.patch
+PATCHFILES = $(DISTNAME)-syslog_h.patch $(DISTNAME)-remove_pie.patch
 LICENSE = GPL2
 
 DESCRIPTION =

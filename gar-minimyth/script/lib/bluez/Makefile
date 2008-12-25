@@ -16,6 +16,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-gtk-doc \
+	--enable-fortify \
+	--disable-pie \
 	--enable-network \
 	--enable-serial \
 	--enable-input \
