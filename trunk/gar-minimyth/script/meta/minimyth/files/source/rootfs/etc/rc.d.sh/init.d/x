@@ -3,6 +3,7 @@
 # x
 ################################################################################
 . /etc/rc.d.sh/functions
+. /lib/minimyth/mm_detect
 
 start() {
 
@@ -18,6 +19,14 @@ start() {
     local NVIDIA_TRUE
     local KBD_TRUE
     local MOUSE_TRUE
+    local EVENT_DEVICE_LIST
+    local INPUTDEVICE_EVENT
+    local SERVERLAYOUT_EVENT
+    local identifier
+    local device
+    local device_blacklist
+    local device_item
+    local device_list
 
     mm_message_output info "configuring X ..."
 
@@ -205,6 +214,49 @@ start() {
     /usr/bin/test -n "${MM_X_MODE_1}" && MM_X_MODE_1="\"${MM_X_MODE_1}\""
     /usr/bin/test -n "${MM_X_MODE_2}" && MM_X_MODE_2="\"${MM_X_MODE_2}\""
 
+    device_list=
+    for device_item in `mm_detect_state_get 'event' | mm_uniq` ; do
+        device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+        if /usr/bin/test -e "${device}" ; then
+            device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+        fi
+        device_list="${device_list} ${device}"
+    done
+    EVENT_DEVICE_LIST="${device_list}"
+
+    if /usr/bin/test -n "${MM_LIRC_DEVICE_LIST}" ; then
+        device_blacklist=
+        for device_item in ${MM_LIRC_DEVICE_LIST} ; do
+            device=`/bin/echo "${device_item}" | /usr/bin/cut -d ',' -f 1`
+            if /usr/bin/test -e "${device}" ; then
+                device=`/sbin/udevadm info --query name --root --name="${device}" 2> /dev/null`
+            fi
+            device_blacklist="${device_blacklist} ${device}"
+        done
+        device_list=
+        for device in ${EVENT_DEVICE_LIST} ; do
+            if ! /bin/echo " ${device_blacklist} " | /bin/grep -q " ${device} " ; then
+                device_list="${device_list} ${device}"
+            fi
+        done
+        EVENT_DEVICE_LIST="${device_list}"
+    fi
+
+    INPUTDEVICE_EVENT=''
+    SERVERLAYOUT_EVENT=''
+    if /usr/bin/test -n "${EVENT_DEVICE_LIST}" ; then
+        for device in ${EVENT_DEVICE_LIST} ; do
+            identifier=`/bin/echo ${device} | /bin/sed -e 's%.*/%%'`
+            INPUTDEVICE_EVENT="${INPUTDEVICE_EVENT}\nSection \"InputDevice\""
+            INPUTDEVICE_EVENT="${INPUTDEVICE_EVENT}\n    Identifier \"${identifier}\""
+            INPUTDEVICE_EVENT="${INPUTDEVICE_EVENT}\n    Driver     \"evdev\""
+            INPUTDEVICE_EVENT="${INPUTDEVICE_EVENT}\n    Option     \"Device\" \"${device}\""
+            INPUTDEVICE_EVENT="${INPUTDEVICE_EVENT}\nEndSection"
+
+            SERVERLAYOUT_EVENT="${SERVERLAYOUT_EVENT}\n    InputDevice \"${identifier}\" \"SendCoreEvents\""
+        done
+    fi
+
     KBD_TRUE='#'
     if /usr/bin/test -n "${MM_X_KBD_DEVICE}" ; then
         KBD_TRUE=''
@@ -214,10 +266,8 @@ start() {
         MOUSE_TRUE=''
     fi
     
-    /bin/sed -i "s%@KBD_TRUE@%${KBD_TRUE}%"                     /etc/X11/xorg.conf
-    /bin/sed -i "s%@MM_X_KBD_DEVICE@%${MM_X_KBD_DEVICE}%"       /etc/X11/xorg.conf
-    /bin/sed -i "s%@MOUSE_TRUE@%${MOUSE_TRUE}%"                 /etc/X11/xorg.conf
-    /bin/sed -i "s%@MM_X_MOUSE_DEVICE@%${MM_X_MOUSE_DEVICE}%"   /etc/X11/xorg.conf
+    /bin/sed -i "s%@INPUTDEVICE_EVENT@%${INPUTDEVICE_EVENT}%"   /etc/X11/xorg.conf
+    /bin/sed -i "s%@SERVERLAYOUT_EVENT@%${SERVERLAYOUT_EVENT}%" /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DRIVER@%${MM_X_DRIVER}%"               /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_INTEL@%${MM_X_DEVICE_INTEL}%"   /etc/X11/xorg.conf
     /bin/sed -i "s%@MM_X_DEVICE_NVIDIA@%${MM_X_DEVICE_NVIDIA}%" /etc/X11/xorg.conf
