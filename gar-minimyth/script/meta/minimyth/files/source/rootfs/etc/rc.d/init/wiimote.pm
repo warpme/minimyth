@@ -15,7 +15,12 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    if ($minimyth->var_get('MM_WIIMOTE_ENABLED') eq 'yes')
+    my $address_0 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_0');
+    my $address_1 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_1');
+    my $address_2 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_2');
+    my $address_3 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_3');
+
+    if ((defined($address_0)) || (defined($address_1)) || (defined($address_2)) || (defined($address_3)))
     {
         $minimyth->message_output('info', "starting bluetooth ...");
 
@@ -75,29 +80,6 @@ sub start
             }
         }
 
-        my $address_0 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_0');
-        my $address_1 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_1');
-        my $address_2 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_2');
-        my $address_3 = $minimyth->var_get('MM_WIIMOTE_ADDRESS_3');
-
-        if ((! $address_0) && (! $address_1) && (! $address_2) && (! $address_3))
-        {
-            my $config = undef;
-            if    (-e '/etc/cwiid/wminput/default')
-            {
-                $config = '/etc/cwiid/wminput/default';
-            }
-            if (! defined($config))
-            {
-                $minimyth->message_output('err', "error: no 'wminput' config file found.");
-                return 0;
-            }
-            if ( system(qq(/usr/bin/wminput -d -c $config > $devnull 2>&1 &)) != 0)
-            {
-                $minimyth->message_output('err', "error: failed to start 'wminput'.");
-                return 0;
-            }
-        }
         if ($address_0)
         {
             my $config = undef;
