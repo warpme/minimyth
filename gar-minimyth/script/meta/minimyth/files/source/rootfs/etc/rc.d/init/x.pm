@@ -287,15 +287,89 @@ sub start
     $mode_1 = '"' . $mode_1 . '"' if ($mode_1 ne '');
     $mode_2 = '"' . $mode_2 . '"' if ($mode_2 ne '');
 
-    my $kbd_true   = $minimyth->var_get('MM_X_KBD_DEVICE')   ? '' : '#';
-    my $mouse_true = $minimyth->var_get('MM_X_MOUSE_DEVICE') ? '' : '#';
+    my $inputdevice_event  = '';
+    my $serverlayout_event = '';
+    {
+        # Determine event device list.
+        # The list is all udev detected event devices that are not claimed by LIRC.
+        my @device_list;
+        {
+            my $device_canonicalize = sub
+            {
+                my $device = shift;
+
+                if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query name --root --name='$device'))))
+                {
+                    while (<FILE>)
+                    {
+                        chomp;
+                        $device = $_;
+                        last;
+                    }
+                    close(FILE);
+                }
+
+                return $device;
+            };
+
+            # Get all udev detected event devices.
+            foreach my $item (@{$minimyth->detect_state_get('event')})
+            {
+                my $device = &{$device_canonicalize}($item->{'device'});
+                if ($device)
+                {
+                    push(@device_list, "$device");
+                }
+            }
+
+            # Remove any duplicates.
+            {
+                my $prev = '';
+                @device_list = grep($_ ne $prev && (($prev) = $_), sort(@device_list));
+            }
+
+            # Remove any devices claimed by LIRC.
+            if ($minimyth->var_get('MM_LIRC_DEVICE_LIST'))
+            {
+                my @blacklist = ();
+                foreach my $item (split(/  +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST')))
+                {
+                    if ($item)
+                    {
+                        my @item = split(/,/, $item);
+                        my $device = &{$device_canonicalize}($item[0]);
+                        push(@blacklist, $device);
+                    }
+                }
+                my $blacklist_filter = join('|', @blacklist);
+                @device_list = grep(! /^($blacklist_filter)$/, @device_list);
+            }
+        }
+
+        my @inputdevice  = ();
+        my @serverlayout = ();
+        foreach my $device (@device_list)
+        {
+            my $identifier = $device;
+            $identifier =~ s/.*\///;
+
+            push(@inputdevice, qq(Section "InputDevice"));
+            push(@inputdevice, qq(    Identifier "$identifier"));
+            push(@inputdevice, qq(    Driver     "evdev"));
+            push(@inputdevice, qq(    Option     "Device" "$device"));
+            push(@inputdevice, qq(EndSection));
+            push(@inputdevice, qq());
+
+            push(@serverlayout, qq(InputDevice "$identifier" "SendCoreEvents"));
+        }
+        $inputdevice_event  = join("\n", @inputdevice);
+        $serverlayout_event = join("\n    ", @serverlayout);
+    }
 
     $minimyth->file_replace_variable(
         '/etc/X11/xorg.conf',
-        { '@KBD_TRUE@'           => $kbd_true                              ,
-          '@MM_X_KBD_DEVICE@'    => $minimyth->var_get('MM_X_KBD_DEVICE')  ,
-          '@MOUSE_TRUE@'         => $mouse_true                            ,
-          '@MM_X_MOUSE_DEVICE@'  => $minimyth->var_get('MM_X_MOUSE_DEVICE'),
+        { '@INPUTDEVICE_EVENT@'  => $inputdevice_event                     ,
+          '@SERVERLAYOUT_EVENT@' => $serverlayout_event                    ,
           '@MM_X_DRIVER@'        => $minimyth->var_get('MM_X_DRIVER')      ,
           '@MM_X_DEVICE_INTEL@'  => $device_intel                          ,
           '@MM_X_DEVICE_NVIDIA@' => $device_nvidia                         ,
