@@ -11,7 +11,10 @@ start() {
     local device_configured
     local devices
     
-    if /usr/bin/test "${MM_WIIMOTE_ENABLED}" = "yes" ; then
+    if /usr/bin/test ! -z "${MM_WIIMOTE_ADDRESS_0}" ||
+       /usr/bin/test ! -z "${MM_WIIMOTE_ADDRESS_1}" ||
+       /usr/bin/test ! -z "${MM_WIIMOTE_ADDRESS_2}" ||
+       /usr/bin/test ! -z "${MM_WIIMOTE_ADDRESS_3}" ; then
 
         mm_message_output info 'starting bluetooth ...'
 
@@ -52,23 +55,6 @@ start() {
             done
         fi
 
-        if /usr/bin/test -z "${MM_WIIMOTE_ADDRESS_0}" &&
-           /usr/bin/test -z "${MM_WIIMOTE_ADDRESS_1}" &&
-           /usr/bin/test -z "${MM_WIIMOTE_ADDRESS_2}" &&
-           /usr/bin/test -z "${MM_WIIMOTE_ADDRESS_3}" ; then
-            config=''
-            /usr/bin/test -z "${config}" \
-                && /usr/bin/test -e /etc/cwiid/wminput/default \
-                && config='/etc/cwiid/wminput/default'
-            if /usr/bin/test -z "${config}" ; then
-                mm_message_output err "error: no 'wminput' config file found."
-                exit 1
-            fi
-            if ! /usr/bin/wminput -d -c ${config} > /dev/null 2>&1 ; then
-                mm_message_output err "error: failed to start 'wminput'."
-                exit 1
-            fi
-        fi
         if /usr/bin/test -n "${MM_WIIMOTE_ADDRESS_0}" ; then
             config=''
             /usr/bin/test -z "${config}" \
