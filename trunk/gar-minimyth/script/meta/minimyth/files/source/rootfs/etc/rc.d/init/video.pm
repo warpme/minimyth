@@ -300,7 +300,9 @@ sub start
           '@DEINTERLACE_PLUGIN@'     => $deinterlace_plugin });
     $minimyth->file_replace_variable(
         '/home/minimyth/.mplayer/config',
-        { '@XVMC_TRUE@'     => $xvmc_true,
+        { '@VDPAU_TRUE@'    => $vdpau_true,
+          '@VDPAU_FALSE@'   => $vdpau_false,
+          '@XVMC_TRUE@'     => $xvmc_true,
           '@XVMC_FALSE@'    => $xvmc_false,
           '@BOBDEINT@'      => $bobdeint,
           '@MONITORASPECT@' => $monitoraspect });
