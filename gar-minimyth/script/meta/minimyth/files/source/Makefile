@@ -433,7 +433,6 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		| grep -v '/libc.so.[0-9]\+$$' \
 		| grep -v '/ld-linux.so.[0-9]\+$$' \
 		| grep -v '/ld-linux-x86-64.so.[0-9]\+$$' \
-		| grep -v '/portmap$$' \
 		| xargs chmod 0644
 	@$(call SET_PERMISSIONS,$@~)
 	@touch $@~
