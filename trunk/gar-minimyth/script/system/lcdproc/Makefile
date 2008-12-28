@@ -1,9 +1,10 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.2
+GARVERSION = 20081227Z
 CATEGORIES = system
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-irtrans.patch $(DISTNAME)-dm140_henlar_v0.2.patch $(DISTNAME)-imonlcd_0.3_with_send_fix.patch
+#MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES =  $(DISTNAME)-dm140_henlar_v0.2.patch $(DISTNAME)-imonlcd_0.3_with_send_fix.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -18,6 +19,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
+	--enable-libftdi \
+	--enable-ethlcd \
 	--disable-doxygen \
 	--disable-dot \
 	--disable-html-dox \
@@ -40,6 +43,7 @@ pre-configure:
 clean-all:
 	@$(MAKE) clean
 	@rm -rf $(DESTDIR)$(bindir)/lcdexec
+	@rm -rf $(DESTDIR)$(bindir)/lcdident.pl
 	@rm -rf $(DESTDIR)$(bindir)/lcdmetar.pl
 	@rm -rf $(DESTDIR)$(bindir)/lcdproc
 	@rm -rf $(DESTDIR)$(bindir)/lcdvc
