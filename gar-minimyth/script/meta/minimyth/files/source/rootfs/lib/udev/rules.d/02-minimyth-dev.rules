@@ -1,19 +1,12 @@
 # Input devices
-# If we can, then give the input device a predictable names using the mm_input script.
-# Otherwise, give the input device whatever name the kernel gives it.
-KERNEL=="mice",                                               NAME="input/%k"
-KERNEL=="mouse*", PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/mouse-$result"
-KERNEL=="mouse*",                                             NAME="input/%k"
-KERNEL=="event*", PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/event-$result"
-KERNEL=="event*",                                             NAME="input/%k"
-KERNEL=="js*"   , PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/js-$result"
-KERNEL=="js*",                                                NAME="input/%k"
-KERNEL=="ts*"   , PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/ts-$result"
-KERNEL=="ts*",                                                NAME="input/%k"
-KERNEL=="uinput", PROGRAM="/lib/udev/mm_input", RESULT=="?*", NAME="input/uinput-$result"
-KERNEL=="uinput,                                              NAME="input/%k"
+KERNEL=="event[0-9]*",                 NAME="input/%k"
+KERNEL=="js[0-9]*",                    NAME="input/%k"
+KERNEL=="mice",                        NAME="input/%k"
+KERNEL=="mouse[0-9]*",                 NAME="input/%k"
+KERNEL=="ts[0-9]*",                    NAME="input/%k"
+KERNEL=="uinput,                       NAME="input/%k"
 
-# DRI devices always go into a subdirectory (as per the LSB spec)
+# DRI devices
 KERNEL=="card*",                       NAME="dri/card%n"
 
 # alsa devices
