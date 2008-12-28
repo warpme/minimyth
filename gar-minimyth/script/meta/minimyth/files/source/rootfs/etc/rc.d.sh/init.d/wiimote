@@ -39,11 +39,6 @@ start() {
 
         mm_message_output info 'starting wminput ...'
 
-        # wminput is already running, so return.
-        if /usr/bin/test -n "`/bin/pidof wminput`" ; then
-            return
-        fi
-
         # Start
         if /usr/bin/test ! -e '/dev/uinput' ; then
             if ! /sbin/modprobe uinput > /dev/null 2>&1 ; then
@@ -67,7 +62,11 @@ start() {
                 mm_message_output err "error: no 'wminput' config file found."
                 exit 1
             fi
-            /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_0} > /dev/null 2>&1 &
+            if /usr/bin/hcitool con 2> /dev/null | /bin/grep -q -e "[[:cntrl:]]*< ACL ${MM_WIIMOTE_ADDRESS_0}" ; then
+               mm_message_output info "Wiimote 0 (address: ${MM_WIIMOTE_ADDRESS_0}) not started because it is already running"
+            else
+               /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_0} > /dev/null 2>&1 &
+            fi
         fi
         if /usr/bin/test -n "${MM_WIIMOTE_ADDRESS_1}" ; then
             config=''
@@ -81,7 +80,11 @@ start() {
                 mm_message_output err "error: no 'wminput' config file found."
                 exit 1
             fi
-            /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_1} > /dev/null 2>&1 &
+            if /usr/bin/hcitool con 2> /dev/null | /bin/grep -q -e "[[:cntrl:]]*< ACL ${MM_WIIMOTE_ADDRESS_1}" ; then
+               mm_message_output info "Wiimote 1 (address: ${MM_WIIMOTE_ADDRESS_1}) not started because it is already running"
+            else
+               /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_1} > /dev/null 2>&1 &
+            fi
         fi
         if /usr/bin/test -n "${MM_WIIMOTE_ADDRESS_2}" ; then
             config=''
@@ -95,7 +98,11 @@ start() {
                 mm_message_output err "error: no 'wminput' config file found."
                 exit 1
             fi
-            /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_2} > /dev/null 2>&1 &
+            if /usr/bin/hcitool con 2> /dev/null | /bin/grep -q -e "[[:cntrl:]]*< ACL ${MM_WIIMOTE_ADDRESS_2}" ; then
+               mm_message_output info "Wiimote 2 (address: ${MM_WIIMOTE_ADDRESS_2}) not started because it is already running"
+            else
+               /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_2} > /dev/null 2>&1 &
+            fi
         fi
         if /usr/bin/test -n "${MM_WIIMOTE_ADDRESS_3}" ; then
             config=''
@@ -109,7 +116,11 @@ start() {
                 mm_message_output err "error: no 'wminput' config file found."
                 exit 1
             fi
-            /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_3} > /dev/null 2>&1 &
+            if /usr/bin/hcitool con 2> /dev/null | /bin/grep -q -e "[[:cntrl:]]*< ACL ${MM_WIIMOTE_ADDRESS_3}" ; then
+               mm_message_output info "Wiimote 3 (address: ${MM_WIIMOTE_ADDRESS_3}) not started because it is already running"
+            else
+               /usr/bin/wminput -d -c ${config} ${MM_WIIMOTE_ADDRESS_3} > /dev/null 2>&1 &
+            fi
         fi
     fi
 
