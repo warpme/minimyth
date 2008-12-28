@@ -5,14 +5,17 @@
 # This script provides a unique identifier based on hardware information.
 #
 # The output has the formats:
-#     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>
-#     usb:<idVendor>:<idProduct>:<serial>
+#     <kernel>-pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>
+#     <kernel>-phys:<phys>
+#     <kernel>-usb:<idVendor>:<idProduct>:<serial>:<bInterfaceNumber>
+#     <kernel>-wminput:<phys>
 ################################################################################
 
 script='BEGIN
         {
             FS="\n"
             RS=""
+            kernel=""
             mm_uid=""
             phys=""
             bInterfaceNumber=""
@@ -24,6 +27,12 @@ script='BEGIN
             subsystem=""
             while ( x < NF ) {
                 x++
+                if ( $x ~ /^ *KERNEL==/ ) {
+                    kernel=$x
+                    sub(/^ *KERNEL=="/, "", kernel)
+                    sub(/"$/, "", kernel)
+                    sub(/[0-9]*$/, "", kernel)
+                }
                 if ( $x ~ /^ *SUBSYSTEMS?=="acpi"/ ) {
                     subsystem="acpi"
                     break
@@ -50,18 +59,33 @@ script='BEGIN
                     x++
                 }
                 if ( phys ) {
-                    mm_uid="phys:" phys
+                    mm_uid=kernel "-phys:" phys
                 }
             }
             if ( subsystem == "input" ) {
+                driver=""
+                name=""
                 while ( x < NF ) {
                     x++
+                    if ( $x ~ /^ *DRIVERS?==/ ) {
+                        driver=$x
+                        sub(/^ *DRIVERS?=="/, "", driver)
+                        sub(/"$/, "", driver)
+                    }
+                    if ( $x ~ /^ *ATTRS?\{name\}==/ ) {
+                        name=$x
+                        sub(/^ *ATTRS?\{name\}=="/, "", name)
+                        sub(/"$/, "", name)
+                    }
                     if ( $x ~ /^ *ATTRS?\{phys\}==/ ) {
                         phys=$x
                         sub(/^ *ATTRS?\{phys\}=="/, "", phys)
                         sub(/"$/, "", phys)
                         gsub(/\//, ":", phys)
                     }
+                }
+                if ( ( driver == "" ) && ( name == "Nintendo Wiimote" ) && ( phys ) ) {
+                    mm_uid=kernel "-wminput:" phys
                 }
             }
             if ( subsystem == "pci" ) {
@@ -101,7 +125,7 @@ script='BEGIN
                     }
                 }
                 if ( class && class_prog && vendor && device && subsystem_vendor && subsystem_device && bus_id ) {
-                    mm_uid="pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
+                    mm_uid=kernel "-pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
                 }
             }
             if ( subsystem == "serio" ) {
@@ -109,7 +133,7 @@ script='BEGIN
                     x++
                 }
                 if ( phys ) {
-                    mm_uid="phys:" phys
+                    mm_uid=kernel "-phys:" phys
                 }
             }
             if ( subsystem == "usb" ) {
@@ -147,7 +171,7 @@ script='BEGIN
                     }
                 }
                 if ( idVendor && idProduct ) {
-                    mm_uid="usb:" idVendor ":" idProduct ":" serial ":" bInterfaceNumber
+                    mm_uid=kernel "-usb:" idVendor ":" idProduct ":" serial ":" bInterfaceNumber
                 }
             }
             if ( mm_uid ) {
