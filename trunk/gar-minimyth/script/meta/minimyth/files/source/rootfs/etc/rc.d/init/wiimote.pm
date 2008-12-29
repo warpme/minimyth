@@ -77,13 +77,9 @@ sub start
         if ($address_0)
         {
             my $config = undef;
-            if    (-e '/etc/cwiid/wminput/default_0')
+            if (-e '/etc/cwiid/wminput/default_0')
             {
                 $config = '/etc/cwiid/wminput/default_0';
-            }
-            elsif (-e '/etc/cwiid/wminput/default')
-            {
-                $config = '/etc/cwiid/wminput/default';
             }
             else
             {
@@ -116,13 +112,9 @@ sub start
         if ($address_1)
         {
             my $config = undef;
-            if    (-e '/etc/cwiid/wminput/default_1')
+            if (-e '/etc/cwiid/wminput/default_1')
             {
                 $config = '/etc/cwiid/wminput/default_1';
-            }
-            elsif (-e '/etc/cwiid/wminput/default')
-            {
-                $config = '/etc/cwiid/wminput/default';
             }
             else
             {
@@ -155,13 +147,9 @@ sub start
         if ($address_2)
         {
             my $config = undef;
-            if    (-e '/etc/cwiid/wminput/default_2')
+            if (-e '/etc/cwiid/wminput/default_2')
             {
                 $config = '/etc/cwiid/wminput/default_2';
-            }
-            elsif (-e '/etc/cwiid/wminput/default')
-            {
-                $config = '/etc/cwiid/wminput/default';
             }
             else
             {
@@ -194,13 +182,9 @@ sub start
         if ($address_3)
         {
             my $config = undef;
-            if    (-e '/etc/cwiid/wminput/default_3')
+            if (-e '/etc/cwiid/wminput/default_3')
             {
                 $config = '/etc/cwiid/wminput/default_3';
-            }
-            elsif (-e '/etc/cwiid/wminput/default')
-            {
-                $config = '/etc/cwiid/wminput/default';
             }
             else
             {
