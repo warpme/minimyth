@@ -1,5 +1,5 @@
 GARNAME = xscreensaver
-GARVERSION = 5.07
+GARVERSION = 5.08
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -24,7 +24,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	--with-hackdir=$(libexecdir)/xscreensaver \
 	--with-configdir=$(datadir)/xscreensaver/config \
-	--with-x-app-defaults=$(datadir)/X11/app-defaults
+	--with-x-app-defaults=$(datadir)/X11/app-defaults \
+	--without-gtk \
+	--without-motif \
+	--with-gl \
+	--without-gle \
+	--without-pixbuf \
+	--with-xpm \
+	--with-jpeg
 INSTALL_ARGS   = \
 	install_prefix=$(DESTDIR)
 
