@@ -1,9 +1,10 @@
 GARNAME = cwiid
-GARVERSION = 0.6.00
+GARVERSION = 183
 CATEGORIES = utils
-MASTER_SITES = http://abstrakraft.org/cwiid/downloads/
-DISTFILES = $(DISTNAME).tgz
-PATCHFILES = $(DISTNAME)-hci_remote_name.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch
+#MASTER_SITES = http://abstrakraft.org/cwiid/downloads/
+MASTER_SITES = svn://abstrakraft.org/cwiid/svn/trunk/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-libm.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -25,8 +26,15 @@ include ../../gar.mk
 # -Wl,--as-needed does not work when compiling wmgui.
 LDFLAGS :=
 
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 pre-configure:
-	@#cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
