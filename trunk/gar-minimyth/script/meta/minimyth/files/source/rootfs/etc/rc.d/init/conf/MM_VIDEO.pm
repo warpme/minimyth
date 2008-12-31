@@ -143,8 +143,8 @@ $var_list{'MM_VIDEO_PLAYBACK_PROFILE'} =
 };
 $var_list{'MM_VIDEO_RESIZE_ENABLED'} =
 {
-    value_default  => 'no',
-    value_valid    => 'no|yes'
+    value_default  => '',
+    value_valid    => '|no|yes'
 };
 
 1;
