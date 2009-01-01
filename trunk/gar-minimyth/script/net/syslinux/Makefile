@@ -1,5 +1,5 @@
 GARNAME = syslinux
-GARVERSION = 3.63
+GARVERSION = 3.72
 CATEGORIES = net
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/boot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -17,6 +17,6 @@ include ../../gar.mk
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth
-	@cp -f $(WORKSRC)/pxelinux.0 $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0
+	@cp -f $(WORKSRC)/core/pxelinux.0 $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.0
 	@mkdir -p $(DESTDIR)$(rootdir)/srv/tftpboot/minimyth/pxelinux.cfg
 	@$(MAKECOOKIE)
