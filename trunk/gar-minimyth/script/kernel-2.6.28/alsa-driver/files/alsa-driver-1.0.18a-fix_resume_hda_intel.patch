@@ -1,0 +1,18 @@
+diff -Naur alsa-driver-1.0.18a-old/alsa-kernel/pci/hda/hda_codec.c alsa-driver-1.0.18a-new/alsa-kernel/pci/hda/hda_codec.c
+--- alsa-driver-1.0.18a-old/alsa-kernel/pci/hda/hda_codec.c	2008-11-12 02:02:25.000000000 -0800
++++ alsa-driver-1.0.18a-new/alsa-kernel/pci/hda/hda_codec.c	2008-12-09 09:34:13.000000000 -0800
+@@ -1585,12 +1585,12 @@
+ {
+ 	hda_nid_t *d;
+ 
+-	snd_hda_codec_write(codec, nid, 0, verb, val);
++	snd_hda_codec_write_cache(codec, nid, 0, verb, val);
+ 	d = codec->slave_dig_outs;
+ 	if (!d)
+ 		return;
+ 	for (; *d; d++)
+-		snd_hda_codec_write(codec, *d, 0, verb, val);
++		snd_hda_codec_write_cache(codec, *d, 0, verb, val);
+ }
+ 
+ static inline void set_dig_out_convert(struct hda_codec *codec, hda_nid_t nid,
