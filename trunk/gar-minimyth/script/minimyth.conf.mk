@@ -100,10 +100,10 @@ mm_TFTP_ROOT              ?= /var/tftpboot/minimyth
 # installed in a subdirectory named 'minimyth-$(mm_VERSION)'.
 mm_NFS_ROOT               ?= /home/public/minimyth
 # The version of kernel headers to use.
-# Valid values are '2.6.26' and '2.6.27'.
+# Valid values are '2.6.26', '2.6.27' and '2.6.28'.
 mm_KERNEL_HEADERS_VERSION ?= 2.6.26
 # The version of kernel to use.
-# Valid values are '2.6.26' and '2.6.27'.
+# Valid values are '2.6.26', '2.6.27' and '2.6.28'.
 mm_KERNEL_VERSION         ?= 2.6.26
 # The kernel configuration file to use.
 # When set, the kernel configuration file $(HOME)/.minimyth/$(mm_KERNEL_CONFIG) will be used.
@@ -121,7 +121,7 @@ mm_NVIDIA_VERSION         ?= 169.12
 mm_XORG_VERSION           ?= 7.3
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 19487
+mm_MYTH_TRUNK_VERSION     ?= 19538
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
