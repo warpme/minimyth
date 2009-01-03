@@ -9,21 +9,27 @@ use warnings;
 
 require MiniMyth;
 
+# If there is no DHCP override variables file (/etc/conf.d/dhcp.override) then
+# this routine will cause the DHCP client to run once and quit. Whereas, if
+# there is a DHCP override variables file, then this routine will cause the DHCP
+# client to run continuously.
 sub start
 {
     my $self     = shift;
     my $minimyth = shift;
 
-    # Create a 'udhcpc.conf' file.
-    $minimyth->var_save({ file => '/etc/udhcpc.conf', filter => 'MM_DHCP_.*' });
-
-    # If 'udhcpc' is running, then stop it.
-    $self->stop($minimyth);
-
     # Start 'udhcpc'.
     if (! $minimyth->application_running('udhcpc'))
     {
         $minimyth->message_output('info', "starting DHCP client ...");
+
+        # Create a 'udhcpc.conf' file.
+        $minimyth->var_save({ file => '/etc/udhcpc.conf', filter => 'MM_DHCP_.*' });
+
+        my $command = q(/sbin/udhcpc);
+        $command = $command . ' ' .  q(-S);
+        $command = $command . ' ' .  q(-p /var/run/udhcpc.pid);
+        $command = $command . ' ' .  q(-s /etc/udhcpc.script);
 
         # Determine network interface.
         my $interface = $minimyth->var_get('MM_NETWORK_INTERFACE');
@@ -49,8 +55,9 @@ sub start
                 $interface = 'eth0';
             }
         }
+        $command = $command . ' ' . qq(-i $interface);
 
-        # Start DHCP on the interface.
+        # Reuse any existing IP address.
         my $ip_address = '';
         if ((-x '/sbin/ifconfig') &&
             (open(FILE, '-|', "/sbin/ifconfig $interface")))
@@ -62,21 +69,24 @@ sub start
             }
             close(FILE);
         }
-        if (! $ip_address)
+        if ($ip_address)
         {
-            if (system(qq(/sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i $interface                > /var/log/udhcpc 2>&1)) != 0)
-            {
-                $minimyth->message_output('err', "error: DHCP on interface '$interface' failed.");
-                return 0;
-            }
+            $command = $command . ' ' . qq(-r $ip_address);
         }
-        else
+
+        # Decide whether or not to run once.
+        if (! -e '/etc/conf.d/dhcp.override')
         {
-            if (system(qq(/sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i $interface -r $ip_address > /var/log/udhcpc 2>&1)) != 0)
-            {
-                $minimyth->message_output('err', "error: DHCP on interface '$interface' failed.");
-                return 0;
-            }
+            $command = $command . ' ' . qq(-q);
+        }
+
+        $command = $command . ' ' .  q(> /var/log/udhcpc 2>&1);
+
+        # Start DHCP client on the interface.
+        if (system($command) != 0)
+        {
+            $minimyth->message_output('err', "error: DHCP on interface '$interface' failed.");
+            return 0;
         }
 
         # Make sure we got an IP address.

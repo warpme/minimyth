@@ -127,7 +127,7 @@ sub start
     $self->_run($minimyth, 'MM_DHCP_.*');
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
-    # Restart the DHCP client in order to pick up the processed DHCP override variables.
+    # Start the DHCP client now that we have created the DHCP override variables file.
     require init::dhcp;
     init::dhcp->start($minimyth);
 
