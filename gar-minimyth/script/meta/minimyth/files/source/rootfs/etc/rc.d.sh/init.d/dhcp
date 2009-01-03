@@ -6,6 +6,7 @@
 
 start() {
 
+    local COMMAND
     local DHCLIENT_CONF
     local INTERFACE
     local INTERFACE_ITEM
@@ -14,25 +15,24 @@ start() {
 
     UDHCPC_CONF='/etc/udhcpc.conf'
 
-    # Create a 'udhcpc.conf' file.
-    /bin/rm -f "${UDHCPC_CONF}~"
-    /bin/mkdir -p "`/usr/bin/dirname ${UDHCPC_CONF}~`"
-    /bin/touch "${UDHCPC_CONF}~"
-    /bin/chmod 644 "${UDHCPC_CONF}~"
-    set | /bin/grep -e '^MM_DHCP_' > "${UDHCPC_CONF}~"
-    /bin/mv -f "${UDHCPC_CONF}~" "${UDHCPC_CONF}"
-
-    # If 'udhcpc' is running, then stop it.
-    if /usr/bin/test -n "`/bin/pidof udhcpc`" ; then
-        mm_message_output info "stopping DHCP client ..."
-        while /usr/bin/test -n "`/bin/pidof udhcpc`" 2> /dev/null ; do
-            /usr/bin/killall udhcpc
-        done
-    fi
-
     # Start 'udhcpc'.
     if /usr/bin/test -z "`/bin/pidof udhcpc`" ; then
         mm_message_output info "starting DHCP client ..."
+
+        # Create a 'udhcpc.conf' file.
+        /bin/rm -f "${UDHCPC_CONF}~"
+        /bin/mkdir -p "`/usr/bin/dirname ${UDHCPC_CONF}~`"
+        /bin/touch "${UDHCPC_CONF}~"
+        /bin/chmod 644 "${UDHCPC_CONF}~"
+        set | /bin/grep -e '^MM_DHCP_' > "${UDHCPC_CONF}~"
+        /bin/mv -f "${UDHCPC_CONF}~" "${UDHCPC_CONF}"
+
+        COMMAND='/sbin/udhcpc'
+        COMMAND="${COMMAND} -S"
+        COMMAND="${COMMAND} -p /var/run/udhcpc.pid"
+        COMMAND="${COMMAND} -s /etc/udhcpc.script"
+
+        # Determine network interface.
         INTERFACE=${MM_NETWORK_INTERFACE}
         if /usr/bin/test -z "${INTERFACE}" ; then
             # Locate a connected network interface.
@@ -54,14 +54,23 @@ start() {
             mm_message_output info "no network interface found, defaulting to 'eth0'."
             INTERFACE='eth0'
         fi
+        COMMAND="${COMMAND} -i ${INTERFACE}"
 
-        # Start DHCP on the interface.
+        # Reuse any existing IP address.
         IP_ADDRESS=`/sbin/ifconfig ${INTERFACE} | /bin/grep '^ *inet addr:' | /bin/sed 's%^ *inet addr:\([^ ]*\) .*%\1%'`
-        if /usr/bin/test -z "${IP_ADDRESS}" ; then
-            /sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i ${INTERFACE}                  > /var/log/udhcpc 2>&1
-        else
-            /sbin/udhcpc -S -p /var/run/udhcpc.pid -s /etc/udhcpc.script -i ${INTERFACE} -r ${IP_ADDRESS} > /var/log/udhcpc 2>&1
+        if /usr/bin/test -n "${IP_ADDRESS}" ; then
+            COMMAND="${COMMAND} -r ${IP_ADDRESS}"
         fi
+
+        # Decide whether or not to run once.
+        if /usr/bin/test ! -e /etc/conf.d/dhcp.override ; then
+            COMMAND="${COMMAND} -q"
+        fi
+
+        COMMAND="${COMMAND} > /var/log/udhcpc 2>&1"
+
+        # Start DHCP client on the interface.
+        ${COMMAND}
         if /usr/bin/test $? -ne 0 ; then
             mm_message_output err "error: DHCP on interface '${INTERFACE}' failed."
             exit 1
