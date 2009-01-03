@@ -1859,7 +1859,7 @@ sub game_save
 
         if (! -e $local_file)
         {
-            $self->message_log('error', "failed to create game files tarball.");
+            $self->message_log('err', "failed to create game files tarball.");
             return 0;
         }
 
@@ -1895,7 +1895,7 @@ sub codecs_fetch_and_save
     }
     else
     {
-        $self->message_log('error', qq(failed to create binary codecs file because could not determine required file format.));
+        $self->message_log('err', qq(failed to create binary codecs file because could not determine required file format.));
         return 0;
     }
 
@@ -1916,7 +1916,7 @@ sub codecs_fetch_and_save
     $self->message_log('info', qq(downloading binary codecs file '$codecs_url'.));
     if (! $self->url_get($codecs_url, qq($local_dir/$codecs_file)))
     {
-        $self->message_log('error', qq(failed to create binary codecs file because no codecs were downloaded.));
+        $self->message_log('err', qq(failed to create binary codecs file because no codecs were downloaded.));
         File::Path::rmtree(qq($local_dir/$codecs_base));
         unlink(qq($local_dir/$codecs_file));
         return 0;
@@ -1938,7 +1938,7 @@ sub codecs_fetch_and_save
         }
         if (! $file_found)
         {
-            $self->message_log('error', qq(failed to create binary codecs file because downloaded codecs file was empty.));
+            $self->message_log('err', qq(failed to create binary codecs file because downloaded codecs file was empty.));
             File::Path::rmtree(qq($local_dir/$codecs_base));
             return 0;
         }
@@ -1966,14 +1966,14 @@ sub codecs_fetch_and_save
     {
         File::Path::rmtree(qq($local_dir/$codecs_base));
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to create binary codecs file because squashfs failed.));
+        $self->message_log('err', qq(failed to create binary codecs file because squashfs failed.));
         return 0;
     }
 
     if (! $self->confrw_put($remote_file, $local_file))
     {
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save binary codecs file.));
+        $self->message_log('err', qq(failed to save binary codecs file.));
         return 0;
     }
     $self->message_log('info', qq(saved binary codecs file 'confrw:$remote_file'.));
@@ -1998,12 +1998,12 @@ sub flash_fetch_and_save
     }
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
-        $self->message_log('error', qq(failed to create Adobe Flash player file because 64-bit file format not supported.));
+        $self->message_log('err', qq(failed to create Adobe Flash player file because 64-bit file format not supported.));
         return 0;
     }
     else
     {
-        $self->message_log('error', qq(failed to create Adobe Flash player file because could not determine required file format.));
+        $self->message_log('err', qq(failed to create Adobe Flash player file because could not determine required file format.));
         return 0;
     }
 
@@ -2024,7 +2024,7 @@ sub flash_fetch_and_save
     $self->message_log('info', qq(downloading Adobe Flash Player file '$flash_url'.));
     if (! $self->url_get($flash_url, qq($local_dir/$flash_file)))
     {
-        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
+        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         File::Path::rmtree(qq($local_dir/$flash_base));
         unlink(qq($local_dir/$flash_file));
         return 0;
@@ -2035,7 +2035,7 @@ sub flash_fetch_and_save
     if (! -e qq($local_dir/$flash_base/libflashplayer.so))
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
-        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
+        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
@@ -2045,7 +2045,7 @@ sub flash_fetch_and_save
     {
         File::Path::rmtree(qq($local_dir/$flash_base));
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to create the Adobe Flash Player file.));
+        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
@@ -2054,7 +2054,7 @@ sub flash_fetch_and_save
     if (! $self->confrw_put(qq($remote_file), qq($local_file)))
     {
         unlink(qq($local_file));
-        $self->message_log('error', qq(failed to save the Adobe Flash Player file.));
+        $self->message_log('err', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
     $self->message_log('info', qq(saved Adobe Flash Player file 'confrw:$remote_file'.));
@@ -2072,7 +2072,7 @@ sub extras_save
 
     if (! -d '/usr/local')
     {
-        $self->message_log('error', qq(failed to create the extras file because the extras directory does not exist.));
+        $self->message_log('err', qq(failed to create the extras file because the extras directory does not exist.));
         return 0;
     }
     my $file_found = 0;
@@ -2087,7 +2087,7 @@ sub extras_save
     }
     if (! $file_found)
     {
-        $self->message_log('error', qq(failed to create the extras file because the extras directory is empty.));
+        $self->message_log('err', qq(failed to create the extras file because the extras directory is empty.));
         return 0;
     }
 
@@ -2106,14 +2106,14 @@ sub extras_save
     if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/usr/local' "$local_file" -no-sparse -no-exports -no-progress -no-sparse -b 64k -processors 1 -check_data > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
-        $self->message_log('error', qq(failed to create the extras file because squashfs failed.));
+        $self->message_log('err', qq(failed to create the extras file because squashfs failed.));
         return 0;
     }
 
     if (! $self->confrw_put($remote_file, $local_file))
     {
         unlink($local_file);
-        $self->message_log('error', qq(failed to save the extras file.));
+        $self->message_log('err', qq(failed to save the extras file.));
         return 0;
     }
 
@@ -2130,7 +2130,7 @@ sub themecache_save
 
     if (! -d '/home/minimyth/.mythtv/themecache')
     {
-        $self->message_log('error', qq(failed to create the MythTV themecache file because the MythTV themecache directory does not exist.));
+        $self->message_log('err', qq(failed to create the MythTV themecache file because the MythTV themecache directory does not exist.));
         return 0;
     }
 
@@ -2149,14 +2149,14 @@ sub themecache_save
     if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" -no-sparse -no-exports -no-progress -no-sparse -b 64k -processors 1 -check_data > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
-        $self->message_log('error', qq(failed to create the MythTV themecache file because squashfs failed.));
+        $self->message_log('err', qq(failed to create the MythTV themecache file because squashfs failed.));
         return 0;
     }
 
     if (! $self->confrw_put($remote_file, $local_file))
     {
         unlink($local_file);
-        $self->message_log('error', qq(failed to save the MythTV themecache file.));
+        $self->message_log('err', qq(failed to save the MythTV themecache file.));
         return 0;
     }
 
@@ -2231,7 +2231,7 @@ sub x_xmacroplay
         }
         else
         {
-            $self->message_output('error', "cannot command '$program' without X window manager enabled.");
+            $self->message_output('err', "cannot command '$program' without X window manager enabled.");
         }
     }
 
@@ -2342,7 +2342,7 @@ sub x_applications_exit
                 $self->x_xmacroplay($application, \@xmacro);
                 if ($self->application_running($application))
                 {
-                    $self->message_output('error', "failed to exit '$application'.");
+                    $self->message_output('err', "failed to exit '$application'.");
                 }
             }
         }
