@@ -24,7 +24,7 @@ sub start
         }
         else
         {
-            $minimyth->message_output('err', "error: '/usr/bin/mythbackend' not found.");
+            $minimyth->message_output('err', "'/usr/bin/mythbackend' not found.");
         }
     }
 

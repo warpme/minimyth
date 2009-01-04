@@ -25,12 +25,12 @@ sub start
             {
                 if (system(qq(/lib/ld-linux.so.2 --list /usr/lib/browser/plugins/libflashplayer.so > /dev/null 2>&1)) != 0)
                 {
-                    $minimyth->message_output('err', 'error: Adobe Flash Player will fail because libraries are missing.')
+                    $minimyth->message_output('err', 'Adobe Flash Player will fail because libraries are missing.')
                 }
             }
             if (-e '/lib/ld-linux-x86-64.so.2')
             {
-                $minimyth->message_output('err', 'error: Adobe Flash Player will fail because it is a 32-bit library.');
+                $minimyth->message_output('err', 'Adobe Flash Player will fail because it is a 32-bit library.');
             }
         }
     }

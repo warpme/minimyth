@@ -134,7 +134,7 @@ $var_list{'MM_X_OUTPUT_TV'} =
             ($minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none') &&
             ($minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
         {
-            $minimyth->message_output('err', qq(error: 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are all disabled.));
+            $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are all disabled.));
         }
         if ($minimyth->var_get('MM_X_DRIVER') eq 'nvidia')
         {
@@ -142,17 +142,17 @@ $var_list{'MM_X_OUTPUT_TV'} =
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none'))
             {
-                $minimyth->message_output('err', qq(error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_VGA' are both enabled.));
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_VGA' are both enabled.));
             }
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
-                $minimyth->message_output('err', qq(error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
             }
             if ((! $minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
-                $minimyth->message_output('err', qq(error: 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are both enabled.));
             }
         }
         if ($minimyth->var_get('MM_X_DRIVER') eq 'openchrome')
@@ -161,7 +161,7 @@ $var_list{'MM_X_OUTPUT_TV'} =
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
-                $minimyth->message_output('err', qq(error: 'MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
             }
         }
     }
@@ -637,7 +637,7 @@ $var_list{'MM_X_MODE_0'} =
 
         if (($minimyth->var_get('MM_X_MODE_0') ne '') && ($minimyth->var_get('MM_X_MODELINE_0') ne ''))
         {
-            $minimyth->message_output('err', qq(error: both 'MM_X_MODE_0' and 'MM_X_MODELINE_0' cannot be set.));
+            $minimyth->message_output('err', qq(both 'MM_X_MODE_0' and 'MM_X_MODELINE_0' cannot be set.));
         }
     }
 };
@@ -704,7 +704,7 @@ $var_list{'MM_X_MODE_1'} =
 
         if (($minimyth->var_get('MM_X_MODE_1') ne '') && ($minimyth->var_get('MM_X_MODELINE_1') ne ''))
         {
-            $minimyth->message_output('err', qq(error: both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
+            $minimyth->message_output('err', qq(both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
         }
     }
 };
@@ -771,7 +771,7 @@ $var_list{'MM_X_MODE_2'} =
 
         if (($minimyth->var_get('MM_X_MODE_2') ne '') && ($minimyth->var_get('MM_X_MODELINE_2') ne ''))
         {
-            $minimyth->message_output('err', qq(error: both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
+            $minimyth->message_output('err', qq(both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
         }
     }
 };

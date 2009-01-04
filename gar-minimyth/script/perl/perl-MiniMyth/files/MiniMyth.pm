@@ -171,7 +171,9 @@ sub message_output
     if ($self->splash_running_test)
     {
         system(qq(/usr/bin/logger    -t minimyth -p local0.$level "$message"));
-        $self->splash_message_output($message);
+        if    ($level eq 'err')  { $self->splash_message_output(qq(error: $message)); }
+        elsif ($level eq 'warn') { $self->splash_message_output(qq(warning: $message)); }
+        else                     { $self->splash_message_output(qq($message)); }
     }
     else
     {
@@ -1098,7 +1100,7 @@ sub url_get
         when (/^http$/  ) { $result = $self->url_http_get(  $local_file, $remote_file, $remote_server); }
         when (/^hunt$/  ) { $result = $self->url_hunt_get(  $local_file, $remote_file, $remote_server); }
         when (/^tftp$/  ) { $result = $self->url_tftp_get(  $local_file, $remote_file, $remote_server); }
-        default           { $self->message_log('err', qq(error: MiniMyth::url_get: protocol ') . $remote_protocol . qq(' is not supported.)); }
+        default           { $self->message_log('err', qq(MiniMyth::url_get: protocol ') . $remote_protocol . qq(' is not supported.)); }
     }
     return $result;
 }
@@ -1391,7 +1393,7 @@ sub url_put
         when (/^file$/  ) { $result = $self->url_file_put(  $local_file, $remote_file, $remote_server); }
         when (/^http$/  ) { $result = $self->url_http_put(  $local_file, $remote_file, $remote_server); }
         when (/^tftp$/  ) { $result = $self->url_tftp_put(  $local_file, $remote_file, $remote_server); }
-        default           { $self->message_log('err', qq(error: MiniMyth::url_put: protocol ') . $_ . qq(' is not supported.)); }
+        default           { $self->message_log('err', qq(MiniMyth::url_put: protocol ') . $_ . qq(' is not supported.)); }
     }
     return $result;
 }
@@ -2568,7 +2570,7 @@ sub package_require
     {
         my $message = $@;
 
-        $self->message_output('err', qq(error: 'require $package' failed.));
+        $self->message_output('err', qq('require $package' failed.));
 
         if ($message)
         {
@@ -2577,7 +2579,7 @@ sub package_require
             {
                 print FILE $message;
                 close(FILE);
-                $self->message_output('err', qq(error: ckeck '$logfile' for details.));
+                $self->message_output('err', qq(ckeck '$logfile' for details.));
             }
         }
         return 0;
@@ -2595,7 +2597,7 @@ sub package_member_require
     if (! $self->package_member_exists($package, $member))
     {
         my $function = $package . '::' . $member;
-        $self->message_output('err', qq(error: '$function' does not exist.));
+        $self->message_output('err', qq('$function' does not exist.));
         return 0;
     }
 

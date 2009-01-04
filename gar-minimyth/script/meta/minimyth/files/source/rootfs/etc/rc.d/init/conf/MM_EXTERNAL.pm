@@ -32,11 +32,11 @@ $var_list{'MM_EXTERNAL_VOLUME_UP'} =
 
         if ((  $minimyth->var_get('MM_EXTERNAL_VOLUME_UP')) && (! $minimyth->var_get('MM_EXTERNAL_VOLUME_DOWN')))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_UP is set but MM_EXTERNAL_VOLUME_DOWN is not set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_UP is set but MM_EXTERNAL_VOLUME_DOWN is not set.");
         }
         if ((! $minimyth->var_get('MM_EXTERNAL_VOLUME_UP')) && (  $minimyth->var_get('MM_EXTERNAL_VOLUME_DOWN')))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_UP is not set but MM_EXTERNAL_VOLUME_DOWN is set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_UP is not set but MM_EXTERNAL_VOLUME_DOWN is set.");
         }
     }
 };
@@ -49,19 +49,19 @@ $var_list{'MM_EXTERNAL_VOLUME_MUTE'} =
 
         if ((  $minimyth->var_get('MM_EXTERNAL_VOLUME_MUTE')) && (! $minimyth->var_get('MM_EXTERNAL_VOLUME_DOWN')))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_MUTE is set but MM_EXTERNAL_VOLUME_DOWN is not set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_MUTE is set but MM_EXTERNAL_VOLUME_DOWN is not set.");
         }
         if ((  $minimyth->var_get('MM_EXTERNAL_VOLUME_MUTE')) && (! $minimyth->var_get('MM_EXTERNAL_VOLUME_UP'  )))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_MUTE is set but MM_EXTERNAL_VOLUME_UP is not set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_MUTE is set but MM_EXTERNAL_VOLUME_UP is not set.");
         }
         if ((! $minimyth->var_get('MM_EXTERNAL_VOLUME_MUTE')) && (  $minimyth->var_get('MM_EXTERNAL_VOLUME_DOWN')))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_MUTE is not set but MM_EXTERNAL_VOLUME_DOWN is set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_MUTE is not set but MM_EXTERNAL_VOLUME_DOWN is set.");
         }
         if ((! $minimyth->var_get('MM_EXTERNAL_VOLUME_MUTE')) && (  $minimyth->var_get('MM_EXTERNAL_VOLUME_UP'  )))
         {
-            $minimyth->message_output('err', "error: MM_EXTERNAL_VOLUME_MUTE is not set but MM_EXTERNAL_VOLUME_UP is set.");
+            $minimyth->message_output('err', "MM_EXTERNAL_VOLUME_MUTE is not set but MM_EXTERNAL_VOLUME_UP is set.");
         }
     }
 };

@@ -36,7 +36,7 @@ sub start
         }
         if ($#devices < 0)
         {
-            $minimyth->message_output('err', "error: no bluetooth device found.");
+            $minimyth->message_output('err', "no bluetooth device found.");
             return 0;
         }
 
@@ -49,12 +49,12 @@ sub start
             }
             else
             {
-                $minimyth->message_output('warn', "warning: configuration of bluetooth device '$device' failed.");
+                $minimyth->message_output('warn', "configuration of bluetooth device '$device' failed.");
             }
         }
         if ($device_configured == 0)
         {
-            $minimyth->message_output('err', "error: no bluetooth device configured.");
+            $minimyth->message_output('err', "no bluetooth device configured.");
             return 0;
         }
 
@@ -65,7 +65,7 @@ sub start
         {
             if (system(qq(/sbin/modprobe uinput > $devnull 2>&1)) != 0)
             {
-                $minimyth->message_output('err', "error: failed to load kernel module: uinput");
+                $minimyth->message_output('err', "failed to load kernel module: uinput");
                 return 0;
             }
             while (! -e q(/dev/uinput))
@@ -83,7 +83,7 @@ sub start
             }
             else
             {
-                $minimyth->message_output('err', "error: no 'wminput' config file found.");
+                $minimyth->message_output('err', "no 'wminput' config file found.");
                 return 0;
             }
             my $running = 0;
@@ -118,7 +118,7 @@ sub start
             }
             else
             {
-                $minimyth->message_output('err', "error: no 'wminput' config file found.");
+                $minimyth->message_output('err', "no 'wminput' config file found.");
                 return 0;
             }
             my $running = 0;
@@ -153,7 +153,7 @@ sub start
             }
             else
             {
-                $minimyth->message_output('err', "error: no 'wminput' config file found.");
+                $minimyth->message_output('err', "no 'wminput' config file found.");
                 return 0;
             }
             my $running = 0;
@@ -188,7 +188,7 @@ sub start
             }
             else
             {
-                $minimyth->message_output('err', "error: no 'wminput' config file found.");
+                $minimyth->message_output('err', "no 'wminput' config file found.");
                 return 0;
             }
             my $running = 0;

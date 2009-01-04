@@ -47,12 +47,12 @@ sub start
     # Make sure that there is a MiniMyth configuration file.
     if (! -e '/etc/minimyth.d/minimyth.conf')
     {
-        $minimyth->message_output('err', "error: 'minimyth.conf' not found.");
+        $minimyth->message_output('err', "'minimyth.conf' not found.");
         return 0;
     }
     if (! -r '/etc/minimyth.d/minimyth.conf')
     {
-        $minimyth->message_output('err', "error: 'minimyth.conf' not readable.");
+        $minimyth->message_output('err', "'minimyth.conf' not readable.");
         return 0;
     }
 
@@ -75,7 +75,7 @@ sub start
             chomp;
             if ($minimyth->var_exists($_))
             {
-                $minimyth->message_output('err', "error: 'minimyth.conf' is out of date. '$_' is obsolete.");
+                $minimyth->message_output('err', "'minimyth.conf' is out of date. '$_' is obsolete.");
             }
         }
         close(FILE);
@@ -90,7 +90,7 @@ sub start
         $minimyth->confro_get('/minimyth.pm', '/etc/minimyth.d/minimyth.pm');
         if (! -e '/etc/minimyth.d/minimyth.pm')
         {
-            $minimyth->message_output('err', "error: failed to fetch 'minimyth.pm' file.");
+            $minimyth->message_output('err', "failed to fetch 'minimyth.pm' file.");
         }
     }
     if (-f '/etc/minimyth.d/minimyth.pm')
@@ -157,7 +157,7 @@ sub start
         close(FILE);
         if ($conf_error != 0)
         {
-            $minimyth->message_output('err', "error: check '/var/log/minimyth.err.log' for further details.");
+            $minimyth->message_output('err', "check '/var/log/minimyth.err.log' for further details.");
             return 0;
         }
     }
@@ -337,7 +337,7 @@ sub _run_var
         }
         if ($valid == 0)
         {
-            $minimyth->message_output('err', qq(error: $var_name=') . $minimyth->var_get($var_name) . qq(' is not valid.));
+            $minimyth->message_output('err', qq($var_name=') . $minimyth->var_get($var_name) . qq(' is not valid.));
 
             # Replace the invalid value with the default value,
             # so that dependent variables will get a valid value.
@@ -382,7 +382,7 @@ sub _run_var
         }
         if ($obsolete == 1)
         {
-            $minimyth->message_output('err', qq(error: 'minimyth.conf' is out of date. $var_name=') . $minimyth->var_get($var_name) . qq(' is obsolete.));
+            $minimyth->message_output('err', qq('minimyth.conf' is out of date. $var_name=') . $minimyth->var_get($var_name) . qq(' is obsolete.));
         }
     }
 
@@ -438,7 +438,7 @@ sub _run_var
                 my $result = $minimyth->confro_get($name_remote, $name_local);
                 if (! -e $name_local)
                 {
-                    $minimyth->message_log('err', qq(error: failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
+                    $minimyth->message_log('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
                 }
                 else
                 {

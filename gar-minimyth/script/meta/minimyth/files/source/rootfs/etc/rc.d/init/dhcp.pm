@@ -85,7 +85,7 @@ sub start
         # Start DHCP client on the interface.
         if (system($command) != 0)
         {
-            $minimyth->message_output('err', "error: DHCP on interface '$interface' failed.");
+            $minimyth->message_output('err', "DHCP on interface '$interface' failed.");
             return 0;
         }
 
@@ -103,7 +103,7 @@ sub start
         }
         if (! $ip_address)
         {
-            $self->message_output('err', "error: DHCP on interface '$interface' failed.");
+            $self->message_output('err', "DHCP on interface '$interface' failed.");
             return 0;
         }
     }

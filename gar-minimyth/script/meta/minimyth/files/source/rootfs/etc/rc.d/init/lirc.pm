@@ -157,7 +157,7 @@ sub start
         }
         if (! -e $device)
         {
-            $minimyth->message_output('err', "error: timed out waiting for remote control device.");
+            $minimyth->message_output('err', "timed out waiting for remote control device.");
             return 0;
         }
     }

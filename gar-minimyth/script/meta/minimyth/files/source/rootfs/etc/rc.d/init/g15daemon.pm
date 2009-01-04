@@ -22,7 +22,7 @@ sub start
         my $kernel_module = 'uinput';
         if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('err', "error: failed to load kernel module: $kernel_module");
+            $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
             return 0;
         }
         # The g15daemon daemon does not create it configuration file, so init
@@ -36,7 +36,7 @@ sub start
             }
             if (! -e '/etc/g15daemon.conf')
             {
-                $minimyth->message_output('err', "error: failed to create file '/etc/g15daemon.conf'.");
+                $minimyth->message_output('err', "failed to create file '/etc/g15daemon.conf'.");
                 return 0;
             }
         }
