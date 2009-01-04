@@ -36,7 +36,7 @@ $var_list{'MM_THEME_NAME'} =
   
         if ($minimyth->var_get($name) eq 'G.A.N.T.')
         {
-            $minimyth->message_output('err', "error: theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update '$name'.");
+            $minimyth->message_output('err', "theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update '$name'.");
         }
     }
 };
@@ -54,7 +54,7 @@ $var_list{'MM_THEME_URL'} =
             my $theme_name = $minimyth->var_get('MM_THEME_NAME');
             if (-e "/usr/share/mythtv/themes/$theme_name")
             {
-                $minimyth->message_output('err', "error: MythTV theme directory '$theme_name' already exists.");
+                $minimyth->message_output('err', "MythTV theme directory '$theme_name' already exists.");
                 return '';
             }
         }
@@ -63,7 +63,7 @@ $var_list{'MM_THEME_URL'} =
             my $theme_name = $minimyth->var_get('MM_THEME_NAME');
             if (! -e "/usr/share/mythtv/themes/$theme_name")
             {
-                $minimyth->message_output('err', "error: MythTV theme directory '$theme_name' does not exist.");
+                $minimyth->message_output('err', "MythTV theme directory '$theme_name' does not exist.");
                 return '';
             }
         }
@@ -105,7 +105,7 @@ $var_list{'MM_THEMEOSD_URL'} =
             my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
             if (-e "/usr/share/mythtv/themes/$themeosd_name")
             {
-                $minimyth->message_output('err', "error: MythTV theme directory '$themeosd_name' already exists.");
+                $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' already exists.");
                 return '';
             }
         }
@@ -114,7 +114,7 @@ $var_list{'MM_THEMEOSD_URL'} =
             my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
             if (! -e "/usr/share/mythtv/themes/$themeosd_name")
             {
-                $minimyth->message_output('err', "error: MythTV theme directory '$themeosd_name' does not exist.");
+                $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' does not exist.");
                 return '';
             }
         }

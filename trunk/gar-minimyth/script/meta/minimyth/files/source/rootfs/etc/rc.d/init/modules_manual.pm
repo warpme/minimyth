@@ -25,7 +25,7 @@ sub start
     {
         if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('warn', "warning: failed to load kernel module: $kernel_module");
+            $minimyth->message_output('warn', "failed to load kernel module: $kernel_module");
         }
     }
 
@@ -35,7 +35,7 @@ sub start
         my $kernel_module = 'snd-pcm-oss';
         if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('warn', "warning: failed to load kernel module: $kernel_module");
+            $minimyth->message_output('warn', "failed to load kernel module: $kernel_module");
         }
     }
 

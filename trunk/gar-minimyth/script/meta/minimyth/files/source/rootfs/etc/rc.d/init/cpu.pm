@@ -23,30 +23,30 @@ sub start
 
         if (! -e '/etc/firmware/microcode.dat')
         {
-            $minimyth->message_output('err', "error: '/etc/firmware/microcode.dat' does not exist.");
+            $minimyth->message_output('err', "'/etc/firmware/microcode.dat' does not exist.");
             return 0;
         }
 
         my $kernel_module = 'microcode';
         if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('err', "error: failed to load kernel module: $kernel_module");
+            $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
             return 0;
         }
         system(qq(/sbin/udevadm settle --timeout=60));
         if (! -e '/dev/cpu/microcode')
         {
-            $minimyth->message_output('err', "error: '/dev/cpu/microcode' does not exist.");
+            $minimyth->message_output('err', "'/dev/cpu/microcode' does not exist.");
             return 0;
         }
         if (! -e '/usr/sbin/microcode_ctl')
         {
-            $minimyth->message_output('err', "error: '/usr/sbin/microcode_ctl' does not exist.");
+            $minimyth->message_output('err', "'/usr/sbin/microcode_ctl' does not exist.");
             return 0;
         }
         if (system(qq(/usr/sbin/microcode_ctl -Q -f /etc/firmware/microcode.dat > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('err', "error: failed to load CPU microcode.");
+            $minimyth->message_output('err', "failed to load CPU microcode.");
             return 0;
         }
         system(qq(/sbin/modprobe -r $kernel_module));
@@ -99,7 +99,7 @@ sub start
         my $kernel_module = 'cpufreq-' . $minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR');
         if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
         {
-            $minimyth->message_output('err', "error: failed to load kernel module: $kernel_module");
+            $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
             return 0;
         }
         # Wait for everything to settle.                                        

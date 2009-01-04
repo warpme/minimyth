@@ -109,7 +109,7 @@ sub start
             }
             if ($device_intel eq '')
             {
-                $minimyth->message_output('err', "error: no X video output enabled.");
+                $minimyth->message_output('err', "no X video output enabled.");
                 return 0;
             }
         }
@@ -132,7 +132,7 @@ sub start
             }
             if ($device_nvidia eq '')
             {
-                $minimyth->message_output('err', "error: no X video output enabled.");
+                $minimyth->message_output('err', "no X video output enabled.");
                 return 0;
             }
         }
@@ -155,7 +155,7 @@ sub start
             }
             if ($device_via eq '')
             {
-                $minimyth->message_output('err', "error: no X video output enabled.");
+                $minimyth->message_output('err', "no X video output enabled.");
                 return 0;
             }
         }

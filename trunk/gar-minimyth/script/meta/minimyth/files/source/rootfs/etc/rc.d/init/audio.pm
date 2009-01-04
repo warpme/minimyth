@@ -41,7 +41,7 @@ sub start
     }
     if (system(qq($amixer_command > $devnull 2>&1)) != 0)
     {
-        $minimyth->message_output('err', "error: the audio driver does not appear to be loaded.");
+        $minimyth->message_output('err', "the audio driver does not appear to be loaded.");
         return 0;
     }
 

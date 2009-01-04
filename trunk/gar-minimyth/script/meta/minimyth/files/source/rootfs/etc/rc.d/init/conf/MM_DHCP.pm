@@ -27,7 +27,7 @@ $var_list{'MM_DHCP_HOST_NAME'} =
             my $hostname = $minimyth->hostname();
             if (! $hostname)
             {
-                $minimyth->message_output('err', qq(error: 'Host Name' (or 'MM_DHCP_HOST_NAME') not configured.));
+                $minimyth->message_output('err', qq('Host Name' (or 'MM_DHCP_HOST_NAME') not configured.));
             }
         }
     }
@@ -47,7 +47,7 @@ $var_list{'MM_DHCP_TCODE'} =
         {
             if (! -e '/etc/localtime')
             {
-                $minimyth->message_output('err', qq(error: 'TCode' (or 'MM_DHCP_TCODE') not configured.));
+                $minimyth->message_output('err', qq('TCode' (or 'MM_DHCP_TCODE') not configured.));
             }
         }
     }
@@ -74,7 +74,7 @@ $var_list{'MM_DHCP_DOMAIN_NAME_SERVERS'} =
             }
             if ($valid == 0)
             {
-                $minimyth->message_output('err', qq(error: 'Domain Name Servers' (or 'MM_DHCP_DOMAIN_NAME_SERVERS') not configured.));
+                $minimyth->message_output('err', qq('Domain Name Servers' (or 'MM_DHCP_DOMAIN_NAME_SERVERS') not configured.));
             }
         }
     }
@@ -101,7 +101,7 @@ $var_list{'MM_DHCP_NTP_SERVERS'} =
             }
             if ($valid == 0)
             {
-                $minimyth->message_output('err', qq(error: 'NTP Servers' (or 'MM_DHCP_NTP_SERVERS') not configured.));
+                $minimyth->message_output('err', qq('NTP Servers' (or 'MM_DHCP_NTP_SERVERS') not configured.));
             }
         }
     }

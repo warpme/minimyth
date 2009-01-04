@@ -35,13 +35,13 @@ sub start
                 close(FILE);
                 if ($mounted == 0)
                 {
-                    $minimyth->message_output('err', "error: '$mountpoint' failed to mount.");
+                    $minimyth->message_output('err', "'$mountpoint' failed to mount.");
                     return 0;
                 }
             }
             if (system(qq(/bin/su -c '/usr/bin/test ! -r $mountpoint' - minimyth)) == 0)
             {
-                $minimyth->message_output('err', "error: '$mountpoint' is not readable by user 'minimyth'.");
+                $minimyth->message_output('err', "'$mountpoint' is not readable by user 'minimyth'.");
                 return 0;
             }
             if ($mountpoint_name eq 'MM_MEDIA_TV_MOUNTPOINT')
@@ -50,7 +50,7 @@ sub start
                 {
                     if (system(qq(/bin/su -c '/usr/bin/test ! -w $mountpoint' - minimyth)) == 0)
                     {
-                        $minimyth->message_output('err', "error: '$mountpoint' is not writable by user 'minimyth'.");
+                        $minimyth->message_output('err', "'$mountpoint' is not writable by user 'minimyth'.");
                         return 0;
                     }
                 }
@@ -59,7 +59,7 @@ sub start
             {
                 if (system(qq(/bin/su -c '/usr/bin/test ! -w $mountpoint' - minimyth)) == 0)
                 {
-                    $minimyth->message_output('err', "error: '$mountpoint' is not writable by user 'minimyth'.");
+                    $minimyth->message_output('err', "'$mountpoint' is not writable by user 'minimyth'.");
                     return 0;
                 }
             }
@@ -85,13 +85,13 @@ sub start
                 close(FILE);
                 if ($mounted == 0)
                 {
-                    $minimyth->message_output('err', "error: '$mountpoint' failed to mount.");
+                    $minimyth->message_output('err', "'$mountpoint' failed to mount.");
                     return 0;
                 }
             }
             if (system(qq(/bin/su -c '/usr/bin/test ! -r $mountpoint' - minimyth)) == 0)
             {
-                $minimyth->message_output('err', "error: '$mountpoint' is not readable by user 'minimyth'.");
+                $minimyth->message_output('err', "'$mountpoint' is not readable by user 'minimyth'.");
                 return 0;
             }
         }

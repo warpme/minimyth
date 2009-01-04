@@ -57,7 +57,7 @@ sub start
     {
         if (! $minimyth->url_mount($theme_url, "/usr/share/mythtv/themes/$theme_name"))
         {
-            $minimyth->message_output('err', "error: mount of 'MM_THEME_URL=$theme_url' failed.");
+            $minimyth->message_output('err', "mount of 'MM_THEME_URL=$theme_url' failed.");
             return 0;
         }
     }
@@ -74,7 +74,7 @@ sub start
     {
         if (! $minimyth->url_mount($themeosd_url, "/usr/share/mythtv/themes/$themeosd_name"))
         {
-            $minimyth->message_output('err', "error: mount of 'MM_THEMEOSD_URL=$themeosd_url' failed.");
+            $minimyth->message_output('err', "mount of 'MM_THEMEOSD_URL=$themeosd_url' failed.");
             return 0;
         }
     }
@@ -97,38 +97,38 @@ sub start
         my $transcode = $minimyth->application_path('transcode');
         if (! $mtd)
         {
-            $minimyth->message_output('err', "error: 'mtd' not found.");
+            $minimyth->message_output('err', "'mtd' not found.");
             return 0;
         }
         if (system(qq(/bin/su -c '/usr/bin/test ! -e $dvd_rip_mountpoint' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint' does not exist.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint' does not exist.");
             return 0;
         }
         if (system(qq(/bin/su -c '/usr/bin/test ! -d $dvd_rip_mountpoint' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint' is not a directory.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint' is not a directory.");
             return 0;
         }
         if (system(qq(/bin/su -c '/usr/bin/test ! -w $dvd_rip_mountpoint' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint' is not writable by user 'minimyth'.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint' is not writable by user 'minimyth'.");
             return 0;
         }
         system(qq(/bin/su -c '/bin/mkdir -p $dvd_rip_mountpoint/.mtd' - minimyth));
         if (system(qq(/bin/su -c '/usr/bin/test ! -e $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint/.mtd' does not exist.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' does not exist.");
             return 0;
         }
         if (system(qq(/bin/su -c '/usr/bin/test ! -d $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint/.mtd' is not a directory.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' is not a directory.");
             return 0;
         }
         if (system(qq(/bin/su -c '/usr/bin/test ! -w $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
         {
-            $minimyth->message_output('err', "error: '$dvd_rip_mountpoint/.mtd' is not writable by user 'minimyth'.");
+            $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' is not writable by user 'minimyth'.");
             return 0;
         }
         $minimyth->mythdb_settings_set('DVDRipLocation', "$dvd_rip_mountpoint/.mtd");
@@ -272,7 +272,7 @@ sub start
         {
             my $hostname = $minimyth->hostname();
             $minimyth->message_log('warn',
-                                   "warning: certain DVDs may not play. see <http://$hostname/minimyth/document-faq.html#dvd>");
+                                   "certain DVDs may not play. see <http://$hostname/minimyth/document-faq.html#dvd>");
         }
     }
 

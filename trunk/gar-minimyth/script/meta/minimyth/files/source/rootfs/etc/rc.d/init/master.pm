@@ -150,7 +150,7 @@ sub start
     # Test Myth database connection.
     if (! $minimyth->mythdb_x_test())
     {
-        $minimyth->message_output('err', "error: cannot connect to the MythTV master backend database.");
+        $minimyth->message_output('err', "cannot connect to the MythTV master backend database.");
         return 0;
     }
 

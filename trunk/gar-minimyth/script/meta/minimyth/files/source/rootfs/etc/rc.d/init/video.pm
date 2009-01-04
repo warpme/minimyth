@@ -158,7 +158,7 @@ sub start
                 }
                 default
                 {
-                    $minimyth->message_output('err', "error: something is very wrong in the 'video' init script.");
+                    $minimyth->message_output('err', "something is very wrong in the 'video' init script.");
                     return 0;
                 }
             }
@@ -257,7 +257,7 @@ sub start
         }
         default
         {
-            $minimyth->message_output('err', "error: something is very wrong in the 'video' init script.");
+            $minimyth->message_output('err', "something is very wrong in the 'video' init script.");
             return 0;
         }
     }

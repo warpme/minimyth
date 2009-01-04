@@ -37,7 +37,7 @@ sub start
             }
             if (! -e $device)
             {
-                $minimyth->message_output('err', "error: timed out waiting for LCD/VFD device.");
+                $minimyth->message_output('err', "timed out waiting for LCD/VFD device.");
                 return 0;
             }
         }

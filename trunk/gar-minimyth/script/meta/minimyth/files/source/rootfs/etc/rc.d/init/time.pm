@@ -37,7 +37,7 @@ sub start
     }
     if ($ntp_success == 0)
     {
-        $minimyth->message_output('warn', "warning: 'ntpd' failed to synchronize with any NTP server.");
+        $minimyth->message_output('warn', "'ntpd' failed to synchronize with any NTP server.");
     }
 
     # Start NTP daemon.
