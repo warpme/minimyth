@@ -32,7 +32,7 @@ mm_DEBUG_BUILD            ?= no
 # Lists the graphics drivers supported.
 # Valid values for mm_GRAPHICS are one or more of 'intel', 'nvidia',
 # 'openchrome', 'radeon', 'radeonhd', 'savage', 'sis', and 'vmware'.
-mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd
+mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd vmware
 # Lists the software to be supported.
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
