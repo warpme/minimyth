@@ -100,12 +100,17 @@ sub start
     }
     if (-f "$dir/minimyth.pm")
     {
-        require init::minimyth;
-        if (exists(&init::minimyth::start))
+        $minimyth->package_require(q(init::minimyth));
+
+        # Validate minimyth.pm.
+        $minimyth->package_member_require(q(init::minimyth), q(start));
+        $minimyth->package_member_require(q(init::minimyth), q(stop));
+
+        if ($minimyth->package_member_exists(q(init::minimyth), q(start)))
         {
             $minimyth->message_output('info', "running configuration package ...");
             init::minimyth->start($minimyth);
-        }
+        } 
     }
 
     # Enable configuration auto-detection udev rules.
@@ -128,8 +133,11 @@ sub start
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
     # Start the DHCP client now that we have created the DHCP override variables file.
-    require init::dhcp;
-    init::dhcp->start($minimyth);
+    $minimyth->package_require(q(init::dhcp));
+    if ($minimyth->package_member_require(q(init::dhcp), q(start)))
+    {
+        init::dhcp->start($minimyth);
+    }
 
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
@@ -195,11 +203,16 @@ sub _run
         foreach (grep(s/^(MM_.*)\.pm$/$1/ && (-f "$dir/$_.pm"), readdir(DIR)))
         {
             my $group = __PACKAGE__ . '::' . $_;
-            eval "require $group";
-            my $group_var_list = $group->var_list();
-            foreach (grep( /^$filter$/, keys %{$group_var_list}))
+
+            $minimyth->package_require($group);
+
+            if ($minimyth->package_member_require($group, q(var_list)))
             {
-                $var_list{$_} = $group_var_list->{$_};
+                my $group_var_list = $group->var_list();
+                foreach (grep( /^$filter$/, keys %{$group_var_list}))
+                {
+                    $var_list{$_} = $group_var_list->{$_};
+                }
             }
         }
         closedir(DIR);

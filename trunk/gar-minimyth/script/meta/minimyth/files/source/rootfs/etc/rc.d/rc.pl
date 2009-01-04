@@ -43,45 +43,79 @@ sub rc_script_list_run
 
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
 
-    my $count;
-    my $script;
-
-    $count = $#{$script_list} + 1;
+    my $count = $#{$script_list} + 1;
     given ($phase)
     {
         when (/^0$/) { $minimyth->splash_progress_set(0     , 2*$count); }
         when (/^1$/) { $minimyth->splash_progress_set($count, 2*$count); }
         when (/^2$/) { $minimyth->splash_progress_set(0     ,   $count); }
     }
+
+    unshift(@INC, $dir);
+
+    my $fail = 0;
     foreach (@{$script_list})
     {
-        unshift(@INC, $dir);
         my $package = "init::$_";
-        eval "require $package";
+        
+        # Require package.
+        if (! $minimyth->package_require($package))
+        {
+            $fail = 1;
+            last;
+        }
+
+        # Make sure that action exists.
+        if (! $minimyth->package_member_require($package, $action))
+        {
+            $fail = 1;
+            last;
+        }
+
+        # Perform action.
+        given ($action)
+        {
+            when (/^start$/)
+            {
+                if (! $package->start($minimyth))
+                {
+                    $fail = 1;
+                    last;
+                }
+            }
+            when (/^stop$/)
+            {
+                if (! $package->stop($minimyth))
+                {
+                    $fail = 1;
+                    last;
+                }
+            }
+            default
+            {
+                $fail = 1;
+                last;
+            }
+        }
+
+        $minimyth->splash_progress_update();
+    }
+    if ($fail)
+    {
         # An error occured, so start a virtual console login and a telnet login.
         # This is a serious security hole, but users have difficulty debugging
         # when they cannot connect.
-        my $result;
-        given ($action)
+        if (! qx(/bin/pidof telnetd))
         {
-            when (/^start$/) { $result = $package->start($minimyth); }
-            when (/^stop$/)  { $result = $package->stop($minimyth);  }
-            default          { $result = 0; }
+            system('/usr/sbin/telnetd');
         }
-        if (! $result )
+        if (! qx(/bin/pidof agetty))
         {
-            if (! qx(/bin/pidof telnetd))
-            {
-                system('/usr/sbin/telnetd');
-            }
-            if (! qx(/bin/pidof agetty))
-            {
-                system('/sbin/agetty 9600 tty1 &');
-            }
-            return 0;
+            system('/sbin/agetty 9600 tty1 &');
         }
-        $minimyth->splash_progress_update();
+        return 0;
     }
+
     return 1;
 }
 

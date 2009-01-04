@@ -2558,4 +2558,59 @@ sub x_stop
     return 1;
 }
 
+# package require
+sub package_require
+{
+    my $self    = shift;
+    my $package = shift;
+
+    if (! eval(qq(require $package)))
+    {
+        my $message = $@;
+
+        $self->message_output('err', qq(error: 'require $package' failed.));
+
+        if ($message)
+        {
+            my $logfile = qq(/var/log/$package.require.log);
+            if (open(FILE, '>', $logfile))
+            {
+                print FILE $message;
+                close(FILE);
+                $self->message_output('err', qq(error: ckeck '$logfile' for details.));
+            }
+        }
+        return 0;
+    }
+
+    return 1;
+}
+
+sub package_member_require
+{
+    my $self    = shift;
+    my $package = shift;
+    my $member  = shift;
+
+    if (! $self->package_member_exists($package, $member))
+    {
+        my $function = $package . '::' . $member;
+        $self->message_output('err', qq(error: '$function' does not exist.));
+        return 0;
+    }
+
+    return 1;
+}
+
+sub package_member_exists
+{
+    my $self    = shift;
+    my $package = shift;
+    my $member  = shift;
+
+    my $function = $package . '::' . $member;
+
+    return exists(&$function);
+}
+
 1;
