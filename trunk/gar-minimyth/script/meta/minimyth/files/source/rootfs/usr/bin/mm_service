@@ -5,21 +5,21 @@ use warnings;
 use feature "switch";
 
 my $service = shift;
-my $command = shift;
+my $action  = shift;
 
 if ((! defined ($service)) || ($service eq ''))
 {
     die qq(error: you must specify a service);
 }
 
-if ((! defined ($command)) || ($command eq ''))
+if ((! defined ($action)) || ($action eq ''))
 {
-    die qq(error: you must specify an command );
+    die qq(error: you must specify an action);
 }
 
 if (! -e "/etc/rc.d/init/$service.pm")
 {
-    die qq(error: unknown service: $service);
+    die qq(error: unknown service '$service');
 }
 
 require MiniMyth;
@@ -30,13 +30,39 @@ unshift (@INC, '/etc/rc.d');
 
 my $package = "init::$service";
 
-eval "require $package";
-
-given ($command)
+# Require package.
+if (! $minimyth->package_require($package))
 {
-    when (/^start$/) { $package->start($minimyth); }
-    when (/^stop$/ ) { $package->stop($minimyth);  }
-    default          { die qq(error: unknown command: $command); }
+    die;
+}
+
+# Make sure that action exists.
+if (! $minimyth->package_member_require($package, $action))
+{
+    die;
+}
+
+# Perform action.
+given ($action)
+{
+    when (/^start$/)
+    {
+        if (! $package->start($minimyth))
+        {
+            die;
+        }
+    }
+    when (/^stop$/)
+    {
+        if (! $package->stop($minimyth))
+        {
+            die;
+        }
+    }
+    default
+    {
+        die qq(error: unkown action '$action' for service '$service');
+    }
 }
 
 1;
