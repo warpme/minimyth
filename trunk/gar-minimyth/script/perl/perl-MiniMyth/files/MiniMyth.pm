@@ -1051,7 +1051,7 @@ sub mythfrontend_networkcontrol
 }
 
 #===============================================================================
-# url_parse functions.
+# url_parse function.
 #===============================================================================
 sub url_parse
 {
@@ -1076,7 +1076,90 @@ sub url_parse
 }
 
 #===============================================================================
-# url_*_get functions.
+# url_expand function.
+#===============================================================================
+sub url_expand
+{
+    my $self = shift;
+    my $url  = shift;
+
+    # Parse the URL.
+    my $url_parsed = $self->url_parse($url);
+    my $protocol   = $url_parsed->{'protocol'};
+    my $server     = $url_parsed->{'server'};
+    my $file       = $url_parsed->{'path'};
+
+    $file =~ s/\/+/\//g;
+    $file =~ s/\/$//g;
+    $file =~ s/^\///g;
+
+    my @list = ();
+
+    given ($protocol)
+    {
+        when (/^confro$/)
+        {
+            my $hostname = $self->hostname();
+            if ($hostname)
+            {
+                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' . $hostname . '/' . $file);
+            }
+            push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' .'default' . '/' . $file);
+        }
+        when (/^confrw$/)
+        {
+            my $hostname = $self->hostname();
+            if ($hostname)
+            {
+                my $file_0 = $file;
+                $file_0 =~ s/\//+/;
+                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf-rw/' . $hostname . '+' . $file_0);
+            }
+        }
+        when (/^dist$/  )
+        {
+            if ($self->var_get('MM_ROOTFS_IMAGE'))
+            {
+                my $file_0 = $self->var_get('MM_ROOTFS_IMAGE') . '/' . $file;
+                $file_0 =~ s/\/+/\//g;
+                $file_0 =~ s/[^\/]+$//g;
+                $file_0 =~ s/\/$//g;
+                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+            }
+            else
+            {
+                my $file_0 = '/minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
+                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+            }
+        }
+        when (/^file$/  )
+        {
+            push(@list, 'file:' . $file);
+        }
+        when (/^http$/  )
+        {
+            push(@list, 'http://' . $server . '/' . $file);
+        }
+        when (/^hunt$/  )
+        {
+            push(@list, @{$self->url_expand('dist:' . $file)});
+            push(@list, @{$self->url_expand('confro:' . $file)});
+        }
+        when (/^tftp$/  )
+        {
+            push(@list, 'tftp://' . $server . '/' . $file);
+        }
+        default
+        {
+            $self->message_log('err', qq(MiniMyth::url_expand: protocol '$protocol' is not supported.));
+        }
+    }
+
+    return \@list;
+}
+
+#===============================================================================
+# url_get function.
 #===============================================================================
 sub url_get
 {
@@ -1084,295 +1167,120 @@ sub url_get
     my $url        = shift;
     my $local_file = shift;
 
-    # Parse the URL.
-    my $url_parsed      = $self->url_parse($url);
-    my $remote_protocol = $url_parsed->{'protocol'};
-    my $remote_server   = $url_parsed->{'server'};
-    my $remote_file     = $url_parsed->{'path'};
+    $self->message_log('info', qq(fetching '$url': local file will be '$local_file'.));
 
     my $result = '';
-    given ($remote_protocol)
-    {
-        when (/^confro$/) { $result = $self->url_confro_get($local_file, $remote_file, $remote_server); }
-        when (/^confrw$/) { $result = $self->url_confrw_get($local_file, $remote_file, $remote_server); }
-        when (/^dist$/  ) { $result = $self->url_dist_get(  $local_file, $remote_file, $remote_server); }
-        when (/^file$/  ) { $result = $self->url_file_get(  $local_file, $remote_file, $remote_server); }
-        when (/^http$/  ) { $result = $self->url_http_get(  $local_file, $remote_file, $remote_server); }
-        when (/^hunt$/  ) { $result = $self->url_hunt_get(  $local_file, $remote_file, $remote_server); }
-        when (/^tftp$/  ) { $result = $self->url_tftp_get(  $local_file, $remote_file, $remote_server); }
-        default           { $self->message_log('err', qq(MiniMyth::url_get: protocol ') . $remote_protocol . qq(' is not supported.)); }
-    }
-    return $result;
-}
-
-sub url_confro_get
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
 
     $local_file =~ s/\/+/\//g;
     $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $hostname = $self->hostname();
-    my $remote_file_0 = undef;
-    my $remote_file_1 = undef;
-
-    if ($hostname)
-    {
-        $remote_file_0 = $remote_file;
-        $remote_file_0 = 'conf/' . $hostname . '/' . $remote_file_0;
-    }
-    $remote_file_1 = $remote_file;
-    $remote_file_1 = 'conf/' . 'default' . '/' . $remote_file_1;
-
-    my $result = '';
-    if (($result eq '') && (defined $remote_file_0))
-    {
-        my $url = $self->var_get('MM_MINIMYTH_BOOT_URL') . $remote_file_0;
-        $result = $self->url_get($url, $local_file);
-    }
-    if (($result eq '') && (defined $remote_file_1))
-    {
-        my $url = $self->var_get('MM_MINIMYTH_BOOT_URL') . $remote_file_1;
-        $result = $self->url_get($url, $local_file);
-    }
-    return $result;
-}
-
-sub url_confrw_get
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $hostname = $self->hostname();
-    my $remote_file_0 = undef;
-
-    if ($hostname)
-    {
-        $remote_file_0 = $remote_file;
-        $remote_file_0 =~ s/\//+/;
-        $remote_file_0 = 'conf-rw/' . $hostname . '+' . $remote_file_0;
-    }
-
-    my $result = '';
-    if (($result eq '') && (defined $remote_file_0))
-    {
-        my $url = $self->var_get('MM_MINIMYTH_BOOT_URL') . $remote_file_0;
-        $result = $self->url_get($url, $local_file);
-    }
-    return $result;
-}
-
-sub url_dist_get
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $remote_file_0 = undef;
-
-    if ($self->var_get('MM_ROOTFS_IMAGE') ne '')
-    {
-        $remote_file_0 = $self->var_get('MM_ROOTFS_IMAGE');
-        $remote_file_0 =~ s/\/+/\//g;
-        $remote_file_0 =~ s/[^\/]+$//g;
-        $remote_file_0 =~ s/\/$//g;
-    }
-    else
-    {
-        $remote_file_0 = '/minimyth-' . $self->var_get('MM_VERSION');
-    }
-    $remote_file_0 = $remote_file_0 . '/' . $remote_file;
-
-    my $result = '';
-    if (($result eq '') && (defined $remote_file_0))
-    {
-        my $url = $self->var_get('MM_MINIMYTH_BOOT_URL') . $remote_file_0;
-        $result = $self->url_get($url, $local_file);
-    }
-    return $result;
-}
-
-sub url_file_get
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-
-    my $local_dir = undef;
-
-    $local_dir = $local_file;
-    $local_dir =~ s/[^\/]*$//;
-    $local_dir =~ s/\$//;
-
-    my $result = '';
-
-    File::Path::mkpath($local_dir, {mode => 0755});
-    (-d $local_dir) or return $result;
 
     unlink $local_file;
-    File::Copy::copy($remote_file, $local_file) and $result = 'file:' . $remote_file;
-    if ($result eq '')
+    if (-e $local_file)
     {
-        unlink $local_file;
+        $self->message_log('err', qq(fetching '$url': failed to remove existing local file '$local_file'.));
+        return $result;
     }
-    return $result;
-}
 
-sub url_http_get
-{
-    my $self          = shift;
-    my $local_file    = shift;
-    my $remote_file   = shift;
-    my $remote_server = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $local_dir = undef;
-
-    $local_dir = $local_file;
+    my $local_dir = $local_file;
     $local_dir =~ s/[^\/]*$//;
     $local_dir =~ s/\$//;
-
-    my $result = '';
-
     File::Path::mkpath($local_dir, {mode => 0755});
-    (-d $local_dir) or return $result;
-
-    unlink $local_file;
-    my $url = 'http://' . $remote_server . '/' . $remote_file;
-    open(my $OUT_FILE, '>', $local_file) || do { return $result; };
-    chmod(0600, $local_file);
-    my $curl = new WWW::Curl::Easy;
-    $curl->setopt(CURLOPT_VERBOSE, 0);
-    $curl->setopt(CURLOPT_URL, $url);
-    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-    my $retcode = $curl->perform;
-    close($OUT_FILE);
-    if    (! -e $local_file) 
+    if (! -d $local_dir)
     {
-        $result = '';
+        $self->message_log('err', qq(fetching '$url': failed to create local directory '$local_dir'.));
+        return $result;
     }
-    elsif ($retcode != 0)
+
+    my @url_list = @{$self->url_expand($url)};
+    if ($#url_list < 0)
     {
+        $self->message_log('err', qq(fetching '$url': URL '$url' did not expand to any valid URLs.));
+    }
+
+    for my $url_item (@url_list)
+    {
+        # Parse the URL.
+        my $url_parsed      = $self->url_parse($url_item);
+        my $remote_protocol = $url_parsed->{'protocol'};
+        my $remote_server   = $url_parsed->{'server'};
+        my $remote_file     = $url_parsed->{'path'};
+
+        $remote_file =~ s/\/+/\//g;
+        $remote_file =~ s/\/$//g;
+
+        given ($remote_protocol)
+        {
+            when (/^file$/)
+            {
+                my $retcode = File::Copy::copy($remote_file, $local_file);
+                if ( (-e $local_file) &&
+                     ($retcode != 0)  )
+                {
+                    chmod(0600, $local_file);
+                    $result = $url_item;
+                }
+            }
+            when (/^http$/)
+            {
+                if (open(my $OUT_FILE, '>', $local_file))
+                {
+                    chmod(0600, $local_file);
+                    my $curl = new WWW::Curl::Easy;
+                    $curl->setopt(CURLOPT_VERBOSE, 0);
+                    $curl->setopt(CURLOPT_URL, $url_item);
+                    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+                    my $retcode = $curl->perform;
+                    close($OUT_FILE);
+                    if ( (-e $local_file)                            &&
+                         ($retcode == 0)                             &&
+                         ($curl->getinfo(CURLINFO_HTTP_CODE) == 200) )
+                    {
+                        $result = $url_item;
+                    }
+                }
+            }
+            when (/^tftp$/)
+            {
+#               if (open(my $OUT_FILE, '>', $local_file))
+#               {
+#                   chmod(0600, $local_file);
+#                   my $curl = new WWW::Curl::Easy;
+#                   $curl->setopt(CURLOPT_URL, $url_item);
+#                   $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+#                   my $retcode = $curl->perform;
+#                   close($OUT_FILE);
+#                   if ( (-e $local_file) &&
+#                        ($retcode == 0)  )
+#                   {
+#                       $result = $url_item;
+#                   }
+#               }
+                my $retcode = system(qq(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server > /dev/null 2>&1));
+                if ( (-e $local_file) &&
+                     ($retcode == 0)  )
+                {
+                    chmod(0600, $local_file);
+                    $result = $url;
+                }
+            }
+            default
+            {
+                $self->message_log('info', qq(fetching '$url': URL '$url_item' has unknown protocol.));
+            }
+        }
+        if ($result ne '')
+        {
+            $self->message_log('info', qq(fetching '$url': URL '$url_item' fetched.));
+            last;
+        }
         unlink $local_file;
-        $result = '';
-    }
-    elsif ($curl->getinfo(CURLINFO_HTTP_CODE) != 200)
-    {
-        unlink $local_file;
-        $result = '';
-    }
-    else
-    {
-        $result = $url;
-    }
-    return $result;
-}
-
-sub url_hunt_get
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
-
-    my $result = '';
-    if ($result eq '')
-    {
-        $result = $self->url_dist_get($local_file, $remote_file);
-    }
-    if ($result eq '')
-    {
-        $result = $self->url_confro_get($local_file, $remote_file);
-    }
-    return $result;
-}
-
-sub url_tftp_get
-{
-    my $self          = shift;
-    my $local_file    = shift;
-    my $remote_file   = shift;
-    my $remote_server = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $local_dir = undef;
-
-    $local_dir = $local_file;
-    $local_dir =~ s/[^\/]*$//;
-    $local_dir =~ s/\$//;
-
-    my $result = '';
-
-    File::Path::mkpath($local_dir, {mode => 0755});
-    (-d $local_dir) or return $result;
-
-    unlink $local_file;
-    my $url = 'tftp://' . $remote_server . '/' . $remote_file;
-#    open(my $OUT_FILE, '>', $local_file) || do { return $result; };
-#    chmod(0600, $local_file);
-#    my $curl = new WWW::Curl::Easy;
-#    $curl->setopt(CURLOPT_URL, $url);
-#    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-#    my $retcode = $curl->perform;
-#    close($OUT_FILE);
-    my $retcode = system(qq(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server));
-    if    (! -e $local_file) 
-    {
-        $result = '';
-    }
-    elsif ($retcode != 0)
-    {
-        unlink $local_file;
-        $result = '';
-    }
-    else
-    {
-        chmod(0600, $local_file);
-        $result = $url;
+        $self->message_log('info', qq(fetching '$url': URL '$url_item' not fetched \(it may not exist\).));
     }
     return $result;
 }
 
 #===============================================================================
-# url_*_put functions.
+# url_put function.
 #===============================================================================
 sub url_put
 {
@@ -1380,189 +1288,127 @@ sub url_put
     my $url        = shift;
     my $local_file = shift;
 
-    # Parse the URL.
-    my $url_parsed      = $self->url_parse($url);
-    my $remote_protocol = $url_parsed->{'protocol'};
-    my $remote_server   = $url_parsed->{'server'};
-    my $remote_file     = $url_parsed->{'path'};
+    $self->message_log('info', qq(saving '$local_file': remote URL will be '$url'.));
 
     my $result = '';
-    given ($remote_protocol)
-    {
-        when (/^confrw$/) { $result = $self->url_confrw_put($local_file, $remote_file, $remote_server); }
-        when (/^file$/  ) { $result = $self->url_file_put(  $local_file, $remote_file, $remote_server); }
-        when (/^http$/  ) { $result = $self->url_http_put(  $local_file, $remote_file, $remote_server); }
-        when (/^tftp$/  ) { $result = $self->url_tftp_put(  $local_file, $remote_file, $remote_server); }
-        default           { $self->message_log('err', qq(MiniMyth::url_put: protocol ') . $_ . qq(' is not supported.)); }
-    }
-    return $result;
-}
-
-sub url_confrw_put
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
 
     $local_file =~ s/\/+/\//g;
     $local_file =~ s/\/$//g;
 
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $hostname = $self->hostname();
-    my $remote_file_0 = undef;
-
-    if ($hostname)
-    {
-        $remote_file_0 = $remote_file;
-        $remote_file_0 =~ s/\//+/;
-        $remote_file_0 = 'conf-rw/' . $hostname . '+' . $remote_file_0;
-    }
-
-    my $result = '';
     if (! -f $local_file)
     {
-        $self->message_log('err', qq(MiniMyth::url_confrw_put: local file ') . $local_file . qq(' not found.));
+        $self->message_log('err', qq(saving '$local_file': file not found.));
         return $result;
     }
-    if ( $hostname eq '')
+
+    my @url_list = @{$self->url_expand($url)};
+
+    if ($#url_list < 0)
     {
-        $self->message_log('err', qq(MiniMyth::url_confrw_put: hostname unknown.'));
-        return $result;
+        $self->message_log('err', qq(saving '$local_file': URL '$url' did not expand to any valid URLs.));
     }
-    if (($result eq '') && (defined $remote_file_0))
+
+    for my $url_item (@url_list)
     {
-        my $url = $self->var_get('MM_MINIMYTH_BOOT_URL') . $remote_file_0;
-        $result = $self->url_put($url, $local_file);
-    }
-    return $result;
-}
+        # Parse the URL.
+        my $url_parsed      = $self->url_parse($url_item);
+        my $remote_protocol = $url_parsed->{'protocol'};
+        my $remote_server   = $url_parsed->{'server'};
+        my $remote_file     = $url_parsed->{'path'};
 
-sub url_file_put
-{
-    my $self        = shift;
-    my $local_file  = shift;
-    my $remote_file = shift;
+        given ($remote_protocol)
+        {
+            when (/^file$/  )
+            {
+                my $remote_dir = $remote_file;
+                $remote_dir =~ s/[^\/]*$//;
+                $remote_dir =~ s/\$//;
+                File::Path::mkpath($remote_dir, {mode => 0755});
+                if (! -d $remote_dir)
+                {
+                    $self->message_log('err', qq(saving '$local_file': failed to create remote directory '$remote_dir'.));
+                    return $result;
+                }
 
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
+                unlink $remote_file;
+                if (-e $remote_file)
+                {
+                    $self->message_log('err', qq(saving '$local_file': failed to remove existing remote file '$remote_file'.));
+                    return $result;
+                }
 
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-
-    my $remote_dir = undef;
-
-    $remote_dir = $remote_file;
-    $remote_dir =~ s/[^\/]*$//;
-    $remote_dir =~ s/\$//;
-
-    my $result = '';
-
-    File::Path::mkpath($remote_dir, {mode => 0755});
-    (-d $remote_dir) or return $result;
-
-    unlink $remote_file;
-    if (! -f $local_file)
-    {
-        $self->message_log('err', qq(MiniMyth::url_file_put: local file ') . $local_file . qq(' not found.));
-        return $result;
-    }
-    File::Copy::copy($local_file, $remote_file) and $result = 'file:' . $remote_file;
-    if ($result eq '')
-    {
-        unlink $remote_file;
-    }
-    return $result;
-}
-
-sub url_http_put
-{
-    my $self          = shift;
-    my $local_file    = shift;
-    my $remote_file   = shift;
-    my $remote_server = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $result = '';
-    if (! -f $local_file)
-    {
-        $self->message_log('err', qq(MiniMyth::url_http_put: local file ') . $local_file . qq(' not found.));
-        return $result;
-    }
-    my $url = 'http://' . $remote_server . '/'. $remote_file;
-    my $local_file_size = -s $local_file;
-    open(my $IN_FILE, '<', $local_file) || do { return $result; };
-    open(my $OUT_FILE, '>', File::Spec->devnull) || do { close($IN_FILE); return $result; };
-    my $curl = new WWW::Curl::Easy;
-    $curl->setopt(CURLOPT_VERBOSE, 0);
-    $curl->setopt(CURLOPT_URL, $url);
-    $curl->setopt(CURLOPT_INFILE, $IN_FILE);
-    $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
-    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-    $curl->setopt(CURLOPT_PUT, 1);
-    my $retcode = $curl->perform;
-    close($IN_FILE);
-    close($OUT_FILE);
-    if ($retcode == 0)
-    {
-        $result = $url;
-    }
-    else
-    {
-        $result = ''
-    }
-    return $result;
-}
-
-sub url_tftp_put
-{
-    my $self          = shift;
-    my $local_file    = shift;
-    my $remote_file   = shift;
-    my $remote_server = shift;
-
-    $local_file =~ s/\/+/\//g;
-    $local_file =~ s/\/$//g;
-
-    $remote_file =~ s/\/+/\//g;
-    $remote_file =~ s/\/$//g;
-    $remote_file =~ s/^\///g;
-
-    my $result = '';
-    if (! -f $local_file)
-    {
-        $self->message_log('err', qq(MiniMyth::url_tftp_put: local file ') . $local_file . qq(' not found.));
-        return $result;
-    }
-    my $url = 'tftp://' . $remote_server . '/'. $remote_file;
-#    my $local_file_size = -s $local_file;
-#    open(my $IN_FILE, '<', $local_file) || do { return $result; };
-#    open(my $OUT_FILE, '>', File::Spec->devnull) || do { close($IN_FILE); return $result; };
-#    my $curl = new WWW::Curl::Easy;
-#    $curl->setopt(CURLOPT_VERBOSE, 0);
-#    $curl->setopt(CURLOPT_URL, $url);
-#    $curl->setopt(CURLOPT_INFILE, $IN_FILE);
-#    $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
-#    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-#    my $retcode = $curl->perform;
-#    close($IN_FILE);
-#    close($OUT_FILE);
-    my $retcode = system(qq(/usr/bin/tftp -p -l $local_file -r $remote_file $remote_server));
-    if ($retcode == 0)
-    {
-        $result = $url;
-    }
-    else
-    {
-        $result = ''
+                my $retcode = File::Copy::copy($local_file, $remote_file);
+                if ( (-e $local_file) &&
+                     ($retcode != 0)  )
+                {
+                    chmod(0600, $local_file);
+                    $result = $url_item;
+                }
+            }
+            when (/^http$/  )
+            {
+                if (open(my $IN_FILE, '<', $local_file))
+                {
+                    if (open(my $OUT_FILE, '>', File::Spec->devnull))
+                    {
+                        my $local_file_size = -s $local_file;
+                        my $curl = new WWW::Curl::Easy;
+                        $curl->setopt(CURLOPT_VERBOSE, 0);
+                        $curl->setopt(CURLOPT_URL, $url_item);
+                        $curl->setopt(CURLOPT_INFILE, $IN_FILE);
+                        $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
+                        $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+                        $curl->setopt(CURLOPT_PUT, 1);
+                        my $retcode = $curl->perform;
+                        close($OUT_FILE);
+                        if ($retcode == 0)
+                        {
+                            $result = $url_item;
+                        }
+                    }
+                    close($IN_FILE);
+                }
+            }
+            when (/^tftp$/  )
+            {
+#               if (open(my $IN_FILE, '<', $local_file))
+#               {
+#                   if (open(my $OUT_FILE, '>', File::Spec->devnull))
+#                   {
+#                       my $local_file_size = -s $local_file;
+#                       my $curl = new WWW::Curl::Easy;
+#                       $curl->setopt(CURLOPT_VERBOSE, 0);
+#                       $curl->setopt(CURLOPT_URL, $url_item);
+#                       $curl->setopt(CURLOPT_INFILE, $IN_FILE);
+#                       $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
+#                       $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+#                       my $retcode = $curl->perform;
+#                       close($OUT_FILE);
+#                       if ($retcode == 0)
+#                       {
+#                           $result = $url_item;
+#                       }
+#                   }
+#                   close($IN_FILE);
+#               }
+                my $retcode = system(qq(/usr/bin/tftp -p -l $local_file -r $remote_file $remote_server > /dev/null 2>&1));
+                if ($retcode == 0)
+                {
+                    $result = $url_item;
+                }
+            }
+            default
+            {
+                $self->message_log('info', qq(saving '$local_file': URL '$url_item' has unknown protocol.));
+            }
+        }
+        if ($result ne '')
+        {
+            $self->message_log('info', qq(saving '$local_file': saved to URL '$url_item'.));
+            last;
+        }
+        unlink $local_file;
+        $self->message_log('info', qq(saving '$local_file': not saved to URL '$url_item' \(we may not have write access\).));
     }
     return $result;
 }
@@ -1576,7 +1422,7 @@ sub confro_get
     my $remote_file = shift;
     my $local_file  = shift;
 
-    my $result = $self->url_confro_get($local_file, $remote_file);
+    my $result = $self->url_get('confro:' . $remote_file, $local_file);
 
     return $result;
 }
@@ -1587,7 +1433,7 @@ sub confrw_get
     my $remote_file = shift;
     my $local_file  = shift;
 
-    my $result = $self->url_confrw_get($local_file, $remote_file);
+    my $result = $self->url_get('confrw:' . $remote_file, $local_file);
 
     return $result;
 }
@@ -1598,7 +1444,7 @@ sub confrw_put
     my $remote_file = shift;
     my $local_file  = shift;
 
-    my $result = $self->url_confrw_put($local_file, $remote_file);
+    my $result = $self->url_put('confrw:' . $remote_file, $local_file);
 
     return $result;
 }
