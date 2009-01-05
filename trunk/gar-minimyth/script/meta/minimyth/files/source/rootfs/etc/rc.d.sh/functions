@@ -188,7 +188,11 @@ mm_url_dist_get() {
         REMOTE_FILE_0=`/bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%/$%%'`
         REMOTE_FILE_0="${REMOTE_FILE_0}/${REMOTE_FILE}"
     else
-        REMOTE_FILE_0="/minimyth-${MM_VERSION}/${REMOTE_FILE}"
+        if /usr/bin/test "${MM_MINIMYTH_BOOT_URL}" = 'file:/minimyth/' ; then
+            REMOTE_FILE_0="/${REMOTE_FILE}"
+        else
+            REMOTE_FILE_0="/minimyth-${MM_VERSION}/${REMOTE_FILE}"
+        fi
     fi
 
     /bin/rm -f "${LOCAL_FILE}"
