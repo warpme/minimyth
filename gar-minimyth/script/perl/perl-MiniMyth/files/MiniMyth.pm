@@ -1128,8 +1128,17 @@ sub url_expand
             }
             else
             {
-                my $file_0 = '/minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
-                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                if ($self->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
+                {
+                    my $file_0 = $file;
+                    push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                }
+                else
+                {
+                    my $file_0 = 'minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
+                    push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                }
+                $self->message_log('info', qq(expanding '$url': guessed '$list[$#list]' because distribution location is unknown.));
             }
         }
         when (/^file$/  )
