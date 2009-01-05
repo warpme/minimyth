@@ -11,7 +11,7 @@ endef
 
 DEPENDS = lang/c
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure shell
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
@@ -28,6 +28,13 @@ include ../../gar.mk
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
+configure-shell:
+	@$(if $(filter build,$(DESTIMG)), \
+		sed -i -e 's%@SHELL@%$(DESTDIR)$(ebindir)/sh%g' $(WORKSRC)/scripts/fakeroot.in , \
+		sed -i -e 's%@SHELL@%$(ebindir)/sh%g' $(WORKSRC)/scripts/fakeroot.in \
+	)
 	@$(MAKECOOKIE)
 
 post-install:
