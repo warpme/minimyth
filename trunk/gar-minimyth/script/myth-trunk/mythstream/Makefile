@@ -59,6 +59,9 @@ post-extract:
 				cp -pd $(WORKSRC)/parsers/$${parser}/$${file} $(WORKSRC)/parsers/$${file} ; \
 			fi ; \
                 done ; )
+	@# Remove parsers that are actually bash scripts not perl scripts.
+	@rm -fr $(WORKSRC)/parsers/belegger
+	@rm -fr $(WORKSRC)/parsers/zoomin
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:
