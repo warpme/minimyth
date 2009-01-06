@@ -9,7 +9,7 @@ use warnings;
 use feature "switch";
 
 require File::Basename;
-require File::Find;
+use File::Find ();
 require File::Path;
 require MiniMyth;
 
@@ -232,6 +232,8 @@ sub start
                     File::Find::find(
                         sub
                         {
+                            # Silence spurious warning caused by $File::Find::dir being used only once.
+                            no warnings 'File::Find';
                             my $file = File::Basename::basename($File::Find::name);
                             if ((-f $File::Find::name) && ($File::Find::dir !~ /^\/usr\/lib\/nvidia(\/.*)?$/) && ($file =~ /^$lib_filter$/))
                             {

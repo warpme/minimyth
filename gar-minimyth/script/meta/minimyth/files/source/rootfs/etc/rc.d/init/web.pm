@@ -7,6 +7,7 @@ package init::web;
 use strict;
 use warnings;
 
+use File::Find ();
 require MiniMyth;
 
 sub start
@@ -21,6 +22,8 @@ sub start
     File::Find::finddepth(
         sub
         {
+            # Silence spurious warning caused by $File::Find::name being used only once.
+            no warnings 'File::Find';
             chown($uid, $gid, $File::Find::name);
         },
         '/srv/www');
