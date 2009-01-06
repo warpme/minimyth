@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-require MiniMyth;
+use MiniMyth ();
 
 require "/srv/www/cgi-bin/mm_webpage.pm";
 

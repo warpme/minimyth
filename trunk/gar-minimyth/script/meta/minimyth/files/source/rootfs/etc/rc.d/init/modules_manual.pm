@@ -7,8 +7,8 @@ package init::modules_manual;
 use strict;
 use warnings;
 
-require File::Spec;
-require MiniMyth;
+use File::Spec ();
+use MiniMyth ();
 
 sub start
 {

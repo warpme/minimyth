@@ -3,8 +3,8 @@
 use warnings;
 use strict;
 
-require File::Spec;
-require MiniMyth;
+use File::Spec ();
+use MiniMyth ();
 
 require "/srv/www/cgi-bin/mm_webpage.pm";
 

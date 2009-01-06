@@ -7,7 +7,7 @@ package init::dhcp;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 # If there is no DHCP override variables file (/etc/conf.d/dhcp.override) then
 # this routine will cause the DHCP client to run once and quit. Whereas, if

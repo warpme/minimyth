@@ -7,7 +7,7 @@ package init::lirc;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub _remote_wakeup_enable
 {

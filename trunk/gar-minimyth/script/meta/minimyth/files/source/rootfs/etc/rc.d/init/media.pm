@@ -7,7 +7,7 @@ package init::media;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

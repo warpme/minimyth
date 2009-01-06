@@ -8,8 +8,8 @@ use strict;
 use warnings;
 use feature "switch";
 
-require File::Spec;
-require MiniMyth;
+use File::Spec ();
+use MiniMyth ();
 
 sub start
 {

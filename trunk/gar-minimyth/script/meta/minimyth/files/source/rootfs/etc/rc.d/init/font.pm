@@ -7,8 +7,8 @@ package init::font;
 use strict;
 use warnings;
 
-require File::Path;
-require MiniMyth;
+use File::Path ();
+use MiniMyth ();
 
 sub start
 {

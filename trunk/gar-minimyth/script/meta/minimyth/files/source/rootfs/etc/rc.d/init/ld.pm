@@ -7,7 +7,7 @@ package init::ld;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {
