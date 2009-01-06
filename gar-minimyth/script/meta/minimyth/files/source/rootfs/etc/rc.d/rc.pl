@@ -7,11 +7,10 @@ use strict;
 use warnings;
 use feature "switch";
 
-require Cwd;
-require Date::Manip;
-require File::Basename;
-require File::Spec;
-require MiniMyth;
+use Cwd ();
+use Date::Manip ();
+use File::Basename ();
+use MiniMyth ();
 
 my @script_list_start =
 (

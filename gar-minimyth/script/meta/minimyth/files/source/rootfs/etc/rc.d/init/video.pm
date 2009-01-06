@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use feature "switch";
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

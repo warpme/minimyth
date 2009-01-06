@@ -7,8 +7,8 @@ package init::ssh_server;
 use strict;
 use warnings;
 
-require File::Copy;
-require MiniMyth;
+use File::Copy ();
+use MiniMyth ();
 
 sub start
 {

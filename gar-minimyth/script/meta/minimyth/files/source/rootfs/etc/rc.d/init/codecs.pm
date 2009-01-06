@@ -7,7 +7,7 @@ package init::codecs;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

@@ -7,7 +7,7 @@ package init::modules_automatic;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

@@ -5,8 +5,8 @@ package mm_webpage;
 use warnings;
 use strict;
 
-require Date::Manip;
-require MiniMyth;
+use Date::Manip ();
+use MiniMyth ();
 
 sub page
 {
@@ -93,7 +93,7 @@ sub page
     push(@page,  q(              alt="Valid CSS!"      height="31" width="88" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="version">));
-    push(@page,  q(          Last Updated on 2008-09-01));
+    push(@page,  q(          Last Updated on 2009-01-05));
     push(@page,  q(          <br />));
     push(@page,  q(          &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;));
     push(@page,  q(        </div>));

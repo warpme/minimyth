@@ -8,9 +8,9 @@ use strict;
 use warnings;
 use feature "switch";
 
-require File::Basename;
-require File::Path;
-require MiniMyth;
+use File::Basename ();
+use File::Path ();
+use MiniMyth ();
 
 sub start
 {

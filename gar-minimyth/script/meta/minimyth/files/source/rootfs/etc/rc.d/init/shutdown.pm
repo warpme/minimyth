@@ -7,7 +7,7 @@ package init::shutdown;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub _mountpoints_get
 {

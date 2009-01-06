@@ -8,10 +8,10 @@ use strict;
 use warnings;
 use feature "switch";
 
-require File::Basename;
+use File::Basename ();
 use File::Find ();
-require File::Path;
-require MiniMyth;
+use File::Path ();
+use MiniMyth ();
 
 sub start
 {

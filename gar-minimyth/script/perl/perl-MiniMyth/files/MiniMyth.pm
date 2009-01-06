@@ -4,15 +4,15 @@ use strict;
 use warnings;
 use feature "switch";
 
-require DBD::mysql;
-require DBI;
-require File::Basename;
-require File::Copy;
-require File::Find;
-require File::Path;
-require File::Spec;
-require Net::Telnet;
-use     WWW::Curl::Easy;
+use DBD::mysql ();
+use DBI ();
+use File::Basename ();
+use File::Copy ();
+use File::Find ();
+use File::Path ();
+use File::Spec ();
+use Net::Telnet ();
+use WWW::Curl::Easy qw(CURLINFO_HTTP_CODE CURLOPT_INFILE CURLOPT_INFILESIZE CURLOPT_PUT CURLOPT_URL CURLOPT_VERBOSE CURLOPT_WRITEDATA);
 
 sub new
 {

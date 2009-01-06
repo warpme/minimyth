@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use File::Find ();
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

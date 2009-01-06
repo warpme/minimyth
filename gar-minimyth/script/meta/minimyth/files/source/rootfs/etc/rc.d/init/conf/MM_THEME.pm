@@ -7,7 +7,7 @@ package init::conf::MM_THEME;
 use strict;
 use warnings;
 
-require File::Basename;
+use File::Basename ();
 
 my %var_list;
 

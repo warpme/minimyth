@@ -7,7 +7,7 @@ package init::time;
 use strict;
 use warnings;
 
-require MiniMyth;
+use MiniMyth ();
 
 sub start
 {

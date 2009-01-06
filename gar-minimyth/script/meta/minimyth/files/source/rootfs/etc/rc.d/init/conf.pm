@@ -7,9 +7,9 @@ package init::conf;
 use strict;
 use warnings;
 
-require Cwd;
-require File::Basename;
-require MiniMyth;
+use Cwd ();
+use File::Basename ();
+use MiniMyth ();
 
 sub start
 {
