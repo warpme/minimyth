@@ -36,14 +36,14 @@ sub start
     # memory).
     # For this to work, you need to prepare the swap file on the server. This is
     # done using the command:
-    #   'cd {swap-dir} ; dd if=/dev/zero of=<swap-file> bs=1k count=<swap-size}'
-    # where <swap-dir> is the directory that will be exported and mounted on
-    # the frontend as the directory containing the swap file, <swap-file> is the
-    # name of the swap file, and <swap-size> is the size of the swap file in
+    #   'cd {swap-dir} ; dd if=/dev/zero of={swap-file} bs=1k count={swap-size}'
+    # where {swap-dir} is the directory that will be exported and mounted on
+    # the frontend as the directory containing the swap file, {swap-file} is the
+    # name of the swap file, and {swap-size} is the size of the swap file in
     # kilobytes. Remember to use different swap files for each MiniMyth frontend.
 #    {
-#        my $swap_url    = '<swap-url>';
-#        my $swap_file   = '<swap-file>';
+#        my $swap_url    = '{swap-url}';
+#        my $swap_file   = '{swap-file}';
 #        my $swap_device = '';
 #        open(FILE, '-|', '/sbin/losetup -f') || die;
 #        while(<FILE>)
