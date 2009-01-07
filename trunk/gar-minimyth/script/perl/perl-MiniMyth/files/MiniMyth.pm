@@ -1120,10 +1120,11 @@ sub url_expand
         {
             if ($self->var_get('MM_ROOTFS_IMAGE'))
             {
-                my $file_0 = $self->var_get('MM_ROOTFS_IMAGE') . '/' . $file;
+                my $file_0 = $self->var_get('MM_ROOTFS_IMAGE');
                 $file_0 =~ s/\/+/\//g;
                 $file_0 =~ s/[^\/]+$//g;
                 $file_0 =~ s/\/$//g;
+                $file_0 .= '/' . $file;
                 push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
             }
             else
