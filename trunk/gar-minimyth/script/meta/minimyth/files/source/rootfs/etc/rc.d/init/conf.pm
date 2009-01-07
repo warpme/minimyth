@@ -109,7 +109,14 @@ sub start
         if ($minimyth->package_member_exists(q(init::minimyth), q(start)))
         {
             $minimyth->message_output('info', "running configuration package ...");
-            init::minimyth->start($minimyth);
+            eval
+            {
+                init::minimyth->start($minimyth);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+            }
         } 
     }
 
@@ -136,7 +143,14 @@ sub start
     $minimyth->package_require(q(init::dhcp));
     if ($minimyth->package_member_require(q(init::dhcp), q(start)))
     {
-        init::dhcp->start($minimyth);
+        eval
+        {
+            init::dhcp->start($minimyth);
+        };
+        if ($@)
+        {
+            $minimyth->message_output('err', qq($@));
+        }
     }
 
     $minimyth->message_output('info', "processing configuration file ...");
@@ -179,7 +193,14 @@ sub stop
         if (exists(&init::minimyth::stop))
         {
             $minimyth->message_output('info', "running configuration package ...");
-            init::minimyth->stop($minimyth);
+            eval
+            {
+                init::minimyth->stop($minimyth);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+            }
         }
     }
 
@@ -208,7 +229,16 @@ sub _run
 
             if ($minimyth->package_member_require($group, q(var_list)))
             {
-                my $group_var_list = $group->var_list();
+                my $group_var_list = undef;
+                eval
+                {
+                    $group_var_list = $group->var_list();
+                };
+                if ($@)
+                {
+                    $minimyth->message_output('err', qq($@));
+                    return 0;
+                }
                 foreach (grep( /^$filter$/, keys %{$group_var_list}))
                 {
                     $var_list{$_} = $group_var_list->{$_};
@@ -268,7 +298,15 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($prerequisite) eq 'CODE')
         {
-            $prerequisite = &{$prerequisite}($minimyth, $var_name); 
+            eval
+            {
+                $prerequisite = &{$prerequisite}($minimyth, $var_name); 
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
         if (ref($prerequisite) ne 'ARRAY')
@@ -306,7 +344,15 @@ sub _run_var
             # Convert function pointer to its return value.
             if (ref($value_default) eq 'CODE')
             {
-                $value_default = &{$value_default}($minimyth, $var_name); 
+                eval
+                {
+                    $value_default = &{$value_default}($minimyth, $var_name); 
+                };
+                if ($@)
+                {
+                    $minimyth->message_output('err', qq($@));
+                    return 0;
+                }
             }
             # Set variable to its default value.
             $minimyth->var_set($var_name, $value_default);
@@ -319,7 +365,15 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($value_valid) eq 'CODE')
         {
-            $value_valid = &{$value_valid}($minimyth, $var_name);
+            eval
+            {
+                $value_valid = &{$value_valid}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
         if (ref($value_valid) ne 'ARRAY')
@@ -349,7 +403,15 @@ sub _run_var
                     # Convert function pointer to its return value.
                     if (ref($value_default) eq 'CODE')
                     {
-                        $value_default = &{$value_default}($minimyth, $var_name); 
+                        eval
+                        {
+                            $value_default = &{$value_default}($minimyth, $var_name); 
+                        };
+                        if ($@)
+                        {
+                            $minimyth->message_output('err', qq($@));
+                            return 0;
+                        }
                     }
                     # Set variable to its default value.
                     $minimyth->var_set($var_name, $value_default);
@@ -364,7 +426,15 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($value_obsolete) eq 'CODE')
         {
-            $value_obsolete = &{$value_obsolete}($minimyth, $var_name);
+            eval
+            {
+                $value_obsolete = &{$value_obsolete}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
         if (ref($value_obsolete) ne 'ARRAY')
@@ -392,7 +462,15 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($value_auto) eq 'CODE')
         {
-            $value_auto = &{$value_auto}($minimyth, $var_name);
+            eval
+            {
+                $value_auto = &{$value_auto}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Set variable to its auto value.
         $minimyth->var_set($var_name, $value_auto);
@@ -404,7 +482,15 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($value_none) eq 'CODE')
         {
-            $value_none = &{$value_none}($minimyth, $var_name);
+            eval
+            {
+                $value_none = &{$value_none}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Set variable to its none value.
         $minimyth->var_set($var_name, $value_none);
@@ -416,11 +502,27 @@ sub _run_var
         # Convert function pointer to its return value.
         if (ref($value_file) eq 'CODE')
         {
-            $value_file = &{$value_file}($minimyth, $var_name);
+            eval
+            {
+                $value_file = &{$value_file}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         if (ref($file) eq 'CODE')
         {
-            $file = &{$file}($minimyth, $var_name);
+            eval
+            {
+                $file = &{$file}($minimyth, $var_name);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                return 0;
+            }
         }
         # Convert non-array pointer (i.e. hash pointer) to an array pointer.
         if (ref($file) ne 'ARRAY')

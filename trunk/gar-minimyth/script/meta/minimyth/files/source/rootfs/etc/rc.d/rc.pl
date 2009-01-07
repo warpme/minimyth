@@ -76,16 +76,34 @@ sub rc_script_list_run
         {
             when (/^start$/)
             {
-                if (! $package->start($minimyth))
+                eval
                 {
+                    if (! $package->start($minimyth))
+                    {
+                        $fail = 1;
+                        last;
+                    }
+                };
+                if ($@)
+                {
+                    $minimyth->message_output('err', qq($@));
                     $fail = 1;
                     last;
                 }
             }
             when (/^stop$/)
             {
-                if (! $package->stop($minimyth))
+                eval
                 {
+                    if (! $package->stop($minimyth))
+                    {
+                        $fail = 1;
+                        last;
+                    }
+                };
+                if ($@)
+                {
+                    $minimyth->message_output('err', qq($@));
                     $fail = 1;
                     last;
                 }
