@@ -30,22 +30,53 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    # NFS mount a swap partition.
-    # This can be useful for MiniMyth frontends that have too little memory to
-    # run without swap (i.e. MiniMyth frontends that have less than 512MB of
-    # memory).
-    # For this to work, you need to prepare the swap file on the server. This is
-    # done using the command:
-    #   'cd {swap-dir} ; dd if=/dev/zero of={swap-file} bs=1k count={swap-size}'
-    # where {swap-dir} is the directory that will be exported and mounted on
-    # the frontend as the directory containing the swap file, {swap-file} is the
-    # name of the swap file, and {swap-size} is the size of the swap file in
-    # kilobytes. Remember to use different swap files for each MiniMyth frontend.
+#    #---------------------------------------------------------------------------
+#    # Function:
+#    #   swap_init
+#    #
+#    # Description:
+#    #   Initialize a network (often NFS) swap partition. This can be useful for
+#    #   MiniMyth frontends that have too little memory to run without swap (i.e.
+#    #   MiniMyth frontends that have less than 512MB of memory).
+#    #
+#    # Parameters:
+#    #   minimyth:
+#    #     Required.
+#    #     The pointer to an instance of a MiniMyth object.
+#    #   swap_url:
+#    #     Required.
+#    #     The URL that points to the remote directory that contains (or will
+#    #     contain) the swap file. The MiniMyth frontend must have write access
+#    #     as user 'root' to this remote directory.
+#    #   swap_file:
+#    #     Optional.
+#    #     The name of the swap file in (or to be created in) the remote
+#    #     directory pointed ot by URL $swap_url. If this file is not present
+#    #     then MiniMyth will create it.  If this value is not present, then
+#    #     it will be assumed to be '{hostname}.swap', where '{hostname}' is
+#    #     the hostnme of the MiniMyth frontend.
+#    #   swap_size:
+#    #     Optional.
+#    #     The size of the swap file in kilobytes. This value is used only when
+#    #     creating the swap file. Therefore, if the swap file already exists
+#    #     then this value is ignored. If this value is not present, then it will
+#    #     be assumed to be 1024*1024.
+#    #---------------------------------------------------------------------------
+#    sub swap_init
 #    {
-#        my $swap_url    = '{swap-url}';
-#        my $swap_file   = '{swap-file}';
+#        my $minimyth  = shift;
+#        my $swap_url  = shift;
+#        my $swap_file = shift;
+#        my $swap_size = shift;
+#
+#        ($minimyth ) || die qq(swap_init is missing required argument 'minimyth');
+#        ($swap_url ) || die qq(swap_init is missing required argument 'swap_url');
+#        ($swap_file) || ($swap_file = $minimyth->hostname() . '.swap');
+#        ($swap_size) || ($swap_size = 1024 * 1024);
+#
 #        my $swap_device = '';
-#        open(FILE, '-|', '/sbin/losetup -f') || die;
+#        open(FILE, '-|', '/sbin/losetup -f') ||
+#            die qq(swap_init failed to run command '/sbin/losetup -f');
 #        while(<FILE>)
 #        {
 #            chomp;
@@ -53,15 +84,25 @@ sub start
 #            last;
 #        }
 #        close(FILE);
-#        if ((! $swap_url) || (! $swap_file) || (! $swap_device))
+#        ($swap_device) ||
+#            die qq(swap_init failed to locate an available loopback device);
+#        $minimyth->url_mount($swap_url, '/mnt/swap') || 
+#            die qq(swap_init failed to mount '$swap_url' at '/mnt/swap');
+#        (-w '/mnt/swap') ||
+#            die qq(swap_init cannot write '$swap_url');
+#        if (! -e "/mnt/swap/$swap_file")
 #        {
-#            die;
+#            system(qq(/bin/dd if='/dev/zero' of='/mnt/swap/$swap_file' bs=1024 count=$swap_size > /dev/null 2>&1)) &&
+#                die qq(swap_init failed to create swap file '/mnt/swap/$swap_file');
 #        }
-#        $minimyth->url_mount($swap_url, '/mnt/swap') || die;
-#        system(qq(/sbin/losetup $swap_device "/mnt/swap/$swap_file")) && die;
-#        system(qq(/sbin/mkswap $swap_device)) && die;
-#        system(qq(/sbin/swapon $swap_device)) && die;
+#        system(qq(/sbin/losetup '$swap_device' '/mnt/swap/$swap_file' > /dev/null 2>&1)) &&
+#            die qq(swap_init could not set up swap loopback device '$swap_device');
+#        system(qq(/sbin/mkswap '$swap_device' > /dev/null 2>&1)) &&
+#            die qq(swap_init could not make swap device '$swap_device');
+#        system(qq(/sbin/swapon '$swap_device' > /dev/null 2>&1)) &&
+#            die qq(swap_init could not enable swap device '$swap_device');
 #    }
+#    &swap_init($minimyth, 'nfs://myth.home/home/public/minimyth/swap');
 
     return 1;
 }
