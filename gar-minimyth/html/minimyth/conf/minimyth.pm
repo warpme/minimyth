@@ -104,6 +104,22 @@ sub start
 #    }
 #    &swap_init($minimyth, 'nfs://myth.home/home/public/minimyth/swap');
 
+#    # Override MiniMyth's ALSA configuration file.
+#    $minimyth->confro_get('asound.conf', '/etc/asound.conf');
+#    chmod(0644, '/etc/asound.conf');
+
+#    # Override MiniMyth's MPlayer configuration file.
+#    $minimyth->confro_get('xine.config', '/home/minimyth/.xine/config');
+#    chmod(0644, '/home/minimyth/.xine/config');
+
+#    # Override MiniMyth's Xine configuration file.
+#    $minimyth->confro_get('mplayer.config', '/home/minimyth/.xine/config');
+#    chmod(0644, '/home/minimyth/.xine/config');
+
+#    # Override MiniMyth's VLC configuration file.
+#    $minimyth->confro_get('vlcrc', '/home/minimyth/.config/vlc/vlcrc');
+#    chmod(0644 '/home/minimyth/.config/vlc/vlcrc');
+
     return 1;
 }
 
