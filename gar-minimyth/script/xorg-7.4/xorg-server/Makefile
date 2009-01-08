@@ -16,7 +16,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-XDEPENDS = lang/c lib/openssl \
+DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/evieext \
