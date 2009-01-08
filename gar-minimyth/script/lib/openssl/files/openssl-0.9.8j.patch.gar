@@ -1,7 +1,7 @@
-diff -Naur openssl-0.9.8i-old/Configure openssl-0.9.8i-new/Configure
---- openssl-0.9.8i-old/Configure	2008-09-12 07:47:00.000000000 -0700
-+++ openssl-0.9.8i-new/Configure	2008-09-16 21:43:17.000000000 -0700
-@@ -322,7 +322,7 @@
+diff -Naur openssl-0.9.8j-old/Configure openssl-0.9.8j-new/Configure
+--- openssl-0.9.8j-old/Configure	2008-12-28 16:18:23.000000000 -0800
++++ openssl-0.9.8j-new/Configure	2009-01-07 15:29:03.000000000 -0800
+@@ -324,7 +324,7 @@
  "linux-ppc",	"gcc:-DB_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL::linux_ppc32.o::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  #### IA-32 targets...
  "linux-ia32-icc",	"icc:-DL_ENDIAN -DTERMIO -O2 -no_cpprt::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-KPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
@@ -10,7 +10,7 @@ diff -Naur openssl-0.9.8i-old/Configure openssl-0.9.8i-new/Configure
  "linux-aout",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -march=i486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_out_asm}",
  ####
  "linux-generic64","gcc:-DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-@@ -330,7 +330,7 @@
+@@ -332,7 +332,7 @@
  "linux-ia64",	"gcc:-DL_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  "linux-ia64-ecc","ecc:-DL_ENDIAN -DTERMIO -O2 -Wall -no_cpprt::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  "linux-ia64-icc","icc:-DL_ENDIAN -DTERMIO -O2 -Wall -no_cpprt::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
@@ -19,34 +19,36 @@ diff -Naur openssl-0.9.8i-old/Configure openssl-0.9.8i-new/Configure
  #### SPARC Linux setups
  # Ray Miller <ray.miller@computing-services.oxford.ac.uk> has patiently
  # assisted with debugging of following two configs.
-@@ -1360,7 +1360,7 @@
+@@ -1458,7 +1458,7 @@
  	s/^OPTIONS=.*$/OPTIONS=$options/;
  	s/^CONFIGURE_ARGS=.*$/CONFIGURE_ARGS=$argvstring/;
  	s/^CC=.*$/CC= $cc/;
 -	s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
 +	s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "@GAR_CC@";
  	s/^CFLAG=.*$/CFLAG= $cflags/;
- 	s/^DEPFLAG=.*$/DEPFLAG= $depflags/;
+ 	s/^DEPFLAG=.*$/DEPFLAG=$depflags/;
  	s/^PEX_LIBS=.*$/PEX_LIBS= $prelflags/;
-diff -Naur openssl-0.9.8i-old/Makefile openssl-0.9.8i-new/Makefile
---- openssl-0.9.8i-old/Makefile	2008-09-15 08:27:21.000000000 -0700
-+++ openssl-0.9.8i-new/Makefile	2008-09-16 21:45:13.000000000 -0700
-@@ -59,19 +59,19 @@
+diff -Naur openssl-0.9.8j-old/Makefile openssl-0.9.8j-new/Makefile
+--- openssl-0.9.8j-old/Makefile	2009-01-07 03:57:01.000000000 -0800
++++ openssl-0.9.8j-new/Makefile	2009-01-07 15:30:18.000000000 -0800
+@@ -59,20 +59,20 @@
  # equal 4.
  # PKCS1_CHECK - pkcs1 tests.
  
 -CC= cc
 +CC= @GAR_CC@
  CFLAG= -O
- DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SEED -DOPENSSL_NO_TLSEXT 
+ DEPFLAG= -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_CMS -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SEED
  PEX_LIBS= 
  EX_LIBS= 
  EXE_EXT= 
  ARFLAGS= 
 -AR=ar $(ARFLAGS) r
+-ARD=ar $(ARFLAGS) d
 -RANLIB= /usr/bin/ranlib
 -PERL= /usr/bin/perl
 +AR=@GAR_AR@ $(ARFLAGS) r
++ARD=@GAR_AR@ $(ARFLAGS) d
 +RANLIB= @GAR_RANLIB@
 +PERL= perl
  TAR= tar
@@ -56,10 +58,10 @@ diff -Naur openssl-0.9.8i-old/Makefile openssl-0.9.8i-new/Makefile
  
  # We let the C compiler driver to take care of .s files. This is done in
  # order to be excused from maintaining a separate set of architecture
-diff -Naur openssl-0.9.8i-old/Makefile.org openssl-0.9.8i-new/Makefile.org
---- openssl-0.9.8i-old/Makefile.org	2008-04-03 16:03:39.000000000 -0700
-+++ openssl-0.9.8i-new/Makefile.org	2008-09-16 21:43:17.000000000 -0700
-@@ -57,19 +57,19 @@
+diff -Naur openssl-0.9.8j-old/Makefile.org openssl-0.9.8j-new/Makefile.org
+--- openssl-0.9.8j-old/Makefile.org	2008-12-30 05:26:26.000000000 -0800
++++ openssl-0.9.8j-new/Makefile.org	2009-01-07 15:32:15.000000000 -0800
+@@ -57,20 +57,20 @@
  # equal 4.
  # PKCS1_CHECK - pkcs1 tests.
  
@@ -72,8 +74,10 @@ diff -Naur openssl-0.9.8i-old/Makefile.org openssl-0.9.8i-new/Makefile.org
  EXE_EXT= 
  ARFLAGS=
 -AR=ar $(ARFLAGS) r
+-ARD=ar $(ARFLAGS) d
 -RANLIB= ranlib
 +AR=@GAR_AR@ $(ARFLAGS) r
++ARD=@GAR_AR@ $(ARFLAGS) d
 +RANLIB= @GAR_RANLIB@
  PERL= perl
  TAR= tar
@@ -83,9 +87,9 @@ diff -Naur openssl-0.9.8i-old/Makefile.org openssl-0.9.8i-new/Makefile.org
  
  # We let the C compiler driver to take care of .s files. This is done in
  # order to be excused from maintaining a separate set of architecture
-diff -Naur openssl-0.9.8i-old/Makefile.shared openssl-0.9.8i-new/Makefile.shared
---- openssl-0.9.8i-old/Makefile.shared	2008-09-12 07:47:01.000000000 -0700
-+++ openssl-0.9.8i-new/Makefile.shared	2008-09-16 21:46:25.000000000 -0700
+diff -Naur openssl-0.9.8j-old/Makefile.shared openssl-0.9.8j-new/Makefile.shared
+--- openssl-0.9.8j-old/Makefile.shared	2008-09-17 08:56:40.000000000 -0700
++++ openssl-0.9.8j-new/Makefile.shared	2009-01-07 15:29:03.000000000 -0800
 @@ -6,7 +6,7 @@
  # properly
  
@@ -95,9 +99,9 @@ diff -Naur openssl-0.9.8i-old/Makefile.shared openssl-0.9.8i-new/Makefile.shared
  CFLAGS=$(CFLAG)
  # LDFLAGS contains flags to be used when temporary object files (when building
  # shared libraries) are created, or when an application is linked.
-diff -Naur openssl-0.9.8i-old/util/domd openssl-0.9.8i-new/util/domd
---- openssl-0.9.8i-old/util/domd	2005-03-30 06:44:50.000000000 -0800
-+++ openssl-0.9.8i-new/util/domd	2008-09-16 21:43:17.000000000 -0700
+diff -Naur openssl-0.9.8j-old/util/domd openssl-0.9.8j-new/util/domd
+--- openssl-0.9.8j-old/util/domd	2005-03-30 06:44:50.000000000 -0800
++++ openssl-0.9.8j-new/util/domd	2009-01-07 15:29:03.000000000 -0800
 @@ -14,7 +14,7 @@
  cp Makefile Makefile.save
  # fake the presence of Kerberos

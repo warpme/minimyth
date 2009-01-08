@@ -1,5 +1,5 @@
 GARNAME = dbus
-GARVERSION = 1.2.10
+GARVERSION = 1.2.12
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
