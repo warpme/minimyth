@@ -1,6 +1,6 @@
 diff -Naur xine-lib-1.1.15-old/configure.ac xine-lib-1.1.15-new/configure.ac
 --- xine-lib-1.1.15-old/configure.ac	2008-08-13 09:26:38.000000000 -0700
-+++ xine-lib-1.1.15-new/configure.ac	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/configure.ac	2009-01-08 19:16:15.000000000 -0800
 @@ -863,6 +863,20 @@
  
  
@@ -42,8 +42,17 @@ diff -Naur xine-lib-1.1.15-old/configure.ac xine-lib-1.1.15-new/configure.ac
  fi
 diff -Naur xine-lib-1.1.15-old/include/xine.h.in xine-lib-1.1.15-new/include/xine.h.in
 --- xine-lib-1.1.15-old/include/xine.h.in	2008-06-25 06:04:09.000000000 -0700
-+++ xine-lib-1.1.15-new/include/xine.h.in	2009-01-02 14:42:18.000000000 -0800
-@@ -482,6 +482,7 @@
++++ xine-lib-1.1.15-new/include/xine.h.in	2009-01-08 19:16:15.000000000 -0800
+@@ -375,6 +375,8 @@
+ #define XINE_PARAM_VO_TVMODE               0x0100000a /* ???                */
+ #define XINE_PARAM_VO_WINDOW_WIDTH         0x0100000f /* readonly           */
+ #define XINE_PARAM_VO_WINDOW_HEIGHT        0x01000010 /* readonly           */
++#define XINE_PARAM_VO_SHARPNESS            0x01000018 /* 0..65535           */
++#define XINE_PARAM_VO_NOISE_REDUCTION      0x01000019 /* 0..65535           */
+ #define XINE_PARAM_VO_CROP_LEFT            0x01000020 /* crop frame pixels  */
+ #define XINE_PARAM_VO_CROP_RIGHT           0x01000021 /* crop frame pixels  */
+ #define XINE_PARAM_VO_CROP_TOP             0x01000022 /* crop frame pixels  */
+@@ -482,6 +484,7 @@
  #define XINE_IMGFMT_YUY2 (('2'<<24)|('Y'<<16)|('U'<<8)|'Y')
  #define XINE_IMGFMT_XVMC (('C'<<24)|('M'<<16)|('v'<<8)|'X')
  #define XINE_IMGFMT_XXMC (('C'<<24)|('M'<<16)|('x'<<8)|'X')
@@ -51,7 +60,7 @@ diff -Naur xine-lib-1.1.15-old/include/xine.h.in xine-lib-1.1.15-new/include/xin
  
  /* get current xine's virtual presentation timestamp (1/90000 sec)
   * note: this is mostly internal data.
-@@ -2134,6 +2135,8 @@
+@@ -2134,6 +2137,8 @@
  
  #define XINE_OSD_CAP_FREETYPE2 0x0001 /* freetype2 support compiled in     */
  #define XINE_OSD_CAP_UNSCALED  0x0002 /* unscaled overlays supp. by vo drv */
@@ -60,7 +69,7 @@ diff -Naur xine-lib-1.1.15-old/include/xine.h.in xine-lib-1.1.15-new/include/xin
  
  typedef struct xine_osd_s xine_osd_t;
  
-@@ -2198,6 +2201,28 @@
+@@ -2198,6 +2203,28 @@
  void        xine_osd_set_palette   (xine_osd_t *self,
  				    const uint32_t *const color,
  				    const uint8_t *const trans ) XINE_PROTECTED;
@@ -91,7 +100,7 @@ diff -Naur xine-lib-1.1.15-old/include/xine.h.in xine-lib-1.1.15-new/include/xin
   * loaded fonts are unloaded
 diff -Naur xine-lib-1.1.15-old/README-VDPAU xine-lib-1.1.15-new/README-VDPAU
 --- xine-lib-1.1.15-old/README-VDPAU	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/README-VDPAU	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/README-VDPAU	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,74 @@
 +xine-vdpau README:
 +------------------------------------------------------------------------------
@@ -169,8 +178,8 @@ diff -Naur xine-lib-1.1.15-old/README-VDPAU xine-lib-1.1.15-new/README-VDPAU
 +----------------------------------------------------------------------------
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/dpb.c xine-lib-1.1.15-new/src/libvdpau/dpb.c
 --- xine-lib-1.1.15-old/src/libvdpau/dpb.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/dpb.c	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,362 @@
++++ xine-lib-1.1.15-new/src/libvdpau/dpb.c	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,372 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
 + *
@@ -489,6 +498,16 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/dpb.c xine-lib-1.1.15-new/src/libvdp
 +  dpb->pictures = NULL;
 +}
 +
++void dpb_clear_all_pts( struct dpb *dpb )
++{
++  struct decoded_picture *pic = dpb->pictures;
++
++  while (pic != NULL) {
++    pic->img->pts = 0;
++    pic = pic->next;
++  }
++}
++
 +int fill_vdpau_reference_list(struct dpb *dpb, VdpReferenceFrameH264 *reflist)
 +{
 +  struct decoded_picture *pic = dpb->pictures;
@@ -535,8 +554,8 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/dpb.c xine-lib-1.1.15-new/src/libvdp
 +}
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/dpb.h xine-lib-1.1.15-new/src/libvdpau/dpb.h
 --- xine-lib-1.1.15-old/src/libvdpau/dpb.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/dpb.h	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,79 @@
++++ xine-lib-1.1.15-new/src/libvdpau/dpb.h	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,80 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
 + *
@@ -612,14 +631,15 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/dpb.h xine-lib-1.1.15-new/src/libvdp
 +int dpb_add_picture(struct dpb *dpb, struct decoded_picture *pic, uint32_t num_ref_frames);
 +int dpb_flush(struct dpb *dpb);
 +void dpb_free_all( struct dpb *dpb );
++void dpb_clear_all_pts( struct dpb *dpb );
 +
 +int fill_vdpau_reference_list(struct dpb *dpb, VdpReferenceFrameH264 *reflist);
 +
 +#endif /* DPB_H_ */
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/src/libvdpau/h264_parser.c
 --- xine-lib-1.1.15-old/src/libvdpau/h264_parser.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/h264_parser.c	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,1337 @@
++++ xine-lib-1.1.15-new/src/libvdpau/h264_parser.c	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,1375 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
 + *
@@ -868,6 +888,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/sr
 +      }
 +      break;
 +    case NAL_SEI:
++      memset(&(nal->sei), 0x00, sizeof(struct sei_message));
 +      parse_sei(buf, parser);
 +      ret = nal->nal_unit_type;
 +      break;
@@ -1092,6 +1113,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/sr
 +void parse_sei(struct buf_reader *buf, struct nal_parser *parser)
 +{
 +  struct sei_message *sei = &(parser->current_nal->sei);
++  struct seq_parameter_set_rbsp *sps = parser->current_nal->sps;
 +  uint8_t tmp;
 +
 +  sei->payload_type = 0;
@@ -1113,6 +1135,35 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/sr
 +    if(parser->cpb_dpb_delays_present_flag) {
 +      sei->pic_timing.cpb_removal_delay = read_bits(buf, 5);
 +      sei->pic_timing.dpb_output_delay = read_bits(buf, 5);
++    }
++
++    if(sps && sps->vui_parameters_present_flag &&
++        sps->vui_parameters.pic_struct_present_flag) {
++      sei->pic_timing.pic_struct = read_bits(buf, 4);
++      switch(sei->pic_timing.pic_struct) {
++        case DISP_FRAME:
++          parser->current_nal->interlaced = 0;
++          parser->current_nal->repeat_pic = 0;
++          break;
++        case DISP_TOP:
++        case DISP_BOTTOM:
++        case DISP_TOP_BOTTOM:
++        case DISP_BOTTOM_TOP:
++          parser->current_nal->interlaced = 1;
++          break;
++        case DISP_TOP_BOTTOM_TOP:
++        case DISP_BOTTOM_TOP_BOTTOM:
++          parser->current_nal->interlaced = 1;
++          parser->current_nal->repeat_pic = 1;
++          break;
++        case DISP_FRAME_DOUBLING:
++          parser->current_nal->interlaced = 0;
++          parser->current_nal->repeat_pic = 2;
++          break;
++        case DISP_FRAME_TRIPLING:
++          parser->current_nal->interlaced = 0;
++          parser->current_nal->repeat_pic = 3;
++      }
 +    }
 +  }
 +}
@@ -1792,6 +1843,13 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/sr
 +   * copy the left data into prebuf
 +   */
 +  if(parsed_len < inbuf_len) {
++    if (inbuf_len-parsed_len + parser->prebuf_len > MAX_FRAME_SIZE) {
++      printf("buf underrun!!\n");
++      parser->prebuf_len = 0;
++      *ret_len = 0;
++      *ret_buf = NULL;
++      return parsed_len;
++    }
 +    parser->incomplete_nal = 1;
 +    xine_fast_memcpy(parser->prebuf + parser->prebuf_len, inbuf, inbuf_len-parsed_len);
 +    parser->prebuf_len += inbuf_len-parsed_len;
@@ -1959,7 +2017,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.c xine-lib-1.1.15-new/sr
 +}
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.h xine-lib-1.1.15-new/src/libvdpau/h264_parser.h
 --- xine-lib-1.1.15-old/src/libvdpau/h264_parser.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/h264_parser.h	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/libvdpau/h264_parser.h	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,85 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -2048,7 +2106,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/h264_parser.h xine-lib-1.1.15-new/sr
 +#endif
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/Makefile.am xine-lib-1.1.15-new/src/libvdpau/Makefile.am
 --- xine-lib-1.1.15-old/src/libvdpau/Makefile.am	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/Makefile.am	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/libvdpau/Makefile.am	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,22 @@
 +include $(top_srcdir)/misc/Makefile.common
 +
@@ -2074,7 +2132,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/Makefile.am xine-lib-1.1.15-new/src/
 +
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.c xine-lib-1.1.15-new/src/libvdpau/nal.c
 --- xine-lib-1.1.15-old/src/libvdpau/nal.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/nal.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/libvdpau/nal.c	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,72 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -2150,8 +2208,8 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.c xine-lib-1.1.15-new/src/libvdp
 +}
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdpau/nal.h
 --- xine-lib-1.1.15-old/src/libvdpau/nal.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/nal.h	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,411 @@
++++ xine-lib-1.1.15-new/src/libvdpau/nal.h	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,438 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
 + *
@@ -2195,6 +2253,19 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdp
 +  NAL_END_OF_STREAM,
 +  NAL_FILLER_DATA,
 +  NAL_SPS_EXT
++};
++
++enum pic_struct {
++  DISP_FRAME = 0,
++  DISP_TOP,
++  DISP_BOTTOM,
++  DISP_TOP_BOTTOM,
++  DISP_BOTTOM_TOP,
++  DISP_TOP_BOTTOM_TOP,
++  DISP_TOP_TOP_BOTTOM,
++  DISP_BOTTOM_TOP_BOTTOM,
++  DISP_FRAME_DOUBLING,
++  DISP_FRAME_TRIPLING
 +};
 +
 +/* slice types repeat from 5-9, we
@@ -2428,6 +2499,16 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdp
 +  int32_t second_chroma_qp_index_offset;
 +};
 +
++/*struct clock_timestamp {
++  uint8_t ct_type;
++  uint8_t nuit_fiel_based_flag;
++  uint8_t counting_type;
++  uint8_t full_timestamp_flag;
++  uint8_t discontinuity_flag;
++  uint8_t cnt_dropped_flag;
++  uint8_t n_frames
++};*/
++
 +/* sei contains several additional info, we do
 + * only care for pic_timing, to handle display
 + * reordering
@@ -2445,7 +2526,8 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdp
 +    uint8_t cpb_removal_delay;
 +    uint8_t dpb_output_delay;
 +
-+    /* ignore the rest */
++    uint8_t pic_struct;
++    //uint8_t clock_timestamp_flag[3];
 +  } pic_timing;
 +};
 +
@@ -2551,6 +2633,9 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdp
 +  uint32_t top_field_order_cnt;
 +  uint32_t bottom_field_order_cnt;
 +
++  uint8_t interlaced;
++  uint8_t repeat_pic;
++
 +  struct sei_message sei;
 +
 +  struct seq_parameter_set_rbsp *sps;
@@ -2565,8 +2650,8 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/nal.h xine-lib-1.1.15-new/src/libvdp
 +#endif /* NAL_H_ */
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.15-new/src/libvdpau/vdpau_h264.c
 --- xine-lib-1.1.15-old/src/libvdpau/vdpau_h264.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/vdpau_h264.c	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,725 @@
++++ xine-lib-1.1.15-new/src/libvdpau/vdpau_h264.c	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,733 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
 + *
@@ -3044,10 +3129,18 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.15-new/src
 +            else {
 +              img->bad_frame = 0;
 +
-+              if(!pic.field_pic_flag && !pic.mb_adaptive_frame_field_flag)
++              if((sps->vui_parameters_present_flag &&
++                  sps->vui_parameters.pic_struct_present_flag &&
++                  !this->nal_parser->current_nal->interlaced) ||
++                  !pic.field_pic_flag && !pic.mb_adaptive_frame_field_flag)
 +                img->progressive_frame = 1;
 +              else
 +                img->progressive_frame = 0;
++
++              if(!img->progressive_frame && this->nal_parser->current_nal->repeat_pic)
++                img->repeat_first_field = 1;
++              else if(img->progressive_frame && this->nal_parser->current_nal->repeat_pic)
++                img->duration *= this->nal_parser->current_nal->repeat_pic;
 +
 +              struct decoded_picture *decoded_pic = NULL;
 +              if(pic.is_reference) {
@@ -3153,7 +3246,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.15-new/src
 +
 +  this->curr_pts = 0;
 +  this->next_pts = 0;
-+
++  dpb_clear_all_pts(&this->nal_parser->dpb);
 +}
 +
 +/*
@@ -3294,7 +3387,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.15-new/src
 +};
 diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.15-new/src/libvdpau/vdpau_mpeg12.c
 --- xine-lib-1.1.15-old/src/libvdpau/vdpau_mpeg12.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/libvdpau/vdpau_mpeg12.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/libvdpau/vdpau_mpeg12.c	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,958 @@
 +/*
 + * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
@@ -4256,7 +4349,7 @@ diff -Naur xine-lib-1.1.15-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.15-new/s
 +};
 diff -Naur xine-lib-1.1.15-old/src/Makefile.am xine-lib-1.1.15-new/src/Makefile.am
 --- xine-lib-1.1.15-old/src/Makefile.am	2008-04-17 09:54:28.000000000 -0700
-+++ xine-lib-1.1.15-new/src/Makefile.am	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/Makefile.am	2009-01-08 19:16:15.000000000 -0800
 @@ -25,5 +25,6 @@
  	libreal \
  	libfaad \
@@ -4266,7 +4359,7 @@ diff -Naur xine-lib-1.1.15-old/src/Makefile.am xine-lib-1.1.15-new/src/Makefile.
  	combined
 diff -Naur xine-lib-1.1.15-old/src/video_out/Makefile.am xine-lib-1.1.15-new/src/video_out/Makefile.am
 --- xine-lib-1.1.15-old/src/video_out/Makefile.am	2008-06-25 06:04:09.000000000 -0700
-+++ xine-lib-1.1.15-new/src/video_out/Makefile.am	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/video_out/Makefile.am	2009-01-08 19:16:15.000000000 -0800
 @@ -36,6 +36,10 @@
  endif
  endif
@@ -4295,7 +4388,7 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/Makefile.am xine-lib-1.1.15-new/src
  xineplug_vo_out_xcbshm_la_CFLAGS = $(VISIBILITY_FLAG) $(MLIB_CFLAGS) $(XCB_CFLAGS) $(XCBSHM_CFLAGS)
 diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_raw.c xine-lib-1.1.15-new/src/video_out/video_out_raw.c
 --- xine-lib-1.1.15-old/src/video_out/video_out_raw.c	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.15-new/src/video_out/video_out_raw.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/video_out/video_out_raw.c	2009-01-08 19:16:15.000000000 -0800
 @@ -278,9 +278,13 @@
  
    frame->yuv2rgb->dispose (frame->yuv2rgb);
@@ -4358,8 +4451,8 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_raw.c xine-lib-1.1.15-new
    }
 diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-new/src/video_out/video_out_vdpau.c
 --- xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/video_out/video_out_vdpau.c	2009-01-02 14:42:18.000000000 -0800
-@@ -0,0 +1,1720 @@
++++ xine-lib-1.1.15-new/src/video_out/video_out_vdpau.c	2009-01-08 19:16:15.000000000 -0800
+@@ -0,0 +1,1876 @@
 +/*
 + * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
 + *
@@ -4412,6 +4505,16 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +#include "accel_vdpau.h"
 +
 +#define NUM_FRAMES_BACK 1
++
++
++
++const char *vdpau_deinterlace_methods[] = {
++  "bob",
++  "temporal",
++  "temporal_spatial",
++  NULL
++};
++
 +
 +
 +VdpOutputSurfaceRenderBlendState blend = { VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION,
@@ -4610,7 +4713,12 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +  int               saturation;
 +  int               brightness;
 +  int               contrast;
++  int               sharpness;
++  int               noise;
 +  int               deinterlace;
++  int               deinterlace_method;
++  int               enable_inverse_telecine;
++  int               honor_progressive;
 +
 +  int               allocated_surfaces;
 +
@@ -5062,10 +5170,10 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +        this->vo_frame.base[0], this->vo_frame.pitches[0],
 +        data->img, this->vo_frame.width,
 +       /* U */
-+        this->vo_frame.base[1], this->vo_frame.pitches[1],
++        this->vo_frame.base[2], this->vo_frame.pitches[2],
 +        data->img+this->vo_frame.width*this->vo_frame.height, this->vo_frame.width/2,
 +       /* V */
-+        this->vo_frame.base[2], this->vo_frame.pitches[2],
++        this->vo_frame.base[1], this->vo_frame.pitches[1],
 +        data->img+this->vo_frame.width*this->vo_frame.height+this->vo_frame.width*this->vo_frame.height/4, this->vo_frame.width/2,
 +       /* width x height */
 +        this->vo_frame.width, this->vo_frame.height);
@@ -5078,7 +5186,7 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +       /* width x height */
 +        this->vo_frame.width, this->vo_frame.height);
 +    }
-+ 
++
 +    if (this->chunk[0])
 +      free(this->chunk[0]);
 +    if (this->chunk[1])
@@ -5255,17 +5363,145 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +static void vdpau_set_deinterlace( vo_driver_t *this_gen )
 +{
 +  vdpau_driver_t  *this  = (vdpau_driver_t *) this_gen;
-+  
++
 +  VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
 +  VdpBool feature_enables[2];
-+  if ( this->deinterlace )
-+    feature_enables[0] = feature_enables[1] = 1;
++  if ( this->deinterlace ) {
++    if ( this->video_mixer_width<800 )
++      feature_enables[0] = feature_enables[1] = 1;
++    else {
++      switch ( this->deinterlace_method ) {
++        case 0: feature_enables[0] = feature_enables[1] = 0; break; /* bob */
++        case 1: feature_enables[0] = 1; feature_enables[1] = 0; break; /* temporal */
++        case 2: feature_enables[0] = feature_enables[1] = 1; break; /* temporal_spatial */
++      }
++    }
++  }
 +  else
 +    feature_enables[0] = feature_enables[1] = 0;
++
 +  vdp_video_mixer_set_feature_enables( this->video_mixer, 2, features, feature_enables );
-+  printf("vo_vdpau: asked features: temporal=%d, temporal_spatial=%d\n", feature_enables[0], feature_enables[1] );
 +  vdp_video_mixer_get_feature_enables( this->video_mixer, 2, features, feature_enables );
 +  printf("vo_vdpau: enabled features: temporal=%d, temporal_spatial=%d\n", feature_enables[0], feature_enables[1] );
++}
++
++static void vdpau_set_inverse_telecine( vo_driver_t *this_gen )
++{
++  vdpau_driver_t  *this  = (vdpau_driver_t *) this_gen;
++
++  VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
++  VdpBool feature_enables[1];
++  if ( this->deinterlace && this->enable_inverse_telecine )
++    feature_enables[0] = 1;
++  else
++    feature_enables[0] = 0;
++
++  vdp_video_mixer_set_feature_enables( this->video_mixer, 1, features, feature_enables );
++  vdp_video_mixer_get_feature_enables( this->video_mixer, 1, features, feature_enables );
++  printf("vo_vdpau: enabled features: inverse_telecine=%d\n", feature_enables[0] );
++}
++
++static void vdpau_update_deinterlace_method( void *this_gen, xine_cfg_entry_t *entry )
++{
++  vdpau_driver_t  *this  = (vdpau_driver_t *) this_gen;
++
++  this->deinterlace_method = entry->num_value;
++  printf( "vo_vdpau: deinterlace_method=%d\n", this->deinterlace_method );
++  vdpau_set_deinterlace( (vo_driver_t*)this_gen );
++}
++
++static void vdpau_update_enable_inverse_telecine( void *this_gen, xine_cfg_entry_t *entry )
++{
++  vdpau_driver_t  *this  = (vdpau_driver_t *) this_gen;
++
++  this->enable_inverse_telecine = entry->num_value;
++  printf( "vo_vdpau: enable inverse_telecine=%d\n", this->enable_inverse_telecine );
++  vdpau_set_inverse_telecine( (vo_driver_t*)this_gen );
++}
++
++static void vdpau_honor_progressive_flag( void *this_gen, xine_cfg_entry_t *entry )
++{
++  vdpau_driver_t  *this  = (vdpau_driver_t *) this_gen;
++
++  this->honor_progressive = entry->num_value;
++}
++
++
++
++static void vdpau_update_noise( vdpau_driver_t *this_gen )
++{
++  float value = this_gen->noise/100.0;
++  if ( value==0 ) {
++    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
++    VdpBool feature_enables[] = { 0 };
++    vdp_video_mixer_set_feature_enables( this_gen->video_mixer, 1, features, feature_enables );
++    printf( "vo_vdpau: disable noise reduction !!\n" );
++    return;
++  }
++  else {
++    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
++    VdpBool feature_enables[] = { 1 };
++    vdp_video_mixer_set_feature_enables( this_gen->video_mixer, 1, features, feature_enables );
++    printf( "vo_vdpau: enable noise reduction !!\n" );
++  }
++
++  VdpVideoMixerAttribute attributes [] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
++  void* attribute_values[] = { &value };
++  VdpStatus st = vdp_video_mixer_set_attribute_values( this_gen->video_mixer, 1, attributes, attribute_values );
++  if ( st != VDP_STATUS_OK )
++    printf( "vo_vdpau: error, can't set noise reduction level !!\n" );
++}
++
++
++
++static void vdpau_update_sharpness( vdpau_driver_t *this_gen )
++{
++  float value = this_gen->sharpness/100.0;
++  if ( value==0 ) {
++    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS  };
++    VdpBool feature_enables[] = { 0 };
++    vdp_video_mixer_set_feature_enables( this_gen->video_mixer, 1, features, feature_enables );
++    printf( "vo_vdpau: disable sharpness !!\n" );
++    return;
++  }
++  else {
++    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS  };
++    VdpBool feature_enables[] = { 1 };
++    vdp_video_mixer_set_feature_enables( this_gen->video_mixer, 1, features, feature_enables );
++    printf( "vo_vdpau: enable sharpness !!\n" );
++  }
++
++  VdpVideoMixerAttribute attributes [] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
++  void* attribute_values[] = { &value };
++  VdpStatus st = vdp_video_mixer_set_attribute_values( this_gen->video_mixer, 1, attributes, attribute_values );
++  if ( st != VDP_STATUS_OK )
++    printf( "vo_vdpau: error, can't set sharpness level !!\n" );
++}
++
++
++
++static void vdpau_update_csc( vdpau_driver_t *this_gen )
++{
++  float hue = this_gen->hue/100.0;
++  float saturation = this_gen->saturation/100.0;
++  float contrast = this_gen->contrast/100.0;
++  float brightness = this_gen->brightness/100.0;
++
++  printf( "vo_vdpau: vdpau_update_csc: hue=%f, saturation=%f, contrast=%f, brightness=%f\n", hue, saturation, contrast, brightness );
++
++  VdpCSCMatrix matrix;
++  VdpProcamp procamp = { VDP_PROCAMP_VERSION, brightness, contrast, saturation, hue };
++
++  VdpStatus st = vdp_generate_csc_matrix( &procamp, VDP_COLOR_STANDARD_ITUR_BT_601, &matrix );
++  if ( st != VDP_STATUS_OK ) {
++    printf( "vo_vdpau: error, can't generate csc matrix !!\n" );
++    return;
++  }
++  VdpVideoMixerAttribute attributes [] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
++  void* attribute_values[] = { &matrix };
++  st = vdp_video_mixer_set_attribute_values( this_gen->video_mixer, 1, attributes, attribute_values );
++  if ( st != VDP_STATUS_OK )
++    printf( "vo_vdpau: error, can't set csc matrix !!\n" );
 +}
 +
 +
@@ -5342,16 +5578,19 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +    vdpau_release_back_frames( this_gen ); /* empty past frames array */
 +    printf("vo_vdpau: recreate mixer to match frames: width=%d, height=%d, chroma=%d\n", mix_w, mix_h, chroma);
 +    vdp_video_mixer_destroy( this->video_mixer );
-+    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
-+    VdpBool feature_enables[] = { 1, 1 };
-+    VdpVideoMixerParameter params[] = { VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH, VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT, VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE, VDP_VIDEO_MIXER_PARAMETER_LAYERS };
++    VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION, VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
++          VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
++    VdpVideoMixerParameter params[] = { VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH, VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
++          VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE, VDP_VIDEO_MIXER_PARAMETER_LAYERS };
 +    int num_layers = 3;
 +    void const *param_values[] = { &mix_w, &mix_h, &chroma, &num_layers };
-+    vdp_video_mixer_create( vdp_device, 2, features, 4, params, param_values, &this->video_mixer );
-+    vdpau_set_deinterlace( this_gen );
++    vdp_video_mixer_create( vdp_device, 4, features, 4, params, param_values, &this->video_mixer );
 +    this->video_mixer_chroma = chroma;
 +    this->video_mixer_width = mix_w;
 +    this->video_mixer_height = mix_h;
++    vdpau_set_deinterlace( this_gen );
++    vdpau_update_noise( this );
++    vdpau_update_sharpness( this );
 +  }
 +
 +  if ( (this->sc.gui_width > this->output_surface_width[this->current_output_surface]) || (this->sc.gui_height > this->output_surface_height[this->current_output_surface]) ) {
@@ -5413,7 +5652,8 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +    layer[layer_count-1].struct_version = VDP_LAYER_VERSION;
 +  }
 +
-+  if ( this->deinterlace && !frame->vo_frame.progressive_frame && frame->format==XINE_IMGFMT_VDPAU ) {
++  int non_progressive = (this->honor_progressive && !frame->vo_frame.progressive_frame) || !this->honor_progressive;
++  if ( frame->vo_frame.duration>2500 && this->deinterlace && non_progressive && frame->format==XINE_IMGFMT_VDPAU ) {
 +    VdpTime current_time = 0;
 +    VdpVideoSurface past[2];
 +    VdpVideoSurface future[1];
@@ -5512,42 +5752,20 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +    case VO_PROP_OUTPUT_YOFFSET:
 +      return this->sc.output_yoffset;
 +    case VO_PROP_HUE:
-+      return 0;
++      return this->hue;
 +    case VO_PROP_SATURATION:
-+      return 100;
++      return this->saturation;
 +    case VO_PROP_CONTRAST:
-+      return 100;
++      return this->contrast;
 +    case VO_PROP_BRIGHTNESS:
-+      return 0;
++      return this->brightness;
++    case VO_PROP_SHARPNESS:
++      return this->sharpness;
++    case VO_PROP_NOISE_REDUCTION:
++      return this->noise;
 +  }
 +
 +  return -1;
-+}
-+
-+
-+
-+static void vdpau_update_csc( vdpau_driver_t *this_gen )
-+{
-+  /*float hue = this_gen->hue/100.0;
-+  float saturation = this_gen->saturation/100.0;
-+  float contrast = this_gen->contrast/100.0;
-+  float brightness = this_gen->brightness/100.0;
-+
-+  printf( "vo_vdpau: vdpau_update_csc: hue=%f, saturation=%f, contrast=%f, brightness=%f\n", hue, saturation, contrast, brightness );
-+
-+  VdpCSCMatrix matrix;
-+  VdpProcamp procamp = { VDP_PROCAMP_VERSION, brightness, contrast, saturation, hue };
-+
-+  VdpStatus st = vdp_generate_csc_matrix( &procamp, VDP_COLOR_STANDARD_ITUR_BT_601, &matrix );
-+  if ( st != VDP_STATUS_OK ) {
-+    printf( "vo_vdpau: error, can't generate csc matrix !!\n" );
-+    return;
-+  }
-+  VdpVideoMixerAttribute attributes [] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-+  void* attribute_values[] = { &matrix };
-+  st = vdp_video_mixer_set_attribute_values( this_gen->video_mixer, 1, attributes, attribute_values );
-+  if ( st != VDP_STATUS_OK )
-+    printf( "vo_vdpau: error, can't set csc matrix !!\n" );*/
 +}
 +
 +
@@ -5587,6 +5805,8 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +    case VO_PROP_SATURATION: this->saturation = value; vdpau_update_csc( this ); break;
 +    case VO_PROP_CONTRAST: this->contrast = value; vdpau_update_csc( this ); break;
 +    case VO_PROP_BRIGHTNESS: this->brightness = value; vdpau_update_csc( this ); break;
++    case VO_PROP_SHARPNESS: this->sharpness = value; vdpau_update_sharpness( this ); break;
++    case VO_PROP_NOISE_REDUCTION: this->noise = value; vdpau_update_noise( this ); break;
 +  }
 +
 +  return value;
@@ -5605,6 +5825,10 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +      *max = 1000; *min = 0; break;
 +    case VO_PROP_BRIGHTNESS:
 +      *max = 100; *min = -100; break;
++    case VO_PROP_SHARPNESS:
++      *max = 100; *min = -100; break;
++    case VO_PROP_NOISE_REDUCTION:
++      *max = 100; *min = 0; break;
 +    default:
 +      *max = 0; *min = 0;
 +  }
@@ -5946,22 +6170,22 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +    return NULL;
 +
 +  /* choose almost magenta as backcolor for color keying */
-+  this->back_color.red = 0.98;
-+  this->back_color.green = 0.01;
-+  this->back_color.blue = 0.99;
++  this->back_color.red = 0.02;//0.98;
++  this->back_color.green = 0.01;//0.01;
++  this->back_color.blue = 0.03;//0.99;
 +  this->back_color.alpha = 1;
 +  vdp_queue_set_background_color( vdp_queue, &this->back_color );
 +
-+  this->soft_surface_width = 1280;
-+  this->soft_surface_height = 720;
++  this->soft_surface_width = 320;
++  this->soft_surface_height = 240;
 +  this->soft_surface_format = XINE_IMGFMT_YV12;
 +  VdpChromaType chroma = VDP_CHROMA_TYPE_420;
 +  st = vdp_video_surface_create( vdp_device, chroma, this->soft_surface_width, this->soft_surface_height, &this->soft_surface );
 +  if ( vdpau_init_error( st, "Can't create video surface !!", &this->vo_driver, 1 ) )
 +    return NULL;
 +
-+  this->output_surface_width[0] = this->output_surface_width[1] = 1280;
-+  this->output_surface_height[0] = this->output_surface_height[1] = 720;
++  this->output_surface_width[0] = this->output_surface_width[1] = 320;
++  this->output_surface_height[0] = this->output_surface_height[1] = 240;
 +  this->current_output_surface = 0;
 +  this->init_queue = 0;
 +  st = vdp_output_surface_create( vdp_device, VDP_RGBA_FORMAT_B8G8R8A8, this->output_surface_width[0], this->output_surface_height[0], &this->output_surface[0] );
@@ -5979,17 +6203,40 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +  this->video_mixer_chroma = chroma;
 +  this->video_mixer_width = this->soft_surface_width;
 +  this->video_mixer_height = this->soft_surface_height;
-+  VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
++  VdpVideoMixerFeature features[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION, VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
++        VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
 +  VdpVideoMixerParameter params[] = { VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH, VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT, VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE, VDP_VIDEO_MIXER_PARAMETER_LAYERS };
 +  int num_layers = 3;
 +  void const *param_values[] = { &this->video_mixer_width, &this->video_mixer_height, &chroma, &num_layers };
-+  st = vdp_video_mixer_create( vdp_device, 2, features, 4, params, param_values, &this->video_mixer );
++  st = vdp_video_mixer_create( vdp_device, 4, features, 4, params, param_values, &this->video_mixer );
 +  if ( vdpau_init_error( st, "Can't create video mixer !!", &this->vo_driver, 1 ) ) {
 +    vdp_video_surface_destroy( this->soft_surface );
 +    vdp_output_surface_destroy( this->output_surface[0] );
 +    vdp_output_surface_destroy( this->output_surface[1] );
 +    return NULL;
 +  }
++
++  this->deinterlace_method = config->register_enum( config, "video.output.vdpau_deinterlace_method", 1,
++         vdpau_deinterlace_methods, _("vdpau: HD deinterlace method"),
++         _("bob\n"
++           "Basic deinterlacing, doing 50i->50p.\n\n"
++           "temporal\n"
++           "Very good, 50i->50p\n\n"
++           "temporal_spatial\n"
++           "The best, but very GPU intensive.\n\n"),
++         10, vdpau_update_deinterlace_method, this );
++
++  this->enable_inverse_telecine = config->register_bool( config, "video.output.vdpau_enable_inverse_telecine", 1,
++      _("vdpau: Try to recreatea progressive frames pulldown material"),
++      _("Enable this to detect bad-flagged progressive content to which\n"
++        "a 2:2 or 3:2 pulldown was applied.\n\n"),
++        10, vdpau_update_enable_inverse_telecine, this );
++
++  this->honor_progressive = config->register_bool( config, "video.output.vdpau_honor_progressive", 0,
++        _("vdpau: disable deinterlacing when progressive_frame flag is set"),
++        _("Set to true if you want to trust the progressive_frame stream's flag.\n"
++          "This flag is not always reliable.\n\n"),
++        10, vdpau_honor_progressive_flag, this );
 +
 +  this->capabilities = VO_CAP_YV12 | VO_CAP_YUY2 | VO_CAP_CROP | VO_CAP_UNSCALED_OVERLAY | VO_CAP_CUSTOM_EXTENT_OVERLAY | VO_CAP_ARGB_LAYER_OVERLAY;
 +  ok = 0;
@@ -6017,6 +6264,8 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +  this->saturation = 100;
 +  this->contrast = 100;
 +  this->brightness = 0;
++  this->sharpness = 0;
++  this->noise = 0;
 +  this->deinterlace = 0;
 +
 +  this->allocated_surfaces = 0;
@@ -6082,7 +6331,7 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_vdpau.c xine-lib-1.1.15-n
 +};
 diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_xv.c xine-lib-1.1.15-new/src/video_out/video_out_xv.c
 --- xine-lib-1.1.15-old/src/video_out/video_out_xv.c	2008-08-01 15:16:05.000000000 -0700
-+++ xine-lib-1.1.15-new/src/video_out/video_out_xv.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/video_out/video_out_xv.c	2009-01-08 19:16:15.000000000 -0800
 @@ -908,6 +908,8 @@
  			    int property, int value) {
    xv_driver_t *this = (xv_driver_t *) this_gen;
@@ -6094,7 +6343,7 @@ diff -Naur xine-lib-1.1.15-old/src/video_out/video_out_xv.c xine-lib-1.1.15-new/
      /* value is out of bound */
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/accel_vdpau.h xine-lib-1.1.15-new/src/xine-engine/accel_vdpau.h
 --- xine-lib-1.1.15-old/src/xine-engine/accel_vdpau.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.15-new/src/xine-engine/accel_vdpau.h	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/accel_vdpau.h	2009-01-08 19:16:15.000000000 -0800
 @@ -0,0 +1,59 @@
 +/*
 + * Copyright (C) 2008 the xine project
@@ -6157,7 +6406,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/accel_vdpau.h xine-lib-1.1.15-new
 +
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/osd.c xine-lib-1.1.15-new/src/xine-engine/osd.c
 --- xine-lib-1.1.15-old/src/xine-engine/osd.c	2008-07-12 13:08:43.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/osd.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/osd.c	2009-01-08 19:16:15.000000000 -0800
 @@ -143,14 +143,19 @@
    osd->next = this->osds;
    this->osds = osd;
@@ -6382,7 +6631,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/osd.c xine-lib-1.1.15-new/src/xin
  }
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/osd.h xine-lib-1.1.15-new/src/xine-engine/osd.h
 --- xine-lib-1.1.15-old/src/xine-engine/osd.h	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/osd.h	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/osd.h	2009-01-08 19:16:15.000000000 -0800
 @@ -47,8 +47,12 @@
  
    int width, height;    /* work area dimentions */
@@ -6441,7 +6690,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/osd.h xine-lib-1.1.15-new/src/xin
    pthread_mutex_t             osd_mutex;
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.c xine-lib-1.1.15-new/src/xine-engine/video_out.c
 --- xine-lib-1.1.15-old/src/xine-engine/video_out.c	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/video_out.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/video_out.c	2009-01-08 19:16:15.000000000 -0800
 @@ -930,8 +930,8 @@
          img->vpts = cur_vpts;
          /* extra info of the backup is thrown away, because it is not up to date */
@@ -6466,9 +6715,27 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.c xine-lib-1.1.15-new/s
      img = vo_remove_from_img_buf_queue_int (this->display_img_buf_queue, 1, 0, 0, 0, 0, 0);
      pthread_mutex_unlock(&this->display_img_buf_queue->mutex);
  
+@@ -1427,6 +1434,8 @@
+     ret = this->crop_bottom;
+     break;
+   
++  case XINE_PARAM_VO_SHARPNESS:
++  case XINE_PARAM_VO_NOISE_REDUCTION:
+   case XINE_PARAM_VO_HUE:
+   case XINE_PARAM_VO_SATURATION:
+   case XINE_PARAM_VO_CONTRAST:
+@@ -1516,6 +1525,8 @@
+     ret = this->crop_bottom = value;
+     break;
+   
++  case XINE_PARAM_VO_SHARPNESS:
++  case XINE_PARAM_VO_NOISE_REDUCTION:
+   case XINE_PARAM_VO_HUE:
+   case XINE_PARAM_VO_SATURATION:
+   case XINE_PARAM_VO_CONTRAST:
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/src/xine-engine/video_out.h
 --- xine-lib-1.1.15-old/src/xine-engine/video_out.h	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/video_out.h	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/video_out.h	2009-01-08 19:16:15.000000000 -0800
 @@ -68,6 +68,14 @@
     * member functions
     */
@@ -6494,7 +6761,18 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
    /* 
     * that part is used only by video_out.c for frame management
     * obs: changing anything here will require recompiling vo drivers
-@@ -271,6 +282,7 @@
+@@ -249,7 +260,9 @@
+ #define VO_PROP_OUTPUT_HEIGHT         20 /* read-only */
+ #define VO_PROP_OUTPUT_XOFFSET        21 /* read-only */
+ #define VO_PROP_OUTPUT_YOFFSET        22 /* read-only */
+-#define VO_NUM_PROPERTIES             23
++#define VO_PROP_SHARPNESS             24
++#define VO_PROP_NOISE_REDUCTION       25
++#define VO_NUM_PROPERTIES             26
+ 
+ /* number of colors in the overlay palette. Currently limited to 256
+    at most, because some alphablend functions use an 8-bit index into
+@@ -271,6 +284,7 @@
  #define VO_PAN_SCAN_FLAG     4
  #define VO_INTERLACED_FLAG   8
  #define VO_NEW_SEQUENCE_FLAG 16 /* set after MPEG2 Sequence Header Code (used by XvMC) */
@@ -6502,7 +6780,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
  
  /* video driver capabilities */
  #define VO_CAP_YV12                   0x00000001 /* driver can handle YUV 4:2:0 pictures */
-@@ -280,6 +292,10 @@
+@@ -280,6 +294,10 @@
  #define VO_CAP_UNSCALED_OVERLAY       0x00000010 /* driver can blend overlay at output resolution */
  #define VO_CAP_CROP                   0x00000020 /* driver can crop */
  #define VO_CAP_XXMC                   0x00000040 /* driver can use extended XvMC */
@@ -6513,7 +6791,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
  
  
  /*
-@@ -392,6 +408,14 @@
+@@ -392,6 +410,14 @@
    uint16_t color;
  } rle_elem_t;
  
@@ -6528,7 +6806,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
  struct vo_overlay_s {
  
    rle_elem_t       *rle;           /* rle code buffer                  */
-@@ -402,6 +426,10 @@
+@@ -402,6 +428,10 @@
    int               width;         /* width of subpicture area         */
    int               height;        /* height of subpicture area        */
    
@@ -6539,7 +6817,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
    uint32_t          color[OVL_PALETTE_SIZE];  /* color lookup table     */
    uint8_t           trans[OVL_PALETTE_SIZE];  /* mixer key table        */
    int               rgb_clut;      /* true if clut was converted to rgb */
-@@ -416,6 +444,9 @@
+@@ -416,6 +446,9 @@
    int               hili_rgb_clut; /* true if clut was converted to rgb */
    
    int               unscaled;      /* true if it should be blended unscaled */
@@ -6551,7 +6829,7 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/video_out.h xine-lib-1.1.15-new/s
  
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/xine.c xine-lib-1.1.15-new/src/xine-engine/xine.c
 --- xine-lib-1.1.15-old/src/xine-engine/xine.c	2008-06-25 06:04:09.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/xine.c	2009-01-02 14:42:18.000000000 -0800
++++ xine-lib-1.1.15-new/src/xine-engine/xine.c	2009-01-08 19:16:15.000000000 -0800
 @@ -1963,6 +1963,8 @@
  
    stream->xine->port_ticket->acquire(stream->xine->port_ticket, 0);
@@ -6643,8 +6921,26 @@ diff -Naur xine-lib-1.1.15-old/src/xine-engine/xine.c xine-lib-1.1.15-new/src/xi
  
 diff -Naur xine-lib-1.1.15-old/src/xine-engine/xine_interface.c xine-lib-1.1.15-new/src/xine-engine/xine_interface.c
 --- xine-lib-1.1.15-old/src/xine-engine/xine_interface.c	2008-07-12 15:52:01.000000000 -0700
-+++ xine-lib-1.1.15-new/src/xine-engine/xine_interface.c	2009-01-02 14:42:18.000000000 -0800
-@@ -855,6 +855,16 @@
++++ xine-lib-1.1.15-new/src/xine-engine/xine_interface.c	2009-01-08 19:16:15.000000000 -0800
+@@ -474,6 +474,8 @@
+     stream->xine->verbosity = value;
+     break;
+ 
++  case XINE_PARAM_VO_SHARPNESS:
++  case XINE_PARAM_VO_NOISE_REDUCTION:
+   case XINE_PARAM_VO_HUE:
+   case XINE_PARAM_VO_SATURATION:
+   case XINE_PARAM_VO_CONTRAST:
+@@ -635,6 +637,8 @@
+     ret = stream->xine->verbosity;
+     break;
+ 
++  case XINE_PARAM_VO_SHARPNESS:
++  case XINE_PARAM_VO_NOISE_REDUCTION:
+   case XINE_PARAM_VO_HUE:
+   case XINE_PARAM_VO_SATURATION:
+   case XINE_PARAM_VO_CONTRAST:
+@@ -855,6 +859,16 @@
    this->osd.renderer->draw_bitmap(&this->osd, bitmap, x1, y1, width, height, palette_map);
  }
  
