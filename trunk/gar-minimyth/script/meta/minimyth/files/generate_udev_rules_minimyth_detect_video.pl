@@ -111,10 +111,6 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
     print FILE qq(#-------------------------------------------------------------------------------\n);
     print FILE qq(# Detect video devices.\n);
     print FILE qq(#\n);
-    print FILE qq(# An X device is assumed to\n);
-    print FILE qq(#     be in the pci subsystem, and\n);
-    print FILE qq(#     in the 0x0300 PCI class.\n);
-    print FILE qq(#\n);
     print FILE qq(# mm_detect_id has the following format:\n);
     print FILE qq(#     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>\n);
     print FILE qq(# mm_detect_state_video has the following format:\n);
