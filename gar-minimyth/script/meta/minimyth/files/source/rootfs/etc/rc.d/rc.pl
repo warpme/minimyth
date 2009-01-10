@@ -20,6 +20,7 @@ my @script_list_start =
     'modules_automatic',
     'conf',
     'modules_manual',
+    'firmware',
     'log'
 );
 my @script_list_kill_halt =
