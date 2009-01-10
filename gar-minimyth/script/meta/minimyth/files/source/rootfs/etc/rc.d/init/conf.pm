@@ -540,7 +540,7 @@ sub _run_var
                 my $result = $minimyth->confro_get($name_remote, $name_local);
                 if (! -e $name_local)
                 {
-                    $minimyth->message_log('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
+                    $minimyth->message_output('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
                 }
                 else
                 {
