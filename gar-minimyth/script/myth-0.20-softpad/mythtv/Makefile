@@ -83,10 +83,10 @@ CONFIGURE_ARGS = \
 	--disable-dbox2 \
 	--disable-hdhomerun \
 	--disable-crciprec \
-	--disable-v4l \
-	--disable-ivtv \
-	--disable-dvb \
-	--dvb-path="/dev/null" \
+	--enable-v4l \
+	--enable-ivtv \
+	--enable-dvb \
+	--dvb-path="$(DESTDIR)$(includedir)" \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
