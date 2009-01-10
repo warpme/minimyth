@@ -24,6 +24,7 @@ script='BEGIN
         $1 !~ /^ *looking at / { next }
         {
             x = 1
+            kernels=""
             subsystem=""
             while ( x < NF ) {
                 x++
@@ -32,6 +33,11 @@ script='BEGIN
                     sub(/^ *KERNEL=="/, "", kernel)
                     sub(/"$/, "", kernel)
                     sub(/[0-9]*$/, "", kernel)
+                }
+                if ( $x ~ /^ *KERNELS==/ ) {
+                    kernels=$x
+                    sub(/^ *KERNELS=="/, "", kernels)
+                    sub(/"$/, "", kernels)
                 }
                 if ( $x ~ /^ *SUBSYSTEMS?=="acpi"/ ) {
                     subsystem="acpi"
@@ -95,9 +101,17 @@ script='BEGIN
                 device=""
                 subsystem_vendor=""
                 subsystem_device=""
-                bus_id=""
+                bus_id=kernels
                 while ( x < NF ) {
                     x++
+                    if ( $x ~ /^ *ATTRS?\{class\}==/ ) {
+                        class=$x
+                        sub(/^ *ATTRS?\{class\}=="0x/, "", class)
+                        sub(/.."$/, "", class)
+                        class_prog=$x
+                        sub(/^ *ATTRS?\{class\}=="0x..../, "", class_prog)
+                        sub(/"$/, "", class_prog)
+                    }
                     if ( $x ~ /^ *ATTRS?\{vendor\}==/ ) {
                         vendor=$x
                         sub(/^ *ATTRS?\{vendor\}=="0x/, "", vendor)
