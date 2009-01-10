@@ -64,6 +64,7 @@ sub start
         {
             foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
             {
+                chomp $_;
                 $ip_address = $_;
                 last;
             }
@@ -83,6 +84,7 @@ sub start
         $command = $command . ' ' .  q(> /var/log/udhcpc 2>&1);
 
         # Start DHCP client on the interface.
+        $minimyth->message_log('info', qq(running DHCP client command '$command'.));
         if (system($command) != 0)
         {
             $minimyth->message_output('err', "DHCP on interface '$interface' failed.");
@@ -96,6 +98,7 @@ sub start
         {
             foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
             {
+                chomp $_;
                 $ip_address = $_;
                 last;
             }
