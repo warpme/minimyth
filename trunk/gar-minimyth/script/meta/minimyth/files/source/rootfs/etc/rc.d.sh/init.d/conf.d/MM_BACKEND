@@ -23,9 +23,14 @@ conf_default_MM_BACKEND() {
 
     local device
     local device_list
+    local firmware_item
+    local firmware_list
 
     if /usr/bin/test -z "${MM_BACKEND_ENABLED}" ; then
         MM_BACKEND_ENABLED='auto'
+    fi
+    if /usr/bin/test -z "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}" ; then
+        MM_BACKEND_TUNER_FIRMWARE_FILE_LIST='auto'
     fi
 
     if /usr/bin/test "${MM_BACKEND_ENABLED}" = "auto" ; then
@@ -38,17 +43,50 @@ conf_default_MM_BACKEND() {
         done
     fi
 
+    if /usr/bin/test "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}" = "auto" ; then
+        firmware_list=
+        for device in `mm_detect_state_get 'tuner'` ; do
+            firmware_item=`/bin/echo "${device}" | /usr/bin/cut -d ',' -f 3 | /bin/sed -e 's%:% %g'`
+            firmware_list="${firmware_list} ${firmware_item}"
+        done
+        if /usr/bin/test -n "${firmware_list}" ; then
+            firmware_list=`/bin/echo ${firmware_list} | mm_uniq`
+        fi
+        MM_BACKEND_TUNER_FIRMWARE_FILE_LIST="${firmware_list}"
+    fi
+
+    if /usr/bin/test "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}" = "none" ; then
+        MM_BACKEND_TUNER_FIRMWARE_FILE_LIST = ''
+    fi
+
     return 0
 }
 
 conf_write_MM_BACKEND() {
     local conf_file=$1
 
-    conf_variable_write "${conf_file}" MM_BACKEND_ENABLED "${MM_BACKEND_ENABLED}"
+    conf_variable_write "${conf_file}" MM_BACKEND_ENABLED                  "${MM_BACKEND_ENABLED}"
+    conf_variable_write "${conf_file}" MM_BACKEND_TUNER_FIRMWARE_FILE_LIST "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}"
 
     return 0
 }
 
 conf_fetch_MM_BACKEND() {
+    local name_remote
+    local name_local
+
+    if /usr/bin/test -n "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}" ; then
+        /bin/mkdir -p /lib/firmware
+        for name_remote in ${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST} ; do
+            name_local=`/usr/bin/basename ${name_remote}`
+            name_local="/lib/firmware/${name_local}"
+            /bin/rm -f ${name_local}
+            mm_confro_get ${name_remote} ${name_local}
+            if /usr/bin/test ! -e ${name_local} ; then
+                mm_message_output err "error: failed to fetch '${name_remote}' file."
+            fi
+        done
+    fi
+
     return 0
 }

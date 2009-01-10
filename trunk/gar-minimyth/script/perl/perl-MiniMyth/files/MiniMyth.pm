@@ -410,6 +410,7 @@ sub detect_state_get
     $map{'event'}   = [ 'device' , 'type' ];
     $map{'lcdproc'} = [ 'device' , 'driver'];
     $map{'lirc'}    = [ 'device' , 'driver', 'lircd_conf' ];
+    $map{'tuner'}   = [ 'device' , 'name' , 'firmware' ];
     $map{'video'}   = [ 'driver' ];
 
     my @state;
