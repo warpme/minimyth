@@ -82,8 +82,8 @@ CONFIGURE_ARGS = \
 	--disable-iptv \
 	--disable-dbox2 \
 	--disable-hdhomerun \
-	--disable-v4l \
-	--disable-ivtv \
+	--enable-v4l \
+	--enable-ivtv \
 	--disable-hdpvr \
 	--enable-dvb \
 	--dvb-path="$(DESTDIR)$(includedir)" \

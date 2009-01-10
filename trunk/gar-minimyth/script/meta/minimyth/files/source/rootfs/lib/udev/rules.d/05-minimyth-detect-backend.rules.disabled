@@ -2,10 +2,9 @@
 # Detect the need for the MythTV backend service.
 #
 # It is assumed that we need the MythTV backend service when we detect
-#     a device in the dvb subsystem.
+#     a device in the dvb subsystem, and
+#     a device in the video4linux subsystem that has a name that starts 'ivtv'.
 #
-# mm_detect_id has the following format:
-#     usb:<idVendor>:<idProduct>
 # mm_detect_state_backend has the following format:
 #     yes
 # where
@@ -13,6 +12,7 @@
 #-------------------------------------------------------------------------------
 ACTION!="add|change|remove", GOTO="end"
 SUBSYSTEM=="dvb", GOTO="begin"
+SUBSYSTEM=="video4linux", ATTR{name}=="ivtv? encoder MPG", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
