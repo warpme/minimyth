@@ -120,17 +120,17 @@ sub start
         } 
     }
 
-    # Enable configuration auto-detection udev rules.
+    # Enable disabled udev rules.
     if (opendir(DIR, '/lib/udev/rules.d'))
     {
-        foreach (grep(s/^(05-minimyth-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
+        foreach (grep(s/^([0-9][0-9]-minimyth-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
             rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
         }
         closedir(DIR);
     }
 
-    # Trigger udev with the additional udev rules that handle configuration auto-detection.
+    # Trigger udev with the additional udev rules.
     system(qq(/sbin/udevadm trigger));
     system(qq(/sbin/udevadm settle --timeout=60));
 
