@@ -46,11 +46,11 @@ sub page
     push(@page,  q(<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">));
     push(@page,  q(  <head>));
     push(@page,  q(    <meta name="author" content="Paul Bender" />));
-    push(@page,  q(    <meta name="copyright" content="2006-2008 Paul Bender &amp; minimyth.org" />));
+    push(@page,  q(    <meta name="copyright" content="2006-2009 Paul Bender &amp; minimyth.org" />));
     push(@page,  q(    <meta name="keywords" content="PVR,Linux,MythTV,MiniMyth" />));
     push(@page,  q(    <meta name="description" content="" />));
     push(@page,  q(    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />));
-    push(@page, qq(    <title>MiniMyth Frontend $title</title>));
+    push(@page, qq(    <title>MiniMyth System $title</title>));
     push(@page,  q(    <style type="text/css" title="main-styles">));
     push(@page,  q(      @import "../css/minimyth.css";));
     if (defined($style))
@@ -77,7 +77,7 @@ sub page
     push(@page,  q(        </div>));
     push(@page,  q(      </div>));
     push(@page,  q(      <div class="middle">));
-    push(@page, qq(      <div class="heading">MiniMyth Frontend $title</div>));
+    push(@page, qq(      <div class="heading">MiniMyth System $title</div>));
     push(@page, @{$middle});
     push(@page,  q(      </div>));
     push(@page,  q(      <div class="footer">));

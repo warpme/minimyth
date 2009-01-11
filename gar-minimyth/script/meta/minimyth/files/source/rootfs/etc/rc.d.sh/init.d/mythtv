@@ -120,7 +120,7 @@ start() {
         /bin/su -c "${MTD} --daemon" - minimyth
     fi
 
-    # Configure Myth database jumppoints to match MiniMyth frontend.
+    # Configure Myth database jumppoints to match MiniMyth.
     set | /bin/grep -e '^MM_MYTHDB_JUMPPOINTS_[^=]*=' | /bin/sed -e 's%^MM_MYTHDB_JUMPPOINTS_[^=]*=%%' -e "s%^'%%" -e "s%'$%%" | \
     while read jumppoints ; do
         jumppoints_destination=`/bin/echo ${jumppoints} | /usr/bin/cut -d '~' -f 1`
@@ -128,7 +128,7 @@ start() {
         mm_mythdb_jumppoints_update "${jumppoints_destination}" "${jumppoints_keylist}"
     done
 
-    # Configure Myth database keybindings to match MiniMyth frontend.
+    # Configure Myth database keybindings to match MiniMyth.
     set | /bin/grep -e '^MM_MYTHDB_KEYBINDINGS_[^=]*=' | /bin/sed -e 's%^MM_MYTHDB_KEYBINDINGS_[^=]*=%%' -e "s%^'%%" -e "s%'$%%" | \
     while read keybindings ; do
         keybindings_context=`/bin/echo ${keybindings} | /usr/bin/cut -d '~' -f 1`
@@ -137,7 +137,7 @@ start() {
         mm_mythdb_keybindings_update "${keybindings_context}" "${keybindings_action}" "${keybindings_keylist}"
     done
 
-    # Configure Myth database settings to match MiniMyth frontend.
+    # Configure Myth database settings to match MiniMyth.
     set | /bin/grep -e '^MM_MYTHDB_SETTINGS_[^=]*=' | /bin/sed -e 's%^MM_MYTHDB_SETTINGS_[^=]*=%%' -e "s%^'%%" -e "s%'$%%" | \
     while read settings ; do
         settings_value=`/bin/echo ${settings} | /usr/bin/cut -d '~' -f 1`
