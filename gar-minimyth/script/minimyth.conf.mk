@@ -52,8 +52,9 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythvideo \
                              mythweather \
                              $(if $(filter $(mm_MYTH_VERSION),0.21 trunk),mythzoneminder) \
-                             mplayer-vld \
+                             $(if $(filter $(mm_MYTH_VERSION),trunk),flash) \
                              mplayer-svn \
+                             mplayer-vld \
                              vlc \
                              xine \
                              perl \
@@ -121,7 +122,7 @@ mm_NVIDIA_VERSION         ?= 169.12
 mm_XORG_VERSION           ?= 7.3
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 19625
+mm_MYTH_TRUNK_VERSION     ?= 19640
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
