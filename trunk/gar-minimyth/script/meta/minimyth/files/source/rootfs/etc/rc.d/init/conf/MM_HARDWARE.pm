@@ -40,7 +40,7 @@ $var_list{'MM_HARDWARE_KERNEL_MODULES'} =
                         s/ +/ /g;
                         s/^ //;
                         s/ $//;
-                        s/ ?, ?/,/;
+                        s/ ?, ?/,/g;
                         if (/^($vendor),([^,]*),([^,]*),([^,]*)$/)
                         {
                             if (((! $2) || ($2 eq $family)) &&
@@ -67,7 +67,7 @@ $var_list{'MM_HARDWARE_KERNEL_MODULES'} =
                         s/ +/ /g;
                         s/^ //;
                         s/ $//;
-                        s/ ?, ?/,/;
+                        s/ ?, ?/,/g;
                         if (/^($x_driver),([^,]*)$/)
                         {
                             push(@kernel_modules, split(/ /, $2));
