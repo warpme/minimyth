@@ -6,6 +6,7 @@ MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-perl.patch.gar
+PATCHFILES += $(DISTNAME)-intel_g4x_stolen_memory_count_fix.patch
 PATCHFILES += $(DISTNAME)-bug_11154.patch
 PATCHFILES += $(DISTNAME)-atl1e.patch
 PATCHFILES += $(DISTNAME)-atl2_2.0.4.patch
