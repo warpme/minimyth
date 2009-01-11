@@ -16,12 +16,12 @@ push(@middle,  q(<div class="section">));
 push(@middle,  q(  <p>));
 if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
 {
-    push(@middle, qq(    You can use the URL <a href="http://$server_name:8080/">http://$server_name:8080/</a> to access your MiniMyth frontend's filesystem.));
+    push(@middle, qq(    You can use the URL <a href="http://$server_name:8080/">http://$server_name:8080/</a> to access your MiniMyth system's filesystem.));
 }
 else
 {
-    push(@middle,  q(    Your MiniMyth frontend has security enabled.));
-    push(@middle,  q(    Therefore, you cannot access your MiniMyth frontend's filesystem.));
+    push(@middle,  q(    Your MiniMyth system has security enabled.));
+    push(@middle,  q(    Therefore, you cannot access your MiniMyth system's filesystem.));
 }
 push(@middle,  q(  </p>));
 push(@middle,  q(</div>));

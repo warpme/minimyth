@@ -7,8 +7,8 @@
 # For information on this file, see either
 # <http://minimyth.org/document.shtml>
 # or
-# <http://{frontend}/document.shtml>,
-# where '{frontend}' is the IPv4 address or hostname of your MiniMyth frontend.
+# <http://{minimyth}/document.shtml>,
+# where '{minimyth}' is the IPv4 address or hostname of your MiniMyth minimyth.
 #
 # A the time package is called, very little configuration has beeen completed.
 # While kernel modules loaded by udev have been loaded, kernel modules loaded by
@@ -36,8 +36,8 @@ sub start
 #    #
 #    # Description:
 #    #   Initialize a network (often NFS) swap partition. This can be useful for
-#    #   MiniMyth frontends that have too little memory to run without swap (i.e.
-#    #   MiniMyth frontends that have less than 512MB of memory).
+#    #   MiniMyth systems that have too little memory to run without swap (i.e.
+#    #   MiniMyth systems that have less than 512MB of memory).
 #    #
 #    # Parameters:
 #    #   minimyth:
@@ -46,7 +46,7 @@ sub start
 #    #   swap_url:
 #    #     Required.
 #    #     The URL that points to the remote directory that contains (or will
-#    #     contain) the swap file. The MiniMyth frontend must have write access
+#    #     contain) the swap file. The MiniMyth system must have write access
 #    #     as user 'root' to this remote directory.
 #    #   swap_file:
 #    #     Optional.
@@ -54,7 +54,7 @@ sub start
 #    #     directory pointed ot by URL $swap_url. If this file is not present
 #    #     then MiniMyth will create it.  If this value is not present, then
 #    #     it will be assumed to be '{hostname}.swap', where '{hostname}' is
-#    #     the hostnme of the MiniMyth frontend.
+#    #     the hostnme of the MiniMyth system.
 #    #   swap_size:
 #    #     Optional.
 #    #     The size of the swap file in kilobytes. This value is used only when

@@ -136,7 +136,7 @@ sub start
         system(qq(/bin/su -c '$mtd --daemon' - minimyth));
     }
 
-    # Configure Myth database jumppoints to match MiniMyth frontend.
+    # Configure Myth database jumppoints to match MiniMyth.
     foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_JUMPPOINTS_.*' })})
     {
         if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]*)$/)
@@ -145,7 +145,7 @@ sub start
         }
     }
 
-    # Configure Myth database keybindings to match MiniMyth frontend.
+    # Configure Myth database keybindings to match MiniMyth.
     foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_KEYBINDINGS_.*' })})
     {
         if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]+)~([^~]*)$/)
@@ -154,7 +154,7 @@ sub start
         }
     }
 
-    # Configure Myth database settings to match MiniMyth frontend.
+    # Configure Myth database settings to match MiniMyth.
     foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_SETTINGS_.*' })})
     {
         if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]*)$/)
