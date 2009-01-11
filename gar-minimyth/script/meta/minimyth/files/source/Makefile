@@ -149,6 +149,8 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
+	@# Make home directory for user 'root'.
+	@mkdir -p $@~/root
 	@# Copy source.
 	@mkdir -p $@~$(sourcedir)
 	@cp -pdR $(top_build)/stage/gar-$(mm_NAME).tar.bz2 $@~$(sourcedir)/gar-$(mm_NAME).tar.bz2

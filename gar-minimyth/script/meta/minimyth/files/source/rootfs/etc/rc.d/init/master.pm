@@ -33,8 +33,6 @@ sub start
     }
 
     # Configure config.xml file.
-    # The frontend runs as user 'minimyth' and the backend runs as user 'root'.
-    # As a result, there is a config.xml file for both 'minimyth' and 'root'.
     $minimyth->file_replace_variable(
         '/home/minimyth/.mythtv/config.xml',
         { '@MM_HOSTNAME@'          => $hostname,
@@ -42,17 +40,8 @@ sub start
           '@MM_MASTER_DBUSERNAME@' => $minimyth->var_get('MM_MASTER_DBUSERNAME'),
           '@MM_MASTER_DBPASSWORD@' => $minimyth->var_get('MM_MASTER_DBPASSWORD'),
           '@MM_MASTER_DBNAME@'     => $minimyth->var_get('MM_MASTER_DBNAME') });
-    $minimyth->file_replace_variable(
-        '/root/.mythtv/config.xml',
-        { '@MM_HOSTNAME@'          => $hostname,
-          '@MM_MASTER_SERVER@'     => $minimyth->var_get('MM_MASTER_SERVER'),
-          '@MM_MASTER_DBUSERNAME@' => $minimyth->var_get('MM_MASTER_DBUSERNAME'),
-          '@MM_MASTER_DBPASSWORD@' => $minimyth->var_get('MM_MASTER_DBPASSWORD'),
-          '@MM_MASTER_DBNAME@'     => $minimyth->var_get('MM_MASTER_DBNAME') });
 
     # Configure mysql.txt file.
-    # The frontend runs as user 'minimyth' and the backend runs as user 'root'.
-    # As a result, there is a mysql.txt file for both 'minimyth' and 'root'.
     my $wol_false;
     my $wol_true;
     if ($minimyth->var_get('MM_MASTER_WOL_ENABLED') eq 'yes')
@@ -81,22 +70,6 @@ sub start
           '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND') });
     $minimyth->file_replace_variable(
         '/home/minimyth/.mythtv/mysql.txt',
-        { '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
-          '@MM_MASTER_WOL_MAC@'                 => $minimyth->var_get('MM_MASTER_WOL_MAC') });
-    $minimyth->file_replace_variable(
-        '/root/.mythtv/mysql.txt',
-        { '@MM_HOSTNAME@'                       => $hostname,
-          '@MM_MASTER_SERVER@'                  => $minimyth->var_get('MM_MASTER_SERVER'),
-          '@MM_MASTER_DBUSERNAME@'              => $minimyth->var_get('MM_MASTER_DBUSERNAME'),
-          '@MM_MASTER_DBPASSWORD@'              => $minimyth->var_get('MM_MASTER_DBPASSWORD'),
-          '@MM_MASTER_DBNAME@'                  => $minimyth->var_get('MM_MASTER_DBNAME'),
-          '@MM_MASTER_WOL_FALSE@'               => $wol_false,
-          '@MM_MASTER_WOL_TRUE@'                => $wol_true,
-          '@MM_MASTER_WOLSQLRECONNECTWAITTIME@' => $minimyth->var_get('MM_MASTER_WOLSQLRECONNECTWAITTIME'),
-          '@MM_MASTER_WOLSQLCONNECTRETRY@'      => $minimyth->var_get('MM_MASTER_WOLSQLCONNECTRETRY'),
-          '@MM_MASTER_WOLSQLCOMMAND@'           => $minimyth->var_get('MM_MASTER_WOLSQLCOMMAND') });
-    $minimyth->file_replace_variable(
-        '/root/.mythtv/mysql.txt',
         { '@MM_MASTER_WOL_BROADCAST@'           => $master_wol_broadcast,
           '@MM_MASTER_WOL_MAC@'                 => $minimyth->var_get('MM_MASTER_WOL_MAC') });
  
