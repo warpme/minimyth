@@ -27,7 +27,6 @@ DEPENDS = lang/c \
 	lib/libmpeg2 \
 	lib/libpng \
 	lib/libxml2 \
-	lib/sysfsutils \
 	lib/taglib \
 	lib/zlib \
 	system/lirc \
@@ -42,12 +41,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-python-bindings \
 	--disable-java-bindings \
+	--disable-static \
+	--enable-shared \
 	--enable-nls \
 	--disable-rpath \
 	--disable-hal \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
+	--disable-debug \
 	--disable-gprof \
 	--disable-cprof \
 	--enable-mmx \
@@ -55,7 +57,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-altivec \
 	--disable-optimize-memory \
 	--disable-optimizations \
-	--disable-debug \
+	--disable-run-as-root \
 	--disable-coverage \
 	--enable-release \
 	--enable-sout \
@@ -67,7 +69,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-growl \
 	--disable-notify \
 	--disable-audioscrobbler \
-	--disable-musicbrains \
 	--enable-taglib \
 	--disable-live555 \
 	--disable-dc1394 \
@@ -81,9 +82,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dvbpsi \
 	--disable-v4l \
 	--disable-v4l2 \
+	--disable-libv4l2 \
 	--disable-pvr \
 	--disable-gnomevfs \
 	--enable-libcdio \
+	--disable-libvcdinfo \
 	--disable-cddax \
 	--disable-libcddb \
 	--disable-vcdx \
@@ -108,6 +111,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-quicktime \
 	--disable-real \
 	--disable-realrtsp \
+	--disable-libsysfs \
 	--disable-libtar \
 	--enable-a52 \
 	--enable-dca \
@@ -119,12 +123,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-tarkin \
 	--disable-theora \
 	--disable-dirac \
+	--disable-schroedinger \
 	--enable-png \
 	--disable-x264 \
 	--disable-fluidsynth \
 	--disable-zvbi \
 	--disable-telx \
 	--disable-csri \
+	--disable-libass \
 	--disable-asademux \
 	--disable-cmml \
 	--disable-kate \
@@ -150,7 +156,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-svgalib \
 	--disable-directfb \
 	--disable-ggi \
-	--disable-glide \
 	--disable-aa \
 	--disable-caca \
 	--disable-wingdi \
@@ -168,7 +173,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-upnp \
 	--disable-skins2 \
 	--disable-pda \
-	--disable-wxwidgets \
 	--disable-wince \
 	--disable-opie \
 	--disable-macosx \
