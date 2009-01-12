@@ -628,16 +628,6 @@ $var_list{'MM_X_MODE_0'} =
             }
         }
         return $value_auto;
-    },
-    extra         => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        if (($minimyth->var_get('MM_X_MODE_0') ne '') && ($minimyth->var_get('MM_X_MODELINE_0') ne ''))
-        {
-            $minimyth->message_output('err', qq(both 'MM_X_MODE_0' and 'MM_X_MODELINE_0' cannot be set.));
-        }
     }
 };
 $var_list{'MM_X_MODE_1'} =
@@ -695,16 +685,6 @@ $var_list{'MM_X_MODE_1'} =
             }
         }
         return $value_auto;
-    },
-    extra         => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        if (($minimyth->var_get('MM_X_MODE_1') ne '') && ($minimyth->var_get('MM_X_MODELINE_1') ne ''))
-        {
-            $minimyth->message_output('err', qq(both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
-        }
     }
 };
 $var_list{'MM_X_MODE_2'} =
@@ -762,16 +742,6 @@ $var_list{'MM_X_MODE_2'} =
             }
         }
         return $value_auto;
-    },
-    extra         => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        if (($minimyth->var_get('MM_X_MODE_2') ne '') && ($minimyth->var_get('MM_X_MODELINE_2') ne ''))
-        {
-            $minimyth->message_output('err', qq(both 'MM_X_MODE_2' and 'MM_X_MODELINE_2' cannot be set.));
-        }
     }
 };
 $var_list{'MM_X_TV_TYPE'} =
