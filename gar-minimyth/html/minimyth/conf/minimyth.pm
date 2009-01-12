@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 ################################################################################
 # minimyth.pm
 #
@@ -17,7 +16,6 @@
 # need to be careful about what you assume is available. In particular, you
 # must use IP addresses rather than DNS names when refering to servers.
 ################################################################################
-
 package init::minimyth;
 
 use strict;
