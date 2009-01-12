@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package mm_webpage;
 
 use warnings;
