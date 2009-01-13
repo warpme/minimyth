@@ -19,7 +19,10 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--with-gnu-ld
+	--disable-libftdipp \
+	--with-gnu-ld \
+	--with-boost="$(DESTDIR)$(prefix)" \
+	--with-boost-libdir="$(DESTDIR)$(libdir)"
 
 CONFIGURE_ENV = \
 	ac_cv_path_HAVELIBUSB=$(DESTDIR)$(bindir)/libusb-config
