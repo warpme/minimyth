@@ -1,0 +1,23 @@
+diff -Naur lm_sensors-3.0.3-old/CHANGES lm_sensors-3.0.3-new/CHANGES
+--- lm_sensors-3.0.3-old/CHANGES	2009-01-12 18:10:22.000000000 -0800
++++ lm_sensors-3.0.3-new/CHANGES	2009-01-12 18:12:06.000000000 -0800
+@@ -5,6 +5,7 @@
+   libsensors: Avoid namespace pollution
+   sensors-detect: Fix detection of ADT7463 and LM96000
+   fancontrol: Don't use named pipes when we don't need them (#2319)
++  sensord: Accept negative temperatures in RRD database
+                   Fix detection of Intel 5000 series FB-DIMM AMB
+   pwmconfig: Tell the user about gnuplot if it isn't installed
+              Fix MINSTOP and MINSTART test functions
+diff -Naur lm_sensors-3.0.3-old/prog/sensord/rrd.c lm_sensors-3.0.3-new/prog/sensord/rrd.c
+--- lm_sensors-3.0.3-old/prog/sensord/rrd.c	2009-01-12 18:09:56.000000000 -0800
++++ lm_sensors-3.0.3-new/prog/sensord/rrd.c	2009-01-12 18:12:06.000000000 -0800
+@@ -201,7 +201,7 @@
+         max = "12000";
+         break;
+       case DataType_temperature:
+-        min = "0";
++        min = "-100";
+         max = "250";
+         break;
+       default:
