@@ -1,14 +1,14 @@
 #!/bin/sh
 ################################################################################
-# mm_uid
+# mm_persistent
 #
-# This script provides a unique identifier based on hardware information.
+# This script provides a persistent device name based on hardware information.
 #
 # The output has the formats:
-#     <kernel>-pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>
-#     <kernel>-phys:<phys>
-#     <kernel>-usb:<idVendor>:<idProduct>:<serial>:<bInterfaceNumber>
-#     <kernel>-wminput:<phys>
+#     persistent/<kernel>-pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>:<instance>
+#     persistent/<kernel>-phys:<phys>:<instance>
+#     persistent/<kernel>-usb:<idVendor>:<idProduct>:<serial>:<bInterfaceNumber>:<instance>
+#     persistent/<kernel>-wminput:<phys>:<instance>
 ################################################################################
 
 script='BEGIN
@@ -16,11 +16,11 @@ script='BEGIN
             FS="\n"
             RS=""
             kernel=""
-            mm_uid=""
+            mm_persistent=""
             phys=""
             bInterfaceNumber=""
         }
-        mm_uid !~ /^$/ { next }
+        mm_persistent !~ /^$/ { next }
         $1 !~ /^ *looking at / { next }
         {
             x = 1
@@ -65,7 +65,7 @@ script='BEGIN
                     x++
                 }
                 if ( phys ) {
-                    mm_uid=kernel "-phys:" phys
+                    mm_persistent=kernel "-phys:" phys
                 }
             }
             if ( subsystem == "input" ) {
@@ -91,7 +91,7 @@ script='BEGIN
                     }
                 }
                 if ( ( driver == "" ) && ( name == "Nintendo Wiimote" ) && ( phys ) ) {
-                    mm_uid=kernel "-wminput:" phys
+                    mm_persistent=kernel "-wminput:" phys
                 }
             }
             if ( subsystem == "pci" ) {
@@ -139,7 +139,7 @@ script='BEGIN
                     }
                 }
                 if ( class && class_prog && vendor && device && subsystem_vendor && subsystem_device && bus_id ) {
-                    mm_uid=kernel "-pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
+                    mm_persistent=kernel "-pci:" class ":" class_prog ":" vendor ":" device ":" subsystem_vendor ":" subsystem_device ":" bus_id
                 }
             }
             if ( subsystem == "serio" ) {
@@ -147,7 +147,7 @@ script='BEGIN
                     x++
                 }
                 if ( phys ) {
-                    mm_uid=kernel "-phys:" phys
+                    mm_persistent=kernel "-phys:" phys
                 }
             }
             if ( subsystem == "usb" ) {
@@ -185,14 +185,31 @@ script='BEGIN
                     }
                 }
                 if ( idVendor && idProduct ) {
-                    mm_uid=kernel "-usb:" idVendor ":" idProduct ":" serial ":" bInterfaceNumber
+                    mm_persistent=kernel "-usb:" idVendor ":" idProduct ":" serial ":" bInterfaceNumber
                 }
             }
-            if ( mm_uid ) {
-                print mm_uid
+            if ( mm_persistent ) {
+                print mm_persistent
             }
         }'
 
-/sbin/udevadm info --attribute-walk --path ${DEVPATH} | /usr/bin/awk "${script}"
+mm_persistent=`/sbin/udevadm info --attribute-walk --path ${DEVPATH} | /usr/bin/awk "${script}"`
+if /usr/bin/test -n "${mm_persistent}" ; then
+    mm_persistent="persistent/${mm_persistent}"
+    # Add an instance number. Ideally, the instance number will always be 0.
+    # However, some device vendors fail to fill in all the fields (e.g. serial
+    # number, and interface number) resulting in non-unique names. Adding an
+    # instance number ensures that the name will be unique.
+    instance=0
+    while /bin/true ; do
+        if /usr/bin/test ! -e "/dev/${mm_persistent}:${instance}" ; then
+            break
+        fi
+        instance=$((${instance} + 1))
+    done
+    mm_persistent="${mm_persistent}:${instance}"
+fi
+
+/bin/echo "${mm_persistent}"
 
 exit 0
