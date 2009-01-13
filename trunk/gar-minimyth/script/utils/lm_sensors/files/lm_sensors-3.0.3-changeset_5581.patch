@@ -1,0 +1,27 @@
+diff -Naur lm_sensors-3.0.3-old/CHANGES lm_sensors-3.0.3-new/CHANGES
+--- lm_sensors-3.0.3-old/CHANGES	2009-01-12 18:14:32.000000000 -0800
++++ lm_sensors-3.0.3-new/CHANGES	2009-01-12 18:15:40.000000000 -0800
+@@ -4,6 +4,7 @@
+ 3.0.3 (2008-09-28)
+   libsensors: Avoid namespace pollution
+   sensors-detect: Fix detection of ADT7463 and LM96000
++              Fix error propagation during expression evaluation
+   fancontrol: Don't use named pipes when we don't need them (#2319)
+   sensord: Accept negative temperatures in RRD database
+            Don't bail out on transient errors (#2330)
+diff -Naur lm_sensors-3.0.3-old/lib/access.c lm_sensors-3.0.3-new/lib/access.c
+--- lm_sensors-3.0.3-old/lib/access.c	2009-01-12 18:13:21.000000000 -0800
++++ lm_sensors-3.0.3-new/lib/access.c	2009-01-12 18:15:40.000000000 -0800
+@@ -437,10 +437,8 @@
+ 		if (!(subfeature = sensors_lookup_subfeature_name(chip_features,
+ 							    expr->data.var)))
+ 			return -SENSORS_ERR_NO_ENTRY;
+-		if (!(res = sensors_get_value(&chip_features->chip,
+-					      subfeature->number, result)))
+-			return res;
+-		return 0;
++		return sensors_get_value(&chip_features->chip,
++					 subfeature->number, result);
+ 	}
+ 	if ((res = sensors_eval_expr(chip_features, expr->data.subexpr.sub1,
+ 				     val, &res1)))
