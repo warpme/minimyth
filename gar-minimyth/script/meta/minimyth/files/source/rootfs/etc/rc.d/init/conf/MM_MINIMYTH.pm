@@ -36,7 +36,8 @@ $var_list{'MM_MINIMYTH_BOOT_URL'} =
         {
             return 'file:/minimyth/';
         }
-    }
+    },
+    value_valid   => '.+/'
 };
 
 1;
