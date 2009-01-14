@@ -1,0 +1,115 @@
+diff -Naur lirc-0.8.4a-old/drivers/lirc_atiusb/lirc_atiusb.c lirc-0.8.4a-new/drivers/lirc_atiusb/lirc_atiusb.c
+--- lirc-0.8.4a-old/drivers/lirc_atiusb/lirc_atiusb.c	2008-05-19 01:10:35.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_atiusb/lirc_atiusb.c	2009-01-13 22:41:17.000000000 -0800
+@@ -1046,8 +1046,9 @@
+ 	IRUNLOCK;
+ }
+ 
+-static struct irctl *new_irctl(struct usb_device *dev)
++static struct irctl *new_irctl(struct usb_interface *intf)
+ {
++	struct usb_device *dev = interface_to_usbdev(intf);
+ 	struct irctl *ir;
+ 	struct lirc_plugin *plugin;
+ 	int type, devnum;
+@@ -1120,7 +1121,7 @@
+ 	plugin->set_use_inc = &set_use_inc;
+ 	plugin->set_use_dec = &set_use_dec;
+ #ifdef LIRC_HAVE_SYSFS
+-	plugin->dev = &dev->dev;
++	plugin->dev = &intf->dev;
+ #endif
+ 	plugin->owner = THIS_MODULE;
+ 	ir->usbdev = dev;
+@@ -1234,7 +1235,7 @@
+ 	ir = get_prior_reg_ir(dev);
+ 
+ 	if (!ir) {
+-		ir = new_irctl(dev);
++		ir = new_irctl(intf);
+ 		if (!ir)
+ #ifdef KERNEL_2_5
+ 			return -ENOMEM;
+diff -Naur lirc-0.8.4a-old/drivers/lirc_igorplugusb/lirc_igorplugusb.c lirc-0.8.4a-new/drivers/lirc_igorplugusb/lirc_igorplugusb.c
+--- lirc-0.8.4a-old/drivers/lirc_igorplugusb/lirc_igorplugusb.c	2008-01-26 05:50:56.000000000 -0800
++++ lirc-0.8.4a-new/drivers/lirc_igorplugusb/lirc_igorplugusb.c	2009-01-13 22:30:50.000000000 -0800
+@@ -524,7 +524,7 @@
+ 	plugin->sample_rate = sample_rate;    /* per second */
+ 	plugin->add_to_buf = &usb_remote_poll;
+ #ifdef LIRC_HAVE_SYSFS
+-	plugin->dev = &dev->dev;
++	plugin->dev = &intf->dev;
+ #endif
+ 	plugin->owner = THIS_MODULE;
+ 
+diff -Naur lirc-0.8.4a-old/drivers/lirc_imon/lirc_imon.c lirc-0.8.4a-new/drivers/lirc_imon/lirc_imon.c
+--- lirc-0.8.4a-old/drivers/lirc_imon/lirc_imon.c	2008-08-22 14:38:17.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_imon/lirc_imon.c	2009-01-13 22:43:57.000000000 -0800
+@@ -1268,7 +1268,7 @@
+ 	plugin->set_use_inc = ir_open;
+ 	plugin->set_use_dec = ir_close;
+ #ifdef LIRC_HAVE_SYSFS
+-	plugin->dev = &dev->dev;
++	plugin->dev = &interface->dev;
+ #endif
+ 	plugin->owner = THIS_MODULE;
+ 
+diff -Naur lirc-0.8.4a-old/drivers/lirc_mceusb/lirc_mceusb.c lirc-0.8.4a-new/drivers/lirc_mceusb/lirc_mceusb.c
+--- lirc-0.8.4a-old/drivers/lirc_mceusb/lirc_mceusb.c	2008-05-16 15:02:13.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_mceusb/lirc_mceusb.c	2009-01-13 22:33:22.000000000 -0800
+@@ -847,7 +847,7 @@
+ 	plugin->add_to_buf = &mceusb_add_to_buf;
+ 	/* plugin->fops = &mceusb_fops; */
+ #ifdef LIRC_HAVE_SYSFS
+-	plugin->dev = &udev->dev;
++	plugin->dev = &interface->dev;
+ #endif
+ 	plugin->owner = THIS_MODULE;
+ 	if (lirc_register_plugin(plugin) < 0) {
+diff -Naur lirc-0.8.4a-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-0.8.4a-new/drivers/lirc_mceusb2/lirc_mceusb2.c
+--- lirc-0.8.4a-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2008-09-30 08:21:10.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-01-13 22:31:44.000000000 -0800
+@@ -955,7 +955,7 @@
+ 	plugin->code_length = sizeof(lirc_t) * 8;
+ 	plugin->ioctl = lirc_ioctl;
+ 	plugin->fops  = &lirc_fops;
+-	plugin->dev   = &dev->dev;
++	plugin->dev   = &intf->dev;
+ 	plugin->owner = THIS_MODULE;
+ 
+ 	init_MUTEX(&ir->lock);
+diff -Naur lirc-0.8.4a-old/drivers/lirc_sasem/lirc_sasem.c lirc-0.8.4a-new/drivers/lirc_sasem/lirc_sasem.c
+--- lirc-0.8.4a-old/drivers/lirc_sasem/lirc_sasem.c	2008-05-16 15:02:13.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_sasem/lirc_sasem.c	2009-01-13 22:34:02.000000000 -0800
+@@ -950,7 +950,7 @@
+ 	plugin->set_use_inc = ir_open;
+ 	plugin->set_use_dec = ir_close;
+ #ifdef LIRC_HAVE_SYSFS
+-	plugin->dev   = &dev->dev;
++	plugin->dev   = &interface->dev;
+ #endif
+ 	plugin->owner = THIS_MODULE;
+ 
+diff -Naur lirc-0.8.4a-old/drivers/lirc_streamzap/lirc_streamzap.c lirc-0.8.4a-new/drivers/lirc_streamzap/lirc_streamzap.c
+--- lirc-0.8.4a-old/drivers/lirc_streamzap/lirc_streamzap.c	2008-09-17 11:20:16.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_streamzap/lirc_streamzap.c	2009-01-13 22:34:38.000000000 -0800
+@@ -600,7 +600,7 @@
+ 	sz->plugin.set_use_dec = &streamzap_use_dec;
+ 	sz->plugin.ioctl = streamzap_ioctl;
+ #ifdef LIRC_HAVE_SYSFS
+-	sz->plugin.dev = &udev->dev;
++	sz->plugin.dev = &interface->dev;
+ #endif
+ 	sz->plugin.owner = THIS_MODULE;
+ 
+diff -Naur lirc-0.8.4a-old/drivers/lirc_ttusbir/lirc_ttusbir.c lirc-0.8.4a-new/drivers/lirc_ttusbir/lirc_ttusbir.c
+--- lirc-0.8.4a-old/drivers/lirc_ttusbir/lirc_ttusbir.c	2008-05-16 15:02:13.000000000 -0700
++++ lirc-0.8.4a-new/drivers/lirc_ttusbir/lirc_ttusbir.c	2009-01-13 22:39:27.000000000 -0800
+@@ -314,6 +314,7 @@
+ 	ttusbir->plugin.set_use_dec = set_use_dec;
+ 	ttusbir->plugin.ioctl = NULL;
+ 	ttusbir->plugin.fops = NULL;
++	ttusbir->plugin.dev = &intf->dev;
+ 	ttusbir->plugin.owner = THIS_MODULE;
+ 	ttusbir->plugin.features = LIRC_CAN_REC_MODE2;
+ 	ttusbir->minor = lirc_register_plugin(&ttusbir->plugin);
