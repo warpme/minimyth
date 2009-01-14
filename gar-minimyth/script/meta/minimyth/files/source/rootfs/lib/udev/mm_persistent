@@ -5,10 +5,10 @@
 # This script provides a persistent device name based on hardware information.
 #
 # The output has the formats:
-#     persistent/<kernel>-pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>:<instance>
-#     persistent/<kernel>-phys:<phys>:<instance>
-#     persistent/<kernel>-usb:<idVendor>:<idProduct>:<serial>:<bInterfaceNumber>:<instance>
-#     persistent/<kernel>-wminput:<phys>:<instance>
+#     persistent/<kernel>-pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>:<bus_id>
+#     persistent/<kernel>-phys:<phys>
+#     persistent/<kernel>-usb:<idVendor>:<idProduct>:<serial>:<bInterfaceNumber>
+#     persistent/<kernel>-wminput:<phys>
 ################################################################################
 
 script='BEGIN
@@ -196,18 +196,6 @@ script='BEGIN
 mm_persistent=`/sbin/udevadm info --attribute-walk --path ${DEVPATH} | /usr/bin/awk "${script}"`
 if /usr/bin/test -n "${mm_persistent}" ; then
     mm_persistent="persistent/${mm_persistent}"
-    # Add an instance number. Ideally, the instance number will always be 0.
-    # However, some device vendors fail to fill in all the fields (e.g. serial
-    # number, and interface number) resulting in non-unique names. Adding an
-    # instance number ensures that the name will be unique.
-    instance=0
-    while /bin/true ; do
-        if /usr/bin/test ! -e "/dev/${mm_persistent}:${instance}" ; then
-            break
-        fi
-        instance=$((${instance} + 1))
-    done
-    mm_persistent="${mm_persistent}:${instance}"
 fi
 
 /bin/echo "${mm_persistent}"
