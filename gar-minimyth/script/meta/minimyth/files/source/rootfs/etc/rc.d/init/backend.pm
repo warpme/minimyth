@@ -19,7 +19,7 @@ sub start
 
         if (-x '/usr/bin/mythbackend')
         {
-            system(qq(/bin/su -c "/usr/bin/mythbackend --daemon" - minimyth));
+            system(qq(/bin/su -c "/usr/bin/mythbackend --daemon 2>&1 | /usr/bin/logger -t mythbackend -p local0.info" - minimyth));
         }
         else
         {
