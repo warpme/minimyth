@@ -13,6 +13,9 @@ start() {
     /bin/sed -e "s%^minimyth:x:1000:%minimyth:x:${MM_SECURITY_USER_MINIMYTH_GID}:%" \
              -i /etc/group
 
+    # Make sure that uid and gid are for the home directory of user 'minimyth' are correct.
+    /bin/chown -Rh minimyth:minimyth /home/minimyth
+
     if /usr/bin/test -e /etc/ssl/certs/ca-bundle.crt ; then
         # Set permissions.
         /bin/chmod 0644 /etc/ssl/certs/ca-bundle.crt
