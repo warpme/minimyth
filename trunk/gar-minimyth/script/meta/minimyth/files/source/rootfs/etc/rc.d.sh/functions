@@ -184,14 +184,16 @@ mm_url_dist_get() {
     LOCAL_FILE=`/bin/echo "${LOCAL_FILE}"   | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%/$%%'`
     REMOTE_FILE=`/bin/echo "${REMOTE_FILE}" | /bin/sed -e 's%^/%%'`
-    if /usr/bin/test -n "${MM_ROOTFS_IMAGE}" ; then
-        REMOTE_FILE_0=`/bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%/$%%'`
-        REMOTE_FILE_0="${REMOTE_FILE_0}/${REMOTE_FILE}"
-    else
-        if /usr/bin/test "${MM_MINIMYTH_BOOT_URL}" = 'file:/minimyth/' ; then
-            REMOTE_FILE_0="/${REMOTE_FILE}"
+    if /usr/bin/test "${MM_ROOTFS_TYPE}" = 'squashfs' ; then
+        if /usr/bin/test -n "${MM_ROOTFS_IMAGE}" ; then
+            REMOTE_FILE_0=`/bin/echo ${MM_ROOTFS_IMAGE} | /bin/sed -e 's%//*%/%g' | /bin/sed -e 's%[^/]*$%%' | /bin/sed -e 's%/$%%'`
+            REMOTE_FILE_0="${REMOTE_FILE_0}/${REMOTE_FILE}"
         else
-            REMOTE_FILE_0="/minimyth-${MM_VERSION}/${REMOTE_FILE}"
+            if /usr/bin/test "${MM_MINIMYTH_BOOT_URL}" = 'file:/minimyth/' ; then
+                REMOTE_FILE_0="/${REMOTE_FILE}"
+            else
+                REMOTE_FILE_0="/minimyth-${MM_VERSION}/${REMOTE_FILE}"
+            fi
         fi
     fi
 

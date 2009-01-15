@@ -76,7 +76,14 @@ $var_list{'MM_THEME_URL'} =
         my $theme_name = $minimyth->var_get('MM_THEME_NAME');
         if (! -e "/usr/share/mythtv/themes/$theme_name")
         {
-            return "hunt:themes/$theme_name.sfs"
+            if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
+            {
+                return "hunt:themes/$theme_name.sfs"
+            }
+            else
+            {
+                return "confro:themes/$theme_name.sfs"
+            }
         }
         else
         {
@@ -127,7 +134,14 @@ $var_list{'MM_THEMEOSD_URL'} =
         my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
         if (! -e "/usr/share/mythtv/themes/$themeosd_name")
         {
-            return "hunt:themes/$themeosd_name.sfs"
+            if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
+            {
+                return "hunt:themes/$themeosd_name.sfs"
+            }
+            else
+            {
+                return "confro:themes/$themeosd_name.sfs"
+            }
         }
         else
         {

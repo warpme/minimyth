@@ -22,7 +22,11 @@ conf_default_MM_EXTRAS() {
     fi
 
     if /usr/bin/test "${MM_EXTRAS_URL}" = "auto" ; then
-        MM_EXTRAS_URL='hunt:extras.sfs'
+        if /usr/bin/test "${MM_ROOTFS_TYPE}" = "squashfs" ; then
+            MM_EXTRAS_URL='hunt:extras.sfs'
+        else
+            MM_EXTRAS_URL='confro:extras.sfs'
+        fi
     fi
 
     # Convert 'none' to empty.
