@@ -77,14 +77,22 @@ conf_default_MM_THEME() {
 
     if /usr/bin/test "${MM_THEME_URL}" = "auto" ; then
         if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEME_NAME}" ; then
-            MM_THEME_URL="hunt:themes/${MM_THEME_NAME}.sfs"
+            if /usr/bin/test "${MM_ROOTFS_TYPE}" = "squashfs" ; then
+                MM_THEME_URL="hunt:themes/${MM_THEME_NAME}.sfs"
+            else
+                MM_THEME_URL="confro:themes/${MM_THEME_NAME}.sfs"
+            fi
         else
             MM_THEME_URL="none"
         fi
     fi
     if /usr/bin/test "${MM_THEMEOSD_URL}" = "auto" ; then
         if /usr/bin/test ! -e "/usr/share/mythtv/themes/${MM_THEMEOSD_NAME}" ; then
-            MM_THEMEOSD_URL="hunt:themes/${MM_THEMEOSD_NAME}.sfs"
+            if /usr/bin/test "${MM_ROOTFS_TYPE}" = "squashfs" ; then
+                MM_THEMEOSD_URL="hunt:themes/${MM_THEMEOSD_NAME}.sfs"
+            else
+                MM_THEMEOSD_URL="confro:themes/${MM_THEMEOSD_NAME}.sfs"
+            fi
         else
             MM_THEMEOSD_URL="none"
         fi

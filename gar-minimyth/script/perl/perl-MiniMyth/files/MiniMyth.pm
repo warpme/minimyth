@@ -1119,28 +1119,31 @@ sub url_expand
         }
         when (/^dist$/  )
         {
-            if ($self->var_get('MM_ROOTFS_IMAGE'))
+            if ($self->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
             {
-                my $file_0 = $self->var_get('MM_ROOTFS_IMAGE');
-                $file_0 =~ s/\/+/\//g;
-                $file_0 =~ s/[^\/]+$//g;
-                $file_0 =~ s/\/$//g;
-                $file_0 .= '/' . $file;
-                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
-            }
-            else
-            {
-                if ($self->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
+                if ($self->var_get('MM_ROOTFS_IMAGE'))
                 {
-                    my $file_0 = $file;
+                    my $file_0 = $self->var_get('MM_ROOTFS_IMAGE');
+                    $file_0 =~ s/\/+/\//g;
+                    $file_0 =~ s/[^\/]+$//g;
+                    $file_0 =~ s/\/$//g;
+                    $file_0 .= '/' . $file;
                     push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
                 }
                 else
                 {
-                    my $file_0 = 'minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
-                    push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                    if ($self->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
+                    {
+                        my $file_0 = $file;
+                        push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                    }
+                    else
+                    {
+                        my $file_0 = 'minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
+                        push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
+                    }
+                    $self->message_log('info', qq(expanding '$url': guessed '$list[$#list]' because distribution location is unknown.));
                 }
-                $self->message_log('info', qq(expanding '$url': guessed '$list[$#list]' because distribution location is unknown.));
             }
         }
         when (/^file$/  )
