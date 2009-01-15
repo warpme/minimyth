@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-changeset_19245.patch \
 	$(DISTNAME_SHORT)-ticket-3035-20070207.patch \
 	$(DISTNAME_SHORT)-ticket-4225-20071220.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
