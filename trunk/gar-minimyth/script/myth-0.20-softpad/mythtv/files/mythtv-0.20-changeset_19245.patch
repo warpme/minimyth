@@ -1,0 +1,21 @@
+diff -Naur mythtv-0.20-16082-old/libs/libmythtv/dvbtypes.h mythtv-0.20-16082-new/libs/libmythtv/dvbtypes.h
+--- mythtv-0.20-16082-old/libs/libmythtv/dvbtypes.h	2008-09-15 14:04:57.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/dvbtypes.h	2009-01-14 16:42:32.000000000 -0800
+@@ -25,7 +25,7 @@
+ #include <qmutex.h>
+ 
+ #include <linux/dvb/version.h>
+-#if (DVB_API_VERSION != 3)
++#if (DVB_API_VERSION != 3 && DVB_API_VERSION != 5)
+ #error "DVB driver includes with API version 3 not found!"
+ #endif
+ 
+@@ -36,7 +36,7 @@
+ #include <linux/dvb/frontend.h>
+ #include <linux/dvb/dmx.h>
+ 
+-#if (DVB_API_VERSION >= 3 && DVB_API_VERSION_MINOR >= 1)
++#if ((DVB_API_VERSION == 3 && DVB_API_VERSION_MINOR >= 1) || (DVB_API_VERSION > 3))
+ #    define USE_ATSC
+ #else
+ #warning DVB API version < 3.1
