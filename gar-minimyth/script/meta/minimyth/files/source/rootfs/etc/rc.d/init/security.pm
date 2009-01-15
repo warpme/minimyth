@@ -6,6 +6,7 @@ package init::security;
 use strict;
 use warnings;
 
+use File::Find ();
 use MiniMyth ();
 
 sub start
@@ -21,6 +22,18 @@ sub start
     $minimyth->file_replace_variable(
         '/etc/group',
         { 'minimyth:x:1000:' => "minimyth:x:$user_minimyth_gid:" });
+
+    # Make sure that uid and gid are for the home directory of user 'minimyth' are correct.
+    {
+        my $uid = getpwnam('minimyth');
+        my $gid = getgrnam('minimyth');
+        File::Find::finddepth(
+            sub
+            {
+                chown($uid, $gid, $File::Find::name);
+            },
+            '/home/minimyth');
+    }
 
     if (-e '/etc/ssl/certs/ca-bundle.crt')
     {
