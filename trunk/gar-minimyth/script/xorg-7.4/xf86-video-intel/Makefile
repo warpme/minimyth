@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.5.1
+GARVERSION = 2.6.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -40,7 +41,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri \
 	--disable-video-debug \
 	--enable-xvmc \
-	--disable-kms \
 	--with-gnu-ld
 
 CONFIGURE_ENV = \
