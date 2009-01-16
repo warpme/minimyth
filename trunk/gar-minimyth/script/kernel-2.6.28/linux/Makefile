@@ -8,6 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-serial_h.patch
 PATCHFILES += $(DISTNAME)-bug_11154.patch
+PATCHFILES += $(DISTNAME)-intel_graphics_package_2008q4.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.4.patch $(DISTNAME)-unionfs_2.5.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
