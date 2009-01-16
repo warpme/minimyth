@@ -1,6 +1,6 @@
 diff -Naur mythtv-0.20-16082-old/libs/libmyth/mythmediamonitor.cpp mythtv-0.20-16082-new/libs/libmyth/mythmediamonitor.cpp
---- mythtv-0.20-16082-old/libs/libmyth/mythmediamonitor.cpp	2009-01-13 09:42:23.000000000 -0800
-+++ mythtv-0.20-16082-new/libs/libmyth/mythmediamonitor.cpp	2009-01-13 09:42:39.000000000 -0800
+--- mythtv-0.20-16082-old/libs/libmyth/mythmediamonitor.cpp	2009-01-15 18:55:32.000000000 -0800
++++ mythtv-0.20-16082-new/libs/libmyth/mythmediamonitor.cpp	2009-01-15 18:56:17.000000000 -0800
 @@ -384,6 +384,13 @@
          return false;
      }
@@ -15,9 +15,34 @@ diff -Naur mythtv-0.20-16082-old/libs/libmyth/mythmediamonitor.cpp mythtv-0.20-1
      dev_t new_rdev;
      struct stat sb;
  
+diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/minimyth_backend_tools.xml mythtv-0.20-16082-new/programs/mythfrontend/minimyth_backend_tools.xml
+--- mythtv-0.20-16082-old/programs/mythfrontend/minimyth_backend_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythfrontend/minimyth_backend_tools.xml	2009-01-15 18:58:47.000000000 -0800
+@@ -0,0 +1,21 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_BACKEND_START</type>
++      <text>Start Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend start &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_STOP</type>
++      <text>Stop Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend stop &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_CONFIGURE</type>
++      <text>Configure Slave Backend</text>
++      <action>EXEC /usr/bin/mythtv-setup 2&gt;&amp;1 | /usr/bin/logger -t mythtv-setup -p local0.info</action>
++   </button>
++
++</mythmenu>
 diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/minimyth_tools.xml mythtv-0.20-16082-new/programs/mythfrontend/minimyth_tools.xml
 --- mythtv-0.20-16082-old/programs/mythfrontend/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20-16082-new/programs/mythfrontend/minimyth_tools.xml	2009-01-13 09:43:12.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythfrontend/minimyth_tools.xml	2009-01-15 18:58:47.000000000 -0800
 @@ -0,0 +1,33 @@
 +<mythmenu name="MINIMYTH_TOOLS">
 +
@@ -46,26 +71,26 @@ diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/minimyth_tools.xml mythtv
 +   </button>
 +
 +   <button>
-+      <type>MINIMYTH_BACKEND_CONFIGURE</type>
-+      <text>Configure Slave Backend</text>
-+      <action>EXEC /usr/bin/mythtv-setup</action>
++      <type>MINIMYTH_BACKEND_TOOLS</type>
++      <text>Slave Backend Tools</text>
++      <action>MENU minimyth_backend_tools.xml</action>
 +   </button>
 +
 +</mythmenu>
 diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/mythfrontend.pro mythtv-0.20-16082-new/programs/mythfrontend/mythfrontend.pro
---- mythtv-0.20-16082-old/programs/mythfrontend/mythfrontend.pro	2009-01-13 09:42:23.000000000 -0800
-+++ mythtv-0.20-16082-new/programs/mythfrontend/mythfrontend.pro	2009-01-13 09:42:39.000000000 -0800
+--- mythtv-0.20-16082-old/programs/mythfrontend/mythfrontend.pro	2009-01-15 18:55:33.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythfrontend/mythfrontend.pro	2009-01-15 18:57:13.000000000 -0800
 @@ -16,6 +16,7 @@
  setting.files += recpriorities_settings.xml tv_search.xml tv_lists.xml
  setting.files += library.xml manage_recordings.xml optical_menu.xml tvmenu.xml
  setting.files += tv_settings.xml
-+setting.files += minimyth_tools.xml
++setting.files += minimyth_tools.xml minimyth_backend_tools.xml
  setting.extra = -ldconfig
  
  INSTALLS += setting
 diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/util_menu.xml mythtv-0.20-16082-new/programs/mythfrontend/util_menu.xml
 --- mythtv-0.20-16082-old/programs/mythfrontend/util_menu.xml	2008-09-15 14:05:07.000000000 -0700
-+++ mythtv-0.20-16082-new/programs/mythfrontend/util_menu.xml	2009-01-13 09:42:39.000000000 -0800
++++ mythtv-0.20-16082-new/programs/mythfrontend/util_menu.xml	2009-01-15 18:56:17.000000000 -0800
 @@ -1,6 +1,12 @@
  <mythmenu name="UTIL">
  
@@ -80,8 +105,8 @@ diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/util_menu.xml mythtv-0.20
        <text>Music Tools</text>
        <text lang="DE">Musik verwalten</text>
 diff -Naur mythtv-0.20-16082-old/themes/classic/mainmenu.xml mythtv-0.20-16082-new/themes/classic/mainmenu.xml
---- mythtv-0.20-16082-old/themes/classic/mainmenu.xml	2009-01-13 09:42:23.000000000 -0800
-+++ mythtv-0.20-16082-new/themes/classic/mainmenu.xml	2009-01-13 09:42:39.000000000 -0800
+--- mythtv-0.20-16082-old/themes/classic/mainmenu.xml	2009-01-15 18:55:35.000000000 -0800
++++ mythtv-0.20-16082-new/themes/classic/mainmenu.xml	2009-01-15 18:56:17.000000000 -0800
 @@ -298,6 +298,12 @@
     </button>
  
@@ -95,9 +120,34 @@ diff -Naur mythtv-0.20-16082-old/themes/classic/mainmenu.xml mythtv-0.20-16082-n
       <type>SETUP</type>
       <text>Setup</text>
       <text lang="IT">Impostazioni</text>
+diff -Naur mythtv-0.20-16082-old/themes/classic/minimyth_backend_tools.xml mythtv-0.20-16082-new/themes/classic/minimyth_backend_tools.xml
+--- mythtv-0.20-16082-old/themes/classic/minimyth_backend_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.20-16082-new/themes/classic/minimyth_backend_tools.xml	2009-01-15 18:58:20.000000000 -0800
+@@ -0,0 +1,21 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_BACKEND_START</type>
++      <text>Start Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend start &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_STOP</type>
++      <text>Stop Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend stop &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_CONFIGURE</type>
++      <text>Configure Slave Backend</text>
++      <action>EXEC /usr/bin/mythtv-setup 2&gt;&amp;1 | /usr/bin/logger -t mythtv-setup -p local0.info</action>
++   </button>
++
++</mythmenu>
 diff -Naur mythtv-0.20-16082-old/themes/classic/minimyth_tools.xml mythtv-0.20-16082-new/themes/classic/minimyth_tools.xml
 --- mythtv-0.20-16082-old/themes/classic/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
-+++ mythtv-0.20-16082-new/themes/classic/minimyth_tools.xml	2009-01-13 09:43:02.000000000 -0800
++++ mythtv-0.20-16082-new/themes/classic/minimyth_tools.xml	2009-01-15 18:58:20.000000000 -0800
 @@ -0,0 +1,33 @@
 +<mythmenu name="MINIMYTH_TOOLS">
 +
@@ -126,9 +176,9 @@ diff -Naur mythtv-0.20-16082-old/themes/classic/minimyth_tools.xml mythtv-0.20-1
 +   </button>
 +
 +   <button>
-+      <type>MINIMYTH_BACKEND_CONFIGURE</type>
-+      <text>Configure Slave Backend</text>
-+      <action>EXEC /usr/bin/mythtv-setup</action>
++      <type>MINIMYTH_BACKEND_TOOLS</type>
++      <text>Slave Backend Tools</text>
++      <action>MENU minimyth_backend_tools.xml</action>
 +   </button>
 +
 +</mythmenu>
