@@ -1,6 +1,6 @@
 diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
---- Mesa-7.2-old/bin/mklib	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/bin/mklib	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/bin/mklib	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/bin/mklib	2009-01-15 21:06:41.000000000 -0800
 @@ -217,9 +217,9 @@
  	if [ "x$LINK" = "x" ] ; then
  	    # -linker was not specified so set default link command now
@@ -97,7 +97,7 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS=${STLIB}
  	else
  	    SHLIB="lib${LIBNAME}.so.${MAJOR}"
-@@ -446,8 +446,8 @@
+@@ -446,14 +446,14 @@
  	    LIBNAME="lib${LIBNAME}_pic.a"
  	    echo "mklib: Making NetBSD PIC static library: " ${LIBNAME}
  	    rm -f ${LIBNAME}
@@ -108,6 +108,13 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    LIBNAME="lib${LIBNAME}.so.${MAJOR}.${MINOR}"
+ 	    echo "mklib: Making NetBSD PIC shared library: " ${LIBNAME}
+ 	    rm -f ${LIBNAME}
+-	    ld -x -Bshareable -Bforcearchive -o ${LIBNAME} ${OBJECTS}
++	    ${LD:-'ld'} -x -Bshareable -Bforcearchive -o ${LIBNAME} ${OBJECTS}
+ 	    FINAL_LIBS=${LIBNAME}
+ 	fi
+ 	;;
 @@ -462,7 +462,7 @@
          if [ $STATIC = 1 ] ; then
  	    LIBNAME="lib${LIBNAME}.a"
@@ -129,6 +136,15 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    fi
  
  	    echo "mklib: Making IRIX " ${ABI} " shared library: " ${LIBNAME}
+@@ -506,7 +506,7 @@
+ 	LIBNAME="lib${LIBNAME}.a"
+ 	echo "mklib: Making linux-cygwin library: " ${LIBNAME}
+ 	rm -f ${LIBNAME}
+-	gnuwin32ar ruv ${LIBNAME} ${OBJECTS}
++	${AR:-'gnuwin32ar'} ruv ${LIBNAME} ${OBJECTS}
+ 	FINAL_LIBS=${LIBNAME}
+ 	;;
+ 
 @@ -515,7 +515,7 @@
  	    LIBNAME="lib${LIBNAME}.a"
  	    echo "mklib: Making HP-UX static library: " ${LIBNAME}
@@ -138,7 +154,16 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
              # HP uses a .2 for their current GL/GLU libraries
-@@ -546,7 +546,7 @@
+@@ -525,7 +525,7 @@
+ 	    RUNLIB="lib${LIBNAME}.${MAJOR}"
+ 	    DEVLIB="lib${LIBNAME}.sl"
+ 	    echo "mklib: Making HP-UX shared library: " ${RUNLIB} ${DEVLIB}
+-	    ld -b -o ${RUNLIB} +b ${RUNLIB} ${OBJECTS} ${DEPS}
++	    ${LD:-'ld'} -b -o ${RUNLIB} +b ${RUNLIB} ${OBJECTS} ${DEPS}
+ 	    ln -s ${RUNLIB} ${DEVLIB}
+ 	    FINAL_LIBS="${RUNLIB} ${DEVLIB}"
+ 	fi
+@@ -546,14 +546,14 @@
  	if [ $STATIC = 1 ] ; then
  	    LIBNAME="lib${LIBNAME}.a"
  	    echo "mklib: Making AIX static library: " ${LIBNAME}
@@ -147,6 +172,14 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    EXPFILE="lib${LIBNAME}.exp"
+ 	    LIBNAME="lib${LIBNAME}.a"  # shared objects are still stored in the .a libraries
+ 	    OPTS="-bE:${EXPFILE} -bM:SRE -bnoentry ${Q64}"
+ 	    rm -f ${EXPFILE} ${OFILE}
+-	    NM="/bin/nm -eC ${X64}"
++	    NM="${NM:-'/bin/nm'} -eC ${X64}"
+ 	    echo "#! /usr/lib/${LIBNAME}" > ${EXPFILE}
+ 	    ${NM} ${OBJECTS} | awk '{
+ 	    if ((($2 == "T") || ($2 == "D") || ($2 == "B")) \
 @@ -577,10 +577,10 @@
              # On AIX a shared library is linked differently when
              # you want to dlopen the file
@@ -212,7 +245,7 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	FINAL_LIBS=${LIBNAME}
  	;;
  
-@@ -708,7 +708,7 @@
+@@ -708,11 +708,11 @@
          if [ $STATIC = 1 ] ; then
              LIBNAME="lib${LIBNAME}.a"
              echo "mklib: Making BeOS static library: " ${LIBNAME}
@@ -221,6 +254,20 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
          else
  	    LIBNAME="lib${LIBNAME}.so"
  	    echo "mklib: Making BeOS shared library: " ${LIBNAME}
+-	    gcc -nostart -Xlinker "-soname=${LIBNAME}" -L/Be/develop/lib/x86 -lbe ${DEPS} ${OBJECTS} -o "${LIBNAME}"
++	    ${CC:-'gcc'} -nostart -Xlinker "-soname=${LIBNAME}" -L/Be/develop/lib/x86 -lbe ${DEPS} ${OBJECTS} -o "${LIBNAME}"
+ 	    mimeset -f "${LIBNAME}"
+ 	    # XXX remove the Mesa3D stuff here since mklib isn't mesa-specific.
+ 	    setversion "${LIBNAME}" -app ${MAJOR} ${MINOR} ${PATCH} -short "Powered by Mesa3D!" -long "Powered by Mesa3D!"
+@@ -730,7 +730,7 @@
+     'MorphOS')
+ 	LIBNAME="lib${LIBNAME}.a"
+ 	echo "mklib: Making MorphOS library: " ${LIBNAME}
+-	ppc-morphos-ar rc ${LIBNAME} ${OBJECTS}
++	${AR:-'ppc-morphos-ar'} rc ${LIBNAME} ${OBJECTS}
+ 	FINAL_LIBS="${LIBNAME}"
+ 	;;
+ 
 @@ -742,7 +742,7 @@
  
          if [ $STATIC = 1 ] ; then
@@ -251,6 +298,15 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS=${LIBNAME}
  	else
  	    LIBNAME="lib${LIBNAME}.so"  # prefix with "lib", suffix with ".so"
+@@ -796,7 +796,7 @@
+ 	    # remove old lib
+ 	    rm -f ${LIBNAME}
+ 	    # make the lib
+-	    gcc -shared -Wl,-G ${OBJECTS} ${DEPS} -o ${LIBNAME}
++	    ${CC:-'gcc'} -shared -Wl,-G ${OBJECTS} ${DEPS} -o ${LIBNAME}
+ 	    # NOTE: the application linking with this library must specify
+ 	    # the -Wl,-brtl flags to gcc
+ 	    FINAL_LIBS=${LIBNAME}
 @@ -811,7 +811,7 @@
  	LIBNAME="lib${LIBNAME}.a"
  	echo "mklib: Making static library for Ultrix: " ${LIBNAME}
@@ -289,7 +345,7 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
              fi
  
              # rm any old libs
-@@ -868,7 +868,7 @@
+@@ -868,12 +868,12 @@
  	    LIBNAME="lib${LIBNAME}.a"
  	    echo "mklib: Making static library for example arch: " ${LIBNAME}
  	    rm -f ${LIBNAME}
@@ -298,9 +354,15 @@ diff -Naur Mesa-7.2-old/bin/mklib Mesa-7.2-new/bin/mklib
  	    FINAL_LIBS="${LIBNAME}"
  	else
  	    LIBNAME="lib${LIBNAME}.so"  # prefix with "lib", suffix with ".so"
+ 	    echo "mklib: Making shared library for example arch: " ${LIBNAME}
+-	    ld -o ${LIBNAME} ${OBJECTS} ${DEPS}
++	    ${LD:-'ld'} -o ${LIBNAME} ${OBJECTS} ${DEPS}
+ 	    FINAL_LIBS="${LIBNAME}"
+ 	fi
+ 	;;
 diff -Naur Mesa-7.2-old/configs/darwin Mesa-7.2-new/configs/darwin
---- Mesa-7.2-old/configs/darwin	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/darwin	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/darwin	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/darwin	2009-01-15 21:01:30.000000000 -0800
 @@ -4,8 +4,6 @@
  
  CONFIG_NAME = darwin
@@ -340,17 +402,9 @@ diff -Naur Mesa-7.2-old/configs/darwin Mesa-7.2-new/configs/darwin
  # omit glw lib for now:
  SRC_DIRS = glx/x11 mesa glu glw glut/glx
 diff -Naur Mesa-7.2-old/configs/default Mesa-7.2-new/configs/default
---- Mesa-7.2-old/configs/default	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/default	2008-10-15 10:15:26.000000000 -0700
-@@ -32,6 +32,7 @@
- MKDEP_OPTIONS = -fdepend
- MAKE = make
- INSTALL = $(SHELL) $(TOP)/bin/minstall
-+PKG_CONFIG = pkg-config
- 
- # Tools for regenerating glapi (generally only needed by the developers)
- PYTHON2 = python
-@@ -92,11 +93,11 @@
+--- Mesa-7.2-old/configs/default	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/default	2009-01-15 21:01:30.000000000 -0800
+@@ -93,11 +93,11 @@
  
  
  # Installation directories (for make install)
@@ -367,135 +421,9 @@ diff -Naur Mesa-7.2-old/configs/default Mesa-7.2-new/configs/default
 -DRI_DRIVER_SEARCH_DIR = $(DRI_DRIVER_INSTALL_DIR)
 +DRI_DRIVER_SEARCH_DIR = @GAR_libdir@/xorg/modules/dri
  
-diff -Naur Mesa-7.2-old/configs/default.orig Mesa-7.2-new/configs/default.orig
---- Mesa-7.2-old/configs/default.orig	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/default.orig	1969-12-31 16:00:00.000000000 -0800
-@@ -1,102 +0,0 @@
--# Default/template configuration
--
--# This is included by other config files which may override some
--# of these variables.
--# Think of this as a base class from which configs are derived.
--
--
--CONFIG_NAME = default
--
--# Version info
--MESA_MAJOR=7
--MESA_MINOR=1
--MESA_TINY=0
--MESA_VERSION = $(MESA_MAJOR).$(MESA_MINOR).$(MESA_TINY)
--
--# external projects.  This should be useless now that we use libdrm.
--DRM_SOURCE_PATH=$(TOP)/../drm
--
--# Compiler and flags
--CC = cc
--CXX = CC
--CFLAGS = -O
--CXXFLAGS = -O
--LDFLAGS =
--GLU_CFLAGS = 
--
--# Misc tools and flags
--SHELL = /bin/sh
--MKLIB = $(SHELL) $(TOP)/bin/mklib
--MKLIB_OPTIONS = 
--MKDEP = makedepend
--MKDEP_OPTIONS = -fdepend
--MAKE = make
--INSTALL = $(SHELL) $(TOP)/bin/minstall
--
--# Tools for regenerating glapi (generally only needed by the developers)
--PYTHON2 = python
--PYTHON_FLAGS = -t -O -O
--INDENT = indent
--INDENT_FLAGS = -i4 -nut -br -brs -npcs -ce -T GLubyte -T GLbyte -T Bool
--
--# Library names (base name)
--GL_LIB = GL
--GLU_LIB = GLU
--GLUT_LIB = glut
--GLW_LIB = GLw
--OSMESA_LIB = OSMesa
--
--
--# Library names (actual file names)
--GL_LIB_NAME = lib$(GL_LIB).so
--GLU_LIB_NAME = lib$(GLU_LIB).so
--GLUT_LIB_NAME = lib$(GLUT_LIB).so
--GLW_LIB_NAME = lib$(GLW_LIB).so
--OSMESA_LIB_NAME = lib$(OSMESA_LIB).so
--
--# globs used to install the lib and all symlinks
--GL_LIB_GLOB = $(GL_LIB_NAME)*
--GLU_LIB_GLOB = $(GLU_LIB_NAME)*
--GLUT_LIB_GLOB = $(GLUT_LIB_NAME)*
--GLW_LIB_GLOB = $(GLW_LIB_NAME)*
--OSMESA_LIB_GLOB = $(OSMESA_LIB_NAME)*
--
--# Optional assembly language optimization files for libGL
--ASM_SOURCES = 
--
--# GLw widget sources (Append "GLwMDrawA.c" here and add -lXm to GLW_LIB_DEPS in
--# order to build the Motif widget too)
--GLW_SOURCES = GLwDrawA.c
--MOTIF_CFLAGS = -I/usr/include/Motif1.2
--
--
--# Directories to build
--LIB_DIR = lib
--SRC_DIRS = mesa glu glut/glx glw
--GLU_DIRS = sgi
--DRIVER_DIRS = x11 osmesa
--# Which subdirs under $(TOP)/progs/ to enter:
--PROGRAM_DIRS = demos redbook samples glsl xdemos
--
--
--# Library dependencies
--#EXTRA_LIB_PATH ?=
--GL_LIB_DEPS = $(EXTRA_LIB_PATH) -lX11 -lXext -lm -lpthread
--OSMESA_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB)
--GLU_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lm
--GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(EXTRA_LIB_PATH) -lX11 -lXmu -lXi -lm
--GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(EXTRA_LIB_PATH) -lXt -lX11
--
--# Program dependencies - specific GL/glut libraries added in Makefiles
--APP_LIB_DEPS = -lm
--
--
--# Installation directories (for make install)
--INSTALL_DIR = /usr/local
--INSTALL_LIB_DIR = $(INSTALL_DIR)/$(LIB_DIR)
--INSTALL_INC_DIR = $(INSTALL_DIR)/include
--DRI_DRIVER_INSTALL_DIR = $(INSTALL_LIB_DIR)/dri
--
--# Where libGL will look for DRI hardware drivers
--DRI_DRIVER_SEARCH_DIR = $(DRI_DRIVER_INSTALL_DIR)
--
-diff -Naur Mesa-7.2-old/configs/default.rej Mesa-7.2-new/configs/default.rej
---- Mesa-7.2-old/configs/default.rej	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/default.rej	1969-12-31 16:00:00.000000000 -0800
-@@ -1,16 +0,0 @@
--***************
--*** 30,35 ****
--  MKDEP_OPTIONS = -fdepend
--  MAKE = make
--  INSTALL = $(TOP)/bin/minstall
--  
--  # Tools for regenerating glapi (generally only needed by the developers)
--  PYTHON2 = python
----- 30,36 ----
--  MKDEP_OPTIONS = -fdepend
--  MAKE = make
--  INSTALL = $(TOP)/bin/minstall
--+ PKG_CONFIG = pkg-config
--  
--  # Tools for regenerating glapi (generally only needed by the developers)
--  PYTHON2 = python
 diff -Naur Mesa-7.2-old/configs/freebsd Mesa-7.2-new/configs/freebsd
---- Mesa-7.2-old/configs/freebsd	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/freebsd	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/freebsd	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/freebsd	2009-01-15 21:01:39.000000000 -0800
 @@ -15,7 +15,7 @@
  DEFINES = -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_BSD_SOURCE -DUSE_XSHM \
  	-DHZ=100
@@ -513,8 +441,8 @@ diff -Naur Mesa-7.2-old/configs/freebsd Mesa-7.2-new/configs/freebsd
 +EXTRA_LIB_PATH =
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) $(EXTRA_LIB_PATH) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-7.2-old/configs/freebsd-dri Mesa-7.2-new/configs/freebsd-dri
---- Mesa-7.2-old/configs/freebsd-dri	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/freebsd-dri	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/freebsd-dri	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/freebsd-dri	2009-01-15 21:01:39.000000000 -0800
 @@ -11,8 +11,8 @@
  WARN_FLAGS = -Wall
  OPT_FLAGS = -O -g
@@ -544,8 +472,8 @@ diff -Naur Mesa-7.2-old/configs/freebsd-dri Mesa-7.2-new/configs/freebsd-dri
  
  # Directories
 diff -Naur Mesa-7.2-old/configs/hpux10 Mesa-7.2-new/configs/hpux10
---- Mesa-7.2-old/configs/hpux10	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux10	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux10	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux10	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -557,8 +485,8 @@ diff -Naur Mesa-7.2-old/configs/hpux10 Mesa-7.2-new/configs/hpux10
 -APP_LIB_DEPS = -$(TOP)/$(LIB_DIR) -L/usr/lib/X11R6 -L/usr/contrib/X11R6/lib -lXext -lXmu -lXi -lX11 -lm
 +APP_LIB_DEPS = -$(TOP)/$(LIB_DIR) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-7.2-old/configs/hpux10-gcc Mesa-7.2-new/configs/hpux10-gcc
---- Mesa-7.2-old/configs/hpux10-gcc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux10-gcc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux10-gcc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux10-gcc	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = gcc
  CXX = g++
@@ -576,8 +504,8 @@ diff -Naur Mesa-7.2-old/configs/hpux10-gcc Mesa-7.2-new/configs/hpux10-gcc
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lXext -lXmu -lXi -lX11 -lm
  
 diff -Naur Mesa-7.2-old/configs/hpux10-static Mesa-7.2-new/configs/hpux10-static
---- Mesa-7.2-old/configs/hpux10-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux10-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux10-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux10-static	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -596,8 +524,8 @@ diff -Naur Mesa-7.2-old/configs/hpux10-static Mesa-7.2-new/configs/hpux10-static
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXext -lXmu -lXt -lXi -lpthread -lm -lstdc++
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lX11 -lm -lstdc++
 diff -Naur Mesa-7.2-old/configs/hpux11-32 Mesa-7.2-new/configs/hpux11-32
---- Mesa-7.2-old/configs/hpux11-32	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-32	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-32	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-32	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -620,8 +548,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-32 Mesa-7.2-new/configs/hpux11-32
  GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(GL_LIB_DEPS)
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-7.2-old/configs/hpux11-32-static Mesa-7.2-new/configs/hpux11-32-static
---- Mesa-7.2-old/configs/hpux11-32-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-32-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-32-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-32-static	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -642,8 +570,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-32-static Mesa-7.2-new/configs/hpux11-32-
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXt -lXi -lX11 -lm -lpthread -lCsup -lcl
  
 diff -Naur Mesa-7.2-old/configs/hpux11-32-static-nothreads Mesa-7.2-new/configs/hpux11-32-static-nothreads
---- Mesa-7.2-old/configs/hpux11-32-static-nothreads	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-32-static-nothreads	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-32-static-nothreads	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-32-static-nothreads	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -663,8 +591,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-32-static-nothreads Mesa-7.2-new/configs/
 -APP_LIB_DEPS = -L/usr/lib/X11R6 -L/usr/contrib/X11R6/lib -lXext -lXmu -lXi -lX11 -lm
 +APP_LIB_DEPS = -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-7.2-old/configs/hpux11-64 Mesa-7.2-new/configs/hpux11-64
---- Mesa-7.2-old/configs/hpux11-64	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-64	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-64	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-64	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -687,8 +615,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-64 Mesa-7.2-new/configs/hpux11-64
  GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(GL_LIB_DEPS)
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-7.2-old/configs/hpux11-64-static Mesa-7.2-new/configs/hpux11-64-static
---- Mesa-7.2-old/configs/hpux11-64-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-64-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-64-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-64-static	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -708,8 +636,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-64-static Mesa-7.2-new/configs/hpux11-64-
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/lib/X11R6/pa20_64 -L/usr/contrib/X11R6/lib/pa20_64 -lXext -lXmu -lXt -lXi -lX11 -lm -lpthread -lCsup -lcl
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXt -lXi -lX11 -lm -lpthread -lCsup -lcl
 diff -Naur Mesa-7.2-old/configs/hpux11-ia64 Mesa-7.2-new/configs/hpux11-ia64
---- Mesa-7.2-old/configs/hpux11-ia64	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-ia64	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-ia64	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-ia64	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -732,8 +660,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-ia64 Mesa-7.2-new/configs/hpux11-ia64
  GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(GL_LIB_DEPS)
  GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) $(GL_LIB_DEPS)
 diff -Naur Mesa-7.2-old/configs/hpux11-ia64-static Mesa-7.2-new/configs/hpux11-ia64-static
---- Mesa-7.2-old/configs/hpux11-ia64-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux11-ia64-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux11-ia64-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux11-ia64-static	2009-01-15 21:01:39.000000000 -0800
 @@ -8,9 +8,9 @@
  CC = cc
  CXX = aCC
@@ -753,8 +681,8 @@ diff -Naur Mesa-7.2-old/configs/hpux11-ia64-static Mesa-7.2-new/configs/hpux11-i
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/lib/X11R6 -L/usr/contrib/X11R6/lib -lXext -lXmu -lXi -lXt -lX11 -lpthread -lm -lCsup -lcl
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXext -lXmu -lXi -lXt -lX11 -lpthread -lm -lCsup -lcl
 diff -Naur Mesa-7.2-old/configs/hpux9 Mesa-7.2-new/configs/hpux9
---- Mesa-7.2-old/configs/hpux9	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux9	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux9	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux9	2009-01-15 21:01:39.000000000 -0800
 @@ -9,8 +9,8 @@
  # XXX fix this
  CXX = c++
@@ -768,8 +696,8 @@ diff -Naur Mesa-7.2-old/configs/hpux9 Mesa-7.2-new/configs/hpux9
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -s -Wl,+s,-B,nonfatal,-B,immediate -lXext -lXmu -lXi -lX11 -lm
  
 diff -Naur Mesa-7.2-old/configs/hpux9-gcc Mesa-7.2-new/configs/hpux9-gcc
---- Mesa-7.2-old/configs/hpux9-gcc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/hpux9-gcc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/hpux9-gcc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/hpux9-gcc	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = cc
  CXX = aCC
@@ -781,8 +709,8 @@ diff -Naur Mesa-7.2-old/configs/hpux9-gcc Mesa-7.2-new/configs/hpux9-gcc
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -L/usr/lib/X11R6 -L/usr/contrib/X11R6/lib -lXext -lXmu -lXi -lX11 -lm
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lXext -lXmu -lXi -lX11 -lm
 diff -Naur Mesa-7.2-old/configs/linux Mesa-7.2-new/configs/linux
---- Mesa-7.2-old/configs/linux	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux	2009-01-15 21:01:39.000000000 -0800
 @@ -20,7 +20,7 @@
  	-D_BSD_SOURCE -D_GNU_SOURCE \
  	-DPTHREADS -DUSE_XSHM -DHAVE_POSIX_MEMALIGN
@@ -799,8 +727,8 @@ diff -Naur Mesa-7.2-old/configs/linux Mesa-7.2-new/configs/linux
 -EXTRA_LIB_PATH = -L/usr/X11R6/lib
 +EXTRA_LIB_PATH =
 diff -Naur Mesa-7.2-old/configs/linux-alpha Mesa-7.2-new/configs/linux-alpha
---- Mesa-7.2-old/configs/linux-alpha	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-alpha	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-alpha	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-alpha	2009-01-15 21:01:39.000000000 -0800
 @@ -15,8 +15,8 @@
  CFLAGS += -fno-strict-aliasing
  CXXFLAGS += -fno-strict-aliasing
@@ -814,8 +742,8 @@ diff -Naur Mesa-7.2-old/configs/linux-alpha Mesa-7.2-new/configs/linux-alpha
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
  
 diff -Naur Mesa-7.2-old/configs/linux-alpha-static Mesa-7.2-new/configs/linux-alpha-static
---- Mesa-7.2-old/configs/linux-alpha-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-alpha-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-alpha-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-alpha-static	2009-01-15 21:01:39.000000000 -0800
 @@ -25,7 +25,7 @@
  OSMESA_LIB_NAME = libOSMesa.a
  
@@ -829,8 +757,8 @@ diff -Naur Mesa-7.2-old/configs/linux-alpha-static Mesa-7.2-new/configs/linux-al
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm -lX11 -lm
 diff -Naur Mesa-7.2-old/configs/linux-dri Mesa-7.2-new/configs/linux-dri
---- Mesa-7.2-old/configs/linux-dri	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-dri	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-dri	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-dri	2009-01-15 21:01:39.000000000 -0800
 @@ -9,7 +9,7 @@
  CC = gcc
  CXX = g++
@@ -859,8 +787,8 @@ diff -Naur Mesa-7.2-old/configs/linux-dri Mesa-7.2-new/configs/linux-dri
  LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
  LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
 diff -Naur Mesa-7.2-old/configs/linux-dri-x86-64 Mesa-7.2-new/configs/linux-dri-x86-64
---- Mesa-7.2-old/configs/linux-dri-x86-64	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-dri-x86-64	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-dri-x86-64	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-dri-x86-64	2009-01-15 21:01:39.000000000 -0800
 @@ -14,7 +14,7 @@
  LIB_DIR = lib64
  
@@ -871,8 +799,8 @@ diff -Naur Mesa-7.2-old/configs/linux-dri-x86-64 Mesa-7.2-new/configs/linux-dri-
  # ffb, gamma, and sis are missing because they have not be converted to use
  # the new interface.  i810 are missing because there is no x86-64
 diff -Naur Mesa-7.2-old/configs/linux-dri-xcb Mesa-7.2-new/configs/linux-dri-xcb
---- Mesa-7.2-old/configs/linux-dri-xcb	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-dri-xcb	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-dri-xcb	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-dri-xcb	2009-01-15 21:01:39.000000000 -0800
 @@ -9,7 +9,7 @@
  CC = gcc
  CXX = g++
@@ -883,8 +811,8 @@ diff -Naur Mesa-7.2-old/configs/linux-dri-xcb Mesa-7.2-new/configs/linux-dri-xcb
  #MKDEP_OPTIONS = -MF depend
  
 diff -Naur Mesa-7.2-old/configs/linux-glide Mesa-7.2-new/configs/linux-glide
---- Mesa-7.2-old/configs/linux-glide	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-glide	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-glide	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-glide	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = gcc
  CXX = g++
@@ -907,8 +835,8 @@ diff -Naur Mesa-7.2-old/configs/linux-glide Mesa-7.2-new/configs/linux-glide
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lglide3x -lm
 diff -Naur Mesa-7.2-old/configs/linux-ia64-icc Mesa-7.2-new/configs/linux-ia64-icc
---- Mesa-7.2-old/configs/linux-ia64-icc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-ia64-icc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-ia64-icc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-ia64-icc	2009-01-15 21:01:39.000000000 -0800
 @@ -7,14 +7,14 @@
  # Compiler and flags
  CC = icc
@@ -929,8 +857,8 @@ diff -Naur Mesa-7.2-old/configs/linux-ia64-icc Mesa-7.2-new/configs/linux-ia64-i
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB)
  
 diff -Naur Mesa-7.2-old/configs/linux-ia64-icc-static Mesa-7.2-new/configs/linux-ia64-icc-static
---- Mesa-7.2-old/configs/linux-ia64-icc-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-ia64-icc-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-ia64-icc-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-ia64-icc-static	2009-01-15 21:01:39.000000000 -0800
 @@ -7,8 +7,8 @@
  # Compiler and flags
  CC = icc
@@ -950,8 +878,8 @@ diff -Naur Mesa-7.2-old/configs/linux-ia64-icc-static Mesa-7.2-new/configs/linux
 +APP_LIB_DEPS = -i-static -cxxlib-icc -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXmu -lXt -lXi -lpthread -lm -lcxa -lunwind
  
 diff -Naur Mesa-7.2-old/configs/linux-icc Mesa-7.2-new/configs/linux-icc
---- Mesa-7.2-old/configs/linux-icc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-icc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-icc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-icc	2009-01-15 21:01:39.000000000 -0800
 @@ -7,13 +7,13 @@
  # Compiler and flags
  CC = icc
@@ -970,8 +898,8 @@ diff -Naur Mesa-7.2-old/configs/linux-icc Mesa-7.2-new/configs/linux-icc
  
  ASM_SOURCES = $(X86_SOURCES)
 diff -Naur Mesa-7.2-old/configs/linux-icc-static Mesa-7.2-new/configs/linux-icc-static
---- Mesa-7.2-old/configs/linux-icc-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-icc-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-icc-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-icc-static	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = icc
@@ -991,8 +919,8 @@ diff -Naur Mesa-7.2-old/configs/linux-icc-static Mesa-7.2-new/configs/linux-icc-
  ASM_SOURCES = $(X86_SOURCES)
  ASM_API = $(X86_API)
 diff -Naur Mesa-7.2-old/configs/linux-indirect Mesa-7.2-new/configs/linux-indirect
---- Mesa-7.2-old/configs/linux-indirect	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-indirect	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-indirect	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-indirect	2009-01-15 21:01:39.000000000 -0800
 @@ -10,7 +10,7 @@
  CC = gcc
  CXX = g++
@@ -1021,8 +949,8 @@ diff -Naur Mesa-7.2-old/configs/linux-indirect Mesa-7.2-new/configs/linux-indire
  DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl
  GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lm -lpthread -ldl
 diff -Naur Mesa-7.2-old/configs/linux-osmesa16 Mesa-7.2-new/configs/linux-osmesa16
---- Mesa-7.2-old/configs/linux-osmesa16	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-osmesa16	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-osmesa16	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-osmesa16	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1033,8 +961,8 @@ diff -Naur Mesa-7.2-old/configs/linux-osmesa16 Mesa-7.2-new/configs/linux-osmesa
  
  # Work around aliasing bugs - developers should comment this out
 diff -Naur Mesa-7.2-old/configs/linux-osmesa16-static Mesa-7.2-new/configs/linux-osmesa16-static
---- Mesa-7.2-old/configs/linux-osmesa16-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-osmesa16-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-osmesa16-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-osmesa16-static	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1045,8 +973,8 @@ diff -Naur Mesa-7.2-old/configs/linux-osmesa16-static Mesa-7.2-new/configs/linux
  MKLIB_OPTIONS = -static
  PIC_FLAGS =
 diff -Naur Mesa-7.2-old/configs/linux-osmesa32 Mesa-7.2-new/configs/linux-osmesa32
---- Mesa-7.2-old/configs/linux-osmesa32	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-osmesa32	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-osmesa32	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-osmesa32	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1057,8 +985,8 @@ diff -Naur Mesa-7.2-old/configs/linux-osmesa32 Mesa-7.2-new/configs/linux-osmesa
  
  # Work around aliasing bugs - developers should comment this out
 diff -Naur Mesa-7.2-old/configs/linux-profile Mesa-7.2-new/configs/linux-profile
---- Mesa-7.2-old/configs/linux-profile	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-profile	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-profile	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-profile	2009-01-15 21:01:39.000000000 -0800
 @@ -8,16 +8,16 @@
  CC = gcc
  CXX = g++
@@ -1082,8 +1010,8 @@ diff -Naur Mesa-7.2-old/configs/linux-profile Mesa-7.2-new/configs/linux-profile
  # Need to make static libs for profiling:
  MKLIB_OPTIONS = -static
 diff -Naur Mesa-7.2-old/configs/linux-x86-64 Mesa-7.2-new/configs/linux-x86-64
---- Mesa-7.2-old/configs/linux-x86-64	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-x86-64	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-x86-64	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-x86-64	2009-01-15 21:01:39.000000000 -0800
 @@ -11,4 +11,4 @@
  ASM_FLAGS = -DUSE_X86_64_ASM
  
@@ -1091,8 +1019,8 @@ diff -Naur Mesa-7.2-old/configs/linux-x86-64 Mesa-7.2-new/configs/linux-x86-64
 -EXTRA_LIB_PATH = -L/usr/X11R6/lib64
 +EXTRA_LIB_PATH =
 diff -Naur Mesa-7.2-old/configs/linux-x86-glide Mesa-7.2-new/configs/linux-x86-glide
---- Mesa-7.2-old/configs/linux-x86-glide	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/linux-x86-glide	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/linux-x86-glide	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/linux-x86-glide	2009-01-15 21:01:39.000000000 -0800
 @@ -8,7 +8,7 @@
  CC = gcc
  CXX = g++
@@ -1115,8 +1043,8 @@ diff -Naur Mesa-7.2-old/configs/linux-x86-glide Mesa-7.2-new/configs/linux-x86-g
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lglide3x -lm
 diff -Naur Mesa-7.2-old/configs/netbsd Mesa-7.2-new/configs/netbsd
---- Mesa-7.2-old/configs/netbsd	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/netbsd	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/netbsd	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/netbsd	2009-01-15 21:01:39.000000000 -0800
 @@ -7,10 +7,10 @@
  # Compiler and flags
  CC = gcc
@@ -1131,8 +1059,8 @@ diff -Naur Mesa-7.2-old/configs/netbsd Mesa-7.2-new/configs/netbsd
  # Work around aliasing bugs - developers should comment this out
  CFLAGS += -fno-strict-aliasing
 diff -Naur Mesa-7.2-old/configs/openbsd Mesa-7.2-new/configs/openbsd
---- Mesa-7.2-old/configs/openbsd	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/openbsd	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/openbsd	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/openbsd	2009-01-15 21:01:39.000000000 -0800
 @@ -7,16 +7,16 @@
  # Compiler and flags
  CC = gcc
@@ -1156,8 +1084,8 @@ diff -Naur Mesa-7.2-old/configs/openbsd Mesa-7.2-new/configs/openbsd
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
  
 diff -Naur Mesa-7.2-old/configs/solaris-x86 Mesa-7.2-new/configs/solaris-x86
---- Mesa-7.2-old/configs/solaris-x86	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/solaris-x86	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/solaris-x86	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/solaris-x86	2009-01-15 21:01:39.000000000 -0800
 @@ -6,10 +6,10 @@
  
  # Compiler and flags
@@ -1172,8 +1100,8 @@ diff -Naur Mesa-7.2-old/configs/solaris-x86 Mesa-7.2-new/configs/solaris-x86
  GL_LIB_NAME = libGL.a
  GLU_LIB_NAME = libGLU.a
 diff -Naur Mesa-7.2-old/configs/solaris-x86-gcc Mesa-7.2-new/configs/solaris-x86-gcc
---- Mesa-7.2-old/configs/solaris-x86-gcc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/solaris-x86-gcc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/solaris-x86-gcc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/solaris-x86-gcc	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1195,8 +1123,8 @@ diff -Naur Mesa-7.2-old/configs/solaris-x86-gcc Mesa-7.2-new/configs/solaris-x86
 +GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXmu -lXt -lXi -lm
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm -lX11 -lXext -lXi -lXmu
 diff -Naur Mesa-7.2-old/configs/solaris-x86-gcc-static Mesa-7.2-new/configs/solaris-x86-gcc-static
---- Mesa-7.2-old/configs/solaris-x86-gcc-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/solaris-x86-gcc-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/solaris-x86-gcc-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/solaris-x86-gcc-static	2009-01-15 21:01:39.000000000 -0800
 @@ -7,7 +7,7 @@
  # Compiler and flags
  CC = gcc
@@ -1221,8 +1149,8 @@ diff -Naur Mesa-7.2-old/configs/solaris-x86-gcc-static Mesa-7.2-new/configs/sola
  GL_LIB_NAME = libGL.a
  GLU_LIB_NAME = libGLU.a
 diff -Naur Mesa-7.2-old/configs/sunos4 Mesa-7.2-new/configs/sunos4
---- Mesa-7.2-old/configs/sunos4	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos4	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos4	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos4	2009-01-15 21:01:39.000000000 -0800
 @@ -6,7 +6,7 @@
  
  # Compiler and flags
@@ -1234,8 +1162,8 @@ diff -Naur Mesa-7.2-old/configs/sunos4 Mesa-7.2-new/configs/sunos4
  
  
 diff -Naur Mesa-7.2-old/configs/sunos4-gcc Mesa-7.2-new/configs/sunos4-gcc
---- Mesa-7.2-old/configs/sunos4-gcc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos4-gcc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos4-gcc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos4-gcc	2009-01-15 21:01:39.000000000 -0800
 @@ -7,13 +7,13 @@
  # Compiler and flags
  CC = gcc
@@ -1254,8 +1182,8 @@ diff -Naur Mesa-7.2-old/configs/sunos4-gcc Mesa-7.2-new/configs/sunos4-gcc
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -lXext -lXmu -lXi -lm
  
 diff -Naur Mesa-7.2-old/configs/sunos4-static Mesa-7.2-new/configs/sunos4-static
---- Mesa-7.2-old/configs/sunos4-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos4-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos4-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos4-static	2009-01-15 21:01:39.000000000 -0800
 @@ -22,4 +22,4 @@
  GLU_LIB_DEPS = 
  GLUT_LIB_DEPS = 
@@ -1263,8 +1191,8 @@ diff -Naur Mesa-7.2-old/configs/sunos4-static Mesa-7.2-new/configs/sunos4-static
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/X11R6/lib -lX11 -lXext -lXmu -lXt -lXi -lpthread -lm
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lX11 -lXext -lXmu -lXt -lXi -lpthread -lm
 diff -Naur Mesa-7.2-old/configs/sunos5 Mesa-7.2-new/configs/sunos5
---- Mesa-7.2-old/configs/sunos5	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5	2009-01-15 21:01:39.000000000 -0800
 @@ -7,12 +7,12 @@
  # Compiler and flags
  CC = cc
@@ -1283,8 +1211,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5 Mesa-7.2-new/configs/sunos5
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lCrun -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-7.2-old/configs/sunos5-gcc Mesa-7.2-new/configs/sunos5-gcc
---- Mesa-7.2-old/configs/sunos5-gcc	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-gcc	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-gcc	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-gcc	2009-01-15 21:01:39.000000000 -0800
 @@ -21,10 +21,9 @@
  ASM_FLAGS = -DUSE_SPARC_ASM
  
@@ -1308,8 +1236,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-gcc Mesa-7.2-new/configs/sunos5-gcc
  GL_LIB_DEPS = $(EXTRA_LIB_PATH) -lX11 -lXext -lXmu -lXi -lm
  GLUT_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-7.2-old/configs/sunos5-smp Mesa-7.2-new/configs/sunos5-smp
---- Mesa-7.2-old/configs/sunos5-smp	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-smp	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-smp	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-smp	2009-01-15 21:01:39.000000000 -0800
 @@ -7,13 +7,13 @@
  # Compiler and flags
  CC = cc
@@ -1329,8 +1257,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-smp Mesa-7.2-new/configs/sunos5-smp
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm -lCrun
  
 diff -Naur Mesa-7.2-old/configs/sunos5-v8 Mesa-7.2-new/configs/sunos5-v8
---- Mesa-7.2-old/configs/sunos5-v8	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-v8	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-v8	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-v8	2009-01-15 21:01:39.000000000 -0800
 @@ -7,12 +7,12 @@
  # Compiler and flags
  CC = cc
@@ -1349,8 +1277,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-v8 Mesa-7.2-new/configs/sunos5-v8
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-7.2-old/configs/sunos5-v8-static Mesa-7.2-new/configs/sunos5-v8-static
---- Mesa-7.2-old/configs/sunos5-v8-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-v8-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-v8-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-v8-static	2009-01-15 21:01:39.000000000 -0800
 @@ -9,8 +9,8 @@
  # Compiler and flags
  CC = cc
@@ -1364,8 +1292,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-v8-static Mesa-7.2-new/configs/sunos5-v8-
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/openwin/lib -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 diff -Naur Mesa-7.2-old/configs/sunos5-v9 Mesa-7.2-new/configs/sunos5-v9
---- Mesa-7.2-old/configs/sunos5-v9	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-v9	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-v9	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-v9	2009-01-15 21:01:39.000000000 -0800
 @@ -11,13 +11,13 @@
  # Compiler and flags
  CC = cc
@@ -1385,8 +1313,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-v9 Mesa-7.2-new/configs/sunos5-v9
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
  
 diff -Naur Mesa-7.2-old/configs/sunos5-v9-cc-g++ Mesa-7.2-new/configs/sunos5-v9-cc-g++
---- Mesa-7.2-old/configs/sunos5-v9-cc-g++	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-v9-cc-g++	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-v9-cc-g++	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-v9-cc-g++	2009-01-15 21:01:39.000000000 -0800
 @@ -18,18 +18,17 @@
  CXX_ARCH_FLAGS = -m64
  
@@ -1412,8 +1340,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-v9-cc-g++ Mesa-7.2-new/configs/sunos5-v9-
 +GLW_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GL_LIB) -lXt -lX11
  APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -lX11 -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
 diff -Naur Mesa-7.2-old/configs/sunos5-v9-static Mesa-7.2-new/configs/sunos5-v9-static
---- Mesa-7.2-old/configs/sunos5-v9-static	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/configs/sunos5-v9-static	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/configs/sunos5-v9-static	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/configs/sunos5-v9-static	2009-01-15 21:01:39.000000000 -0800
 @@ -11,8 +11,8 @@
  # Compiler and flags
  CC = cc
@@ -1427,8 +1355,8 @@ diff -Naur Mesa-7.2-old/configs/sunos5-v9-static Mesa-7.2-new/configs/sunos5-v9-
 -APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/openwin/lib -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 +APP_LIB_DEPS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lXt -lX11 -lXext -lXmu -lXi -lpthread -lm -lCstd -lCrun
 diff -Naur Mesa-7.2-old/docs/README.LYNXOS Mesa-7.2-new/docs/README.LYNXOS
---- Mesa-7.2-old/docs/README.LYNXOS	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/docs/README.LYNXOS	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/docs/README.LYNXOS	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/docs/README.LYNXOS	2009-01-15 21:01:39.000000000 -0800
 @@ -35,12 +35,11 @@
  
  FILES = your_app.x
@@ -1445,8 +1373,8 @@ diff -Naur Mesa-7.2-old/docs/README.LYNXOS Mesa-7.2-new/docs/README.LYNXOS
  STANDARD_OFILES = $(FILES:.x=.o)
  
 diff -Naur Mesa-7.2-old/docs/README.QUAKE Mesa-7.2-new/docs/README.QUAKE
---- Mesa-7.2-old/docs/README.QUAKE	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/docs/README.QUAKE	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/docs/README.QUAKE	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/docs/README.QUAKE	2009-01-15 21:01:39.000000000 -0800
 @@ -60,7 +60,7 @@
  > /usr/lib for programs linked against glibc.
  > 
@@ -1472,8 +1400,8 @@ diff -Naur Mesa-7.2-old/docs/README.QUAKE Mesa-7.2-new/docs/README.QUAKE
  and to make two symbolic links:
  
 diff -Naur Mesa-7.2-old/progs/util/sampleMakefile Mesa-7.2-new/progs/util/sampleMakefile
---- Mesa-7.2-old/progs/util/sampleMakefile	2008-10-15 10:14:46.000000000 -0700
-+++ Mesa-7.2-new/progs/util/sampleMakefile	2008-10-15 10:15:26.000000000 -0700
+--- Mesa-7.2-old/progs/util/sampleMakefile	2009-01-15 20:58:01.000000000 -0800
++++ Mesa-7.2-new/progs/util/sampleMakefile	2009-01-15 21:01:39.000000000 -0800
 @@ -20,7 +20,7 @@
  
  INCDIRS = -I. -I../include
