@@ -199,6 +199,8 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		| sed -e 's%^\(\$(top_source)/html\)/\(.*\)$$%\1/\2 $@~/srv/www/\2%' \
 		| xargs -n 2 cp -fpd
 	@rm -rf $@~/srv/www/download
+	@rm -rf $@~/srv/www/error
+	@rm -rf $@~/srv/www/robots.txt
 	@# Copy package rootfs files.
 	@find $(top_source)/rootfs -depth -type d \
 		| sed -e 's%^\$(top_source)/rootfs%$@~%' \
