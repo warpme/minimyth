@@ -10,6 +10,7 @@
 remote_wakeup_enable() {
     local device_list="$1"
 
+    local devpath
     local lirc_list
     local lirc
     local name
@@ -29,24 +30,28 @@ remote_wakeup_enable() {
             continue
         fi
 
-        name="/dev/`/sbin/udevadm info --query=name --root --path=/sys/class/lirc/${lirc}`"
+        name=`/sbin/udevadm info --query=name --root --path=/sys/class/lirc/${lirc}`
         /bin/echo " ${device_list}" | grep -q " ${name},"
         if /usr/bin/test $? -ne 0 ; then
             continue
         fi
 
-        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/busnum" ; then
+        devpath=`/usr/bin/readlink -f "/sys/class/lirc/${lirc}/device"`
+        devpath=`/usr/bin/dirname "${devpath}"`
+        devpath=`/usr/bin/dirname "${devpath}"`
+
+        if /usr/bin/test ! -r "${devpath}/busnum" ; then
             continue
         fi
-        busnum=`/bin/cat "/sys/class/lirc/${lirc}/device/busnum" 2> /dev/null`
+        busnum=`/bin/cat "${devpath}/busnum" 2> /dev/null`
         if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${busnum}" ; then
             continue
         fi
     
-        if /usr/bin/test ! -r "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial" ; then
+        if /usr/bin/test ! -r "${devpath}/subsystem/devices/usb${busnum}/serial" ; then
             continue
         fi
-        serial=`/bin/cat "/sys/class/lirc/${lirc}/device/subsystem/devices/usb${busnum}/serial"`
+        serial=`/bin/cat "${devpath}/subsystem/devices/usb${busnum}/serial"`
         if /usr/bin/test $? -ne 0 || /usr/bin/test -z "${serial}" ; then
             continue
         fi
