@@ -34,6 +34,26 @@ $var_list{'MM_BACKEND_ENABLED'} =
     }
 };
 
+$var_list{'MM_BACKEND_DEBUG_LEVEL'} =
+{
+    prerequisite  => ['MM_DEBUG'],
+    value_default => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        if ($minimyth->var_get('MM_DEBUG') eq 'yes')
+        {
+            return 'all';
+        }
+        else
+        {
+            return 'none';
+        }
+    },
+    value_valid   => 'none|most|all|[[:alnum:],]+'
+};
+
 $var_list{'MM_BACKEND_TUNER_FIRMWARE_FILE_LIST'} =
 {
     value_default => 'auto',

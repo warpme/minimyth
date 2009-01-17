@@ -18,9 +18,17 @@ conf_check_MM_DEBUG() {
 }
 
 conf_default_MM_DEBUG() {
+    if /usr/bin/test -e '/tmp/init.conf.debug/conf_default_MM_DEBUG' ; then
+        return 0
+    fi
+
     if /usr/bin/test -z "${MM_DEBUG}" ; then
         MM_DEBUG='no'
     fi
+
+    /bin/mkdir -p '/tmp/init.conf.debug'
+    /bin/touch    '/tmp/init.conf.debug/conf_default_MM_DEBUG'
+
     return 0
 }
 

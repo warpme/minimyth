@@ -26,8 +26,18 @@ conf_default_MM_BACKEND() {
     local firmware_item
     local firmware_list
 
+    # The routine relies on MM_DEBUG_* variables.
+    conf_default_MM_DEBUG
+
     if /usr/bin/test -z "${MM_BACKEND_ENABLED}" ; then
         MM_BACKEND_ENABLED='auto'
+    fi
+    if /usr/bin/test -z "${MM_BACKEND_DEBUG_LEVEL}" ; then
+        if /usr/bin/test "${MM_DEBUG}" = "yes" ; then
+            MM_BACKEND_DEBUG_LEVEL='all',
+        else
+            MM_BACKEND_DEBUG_LEVEL='none',
+        fi
     fi
     if /usr/bin/test -z "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}" ; then
         MM_BACKEND_TUNER_FIRMWARE_FILE_LIST='auto'
@@ -66,6 +76,7 @@ conf_write_MM_BACKEND() {
     local conf_file=$1
 
     conf_variable_write "${conf_file}" MM_BACKEND_ENABLED                  "${MM_BACKEND_ENABLED}"
+    conf_variable_write "${conf_file}" MM_BACKEND_DEBUG_LEVEL              "${MM_BACKEND_DEBUG_LEVEL}"
     conf_variable_write "${conf_file}" MM_BACKEND_TUNER_FIRMWARE_FILE_LIST "${MM_BACKEND_TUNER_FIRMWARE_FILE_LIST}"
 
     return 0
