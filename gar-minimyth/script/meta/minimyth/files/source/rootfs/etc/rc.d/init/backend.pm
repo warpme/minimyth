@@ -19,7 +19,8 @@ sub start
 
         if (-x '/usr/bin/mythbackend')
         {
-            system(qq(/bin/su -c "/usr/bin/mythbackend 2>&1 | /usr/bin/logger -t mythbackend -p local0.info" - minimyth &));
+            my $debug_level = $minimyth->var_get('MM_BACKEND_DEBUG_LEVEL');
+            system(qq(/bin/su -c "/usr/bin/mythbackend -v $debug_level 2>&1 | /usr/bin/logger -t mythbackend -p local0.info" - minimyth &));
         }
         else
         {
