@@ -6,6 +6,8 @@ package init::lirc;
 use strict;
 use warnings;
 
+use Cwd ();
+use File::Basename ();
 use MiniMyth ();
 
 sub _remote_wakeup_enable
@@ -43,8 +45,12 @@ sub _remote_wakeup_enable
             next;
         }
 
-        if ((! -r "/sys/class/lirc/$lirc/device/busnum") || 
-            (! open(FILE, '<', "/sys/class/lirc/$lirc/device/busnum")))
+        my $devpath = Cwd::abs_path(qq(/sys/class/lirc/$lirc/device));
+        $devpath = File::Basename::dirname($devpath);
+        $devpath = File::Basename::dirname($devpath);
+
+        if ((! -r "$devpath/busnum") || 
+            (! open(FILE, '<', "$devpath/busnum")))
         {
             next;
         }
@@ -61,8 +67,8 @@ sub _remote_wakeup_enable
             next;
         }
     
-        if ((! -r "/sys/class/lirc/$lirc/device/subsystem/devices/usb$busnum/serial") ||
-            (! open(FILE, '<', "/sys/class/lirc/$lirc/device/subsystem/devices/usb$busnum/serial")))
+        if ((! -r "$devpath/subsystem/devices/usb$busnum/serial") ||
+            (! open(FILE, '<', "$devpath/subsystem/devices/usb$busnum/serial")))
         {
             next;
         }
