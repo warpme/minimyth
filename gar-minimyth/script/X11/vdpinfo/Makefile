@@ -1,5 +1,5 @@
 GARNAME = vdpinfo
-GARVERSION = 0.0.4
+GARVERSION = 0.0.5
 CATEGORIES = X11
 MASTER_SITES = http://www.cs.rug.nl/~wladimir/vdpinfo/
 DISTFILES = $(DISTNAME).tar.gz
