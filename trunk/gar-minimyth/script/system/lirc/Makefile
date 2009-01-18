@@ -1,18 +1,20 @@
 GARNAME = lirc
-GARVERSION = 0.8.4a
+#GARVERSION = 0.8.4a
+GARVERSION = 20090116Z
 CATEGORIES = system
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+#MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = http://www.lirc.org/software/snapshots/
-#MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-usb_sysfs.patch $(DISTNAME)-lirc_i2c_device.patch $(DISTNAME)-no_python.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_gpio.patch
+#PATCHFILES = $(DISTNAME)-usb_sysfs.patch $(DISTNAME)-lirc_i2c_device.patch $(DISTNAME)-no_python.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_gpio.patch
+PATCHFILES = $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-remove_gpio.patch $(DISTNAME)-remove_livedrive.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/libirman lib/libusb xorg/xorg
+DEPENDS = lang/c kernel/kernel lib/alsa-lib lib/libftdi lib/libirman lib/libusb xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

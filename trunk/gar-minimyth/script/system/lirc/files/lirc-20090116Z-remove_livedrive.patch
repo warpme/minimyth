@@ -1,0 +1,90 @@
+diff -Naur lirc-20090116Z-old/configure.ac lirc-20090116Z-new/configure.ac
+--- lirc-20090116Z-old/configure.ac	2009-01-17 17:23:16.000000000 -0800
++++ lirc-20090116Z-new/configure.ac	2009-01-17 17:28:51.000000000 -0800
+@@ -132,8 +132,6 @@
+ 	(ftdi) \
+ 	(irlink) \
+ 	(irreal) \
+-	(livedrive_midi) \
+-	(livedrive_seq) \
+ 	(logitech) \
+ 	(mediafocusI) \
+ 	(mouseremote) \
+@@ -440,7 +438,7 @@
+                           irdeo, irdeo_remote, irlink, irman, irreal,
+                           it87, ite8709, knc_one, kworld,
+                           leadtek_pvr2000,
+-                          livedrive_midi, livedrive_seq, logitech,
++                          logitech,
+                           lptX, macmini, mceusb, mceusb2, mediafocusI,
+                           mouseremote, mouseremote_ps2, mp3anywhere,
+                           mplay, nslu2,packard_bell, pcmak,
+@@ -611,12 +609,6 @@
+ 		;;
+ 	lirc_dev-lirc_wpc8769l)
+ 		;;
+-	livedrive_midi)
+-		hw_module="${hw_module} hw_livedrive_common.o hw_livedrive_midi.o"
+-		;;
+-	livedrive_seq)
+-		hw_module="${hw_module} hw_livedrive_common.o hw_livedrive_seq.o"
+-		;;
+ 	logitech)
+ 		hw_module="${hw_module} hw_logitech.o serial.o"
+ 		;;
+@@ -1031,22 +1023,6 @@
+ #  lircmd_conf="leadtek/lircmd.conf.PVR2000"
+ fi
+ 
+-if test "$driver" = "livedrive_midi"; then
+-  lirc_driver="none"
+-  hw_module="hw_livedrive_common.o hw_livedrive_midi.o"
+-  HW_DEFAULT="hw_livedrive_midi"
+-  lircd_conf="creative/lircd.conf.livedrive"
+-#  lircmd_conf="creative/lircmd.conf.livedrive"
+-fi
+-
+-if test "$driver" = "livedrive_seq"; then
+-  lirc_driver="none"
+-  hw_module="hw_livedrive_common.o hw_livedrive_seq.o"
+-  HW_DEFAULT="hw_livedrive_seq"
+-  lircd_conf="creative/lircd.conf.livedrive"
+-#  lircmd_conf="creative/lircmd.conf.livedrive"
+-fi
+-
+ if test "$driver" = "logitech"; then
+   lirc_driver="none"
+   hw_module="hw_logitech.o serial.o"
+diff -Naur lirc-20090116Z-old/daemons/hw-types.c lirc-20090116Z-new/daemons/hw-types.c
+--- lirc-20090116Z-old/daemons/hw-types.c	2008-12-30 13:25:09.000000000 -0800
++++ lirc-20090116Z-new/daemons/hw-types.c	2009-01-17 17:33:40.000000000 -0800
+@@ -28,8 +28,6 @@
+ extern struct hardware hw_iguanaIR;
+ extern struct hardware hw_irlink;
+ extern struct hardware hw_irman;
+-extern struct hardware hw_livedrive_midi;
+-extern struct hardware hw_livedrive_seq;
+ extern struct hardware hw_logitech;
+ extern struct hardware hw_macmini;
+ extern struct hardware hw_mouseremote;
+@@ -132,8 +130,6 @@
+ #ifdef HAVE_LIBIRMAN
+ 	&hw_irman,
+ #endif
+-	&hw_livedrive_midi,
+-	&hw_livedrive_seq,
+ 	&hw_logitech,
+ #ifdef HAVE_LINUX_HIDDEV_H
+ 	&hw_macmini,
+diff -Naur lirc-20090116Z-old/daemons/Makefile.am lirc-20090116Z-new/daemons/Makefile.am
+--- lirc-20090116Z-old/daemons/Makefile.am	2008-12-30 13:25:09.000000000 -0800
++++ lirc-20090116Z-new/daemons/Makefile.am	2009-01-17 17:33:16.000000000 -0800
+@@ -37,8 +37,6 @@
+ 			hw_iguanaIR.c \
+ 			hw_irlink.c hw_irlink.h \
+ 			hw_irman.c hw_irman.h \
+-			hw_livedrive_common.c hw_livedrive_common.h \
+-			hw_livedrive_midi.c hw_livedrive_seq.c \
+ 			hw_logitech.c hw_logitech.h \
+ 			hw_mouseremote.c hw_mouseremote.h \
+ 			hw_mp3anywhere.c hw_mp3anywhere.h \
