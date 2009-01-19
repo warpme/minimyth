@@ -8,6 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-intel_g4x_stolen_memory_count_fix.patch
 PATCHFILES += $(DISTNAME)-bug_11154.patch
+PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-atl1e.patch
 PATCHFILES += $(DISTNAME)-atl2_2.0.4.patch
 PATCHFILES += $(DISTNAME)-squashfs_3.4.patch $(DISTNAME)-unionfs_2.5.patch

@@ -19,6 +19,8 @@ Improved MythV slave backend support.
         - Added lircd.conf files for the Hauppauge R808 and Hauppauge A415 remotes
           using the PVR-250 card receiver.
         - Added autoconfiguration of the PVR-250 IR receiver.
+    - Added bttv kernel driver.
+        - Added the lirc_gpio driver used may cards that use the bttv driver.
     - Added mythcommflag and mythtranscode.
     - Added MM_BACKEND_DEBUG_LEVEL and MM_BACKEND_TUNER_FIRMWARE_FILE_LIST.
     - Added 'Slave Backend Tools' item to 'MiniMyth Tools' for starting,
@@ -37,6 +39,7 @@ Modified kernel
     - Added PVR-250 related kernel drivers (e.g. ivtv).
     - Added Intel Graphics Package 2008Q4 patch for 2.6.28
       <http://intellinuxgraphics.org/2008Q4.html>.
+    - Patched kernel so that the LIRC driver lirc_gpio works.
 
 Modified mediaplayers
     - Patched MPlayer SVN with the VDPAU 'line 704 hack' patch.
@@ -48,6 +51,7 @@ Modified LIRC
       devices as well as autodetection
         - This causes /sys/module/lirc_imon/parameters/is_lcd to no longer be
           available, but with autodetection is should no longer be needed.
+    - Enabled lirc_gpio.
 
 Modified init
     - Added detection of i2c lirc devices.
@@ -97,6 +101,12 @@ Fixed bugs
       permissions on home direcotry for the user 'minimyth' after set the uid
       and gid for the user 'minimyth'.
     - Added missing vmware video driver dependency: shadowfb.
+
+Modified build system
+    - Modified include file lists so that LIRC drivers are included
+      individually rather than including all the LIRC drivers.
+    - Modified include file lists so that lirc_gpio and lirc_i2c drivers are
+      included only when the backend software is included.
 
 Fixed build system
     - Fixed lib/libftdi so that it does detect the system's boost library and
