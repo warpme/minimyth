@@ -1,5 +1,5 @@
 GARNAME = libxml2
-GARVERSION = 2.7.2
+GARVERSION = 2.7.3
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
