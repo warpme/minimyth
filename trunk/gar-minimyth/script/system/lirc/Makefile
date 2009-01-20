@@ -7,7 +7,7 @@ CATEGORIES = system
 MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 #PATCHFILES = $(DISTNAME)-usb_sysfs.patch $(DISTNAME)-lirc_i2c_device.patch $(DISTNAME)-no_python.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
-PATCHFILES = $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES = $(DISTNAME)-no_python.patch $(DISTNAME)-remove_request_module.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 LICENSE = GPL2
 
 DESCRIPTION =
