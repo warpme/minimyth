@@ -1,9 +1,9 @@
 GARNAME = curl
-GARVERSION =  7.19.2
+GARVERSION =  7.19.3
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION = 
