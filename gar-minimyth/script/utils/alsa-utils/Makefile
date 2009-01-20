@@ -1,9 +1,9 @@
 GARNAME = alsa-utils
-GARVERSION = 1.0.18
+GARVERSION = 1.0.19
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-disable_xmlto.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -17,8 +17,13 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-nls \
 	--disable-rpath \
 	--disable-alsatest \
+	--enable-alsamixer \
+	--enable-alsaconf \
+	--disable-xmlto \
+	--enable-largefile \
 	--with-gnu-ld \
 	--with-curses=ncursesw
 
