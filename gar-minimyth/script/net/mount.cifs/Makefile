@@ -1,9 +1,9 @@
 GARNAME = mount.cifs
-GARVERSION = 22982
+GARVERSION = 3.2.7
 CATEGORIES = net
-MASTER_SITES = svn://svnanon.samba.org/samba/branches/SAMBA_3_0/source/client/
-DISTFILES = $(DISTNAME).tar.bz2 $(MAKEFILE)
-PATCHFILES = $(DISTNAME)-limits_h.patch
+DISTFILES = samba-$(GARVERSION).tar.gz
+MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
+PATCHFILES = $(DISTNAME)-sys_stat_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -12,30 +12,15 @@ endef
 
 DEPENDS = lang/c
 
+WORKSRC = $(WORKDIR)/samba-$(GARVERSION)/source/client
+
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
-	@cd $(PARTIALDIR); rm -rf   $(DISTNAME)
-	@cd $(PARTIALDIR); tar -jxf $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR); rm -rf   $(DISTNAME)~
-	@cd $(PARTIALDIR); mv       $(DISTNAME) $(DISTNAME)~
-	@cd $(PARTIALDIR); mkdir -p $(DISTNAME)
-	@cd $(PARTIALDIR); cp -f    $(DISTNAME)~/mount.cifs.c $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf   $(DISTNAME)~
-	@cd $(PARTIALDIR); rm -rf   $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR); tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR); rm -rf   $(DISTNAME)
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
-
 build-custom:
-	@$(BUILD_ENV) cd $(WORKSRC) ; $(CC) -o mount.cifs $(CFLAGS) mount.cifs.c
+	@$(BUILD_ENV) cd $(WORKSRC) ; $(CC) -o mount.cifs $(CFLAGS) mount.cifs.c mtab.c
 	@$(MAKECOOKIE)
 
 install-custom:
