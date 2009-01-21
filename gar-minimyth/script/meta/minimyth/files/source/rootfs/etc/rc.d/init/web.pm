@@ -16,17 +16,6 @@ sub start
 
     $minimyth->message_output('info', "starting web server ...");
 
-    my $uid = getpwnam('root');
-    my $gid = getgrnam('httpd');
-    File::Find::finddepth(
-        sub
-        {
-            # Silence spurious warning caused by $File::Find::name being used only once.
-            no warnings 'File::Find';
-            chown($uid, $gid, $File::Find::name);
-        },
-        '/srv/www');
-
     # Web page.
     system(qq(/usr/bin/webfsd -s -u httpd -g httpd -4 -p 80 -j -r /srv/www -x /cgi-bin -f index.html));
 
