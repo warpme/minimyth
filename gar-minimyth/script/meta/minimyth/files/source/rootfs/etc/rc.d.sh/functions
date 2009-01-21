@@ -276,7 +276,7 @@ mm_url_tftp_get() {
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/tftp -g -r "${REMOTE_FILE}" -l "${LOCAL_FILE}" "${REMOTE_SERVER}" || return
+    /usr/bin/curl -s -f "tftp://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
     /usr/bin/logger -s -t minimyth -p "local0.info" "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
@@ -454,7 +454,7 @@ mm_url_tftp_put() {
         return
     fi
 
-    if /usr/bin/tftp -p -l "${LOCAL_FILE}" -r "${REMOTE_FILE}" "${REMOTE_SERVER}" ; then
+    if /usr/bin/curl -s -T "${LOCAL_FILE}" "tftp://${REMOTE_SERVER}${REMOTE_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.info"  \
             "'tftp://${REMOTE_SERVER}${REMOTE_FILE}' posted."
         /bin/true

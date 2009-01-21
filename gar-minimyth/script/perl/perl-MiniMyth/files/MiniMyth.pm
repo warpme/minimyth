@@ -12,7 +12,7 @@ use File::Find ();
 use File::Path ();
 use File::Spec ();
 use Net::Telnet ();
-use WWW::Curl::Easy qw(CURLINFO_HTTP_CODE CURLOPT_INFILE CURLOPT_INFILESIZE CURLOPT_PUT CURLOPT_URL CURLOPT_VERBOSE CURLOPT_WRITEDATA);
+use WWW::Curl::Easy qw(CURLINFO_HTTP_CODE CURLOPT_INFILE CURLOPT_INFILESIZE CURLOPT_PUT CURLOPT_UPLOAD CURLOPT_URL CURLOPT_VERBOSE CURLOPT_WRITEDATA);
 
 sub new
 {
@@ -1255,26 +1255,20 @@ sub url_get
             }
             when (/^tftp$/)
             {
-#               if (open(my $OUT_FILE, '>', $local_file))
-#               {
-#                   chmod(0600, $local_file);
-#                   my $curl = new WWW::Curl::Easy;
-#                   $curl->setopt(CURLOPT_URL, $url_item);
-#                   $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-#                   my $retcode = $curl->perform;
-#                   close($OUT_FILE);
-#                   if ( (-e $local_file) &&
-#                        ($retcode == 0)  )
-#                   {
-#                       $result = $url_item;
-#                   }
-#               }
-                my $retcode = system(qq(/usr/bin/tftp -g -r $remote_file -l $local_file $remote_server > /dev/null 2>&1));
-                if ( (-e $local_file) &&
-                     ($retcode == 0)  )
+                if (open(my $OUT_FILE, '>', $local_file))
                 {
                     chmod(0600, $local_file);
-                    $result = $url;
+                    my $curl = new WWW::Curl::Easy;
+                    $curl->setopt(CURLOPT_VERBOSE, 0);
+                    $curl->setopt(CURLOPT_URL, $url_item);
+                    $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+                    my $retcode = $curl->perform;
+                    close($OUT_FILE);
+                    if ( (-e $local_file) &&
+                         ($retcode == 0)  )
+                    {
+                        $result = $url_item;
+                    }
                 }
             }
             default
@@ -1385,30 +1379,26 @@ sub url_put
             }
             when (/^tftp$/  )
             {
-#               if (open(my $IN_FILE, '<', $local_file))
-#               {
-#                   if (open(my $OUT_FILE, '>', File::Spec->devnull))
-#                   {
-#                       my $local_file_size = -s $local_file;
-#                       my $curl = new WWW::Curl::Easy;
-#                       $curl->setopt(CURLOPT_VERBOSE, 0);
-#                       $curl->setopt(CURLOPT_URL, $url_item);
-#                       $curl->setopt(CURLOPT_INFILE, $IN_FILE);
-#                       $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
-#                       $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-#                       my $retcode = $curl->perform;
-#                       close($OUT_FILE);
-#                       if ($retcode == 0)
-#                       {
-#                           $result = $url_item;
-#                       }
-#                   }
-#                   close($IN_FILE);
-#               }
-                my $retcode = system(qq(/usr/bin/tftp -p -l $local_file -r $remote_file $remote_server > /dev/null 2>&1));
-                if ($retcode == 0)
+                if (open(my $IN_FILE, '<', $local_file))
                 {
-                    $result = $url_item;
+                    if (open(my $OUT_FILE, '>', File::Spec->devnull))
+                    {
+                        my $local_file_size = -s $local_file;
+                        my $curl = new WWW::Curl::Easy;
+                        $curl->setopt(CURLOPT_VERBOSE, 0);
+                        $curl->setopt(CURLOPT_URL, $url_item);
+                        $curl->setopt(CURLOPT_INFILE, $IN_FILE);
+                        $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
+                        $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
+                        $curl->setopt(CURLOPT_UPLOAD, 1);
+                        my $retcode = $curl->perform;
+                        close($OUT_FILE);
+                        if ($retcode == 0)
+                        {
+                            $result = $url_item;
+                        }
+                    }
+                    close($IN_FILE);
                 }
             }
             default
