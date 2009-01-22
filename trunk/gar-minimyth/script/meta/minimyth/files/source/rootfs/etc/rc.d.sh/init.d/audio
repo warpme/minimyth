@@ -15,8 +15,8 @@ start() {
     mm_message_output info "configuring audio ..."
 
     # Set audio card number and audio card device.
-    /bin/sed -i "s%@MM_AUDIO_CARD_NUMBER@%${MM_AUDIO_CARD_NUMBER}%"     /etc/asound.conf
-    /bin/sed -i "s%@MM_AUDIO_DEVICE_NUMBER@%${MM_AUDIO_DEVICE_NUMBER}%" /etc/asound.conf
+    mm_file_replace_variable '/etc/asound.conf' '@MM_AUDIO_CARD_NUMBER@'   "${MM_AUDIO_CARD_NUMBER}"
+    mm_file_replace_variable '/etc/asound.conf' '@MM_AUDIO_DEVICE_NUMBER@' "${MM_AUDIO_DEVICE_NUMBER}"
     
     # Wait for audio driver to load.
     timeout=10
@@ -31,10 +31,10 @@ start() {
 
     # Configure Xine audio.
     if /bin/echo "+${MM_AUDIO_TYPE}+" | /bin/grep -q '+digital+' ; then
-        /bin/sed -i 's%@SPEAKER_ARRANGEMENT@%Pass Through%' /home/minimyth/.xine/config
+        mm_file_replace_variable '/home/minimyth/.xine/config' '@SPEAKER_ARRANGEMENT@' 'Pass Through%'
     fi
     if /bin/echo "+${MM_AUDIO_TYPE}+" | /bin/grep -q '+analog+'  ; then
-        /bin/sed -i 's%@SPEAKER_ARRANGEMENT@%Stereo 2.0%'   /home/minimyth/.xine/config
+        mm_file_replace_variable '/home/minimyth/.xine/config' '@SPEAKER_ARRANGEMENT@' 'Stereo 2.0'
     fi
 
     # Unmute audio.

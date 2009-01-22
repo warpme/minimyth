@@ -77,6 +77,15 @@ start() {
     # Mount themecache directory.
     if /usr/bin/test -n "${MM_THEMECACHE_URL}" ; then
         mm_url_mount "${MM_THEMECACHE_URL}" "/home/minimyth/.mythtv/themecache"
+        # Make sure that uid and gid are for user 'minimyth'.
+        if /usr/bin/test ! `/bin/stat -c%U,%G "/home/minimyth/.mythtv/themecache"` = 'minimyth,minimyth' ; then
+            /bin/chown minimyth:minimyth /home/minimyth/.mythtv/themecache
+        fi
+        for file in `/bin/ls -1d "/home/minimyth/.mythtv/themecache/*"` ; do
+            if /usr/bin/test ! `/bin/stat -c%U,%G "${file}"` = 'minimyth,minimyth' ; then
+                /bin/chown -Rh minimyth:minimyth "${file}"
+            fi
+        done
     fi
 
     # Configure MythVideo DVD ripping.
@@ -147,12 +156,14 @@ start() {
 
     # Delete disabled plugins.
     if /usr/bin/test "${MM_PLUGIN_INFORMATION_CENTER_ENABLED}" = "no" ; then
-        /bin/sed -i -e 's%<type>MENU_INFO_CENTER</type>%<type>MENU_INFO_CENTER</type><depends></depends>%' \
-            /usr/share/mythtv/mainmenu.xml
+        mm_file_replace_variable '/usr/share/mythtv/mainmenu.xml' \
+            '<type>MENU_INFO_CENTER</type>' \
+            '<type>MENU_INFO_CENTER</type><depends></depends>'
     fi
     if /usr/bin/test "${MM_PLUGIN_OPTICAL_DISK_ENABLED}" = "no" ; then
-        /bin/sed -i -e 's%<depends>mythmusic mythvideo mytharchive mythburn</depends>%<depends>disabled</depends>%' \
-            /usr/share/mythtv/mainmenu.xml
+        mm_file_replace_variable '/usr/share/mythtv/mainmenu.xml' \
+            '<depends>mythmusic mythvideo mytharchive mythburn</depends>' \
+            '<depends>disabled</depends>'
     fi
     if /usr/bin/test "${MM_PLUGIN_BROWSER_ENABLED}"     = "no" ; then
         /bin/rm -rf /usr/lib/mythtv/plugins/libmythbookmarkmanager.so

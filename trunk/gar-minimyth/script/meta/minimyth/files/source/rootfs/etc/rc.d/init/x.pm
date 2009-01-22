@@ -395,18 +395,6 @@ sub start
           '@DRI_TRUE@'           => $dri_true                              ,
           '@NVIDIA_TRUE@'        => $nvidia_true                            });
 
-    # Make sure that the file ownership is correct.
-    {
-        my $uid = getpwnam('minimyth');
-        my $gid = getgrnam('minimyth');
-        File::Find::finddepth(
-            sub
-            {
-                chown($uid, $gid, $File::Find::name);
-            },
-            '/home/minimyth');
-    }
-
     $minimyth->message_output('info', "starting X ...");
     $minimyth->x_start();
 
