@@ -8,13 +8,21 @@
 
 start() {
 
-    /bin/sed -e "s%^minimyth::1000:1000:%minimyth::${MM_SECURITY_USER_MINIMYTH_UID}:${MM_SECURITY_USER_MINIMYTH_GID}:%" \
-             -i /etc/passwd
-    /bin/sed -e "s%^minimyth:x:1000:%minimyth:x:${MM_SECURITY_USER_MINIMYTH_GID}:%" \
-             -i /etc/group
+    mm_file_replace_variable '/etc/passwd' \
+        '^minimyth::1000:1000:' \
+        "minimyth::${MM_SECURITY_USER_MINIMYTH_UID}:${MM_SECURITY_USER_MINIMYTH_GID}:"
+    mm_file_replace_variable '/etc/group' \
+        '^minimyth:x:1000:' \
+        "minimyth:x:${MM_SECURITY_USER_MINIMYTH_GID}:"
 
-    # Make sure that uid and gid are for the home directory of user 'minimyth' are correct.
-    /bin/chown -Rh minimyth:minimyth /home/minimyth
+    # Make sure that uid and gid for the home directory of user 'minimyth' are correct.
+    /usr/bin/find /home/minimyth -depth |
+    while read file ; do
+        if /usr/bin/test ! `/bin/stat -c%U,%G "${file}"` = 'minimyth,minimyth' ; then
+            /bin/chown minimyth:minimyth "${file}"
+        fi
+    done
+
 
     if /usr/bin/test -e /etc/ssl/certs/ca-bundle.crt ; then
         # Set permissions.

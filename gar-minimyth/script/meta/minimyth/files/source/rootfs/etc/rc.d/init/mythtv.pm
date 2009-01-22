@@ -83,6 +83,33 @@ sub start
     if ($themecache_url)
     {
         $minimyth->url_mount($themecache_url, '/home/minimyth/.mythtv/themecache');
+        # Make sure that uid and gid are for user 'minimyth'.
+        # Make sure that the file ownership is correct.
+        my $uid = getpwnam('minimyth');
+        my $gid = getgrnam('minimyth');
+        if (((stat('/home/minimyth/.mythtv/themecache'))[4] != $uid) || ((stat(_))[5] != $gid))
+        {
+            chown($uid, $gid, '/home/minimyth/.mythtv/themecache');
+        }
+        if (opendir(DIR, '/home/minimyth/.mythtv/themecache'))
+        {
+            while (my $themecache = readdir(DIR))
+            {
+                if (((stat($themecache))[4] != $uid) || ((stat(_))[5] != $gid))
+                {
+                    File::Find::finddepth(
+                        sub
+                        {
+                            if (((stat($File::Find::name))[4] != $uid) || ((stat(_))[5] != $gid))
+                            {
+                                chown($uid, $gid, $File::Find::name);
+                            }
+                        },
+                        $themecache);
+                }
+            }
+            closedir(DIR);
+        }
     }
 
     # Configure MythVideo DVD ripping.

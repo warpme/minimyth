@@ -832,6 +832,27 @@ mm_url_mount() {
     return
 }
 
+
+mm_file_replace_variable() {
+    local file=$1
+    local var_name=$2
+    local var_value=$3
+
+    local mode
+    local uid
+    local gid
+
+    mode=`/bin/stat -c%a "${file}"`
+    uid=`/bin/stat -c%u "${file}"`
+    gid=`/bin/stat -c%g "${file}"`
+    /bin/sed -i "s%${var_name}%${var_value}%g" "${file}"
+    /bin/chmod ${mode} "${file}"
+    /bin/chown ${uid}:${gid} "${file}"
+
+    return
+}
+
+
 mm_var_get() {
     local VAR=$1
 

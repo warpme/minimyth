@@ -23,14 +23,17 @@ sub start
         '/etc/group',
         { 'minimyth:x:1000:' => "minimyth:x:$user_minimyth_gid:" });
 
-    # Make sure that uid and gid are for the home directory of user 'minimyth' are correct.
+    # Make sure that uid and gid for the home directory of user 'minimyth' are correct.
     {
         my $uid = getpwnam('minimyth');
         my $gid = getgrnam('minimyth');
         File::Find::finddepth(
             sub
             {
-                chown($uid, $gid, $File::Find::name);
+                if (((stat($File::Find::name))[4] != $uid) || ((stat(_))[5] != $gid))
+                {
+                    chown($uid, $gid, $File::Find::name);
+                }
             },
             '/home/minimyth');
     }

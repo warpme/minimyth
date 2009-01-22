@@ -33,31 +33,31 @@ start() {
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}" = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             XVMC_LIB='/usr/lib/libI810XvMC.so.1'  && \
                 /usr/bin/test -e ${XVMC_LIB}      && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+                mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' "${XVMC_LIB}"
             ;;
         intel_915)
             /usr/bin/test "${MM_VIDEO_DECODER}"      = "auto" && MM_VIDEO_DECODER='ffmpeg'
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}" = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             XVMC_LIB='/usr/lib/libIntelXvMC.so.1' && \
                 /usr/bin/test -e ${XVMC_LIB}      && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+                mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' "${XVMC_LIB}"
             ;;
         nvidia)
             /usr/bin/test "${MM_VIDEO_DECODER}"      = "auto" && MM_VIDEO_DECODER='ffmpeg'
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}" = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             XVMC_LIB='/usr/lib/nvidia/libXvMCNVIDIA.so.1'         && \
                 /usr/bin/test -e ${XVMC_LIB}                      && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+                mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' "${XVMC_LIB}"
             XVMC_LIB='/usr/lib/nvidia/libXvMCNVIDIA_dynamic.so.1' && \
                 /usr/bin/test -e ${XVMC_LIB}                      && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+                mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' "${XVMC_LIB}"
             ;;
         openchrome)
             /usr/bin/test "${MM_VIDEO_DECODER}"      = "auto" && MM_VIDEO_DECODER='xvmc-vld'
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}" = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             XVMC_LIB='/usr/lib/libchromeXvMC.so.1' && \
                 /usr/bin/test -e ${XVMC_LIB}       && \
-                /bin/sed -i "s%@MM_XVMC_LIB@%${XVMC_LIB}%" /etc/X11/XvMCConfig
+                mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' "${XVMC_LIB}"
             ;;
         radeon)
             /usr/bin/test "${MM_VIDEO_DECODER}"      = "auto" && MM_VIDEO_DECODER='ffmpeg'
@@ -80,7 +80,7 @@ start() {
             /usr/bin/test "${MM_VIDEO_DEINTERLACER}" = "auto" && MM_VIDEO_DEINTERLACER='bobdeint'
             ;;
     esac
-    /bin/sed -i "s%@MM_XVMC_LIB@%%" /etc/X11/XvMCConfig
+    mm_file_replace_variable '/etc/X11/XvMCConfig' '@MM_XVMC_LIB@' ''
 
     if ( /usr/bin/test ${MM_VERSION_MYTH_BINARY_MAJOR} -eq  0 && \
          /usr/bin/test ${MM_VERSION_MYTH_BINARY_MINOR} -eq 20    ) ; then
@@ -216,43 +216,43 @@ start() {
     case "${MM_VIDEO_DECODER}" in
         ffmpeg)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"    /home/minimyth/.xine/config
-            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@VIDEO_DRIVER@' 'xv'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_TRUE@'   '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_FALSE@'  ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_TRUE@'    '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_FALSE@'   ''
             ;;
         libmpeg2)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xv%"    /home/minimyth/.xine/config
-            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@VIDEO_DRIVER@' 'xv'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_TRUE@'   '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_FALSE@'  ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_TRUE@'    '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_FALSE@'   ''
             ;;
         vdpau)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%vdpau%" /home/minimyth/.xine/config
-            /bin/sed -i "s%@VDPAU_TRUE@%%"        /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@VDPAU_FALSE@%\#%"     /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_TRUE@%\#%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%%"        /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@VIDEO_DRIVER@' 'vdpau'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_TRUE@'   ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_FALSE@'  '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_TRUE@'    '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_FALSE@'   ''
             ;;
         xvmc)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-svn && /bin/ln -s mplayer-svn /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xvmc%"  /home/minimyth/.xine/config
-            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"         /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"      /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@VIDEO_DRIVER@' 'xvmc'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_TRUE@'   '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_FALSE@'  ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_TRUE@'    ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_FALSE@'   '\#'
             ;;
         xvmc-vld)
             /usr/bin/test ! -e /usr/bin/mplayer && /usr/bin/test -e /usr/bin/mplayer-vld && /bin/ln -s mplayer-vld /usr/bin/mplayer
-            /bin/sed -i "s%@VIDEO_DRIVER@%xxmc%"  /home/minimyth/.xine/config
-            /bin/sed -i "s%@VDPAU_TRUE@%\#%"      /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@VDPAU_FALSE@%%"       /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_TRUE@%%"         /home/minimyth/.mplayer/config
-            /bin/sed -i "s%@XVMC_FALSE@%\#%"      /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@VIDEO_DRIVER@' 'xxmc'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_TRUE@'   '\#'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@VDPAU_FALSE@'  ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_TRUE@'    ''
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@XVMC_FALSE@'   '\#'
             ;;
         *)
             mm_message_output err "error: something is very wrong in the 'video' init script."
@@ -262,28 +262,28 @@ start() {
 
     case "${MM_VIDEO_DEINTERLACER}" in
         none)
-            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%0%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%none%"                      /home/minimyth/.xine/config
-            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_BY_DEFAULT@' '0'
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_PLUGIN@'     'none'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@BOBDEINT@'               ''
             ;;
         bobdeint|openglbobdeint|vdpaubobdeint)
-            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=ScalerBob%"   /home/minimyth/.xine/config
-            /bin/sed -i "s%@BOBDEINT@%:bobdeint%"                           /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_BY_DEFAULT@' '1'
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_PLUGIN@'     'tvtime:method=ScalerBob%'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@BOBDEINT@'               ':bobdeint'
             ;;
         *)
-            /bin/sed -i "s%@DEINTERLACE_BY_DEFAULT@%1%"                     /home/minimyth/.xine/config
-            /bin/sed -i "s%@DEINTERLACE_PLUGIN@%tvtime:method=LinearBlend%" /home/minimyth/.xine/config
-            /bin/sed -i "s%@BOBDEINT@%%"                                    /home/minimyth/.mplayer/config
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_BY_DEFAULT@' '1'
+            mm_file_replace_variable '/home/minimyth/.xine/config'    '@DEINTERLACE_PLUGIN@'     'tvtime:method=LinearBlend'
+            mm_file_replace_variable '/home/minimyth/.mplayer/config' '@BOBDEINT@'               ''
             ;;
     esac
 
     if   /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "4:3"   ; then
-        /bin/sed -i "s%@MONITORASPECT@%4:3%"   /home/minimyth/.mplayer/config
+        mm_file_replace_variable '/home/minimyth/.mplayer/config' '@MONITORASPECT@' '4:3'
     elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:9"  ; then
-        /bin/sed -i "s%@MONITORASPECT@%16:9%"  /home/minimyth/.mplayer/config
+        mm_file_replace_variable '/home/minimyth/.mplayer/config' '@MONITORASPECT@' '16:9'
     elif /usr/bin/test "${MM_VIDEO_ASPECT_RATIO}" = "16:10" ; then
-        /bin/sed -i "s%@MONITORASPECT@%16:10%" /home/minimyth/.mplayer/config
+        mm_file_replace_variable '/home/minimyth/.mplayer/config' '@MONITORASPECT@' '16:10'
     else
         mm_message_output err "error: something is very wrong in the 'video' init script."
         exit 1
@@ -382,29 +382,29 @@ start() {
              | /bin/grep -e '^flags *:' \
              | /bin/sed -e 's%^flags *:%%' -e 's%  *% %g' -e 's%^ %%' -e 's% $%%'`
         if /bin/echo " ${cpu_flags} " | /bin/grep -q ' 3dnow '  > /dev/null 2>&1 ; then
-            /bin/sed -e 's%@MM_VLC_VLCRC_3DN@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_3DN@'    '1'
         else
-            /bin/sed -e 's%@MM_VLC_VLCRC_3DN@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_3DN@'    '0'
         fi
         if /bin/echo " ${cpu_flags} " | /bin/grep -q ' mmx '    > /dev/null 2>&1 ; then
-            /bin/sed -e 's%@MM_VLC_VLCRC_MMX@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_MMX@'    '1'
         else
-            /bin/sed -e 's%@MM_VLC_VLCRC_MMX@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_MMX@'    '0'
         fi
         if /bin/echo " ${cpu_flags} " | /bin/grep -q ' mmxext ' > /dev/null 2>&1 ; then
-            /bin/sed -e 's%@MM_VLC_VLCRC_MMXEXT@%1%g' -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_MMXEXT@' '1'
         else
-            /bin/sed -e 's%@MM_VLC_VLCRC_MMXEXT@%0%g' -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_MMXEXT@' '0'
         fi
         if /bin/echo " ${cpu_flags} " | /bin/grep -q ' sse '    > /dev/null 2>&1 ; then
-            /bin/sed -e 's%@MM_VLC_VLCRC_SSE@%1%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_SSE@'    '1'
         else
-            /bin/sed -e 's%@MM_VLC_VLCRC_SSE@%0%g'    -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_SSE@'    '0'
         fi
         if /bin/echo " ${cpu_flags} " | /bin/grep -q ' sse2 '   > /dev/null 2>&1 ; then
-            /bin/sed -e 's%@MM_VLC_VLCRC_SSE2@%1%g'   -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_SSE2@'   '1'
         else
-            /bin/sed -e 's%@MM_VLC_VLCRC_SSE2@%0%g'   -i /home/minimyth/.config/vlc/vlcrc
+            mm_file_replace_variable '/home/minimyth/.config/vlc/vlcrc' '@MM_VLC_VLCRC_SSE2@'   '0'
         fi
     fi
 
