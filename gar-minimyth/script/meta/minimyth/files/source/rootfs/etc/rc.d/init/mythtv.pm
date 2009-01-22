@@ -93,9 +93,9 @@ sub start
         }
         if (opendir(DIR, '/home/minimyth/.mythtv/themecache'))
         {
-            while (my $themecache = readdir(DIR))
+            foreach my $themecache (grep(! /^\./, (readdir(DIR))))
             {
-                if (((stat($themecache))[4] != $uid) || ((stat(_))[5] != $gid))
+                if (((stat(qq(/home/minimyth/.mythtv/themecache/$themecache)))[4] != $uid) || ((stat(_))[5] != $gid))
                 {
                     File::Find::finddepth(
                         sub
@@ -105,7 +105,7 @@ sub start
                                 chown($uid, $gid, $File::Find::name);
                             }
                         },
-                        $themecache);
+                        qq(/home/minimyth/.mythtv/themecache/$themecache));
                 }
             }
             closedir(DIR);
