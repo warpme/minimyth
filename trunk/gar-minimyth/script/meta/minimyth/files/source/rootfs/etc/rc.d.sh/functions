@@ -242,7 +242,7 @@ mm_url_http_get() {
     /usr/bin/test -n "${LOCAL_DIR}" && /bin/mkdir -p "${LOCAL_DIR}"
     /usr/bin/test -n "${LOCAL_DIR}" && /usr/bin/test ! -d "${LOCAL_DIR}" && return
 
-    /usr/bin/curl -s -f "http://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
+    /usr/bin/curl -L -s -f "http://${REMOTE_SERVER}${REMOTE_FILE}" -o "${LOCAL_FILE}" || return
 
     /usr/bin/logger -s -t minimyth -p "local0.info" "'http://${REMOTE_SERVER}${REMOTE_FILE}' downloaded."
 
@@ -423,7 +423,7 @@ mm_url_http_put() {
         return
     fi
 
-    if /usr/bin/curl -s -f -T "${LOCAL_FILE}" "http://${REMOTE_SERVER}${REMOTE_FILE}" ; then
+    if /usr/bin/curl -L -s -f -T "${LOCAL_FILE}" "http://${REMOTE_SERVER}${REMOTE_FILE}" ; then
         /usr/bin/logger -s -t minimyth -p "local0.info"  \
             "'http://${REMOTE_SERVER}${REMOTE_FILE}' posted."
         /bin/true
