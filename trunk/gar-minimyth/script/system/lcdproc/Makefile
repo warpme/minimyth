@@ -7,6 +7,7 @@ MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  =
 PATCHFILES += $(DISTNAME)-irtrans.patch
+PATCHFILES += $(DISTNAME)-picolcd_4x20.patch
 PATCHFILES += $(DISTNAME)-dm140_henlar_v0.2.patch $(DISTNAME)-imonlcd_0.3_with_send_fix.patch
 else
 MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
