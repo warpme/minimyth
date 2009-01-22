@@ -128,8 +128,8 @@ $var_list{'MM_LCDPROC_FETCH_LCDD_CONF'} =
     value_default  => 'no',
     value_valid    => 'no|yes',
     value_file     => 'yes',
-    file           => {'remote' => '/LCDd.conf',
-                       'local'  => '/etc/LCDd.conf'},
+    file           => {'name_remote' => '/LCDd.conf',
+                       'name_local'  => '/etc/LCDd.conf'}
 };
 
 1;
