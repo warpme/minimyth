@@ -8,6 +8,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-yasm.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
+	$(DISTNAME_SHORT)-ticket-6105-20090110.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \

@@ -8,6 +8,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-changeset_19245.patch \
 	$(DISTNAME_SHORT)-ticket-3035-20070207.patch \
 	$(DISTNAME_SHORT)-ticket-4225-20071220.patch \
+	$(DISTNAME_SHORT)-ticket-6105-20090110.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-avformat_asf_utf8.patch \
