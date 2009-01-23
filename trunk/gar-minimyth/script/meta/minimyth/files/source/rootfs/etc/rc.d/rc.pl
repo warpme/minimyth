@@ -8,7 +8,6 @@ use warnings;
 use feature "switch";
 
 use Cwd ();
-use Date::Manip ();
 use File::Basename ();
 use MiniMyth ();
 
@@ -188,14 +187,6 @@ sub rc_run
             rc_script_list_run($minimyth, 1, 'start', \@script_list) || return 0;
                 
             $minimyth->splash_halt();
-
-            if (open(FILE, '>>', '/init.log'))
-            {
-                Date::Manip::Date_Init("ConvTZ=UTC");
-                my $date  = Date::Manip::UnixDate('now', '%Y-%m-%d %H:%M:%S %Z');
-                print FILE "end   date and time: $date\n";
-                close (FILE);
-            }
         }
         when (/^0$/)
         {
