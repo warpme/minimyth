@@ -8,6 +8,7 @@ PATCHFILES += \
 	$(DISTNAME)-mstorage.patch \
 	$(DISTNAME)-getthemedir.patch \
 	$(DISTNAME)-mythversion_h.patch \
+	$(DISTNAME)-virtualkeyboard_qt_h.patch \
 	$(DISTNAME)-qtopengl.patch \
 	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME)-fftw3f.patch \
