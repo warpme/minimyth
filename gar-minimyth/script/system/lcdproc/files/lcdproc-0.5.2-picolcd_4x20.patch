@@ -1,7 +1,7 @@
 diff -Naur lcdproc-0.5.2-old/acinclude.m4 lcdproc-0.5.2-new/acinclude.m4
---- lcdproc-0.5.2-old/acinclude.m4	2007-04-14 07:39:28.000000000 -0700
-+++ lcdproc-0.5.2-new/acinclude.m4	2009-01-21 17:03:22.000000000 -0800
-@@ -277,21 +277,12 @@
+--- lcdproc-0.5.2-old/acinclude.m4	2009-01-22 18:59:55.000000000 -0800
++++ lcdproc-0.5.2-new/acinclude.m4	2009-01-22 19:01:11.000000000 -0800
+@@ -281,21 +281,12 @@
  			actdrivers=["$actdrivers NoritakeVFD"]
  			;;
  		picolcd)
@@ -30,9 +30,9 @@ diff -Naur lcdproc-0.5.2-old/acinclude.m4 lcdproc-0.5.2-new/acinclude.m4
  		pyramid)
  			DRIVERS="$DRIVERS pyramid${SO}"
 diff -Naur lcdproc-0.5.2-old/LCDd.conf lcdproc-0.5.2-new/LCDd.conf
---- lcdproc-0.5.2-old/LCDd.conf	2007-04-25 12:56:43.000000000 -0700
-+++ lcdproc-0.5.2-new/LCDd.conf	2009-01-21 17:04:20.000000000 -0800
-@@ -744,6 +744,21 @@
+--- lcdproc-0.5.2-old/LCDd.conf	2009-01-22 18:59:55.000000000 -0800
++++ lcdproc-0.5.2-new/LCDd.conf	2009-01-22 19:01:11.000000000 -0800
+@@ -758,6 +758,21 @@
  Key4Light=on
  Key5Light=on
  
@@ -54,9 +54,21 @@ diff -Naur lcdproc-0.5.2-old/LCDd.conf lcdproc-0.5.2-new/LCDd.conf
  
  
  ## Pyramid LCD driver ##
+diff -Naur lcdproc-0.5.2-old/server/drivers/Makefile.am lcdproc-0.5.2-new/server/drivers/Makefile.am
+--- lcdproc-0.5.2-old/server/drivers/Makefile.am	2009-01-22 18:59:55.000000000 -0800
++++ lcdproc-0.5.2-new/server/drivers/Makefile.am	2009-01-22 19:00:49.000000000 -0800
+@@ -45,7 +45,7 @@
+ mtc_s16209x_LDADD =  libLCD.a
+ MtxOrb_LDADD =       libLCD.a libbignum.a
+ NoritakeVFD_LDADD =  libLCD.a
+-picolcd_LDADD =      libLCD.a @LIBUSBLCD@
++picolcd_LDADD =      libLCD.a @libusb_libs@
+ pyramid_LDADD =      libLCD.a
+ serialPOS_LDADD =    libLCD.a libbignum.a
+ serialVFD_LDADD =    libLCD.a libbignum.a
 diff -Naur lcdproc-0.5.2-old/server/drivers/picolcd.c lcdproc-0.5.2-new/server/drivers/picolcd.c
 --- lcdproc-0.5.2-old/server/drivers/picolcd.c	2007-04-14 07:38:14.000000000 -0700
-+++ lcdproc-0.5.2-new/server/drivers/picolcd.c	2009-01-21 17:03:22.000000000 -0800
++++ lcdproc-0.5.2-new/server/drivers/picolcd.c	2009-01-22 19:01:11.000000000 -0800
 @@ -3,50 +3,31 @@
   *
   * (c) 2007 NitroSecurity, Inc.
@@ -1363,7 +1375,7 @@ diff -Naur lcdproc-0.5.2-old/server/drivers/picolcd.c lcdproc-0.5.2-new/server/d
 +
 diff -Naur lcdproc-0.5.2-old/server/drivers/picolcd.h lcdproc-0.5.2-new/server/drivers/picolcd.h
 --- lcdproc-0.5.2-old/server/drivers/picolcd.h	2007-04-14 07:38:14.000000000 -0700
-+++ lcdproc-0.5.2-new/server/drivers/picolcd.h	2009-01-21 17:03:22.000000000 -0800
++++ lcdproc-0.5.2-new/server/drivers/picolcd.h	2009-01-22 19:01:11.000000000 -0800
 @@ -1,56 +1,112 @@
  /*
 - * Driver for picoLCD graphical displays

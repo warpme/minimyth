@@ -34,9 +34,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-doxygen \
 	--disable-dot \
 	--disable-html-dox \
-	--disable-latex-dox
-CONFIGURE_ENV  = \
-	libusb_config="no"
+	--disable-latex-dox \
+	--with-libusb-libraries="$(DESTDIR)$(libdir)"
 else
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
