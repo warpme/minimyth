@@ -31,6 +31,8 @@ $var_list{'MM_LCDPROC_DRIVER'} =
             $minimyth->var_set('MM_LCDPROC_DRIVER', $driver);
             $minimyth->var_set('MM_LCDPROC_DEVICE', $device);
         }
+
+        return 1;
     }
 };
 $var_list{'MM_LCDPROC_DEVICE'} =

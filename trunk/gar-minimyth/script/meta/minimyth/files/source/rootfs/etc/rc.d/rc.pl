@@ -119,6 +119,8 @@ sub rc_script_list_run
     }
     if ($fail)
     {
+        $minimyth->message_output('info', "init failed. check '/var/log/messages' for further details.");
+
         # An error occured, so start a virtual console login and a telnet login.
         # This is a serious security hole, but users have difficulty debugging
         # when they cannot connect.

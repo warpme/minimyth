@@ -28,7 +28,11 @@ sub start
     $minimyth->message_output('info', "fetching configuration file  ...");
 
     # Determine current boot directory location.
-    $self->_run($minimyth, 'MM_MINIMYTH_BOOT_URL');
+    if (! $self->_run($minimyth, 'MM_MINIMYTH_BOOT_URL'))
+    {
+        $minimyth->message_output('err', "cannot determine 'MM_MINIMYTH_BOOT_URL'.");
+        return 0;
+    }
 
     # Using local configuration files, so there should be a '/minimyth' directory.
     if ($minimyth->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
@@ -55,6 +59,8 @@ sub start
         return 0;
     }
 
+    my $success = 1;
+
     # Save the current boot directory location so that it is available to the
     # 'mm_minimyth_conf_include shell' shell function that might be called from
     # within '/etc/minimyth.d/minimyth.conf' when it is read.
@@ -75,13 +81,14 @@ sub start
             if ($minimyth->var_exists($_))
             {
                 $minimyth->message_output('err', "'minimyth.conf' is out of date. '$_' is obsolete.");
+                $success = 0;
             }
         }
         close(FILE);
     }
 
     # Fetch and run 'minimyth.pm'.
-    $self->_run($minimyth, 'MM_MINIMYTH_FETCH_MINIMYTH_PM');
+    $self->_run($minimyth, 'MM_MINIMYTH_FETCH_MINIMYTH_PM') || ($success = 0);
     if ($minimyth->var_get('MM_MINIMYTH_FETCH_MINIMYTH_PM') eq 'yes')
     {
         $minimyth->message_output('info', "fetching configuration package ...");
@@ -90,6 +97,7 @@ sub start
         if (! -e '/etc/minimyth.d/minimyth.pm')
         {
             $minimyth->message_output('err', "failed to fetch 'minimyth.pm' file.");
+            $success = 0;
         }
     }
     if (-f '/etc/minimyth.d/minimyth.pm')
@@ -110,11 +118,12 @@ sub start
             $minimyth->message_output('info', "running configuration package ...");
             eval
             {
-                init::minimyth->start($minimyth);
+                init::minimyth->start($minimyth) || ($success = 0);
             };
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
+                $success = 0;
             }
         } 
     }
@@ -135,7 +144,7 @@ sub start
 
     # Process the DHCP override configuration variables
     # so that they are available to the DHCP client.
-    $self->_run($minimyth, 'MM_DHCP_.*');
+    $self->_run($minimyth, 'MM_DHCP_.*') || ($success = 0);
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
     # Start the DHCP client now that we have created the DHCP override variables file.
@@ -144,38 +153,22 @@ sub start
     {
         eval
         {
-            init::dhcp->start($minimyth);
+            init::dhcp->start($minimyth) || ($success = 0);
         };
         if ($@)
         {
             $minimyth->message_output('err', qq($@));
+            $success = 0;
         }
     }
 
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
     $minimyth->var_load({ 'file' => '/etc/minimyth.d/minimyth.conf' });
-    $self->_run($minimyth);
+    $self->_run($minimyth) || ($success = 0);
     $minimyth->var_save();
 
-    # If there are any errors, then do not continue
-    if ((-e '/var/log/minimyth.err.log') && (open(FILE, '<', '/var/log/minimyth.err.log')))
-    {
-        my $conf_error = 0;
-        while (<FILE>)
-        {
-            $conf_error = 1;
-            last;
-        }
-        close(FILE);
-        if ($conf_error != 0)
-        {
-            $minimyth->message_output('err', "check '/var/log/minimyth.err.log' for further details.");
-            return 0;
-        }
-    }
-
-    return 1;
+    return $success;
 }
 
 sub stop
@@ -212,6 +205,8 @@ sub _run
     my $minimyth = shift;
     my $filter   = shift || 'MM_.*';
 
+    my $success = 1;
+
     my %var_list;
 
     # Get the variable handlers from each of the variable group packages in the MM directory,
@@ -236,7 +231,8 @@ sub _run
                 if ($@)
                 {
                     $minimyth->message_output('err', qq($@));
-                    return 0;
+                    $success = 0;
+                    return $success;
                 }
                 foreach (grep( /^$filter$/, keys %{$group_var_list}))
                 {
@@ -259,10 +255,10 @@ sub _run
     # Run the variable initialization handlers for each variable.
     foreach (keys %var_list)
     {
-        $self->_run_var($minimyth, \%var_list, $_);
+        $self->_run_var($minimyth, \%var_list, $_) || ($success = 0);
     }
 
-    return 1;
+    return $success;
 }
 
 sub _run_var
@@ -285,10 +281,12 @@ sub _run_var
     my $file           = $var->{'file'};
     my $extra          = $var->{'extra'};
 
+    my $success = 1;
+
     # Check whether or not it has been processed.
     if (($var->{'complete'}) && ($var->{'complete'} == 1))
     {
-        return 1;
+        return $success;
     }
 
     # Process prerequisites.
@@ -304,7 +302,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
@@ -318,7 +317,7 @@ sub _run_var
             my $filter = $_;
             foreach (grep(/^$filter$/, (keys %{$var_list})))
             {
-                $self->_run_var($minimyth, $var_list, $_);
+                $self->_run_var($minimyth, $var_list, $_) || ($success = 0);
             }
         }
     }
@@ -332,7 +331,7 @@ sub _run_var
     # Clean value.
     if (defined $value_clean)
     {
-        &{$value_clean}($minimyth, $var_name);
+        &{$value_clean}($minimyth, $var_name) || ($success = 0);
     }
 
     # Process default value.
@@ -350,7 +349,8 @@ sub _run_var
                 if ($@)
                 {
                     $minimyth->message_output('err', qq($@));
-                    return 0;
+                    $success = 0;
+                    return $success;
                 }
             }
             # Set variable to its default value.
@@ -371,7 +371,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
@@ -391,6 +392,7 @@ sub _run_var
         if ($valid == 0)
         {
             $minimyth->message_output('err', qq($var_name=') . $minimyth->var_get($var_name) . qq(' is not valid.));
+            $success = 0;
 
             # Replace the invalid value with the default value,
             # so that dependent variables will get a valid value.
@@ -409,7 +411,8 @@ sub _run_var
                         if ($@)
                         {
                             $minimyth->message_output('err', qq($@));
-                            return 0;
+                            $success = 0;
+                            return $success;
                         }
                     }
                     # Set variable to its default value.
@@ -432,7 +435,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Convert non-array pointer (i.e. scaler) to an array pointer.
@@ -452,6 +456,7 @@ sub _run_var
         if ($obsolete == 1)
         {
             $minimyth->message_output('err', qq('minimyth.conf' is out of date. $var_name=') . $minimyth->var_get($var_name) . qq(' is obsolete.));
+            $success = 0;
         }
     }
 
@@ -468,7 +473,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Set variable to its auto value.
@@ -488,7 +494,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Set variable to its none value.
@@ -508,7 +515,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         if (ref($file) eq 'CODE')
@@ -520,7 +528,8 @@ sub _run_var
             if ($@)
             {
                 $minimyth->message_output('err', qq($@));
-                return 0;
+                $success = 0;
+                return $success;
             }
         }
         # Convert non-array pointer (i.e. hash pointer) to an array pointer.
@@ -540,6 +549,7 @@ sub _run_var
                 if (! -e $name_local)
                 {
                     $minimyth->message_output('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
+                    $success = 0;
                 }
                 else
                 {
@@ -555,12 +565,12 @@ sub _run_var
     # Run extra sub-routine.
     if (defined $extra)
     {
-        &{$extra}($minimyth, $var_name);
+        &{$extra}($minimyth, $var_name) || ($success = 0);
     }
 
     $var->{'complete'} = 1;
 
-    return 1;
+    return $success;
 }
 
 1;

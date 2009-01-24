@@ -22,6 +22,8 @@ my $value_clean_list       = sub
     $value_clean =~ s/^ //g;
     $value_clean =~ s/ $//g;
     $minimyth->var_set($name, $value_clean);
+
+    return 1;
 };
 
 my %var_list;

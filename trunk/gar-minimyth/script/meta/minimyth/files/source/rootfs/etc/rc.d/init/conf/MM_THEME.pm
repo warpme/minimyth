@@ -33,10 +33,13 @@ $var_list{'MM_THEME_NAME'} =
         my $minimyth = shift;
         my $name     = shift;
   
+        my $success = 1;
         if ($minimyth->var_get($name) eq 'G.A.N.T.')
         {
             $minimyth->message_output('err', "theme 'G.A.N.T.' has been renamed to 'G.A.N.T'. Please update '$name'.");
+            $success = 0;
         }
+        return $success;
     }
 };
 $var_list{'MM_THEME_URL'} =
@@ -165,6 +168,8 @@ $var_list{'MM_THEME_FILE_MENU_ADD'} =
         $value_clean =~ s/^ //;
         $value_clean =~ s/ $//;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default  => '',
     value_file     => '.+',

@@ -33,6 +33,8 @@ $var_list{'MM_FONT_FILE_TTF_DELETE'} =
                 closedir(DIR);
             }
         }
+
+        return 1;
     }
 };
 $var_list{'MM_FONT_FILE_TTF_ADD'} =
@@ -50,6 +52,8 @@ $var_list{'MM_FONT_FILE_TTF_ADD'} =
         $value_clean =~ s/^ //;
         $value_clean =~ s/ $//;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default  => '',
     value_file     => '.+',

@@ -84,6 +84,8 @@ $var_list{'MM_HARDWARE_KERNEL_MODULES'} =
         }
 
         $minimyth->var_set($name, join(' ', @kernel_modules));
+
+        return 1;
     }
 };
 
