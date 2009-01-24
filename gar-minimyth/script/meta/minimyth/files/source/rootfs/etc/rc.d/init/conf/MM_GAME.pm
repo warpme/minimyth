@@ -32,6 +32,8 @@ $var_list{'MM_GAME_SAVE_LIST'} =
         $value_clean =~ s/^://;
         $value_clean =~ s/:$//;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default  =>       '.fceultra' .
                       ':' . '.jzintv' .

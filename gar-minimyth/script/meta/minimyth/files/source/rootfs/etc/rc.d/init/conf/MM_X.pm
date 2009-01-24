@@ -129,6 +129,7 @@ $var_list{'MM_X_OUTPUT_TV'} =
         my $minimyth = shift;
         my $name     = shift;
         
+        my $success = 1;
         if (($minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
             ($minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none') &&
             ($minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
@@ -142,16 +143,19 @@ $var_list{'MM_X_OUTPUT_TV'} =
                 (! $minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none'))
             {
                 $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_VGA' are both enabled.));
+                $success = 0;
             }
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
                 $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $success = 0;
             }
             if ((! $minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
                 $minimyth->message_output('err', qq('MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $success = 0;
             }
         }
         if ($minimyth->var_get('MM_X_DRIVER') eq 'openchrome')
@@ -161,8 +165,10 @@ $var_list{'MM_X_OUTPUT_TV'} =
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
                 $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $success = 0;
             }
         }
+        return $success;
     }
 };
 #===============================================================================
@@ -195,6 +201,8 @@ $var_list{'MM_X_SYNC'} =
         $value = 'HorizSync ' . $value;
 
         $minimyth->var_set($name, $value);
+
+        return 1;
     }
 };
 $var_list{'MM_X_REFRESH'} =
@@ -290,6 +298,8 @@ $var_list{'MM_X_REFRESH'} =
         $value = 'VertRefresh ' . $value;
 
         $minimyth->var_set($name, $value);
+
+        return 1;
     }
 };
 $var_list{'MM_X_RESOLUTION'} =
@@ -302,6 +312,8 @@ $var_list{'MM_X_RESOLUTION'} =
         my $value_clean = $minimyth->var_get($name);
         $value_clean =~ s/^([0-9]+)[Xx]([0-9]+)$/$1x$2/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'none',
     value_valid   => 'none|[0-9]+x[0-9]+',
@@ -319,6 +331,8 @@ $var_list{'MM_X_MODELINE'} =
         $value_clean =~ s/  +/ /g;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'auto',
     value_valid   => sub
@@ -390,6 +404,8 @@ $var_list{'MM_X_MODELINE_0'} =
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'none',
     value_valid   => 'none|Modeline "[0-9]+[Xx][0-9]+[^"]*" .*',
@@ -408,6 +424,8 @@ $var_list{'MM_X_MODELINE_1'} =
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'none',
     value_valid   => 'none|Modeline "[0-9]+[Xx][0-9]+[^"]*" .*',
@@ -426,6 +444,8 @@ $var_list{'MM_X_MODELINE_2'} =
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'none',
     value_valid   => 'none|Modeline "[0-9]+[Xx][0-9]+[^"]*" .*',
@@ -442,6 +462,8 @@ $var_list{'MM_X_MODE'} =
         my $value_clean = $minimyth->var_get($name);
         $value_clean =~ s/^([0-9]+)[Xx]([0-9]+)(.*)$/$1x$2$3/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'auto',
     value_valid   => sub
@@ -584,6 +606,8 @@ $var_list{'MM_X_MODE_0'} =
         my $value_clean = $minimyth->var_get($name);
         $value_clean =~ s/^([0-9]+)[Xx]([0-9]+)(.*)$/$1x$2$3/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'auto',
     value_valid   => 'auto|none|[0-9]+[Xx][0-9]+.*',
@@ -641,6 +665,8 @@ $var_list{'MM_X_MODE_1'} =
         my $value_clean = $minimyth->var_get($name);
         $value_clean =~ s/^([0-9]+)[Xx]([0-9]+)(.*)$/$1x$2$3/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'auto',
     value_valid   => 'auto|none|[0-9]+[Xx][0-9]+.*',
@@ -698,6 +724,8 @@ $var_list{'MM_X_MODE_2'} =
         my $value_clean = $minimyth->var_get($name);
         $value_clean =~ s/^([0-9]+)[Xx]([0-9]+)(.*)$/$1x$2$3/;
         $minimyth->var_set($name, $value_clean);
+
+        return 1;
     },
     value_default => 'auto',
     value_valid   => 'auto|none|[0-9]+[Xx][0-9]+.*',

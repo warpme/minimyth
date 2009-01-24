@@ -20,6 +20,7 @@ $var_list{'MM_DHCP_HOST_NAME'} =
         my $minimyth = shift;
         my $name     = shift;
 
+        my $success = 1;
         # If the DCHP override file exists, then DHCP should be completely configured.
         if (-e '/etc/conf.d/dhcp.override')
         {
@@ -27,8 +28,10 @@ $var_list{'MM_DHCP_HOST_NAME'} =
             if (! $hostname)
             {
                 $minimyth->message_output('err', qq('Host Name' (or 'MM_DHCP_HOST_NAME') not configured.));
+                $success = 0;
             }
         }
+        return $success;
     }
 };
 $var_list{'MM_DHCP_DOMAIN_NAME'} =
@@ -41,14 +44,17 @@ $var_list{'MM_DHCP_TCODE'} =
         my $minimyth = shift;
         my $name     = shift;
 
+        my $success = 1;
         # If the DCHP override file exists, then DHCP should be completely configured.
         if (-e '/etc/conf.d/dhcp.override')
         {
             if (! -e '/etc/localtime')
             {
                 $minimyth->message_output('err', qq('TCode' (or 'MM_DHCP_TCODE') not configured.));
+                $success = 0;
             }
         }
+        return $success;
     }
 };
 $var_list{'MM_DHCP_DOMAIN_NAME_SERVERS'} =
@@ -58,6 +64,7 @@ $var_list{'MM_DHCP_DOMAIN_NAME_SERVERS'} =
         my $minimyth = shift;
         my $name     = shift;
 
+        my $success = 1;
         # If the DCHP override file exists, then DHCP should be completely configured.
         if (-e '/etc/conf.d/dhcp.override')
         {
@@ -74,8 +81,10 @@ $var_list{'MM_DHCP_DOMAIN_NAME_SERVERS'} =
             if ($valid == 0)
             {
                 $minimyth->message_output('err', qq('Domain Name Servers' (or 'MM_DHCP_DOMAIN_NAME_SERVERS') not configured.));
+                $success = 0;
             }
         }
+        return $success;
     }
 };
 $var_list{'MM_DHCP_NTP_SERVERS'} =
@@ -85,6 +94,7 @@ $var_list{'MM_DHCP_NTP_SERVERS'} =
         my $minimyth = shift;
         my $name     = shift;
 
+        my $success = 1;
         # If the DCHP override file exists, then DHCP should be completely configured.
         if (-e '/etc/conf.d/dhcp.override')
         {
@@ -101,8 +111,10 @@ $var_list{'MM_DHCP_NTP_SERVERS'} =
             if ($valid == 0)
             {
                 $minimyth->message_output('err', qq('NTP Servers' (or 'MM_DHCP_NTP_SERVERS') not configured.));
+                $success = 0;
             }
         }
+        return $success;
     }
 };
 $var_list{'MM_DHCP_LOG_SERVERS'} =

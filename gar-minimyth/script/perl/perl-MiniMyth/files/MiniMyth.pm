@@ -171,39 +171,25 @@ sub message_output
     if ($self->splash_running_test)
     {
         system(qq(/usr/bin/logger    -t minimyth -p local0.$level "$message"));
-        if    ($level eq 'err')  { $self->splash_message_output(qq(error: $message)); }
-        elsif ($level eq 'warn') { $self->splash_message_output(qq(warning: $message)); }
-        else                     { $self->splash_message_output(qq($message)); }
+
+        if    ($level eq 'err')
+        { 
+            $self->splash_message_output(qq(error: $message));
+            $self->splash_command(qq(log $message));
+        }
+        elsif ($level eq 'warn')
+        {
+            $self->splash_message_output(qq(warning: $message));
+            $self->splash_command(qq(log $message));
+        }
+        else
+        {
+            $self->splash_message_output(qq($message));
+        }
     }
     else
     {
         system(qq(/usr/bin/logger -s -t minimyth -p local0.$level "$message"));
-    }
-
-    if (($level eq 'err') || ($level eq 'warn'))
-    {
-        my $log_file = "/var/log/minimyth.$level.log";
-        if (! -e $log_file)
-        {
-            my $log_dir = File::Basename::dirname($log_file);
-            if (! -e $log_dir)
-            {
-                File::Path::mkpath($log_dir);
-            }
-            if (-w $log_dir)
-            {
-                open(FILE, '>', $log_file);
-                chmod(0666, $log_file);
-                close(FILE);
-            }
-        }
-        if (-e $log_file)
-        {
-            open(FILE, '>>', $log_file);
-            print FILE $message . "\n";
-            close(FILE);
-        }
-        $self->splash_command(qq(log $message));
     }
 }
 
