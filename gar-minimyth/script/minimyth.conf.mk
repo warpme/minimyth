@@ -58,6 +58,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              vlc \
                              xine \
                              perl \
+                             wiimote \
                              backend \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
