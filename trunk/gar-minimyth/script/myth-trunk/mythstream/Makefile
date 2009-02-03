@@ -5,11 +5,7 @@ MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME)-mstorage.patch \
-	$(DISTNAME)-getthemedir.patch \
-	$(DISTNAME)-mythversion_h.patch \
-	$(DISTNAME)-virtualkeyboard_qt_h.patch \
-	$(DISTNAME)-qtopengl.patch \
+	$(DISTNAME)-mythtv_0_22.patch \
 	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
@@ -44,7 +40,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
-INSTALL_ENV   = $(MYTHTV_INSTALL_ENV) INSTALL_ROOT="$(DESTDIR)"
+INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk

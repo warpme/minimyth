@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-changeset_19245.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
@@ -14,6 +13,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
+	$(DISTNAME_SHORT)-glvdpau19794-2.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
@@ -38,6 +38,7 @@ DEPENDS = \
 	lib/zlib \
 	qt/qt3 \
 	system/lirc \
+	X11/vdpau \
 	xorg/xorg
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -89,6 +90,7 @@ CONFIGURE_ARGS = \
 	--enable-xvmcw \
 	--enable-xvmc-pro \
 	--disable-xvmc-opengl \
+	--enable-vdpau \
 	--xvmc-lib=XvMCW \
 	--enable-opengl-video \
 	--disable-mac-accel \
