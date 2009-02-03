@@ -1,20 +1,21 @@
 diff -Naur mythstream-0.18_qt4-old/settings.pro mythstream-0.18_qt4-new/settings.pro
---- mythstream-0.18_qt4-old/settings.pro	2008-04-08 14:07:57.000000000 -0700
-+++ mythstream-0.18_qt4-new/settings.pro	2008-04-08 14:11:34.000000000 -0700
-@@ -4,18 +4,12 @@
- VERSION=0.18_2
+--- mythstream-0.18_qt4-old/settings.pro	2009-02-02 09:44:18.000000000 -0800
++++ mythstream-0.18_qt4-new/settings.pro	2009-02-02 09:47:21.000000000 -0800
+@@ -7,11 +7,11 @@
+ isEmpty( PREFIX ) {
+     # Install in /usr/share/... or /usr/local/share/... ?
+     #PREFIX = /usr/local
+-    PREFIX = /usr
++    PREFIX = @GAR_DESTDIR@@GAR_prefix@
+ }
+ # Where the binaries actually locate the assets/filters/plugins at runtime
+ isEmpty( RUNPREFIX ) {
+-    RUNPREFIX = $$PREFIX
++    RUNPREFIX = @GAR_prefix@
+ }
  
- # Install in /usr/share/... or /usr/local/share/... ?
--#PREFIX = /usr/local
--PREFIX = /usr
-+PREFIX = @GAR_prefix@
- 
--INCLUDEPATH += $${PREFIX}/include
--#INCLUDEPATH *= /usr/local/include
-+INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_includedir@/mythtv
- 
- DEFINES += _GNU_SOURCE
- DEFINES += PREFIX=\\\"$${PREFIX}\\\"
+ INCLUDEPATH += $${PREFIX}/include
+@@ -26,7 +26,3 @@
  DEFINES += VERSION=\\\"$${VERSION}\\\"
  
  QMAKE_LFLAGS -= -Wl,--no-undefined
