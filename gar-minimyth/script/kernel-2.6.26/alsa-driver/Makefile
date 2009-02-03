@@ -4,6 +4,7 @@ CATEGORIES = kernel-2.6.26
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-quirk_asus_m3n78_vm.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
