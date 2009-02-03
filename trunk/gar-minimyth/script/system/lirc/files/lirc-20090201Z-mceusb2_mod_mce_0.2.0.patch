@@ -1,19 +1,17 @@
-diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c
---- lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-01-14 23:19:56.000000000 -0800
-+++ lirc-20090120Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-01-22 11:16:14.000000000 -0800
-@@ -1,4 +1,11 @@
+diff -Naur lirc-20090201Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090201Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c
+--- lirc-20090201Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-01-31 02:43:53.000000000 -0800
++++ lirc-20090201Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-02-02 17:04:35.000000000 -0800
+@@ -1,6 +1,8 @@
  /*
-+ * Input driver for Microsoft MCE 2005 keyboard _and_ lirc module
+  * LIRC driver for Philips eHome USB Infrared Transceiver
+- * and the Microsoft MCE 2005 Remote Control
++ * and the Microsoft MCE 2005 Remote Control and Keyboard
 + *
 + * (C) by Florian Demski
-+ *
-+ * Based upon lirc_mcesub2.c from Martin A. Blatter et al
-+ */
-+/*
-  * LIRC driver for Philips eHome USB Infrared Transceiver
-  * and the Microsoft MCE 2005 Remote Control
   *
-@@ -33,10 +40,11 @@
+  * (C) by Martin A. Blatter <martin_a_blatter@yahoo.com>
+  *
+@@ -33,10 +35,11 @@
   *
   */
  
@@ -27,7 +25,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  #error "*******************************************************"
  #endif
  
-@@ -59,6 +67,12 @@
+@@ -59,6 +62,12 @@
  #include <linux/poll.h>
  #include <linux/wait.h>
  #include <linux/time.h>
@@ -40,9 +38,9 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  
  #include "drivers/lirc.h"
  #include "drivers/kcompat.h"
-@@ -66,12 +80,16 @@
+@@ -66,12 +75,16 @@
  
- #define DRIVER_VERSION	"$Revision: 1.66 $"
+ #define DRIVER_VERSION	"$Revision: 1.70 $"
  #define DRIVER_AUTHOR	"Daniel Melander <lirc@rajidae.se>, " \
 -			"Martin Blatter <martin_a_blatter@yahoo.com>"
 +			"Martin Blatter <martin_a_blatter@yahoo.com>, " \
@@ -60,8 +58,8 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  #define LIRCBUF_SIZE	256	/* LIRC work buffer length */
  
  /* MCE constants */
-@@ -90,6 +108,52 @@
- #define MCE_PACKET_LENGTH_MASK	0x7F /* Pulse mask */
+@@ -90,6 +103,52 @@
+ #define MCE_PACKET_LENGTH_MASK  0x7F /* Pulse mask */
  
  
 +/* Keyboard/Mouse constants */
@@ -113,7 +111,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  /* module parameters */
  #ifdef CONFIG_USB_DEBUG
  static int debug = 1;
-@@ -218,15 +282,45 @@
+@@ -218,15 +277,45 @@
  	{}
  };
  
@@ -159,7 +157,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  
  	/* buffers and dma */
  	unsigned char *buf_in;
-@@ -234,9 +328,16 @@
+@@ -234,9 +323,16 @@
  	dma_addr_t dma_in;
  	dma_addr_t dma_out;
  
@@ -176,7 +174,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  	unsigned char is_pulse;
  	struct {
  		u32 connected:1;
-@@ -253,6 +354,9 @@
+@@ -253,6 +349,9 @@
  	wait_queue_head_t wait_out;
  
  	struct mutex lock;
@@ -186,7 +184,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  };
  
  /* init strings */
-@@ -383,6 +487,261 @@
+@@ -383,6 +482,261 @@
  		ir->devnum, res);
  }
  
@@ -448,7 +446,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  static int unregister_from_lirc(struct mceusb2_dev *ir)
  {
  	struct lirc_driver *d = ir->d;
-@@ -505,6 +864,10 @@
+@@ -504,6 +858,10 @@
  	switch (urb->status) {
  	/* success */
  	case 0:
@@ -459,7 +457,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  		for (i = 0; i < buf_len; i++) {
  			/* decode mce packets of the form (84),AA,BB,CC,DD */
  			if (ir->buf_in[i] >= 0x80 && ir->buf_in[i] <= 0x9e) {
-@@ -557,6 +920,7 @@
+@@ -558,6 +916,7 @@
  				i = buf_len;
  			}
  		}
@@ -467,7 +465,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  
  		break;
  
-@@ -723,6 +1087,15 @@
+@@ -725,6 +1084,15 @@
  }
  
  
@@ -483,7 +481,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  static int lirc_ioctl(struct inode *node, struct file *filep,
  		      unsigned int cmd, unsigned long arg)
  {
-@@ -812,9 +1185,10 @@
+@@ -814,9 +1182,10 @@
  	struct lirc_buffer *rbuf = NULL;
  	int devnum, pipe, maxp;
  	int minor = 0;
@@ -495,7 +493,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  
  	dprintk(DRIVER_NAME ": usb probe called\n");
  
-@@ -878,6 +1252,12 @@
+@@ -880,6 +1249,12 @@
  		return -ENODEV;
  	}
  
@@ -508,7 +506,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  	devnum = dev->devnum;
  	pipe = usb_rcvintpipe(dev, ep_in->bEndpointAddress);
  	maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
-@@ -978,6 +1358,55 @@
+@@ -978,6 +1353,55 @@
  	ir->is_pulse = 0;
  
  	/* ir->flags.transmitter_mask_inverted must be set */
@@ -564,7 +562,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  	set_transmitter_mask(ir, MCE_DEFAULT_TX_MASK);
  	/* Saving usb interface data for use by the transmitter routine */
  	ir->usb_ep_in = ep_in;
-@@ -992,6 +1421,7 @@
+@@ -992,6 +1416,7 @@
  			  buf, sizeof(buf)) > 0)
  		snprintf(name + strlen(name), sizeof(name) - strlen(name),
  			 " %s", buf);
@@ -572,7 +570,7 @@ diff -Naur lirc-20090120Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090120Z
  	printk(DRIVER_NAME "[%d]: %s on usb%d:%d\n", devnum, name,
  	       dev->bus->busnum, devnum);
  
-@@ -1067,6 +1497,12 @@
+@@ -1070,6 +1495,12 @@
  	ir->usbdev = NULL;
  	wake_up_all(&ir->wait_out);
  
