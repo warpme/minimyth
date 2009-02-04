@@ -1,6 +1,6 @@
-diff -Naur MPlayer-28207.16380-old/codec-cfg.c MPlayer-28207.16380-new/codec-cfg.c
---- MPlayer-28207.16380-old/codec-cfg.c	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/codec-cfg.c	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/codec-cfg.c MPlayer-28461.16984-new/codec-cfg.c
+--- MPlayer-28461.16984-old/codec-cfg.c	2009-02-03 20:12:45.000000000 -0800
++++ MPlayer-28461.16984-new/codec-cfg.c	2009-02-03 20:16:12.000000000 -0800
 @@ -182,6 +182,16 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
@@ -18,9 +18,9 @@ diff -Naur MPlayer-28207.16380-old/codec-cfg.c MPlayer-28207.16380-new/codec-cfg
  		{NULL,    0}
  	};
  
-diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
---- MPlayer-28207.16380-old/configure	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/configure	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/configure MPlayer-28461.16984-new/configure
+--- MPlayer-28461.16984-old/configure	2009-02-03 20:12:45.000000000 -0800
++++ MPlayer-28461.16984-new/configure	2009-02-03 20:16:13.000000000 -0800
 @@ -382,6 +382,7 @@
    --enable-xmga            enable mga_vid X11 video output [autodetect]
    --enable-xv              enable Xv video output [autodetect]
@@ -29,7 +29,16 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
    --enable-vm              enable XF86VidMode support [autodetect]
    --enable-xinerama        enable Xinerama support [autodetect]
    --enable-x11             enable X11 video output [autodetect]
-@@ -550,6 +551,7 @@
+@@ -523,7 +524,7 @@
+ _libamr_nb=auto
+ _libamr_wb=auto
+ _libavdecoders_all=`sed -n 's/^[^#]*DEC.*(.*, *\(.*\)).*/\1_decoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]'`
+-_libavdecoders=` echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER// -e s/H264_VDPAU_DECODER// -e s/MPEG_VDPAU_DECODER// -e s/MPEG1_VDPAU_DECODER// -e s/VC1_VDPAU_DECODER//  -e s/WMV3_VDPAU_DECODER// `
++_libavdecoders=` echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER//`
+ _libavencoders_all=`sed -n 's/^[^#]*ENC.*(.*, *\(.*\)).*/\1_encoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]'`
+ _libavencoders=` echo $_libavencoders_all | sed 's/ LIB[A-Z0-9_]*_ENCODER//g'`
+ _libavparsers_all=`sed -n 's/^[^#]*PARSER.*(.*, *\(.*\)).*/\1_parser/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]'`
+@@ -552,6 +553,7 @@
  _dga2=auto
  _xv=auto
  _xvmc=no  #auto when complete
@@ -37,7 +46,7 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
  _sdl=auto
  _direct3d=auto
  _directx=auto
-@@ -875,6 +877,8 @@
+@@ -877,6 +879,8 @@
    --disable-xv)		_xv=no		;;
    --enable-xvmc)        _xvmc=yes       ;;
    --disable-xvmc)       _xvmc=no        ;;
@@ -46,7 +55,7 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
    --enable-sdl)		_sdl=yes	;;
    --disable-sdl)	_sdl=no		;;
    --enable-direct3d)    _direct3d=yes   ;;
-@@ -4021,7 +4025,7 @@
+@@ -4125,7 +4129,7 @@
    _novomodules="x11 $_novomodules"
    _res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -55,7 +64,7 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
  fi
  echores "$_x11"
  
-@@ -4132,6 +4136,30 @@
+@@ -4236,6 +4240,30 @@
  echores "$_xvmc"
  
  
@@ -86,15 +95,15 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
  echocheck "Xinerama"
  if test "$_xinerama" = auto ; then
    cat > $TMPC <<EOF
-@@ -8052,6 +8080,7 @@
- UNRAR_EXEC = $_unrar_exec
- V4L2 = $_v4l2
- VCD = $_vcd
+@@ -8112,6 +8140,7 @@
+ XVID4 = $_xvid
+ XVIDIX = $xvidix
+ XVMC = $_xvmc
 +VDPAU = $_vdpau
- VESA = $_vesa
- VIDIX = $_vidix
- VIDIX_PCIDB = $_vidix_pcidb_val
-@@ -8136,6 +8165,7 @@
+ YUV4MPEG = $_yuv4mpeg
+ ZR = $_zr
+ 
+@@ -8165,6 +8194,7 @@
  # Prevent building libavcodec/imgresample.c with conflicting symbols
  CONFIG_SWSCALE=yes
  CONFIG_XVMC=$_xvmc
@@ -102,7 +111,7 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
  CONFIG_ZLIB=$_zlib
  
  HAVE_PTHREADS = $_pthreads
-@@ -8513,6 +8543,7 @@
+@@ -8547,6 +8577,7 @@
  $_def_xss
  $_def_xv
  $_def_xvmc
@@ -110,10 +119,10 @@ diff -Naur MPlayer-28207.16380-old/configure MPlayer-28207.16380-new/configure
  $_def_xvr100
  $_def_yuv4mpeg
  $_def_zr
-diff -Naur MPlayer-28207.16380-old/etc/codecs.conf MPlayer-28207.16380-new/etc/codecs.conf
---- MPlayer-28207.16380-old/etc/codecs.conf	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/etc/codecs.conf	2008-12-28 23:05:14.000000000 -0800
-@@ -271,6 +271,34 @@
+diff -Naur MPlayer-28461.16984-old/etc/codecs.conf MPlayer-28461.16984-new/etc/codecs.conf
+--- MPlayer-28461.16984-old/etc/codecs.conf	2009-02-03 20:12:45.000000000 -0800
++++ MPlayer-28461.16984-new/etc/codecs.conf	2009-02-03 20:16:13.000000000 -0800
+@@ -272,6 +272,34 @@
    out IDCT_MPEG2
    out MOCO_MPEG2
  
@@ -148,13 +157,13 @@ diff -Naur MPlayer-28207.16380-old/etc/codecs.conf MPlayer-28207.16380-new/etc/c
  ; we have only native open source codecs for these:
  
  videocodec ffnuv
-@@ -769,6 +797,15 @@
+@@ -771,15 +799,32 @@
    dll wmv3
    out YV12,I420,IYUV
  
 +videocodec ffwmv3vdpau
 +  info "FFmpeg WMV3/WMV9 (VDPAU)"
-+  status buggy
++  status working
 +  fourcc WMV3,wmv3
 +  driver ffmpeg
 +  dll wmv3_vdpau
@@ -163,14 +172,17 @@ diff -Naur MPlayer-28207.16380-old/etc/codecs.conf MPlayer-28207.16380-new/etc/c
 +
  videocodec ffvc1
    info "FFmpeg WVC1"
-   status buggy
-@@ -778,6 +815,14 @@
+-  status buggy
++  status working
+   fourcc WVC1,wvc1,WMVA
+   fourcc vc-1,VC-1
+   driver ffmpeg
    dll vc1
    out YV12,I420,IYUV
  
 +videocodec ffvc1vdpau
 +  info "FFmpeg WVC1 (VDPAU)"
-+  status buggy
++  status working
 +  fourcc WVC1,wvc1
 +  driver ffmpeg
 +  dll vc1_vdpau
@@ -179,7 +191,7 @@ diff -Naur MPlayer-28207.16380-old/etc/codecs.conf MPlayer-28207.16380-new/etc/c
  videocodec ffh264
    info "FFmpeg H.264"
    status working
-@@ -790,6 +835,20 @@
+@@ -792,6 +837,20 @@
    dll h264
    out YV12,I420,IYUV
  
@@ -200,9 +212,9 @@ diff -Naur MPlayer-28207.16380-old/etc/codecs.conf MPlayer-28207.16380-new/etc/c
  videocodec ffsvq3
    info "FFmpeg Sorenson Video v3 (SVQ3)"
    status working
-diff -Naur MPlayer-28207.16380-old/help/help_mp-en.h MPlayer-28207.16380-new/help/help_mp-en.h
---- MPlayer-28207.16380-old/help/help_mp-en.h	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/help/help_mp-en.h	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/help/help_mp-en.h MPlayer-28461.16984-new/help/help_mp-en.h
+--- MPlayer-28461.16984-old/help/help_mp-en.h	2009-02-03 20:12:35.000000000 -0800
++++ MPlayer-28461.16984-new/help/help_mp-en.h	2009-02-03 20:16:13.000000000 -0800
 @@ -1654,15 +1654,18 @@
  
  // libmpcodecs/vd_ffmpeg.c
@@ -222,9 +234,9 @@ diff -Naur MPlayer-28207.16380-old/help/help_mp-en.h MPlayer-28207.16380-new/hel
  
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
-diff -Naur MPlayer-28207.16380-old/libmpcodecs/img_format.c MPlayer-28207.16380-new/libmpcodecs/img_format.c
---- MPlayer-28207.16380-old/libmpcodecs/img_format.c	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/libmpcodecs/img_format.c	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/libmpcodecs/img_format.c MPlayer-28461.16984-new/libmpcodecs/img_format.c
+--- MPlayer-28461.16984-old/libmpcodecs/img_format.c	2009-02-03 20:11:58.000000000 -0800
++++ MPlayer-28461.16984-new/libmpcodecs/img_format.c	2009-02-03 20:16:12.000000000 -0800
 @@ -67,6 +67,15 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -241,9 +253,9 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/img_format.c MPlayer-28207.16380-
      }
      snprintf(unknown_format,20,"Unknown 0x%04x",format);
      return unknown_format;
-diff -Naur MPlayer-28207.16380-old/libmpcodecs/img_format.h MPlayer-28207.16380-new/libmpcodecs/img_format.h
---- MPlayer-28207.16380-old/libmpcodecs/img_format.h	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/libmpcodecs/img_format.h	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/libmpcodecs/img_format.h MPlayer-28461.16984-new/libmpcodecs/img_format.h
+--- MPlayer-28461.16984-old/libmpcodecs/img_format.h	2009-02-03 20:11:58.000000000 -0800
++++ MPlayer-28461.16984-new/libmpcodecs/img_format.h	2009-02-03 20:16:12.000000000 -0800
 @@ -107,6 +107,20 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
@@ -265,9 +277,9 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/img_format.h MPlayer-28207.16380-
  typedef struct {
      void* data;
      int size;
-diff -Naur MPlayer-28207.16380-old/libmpcodecs/mp_image.h MPlayer-28207.16380-new/libmpcodecs/mp_image.h
---- MPlayer-28207.16380-old/libmpcodecs/mp_image.h	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/libmpcodecs/mp_image.h	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/libmpcodecs/mp_image.h MPlayer-28461.16984-new/libmpcodecs/mp_image.h
+--- MPlayer-28461.16984-old/libmpcodecs/mp_image.h	2009-02-03 20:11:58.000000000 -0800
++++ MPlayer-28461.16984-new/libmpcodecs/mp_image.h	2009-02-03 20:16:12.000000000 -0800
 @@ -113,6 +113,10 @@
  	mpi->bpp=0;
  	return;
@@ -279,15 +291,15 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/mp_image.h MPlayer-28207.16380-ne
      if(IMGFMT_IS_XVMC(out_fmt)){
  	mpi->bpp=0;
  	return;
-diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/libmpcodecs/vd_ffmpeg.c	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/libmpcodecs/vd_ffmpeg.c MPlayer-28461.16984-new/libmpcodecs/vd_ffmpeg.c
+--- MPlayer-28461.16984-old/libmpcodecs/vd_ffmpeg.c	2009-02-03 20:11:58.000000000 -0800
++++ MPlayer-28461.16984-new/libmpcodecs/vd_ffmpeg.c	2009-02-03 20:17:53.000000000 -0800
 @@ -30,6 +30,10 @@
  #include "xvmc_render.h"
  #endif
  
 +#ifdef CONFIG_VDPAU
-+#include "vdpau_render.h"
++#include <libavcodec/vdpau.h>
 +#endif
 +
  int avcodec_initialized=0;
@@ -310,7 +322,7 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
  static int lavc_param_workaround_bugs= FF_BUG_AUTODETECT;
  static int lavc_param_error_resilience=2;
  static int lavc_param_error_concealment=3;
-@@ -147,6 +161,36 @@
+@@ -147,6 +161,21 @@
          case IMGFMT_XVMC_IDCT_MPEG2:
          case IMGFMT_XVMC_MOCO_MPEG2:
              if(avctx->pix_fmt==PIX_FMT_XVMC_MPEG2_IDCT) return CONTROL_TRUE;
@@ -318,36 +330,30 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +#endif
 +#ifdef CONFIG_VDPAU
 +        case IMGFMT_VDPAU_MPEG1:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_MPEG1) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_MPEG2_SIMPLE:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_MPEG2_SIMPLE) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_MPEG2_MAIN:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_MPEG2_MAIN) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_H264_BASELINE:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_H264_BASELINE) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_H264_MAIN:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_H264_MAIN) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_H264_HIGH:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_H264_HIGH) return CONTROL_TRUE;
-+	    break;
 +        case IMGFMT_VDPAU_VC1_SIMPLE:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_VC1_SIMPLE) return CONTROL_TRUE;
-+            break;
 +        case IMGFMT_VDPAU_VC1_MAIN:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_VC1_MAIN) return CONTROL_TRUE;
-+            break;
 +        case IMGFMT_VDPAU_VC1_ADVANCED:
-+            if(avctx->pix_fmt==PIX_FMT_VDPAU_VC1_ADVANCED) return CONTROL_TRUE;
++            // Why doesn't mpcodecs_config_vo check for best_csp first???
++            if(format == ctx->best_csp) return CONTROL_TRUE;
 +            break;
  #endif
  	}
          return CONTROL_FALSE;
-@@ -250,6 +294,18 @@
+@@ -241,7 +270,7 @@
+     if(vd_use_slices && (lavc_codec->capabilities&CODEC_CAP_DRAW_HORIZ_BAND) && !do_vis_debug)
+ 	ctx->do_slices=1;
+  
+-    if(lavc_codec->capabilities&CODEC_CAP_DR1 && !do_vis_debug && lavc_codec->id != CODEC_ID_H264 && lavc_codec->id != CODEC_ID_INTERPLAY_VIDEO && lavc_codec->id != CODEC_ID_ROQ)
++    if(lavc_codec->capabilities&CODEC_CAP_DR1 && !do_vis_debug && ((lavc_codec->id != CODEC_ID_H264) || (lavc_codec->capabilities & CODEC_CAP_HWACCEL_VDPAU)) && lavc_codec->id != CODEC_ID_INTERPLAY_VIDEO && lavc_codec->id != CODEC_ID_ROQ)
+ 	ctx->do_dr1=1;
+     ctx->b_age= ctx->ip_age[0]= ctx->ip_age[1]= 256*256*256*64;
+     ctx->ip_count= ctx->b_count= 0;
+@@ -250,6 +279,18 @@
      ctx->avctx = avcodec_alloc_context();
      avctx = ctx->avctx;
  
@@ -363,28 +369,46 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +    } else
 +#endif /* CONFIG_VDPAU */
 +
- #ifdef CONFIG_XVMC
+ #if CONFIG_XVMC
  
  #ifdef CODEC_CAP_HWACCEL
-@@ -537,6 +593,17 @@
+@@ -537,6 +578,35 @@
          case PIX_FMT_XVMC_MPEG2_MC:ctx->best_csp=IMGFMT_XVMC_MOCO_MPEG2;break;
          case PIX_FMT_XVMC_MPEG2_IDCT:ctx->best_csp=IMGFMT_XVMC_IDCT_MPEG2;break;
  #endif
 +#ifdef CONFIG_VDPAU
-+        case PIX_FMT_VDPAU_MPEG1: ctx->best_csp=IMGFMT_VDPAU_MPEG1;break;
-+        case PIX_FMT_VDPAU_MPEG2_SIMPLE: ctx->best_csp=IMGFMT_VDPAU_MPEG2_SIMPLE;break;
-+        case PIX_FMT_VDPAU_MPEG2_MAIN: ctx->best_csp=IMGFMT_VDPAU_MPEG2_MAIN;break;
-+        case PIX_FMT_VDPAU_H264_BASELINE: ctx->best_csp=IMGFMT_VDPAU_H264_BASELINE;break;
-+        case PIX_FMT_VDPAU_H264_MAIN: ctx->best_csp=IMGFMT_VDPAU_H264_MAIN;break;
-+        case PIX_FMT_VDPAU_H264_HIGH: ctx->best_csp=IMGFMT_VDPAU_H264_HIGH;break;
-+        case PIX_FMT_VDPAU_VC1_SIMPLE: ctx->best_csp=IMGFMT_VDPAU_VC1_SIMPLE;break;
-+        case PIX_FMT_VDPAU_VC1_MAIN: ctx->best_csp=IMGFMT_VDPAU_VC1_MAIN;break;
-+        case PIX_FMT_VDPAU_VC1_ADVANCED: ctx->best_csp=IMGFMT_VDPAU_VC1_ADVANCED;break;
++        case PIX_FMT_VDPAU_MPEG1:
++            ctx->best_csp=IMGFMT_VDPAU_MPEG1;
++            break;
++        case PIX_FMT_VDPAU_MPEG2:
++            // FIXME: This needs to differentiate between SIMPLE/MAIN
++            // This doesn't matter much for NVIDIA's implementation, since
++            // it supports MAIN, and SIMPLE is backwards compatible.
++            // ctx->best_csp=IMGFMT_VDPAU_MPEG2_SIMPLE;
++            ctx->best_csp=IMGFMT_VDPAU_MPEG2_MAIN;
++            break;
++        case PIX_FMT_VDPAU_H264:
++            // FIXME: This needs to differentiate between BASELINE/MAIN/HIGH
++            // This doesn't matter much for NVIDIA's implementation, since
++            // BASELINE is not supported at all, and any HIGH decoder (as
++            // NVIDIA's is) can also decode MAIN streams.
++            ctx->best_csp=IMGFMT_VDPAU_H264_HIGH;
++            break;
++        case PIX_FMT_VDPAU_WMV3:
++            // FIXME: This needs to differentiate between SIMPLE/MAIN.
++            // For now, just hard-code MAIN, since that's what our sample
++            // clip is.
++            // ctx->best_csp=IMGFMT_VDPAU_VC1_SIMPLE;
++            ctx->best_csp=IMGFMT_VDPAU_VC1_MAIN;
++            break;
++        case PIX_FMT_VDPAU_VC1:
++            ctx->best_csp=IMGFMT_VDPAU_VC1_ADVANCED;
++            break;
 +#endif
  	default:
  	    ctx->best_csp=0;
  	}
-@@ -874,7 +941,7 @@
+@@ -874,7 +944,7 @@
  	return NULL;
      }
      
@@ -393,7 +417,23 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
          mpi->planes[0]=pic->data[0];
          mpi->planes[1]=pic->data[1];
          mpi->planes[2]=pic->data[2];
-@@ -1071,3 +1138,154 @@
+@@ -1022,7 +1092,6 @@
+     if( mp_msg_test(MSGT_DECVIDEO,MSGL_DBG5) )
+         mp_msg(MSGT_DECVIDEO, MSGL_DBG5, "vd_ffmpeg::mc_get_buffer (render=%p)\n",render);
+     assert(render != 0);
+-    assert(render->magic == MP_XVMC_RENDER_MAGIC);
+     render->state |= MP_XVMC_STATE_PREDICTION;
+     return 0;
+ }
+@@ -1049,7 +1118,6 @@
+     if( mp_msg_test(MSGT_DECVIDEO,MSGL_DBG5) )
+         mp_msg(MSGT_DECVIDEO, MSGL_DBG5, "vd_ffmpeg::mc_release_buffer (render=%p)\n",render);
+     assert(render!=NULL);
+-    assert(render->magic==MP_XVMC_RENDER_MAGIC);
+     render->state&=~MP_XVMC_STATE_PREDICTION;
+     for(i=0; i<4; i++){
+         pic->data[i]= NULL;
+@@ -1071,3 +1139,144 @@
  }
  
  #endif /* CONFIG_XVMC */
@@ -405,14 +445,12 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +    sh_video_t * sh = avctx->opaque;
 +    int i;
 +
-+    if(avctx->vdpau_acceleration){
-+        vd_ffmpeg_ctx *ctx = sh->context;
-+        avctx->get_buffer= vdpau_get_buffer;
-+        avctx->release_buffer= vdpau_release_buffer;
-+        avctx->draw_horiz_band = vdpau_render_frame;
-+        assert(ctx->do_dr1);
-+        avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-+    }
++    vd_ffmpeg_ctx *ctx = sh->context;
++    avctx->get_buffer= vdpau_get_buffer;
++    avctx->release_buffer= vdpau_release_buffer;
++    avctx->draw_horiz_band = vdpau_render_frame;
++    assert(ctx->do_dr1);
++    avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
 +    for(i=0;fmt[i]!=-1;i++){
 +        mp_msg(MSGT_DECVIDEO, MSGL_INFO, MSGTR_MPCODECS_TryingPixfmt,i);
 +        if( init_vo(sh,fmt[i]) >= 0)
@@ -425,15 +463,9 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +    sh_video_t * sh = avctx->opaque;
 +    vd_ffmpeg_ctx *ctx = sh->context;
 +    mp_image_t* mpi=NULL;
-+    vdpau_render_state_t * render;
++    struct vdpau_render_state * render;
 +    int flags= MP_IMGFLAG_ACCEPT_STRIDE | MP_IMGFLAG_PREFER_ALIGNED_STRIDE|
 +               MP_IMGFLAG_DRAW_CALLBACK;
-+
-+    if(!avctx->vdpau_acceleration){
-+        mp_msg(MSGT_DECVIDEO, MSGL_INFO, MSGTR_MPCODECS_VDPAUGetBufferShouldWorkOnlyWithVDPAU);
-+        assert(0);
-+        exit(1);
-+    }
 +
 +    assert(avctx->draw_horiz_band == vdpau_render_frame);
 +    assert(avctx->release_buffer == vdpau_release_buffer);
@@ -498,12 +530,11 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +
 +    pic->type= FF_BUFFER_TYPE_USER;
 +
-+    render=(vdpau_render_state_t*)mpi->planes[2];
++    render=(struct vdpau_render_state*)mpi->planes[2];
 +    if( mp_msg_test(MSGT_DECVIDEO,MSGL_DBG5) )
 +        mp_msg(MSGT_DECVIDEO, MSGL_DBG5, "vd_ffmpeg::vdpau_get_buffer (render=%p)\n",render);
 +    assert(render != NULL);
-+    assert(render->magic == MP_VDPAU_RENDER_MAGIC);
-+    render->state |= MP_VDPAU_STATE_USED_FOR_REFERENCE;
++    render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
 +   return 0;
 +}
 +
@@ -511,7 +542,7 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +    mp_image_t* mpi= pic->opaque;
 +    sh_video_t * sh = avctx->opaque;
 +    vd_ffmpeg_ctx *ctx = sh->context;
-+    vdpau_render_state_t * render;
++    struct vdpau_render_state * render;
 +    int i;
 +
 +    if(ctx->ip_count <= 2 && ctx->b_count<=1){
@@ -522,12 +553,11 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +    }
 +
 +    // Mark the surface as not required for prediction
-+    render=(vdpau_render_state_t*)pic->data[2];
++    render=(struct vdpau_render_state*)pic->data[2];
 +    if( mp_msg_test(MSGT_DECVIDEO,MSGL_DBG5) )
 +        mp_msg(MSGT_DECVIDEO, MSGL_DBG5, "vd_ffmpeg::vdpau_release_buffer (render=%p)\n",render);
 +    assert(render != NULL);
-+    assert(render->magic == MP_VDPAU_RENDER_MAGIC);
-+    render->state &= ~MP_VDPAU_STATE_USED_FOR_REFERENCE;
++    render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
 +    for(i=0; i<4; i++){
 +        pic->data[i]= NULL;
 +    }
@@ -548,9 +578,9 @@ diff -Naur MPlayer-28207.16380-old/libmpcodecs/vd_ffmpeg.c MPlayer-28207.16380-n
 +
 +#endif
 +
-diff -Naur MPlayer-28207.16380-old/libvo/video_out.c MPlayer-28207.16380-new/libvo/video_out.c
---- MPlayer-28207.16380-old/libvo/video_out.c	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/libvo/video_out.c	2008-12-28 23:05:14.000000000 -0800
+diff -Naur MPlayer-28461.16984-old/libvo/video_out.c MPlayer-28461.16984-new/libvo/video_out.c
+--- MPlayer-28461.16984-old/libvo/video_out.c	2009-02-03 20:12:18.000000000 -0800
++++ MPlayer-28461.16984-new/libvo/video_out.c	2009-02-03 20:16:12.000000000 -0800
 @@ -71,6 +71,7 @@
  extern vo_functions_t video_out_x11;
  extern vo_functions_t video_out_xover;
@@ -569,10 +599,10 @@ diff -Naur MPlayer-28207.16380-old/libvo/video_out.c MPlayer-28207.16380-new/lib
  #ifdef CONFIG_XV
          &video_out_xv,
  #endif
-diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libvo/vo_vdpau.c
---- MPlayer-28207.16380-old/libvo/vo_vdpau.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28207.16380-new/libvo/vo_vdpau.c	2008-12-28 23:05:14.000000000 -0800
-@@ -0,0 +1,1344 @@
+diff -Naur MPlayer-28461.16984-old/libvo/vo_vdpau.c MPlayer-28461.16984-new/libvo/vo_vdpau.c
+--- MPlayer-28461.16984-old/libvo/vo_vdpau.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-28461.16984-new/libvo/vo_vdpau.c	2009-02-03 20:16:12.000000000 -0800
+@@ -0,0 +1,1340 @@
 +/*
 + * VDPAU Renderer for MPlayer.
 + * vo_vdpau.c - VDPAU with X11 interface.
@@ -602,7 +632,7 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 + *
 + * Actual decoding and presentation are implemented here.
 + * All necessary frame informations are collected through
-+ * "vdpau_render_state_t" structure after parsing all headers
++ * "vdpau_render_state" structure after parsing all headers
 + * etc in ffmpeg module for different codecs.
 + *
 + * @{
@@ -625,7 +655,7 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +
 +#include "x11_common.h"
 +
-+#include "vdpau_render.h"
++#include <libavcodec/vdpau.h>
 +
 +#include "fastmemcpy.h"
 +#include "sub.h"
@@ -736,7 +766,7 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +static VdpRect outRect;
 +static VdpRect outRectVid;
 +
-+static vdpau_render_state_t * surface_render;
++static struct vdpau_render_state * surface_render;
 +int surfaceNum;
 +static uint32_t vid_width, vid_height;
 +static uint32_t image_format;
@@ -1315,12 +1345,11 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +    }
 +
 +    if (num_video_surfaces) {
-+        surface_render = malloc(num_video_surfaces*sizeof(vdpau_render_state_t));
-+        memset(surface_render,0,num_video_surfaces*sizeof(vdpau_render_state_t));
++        surface_render = malloc(num_video_surfaces*sizeof(struct vdpau_render_state));
++        memset(surface_render,0,num_video_surfaces*sizeof(struct vdpau_render_state));
 +
 +        for (i = 0; i < num_video_surfaces; i++) {
-+            surface_render[i].magic = MP_VDPAU_RENDER_MAGIC;
-+            surface_render[i].state = MP_VDPAU_STATE_USED_FOR_RENDER;
++            surface_render[i].state = FF_VDPAU_STATE_USED_FOR_RENDER;
 +            surface_render[i].surface = videoSurfaces[i];
 +        }
 +
@@ -1541,12 +1570,11 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +                           int x, int y)
 +{
 +    VdpStatus vdp_st;
-+    vdpau_render_state_t * rndr;
++    struct vdpau_render_state * rndr;
 +
-+    rndr = (vdpau_render_state_t*)image[2]; // this is a copy of private
++    rndr = (struct vdpau_render_state*)image[2]; // this is a copy of private
 +    assert( rndr != NULL );
-+    assert(rndr->magic == MP_VDPAU_RENDER_MAGIC);
-+    if ((rndr == NULL) || (rndr->magic != MP_VDPAU_RENDER_MAGIC))
++    if (rndr == NULL)
 +        return VO_ERROR;
 +
 +#if TRACE_SURFACES
@@ -1561,8 +1589,8 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +        decoder,
 +        rndr->surface,
 +        (void*)&(rndr->info),
-+        rndr->bitstreamBuffersUsed,
-+        rndr->bitstreamBuffers
++        rndr->bitstream_buffers_used,
++        rndr->bitstream_buffers
 +    );
 +    CHECK_ST
 +
@@ -1581,7 +1609,7 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +
 +static uint32_t draw_image(mp_image_t * mpi)
 +{
-+    vdpau_render_state_t * rndr;
++    struct vdpau_render_state * rndr;
 +    VdpStatus vdp_st;
 +    VdpTime dummy;
 +    VdpYCbCrFormat vdp_ycbcr_format;
@@ -1590,10 +1618,9 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +
 +    // check for VDPAU surface format 
 +    if (IMGFMT_IS_VDPAU(image_format)) {   
-+        rndr = (vdpau_render_state_t*)mpi->planes[2]; // this is a copy of private
++        rndr = (struct vdpau_render_state*)mpi->planes[2]; // this is a copy of private
 +        assert( rndr != NULL );
-+        assert(rndr->magic == MP_VDPAU_RENDER_MAGIC);
-+        if ((rndr == NULL) || (rndr->magic != MP_VDPAU_RENDER_MAGIC))
++        if (rndr == NULL)
 +            return VO_ERROR;
 +
 +        videoSurface = rndr->surface;
@@ -1675,13 +1702,13 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +    return VO_TRUE;
 +}
 +
-+static vdpau_render_state_t * find_free_surface()
++static struct vdpau_render_state * find_free_surface()
 +{
 +    int i;
 +
 +    for (i = 0 ; i < num_video_surfaces; i++)
 +    {
-+        if (!(surface_render[i].state & MP_VDPAU_STATE_USED_FOR_REFERENCE)) {
++        if (!(surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
 +            return &surface_render[i];
 +        }
 +    }
@@ -1691,7 +1718,7 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +
 +static uint32_t get_image(mp_image_t * mpi)
 +{
-+    vdpau_render_state_t * rndr;
++    struct vdpau_render_state * rndr;
 +
 +    if (!IMGFMT_IS_VDPAU(image_format)) {
 +        return VO_FALSE; // buffer in system memory instead of video memory.
@@ -1703,7 +1730,6 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +        printf("vo_vdpau: get_image failed\n");
 +        return VO_FALSE;
 +    }
-+    assert(rndr->magic == MP_VDPAU_RENDER_MAGIC);
 +
 +    mpi->flags |= MP_IMGFLAG_DIRECT;
 +    mpi->stride[0] = 0;
@@ -1725,9 +1751,9 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +
 +#if TRACE_SURFACES
 +    {
-+        vdpau_render_state_t * rndr;
++        struct vdpau_render_state * rndr;
 +
-+        rndr = (vdpau_render_state_t*)mpi->planes[2]; // this is a copy of private
++        rndr = (struct vdpau_render_state*)mpi->planes[2]; // this is a copy of private
 +        assert( rndr != NULL );
 +        if (rndr == NULL)
 +            return VO_ERROR;
@@ -1917,10 +1943,10 @@ diff -Naur MPlayer-28207.16380-old/libvo/vo_vdpau.c MPlayer-28207.16380-new/libv
 +}
 +
 +/* @} */
-diff -Naur MPlayer-28207.16380-old/Makefile MPlayer-28207.16380-new/Makefile
---- MPlayer-28207.16380-old/Makefile	2008-12-28 23:02:24.000000000 -0800
-+++ MPlayer-28207.16380-new/Makefile	2008-12-28 23:05:14.000000000 -0800
-@@ -617,6 +617,7 @@
+diff -Naur MPlayer-28461.16984-old/Makefile MPlayer-28461.16984-new/Makefile
+--- MPlayer-28461.16984-old/Makefile	2009-02-03 20:12:45.000000000 -0800
++++ MPlayer-28461.16984-new/Makefile	2009-02-03 20:16:12.000000000 -0800
+@@ -628,6 +628,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
  SRCS_MPLAYER-$(V4L2)          += libao2/ao_v4l2.c
@@ -1928,100 +1954,3 @@ diff -Naur MPlayer-28207.16380-old/Makefile MPlayer-28207.16380-new/Makefile
  SRCS_MPLAYER-$(VESA)          += libvo/gtf.c libvo/vo_vesa.c libvo/vesa_lvo.c
  SRCS_MPLAYER-$(VIDIX)         += libvo/vo_cvidix.c \
                                   libvo/vosub_vidix.c \
-diff -Naur MPlayer-28207.16380-old/vdpau_render.h MPlayer-28207.16380-new/vdpau_render.h
---- MPlayer-28207.16380-old/vdpau_render.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-28207.16380-new/vdpau_render.h	2008-12-28 23:05:14.000000000 -0800
-@@ -0,0 +1,93 @@
-+/*
-+ * Video Decode and Presentation API for UNIX (VDPAU) is used for
-+ * HW decode acceleration for MPEG-1/2, H.264 and VC-1.
-+ *
-+ * Copyright (C) 2008 NVIDIA.
-+ *
-+ * This file is part of FFmpeg.
-+ *
-+ * FFmpeg is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU Lesser General Public
-+ * License as published by the Free Software Foundation; either
-+ * version 2.1 of the License, or (at your option) any later version.
-+ *
-+ * FFmpeg is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * Lesser General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public
-+ * License along with FFmpeg; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ */
-+
-+#ifndef FFMPEG_VDPAU_RENDER_H
-+#define FFMPEG_VDPAU_RENDER_H
-+
-+/**
-+ * \defgroup Decoder VDPAU Decoder and Renderer
-+ *
-+ * VDPAU HW acceleration has two modules
-+ * - VDPAU Decoding
-+ * - VDPAU Presentation
-+ *
-+ * VDPAU decoding module parses all headers using MPlayer
-+ * parsing mechanism and uses VDPAU for the actual decoding.
-+ *
-+ * As per the current implementation, the actual decoding 
-+ * and rendering (API calls) are done as part of VDPAU
-+ * presentation (vo_vdpau.c) module.
-+ *
-+ * @{
-+ * \defgroup  VDPAU_Decoding VDPAU Decoding
-+ * \ingroup Decoder
-+ * @{
-+ */
-+
-+#include "vdpau/vdpau.h"
-+#include "vdpau/vdpau_x11.h"
-+
-+/**
-+ * \brief The videoSurface is used for render.
-+ */
-+#define MP_VDPAU_STATE_USED_FOR_RENDER 1
-+
-+/**
-+ * \brief The videoSurface is needed for reference/prediction,
-+ * codec manipulates this.
-+ */
-+#define MP_VDPAU_STATE_USED_FOR_REFERENCE 2
-+
-+#define MP_VDPAU_RENDER_MAGIC 0x1DC8E14B
-+
-+/** 
-+ * \brief This structure is used as a CALL-BACK between the ffmpeg 
-+ * decoder (vd_) and presentation (vo_) module.
-+ * This is used for defining a video-frame containing surface,
-+ * picture-parameter, bitstream informations etc which are passed 
-+ * between ffmpeg decoder and its clients.
-+ */
-+typedef struct {
-+    int  magic;
-+
-+    VdpVideoSurface surface; /** used as rendered surface, never changed.*/
-+
-+    int state; /** Holds MP_VDPAU_STATE_* values */
-+
-+    /** Picture Parameter information for all supported codecs */
-+    union _VdpPictureInfo {
-+        VdpPictureInfoMPEG1Or2 mpeg;
-+        VdpPictureInfoH264     h264;
-+        VdpPictureInfoVC1       vc1;
-+    } info;
-+
-+    /** Describe size/location of the compressed video data */
-+    int bitstreamBuffersAlloced;
-+    int bitstreamBuffersUsed;
-+    VdpBitstreamBuffer *bitstreamBuffers;
-+} vdpau_render_state_t;
-+
-+/* @}*/
-+/* @}*/
-+
-+#endif /* FFMPEG_VDPAU_RENDER_H */
