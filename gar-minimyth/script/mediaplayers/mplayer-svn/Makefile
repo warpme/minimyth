@@ -1,9 +1,9 @@
 GARNAME = MPlayer
-GARVERSION = 28207.16380
+GARVERSION = 28461.16984.1167
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3263604.patch $(DISTNAME)-vdpau_libavutil_3263604.patch $(DISTNAME)-vdpau_mplayer_3263604.patch $(DISTNAME)-vdpau_line_704_hack.patch $(DISTNAME)-libdvdread_udf.patch $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(DISTNAME)-vdpau_mplayer_3402051.patch $(DISTNAME)-vdpau_line_704_hack.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -237,6 +237,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-altivec \
 	--disable-armv5te \
 	--disable-armv6 \
+	--disable-armv6t2 \
 	--disable-armvfp \
 	--disable-iwmmxt \
 	--enable-fastmemcpy \
@@ -271,7 +272,7 @@ include ../../gar.mk
 
 CFLAGS :=
 
-# When using the SVN version, GARVERSION must have the form <mplayer-svn-version>.<ffmpeg-svn-version>.
+# When using the SVN version, GARVERSION must have the form <mplayer-svn-version>.<ffmpeg-svn-version>.<dvdnav-svn-version>.
 # This is done to ensure that the correct version of FFmpeg is used.
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*/mplayer/trunk           , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
@@ -279,11 +280,15 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavcodec , $(word 2,$(subst ., ,$(GARVERSION))), libavcodec )
 	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavformat, $(word 2,$(subst ., ,$(GARVERSION))), libavformat)
 	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libpostproc, $(word 2,$(subst ., ,$(GARVERSION))), libpostproc)
+	@$(call FETCH_SVN, svn://$*/dvdnav/trunk/libdvdnav  , $(word 3,$(subst ., ,$(GARVERSION))), libdvdnav  )
+	@$(call FETCH_SVN, svn://$*/dvdnav/trunk/libdvdread , $(word 3,$(subst ., ,$(GARVERSION))), libdvdread4)
 	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2 ; rm -r $(DISTNAME).tar.bz2
 	@cd $(PARTIALDIR) ; tar -jxf libavutil.tar.bz2   ; rm -r libavutil.tar.bz2   ; rm -rf $(DISTNAME)/libavutil   ; mv libavutil   $(DISTNAME)/
 	@cd $(PARTIALDIR) ; tar -jxf libavcodec.tar.bz2  ; rm -r libavcodec.tar.bz2  ; rm -rf $(DISTNAME)/libavcodec  ; mv libavcodec  $(DISTNAME)/
 	@cd $(PARTIALDIR) ; tar -jxf libavformat.tar.bz2 ; rm -r libavformat.tar.bz2 ; rm -rf $(DISTNAME)/libavformat ; mv libavformat $(DISTNAME)/
 	@cd $(PARTIALDIR) ; tar -jxf libpostproc.tar.bz2 ; rm -r libpostproc.tar.bz2 ; rm -rf $(DISTNAME)/libpostproc ; mv libpostproc $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jxf libdvdnav.tar.bz2   ; rm -r libdvdnav.tar.bz2   ; rm -rf $(DISTNAME)/libdvdnav   ; mv libdvdnav   $(DISTNAME)/
+	@cd $(PARTIALDIR) ; tar -jxf libdvdread4.tar.bz2 ; rm -r libdvdread4.tar.bz2 ; rm -rf $(DISTNAME)/libdvdread4 ; mv libdvdread4 $(DISTNAME)/
 	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)

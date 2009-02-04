@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 16380.28207
+GARVERSION = 16984.28461
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_libavcodec_3263604.patch $(DISTNAME)-vdpau_libavutil_3263604.patch $(DISTNAME)-vdpau_configure_3263604.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -24,6 +24,7 @@ CONFIGURE_ARGS = \
 	--enable-logging \
 	--prefix=$(prefix) \
 	--bindir=$(bindir) \
+	--datadir=$(datadir)/ffmpeg \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
 	--incdir=$(includedir)/ffmpeg \
@@ -32,6 +33,9 @@ CONFIGURE_ARGS = \
 	--enable-shared \
 	--enable-gpl \
 	--disable-nonfree \
+	--enable-ffmpeg \
+	--disable-ffplay \
+	--disable-ffserver \
 	--enable-postproc \
 	--enable-swscale \
 	--disable-avfilter \
@@ -42,9 +46,32 @@ CONFIGURE_ARGS = \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
-	--enable-xvmc \
 	--enable-vdpau \
-	--disable-mlib \
+	--enable-xvmc \
+	--enable-network \
+	--disable-ipv6 \
+	--disable-mpegaudio-hp \
+	--disable-gray \
+	--enable-fastdiv \
+	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
+	--enable-aandct \
+	--enable-fft \
+	--enable-golomb \
+	--enable-mdct \
+	--enable-rdft \
+	--disable-hardcoded-tables \
+	--disable-memalign-hack \
+	--disable-beos-netserver \
+	--enable-encoders \
+	--enable-decoders \
+	--enable-muxers \
+	--enable-demuxers \
+	--enable-parsers \
+	--enable-bsfs \
+	--disable-protocols \
+	--enable-indevs \
+	--enable-outdevs \
+	--enable-filters \
 	--disable-avisynth \
 	--enable-bzlib \
 	--disable-libamr-nb \
@@ -63,6 +90,7 @@ CONFIGURE_ARGS = \
 	--disable-libvorbis \
 	--disable-libx264 \
 	--disable-libxvid \
+	--disable-mlib \
 	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
@@ -84,39 +112,16 @@ CONFIGURE_ARGS = \
 	--disable-altivec \
 	--enable-mmx \
 	--enable-mmx2 \
+	--enable-sse \
 	--enable-ssse3 \
 	--disable-armv5te \
 	--disable-armv6 \
+	--disable-armv6t2 \
 	--disable-armvfp \
 	--disable-iwmmxt \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
-	--enable-network \
-	--disable-ipv6 \
-	--disable-mpegaudio-hp \
-	--enable-aandct \
-	--enable-fft \
-	--enable-golomb \
-	--enable-mdct \
-	--disable-gray \
-	--enable-ffmpeg \
-	--disable-ffplay \
-	--disable-ffserver \
-	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
-	--disable-hardcoded-tables \
-	--disable-memalign-hack \
-	--disable-beos-netserver \
-	--enable-encoders \
-	--enable-decoders \
-	--enable-muxers \
-	--enable-demuxers \
-	--enable-parsers \
-	--enable-bsfs \
-	--disable-protocols \
-	--enable-indevs \
-	--enable-outdevs \
-	--enable-filters \
 	--disable-debug \
 	--disable-gprof \
 	--enable-optimizations \
