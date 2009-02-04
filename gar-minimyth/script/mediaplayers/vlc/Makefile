@@ -103,7 +103,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-id3tag \
 	--enable-avcodec \
 	--enable-avformat \
-	--disable-swscale \
+	--enable-swscale \
 	--disable-imgresample \
 	--enable-postproc \
 	--enable-faad \
