@@ -3,7 +3,7 @@ GARVERSION = 1.41.4
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-verbose.patch
+PATCHFILES = $(DISTNAME)-chmod.patch $(DISTNAME)-verbose.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
