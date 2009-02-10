@@ -3,7 +3,7 @@ GARVERSION = 28461.16984.1167
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vdpau_mplayer_3402051.patch $(DISTNAME)-vdpau_line_704_hack.patch $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(DISTNAME)-vdpau_mplayer_3482714.patch $(DISTNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
