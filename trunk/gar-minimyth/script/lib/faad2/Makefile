@@ -1,9 +1,9 @@
 GARNAME = faad2
-GARVERSION = 2.6.1
+GARVERSION = 2.7
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/faac/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME)-mp4ff.patch
+PATCHFILES = $(DISTNAME)-mp4ff_shared.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -12,7 +12,7 @@ endef
 
 DEPENDS = lang/c
 
-WORKSRC = $(WORKDIR)/$(GARNAME)
+#WORKSRC = $(WORKDIR)/$(GARNAME)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -32,5 +32,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfaad.la
+	@rm -f $(DESTDIR)$(libdir)/libmp4ff.a
 	@rm -f $(DESTDIR)$(libdir)/libmp4ff.la
 	@$(MAKECOOKIE)
