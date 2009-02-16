@@ -1,7 +1,7 @@
 GARNAME = xf86-video-ati
-GARVERSION_TYPE =
+GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	c0c33dab44e6966b1702d4e8cfba3537fc6e2d5c , \
+	00ac9d2f8d58725d0d3e6b1bf7f728d9ae7e6109 , \
 	6.10.0 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
@@ -55,7 +55,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
