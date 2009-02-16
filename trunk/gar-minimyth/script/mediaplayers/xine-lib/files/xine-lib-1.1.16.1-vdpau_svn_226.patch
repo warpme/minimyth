@@ -1,6 +1,6 @@
 diff -Naur xine-lib-1.1.16.1-old/configure.ac xine-lib-1.1.16.1-new/configure.ac
 --- xine-lib-1.1.16.1-old/configure.ac	2009-01-11 15:58:58.000000000 -0800
-+++ xine-lib-1.1.16.1-new/configure.ac	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/configure.ac	2009-02-15 09:37:32.000000000 -0800
 @@ -865,6 +865,20 @@
  
  
@@ -42,7 +42,7 @@ diff -Naur xine-lib-1.1.16.1-old/configure.ac xine-lib-1.1.16.1-new/configure.ac
  fi
 diff -Naur xine-lib-1.1.16.1-old/include/xine.h.in xine-lib-1.1.16.1-new/include/xine.h.in
 --- xine-lib-1.1.16.1-old/include/xine.h.in	2009-01-11 12:54:19.000000000 -0800
-+++ xine-lib-1.1.16.1-new/include/xine.h.in	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/include/xine.h.in	2009-02-15 09:37:32.000000000 -0800
 @@ -375,6 +375,8 @@
  #define XINE_PARAM_VO_TVMODE               0x0100000a /* ???                */
  #define XINE_PARAM_VO_WINDOW_WIDTH         0x0100000f /* readonly           */
@@ -100,7 +100,7 @@ diff -Naur xine-lib-1.1.16.1-old/include/xine.h.in xine-lib-1.1.16.1-new/include
   * loaded fonts are unloaded
 diff -Naur xine-lib-1.1.16.1-old/README-VDPAU xine-lib-1.1.16.1-new/README-VDPAU
 --- xine-lib-1.1.16.1-old/README-VDPAU	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/README-VDPAU	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/README-VDPAU	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,70 @@
 +xine-vdpau README:
 +------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ diff -Naur xine-lib-1.1.16.1-old/README-VDPAU xine-lib-1.1.16.1-new/README-VDPAU
 +----------------------------------------------------------------------------
 diff -Naur xine-lib-1.1.16.1-old/src/demuxers/demux_mpeg.c xine-lib-1.1.16.1-new/src/demuxers/demux_mpeg.c
 --- xine-lib-1.1.16.1-old/src/demuxers/demux_mpeg.c	2009-01-10 17:25:33.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/demuxers/demux_mpeg.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/demuxers/demux_mpeg.c	2009-02-15 09:37:32.000000000 -0800
 @@ -246,6 +246,8 @@
  
    len = read_bytes(this, 2);
@@ -202,9 +202,488 @@ diff -Naur xine-lib-1.1.16.1-old/src/demuxers/demux_mpeg.c xine-lib-1.1.16.1-new
        buf->pts  = pts;
        buf->decoder_info[0] = pts - dts;
        check_newpts( this, pts, PTS_VIDEO );
+diff -Naur xine-lib-1.1.16.1-old/src/demuxers/demux_vc1es.c xine-lib-1.1.16.1-new/src/demuxers/demux_vc1es.c
+--- xine-lib-1.1.16.1-old/src/demuxers/demux_vc1es.c	1969-12-31 16:00:00.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/demuxers/demux_vc1es.c	2009-02-15 09:37:32.000000000 -0800
+@@ -0,0 +1,452 @@
++/*
++ * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
++ *
++ * This file is part of xine, a free video player.
++ *
++ * xine is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * xine is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
++ */
++
++/*
++ * demultiplexer for wmv9/vc1 elementary streams
++ *
++ *
++ *    SMP (.rcv) format:
++ *
++ *    ** header ***
++ *    le24 number of frames
++ *    C5 04 00 00 00
++ *    4 bytes sequence header
++ *    le32 height
++ *    le32 width
++ *    0C 00 00 00
++ *    8 bytes unknown
++ *    le32 fps
++ *    ************
++ *    le24 frame_size
++ *    80
++ *    le32 pts (ms)
++ *    frame_size bytes of picture data
++ */
++
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <string.h>
++
++/* #define LOG */
++#define LOG_MODULE "demux_vc1es"
++#define LOG_VERBOSE
++
++#include "xine_internal.h"
++#include "xineutils.h"
++#include "compat.h"
++#include "demux.h"
++
++#define SCRATCH_SIZE 36
++#define PRIVATE_SIZE 44
++
++#define MODE_SMP 1
++#define MODE_AP  2
++
++
++
++typedef struct {
++  demux_plugin_t      demux_plugin;
++
++  xine_stream_t       *stream;
++  fifo_buffer_t       *video_fifo;
++  fifo_buffer_t       *audio_fifo;
++  input_plugin_t      *input;
++  int                  status;
++  int                  mode;
++  int                  first_chunk;
++  uint8_t              private[PRIVATE_SIZE];
++  uint32_t             video_step;
++
++  uint32_t             blocksize;
++} demux_vc1_es_t ;
++
++
++
++typedef struct {
++  demux_class_t     demux_class;
++} demux_vc1_es_class_t;
++
++
++
++static int demux_vc1_es_next_smp( demux_vc1_es_t *this )
++{
++  buf_element_t *buf;
++  uint32_t pts=0, frame_size=0;
++  off_t done;
++  uint8_t head[SCRATCH_SIZE];
++  int start_flag = 1;
++
++  if ( this->first_chunk ) {
++    this->input->read( this->input, head, SCRATCH_SIZE );
++    this->first_chunk = 0;
++  }
++
++  done = this->input->read( this->input, head, 8 );
++  frame_size = head[2]<<16 | head[1]<<8 | head[0];
++  pts = head[7]<<24 | head[6]<<16 | head[5]<<8 | head[4];
++
++  done = 0;
++  while ( frame_size>0 ) {
++    buf = this->video_fifo->buffer_pool_alloc(this->video_fifo);
++    off_t read = (frame_size>buf->max_size) ? buf->max_size : frame_size;
++    done = this->input->read( this->input, buf->mem, read );
++    if ( done<=0 ) {
++      buf->free_buffer( buf );
++      this->status = DEMUX_FINISHED;
++      return 0;
++    }
++    buf->size = done;
++    buf->content = buf->mem;
++    buf->type = BUF_VIDEO_WMV9;
++    buf->pts = pts*90;
++    frame_size -= done;
++    if ( start_flag ) {
++      buf->decoder_flags = BUF_FLAG_FRAME_START;
++      start_flag = 0;
++    }
++    if ( !(frame_size>0) )
++      buf->decoder_flags = BUF_FLAG_FRAME_END;
++    this->video_fifo->put(this->video_fifo, buf);
++  }
++
++  return 1;
++}
++
++
++
++static int demux_vc1_es_next_ap( demux_vc1_es_t *this )
++{
++  buf_element_t *buf;
++  uint32_t blocksize;
++  off_t done;
++
++  buf = this->video_fifo->buffer_pool_alloc(this->video_fifo);
++  blocksize = (this->blocksize ? this->blocksize : buf->max_size);
++  done = this->input->read(this->input, buf->mem, blocksize);
++
++  if (done <= 0) {
++    buf->free_buffer (buf);
++    this->status = DEMUX_FINISHED;
++    return 0;
++  }
++
++  buf->size = done;
++  buf->content = buf->mem;
++  buf->pts = 0;
++  buf->type = BUF_VIDEO_VC1;
++
++  if( this->input->get_length (this->input) )
++    buf->extra_info->input_normpos = (int)( (double)this->input->get_current_pos( this->input )*65535/this->input->get_length( this->input ) );
++
++  this->video_fifo->put(this->video_fifo, buf);
++
++  return 1;
++}
++
++
++
++static int demux_vc1_es_send_chunk( demux_plugin_t *this_gen )
++{
++  demux_vc1_es_t *this = (demux_vc1_es_t *) this_gen;
++  //printf ("demux_vc1_es_send_chunk\n");
++
++  if ( this->mode==MODE_SMP ) {
++    if (!demux_vc1_es_next_smp(this))
++      this->status = DEMUX_FINISHED;
++    return this->status;
++  }
++
++  if (!demux_vc1_es_next_ap(this))
++    this->status = DEMUX_FINISHED;
++  return this->status;
++}
++
++
++
++static int demux_vc1_es_get_status( demux_plugin_t *this_gen )
++{
++  demux_vc1_es_t *this = (demux_vc1_es_t *) this_gen;
++
++  return this->status;
++}
++
++
++
++static void demux_vc1_es_send_headers( demux_plugin_t *this_gen )
++{
++  demux_vc1_es_t *this = (demux_vc1_es_t *) this_gen;
++
++  this->video_fifo  = this->stream->video_fifo;
++  this->audio_fifo  = this->stream->audio_fifo;
++  _x_stream_info_set(this->stream, XINE_STREAM_INFO_HAS_VIDEO, 1);
++  _x_stream_info_set(this->stream, XINE_STREAM_INFO_HAS_AUDIO, 0);
++  _x_demux_control_start(this->stream);
++  this->blocksize = this->input->get_blocksize(this->input);
++  this->status = DEMUX_OK;
++
++  if ( this->mode==MODE_SMP ) {
++    buf_element_t *buf;
++    buf = this->video_fifo->buffer_pool_alloc(this->video_fifo);
++    xine_fast_memcpy( buf->mem, this->private, PRIVATE_SIZE );
++    buf->size = PRIVATE_SIZE;
++    buf->content = buf->mem;
++    buf->decoder_flags = BUF_FLAG_HEADER|BUF_FLAG_STDHEADER|BUF_FLAG_FRAME_END;
++    if ( this->video_step ) {
++      buf->decoder_flags |= BUF_FLAG_FRAMERATE;
++      buf->decoder_info[0] = 90000/this->video_step;
++    }
++    buf->type = BUF_VIDEO_WMV9;
++    this->video_fifo->put(this->video_fifo, buf);
++  }
++}
++
++
++
++static int demux_vc1_es_seek( demux_plugin_t *this_gen, off_t start_pos, int start_time, int playing )
++{
++  demux_vc1_es_t *this = (demux_vc1_es_t *) this_gen;
++
++  if ( this->mode==MODE_SMP ) {
++    this->status = DEMUX_OK;
++    return this->status;
++  }
++
++  start_pos = (off_t) ( (double) start_pos / 65535 *
++              this->input->get_length (this->input) );
++
++  this->status = DEMUX_OK;
++
++  if (playing)
++    _x_demux_flush_engine(this->stream);
++
++  if (INPUT_IS_SEEKABLE(this->input)) {
++
++    /* FIXME: implement time seek */
++
++    if (start_pos != this->input->seek (this->input, start_pos, SEEK_SET)) {
++      this->status = DEMUX_FINISHED;
++      return this->status;
++    }
++    lprintf ("seeking to %"PRId64"\n", start_pos);
++  }
++
++  /*
++   * now start demuxing
++   */
++  this->status = DEMUX_OK;
++
++  return this->status;
++}
++
++
++
++static void demux_vc1_es_dispose( demux_plugin_t *this )
++{
++  free (this);
++}
++
++
++
++static int demux_vc1_es_get_stream_length( demux_plugin_t *this_gen )
++{
++  return 0 ; /*FIXME: implement */
++}
++
++
++
++static uint32_t demux_vc1_es_get_capabilities( demux_plugin_t *this_gen )
++{
++  return DEMUX_CAP_NOCAP;
++}
++
++
++
++static int demux_vc1_es_get_optional_data( demux_plugin_t *this_gen, void *data, int data_type )
++{
++  return DEMUX_OPTIONAL_UNSUPPORTED;
++}
++
++
++
++static demux_plugin_t *open_plugin( demux_class_t *class_gen, xine_stream_t *stream, input_plugin_t *input )
++{
++
++  demux_vc1_es_t *this;
++  uint8_t scratch[SCRATCH_SIZE];
++  int i, read, found=0;
++
++  switch (stream->content_detection_method) {
++
++  case METHOD_BY_CONTENT: {
++    read = _x_demux_read_header(input, scratch, SCRATCH_SIZE);
++    if (!read)
++      return NULL;
++    lprintf("read size =%d\n",read);
++
++    /* simple and main profiles */
++    if ( read>=SCRATCH_SIZE ) {
++      lprintf("searching for rcv format..\n");
++      if ( scratch[3]==0xc5 && scratch[4]==4 && scratch[5]==0 && scratch[6]==0 && scratch[7]==0 && scratch[20]==0x0c && scratch[21]==0 && scratch[22]==0 && scratch[23]==0 ) {
++        lprintf("rcv format found\n");
++        found = MODE_SMP;
++      }
++    }
++
++    if ( found==0 ) {
++      /* advanced profile */
++      for (i = 0; i < read-4; i++) {
++        lprintf ("%02x %02x %02x %02x\n", scratch[i], scratch[i+1], scratch[i+2], scratch[i+3]);
++        if ((scratch[i] == 0x00) && (scratch[i+1] == 0x00) && (scratch[i+2] == 0x01)) {
++          if (scratch[i+3] == 0x0f) {
++            found = MODE_AP;
++            lprintf ("found header at offset 0x%x\n", i);
++            break;
++          }
++        }
++      }
++    }
++
++    if (found == 0)
++      return NULL;
++    lprintf ("input accepted.\n");
++  }
++  break;
++
++  case METHOD_BY_EXTENSION: {
++    const char *extensions, *mrl;
++
++    mrl = input->get_mrl (input);
++    extensions = class_gen->get_extensions (class_gen);
++
++    if (!_x_demux_check_extension (mrl, extensions))
++      return NULL;
++  }
++  break;
++
++  case METHOD_EXPLICIT:
++  break;
++
++  default:
++    return NULL;
++  }
++
++  this = calloc(1, sizeof(demux_vc1_es_t));
++  this->mode = found;
++  this->first_chunk = 1;
++  if ( found==MODE_SMP ) {
++    xine_fast_memcpy( this->private+8, scratch+12, 4 ); /* height */
++    xine_fast_memcpy( this->private+4, scratch+16, 4 ); /* width */
++    xine_fast_memcpy( this->private+40, scratch+8, 4 ); /* sequence header */
++  }
++  this->video_step = scratch[35]<<24 | scratch[34]<<16 | scratch[33]<<8 | scratch[32];
++  this->stream = stream;
++  this->input  = input;
++
++  this->demux_plugin.send_headers      = demux_vc1_es_send_headers;
++  this->demux_plugin.send_chunk        = demux_vc1_es_send_chunk;
++  this->demux_plugin.seek              = demux_vc1_es_seek;
++  this->demux_plugin.dispose           = demux_vc1_es_dispose;
++  this->demux_plugin.get_status        = demux_vc1_es_get_status;
++  this->demux_plugin.get_stream_length = demux_vc1_es_get_stream_length;
++  this->demux_plugin.get_capabilities  = demux_vc1_es_get_capabilities;
++  this->demux_plugin.get_optional_data = demux_vc1_es_get_optional_data;
++  this->demux_plugin.demux_class       = class_gen;
++
++  this->status = DEMUX_FINISHED;
++
++  return &this->demux_plugin;
++}
++
++
++
++static const char *get_description( demux_class_t *this_gen )
++{
++  return "VC1 elementary stream demux plugin";
++}
++
++
++
++static const char *get_identifier( demux_class_t *this_gen )
++{
++  return "VC1_ES";
++}
++
++
++
++static const char *get_extensions( demux_class_t *this_gen )
++{
++  return "";
++}
++
++
++
++static const char *get_mimetypes( demux_class_t *this_gen )
++{
++  return NULL;
++}
++
++
++
++static void class_dispose( demux_class_t *this_gen )
++{
++  demux_vc1_es_class_t *this = (demux_vc1_es_class_t *) this_gen;
++
++  free (this);
++}
++
++
++
++static void *init_plugin( xine_t *xine, void *data )
++{
++  demux_vc1_es_class_t     *this;
++
++  this = calloc(1, sizeof(demux_vc1_es_class_t));
++
++  this->demux_class.open_plugin     = open_plugin;
++  this->demux_class.get_description = get_description;
++  this->demux_class.get_identifier  = get_identifier;
++  this->demux_class.get_mimetypes   = get_mimetypes;
++  this->demux_class.get_extensions  = get_extensions;
++  this->demux_class.dispose         = class_dispose;
++
++  return this;
++}
++
++
++/*
++ * exported plugin catalog entry
++ */
++static const demuxer_info_t demux_info_vc1es = {
++  0                       /* priority */
++};
++
++
++
++const plugin_info_t xine_plugin_info[] EXPORTED = {
++  /* type, API, "name", version, special_info, init_function */
++  { PLUGIN_DEMUX, 26, "vc1es", XINE_VERSION_CODE, &demux_info_vc1es, init_plugin },
++  { PLUGIN_NONE, 0, "", 0, NULL, NULL }
++};
+diff -Naur xine-lib-1.1.16.1-old/src/demuxers/Makefile.am xine-lib-1.1.16.1-new/src/demuxers/Makefile.am
+--- xine-lib-1.1.16.1-old/src/demuxers/Makefile.am	2009-01-10 17:25:33.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/demuxers/Makefile.am	2009-02-15 09:37:32.000000000 -0800
+@@ -48,7 +48,8 @@
+ 	xineplug_dmx_nsv.la \
+ 	xineplug_dmx_matroska.la \
+ 	xineplug_dmx_iff.la \
+-	xineplug_dmx_flv.la 
++	xineplug_dmx_flv.la \
++  xineplug_dmx_vc1_es.la
+ 
+ xineplug_dmx_ogg_la_SOURCES = demux_ogg.c
+ xineplug_dmx_ogg_la_LIBADD = $(XINE_LIB) $(VORBIS_LIBS) $(SPEEX_LIBS) $(THEORA_LIBS) $(OGG_LIBS) $(LTLIBINTL)
+@@ -66,6 +67,9 @@
+ xineplug_dmx_mpeg_elem_la_SOURCES = demux_elem.c
+ xineplug_dmx_mpeg_elem_la_LIBADD = $(XINE_LIB)
+ 
++xineplug_dmx_vc1_es_la_SOURCES = demux_vc1es.c
++xineplug_dmx_vc1_es_la_LIBADD = $(XINE_LIB)
++
+ xineplug_dmx_mpeg_pes_la_SOURCES = demux_mpeg_pes.c
+ xineplug_dmx_mpeg_pes_la_LIBADD = $(XINE_LIB) $(LTLIBINTL)
+ 
 diff -Naur xine-lib-1.1.16.1-old/src/libspudvb/xine_spudvb_decoder.c xine-lib-1.1.16.1-new/src/libspudvb/xine_spudvb_decoder.c
 --- xine-lib-1.1.16.1-old/src/libspudvb/xine_spudvb_decoder.c	2009-01-10 17:25:34.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libspudvb/xine_spudvb_decoder.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libspudvb/xine_spudvb_decoder.c	2009-02-15 09:37:32.000000000 -0800
 @@ -32,7 +32,11 @@
  #include "osd.h"
  #define MAX_REGIONS 7
@@ -335,7 +814,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libspudvb/xine_spudvb_decoder.c xine-lib-1.
      else
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/dpb.c xine-lib-1.1.16.1-new/src/libvdpau/dpb.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/dpb.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/dpb.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/dpb.c	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,377 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -716,7 +1195,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/dpb.c xine-lib-1.1.16.1-new/src/li
 +}
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/dpb.h xine-lib-1.1.16.1-new/src/libvdpau/dpb.h
 --- xine-lib-1.1.16.1-old/src/libvdpau/dpb.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/dpb.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/dpb.h	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,80 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -800,7 +1279,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/dpb.h xine-lib-1.1.16.1-new/src/li
 +#endif /* DPB_H_ */
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.c xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.c	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,1591 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -2395,7 +2874,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.c xine-lib-1.1.16.1-ne
 +}
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.h xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.h
 --- xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/h264_parser.h	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,93 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -2492,7 +2971,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/h264_parser.h xine-lib-1.1.16.1-ne
 +#endif
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/Makefile.am xine-lib-1.1.16.1-new/src/libvdpau/Makefile.am
 --- xine-lib-1.1.16.1-old/src/libvdpau/Makefile.am	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/Makefile.am	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/Makefile.am	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,27 @@
 +include $(top_srcdir)/misc/Makefile.common
 +
@@ -2523,7 +3002,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/Makefile.am xine-lib-1.1.16.1-new/
 +xineplug_decode_vdpau_vc1_la_LIBADD = $(XINE_LIB) $(DYNAMIC_LD_LIBS)
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/nal.c xine-lib-1.1.16.1-new/src/libvdpau/nal.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/nal.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/nal.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/nal.c	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,75 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -2602,7 +3081,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/nal.c xine-lib-1.1.16.1-new/src/li
 +}
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/nal.h xine-lib-1.1.16.1-new/src/libvdpau/nal.h
 --- xine-lib-1.1.16.1-old/src/libvdpau/nal.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/nal.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/nal.h	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,466 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -3072,7 +3551,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/nal.h xine-lib-1.1.16.1-new/src/li
 +#endif /* NAL_H_ */
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.16.1-new/src/libvdpau/vdpau_h264.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/vdpau_h264.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_h264.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_h264.c	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,862 @@
 +/*
 + * Copyright (C) 2008 Julian Scheel
@@ -3938,8 +4417,8 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_h264.c xine-lib-1.1.16.1-new
 +};
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-new/src/libvdpau/vdpau_mpeg12.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_mpeg12.c	2009-02-10 08:32:06.000000000 -0800
-@@ -0,0 +1,989 @@
++++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_mpeg12.c	2009-02-15 09:37:32.000000000 -0800
+@@ -0,0 +1,967 @@
 +/*
 + * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
 + *
@@ -4151,7 +4630,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +	sequence->seq_pts = sequence->cur_pts = 0;
 +  sequence->profile = VDP_DECODER_PROFILE_MPEG1;
 +  sequence->chroma = 0;
-+	//sequence->ratio = 1.0;
 +	sequence->video_step = 3600;
 +  if ( sequence->forward_ref )
 +    sequence->forward_ref->free( sequence->forward_ref );
@@ -4475,7 +4953,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +          break;
 +        case sequence_display_ext_sc:
 +          lprintf( " ----------- sequence_display_extension_start_code\n" );
-+          //sequence_display_extension( sequence, buf+4, len-4 );
 +          break;
 +      }
 +      break;
@@ -4488,7 +4965,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +      break;
 +    case picture_start_code:
 +      lprintf( " ----------- picture_start_code\n" );
-+      //slice_count = 0;
 +      picture_header( sequence, buf+4, len-4 );
 +      break;
 +    case sequence_error_code:
@@ -4546,7 +5022,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +    pic->vdp_infos2.backward_reference = VDP_INVALID_HANDLE;
 +    pic->vdp_infos2.forward_reference = VDP_INVALID_HANDLE;
 +    if ( pic->vdp_infos2.picture_coding_type==P_FRAME ) {
-+      pic->vdp_infos2.backward_reference = VDP_INVALID_HANDLE;
 +      if ( pic->vdp_infos.picture_coding_type==I_FRAME )
 +        pic->vdp_infos2.forward_reference = accel->surface;
 +      else
@@ -4566,8 +5041,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +      lprintf( "DECODER SUCCESS : frame_type:%d, slices=%d, current=%d, forwref:%d, backref:%d, pts:%lld\n",
 +                pic->vdp_infos2.picture_coding_type, pic->vdp_infos2.slice_count, accel->surface, pic->vdp_infos2.forward_reference, pic->vdp_infos2.backward_reference, seq->seq_pts );
 +  }
-+
-+  //printf( "vdpau_meg12:  forwref:%d, backref:%d\n", seq->forward_ref, seq->backward_ref );
 +}
 +
 +
@@ -4612,7 +5085,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +      return;
 +  }
 +
-+  //printf("vdpau_mpeg12: get image ..\n");
 +  vo_frame_t *img = vd->stream->video_out->get_frame( vd->stream->video_out, seq->coded_width, seq->coded_height,
 +                                                      seq->ratio, XINE_IMGFMT_VDPAU, VO_BOTH_FIELDS|seq->chroma );
 +  vdpau_accel_t *accel = (vdpau_accel_t*)img->accel_data;
@@ -4629,12 +5101,10 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +    seq->backward_ref = NULL;
 +    vd->decoder = VDP_INVALID_HANDLE;
 +  }
-+  
-+  img->drawn = 0;
-+  //printf("vdpau_mpeg12: .. got image %d\n", img);
 +
 +  decode_render( vd, accel );
 +
++  img->drawn = 0;
 +  img->pts = seq->seq_pts;
 +  img->bad_frame = 0;
 +  img->duration = seq->video_step;
@@ -4643,7 +5113,9 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +  else
 +    img->top_field_first = 0;
 +
-+  // progressive_frame is unreliable with most mpeg2 streams //img->progressive_frame = pic->progressive_frame;
++  /* progressive_frame is unreliable with most mpeg2 streams
++  img->progressive_frame = pic->progressive_frame;*/
++  img->progressive_frame = 0;
 +
 +  if ( pic->vdp_infos.picture_coding_type!=B_FRAME ) {
 +    if ( pic->vdp_infos.picture_coding_type==I_FRAME && !seq->backward_ref ) {
@@ -4654,21 +5126,16 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +    if ( seq->forward_ref ) {
 +      seq->forward_ref->drawn = 0;
 +      seq->forward_ref->free( seq->forward_ref );
-+      //printf("vdpau_mpeg12: freed image %d\n", seq->forward_ref );
 +    }
 +    seq->forward_ref = seq->backward_ref;
 +    if ( seq->forward_ref && !seq->forward_ref->drawn ) {
-+      //seq->forward_ref->pts = seq->seq_pts;
 +      seq->forward_ref->draw( seq->forward_ref, vd->stream );
-+      //printf( "vdpau_mpeg12: drawn reference image with pts=%lld\n", seq->forward_ref->pts );
 +    }
 +    seq->backward_ref = img;
 +  }
 +  else {
 +    img->draw( img, vd->stream );
-+    //printf( "vdpau_mpeg12: drawn image with pts=%lld\n", img->pts );
 +    img->free( img );
-+    //printf("vdpau_mpeg12: freed B image %d\n", img );
 +  }
 +
 +  seq->seq_pts +=seq->video_step;
@@ -4685,27 +5152,20 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +  vdpau_mpeg12_decoder_t *this = (vdpau_mpeg12_decoder_t *) this_gen;
 +  sequence_t *seq = (sequence_t*)&this->sequence;
 +
-+  /* a video decoder does not care about this flag (?) */
-+  if (buf->decoder_flags & BUF_FLAG_PREVIEW) {
-+    return;
-+  }
-+
 +  if (buf->decoder_flags & BUF_FLAG_FRAMERATE) {
-+    //this->video_step = buf->decoder_info[0];
-+    //_x_stream_info_set(this->stream, XINE_STREAM_INFO_FRAME_DURATION, this->video_step);
++    /*seq->video_step = buf->decoder_info[0];
++    _x_stream_info_set(this->stream, XINE_STREAM_INFO_FRAME_DURATION, seq->video_step);*/
 +  }
 +
 +  if ( !buf->size )
 +    return;
 +
 +  seq->cur_pts = buf->pts;
-+  //printf("vdpau_mpeg12_decode_data: new pts : %lld\n", buf->pts );
 +
 +  int size = seq->bufpos+buf->size;
 +  if ( seq->bufsize < size ) {
 +    seq->bufsize = size+1024;
 +    seq->buf = realloc( seq->buf, seq->bufsize );
-+    //printf("sequence buffer realloced = %d\n", seq->bufsize );
 +  }
 +  xine_fast_memcpy( seq->buf+seq->bufpos, buf->content, buf->size );
 +  seq->bufpos += buf->size;
@@ -4750,8 +5210,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +  vdpau_mpeg12_decoder_t *this = (vdpau_mpeg12_decoder_t *) this_gen;
 +
 +  lprintf( "vdpau_mpeg12_flush\n" );
-+// incorrect: see libmpeg2, mpeg2_flush()
-+//  reset_sequence( &this->sequence );
 +}
 +
 +/*
@@ -4762,8 +5220,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +
 +  lprintf( "vdpau_mpeg12_reset\n" );
 +  reset_sequence( &this->sequence );
-+
-+  //this->size = 0;
 +}
 +
 +/*
@@ -4844,6 +5300,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +  this->sequence.backward_ref = 0;
 +  this->sequence.vdp_runtime_nr = 1;
 +  reset_sequence( &this->sequence );
++  this->sequence.ratio = 1;
 +
 +  init_picture( &this->sequence.picture );
 +
@@ -4931,8 +5388,8 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_mpeg12.c xine-lib-1.1.16.1-n
 +};
 diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/src/libvdpau/vdpau_vc1.c
 --- xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_vc1.c	2009-02-10 08:32:06.000000000 -0800
-@@ -0,0 +1,1044 @@
++++ xine-lib-1.1.16.1-new/src/libvdpau/vdpau_vc1.c	2009-02-15 09:37:32.000000000 -0800
+@@ -0,0 +1,1188 @@
 +/*
 + * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
 + *
@@ -4985,13 +5442,22 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +#define PICTURE_FRAME_INTERLACE  2
 +#define PICTURE_FIELD_INTERLACE  3
 +
-+#define I_FRAME 0
-+#define P_FRAME 1
-+#define B_FRAME 3
-+#define BI_FRAME 4
++#define I_FRAME   0
++#define P_FRAME   1
++#define B_FRAME   3
++#define BI_FRAME  4
 +
-+#define MODE_STARTCODE 0
-+#define MODE_FRAME     1
++#define FIELDS_I_I    0
++#define FIELDS_I_P    1
++#define FIELDS_P_I    2
++#define FIELDS_P_P    3
++#define FIELDS_B_B    4
++#define FIELDS_B_BI   5
++#define FIELDS_BI_B   6
++#define FIELDS_BI_BI  7
++
++#define MODE_STARTCODE  0
++#define MODE_FRAME      1
 +
 +
 +
@@ -5016,6 +5482,9 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +
 +typedef struct {
 +  VdpPictureInfoVC1       vdp_infos;
++  int                     fptype;
++  int                     field;
++  int                     header_size;
 +  int                     hrd_param_flag;
 +  int                     hrd_num_leaky_buckets;
 +  int                     repeat_first_field;
@@ -5385,9 +5854,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +    else
 +      off += 3;
 +  }
-+  /*if ( info->picture_type==I_FRAME || info->picture_type==BI_FRAME )
-+    off += 7;
-+  tmp = get_bits(buf,off,5);*/
 +}
 +
 +
@@ -5405,39 +5871,60 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +    lprintf("frame->interlace=1\n");
 +    if ( !get_bits(buf,off++,1) ) {
 +      lprintf("progressive frame\n");
-+      info->frame_coding_mode = 0;
++      info->frame_coding_mode = PICTURE_FRAME;
 +    }
 +    else {
 +      if ( !get_bits(buf,off++,1) ) {
 +        lprintf("frame interlaced\n");
-+        info->frame_coding_mode = 2;
++        info->frame_coding_mode = PICTURE_FRAME_INTERLACE;
 +      }
 +      else {
 +        lprintf("field interlaced\n");
-+        info->frame_coding_mode = 3;
++        info->frame_coding_mode = PICTURE_FIELD_INTERLACE;
 +      }
 +    }
 +  }
-+  if ( !get_bits(buf,off++,1) )
-+    info->picture_type = P_FRAME;
++  if ( info->frame_coding_mode == PICTURE_FIELD_INTERLACE ) {
++    pic->fptype = get_bits(buf,off,3);
++    switch ( pic->fptype ) {
++      case FIELDS_I_I:
++      case FIELDS_I_P:
++        info->picture_type = I_FRAME; break;
++      case FIELDS_P_I:
++      case FIELDS_P_P:
++        info->picture_type = P_FRAME; break;
++      case FIELDS_B_B:
++      case FIELDS_B_BI:
++        info->picture_type = B_FRAME; break;
++      default:
++        info->picture_type = BI_FRAME;
++    }
++    off += 3;
++  }
 +  else {
 +    if ( !get_bits(buf,off++,1) )
-+      info->picture_type = B_FRAME;
++      info->picture_type = P_FRAME;
 +    else {
 +      if ( !get_bits(buf,off++,1) )
-+        info->picture_type = I_FRAME;
++        info->picture_type = B_FRAME;
 +      else {
 +        if ( !get_bits(buf,off++,1) )
-+          info->picture_type = BI_FRAME;
++          info->picture_type = I_FRAME;
 +        else {
-+          info->picture_type = P_FRAME;
-+          pic->skipped = 1;
++          if ( !get_bits(buf,off++,1) )
++            info->picture_type = BI_FRAME;
++          else {
++            info->picture_type = P_FRAME;
++            pic->skipped = 1;
++          }
 +        }
 +      }
 +    }
 +  }
-+  if ( info->tfcntrflag )
++  if ( info->tfcntrflag ) {
++    lprintf("tfcntrflag=1\n");
 +    off += 8;
++  }
 +  if ( info->pulldown && info->interlace ) {
 +    pic->top_field_first = get_bits(buf,off++,1);
 +    pic->repeat_first_field = get_bits(buf,off++,1);
@@ -5467,6 +5954,40 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +
 +
 +
++static void remove_emulation_prevention( uint8_t *src, uint8_t *dst, int src_len, int *dst_len )
++{
++  int i;
++  int len = 0;
++  int removed = 0;
++
++  for ( i=0; i<src_len; ++i )
++    printf("%02X ", src[i]);
++  printf("\n");
++
++  for ( i=0; i<src_len-3; ++i ) {
++    if ( src[i]==0 && src[i+1]==0 && src[i+2]==3 ) {
++      lprintf("removed emulation prevention byte\n");
++      dst[len++] = src[i];
++      dst[len++] = src[i+1];
++      i += 2;
++      ++removed;
++    }
++    else {
++      memcpy( dst+len, src+i, 4 );
++      ++len;
++    }
++  }
++  for ( ; i<src_len; ++i )
++    dst[len++] = src[i];
++  *dst_len = src_len-removed;
++
++  for ( i=0; i<*dst_len; ++i )
++    printf("%02X ", dst[i]);
++  printf("\n");
++}
++
++
++
 +static int parse_code( vdpau_vc1_decoder_t *this_gen, uint8_t *buf, int len )
 +{
 +  sequence_t *sequence = (sequence_t*)&this_gen->sequence;
@@ -5474,17 +5995,28 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  if ( !sequence->have_header && buf[3]!=sequence_header_code )
 +    return 0;
 +
-+  if ( sequence->code_start == frame_start_code )
++  if ( sequence->code_start == frame_start_code ) {
++    if ( buf[3]==field_start_code || buf[3]==slice_start_code )
++      return -1;
 +    return 1; /* frame complete, decode */
++  }
 +
 +  switch ( buf[3] ) {
++    int dst_len;
++    uint8_t *tmp;
 +    case sequence_header_code:
 +      lprintf("sequence_header_code\n");
-+      sequence_header( this_gen, buf+4, len-4 );
++      tmp = malloc( len );
++      remove_emulation_prevention( buf, tmp, len, &dst_len );
++      sequence_header( this_gen, tmp+4, dst_len-4 );
++      free( tmp );
 +      break;
 +    case entry_point_code:
 +      lprintf("entry_point_code\n");
-+      entry_point( this_gen, buf+4, len-4 );
++      tmp = malloc( len );
++      remove_emulation_prevention( buf, tmp, len, &dst_len );
++      entry_point( this_gen, tmp+4, dst_len-4 );
++      free( tmp );
 +      break;
 +    case sequence_end_code:
 +      lprintf("sequence_end_code\n");
@@ -5509,7 +6041,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  sequence_t *seq = (sequence_t*)&vd->sequence;
 +  picture_t *pic = (picture_t*)&seq->picture;
 +
-+  if ( !seq->backward_ref ) // Should not happen!
++  if ( !seq->backward_ref ) /* Should not happen! */
 +    return;
 +
 +  dst->proc_duplicate_frame_data( dst, seq->backward_ref );
@@ -5544,13 +6076,73 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  vbit.struct_version = VDP_BITSTREAM_BUFFER_VERSION;
 +  vbit.bitstream = buf;
 +  vbit.bitstream_bytes = len;
++  if ( pic->field )
++    vbit.bitstream_bytes = pic->field;
 +  st = accel->vdp_decoder_render( vd->decoder, accel->surface, (VdpPictureInfo*)&pic->vdp_infos, 1, &vbit );
 +  if ( st!=VDP_STATUS_OK )
 +    lprintf( "decoder failed : %d!! %s\n", st, accel->vdp_get_error_string( st ) );
 +  else {
 +    lprintf( "DECODER SUCCESS : slices=%d, slices_bytes=%d, current=%d, forwref:%d, backref:%d, pts:%lld\n",
 +              pic->vdp_infos.slice_count, vbit.bitstream_bytes, accel->surface, pic->vdp_infos.forward_reference, pic->vdp_infos.backward_reference, seq->seq_pts );
++    int i;
++    for ( i=0; i<20; ++i )
++      printf("%02X ", buf[i]);
++    printf("\n");
 +  }
++
++  if ( pic->field ) {
++    int old_type = pic->vdp_infos.picture_type;
++    switch ( pic->fptype ) {
++      case FIELDS_I_I:
++      case FIELDS_P_I:
++        pic->vdp_infos.picture_type = I_FRAME;
++        pic->vdp_infos.backward_reference = VDP_INVALID_HANDLE;
++        pic->vdp_infos.forward_reference = VDP_INVALID_HANDLE;
++        break;
++      case FIELDS_I_P:
++      case FIELDS_P_P:
++        pic->vdp_infos.forward_reference = accel->surface;
++        pic->vdp_infos.picture_type = P_FRAME; break;
++      case FIELDS_B_B:
++      case FIELDS_BI_B:  
++        pic->vdp_infos.picture_type = B_FRAME;
++        break;
++      default:
++        pic->vdp_infos.picture_type = BI_FRAME;
++    }
++    vbit.bitstream = buf+pic->field+4;
++    vbit.bitstream_bytes = len-pic->field-4;
++    st = accel->vdp_decoder_render( vd->decoder, accel->surface, (VdpPictureInfo*)&pic->vdp_infos, 1, &vbit );
++    if ( st!=VDP_STATUS_OK )
++      lprintf( "decoder failed : %d!! %s\n", st, accel->vdp_get_error_string( st ) );
++    else {
++      lprintf( "DECODER SUCCESS : slices=%d, slices_bytes=%d, current=%d, forwref:%d, backref:%d, pts:%lld\n",
++                pic->vdp_infos.slice_count, vbit.bitstream_bytes, accel->surface, pic->vdp_infos.forward_reference, pic->vdp_infos.backward_reference, seq->seq_pts );
++      int i;
++    for ( i=0; i<20; ++i )
++      printf("%02X ", buf[pic->field+4+i] );
++    printf("\n");
++    }
++    VdpPictureInfoVC1 *info = &(seq->picture.vdp_infos);
++    lprintf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n\n", info->slice_count, info->picture_type, info->frame_coding_mode, info->postprocflag, info->pulldown, info->interlace, info->tfcntrflag, info->finterpflag, info->psf, info->dquant, info->panscan_flag, info->refdist_flag, info->quantizer, info->extended_mv, info->extended_dmv, info->overlap, info->vstransform, info->loopfilter, info->fastuvmc, info->range_mapy_flag, info->range_mapy, info->range_mapuv_flag, info->range_mapuv, info->multires, info->syncmarker, info->rangered, info->maxbframes, info->deblockEnable, info->pquant );
++    
++    pic->vdp_infos.picture_type = old_type;
++  }
++}
++
++
++
++static int search_field( vdpau_vc1_decoder_t *vd, uint8_t *buf, int len )
++{
++  int i;
++  lprintf("search_fields, len=%d\n", len);
++  for ( i=0; i<len-4; ++i ) {
++    if ( buf[i]==0 && buf[i+1]==0 && buf[i+2]==1 && buf[i+3]==field_start_code ) {
++      lprintf("found field_start_code at %d\n", i);
++      return i;
++    }
++  }
++  return 0;
 +}
 +
 +
@@ -5560,34 +6152,48 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  sequence_t *seq = (sequence_t*)&vd->sequence;
 +  picture_t *pic = (picture_t*)&seq->picture;
 +  vdpau_accel_t *ref_accel;
++  int field;
 +
 +  uint8_t *buf;
 +  int len;
 +
 +  pic->skipped = 0;
++  pic->field = 0;
 +
 +  if ( seq->mode == MODE_FRAME ) {
 +    buf = seq->buf;
 +    len = seq->bufpos;
 +    if ( seq->profile==VDP_DECODER_PROFILE_VC1_ADVANCED )
-+      picture_header_advanced( vd, seq->buf, seq->bufpos );
++      picture_header_advanced( vd, buf, len );
 +    else
-+      picture_header( vd, seq->buf, seq->bufpos );
++      picture_header( vd, buf, len );
 +
-+    if ( seq->bufpos<2 )
++    if ( len < 2 )
 +      pic->skipped = 1;
 +  }
 +  else {
 +    seq->picture.vdp_infos.slice_count = 1;
 +    buf = seq->buf+seq->start+4;
 +    len = seq->bufseek-seq->start-4;
-+    if ( seq->profile==VDP_DECODER_PROFILE_VC1_ADVANCED )
-+      picture_header_advanced( vd, seq->buf+seq->start+4, seq->bufseek-seq->start-4 );
++    if ( seq->profile==VDP_DECODER_PROFILE_VC1_ADVANCED ) {
++      int tmplen = (len>50) ? 50 : len;
++      uint8_t *tmp = malloc( tmplen );
++      remove_emulation_prevention( buf, tmp, tmplen, &tmplen );
++      picture_header_advanced( vd, tmp, tmplen );
++      free( tmp );
++    }
 +    else
-+      picture_header( vd, seq->buf+seq->start+4, seq->bufseek-seq->start-4 );
++      picture_header( vd, buf, len );
 +
-+    if ( (seq->bufseek-seq->start-4) < 2 )
++    if ( len < 2 )
 +      pic->skipped = 1;
++  }
++
++  if ( pic->vdp_infos.interlace && pic->vdp_infos.frame_coding_mode == PICTURE_FIELD_INTERLACE ) {
++    if ( !(field = search_field( vd, buf, len )) )
++      lprintf("error, no fields found!\n");
++    else
++      pic->field = field;
 +  }
 +
 +  VdpPictureInfoVC1 *info = &(seq->picture.vdp_infos);
@@ -5720,7 +6326,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  if ( !buf->size )
 +    return;
 +
-+  //printf("vdpau_vc1_decode_data: new pts : %lld\n", buf->pts );
 +  seq->cur_pts = buf->pts;
 +  
 +  if (buf->decoder_flags & BUF_FLAG_STDHEADER) {
@@ -5759,6 +6364,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +    }
 +  }
 +  else {
++    int res;
 +    while ( seq->bufseek <= seq->bufpos-4 ) {
 +      uint8_t *buffer = seq->buf+seq->bufseek;
 +      if ( buffer[0]==0 && buffer[1]==0 && buffer[2]==1 ) {
@@ -5769,25 +6375,24 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +            seq->seq_pts = seq->cur_pts;
 +        }
 +        else {
-+          if ( parse_code( this, seq->buf+seq->start, seq->bufseek-seq->start ) ) {
++          res = parse_code( this, seq->buf+seq->start, seq->bufseek-seq->start );
++          if ( res==1 ) {
 +            decode_picture( this );
 +            parse_code( this, seq->buf+seq->start, seq->bufseek-seq->start );
 +          }
-+          uint8_t *tmp = (uint8_t*)malloc(seq->bufsize);
-+          xine_fast_memcpy( tmp, seq->buf+seq->bufseek, seq->bufpos-seq->bufseek );
-+          seq->bufpos -= seq->bufseek;
-+          seq->start = -1;
-+          seq->bufseek = -1;
-+          free( seq->buf );
-+          seq->buf = tmp;
++          if ( res!=-1 ) {
++            uint8_t *tmp = (uint8_t*)malloc(seq->bufsize);
++            xine_fast_memcpy( tmp, seq->buf+seq->bufseek, seq->bufpos-seq->bufseek );
++            seq->bufpos -= seq->bufseek;
++            seq->start = -1;
++            seq->bufseek = -1;
++            free( seq->buf );
++            seq->buf = tmp;
++          }
 +        }
 +      }
 +      ++seq->bufseek;
 +    }
-+    /*int i;
-+    for ( i=0; i<buf->size; ++i )
-+      printf("%02X ", buf->content[i] );
-+    printf("\n\n");*/
 +  }
 +}
 +
@@ -5810,8 +6415,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +
 +  lprintf( "vdpau_vc1_reset\n" );
 +  reset_sequence( &this->sequence );
-+
-+  //this->size = 0;
 +}
 +
 +/*
@@ -5821,8 +6424,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +  vdpau_vc1_decoder_t *this = (vdpau_vc1_decoder_t *) this_gen;
 +
 +  lprintf( "vdpau_vc1_discontinuity\n" );
-+  //reset_sequence( &this->sequence );
-+
 +}
 +
 +/*
@@ -5979,7 +6580,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/libvdpau/vdpau_vc1.c xine-lib-1.1.16.1-new/
 +};
 diff -Naur xine-lib-1.1.16.1-old/src/Makefile.am xine-lib-1.1.16.1-new/src/Makefile.am
 --- xine-lib-1.1.16.1-old/src/Makefile.am	2008-12-01 11:58:03.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/Makefile.am	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/Makefile.am	2009-02-15 09:37:32.000000000 -0800
 @@ -25,5 +25,6 @@
  	libreal \
  	libfaad \
@@ -5989,7 +6590,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/Makefile.am xine-lib-1.1.16.1-new/src/Makef
  	combined
 diff -Naur xine-lib-1.1.16.1-old/src/video_out/Makefile.am xine-lib-1.1.16.1-new/src/video_out/Makefile.am
 --- xine-lib-1.1.16.1-old/src/video_out/Makefile.am	2009-01-10 17:25:34.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/video_out/Makefile.am	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/video_out/Makefile.am	2009-02-15 09:37:32.000000000 -0800
 @@ -36,6 +36,10 @@
  endif
  endif
@@ -6018,7 +6619,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/Makefile.am xine-lib-1.1.16.1-new
  xineplug_vo_out_xcbshm_la_CFLAGS = $(VISIBILITY_FLAG) $(MLIB_CFLAGS) $(XCB_CFLAGS) $(XCBSHM_CFLAGS)
 diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_raw.c xine-lib-1.1.16.1-new/src/video_out/video_out_raw.c
 --- xine-lib-1.1.16.1-old/src/video_out/video_out_raw.c	2009-01-10 17:25:34.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/video_out/video_out_raw.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/video_out/video_out_raw.c	2009-02-15 09:37:32.000000000 -0800
 @@ -163,10 +163,15 @@
      clr = rle->color;
      alpha = trans[clr];
@@ -6097,8 +6698,8 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_raw.c xine-lib-1.1.16.1
    }
 diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16.1-new/src/video_out/video_out_vdpau.c
 --- xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/video_out/video_out_vdpau.c	2009-02-10 08:32:06.000000000 -0800
-@@ -0,0 +1,2157 @@
++++ xine-lib-1.1.16.1-new/src/video_out/video_out_vdpau.c	2009-02-15 09:37:32.000000000 -0800
+@@ -0,0 +1,2153 @@
 +/*
 + * Copyright (C) 2008 Christophe Thommeret <hftom@free.fr>
 + *
@@ -6160,6 +6761,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +  "temporal_spatial",
 +  NULL
 +};
++
 +
 +VdpOutputSurfaceRenderBlendState blend = { VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION,
 +          VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
@@ -6245,9 +6847,9 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +static VdpStatus guarded_vdp_video_surface_destroy(VdpVideoSurface surface)
 +{
 +  VdpStatus r;
-+//  XLockDisplay(guarded_display);
++  /*XLockDisplay(guarded_display);*/
 +  r = orig_vdp_video_surface_destroy(surface);
-+//  XUnlockDisplay(guarded_display);
++  /*XUnlockDisplay(guarded_display);*/
 +  return r;
 +}
 +
@@ -7006,7 +7608,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +  /* Check frame size and format and reallocate if necessary */
 +  if ( (frame->width != width) || (frame->height != height) || (frame->format != format) || (frame->format==XINE_IMGFMT_VDPAU && frame->vdpau_accel_data.chroma!=chroma) ||
 +        (frame->vdpau_accel_data.vdp_runtime_nr != this->vdp_runtime_nr)) {
-+    //printf("vo_vdpau: updating frame to %d x %d (ratio=%g, format=%08X)\n", width, height, ratio, format);
 +
 +    /* (re-) allocate render space */
 +    if ( frame->chunk[0] )
@@ -7069,8 +7670,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +
 +    vdpau_frame_field ((vo_frame_t *)frame, flags);
 +  }
-+
-+  //printf("vo_vdpau: allocated_surfaces=%d\n", this->allocated_surfaces );
 +
 +  frame->vdpau_accel_data.color_standard = VDP_COLOR_STANDARD_ITUR_BT_601;
 +  frame->ratio = ratio;
@@ -7307,7 +7906,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +  vdpau_redraw_needed( this_gen );
 +
 +  if ( (frame->format == XINE_IMGFMT_YV12) || (frame->format == XINE_IMGFMT_YUY2) ) {
-+    //printf( "vo_vdpau: got a yuv image -------------\n" );
 +    chroma = ( frame->format==XINE_IMGFMT_YV12 )? VDP_CHROMA_TYPE_420 : VDP_CHROMA_TYPE_422;
 +    if ( (frame->width > this->soft_surface_width) || (frame->height > this->soft_surface_height) || (frame->format != this->soft_surface_format) ) {
 +      printf( "vo_vdpau: soft_surface size update\n" );
@@ -7336,7 +7934,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +    mix_h = this->soft_surface_height;
 +  }
 +  else if (frame->format == XINE_IMGFMT_VDPAU) {
-+    //printf( "vo_vdpau: got a vdpau image -------------\n" );
 +    surface = frame->vdpau_accel_data.surface;
 +    mix_w = frame->width;
 +    mix_h = frame->height;
@@ -7397,7 +7994,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +  if (stream_speed != 0) {
 +    int vo_bufs_in_fifo = 0;
 +    _x_query_buffer_usage(frame->vo_frame.stream, NULL, NULL, &vo_bufs_in_fifo, NULL);
-+    //fprintf(stderr, "vo_bufs: %d\n", vo_bufs_in_fifo);
++    /* fprintf(stderr, "vo_bufs: %d\n", vo_bufs_in_fifo); */
 +    if (vo_bufs_in_fifo <= 0)
 +      stream_speed = 0; /* still image -> no delay */
 +  }
@@ -7413,13 +8010,11 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +  VdpLayer layer[3];
 +  VdpRect layersrc, unscaledsrc;
 +  if ( this->has_overlay ) {
-+    //printf("vdpau_display_frame: overlay should be visible !\n");
 +    layer_count = 2;
 +    layersrc.x0 = 0; layersrc.y0 = 0; layersrc.x1 = this->overlay_output_width; layersrc.y1 = this->overlay_output_height;
 +    layer[0].struct_version = VDP_LAYER_VERSION; layer[0].source_surface = this->overlay_output; layer[0].source_rect = &layersrc; layer[0].destination_rect = &vid_dest;
 +    unscaledsrc.x0 = 0; unscaledsrc.y0 = 0; unscaledsrc.x1 = this->overlay_unscaled_width; unscaledsrc.y1 = this->overlay_unscaled_height;
 +    layer[1].struct_version = VDP_LAYER_VERSION; layer[1].source_surface = this->overlay_unscaled; layer[1].source_rect = &unscaledsrc; layer[1].destination_rect = &unscaledsrc;
-+    //printf( "layersrc = %d %d %d %d \n", layersrc.x0, layersrc.y0, layersrc.x1, layersrc.y1 );
 +  }
 +  else {
 +    layer_count = 0;
@@ -7434,8 +8029,14 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +    layer[layer_count-1].struct_version = VDP_LAYER_VERSION;
 +  }
 +
++  /* try to get frame duration from previous img->pts when frame->duration is 0 */
++  int frame_duration = frame->vo_frame.duration;
++  if ( !frame_duration && this->back_frame[0] ) {
++    int duration = frame->vo_frame.pts - this->back_frame[0]->vo_frame.pts;
++    if ( duration>0 && duration<4000 )
++      frame_duration = duration;
++  }
 +  int non_progressive = (this->honor_progressive && !frame->vo_frame.progressive_frame) || !this->honor_progressive;
-+  int frame_duration = (frame->vo_frame.duration>0) ? frame->vo_frame.duration : 3000; /* unknown frame duration should not lead to no deint! */
 +  if ( stream_speed && frame_duration>2500 && this->deinterlace && non_progressive && frame->format==XINE_IMGFMT_VDPAU ) {
 +    VdpTime current_time = 0;
 +    VdpVideoSurface past[2];
@@ -7450,8 +8051,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +                               2, past, surface, 1, future, &vid_source, this->output_surface[this->current_output_surface], &out_dest, &vid_dest, layer_count, layer_count?layer:NULL );
 +    if ( st != VDP_STATUS_OK )
 +      printf( "vo_vdpau: vdp_video_mixer_render error : %s\n", vdp_get_error_string( st ) );
-+    //else
-+      //printf( "vo_vdpau: vdp_video_mixer_render: top_field, past1=%d, past0=%d, current=%d, future=%d\n", past[1], past[0], surface, future[0] );
 +
 +    vdp_queue_get_time( vdp_queue, &current_time );
 +    vdp_queue_display( vdp_queue, this->output_surface[this->current_output_surface], 0, 0, current_time );
@@ -7484,8 +8083,6 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +                               2, past, surface, 1, future, &vid_source, this->output_surface[this->current_output_surface], &out_dest, &vid_dest, layer_count, layer_count?layer:NULL );
 +    if ( st != VDP_STATUS_OK )
 +      printf( "vo_vdpau: vdp_video_mixer_render error : %s\n", vdp_get_error_string( st ) );
-+    //else
-+      //printf( "vo_vdpau: vdp_video_mixer_render: bottom_field, past1=%d, past0=%d, current=%d, future=%d\n", past[1], past[0], surface, future[0] );
 +
 +    /* calculate delay for second field: there should be no delay for still images otherwise, take replay speed into account */
 +    if (stream_speed > 0)
@@ -7796,7 +8393,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +    return;
 +  }
 +
-+  // osd overlays need to be recreated
++  /* osd overlays need to be recreated */
 +  this->overlay_output = VDP_INVALID_HANDLE;
 +  this->overlay_output_width = this->overlay_output_height = 0;
 +  this->overlay_unscaled = VDP_INVALID_HANDLE;
@@ -8258,7 +8855,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_vdpau.c xine-lib-1.1.16
 +};
 diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_xv.c xine-lib-1.1.16.1-new/src/video_out/video_out_xv.c
 --- xine-lib-1.1.16.1-old/src/video_out/video_out_xv.c	2009-01-10 17:25:34.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/video_out/video_out_xv.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/video_out/video_out_xv.c	2009-02-15 09:37:32.000000000 -0800
 @@ -912,6 +912,8 @@
  			    int property, int value) {
    xv_driver_t *this = (xv_driver_t *) this_gen;
@@ -8270,7 +8867,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/video_out/video_out_xv.c xine-lib-1.1.16.1-
      /* value is out of bound */
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/accel_vdpau.h xine-lib-1.1.16.1-new/src/xine-engine/accel_vdpau.h
 --- xine-lib-1.1.16.1-old/src/xine-engine/accel_vdpau.h	1969-12-31 16:00:00.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/xine-engine/accel_vdpau.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/accel_vdpau.h	2009-02-15 09:37:32.000000000 -0800
 @@ -0,0 +1,64 @@
 +/*
 + * Copyright (C) 2008 the xine project
@@ -8338,7 +8935,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/accel_vdpau.h xine-lib-1.1.16.1
 +
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/load_plugins.c xine-lib-1.1.16.1-new/src/xine-engine/load_plugins.c
 --- xine-lib-1.1.16.1-old/src/xine-engine/load_plugins.c	2009-01-10 17:25:34.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/xine-engine/load_plugins.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/load_plugins.c	2009-02-15 09:37:32.000000000 -0800
 @@ -1959,7 +1959,13 @@
  
      vd = ((video_decoder_class_t *)node->plugin_class)->open_plugin(node->plugin_class, stream);
@@ -8356,7 +8953,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/load_plugins.c xine-lib-1.1.16.
        xprintf(stream->xine, XINE_VERBOSITY_DEBUG,
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/osd.c xine-lib-1.1.16.1-new/src/xine-engine/osd.c
 --- xine-lib-1.1.16.1-old/src/xine-engine/osd.c	2009-01-11 10:15:19.000000000 -0800
-+++ xine-lib-1.1.16.1-new/src/xine-engine/osd.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/osd.c	2009-02-15 09:37:32.000000000 -0800
 @@ -157,14 +157,19 @@
    osd->next = this->osds;
    this->osds = osd;
@@ -8581,7 +9178,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/osd.c xine-lib-1.1.16.1-new/src
  }
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/osd.h xine-lib-1.1.16.1-new/src/xine-engine/osd.h
 --- xine-lib-1.1.16.1-old/src/xine-engine/osd.h	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.16.1-new/src/xine-engine/osd.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/osd.h	2009-02-15 09:37:32.000000000 -0800
 @@ -47,8 +47,12 @@
  
    int width, height;    /* work area dimentions */
@@ -8640,7 +9237,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/osd.h xine-lib-1.1.16.1-new/src
    pthread_mutex_t             osd_mutex;
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/video_out.c xine-lib-1.1.16.1-new/src/xine-engine/video_out.c
 --- xine-lib-1.1.16.1-old/src/xine-engine/video_out.c	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.16.1-new/src/xine-engine/video_out.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/video_out.c	2009-02-15 09:37:32.000000000 -0800
 @@ -930,8 +930,8 @@
          img->vpts = cur_vpts;
          /* extra info of the backup is thrown away, because it is not up to date */
@@ -8685,7 +9282,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/video_out.c xine-lib-1.1.16.1-n
    case XINE_PARAM_VO_CONTRAST:
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/video_out.h xine-lib-1.1.16.1-new/src/xine-engine/video_out.h
 --- xine-lib-1.1.16.1-old/src/xine-engine/video_out.h	2008-06-14 16:15:00.000000000 -0700
-+++ xine-lib-1.1.16.1-new/src/xine-engine/video_out.h	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/video_out.h	2009-02-15 09:37:32.000000000 -0800
 @@ -68,6 +68,14 @@
     * member functions
     */
@@ -8780,7 +9377,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/video_out.h xine-lib-1.1.16.1-n
  
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/xine.c xine-lib-1.1.16.1-new/src/xine-engine/xine.c
 --- xine-lib-1.1.16.1-old/src/xine-engine/xine.c	2008-06-25 06:04:09.000000000 -0700
-+++ xine-lib-1.1.16.1-new/src/xine-engine/xine.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/xine.c	2009-02-15 09:37:32.000000000 -0800
 @@ -1963,6 +1963,8 @@
  
    stream->xine->port_ticket->acquire(stream->xine->port_ticket, 0);
@@ -8872,7 +9469,7 @@ diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/xine.c xine-lib-1.1.16.1-new/sr
  
 diff -Naur xine-lib-1.1.16.1-old/src/xine-engine/xine_interface.c xine-lib-1.1.16.1-new/src/xine-engine/xine_interface.c
 --- xine-lib-1.1.16.1-old/src/xine-engine/xine_interface.c	2008-07-12 15:52:01.000000000 -0700
-+++ xine-lib-1.1.16.1-new/src/xine-engine/xine_interface.c	2009-02-10 08:32:06.000000000 -0800
++++ xine-lib-1.1.16.1-new/src/xine-engine/xine_interface.c	2009-02-15 09:37:32.000000000 -0800
 @@ -474,6 +474,8 @@
      stream->xine->verbosity = value;
      break;
