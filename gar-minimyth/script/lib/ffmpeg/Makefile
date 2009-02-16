@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 16984.28461
+GARVERSION = 17385.28617
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -47,7 +47,6 @@ CONFIGURE_ARGS = \
 	--disable-w32threads \
 	--enable-x11grab \
 	--enable-vdpau \
-	--enable-xvmc \
 	--enable-network \
 	--disable-ipv6 \
 	--disable-mpegaudio-hp \
@@ -84,6 +83,7 @@ CONFIGURE_ARGS = \
 	--disable-libgsm \
 	--disable-libmp3lame \
 	--disable-libnut \
+	--disable-libopenjpeg \
 	--disable-libschroedinger \
 	--disable-libspeex \
 	--disable-libtheora \
@@ -110,6 +110,7 @@ CONFIGURE_ARGS = \
 	--cpu=$(GARCH) \
 	--disable-powerpc-perf \
 	--disable-altivec \
+	--enable-amd3dnow \
 	--enable-mmx \
 	--enable-mmx2 \
 	--enable-sse \
@@ -122,6 +123,7 @@ CONFIGURE_ARGS = \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
+	--enable-yasm \
 	--disable-debug \
 	--disable-gprof \
 	--enable-optimizations \
