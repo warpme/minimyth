@@ -1,8 +1,8 @@
 GARNAME = xf86-video-ati
-GARVERSION_TYPE = git
+GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	00ac9d2f8d58725d0d3e6b1bf7f728d9ae7e6109 , \
-	6.10.0 ))
+	6.11.0 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-ati/ , \
@@ -55,7 +55,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
