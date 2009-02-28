@@ -1,5 +1,5 @@
 GARNAME = libpng
-GARVERSION = 1.2.34
+GARVERSION = 1.2.35
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
