@@ -3,7 +3,7 @@ GARVERSION = 0.28
 CATEGORIES = net
 MASTER_SITES = http://0pointer.de/lennart/projects/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-interface_c.patch
 LICENSE = GPL2
 
 DESCRIPTION =
