@@ -1,17 +1,10 @@
 GARNAME = lm_sensors
-GARVERSION = 3.0.3
+GARVERSION = 3.1.0
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
 DISTFILES  = $(DISTNAME).tar.bz2
-PATCHFILES  = \
-	$(DISTNAME)-changeset_5352.patch \
-	$(DISTNAME)-changeset_5366.patch \
-	$(DISTNAME)-changeset_5473.patch \
-	$(DISTNAME)-changeset_5580.patch \
-	$(DISTNAME)-changeset_5581.patch \
-	$(DISTNAME)-changeset_5627.patch
-PATCHFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
