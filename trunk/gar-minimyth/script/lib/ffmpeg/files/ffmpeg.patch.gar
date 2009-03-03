@@ -1,0 +1,46 @@
+diff -Naur ffmpeg-17751.28799-old/configure ffmpeg-17751.28799-new/configure
+--- ffmpeg-17751.28799-old/configure	2009-03-02 23:11:16.000000000 -0800
++++ ffmpeg-17751.28799-new/configure	2009-03-02 23:11:34.000000000 -0800
+@@ -718,11 +718,11 @@
+     func=$4
+     shift 4
+     disable $cfg
+-    check_cmd ${pkg}-config --version
++    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
+     err=$?
+     if test "$err" = 0; then
+-        temp_cflags `${pkg}-config --cflags`
+-        temp_extralibs `${pkg}-config --libs`
++        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
++        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
+         check_lib "$@" $header $func && enable $cfg
+     fi
+     return $err
+@@ -2039,7 +2039,7 @@
+ 
+ disable sdl_too_old
+ disable sdl
+-SDL_CONFIG="${cross_prefix}sdl-config"
++SDL_CONFIG="${SDL_CONFIG:-@GAR_DESTDIR@@GAR_bindir@/sdl-config}"
+ if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
+     sdl_cflags=`"${SDL_CONFIG}" --cflags`
+     temp_cflags $sdl_cflags
+diff -Naur ffmpeg-17751.28799-old/Makefile ffmpeg-17751.28799-new/Makefile
+--- ffmpeg-17751.28799-old/Makefile	2009-03-02 23:11:16.000000000 -0800
++++ ffmpeg-17751.28799-new/Makefile	2009-03-02 23:11:34.000000000 -0800
+@@ -93,11 +93,11 @@
+ 
+ HOOKS = $(addprefix vhook/, $(addsuffix $(SLIBSUF), $(BASEHOOKS) $(HOOKS-yes)))
+ 
+-VHOOKCFLAGS-$(HAVE_IMLIB2) += `imlib2-config --cflags`
+-LIBS_imlib2$(SLIBSUF)       = `imlib2-config --libs`
++VHOOKCFLAGS-$(HAVE_IMLIB2) += `@GAR_DESTDIR@@GAR_bindir@/imlib2-config --cflags`
++LIBS_imlib2$(SLIBSUF)       = `@GAR_DESTDIR@@GAR_bindir@/imlib2-config --libs`
+ 
+-VHOOKCFLAGS-$(HAVE_FREETYPE2) += `freetype-config --cflags`
+-LIBS_drawtext$(SLIBSUF)        = `freetype-config --libs`
++VHOOKCFLAGS-$(HAVE_FREETYPE2) += `@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`
++LIBS_drawtext$(SLIBSUF)        = `@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`
+ 
+ VHOOKCFLAGS += $(VHOOKCFLAGS-yes)
+ 
