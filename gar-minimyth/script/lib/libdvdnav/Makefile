@@ -1,7 +1,7 @@
 GARNAME = libdvdnav
-GARVERSION = 4.1.3
+GARVERSION = $(DVDNAV_TRUNK_VERSION)
 CATEGORIES = lib
-MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/dvdnav/
+MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-destdir.patch
 LICENSE = GPL2
@@ -22,6 +22,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
@@ -30,4 +37,5 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdvdnav.la
 	@rm -f $(DESTDIR)$(libdir)/libdvdnavmini.la
+	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(libdir)/pkgconfig/dvdnavmini.pc
 	@$(MAKECOOKIE)

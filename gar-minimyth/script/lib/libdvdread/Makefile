@@ -1,7 +1,7 @@
 GARNAME = libdvdread
-GARVERSION = 4.1.3
+GARVERSION = $(DVDNAV_TRUNK_VERSION)
 CATEGORIES = lib
-MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/dvdnav/
+MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-destdir.patch
 LICENSE = GPL2
@@ -19,7 +19,15 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += lib/libdvdnav/package-api.mk
 include ../../gar.mk
+
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
