@@ -1,9 +1,9 @@
 GARNAME = MPlayer
-GARVERSION = 28715.17550.1168
+GARVERSION = $(MPLAYER_TRUNK_VERSION).$(FFMPEG_TRUNK_VERSION).$(DVDNAV_TRUNK_VERSION)
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-x11_headers.patch
+PATCHFILES = $(GARNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -268,6 +268,7 @@ CONFIGURE_ENV  = \
 BUILD_ENV  = \
 	DESTDIR="$(DESTDIR)"
 
+GAR_EXTRA_CONF += lib/ffmpeg/package-api.mk lib/libdvdnav/package-api.mk
 include ../../gar.mk
 
 CFLAGS :=
@@ -308,3 +309,35 @@ post-install:
 	@rm -f $(DESTDIR)$(bindir)/mplayer-svn
 	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-svn
 	@$(MAKECOOKIE)
+
+source-update:
+	@$(MAKE) source-update-source
+	@$(MAKE) source-update-patches
+	
+source-update-source:
+	@$(MAKE) clean
+	@$(MAKE) fetch
+	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
+	@$(MAKE) clean
+
+source-update-patches:
+	@$(MAKE) clean
+	@$(MAKE) extract
+	@$(foreach PATCHFILE, $(PATCHFILES), \
+		cd $(WORKDIR) || exit 1 ; \
+		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
+		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
+		cd $(DISTNAME)-new || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-patches-update patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		cd ../ || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-patches-update -exec rm {} \; || exit 1 ; \
+		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
+		rm -fr $(DISTNAME)-old || exit 1 ; \
+		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
+		cd ../../ || exit 1 ; \
+		rm -f checksums~ || exit 1 ; \
+		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ ; \
+		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
+		rm -f checksums || exit 1 ; \
+		mv -f checksums~ checksums || exit 1 ; )
+	@$(MAKE) clean

@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 17550.28715
+GARVERSION = $(FFMPEG_TRUNK_VERSION).$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(GARNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -133,6 +133,7 @@ CONFIGURE_ARGS = \
 CONFIGURE_ENV = \
 	SDL_CONFIG='/bin/false'
 
+GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
@@ -152,3 +153,46 @@ svn//%/$(DISTNAME).tar.bz2:
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
+
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(DESTDIR)$(includedir)/ffmpeg
+	@rm -rf $(DESTDIR)$(libdir)/libavcodec.*
+	@rm -rf $(DESTDIR)$(libdir)/libavdevice.*
+	@rm -rf $(DESTDIR)$(libdir)/libavformat.*
+	@rm -rf $(DESTDIR)$(libdir)/libavutil.*
+	@rm -rf $(DESTDIR)$(libdir)/libpostproc.*
+	@rm -rf $(DESTDIR)$(libdir)/libswscale.*
+	@rm -rf $(DESTDIR)$(bin)/ffmpeg
+
+source-update:
+	@$(MAKE) source-update-source
+	@$(MAKE) source-update-patches
+	
+source-update-source:
+	@$(MAKE) clean
+	@$(MAKE) fetch
+	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
+	@$(MAKE) clean
+
+source-update-patches:
+	@$(MAKE) clean
+	@$(MAKE) extract
+	@$(foreach PATCHFILE, $(PATCHFILES), \
+		cd $(WORKDIR) || exit 1 ; \
+		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
+		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
+		cd $(DISTNAME)-new || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-patches-update patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		cd ../ || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-patches-update -exec rm {} \; || exit 1 ; \
+		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
+		rm -fr $(DISTNAME)-old || exit 1 ; \
+		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
+		cd ../../ || exit 1 ; \
+		rm -f checksums~ || exit 1 ; \
+		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ ; \
+		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
+		rm -f checksums || exit 1 ; \
+		mv -f checksums~ checksums || exit 1 ; )
+	@$(MAKE) clean
