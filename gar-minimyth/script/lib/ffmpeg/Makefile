@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = $(FFMPEG_TRUNK_VERSION).$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 17751.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -140,7 +140,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-# When using the SVN version, GARVERSION must have the form <ffmpeg-svn-version>.<mplayer-svn-version>.
+# When using the SVN version, GARVERSION must have the form <ffmpeg-trunk-version>.<mplayer-trunk-version>.
 # This is done to ensure that the correct version of libswscale is used.
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk            , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
