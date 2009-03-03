@@ -1,7 +1,8 @@
 GARNAME = MPlayer
-GARVERSION = $(MPLAYER_TRUNK_VERSION).$(FFMPEG_TRUNK_VERSION).$(DVDNAV_TRUNK_VERSION)
+GARVERSION = $(MPLAYER_TRUNK_VERSION)
 CATEGORIES = mediaplayers
-MASTER_SITES = svn://svn.mplayerhq.hu/
+MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
+SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(GARNAME)-x11_headers.patch
 LICENSE = mplayer
@@ -268,33 +269,35 @@ CONFIGURE_ENV  = \
 BUILD_ENV  = \
 	DESTDIR="$(DESTDIR)"
 
-GAR_EXTRA_CONF += lib/ffmpeg/package-api.mk lib/libdvdnav/package-api.mk
 include ../../gar.mk
 
 CFLAGS :=
 
-# When using the SVN version, GARVERSION must have the form <mplayer-svn-version>.<ffmpeg-svn-version>.<dvdnav-svn-version>.
-# This is done to ensure that the correct version of FFmpeg is used.
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*/mplayer/trunk           , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavutil  , $(word 2,$(subst ., ,$(GARVERSION))), libavutil  )
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavcodec , $(word 2,$(subst ., ,$(GARVERSION))), libavcodec )
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libavformat, $(word 2,$(subst ., ,$(GARVERSION))), libavformat)
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk/libpostproc, $(word 2,$(subst ., ,$(GARVERSION))), libpostproc)
-	@$(call FETCH_SVN, svn://$*/dvdnav/trunk/libdvdnav  , $(word 3,$(subst ., ,$(GARVERSION))), libdvdnav  )
-	@$(call FETCH_SVN, svn://$*/dvdnav/trunk/libdvdread , $(word 3,$(subst ., ,$(GARVERSION))), libdvdread4)
+	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2 ; rm -r $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jxf libavutil.tar.bz2   ; rm -r libavutil.tar.bz2   ; rm -rf $(DISTNAME)/libavutil   ; mv libavutil   $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jxf libavcodec.tar.bz2  ; rm -r libavcodec.tar.bz2  ; rm -rf $(DISTNAME)/libavcodec  ; mv libavcodec  $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jxf libavformat.tar.bz2 ; rm -r libavformat.tar.bz2 ; rm -rf $(DISTNAME)/libavformat ; mv libavformat $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jxf libpostproc.tar.bz2 ; rm -r libpostproc.tar.bz2 ; rm -rf $(DISTNAME)/libpostproc ; mv libpostproc $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jxf libdvdnav.tar.bz2   ; rm -r libdvdnav.tar.bz2   ; rm -rf $(DISTNAME)/libdvdnav   ; mv libdvdnav   $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jxf libdvdread4.tar.bz2 ; rm -r libdvdread4.tar.bz2 ; rm -rf $(DISTNAME)/libdvdread4 ; mv libdvdread4 $(DISTNAME)/
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavcodec
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavformat
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavutil
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libpostproc
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libswscale
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdnav
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdread4
 	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+post-patch:
+	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavcodec  $(WORKSRC)/libavcodec
+	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavformat $(WORKSRC)/libavformat
+	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavutil   $(WORKSRC)/libavutil
+	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libpostproc $(WORKSRC)/libpostproc
+	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libswscale  $(WORKSRC)/libswscale
+	@mv $(wildcard $(WORKDIR)/libdvdnav-*)          $(WORKSRC)/libdvdnav
+	@mv $(wildcard $(WORKDIR)/libdvdread-*)         $(WORKSRC)/libdvdread4
 	@$(MAKECOOKIE)
 
 install-config:

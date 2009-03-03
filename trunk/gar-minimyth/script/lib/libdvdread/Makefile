@@ -1,5 +1,5 @@
 GARNAME = libdvdread
-GARVERSION = $(DVDNAV_TRUNK_VERSION)
+GARVERSION = 1168
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -19,7 +19,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
-GAR_EXTRA_CONF += lib/libdvdnav/package-api.mk
 include ../../gar.mk
 
 svn//%/$(DISTNAME).tar.bz2:
