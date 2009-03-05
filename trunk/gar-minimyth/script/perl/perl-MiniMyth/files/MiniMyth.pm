@@ -1018,6 +1018,8 @@ sub mythfrontend_networkcontrol
     my $self    = shift;
     my $command = shift;
 
+    my @lines = ();
+
     my $port = $self->mythdb_settings_get('NetworkControlPort');
 
     my $prompt = '/\# $/';
@@ -1029,12 +1031,13 @@ sub mythfrontend_networkcontrol
     if (($telnet) && ($telnet->open()))
     {
         $telnet->waitfor($prompt);
-        my @lines = $telnet->cmd($command);
+        @lines = $telnet->cmd($command);
         $telnet->cmd('exit');
         $telnet->close;
         chomp @lines;
-        return \@lines;
     }
+
+    return \@lines;
 }
 
 #===============================================================================
@@ -2144,7 +2147,8 @@ sub x_applications_exit
                     {
                         for (my $timeout = 10 ; $timeout > 0 ; $timeout--)
                         {
-                            if ($self->mythfrontend_networkcontrol('query location')->[0] eq 'MainMenu')
+                            my $mythfrontend_location = join("\n", @{$self->mythfrontend_networkcontrol('query location')});
+                            if ($mythfrontend_location eq 'MainMenu')
                             {
                                 last;
                             }
