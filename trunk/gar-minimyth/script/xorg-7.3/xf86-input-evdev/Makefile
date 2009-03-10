@@ -3,7 +3,7 @@ GARVERSION = 2.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-xkbstr_h.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-no_server_softrepeat.patch $(DISTNAME)-xkbstr_h.patch $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
