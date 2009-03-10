@@ -27,7 +27,8 @@ sub _mountpoints_get
                 if ( ($2 =~ /^\/media\//)      ||
                      ($2 =~ /^\/\/minimyth\//) ||
                      ($3 =~ /^cifs$/)          ||
-                     ($3 =~ /^nfs$/)           )
+                     ($3 =~ /^nfs$/)           ||
+                     ($3 =~ /^ext3$/)          )
                 {
                     unshift(@mountpoints, $mountpoint);
                 }

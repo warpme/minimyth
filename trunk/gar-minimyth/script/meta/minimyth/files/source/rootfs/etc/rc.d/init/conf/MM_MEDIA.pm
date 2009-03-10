@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 my $dir = '/|(/[[:alnum:]._-]+)+';
-my $url = '(cifs|nfs):(//(([^ :@]*)?(:([^ @]*))?\@)?([^ /]+))?[^ ?#]*(\?([^ #]*))?(\#([^ ]*))?';
+my $url = '(cifs|nfs|ext3):(//(([^ :@]*)?(:([^ @]*))?\@)?([^ /]+))?[^ ?#]*(\?([^ #]*))?(\#([^ ]*))?';
 
 my $value_valid_mountpoint = qq/$dir/;
 my $value_valid_url        = qq/none|$url/;
