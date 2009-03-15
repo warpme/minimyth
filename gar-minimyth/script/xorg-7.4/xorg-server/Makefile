@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.5.3
+GARVERSION = 1.6.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -7,7 +7,6 @@ PATCHFILES = \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
-	$(DISTNAME)-drm.patch \
 	$(DISTNAME)-remove_moduledefaults.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -16,10 +15,13 @@ DESCRIPTION =
 define BLURB
 endef
 
+#	$(CATEGORY)/evieext \
+#	$(CATEGORY)/xf86bigfontproto \
+#	$(CATEGORY)/xf86miscproto \
+
 DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
-	$(CATEGORY)/evieext \
 	$(CATEGORY)/fixesproto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
@@ -32,6 +34,7 @@ DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
+	$(CATEGORY)/libXinerama \
 	$(CATEGORY)/libxkbfile \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/pixman \
@@ -43,10 +46,8 @@ DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
-	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xf86driproto \
-	$(CATEGORY)/xf86miscproto \
 	$(CATEGORY)/xf86vidmodeproto \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xproto \
@@ -70,15 +71,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-builddocs \
 	--enable-install-libxf86config \
-	--disable-builtin-fonts \
 	--disable-null-root-cursor \
 	--enable-aiglx \
 	--disable-glx-tls \
 	--enable-registry \
 	--disable-composite \
-	--enable-mitshm \
+	--enable-shm \
 	--disable-xres \
-	--disable-xtrap \
 	--enable-record \
 	--enable-xv \
 	--enable-xvmc \
@@ -91,17 +90,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-dri2 \
 	--enable-xinerama \
 	--enable-xf86vidmode \
-	--enable-xf86misc \
 	--disable-xace \
+	--disable-xselinux \
 	--disable-xcsecurity \
-	--disable-appgroup \
 	--disable-xcalibrate \
 	--disable-tslib \
-	--disable-xevie \
-	--disable-cup \
-	--disable-evi \
 	--disable-multibuffer \
-	--disable-fontcache \
 	--enable-dbe \
 	--enable-xf86bigfont \
 	--enable-dpms \
@@ -113,26 +107,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xvfb \
 	--disable-xnest \
 	--disable-xquartz \
-	--disable-x11app \
+	--disable-standalone-xpbproxy \
 	--disable-xwin \
-	--disable-xprint \
-	--disable-xgl \
-	--disable-xglx \
-	--disable-xegl \
-	--disable-mfb \
-	--disable-cfb \
-	--disable-afb \
 	--disable-kdrive \
 	--disable-xephyr \
 	--disable-xsdl \
 	--disable-xfake \
 	--disable-xfbdev \
-	--disable-kdrive-vesa \
-	--disable-freetype \
 	--disable-install-setuid \
 	--disable-secure-rpc \
-	--disable-xorgcfg \
-	--disable-kbd_mode \
 	--enable-unix-transport \
 	--disable-tcp-transport \
 	--disable-ipv6 \
@@ -156,7 +139,7 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@rm -f $(WORKSRC)/config.cache
-	@echo "ac_cv_sys_linker_h=no" >> $(WORKSRC)/config.cache
+	@#echo "ac_cv_sys_linker_h=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
@@ -165,7 +148,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libextmod.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libglx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/fonts/libfreetype.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
@@ -184,5 +166,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
-	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(libdir)/pkgconfig/xorg-server.pc
 	@$(MAKECOOKIE)
