@@ -635,7 +635,7 @@ $(top_build)/stage/rootfs: $(top_build)/stage/image/rootfs $(top_build)/stage/im
 	@echo "making the squashfs version of the root file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c "mksquashfs $< $@~ -no-exports -no-progress -processors 1 -no-fragments -check_data > /dev/null 2>&1"
+	@fakeroot -i $<.fakeroot sh -c "mksquashfs $< $@~ -no-exports -no-progress -processors 1 -no-fragments > /dev/null 2>&1"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
@@ -644,7 +644,7 @@ $(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras
 	@echo "making the squashfs version of the extras file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot                sh -c "mksquashfs $< $@~ -no-exports -no-progress -processors 1 -no-fragments -check_data > /dev/null 2>&1"
+	@fakeroot                sh -c "mksquashfs $< $@~ -no-exports -no-progress -processors 1 -no-fragments > /dev/null 2>&1"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
@@ -655,7 +655,7 @@ $(top_build)/stage/themes: $(top_build)/stage/image/themes
 	@rm -rf $@ $@~
 	@mkdir -m 0755 -p $@~
 	@for theme in `cd $< ; ls -1` ; do                                                    \
-		fakeroot         sh -c "mksquashfs $</$${theme} $@~/$${theme}.sfs -no-exports -no-progress -processors 1 -no-fragments -check_data > /dev/null 2>&1" ; \
+		fakeroot         sh -c "mksquashfs $</$${theme} $@~/$${theme}.sfs -no-exports -no-progress -processors 1 -no-fragments > /dev/null 2>&1" ; \
 	 done
 	@find $@~ -depth -type d -exec chmod 0755 '{}' \;
 	@find $@~ -depth -type f -exec chmod 0644 '{}' \;
