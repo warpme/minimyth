@@ -1,0 +1,15 @@
+diff -Naur xorg-server-1.6.0-old/xorg-server.m4 xorg-server-1.6.0-new/xorg-server.m4
+--- xorg-server-1.6.0-old/xorg-server.m4	2009-03-14 12:03:15.000000000 -0700
++++ xorg-server-1.6.0-new/xorg-server.m4	2009-03-14 12:04:07.000000000 -0700
+@@ -29,8 +29,10 @@
+ # is defined, then add $1 to $REQUIRED_MODULES.
+ 
+ AC_DEFUN([XORG_DRIVER_CHECK_EXT],[
++	AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+ 	SAVE_CFLAGS="$CFLAGS"
+-	CFLAGS="$CFLAGS -I`pkg-config --variable=sdkdir xorg-server`"
++	m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++	CFLAGS="$CFLAGS -I$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=sdkdir xorg-server`"
+ 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include "xorg-server.h"
+ #if !defined $1
