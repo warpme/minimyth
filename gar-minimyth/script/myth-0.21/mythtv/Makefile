@@ -13,7 +13,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
-	$(DISTNAME_SHORT)-glvdpau20206.patch \
+	$(DISTNAME_SHORT)-glvdpau20212.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
