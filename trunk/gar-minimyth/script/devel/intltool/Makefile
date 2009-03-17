@@ -1,5 +1,5 @@
 GARNAME = intltool
-GARVERSION = 0.40.5
+GARVERSION = 0.40.6
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/0.40/
 DISTFILES = $(DISTNAME).tar.bz2
