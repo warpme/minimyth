@@ -4,7 +4,19 @@ CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  = $(DISTNAME)-perl.patch.gar
+PATCHFILES  =
+PATCHFILES += \
+	$(GARNAME)40-001 \
+	$(GARNAME)40-002 \
+	$(GARNAME)40-003 \
+	$(GARNAME)40-004 \
+	$(GARNAME)40-005 \
+	$(GARNAME)40-006 \
+	$(GARNAME)40-007 \
+	$(GARNAME)40-008 \
+	$(GARNAME)40-009 \
+	$(GARNAME)40-010
+PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -12,6 +24,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c
+
+PATCHDIRLEVEL = 0
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
