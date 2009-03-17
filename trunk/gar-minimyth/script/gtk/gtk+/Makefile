@@ -1,7 +1,7 @@
 GARNAME = gtk+
-GARVERSION = 2.14.7
+GARVERSION = 2.16.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.14/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.16/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-disable_demos.patch
 LICENSE = LGPL2
@@ -25,6 +25,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries="$(DESTDIR)$(libdir)" \
 	--disable-static \
 	--enable-shared \
+	--enable-debug=no \
 	--enable-shm \
 	--disable-xkb \
 	--enable-xinerama \
