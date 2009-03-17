@@ -1,7 +1,7 @@
-diff -Naur linux-2.6.28.7-old/net/sunrpc/xprtsock.c linux-2.6.28.7-new/net/sunrpc/xprtsock.c
---- linux-2.6.28.7-old/net/sunrpc/xprtsock.c	2009-03-14 13:57:31.000000000 -0700
-+++ linux-2.6.28.7-new/net/sunrpc/xprtsock.c	2009-03-14 14:00:42.000000000 -0700
-@@ -1144,6 +1144,8 @@
+diff -Naur linux-2.6.27.20-old/net/sunrpc/xprtsock.c linux-2.6.27.20-new/net/sunrpc/xprtsock.c
+--- linux-2.6.27.20-old/net/sunrpc/xprtsock.c	2009-03-16 20:40:52.000000000 -0700
++++ linux-2.6.27.20-new/net/sunrpc/xprtsock.c	2009-03-16 20:43:46.000000000 -0700
+@@ -1127,6 +1127,8 @@
  			struct sock_xprt *transport = container_of(xprt,
  					struct sock_xprt, xprt);
  
@@ -10,7 +10,7 @@ diff -Naur linux-2.6.28.7-old/net/sunrpc/xprtsock.c linux-2.6.28.7-new/net/sunrp
  			/* Reset TCP record info */
  			transport->tcp_offset = 0;
  			transport->tcp_reclen = 0;
-@@ -1158,7 +1160,6 @@
+@@ -1141,7 +1143,6 @@
  	case TCP_FIN_WAIT1:
  		/* The client initiated a shutdown of the socket */
  		xprt->connect_cookie++;
@@ -18,7 +18,7 @@ diff -Naur linux-2.6.28.7-old/net/sunrpc/xprtsock.c linux-2.6.28.7-new/net/sunrp
  		set_bit(XPRT_CLOSING, &xprt->state);
  		smp_mb__before_clear_bit();
  		clear_bit(XPRT_CONNECTED, &xprt->state);
-@@ -1793,6 +1794,7 @@
+@@ -1755,6 +1756,7 @@
  {
  	struct rpc_xprt *xprt = task->tk_xprt;
  	struct sock_xprt *transport = container_of(xprt, struct sock_xprt, xprt);
@@ -26,7 +26,7 @@ diff -Naur linux-2.6.28.7-old/net/sunrpc/xprtsock.c linux-2.6.28.7-new/net/sunrp
  
  	if (xprt_test_and_set_connecting(xprt))
  		return;
-@@ -1801,12 +1803,12 @@
+@@ -1763,12 +1765,12 @@
  		dprintk("RPC:       xs_connect delayed xprt %p for %lu "
  				"seconds\n",
  				xprt, xprt->reestablish_timeout / HZ);
