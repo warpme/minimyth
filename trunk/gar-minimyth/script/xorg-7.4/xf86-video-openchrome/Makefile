@@ -1,10 +1,10 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 0.2.903
+GARVERSION = 737
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
 MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ioctl.patch $(DISTNAME)-composite.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-pkg_config.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -13,9 +13,10 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
-	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -38,6 +39,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-dri \
+	--disable-debug \
+	--disable-xv-debug \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -46,7 +49,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
