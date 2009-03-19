@@ -77,6 +77,7 @@ libdirs_base := \
 	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
+	$(libdir)/gnash \
 	$(libdir)/mysql \
 	$(qt3libdir) \
 	$(qt4libdir) \
