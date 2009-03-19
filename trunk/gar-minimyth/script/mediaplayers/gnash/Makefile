@@ -1,5 +1,5 @@
 GARNAME = gnash
-GARVERSION = 0.8.4
+GARVERSION = 0.8.5
 CATEGORIES = mediaplayers
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -27,11 +27,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-swftree \
 	--disable-testsuite \
 	--disable-write \
+	--enable-sa-launcher \
 	--disable-cygnal \
 	--disable-i810-lod-bias \
 	--enable-gui=gtk \
 	--enable-renderer=agg \
-	--enable-mit-shm \
 	--enable-media=ffmpeg \
 	--enable-lirc \
 	--disable-static \
@@ -39,22 +39,24 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-atk \
 	--disable-glext \
 	--disable-cairo \
-	--disable-kparts \
+	--disable-kparts3 \
+	--disable-kparts4 \
 	--enable-npapi \
 	--enable-plugins \
 	--disable-xpcom \
 	--disable-nspr \
 	--enable-z \
 	--enable-jpeg \
-	--enable-libpng \
+	--enable-png \
 	--enable-gif \
 	--disable-ungif \
+	--disable-speex \
+	--disable-speexdsp \
 	--enable-fontconfig \
 	--disable-ghelp \
 	--enable-Xft \
 	--enable-expat \
 	--disable-gstreamer \
-	--enable-glib \
 	--disable-fltk2 \
 	--disable-docbook \
 	--enable-visibility \
@@ -92,5 +94,6 @@ post-install:
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashcore.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashmedia.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashnet.la
+	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashsound.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libmozsdk.la
 	@$(MAKECOOKIE)
