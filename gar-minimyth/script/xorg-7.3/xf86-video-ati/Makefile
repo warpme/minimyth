@@ -2,7 +2,7 @@ GARNAME = xf86-video-ati
 GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	00ac9d2f8d58725d0d3e6b1bf7f728d9ae7e6109 , \
-	6.12.0 ))
+	6.12.1 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-ati/ , \
