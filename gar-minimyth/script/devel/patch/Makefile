@@ -1,9 +1,8 @@
 GARNAME = patch
-GARVERSION = 2.5.4
+GARVERSION = 2.5.9
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-space_in_filename.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
