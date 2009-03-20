@@ -34,6 +34,7 @@ MM_INIT_START := \
     mythtv \
     font \
     backend \
+    gtk \
     mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
