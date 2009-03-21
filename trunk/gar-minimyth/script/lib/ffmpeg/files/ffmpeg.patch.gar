@@ -1,27 +1,27 @@
-diff -Naur ffmpeg-17861.28852-old/configure ffmpeg-17861.28852-new/configure
---- ffmpeg-17861.28852-old/configure	2009-03-06 17:27:17.000000000 -0800
-+++ ffmpeg-17861.28852-new/configure	2009-03-06 17:33:06.000000000 -0800
-@@ -722,11 +722,11 @@
+diff -Naur ffmpeg-18115.29024-old/configure ffmpeg-18115.29024-new/configure
+--- ffmpeg-18115.29024-old/configure	2009-03-21 10:21:30.000000000 -0700
++++ ffmpeg-18115.29024-new/configure	2009-03-21 10:25:28.000000000 -0700
+@@ -723,11 +723,11 @@
      func=$4
      shift 4
      disable $cfg
 -    check_cmd ${pkg}-config --version
-+    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
++    check_cmd @GAR_destdir@@GAR_bindir@/${pkg}-config --version
      err=$?
      if test "$err" = 0; then
--        temp_cflags `${pkg}-config --cflags`
--        temp_extralibs `${pkg}-config --libs`
-+        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
-+        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
+-        temp_cflags $(${pkg}-config --cflags)
+-        temp_extralibs $(${pkg}-config --libs)
++        temp_cflags $(@GAR_destdir@@GAR_bindir@/${pkg}-config --cflags)
++        temp_extralibs $(@GAR_destdir@@GAR_bindir@/${pkg}-config --libs)
          check_lib "$@" $header $func && enable $cfg
      fi
      return $err
-@@ -2034,7 +2034,7 @@
+@@ -2051,7 +2051,7 @@
  
  disable sdl_too_old
  disable sdl
 -SDL_CONFIG="${cross_prefix}sdl-config"
 +SDL_CONFIG="${SDL_CONFIG:-@GAR_DESTDIR@@GAR_bindir@/sdl-config}"
  if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
-     sdl_cflags=`"${SDL_CONFIG}" --cflags`
+     sdl_cflags=$("${SDL_CONFIG}" --cflags)
      temp_cflags $sdl_cflags
