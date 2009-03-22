@@ -30,7 +30,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ldaps \
 	--enable-proxy \
 	--disable-dict \
-	--disable-telnet \
+	--enable-telnet \
 	--enable-tftp \
 	--disable-manual \
 	--enable-libgcc \
@@ -38,10 +38,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-nonblocking \
 	--enable-thread \
 	--disable-ares \
-	--disable-verbose \
+	--enable-verbose \
 	--disable-sspi \
-	--disable-crypto-auth \
-	--disable-cookies \
+	--enable-crypto-auth \
+	--enable-cookies \
 	--enable-hidden-symbols \
 	--disable-soname-bump \
 	--with-gnu-ld \
