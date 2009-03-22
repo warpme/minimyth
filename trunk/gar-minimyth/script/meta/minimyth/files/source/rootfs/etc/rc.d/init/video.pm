@@ -126,19 +126,9 @@ sub start
                 }
                 when (/^vdpau$/)
                 {
-                    if ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
-                         ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 21) )
-                    {
-                        $pref{'pref_decoder'}       = 'ffmpeg';
-                        $pref{'pref_videorenderer'} = 'xv-blit';
-                        $pref{'pref_osdrenderer'}   = 'softblend';
-                    }
-                    else
-                    {
-                        $pref{'pref_decoder'}       = 'vdpau';
-                        $pref{'pref_videorenderer'} = 'vdpau';
-                        $pref{'pref_osdrenderer'}   = 'vdpau';
-                    }
+                    $pref{'pref_decoder'}       = 'vdpau';
+                    $pref{'pref_videorenderer'} = 'vdpau';
+                    $pref{'pref_osdrenderer'}   = 'vdpau';
                     $pref{'pref_osdfade'}       = '0';
                 }
                 when (/^xvmc$/)
