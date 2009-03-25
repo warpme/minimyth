@@ -4,7 +4,6 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-x11_headers.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -210,10 +209,12 @@ CONFIGURE_ARGS_AUDIO = \
 	--disable-sunaudio \
 	--disable-win32waveout \
 	--disable-select
+# The --extra-cflags option forces configure to look in the correct directory for X11.
 CONFIGURE_ARGS_MISC = \
 	--enable-runtime-cpudetection \
 	--enable-cross-compile \
 	--cc="$(CC)" \
+	--extra-cflags="-I$(DESTDIR)$(includedir)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
 	--nm="$(NM)" \
