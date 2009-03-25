@@ -103,15 +103,12 @@ case "${1}" in
             /usr/bin/logger -s -t udhcpc -p "daemon.err" \
                 "error: TCode (MM_DHCP_TCODE) '${tcode}' not valid."
         else
-            /bin/rm -f ${TZ_CONF}~
-            /bin/touch ${TZ_CONF}~
-            /bin/chmod 644 ${TZ_CONF}~
-            /bin/cat /usr/share/zoneinfo/${tcode} > ${TZ_CONF}~
-            /usr/bin/cmp -s "${TZ_CONF}~" "${TZ_CONF}" 2> /dev/null
-            if /usr/bin/test $? -ne 0 ; then
-                /bin/mv -f ${TZ_CONF}~ ${TZ_CONF}
+            if /usr/bin/test ! -e ${TZ_CONF} ; then
+                /bin/ln -s /usr/share/zoneinfo/${tcode} ${TZ_CONF}
             else
-                /bin/rm -f ${TZ_CONF}~
+                if /usr/bin/test ! `/usr/bin/readlink -f ${TZ_CONF}` = /usr/share/zoneinfo/${tcode} ; then
+                    /bin/ln -sf /usr/share/zoneinfo/${tcode} ${TZ_CONF}
+                fi
             fi
         fi
 
