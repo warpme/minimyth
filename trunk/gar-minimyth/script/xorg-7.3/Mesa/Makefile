@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.gz MesaGLUT-$(GARVERSION).tar.gz MesaDemos-$(GARVERSION).tar.gz
-PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-x8r8g8b8_fbconfig.patch $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
