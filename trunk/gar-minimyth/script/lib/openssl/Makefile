@@ -1,5 +1,5 @@
 GARNAME = openssl
-GARVERSION = 0.9.8j
+GARVERSION = 0.9.8k
 CATEGORIES = lib
 MASTER_SITES = http://www.openssl.org/source/
 DISTFILES = $(DISTNAME).tar.gz
