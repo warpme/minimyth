@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 2.7.3
+GARVERSION = 2.7.5
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
