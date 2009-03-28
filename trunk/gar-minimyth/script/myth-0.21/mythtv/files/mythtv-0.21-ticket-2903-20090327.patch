@@ -1,0 +1,34 @@
+diff -Naur mythtv-0.21-20278-old/libs/libmythtv/videoout_xv.cpp mythtv-0.21-20278-new/libs/libmythtv/videoout_xv.cpp
+--- mythtv-0.21-20278-old/libs/libmythtv/videoout_xv.cpp	2009-03-28 09:52:57.000000000 -0700
++++ mythtv-0.21-20278-new/libs/libmythtv/videoout_xv.cpp	2009-03-28 09:52:58.000000000 -0700
+@@ -72,6 +72,10 @@
+ #define round(x) ((int) ((x) + 0.5))
+ #endif
+ 
++#ifndef V_INTERLACE
++#define V_INTERLACE (0x010)
++#endif
++
+ #ifndef XVMC_CHROMA_FORMAT_420
+ #define XVMC_CHROMA_FORMAT_420 0x00000001
+ #endif
+@@ -395,6 +399,19 @@
+ 
+     rate = (dot_clock * 1000.0) / rate;
+ 
++    // For an interlaced display mode, we want the refresh rate to be the field
++    // rate, so that we can use an x2 deinterlacer. It may be the case that some
++    // drivers (possibly openchrome) use false mode lines, with a doubled clock
++    // rate, so as to make the frame rate calculation produce the field rate.
++    // We check for 25 or 30 to avoid twice doubling in that case.
++    if ((mode_line.flags & V_INTERLACE) != 0
++        && rate == 25 || rate == 30)
++    {
++        VERBOSE(VB_GENERAL, "Doubling refresh rate for interlaced display mode");
++
++        rate *= 2;
++    }
++
+     // Assume 60Hz if rate isn't good:
+     if (rate < 20 || rate > 200)
+     {
