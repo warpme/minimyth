@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++ lib/freetype lib/SDL
+DEPENDS   = lang/c++ lib/freetype lib/SDL
+#BUILDDEPS = lib/SDL
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
