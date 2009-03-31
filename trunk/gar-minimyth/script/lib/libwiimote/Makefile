@@ -1,7 +1,7 @@
 GARNAME = libwiimote
 GARVERSION = 0.4
 CATEGORIES = lib
-MASTER_SITES = http://ovh.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tgz
 PATCHFILES = $(DISTNAME)-hci_remote_name.patch
 LICENSE = GPL2
