@@ -1,5 +1,5 @@
 GARNAME = sqlite
-GARVERSION = 3.6.10
+GARVERSION = 3.6.12
 CATEGORIES = db
 MASTER_SITES = http://www.sqlite.org/
 DISTFILES = $(DISTNAME).tar.gz
