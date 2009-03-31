@@ -1,7 +1,7 @@
 GARNAME = zsnes
 GARVERSION = 1.51
 CATEGORIES = emulators
-MASTER_SITES = http://superb-east.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = svn://svn.bountysource.com/zsnes/trunk/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))src.tar.bz2
 PATCHFILES = $(DISTNAME)-gcc_4.3.patch $(DISTNAME).patch
