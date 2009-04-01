@@ -28,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-isapnp=no \
 	--with-sequencer=yes \
 	--with-oss=yes \
-	--with-cards="atiixp,ca0106,cmipci,emu10k1,ens1371,hda-intel,ice1724,intel8x0,intel8x0m,usb-audio,via82xx"
+	--with-cards="ali5451,atiixp,ca0106,cmipci,emu10k1,ens1371,hda-intel,ice1724,intel8x0,intel8x0m,usb-audio,via82xx"
 
 CONFIGURE_ENV = $(LINUX_MAKE_ENV)
 BUILD_ENV     = $(LINUX_MAKE_ENV)
