@@ -1,5 +1,5 @@
 GARNAME = squashfs
-GARVERSION = 20090314Z
+GARVERSION = 20090331Z
 CATEGORIES = lib
 MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
