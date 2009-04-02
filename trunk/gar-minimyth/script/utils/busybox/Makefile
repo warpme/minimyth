@@ -8,7 +8,9 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-tail.patch
+	$(DISTNAME)-tail.patch \
+	$(DISTNAME)-tar.patch \
+	$(DISTNAME)-volumeid.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
