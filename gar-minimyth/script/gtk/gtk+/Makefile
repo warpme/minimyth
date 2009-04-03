@@ -16,9 +16,12 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/gtk+
 endif
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+ifeq ($(DESTIMG),build)
+INSTALL_SCRIPTS   += gdk-pixbuf.loaders
+endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -56,6 +59,12 @@ include ../../gar.mk
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
+	@$(MAKECOOKIE)
+
+install-gdk-pixbuf.loaders:
+	@mkdir -p $(DESTDIR)$(sysconfdir)/gtk-2.0
+	@rm -f $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders
+	@$(DESTDIR)$(bindir)/gdk-pixbuf-query-loaders > $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders
 	@$(MAKECOOKIE)
 
 post-install:
