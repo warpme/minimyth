@@ -13,7 +13,18 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->message_output('info', "configuring GTK ...");
+    $minimyth->message_output('info', "generating GTK related configuration files ...");
+
+    if (-e q(/usr/bin/dbus-uuidgen))
+    {
+        if (! -e q(/var/lib/dbus))
+        {
+            mkdir(q(/var/lib/dbus));
+        }
+        chmod(0755, q(/var/lib/dbus));
+        system(qq(/usr/bin/dbus-uuidgen > /var/lib/dbus/machine-id));
+        chmod(0644, q(/var/lib/dbus/machine-id));
+    }
 
     if (-e q(/usr/bin/gdk-pixbuf-query-loaders))
     {
@@ -24,6 +35,17 @@ sub start
         chmod(0755, q(/etc/gtk-2.0));
         system(qq(/usr/bin/gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders));
         chmod(0644, q(/etc/gtk-2.0/gdk-pixbuf.loaders));
+    }
+
+    if (-e q(/usr/bin/pango-querymodules))
+    {
+        if (! -e q(/etc/pango))
+        {
+            mkdir(q(/etc/pango));
+        }
+        chmod(0755, q(/etc/pango));
+        system(qq(/usr/bin/pango-querymodules > /etc/pango/pango.modules));
+        chmod(0644, q(/etc/pango/pango.modules));
     }
 
     return 1;
