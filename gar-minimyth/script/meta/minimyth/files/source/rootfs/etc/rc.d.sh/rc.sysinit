@@ -19,25 +19,20 @@ fi
 
 # Create /tmp.
 /bin/mkdir -p /tmp
-/bin/mount -n -t tmpfs -o size=512K  /tmp /tmp
 /bin/chmod 1777 /tmp
 
 # Create /var.
 /bin/mkdir -p /var
-/bin/mount -n -t tmpfs -o size=512K /var /var
 /bin/mkdir -p /var/cache
 /bin/mkdir -p /var/lock
 /bin/mkdir -p /var/log
-/bin/mount -n -t tmpfs -o size=1024K /var/log /var/log
 /bin/mkdir -p /var/run
 /bin/touch    /var/run/utmp
 /bin/mkdir -p /var/tmp
-/bin/mount -n -t tmpfs -o size=512K  /var/tmp /var/tmp
 /bin/chmod 1777 /var/tmp
 
 # Create /dev.
 /bin/mkdir -p /dev
-/bin/mount -n -t tmpfs /dev /dev
 /bin/mknod -m 0666 /dev/null c 1 3
 /bin/ln -s /proc/kcore     /dev/core
 /bin/ln -s /proc/self/fd   /dev/fd
