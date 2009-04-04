@@ -8,11 +8,9 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
-	$(DISTNAME_SHORT)-glvdpau20263.patch \
-	$(DISTNAME_SHORT)-ticket-2903-20090327.patch \
+	$(DISTNAME_SHORT)-glvdpau20300.patch \
 	$(DISTNAME_SHORT)-ticket-4792.patch \
 	$(DISTNAME_SHORT)-ticket-6105-20090110.patch \
-	$(DISTNAME_SHORT)-ticket-6391-20090327.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
