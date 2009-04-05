@@ -1,5 +1,5 @@
 GARNAME = vlc
-GARVERSION = 0.9.9
+GARVERSION = 0.9.9a
 CATEGORIES = mediaplayers
 MASTER_SITES = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
