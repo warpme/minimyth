@@ -1,0 +1,34 @@
+diff -Naur sdlmame0130-old/src/osd/sdl/sdl.mak sdlmame0130-new/src/osd/sdl/sdl.mak
+--- sdlmame0130-old/src/osd/sdl/sdl.mak	2009-04-05 13:32:45.000000000 -0700
++++ sdlmame0130-new/src/osd/sdl/sdl.mak	2009-04-05 13:36:38.000000000 -0700
+@@ -131,7 +131,7 @@
+ endif
+ 
+ ifeq ($(TARGETOS),unix)
+-DEFS += -DSDLMAME_UNIX
++DEFS += -DSDLMAME_UNIX -DNO_DEBUGGER
+ ifndef NO_X11
+ DEFS += -DSDLMAME_X11
+ else
+@@ -263,14 +263,14 @@
+ 
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ # Non-X11 builds can not use the debugger
+-ifndef NO_X11
+-OSDCOREOBJS += $(SDLOBJ)/debugwin.o $(SDLOBJ)/dview.o $(SDLOBJ)/debug-sup.o $(SDLOBJ)/debug-intf.o
+-CFLAGS += `pkg-config --cflags gtk+-2.0` `pkg-config --cflags gconf-2.0` 
+-LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
+-CFLAGS += -DGTK_DISABLE_DEPRECATED
+-else
++#ifndef NO_X11
++#OSDCOREOBJS += $(SDLOBJ)/debugwin.o $(SDLOBJ)/dview.o $(SDLOBJ)/debug-sup.o $(SDLOBJ)/debug-intf.o
++#CFLAGS += `pkg-config --cflags gtk+-2.0` `pkg-config --cflags gconf-2.0` 
++#LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
++#CFLAGS += -DGTK_DISABLE_DEPRECATED
++#else
+ OSDCOREOBJS += $(SDLOBJ)/debugwin.o
+-endif # NO_X11
++#endif # NO_X11
+ 
+ # make sure we can find X headers
+ CFLAGS +=

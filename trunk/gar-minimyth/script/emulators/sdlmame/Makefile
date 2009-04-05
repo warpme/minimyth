@@ -1,8 +1,8 @@
 GARNAME = sdlmame
-GARVERSION = 0.125
+GARVERSION = 0.130
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).zip
-PATCHFILES  = $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
@@ -45,4 +45,5 @@ install-cross:
 	@cp -f $(WORKSRC)/obj/sdl/mame/build/file2str $(DESTDIR)$(bindir)/sdlmame-file2str
 	@cp -f $(WORKSRC)/obj/sdl/mame/build/png2bdc  $(DESTDIR)$(bindir)/sdlmame-png2bdc
 	@cp -f $(WORKSRC)/obj/sdl/mame/build/m68kmake $(DESTDIR)$(bindir)/sdlmame-m68kmake
+	@cp -f $(WORKSRC)/obj/sdl/mame/build/tmsmake  $(DESTDIR)$(bindir)/sdlmame-tmsmake
 	@$(MAKECOOKIE)
