@@ -1,0 +1,83 @@
+diff -Naur sdlmame0130-old/makefile sdlmame0130-new/makefile
+--- sdlmame0130-old/makefile	2009-03-05 06:16:35.000000000 -0800
++++ sdlmame0130-new/makefile	2009-04-05 13:06:05.000000000 -0700
+@@ -125,10 +125,10 @@
+ # BIGENDIAN = 1
+ 
+ # uncomment next line to build expat as part of MAME build
+-BUILD_EXPAT = 1
++# BUILD_EXPAT = 1
+ 
+ # uncomment next line to build zlib as part of MAME build
+-BUILD_ZLIB = 1
++# BUILD_ZLIB = 1
+ 
+ # uncomment next line to include the symbols
+ # SYMBOLS = 1
+@@ -196,11 +196,11 @@
+ endif
+ 
+ # compiler, linker and utilities
+-AR = @ar
+-CC = @gcc
+-LD = @gcc
+-MD = -mkdir$(EXE)
+-RM = @rm -f
++AR ?= ar
++CC ?= gcc
++LD = $(CC)
++MD = mkdir$(EXE) -p
++RM = rm -f
+ 
+ 
+ 
+diff -Naur sdlmame0130-old/src/osd/sdl/sdl.mak sdlmame0130-new/src/osd/sdl/sdl.mak
+--- sdlmame0130-old/src/osd/sdl/sdl.mak	2009-01-02 12:59:12.000000000 -0800
++++ sdlmame0130-new/src/osd/sdl/sdl.mak	2009-04-05 13:08:30.000000000 -0700
+@@ -249,8 +249,8 @@
+ endif
+ 
+ ifndef SDL_INSTALL_ROOT
+-CFLAGS += `sdl-config --cflags`
+-LIBS += -lm `sdl-config --libs` $(LIBGL)
++CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`
++LIBS += -lm `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs` $(LIBGL)
+ else
+ CFLAGS += -I$(SDL_INSTALL_ROOT)/include
+ #LIBS += -L/opt/intel/cce/9.1.051/lib  -limf -L$(SDL_INSTALL_ROOT)/lib -Wl,-rpath,$(SDL_INSTALL_ROOT)/lib -lSDL $(LIBGL)
+@@ -273,10 +273,10 @@
+ endif # NO_X11
+ 
+ # make sure we can find X headers
+-CFLAGS += -I/usr/X11/include -I/usr/X11R6/include -I/usr/openwin/include
++CFLAGS +=
+ # some systems still put important things in a different prefix
+ ifndef NO_X11
+-LIBS += -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/openwin/lib
++LIBS +=
+ endif
+ endif # Unix
+ 
+@@ -320,9 +320,9 @@
+ # Remove the "/SDL" component from the include path so that we can compile
+ # files (header files are #include "SDL/something.h", so the extra "/SDL"
+ # causes a significant problem)
+-CFLAGS += `sdl-config --cflags | sed 's:/SDL::'` -DNO_SDL_GLEXT
++CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags | sed 's:/SDL::'` -DNO_SDL_GLEXT
+ # Remove libSDLmain, as its symbols conflict with SDLMain_tmpl.m
+-LIBS += `sdl-config --libs | sed 's/-lSDLmain//'` -lpthread
++LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs | sed 's/-lSDLmain//'` -lpthread
+ endif
+ 
+ SDLMAIN = $(SDLOBJ)/SDLMain_tmpl.o
+@@ -336,8 +336,8 @@
+ ifeq ($(TARGETOS),os2)
+ OSDCOREOBJS += $(SDLOBJ)/debugwin.o
+ 
+-CFLAGS += `sdl-config --cflags`
+-LIBS += `sdl-config --libs`
++CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`
++LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`
+ 
+ # to avoid name clash of '_brk'
+ $(OBJ)/emu/cpu/h6280/6280dasm.o : CDEFS += -D__STRICT_ANSI__
