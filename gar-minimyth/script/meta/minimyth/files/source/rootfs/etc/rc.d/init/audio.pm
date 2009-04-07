@@ -61,53 +61,61 @@ sub start
     # Unmute audio.
     if (system(qq($amixer_command > $devnull 2>&1)) == 0)
     {
-        if ($type =~ /^(.*\+)?analog(\+.*)?$/)
+        if ((-e qq(/usr/sbin/alsactl)) && (-e q(/etc/asound.state)))
         {
-            if (open(FILE, '-|', "$amixer_command"))
-            {
-                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
-                {
-                    given ($_)
-                    {
-                        # General unmuting.
-                        when (/^PCM$/)                { system(qq($amixer_command set 'PCM'                       90% unmute)); }
-                        when (/^Master$/)             { system(qq($amixer_command set 'Master'                    90% unmute)); }
-                        when (/^Front$/)              { system(qq($amixer_command set 'Front'                     90% unmute)); }
-                        when (/^Master Front$/)       { system(qq($amixer_command set 'Master Front'              90% unmute)); }
-                        when (/^Analog Front$/)       { system(qq($amixer_command set 'Analog Front'              90% unmute)); }
-                        when (/^Surround$/)           { system(qq($amixer_command set 'Surround'                  90% unmute)); }
-                        when (/^Analog Side$/)        { system(qq($amixer_command set 'Analog Side'               90% unmute)); }
-                        when (/^Analog Rear$/)        { system(qq($amixer_command set 'Analog Rear'               90% unmute)); }
-                        when (/^Center$/)             { system(qq($amixer_command set 'Center'                    90% unmute)); }
-                        when (/^LFE$/)                { system(qq($amixer_command set 'LFE'                       90% unmute)); }
-                        when (/^Analog Center\/LFE$/) { system(qq($amixer_command set 'Analog Center/LFE'         90% unmute)); }
-                        # VIA Specific unmuting.
-                        when (/^VIA DXS$/)            { system(qq($amixer_command set 'VIA DXS'                   100%      )); }
-                    }
-                }
-                close(FILE);
-            }
+            system(qq(/usr/sbin/alsactl -f /etc/asound.state restore));
         }
-        if ($type =~ /^(.*\+)?digital(\+.*)?$/)
+        else
         {
-            if (open(FILE, '-|', "$amixer_command"))
+            my $gain = $minimyth->var_get('MM_AUDIO_GAIN') . '%';
+            if ($type =~ /^(.*\+)?analog(\+.*)?$/)
             {
-                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                if (open(FILE, '-|', "$amixer_command scontrols"))
                 {
-                    given ($_)
+                    foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                     {
-                        # General unmuting.
-                        when (/^IEC958$/)             { system(qq($amixer_command set 'IEC958'                    on        )); }
-                        when (/^IEC958 Front$/)       { system(qq($amixer_command set 'IEC958 Front'              90% unmute)); }
-                        when (/^IEC958 Side$/)        { system(qq($amixer_command set 'IEC958 Side'               90% unmute)); }
-                        when (/^IEC958 Rear$/)        { system(qq($amixer_command set 'IEC958 Rear'               90% unmute)); }
-                        when (/^IEC958 Center\/LFE$/) { system(qq($amixer_command set 'IEC958 Center/LFE'         90% unmute)); }
-                        # VIA Specific unmuting.
-                        when (/^IEC958 Playback AC97-SPSA$/)
-                                                      { system(qq($amixer_command set 'IEC958 Playback AC97-SPSA' 0         )); }
+                        given ($_)
+                        {
+                            # General unmuting.
+                            when (/^PCM$/)                { system(qq($amixer_command sset 'PCM'                       $gain unmute)); }
+                            when (/^Master$/)             { system(qq($amixer_command sset 'Master'                    $gain unmute)); }
+                            when (/^Front$/)              { system(qq($amixer_command sset 'Front'                     $gain unmute)); }
+                            when (/^Master Front$/)       { system(qq($amixer_command sset 'Master Front'              $gain unmute)); }
+                            when (/^Analog Front$/)       { system(qq($amixer_command sset 'Analog Front'              $gain unmute)); }
+                            when (/^Surround$/)           { system(qq($amixer_command sset 'Surround'                  $gain unmute)); }
+                            when (/^Analog Side$/)        { system(qq($amixer_command sset 'Analog Side'               $gain unmute)); }
+                            when (/^Analog Rear$/)        { system(qq($amixer_command sset 'Analog Rear'               $gain unmute)); }
+                            when (/^Center$/)             { system(qq($amixer_command sset 'Center'                    $gain unmute)); }
+                            when (/^LFE$/)                { system(qq($amixer_command sset 'LFE'                       $gain unmute)); }
+                            when (/^Analog Center\/LFE$/) { system(qq($amixer_command sset 'Analog Center/LFE'         $gain unmute)); }
+                            # VIA Specific unmuting.
+                            when (/^VIA DXS$/)            { system(qq($amixer_command sset 'VIA DXS'                   100%      )); }
+                        }
                     }
+                    close(FILE);
                 }
-                close(FILE);
+            }
+            if ($type =~ /^(.*\+)?digital(\+.*)?$/)
+            {
+                if (open(FILE, '-|', "$amixer_command scontrols"))
+                {
+                    foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                    {
+                        given ($_)
+                        {
+                            # General unmuting.
+                            when (/^IEC958$/)             { system(qq($amixer_command sset 'IEC958'                    on        )); }
+                            when (/^IEC958 Front$/)       { system(qq($amixer_command sset 'IEC958 Front'              $gain unmute)); }
+                            when (/^IEC958 Side$/)        { system(qq($amixer_command sset 'IEC958 Side'               $gain unmute)); }
+                            when (/^IEC958 Rear$/)        { system(qq($amixer_command sset 'IEC958 Rear'               $gain unmute)); }
+                            when (/^IEC958 Center\/LFE$/) { system(qq($amixer_command sset 'IEC958 Center/LFE'         $gain unmute)); }
+                            # VIA Specific unmuting.
+                            when (/^IEC958 Playback AC97-SPSA$/)
+                                                          { system(qq($amixer_command sset 'IEC958 Playback AC97-SPSA' 0         )); }
+                        }
+                    }
+                    close(FILE);
+                }
             }
         }
     }
@@ -135,7 +143,7 @@ sub stop
     {
         if ($type =~ /^(.*\+)?analog(\+.*)?$/)
         {
-            if (open(FILE, '-|', "$amixer_command"))
+            if (open(FILE, '-|', "$amixer_command scontrols"))
             {
                 foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
@@ -162,7 +170,7 @@ sub stop
         }
         if ($type =~ /^(.*\+)?digital(\+.*)?$/)
         {
-            if (open(FILE, '-|', "$amixer_command"))
+            if (open(FILE, '-|', "$amixer_command scontrols"))
             {
                 foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
