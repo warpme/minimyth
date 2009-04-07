@@ -391,7 +391,7 @@ sub detect_state_get
     my $field    = shift;
 
     my %map;
-    $map{'audio'}   = [ 'card_number' , 'device_number' ];
+    $map{'audio'}   = [ 'card_number' , 'device_number' , 'gain' ];
     $map{'backend'} = [ 'enabled'];
     $map{'event'}   = [ 'device' , 'type' ];
     $map{'lcdproc'} = [ 'device' , 'driver'];
