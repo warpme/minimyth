@@ -126,7 +126,7 @@ $var_list{'MM_X_OUTPUT_VGA'} =
 };
 $var_list{'MM_X_OUTPUT_TV'} =
 {
-    prerequisite  => ['MM_X_DRIVER', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA'],
+    prerequisite  => ['MM_X_DRIVER', 'MM_X_OUTPUT_HDMI', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA'],
     value_default => 'none',
     value_valid   => 'none|auto|[0-9]+',
     extra         => sub
@@ -135,15 +135,35 @@ $var_list{'MM_X_OUTPUT_TV'} =
         my $name     = shift;
         
         my $success = 1;
-        if (($minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
-            ($minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none') &&
-            ($minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
+        if (($minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+            ($minimyth->var_get('MM_X_OUTPUT_DVI')  eq 'none') &&
+            ($minimyth->var_get('MM_X_OUTPUT_VGA')  eq 'none') &&
+            ($minimyth->var_get('MM_X_OUTPUT_TV')   eq 'none'))
         {
-            $minimyth->message_output('err', qq('MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are all disabled.));
+            $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_VGA' and 'MM_X_OUTPUT_TV' are all disabled.));
         }
-        if ($minimyth->var_get('MM_X_DRIVER') eq 'nvidia')
+        if (($minimyth->var_get('MM_X_DRIVER') eq 'intel' ) &&
+            ($minimyth->var_get('MM_X_DRIVER') eq 'nvidia'))
         {
             # Make sure no more than one output is enabled.
+            if ((! $minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+                (! $minimyth->var_get('MM_X_OUTPUT_DVI')  eq 'none'))
+            {
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI' and 'MM_X_OUTPUT_DVI' are both enabled.));
+                $success = 0;
+            }
+            if ((! $minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+                (! $minimyth->var_get('MM_X_OUTPUT_VGA')  eq 'none'))
+            {
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI' and 'MM_X_OUTPUT_VGA' are both enabled.));
+                $success = 0;
+            }
+            if ((! $minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+                (! $minimyth->var_get('MM_X_OUTPUT_TV')   eq 'none'))
+            {
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $success = 0;
+            }
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_VGA') eq 'none'))
             {
@@ -166,6 +186,18 @@ $var_list{'MM_X_OUTPUT_TV'} =
         if ($minimyth->var_get('MM_X_DRIVER') eq 'openchrome')
         {
             # Make sure that DVI and TV outputs are not enabled at the same time.
+            if ((! $minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+                (! $minimyth->var_get('MM_X_OUTPUT_DVI')  eq 'none'))
+            {
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI' and 'MM_X_OUTPUT_DVI' are both enabled.));
+                $success = 0;
+            }
+            if ((! $minimyth->var_get('MM_X_OUTPUT_HDMI') eq 'none') &&
+                (! $minimyth->var_get('MM_X_OUTPUT_TV')   eq 'none'))
+            {
+                $minimyth->message_output('err', qq('MM_X_OUTPUT_HDMI' and 'MM_X_OUTPUT_TV' are both enabled.));
+                $success = 0;
+            }
             if ((! $minimyth->var_get('MM_X_OUTPUT_DVI') eq 'none') &&
                 (! $minimyth->var_get('MM_X_OUTPUT_TV')  eq 'none'))
             {
@@ -212,7 +244,7 @@ $var_list{'MM_X_SYNC'} =
 };
 $var_list{'MM_X_REFRESH'} =
 {
-    prerequisite  => ['MM_VIDEO_ASPECT_RATIO' , 'MM_VIDEO_RESIZE_ENABLED' , 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_TV', 'MM_X_OUTPUT_VGA', 'MM_X_RESOLUTION' , 'MM_X_TV_TYPE'],
+    prerequisite  => ['MM_VIDEO_ASPECT_RATIO' , 'MM_VIDEO_RESIZE_ENABLED' , 'MM_X_OUTPUT_HDMI', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_TV', 'MM_X_OUTPUT_VGA', 'MM_X_RESOLUTION' , 'MM_X_TV_TYPE'],
     value_default => 'auto',
     value_valid   => 'auto|(VertRefresh )?[0-9]+([.][0-9]*)?(-[0-9]+([.][0-9]*)?)?(,[0-9]+([.][0-9]*)?(-[0-9]+([.][0-9]*)?)?)*',
     value_auto    => sub
@@ -247,6 +279,13 @@ $var_list{'MM_X_REFRESH'} =
                     {
                     }
                 }
+            }
+        }
+        if (! $value_auto)
+        {
+            if ($minimyth->var_get('MM_X_OUTPUT_HDMI') ne 'none')
+            {
+                $value_auto = '60.0';
             }
         }
         if (! $value_auto)
@@ -458,7 +497,7 @@ $var_list{'MM_X_MODELINE_2'} =
 };
 $var_list{'MM_X_MODE'} =
 {
-    prerequisite  => ['MM_VIDEO_ASPECT_RATIO', 'MM_VIDEO_RESIZE_ENABLED', 'MM_X_DRVER', 'MM_X_MODELINE', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_TV', 'MM_X_OUTPUT_VGA', 'MM_X_RESOLUTION', 'MM_X_TV_TYPE'],
+    prerequisite  => ['MM_VIDEO_ASPECT_RATIO', 'MM_VIDEO_RESIZE_ENABLED', 'MM_X_DRVER', 'MM_X_MODELINE', 'MM_X_OUTPUT_HDMI', 'MM_X_OUTPUT_DVI', 'MM_X_OUTPUT_TV', 'MM_X_OUTPUT_VGA', 'MM_X_RESOLUTION', 'MM_X_TV_TYPE'],
     value_clean   => sub
     {
         my $minimyth = shift;
@@ -517,6 +556,18 @@ $var_list{'MM_X_MODE'} =
                         }
                     }
                     when (/^16:10$/) {}
+                }
+            }
+        }
+        if (! $value_auto)
+        {
+            if ($minimyth->var_get('MM_X_OUTPUT_HDMI') ne 'none')
+            {
+                given ($minimyth->var_get('MM_VIDEO_ASPECT_RATIO'))
+                {
+                    when (/^4:3$/)   { $value_auto = '800x600';  }
+                    when (/^16:9$/)  { $value_auto = '1280x720'; }
+                    when (/^16:10$/) { $value_auto = '1440x900'; }
                 }
             }
         }
