@@ -8,6 +8,7 @@ use warnings;
 
 use Cwd ();
 use File::Basename ();
+use File::Path ();
 use MiniMyth ();
 
 sub _remote_wakeup_enable
@@ -280,8 +281,8 @@ sub start
    }
 
     # Create directories used by the LIRC daemon.
-    mkdir('/var/lock', 0755);
-    mkdir('/var/run', 0755);
+    File::Path::mkpath('/var/lock', { mode => 0755 });
+    File::Path::mkpath('/var/run', { mode => 0755 });
 
     # Enable wakeup and start an LIRC daemon for each device.
     my $index = 0;

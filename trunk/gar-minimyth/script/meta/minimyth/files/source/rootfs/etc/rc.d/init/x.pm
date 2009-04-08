@@ -23,8 +23,7 @@ sub start
         my $uid = getpwnam('root');
         my $gid = getgrnam('root');
         rmdir('/tmp/.ICE-unix');
-        mkdir('/tmp/.ICE-unix');
-        chmod(01777,      '/tmp/.ICE-unix');
+        File::Path::mkpath('/tmp/.ICE-unix', { mode => 01777 });
         chown($uid, $gid, '/tmp/.ICE-unix');
     }
 
