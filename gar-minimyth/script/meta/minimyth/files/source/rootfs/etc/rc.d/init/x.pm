@@ -106,6 +106,11 @@ sub start
                 when (/^auto$/)     { $device_intel = 'TMDS';       }
                 when (/^([0-9]+)$/) { $device_intel = 'TMDS-' . $1; }
             }
+            given ($minimyth->var_get('MM_X_OUTPUT_HDMI'))
+            {
+                when (/^auto$/)     { $device_intel = 'HDMI';       }
+                when (/^([0-9]+)$/) { $device_intel = 'HDMI-' . $1; }
+            }
             if ($device_intel eq '')
             {
                 $minimyth->message_output('err', "no X video output enabled.");
@@ -129,6 +134,11 @@ sub start
                 when (/^auto$/)     { $device_nvidia = 'DFP';       }
                 when (/^([0-9]+)$/) { $device_nvidia = 'DFP-' . $1; }
             }
+            given ($minimyth->var_get('MM_X_OUTPUT_HDMI'))
+            {
+                when (/^auto$/)     { $device_nvidia = 'DFP';       }
+                when (/^([0-9]+)$/) { $device_nvidia = 'DFP-' . $1; }
+            }
             if ($device_nvidia eq '')
             {
                 $minimyth->message_output('err', "no X video output enabled.");
@@ -148,6 +158,11 @@ sub start
                 when (/^([0-9]+)$/) { $device_via .= ',' if ($device_via ne '') ; $device_via .= 'CRT'; }
             }
             given ($minimyth->var_get('MM_X_OUTPUT_DVI'))
+            {
+                when (/^auto$/)     { $device_via .= ',' if ($device_via ne '') ; $device_via .= 'LCD'; }
+                when (/^([0-9]+)$/) { $device_via .= ',' if ($device_via ne '') ; $device_via .= 'LCD'; }
+            }
+            given ($minimyth->var_get('MM_X_OUTPUT_HDMI'))
             {
                 when (/^auto$/)     { $device_via .= ',' if ($device_via ne '') ; $device_via .= 'LCD'; }
                 when (/^([0-9]+)$/) { $device_via .= ',' if ($device_via ne '') ; $device_via .= 'LCD'; }

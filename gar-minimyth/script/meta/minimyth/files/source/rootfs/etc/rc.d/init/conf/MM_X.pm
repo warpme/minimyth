@@ -109,6 +109,11 @@ $var_list{'MM_X_FETCH_XORG_CONF'} =
 #===============================================================================
 #
 #===============================================================================
+$var_list{'MM_X_OUTPUT_HDMI'} =
+{
+    value_default => 'none',
+    value_valid   => 'none|auto|[0-9]+'
+};
 $var_list{'MM_X_OUTPUT_DVI'} =
 {
     value_default => 'none',
