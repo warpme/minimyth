@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use File::Copy ();
+use File::Path ();
 use MiniMyth ();
 
 sub start
@@ -36,7 +37,7 @@ sub start
         chmod(0600,       '/etc/ssh/authorized_keys');
         chown($uid, $gid, '/etc/ssh/authorized_keys');
 
-        mkdir('/root/.ssh', 0755);
+        File::Path::mkpath('/root/.ssh', { mode => 0755 });
         File::Copy::copy('/etc/ssh/authorized_keys', '/root/.ssh/authorized_keys');
         chmod(0600,       '/root/.ssh/authorized_keys');
         chown($uid, $gid, '/root/.ssh/authorized_keys');
@@ -47,7 +48,7 @@ sub start
         if (! $minimyth->application_running('sshd'))
         {
             $minimyth->message_output('info', "starting ssh server ...");
-            mkdir('/var/empty', 0755);
+            File::Path::mkpath('/var/empty', { mode => 0755 });
             system(qq(/usr/sbin/sshd));
         }
     }

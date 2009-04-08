@@ -6,6 +6,7 @@ package init::gtk;
 use strict;
 use warnings;
 
+use File::Path ();
 use MiniMyth ();
 
 sub start
@@ -19,7 +20,7 @@ sub start
     {
         if (! -e q(/var/lib/dbus))
         {
-            mkdir(q(/var/lib/dbus));
+            File::Path::mkpath(q(/var/lib/dbus), { mode => 0755 });
         }
         chmod(0755, q(/var/lib/dbus));
         system(qq(/usr/bin/dbus-uuidgen > /var/lib/dbus/machine-id));
@@ -30,7 +31,7 @@ sub start
     {
         if (! -e q(/etc/gtk-2.0))
         {
-            mkdir(q(/etc/gtk-2.0));
+            File::Path::mkpath(q(/etc/gtk-2.0), { mode => 0755 });
         }
         chmod(0755, q(/etc/gtk-2.0));
         system(qq(/usr/bin/gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders));
@@ -41,7 +42,7 @@ sub start
     {
         if (! -e q(/etc/pango))
         {
-            mkdir(q(/etc/pango));
+            File::Path::mkpath(q(/etc/pango), { mode => 0755 });
         }
         chmod(0755, q(/etc/pango));
         system(qq(/usr/bin/pango-querymodules > /etc/pango/pango.modules));
