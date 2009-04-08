@@ -24,6 +24,7 @@ fi
 # Create /var.
 /bin/mkdir -p /var
 /bin/mkdir -p /var/cache
+/bin/mkdir -p /var/lib
 /bin/mkdir -p /var/lock
 /bin/mkdir -p /var/log
 /bin/mkdir -p /var/run
@@ -31,9 +32,7 @@ fi
 /bin/mkdir -p /var/tmp
 /bin/chmod 1777 /var/tmp
 
-# Create /dev.
-/bin/mkdir -p /dev
-/bin/mknod -m 0666 /dev/null c 1 3
+# Create basic devices that are not created by pivot_root.
 /bin/ln -s /proc/kcore     /dev/core
 /bin/ln -s /proc/self/fd   /dev/fd
 /bin/ln -s /proc/self/fd/0 /dev/stdin
