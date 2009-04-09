@@ -356,13 +356,13 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Copy dependent kernel modules.
 	@echo 'copying dependent kernel modules'
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
-	@find $@~$(LINUX_MODULESDIR) -depth -name '*.ko' | sed -e 's%^$@~%/%' -e 's%//*%/%g' | \
+	@find $@~$(LINUX_MODULESDIR) -depth -name '*.ko' | sed -e 's%^$@~$(LINUX_MODULESDIR)%/%' -e 's%//*%/%g' -e 's%^/%%' | \
 	 while read module ; do \
 		module_deps=`cat $(DESTDIR)$(LINUX_MODULESDIR)/modules.dep | grep -e "^$${module}:" | sed -e 's%[^:]*: *%%'` ; \
 		for module_dep in $${module_deps} ; do \
-			if [ ! -e $@~$${module_dep} ] ; then \
-				mkdir -p `dirname $@~$${module_dep}` ; \
-				cp -pd $(DESTDIR)$${module_dep} $@~$${module_dep} ; \
+			if [ ! -e $@~$(LINUX_MODULESDIR)/$${module_dep} ] ; then \
+				mkdir -p `dirname $@~$(LINUX_MODULESDIR)/$${module_dep}` ; \
+				cp -pd $(DESTDIR)$(LINUX_MODULESDIR)/$${module_dep} $@~$(LINUX_MODULESDIR)/$${module_dep} ; \
 			fi ; \
 		done ; \
 	 done
