@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use File::Find ();
+use Lchown qw(lchown);
 use MiniMyth ();
 
 sub start
@@ -30,9 +31,9 @@ sub start
         File::Find::finddepth(
             sub
             {
-                if (((stat($File::Find::name))[4] != $uid) || ((stat(_))[5] != $gid))
+                if (((lstat($File::Find::name))[4] != $uid) || ((lstat(_))[5] != $gid))
                 {
-                    chown($uid, $gid, $File::Find::name);
+                    lchown($uid, $gid, $File::Find::name);
                 }
             },
             '/home/minimyth');
