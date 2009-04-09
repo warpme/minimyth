@@ -2,7 +2,7 @@ GARNAME = xf86-video-radeonhd
 GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	f1c6cc865d8d0703478c3eedea2e706e911f9965 , \
-	1.2.4 ))
+	1.2.5 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-radeonhd/ , \
