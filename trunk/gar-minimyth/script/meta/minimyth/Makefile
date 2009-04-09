@@ -49,6 +49,7 @@ DEPENDS = \
 	utils/pciutils \
 	perl/perl \
 	perl/perl-Date-Manip \
+	perl/perl-Lchown \
 	perl/perl-MiniMyth \
 	utils/pmount \
 	net/portmap \
