@@ -1,5 +1,5 @@
 GARNAME = yasm
-GARVERSION = 0.7.2
+GARVERSION = 0.8.0
 CATEGORIES = devel
 MASTER_SITES = http://www.tortall.net/projects/yasm/releases/
 DISTFILES = $(DISTNAME).tar.gz
