@@ -1,6 +1,6 @@
 GARNAME = lcdproc
 GARVERSION = 0.5.2
-GARVERSION = 20090314Z
+GARVERSION = 20090410Z
 CATEGORIES = system
 ifeq ($(GARVERSION),0.5.2)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
