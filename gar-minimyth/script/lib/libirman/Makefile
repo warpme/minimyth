@@ -1,9 +1,8 @@
 GARNAME = libirman
-GARVERSION = 0.4.4
+GARVERSION = 0.4.5
 CATEGORIES = lib
-MASTER_SITES = http://lirc.sourceforge.net/software/snapshots/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-autoconf.patch
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/lirc/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -16,18 +15,21 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
+	--disable-swtest \
+	--with-gnu-ld
 
 include ../../gar.mk
 
-CFLAGS := $(CFLAGS) -fPIC
-
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:
 	@cp $(WORKSRC)/test_io   $(DESTDIR)/$(bindir)
 	@cp $(WORKSRC)/test_name $(DESTDIR)/$(bindir)
 	@cp $(WORKSRC)/test_func $(DESTDIR)/$(bindir)
+	@rm -f $(DESTDIR)$(libdir)/libirman.la
 	@$(MAKECOOKIE)
