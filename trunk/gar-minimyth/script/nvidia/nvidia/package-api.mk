@@ -68,8 +68,6 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 			libvdpau_nvidia.so:/usr/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.*), \
 			libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia) \
-		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/libnvidia-wfb.so.*), \
-			libnvidia-wfb.so:/usr/X11R6/lib/modules:$(libdir)/nvidia/xorg/modules:libwfb.so) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.*), \
 			libglx.so:/usr/X11R6/lib/modules/extensions:$(libdir)/nvidia/xorg/modules/extensions) \
 	)
