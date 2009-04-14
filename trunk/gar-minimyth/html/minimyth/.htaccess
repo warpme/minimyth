@@ -1,1 +1,9 @@
+Options +FollowSymlinks
+RewriteEngine on
+
 ErrorDocument 404 /error/404.shtml
+
+# We did not get here by redirect, to redirect.
+# This is a hack to make sure that the base /domains/minimyth.org is not in the real URL.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^(.*)$ http://www.minimyth.org/$1 [R=301,L]
