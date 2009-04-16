@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.6.0
+GARVERSION = 1.6.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -14,10 +14,6 @@ $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 DESCRIPTION = 
 define BLURB
 endef
-
-#	$(CATEGORY)/evieext \
-#	$(CATEGORY)/xf86bigfontproto \
-#	$(CATEGORY)/xf86miscproto \
 
 DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
