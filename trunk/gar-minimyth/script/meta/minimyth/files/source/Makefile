@@ -486,7 +486,8 @@ $(top_build)/stage/image/rootfs.fakeroot: $(top_build)/stage/image/rootfs
 		rm -rf           $</rootfs-ro/$(rootdir)/dev               ; \
 		mkdir -m 0755 -p $</rootfs-ro/$(rootdir)/dev               ; \
 		mknod -m 0600    $</rootfs-ro/$(rootdir)/dev/console c 5 1 ; \
-		mknod -m 0600    $</rootfs-ro/$(rootdir)/dev/initctl p     "
+		mknod -m 0600    $</rootfs-ro/$(rootdir)/dev/initctl p     ; \
+		mknod -m 0666    $</rootfs-ro/$(rootdir)/dev/null    c 1 3 "
 	@touch $@~
 	@mv $@~ $@
 
