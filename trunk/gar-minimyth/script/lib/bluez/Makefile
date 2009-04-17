@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.35
+GARVERSION = 4.36
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-static \
+	--enable-shared \
 	--disable-gtk-doc \
 	--enable-fortify \
 	--disable-pie \
