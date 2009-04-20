@@ -34,8 +34,8 @@ GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
 
 post-configure:
-	@echo "using gcc : $(GCC_VERSION) : $(CXX) ;" >  $(WORKSRC)/user-config.jam
-	@echo "using gcc : $(GCC_VERSION) : $(CXX) ;" >> $(WORKSRC)/tools/build/v2/user-config.jam
+	@echo "using gcc : $(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION).$(GCC_TEENY_VERSION) : $(CXX) ;" >  $(WORKSRC)/user-config.jam
+	@echo "using gcc : $(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION).$(GCC_TEENY_VERSION) : $(CXX) ;" >> $(WORKSRC)/tools/build/v2/user-config.jam
 	@$(MAKECOOKIE)
 
 post-install:
