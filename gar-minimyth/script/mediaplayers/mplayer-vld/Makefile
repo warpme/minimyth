@@ -10,6 +10,7 @@ PATCHFILES = \
 	$(DISTNAME)-demux_mov_fix_20080129.patch \
 	$(DISTNAME)-url_fix_20080120.patch \
 	$(DISTNAME)-stream_cddb_fix_20080120.patch
+PATCHFILES += $(DISTNAME)-liba52_external.patch
 PATCHFILES += $(DISTNAME)-libdvdread_udf.patch
 PATCHFILES += $(DISTNAME)-dvdnav.patch
 PATCHFILES += $(DISTNAME)-openchrome.patch $(DISTNAME)-x11_headers.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
@@ -20,7 +21,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libpng lib/zlib system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
