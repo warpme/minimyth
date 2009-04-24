@@ -74,22 +74,23 @@ sub start
                 {
                     foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                     {
+                        chomp;
                         given ($_)
                         {
                             # General unmuting.
-                            when (/^PCM$/)                { system(qq($amixer_command sset 'PCM'                       $gain unmute)); }
-                            when (/^Master$/)             { system(qq($amixer_command sset 'Master'                    $gain unmute)); }
-                            when (/^Front$/)              { system(qq($amixer_command sset 'Front'                     $gain unmute)); }
-                            when (/^Master Front$/)       { system(qq($amixer_command sset 'Master Front'              $gain unmute)); }
-                            when (/^Analog Front$/)       { system(qq($amixer_command sset 'Analog Front'              $gain unmute)); }
-                            when (/^Surround$/)           { system(qq($amixer_command sset 'Surround'                  $gain unmute)); }
-                            when (/^Analog Side$/)        { system(qq($amixer_command sset 'Analog Side'               $gain unmute)); }
-                            when (/^Analog Rear$/)        { system(qq($amixer_command sset 'Analog Rear'               $gain unmute)); }
-                            when (/^Center$/)             { system(qq($amixer_command sset 'Center'                    $gain unmute)); }
-                            when (/^LFE$/)                { system(qq($amixer_command sset 'LFE'                       $gain unmute)); }
-                            when (/^Analog Center\/LFE$/) { system(qq($amixer_command sset 'Analog Center/LFE'         $gain unmute)); }
+                            when (m!^'PCM'!)               { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Master'!)            { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Front'!)             { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Master Front'!)      { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Analog Front'!)      { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Surround'!)          { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Analog Side'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Analog Rear'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Center'!)            { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'LFE'!)               { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Analog Center/LFE'!) { system(qq($amixer_command sset $_ $gain unmute)); }
                             # VIA Specific unmuting.
-                            when (/^VIA DXS$/)            { system(qq($amixer_command sset 'VIA DXS'                   100%      )); }
+                            when (m!^'VIA DXS'!)           { system(qq($amixer_command sset $_ 100%        )); }
                         }
                     }
                     close(FILE);
@@ -99,19 +100,20 @@ sub start
             {
                 if (open(FILE, '-|', "$amixer_command scontrols"))
                 {
-                    foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                    foreach (grep(s/^Simple mixer control ('[^']*'(,[0-9]+)?)$/$1/, (<FILE>)))
                     {
+                        chomp;
                         given ($_)
                         {
                             # General unmuting.
-                            when (/^IEC958$/)             { system(qq($amixer_command sset 'IEC958'                    on        )); }
-                            when (/^IEC958 Front$/)       { system(qq($amixer_command sset 'IEC958 Front'              $gain unmute)); }
-                            when (/^IEC958 Side$/)        { system(qq($amixer_command sset 'IEC958 Side'               $gain unmute)); }
-                            when (/^IEC958 Rear$/)        { system(qq($amixer_command sset 'IEC958 Rear'               $gain unmute)); }
-                            when (/^IEC958 Center\/LFE$/) { system(qq($amixer_command sset 'IEC958 Center/LFE'         $gain unmute)); }
+                            when (m!^'IEC958'!)            { system(qq($amixer_command sset $_ on          )); }
+                            when (m!^'IEC958 Front'!)      { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'IEC958 Side'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'IEC958 Rear'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'IEC958 Center/LFE'!) { system(qq($amixer_command sset $_ $gain unmute)); }
                             # VIA Specific unmuting.
-                            when (/^IEC958 Playback AC97-SPSA$/)
-                                                          { system(qq($amixer_command sset 'IEC958 Playback AC97-SPSA' 0         )); }
+                            when (m!^'IEC958 Playback AC97-SPSA'!)
+                                                           { system(qq($amixer_command sset $_ 0           )); }
                         }
                     }
                     close(FILE);
@@ -147,22 +149,23 @@ sub stop
             {
                 foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
+                    chomp;
                     given ($_)
                     {
                         # General muting.
-                        when (/^PCM$/)                { system(qq($amixer_command set 'PCM'               0% mute)); }
-                        when (/^Master$/)             { system(qq($amixer_command set 'Master'            0% mute)); }
-                        when (/^Front$/)              { system(qq($amixer_command set 'Front'             0% mute)); }
-                        when (/^Analog Front$/)       { system(qq($amixer_command set 'Analog Front'      0% mute)); }
-                        when (/^Surround$/)           { system(qq($amixer_command set 'Surround'          0% mute)); }
-                        when (/^Analog Side$/)        { system(qq($amixer_command set 'Analog Sied'       0% mute)); }
-                        when (/^Analog Rear$/)        { system(qq($amixer_command set 'Analog Rear'       0% mute)); }
-                        when (/^Center$/)             { system(qq($amixer_command set 'Center'            0% mute)); }
-                        when (/^LFE$/)                { system(qq($amixer_command set 'LFE'               0% mute)); }
-                        when (/^Analog Center\/LFE$/) { system(qq($amixer_command set 'Analog Center/LFE' 0% mute)); }
+                        when (m!^'PCM'!)               { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Master'!)            { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Front'!)             { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Analog Front'!)      { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Surround'!)          { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Analog Side'!)       { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Analog Rear'!)       { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Center'!)            { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'LFE'!)               { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'Analog Center/LFE'!) { system(qq($amixer_command set $_ 0% mute)); }
                         # VIA Specific muting.
-                        when (/^VIA DXS$/)            { system(qq($amixer_command set 'VIA DXS'           0%     )); }
-                        when (/^IEC958 Center\/LFE$/) { system(qq($amixer_command set 'IEC958 Center/LFE' 0% mute)); }
+                        when (m!^'VIA DXS'!)           { system(qq($amixer_command set $_ 0%     )); }
+                        when (m!^'IEC958 Center/LFE'!) { system(qq($amixer_command set $_ 0% mute)); }
                     }
                 }
                 close(FILE);
@@ -174,14 +177,15 @@ sub stop
             {
                 foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
                 {
+                    chomp;
                     given ($_)
                     {
-                        # General unmuting.
-                        when (/^IEC958$/)             { system(qq($amixer_command set 'IEC958'            off    )); }
-                        when (/^IEC958 Front$/)       { system(qq($amixer_command set 'IEC958 Front'      0% mute)); }
-                        when (/^IEC958 Side$/)        { system(qq($amixer_command set 'IEC958 Side'       0% mute)); }
-                        when (/^IEC958 Rear$/)        { system(qq($amixer_command set 'IEC958 Rear'       0% mute)); }
-                        when (/^IEC958 Center\/LFE$/) { system(qq($amixer_command set 'IEC958 Center/LFE' 0% mute)); }
+                        # General muting.
+                        when (m!^'IEC958'!)            { system(qq($amixer_command set $_ off    )); }
+                        when (m!^'IEC958 Front'!)      { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'IEC958 Side'!)       { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'IEC958 Rear'!)       { system(qq($amixer_command set $_ 0% mute)); }
+                        when (m!^'IEC958 Center/LFE'!) { system(qq($amixer_command set $_ 0% mute)); }
                     }
                 }
                 close(FILE);
