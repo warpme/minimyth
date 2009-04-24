@@ -1,5 +1,5 @@
 GARNAME = acpid
-GARVERSION = 1.0.8
+GARVERSION = 1.0.10
 CATEGORIES = system
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
