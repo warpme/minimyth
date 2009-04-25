@@ -1,5 +1,5 @@
 GARNAME = libpciaccess
-GARVERSION = 0.10.5
+GARVERSION = 0.10.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c lib/zlib
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -22,7 +22,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld \
-	--with-pciids-path=$(datadir)
+	--with-pciids-path=$(datadir) \
+	--with-zlib
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
