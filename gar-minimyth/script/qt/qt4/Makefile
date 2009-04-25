@@ -1,11 +1,11 @@
 GARNAME = qt-x11-opensource-src
-GARVERSION = 4.5.0
+GARVERSION = 4.5.1
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
-LICENSE = GPL2/GPL3
+LICENSE = GPL3/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
@@ -30,6 +30,7 @@ CONFIGURE_ARGS = \
 	-demosdir $(DESTDIR)$(qt4prefix)/demos \
 	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
 	-shared \
+	-opensource \
 	-qt-gif \
 	-system-zlib \
 	-no-fast \
