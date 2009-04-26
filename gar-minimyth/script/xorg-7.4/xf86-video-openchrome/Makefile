@@ -15,6 +15,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \

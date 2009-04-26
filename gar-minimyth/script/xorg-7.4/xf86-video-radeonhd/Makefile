@@ -20,6 +20,7 @@ DEPENDS = lang/c utils/pciutils \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/videoproto \

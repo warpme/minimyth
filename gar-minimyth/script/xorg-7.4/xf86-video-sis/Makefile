@@ -14,6 +14,7 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
+	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/videoproto \
