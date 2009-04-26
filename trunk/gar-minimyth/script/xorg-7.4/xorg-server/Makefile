@@ -83,7 +83,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xdm-auth-1 \
 	--enable-glx \
 	--enable-dri \
-	--disable-dri2 \
+	--enable-dri2 \
 	--enable-xinerama \
 	--enable-xf86vidmode \
 	--disable-xace \
