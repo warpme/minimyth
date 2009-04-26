@@ -5,6 +5,8 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-changeset-18944.patch \
+	$(DISTNAME_SHORT)-ffmpeg_changeset-17091.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
