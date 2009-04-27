@@ -1,6 +1,6 @@
 diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 13:30:12.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 13:36:08.000000000 -0700
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 10:37:11.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 14:19:09.000000000 -0700
 @@ -404,7 +404,8 @@
  	/** AGP memory structure for our GTT binding. */
  	DRM_AGP_MEM *agp_mem;
@@ -21,8 +21,8 @@ diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.2-new
  
  /* i915_irq.c */
 diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 13:30:12.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 13:36:08.000000000 -0700
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 10:37:11.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 14:19:09.000000000 -0700
 @@ -43,8 +43,8 @@
  						     uint64_t offset,
  						     uint64_t size);
@@ -1012,9 +1012,20 @@ diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.2-new
  		char *dst = obj_priv->phys_obj->handle->vaddr + (i * PAGE_SIZE);
  
  		memcpy(dst, src, PAGE_SIZE);
+diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_reg.h linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_reg.h
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_reg.h	2009-04-27 10:37:11.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_reg.h	2009-04-27 14:24:10.000000000 -0700
+@@ -1431,6 +1431,7 @@
+ #define   DISPPLANE_NO_LINE_DOUBLE		0
+ #define   DISPPLANE_STEREO_POLARITY_FIRST	0
+ #define   DISPPLANE_STEREO_POLARITY_SECOND	(1<<18)
++#define   DISPPLANE_TILED			(1<<10)
+ #define DSPAADDR		0x70184
+ #define DSPASTRIDE		0x70188
+ #define DSPAPOS			0x7018C /* reserved */
 diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c	2009-04-27 13:30:12.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c	2009-04-27 13:38:16.000000000 -0700
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c	2009-04-27 10:37:11.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c	2009-04-27 14:19:09.000000000 -0700
 @@ -338,6 +338,7 @@
  	int dspbase = (pipe == 0 ? DSPAADDR : DSPBADDR);
  	int dspsurf = (pipe == 0 ? DSPASURF : DSPBSURF);
