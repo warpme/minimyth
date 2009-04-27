@@ -1,275 +1,6 @@
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/drm_gem.c linux-2.6.29.1-new/drivers/gpu/drm/drm_gem.c
---- linux-2.6.29.1-old/drivers/gpu/drm/drm_gem.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/drm_gem.c	2009-04-25 06:29:46.000000000 -0700
-@@ -505,7 +505,6 @@
- 	struct drm_map *map = NULL;
- 	struct drm_gem_object *obj;
- 	struct drm_hash_item *hash;
--	unsigned long prot;
- 	int ret = 0;
- 
- 	mutex_lock(&dev->struct_mutex);
-@@ -538,11 +537,7 @@
- 	vma->vm_ops = obj->dev->driver->gem_vm_ops;
- 	vma->vm_private_data = map->handle;
- 	/* FIXME: use pgprot_writecombine when available */
--	prot = pgprot_val(vma->vm_page_prot);
--#ifdef CONFIG_X86
--	prot |= _PAGE_CACHE_WC;
--#endif
--	vma->vm_page_prot = __pgprot(prot);
-+	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
- 
- 	/* Take a ref for this mapping of the object, so that the fault
- 	 * handler can dereference the mmap offset's pointer to the object.
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_dma.c linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_dma.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_dma.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_dma.c	2009-04-25 06:29:46.000000000 -0700
-@@ -41,7 +41,6 @@
- int i915_wait_ring(struct drm_device * dev, int n, const char *caller)
- {
- 	drm_i915_private_t *dev_priv = dev->dev_private;
--	struct drm_i915_master_private *master_priv = dev->primary->master->driver_priv;
- 	drm_i915_ring_buffer_t *ring = &(dev_priv->ring);
- 	u32 acthd_reg = IS_I965G(dev) ? ACTHD_I965 : ACTHD;
- 	u32 last_acthd = I915_READ(acthd_reg);
-@@ -58,8 +57,12 @@
- 		if (ring->space >= n)
- 			return 0;
- 
--		if (master_priv->sarea_priv)
--			master_priv->sarea_priv->perf_boxes |= I915_BOX_WAIT;
-+		if (dev->primary->master) {
-+			struct drm_i915_master_private *master_priv = dev->primary->master->driver_priv;
-+			if (master_priv->sarea_priv)
-+				master_priv->sarea_priv->perf_boxes |= I915_BOX_WAIT;
-+		}
-+
- 
- 		if (ring->head != last_head)
- 			i = 0;
-@@ -356,7 +359,7 @@
- 	return ret;
- }
- 
--static int i915_emit_cmds(struct drm_device * dev, int __user * buffer, int dwords)
-+static int i915_emit_cmds(struct drm_device * dev, int *buffer, int dwords)
- {
- 	drm_i915_private_t *dev_priv = dev->dev_private;
- 	int i;
-@@ -370,8 +373,7 @@
- 	for (i = 0; i < dwords;) {
- 		int cmd, sz;
- 
--		if (DRM_COPY_FROM_USER_UNCHECKED(&cmd, &buffer[i], sizeof(cmd)))
--			return -EINVAL;
-+		cmd = buffer[i];
- 
- 		if ((sz = validate_cmd(cmd)) == 0 || i + sz > dwords)
- 			return -EINVAL;
-@@ -379,11 +381,7 @@
- 		OUT_RING(cmd);
- 
- 		while (++i, --sz) {
--			if (DRM_COPY_FROM_USER_UNCHECKED(&cmd, &buffer[i],
--							 sizeof(cmd))) {
--				return -EINVAL;
--			}
--			OUT_RING(cmd);
-+			OUT_RING(buffer[i]);
- 		}
- 	}
- 
-@@ -397,17 +395,13 @@
- 
- int
- i915_emit_box(struct drm_device *dev,
--	      struct drm_clip_rect __user *boxes,
-+	      struct drm_clip_rect *boxes,
- 	      int i, int DR1, int DR4)
- {
- 	drm_i915_private_t *dev_priv = dev->dev_private;
--	struct drm_clip_rect box;
-+	struct drm_clip_rect box = boxes[i];
- 	RING_LOCALS;
- 
--	if (DRM_COPY_FROM_USER_UNCHECKED(&box, &boxes[i], sizeof(box))) {
--		return -EFAULT;
--	}
--
- 	if (box.y2 <= box.y1 || box.x2 <= box.x1 || box.y2 <= 0 || box.x2 <= 0) {
- 		DRM_ERROR("Bad box %d,%d..%d,%d\n",
- 			  box.x1, box.y1, box.x2, box.y2);
-@@ -460,7 +454,9 @@
- }
- 
- static int i915_dispatch_cmdbuffer(struct drm_device * dev,
--				   drm_i915_cmdbuffer_t * cmd)
-+				   drm_i915_cmdbuffer_t *cmd,
-+				   struct drm_clip_rect *cliprects,
-+				   void *cmdbuf)
- {
- 	int nbox = cmd->num_cliprects;
- 	int i = 0, count, ret;
-@@ -476,13 +472,13 @@
- 
- 	for (i = 0; i < count; i++) {
- 		if (i < nbox) {
--			ret = i915_emit_box(dev, cmd->cliprects, i,
-+			ret = i915_emit_box(dev, cliprects, i,
- 					    cmd->DR1, cmd->DR4);
- 			if (ret)
- 				return ret;
- 		}
- 
--		ret = i915_emit_cmds(dev, (int __user *)cmd->buf, cmd->sz / 4);
-+		ret = i915_emit_cmds(dev, cmdbuf, cmd->sz / 4);
- 		if (ret)
- 			return ret;
- 	}
-@@ -492,10 +488,10 @@
- }
- 
- static int i915_dispatch_batchbuffer(struct drm_device * dev,
--				     drm_i915_batchbuffer_t * batch)
-+				     drm_i915_batchbuffer_t * batch,
-+				     struct drm_clip_rect *cliprects)
- {
- 	drm_i915_private_t *dev_priv = dev->dev_private;
--	struct drm_clip_rect __user *boxes = batch->cliprects;
- 	int nbox = batch->num_cliprects;
- 	int i = 0, count;
- 	RING_LOCALS;
-@@ -511,7 +507,7 @@
- 
- 	for (i = 0; i < count; i++) {
- 		if (i < nbox) {
--			int ret = i915_emit_box(dev, boxes, i,
-+			int ret = i915_emit_box(dev, cliprects, i,
- 						batch->DR1, batch->DR4);
- 			if (ret)
- 				return ret;
-@@ -626,6 +622,7 @@
- 	    master_priv->sarea_priv;
- 	drm_i915_batchbuffer_t *batch = data;
- 	int ret;
-+	struct drm_clip_rect *cliprects = NULL;
- 
- 	if (!dev_priv->allow_batchbuffer) {
- 		DRM_ERROR("Batchbuffer ioctl disabled\n");
-@@ -637,17 +634,35 @@
- 
- 	RING_LOCK_TEST_WITH_RETURN(dev, file_priv);
- 
--	if (batch->num_cliprects && DRM_VERIFYAREA_READ(batch->cliprects,
--						       batch->num_cliprects *
--						       sizeof(struct drm_clip_rect)))
--		return -EFAULT;
-+	if (batch->num_cliprects < 0)
-+		return -EINVAL;
-+
-+	if (batch->num_cliprects) {
-+		cliprects = drm_calloc(batch->num_cliprects,
-+				       sizeof(struct drm_clip_rect),
-+				       DRM_MEM_DRIVER);
-+		if (cliprects == NULL)
-+			return -ENOMEM;
-+
-+		ret = copy_from_user(cliprects, batch->cliprects,
-+				     batch->num_cliprects *
-+				     sizeof(struct drm_clip_rect));
-+		if (ret != 0)
-+			goto fail_free;
-+	}
- 
- 	mutex_lock(&dev->struct_mutex);
--	ret = i915_dispatch_batchbuffer(dev, batch);
-+	ret = i915_dispatch_batchbuffer(dev, batch, cliprects);
- 	mutex_unlock(&dev->struct_mutex);
- 
- 	if (sarea_priv)
- 		sarea_priv->last_dispatch = READ_BREADCRUMB(dev_priv);
-+
-+fail_free:
-+	drm_free(cliprects,
-+		 batch->num_cliprects * sizeof(struct drm_clip_rect),
-+		 DRM_MEM_DRIVER);
-+
- 	return ret;
- }
- 
-@@ -659,6 +674,8 @@
- 	drm_i915_sarea_t *sarea_priv = (drm_i915_sarea_t *)
- 	    master_priv->sarea_priv;
- 	drm_i915_cmdbuffer_t *cmdbuf = data;
-+	struct drm_clip_rect *cliprects = NULL;
-+	void *batch_data;
- 	int ret;
- 
- 	DRM_DEBUG("i915 cmdbuffer, buf %p sz %d cliprects %d\n",
-@@ -666,25 +683,50 @@
- 
- 	RING_LOCK_TEST_WITH_RETURN(dev, file_priv);
- 
--	if (cmdbuf->num_cliprects &&
--	    DRM_VERIFYAREA_READ(cmdbuf->cliprects,
--				cmdbuf->num_cliprects *
--				sizeof(struct drm_clip_rect))) {
--		DRM_ERROR("Fault accessing cliprects\n");
--		return -EFAULT;
-+	if (cmdbuf->num_cliprects < 0)
-+		return -EINVAL;
-+
-+	batch_data = drm_alloc(cmdbuf->sz, DRM_MEM_DRIVER);
-+	if (batch_data == NULL)
-+		return -ENOMEM;
-+
-+	ret = copy_from_user(batch_data, cmdbuf->buf, cmdbuf->sz);
-+	if (ret != 0)
-+		goto fail_batch_free;
-+
-+	if (cmdbuf->num_cliprects) {
-+		cliprects = drm_calloc(cmdbuf->num_cliprects,
-+				       sizeof(struct drm_clip_rect),
-+				       DRM_MEM_DRIVER);
-+		if (cliprects == NULL)
-+			goto fail_batch_free;
-+
-+		ret = copy_from_user(cliprects, cmdbuf->cliprects,
-+				     cmdbuf->num_cliprects *
-+				     sizeof(struct drm_clip_rect));
-+		if (ret != 0)
-+			goto fail_clip_free;
- 	}
- 
- 	mutex_lock(&dev->struct_mutex);
--	ret = i915_dispatch_cmdbuffer(dev, cmdbuf);
-+	ret = i915_dispatch_cmdbuffer(dev, cmdbuf, cliprects, batch_data);
- 	mutex_unlock(&dev->struct_mutex);
- 	if (ret) {
- 		DRM_ERROR("i915_dispatch_cmdbuffer failed\n");
--		return ret;
-+		goto fail_batch_free;
- 	}
- 
- 	if (sarea_priv)
- 		sarea_priv->last_dispatch = READ_BREADCRUMB(dev_priv);
--	return 0;
-+
-+fail_batch_free:
-+	drm_free(batch_data, cmdbuf->sz, DRM_MEM_DRIVER);
-+fail_clip_free:
-+	drm_free(cliprects,
-+		 cmdbuf->num_cliprects * sizeof(struct drm_clip_rect),
-+		 DRM_MEM_DRIVER);
-+
-+	return ret;
- }
- 
- static int i915_flip_bufs(struct drm_device *dev, void *data,
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_drv.h
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_drv.h	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_drv.h	2009-04-25 06:29:46.000000000 -0700
+diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 13:30:12.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 13:36:08.000000000 -0700
 @@ -404,7 +404,8 @@
  	/** AGP memory structure for our GTT binding. */
  	DRM_AGP_MEM *agp_mem;
@@ -289,9 +20,9 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.1-new
  			 int i, int DR1, int DR4);
  
  /* i915_irq.c */
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_gem.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_gem.c	2009-04-25 06:29:46.000000000 -0700
+diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 13:30:12.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 13:36:08.000000000 -0700
 @@ -43,8 +43,8 @@
  						     uint64_t offset,
  						     uint64_t size);
@@ -998,15 +729,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  
  #if WATCH_PWRITE
  	if (ret)
-@@ -603,6 +1072,7 @@
- 	case -EAGAIN:
- 		return VM_FAULT_OOM;
- 	case -EFAULT:
-+	case -EINVAL:
- 		return VM_FAULT_SIGBUS;
- 	default:
- 		return VM_FAULT_NOPAGE;
-@@ -816,29 +1286,30 @@
+@@ -817,29 +1286,30 @@
  }
  
  static void
@@ -1046,7 +769,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  }
  
  static void
-@@ -1290,7 +1761,7 @@
+@@ -1291,7 +1761,7 @@
  	if (obj_priv->fence_reg != I915_FENCE_REG_NONE)
  		i915_gem_clear_fence_reg(obj);
  
@@ -1055,7 +778,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  
  	if (obj_priv->gtt_space) {
  		atomic_dec(&dev->gtt_count);
-@@ -1409,7 +1880,7 @@
+@@ -1410,7 +1880,7 @@
  }
  
  static int
@@ -1064,7 +787,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  {
  	struct drm_i915_gem_object *obj_priv = obj->driver_private;
  	int page_count, i;
-@@ -1418,18 +1889,19 @@
+@@ -1419,18 +1889,19 @@
  	struct page *page;
  	int ret;
  
@@ -1089,7 +812,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  		return -ENOMEM;
  	}
  
-@@ -1440,10 +1912,10 @@
+@@ -1441,10 +1912,10 @@
  		if (IS_ERR(page)) {
  			ret = PTR_ERR(page);
  			DRM_ERROR("read_mapping_page failed: %d\n", ret);
@@ -1102,7 +825,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	}
  	return 0;
  }
-@@ -1766,7 +2238,7 @@
+@@ -1767,7 +2238,7 @@
  	DRM_INFO("Binding object of size %d at 0x%08x\n",
  		 obj->size, obj_priv->gtt_offset);
  #endif
@@ -1111,7 +834,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	if (ret) {
  		drm_mm_put_block(obj_priv->gtt_space);
  		obj_priv->gtt_space = NULL;
-@@ -1778,12 +2250,12 @@
+@@ -1779,12 +2250,12 @@
  	 * into the GTT.
  	 */
  	obj_priv->agp_mem = drm_agp_bind_pages(dev,
@@ -1126,7 +849,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  		drm_mm_put_block(obj_priv->gtt_space);
  		obj_priv->gtt_space = NULL;
  		return -ENOMEM;
-@@ -1810,10 +2282,10 @@
+@@ -1811,10 +2282,10 @@
  	 * to GPU, and we can ignore the cache flush because it'll happen
  	 * again at bind time.
  	 */
@@ -1139,7 +862,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  }
  
  /** Flushes any GPU write domain for the object if it's dirty. */
-@@ -2158,7 +2630,7 @@
+@@ -2159,7 +2630,7 @@
  		for (i = 0; i <= (obj->size - 1) / PAGE_SIZE; i++) {
  			if (obj_priv->page_cpu_valid[i])
  				continue;
@@ -1148,7 +871,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  		}
  		drm_agp_chipset_flush(dev);
  	}
-@@ -2224,7 +2696,7 @@
+@@ -2225,7 +2696,7 @@
  		if (obj_priv->page_cpu_valid[i])
  			continue;
  
@@ -1157,7 +880,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  
  		obj_priv->page_cpu_valid[i] = 1;
  	}
-@@ -2423,11 +2895,10 @@
+@@ -2424,11 +2895,10 @@
  static int
  i915_dispatch_gem_execbuffer(struct drm_device *dev,
  			      struct drm_i915_gem_execbuffer *exec,
@@ -1170,7 +893,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	int nbox = exec->num_cliprects;
  	int i = 0, count;
  	uint32_t	exec_start, exec_len;
-@@ -2448,7 +2919,7 @@
+@@ -2449,7 +2919,7 @@
  
  	for (i = 0; i < count; i++) {
  		if (i < nbox) {
@@ -1179,7 +902,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  						exec->DR1, exec->DR4);
  			if (ret)
  				return ret;
-@@ -2515,6 +2986,7 @@
+@@ -2516,6 +2986,7 @@
  	struct drm_gem_object **object_list = NULL;
  	struct drm_gem_object *batch_obj;
  	struct drm_i915_gem_object *obj_priv;
@@ -1187,7 +910,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	int ret, i, pinned = 0;
  	uint64_t exec_offset;
  	uint32_t seqno, flush_domains;
-@@ -2551,6 +3023,23 @@
+@@ -2552,6 +3023,23 @@
  		goto pre_mutex_err;
  	}
  
@@ -1211,7 +934,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	mutex_lock(&dev->struct_mutex);
  
  	i915_verify_inactive(dev, __FILE__, __LINE__);
-@@ -2687,7 +3176,7 @@
+@@ -2688,7 +3176,7 @@
  #endif
  
  	/* Exec the batchbuffer */
@@ -1220,7 +943,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	if (ret) {
  		DRM_ERROR("dispatch failed %d\n", ret);
  		goto err;
-@@ -2756,6 +3245,8 @@
+@@ -2757,6 +3245,8 @@
  		 DRM_MEM_DRIVER);
  	drm_free(exec_list, sizeof(*exec_list) * args->buffer_count,
  		 DRM_MEM_DRIVER);
@@ -1229,7 +952,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  
  	return ret;
  }
-@@ -3192,7 +3683,7 @@
+@@ -3193,7 +3683,7 @@
  
  	dev_priv->status_gfx_addr = obj_priv->gtt_offset;
  
@@ -1238,7 +961,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	if (dev_priv->hw_status_page == NULL) {
  		DRM_ERROR("Failed to map status page.\n");
  		memset(&dev_priv->hws_map, 0, sizeof(dev_priv->hws_map));
-@@ -3222,7 +3713,7 @@
+@@ -3223,7 +3713,7 @@
  	obj = dev_priv->hws_obj;
  	obj_priv = obj->driver_private;
  
@@ -1247,7 +970,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	i915_gem_object_unpin(obj);
  	drm_gem_object_unreference(obj);
  	dev_priv->hws_obj = NULL;
-@@ -3525,20 +4016,20 @@
+@@ -3526,20 +4016,20 @@
  	if (!obj_priv->phys_obj)
  		return;
  
@@ -1271,7 +994,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	drm_agp_chipset_flush(dev);
  out:
  	obj_priv->phys_obj->cur_obj = NULL;
-@@ -3581,7 +4072,7 @@
+@@ -3582,7 +4072,7 @@
  	obj_priv->phys_obj = dev_priv->mm.phys_objs[id - 1];
  	obj_priv->phys_obj->cur_obj = obj;
  
@@ -1280,7 +1003,7 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  	if (ret) {
  		DRM_ERROR("failed to get page list\n");
  		goto out;
-@@ -3590,7 +4081,7 @@
+@@ -3591,7 +4081,7 @@
  	page_count = obj->size / PAGE_SIZE;
  
  	for (i = 0; i < page_count; i++) {
@@ -1289,163 +1012,9 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.1-new
  		char *dst = obj_priv->phys_obj->handle->vaddr + (i * PAGE_SIZE);
  
  		memcpy(dst, src, PAGE_SIZE);
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem_tiling.c linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_gem_tiling.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_gem_tiling.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_gem_tiling.c	2009-04-25 06:29:46.000000000 -0700
-@@ -96,16 +96,16 @@
- 		 */
- 		swizzle_x = I915_BIT_6_SWIZZLE_NONE;
- 		swizzle_y = I915_BIT_6_SWIZZLE_NONE;
--	} else if ((!IS_I965G(dev) && !IS_G33(dev)) || IS_I965GM(dev) ||
--		   IS_GM45(dev)) {
-+	} else if (IS_MOBILE(dev)) {
- 		uint32_t dcc;
- 
--		/* On 915-945 and GM965, channel interleave by the CPU is
--		 * determined by DCC.  The CPU will alternate based on bit 6
--		 * in interleaved mode, and the GPU will then also alternate
--		 * on bit 6, 9, and 10 for X, but the CPU may also optionally
--		 * alternate based on bit 17 (XOR not disabled and XOR
--		 * bit == 17).
-+		/* On mobile 9xx chipsets, channel interleave by the CPU is
-+		 * determined by DCC.  For single-channel, neither the CPU
-+		 * nor the GPU do swizzling.  For dual channel interleaved,
-+		 * the GPU's interleave is bit 9 and 10 for X tiled, and bit
-+		 * 9 for Y tiled.  The CPU's interleave is independent, and
-+		 * can be based on either bit 11 (haven't seen this yet) or
-+		 * bit 17 (common).
- 		 */
- 		dcc = I915_READ(DCC);
- 		switch (dcc & DCC_ADDRESSING_MODE_MASK) {
-@@ -115,19 +115,18 @@
- 			swizzle_y = I915_BIT_6_SWIZZLE_NONE;
- 			break;
- 		case DCC_ADDRESSING_MODE_DUAL_CHANNEL_INTERLEAVED:
--			if (IS_I915G(dev) || IS_I915GM(dev) ||
--			    dcc & DCC_CHANNEL_XOR_DISABLE) {
-+			if (dcc & DCC_CHANNEL_XOR_DISABLE) {
-+				/* This is the base swizzling by the GPU for
-+				 * tiled buffers.
-+				 */
- 				swizzle_x = I915_BIT_6_SWIZZLE_9_10;
- 				swizzle_y = I915_BIT_6_SWIZZLE_9;
--			} else if ((IS_I965GM(dev) || IS_GM45(dev)) &&
--				   (dcc & DCC_CHANNEL_XOR_BIT_17) == 0) {
--				/* GM965/GM45 does either bit 11 or bit 17
--				 * swizzling.
--				 */
-+			} else if ((dcc & DCC_CHANNEL_XOR_BIT_17) == 0) {
-+				/* Bit 11 swizzling by the CPU in addition. */
- 				swizzle_x = I915_BIT_6_SWIZZLE_9_10_11;
- 				swizzle_y = I915_BIT_6_SWIZZLE_9_11;
- 			} else {
--				/* Bit 17 or perhaps other swizzling */
-+				/* Bit 17 swizzling by the CPU in addition. */
- 				swizzle_x = I915_BIT_6_SWIZZLE_UNKNOWN;
- 				swizzle_y = I915_BIT_6_SWIZZLE_UNKNOWN;
- 			}
-@@ -266,7 +265,6 @@
- 	mutex_lock(&dev->struct_mutex);
- 
- 	if (args->tiling_mode == I915_TILING_NONE) {
--		obj_priv->tiling_mode = I915_TILING_NONE;
- 		args->swizzle_mode = I915_BIT_6_SWIZZLE_NONE;
- 	} else {
- 		if (args->tiling_mode == I915_TILING_X)
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_reg.h linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_reg.h
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/i915_reg.h	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/i915_reg.h	2009-04-25 06:29:46.000000000 -0700
-@@ -629,6 +629,22 @@
- #define   TV_HOTPLUG_INT_EN			(1 << 18)
- #define   CRT_HOTPLUG_INT_EN			(1 << 9)
- #define   CRT_HOTPLUG_FORCE_DETECT		(1 << 3)
-+#define CRT_HOTPLUG_ACTIVATION_PERIOD_32	(0 << 8)
-+/* must use period 64 on GM45 according to docs */
-+#define CRT_HOTPLUG_ACTIVATION_PERIOD_64	(1 << 8)
-+#define CRT_HOTPLUG_DAC_ON_TIME_2M		(0 << 7)
-+#define CRT_HOTPLUG_DAC_ON_TIME_4M		(1 << 7)
-+#define CRT_HOTPLUG_VOLTAGE_COMPARE_40		(0 << 5)
-+#define CRT_HOTPLUG_VOLTAGE_COMPARE_50		(1 << 5)
-+#define CRT_HOTPLUG_VOLTAGE_COMPARE_60		(2 << 5)
-+#define CRT_HOTPLUG_VOLTAGE_COMPARE_70		(3 << 5)
-+#define CRT_HOTPLUG_VOLTAGE_COMPARE_MASK	(3 << 5)
-+#define CRT_HOTPLUG_DETECT_DELAY_1G		(0 << 4)
-+#define CRT_HOTPLUG_DETECT_DELAY_2G		(1 << 4)
-+#define CRT_HOTPLUG_DETECT_VOLTAGE_325MV	(0 << 2)
-+#define CRT_HOTPLUG_DETECT_VOLTAGE_475MV	(1 << 2)
-+#define CRT_HOTPLUG_MASK			(0x3fc) /* Bits 9-2 */
-+
- 
- #define PORT_HOTPLUG_STAT	0x61114
- #define   HDMIB_HOTPLUG_INT_STATUS		(1 << 29)
-@@ -1415,6 +1431,7 @@
- #define   DISPPLANE_NO_LINE_DOUBLE		0
- #define   DISPPLANE_STEREO_POLARITY_FIRST	0
- #define   DISPPLANE_STEREO_POLARITY_SECOND	(1<<18)
-+#define   DISPPLANE_TILED			(1<<10)
- #define DSPAADDR		0x70184
- #define DSPASTRIDE		0x70188
- #define DSPAPOS			0x7018C /* reserved */
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_crt.c linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_crt.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_crt.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_crt.c	2009-04-25 06:29:46.000000000 -0700
-@@ -133,20 +133,39 @@
- {
- 	struct drm_device *dev = connector->dev;
- 	struct drm_i915_private *dev_priv = dev->dev_private;
--	u32 temp;
--
--	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
--
--	temp = I915_READ(PORT_HOTPLUG_EN);
--
--	I915_WRITE(PORT_HOTPLUG_EN,
--		   temp | CRT_HOTPLUG_FORCE_DETECT | (1 << 5));
--
--	do {
--		if (!(I915_READ(PORT_HOTPLUG_EN) & CRT_HOTPLUG_FORCE_DETECT))
--			break;
--		msleep(1);
--	} while (time_after(timeout, jiffies));
-+	u32 hotplug_en;
-+	int i, tries = 0;
-+	/*
-+	 * On 4 series desktop, CRT detect sequence need to be done twice
-+	 * to get a reliable result.
-+	 */
-+
-+	if (IS_G4X(dev) && !IS_GM45(dev))
-+		tries = 2;
-+	else
-+		tries = 1;
-+	hotplug_en = I915_READ(PORT_HOTPLUG_EN);
-+	hotplug_en &= ~(CRT_HOTPLUG_MASK);
-+	hotplug_en |= CRT_HOTPLUG_FORCE_DETECT;
-+
-+	if (IS_GM45(dev))
-+		hotplug_en |= CRT_HOTPLUG_ACTIVATION_PERIOD_64;
-+
-+	hotplug_en |= CRT_HOTPLUG_VOLTAGE_COMPARE_50;
-+
-+	for (i = 0; i < tries ; i++) {
-+		unsigned long timeout;
-+		/* turn on the FORCE_DETECT */
-+		I915_WRITE(PORT_HOTPLUG_EN, hotplug_en);
-+		timeout = jiffies + msecs_to_jiffies(1000);
-+		/* wait for FORCE_DETECT to go off */
-+		do {
-+			if (!(I915_READ(PORT_HOTPLUG_EN) &
-+					CRT_HOTPLUG_FORCE_DETECT))
-+				break;
-+			msleep(1);
-+		} while (time_after(timeout, jiffies));
-+	}
- 
- 	if ((I915_READ(PORT_HOTPLUG_STAT) & CRT_HOTPLUG_MONITOR_MASK) ==
- 	    CRT_HOTPLUG_MONITOR_COLOR)
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_display.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_display.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_display.c	2009-04-25 06:29:46.000000000 -0700
+diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c
+--- linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c	2009-04-27 13:30:12.000000000 -0700
++++ linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c	2009-04-27 13:38:16.000000000 -0700
 @@ -338,6 +338,7 @@
  	int dspbase = (pipe == 0 ? DSPAADDR : DSPBADDR);
  	int dspsurf = (pipe == 0 ? DSPASURF : DSPBSURF);
@@ -1476,86 +1045,3 @@ diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.29.
  	} else {
  		I915_WRITE(dspbase, Start + Offset);
  		I915_READ(dspbase);
-@@ -1474,13 +1483,21 @@
- 
- 	if (IS_I9XX(dev)) {
- 		int found;
-+		u32 reg;
- 
- 		if (I915_READ(SDVOB) & SDVO_DETECTED) {
- 			found = intel_sdvo_init(dev, SDVOB);
- 			if (!found && SUPPORTS_INTEGRATED_HDMI(dev))
- 				intel_hdmi_init(dev, SDVOB);
- 		}
--		if (!IS_G4X(dev) || (I915_READ(SDVOB) & SDVO_DETECTED)) {
-+
-+		/* Before G4X SDVOC doesn't have its own detect register */
-+		if (IS_G4X(dev))
-+			reg = SDVOC;
-+		else
-+			reg = SDVOB;
-+
-+		if (I915_READ(reg) & SDVO_DETECTED) {
- 			found = intel_sdvo_init(dev, SDVOC);
- 			if (!found && SUPPORTS_INTEGRATED_HDMI(dev))
- 				intel_hdmi_init(dev, SDVOC);
-diff -Naur linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_tv.c linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_tv.c
---- linux-2.6.29.1-old/drivers/gpu/drm/i915/intel_tv.c	2009-04-02 13:55:27.000000000 -0700
-+++ linux-2.6.29.1-new/drivers/gpu/drm/i915/intel_tv.c	2009-04-25 06:29:46.000000000 -0700
-@@ -1558,33 +1558,49 @@
- 	struct drm_device *dev = connector->dev;
- 	struct intel_output *intel_output = to_intel_output(connector);
- 	struct intel_tv_priv *tv_priv = intel_output->dev_priv;
-+	struct drm_encoder *encoder = &intel_output->enc;
-+	struct drm_crtc *crtc = encoder->crtc;
- 	int ret = 0;
-+	bool changed = false;
- 
- 	ret = drm_connector_property_set_value(connector, property, val);
- 	if (ret < 0)
- 		goto out;
- 
--	if (property == dev->mode_config.tv_left_margin_property)
-+	if (property == dev->mode_config.tv_left_margin_property &&
-+		tv_priv->margin[TV_MARGIN_LEFT] != val) {
- 		tv_priv->margin[TV_MARGIN_LEFT] = val;
--	else if (property == dev->mode_config.tv_right_margin_property)
-+		changed = true;
-+	} else if (property == dev->mode_config.tv_right_margin_property &&
-+		tv_priv->margin[TV_MARGIN_RIGHT] != val) {
- 		tv_priv->margin[TV_MARGIN_RIGHT] = val;
--	else if (property == dev->mode_config.tv_top_margin_property)
-+		changed = true;
-+	} else if (property == dev->mode_config.tv_top_margin_property &&
-+		tv_priv->margin[TV_MARGIN_TOP] != val) {
- 		tv_priv->margin[TV_MARGIN_TOP] = val;
--	else if (property == dev->mode_config.tv_bottom_margin_property)
-+		changed = true;
-+	} else if (property == dev->mode_config.tv_bottom_margin_property &&
-+		tv_priv->margin[TV_MARGIN_BOTTOM] != val) {
- 		tv_priv->margin[TV_MARGIN_BOTTOM] = val;
--	else if (property == dev->mode_config.tv_mode_property) {
-+		changed = true;
-+	} else if (property == dev->mode_config.tv_mode_property) {
- 		if (val >= NUM_TV_MODES) {
- 			ret = -EINVAL;
- 			goto out;
- 		}
-+		if (!strcmp(tv_priv->tv_format, tv_modes[val].name))
-+			goto out;
-+
- 		tv_priv->tv_format = tv_modes[val].name;
--		intel_tv_mode_set(&intel_output->enc, NULL, NULL);
-+		changed = true;
- 	} else {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
--	intel_tv_mode_set(&intel_output->enc, NULL, NULL);
-+	if (changed && crtc)
-+		drm_crtc_helper_set_mode(crtc, &crtc->mode, crtc->x,
-+				crtc->y, crtc->fb);
- out:
- 	return ret;
- }
