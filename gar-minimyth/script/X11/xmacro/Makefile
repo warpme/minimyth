@@ -1,6 +1,6 @@
 GARNAME = xmacro
 GARVERSION = pre0.3-20000911
-CATEGORIES = lib
+CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-c++.patch $(DISTNAME)-makefile.patch
