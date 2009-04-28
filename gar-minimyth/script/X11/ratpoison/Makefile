@@ -1,5 +1,5 @@
 GARNAME = ratpoison
-GARVERSION = 1.4.3
+GARVERSION = 1.4.4
 CATEGORIES = X11
 MASTER_SITES = http://savannah.nongnu.org/download/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -22,6 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-history \
 	--with-xterm=rxvt \
+	--with-xft \
 	--with-x
 
 include ../../gar.mk
