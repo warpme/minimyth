@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).patch $(DISTNAME)-ldd.patch
+PATCHFILES = $(DISTNAME)-ticket-7060.patch $(DISTNAME)-perl.patch.gar $(DISTNAME).patch $(DISTNAME)-ldd.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -36,7 +36,7 @@ INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-bind-now \
-	--enable-kernel=2.6.9 \
+	--enable-kernel=2.6.26 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
