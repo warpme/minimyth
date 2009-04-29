@@ -1,5 +1,4 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.2
 GARVERSION = 20090410Z
 CATEGORIES = system
 ifeq ($(GARVERSION),0.5.2)
@@ -13,7 +12,7 @@ else
 MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
-PATCHFILES += $(DISTNAME)-dm140_henlar_v0.2.patch $(DISTNAME)-imonlcd_0.3_with_send_fix.patch
+PATCHFILES += $(DISTNAME)-dm140_henlar_v0.2.patch $(DISTNAME)-imonlcd_0.6.1.patch
 endif
 LICENSE = GPL2
 
