@@ -9,16 +9,21 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libusb lib/zlib
+DEPENDS = lang/c lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-zlib
 
 include ../../gar.mk
 
 extract-usb.ids:
 	@cp -f $(DOWNLOADDIR)/usb.ids $(WORKSRC)/usb.ids
+	@$(MAKECOOKIE)
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
