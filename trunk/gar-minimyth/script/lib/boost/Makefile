@@ -39,6 +39,6 @@ post-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc43-mt.a
-	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc43-mt-1_38.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc*-mt.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc*-mt-1_38.a
 	@$(MAKECOOKIE)
