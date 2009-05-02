@@ -1,5 +1,5 @@
 GARNAME = unzip
-GARVERSION = 5.52
+GARVERSION = 6.0
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/infozip/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).tar.gz
@@ -10,7 +10,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c
+DEPENDS = lang/c
+
+WORKSRC = $(WORKDIR)/$(GARNAME)$(subst .,,$(GARVERSION))
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
