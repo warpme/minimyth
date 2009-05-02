@@ -1,11 +1,11 @@
 GARNAME = mysql
-GARVERSION = 5.0.77
+GARVERSION = 5.1.34
 CATEGORIES = db
-MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.0/
-MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.0/
-MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.0/
+MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.1/
+MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.1/
+MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
-PATCHFILES  = $(DISTNAME)-perl.patch.gar $(DISTNAME)-configure.patch
+PATCHFILES  = $(DISTNAME)-perl.patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
@@ -29,6 +29,7 @@ INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
 	--enable-shared \
 	--disable-static \
 	--enable-thread-safe-client \
@@ -39,10 +40,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-docs \
 	--without-bench
 
-CONFIGURE_ENV = $(shell cat $(WORKDIR)/config.cache.$(GARCH_FAMILY))
+#CONFIGURE_ENV = $(shell cat $(WORKDIR)/config.cache.$(GARCH_FAMILY))
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
+
+extract-config.cache.$(GARCH_FAMILY):
+	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
@@ -56,6 +61,13 @@ install-cross:
 
 post-install:
 	@$(call GLIBC_ADD_LIB_PATH, $(libdir)/mysql)
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient_r.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_archive.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_blackhole.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_example.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_federated.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_innodb.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/libdbug.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libheap.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmyisam.a
@@ -63,8 +75,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmystrings.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysys.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libvio.a
-	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient.la
-	@rm -f $(DESTDIR)$(libdir)/mysql/libmysqlclient_r.la
 	@$(MAKECOOKIE)
 
 clean-all:
