@@ -1,4 +1,4 @@
-GARNAME = irserver
+GARNAME = irclient
 GARVERSION = 20090430
 CATEGORIES = system
 # This site lacks a version number so we will download it from linprv.org.
@@ -22,17 +22,14 @@ BUILD_ARGS = \
 	CFLAGS="$(CFLAGS)" \
 	CPPFLAGS="$(CPPFLAGS) -DLINUX" \
 	LDFLAGS="$(LDFLAGS)" \
-	$(if $(filter i386,$(GARCH_FAMILY)),irserver) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),irserver64)
+	$(if $(filter i386,$(GARCH_FAMILY)),irclient) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),irclient64)
 
 include ../../gar.mk
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(sbindir)
-	@rm -rf $(DESTDIR)$(sbindir)/irserver
-	@$(if $(filter i386,  $(GARCH_FAMILY)),cp $(WORKSRC)/irserver   $(DESTDIR)$(sbindir)/irserver)
-	@$(if $(filter x86_64,$(GARCH_FAMILY)),cp $(WORKSRC)/irserver64 $(DESTDIR)$(sbindir)/irserver)
-	@mkdir -p $(DESTDIR)$(datadir)/irtrans
-	@rm -rf $(DESTDIR)$(datadir)/irtrans/remotes
-	@cp -r $(WORKSRC)/remotes $(DESTDIR)$(datadir)/irtrans
+	@rm -rf $(DESTDIR)$(sbindir)/irclient
+	@$(if $(filter i386,  $(GARCH_FAMILY)),cp $(WORKSRC)/irclient   $(DESTDIR)$(sbindir)/irclient)
+	@$(if $(filter x86_64,$(GARCH_FAMILY)),cp $(WORKSRC)/irclient64 $(DESTDIR)$(sbindir)/irclient)
 	@$(MAKECOOKIE)
