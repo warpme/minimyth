@@ -21,10 +21,10 @@ IMPORT{program}="/lib/udev/mm_detect_id"
 
 ENV{mm_detect_state_tuner}="unknown,"
 
-ENV{mm_detect_id}!="pci:0280:00:13d0:????:????:????", GOTO="end-13d0"
+ENV{mm_detect_id}!="pci:0280:00:13d0:????:????:????", GOTO="end-pci:0280:00:13d0"
 ENV{mm_detect_id}=="pci:0280:00:13d0:2103:13d0:2103", ENV{mm_detect_state_tuner}="technisat_skystar2,dvb-fe-bcm3510-01.fw"
-LABEL="end-13d0"
-ENV{mm_detect_id}!="pci:0400:00:4444:????:????:????", GOTO="end-4444"
+LABEL="end-pci:0280:00:13d0"
+ENV{mm_detect_id}!="pci:0400:00:4444:????:????:????", GOTO="end-pci:0400:00:4444"
 ENV{mm_detect_id}=="pci:0400:00:4444:0016:0070:0003", ENV{mm_detect_state_tuner}="hauppauge_pvr_250,v4l-cx2341x-enc.fw"
 ENV{mm_detect_id}=="pci:0400:00:4444:0016:0070:0009", ENV{mm_detect_state_tuner}="hauppauge_pvr_150,v4l-cx2341x-enc.fw"
 ENV{mm_detect_id}=="pci:0400:00:4444:0016:0070:0801", ENV{mm_detect_state_tuner}="hauppauge_pvr_150,v4l-cx2341x-enc.fw"
@@ -43,7 +43,10 @@ ENV{mm_detect_id}=="pci:0400:00:4444:0016:0270:0801", ENV{mm_detect_state_tuner}
 ENV{mm_detect_id}=="pci:0400:00:4444:0803:0070:4000", ENV{mm_detect_state_tuner}="hauppauge_pvr_350,v4l-cx2341x-enc.fw"
 ENV{mm_detect_id}=="pci:0400:00:4444:0803:0070:4001", ENV{mm_detect_state_tuner}="hauppauge_pvr_250,v4l-cx2341x-enc.fw"
 ENV{mm_detect_id}=="pci:0400:00:4444:0803:0070:4800", ENV{mm_detect_state_tuner}="hauppauge_pvr_350,v4l-cx2341x-enc.fw"
-LABEL="end-4444"
+LABEL="end-pci:0400:00:4444"
+ENV{mm_detect_id}!="usb:", GOTO="end-usb:"
+ENV{mm_detect_id}=="usb:"                           , ENV{mm_detect_state_tuner}="unknown,dvb-usb-dib0700-1.20.fw"
+LABEL="end-usb:"
 
 # The state has been set, so save it.
 ENV{mm_detect_state_tuner}=="?*", RUN+="/lib/udev/mm_detect tuner %k $env{mm_detect_state_tuner} state_prepend_devname"
