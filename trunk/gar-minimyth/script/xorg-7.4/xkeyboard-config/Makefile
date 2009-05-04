@@ -22,7 +22,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xkbcomp-symlink \
-	--disable-compat-rules \
+	--enable-compat-rules \
 	--with-xkb-base="$(datadir)/X11/xkb"
 
 CONFIGURE_ENV  = \
