@@ -29,6 +29,7 @@ DEPENDS = \
 	system/lcdproc \
 	system/kbdd \
 	kernel/kernel \
+	system/irclient \
 	system/irserver \
 	fonts/liberation-fonts \
 	system/lirc \
