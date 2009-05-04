@@ -1,5 +1,5 @@
 GARNAME = boost
-GARVERSION = 1.38.0
+GARVERSION = 1.39.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)_$(subst .,_,$(GARVERSION)).tar.bz2
@@ -16,29 +16,41 @@ DEPENDS = lang/c++
 WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+BUILD_SCRIPTS     = custom
+INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS = \
 	--with-toolset=gcc \
 	--without-icu \
-	--with-python=false \
+	--without-python \
 	--prefix=$(prefix) \
 	--exec-prefix=$(exec_prefix) \
 	--libdir=$(libdir) \
 	--includedir=$(includedir)
 
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix libdir includedir
+xINSTALL_OVERRIDE_DIRS = prefix exec_prefix libdir includedir
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
+
+pre-configure:
+	@ln -s bootstrap.sh $(WORKSRC)/configure
+	@$(MAKECOOKIE)
 
 post-configure:
 	@echo "using gcc : $(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION).$(GCC_TEENY_VERSION) : $(CXX) ;" >  $(WORKSRC)/user-config.jam
 	@echo "using gcc : $(GCC_MAJOR_VERSION).$(GCC_MINOR_VERSION).$(GCC_TEENY_VERSION) : $(CXX) ;" >> $(WORKSRC)/tools/build/v2/user-config.jam
 	@$(MAKECOOKIE)
 
+build-custom:
+	cd $(WORKSRC) ; ./bjam
+	@$(MAKECOOKIE)
+
+install-custom:
+	cd $(WORKSRC) ; ./bjam install --prefix=$(DESTDIR)$(prefix) --exec-prefix=$(DESTDIR)$(exec_prefix) --libdir=$(DESTDIR)$(libdir) --includedir=$(DESTDIR)$(includedir)
+	@$(MAKECOOKIE)
+
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc*-mt.a
-	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor-gcc*-mt-1_38.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_*-gcc*-mt.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_*-gcc*-mt-1_39.a
 	@$(MAKECOOKIE)
