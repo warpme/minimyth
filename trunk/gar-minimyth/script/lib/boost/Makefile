@@ -22,7 +22,7 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS = \
 	--with-toolset=gcc \
 	--without-icu \
-	--without-python \
+	--without-libraries=python \
 	--prefix=$(prefix) \
 	--exec-prefix=$(exec_prefix) \
 	--libdir=$(libdir) \
