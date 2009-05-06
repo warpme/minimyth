@@ -49,14 +49,19 @@ $var_list{'MM_FIRMWARE_FILE_LIST'} =
 
         my @file = ();
 
-        foreach (split(/ /, $minimyth->var_get($name)))
+        foreach my $name_remote (split(/ /, $minimyth->var_get($name)))
         {
-            my $item;
-            $item->{'name_remote'} = "$_";
-            $item->{'name_local'}  = '/lib/firmware/' . File::Basename::basename($_);
-            $item->{'mode_local'}  = '0644';
+            my $name_local = '/lib/firmware/' . File::Basename::basename($name_remote);
+            # Fetch firmware files that are not already present.
+            if (! -e $name_local)
+            {
+                my $item;
+                $item->{'name_remote'} = $name_remote;
+                $item->{'name_local'}  = $name_local;
+                $item->{'mode_local'}  = '0644';
 
-            push(@file, $item);
+                push(@file, $item);
+            }
         }
 
         return \@file;

@@ -19,12 +19,12 @@ sub start
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
 
     # This is a hack for testing that should never get invoked during normal boot.
-    File::Path::rmtree('/var/cache/minimyth/init/state/conf') if (-e '/var/cache/minimyth/init/state/conf')
+    File::Path::rmtree('/var/cache/minimyth/init/state/conf') if (-e '/var/cache/minimyth/init/state/conf');
     unlink('/etc/conf.d/dhcp.override')                       if (-e '/etc/conf.d/dhcp.override');
     unlink('/etc/conf.d/minimyth')                            if (-e '/etc/conf.d/minimyth');
 
     # Create conf state directory.
-    File::Path::mkpath('/var/cache/minimyth/init/state/conf', { mode => 0755 })
+    File::Path::mkpath('/var/cache/minimyth/init/state/conf', { mode => 0755 });
 
     # Read core and dhcp configuration files, which are included in '/etc/conf'.
     $minimyth->var_clear();
@@ -150,7 +150,14 @@ sub start
     # Fetch firmware files.
     $self->_run($minimyth, 'MM_FIRMWARE_FILE_LIST') || ($success = 0);
 
-    open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-firmware_fetch')) { close(FILE); } else { $success = 0; }
+    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-firmware_fetch'))
+    {
+        close(FILE);
+    }
+    else
+    {
+        $success = 0;
+    }
 
     # Enable configuration auto-detection udev rules for everything else.
     if (opendir(DIR, '/lib/udev/rules.d'))
@@ -172,7 +179,14 @@ sub start
     $self->_run($minimyth, 'MM_DHCP_.*') || ($success = 0);
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
-    open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp_override_file')) { close(FILE); } else { $success = 0; }
+    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp_override_file'))
+    {
+        close(FILE);
+    }
+    else
+    {
+        $success = 0;
+    }
 
     # Start the DHCP client now that we have created the DHCP override variables file.
     $minimyth->package_require(q(init::dhcp));
@@ -189,7 +203,14 @@ sub start
         }
     }
 
-    open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp')) { close(FILE); } else { $success = 0; }
+    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp'))
+    {
+        close(FILE);
+    }
+    else
+    {
+        $success = 0;
+    }
 
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
@@ -573,6 +594,7 @@ sub _run_var
                 my $name_remote = $_->{'name_remote'};
                 my $name_local  = $_->{'name_local'};
                 my $mode_local  = $_->{'mode_local'}  || '0644' ;
+ 
                 unlink($name_local);
                 my $result = $minimyth->confro_get($name_remote, $name_local);
                 if (! -e $name_local)
