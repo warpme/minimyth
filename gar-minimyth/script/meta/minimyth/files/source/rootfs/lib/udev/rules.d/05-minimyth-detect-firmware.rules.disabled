@@ -1,0 +1,71 @@
+#-------------------------------------------------------------------------------
+# Detect firmware files.
+#
+# mm_detect_state_firmware has the following format:
+#     <file_list>
+# where
+#     <file_list>: Colon separated list of required firmware files.
+#-------------------------------------------------------------------------------
+ACTION!="add|change|remove", GOTO="end"
+SUBSYSTEM=="pci|usb", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+ENV{mm_detect_state_firmware}=""
+
+SUBSYSTEM!="pci", GOTO="end-pci"
+ENV{MODALIAS}!="pci:v000013D0d*sv*sd*bc02sc80i00", GOTO="end-pci:0280:00:13d0"
+#Technisat Skystar2
+ENV{MODALIAS}=="pci:v000013D0d00002103sv000013D0sd00002103bc02sc80i00", ENV{mm_detect_state_firmware}="dvb-fe-bcm3510-01.fw"
+LABEL="end-pci:0280:00:13d0"
+ENV{MODALIAS}!="pci:v00004444d*sv*sd*bc04sc00i00", GOTO="end-pci:0400:00:4444"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00000003bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00000009bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00000801bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00000807bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00004001bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00004009bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00004801bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00004803bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00008003bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00008801bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd0000C801bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-500
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd0000E807bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-500
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd0000E817bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-550
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd0000FF82bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-150
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000270sd00000801bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-350
+ENV{MODALIAS}=="pci:v00004444d00000016sv00000070sd00004000bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-250
+ENV{MODALIAS}=="pci:v00004444d00000803sv00000070sd00004001bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+# Hauppauge PVR-350
+ENV{MODALIAS}=="pci:v00004444d00000803sv00000070sd00004800bc04sc00i00", ENV{mm_detect_state_firmware}="v4l-cx2341x-enc.fw"
+LABEL="end-pci:0400:00:4444"
+LABEL="end-pci"
+
+SUBSYSTEM!="usb", GOTO="end-usb"
+ENV{MODALIAS}!="usb:v2040p*d*dc*dsc*dp*ic*isc*ip*", GOTO="end-usb:2040"
+# Hauppauge WinTV NOVA-TD
+ENV{MODALIAS}=="usb:v2040p9580d*dc*dsc*dp*ic*isc*ip*"                 , ENV{mm_detect_state_firmware}="dvb-usb-dib0700-1.20.fw"
+LABEL="end-usb:2040"
+LABEL="end-usb"
+
+# The state has been set, so save it.
+ENV{mm_detect_state_firmware}=="?*", RUN+="/lib/udev/mm_detect firmware %k $env{mm_detect_state_firmware}"
+
+LABEL="end"

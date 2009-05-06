@@ -8,6 +8,7 @@ use warnings;
 
 use Cwd ();
 use File::Basename ();
+use File::Path ();
 use MiniMyth ();
 
 sub start
@@ -18,8 +19,10 @@ sub start
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__));
 
     # This is a hack for testing that should never get invoked during normal boot.
-    unlink('/etc/conf.d/dhcp.override') if (-e '/etc/conf.d/dhcp.override');
-    unlink('/etc/conf.d/minimyth')      if (-e '/etc/conf.d/minimyth');
+    unlink('/etc/conf.d/dhcp.override')                 if (-e '/etc/conf.d/dhcp.override');
+    unlink('/etc/conf.d/minimyth')                      if (-e '/etc/conf.d/minimyth');
+    File::Path::rmtree('/var/cache/minimyth/init/conf') if (-d '/var/cache/minimyth/init/conf');
+    File::Path::rmtree('/var/cache/minimyth/detect')    if (-d '/var/cache/minimyth/detect');
 
     # Read core and dhcp configuration files, which are included in '/etc/conf'.
     $minimyth->var_clear();
@@ -128,17 +131,35 @@ sub start
         } 
     }
 
-    # Enable configuration auto-detection udev rules.
+    # Enable configuration auto-detection udev rules for firmware.
     if (opendir(DIR, '/lib/udev/rules.d'))
     {
-        foreach (grep(s/^(05-minimyth-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
+        foreach (grep(s/^(05-minimyth-detect-firmware\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
             rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
         }
         closedir(DIR);
     }
 
-    # Trigger udev with the additional udev rules that handle configuration auto-detection.
+    # Trigger udev with the additional udev rules that handle configuration auto-detection for firmware.
+    system(qq(/sbin/udevadm trigger));
+    system(qq(/sbin/udevadm settle --timeout=60));
+
+    # Fetch firmware files.
+    $self->_run($minimyth, 'MM_FIRMWARE_FILE_LIST') || ($success = 0);
+
+    # Enable configuration auto-detection udev rules for everything else.
+    if (opendir(DIR, '/lib/udev/rules.d'))
+    {
+        foreach (grep(s/^(05-minimyth-detect-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
+        {
+            rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
+        }
+        closedir(DIR);
+    }
+
+    # Trigger udev with the additional udev rules that handle configuration auto-detection for everything else.
+    # This will load potentially firmware dependent drivers as well.
     system(qq(/sbin/udevadm trigger));
     system(qq(/sbin/udevadm settle --timeout=60));
 
@@ -569,6 +590,18 @@ sub _run_var
     }
 
     $var->{'complete'} = 1;
+
+    # Create a file with the variable value.
+    {                 
+        my $var_file = q(/var/cache/minimyth/init/conf/) . $var_name;
+        File::Path::mkpath(File::Basename::dirname("$var_file"), {mode => 0755});
+        unlink("$var_file");
+        if (open(FILE, '>', "$var_file"))
+        {
+            print FILE $minimyth->var_get("$var_name");
+            close(FILE); 
+        }                
+    }
 
     return $success;
 }

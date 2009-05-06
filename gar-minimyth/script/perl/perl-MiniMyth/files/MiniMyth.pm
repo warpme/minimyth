@@ -391,13 +391,13 @@ sub detect_state_get
     my $field    = shift;
 
     my %map;
-    $map{'audio'}   = [ 'card_number' , 'device_number' , 'gain' ];
-    $map{'backend'} = [ 'enabled'];
-    $map{'event'}   = [ 'device' , 'type' ];
-    $map{'lcdproc'} = [ 'device' , 'driver'];
-    $map{'lirc'}    = [ 'device' , 'driver', 'lircd_conf' ];
-    $map{'tuner'}   = [ 'device' , 'name' , 'firmware' ];
-    $map{'video'}   = [ 'driver' ];
+    $map{'audio'}    = [ 'card_number' , 'device_number' , 'gain' ];
+    $map{'backend'}  = [ 'enabled'];
+    $map{'event'}    = [ 'device' , 'type' ];
+    $map{'firmware'} = [ 'file_list' ];
+    $map{'lcdproc'}  = [ 'device' , 'driver'];
+    $map{'lirc'}     = [ 'device' , 'driver', 'lircd_conf' ];
+    $map{'video'}    = [ 'driver' ];
 
     my @state;
 
