@@ -8,10 +8,10 @@ use warnings;
 
 use MiniMyth ();
 
-# If there is no DHCP override variables file (/etc/conf.d/dhcp.override) then
-# this routine will cause the DHCP client to run once and quit. Whereas, if
-# there is a DHCP override variables file, then this routine will cause the DHCP
-# client to run continuously.
+# If conf.pm indicates that the DHCP override file is valid (i.e. the file
+# '/var/cache/minimyth/init/state/conf/done_dhcp_override_file'), then this
+# routine will cause the DHCP client to run continuously. Otherwise, this
+# routine will cause the DHCP client to run once and quit.
 sub start
 {
     my $self     = shift;
@@ -75,7 +75,7 @@ sub start
         }
 
         # Decide whether or not to run once.
-        if (! -e '/etc/conf.d/dhcp.override')
+        if (! -e '/var/cache/init/state/conf/done-dhcp_override_file')
         {
             $command = $command . ' ' . qq(-q);
         }

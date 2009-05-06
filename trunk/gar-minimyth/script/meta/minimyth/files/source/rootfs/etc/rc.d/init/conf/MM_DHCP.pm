@@ -21,8 +21,7 @@ $var_list{'MM_DHCP_HOST_NAME'} =
         my $name     = shift;
 
         my $success = 1;
-        # If the DCHP override file exists, then DHCP should be completely configured.
-        if (-e '/etc/conf.d/dhcp.override')
+        if (-e '/var/cache/minimyth/init/state/conf/done-dhcp')
         {
             my $hostname = $minimyth->hostname();
             if (! $hostname)
@@ -45,8 +44,7 @@ $var_list{'MM_DHCP_TCODE'} =
         my $name     = shift;
 
         my $success = 1;
-        # If the DCHP override file exists, then DHCP should be completely configured.
-        if (-e '/etc/conf.d/dhcp.override')
+        if (-e '/var/cache/minimyth/init/state/conf/done-dhcp')
         {
             if (! -e '/etc/localtime')
             {
@@ -65,8 +63,7 @@ $var_list{'MM_DHCP_DOMAIN_NAME_SERVERS'} =
         my $name     = shift;
 
         my $success = 1;
-        # If the DCHP override file exists, then DHCP should be completely configured.
-        if (-e '/etc/conf.d/dhcp.override')
+        if (-e '/var/cache/minimyth/init/state/conf/done-dhcp')
         {
             my $valid = 0;
             if (open(FILE, '<', '/etc/resolv.conf'))
@@ -95,8 +92,7 @@ $var_list{'MM_DHCP_NTP_SERVERS'} =
         my $name     = shift;
 
         my $success = 1;
-        # If the DCHP override file exists, then DHCP should be completely configured.
-        if (-e '/etc/conf.d/dhcp.override')
+        if (-e '/var/cache/minimyth/init/state/conf/done-dhcp')
         {
             my $valid = 0;
             if (open(FILE, '<', '/etc/ntp.conf'))
