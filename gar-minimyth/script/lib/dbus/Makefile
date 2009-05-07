@@ -1,9 +1,9 @@
 GARNAME = dbus
-GARVERSION = 1.2.12
+GARVERSION = 1.2.14
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-syslog_h.patch $(DISTNAME)-remove_pie.patch
+PATCHFILES = $(DISTNAME)-remove_pie.patch
 LICENSE = GPL2
 
 DESCRIPTION =
