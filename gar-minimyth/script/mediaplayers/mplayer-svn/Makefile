@@ -77,7 +77,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx \
 	--disable-maemo \
 	--disable-macosx-finder \
 	--disable-macosx-bundle \
