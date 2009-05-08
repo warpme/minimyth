@@ -72,7 +72,7 @@ sub start
             {
                 if (open(FILE, '-|', "$amixer_command scontrols"))
                 {
-                    foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                    foreach (grep(s/^Simple mixer control ('[^']*'(,[0-9]+)?)$/$1/, (<FILE>)))
                     {
                         chomp;
                         given ($_)
@@ -147,7 +147,7 @@ sub stop
         {
             if (open(FILE, '-|', "$amixer_command scontrols"))
             {
-                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control ('[^']*'(,[0-9]+)?)$/$1/, (<FILE>)))
                 {
                     chomp;
                     given ($_)
@@ -175,7 +175,7 @@ sub stop
         {
             if (open(FILE, '-|', "$amixer_command scontrols"))
             {
-                foreach (grep(s/^Simple mixer control '([^']*)'(,[0-9]+)?$/$1/, (<FILE>)))
+                foreach (grep(s/^Simple mixer control ('[^']*'(,[0-9]+)?)$/$1/, (<FILE>)))
                 {
                     chomp;
                     given ($_)
