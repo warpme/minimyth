@@ -9,6 +9,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-mythweather_weather_com.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
 	$(DISTNAME_SHORT)-mythmusic_fftw3.patch \
+	$(DISTNAME_SHORT)-mythvideo_tmdb_pl.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-softpad.patch
@@ -32,6 +33,11 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+post-patch:
+	@# Fix because neither patch nor the installer makes this executable.
+	@chmod 0755 $(WORKSRC)/mythvideo/mythvideo/scripts/tmdb.pl
 	@$(MAKECOOKIE)
 
 post-install:
