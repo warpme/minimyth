@@ -1,0 +1,27 @@
+diff -Naur xf86-video-intel-2.7.0-old/src/i830_hdmi.c xf86-video-intel-2.7.0-new/src/i830_hdmi.c
+--- xf86-video-intel-2.7.0-old/src/i830_hdmi.c	2009-04-13 13:41:53.000000000 -0700
++++ xf86-video-intel-2.7.0-new/src/i830_hdmi.c	2009-05-10 14:46:37.000000000 -0700
+@@ -166,11 +166,18 @@
+ 
+     temp = INREG(PORT_HOTPLUG_EN);
+ 
+-    OUTREG(PORT_HOTPLUG_EN,
+-	   temp |
+-	   HDMIB_HOTPLUG_INT_EN |
+-	   HDMIC_HOTPLUG_INT_EN |
+-	   HDMID_HOTPLUG_INT_EN);
++    switch (dev_priv->output_reg) {
++    case SDVOB:
++	temp |= HDMIB_HOTPLUG_INT_EN;
++	break;
++    case SDVOC:
++	temp |= HDMIC_HOTPLUG_INT_EN;
++	break;
++    default:
++	return XF86OutputStatusUnknown;
++    }
++
++    OUTREG(PORT_HOTPLUG_EN, temp);
+ 
+     POSTING_READ(PORT_HOTPLUG_EN);
+ 
