@@ -1051,7 +1051,7 @@ sub url_parse
     # Parse the URL.
     my    ($protocol, undef, undef, $username, undef, $password, $server , $path   , undef, $query   , undef, $fragment)
         = ($1 || '' , $2   , $3   , $4 || '' , $5   , $6 || '' , $7 || '', $8 || '', $9   , $10 || '', $11  , $12 || '')
-        if ($url =~ /^([^:]+):(\/\/(([^:@]*)?(:([^@]*))?\@)?([^\/]+))?([^?#]*)(\?([^#]*))?(\#(.*))?$/);
+        if ($url =~ /^([^:]+):(\/\/(([^:@]*)?(:([^@]*))?\@)?([^\/]+)\/)?([^?#]*)(\?([^#]*))?(\#(.*))?$/);
 
     return
     {
@@ -1078,10 +1078,6 @@ sub url_expand
     my $protocol   = $url_parsed->{'protocol'};
     my $server     = $url_parsed->{'server'};
     my $file       = $url_parsed->{'path'};
-
-    $file =~ s/\/+/\//g;
-    $file =~ s/\/$//g;
-    $file =~ s/^\///g;
 
     my @list = ();
 
@@ -1207,9 +1203,6 @@ sub url_get
         my $remote_protocol = $url_parsed->{'protocol'};
         my $remote_server   = $url_parsed->{'server'};
         my $remote_file     = $url_parsed->{'path'};
-
-        $remote_file =~ s/\/+/\//g;
-        $remote_file =~ s/\/$//g;
 
         given ($remote_protocol)
         {
@@ -1514,7 +1507,7 @@ sub url_mount
     if    ($url_protocol eq 'cifs')
     {
         $mount_vfstype = 'cifs';
-        $mount_device  = '//' . $url_server . $url_path;
+        $mount_device  = '//' . $url_server . '/' . $url_path;
         if ($url_password ne '')
         {
             $mount_options = 'password=' . $url_password . ',' . $mount_options;
@@ -1527,13 +1520,13 @@ sub url_mount
     elsif ($url_protocol eq 'nfs')
     {
         $mount_vfstype = 'nfs';
-        $mount_device  = $url_server . ':' . $url_path;
+        $mount_device  = $url_server . ':' . '/' . $url_path;
         $mount_options = 'nolock,' . $mount_options;
     }
     elsif ($url_protocol eq 'ext3')
     {
         $mount_vfstype = 'ext3';
-        $mount_device  = $url_path;
+        $mount_device  = '/' . $url_path;
         $mount_options = $mount_options;
     }
     elsif (( $url_protocol eq 'confro'                   ) ||

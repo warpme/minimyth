@@ -173,11 +173,11 @@ case "${1}" in
         TFTP_BOOT_URL=
         if /usr/bin/test ! "x${TFTP_BOOT_FILE}" = "x" ; then
             if /bin/echo ${TFTP_BOOT_FILE} | /bin/grep -q '://' ; then
-                TFTP_BOOT_URL=`/bin/echo "${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%[^/]*/$%%'`
+                TFTP_BOOT_URL=`/bin/echo "${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%'`
             else
                 if /usr/bin/test ! "x${TFTP_SERVER}" = "x" ; then
-                    TFTP_BOOT_DIR=`/bin/echo "/${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%' -e 's%//*%/%g'`
-                    TFTP_BOOT_URL="tftp://${TFTP_SERVER}${TFTP_BOOT_DIR}"
+                    TFTP_BOOT_DIR=`/bin/echo "${TFTP_BOOT_FILE}" | /bin/sed -e 's%[^/]*$%%'`
+                    TFTP_BOOT_URL="tftp://${TFTP_SERVER}/${TFTP_BOOT_DIR}"
                 fi
             fi
         fi
