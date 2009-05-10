@@ -1,6 +1,6 @@
-diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 10:37:11.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_drv.h	2009-04-27 14:19:09.000000000 -0700
+diff -Naur linux-2.6.29.3-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.3-new/drivers/gpu/drm/i915/i915_drv.h
+--- linux-2.6.29.3-old/drivers/gpu/drm/i915/i915_drv.h	2009-05-08 21:58:36.000000000 -0700
++++ linux-2.6.29.3-new/drivers/gpu/drm/i915/i915_drv.h	2009-05-08 22:00:37.000000000 -0700
 @@ -404,7 +404,8 @@
  	/** AGP memory structure for our GTT binding. */
  	DRM_AGP_MEM *agp_mem;
@@ -20,9 +20,9 @@ diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.29.2-new
  			 int i, int DR1, int DR4);
  
  /* i915_irq.c */
-diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 10:37:11.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_gem.c	2009-04-27 14:19:09.000000000 -0700
+diff -Naur linux-2.6.29.3-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.3-new/drivers/gpu/drm/i915/i915_gem.c
+--- linux-2.6.29.3-old/drivers/gpu/drm/i915/i915_gem.c	2009-05-08 21:58:36.000000000 -0700
++++ linux-2.6.29.3-new/drivers/gpu/drm/i915/i915_gem.c	2009-05-08 22:00:37.000000000 -0700
 @@ -43,8 +43,8 @@
  						     uint64_t offset,
  						     uint64_t size);
@@ -1012,47 +1012,3 @@ diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.29.2-new
  		char *dst = obj_priv->phys_obj->handle->vaddr + (i * PAGE_SIZE);
  
  		memcpy(dst, src, PAGE_SIZE);
-diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_reg.h linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_reg.h
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/i915_reg.h	2009-04-27 10:37:11.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/i915_reg.h	2009-04-27 14:24:10.000000000 -0700
-@@ -1431,6 +1431,7 @@
- #define   DISPPLANE_NO_LINE_DOUBLE		0
- #define   DISPPLANE_STEREO_POLARITY_FIRST	0
- #define   DISPPLANE_STEREO_POLARITY_SECOND	(1<<18)
-+#define   DISPPLANE_TILED			(1<<10)
- #define DSPAADDR		0x70184
- #define DSPASTRIDE		0x70188
- #define DSPAPOS			0x7018C /* reserved */
-diff -Naur linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c
---- linux-2.6.29.2-old/drivers/gpu/drm/i915/intel_display.c	2009-04-27 10:37:11.000000000 -0700
-+++ linux-2.6.29.2-new/drivers/gpu/drm/i915/intel_display.c	2009-04-27 14:19:09.000000000 -0700
-@@ -338,6 +338,7 @@
- 	int dspbase = (pipe == 0 ? DSPAADDR : DSPBADDR);
- 	int dspsurf = (pipe == 0 ? DSPASURF : DSPBSURF);
- 	int dspstride = (pipe == 0) ? DSPASTRIDE : DSPBSTRIDE;
-+	int dsptileoff = (pipe == 0 ? DSPATILEOFF : DSPBTILEOFF);
- 	int dspcntr_reg = (pipe == 0) ? DSPACNTR : DSPBCNTR;
- 	u32 dspcntr, alignment;
- 	int ret;
-@@ -414,6 +415,13 @@
- 		mutex_unlock(&dev->struct_mutex);
- 		return -EINVAL;
- 	}
-+	if (IS_I965G(dev)) {
-+		if (obj_priv->tiling_mode != I915_TILING_NONE)
-+			dspcntr |= DISPPLANE_TILED;
-+		else
-+			dspcntr &= ~DISPPLANE_TILED;
-+	}
-+
- 	I915_WRITE(dspcntr_reg, dspcntr);
- 
- 	Start = obj_priv->gtt_offset;
-@@ -426,6 +434,7 @@
- 		I915_READ(dspbase);
- 		I915_WRITE(dspsurf, Start);
- 		I915_READ(dspsurf);
-+		I915_WRITE(dsptileoff, (y << 16) | x);
- 	} else {
- 		I915_WRITE(dspbase, Start + Offset);
- 		I915_READ(dspbase);
