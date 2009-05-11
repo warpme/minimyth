@@ -19,8 +19,10 @@ sub _mountpoints_get
             if (/^([^ ]*) ([^ ]*) ([^ ]*)/)
             {
                 my $mountpoint = $2;
-                if ( ($2 =~ /^\/$/)       ||
-                     ($2 =~ /^\/initrd$/) )
+                if ( ($1 =~ /^\/dev\/root$/) ||
+                     ($1 =~ /^rootfs$/)      ||
+                     ($2 =~ /^\/$/)          ||
+                     ($2 =~ /^\/initrd$/)    )
                 {
                     next;
                 }
