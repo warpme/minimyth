@@ -16,7 +16,6 @@ my @script_list_start =
     'ld',
     'loopback',
     'dhcp',
-    'modules_automatic',
     'conf',
     'modules_manual',
     'log'
