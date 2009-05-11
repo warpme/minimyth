@@ -1452,25 +1452,25 @@ sub confrw_put
 #             nfs://server.home/home/public/music
 #             cifs://user:pass@server.home/home/public/music,domain=home
 #             confrw:themecaches/G.A.N.T..1024.768.sfs<br/>
-#         The valid protocol values are: 'cifs', 'nfs', 'ext3', 'http', 'tftp',
-#         'confro', 'confrw', 'dist', 'hunt' and 'file'. For 'cifs' and 'nfs'
-#         the URL points to a remote directory. For 'ext3' the URL points to a
-#         local ext3 device. For 'http', 'tftp', 'confro', 'confrw', 'dist' and
-#         'hunt', the URL points to a remote file. For 'file', the URL point to
-#         a local directory or file. A directory will be mounted at the mount
-#         point. A file, which can be a squashfs image (*.sfs.), cramfs image
-#         (*.cmg) or a tarball file (*.tar.bz2) will be downloaded and mounted
-#         at (for *.sfs and *.cmg files) or downloaded and expanded into (for
-#         *.tar.bz2 files) the mount point. The 'confro', 'confrw', 'dist' and
-#         'hunt' are special MiniMyth specific URLs. A 'dist' URL causes
-#         MiniMyth to look for the file in the MiniMyth distribution directory
-#         (the directory with the MiniMyth root file system squashfs image). A
-#         'confro' URL causes MiniMyth to look for the file in the MiniMyth
-#         read-only configuration directory. A 'confrw' URL causes MiniMyth to
-#         look for the file in the MiniMyth read-write configuration directory.
-#         A 'hunt' URL causes MiniMyth to look for the file first in the
-#         MiniMyth distribution directory and second in the MiniMyth read-only
-#         configuration directory.
+#         The valid protocol values are: 'cifs', 'nfs', 'ext2', 'ext3', 'http',
+#         'tftp', 'confro', 'confrw', 'dist', 'hunt' and 'file'. For 'cifs' and
+#         'nfs' the URL points to a remote directory. For 'ext2' and 'ext3' the
+#         URL points to a local ext2 or ext3 device. For 'http', 'tftp',
+#         confro', 'confrw', 'dist' and 'hunt', the URL points to a remote file.
+#         For 'file', the URL point to a local directory or file. A directory
+#         will be mounted at the mount point. A file, which can be a squashfs
+#         image (*.sfs.), cramfs image (*.cmg) or a tarball file (*.tar.bz2)
+#         will be downloaded and mounted at (for *.sfs and *.cmg files) or
+#         downloaded and expanded into (for *.tar.bz2 files) the mount point.
+#         The 'confro', 'confrw', 'dist' and 'hunt' are special MiniMyth
+#         specific URLs. A 'dist' URL causes MiniMyth to look for the file in
+#         the MiniMyth distribution directory (the directory with the MiniMyth
+#         root file system squashfs image). A 'confro' URL causes MiniMyth to
+#         look for the file in the MiniMyth read-only configuration directory.
+#         A 'confrw' URL causes MiniMyth to look for the file in the MiniMyth
+#         read-write configuration directory. A 'hunt' URL causes MiniMyth to
+#         look for the file first in the MiniMyth distribution directory and
+#         second in the MiniMyth read-only configuration directory.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
 #-------------------------------------------------------------------------------
@@ -1522,6 +1522,12 @@ sub url_mount
         $mount_vfstype = 'nfs';
         $mount_device  = $url_server . ':' . '/' . $url_path;
         $mount_options = 'nolock,' . $mount_options;
+    }
+    elsif ($url_protocol eq 'ext2')
+    {
+        $mount_vfstype = 'ext2';
+        $mount_device  = '/' . $url_path;
+        $mount_options = $mount_options;
     }
     elsif ($url_protocol eq 'ext3')
     {
