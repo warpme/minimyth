@@ -1,5 +1,5 @@
 GARNAME = libftdi
-GARVERSION = 0.15
+GARVERSION = 0.16
 CATEGORIES = lib
 MASTER_SITES = http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/
 DISTFILES = $(DISTNAME).tar.gz
@@ -20,9 +20,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-libftdipp \
+	--disable-python-bindings \
 	--with-gnu-ld \
-	--with-boost="$(DESTDIR)$(prefix)" \
-	--with-boost-libdir="$(DESTDIR)$(libdir)"
+	--without-boost
 
 CONFIGURE_ENV = \
 	ac_cv_path_HAVELIBUSB=$(DESTDIR)$(bindir)/libusb-config
