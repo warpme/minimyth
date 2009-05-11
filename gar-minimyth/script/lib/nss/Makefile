@@ -1,8 +1,8 @@
 GARNAME = nss
-GARVERSION = 3.12
+GARVERSION = 3.12.3
 CATEGORIES = lib
-MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_RTM/src/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_3_RTM/src/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
@@ -30,7 +30,7 @@ BUILD_ARGS = \
 	OS_ARCH="Linux" \
 	OS_TEST="$(GARCH_FAMILY)" \
 	CPU_ARCH="$(GARCH_FAMILY)" \
-	USE_64="$(if $(filter x86_64,$(GARCH_FAMILY)),1,0)" \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),USE_64="1") \
 	NATIVE_CC="$(build_CC)" \
 	NATIVE_FLAGS="$(build_CFLAGS)" \
 	BUILD_OPT="1" \

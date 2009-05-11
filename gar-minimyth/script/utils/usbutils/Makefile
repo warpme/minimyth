@@ -1,5 +1,5 @@
 GARNAME = usbutils
-GARVERSION = 0.81
+GARVERSION = 0.82
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-usb/
 DISTFILES = $(DISTNAME).tar.gz usb.ids
