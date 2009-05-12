@@ -75,7 +75,7 @@ sub start
         }
 
         # Decide whether or not to run once.
-        if (! -e '/var/cache/init/state/conf/done-dhcp_override_file')
+        if (! -e '/var/cache/minimyth/init/state/conf/done-dhcp_override_file')
         {
             $command = $command . ' ' . qq(-q);
         }
