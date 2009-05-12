@@ -172,32 +172,25 @@ sub start
         $success = 0;
     }
 
-    # Enable configuration auto-detection udev rules for firmware.
+    # Enable and trigger configuration auto-detection udev rules.
+    # Some auto-detection rules may not trigger because the
+    # automatic and manual kernel modules have yet to be loaded.
+    # The firmware auto-detection rules will trigger because they do
+    # do not depend on the automatic and manual kernel modules.
     if (opendir(DIR, '/lib/udev/rules.d'))
     {
-        foreach (grep(s/^(05-minimyth-detect-firmware\.rules)\.disabled$/$1/, (readdir(DIR))))
+        foreach (grep(s/^(05-minimyth-detect-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
             rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
         }
         closedir(DIR);
     }
-
-    # Trigger udev with the additional udev rules that handle configuration auto-detection for firmware.
     system(qq(/sbin/udevadm trigger));
     system(qq(/sbin/udevadm settle --timeout=60));
 
     # Fetch firmware files.
     $minimyth->message_output('info', "Fetching firmware files ...");
     $self->_run($minimyth, 'MM_FIRMWARE_FILE_LIST') || ($success = 0);
-
-    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-firmware_fetch'))
-    {
-        close(FILE);
-    }
-    else
-    {
-        $success = 0;
-    }
 
     # Load the automatic kernel modules.
     $minimyth->package_require(q(init::modules_automatic));
@@ -214,21 +207,7 @@ sub start
         }
     }
 
-    # Enable configuration auto-detection udev rules for everything else.
-    if (opendir(DIR, '/lib/udev/rules.d'))
-    {
-        foreach (grep(s/^(05-minimyth-detect-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
-        {
-            rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
-        }
-        closedir(DIR);
-    }
-
-    # Trigger udev with the additional udev rules that handle configuration auto-detection for everything else.
-    # This will load potentially firmware dependent drivers as well.
-    system(qq(/sbin/udevadm trigger));
-    system(qq(/sbin/udevadm settle --timeout=60));
-
+    # (Re)process all the configuration variables.
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
     $minimyth->var_load({ 'file' => '/etc/minimyth.d/minimyth.conf' });
