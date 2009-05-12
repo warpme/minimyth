@@ -1,16 +1,8 @@
-ACTION!="add", GOTO="end"
-
 # Load the appropriate kernel modules using module aliases.
-SUBSYSTEM!="?*"                      , GOTO="end-modalias" # No subsystem
-ENV{MODALIAS}!="?*"                  , GOTO="end-modalias" # No modalias
-PROGRAM=="/lib/udev/mm_firmware_wait", GOTO="end-modalias" # Wait until init has had a chance to fetch firmware.
-RUN+="/sbin/modprobe -q $env{MODALIAS}"
-LABEL="end-modalias"
+ACTION=="add", SUBSYSTEM=="?*", ENV{MODALIAS}=="?*", RUN+="/sbin/modprobe -q $env{MODALIAS}"
 
 # Some cards that use the bttv driver use the lirc_gpio driver as well.
-DRIVER=="bttv", RUN+="/sbin/modprobe -q lirc_gpio"
+ACTION=="add", DRIVER=="bttv", RUN+="/sbin/modprobe -q lirc_gpio"
 
 # Some cards that use the ivtv driver use the lirc_i2c driver as well.
-DRIVER=="ivtv", RUN+="/sbin/modprobe -q lirc_i2c"
-
-LABEL="end"
+ACTION=="add", DRIVER=="ivtv", RUN+="/sbin/modprobe -q lirc_i2c"
