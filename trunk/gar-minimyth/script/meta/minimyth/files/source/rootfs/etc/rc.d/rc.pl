@@ -17,7 +17,6 @@ my @script_list_start =
     'loopback',
     'dhcp',
     'conf',
-    'modules_manual',
     'log'
 );
 my @script_list_kill_halt =

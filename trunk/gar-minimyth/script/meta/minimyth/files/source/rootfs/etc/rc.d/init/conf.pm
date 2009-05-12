@@ -207,6 +207,22 @@ sub start
         }
     }
 
+    # Load the manual kernel modules.
+    $self->_run($minimyth, 'MM_HARDWARE_KERNEL_MODULES');
+    $minimyth->package_require(q(init::modules_manual));
+    if ($minimyth->package_member_require(q(init::modules_manual), q(start)))
+    {
+        eval
+        {
+            init::modules_manual->start($minimyth) || ($success = 0);
+        };
+        if ($@)
+        {
+            $minimyth->message_output('err', qq($@));
+            $success = 0;
+        }
+    }
+
     # (Re)process all the configuration variables.
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
