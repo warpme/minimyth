@@ -11,6 +11,24 @@ use File::Basename ();
 use File::Path ();
 use MiniMyth ();
 
+# Steps:
+#   (1)  Check for MM_MINIMYTH_BOOT_URL.
+#   (2)  If MiniMyth boot directory is local, then wait for it to mount.
+#   (3)  Fetch minimyth.conf.
+#   (4)  Reprocess MM_MINIMYTH_BOOT_URL,
+#        since it can be overrridden by minimyth.conf.
+#   (5)  Process MM_MINIMYTH_FETCH_MINIMYTH_PM.
+#   (6)  If configured to do so, then fetch and run minimyth.pm.
+#   (7)  Process DHCP override variables.
+#   (8)  Start DHCP.
+#   (9)  Enable udev based auto-detection,
+#        including hardware firmware files.
+#   (10) Process MM_FIRMWARE_FILE_LIST,
+#        including fetching any hardware firmware files.
+#   (11) Load automatic kernel modules.
+#   (12) Process MM_HARDWARE_KERNEL_MODULES.
+#   (13) Load manual kernel modules.
+#   (14) (Re)process all configuration variables.
 sub start
 {
     my $self     = shift;
