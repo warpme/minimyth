@@ -1086,11 +1086,14 @@ sub url_expand
         when (/^confro$/)
         {
             my $hostname = $self->hostname();
+            my $file_0 = $file;
+            $file_0 =~ s/\/+/\//g;
+            $file_0 =~ s/^\///;
             if ($hostname)
             {
-                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' . $hostname . '/' . $file);
+                push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' . $hostname . '/' . $file_0);
             }
-            push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' .'default' . '/' . $file);
+            push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf/' .'default' . '/' . $file_0);
         }
         when (/^confrw$/)
         {
@@ -1098,6 +1101,8 @@ sub url_expand
             if ($hostname)
             {
                 my $file_0 = $file;
+                $file_0 =~ s/\/+/\//g;
+                $file_0 =~ s/^\///;
                 $file_0 =~ s/\//+/;
                 push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . 'conf-rw/' . $hostname . '+' . $file_0);
             }
@@ -1109,10 +1114,10 @@ sub url_expand
                 if ($self->var_get('MM_ROOTFS_IMAGE'))
                 {
                     my $file_0 = $self->var_get('MM_ROOTFS_IMAGE');
-                    $file_0 =~ s/\/+/\//g;
                     $file_0 =~ s/[^\/]+$//g;
-                    $file_0 =~ s/\/$//g;
                     $file_0 .= '/' . $file;
+                    $file_0 =~ s/\/+/\//g;
+                    $file_0 =~ s/^\///;
                     push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
                 }
                 else
@@ -1120,11 +1125,15 @@ sub url_expand
                     if ($self->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
                     {
                         my $file_0 = $file;
+                        $file_0 =~ s/\/+/\//g;
+                        $file_0 =~ s/^\///;
                         push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
                     }
                     else
                     {
                         my $file_0 = 'minimyth-' . $self->var_get('MM_VERSION') . '/' . $file;
+                        $file_0 =~ s/\/+/\//g;
+                        $file_0 =~ s/^\///;
                         push(@list, $self->var_get('MM_MINIMYTH_BOOT_URL') . $file_0);
                     }
                     $self->message_log('info', qq(expanding '$url': guessed '$list[$#list]' because distribution location is unknown.));
@@ -1133,11 +1142,11 @@ sub url_expand
         }
         when (/^file$/  )
         {
-            push(@list, 'file:' . $file);
+            push(@list, $url);
         }
         when (/^http$/  )
         {
-            push(@list, 'http://' . $server . '/' . $file);
+            push(@list, $url);
         }
         when (/^hunt$/  )
         {
@@ -1146,7 +1155,7 @@ sub url_expand
         }
         when (/^tftp$/  )
         {
-            push(@list, 'tftp://' . $server . '/' . $file);
+            push(@list, $url)
         }
         default
         {
