@@ -133,6 +133,44 @@ sub start
         } 
     }
 
+    # Process the DHCP override configuration variables
+    # so that they are available to the DHCP client.
+    $self->_run($minimyth, 'MM_DHCP_.*') || ($success = 0);
+    $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
+
+    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp_override_file'))
+    {
+        close(FILE);
+    }
+    else
+    {
+        $success = 0;
+    }
+
+    # Start the DHCP client now that we have created the DHCP override variables file.
+    $minimyth->package_require(q(init::dhcp));
+    if ($minimyth->package_member_require(q(init::dhcp), q(start)))
+    {
+        eval
+        {
+            init::dhcp->start($minimyth) || ($success = 0);
+        };
+        if ($@)
+        {
+            $minimyth->message_output('err', qq($@));
+            $success = 0;
+        }
+    }
+
+    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp'))
+    {
+        close(FILE);
+    }
+    else
+    {
+        $success = 0;
+    }
+
     # Load the automatic kernel modules.
     $minimyth->package_require(q(init::modules_automatic));
     if ($minimyth->package_member_require(q(init::modules_automatic), q(start)))
@@ -188,44 +226,6 @@ sub start
     # This will load potentially firmware dependent drivers as well.
     system(qq(/sbin/udevadm trigger));
     system(qq(/sbin/udevadm settle --timeout=60));
-
-    # Process the DHCP override configuration variables
-    # so that they are available to the DHCP client.
-    $self->_run($minimyth, 'MM_DHCP_.*') || ($success = 0);
-    $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
-
-    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp_override_file'))
-    {
-        close(FILE);
-    }
-    else
-    {
-        $success = 0;
-    }
-
-    # Start the DHCP client now that we have created the DHCP override variables file.
-    $minimyth->package_require(q(init::dhcp));
-    if ($minimyth->package_member_require(q(init::dhcp), q(start)))
-    {
-        eval
-        {
-            init::dhcp->start($minimyth) || ($success = 0);
-        };
-        if ($@)
-        {
-            $minimyth->message_output('err', qq($@));
-            $success = 0;
-        }
-    }
-
-    if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-dhcp'))
-    {
-        close(FILE);
-    }
-    else
-    {
-        $success = 0;
-    }
 
     $minimyth->message_output('info', "processing configuration file ...");
     $minimyth->var_clear();
