@@ -171,21 +171,6 @@ sub start
         $success = 0;
     }
 
-    # Load the automatic kernel modules.
-    $minimyth->package_require(q(init::modules_automatic));
-    if ($minimyth->package_member_require(q(init::modules_automatic), q(start)))
-    {
-        eval
-        {
-            init::modules_automatic->start($minimyth) || ($success = 0);
-        };
-        if ($@)
-        {
-            $minimyth->message_output('err', qq($@));
-            $success = 0;
-        }
-    }
-
     # Enable configuration auto-detection udev rules for firmware.
     if (opendir(DIR, '/lib/udev/rules.d'))
     {
@@ -210,6 +195,21 @@ sub start
     else
     {
         $success = 0;
+    }
+
+    # Load the automatic kernel modules.
+    $minimyth->package_require(q(init::modules_automatic));
+    if ($minimyth->package_member_require(q(init::modules_automatic), q(start)))
+    {
+        eval
+        {
+            init::modules_automatic->start($minimyth) || ($success = 0);
+        };
+        if ($@)
+        {
+            $minimyth->message_output('err', qq($@));
+            $success = 0;
+        }
     }
 
     # Enable configuration auto-detection udev rules for everything else.
