@@ -135,6 +135,7 @@ sub start
 
     # Process the DHCP override configuration variables
     # so that they are available to the DHCP client.
+    $minimyth->message_output('info', "Processing DHCP override variables ...");
     $self->_run($minimyth, 'MM_DHCP_.*') || ($success = 0);
     $minimyth->var_save({ 'file' => '/etc/conf.d/dhcp.override', 'filter' => 'MM_DHCP_.*' });
 
@@ -186,6 +187,7 @@ sub start
     system(qq(/sbin/udevadm settle --timeout=60));
 
     # Fetch firmware files.
+    $minimyth->message_output('info', "Fetching firmware files ...");
     $self->_run($minimyth, 'MM_FIRMWARE_FILE_LIST') || ($success = 0);
 
     if (open(FILE, '>', '/var/cache/minimyth/init/state/conf/done-firmware_fetch'))
