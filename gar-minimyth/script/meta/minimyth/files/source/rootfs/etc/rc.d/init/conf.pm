@@ -60,10 +60,15 @@ sub start
     # Using local configuration files, so there should be a '/minimyth' directory.
     if ($minimyth->var_get('MM_MINIMYTH_BOOT_URL') eq 'file:/minimyth/')
     {
-        while (! -e '/minimyth')
+        for (my $countdown = 30; (! -e '/minimyth') && ($countdown > 0) ; $countdown--)
         {
-            $minimyth->message_output('info', "waiting for directory /minimyth to mount ...");
+            $minimyth->message_output('info', "waiting for directory /minimyth to mount ($countdown second(s) left) ...");
             sleep 1;
+        }
+        if (! -e '/minimyth')
+        {
+            $minimyth->message_output('err', "directory /minimyth failed to mount.");
+            return 0;
         }
     }
 
