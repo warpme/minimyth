@@ -3,7 +3,7 @@ GARVERSION = 3.5.10
 CATEGORIES = kde
 MASTER_SITES = ftp://ftp.kde.org/pub/kde/stable/$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-inotify_h.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-kab2kabc_dependencies.patch $(DISTNAME)-inotify_h.patch $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch.gar
 endif
