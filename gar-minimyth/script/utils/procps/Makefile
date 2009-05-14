@@ -1,5 +1,5 @@
 GARNAME = procps
-GARVERSION = 3.2.7
+GARVERSION = 3.2.8
 CATEGORIES = utils
 MASTER_SITES = http://procps.sourceforge.net/
 DISTFILES = $(DISTNAME).tar.gz
