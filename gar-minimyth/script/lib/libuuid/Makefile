@@ -1,25 +1,24 @@
-GARNAME = e2fsprogs
+GARNAME = libuuid
 GARVERSION = 1.41.5
-CATEGORIES = disk
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-chmod.patch $(DISTNAME)-verbose.patch
+CATEGORIES = lib
+SOURCEPKG = disk/e2fsprogs
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c utils/util-linux-ng
+DEPENDS = lang/c
+
+WORKSRC = $(WORKDIR)/e2fsprogs-$(GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = custom
+BUILD_SCRIPTS     = $(WORKSRC)/lib/uuid/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/lib/uuid/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath \
 	--enable-elf-shlibs \
-	--disable-libblkid \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -33,10 +32,6 @@ install-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libcom_err.a
-	@rm -f $(DESTDIR)$(libdir)/libe2p.a
-	@rm -f $(DESTDIR)$(libdir)/libext2fs.a
-	@rm -f $(DESTDIR)$(libdir)/libss.a
 	@rm -f $(DESTDIR)$(libdir)/libuuid.a
 	@mv -f $(DESTDIR)$(libdir)/libuuid.*  $(DESTDIR)$(elibdir)/
 	@$(MAKECOOKIE)
