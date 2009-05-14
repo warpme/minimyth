@@ -35,9 +35,7 @@ fi
 # Create /udev.
 /bin/mkdir -p /var
 /bin/mount -n -t tmpfs /dev /dev
-/bin/mknod -m 0600 /dev/console c 5 1
 /bin/mknod -m 0600 /dev/initctl p
-/bin/mknod -m 0666 /dev/null    c 1 3
 /bin/ln -s /proc/kcore     /dev/core
 /bin/ln -s /proc/self/fd   /dev/fd
 /bin/ln -s /proc/self/fd/0 /dev/stdin
