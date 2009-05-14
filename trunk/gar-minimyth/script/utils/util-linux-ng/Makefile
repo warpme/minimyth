@@ -1,15 +1,16 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.14.2
+GARVERSION = 2.15
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.15/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-blkid.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncursesw lib/zlib utils/procps disk/e2fsprogs system/udev
+DEPENDS = lang/c lib/libuuid lib/ncursesw lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -19,10 +20,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--bindir=$(ebindir) \
 	--sbindir=$(esbindir) \
 	--libdir=$(elibdir) \
+	--enable-shared \
+	--disable-static \
 	--disable-rpath \
 	--enable-arch \
 	--disable-use-tty-group \
-	--with-fsprobe=volume_id \
+	--with-fsprobe=builtin \
 	--with-gnu-ld
 
 BUILD_ARGS     = \
@@ -34,8 +37,7 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
-PATH := $(PATH):$(build_DESTDIR)$(build_elibdir)/udev
-
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
