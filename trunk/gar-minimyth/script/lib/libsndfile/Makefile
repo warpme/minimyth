@@ -1,5 +1,5 @@
 GARNAME = libsndfile
-GARVERSION = 1.0.19
+GARVERSION = 1.0.20
 CATEGORIES = lib
 MASTER_SITES = http://www.mega-nerd.com/libsndfile/
 DISTFILES = $(DISTNAME).tar.gz
