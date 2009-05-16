@@ -178,7 +178,8 @@ mm-all:
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.26" ] && \
 	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.27" ] && \
 	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.28" ] && \
-	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.29" ] ; then \
+	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.29" ] && \
+	    [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.30" ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION=\"$(mm_KERNEL_HEADERS_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
@@ -186,7 +187,8 @@ mm-all:
 	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.26" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.27" ] && \
 	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.28" ] && \
-	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.29" ] ; then \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.29" ] && \
+	    [ ! "$(mm_KERNEL_VERSION)" = "2.6.30" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
