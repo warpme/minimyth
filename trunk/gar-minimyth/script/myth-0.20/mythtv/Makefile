@@ -18,6 +18,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-eject.patch \
         $(DISTNAME_SHORT)-udevinfo.patch \
 	$(DISTNAME_SHORT)-lm_sensors_detect.patch \
+	$(DISTNAME_SHORT)-disable_drm_vsync.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-mythaudio.patch \
