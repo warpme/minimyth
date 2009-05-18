@@ -1,9 +1,9 @@
 GARNAME = curl
-GARVERSION = 7.19.3
+GARVERSION = 7.19.5
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -35,8 +35,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-manual \
 	--enable-libgcc \
 	--disable-ipv6 \
-	--enable-nonblocking \
 	--enable-thread \
+	--enable-nonblocking \
 	--disable-ares \
 	--enable-verbose \
 	--disable-sspi \
@@ -45,7 +45,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-hidden-symbols \
 	--disable-soname-bump \
 	--with-gnu-ld \
-	--without-ldap \
 	--without-krb4 \
 	--without-spnego \
 	--without-gssapi \
