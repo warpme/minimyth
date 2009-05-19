@@ -305,68 +305,11 @@ sub start
     my $inputdevice_event  = '';
     my $serverlayout_event = '';
     {
-        # Determine event device list.
-        # The list is all udev detected event devices that are not claimed by LIRC.
-        my @device_list;
-        {
-            my $device_canonicalize = sub
-            {
-                my $device = shift;
-
-                if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query name --root --name='$device'))))
-                {
-                    while (<FILE>)
-                    {
-                        chomp;
-                        $device = $_;
-                        last;
-                    }
-                    close(FILE);
-                }
-
-                return $device;
-            };
-
-            # Get all udev detected event devices.
-            foreach my $item (@{$minimyth->detect_state_get('event')})
-            {
-                my $device = &{$device_canonicalize}($item->{'device'});
-                if ($device)
-                {
-                    push(@device_list, "$device");
-                }
-            }
-
-            # Remove any duplicates.
-            {
-                my $prev = '';
-                @device_list = grep($_ ne $prev && (($prev) = $_), sort(@device_list));
-            }
-
-            # Remove any devices claimed by LIRC.
-            if ($minimyth->var_get('MM_LIRC_DEVICE_LIST'))
-            {
-                my @blacklist = ();
-                foreach my $item (split(/  +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST')))
-                {
-                    if ($item)
-                    {
-                        my @item = split(/,/, $item);
-                        my $device = &{$device_canonicalize}($item[0]);
-                        push(@blacklist, $device);
-                    }
-                }
-                my $blacklist_filter = join('|', @blacklist);
-                @device_list = grep(! /^($blacklist_filter)$/, @device_list);
-            }
-        }
-
         my @inputdevice  = ();
         my @serverlayout = ();
-        foreach my $device (@device_list)
+        foreach my $device (split(/ +/, $minimyth->var_get('MM_X_EVENT_DEVICE_LIST')))
         {
             my $identifier = $device;
-            $identifier =~ s/.*\///;
 
             push(@inputdevice, qq(Section "InputDevice"));
             push(@inputdevice, qq(    Identifier "$identifier"));

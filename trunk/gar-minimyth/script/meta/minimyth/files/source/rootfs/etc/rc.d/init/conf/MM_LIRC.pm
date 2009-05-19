@@ -176,24 +176,6 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my $device_canonicalize = sub
-        {
-            my $device = shift;
-
-            if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query name --root --name='$device'))))
-            {
-                while (<FILE>)
-                {
-                    chomp;
-                    $device = $_;
-                    last;
-                }
-                close(FILE);
-            }
-
-            return $device;
-        };
-
         my @device_list;
 
         # If the manual LIRC driver is not 'irtrans',
@@ -203,7 +185,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
         # so no LIRC device list is created.
         if ($minimyth->var_get('MM_LIRC_DRIVER') ne 'irtrans')
         {
-            my $device     = &{$device_canonicalize}($minimyth->var_get('MM_LIRC_DEVICE'));
+            my $device     = $minimyth->device_canonicalize($minimyth->var_get('MM_LIRC_DEVICE'));
             my $driver     = $minimyth->var_get('MM_LIRC_DRIVER');
             my $lircd_conf = q(/etc/lircd.conf);
             if (($device) && ($driver))
@@ -214,7 +196,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
             {
                 foreach my $item (@{$minimyth->detect_state_get('lirc')})
                 {
-                    my $device =     &{$device_canonicalize}($item->{'device'});
+                    my $device =     $minimyth->device_canonicalize($item->{'device'});
                     my $driver     = $item->{'driver'};
                     my $lircd_conf = $item->{'lircd_conf'};
                     if ((! $lircd_conf) || ($minimyth->var_get('MM_LIRC_FETCH_LIRCD_CONF') eq 'yes'))
@@ -241,7 +223,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
             {
                 if ($item)
                 {
-                    push(@blacklist, &{$device_canonicalize}($item));
+                    push(@blacklist, $minimyth->device_canonicalize($item));
                 }
             }
             my $blacklist_filter = join('|', @blacklist);

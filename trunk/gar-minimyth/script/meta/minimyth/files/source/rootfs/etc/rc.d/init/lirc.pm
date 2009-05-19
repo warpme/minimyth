@@ -318,19 +318,6 @@ sub start
         # Start daemon.
         my $daemon = '';
         my $instance = $device;
-        if (($device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=symlink --root --name='$device'))))
-        {
-            while (<FILE>)
-            {
-                chomp;
-                if (/^\/dev\/persistent\//)
-                {
-                    $instance = $_;
-                    last;
-                }
-            }
-            close(FILE);
-        }
         $instance =~ s/\/+/~/g;
         $instance =~ s/^~dev~//;
         if ($daemon_master)
