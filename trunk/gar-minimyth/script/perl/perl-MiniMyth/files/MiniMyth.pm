@@ -555,10 +555,11 @@ sub splash_init
             default             { $message = ''                        ; }
         }
         $self->message_log('info', qq(starting splash screen));
-        system(qq(/usr/bin/chvt 1));
         File::Path::mkpath($var_splash_fifo_dir, {mode => 0755});
         $self->splash_command('exit');
         system(qq($var_splash_command --theme="minimyth" --progress="0" --mesg="$message" --type="$type"));
+        $self->splash_command('set tty silent 3');
+        $self->splash_command('set tty verbose 1');
         $self->splash_command('set mode silent');
         $self->splash_command('repaint');
     }
@@ -574,7 +575,7 @@ sub splash_halt
 
     $self->message_log('info', qq(stopping splash screen));
 
-    $self->splash_command('exit');
+    $self->splash_command('exit staysilent');
 
     return 1;
 }
