@@ -28,6 +28,7 @@ $var_list{'MM_LCDPROC_DRIVER'} =
         {
             my $driver = $minimyth->detect_state_get('lcdproc', 0, 'driver') || '';
             my $device = $minimyth->detect_state_get('lcdproc', 0, 'device') || '';
+            $device = $minimyth->device_canonicalize($device);
             $minimyth->var_set('MM_LCDPROC_DRIVER', $driver);
             $minimyth->var_set('MM_LCDPROC_DEVICE', $device);
         }

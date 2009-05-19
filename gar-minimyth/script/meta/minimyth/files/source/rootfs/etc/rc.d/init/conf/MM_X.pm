@@ -28,6 +28,54 @@ $var_list{'MM_X_DRIVER'} =
     },
     value_valid   => '.+'
 };
+$var_list{'MM_X_EVENT_DEVICE_LIST'} =
+{
+    prerequisite   => ['MM_LIRC_DEVICE_LIST'],
+    value_default  => 'auto',
+    value_valid    => 'auto|.+',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @device_list;
+
+        # Get all udev detected event devices.
+        foreach my $item (@{$minimyth->detect_state_get('event')})
+        {
+            my $device = $minimyth->device_canonicalize($item->{'device'});
+            if ($device)
+            {
+                push(@device_list, "$device");
+            }
+        }
+
+        # Remove any duplicates.
+        {
+            my $prev = '';
+            @device_list = grep($_ ne $prev && (($prev) = $_), sort(@device_list));
+        }
+
+        # Remove any devices claimed by LIRC.
+        if ($minimyth->var_get('MM_LIRC_DEVICE_LIST'))
+        {
+            my @blacklist = ();
+            foreach my $item (split(/  +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST')))
+            {
+                if ($item)
+                {
+                    my @item = split(/,/, $item);
+                    my $device = $minimyth->device_canonicalize($item[0]);
+                    push(@blacklist, $device);
+                }
+            }
+            my $blacklist_filter = join('|', @blacklist);
+            @device_list = grep(! /^($blacklist_filter)$/, @device_list);
+        }
+
+        return join(' ', @device_list);
+    }
+};
 #===============================================================================
 #
 #===============================================================================

@@ -381,7 +381,7 @@ sub var_exists
 }
 
 #===============================================================================
-# Hardware autodetection functions.
+# hardware autodetection functions.
 #===============================================================================
 sub detect_state_get
 {
@@ -453,6 +453,45 @@ sub detect_state_get
         return \@state;
     }
 }
+
+#===============================================================================
+# device functions.
+#===============================================================================
+sub device_canonicalize
+{
+    my $self   = shift;
+    my $device = shift;
+
+    # If possible, covert the device name to its real name.
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --name='$device'))))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $device = $_;
+            last;
+        }
+        close(FILE);
+    }
+    # If possible, covert the device name to its persistent link name.
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=symlink --root --name='$device'))))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            if (/^\/dev\/persistent\/.*$/)
+            {
+                chomp;
+                $device = $_;
+                last;
+            }
+        }
+        close(FILE);
+    }
+
+    return $device;
+};
+
 
 #===============================================================================
 # splash screen functions
@@ -2451,6 +2490,9 @@ sub package_require
     return 1;
 }
 
+#===============================================================================
+# Perl package functions.
+#===============================================================================
 sub package_member_require
 {
     my $self    = shift;
