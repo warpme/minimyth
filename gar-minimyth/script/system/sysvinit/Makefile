@@ -3,7 +3,7 @@ GARVERSION = 2.86
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-makefile.patch $(DISTNAME)-halt.patch
+PATCHFILES = $(DISTNAME)-init_silent.patch $(DISTNAME)-makefile.patch $(DISTNAME)-halt.patch
 LICENSE = GPL2
 
 DESCRIPTION =
