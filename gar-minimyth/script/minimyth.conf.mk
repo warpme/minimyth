@@ -32,7 +32,7 @@ mm_DEBUG_BUILD            ?= no
 # Lists the graphics drivers supported.
 # Valid values for mm_GRAPHICS are one or more of 'intel', 'nvidia',
 # 'openchrome', 'radeon', 'radeonhd', 'savage', 'sis', and 'vmware'.
-mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd vmware
+mm_GRAPHICS               ?= intel nvidia openchrome radeon radeonhd sis vmware
 # Lists the software to be supported.
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
@@ -103,10 +103,10 @@ mm_TFTP_ROOT              ?= /var/tftpboot/minimyth
 mm_NFS_ROOT               ?= /home/public/minimyth
 # The version of kernel headers to use.
 # Valid values are '2.6.26', '2.6.27', '2.6.28', '2.6.29' and '2.6.30'.
-mm_KERNEL_HEADERS_VERSION ?= 2.6.26
+mm_KERNEL_HEADERS_VERSION ?= 2.6.29
 # The version of kernel to use.
 # Valid values are '2.6.26', '2.6.27', '2.6.28', '2.6.29' and '2.6.30'.
-mm_KERNEL_VERSION         ?= 2.6.26
+mm_KERNEL_VERSION         ?= 2.6.29
 # The kernel configuration file to use.
 # When set, the kernel configuration file $(HOME)/.minimyth/$(mm_KERNEL_CONFIG) will be used.
 # When not set, a built-in kernel configuration file will be used.
@@ -117,10 +117,10 @@ mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '71.86.09' (legacy), '96.43.11' (legacy), '169.12' (legacy),
 # '173.14.18' (legacy), '180.51', '185.18.08' (beta).
-mm_NVIDIA_VERSION         ?= 169.12
+mm_NVIDIA_VERSION         ?= 180.51
 # The version of xorg to use.
 # Valid values are '7.3' and '7.4'.
-mm_XORG_VERSION           ?= 7.3
+mm_XORG_VERSION           ?= 7.4
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
 mm_MYTH_TRUNK_VERSION     ?= 20586
