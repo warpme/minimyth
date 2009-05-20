@@ -16,6 +16,17 @@ sub _remote_wakeup_enable
     my $self   = shift;
     my $device = shift;
 
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --name='$device'))))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            $device = $_;
+            last;
+        }
+        close(FILE);
+    }
+
     if ((! -r '/sys/class/lirc') ||
         (! opendir(DIR, '/sys/class/lirc')))
     {
