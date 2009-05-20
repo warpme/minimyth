@@ -145,29 +145,6 @@ sub start
 
     $minimyth->message_output('info', "starting remote control(s) ...");
 
-    my $device                = $minimyth->var_get('MM_LIRC_DEVICE');
-    my $driver                = $minimyth->var_get('MM_LIRC_DRIVER');
-    my $kernel_module         = $minimyth->var_get('MM_LIRC_KERNEL_MODULE');
-    my $kernel_module_options = $minimyth->var_get('MM_LIRC_KERNEL_MODULE_OPTIONS');
-
-    # Load user configured kernel module.
-    if ($kernel_module)
-    {
-        system(qq(/sbin/modprobe $kernel_module $kernel_module_options));
-        # Wait up to 60 seconds for the device to appear in the device file system.
-        # Wait up to 60 seconds for the device to appear in the device file system.
-        for (my $delay = 0 ; ($delay < 60) && (! -e $device) ; $delay++)
-        {
-            $minimyth->message_output('info', "waiting for remote control device ($delay seconds) ...");
-            sleep 1;
-        }
-        if (! -e $device)
-        {
-            $minimyth->message_output('err', "timed out waiting for remote control device.");
-            return 0;
-        }
-    }
-
     # Determine master LIRC daemon.
     # The master LIRC daemon combines the LIRC daemons for multiple LIRC devices.
     # Therefore, if there is more than one LIRC device, then we need a master LIRC daemon.

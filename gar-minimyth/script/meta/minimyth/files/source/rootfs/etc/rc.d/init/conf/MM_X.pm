@@ -1020,4 +1020,49 @@ $var_list{'MM_X_DISPLAYSIZE'} =
     }
 };
 
+$var_list{'MM_X_KERNEL_MODULE_LIST'} =
+{
+    prerequisite   => ['MM_X_DRIVER'],
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->var_set($name, 'auto');
+
+        return 1;
+    },
+    value_default  => 'auto',
+    value_valid    => 'auto',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @kernel_modules;
+
+        my $x_driver = $minimyth->var_get('MM_X_DRIVER');
+        if ($x_driver)
+        {
+            if ((-f  '/etc/hardware.d/x2kernel.map') && open(FILE, '<', '/etc/hardware.d/x2kernel.map'))
+            {
+                foreach (grep((! /^ *$/) && (! /^ *#/), (<FILE>)))
+                {
+                    chomp;
+                    s/ +/ /g;
+                    s/^ //;
+                    s/ $//;
+                    s/ ?, ?/,/g;
+                    if (/^($x_driver),([^,]*)$/)
+                    {
+                        push(@kernel_modules, split(/ /, $2));
+                        last;
+                    }
+                }
+            }
+        }
+        return join(' ', @kernel_modules);
+    }
+};
+
 1;

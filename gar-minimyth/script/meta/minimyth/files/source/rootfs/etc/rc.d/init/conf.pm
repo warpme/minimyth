@@ -26,7 +26,7 @@ use MiniMyth ();
 #   (10) Process MM_FIRMWARE_FILE_LIST,
 #        including fetching any hardware firmware files.
 #   (11) Load automatic kernel modules.
-#   (12) Process MM_HARDWARE_KERNEL_MODULES.
+#   (12) Process MM_HARDWARE_KERNEL_MODULE_LIST.
 #   (13) Load manual kernel modules.
 #   (14) (Re)process all configuration variables.
 sub start
@@ -231,7 +231,7 @@ sub start
     }
 
     # Load the manual kernel modules.
-    $self->_run($minimyth, 'MM_HARDWARE_KERNEL_MODULES');
+    $self->_run($minimyth, 'MM_HARDWARE_KERNEL_MODULE_LIST');
     $minimyth->package_require(q(init::modules_manual));
     if ($minimyth->package_member_require(q(init::modules_manual), q(start)))
     {
@@ -294,8 +294,7 @@ sub _run
 
     my %var_list;
 
-    # Get the variable handlers from each of the variable group packages in the MM directory,
-    # discarding the variable handlers for variables that do not match the filter.
+    # Get the variable handlers from each of the variable group packages in the MM directory.
     my $dir = Cwd::abs_path(File::Basename::dirname(__FILE__)) . '/conf';
 
     if ((-d $dir) && (opendir(DIR, $dir)))
@@ -319,7 +318,7 @@ sub _run
                     $success = 0;
                     return $success;
                 }
-                foreach (grep( /^$filter$/, keys %{$group_var_list}))
+                foreach (keys %{$group_var_list})
                 {
                     $var_list{$_} = $group_var_list->{$_};
                 }
@@ -328,8 +327,8 @@ sub _run
         closedir(DIR);
     }
 
-    # Make sure that all variables (re)initialize.
-    foreach (keys %var_list)
+    # Make sure that all variables that match the filter (re)initialize.
+    foreach (grep( /^$filter$/, keys %var_list))
     {
         $var_list{$_}->{'complete'} = 0;
     }
@@ -337,8 +336,8 @@ sub _run
     # Run variable initialization handler for MM_MINIMYTH_BOOT_URL because it is needed when fetching files.
     $self->_run_var($minimyth, \%var_list, 'MM_MINIMYTH_BOOT_URL');
 
-    # Run the variable initialization handlers for each variable.
-    foreach (keys %var_list)
+    # Run the variable initialization handlers for each variable that matches the filter .
+    foreach (grep( /^$filter$/, keys %var_list))
     {
         $self->_run_var($minimyth, \%var_list, $_) || ($success = 0);
     }

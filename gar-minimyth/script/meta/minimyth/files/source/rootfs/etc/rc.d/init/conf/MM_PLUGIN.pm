@@ -221,5 +221,35 @@ $var_list{'MM_PLUGIN_ZONEMINDER_ENABLED'} =
     },
     value_valid    => 'no|yes'
 };
+$var_list{'MM_PLUGIN_KERNEL_MODULE_LIST'} =
+{
+    prerequisite   => ['MM_PLUGIN_PHONE_ENABLED'],
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->var_set($name, 'auto');
+
+        return 1;
+    },
+    value_default  => 'auto',
+    value_valid    => 'auto',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @kernel_modules;
+
+        # MythPhone uses OSS not ALSA.
+        if ($minimyth->var_get('MM_PLUGIN_PHONE_ENABLED') eq 'yes')
+        {
+            push(@kernel_modules, 'snd-pcm-oss');
+        }
+
+        return join(' ', @kernel_modules);
+    }
+};
 
 1;
