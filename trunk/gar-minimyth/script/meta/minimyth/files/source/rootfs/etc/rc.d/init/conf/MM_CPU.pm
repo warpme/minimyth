@@ -121,5 +121,55 @@ $var_list{'MM_CPU_FETCH_MICROCODE_DAT'} =
     file           => {name_remote => '/microcode.dat',
                        name_local  => '/etc/firmware/microcode.dat'}
 };
+$var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
+{
+    prerequisite   => [ 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_CPU_VENDOR' ],
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->var_set($name, 'auto');
+
+        return 1;
+    },
+    value_default  => 'auto',
+    value_valid    => 'auto',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @kernel_modules;
+
+        my $vendor = $minimyth->var_get('MM_CPU_VENDOR');
+        my $family = $minimyth->var_get('MM_CPU_FAMILY');
+        my $model  = $minimyth->var_get('MM_CPU_MODEL');
+        if ($vendor)
+        {
+            if ((-f  '/etc/hardware.d/cpu2kernel.map') && open(FILE, '<', '/etc/hardware.d/cpu2kernel.map'))
+            {
+                foreach (grep((! /^ *$/) && (! /^ *#/), (<FILE>)))
+                {
+                    chomp;
+                    s/ +/ /g;
+                    s/^ //;
+                    s/ $//;
+                    s/ ?, ?/,/g;
+                    if (/^($vendor),([^,]*),([^,]*),([^,]*)$/)
+                    {
+                        if (((! $2) || ($2 eq $family)) &&
+                            ((! $3) || ($3 eq $model )))
+                        {
+                            push(@kernel_modules, split(/ /, $4));
+                        }
+                    }
+                }
+            }
+        }
+
+        return join(' ', @kernel_modules);
+    }
+};
 
 1;

@@ -13,71 +13,27 @@ sub var_list
     return \%var_list;
 }
 
-$var_list{'MM_HARDWARE_KERNEL_MODULES'} =
+$var_list{'MM_HARDWARE_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_CPU_VENDOR', 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_X_DRIVER'],
+    prerequisite   => ['MM_CPU_KERNEL_MODULE_LIST', 'MM_LIRC_KERNEL_MODULE_LIST', 'MM_PLUGIN_KERNEL_MODULE_LIST', 'MM_X_KERNEL_MODULE_LIST'],
     value_default  => '',
     extra          => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        my @kernel_modules = split(/  +/, $minimyth->var_get($name));
+        my @kernel_modules = split(/ +/, $minimyth->var_get($name));
 
-        # Get CPU related kernel modules.
+        foreach my $delta_name ('CPU', 'LIRC', 'PLUGIN', 'X')
         {
-            my $vendor = $minimyth->var_get('MM_CPU_VENDOR');
-            my $family = $minimyth->var_get('MM_CPU_FAMILY');
-            my $model  = $minimyth->var_get('MM_CPU_MODEL');
-            if ($vendor)
+            my $delta_kernel_modules = $minimyth->var_get('MM_' . $delta_name . '_KERNEL_MODULE_LIST');
+            if ($delta_kernel_modules)
             {
-                if ((-f  '/etc/hardware.d/cpu2kernel.map') && open(FILE, '<', '/etc/hardware.d/cpu2kernel.map'))
-                {
-                    foreach (grep((! /^ *$/) && (! /^ *#/), (<FILE>)))
-                    {
-                        chomp;
-                        s/ +/ /g;
-                        s/^ //;
-                        s/ $//;
-                        s/ ?, ?/,/g;
-                        if (/^($vendor),([^,]*),([^,]*),([^,]*)$/)
-                        {
-                            if (((! $2) || ($2 eq $family)) &&
-                                ((! $3) || ($3 eq $model )))
-                            {
-                                push(@kernel_modules, split(/ /, $4));
-                            }
-                        }
-                    }
-                }
+                push(@kernel_modules, split(/ +/, $delta_kernel_modules));
             }
         }
 
-        # Get X related kernel modules.
-        {
-            my $x_driver = $minimyth->var_get('MM_X_DRIVER');
-            if ($x_driver)
-            {
-                if ((-f  '/etc/hardware.d/x2kernel.map') && open(FILE, '<', '/etc/hardware.d/x2kernel.map'))
-                {
-                    foreach (grep((! /^ *$/) && (! /^ *#/), (<FILE>)))
-                    {
-                        chomp;
-                        s/ +/ /g;
-                        s/^ //;
-                        s/ $//;
-                        s/ ?, ?/,/g;
-                        if (/^($x_driver),([^,]*)$/)
-                        {
-                            push(@kernel_modules, split(/ /, $2));
-                            last;
-                        }
-                    }
-                }
-            }
-        }
-
-        # Remove any dumplicates.
+        # Remove any duplicates.
         {
             my $prev = '';
             @kernel_modules = grep($_ ne $prev && (($prev) = $_), sort(@kernel_modules));
