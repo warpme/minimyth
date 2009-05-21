@@ -1,10 +1,9 @@
 GARNAME = irserver
-GARVERSION = 20090430
+GARVERSION = 20090521
 CATEGORIES = system
-# This site lacks a version number so we will download it from linprv.org.
+# This site lacks a version number so we will download it from www.minimyth.org.
 #MASTER_SITES = http://www.irtrans.de/download/Server/Linux/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-gcc_4.3.patch
 LICENSE = BSD_3_Clause
 
 DESCRIPTION =
