@@ -74,6 +74,20 @@ $var_list{'MM_LIRC_DEVICE'} =
         return $value_auto;
     },
     value_none     => '',
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $device = $minimyth->var_get($name);
+        if (($device) && (! -e $device))
+        {
+            $minimyth->message_output('err', "Remote control device '$device' specified by '$name' does not exist.");
+            return 0;
+        }
+
+        return 1;
+    },
 };
 $var_list{'MM_LIRC_KERNEL_MODULE'} =
 {
@@ -168,7 +182,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC'} =
 };
 $var_list{'MM_LIRC_DEVICE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DRIVER', 'MM_LIRC_FETCH_LIRCD_CONF'],
+    prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DEVICE', 'MM_LIRC_FETCH_LIRCD_CONF'],
     value_default  => 'auto',
     value_valid    => 'auto|.+',
     value_auto     => sub
