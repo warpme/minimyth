@@ -35,8 +35,8 @@ sub start
         }
         if ($#devices < 0)
         {
-            $minimyth->message_output('err', "no bluetooth device found.");
-            return 0;
+            $minimyth->message_output('warn', "no bluetooth device found.");
+            return 1;
         }
 
         my $device_configured = 0;
