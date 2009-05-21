@@ -629,7 +629,10 @@ sub _run_var
                 my $name_local  = $_->{'name_local'};
                 my $mode_local  = $_->{'mode_local'}  || '0644' ;
  
-                unlink($name_local);
+                if (-e $name_local)
+                {
+                    File::Path::rmtree($name_local);
+                }
                 my $result = $minimyth->confro_get($name_remote, $name_local);
                 if (! -e $name_local)
                 {

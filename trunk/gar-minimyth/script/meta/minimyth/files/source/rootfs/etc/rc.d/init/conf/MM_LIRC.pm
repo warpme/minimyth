@@ -180,6 +180,116 @@ $var_list{'MM_LIRC_FETCH_LIRCRC'} =
     file           => {name_remote => '/lircrc',
                        name_local  => '/etc/lircrc'}
 };
+$var_list{'MM_LIRC_FETCH_LIRCRC_MINIMYTH'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'no',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCRC') =~ /^no/)
+        {
+            return 'no|yes';
+        }
+        else
+        {
+            return 'no';
+        }
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/lircrc.minimyth',
+                       name_local  => '/etc/lirc.d/lircrc/minimyth'}
+};
+$var_list{'MM_LIRC_FETCH_LIRCRC_MYTHTV'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'no',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCRC') =~ /^no/)
+        {
+            return 'no|yes';
+        }
+        else
+        {
+            return 'no';
+        }
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/lircrc.mythtv',
+                       name_local  => '/etc/lirc.d/lircrc/mythtv'}
+};
+$var_list{'MM_LIRC_FETCH_LIRCRC_MPLAYER'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'no',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCRC') =~ /^no/)
+        {
+            return 'no|yes';
+        }
+        else
+        {
+            return 'no';
+        }
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/lircrc.mplayer',
+                       name_local  => '/etc/lirc.d/lircrc/mplayer'}
+};
+$var_list{'MM_LIRC_FETCH_LIRCRC_VLC'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'no',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCRC') =~ /^no/)
+        {
+            return 'no|yes';
+        }
+        else
+        {
+            return 'no';
+        }
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/lircrc.vlc',
+                       name_local  => '/etc/lirc.d/lircrc/vlc'}
+};
+$var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'no',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCRC') =~ /^no/)
+        {
+            return 'no|yes';
+        }
+        else
+        {
+            return 'no';
+        }
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/lircrc.xine',
+                       name_local  => '/etc/lirc.d/lircrc/xine'}
+};
 $var_list{'MM_LIRC_DEVICE_LIST'} =
 {
     prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DEVICE', 'MM_LIRC_FETCH_LIRCD_CONF'],
