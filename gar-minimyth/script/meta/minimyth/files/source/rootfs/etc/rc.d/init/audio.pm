@@ -80,6 +80,7 @@ sub start
                             # General unmuting.
                             when (m!^'PCM'!)                { system(qq($amixer_command sset $_ $gain unmute)); }
                             when (m!^'Master'!)             { system(qq($amixer_command sset $_ $gain unmute)); }
+                            when (m!^'Speaker'!)            { system(qq($amixer_command sset $_ $gain unmute)); }
                             when (m!^'Front'!)              { system(qq($amixer_command sset $_ $gain unmute)); }
                             when (m!^'Master Front'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
                             when (m!^'Analog Front'!)       { system(qq($amixer_command sset $_ $gain unmute)); }
@@ -156,6 +157,7 @@ sub stop
                         # General muting.
                         when (m!^'PCM'!)                { system(qq($amixer_command sset $_ 0% mute)); }
                         when (m!^'Master'!)             { system(qq($amixer_command sset $_ 0% mute)); }
+                        when (m!^'Speaker'!)            { system(qq($amixer_command sset $_ 0% mute)); }
                         when (m!^'Front'!)              { system(qq($amixer_command sset $_ 0% mute)); }
                         when (m!^'Analog Front'!)       { system(qq($amixer_command sset $_ 0% mute)); }
                         when (m!^'Surround'!)           { system(qq($amixer_command sset $_ 0% mute)); }
