@@ -4,7 +4,11 @@ CATEGORIES = devel
 MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ticket-7048.patch $(DISTNAME)-ticket-7060.patch $(DISTNAME)-perl.patch.gar $(DISTNAME).patch $(DISTNAME)-ldd.patch
+PATCHFILES  =
+ifeq ($(GARVERSION),2.9)
+PATCHFILES += $(DISTNAME)-ticket-7048.patch $(DISTNAME)-ticket-7060.patch
+endif
+PATCHFILES += $(DISTNAME)-perl.patch.gar $(DISTNAME).patch $(DISTNAME)-ldd.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
