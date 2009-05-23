@@ -19,7 +19,9 @@ sub start
         $minimyth->message_output('info', "updating fonts ...");
 
         File::Path::mkpath('/usr/lib/X11/fonts/TTF', { mode => 0755 });
+        chmod(0755, '/usr/lib/X11/fonts/TTF');
         File::Path::mkpath('/usr/share/mythtv', { mode => 0755 });
+        chmod(0755, '/usr/share/mythtv');
 
         if ($minimyth->var_get('MM_FONT_FILE_TTF_DELETE'))
         {
