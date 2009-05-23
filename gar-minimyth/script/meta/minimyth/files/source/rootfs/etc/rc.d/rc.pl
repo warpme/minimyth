@@ -150,7 +150,8 @@ sub rc_run
         my $log_dir = File::Basename::dirname($log_file);
         if (! -e $log_dir)
         {
-            File::Path::mkpath($log_dir);
+            File::Path::mkpath($log_dir, { mode => 0755 });
+            chmod(0755, $log_dir);
         }
         if (-w $log_dir)
         {

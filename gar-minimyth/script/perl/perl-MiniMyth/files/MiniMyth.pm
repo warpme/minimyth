@@ -297,7 +297,7 @@ sub var_save
 
     (defined $self->{'conf_variable'}) || die 'MiniMyth::var_save: MiniMyth configuration variables have not been loaded.';
 
-    File::Path::mkpath(File::Basename::dirname("$conf_file"));
+    File::Path::mkpath(File::Basename::dirname("$conf_file"), { mode => 0755 });
     unlink("$conf_file.$$");
     if (open(FILE, '>', "$conf_file.$$"))
     {
@@ -594,7 +594,7 @@ sub splash_init
             default             { $message = ''                        ; }
         }
         $self->message_log('info', qq(starting splash screen));
-        File::Path::mkpath($var_splash_fifo_dir, {mode => 0755});
+        File::Path::mkpath($var_splash_fifo_dir, { mode => 0755 });
         $self->splash_command('exit');
         system(qq($var_splash_command --theme="minimyth" --progress="0" --mesg="$message" --type="$type"));
         $self->splash_command('set tty silent 3');
@@ -1232,7 +1232,7 @@ sub url_get
     my $local_dir = $local_file;
     $local_dir =~ s/[^\/]*$//;
     $local_dir =~ s/\$//;
-    File::Path::mkpath($local_dir, {mode => 0755});
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         $self->message_log('err', qq(fetching '$url': failed to create local directory '$local_dir'.));
@@ -1363,7 +1363,7 @@ sub url_put
                 my $remote_dir = $remote_file;
                 $remote_dir =~ s/[^\/]*$//;
                 $remote_dir =~ s/\$//;
-                File::Path::mkpath($remote_dir, {mode => 0755});
+                File::Path::mkpath($remote_dir, { mode => 0755 });
                 if (! -d $remote_dir)
                 {
                     $self->message_log('err', qq(saving '$local_file': failed to create remote directory '$remote_dir'.));
@@ -1531,7 +1531,7 @@ sub url_mount
 
     if (! -e $mount_dir)
     {
-        File::Path::mkpath($mount_dir) || return 0;
+        File::Path::mkpath($mount_dir, { mode => 0755 }) || return 0;
     }
 
     # Parse the URL.
@@ -1598,9 +1598,9 @@ sub url_mount
             $dir =~ s/\/+/~/g;
             $dir = "/initrd/rw/loopfs/$dir";
             my $file = 'image.sfs';
-            File::Path::mkpath("$dir");
-            File::Path::mkpath("$dir/ro");
-            File::Path::mkpath("$dir/rw");
+            File::Path::mkpath("$dir", { mode => 0755 });
+            File::Path::mkpath("$dir/ro", { mode => 0755 });
+            File::Path::mkpath("$dir/rw", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
             system(qq(/bin/mount -t squashfs -o loop "$dir/$file" "$dir/ro")) && return 0;
             system(qq(/bin/mount -t unionfs -o dirs=$dir/rw=rw:$dir/ro=ro none "$mount_dir")) && return 0;
@@ -1611,9 +1611,9 @@ sub url_mount
             $dir =~ s/\/+/~/g;
             $dir = "/initrd/rw/loopfs/$dir";
             my $file = 'image.cmg';
-            File::Path::mkpath("$dir");
-            File::Path::mkpath("$dir/ro");
-            File::Path::mkpath("$dir/rw");
+            File::Path::mkpath("$dir", { mode => 0755 });
+            File::Path::mkpath("$dir/ro", { mode => 0755 });
+            File::Path::mkpath("$dir/rw", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
             system(qq(/bin/mount -t cramfs -o loop "$dir/$file" "$dir/ro")) && return 0;
             system(qq(/bin/mount -t unionfs -o dirs=$dir/rw=rw:$dir/ro=ro none "$mount_dir")) && return 0;
@@ -1700,7 +1700,7 @@ sub game_restore
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
-    File::Path::mkpath($local_dir);
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;
@@ -1731,7 +1731,7 @@ sub game_save
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
-    File::Path::mkpath($local_dir);
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;
@@ -1751,7 +1751,7 @@ sub game_save
 
     if ($game_save_list)
     {
-        File::Path::mkpath('/home/minimyth');
+        File::Path::mkpath('/home/minimyth', { mode => 0755 });
         unlink ($local_file);
         if (system(qq(/bin/tar -C '/home/minimyth' -cf $local_file $game_save_list)) != 0)
         {
@@ -1804,7 +1804,7 @@ sub codecs_fetch_and_save
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
-    File::Path::mkpath($local_dir);
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;
@@ -1912,7 +1912,7 @@ sub flash_fetch_and_save
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
-    File::Path::mkpath($local_dir);
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;
@@ -1998,7 +1998,7 @@ sub extras_save
     my $local_file  = $local_dir . '/' . $file;
 
     unlink($local_file);
-    File::Path::mkpath($local_dir, { mode => 0700 });
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;
@@ -2041,7 +2041,7 @@ sub themecache_save
     my $local_file  = $local_dir . '/' . $file;
 
     unlink($local_file);
-    File::Path::mkpath($local_dir, { mode => 0700 });
+    File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
         return 0;

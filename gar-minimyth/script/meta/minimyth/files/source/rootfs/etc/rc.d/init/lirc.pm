@@ -270,7 +270,9 @@ sub start
 
     # Create directories used by the LIRC daemon.
     File::Path::mkpath('/var/lock', { mode => 0755 });
+    chmod(0755, '/var/lock');
     File::Path::mkpath('/var/run', { mode => 0755 });
+    chmod(0755, '/var/run');
 
     # Enable wakeup and start an LIRC daemon for each device.
     my $index = 0;

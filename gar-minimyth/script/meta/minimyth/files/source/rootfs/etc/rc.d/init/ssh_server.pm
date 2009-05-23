@@ -38,6 +38,7 @@ sub start
         chown($uid, $gid, '/etc/ssh/authorized_keys');
 
         File::Path::mkpath('/root/.ssh', { mode => 0755 });
+        chmod(0755, '/root/.ssh');
         File::Copy::copy('/etc/ssh/authorized_keys', '/root/.ssh/authorized_keys');
         chmod(0600,       '/root/.ssh/authorized_keys');
         chown($uid, $gid, '/root/.ssh/authorized_keys');
