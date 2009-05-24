@@ -1,6 +1,6 @@
 diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/MythTV/MythVideoCommon.pm mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/MythTV/MythVideoCommon.pm
 --- mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/MythTV/MythVideoCommon.pm	1969-12-31 16:00:00.000000000 -0800
-+++ mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/MythTV/MythVideoCommon.pm	2009-05-19 08:08:14.000000000 -0700
++++ mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/MythTV/MythVideoCommon.pm	2009-05-24 09:04:56.000000000 -0700
 @@ -0,0 +1,238 @@
 +package MythTV::MythVideoCommon;
 +
@@ -242,8 +242,8 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/MythTV/MythVid
 +# vim: set expandtab ts=4 sw=4 :
 diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/tmdb.pl
 --- mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl	1969-12-31 16:00:00.000000000 -0800
-+++ mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/tmdb.pl	2009-05-19 08:08:14.000000000 -0700
-@@ -0,0 +1,375 @@
++++ mythplugins-0.21-20592-new/mythvideo/mythvideo/scripts/tmdb.pl	2009-05-24 09:09:33.000000000 -0700
+@@ -0,0 +1,405 @@
 +#!/usr/bin/perl -w
 +
 +# This perl script is intended to perform movie data lookups based on
@@ -365,6 +365,11 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythpl
 +    my ($rc, $response) =
 +        TMDBAPIRequest('Movie.imdbLookup', {'imdb_id' => "tt$movieid"});
 +
++    if (!defined $response) {
++        die "Unable to contact themoviedb.org while retrieving ".
++            "movie data, stopped";
++    }
++
 +    my $xs = new XML::Simple(SuppressEmpty => '', ForceArray => ['movie'],
 +        KeyAttr => []);
 +    my $xml = $xs->XMLin($response);
@@ -376,8 +381,13 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythpl
 +        my ($rc, $response) =
 +            TMDBAPIRequest('Movie.getInfo', {'id' => $tmdbid});
 +
++        if (!defined $response) {
++            die "Unable to contact themoviedb.org while retrieving ".
++                "movie data, stopped";
++        }
++
 +        $xml = $xs->XMLin($response,
-+            ForceArray => ['category', 'production_countries'],
++            ForceArray => ['category', 'production_countries', 'person'],
 +            KeyAttr => ['key', 'id']);
 +
 +        my $movie = $xml->{moviematches}->{movie};
@@ -481,6 +491,11 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythpl
 +    my ($rc, $response) =
 +        TMDBAPIRequest('Movie.imdbLookup', {'imdb_id' => "tt$movieid"});
 +
++    if (!defined $response) {
++        die "Unable to contact themoviedb.org while retrieving ".
++            "movie poster, stopped";
++    }
++
 +    my $xml = XMLin($response, ForceArray => ['movie', 'poster', 'backdrop'],
 +        KeyAttr => {poster => 'size'});
 +
@@ -504,19 +519,29 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythpl
 +    my ($rc, $response) =
 +        TMDBAPIRequest('Movie.imdbLookup', {'imdb_id' => "tt$movieid"});
 +
-+    my $xs = new XML::Simple(SuppressEmpty => '', ForceArray => [],
++    if (!defined $response) {
++        die "Unable to contact themoviedb.org while retrieving ".
++            "movie backdrop, stopped";
++    }
++
++    my $xs = new XML::Simple(SuppressEmpty => '', ForceArray => ['movie'],
 +        KeyAttr => []);
 +    my $xml = $xs->XMLin($response);
 +
 +    if ($xml->{"opensearch:totalResults"} > 0) {
 +        # now get the movie data via Movie.getInfo, Movie.imdbLookup does not
 +        # provide us all the data
-+        my $tmdbid = $xml->{moviematches}->{movie}->{id};
++        my $tmdbid = $xml->{moviematches}{movie}[0]{id};
 +
 +        my ($rc, $response) =
 +            TMDBAPIRequest('Movie.getInfo', {'id' => $tmdbid});
 +
-+        $xml = XMLin($response, ForceArray=> [], KeyAttr => ['key', 'id']);
++        if (!defined $response) {
++            die "Unable to contact themoviedb.org while retrieving ".
++                "movie backdrop, stopped";
++        }
++
++        $xml = XMLin($response, ForceArray=> ['backdrop'], KeyAttr => ['key', 'id']);
 +
 +        foreach my $backdrop (@{$xml->{moviematches}->{movie}->{backdrop}}) {
 +            # print "$backdrop->{content}\n";
@@ -544,6 +569,11 @@ diff -Naur mythplugins-0.21-20592-old/mythvideo/mythvideo/scripts/tmdb.pl mythpl
 +    # get the search results  page
 +    my ($rc, $response) =
 +        TMDBAPIRequest('Movie.search', {'title' => $query});
++
++    if (!defined $response) {
++        die "Unable to contact themoviedb.org while retrieving ".
++            "movie list, stopped";
++    }
 +
 +    my $xs = new XML::Simple(SuppressEmpty => '', ForceArray => ['movie'],
 +        KeyAttr => []);
