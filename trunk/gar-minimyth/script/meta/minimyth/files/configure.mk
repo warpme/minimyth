@@ -31,6 +31,7 @@ MM_INIT_START := \
     lirc \
     g15daemon \
     lcdproc \
+    aquosserver \
     mythtv \
     font \
     backend \
@@ -39,6 +40,7 @@ MM_INIT_START := \
     x
 MM_INIT_KILL := \
     x \
+    sharpaquos \
     lcdproc \
     g15daemon \
     lirc \

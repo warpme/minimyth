@@ -241,7 +241,9 @@ sub start
                     }
                 }
                 # Add files for the volume key(s).
-                if ($minimyth->var_get('MM_EXTERNAL_VOLUME_ENABLED') eq 'yes')
+                if ((-e q(/usr/bin/mm_external_volume_down)) &&
+                    (-e q(/usr/bin/mm_external_volume_up)  ) &&
+                    (-e q(/usr/bin/mm_external_volume_mute)))
                 {
                     if (-f qq($application_path/optional/key.volume.external))
                     {
