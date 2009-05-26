@@ -15,6 +15,7 @@ DESTIMG = $(MINIMYTHIMG)
 
 DEPENDS = \
 	system/acpid \
+	system/aquosserver \
 	utils/alsa-utils \
 	utils/busybox \
 	net/curl \
@@ -53,6 +54,7 @@ DEPENDS = \
 	perl/perl-Date-Manip \
 	perl/perl-Lchown \
 	perl/perl-MiniMyth \
+	perl/perl-RFLibs \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
