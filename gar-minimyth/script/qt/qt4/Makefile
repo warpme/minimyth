@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lang/c++ db/mysql lib/freetype lib/fontconfig lib/libjpeg lib/libmng lib/libpng lib/libtiff lib/openssl lib/zlib xorg/xorg
+DEPENDS   = lang/c lang/c++ db/mysql lib/dbus lib/freetype lib/fontconfig lib/libjpeg lib/libmng lib/libpng lib/libtiff lib/openssl lib/zlib xorg/xorg
 BUILDDEPS = devel/bison devel/flex
 
 PWD := $(shell pwd)
@@ -21,6 +21,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
+	-v \
 	-prefix $(qt4prefix) \
 	-hostprefix $(DESTDIR)$(qt4prefix) \
 	-bindir $(qt4bindir) \
@@ -39,7 +40,7 @@ CONFIGURE_ARGS = \
 	-plugin-sql-mysql -mysql_config $(DESTDIR)$(bindir)/mysql_config \
 	-no-nis \
 	-no-pch \
-	-no-qdbus \
+	-dbus-linked \
 	-no-cups \
 	-largefile \
 	-stl \
@@ -72,7 +73,8 @@ BUILD_ENV = \
 	LD_LIBRARY_PATH="$(PWD)/$(WORKSRC)/lib:$(LD_LIBRARY_PATH)"
 else
 CONFIGURE_ARGS += \
-	-xplatform $(PLATFORM_GARHOST_NAME)
+	-xplatform $(PLATFORM_GARHOST_NAME) \
+	-force-pkg-config
 endif
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
