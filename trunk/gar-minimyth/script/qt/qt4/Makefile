@@ -37,6 +37,7 @@ CONFIGURE_ARGS = \
 	-no-exceptions \
 	-platform $(PLATFORM_GARBUILD_NAME) \
 	-plugin-sql-mysql -mysql_config $(DESTDIR)$(bindir)/mysql_config \
+	-no-sql-sqlite \
 	-no-nis \
 	-no-pch \
 	-dbus-linked \
@@ -48,7 +49,7 @@ CONFIGURE_ARGS = \
 	-system-libpng \
 	-system-libmng \
 	-system-libjpeg \
-	-openssl \
+	-openssl-linked \
 	-nomake demos \
 	-nomake examples \
 	-no-rpath \
