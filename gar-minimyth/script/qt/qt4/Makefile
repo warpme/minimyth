@@ -21,7 +21,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	-v \
 	-prefix $(qt4prefix) \
 	-hostprefix $(DESTDIR)$(qt4prefix) \
 	-bindir $(qt4bindir) \
