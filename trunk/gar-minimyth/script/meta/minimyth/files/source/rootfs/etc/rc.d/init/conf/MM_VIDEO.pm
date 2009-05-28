@@ -68,7 +68,9 @@ $var_list{'MM_VIDEO_DEINTERLACER'} =
                            '|' . 'openglkerneldeint' .
                            '|' . 'opengllinearblend' .
                            '|' . 'openglonefield' .
+                           '|' . 'vdpauadvanced' .
                            '|' . 'vdpauadvanceddoublerate' .
+                           '|' . 'vdpaubasic' .
                            '|' . 'vdpaubasicdoublerate' .
                            '|' . 'vdpaubobdeint' .
                            '|' . 'vdpauonefield' .
@@ -93,7 +95,9 @@ $var_list{'MM_VIDEO_DEINTERLACER'} =
                            '|' . 'openglkerneldeint' .
                            '|' . 'opengllinearblend' .
                            '|' . 'openglonefield' .
+                           '|' . 'vdpauadvanced' .
                            '|' . 'vdpauadvanceddoublerate' .
+                           '|' . 'vdpaubasic' .
                            '|' . 'vdpaubasicdoublerate' .
                            '|' . 'vdpaubobdeint' .
                            '|' . 'vdpauonefield' .
