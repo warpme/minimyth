@@ -213,7 +213,7 @@ mm-all:
 	    [ ! "$(mm_NVIDIA_VERSION)" = "169.12"    ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "173.14.18" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "180.51"    ] && \
-	    [ ! "$(mm_NVIDIA_VERSION)" = "185.18.08" ] ; then \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "185.18.14" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
