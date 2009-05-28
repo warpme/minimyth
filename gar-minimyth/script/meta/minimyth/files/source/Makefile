@@ -184,12 +184,17 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@$(call COPY_FILES, "shares", "share", $(DESTDIR), $@~, $(sharedirs), $(MM_SHARES))
 	@# Copy the QT mysql plugin needed by MythTV.
 	@$(if $(filter 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), \
+		rm -rf   $@~$(qt3prefix)/plugins ; \
 		mkdir -p $@~$(qt3prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $@~$(qt3prefix)/plugins ; \
 	 )
 	@$(if $(filter trunk,$(mm_MYTH_VERSION)), \
+		rm -rf   $@~$(qt4prefix)/plugins ; \
 		mkdir -p $@~$(qt4prefix)/plugins ; \
-		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers $@~$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/graphicssystems $@~$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/iconengines     $@~$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/imageformats    $@~$(qt4prefix)/plugins ; \
+		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/sqldrivers      $@~$(qt4prefix)/plugins ; \
 	 )
 	@# Copy HTML files.
 	@find $(top_source)/html -depth -type d \
