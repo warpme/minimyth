@@ -1,0 +1,30 @@
+diff -Naur iguanaIR-0.99-old/Makefile.in iguanaIR-0.99-new/Makefile.in
+--- iguanaIR-0.99-old/Makefile.in	2009-05-29 03:32:36.000000000 -0700
++++ iguanaIR-0.99-new/Makefile.in	2009-05-29 04:30:58.000000000 -0700
+@@ -23,7 +23,7 @@
+ SHAREARG = -shared
+ LINKARGS = -Wl,-soname=$(LIBNAME),--version-script=ig.ver
+ ifeq ($(shell uname -m),x86_64)
+-  LIBDIR  = lib64
++  LIBDIR  = lib
+   CFLAGS += -fpic
+ else
+   LIBDIR  = lib
+@@ -34,8 +34,6 @@
+     ifeq ($(shell uname -m),Power Macintosh)
+       LIBDIR  = lib
+       CFLAGS += -fPIC
+-      CPPFLAGS += -I/sw/include
+-      LDFLAGS += -L/sw/lib
+       SHAREEXT = dylib
+       LIBNAME=libiguanaIR.$(SHAREEXT)
+       SHAREARG = -dynamiclib
+@@ -120,7 +118,7 @@
+ .PHONY: install-symlink
+ install-symlink:
+ 	install -d $(DESTDIR)/usr/$(LIBDIR)
+-	ln -s $(LIBNAME) $(DESTDIR)/usr/$(LIBDIR)/libiguanaIR.$(SHAREEXT)
++	ln -sf $(LIBNAME) $(DESTDIR)/usr/$(LIBDIR)/libiguanaIR.$(SHAREEXT)
+ endif
+ 
+ .PHONY: install
