@@ -1,0 +1,15 @@
+diff -Naur iguanaIR-0.99-old/autoconf/configure.ac iguanaIR-0.99-new/autoconf/configure.ac
+--- iguanaIR-0.99-old/autoconf/configure.ac	2008-11-18 18:28:01.000000000 -0800
++++ iguanaIR-0.99-new/autoconf/configure.ac	2009-05-29 03:36:53.000000000 -0700
+@@ -97,7 +97,10 @@
+ AC_CHECK_LIB([usb], [usb_get_busses],
+   [
+     VERSION=0
+-    for num in `libusb-config --version | tr '.' ' '`
++    if test x$LIBUSB_CONFIG = x; then
++      $LIBUSB_CONFIG = libusb-config
++    fi
++    for num in `$LIBUSB_CONFIG --version | tr '.' ' '`
+      do
+       VERSION=$(($VERSION * 100 + $num))
+     done

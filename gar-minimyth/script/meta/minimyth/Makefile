@@ -26,12 +26,13 @@ DEPENDS = \
 	$(if $(filter i386,$(mm_GARCH_FAMILY)),net/gpxe) \
 	disk/hdparm \
 	net/ifplugd \
+	system/iguanair \
 	net/iputils \
+	system/irclient \
+	system/irserver \
 	system/lcdproc \
 	system/kbdd \
 	kernel/kernel \
-	system/irclient \
-	system/irserver \
 	fonts/liberation-fonts \
 	system/lirc \
 	utils/lm_sensors \
