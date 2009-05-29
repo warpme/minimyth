@@ -141,6 +141,7 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdbe.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdri.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdri2.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libextmod.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libglx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
