@@ -1,5 +1,5 @@
 GARNAME      = perl-URI
-GARVERSION   = 1.37
+GARVERSION   = 1.38
 MASTER_SITES = http://www.cpan.org/authors/id/G/GA/GAAS/
 
 include ../../perl/perl/perl-module.mk
