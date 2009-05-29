@@ -38,7 +38,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->message_stop('igdeamon', "stopping iguanaIR daemon ...");
+    $minimyth->application_stop('igdeamon', "stopping iguanaIR daemon ...");
 
     return 1;
 }
