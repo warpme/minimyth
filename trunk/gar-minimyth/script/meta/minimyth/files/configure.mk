@@ -28,6 +28,7 @@ MM_INIT_START := \
     video \
     wiimote \
     irtrans \
+    iguanair \
     lirc \
     g15daemon \
     lcdproc \
@@ -44,6 +45,7 @@ MM_INIT_KILL := \
     lcdproc \
     g15daemon \
     lirc \
+    iguanair \
     irtrans \
     wiimote \
     audio \
