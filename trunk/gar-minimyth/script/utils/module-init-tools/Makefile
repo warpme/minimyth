@@ -1,5 +1,5 @@
 GARNAME = module-init-tools
-GARVERSION = 3.8
+GARVERSION = 3.9
 CATEGORIES = utils
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 DISTFILES = $(DISTNAME).tar.bz2
