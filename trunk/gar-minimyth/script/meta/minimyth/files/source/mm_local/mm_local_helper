@@ -185,11 +185,11 @@ url_http_fetch () {
         message_output 1 "url_http_fetch: argument 'URL' is missing." || \
         return
 
-    which wget > /dev/null 2>&1                                      || \
-        message_output 1 "url_http_fetch: command 'wget' not found." || \
+    which curl > /dev/null 2>&1                                      || \
+        message_output 1 "url_http_fetch: command 'curl' not found." || \
         return
 
-    wget "${URL}" -O "${LOCAL_FILE}" > /dev/null 2>&1 || \
+    curl -o "${LOCAL_FILE}" "${URL}" > /dev/null 2>&1 || \
         return
 }
 
@@ -197,6 +197,7 @@ url_tftp_fetch () {
     local LOCAL_FILE=$1
     local URL_PATH=$2
     local URL_SERVER=$3
+    local URL=$4
 
     test -n "${LOCAL_FILE}"                                                  || \
         message_output 1 "url_tftp_fetch: argument 'LOCAL_FILE' is missing." || \
@@ -208,11 +209,11 @@ url_tftp_fetch () {
         message_output 1 "url_tftp_fetch: argument 'URL_SERVER' is missing." || \
         return
 
-    which tftp > /dev/null 2>&1                                      || \
-        message_output 1 "url_tftp_fetch: command 'tftp' not found." || \
+    which curl > /dev/null 2>&1                                      || \
+        message_output 1 "url_tftp_fetch: command 'curl' not found." || \
         return
 
-    tftp -g -r "${URL_PATH}" -l "${LOCAL_FILE}" "${URL_SERVER}" > /dev/null 2>&1 || \
+    curl -o "${LOCAL_FILE}" "${URL}" > /dev/null 2>&1 || \
         return
 }
 
