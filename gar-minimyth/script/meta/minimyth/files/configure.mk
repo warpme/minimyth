@@ -22,7 +22,7 @@ MM_INIT_START := \
     sensors \
     acpi \
     time \
-    web \
+    inetd \
     media \
     audio \
     video \
@@ -50,7 +50,7 @@ MM_INIT_KILL := \
     wiimote \
     audio \
     media \
-    web \
+    inetd \
     time \
     acpi \
     game \
