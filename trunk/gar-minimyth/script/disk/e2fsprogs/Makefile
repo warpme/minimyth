@@ -1,5 +1,5 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.41.5
+GARVERSION = 1.41.6
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -17,9 +17,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-rpath \
 	--enable-elf-shlibs \
 	--disable-libblkid \
+	--disable-rpath \
 	--with-gnu-ld
 
 include ../../gar.mk
