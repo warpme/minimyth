@@ -1,5 +1,5 @@
 GARNAME = xvidcore
-GARVERSION = 1.2.1
+GARVERSION = 1.2.2
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xvid.org/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
