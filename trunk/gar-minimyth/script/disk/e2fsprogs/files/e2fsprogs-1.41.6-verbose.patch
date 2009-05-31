@@ -1,6 +1,6 @@
-diff -Naur e2fsprogs-1.41.5-old/debugfs/Makefile.in e2fsprogs-1.41.5-new/debugfs/Makefile.in
---- e2fsprogs-1.41.5-old/debugfs/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/debugfs/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/debugfs/Makefile.in e2fsprogs-1.41.6-new/debugfs/Makefile.in
+--- e2fsprogs-1.41.6-old/debugfs/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/debugfs/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -30,25 +30,25 @@
  
  .c.o:
@@ -32,9 +32,9 @@ diff -Naur e2fsprogs-1.41.5-old/debugfs/Makefile.in e2fsprogs-1.41.5-new/debugfs
  		$(DESTDIR)$(man8dir)
  
  install: $(PROGS) $(MANPAGES) installdirs
-diff -Naur e2fsprogs-1.41.5-old/doc/Makefile.in e2fsprogs-1.41.5-new/doc/Makefile.in
---- e2fsprogs-1.41.5-old/doc/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/doc/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/doc/Makefile.in e2fsprogs-1.41.6-new/doc/Makefile.in
+--- e2fsprogs-1.41.6-old/doc/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/doc/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -19,9 +19,9 @@
  all:: libext2fs.info libext2fs.dvi
  
@@ -61,9 +61,9 @@ diff -Naur e2fsprogs-1.41.5-old/doc/Makefile.in e2fsprogs-1.41.5-new/doc/Makefil
  
  .PHONY: distclean
  distclean:: clean
-diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/Makefile.in
---- e2fsprogs-1.41.5-old/e2fsck/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/e2fsck/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/e2fsck/Makefile.in e2fsprogs-1.41.6-new/e2fsck/Makefile.in
+--- e2fsprogs-1.41.6-old/e2fsck/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/e2fsck/Makefile.in	2009-05-31 15:54:55.000000000 -0700
 @@ -33,8 +33,8 @@
  
  .c.o:
@@ -75,7 +75,7 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
  
  #
  # Flags for using Checker
-@@ -110,42 +110,42 @@
+@@ -110,46 +110,46 @@
  
  prof_err.c prof_err.h: prof_err.et
  	@echo "	COMPILE_ET prof_err.et"
@@ -109,6 +109,11 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
 -	@./gen_crc32table > crc32table.h
 +	./gen_crc32table > crc32table.h
  
+ tst_problem: $(srcdir)/problem.c $(srcdir)/problem.h $(LIBEXT2FS)
+-	@$(CC) $(BUILD_LDFLAGS) $(ALL_CFLAGS) -o tst_problem \
++	$(CC) $(BUILD_LDFLAGS) $(ALL_CFLAGS) -o tst_problem \
+ 		$(srcdir)/problem.c -DUNITTEST $(LIBEXT2FS) $(LIBCOM_ERR)
+ 
  tst_crc32: $(srcdir)/crc32.c $(LIBEXT2FS)
 -	@$(CC) $(BUILD_LDFLAGS) $(ALL_CFLAGS) -o tst_crc32 $(srcdir)/crc32.c \
 +	$(CC) $(BUILD_LDFLAGS) $(ALL_CFLAGS) -o tst_crc32 $(srcdir)/crc32.c \
@@ -126,8 +131,8 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
 +	$(CC) -o tst_region $(srcdir)/region.c \
  		$(ALL_CFLAGS) -DTEST_PROGRAM $(LIBCOM_ERR)
  
- check:: tst_refcount tst_region tst_crc32
-@@ -155,20 +155,20 @@
+ check:: tst_refcount tst_region tst_crc32 tst_problem
+@@ -160,20 +160,20 @@
  
  extend: extend.o
  	@echo "	LD $@"
@@ -152,7 +157,7 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
  		profile_helpers.o argv_parse.o $(STATIC_LIBCOM_ERR) \
  		$(ALL_CFLAGS)
  
-@@ -178,15 +178,15 @@
+@@ -183,15 +183,15 @@
  
  e2fsck.8: $(DEP_SUBSTITUTE) $(srcdir)/e2fsck.8.in
  	@echo "	SUBST $@"
@@ -171,7 +176,7 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
  		$(DESTDIR)$(man8dir) $(DESTDIR)$(man5dir)
  
  install: $(PROGS) $(MANPAGES) $(FMANPAGES) installdirs
-@@ -195,16 +195,16 @@
+@@ -200,16 +200,16 @@
  		$(INSTALL_PROGRAM) $$i $(DESTDIR)$(root_sbindir)/$$i; \
  	done
  	@echo "	LINK $(root_sbindir)/fsck.ext2"
@@ -192,7 +197,7 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
  			$(DESTDIR)$(root_sbindir)/fsck.ext4dev
  	@for i in $(MANPAGES); do \
  		for j in $(COMPRESS_EXT); do \
-@@ -221,16 +221,16 @@
+@@ -226,16 +226,16 @@
  		$(INSTALL_DATA) $$i $(DESTDIR)$(man5dir)/$$i; \
  	done
  	@echo "	LINK $(man8dir)/fsck.ext2.8"
@@ -213,9 +218,9 @@ diff -Naur e2fsprogs-1.41.5-old/e2fsck/Makefile.in e2fsprogs-1.41.5-new/e2fsck/M
  		$(DESTDIR)$(man8dir)/fsck.ext4dev.8
  
  install-strip: install
-diff -Naur e2fsprogs-1.41.5-old/intl/Makefile.in e2fsprogs-1.41.5-new/intl/Makefile.in
---- e2fsprogs-1.41.5-old/intl/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/intl/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/intl/Makefile.in e2fsprogs-1.41.6-new/intl/Makefile.in
+--- e2fsprogs-1.41.6-old/intl/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/intl/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -148,9 +148,9 @@
  libintl.a libgnuintl.a: $(OBJECTS)
  	@rm -f $@
@@ -246,9 +251,9 @@ diff -Naur e2fsprogs-1.41.5-old/intl/Makefile.in e2fsprogs-1.41.5-new/intl/Makef
  	@mv t-$@ $@
  
  check: all
-diff -Naur e2fsprogs-1.41.5-old/lib/blkid/Makefile.in e2fsprogs-1.41.5-new/lib/blkid/Makefile.in
---- e2fsprogs-1.41.5-old/lib/blkid/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/blkid/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/blkid/Makefile.in e2fsprogs-1.41.6-new/lib/blkid/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/blkid/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/blkid/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -55,11 +55,11 @@
  
  .c.o:
@@ -369,9 +374,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/blkid/Makefile.in e2fsprogs-1.41.5-new/lib/b
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/libblkid.a \
-diff -Naur e2fsprogs-1.41.5-old/lib/e2p/Makefile.in e2fsprogs-1.41.5-new/lib/e2p/Makefile.in
---- e2fsprogs-1.41.5-old/lib/e2p/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/e2p/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/e2p/Makefile.in e2fsprogs-1.41.6-new/lib/e2p/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/e2p/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/e2p/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -54,11 +54,11 @@
  
  .c.o:
@@ -430,9 +435,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/e2p/Makefile.in e2fsprogs-1.41.5-new/lib/e2p
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/libe2p.a \
-diff -Naur e2fsprogs-1.41.5-old/lib/et/Makefile.in e2fsprogs-1.41.5-new/lib/et/Makefile.in
---- e2fsprogs-1.41.5-old/lib/et/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/et/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/et/Makefile.in e2fsprogs-1.41.6-new/lib/et/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/et/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/et/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -42,11 +42,11 @@
  #
  .c.o:
@@ -501,9 +506,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/et/Makefile.in e2fsprogs-1.41.5-new/lib/et/M
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/libcom_err.a \
-diff -Naur e2fsprogs-1.41.5-old/lib/ext2fs/Makefile.in e2fsprogs-1.41.5-new/lib/ext2fs/Makefile.in
---- e2fsprogs-1.41.5-old/lib/ext2fs/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/ext2fs/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/ext2fs/Makefile.in e2fsprogs-1.41.6-new/lib/ext2fs/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/ext2fs/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/ext2fs/Makefile.in	2009-05-31 15:55:49.000000000 -0700
 @@ -177,11 +177,11 @@
  
  .c.o:
@@ -674,10 +679,10 @@ diff -Naur e2fsprogs-1.41.5-old/lib/ext2fs/Makefile.in e2fsprogs-1.41.5-new/lib/
  		$(STATIC_LIBEXT2FS) $(LIBBLKID) $(LIBUUID) $(LIBCOM_ERR) \
  		-I $(top_srcdir)/debugfs
  
- tst_csum: tst_csum.c csum.c $(STATIC_LIBEXT2FS)
+ tst_csum: csum.c $(STATIC_LIBEXT2FS)
  	@echo "	LD $@"
--	@$(CC) -o tst_csum $(srcdir)/csum.c $(srcdir)/tst_csum.c -DDEBUG \
-+	$(CC) -o tst_csum $(srcdir)/csum.c $(srcdir)/tst_csum.c -DDEBUG \
+-	@$(CC) -o tst_csum $(srcdir)/csum.c -DDEBUG \
++	$(CC) -o tst_csum $(srcdir)/csum.c -DDEBUG \
  		$(ALL_CFLAGS) $(STATIC_LIBEXT2FS) $(LIBCOM_ERR)
  
  mkjournal: mkjournal.c $(STATIC_LIBEXT2FS)
@@ -715,9 +720,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/ext2fs/Makefile.in e2fsprogs-1.41.5-new/lib/
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/libext2fs.a \
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.bsd-lib e2fsprogs-1.41.5-new/lib/Makefile.bsd-lib
---- e2fsprogs-1.41.5-old/lib/Makefile.bsd-lib	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.bsd-lib	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.bsd-lib e2fsprogs-1.41.6-new/lib/Makefile.bsd-lib
+--- e2fsprogs-1.41.6-old/lib/Makefile.bsd-lib	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.bsd-lib	2009-05-31 15:53:44.000000000 -0700
 @@ -29,9 +29,9 @@
  
  install-shlibs install:: $(BSD_LIB)
@@ -730,9 +735,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.bsd-lib e2fsprogs-1.41.5-new/lib/Ma
  
  install-strip: install
  
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.checker e2fsprogs-1.41.5-new/lib/Makefile.checker
---- e2fsprogs-1.41.5-old/lib/Makefile.checker	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.checker	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.checker e2fsprogs-1.41.6-new/lib/Makefile.checker
+--- e2fsprogs-1.41.6-old/lib/Makefile.checker	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.checker	2009-05-31 15:53:44.000000000 -0700
 @@ -11,6 +11,6 @@
  	@echo "	GEN_CHECKER_LIB $@"
  	@(test -r $@ && $(RM) -f $@.bak && $(MV) $@ $@.bak)
@@ -743,9 +748,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.checker e2fsprogs-1.41.5-new/lib/Ma
 +	-$(RANLIB) $@
 +	$(RM) -f ../$@
 +	$(LN) $@ ../$@
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.darwin-lib e2fsprogs-1.41.5-new/lib/Makefile.darwin-lib
---- e2fsprogs-1.41.5-old/lib/Makefile.darwin-lib	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.darwin-lib	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.darwin-lib e2fsprogs-1.41.6-new/lib/Makefile.darwin-lib
+--- e2fsprogs-1.41.6-old/lib/Makefile.darwin-lib	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.darwin-lib	2009-05-31 15:53:44.000000000 -0700
 @@ -25,16 +25,16 @@
  	@echo "	GEN_BSD_SOLIB $(BSD_LIB)"
  	@(cd pic; $(CC) -dynamiclib -compatibility_version 1.0 -current_version $(BSDLIB_VERSION) \
@@ -769,9 +774,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.darwin-lib e2fsprogs-1.41.5-new/lib
  
  install-strip: install
  
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.elf-lib e2fsprogs-1.41.5-new/lib/Makefile.elf-lib
---- e2fsprogs-1.41.5-old/lib/Makefile.elf-lib	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.elf-lib	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.elf-lib e2fsprogs-1.41.6-new/lib/Makefile.elf-lib
+--- e2fsprogs-1.41.6-old/lib/Makefile.elf-lib	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.elf-lib	2009-05-31 15:53:44.000000000 -0700
 @@ -15,7 +15,7 @@
  
  real-subdirs:: Makefile
@@ -839,9 +844,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.elf-lib e2fsprogs-1.41.5-new/lib/Ma
  		--remove-section=.note $(DESTDIR)$(ELF_INSTALL_DIR)/$(ELF_LIB)
  
  uninstall-shlibs uninstall::
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.library e2fsprogs-1.41.5-new/lib/Makefile.library
---- e2fsprogs-1.41.5-old/lib/Makefile.library	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.library	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.library e2fsprogs-1.41.6-new/lib/Makefile.library
+--- e2fsprogs-1.41.6-old/lib/Makefile.library	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.library	2009-05-31 15:53:44.000000000 -0700
 @@ -7,18 +7,18 @@
  real-subdirs::
  
@@ -867,9 +872,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.library e2fsprogs-1.41.5-new/lib/Ma
 +	$(LN) $@ ../$@
  
  $(LIB)/$(LIBRARY).a: $(LIBRARY).a
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.profile e2fsprogs-1.41.5-new/lib/Makefile.profile
---- e2fsprogs-1.41.5-old/lib/Makefile.profile	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.profile	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.profile e2fsprogs-1.41.6-new/lib/Makefile.profile
+--- e2fsprogs-1.41.6-old/lib/Makefile.profile	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.profile	2009-05-31 15:53:44.000000000 -0700
 @@ -12,15 +12,15 @@
  	@echo "	GEN_PROFILED_LIB $(ELF_LIB)"
  	@(if test -r $@; then $(RM) -f $@.bak && $(MV) $@ $@.bak; fi)
@@ -892,9 +897,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.profile e2fsprogs-1.41.5-new/lib/Ma
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/$(LIBRARY)_p.a
-diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.solaris-lib e2fsprogs-1.41.5-new/lib/Makefile.solaris-lib
---- e2fsprogs-1.41.5-old/lib/Makefile.solaris-lib	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/Makefile.solaris-lib	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/Makefile.solaris-lib e2fsprogs-1.41.6-new/lib/Makefile.solaris-lib
+--- e2fsprogs-1.41.6-old/lib/Makefile.solaris-lib	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/Makefile.solaris-lib	2009-05-31 15:53:44.000000000 -0700
 @@ -26,11 +26,11 @@
  	@echo "	GEN_ELF_SOLIB $(ELF_LIB)"
  	@(cd elfshared; $(CC) --shared -o $(ELF_LIB) $(LDFLAGS) \
@@ -912,9 +917,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/Makefile.solaris-lib e2fsprogs-1.41.5-new/li
  
  installdirs-elf-lib::
  	$(MKINSTALLDIRS) $(DESTDIR)$(ELF_INSTALL_DIR) \
-diff -Naur e2fsprogs-1.41.5-old/lib/ss/Makefile.in e2fsprogs-1.41.5-new/lib/ss/Makefile.in
---- e2fsprogs-1.41.5-old/lib/ss/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/ss/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/ss/Makefile.in e2fsprogs-1.41.6-new/lib/ss/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/ss/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/ss/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -38,11 +38,11 @@
  
  .c.o:
@@ -1003,9 +1008,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/ss/Makefile.in e2fsprogs-1.41.5-new/lib/ss/M
  		$(LIBSS) $(LIBCOM_ERR)
  
  check:: all test_ss
-diff -Naur e2fsprogs-1.41.5-old/lib/uuid/Makefile.in e2fsprogs-1.41.5-new/lib/uuid/Makefile.in
---- e2fsprogs-1.41.5-old/lib/uuid/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/lib/uuid/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/lib/uuid/Makefile.in e2fsprogs-1.41.6-new/lib/uuid/Makefile.in
+--- e2fsprogs-1.41.6-old/lib/uuid/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/lib/uuid/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -61,11 +61,11 @@
  
  .c.o:
@@ -1128,9 +1133,9 @@ diff -Naur e2fsprogs-1.41.5-old/lib/uuid/Makefile.in e2fsprogs-1.41.5-new/lib/uu
  
  uninstall::
  	$(RM) -f $(DESTDIR)$(libdir)/libuuid.a \
-diff -Naur e2fsprogs-1.41.5-old/misc/Makefile.in e2fsprogs-1.41.5-new/misc/Makefile.in
---- e2fsprogs-1.41.5-old/misc/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/misc/Makefile.in	2009-04-24 08:42:01.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/misc/Makefile.in e2fsprogs-1.41.6-new/misc/Makefile.in
+--- e2fsprogs-1.41.6-old/misc/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/misc/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -94,8 +94,8 @@
  
  .c.o:
@@ -1523,9 +1528,9 @@ diff -Naur e2fsprogs-1.41.5-old/misc/Makefile.in e2fsprogs-1.41.5-new/misc/Makef
  		$(DESTDIR)$(man8dir)/mkfs.ext4dev.8
  	@for i in $(UMANPAGES); do \
  		for j in $(COMPRESS_EXT); do \
-diff -Naur e2fsprogs-1.41.5-old/po/Makefile.in.in e2fsprogs-1.41.5-new/po/Makefile.in.in
---- e2fsprogs-1.41.5-old/po/Makefile.in.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/po/Makefile.in.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/po/Makefile.in.in e2fsprogs-1.41.6-new/po/Makefile.in.in
+--- e2fsprogs-1.41.6-old/po/Makefile.in.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/po/Makefile.in.in	2009-05-31 15:53:44.000000000 -0700
 @@ -293,7 +293,7 @@
  distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
  dist distdir:
@@ -1535,9 +1540,9 @@ diff -Naur e2fsprogs-1.41.5-old/po/Makefile.in.in e2fsprogs-1.41.5-new/po/Makefi
  # This is a separate target because 'update-po' must be executed before.
  dist2: $(DISTFILES)
  	dists="$(DISTFILES)"; \
-diff -Naur e2fsprogs-1.41.5-old/resize/Makefile.in e2fsprogs-1.41.5-new/resize/Makefile.in
---- e2fsprogs-1.41.5-old/resize/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/resize/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/resize/Makefile.in e2fsprogs-1.41.6-new/resize/Makefile.in
+--- e2fsprogs-1.41.6-old/resize/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/resize/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -35,30 +35,30 @@
  
  .c.o:
@@ -1575,9 +1580,9 @@ diff -Naur e2fsprogs-1.41.5-old/resize/Makefile.in e2fsprogs-1.41.5-new/resize/M
  		$(DESTDIR)$(man8dir)
  
  install: $(PROGS) $(MANPAGES) installdirs
-diff -Naur e2fsprogs-1.41.5-old/tests/progs/Makefile.in e2fsprogs-1.41.5-new/tests/progs/Makefile.in
---- e2fsprogs-1.41.5-old/tests/progs/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/tests/progs/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/tests/progs/Makefile.in e2fsprogs-1.41.6-new/tests/progs/Makefile.in
+--- e2fsprogs-1.41.6-old/tests/progs/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/tests/progs/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -26,25 +26,25 @@
  
  .c.o:
@@ -1609,9 +1614,9 @@ diff -Naur e2fsprogs-1.41.5-old/tests/progs/Makefile.in e2fsprogs-1.41.5-new/tes
  
  clean:
  	$(RM) -f $(PROGS) test_rel_cmds.c test_icount_cmds.c \
-diff -Naur e2fsprogs-1.41.5-old/util/Makefile.in e2fsprogs-1.41.5-new/util/Makefile.in
---- e2fsprogs-1.41.5-old/util/Makefile.in	2009-04-24 08:40:33.000000000 -0700
-+++ e2fsprogs-1.41.5-new/util/Makefile.in	2009-04-24 08:41:14.000000000 -0700
+diff -Naur e2fsprogs-1.41.6-old/util/Makefile.in e2fsprogs-1.41.6-new/util/Makefile.in
+--- e2fsprogs-1.41.6-old/util/Makefile.in	2009-05-31 15:53:04.000000000 -0700
++++ e2fsprogs-1.41.6-new/util/Makefile.in	2009-05-31 15:53:44.000000000 -0700
 @@ -15,7 +15,7 @@
  
  .c.o:
