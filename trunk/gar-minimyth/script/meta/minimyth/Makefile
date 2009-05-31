@@ -31,6 +31,7 @@ DEPENDS = \
 	system/irclient \
 	system/irserver \
 	system/lcdproc \
+	net/lighttpd \
 	system/kbdd \
 	kernel/kernel \
 	fonts/liberation-fonts \

@@ -1,7 +1,7 @@
 ################################################################################
-# inetd
+# web
 ################################################################################
-package init::inetd;
+package init::web;
 
 use strict;
 use warnings;
@@ -14,22 +14,17 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->message_output('info', "starting inetd ...");
+    $minimyth->message_output('info', "starting web server ...");
 
-    my $http_true = '';
-    my $ftp_true  = '';
+    # Web page.
+    system(qq(/usr/sbin/lighttpd -f /etc/lighttpd-web.conf));
+
     # Allow web access to the file system on machines that have security disabled.
-    if ($minimyth->var_get('MM_SECURITY_ENABLED') ne 'no')
+    # It is run as root in order to provide access to all files.
+    if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
     {
-        $ftp_true  = '#';
+        system(qq(/usr/sbin/lighttpd -f /etc/lighttpd-dir.conf));
     }
-
-    $minimyth->file_replace_variable(
-        '/etc/inetd.conf',
-        { '@MM_INETD_HTTP_TRUE@' => $http_true,
-          '@MM_INETD_FTP_TRUE@'  => $ftp_true });
-
-    system('/usr/sbin/inetd');
 
     return 1;
 }
@@ -39,7 +34,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->application_stop('xinetd', "stopping inetd ...");
+    $minimyth->application_stop('lighttpd', "stopping web server ...");
 
     return 1;
 }
