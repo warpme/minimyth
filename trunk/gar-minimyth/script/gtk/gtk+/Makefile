@@ -1,5 +1,5 @@
 GARNAME = gtk+
-GARVERSION = 2.16.1
+GARVERSION = 2.16.2
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.16/
 DISTFILES = $(DISTNAME).tar.bz2
