@@ -1,7 +1,7 @@
 ################################################################################
-# web
+# inetd
 ################################################################################
-package init::web;
+package init::inetd;
 
 use strict;
 use warnings;
@@ -14,17 +14,22 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->message_output('info', "starting web server ...");
+    $minimyth->message_output('info', "starting inetd ...");
 
-    # Web page.
-    system(qq(/usr/bin/webfsd -s -u httpd -g httpd -4 -p 80 -j -r /srv/www -x /cgi-bin -f index.html));
-
+    my $http_true = '';
+    my $ftp_true  = '';
     # Allow web access to the file system on machines that have security disabled.
-    # It is run as root in order to provide access to all files.
-    if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
+    if ($minimyth->var_get('MM_SECURITY_ENABLED') ne 'no')
     {
-        system(qq(/usr/bin/webfsd -s -u root -g root -4 -p 8080 -r /));
+        $ftp_true  = '#';
     }
+
+    $minimyth->file_replace_variable(
+        '/etc/inetd.conf',
+        { '@MM_INETD_HTTP_TRUE@' => $http_true,
+          '@MM_INETD_FTP_TRUE@'  => $ftp_true });
+
+    system('/usr/sbin/inetd');
 
     return 1;
 }
@@ -34,7 +39,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->application_stop('webfsd', "stopping web server ...");
+    $minimyth->application_stop('xinetd', "stopping inetd ...");
 
     return 1;
 }

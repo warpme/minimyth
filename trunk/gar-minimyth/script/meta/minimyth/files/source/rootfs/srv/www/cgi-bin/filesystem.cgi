@@ -7,8 +7,8 @@ use MiniMyth ();
 
 require "/srv/www/cgi-bin/mm_webpage.pm";
 
-my $minimyth    = new MiniMyth;
-my $server_name = $ENV{'SERVER_NAME'};
+my $minimyth  = new MiniMyth;
+my $http_host = $ENV{'HTTP_HOST'};
 
 my @middle = ();
 
@@ -16,7 +16,7 @@ push(@middle,  q(<div class="section">));
 push(@middle,  q(  <p>));
 if ($minimyth->var_get('MM_SECURITY_ENABLED') eq 'no')
 {
-    push(@middle, qq(    You can use the URL <a href="http://$server_name:8080/">http://$server_name:8080/</a> to access your MiniMyth system's filesystem.));
+    push(@middle, qq(    You can use the URL <a href="ftp://$http_host">ftp://$http_host</a> to access your MiniMyth system's filesystem.));
 }
 else
 {

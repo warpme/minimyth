@@ -91,7 +91,7 @@ sub page
     push(@page,  q(              alt="Valid CSS!"      height="31" width="88" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="version">));
-    push(@page,  q(          Last Updated on 2009-01-28));
+    push(@page,  q(          Last Updated on 2009-05-30));
     push(@page,  q(          <br />));
     push(@page,  q(          &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;));
     push(@page,  q(        </div>));
