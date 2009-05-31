@@ -36,6 +36,7 @@ include ../../gar.mk
 
 extract-$(CONFIGFILE):
 	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
+		| sed -e 's%@GAR_rootdir@%$(sysconfdir)%g' \
 		| sed -e 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
 		> $(WORKDIR)/$(CONFIGFILE)
 	@$(MAKECOOKIE)
