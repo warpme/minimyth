@@ -30,7 +30,8 @@ $var_list{'MM_X_DRIVER'} =
 };
 $var_list{'MM_X_EVENT_DEVICE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_DEVICE_LIST'],
+    prerequisite   => ['MM_LIRC_DEVICE_LIST', 'MM_WIIMOTE_EVENT_DEVICE_LIST'],
+    
     value_default  => 'auto',
     value_valid    => 'auto|.+',
     value_auto     => sub
@@ -46,7 +47,16 @@ $var_list{'MM_X_EVENT_DEVICE_LIST'} =
             my $device = $minimyth->device_canonicalize($item->{'device'});
             if ($device)
             {
-                push(@device_list, "$device");
+                push(@device_list, $device);
+            }
+        }
+
+        # Add wiimote event devices.
+        if ($minimyth->var_get('MM_WIIMOTE_EVENT_DEVICE_LIST'))
+        {
+            foreach my $device (split(/ +/, $minimyth->var_get('MM_WIIMOTE_EVENT_DEVICE_LIST')))
+            {
+                push(@device_list, $device);
             }
         }
 
