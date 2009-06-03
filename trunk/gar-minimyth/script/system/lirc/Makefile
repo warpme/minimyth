@@ -8,7 +8,7 @@ MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 #PATCHFILES = $(DISTNAME)-usb_sysfs.patch $(DISTNAME)-lirc_i2c_device.patch $(DISTNAME)-no_python.patch $(DISTNAME)-imon_module_param.patch $(DISTNAME)-imon_lcd_dynamic.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
-PATCHFILES = $(DISTNAME)-mceusb2_mod_mce_0.2.0.patch $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES = $(DISTNAME)-lircmd_uinput.patch $(DISTNAME)-mceusb2_mod_mce_0.2.0.patch $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 LICENSE = GPL2
 
 DESCRIPTION =

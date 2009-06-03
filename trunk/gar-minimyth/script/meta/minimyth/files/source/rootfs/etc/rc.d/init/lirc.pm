@@ -391,6 +391,12 @@ sub start
         system(qq(/usr/bin/irexec -d /etc/lircrc));
     }
 
+    # Start the lircmd daemon.
+    if (-e '/etc/lircmd.conf')
+    {
+        system(qq(/usr/sbin/lircmd --uinput /etc/lircmd.conf));
+    }
+
     return 1;
 }
 
@@ -399,10 +405,13 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    if (($minimyth->application_running('irexec')) || ($minimyth->application_running('lircd')))
+    if ( ($minimyth->application_running('lircmd')) ||
+         ($minimyth->application_running('irexec')) ||
+         ($minimyth->application_running('lircd')) )
     {
         $minimyth->message_output('info', "stopping remote control ...");
 
+        $minimyth->application_stop('lircmd');
         $minimyth->application_stop('irexec');
         $minimyth->application_stop('lircd');
     }

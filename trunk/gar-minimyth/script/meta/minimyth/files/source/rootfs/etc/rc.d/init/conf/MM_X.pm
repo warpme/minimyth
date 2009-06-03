@@ -30,7 +30,7 @@ $var_list{'MM_X_DRIVER'} =
 };
 $var_list{'MM_X_EVENT_DEVICE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_DEVICE_LIST', 'MM_WIIMOTE_EVENT_DEVICE_LIST'],
+    prerequisite   => ['MM_LIRC_DEVICE_LIST', 'MM_LIRC_LIRCMD_DEVICE', 'MM_WIIMOTE_EVENT_DEVICE_LIST'],
     
     value_default  => 'auto',
     value_valid    => 'auto|.+',
@@ -58,6 +58,12 @@ $var_list{'MM_X_EVENT_DEVICE_LIST'} =
             {
                 push(@device_list, $device);
             }
+        }
+
+        # Add LIRC mouse daemon event device.
+        if ($minimyth->var_get('MM_LIRC_LIRCM_DEVICE'))
+        {
+            push(@device_list, $minimyth->var_get('MM_LIRC_LIRCM_DEVICE'));
         }
 
         # Remove any duplicates.

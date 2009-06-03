@@ -1,0 +1,223 @@
+diff -Naur lirc-0.8.5-old/daemons/lircmd.c lirc-0.8.5-new/daemons/lircmd.c
+--- lirc-0.8.5-old/daemons/lircmd.c	2006-10-09 00:22:14.000000000 -0700
++++ lirc-0.8.5-new/daemons/lircmd.c	2009-06-02 17:30:53.000000000 -0700
+@@ -32,6 +32,12 @@
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ 
++#if defined(__linux__)
++#include <linux/input.h>
++#include <linux/uinput.h>
++#include "input_map.h"
++#endif
++
+ #define CLICK_DELAY 50000 /* usecs */
+ #define PACKET_SIZE 256
+ #define WHITE_SPACE " \t"
+@@ -49,6 +55,9 @@
+ #define MAP_BUTTON2 1
+ #define MAP_BUTTON3 2
+ 
++static int uinputfd = -1;
++static int useuinput = 0;
++
+ inline int map_buttons(int b)
+ {
+ 	switch(b)
+@@ -165,6 +174,13 @@
+ {
+ 	/* not safe in a signal handler *//*freetm(tm_first);*/
+ 	
++	if(uinputfd != -1)
++	{
++		ioctl(uinputfd, UI_DEV_DESTROY);
++		close(uinputfd);
++		uinputfd = -1;
++	}
++
+ 	shutdown(lircd,2);
+ 	close(lircd);
+ 	shutdown(lircm,2);
+@@ -217,6 +233,88 @@
+ }
+ #endif /* DAEMONIZE */
+ 
++int setup_uinputfd(const char *name)
++{
++#if defined(__linux__)
++	int fd;
++	int key;
++	struct uinput_user_dev dev;
++	
++	fd = open("/dev/input/uinput", O_RDWR);
++	if(fd == -1)
++	{
++		fd = open("/dev/uinput", O_RDWR);
++		if(fd == -1)
++		{
++			fd = open("/dev/misc/uinput", O_RDWR);
++			if(fd == -1)
++			{
++				fprintf(stderr, "could not open %s\n",
++					"uinput");
++				perror(NULL);
++				return -1;
++			}
++		}
++	}
++	memset(&dev, 0, sizeof(dev));
++	strncpy(dev.name, name, sizeof(dev.name));
++	dev.name[sizeof(dev.name)-1] = 0;
++	if(write(fd, &dev, sizeof(dev)) != sizeof(dev))
++	{
++		goto setup_error;
++	}
++
++	if( (ioctl(fd, UI_SET_EVBIT , EV_KEY    ) != 0) ||
++            (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT  ) != 0) ||
++            (ioctl(fd, UI_SET_KEYBIT, BTN_MIDDLE) != 0) ||
++            (ioctl(fd, UI_SET_KEYBIT, BTN_RIGHT ) != 0) )
++        {
++		goto setup_error;
++	}
++
++	if( (ioctl(fd, UI_SET_EVBIT , EV_REL   ) != 0) ||
++            (ioctl(fd, UI_SET_RELBIT, REL_X    ) != 0) ||
++            (ioctl(fd, UI_SET_RELBIT, REL_Y    ) != 0) ||
++            (ioctl(fd, UI_SET_RELBIT, REL_WHEEL) != 0) )
++        {
++		goto setup_error;
++        }
++
++	if(ioctl(fd, UI_DEV_CREATE) != 0)
++	{
++		goto setup_error;
++	}
++	return fd;
++	
++ setup_error:
++	fprintf(stderr, "could not setup %s\n", "uinput");
++	perror(NULL);
++	close(fd);
++#endif
++	return -1;
++}
++
++int usend(__u16 type, __u16 code, __s32 value)
++{
++#ifdef __linux__
++	if(uinputfd != -1)
++	{
++		struct input_event event;
++
++		memset(&event, 0, sizeof(event));
++		event.type = type;
++		event.code = code;
++		event.value = value;
++
++		if(write(uinputfd, &event, sizeof(event)) != sizeof(event))
++		{
++			fprintf(stderr,"%s: writing to uinput failed\n",progname);
++			perror(progname);
++		}
++	}
++#endif
++}
++
+ void msend(int dx,int dy,int dz,int rep,int buttp,int buttr)
+ {
+ 	static int buttons=0;
+@@ -290,6 +388,48 @@
+ 		}
+ 		break;
+ 	}
++
++	if((dx != 0) || (dy != 0))
++	{
++		usend(EV_REL, REL_X, dx);
++		usend(EV_REL, REL_Y, dy);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++        if(dz != 0)
++	{
++		usend(EV_REL, REL_WHEEL, dz);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttp == BUTTON1)
++	{
++		usend(EV_KEY, BTN_LEFT, 1 );
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttr == BUTTON1)
++	{
++		usend(EV_KEY, BTN_LEFT, 0 );
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttp == BUTTON2)
++	{
++		usend(EV_KEY, BTN_MIDDLE, 1);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttr == BUTTON2)
++	{
++		usend(EV_KEY, BTN_MIDDLE, 0);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttp == BUTTON3)
++	{
++		usend(EV_KEY, BTN_RIGHT, 1);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
++	if(buttr == BUTTON3)
++	{
++		usend(EV_KEY, BTN_RIGHT, 0);
++		usend(EV_SYN, SYN_REPORT, 0);
++	}
+ }
+ 
+ void mouse_move(int dx,int dy,int dz,int rep)
+@@ -725,6 +865,9 @@
+ 			{"help",no_argument,NULL,'h'},
+ 			{"version",no_argument,NULL,'v'},
+ 			{"nodaemon",no_argument,NULL,'n'},
++#                       if defined(__linux__)
++			{"uinput",no_argument,NULL,'u'},
++#                       endif
+ 			{0, 0, 0, 0}
+ 		};
+ 		c = getopt_long(argc,argv,"hvn",long_options,NULL);
+@@ -737,6 +880,9 @@
+ 			printf("\t -h --help\t\tdisplay this message\n");
+ 			printf("\t -v --version\t\tdisplay version\n");
+ 			printf("\t -n --nodaemon\t\tdon't fork to background\n");
++#                       if defined(__linux__)
++			printf("\t -u --uinput\t\tgenerate Linux input events\n");
++#                       endif
+ 			return(EXIT_SUCCESS);
+ 		case 'v':
+ 			printf("%s %s\n",progname,VERSION);
+@@ -744,6 +890,11 @@
+ 		case 'n':
+ 			nodaemon=1;
+ 			break;
++#               if defined(__linux__)
++		case 'u':
++			useuinput=1;
++			break;
++#               endif
+ 		default:
+ 			printf("Usage: %s [options] [config-file]\n",progname);
+ 			return(EXIT_FAILURE);
+@@ -817,6 +968,12 @@
+ 	{
+ 		ms=new_ms;
+ 	}
++
++	if(useuinput)
++	{
++		uinputfd = setup_uinputfd(progname);
++	}
++
+ #ifdef DAEMONIZE
+ 	if(!nodaemon) daemonize();
+ #endif
