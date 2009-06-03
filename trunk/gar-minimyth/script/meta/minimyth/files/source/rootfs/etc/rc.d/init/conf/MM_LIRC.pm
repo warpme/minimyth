@@ -376,7 +376,7 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
         my $name     = shift;
 
         my $device = '';
-        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF'))
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF') eq 'yes')
         {
             $device = '/dev/persistent/event-lircm';
         }
