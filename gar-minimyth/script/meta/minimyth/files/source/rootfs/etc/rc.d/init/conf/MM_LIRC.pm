@@ -172,6 +172,14 @@ $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
     file           => {name_remote => '/lircd.conf',
                        name_local  => '/etc/lircd.conf'}
 };
+$var_list{'MM_LIRC_FETCH_LIRCMD_CONF'} =
+{
+    value_default  => 'no',
+    value_valid    => 'no|yes',
+    value_file     => 'yes',
+    file           => {name_remote => '/lircmd.conf',
+                       name_local  => '/etc/lircmd.conf'}
+};
 $var_list{'MM_LIRC_FETCH_LIRCRC'} =
 {
     value_default  => 'no',
@@ -357,9 +365,28 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
         return join(' ', @device_list);
     }
 };
+$var_list{'MM_LIRC_LIRCM_DEVICE'} =
+{
+    prerequisite   => ['MM_LIRC_FETCH_LIRCMD_CONF'],
+    value_default  => 'auto',
+    value_valid    => 'auto|.+',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $device = '';
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF'))
+        {
+            $device = '/dev/persistent/event-lircm';
+        }
+
+        return $device;
+    }
+};
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS'],
+    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_FETCH_LIRCMD_CONF'],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -376,7 +403,18 @@ $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        return $minimyth->var_get('MM_LIRC_KERNEL_MODULE');
+        my @kernel_modules = ();
+
+        if ($minimyth->var_get('MM_LIRC_KERNEL_MODULE'))
+        {
+            push(@kernel_modules, $minimyth->var_get('MM_LIRC_KERNEL_MODULE'));
+        }
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF'))
+        {
+            push(@kernel_modules, 'uinput');
+        }
+
+        return join(' ', @kernel_modules);
     },
     extra          => sub
     {
