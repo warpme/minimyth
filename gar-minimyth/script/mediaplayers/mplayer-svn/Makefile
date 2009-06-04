@@ -301,6 +301,10 @@ post-patch:
 	@mv $(wildcard $(WORKDIR)/libdvdread-*)         $(WORKSRC)/libdvdread4
 	@$(MAKECOOKIE)
 
+pre-configure:
+	@echo $(GARVERSION) > $(WORKSRC)/snapshot_version
+	@$(MAKECOOKIE)
+
 install-config:
 	@mkdir -p $(DESTDIR)$(rootdir)/root/.mplayer
 	@cp $(WORKSRC)/etc/codecs.conf  $(DESTDIR)$(rootdir)/root/.mplayer
