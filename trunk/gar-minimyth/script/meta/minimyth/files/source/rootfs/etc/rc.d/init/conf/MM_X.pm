@@ -331,7 +331,7 @@ $var_list{'MM_X_REFRESH'} =
                     {
                         given ($minimyth->var_get('MM_X_TV_TYPE'))
                         {
-                            when (/^NTSC(-(J|M))?$/)                { $value_auto = '58.0-62.0,118.0-122.0'; }
+                            when (/^NTSC(-(443|J|M))?$/)            { $value_auto = '58.0-62.0,118.0-122.0'; }
                             when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) {}
                             when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = '58.0-62.0,118.0-122.0'; }
                             when (/^(HD|hd)?720(P|p)$/)             { $value_auto = '58.0-62.0,118.0-122.0'; }
@@ -372,7 +372,7 @@ $var_list{'MM_X_REFRESH'} =
             {
                 given ($minimyth->var_get('MM_X_TV_TYPE'))
                 {
-                    when (/^NTSC(-(J|M))?$/)                { $value_auto = '60.0'; }
+                    when (/^NTSC(-(443|J|M))?$/)            { $value_auto = '60.0'; }
                     when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) { $value_auto = '50.0'; }
                     when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = '60.0'; }
                     when (/^(HD|hd)?720(P|p)$/)             { $value_auto = '60.0'; }
@@ -611,7 +611,7 @@ $var_list{'MM_X_MODE'} =
                     {
                         given ($minimyth->var_get('MM_X_TV_TYPE'))
                         {
-                            when (/^NTSC(-(J|M))?$/)                { $value_auto = '1280x720'; }
+                            when (/^NTSC(-(443|J|M))?$/)            { $value_auto = '1280x720'; }
                             when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) {}
                             when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = '720x480';  }
                             when (/^(HD|hd)?720(P|p)$/)             { $value_auto = '1280x720'; }
@@ -665,7 +665,7 @@ $var_list{'MM_X_MODE'} =
             {
                 given ($minimyth->var_get('MM_X_TV_TYPE'))
                 {
-                    when (/^NTSC(-(J|M))?$/)
+                    when (/^NTSC(-(443|J|M))?$/)
                     {
                         given($minimyth->var_get('MM_X_DRIVER'))
                         {
@@ -757,7 +757,7 @@ $var_list{'MM_X_MODE_0'} =
                     {
                         given ($minimyth->var_get('MM_X_TV_TYPE'))
                         {
-                            when (/^NTSC(-(J|M))?$/)                { $value_auto = '1920x1080'; }
+                            when (/^NTSC(-(443|J|M))?$/)            { $value_auto = '1920x1080'; }
                             when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) {}
                             when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = '720x480';   }
                             when (/^(HD|hd)?720(P|p)$/)             { $value_auto = '1920x720';  }
@@ -816,7 +816,7 @@ $var_list{'MM_X_MODE_1'} =
                     {
                         given ($minimyth->var_get('MM_X_TV_TYPE'))
                         {
-                            when (/^NTSC(-(J|M))?$/)                { $value_auto = '1280x720'; }
+                            when (/^NTSC(-(443|J|M))?$/)            { $value_auto = '1280x720'; }
                             when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) {}
                             when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = 'none';     }
                             when (/^(HD|hd)?720(P|p)$/)             { $value_auto = '720x480';  }
@@ -875,7 +875,7 @@ $var_list{'MM_X_MODE_2'} =
                     {
                         given ($minimyth->var_get('MM_X_TV_TYPE'))
                         {
-                            when (/^NTSC(-(J|M))?$/)                { $value_auto = '720x480'; }
+                            when (/^NTSC(-(443|J|M|))?$/)           { $value_auto = '720x480'; }
                             when (/^PAL(-(B|D|G|H|I|K1|M|N|NC))?$/) {}
                             when (/^(HD|hd)?480(I|i|P|p)$/)         { $value_auto = 'none';    }
                             when (/^(HD|hd)?720(P|p)$/)             { $value_auto = 'none';    }
@@ -901,6 +901,7 @@ $var_list{'MM_X_TV_TYPE'} =
 
         given ($minimyth->var_get('MM_X_DRIVER'))
         {
+            when (/^intel$/     ) { return 'NTSC-M'; }
             when (/^nvidia$/    ) { return 'NTSC-M'; }
             when (/^openchrome$/) { return 'NTSC'  ; }
             default               { return 'NTSC'  ; }
@@ -912,6 +913,7 @@ $var_list{'MM_X_TV_TYPE'} =
 
         given ($minimyth->var_get('MM_X_DRIVER'))
         {
+            when (/^intel$/     ) { return 'PAL(-(M|N)?|NTSC-(443|J|M)'                                              ; }
             when (/^nvidia$/    ) { return 'PAL-(B|D|G|H|I|K1|M|N|NC)|NTSC-(J|M)|HD(480[ip]|576[ip]|720[p]|1080[ip])'; }
             when (/^openchrome$/) { return 'PAL|NTSC|480P|576P|720P|1080I'                                           ; }
             default               { return 'PAL|NTSC'                                                                ; }
@@ -927,6 +929,7 @@ $var_list{'MM_X_TV_OUTPUT'} =
 
         given ($minimyth->var_get('MM_X_DRIVER'))
         {
+            when (/^intel$/     ) { return 'S-Video'   ; }
             when (/^nvidia$/    ) { return 'AUTOSELECT'; }
             when (/^openchrome$/) { return 'Composite' ; }
             default               { return 'Composite' ; }
@@ -938,6 +941,7 @@ $var_list{'MM_X_TV_OUTPUT'} =
 
         given ($minimyth->var_get('MM_X_DRIVER'))
         {
+            when (/^intel$/     ) { return 'Composite|S-Video|Component'                ; }
             when (/^nvidia$/    ) { return 'AUTOSELECT|COMPOSITE|SVIDEO|COMPONENT|SCART'; }
             when (/^openchrome$/) { return 'Composite|S-Video|SC|RGP|YCbCr'             ; }
             default               { return 'Composite'                                  ; }
