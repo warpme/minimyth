@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-gcc_4.4.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
 	$(DISTNAME_SHORT)-mythmusic_fftw3.patch \
 	$(DISTNAME_SHORT)-mythvideo_tmdb_pl.patch \
