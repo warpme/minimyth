@@ -147,90 +147,59 @@ gui.deinterlace_plugin:@DEINTERLACE_PLUGIN@
 # bool, default: 0
 #gui.use_xvidext:0
 
+# height for xinerama fullscreen (-8192 = autodetect)
+# numeric, default: -8192
+#gui.xinerama_fullscreen_height:-8192
+
+# width for xinerama fullscreen (-8192 = autodetect)
+# numeric, default: -8192
+#gui.xinerama_fullscreen_width:-8192
+
+# x coordinate for xinerama fullscreen (-8192 = autodetect)
+# numeric, default: -8192
+#gui.xinerama_fullscreen_x:-8192
+
+# y coordinate for xinerama fullscreen (-8192 = autodetect)
+# numeric, default: -8192
+#gui.xinerama_fullscreen_y:-8192
+
+# Screens to use in order to do a very fullscreen in xinerama mode. (example 0 2 3)
+# string, default: 0 1
+#gui.xinerama_use_screens:0 1
+
 # Amplification level
 # [0..200], default: 100
 #gui.amp_level:100
 
 # gui panel visibility
 # bool, default: 1
-#gui.panel_visible:1
 gui.panel_visible:0
 
 # numeric, default: 200
-gui.panel_x:201
+#gui.panel_x:200
 
 # numeric, default: 100
-gui.panel_y:101
+#gui.panel_y:100
 
-# numeric, default: 80
-gui.setup_x:81
+# brightness value
+# [0..65535], default: -1
+#gui.vo_brightness:-1
 
-# numeric, default: 80
-gui.setup_y:81
+# contrast value
+# [0..65535], default: -1
+#gui.vo_contrast:-1
 
-# color specification yuv-opacity
-# string, default: 8080c0-f
-#gui.osdmenu.color_focused_button:8080c0-f
+# hue value
+# [0..65535], default: -1
+#gui.vo_hue:-1
 
-# color specification yuv-opacity
-# string, default: 808080-f
-#gui.osdmenu.color_focused_slider:808080-f
-
-# color specification yuv-opacity
-# string, default: ff8080-f
-#gui.osdmenu.color_focused_slider_knob:ff8080-f
-
-# color specification yuv-opacity
-# string, default: 808080-f
-#gui.osdmenu.color_focused_text_border:808080-f
-
-# color specification yuv-opacity
-# string, default: ff8080-f
-#gui.osdmenu.color_focused_text_foreground:ff8080-f
-
-# color specification yuv-opacity
-# string, default: 0080c0-f
-#gui.osdmenu.color_label_border:0080c0-f
-
-# color specification yuv-opacity
-# string, default: c08080-f
-#gui.osdmenu.color_label_foreground:c08080-f
-
-# color specification yuv-opacity
-# string, default: 0080c0-f
-#gui.osdmenu.color_label_window:0080c0-f
-
-# color specification yuv-opacity
-# string, default: 008000-f
-#gui.osdmenu.color_slider:008000-f
-
-# color specification yuv-opacity
-# string, default: ffff00-f
-#gui.osdmenu.color_slider_knob:ffff00-f
-
-# color specification yuv-opacity
-# string, default: 008000-f
-#gui.osdmenu.color_text_border:008000-f
-
-# color specification yuv-opacity
-# string, default: ffff00-f
-#gui.osdmenu.color_text_foreground:ffff00-f
-
-# color specification yuv-opacity
-# string, default: 0080c0-f
-#gui.osdmenu.color_text_window:0080c0-f
-
-# directory a media in dvd device will be mounted
-# string, default: /dvd
-#gui.osdmenu.dvd_mountpoint:/dvd
+# saturation value
+# [0..65535], default: -1
+#gui.vo_saturation:-1
 
 # palette (foreground-border-background) to use for subtitles and OSD
 # { white-black-transparent  white-none-transparent  white-none-translucid  yellow-black-transparent }, default: 0
 #ui.osd.text_palette:white-black-transparent
-
-# notify changes to the hardware mixer
-# bool, default: 1
-#audio.alsa_hw_mixer:1
 
 # audio driver to use
 # { auto  null  alsa  none  file }, default: 0
@@ -312,17 +281,9 @@ audio.output.speaker_arrangement:@SPEAKER_ARRANGEMENT@
 #audio.volume.remember_volume:0
 
 # video driver to use
-# { auto  xv  opengl  xshm  xxmc  none  sdl  xvmc }, default: 0
+# { auto  vdpau  xv  raw  opengl  xshm  xxmc  none  xvmc }, default: 0
 #video.driver:auto
 video.driver:@VIDEO_DRIVER@
-
-# pitch alignment workaround
-# bool, default: 0
-#video.device.xv_pitch_alignment:0
-
-# disable exact alpha blending of overlays
-# bool, default: 0
-#video.output.disable_exact_alphablend:0
 
 # disable all video scaling
 # bool, default: 0
@@ -332,18 +293,41 @@ video.driver:@VIDEO_DRIVER@
 # [0..100], default: 50
 #video.output.horizontal_position:50
 
+# vdpau: HD deinterlace method
+# { bob  temporal  temporal_spatial }, default: 1
+#video.output.vdpau_deinterlace_method:temporal
+
+# vdpau: Try to recreate progressive frames from pulldown material
+# bool, default: 1
+#video.output.vdpau_enable_inverse_telecine:1
+
+# vdpau: disable deinterlacing when progressive_frame flag is set
+# bool, default: 0
+#video.output.vdpau_honor_progressive:0
+
+# vdpau: disable advanced deinterlacers chroma filter
+# bool, default: 0
+#video.output.vdpau_skip_chroma_deinterlace:0
+
 # vertical image position in the output window
 # [0..100], default: 50
 #video.output.vertical_position:50
 
-# deinterlace method (deprecated)
-# { none  bob  weave  greedy  onefield  onefield_xv  linearblend }, default: 4
-#video.output.xv_deinterlace_method:onefield
-video.output.xv_deinterlace_method:none
+# Choose speed over specification compliance
+# bool, default: 0
+#video.processing.ffmpeg_choose_speed_over_accuracy:0
 
 # MPEG-4 postprocessing quality
 # [0..6], default: 3
 #video.processing.ffmpeg_pp_quality:3
+
+# Skip loop filter
+# { default  none  nonref  bidir  nonkey  all }, default: 0
+#video.processing.ffmpeg_skip_loop_filter:default
+
+# FFmpeg video decoding thread count
+# numeric, default: 1
+#video.processing.ffmpeg_thread_count:1
 
 # device used for CD audio
 # string, default: /dev/cdrom
@@ -352,7 +336,6 @@ video.output.xv_deinterlace_method:none
 # slow down disc drive to this speed factor
 # numeric, default: 4
 #media.audio_cd.drive_slowdown:4
-media.audio_cd.drive_slowdown:1
 
 # query CDDB
 # bool, default: 1
@@ -381,6 +364,18 @@ media.audio_cd.drive_slowdown:1
 # Remember last DVB channel watched
 # bool, default: 1
 #media.dvb.remember_channel:1
+
+# Number of seconds until tuning times out.
+# numeric, default: 0
+#media.dvb.tuning_timeout:0
+
+# DVB Channels config file
+# string, default: /home/minimyth/.xine/channels.conf
+#media.dvb.channels_conf:/home/minimyth/.xine/channels.conf
+
+# Enable the DVB GUI
+# bool, default: 1
+#media.dvb.gui_enabled:1
 
 # Last DVB channel viewed
 # numeric, default: -1
@@ -427,8 +422,8 @@ media.audio_cd.drive_slowdown:1
 #media.dvd.css_cache_path:/home/minimyth/.dvdcss/
 
 # file browsing start location
-# string, default: /home/minimyth
-#media.files.origin_path:/home/minimyth
+# string, default: /home/minimyth/.xine
+#media.files.origin_path:/home/minimyth/.xine
 media.files.origin_path:@MEDIA_FILES_ORIGIN_PATH@
 
 # list hidden files
@@ -500,8 +495,8 @@ media.files.origin_path:@MEDIA_FILES_ORIGIN_PATH@
 #media.vcd.title_format:%F - %I %N%L%S, disk %c of %C - %v %A
 
 # path to RealPlayer codecs
-# string, default: 
-#decoder.external.real_codecs_path:
+# string, default: /usr/lib/codecs
+#decoder.external.real_codecs_path:/usr/lib/codecs
 
 # path to Win32 codecs
 # string, default: /usr/lib/codecs
@@ -547,7 +542,7 @@ media.files.origin_path:@MEDIA_FILES_ORIGIN_PATH@
 # numeric, default: 320
 #effects.goom.width:320
 
-# colorspace conversion method
+# colour space conversion method
 # { Fast but not photorealistic  Slow but looks better }, default: 0
 #effects.goom.csc_method:Fast but not photorealistic
 
@@ -660,13 +655,17 @@ engine.buffers.video_num_frames:22
 # numeric, default: 0
 #engine.decoder_priorities.sputext:0
 
-# priority for theora decoder
+# priority for vdpau_h264 decoder
 # numeric, default: 0
-#engine.decoder_priorities.theora:0
+#engine.decoder_priorities.vdpau_h264:0
 
-# priority for vorbis decoder
+# priority for vdpau_mpeg12 decoder
 # numeric, default: 0
-#engine.decoder_priorities.vorbis:0
+#engine.decoder_priorities.vdpau_mpeg12:0
+
+# priority for vdpau_vc1 decoder
+# numeric, default: 0
+#engine.decoder_priorities.vdpau_vc1:0
 
 # priority for win32a decoder
 # numeric, default: 0
