@@ -152,7 +152,34 @@ $var_list{'MM_LIRC_KERNEL_MODULE_OPTIONS'} =
 $var_list{'MM_LIRC_IREXEC_ENABLED'} =
 {
     value_default  => 'auto',
-    value_valid    => 'auto|no|yes'
+    value_valid    => 'auto|no|yes',
+    value_auto     => sub
+    {
+        if (-e '/usr/bin/irexec')
+        {
+            return 'auto';
+        }
+        else
+        {
+            return 'no';
+        }
+    }
+};
+$var_list{'MM_LIRC_IRXEVENT_ENABLED'} =
+{
+    value_default  => 'auto',
+    value_valid    => 'auto|no|yes',
+    value_auto     => sub
+    {
+        if (-e '/usr/bin/irxevent')
+        {
+            return 'auto';
+        }
+        else
+        {
+            return 'no';
+        }
+    }
 };
 $var_list{'MM_LIRC_SLEEP_ENABLED'} =
 {
