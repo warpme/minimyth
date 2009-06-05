@@ -391,6 +391,56 @@ sub start
         system(qq(/usr/bin/irexec -d /etc/lircrc));
     }
 
+    my $irxevent_enabled = $minimyth->var_get('MM_LIRC_IRXEVENT_ENABLED');
+
+    # Auto-configure usage of 'irxevent'.
+    if ($irxevent_enabled eq 'auto')
+    {
+        $minimyth->message_log('info', "attempting to auto-configure usage of 'irxevent'.");
+        $irxevent_enabled = 'no';
+        if (-e '/etc/lircrc')
+        {
+            # Only one level of includes is supported.
+            my @lircrc_list = ();
+            push(@lircrc_list, '/etc/lircrc');
+            if (open(FILE, '<', '/etc/lircrc'))
+            {
+                foreach (grep(s/^include +(.*)$/$1/, (<FILE>)))
+                {
+                    chomp;
+                    push(@lircrc_list, $_);
+                }
+                close(FILE);
+            }
+            foreach my $lircrc_file (@lircrc_list)
+            {
+                if (open(FILE, '<', $lircrc_file))
+                {
+                    foreach (grep(/^ *prog *= *irxevent *$/, (<FILE>)))
+                    {
+                        $irxevent_enabled = 'yes';
+                        if ($irxevent_enabled eq 'yes')
+                        {
+                            last;
+                        }
+                    }
+                    close(FILE);
+                }
+                if ($irxevent_enabled eq 'yes')
+                {
+                    last;
+                }
+            }
+        }
+        $minimyth->message_log('info', "auto-configured usage of 'irxevent' as '$irxevent_enabled'.");
+    }
+
+    # Start the irxevent daemon.
+    if ($irxevent_enabled eq 'yes')
+    {
+        system(qq(/usr/bin/irxevent -d /etc/lircrc));
+    }
+
     # Start the lircmd daemon.
     if (-e '/etc/lircmd.conf')
     {
