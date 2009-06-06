@@ -1,0 +1,58 @@
+diff -Naur lm_sensors-3.1.0-old/CHANGES lm_sensors-3.1.0-new/CHANGES
+--- lm_sensors-3.1.0-old/CHANGES	2009-02-28 12:55:15.000000000 -0800
++++ lm_sensors-3.1.0-new/CHANGES	2009-06-05 14:36:09.000000000 -0700
+@@ -4,6 +4,7 @@
+ 3.1.0 "Happy Birthday Lina" (2009-02-28)
+   libsensors: Add support for instantaneous power sensors
+               Add support for current sensors
++  libsensors: Don't rely on dirent->dt_type being set
+               Fix error propagation during expression evaluation
+               Detect excessive recursion depth during expression eval (#2365)
+               Return a string rather than NULL for unknown errors
+diff -Naur lm_sensors-3.1.0-old/lib/init.c lm_sensors-3.1.0-new/lib/init.c
+--- lm_sensors-3.1.0-old/lib/init.c	2009-02-26 06:46:47.000000000 -0800
++++ lm_sensors-3.1.0-new/lib/init.c	2009-06-05 14:36:09.000000000 -0700
+@@ -23,12 +23,14 @@
+ #define _BSD_SOURCE
+ 
+ #include <sys/types.h>
++#include <sys/stat.h>
+ #include <locale.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <errno.h>
+ #include <dirent.h>
++#include <unistd.h>
+ #include "sensors.h"
+ #include "data.h"
+ #include "error.h"
+@@ -120,8 +122,7 @@
+ 
+ static int config_file_filter(const struct dirent *entry)
+ {
+-	return (entry->d_type == DT_REG || entry->d_type == DT_LNK)
+-	    && entry->d_name[0] != '.';		/* Skip hidden files */
++	return entry->d_name[0] != '.';		/* Skip hidden files */
+ }
+ 
+ static int add_config_from_dir(const char *dir)
+@@ -143,6 +144,7 @@
+ 		int len;
+ 		char path[PATH_MAX];
+ 		FILE *input;
++		struct stat st;
+ 
+ 		len = snprintf(path, sizeof(path), "%s/%s", dir,
+ 			       namelist[i]->d_name);
+@@ -151,6 +153,10 @@
+ 			continue;
+ 		}
+ 
++		/* Only accept regular files */
++		if (stat(path, &st) < 0 || !S_ISREG(st.st_mode))
++			continue;
++
+ 		input = fopen(path, "r");
+ 		if (input) {
+ 			res = parse_config(input, path);
