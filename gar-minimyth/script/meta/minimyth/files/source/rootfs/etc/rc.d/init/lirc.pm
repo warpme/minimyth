@@ -164,7 +164,7 @@ sub start
     {
         $daemon_master = '/usr/sbin/lircd';
         $daemon_master = $daemon_master . ' --driver=null';
-        $daemon_master = $daemon_master . ' --output=/dev/lircd --pidfile=/var/run/lircd.pid';
+        $daemon_master = $daemon_master . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
         for (my $index = 0 ; $index <= $#device_list ; $index++)
         {
             my $port = 8765 + $index;
@@ -273,8 +273,8 @@ sub start
     # Create directories used by the LIRC daemon.
     File::Path::mkpath('/var/lock', { mode => 0755 });
     chmod(0755, '/var/lock');
-    File::Path::mkpath('/var/run', { mode => 0755 });
-    chmod(0755, '/var/run');
+    File::Path::mkpath('/var/run/lirc', { mode => 0755 });
+    chmod(0755, '/var/run/lirc');
 
     # Enable wakeup and start an LIRC daemon for each device.
     my $index = 0;
@@ -317,7 +317,7 @@ sub start
             my $port = 8765 + $index;
             $daemon = '/usr/sbin/lircd';
             $daemon = $daemon . " --device=$device --driver=$driver";
-            $daemon = $daemon . " --output=/dev/lircd-$instance --pidfile=/var/run/lircd-$instance.pid";
+            $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
             $daemon = $daemon . " --listen=$port";
             $daemon = $daemon . " $lircd_conf";
         }
@@ -325,9 +325,9 @@ sub start
         {
             $daemon = '/usr/sbin/lircd';
             $daemon = $daemon . " --device=$device --driver=$driver";
-            $daemon = $daemon . ' --output=/dev/lircd --pidfile=/var/run/lircd.pid';
+            $daemon = $daemon . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
             $daemon = $daemon . " $lircd_conf";
-            symlink('/dev/lircd', "/dev/lircd-$instance");
+            symlink('/var/run/lirc/lircd', "/var/run/lirc/lircd-$instance");
         }
         $minimyth->message_log('info', "started '$daemon'.");
         system(qq($daemon));
