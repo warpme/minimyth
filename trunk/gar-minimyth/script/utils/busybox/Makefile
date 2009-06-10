@@ -8,7 +8,9 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-ftpd.patch \
-	$(DISTNAME)-modprobe.patch
+	$(DISTNAME)-httpd.patch \
+	$(DISTNAME)-modprobe.patch \
+	$(DISTNAME)-telnetd.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
