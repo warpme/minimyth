@@ -3,14 +3,14 @@ GARVERSION = 1.5.4.3
 CATEGORIES = system
 MASTER_SITES = http://download.berlios.de/fbsplash/
 DISTFILES = $(GARNAME)-lite-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch
+PATCHFILES = $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch $(DISTNAME)-no_klibc.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libjpeg lib/libpng lib/zlib lib/freetype
+DEPENDS = lang/c lib/libjpeg lib/libmng lib/libpng lib/zlib lib/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -22,8 +22,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-deprecated \
 	--enable-fbcondecor \
-	--disable-helper \
-	--disable-misc \
+	--enable-helper \
+	--enable-misc \
 	--with-gnu-ld \
 	--without-gpm \
 	--with-mng \
