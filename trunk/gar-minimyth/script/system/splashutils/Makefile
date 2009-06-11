@@ -23,7 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-deprecated \
 	--enable-fbcondecor \
 	--enable-helper \
-	--enable-misc \
+	--disable-misc \
 	--with-gnu-ld \
 	--without-gpm \
 	--with-mng \
