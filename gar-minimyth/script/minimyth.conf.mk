@@ -120,7 +120,7 @@ mm_MYTH_VERSION           ?= 0.21
 # '173.14.18' (legacy), 185.18.14.
 mm_NVIDIA_VERSION         ?= 185.18.14
 # The version of xorg to use.
-# Valid values are '7.3' and '7.4'.
+# Valid values are '7.4'.
 mm_XORG_VERSION           ?= 7.4
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
