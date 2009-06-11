@@ -116,7 +116,7 @@ mm_KERNEL_CONFIG          ?=
 # Valid values are '0.20', '0.20-softpad', '0.21', and 'trunk'.
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
-# Valid values are '71.86.09' (legacy), '96.43.11' (legacy), '169.12' (legacy),
+# Valid values are '71.86.09' (legacy), '96.43.11' (legacy),
 # '173.14.18' (legacy), 185.18.14.
 mm_NVIDIA_VERSION         ?= 185.18.14
 # The version of xorg to use.
