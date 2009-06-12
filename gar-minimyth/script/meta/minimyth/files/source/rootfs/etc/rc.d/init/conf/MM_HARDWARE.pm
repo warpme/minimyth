@@ -15,7 +15,7 @@ sub var_list
 
 $var_list{'MM_HARDWARE_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_CPU_KERNEL_MODULE_LIST', 'MM_LCDPROC_KERNEL_MODULE_LIST', 'MM_LIRC_KERNEL_MODULE_LIST', 'MM_PLUGIN_KERNEL_MODULE_LIST', 'MM_X_KERNEL_MODULE_LIST'],
+    prerequisite   => ['MM_CPU_KERNEL_MODULE_LIST', 'MM_LCDPROC_KERNEL_MODULE_LIST', 'MM_LIRC_KERNEL_MODULE_LIST', 'MM_PLUGIN_KERNEL_MODULE_LIST', 'MM_WIIMOTE_KERNEL_MODULE_LIST', 'MM_X_KERNEL_MODULE_LIST'],
     value_default  => '',
     extra          => sub
     {
@@ -24,7 +24,7 @@ $var_list{'MM_HARDWARE_KERNEL_MODULE_LIST'} =
 
         my @kernel_modules = split(/ +/, $minimyth->var_get($name));
 
-        foreach my $delta_name ('CPU', 'LCDPROC', 'LIRC', 'PLUGIN', 'X')
+        foreach my $delta_name ('CPU', 'LCDPROC', 'LIRC', 'PLUGIN', 'WIIMOTE', 'X')
         {
             my $delta_kernel_modules = $minimyth->var_get('MM_' . $delta_name . '_KERNEL_MODULE_LIST');
             if ($delta_kernel_modules)

@@ -59,20 +59,6 @@ sub start
 
         $minimyth->message_output('info', "starting wminput ...");
 
-        # Load uinput driver as needed.
-        if (! -e q(/dev/uinput))
-        {
-            if (system(qq(/sbin/modprobe uinput > $devnull 2>&1)) != 0)
-            {
-                $minimyth->message_output('err', "failed to load kernel module: uinput");
-                return 0;
-            }
-            while (! -e q(/dev/uinput))
-            {
-                sleep 1;
-            }
-        }
-
         if ($address_0)
         {
             my $config = undef;
