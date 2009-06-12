@@ -18,12 +18,6 @@ sub start
     if ($minimyth->var_get('MM_LCDPROC_DRIVER') eq 'g15')
     {
         $minimyth->message_output('info', "starting G15daemon ...");
-        my $kernel_module = 'uinput';
-        if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
-        {
-            $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
-            return 0;
-        }
         # The g15daemon daemon does not create it configuration file, so init
         # creates it when it does not exist.
         if (! -e '/etc/g15daemon.conf')

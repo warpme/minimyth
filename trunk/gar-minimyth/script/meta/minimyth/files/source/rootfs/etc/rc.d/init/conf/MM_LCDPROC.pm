@@ -150,7 +150,7 @@ $var_list{'MM_LCDPROC_FETCH_LCDD_CONF'} =
 };
 $var_list{'MM_LCDPROC_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_LCDPROC_KERNEL_MODULE', 'MM_LCDPROC_KERNEL_MODULE_OPTIONS'],
+    prerequisite   => ['MM_LCDPROC_DRIVER', 'MM_LCDPROC_KERNEL_MODULE', 'MM_LCDPROC_KERNEL_MODULE_OPTIONS'],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -167,7 +167,18 @@ $var_list{'MM_LCDPROC_KERNEL_MODULE_LIST'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        return $minimyth->var_get('MM_LCDPROC_KERNEL_MODULE');
+        my @kernel_modules = ();
+
+        if ($minimyth->var_get('MM_LCDPROC_KERNEL_MODULE'))
+        {
+            push(@kernel_modules, $minimyth->var_get('MM_LCDPROC_KERNEL_MODULE'));
+        }
+        if ($minimyth->var_get('MM_LCDPROC_DRIVER') eq 'g15')
+        {
+            push(@kernel_modules, 'uinput');
+        }
+
+        return join(' ', @kernel_modules);
     },
     extra          => sub
     {
