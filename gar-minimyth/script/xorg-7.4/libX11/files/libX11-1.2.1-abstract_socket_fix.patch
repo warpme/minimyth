@@ -1,0 +1,26 @@
+diff -Naur libX11-1.2.1-old/configure.ac libX11-1.2.1-new/configure.ac
+--- libX11-1.2.1-old/configure.ac	2009-04-07 15:18:30.000000000 -0700
++++ libX11-1.2.1-new/configure.ac	2009-06-12 11:29:06.000000000 -0700
+@@ -88,6 +88,10 @@
+ 		# Unix domain sockets are faster now.
+ 		DEFAULT_LOCAL_TRANS="UNIX_TRANS,LOCAL_TRANS,TCP_TRANS"
+ 		;;
++	linux*)
++		# LOCAL_TRANS is used for abstract sockets.
++		DEFAULT_LOCAL_TRANS="LOCAL_TRANS,UNIX_TRANS,TCP_TRANS"
++		;;
+ 	*)
+ 		if test "$LOCALCONN" = "yes"; then
+ 			DEFAULT_LOCAL_TRANS="LOCAL_TRANS,UNIX_TRANS,TCP_TRANS"
+diff -Naur libX11-1.2.1-old/src/ConnDis.c libX11-1.2.1-new/src/ConnDis.c
+--- libX11-1.2.1-old/src/ConnDis.c	2008-11-18 22:42:01.000000000 -0800
++++ libX11-1.2.1-new/src/ConnDis.c	2009-06-12 11:16:31.000000000 -0700
+@@ -93,7 +93,7 @@
+ #ifdef UNIXCONN
+ # define UNIX_TRANS	"unix"
+ #endif
+-#if defined(LOCALCONN) || defined(OS2PIPECONN)
++#if defined(LOCALCONN) || defined(OS2PIPECONN) || defined(UNIXCONN)
+ # define LOCAL_TRANS	"local"
+ #endif
+ 
