@@ -55,55 +55,6 @@ sub start
 
     if ($minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR') ne 'performance')
     {
-        # Load CPU frequency scaling processor kernel modules.
-        # Kernel modules that do not support the CPU should fail to load.
-        my $kernel_version = '';
-        if ((-d '/lib/modules') &&
-            (opendir(DIR, '/lib/modules')))
-        {
-            foreach (grep(! /^\./, readdir(DIR)))
-            {
-                $kernel_version = $_;
-                last;
-            }
-            closedir(DIR);
-        }
-        my $kernel_arch = '';
-        if (($kernel_version) && 
-            (-d "/lib/modules/$kernel_version/kernel/arch") &&
-            (opendir(DIR, "/lib/modules/$kernel_version/kernel/arch")))
-        {
-            foreach (grep(! /^\./, readdir(DIR)))
-            {
-                $kernel_arch = $_;
-                last;
-            }
-            closedir(DIR);
-        }
-        if (($kernel_version) && ($kernel_arch) &&
-            (-d "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq") &&
-            (opendir(DIR, "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq")))
-        {
-            foreach (grep(! /^\./, readdir(DIR)))
-            {
-                if (/^(.*)\.ko$/)
-                {
-                    system(qq(/sbin/modprobe $1 > $devnull 2>&1));
-                }
-            }
-            closedir(DIR);
-        }
-
-        # Load CPU frequency governor kernel module.
-        my $kernel_module = 'cpufreq-' . $minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR');
-        if (system(qq(/sbin/modprobe $kernel_module > $devnull 2>&1)) != 0)
-        {
-            $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
-            return 0;
-        }
-        # Wait for everything to settle.                                        
-        system(qq(/sbin/udevadm settle --timeout=60));
-
         if ((-d '/sys/devices/system/cpu') &&
             (opendir(DIR, '/sys/devices/system/cpu')))
         {

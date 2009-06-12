@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use feature "switch";
 
+use File::Spec ();
+
 my %var_list;
 
 sub var_list
@@ -123,7 +125,7 @@ $var_list{'MM_CPU_FETCH_MICROCODE_DAT'} =
 };
 $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => [ 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_CPU_VENDOR' ],
+    prerequisite   => [ 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_CPU_VENDOR', 'MM_CPU_FREQUENCY_GOVERNOR' ],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -141,6 +143,8 @@ $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
         my $name     = shift;
 
         my @kernel_modules;
+
+        my $devnull = File::Spec->devnull;
 
         my $vendor = $minimyth->var_get('MM_CPU_VENDOR');
         my $family = $minimyth->var_get('MM_CPU_FAMILY');
@@ -166,6 +170,54 @@ $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
                     }
                 }
             }
+        }
+
+        if ($minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR') ne 'performance')
+        {
+            my $kernel_version = '';
+            if ((-d '/lib/modules') &&
+                (opendir(DIR, '/lib/modules')))
+            {
+                foreach (grep(! /^\./, readdir(DIR)))
+                {
+                    $kernel_version = $_;
+                    last;
+                }
+                closedir(DIR);
+            }
+            my $kernel_arch = '';
+            if (($kernel_version) && 
+                (-d "/lib/modules/$kernel_version/kernel/arch") &&
+                (opendir(DIR, "/lib/modules/$kernel_version/kernel/arch")))
+            {
+                foreach (grep(! /^\./, readdir(DIR)))
+                {
+                    $kernel_arch = $_;
+                    last;
+                }
+                closedir(DIR);
+            }
+            if (($kernel_version) && ($kernel_arch) &&
+                (-d "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq") &&
+                (opendir(DIR, "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq")))
+            {
+                foreach (grep(! /^\./, readdir(DIR)))
+                {
+                    if (/^(.*)\.ko$/)
+                    {
+                        # Kernel modules that do not support the CPU should fail to load.
+                        if (system(qq(/sbin/modprobe $1 > $devnull 2>&1)) == 0)
+                        {
+                            system(qq(/sbin/modprobe -r $1 > $devnull 2>&1));
+                            push(@kernel_modules, $1);
+                        }
+                    }
+                }
+                closedir(DIR);
+            }
+
+            # Add frequency governor kernel module.
+            push(@kernel_modules, 'cpufreq-' . $minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR'));
         }
 
         return join(' ', @kernel_modules);
