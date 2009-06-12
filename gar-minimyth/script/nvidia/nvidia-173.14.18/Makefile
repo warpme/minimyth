@@ -1,4 +1,4 @@
-PATCHFILES = $(DISTFILE)-select_makefile.patch
+PATCHFILES = $(DISTFILE)-kernel_2.6.30.patch $(DISTFILE)-select_makefile.patch
 
 NVIDIA_MAJOR_VERSION = 173
 NVIDIA_MINOR_VERSION = 14
