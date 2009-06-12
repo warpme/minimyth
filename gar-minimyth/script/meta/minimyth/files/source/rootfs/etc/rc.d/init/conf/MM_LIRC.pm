@@ -436,7 +436,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
         {
             push(@kernel_modules, $minimyth->var_get('MM_LIRC_KERNEL_MODULE'));
         }
-        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF'))
+        if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF') eq 'yes')
         {
             push(@kernel_modules, 'uinput');
         }
