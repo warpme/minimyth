@@ -66,7 +66,6 @@ DEPENDS = \
 	X11/rxvt \
 	utils/SDL-Test \
 	system/splashutils \
-	utils/squashfs-3.4 \
 	utils/squashfs-4.0 \
 	net/syslinux \
 	system/sysvinit \
@@ -160,7 +159,6 @@ BUILDDEPS = \
 	devel/fakeroot \
 	utils/file \
 	utils/findutils \
-	utils/squashfs-3.4 \
 	utils/squashfs-4.0 \
 	utils/tar \
 	utils/util-linux-ng \
