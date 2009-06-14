@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-ftpd.patch \
 	$(DISTNAME)-httpd.patch \
 	$(DISTNAME)-modprobe.patch \
