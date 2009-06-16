@@ -9,8 +9,11 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c system/udev \
+DEPENDS  = lang/c \
 	$(CATEGORY)/libpthread-stubs
+ifneq ($(DESTIMG),build)
+DEPENDS += system/udev
+endif
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -18,11 +21,18 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
-	--enable-udev \
+	--disable-nouveau-experimental-api \
 	--with-gnu-ld
+ifeq ($(DESTIMG),build)
+CONFIGURE_ARGS += \
+	--disable-udev
+else
+CONFIGURE_ARGS += \
+	--enable-udev
+endif
 
 include ../../gar.mk
 
