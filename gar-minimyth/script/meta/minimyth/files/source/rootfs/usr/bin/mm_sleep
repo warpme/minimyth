@@ -102,7 +102,38 @@ if (open(FILE, '>', '/sys/power/state'))
 }
 
 # Restore system time from the hardware clock.
-system(qq(/sbin/hwclock -r -u));
+system(qq(/sbin/hwclock -r -u $devnull 2>&1));
+
+# Hack to 'clear' NVidia HDMI audio device output.
+# Without this, it may output a continuous screeching sound upon resume.
+ as it does not always resume cleanly.
+if (-x '/usr/bin/aplay')
+{
+    # Find all NVidia HDMI sound devices.
+    my @device_list = ();
+    if (open(FILE, '-|', "/usr/bin/aplay -L"))
+    {
+        while (<FILE>)
+        {
+            chomp;
+            if (/^(hdmi:CARD=NVidia,.*)$/i)
+            {
+                push(@device_list, $1);
+            }
+        }
+        close(FILE);
+    }
+    # Send each NVidia HDMI sound device one silent sample of 48kHz, 2 channel, 16-bit audio.
+    # The packed string is the one silent sample in WAVE file format.
+    foreach my $device (@device_list)
+    {
+        if (open(FILE, '|-', "/usr/bin/aplay -q -D '$device' > $devnull 2>&1"))
+        {
+            print FILE pack('a*Va*a*VvvVVvva*Vvv', 'RIFF',40,'WAVE','fmt ',16,1,2,48000,48000*2*16/8,2*16/8,16,'data',4,0,0);
+            close(FILE);
+        }
+    }
+}
 
 # Start X
 if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
