@@ -32,6 +32,7 @@ CONFIGURE_ARGS = \
 	--disable-static \
 	--enable-shared \
 	--enable-gpl \
+	--disable-version3 \
 	--disable-nonfree \
 	--enable-ffmpeg \
 	--disable-ffplay \
@@ -48,6 +49,7 @@ CONFIGURE_ARGS = \
 	--disable-ipv6 \
 	--disable-mpegaudio-hp \
 	--disable-gray \
+	--enable-swscale-alpha \
 	--enable-fastdiv \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-aandct \
@@ -55,6 +57,9 @@ CONFIGURE_ARGS = \
 	--enable-golomb \
 	--enable-mdct \
 	--enable-rdft \
+	--disable-vaapi \
+	--enable-vdpau \
+	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
 	--disable-beos-netserver \
@@ -93,6 +98,7 @@ CONFIGURE_ARGS = \
 	--enable-cross-compile \
 	--target-os="linux" \
 	--nm="$(NM)" \
+	--as="$(AS)" \
 	--cc="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
@@ -108,6 +114,7 @@ CONFIGURE_ARGS = \
 	--disable-powerpc-perf \
 	--disable-altivec \
 	--enable-amd3dnow \
+	--enable-amd3dnowext \
 	--enable-mmx \
 	--enable-mmx2 \
 	--enable-sse \

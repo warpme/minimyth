@@ -64,6 +64,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-smb \
 	--disable-live \
 	--disable-nemesi \
+	--enable-vcd \
 	--enable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \
@@ -132,6 +133,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-faac \
 	--disable-faac-lavc \
 	--disable-ladspa \
+	--disable-libbs2b \
 	--disable-libdv \
 	--enable-mad \
 	--disable-mp3lame \
@@ -157,6 +159,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-vesa \
 	--disable-svga \
 	--disable-sdl \
+	--disable-kva \
 	--disable-aa \
 	--disable-caca \
 	--disable-ggi \
@@ -193,7 +196,9 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-tga \
 	--disable-pnm \
 	--disable-md5sum \
-	--disable-yuv4mpeg
+	--disable-yuv4mpeg \
+	--disable-corevideo \
+	--disable-quartz
 # Audio output: enable alsa
 CONFIGURE_ARGS_AUDIO = \
 	--enable-alsa \
@@ -206,7 +211,9 @@ CONFIGURE_ARGS_AUDIO = \
 	--disable-nas \
 	--disable-sgiaudio \
 	--disable-sunaudio \
+	--disable-dart \
 	--disable-win32waveout \
+	--disable-coreaudio \
 	--disable-select
 # The --extra-cflags option forces configure to look in the correct directory for X11.
 CONFIGURE_ARGS_MISC = \
