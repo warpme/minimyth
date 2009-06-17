@@ -4,7 +4,7 @@ CATEGORIES = kernel-2.6.30
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-nvidia_hdmi_8channel.patch $(DISTNAME)-quirk.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
