@@ -1,6 +1,6 @@
-diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c
---- lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-06-13 13:02:58.000000000 -0700
-+++ lirc-20090614Z-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-06-14 09:39:33.000000000 -0700
+diff -Naur lirc-20090618PST-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090618PST-new/drivers/lirc_mceusb2/lirc_mceusb2.c
+--- lirc-20090618PST-old/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-06-15 10:27:46.000000000 -0700
++++ lirc-20090618PST-new/drivers/lirc_mceusb2/lirc_mceusb2.c	2009-06-18 08:00:45.000000000 -0700
 @@ -1,6 +1,8 @@
  /*
   * LIRC driver for Philips eHome USB Infrared Transceiver
@@ -40,7 +40,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  #include "drivers/kcompat.h"
 @@ -63,12 +72,16 @@
  
- #define DRIVER_VERSION	"$Revision: 1.82 $"
+ #define DRIVER_VERSION	"$Revision: 1.84 $"
  #define DRIVER_AUTHOR	"Daniel Melander <lirc@rajidae.se>, " \
 -			"Martin Blatter <martin_a_blatter@yahoo.com>"
 +			"Martin Blatter <martin_a_blatter@yahoo.com>, " \
@@ -111,7 +111,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  /* module parameters */
  #ifdef CONFIG_USB_DEBUG
  static int debug = 1;
-@@ -220,15 +279,45 @@
+@@ -222,15 +281,45 @@
  	{}
  };
  
@@ -157,7 +157,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  
  	/* buffers and dma */
  	unsigned char *buf_in;
-@@ -236,9 +325,16 @@
+@@ -238,9 +327,16 @@
  	dma_addr_t dma_in;
  	dma_addr_t dma_out;
  
@@ -174,7 +174,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  	unsigned char is_pulse;
  	struct {
  		u32 connected:1;
-@@ -255,6 +351,9 @@
+@@ -257,6 +353,9 @@
  	wait_queue_head_t wait_out;
  
  	struct mutex lock;
@@ -184,7 +184,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  };
  
  /* init strings */
-@@ -379,6 +478,261 @@
+@@ -381,6 +480,261 @@
  		ir->devnum, res);
  }
  
@@ -446,7 +446,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  static int unregister_from_lirc(struct mceusb2_dev *ir)
  {
  	struct lirc_driver *d = ir->d;
-@@ -500,6 +854,10 @@
+@@ -502,6 +856,10 @@
  	switch (urb->status) {
  	/* success */
  	case 0:
@@ -457,7 +457,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  		for (i = 0; i < buf_len; i++) {
  			/* decode mce packets of the form (84),AA,BB,CC,DD */
  			if (ir->buf_in[i] >= 0x80 && ir->buf_in[i] <= 0x9e) {
-@@ -554,6 +912,7 @@
+@@ -556,6 +914,7 @@
  				i = buf_len;
  			}
  		}
@@ -465,7 +465,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  
  		break;
  
-@@ -721,6 +1080,15 @@
+@@ -723,6 +1082,15 @@
  }
  
  
@@ -481,7 +481,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  static int lirc_ioctl(struct inode *node, struct file *filep,
  		      unsigned int cmd, unsigned long arg)
  {
-@@ -812,10 +1180,11 @@
+@@ -814,10 +1182,11 @@
  	struct lirc_buffer *rbuf = NULL;
  	int devnum, pipe, maxp;
  	int minor = 0;
@@ -494,7 +494,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  
  	dprintk(DRIVER_NAME ": usb probe called\n");
  
-@@ -881,6 +1250,12 @@
+@@ -883,6 +1252,12 @@
  		return -ENODEV;
  	}
  
@@ -507,7 +507,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  	devnum = dev->devnum;
  	pipe = usb_rcvintpipe(dev, ep_in->bEndpointAddress);
  	maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
-@@ -978,6 +1353,55 @@
+@@ -980,6 +1355,55 @@
  	ir->is_pulse = 0;
  
  	/* ir->flags.transmitter_mask_inverted must be set */
@@ -563,7 +563,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  	set_transmitter_mask(ir, MCE_DEFAULT_TX_MASK);
  	/* Saving usb interface data for use by the transmitter routine */
  	ir->usb_ep_in = ep_in;
-@@ -992,6 +1416,7 @@
+@@ -994,6 +1418,7 @@
  			  buf, sizeof(buf)) > 0)
  		snprintf(name + strlen(name), sizeof(name) - strlen(name),
  			 " %s", buf);
@@ -571,7 +571,7 @@ diff -Naur lirc-20090614Z-old/drivers/lirc_mceusb2/lirc_mceusb2.c lirc-20090614Z
  	printk(DRIVER_NAME "[%d]: %s on usb%d:%d\n", devnum, name,
  	       dev->bus->busnum, devnum);
  
-@@ -1070,6 +1495,12 @@
+@@ -1072,6 +1497,12 @@
  	ir->usbdev = NULL;
  	wake_up_all(&ir->wait_out);
  
