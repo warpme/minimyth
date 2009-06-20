@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/zlib utils/bzip2 X11/vdpau
+DEPENDS   = lang/c lib/zlib utils/bzip2 X11/libva X11/vdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -57,7 +57,7 @@ CONFIGURE_ARGS = \
 	--enable-golomb \
 	--enable-mdct \
 	--enable-rdft \
-	--disable-vaapi \
+	--enable-vaapi \
 	--enable-vdpau \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
@@ -156,6 +156,10 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+post-install:
+	@cp -f $(WORKSRC)/libavcodec/vaapi.h $(DESTDIR)`pkg-config --variable=includedir libavcodec`/libavcodec/vaapi.h
 	@$(MAKECOOKIE)
 
 clean-all:
