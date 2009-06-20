@@ -1,7 +1,8 @@
 GARNAME = vlc
-GARVERSION = 0.9.9a
+GARVERSION = 1.0.0-rc4
 CATEGORIES = mediaplayers
-MASTER_SITES = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
+MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
+MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2
@@ -41,15 +42,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-python-bindings \
 	--disable-java-bindings \
+	--disable-macosx-defaults \
 	--disable-static \
 	--enable-shared \
 	--enable-nls \
 	--disable-rpath \
 	--disable-hal \
+	--disable-mtp \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
-	--disable-debug \
 	--disable-gprof \
 	--disable-cprof \
 	--enable-mmx \
@@ -57,6 +59,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-altivec \
 	--disable-optimize-memory \
 	--disable-optimizations \
+	--disable-debug \
 	--disable-run-as-root \
 	--disable-coverage \
 	--enable-release \
@@ -65,6 +68,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-shout \
 	--disable-lua \
 	--disable-httpd \
+	--disable-libproxy \
 	--disable-vlm \
 	--disable-growl \
 	--disable-notify \
@@ -86,7 +90,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-pvr \
 	--disable-gnomevfs \
 	--enable-libcdio \
-	--disable-libvcdinfo \
+	--disable-vcdinfo \
 	--disable-cddax \
 	--disable-libcddb \
 	--disable-vcdx \
@@ -99,12 +103,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-mod \
 	--disable-mpc \
 	--disable-gme \
+	--disable-wma-fixed \
+	--disable-shine \
 	--enable-mad \
 	--disable-id3tag \
 	--enable-avcodec \
 	--enable-avformat \
 	--enable-swscale \
-	--disable-imgresample \
 	--enable-postproc \
 	--enable-faad \
 	--disable-twolame \
@@ -134,11 +139,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-asademux \
 	--disable-cmml \
 	--disable-kate \
+	--disable-tiger \
 	--enable-x11 \
 	--enable-xvideo \
 	--enable-glx \
 	--enable-xvmc \
 	--enable-xinerama \
+	--disable-xcb \
 	--enable-opengl \
 	--disable-sdl \
 	--disable-sdl-image \
@@ -153,6 +160,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-directx \
 	--disable-fb \
 	--disable-mga \
+	--disable-omapfb \
 	--disable-svgalib \
 	--disable-directfb \
 	--disable-ggi \
@@ -160,10 +168,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-caca \
 	--disable-wingdi \
 	--disable-oss \
-	--disable-esd \
 	--disable-pulse \
 	--disable-portaudio \
-	--disable-arts \
 	--enable-alsa \
 	--disable-waveout \
 	--disable-macosx-audio \
@@ -173,6 +179,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-upnp \
 	--disable-skins2 \
 	--disable-pda \
+	--disable-maemo \
 	--disable-wince \
 	--disable-opie \
 	--disable-macosx \
@@ -186,7 +193,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-atmo \
 	--disable-bonjour \
 	--enable-lirc \
-	--enable-libgcrypt \
 	--disable-gnutls \
 	--disable-remoteosd \
 	--disable-update-check \
@@ -197,13 +203,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-testsuite \
 	--without-contrib \
 	--with-gnu-ld \
-	--with-x \
 	--with-tuning=$(mm_ARCH) \
 	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
-	--without-a52-fixed \
-	--with-sdl-config-path=$(DESTDIR)$(bindir) \
-	--with-xml2-config-path=$(DESTDIR)$(bindir) \
-	--with-libgcrypt-prefix=$(DESTDIR)$(prefix)
+	--with-x
 
 CONFIGURE_ENV =
 
@@ -224,14 +226,12 @@ endif
 
 include ../../gar.mk
 
+CPPFLAGS += -DHAVE_AVCODEC_VAAPI
+CFLAGS   += -DHAVE_AVCODEC_VAAPI
+CXXFLAGS += -DHAVE_AVCODEC_VAAPI
+
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
-	@$(MAKECOOKIE)
-
-x-post-build:
-	@# Hack to work around libtool relinking issue.
-	@# Only works because FIX_LIBTOOL stops hard linking.
-	@cp -f $(WORKSRC)/src/.libs/vlc $(WORKSRC)/src/vlc
 	@$(MAKECOOKIE)
 
 post-install:
@@ -246,9 +246,10 @@ clean-all:
 	@rm -rf $(DESTDIR)$(bindir)/cvlc
 	@rm -rf $(DESTDIR)$(bindir)/qvlc
 	@rm -rf $(DESTDIR)$(bindir)/rvlc
-	@rm -rf $(DESTDIR)$(bindir)/vlc-config
+	@rm -rf $(DESTDIR)$(bindir)/vlc-wrapper
 	@rm -rf $(DESTDIR)$(includedir)/vlc
 	@rm -rf $(DESTDIR)$(libdir)/vlc
 	@rm -rf $(DESTDIR)$(libdir)/libvlc.*
+	@rm -rf $(DESTDIR)$(libdir)/libvlccore.*
 	@rm -rf $(DESTDIR)$(datadir)/vlc
 	@rm -rf $(DESTDIR)$(docdir)/vlc
