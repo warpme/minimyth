@@ -226,6 +226,7 @@ endif
 
 include ../../gar.mk
 
+# Ignored when the vdpau patch is not applied.
 CPPFLAGS += -DHAVE_AVCODEC_VAAPI
 CFLAGS   += -DHAVE_AVCODEC_VAAPI
 CXXFLAGS += -DHAVE_AVCODEC_VAAPI
