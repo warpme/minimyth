@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -22,7 +22,6 @@ DEPENDS = lang/c \
 	lib/libdvdnav \
 	lib/libdvbpsi \
 	lib/libdca \
-	lib/libgcrypt \
 	lib/libmad \
 	lib/libmatroska \
 	lib/libmpeg2 \
@@ -193,6 +192,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-atmo \
 	--disable-bonjour \
 	--enable-lirc \
+	--disable-libgcrypt \
 	--disable-gnutls \
 	--disable-remoteosd \
 	--disable-update-check \
