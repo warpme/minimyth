@@ -68,6 +68,19 @@ sub start
         }
     }
 
+    if ($minimyth->var_get('MM_X_SCREENSAVER') eq 'none')
+    {
+        $minimyth->file_replace_variable(
+            '/home/minimyth/.xine/config',
+            { '@MM_X_SCREENSAVER_TIMEOUT@' => '0' });
+    }
+    else
+    {
+        $minimyth->file_replace_variable(
+            '/home/minimyth/.xine/config',
+            { '@MM_X_SCREENSAVER_TIMEOUT@' => $minimyth->var_get('MM_X_SCREENSAVER_TIMEOUT') });
+    }
+
     my $displaysize_x;
     my $displaysize_y;
     if ($minimyth->var_get('MM_X_DISPLAYSIZE') =~ /^([0-9]+)x([0-9]+)$/)
