@@ -1,9 +1,8 @@
 GARNAME = lighttpd
-GARVERSION = 1.4.22
+GARVERSION = 1.4.23
 CATEGORIES = net
 MASTER_SITES = http://www.lighttpd.net/download/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-gar.patch
 LICENSE = BSD_3_Clause
 
 DESCRIPTION =
@@ -21,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--enable-lfs \
 	--disable-ipv6 \
+	--disable-extra-warnings \
 	--with-gnu-ld \
 	--without-mysql \
 	--without-ldap \
@@ -43,7 +43,6 @@ CONFIGURE_ENV  = \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
