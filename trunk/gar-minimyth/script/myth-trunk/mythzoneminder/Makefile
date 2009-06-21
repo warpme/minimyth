@@ -21,8 +21,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	$(MYTHPLUGINS_CONFIGURE_ARGS) \
-	--enable-mythzoneminder \
-		--zm-version=1.22.3
+	--enable-mythzoneminder
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)

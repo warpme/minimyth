@@ -51,14 +51,17 @@ CONFIGURE_ARGS = \
 	--prefix="$(DESTDIR)$(prefix)" \
 	--runprefix="$(prefix)" \
 	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
+	--disable-ccache \
+	--disable-distcc \
 	--bindir="$(DESTDIR)$(bindir)" \
 	--libdir="$(DESTDIR)$(libdir)" \
 	--shlibdir="$(DESTDIR)$(libdir)" \
 	--incdir="$(DESTDIR)$(incdir)" \
 	--mandir="$(DESTDIR)$(mandir)" \
-	--disable-ccache \
-	--disable-distcc \
+	--enable-libfaad \
+	--enable-libfftw3 \
 	--cross-prefix="$(compiler_prefix)" \
+	--enable-cross-compile \
 	--target-os="linux" \
 	--cc="gcc" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
@@ -69,6 +72,7 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
+	--disable-proc-opt \
 	--enable-mmx \
 	--enable-mmx2 \
 	--enable-ssse3 \
@@ -76,7 +80,6 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-arts \
 	--disable-audio-jack \
-	--enable-libfftw3 \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
@@ -96,7 +99,6 @@ CONFIGURE_ARGS = \
 	--enable-xvmc \
 	--enable-xvmcw \
 	--enable-xvmc-pro \
-	--disable-xvmc-opengl \
 	--enable-vdpau \
 	--xvmc-lib=XvMCW \
 	--enable-opengl-video \
@@ -106,7 +108,6 @@ CONFIGURE_ARGS = \
 	--disable-directx \
 	--disable-mac-bundle \
 	--without-bindings="perl,python" \
-	--enable-libfaad \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small)
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
