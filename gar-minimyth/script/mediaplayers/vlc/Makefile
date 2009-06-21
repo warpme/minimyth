@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-vaapi.patch $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
