@@ -295,6 +295,10 @@ sub start
           '@XVMC_FALSE@'    => $xvmc_false,
           '@BOBDEINT@'      => $bobdeint,
           '@MONITORASPECT@' => $monitoraspect });
+    $minimyth->file_replace_variable(
+        '/.config/vlc/vlcrc',
+        { '@VDPAU_TRUE@'    => $vdpau_true,
+          '@VDPAU_FALSE@'   => $vdpau_false });
 
     given ($minimyth->var_get('MM_VIDEO_RESIZE_ENABLED'))
     {
