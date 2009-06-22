@@ -1,9 +1,9 @@
 GARNAME = lirc
-GARVERSION = 20090618PST
+GARVERSION = 0.8.6pre1
 CATEGORIES = system
 #MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-#MASTER_SITES = http://www.lirc.org/software/snapshots/
-MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+MASTER_SITES = http://www.lirc.org/software/snapshots/
+#MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-mceusb2_mod_mce_0.2.0.patch $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
 LICENSE = GPL2
@@ -46,7 +46,7 @@ cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
