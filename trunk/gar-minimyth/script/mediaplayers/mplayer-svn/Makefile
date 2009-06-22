@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch
+PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20090423.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib system/lirc X11/vdpau xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib system/lirc X11/libva X11/vdpau xorg/xorg
 BUILD_DEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -177,6 +177,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-xmga \
 	--enable-xv \
 	--enable-xvmc \
+	--enable-vaapi \
 	--enable-vdpau \
 	--enable-vm \
 	--enable-xinerama \
