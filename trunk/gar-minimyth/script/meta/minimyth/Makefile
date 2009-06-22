@@ -72,6 +72,7 @@ DEPENDS = \
 	system/udev \
 	utils/usbutils \
 	utils/util-linux-ng \
+	X11/vdpau-video \
 	X11/vdpinfo \
 	net/wakelan \
 	X11/x11vnc \
