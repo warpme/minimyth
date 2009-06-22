@@ -296,7 +296,7 @@ sub start
           '@BOBDEINT@'      => $bobdeint,
           '@MONITORASPECT@' => $monitoraspect });
     $minimyth->file_replace_variable(
-        '/.config/vlc/vlcrc',
+        '/home/minimyth/.config/vlc/vlcrc',
         { '@VDPAU_TRUE@'    => $vdpau_true,
           '@VDPAU_FALSE@'   => $vdpau_false });
 
