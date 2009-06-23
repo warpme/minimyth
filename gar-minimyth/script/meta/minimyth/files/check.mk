@@ -150,7 +150,6 @@ mm-all:
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
 		   [ ! "$${software}" = "backend"        ] && \
-		   [ ! "$${software}" = "vlan"           ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
