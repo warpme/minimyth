@@ -49,7 +49,6 @@ DEPENDS = \
 	net/nfs-utils \
 	net/ntp \
 	net/openssh \
-	net/vconfig \
 	utils/pciutils \
 	perl/perl \
 	perl/perl-Date-Manip \
