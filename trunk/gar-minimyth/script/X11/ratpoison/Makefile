@@ -3,7 +3,7 @@ GARVERSION = 1.4.4
 CATEGORIES = X11
 MASTER_SITES = http://savannah.nongnu.org/download/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-staticgravity.patch
+PATCHFILES = $(DISTNAME)-getline.patch $(DISTNAME)-staticgravity.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -26,3 +26,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x
 
 include ../../gar.mk
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
