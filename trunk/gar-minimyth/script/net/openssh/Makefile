@@ -4,7 +4,7 @@ CATEGORIES = net
 MASTER_SITES  = ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
 MASTER_SITES += ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/old/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-abstract_socket.patch $(DISTNAME).patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENCE
 
@@ -31,6 +31,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-pam
 
 include ../../gar.mk
+
+#CPPFLAGS   += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
+#CFLAGS     += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
+#CXXFLAGS   += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
 
 LD         := $(CC)
 LDFLAGS    := $(CFLAGS)
