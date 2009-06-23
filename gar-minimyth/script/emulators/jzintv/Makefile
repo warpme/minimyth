@@ -3,7 +3,7 @@ GARVERSION = 1.0-beta3
 CATEGORIES = emulators
 MASTER_SITES = http://spatula-city.org/~im14u2c/intv/dl/
 DISTFILES = $(DISTNAME)-src.zip
-PATCHFILES  = $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-debug_printf.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
