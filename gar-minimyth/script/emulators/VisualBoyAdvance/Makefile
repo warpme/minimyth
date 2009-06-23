@@ -3,7 +3,7 @@ GARVERSION = 1.7.2
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/vba/
 DISTFILES = $(GARNAME)-src-$(GARVERSION).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-x86_64.patch
+PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-strrchr.patch $(DISTNAME)-x86_64.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
