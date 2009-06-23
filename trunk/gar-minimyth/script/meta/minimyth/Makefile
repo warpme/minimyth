@@ -46,7 +46,6 @@ DEPENDS = \
 	myth-$(mm_MYTH_VERSION)/myththemes-addons \
 	myth-$(mm_MYTH_VERSION)/mythtv \
 	lib/ncursesw \
-	net/netpipes \
 	net/nfs-utils \
 	net/ntp \
 	net/openssh \
