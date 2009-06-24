@@ -13,6 +13,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-avformat_asf_utf8.patch \
 	$(DISTNAME_SHORT)-gcc_4.3.patch \
+	$(DISTNAME_SHORT)-gcc_4.4.patch \
 	$(DISTNAME_SHORT)-link_xvmc_lib.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
