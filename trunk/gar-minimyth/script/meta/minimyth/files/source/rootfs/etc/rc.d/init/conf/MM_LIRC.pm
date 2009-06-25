@@ -241,6 +241,52 @@ $var_list{'MM_LIRC_IRXEVENT_ENABLED'} =
         return $value;
     }
 };
+$var_list{'MM_LIRC_IRXKEYS_ENABLED'} =
+{
+    prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
+    value_default  => 'auto',
+    value_valid    => 'auto|no|yes',
+    value_auto     => sub
+    {
+        my $value = 'no';
+
+        if ((-e '/usr/bin/irxkeys') && (-e '/etc/lircrc'))
+        {
+            # Only one level of includes is supported.
+            my @lircrc_list = ();
+            push(@lircrc_list, '/etc/lircrc');
+            if (open(FILE, '<', '/etc/lircrc'))
+            {
+                foreach (grep(s/^include +(.*)$/$1/, (<FILE>)))
+                {
+                    chomp;
+                    push(@lircrc_list, $_);
+                }
+                close(FILE);
+            }
+            foreach my $lircrc_file (@lircrc_list)
+            {
+                if (open(FILE, '<', $lircrc_file))
+                {
+                    foreach (grep(/^ *prog *= *irxkeys *$/, (<FILE>)))
+                    {
+                        $value = 'yes';
+                        if ($value eq 'yes')
+                        {
+                            last;
+                        }
+                    }
+                    close(FILE);
+                }
+                if ($value eq 'yes')
+                {
+                    last;
+                }
+            }
+        }
+        return $value;
+    }
+};
 $var_list{'MM_LIRC_SLEEP_ENABLED'} =
 {
     value_default  => 'yes',
