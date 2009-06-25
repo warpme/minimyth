@@ -30,6 +30,7 @@ DEPENDS = \
 	net/iputils \
 	system/irclient \
 	system/irserver \
+	system/irxkeys \
 	system/lcdproc \
 	net/lighttpd \
 	system/kbdd \

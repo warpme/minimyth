@@ -2406,6 +2406,7 @@ sub x_stop
         my @applications = ();
         push(@applications, $myth_program);
         push(@applications, 'irxevent');
+        push(@applications, 'irxkeys');
         push(@applications, 'mythfrontend');
         push(@applications, 'mythwelcome');
         push(@applications, 'ratpoison');
