@@ -249,12 +249,6 @@ sub start
         system(qq(/usr/bin/irexec -d /etc/lircrc));
     }
 
-    # Start the irxevent daemon.
-    if ($minimyth->var_get('MM_LIRC_IRXEVENT_ENABLED') eq 'yes')
-    {
-        system(qq(/usr/bin/irxevent -d /etc/lircrc));
-    }
-
     # Start the lircmd daemon.
     if (-e '/etc/lircmd.conf')
     {
