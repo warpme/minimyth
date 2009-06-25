@@ -2405,6 +2405,7 @@ sub x_stop
         # Create a list of all applications that xinit might start.
         my @applications = ();
         push(@applications, $myth_program);
+        push(@applications, 'irxevent');
         push(@applications, 'mythfrontend');
         push(@applications, 'mythwelcome');
         push(@applications, 'ratpoison');
