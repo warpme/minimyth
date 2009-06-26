@@ -26,7 +26,7 @@ $var_list{'MM_EXTERNAL_POWER_OFF'} =
         my @command_list = ();
         if ($minimyth->var_get($name))
         {
-            push(@command_list, minimyth->var_get($name));
+            push(@command_list, $minimyth->var_get($name));
         }
         if ($minimyth->var_get('MM_EXTERNAL_AQUOS_POWER_ENABLED') eq 'yes')
         {
@@ -70,7 +70,7 @@ $var_list{'MM_EXTERNAL_POWER_ON'} =
         my @command_list = ();
         if ($minimyth->var_get($name))
         {
-            push(@command_list, minimyth->var_get($name));
+            push(@command_list, $minimyth->var_get($name));
         }
         if ($minimyth->var_get('MM_EXTERNAL_AQUOS_POWER_ENABLED') eq 'yes')
         {
@@ -122,7 +122,7 @@ $var_list{'MM_EXTERNAL_VOLUME_DOWN'} =
         my @command_list = ();
         if ($minimyth->var_get($name))
         {
-            push(@command_list, minimyth->var_get($name));
+            push(@command_list, $minimyth->var_get($name));
         }
         if ($minimyth->var_get('MM_EXTERNAL_AQUOS_VOLUME_ENABLED') eq 'yes')
         {
@@ -177,7 +177,7 @@ $var_list{'MM_EXTERNAL_VOLUME_UP'} =
         my @command_list = ();
         if ($minimyth->var_get($name))
         {
-            push(@command_list, minimyth->var_get($name));
+            push(@command_list, $minimyth->var_get($name));
         }
         if ($minimyth->var_get('MM_EXTERNAL_AQUOS_VOLUME_ENABLED') eq 'yes')
         {
@@ -242,7 +242,7 @@ $var_list{'MM_EXTERNAL_VOLUME_MUTE'} =
         my @command_list = ();
         if ($minimyth->var_get($name))
         {
-            push(@command_list, minimyth->var_get($name));
+            push(@command_list, $minimyth->var_get($name));
         }
         if ($minimyth->var_get('MM_EXTERNAL_AQUOS_VOLUME_ENABLED') eq 'yes')
         {
