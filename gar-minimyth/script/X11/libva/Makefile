@@ -1,18 +1,18 @@
 GARNAME = libva
-GARVERSION = 0.29
+GARVERSION = 0.30
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
-DISTFILES = $(GARNAME)_0.29-2+sds12.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds1.tar.gz
 PATCHFILES = \
 	102_fix_make_dist.patch \
-	103_fix_includes.patch \
-	104_fix_anon_unions.patch \
-	105_libdrm_headers_check.patch \
-	106_libva_includedir.patch \
-	107_cosmetics.patch \
+	103_drop_CFGLAGS_override.patch \
+	104_fix_bitfields_types.patch \
+	105_fix_vainfo.patch \
+	106_fix_includes.patch \
+	107_fix_dummy_drv_video_init.patch \
 	108_drivers_path.patch \
-	109_VA_FOURCC.patch \
+	109_fix_tests.patch \
 	201_change_SONAME.patch \
 	202_split_libva.patch \
 	204_version.patch \
