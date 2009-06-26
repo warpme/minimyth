@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-vaapi.patch $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-duplicate_headers.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -232,6 +232,8 @@ CFLAGS   += -DHAVE_AVCODEC_VAAPI
 CXXFLAGS += -DHAVE_AVCODEC_VAAPI
 
 pre-configure:
+	@cd $(WORKSRC) ; aclocal --verbose --force -I m4
+	@cd $(WORKSRC) ; automake --foreign --add-missing --ignore-deps
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
