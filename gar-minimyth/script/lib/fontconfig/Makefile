@@ -1,9 +1,9 @@
 GARNAME = fontconfig
-GARVERSION = 2.6.0
+GARVERSION = 2.7.0
 CATEGORIES = lib
 MASTER_SITES = http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-parallel.patch $(DISTNAME)-build.patch
+PATCHFILES = $(DISTNAME)-build.patch
 LICENSE = fontconfig
 fontconfig_LICENSE_TEXT = $(WORKSRC)/COPYING
 
