@@ -204,3 +204,28 @@ source-update-patches:
 		rm -f checksums || exit 1 ; \
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
+
+FFMPEG_MT_VERSION_NORMAL=19242
+FFMPEG_MT_VERSION_THREAD=20997d60c8ec84dd0dd68055901e847c4b4e171a
+
+source-update-mt:
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
+	@$(call FETCH_SVN, svn://svn.ffmpeg.org/ffmpeg/trunk, $(FFMPEG_MT_VERSION_NORMAL), ffmpeg-mt-normal)
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
+	@$(call FETCH_GIT, gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git, $(FFMPEG_MT_VERSION_THREAD), ffmpeg-mt-thread)
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
+	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-normal.tar.bz2 && rm -rf ffmpeg-mt-normal/libswscale
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
+	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-thread.tar.bz2
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
+	@cd $(PARTIALDIR) ; rm -f ffmpeg-mt.patch
+	@cd $(PARTIALDIR) ; diff -Naur ffmpeg-mt-normal ffmpeg-mt-thread > ffmpeg-mt.patch || test $$? = 1
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
+	@rm -f files/ffmpeg-mt.patch 
+	@mv $(PARTIALDIR)/ffmpeg-mt.patch files/ffmpeg-mt.patch
+	@cat checksums | grep -v $(DOWNLOADDIR)/ffmpeg-mt.patch > checksums~
+	@md5sum $(DOWNLOADDIR)/ffmpeg-mt.patch >> checksums~ || exit 1
+	@rm -f checksums || exit 1
+	@mv -f checksums~ checksums || exit 1
