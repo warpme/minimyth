@@ -102,7 +102,7 @@ sub start
     my $device_via    = '';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
-        when (/^intel_810|intel_915$/)
+        when (/^(intel_810|intel_915)$/)
         {
             given ($minimyth->var_get('MM_X_OUTPUT_TV'))
             {
@@ -130,7 +130,10 @@ sub start
                 return 0;
             }
         }
-        when (/^nvidia$/)
+        when (/^(nv)$/)
+        {
+        }
+        when (/^(nvidia)$/)
         {
             given ($minimyth->var_get('MM_X_OUTPUT_TV'))
             {
@@ -158,7 +161,7 @@ sub start
                 return 0;
             }
         }
-        when (/^openchrome$/)
+        when (/^(openchrome)$/)
         {
             given ($minimyth->var_get('MM_X_OUTPUT_TV'))
             {
@@ -198,7 +201,7 @@ sub start
         when (/^(sis)$/)
         {
         }
-        when (/^vmware$/)
+        when (/^(vmware)$/)
         {
         }
     }
@@ -211,6 +214,9 @@ sub start
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
         when (/^(intel_810|intel_915)$/)
+        {
+        }
+        when (/^(nv)$/)
         {
         }
         when (/^(nvidia)$/)
