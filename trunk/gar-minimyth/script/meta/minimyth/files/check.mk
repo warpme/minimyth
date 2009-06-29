@@ -114,6 +114,7 @@ mm-all:
 	@echo "    mm_GRAPHICS"
 	@for graphic in $(mm_GRAPHICS) ; do \
 		if [ ! "$${graphic}" = "intel"      ] && \
+		   [ ! "$${graphic}" = "nv"         ] && \
 		   [ ! "$${graphic}" = "nvidia"     ] && \
 		   [ ! "$${graphic}" = "openchrome" ] && \
 		   [ ! "$${graphic}" = "radeon"     ] && \
