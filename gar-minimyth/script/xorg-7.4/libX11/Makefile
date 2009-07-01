@@ -3,7 +3,7 @@ GARVERSION = 1.2.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-abstract_socket_fix.patch $(DISTNAME)-default_local_trans.patch $(DISTNAME)-xdmcp.patch $(DISTNAME)-cross.patch.gar
+PATCHFILES = $(DISTNAME)-abstract_socket_fix.patch $(DISTNAME)-default_local_trans.patch $(DISTNAME)-xdmcp.patch $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
