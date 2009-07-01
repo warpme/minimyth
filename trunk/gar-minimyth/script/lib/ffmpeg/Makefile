@@ -69,7 +69,7 @@ CONFIGURE_ARGS = \
 	--enable-demuxers \
 	--enable-parsers \
 	--enable-bsfs \
-	--disable-protocols \
+	--enable-protocols \
 	--enable-indevs \
 	--enable-outdevs \
 	--enable-filters \
@@ -77,6 +77,8 @@ CONFIGURE_ARGS = \
 	--enable-bzlib \
 	--disable-libamr-nb \
 	--disable-libamr-wb \
+	--disable-libopencore-amrnb \
+	--disable-libopencore-amrwb \
 	--disable-libdc1394 \
 	--disable-libdirac \
 	--disable-libfaac \
@@ -96,6 +98,8 @@ CONFIGURE_ARGS = \
 	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
+	--sysroot="$(DESTDIR)$(rootdir)" \
+	--sysinclude="$(DESTDIR)$(includedir)" \
 	--target-os="linux" \
 	--nm="$(NM)" \
 	--as="$(AS)" \
