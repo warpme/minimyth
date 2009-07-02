@@ -1,0 +1,52 @@
+diff -Naur libXt-1.0.6-old/configure.ac libXt-1.0.6-new/configure.ac
+--- libXt-1.0.6-old/configure.ac	2009-07-02 10:25:41.000000000 -0700
++++ libXt-1.0.6-new/configure.ac	2009-07-02 10:37:52.000000000 -0700
+@@ -26,6 +26,8 @@
+ dnl
+ dnl
+ AC_INIT(libXt, 1.0.6, [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg], libXt)
++AC_CANONICAL_BUILD
++AC_CANONICAL_HOST
+ AM_INIT_AUTOMAKE([dist-bzip2])
+ AM_MAINTAINER_MODE
+ 
+@@ -48,6 +50,26 @@
+ 	fi
+ fi
+ AC_SUBST([CC_FOR_BUILD])
++if test x"$CPPFLAGS_FOR_BUILD" = x; then
++	if test ! x"$cross_compiling" = xyes; then
++    	       CPPFLAGS_FOR_BUILD=${CPPFLAGS}
++	fi
++fi
++AC_SUBST(CPPFLAGS_FOR_BUILD)
++
++if test x"$CFLAGS_FOR_BUILD" = x; then
++	if test ! x"$cross_compiling" = xyes; then
++    	       CFLAGS_FOR_BUILD=${CFLAGS}
++	fi
++fi
++AC_SUBST(CFLAGS_FOR_BUILD)
++
++if test x"$LDFLAGS_FOR_BUILD" = x; then
++	if test ! x"$cross_compiling" = xyes; then
++    	       LDFLAGS_FOR_BUILD=${LDFLAGS}
++	fi
++fi
++AC_SUBST(LDFLAGS_FOR_BUILD)
+ 
+ PKG_CHECK_MODULES(XT, sm x11 xproto kbproto)
+ 
+diff -Naur libXt-1.0.6-old/util/Makefile.am libXt-1.0.6-new/util/Makefile.am
+--- libXt-1.0.6-old/util/Makefile.am	2009-07-02 10:22:11.000000000 -0700
++++ libXt-1.0.6-new/util/Makefile.am	2009-07-02 10:35:01.000000000 -0700
+@@ -5,6 +5,9 @@
+ endif
+ 
+ CC = @CC_FOR_BUILD@
++CPPFLAGS = @CPPFLAGS_FOR_BUILD@
++CFLAGS = @CFLAGS_FOR_BUILD@
++LDFLAGS = @LDFLAGS_FOR_BUILD@
+ 
+ EXTRA_DIST = \
+ 	Shell.ht \
