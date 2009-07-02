@@ -39,7 +39,7 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 unlink(qq($tmpfile_pciids_txt));
 
 system(qq(wget 'http://cgit.freedesktop.org/xorg/driver/xf86-video-radeonhd/plain/src/rhd_id.c' -O $tmpfile_pciids_txt));
-die qq(error: failed to download DRM PCI ids file.\n) if (! -e $tmpfile_pciids_txt);
+die qq(error: failed to download xf86-video-radeonhd PCI ids file.\n) if (! -e $tmpfile_pciids_txt);
 if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 {
     my $driver = undef;
@@ -73,13 +73,13 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 unlink(qq($tmpfile_pciids_txt));
 
 system(qq(wget 'http://cgit.freedesktop.org/xorg/driver/xf86-video-ati/plain/src/radeon_chipinfo_gen.h' -O $tmpfile_pciids_txt));
-die qq(error: failed to download DRM PCI ids file.\n) if (! -e $tmpfile_pciids_txt);
+die qq(error: failed to download xf86-video-ati PCI ids file.\n) if (! -e $tmpfile_pciids_txt);
 if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 {
     my $driver = undef;
     while (<FILE>)
     {
-        if (/^ *RADEONCardInfo +RADEONCards\[\] *= *{/)
+        if (/^ *(static +)?RADEONCardInfo +RADEONCards\[\] *= *{/)
         {
             $driver = 'radeon';
             last;
