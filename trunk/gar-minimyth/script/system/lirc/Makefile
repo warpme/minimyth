@@ -5,7 +5,7 @@ CATEGORIES = system
 MASTER_SITES = http://www.lirc.org/software/snapshots/
 #MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-mceusb2_mod_mce_0.2.0.patch $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch
+PATCHFILES = $(DISTNAME)-mceusb2_mod_mce_0.2.0.patch $(DISTNAME)-no_python.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-update_input_map.patch
 LICENSE = GPL2
 
 DESCRIPTION =
