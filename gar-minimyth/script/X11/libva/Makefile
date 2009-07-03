@@ -5,6 +5,10 @@ MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
 DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds2.tar.gz
 PATCHFILES = \
+	$(DISTNAME)-i965_drv_video_noinst_headers.patch \
+	$(DISTNAME)-i965_drv_video_missing_headers.patch \
+	$(DISTNAME)-i965_drv_video_drivers_path.patch \
+	$(DISTNAME)-i965_drv_video_split_libva.patch \
 	102_fix_make_dist.patch \
 	103_drop_CFGLAGS_override.patch \
 	104_fix_bitfields_types.patch \
@@ -46,8 +50,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-dummy-driver \
-	--disable-i965-driver \
+	--enable-dummy-driver \
+	--enable-i965-driver \
 	--disable-static \
 	--enable-shared \
 	--with-drivers-path="$(libdir)/va" \
@@ -63,4 +67,6 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libva.la
 	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
+	@rm -f $(DESTDIR)$(libdir)/va/dummy_drv_video.la
+	@rm -f $(DESTDIR)$(libdir)/va/i965_drv_video.la
 	@$(MAKECOOKIE)
