@@ -1,9 +1,9 @@
 GARNAME = libva
-GARVERSION = 0.30
+GARVERSION = 0.30.4
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds1.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds2.tar.gz
 PATCHFILES = \
 	102_fix_make_dist.patch \
 	103_drop_CFGLAGS_override.patch \
@@ -13,10 +13,19 @@ PATCHFILES = \
 	107_fix_dummy_drv_video_init.patch \
 	108_drivers_path.patch \
 	109_fix_tests.patch \
+	110_conditional_drivers.patch \
+	111_check_for_LIBVA_DRIVER_NAME_first.patch \
+	112_fix_vaGetDriverName_DRI12.patch \
+	113_drop_LIBDRM_DEPS_duplicate_check.patch \
+	114_add_libXfixes_check.patch \
+	115_fix_make_install.patch \
+	116_add_VA_INVALID_ID.patch \
+	117_fix_memory_leak.patch \
 	201_change_SONAME.patch \
 	202_split_libva.patch \
 	204_version.patch \
 	205_nvidia_drv_info.patch \
+	206_drop_obsolete_fields.patch \
 	300_sds_version.patch \
 	301_vdpau_h264.patch \
 	302_vdpau_vc1.patch \
