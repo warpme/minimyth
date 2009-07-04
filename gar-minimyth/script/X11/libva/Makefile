@@ -33,7 +33,6 @@ PATCHFILES = \
 	304_vc1_skipped_p_frames.patch \
 	310_VASliceParameterBufferBase.patch \
 	390_compat.patch
-
 LICENSE = MIT
 
 DESCRIPTION = 
