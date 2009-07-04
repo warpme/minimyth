@@ -32,6 +32,7 @@ DEPENDS = \
 	$(CATEGORY)/mkfontscale \
 	$(CATEGORY)/rgb \
 	$(CATEGORY)/xdpyinfo \
+	$(CATEGORY)/xev \
 	$(CATEGORY)/xf86-input-evdev \
 	$(CATEGORY)/xf86-input-void \
 	$(CATEGORY)/xf86-video-ati \
