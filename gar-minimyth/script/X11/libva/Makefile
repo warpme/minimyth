@@ -3,12 +3,8 @@ GARVERSION = 0.30.4
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds2.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds3.tar.gz
 PATCHFILES = \
-	$(DISTNAME)-i965_drv_video_noinst_headers.patch \
-	$(DISTNAME)-i965_drv_video_missing_headers.patch \
-	$(DISTNAME)-i965_drv_video_drivers_path.patch \
-	$(DISTNAME)-i965_drv_video_split_libva.patch \
 	102_fix_make_dist.patch \
 	103_drop_CFGLAGS_override.patch \
 	104_fix_bitfields_types.patch \
@@ -37,6 +33,7 @@ PATCHFILES = \
 	304_vc1_skipped_p_frames.patch \
 	310_VASliceParameterBufferBase.patch \
 	390_compat.patch
+
 LICENSE = MIT
 
 DESCRIPTION = 
