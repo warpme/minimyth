@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/vdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/libtheora lib/libvorbis lib/vcdimager lib/zlib X11/vdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -99,10 +99,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--with-linux-path="/dev/null" \
-	--without-vorbis \
-	--without-theora \
+	--with-vorbis \
+	--with-theora \
 	--without-speex \
-	--without-libflac \
+	--with-libflac \
 	--without-external-a52dec \
 	--with-external-libmad \
 	--without-external-libmpcdec \

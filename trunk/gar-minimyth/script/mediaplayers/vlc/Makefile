@@ -26,6 +26,8 @@ DEPENDS = lang/c \
 	lib/libmatroska \
 	lib/libmpeg2 \
 	lib/libpng \
+	lib/libtheora \
+	lib/libvorbis \
 	lib/libxml2 \
 	lib/taglib \
 	lib/zlib \
@@ -121,11 +123,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dca \
 	--disable-flac \
 	--enable-libmpeg2 \
-	--disable-vorbis \
+	--enable-vorbis \
 	--disable-tremor \
 	--disable-speex \
 	--disable-tarkin \
-	--disable-theora \
+	--enable-theora \
 	--disable-dirac \
 	--disable-schroedinger \
 	--enable-png \
