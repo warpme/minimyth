@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/zlib utils/bzip2 X11/libva X11/vdpau
+DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/zlib utils/bzip2 X11/libva X11/vdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -64,7 +64,11 @@ CONFIGURE_ARGS = \
 	--disable-memalign-hack \
 	--disable-beos-netserver \
 	--enable-encoders \
+	--disable-encoder="theora" \
+	--disable-encoder="vorbis" \
 	--enable-decoders \
+	--disable-decoder="theora" \
+	--disable-decoder="vorbis" \
 	--enable-muxers \
 	--enable-demuxers \
 	--enable-parsers \
@@ -90,8 +94,8 @@ CONFIGURE_ARGS = \
 	--disable-libopenjpeg \
 	--disable-libschroedinger \
 	--disable-libspeex \
-	--disable-libtheora \
-	--disable-libvorbis \
+	--enable-libtheora \
+	--enable-libvorbis \
 	--disable-libx264 \
 	--disable-libxvid \
 	--disable-mlib \

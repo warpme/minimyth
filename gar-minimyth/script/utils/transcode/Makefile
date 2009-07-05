@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/ffmpeg lib/freetype lib/lame lib/libmpeg2 lib/lzo lib/xvidcore xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/libogg lib/libtheora lib/libvorbis lib/ffmpeg lib/freetype lib/lame lib/libmpeg2 lib/lzo lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -44,9 +44,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-freetype2 \
 	--disable-avifile \
 	--enable-lame \
-	--disable-ogg \
-	--disable-vorbis \
-	--disable-theora \
+	--enable-ogg \
+	--enable-vorbis \
+	--enable-theora \
 	--disable-libdvdread \
 	--disable-pvm3 \
 	--disable-libdv \
