@@ -1,5 +1,5 @@
 GARNAME = cwiid
-GARVERSION = 192
+GARVERSION = 200
 CATEGORIES = utils
 #MASTER_SITES = http://abstrakraft.org/cwiid/downloads/
 MASTER_SITES = svn://abstrakraft.org/cwiid/svn/trunk/
