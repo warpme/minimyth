@@ -42,7 +42,7 @@ $var_list{'MM_LIRC_DRIVER'} =
 {
     value_default  => 'none',
     value_valid    => 'none|.+',
-    value_obsolete => 'auto|mceusbnew',
+    value_obsolete => 'auto|mceusb2|mceusbnew',
     value_none     => '',
 };
 $var_list{'MM_LIRC_DEVICE'} =
