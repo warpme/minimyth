@@ -5,6 +5,7 @@ MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
 DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds3.tar.gz
 PATCHFILES = \
+	101_fix_build_with_x11.patch \
 	102_fix_make_dist.patch \
 	103_drop_CFGLAGS_override.patch \
 	104_fix_bitfields_types.patch \
