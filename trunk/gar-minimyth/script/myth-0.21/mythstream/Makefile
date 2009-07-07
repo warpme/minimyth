@@ -5,6 +5,7 @@ MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME)-apple_parser_fix.patch \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-mythpopupbox_delete.patch \
 	$(DISTNAME)-harvester_cpp.patch \
