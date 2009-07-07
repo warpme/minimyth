@@ -210,6 +210,7 @@ sub start
     # open source drivers conflict.
     #   the proprietary NVIDIA GL libraries conflict with the Open Source Mesa GL libraries.
     my $dri_true    = '';
+    my $dri_false   = '#';
     my $nvidia_true = '#';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
@@ -222,6 +223,7 @@ sub start
         when (/^(nvidia)$/)
         {
             $dri_true    = '#';
+            $dri_false   = '';
             $nvidia_true = '';
             # Include path to proprietary libraries.
             {
@@ -306,26 +308,6 @@ sub start
         }
     }
 
-    # xorg-server versions 1.6.0 and greater have freetype support built-in,
-    # whereas older versions require the freetype module.
-    my $freetype_true = '#';
-    if ((-e '/usr/version/xorg-server') && (open(FILE, '<', '/usr/version/xorg-server')))
-    {
-        while (<FILE>)
-        {
-            chomp;
-            if (/(\d+)\.(\d+)(\..*)?$/)
-            {
-                if (($1) && ($2) && (($1 < 1) || (($1 <= 1) && ($2 < 6))))
-                {
-                    $freetype_true = '';
-                    last;
-                }
-            }
-        }
-        close(FILE);
-    }
-
     my $mode   = $minimyth->var_get('MM_X_MODE');
     my $mode_0 = $minimyth->var_get('MM_X_MODE_0');
     my $mode_1 = $minimyth->var_get('MM_X_MODE_1');
@@ -389,8 +371,8 @@ sub start
           '@X_DISPLAYSIZE_Y@'    => $displaysize_y                         ,
           '@X_VIRTUAL_X@'        => $virtual_x                             ,
           '@X_VIRTUAL_Y@'        => $virtual_y                             ,
-          '@FREETYPE_TRUE@'      => $freetype_true                         ,
           '@DRI_TRUE@'           => $dri_true                              ,
+          '@DRI_FALSE@'          => $dri_false                             ,
           '@NVIDIA_TRUE@'        => $nvidia_true                            });
 
     $minimyth->message_output('info', "starting X ...");
