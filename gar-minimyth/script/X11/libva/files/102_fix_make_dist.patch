@@ -1,0 +1,61 @@
+commit d40b87b284b2954f9fe60b6b65a70cf64c21797a
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Jul 3 15:40:54 2009 +0000
+
+    Fix make dist (i965_drv_video missing files, Paul Bender).
+
+commit a02c6205509411b9e444b5546023dd8c5672fd99
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Jul 2 09:28:02 2009 +0000
+
+    Fix make dist (tests).
+
+commit 93db0794456910eb4b1daf2e1c1a7f45448897c1
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Jun 24 07:49:02 2009 +0000
+
+    Fix make dist.
+
+diff --git a/src/x11/Makefile.am b/dri/Makefile.am
+index c75f5e7..8ce9bd3 100644
+--- a/src/x11/Makefile.am
++++ b/src/x11/Makefile.am
+@@ -27,3 +27,5 @@ libva_x11include_HEADERS = va_x11.h va_dri.h va_dri2.h va_dricommon.h
+ 
+ libva_x11_la_SOURCES = va_x11.c va_dri.c va_dri2.c va_dricommon.c dri2_util.c dri1_util.c
+ CFLAGS = -ansi -O2 
++
++EXTRA_DIST = va_dristr.h va_dri2str.h va_dri2tokens.h
+diff --git a/test/Makefile.am b/test/Makefile.am
+index d9c9d82..37b3f06 100644
+--- a/test/Makefile.am
++++ b/test/Makefile.am
+@@ -72,7 +72,7 @@ test_11_SOURCES = test_11.c
+ test_12_LDADD = $(TEST_LIBS)
+ test_12_SOURCES = test_12.c
+ 
+-EXTRA_DIST = test_common.c
++EXTRA_DIST = test_common.c mpeg2-I.jpg mpeg2-I.mpg
+ 
+ valgrind:	$(check_PROGRAMS)
+ 	for a in $(check_PROGRAMS); do \
+diff --git a/i965_drv_video/Makefile.am b/i965_drv_video/Makefile.am
+index 594b165..dd91861 100644
+--- a/i965_drv_video/Makefile.am
++++ b/i965_drv_video/Makefile.am
+@@ -38,3 +38,15 @@ i965_drv_video_la_SOURCES =	\
+ 	i965_media_mpeg2.c	\
+ 	i965_render.c		\
+ 	i965_drv_video.c
++
++noinst_HEADERS =                \
++	object_heap.h           \
++	intel_batchbuffer.h     \
++	intel_memman.h          \
++	intel_driver.h          \
++	i965_media.h            \
++	i965_media_mpeg2.h      \
++	i965_render.h           \
++	i965_drv_video.h        \
++	i965_defines.h          \
++	i965_structs.h

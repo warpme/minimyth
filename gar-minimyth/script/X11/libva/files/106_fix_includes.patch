@@ -1,0 +1,60 @@
+TODO: actually remove use of <Xlibint.h> (Xmalloc(), Xfree()).
+
+commit e4d08c25d08f9f7756701c5435d0f36d5caf1d36
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Jul 2 12:21:15 2009 +0000
+
+    Fix includes (Xlibint.h).
+
+commit 18e380d2efc8a6aa4da9911f7db3ca266f363d6e
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Jun 25 13:59:46 2009 +0000
+
+    Fix includes
+
+diff --git a/src/x11/dri2_util.c b/dri/dri2_util.c
+index 1d3c141..ebe7a2c 100644
+--- a/src/x11/dri2_util.c
++++ b/src/x11/dri2_util.c
+@@ -5,7 +5,8 @@
+ 
+ #include <xf86drm.h>
+ 
+-#include "X11/Xlib.h"
++#include <X11/Xlibint.h>
++#include <X11/Xlib.h>
+ #include "va.h"
+ #include "va_backend.h"
+ 
+diff --git a/src/x11/va_x11.c b/dri/va_x11.c
+index de4110e..87f3a36 100644
+--- a/src/x11/va_x11.c
++++ b/src/x11/va_x11.c
+@@ -22,6 +22,7 @@
+  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
+ 
++#define _GNU_SOURCE 1
+ #include "config.h"
+ #include "va.h"
+ #include "va_backend.h"
+@@ -33,6 +34,7 @@
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <string.h>
++#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+diff --git a/src/va.c b/src/va.c
+index a4fa14b..0ec04f9 100644
+--- a/src/va.c
++++ b/src/va.c
+@@ -22,6 +22,7 @@
+  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
+ 
++#define _GNU_SOURCE 1
+ #include "va.h"
+ #include "va_backend.h"
+ #include "va_compat.h"
