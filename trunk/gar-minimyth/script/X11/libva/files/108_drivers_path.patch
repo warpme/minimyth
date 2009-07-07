@@ -1,0 +1,103 @@
+commit 0f5655e9668cc5f622669181beb4db42dde23e8d
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Jul 3 15:41:35 2009 +0000
+
+    Fix VA drivers path for i965_dummy_drv.so (Paul Bender).
+
+commit 35d34b966367f2de558302e86812d65bebba6311
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Jun 24 08:12:13 2009 +0000
+
+    Install drivers into pkglibdir/va/.
+
+diff --git a/configure.ac b/configure.ac
+index 54b271b..c1a32d5 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -27,6 +27,13 @@ AM_INIT_AUTOMAKE([dist-bzip2])
+ 
+ AM_CONFIG_HEADER([config.h])
+ 
++AC_ARG_WITH(drivers-path,
++	    [AC_HELP_STRING([--with-drivers-path=[[path]]], [drivers path])],,
++	    [with_drivers_path="$libdir/va/drivers"])
++
++LIBVA_DRIVERS_PATH="$with_drivers_path"
++AC_SUBST(LIBVA_DRIVERS_PATH)
++
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
+diff --git a/dummy_drv_video/Makefile.am b/dummy_drv_video/Makefile.am
+index f782c71..53041eb 100644
+--- a/dummy_drv_video/Makefile.am
++++ b/dummy_drv_video/Makefile.am
+@@ -21,7 +21,7 @@
+ # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+ dummy_drv_video_la_LTLIBRARIES = dummy_drv_video.la
+-dummy_drv_video_ladir = /usr/lib/dri
++dummy_drv_video_ladir = @LIBVA_DRIVERS_PATH@
+ dummy_drv_video_la_LDFLAGS = -module -avoid-version -no-undefined -Wl,--no-undefined
+ dummy_drv_video_la_LIBADD = ../src/libva.la
+ 
+diff --git a/libva.pc.in b/libva.pc.in
+index 16fb6aa..60f1483 100644
+--- a/libva.pc.in
++++ b/libva.pc.in
+@@ -2,6 +2,7 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@
++driverdir=@LIBVA_DRIVERS_PATH@
+ 
+ Name: libva
+ Description: Userspace Video Acceleration (VA) core interface
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f7ed55e..9f03b08 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -22,7 +22,8 @@
+ 
+ INCLUDES = \
+ 	$(LIBVA_CFLAGS) -I$(top_srcdir)/src/x11 \
+-	-DIN_LIBVA
++	-DIN_LIBVA \
++	-DVA_DRIVERS_PATH="\"$(LIBVA_DRIVERS_PATH)\""
+ 
+ libva_la_LTLIBRARIES = libva.la
+ libva_ladir = $(libdir)
+diff --git a/src/va.c b/src/va.c
+index de2d2d8..ad95339 100644
+--- a/src/va.c
++++ b/src/va.c
+@@ -46,7 +46,6 @@
+ #define VA_MINOR_VERSION	30
+ #define DRIVER_INIT_FUNC	"__vaDriverInit_0_30"
+ 
+-#define DEFAULT_DRIVER_DIR	"/usr/lib/dri/"
+ #define DRIVER_EXTENSION	"_drv_video.so"
+ 
+ #define CTX(dpy) (((VADisplayContextP)dpy)->pDriverContext)
+@@ -152,7 +151,7 @@ static VAStatus va_openDriver(VADisplay dpy, char *driver_name)
+     }
+     if (!search_path)
+     {
+-        search_path = DEFAULT_DRIVER_DIR;
++        search_path = VA_DRIVERS_PATH;
+     }
+ 
+     search_path = strdup((const char *)search_path);
+diff --git a/i965_drv_video/Makefile.am b/i965_drv_video/Makefile.am
+index dd91861..b3d662c 100644
+--- a/i965_drv_video/Makefile.am
++++ b/i965_drv_video/Makefile.am
+@@ -25,7 +25,7 @@ SUBDIRS = shaders
+ AM_CFLAGS = -Wall -I$(top_srcdir)/src -I$(top_srcdir)/dri @DRM_CFLAGS@ -DIN_LIBVA
+ 
+ i965_drv_video_la_LTLIBRARIES = i965_drv_video.la
+-i965_drv_video_ladir = $(libdir)/dri
++i965_drv_video_ladir = @LIBVA_DRIVERS_PATH@
+ i965_drv_video_la_LDFLAGS = -module -avoid-version -no-undefined -Wl,--no-undefined @DRM_LIBS@ -ldrm_intel
+ i965_drv_video_la_LIBADD = ../src/libva.la -lpthread
+ 

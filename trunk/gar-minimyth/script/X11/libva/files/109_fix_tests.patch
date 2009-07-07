@@ -1,0 +1,32 @@
+commit 77665ebc80af40cadb8d2928bdf23d5826d17f7f
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Jun 25 14:26:27 2009 +0000
+
+    Fix tests.
+
+diff --git a/test/Makefile.am b/test/Makefile.am
+index 2446d80..61e84bf 100644
+--- a/test/Makefile.am
++++ b/test/Makefile.am
+@@ -27,7 +27,7 @@ bin_PROGRAMS = vainfo
+ 
+ testdir = $(bindir)
+ 
+-AM_CFLAGS = -I$(top_srcdir)/../../include/external/ -I$(top_srcdir)/src -DIN_LIBVA
++AM_CFLAGS = -I$(top_srcdir)/../../include/external/ -I$(top_srcdir)/src -I$(top_srcdir)/src/x11 -DIN_LIBVA
+ 
+ TESTS = $(check_PROGRAMS)
+ 
+diff --git a/test/test_common.c b/test/test_common.c
+index 6b63748..c624dac 100644
+--- a/test/test_common.c
++++ b/test/test_common.c
+@@ -59,7 +59,7 @@ void status(const char *msg, ...)
+ 
+ int main(int argc, const char* argv[])
+ {
+-  const char *name = rindex(argv[0], '/');
++  const char *name = strrchr(argv[0], '/');
+   if (name)
+       name++;
+   else
