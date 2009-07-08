@@ -5,9 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-ffmpeg_changeset-17091.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
-	$(DISTNAME_SHORT)-yasm.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
@@ -63,8 +61,14 @@ CONFIGURE_ARGS = \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
 	--target-os="linux" \
-	--cc="gcc" \
+	--nm="$(NM)" \
+	--as="$(AS)" \
+	--cc="$(CC)" \
+	--host-cc="$(build_CC)" \
+	--host-cflags="$(build_CFLAGS)" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
+	--host-ldflags="$(build_LDFLAGS)" \
+	--host-libs="" \
 	--extra-cflags="$(CFLAGS)" \
 	--extra-cxxflags="$(CFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
@@ -73,9 +77,13 @@ CONFIGURE_ARGS = \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
 	--disable-proc-opt \
+	--disable-altivec \
+	--enable-amd3dnow \
+	--enable-amd3dnowext \
 	--enable-mmx \
 	--enable-mmx2 \
 	--enable-ssse3 \
+	--disable-armv5te \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
@@ -85,7 +93,6 @@ CONFIGURE_ARGS = \
 	--enable-joystick-menu \
 	--disable-firewire \
 	--disable-iptv \
-	--disable-dbox2 \
 	--disable-hdhomerun \
 	--enable-v4l \
 	--enable-ivtv \
