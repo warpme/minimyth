@@ -7,11 +7,6 @@
 # Create /proc.
 /bin/mkdir -p /proc
 /bin/mount -n -t proc  /proc /proc
-if /usr/bin/test ! -d /proc/bus/usb ; then
-    /sbin/modprobe usbcore >/dev/null 2>&1 && /bin/mount -n -t usbfs /proc/bus/usb /proc/bus/usb
-else
-    /bin/mount -n -t usbfs /proc/bus/usb /proc/bus/usb
-fi
 
 # Create /sys.
 /bin/mkdir -p /sys
