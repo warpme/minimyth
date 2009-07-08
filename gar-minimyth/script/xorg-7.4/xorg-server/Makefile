@@ -1,10 +1,9 @@
 GARNAME = xorg-server
-GARVERSION = 1.6.1
+GARVERSION = 1.6.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-duplicate_headers.patch \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
