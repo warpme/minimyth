@@ -1,29 +1,49 @@
-diff -Naur mythplugins-trunk-20830-old/configure mythplugins-trunk-20830-new/configure
---- mythplugins-trunk-20830-old/configure	2009-07-07 18:59:07.000000000 -0700
-+++ mythplugins-trunk-20830-new/configure	2009-07-07 18:59:08.000000000 -0700
-@@ -28,7 +28,9 @@
- opengl="yes"
+diff -Naur mythplugins-trunk-20842-old/configure mythplugins-trunk-20842-new/configure
+--- mythplugins-trunk-20842-old/configure	2009-07-09 05:12:52.000000000 -0700
++++ mythplugins-trunk-20842-new/configure	2009-07-09 05:12:52.000000000 -0700
+@@ -29,6 +29,8 @@
  visual="yes"
  fftw_lib="yes"
-+fftw_lib3f="yes"
  fftw_lib3="yes"
++fftw_lib3f="yes"
 +fftw_lib3l="yes"
  sdl="yes"
  aac="no"          # compile fails w/libfaad v2.0
  exif="yes"
-@@ -345,13 +347,29 @@
-     fi
- fi
+@@ -188,9 +190,13 @@
+   ;;
+   --enable-fftw) fftw_lib="yes"
+                  fftw_lib3="yes"
++                 fftw_lib3f="yes"
++                 fftw_lib3l="yes"
+   ;;
+   --disable-fftw) fftw_lib="no"
+                   fftw_lib3="no"
++                  fftw_lib3f="no"
++                  fftw_lib3l="no"
+   ;;
+   --enable-sdl) sdl="yes"
+   ;;
+@@ -228,6 +234,8 @@
+                  visual="yes";
+                  fftw_lib="yes";
+                  fftw_lib3="yes";
++                 fftw_lib3f="yes";
++                 fftw_lib3l="yes";
+                  aac="yes";
+                  exif="yes";
+                  festival="yes";
+@@ -248,6 +256,8 @@
+                  visual="no";
+                  fftw_lib="no";
+                  fftw_lib3="no";
++                 fftw_lib3f="no";
++                 fftw_lib3l="no";
+                  aac="no";
+                  exif="no";
+                  festival="no";
+@@ -351,11 +361,27 @@
  
-+if test "$fftw_lib3f" != "no" ; then
-+    fftw_lib3f="no"
-+    if has_library libfftw3f ; then
-+        if has_header fftw3.h ; then
-+            fftw_lib3f="yes"
-+        fi
-+    fi
-+fi
-+
  if test "$fftw_lib3" != "no" ; then
      fftw_lib3="no"
 -    if has_library libfftw3f_threads ; then
@@ -38,15 +58,24 @@ diff -Naur mythplugins-trunk-20830-old/configure mythplugins-trunk-20830-new/con
 +    fi
 +fi
 +
++if test "$fftw_lib3f" != "no" ; then
++    fftw_lib3f="no"
++    if has_library libfftw3f ; then
++        if has_header fftw3.h ; then
++            fftw_lib3f="yes"
++        fi
++    fi
++fi
++
 +if test "$fftw_lib3l" != "no" ; then
 +    fftw_lib3l="no"
-+    if has_library libfftw3 ; then
++    if has_library libfftw3l ; then
 +        if has_header fftw3.h ; then
 +            fftw_lib3l="yes"
          fi
      fi
  fi
-@@ -724,11 +742,21 @@
+@@ -728,18 +754,28 @@
          echo "        libvisual      support will not be included in MythMusic"
      fi
  
@@ -71,9 +100,17 @@ diff -Naur mythplugins-trunk-20830-old/configure mythplugins-trunk-20830-new/con
      elif test "$fftw_lib" = "yes" ; then
          echo "        FFTW v.2       support will be included in MythMusic"
          echo "#define FFTW2_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
-diff -Naur mythplugins-trunk-20830-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-20830-new/mythmusic/mythmusic/visualize.cpp
---- mythplugins-trunk-20830-old/mythmusic/mythmusic/visualize.cpp	2009-07-07 18:59:07.000000000 -0700
-+++ mythplugins-trunk-20830-new/mythmusic/mythmusic/visualize.cpp	2009-07-07 18:59:08.000000000 -0700
+         echo "LIBS += -lrfftw -lfftw" >> ./mythmusic/mythmusic/config.pro
+     fi
+ 
+-    if test "$fftw_lib" = "no" -a "$fftw_lib3" = "no" ; then
++    if test "$fftw_lib" = "no" -a "$fftw_lib3" = "no" -a "$fftw3f_lib" = "no" -a "$fftw_lib3l" = "no" ; then
+         echo "        FFTW           support will not be included in MythMusic"
+     fi
+ 
+diff -Naur mythplugins-trunk-20842-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-20842-new/mythmusic/mythmusic/visualize.cpp
+--- mythplugins-trunk-20842-old/mythmusic/mythmusic/visualize.cpp	2009-07-09 05:12:52.000000000 -0700
++++ mythplugins-trunk-20842-new/mythmusic/mythmusic/visualize.cpp	2009-07-09 05:12:52.000000000 -0700
 @@ -59,8 +59,8 @@
      rout = (myth_fftw_complex*)
          av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
@@ -140,9 +177,9 @@ diff -Naur mythplugins-trunk-20830-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_one(plan, lin, lout);
      rfftw_one(plan, rin, rout);
-diff -Naur mythplugins-trunk-20830-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-20830-new/mythmusic/mythmusic/visualize.h
---- mythplugins-trunk-20830-old/mythmusic/mythmusic/visualize.h	2009-07-07 18:59:07.000000000 -0700
-+++ mythplugins-trunk-20830-new/mythmusic/mythmusic/visualize.h	2009-07-07 18:59:08.000000000 -0700
+diff -Naur mythplugins-trunk-20842-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-20842-new/mythmusic/mythmusic/visualize.h
+--- mythplugins-trunk-20842-old/mythmusic/mythmusic/visualize.h	2009-07-09 05:12:52.000000000 -0700
++++ mythplugins-trunk-20842-new/mythmusic/mythmusic/visualize.h	2009-07-09 05:12:52.000000000 -0700
 @@ -25,16 +25,35 @@
  extern "C" {
  #ifdef FFTW3_SUPPORT
