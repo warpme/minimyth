@@ -99,7 +99,7 @@ sharedirs := \
 	$(datadir) \
 	$(kdedatadir)
 
-MM_CONFIG_VARS = \
+MM_CONFIG_VARS := $(sort \
 	bindir \
 	bindirs \
 	bindirs_base \
@@ -109,6 +109,7 @@ MM_CONFIG_VARS = \
 	build_rootdir \
 	build_system_bins \
 	build_vars \
+	$(build_vars) \
 	build_versiondir \
 	datadir \
 	DESTDIR \
@@ -163,7 +164,7 @@ MM_CONFIG_VARS = \
 	sourcedir \
 	STRIP \
 	sysconfdir \
-	versiondir
+	versiondir )
 
 mm-all: $(WORKSRC)/build/config.mk
 
