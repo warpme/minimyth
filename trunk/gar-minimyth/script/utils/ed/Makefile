@@ -1,5 +1,5 @@
 GARNAME = ed
-GARVERSION = 1.3
+GARVERSION = 1.4
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
