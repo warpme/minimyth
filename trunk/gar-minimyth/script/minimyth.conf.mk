@@ -157,7 +157,7 @@ mm_GARHOST                ?= $(strip \
                               )-minimyth-linux-gnu
 mm_CFLAGS                 ?= $(strip \
                                  -pipe                                                                                       \
-                                 $(if $(filter c3          ,$(mm_GARCH)),-march=c3-2        -mtune=c3      -Os             ) \
+                                 $(if $(filter c3          ,$(mm_GARCH)),-march=c3          -mtune=c3      -Os             ) \
                                  $(if $(filter c3-2        ,$(mm_GARCH)),-march=c3-2        -mtune=c3-2    -Os -mfpmath=sse) \
                                  $(if $(filter pentium-mmx ,$(mm_GARCH)),-march=pentium-mmx -mtune=generic -Os             ) \
                                  $(if $(filter x86-64      ,$(mm_GARCH)),-march=x86-64      -mtune=generic -O3 -mfpmath=sse) \
