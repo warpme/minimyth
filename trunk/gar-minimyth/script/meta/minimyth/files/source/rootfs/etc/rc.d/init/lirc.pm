@@ -246,13 +246,13 @@ sub start
     # Start the irexec daemon.
     if ($minimyth->var_get('MM_LIRC_IREXEC_ENABLED') eq 'yes')
     {
-        system(qq(/usr/bin/irexec -d /etc/lircrc));
+        system(qq(/usr/bin/irexec -d /etc/lirc/lircrc));
     }
 
     # Start the lircmd daemon.
-    if (-e '/etc/lircmd.conf')
+    if (-e '/etc/lirc/lircmd.conf')
     {
-        system(qq(/usr/sbin/lircmd --uinput /etc/lircmd.conf));
+        system(qq(/usr/sbin/lircmd --uinput /etc/lirc/lircmd.conf));
     }
 
     return 1;
