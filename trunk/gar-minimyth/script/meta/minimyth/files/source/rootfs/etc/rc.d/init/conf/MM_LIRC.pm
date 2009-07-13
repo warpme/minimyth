@@ -62,7 +62,7 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf/$driver";
+            my $driver_file = "/etc/lirc/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
@@ -106,7 +106,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf/$driver";
+            my $driver_file = "/etc/lirc/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
@@ -136,7 +136,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE_OPTIONS'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         if ($driver)
         {
-            my $driver_file = "/etc/lirc.d/driver.conf/$driver";
+            my $driver_file = "/etc/lirc/driver.conf.d/$driver";
             if ((-r $driver_file) && (open(FILE, '<', $driver_file)))
             {
                 while (<FILE>)
@@ -314,7 +314,7 @@ $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
         # If there is no lircd.conf file, then create it.
         if (! -e '/etc/lirc/lircd.conf')
         {
-            my $lircd_conf_path = q(/etc/lirc.d/lircd.conf);
+            my $lircd_conf_path = q(/etc/lirc/lircd.conf.d);
             my @lircd_conf_list = ();
             if (opendir(DIR, $lircd_conf_path))
             {
@@ -373,7 +373,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC'} =
         # If there is no lircrc file, then create it.
         if (! -e '/etc/lirc/lircrc')
         {
-            my $lircrc_path = q(/etc/lirc.d/lircrc);
+            my $lircrc_path = q(/etc/lirc/lircrc.d);
             # Create a list of lircrc applications.
             my @application_path_list = ();
             if (opendir(DIR, $lircrc_path))
@@ -455,7 +455,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MINIMYTH'} =
     value_valid    => 'no|yes',
     value_file     => 'yes',
     file           => {name_remote => '/lircrc.minimyth',
-                       name_local  => '/etc/lirc.d/lircrc/minimyth'}
+                       name_local  => '/etc/lirc/lircrc.d/minimyth'}
 };
 $var_list{'MM_LIRC_FETCH_LIRCRC_MYTHTV'} =
 {
@@ -463,7 +463,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MYTHTV'} =
     value_valid    => 'no|yes',
     value_file     => 'yes',
     file           => {name_remote => '/lircrc.mythtv',
-                       name_local  => '/etc/lirc.d/lircrc/mythtv'}
+                       name_local  => '/etc/lirc/lircrc.d/mythtv'}
 };
 $var_list{'MM_LIRC_FETCH_LIRCRC_MPLAYER'} =
 {
@@ -471,7 +471,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MPLAYER'} =
     value_valid    => 'no|yes',
     value_file     => 'yes',
     file           => {name_remote => '/lircrc.mplayer',
-                       name_local  => '/etc/lirc.d/lircrc/mplayer'}
+                       name_local  => '/etc/lirc/lircrc.d/mplayer'}
 };
 $var_list{'MM_LIRC_FETCH_LIRCRC_VLC'} =
 {
@@ -479,7 +479,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_VLC'} =
     value_valid    => 'no|yes',
     value_file     => 'yes',
     file           => {name_remote => '/lircrc.vlc',
-                       name_local  => '/etc/lirc.d/lircrc/vlc'}
+                       name_local  => '/etc/lirc/lircrc.d/vlc'}
 };
 $var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
 {
@@ -487,7 +487,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
     value_valid    => 'no|yes',
     value_file     => 'yes',
     file           => {name_remote => '/lircrc.xine',
-                       name_local  => '/etc/lirc.d/lircrc/xine'}
+                       name_local  => '/etc/lirc/lircrc.d/xine'}
 };
 $var_list{'MM_LIRC_DEVICE_LIST'} =
 {
