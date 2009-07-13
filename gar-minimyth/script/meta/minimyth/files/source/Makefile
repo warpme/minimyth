@@ -256,10 +256,10 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	        $@~/srv/www/software/build/licenses
 	@# Make user 'minimyth' configuration links.
 	@mkdir -m 0755 -p $@~/home/minimyth
-	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth))$(sysconfdir)/lircrc \
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth))$(sysconfdir)/lirc/lircrc \
 	        $@~/home/minimyth/.lircrc
 	@mkdir -m 0755 -p $@~/home/minimyth/.mythtv
-	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/lircrc \
+	@ln -sf $(patsubst /%,%,$(call DIRSTODOTS,/home/minimyth/.mythtv))$(sysconfdir)/lirc/lircrc \
 	        $@~/home/minimyth/.mythtv/lircrc
 	@# Make perl init script links.
 	@mkdir -m 0775 -p                $@~$(sysconfdir)/rc.d/rc
