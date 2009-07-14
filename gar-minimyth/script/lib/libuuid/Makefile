@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-blkid-debug \
 	--disable-testio-debug \
 	--enable-libuuid \
-	--disable-libblkid \
+	--enable-libblkid \
 	--disable-debugfs \
 	--disable-imager \
 	--disable-resizer \
