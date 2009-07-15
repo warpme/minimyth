@@ -1,9 +1,9 @@
 GARNAME = transcode
-GARVERSION = 1.0.7
+GARVERSION = 1.1.2
 CATEGORIES = utils
-MASTER_SITES  = http://fromani.exit1.org/
-MASTER_SITES += http://www.kraymer.mynetcologne.de/
-DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
+MASTER_SITES = http://download.berlios.de/tcforge/
+DISTFILES  = $(DISTNAME).tar.bz2
+DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
@@ -22,28 +22,29 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-include=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
 	--disable-static \
+	--enable-static \
 	--enable-mmx \
 	--enable-3dnow \
 	--enable-sse \
 	--enable-sse2 \
 	--disable-altivec \
-	--enable-shared \
-	--enable-fast-install \
-	--enable-libtool-lock \
-	--disable-libavcodec-static \
+	--enable-ffmpeg \
 	--enable-libavcodec \
+	--enable-libavformat \
 	--enable-libmpeg2 \
+	--disable-experimental \
+	--disable-deprecated \
 	--enable-statbuffer \
-	--disable-netstream \
 	--disable-v4l \
 	--disable-bktr \
 	--disable-sunau \
 	--disable-oss \
-	--disable-ibp \
+	--disable-alsa \
 	--disable-libpostproc \
 	--disable-freetype2 \
-	--disable-avifile \
 	--enable-lame \
+	--disable-xvid \
+	--disable-x264 \
 	--enable-ogg \
 	--enable-vorbis \
 	--enable-theora \
@@ -53,34 +54,38 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-libquicktime \
 	--enable-lzo \
 	--enable-a52 \
-	--enable-a52-default-decoder \
-	--disable-libmpeg3 \
+	--disable-faac \
 	--disable-libxml2 \
+	--disable-ibp \
 	--disable-mjpegtools \
 	--disable-sdl \
-	--disable-libfame \
 	--disable-imagemagick \
 	--disable-libjpegmmx \
 	--disable-libjpeg \
 	--disable-bsdav \
 	--disable-iconv \
-	--disable-xio \
+	--disable-pv3 \
+	--disable-nuv \
 	--disable-warnings-as-errors \
-	--with-gnu-ld \
 	--with-x \
-	--with-libavcodec-includes=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libavcodec` \
-	--with-libavcodec-libs=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libavcodec` \
-	--with-libpostproc-includes=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libpostproc` \
-	--with-libpostproc-libs=$(PKG_CONFIG_SYSROOT_DIR)`pkg-config --variable=includedir libpostproc` \
-	--with-default-xvid=xvid4 \
+	--with-gnu-ld \
+	--with-libmpeg2-prefix=$(DESTDIR)$(prefix) \
+	--with-libmpeg2-includes=$(DESTDIR)$(includedir) \
+	--with-libmpeg2-libs=$(DESTDIR)$(libdir) \
 	--with-lame-prefix=$(DESTDIR)$(prefix) \
 	--with-lame-includes=$(DESTDIR)$(includedir) \
 	--with-lame-libs=$(DESTDIR)$(libdir) \
+	--with-lzo-prefix=$(DESTDIR)$(prefix) \
+	--with-lzo-includes=$(DESTDIR)$(includedir) \
+	--with-lzo-libs=$(DESTDIR)$(libdir) \
+	--with-a52-prefix=$(DESTDIR)$(prefix) \
+	--with-a52-includes=$(DESTDIR)$(includedir) \
+	--with-a52-libs=$(DESTDIR)$(libdir) \
 	--with-mod-path=$(libdir)/transcode
 
 include ../../gar.mk
 
-CFLAGS += `pkg-config --cflags libavcodec` `pkg-config --libs libavcodec`
+#CFLAGS += `pkg-config --cflags libavcodec` `pkg-config --libs libavcodec`
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
@@ -96,5 +101,6 @@ pre-install:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -rf $(DESTDIR)$(libdir)/transcode/*.a
 	@rm -rf $(DESTDIR)$(libdir)/transcode/*.la
 	@$(MAKECOOKIE)
