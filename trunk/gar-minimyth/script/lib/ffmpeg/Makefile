@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 19334.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 19437.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -79,8 +79,6 @@ CONFIGURE_ARGS = \
 	--enable-filters \
 	--disable-avisynth \
 	--enable-bzlib \
-	--disable-libamr-nb \
-	--disable-libamr-wb \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
 	--disable-libdc1394 \
@@ -108,6 +106,7 @@ CONFIGURE_ARGS = \
 	--nm="$(NM)" \
 	--as="$(AS)" \
 	--cc="$(CC)" \
+	--ld="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
 	--host-ldflags="$(build_LDFLAGS)" \
