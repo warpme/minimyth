@@ -70,5 +70,6 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(elibdir)/libblkid.la
+	@rm -f $(DESTDIR)$(libdir)/libblkid.la
+	@rm -f $(DESTDIR)$(libdir)/libuuid.la
 	@$(MAKECOOKIE)
