@@ -1,16 +1,15 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.15.1
+GARVERSION = 2.16
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.15/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.16/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-blkid.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libuuid lib/ncursesw lib/zlib
+DEPENDS = lang/c lib/ncursesw lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -22,10 +21,38 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--libdir=$(elibdir) \
 	--enable-shared \
 	--disable-static \
+	--enable-tls \
+	--enable-mount \
+	--enable-fsck \
+	--enable-uuidd \
+	--enable-libblkid \
+	--enable-nls \
 	--disable-rpath \
 	--enable-arch \
+	--enable-agetty \
+	--enable-cramfs \
+	--enable-switch-root \
+	--disable-elvtune \
+	--disable-init \
+	--disable-kill \
+	--disable-last \
+	--disable-mesg \
+	--disable-partx \
+	--disable-raw \
+	--disable-rdev \
+	--enable-rename \
+	--disable-reset \
+	--disable-login-utils \
+	--enable-schedutils \
+	--enable-wall \
+	--disable-write \
+	--enable-chsh-only-listed \
+	--disable-login-chown-vcs \
+	--disable-login-stat-mail \
+	--enable-pg-bell \
+	--enable-require-password \
 	--disable-use-tty-group \
-	--with-fsprobe=builtin \
+	--disable-makeinstall-chown \
 	--with-gnu-ld
 
 BUILD_ARGS     = \
