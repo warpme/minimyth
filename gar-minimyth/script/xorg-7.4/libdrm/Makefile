@@ -1,5 +1,5 @@
 GARNAME = libdrm
-GARVERSION = 2.4.11
+GARVERSION = 2.4.12
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -25,6 +25,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--disable-nouveau-experimental-api \
+	--disable-radeon-experimental-api \
 	--with-gnu-ld
 ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
