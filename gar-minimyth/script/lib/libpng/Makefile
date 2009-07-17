@@ -1,8 +1,9 @@
 GARNAME = libpng
-GARVERSION = 1.2.37
+GARVERSION = 1.2.38
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2 config.cache.$(GARCH_FAMILY)
+DISTFILES  = $(DISTNAME).tar.bz2
+DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
