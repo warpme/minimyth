@@ -1,5 +1,5 @@
 GARNAME = fftw
-GARVERSION = 3.2.1
+GARVERSION = 3.2.2
 CATEGORIES = lib
 MASTER_SITES = http://www.fftw.org/
 DISTFILES = $(DISTNAME).tar.gz
