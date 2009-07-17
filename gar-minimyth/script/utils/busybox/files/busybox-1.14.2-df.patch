@@ -1,6 +1,7 @@
---- busybox-1.14.2/coreutils/df.c	Sun Jul  5 22:59:28 2009
-+++ busybox-1.14.2-df/coreutils/df.c	Sun Jul  5 23:00:09 2009
-@@ -44,7 +44,6 @@
+diff -urpN busybox-1.14.2/coreutils/df.c busybox-1.14.2-df/coreutils/df.c
+--- busybox-1.14.2/coreutils/df.c	2009-07-05 22:59:28.000000000 +0200
++++ busybox-1.14.2-df/coreutils/df.c	2009-07-05 23:00:09.000000000 +0200
+@@ -44,7 +44,6 @@ int df_main(int argc, char **argv)
  	FILE *mount_table;
  	struct mntent *mount_entry;
  	struct statfs s;
@@ -8,7 +9,7 @@
  
  	enum {
  		OPT_KILO  = (1 << 0),
-@@ -120,7 +119,7 @@
+@@ -120,7 +119,7 @@ int df_main(int argc, char **argv)
  			mount_point = *argv++;
  			if (!mount_point)
  				break;
@@ -17,7 +18,7 @@
  			if (!mount_entry) {
  				bb_error_msg("%s: can't find mount point", mount_point);
   set_error:
-@@ -154,8 +153,8 @@
+@@ -154,8 +153,8 @@ int df_main(int argc, char **argv)
  						) / (blocks_used + s.f_bavail);
  			}
  
@@ -28,9 +29,10 @@
  				continue;
  
  #ifdef WHY_WE_DO_IT_FOR_DEV_ROOT_ONLY
---- busybox-1.14.2/include/libbb.h	Sun Jul  5 22:59:31 2009
-+++ busybox-1.14.2-df/include/libbb.h	Sun Jul  5 23:00:09 2009
-@@ -1025,7 +1025,7 @@
+diff -urpN busybox-1.14.2/include/libbb.h busybox-1.14.2-df/include/libbb.h
+--- busybox-1.14.2/include/libbb.h	2009-07-05 22:59:31.000000000 +0200
++++ busybox-1.14.2-df/include/libbb.h	2009-07-05 23:00:09.000000000 +0200
+@@ -1025,7 +1025,7 @@ extern void run_applet_no_and_exit(int a
  
  #ifdef HAVE_MNTENT_H
  extern int match_fstype(const struct mntent *mt, const char *fstypes) FAST_FUNC;
@@ -39,8 +41,9 @@
  #endif
  extern void erase_mtab(const char * name) FAST_FUNC;
  extern unsigned int tty_baud_to_value(speed_t speed) FAST_FUNC;
---- busybox-1.14.2/libbb/find_mount_point.c	Sun Jul  5 22:59:24 2009
-+++ busybox-1.14.2-df/libbb/find_mount_point.c	Sun Jul  5 23:00:09 2009
+diff -urpN busybox-1.14.2/libbb/find_mount_point.c busybox-1.14.2-df/libbb/find_mount_point.c
+--- busybox-1.14.2/libbb/find_mount_point.c	2009-07-05 22:59:24.000000000 +0200
++++ busybox-1.14.2-df/libbb/find_mount_point.c	2009-07-05 23:00:09.000000000 +0200
 @@ -17,7 +17,7 @@
   * Given any other file (or directory), find the mount table entry for its
   * filesystem.
@@ -50,7 +53,7 @@
  {
  	struct stat s;
  	dev_t mountDevice;
-@@ -25,27 +25,35 @@
+@@ -25,27 +25,35 @@ struct mntent* FAST_FUNC find_mount_poin
  	struct mntent *mountEntry;
  
  	if (stat(name, &s) != 0)
@@ -92,9 +95,10 @@
  			break;
  	}
  	endmntent(mountTable);
---- busybox-1.14.2/util-linux/mkfs_minix.c	Sun Jul  5 22:59:30 2009
-+++ busybox-1.14.2-df/util-linux/mkfs_minix.c	Sun Jul  5 23:00:09 2009
-@@ -624,7 +624,6 @@
+diff -urpN busybox-1.14.2/util-linux/mkfs_minix.c busybox-1.14.2-df/util-linux/mkfs_minix.c
+--- busybox-1.14.2/util-linux/mkfs_minix.c	2009-07-05 22:59:30.000000000 +0200
++++ busybox-1.14.2-df/util-linux/mkfs_minix.c	2009-07-05 23:00:09.000000000 +0200
+@@ -624,7 +624,6 @@ static void setup_tables(void)
  int mkfs_minix_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
  int mkfs_minix_main(int argc UNUSED_PARAM, char **argv)
  {
@@ -102,7 +106,7 @@
  	unsigned opt;
  	char *tmp;
  	struct stat statbuf;
-@@ -683,11 +682,8 @@
+@@ -683,11 +682,8 @@ int mkfs_minix_main(int argc UNUSED_PARA
  		G.total_blocks = 65535;
  
  	/* Check if it is mounted */
@@ -116,9 +120,10 @@
  
  	xmove_fd(xopen(G.device_name, O_RDWR), dev_fd);
  	if (fstat(dev_fd, &statbuf) < 0)
---- busybox-1.14.2/util-linux/mkfs_vfat.c	Sun Jul  5 22:59:30 2009
-+++ busybox-1.14.2-df/util-linux/mkfs_vfat.c	Sun Jul  5 23:00:35 2009
-@@ -273,10 +273,10 @@
+diff -urpN busybox-1.14.2/util-linux/mkfs_vfat.c busybox-1.14.2-df/util-linux/mkfs_vfat.c
+--- busybox-1.14.2/util-linux/mkfs_vfat.c	2009-07-05 22:59:30.000000000 +0200
++++ busybox-1.14.2-df/util-linux/mkfs_vfat.c	2009-07-05 23:00:35.000000000 +0200
+@@ -273,10 +273,10 @@ int mkfs_vfat_main(int argc UNUSED_PARAM
  			device_num == 0x0d00 || // xd
  			device_num == 0x1600 )  // hdc, hdd
  		)
