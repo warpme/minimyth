@@ -1,15 +1,16 @@
-GARNAME = libusb
-GARVERSION = 1.0.2
+GARNAME = libusb-compat
+GARVERSION = 0.1.3
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libusb/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -30,5 +31,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libusb-1.0.la
+	@rm -f $(DESTDIR)$(libdir)/libusb.la
 	@$(MAKECOOKIE)
