@@ -1,5 +1,5 @@
 GARNAME = transcode
-GARVERSION = 1.1.2
+GARVERSION = 1.1.3
 CATEGORIES = utils
 MASTER_SITES = http://download.berlios.de/tcforge/
 DISTFILES  = $(DISTNAME).tar.bz2
