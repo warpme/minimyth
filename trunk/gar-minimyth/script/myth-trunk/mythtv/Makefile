@@ -52,25 +52,30 @@ CONFIGURE_ARGS = \
 	--disable-ccache \
 	--disable-distcc \
 	--bindir="$(DESTDIR)$(bindir)" \
+	--datadir="$(DESTDIR)$(datadir)" \
 	--libdir="$(DESTDIR)$(libdir)" \
 	--shlibdir="$(DESTDIR)$(libdir)" \
 	--incdir="$(DESTDIR)$(incdir)" \
 	--mandir="$(DESTDIR)$(mandir)" \
+	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-libfaad \
 	--enable-libfftw3 \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
+	--sysroot="$(DESTDIR)$(rootdir)" \
+	--sysinclude="$(DESTDIR)$(includedir)" \
 	--target-os="linux" \
 	--nm="$(NM)" \
 	--as="$(AS)" \
 	--cc="$(CC)" \
+	--cxx="$(CXX)" \
+	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
-	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
 	--host-ldflags="$(build_LDFLAGS)" \
 	--host-libs="" \
 	--extra-cflags="$(CFLAGS)" \
-	--extra-cxxflags="$(CFLAGS)" \
+	--extra-cxxflags="$(CXXFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--enable-symbol-visibility \
 	--arch=$(GARCH_FAMILY) \
@@ -82,8 +87,9 @@ CONFIGURE_ARGS = \
 	--enable-amd3dnowext \
 	--enable-mmx \
 	--enable-mmx2 \
+	--enable-sse \
 	--enable-ssse3 \
-	--disable-armv5te \
+	--enable-yasm \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-arts \
@@ -114,8 +120,7 @@ CONFIGURE_ARGS = \
 	--disable-directfb \
 	--disable-directx \
 	--disable-mac-bundle \
-	--without-bindings="perl,python" \
-	$(if $(filter -Os,$(CFLAGS)),--enable-small)
+	--without-bindings="perl,python"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
