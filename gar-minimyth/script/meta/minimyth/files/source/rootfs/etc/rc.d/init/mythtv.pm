@@ -203,16 +203,48 @@ sub start
             { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
     }
     my %plugin_remove = ();
-    $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
-        [ '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so',
-          '/usr/share/mythtv/bookmark*',
-          '/usr/share/mythtv/mythbookmarkmanager*',
-          '/usr/share/mythtv/browser*',
-          '/usr/share/mythtv/mythbrowser*' ];
-    $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} =
-        [ '/usr/lib/mythtv/plugins/libmythdvd.so',
-          '/usr/share/mythtv/dvd*',
-          '/usr/share/mythtv/mythdvd*' ];
+    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+    {
+        when (/^20$/)
+        {
+            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so',
+                  '/usr/share/mythtv/bookmark*',
+                  '/usr/share/mythtv/mythbookmarkmanager*',
+                  '/usr/share/mythtv/browser*',
+                  '/usr/share/mythtv/mythbrowser*' ];
+        }
+        when (/^21$/)
+        {
+            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so',
+                  '/usr/share/mythtv/bookmark*',
+                  '/usr/share/mythtv/mythbookmarkmanager*',
+                  '/usr/share/mythtv/browser*',
+                  '/usr/share/mythtv/mythbrowser*' ];
+        }
+        default
+        {
+            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythbrowser.so',
+                  '/usr/share/mythtv/browser*',
+                  '/usr/share/mythtv/mythbrowser*' ];
+        }
+    }
+    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+    {
+        when (/^20$/)
+        {
+            $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythdvd.so',
+                  '/usr/share/mythtv/dvd*',
+                  '/usr/share/mythtv/mythdvd*' ];
+        }
+        default
+        {
+            $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} = [];
+        }
+    }
     $plugin_remove{'MM_PLUGIN_GALLERY_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythgallery.so',
           '/usr/share/mythtv/gallery*',
@@ -229,10 +261,27 @@ sub start
         [ '/usr/lib/mythtv/plugins/libmythnews.so',
           '/usr/share/mythtv/news*',
           '/usr/share/mythtv/mythnews*' ];
-    $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} =
-        [ '/usr/lib/mythtv/plugins/libmythphone.so',
-          '/usr/share/mythtv/phone*',
-          '/usr/share/mythtv/mythphone*' ];
+    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+    {
+        when (/^20$/)
+        {
+            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythphone.so',
+                  '/usr/share/mythtv/phone*',
+                  '/usr/share/mythtv/mythphone*' ];
+        }
+        when (/^21$/)
+        {
+            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythphone.so',
+                  '/usr/share/mythtv/phone*',
+                  '/usr/share/mythtv/mythphone*' ];
+        }
+        default
+        {
+            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} = [];
+        }
+    }
     $plugin_remove{'MM_PLUGIN_STREAM_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythstream.so',
           '/usr/share/mythtv/stream*',
@@ -245,10 +294,20 @@ sub start
         [ '/usr/lib/mythtv/plugins/libmythweather.so',
           '/usr/share/mythtv/weather*',
           '/usr/share/mythtv/mythweather*' ];
-    $plugin_remove{'MM_PLUGIN_ZONEMINDER_ENABLED'} =
-        [ '/usr/lib/mythtv/plugins/libmythzoneminder.so',
-          '/usr/share/mythtv/zoneminder*',
-          '/usr/share/mythtv/mythzoneminder*' ];
+    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+    {
+        when (/^20$/)
+        {
+            $plugin_remove{'MM_PLUGIN_ZONEMINDER_ENABLED'} = [];
+        }
+        default
+        {
+            $plugin_remove{'MM_PLUGIN_ZONEMINDER_ENABLED'} =
+                [ '/usr/lib/mythtv/plugins/libmythzoneminder.so',
+                  '/usr/share/mythtv/zoneminder*',
+                  '/usr/share/mythtv/mythzoneminder*' ];
+        }
+    }
     foreach my $plugin (keys %plugin_remove)
     {
         if ($minimyth->var_get($plugin) eq 'no')
