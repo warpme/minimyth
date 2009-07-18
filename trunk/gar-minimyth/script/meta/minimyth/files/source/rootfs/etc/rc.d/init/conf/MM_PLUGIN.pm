@@ -5,6 +5,7 @@ package init::conf::MM_PLUGIN;
 
 use strict;
 use warnings;
+use feature "switch";
 
 my %var_list;
 
@@ -25,36 +26,65 @@ $var_list{'MM_PLUGIN_OPTICAL_DISK_ENABLED'} =
 };
 $var_list{'MM_PLUGIN_BROWSER_ENABLED'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (-e '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so')
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            return 'yes'
-        }
-        else
-        {
-            return 'no'
+            when (/^20|21$/)
+            {
+                if (-e '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so')
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
+            default
+            {
+                if (-e '/usr/lib/mythtv/plugins/libmythbrowser.so')
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
         }
     },
     value_valid    => 'no|yes'
 };
 $var_list{'MM_PLUGIN_DVD_ENABLED'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (-e '/usr/lib/mythtv/plugins/libmythdvd.so')
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            return 'yes'
-        }
-        else
-        {
-            return 'no'
+            when (/^20$/)
+            {
+                if (-e '/usr/lib/mythtv/plugins/libmythdvd.so')
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
+            default
+            {
+                return 'no';
+            }
         }
     },
     value_valid    => 'no|yes'
@@ -68,11 +98,11 @@ $var_list{'MM_PLUGIN_GALLERY_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythgallery.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -86,11 +116,11 @@ $var_list{'MM_PLUGIN_GAME_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythgame.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -104,11 +134,11 @@ $var_list{'MM_PLUGIN_MUSIC_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythmusic.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -122,29 +152,40 @@ $var_list{'MM_PLUGIN_NEWS_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythnews.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
 };
 $var_list{'MM_PLUGIN_PHONE_ENABLED'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (-e '/usr/lib/mythtv/plugins/libmythphone.so')
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            return 'yes'
-        }
-        else
-        {
-            return 'no'
+            when (/^20|21$/)
+            {
+                if (-e '/usr/lib/mythtv/plugins/libmythphone.so')
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
+            default
+            {
+                return 'no';
+            }
         }
     },
     value_valid    => 'no|yes'
@@ -158,11 +199,11 @@ $var_list{'MM_PLUGIN_STREAM_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythstream.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -176,11 +217,11 @@ $var_list{'MM_PLUGIN_VIDEO_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythvideo.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -194,29 +235,40 @@ $var_list{'MM_PLUGIN_WEATHER_ENABLED'} =
 
         if (-e '/usr/lib/mythtv/plugins/libmythweather.so')
         {
-            return 'yes'
+            return 'yes';
         }
         else
         {
-            return 'no'
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
 };
 $var_list{'MM_PLUGIN_ZONEMINDER_ENABLED'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (-e '/usr/lib/mythtv/plugins/libmythzoneminder.so')
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            return 'yes'
-        }
-        else
-        {
-            return 'no'
+            when (/^20$/)
+            {
+                return 'no';
+            }
+            default
+            {
+                if (-e '/usr/lib/mythtv/plugins/libmythzoneminder.so')
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
         }
     },
     value_valid    => 'no|yes'
