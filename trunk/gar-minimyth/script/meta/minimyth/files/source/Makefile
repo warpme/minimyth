@@ -12,30 +12,22 @@ include $(top_build)/config.mk
 
 mm_NAME := minimyth-$(mm_VERSION)
 
-MM_BIN_FILES    := $(strip \
-	$(if $(wildcard                     lists/minimyth-bin-list   ),                     lists/minimyth-bin-list   ) \
-	$(if $(wildcard                lists/extras/extras-bin-list   ),                lists/extras/extras-bin-list   ) \
-	$(filter $(patsubst %,lists/graphics/minimyth-bin-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-bin-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-bin-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-bin-list.*)))
-MM_LIB_FILES    := $(strip \
-	$(if $(wildcard                     lists/minimyth-lib-list   ),                     lists/minimyth-lib-list   ) \
-	$(if $(wildcard                lists/extras/extras-lib-list   ),                lists/extras/extras-lib-list   ) \
-	$(filter $(patsubst %,lists/graphics/minimyth-lib-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-lib-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-lib-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-lib-list.*)))
-MM_ETC_FILES    := $(strip \
-	$(if $(wildcard                     lists/minimyth-etc-list   ),                     lists/minimyth-etc-list   ) \
-	$(if $(wildcard                lists/extras/extras-etc-list   ),                lists/extras/extras-etc-list   ) \
-	$(filter $(patsubst %,lists/graphics/minimyth-etc-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-etc-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-etc-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-etc-list.*)))
-MM_SHARE_FILES  := $(strip \
-	$(if $(wildcard                     lists/minimyth-share-list ),                     lists/minimyth-share-list ) \
-	$(if $(wildcard                lists/extras/extras-share-list ),                lists/extras/extras-share-list ) \
-	$(filter $(patsubst %,lists/graphics/minimyth-share-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-share-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-share-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-share-list.*)))
-MM_REMOVE_FILES := $(strip \
-	$(if $(wildcard                     lists/minimyth-remove-list),                     lists/minimyth-remove-list) \
-	$(filter $(patsubst %,lists/graphics/minimyth-remove-list.%,$(mm_GRAPHICS)),$(wildcard lists/graphics/minimyth-remove-list.*)) \
-	$(filter $(patsubst %,lists/software/minimyth-remove-list.%,$(mm_SOFTWARE)),$(wildcard lists/software/minimyth-remove-list.*)))
+MM_LIST_FILES    = $(strip \
+	$(if $(wildcard lists/minimyth-$(strip $(1))-list), \
+                        lists/minimyth-$(strip $(1))-list ) \
+	$(if $(wildcard lists/extras/extras-$(strip $(1))-list), \
+                        lists/extras/extras-$(strip $(1))-list ) \
+	$(filter $(patsubst %,lists/graphics/minimyth-$(strip $(1))-list.%,$(mm_GRAPHICS)), \
+                 $(wildcard   lists/graphics/minimyth-$(strip $(1))-list.*               )) \
+	$(filter $(patsubst %,lists/software/minimyth-$(strip $(1))-list.%,$(mm_SOFTWARE)), \
+                 $(wildcard   lists/software/minimyth-$(strip $(1))-list.*               )) \
+	$(filter $(patsubst %,lists/software/minimyth-$(strip $(1))-list.%:$(mm_MYTH_VERSION),$(mm_SOFTWARE)), \
+                 $(wildcard   lists/software/minimyth-$(strip $(1))-list.*:$(mm_MYTH_VERSION)              )))
+MM_BIN_FILES    := $(call MM_LIST_FILES, bin)
+MM_LIB_FILES    := $(call MM_LIST_FILES, lib)
+MM_ETC_FILES    := $(call MM_LIST_FILES, etc)
+MM_SHARE_FILES  := $(call MM_LIST_FILES, share)
+MM_REMOVE_FILES := $(call MM_LIST_FILES, remove)
 
 MM_BIN_DEBUG    := $(strip $(if $(filter yes,$(mm_DEBUG)), \
 	gdb \
