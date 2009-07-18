@@ -6,13 +6,13 @@ diff -Naur ffmpeg-19439.29418-old/configure ffmpeg-19439.29418-new/configure
      shift 4
      disable $cfg
 -    check_cmd ${pkg}-config --version
-+    check_cmd @GAR_destdir@@GAR_bindir@/${pkg}-config --version
++    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
      err=$?
      if test "$err" = 0; then
 -        temp_cflags $(${pkg}-config --cflags)
 -        temp_extralibs $(${pkg}-config --libs)
-+        temp_cflags $(@GAR_destdir@@GAR_bindir@/${pkg}-config --cflags)
-+        temp_extralibs $(@GAR_destdir@@GAR_bindir@/${pkg}-config --libs)
++        temp_cflags $(@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags)
++        temp_extralibs $(@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs)
          check_lib "$@" $header $func && enable $cfg
      fi
      return $err
