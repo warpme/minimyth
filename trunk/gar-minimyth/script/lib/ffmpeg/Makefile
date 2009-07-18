@@ -142,7 +142,7 @@ CONFIGURE_ARGS = \
 	--disable-stripping
 
 CONFIGURE_ENV = \
-	SDL_CONFIG='/bin/false'
+	SDL_CONFIG="false"
 
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
