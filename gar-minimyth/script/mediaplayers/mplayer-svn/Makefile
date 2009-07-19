@@ -146,8 +146,8 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-liba52-internal \
 	--enable-libmpeg2 \
 	--disable-musepack \
-	--disable-libamr_nb \
-	--disable-libamr_wb
+	--disable-libopencore_amrnb \
+	--disable-libopencore_amrwb
 # Video output: enable xv (requires x11 and vm), xvmc and vdpau.
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix \
@@ -344,9 +344,9 @@ source-update-patches:
 		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
 		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
 		cd $(DISTNAME)-new || exit 1 ; \
-		SIMPLE_BACKUP_SUFFIX=.gar-source-patches-update patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
 		cd ../ || exit 1 ; \
-		find $(DISTNAME)-new -name *.gar-source-patches-update -exec rm {} \; || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
 		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
 		rm -fr $(DISTNAME)-old || exit 1 ; \
 		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
