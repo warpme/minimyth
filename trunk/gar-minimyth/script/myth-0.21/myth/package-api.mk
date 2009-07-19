@@ -19,13 +19,13 @@ post-install-mythtv-version:
 	@echo "$(GARVERSION_SHORT) with fixes through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
 	@$(MAKECOOKIE)
 
-myth-update-source:
+source-update-source:
 	@$(MAKE) clean
 	@$(MAKE) fetch
 	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
 	@$(MAKE) clean
 
-myth-update-patches:
+source-update-patches:
 	@$(MAKE) clean
 	@$(MAKE) extract
 	@$(foreach PATCHFILE, $(PATCHFILES), \
@@ -33,9 +33,9 @@ myth-update-patches:
 		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
 		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
 		cd $(DISTNAME)-new || exit 1 ; \
-		SIMPLE_BACKUP_SUFFIX=.gar-myth-patches-update patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
 		cd ../ || exit 1 ; \
-		find $(DISTNAME)-new -name *.gar-myth-patches-update -exec rm {} \; || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
 		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
 		rm -fr $(DISTNAME)-old || exit 1 ; \
 		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
