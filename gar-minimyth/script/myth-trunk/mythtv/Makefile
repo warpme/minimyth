@@ -35,6 +35,7 @@ DEPENDS = \
 	system/lirc \
 	X11/vdpau \
 	xorg/xorg
+BUILDDEPS = devel/yasm
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
