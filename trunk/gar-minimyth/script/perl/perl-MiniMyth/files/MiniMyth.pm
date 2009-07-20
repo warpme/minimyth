@@ -1400,7 +1400,7 @@ sub url_put
                         $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
                         $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
                         $curl->setopt(CURLOPT_UPLOAD, 1);
-                        # lighttpd < 1.5 does not support the HTTP 1.1 Expect header.
+                        # lighttpd < 1.5 does not support for the Expect request-header.
                         $curl->setopt(CURLOPT_HTTPHEADER, [ q(Expect:) ]);
                         my $retcode = $curl->perform;
                         close($OUT_FILE);
