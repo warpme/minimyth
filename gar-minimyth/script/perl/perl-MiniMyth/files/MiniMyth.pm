@@ -12,7 +12,7 @@ use File::Find ();
 use File::Path ();
 use File::Spec ();
 use Net::Telnet ();
-use WWW::Curl::Easy qw(CURLINFO_HTTP_CODE CURLOPT_FOLLOWLOCATION CURLOPT_INFILE CURLOPT_INFILESIZE CURLOPT_PUT CURLOPT_UPLOAD CURLOPT_URL CURLOPT_VERBOSE CURLOPT_WRITEDATA);
+use WWW::Curl::Easy qw(CURLINFO_HTTP_CODE CURLOPT_FOLLOWLOCATION CURLOPT_HTTPHEADER CURLOPT_INFILE CURLOPT_INFILESIZE CURLOPT_UPLOAD CURLOPT_URL CURLOPT_VERBOSE CURLOPT_WRITEDATA);
 
 sub new
 {
@@ -1399,7 +1399,9 @@ sub url_put
                         $curl->setopt(CURLOPT_INFILE, $IN_FILE);
                         $curl->setopt(CURLOPT_INFILESIZE, $local_file_size);
                         $curl->setopt(CURLOPT_WRITEDATA, $OUT_FILE);
-                        $curl->setopt(CURLOPT_PUT, 1);
+                        $curl->setopt(CURLOPT_UPLOAD, 1);
+                        # lighttpd < 1.5 does not support the HTTP 1.1 Expect header.
+                        $curl->setopt(CURLOPT_HTTPHEADER, [ q(Expect:) ]);
                         my $retcode = $curl->perform;
                         close($OUT_FILE);
                         if ($retcode == 0)
