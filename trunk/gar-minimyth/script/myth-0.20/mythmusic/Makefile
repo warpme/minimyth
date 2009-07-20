@@ -14,10 +14,12 @@ DEPENDS = \
 	lib/faad2 \
 	lib/flac \
 	lib/fftw3f \
+	lib/lame \
 	lib/libcdaudio \
 	lib/libcdio \
 	lib/libid3tag \
 	lib/libmad \
+	lib/libogg \
 	lib/libvorbis \
 	lib/SDL
 

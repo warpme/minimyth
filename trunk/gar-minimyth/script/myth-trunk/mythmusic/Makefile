@@ -11,12 +11,12 @@ endef
 DEPENDS = \
 	lang/c++ \
 	$(CATEGORY)/mythtv \
-	lib/faad2 \
 	lib/flac \
 	lib/fftw3f \
+	lib/lame \
 	lib/libcdaudio \
 	lib/libcdio \
-	lib/libmad \
+	lib/libogg \
 	lib/libvorbis \
 	lib/SDL \
 	lib/taglib
@@ -32,8 +32,7 @@ CONFIGURE_ARGS = \
 	--enable-mythmusic \
 		--disable-libvisual \
 		--enable-fftw \
-		--enable-sdl \
-		--enable-aac
+		--enable-sdl
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
