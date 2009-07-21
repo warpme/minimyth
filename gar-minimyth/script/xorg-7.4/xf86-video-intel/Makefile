@@ -1,9 +1,9 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.7.1
+GARVERSION = 2.8.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ticket-21371.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -12,12 +12,14 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
+	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -41,10 +43,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-dri \
 	--disable-video-debug \
+	--disable-debug \
 	--enable-xvmc \
+	--disable-shave \
 	--with-gnu-ld
 
-CONFIGURE_ENV = \
+x_CONFIGURE_ENV = \
 	XORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
