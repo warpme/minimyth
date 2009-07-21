@@ -1,16 +1,19 @@
 GARNAME = Mesa
-GARVERSION = 7.4.4
+GARVERSION = 7.5
 CATEGORIES = $(CATEGORY)
-MASTER_SITES  = http://www.mesa3d.org/beta/
-MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
-DISTFILES = MesaLib-$(GARVERSION).tar.gz MesaGLUT-$(GARVERSION).tar.gz MesaDemos-$(GARVERSION).tar.gz
-PATCHFILES  = $(DISTNAME)-parallel_build.patch $(DISTNAME)-pkg_config.patch $(DISTNAME)-gen_matypes.patch $(DISTNAME).patch.gar
+#MASTER_SITES  = http://www.mesa3d.org/beta/
+#MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
+MASTER_SITES  = http://cgit.freedesktop.org/mesa/mesa/snapshot/
+DISTFILES = mesa_7_5.tar.bz2
+PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
 define BLURB
 endef
+
+WORKSRC = $(WORKDIR)/mesa_7_5
 
 DEPENDS   = lang/c++ lib/expat \
 	$(CATEGORY)/dri2proto \
@@ -46,8 +49,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-dri-drivers="$(DRI_DIRS)"
 
 BUILD_ARGS = \
-	BUILD_CC="$(build_CC)" \
-	BUILD_CFLAGS="$(build_CFLAGS)"
+	HOST_CC="$(build_CC)" \
+	HOST_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
 
@@ -57,6 +60,7 @@ DRI_DIRS := $(strip \
 DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)
 
