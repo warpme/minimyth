@@ -102,10 +102,10 @@ mm_TFTP_ROOT              ?= /var/tftpboot/minimyth
 mm_NFS_ROOT               ?= /home/public/minimyth
 # The version of kernel headers to use.
 # Valid values are '2.6.30' and '2.6.31'.
-mm_KERNEL_HEADERS_VERSION ?= 2.6.30
+mm_KERNEL_HEADERS_VERSION ?= 2.6.31
 # The version of kernel to use.
 # Valid values are '2.6.30' and '2.6.31'.
-mm_KERNEL_VERSION         ?= 2.6.30
+mm_KERNEL_VERSION         ?= 2.6.31
 # The kernel configuration file to use.
 # When set, the kernel configuration file $(HOME)/.minimyth/$(mm_KERNEL_CONFIG) will be used.
 # When not set, a built-in kernel configuration file will be used.
@@ -115,8 +115,8 @@ mm_KERNEL_CONFIG          ?=
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '96.43.13' (legacy), '173.14.20' (legacy), 185.18.14,
-# 190.16 (beta).
-mm_NVIDIA_VERSION         ?= 185.18.14
+# 190.18 (beta).
+mm_NVIDIA_VERSION         ?= 190.18
 # The version of xorg to use.
 # Valid values are '7.4'.
 mm_XORG_VERSION           ?= 7.4
