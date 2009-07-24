@@ -6,6 +6,7 @@ DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-apple_parser_fix.patch \
+	$(DISTNAME)-youtube_parser_fix.patch \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-mythpopupbox_delete.patch \
 	$(DISTNAME)-harvester_cpp.patch \
