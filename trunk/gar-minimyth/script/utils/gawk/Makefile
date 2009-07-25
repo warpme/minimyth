@@ -1,5 +1,5 @@
 GARNAME = gawk
-GARVERSION = 3.1.6
+GARVERSION = 3.1.7
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
