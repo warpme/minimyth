@@ -1,5 +1,5 @@
 GARNAME = autoconf
-GARVERSION = 2.63
+GARVERSION = 2.64
 CATEGORIES = devel
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
