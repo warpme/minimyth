@@ -1,8 +1,6 @@
 #-------------------------------------------------------------------------------
 # Detect LCDproc devices.
 #
-# mm_detect_id has the following format:
-#     usb:<idVendor>:<idProduct>
 # mm_detect_state_lcdproc has the following format:
 #     <driver>
 # where
@@ -17,25 +15,22 @@ KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
-# Import mm_detect_id.
-IMPORT{program}="/lib/udev/mm_detect_id"
-
 # Initialize state
 ENV{mm_detect_state_lcdproc}=""
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-  ENV{mm_detect_id}=="usb:0403:fa01", ENV{mm_detect_state_lcdproc}="MtxOrb"
-  ENV{mm_detect_id}=="usb:0403:fc0d", ENV{mm_detect_state_lcdproc}="CFontzPacket"
-  ENV{mm_detect_id}=="usb:0403:fc60", ENV{mm_detect_state_lcdproc}="irtrans"
-  ENV{mm_detect_id}=="usb:040b:7001", ENV{mm_detect_state_lcdproc}="dm140"
-  ENV{mm_detect_id}=="usb:046d:0a07", ENV{mm_detect_state_lcdproc}="g15"
-  ENV{mm_detect_id}=="usb:15c2:0038", ENV{mm_detect_state_lcdproc}="imonlcd"
-  ENV{mm_detect_id}=="usb:15c2:ffdc", ENV{mm_detect_state_lcdproc}="imon"
-  ENV{mm_detect_id}=="usb:1b3d:0153", ENV{mm_detect_state_lcdproc}="MtxOrb"
-  ENV{mm_detect_id}=="usb:04d8:0002", ENV{mm_detect_state_lcdproc}="picolcd"
-  ENV{mm_detect_id}=="usb:04d8:c001", ENV{mm_detect_state_lcdproc}="picolcd"
+  ENV{MODALIAS}=="usb:v0403pFA01d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="MtxOrb"
+  ENV{MODALIAS}=="usb:v0403pFC0dd*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="CFontzPacket"
+  ENV{MODALIAS}=="usb:v0403pFC60d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="irtrans"
+  ENV{MODALIAS}=="usb:v040Bp7001d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="dm140"
+  ENV{MODALIAS}=="usb:v046Dp0A07d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="g15"
+  ENV{MODALIAS}=="usb:v15C2p0038d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="imonlcd"
+  ENV{MODALIAS}=="usb:v15C2pFFDCd*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="imon"
+  ENV{MODALIAS}=="usb:v1B3Dp0153d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="MtxOrb"
+  ENV{MODALIAS}=="usb:v04D8p0002d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="picolcd"
+  ENV{MODALIAS}=="usb:v04D8pC001d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lcdproc}="picolcd"
 
 # The state has been set, so save it.
 ENV{mm_detect_state_lcdproc}=="?*", RUN+="/lib/udev/mm_detect lcdproc %k $env{mm_detect_state_lcdproc} state_prepend_devname"

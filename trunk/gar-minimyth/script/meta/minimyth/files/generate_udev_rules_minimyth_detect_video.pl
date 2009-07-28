@@ -1,5 +1,16 @@
 #!/usr/bin/perl
 
+sub modalias
+{
+    $vendor = shift;
+    $product = shift;
+
+    $vendor = uc($vendor);
+    $product = uc($product);
+
+    return "pci:v0000" . $vendor . "d0000" . $product . "sv0000????sd0000????bc03sc00i??";
+}
+
 my %entries = undef;
 
 my $outfile_udev_rules = qq(05-minimyth-detect-video.rules.disabled);
@@ -28,8 +39,8 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
         {
             if (/^0x(....) 0x(....) /)
             {
-                my $vendor  = lc($1);
-                my $product = lc($2);
+                my $vendor  = uc($1);
+                my $product = uc($2);
                 $entries{qq($vendor.$product)} = $driver;
             }
         }
@@ -57,8 +68,8 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
         {
             if (/^ *RHD_DEVICE_MATCH\( *0x(....) *,/)
             {
-                my $vendor  = lc(q(1002));
-                my $product = lc($1);
+                my $vendor  = uc(q(1002));
+                my $product = uc($1);
                 $entries{qq($vendor.$product)} = $driver;
             }
         }
@@ -91,8 +102,8 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
         {
             if (/^ *{ *0x(....),/)
             {
-                my $vendor  = lc(q(1002));
-                my $product = lc($1);
+                my $vendor  = uc(q(1002));
+                my $product = uc($1);
                 $entries{qq($vendor.$product)} = $driver;
             }
         }
@@ -106,13 +117,39 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 }
 unlink(qq($tmpfile_pciids_txt));
 
+# NVIDIA.
+{
+    my $vendor = q(10DE);
+    {
+        my $driver= q(nvidia);
+        my $product = q(????);
+        $entries{qq($vendor.$product)} = $driver;
+    }
+    {
+        my $driver= q(nv);
+        foreach my $product (qw(0020 0028 0029 002c 002d 00a0 0100 0101 0103 0150 0151 0152 0153))
+        {
+            $entries{qq($vendor.$product)} = $driver;
+        }
+    }
+
+}
+
+# VMWare.
+{
+    my $vendor = q(15AD);
+    {
+        my $driver= q(vmware);
+        my $product = q(0405);
+        $entries{qq($vendor.$product)} = $driver;
+    }
+}
+
 if (open(FILE, '>', qq($outfile_udev_rules)))
 {
     print FILE qq(#-------------------------------------------------------------------------------\n);
     print FILE qq(# Detect video devices.\n);
     print FILE qq(#\n);
-    print FILE qq(# mm_detect_id has the following format:\n);
-    print FILE qq(#     pci:<class>:<class_prog>:<vendor>:<device>:<subsystem_vendor>:<subsystem_device>\n);
     print FILE qq(# mm_detect_state_video has the following format:\n);
     print FILE qq(#     <driver>\n);
     print FILE qq(# where\n);
@@ -125,10 +162,6 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
     print FILE qq(GOTO="end"\n);
     print FILE qq(LABEL="begin"\n);
     print FILE qq(\n);
-    print FILE qq(# Import mm_detect_id.\n);
-    print FILE qq(IMPORT{program}="/lib/udev/mm_detect_id"\n);
-    print FILE qq(\n);
-    print FILE qq(# Initialize state\n);
     print FILE qq(ENV{mm_detect_state_video}=""\n);
     print FILE qq(\n);
     print FILE qq(#-------------------------------------------------------------------------------\n);
@@ -136,10 +169,28 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
     print FILE qq(# http://cgit.freedesktop.org/mesa/drm/plain/shared-core/drm_pciids.txt\n);
     print FILE qq(# http://cgit.freedesktop.org/xorg/driver/xf86-video-radeonhd/plain/src/rhd_id.c\n);
     print FILE qq(# http://cgit.freedesktop.org/xorg/driver/xf86-video-ati/plain/src/radeon_chipinfo_gen.h\n);
+    print FILE qq(# built-in nvidia/nv driver information\n);
+    print FILE qq(# built-in vmdriver driver information\n);
     print FILE qq(#-------------------------------------------------------------------------------\n);
     print FILE qq(\n);
     my $vendor_previous = undef;
-    foreach my $key (sort(keys(%entries)))
+    my @keys = sort
+    {
+        my ($a_vendor, $a_product) = split(/\./, $a);
+        my ($b_vendor, $b_product) = split(/\./, $b);
+
+        if ($a_vendor eq $b_vendor)
+        {
+            if    ($a_product eq '????') { return -1;                        }
+            elsif ($b_product eq '????') { return  1;                        }
+            else                         { return $a_product cmp $b_product; }
+        }
+        else
+        {
+            return $a_vendor cmp $b_vendor;
+        }
+    } keys(%entries);
+    foreach my $key (@keys)
     {
         if ($key)
         {
@@ -152,11 +203,13 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
                     print FILE qq(  LABEL="end-$vendor_previous"\n);
                     print FILE qq(\n);
                 }
-                print FILE qq(  ENV{mm_detect_id}!="pci:0300:00:$vendor:????:????:????", GOTO="end-$vendor"\n);
+                my $modalias = modalias($vendor, q(????));
+                print FILE qq(  ENV{MODALIAS}!="$modalias", GOTO="end-$vendor"\n);
                 $vendor_previous = $vendor;
             }
-            my $mm_detect_id = qq(pci:0300:00:$vendor:$product:????);
-            print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:$vendor:$product:????:????", ENV{mm_detect_state_video}="$driver"\n);
+            my $modalias = modalias($vendor, $product);
+            print FILE qq(  ENV{MODALIAS}=="$modalias", ENV{mm_detect_state_video}="$driver"\n);
+
         }
     }
     if (defined($vendor_previous))
@@ -164,35 +217,6 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
         print FILE qq(  LABEL="end-$vendor_previous"\n);
         print FILE qq(\n);
     }
-    print FILE qq(#-------------------------------------------------------------------------------\n);
-    print FILE qq(# NVIDIA\n);
-    print FILE qq(#-------------------------------------------------------------------------------\n);
-    print FILE qq(\n);
-    print FILE qq(  ENV{mm_detect_id}!="pci:0300:00:10de:????:????:????", GOTO="end-10de"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:????:????:????", ENV{mm_detect_state_video}="nvidia"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0020:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0028:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0029:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:002c:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:002d:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:00a0:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0100:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0101:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0103:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0150:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0151:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0152:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:10de:0153:????:????", ENV{mm_detect_state_video}="nv"\n);
-    print FILE qq(  LABEL="end-10de"\n);
-    print FILE qq(\n);
-    print FILE qq(#-------------------------------------------------------------------------------\n);
-    print FILE qq(# VMware\n);
-    print FILE qq(#-------------------------------------------------------------------------------\n);
-    print FILE qq(\n);
-    print FILE qq(  ENV{mm_detect_id}!="pci:0300:00:15ad:????:????:????", GOTO="end-15ad"\n);
-    print FILE qq(  ENV{mm_detect_id}=="pci:0300:00:15ad:0405:????:????", ENV{mm_detect_state_video}="vmware"\n);
-    print FILE qq(  LABEL="end-15ad"\n);
-    print FILE qq(\n);
     print FILE qq(# The state has been set, so save it.\n);
     print FILE qq(ENV{mm_detect_state_video}=="?*", RUN+="/lib/udev/mm_detect video %k \$env{mm_detect_state_video}"\n);
     print FILE qq(\n);
