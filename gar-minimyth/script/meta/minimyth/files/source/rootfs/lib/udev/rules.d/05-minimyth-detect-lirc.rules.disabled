@@ -6,10 +6,8 @@
 #
 # For an LIRC device not in the lirc subsystem, the LIRC driver is not the
 # default LIRC driver. As a result, further detection is needed. For this
-# detection, mm_detect_id is used.
+# detection, modalias is used.
 #
-# mm_detect_id has the following format:
-#     usb:<idVendor>:<idProduct>
 # mm_detect_state_lirc has the following format:
 #     <driver>
 # where
@@ -35,18 +33,15 @@ LABEL="end-lirc"
 
 SUBSYSTEM=="lirc", GOTO="end-nonlirc"
 
-# Import mm_detect_id.
-IMPORT{program}="/lib/udev/mm_detect_id"
-
 # Initialize state
 ENV{mm_detect_state_lirc}=""
 
 #-------------------------------------------------------------------------------
 # non-lirc device list
 #-------------------------------------------------------------------------------
-  ENV{mm_detect_id}=="usb:0766:0204", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_0766_0204"
-  ENV{mm_detect_id}=="usb:0fe9:9010", ENV{mm_detect_state_lirc}="dvico,"
-  ENV{mm_detect_id}=="usb:147a:e02d", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_147a_e02d"
+  ENV{MODALIAS}=="usb:v0766p0204d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_0766_0204"
+  ENV{MODALIAS}=="usb:v0FE9p9010d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="dvico,"
+  ENV{MODALIAS}=="usb:v147ApE02Dd*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_147a_e02d"
 
 LABEL="end-nonlirc"
 
