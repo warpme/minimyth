@@ -1,9 +1,12 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.8.0
+GARVERSION = 2.7.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-pkg_config.patch
+ifeq ("$(GARVERSION)","2.7.1")
+PATCHFILES += $(DISTNAME)-ticket-21371.patch
+endif
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -12,14 +15,12 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
-	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -28,6 +29,11 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
+ifneq ("$(GARVERSION)","2.7.1")
+DEPENDS += \
+	$(CATEGORY)/dri2proto \
+	$(CATEGORY)/libXfixes
+endif
 BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
@@ -43,12 +49,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-dri \
 	--disable-video-debug \
-	--disable-debug \
 	--enable-xvmc \
-	--disable-shave \
 	--with-gnu-ld
+ifneq ("$(GARVERSION)","2.7.1")
+CONFIGURE_ARGS += \
+	--disable-debug \
+	--disable-shave
+endif
 
-x_CONFIGURE_ENV = \
+CONFIGURE_ENV = \
 	XORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
