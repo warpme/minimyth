@@ -19,6 +19,7 @@ DEPENDS = \
 	utils/alsa-utils \
 	utils/busybox \
 	net/curl \
+	disk/e2fsprogs \
 	disk/eject \
 	utils/ethtool \
 	devel/fakeroot \
