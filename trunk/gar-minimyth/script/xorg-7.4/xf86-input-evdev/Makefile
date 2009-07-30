@@ -1,5 +1,5 @@
 GARNAME = xf86-input-evdev
-GARVERSION = 2.2.2
+GARVERSION = 2.2.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,7 +12,6 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/inputproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
