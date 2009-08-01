@@ -37,7 +37,7 @@ source-update-patches:
 		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
 		cd ../../ || exit 1 ; \
 		rm -f checksums~ || exit 1 ; \
-		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ || exit 1 ; \
+		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ || true ; \
 		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
 		rm -f checksums || exit 1 ; \
 		mv -f checksums~ checksums || exit 1 ; )
