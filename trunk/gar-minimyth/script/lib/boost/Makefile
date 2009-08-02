@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++
+DEPENDS = lang/c++ utils/bzip2
 
 WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))
 
