@@ -1,6 +1,6 @@
 diff -Naur ffmpeg-19557.29463-old/libavcodec/allcodecs.c ffmpeg-19557.29463-new/libavcodec/allcodecs.c
---- ffmpeg-19557.29463-old/libavcodec/allcodecs.c	2009-08-01 10:59:24.000000000 -0700
-+++ ffmpeg-19557.29463-new/libavcodec/allcodecs.c	2009-08-01 10:59:24.000000000 -0700
+--- ffmpeg-19557.29463-old/libavcodec/allcodecs.c	2009-08-01 10:59:01.000000000 -0700
++++ ffmpeg-19557.29463-new/libavcodec/allcodecs.c	2009-08-05 14:02:32.000000000 -0700
 @@ -55,6 +55,7 @@
  
      /* hardware accelerators */
@@ -10,22 +10,31 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/allcodecs.c ffmpeg-19557.29463-new/
      REGISTER_HWACCEL (MPEG4_VAAPI, mpeg4_vaapi);
      REGISTER_HWACCEL (VC1_VAAPI, vc1_vaapi);
 diff -Naur ffmpeg-19557.29463-old/libavcodec/Makefile ffmpeg-19557.29463-new/libavcodec/Makefile
---- ffmpeg-19557.29463-old/libavcodec/Makefile	2009-08-01 10:59:24.000000000 -0700
-+++ ffmpeg-19557.29463-new/libavcodec/Makefile	2009-08-01 10:59:24.000000000 -0700
+--- ffmpeg-19557.29463-old/libavcodec/Makefile	2009-08-01 10:59:01.000000000 -0700
++++ ffmpeg-19557.29463-new/libavcodec/Makefile	2009-08-05 14:02:32.000000000 -0700
+@@ -3,7 +3,7 @@
+ NAME = avcodec
+ FFLIBS = avutil
+ 
+-HEADERS = avcodec.h opt.h vdpau.h xvmc.h
++HEADERS = avcodec.h opt.h vaapi.h vdpau.h xvmc.h
+ 
+ OBJS = allcodecs.o                                                      \
+        audioconvert.o                                                   \
 @@ -109,6 +109,7 @@
  OBJS-$(CONFIG_H263P_ENCODER)           += mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
  OBJS-$(CONFIG_H264_DECODER)            += h264.o h264idct.o h264pred.o h264_parser.o cabac.o mpegvideo.o error_resilience.o
  OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dspenc.o
-+OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += h264.o h264idct.o h264pred.o h264_parser.o cabac.o mpegvideo.o error_resilience.o vaapi.o vaapi_h264.o
++OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += vaapi_h264.o
  OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
  OBJS-$(CONFIG_HUFFYUV_ENCODER)         += huffyuv.o
  OBJS-$(CONFIG_IDCIN_DECODER)           += idcinvideo.o
 diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new/libavcodec/vaapi_h264.c
 --- ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-19557.29463-new/libavcodec/vaapi_h264.c	2009-08-01 10:59:24.000000000 -0700
-@@ -0,0 +1,360 @@
++++ ffmpeg-19557.29463-new/libavcodec/vaapi_h264.c	2009-08-05 14:02:32.000000000 -0700
+@@ -0,0 +1,353 @@
 +/*
-+ * H.264 HW decode acceleration through VAAPI
++ * H.264 HW decode acceleration through VA API
 + *
 + * Copyright (C) 2008-2009 Splitted-Desktop Systems
 + *
@@ -49,12 +58,12 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +#include "vaapi_internal.h"
 +#include "h264.h"
 +
-+/** @file 
-+ *  This file implements the glue code between FFmpeg's and VAAPI's structures.
++/** @file
++ *  This file implements the glue code between FFmpeg's and VA API's
++ *  structures for H.264 decoding.
 + */
 +
-+/** Reconstruct bitstream slice_type.
-+ */
++/** Reconstruct bitstream slice_type. */
 +static int get_slice_type(H264Context *h)
 +{
 +    switch (h->slice_type) {
@@ -67,7 +76,10 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    }
 +}
 +
-+/** Initialize an empty VAAPI picture.
++/**
++ * Initialize an empty VA API picture.
++ *
++ * VA API requires a fixed-size reference picture array.
 + */
 +static void init_vaapi_pic(VAPictureH264 *va_pic)
 +{
@@ -77,15 +89,17 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    va_pic->BottomFieldOrderCnt = 0;
 +}
 +
-+/** Translate an FFmpeg Picture into its VAAPI form.
-+ *  @param[out] va_pic          A pointer to VAAPI's own picture struct
-+ *  @param[in]  pic             A pointer to the FFmpeg picture struct to convert
-+ *  @param[in]  pic_structure   The picture field type (as defined in mpegvideo.h),
-+ *                              supersede pic's field type if nonzero.
++/**
++ * Translate an FFmpeg Picture into its VA API form.
++ *
++ * @param[out] va_pic          A pointer to VA API's own picture struct
++ * @param[in]  pic             A pointer to the FFmpeg picture struct to convert
++ * @param[in]  pic_structure   The picture field type (as defined in mpegvideo.h),
++ *                             supersedes pic's field type if nonzero.
 + */
-+static void fill_vaapi_pic(VAPictureH264  *va_pic,
-+                           Picture        *pic,
-+                           int             pic_structure)
++static void fill_vaapi_pic(VAPictureH264 *va_pic,
++                           Picture       *pic,
++                           int            pic_structure)
 +{
 +    if (pic_structure == 0)
 +        pic_structure = pic->reference;
@@ -93,7 +107,7 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    va_pic->picture_id = ff_vaapi_get_surface(pic);
 +    va_pic->frame_idx  = pic->long_ref ? pic->pic_id : pic->frame_num;
 +
-+    va_pic->flags = 0;
++    va_pic->flags      = 0;
 +    if (pic_structure != PICT_FRAME)
 +        va_pic->flags |= (pic_structure & PICT_TOP_FIELD) ? VA_PICTURE_H264_TOP_FIELD : VA_PICTURE_H264_BOTTOM_FIELD;
 +    if (pic->reference)
@@ -108,22 +122,20 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +        va_pic->BottomFieldOrderCnt = pic->field_poc[1];
 +}
 +
-+/** Decoded picture buffer.
-+ */
++/** Decoded Picture Buffer (DPB). */
 +typedef struct DPB {
 +    unsigned int   size;
 +    unsigned int   max_size;
 +    VAPictureH264 *pics;
 +} DPB;
 +
-+/** Append picture to the decoded picture buffer, in a VAAPI form that
-+ *  merges the second field picture attributes with the first, if available.
-+ *  The decoded picture buffer's size must be large enough
-+ *  to receive the new VAAPI picture object.
-+ *
-+ *  VAAPI decoded pictures merge both field when present.
++/**
++ * Append picture to the decoded picture buffer, in a VA API form that
++ * merges the second field picture attributes with the first, if
++ * available.  The decoded picture buffer's size must be large enough
++ * to receive the new VA API picture object.
 + */
-+static int append_to_vaapi_decoded_pic_buf(DPB *dpb, Picture *pic)
++static int dpb_add(DPB *dpb, Picture *pic)
 +{
 +    unsigned int i;
 +
@@ -131,23 +143,18 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +        return -1;
 +
 +    for (i = 0; i < dpb->size; i++) {
-+        VAPictureH264 * const merged_va_pic = &dpb->pics[i];
++        VAPictureH264 * const va_pic = &dpb->pics[i];
++        if (va_pic->picture_id == ff_vaapi_get_surface(pic)) {
++            VAPictureH264 temp_va_pic;
++            fill_vaapi_pic(&temp_va_pic, pic, 0);
 +
-+        /* Check if the reference picture was already refered in a previous pass */
-+        if (merged_va_pic->picture_id == ff_vaapi_get_surface(pic)) {
-+            /* Don't overwrite our reference, use a temporary */
-+            VAPictureH264 tmp_va_pic;
-+            fill_vaapi_pic(&tmp_va_pic, pic, 0);
-+
-+            if ((tmp_va_pic.flags ^ merged_va_pic->flags) & (VA_PICTURE_H264_TOP_FIELD | VA_PICTURE_H264_BOTTOM_FIELD)) {
-+                /* Merge second field. */
-+                merged_va_pic->flags |= tmp_va_pic.flags & (VA_PICTURE_H264_TOP_FIELD | VA_PICTURE_H264_BOTTOM_FIELD);
-+
-+                if (tmp_va_pic.flags & VA_PICTURE_H264_TOP_FIELD) {
-+                    merged_va_pic->TopFieldOrderCnt    = tmp_va_pic.TopFieldOrderCnt;
-+                } else {
-+                    merged_va_pic->BottomFieldOrderCnt = tmp_va_pic.BottomFieldOrderCnt;
-+                }
++            if ((temp_va_pic.flags ^ va_pic->flags) & (VA_PICTURE_H264_TOP_FIELD | VA_PICTURE_H264_BOTTOM_FIELD)) {
++                va_pic->flags |= temp_va_pic.flags & (VA_PICTURE_H264_TOP_FIELD | VA_PICTURE_H264_BOTTOM_FIELD);
++                /* Merge second field */
++                if (temp_va_pic.flags & VA_PICTURE_H264_TOP_FIELD)
++                    va_pic->TopFieldOrderCnt    = temp_va_pic.TopFieldOrderCnt;
++                else
++                    va_pic->BottomFieldOrderCnt = temp_va_pic.BottomFieldOrderCnt;
 +            }
 +            return 0;
 +        }
@@ -157,14 +164,9 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    return 0;
 +}
 +
-+/** Prepare VAAPI's reference frames array.
-+ *  Called when starting decoding a frame, this function fills the
-+ *  reference frame array with per-frame values.
-+ *  This is required because VAAPI need interlaced fields reference
-+ *  to be merged in its reference array.
-+ */
-+static int prepare_vaapi_reference_frame_array(VAPictureParameterBufferH264 *pic_param, 
-+                                               H264Context                  *h)
++/** Fill in VA API reference frames array. */
++static int fill_vaapi_ReferenceFrames(VAPictureParameterBufferH264 *pic_param,
++                                      H264Context                  *h)
 +{
 +    DPB dpb;
 +    unsigned int i, list;
@@ -175,27 +177,25 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    for (i = 0; i < dpb.max_size; i++)
 +        init_vaapi_pic(&dpb.pics[i]);
 +
-+    /* For each refered picture in the current decoding context, 
-+       prepare a decoded picture buffer to hold it */
 +    for (list = 0; list < h->list_count; list++)
 +        for (i = 0; i < h->ref_count[list]; i++) {
 +            Picture * const pic = &h->ref_list[list][i];
-+            if (pic->reference && append_to_vaapi_decoded_pic_buf(&dpb, pic) < 0)
++            if (pic->reference && dpb_add(&dpb, pic) < 0)
 +                return -1;
 +        }
 +    return 0;
 +}
 +
-+/** Fill VAAPI reference picture lists.
-+ *  Called for each field in slice, it fills the reference picture
-+ *  list for that field.
-+ *  @param[out] RefPicList  VAAPI internal reference picture list
-+ *  @param[in]  ref_list    A pointer to the FFmpeg reference list
-+ *  @param[in]  ref_count   The number of reference pictures in ref_list
++/**
++ * Fill in VA API reference picture lists from the FFmpeg reference picture list.
++ *
++ * @param[out] RefPicList  VA API internal reference picture list
++ * @param[in]  ref_list    A pointer to the FFmpeg reference list
++ * @param[in]  ref_count   The number of reference pictures in ref_list
 + */
-+static void fill_vaapi_reference_pic_list(VAPictureH264 RefPicList[32], 
-+                                          Picture *     ref_list, 
-+                                          unsigned int  ref_count)
++static void fill_vaapi_RefPicList(VAPictureH264 RefPicList[32],
++                                  Picture      *ref_list,
++                                  unsigned int  ref_count)
 +{
 +    unsigned int i, n = 0;
 +    for (i = 0; i < ref_count; i++)
@@ -206,19 +206,23 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +        init_vaapi_pic(&RefPicList[n]);
 +}
 +
-+/** Initialize prediction weight table.
-+ *  VAAPI requires a plain prediction weight table as it does not infer 
-+ *  any value.
-+ *  @param[in]  h                   A pointer to the current H.264 context
-+ *  @param[in]  list                The reference frame list index to use
-+ *  @param[out] luma_weight_flag    VAAPI plain luma weight flag 
-+ *  @param[out] luma_weight         VAAPI plain luma weight table 
-+ *  @param[out] luma_offset         VAAPI plain luma offset table  
-+ *  @param[out] chroma_weight_flag  VAAPI plain chroma weight flag  
-+ *  @param[out] chroma_weight       VAAPI plain chroma weight table
-+ *  @param[out] chroma_offset       VAAPI plain chroma offset table
++/**
++ * Fill in prediction weight table.
++ *
++ * VA API requires a plain prediction weight table as it does not infer
++ * any value.
++ *
++ * @param[in]  h                   A pointer to the current H.264 context
++ * @param[in]  list                The reference frame list index to use
++ * @param[out] luma_weight_flag    VA API plain luma weight flag
++ * @param[out] luma_weight         VA API plain luma weight table
++ * @param[out] luma_offset         VA API plain luma offset table
++ * @param[out] chroma_weight_flag  VA API plain chroma weight flag
++ * @param[out] chroma_weight       VA API plain chroma weight table
++ * @param[out] chroma_offset       VA API plain chroma offset table
 + */
-+static void fill_vaapi_plain_pred_weight_table(H264Context *h, int list,
++static void fill_vaapi_plain_pred_weight_table(H264Context   *h,
++                                               int            list,
 +                                               unsigned char *luma_weight_flag,
 +                                               short          luma_weight[32],
 +                                               short          luma_offset[32],
@@ -232,7 +236,7 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    *chroma_weight_flag  = h->chroma_weight_flag[list];
 +
 +    for (i = 0; i < h->ref_count[list]; i++) {
-+        /* VAAPI also wants the inferred (default) values, not
++        /* VA API also wants the inferred (default) values, not
 +           only what is available in the bitstream (7.4.3.2). */
 +        if (h->luma_weight_flag[list]) {
 +            luma_weight[i] = h->luma_weight[list][i];
@@ -253,11 +257,10 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    }
 +}
 +
-+/** Initialize and start decoding a frame with VAAPI.
-+ */
-+static int start_frame(AVCodecContext *          avctx, 
-+                       av_unused const uint8_t * buffer, 
-+                       av_unused uint32_t        size)
++/** Initialize and start decoding a frame with VA API. */
++static int start_frame(AVCodecContext          *avctx,
++                       av_unused const uint8_t *buffer,
++                       av_unused uint32_t       size)
 +{
 +    H264Context * const h = avctx->priv_data;
 +    MpegEncContext * const s = &h->s;
@@ -274,12 +277,12 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    if (!pic_param)
 +        return -1;
 +    fill_vaapi_pic(&pic_param->CurrPic, s->current_picture_ptr, s->picture_structure);
-+    if (prepare_vaapi_reference_frame_array(pic_param, h) < 0)
++    if (fill_vaapi_ReferenceFrames(pic_param, h) < 0)
 +        return -1;
 +    pic_param->picture_width_in_mbs_minus1                      = s->mb_width - 1;
 +    pic_param->picture_height_in_mbs_minus1                     = s->mb_height - 1;
-+    pic_param->bit_depth_luma_minus8                            = h->sps.bit_depth_luma   - 8;
-+    pic_param->bit_depth_chroma_minus8                          = h->sps.bit_depth_chroma - 8;
++    pic_param->bit_depth_luma_minus8                            = h->sps.bit_depth_luma >= 8 ? h->sps.bit_depth_luma - 8 : 0;
++    pic_param->bit_depth_chroma_minus8                          = h->sps.bit_depth_chroma >= 8 ? h->sps.bit_depth_chroma - 8 : 0;
 +    pic_param->num_ref_frames                                   = h->sps.ref_frame_count;
 +    pic_param->seq_fields.value                                 = 0; /* reset all bits */
 +    pic_param->seq_fields.bits.chroma_format_idc                = h->sps.chroma_format_idc;
@@ -322,8 +325,7 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    return 0;
 +}
 +
-+/** Finish hardware decoding of the frame.
-+ */
++/** End a hardware decoding based frame. */
 +static int end_frame(AVCodecContext *avctx)
 +{
 +    H264Context * const h = avctx->priv_data;
@@ -332,8 +334,7 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    return ff_vaapi_common_end_frame(&h->s);
 +}
 +
-+/** Decode the given H.264 slice with VAAPI.
-+ */
++/** Decode the given H.264 slice with VA API. */
 +static int decode_slice(AVCodecContext *avctx,
 +                        const uint8_t  *buffer,
 +                        uint32_t        size)
@@ -352,17 +353,18 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new
 +    slice_param->first_mb_in_slice              = (s->mb_y >> FIELD_OR_MBAFF_PICTURE) * s->mb_width + s->mb_x;
 +    slice_param->slice_type                     = get_slice_type(h);
 +    slice_param->direct_spatial_mv_pred_flag    = h->slice_type == FF_B_TYPE ? h->direct_spatial_mv_pred : 0;
-+    slice_param->num_ref_idx_l0_active_minus1   = h->ref_count[0] - 1;
-+    slice_param->num_ref_idx_l1_active_minus1   = h->ref_count[1] - 1;
++    slice_param->num_ref_idx_l0_active_minus1   = h->list_count > 0 ? h->ref_count[0] - 1 : 0;
++    slice_param->num_ref_idx_l1_active_minus1   = h->list_count > 1 ? h->ref_count[1] - 1 : 0;
 +    slice_param->cabac_init_idc                 = h->cabac_init_idc;
 +    slice_param->slice_qp_delta                 = s->qscale - h->pps.init_qp;
 +    slice_param->disable_deblocking_filter_idc  = h->deblocking_filter < 2 ? !h->deblocking_filter : h->deblocking_filter;
 +    slice_param->slice_alpha_c0_offset_div2     = h->slice_alpha_c0_offset / 2;
 +    slice_param->slice_beta_offset_div2         = h->slice_beta_offset / 2;
-+    fill_vaapi_reference_pic_list(slice_param->RefPicList0, h->ref_list[0], h->list_count > 0 ? h->ref_count[0] : 0);
-+    fill_vaapi_reference_pic_list(slice_param->RefPicList1, h->ref_list[1], h->list_count > 1 ? h->ref_count[1] : 0);
 +    slice_param->luma_log2_weight_denom         = h->luma_log2_weight_denom;
 +    slice_param->chroma_log2_weight_denom       = h->chroma_log2_weight_denom;
++
++    fill_vaapi_RefPicList(slice_param->RefPicList0, h->ref_list[0], h->list_count > 0 ? h->ref_count[0] : 0);
++    fill_vaapi_RefPicList(slice_param->RefPicList1, h->ref_list[1], h->list_count > 1 ? h->ref_count[1] : 0);
 +
 +    fill_vaapi_plain_pred_weight_table(h, 0,
 +                                       &slice_param->luma_weight_l0_flag,   slice_param->luma_weight_l0,   slice_param->luma_offset_l0,
