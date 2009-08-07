@@ -1,6 +1,24 @@
 diff -Naur lcdproc-0.5.3-old/acinclude.m4 lcdproc-0.5.3-new/acinclude.m4
 --- lcdproc-0.5.3-old/acinclude.m4	2009-05-18 23:44:46.000000000 -0700
-+++ lcdproc-0.5.3-new/acinclude.m4	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/acinclude.m4	2009-08-06 17:12:09.000000000 -0700
+@@ -8,7 +8,7 @@
+ 	[  --enable-drivers=<list> compile drivers for LCDs in <list>,]
+ 	[                  which is a comma-separated list of drivers.]
+ 	[                  Possible drivers are:]
+-	[                    bayrad,CFontz,CFontz633,CFontzPacket,curses,CwLnx,ea65,]
++	[                    bayrad,CFontz,CFontz633,CFontzPacket,curses,CwLnx,dm140,ea65,]
+ 	[                    EyeboxOne,g15,glcdlib,glk,hd44780,i2500vfd,icp_a106,imon,imonlcd,]
+ 	[                    IOWarrior,irman,irtrans,joy,lb216,lcdm001,lcterm,lirc,lis,]
+ 	[                    MD8800,ms6931,mtc_s16209x,MtxOrb,mx5000,NoritakeVFD,picolcd,]
+@@ -19,7 +19,7 @@
+ 	drivers="$enableval",
+ 	drivers=[bayrad,CFontz,CFontz633,curses,CwLnx,glk,lb216,lcdm001,MtxOrb,pyramid,text])
+ 
+-allDrivers=[bayrad,CFontz,CFontz633,CFontzPacket,curses,CwLnx,ea65,EyeboxOne,g15,glcdlib,glk,hd44780,i2500vfd,icp_a106,imon,imonlcd,IOWarrior,irman,irtrans,joy,lb216,lcdm001,lcterm,lirc,lis,MD8800,ms6931,mtc_s16209x,MtxOrb,mx5000,NoritakeVFD,picolcd,pyramid,sed1330,sed1520,serialPOS,serialVFD,shuttleVFD,sli,stv5730,svga,t6963,text,tyan,ula200,xosd]
++allDrivers=[bayrad,CFontz,CFontz633,CFontzPacket,curses,dm140,CwLnx,ea65,EyeboxOne,g15,glcdlib,glk,hd44780,i2500vfd,icp_a106,imon,imonlcd,IOWarrior,irman,irtrans,joy,lb216,lcdm001,lcterm,lirc,lis,MD8800,ms6931,mtc_s16209x,MtxOrb,mx5000,NoritakeVFD,picolcd,pyramid,sed1330,sed1520,serialPOS,serialVFD,shuttleVFD,sli,stv5730,svga,t6963,text,tyan,ula200,xosd]
+ 
+ drivers=`echo $drivers | sed -e 's/,/ /g'`
+ 
 @@ -128,6 +128,10 @@
  			DRIVERS="$DRIVERS CwLnx${SO}"
  			actdrivers=["$actdrivers CwLnx"]
@@ -14,7 +32,7 @@ diff -Naur lcdproc-0.5.3-old/acinclude.m4 lcdproc-0.5.3-new/acinclude.m4
  			actdrivers=["$actdrivers ea65"]
 diff -Naur lcdproc-0.5.3-old/LCDd.conf lcdproc-0.5.3-new/LCDd.conf
 --- lcdproc-0.5.3-old/LCDd.conf	2009-06-20 06:48:34.000000000 -0700
-+++ lcdproc-0.5.3-new/LCDd.conf	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/LCDd.conf	2009-08-06 15:28:12.000000000 -0700
 @@ -304,6 +304,10 @@
  
  
@@ -28,7 +46,7 @@ diff -Naur lcdproc-0.5.3-old/LCDd.conf lcdproc-0.5.3-new/LCDd.conf
  
 diff -Naur lcdproc-0.5.3-old/server/drivers/dm140.c lcdproc-0.5.3-new/server/drivers/dm140.c
 --- lcdproc-0.5.3-old/server/drivers/dm140.c	1969-12-31 16:00:00.000000000 -0800
-+++ lcdproc-0.5.3-new/server/drivers/dm140.c	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/dm140.c	2009-08-06 15:28:12.000000000 -0700
 @@ -0,0 +1,241 @@
 +/*  
 + *  dm1400 vfd driver (c)2007 Henrik Larsson 
@@ -273,7 +291,7 @@ diff -Naur lcdproc-0.5.3-old/server/drivers/dm140.c lcdproc-0.5.3-new/server/dri
 +
 diff -Naur lcdproc-0.5.3-old/server/drivers/dm140.h lcdproc-0.5.3-new/server/drivers/dm140.h
 --- lcdproc-0.5.3-old/server/drivers/dm140.h	1969-12-31 16:00:00.000000000 -0800
-+++ lcdproc-0.5.3-new/server/drivers/dm140.h	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/dm140.h	2009-08-06 15:28:12.000000000 -0700
 @@ -0,0 +1,38 @@
 +#ifndef DM140_H
 +#define DM140_H
@@ -315,7 +333,7 @@ diff -Naur lcdproc-0.5.3-old/server/drivers/dm140.h lcdproc-0.5.3-new/server/dri
 +#endif
 diff -Naur lcdproc-0.5.3-old/server/drivers/led.c lcdproc-0.5.3-new/server/drivers/led.c
 --- lcdproc-0.5.3-old/server/drivers/led.c	1969-12-31 16:00:00.000000000 -0800
-+++ lcdproc-0.5.3-new/server/drivers/led.c	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/led.c	2009-08-06 15:28:12.000000000 -0700
 @@ -0,0 +1,1065 @@
 +/* File modified by Henrik Larsson 2007 to interface with LCDproc API
 + */
@@ -1384,7 +1402,7 @@ diff -Naur lcdproc-0.5.3-old/server/drivers/led.c lcdproc-0.5.3-new/server/drive
 +}
 diff -Naur lcdproc-0.5.3-old/server/drivers/led.h lcdproc-0.5.3-new/server/drivers/led.h
 --- lcdproc-0.5.3-old/server/drivers/led.h	1969-12-31 16:00:00.000000000 -0800
-+++ lcdproc-0.5.3-new/server/drivers/led.h	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/led.h	2009-08-06 15:28:12.000000000 -0700
 @@ -0,0 +1,29 @@
 +#ifndef LED_H
 +#define LED_H
@@ -1417,7 +1435,7 @@ diff -Naur lcdproc-0.5.3-old/server/drivers/led.h lcdproc-0.5.3-new/server/drive
 +#endif
 diff -Naur lcdproc-0.5.3-old/server/drivers/libvfd.h lcdproc-0.5.3-new/server/drivers/libvfd.h
 --- lcdproc-0.5.3-old/server/drivers/libvfd.h	1969-12-31 16:00:00.000000000 -0800
-+++ lcdproc-0.5.3-new/server/drivers/libvfd.h	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/libvfd.h	2009-08-06 15:28:12.000000000 -0700
 @@ -0,0 +1,183 @@
 +/* Header for libvfd
 + * Copyright (C) 2006, Advanced Micro Devices, Inc.
@@ -1604,7 +1622,7 @@ diff -Naur lcdproc-0.5.3-old/server/drivers/libvfd.h lcdproc-0.5.3-new/server/dr
 +#endif
 diff -Naur lcdproc-0.5.3-old/server/drivers/Makefile.am lcdproc-0.5.3-new/server/drivers/Makefile.am
 --- lcdproc-0.5.3-old/server/drivers/Makefile.am	2009-05-18 23:44:57.000000000 -0700
-+++ lcdproc-0.5.3-new/server/drivers/Makefile.am	2009-06-24 07:42:01.000000000 -0700
++++ lcdproc-0.5.3-new/server/drivers/Makefile.am	2009-08-06 15:28:12.000000000 -0700
 @@ -19,7 +19,7 @@
  #LIBS =
  
