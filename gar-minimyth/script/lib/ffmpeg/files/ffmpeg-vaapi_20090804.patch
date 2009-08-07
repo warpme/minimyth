@@ -1,6 +1,6 @@
-diff -Naur ffmpeg-19557.29463-old/libavcodec/allcodecs.c ffmpeg-19557.29463-new/libavcodec/allcodecs.c
---- ffmpeg-19557.29463-old/libavcodec/allcodecs.c	2009-08-01 10:59:01.000000000 -0700
-+++ ffmpeg-19557.29463-new/libavcodec/allcodecs.c	2009-08-05 14:02:32.000000000 -0700
+diff -Naur ffmpeg-19605.29479-old/libavcodec/allcodecs.c ffmpeg-19605.29479-new/libavcodec/allcodecs.c
+--- ffmpeg-19605.29479-old/libavcodec/allcodecs.c	2009-08-06 19:12:40.000000000 -0700
++++ ffmpeg-19605.29479-new/libavcodec/allcodecs.c	2009-08-06 19:15:30.000000000 -0700
 @@ -55,6 +55,7 @@
  
      /* hardware accelerators */
@@ -9,9 +9,9 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/allcodecs.c ffmpeg-19557.29463-new/
      REGISTER_HWACCEL (MPEG2_VAAPI, mpeg2_vaapi);
      REGISTER_HWACCEL (MPEG4_VAAPI, mpeg4_vaapi);
      REGISTER_HWACCEL (VC1_VAAPI, vc1_vaapi);
-diff -Naur ffmpeg-19557.29463-old/libavcodec/Makefile ffmpeg-19557.29463-new/libavcodec/Makefile
---- ffmpeg-19557.29463-old/libavcodec/Makefile	2009-08-01 10:59:01.000000000 -0700
-+++ ffmpeg-19557.29463-new/libavcodec/Makefile	2009-08-05 14:02:32.000000000 -0700
+diff -Naur ffmpeg-19605.29479-old/libavcodec/Makefile ffmpeg-19605.29479-new/libavcodec/Makefile
+--- ffmpeg-19605.29479-old/libavcodec/Makefile	2009-08-06 19:12:40.000000000 -0700
++++ ffmpeg-19605.29479-new/libavcodec/Makefile	2009-08-06 19:15:30.000000000 -0700
 @@ -3,7 +3,7 @@
  NAME = avcodec
  FFLIBS = avutil
@@ -21,17 +21,17 @@ diff -Naur ffmpeg-19557.29463-old/libavcodec/Makefile ffmpeg-19557.29463-new/lib
  
  OBJS = allcodecs.o                                                      \
         audioconvert.o                                                   \
-@@ -109,6 +109,7 @@
- OBJS-$(CONFIG_H263P_ENCODER)           += mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
+@@ -107,6 +107,7 @@
+ OBJS-$(CONFIG_H263_ENCODER)            += mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
  OBJS-$(CONFIG_H264_DECODER)            += h264.o h264idct.o h264pred.o h264_parser.o cabac.o mpegvideo.o error_resilience.o
  OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dspenc.o
 +OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += vaapi_h264.o
  OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
  OBJS-$(CONFIG_HUFFYUV_ENCODER)         += huffyuv.o
  OBJS-$(CONFIG_IDCIN_DECODER)           += idcinvideo.o
-diff -Naur ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c ffmpeg-19557.29463-new/libavcodec/vaapi_h264.c
---- ffmpeg-19557.29463-old/libavcodec/vaapi_h264.c	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-19557.29463-new/libavcodec/vaapi_h264.c	2009-08-05 14:02:32.000000000 -0700
+diff -Naur ffmpeg-19605.29479-old/libavcodec/vaapi_h264.c ffmpeg-19605.29479-new/libavcodec/vaapi_h264.c
+--- ffmpeg-19605.29479-old/libavcodec/vaapi_h264.c	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-19605.29479-new/libavcodec/vaapi_h264.c	2009-08-06 19:15:30.000000000 -0700
 @@ -0,0 +1,353 @@
 +/*
 + * H.264 HW decode acceleration through VA API
