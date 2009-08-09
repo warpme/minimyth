@@ -1,6 +1,6 @@
-diff -Naur mythplugins-trunk-21145-old/configure mythplugins-trunk-21145-new/configure
---- mythplugins-trunk-21145-old/configure	2009-08-06 18:55:38.000000000 -0700
-+++ mythplugins-trunk-21145-new/configure	2009-08-06 18:55:38.000000000 -0700
+diff -Naur mythplugins-trunk-21184-old/configure mythplugins-trunk-21184-new/configure
+--- mythplugins-trunk-21184-old/configure	2009-08-09 11:11:48.000000000 -0700
++++ mythplugins-trunk-21184-new/configure	2009-08-09 11:11:49.000000000 -0700
 @@ -30,6 +30,8 @@
  visual="yes"
  fftw_lib="yes"
@@ -108,9 +108,9 @@ diff -Naur mythplugins-trunk-21145-old/configure mythplugins-trunk-21145-new/con
          echo "        FFTW           support will not be included in MythMusic"
      fi
  
-diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-21145-new/mythmusic/mythmusic/visualize.cpp
---- mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.cpp	2009-08-06 18:55:38.000000000 -0700
-+++ mythplugins-trunk-21145-new/mythmusic/mythmusic/visualize.cpp	2009-08-06 18:55:38.000000000 -0700
+diff -Naur mythplugins-trunk-21184-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-21184-new/mythmusic/mythmusic/visualize.cpp
+--- mythplugins-trunk-21184-old/mythmusic/mythmusic/visualize.cpp	2009-08-09 11:11:48.000000000 -0700
++++ mythplugins-trunk-21184-new/mythmusic/mythmusic/visualize.cpp	2009-08-09 11:11:49.000000000 -0700
 @@ -59,8 +59,8 @@
      rout = (myth_fftw_complex*)
          av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
@@ -177,10 +177,10 @@ diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_one(plan, lin, lout);
      rfftw_one(plan, rin, rout);
-diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-21145-new/mythmusic/mythmusic/visualize.h
---- mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h	2009-08-06 18:55:38.000000000 -0700
-+++ mythplugins-trunk-21145-new/mythmusic/mythmusic/visualize.h	2009-08-06 18:55:38.000000000 -0700
-@@ -25,16 +25,35 @@
+diff -Naur mythplugins-trunk-21184-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-21184-new/mythmusic/mythmusic/visualize.h
+--- mythplugins-trunk-21184-old/mythmusic/mythmusic/visualize.h	2009-08-09 11:11:48.000000000 -0700
++++ mythplugins-trunk-21184-new/mythmusic/mythmusic/visualize.h	2009-08-09 11:11:49.000000000 -0700
+@@ -25,14 +25,35 @@
  extern "C" {
  #ifdef FFTW3_SUPPORT
  #include <fftw3.h>
@@ -203,7 +203,6 @@ diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h mythplugi
 +#define myth_fftw_float float
 +#define myth_fftw_complex std::complex<myth_fftw_float>
  #define myth_fftw_complex_cast fftwf_complex
--#elif (myth_fftw_float == long double)
 +#define myth_fftw_plan fftwf_plan
 +#define myth_fftw_destroy_plan(a) fftwf_destroy_plan(a)
 +#define myth_fftw_execute(a) fftwf_execute(a)
@@ -211,7 +210,7 @@ diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h mythplugi
 +#elif defined (FFTW3_SUPPORT_FFTWL)
 +#define myth_fftw_float long double
 +#define myth_fftw_complex std::complex<myth_fftw_float>
- #define myth_fftw_complex_cast fftwl_complex
++#define myth_fftw_complex_cast fftwl_complex
 +#define myth_fftw_plan fftwl_plan
 +#define myth_fftw_destroy_plan(a) fftwl_destroy_plan(a)
 +#define myth_fftw_execute(a) fftwl_execute(a)
@@ -221,7 +220,7 @@ diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h mythplugi
  #elif	FFTW2_SUPPORT
  #include <rfftw.h>
  #include <fftw.h>
-@@ -72,7 +91,7 @@
+@@ -70,7 +91,7 @@
      int analyzerBarWidth;
  
  #ifdef FFTW3_SUPPORT
@@ -230,7 +229,7 @@ diff -Naur mythplugins-trunk-21145-old/mythmusic/mythmusic/visualize.h mythplugi
      myth_fftw_float *lin, *rin;
      myth_fftw_complex *lout, *rout;
  #elif FFTW2_SUPPORT
-@@ -169,7 +188,7 @@
+@@ -167,7 +188,7 @@
      GLfloat angle, view_roty;
  
  #ifdef FFTW3_SUPPORT
