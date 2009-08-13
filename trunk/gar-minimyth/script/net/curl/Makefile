@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION = 7.19.5
+GARVERSION = 7.19.6
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--enable-optimize \
 	--enable-warnings \
+	--disable-curldebug \
 	--enable-largefile \
 	--enable-shared \
 	--disable-static \
