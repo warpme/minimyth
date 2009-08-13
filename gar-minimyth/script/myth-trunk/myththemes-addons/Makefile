@@ -45,7 +45,6 @@ pre-configure:
 	@echo "themes.files  ="                   >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootube-osd"      >> $(WORKSRC)/themes.pro
 	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
-	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
 	@echo "themes.files += Graphite"          >> $(WORKSRC)/themes.pro
 
 post-install: post-install-mythtv-version
