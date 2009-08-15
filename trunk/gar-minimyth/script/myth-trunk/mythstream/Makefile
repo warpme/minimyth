@@ -10,6 +10,7 @@ PATCHFILES += \
 	$(DISTNAME)-qt_paintevent_fix.patch \
 	$(DISTNAME)-qt_bitblt_replace.patch \
 	$(DISTNAME)-apple_parser_fix.patch \
+	$(DISTNAME)-apple_parser_resolutions.patch \
 	$(DISTNAME)-youtube_parser_fix.patch \
 	$(DISTNAME)-mythtv_0_22.patch \
 	$(DISTNAME)-fftw3f.patch \
