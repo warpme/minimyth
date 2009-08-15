@@ -1,0 +1,184 @@
+diff -Naur mythstream-0.18_1-old/libs/configelements.cpp mythstream-0.18_1-new/libs/configelements.cpp
+--- mythstream-0.18_1-old/libs/configelements.cpp	2006-10-07 07:07:33.000000000 -0700
++++ mythstream-0.18_1-new/libs/configelements.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -78,7 +78,7 @@
+ 
+ // ------------------- Edit group box --------------------
+ 
+-EditGroup::EditGroup(char* title, QWidget* parent) : QVGroupBox(title, parent)
++EditGroup::EditGroup(const char* title, QWidget* parent) : QVGroupBox(title, parent)
+ {
+     myParent = parent;
+     setPalette(parent->palette());
+diff -Naur mythstream-0.18_1-old/libs/configelements.h mythstream-0.18_1-new/libs/configelements.h
+--- mythstream-0.18_1-old/libs/configelements.h	2007-09-22 18:18:09.000000000 -0700
++++ mythstream-0.18_1-new/libs/configelements.h	2009-08-13 22:57:07.000000000 -0700
+@@ -185,7 +185,7 @@
+         idle
+     };
+ 
+-    EditGroup(char* title, QWidget* parent);
++    EditGroup(const char* title, QWidget* parent);
+     ~EditGroup();
+ 
+     void buildGroup(int boxes);
+diff -Naur mythstream-0.18_1-old/libs/storageconfig.cpp mythstream-0.18_1-new/libs/storageconfig.cpp
+--- mythstream-0.18_1-old/libs/storageconfig.cpp	2007-09-05 14:03:14.000000000 -0700
++++ mythstream-0.18_1-new/libs/storageconfig.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -39,7 +39,7 @@
+ {
+ 
+   public:
+-    StorageEditGroup(char* title, StorageConfig* parent) : EditGroup(title, parent)
++    StorageEditGroup(const char* title, StorageConfig* parent) : EditGroup(title, parent)
+     {
+         boxAddTitle  = "Add storage";
+         boxEditTitle = "Edit storage";
+diff -Naur mythstream-0.18_1-old/libs/streambrowser.cpp mythstream-0.18_1-new/libs/streambrowser.cpp
+--- mythstream-0.18_1-old/libs/streambrowser.cpp	2007-09-25 15:47:34.000000000 -0700
++++ mythstream-0.18_1-new/libs/streambrowser.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -2159,10 +2159,12 @@
+   checkAndSetIcon(item);
+   // give *-prefix when item is inserted in the recording folder by recorder
+   if ( folder->getName() == "recordings" )
++  {
+     if ( rec->ident == ident_recorder )
+       item->setPrefix("R");
+     else
+       item->setPrefix("#");
++  }
+ 
+   emit eventValuesUpdated( folderlist );
+ 
+diff -Naur mythstream-0.18_1-old/libs/streamconfig.cpp mythstream-0.18_1-new/libs/streamconfig.cpp
+--- mythstream-0.18_1-old/libs/streamconfig.cpp	2007-09-05 13:36:21.000000000 -0700
++++ mythstream-0.18_1-new/libs/streamconfig.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -54,7 +54,7 @@
+ 
+ // ------------------- Storage Select group box --------------------
+ 
+-MStorageGroup::MStorageGroup(char* title, QWidget* parent, ReposStorage *storageStorage,
++MStorageGroup::MStorageGroup(const char* title, QWidget* parent, ReposStorage *storageStorage,
+                            StreamStorage *streamStorage) : QVGroupBox(title, parent)
+ {
+     myParent = parent;
+@@ -347,35 +347,39 @@
+       newStorage = storages->getStorageValuesByName( values, streams->getStorageName() );
+ 
+       if ( activeStorage != streams->getStorageName() )
+-      if ( oldStorage )
+       {
+-          //cout << "found old: " << activeStorage << endl;
+-
+-          newValues = oldStorageValues;
+-          newValues[r_selected] = "-";
+-
+-          // condition should not fail
+-          if ( oldStorageValues[r_selected] != "-" )
+-            if ( !storages->updateRecord(ident_storagegroup, oldStorageValues, newValues, err) )
+-              reportMessage(err, true);
++          if ( oldStorage )
++          {
++              //cout << "found old: " << activeStorage << endl;
++
++              newValues = oldStorageValues;
++              newValues[r_selected] = "-";
++
++              // condition should not fail
++              if ( oldStorageValues[r_selected] != "-" )
++                if ( !storages->updateRecord(ident_storagegroup, oldStorageValues, newValues, err) )
++                  reportMessage(err, true);
++          }
++          else
++              cerr << "warning: unknown previous connected storage" << endl;
+       }
+-        else
+-          cerr << "warning: unknown previous connected storage" << endl;
+ 
+       
+       if ( activeStorage != streams->getStorageName() )
+-      if ( newStorage )
+       {
+-          // cout << "found new: " << streams->getStorageName() << endl;
+-
+-          newValues = values;
+-          newValues[r_selected] = "*";
+-          if ( values[r_selected] != "*" )
+-            if ( !storages->updateRecord(ident_storagegroup, values, newValues, err) )
+-              reportMessage(err, true);
++          if ( newStorage )
++          {
++              // cout << "found new: " << streams->getStorageName() << endl;
++
++              newValues = values;
++              newValues[r_selected] = "*";
++              if ( values[r_selected] != "*" )
++                if ( !storages->updateRecord(ident_storagegroup, values, newValues, err) )
++                  reportMessage(err, true);
++          }
++          else
++              cerr << "error: unknown previous connected storage" << endl;
+       }
+-        else
+-          cerr << "error: unknown previous connected storage" << endl;
+ 
+       synchronized(false);
+ 
+@@ -417,7 +421,7 @@
+ {
+ 
+   public:
+-    StreamEditGroup(char* title, StreamConfig* parent) : EditGroup(title, parent)
++    StreamEditGroup(const char* title, StreamConfig* parent) : EditGroup(title, parent)
+     {
+         boxAddTitle  = "Add stream";
+         boxEditTitle = "Edit stream";
+@@ -493,7 +497,7 @@
+       edit4 = getLineEdit("edit3");
+       edit5 = getLineEdit("edit4");
+ 
+-      if ( status == add | status == idle )
++      if ( (status == add) | (status == idle) )
+       {
+         streamConfig->createStation(edit1->text(), edit2->text(),
+                                 edit3->text(), edit4->text(), edit5->text());
+diff -Naur mythstream-0.18_1-old/libs/streamconfig.h mythstream-0.18_1-new/libs/streamconfig.h
+--- mythstream-0.18_1-old/libs/streamconfig.h	2007-09-02 14:12:59.000000000 -0700
++++ mythstream-0.18_1-new/libs/streamconfig.h	2009-08-13 22:57:07.000000000 -0700
+@@ -60,7 +60,7 @@
+     Q_OBJECT
+ 
+   public:
+-    MStorageGroup(char* title, QWidget* parent, ReposStorage *storageStorage, StreamStorage *streamStorage);
++    MStorageGroup(const char* title, QWidget* parent, ReposStorage *storageStorage, StreamStorage *streamStorage);
+     ~MStorageGroup();
+ 
+   public slots:
+diff -Naur mythstream-0.18_1-old/libs/streamstatus.cpp mythstream-0.18_1-new/libs/streamstatus.cpp
+--- mythstream-0.18_1-old/libs/streamstatus.cpp	2007-09-18 17:13:45.000000000 -0700
++++ mythstream-0.18_1-new/libs/streamstatus.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -896,7 +896,7 @@
+    delete proc;
+    proc = NULL;
+ 
+-   if ( getStatus() == starting | getStatus() == buffering )
++   if ( (getStatus() == starting) | (getStatus() == buffering) )
+      setStatus(nostream);  // nothing to play,pause or videoinit = no stream
+    else
+      setStatus(stopped);
+diff -Naur mythstream-0.18_1-old/mythstream/mythstream.cpp mythstream-0.18_1-new/mythstream/mythstream.cpp
+--- mythstream-0.18_1-old/mythstream/mythstream.cpp	2007-09-25 15:54:33.000000000 -0700
++++ mythstream-0.18_1-new/mythstream/mythstream.cpp	2009-08-13 22:57:07.000000000 -0700
+@@ -233,10 +233,12 @@
+    if (displayResetDelay != -1 && --displayResetDelay == 0)
+    {
+      if (streamStatus == "playing" || streamStatus == "buffering" )
++     {
+        if (playingVideo)
+          displayStatus = video;
+        else
+          displayStatus = audio;
++     }
+ 
+      if (streamStatus == "idle")
+        displayStatus = browse;
