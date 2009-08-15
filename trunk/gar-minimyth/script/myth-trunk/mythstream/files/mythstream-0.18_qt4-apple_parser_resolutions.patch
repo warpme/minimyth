@@ -1,6 +1,6 @@
 diff -Naur mythstream-0.18_qt4-old/parsers/apple.pl mythstream-0.18_qt4-new/parsers/apple.pl
---- mythstream-0.18_qt4-old/parsers/apple.pl	2009-08-15 11:26:43.000000000 -0700
-+++ mythstream-0.18_qt4-new/parsers/apple.pl	2009-08-15 11:27:27.000000000 -0700
+--- mythstream-0.18_qt4-old/parsers/apple.pl	2009-08-15 11:57:37.000000000 -0700
++++ mythstream-0.18_qt4-new/parsers/apple.pl	2009-08-15 11:58:27.000000000 -0700
 @@ -102,17 +102,15 @@
  	my $TRAILERS_URL_XQL   = 'VBoxView/MatrixView/VBoxView/HBoxView/TextView/GotoURL';
  	my $TRAILERS_TITLE_XQL = 'SetFontStyle/B/textNode()[0]';
@@ -19,7 +19,7 @@ diff -Naur mythstream-0.18_qt4-old/parsers/apple.pl mythstream-0.18_qt4-new/pars
 -				handler => '');
 + 	my $TRAILER_XQL = '/Document/TrackList/plist/dict/array/dict';
 +	my $TRAILER_URL_KEY = 'previewURL';
-+	my $TRAILER_TITLE_KEY = 'playlistName';
++	my $TRAILER_TITLE_KEY = 'songName';
 +
 +	getTrailer($maindoc, $TRAILER_XQL, $TRAILER_TITLE_KEY, $TRAILER_URL_KEY);
  }
@@ -34,7 +34,7 @@ diff -Naur mythstream-0.18_qt4-old/parsers/apple.pl mythstream-0.18_qt4-new/pars
  {
  	my $doc = shift;
  	my $root_xql = shift;
-@@ -158,6 +156,36 @@
+@@ -158,6 +156,27 @@
  	}
  }
  
@@ -52,18 +52,9 @@ diff -Naur mythstream-0.18_qt4-old/parsers/apple.pl mythstream-0.18_qt4-new/pars
 +		my ($url)   = $string =~ /<key>$url_key<\/key><string>(.*?)<\/string>/;
 +		if (($title) && ($url))
 +		{
-+			my ($type) = $url =~ /^.*\.([^.]+)/;
-+			if (($type) && ($type =~ /^mov$/))
-+			{
-+				my ($resolution) = $url =~ /^.*_([^_.]+)\.[^_.]+/;
-+				if ($resolution)
-+				{
-+					$title = $title . ' (' . $resolution . ')';
-+				}
-+				newItem(	name => $title,
-+						url => $url,
-+						handler => '');
-+			}
++			newItem(	name => $title,
++					url => $url,
++					handler => '');
 +		}
 +	}
 +}
