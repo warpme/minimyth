@@ -1,0 +1,235 @@
+diff -Naur mythstream-0.18_1-old/mythstream/mythstream.cpp mythstream-0.18_1-new/mythstream/mythstream.cpp
+--- mythstream-0.18_1-old/mythstream/mythstream.cpp	2009-08-14 22:12:36.000000000 -0700
++++ mythstream-0.18_1-new/mythstream/mythstream.cpp	2009-08-14 22:13:07.000000000 -0700
+@@ -88,10 +88,10 @@
+ {
+ }
+ 
+-void setPainterCol(QPainter *p, QColor col)
++void setPainterCol(QPainter &p, QColor col)
+ {
+-   p->setPen( col );
+-   p->setBrush( QBrush(col, QBrush::SolidPattern) );
++   p.setPen( col );
++   p.setBrush( QBrush(col, QBrush::SolidPattern) );
+ }
+ 
+ void FFTBox::buildFFTBackground()
+@@ -106,9 +106,11 @@
+     fftPict = QPixmap(bckPict);
+     QColor col = QColor(0x07, 0x99, 0);
+ 
+-    QPainter *painter = new QPainter( &fftPict );
+-    painter->setPen( col );
+-    painter->setBrush( QBrush(col, SolidPattern) );
++    QPainter p;
++
++    p.begin( &fftPict );
++    p.setPen( col );
++    p.setBrush( QBrush(col, SolidPattern) );
+ 
+     int barHeight = height();
+     int divSpace = 2;
+@@ -123,13 +125,13 @@
+     for ( int i = 0; i < barCount; i++)
+       for ( int j = 0; j < 20; j++)
+       {
+-        if (j == 0)  setPainterCol(painter, fftLow);
+-        if (j == 5)  setPainterCol(painter, fftMid);
+-        if (j == 10) setPainterCol(painter, fftHigh);
+-        painter->drawRect( i*(barWidth + 2) + 1, barHeight - (j + 1) * (barDiv + divSpace) + divSpace, barWidth, barDiv);
++        if (j == 0)  setPainterCol(p, fftLow);
++        if (j == 5)  setPainterCol(p, fftMid);
++        if (j == 10) setPainterCol(p, fftHigh);
++        p.drawRect( i*(barWidth + 2) + 1, barHeight - (j + 1) * (barDiv + divSpace) + divSpace, barWidth, barDiv);
+       }
+ 
+-    delete(painter);
++    p.end();
+ 
+     fftMask = QBitmap(fftPict.size(), true);
+     drawPict = QPixmap(fftPict.size());
+@@ -146,9 +148,11 @@
+     fftMask.fill(Qt::color0);
+     int barHeight;
+ 
+-    QPainter *painter = new QPainter( &fftMask );
+-    painter->setPen( col );
+-    painter->setBrush( QBrush(col, SolidPattern) );
++    QPainter p;
++
++    p.begin( &fftMask );
++    p.setPen( col );
++    p.setBrush( QBrush(col, SolidPattern) );
+ 
+     if (percentage)
+     {
+@@ -157,20 +161,25 @@
+           barHeight = int ( float( percentage->values[i] ) * div );
+           if ( barHeight > height() ) barHeight = height();
+           if ( barHeight < 0 ) barHeight = 0;
+-          painter->drawRect( i*(barWidth + 2) + 1, height() - barHeight, barWidth, height() );
++          p.drawRect( i*(barWidth + 2) + 1, height() - barHeight, barWidth, height() );
+         }
+     }
+ 
+-    painter->setPen( Qt::color1 );
+-    painter->setBrush( QBrush(Qt::color1, NoBrush) );
+-    painter->drawRect( 0, height()-1, gaugeWidth, height() );
+-    delete(painter);
++    p.setPen( Qt::color1 );
++    p.setBrush( QBrush(Qt::color1, NoBrush) );
++    p.drawRect( 0, height()-1, gaugeWidth, height() );
++    p.end();
+ 
+     fftPict.setMask(fftMask);
+ 
+-    bitBlt(&drawPict, QPoint(0,0), &bckPict, rect(), Qt::CopyROP);
+-    bitBlt(&drawPict, QPoint(0,0), &fftPict, rect(), Qt::CopyROP);
+-    bitBlt(this, QPoint(0,0), &drawPict, rect(), Qt::CopyROP);
++    p.begin( &drawPict );
++    p.drawPixmap(QPoint(0,0), bckPict, rect());
++    p.drawPixmap(QPoint(0,0), fftPict, rect());
++    p.end();
++
++    p.begin( this );
++    p.drawPixmap(QPoint(0,0), drawPict, rect());
++    p.end();
+ }
+ 
+ void FFTBox::setPercentage(Spectrum* percent)
+@@ -757,7 +766,7 @@
+         if (clearVideo)
+         {
+           clearOnly = true; // oops, gui is mess... (clear video window)
+-          update(m_BotRect);
++          update(m_TopRect|m_MidRect|m_BotRect);
+           clearVideo = false;
+         }
+ 
+@@ -853,8 +862,14 @@
+     if ( playerState.pollMe() )
+     {
+       if ( playerState.getDisplayStatus() == PlayerState::video )
++      {
+         streamBrowser->showVideo();
+-      update(m_BotRect);
++        update(m_TopRect|m_MidRect|m_BotRect);
++      }
++      else
++      {
++        update(m_BotRect);
++      }
+     }
+ }
+ 
+@@ -1104,7 +1119,7 @@
+           {
+             streamBrowser->hideVideo();      // hide video window
+             clearOnly = true; // oops, gui is mess... (clear video window)
+-            update(m_BotRect);
++            update(m_TopRect|m_MidRect|m_BotRect);
+           }
+ 
+         }
+@@ -1160,7 +1175,7 @@
+ {
+    playerState.videoDetected(active);
+ 
+-   update( m_BotRect );
++   update(m_TopRect|m_MidRect|m_BotRect);
+ }
+ 
+ void MythStream::slotGuardInfoField()
+@@ -1293,7 +1308,7 @@
+    {
+      case StreamBrowser::streamstatus:
+        getStreamStatusValues();
+-       update(m_BotRect);  // stream info fields
++       update(m_TopRect|m_MidRect|m_BotRect);  // stream info fields
+        update(m_TopRect);  // status field
+      break;
+      case StreamBrowser::streamplay:
+@@ -1565,11 +1580,15 @@
+ void MythStream::updateTopView()
+ {
+    // unconditional update
+-    QPixmap pix(m_TopRect.size());
+-    pix.fill(this, m_TopRect.topLeft());
+-    QPainter p(&pix);
+ 
+     LayerSet* container = m_Theme->GetSet("status_panel");
++    QRect rect = container->GetAreaRect();
++
++    QPainter p;
++
++    QPixmap pix( rect.size() );
++    pix.fill(this, rect.topLeft());
++    p.begin(&pix);
+ 
+     if (container)
+     {
+@@ -1586,8 +1605,9 @@
+ 
+     p.end();
+ 
+-    bitBlt(this, m_TopRect.left(), m_TopRect.top(),
+-           &pix, 0, 0, -1, -1, Qt::CopyROP);
++    p.begin(this);
++    p.drawPixmap(rect.left(), rect.top(), pix);
++    p.end();
+     
+ }
+ 
+@@ -1600,11 +1620,12 @@
+     LayerSet* container = m_Theme->GetSet("dyn_panel");
+     QRect rect = container->GetAreaRect();
+ 
++    QPainter p;
++
+     QPixmap pix( rect.size() );
+     pix.fill(this, rect.topLeft() );
+-    QPainter p(&pix);
++    p.begin(&pix);
+ 
+-    
+     if (container)
+     {
+       container->Draw(&p, 0, 0);
+@@ -1613,8 +1634,9 @@
+ 
+     p.end();
+     
+-    bitBlt(this, rect.left(), rect.top(),
+-           &pix, 0, 0, -1, -1, Qt::CopyROP);
++    p.begin(this);
++    p.drawPixmap(rect.left(), rect.top(), pix);
++    p.end();
+     
+ }
+ 
+@@ -1651,9 +1673,11 @@
+ 
+     QRect rect = container->GetAreaRect();
+ 
++    QPainter p;
++
+     QPixmap pix( rect.size() );
+     pix.fill(this, rect.topLeft());
+-    QPainter p(&pix);
++    p.begin(&pix);
+ 
+     if (container)
+     {
+@@ -1674,8 +1698,9 @@
+ 
+     p.end();
+         
+-    bitBlt(this, rect.left(), rect.top(),
+-           &pix, 0, 0, -1, -1, Qt::CopyROP);
++    p.begin(this);
++    p.drawPixmap(rect.left(), rect.top(), pix);
++    p.end();
+     
+ }
+ 

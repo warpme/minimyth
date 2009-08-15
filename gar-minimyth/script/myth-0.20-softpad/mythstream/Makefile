@@ -5,11 +5,14 @@ MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 DISTFILES = $(DISTNAME).tar.gz $(patsubst %,%.tar.gz,$(subst -,,$(PARSERS)))
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME)-apple_parser_fix.patch \
-	$(DISTNAME)-youtube_parser_fix.patch \
+	$(DISTNAME)-gcc_warnings_fixes.patch \
 	$(DISTNAME)-gcc_4.3.patch \
 	$(DISTNAME)-harvester_cpp.patch \
 	$(DISTNAME)-streams_res.patch \
+	$(DISTNAME)-qt_paintevent_fix.patch \
+	$(DISTNAME)-qt_bitblt_replace.patch \
+	$(DISTNAME)-apple_parser_fix.patch \
+	$(DISTNAME)-youtube_parser_fix.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
 PARSERS = \
