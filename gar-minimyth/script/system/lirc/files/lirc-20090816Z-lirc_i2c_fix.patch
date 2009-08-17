@@ -1,15 +1,11 @@
 diff -Naur lirc-20090816Z-old/drivers/lirc_i2c/lirc_i2c.c lirc-20090816Z-new/drivers/lirc_i2c/lirc_i2c.c
 --- lirc-20090816Z-old/drivers/lirc_i2c/lirc_i2c.c	2009-08-04 17:31:10.000000000 -0700
-+++ lirc-20090816Z-new/drivers/lirc_i2c/lirc_i2c.c	2009-08-16 13:31:19.000000000 -0700
-@@ -380,6 +380,20 @@
++++ lirc-20090816Z-new/drivers/lirc_i2c/lirc_i2c.c	2009-08-17 13:06:12.000000000 -0700
+@@ -380,6 +380,16 @@
  static int ir_remove(struct i2c_client *client);
  static int ir_command(struct i2c_client *client, unsigned int cmd, void *arg);
  
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31)
-+static struct i2c_client client_template = {
-+	.name		= "unset",
-+	.driver		= &driver
-+};
 +#else
 +static const struct i2c_device_id ir_receiver_id[] = {
 +	/* Generic entry for any IR receiver */
@@ -22,24 +18,16 @@ diff -Naur lirc-20090816Z-old/drivers/lirc_i2c/lirc_i2c.c lirc-20090816Z-new/dri
  static struct i2c_driver driver = {
  #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
  	.name		= "i2c ir driver",
-@@ -403,20 +417,6 @@
+@@ -408,12 +418,6 @@
+ 	.driver		= &driver
  };
- 
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31)
--static struct i2c_client client_template = {
--	.name		= "unset",
--	.driver		= &driver
--};
--#else
+ #else
 -static const struct i2c_device_id ir_receiver_id[] = {
 -	/* Generic entry for any IR receiver */
 -	{ "ir_video", 0 },
 -	/* IR device specific entries could be added here */
 -	{ }
 -};
--#endif
--
--#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31)
- static int ir_attach(struct i2c_adapter *adap, int addr,
- 		     unsigned short flags, int kind)
- #else
+ #endif
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 31)
