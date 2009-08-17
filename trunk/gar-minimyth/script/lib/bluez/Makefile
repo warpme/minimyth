@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.47
+GARVERSION = 4.48
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -33,6 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-netlink \
 	--enable-tools \
 	--enable-bccmd \
+	--enable-pcmcia \
 	--enable-hid2hci \
 	--enable-dfutool \
 	--enable-hidd \
@@ -41,9 +42,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-cups \
 	--disable-test \
 	--enable-manpages \
+	--enable-udevrules \
 	--enable-configfiles \
-	--enable-initscripts \
-	--enable-pcmciarules \
 	--disable-debug \
 	--with-gnu-ld
 
@@ -56,11 +56,5 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_ctl_bluetooth.la
 	@rm -f $(DESTDIR)$(libdir)/alsa-lib/libasound_module_pcm_bluetooth.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/audio.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/input.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/hal.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/network.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/serial.la
-	@rm -f $(DESTDIR)$(libdir)/bluetooth/plugins/service.la
 	@rm -f $(DESTDIR)$(libdir)/libbluetooth.la
 	@$(MAKECOOKIE)
