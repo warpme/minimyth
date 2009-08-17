@@ -8,7 +8,6 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-bug_11154.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
-PATCHFILES += $(DISTNAME)-intel_2009Q2_graphics_package.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.2.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
