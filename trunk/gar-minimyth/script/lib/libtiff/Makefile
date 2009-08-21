@@ -1,7 +1,8 @@
 GARNAME = tiff
-GARVERSION = 3.8.2
+GARVERSION = 3.9.0
 CATEGORIES = lib
-MASTER_SITES  = http://fresh.t-systems-sfr.com/unix/src/misc/
+MASTER_SITES  = http://ftp.remotesensing.org/pub/libtiff/
+MASTER_SITES += http://ftp.remotesensing.org/pub/libtiff/old
 MASTER_SITES += ftp://ftp.remotesensing.org/pub/libtiff/
 MASTER_SITES += ftp://ftp.remotesensing.org/pub/libtiff/old/
 DISTFILES = $(DISTNAME).tar.gz
