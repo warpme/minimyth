@@ -46,7 +46,7 @@ while (($#status_sensors_body >= 0) && ($status_sensors_body[$#status_sensors_bo
 
 my $status_loads_head = q(Loads (output of file "/proc/loadavg"));
 my @status_loads_body = ();
-if (-e 'proc/loadavg')
+if (-e '/proc/loadavg')
 {
     if (open(FILE, '<', '/proc/loadavg'))
     {
