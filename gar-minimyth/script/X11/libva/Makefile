@@ -2,7 +2,7 @@ GARNAME = libva
 GARVERSION = 0.30.4
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds3.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds4.tar.gz
 PATCHFILES = \
 	101_fix_build_with_x11.patch \
 	102_fix_make_dist.patch \
@@ -26,12 +26,17 @@ PATCHFILES = \
 	204_version.patch \
 	205_nvidia_drv_info.patch \
 	206_drop_obsolete_fields.patch \
+	207_nvidia_drv_version_fix.patch \
+	208_fix_libva_x11_deps.patch \
+	209_drop_libva_display_defs.patch \
 	300_sds_version.patch \
 	301_vdpau_h264.patch \
 	302_vdpau_vc1.patch \
 	303_xvba_h264.patch \
 	304_vc1_skipped_p_frames.patch \
 	310_VASliceParameterBufferBase.patch \
+	320_move_vaPutSurface_flags_def.patch \
+	321_libva_glx.patch \
 	390_compat.patch
 LICENSE = MIT
 
