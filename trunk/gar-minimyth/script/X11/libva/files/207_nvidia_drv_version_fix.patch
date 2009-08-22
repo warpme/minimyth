@@ -1,0 +1,28 @@
+commit 9538b7b3f5d6a2bd19eb5a3b061d33e814ce2f28
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Aug 13 14:43:09 2009 +0000
+
+    Fix NVIDIA driver version string parser.
+
+diff --git a/src/x11/va_nvctrl.c b/src/x11/va_nvctrl.c
+index 46fcca5..b14db47 100644
+--- a/src/x11/va_nvctrl.c
++++ b/src/x11/va_nvctrl.c
+@@ -377,9 +377,16 @@ Bool VA_NVCTRLGetClientDriverName( Display *dpy, int screen,
+             *ddxDriverMajorVersion = v;
+         if (*(str = end) == '.') {
+             v = strtoul(str + 1, &end, 10);
+-            if (end && end != str && *end == '\0') {
++            if (end && end != str && (*end == '.' || *end == '\0')) {
+                 if (ddxDriverMinorVersion)
+                     *ddxDriverMinorVersion = v;
++                if (*(str = end) == '.') {
++                    v = strtoul(str + 1, &end, 10);
++                    if (end && end != str && *end == '\0') {
++                        if (ddxDriverPatchVersion)
++                            *ddxDriverPatchVersion = v;
++                    }
++                }
+             }
+         }
+     }
