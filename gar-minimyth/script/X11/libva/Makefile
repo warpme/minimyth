@@ -67,6 +67,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libva.la
+	@rm -f $(DESTDIR)$(libdir)/libva-glx.la
 	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
 	@rm -f $(DESTDIR)$(libdir)/va/dummy_drv_video.la
 	@rm -f $(DESTDIR)$(libdir)/va/i965_drv_video.la
