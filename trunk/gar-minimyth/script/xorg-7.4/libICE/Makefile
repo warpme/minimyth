@@ -1,5 +1,5 @@
 GARNAME = libICE
-GARVERSION = 1.0.5
+GARVERSION = 1.0.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -23,6 +23,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
 	--enable-unix-transport \
 	--disable-tcp-transport \
 	--disable-ipv6 \
