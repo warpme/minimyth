@@ -1,5 +1,5 @@
 GARNAME = libXau
-GARVERSION = 1.0.4
+GARVERSION = 1.0.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -23,6 +23,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--enable-xthreads \
+	--disable-silent-rules \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
