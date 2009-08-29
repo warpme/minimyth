@@ -1,5 +1,5 @@
 GARNAME = boost
-GARVERSION = 1.39.0
+GARVERSION = 1.40.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)_$(subst .,_,$(GARVERSION)).tar.bz2
