@@ -3,7 +3,7 @@ GARVERSION = 0.8.5
 CATEGORIES = mediaplayers
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-headers.patch $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
