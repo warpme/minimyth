@@ -40,6 +40,8 @@ INSTALL_ENV   = $(LINUX_MAKE_ENV)
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+PARALLELMFLAGS := -j1
+
 cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
