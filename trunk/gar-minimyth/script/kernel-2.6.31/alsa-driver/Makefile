@@ -1,10 +1,10 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.20
+GARVERSION = 1.0.21
 CATEGORIES = kernel-2.6.31
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-nvidia_hdmi_8channel.patch $(DISTNAME)-quirk.patch
+PATCHFILES = $(DISTNAME)-quirk.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
