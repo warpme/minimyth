@@ -1,8 +1,8 @@
 GARNAME = nss
-GARVERSION = 3.12.3
+GARVERSION = 3.12.4
 CATEGORIES = lib
-MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_3_RTM/src/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_4_RTM/src/
+DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
