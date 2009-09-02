@@ -51,6 +51,25 @@ install-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libboost_*-gcc*-mt.a
-	@rm -f $(DESTDIR)$(libdir)/libboost_*-gcc*-mt-1_39.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_date_time.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_filesystem.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_graph.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_iostreams.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_c99.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_c99f.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_c99l.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_tr1.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_tr1f.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_math_tr1l.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_prg_exec_monitor.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_program_options.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_regex.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_serialization.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_signals.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_system.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_test_exec_monitor.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_thread.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_unit_test_framework.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_wave.a
+	@rm -f $(DESTDIR)$(libdir)/libboost_wserialization.a
 	@$(MAKECOOKIE)
