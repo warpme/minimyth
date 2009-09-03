@@ -88,7 +88,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xvmc-path="$(DESTDIR)$(libdir)" \
 	--with-xvmc-lib=XvMCW \
 	--with-vdpau \
-	--without-xcb \
+	--with-xcb \
 	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
 	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--without-caca \
