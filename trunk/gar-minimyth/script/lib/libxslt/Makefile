@@ -19,6 +19,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld \
+	--without-python \
 	--with-libxml-prefix=$(DESTDIR)$(prefix) \
 	--with-libxml-include-prefix=$(DESTDIR)$(includedir) \
 	--with-libxml-libs-prefix=$(DESTDIR)$(libdir)
