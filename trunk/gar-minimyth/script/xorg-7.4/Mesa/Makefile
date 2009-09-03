@@ -21,6 +21,7 @@ DEPENDS   = lang/c++ lib/expat \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libxcb \
 	$(CATEGORY)/libXdamage \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfixes \
@@ -43,6 +44,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-libraries="$(DESTDIR)$(libdir)" \
 	--enable-shared \
 	--disable-static \
+	--enable-xcb \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
