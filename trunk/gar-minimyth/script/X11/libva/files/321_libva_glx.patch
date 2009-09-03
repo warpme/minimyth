@@ -1,3 +1,9 @@
+commit f1bfebcdc10323e9b20a0be15139a7cc2dc759d0
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Aug 26 12:01:30 2009 +0000
+
+    Improve documentation and rename "tex" argument to "texture".
+
 commit b191169d64f4abed13db5aaa759950cd4261655b
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Fri Aug 21 11:58:16 2009 +0000
@@ -174,7 +180,7 @@ index 0000000..c62e5de
 +libva_glx_la_SOURCES = va_glx.c
 diff --git a/src/glx/va_glx.c b/src/glx/va_glx.c
 new file mode 100644
-index 0000000..68558e4
+index 0000000..49f09e0
 --- /dev/null
 +++ b/src/glx/va_glx.c
 @@ -0,0 +1,107 @@
@@ -261,7 +267,7 @@ index 0000000..68558e4
 +VAStatus vaCopySurfaceToTextureGLX(
 +    VADisplay    dpy,
 +    VASurfaceID  surface,
-+    GLuint       tex,
++    GLuint       texture,
 +    unsigned int flags
 +)
 +{
@@ -280,17 +286,17 @@ index 0000000..68558e4
 +        return VA_STATUS_ERROR_OPERATION_FAILED;
 +
 +    if (ctx->vtable.vaCopySurfaceToTextureGLX)
-+        return ctx->vtable.vaCopySurfaceToTextureGLX(ctx, surface, tex, flags);
++        return ctx->vtable.vaCopySurfaceToTextureGLX(ctx, surface, texture, flags);
 +
 +    /* XXX: implement with the GLX texture-from-pixmap + FBO extension? */
-+    return VA_STATUS_ERROR_OPERATION_FAILED;
++    return VA_STATUS_ERROR_UNIMPLEMENTED;
 +}
 diff --git a/src/glx/va_glx.h b/src/glx/va_glx.h
 new file mode 100644
-index 0000000..117c7d8
+index 0000000..f0bc21f
 --- /dev/null
 +++ b/src/glx/va_glx.h
-@@ -0,0 +1,65 @@
+@@ -0,0 +1,67 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -342,16 +348,18 @@ index 0000000..117c7d8
 + * Implementations are free to use glXGetCurrentContext() and
 + * glXGetCurrentDrawable() functions for internal purposes.
 + *
++ * The default texture (0) will be bound on exit from this function.
++ *
 + * @param dpy the VA API display
 + * @param surface the VA API surface
-+ * @param tex the OpenGL texture
++ * @param texture the OpenGL 2D texture
 + * @param flags the PutSurface flags
 + * @return VA_STATUS_SUCCESS if successful
 + */
 +VAStatus vaCopySurfaceToTextureGLX(
 +    VADisplay    dpy,
 +    VASurfaceID  surface,
-+    GLuint       tex,
++    GLuint       texture,
 +    unsigned int flags
 +);
 +
