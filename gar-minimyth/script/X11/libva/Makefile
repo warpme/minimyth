@@ -2,7 +2,7 @@ GARNAME = libva
 GARVERSION = 0.30.4
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds4.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds5.tar.gz
 PATCHFILES = \
 	101_fix_build_with_x11.patch \
 	102_fix_make_dist.patch \
@@ -21,6 +21,7 @@ PATCHFILES = \
 	115_fix_make_install.patch \
 	116_add_VA_INVALID_ID.patch \
 	117_fix_memory_leak.patch \
+	118_add_VA_STATUS_ERROR_UNIMPLEMENTED.patch \
 	201_change_SONAME.patch \
 	202_split_libva.patch \
 	204_version.patch \
@@ -37,6 +38,7 @@ PATCHFILES = \
 	310_VASliceParameterBufferBase.patch \
 	320_move_vaPutSurface_flags_def.patch \
 	321_libva_glx.patch \
+	322_libva_glx.2.patch \
 	390_compat.patch
 LICENSE = MIT
 
@@ -51,6 +53,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-glx \
 	--enable-dummy-driver \
 	--enable-i965-driver \
 	--disable-static \
