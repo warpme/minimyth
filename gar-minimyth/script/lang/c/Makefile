@@ -35,7 +35,8 @@ BUILDDEPS += \
 	utils/bzip2 \
 	utils/gzip \
 	utils/unzip \
-	doc/texinfo
+	doc/texinfo \
+	python/python
 
 include ../../gar.mk
 
