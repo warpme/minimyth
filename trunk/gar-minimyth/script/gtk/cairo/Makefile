@@ -24,7 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gcov \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--disable-xkb \
+	--enable-xcb \
 	--disable-quartz \
 	--disable-quartz-font \
 	--disable-quartz-image \
