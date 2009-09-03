@@ -16,6 +16,7 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
+	$(CATEGORY)/libxcb \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86bigfontproto \
@@ -50,7 +51,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld \
-	--without-xcb \
+	--with-xcb \
 	--without-launchd \
 	--without-lint
 
@@ -70,10 +71,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/ximcp.la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcUTF8Load.la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlcDef.la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlibi18n.la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xlocale.la
-	@rm -f $(DESTDIR)$(libdir)/X11/locale/common/xomGeneric.la
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)-xcb.la
 	@$(MAKECOOKIE)
