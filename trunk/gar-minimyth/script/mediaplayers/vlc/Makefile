@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-no_xcb.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -146,7 +146,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--enable-xvmc \
 	--enable-xinerama \
-	--disable-xcb \
+	--enable-xcb \
 	--enable-opengl \
 	--disable-sdl \
 	--disable-sdl-image \
