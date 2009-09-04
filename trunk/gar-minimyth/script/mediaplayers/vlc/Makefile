@@ -1,10 +1,19 @@
 GARNAME = vlc
+#GARVERSION = snapshot-20090901-2221
 GARVERSION = 1.0.1
 CATEGORIES = mediaplayers
+PATCHFILES  =
+ifeq ($(word 1,$(subst -, ,$(GARVERSION))),snapshot)
+MASTER_SITES  = http://nightlies.videolan.org/build/source/$(subst snapshot,trunk,$(GARVERSION))/
+DISTFILES = $(GARNAME)-snapshot-$(word 2,$(subst -, ,$(GARVERSION))).tar.bz2
+PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
+WORKSRC = $(WORKDIR)/$(GARNAME)-1.1.0-git
+else
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME).patch.gar
+endif
+PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -32,6 +41,7 @@ DEPENDS = lang/c \
 	lib/taglib \
 	lib/zlib \
 	system/lirc \
+	X11/vdpau \
 	xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -41,6 +51,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--disable-silent-rules \
 	--disable-python-bindings \
 	--disable-java-bindings \
 	--disable-macosx-defaults \
@@ -131,6 +142,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-dirac \
 	--disable-schroedinger \
 	--enable-png \
+	--enable-vdpau \
 	--disable-x264 \
 	--disable-fluidsynth \
 	--disable-zvbi \
@@ -228,12 +240,13 @@ endif
 
 include ../../gar.mk
 
-# Ignored when the vdpau patch is not applied.
+# Ignored when the vaapi patch is not applied.
 CPPFLAGS += -DHAVE_AVCODEC_VAAPI
 CFLAGS   += -DHAVE_AVCODEC_VAAPI
 CXXFLAGS += -DHAVE_AVCODEC_VAAPI
 
 pre-configure:
+	@$(if $(wildcard $(WORKSRC)/modules/codec/vdpau/*),cd $(WORKSRC) ; ./modules/genmf codec/vdpau)
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
