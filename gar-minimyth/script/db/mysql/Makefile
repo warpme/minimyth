@@ -1,12 +1,13 @@
 GARNAME = mysql
-GARVERSION = 5.1.37
+GARVERSION = 5.1.38
 CATEGORIES = db
 MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.1/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.1/
 MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.1/
-DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
-PATCHFILES  = $(DISTNAME)-perl.patch.gar
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-have_atomic_pthread_t.patch $(DISTNAME)-perl.patch.gar
 ifneq ($(DESTIMG),build)
+DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
 LICENSE = GPL2
@@ -36,11 +37,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--without-debug \
 	--with-server \
-	--with-extra-tools \
 	--without-docs \
-	--without-bench
-
-#CONFIGURE_ENV = $(shell cat $(WORKDIR)/config.cache.$(GARCH_FAMILY))
+	--without-man \
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
