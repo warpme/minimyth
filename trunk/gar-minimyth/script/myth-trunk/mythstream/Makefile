@@ -1,30 +1,13 @@
 GARNAME = mythstream
-GARVERSION = 0.18_qt4
+GARVERSION = mythtv-r21640
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
-DISTFILES = $(DISTNAME).tar.gz $(subst -,,$(PARSERS))
-PATCHFILES  =
-PATCHFILES += \
-	$(DISTNAME)-gcc_warnings_fixes.patch \
-	$(DISTNAME)-streams_res.patch \
-	$(DISTNAME)-qt_paintevent_fix.patch \
-	$(DISTNAME)-qt_bitblt_replace.patch \
-	$(DISTNAME)-user_agent_quicktime.patch \
-	$(DISTNAME)-youtube_parser_fix.patch \
-	$(DISTNAME)-mythtv_0_22.patch \
-	$(DISTNAME)-fftw3f.patch \
+#DISTFILES = $(DISTNAME).tar.gz $(subst -,,$(PARSERS))
+DISTFILES = $(GARNAME)_$(GARVERSION).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-qt4_header.patch \
 	$(DISTNAME).patch.gar
-PARSERS = \
-	apple-3.pl \
-	belegger.tar.gz \
-	dailymotion-2.tar.gz \
-	google.tar.gz \
-	omroep-3.tar.gz \
-	retrovision.tar.gz \
-	shoutcast-2.tar.gz \
-	yahoo.tar.gz \
-	youtube-5.tar.gz \
-	zoomin.tar.gz
+PARSERS =
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -38,7 +21,7 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/$(GARNAME)-0.18_qt4
+WORKSRC = $(WORKDIR)/$(GARNAME)_$(GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
