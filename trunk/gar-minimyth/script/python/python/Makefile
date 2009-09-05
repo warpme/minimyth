@@ -20,3 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared
 	
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/python2.6/config/libpython2.6.a
+	@$(MAKECOOKIE)
