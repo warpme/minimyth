@@ -1,10 +1,12 @@
 GARNAME = Mesa
-GARVERSION = 7.5
+GARVERSION = 7.5.1
 CATEGORIES = $(CATEGORY)
-#MASTER_SITES  = http://www.mesa3d.org/beta/
-#MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
-MASTER_SITES  = http://cgit.freedesktop.org/mesa/mesa/snapshot/
-DISTFILES = mesa_7_5.tar.bz2
+MASTER_SITES  = http://www.mesa3d.org/beta/
+MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
+DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
+#MASTER_SITES  = http://cgit.freedesktop.org/mesa/mesa/snapshot/
+#DISTFILES = mesa_7_5.tar.bz2
 PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
@@ -12,8 +14,6 @@ LICENSE = LGPL2/MIT
 DESCRIPTION = 
 define BLURB
 endef
-
-WORKSRC = $(WORKDIR)/mesa_7_5
 
 DEPENDS   = lang/c++ lib/expat \
 	$(CATEGORY)/dri2proto \
