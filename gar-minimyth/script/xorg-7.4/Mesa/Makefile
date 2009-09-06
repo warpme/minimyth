@@ -7,7 +7,7 @@ MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
 #MASTER_SITES  = http://cgit.freedesktop.org/mesa/mesa/snapshot/
 #DISTFILES = mesa_7_5.tar.bz2
-PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-incdir.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
