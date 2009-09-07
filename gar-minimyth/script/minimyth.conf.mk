@@ -102,7 +102,7 @@ mm_TFTP_ROOT              ?= /var/tftpboot/minimyth
 mm_NFS_ROOT               ?= /home/public/minimyth
 # The version of kernel headers to use.
 # Valid values are '2.6.30' and '2.6.31'.
-mm_KERNEL_HEADERS_VERSION ?= 2.6.31
+mm_KERNEL_HEADERS_VERSION ?= 2.6.30
 # The version of kernel to use.
 # Valid values are '2.6.30' and '2.6.31'.
 mm_KERNEL_VERSION         ?= 2.6.30
