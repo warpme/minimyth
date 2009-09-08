@@ -30,6 +30,8 @@ DEPENDS = \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
+	lib/libavc1394 \
+	lib/libiec61883 \
 	lib/zlib \
 	qt/qt4 \
 	system/lirc \
@@ -98,7 +100,7 @@ CONFIGURE_ARGS = \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
-	--disable-firewire \
+	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
 	--enable-v4l \
