@@ -66,6 +66,7 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_example.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_federated.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_innodb.la
+	@rm -f $(DESTDIR)$(libdir)/mysql/plugin/ha_innodb_plugin.la
 	@rm -f $(DESTDIR)$(libdir)/mysql/libdbug.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libheap.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmyisam.a
