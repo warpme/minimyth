@@ -1,9 +1,9 @@
 GARNAME = xscreensaver
-GARVERSION = 5.09
+GARVERSION = 5.10
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-dependency_fix.patch $(DISTNAME)-intltool_disable.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-intltool_disable.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION =
