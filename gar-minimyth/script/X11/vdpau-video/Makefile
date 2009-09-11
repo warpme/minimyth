@@ -4,6 +4,7 @@ CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-install.patch
 LICENSE =
 
 DESCRIPTION = 
@@ -28,5 +29,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/va/nvidia_drv_video.la
+	@rm -f $(DESTDIR)$(libdir)/va/vdpau_drv_video.la
 	@$(MAKECOOKIE)
