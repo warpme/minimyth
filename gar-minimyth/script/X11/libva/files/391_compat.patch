@@ -1,3 +1,27 @@
+commit 30808b39d82cbf0c185052a2d2d5ed8a5fc065d1
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Thu Sep 10 14:01:57 2009 +0000
+
+    Update compatibility glue for VASliceParameterBufferMPEG2.slice_horizontal_position addition.
+
+commit 27faf49366602637da223f3dc5f30ce4d6d72070
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Sep 2 15:06:20 2009 +0000
+
+    Fix vaSyncSurface() compat code for VA API < 0.31 drivers.
+
+commit dc33a3e28b38b7d579ab768899963cf9b0d38677
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Sep 2 12:28:43 2009 +0000
+
+    Fix check for 0.30 modules.
+
+commit bd913971bd9e7460b454513b006e16c18136625e
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Wed Sep 2 11:58:08 2009 +0000
+
+    Update for VA API 0.31.
+
 commit 9cc7f89d3cc0238ab5b3a47c316e261e06a16634
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Thu Jul 2 15:55:48 2009 +0000
@@ -46,129 +70,12 @@ Date:   Wed Jun 24 11:40:56 2009 +0000
 
     Add compatibility layer with original libva 0.29.
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index ec7b861..99f45a3 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -44,7 +44,7 @@ libva_x11_la_DEPENDENCIES = $(libvacorelib)
- libva_x11_la_DEPENDENCIES = $(libvacorelib)
- 
- 
--libva_la_SOURCES = va.c
-+libva_la_SOURCES = va.c va_compat.c
- 
- libvaincludedir = ${includedir}/va
- libvainclude_HEADERS = va.h va_backend.h va_version.h
-@@ -53,4 +53,8 @@ DISTCLEANFILES = \
- 	va_version.h
- 
- EXTRA_DIST = \
--	va_version.h.in
-+	va_version.h.in \
-+	va_compat.h \
-+	va_compat_template.h
-+
-+va_compat.c: va_compat_template.h
-diff --git a/src/va.c b/src/va.c
-index b60ac12..5361052 100644
---- a/src/va.c
-+++ b/src/va.c
-@@ -22,6 +22,7 @@
- #define _GNU_SOURCE 1
- #include "va.h"
- #include "va_backend.h"
-+#include "va_compat.h"
- 
- #include <assert.h>
- #include <stdarg.h>
-@@ -36,6 +38,7 @@
- 
- #define DRIVER_INIT_FUNC	"__vaDriverInit_0_30"
- #define DRIVER_INIT_FUNC_SDS	"__vaDriverInit_0_30_sds"
-+#define DRIVER_INIT_FUNC_0_29	"__vaDriverInit_0_29"
- 
- #define DRIVER_EXTENSION	"_drv_video.so"
- 
-@@ -158,11 +165,18 @@ static VAStatus va_openDriver(VADisplay dpy, char *driver_name)
-         else
-         {
-             VADriverInit init_func;
--            init_func = (VADriverInit) dlsym(handle, DRIVER_INIT_FUNC);
-+            int compat_version = 0;
-+            /* First, try SDS extensions (VDPAU and XvBA backends) */
-+            init_func = (VADriverInit) dlsym(handle, DRIVER_INIT_FUNC_SDS);
-             if (!init_func)
-             {
--                /* Then try SDS extensions (VDPAU and XvBA backends) */
--                init_func = (VADriverInit) dlsym(handle, DRIVER_INIT_FUNC_SDS);
-+                /* Otherwise, we need the compatibility layer for some buffers */
-+                init_func = (VADriverInit) dlsym(handle, DRIVER_INIT_FUNC);
-+                compat_version = VA_MINOR_VERSION;
-+                if (!init_func) {
-+                    init_func = (VADriverInit) dlsym(handle, DRIVER_INIT_FUNC_0_29);
-+                    compat_version = 29;
-+                }
-             }
-             if (!init_func)
-             {
-@@ -171,7 +185,29 @@ static VAStatus va_openDriver(VADisplay dpy, char *driver_name)
-             }
-             else
-             {
--                vaStatus = (*init_func)(ctx);
-+                struct VADriverContext_0_29 ctx_0_29;
-+                void *compat_ctx = NULL;
-+
-+                switch (compat_version) {
-+                case 29:
-+                    compat_ctx           = &ctx_0_29;
-+                    ctx_0_29.pDriverData = NULL;
-+                    ctx_0_29.x11_dpy     = ctx->x11_dpy;
-+                    ctx_0_29.x11_screen  = ctx->x11_screen;
-+                    break;
-+                case VA_MINOR_VERSION:
-+                    compat_ctx           = ctx;
-+                    break;
-+                default:
-+                    ASSERT(compat_version == 0);
-+                    vaStatus = VA_STATUS_ERROR_UNKNOWN;
-+                    break;
-+                }
-+
-+                vaStatus = (*init_func)(compat_ctx ? compat_ctx : ctx);
-+
-+                if (VA_STATUS_SUCCESS == vaStatus)
-+                    vaStatus = va_compat_init(dpy, compat_version, compat_ctx);
- 
-                 if (VA_STATUS_SUCCESS == vaStatus)
-                 {
-@@ -369,6 +405,8 @@ VAStatus vaTerminate (
-       old_ctx->handle = NULL;
-   }
- 
-+  va_compat_fini(dpy);
-+
-   if (VA_STATUS_SUCCESS == vaStatus)
-       pDisplayContext->vaDestroy(pDisplayContext);
-   return vaStatus;
-diff --git a/src/va_backend.h b/src/va_backend.h
-index f8456ad..a57c177 100755
---- a/src/va_backend.h
-+++ b/src/va_backend.h
-@@ -426,6 +426,7 @@ struct VADriverContext
-     void *handle;			/* dlopen handle */
-     
-     void *dri_state;
-+    void *compat;			/* opaque for compat code */
- };
- 
- struct VADisplayContext
 diff --git a/src/va_compat.c b/src/va_compat.c
 new file mode 100644
-index 0000000..2ad36a3
+index 0000000..e83e314
 --- /dev/null
 +++ b/src/va_compat.c
-@@ -0,0 +1,968 @@
+@@ -0,0 +1,1170 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -239,6 +146,13 @@ index 0000000..2ad36a3
 +    unsigned int                map_count;
 +} VABufferCompat;
 +
++typedef struct VAContextMap *VAContextMapP;
++typedef struct VAContextMap {
++    VASurfaceID                 surface;
++    VAContextID                 context;
++    VAContextMapP               next;
++} VAContextMap;
++
 +typedef struct {
 +    VAStatus (*vaTerminate)(void *);
 +    VAStatus (*vaQueryConfigProfiles)(void *, VAProfile *, int *);
@@ -259,7 +173,7 @@ index 0000000..2ad36a3
 +    VAStatus (*vaBeginPicture)(void *, VAContextID, VASurfaceID);
 +    VAStatus (*vaRenderPicture)(void *, VAContextID, VABufferID *, int);
 +    VAStatus (*vaEndPicture)(void *, VAContextID);
-+    VAStatus (*vaSyncSurface)(void *, VAContextID, VASurfaceID);
++    VAStatus (*vaSyncSurface_pre31)(void *, VAContextID, VASurfaceID);
 +    VAStatus (*vaQuerySurfaceStatus)(void *, VASurfaceID, VASurfaceStatus *);
 +    VAStatus (*vaPutSurface)(void *, VASurfaceID, unsigned long, short, short, unsigned short, unsigned short, short, short, unsigned short, unsigned short, VARectangle *, unsigned int, unsigned int);
 +    VAStatus (*vaQueryImageFormats)(void *, VAImageFormat *, int *);
@@ -268,16 +182,16 @@ index 0000000..2ad36a3
 +    VAStatus (*vaDestroyImage)(void *, VAImageID);
 +    VAStatus (*vaSetImagePalette)(void *, VAImageID, unsigned char *);
 +    VAStatus (*vaGetImage)(void *, VASurfaceID, int, int, unsigned int, unsigned int, VAImageID);
-+    VAStatus (*vaPutImage)(void *, VASurfaceID, VAImageID, int, int, unsigned int, unsigned int, int, int);
-+    VAStatus (*vaPutImage2)(void *, VASurfaceID, VAImageID, int, int, unsigned int, unsigned int, int, int, unsigned int, unsigned int);
++    VAStatus (*vaPutImage_pre31)(void *, VASurfaceID, VAImageID, int, int, unsigned int, unsigned int, int, int);
++    VAStatus (*vaPutImage2_pre31)(void *, VASurfaceID, VAImageID, int, int, unsigned int, unsigned int, int, int, unsigned int, unsigned int);
 +    VAStatus (*vaQuerySubpictureFormats)(void *, VAImageFormat *, unsigned int *, unsigned int *);
 +    VAStatus (*vaCreateSubpicture)(void *, VAImageID, VASubpictureID *);
 +    VAStatus (*vaDestroySubpicture)(void *, VASubpictureID);
 +    VAStatus (*vaSetSubpictureImage)(void *, VASubpictureID, VAImageID);
 +    VAStatus (*vaSetSubpictureChromakey)(void *, VASubpictureID, unsigned int, unsigned int, unsigned int);
 +    VAStatus (*vaSetSubpictureGlobalAlpha)(void *, VASubpictureID, float);
-+    VAStatus (*vaAssociateSubpicture)(void *, VASubpictureID, VASurfaceID *, int, short, short, short, short, unsigned short, unsigned short, unsigned int);
-+    VAStatus (*vaAssociateSubpicture2)(void *, VASubpictureID, VASurfaceID *, int, short, short, unsigned short, unsigned short, short, short, unsigned short, unsigned short, unsigned int);
++    VAStatus (*vaAssociateSubpicture_pre31)(void *, VASubpictureID, VASurfaceID *, int, short, short, short, short, unsigned short, unsigned short, unsigned int);
++    VAStatus (*vaAssociateSubpicture2_pre31)(void *, VASubpictureID, VASurfaceID *, int, short, short, unsigned short, unsigned short, short, short, unsigned short, unsigned short, unsigned int);
 +    VAStatus (*vaDeassociateSubpicture)(void *, VASubpictureID, VASurfaceID *, int);
 +    VAStatus (*vaQueryDisplayAttributes)(void *, VADisplayAttribute *, int *);
 +    VAStatus (*vaGetDisplayAttributes)(void *, VADisplayAttribute *, int);
@@ -291,6 +205,11 @@ index 0000000..2ad36a3
 +    VAStatus (*vaCreateSurfaceFromCIFrame)(void *, unsigned long, VASurfaceID *);
 +    VAStatus (*vaCreateSurfaceFromV4L2Buf)(void *, int, struct v4l2_format *, struct v4l2_buffer *, VASurfaceID *);
 +    VAStatus (*vaCopySurfaceToBuffer)(void *, VASurfaceID, unsigned int *, unsigned int *, unsigned int *, unsigned int *, unsigned int *, unsigned int *, unsigned int *, void **);
++
++    /* 0.31 hooks */
++    VAStatus (*vaPutImage)(void *, VASurfaceID, VAImageID, int, int, unsigned int, unsigned int, int, int, unsigned int, unsigned int);
++    VAStatus (*vaAssociateSubpicture)(void *, VASubpictureID, VASurfaceID *, int, short, short, unsigned short, unsigned short, short, short, unsigned short, unsigned short, unsigned int);
++    VAStatus (*vaSyncSurface)(void *, VASurfaceID);
 +} VACompatDriverVTable;
 +
 +typedef struct VACompatContext {
@@ -301,6 +220,8 @@ index 0000000..2ad36a3
 +    VACompatDriverVTable        vtable;                 /* original vtable */
 +    VADriverID                  driver_id;
 +    char                       *driver_name;
++    VAContextMapP               context_map;
++    VAContextMapP               last_context_map_match;
 +    unsigned int                skip_frame : 1;
 +} VACompatContext;
 +
@@ -310,6 +231,10 @@ index 0000000..2ad36a3
 +
 +#define COMPAT_MAJOR 0
 +#define COMPAT_MINOR 30
++#include "va_compat_template.h"
++
++#define COMPAT_MAJOR 0
++#define COMPAT_MINOR 31
 +#include "va_compat_template.h"
 +
 +static inline int va_IsIntelBuffer(VADriverContextP ctx, VABufferID id)
@@ -331,6 +256,101 @@ index 0000000..2ad36a3
 +    }
 +
 +    return 0;
++}
++
++static VAContextMapP va_context_map_lookup_p(
++    VACompatContextP    ctx,
++    VASurfaceID         surface
++)
++{
++    VAContextMapP m = ctx->context_map;
++
++    while (m) {
++        if (m->surface == surface)
++            return m;
++        m = m->next;
++    }
++    return NULL;
++}
++
++static VAContextID va_context_map_lookup(
++    VACompatContextP    ctx,
++    VASurfaceID         surface
++)
++{
++    VAContextMapP m;
++
++    /* Lookup in cached */
++    m = ctx->last_context_map_match;
++    if (m && m->surface == surface)
++        return m->context;
++
++    /* Full (slow) lookup */
++    m = va_context_map_lookup_p(ctx, surface);
++    if (m) {
++        ctx->last_context_map_match = m;
++        return m->context;
++    }
++    return VA_INVALID_ID;
++}
++
++static void va_context_map_add(
++    VACompatContextP    ctx,
++    VAContextID         context,
++    VASurfaceID         surface
++)
++{
++    VAContextMapP m;
++
++    /* Update existing entry */
++    m = va_context_map_lookup_p(ctx, surface);
++    if (m) {
++        m->context = context;
++        return;
++    }
++
++    /* Create new mapping */
++    m = malloc(sizeof(*m));
++    ASSERT(m);
++    if (m) {
++        m->surface = surface;
++        m->context = context;
++        m->next    = ctx->context_map;
++        ctx->context_map = m;
++    }
++}
++
++static void va_context_map_remove(
++    VACompatContextP    ctx,
++    VAContextID         context
++)
++{
++    VAContextMapP p = NULL;
++    VAContextMapP m = ctx->context_map;
++    VAContextMapP d;
++
++    while (m) {
++        if (m->context == context) {
++            d = m;
++
++            /* Unlink current node */
++            if (p)
++                p->next = m->next;
++            else
++                ctx->context_map = m->next;
++            m = m->next;
++
++            /* Reset cache */
++            if (ctx->last_context_map_match == d)
++                ctx->last_context_map_match = NULL;
++
++            free(d);
++        }
++        else {
++            p = m;
++            m = m->next;
++        }
++    }
 +}
 +
 +static VABufferCompat *va_GetBufferCompat (
@@ -526,6 +546,15 @@ index 0000000..2ad36a3
 +            switch (ctx->version_minor) {
 +            case 29: INIT_TRANSLATE_FUNC(PictureParameter,MPEG2, 0,29); break;
 +            case 30: INIT_TRANSLATE_FUNC(PictureParameter,MPEG2, 0,30); break;
++            }
++        }
++        break;
++    case sizeof(VASliceParameterBufferMPEG2):
++        if (type == VASliceParameterBufferType && ctx->version_major == 0)
++        {
++            switch (ctx->version_minor) {
++            case 29: INIT_TRANSLATE_FUNC(SliceParameter,MPEG2, 0,29); break;
++            case 30: INIT_TRANSLATE_FUNC(SliceParameter,MPEG2, 0,30); break;
 +            }
 +        }
 +        break;
@@ -738,13 +767,19 @@ index 0000000..2ad36a3
 +    return VA_STATUS_SUCCESS;
 +}
 +
-+#define DEFINE_VTABLE_ENTRY(RETVAL, PROC, DECL_ARGS, CALL_ARGS)         \
-+static RETVAL va_compat_##PROC DECL_ARGS                                \
-+{                                                                       \
-+    if (COMPAT_CTX(ctx)->vtable.va##PROC == NULL)                       \
-+        return VA_STATUS_ERROR_OPERATION_FAILED;                        \
-+    return COMPAT_CTX(ctx)->vtable.va##PROC VA_INVOKE_COMPAT_ARGS CALL_ARGS; \
++#define DEFINE_VTABLE_ENTRY_(RETVAL, PROC, ARGS, COMPAT_PROC, COMPAT_ARGS, COMPAT_PRE, COMPAT_POST) \
++static RETVAL va_compat_##PROC ARGS                                        \
++{                                                                          \
++    if (COMPAT_CTX(ctx)->vtable.va##COMPAT_PROC == NULL)                   \
++        return VA_STATUS_ERROR_OPERATION_FAILED;                           \
++    COMPAT_PRE;                                                            \
++    RETVAL ret = COMPAT_CTX(ctx)->vtable.va##COMPAT_PROC VA_INVOKE_COMPAT_ARGS COMPAT_ARGS; \
++    COMPAT_POST;                                                           \
++    return ret;                                                            \
 +}
++
++#define DEFINE_VTABLE_ENTRY(RETVAL, PROC, DECL_ARGS, CALL_ARGS) \
++DEFINE_VTABLE_ENTRY_(RETVAL, PROC, DECL_ARGS, PROC, CALL_ARGS, {}, {})
 +
 +static VAStatus va_compat_Terminate(VADriverContextP ctx)
 +{
@@ -813,8 +848,8 @@ index 0000000..2ad36a3
 +
 +DEFINE_VTABLE_ENTRY(
 +    VAStatus, SyncSurface,
-+    (VADriverContextP ctx, VAContextID context, VASurfaceID render_target),
-+    (ctx, context, render_target))
++    (VADriverContextP ctx, VASurfaceID render_target),
++    (ctx, render_target))
 +
 +DEFINE_VTABLE_ENTRY(
 +    VAStatus, QuerySurfaceStatus,
@@ -865,13 +900,6 @@ index 0000000..2ad36a3
 +DEFINE_VTABLE_ENTRY(
 +    VAStatus, PutImage,
 +    (VADriverContextP ctx, VASurfaceID surface, VAImageID image,
-+     int srcx, int srcy, unsigned int width, unsigned int height,
-+     int destx, int desty),
-+    (ctx, surface, image, srcx, srcy, width, height, destx, desty))
-+
-+DEFINE_VTABLE_ENTRY(
-+    VAStatus, PutImage2,
-+    (VADriverContextP ctx, VASurfaceID surface, VAImageID image,
 +     int srcx, int srcy, unsigned int srcw, unsigned int srch,
 +     int destx, int desty, unsigned int destw, unsigned int desth),
 +    (ctx, surface, image, srcx, srcy, srcw, srch, destx, desty, destw, desth))
@@ -912,15 +940,6 @@ index 0000000..2ad36a3
 +
 +DEFINE_VTABLE_ENTRY(
 +    VAStatus, AssociateSubpicture,
-+    (VADriverContextP ctx, VASubpictureID subpicture,
-+     VASurfaceID *target_surfaces, int num_surfaces,
-+     short srcx, short srcy, short destx, short desty,
-+     unsigned short width, unsigned short height, unsigned int flags),
-+    (ctx, subpicture, target_surfaces, num_surfaces,
-+     srcx, srcy, destx, desty, width, height, flags))
-+
-+DEFINE_VTABLE_ENTRY(
-+    VAStatus, AssociateSubpicture2,
 +    (VADriverContextP ctx, VASubpictureID subpicture,
 +     VASurfaceID *target_surfaces, int num_surfaces,
 +     short srcx, short srcy, unsigned short srcw, unsigned short srch,
@@ -975,12 +994,65 @@ index 0000000..2ad36a3
 +     luma_offset, chroma_u_offset, chroma_v_offset,
 +     buffer))
 +
-+#undef DEFINE_VTABLE_ENTRY
++DEFINE_VTABLE_ENTRY_(
++    VAStatus, SyncSurface_pre31,
++    (VADriverContextP ctx, VASurfaceID render_target),
++    SyncSurface_pre31,
++    (ctx, va_context_map_lookup(COMPAT_CTX(ctx), render_target), render_target),
++    {}, {})
 +
-+static void va_compat_init_VADriverVTable(VADriverContextP ctx)
++DEFINE_VTABLE_ENTRY_(
++    VAStatus, PutImage_pre31,
++    (VADriverContextP ctx, VASurfaceID surface, VAImageID image,
++     int srcx, int srcy, unsigned int srcw, unsigned int srch,
++     int destx, int desty, unsigned int destw, unsigned int desth),
++    PutImage2_pre31,
++    (ctx, surface, image, srcx, srcy, srcw, srch, destx, desty, destw, desth),
++    {}, {})
++
++DEFINE_VTABLE_ENTRY_(
++    VAStatus, AssociateSubpicture_pre31,
++    (VADriverContextP ctx, VASubpictureID subpicture,
++     VASurfaceID *target_surfaces, int num_surfaces,
++     short srcx, short srcy, unsigned short srcw, unsigned short srch,
++     short destx, short desty, unsigned short destw, unsigned short desth,
++     unsigned int flags),
++    AssociateSubpicture2_pre31,
++    (ctx, subpicture, target_surfaces, num_surfaces,
++     srcx, srcy, srcw, srch, destx, desty, destw, desth, flags),
++    {}, {})
++
++DEFINE_VTABLE_ENTRY_(
++    VAStatus, CreateContext_pre31,
++    (VADriverContextP ctx, VAConfigID config_id,
++     int picture_width, int picture_height, int flag,
++     VASurfaceID *render_targets, int num_render_targets, VAContextID *context),
++    CreateContext,
++    (ctx, config_id, picture_width, picture_height, flag,
++     render_targets, num_render_targets, context),
++    {}, {
++        VACompatContextP const compat_ctx = COMPAT_CTX(ctx);
++        int i;
++        for (i = 0; i < num_render_targets; i++)
++            va_context_map_add(compat_ctx, *context, render_targets[i]);
++    })
++
++DEFINE_VTABLE_ENTRY_(
++    VAStatus, DestroyContext_pre31,
++    (VADriverContextP ctx, VAContextID context),
++    DestroyContext,
++    (ctx, context),
++    {}, { va_context_map_remove(COMPAT_CTX(ctx), context); })
++
++#undef DEFINE_VTABLE_ENTRY
++#undef DEFINE_VTABLE_ENTRY_
++
++static void va_compat_init_VADriverVTable(VADriverContextP ctx, int compat_version)
 +{
++#define INIT_VTABLE_(CTX, DST_PROC, SRC_PROC) \
++    (CTX)->vtable.va##DST_PROC = va_compat_##SRC_PROC
 +#define INIT_VTABLE(CTX, PROC) \
-+    (CTX)->vtable.va##PROC = va_compat_##PROC
++    INIT_VTABLE_(CTX, PROC, PROC)
 +
 +    INIT_VTABLE(ctx, Terminate);
 +    INIT_VTABLE(ctx, QueryConfigProfiles);
@@ -1011,7 +1083,6 @@ index 0000000..2ad36a3
 +    INIT_VTABLE(ctx, SetImagePalette);
 +    INIT_VTABLE(ctx, GetImage);
 +    INIT_VTABLE(ctx, PutImage);
-+    INIT_VTABLE(ctx, PutImage2);
 +    INIT_VTABLE(ctx, QuerySubpictureFormats);
 +    INIT_VTABLE(ctx, CreateSubpicture);
 +    INIT_VTABLE(ctx, DestroySubpicture);
@@ -1019,7 +1090,6 @@ index 0000000..2ad36a3
 +    INIT_VTABLE(ctx, SetSubpictureChromakey);
 +    INIT_VTABLE(ctx, SetSubpictureGlobalAlpha);
 +    INIT_VTABLE(ctx, AssociateSubpicture);
-+    INIT_VTABLE(ctx, AssociateSubpicture2);
 +    INIT_VTABLE(ctx, DeassociateSubpicture);
 +    INIT_VTABLE(ctx, QueryDisplayAttributes);
 +    INIT_VTABLE(ctx, GetDisplayAttributes);
@@ -1028,7 +1098,16 @@ index 0000000..2ad36a3
 +    INIT_VTABLE(ctx, CreateSurfaceFromV4L2Buf);
 +    INIT_VTABLE(ctx, CopySurfaceToBuffer);
 +
++    if (compat_version && compat_version < 31) {
++        INIT_VTABLE_(ctx, CreateContext,        CreateContext_pre31);
++        INIT_VTABLE_(ctx, DestroyContext,       DestroyContext_pre31);
++        INIT_VTABLE_(ctx, SyncSurface,          SyncSurface_pre31);
++        INIT_VTABLE_(ctx, PutImage,             PutImage_pre31);
++        INIT_VTABLE_(ctx, AssociateSubpicture,  AssociateSubpicture_pre31);
++    }
++
 +#undef INIT_VTABLE
++#undef INIT_VTABLE__
 +}
 +
 +VAStatus va_compat_init(VADisplay dpy, int compat_version, void *compat_ctx)
@@ -1036,6 +1115,7 @@ index 0000000..2ad36a3
 +    VADisplayContextP pDisplayContext = (VADisplayContextP)dpy;
 +    VADriverContextP ctx = CTX(dpy);
 +    VADriverContextP_0_29 ctx_0_29;
++    VADriverContextP_0_30 ctx_0_30;
 +    VACompatContextP compat;
 +    VAStatus status;
 +    char *driver_name;
@@ -1062,6 +1142,8 @@ index 0000000..2ad36a3
 +    compat->compat_version              = compat_version;
 +    compat->compat_ctx                  = NULL;
 +    compat->driver_name                 = driver_name;
++    compat->context_map                 = NULL;
++    compat->last_context_map_match      = NULL;
 +    ctx->compat                         = compat;
 +
 +    if (strcmp(driver_name, "psb") == 0)
@@ -1088,6 +1170,22 @@ index 0000000..2ad36a3
 +        COPY_FIELD(ctx, ctx_0_29, max_display_attributes);
 +        COPY_FIELD(ctx, ctx_0_29, str_vendor);
 +        break;
++    case 30:
++        if ((ctx_0_30 = malloc(sizeof(*ctx_0_30))) == NULL)
++            return VA_STATUS_ERROR_ALLOCATION_FAILED;
++        memcpy(ctx_0_30, compat_ctx, sizeof(*ctx_0_30));
++        va_compat_translate_VADriverContext_0_30(compat, ctx_0_30);
++        compat->compat_ctx = ctx_0_30;
++        COPY_FIELD(ctx, ctx_0_30, version_major);
++        COPY_FIELD(ctx, ctx_0_30, version_minor);
++        COPY_FIELD(ctx, ctx_0_30, max_profiles);
++        COPY_FIELD(ctx, ctx_0_30, max_entrypoints);
++        COPY_FIELD(ctx, ctx_0_30, max_attributes);
++        COPY_FIELD(ctx, ctx_0_30, max_image_formats);
++        COPY_FIELD(ctx, ctx_0_30, max_subpic_formats);
++        COPY_FIELD(ctx, ctx_0_30, max_display_attributes);
++        COPY_FIELD(ctx, ctx_0_30, str_vendor);
++        break;
 +    case VA_MINOR_VERSION:
 +        va_compat_translate_VADriverContext(compat, compat_ctx);
 +        compat->compat_ctx = compat_ctx;
@@ -1097,7 +1195,7 @@ index 0000000..2ad36a3
 +        return VA_STATUS_ERROR_UNKNOWN;
 +    }
 +
-+    va_compat_init_VADriverVTable(ctx);
++    va_compat_init_VADriverVTable(ctx, compat_version);
 +    return VA_STATUS_SUCCESS;
 +}
 +
@@ -1133,16 +1231,27 @@ index 0000000..2ad36a3
 +        compat->compat_ctx = NULL;
 +    }
 +
++    if (compat->context_map)
++    {
++        VAContextMapP d, m = compat->context_map;
++        while (m) {
++            d = m;
++            m = m->next;
++            free(d);
++        }
++    }
++    compat->last_context_map_match = NULL;
++
 +    free(compat);
 +    ctx->compat = NULL;
 +    return VA_STATUS_SUCCESS;
 +}
 diff --git a/src/va_compat.h b/src/va_compat.h
 new file mode 100644
-index 0000000..6512aba
+index 0000000..e2b32ee
 --- /dev/null
 +++ b/src/va_compat.h
-@@ -0,0 +1,1015 @@
+@@ -0,0 +1,1420 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -1420,7 +1529,19 @@ index 0000000..6512aba
 +    };
 +} VAPictureParameterBufferMPEG2_0_29;
 +
-+/* MPEG-4 Picture Parameter Buffer_0_29 */
++/* MPEG-2 Slice Parameter Buffer (0.29) */
++typedef struct _VASliceParameterBufferMPEG2_0_29
++{
++    unsigned int slice_data_size;/* number of bytes in the slice data buffer for this slice */
++    unsigned int slice_data_offset;/* the offset to the first byte of slice data */
++    unsigned int slice_data_flag; /* see VA_SLICE_DATA_FLAG_XXX defintions */
++    unsigned int macroblock_offset;/* the offset to the first bit of MB from the first byte of slice data */
++    unsigned int slice_vertical_position;
++    int quantiser_scale_code;
++    int intra_slice_flag;
++} VASliceParameterBufferMPEG2_0_29;
++
++/* MPEG-4 Picture Parameter Buffer (0.29) */
 +typedef struct _VAPictureParameterBufferMPEG4_0_29
 +{
 +    unsigned short vop_width;
@@ -1713,6 +1834,9 @@ index 0000000..6512aba
 +        unsigned int value;
 +    } picture_coding_extension;
 +} VAPictureParameterBufferMPEG2_0_30;
++
++/* MPEG-2 Slice Parameter Buffer (0.29) */
++typedef VASliceParameterBufferMPEG2_0_29 VASliceParameterBufferMPEG2_0_30;
 +
 +/* MPEG-4 Picture Parameter Buffer (0.30) */
 +typedef struct _VAPictureParameterBufferMPEG4_0_30
@@ -2153,17 +2277,407 @@ index 0000000..6512aba
 +    void *handle;			/* dlopen handle */
 +};
 +
-+/* Driver VTable and context (0.30) */
-+#define VADriverVTable_0_30     VADriverVTable
-+#define VADriverContext_0_30    VADriverContext
++/* Forward declarations for VA API 0.30 */
++struct v4l2_format;
++struct v4l2_buffer;
++typedef struct VADriverContext_0_30 *VADriverContextP_0_30;
++
++/* Driver VTable (0.30) */
++struct VADriverVTable_0_30
++{
++	VAStatus (*vaTerminate) ( VADriverContextP_0_30 ctx );
++
++	VAStatus (*vaQueryConfigProfiles) (
++		VADriverContextP_0_30 ctx,
++		VAProfile *profile_list,	/* out */
++		int *num_profiles			/* out */
++	);
++
++	VAStatus (*vaQueryConfigEntrypoints) (
++		VADriverContextP_0_30 ctx,
++		VAProfile profile,
++		VAEntrypoint  *entrypoint_list,	/* out */
++		int *num_entrypoints			/* out */
++	);
++
++	VAStatus (*vaGetConfigAttributes) (
++		VADriverContextP_0_30 ctx,
++		VAProfile profile,
++		VAEntrypoint entrypoint,
++		VAConfigAttrib *attrib_list,	/* in/out */
++		int num_attribs
++	);
++
++	VAStatus (*vaCreateConfig) (
++		VADriverContextP_0_30 ctx,
++		VAProfile profile, 
++		VAEntrypoint entrypoint, 
++		VAConfigAttrib *attrib_list,
++		int num_attribs,
++		VAConfigID *config_id		/* out */
++	);
++
++	VAStatus (*vaDestroyConfig) (
++		VADriverContextP_0_30 ctx,
++		VAConfigID config_id
++	);
++
++	VAStatus (*vaQueryConfigAttributes) (
++		VADriverContextP_0_30 ctx,
++		VAConfigID config_id, 
++		VAProfile *profile,		/* out */
++		VAEntrypoint *entrypoint, 	/* out */
++		VAConfigAttrib *attrib_list,	/* out */
++		int *num_attribs		/* out */
++	);
++
++	VAStatus (*vaCreateSurfaces) (
++		VADriverContextP_0_30 ctx,
++		int width,
++		int height,
++		int format,
++		int num_surfaces,
++		VASurfaceID *surfaces		/* out */
++	);
++
++	VAStatus (*vaDestroySurfaces) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID *surface_list,
++		int num_surfaces
++	);
++
++	VAStatus (*vaCreateContext) (
++		VADriverContextP_0_30 ctx,
++		VAConfigID config_id,
++		int picture_width,
++		int picture_height,
++		int flag,
++		VASurfaceID *render_targets,
++		int num_render_targets,
++		VAContextID *context		/* out */
++	);
++
++	VAStatus (*vaDestroyContext) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context
++	);
++
++	VAStatus (*vaCreateBuffer) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context,		/* in */
++		VABufferType type,		/* in */
++		unsigned int size,		/* in */
++		unsigned int num_elements,	/* in */
++		void *data,			/* in */
++		VABufferID *buf_id		/* out */
++	);
++
++	VAStatus (*vaBufferSetNumElements) (
++		VADriverContextP_0_30 ctx,
++		VABufferID buf_id,	/* in */
++		unsigned int num_elements	/* in */
++	);
++
++	VAStatus (*vaMapBuffer) (
++		VADriverContextP_0_30 ctx,
++		VABufferID buf_id,	/* in */
++		void **pbuf         /* out */
++	);
++
++	VAStatus (*vaUnmapBuffer) (
++		VADriverContextP_0_30 ctx,
++		VABufferID buf_id	/* in */
++	);
++
++	VAStatus (*vaDestroyBuffer) (
++		VADriverContextP_0_30 ctx,
++		VABufferID buffer_id
++	);
++
++	VAStatus (*vaBeginPicture) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context,
++		VASurfaceID render_target
++	);
++
++	VAStatus (*vaRenderPicture) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context,
++		VABufferID *buffers,
++		int num_buffers
++	);
++
++	VAStatus (*vaEndPicture) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context
++	);
++
++	VAStatus (*vaSyncSurface) (
++		VADriverContextP_0_30 ctx,
++		VAContextID context,
++		VASurfaceID render_target
++	);
++
++	VAStatus (*vaQuerySurfaceStatus) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID render_target,
++		VASurfaceStatus *status	/* out */
++	);
++
++	VAStatus (*vaPutSurface) (
++    		VADriverContextP_0_30 ctx,
++		VASurfaceID surface,
++		unsigned long draw, /* X Drawable */
++		short srcx,
++		short srcy,
++		unsigned short srcw,
++		unsigned short srch,
++		short destx,
++		short desty,
++		unsigned short destw,
++		unsigned short desth,
++		VARectangle *cliprects, /* client supplied clip list */
++		unsigned int number_cliprects, /* number of clip rects in the clip list */
++		unsigned int flags /* de-interlacing flags */
++	);
++
++	VAStatus (*vaQueryImageFormats) (
++		VADriverContextP_0_30 ctx,
++		VAImageFormat *format_list,        /* out */
++		int *num_formats           /* out */
++	);
++
++	VAStatus (*vaCreateImage) (
++		VADriverContextP_0_30 ctx,
++		VAImageFormat *format,
++		int width,
++		int height,
++		VAImage *image     /* out */
++	);
++
++	VAStatus (*vaDeriveImage) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID surface,
++		VAImage *image     /* out */
++	);
++
++	VAStatus (*vaDestroyImage) (
++		VADriverContextP_0_30 ctx,
++		VAImageID image
++	);
++	
++	VAStatus (*vaSetImagePalette) (
++	        VADriverContextP_0_30 ctx,
++	        VAImageID image,
++	        /*
++                 * pointer to an array holding the palette data.  The size of the array is
++                 * num_palette_entries * entry_bytes in size.  The order of the components
++                 * in the palette is described by the component_order in VAImage struct
++                 */
++                unsigned char *palette
++	);
++	
++	VAStatus (*vaGetImage) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID surface,
++		int x,     /* coordinates of the upper left source pixel */
++		int y,
++		unsigned int width, /* width and height of the region */
++		unsigned int height,
++		VAImageID image
++	);
++
++	VAStatus (*vaPutImage) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID surface,
++		VAImageID image,
++		int src_x,
++		int src_y,
++		unsigned int width,
++		unsigned int height,
++		int dest_x,
++		int dest_y 
++	);
++
++	VAStatus (*vaPutImage2) (
++		VADriverContextP_0_30 ctx,
++		VASurfaceID surface,
++		VAImageID image,
++		int src_x,
++		int src_y,
++		unsigned int src_width,
++		unsigned int src_height,
++		int dest_x,
++		int dest_y,
++		unsigned int dest_width,
++		unsigned int dest_height
++	);
++
++	VAStatus (*vaQuerySubpictureFormats) (
++		VADriverContextP_0_30 ctx,
++		VAImageFormat *format_list,        /* out */
++		unsigned int *flags,       /* out */
++		unsigned int *num_formats  /* out */
++	);
++
++	VAStatus (*vaCreateSubpicture) (
++		VADriverContextP_0_30 ctx,
++		VAImageID image,
++		VASubpictureID *subpicture   /* out */
++	);
++
++	VAStatus (*vaDestroySubpicture) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture
++	);
++
++        VAStatus (*vaSetSubpictureImage) (
++                VADriverContextP_0_30 ctx,
++                VASubpictureID subpicture,
++                VAImageID image
++        );
++
++	VAStatus (*vaSetSubpictureChromakey) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture,
++		unsigned int chromakey_min,
++		unsigned int chromakey_max,
++		unsigned int chromakey_mask
++	);
++
++	VAStatus (*vaSetSubpictureGlobalAlpha) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture,
++		float global_alpha 
++	);
++
++	VAStatus (*vaAssociateSubpicture) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture,
++		VASurfaceID *target_surfaces,
++		int num_surfaces,
++		short src_x, /* upper left offset in subpicture */
++		short src_y,
++		short dest_x, /* upper left offset in surface */
++		short dest_y,
++		unsigned short width,
++		unsigned short height,
++		/*
++		 * whether to enable chroma-keying or global-alpha
++		 * see VA_SUBPICTURE_XXX values
++		 */
++		unsigned int flags
++	);
++
++	VAStatus (*vaAssociateSubpicture2) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture,
++		VASurfaceID *target_surfaces,
++		int num_surfaces,
++		short src_x, /* upper left offset in subpicture */
++		short src_y,
++		unsigned short src_width,
++		unsigned short src_height,
++		short dest_x, /* upper left offset in surface */
++		short dest_y,
++		unsigned short dest_width,
++		unsigned short dest_height,
++		/*
++		 * whether to enable chroma-keying or global-alpha
++		 * see VA_SUBPICTURE_XXX values
++		 */
++		unsigned int flags
++	);
++
++	VAStatus (*vaDeassociateSubpicture) (
++		VADriverContextP_0_30 ctx,
++		VASubpictureID subpicture,
++		VASurfaceID *target_surfaces,
++		int num_surfaces
++	);
++
++	VAStatus (*vaQueryDisplayAttributes) (
++		VADriverContextP_0_30 ctx,
++		VADisplayAttribute *attr_list,	/* out */
++		int *num_attributes		/* out */
++        );
++
++	VAStatus (*vaGetDisplayAttributes) (
++		VADriverContextP_0_30 ctx,
++		VADisplayAttribute *attr_list,	/* in/out */
++		int num_attributes
++        );
++        
++        VAStatus (*vaSetDisplayAttributes) (
++		VADriverContextP_0_30 ctx,
++                VADisplayAttribute *attr_list,
++                int num_attributes
++        );
++
++        /* device specific */
++	VAStatus (*vaCreateSurfaceFromCIFrame) (
++		VADriverContextP_0_30 ctx,
++		unsigned long frame_id,
++		VASurfaceID *surface		/* out */
++	);
++    
++    
++        VAStatus (*vaCreateSurfaceFromV4L2Buf) (
++		VADriverContextP_0_30 ctx,
++                int v4l2_fd,         /* file descriptor of V4L2 device */
++                struct v4l2_format *v4l2_fmt,       /* format of V4L2 */
++                struct v4l2_buffer *v4l2_buf,       /* V4L2 buffer */
++                VASurfaceID *surface	           /* out */
++        );
++    
++        VAStatus (*vaCopySurfaceToBuffer) (
++		VADriverContextP_0_30 ctx,
++                VASurfaceID surface,
++                unsigned int *fourcc, /* out  for follow argument */
++                unsigned int *luma_stride,
++                unsigned int *chroma_u_stride,
++                unsigned int *chroma_v_stride,
++                unsigned int *luma_offset,
++                unsigned int *chroma_u_offset,
++                unsigned int *chroma_v_offset,
++                void **buffer
++        );
++};
++
++/* Driver context (0.30) */
++struct VADriverContext_0_30
++{
++    void *pDriverData;
++    struct VADriverVTable_0_30 vtable;
++
++    void *x11_dpy;
++    int x11_screen;
++    int version_major;
++    int version_minor;
++    int max_profiles;
++    int max_entrypoints;
++    int max_attributes;
++    int max_image_formats;
++    int max_subpic_formats;
++    int max_display_attributes;
++    const char *str_vendor;
++
++    void *handle;			/* dlopen handle */
++    
++    void *dri_state;
++};
++
++/* Driver VTable and context (0.31) */
++#define VADriverVTable_0_31     VADriverVTable
++#define VADriverContext_0_31    VADriverContext
 +
 +#endif /* VA_COMPAT_H */
 diff --git a/src/va_compat_template.h b/src/va_compat_template.h
 new file mode 100644
-index 0000000..d51b60d
+index 0000000..a652af6
 --- /dev/null
 +++ b/src/va_compat_template.h
-@@ -0,0 +1,503 @@
+@@ -0,0 +1,539 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -2213,9 +2727,17 @@ index 0000000..d51b60d
 +#define COPY_FIELD(DST, SRC, MEMBER) \
 +    (DST)->MEMBER = (SRC)->MEMBER
 +
++#undef  COPY_VTABLE__
++#define COPY_VTABLE__(DST, DST_MEMBER, SRC, SRC_MEMBER) \
++    (DST##_vtable)->DST_MEMBER = (SRC##_vtable)->SRC_MEMBER
++
++#undef  COPY_VTABLE_
++#define COPY_VTABLE_(DST, DST_SUFFIX, SRC, MEMBER) \
++    COPY_VTABLE__(DST, MEMBER##_##DST_SUFFIX, SRC, MEMBER)
++
 +#undef  COPY_VTABLE
 +#define COPY_VTABLE(DST, SRC, MEMBER) \
-+    COPY_FIELD(DST##_vtable, SRC##_vtable, MEMBER)
++    COPY_VTABLE__(DST, MEMBER, SRC, MEMBER)
 +
 +/* 0.29 */
 +#if COMPAT_MAJOR == 0 && COMPAT_MINOR == 29
@@ -2269,6 +2791,7 @@ index 0000000..d51b60d
 +    (DST)->FIELD.flags.MEMBER = (SRC)->FIELD.flags.MEMBER
 +#endif
 +
++#if COMPAT_MAJOR == 0 && COMPAT_MINOR < 31
 +static VAStatus TRANSLATE_(VAPictureH264)(
 +    VACompatContextP    ctx,
 +    void               *dest_pic,
@@ -2538,6 +3061,26 @@ index 0000000..d51b60d
 +    return VA_STATUS_SUCCESS;
 +}
 +
++static VAStatus TRANSLATE(SliceParameter,MPEG2)(
++    VACompatContextP    ctx,
++    void               *dest_buffer,
++    const void         *src_buffer
++)
++{
++    STRUCT(SliceParameter,MPEG2) *dest = dest_buffer;
++    const VASliceParameterBufferMPEG2 *src = src_buffer;
++
++    COPY_FIELD(dest, src, slice_data_size);
++    COPY_FIELD(dest, src, slice_data_offset);
++    COPY_FIELD(dest, src, slice_data_flag);
++    COPY_FIELD(dest, src, macroblock_offset);
++    COPY_FIELD(dest, src, slice_vertical_position);
++    COPY_FIELD(dest, src, quantiser_scale_code);
++    COPY_FIELD(dest, src, intra_slice_flag);
++
++    return VA_STATUS_SUCCESS;
++}
++
 +static VAStatus TRANSLATE(PictureParameter,MPEG4)(
 +    VACompatContextP    ctx,
 +    void               *dest_buffer,
@@ -2582,6 +3125,7 @@ index 0000000..d51b60d
 +
 +    return VA_STATUS_SUCCESS;
 +}
++#endif
 +
 +#if COMPAT_MAJOR == 0 && COMPAT_MINOR == 30
 +static VAStatus TRANSLATE_(VAEncSliceParameterBuffer)(
@@ -2631,7 +3175,6 @@ index 0000000..d51b60d
 +    COPY_VTABLE(dest, src, vaBeginPicture);
 +    COPY_VTABLE(dest, src, vaRenderPicture);
 +    COPY_VTABLE(dest, src, vaEndPicture);
-+    COPY_VTABLE(dest, src, vaSyncSurface);
 +    COPY_VTABLE(dest, src, vaQuerySurfaceStatus);
 +    COPY_VTABLE(dest, src, vaPutSurface);
 +    COPY_VTABLE(dest, src, vaQueryImageFormats);
@@ -2640,16 +3183,12 @@ index 0000000..d51b60d
 +    COPY_VTABLE(dest, src, vaDestroyImage);
 +    COPY_VTABLE(dest, src, vaSetImagePalette);
 +    COPY_VTABLE(dest, src, vaGetImage);
-+    COPY_VTABLE(dest, src, vaPutImage);
-+    COPY_VTABLE(dest, src, vaPutImage2);
 +    COPY_VTABLE(dest, src, vaQuerySubpictureFormats);
 +    COPY_VTABLE(dest, src, vaCreateSubpicture);
 +    COPY_VTABLE(dest, src, vaDestroySubpicture);
 +    COPY_VTABLE(dest, src, vaSetSubpictureImage);
 +    COPY_VTABLE(dest, src, vaSetSubpictureChromakey);
 +    COPY_VTABLE(dest, src, vaSetSubpictureGlobalAlpha);
-+    COPY_VTABLE(dest, src, vaAssociateSubpicture);
-+    COPY_VTABLE(dest, src, vaAssociateSubpicture2);
 +    COPY_VTABLE(dest, src, vaDeassociateSubpicture);
 +    COPY_VTABLE(dest, src, vaQueryDisplayAttributes);
 +    COPY_VTABLE(dest, src, vaGetDisplayAttributes);
@@ -2662,6 +3201,17 @@ index 0000000..d51b60d
 +    COPY_VTABLE(dest, src, vaCreateSurfaceFromCIFrame);
 +    COPY_VTABLE(dest, src, vaCreateSurfaceFromV4L2Buf);
 +    COPY_VTABLE(dest, src, vaCopySurfaceToBuffer);
++#endif
++#if COMPAT_MAJOR == 0 && COMPAT_MINOR >= 31
++    COPY_VTABLE(dest, src, vaSyncSurface);
++    COPY_VTABLE(dest, src, vaPutImage);
++    COPY_VTABLE(dest, src, vaAssociateSubpicture);
++#else
++    COPY_VTABLE_(dest, pre31, src, vaSyncSurface);
++    COPY_VTABLE_(dest, pre31, src, vaPutImage);
++    COPY_VTABLE_(dest, pre31, src, vaPutImage2);
++    COPY_VTABLE_(dest, pre31, src, vaAssociateSubpicture);
++    COPY_VTABLE_(dest, pre31, src, vaAssociateSubpicture2);
 +#endif
 +}
 +
