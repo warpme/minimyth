@@ -1,6 +1,6 @@
 diff -Naur vlc-1.0.1-old/configure.ac vlc-1.0.1-new/configure.ac
 --- vlc-1.0.1-old/configure.ac	2009-07-27 15:24:17.000000000 -0700
-+++ vlc-1.0.1-new/configure.ac	2009-09-02 21:29:04.000000000 -0700
++++ vlc-1.0.1-new/configure.ac	2009-09-11 06:28:32.000000000 -0700
 @@ -3102,8 +3102,8 @@
        AC_CHECK_HEADERS(libavcodec/avcodec.h ffmpeg/avcodec.h)
        AC_CHECK_HEADERS(libavutil/avutil.h ffmpeg/avutil.h)
@@ -14,7 +14,7 @@ diff -Naur vlc-1.0.1-old/configure.ac vlc-1.0.1-new/configure.ac
        AC_MSG_ERROR([Could not find libavcodec or libavutil. Use --disable-avcodec to ignore this error.])
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/avcodec.c vlc-1.0.1-new/modules/codec/avcodec/avcodec.c
 --- vlc-1.0.1-old/modules/codec/avcodec/avcodec.c	2009-05-08 17:10:48.000000000 -0700
-+++ vlc-1.0.1-new/modules/codec/avcodec/avcodec.c	2009-09-02 21:29:30.000000000 -0700
++++ vlc-1.0.1-new/modules/codec/avcodec/avcodec.c	2009-09-11 06:28:32.000000000 -0700
 @@ -129,6 +129,9 @@
  
      add_integer( "ffmpeg-debug", 0, NULL, DEBUG_TEXT, DEBUG_LONGTEXT,
@@ -27,7 +27,7 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/avcodec.c vlc-1.0.1-new/modules/c
      /* encoder submodule */
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/avcodec.h vlc-1.0.1-new/modules/codec/avcodec/avcodec.h
 --- vlc-1.0.1-old/modules/codec/avcodec/avcodec.h	2009-05-08 17:10:48.000000000 -0700
-+++ vlc-1.0.1-new/modules/codec/avcodec/avcodec.h	2009-09-02 21:29:30.000000000 -0700
++++ vlc-1.0.1-new/modules/codec/avcodec/avcodec.h	2009-09-11 06:28:32.000000000 -0700
 @@ -127,6 +127,9 @@
      "usually has a detrimental effect on quality. However it provides a big " \
      "speedup for high definition streams." )
@@ -47,7 +47,7 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/avcodec.h vlc-1.0.1-new/modules/c
 +//#define HAVE_AVCODEC_VAAPI 1
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/Modules.am vlc-1.0.1-new/modules/codec/avcodec/Modules.am
 --- vlc-1.0.1-old/modules/codec/avcodec/Modules.am	2009-05-08 17:10:48.000000000 -0700
-+++ vlc-1.0.1-new/modules/codec/avcodec/Modules.am	2009-09-02 21:29:30.000000000 -0700
++++ vlc-1.0.1-new/modules/codec/avcodec/Modules.am	2009-09-11 06:28:32.000000000 -0700
 @@ -7,6 +7,7 @@
  	avutil.h \
  	fourcc.c \
@@ -58,8 +58,8 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/Modules.am vlc-1.0.1-new/modules/
  if ENABLE_SOUT
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/vaapi.c vlc-1.0.1-new/modules/codec/avcodec/vaapi.c
 --- vlc-1.0.1-old/modules/codec/avcodec/vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.1-new/modules/codec/avcodec/vaapi.c	2009-09-02 21:29:30.000000000 -0700
-@@ -0,0 +1,487 @@
++++ vlc-1.0.1-new/modules/codec/avcodec/vaapi.c	2009-09-11 06:29:16.000000000 -0700
+@@ -0,0 +1,492 @@
 +/*****************************************************************************
 + * vaapi.c: VAAPI helpers for the ffmpeg decoder
 + *****************************************************************************
@@ -404,8 +404,13 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/vaapi.c vlc-1.0.1-new/modules/cod
 +{
 +    VASurfaceID i_surface_id = (VASurfaceID)(uintptr_t)p_ff->data[3];
 +
++#if !VA_CHECK_VERSION(0,31,0)
 +    if( vaSyncSurface( p_va->p_display, p_va->i_context_id, i_surface_id ) )
 +        return VLC_EGENERIC;
++#else
++    if( vaSyncSurface( p_va->p_display, i_surface_id ) )
++        return VLC_EGENERIC;
++#endif
 +
 +    /* XXX vaDeriveImage may be better but it is not supported by
 +     * my setup.
@@ -549,7 +554,7 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/vaapi.c vlc-1.0.1-new/modules/cod
 +#endif
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/vaapi.h vlc-1.0.1-new/modules/codec/avcodec/vaapi.h
 --- vlc-1.0.1-old/modules/codec/avcodec/vaapi.h	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.1-new/modules/codec/avcodec/vaapi.h	2009-09-02 21:29:30.000000000 -0700
++++ vlc-1.0.1-new/modules/codec/avcodec/vaapi.h	2009-09-11 06:28:32.000000000 -0700
 @@ -0,0 +1,43 @@
 +/*****************************************************************************
 + * vaapi.h: VAAPI helpers for the ffmpeg decoder
@@ -596,7 +601,7 @@ diff -Naur vlc-1.0.1-old/modules/codec/avcodec/vaapi.h vlc-1.0.1-new/modules/cod
 +#endif
 diff -Naur vlc-1.0.1-old/modules/codec/avcodec/video.c vlc-1.0.1-new/modules/codec/avcodec/video.c
 --- vlc-1.0.1-old/modules/codec/avcodec/video.c	2009-07-21 14:33:28.000000000 -0700
-+++ vlc-1.0.1-new/modules/codec/avcodec/video.c	2009-09-02 21:29:30.000000000 -0700
++++ vlc-1.0.1-new/modules/codec/avcodec/video.c	2009-09-11 06:28:32.000000000 -0700
 @@ -34,10 +34,14 @@
  #include <vlc_vout.h>
  #include <vlc_codecs.h>                               /* BITMAPINFOHEADER */

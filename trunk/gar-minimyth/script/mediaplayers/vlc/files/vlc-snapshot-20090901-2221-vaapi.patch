@@ -1,6 +1,6 @@
 diff -Naur vlc-1.1.0-git-old/configure.ac vlc-1.1.0-git-new/configure.ac
 --- vlc-1.1.0-git-old/configure.ac	2009-09-01 15:04:36.000000000 -0700
-+++ vlc-1.1.0-git-new/configure.ac	2009-09-02 22:51:17.000000000 -0700
++++ vlc-1.1.0-git-new/configure.ac	2009-09-11 06:31:52.000000000 -0700
 @@ -2852,8 +2852,8 @@
        AC_CHECK_HEADERS(libavcodec/avcodec.h ffmpeg/avcodec.h)
        AC_CHECK_HEADERS(libavutil/avutil.h ffmpeg/avutil.h)
@@ -12,3 +12,20 @@ diff -Naur vlc-1.1.0-git-old/configure.ac vlc-1.1.0-git-new/configure.ac
        VLC_RESTORE_FLAGS
        have_avcodec="yes"
      ],[
+diff -Naur vlc-1.1.0-git-old/modules/codec/avcodec/vaapi.c vlc-1.1.0-git-new/modules/codec/avcodec/vaapi.c
+--- vlc-1.1.0-git-old/modules/codec/avcodec/vaapi.c	2009-09-01 15:04:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/avcodec/vaapi.c	2009-09-11 06:32:35.000000000 -0700
+@@ -344,8 +344,13 @@
+ {
+     VASurfaceID i_surface_id = (VASurfaceID)(uintptr_t)p_ff->data[3];
+ 
++#if !VA_CHECK_VERSION(0,31,0)
+     if( vaSyncSurface( p_va->p_display, p_va->i_context_id, i_surface_id ) )
+         return VLC_EGENERIC;
++#else
++    if( vaSyncSurface( p_va->p_display, i_surface_id ) )
++        return VLC_EGENERIC;
++#endif
+ 
+     /* XXX vaDeriveImage may be better but it is not supported by
+      * my setup.
