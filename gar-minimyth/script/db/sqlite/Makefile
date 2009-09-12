@@ -1,5 +1,5 @@
 GARNAME = sqlite
-GARVERSION = 3.6.17
+GARVERSION = 3.6.18
 CATEGORIES = db
 MASTER_SITES = http://www.sqlite.org/
 DISTFILES = $(DISTNAME).tar.gz
@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS   = lang/c
+BUILDDEPS = utils/tcl
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
