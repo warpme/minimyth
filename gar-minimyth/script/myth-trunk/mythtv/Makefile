@@ -14,8 +14,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
-	$(DISTNAME_SHORT)-programid.patch \
-	$(DISTNAME_SHORT)-alphapulse.patch
+	$(DISTNAME_SHORT)-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -120,9 +119,6 @@ CONFIGURE_ARGS = \
 	--enable-opengl-video \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
-	--disable-directfb \
-	--disable-directx \
-	--disable-mac-bundle \
 	--without-bindings="perl,python"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
