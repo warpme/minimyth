@@ -1,13 +1,10 @@
 GARNAME = busybox
-GARVERSION = 1.14.3
+GARVERSION = 1.15.1
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = \
-	$(DISTNAME)-httpd.patch \
-	$(DISTNAME)-modprobe.patch \
-	$(DISTNAME)-trylink-gc-sections.patch
+PATCHFILES  =
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
