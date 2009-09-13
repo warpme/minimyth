@@ -1,6 +1,6 @@
-diff -Naur ffmpeg-19729.29565-old/doc/multithreading.txt ffmpeg-19729.29565-new/doc/multithreading.txt
---- ffmpeg-19729.29565-old/doc/multithreading.txt	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-19729.29565-new/doc/multithreading.txt	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/doc/multithreading.txt ffmpeg-19828.29674-new/doc/multithreading.txt
+--- ffmpeg-19828.29674-old/doc/multithreading.txt	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-19828.29674-new/doc/multithreading.txt	2009-09-12 17:27:29.000000000 -0700
 @@ -0,0 +1,73 @@
 +FFmpeg multithreading methods
 +==============================================
@@ -75,10 +75,10 @@ diff -Naur ffmpeg-19729.29565-old/doc/multithreading.txt ffmpeg-19729.29565-new/
 +
 +5. Call ff_report_frame_setup_done() as soon as possible. This will start the
 +next thread.
-diff -Naur ffmpeg-19729.29565-old/ffmpeg.c ffmpeg-19729.29565-new/ffmpeg.c
---- ffmpeg-19729.29565-old/ffmpeg.c	2009-08-27 08:43:34.000000000 -0700
-+++ ffmpeg-19729.29565-new/ffmpeg.c	2009-08-27 08:43:50.000000000 -0700
-@@ -491,11 +491,6 @@
+diff -Naur ffmpeg-19828.29674-old/ffmpeg.c ffmpeg-19828.29674-new/ffmpeg.c
+--- ffmpeg-19828.29674-old/ffmpeg.c	2009-09-12 17:17:15.000000000 -0700
++++ ffmpeg-19828.29674-new/ffmpeg.c	2009-09-12 17:27:29.000000000 -0700
+@@ -495,11 +495,6 @@
          else if (st->codec->codec_type == CODEC_TYPE_VIDEO && video_stream_copy)
              st->stream_copy = 1;
  
@@ -90,7 +90,7 @@ diff -Naur ffmpeg-19729.29565-old/ffmpeg.c ffmpeg-19729.29565-new/ffmpeg.c
          if(st->codec->flags & CODEC_FLAG_BITEXACT)
              nopts = 1;
      }
-@@ -2903,8 +2898,6 @@
+@@ -2911,8 +2906,6 @@
      /* update the current parameters so that they match the one of the input stream */
      for(i=0;i<ic->nb_streams;i++) {
          AVCodecContext *enc = ic->streams[i]->codec;
@@ -99,7 +99,7 @@ diff -Naur ffmpeg-19729.29565-old/ffmpeg.c ffmpeg-19729.29565-new/ffmpeg.c
          enc->thread_count= thread_count;
          switch(enc->codec_type) {
          case CODEC_TYPE_AUDIO:
-@@ -3037,8 +3030,7 @@
+@@ -3045,8 +3038,7 @@
      bitstream_filters[nb_output_files][oc->nb_streams - 1]= video_bitstream_filters;
      video_bitstream_filters= NULL;
  
@@ -109,7 +109,7 @@ diff -Naur ffmpeg-19729.29565-old/ffmpeg.c ffmpeg-19729.29565-new/ffmpeg.c
  
      video_enc = st->codec;
  
-@@ -3180,8 +3172,7 @@
+@@ -3188,8 +3180,7 @@
      bitstream_filters[nb_output_files][oc->nb_streams - 1]= audio_bitstream_filters;
      audio_bitstream_filters= NULL;
  
@@ -119,9 +119,9 @@ diff -Naur ffmpeg-19729.29565-old/ffmpeg.c ffmpeg-19729.29565-new/ffmpeg.c
  
      audio_enc = st->codec;
      audio_enc->codec_type = CODEC_TYPE_AUDIO;
-diff -Naur ffmpeg-19729.29565-old/ffplay.c ffmpeg-19729.29565-new/ffplay.c
---- ffmpeg-19729.29565-old/ffplay.c	2009-08-27 08:43:34.000000000 -0700
-+++ ffmpeg-19729.29565-new/ffplay.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/ffplay.c ffmpeg-19828.29674-new/ffplay.c
+--- ffmpeg-19828.29674-old/ffplay.c	2009-09-12 17:17:15.000000000 -0700
++++ ffmpeg-19828.29674-new/ffplay.c	2009-09-12 17:27:29.000000000 -0700
 @@ -1719,6 +1719,7 @@
      enc->skip_loop_filter= skip_loop_filter;
      enc->error_recognition= error_recognition;
@@ -140,10 +140,10 @@ diff -Naur ffmpeg-19729.29565-old/ffplay.c ffmpeg-19729.29565-new/ffplay.c
      ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;
      switch(enc->codec_type) {
      case CODEC_TYPE_AUDIO:
-diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/libavcodec/avcodec.h
---- ffmpeg-19729.29565-old/libavcodec/avcodec.h	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/avcodec.h	2009-08-27 08:43:50.000000000 -0700
-@@ -604,6 +604,10 @@
+diff -Naur ffmpeg-19828.29674-old/libavcodec/avcodec.h ffmpeg-19828.29674-new/libavcodec/avcodec.h
+--- ffmpeg-19828.29674-old/libavcodec/avcodec.h	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/avcodec.h	2009-09-12 17:27:29.000000000 -0700
+@@ -605,6 +605,10 @@
   * Codec can export data for HW decoding (VDPAU).
   */
  #define CODEC_CAP_HWACCEL_VDPAU    0x0080
@@ -154,7 +154,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
  
  //The following defines may change, don't expect compatibility if you use them.
  #define MB_TYPE_INTRA4x4   0x0001
-@@ -883,7 +887,20 @@
+@@ -884,7 +888,20 @@
       * - decoding: Set by libavcodec\
       */\
      void *hwaccel_picture_private;\
@@ -176,7 +176,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
  
  #define FF_QSCALE_TYPE_MPEG1 0
  #define FF_QSCALE_TYPE_MPEG2 1
-@@ -1089,7 +1106,7 @@
+@@ -1090,7 +1107,7 @@
       * If non NULL, 'draw_horiz_band' is called by the libavcodec
       * decoder to draw a horizontal band. It improves cache usage. Not
       * all codecs can do that. You must check the codec capabilities
@@ -185,7 +185,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
       * The function is also used by hardware acceleration APIs.
       * It is called at least once during frame decoding to pass
       * the data needed for hardware render.
-@@ -1338,7 +1355,8 @@
+@@ -1339,7 +1356,8 @@
       * height, as they normally need to be rounded up to the next multiple of 16.
       * if CODEC_CAP_DR1 is not set then get_buffer() must call
       * avcodec_default_get_buffer() instead of providing buffers allocated by
@@ -195,7 +195,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
       * - encoding: unused
       * - decoding: Set by libavcodec., user can override.
       */
-@@ -1347,7 +1365,9 @@
+@@ -1348,7 +1366,9 @@
      /**
       * Called to release buffers which were allocated with get_buffer.
       * A released buffer can be reused in get_buffer().
@@ -206,7 +206,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
       * - encoding: unused
       * - decoding: Set by libavcodec., user can override.
       */
-@@ -1648,6 +1668,7 @@
+@@ -1649,6 +1669,7 @@
  #define FF_DEBUG_VIS_QP      0x00002000
  #define FF_DEBUG_VIS_MB_TYPE 0x00004000
  #define FF_DEBUG_BUFFERS     0x00008000
@@ -214,7 +214,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
  
      /**
       * debug
-@@ -2520,7 +2541,33 @@
+@@ -2521,7 +2542,33 @@
       * - encoding: Set by user
       * - decoding: Set by libavcodec
       */
@@ -249,7 +249,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
  } AVCodecContext;
  
  /**
-@@ -2562,6 +2609,26 @@
+@@ -2563,6 +2610,26 @@
      const int *supported_samplerates;       ///< array of supported audio samplerates, or NULL if unknown, array is terminated by 0
      const enum SampleFormat *sample_fmts;   ///< array of supported sample formats, or NULL if unknown, array is terminated by -1
      const int64_t *channel_layouts;         ///< array of support channel layouts, or NULL if unknown. array is terminated by 0
@@ -276,9 +276,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/avcodec.h ffmpeg-19729.29565-new/li
  } AVCodec;
  
  /**
-diff -Naur ffmpeg-19729.29565-old/libavcodec/beosthread.c ffmpeg-19729.29565-new/libavcodec/beosthread.c
---- ffmpeg-19729.29565-old/libavcodec/beosthread.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/beosthread.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/beosthread.c ffmpeg-19828.29674-new/libavcodec/beosthread.c
+--- ffmpeg-19828.29674-old/libavcodec/beosthread.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/beosthread.c	2009-09-12 17:27:29.000000000 -0700
 @@ -121,7 +121,13 @@
      int i;
      ThreadContext *c;
@@ -293,9 +293,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/beosthread.c ffmpeg-19729.29565-new
  
      assert(!s->thread_opaque);
      c= av_mallocz(sizeof(ThreadContext)*thread_count);
-diff -Naur ffmpeg-19729.29565-old/libavcodec/dsputil.c ffmpeg-19729.29565-new/libavcodec/dsputil.c
---- ffmpeg-19729.29565-old/libavcodec/dsputil.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/dsputil.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/dsputil.c ffmpeg-19828.29674-new/libavcodec/dsputil.c
+--- ffmpeg-19828.29674-old/libavcodec/dsputil.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/dsputil.c	2009-09-12 17:27:29.000000000 -0700
 @@ -438,7 +438,7 @@
  
  /* draw the edges of width 'w' of an image of size width, height */
@@ -336,9 +336,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/dsputil.c ffmpeg-19729.29565-new/li
      }
  }
  
-diff -Naur ffmpeg-19729.29565-old/libavcodec/dsputil.h ffmpeg-19729.29565-new/libavcodec/dsputil.h
---- ffmpeg-19729.29565-old/libavcodec/dsputil.h	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/dsputil.h	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/dsputil.h ffmpeg-19828.29674-new/libavcodec/dsputil.h
+--- ffmpeg-19828.29674-old/libavcodec/dsputil.h	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/dsputil.h	2009-09-12 17:27:29.000000000 -0700
 @@ -449,8 +449,10 @@
  #define BASIS_SHIFT 16
  #define RECON_SHIFT 6
@@ -351,9 +351,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/dsputil.h ffmpeg-19729.29565-new/li
  
      /* h264 functions */
      /* NOTE!!! if you implement any of h264_idct8_add, h264_idct8_add4 then you must implement all of them
-diff -Naur ffmpeg-19729.29565-old/libavcodec/h263.c ffmpeg-19729.29565-new/libavcodec/h263.c
---- ffmpeg-19729.29565-old/libavcodec/h263.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/h263.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/h263.c ffmpeg-19828.29674-new/libavcodec/h263.c
+--- ffmpeg-19828.29674-old/libavcodec/h263.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/h263.c	2009-09-12 17:27:29.000000000 -0700
 @@ -41,6 +41,7 @@
  #include "mpeg4data.h"
  #include "mathops.h"
@@ -400,9 +400,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/h263.c ffmpeg-19729.29565-new/libav
              if(s->pict_type==FF_B_TYPE && s->next_picture.mbskip_table[xy + delta])
                  return SLICE_OK;
              return SLICE_END;
-diff -Naur ffmpeg-19729.29565-old/libavcodec/h263dec.c ffmpeg-19729.29565-new/libavcodec/h263dec.c
---- ffmpeg-19729.29565-old/libavcodec/h263dec.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/h263dec.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/h263dec.c ffmpeg-19828.29674-new/libavcodec/h263dec.c
+--- ffmpeg-19828.29674-old/libavcodec/h263dec.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/h263dec.c	2009-09-12 17:27:29.000000000 -0700
 @@ -32,6 +32,7 @@
  #include "h263_parser.h"
  #include "mpeg4video_parser.h"
@@ -443,9 +443,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/h263dec.c ffmpeg-19729.29565-new/li
  };
  
  AVCodec h263_decoder = {
-diff -Naur ffmpeg-19729.29565-old/libavcodec/h264.c ffmpeg-19729.29565-new/libavcodec/h264.c
---- ffmpeg-19729.29565-old/libavcodec/h264.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/h264.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/h264.c ffmpeg-19828.29674-new/libavcodec/h264.c
+--- ffmpeg-19828.29674-old/libavcodec/h264.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/h264.c	2009-09-12 17:27:29.000000000 -0700
 @@ -35,6 +35,7 @@
  #include "golomb.h"
  #include "mathops.h"
@@ -1383,9 +1383,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/h264.c ffmpeg-19729.29565-new/libav
  };
  
  #if CONFIG_H264_VDPAU_DECODER
-diff -Naur ffmpeg-19729.29565-old/libavcodec/h264.h ffmpeg-19729.29565-new/libavcodec/h264.h
---- ffmpeg-19729.29565-old/libavcodec/h264.h	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/h264.h	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/h264.h ffmpeg-19828.29674-new/libavcodec/h264.h
+--- ffmpeg-19828.29674-old/libavcodec/h264.h	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/h264.h	2009-09-12 17:27:29.000000000 -0700
 @@ -250,7 +250,7 @@
        * Used to parse AVC variant of h264
        */
@@ -1403,9 +1403,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/h264.h ffmpeg-19729.29565-new/libav
      int outputed_poc;
  
      /**
-diff -Naur ffmpeg-19729.29565-old/libavcodec/huffyuv.c ffmpeg-19729.29565-new/libavcodec/huffyuv.c
---- ffmpeg-19729.29565-old/libavcodec/huffyuv.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/huffyuv.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/huffyuv.c ffmpeg-19828.29674-new/libavcodec/huffyuv.c
+--- ffmpeg-19828.29674-old/libavcodec/huffyuv.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/huffyuv.c	2009-09-12 17:27:29.000000000 -0700
 @@ -32,6 +32,7 @@
  #include "get_bits.h"
  #include "put_bits.h"
@@ -1478,9 +1478,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/huffyuv.c ffmpeg-19729.29565-new/li
      .long_name = NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
  };
  #endif
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mdec.c ffmpeg-19729.29565-new/libavcodec/mdec.c
---- ffmpeg-19729.29565-old/libavcodec/mdec.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mdec.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mdec.c ffmpeg-19828.29674-new/libavcodec/mdec.c
+--- ffmpeg-19828.29674-old/libavcodec/mdec.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mdec.c	2009-09-12 17:27:29.000000000 -0700
 @@ -31,6 +31,7 @@
  #include "dsputil.h"
  #include "mpegvideo.h"
@@ -1531,9 +1531,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mdec.c ffmpeg-19729.29565-new/libav
 +    .init_copy= ONLY_IF_THREADS_ENABLED(decode_init_copy)
  };
  
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mimic.c ffmpeg-19729.29565-new/libavcodec/mimic.c
---- ffmpeg-19729.29565-old/libavcodec/mimic.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mimic.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mimic.c ffmpeg-19828.29674-new/libavcodec/mimic.c
+--- ffmpeg-19828.29674-old/libavcodec/mimic.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mimic.c	2009-09-12 17:27:29.000000000 -0700
 @@ -27,6 +27,7 @@
  #include "get_bits.h"
  #include "bytestream.h"
@@ -1685,9 +1685,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mimic.c ffmpeg-19729.29565-new/liba
      .long_name = NULL_IF_CONFIG_SMALL("Mimic"),
 +    .update_context = ONLY_IF_THREADS_ENABLED(mimic_decode_update_context)
  };
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mpeg12.c ffmpeg-19729.29565-new/libavcodec/mpeg12.c
---- ffmpeg-19729.29565-old/libavcodec/mpeg12.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mpeg12.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mpeg12.c ffmpeg-19828.29674-new/libavcodec/mpeg12.c
+--- ffmpeg-19828.29674-old/libavcodec/mpeg12.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mpeg12.c	2009-09-12 17:27:29.000000000 -0700
 @@ -37,6 +37,7 @@
  #include "bytestream.h"
  #include "vdpau_internal.h"
@@ -1800,9 +1800,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpeg12.c ffmpeg-19729.29565-new/lib
          return -1;
      if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
          return -1;
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo.c ffmpeg-19729.29565-new/libavcodec/mpegvideo.c
---- ffmpeg-19729.29565-old/libavcodec/mpegvideo.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mpegvideo.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mpegvideo.c ffmpeg-19828.29674-new/libavcodec/mpegvideo.c
+--- ffmpeg-19828.29674-old/libavcodec/mpegvideo.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mpegvideo.c	2009-09-12 17:27:29.000000000 -0700
 @@ -35,6 +35,7 @@
  #include "msmpeg4.h"
  #include "faandct.h"
@@ -1931,13 +1931,13 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo.c ffmpeg-19729.29565-new/
          return -1;
      }
 @@ -553,8 +632,9 @@
-             CHECKED_ALLOCZ(s->dct_offset, 2 * 64 * sizeof(uint16_t))
+             FF_ALLOCZ_OR_GOTO(s->avctx, s->dct_offset, 2 * 64 * sizeof(uint16_t), fail)
          }
      }
--    CHECKED_ALLOCZ(s->picture, MAX_PICTURE_COUNT * sizeof(Picture))
+-    FF_ALLOCZ_OR_GOTO(s->avctx, s->picture, MAX_PICTURE_COUNT * sizeof(Picture), fail)
 -    for(i = 0; i < MAX_PICTURE_COUNT; i++) {
 +    s->picture_count = MAX_PICTURE_COUNT * FFMAX(1, s->avctx->thread_count);
-+    CHECKED_ALLOCZ(s->picture, s->picture_count * sizeof(Picture))
++    FF_ALLOCZ_OR_GOTO(s->avctx, s->picture, s->picture_count * sizeof(Picture), fail)
 +    for(i = 0; i < s->picture_count; i++) {
          avcodec_get_frame_defaults((AVFrame *)&s->picture[i]);
      }
@@ -2231,9 +2231,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo.c ffmpeg-19729.29565-new/
 +    if (s->pict_type != FF_B_TYPE && !s->partitioned_frame)
 +        ff_report_frame_progress((AVFrame*)s->current_picture_ptr, s->mb_y);
 +}
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-new/libavcodec/mpegvideo_enc.c
---- ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mpegvideo_enc.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mpegvideo_enc.c ffmpeg-19828.29674-new/libavcodec/mpegvideo_enc.c
+--- ffmpeg-19828.29674-old/libavcodec/mpegvideo_enc.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mpegvideo_enc.c	2009-09-12 17:27:29.000000000 -0700
 @@ -35,6 +35,7 @@
  #include "msmpeg4.h"
  #include "h263.h"
@@ -2242,7 +2242,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
  #include "aandcttab.h"
  #include <limits.h>
  
-@@ -1187,9 +1188,9 @@
+@@ -1192,9 +1193,9 @@
  {
      MpegEncContext *s = avctx->priv_data;
      AVFrame *pic_arg = data;
@@ -2254,7 +2254,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
          int start_y= s->thread_context[i]->start_mb_y;
          int   end_y= s->thread_context[i]->  end_mb_y;
          int h= s->mb_height;
-@@ -1251,7 +1252,7 @@
+@@ -1256,7 +1257,7 @@
                      s->last_non_b_time= s->time - s->pp_time;
                  }
  //                av_log(NULL, AV_LOG_ERROR, "R:%d ", s->next_lambda);
@@ -2263,7 +2263,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
                      PutBitContext *pb= &s->thread_context[i]->pb;
                      init_put_bits(pb, pb->buf, pb->buf_end - pb->buf);
                  }
-@@ -2715,6 +2716,7 @@
+@@ -2720,6 +2721,7 @@
  {
      int i;
      int bits;
@@ -2271,7 +2271,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
  
      s->picture_number = picture_number;
  
-@@ -2754,7 +2756,7 @@
+@@ -2759,7 +2761,7 @@
      }
  
      s->mb_intra=0; //for the rate distortion & bit compare functions
@@ -2280,7 +2280,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
          ff_update_duplicate_context(s->thread_context[i], s);
      }
  
-@@ -2767,11 +2769,11 @@
+@@ -2772,11 +2774,11 @@
          s->lambda2= (s->lambda2* (int64_t)s->avctx->me_penalty_compensation + 128)>>8;
          if(s->pict_type != FF_B_TYPE && s->avctx->me_threshold==0){
              if((s->avctx->pre_me && s->last_non_b_pict_type==FF_I_TYPE) || s->avctx->pre_me==2){
@@ -2294,7 +2294,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
      }else /* if(s->pict_type == FF_I_TYPE) */{
          /* I-Frame */
          for(i=0; i<s->mb_stride*s->mb_height; i++)
-@@ -2779,10 +2781,10 @@
+@@ -2784,10 +2786,10 @@
  
          if(!s->fixed_qscale){
              /* finding spatial complexity for I-frame rate control */
@@ -2307,7 +2307,7 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
          merge_context_after_me(s, s->thread_context[i]);
      }
      s->current_picture.mc_mb_var_sum= s->current_picture_ptr->mc_mb_var_sum= s->me.mc_mb_var_sum_temp;
-@@ -2916,11 +2918,11 @@
+@@ -2921,11 +2923,11 @@
      bits= put_bits_count(&s->pb);
      s->header_bits= bits - s->last_bits;
  
@@ -2322,9 +2322,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo_enc.c ffmpeg-19729.29565-
          merge_context_after_encode(s, s->thread_context[i]);
      }
      emms_c();
-diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo.h ffmpeg-19729.29565-new/libavcodec/mpegvideo.h
---- ffmpeg-19729.29565-old/libavcodec/mpegvideo.h	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/mpegvideo.h	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/mpegvideo.h ffmpeg-19828.29674-new/libavcodec/mpegvideo.h
+--- ffmpeg-19828.29674-old/libavcodec/mpegvideo.h	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/mpegvideo.h	2009-09-12 17:27:29.000000000 -0700
 @@ -123,6 +123,7 @@
      int ref_poc[2][2][16];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
      int ref_count[2][2];        ///< number of entries in ref_poc              (FIXME need per slice)
@@ -2361,9 +2361,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/mpegvideo.h ffmpeg-19729.29565-new/
  const uint8_t *ff_find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
  
  void ff_er_frame_start(MpegEncContext *s);
-diff -Naur ffmpeg-19729.29565-old/libavcodec/options.c ffmpeg-19729.29565-new/libavcodec/options.c
---- ffmpeg-19729.29565-old/libavcodec/options.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/options.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/options.c ffmpeg-19828.29674-new/libavcodec/options.c
+--- ffmpeg-19828.29674-old/libavcodec/options.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/options.c	2009-09-12 17:27:29.000000000 -0700
 @@ -245,6 +245,7 @@
  {"vis_qp", "visualize quantization parameter (QP), lower QP are tinted greener", 0, FF_OPT_TYPE_CONST, FF_DEBUG_VIS_QP, INT_MIN, INT_MAX, V|D, "debug"},
  {"vis_mb_type", "visualize block types", 0, FF_OPT_TYPE_CONST, FF_DEBUG_VIS_MB_TYPE, INT_MIN, INT_MAX, V|D, "debug"},
@@ -2382,9 +2382,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/options.c ffmpeg-19729.29565-new/li
  {NULL},
  };
  
-diff -Naur ffmpeg-19729.29565-old/libavcodec/os2thread.c ffmpeg-19729.29565-new/libavcodec/os2thread.c
---- ffmpeg-19729.29565-old/libavcodec/os2thread.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/os2thread.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/os2thread.c ffmpeg-19828.29674-new/libavcodec/os2thread.c
+--- ffmpeg-19828.29674-old/libavcodec/os2thread.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/os2thread.c	2009-09-12 17:27:29.000000000 -0700
 @@ -114,7 +114,13 @@
      ThreadContext *c;
      uint32_t threadid;
@@ -2399,9 +2399,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/os2thread.c ffmpeg-19729.29565-new/
  
      assert(!s->thread_opaque);
      c= av_mallocz(sizeof(ThreadContext)*thread_count);
-diff -Naur ffmpeg-19729.29565-old/libavcodec/pthread.c ffmpeg-19729.29565-new/libavcodec/pthread.c
---- ffmpeg-19729.29565-old/libavcodec/pthread.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/pthread.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/pthread.c ffmpeg-19828.29674-new/libavcodec/pthread.c
+--- ffmpeg-19828.29674-old/libavcodec/pthread.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/pthread.c	2009-09-12 17:27:29.000000000 -0700
 @@ -1,5 +1,6 @@
  /*
   * Copyright (c) 2004 Roman Shaposhnik
@@ -3036,9 +3036,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/pthread.c ffmpeg-19729.29565-new/li
 +    else
 +        thread_free(avctx);
 +}
-diff -Naur ffmpeg-19729.29565-old/libavcodec/snow.c ffmpeg-19729.29565-new/libavcodec/snow.c
---- ffmpeg-19729.29565-old/libavcodec/snow.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/snow.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/snow.c ffmpeg-19828.29674-new/libavcodec/snow.c
+--- ffmpeg-19828.29674-old/libavcodec/snow.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/snow.c	2009-09-12 17:27:29.000000000 -0700
 @@ -4132,9 +4132,9 @@
     int h= s->avctx->height;
  
@@ -3052,9 +3052,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/snow.c ffmpeg-19729.29565-new/libav
      }
  
      release_buffer(s->avctx);
-diff -Naur ffmpeg-19729.29565-old/libavcodec/thread.h ffmpeg-19729.29565-new/libavcodec/thread.h
---- ffmpeg-19729.29565-old/libavcodec/thread.h	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-19729.29565-new/libavcodec/thread.h	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/thread.h ffmpeg-19828.29674-new/libavcodec/thread.h
+--- ffmpeg-19828.29674-old/libavcodec/thread.h	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-19828.29674-new/libavcodec/thread.h	2009-09-12 17:27:29.000000000 -0700
 @@ -0,0 +1,139 @@
 +/*
 + * Multithreading support
@@ -3195,9 +3195,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/thread.h ffmpeg-19729.29565-new/lib
 +#endif
 +
 +#endif /* AVCODEC_THREAD_H */
-diff -Naur ffmpeg-19729.29565-old/libavcodec/utils.c ffmpeg-19729.29565-new/libavcodec/utils.c
---- ffmpeg-19729.29565-old/libavcodec/utils.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/utils.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/utils.c ffmpeg-19828.29674-new/libavcodec/utils.c
+--- ffmpeg-19828.29674-old/libavcodec/utils.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/utils.c	2009-09-12 17:27:29.000000000 -0700
 @@ -35,6 +35,7 @@
  #include "dsputil.h"
  #include "opt.h"
@@ -3294,9 +3294,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/utils.c ffmpeg-19729.29565-new/liba
      if(avctx->codec->flush)
          avctx->codec->flush(avctx);
  }
-diff -Naur ffmpeg-19729.29565-old/libavcodec/vp3.c ffmpeg-19729.29565-new/libavcodec/vp3.c
---- ffmpeg-19729.29565-old/libavcodec/vp3.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/vp3.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/vp3.c ffmpeg-19828.29674-new/libavcodec/vp3.c
+--- ffmpeg-19828.29674-old/libavcodec/vp3.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/vp3.c	2009-09-12 17:27:29.000000000 -0700
 @@ -39,6 +39,7 @@
  
  #include "vp3data.h"
@@ -3718,9 +3718,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/vp3.c ffmpeg-19729.29565-new/libavc
      .long_name = NULL_IF_CONFIG_SMALL("On2 VP3"),
 +    .update_context = ONLY_IF_THREADS_ENABLED(vp3_update_context),
  };
-diff -Naur ffmpeg-19729.29565-old/libavcodec/w32thread.c ffmpeg-19729.29565-new/libavcodec/w32thread.c
---- ffmpeg-19729.29565-old/libavcodec/w32thread.c	2009-08-27 08:43:32.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/w32thread.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/w32thread.c ffmpeg-19828.29674-new/libavcodec/w32thread.c
+--- ffmpeg-19828.29674-old/libavcodec/w32thread.c	2009-09-12 17:17:12.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/w32thread.c	2009-09-12 17:27:29.000000000 -0700
 @@ -105,7 +105,13 @@
      ThreadContext *c;
      uint32_t threadid;
@@ -3735,9 +3735,9 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/w32thread.c ffmpeg-19729.29565-new/
  
      assert(!s->thread_opaque);
      c= av_mallocz(sizeof(ThreadContext)*thread_count);
-diff -Naur ffmpeg-19729.29565-old/libavcodec/x86/dsputil_mmx.c ffmpeg-19729.29565-new/libavcodec/x86/dsputil_mmx.c
---- ffmpeg-19729.29565-old/libavcodec/x86/dsputil_mmx.c	2009-08-27 08:43:30.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavcodec/x86/dsputil_mmx.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavcodec/x86/dsputil_mmx.c ffmpeg-19828.29674-new/libavcodec/x86/dsputil_mmx.c
+--- ffmpeg-19828.29674-old/libavcodec/x86/dsputil_mmx.c	2009-09-12 17:17:06.000000000 -0700
++++ ffmpeg-19828.29674-new/libavcodec/x86/dsputil_mmx.c	2009-09-12 17:27:29.000000000 -0700
 @@ -807,7 +807,7 @@
  
  /* draw the edges of width 'w' of an image of size width, height
@@ -3815,10 +3815,10 @@ diff -Naur ffmpeg-19729.29565-old/libavcodec/x86/dsputil_mmx.c ffmpeg-19729.2956
      }
  }
  
-diff -Naur ffmpeg-19729.29565-old/libavutil/internal.h ffmpeg-19729.29565-new/libavutil/internal.h
---- ffmpeg-19729.29565-old/libavutil/internal.h	2009-08-27 08:43:27.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavutil/internal.h	2009-08-27 08:43:50.000000000 -0700
-@@ -318,4 +318,10 @@
+diff -Naur ffmpeg-19828.29674-old/libavutil/internal.h ffmpeg-19828.29674-new/libavutil/internal.h
+--- ffmpeg-19828.29674-old/libavutil/internal.h	2009-09-12 17:16:59.000000000 -0700
++++ ffmpeg-19828.29674-new/libavutil/internal.h	2009-09-12 17:27:29.000000000 -0700
+@@ -327,4 +327,10 @@
  #   define NULL_IF_CONFIG_SMALL(x) x
  #endif
  
@@ -3829,9 +3829,9 @@ diff -Naur ffmpeg-19729.29565-old/libavutil/internal.h ffmpeg-19729.29565-new/li
 +#endif
 +
  #endif /* AVUTIL_INTERNAL_H */
-diff -Naur ffmpeg-19729.29565-old/libavutil/log.c ffmpeg-19729.29565-new/libavutil/log.c
---- ffmpeg-19729.29565-old/libavutil/log.c	2009-08-27 08:43:27.000000000 -0700
-+++ ffmpeg-19729.29565-new/libavutil/log.c	2009-08-27 08:43:50.000000000 -0700
+diff -Naur ffmpeg-19828.29674-old/libavutil/log.c ffmpeg-19828.29674-new/libavutil/log.c
+--- ffmpeg-19828.29674-old/libavutil/log.c	2009-09-12 17:16:59.000000000 -0700
++++ ffmpeg-19828.29674-new/libavutil/log.c	2009-09-12 17:27:29.000000000 -0700
 @@ -35,6 +35,8 @@
      static int count;
      static char line[1024], prev[1024];
