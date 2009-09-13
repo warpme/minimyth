@@ -1,9 +1,9 @@
 GARNAME = lirc
-GARVERSION = 20090831
+GARVERSION = 0.8.6
 CATEGORIES = system
-#MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = http://www.lirc.org/software/snapshots/
-MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+#MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-input_map.patch.gar
 LICENSE = GPL2
@@ -46,7 +46,7 @@ cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
