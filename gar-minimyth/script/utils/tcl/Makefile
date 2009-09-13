@@ -1,8 +1,8 @@
 GARNAME = tcl
-GARVERSION = 8.2.3
+GARVERSION = 8.5.7
 CATEGORIES = utils
-MASTER_SITES = http://prdownloads.sourceforge.net/$(GARNAME)/
-DISTFILES = $(GARNAME)$(GARVERSION).tar.gz
+MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+DISTFILES = $(GARNAME)$(GARVERSION)-src.tar.gz
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/license.terms
 
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c system/zoneinfo
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/unix/configure
 BUILD_SCRIPTS     = $(WORKSRC)/unix/Makefile
@@ -19,15 +19,21 @@ INSTALL_SCRIPTS   = $(WORKSRC)/unix/Makefile
 WORKSRC = $(WORKDIR)/$(GARNAME)$(GARVERSION)
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes=$(DESTDIR)$(includedir) \
-	--x-libraries=$(DESTDIR)$(libdir) \
-	--enable-gcc \
+	--disable-man-symlinks \
 	--enable-threads \
+	--enable-shared \
 	$(if $(filter i386,$(GARCH_FAMILY)),--disable-64bit) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),--enable-64bit) \
+	--disable-64bit-vis \
+	--disable-rpath \
+	--disable-corefoundation \
 	--enable-load \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-symbols) \
-	--enable-shared
+	--enable-langinfo \
+	--enable-dll-unloading \
+	--disable-dtrace \
+	--disable-framework \
+	--without-tzdata
 
 include ../../gar.mk
 
