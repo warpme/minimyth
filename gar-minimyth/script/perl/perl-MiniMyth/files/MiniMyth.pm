@@ -1865,7 +1865,7 @@ sub codecs_fetch_and_save
         "$local_dir/$codecs_base");
 
     unlink(qq($local_file));
-    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs "$local_dir/$codecs_base" "$local_file" -no-exports -no-progress -processors 1 -force-uid 0 -force-gid 0 > "$devnull" 2>&1)) != 0)
+    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs "$local_dir/$codecs_base" "$local_file" -no-exports -no-progress -force-uid 0 -force-gid 0 > "$devnull" 2>&1)) != 0)
     {
         File::Path::rmtree(qq($local_dir/$codecs_base));
         unlink(qq($local_file));
@@ -2006,7 +2006,7 @@ sub extras_save
         return 0;
     }
 
-    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/usr/local' "$local_file" -no-exports -no-progress -processors 1 -force-uid 0 -force-gid 0 -ckeck_data > "$devnull" 2>&1)) != 0)
+    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/usr/local' "$local_file" -no-exports -no-progress -force-uid 0 -force-gid 0 -ckeck_data > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
         $self->message_log('err', qq(failed to create the extras file because squashfs failed.));
@@ -2051,7 +2051,7 @@ sub themecache_save
 
     my $uid = getpwnam('minimyth');
     my $gid = getgrnam('minimyth');
-    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" -no-exports -no-progress -processors 1 -force-uid $uid -force-gid $gid > "$devnull" 2>&1)) != 0)
+    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" -no-exports -no-progress -force-uid $uid -force-gid $gid > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
         $self->message_log('err', qq(failed to create the MythTV themecache file because squashfs failed.));
