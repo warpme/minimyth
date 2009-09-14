@@ -3,7 +3,7 @@ GARVERSION = 4.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)$(GARVERSION).tar.gz
-PATCHFILES =
+PATCHFILES = $(DISTNAME)-multi_core_fix.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
