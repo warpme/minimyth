@@ -130,6 +130,9 @@ sub start
                 return 0;
             }
         }
+        when (/^(geode)$/)
+        {
+        }
         when (/^(nv)$/)
         {
         }
@@ -215,6 +218,9 @@ sub start
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
         when (/^(intel_810|intel_915)$/)
+        {
+        }
+        when (/^(geode)$/)
         {
         }
         when (/^(nv)$/)

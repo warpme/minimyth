@@ -117,6 +117,17 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 }
 unlink(qq($tmpfile_pciids_txt));
 
+# AMD geode.
+{
+    my $vendor = q(1022);
+    {
+        my $driver= q(geode);
+        my $product = q(2081);
+        $entries{qq($vendor.$product)} = $driver;
+    }
+
+}
+
 # NVIDIA.
 {
     my $vendor = q(10DE);

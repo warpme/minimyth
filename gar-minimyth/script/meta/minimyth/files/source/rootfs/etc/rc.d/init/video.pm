@@ -33,6 +33,11 @@ sub start
             ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libIntelXvMC.so.1') && ($xvmc_lib = '/usr/lib/libIntelXvMC.so.1');
         }
+        when (/^geode$/)
+        {
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
+        }
         when (/^nv$/)
         {
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
