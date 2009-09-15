@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/themes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-font.patch
 LICENSE = GPL2
 
@@ -23,8 +22,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
-	--prefix="$(prefix)" \
-	--sysroot="$(DESTDIR)$(rootdir)" \
+	--prefix="$(DESTDIR)$(prefix)" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
