@@ -197,6 +197,7 @@ mm-all:
 	@if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.22"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "trunk"        ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
