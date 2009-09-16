@@ -1,16 +1,16 @@
 GARNAME = gnash
-GARVERSION = 0.8.5
+GARVERSION = 0.8.6
 CATEGORIES = mediaplayers
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-headers.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++ gtk/gtk+ lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/libjpeg lib/libpng lib/libxml2 lib/zlib net/curl system/lirc xorg/xorg
+DEPENDS = lang/c++ gtk/atk gtk/glib gtk/gtk+ gtk/pango lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/libjpeg lib/libpng lib/libxml2 lib/zlib net/curl system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -19,6 +19,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-nls \
 	--disable-rpath \
+	--disable-avm2 \
+	--disable-python \
 	--disable-jemalloc \
 	--disable-debugger \
 	--disable-fps-debug \
@@ -29,35 +31,25 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-write \
 	--enable-sa-launcher \
 	--disable-cygnal \
+	--disable-cgibins \
 	--disable-i810-lod-bias \
+	--disable-sdkinstall \
 	--enable-gui=gtk \
 	--enable-renderer=agg \
+	--enable-sound=sdl \
 	--enable-media=ffmpeg \
 	--enable-lirc \
 	--disable-static \
 	--enable-shared \
-	--enable-atk \
+	--disable-ssh \
+	--disable-ssl \
 	--disable-glext \
-	--disable-cairo \
 	--disable-kparts3 \
 	--disable-kparts4 \
 	--enable-npapi \
 	--enable-plugins \
 	--disable-xpcom \
-	--disable-nspr \
-	--enable-z \
-	--enable-jpeg \
-	--enable-png \
-	--enable-gif \
-	--disable-ungif \
-	--disable-speex \
-	--disable-speexdsp \
-	--enable-fontconfig \
 	--disable-ghelp \
-	--enable-Xft \
-	--enable-expat \
-	--disable-gstreamer \
-	--disable-fltk2 \
 	--disable-docbook \
 	--enable-visibility \
 	--disable-strict \

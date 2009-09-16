@@ -1,7 +1,7 @@
-diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
---- gnash-0.8.5-old/configure.ac	2009-03-03 08:20:52.000000000 -0800
-+++ gnash-0.8.5-new/configure.ac	2009-03-18 22:12:07.000000000 -0700
-@@ -1321,6 +1321,7 @@
+diff -Naur gnash-0.8.6-old/configure.ac gnash-0.8.6-new/configure.ac
+--- gnash-0.8.6-old/configure.ac	2009-09-13 17:13:12.000000000 -0700
++++ gnash-0.8.6-new/configure.ac	2009-09-15 15:35:08.000000000 -0700
+@@ -1479,6 +1479,7 @@
  AC_CHECK_HEADERS(signal.h)
  AC_CHECK_HEADERS(unistd.h)
  AC_CHECK_HEADERS(sys/time.h)
@@ -9,7 +9,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
  dnl libcurl3-dev on Ubuntu has a dependency on lber, and Gnash won't link
  dnl on most machines without it. While it isn't diretly used by Gnash at all,
  dnl it's to work around an Ubuntu packaging bug.
-@@ -1337,7 +1338,7 @@
+@@ -1496,7 +1497,7 @@
    AC_CHECK_LIB(Xi, XInput_find_display)
    AC_CHECK_LIB(X11, XDisableAccessControl)
  dnl fi
@@ -18,7 +18,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
  AC_CHECK_LIB(rt, shm_unlink)
  AC_CHECK_FUNCS(shm_open shm_unlink)
  AC_TRY_COMPILE([#include <strings.h>], [
-@@ -1649,12 +1650,19 @@
+@@ -1857,12 +1858,19 @@
  AM_CONDITIONAL([QT_OS9], [test "$platform" = "OS9"])
  AM_CONDITIONAL([QT_WIN32], [test "$platform" = "Win32"])
  
@@ -30,7 +30,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
 +esac], glib=no)
 +
  dnl Need GLIB for both GTK and GST
--if test x$build_gtk = xyes -o x${Media_handler} = "xgst"; then
+-if test x$build_gtk = xyes -o x${media_handler} = "xgst"; then
 +if test x$build_gtk = xyes -o x${Media_handler} = "xgst" -o "x$glib" = "xyes" ; then
    GNASH_PATH_GLIB
  fi
@@ -40,7 +40,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
  
  if test x$build_gtk = xno -a x$npapi = xyes; then
    AC_MSG_WARN(["Enabled NPAPI plugin, but you aren't building a GTK based GUI!"])
-@@ -1799,7 +1807,7 @@
+@@ -2025,7 +2033,7 @@
    GNASH_PATH_FFMPEG
    if test x"${media_handler_specified}" = xfalse; then
       # If the library is not found, or its version is not ok, we'll try gst
@@ -49,7 +49,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
         AC_MSG_WARN([No appropriate ffmpeg library found, disabling media handling.])
         media_handler=none
       fi
-@@ -2663,9 +2671,9 @@
+@@ -2869,9 +2877,9 @@
    if test x"$media_handler" = x"ffmpeg"; then
      if test x"$FFMPEG_LIBS" != x; then
        echo "        MP3 and video support enabled through ffmpeg"
@@ -62,7 +62,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
            echo "               with no swscale enabled." >&3
          else
            echo "               with swscale enabled." >&3
-@@ -2673,12 +2681,11 @@
+@@ -2879,12 +2887,11 @@
          echo "               This setup isn't supported!" >&3
          echo "               Version 51.11.0 or newer is required, enabling swscale if >= 52.0.0." >&3
        else
@@ -77,16 +77,7 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
            echo "               or reconfigure with --enable-media=gst" >&3
  	else
            if test x"$FFMPEG_CFLAGS" != x; then
-@@ -2790,8 +2797,6 @@
-   fi
-   if test x"$PTHREAD_LIBS" != x; then
-     echo "        POSIX Threads lib is: $PTHREAD_LIBS"
--  else
--    echo "ERROR: No pthread development package installed!" >&3
-   fi
- fi
- 
-@@ -2870,21 +2875,13 @@
+@@ -3077,21 +3084,13 @@
  
  if test x$build_agg = xyes; then # {
    echo "        AGG Pixel format is: $pixelformat"
@@ -113,9 +104,9 @@ diff -Naur gnash-0.8.5-old/configure.ac gnash-0.8.5-new/configure.ac
      else # }{
        echo "        ERROR: No AGG development package installed!" >&3
        echo "               Install it from http://www.antigrain.com" >&3
-diff -Naur gnash-0.8.5-old/macros/agg.m4 gnash-0.8.5-new/macros/agg.m4
---- gnash-0.8.5-old/macros/agg.m4	2009-03-02 07:29:51.000000000 -0800
-+++ gnash-0.8.5-new/macros/agg.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/agg.m4 gnash-0.8.6-new/macros/agg.m4
+--- gnash-0.8.6-old/macros/agg.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/agg.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -19,123 +19,9 @@
  dnl but not in AGG 2.3. As we need AGG 2.4, we use this as 
  AC_DEFUN([GNASH_PATH_AGG],
@@ -241,10 +232,10 @@ diff -Naur gnash-0.8.5-old/macros/agg.m4 gnash-0.8.5-new/macros/agg.m4
    AC_SUBST(AGG_LIBS)
  ])
  
-diff -Naur gnash-0.8.5-old/macros/boost.m4 gnash-0.8.5-new/macros/boost.m4
---- gnash-0.8.5-old/macros/boost.m4	2009-03-02 07:29:48.000000000 -0800
-+++ gnash-0.8.5-new/macros/boost.m4	2009-03-18 20:07:01.000000000 -0700
-@@ -63,7 +63,7 @@
+diff -Naur gnash-0.8.6-old/macros/boost.m4 gnash-0.8.6-new/macros/boost.m4
+--- gnash-0.8.6-old/macros/boost.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/boost.m4	2009-09-15 15:32:10.000000000 -0700
+@@ -64,7 +64,7 @@
      dnl Attempt to find the top level directory, which unfortunately has a
      dnl version number attached. At least on Debian based systems, this
      dnl doesn't seem to get a directory that is unversioned.
@@ -253,9 +244,9 @@ diff -Naur gnash-0.8.5-old/macros/boost.m4 gnash-0.8.5-new/macros/boost.m4
        if test x"$PKG_CONFIG" != x; then
          AC_MSG_CHECKING([for the Boost Version])
          $PKG_CONFIG --exists boost && gnash_boost_version="`$PKG_CONFIG --modversion boost | cut -d "." -f 1 | awk '{print $'0'".0"}'`"
-diff -Naur gnash-0.8.5-old/macros/curl.m4 gnash-0.8.5-new/macros/curl.m4
---- gnash-0.8.5-old/macros/curl.m4	2009-03-02 07:29:41.000000000 -0800
-+++ gnash-0.8.5-new/macros/curl.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/curl.m4 gnash-0.8.6-new/macros/curl.m4
+--- gnash-0.8.6-old/macros/curl.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/curl.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -17,109 +17,11 @@
  
  AC_DEFUN([GNASH_PATH_CURL],
@@ -369,9 +360,9 @@ diff -Naur gnash-0.8.5-old/macros/curl.m4 gnash-0.8.5-new/macros/curl.m4
      AC_DEFINE(USE_CURL, [1], [Define this if you want to enable curl usage])
    fi
  
-diff -Naur gnash-0.8.5-old/macros/dbus.m4 gnash-0.8.5-new/macros/dbus.m4
---- gnash-0.8.5-old/macros/dbus.m4	2009-03-02 07:29:47.000000000 -0800
-+++ gnash-0.8.5-new/macros/dbus.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/dbus.m4 gnash-0.8.6-new/macros/dbus.m4
+--- gnash-0.8.6-old/macros/dbus.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/dbus.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -17,115 +17,7 @@
  
  AC_DEFUN([GNASH_PATH_DBUS],
@@ -489,9 +480,9 @@ diff -Naur gnash-0.8.5-old/macros/dbus.m4 gnash-0.8.5-new/macros/dbus.m4
  
    AC_SUBST(DBUS_CFLAGS)
    AC_SUBST(DBUS_LIBS)
-diff -Naur gnash-0.8.5-old/macros/ffmpeg.m4 gnash-0.8.5-new/macros/ffmpeg.m4
---- gnash-0.8.5-old/macros/ffmpeg.m4	2009-03-02 07:29:50.000000000 -0800
-+++ gnash-0.8.5-new/macros/ffmpeg.m4	2009-03-18 21:53:35.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/ffmpeg.m4 gnash-0.8.6-new/macros/ffmpeg.m4
+--- gnash-0.8.6-old/macros/ffmpeg.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/ffmpeg.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -17,593 +17,63 @@
  
  AC_DEFUN([GNASH_PATH_FFMPEG],
@@ -1127,9 +1118,9 @@ diff -Naur gnash-0.8.5-old/macros/ffmpeg.m4 gnash-0.8.5-new/macros/ffmpeg.m4
  ])
  
  # Local Variables:
-diff -Naur gnash-0.8.5-old/macros/freetype.m4 gnash-0.8.5-new/macros/freetype.m4
---- gnash-0.8.5-old/macros/freetype.m4	2009-03-02 07:29:50.000000000 -0800
-+++ gnash-0.8.5-new/macros/freetype.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/freetype.m4 gnash-0.8.6-new/macros/freetype.m4
+--- gnash-0.8.6-old/macros/freetype.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/freetype.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -16,116 +16,17 @@
  
  AC_DEFUN([GNASH_PATH_FREETYPE2],
@@ -1263,9 +1254,9 @@ diff -Naur gnash-0.8.5-old/macros/freetype.m4 gnash-0.8.5-new/macros/freetype.m4
  ])
  
  # Local Variables:
-diff -Naur gnash-0.8.5-old/macros/glib.m4 gnash-0.8.5-new/macros/glib.m4
---- gnash-0.8.5-old/macros/glib.m4	2009-03-02 07:29:49.000000000 -0800
-+++ gnash-0.8.5-new/macros/glib.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/glib.m4 gnash-0.8.6-new/macros/glib.m4
+--- gnash-0.8.6-old/macros/glib.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/glib.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -17,100 +17,10 @@
  
  AC_DEFUN([GNASH_PATH_GLIB],
@@ -1370,30 +1361,21 @@ diff -Naur gnash-0.8.5-old/macros/glib.m4 gnash-0.8.5-new/macros/glib.m4
    fi
  
    AC_SUBST(GLIB_CFLAGS)
-diff -Naur gnash-0.8.5-old/macros/gnashpkgtool.m4 gnash-0.8.5-new/macros/gnashpkgtool.m4
---- gnash-0.8.5-old/macros/gnashpkgtool.m4	2009-03-02 07:29:44.000000000 -0800
-+++ gnash-0.8.5-new/macros/gnashpkgtool.m4	2009-03-18 20:07:01.000000000 -0700
-@@ -61,7 +61,7 @@
- 	    fi
- 	  ])
+diff -Naur gnash-0.8.6-old/macros/gnashpkgtool.m4 gnash-0.8.6-new/macros/gnashpkgtool.m4
+--- gnash-0.8.6-old/macros/gnashpkgtool.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/gnashpkgtool.m4	2009-09-15 15:36:15.000000000 -0700
+@@ -55,7 +55,7 @@
+       fi
+     ])
  
 -  if test x$cross_compiling = xno; then
 +  if test xno = xno; then
      if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_$1_incl}" = x; then
        AC_MSG_CHECKING([for $2 header using pkg-config])
-       $PKG_CONFIG --exists DOWN[] && ac_cv_path_$1_incl="`$PKG_CONFIG --cflags DOWN[]`"
-@@ -185,7 +185,7 @@
- 	])
- 
- 	dnl If the header doesn't exist, there is no point looking for the library.
--  if test x$cross_compiling = xno; then
-+  if test xno = xno; then
- 	  if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_$1_lib}" = x; then
- 		  $PKG_CONFIG --exists libDOWN[] && ac_cv_path_$1_lib="`$PKG_CONFIG --libs-only-l libDOWN[]`"
- 		  $PKG_CONFIG --exists DOWN[] && ac_cv_path_$1_lib="`$PKG_CONFIG --libs-only-l DOWN[]`"
-diff -Naur gnash-0.8.5-old/macros/gtk2.m4 gnash-0.8.5-new/macros/gtk2.m4
---- gnash-0.8.5-old/macros/gtk2.m4	2009-03-02 07:29:47.000000000 -0800
-+++ gnash-0.8.5-new/macros/gtk2.m4	2009-03-18 20:07:01.000000000 -0700
+       $PKG_CONFIG --exists DASHDOWN[] && ac_cv_path_$1_incl="`$PKG_CONFIG --cflags DASHDOWN[]`"
+diff -Naur gnash-0.8.6-old/macros/gtk2.m4 gnash-0.8.6-new/macros/gtk2.m4
+--- gnash-0.8.6-old/macros/gtk2.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/gtk2.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -31,7 +31,7 @@
    ])
  
@@ -1412,9 +1394,9 @@ diff -Naur gnash-0.8.5-old/macros/gtk2.m4 gnash-0.8.5-new/macros/gtk2.m4
      if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_gtk2_lib}" = x; then
        $PKG_CONFIG --exists gtk+-2.0 && ac_cv_path_gtk2_lib="`$PKG_CONFIG --libs-only-l gtk+-2.0`"
      fi
-diff -Naur gnash-0.8.5-old/macros/hildon.m4 gnash-0.8.5-new/macros/hildon.m4
---- gnash-0.8.5-old/macros/hildon.m4	2009-03-02 07:29:40.000000000 -0800
-+++ gnash-0.8.5-new/macros/hildon.m4	2009-03-18 20:07:01.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/hildon.m4 gnash-0.8.6-new/macros/hildon.m4
+--- gnash-0.8.6-old/macros/hildon.m4	2009-09-13 16:22:17.000000000 -0700
++++ gnash-0.8.6-new/macros/hildon.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -30,7 +30,7 @@
      fi
    ])
@@ -1442,9 +1424,9 @@ diff -Naur gnash-0.8.5-old/macros/hildon.m4 gnash-0.8.5-new/macros/hildon.m4
      if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_hildon_lib}" = x; then
        $PKG_CONFIG --exists hildon-1 && ac_cv_path_hildon_lib="`$PKG_CONFIG --libs-only-l hildon-1 | cut -d ' ' -f 1`"
      fi
-diff -Naur gnash-0.8.5-old/macros/nspr.m4 gnash-0.8.5-new/macros/nspr.m4
---- gnash-0.8.5-old/macros/nspr.m4	2009-03-02 07:29:48.000000000 -0800
-+++ gnash-0.8.5-new/macros/nspr.m4	2009-03-18 20:07:09.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/nspr.m4 gnash-0.8.6-new/macros/nspr.m4
+--- gnash-0.8.6-old/macros/nspr.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/nspr.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -49,7 +49,7 @@
  
    #always check to see if we have it; we only use the results if XPCOM is set.
@@ -1454,9 +1436,9 @@ diff -Naur gnash-0.8.5-old/macros/nspr.m4 gnash-0.8.5-new/macros/nspr.m4
        if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_nspr_incl}" = x; then
          $PKG_CONFIG --exists nspr && ac_cv_path_nspr_incl="`$PKG_CONFIG --cflags-only-I nspr`"
          $PKG_CONFIG --exists nspr && ac_cv_path_nspr_lib="`$PKG_CONFIG --libs nspr`"
-diff -Naur gnash-0.8.5-old/macros/pango.m4 gnash-0.8.5-new/macros/pango.m4
---- gnash-0.8.5-old/macros/pango.m4	2009-03-02 07:29:49.000000000 -0800
-+++ gnash-0.8.5-new/macros/pango.m4	2009-03-18 20:07:09.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/pango.m4 gnash-0.8.6-new/macros/pango.m4
+--- gnash-0.8.6-old/macros/pango.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/pango.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -36,7 +36,7 @@
      pango_pkg=pangox
    fi
@@ -1484,9 +1466,9 @@ diff -Naur gnash-0.8.5-old/macros/pango.m4 gnash-0.8.5-new/macros/pango.m4
      if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_pango_lib}" = x; then
        $PKG_CONFIG --exists $pango_pkg && ac_cv_path_pango_lib=`$PKG_CONFIG --libs-only-l $pango_pkg`
      fi
-diff -Naur gnash-0.8.5-old/macros/pkg.m4 gnash-0.8.5-new/macros/pkg.m4
---- gnash-0.8.5-old/macros/pkg.m4	2009-03-02 07:29:45.000000000 -0800
-+++ gnash-0.8.5-new/macros/pkg.m4	2009-03-18 20:07:09.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/pkg.m4 gnash-0.8.6-new/macros/pkg.m4
+--- gnash-0.8.6-old/macros/pkg.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/pkg.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -28,7 +28,7 @@
  [m4_pattern_forbid([^_?PKG_[A-Z_]+$])
  m4_pattern_allow([^PKG_CONFIG(_PATH)?$])
@@ -1496,9 +1478,9 @@ diff -Naur gnash-0.8.5-old/macros/pkg.m4 gnash-0.8.5-new/macros/pkg.m4
    if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
      AC_PATH_TOOL([PKG_CONFIG], [pkg-config], ,[${pathlist}])
    fi
-diff -Naur gnash-0.8.5-old/macros/sdl.m4 gnash-0.8.5-new/macros/sdl.m4
---- gnash-0.8.5-old/macros/sdl.m4	2009-03-02 07:29:42.000000000 -0800
-+++ gnash-0.8.5-new/macros/sdl.m4	2009-03-18 20:07:12.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/sdl.m4 gnash-0.8.6-new/macros/sdl.m4
+--- gnash-0.8.6-old/macros/sdl.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/sdl.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -28,7 +28,7 @@
        fi
      fi
@@ -1542,9 +1524,9 @@ diff -Naur gnash-0.8.5-old/macros/sdl.m4 gnash-0.8.5-new/macros/sdl.m4
      if test x"$PKG_CONFIG" != x -a x"${ac_cv_path_sdl_lib}" = x; then
        $PKG_CONFIG --exists sdl && ac_cv_path_sdl_lib=`$PKG_CONFIG --libs sdl`
        if test x"$ac_cv_path_sdl_lib" != x; then
-diff -Naur gnash-0.8.5-old/macros/x11.m4 gnash-0.8.5-new/macros/x11.m4
---- gnash-0.8.5-old/macros/x11.m4	2009-03-02 07:29:45.000000000 -0800
-+++ gnash-0.8.5-new/macros/x11.m4	2009-03-18 22:45:10.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/x11.m4 gnash-0.8.6-new/macros/x11.m4
+--- gnash-0.8.6-old/macros/x11.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/x11.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -18,131 +18,69 @@
  
  AC_DEFUN([GNASH_PATH_X11],
@@ -1721,9 +1703,9 @@ diff -Naur gnash-0.8.5-old/macros/x11.m4 gnash-0.8.5-new/macros/x11.m4
  
    AC_SUBST(X11_CFLAGS)
    AC_SUBST(X11_LIBS)
-diff -Naur gnash-0.8.5-old/macros/xpcom.m4 gnash-0.8.5-new/macros/xpcom.m4
---- gnash-0.8.5-old/macros/xpcom.m4	2009-03-02 07:29:48.000000000 -0800
-+++ gnash-0.8.5-new/macros/xpcom.m4	2009-03-18 20:07:12.000000000 -0700
+diff -Naur gnash-0.8.6-old/macros/xpcom.m4 gnash-0.8.6-new/macros/xpcom.m4
+--- gnash-0.8.6-old/macros/xpcom.m4	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/macros/xpcom.m4	2009-09-15 15:32:10.000000000 -0700
 @@ -57,7 +57,7 @@
      ])
  
@@ -1733,9 +1715,9 @@ diff -Naur gnash-0.8.5-old/macros/xpcom.m4 gnash-0.8.5-new/macros/xpcom.m4
  
        # Look for libxpcomglue_s.a (version 1.8 !!) if not explicitly given
        if test x$ac_cv_path_xpcom_sdk_dir = x; then
-diff -Naur gnash-0.8.5-old/plugin/plugin.h gnash-0.8.5-new/plugin/plugin.h
---- gnash-0.8.5-old/plugin/plugin.h	2009-03-02 07:29:49.000000000 -0800
-+++ gnash-0.8.5-new/plugin/plugin.h	2009-03-18 20:07:12.000000000 -0700
+diff -Naur gnash-0.8.6-old/plugin/plugin.h gnash-0.8.6-new/plugin/plugin.h
+--- gnash-0.8.6-old/plugin/plugin.h	2009-09-13 16:22:18.000000000 -0700
++++ gnash-0.8.6-new/plugin/plugin.h	2009-09-15 15:32:10.000000000 -0700
 @@ -41,6 +41,9 @@
  #include <X11/Xlib.h>
  //#include <X11/Intrinsic.h>
