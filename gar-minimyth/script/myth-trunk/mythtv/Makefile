@@ -143,5 +143,6 @@ install-source:
 	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
-	@mv $(DESTDIR)$(bindir)/mythtvtest $(DESTDIR)$(bindir)/mythtv
+	@rm -f $(DESTDIR)$(bindir)/mythtv
+	@mv $(DESTDIR)$(bindir)/mythavtest $(DESTDIR)$(bindir)/mythtv
 	@$(MAKECOOKIE)
