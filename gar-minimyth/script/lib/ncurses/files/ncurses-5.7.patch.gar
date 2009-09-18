@@ -1,6 +1,6 @@
 diff -Naur ncurses-5.7-old/aclocal.m4 ncurses-5.7-new/aclocal.m4
---- ncurses-5.7-old/aclocal.m4	2008-11-04 11:23:42.000000000 -0800
-+++ ncurses-5.7-new/aclocal.m4	2008-11-04 11:24:42.000000000 -0800
+--- ncurses-5.7-old/aclocal.m4	2008-10-25 15:15:32.000000000 -0700
++++ ncurses-5.7-new/aclocal.m4	2009-09-18 05:24:26.000000000 -0700
 @@ -73,14 +73,14 @@
  	ACPPFLAGS="-I\${srcdir}/../../include $ACPPFLAGS"
  fi
@@ -38,8 +38,8 @@ diff -Naur ncurses-5.7-old/aclocal.m4 ncurses-5.7-new/aclocal.m4
  fi
  AC_SUBST(CPPFLAGS)
 diff -Naur ncurses-5.7-old/configure ncurses-5.7-new/configure
---- ncurses-5.7-old/configure	2008-11-04 11:23:42.000000000 -0800
-+++ ncurses-5.7-new/configure	2008-11-04 11:24:42.000000000 -0800
+--- ncurses-5.7-old/configure	2008-10-25 17:04:38.000000000 -0700
++++ ncurses-5.7-new/configure	2009-09-18 05:24:26.000000000 -0700
 @@ -16198,14 +16198,14 @@
  	CPPFLAGS="-I\${srcdir}/../include $CPPFLAGS"
  fi
@@ -77,37 +77,49 @@ diff -Naur ncurses-5.7-old/configure ncurses-5.7-new/configure
  fi
  
 diff -Naur ncurses-5.7-old/misc/ncurses-config.in ncurses-5.7-new/misc/ncurses-config.in
---- ncurses-5.7-old/misc/ncurses-config.in	2008-11-04 11:23:42.000000000 -0800
-+++ ncurses-5.7-new/misc/ncurses-config.in	2008-11-04 11:24:42.000000000 -0800
-@@ -30,6 +30,7 @@
+--- ncurses-5.7-old/misc/ncurses-config.in	2007-03-17 13:02:19.000000000 -0700
++++ ncurses-5.7-new/misc/ncurses-config.in	2009-09-18 05:25:50.000000000 -0700
+@@ -30,13 +30,13 @@
  #
  # Author: Thomas E. Dickey, 2006
  
-+DESTDIR="@DESTDIR@"
- prefix="@prefix@"
- exec_prefix="@exec_prefix@"
+-prefix="@prefix@"
+-exec_prefix="@exec_prefix@"
++prefix="@DESTDIR@@prefix@"
++exec_prefix="@DESTDIR@@exec_prefix@"
  
-@@ -75,11 +76,11 @@
+-bindir="@bindir@"
+-libdir="@libdir@"
+-datadir="@datadir@"
+-mandir="@mandir@"
++bindir="@DESTDIR@@bindir@"
++libdir="@DESTDIR@@libdir@"
++datadir="@DESTDIR@@datadir@"
++mandir="@DESTDIR@@mandir@"
+ 
+ THIS="ncurses@DFT_ARG_SUFFIX@"
+ 
+@@ -75,11 +75,11 @@
  	# compile/link
  	--cflags)
  		INCS=
 -		if test "${prefix}/include" != /usr/include ; then
 -			INCS="-I${prefix}/include"
-+		if test "${includedir}" != /usr/include ; then
++		if test "${includedir}" != @GAR_DESTDIR@@GAR_includedir@ ; then
 +			INCS="-I${includedir}"
  		fi
  		if test "@WITH_OVERWRITE@" != no ; then
 -			INCS="$INCS -I${prefix}/include/${THIS}"
-+			INCS="$INCS -I${DESTDIR}${includedir}/${THIS}"
++			INCS="$INCS -I${includedir}/${THIS}"
  		fi
  		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
  			$INCS
-@@ -87,7 +88,7 @@
+@@ -87,7 +87,7 @@
  		;;
  	--libs)
  		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
 -			-L${exec_prefix}/lib @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
-+			-L${DESTDIR}${libdir} @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
++			-L${libdir} @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
  ENDECHO
  		;;
  	# identification
