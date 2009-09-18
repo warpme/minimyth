@@ -5,7 +5,8 @@ MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = $(DISTNAME)-perl.patch.gar
+PATCHFILES  = $(DISTNAME).patch.gar
+PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-via_vblank.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.2.patch
@@ -18,7 +19,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = utils/module-init-tools utils/mktemp
+BUILDDEPS = lib/ncursesw utils/mktemp utils/module-init-tools
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

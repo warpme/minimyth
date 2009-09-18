@@ -155,6 +155,7 @@ gar-patch-%:
 	@cat $(DOWNLOADDIR)/$* \
 		| sed 's%@GAR_build_DESTDIR@%$(build_DESTDIR)%g' \
 		| sed 's%@GAR_build_bindir@%$(build_bindir)%g' \
+		| sed 's%@GAR_build_includedir@%$(build_includedir)%g' \
 		| sed 's%@GAR_build_qt3bindir@%$(build_qt3bindir)%g' \
 		| sed 's%@GAR_build_qt4bindir@%$(build_qt4bindir)%g' \
 		| sed 's%@GAR_build_kdebindir@%$(build_kdebindir)%g' \
