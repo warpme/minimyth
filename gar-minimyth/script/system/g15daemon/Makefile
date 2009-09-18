@@ -3,6 +3,7 @@ GARVERSION = 1.9.5.3
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
