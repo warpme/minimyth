@@ -3,8 +3,7 @@ GARVERSION = 0.0.6
 CATEGORIES = X11
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = $(GARNAME)
-$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
+LICENSE = MIT
 
 DESCRIPTION =
 define BLURB
