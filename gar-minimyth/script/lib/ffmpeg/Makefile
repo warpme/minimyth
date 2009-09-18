@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/zlib utils/bzip2 X11/libva X11/vdpau
+DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/zlib utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

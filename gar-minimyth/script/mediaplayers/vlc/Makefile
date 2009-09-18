@@ -41,7 +41,7 @@ DEPENDS = lang/c \
 	lib/taglib \
 	lib/zlib \
 	system/lirc \
-	X11/vdpau \
+	X11/libvdpau \
 	xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure

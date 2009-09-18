@@ -43,7 +43,7 @@ DEPENDS = \
 	lib/zlib \
 	qt/qt3 \
 	system/lirc \
-	X11/vdpau \
+	X11/libvdpau \
 	xorg/xorg
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
