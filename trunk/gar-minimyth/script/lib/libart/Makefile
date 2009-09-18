@@ -42,5 +42,9 @@ install-cross:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libart_lgpl_2.la
+	@rm -f $(DESTDIR)$(bindir)-config/libart2-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libart2-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/libart2-config $(DESTDIR)$(bindir)-config/libart2-config
+	@$(if $(compiler_prefix), ln -s libart2-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libart2-config)
 	@$(MAKECOOKIE)

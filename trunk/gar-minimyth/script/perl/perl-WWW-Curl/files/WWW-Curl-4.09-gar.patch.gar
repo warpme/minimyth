@@ -1,30 +1,7 @@
 diff -Naur WWW-Curl-4.09-old/Makefile.PL WWW-Curl-4.09-new/Makefile.PL
 --- WWW-Curl-4.09-old/Makefile.PL	2009-07-09 03:25:54.000000000 -0700
-+++ WWW-Curl-4.09-new/Makefile.PL	2009-07-10 09:06:29.000000000 -0700
-@@ -13,7 +13,7 @@
- # and comment out this line.
- if ($^O ne 'MSWin32') {
-     if (!$ENV{CURL_CONFIG}) {
--	    requires_external_bin	'curl-config';
-+	    requires_external_bin	'@GAR_DESTDIR@@GAR_bindir@/curl-config';
-     }
- } else {
- 	print	"Sorry, no automated install is available on Windows,\n".
-@@ -21,7 +21,7 @@
- 	exit(0);
- }
- 
--my $curl_config = $ENV{CURL_CONFIG} || 'curl-config';
-+my $curl_config = $ENV{CURL_CONFIG} || '@GAR_DESTDIR@@GAR_bindir@/curl-config';
- 
- my $vernum = `${curl_config} --vernum`; chomp $vernum;
- my $version = `${curl_config} --version`; chomp $version; 
-@@ -42,15 +42,11 @@
- # It is normally only used by the maintainer, but if you're curl is older
- # or missing some constants, you can delete curlopt-constants.c and re-run 'perl Makefile.PL'
- # You may need to specify where to find curl.h on your platform
--# These are guesses only, in case curl-config is not telling us.
-+# These are guesses only, in case @GAR_DESTDIR@@GAR_bindir@/curl-config is not telling us.
++++ WWW-Curl-4.09-new/Makefile.PL	2009-09-16 19:07:09.000000000 -0700
+@@ -46,11 +46,7 @@
  
  if ($^O ne 'MSWin32') {
  	push @includes, qw(

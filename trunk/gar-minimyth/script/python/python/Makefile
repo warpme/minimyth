@@ -46,3 +46,15 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/python2.6/config/libpython2.6.a
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(bindir)-config/python2.6-config
+	@rm -f $(DESTDIR)$(bindir)-config/python-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)python2.6-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)python-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/python2.6-config $(DESTDIR)$(bindir)-config/python2.6-config
+	@mv $(DESTDIR)$(bindir)/python-config $(DESTDIR)$(bindir)-config/python-config
+	@$(if $(compiler_prefix), ln -s python2.6-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)python2.6-config)
+	@$(if $(compiler_prefix), ln -s python-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)python-config)
+	@$(MAKECOOKIE)

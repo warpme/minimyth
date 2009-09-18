@@ -72,14 +72,8 @@ CONFIGURE_ENV  = \
 	libltdl_cv_sys_search_path="$(subst :, ,$(LD_LIBRARY_PATH))" \
 	lt_cv_dlopen_self=yes \
 	lt_cv_dlopen_self_static=yes \
-	PKG_CONFIG=$(build_DESTDIR)$(build_bindir)/pkg-config \
-	KDEINIT_FREETYPE_CONFIG=$(DESTDIR)$(bindir)/freetype-config \
-	LIBART_CONFIG=$(DESTDIR)$(bindir)/libart2-config \
 	MOC=$(build_DESTDIR)$(build_qt3bindir)/moc \
-	PCRE_CONFIG=$(DESTDIR)$(bindir)/pcre-config \
 	UIC_PATH=$(build_DESTDIR)$(build_qt3bindir)/uic \
-	XML_CONFIG=$(DESTDIR)$(bindir)/xml2-config \
-	XSLT_CONFIG=$(DESTDIR)$(bindir)/xslt-config \
 	LD_RUN_PATH="$(LD_LIBRARY_PATH)"
 BUILD_ENV      = \
 	$(CONFIGURE_ENV)

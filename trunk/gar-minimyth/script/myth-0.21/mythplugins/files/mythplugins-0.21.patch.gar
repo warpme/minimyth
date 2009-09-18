@@ -1,6 +1,6 @@
 diff -Naur mythplugins-0.21-21625-old/configure mythplugins-0.21-21625-new/configure
---- mythplugins-0.21-21625-old/configure	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/configure	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/configure	2009-09-16 19:26:15.000000000 -0700
++++ mythplugins-0.21-21625-new/configure	2009-09-16 19:26:29.000000000 -0700
 @@ -315,27 +315,7 @@
  
  has_library()
@@ -41,24 +41,6 @@ diff -Naur mythplugins-0.21-21625-old/configure mythplugins-0.21-21625-new/confi
  
      HAS_IT="no"
      for HPATH in $HPATHS ; do
-@@ -420,7 +398,7 @@
- 
- if test "$sdl" != "no" ; then
-     sdl="no"
--    if test x`which sdl-config` != x ; then
-+    if test x`which @GAR_DESTDIR@@GAR_bindir@/sdl-config` != x ; then
-         sdl="yes"
-     fi
- fi
-@@ -508,7 +486,7 @@
-     fi
- 
-     taglib="no"
--    taglib_minor=`taglib-config --version | cut -d. -f2`
-+    taglib_minor=`@GAR_DESTDIR@@GAR_bindir@/taglib-config --version | cut -d. -f2`
-     if has_library libtag && has_header taglib/fileref.h && test $taglib_minor -ge 4 ; then
-         taglib="yes"
-     else
 @@ -556,12 +534,7 @@
  if test "$browser" != "no" ; then
      hasit="no"
@@ -97,27 +79,14 @@ diff -Naur mythplugins-0.21-21625-old/configure mythplugins-0.21-21625-new/confi
              echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
          else
              echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
-@@ -921,9 +894,9 @@
-     if test "$sdl" = "yes" ; then
-         echo "        SDL            support will be included in MythMusic"
-         echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
--        echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
--        echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
--        echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@GAR_DESTDIR@/@GAR_bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-     fi
-     if test "$sdl" = "no" ; then
-         echo "        SDL            support will not be included in MythMusic"
 @@ -942,7 +915,9 @@
      fi
  
      if test "$taglib" = "yes" ; then
 -        echo "INCLUDEPATH += `taglib-config --prefix`/include/taglib" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += `taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_RELEASE += `taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
++        echo "QMAKE_CXXFLAGS_DEBUG += `taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
      fi
  fi
  
@@ -135,8 +104,8 @@ diff -Naur mythplugins-0.21-21625-old/configure mythplugins-0.21-21625-new/confi
      fi
  
 diff -Naur mythplugins-0.21-21625-old/mytharchive/mytharchive/mytharchive.pro mythplugins-0.21-21625-new/mytharchive/mytharchive/mytharchive.pro
---- mythplugins-0.21-21625-old/mytharchive/mytharchive/mytharchive.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mytharchive/mytharchive/mytharchive.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/mytharchive/mytharchive/mytharchive.pro	2009-09-04 19:52:21.000000000 -0700
++++ mythplugins-0.21-21625-new/mytharchive/mytharchive/mytharchive.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -6,8 +6,8 @@
     error(Missing config.pro: please run the configure script)
  }
@@ -149,8 +118,8 @@ diff -Naur mythplugins-0.21-21625-old/mytharchive/mytharchive/mytharchive.pro my
  TEMPLATE = lib opengl
  CONFIG += plugin thread
 diff -Naur mythplugins-0.21-21625-old/mythbrowser/mythbrowser/mythbrowser.pro mythplugins-0.21-21625-new/mythbrowser/mythbrowser/mythbrowser.pro
---- mythplugins-0.21-21625-old/mythbrowser/mythbrowser/mythbrowser.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mythbrowser/mythbrowser/mythbrowser.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/mythbrowser/mythbrowser/mythbrowser.pro	2009-09-04 19:52:32.000000000 -0700
++++ mythplugins-0.21-21625-new/mythbrowser/mythbrowser/mythbrowser.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -3,8 +3,7 @@
  include (../../programs-libs.pro )
  
@@ -171,8 +140,8 @@ diff -Naur mythplugins-0.21-21625-old/mythbrowser/mythbrowser/mythbrowser.pro my
  # Input
  HEADERS += webpage.h tabview.h
 diff -Naur mythplugins-0.21-21625-old/mythcontrols/mythcontrols/mythcontrols.pro mythplugins-0.21-21625-new/mythcontrols/mythcontrols/mythcontrols.pro
---- mythplugins-0.21-21625-old/mythcontrols/mythcontrols/mythcontrols.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mythcontrols/mythcontrols/mythcontrols.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/mythcontrols/mythcontrols/mythcontrols.pro	2009-09-04 19:52:35.000000000 -0700
++++ mythplugins-0.21-21625-new/mythcontrols/mythcontrols/mythcontrols.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -7,7 +7,7 @@
  target.path = $${LIBDIR}/mythtv/plugins
  INSTALLS += target
@@ -183,8 +152,8 @@ diff -Naur mythplugins-0.21-21625-old/mythcontrols/mythcontrols/mythcontrols.pro
  uifiles.path = $${PREFIX}/share/mythtv/themes/default
  uifiles.files = controls-ui.xml ../images/kb-button-on.png ../images/kb-button-off.png
 diff -Naur mythplugins-0.21-21625-old/mythmusic/mythmusic/mythmusic.pro mythplugins-0.21-21625-new/mythmusic/mythmusic/mythmusic.pro
---- mythplugins-0.21-21625-old/mythmusic/mythmusic/mythmusic.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mythmusic/mythmusic/mythmusic.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/mythmusic/mythmusic/mythmusic.pro	2009-09-16 19:26:15.000000000 -0700
++++ mythplugins-0.21-21625-new/mythmusic/mythmusic/mythmusic.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -6,7 +6,7 @@
     error(Missing config.pro: please run the configure script)
  }
@@ -195,38 +164,18 @@ diff -Naur mythplugins-0.21-21625-old/mythmusic/mythmusic/mythmusic.pro mythplug
  CONFIG += plugin thread
  TARGET = mythmusic
 diff -Naur mythplugins-0.21-21625-old/mythzoneminder/mythzmserver/Makefile.standalone mythplugins-0.21-21625-new/mythzoneminder/mythzmserver/Makefile.standalone
---- mythplugins-0.21-21625-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-04 19:54:52.000000000 -0700
-@@ -7,11 +7,11 @@
- all : mythzmserver 
- 
- mythzmserver: $(mythzmserver_objects)
--	g++ -o mythzmserver $(mythzmserver_objects) $(shell mysql_config --libs)
-+	g++ -o mythzmserver $(mythzmserver_objects) $(shell @GAR_DESTDIR@@GAR_bindir@/mysql_config --libs)
- 
- 
- main: main.cpp
+--- mythplugins-0.21-21625-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-04 19:52:41.000000000 -0700
++++ mythplugins-0.21-21625-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-16 19:26:29.000000000 -0700
+@@ -14,4 +14,4 @@
  zmserver: zmserver.cpp
  
  clean:
 -	rm -f *.o mythzmserver
 \ No newline at end of file
 +	rm -f *.o mythzmserver
-diff -Naur mythplugins-0.21-21625-old/mythzoneminder/mythzmserver/mythzmserver.pro mythplugins-0.21-21625-new/mythzoneminder/mythzmserver/mythzmserver.pro
---- mythplugins-0.21-21625-old/mythzoneminder/mythzmserver/mythzmserver.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/mythzoneminder/mythzmserver/mythzmserver.pro	2009-09-04 19:54:52.000000000 -0700
-@@ -10,7 +10,7 @@
- 
- INSTALLS = target
- 
--LIBS = $$system(mysql_config --libs)
-+LIBS = $$system(@GAR_DESTDIR@@GAR_bindir@/mysql_config --libs)
- 
- # Input
- HEADERS += zmserver.h
 diff -Naur mythplugins-0.21-21625-old/programs-libs.pro mythplugins-0.21-21625-new/programs-libs.pro
---- mythplugins-0.21-21625-old/programs-libs.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/programs-libs.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/programs-libs.pro	2009-09-04 19:52:42.000000000 -0700
++++ mythplugins-0.21-21625-new/programs-libs.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -1,6 +1,6 @@
 -INCLUDEPATH += $${PREFIX}/include/mythtv
 +INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/mythtv
@@ -237,8 +186,8 @@ diff -Naur mythplugins-0.21-21625-old/programs-libs.pro mythplugins-0.21-21625-n
  LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION -lmythupnp-$$LIBVERSION
  
 diff -Naur mythplugins-0.21-21625-old/settings.pro mythplugins-0.21-21625-new/settings.pro
---- mythplugins-0.21-21625-old/settings.pro	2009-09-04 19:54:52.000000000 -0700
-+++ mythplugins-0.21-21625-new/settings.pro	2009-09-04 19:54:52.000000000 -0700
+--- mythplugins-0.21-21625-old/settings.pro	2009-09-04 19:52:42.000000000 -0700
++++ mythplugins-0.21-21625-new/settings.pro	2009-09-16 19:26:29.000000000 -0700
 @@ -2,22 +2,22 @@
  
  LIBVERSION = 0.21

@@ -25,9 +25,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	$(if $(filter i386,$(GARCH_FAMILY)),,--disable-accel-detect)
 
-CONFIGURE_ENV = \
-	SDLCONFIG="$(DESTDIR)$(bindir)/sdl-config"
-
 include ../../gar.mk
 
 pre-configure:

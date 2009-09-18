@@ -30,4 +30,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcdaudio.la
+	@rm -f $(DESTDIR)$(bindir)-config/libcdaudio-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libcdaudio-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/libcdaudio-config $(DESTDIR)$(bindir)-config/libcdaudio-config
+	@$(if $(compiler_prefix), ln -s libcdaudio-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libcdaudio-config)
 	@$(MAKECOOKIE)

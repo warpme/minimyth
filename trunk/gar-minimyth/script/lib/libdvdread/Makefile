@@ -35,4 +35,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdvdread.la
+	@rm -f $(DESTDIR)$(bindir)-config/dvdread-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libdvdread-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/dvdread-config $(DESTDIR)$(bindir)-config/dvdread-config
+	@$(if $(compiler_prefix), ln -s dvdread-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)dvdread-config)
 	@$(MAKECOOKIE)

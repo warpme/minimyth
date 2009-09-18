@@ -5,7 +5,7 @@ MASTER_SITES  = http://downloads.mysql.com/archives/$(GARNAME)-5.1/
 MASTER_SITES += http://mirror.trouble-free.net/mysql_mirror/Downloads/MySQL-5.1/
 MASTER_SITES += http://mysql.mirror.redwire.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-have_atomic_pthread_t.patch $(DISTNAME)-perl.patch.gar
+PATCHFILES = $(DISTNAME)-have_atomic_pthread_t.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-mysql_config.patch.gar
 ifneq ($(DESTIMG),build)
 DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES += $(DISTNAME)-cross.patch
@@ -74,6 +74,11 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmystrings.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libmysys.a
 	@rm -f $(DESTDIR)$(libdir)/mysql/libvio.a
+	@rm -f $(DESTDIR)$(bindir)-config/mysql_config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)mysql_config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/mysql_config $(DESTDIR)$(bindir)-config/mysql_config
+	@$(if $(compiler_prefix), ln -s mysql_config $(DESTDIR)$(bindir)-config/$(compiler_prefix)mysql_config)
 	@$(MAKECOOKIE)
 
 clean-all:

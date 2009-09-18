@@ -5,6 +5,3 @@ DEPENDS        = perl/perl-DBI
 PERL_MODULE_SO = true
 
 include ../../perl/perl/perl-module.mk
-
-CONFIGURE_ARGS += \
-	--mysql_config=$(DESTDIR)$(bindir)/mysql_config

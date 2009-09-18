@@ -24,9 +24,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--without-boost
 
-CONFIGURE_ENV = \
-	ac_cv_path_HAVELIBUSB=$(DESTDIR)$(bindir)/libusb-config
-
 include ../../gar.mk
 
 pre-configure:
@@ -35,4 +32,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libftdi.la
+	@rm -f $(DESTDIR)$(bindir)-config/libftdi-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libftdi-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/libftdi-config $(DESTDIR)$(bindir)-config/libftdi-config
+	@$(if $(compiler_prefix), ln -s libftdi-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libftdi-config)
 	@$(MAKECOOKIE)

@@ -21,9 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--disable-sdltest \
 	--disable-gui \
-	--with-gnu-ld \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
-	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)"
+	--with-gnu-ld
 
 include ../../gar.mk
 

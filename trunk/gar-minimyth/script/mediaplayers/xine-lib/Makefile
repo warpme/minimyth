@@ -133,6 +133,11 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxine.la
+	@rm -f $(DESTDIR)$(bindir)-config/xine-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xine-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/xine-config $(DESTDIR)$(bindir)-config/xine-config
+	@$(if $(compiler_prefix), ln -s xine-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)xine-config)
 	@$(MAKECOOKIE)
 
 clean-all:

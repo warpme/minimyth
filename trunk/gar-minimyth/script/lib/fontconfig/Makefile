@@ -24,7 +24,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-docs \
 	--with-gnu-ld \
 	--with-arch=$(GARCH) \
-	--with-freetype-config=$(DESTDIR)$(bindir)/freetype-config \
 	--with-expat-includes=$(DESTDIR)$(includedir) \
 	--with-expat-lib=$(DESTDIR)$(libdir)
 

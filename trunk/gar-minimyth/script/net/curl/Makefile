@@ -68,4 +68,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libcurl.la
+	@rm -f $(DESTDIR)$(bindir)-config/curl-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)curl-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/curl-config $(DESTDIR)$(bindir)-config/curl-config
+	@$(if $(compiler_prefix), ln -s curl-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)curl-config)
 	@$(MAKECOOKIE)

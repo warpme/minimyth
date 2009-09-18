@@ -37,4 +37,13 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpng12.la
 	@rm -f $(DESTDIR)$(libdir)/libpng.la
+	@rm -f $(DESTDIR)$(bindir)-config/libpng12-config
+	@rm -f $(DESTDIR)$(bindir)-config/libpng-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng12-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/libpng12-config $(DESTDIR)$(bindir)-config/libpng12-config
+	@mv $(DESTDIR)$(bindir)/libpng-config $(DESTDIR)$(bindir)-config/libpng-config
+	@$(if $(compiler_prefix), ln -s libpng12-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng12-config)
+	@$(if $(compiler_prefix), ln -s libpng-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng-config)
 	@$(MAKECOOKIE)

@@ -1,21 +1,6 @@
 diff -Naur mythtv-0.21-21625-old/configure mythtv-0.21-21625-new/configure
---- mythtv-0.21-21625-old/configure	2009-09-04 19:54:45.000000000 -0700
-+++ mythtv-0.21-21625-new/configure	2009-09-04 19:54:46.000000000 -0700
-@@ -691,11 +691,11 @@
-     func=$4
-     shift 4
-     disable $cfg
--    check_cmd ${pkg}-config --version
-+    check_cmd @GAR_DESTDIR@@GAR_bindir@/${pkg}-config --version
-     err=$?
-     if test "$err" = 0; then
--        temp_cflags `${pkg}-config --cflags`
--        temp_extralibs `${pkg}-config --libs`
-+        temp_cflags `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --cflags`
-+        temp_extralibs `@GAR_DESTDIR@@GAR_bindir@/${pkg}-config --libs`
-         check_lib "$@" $header $func && enable $cfg
-     fi
-     return $err
+--- mythtv-0.21-21625-old/configure	2009-09-16 19:27:40.000000000 -0700
++++ mythtv-0.21-21625-new/configure	2009-09-16 19:29:21.000000000 -0700
 @@ -1491,7 +1491,7 @@
    x86_64|amd64)
      arch="x86_32"
@@ -72,22 +57,11 @@ diff -Naur mythtv-0.21-21625-old/configure mythtv-0.21-21625-new/configure
  disable sdl_too_old
  disable sdl
 -#SDL_CONFIG="${cross_prefix}sdl-config"
-+#SDL_CONFIG="@GAR_DESTDIR@@GAR_bindir@/sdl-config"
++#SDL_CONFIG="sdl-config"
  if "${SDL_CONFIG}" --version >/dev/null 2>&1; then
      sdl_cflags=`"${SDL_CONFIG}" --cflags`
      temp_cflags $sdl_cflags
-@@ -2581,8 +2559,8 @@
- # aRts probe
- ! disabled audio_arts &&
-     check_foo_config arts artsc artsc.h arts_init &&
--    audio_arts_libs=`artsc-config --libs`  &&
--    audio_arts_cflags=`artsc-config --cflags` &&
-+    audio_arts_libs=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --libs`  &&
-+    audio_arts_cflags=`@GAR_DESTDIR@@GAR_bindir@/artsc-config --cflags` &&
-     enable  audio_arts ||
-     disable audio_arts
- 
-@@ -2804,21 +2782,21 @@
+@@ -2804,13 +2782,13 @@
  # Ubuntu Dapper installs NVIDIA GL headers to a weird location in order
  # not to overwrite the headers installed from Mesa, etc. We need to
  # add that path to include paths if that's the case. 
@@ -105,31 +79,9 @@ diff -Naur mythtv-0.21-21625-old/configure mythtv-0.21-21625-new/configure
  fi
  
  if enabled directfb; then
-     directfb="no"
--    if test x`which directfb-config 2> /dev/null` != x"" ; then
-+    if test x`which @GAR_DESTDIR@@GAR_bindir@/directfb-config 2> /dev/null` != x"" ; then
-         directfb="yes"
--        CONFIG_DIRECTFB_LIBS=`directfb-config --libs`
--        CONFIG_DIRECTFB_CXXFLAGS=`directfb-config --cflags`
-+        CONFIG_DIRECTFB_LIBS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --libs`
-+        CONFIG_DIRECTFB_CXXFLAGS=`@GAR_DESTDIR@@GAR_bindir@/directfb-config --cflags`
-     fi
- fi
- 
-@@ -3154,8 +3132,8 @@
- fi
- if enabled freetype2; then
-   echo "HAVE_FREETYPE2=yes" >> $MYTH_CONFIG_MAK
--  echo "FREETYPE_CFLAGS=`freetype-config --cflags`" >> $MYTH_CONFIG_MAK
--  echo "FREETYPE_LIBS=`freetype-config --libs`" >> $MYTH_CONFIG_MAK
-+  echo "FREETYPE_CFLAGS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --cflags`" >> $MYTH_CONFIG_MAK
-+  echo "FREETYPE_LIBS=`@GAR_DESTDIR@@GAR_bindir@/freetype-config --libs`" >> $MYTH_CONFIG_MAK
- fi
- if enabled fribidi; then
-   echo "FRIBIDI_LIBS=`${FRIBIDI_CONFIG} --libs`" >> $MYTH_CONFIG_MAK
 diff -Naur mythtv-0.21-21625-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.21-21625-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-0.21-21625-old/contrib/mythnotify/cidbcast/Makefile	2009-09-04 19:54:45.000000000 -0700
-+++ mythtv-0.21-21625-new/contrib/mythnotify/cidbcast/Makefile	2009-09-04 19:54:46.000000000 -0700
+--- mythtv-0.21-21625-old/contrib/mythnotify/cidbcast/Makefile	2009-09-04 19:51:44.000000000 -0700
++++ mythtv-0.21-21625-new/contrib/mythnotify/cidbcast/Makefile	2009-09-16 19:29:21.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -140,28 +92,20 @@ diff -Naur mythtv-0.21-21625-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.2
  
  #################################################################################
 diff -Naur mythtv-0.21-21625-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.21-21625-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-0.21-21625-old/contrib/mythnotify/mythudprelay/Makefile	2009-09-04 19:54:45.000000000 -0700
-+++ mythtv-0.21-21625-new/contrib/mythnotify/mythudprelay/Makefile	2009-09-04 19:54:46.000000000 -0700
-@@ -9,13 +9,13 @@
- RM       =  rm 
- RM_FLAGS =  -f
- 
--CFLAGS  	= -g -Wall `xml2-config --cflags` -O
-+CFLAGS  	= -g -Wall `@GAR_DESTDIR@@GAR_bindir@/xml2-config --cflags` -O
- CDEFS   	= -DDEBUG
- 
+--- mythtv-0.21-21625-old/contrib/mythnotify/mythudprelay/Makefile	2009-09-04 19:51:44.000000000 -0700
++++ mythtv-0.21-21625-new/contrib/mythnotify/mythudprelay/Makefile	2009-09-16 19:29:21.000000000 -0700
+@@ -15,7 +15,7 @@
  # Libraries
  
--STDLIBS    = -lm `xml2-config --libs` -lxslt
+ STDLIBS    = -lm `xml2-config --libs` -lxslt
 -X11LIBS    =  -L/usr/X11R6/lib -lX11
-+STDLIBS    = -lm `@GAR_DESTDIR@@GAR_bindir@/xml2-config --libs` -lxslt
 +X11LIBS    =  -L@GAR_DESTDIR@@GAR_libdir@ -lX11
  PROGRAM = mythudprelay
  
  #################################################################################
 diff -Naur mythtv-0.21-21625-old/programs/mythtranscode/Makefile.standlone mythtv-0.21-21625-new/programs/mythtranscode/Makefile.standlone
---- mythtv-0.21-21625-old/programs/mythtranscode/Makefile.standlone	2009-09-04 19:54:45.000000000 -0700
-+++ mythtv-0.21-21625-new/programs/mythtranscode/Makefile.standlone	2009-09-04 19:54:46.000000000 -0700
+--- mythtv-0.21-21625-old/programs/mythtranscode/Makefile.standlone	2009-09-04 19:51:42.000000000 -0700
++++ mythtv-0.21-21625-new/programs/mythtranscode/Makefile.standlone	2009-09-16 19:29:21.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
@@ -172,8 +116,8 @@ diff -Naur mythtv-0.21-21625-old/programs/mythtranscode/Makefile.standlone mytht
  
  OBJS = $(TOOL).o helper.o replex/libreplex.a
 diff -Naur mythtv-0.21-21625-old/settings.pro mythtv-0.21-21625-new/settings.pro
---- mythtv-0.21-21625-old/settings.pro	2009-09-04 19:54:45.000000000 -0700
-+++ mythtv-0.21-21625-new/settings.pro	2009-09-04 19:54:46.000000000 -0700
+--- mythtv-0.21-21625-old/settings.pro	2009-09-04 19:51:45.000000000 -0700
++++ mythtv-0.21-21625-new/settings.pro	2009-09-16 19:29:21.000000000 -0700
 @@ -1,7 +1,7 @@
  CONFIG += $$CCONFIG
  

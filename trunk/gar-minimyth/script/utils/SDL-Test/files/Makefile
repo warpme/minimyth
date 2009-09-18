@@ -2,7 +2,7 @@ DESTDIR ?=
 prefix  ?= /usr
 bindir  ?= $(prefix)/bin
 
-SDL_CONFIG ?= $(DESTDIR)$(bindir)/sdl-config
+SDL_CONFIG ?= sdl-config
 
 SDL_CFLAGS ?= $(shell $(SDL_CONFIG) --cflags)
 SDL_LIBS   ?= $(shell $(SDL_CONFIG) --libs)

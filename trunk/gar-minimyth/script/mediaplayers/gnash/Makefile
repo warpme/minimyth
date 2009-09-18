@@ -68,9 +68,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 INSTALL_ARGS = \
 	install-plugin
 
-CONFIGURE_ENV =  \
-	SDL_CONFIG="$(DESTDIR)$(bindir)/sdl-config"
-
 include ../../gar.mk
 
 pre-configure:

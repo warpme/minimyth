@@ -19,10 +19,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld \
-	--without-python \
-	--with-libxml-prefix=$(DESTDIR)$(prefix) \
-	--with-libxml-include-prefix=$(DESTDIR)$(includedir) \
-	--with-libxml-libs-prefix=$(DESTDIR)$(libdir)
+	--without-python
 
 include ../../gar.mk
 
@@ -39,4 +36,9 @@ post-install:
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(bindir)/xslt-config
 	@sed -i 's%-L${libdir}%-L$(DESTDIR)${libdir}%g'           $(DESTDIR)$(libdir)/xsltConf.sh
 	@sed -i 's%-I${includedir}%-I$(DESTDIR)${includedir}%g'   $(DESTDIR)$(libdir)/xsltConf.sh
+	@rm -f $(DESTDIR)$(bindir)-config/xslt-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xslt-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/xslt-config $(DESTDIR)$(bindir)-config/xslt-config
+	@$(if $(compiler_prefix), ln -s xslt-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)xslt-config)
 	@$(MAKECOOKIE)

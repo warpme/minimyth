@@ -29,8 +29,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath \
 	$(if $(filter i386,$(GARCH_FAMILY)),--with-mmx,--without-mmx) \
 	--with-x \
-        --with-sdl-prefix="$(DESTDIR)$(prefix)" \
-        --with-sdl-exec-prefix="$(DESTDIR)$(prefix)" \
 	--with-gnu-ld
 
 include ../../gar.mk

@@ -3,7 +3,7 @@ GARVERSION = 1.2
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/g15tools/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES =
 LICENSE = LGPL2
 
 DESCRIPTION = 
