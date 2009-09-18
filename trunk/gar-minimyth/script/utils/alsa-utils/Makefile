@@ -27,11 +27,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-curses=ncursesw
 
-CONFIGURE_ENV = \
+xCONFIGURE_ENV = \
 	ncursesw5_config='yes'
 
 include ../../gar.mk
 
 pre-configure:
-	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
+	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
