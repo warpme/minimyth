@@ -75,7 +75,7 @@ DEPENDS = \
 	utils/usbutils \
 	utils/util-linux-ng \
 	X11/vdpau-video \
-	X11/vdpinfo \
+	X11/vdpauinfo \
 	net/wakelan \
 	X11/x11vnc \
 	X11/xmacro \
