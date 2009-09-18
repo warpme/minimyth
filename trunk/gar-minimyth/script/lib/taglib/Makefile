@@ -1,5 +1,5 @@
 GARNAME = taglib
-GARVERSION = 1.5
+GARVERSION = 1.6
 CATEGORIES = lib
 MASTER_SITES = http://developer.kde.org/~wheeler/files/src/
 DISTFILES = $(DISTNAME).tar.gz
