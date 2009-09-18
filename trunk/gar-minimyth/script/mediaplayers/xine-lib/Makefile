@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/libtheora lib/libvorbis lib/vcdimager lib/zlib X11/vdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/libtheora lib/libvorbis lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

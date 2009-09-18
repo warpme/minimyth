@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg X11/vdpau
+DEPENDS = lang/c xorg/xorg X11/libvdpau
 
 WORKSRC = $(WORKDIR)/$(GARNAME)
 

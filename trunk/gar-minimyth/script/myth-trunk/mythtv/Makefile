@@ -34,7 +34,7 @@ DEPENDS = \
 	lib/zlib \
 	qt/qt4 \
 	system/lirc \
-	X11/vdpau \
+	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = devel/yasm
 
