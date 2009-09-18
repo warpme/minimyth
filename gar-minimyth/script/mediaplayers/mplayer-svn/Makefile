@@ -258,9 +258,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-crash-debug \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
-	--with-xvmclib=XvMCW \
-	--with-freetype-config="$(DESTDIR)$(bindir)/freetype-config" \
-	--with-dvdnav-config="$(DESTDIR)$(bindir)/dvdnav-config"
+	--with-xvmclib=XvMCW
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \
 	$(CONFIGURE_ARGS_OPTIONAL) \

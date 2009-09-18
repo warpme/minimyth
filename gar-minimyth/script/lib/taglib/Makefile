@@ -28,4 +28,9 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libtag.la
 	@rm -f $(DESTDIR)$(libdir)/libtag_c.la
+	@rm -f $(DESTDIR)$(bindir)-config/taglib-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)taglib-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/taglib-config $(DESTDIR)$(bindir)-config/taglib-config
+	@$(if $(compiler_prefix), ln -s taglib-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)taglib-config)
 	@$(MAKECOOKIE)

@@ -19,8 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-python
 
-CONFIGURE_ENV  = \
-	LIBUSB_CONFIG=$(DESTDIR)$(bindir)/libusb-config
+CONFIGURE_ENV  =
 ifneq ($(DESTIMG),build)
 CONFIGURE_ENV += \
 	ac_cv_func_lstat_dereferences_slashed_symlink='yes' \

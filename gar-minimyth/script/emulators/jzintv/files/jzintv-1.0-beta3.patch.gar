@@ -1,6 +1,6 @@
 diff -Naur jzintv-1.0-beta3-old/src/config.h jzintv-1.0-beta3-new/src/config.h
 --- jzintv-1.0-beta3-old/src/config.h	2006-07-06 10:52:01.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/config.h	2006-12-16 15:37:47.000000000 -0800
++++ jzintv-1.0-beta3-new/src/config.h	2009-09-16 18:48:17.000000000 -0700
 @@ -166,7 +166,7 @@
  
  #ifdef linux
@@ -21,7 +21,7 @@ diff -Naur jzintv-1.0-beta3-old/src/config.h jzintv-1.0-beta3-new/src/config.h
  
 diff -Naur jzintv-1.0-beta3-old/src/event/subMakefile jzintv-1.0-beta3-new/src/event/subMakefile
 --- jzintv-1.0-beta3-old/src/event/subMakefile	2006-07-03 00:51:24.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/event/subMakefile	2006-12-16 15:47:02.000000000 -0800
++++ jzintv-1.0-beta3-new/src/event/subMakefile	2009-09-16 18:48:17.000000000 -0700
 @@ -12,7 +12,7 @@
  
  .SUFFIXES: .rom .asm .mac
@@ -33,7 +33,7 @@ diff -Naur jzintv-1.0-beta3-old/src/event/subMakefile jzintv-1.0-beta3-new/src/e
  $(R)/event_diag.rom:  ../examples/library/print.asm
 diff -Naur jzintv-1.0-beta3-old/src/joy/subMakefile jzintv-1.0-beta3-new/src/joy/subMakefile
 --- jzintv-1.0-beta3-old/src/joy/subMakefile	2006-07-02 22:04:46.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/joy/subMakefile	2006-12-16 15:46:26.000000000 -0800
++++ jzintv-1.0-beta3-new/src/joy/subMakefile	2009-09-16 18:48:17.000000000 -0700
 @@ -15,7 +15,7 @@
  
  .SUFFIXES: .rom .asm .mac
@@ -45,20 +45,18 @@ diff -Naur jzintv-1.0-beta3-old/src/joy/subMakefile jzintv-1.0-beta3-new/src/joy
  $(R)/joy_diag.rom:  ../examples/library/print.asm
 diff -Naur jzintv-1.0-beta3-old/src/Makefile jzintv-1.0-beta3-new/src/Makefile
 --- jzintv-1.0-beta3-old/src/Makefile	2006-07-05 13:45:31.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/Makefile	2006-12-16 15:37:47.000000000 -0800
-@@ -18,9 +18,9 @@
++++ jzintv-1.0-beta3-new/src/Makefile	2009-09-16 18:54:25.000000000 -0700
+@@ -18,8 +18,8 @@
  ##############################################################################
  P           = export PATH;
  
 -SDL_DIR     = /usr/local
 -SDL_CFLAGS := $(shell sdl-config --cflags)
--SDL_LFLAGS := $(shell sdl-config --libs) 
 +SDL_DIR     = @GAR_DESTDIR@@GAR_prefix@
-+#SDL_CFLAGS := $(shell @GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags)
-+SDL_LFLAGS := $(shell @GAR_DESTDIR@@GAR_bindir@/sdl-config --libs) 
++#SDL_CFLAGS := $(shell sdl-config --cflags)
+ SDL_LFLAGS := $(shell sdl-config --libs) 
  
  # Set "X" to be the executable extension
- X =        
 @@ -32,8 +32,8 @@
  	       -Wbad-function-cast -Wcast-qual 
   WARNXX  = -Wall -W -Wshadow -Wpointer-arith -Wcast-qual 
@@ -72,20 +70,18 @@ diff -Naur jzintv-1.0-beta3-old/src/Makefile jzintv-1.0-beta3-new/src/Makefile
  #CC  = $(P) icc
 diff -Naur jzintv-1.0-beta3-old/src/Makefile.linux jzintv-1.0-beta3-new/src/Makefile.linux
 --- jzintv-1.0-beta3-old/src/Makefile.linux	2006-07-05 13:45:31.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/Makefile.linux	2006-12-16 15:37:47.000000000 -0800
-@@ -18,9 +18,9 @@
++++ jzintv-1.0-beta3-new/src/Makefile.linux	2009-09-16 18:55:16.000000000 -0700
+@@ -18,8 +18,8 @@
  ##############################################################################
  P           = export PATH;
  
 -SDL_DIR     = /usr/local
 -SDL_CFLAGS := $(shell sdl-config --cflags)
--SDL_LFLAGS := $(shell sdl-config --libs) 
 +SDL_DIR     = @GAR_DESTDIR@@GAR_prefix@
-+#SDL_CFLAGS := $(shell @GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags)
-+SDL_LFLAGS := $(shell @GAR_DESTDIR@@GAR_bindir@/sdl-config --libs) 
++#SDL_CFLAGS := $(shell sdl-config --cflags)
+ SDL_LFLAGS := $(shell sdl-config --libs) 
  
  # Set "X" to be the executable extension
- X =        
 @@ -32,8 +32,8 @@
  	       -Wbad-function-cast -Wcast-qual 
   WARNXX  = -Wall -W -Wshadow -Wpointer-arith -Wcast-qual 
@@ -99,7 +95,7 @@ diff -Naur jzintv-1.0-beta3-old/src/Makefile.linux jzintv-1.0-beta3-new/src/Make
  #CC  = $(P) icc
 diff -Naur jzintv-1.0-beta3-old/src/util/subMakefile jzintv-1.0-beta3-new/src/util/subMakefile
 --- jzintv-1.0-beta3-old/src/util/subMakefile	2006-07-05 19:49:39.000000000 -0700
-+++ jzintv-1.0-beta3-new/src/util/subMakefile	2006-12-16 15:46:12.000000000 -0800
++++ jzintv-1.0-beta3-new/src/util/subMakefile	2009-09-16 18:48:17.000000000 -0700
 @@ -116,7 +116,7 @@
  
  .SUFFIXES: .rom .asm .mac

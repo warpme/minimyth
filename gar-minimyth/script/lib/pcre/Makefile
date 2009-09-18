@@ -46,4 +46,9 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libpcre.la
 	@rm -f $(DESTDIR)$(libdir)/libpcrecpp.la
 	@rm -f $(DESTDIR)$(libdir)/libpcreposix.la
+	@rm -f $(DESTDIR)$(bindir)-config/pcre-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)pcre-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/pcre-config $(DESTDIR)$(bindir)-config/pcre-config
+	@$(if $(compiler_prefix), ln -s pcre-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)pcre-config)
 	@$(MAKECOOKIE)

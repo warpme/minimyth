@@ -49,8 +49,8 @@ diff -Naur sdlmame0134-old/src/osd/sdl/sdl.mak sdlmame0134-new/src/osd/sdl/sdl.m
  ifndef SDL_INSTALL_ROOT
 -CFLAGS += `sdl-config --cflags`
 -LIBS += -lm `sdl-config --libs` $(LIBGL)
-+CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`
-+LIBS += -lm `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs` $(LIBGL)
++CFLAGS += `sdl-config --cflags`
++LIBS += -lm `sdl-config --libs` $(LIBGL)
  else
  CFLAGS += -I$(SDL_INSTALL_ROOT)/include
  #LIBS += -L/opt/intel/cce/9.1.051/lib  -limf -L$(SDL_INSTALL_ROOT)/lib -Wl,-rpath,$(SDL_INSTALL_ROOT)/lib -lSDL $(LIBGL)
@@ -72,10 +72,10 @@ diff -Naur sdlmame0134-old/src/osd/sdl/sdl.mak sdlmame0134-new/src/osd/sdl/sdl.m
  # files (header files are #include "SDL/something.h", so the extra "/SDL"
  # causes a significant problem)
 -CFLAGS += `sdl-config --cflags | sed 's:/SDL::'` -DNO_SDL_GLEXT
-+CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags | sed 's:/SDL::'` -DNO_SDL_GLEXT
++CFLAGS += `sdl-config --cflags | sed 's:/SDL::'` -DNO_SDL_GLEXT
  # Remove libSDLmain, as its symbols conflict with SDLMain_tmpl.m
 -LIBS += `sdl-config --libs | sed 's/-lSDLmain//'` -lpthread
-+LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs | sed 's/-lSDLmain//'` -lpthread
++LIBS += `sdl-config --libs | sed 's/-lSDLmain//'` -lpthread
  endif
  
  SDLMAIN = $(SDLOBJ)/SDLMain_tmpl.o
@@ -85,8 +85,8 @@ diff -Naur sdlmame0134-old/src/osd/sdl/sdl.mak sdlmame0134-new/src/osd/sdl/sdl.m
  
 -CFLAGS += `sdl-config --cflags`
 -LIBS += `sdl-config --libs`
-+CFLAGS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`
-+LIBS += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --libs`
++CFLAGS += `sdl-config --cflags`
++LIBS += `sdl-config --libs`
  
  # to avoid name clash of '_brk'
  $(OBJ)/emu/cpu/h6280/6280dasm.o : CDEFS += -D__STRICT_ANSI__

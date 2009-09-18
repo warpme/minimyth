@@ -34,4 +34,9 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfreetype.la
 	@ln -sf freetype2/freetype $(DESTDIR)$(includedir)/freetype
+	@rm -f $(DESTDIR)$(bindir)-config/freetype-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)freetype-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/freetype-config $(DESTDIR)$(bindir)-config/freetype-config
+	@$(if $(compiler_prefix), ln -s freetype-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)freetype-config)
 	@$(MAKECOOKIE)

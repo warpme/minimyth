@@ -38,5 +38,9 @@ include ../../gar.mk
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxosd.la
+	@rm -f $(DESTDIR)$(bindir)-config/xosd-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xosd-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/xosd-config $(DESTDIR)$(bindir)-config/xosd-config
+	@$(if $(compiler_prefix), ln -s xosd-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)xosd-config)
 	@$(MAKECOOKIE)
-	

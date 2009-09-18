@@ -36,7 +36,7 @@ CONFIGURE_ARGS = \
 	-no-fast \
 	-no-exceptions \
 	-platform $(PLATFORM_GARBUILD_NAME) \
-	-plugin-sql-mysql -mysql_config $(DESTDIR)$(bindir)/mysql_config \
+	-plugin-sql-mysql \
 	-no-sql-sqlite \
 	-no-nis \
 	-no-pch \

@@ -37,4 +37,9 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libnspr4.a
 	@rm -f $(DESTDIR)$(libdir)/libplc4.a
 	@rm -f $(DESTDIR)$(libdir)/libplds4.a
+	@rm -f $(DESTDIR)$(bindir)-config/nspr-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)nspr-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/nspr-config $(DESTDIR)$(bindir)-config/nspr-config
+	@$(if $(compiler_prefix), ln -s nspr-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)nspr-config)
 	@$(MAKECOOKIE)

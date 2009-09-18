@@ -31,8 +31,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-cpucheck \
 	$(if $(filter yes,$(mm_DEBUG)),--enable-debug,--disable-debug) \
 	$(if $(filter no,$(mm_DEBUG)),--enable-release,--disable-release) \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
-	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)" \
 	--with-x
 
 CONFIGURE_ENV = \

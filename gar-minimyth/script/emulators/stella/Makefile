@@ -30,7 +30,6 @@ CONFIGURE_ARGS = \
 	--enable-shared \
 	--disable-static \
 	--disable-profile \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
 	--with-zlib-prefix="$(DESTDIR)$(prefix)" \
 	--x-libraries="$(DESTDIR)$(libdir)"
 

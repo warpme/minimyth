@@ -32,4 +32,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libusb.la
+	@rm -f $(DESTDIR)$(bindir)-config/libusb-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libusb-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/libusb-config $(DESTDIR)$(bindir)-config/libusb-config
+	@$(if $(compiler_prefix), ln -s libusb-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libusb-config)
 	@$(MAKECOOKIE)

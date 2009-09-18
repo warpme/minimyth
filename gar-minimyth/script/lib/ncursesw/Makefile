@@ -35,3 +35,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += lib/ncurses/package-api.mk
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(bindir)-config/ncursesw5-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncursesw5-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/ncursesw5-config $(DESTDIR)$(bindir)-config/ncursesw5-config
+	@$(if $(compiler_prefix), ln -s ncursesw5-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncursesw5-config)
+	@$(MAKECOOKIE)

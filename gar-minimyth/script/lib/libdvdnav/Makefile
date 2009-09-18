@@ -17,8 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-gnu-ld \
-	--with-dvdread-config="$(DESTDIR)$(bindir)/dvdread-config"
+	--with-gnu-ld
 
 include ../../gar.mk
 
@@ -38,4 +37,9 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libdvdnav.la
 	@rm -f $(DESTDIR)$(libdir)/libdvdnavmini.la
 	@sed -e 's%-I$(DESTDIR)$(includedir)%-I$${includedir}%g' -i $(DESTDIR)$(libdir)/pkgconfig/dvdnavmini.pc
+	@rm -f $(DESTDIR)$(bindir)-config/dvdnav-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)dvdnav-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/dvdnav-config $(DESTDIR)$(bindir)-config/dvdnav-config
+	@$(if $(compiler_prefix), ln -s dvdnav-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)dvdnav-config)
 	@$(MAKECOOKIE)

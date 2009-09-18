@@ -41,4 +41,9 @@ include ../../gar.mk
 
 post-install:
 	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
+	@rm -f $(DESTDIR)$(bindir)-config/ncurses5-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncurses5-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/ncurses5-config $(DESTDIR)$(bindir)-config/ncurses5-config
+	@$(if $(compiler_prefix), ln -s ncurses5-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncurses5-config)
 	@$(MAKECOOKIE)

@@ -22,8 +22,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sdltest \
 	--without-debugger \
 	--without-nativewin32 \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
-	--with-sdl-exec-prefix="$(DESTDIR)$(prefix)" \
 	--with-opengl
 
 include ../../gar.mk

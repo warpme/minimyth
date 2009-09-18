@@ -34,4 +34,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@rm -f $(DESTDIR)$(bindir)-config/xft-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xft-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/xft-config $(DESTDIR)$(bindir)-config/xft-config
+	@$(if $(compiler_prefix), ln -sf xft-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)xft-config)
 	@$(MAKECOOKIE)

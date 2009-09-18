@@ -1,6 +1,6 @@
 diff -Naur mythplugins-trunk-21904-old/configure mythplugins-trunk-21904-new/configure
---- mythplugins-trunk-21904-old/configure	2009-09-16 16:47:13.000000000 -0700
-+++ mythplugins-trunk-21904-new/configure	2009-09-16 16:47:14.000000000 -0700
+--- mythplugins-trunk-21904-old/configure	2009-09-16 19:30:56.000000000 -0700
++++ mythplugins-trunk-21904-new/configure	2009-09-16 19:32:40.000000000 -0700
 @@ -276,27 +276,7 @@
  
  has_library()
@@ -41,24 +41,6 @@ diff -Naur mythplugins-trunk-21904-old/configure mythplugins-trunk-21904-new/con
  
      HAS_IT="no"
      for HPATH in $HPATHS ; do
-@@ -395,7 +373,7 @@
- 
- if test "$sdl" != "no" ; then
-     sdl="no"
--    if test x`which sdl-config` != x ; then
-+    if test x`which @GAR_DESTDIR@@GAR_bindir@/sdl-config` != x ; then
-         sdl="yes"
-     fi
- fi
-@@ -465,7 +443,7 @@
-     fi
- 
-     taglib="no"
--    taglib_minor=`taglib-config --version | cut -d. -f2`
-+    taglib_minor=`@GAR_DESTDIR@@GAR_bindir@/taglib-config --version | cut -d. -f2`
-     if has_library libtag && has_header taglib/fileref.h && test $taglib_minor -ge 5 ; then
-         taglib="yes"
-     else
 @@ -729,7 +707,7 @@
          if test "$sdl" = "yes" ; then
              echo "        libvisual      support will be included in MythMusic"
@@ -68,62 +50,19 @@ diff -Naur mythplugins-trunk-21904-old/configure mythplugins-trunk-21904-new/con
              echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
          else
              echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
-@@ -768,16 +746,18 @@
-     if test "$sdl" = "yes" ; then
-         echo "        SDL            support will be included in MythMusic"
-         echo "#define SDL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
--        echo "LIBS += `sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
--        echo "QMAKE_CXXFLAGS_RELEASE += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
--        echo "QMAKE_CXXFLAGS_DEBUG += `sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@GAR_DESTDIR@/@GAR_bindir@/sdl-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/sdl-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-     fi
-     if test "$sdl" = "no" ; then
-         echo "        SDL            support will not be included in MythMusic"
-     fi
- 
-     if test "$taglib" = "yes" ; then
--        echo "INCLUDEPATH += `taglib-config --prefix`/include/taglib" >> ./mythmusic/mythmusic/config.pro
-+        echo "LIBS += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --libs`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_RELEASE += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-+        echo "QMAKE_CXXFLAGS_DEBUG += `@GAR_DESTDIR@@GAR_bindir@/taglib-config --cflags`" >> ./mythmusic/mythmusic/config.pro
-     fi
- fi
- 
 diff -Naur mythplugins-trunk-21904-old/mythzoneminder/mythzmserver/Makefile.standalone mythplugins-trunk-21904-new/mythzoneminder/mythzmserver/Makefile.standalone
---- mythplugins-trunk-21904-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-16 16:47:13.000000000 -0700
-+++ mythplugins-trunk-21904-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-16 16:47:14.000000000 -0700
-@@ -7,11 +7,11 @@
- all : mythzmserver 
- 
- mythzmserver: $(mythzmserver_objects)
--	g++ -o mythzmserver $(mythzmserver_objects) $(shell mysql_config --libs)
-+	g++ -o mythzmserver $(mythzmserver_objects) $(shell @GAR_DESTDIR@@GAR_bindir@/mysql_config --libs)
- 
- 
- main: main.cpp
+--- mythplugins-trunk-21904-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-16 16:16:14.000000000 -0700
++++ mythplugins-trunk-21904-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-09-16 19:32:40.000000000 -0700
+@@ -14,4 +14,4 @@
  zmserver: zmserver.cpp
  
  clean:
 -	rm -f *.o mythzmserver
 \ No newline at end of file
 +	rm -f *.o mythzmserver
-diff -Naur mythplugins-trunk-21904-old/mythzoneminder/mythzmserver/mythzmserver.pro mythplugins-trunk-21904-new/mythzoneminder/mythzmserver/mythzmserver.pro
---- mythplugins-trunk-21904-old/mythzoneminder/mythzmserver/mythzmserver.pro	2009-09-16 16:47:13.000000000 -0700
-+++ mythplugins-trunk-21904-new/mythzoneminder/mythzmserver/mythzmserver.pro	2009-09-16 16:47:14.000000000 -0700
-@@ -10,7 +10,7 @@
- 
- INSTALLS = target
- 
--LIBS = $$system(mysql_config --libs)
-+LIBS = $$system(@GAR_DESTDIR@@GAR_bindir@/mysql_config --libs)
- 
- # Input
- HEADERS += zmserver.h
 diff -Naur mythplugins-trunk-21904-old/settings.pro mythplugins-trunk-21904-new/settings.pro
---- mythplugins-trunk-21904-old/settings.pro	2009-09-16 16:47:13.000000000 -0700
-+++ mythplugins-trunk-21904-new/settings.pro	2009-09-16 16:47:14.000000000 -0700
+--- mythplugins-trunk-21904-old/settings.pro	2009-09-16 16:16:14.000000000 -0700
++++ mythplugins-trunk-21904-new/settings.pro	2009-09-16 19:32:40.000000000 -0700
 @@ -33,7 +33,6 @@
  
  profile:CONFIG += release

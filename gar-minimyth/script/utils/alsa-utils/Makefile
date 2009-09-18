@@ -3,7 +3,7 @@ GARVERSION = 1.0.21
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES =
 LICENSE = GPL2
 
 DESCRIPTION = 

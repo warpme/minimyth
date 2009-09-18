@@ -195,7 +195,7 @@ STAGINGDIR ?= $(build_DESTDIR)$(build_prefix)/staging
 
 # allow us to use programs we just built
 BUILD_SYSTEM_PATH := $(if $(BUILD_SYSTEM_PATH),$(BUILD_SYSTEM_PATH),$(PATH))
-GAR_SYSTEM_PATH := $(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system
+GAR_SYSTEM_PATH := $(DESTDIR)$(bindir)-config:$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system
 PATH := $(if $(wildcard $(build_DESTDIR)$(build_rootdir)/bin-build-system),$(GAR_SYSTEM_PATH),$(GAR_SYSTEM_PATH):$(BUILD_SYSTEM_PATH))
 # this causes pain for all involved once glibc is built.
 LIBRARY_PATH = $(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_qt3libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql$(strip $(if $(filter i386,$(build_GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(build_GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))

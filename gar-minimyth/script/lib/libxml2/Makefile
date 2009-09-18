@@ -33,4 +33,9 @@ post-install:
 	@sed -i 's%-I$${includedir}%-I$(DESTDIR)$${includedir}%g' $(DESTDIR)$(bindir)/xml2-config
 	@sed -i 's%-L${libdir}%-L$(DESTDIR)${libdir}%g'           $(DESTDIR)$(libdir)/xml2Conf.sh
 	@sed -i 's%-I${includedir}%-I$(DESTDIR)${includedir}%g'   $(DESTDIR)$(libdir)/xml2Conf.sh
+	@rm -f $(DESTDIR)$(bindir)-config/xml2-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xml2-config
+	@mkdir -p $(DESTDIR)$(bindir)-config
+	@mv $(DESTDIR)$(bindir)/xml2-config $(DESTDIR)$(bindir)-config/xml2-config
+	@$(if $(compiler_prefix), ln -s xml2-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)xml2-config)
 	@$(MAKECOOKIE)
