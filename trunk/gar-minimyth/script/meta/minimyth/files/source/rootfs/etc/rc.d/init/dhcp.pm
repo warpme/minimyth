@@ -20,15 +20,10 @@ sub start
     # Start 'udhcpc'.
     if (! $minimyth->application_running('udhcpc'))
     {
-        $minimyth->message_output('info', "starting DHCP client ...");
+        $minimyth->message_output('info', "configuring network interface ...");
 
         # Create a 'udhcpc.conf' file.
         $minimyth->var_save({ file => '/etc/udhcpc.conf', filter => 'MM_DHCP_.*' });
-
-        my $command = q(/sbin/udhcpc);
-        $command = $command . ' ' .  q(-S);
-        $command = $command . ' ' .  q(-p /var/run/udhcpc.pid);
-        $command = $command . ' ' .  q(-s /etc/udhcpc.script);
 
         # Determine network interface.
         my $interface = $minimyth->var_get('MM_NETWORK_INTERFACE');
@@ -54,44 +49,63 @@ sub start
                 $interface = 'eth0';
             }
         }
-        $command = $command . ' ' . qq(-i $interface);
 
-        # Reuse any existing IP address.
-        my $ip_address = '';
-        if ((-x '/sbin/ifconfig') &&
-            (open(FILE, '-|', "/sbin/ifconfig $interface")))
+        # If the client's address has not been manually configured, then run the DHCP client.
+        if (! $minimyth->var_get('MM_DHCP_ADDRESS'))
         {
-            foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
+            my $command = q(/sbin/udhcpc);
+            $command = $command . ' ' .  q(-S);
+            $command = $command . ' ' .  q(-p /var/run/udhcpc.pid);
+            $command = $command . ' ' .  q(-s /etc/udhcpc.script);
+
+            $command = $command . ' ' . qq(-i $interface);
+
+            # Reuse any existing IP address.
+            my $ip_address = '';
+            if ((-x '/sbin/ifconfig') &&
+                (open(FILE, '-|', "/sbin/ifconfig $interface")))
             {
-                chomp $_;
-                $ip_address = $_;
-                last;
+                foreach (grep(s/^ *inet addr:([^ ]*) .*$/$1/, (<FILE>)))
+                {
+                    chomp $_;
+                    $ip_address = $_;
+                    last;
+                }
+                close(FILE);
             }
-            close(FILE);
-        }
-        if ($ip_address)
-        {
-            $command = $command . ' ' . qq(-r $ip_address);
-        }
+            if ($ip_address)
+            {
+                $command = $command . ' ' . qq(-r $ip_address);
+            }
 
-        # Decide whether or not to run once.
-        if (! -e '/var/cache/minimyth/init/state/conf/done-dhcp_override_file')
-        {
-            $command = $command . ' ' . qq(-q);
+            # Decide whether or not to run once.
+            if (! -e '/var/cache/minimyth/init/state/conf/done-dhcp_override_file')
+            {
+                $command = $command . ' ' . qq(-q);
+            }
+
+            $command = $command . ' ' .  q(> /var/log/udhcpc 2>&1);
+
+            # Start DHCP client on the interface.
+            $minimyth->message_log('info', qq(running DHCP client command '$command'.));
+            if (system($command) != 0)
+            {
+                $minimyth->message_output('err', "dynamic configuratoin of interface '$interface' failed.");
+                return 0;
+            }
         }
-
-        $command = $command . ' ' .  q(> /var/log/udhcpc 2>&1);
-
-        # Start DHCP client on the interface.
-        $minimyth->message_log('info', qq(running DHCP client command '$command'.));
-        if (system($command) != 0)
+        else
         {
-            $minimyth->message_output('err', "DHCP on interface '$interface' failed.");
-            return 0;
+            my $command = qq(/bin/sh -c 'interface=$interface /etc/udhcpc.script renew');
+            if (system($command) != 0)
+            {
+                $minimyth->message_output('err', "static configuration of interface '$interface' failed.");
+                return 0;
+            }
         }
 
         # Make sure we got an IP address.
-        $ip_address = '';
+        my $ip_address = '';
         if ((-x '/sbin/ifconfig') &&
             (open(FILE, '-|', "/sbin/ifconfig $interface")))
         {
@@ -105,7 +119,7 @@ sub start
         }
         if (! $ip_address)
         {
-            $self->message_output('err', "DHCP on interface '$interface' failed.");
+            $minimyth->message_output('err', "configuration of network interface '$interface' failed.");
             return 0;
         }
     }
