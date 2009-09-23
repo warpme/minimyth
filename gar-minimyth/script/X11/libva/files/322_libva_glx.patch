@@ -1,3 +1,15 @@
+commit 8e76000abce070da5f1c902a6290f4ccaa3eccc8
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Sep 18 15:51:08 2009 +0000
+
+    Add C++ guards.
+
+commit bf1ae22ef324fbb347f5369e1ba307e847553fe8
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Sep 18 15:49:55 2009 +0000
+
+    Fix check for GL extensions.
+
 commit df0953a951d8a2e5e4b0a28a95ae0f1ac735726e
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Tue Sep 8 12:25:14 2009 +0000
@@ -459,10 +471,10 @@ index 0000000..f6ec2c3
 +}
 diff --git a/src/glx/va_glx.h b/src/glx/va_glx.h
 new file mode 100644
-index 0000000..b2a9ef3
+index 0000000..183ef3a
 --- /dev/null
 +++ b/src/glx/va_glx.h
-@@ -0,0 +1,209 @@
+@@ -0,0 +1,217 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -496,6 +508,10 @@ index 0000000..b2a9ef3
 +#include <va/va.h>
 +#endif
 +#include <GL/glx.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
 +
 +/**
 + * Return a suitable VADisplay for VA API
@@ -671,10 +687,14 @@ index 0000000..b2a9ef3
 +    unsigned int flags
 +);
 +
++#ifdef __cplusplus
++}
++#endif
++
 +#endif /* VA_GLX_H */
 diff --git a/src/glx/va_glx_impl.c b/src/glx/va_glx_impl.c
 new file mode 100644
-index 0000000..44c0cab
+index 0000000..d4f9c1d
 --- /dev/null
 +++ b/src/glx/va_glx_impl.c
 @@ -0,0 +1,1168 @@
@@ -899,13 +919,13 @@ index 0000000..44c0cab
 +    const char *glx_extensions;
 +
 +    gl_extensions = (const char *)glGetString(GL_EXTENSIONS);
-+    if (check_extension("GL_ARB_texture_non_power_of_two", gl_extensions))
-+        return 1;
++    if (!check_extension("GL_ARB_texture_non_power_of_two", gl_extensions))
++        return 0;
 +
 +    glx_extensions = glXQueryExtensionsString(ctx->x11_dpy, ctx->x11_screen);
-+    if (check_extension("GLX_EXT_texture_from_pixmap", glx_extensions))
-+        return 1;
-+    return 0;
++    if (!check_extension("GLX_EXT_texture_from_pixmap", glx_extensions))
++        return 0;
++    return 1;
 +}
 +
 +static int check_fbo_extensions(VADriverContextP ctx)
@@ -913,11 +933,11 @@ index 0000000..44c0cab
 +    const char *gl_extensions;
 +
 +    gl_extensions = (const char *)glGetString(GL_EXTENSIONS);
-+    if (check_extension("GL_ARB_framebuffer_object", gl_extensions))
-+        return 1;
-+    if (check_extension("GL_EXT_framebuffer_object", gl_extensions))
-+        return 1;
-+    return 0;
++    if (!check_extension("GL_ARB_framebuffer_object", gl_extensions))
++        return 0;
++    if (!check_extension("GL_EXT_framebuffer_object", gl_extensions))
++        return 0;
++    return 1;
 +}
 +
 +// Load GLX extensions
