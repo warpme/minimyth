@@ -1,7 +1,7 @@
 GARNAME = glib
-GARVERSION = 2.20.5
+GARVERSION = 2.22.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.20/
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.22/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c
+DEPENDS    = lang/c lib/pcre
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/glib
@@ -21,9 +21,19 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-silent-rules \
+	--disable-debug \
 	--disable-static \
 	--enable-shared \
-	--with-gnu-ld
+	--disable-selinux \
+	--disable-fam \
+	--enable-xattr \
+	--enable-regex \
+	--disable-gtk-doc \
+	--disable-man \
+	--with-gnu-ld \
+	--with-threads=posix \
+	--with-pcre=system
 
 CONFIGURE_ENV  =
 ifneq ($(DESTIMG),build)
