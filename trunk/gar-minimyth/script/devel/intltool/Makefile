@@ -1,9 +1,9 @@
 GARNAME = intltool
-GARVERSION = 0.40.6
+GARVERSION = 0.41.0
 CATEGORIES = devel
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/0.40/
-DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-perl.patch.gar
+MASTER_SITES  = http://edge.launchpad.net/intltool/trunk/0.41.0/+download/
+MASTER_SITES += http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/0.41/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION =
