@@ -1,7 +1,7 @@
 GARNAME = pango
-GARVERSION = 1.24.5
+GARVERSION = 1.26.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.24/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.26/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
@@ -18,6 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--disable-debug \
