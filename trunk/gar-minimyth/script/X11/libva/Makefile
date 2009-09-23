@@ -2,13 +2,13 @@ GARNAME = libva
 GARVERSION = 0.31.0
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds3.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds4.tar.gz
 PATCHFILES = \
-	001_mpeg2_slice_horizontal_position.patch \
 	102_attribute_visibility.patch \
+	103_fix_vainfo_deps.patch \
+	104_fix_libva_pkgconfig_deps.patch \
+	105_dont_search_LIBGL_DRIVERS_PATH.patch \
 	108_drivers_path.patch \
-	201_drop_assert_in_isDRI1Connected.patch \
-	202_cleanup_nvidia_detection.patch \
 	203_fix_fglrx_detection.patch \
 	300_sds_version.patch \
 	320_move_vaPutSurface_flags_def.patch \
