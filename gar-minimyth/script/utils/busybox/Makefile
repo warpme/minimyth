@@ -8,8 +8,10 @@ PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-buildsys.patch \
 	$(DISTNAME)-dd.patch \
+	$(DISTNAME)-hush.patch \
 	$(DISTNAME)-pidof_killall.patch \
-	$(DISTNAME)-sed.patch
+	$(DISTNAME)-sed.patch \
+	$(DISTNAME)-uniq.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
