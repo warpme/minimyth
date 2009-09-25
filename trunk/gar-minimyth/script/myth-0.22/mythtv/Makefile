@@ -43,8 +43,8 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 PWD := $(shell pwd)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile sa3250ch
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile sa3250ch source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
@@ -133,6 +133,15 @@ svn//%/$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
+build-sa3250ch:
+	@cd $(WORKSRC)/contrib/channel_changers/sa3250ch ; $(CC) $(CFLAGS) -o sa3250ch sa3250ch.c -lrom1394 -lavc1394 -lraw1394
+	@$(MAKECOOKIE)
+
+install-sa3250ch:
+	@rm -f $(DESTDIR)$(bindir)/sa3250ch
+	@cp $(WORKSRC)/contrib/channel_changers/sa3250ch/sa3250ch $(DESTDIR)$(bindir)/sa3250ch
 	@$(MAKECOOKIE)
 
 install-source:

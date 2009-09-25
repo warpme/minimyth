@@ -122,7 +122,7 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 build-sa3250ch:
-	@cd $(WORKSRC)/contrib/channel_changers ; $(CC) -o sa3250ch sa3250ch.c -lrom1394 -lavc1394 -lraw1394
+	@cd $(WORKSRC)/contrib/channel_changers ; $(CC) $(CFLAGS) -o sa3250ch sa3250ch.c -lrom1394 -lavc1394 -lraw1394
 	@$(MAKECOOKIE)
 
 install-sa3250ch:
