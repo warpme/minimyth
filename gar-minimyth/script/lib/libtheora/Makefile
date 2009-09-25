@@ -1,5 +1,5 @@
 GARNAME = libtheora
-GARVERSION = 1.1beta3
+GARVERSION = 1.1.0
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/theora/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-spec \
+	--disable-valgrind-testing \
 	--enable-asm \
 	--disable-oggtest \
 	--disable-vorbistest \
