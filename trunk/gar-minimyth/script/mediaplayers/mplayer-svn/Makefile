@@ -249,6 +249,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-armv6 \
 	--disable-armv6t2 \
 	--disable-armvfp \
+	--disable-neon \
 	--disable-iwmmxt \
 	--enable-fastmemcpy \
 	--disable-big-endian \

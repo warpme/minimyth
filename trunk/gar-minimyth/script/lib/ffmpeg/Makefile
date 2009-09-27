@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 19905.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 20063.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -69,6 +69,7 @@ CONFIGURE_ARGS = \
 	--enable-decoders \
 	--disable-decoder="theora" \
 	--disable-decoder="vorbis" \
+	--enable-hwaccels \
 	--enable-muxers \
 	--enable-demuxers \
 	--enable-parsers \
