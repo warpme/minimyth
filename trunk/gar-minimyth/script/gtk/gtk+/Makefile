@@ -1,9 +1,8 @@
 GARNAME = gtk+
-GARVERSION = 2.16.6
+GARVERSION = 2.18.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.16/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.18/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-disable_demos.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
@@ -26,6 +25,7 @@ endif
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-debug=no \
@@ -39,6 +39,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-modules \
 	--disable-gdiplus \
 	--disable-cups \
+	--disable-papi \
 	--disable-test-print-backend \
 	--disable-gtk-doc \
 	--disable-man \
