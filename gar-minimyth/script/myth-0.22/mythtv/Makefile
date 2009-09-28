@@ -104,7 +104,7 @@ CONFIGURE_ARGS = \
 	--disable-hdhomerun \
 	--enable-v4l \
 	--enable-ivtv \
-	--disable-hdpvr \
+	--enable-hdpvr \
 	--enable-dvb \
 	--dvb-path="$(DESTDIR)$(includedir)" \
 	--enable-x11 \
