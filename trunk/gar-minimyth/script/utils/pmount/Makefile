@@ -1,9 +1,9 @@
 GARNAME = pmount
-GARVERSION = 0.9.13
+GARVERSION = 0.9.20
 CATEGORIES = utils
-MASTER_SITES = http://www.piware.de/projects/
+MASTER_SITES = http://alioth.debian.org/frs/download.php/3127/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-umountprog.patch $(DISTNAME)-install.patch
+PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -18,6 +18,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-nls \
+	--enable-shared \
+	--disable-static \
 	--disable-hal \
 	--with-gnu-ld \
 	--with-media-dir="$(rootdir)/media/" \
