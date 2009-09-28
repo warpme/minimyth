@@ -1,6 +1,6 @@
-diff -Naur mythtv-trunk-22067-old/programs/mythfrontend/main.cpp mythtv-trunk-22067-new/programs/mythfrontend/main.cpp
---- mythtv-trunk-22067-old/programs/mythfrontend/main.cpp	2009-09-26 09:35:56.000000000 -0700
-+++ mythtv-trunk-22067-new/programs/mythfrontend/main.cpp	2009-09-26 09:35:57.000000000 -0700
+diff -Naur mythtv-trunk-22090-old/programs/mythfrontend/main.cpp mythtv-trunk-22090-new/programs/mythfrontend/main.cpp
+--- mythtv-trunk-22090-old/programs/mythfrontend/main.cpp	2009-09-28 06:34:00.000000000 -0700
++++ mythtv-trunk-22090-new/programs/mythfrontend/main.cpp	2009-09-28 06:34:01.000000000 -0700
 @@ -1,10 +1,13 @@
  
  #include <unistd.h>
@@ -92,12 +92,21 @@ diff -Naur mythtv-trunk-22067-old/programs/mythfrontend/main.cpp mythtv-trunk-22
      }
  
      themename = gContext->GetSetting("Theme", "blue");
-@@ -1525,8 +1584,8 @@
+@@ -1500,7 +1559,8 @@
+ 
+     if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
+     {
+-        delete networkControl;
++        while (!networkControls.isEmpty())
++            delete networkControls.takeFirst();
+         return FRONTEND_EXIT_NO_THEME;
+     }
+ 
+@@ -1524,7 +1584,8 @@
          pthread_join(priv_thread, NULL);
      }
  
--    if (networkControl)
--        delete networkControl;
+-    delete networkControl;
 +    while (!networkControls.isEmpty())
 +        delete networkControls.takeFirst();
  
