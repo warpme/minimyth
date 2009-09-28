@@ -2,6 +2,7 @@ GARNAME = busybox
 GARVERSION = 1.15.1
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
+MASTER_SITES += http://www.busybox.net/downloads/fixes-1.15.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
@@ -9,6 +10,7 @@ PATCHFILES  = \
 	$(DISTNAME)-buildsys.patch \
 	$(DISTNAME)-dd.patch \
 	$(DISTNAME)-hush.patch \
+	$(DISTNAME)-lineedit.patch \
 	$(DISTNAME)-pidof_killall.patch \
 	$(DISTNAME)-sed.patch \
 	$(DISTNAME)-uniq.patch
