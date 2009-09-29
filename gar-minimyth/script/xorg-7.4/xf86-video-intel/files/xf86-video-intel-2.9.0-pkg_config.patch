@@ -1,0 +1,23 @@
+diff -Naur xf86-video-intel-2.9.0-old/configure.ac xf86-video-intel-2.9.0-new/configure.ac
+--- xf86-video-intel-2.9.0-old/configure.ac	2009-09-28 20:02:39.000000000 -0700
++++ xf86-video-intel-2.9.0-new/configure.ac	2009-09-28 20:30:27.000000000 -0700
+@@ -45,6 +45,7 @@
+ DOLT
+ AC_PROG_CC
+ AM_PROG_CC_C_O
++PKG_PROG_PKG_CONFIG
+ 
+ PKG_CHECK_MODULES(GEN4ASM, [intel-gen4asm >= 1.0], [gen4asm=yes], [gen4asm=no])
+ AM_CONDITIONAL(HAVE_GEN4ASM, test x$gen4asm = xyes)
+@@ -102,8 +103,9 @@
+                   HAVE_XEXTPROTO_71="no")
+ AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
+ 
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
+-drm_cflags=$(pkg-config --cflags libdrm)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
++drm_cflags=$($PKG_CONFIG --cflags libdrm)
+ 
+ # Checks for libraries.
+ 

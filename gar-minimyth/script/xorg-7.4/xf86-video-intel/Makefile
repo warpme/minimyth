@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.8.1
+GARVERSION = 2.9.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -47,6 +47,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-static \
+	--enable-shared \
 	--enable-dri \
 	--disable-video-debug \
 	--enable-xvmc \
@@ -55,6 +57,10 @@ ifneq ("$(GARVERSION)","2.7.1")
 CONFIGURE_ARGS += \
 	--disable-debug \
 	--disable-shave
+ifneq ("$(GARVERSION)","2.8.1")
+CONFIGURE_ARGS += \
+	--disable-kms-only
+endif
 endif
 
 CONFIGURE_ENV = \
