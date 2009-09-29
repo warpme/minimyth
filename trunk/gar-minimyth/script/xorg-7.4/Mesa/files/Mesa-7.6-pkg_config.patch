@@ -1,0 +1,349 @@
+diff -Naur Mesa-7.6-old/configs/default Mesa-7.6-new/configs/default
+--- Mesa-7.6-old/configs/default	2009-09-28 11:14:20.000000000 -0700
++++ Mesa-7.6-new/configs/default	2009-09-29 06:55:32.000000000 -0700
+@@ -37,6 +37,7 @@
+ MKDEP = makedepend
+ MKDEP_OPTIONS = -fdepend
+ MAKE = make
++PKG_CONFIG = pkg-config
+ 
+ # Use MINSTALL for installing libraries, INSTALL for everything else
+ MINSTALL = $(SHELL) $(TOP)/bin/minstall
+diff -Naur Mesa-7.6-old/configs/freebsd-dri Mesa-7.6-new/configs/freebsd-dri
+--- Mesa-7.6-old/configs/freebsd-dri	2009-06-17 11:35:16.000000000 -0700
++++ Mesa-7.6-new/configs/freebsd-dri	2009-09-29 06:54:34.000000000 -0700
+@@ -30,8 +30,8 @@
+ MESA_ASM_SOURCES = 
+ 
+ # Library/program dependencies
+-LIBDRM_CFLAGS = `pkg-config --cflags libdrm`
+-LIBDRM_LIB = `pkg-config --libs libdrm`
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS = -L/usr/local/lib -lm -pthread -lexpat $(LIBDRM_LIB)
+ GL_LIB_DEPS = -L/usr/local/lib -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+ 	-lm -pthread $(LIBDRM_LIB)
+diff -Naur Mesa-7.6-old/configs/linux-dri Mesa-7.6-new/configs/linux-dri
+--- Mesa-7.6-old/configs/linux-dri	2009-06-17 11:41:53.000000000 -0700
++++ Mesa-7.6-new/configs/linux-dri	2009-09-29 06:54:34.000000000 -0700
+@@ -43,8 +43,8 @@
+ # Library/program dependencies
+ EXTRA_LIB_PATH=-L/usr/X11R6/lib
+ 
+-LIBDRM_CFLAGS = $(shell pkg-config --cflags libdrm)
+-LIBDRM_LIB = $(shell pkg-config --libs libdrm)
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+ 		-lm -lpthread -ldl $(LIBDRM_LIB)
+diff -Naur Mesa-7.6-old/configs/linux-dri-xcb Mesa-7.6-new/configs/linux-dri-xcb
+--- Mesa-7.6-old/configs/linux-dri-xcb	2009-06-17 11:35:16.000000000 -0700
++++ Mesa-7.6-new/configs/linux-dri-xcb	2009-09-29 06:54:34.000000000 -0700
+@@ -25,7 +25,7 @@
+ 	-DGLX_DIRECT_RENDERING -DGLX_INDIRECT_RENDERING \
+         -DHAVE_ALIAS -DUSE_XCB -DHAVE_POSIX_MEMALIGN
+ 
+-X11_INCLUDES = $(shell pkg-config --cflags-only-I x11) $(shell pkg-config --cflags-only-I xcb) $(shell pkg-config --cflags-only-I x11-xcb) $(shell pkg-config --cflags-only-I xcb-glx)
++X11_INCLUDES = `$(PKG_CONFIG) --cflags-only-I x11` `$(PKG_CONFIG) --cflags-only-I xcb` `$(PKG_CONFIG) --cflags-only-I x11-xcb` `$(PKG_CONFIG) --cflags-only-I xcb-glx`
+ 
+ CFLAGS = -Wall -Wmissing-prototypes $(OPT_FLAGS) $(PIC_FLAGS) $(ARCH_FLAGS) \
+ 	$(DEFINES) $(ASM_FLAGS) -std=c99 -ffast-math 
+@@ -39,13 +39,13 @@
+ MESA_ASM_SOURCES = 
+ 
+ # Library/program dependencies
+-EXTRA_LIB_PATH=$(shell pkg-config --libs-only-L x11)
++EXTRA_LIB_PATH=`$(PKG_CONFIG) --libs-only-L x11`
+ 
+-LIBDRM_CFLAGS = $(shell pkg-config --cflags libdrm)
+-LIBDRM_LIB = $(shell pkg-config --libs libdrm)
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lm -lpthread -ldl \
+-                $(LIBDRM_LIB) $(shell pkg-config --libs xcb) $(shell pkg-config --libs x11-xcb) $(shell pkg-config --libs xcb-glx)
++                $(LIBDRM_LIB) `$(PKG_CONFIG) --libs xcb` `$(PKG_CONFIG) --libs x11-xcb` `$(PKG_CONFIG) --libs xcb-glx`
+ 
+ 
+ # This is now 0 by default since it seems to confuse the hell out of people
+diff -Naur Mesa-7.6-old/configs/linux-egl Mesa-7.6-new/configs/linux-egl
+--- Mesa-7.6-old/configs/linux-egl	2009-03-23 17:25:43.000000000 -0700
++++ Mesa-7.6-new/configs/linux-egl	2009-09-29 06:54:34.000000000 -0700
+@@ -38,8 +38,8 @@
+ # Library/program dependencies
+ EXTRA_LIB_PATH=-L/usr/X11R6/lib
+ 
+-LIBDRM_CFLAGS = $(shell pkg-config --cflags libdrm)
+-LIBDRM_LIB = $(shell pkg-config --libs libdrm)
++LIBDRM_CFLAGS = `$(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ DRI_LIB_DEPS  = $(EXTRA_LIB_PATH) -lm -lpthread -lexpat -ldl $(LIBDRM_LIB)
+ GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
+ 		-lm -lpthread -ldl \
+diff -Naur Mesa-7.6-old/configs/linux-solo Mesa-7.6-new/configs/linux-solo
+--- Mesa-7.6-old/configs/linux-solo	2009-06-17 11:35:16.000000000 -0700
++++ Mesa-7.6-new/configs/linux-solo	2009-09-29 06:54:34.000000000 -0700
+@@ -16,10 +16,10 @@
+ ARCH_FLAGS ?=
+ 
+ # DRM and pciaccess
+-LIBDRM_CFLAGS = $(shell pkg-config --cflags libdrm)
+-LIBDRM_LIB = $(shell pkg-config --libs libdrm)
+-PCIACCESS_CFLAGS = $(shell pkg-config --cflags pciaccess)
+-PCIACCESS_LIB = $(shell pkg-config --libs pciaccess)
++LIBDRM_CFLAGS = $(PKG_CONFIG) --cflags libdrm`
++LIBDRM_LIB = $(PKG_CONFIG) --libs libdrm`
++PCIACCESS_CFLAGS = $(PKG_CONFIG) --cflags pciaccess`
++PCIACCESS_LIB = $(PKG_CONFIG) --libs pciaccess`
+ 
+ 
+ DEFINES = -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE \
+diff -Naur Mesa-7.6-old/src/egl/drivers/dri/Makefile Mesa-7.6-new/src/egl/drivers/dri/Makefile
+--- Mesa-7.6-old/src/egl/drivers/dri/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/egl/drivers/dri/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -8,7 +8,7 @@
+ INCLUDE_DIRS = \
+ 	-I. \
+ 	-I/usr/include \
+-	$(shell pkg-config --cflags-only-I libdrm) \
++	`$(PKG_CONFIG) --cflags-only-I libdrm`
+ 	-I$(TOP)/include \
+ 	-I$(TOP)/include/GL/internal \
+ 	-I$(TOP)/src/mesa \
+@@ -29,7 +29,7 @@
+ 
+ OBJECTS = $(SOURCES:.c=.o)
+ 
+-DRM_LIB = `pkg-config --libs libdrm`
++DRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ 
+ 
+ .c.o:
+diff -Naur Mesa-7.6-old/src/egl/drivers/glx/Makefile Mesa-7.6-new/src/egl/drivers/glx/Makefile
+--- Mesa-7.6-old/src/egl/drivers/glx/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/egl/drivers/glx/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -15,7 +15,7 @@
+ INCLUDE_DIRS = \
+ 	-I. \
+ 	-I/usr/include \
+-	$(shell pkg-config --cflags-only-I libdrm) \
++	`$(PKG_CONFIG) --cflags-only-I libdrm` \
+ 	-I$(TOP)/include \
+ 	-I$(TOP)/include/GL/internal \
+ 	-I$(TOP)/src/mesa/glapi \
+@@ -29,7 +29,7 @@
+ 
+ OBJECTS = $(SOURCES:.c=.o)
+ 
+-DRM_LIB = `pkg-config --libs libdrm`
++DRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ 
+ MISC_LIBS = -ldl -lXext -lGL
+ 
+diff -Naur Mesa-7.6-old/src/egl/drivers/xdri/Makefile Mesa-7.6-new/src/egl/drivers/xdri/Makefile
+--- Mesa-7.6-old/src/egl/drivers/xdri/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/egl/drivers/xdri/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -13,7 +13,7 @@
+ INCLUDE_DIRS = \
+ 	-I. \
+ 	-I/usr/include \
+-	$(shell pkg-config --cflags-only-I libdrm) \
++	`$(PKG_CONFIG) --cflags-only-I libdrm` \
+ 	-I$(TOP)/include \
+ 	-I$(TOP)/include/GL/internal \
+ 	-I$(TOP)/src/mesa \
+@@ -31,7 +31,7 @@
+ 
+ OBJECTS = $(SOURCES:.c=.o)
+ 
+-DRM_LIB = `pkg-config --libs libdrm`
++DRM_LIB = `$(PKG_CONFIG) --libs libdrm`
+ 
+ CFLAGS += -DGLX_DIRECT_RENDERING
+ 
+diff -Naur Mesa-7.6-old/src/gallium/state_trackers/dri/Makefile Mesa-7.6-new/src/gallium/state_trackers/dri/Makefile
+--- Mesa-7.6-old/src/gallium/state_trackers/dri/Makefile	2009-06-17 11:41:53.000000000 -0700
++++ Mesa-7.6-new/src/gallium/state_trackers/dri/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -8,7 +8,7 @@
+ 	-I$(TOP)/src/mesa \
+ 	-I$(TOP)/src/mesa/drivers/dri/common \
+ 	-I$(TOP)/src/mesa/main \
+-         $(shell pkg-config --cflags-only-I libdrm)
++         `$(PKG_CONFIG) --cflags-only-I libdrm`
+ 
+ 
+ C_SOURCES = \
+diff -Naur Mesa-7.6-old/src/gallium/state_trackers/egl/Makefile Mesa-7.6-new/src/gallium/state_trackers/egl/Makefile
+--- Mesa-7.6-old/src/gallium/state_trackers/egl/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/state_trackers/egl/Makefile	2009-09-29 06:59:14.000000000 -0700
+@@ -10,7 +10,7 @@
+ 	-I$(TOP)/src/mesa \
+ 	-I$(TOP)/include \
+ 	-I$(TOP)/src/egl/main \
+-	$(shell pkg-config --cflags-only-I libdrm)
++	`$(PKG_CONFIG) --cflags-only-I libdrm`
+ 
+ 
+ C_SOURCES = $(wildcard ./*.c)
+diff -Naur Mesa-7.6-old/src/gallium/state_trackers/xorg/Makefile Mesa-7.6-new/src/gallium/state_trackers/xorg/Makefile
+--- Mesa-7.6-old/src/gallium/state_trackers/xorg/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/state_trackers/xorg/Makefile	2009-09-29 06:56:26.000000000 -0700
+@@ -5,7 +5,7 @@
+ 
+ LIBRARY_INCLUDES = \
+ 	-DHAVE_CONFIG_H \
+-	$(shell pkg-config --cflags-only-I pixman-1 xorg-server libdrm xproto) \
++	`$(PKG_CONFIG) --cflags-only-I pixman-1 xorg-server libdrm xproto` \
+ 	-I$(TOP)/src/gallium/include \
+ 	-I$(TOP)/src/gallium/auxiliary \
+ 	-I$(TOP)/include \
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/intel/egl/Makefile Mesa-7.6-new/src/gallium/winsys/drm/intel/egl/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/intel/egl/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/intel/egl/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -21,8 +21,8 @@
+ 
+ ASM_SOURCES = 
+ 
+-DRIVER_DEFINES = -I../gem $(shell pkg-config libdrm --atleast-version=2.3.1 \
+-				&& echo "-DDRM_VBLANK_FLIP=DRM_VBLANK_FLIP")
++DRIVER_DEFINES = -I../gem `$(PKG_CONFIG) libdrm --atleast-version=2.3.1 \
++				&& echo "-DDRM_VBLANK_FLIP=DRM_VBLANK_FLIP"`
+ 
+ include ../../Makefile.template
+ 
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/intel/gem/Makefile Mesa-7.6-new/src/gallium/winsys/drm/intel/gem/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/intel/gem/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/intel/gem/Makefile	2009-09-29 06:54:34.000000000 -0700
+@@ -9,8 +9,8 @@
+ 	intel_drm_fence.c \
+ 	intel_drm_api.c
+ 
+-LIBRARY_INCLUDES = $(shell pkg-config libdrm --cflags-only-I)
++LIBRARY_INCLUDES = `$(PKG_CONFIG) libdrm --cflags-only-I`
+ 
+-LIBRARY_DEFINES = $(shell pkg-config libdrm --cflags-only-other)
++LIBRARY_DEFINES = `$(PKG_CONFIG) libdrm --cflags-only-other`
+ 
+ include ../../../../Makefile.template
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/intel/xorg/Makefile Mesa-7.6-new/src/gallium/winsys/drm/intel/xorg/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/intel/xorg/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/intel/xorg/Makefile	2009-09-29 06:57:35.000000000 -0700
+@@ -6,7 +6,7 @@
+ include $(TOP)/configs/current
+ 
+ INCLUDES = \
+-	$(shell pkg-config --cflags-only-I pixman-1 xorg-server libdrm xproto) \
++	`$(PKG_CONFIG) --cflags-only-I pixman-1 xorg-server libdrm xproto` \
+ 	-I../gem \
+ 	-I$(TOP)/src/gallium/include \
+ 	-I$(TOP)/src/gallium/drivers \
+@@ -35,7 +35,7 @@
+ 
+ $(TARGET): $(OBJECTS) Makefile $(TOP)/src/gallium/state_trackers/xorg/libxorgtracker.a $(LIBS)
+ 	$(TOP)/bin/mklib -noprefix -o $@ \
+-	$(OBJECTS) $(LIBS) $(shell pkg-config --libs libdrm) -ldrm_intel
++	$(OBJECTS) $(LIBS) `$(PKG_CONFIG) --libs libdrm` -ldrm_intel
+ 
+ clean:
+ 	rm -rf $(OBJECTS) $(TARGET)
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/nouveau/dri/Makefile Mesa-7.6-new/src/gallium/winsys/drm/nouveau/dri/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/nouveau/dri/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/nouveau/dri/Makefile	2009-09-29 06:58:10.000000000 -0700
+@@ -22,6 +22,6 @@
+ 
+ include ../../Makefile.template
+ 
+-DRI_LIB_DEPS += $(shell pkg-config libdrm_nouveau --libs)
++DRI_LIB_DEPS += `$(PKG_CONFIG) libdrm_nouveau --libs`
+ 
+ symlinks:
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/nouveau/drm/Makefile Mesa-7.6-new/src/gallium/winsys/drm/nouveau/drm/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/nouveau/drm/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/nouveau/drm/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -5,7 +5,7 @@
+ 
+ C_SOURCES = nouveau_drm_api.c
+ 
+-LIBRARY_INCLUDES = $(shell pkg-config libdrm libdrm_nouveau --cflags-only-I)
+-LIBRARY_DEFINES = $(shell pkg-config libdrm libdrm_nouveau --cflags-only-other)
++LIBRARY_INCLUDES = `$(PKG_CONFIG) libdrm libdrm_nouveau --cflags-only-I`
++LIBRARY_DEFINES = `$(PKG_CONFIG) libdrm libdrm_nouveau --cflags-only-other`
+ 
+ include ../../../../Makefile.template
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/radeon/core/Makefile Mesa-7.6-new/src/gallium/winsys/drm/radeon/core/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/radeon/core/Makefile	2009-06-17 11:41:53.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/radeon/core/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -11,7 +11,7 @@
+ 	radeon_winsys_softpipe.c
+ 
+ LIBRARY_INCLUDES = -I$(TOP)/src/gallium/drivers/r300 \
+-		   $(shell pkg-config libdrm --cflags-only-I)
++		   `$(PKG_CONFIG) libdrm --cflags-only-I`
+ 
+ include ../../../../Makefile.template
+ 
+diff -Naur Mesa-7.6-old/src/gallium/winsys/drm/radeon/xorg/Makefile Mesa-7.6-new/src/gallium/winsys/drm/radeon/xorg/Makefile
+--- Mesa-7.6-old/src/gallium/winsys/drm/radeon/xorg/Makefile	2009-09-22 18:15:03.000000000 -0700
++++ Mesa-7.6-new/src/gallium/winsys/drm/radeon/xorg/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -8,7 +8,7 @@
+ 
+ CFLAGS = -DHAVE_CONFIG_H \
+          -g -Wall -Wimplicit-function-declaration -fPIC \
+-         $(shell pkg-config --cflags pixman-1 xorg-server libdrm xproto) \
++         `$(PKG_CONFIG) --cflags pixman-1 xorg-server libdrm xproto` \
+          -I${GALLIUMDIR}/include \
+          -I${GALLIUMDIR}/drivers \
+          -I${GALLIUMDIR}/auxiliary \
+@@ -30,7 +30,7 @@
+ 
+ $(TARGET): $(OBJECTS) Makefile $(GALLIUMDIR)/state_trackers/xorg/libxorgtracker.a
+ 	$(TOP)/bin/mklib -noprefix -o $@ \
+-	$(OBJECTS) $(LIBS) $(shell pkg-config --libs libdrm) -ldrm_radeon
++	$(OBJECTS) $(LIBS) `$(PKG_CONFIG) --libs libdrm` -ldrm_radeon
+ 
+ clean:
+ 	rm -rf $(OBJECTS) $(TARGET)
+diff -Naur Mesa-7.6-old/src/glut/directfb/Makefile Mesa-7.6-new/src/glut/directfb/Makefile
+--- Mesa-7.6-old/src/glut/directfb/Makefile	2009-06-17 11:35:16.000000000 -0700
++++ Mesa-7.6-new/src/glut/directfb/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -9,9 +9,9 @@
+ GLUT_MINOR = 7
+ GLUT_TINY = 1
+ 
+-INCLUDES = -I$(TOP)/include -I$(MARK) $(shell pkg-config --cflags directfb)
++INCLUDES = -I$(TOP)/include -I$(MARK) `$(PKG_CONFIG) --cflags directfb`
+ 
+-GLUT_LIB_DEPS += $(shell pkg-config --libs directfb)
++GLUT_LIB_DEPS += `$(PKG_CONFIG) --libs directfb`
+ 
+ CORE_SOURCES = \
+ 	callback.c \
+diff -Naur Mesa-7.6-old/src/mesa/drivers/directfb/Makefile Mesa-7.6-new/src/mesa/drivers/directfb/Makefile
+--- Mesa-7.6-old/src/mesa/drivers/directfb/Makefile	2009-06-17 11:35:16.000000000 -0700
++++ Mesa-7.6-new/src/mesa/drivers/directfb/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -16,8 +16,8 @@
+ 	-I$(TOP)/src/mesa/swrast \
+ 	-I$(TOP)/src/mesa/swrast_setup
+ 
+-DFB_CFLAGS    = $(shell pkg-config --cflags directfb)
+-DFB_MODULEDIR = $(shell pkg-config --variable=moduledir directfb-internal)
++DFB_CFLAGS    = `$(PKG_CONFIG) --cflags directfb`
++DFB_MODULEDIR = `$(PKG_CONFIG) --variable=moduledir directfb-internal`
+ 
+ DIRECTFBGL_MESA_SOURCES = ../common/driverfuncs.c idirectfbgl_mesa.c
+ 
+diff -Naur Mesa-7.6-old/src/mesa/drivers/dri/i915/Makefile Mesa-7.6-new/src/mesa/drivers/dri/i915/Makefile
+--- Mesa-7.6-old/src/mesa/drivers/dri/i915/Makefile	2009-09-25 16:54:04.000000000 -0700
++++ Mesa-7.6-new/src/mesa/drivers/dri/i915/Makefile	2009-09-29 06:54:42.000000000 -0700
+@@ -62,8 +62,8 @@
+ ASM_SOURCES = 
+ 
+ DRIVER_DEFINES = -I../intel -I../intel/server -DI915 \
+-	$(shell pkg-config libdrm --atleast-version=2.3.1 \
+-				&& echo "-DDRM_VBLANK_FLIP=DRM_VBLANK_FLIP")
++	`$(PKG_CONFIG) libdrm --atleast-version=2.3.1 \
++				&& echo "-DDRM_VBLANK_FLIP=DRM_VBLANK_FLIP"`
+ 
+ DRI_LIB_DEPS += -ldrm_intel
+ 
