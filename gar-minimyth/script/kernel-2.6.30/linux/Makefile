@@ -8,6 +8,7 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-via_vblank.patch
+PATCHFILES += $(DISTNAME)-intel_atom.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.3.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
