@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 1.6
+GARVERSION = 1.7
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xlibs.freedesktop.org/xkbdesc/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -23,6 +23,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xkbcomp-symlink \
 	--enable-compat-rules \
+	--enable-nls \
 	--with-xkb-base="$(datadir)/X11/xkb"
 
 CONFIGURE_ENV  = \
