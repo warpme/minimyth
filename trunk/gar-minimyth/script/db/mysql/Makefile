@@ -43,6 +43,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+# Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
+# MySQL 4.1.10 breaks with strict aliasing.
+CFLAGS   += -fno-strict-aliasing
+CXXFLAGS += -fno-strict-aliasing
+# MySQL 5.0.16 breaks when compiled with gcc 4.1 without -fwrapv.
+CFLAGS   += -fwrapv
+CXXFLAGS += -fwrapv
+# MySQL INSTALL-SOURCE recommends the following.
+CXXFLAGS += -felide-constructors -fno-exceptions -fno-rtti
+
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
