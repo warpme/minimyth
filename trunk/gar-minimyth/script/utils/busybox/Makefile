@@ -9,6 +9,7 @@ PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-buildsys.patch \
 	$(DISTNAME)-dd.patch \
+	$(DISTNAME)-find.patch \
 	$(DISTNAME)-hush.patch \
 	$(DISTNAME)-lineedit.patch \
 	$(DISTNAME)-pidof_killall.patch \
