@@ -30,7 +30,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--enable-debug=no \
 	--enable-shm \
-	--disable-xkb \
+	--enable-xkb \
 	--enable-xinerama \
 	--enable-rebuilds \
 	--enable-visibility \
