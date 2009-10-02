@@ -1,0 +1,1109 @@
+MiniMyth Changelog 2007
+
+--------------------------------------------------------------------------------
+Changes since 35 (2007-12-30):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15087, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15087,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15142, trunk svn 15142.
+
+Fixed DHCP override
+    - MM_DHCP_* override variables were being ignored. ARG!!!
+
+Improved LIRC support
+    - Added patch to support the 'include' statement in 'lircd.conf'.
+    - Changed to using a single generated 'lircd.conf' similar to the single.
+      generated 'lircrc'.
+
+Began adding gcc 4.3 support
+    - Added linker patch for gcc 4.3.
+    - Added gcc 4.3 patch to 'devel/glibc' to add gcc's new include-fixed
+      system include directory.
+    - Added -fgnu89-inline compiler flag to packages
+        utils/coreutils,
+        utils/m4 and
+        utils/tar.
+      in order to work aroud glibc wchar.h header file bug.
+    - Removed unneeded 'kernel/kernel' dependency from
+        lib/alsa-lib,
+        myth-stable20/mythtv,
+        myth-softpad20/mythtv and
+        myth-svn/mythtv.
+    - Fails to build the Linux kernel. See
+        <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=32044> and
+        <http://bugzilla.kernel.org/show_bug.cgi?id=8501>.
+    - It may fail to build other packages as well, since several packages are
+      blocked by the Linux kernel build failure.
+
+Updated packages
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+
+--------------------------------------------------------------------------------
+Changes since 34 (2007-12-28):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15087, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15087,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15142, trunk svn 15142.
+
+Changed DHCP support
+    - Switched from dhclient to udhcpc.
+        - Could not make it request the address obtained during NFS boot.
+        - Found bugs in dhclient that could cause memory corruption.
+        - Unfortunately we no longer have vendor specific attributes so we
+          no longer have minimyth.boot-url.
+    - Obsoleted MM_DHCP_MINIMYTH_BOOT_URL
+        - Replaced with MM_MINIMYTH_BOOT_URL.
+    - Changed /etc/rc.d/init.d/dhcp so that it always restarts the udhcpc, even
+      when /etc/udhcpc.conf has not changed, resulting in more predictable
+      behavior.
+
+Changed kernel configuration
+    - Enabled HPET (high precision event timer) support.
+    - Switched to timer frequecy to 1000Hz (from 250Hz).
+        - 1000Hz is more widely used so it is likely to have fewer problems.
+    - Switched to a tickless system.
+        - Can help with power consumption.
+    - Switched to ATA (from IDE) for all supported hardware.
+        - The PATA ATI and PATA SiS drivers are still experimental.
+        - Removed the longhaul_ide_lockup patch since it depends on IDE.
+          Hopefully, it is no longer needed.
+    - Disabled some legacy APIs, legacy procfs entries and legacy sysfs
+      entries, none of which should be needed any longer.
+    - Removed the via_rhine_pxeboot patch since it is handled by the driver,
+      using BIOS information made availabe using the DMI interface.
+
+Removed packages
+    Removed net/dhcp.
+
+Updated packages
+    Updated kernel-2.6.23/gspca.
+    Updated kernel-2.6.24/gspca.
+    Updated utils/file.
+
+--------------------------------------------------------------------------------
+Changes since 33 (2007-12-23):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15087, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15087,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15142, trunk svn 15142.
+
+ALERT
+    - Please replace your boot line parameter 'ramdisk=' with 'ramdisk_size='.
+      The boot parameter 'ramdisk' has been deprecated for some time. Starting
+      with the 2.6.24 kernel it has become obsolete. Therefore, as of the 2.6.24
+      kernel it will no longer work.
+
+Changed NVIDIA driver
+    - Made NVIDIA driver 169.07 the default.
+
+Improved support for multiple network interfaces
+    - Use first connected network interface rather than eth0.
+
+Removed packages
+    Removed kernel-2.6.22/*.
+    Removed kernel-2.6.23/alsa-driver.
+    Removed kernel-2.6.23/drm.
+    Removed kernel-2.6.24/alsa-driver.
+    Removed kernel-2.6.24/drm.
+    Removed kernel-headers/linux-headers-2.6.22/*.
+    Removed lib/libcddb.
+    Removed nvidia/nvidia-7185.
+    Removed nvidia/nvidia-9639.
+    Removed nvidia/nvidia-100.14.19.
+    Removed nvidia/nvidia-169.04.
+
+Added packages
+    Added lib/libdaemon.
+    Added net/ifplugd.
+    Added nvidia/nvidia-169.07.
+
+Updated packages
+    Updated disk/e2fsprogs.
+    Updated emulators/mednafen.
+    Updated emulators/sdlmame.
+    Updated kernel-2.6.23/gspca.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/gspca.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.24/uvc.
+    Updated lib/libpng.
+    Updated net/dhcp.
+    Updated system/splashutils.
+    Updated system/udev.
+
+--------------------------------------------------------------------------------
+Changes since 32 (2007-12-19):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15087, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15087,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15142, trunk svn 15142.
+
+Improved security implementation.
+    - Disabled telnet server until after minimyth.conf is processed.
+    - Enabled virtual terminal and telnet server when error is detected during
+      boot (i.e. init), making debugging easier but security weaker.
+    - Added MM_SECURITY_ENABLED and obsoleted MM_SECURITY_LEVEL.
+    - Added MM_SECURITY_USER_MINIMYTH_UID and MM_SECURITY_USER_MINIMYTH_GID 
+      for setting the UID and GID used by the user 'minimyth', making it
+      easier to interoperate more securely with NFS shares.
+    - Added MM_SECURITY_FETCH_CREDENTIALS_CIFS for fetch a CIFS credentials
+      file that can be used by mount.cifs when connecting to CIFS shares.
+    - Disabled password access for users 'root' and 'minimyth' when security
+      is enabled and not debugging.
+    - Stopped looking for most configuration files in the MiniMyth read-write
+      configuration directory.
+    - Obsoleted the MM_REMOTE_FETCH_ID_RSA variable since it is redundant.
+    - Obsoleted the MM_SERVER_FETCH_SSH_HOST_RSA_KEY and
+      MM_SSH_SERVER_FETCH_AUTHORIZED_KEYS variables since they are redundant.
+
+Improved file transfer.
+    - Added curl.
+    - Removed tftp and wget since curl supports FTP, HTTP, and TFTP.
+    - Added DHCP option (minimyth.boot-url) for setting the boot directory
+      location used to locate configuration and distribution files. This allows
+      the user to download/upload of configuration and distributions files using
+      a protocol other than the slow and unreliable TFTP.
+    - Obsoleted boot line variables MM_BOOT_TYPE (and MM_BOOT_TYPE) since they
+      have been replaced by the minimyth.boot-url DHCP option.
+
+Improved DHCP options.
+    - Added support for vendor specific information options.
+        - Switched from udhcpc to dhclient.
+        - Added vendor minimyth.
+        - Added vendor option minimyth.boot-url.
+    - Consolidated DHCP override variables.
+        - Eliminated the duplicate DHCP override variables that do not start
+          with MM_DHCP_.
+    - Renamed DHCP override variables to better match the DHCP option names
+        - MM_DHCP_HOSTNAME -> MM_DHCP_HOST_NAME.
+        - MM_DHCP_DOMAIN -> MM_DHCP_DOMAIN_NAME.
+        - MM_DHCP_DNS_SERVERS -> MM_DHCP_DOMAIN_NAME_SERVERS.
+        - MM_DHCP_TZ -> MM_DHCP_TCODE.
+    - Removed MM_NTP_FAILURE_ACTION.
+        - MiniMyth now continues on NTP failure.
+
+Fixed MythWeather.
+    - Applied patch from Ubuntu.
+
+Changed ALSA drivers.
+    - Switched from out-of-tree ALSA drivers to in-tree ALSA drivers.
+
+Changed DRM drivers.
+    - Switched from out-of-tree DRM drivers to in-tree DRM drivers.
+
+Added packages
+    Added kernel-2.6.22/*.
+    Added kernel-2.6.24/*.
+    Added kernel-headers/linux-headers-2.6.22.
+    Added kernel-headers/linux-headers-2.6.24.
+    Added net/curl.
+    Added net/dhcp.
+    Added net/rsync.
+    Added perl/perl (compilation is broken).
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/fakeroot.
+    Reverted kernel-2.6.23/drm (now using version from -30).
+    Updated kernel-2.6.23/gspca.
+    Updated kernel-2.6.23/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated mythtv-softpad20/myththemes-blootube-osd.
+    Updated mythtv-softpad20/myththemes-blootubelite-wide.
+    Updated mythtv-stable20/myththemes-blootube-osd.
+    Updated mythtv-stable20/myththemes-blootubelite-wide.
+    Updated mythtv-svn/myththemes-blootube-osd.
+    Updated mythtv-svn/myththemes-blootubelite-wide.
+    Updated system/lirc.
+    Updated system/splashutils.
+    Updated system/zoneinfo.
+    Updated utils/lm_sensors.
+    Reverted xorg-7.2/Mesa (now using version from -30).
+    Reverted xorg-7.2/xf86-video-openchrome (now using version from -30).
+    Reverted xorg-7.3/Mesa (now using version from -30).
+    Reverted xorg-7.3/xf86-video-openchrome (now using version from -30).
+
+--------------------------------------------------------------------------------
+Changes since 31 (2007-11-29):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 14972, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 14972,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14921, trunk svn 14921.
+
+Streamlined authentication and authorization.
+    - When security is enabled, only public key based SSH connections are
+      allowed.
+    - Removed authentication configuration.
+    - Removed PAM support.
+    - Removed LDAP support.
+
+Removed packages
+    Removed lib/libdvdnav.
+    Removed lib/openldap.
+    Removed system/nss_ldap.
+    Removed system/pam.
+    Removed system/pam_ldap.
+
+Updated packages
+    Reverted devel/glibc.
+    Reverted devel/glibc-crtobjs.
+    Reverted devel/glibc-headers.
+    Updated devel/nasm.
+    Updated kernel-2.6.23/drm.
+    Updated kernel-2.6.23/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-headers/linux-headers-2.6.23.
+    Updated utils/busybox.
+    Updated net/iputils.
+    Updated system/splashutils.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.3/xf86-video-openchrome.
+
+--------------------------------------------------------------------------------
+Changes since 30 (2007-11-22):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 14921, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 14921,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14921, trunk svn 14921.
+
+Added security
+    - Added MM_SECURITY_* to configure security.
+        - Disabled telnet access when security is enabled.
+        - Disabled web access to the file system when security is enabled.
+        - Disabled non-localhost access to VNC when security is enabled.
+    - Added PAM support for authentication and authorization.
+        - Added PAM.
+        - Enabled PAM support in busybox telnet.
+        - Added MM_AUTH_* to configure authentication and authorization.
+    - Added LDAP authentication and authorization.
+        - Added nss_ldap.
+            - Patched to override non-existent home directories and shells.
+            - Patched to attempt to create non-existent home directories,
+              before overriding non-existent home directories.
+        - Added pam_ldap.
+        - Added MM_AUTH_LDAP_* to configure LDAP authentication and
+          authorization.
+    - Replaced dropbear with OpenSSH
+        - Enables more flexibility.
+        - Enables VIA Padlock support.
+    - Added SSH server.
+        - Renamed MM_SSH_* to MM_SSH_REMOTE_*.
+        - Added MM_SSH_SERVER_* to configure the SSH server.
+    - Made some of the file system permissions more strict.
+
+Added remote perl support
+    - Added script '/usr/bin/mm_perl' for remote perl execution.
+    - Added stub binary '/usr/bin/perl' (package: 'utils/perl-stub').
+        - Calls '/usr/bin/mm_perl'.
+        - Enables the perl shebang (#!/usr/bin/perl) to function.
+    - Converted MythStream to use remote perl support rather than local binaries.
+        - Copies scripts to remote host during init.
+    - Converted MythVideo to use remote perl suport.
+        - Copies scripts to remote host during init.
+
+Removed general remote command support 
+    - Removed mm_ssh_remote_command_execute shell script.
+    - Obsoleted MM_SSH_PREFIX_MAP/MM_SSH_REMOTE_PREFIX_MAP variables.
+
+Added sleep / wakeup support
+    - Added support for putting frontend to sleep using the remote control's
+      power button.
+    - Added support for waking up frontend using the remote control's
+      power button.
+    - Added support for putting frontend to sleep on inactivity.
+    - Added support for restarting X when sleeping/waking.
+    - Added MM_LIRC_SLEEP_ENABLED, MM_LIRC_WAKEUP_ENABLED, MM_X_RESTART_ON_SLEEP_ENABLED
+      and MM_X_SCREENSAVER_HACK='sleep' for controlling the functions.
+
+Fixed Xorg 7.3 so that it builds; everything else appears to work.
+
+Added SiS hardware support
+    - Added 'sis' option to mm_CHIPSETS, but not enabled by default.
+    - Added 'sis' Xorg driver, including drm and dri drivers
+        - Included in minimyth-lib-list.sis.
+    - Added SiS ALSA drivers.
+        - Included in minimyth-lib-list.sis.
+    - Added SiS network driver
+        - Compiled into kernel.
+    - Added SiS PATA and SATA drivers.
+        - Included in minimyth-lib-list.sis.
+
+Updated Xorg drivers for VIA hardware
+    - Xorg driver renamed from via_drv to openchrome_drv.
+    - XvMC libraries renamed from libviaXvMC and libviaXvMCPro to
+      libchromeXvMC and libchromeXvMCPro.
+
+Updated proprietary Xorg drivers for Intel hardware
+    - Xorg driver renamed from intel_drv to iegd_drv.
+
+Removed packages
+    Removed kernel-2.6.17/*.
+    Removed kernel-2.6.21/*.
+    Removed kernel-2.6.22/*.
+    Removed kernel-headers/linux-headers-2.6.12/*.
+    Removed kernel-headers/linux-headers-2.6.21/*.
+    Removed kernel-headers/linux-headers-2.6.22/*.
+    Removed net/dropbear.
+    Removed nvidia/nvidia-9755.
+    Removed nvidia/nvidia-100.14.11.
+    Removed utils/dmidecode.
+    Removed xorg-7.2/xf86-video-i810.
+    Removed xorg-7.3/xf86-video-i810.
+
+Added packages
+    Added devel/yasm.
+    Added kernel-2.6.23/*.
+    Added kernel-headers/linux-headers-2.6.23/*.
+    Added lib/gmp.
+    Added lib/libftdi.
+    Added lib/mpfr.
+    Added lib/openldap.
+    Added net/openssh.
+    Added nvidia/nvidia-71.86.01.
+    Added nvidia/nvidia-96.43.01.
+    Added nvidia/nvidia-100.14.19.
+    Added nvidia/nvidia-169.04.
+    Added system/nss_ldap.
+    Added system/pam.
+    Added system/pam_ldap.
+    Added xorg-7.2/xf86-input-void.
+    Added xorg-7.2/xlsclients.
+    Added xorg-7.3/libpciaccess.
+    Added xorg-7.3/pixman.
+    Added xorg-7.3/xf86-input-void.
+    Added xorg-7.3/xlsclients.
+
+Updated packages
+    Updated devel/fakeroot.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-static.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/gdb.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated devel/nasm.
+    Updated doc/texinfo.
+    Updated emulators/mednafen.
+    Updated emulators/sdlmame.
+    Updated emulators/stella.
+    Updated kde/kdelibs.
+    Updated lib/alsa-lib.
+    Updated lib/ffmpeg.
+    Updated lib/flac.
+    Updated lib/fontconfig.
+    Updated lib/libcdio.
+    Updated lib/libcdio-mini.
+    Updated lib/libpng.
+    Updated lib/libtheora.
+    Updated lib/pcre.
+    Updated lib/openssl.
+    Updated mediaplayers/mplayer.
+    Updated mediaplayers/xine-lib.
+    Updated myth-*/mythstream.
+    Updated net/ntp.
+    Updated qt/qt.
+    Updated system/lirc.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/busybox.
+    Updated utils/gawk.
+    Updated utils/lm_sensors.
+    Updated utils/module-init-tools.
+    Updated utils/pciutils.
+    Updated utils/powertop.
+    Updated utils/tar.
+    Updated utils/transcode.
+    Updated utils/usbutils.
+    Updated utils/util-linux-ng.
+    Updated utils/which.
+    Updated X11/ratpoison.
+    Updated X11/IEGD.
+    Updated X11/x11vnc.
+    Updated X11/xscreensaver.
+    Updated xorg-7.2/libXfont.
+    Updated xorg-7.2/Mesa.
+    Updated xorg-7.2/xf86-input-evtouch.
+    Updated xorg-7.2/xf86-video-intel.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.3/glproto.
+    Updated xorg-7.3/inputproto.
+    Updated xorg-7.3/libXext.
+    Updated xorg-7.3/libXfont.
+    Updated xorg-7.3/libXi.
+    Updated xorg-7.3/libXrandr.
+    Updated xorg-7.3/libXrender.
+    Updated xorg-7.3/libXt.
+    Updated xorg-7.3/libXxf86dga.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/renderproto.
+    Updated xorg-7.3/xdpyinfo.
+    Updated xorg-7.3/xf86dgaproto.
+    Updated xorg-7.3/xf86-input-evtouch.
+    Updated xorg-7.3/xf86-input-keyboard.
+    Updated xorg-7.3/xf86-input-mouse.
+    Reverted xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xf86-video-openchrome.
+    Updated xorg-7.3/xf86-video-sis.
+    Updated xorg-7.3/xf86-video-vmware.
+    Updated xorg-7.3/xinit.
+    Updated xorg-7.3/xorg-server.
+    Updated xorg-7.3/xorg-sgml-doctools.
+    Updated xorg-7.3/xproto.
+    Updated xorg-7.3/xsetroot.
+
+--------------------------------------------------------------------------------
+Changes since 29 (2007-08-30):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 14357, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 14357,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14359, trunk svn 14359.
+
+Removed packages
+    Removed myth-stable19/*.
+
+Updated packages
+    Updated devel/binutils.
+    Updated emulators/stella.
+    Updated kernel-2.6.17/drm.
+    Updated kernel-2.6.21/drm.
+    Updated kernel-2.6.22/drm.
+    Updated lib/freetype.
+    Updated lib/pcre.
+    Updated utils/util-linux-ng.
+    Updated xorg-7.2/libXfont.
+    Updated xorg-7.3/libICE.
+    Updated xorg-7.3/libXpm.
+    Updated xorg-7.3/libXrender.
+    Updated xorg-7.3/libXtst.
+    Updated xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xset.
+    Updated xorg-7.3/xtrans.
+
+--------------------------------------------------------------------------------
+Changes since 28 (2007-08-25):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 14301, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 14301,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14008, trunk svn 14228.
+
+Added packages
+    Added net/iputils.
+
+Updated packages
+    Updated emulators/stella.
+    Updated kernel-2.6.17/drm.
+    Updated kernel-2.6.21/drm.
+    Updated kernel-2.6.21/linux.
+    Updated kernel-2.6.22/drm.
+    Updated kernel-2.6.22/linux.
+    Updated kernel-headers/linux-headers-2.6.21.
+    Updated kernel-headers/linux-headers-2.6.22.
+    Updated lib/libpng.
+    Updated lib/libxml2.
+    Updated lib/libxslt.
+    Updated net/dropbear.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/ed.
+    Updated utils/transcode.
+
+--------------------------------------------------------------------------------
+Changes since 27 (2007-08-12):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20.1,   release-0-20-fixes branch svn 14154, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.1,   release-0-20-fixes branch svn 14154,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14008, trunk svn 14008.
+
+Added packages
+    Added net/nfs-utils.
+
+Updated packages
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated kernel-2.6.17/drm.
+    Updated kernel-2.6.21/drm.
+    Updated kernel-2.6.22/drm.
+    Updated lib/libvorbis.
+    Updated utils/busybox.
+    Updated utils/transcode.
+    Updated utils/util-linux-ng.
+
+--------------------------------------------------------------------------------
+Changes since 26 (2007-08-08):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20.1,   release-0-20-fixes branch svn 14154, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.1,   release-0-20-fixes branch svn 14154,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn14008, trunk svn 14008.
+
+Removed packages
+    Removed lib/libmng-mini.
+
+Added packages
+    Added kernel-2.6.17/uvc.
+    Added kernel-2.6.21/*.
+    Added kernel-2.6.22/uvc.
+    Added kernel-headers/linux-headers-2.6.21.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-static.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/strace.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated emulators/sdlmame.
+    Updated kernel-2.6.22/linux.
+    Updated kernel-headers/linux-headers-2.6.22.
+    Updated lib/ffmpeg.
+    Updated lib/libmng.
+    Updated lib/SDL.
+    Updated lib/SDL_net.
+    Updated system/lirc.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated utils/ed.
+    Updated utils/grep.
+    Updated utils/lm_sensors.
+    Updated utils/m4.
+    Updated utils/transcode.
+    Updated utils/ethtool.
+    Updated X11/xscreensaver.
+    Updated xorg-7.2/Mesa.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.3/iceauth.
+    Updated xorg-7.3/libX11.
+    Updated xorg-7.3/libXi.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/xf86-input-mouse.
+    Updated xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-openchrome.
+    Updated xorg-7.3/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 25 (2007-07-09):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20.1,   release-0-20-fixes branch svn 13794, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.1,   release-0-20-fixes branch svn 13794,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn13857, trunk svn 13857.
+
+Extended MythTV
+    Added MythTV SVN plugin MythZoneMinder for ZoneMinder 1.22.3.
+
+Extended minimyth.conf
+    Added MM_FONT_FILE_TTF_ADD and MM_FONT_FILE_TTF_DELETE to allow adding and
+        deleting of TrueType font files respectively.
+    Replaced MM_VIDEO_DEINTERLACE_ENABLED with MM_VIDEO_DEINTERLACER so that
+        a video deinterlacer other than bob can be specified.
+    Added MM_VIDEO_MPEG2_DECODER so that the MPEG2 decoder can be specified.
+
+Added initial touchscreen support.
+    - Added linux usbtouchscreen driver.
+    - Added xorg xf86-input-evtouch driver.
+      - evtouch_drv driver.
+      - ev_calibrate.sh and ev_calibrate for calibration.
+    - Currently, there is no init script support.
+
+Changed cdda/paranoia support
+    Patched MythAudio and MythMusic to support libcdio.
+    Switched MythAudio and MythMusic from cdparanoia to libcdio.
+    Switched MPlayer from cdparanoia to libcdio.
+    Switched Xine to external libdcio (and libvcdio (and libmad)).
+
+Improved the build system
+    Added the ability to use a custom kernel configuration file by setting
+        mm_KERNEL_CONFIG.
+    Added parallel make on systems with more than one processor.
+    Added GPL3 license.
+
+Removed packages
+    Removed devel/valgrind.
+    Removed kernel-2.6.20/*.
+    Removed kernel-headers/linux-headers-2.6.20.
+    Removed lib/cdparanoia.
+    Removed net/adns.
+    Removed nvidia/nvidia-7184.
+    Removed nvidia/nvidia-9631.
+
+Moved packages
+    Moved lib/libdts to lib/libdca.
+
+Added packages
+    Added emulators/mednafen.
+    Added kernel-2.6.22/*.
+    Added kernel-headers/linux-headers-2.6.22.
+    Added lib/libcddb.
+    Added lib/libcdio.
+    Added lib/libcdio-mini.
+    Added lib/libsndfile.
+    Added lib/ncursesw.
+    Added lib/SDL_net.
+    Added lib/vcdimager.
+    Added myth-svn/mythzoneminder.
+    Added nvidia/nvidia-7185.
+    Added nvidia/nvidia-9639.
+    Added nvidia/nvidia-100.14.11.
+    Added utils/powertop.
+    Added xorg-7.2/xf86-input-evtouch.
+    Added xorg-7.2/xf86-video-intel.
+    Added xorg-7.2/xorg-sgml-doctools.
+    Added xorg-7.3/*
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-static.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/libtool.
+    Updated devel/pkg-config.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated emulators/sdlmame.
+    Updated kde/kdelibs.
+    Updated kernel-2.6.17/alsa-driver.
+    Updated kernel-2.6.17/drm.
+    Updated kernel-2.6.17/gspca.
+    Updated kernel-2.6.20/alsa-driver.
+    Updated kernel-2.6.20/drm.
+    Updated kernel-2.6.20/gspca.
+    Updated kernel-2.6.20/linux.
+    Updated kernel-headers/linux-headers-2.6.20.
+    Updated lib/alsa-lib.
+    Updated lib/expat.
+    Updated lib/ffmpeg.
+    Updated lib/freetype.
+    Updated lib/libdca.
+    Updated lib/libexif.
+    Updated lib/libpng.
+    Updated lib/libxml2.
+    Updated lib/libxslt.
+    Updated lib/pcre.
+    Updated lib/xvidcore.
+    Updated mediaplayers/xine-lib.
+    Updated mediaplayers/xine-ui.
+    Updated myth-softpad20/myththemes-blootubelite-wide.
+    Updated myth-stable19/myththemes-blootubelite-wide.
+    Updated myth-stable20/myththemes-blootubelite-wide.
+    Updated myth-svn/myththemes-blootubelite-wide.
+    Updated net/mount.cifs.
+    Updated net/ntp.
+    Updated system/acpid.
+    Updated system/lcdproc.
+    Updated system/lirc.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/busybox.
+    Updated utils/ed.
+    Updated utils/findutils.
+    Updated utils/tar.
+    Updated utils/transcode.
+    Updated X11/x11vnc.
+    Updated X11/xscreensaver.
+    Updated xorg-7.2/Mesa.
+    Updated xorg-7.2/xf86-video-openchrome.
+
+--------------------------------------------------------------------------------
+Changes since 24 (2007-04-15):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20,     release-0-20-fixes branch svn 13243, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20,     release-0-20-fixes branch svn 13243,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn13248, trunk svn 13248.
+
+Added cron support
+    Enabled crond and crontab support in busybox.
+    Added MM_CRON_FETCH_CRONTAB to control fetching the crontab file from the
+        MiniMyth configuration directory.
+    Added init scripts to fetch the crontab file and start crond.
+
+Updated packages
+    Updated kernel-2.6.20/linux.
+    Updated kernel-headers/linux-headers-2.6.20.
+    Updated mediaplayers/xine-lib.
+    Updated myth-softpad20/mythstream.
+    Updated myth-stable19/mythstream.
+    Updated myth-stable20/mythstream.
+    Updated myth-svn/mythstream.
+
+--------------------------------------------------------------------------------
+Changes since 23 (2007-04-09):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20,     release-0-20-fixes branch svn 13194, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20,     release-0-20-fixes branch svn 13194,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn13153, trunk svn 13153.
+
+Fixed init bugs
+    Added missing udev utilities that were accidently dropped from release 22.
+        This bug caused local boot to fail.
+    Fixed problem with boot line DHCP parameters being ignored caused by the
+        new version of Busybox.
+
+Added packages
+    Added nvidia/nvidia-9631.
+
+--------------------------------------------------------------------------------
+Changes since 22 (2007-04-08):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 13054,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20,     release-0-20-fixes branch svn 13194, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20,     release-0-20-fixes branch svn 13194,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn13153, trunk svn 13153.
+
+Added MythBrowser support
+    Added MM_MYTHBROWSER_ENABLED to control whether or not MythBrowswer is used.
+
+Added MythPhone support
+    Added MM_MYTHPHONE_ENABLED to control whether or not MythPhone is used.
+    Only the MythPhone plugin is included. No Linux drivers (except the
+        'gspca' driver) have been included, and no init script support has been
+        added.
+
+Changed removable disk handling
+    Changed udev rules so that udev does not mount removable disks.
+    Added udev rules and script  so that MythTV receives removable disk events.
+    Renamed removable device file system names so that they are more user
+        friendly.
+    Patched MythTV so that it uses the 'eject' command rather than its
+        internal command when the 'eject' command is present. The 'eject'
+        command works around problems that can prevent some CDs and DVDs from
+        ejecting.
+
+Added SSH remote command execution
+    Intended to allow the mythfrontend to run MythTV plugin Perl scripts
+        on a remote host.
+    Added /usr/bin/mm_ssh_remote_command_execute for running remote
+        commands.
+    Added MM_SSH_HOST, MM_SSH_USER, MM_SSH_COMMAND_PREFIX and
+        MM_SSH_FETCH_ID_RSA for configuring the SSH client and the command
+        prefix.
+
+Extended minimyth.conf
+    Added MM_NTP_FAILURE_ACTION to control the action taken when NTP
+        fails during MiniMyth initialization.
+    Renamed MM_MYTH_* variables from MM_MYTH_* to MM_MASTER_*.
+    Added MM_MASTER_WOL_ADDITIONAL_DELAY to allow for additional delay
+        after WOL wakes the Myth master backend.
+    Added MM_MYTHBROWSER_ENABLED to control whether or not MythBrowswer is used.
+
+Modified init
+    Changed how the LIRC daemon is run so that the 'master' LIRC daemon is used
+        only when there are more than one LIRC devices.
+    Moved LIRC auto-detection from udev rules/scripts to init scripts.
+
+Modified udev
+    Changed udev rules so that udev does not mount removable disks.
+    Added udev rules and script  so that MythTV receives removable disk events.
+    Remoted rules and script for LIRC auto-detection.
+
+Improved the build system
+    Added the ability to control the software included using the mm_SOFTWARE
+        value in minimyth.conf.mk.
+    Modularized MythPlugins so that they are selected and built independently.
+
+Removed pakages
+    Removed xorg-7.0/*.
+
+Moved packages
+    Moved kernel-2.6.17/linux-headers to kernel-header/linux-headers-2.6.12.
+    Moved kernel-2.6.20/linux-headers to kernel-header/linux-headers-2.6.20.
+    Moved myth/*-stable19 to myth-stable19/*.
+    Moved myth/*-stable20 to myth-stable20/*.
+    Moved myth/*-softpad20 to myth-softpad20/*.
+    Moved myth/*-svn to myth-svn/*.
+    Moved X11/corefonts to fonts/corefonts.
+
+Added packages
+    Added disk/eject.
+    Added emulators/sdlmame.
+    Added fonts/ttf-bitstream-vera.
+    Added kde/kdelibs.
+    Added kernel-2.6.17/gspca.
+    Added kernel-2.6.20/gspca.
+    Added lib/libart.
+    Added lib/libtiff.
+    Added lib/libxml2.
+    Added lib/libxslt.
+    Added lib/openssl.
+    Added lib/pcre.
+    Added lib/taglib.
+    Added net/dropbear.
+    Added nvidia/nvidia-7184.
+    Added myth-softpad20/blootube-osd.
+    Added myth-softpad20/blootubelite-wide.
+    Added myth-stable19/blootube-osd.
+    Added myth-stable19/blootubelite-wide.
+    Added myth-stable20/blootube-osd.
+    Added myth-stable20/blootubelite-wide.
+    Added myth-svn/blootube-osd.
+    Added myth-svn/blootubelite-wide.
+    Added utils/pmount.
+    Added xorg-7.2/iceauth.
+
+Updated packages
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/flex.
+    Updated kernel-2.6.20/linux.
+    Updated kernel-headers/linux-headers-2.6.20.
+    Reverted lib/flac (MythMusic playback failure).
+    Updated lib/freetype.
+    Updated net/mount.cifs.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/busybox.
+    Updated utils/coreutils.
+    Updated utils/lm_sensors.
+    Updated utils/m4.
+    Updated xorg-7.2/xf86-video-openchrome.
+
+--------------------------------------------------------------------------------
+Changes since 21 (2007-03-10):
+
+Current MythTV versions
+    MythTV stable19:  version 0.19,     release-0-19-fixes branch svn 10505,
+                                        changeset 11610 (backported),
+                                        changeset 12811 (backported),
+                                        changeset 12824 (backported), and
+                                        changeset 12853 (backported).
+    MythTV stable20:  version 0.20,     release-0-20-fixes branch svn 12963, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20,     release-0-20-fixes branch svn 12963,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn12904, trunk svn 12904.
+
+Modified minimyth.conf
+    Added MM_CONF_VERSION to /etc/conf.d/core, which increases each time
+        the minimyth.conf file format changes.
+    Changed minimyth.conf processing so that it is treated as a shell script.
+        This allows variables to be conditionally included based on 
+            MM_CONF_VERSION.
+    Added MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT, MM_X_FETCH_XINITRC,
+        MM_X_FETCH_XORG_CONF, MM_LIRC_LIRCD_CONF, MM_LIRC_LIRCRC and
+        MM_LCDPROC_FETCH_LCDD_CONF to indicate explicitly whether or not
+        to fetch the files 'minimyth.script', 'xinitrc', 'xorg.conf',
+        'lircd.conf', 'lircrc' and 'LCDd.conf' from the frontend's conf
+        directory.
+    Added MM_AUDIO_CARD_NUMBER and MM_AUDIO_DEVICE_NUMBER to set the audio
+        card number and audio device number used by ALSA.
+    Added MM_MODE_0, MM_MODE_1, MM_MODE_2, MM_MODELINE_0, MM_MODELINE_1 and 
+        MM_MODELINE_2 so that there can be more modes and modelines for use
+        by MythTV's video mode settings.
+    Extended MM_X_SYNC and MM_X_REFRESH to allow comma separated lists
+        of sync and refresh values.
+    Added MM_VIDEO_RESIZE_ENABLED to control MythTV's video resizing.
+    Added MM_X_SCREENSAVER_HACK to specify which XScreenSaver hack to use.
+    Added MM_X_MYTH_PROGRAM to specify which Myth program to use.
+    Added MM_MYTHDVD_MOUNTPOINT, MM_MYTHGALLERY_MOUNTPOINT,
+        MM_MYTHGAME_MOUNTPOINT, MM_MYTHMUSIC_MOUNTPOINT and
+        MM_MYTHVIDEO_MOUNTPOINT to specify the mount points for the media
+        shares.
+    Added MM_X_HACK_HIDE_BLUELINE_ENABLED to enable the hide blue line hack.
+    Added MM_LIRC_AUTO_ENABLED to control whether or not LIRC auto-detection
+        is done.
+    Added MM_MYTHAUDIO_MOUNTPOINT and MM_MYTHAUDIO_URL.
+    Changed the default for MM_X_WM_ENABLED from 'no' to 'yes', since
+        multiple MythTV plugins do not work correctly without it.
+    Renamed MM_GAME_SAVE_ENABLE from MM_GAME_SAVE_ENABLE to
+        MM_GAME_SAVE_ENABLED so that it is more consistant with other
+        variables.
+
+Modified init
+    Moved PATH and DISPLAY variables from /etc/conf.d/core to /etc/profile.
+    Added LANG='en_US.UTF-8' to /etc/profile.
+    Changed how lircd is run to enable running multiple lircd daemons.
+    Moved LIRC auto-detection from init scripts to udev rules/scripts.
+    Moved fetching of configuration files from their respective init scripts
+        to their respective conf scripts. This was needed to move LIRC
+        auto-detection to udev rules/scripts.
+    Changed init to enable XvMC for NIDIA video.
+
+Modified udev
+    Changed the default for DMA on IDE devices to be off.
+    Changed udev rules to enable DMA on IDE DVD devices.
+    Added rules and script for LIRC auto-detection.
+
+Improved build system
+    Added ATI kernel Xorg driver support, but they are not included in
+        default binary image and do not have explicit init script support.
+    Added ability to select different Linux kernels.
+    Added ability to select what distributions are built.
+    Added ability to detect kernel module dependencies when assembling
+        image.
+
+Removed packages
+    Removed emulators/sdlmame.
+    Removed emulators/sdlmess.
+    Removed kernel/*.
+    Removed nvidia/nvidia-9631.
+
+Moved packages
+    Moved lirc/libirman to lib/libirman.
+    Moved lirc/lirc to system/lirc.
+
+Added packages
+    Updated doc/texinfo.
+    Added kernel/kernel.
+    Added kernel-2.6.17/*.
+    Added kernel-2.6.17/k8temp.
+    Added kernel-2.6.17/xbox360 (custom Xbox 360 controller driver).
+    Added kernel-2.6.20/*.
+    Added kernel-2.6.20/xbox360 (custom Xbox 360 controller driver).
+    Added myth/mythaudio-stable20.
+    Added myth/mythplugins-softpad20.
+    Added myth/mythstream-softpad20.
+    Added myth/myththemes-softpad20.
+    Added myth/mythtv-softpad20.
+    Added nvidia/nvidia-9755.
+    Added system/kbdd.
+    Added utils/SDL-Test.
+    Added xorg-7.0/*.
+    Added X11/IEGD.
+    Added X11/xvattr.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/binutils.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-static.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/fakeroot.
+    Updated devel/strace.
+    Updated devel/valgrind.
+    Updated emulators/stella.
+    Updated emulators/zsnes.
+    Updated kernel-2.6.17/alsa-driver.
+    Updated kernel-2.6.17/drm.
+    Updated kernel-2.6.20/alsa-driver.
+    Updated kernel-2.6.20/drm.
+    Updated lib/alsa-lib.
+    Updated lib/flac.
+    Updated lib/freetype.
+    Updated lib/libpng.
+    Updated lib/xvidcore.
+    Updated lirc/lirc.
+    Updated mediaplayers/xine-lib.
+    Updated mythtv/mythplugins-stable20.
+    Updated mythtv/myththemes-stable20.
+    Updated mythtv/mythtv-stable20.
+    Updated qt/qt.
+    Updated net/ntp.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/dmidecode.
+    Updated utils/file.
+    Updated utils/findutils.
+    Updated utils/ed.
+    Updated utils/lm_sensors.
+    Updated utils/squashfs.
+    Updated X11/x11vnc.
+    Updated xorg-7.0/xf86-video-openchrome.
+    Updated xorg-7.2/libXext.
+    Updated xorg-7.2/libXfont.
+    Updated xorg-7.2/libXt.
+    Updated xorg-7.2/xf86-video-i810.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.2/xorg-server.
