@@ -1,0 +1,2418 @@
+MiniMyth Changelog 2008
+
+--------------------------------------------------------------------------------
+Changes since 61 (2008-12-23):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 19386.
+    MythTV trunk:        version trunk.19435     trunk svn 19435.
+
+Modified MiniMyth configuration
+    - Added MM_VIDEO_DECODER
+    - Obsoleted MM_VIDEO_MPEG2_DECODER.
+    - Changed the meaning of MM_CODECS_URL='auto'.
+    - Changed the meaning of MM_FLASH_URL='auto'.
+
+Modified support for binary codecs
+    - Added support for 64-bit binary codecs.
+    - Changed the meaning of 'auto' value for MM_CODECS_URL.
+        - 'auto' means confrw:codecs.32.sfs for 32-bit versions of MiniMyth.
+        - 'auto' means confrw:codecs.64.sfs for 64-bit versions of MiniMyth.
+    - Modified codec download and save function so that it saves the file
+        to confrw:codecs.32.sfs for 32-bit versions of MiniMyth, and
+        to confrw:codecs.64.sfs for 64-bit versions of MiniMyth.
+    - Changed the sh script function so that it calls the perl function.
+
+Modified support for Adobe Flash player
+    - Changed the meaning of 'auto' value for MM_FLASH_URL.
+        - 'auto' means confrw:libflashplayer.32.so for 32-bit versions of MiniMyth.
+    - Modified flash download and save function so that it saves the file
+        to confrw:libflashplayer.32.so for 32-bit versions of MiniMyth.
+    - Changed the sh script function so that it calls the perl function.
+
+Modified MiniMyth utilities
+    - Added mm_run_without_ss
+        - When run using 'mm_run_without_ss {program} [{program-arg} ...]' it
+          will deactivate the X screensaver while {program} is running. 
+    - Deprecated mm_ss_suspend
+        - The mm_run_without_ss performs the same function more cleanly and
+          precisely.
+    - Improved resolution detection in mm_game_start
+        - Added resolution detection using xrandr utility.
+    - Added mm_external_on_ss (formerly mm_script_on_ss)
+        - This is daemon that will call the external power off and power on
+          commands 30 minutes after XScreenSaver activates and immediately
+          after XScreenSaver deactivates respectively.
+        - Use of this script has not been integrated into MiniMyth's init
+          process.
+
+Modified mediaplayers
+    - Added VDPAU support to Xine.
+        - Use Xine's -v option to select vdpau.
+        - VDPAU NVIDIA drivers are not included in the binary image.
+
+Modified kernel
+    - Enabled use of out-of-tree ALSA 1.0.18a drivers now that they include a
+      fix for the hda-intel suspend-to-RAM problem.
+    - Added support for the amd64-agp.ko driver.
+
+Modified Xorg
+    - Modified the default /etc/X11/xorg.conf file so that it does not auto
+      add devices.
+    - Replaced the kbd and mouse drivers with the evdev driver.
+    - Added auto-detection of the kbd and mouse device.
+        - Now, when a device is used by LIRC, it is not used by Xorg.
+    - Reorganized detection rules.
+        - Renamed udev detection rules from
+          04-minimyth-detect-x.rules.disabled to
+          05-minimyth-detect-video.rules.disabled.
+    - Modified video detection udev rules generation script
+        - Converted the script from sh to perl.
+        - Modified it so that it generates the entire video detection udev
+          rules file.
+        - Added the use of PCI ids from the xf86-video-radeonhd driver for
+          detecting video devices that are supported by the radeonhd driver.
+        - Added the use of PCI ids from the xf86-video-ati driver for
+          detecting video devices that are supported by the radeon driver.
+
+Modified LCDproc
+    - Reorganized lcdproc devices names.
+        - Converted persistent names from device names to device symbolic links.
+        - Moved persistent names into directory /dev/persistent.
+    - Reorganized detection rules.
+        - Renamed udev detection rules from
+          04-minimyth-detect-lcdproc.rules.disabled to
+          05-minimyth-detect-lcdproc.rules.disabled.
+        - Moved persistent name symbolic link creation to
+          03-minimyth-persistent.rules.
+    - Added henlar-v0.2 patch that adds support for the dm140.
+
+Modified LIRC
+    - Reorganized lirc device names.
+        - Converted persistent names from device names to device symbolic links.
+        - Moved persistent names into directory /dev/persistent.
+    - Reorganized detection rules.
+        - Renamed udev detection rules from
+          04-minimyth-detect-lirc.rules.disabled to
+          05-minimyth-detect-lirc.rules.disabled.
+        - Moved persistent name symbolic link creation to
+          03-minimyth-persistent.rules.
+    - Reorganized the /etc/lirc.d directory.
+        - Renamed some directories to shorten the names:
+            /etc/lirc.d/driver.conf.d -> /etc/lirc.d/driver.conf
+            /etc/lirc.d/lircd.conf.d  -> /etc/lirc.d/lircd.conf
+            /etc/lirc.d/lircrc.d      -> /etc/lirc.d/lircrc
+        - Reorganized the lircrc files so that they are grouped by application.
+          Each application's lircrc configuration is now in either a single
+          file or single directory, making it easier for a user to replace one
+          application's lircrc configuration without impacting any other
+          application.
+        - Shortened the names of the files in the /etc/lirc.d/drivers.conf and
+          /etc/lirc.d/lircd.conf directories.
+    - Modified lirc device detection so that different build-in lircd.conf files
+      can be used for different devices, enabling better support for devices
+      that use the devinput driver.
+    - Added lircd.conf file for devinput device with a default keyboard map.
+    - Added lircd.conf file for remotes that emulate MCE keyboard shortcuts.
+        - This has not been tested.
+    - Added lircrc entries for remotes that emulate MCE keyboard shortcuts.
+        - Because many of these are key combinations, they cannot be mapped to
+          the key names used by other remotes.
+        - This has not been tested.
+    - Modified lircrc entries
+        - Added KEY_MP3 (controls music).
+        - Added KEY_SUBTITLE (controls cc/teletext/subtitle).
+        - Added KEY_TEXT (contrls cc/teletext/subtitle).
+        - Removed KEY_TELETEXT which does not exist in linux/input.h
+    - Added auto-detection of the 'Topseed Cyberlink' remote control.
+        - Added entry in 05-minimyth-detect-lirc.rules.
+        - Added lircd.conf file.
+        - This has not been tested.
+    - Added lircd.conf file for the already auto-detected the
+      'TechniSat SkyStar 2 TV 2.6D' remote control.
+      
+Fixed bugs
+    - Fixed a bug that would cause the perl init scripts to hang when no
+      remote was present.
+    - Fixed a bug that would cause the perl init scripts to fail when there
+      was more than one LIRC device.
+    - Fixed a bug that would cause NFS boot to fail when the NFS server is not
+      on the same subnet as the MiniMyth system.
+    - Fixed a bug that would cause mm_ss_suspend to fail.
+    - Fixed a bug that would cause the MythTV 0.20.x MPEG2 decoder to be set
+      incorrectly.
+
+Modified build system
+    - Explicitly enable XvMC and VDPAU in FFmpeg.
+
+Removed packages
+    Removed nvidia/nvidia-180.08.
+    Removed xorg-7.3/xf86-input-keyboard.
+    Removed xorg-7.3/xf86-input-mouse.
+    Removed xorg-7.4/xf86-input-keyboard.
+    Removed xorg-7.4/xf86-input-mouse.
+
+Added packages
+    Added nvidia/nvidia-180.18.
+    Added X11/vdpinfo.
+    Added xorg-7.3/xf86-input-evdev.
+    Added xorg-7.4/xf86-input-evdev.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/bison.
+    Updated devel/fakeroot.
+    Updated disk/hdparm.
+    Updated gtk/cairo.
+    Updated gtk/gtk+.
+    Updated gtk/pango.
+    Updated kernel-2.6.27/linux.
+    Updated kernel-headers/linux-headers-2.6.27.
+    Updated lib/bluez.
+    Updated lib/dbus.
+    Updated lib/ffmpeg.
+    Updated lib/libftdi.
+    Updated lib/libpng.
+    Updated lib/xvidcore.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated perl/perl-libwww-perl.
+    Updated qt/qt4.
+    Updated system/udev.
+    Updated X11/vpdau.
+    Updated X11/x11vnc.
+    Updated xorg-7.3/libdrm.
+    Updated xorg-7.3/libXfont.
+    Updated xorg-7.3/libXi.
+    Updated xorg-7.3/mkfontscale.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/util-macros.
+    Updated xorg-7.3/xextproto.
+    Updated xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-radeonhd.
+    Updated xorg-7.3/xf86-video-sis.
+    Updated xorg-7.3/xinit.
+    Updated xorg-7.4/libdrm.
+    Updated xorg-7.4/libXfont.
+    Updated xorg-7.4/libXi.
+    Updated xorg-7.4/mkfontscale.
+    Updated xorg-7.4/pixman.
+    Updated xorg-7.4/util-macros.
+    Updated xorg-7.4/xextproto.
+    Updated xorg-7.4/xf86-video-ati.
+    Updated xorg-7.4/xf86-video-radeonhd.
+    Updated xorg-7.4/xf86-video-sis.
+    Updated xorg-7.4/xinit.
+
+--------------------------------------------------------------------------------
+Changes since 60 (2008-11-28):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 19162
+    MythTV trunk:        version trunk.19168    trunk svn 19169
+
+Modified kernel
+    - Disabled use of out-of-tree ALSA 1.0.18a drivers as some of the drivers
+      fail after suspend-to-RAM.
+    - Reverted to kernel 2.6.26 bacause wake-on-USB doe now work under kernel
+      2.6.27.
+    - Added patch that may help pervent NFS failures after suspend-to-RAM.
+
+Modified mediaplayers
+    - Added VDPAU support to FFmpeg and MPlayer SVN.
+        - VDPAU NVIDIA drivers are not included in the binary image.
+    - Made sure players are not using libFLAC because FFmpeg's FLAC decoder
+      should work.
+    - Made sure players are using libFAAD because FFmpeg's AAC decoder lacks
+      certain capabilities.
+    - Made sure that all are using the shared libdca rather than their
+      internal versions of libdca/libdts.
+    - Renamed mplayer-stable to mplayer-vld in order to reflect that the only
+      reason it continues to be included is because it supports XvMC-VLD.
+
+Modified init
+    - Modified init so that it redirects the output of '/usr/sbin/powernowd'
+      to /dev/null.
+    - Modified init so that it links mplayer appropriate version (mplayer-svn or
+      mplayer-vld), which depends on whether or not the MiniMyth is using
+      XvMC-VLD for MPEG2 decoding.
+
+Fixed bugs
+    - Worked around problem in Sys::Hostname::hostname that caused the perl init
+      script to fail when the host name was set using MM_DHCP_HOST_NAME. It
+      appears that there is at least one bug in Sys::Hostname::hostname that
+      causes the value to be incorrect when the host name is changed after
+      Sys::Hostname is loaded.
+    - Fixed bug that caused perl init scripts to create '/STDOUT' rather than
+      '/var/log/minimyth.log'.
+    - Fixed bug that caused MM_MYTHDB_SETTINGS_* variables to fail when using
+      perl init scripts.
+    - Fixed bug in MiniMyth::mythdb_jumppoints_update.
+    - Fixed bug in MiniMyth::mythdb_x_get. This bug could cause the perl init
+      scripts to fail with the error message 'configuring video ...'.
+    - Fixed bug in the openChrome driver's XvMC-VLD implementation:
+      <http://wiki.openchrome.org/pipermail/openchrome-devel/2008-November/000140.html>
+    - Fixed bug in the lib/libirman package, which would cause irman to no
+      longer work in LIRC.
+
+Modified build system
+    - Changed mksquashfs so that it uses more conservative settings. I hope
+      that this will reduce the chance of creating bad squashfs images.
+    - Removed FFmpeg's dependency on SDL.
+    - Removed giflib's dependency on X11.
+    - Removed xine-lib's dependency on FLAC.
+
+Fixed build system
+    - Fixed bug that caused MythTV trunk to pick up files from the build
+      system.
+    - Fixed bug that caused there to be no shared library for bzip2.
+
+Moved packages
+    Moved mediaplayers/mplayer to mediaplayers/mplayer-vld.
+
+Added packages
+    Added kernel-2.6.26/*.
+    Added kernel-headers/linux-headers-2.6.26.
+    Added nvidia/nvidia-180.08.
+    Added X11/vdpau.
+
+Updated packages
+    Updated db/sqlite.
+    Updated devel/automake.
+    Updated devel/fakeroot.
+    Updated gtk/cairo.
+    Updated gtk/glib.
+    Updated gtk/gtk+.
+    Updated gtk/pango.
+    Updated kernel-2.6.27/linux.
+    Updated kernel-headers/linux-headers-2.6.27.
+    Updated lib/bluez.
+    Updated lib/ffmpeg.
+    Updated lib/libg15.
+    Updated lib/libgpg-error.
+    Updated mediaplayers/mplayer-svn.
+    Updated net/gpxe.
+    Updated perl/perl-HTML-Parser.
+    Updated perl/perl-libwww-perl.
+    Reverted qt/qt4 (4.5.0-tp1 does not install a valid QtWebKit.pc file).
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated utils/transcode.
+    Updated xorg-7.3/inputproto.
+    Updated xorg-7.3/libXi.
+    Updated xorg-7.4/inputproto.
+    Updated xorg-7.4/libXi.
+
+--------------------------------------------------------------------------------
+Changes since 59 (2008-11-14):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 19046.
+    MythTV trunk:        version trunk.19090,    trunk svn 19090.
+
+Modified Xorg
+    - Updated Xorg 7.3 Mesa version 7.2.
+    - Updated intel video driver to version 2.5.0.
+    - Removed evtouch input driver.
+
+Modified init
+    - Obsoleted variable MM_MINIMYTH_FETCH_MINIMYTH_SCRIPT when perl init
+      scripts are used.
+    - Added ability to disable the power button by setting
+      MM_ACPI_EVENT_BUTTON_POWER='none'.
+    - Added MM_MEDIA_GENERIC_LIST for adding media mounts that are not handled
+      by the MM_MEDIA_*_MOUNTPOINT + MM_MEDIA_*_URL variables.
+    - Moved sh based init from '/etc/rc.d' to '/etc/rc.d.sh'.
+        - As a result, '/etc/rc.d/functions' has been moved to
+          '/etc/rc.d.sh/functions'.
+    - Moved perl based init from '/etc/rc.d.perl' to '/etc/rc.d'.
+    - Renamed perl based init 'rc.sysinit' to 'rc.sysinit.sh'.
+    - Renamed perl based init 'rc' to 'rc.pl'.
+    - Created a perl init scripts links directory rather than having the perl
+      init scripts rely on the sh init script links directory.
+    - Added autodetection of the iMON LCD device identified by idVendor=0x15c2
+      and idProduct=0x0038.
+    - Changed xinit so that is sends the output of mythfrontend to syslogd's
+      '/var/log/messages' file.
+
+Modified kernel
+    - Removed usbtouchscreen.ko driver.
+    - Enabled legacy symbols so that older 64-bit NVIDIA drivers work.
+
+Fixed bugs
+    - Fixed bug in MiniMyth::url_mount that caused mount options contained in
+      the URL's query part to be ignored.
+    - Fixed bug in perl based log init scripts that sometimes caused it to
+      fail to correctly determine the log server.
+    - Fixed bug in perl based log init scripts that sometimes caused it to
+      fail to correctly determine the time server.
+    - Worked around an issue in the perl based media init script that caused
+      MM_MEDIA_TV_URL and MM_MEDIA_TV_MOUNTPOINT to fail.
+    - Worked around problem caused to the mm_install_* scripts by the fact
+      that the dash shell included in Ubuntu is broken.
+    - Fixed init so that MM_MEDIA_TV_URL does not need to be writable by
+      user 'minimyth' unless mythbackend is enabled (MM_BACKEND_ENABLED='yes'),
+      but is must still be readable by user 'minimyth'.
+    - Fixed perl init bug that would cause init to hang sometimes when a
+      invalid variable value is encountered.
+    - Fixed perl init bug that would cause init to say that some variables
+      were valid when they are not.
+    - Fixed perl init bugs that caused some variables to not be initialized
+      correctly.
+
+Modified build system
+    - Removed unneeded static libraries from the build system.
+
+Fixed build system
+    - Added missing btusb.ko driver to wiimote library list.
+    - Fixed bug that caused the Qt MySQL driver to not be included in the
+      image when building MythTV 0.20.
+
+Removed packages
+    Removed kernel-2.6.23/*.
+    Removed kernel-2.6.24/*.
+    Removed kernel-2.6.25/*.
+    Removed kernel-2.6.26/*.
+    Removed kernel-headers/linux-headers-2.6.23.
+    Removed kernel-headers/linux-headers-2.6.24.
+    Removed kernel-headers/linux-headers-2.6.25.
+    Removed kernel-headers/linux-headers-2.6.26.
+    Removed nvidia/nvidia-177.80.
+    Removed xorg-7.3/xf86-input-evtouch.
+    Removed xorg-7.4/xf86-input-evtouch.
+
+Added packages
+    Added devel/intltool.
+    Added nvidia/nvidia-177.82.
+    Added xorg-7.3/dri2proto.
+    Added xorg-7.3/libpthread-stubs.
+    Added xorg-7.4/libpthread-stubs.
+
+Updated packages
+    Updated db/sqlite.
+    Updated devel/bison.
+    Updated disk/hdparm.
+    Updated kernel-2.6.27/alsa-driver.
+    Updated kernel-2.6.27/linux.
+    Updated kernel-headers/linux-headers-2.6.27.
+    Updated lib/bluez.
+    Updated lib/boost.
+    Updated lib/ffmpeg.
+    Updated lib/libexif.
+    Updated lib/ncurses.
+    Updated lib/ncursesw.
+    Updated lib/nspr.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated net/curl.
+    Updated perl/perl-libwww-perl.
+    Reverted utils/busybox (newer version breaks mm_mytfrontend_networkcontrol).
+    Updated utils/pciutils.
+    Updated utils/transcode.
+    Updated system/udev.
+    Updated xorg-7.3/xkeyboard-config.
+    Updated xorg-7.3/libdrm.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.4/xkeyboard-config.
+    Updated xorg-7.4/libdrm.
+    Updated xorg-7.4/xf86-video-intel.
+    Updated xorg-7.4/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 58 (2008-10-31):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 18900.
+    MythTV trunk:        version trunk.18943,    trunk svn 18943.
+
+Re-added MythTV 0.20 support
+    - Removed myth-0.20/* and myth-0.20-softpad/* packages.
+    - Removed support for 0.20 from init scripts.
+    - Re-added MM_PLUGIN_DVD_ENABLED.
+
+Deprecated sh init scripts
+    - Made perl init scripts the default.
+    - Deprecated 'minimyth.script'.
+        - Users will need to convert from 'minimyth.script' to 'minimyth.pm'.
+    - After release 59, support for the sh init scripts and 'minimyth.script'
+      will be removed.
+
+Modified udev rules
+    - Added autodetection of the TechniSat SkyStar 2 TV USB remote control
+      receiver.
+
+Modified Linux kernel
+    - Updated unionfs to 2.5.
+        - Hopefully, this fixes the kernel oops problem with the 2.6.25
+          kernel.
+    - Updated kernel to 2.6.27.
+        - Hopefully, this fixes the problem with Realtek 8111b/8111c Ethernet
+          hardware.
+    - Added atl2 and sky2 Ethernet driver.
+    - Added smsc47m1 and smsc47m192 drivers.
+    - Moved gspca and uvc drivers to their in-tree locations.
+
+Modified NVIDIA video drivers
+    - Patched older drivers to so that they work with the Linux kernel 2.6.27.
+
+Modified MythTV
+    - Changed init patch so that it does not change "Extra audio buffering"
+      default.
+
+Modified udev support
+    - Stopped creating udev* links to udevadm.
+    - Stopped including udevinfo symbolic link to udevadm in the image.
+    - Patched MythTV so that it uses udevadm rather than udevinfo.
+
+Modified MPlayer SVN version
+    - Changed it to use the external dvdread libraries.
+
+Modified MiniMyth X support
+    - Added support for the radeonhd video driver.
+        - To use the radeonhd driver add MM_X_DRIVER='radeonhd' to your
+          minimyth.conf file.
+        - As with the radeon driver, you will likely need to create a custom
+          xorg.conf file.
+    - Patched the radeonhd driver with the HDMI-including-audio patch.
+
+Modified MiniMyth configuration
+    - Added MM_FLASH_URL for installing Adobe Flash Player.
+        - Adobe Flash Player only works with MythBrowser versions after 0.20.
+        - Adobe Flash Player only works when the MiniMyth image contains the
+          required GTK2 and NSS3 libraries.
+        - Adobe Flash Player only works on 32-bit builds.
+    - Added MM_PLUGIN_INFORMATION_CENTER_ENABLED for disabling (i.e. removing) 
+      the 'Information Center' menu.
+    - Added MM_THEME_FILE_MENU_ADD for overriding/extending MythTV theme menus.
+    - Changed MM_FONT_FILE_TTF_ADD so that the font files can be located in a
+      sub-directory of the MiniMyth read-only configuration directory.
+    - Re-added MM_PLUGIN_DVD_ENABLED.
+    - Added support for running the 'stop' method if it is included in
+      'minimyth.pm'.
+    - Changed MM_THEMECACHE_URL='auto' so that it is 'confrw:themecache.sfs'.
+        - This was done to enable MiniMyth to save more than one cached theme
+          in the file as it is supported by MythTV 0.21.
+
+Modified MiniMyth commands
+    - Changed mm_sleep so that is saves the system clock to the hardware
+      clock on suspend and sets the system clock to the hardware clock on
+      wakeup.
+    - Changed mm_sleep so that it restarts commands that it stops using the
+      original command line not the default command line.
+    - Changed mm_sleep_on_ss so that it daemonizes.
+    - Changed mm_ss_suspend so that it daemonizes.
+
+Fixed bugs
+    - Fixed a bug that caused the MM_PLUGIN_*_ENABLED variables to not work when
+      using the perl init scripts.
+    - Fixed a bug that caused multiline MiniMyth configuration variables to
+      fail when the perl init scripts are to process the variables.
+    - Fixed a bug that caused the perl init scripts to fail to configure the
+      playback profile.
+    - Fixed errors in the example 'minimyth.pm' found in the documentation.
+    - Fixed a bug that caused MythTV 0.21 and trunk to fail to detect fftw3f.
+    - Fixed a bug that caused perl init scripts to incorrectly declare mtd as
+      missing when when DVD ripping support was enabled.
+    - Fixed a bug that caused perl init scripts to fail to detect LCDproc
+      devices.
+    - Modified MiniMyth::application_path so that it removed trailing new
+      line.
+    - Fixed a bug in MiniMyth::url_file_put that caused MythTV themecache and
+      codecs saving to local boot device to fail.
+    - Fixed a bug that would cause the video output to no be configured
+      correctly for Intel DVI output when perl init scripts were used.
+    - Fixed a bug that caused crond to fail to start when perl init scripts
+      were used.
+
+Modified build system
+    - Added mm_GRAPHICS for controlling which graphics drivers are included.
+    - Removed mm_CHIPSETS.
+        - All supported non-graphics kernel drivers are now included.
+    - Added support for the Neoware CA2.
+        - Added support for the savage video driver.
+        - Added support for the vt8231 sensor chip.
+    - Added support for the radeonhd video driver.
+    - Moved gspca and uvc drivers to their in-tree locations.
+    - Added support for building gnash (an Open Source flash player).
+    - Added support for building libraries needed by Adobe Flash Player 10.
+
+Fixed build system
+    - Fixed check bug that prevented compiling with Xorg 7.4.
+    - Fixed MPlayer packages so that they do not pick up system X11 includes.
+    - Fixed kde/kdelibs so that it builds when MiniMyth is built with Linux 2.6.27.
+
+Removed packages
+    Removed nvidia/nvidia-177.13.
+
+Moved packages
+    Moved lib/glib to gtk/glib.
+
+Added packages
+    Added db/sqlite.
+    Added gtk/atk.
+    Added gtk/cairo.
+    Added gtk/gtk+.
+    Added gtk/pango.
+    Added kernel-2.6.26/*.
+    Added kernel-2.6.27/*.
+    Added kernel-headers/linux-headers-2.6.26.
+    Added kernel-headers/linux-headers-2.6.27.
+    Added lib/agg.
+    Added lib/boost.
+    Added lib/giflib.
+    Added lib/libdvdread.
+    Added lib/libmpeg2.
+    Added lib/nspr.
+    Added lib/nss.
+    Added mediaplayers/gnash.
+    Added myth-0.20/*.
+    Added myth-0.20-softpad/*.
+    Added nvidia/nvidia-177.80.
+    Added xorg-7.3/xf86-video-radeonhd.
+    Added xorg-7.4/xf86-video-radeonhd.
+
+Updated packages
+    Updated devel/autoconf.
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/libtool.
+    Updated devel/nasm.
+    Updated devel/yasm.
+    Updated disk/e2fsprogs.
+    Updated doc/texinfo.
+    Updated emulators/mednafen.
+    Updated kernel-2.6.23/alsa-driver.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/alsa-driver.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/alsa-driver.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/alsa-lib.
+    Updated lib/bluez.
+    Updated lib/ffmpeg.
+    Updated lib/glib.
+    Updated lib/gmp.
+    Updated lib/lame.
+    Updated lib/libcdio.
+    Updated lib/libdvdnav.
+    Updated lib/libftdi.
+    Updated lib/libgcrypt.
+    Updated lib/libmpeg2.
+    Updated lib/libpng.
+    Updated lib/libxml2.
+    Updated lib/openssl.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated net/gpxe.
+    Updated perl/perl-DBD-mysql.
+    Updated perl/perl-libwww-perl.
+    Updated qt/qt4.
+    Updated system/acpid.
+    Updated system/lirc.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/ed.
+    Updated utils/lm_sensors.
+    Updated utils/m4.
+    Updated utils/pciutils.
+    Updated utils/module-init-tools.
+    Updated utils/util-linux-ng.
+    Updated X11/x11vnc
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/xtrans.
+    Updated xorg-7.4/libpciaccess.
+    Updated xorg-7.4/Mesa.
+    Updated xorg-7.4/pixman.
+    Updated xorg-7.4/xorg-server.
+    Updated xorg-7.4/xtrans.
+
+--------------------------------------------------------------------------------
+Changes since 57 (2008-09-10):
+
+Current MythTV versions
+    MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 18228.
+    MythTV trunk: version trunk.18227, trunk svn 18227.
+
+Converted to perl from sh
+    - Added MiniMyth perl package.
+        - Implements the functions in /etc/rc.d/functions.
+            - 'mm_*' maps to 'MiniMyth::*' execpt for 'mm_mythdb_*_dump'
+                which maps to 'MiniMyth::mythdb_*_print'
+            - Function arguments differ because perl supports types other than
+              strings.
+            - Function return mechanism differs because perl support
+              non-integer return values.
+    - Added perl init scripts.
+        - sh init scripts are the default.
+        - perl init scripts can be enabled by adding MM_INIT_TYPE=perl to the
+          boot line.
+    - Converted the following mm_* scripts to perl:
+        mm_command
+        mm_external
+        mm_game_exit
+        mm_game_start
+        mm_sleep
+        mm_sleep_on_ss
+        mm_ss_suspend
+        mm_term_exit
+        mm_term_start
+    - Converted web page CGI scripts to perl.
+
+Modified image
+    - Added g15daemon's g15plugin_clock to help with testing.
+
+Modified init
+    - Changed udev rules so that they move /dev/uinput to /dev/input/uinput.
+    - Added file '/init.log' that contains the init start and end times,
+      allowing timing of sh and perl based init scripts.
+
+Modified Linux kernel
+    - Updated squashfs to 3.4.
+
+Fixed bugs
+    - Changed init so that it creates an empty /etc/g15daemon.conf when
+      init determines it needs to run g15daemon and /etc/g15daemon.conf does
+      not exist.
+    - Added g15daemon's g15plugin_tcpserver because it appears to be needed
+      even when the client and server are on the same computer.
+    - Patched the Xorg Intel driver with the patch from ticket 16833:
+      <https://bugs.freedesktop.org/show_bug.cgi?id=16833> and
+      <http://people.freedesktop.org/~jcristau/i830_dsparb_sooner.diff>
+    - Fixed typo that caused MiniMyth to not fetch xmodmaprc when present in
+      the MiniMyth read-only configuration directory.
+    - Fixed variable name error that caused the MM_X_FETCH_XORG_CONF variable
+      to not be checked (though it was still used).
+    - Fixed typo that caused MiniMyth to reject the 576 television resolution
+      when using the openchrome driver.
+    - Fixed typo that caused MiniMyth shutdown to not cleanly stop the splash
+      screen.
+    - Fixed bug that could cause MiniMyth init to not wake the backend.
+    - Fixed problem that caused MM_GAME_BIOS_ROOT and MM_GAME_GAME_ROOT to be
+      set incorrectly.
+    - Fixed bug that caused portmap to not start.
+    - Fixed bug that caused sytem time to not be saved to the hardware clock
+      on shutdown.
+    - Fixed bug in format of the default MM_CODECS_URL value.
+    - Fixed bug in format of the default MM_EXTRAS_URL value.
+    - Fixed bug that caused hostname '' to be '?', causing retrieval of
+      MiniMyth configuration files to fail.
+    - Fixed bug that caused mm_sleep_on_ss to not be stopped at shutdown.
+
+Modified build system
+    - Added gar-minimyth-<version>.tar.bz2 to the root file system image so
+      that we can know exactly what was used to build the binary.
+    - Added build system support for gnash.
+
+Fixed build system
+    - Fixed bug that caused minimyth.conf.mk variables to not be included in
+      the file system image.
+    - Fixed bug that caused the MiniMyth license file to be unavailable in on
+      the file system image's software web page.
+    - Fixed bug that caused the x86_64 image to fail to boot.
+
+Removed packages
+    Removed lib/bluez-libs.
+    Removed utils/bluez-utils.
+
+Added packages
+    Added lib/bluez.
+    Added lib/glib.
+    Added nvidia/nvidia-177.13.
+    Added perl/perl-DBD-mysql.
+    Added perl/perl-DBI.
+    Added perl/perl-MiniMyth.
+    Added perl/perl-Net-Telnet.
+    Added perl/perl-WW-Curl.
+    Added xorg-7.4/*.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/binutils.
+    Updated devel/libtool.
+    Updated devel/strace.
+    Updated disk/e2fsprogs.
+    Updated extras/libdvdcss.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated kde/kdelibs.
+    Updated lib/alsa-lib.
+    Updated lib/dbus.
+    Updated lib/ffmpeg.
+    Updated lib/libpng.
+    Updated lib/pcre.
+    Updated multimedia/mplayer-svn.
+    Updated multimedia/vlc.
+    Updated multimedia/xine-lib.
+    Updated net/curl.
+    Updated net/ntp.
+    Updated perl/perl-DBD-mysql.
+    Updated perl/perl-libwww-perl.
+    Updated perl/perl-XML-SAX.
+    Updated system/udev.
+    Updated utils/busybox.
+    Updated utils/ed.
+    Updated utils/mktemp.
+    Updated utils/squashfs.
+    Updated utils/which.
+    Updated X11/xscreensaver.
+    Updated xorg-7.3/libX11.
+    Updated xorg-7.3/libXau.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xf86-video-openchrome.
+    Updated xorg-7.3/xf86-video-vmware.
+
+--------------------------------------------------------------------------------
+Changes since 56 (2008-08-06):
+
+Current MythTV versions
+    MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 18023.
+    MythTV trunk: version trunk.17941, trunk svn 17941.
+
+Added Logitech Z-10 support
+    - Added G15daemon to support the keys and LCD display, including init
+      script for starting and stopping G15daemon.
+    - Enabled g15 support in LCDproc, including autodetection using udev.
+    - ALSA drivers should already support the speakers.
+
+Improved Xorg keyboard handling
+    - Added MM_X_FETCH_XMODMAPRC for fetching the xmodmaprc file.
+    - Modified the default xinitrc file so that it loads the xmodmaprc file, if
+      present.
+
+Improved Intel graphics support
+    - Improved support for Intel Xorg driver configuration during init.
+    - Patched Intel Xorg driver so that it supports the XvPreferOverlay
+      option.
+
+Modified Linux kernel
+    - Updated unionfs to 2.4.
+
+Fixed bugs
+    - Fixed minimyth.conf file processing bug that caused the MythGallery
+      directory to not be mounted during init.
+    - Fixed minimyth.conf file processing bug that caused the all but the none
+      and auto deinterlacer values to be rejected.
+    - Blacklisted the 8250, 8250_pci and 8250_pnp kernel drivers so that they
+      are not loaded by udev.
+    - Added KERNEL=="hiddev[0-9]*",SUBSYSTEM=="usb" to the lirc udev rule so
+      that the USB DViCO remote can be detected.
+    - Converted more of the DViCO remote keys to the LIRC namespace, but there
+      are still keys that have not been converted.
+    - Added missing imonlcd configuration to the LCDd.conf file.
+    - Fixed permission problems with MythTV's config.xml and mysql.txt files
+      by giving user 'minimyth' (who runs the mythfrontend and mythwelcome)
+      and the user 'root' (who runs mythbackend) separate copies.
+
+Modified build system
+    - Removed support for the i386 athlon64 target.
+    - Removed support for the x86_64 athlon64 target.
+    - Added support for the x86_64 x86-64 target.
+        - This target should work for both athlon64 and core2 processors.
+    - Enabled parallel build in packages
+        lib/ffmpeg
+        lib/libcdio-mini
+        perl/perl-XML-SAX
+    - Removed execute permissions from the shared libraries, except for the
+      ld-linux and libc libraries.
+    - Resturctured meta/minimyth package
+        - Restructured source files under the files directory in a structure
+          that better follows their installed structure.
+        - Restructured the make system so that it is cleaner.
+    - Wrote perlstrip.pl to replace perlsharp.cgi because perlsharp.cgi is
+      single threaded.
+    - Changed dependent library copying so that it is faster.
+
+Fixed build system
+    - Switched back to non-parallel build in package lib/lame.
+    - Patched package lib/fontconfig so that parallel build works.
+    - Changed perl module packages so that they use pure_install rather than
+      install when installing.
+    - Changed packaging so that it sets the correct permissions.
+
+Removed packages
+    Removed nvidia/nvidia-173.14.09.
+    Removed nvidia/nvidia-71.86.04.
+    Removed nvidia/nvidia-96.43.05.
+    Removed perl/perlsharp.
+
+Added packages
+    Added lib/libg15.
+    Added lib/libg15render.
+    Added lib/lzo.
+    Added nvidia/nvidia-173.14.12.
+    Added nvidia/nvidia-71.86.06.
+    Added nvidia/nvidia-96.43.07.
+    Added perl/perlstrip.
+    Added system/g15daemon.
+    Added xorg-7.3/xmodmap.
+
+Updated packages
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/strace.
+    Updated fonts/liberation-fonts.
+    Updated kernel-2.6.23/alsa-driver.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/alsa-driver.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/alsa-driver.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/alsa-lib.
+    Updated lib/bluez-libs.
+    Updated lib/ffmpeg.
+    Updated lib/gmp.
+    Updated lib/libdaemon.
+    Updated multimedia/mplayer-svn.
+    Updated multimedia/vlc.
+    Updated net/openssh.
+    Updated qt/qt4.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/bluez-utils.
+    Updated utils/busybox.
+    Updated utils/transcode.
+    Updated X11/xscreensaver.
+    Updated xorg-7.3/inputproto.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xf86-video-vmware.
+
+--------------------------------------------------------------------------------
+Changes since 55 (2008-07-06):
+
+Current MythTV versions
+    MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 17722.
+    MythTV trunk: version trunk.17721, trunk svn 17721.
+
+Added MythTV backend support
+    - Added backend init script.
+    - Added MM_BACKEND init conf script.
+    - Added backend detection based on DVB card being present.
+
+Added DVB support
+    - Enabled DVB support in MythTV.
+    - Added DVB card support to the udev rules.
+    - Enabled the DVB card support in the kernel needed to support the modules
+      listed here: <http://minimyth.org/forum/viewtopic.php?t=1804>.
+
+Modified init
+    - Added MM_MEDIA_TV_MOUNTPOINT and MM_MEDIA_TV_URL.
+    - Updated the values for the MM_VIDEO_DEINTERLACER variable so that they
+      match MythTV 0.21 rather than MythTV 0.20.
+    - Changed init so that it creates MythTV's config.xml file.
+    - Changed init so that it adds LocalHostName to MythTV's mysql.txt file.
+    - Moved MythTV's config.xml and mysql.txt file to /etc/mythtv.
+    - Added additional checks when mounting the media (MM_MEDIA) shares.
+        - Check that the mount exists after mounting.
+        - Check that the mount is readable (and writable when needed) by the
+          user 'minimyth'.
+    - Stopped setting UseChromaKeyOSD in database settings table since it is
+      not used in MythTV 0.21 or newer.
+    - Disabled MythTV's use of OpenGL vertical sync when the intel Xorg driver
+      is used because it does not work
+
+Modified image
+    - Switched to the out-of-tree ALSA drivers because they fix a VLC audio
+      problem (no audio) on the ASUS A8N-VM CSM.
+    - Switched from Busybox's top to procps' top because it is more flexible.
+    - Switched from Busybox's ps to procps' ps because MythTV makes system
+      calls to ps that fail with Busybox's ps.
+    - Added lsof and pmap to the normal image.
+
+Fixed bugs
+    - Fixed typo in /etc/rc.d/functions.
+        - Changed mm_sleep_on_xss to mm_sleep_on_ss.
+    - Added trap to the mm_ss_suspend script that kills child processes when
+      the mm_ss_suspend script is killed.
+    - Added trap to the mm_sleep_on_ss script that kills child processes when
+      the mm_sleep_on_ss script is killed.
+    - Changed mm_sleep so that it disables and reenables mm_sleep_on_ss when
+      mm_sleep_on_ss is running.
+    - Switched from Busybox's ps to procps' ps, because MythTV makes system
+      calls to ps and expects certain textual output. While such system calls
+      should be avoided, the easiest way to deal with it is to provide MythTV
+      with the ps that it expects.
+    - Fixed problem with VLC playback of flash file playback.
+        - Enabled sout (streaming output).
+
+Modified build system
+    - Changed how the libtool fix-ups are done.
+        - Created the macro FIX_LIBTOOL_HARDCODE that fixes the library path
+          hardcoding.
+        - Created the macro FIX_LIBTOOL_LIBPATH that fixes the library link
+          and run search paths.
+        - Created the macro FIX_LIBTOOL that is the combination of the macros
+          FIX_LIBTOOL_HARDCODE and FIX_LIBTOOL_LIBPATH.
+        - Stopped running autoreconf to fix library link search path since the
+          FIX_LIBTOOL_LIBPATH macro should fix it.
+            - Packages that patch their autoconf files for other reasons
+              continue to run autoreconf.
+        - Stopped using custom sed lines to fix library path hard coding since
+          the FIX_LIBTOOL_HARCODE macro should fix it.
+    - Enabled DVB support in MythTV, making it somewhat easier for those
+      building MiniMyth based slave backends that use DVB cards.
+    - Enabled the DVB card support in the kernel needed to support the modules
+      list here: <http://minimyth.org/forum/viewtopic.php?t=1804>.
+    - Added mm_SOFTWARE variable value 'backend' for including MythTV backend
+      in the binary image.
+    - Changed build system so that it creates symbolic links to config.xml and
+      mysql.txt in the /home/minimyth/.mythtv directory.
+    - Reverted to GCC 4.3.1 to 4.3.0 because there are some compiler
+      optimization compilation problems with MythTV using GCC 4.3.1. Even
+      though MythTV has a workaround, it is possible that other packages have
+      problems with GCC 4.3.1 as well.
+    - Changed binutils, gcc and make packages so that they do not apply their
+      repsective perl patches when doing a native build.
+    - Changed build system so that it copies /root from the dirs directory
+      rather than creating it. This makes it easier to add program
+      configuration files used by the user root.
+
+Fixed build system
+    - Fixed bug that caused libtool to search the wrong library directories,
+      sometimes resulting in compilation failure:
+          lib/taglib
+
+Removed packages
+    Removed nvidia-173.14.05.
+
+Added packages
+    Added kernel-2.6.23/alsa-driver.
+    Added kernel-2.6.24/alsa-driver.
+    Added kernel-2.6.25/alsa-driver.
+    Added lib/libgcrypt.
+    Added lib/libgpg-error.
+    Added nvidia-173.14.09.
+    Added utils/lsof.
+    Added X11/xosd.
+
+Updated packages
+    Updated devel/autoconf.
+    Updated devel/gettext.
+    Updated devel/libtool.
+    Updated devel/nasm.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated fonts/liberation-fonts.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/bluez-libs.
+    Updated lib/freetype.
+    Updated lib/lame.
+    Updated mediaplayers/vlc.
+    Updated mediaplayers/xine-lib.
+    Updated perl/perl-libwww-perl.
+    Updated perl/perl-URI.
+    Updated utils/bluez-utils.
+    Updated utils/busybox.
+    Updated utils/file.
+    Updated xorg-7.3/libSM.
+    Updated xorg-7.3/libXfont
+    Updated xorg-7.3/libXft
+    Updated xorg-7.3/libXrandr
+    Updated xorg-7.3/libXxf86vm
+    Updated xorg-7.3/randrproto
+    Updated xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xtrans
+
+--------------------------------------------------------------------------------
+Changes since 54 (2008-06-15):
+
+Current MythTV versions
+    MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 17450.
+    MythTV trunk: version trunk.17452, trunk svn 17452.
+
+Modified media players
+    - Added SVN version of MPlayer (the binary is called mplayer-svn) and
+      changed it so that it uses the shared FFmpeg library.
+    - Changed the Xine library so that it uses the shared FFmpeg library.
+    - Updated the shared FFmpeg library.
+    - Updated the Xine library.
+    - With these changes, MPlayer SVN, VLC and Xine use the same shared FFmpeg
+      library.
+
+Fixed bugs
+    - Fixed bug with using DPMS and the NVIDIA driver.
+        - Changed default NVIDIA driver version from 173.14.05 to 169.12,
+          since 173.14.05 has the problem and 169.12 does not.
+    - Fixed but that caused mm_x_stop function to fail.
+        - Changed mm_x_applications_list function so that it cleans up
+          whitespace that was confusing the other mm_x_applications_*
+          functions.
+    - Fixed ASUS M2N-VM DVI audio.
+        - Added appropriate module option using a modalias.
+    - Fixed e1000e Ethernet driver.
+        - Patched the 2.6.23 kernel to include the e1000e Ethernet driver.
+
+Modified build system 
+    - Added check to make sure build_GARCH_FAMILY is valid.
+
+Fixed build system
+    - Fixed bug that caused pkg-config to find the wrong *.pc files when the
+      the user's environment sets PKG_CONFIG_PATH.
+        - The build system sets PKG_CONFIG_PATH='' now.
+    - Fixed bug in package utils/util-linux-ng that caused its configure
+      script to find the wrong vol_id binary.
+        - The Makefile file adds $(build_DESTDIR)$(build_elibdir)/udev to the
+          path now.
+    - Fixed bug that caused build_GARCH_FAMILY to be set incorrectly.
+        - Apparently, the output of 'uname -i' is not the same for all Linux
+          distributions. Therefore, the value of build_GARCH is used, which is
+          based on the output of 'uname -m'.
+    - Fixed bug where the compiler would sometimes find the system's libraries
+      rather than the MiniMyth compiled native libraries for some packages
+      (e.g. system/udev).
+        - Patched binutils and gcc so that they use lib not lib64 for x86_64
+          libraries.
+        - Added LIBRARY_PATH to the build system so that the native compiler
+          knows about all the library directories and searches them in the
+          correct order.
+    - Fixed bug that caused libtool to search the wrong library directories,
+      sometimes resulting in compilation failure:
+          lib/bluez-libs
+          lib/dbus
+          lib/libart
+          lib/libftdi
+          lib/libxml2
+          lib/libxslt
+          utils/bluez-utils
+          xorg-7.3/libXfont
+          xorg-7.3/libXinerama
+     - Fixed a bug in fetching files from SVN that could cause download
+       problems with files such as the net/mount.cifs package files.
+
+Added packages
+    Added mediaplayers/mplayer-svn.
+
+Updated packages
+    Updated devel/nasm.
+    Updated disk/hdparm.
+    Updated emulators/mednafen.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/libftdi.
+    Updated lib/ffmpeg.
+    Updated lib/freetype.
+    Updated mediaplayers/xine-lib.
+    Updated system/udev.
+    Updated utils/util-linux-ng.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/xf86-video-vmware.
+    Updated xorg-7.3/xinit.
+    Updated xorg-7.3/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 53 (2008-06-08):
+
+Current MythTV versions
+    MythTV 0.21:  version 0.21.0,      release-0-21-fixes branch svn 17450.
+    MythTV trunk: version trunk.17452, trunk svn 17452.
+
+Removed MythTV 0.20 support
+    - Removed myth-0.20/* and myth-0.20-softpad/* packages.
+    - Removed support for 0.20 from init scripts.
+    - Obsoleted MM_PLUGIN_DVD_ENABLED since MythDVD plugin functionality was
+      integrated into the MythVideo plugin after 0.20.
+
+Enhanced MiniMyth
+    - Added support for ext3 and ntfs (read only) file systems.
+
+Modified MiniMyth mm_* functions
+    - Restructured the code that shuts down X applications and returns
+      mythfrontend to the main menu, allowing it to be used by functions other
+      than the mm_suspend script.
+    - Changed the mm_x_stop function so that it more cleanly shuts down X
+      applications and so that it returns mythfrontend to the main menu before
+      stopping X.
+
+Fixed bugs
+    - Fixed bug that caused init warning and errors to not be printed to the
+      boot splash screen.
+    - Fixed bug that caused MythMusic to not support AAC.
+        - Patched package lib/faad2 so that it installs mp4ff.
+        - Patched package myth-0.21/mythplugins so that MythMusic compiles
+          with GCC 4.3.x with AAC support.
+
+Removed packages
+    Removed myth-0.20/*.
+    Removed myth-0.20-softpad/*.
+    Removed utils/cabextract.
+
+Updated packages
+    Updated devel/gcc.
+    Updated devel/gcc-minimyth-shared.
+    Updated devel/gcc-minimyth-static.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated disk/hdparm.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/ffmpeg.
+    Updated lib/fontconfig.
+    Updated mediaplayers/vlc.
+    Updated net/curl.
+    Updated utils/busybox.
+    Updated utils/coreutils.
+
+--------------------------------------------------------------------------------
+Changes since 52 (2008-06-01):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17404.
+    MythTV trunk:        version trunk.17402,    trunk svn 17402.
+
+Modified init
+    - Changed boot splash screen.
+        - Created a "minimyth" theme to replace the "MythTV" theme.
+        - Changed background to the MythCenter theme background.
+        - Added "MiniMyth" watermark.
+        - Added display of error and warning messages to splash screen so that
+          is is less necessary to read /var/log/minimyth.err.log and
+          /var/log/minimyth.warn.log files.
+    - Removed destiction between openChrome and openChrome Pro X drivers.
+        - The openChrome XvMC driver will load the openChrome Pro XvMC driver
+          as needed.
+        - openchrome_pro is no longer a valid value.
+
+Modified fonts
+    - Added Liberation fonts.
+    - Replaced Luxi fonts with Liberation fonts.
+    - Replaced Bitstream Vera fonts with Liberation fonts.
+    - Replaced Microsoft Core fonts with Liberation fonts.
+    - Removed Bitstream Vera fonts.
+    - Removed Microsoft Core fonts.
+
+Fixed bugs
+    - Fixed bug that caused detection of many LCDproc devices to fail.
+        - Rewrote udev scripts mm_detect_id and mm_uid to be more tolerant to
+          differences in device hierarchy.
+    - Fixed bug that caused detection of the imon LCDproc to fail.
+        - Even though the kernel device name is of the form 'lcd[0-9]*',
+          the subsystem is usb not lcd.
+    - Fixed bug in the path to irserver that caused init to fail to start
+      irtrans.
+    - Fixed bug that caused the irserver's lirc support to be enabled when it
+      should be disabled.
+    - Fixed an error in the irtrans idProduct value that was causing detection
+      to fail.
+    - Fixed omission that caused VLC not to be stopped when suspending.
+    - Fixed bug that caused analog audio on the VIA EPIA PX to fail.
+        - Added new mixer control 'Master Front' to the the audio init script.
+    - Fixed bugs in the mm_mythdb_musicplaylist_* functions.
+        - Updated to reflect the restructing of the MythMusic tables.
+    - Fixed configuration of the XvMC support for Intel 915, Intel 945 and
+      Intel G33.
+    - Fixed analog audio problem with the ASUS A8N-VM CSM motherboard that was
+      caused by changing the audio device from 0 to 1.
+         - As a result of reberting back, there may by a VLC audio problem
+           with this motherboard.
+
+Modified build system 
+    - Added script to generate X driver detection udev rules from the latest
+      drm_pciids.txt file.
+    - Removed i830 kernel driver.
+        - i830 kernel driver is not used by Xorg 6.8 and newer.
+    - Removed r128 kernel and Xorg drivers.
+        - r128 support was never integrated into the MiniMyth init.
+    - Removed ati Xorg driver.
+        - The ati driver is just a wrapper driver and is not used. Rather
+          the radeon driver is used directly.
+    - Made ATI driver inclusion the default.
+
+Fixed build system
+    - Fixed LD_LIBRARY_PATH typo that caused Qt not to be found when the build
+      system ran the build system's Qt.
+    - Fixed installation of rxvt when compiled for x86_64 on a i386 machine.
+
+Removed packages
+    Removed fonts/corefonts.
+    Removed fonts/ttf-bitstream-vera.
+    Removed nvidia/nvidia-173.08.
+
+Added packages
+    Added fonts/liberation-fonts.
+    Added mediaplayers/mplayer-resumer.
+    Added nvidia/nvidia-173.14.05.
+
+Updated packages
+    Reverted devel/glibc (segfaults reported on never versions).
+    Reverted devel/glibc-crtobjs.
+    Reverted devel/glibc-headers.
+    Updated disk/e2fsprogs.
+    Updated emulators/stella.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/uvc.
+    Updated lib/bluez-libs.
+    Updated lib/ffmpeg.
+    Updated lib/openssl.
+    Updated mediaplayers/vlc.
+    Updated perl/perl-URI.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/bluez-utils.
+    Updated utils/lm_sensors.
+    Updated xorg-7.3/xdpyinfo.
+    Updated xorg-7.3/xextproto.
+    Updated xorg-7.3/xf86-input-keyboard.
+    Updated xorg-7.3/xinit.
+    Updated xorg-7.3/xkeyboard-config.
+    Updated xorg-7.3/xproto.
+    Updated xorg-7.3/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 51 (2008-05-18):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17349.
+    MythTV trunk:        version trunk.17350,    trunk svn 17350.
+
+Updated documentation
+    - Updated documentation to reflect the relocation of MiniMyth from
+      http://linpvr.org/ to http://minimyth.org/.
+
+Fixed build system
+    - Fixed problem that caused 64-bit versions of MiniMyth to fail to build
+      with the 2.6.23 kernel.
+
+Added packages
+    Added xorg-7.3/xrandr.
+
+Updated packages
+    Updated devel/yasm.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-headers/linux-headers-2.6.25.
+
+--------------------------------------------------------------------------------
+Changes since 50 (2008-05-14):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17323.
+    MythTV trunk:        version trunk.17324,    trunk svn 17324.
+
+Modified LIRC
+    - Removed minimyth.conf variable MM_LIRC_REMOTE as it is not used.
+    - Changed udev rules so that all devices in the lirc subystem are
+      detected not just devices with built-in lircd.conf files. This was the
+      (unintended) behavior before moving the detection to udev.
+
+Fixed bugs
+    - Fixed path to built in LCDd.conf files. Hopefully, this fixes problems
+      with VFD/LCD devices not working.
+
+Removed packages
+    Removed xorg-7.2/*.
+
+Added packages
+    Added xorg-7.2/*.
+
+Updated packages
+    Updated devel/glibc.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/libxslt.
+    Updated perl/perl-Date-Manip.
+    Updated system/udev.
+    Updated xorg-7.2/mkfontscale.
+    Updated xorg-7.2/xf86-input-keyboard.
+    Updated xorg-7.2/xf86-input-mouse.
+    Updated xorg-7.2/xf86-video-ati.
+    Updated xorg-7.2/xf86-video-intel.
+    Updated xorg-7.2/xf86-video-sis.
+    Updated xorg-7.2/xf86-video-vmware.
+    Updated xorg-7.3/mkfontscale.
+    Updated xorg-7.3/xf86-video-intel.
+
+--------------------------------------------------------------------------------
+Changes since 49 (2008-05-09):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17284.
+    MythTV trunk:        version trunk.17283,    trunk svn 17283.
+
+Modified Linux kernel
+    - Switched from the 2.6.24 to the 2.6.23 kernel. The MythTV EPG freezes on
+      some systems when using the 2.6.24 kernel.
+
+Modified init
+    - Removed support for the proprietary IEGD driver.
+
+Modified X
+    - Removed support for the proprietary IEGD driver.
+
+Fixed bugs
+    - Fixed bug that caused minimyth.conf variables to not be visible to
+      minimyth.script, causing /etc/rc.d/functions functions that use
+      minimyth.conf variables (e.g. mm_confro_get) to fail without any error
+      message.
+
+Modified build system 
+    - Removed support for Xorg 7.2.
+    - Removed support for the proprietary IEGD driver.
+
+Fixed build system
+    - Fixed problem where 'small' optimization was not being selected for the
+      pentium-mmx, c3 and c3-2 processors in MythTV 0.21 and MythTV trunk.
+      This problem caused the MythTV 0.21 and MythTV trunk builds for the C3-2
+      processor to fail.
+    - Fixed problem where the 64-bit NVIDIA driver would not compile on a
+      32-bit machine.
+    - Fixed problem where the 64-bit lib/a52dec package would not compile on a
+      32-bit machine.
+    - Fixed problem where the 64-bit lib/ffmpeg package would not compile on a
+      32-bit machine.
+    - Fixed problem building VLC with the Qt4 GUI enabled.
+
+Removed packages
+    Removed X11/IEGD.
+    Removed xorg-7.2/*.
+
+Updated packages
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/libpng.
+    Updated lib/pcre.
+    Updated qt/qt4.
+    Updated utils/busybox.
+    Updated xorg-7.2/xkbcomp.
+    Updated xorg-7.2/xtrans.
+    Updated xorg-7.3/xkbcomp.
+    Updated xorg-7.3/xorg-server.
+    Updated xorg-7.3/xtrans.
+
+--------------------------------------------------------------------------------
+Changes since 48 (2008-05-06):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17281.
+    MythTV trunk:        version trunk.17280,    trunk svn 17280.
+
+Modified Xorg 7.2 and 7.3
+    - Enabled threads because they are required by Xine.
+
+Modified Linux kernel
+    - Switched from the 2.6.25 to the 2.6.24 kernel because people are
+      reporting kernel oops when using 2.6.25.
+    - Enabled ALSA's vebose procfs support.
+
+Modified init
+    - Improved LIRC's consistancy across reboot
+        - Changed udev so that it names USB LIRC and USB TTY devices based on
+          the USB vendor, product and serial number values. The original
+          device name remains as a symbolic link.
+        - Changed LIRC init to sort the autodetected LIRC devices by device
+          name.
+    - Improved LCDproc's consistancy across reboot
+        - Changed udev so that it names USB LCD and USB TTY devices based on
+          the USB vendor, product and serial number values. The original
+          device name remains as a symbolic link.
+    - Added variable MM_LIRC_DEVICE_BLACKLIST for configuring a list of
+          remote control receivers that MiniMyth should ignore.
+    - Added variables MM_LCDPROC_DEVICE, MM_LCDPROC_KERNEL_MODULE and
+      MM_LCDPROC_KERNEL_MODULE_OPTIONS for providing better configuration of
+      LCDproc devices.
+
+Added initial VLC support
+    - It is experimental and may be removed in the future without warning.
+    - It builds.
+    - It runs but with some problems.
+    - DVD playback on my VIA EPIA SP8000E crashes.
+
+Improved build system
+    - Separated Qt 3 and Qt 4 into separate staging directories so that the
+      final image can contain both Qt 3 and Qt 4.
+
+Fixed build system
+    - Fixed build problem with system/irserver for x86_64 targets.
+    - Fixed MythTV ARCH detection problem when building for x86_64 on i386.
+
+Added packages
+    Added lib/a52dec.
+    Added lib/libdvbpsi.
+    Added lib/libebml.
+    Added lib/libmatroska.
+    Added mediaplayers/vlc.
+
+Updated packages
+    Updated devel/binutils.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated emulators/sdlmame.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/bluez-libs.
+    Updated lib/ffmpeg.
+    Updated lib/libpng.
+    Updated system/lirc.
+    Updated utils/bluez-utils.
+    Updated xorg-7.3/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 47 (2008-04-29):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17166.
+    MythTV trunk:        version trunk.17177,    trunk svn 17177.
+
+Modified Xorg 7.2 and 7.3
+    - Updated X server with latest git fixes (7.3 only).
+    - Disabled the following unused extensions at compile time
+        - appgroup
+        - composite
+        - cup
+        - xace
+        - xcsecurity
+    - Disabled the following unused frame buffer support at complile time
+        - afb (7.3 only)
+        - cfb (7.3 only)
+        - mfb (7.3 only)
+        - xvfb
+    - Disabled threads.
+    - Disabled XDMCP.
+    - Patched xtrans so that unix transport (both file system and abstract
+      namespace) works.
+    - Patched xtrans to disable unix transport using file system namespace.
+    - Disabled local transport at compile time since it is not used by Linux.
+    - Disabled TCP transport at compile time since it is not used for local X
+      connections.
+    - Stopped overriding gcc optimzition with -02 at compile time.
+
+Modified Linux kernel
+    - Switched from the 2.6.24 to the 2.6.25 kernel.
+    - Disabled timer stats collected to support powertop because they increase
+      the kernel overhead.
+    - Switched 2.6.23 and 2.6.24 kernels back to in-tree ALSA drivers.
+        - In-tree drivers appear to have fewer overall problems.
+        - Unfortunately, in-tree drivers do not support the Jetway J9F2 HDMI.
+    - Updated unionfs to 2.3.3.
+
+Modified init
+    - Changed 'minimyth.script' handling so that 'minimyth.script' it is fetched
+      and run earlier.
+        - Now, 'minimyth.script' fetched and run after the 'minimyth.conf' is
+          imported and the DHCP override variables are applied but before
+          'minimyth.conf' is processed.
+    - Moved audio auto-detection to udev.
+        - Moved mapping information from
+          '/etc/hardware.d/{pci|usb}2audio.map'
+          to
+          '/etc/udev/rules.d/04-minimyth-detect-audio.rules.disabled'.
+    - Moved LCDproc auto-detection to udev.
+        - Moved mapping information from
+          '/etc/hardware.d/usb2lcdproc.map'
+          to
+          '/etc/udev/rules.d/04-minimyth-detect-lcdproc.rules.disabled'.
+    - Moved LIRC auto-detection to udev.
+        - Moved mapping information from
+          '/etc/hardware.d/usb2lirc.map'
+          to
+          '/etc/udev/rules.d/04-minimyth-detect-lirc.rules.disabled'.
+    - Moved X auto-detection to udev.
+        - Moved mapping information from
+          '/etc/hardware.d/pci2x.map'
+          to
+          '/etc/udev/rules.d/04-minimyth-detect-x.rules.disabled'.
+    - Made LIRC device list a variable so that it can be more easily debugged.
+    - Added IRTrans init support for LCDproc and LIRC functions.
+    - Removed functions
+          mm_hardware_pci_process,
+          mm_hardware_pci2audio_map,
+          mm_hardware_pci2x_map,
+          mm_hardware_usb_process,
+          mm_hardware_usb2audio_map,
+          mm_hardware_usb2lcdproc_map,
+          mm_hardware_usb2lirc_driver_map and
+          mm_hardware_usb2lirc_remote_map
+      because they are no longer used anywhere.
+
+Fixed bugs
+    - Fixed typo that caused MM_VIDEO_PLAYBACK_PROFILE='none' to behave
+      incorrectly.
+    - Fixed bug that caused perl not to build on systems using the dash shell
+      (thanks to pleeke for tranking down the bug and proposing a fix).
+
+Deprecated packages
+    Deprecated kernel-2.6.23.
+    Deprecated kernel-headers/linux-headers-2.6.23.
+    Deprecated X11/IEGD.
+    Deprecated xorg-7.2.
+
+Removed packages
+    Removed kernel-2.6.23/alsa-driver.
+    Removed kernel-2.6.24/alsa-driver.
+    Removed xorg-7.2/compositeproto.
+    Removed xorg-7.2/libpthread-stubs.
+    Removed xorg-7.2/libxcb.
+    Removed xorg-7.2/libXdmcp.
+    Removed xorg-7.2/xcb-proto.
+    Removed xorg-7.3/compositeproto.
+    Removed xorg-7.3/libpthread-stubs.
+    Removed xorg-7.3/libxcb.
+    Removed xorg-7.3/libXdmcp.
+    Removed xorg-7.3/xcb-proto.
+
+Added packages
+    Added nvidia/nvidia-173.08.
+    Added system/irserver.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/fakeroot.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated devel/yasm.
+    Updated disk/e2fsprogs.
+    Updated doc/texinfo.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-2.6.25/uvc.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/libart.
+    Updated lib/libdvdnav.
+    Updated lib/libftdi.
+    Updated lib/libpng.
+    Updated mediaplayers/xine-lib.
+    Updated perl/perl-libwww-perl.
+    Updated system/lirc.
+    Updated system/splashutils.
+    Updated utils/busybox.
+    Updated utils/coreutils.
+    Updated utils/tar.
+    Updated utils/util-linux-ng.
+    Updated xorg-7.2/xf86-video-intel.
+    Updated xorg-7.3/pixman.
+    Updated xorg-7.3/xf86-video-intel.
+    Updated xorg-7.3/xf86-video-vmware.
+    Updated xorg-7.3/xf86driproto.
+    Updated xorg-7.3/xorg-server.
+
+--------------------------------------------------------------------------------
+Changes since 46 (2008-04-11):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 17011.
+    MythTV trunk:        version trunk.17014,    trunk svn 17014.
+
+Modified Xorg
+    - Disabled xcb support because of a bad interaction between Xine's xxmc and
+      xcb: <http://bugs.xine-project.org/show_bug.cgi?id=25>.
+
+Modified Linux kernel
+    - Disabled CONFIG_HIGH_RES_TIMERS because it slows down starting playback
+      on at least some VIA EPIA boards. I have no idea why.
+
+Updated packages
+    Updated emulators/stella.
+    Updated lib/libxml2.
+    Updated lib/libxslt.
+    Updated myth-trunk/mythstream.
+    Updated net/syslinux.
+    Updated system/lirc.
+    Updated utils/pciutils.
+    Updated xorg-7.2/Mesa.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/xf86-video-openchrome.
+
+--------------------------------------------------------------------------------
+Changes since 45 (2008-04-05):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16962.
+    MythTV trunk:        version trunk.16956,    trunk svn 16956.
+
+Improved Xorg
+    - Enabled xkb support.
+
+Modified MPlayer
+    - Removed SDL support.
+    - Removed external Ogg, Vorbis and Theora support.
+        - FFmpeg's Ogg, Vorbis and Theora are still included.
+
+Modified Xine
+    - Removed SDL support.
+    - Removed Ogg, Vorbis and Theora support.
+
+Removed packages
+    Removed lib/libtheora.
+
+Added packages
+    Added kernel-2.6.23/alsa-driver.
+    Added kernel-2.6.24/alsa-driver.
+    Added xorg-7.2/xkbcomp.
+    Added xorg-7.2/xkeyboard-config.
+    Added xorg-7.3/xkbcomp.
+    Added xorg-7.3/xkeyboard-config.
+
+Updated packages
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/gdb.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated emulators/mednafen.
+    Updated emulators/stella.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated lib/bluez-libs.
+    Updated lib/dbus.
+    Updated lib/libpng.
+    Updated mediaplayers/xine-lib.
+    Updated net/curl.
+    Updated net/openssh.
+    Updated system/udev.
+    Updated utils/bluez-utils.
+    Updated utils/file.
+    Updated utils/m4.
+    Updated xorg-7.2/Mesa.
+
+--------------------------------------------------------------------------------
+Changes since 44 (2008-03-27):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16812.
+    MythTV trunk:        version trunk.16813,    trunk svn 16813.
+
+Improved MythTV
+    - Enabled FAAD2 support so that AAC works in videos.
+    - Enabled libfftw3f in 0.21 and trunk so that it can be used for 5.1 surround
+      processing.
+    - Patched MythMusic and MythStream so that they use libfftw3f as well in
+      order to avoid multiple FFTW libraries in the distribution.
+        - MythMusic used libfftw3 previously.
+        - MythStream used libfftw previously.
+
+Improved Xorg
+    - Replaced Xorg's default paths with paths used by MiniMyth
+        - Eliminates the need for putting them in xorg.conf.
+        - Stops Xorg from including and then pruning non-existant font
+          directories.
+    - Removed Xorg 7.3's default modules
+        - Stops Xorg 7.3's indiscriminate loading of dri and type1 modules
+          without the need for the disable directive in xorg.conf.
+
+Improved Init
+    - Changed mythtv init script so that it disables MythTV's use OpenGL
+      when the unstable unichrome_dri.so driver would be used.
+
+Removed packages
+    Removed lib/fftw.
+
+Added packages
+    Added lib/fftw3f.
+
+Updated packages
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated emulators/sdlmame.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.25/linux.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated kernel-headers/linux-headers-2.6.25.
+    Updated xorg-7.2/Mesa.
+    Updated xorg-7.3/Mesa.
+
+--------------------------------------------------------------------------------
+Changes since 43 (2008-03-22):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16743.
+    MythTV trunk:        version trunk.16747,    trunk svn 16747.
+
+Changed Xorg and Mesa
+    - Patched Mesa with <https://bugs.freedesktop.org/show_bug.cgi?id=13541>
+      in order to fix some GL/GLX related crashes.
+    - Re-included unichrome_dri.so since the Mesa patch appears to have fixed
+      the UI crases and video renderer fallback to OpenGL has already by
+      patched.
+    - Switched back to Xorg 7.3 in order to overcome a crash when using the
+      program guide on at least some VIA hardware.
+
+Improved build system
+    - Added initial support for Qt 4 that will soon be required by MythTV trunk.
+        - While the build system supports both Qt 3 and Qt 4, you cannot have
+          both Qt 3 and Qt 4 in the same build.
+
+Fixed bugs
+    - Fixed bug that caused MiniMyth's playback profile to fail for xvmc-vld.
+    - Fixed bug that prevented local boot.
+    - Overcame bug that caused the program guide to crash on at least some
+      VIA hardware.
+    - Fixed bug that caused lm_sensors to incorrectly handle virtual devices
+      by appling the patch dated 2008-03-17 found at
+      <https://bugzilla.redhat.com/show_bug.cgi?id=437637>.
+
+Moved packages
+    Moved qt/qt to qt/qt3.
+
+Added packages
+    Added kernel-2.6.25/*.
+    Added kernel-headers/linux-headers-2.6.25.
+    Added qt/qt4.
+
+Updated packages
+    Updated libs/bluez-libs.
+    Updated mediaplayers/xine-lib.
+    Updated system/udev.
+    Updated utils/bluez-utils.
+    Updated utils/busybox.
+    Updated utils/bzip2.
+    Updated xorg-7.3/libkbfile.
+    Updated xorg-7.3/libXv.
+    Updated xorg-7.3/xf86-input-keyboard.
+    Updated xorg-7.3/xf86-input-mouse.
+    Updated xorg-7.3/xf86-video-sis.
+    Updated xorg-7.3/xf86-video-vmware.
+
+--------------------------------------------------------------------------------
+Changes since 42 (2008-03-16):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16577.
+    MythTV trunk:        version trunk.16588,    trunk svn 16588.
+
+Improved init
+    - Changed init to create video playback profile name 'MiniMyth' for MythTV
+      0.21 and trunk based on MiniMyth configuration variables.
+    - Added MM_VIDEO_PLAYBACK_PROFILE for configuring the video playback profile
+      in MythTV 0.21 and trunk.
+
+Enhanced MPlayer
+    - Added DVD navigation support. When MythTV's internal player does not play
+      a DVD or DVD ISO correctly, I use the following MPlayer commands instead:
+        - For a DVD
+          mplayer -fs -quiet -nocache -vfm ffmpeg -vo xv dvdnav://0 -dvd-device /dev/dvd
+        - For a DVD ISO
+          mplayer -fs -quiet -nocache -vfm ffmpeg -vo xv dvdnav://0 -dvd-device %s
+    - Changed LIRC KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_OK and KEY_DVD
+      so that they control DVD navigation functionality.
+    - It crashes when either XvMC or XvMC-VLD is enabled. I have no looked
+      into the cause.
+    - If you are using Xine for DVD playback and you do not require XvMC or
+      XvMC-VLD support, then please try using mplayer instead. As some point
+      in the future, I would like to remove Xine.
+
+Removed packages
+    Removed lib/libdvdread (included in lib/libdvdnav).
+
+Added packages
+    Added lib/libdvdnav.
+
+Updated packages
+    Updated disk/e2fsprogs.
+    Updated devel/binutils.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated lib/libcdio.
+    Updated utils/findutils.
+
+--------------------------------------------------------------------------------
+Changes since 41 (2008-03-12):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16483.
+    MythTV trunk:        version trunk.16487,    trunk svn 16487.
+
+Changed Xorg and Mesa:
+    - Reverted from Mesa 7.0.3-rc2 to Mesa 7.0.1 because newer versions
+      cause segfaults when using MythTV on VIA video hardware due to GL/GLX
+      problems.
+    - Reverted from Xorg 7.3 to Xorg 7.2 because a combination of
+      Xorg 7.3 and Mesa causes fequent segfaults when using xscreensaver's
+      glsideshow hack with VIA video hardware.
+    - Stopped including unichrome_dri.so because it is buggy (due to the fact
+      that it is no longer maintained) and causes infrequent segfaults when
+      using xscreensaver's glslideshow hack. Unfortunately, this means that
+      there is no longer GL/GLX acceleration for VIA video hardware.
+
+Made bug fixes
+    - Fixed bug that prevented MM_DHCP_* variables in minimyth.conf from
+      working. The MM_DCHP_* variables still worked when used on the boot line.
+    - Fixed bug that prevented powernowd from starting when 
+      MM_CPU_FREQUENCY_GOVERNOR was set to 'userspace'.
+
+Made bug fixes in build system
+    - Fixed bug that prevented perl modules from building when the native and
+      cross environments are the same architecture family (i.e. both i386 or
+      both x86_64).
+
+--------------------------------------------------------------------------------
+Changes since 40 (2008-03-09):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16483.
+    MythTV trunk:        version trunk.16487,    trunk svn 16487.
+
+Changed minimyth.conf
+    - Renamed MM_UPDATE variables
+        - MM_UPDATE_URL to MM_MINIMYTH_UPDATE_URL.
+    - Renamed MM_MEDIA variables
+        - MM_MYTHGALLERY_MOUNTPOINT to MM_MEDIA_GALLERY_MOUNTPOINT.
+        - MM_MYTHGALLERY_URL to MM_MEDIA_GALLERY_URL.
+        - MM_MYTHGAME_MOUNTPOINT to MM_MEDIA_GAME_MOUNTPOINT.
+        - MM_MYTHGAME_URL to MM_MEDIA_GAME_URL.
+        - MM_MYTHMUSIC_MOUNTPOINT to MM_MEDIA_MUSIC_MOUNTPOINT.
+        - MM_MYTHMUSIC_URL to MM_MEDIA_MUSIC_URL.
+        - MM_MYTHVIDEO_MOUNTPOINT to MM_MEDIA_VIDEO_MOUNTPOINT.
+        - MM_MYTHVIDEO_URL to MM_MEDIA_VIDEO_URL.
+        - MM_MYTHDVD_MOUNTPOINT to MM_MEDIA_DVD_RIP_MOUNTPOINT.
+        - MM_MYTHDVD_URL to MM_MEDIA_DVD_RIP_URL.
+    - Renamed MM_PLUGIN variables
+        - MM_MYTHTV_OPTICAL_DISK_ENABLED to MM_PLUGIN_OPTICAL_DISK_ENABLED.
+        - MM_MYTHBROWSER_ENABLED to MM_PLUGIN_BROWSER_ENABLED.
+        - MM_MYTHDVD_ENABLED to MM_PLUGIN_DVD_ENABLED.
+        - MM_MYTHGALLERY_ENABLED to MM_PLUGIN_GALLERY_ENABLED.
+        - MM_MYTHGAME_ENABLED to MM_PLUGIN_GAME_ENABLED.
+        - MM_MYTHMUSIC_ENABLED to MM_PLUGIN_MUSIC_ENABLED.
+        - MM_MYTHNEWS_ENABLED to MM_PLUGIN_NEWS_ENABLED.
+        - MM_MYTHPHONE_ENABLED to MM_PLUGIN_PHONE_ENABLED.
+        - MM_MYTHSTREAM_ENABLED to MM_PLUGIN_STREAM_ENABLED.
+        - MM_MYTHVIDEO_ENABLED to MM_PLUGIN_VIDEO_ENABLED.
+        - MM_MYTHWEATHER_ENABLED to MM_PLUGIN_WEATHER_ENABLED.
+        - MM_MYTHZONEMINDER_ENABLED to MM_PLUGIN_ZONEMINDER_ENABLED.
+
+Improved build system
+    - Extended build system to add pxe-minimyth-{version}.tar.bz2 to the
+      distribution, a file that contains boot loaders and configuration filess
+      for PXELINUX and gPXE.
+    - Dropped dependency on 'arch' utility.
+    - Switched to gcc 4.3.0.
+
+Removed packages
+    Removed nvidia/nvidia-169.09.
+    Removed xorg-7.3/libpciaccess.
+
+Added packages
+    Added net/gpxe.
+    Added net/syslinux.
+
+Updated packages
+    Updated devel/binutils.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/gcc-minimal-static.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/uvc.
+    Updated lib/bluez-libs.
+    Updated lib/dbus.
+    Updated lib/libftdi.
+    Updated perl/perl-HTML-Tagset.
+    Updated system/zoneinfo.
+    Updated utils/bluez-utils.
+    Updated X11/xscreensaver.
+    Updated xorg-7.2/libX11.
+    Updated xorg-7.2/libXfont.
+    Updated xorg-7.2/mkfontdir.
+    Updated xorg-7.2/mkfontscale.
+    Updated xorg-7.2/util-macros.
+    Updated xorg-7.2/xinit.
+    Updated xorg-7.2/xproto.
+    Updated xorg-7.2/xset.
+    Updated xorg-7.2/xtrans.
+    Updated xorg-7.3/inputproto.
+    Updated xorg-7.3/libX11.
+    Updated xorg-7.3/libXfont.
+    Updated xorg-7.3/libXinerama.
+    Updated xorg-7.3/mkfontdir.
+    Updated xorg-7.3/mkfontscale.
+    Updated xorg-7.3/util-macros.
+    Updated xorg-7.2/xinit.
+    Updated xorg-7.3/xproto.
+    Updated xorg-7.3/xset.
+    Updated xorg-7.3/xtrans.
+
+--------------------------------------------------------------------------------
+Changes since 39 (2008-03-01):
+
+Current MythTV versions
+    MythTV 0.20-softpad: version 0.20.2.softpad, release-0-20-fixes branch svn 16082,
+                                                 ticket 3035 as of 2007.02.07, and
+                                                 softpad branch svn 11261 (updated).
+    MythTV 0.20:         version 0.20.2,         release-0-20-fixes branch svn 16082, and
+                                                 ticket 3035 as of 2007.02.07.
+    MythTV 0.21:         version 0.21.0,         release-0-21-fixes branch svn 16317.
+    MythTV trunk:        version trunk.16318,    trunk svn 16318.
+
+Removed MythAduio support
+    - Removed myth-stable20/mythaudio package.
+    - Removed MM_MYTHAUDIO_ENABLED, MM_MYTHAUDIO_MOUNTPOINT and
+      MM_MYTHAUDIO_URL.
+
+Improved build system
+    - Switched to using fixes branches directly rather than the stable
+      tarballs with patches from fixes branches.
+    - Aligned 'myth-*' packages so that it is easier to tell the
+      difference between the different 'myth-*' packages.
+    - Renamed 'myth-*' packages.
+
+Moved packages
+    Moved myth-softpad20/* to myth-0.20-softpad/*
+    Moved myth-stable20/*  to myth-0.20/*
+    Moved myth-stable21/*  to myth-0.21/*
+    Moved myth-svn/*       to myth-trunk/*
+
+Removed packages
+    Removed devel/automake-1.9.
+    Removed lib/fftw3f.
+    Removed myth-stable20/mythaudio.
+    Removed utils/powertop.
+
+Updated packages
+    Updated devel/flex.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated xorg-7.2/libXext.
+    Updated xorg-7.3/libXext.
+
+--------------------------------------------------------------------------------
+Changes since 38 (2008-02-26):
+
+Current MythTV versions
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15874,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15874, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV stable21:  version 0.21.0,   release-0-21-fixes branch svn 15948.
+    MythTV svn:       version svn16133, trunk svn 16133.
+
+Added MythTV 0.21 support to the build system
+    - Does not work because the MythTV 0.21 tarballs have not been released.
+
+Added perl
+    - The good
+        - It eliminates the need for remote perl execution.
+        - It supports more perl scripts than remote perl execution.
+    - The bad
+        - It increases the root file system size significantly (~5MB).
+            - Currently the perl files known to be unused have been removed and
+              remaining the perl files have been stripped (it was ~9MB without
+              this). Unfortunately, there is no way to do foolproof dependency
+              tracking for perl script and modules. As a result, it is likely
+              that unused perl files still remain.
+    - Only tested with MythTV 0.20.
+        - MythWeather 0.21 and MythWeather SVN may not work.
+    - Removed remote command or ssh since it was used only to run perl
+      scripts.
+        - Obsoleted MM_SSH_REMOTE_* variables.
+
+Patched MythTV
+    - Patched MythTV so that mythfrontend runs a network control (aka telnet
+      socket) interface on the loopback address on the port one greater than
+      the configured network control port. This allows MiniMyth to use the
+      network control interface without requiring the reqular network control
+      interface to be enabled and without interfering with the regular network
+      control interface.
+
+Updated Xorg
+    - Switched to using Xorg 7.3 by default.
+
+Updated LIRC
+    - The lirc_imon module parameter islcd renamed is_lcd because the patch that
+      adds LCD support to the lirc_imon has been merged upstream and uses this
+      different module parameter name.
+
+Improved build system
+    - Added bluetooth kernel modules.
+    - Added BlueZ libraries (lib/bluez-libs) and utilities (utils/bluez-utils).
+    - Added Wii remote control (aka wiimote) libraries (lib/libwiimote) and
+      utilities (utils/cwiid).
+    - Added Wii remote control support.
+        - It is not compiled in by default.
+    - Switched to using the build system's perl.
+    - Added perl packages needed to run perl dependent MythTV plugins.
+
+Removed packages
+    Removed kernel-2.6.23/xbox360.
+    Removed kernel-2.6.24/xbox360.
+    Removed net/rsync.
+    Removed nvidia/nvidia-71.86.01.
+    Removed nvidia/nvidia-96.43.01.
+    Removed nvidia/nvidia-169.07.
+
+Added packages
+    Added lib/bluez-libs.
+    Added lib/dbus.
+    Added lib/fftw3.
+    Added lib/libwiimote.
+    Added lib/readline.
+    Added myth-stable21/*.
+    Added net/netpipes.
+    Added nvidia/nvidia-71.86.04.
+    Added nvidia/nvidia-96.43.05.
+    Added nvidia/nvidia-169.12.
+    Added perl/perlsharp.
+    Added perl/perl-Date-Manip.
+    Added perl/perl-File-Temp.
+    Added perl/perl-HTML-Parser.
+    Added perl/perl-HTML-Tagset.
+    Added perl/perl-Image-Size.
+    Added perl/perl-libwww-perl.
+    Added perl/perl-libxml-perl.
+    Added perl/perl-Parse-Yapp.
+    Added perl/perl-Perl-Tidy.
+    Added perl/perl-SOAP-Lite.
+    Added perl/perl-URI.
+    Added perl/perl-XML-DOM.
+    Added perl/perl-XML-NamespaceSupport.
+    Added perl/perl-XML-Parser.
+    Added perl/perl-XML-RegExp.
+    Added perl/perl-XML-SAX.
+    Added perl/perl-XML-Simple.
+    Added perl/perl-XML-XQL.
+    Added utils/cwiid.
+    Added utils/bluez-utils.
+    Added xorg-7.2/libxcb.
+    Added xorg-7.3/libxcb.
+
+Updated packages
+    Updated db/mysql.
+    Updated devel/gcc.
+    Updated devel/fakeroot.
+    Updated devel/flex.
+    Updated devel/libtool.
+    Updated devel/nasm.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated emulators/sdlmame.
+    Updated kde/kdelibs.
+    Updated kernel-2.6.23/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-headers/linux-headers-2.6.23.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated lib/alsa-lib.
+    Updated lib/faad2.
+    Updated lib/libpng.
+    Updated lib/mpfr.
+    Updated lib/pcre.
+    Updated lib/taglib.
+    Updated mediaplayers/xine-lib.
+    Updated net/curl.
+    Updated system/lirc.
+    Updated system/powernowd.
+    Updated system/splashutils.
+    Updated utils/alsa-utils.
+    Updated utils/busybox.
+    Updated utils/coreutils.
+    Updated utils/ed.
+    Updated utils/findutils.
+    Updated utils/lm_sensors.
+    Updated utils/pciutils.
+    Updated utils/which.
+    Updated X11/ratpoison.
+    Updated xorg-7.2/bdftopcf.
+    Updated xorg-7.2/damageproto.
+    Updated xorg-7.2/glproto.
+    Updated xorg-7.2/iceauth.
+    Updated xorg-7.2/libICE.
+    Updated xorg-7.2/libSM.
+    Updated xorg-7.2/libX11.
+    Updated xorg-7.2/libXdamage.
+    Updated xorg-7.2/libXext.
+    Updated xorg-7.2/libXi.
+    Updated xorg-7.2/libXmu.
+    Updated xorg-7.2/libXpm.
+    Updated xorg-7.2/libXrandr.
+    Updated xorg-7.2/libXt.
+    Updated xorg-7.2/libXtst.
+    Updated xorg-7.2/libXxf86dga.
+    Updated xorg-7.2/makedepend.
+    Updated xorg-7.2/mkfontdir.
+    Updated xorg-7.2/randrproto.
+    Updated xorg-7.2/xcb-proto.
+    Updated xorg-7.2/xdpyinfo.
+    Updated xorg-7.2/xf86dgaproto.
+    Updated xorg-7.2/xf86-input-void.
+    Updated xorg-7.2/xf86-video-intel.
+    Updated xorg-7.2/xf86-video-sis.
+    Updated xorg-7.2/xinit.
+    Updated xorg-7.2/xorg-server.
+    Updated xorg-7.2/xproto.
+    Updated xorg-7.2/xset.
+    Updated xorg-7.2/xsetroot.
+    Updated xorg-7.2/xtrans.
+    Updated xorg-7.3/libXmu.
+    Updated xorg-7.3/Mesa.
+    Updated xorg-7.3/xcb-proto.
+    Updated xorg-7.3/xf86-video-ati.
+    Updated xorg-7.3/xf86-video-intel.
+
+--------------------------------------------------------------------------------
+Changes since 37 (2008-01-23):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15488, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15488,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15481, trunk svn 15481.
+
+Modified XvMC support
+    - Changed /etc/X11/XvMCConfig so that it uses libXVMCNVIDIA rather
+      than libXVMCNVIDIA_dynamic.
+    - Changed /etc/X11/XvMCConfig so that it contains the full path.
+
+Modified minimyth.conf
+    - Added the function mm_minimyth_conf_include for fetching and including
+      a file in minimyth.conf. See the example minimyth.conf for usage.
+    - Obsoleted MM_CPUFREQ_GOVERNOR, replacing it with MM_CPU_FREQUENCY_GOVERNOR.
+    - Added MM_CPU_FETCH_MICROCODE_DAT.
+
+Modified CIFS support
+    - Stopped disabling CIFS UNIX extensions support.
+    - Stopped setting uid, gid, file_mode and dir_mode options.
+
+Added Intel CPU firmware loading
+    - Added microcode kernel module.
+    - Added microcode_ctl utility.
+    - Added microcode loading to init scripts
+        - Renamed init script cpufreq to cpu
+        - Added MM_CPU_FETCH_MICROCODE_DAT for controlling retrieval of
+          the microcode.dat file.
+
+Fixed gcc 4.3 support
+    - Patched Linux kernel so that it builds.
+    - Added missing headers to packages
+        emulaters/mednafen,
+        emulaters/stella,
+        emulaters/zsnes,
+        lib/flac,
+        lib/libcdio,
+        lib/taglib,
+        myth-softpad20/mythplugins,
+        myth-softpad20/mythstream,
+        myth-softpad20/mythtv,
+        myth-stable20/mythplugins,
+        myth-stable20/mythstream,
+        myth-stable20/mythtv,
+        myth-svn/mythplugins,
+        myth-svn/mythstream,
+        myth-svn/mythtv and
+        X11/xmacro.
+    - Fixed incompatible #defines in packages
+        lib/libjpeg,
+        myth-softpad20/mythplugins and
+        myth-stable20/mythplugins,
+    - Disabled fpic for i386 so that registers do not run out in packages
+        mediaplayers/xine-lib.
+    - Patched GCC so that it is configured correctly for glibc during cross
+      compile, enabling Qt to cross compile.
+    - Compiling MiniMyth with GCC 4.3 takes much longer than compiling
+      MiniMyth with GCC 4.2 (8 hours versus 5 hours), so I am not sure that it
+      is worth using.
+
+Fixed file transfer problems.
+    - Reincluded tftp and wget.
+        - The TFTP support in curl appears to be somewhat broken.
+        - The mm_local_* scripts use tftp and wget.
+
+Modified build system.
+    - Switched pbg-config to using PKG_CONFIG_LIBDIR and
+      PKG_CONFIG_SYSROOT_DIR in order to simplify *.pc file handling
+      in the cross environment.
+
+Removed packages
+    Removed nvidia/nvidia-9646.
+
+Added packages
+    Added nvidia/nvidia-169.09.
+    Added utils/microcode_ctl.
+
+Updated packages
+    Updated devel/automake.
+    Updated devel/fakeroot.
+    Updated devel/nasm.
+    Updated devel/pkg-config.
+    Updated kernel-2.6.23/linux.
+    Updated kernel-2.6.23/uvc.
+    Updated kernel-2.6.24/linux.
+    Updated kernel-2.6.24/uvc.
+    Updated kernel-headers/linux-headers-2.6.23.
+    Updated kernel-headers/linux-headers-2.6.24.
+    Updated mediaplayers/xine-lib.
+    Updated lib/libxml2.
+    Updated lib/pcre.
+    Updated qt/qt.
+    Updated system/lirc.
+    Updated utils/util-linux-ng.
+
+--------------------------------------------------------------------------------
+Changes since 36 (2008-01-06):
+
+Current MythTV versions
+    MythTV stable20:  version 0.20.2,   release-0-20-fixes branch svn 15332, and
+                                        ticket 3035 as of 2007.02.07.
+    MythTV softpad20: version 0.20.2,   release-0-20-fixes branch svn 15275,
+                                        ticket 3035 as of 2007.02.07, and
+                                        softpad branch svn 11261 (updated).
+    MythTV svn:       version svn15333, trunk svn 15333.
+
+Fixed CD/DVD detection
+    - MythTV calls udevinfo which no longer exists as a separate binary.
+
+Fixed MythPhone audio
+    - MythPhone uses OSS rather than ALSA.
+    - Added PCM OSS emulation kernel driver.
+
+Improved sleep/wakeup handling
+    - Only allow one instance of mm_sleep to run.
+    - Stop and restart irexec in mm_sleep so that queued remote power button
+      presses are discarded rather than processed.
+    - Changed LIRC wakeup enabling so that it only enables wakeup on USB host
+      controllers associated with configured LIRC devices rather than all LIRC
+      devices.
+    - Changed the sleep script so that it stops and restarts LCDd.
+    - Added MM_ACPI_EVENT_BUTTON_POWER and MM_ACPI_VIDEO_FLAGS.
+
+Added work-around for OpenGL segfault on VIA hardware
+    - Disabled Mesa assembly language support.
+
+Modified build system
+    - When copying files listed in the file lists (e.g. minimyt-*-list),
+      every file that is a symbolic link not pointing to a shared library
+      is copied as a symbolic link along with the file to which it points.
+    - Removed remaining unneeded dependencies on the 'kernel/kernel' package.
+
+Updated packages
+    Updated disk/e2fsprogs.
+    Updated emulators/mednafen.
+    Updated lib/SDL.
+    Updated mediaplayers/xine-lib.
+    Updated system/splashutils.
+    Updated system/zoneinfo.
+    Updated utils/file.
+    Updated utils/transcode.
+    Updated xorg-7.2/xf86-video-openchrome.
+    Updated xorg-7.3/xf86-video-openchrome.
