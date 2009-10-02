@@ -2,11 +2,12 @@ Directory listing
     + readme.txt
         This file.
     + changelog.txt
-        A text file containing the changes to MiniMyth.
-        Be sure to read the changes before you use the new version as some
-        changes will cause your system to fail during boot.
-        This file is included in 'ram-minimyth-<version>.tar.bz2' and
-        'nfs-minimyth-<version>.tar.bz2' as well.
+        A text file containing a list of changes since the previous stable
+        MiniMyth release. Be sure to read the changes before you use the new
+        version as some changes will cause your system to fail during boot.
+        This file as well as the change logs for earlier versions are included
+        in 'ram-minimyth-<version>.tar.bz2' and 'nfs-minimyth-<version>.tar.bz2'
+        as well.
     + version
         A text file containing the the version of MiniMyth in this directory.
         This file is included in 'ram-minimyth-<version>.tar.bz2' and
@@ -38,9 +39,10 @@ Directory listing
     + pxe-minimyth-<version>.tar.bz2.md5
         The MD5 checksum for the file 'pxe-minimyth-<version>.tar.bz2'
     + html.tar.bz2
-        A tarball of the MiniMyth documentation files in HTML (XHTML 1.1 + CSS 1)
-        format. These files are included in 'ram-minimyth-<version>.tar.bz2' and
-        'nfs-minimyth-<version>.tar.bz2' as well.
+        A tarball of the MiniMyth documentation files in HTML
+        (XHTML 1.1 + CSS 1) format. These files are included in
+        'ram-minimyth-<version>.tar.bz2' and 'nfs-minimyth-<version>.tar.bz2'
+        as well.
     + html.tar.bz2.md5
         The MD5 checksum for the file 'html.tar.bz2'.
     + scripts/
