@@ -28,9 +28,11 @@ clean-all:
 source-update:
 	@$(MAKE) -C ../mythtv            source-update-source
 	@$(MAKE) -C ../mythplugins       source-update-source
+	@$(MAKE) -C ../myththemes        source-update-source
 	@$(MAKE) -C ../myththemes-addons source-update-source
 	@$(MAKE) -C ../myththemes-old    source-update-source
 	@$(MAKE) -C ../mythtv            source-update-patches
 	@$(MAKE) -C ../mythplugins       source-update-patches
+	@$(MAKE) -C ../myththemes        source-update-patches
 	@$(MAKE) -C ../myththemes-addons source-update-patches
 	@$(MAKE) -C ../myththemes-old    source-update-patches
