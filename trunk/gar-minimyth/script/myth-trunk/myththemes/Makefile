@@ -1,11 +1,9 @@
-GARNAME = myththemes-addons
+GARNAME = myththemes
 GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/themes/
+MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
-PATCHFILES += \
-	$(DISTNAME_SHORT)-font.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -39,12 +37,6 @@ svn//%/$(DISTNAME).tar.bz2:
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
-
-pre-configure:
-	@echo "themes.files  ="                   >> $(WORKSRC)/themes.pro
-	@echo "themes.files += blootube-osd"      >> $(WORKSRC)/themes.pro
-	@echo "themes.files += blootubelite-wide" >> $(WORKSRC)/themes.pro
-	@echo "themes.files += Graphite"          >> $(WORKSRC)/themes.pro
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)
