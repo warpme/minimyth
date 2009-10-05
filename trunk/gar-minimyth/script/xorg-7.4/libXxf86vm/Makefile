@@ -1,5 +1,5 @@
 GARNAME = libXxf86vm
-GARVERSION = 1.0.2
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,6 +26,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
 	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
