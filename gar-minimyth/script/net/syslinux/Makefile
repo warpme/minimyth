@@ -1,5 +1,5 @@
 GARNAME = syslinux
-GARVERSION = 3.82
+GARVERSION = 3.83
 CATEGORIES = net
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/boot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
