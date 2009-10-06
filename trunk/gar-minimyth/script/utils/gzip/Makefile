@@ -1,10 +1,9 @@
 GARNAME = gzip
-GARVERSION = 1.3.12
+GARVERSION = 1.3.13
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-futimens.patch
-LICENSE = GPL2
+LICENSE = GPL3
 
 DESCRIPTION = 
 define BLURB
@@ -16,6 +15,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules
 
 include ../../gar.mk
