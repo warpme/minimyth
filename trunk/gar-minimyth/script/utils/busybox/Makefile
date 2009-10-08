@@ -1,20 +1,11 @@
 GARNAME = busybox
-GARVERSION = 1.15.1
+GARVERSION = 1.15.2
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-1.15.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = \
-	$(DISTNAME)-ash.patch \
-	$(DISTNAME)-buildsys.patch \
-	$(DISTNAME)-dd.patch \
-	$(DISTNAME)-find.patch \
-	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-lineedit.patch \
-	$(DISTNAME)-pidof_killall.patch \
-	$(DISTNAME)-sed.patch \
-	$(DISTNAME)-uniq.patch
+PATCHFILES  =
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
@@ -45,7 +36,7 @@ include ../../gar.mk
 
 extract-$(CONFIGFILE):
 	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
-		| sed -e 's%@GAR_rootdir@%$(rootdir)%g' \
+		| sed -e 's%@GAR_localstatedir@%$(localstatedir)%g' \
 		| sed -e 's%@GAR_sysconfdir@%$(sysconfdir)%g' \
 		> $(WORKDIR)/$(CONFIGFILE)
 	@$(MAKECOOKIE)
