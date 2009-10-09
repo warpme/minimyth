@@ -1,10 +1,10 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 0.2.903
+GARVERSION = 0.2.904
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
 MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ioctl.patch $(DISTNAME)-composite.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-pkg_config.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -13,10 +13,10 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
-	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -38,7 +38,11 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-static \
+	--enable-shared \
 	--enable-dri \
+	--disable-debug \
+	--disable-xv-debug \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -58,7 +62,6 @@ pre-configure:
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"        >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"  >> $(WORKSRC)/config.cache
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"      >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/xf86Module.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
