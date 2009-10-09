@@ -1,7 +1,7 @@
 ################################################################################
-# MM_FLASH configuration variable handlers.
+# MM_HULU configuration variable handlers.
 ################################################################################
-package init::conf::MM_FLASH;
+package init::conf::MM_HULU;
 
 use strict;
 use warnings;
@@ -13,9 +13,9 @@ sub var_list
     return \%var_list;
 }
 
-$var_list{'MM_FLASH_URL'} =
+$var_list{'MM_HULU_URL'} =
 {
-    prerequisite   => ['MM_PLUGIN_BROWSER_ENABLED'],
+    prerequisite   => ['MM_FLASH'],
     value_default  => 'auto',
     value_valid    => 'auto|none|((cifs|confro|confrw|dist|file|http|hunt|nfs|tftp):(//(([^:@]*)?(:([^@]*))?\@)?([^/]+))?[^?#]*(\?([^#]*))?(\#(.*))?)',
     value_auto     => sub
@@ -25,18 +25,15 @@ $var_list{'MM_FLASH_URL'} =
 
         my $value_auto = 'none';
 
-        if ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes')
+        if ($minimyth->var_get('MM_FLASH_URL') ne 'none')
         {
             if (-e '/lib/ld-linux.so.2')
             {
-                $value_auto = 'confrw:libflashplayer.32.so';
+                $value_auto = 'confrw:huludesktop.32';
             }
-        }
-        if ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes')
-        {
             if (-e '/lib/ld-linux-x86-64.so.2')
             {
-                $value_auto = 'confrw:libflashplayer.64.so';
+                $value_auto = 'confrw:huludesktop.64';
             }
         }
 

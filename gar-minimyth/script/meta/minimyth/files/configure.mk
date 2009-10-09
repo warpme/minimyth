@@ -18,6 +18,7 @@ MM_INIT_START := \
     master \
     codecs \
     flash \
+    hulu \
     extras \
     sensors \
     acpi \

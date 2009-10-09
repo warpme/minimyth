@@ -1892,17 +1892,17 @@ sub flash_fetch_and_save
 
     my $devnull = File::Spec->devnull;
 
-    my $file       = undef;
-    my $flash_base = undef;
+    my $flash_file = undef;
+    my $flash_url  = undef;
     if    (-e q(/lib/ld-linux.so.2))
     {
-        $file       = q(libflashplayer.32.so);
-        $flash_base = q(install_flash_player_10_linux);
+        $flash_file = q(libflashplayer.32.so);
+        $flash_url  = q(http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_10_linux.tar.gz);
     }
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
-        $self->message_log('err', qq(failed to create Adobe Flash player file because 64-bit file format not supported.));
-        return 0;
+        $flash_file = q(libflashplayer.64.so);
+        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/libflashplayer-10.0.32.18.linux-x86_64.so.tar.gz);
     }
     else
     {
@@ -1910,9 +1910,9 @@ sub flash_fetch_and_save
         return 0;
     }
 
-    my $remote_file = $file;
-    my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
-    my $local_file  = $local_dir . '/' . $file;
+    my $local_dir = $ENV{'HOME'} . '/' . 'tmp' . '/' . 'flash' ;
+
+    File::Path::rmtree($local_dir);
 
     File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
@@ -1920,49 +1920,100 @@ sub flash_fetch_and_save
         return 0;
     }
 
-    my $flash_file = qq($flash_base.tar.gz);
-    my $flash_url  = qq(http://fpdownload.macromedia.com/get/flashplayer/current/$flash_file);
-    File::Path::rmtree(qq($local_dir/$flash_base));
-    unlink(qq($local_dir/$flash_file));
     $self->message_log('info', qq(downloading Adobe Flash Player file '$flash_url'.));
-    if (! $self->url_get($flash_url, qq($local_dir/$flash_file)))
+    if (! $self->url_get($flash_url, qq($local_dir/flash.tar.gz)))
     {
         $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
-        File::Path::rmtree(qq($local_dir/$flash_base));
-        unlink(qq($local_dir/$flash_file));
+        File::Path::rmtree(qq($local_dir));
         return 0;
     }
-    system(qq(/bin/tar -C $local_dir -zxf $local_dir/$flash_file));
-    unlink(qq($local_dir/$flash_file));
+    system(qq(/bin/tar -C $local_dir -zxf $local_dir/flash.tar.gz));
 
-    if (! -e qq($local_dir/$flash_base/libflashplayer.so))
+    if (! -e qq($local_dir/libflashplayer.so))
     {
-        File::Path::rmtree(qq($local_dir/$flash_base));
+        File::Path::rmtree($local_dir);
         $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
-    unlink(qq($local_file));
-    File::Copy::copy(qq($local_dir/$flash_base/libflashplayer.so), qq($local_file));
-    if (! -e qq($local_file))
+    if (! $self->confrw_put(qq($flash_file), qq($local_dir/libflashplayer.so)))
     {
-        File::Path::rmtree(qq($local_dir/$flash_base));
-        unlink(qq($local_file));
-        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
-        return 0;
-    }
-
-    File::Path::rmtree(qq($local_dir/$flash_base));
-
-    if (! $self->confrw_put(qq($remote_file), qq($local_file)))
-    {
-        unlink(qq($local_file));
+        File::Path::rmtree($local_dir);
         $self->message_log('err', qq(failed to save the Adobe Flash Player file.));
         return 0;
     }
-    $self->message_log('info', qq(saved Adobe Flash Player file 'confrw:$remote_file'.));
+    $self->message_log('info', qq(saved Adobe Flash Player file 'confrw:$flash_file'.));
 
-    unlink(qq($local_file));
+    File::Path::rmtree($local_dir);
+
+    return 1;
+}
+
+sub hulu_fetch_and_save
+{
+    my $self = shift;
+
+    my $devnull = File::Spec->devnull;
+
+    my $hulu_file = undef;
+    my $hulu_url  = undef;
+    if    (-e q(/lib/ld-linux.so.2))
+    {
+        $hulu_file = q(huludesktop.32);
+        $hulu_url  = qq(http://download.hulu.com/huludesktop_i386.deb);
+    }
+    elsif (-e q(/lib/ld-linux-x86-64.so.2))
+    {
+        $hulu_file = q(huludesktop.64);
+        $hulu_url  = qq(http://download.hulu.com/huludesktop_x86_64.deb);
+        return 0;
+    }
+    else
+    {
+        $self->message_log('err', qq(failed to create Hulu Desktop file because could not determine required file format.));
+        return 0;
+    }
+
+    my $local_dir = $ENV{'HOME'} . '/' . 'tmp' . '/' . 'hulu';
+
+    File::Path::rmtree(qq($local_dir));
+    File::Path::mkpath($local_dir, { mode => 0755 });
+    if (! -d $local_dir)
+    {
+        return 0;
+    }
+
+    $self->message_log('info', qq(downloading Hulu Desktop file '$hulu_url'.));
+    if (! $self->url_get($hulu_url, qq($local_dir/hulu.deb)))
+    {
+        File::Path::rmtree($local_dir);
+        $self->message_log('err', qq(failed to create the Hulu Desktop file.));
+        return 0;
+    }
+    system(qq(cd $local_dir ; /usr/bin/ar -x hulu.deb));
+
+    if (! -e qq($local_dir/data.tar.gz))
+    {
+        File::Path::rmtree($local_dir);
+        $self->message_log('err', qq(failed to create the Hulu Desktop file.));
+        return 0;
+    }
+    system(qq(/bin/tar -C $local_dir -zxf $local_dir/data.tar.gz));
+    if (! -e qq($local_dir/usr/bin/huludesktop))
+    {
+        File::Path::rmtree($local_dir);
+        $self->message_log('err', qq(failed to create the Hulu Desktop file.));
+        return 0;
+    }
+    if (! $self->confrw_put(qq($hulu_file), qq($local_dir/usr/bin/huludesktop)))
+    {
+        File::Path::rmtree($local_dir);
+        $self->message_log('err', qq(failed to save the Hulu Desktop file.));
+        return 0;
+    }
+    $self->message_log('info', qq(saved Hulu Desktop file 'confrw:$hulu_file'.));
+
+    File::Path::rmtree($local_dir);
 
     return 1;
 }
