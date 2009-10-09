@@ -218,6 +218,7 @@ sub start
         {
             my $port = 8765 + $index;
             $daemon = '/usr/sbin/lircd';
+            $daemon = $daemon . " --release=:UP";
             $daemon = $daemon . " --device=$device --driver=$driver";
             $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
             $daemon = $daemon . " --listen=$port";
@@ -226,6 +227,7 @@ sub start
         else
         {
             $daemon = '/usr/sbin/lircd';
+            $daemon = $daemon . " --release=:UP";
             $daemon = $daemon . " --device=$device --driver=$driver";
             $daemon = $daemon . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
             $daemon = $daemon . " $lircd_conf";

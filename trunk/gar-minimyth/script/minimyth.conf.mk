@@ -60,7 +60,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythvideo \
                              mythweather \
                              $(if $(filter $(mm_MYTH_VERSION),0.21 0.22 trunk),mythzoneminder) \
-                             $(if $(filter $(mm_MYTH_VERSION),0.22 trunk),flash) \
+                             flash \
                              mplayer-svn \
                              mplayer-vld \
                              vlc \

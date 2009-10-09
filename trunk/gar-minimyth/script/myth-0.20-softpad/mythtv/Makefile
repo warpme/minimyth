@@ -15,6 +15,8 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-gcc_4.3.patch \
 	$(DISTNAME_SHORT)-gcc_4.4.patch \
 	$(DISTNAME_SHORT)-link_xvmc_lib.patch \
+	$(DISTNAME_SHORT)-mythstream.patch \
+	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
@@ -22,7 +24,6 @@ PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-mythaudio.patch \
-	$(DISTNAME_SHORT)-mythstream.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
 	$(DISTNAME_SHORT)-programid.patch \
 	$(DISTNAME_SHORT)-fadeaway.patch \
