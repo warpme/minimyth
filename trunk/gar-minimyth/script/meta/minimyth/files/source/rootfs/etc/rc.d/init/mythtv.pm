@@ -194,7 +194,7 @@ sub start
     {
         $minimyth->file_replace_variable(
             '/usr/share/mythtv/mainmenu.xml',
-            { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends></depends>' });
+            { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
     }
     if ($minimyth->var_get('MM_PLUGIN_OPTICAL_DISK_ENABLED') eq 'no')
     {
