@@ -32,12 +32,12 @@ sub start
         {
             if (system(qq(/lib/ld-linux-x86-64.so.2 --list /usr/bin/huludesktop > /dev/null 2>&1)) != 0)
             {
-                $minimyth->message_output('err', 'Hulu Deskop will fail because libraries are missing.')
+                $minimyth->message_output('err', 'Hulu Desktop will fail because libraries are missing.')
             }
         }
         if (! -e '/usr/lib/browser/plugins/libflashplayer.so')
         {
-            $minimyth->message_output('err', 'Hulu Deskop will fail because Adobe Flash Player is missing.')
+            $minimyth->message_output('err', 'Hulu Desktop will fail because Adobe Flash Player is missing.')
         }
         my $gui_x        = $minimyth->mythdb_settings_get('GuiWidth');
         my $gui_y        = $minimyth->mythdb_settings_get('GuiHeight');
