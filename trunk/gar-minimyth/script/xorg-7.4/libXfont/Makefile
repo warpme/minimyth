@@ -1,5 +1,5 @@
 GARNAME = libXfont
-GARVERSION = 1.4.0
+GARVERSION = 1.4.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -25,15 +25,14 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
+	--disable-devel-docs \
 	--enable-freetype \
-	--disable-type1 \
-	--disable-speedo \
+	--enable-builtins \
 	--enable-builtins \
 	--enable-pcfformat \
 	--disable-bdfformat \
 	--disable-snfformat \
-	--enable-loadable-font-modules \
-	--disable-fontcache \
 	--enable-fc \
 	--enable-unix-transport \
 	--disable-tcp-transport \
