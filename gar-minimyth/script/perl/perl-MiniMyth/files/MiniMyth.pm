@@ -1917,14 +1917,16 @@ sub flash_fetch_and_save
     File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
+        File::Path::rmtree(qq($local_dir));
+        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
 
     $self->message_log('info', qq(downloading Adobe Flash Player file '$flash_url'.));
     if (! $self->url_get($flash_url, qq($local_dir/flash.tar.gz)))
     {
-        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         File::Path::rmtree(qq($local_dir));
+        $self->message_log('err', qq(failed to create the Adobe Flash Player file.));
         return 0;
     }
     system(qq(/bin/tar -C $local_dir -zxf $local_dir/flash.tar.gz));
@@ -1965,8 +1967,7 @@ sub hulu_fetch_and_save
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
         $hulu_file = q(huludesktop.64);
-        $hulu_url  = qq(http://download.hulu.com/huludesktop_x86_64.deb);
-        return 0;
+        $hulu_url  = qq(http://download.hulu.com/huludesktop_amd64.deb);
     }
     else
     {
@@ -1980,6 +1981,8 @@ sub hulu_fetch_and_save
     File::Path::mkpath($local_dir, { mode => 0755 });
     if (! -d $local_dir)
     {
+        File::Path::rmtree($local_dir);
+        $self->message_log('err', qq(failed to create the Hulu Desktop file.));
         return 0;
     }
 
