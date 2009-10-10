@@ -15,16 +15,6 @@ DEPENDS = lang/c
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
-PREFIX=/usr/local
-SBINDIR=$(PREFIX)/sbin
-SHAREDIR=$(PREFIX)/share
-IDSDIR=$(SHAREDIR)
-MANDIR:=$(shell if [ -d $(PREFIX)/share/man ] ; then echo $(PREFIX)/share/man ; else echo $(PREFIX)/man ; fi)
-INCDIR=$(PREFIX)/include
-LIBDIR=$(PREFIX)/lib
-PKGCFDIR=$(LIBDIR)/pkgconfig
-
-# Commands
 BUILD_ARGS   = \
 	OPT="$(CFLAGS)" \
 	HOST="$(GARCH_FAMILY)-dummy-linux" \
@@ -66,7 +56,8 @@ INSTALL_ARGS = \
 	STRIP="" \
 	CC="$(CC)" \
 	AR="$(AR)" \
-	RANLIB="$(RANLIB)"
+	RANLIB="$(RANLIB)" \
+	install-lib
 
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
