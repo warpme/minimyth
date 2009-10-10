@@ -42,4 +42,11 @@ $var_list{'MM_HULU_URL'} =
     value_none     => ''
 };
 
+$var_list{'MM_HULU_REMOTE'} =
+{
+    value_default => 'mceusb',
+    value_valid   => '.+',
+    value_none    => ''
+};
+
 1;
