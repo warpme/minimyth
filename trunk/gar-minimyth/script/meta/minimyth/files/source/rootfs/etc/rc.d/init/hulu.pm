@@ -59,7 +59,7 @@ sub start
                 $gui_y_offset = 0;
             }
 
-            my $remote = 'mceusb';
+            my $remote = $minimyth->var_get('MM_HULU_REMOTE');
 
             $minimyth->file_replace_variable(
                 '/home/minimyth/.huludesktop',
