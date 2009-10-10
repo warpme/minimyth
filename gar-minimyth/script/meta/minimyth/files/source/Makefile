@@ -411,6 +411,21 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			cp -f $(DESTDIR)$${revert} $@~$${revert} ; \
 		done ; \
 	 fi
+	@# Create library loader symbolic link to help out binary applications.
+	@if [ -e $@~$(elibdir)/ld-linux.so.2 ] ; then \
+		if [ ! $(elibdir) = '/lib32' ] ; then \
+			mkdir -p $@~/lib32 ; \
+			rm -f $@~/lib32/ld-linux.so.2 ; \
+			ln -s $(elibdir)/ld-linux.so.2 $@~/lib32/ld-linux.so.2 ; \
+		fi ; \
+	 fi
+	@if [ -e $@~$(elibdir)/ld-linux-x86-64.so.2 ] ; then \
+		if [ ! $(elibdir) = '/lib64' ] ; then \
+			mkdir -p $@~/lib64 ; \
+			rm -f $@~/lib64/ld-linux-x86_64.so.2 ; \
+			ln -s $(elibdir)/ld-linux-x86-64.so.2 $@~/lib64/ld-linux-x86-64.so.2 ; \
+		fi ; \
+	 fi
 	@# Clean up permissions (at least somewhat)
 	@find $@~ -depth -exec file '{}' \; \
 		| grep -i 'ELF ..-bit LSB executable' \
