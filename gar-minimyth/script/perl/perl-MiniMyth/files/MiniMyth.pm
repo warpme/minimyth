@@ -2271,15 +2271,16 @@ sub x_applications_exit
                 # Browsers
                 when (/^mythbrowser$/)      { push(@xmacro, 'KeyStr Escape'); }
                 # Players
+# Does not work because huludesktop does not have a key sequence to quit.
+#               when (/^huludesktop$/)      { push(@xmacro, );                }
                 when (/^mplayer$/)          { push(@xmacro, 'KeyStr Escape'); }
-                when (/^mplayer-stable$/)   { push(@xmacro, 'KeyStr Escape'); }
                 when (/^mplayer-svn$/)      { push(@xmacro, 'KeyStr Escape'); }
+                when (/^mplayer-vld$/)      { push(@xmacro, 'KeyStr Escape'); }
                 when (/^mythtv$/)           { push(@xmacro, 'KeyStr Escape'); }
-# Does not work because the window name is not 'vlc'.
-#               when (/^vlc$/)
-#               {
-#                   push(@xmacro, 'KeyStrPress Control_L', 'KeyStrPress Q', 'KeyStrRelease Q', 'KeyStrRelease Control_L');
-#               }
+                when (/^vlc$/)
+                {
+                    push(@xmacro, 'KeyStrPress Control_L', 'KeyStrPress Q', 'KeyStrRelease Q', 'KeyStrRelease Control_L');
+                }
                 when (/^xine$/)             { push(@xmacro, 'KeyStr Q');      }
                 # Games
                 when (/^fceu$/)             { push(@xmacro, 'KeyStr Escape'); }
