@@ -71,6 +71,7 @@ DEPENDS = \
 	net/syslinux \
 	system/sysvinit \
 	system/udev \
+	X11/unclutter \
 	utils/usbutils \
 	utils/util-linux-ng \
 	X11/vdpau-video \
