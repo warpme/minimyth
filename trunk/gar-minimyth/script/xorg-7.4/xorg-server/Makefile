@@ -117,8 +117,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld \
-	--with-fontdir="$(libdir)/X11/fonts" \
-	--with-default-font-path="$(libdir)/X11/fonts/TTF,$(libdir)/X11/fonts/misc" \
+	--with-fontdir="$(datadir)/fonts/X11" \
+	--with-default-font-path="$(datadir)/fonts/X11/TTF,$(datadir)/fonts/X11/misc" \
 	--with-xkb-path="$(datadir)/X11/xkb" \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
 	--with-serverconfig-path="$(libdir)/xserver" \

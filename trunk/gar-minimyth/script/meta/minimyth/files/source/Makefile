@@ -215,7 +215,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@sed -i 's%@MM_VERSION_MINIMYTH@%$(mm_VERSION_MINIMYTH)%g' $@~$(sysconfdir)/conf.d/core
 	@sed -i 's%@MM_CONF_VERSION@%$(mm_CONF_VERSION)%g'         $@~$(sysconfdir)/conf.d/core
 	@sed -i 's%@PATH@%$(call MAKE_PATH,$(bindirs_base))%g'     $@~$(sysconfdir)/conf.d/core
-	@sed -i 's%@GAR_libdir@%$(libdir)%g'                       $@~$(sysconfdir)/fonts/local.conf
+	@sed -i 's%@GAR_datadir@%$(datadir)%g'                     $@~$(sysconfdir)/fonts/local.conf
 	@sed -i 's%@EXTRAS_ROOTDIR@%$(extras_rootdir)%'            $@~$(sysconfdir)/rc.d/init/extras.pm
 	@# Create the minimyth build configuration file.
 	@rm -rf   $@~$(versiondir)/minimyth.conf.mk
@@ -264,8 +264,8 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		index=$$(($${index}+2)) && \
 		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d/rc/K$${index}$(file) ; )
 	@# Make font file links.
-	@for font in `cd $@~$(libdir)/X11/fonts/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
-		ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv))$(libdir)/X11/fonts/TTF/$${font} \
+	@for font in `cd $@~$(datadir)/fonts/X11/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
+		ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv))$(datadir)/fonts/X11/TTF/$${font} \
 		       $@~$(datadir)/mythtv/$${font} ; \
 	 done
 	@# Remove unneeded perl files.
@@ -385,8 +385,8 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	@# Generate kernel files.
 	@depmod -b "$@~$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@# Generate font files.
-	@cd $@~$(libdir)/X11/fonts/misc ; mkfontscale . ; mkfontdir .
-	@cd $@~$(libdir)/X11/fonts/TTF  ; mkfontscale . ; mkfontdir .
+	@cd $@~$(datadir)/fonts/X11/misc ; mkfontscale . ; mkfontdir .
+	@cd $@~$(datadir)/fonts/X11/TTF  ; mkfontscale . ; mkfontdir .
 	@# Strip binaries and shared libraries.
 	@if [ ! $(mm_DEBUG) = yes ] ; then \
 		echo 'stripping binaries and shared libraries' ; \

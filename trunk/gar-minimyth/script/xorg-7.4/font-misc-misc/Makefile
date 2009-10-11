@@ -1,9 +1,9 @@
 GARNAME = font-misc-misc
-GARVERSION = 1.0.0
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-destdir.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -22,6 +22,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-iso8859-1 \
 	--disable-iso8859-2 \
 	--disable-iso8859-3 \
@@ -41,8 +42,3 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-pre-configure:
-	@rm -f $(WORKSRC)/acinclude.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)
