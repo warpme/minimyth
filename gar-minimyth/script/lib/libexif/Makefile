@@ -1,5 +1,5 @@
 GARNAME = libexif
-GARVERSION = 0.6.17
+GARVERSION = 0.6.18
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
