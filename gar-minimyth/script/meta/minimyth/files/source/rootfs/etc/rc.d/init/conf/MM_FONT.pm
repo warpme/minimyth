@@ -27,9 +27,9 @@ $var_list{'MM_FONT_FILE_TTF_DELETE'} =
         {
             my $font_match = join('|', split(/  +/, $minimyth->var_get($name)));
             $minimyth->var_set($name, '');
-            if ((-d '/usr/lib/X11/fonts/TTF') && (opendir(DIR, '/usr/lib/X11/fonts/TTF')))
+            if ((-d '/usr/share/fonts/X11/TTF') && (opendir(DIR, '/usr/share/fonts/X11/TTF')))
             {
-                $minimyth->var_set($name, join(' ', (grep(/^$font_match$/ && -f "/usr/lib/X11/fonts/TTF/$_", (readdir(DIR))))));
+                $minimyth->var_set($name, join(' ', (grep(/^$font_match$/ && -f "/usr/share/fonts/X11/TTF/$_", (readdir(DIR))))));
                 closedir(DIR);
             }
         }
@@ -68,7 +68,7 @@ $var_list{'MM_FONT_FILE_TTF_ADD'} =
         {
             my $item;
             $item->{'name_remote'} = "$_";
-            $item->{'name_local'}  = '/usr/lib/X11/fonts/TTF/' . File::Basename::basename($_);
+            $item->{'name_local'}  = '/usr/share/fonts/X11/TTF/' . File::Basename::basename($_);
             $item->{'mode_local'}  = '0644';
 
             push(@file, $item);
