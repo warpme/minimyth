@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.6.3
+GARVERSION = 1.6.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -48,7 +48,7 @@ DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
-XBUILDDEPS = \
+BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-sgml-doctools
 
@@ -72,7 +72,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-glx-tls \
 	--enable-registry \
 	--disable-composite \
-	--enable-shm \
+	--enable-mitshm \
 	--disable-xres \
 	--enable-record \
 	--enable-xv \
