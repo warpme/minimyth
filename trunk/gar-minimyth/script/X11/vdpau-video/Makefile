@@ -1,11 +1,11 @@
 GARNAME = vdpau-video
-GARVERSION = 0.5.0
+GARVERSION = 0.5.1
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-install.patch
-LICENSE =
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
