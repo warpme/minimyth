@@ -3,6 +3,7 @@ GARVERSION = 4.56
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-device.patch $(DISTNAME)-fakehid.patch
 LICENSE = GPL2
 
 DESCRIPTION =
