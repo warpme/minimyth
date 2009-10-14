@@ -1,5 +1,5 @@
 GARNAME = libpthread-stubs
-GARVERSION = 0.2
+GARVERSION = 0.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
