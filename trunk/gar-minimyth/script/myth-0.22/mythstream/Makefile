@@ -5,6 +5,8 @@ MASTER_SITES = http://home.kabelfoon.nl/~moongies/sw9vc4htz2/
 #DISTFILES = $(DISTNAME).tar.gz $(subst -,,$(PARSERS))
 DISTFILES = $(GARNAME)_$(GARVERSION).tar.gz
 PATCHFILES = \
+	$(DISTNAME)-mythconfig_mak.patch \
+	$(DISTNAME)-sysroot.patch \
 	$(DISTNAME)-qt4_header.patch \
 	$(DISTNAME).patch.gar
 PARSERS =
@@ -23,7 +25,7 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 WORKSRC = $(WORKDIR)/$(GARNAME)_$(GARVERSION)
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv
+CONFIGURE_SCRIPTS = custom $(WORKSRC)/mythtv
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
@@ -59,6 +61,11 @@ post-extract:
 	@# Remove parsers that are actually bash scripts not perl scripts.
 	@rm -fr $(WORKSRC)/parsers/belegger
 	@rm -fr $(WORKSRC)/parsers/zoomin
+	@$(MAKECOOKIE)
+
+configure-custom:
+	@rm -fr $(WORKSRC)/mythconfig.mak
+	@ln -s $(DESTDIR)$(includedir)/mythtv/mythconfig.mak $(WORKSRC)/mythconfig.mak
 	@$(MAKECOOKIE)
 
 configure-%/mythtv:

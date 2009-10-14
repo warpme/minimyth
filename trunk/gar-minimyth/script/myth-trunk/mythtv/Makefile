@@ -5,7 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-changeset_22319_revert.patch \
+	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
@@ -50,17 +50,17 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
-	--prefix="$(DESTDIR)$(prefix)" \
+	--prefix="$(prefix)" \
 	--runprefix="$(prefix)" \
 	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
 	--disable-ccache \
 	--disable-distcc \
-	--bindir="$(DESTDIR)$(bindir)" \
-	--datadir="$(DESTDIR)$(datadir)" \
-	--libdir="$(DESTDIR)$(libdir)" \
-	--shlibdir="$(DESTDIR)$(libdir)" \
-	--incdir="$(DESTDIR)$(incdir)" \
-	--mandir="$(DESTDIR)$(mandir)" \
+	--bindir="$(bindir)" \
+	--datadir="$(datadir)" \
+	--libdir="$(libdir)" \
+	--shlibdir="$(libdir)" \
+	--incdir="$(incdir)" \
+	--mandir="$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-libfaad \
 	--enable-libfftw3 \

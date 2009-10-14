@@ -1,6 +1,6 @@
-diff -Naur mythtv-0.22-21871-old/programs/mythfrontend/main.cpp mythtv-0.22-21871-new/programs/mythfrontend/main.cpp
---- mythtv-0.22-21871-old/programs/mythfrontend/main.cpp	2009-09-15 10:09:17.000000000 -0700
-+++ mythtv-0.22-21871-new/programs/mythfrontend/main.cpp	2009-09-15 10:09:17.000000000 -0700
+diff -Naur mythtv-0.22-22430-old/programs/mythfrontend/main.cpp mythtv-0.22-22430-new/programs/mythfrontend/main.cpp
+--- mythtv-0.22-22430-old/programs/mythfrontend/main.cpp	2009-10-13 17:07:43.000000000 -0700
++++ mythtv-0.22-22430-new/programs/mythfrontend/main.cpp	2009-10-13 17:07:44.000000000 -0700
 @@ -1,10 +1,13 @@
  
  #include <unistd.h>
@@ -15,7 +15,7 @@ diff -Naur mythtv-0.22-21871-old/programs/mythfrontend/main.cpp mythtv-0.22-2187
  #include <iostream>
  using namespace std;
  
-@@ -1478,15 +1481,71 @@
+@@ -1501,15 +1504,71 @@
          mainWindow->installEventFilter(mon);
      }
  
@@ -92,12 +92,21 @@ diff -Naur mythtv-0.22-21871-old/programs/mythfrontend/main.cpp mythtv-0.22-2187
      }
  
      themename = gContext->GetSetting("Theme", "blue");
-@@ -1525,8 +1584,8 @@
+@@ -1523,7 +1582,8 @@
+ 
+     if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
+     {
+-        delete networkControl;
++        while (!networkControls.isEmpty())
++            delete networkControls.takeFirst();
+         return FRONTEND_EXIT_NO_THEME;
+     }
+ 
+@@ -1547,7 +1607,8 @@
          pthread_join(priv_thread, NULL);
      }
  
--    if (networkControl)
--        delete networkControl;
+-    delete networkControl;
 +    while (!networkControls.isEmpty())
 +        delete networkControls.takeFirst();
  

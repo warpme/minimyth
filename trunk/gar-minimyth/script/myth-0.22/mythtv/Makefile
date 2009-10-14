@@ -5,12 +5,14 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
+	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
-	$(DISTNAME_SHORT)-disable_drm_vsync.patch \
+	$(DISTNAME_SHORT)-lircd.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
@@ -48,17 +50,17 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
-	--prefix="$(DESTDIR)$(prefix)" \
+	--prefix="$(prefix)" \
 	--runprefix="$(prefix)" \
 	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
 	--disable-ccache \
 	--disable-distcc \
-	--bindir="$(DESTDIR)$(bindir)" \
-	--datadir="$(DESTDIR)$(datadir)" \
-	--libdir="$(DESTDIR)$(libdir)" \
-	--shlibdir="$(DESTDIR)$(libdir)" \
-	--incdir="$(DESTDIR)$(incdir)" \
-	--mandir="$(DESTDIR)$(mandir)" \
+	--bindir="$(bindir)" \
+	--datadir="$(datadir)" \
+	--libdir="$(libdir)" \
+	--shlibdir="$(libdir)" \
+	--incdir="$(incdir)" \
+	--mandir="$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-libfaad \
 	--enable-libfftw3 \
@@ -143,4 +145,6 @@ install-source:
 	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
+	@rm -f $(DESTDIR)$(bindir)/mythtv
+	@mv $(DESTDIR)$(bindir)/mythavtest $(DESTDIR)$(bindir)/mythtv
 	@$(MAKECOOKIE)

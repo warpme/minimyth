@@ -121,7 +121,7 @@ mm_KERNEL_VERSION         ?= 2.6.31
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.20', '0.20-softpad', '0.21', and 'trunk'.
+# Valid values are '0.20', '0.20-softpad', '0.21', '0.22' and 'trunk'.
 mm_MYTH_VERSION           ?= 0.21
 # The version of the NVIDIA driver.
 # Valid values are '96.43.13' (legacy), '173.14.20' (legacy), 185.18.36,
@@ -132,7 +132,7 @@ mm_NVIDIA_VERSION         ?= 185.18.36
 mm_XORG_VERSION           ?= 7.4
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 22413
+mm_MYTH_TRUNK_VERSION     ?= 22429
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
