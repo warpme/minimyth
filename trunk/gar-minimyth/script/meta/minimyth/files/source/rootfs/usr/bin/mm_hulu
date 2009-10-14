@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use MiniMyth ();
+
+my $minimyth = new MiniMyth;
+$minimyth->var_load();
+
+system('/usr/bin/huludesktop');
+
+if ($minimyth->var_get('MM_HULU_STORE_HULUDESKTOP_DATA') eq 'yes')
+{
+    if (-e '/home/minimyth/.local/share/.huludesktop.data')
+    {
+        $minimyth->confrw_put('huludesktop.data', '/home/minimyth/.local/share/.huludesktop.data');
+    }
+}
+
+1;
