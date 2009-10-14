@@ -626,6 +626,7 @@ sub _run_var
             foreach (@{$file})
             {
                 my $name_remote = $_->{'name_remote'};
+                my $mode_remote = $_->{'mode_remote'} || 'ro';
                 my $name_local  = $_->{'name_local'};
                 my $mode_local  = $_->{'mode_local'}  || '0644' ;
  
@@ -633,18 +634,37 @@ sub _run_var
                 {
                     File::Path::rmtree($name_local);
                 }
-                my $result = $minimyth->confro_get($name_remote, $name_local);
-                if (! -e $name_local)
+                if ($mode_remote eq 'ro')
                 {
-                    $minimyth->message_output('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
-                    $success = 0;
+                    my $result = $minimyth->confro_get($name_remote, $name_local);
+                    if (! -e $name_local)
+                    {
+                        $minimyth->message_output('err', qq(failed to fetch MiniMyth read-only configuration file ') . $name_remote . qq('));
+                        $success = 0;
+                    }
+                    else
+                    {
+                        $minimyth->message_log('info', qq(fetched MiniMyth read-only configuration file ') . $name_remote . qq('));
+                        $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
+                        $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
+                        chmod(oct($mode_local), $name_local);
+                    }
                 }
-                else
+                if ($mode_remote eq 'rw')
                 {
-                    $minimyth->message_log('info', qq(fetched MiniMyth read-only configuration file ') . $name_remote . qq('));
-                    $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
-                    $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
-                    chmod(oct($mode_local), $name_local);
+                    my $result = $minimyth->confrw_get($name_remote, $name_local);
+                    if (! -e $name_local)
+                    {
+                        $minimyth->message_output('err', qq(failed to fetch MiniMyth read-write configuration file ') . $name_remote . qq('));
+                        $success = 0;
+                    }
+                    else
+                    {
+                        $minimyth->message_log('info', qq(fetched MiniMyth read-write configuration file ') . $name_remote . qq('));
+                        $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
+                        $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
+                        chmod(oct($mode_local), $name_local);
+                    }
                 }
             }
         }

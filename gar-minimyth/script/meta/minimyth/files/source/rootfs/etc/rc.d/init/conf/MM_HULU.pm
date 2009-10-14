@@ -15,7 +15,7 @@ sub var_list
 
 $var_list{'MM_HULU_URL'} =
 {
-    prerequisite   => ['MM_FLASH'],
+    prerequisite   => ['MM_FLASH_URL'],
     value_default  => 'auto',
     value_valid    => 'auto|none|((cifs|confro|confrw|dist|file|http|hunt|nfs|tftp):(//(([^:@]*)?(:([^@]*))?\@)?([^/]+))?[^?#]*(\?([^#]*))?(\#(.*))?)',
     value_auto     => sub
@@ -47,6 +47,35 @@ $var_list{'MM_HULU_REMOTE'} =
     value_default => 'mceusb',
     value_valid   => '.+',
     value_none    => ''
+};
+
+$var_list{'MM_HULU_STORE_HULUDESKTOP_DATA'} =
+{
+    prerequisite   => ['MM_HULU_URL'],
+    value_default  => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_default = 'no';
+
+        if ($minimyth->var_get('MM_HULU_URL') ne '')
+        {
+            $value_default = 'yes';
+        }
+
+        if (-e '/usr/bin/huludesktop')
+        {
+            $value_default = 'yes';
+        }
+
+        return $value_default;
+    },
+    value_valid    => 'no|yes',
+    value_file     => 'yes',
+    file           => {name_remote => '/huludesktop.data',
+                       mode_remote => 'rw',
+                       name_local  => '/home/minimyth/.local/share/.huludesktop.data'}
 };
 
 1;

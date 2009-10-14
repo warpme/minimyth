@@ -1863,6 +1863,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
           <ul>
             <li><a href="#MM_HULU_URL">MM_HULU_URL</a></li>
             <li><a href="#MM_HULU_REMOTE">MM_HULU_REMOTE</a></li>
+            <li><a href="#MM_HULU_STORE_HULUDESKTOP_DATA">MM_HULU_STORE_HULUDESKTOP_DATA</a></li>
           </ul>
           <dl>
             <dt id="MM_HULU-overview"><strong>Overview</strong></dt>
@@ -1890,7 +1891,8 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 '/usr/bin/huludesktop'.
               </p>
               <p>
-                If the value is 'auto',
+                If the value is 'auto' and
+                <a href="MM_FLASH_URL">'MM_FLASH_URL'</a> is not 'none',
                 then MiniMyth will assume that the file is an executable file
                 located in the MiniMyth read-write configuration directory and having the name 'huludesktop.{arch}',
                 where {arch} is 32 or 64.
@@ -1925,19 +1927,39 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
             </dd>
             <dt id="MM_HULU_REMOTE"><strong>MM_HULU_REMOTE</strong></dt>
             <dd>
-              Set the name of the remote control that Hulu will use.
-              Valid values are remote control name with, 'mceusb' the default.
+              <p>
+                Set the name of the remote control that Hulu will use.
+                Valid values are remote control name with, 'mceusb' the default.
+              </p>
+              <p>
+                For some reason, Hulu Desktop requires the name of the remote control.
+                It ignores remote control input that is not from the named remote control.
+              </p>
+              <p>
+                In order to determine the name of your remote control,
+                telnet into your MiniMyth system,
+                run the command 'irw' and
+                press a key on your remote control.
+                The name of your remote control is the word at the end of each line output by 'irw'
+              </p>
             </dd>
+            <dt id="MM_HULU_STORE_HULUDESKTOP_DATA"><strong>MM_HULU_STORE_HULUDESKTOP_DATA</strong></dt>
             <dd>
-              For some reason, Hulu Desktop requires the name of the remote control.
-              It ignores remote control input that is not from the named remote control.
-            </dd>
-            <dd>
-              In order to determine the name of your remote control,
-              telnet into your MiniMyth system,
-              run the command 'irw' and
-              press a key on your remote control.
-              The name of your remote control is the word at the end of each line output by 'irw'
+              <p>
+                Indicate whether or not to store and fetch the
+                '<a href="document-configure.html#huludesktop_data">huludesktop.data</a>'
+                file to and from the MiniMyth system's MiniMyth read-write configuration directory.
+                Valid values are 'yes' and 'no',
+                with 'no' the default when <a href="#MM_HULU_URL">MM_HULU_URL</a> is 'none'
+                and '/usr/bin/huludesktop' does not exist, 
+                and 'yes' the default otherwise.
+              </p>
+              <p>
+                If MM_HULU_STORE_HULUDESKTOP_DATA='yes',
+                then MiniMyth will fetch this file on boot and store this file whenever the 'mm_hulu' command exits.
+                Therefore, if you want MiniMyth to store your Hulu Desktop configuration file,
+                then you must run Hulu Desktop using the 'mm_hulu' command rather than the 'huludesktop' command.
+              </p>
             </dd>
           </dl>
           <p>
@@ -3415,7 +3437,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2009-10-11
+          Last Updated on 2009-10-14
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
