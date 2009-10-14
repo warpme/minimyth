@@ -1,58 +1,6 @@
-diff -Naur mythplugins-trunk-22413-old/configure mythplugins-trunk-22413-new/configure
---- mythplugins-trunk-22413-old/configure	2009-10-12 20:42:29.000000000 -0700
-+++ mythplugins-trunk-22413-new/configure	2009-10-12 20:42:30.000000000 -0700
-@@ -276,27 +276,7 @@
- 
- has_library()
- {
--    if test -f /etc/ld.so.conf ; then
--        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
--    else
--        LIBPATHS=''
--    fi
--
--    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
--    # Mac OS X has a different variable for this:
--    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
--
--    # recurse down just one level, should be enough in most cases
--    if test -f /etc/ld.so.conf ; then
--        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
--        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
--        for x in $SRCH ; do
--            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
--            LIBPATHS="$LIBPATHS $LP_APPEND"
--        done
--    fi
--
--    LIBPATHS="`echo $LIBPATHS $sysroot$prefix/$libdir_name $sysroot/$libdir_name $sysroot/usr/$libdir_name $sysroot/usr/local/$libdir_name $sysroot/usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
-+    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_qt4libdir@ @GAR_DESTDIR@@GAR_kdelibdir@ | sed s/'\/ '/' '/g` "
- 
-     HAS_IT="no"
-     for LIBPATH in $LIBPATHS ; do
-@@ -309,9 +289,7 @@
- 
- has_header()
- {
--    HPATHS="$sysroot$prefix/include $sysroot/usr/local/include $sysroot/usr/include $sysroot/usr/include/g++-v3 $sysroot/usr/X11R6/include $sysroot/"
--    INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
--    HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
-+    HPATHS="@GAR_DESTDIR@@GAR_includedir@ @GAR_DESTDIR@@GAR_qt4includedir@ @GAR_DESTDIR@@GAR_kdeincludedir@"
- 
-     HAS_IT="no"
-     for HPATH in $HPATHS ; do
-@@ -733,7 +711,7 @@
-         if test "$sdl" = "yes" ; then
-             echo "        libvisual      support will be included in MythMusic"
-             echo "#define LIBVISUAL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
--            echo "INCLUDEPATH += /usr/include/libvisual-0.4" >> ./mythmusic/mythmusic/config.pro
-+            echo "INCLUDEPATH += @GAR_DESTDIR@@GAR_includedir@/libvisual-0.4" >> ./mythmusic/mythmusic/config.pro
-             echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
-         else
-             echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
-diff -Naur mythplugins-trunk-22413-old/mythzoneminder/mythzmserver/Makefile.standalone mythplugins-trunk-22413-new/mythzoneminder/mythzmserver/Makefile.standalone
---- mythplugins-trunk-22413-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-10-12 20:42:29.000000000 -0700
-+++ mythplugins-trunk-22413-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-10-12 20:42:30.000000000 -0700
+diff -Naur mythplugins-trunk-22429-old/mythzoneminder/mythzmserver/Makefile.standalone mythplugins-trunk-22429-new/mythzoneminder/mythzmserver/Makefile.standalone
+--- mythplugins-trunk-22429-old/mythzoneminder/mythzmserver/Makefile.standalone	2009-10-13 16:59:56.000000000 -0700
++++ mythplugins-trunk-22429-new/mythzoneminder/mythzmserver/Makefile.standalone	2009-10-13 16:59:56.000000000 -0700
 @@ -14,4 +14,4 @@
  zmserver: zmserver.cpp
  
@@ -60,9 +8,9 @@ diff -Naur mythplugins-trunk-22413-old/mythzoneminder/mythzmserver/Makefile.stan
 -	rm -f *.o mythzmserver
 \ No newline at end of file
 +	rm -f *.o mythzmserver
-diff -Naur mythplugins-trunk-22413-old/settings.pro mythplugins-trunk-22413-new/settings.pro
---- mythplugins-trunk-22413-old/settings.pro	2009-10-12 20:42:29.000000000 -0700
-+++ mythplugins-trunk-22413-new/settings.pro	2009-10-12 20:42:30.000000000 -0700
+diff -Naur mythplugins-trunk-22429-old/settings.pro mythplugins-trunk-22429-new/settings.pro
+--- mythplugins-trunk-22429-old/settings.pro	2009-10-13 16:59:56.000000000 -0700
++++ mythplugins-trunk-22429-new/settings.pro	2009-10-13 16:59:56.000000000 -0700
 @@ -33,7 +33,6 @@
  
  profile:CONFIG += release

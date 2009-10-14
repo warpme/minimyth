@@ -1,47 +1,6 @@
-diff -Naur mythtv-0.22-21871-old/configure mythtv-0.22-21871-new/configure
---- mythtv-0.22-21871-old/configure	2009-09-16 20:00:01.000000000 -0700
-+++ mythtv-0.22-21871-new/configure	2009-09-16 20:02:05.000000000 -0700
-@@ -919,27 +919,7 @@
- #deprecated, use check_lib or check_lib2 instead
- has_library()
- {
--    if test -f /etc/ld.so.conf ; then
--        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
--    else
--        LIBPATHS=''
--    fi
--
--    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
--    # Mac OS X has a different variable for this:
--    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
--
--    # recurse down just one level, should be enough in most cases
--    if test -f /etc/ld.so.conf ; then
--        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
--        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
--        for x in $SRCH ; do
--            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
--            LIBPATHS="$LIBPATHS $LP_APPEND"
--        done
--    fi
--
--    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
-+    LIBPATHS="`echo @GAR_DESTDIR@@GAR_elibdir@ @GAR_DESTDIR@@GAR_libdir@ @GAR_DESTDIR@@GAR_qt4libdir@ @GAR_DESTDIR@@GAR_kdelibdir@ | sed s/'\/ '/' '/g` "
- 
-     HAS_IT="no"
-     for LIBPATH in $LIBPATHS ; do
-@@ -3196,7 +3176,7 @@
- 
- disable sdl_too_old
- disable sdl
--SDL_CONFIG="${cross_prefix}sdl-config"
-+SDL_CONFIG="sdl-config"
- if "${SDL_CONFIG}" --version > /dev/null 2>&1; then
-     sdl_cflags=$("${SDL_CONFIG}" --cflags)
-     temp_cflags $sdl_cflags
-diff -Naur mythtv-0.22-21871-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.22-21871-new/contrib/mythnotify/cidbcast/Makefile
---- mythtv-0.22-21871-old/contrib/mythnotify/cidbcast/Makefile	2009-09-15 10:07:09.000000000 -0700
-+++ mythtv-0.22-21871-new/contrib/mythnotify/cidbcast/Makefile	2009-09-16 20:02:05.000000000 -0700
+diff -Naur mythtv-0.22-22430-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.22-22430-new/contrib/mythnotify/cidbcast/Makefile
+--- mythtv-0.22-22430-old/contrib/mythnotify/cidbcast/Makefile	2009-10-13 17:07:46.000000000 -0700
++++ mythtv-0.22-22430-new/contrib/mythnotify/cidbcast/Makefile	2009-10-13 17:07:46.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -51,9 +10,9 @@ diff -Naur mythtv-0.22-21871-old/contrib/mythnotify/cidbcast/Makefile mythtv-0.2
  PROGRAM    = cidbcast
  
  #################################################################################
-diff -Naur mythtv-0.22-21871-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.22-21871-new/contrib/mythnotify/mythudprelay/Makefile
---- mythtv-0.22-21871-old/contrib/mythnotify/mythudprelay/Makefile	2009-09-15 10:07:09.000000000 -0700
-+++ mythtv-0.22-21871-new/contrib/mythnotify/mythudprelay/Makefile	2009-09-16 20:02:05.000000000 -0700
+diff -Naur mythtv-0.22-22430-old/contrib/mythnotify/mythudprelay/Makefile mythtv-0.22-22430-new/contrib/mythnotify/mythudprelay/Makefile
+--- mythtv-0.22-22430-old/contrib/mythnotify/mythudprelay/Makefile	2009-10-13 17:07:46.000000000 -0700
++++ mythtv-0.22-22430-new/contrib/mythnotify/mythudprelay/Makefile	2009-10-13 17:07:46.000000000 -0700
 @@ -15,7 +15,7 @@
  # Libraries
  
@@ -63,9 +22,9 @@ diff -Naur mythtv-0.22-21871-old/contrib/mythnotify/mythudprelay/Makefile mythtv
  PROGRAM = mythudprelay
  
  #################################################################################
-diff -Naur mythtv-0.22-21871-old/programs/mythtranscode/Makefile.standlone mythtv-0.22-21871-new/programs/mythtranscode/Makefile.standlone
---- mythtv-0.22-21871-old/programs/mythtranscode/Makefile.standlone	2009-09-15 10:07:08.000000000 -0700
-+++ mythtv-0.22-21871-new/programs/mythtranscode/Makefile.standlone	2009-09-16 20:02:05.000000000 -0700
+diff -Naur mythtv-0.22-22430-old/programs/mythtranscode/Makefile.standlone mythtv-0.22-22430-new/programs/mythtranscode/Makefile.standlone
+--- mythtv-0.22-22430-old/programs/mythtranscode/Makefile.standlone	2009-10-13 17:07:46.000000000 -0700
++++ mythtv-0.22-22430-new/programs/mythtranscode/Makefile.standlone	2009-10-13 17:07:46.000000000 -0700
 @@ -4,7 +4,7 @@
  TOOL = mpeg2fix
  
