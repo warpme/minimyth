@@ -39,36 +39,12 @@ sub start
         {
             $minimyth->message_output('err', 'Hulu Desktop will fail because Adobe Flash Player is missing.')
         }
-        my $gui_x        = $minimyth->mythdb_settings_get('GuiWidth');
-        my $gui_y        = $minimyth->mythdb_settings_get('GuiHeight');
-        my $gui_x_offset = $minimyth->mythdb_settings_get('GuiOffsetX');
-        my $gui_y_offset = $minimyth->mythdb_settings_get('GuiOffsetY');
-        if (! defined($gui_x))
-        {
-            $gui_x = 0;
-        }
-        if (! defined($gui_y))
-        {
-            $gui_y = 0;
-        }
-        if (! defined($gui_x_offset))
-        {
-            $gui_x_offset = 0;
-        }
-        if (! defined($gui_y_offset))
-        {
-            $gui_y_offset = 0;
-        }
 
         my $remote = $minimyth->var_get('MM_HULU_REMOTE');
 
         $minimyth->file_replace_variable(
             '/home/minimyth/.huludesktop',
-            { '@GUI_X@'        => $gui_x,
-              '@GUI_Y@'        => $gui_y,
-              '@GUI_X_OFFSET@' => $gui_x_offset,
-              '@GUI_Y_OFFSET@' => $gui_y_offset,
-              '@REMOTE@'       => $remote });
+            { '@REMOTE@' => $remote });
     }
     else
     {
