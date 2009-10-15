@@ -1,6 +1,6 @@
 diff -Naur MPlayer-29756-old/cfg-common-opts.h MPlayer-29756-new/cfg-common-opts.h
---- MPlayer-29756-old/cfg-common-opts.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/cfg-common-opts.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/cfg-common-opts.h	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/cfg-common-opts.h	2009-10-15 08:29:13.000000000 -0700
 @@ -228,6 +228,7 @@
  //	{"ac", &audio_codec, CONF_TYPE_STRING, 0, 0, 0, NULL},
  	{"ac", &audio_codec_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
@@ -10,8 +10,8 @@ diff -Naur MPlayer-29756-old/cfg-common-opts.h MPlayer-29756-new/cfg-common-opts
  	// postprocessing:
  #ifdef CONFIG_LIBAVCODEC
 diff -Naur MPlayer-29756-old/codec-cfg.c MPlayer-29756-new/codec-cfg.c
---- MPlayer-29756-old/codec-cfg.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/codec-cfg.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/codec-cfg.c	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/codec-cfg.c	2009-10-15 08:29:13.000000000 -0700
 @@ -187,6 +187,13 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
@@ -27,8 +27,8 @@ diff -Naur MPlayer-29756-old/codec-cfg.c MPlayer-29756-new/codec-cfg.c
  		{"VDPAU_MPEG2",IMGFMT_VDPAU_MPEG2},
  		{"VDPAU_H264",IMGFMT_VDPAU_H264},
 diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
---- MPlayer-29756-old/configure	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/configure	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/configure	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/configure	2009-10-15 08:29:13.000000000 -0700
 @@ -354,6 +354,9 @@
    --disable-muxer=MUXER     disable specified FFmpeg muxer
    --enable-muxer=MUXER      enable specified FFmpeg muxer
@@ -48,16 +48,17 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  _libavdecoders_all=$(sed -n 's/^[^#]*DEC.*(.*, *\(.*\)).*/\1_decoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
  _libavdecoders=$(echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER//)
  _libavencoders_all=$(sed -n 's/^[^#]*ENC.*(.*, *\(.*\)).*/\1_encoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
-@@ -562,6 +567,8 @@
+@@ -562,6 +567,9 @@
  _libavcodec_mpegaudio_hp=yes
  _mencoder=yes
  _mplayer=yes
 +_vaapi=auto
 +_vaapi_glx=no
++_libgtop=auto
  _x11=auto
  _xshape=auto
  _xss=auto
-@@ -904,6 +911,8 @@
+@@ -904,6 +912,8 @@
    --disable-mplayer)	_mplayer=no	;;
    --enable-dynamic-plugins) _dynamic_plugins=yes ;;
    --disable-dynamic-plugins) _dynamic_plugins=no ;;
@@ -66,7 +67,36 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
    --enable-x11)		_x11=yes	;;
    --disable-x11)	_x11=no		;;
    --enable-xshape)	_xshape=yes	;;
-@@ -4222,7 +4231,7 @@
+@@ -3794,6 +3804,28 @@
+ echores "$_gettimeofday"
+ 
+ 
++echocheck "clock_gettime()"
++cat > $TMPC << EOF
++#include <time.h>
++int main(void) {
++    struct timespec t;
++    clock_gettime(CLOCK_REALTIME, &t);
++    return 0;
++}
++EOF
++_clock_gettime=no
++cc_check -lrt && _clock_gettime=yes
++if test "$_clock_gettime" = yes ; then
++  def_clock_gettime='#define HAVE_CLOCK_GETTIME 1'
++  extra_ldflags="$extra_ldflags -lrt"
++  _need_clock_gettime=no
++else
++  def_clock_gettime='#undef HAVE_CLOCK_GETTIME'
++  _need_clock_gettime=yes
++fi
++echores "$_clock_gettime"
++
++
+ echocheck "glob()"
+ cat > $TMPC << EOF
+ #include <stdio.h>
+@@ -4222,7 +4254,7 @@
    _novomodules="x11 $_novomodules"
    _res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -75,7 +105,7 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  fi
  echores "$_x11"
  
-@@ -4350,7 +4359,7 @@
+@@ -4350,7 +4382,7 @@
  else
    def_vdpau='#define CONFIG_VDPAU 0'
    _novomodules="vdpau $_novomodules"
@@ -84,7 +114,7 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  fi
  echores "$_vdpau"
  
-@@ -4930,6 +4939,65 @@
+@@ -4930,6 +4962,90 @@
  fi
  echores "$_gl"
  
@@ -147,10 +177,35 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
 +fi
 +echores "$_vaapi_glx"
 +
++
++echocheck "libgtop"
++if test "$_libgtop" = auto ; then
++  _libgtop=no
++  if $_pkg_config --exists 'libgtop-2.0' ; then
++
++cat > $TMPC << EOF
++#include <glibtop/cpu.h>
++#include <glibtop/proctime.h>
++int main(void) { return 0; }
++EOF
++cc_check $($_pkg_config --libs --cflags libgtop-2.0) && tmp_run && _libgtop=yes
++
++  fi
++fi
++echores "$_libgtop"
++
++if test "$_libgtop" = yes ; then
++  def_libgtop='#define CONFIG_LIBGTOP 1'
++  libs_mplayer="$libs_mplayer $($_pkg_config --libs libgtop-2.0)"
++  extra_cflags="$extra_cflags $($_pkg_config --cflags libgtop-2.0)"
++else
++  def_libgtop='#define CONFIG_LIBGTOP 0'
++fi
++
  
  echocheck "PNG support"
  if test "$_png" = auto ; then
-@@ -8360,6 +8428,7 @@
+@@ -8360,6 +8476,7 @@
  TWOLAME=$_twolame
  UNRAR_EXEC = $_unrar_exec
  V4L2 = $_v4l2
@@ -158,7 +213,15 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  VCD = $_vcd
  VDPAU = $_vdpau
  VESA = $_vesa
-@@ -8453,6 +8522,7 @@
+@@ -8439,6 +8556,7 @@
+ CONFIG_LIBDIRAC_DECODER=$_libdirac_lavc
+ CONFIG_LIBDIRAC_ENCODER=$_libdirac_lavc
+ CONFIG_LIBFAAC_ENCODER=$_faac_lavc
++CONFIG_LIBGTOP=$_libgtop
+ CONFIG_LIBMP3LAME_ENCODER=$_mp3lame_lavc
+ CONFIG_LIBOPENCORE_AMRNB_DECODER=$_libopencore_amrnb
+ CONFIG_LIBOPENCORE_AMRNB_ENCODER=$_libopencore_amrnb
+@@ -8453,6 +8571,7 @@
  CONFIG_POSTPROC = yes
  # Prevent building libavcodec/imgresample.c with conflicting symbols
  CONFIG_SWSCALE=yes
@@ -166,7 +229,7 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  CONFIG_VDPAU=$_vdpau
  CONFIG_XVMC=$_xvmc
  CONFIG_ZLIB=$_zlib
-@@ -8462,6 +8532,7 @@
+@@ -8462,6 +8581,7 @@
  HAVE_W32THREADS = $_w32threads
  HAVE_YASM = $_have_yasm
  
@@ -174,7 +237,23 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  $(echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
-@@ -8822,6 +8893,8 @@
+@@ -8567,6 +8687,7 @@
+ 
+ 
+ /* system functions */
++$def_clock_gettime
+ $def_gethostbyname2
+ $def_gettimeofday
+ $def_glob
+@@ -8602,6 +8723,7 @@
+ $def_extern_prefix
+ $def_iconv
+ $def_kstat
++$def_libgtop
+ $def_macosx_bundle
+ $def_macosx_finder
+ $def_maemo
+@@ -8822,6 +8944,8 @@
  $def_tdfxvid
  $def_tga
  $def_v4l2
@@ -183,7 +262,7 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  $def_vdpau
  $def_vesa
  $def_vidix
-@@ -8938,6 +9011,7 @@
+@@ -8938,6 +9062,7 @@
  $def_x264_lavc
  $def_xvid_lavc
  
@@ -191,7 +270,7 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  $(ff_config_enable "$_libavdecoders_all" "$_libavdecoders")
  $(ff_config_enable "$_libavencoders_all" "$_libavencoders")
  $(ff_config_enable "$_libavparsers_all"  "$_libavparsers")
-@@ -8946,13 +9020,6 @@
+@@ -8946,13 +9071,6 @@
  $(ff_config_enable "$_libavprotocols_all" "$_libavprotocols")
  $(ff_config_enable "$_libavbsfs_all" "$_libavbsfs")
  
@@ -206,8 +285,8 @@ diff -Naur MPlayer-29756-old/configure MPlayer-29756-new/configure
  EOF
  
 diff -Naur MPlayer-29756-old/etc/codecs.conf MPlayer-29756-new/etc/codecs.conf
---- MPlayer-29756-old/etc/codecs.conf	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/etc/codecs.conf	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/etc/codecs.conf	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/etc/codecs.conf	2009-10-15 08:29:13.000000000 -0700
 @@ -164,6 +164,7 @@
    fourcc LMP2 ; Lead mpeg2 in avi
    driver ffmpeg
@@ -257,8 +336,8 @@ diff -Naur MPlayer-29756-old/etc/codecs.conf MPlayer-29756-new/etc/codecs.conf
  
  videocodec ffzygo
 diff -Naur MPlayer-29756-old/fmt-conversion.c MPlayer-29756-new/fmt-conversion.c
---- MPlayer-29756-old/fmt-conversion.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/fmt-conversion.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/fmt-conversion.c	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/fmt-conversion.c	2009-10-15 08:29:13.000000000 -0700
 @@ -18,12 +18,14 @@
  
  #include "mp_msg.h"
@@ -310,8 +389,8 @@ diff -Naur MPlayer-29756-old/fmt-conversion.c MPlayer-29756-new/fmt-conversion.c
      fmt = conversion_map[i].fmt;
      if (!fmt)
 diff -Naur MPlayer-29756-old/fmt-conversion.h MPlayer-29756-new/fmt-conversion.h
---- MPlayer-29756-old/fmt-conversion.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/fmt-conversion.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/fmt-conversion.h	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/fmt-conversion.h	2009-10-15 08:29:13.000000000 -0700
 @@ -4,6 +4,6 @@
  #include "libavutil/avutil.h"
  
@@ -321,8 +400,8 @@ diff -Naur MPlayer-29756-old/fmt-conversion.h MPlayer-29756-new/fmt-conversion.h
  
  #endif /* MPLAYER_FMT_CONVERSION_H */
 diff -Naur MPlayer-29756-old/gui/mplayer/gtk/opts.c MPlayer-29756-new/gui/mplayer/gtk/opts.c
---- MPlayer-29756-old/gui/mplayer/gtk/opts.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/gui/mplayer/gtk/opts.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/gui/mplayer/gtk/opts.c	2009-10-06 14:11:20.000000000 -0700
++++ MPlayer-29756-new/gui/mplayer/gtk/opts.c	2009-10-15 08:29:13.000000000 -0700
 @@ -63,9 +63,11 @@
         GtkWidget * prEFontName;
         GtkWidget * prEDVDDevice;
@@ -402,8 +481,8 @@ diff -Naur MPlayer-29756-old/gui/mplayer/gtk/opts.c MPlayer-29756-new/gui/mplaye
  
    CBVFM=gtk_combo_new();
 diff -Naur MPlayer-29756-old/help/help_mp-en.h MPlayer-29756-new/help/help_mp-en.h
---- MPlayer-29756-old/help/help_mp-en.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/help/help_mp-en.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/help/help_mp-en.h	2009-10-06 14:11:25.000000000 -0700
++++ MPlayer-29756-new/help/help_mp-en.h	2009-10-15 08:29:13.000000000 -0700
 @@ -718,6 +718,7 @@
  #define MSGTR_PREFERENCES_IDX "Rebuild index table, if needed"
  #define MSGTR_PREFERENCES_VideoCodecFamily "Video codec family:"
@@ -421,8 +500,8 @@ diff -Naur MPlayer-29756-old/help/help_mp-en.h MPlayer-29756-new/help/help_mp-en
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
 diff -Naur MPlayer-29756-old/libmpcodecs/dec_video.c MPlayer-29756-new/libmpcodecs/dec_video.c
---- MPlayer-29756-old/libmpcodecs/dec_video.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/dec_video.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/dec_video.c	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/dec_video.c	2009-10-15 08:29:31.000000000 -0700
 @@ -39,9 +39,47 @@
  int field_dominance=-1;
  
@@ -472,8 +551,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/dec_video.c MPlayer-29756-new/libmpcode
    vf_instance_t* vf=sh_video->vfilter;
    if(vf){
 diff -Naur MPlayer-29756-old/libmpcodecs/dec_video.h MPlayer-29756-new/libmpcodecs/dec_video.h
---- MPlayer-29756-old/libmpcodecs/dec_video.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/dec_video.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/dec_video.h	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/dec_video.h	2009-10-15 08:29:31.000000000 -0700
 @@ -3,6 +3,14 @@
  
  #include "libmpdemux/stheader.h"
@@ -502,8 +581,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/dec_video.h MPlayer-29756-new/libmpcode
  
  #endif /* MPLAYER_DEC_VIDEO_H */
 diff -Naur MPlayer-29756-old/libmpcodecs/img_format.c MPlayer-29756-new/libmpcodecs/img_format.c
---- MPlayer-29756-old/libmpcodecs/img_format.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/img_format.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/img_format.c	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/img_format.c	2009-10-15 08:29:31.000000000 -0700
 @@ -69,6 +69,14 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -520,8 +599,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/img_format.c MPlayer-29756-new/libmpcod
  	case IMGFMT_VDPAU_MPEG2: return "MPEG2 VDPAU acceleration";
  	case IMGFMT_VDPAU_H264: return "H.264 VDPAU acceleration";
 diff -Naur MPlayer-29756-old/libmpcodecs/img_format.h MPlayer-29756-new/libmpcodecs/img_format.h
---- MPlayer-29756-old/libmpcodecs/img_format.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/img_format.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/img_format.h	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/img_format.h	2009-10-15 08:29:31.000000000 -0700
 @@ -109,6 +109,26 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
@@ -550,8 +629,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/img_format.h MPlayer-29756-new/libmpcod
  #define IMGFMT_VDPAU               0x1DC80000
  #define IMGFMT_VDPAU_MASK          0xFFFF0000
 diff -Naur MPlayer-29756-old/libmpcodecs/mp_image.h MPlayer-29756-new/libmpcodecs/mp_image.h
---- MPlayer-29756-old/libmpcodecs/mp_image.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/mp_image.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/mp_image.h	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/mp_image.h	2009-10-15 08:29:31.000000000 -0700
 @@ -111,6 +111,7 @@
      // compressed formats
      if(out_fmt == IMGFMT_MPEGPES ||
@@ -561,8 +640,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/mp_image.h MPlayer-29756-new/libmpcodec
  	mpi->bpp=0;
  	return;
 diff -Naur MPlayer-29756-old/libmpcodecs/vd.c MPlayer-29756-new/libmpcodecs/vd.c
---- MPlayer-29756-old/libmpcodecs/vd.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/vd.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/vd.c	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/vd.c	2009-10-15 08:29:31.000000000 -0700
 @@ -348,3 +348,12 @@
    if(vf->draw_slice)
      vf->draw_slice(vf,src,stride,w,h,x,y);
@@ -577,8 +656,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/vd.c MPlayer-29756-new/libmpcodecs/vd.c
 +    return NULL;
 +}
 diff -Naur MPlayer-29756-old/libmpcodecs/vd_ffmpeg.c MPlayer-29756-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-29756-old/libmpcodecs/vd_ffmpeg.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/vd_ffmpeg.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/vd_ffmpeg.c	2009-10-15 08:28:51.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/vd_ffmpeg.c	2009-10-15 08:29:31.000000000 -0700
 @@ -14,6 +14,7 @@
  #include "fmt-conversion.h"
  
@@ -759,8 +838,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/vd_ffmpeg.c MPlayer-29756-new/libmpcode
 -#endif /* CONFIG_XVMC || CONFIG_VDPAU */
 +#endif /* CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU */
 diff -Naur MPlayer-29756-old/libmpcodecs/vd.h MPlayer-29756-new/libmpcodecs/vd.h
---- MPlayer-29756-old/libmpcodecs/vd.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/vd.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/vd.h	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/vd.h	2009-10-15 08:29:31.000000000 -0700
 @@ -34,6 +34,7 @@
  int mpcodecs_config_vo(sh_video_t *sh, int w, int h, unsigned int preferred_outfmt);
  mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h);
@@ -770,8 +849,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/vd.h MPlayer-29756-new/libmpcodecs/vd.h
  #define VDFLAGS_DROPFRAME 3
  
 diff -Naur MPlayer-29756-old/libmpcodecs/vf.h MPlayer-29756-new/libmpcodecs/vf.h
---- MPlayer-29756-old/libmpcodecs/vf.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/vf.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/vf.h	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/vf.h	2009-10-15 08:29:31.000000000 -0700
 @@ -89,6 +89,7 @@
  #define VFCTRL_GET_PTS         17 /* Return last pts value that reached vf_vo*/
  #define VFCTRL_SET_DEINTERLACE 18 /* Set deinterlacing status */
@@ -781,8 +860,8 @@ diff -Naur MPlayer-29756-old/libmpcodecs/vf.h MPlayer-29756-new/libmpcodecs/vf.h
  #include "vfcap.h"
  
 diff -Naur MPlayer-29756-old/libmpcodecs/vf_vo.c MPlayer-29756-new/libmpcodecs/vf_vo.c
---- MPlayer-29756-old/libmpcodecs/vf_vo.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libmpcodecs/vf_vo.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libmpcodecs/vf_vo.c	2009-10-06 14:11:16.000000000 -0700
++++ MPlayer-29756-new/libmpcodecs/vf_vo.c	2009-10-15 08:29:31.000000000 -0700
 @@ -151,6 +151,12 @@
  	*(double *)data = vf->priv->pts;
  	return CONTROL_TRUE;
@@ -804,9 +883,255 @@ diff -Naur MPlayer-29756-old/libmpcodecs/vf_vo.c MPlayer-29756-new/libmpcodecs/v
         IMGFMT_IS_XVMC(mpi->imgfmt) || IMGFMT_IS_VDPAU(mpi->imgfmt))
  	video_out->control(VOCTRL_GET_IMAGE,mpi);
  }
+diff -Naur MPlayer-29756-old/libvo/stats.c MPlayer-29756-new/libvo/stats.c
+--- MPlayer-29756-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-29756-new/libvo/stats.c	2009-10-15 08:29:31.000000000 -0700
+@@ -0,0 +1,217 @@
++#include "config.h"
++#include "stats.h"
++#include <time.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <locale.h>
++#include <inttypes.h>
++
++#if CONFIG_LIBGTOP
++#include <glibtop/cpu.h>
++#include <glibtop/proctime.h>
++#include <glibtop/procstate.h>
++#endif
++
++// Process statistics
++struct proc_stats {
++    uint64_t utime;
++    uint64_t stime;
++    uint64_t cutime;
++    uint64_t cstime;
++    uint64_t frequency;
++    uint64_t cpu_time;
++    uint64_t start_time;
++    uint64_t current_time;
++};
++
++// Get current process stats
++static int get_proc_stats(struct proc_stats *pstats);
++
++void stats_init(void)
++{
++#if CONFIG_LIBGTOP
++    glibtop_init();
++#endif
++}
++
++void stats_exit(void)
++{
++#if CONFIG_LIBGTOP
++    glibtop_close();
++#endif
++}
++
++// Get CPU frequency
++unsigned int get_cpu_frequency(void)
++{
++    unsigned int freq = 0;
++#if defined __linux__
++    {
++        FILE *proc_file = fopen("/proc/cpuinfo", "r");
++        if (proc_file) {
++            char line[256];
++            char *old_locale = setlocale(LC_NUMERIC, NULL);
++            setlocale(LC_NUMERIC, "C");
++            while(fgets(line, sizeof(line), proc_file)) {
++                float f;
++                int len = strlen(line);
++                if (len == 0)
++                    continue;
++                line[len - 1] = 0;
++                if (sscanf(line, "cpu MHz : %f", &f) == 1)
++                    freq = (unsigned int)f;
++            }
++            setlocale(LC_NUMERIC, old_locale);
++            fclose(proc_file);
++        }
++    }
++#endif
++    return freq;
++}
++
++// Get CPU usage in percent
++static float get_cpu_usage_1(void)
++{
++    static struct proc_stats prev_stats;
++    struct proc_stats curr_stats;
++    uint64_t prev_proc_time = 0, curr_proc_time = 0;
++    float pcpu = 0.0f;
++
++    if (get_proc_stats(&curr_stats) == 0) {
++        prev_proc_time += prev_stats.utime;
++        prev_proc_time += prev_stats.stime;
++        prev_proc_time += prev_stats.cutime;
++        prev_proc_time += prev_stats.cstime;
++        curr_proc_time += curr_stats.utime;
++        curr_proc_time += curr_stats.stime;
++        curr_proc_time += curr_stats.cutime;
++        curr_proc_time += curr_stats.cstime;
++        if (prev_stats.start_time > 0)
++            pcpu = 100.0 * ((float)(curr_proc_time - prev_proc_time) /
++                            (float)(curr_stats.cpu_time - prev_stats.cpu_time));
++        prev_stats = curr_stats;
++    }
++    return pcpu;
++}
++
++float get_cpu_usage(enum CpuUsageType type)
++{
++    static float pcpu_total = 0.0;
++    static unsigned int n_samples;
++    float pcpu;
++
++    pcpu        = get_cpu_usage_1();
++    pcpu_total += pcpu / 100.0;
++    ++n_samples;
++
++    if (type == CPU_USAGE_AVERAGE)
++        pcpu = 100.0 * (pcpu_total / n_samples);
++    return pcpu;
++}
++
++// For ELF executable, notes are pushed before environment and args
++static int find_elf_note(unsigned long match, unsigned long *pval)
++{
++    unsigned long *ep = (unsigned long *)__environ;
++    while (*ep++);
++    for (; *ep != 0; ep += 2) {
++        if (ep[0] == match) {
++            *pval = ep[1];
++            return 0;
++        }
++    }
++    return -1;
++}
++
++#ifndef AT_CLKTCK
++#define AT_CLKTCK 17
++#endif
++
++// Get current process stats
++int get_proc_stats(struct proc_stats *pstats)
++{
++    int error = -1;
++    char line[256], *str, *end;
++    char vc;
++    int vi;
++    unsigned long vul;
++    unsigned long long vull;
++    float vf;
++#if defined __linux__
++    {
++        FILE *proc_file = fopen("/proc/self/stat", "r");
++        if (proc_file) {
++            if (fgets(line, sizeof(line), proc_file)) {
++                unsigned long utime, stime, cutime, cstime, start_time;
++                str = strrchr(line, ')');
++                if (str && sscanf(str + 2,
++                                  "%c "
++                                  "%d %d %d %d %d "
++                                  "%lu %lu %lu %lu %lu %lu %lu "
++                                  "%ld %ld %ld %ld %ld %ld "
++                                  "%lu %lu ",
++                                  &vc,
++                                  &vi, &vi, &vi, &vi, &vi, 
++                                  &vul, &vul, &vul, &vul, &vul, &utime, &stime,
++                                  &cutime, &cstime, &vul, &vul, &vul, &vul,
++                                  &start_time, &vul) == 21) {
++                    pstats->utime      = utime;
++                    pstats->stime      = stime;
++                    pstats->cutime     = cutime;
++                    pstats->cstime     = cstime;
++                    pstats->start_time = start_time;
++                    error = 0;
++                }
++            }
++            fclose(proc_file);
++        }
++        if (error)
++            return error;
++        error = -1;
++
++        if (find_elf_note(AT_CLKTCK, &vul) == 0) {
++            pstats->frequency = vul;
++            error = 0;
++        }
++        if (error)
++            return error;
++        error = -1;
++
++        proc_file = fopen("/proc/uptime", "r");
++        if (proc_file) {
++            if (fgets(line, sizeof(line), proc_file)) {
++                char *old_locale = setlocale(LC_NUMERIC, NULL);
++                setlocale(LC_NUMERIC, "C");
++                if (sscanf(line, "%f", &vf) == 1) {
++                    pstats->cpu_time = (uint64_t)(vf * (float)pstats->frequency);
++                    error = 0;
++                }
++                setlocale(LC_NUMERIC, old_locale);
++            }
++            fclose(proc_file);
++        }
++    }
++#elif CONFIG_LIBGTOP
++    {
++        glibtop_cpu cpu;
++        glibtop_proc_time proc_time;
++        glibtop_proc_state proc_state;
++
++        glibtop_get_cpu(&cpu);
++        glibtop_get_proc_state(&proc_state, getpid());
++        pstats->cpu_time   = cpu.xcpu_total[proc_state.processor];
++
++        glibtop_get_proc_time(&proc_time, getpid());
++        pstats->utime      = proc_time.utime;
++        pstats->stime      = proc_time.stime;
++        pstats->cutime     = proc_time.cutime;
++        pstats->cstime     = proc_time.cstime;
++        pstats->start_time = proc_time.start_time;
++        pstats->frequency  = proc_time.frequency;
++
++        error = 0;
++    }
++#endif
++    return error;
++}
+diff -Naur MPlayer-29756-old/libvo/stats.h MPlayer-29756-new/libvo/stats.h
+--- MPlayer-29756-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-29756-new/libvo/stats.h	2009-10-15 08:29:31.000000000 -0700
+@@ -0,0 +1,21 @@
++#ifndef MPLAYER_STATS_H
++#define MPLAYER_STATS_H
++
++#include <stdint.h>
++
++void stats_init(void);
++void stats_exit(void);
++
++/// CPU usage model
++enum CpuUsageType {
++    CPU_USAGE_QUANTUM = 1, ///< CPU usage since the last call to cpu_get_usage()
++    CPU_USAGE_AVERAGE      ///< CPU usage average'd since program start
++};
++
++/// Get CPU frequency
++unsigned int get_cpu_frequency(void);
++
++/// Get CPU usage in percent
++float get_cpu_usage(enum CpuUsageType type);
++
++#endif /* MPLAYER_STATS_H */
 diff -Naur MPlayer-29756-old/libvo/video_out.c MPlayer-29756-new/libvo/video_out.c
---- MPlayer-29756-old/libvo/video_out.c	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libvo/video_out.c	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libvo/video_out.c	2009-10-06 14:11:21.000000000 -0700
++++ MPlayer-29756-new/libvo/video_out.c	2009-10-15 08:29:31.000000000 -0700
 @@ -132,6 +132,7 @@
  extern vo_functions_t video_out_quartz;
  extern vo_functions_t video_out_pnm;
@@ -826,8 +1151,8 @@ diff -Naur MPlayer-29756-old/libvo/video_out.c MPlayer-29756-new/libvo/video_out
  };
  
 diff -Naur MPlayer-29756-old/libvo/video_out.h MPlayer-29756-new/libvo/video_out.h
---- MPlayer-29756-old/libvo/video_out.h	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/libvo/video_out.h	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/libvo/video_out.h	2009-10-06 14:11:21.000000000 -0700
++++ MPlayer-29756-new/libvo/video_out.h	2009-10-15 08:29:31.000000000 -0700
 @@ -97,6 +97,10 @@
    int w,h;
  } mp_win_t;
@@ -841,8 +1166,8 @@ diff -Naur MPlayer-29756-old/libvo/video_out.h MPlayer-29756-new/libvo/video_out
  #define VO_ERROR	-1
 diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 --- MPlayer-29756-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-29756-new/libvo/vo_vaapi.c	2009-10-06 14:12:24.000000000 -0700
-@@ -0,0 +1,1146 @@
++++ MPlayer-29756-new/libvo/vo_vaapi.c	2009-10-15 08:29:31.000000000 -0700
+@@ -0,0 +1,1550 @@
 +/*
 + * VA API output module
 + *
@@ -871,14 +1196,18 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +#include "subopt-helper.h"
 +#include "video_out.h"
 +#include "video_out_internal.h"
++#include "sub.h"
 +#include "x11_common.h"
 +#include "libavutil/common.h"
 +#include "libavcodec/vaapi.h"
 +#include "gui/interface.h"
++#include "stats.h"
++#include <stdarg.h>
 +
 +#if CONFIG_GL
 +#include "gl_common.h"
 +#include <GL/glu.h>
++#include <GL/glx.h>
 +#endif
 +
 +#include <assert.h>
@@ -906,10 +1235,15 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +#define NUM_VIDEO_SURFACES_H264  17 /* 1 decode frame, up to 16 references */
 +#define NUM_VIDEO_SURFACES_VC1    3 /* 1 decode frame, up to  2 references */
 +
++typedef void (*draw_alpha_func)(int x0, int y0, int w, int h,
++                                unsigned char *src, unsigned char *srca,
++                                int stride);
++
 +static int                      g_is_paused;
 +static uint32_t                 g_image_width;
 +static uint32_t                 g_image_height;
 +static uint32_t                 g_image_format;
++static struct vo_rect           g_borders;
 +static struct vo_rect           g_output_rect;
 +static VASurfaceID              g_output_surfaces[MAX_OUTPUT_SURFACES];
 +static unsigned int             g_output_surface;
@@ -919,6 +1253,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +static int                      gl_binding;
 +static int                      gl_reflect;
 +static GLuint                   gl_texture;
++static GLuint                   gl_font_base;
 +#endif
 +
 +#if CONFIG_VAAPI_GLX
@@ -947,9 +1282,24 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +static int                      va_free_surfaces_tail_index;
 +static VAImageFormat           *va_image_formats;
 +static int                      va_num_image_formats;
++static VAImageFormat           *va_subpic_formats;
++static unsigned int            *va_subpic_flags;
++static int                      va_num_subpic_formats;
++static VAImage                  va_osd_image;
++static uint8_t                 *va_osd_image_data;
++static struct vo_rect           va_osd_image_dirty_rect;
++static VASubpictureID           va_osd_subpicture;
++static int                      va_osd_associated;
++static draw_alpha_func          va_osd_draw_alpha;
++static uint8_t                 *va_osd_palette;
 +
 +///< Flag: direct surface mapping: use mpi->number to select free VA surface?
 +static int                      va_dm;
++
++///< Flag: gather run-time statistics (CPU usage, frequency)
++static int                      cpu_stats;
++static unsigned int             cpu_frequency;
++static float                    cpu_usage;
 +
 +static int check_status(VAStatus status, const char *msg)
 +{
@@ -1107,7 +1457,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    struct vo_rect src;
 +
 +    calc_src_dst_rects(g_image_width, g_image_height,
-+                       &src, &g_output_rect, NULL, NULL);
++                       &src, &g_output_rect, &g_borders, NULL);
 +
 +    vo_x11_clearwindow(mDisplay, vo_window);
 +
@@ -1137,6 +1487,278 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    flip_page();
 +}
 +
++#if CONFIG_GL
++static int gl_build_font(void)
++{
++    XFontStruct *fi;
++
++    gl_font_base = glGenLists(96);
++
++    fi = XLoadQueryFont(mDisplay, "-adobe-helvetica-medium-r-normal--16-*-*-*-p-*-iso8859-1" );
++    if (!fi) {
++        fi = XLoadQueryFont(mDisplay, "fixed");
++        if (!fi)
++            return -1;
++    }
++
++    glXUseXFont(fi->fid, 32, 96, gl_font_base);
++    XFreeFont(mDisplay, fi);
++    return 0;
++}
++
++static void gl_printf(const char *format, ...)
++{
++    va_list args;
++    char *text;
++    int textlen;
++
++    va_start(args, format);
++    textlen = vsnprintf(NULL, 0, format, args);
++    va_end(args);
++
++    text = malloc(textlen + 1);
++    if (!text)
++        return;
++
++    va_start(args, format);
++    vsprintf(text, format, args);
++    va_end(args);
++
++    glPushAttrib(GL_LIST_BIT);
++    glListBase(gl_font_base - 32);
++    glCallLists(textlen, GL_UNSIGNED_BYTE, text);
++    glPopAttrib();
++    free(text);
++}
++
++static void gl_draw_rectangle(int x, int y, int w, int h, unsigned int rgba)
++{
++    glColor4f((GLfloat)((rgba >> 24) & 0xff) / 255.0,
++              (GLfloat)((rgba >> 16) & 0xff) / 255.0,
++              (GLfloat)((rgba >> 8) & 0xff) / 255.0,
++              (GLfloat)(rgba & 0xff) / 255.0);
++
++    glTranslatef((GLfloat)x, (GLfloat)y, 0.0f);
++    glBegin(GL_QUADS);
++    {
++        glVertex2i(0, 0);
++        glVertex2i(w, 0);
++        glVertex2i(w, h);
++        glVertex2i(0, h);
++    }
++    glEnd();
++}
++#endif
++
++static inline unsigned char *get_osd_image_data(int x0, int y0)
++{
++    return (va_osd_image_data +
++            va_osd_image.offsets[0] +
++            va_osd_image.pitches[0] * y0 +
++            x0 * ((va_osd_image.format.bits_per_pixel + 7) / 8));
++}
++
++static inline void set_osd_image_dirty_rect(int x, int y, int w, int h)
++{
++    struct vo_rect * const dirty_rect = &va_osd_image_dirty_rect;
++    dirty_rect->left   = x + w;
++    dirty_rect->top    = y + h;
++    dirty_rect->right  = x;
++    dirty_rect->bottom = y;
++    dirty_rect->width  = w;
++    dirty_rect->height = h;
++}
++
++static inline void update_osd_image_dirty_rect(int x, int y, int w, int h)
++{
++    struct vo_rect * const dirty_rect = &va_osd_image_dirty_rect;
++    dirty_rect->left   = FFMIN(dirty_rect->left,   x);
++    dirty_rect->top    = FFMIN(dirty_rect->top,    y);
++    dirty_rect->right  = FFMAX(dirty_rect->right,  x + w);
++    dirty_rect->bottom = FFMAX(dirty_rect->bottom, y + h);
++    dirty_rect->width  = dirty_rect->right - dirty_rect->left;
++    dirty_rect->height = dirty_rect->bottom - dirty_rect->top;
++}
++
++static void draw_alpha_rgb32(int x0, int y0, int w, int h,
++                             unsigned char *src, unsigned char *srca,
++                             int stride)
++{
++    update_osd_image_dirty_rect(x0, y0, w, h);
++
++    vo_draw_alpha_rgb32(w, h, src, srca, stride,
++                        va_osd_image_data +
++                        va_osd_image.offsets[0] +
++                        va_osd_image.pitches[0] * y0 + x0,
++                        va_osd_image.pitches[0]);
++}
++
++static void draw_alpha_IA44(int x0, int y0, int w, int h,
++                            unsigned char *src, unsigned char *srca,
++                            int stride)
++{
++    int x, y;
++    const unsigned int dststride = va_osd_image.pitches[0];
++    unsigned char *dst = get_osd_image_data(x0, y0);
++
++    update_osd_image_dirty_rect(x0, y0, w, h);
++
++    for (y = 0; y < h; y++, dst += dststride)
++        for (x = 0; x < w; x++)
++            dst[x] = (src[y*stride + x] & 0xf0) | (-srca[y*stride + x] >> 4);
++}
++
++static void draw_alpha_AI44(int x0, int y0, int w, int h,
++                            unsigned char *src, unsigned char *srca,
++                            int stride)
++{
++    int x, y;
++    const unsigned int dststride = va_osd_image.pitches[0];
++    unsigned char *dst = get_osd_image_data(x0, y0);
++
++    update_osd_image_dirty_rect(x0, y0, w, h);
++
++    for (y = 0; y < h; y++, dst += dststride)
++        for (x = 0; x < w; x++)
++            dst[x] = (src[y*stride + x] >> 4) | (-srca[y*stride + x] & 0xf0);
++}
++
++static void draw_alpha_IA88(int x0, int y0, int w, int h,
++                            unsigned char *src, unsigned char *srca,
++                            int stride)
++{
++    int x, y;
++    const unsigned int dststride = va_osd_image.pitches[0];
++    unsigned char *dst = get_osd_image_data(x0, y0);
++
++    update_osd_image_dirty_rect(x0, y0, w, h);
++
++    for (y = 0; y < h; y++, dst += dststride)
++        for (x = 0; x < w; x++) {
++            dst[2*x + 0] =  src [y*stride + x];
++            dst[2*x + 1] = -srca[y*stride + x];
++        }
++}
++
++static void draw_alpha_AI88(int x0, int y0, int w, int h,
++                            unsigned char *src, unsigned char *srca,
++                            int stride)
++{
++    int x, y;
++    const unsigned int dststride = va_osd_image.pitches[0];
++    unsigned char *dst = get_osd_image_data(x0, y0);
++
++    update_osd_image_dirty_rect(x0, y0, w, h);
++
++    for (y = 0; y < h; y++, dst += dststride)
++        for (x = 0; x < w; x++) {
++            dst[2*x + 0] = -srca[y*stride + x];
++            dst[2*x + 1] =  src [y*stride + x];
++        }
++}
++
++///< List of subpicture formats in preferred order
++static const struct {
++    uint32_t format;
++    draw_alpha_func draw_alpha;
++}
++va_osd_info[] = {
++    { VA_FOURCC('I','A','4','4'), draw_alpha_IA44  },
++    { VA_FOURCC('A','I','4','4'), draw_alpha_AI44  },
++    { VA_FOURCC('I','A','8','8'), draw_alpha_IA88  },
++    { VA_FOURCC('A','I','8','8'), draw_alpha_AI88  },
++    { VA_FOURCC('B','G','R','A'), draw_alpha_rgb32 },
++    { VA_FOURCC('R','G','B','A'), draw_alpha_rgb32 },
++    { 0, NULL }
++};
++
++static uint8_t *gen_osd_palette(const VAImage *image)
++{
++    uint8_t *palette;
++    int i, is_rgb;
++    int r_idx = -1, g_idx = -1, b_idx = -1;
++    int y_idx = -1, u_idx = -1, v_idx = -1;
++
++    if (image->num_palette_entries < 1)
++        return NULL;
++
++    palette = malloc(image->num_palette_entries * image->entry_bytes);
++    if (!palette)
++        return NULL;
++
++    for (i = 0; i < image->entry_bytes; i++) {
++        switch (image->component_order[i]) {
++        case 'R': r_idx = i; is_rgb = 1; break;
++        case 'G': g_idx = i; is_rgb = 1; break;
++        case 'B': b_idx = i; is_rgb = 1; break;
++        case 'Y': y_idx = i; is_rgb = 0; break;
++        case 'U': u_idx = i; is_rgb = 0; break;
++        case 'V': v_idx = i; is_rgb = 0; break;
++        }
++    }
++
++    if (r_idx != -1 && g_idx != -1 && b_idx != -1) {      /* RGB format */
++        for (i = 0; i < image->num_palette_entries; i++) {
++            const int n = i * image->entry_bytes;
++            palette[n + r_idx] = i * 0xff / (image->num_palette_entries - 1);
++            palette[n + g_idx] = i * 0xff / (image->num_palette_entries - 1);
++            palette[n + b_idx] = i * 0xff / (image->num_palette_entries - 1);
++        }
++    }
++    else if (y_idx != -1 && u_idx != -1 && v_idx != -1) { /* YUV format */
++        for (i = 0; i < image->num_palette_entries; i++) {
++            const int n = i * image->entry_bytes;
++            palette[n + y_idx] = i * 0xff / (image->num_palette_entries - 1);
++            palette[n + u_idx] = 0xff;
++            palette[n + v_idx] = 0xff;
++        }
++    }
++    else {
++        mp_msg(MSGT_VO, MSGL_ERR, "[vo_vaapi] Could not set up subpicture palette\n");
++        free(palette);
++        palette = NULL;
++    }
++    return palette;
++}
++
++static void disable_osd(void)
++{
++    if (!va_osd_associated)
++        return;
++
++    vaDeassociateSubpicture(va_context->display,
++                            va_osd_subpicture,
++                            va_surface_ids, va_num_surfaces);
++
++    va_osd_associated = 0;
++}
++
++static int enable_osd(const struct vo_rect *src_rect,
++                      const struct vo_rect *dst_rect)
++{
++    VAStatus status;
++
++    disable_osd();
++
++    status = vaAssociateSubpicture(va_context->display,
++                                   va_osd_subpicture,
++                                   va_surface_ids, va_num_surfaces,
++                                   src_rect->left,
++                                   src_rect->top,
++                                   src_rect->right - src_rect->left,
++                                   src_rect->bottom - src_rect->top,
++                                   dst_rect->left,
++                                   dst_rect->top,
++                                   dst_rect->right - dst_rect->left,
++                                   dst_rect->bottom - dst_rect->top,
++                                   0);
++    if (!check_status(status, "vaAssociateSubpicture()"))
++        return -1;
++
++    va_osd_associated = 1;
++    return 0;
++}
++
 +static int is_direct_mapping_init(void)
 +{
 +    VADisplayAttribute attr;
@@ -1145,15 +1767,18 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    if (va_dm < 2)
 +        return va_dm;
 +
++    /* If the driver doesn't make a copy of the VA surface for
++       display, then we have to retain it until it's no longer the
++       visible surface. In other words, if the driver is using
++       DirectSurface mode, we don't want to decode the new surface
++       into the previous one that was used for display. */
 +    attr.type  = VADisplayAttribDirectSurface;
 +    attr.flags = VA_DISPLAY_ATTRIB_GETTABLE;
 +
 +    status = vaGetDisplayAttributes(va_context->display, &attr, 1);
-+    if (!check_status(status, "vaGetDisplayAttributes()") &&
-+        status != VA_STATUS_ERROR_ATTR_NOT_SUPPORTED)
-+        return 0;
-+
-+    return !attr.value;
++    if (status == VA_STATUS_SUCCESS)
++        return !attr.value;
++    return 0;
 +}
 +
 +static inline int is_direct_mapping(void)
@@ -1175,6 +1800,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +
 +static const opt_t subopts[] = {
 +    { "dm",          OPT_ARG_INT,  &va_dm,        (opt_test_f)int_012 },
++    { "stats",       OPT_ARG_BOOL, &cpu_stats,    NULL },
 +#if CONFIG_GL
 +    { "gl",          OPT_ARG_BOOL, &gl_enabled,   NULL },
 +    { "bind",        OPT_ARG_BOOL, &gl_binding,   NULL },
@@ -1187,7 +1813,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +{
 +    VAStatus status;
 +    int va_major_version, va_minor_version;
-+    int i, max_image_formats, max_profiles;
++    int i, max_image_formats, max_subpic_formats, max_profiles;
 +
 +    va_dm = 2;
 +    if (subopt_parse(arg, subopts) != 0) {
@@ -1213,6 +1839,8 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +        mp_msg(MSGT_VO, MSGL_INFO, "[vo_vaapi] Using OpenGL rendering%s\n",
 +               gl_reflect ? ", with reflection effects" : "");
 +#endif
++
++    stats_init();
 +
 +    if (!vo_init())
 +        return -1;
@@ -1249,6 +1877,21 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    for (i = 0; i < va_num_image_formats; i++)
 +        mp_msg(MSGT_VO, MSGL_DBG2, "  %s\n", string_of_VAImageFormat(&va_image_formats[i]));
 +
++    max_subpic_formats = vaMaxNumSubpictureFormats(va_context->display);
++    va_subpic_formats = calloc(max_subpic_formats, sizeof(*va_subpic_formats));
++    if (!va_subpic_formats)
++        return -1;
++    va_subpic_flags = calloc(max_subpic_formats, sizeof(*va_subpic_flags));
++    if (!va_subpic_flags)
++        return -1;
++    status = vaQuerySubpictureFormats(va_context->display, va_subpic_formats, va_subpic_flags, &va_num_subpic_formats);
++    if (!check_status(status, "vaQuerySubpictureFormats()"))
++        return -1;
++    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] preinit(): %d subpicture formats available\n",
++           va_num_subpic_formats);
++    for (i = 0; i < va_num_subpic_formats; i++)
++        mp_msg(MSGT_VO, MSGL_DBG2, "  %s, flags 0x%x\n", string_of_VAImageFormat(&va_subpic_formats[i]), va_subpic_flags[i]);
++
 +    max_profiles = vaMaxNumProfiles(va_context->display);
 +    va_profiles = calloc(max_profiles, sizeof(*va_profiles));
 +    if (!va_profiles)
@@ -1283,6 +1926,23 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    if (va_free_surfaces) {
 +        free(va_free_surfaces);
 +        va_free_surfaces = NULL;
++    }
++
++    if (va_osd_palette) {
++        free(va_osd_palette);
++        va_osd_palette = NULL;
++    }
++
++    disable_osd();
++
++    if (va_osd_subpicture != VA_INVALID_ID) {
++        vaDestroySubpicture(va_context->display, va_osd_subpicture);
++        va_osd_subpicture = VA_INVALID_ID;
++    }
++
++    if (va_osd_image.image_id != VA_INVALID_ID) {
++        vaDestroyImage(va_context->display, va_osd_image.image_id);
++        va_osd_image.image_id = VA_INVALID_ID;
 +    }
 +
 +    if (va_surface_ids) {
@@ -1325,6 +1985,16 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +        va_profiles = NULL;
 +    }
 +
++    if (va_subpic_flags) {
++        free(va_subpic_flags);
++        va_subpic_flags = NULL;
++    }
++
++    if (va_subpic_formats) {
++        free(va_subpic_formats);
++        va_subpic_formats = NULL;
++    }
++
 +    if (va_image_formats) {
 +        free(va_image_formats);
 +        va_image_formats = NULL;
@@ -1344,6 +2014,8 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    vo_vm_close();
 +#endif
 +    vo_x11_uninit();
++
++    stats_exit();
 +}
 +
 +static int config_x11(uint32_t width, uint32_t height,
@@ -1452,6 +2124,9 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +
 +    glClearColor(0.0, 0.0, 0.0, 1.0);
 +    glClear(GL_COLOR_BUFFER_BIT);
++
++    if (gl_build_font() < 0)
++        return -1;
 +    return 0;
 +}
 +#endif
@@ -1460,7 +2135,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +{
 +    VAConfigAttrib attrib;
 +    VAStatus status;
-+    int i, profile, entrypoint, max_entrypoints;
++    int i, j, profile, entrypoint, max_entrypoints;
 +
 +    /* Check profile */
 +    profile = VAProfile_from_imgfmt(format);
@@ -1538,6 +2213,34 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    for (i = 0; i < va_num_surfaces; i++)
 +        va_free_surfaces[i] = &va_surface_ids[i];
 +
++    /* Create OSD data */
++    va_osd_draw_alpha     = NULL;
++    va_osd_image.image_id = VA_INVALID_ID;
++    va_osd_image.buf      = VA_INVALID_ID;
++    va_osd_subpicture     = VA_INVALID_ID;
++    for (i = 0; va_osd_info[i].format; i++) {
++        for (j = 0; j < va_num_subpic_formats; j++)
++            if (va_subpic_formats[j].fourcc == va_osd_info[i].format)
++                break;
++        if (j < va_num_subpic_formats &&
++            vaCreateImage(va_context->display, &va_subpic_formats[j],
++                          width, height, &va_osd_image) == VA_STATUS_SUCCESS)
++            break;
++    }
++    if (va_osd_info[i].format &&
++        vaCreateSubpicture(va_context->display, va_osd_image.image_id,
++                           &va_osd_subpicture) == VA_STATUS_SUCCESS) {
++        va_osd_draw_alpha = va_osd_info[i].draw_alpha;
++        va_osd_palette = gen_osd_palette(&va_osd_image);
++        if (va_osd_palette) {
++            status = vaSetImagePalette(va_context->display,
++                                       va_osd_image.image_id, va_osd_palette);
++            check_status(status, "vaSetImagePalette()");
++        }
++        mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] Using %s surface for OSD\n",
++               string_of_VAImageFormat(&va_osd_image.format));
++    }
++
 +#if CONFIG_VAAPI_GLX
 +    /* Create GLX surfaces */
 +    if (gl_enabled) {
@@ -1596,7 +2299,8 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    const int default_caps = (VFCAP_CSP_SUPPORTED |
 +                              VFCAP_CSP_SUPPORTED_BY_HW |
 +                              VFCAP_HWSCALE_UP |
-+                              VFCAP_HWSCALE_DOWN);
++                              VFCAP_HWSCALE_DOWN |
++                              VFCAP_OSD);
 +
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] query_format(): format %x (%s)\n",
 +           format, vo_format_name(format));
@@ -1654,7 +2358,7 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +                                  VA_FRAME_PICTURE);
 +        if (status == VA_STATUS_ERROR_UNIMPLEMENTED) {
 +            mp_msg(MSGT_VO, MSGL_WARN,
-+                   "[vaapi] vaCopySurfaceGLX() is not implemented\n");
++                   "[vo_vaapi] vaCopySurfaceGLX() is not implemented\n");
 +            gl_binding = 1;
 +        }
 +        else {
@@ -1802,6 +2506,13 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +        glPopMatrix();
 +    }
 +
++    if (cpu_stats) {
++        gl_draw_rectangle(0, 0, vo_dwidth, 32, 0x000000ff);
++        glColor3f(1.0f, 1.0f, 1.0f);
++        glRasterPos2i(16, 20);
++        gl_printf("MPlayer: %.1f%% of CPU @ %u MHz", cpu_usage, cpu_frequency);
++    }
++
 +    swapGlBuffers();
 +
 +    if (vo_fs) /* avoid flickering borders in fullscreen mode */
@@ -1822,20 +2533,6 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +        put_surface_x11(surface);
 +}
 +
-+static inline int sync_surface(VASurfaceID surface)
-+{
-+    VAStatus status;
-+
-+    status = vaSyncSurface(va_context->display,
-+#if !VA_CHECK_VERSION(0,31,0)
-+                           va_context->context_id,
-+#endif
-+                           surface);
-+    if (!check_status(status, "vaSyncSurface()"))
-+        return -1;
-+    return 0;
-+}
-+
 +static int draw_slice(uint8_t * image[], int stride[],
 +                      int w, int h, int x, int y)
 +{
@@ -1853,7 +2550,35 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +
 +static void draw_osd(void)
 +{
-+    // XXX: not implemented
++    VAStatus status;
++
++    if (!va_osd_draw_alpha)
++        return;
++
++    if (!vo_update_osd(g_image_width, g_image_height))
++        return;
++
++    if (!vo_osd_check_range_update(0, 0, g_image_width, g_image_height)) {
++        disable_osd();
++        return;
++    }
++
++    status = vaMapBuffer(va_context->display, va_osd_image.buf,
++                         &va_osd_image_data);
++    if (!check_status(status, "vaMapBuffer()"))
++        return;
++
++    memset(va_osd_image_data, 0, va_osd_image.data_size);
++
++    set_osd_image_dirty_rect(0, 0, g_image_width, g_image_height);
++    vo_draw_text(g_image_width, g_image_height, va_osd_draw_alpha);
++
++    status = vaUnmapBuffer(va_context->display, va_osd_image.buf);
++    if (!check_status(status, "vaUnmapBuffer()"))
++        return;
++    va_osd_image_data = NULL;
++
++    enable_osd(&va_osd_image_dirty_rect, &va_osd_image_dirty_rect);
 +}
 +
 +static void flip_page(void)
@@ -1865,10 +2590,6 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    surface = g_output_surfaces[g_output_surface];
 +    if (surface != VA_INVALID_SURFACE)
 +        put_surface(surface);
-+
-+    surface = g_output_surfaces[(g_output_surface - 1) % MAX_OUTPUT_SURFACES];
-+    if (surface != VA_INVALID_SURFACE)
-+        sync_surface(surface);
 +    g_output_surface = (g_output_surface + 1) % MAX_OUTPUT_SURFACES;
 +
 +#if CONFIG_VAAPI_GLX
@@ -1935,6 +2656,14 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] draw_image(): surface 0x%08x\n", surface);
 +
 +    g_output_surfaces[g_output_surface] = surface;
++
++    if (cpu_stats) {
++        static uint64_t ticks;
++        if ((ticks++ % 30) == 0) {
++            cpu_frequency = get_cpu_frequency();
++            cpu_usage = get_cpu_usage(CPU_USAGE_QUANTUM);
++        }
++    }
 +    return VO_TRUE;
 +}
 +
@@ -1990,8 +2719,8 @@ diff -Naur MPlayer-29756-old/libvo/vo_vaapi.c MPlayer-29756-new/libvo/vo_vaapi.c
 +    return VO_NOTIMPL;
 +}
 diff -Naur MPlayer-29756-old/Makefile MPlayer-29756-new/Makefile
---- MPlayer-29756-old/Makefile	2009-10-06 14:12:24.000000000 -0700
-+++ MPlayer-29756-new/Makefile	2009-10-06 14:12:24.000000000 -0700
+--- MPlayer-29756-old/Makefile	2009-10-06 14:11:26.000000000 -0700
++++ MPlayer-29756-new/Makefile	2009-10-15 08:29:13.000000000 -0700
 @@ -621,6 +621,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
@@ -2000,3 +2729,11 @@ diff -Naur MPlayer-29756-old/Makefile MPlayer-29756-new/Makefile
  SRCS_MPLAYER-$(VDPAU)         += libvo/vo_vdpau.c
  SRCS_MPLAYER-$(VESA)          += libvo/gtf.c libvo/vo_vesa.c libvo/vesa_lvo.c
  SRCS_MPLAYER-$(VIDIX)         += libvo/vo_cvidix.c \
+@@ -674,6 +675,7 @@
+                libvo/aspect.c \
+                libvo/geometry.c \
+                libvo/spuenc.c \
++               libvo/stats.c \
+                libvo/video_out.c \
+                libvo/vo_mpegpes.c \
+                libvo/vo_null.c \
