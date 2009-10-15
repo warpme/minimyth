@@ -1,8 +1,9 @@
 GARNAME = module-init-tools
-GARVERSION = 3.10
+GARVERSION = 3.11
 CATEGORIES = utils
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-no_docbook2man.patch
 LICENSE = GPL2
 
 DESCRIPTION =
