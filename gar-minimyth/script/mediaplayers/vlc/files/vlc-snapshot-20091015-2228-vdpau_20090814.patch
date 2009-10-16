@@ -1,7 +1,7 @@
 diff -Naur vlc-1.1.0-git-old/configure.ac vlc-1.1.0-git-new/configure.ac
---- vlc-1.1.0-git-old/configure.ac	2009-09-01 15:04:36.000000000 -0700
-+++ vlc-1.1.0-git-new/configure.ac	2009-09-02 17:08:54.000000000 -0700
-@@ -3237,6 +3237,31 @@
+--- vlc-1.1.0-git-old/configure.ac	2009-10-15 18:46:48.000000000 -0700
++++ vlc-1.1.0-git-new/configure.ac	2009-10-15 18:47:14.000000000 -0700
+@@ -3311,6 +3311,31 @@
  fi
  AM_CONDITIONAL(BUILD_OSDMENU, [test "${enable_png}" != "no"])
  
@@ -33,7 +33,7 @@ diff -Naur vlc-1.1.0-git-old/configure.ac vlc-1.1.0-git-new/configure.ac
  dnl
  dnl H264 encoder plugin (using libx264)
  dnl
-@@ -5079,6 +5104,7 @@
+@@ -5164,6 +5189,7 @@
    modules/codec/shine/Makefile
    modules/codec/subtitles/Makefile
    modules/codec/spudec/Makefile
@@ -42,8 +42,8 @@ diff -Naur vlc-1.1.0-git-old/configure.ac vlc-1.1.0-git-new/configure.ac
    modules/codec/xvmc/Makefile
    modules/control/Makefile
 diff -Naur vlc-1.1.0-git-old/modules/codec/Modules.am vlc-1.1.0-git-new/modules/codec/Modules.am
---- vlc-1.1.0-git-old/modules/codec/Modules.am	2009-09-01 15:04:36.000000000 -0700
-+++ vlc-1.1.0-git-new/modules/codec/Modules.am	2009-09-02 17:02:37.000000000 -0700
+--- vlc-1.1.0-git-old/modules/codec/Modules.am	2009-10-15 15:04:25.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/Modules.am	2009-10-15 18:47:14.000000000 -0700
 @@ -1,4 +1,4 @@
 -SUBDIRS = cmml dmo avcodec shine subtitles spudec wmafixed xvmc
 +SUBDIRS = cmml dmo avcodec shine subtitles spudec vdpau wmafixed xvmc
@@ -52,8 +52,8 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/Modules.am vlc-1.1.0-git-new/modules/
  SOURCES_flac = flac.c
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.c vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.c
 --- vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.c	2009-09-02 17:02:37.000000000 -0700
-@@ -0,0 +1,251 @@
++++ vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.c	2009-10-15 18:48:00.000000000 -0700
+@@ -0,0 +1,252 @@
 +/*****************************************************************************
 + * avcodec.c: video and audio decoder and encoder using libavcodec
 + *****************************************************************************
@@ -92,6 +92,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.c vlc-1.1.0-git-new/mod
 +#include <vlc_plugin.h>
 +#include <vlc_codec.h>
 +#include <vlc_avcodec.h>
++#include <vlc_cpu.h>
 +
 +/* ffmpeg header */
 +#define HAVE_MMX 1
@@ -307,7 +308,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.c vlc-1.1.0-git-new/mod
 +}
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.h vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.h
 --- vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.h	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.h	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/avcodec.h	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,249 @@
 +/*****************************************************************************
 + * avcodec.h: decoder and encoder using libavcodec
@@ -560,7 +561,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avcodec.h vlc-1.1.0-git-new/mod
 +
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avutil.h vlc-1.1.0-git-new/modules/codec/vdpau/avutil.h
 --- vlc-1.1.0-git-old/modules/codec/vdpau/avutil.h	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/avutil.h	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/avutil.h	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,60 @@
 +/*****************************************************************************
 + * avutil.h: avutil helper functions
@@ -624,7 +625,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/avutil.h vlc-1.1.0-git-new/modu
 +}
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/chroma.c vlc-1.1.0-git-new/modules/codec/vdpau/chroma.c
 --- vlc-1.1.0-git-old/modules/codec/vdpau/chroma.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/chroma.c	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/chroma.c	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,158 @@
 +/*****************************************************************************
 + * chroma.c: libavutil <-> libvlc conversion routines
@@ -786,7 +787,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/chroma.c vlc-1.1.0-git-new/modu
 +}
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/deinterlace.c vlc-1.1.0-git-new/modules/codec/vdpau/deinterlace.c
 --- vlc-1.1.0-git-old/modules/codec/vdpau/deinterlace.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/deinterlace.c	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/deinterlace.c	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,157 @@
 +/*****************************************************************************
 + * video filter: video filter doing chroma conversion and resizing
@@ -947,7 +948,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/deinterlace.c vlc-1.1.0-git-new
 +}
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/fourcc.c vlc-1.1.0-git-new/modules/codec/vdpau/fourcc.c
 --- vlc-1.1.0-git-old/modules/codec/vdpau/fourcc.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/fourcc.c	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/fourcc.c	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,177 @@
 +/*****************************************************************************
 + * fourcc.c: libavcodec <-> libvlc conversion routines
@@ -1128,7 +1129,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/fourcc.c vlc-1.1.0-git-new/modu
 +}
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/Modules.am vlc-1.1.0-git-new/modules/codec/vdpau/Modules.am
 --- vlc-1.1.0-git-old/modules/codec/vdpau/Modules.am	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/Modules.am	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/Modules.am	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,18 @@
 +SOURCES_vdpau = \
 +	avcodec.c \
@@ -1150,7 +1151,7 @@ diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/Modules.am vlc-1.1.0-git-new/mo
 +	libvdpau_plugin.la
 diff -Naur vlc-1.1.0-git-old/modules/codec/vdpau/video.c vlc-1.1.0-git-new/modules/codec/vdpau/video.c
 --- vlc-1.1.0-git-old/modules/codec/vdpau/video.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.1.0-git-new/modules/codec/vdpau/video.c	2009-09-02 17:02:37.000000000 -0700
++++ vlc-1.1.0-git-new/modules/codec/vdpau/video.c	2009-10-15 18:47:14.000000000 -0700
 @@ -0,0 +1,1446 @@
 +/*****************************************************************************
 + * video.c: video decoder using the ffmpeg library
