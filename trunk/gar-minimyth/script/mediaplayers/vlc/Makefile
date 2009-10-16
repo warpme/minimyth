@@ -1,12 +1,11 @@
 GARNAME = vlc
-#GARVERSION = snapshot-20090901-2221
+#GARVERSION = snapshot-20091015-2228
 GARVERSION = 1.0.2
 CATEGORIES = mediaplayers
 PATCHFILES  =
 ifeq ($(word 1,$(subst -, ,$(GARVERSION))),snapshot)
 MASTER_SITES  = http://nightlies.videolan.org/build/source/$(subst snapshot,trunk,$(GARVERSION))/
 DISTFILES = $(GARNAME)-snapshot-$(word 2,$(subst -, ,$(GARVERSION))).tar.bz2
-PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
 WORKSRC = $(WORKDIR)/$(GARNAME)-1.1.0-git
 else
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
