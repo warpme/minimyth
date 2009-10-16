@@ -9,7 +9,7 @@ PATCHFILES  = $(DISTNAME)-multi_os_directory.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 endif
-LICENSE = GPL3/GPL2/LGPL2
+LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
 define BLURB
