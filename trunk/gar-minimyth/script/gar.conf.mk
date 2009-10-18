@@ -170,7 +170,7 @@ build_NODEPEND += kernel/linux-headers devel/glibc
 
 # This is for foo-config chaos
 PKG_CONFIG_PATH = 
-PKG_CONFIG_LIBDIR = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig
+PKG_CONFIG_LIBDIR = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(datadir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig
 PKG_CONFIG_SYSROOT_DIR = $(DESTDIR)
 PERLLIB = 
 PERL5LIB =
