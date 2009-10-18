@@ -71,11 +71,7 @@ $var_list{'MM_HULU_STORE_HULUDESKTOP_DATA'} =
 
         return $value_default;
     },
-    value_valid    => 'no|yes',
-    value_file     => 'yes',
-    file           => {name_remote => '/huludesktop.data',
-                       mode_remote => 'rw',
-                       name_local  => '/home/minimyth/.local/share/.huludesktop.data'}
+    value_valid    => 'no|yes'
 };
 
 1;
