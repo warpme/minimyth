@@ -18,6 +18,25 @@ sub start
         $minimyth->message_output('info', "installing binary Hulu Desktop ...");
         $minimyth->url_get($minimyth->var_get('MM_HULU_URL'), '/usr/bin/huludesktop');
     }
+
+    if ($minimyth->var_get('MM_HULU_STORE_HULUDESKTOP_DATA') eq 'yes')
+    {
+        my $name_remote = '/huludesktop.data';
+        my $name_local  = '/home/minimyth/.local/share/.huludesktop.data';
+        my $result = $minimyth->confrw_get($name_remote, $name_local);
+        if (! -e $name_local)
+        {
+            $minimyth->message_output('info', qq(failed to fetch MiniMyth read-write configuration file ') . $name_remote . qq('));
+        }
+        else
+        {
+            $minimyth->message_log('info', qq(fetched MiniMyth read-write configuration file ') . $name_remote . qq('));
+            $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
+            $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
+            chmod(oct('0644'), $name_local);
+        }
+    }
+
     if (-f '/usr/bin/huludesktop')
     {
         chmod(0755, '/usr/bin/huludesktop');
