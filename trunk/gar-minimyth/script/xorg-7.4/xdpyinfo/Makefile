@@ -1,5 +1,5 @@
 GARNAME = xdpyinfo
-GARVERSION = 1.0.3
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -28,7 +28,12 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--without-dmx
+	--disable-silent-rules \
+	--with-dga \
+	--with-xf86misc \
+	--with-xinerama \
+	--without-dmx \
+	--without-xprint
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
