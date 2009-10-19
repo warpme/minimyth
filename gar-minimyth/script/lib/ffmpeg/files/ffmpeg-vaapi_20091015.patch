@@ -1,7 +1,7 @@
-diff -Naur ffmpeg-20182.29756-old/configure ffmpeg-20182.29756-new/configure
---- ffmpeg-20182.29756-old/configure	2009-10-06 14:06:28.000000000 -0700
-+++ ffmpeg-20182.29756-new/configure	2009-10-15 08:48:35.000000000 -0700
-@@ -2790,6 +2790,27 @@
+diff -Naur ffmpeg-20304.29779-old/configure ffmpeg-20304.29779-new/configure
+--- ffmpeg-20304.29779-old/configure	2009-10-18 17:11:03.000000000 -0700
++++ ffmpeg-20304.29779-new/configure	2009-10-18 17:11:03.000000000 -0700
+@@ -2798,6 +2798,27 @@
      done
  fi
  
@@ -29,9 +29,9 @@ diff -Naur ffmpeg-20182.29756-old/configure ffmpeg-20182.29756-new/configure
  
  # build pkg-config files
  
-diff -Naur ffmpeg-20182.29756-old/libavcodec/allcodecs.c ffmpeg-20182.29756-new/libavcodec/allcodecs.c
---- ffmpeg-20182.29756-old/libavcodec/allcodecs.c	2009-10-06 14:06:26.000000000 -0700
-+++ ffmpeg-20182.29756-new/libavcodec/allcodecs.c	2009-10-15 08:36:55.000000000 -0700
+diff -Naur ffmpeg-20304.29779-old/libavcodec/allcodecs.c ffmpeg-20304.29779-new/libavcodec/allcodecs.c
+--- ffmpeg-20304.29779-old/libavcodec/allcodecs.c	2009-10-18 17:11:03.000000000 -0700
++++ ffmpeg-20304.29779-new/libavcodec/allcodecs.c	2009-10-18 17:11:03.000000000 -0700
 @@ -55,6 +55,7 @@
  
      /* hardware accelerators */
@@ -40,9 +40,9 @@ diff -Naur ffmpeg-20182.29756-old/libavcodec/allcodecs.c ffmpeg-20182.29756-new/
      REGISTER_HWACCEL (MPEG2_VAAPI, mpeg2_vaapi);
      REGISTER_HWACCEL (MPEG4_VAAPI, mpeg4_vaapi);
      REGISTER_HWACCEL (VC1_VAAPI, vc1_vaapi);
-diff -Naur ffmpeg-20182.29756-old/libavcodec/Makefile ffmpeg-20182.29756-new/libavcodec/Makefile
---- ffmpeg-20182.29756-old/libavcodec/Makefile	2009-10-06 14:06:26.000000000 -0700
-+++ ffmpeg-20182.29756-new/libavcodec/Makefile	2009-10-15 08:36:55.000000000 -0700
+diff -Naur ffmpeg-20304.29779-old/libavcodec/Makefile ffmpeg-20304.29779-new/libavcodec/Makefile
+--- ffmpeg-20304.29779-old/libavcodec/Makefile	2009-10-18 17:11:03.000000000 -0700
++++ ffmpeg-20304.29779-new/libavcodec/Makefile	2009-10-18 17:11:03.000000000 -0700
 @@ -3,7 +3,7 @@
  NAME = avcodec
  FFLIBS = avutil
@@ -52,17 +52,17 @@ diff -Naur ffmpeg-20182.29756-old/libavcodec/Makefile ffmpeg-20182.29756-new/lib
  
  OBJS = allcodecs.o                                                      \
         audioconvert.o                                                   \
-@@ -108,6 +108,7 @@
- OBJS-$(CONFIG_H263_ENCODER)            += mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
- OBJS-$(CONFIG_H264_DECODER)            += h264.o h264idct.o h264pred.o h264_parser.o cabac.o mpegvideo.o error_resilience.o
+@@ -136,6 +136,7 @@
+                                           h264_parser.o cabac.o        \
+                                           mpegvideo.o error_resilience.o
  OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dspenc.o
 +OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += vaapi_h264.o
  OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
  OBJS-$(CONFIG_HUFFYUV_ENCODER)         += huffyuv.o
  OBJS-$(CONFIG_IDCIN_DECODER)           += idcinvideo.o
-diff -Naur ffmpeg-20182.29756-old/libavcodec/vaapi_h264.c ffmpeg-20182.29756-new/libavcodec/vaapi_h264.c
---- ffmpeg-20182.29756-old/libavcodec/vaapi_h264.c	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-20182.29756-new/libavcodec/vaapi_h264.c	2009-10-15 08:36:55.000000000 -0700
+diff -Naur ffmpeg-20304.29779-old/libavcodec/vaapi_h264.c ffmpeg-20304.29779-new/libavcodec/vaapi_h264.c
+--- ffmpeg-20304.29779-old/libavcodec/vaapi_h264.c	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-20304.29779-new/libavcodec/vaapi_h264.c	2009-10-18 17:11:03.000000000 -0700
 @@ -0,0 +1,353 @@
 +/*
 + * H.264 HW decode acceleration through VA API
@@ -417,10 +417,10 @@ diff -Naur ffmpeg-20182.29756-old/libavcodec/vaapi_h264.c ffmpeg-20182.29756-new
 +    .decode_slice   = decode_slice,
 +    .priv_data_size = 0,
 +};
-diff -Naur ffmpeg-20182.29756-old/libavcodec/x86/dsputil_mmx.c ffmpeg-20182.29756-new/libavcodec/x86/dsputil_mmx.c
---- ffmpeg-20182.29756-old/libavcodec/x86/dsputil_mmx.c	2009-10-15 08:27:39.000000000 -0700
-+++ ffmpeg-20182.29756-new/libavcodec/x86/dsputil_mmx.c	2009-10-15 08:36:55.000000000 -0700
-@@ -2668,7 +2668,9 @@
+diff -Naur ffmpeg-20304.29779-old/libavcodec/x86/dsputil_mmx.c ffmpeg-20304.29779-new/libavcodec/x86/dsputil_mmx.c
+--- ffmpeg-20304.29779-old/libavcodec/x86/dsputil_mmx.c	2009-10-18 17:11:03.000000000 -0700
++++ ffmpeg-20304.29779-new/libavcodec/x86/dsputil_mmx.c	2009-10-18 17:11:03.000000000 -0700
+@@ -2670,7 +2670,9 @@
          c->add_pixels_clamped = add_pixels_clamped_mmx;
          c->clear_block  = clear_block_mmx;
          c->clear_blocks = clear_blocks_mmx;

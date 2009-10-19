@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 20182.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 20304.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -55,6 +55,7 @@ CONFIGURE_ARGS = \
 	--enable-aandct \
 	--enable-fft \
 	--enable-golomb \
+	--enable-lpc \
 	--enable-mdct \
 	--enable-rdft \
 	--enable-vaapi \
