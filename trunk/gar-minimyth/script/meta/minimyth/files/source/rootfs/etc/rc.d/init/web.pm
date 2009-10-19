@@ -6,7 +6,6 @@ package init::web;
 use strict;
 use warnings;
 
-use File::Find ();
 use MiniMyth ();
 
 sub start
