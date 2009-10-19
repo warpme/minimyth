@@ -8,6 +8,7 @@ use warnings;
 use feature "switch";
 
 use File::Basename ();
+use File::Find ();
 use File::Path ();
 use MiniMyth ();
 
