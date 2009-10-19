@@ -46,6 +46,7 @@ DEPENDS = \
 	net/mount.cifs \
 	myth-$(mm_MYTH_VERSION)/myththemes \
 	myth-$(mm_MYTH_VERSION)/myththemes-addons \
+	$(if $(filter-out 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes-blue-abstract-wide) \
 	$(if $(filter-out 0.20 0.20-softpad 0.21,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes-old) \
 	myth-$(mm_MYTH_VERSION)/mythtv \
 	lib/ncursesw \
