@@ -26,7 +26,6 @@ DEPENDS = \
 	$(CATEGORY)/libXres \
 	$(CATEGORY)/libXt \
 	$(CATEGORY)/libXtst \
-	$(CATEGORY)/libXxf86dga \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/mkfontdir \
 	$(CATEGORY)/mkfontscale \
