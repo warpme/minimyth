@@ -21,7 +21,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xf86driproto \
-	$(CATEGORY)/xf86miscproto \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto

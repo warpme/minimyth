@@ -17,8 +17,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXinerama \
 	$(CATEGORY)/libXrender \
 	$(CATEGORY)/libXtst \
-	$(CATEGORY)/libXxf86dga \
-	$(CATEGORY)/libXxf86misc \
 	$(CATEGORY)/libXxf86vm
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -29,8 +27,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
-	--with-dga \
-	--with-xf86misc \
+	--without-dga \
+	--without-xf86misc \
 	--with-xinerama \
 	--without-dmx \
 	--without-xprint
