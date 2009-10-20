@@ -1,5 +1,5 @@
 GARNAME = SDL
-GARVERSION = 1.2.13
+GARVERSION = 1.2.14
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
@@ -41,6 +41,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-esd \
 	--disable-esdtest \
 	--disable-esd-shared \
+	--disable-pulseaudio \
+	--disable-pulseaudio-shared \
 	--disable-arts \
 	--disable-arts-shared \
 	--disable-nas \
@@ -64,18 +66,19 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-video-x11-xinerama \
 	--disable-video-x11-xme \
 	--enable-video-x11-xrandr \
-	--disable-video-dpms \
 	--disable-video-photon \
 	--disable-video-carbon \
 	--disable-video-cocoa \
 	--disable-video-fbcon \
 	--disable-video-directfb \
 	--disable-video-ps2gs \
+	--disable-video-ps3 \
 	--disable-video-ggi \
 	--disable-video-svga \
 	--disable-video-vgl \
 	--enable-video-wscons \
 	--disable-video-aalib \
+	--disable-video-caca \
 	--disable-video-qtopia \
 	--disable-video-picogui \
 	--disable-video-xbios \
@@ -83,6 +86,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-video-dummy \
 	--enable-video-opengl \
 	--enable-osmesa-shared \
+	--enable-screensaver \
 	--enable-input-events \
 	--disable-input-tslib \
 	--enable-pth \
