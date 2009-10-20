@@ -1,7 +1,7 @@
-diff -Naur pcre-7.9-old/pcre-config.in pcre-7.9-new/pcre-config.in
---- pcre-7.9-old/pcre-config.in	2007-03-08 03:30:55.000000000 -0800
-+++ pcre-7.9-new/pcre-config.in	2009-04-11 16:54:22.000000000 -0700
-@@ -15,7 +15,7 @@
+diff -Naur pcre-8.00-old/pcre-config.in pcre-8.00-new/pcre-config.in
+--- pcre-8.00-old/pcre-config.in	2009-09-01 09:21:54.000000000 -0700
++++ pcre-8.00-new/pcre-config.in	2009-10-19 17:59:56.000000000 -0700
+@@ -15,10 +15,10 @@
  libR=
  case `uname -s` in
    *SunOS*)
@@ -9,15 +9,21 @@ diff -Naur pcre-7.9-old/pcre-config.in pcre-7.9-new/pcre-config.in
 +  libR=" -R@GAR_DESTDIR@@libdir@"
    ;;
    *BSD*)
-   libR=" -Wl,-R@libdir@"
-@@ -50,15 +50,15 @@
+-  libR=" -Wl,-R@libdir@"
++  libR=" -Wl,-R@GAR_DESTDIR@@libdir@"
+   ;;
+ esac
+ 
+@@ -49,16 +49,16 @@
+       echo @PACKAGE_VERSION@
        ;;
      --cflags | --cflags-posix)
-       if test @includedir@ != /usr/include ; then
+-      if test @includedir@ != /usr/include ; then
 -        includes=-I@includedir@
++      if test @GAR_DESTDIR@@includedir@ != @GAR_DESTDIR@/usr/include ; then
 +        includes=-I@GAR_DESTDIR@@includedir@
        fi
-       echo $includes
+       echo $includes @PCRE_STATIC_CFLAG@
        ;;
      --libs-posix)
 -      echo -L@libdir@$libR -lpcreposix -lpcre
