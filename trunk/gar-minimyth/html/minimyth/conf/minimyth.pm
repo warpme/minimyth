@@ -107,16 +107,16 @@ sub start
 #    chmod(0644, '/etc/asound.conf');
 
 #    # Override MiniMyth's MPlayer configuration file.
-#    $minimyth->confro_get('xine.config', '/home/minimyth/.xine/config');
-#    chmod(0644, '/home/minimyth/.xine/config');
-
-#    # Override MiniMyth's Xine configuration file.
-#    $minimyth->confro_get('mplayer.config', '/home/minimyth/.xine/config');
-#    chmod(0644, '/home/minimyth/.xine/config');
+#    $minimyth->confro_get('mplayer.config', '/home/minimyth/.mplayer/config');
+#    chmod(0644, '/home/minimyth/.mplayer/config');
 
 #    # Override MiniMyth's VLC configuration file.
 #    $minimyth->confro_get('vlcrc', '/home/minimyth/.config/vlc/vlcrc');
-#    chmod(0644 '/home/minimyth/.config/vlc/vlcrc');
+#    chmod(0644, '/home/minimyth/.config/vlc/vlcrc');
+
+#    # Override MiniMyth's Xine configuration file.
+#    $minimyth->confro_get('xine.config', '/home/minimyth/.xine/config');
+#    chmod(0644, '/home/minimyth/.xine/config');
 
     return 1;
 }
