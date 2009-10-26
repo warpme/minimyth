@@ -1,5 +1,5 @@
 GARNAME = Python
-GARVERSION =  2.6.3
+GARVERSION =  2.6.4
 CATEGORIES = python
 MASTER_SITES = http://www.python.org/ftp/python/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
