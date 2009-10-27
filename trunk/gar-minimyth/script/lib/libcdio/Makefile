@@ -2,9 +2,9 @@ GARNAME = libcdio
 GARVERSION = $(LIBCDIO_VERSION)
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz config.rpath
-PATCHFILES = $(DISTNAME)-help2man.patch $(DISTNAME)-ac_arg_enable.patch $(DISTNAME).patch
-LICENSE = LGPL2_1
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-ac_arg_enable.patch
+LICENSE = GPL3
 
 DESCRIPTION = 
 define BLURB
@@ -36,10 +36,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
-
-extract-config.rpath:
-	@cp $(DOWNLOADDIR)/config.rpath $(WORKSRC)/config.rpath
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
