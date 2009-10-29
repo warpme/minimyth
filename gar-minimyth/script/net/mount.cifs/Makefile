@@ -1,5 +1,5 @@
 GARNAME = mount.cifs
-GARVERSION = 3.4.2
+GARVERSION = 3.4.3
 CATEGORIES = net
 DISTFILES = samba-$(GARVERSION).tar.gz
 MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
