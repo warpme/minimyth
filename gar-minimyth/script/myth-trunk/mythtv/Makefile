@@ -95,7 +95,6 @@ CONFIGURE_ARGS = \
 	--enable-yasm \
 	--enable-audio-oss \
 	--enable-audio-alsa \
-	--disable-audio-arts \
 	--disable-audio-jack \
 	--disable-valgrind \
 	--enable-lirc \
