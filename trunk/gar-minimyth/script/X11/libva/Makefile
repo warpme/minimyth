@@ -2,7 +2,7 @@ GARNAME = libva
 GARVERSION = 0.31.0
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds5.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds6.tar.gz
 PATCHFILES = \
 	020_g45_nop_vaQueryDisplayAttributes.patch \
 	021_g45_fix_vaQueryImageFormats.patch \
