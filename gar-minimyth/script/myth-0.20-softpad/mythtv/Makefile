@@ -20,6 +20,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
 	$(DISTNAME_SHORT)-udevinfo.patch \
+	$(DISTNAME_SHORT)-drm_vsync_control.patch \
 	$(DISTNAME_SHORT)-lm_sensors_detect.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
