@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION = 7.19.6
+GARVERSION = 7.19.7
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -51,13 +51,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-gssapi \
 	--with-ssl \
 	--with-zlib \
-	--without-libssh2 \
 	--without-egd-socket \
 	--with-random="$(rootdir)/dev/urandom" \
 	--without-gnutls \
 	--without-nss \
 	--with-ca-bundle="$(sysconfdir)/ssl/certs/ca-bundle.crt" \
 	--without-ca-path \
+	--without-libssh2 \
 	--without-libidn
 
 include ../../gar.mk
