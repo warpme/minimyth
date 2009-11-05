@@ -1068,7 +1068,7 @@ sub mythfrontend_networkcontrol
                                  'Host'    => 'localhost',
                                  'Port'    => $port,
                                  'Prompt'  => $prompt);
-    if (($telnet) && ($telnet->open()))
+    if ($telnet)
     {
         $telnet->waitfor($prompt);
         @lines = $telnet->cmd($command);
