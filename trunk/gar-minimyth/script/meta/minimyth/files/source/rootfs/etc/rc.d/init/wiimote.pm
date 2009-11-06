@@ -21,43 +21,9 @@ sub start
 
     if (($address_0) || ($address_1) || ($address_2) || ($address_3))
     {
-        $minimyth->message_output('info', "starting bluetooth ...");
+        $minimyth->message_output('info', "starting wminput ...");
 
         my $devnull = File::Spec->devnull;
-
-        my @devices = ();
-        if ((-e '/sys/class/bluetooth') && (opendir(DIR, '/sys/class/bluetooth')))
-        {
-            foreach (grep(! /\./, (readdir(DIR))))
-            {
-                push(@devices, $_);
-            }
-        }
-        if ($#devices < 0)
-        {
-            $minimyth->message_output('warn', "no bluetooth device found.");
-            return 1;
-        }
-
-        my $device_configured = 0;
-        foreach my $device (@devices)
-        {
-            if (system(qq(/usr/sbin/hciconfig $device up > $devnull 2>&1)) == 0)
-            {
-                $device_configured = 1;
-            }
-            else
-            {
-                $minimyth->message_output('warn', "configuration of bluetooth device '$device' failed.");
-            }
-        }
-        if ($device_configured == 0)
-        {
-            $minimyth->message_output('err', "no bluetooth device configured.");
-            return 0;
-        }
-
-        $minimyth->message_output('info', "starting wminput ...");
 
         if ($address_0)
         {
