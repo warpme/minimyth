@@ -12,7 +12,6 @@ MM_INIT_START := \
     console \
     telnet \
     ssh_server \
-    mythdb_buffer_create \
     cron \
     game \
     master \
@@ -27,6 +26,7 @@ MM_INIT_START := \
     media \
     audio \
     video \
+    bluetooth \
     wiimote \
     irtrans \
     iguanair \
@@ -38,7 +38,6 @@ MM_INIT_START := \
     font \
     backend \
     gtk \
-    mythdb_buffer_delete \
     x
 MM_INIT_KILL := \
     x \
@@ -49,6 +48,7 @@ MM_INIT_KILL := \
     iguanair \
     irtrans \
     wiimote \
+    bluetooth \
     audio \
     media \
     web \

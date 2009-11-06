@@ -15,19 +15,71 @@ sub var_list
 
 $var_list{'MM_WIIMOTE_ADDRESS_0'} =
 {
-    value_default  => ''
+    prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
+    value_default  => '',
+    value_extra    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        {
+            $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
+            return 0;
+        }
+        return 1;
+    }
 };
 $var_list{'MM_WIIMOTE_ADDRESS_1'} =
 {
-    value_default  => ''
+    prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
+    value_default  => '',
+    value_extra    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        {
+            $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
+            return 0;
+        }
+        return 1;
+    }
 };
 $var_list{'MM_WIIMOTE_ADDRESS_2'} =
 {
-    value_default  => ''
+    prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
+    value_default  => '',
+    value_extra    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        {
+            $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
+            return 0;
+        }
+        return 1;
+    }
 };
 $var_list{'MM_WIIMOTE_ADDRESS_3'} =
 {
-    value_default  => ''
+    prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
+    value_default  => '',
+    value_extra    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        {
+            $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
+            return 0;
+        }
+        return 1;
+    }
 };
 $var_list{'MM_WIIMOTE_EVENT_DEVICE_LIST'} =
 {
