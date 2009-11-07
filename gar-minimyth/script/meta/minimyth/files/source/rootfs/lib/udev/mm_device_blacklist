@@ -1,0 +1,30 @@
+#!/bin/sh
+
+device_group=$1
+
+result='no'
+
+device_list=''
+if test ! "x${DEVNAME}" = "x" ; then
+    device_list="${device_list} /dev/${DEVNAME}"
+fi
+if test ! "x$DEVLINKS" = "x" ; then
+    device_list="${device_list} ${DEVLINKS}"
+fi
+
+blacklist_list=''
+if test -e "/lib/udev/mm_device_blacklist.d/${device_group}" ; then
+    blacklist_list=`/bin/cat "/lib/udev/mm_device_blacklist.d/${device_group}"`
+    blacklist_list=`/bin/echo "${blacklist_list}"`
+fi
+
+for device_item in ${device_list} ; do
+    if echo " ${blacklist_list} " | grep -q " ${device_item} " ; then
+        result='yes'
+        break
+    fi
+done
+
+echo -n ${result}
+
+exit 0

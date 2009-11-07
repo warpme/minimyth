@@ -330,33 +330,9 @@ sub start
     $mode_1 = '"' . $mode_1 . '"' if ($mode_1 ne '');
     $mode_2 = '"' . $mode_2 . '"' if ($mode_2 ne '');
 
-    my $inputdevice_event  = '';
-    my $serverlayout_event = '';
-    {
-        my @inputdevice  = ();
-        my @serverlayout = ();
-        foreach my $device (split(/ +/, $minimyth->var_get('MM_X_EVENT_DEVICE_LIST')))
-        {
-            my $identifier = $device;
-
-            push(@inputdevice, qq(Section "InputDevice"));
-            push(@inputdevice, qq(    Identifier "$identifier"));
-            push(@inputdevice, qq(    Driver     "evdev"));
-            push(@inputdevice, qq(    Option     "Device" "$device"));
-            push(@inputdevice, qq(EndSection));
-            push(@inputdevice, qq());
-
-            push(@serverlayout, qq(InputDevice "$identifier" "SendCoreEvents"));
-        }
-        $inputdevice_event  = join("\n", @inputdevice);
-        $serverlayout_event = join("\n    ", @serverlayout);
-    }
-
     $minimyth->file_replace_variable(
         '/etc/X11/xorg.conf',
-        { '@INPUTDEVICE_EVENT@'  => $inputdevice_event                     ,
-          '@SERVERLAYOUT_EVENT@' => $serverlayout_event                    ,
-          '@MM_X_DRIVER@'        => $minimyth->var_get('MM_X_DRIVER')      ,
+        { '@MM_X_DRIVER@'        => $minimyth->var_get('MM_X_DRIVER')      ,
           '@MM_X_DEVICE_INTEL@'  => $device_intel                          ,
           '@MM_X_DEVICE_NVIDIA@' => $device_nvidia                         ,
           '@MM_X_DEVICE_VIA@'    => $device_via                            ,
