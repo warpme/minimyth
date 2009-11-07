@@ -38,14 +38,44 @@ $var_list{'MM_LIRC_AUTO_ENABLED'} =
 };
 $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
 {
-    value_default  => ''
+    value_default  => '',
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $blacklist_dir   = q(/lib/udev/mm_device_blacklist);
+        my $blacklist_group = q(lirc);
+
+        if (-e qq($blacklist_dir/$blacklist_group))
+        {
+            unlink(qq($blacklist_dir/$blacklist_group));
+        }
+        if (-e qq($blacklist_dir/$blacklist_group~))
+        {
+            unlink(qq($blacklist_dir/$blacklist_group~));
+        }
+
+        if (open(FILE, '>', qq($blacklist_dir/$blacklist_group~)))
+        {
+            my @blacklist_list = split(/ +/, $minimyth->var_get($name));
+            foreach my $blacklist_item (@blacklist_list)
+            {
+                print FILE $blacklist_item . "\n"
+            }
+            close(FILE);
+            rename(qq($blacklist_dir/$blacklist_group~), qq($blacklist_dir/$blacklist_group));
+        }
+
+        return 1;
+    }
 };
 $var_list{'MM_LIRC_DRIVER'} =
 {
     value_default  => 'none',
     value_valid    => 'none|.+',
     value_obsolete => 'auto|mceusb2|mceusbnew',
-    value_none     => '',
+    value_none     => ''
 };
 $var_list{'MM_LIRC_DEVICE'} =
 {

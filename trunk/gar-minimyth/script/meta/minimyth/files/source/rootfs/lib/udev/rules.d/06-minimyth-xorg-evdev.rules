@@ -1,0 +1,11 @@
+ENV{mm_device_owner}=="?*", GOTO="end"
+
+SUBSYSTEM!="input", GOTO="end"
+KERNEL=!"event*"    GOTO="end"
+PROGRAM="mm_device_blacklist x_event", RESULT=="yes", GOTO="end"
+
+ENV{x11_driver}="evdev"
+
+ENV{mm_device_owner}="xorg"
+
+LABEL="end"
