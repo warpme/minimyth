@@ -4,6 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-udev_20090929.patch \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
@@ -95,6 +96,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dbe \
 	--enable-xf86bigfont \
 	--enable-dpms \
+	$(if $(filter build, $(DESTIMG)), --disable-config-udev, --enable-config-udev) \
 	--disable-config-dbus \
 	--disable-config-hal \
 	--enable-xfree86-utils \
