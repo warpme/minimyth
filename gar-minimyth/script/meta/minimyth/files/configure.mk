@@ -23,6 +23,7 @@ MM_INIT_START := \
     acpi \
     time \
     web \
+    dbus \
     media \
     audio \
     video \
@@ -52,6 +53,7 @@ MM_INIT_KILL := \
     audio \
     media \
     web \
+    dbus \
     time \
     acpi \
     game \
