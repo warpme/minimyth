@@ -20,9 +20,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--disable-gtk-doc \
 	--enable-fortify \
 	--disable-pie \
+	--disable-capng \
 	--enable-network \
 	--enable-serial \
 	--enable-input \
@@ -42,7 +42,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dund \
 	--disable-cups \
 	--disable-test \
-	--enable-manpages \
 	--enable-udevrules \
 	--enable-configfiles \
 	--disable-debug \
