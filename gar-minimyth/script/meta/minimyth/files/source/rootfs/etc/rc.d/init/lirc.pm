@@ -5,6 +5,7 @@ package init::lirc;
 
 use strict;
 use warnings;
+use feature "switch";
 
 use Cwd ();
 use File::Basename ();
@@ -16,125 +17,88 @@ sub _remote_wakeup_enable
     my $self   = shift;
     my $device = shift;
 
-    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --name='$device'))))
+    my $wakeup_node = undef;
+
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=all --attribute-walk --name='$device'))))
     {
+        my $kernels    = undef;
+        my $subsystems = undef;
+        my $class      = undef;
+        my $in_record  = 0;
         while (<FILE>)
         {
             chomp;
-            $device = $_;
-            last;
+            my $field = $_;
+            if ($field =~ /^ *looking at parent device .*$/)
+            {
+                $kernels    = undef;
+                $subsystems = undef;
+                $class      = undef;
+                $in_record  = 1;
+                next;
+            }
+            if ($in_record)
+            {
+                if ($field =~ /^ *$/)
+                {
+                    if (($kernels =~ /^[^ ]+/) && ($subsystems =~ /^pci$/) && ($class =~ /^0x0c03(0|1|2)0$/))
+                    {
+                        $wakeup_node = "$subsystems:$kernels";
+                        last;
+                    }
+                    $in_record  = 0;
+                    next;
+                }
+                if ($field =~ /^ *([^ ]+)=="(.*)"$/)
+                {
+                    my $name  = $1;
+                    my $value = $2;
+                    given ($name)
+                    {
+                        when (/^KERNELS$/)
+                        {
+                            $kernels = $value;
+                        }
+                        when (/^SUBSYSTEMS$/)
+                        {
+                            $subsystems = $value;
+                        }
+                        when (/^ATTRS{class}$/)
+                        {
+                            $class = $value;
+                        }
+                    }
+                    next;
+                }
+            }
         }
         close(FILE);
     }
 
-    if ((! -r '/sys/class/lirc') ||
-        (! opendir(DIR, '/sys/class/lirc')))
+    if ((defined($wakeup_node)) && ($wakeup_node ne ''))
     {
-        return 1;
-    }
-    my @lirc_list = ();
-    foreach (grep(! /^\./, (readdir(DIR))))
-    {
-        push(@lirc_list, $_);
-    }
-    closedir(DIR);
-    
-    foreach my $lirc (@lirc_list)
-    {
-        my $name = '';
-        if (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --path='/sys/class/lirc/$lirc')))
+        if ((-r '/proc/acpi/wakeup') && (open(FILE, '<', '/proc/acpi/wakeup')))
         {
-            while (<FILE>)
+            my $wakeup_device = undef;
+            my $wakeup_status = undef;
+            foreach (grep(/ $wakeup_node$/, (<FILE>)))
             {
                 chomp;
-                $name = $_;
+                ($wakeup_device, undef, $wakeup_status) = split(/ +/, $_);
                 last;
             }
             close(FILE);
-        }
-        if ($name ne $device)
-        {
-            next;
-        }
 
-        my $devpath = Cwd::abs_path(qq(/sys/class/lirc/$lirc/device));
-        $devpath = File::Basename::dirname($devpath);
-        $devpath = File::Basename::dirname($devpath);
-
-        if ((! -r "$devpath/busnum") || 
-            (! open(FILE, '<', "$devpath/busnum")))
-        {
-            next;
-        }
-        my $busnum = undef;
-        foreach (grep(/^[0-9]+$/,(<FILE>)))
-        {
-            chomp;
-            $busnum = $_;
-            last;
-        }
-        close(FILE);
-        if (! defined($busnum))
-        {
-            next;
-        }
-    
-        if ((! -r "$devpath/subsystem/devices/usb$busnum/serial") ||
-            (! open(FILE, '<', "$devpath/subsystem/devices/usb$busnum/serial")))
-        {
-            next;
-        }
-        my $serial = undef;
-        foreach (grep(! /^$/,(<FILE>)))
-        {
-            chomp;
-            $serial = $_;
-            last;
-        }
-        close(FILE);
-        if (! defined($serial))
-        {
-            next;
-        }
-
-        if ((! -r '/proc/acpi/wakeup') ||
-            (! open(FILE, '<', '/proc/acpi/wakeup')))
-        {
-            next;
-        }
-        my $entry = undef;
-        foreach (grep(/$serial$/, (<FILE>)))
-        {
-            chomp;
-            $entry = $_;
-        }
-        close(FILE);
-        if (! defined($entry))
-        {
-            next;
-        }
-
-        my $device = (split(/ +/, $entry))[0];
-        if ((! defined($device)) || ($device eq ''))
-        {
-            next;
-        }
-
-        my $status = (split(/ +/, $entry))[2];
-        if ((! defined($status)) || ($status eq ''))
-        {
-            next;
-        }
-        
-        if ($status ne 'enabled')
-        {
-            if ((! -w '/proc/acpi/wakeup') ||
-                (! open(FILE, '>', '/proc/acpi/wakeup')))
+            if ((defined($wakeup_device)) && ($wakeup_device ne '') &&
+                (defined($wakeup_status)) && ($wakeup_status ne '') &&
+                ($wakeup_status ne 'enabled'))
             {
-                next;
+                if ((-w '/proc/acpi/wakeup') && (open(FILE, '>', '/proc/acpi/wakeup')))
+                {
+                    print FILE $wakeup_device . "\n";
+                    close(FILE);
+                }
             }
-            print FILE $device . "\n";
-            close(FILE);
         }
     }
 
