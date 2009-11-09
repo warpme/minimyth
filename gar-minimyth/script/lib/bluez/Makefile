@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/glib lib/alsa-lib lib/dbus lib/expat lib/libsndfile lib/libusb-compat
+DEPENDS = lang/c gtk/glib lib/dbus lib/expat lib/libusb-compat
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -23,15 +23,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-fortify \
 	--disable-pie \
 	--disable-capng \
-	--enable-network \
-	--enable-serial \
+	--disable-network \
+	--disable-serial \
 	--enable-input \
-	--enable-audio \
+	--disable-audio \
 	--enable-service \
 	--disable-gstreamer \
-	--enable-alsa \
+	--disable-alsa \
 	--enable-usb \
-	--enable-netlink \
+	--disable-netlink \
 	--enable-tools \
 	--enable-bccmd \
 	--enable-pcmcia \
