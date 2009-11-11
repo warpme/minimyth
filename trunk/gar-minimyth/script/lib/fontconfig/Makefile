@@ -25,7 +25,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-arch=$(GARCH) \
 	--with-expat-includes=$(DESTDIR)$(includedir) \
-	--with-expat-lib=$(DESTDIR)$(libdir)
+	--with-expat-lib=$(DESTDIR)$(libdir) \
+	--with-add-fonts=no
 
 DEFAULT_ENV   = \
 	CPP_FOR_BUILD="$(build_CPP)" \
