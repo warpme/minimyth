@@ -2258,8 +2258,8 @@ sub x_applications_exit
                     {
                         for (my $timeout = 10 ; $timeout > 0 ; $timeout--)
                         {
-                            my $mythfrontend_location = join("\n", @{$self->mythfrontend_networkcontrol('query location')});
-                            if ($mythfrontend_location eq 'MainMenu')
+                            my $mythfrontend_location = lc(join("\n", @{$self->mythfrontend_networkcontrol('query location')}));
+                            if ($mythfrontend_location eq 'mainmenu')
                             {
                                 last;
                             }
