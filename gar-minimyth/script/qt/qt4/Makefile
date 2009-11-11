@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lang/c++ db/mysql lib/dbus lib/freetype lib/fontconfig lib/libjpeg lib/libmng lib/libpng lib/libtiff lib/openssl lib/zlib xorg/xorg
+DEPENDS   = lang/c lang/c++ db/mysql lib/dbus gtk/glib lib/freetype lib/fontconfig lib/libjpeg lib/libmng lib/libpng lib/libtiff lib/openssl lib/zlib xorg/xorg
 BUILDDEPS = devel/bison devel/flex
 
 PWD := $(shell pwd)
@@ -66,7 +66,7 @@ CONFIGURE_ARGS = \
 	-no-xinput \
 	-xkb \
 	-no-separate-debug-info \
-	-no-glib \
+	-glib \
 	-little-endian
 ifeq ($(DESTIMG),build)
 BUILD_ENV = \
