@@ -39,4 +39,6 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@# Work around a problem caused by xscreensaver' broken use of intltools.
+	@cd $(WORKSRC) ; touch po/stamp-it
 	@$(MAKECOOKIE)
