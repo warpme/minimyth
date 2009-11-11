@@ -8,6 +8,7 @@ PATCHFILES = \
 	$(DISTNAME)-mythconfig_mak.patch \
 	$(DISTNAME)-sysroot.patch \
 	$(DISTNAME)-qt4_header.patch \
+	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME).patch.gar
 PARSERS =
 LICENSE = GPL2
