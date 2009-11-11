@@ -13,6 +13,7 @@ PATCHFILES += \
 	$(DISTNAME)-qt_bitblt_replace.patch \
 	$(DISTNAME)-user_agent_quicktime.patch \
 	$(DISTNAME)-youtube_parser_fix.patch \
+	$(DISTNAME)-youtube_parser_fix_2.patch \
 	$(DISTNAME)-mythtv_0_21.patch \
 	$(DISTNAME)-fftw3f.patch \
 	$(DISTNAME).patch.gar
