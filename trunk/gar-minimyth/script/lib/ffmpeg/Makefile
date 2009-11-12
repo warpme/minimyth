@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 20416.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 20520.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20091028.patch $(GARNAME)-vaapi_20091015.patch
+PATCHFILES = $(GARNAME)-mt_20091111.patch $(GARNAME)-vaapi_20091015.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -34,6 +34,7 @@ CONFIGURE_ARGS = \
 	--enable-gpl \
 	--disable-version3 \
 	--disable-nonfree \
+	--enable-doc \
 	--enable-ffmpeg \
 	--disable-ffplay \
 	--disable-ffserver \

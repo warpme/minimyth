@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20091028.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20091015.patch
+PATCHFILES = $(GARNAME)-mt_20091111.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20091015.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -57,7 +57,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-tv-v4l1 \
 	--disable-tv-v4l2 \
 	--disable-tv-bsdbt848 \
-	--disable-tv-teletext \
 	--disable-pvr \
 	--enable-rtc \
 	--enable-network \
@@ -220,6 +219,9 @@ CONFIGURE_ARGS_AUDIO = \
 # The --extra-cflags option forces configure to look in the correct directory for X11.
 CONFIGURE_ARGS_MISC = \
 	--charset="UTF-8" \
+	--language-doc="all" \
+	--language-man="all" \
+	--language-man="all" \
 	--language="all" \
 	--enable-runtime-cpudetection \
 	--enable-cross-compile \
