@@ -79,6 +79,7 @@ DEPENDS = \
 	X11/vdpauinfo \
 	net/wakelan \
 	X11/x11vnc \
+	X11/xbindkeys \
 	X11/xmacro \
 	xorg/xorg \
 	X11/xosd \
