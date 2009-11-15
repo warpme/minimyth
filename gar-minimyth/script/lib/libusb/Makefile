@@ -1,5 +1,5 @@
 GARNAME = libusb
-GARVERSION = 1.0.4
+GARVERSION = 1.0.5
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,8 +16,10 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--enable-timerfd \
 	--disable-log \
 	--disable-debug-log \
 	--disable-examples-build \
