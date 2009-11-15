@@ -1,6 +1,6 @@
-diff -Naur bluez-4.57-old/input/device.c bluez-4.57-new/input/device.c
---- bluez-4.57-old/input/device.c	2009-05-09 02:31:01.000000000 -0700
-+++ bluez-4.57-new/input/device.c	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/device.c bluez-4.58-new/input/device.c
+--- bluez-4.58-old/input/device.c	2009-05-09 02:31:01.000000000 -0700
++++ bluez-4.58-new/input/device.c	2009-11-15 04:42:56.000000000 -0800
 @@ -83,18 +83,6 @@
  	struct input_device	*idev;
  };
@@ -65,9 +65,9 @@ diff -Naur bluez-4.57-old/input/device.c bluez-4.57-new/input/device.c
  	if (!iconn)
  		return -EINVAL;
  
-diff -Naur bluez-4.57-old/input/device.h bluez-4.57-new/input/device.h
---- bluez-4.57-old/input/device.h	2009-04-22 18:40:04.000000000 -0700
-+++ bluez-4.57-new/input/device.h	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/device.h bluez-4.58-new/input/device.h
+--- bluez-4.58-old/input/device.h	2009-04-22 18:40:04.000000000 -0700
++++ bluez-4.58-new/input/device.h	2009-11-15 04:42:56.000000000 -0800
 @@ -27,7 +27,22 @@
  #define L2CAP_PSM_HIDP_CTRL	0x11
  #define L2CAP_PSM_HIDP_INTR	0x13
@@ -112,9 +112,9 @@ diff -Naur bluez-4.57-old/input/device.h bluez-4.57-new/input/device.h
  int input_device_unregister(const char *path, const char *uuid);
  
  int input_device_set_channel(const bdaddr_t *src, const bdaddr_t *dst, int psm,
-diff -Naur bluez-4.57-old/input/fakehid.c bluez-4.57-new/input/fakehid.c
---- bluez-4.57-old/input/fakehid.c	2009-04-22 18:40:04.000000000 -0700
-+++ bluez-4.57-new/input/fakehid.c	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/fakehid.c bluez-4.58-new/input/fakehid.c
+--- bluez-4.58-old/input/fakehid.c	2009-04-22 18:40:04.000000000 -0700
++++ bluez-4.58-new/input/fakehid.c	2009-11-15 04:42:56.000000000 -0800
 @@ -31,11 +31,13 @@
  #include <unistd.h>
  #include <stdlib.h>
@@ -499,9 +499,9 @@ diff -Naur bluez-4.57-old/input/fakehid.c bluez-4.57-new/input/fakehid.c
 +				(GIOFunc) fake_hid->oevent, fake);
  	return 0;
  }
-diff -Naur bluez-4.57-old/input/fakehid.h bluez-4.57-new/input/fakehid.h
---- bluez-4.57-old/input/fakehid.h	2009-02-25 12:14:11.000000000 -0800
-+++ bluez-4.57-new/input/fakehid.h	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/fakehid.h bluez-4.58-new/input/fakehid.h
+--- bluez-4.58-old/input/fakehid.h	2009-02-25 12:14:11.000000000 -0800
++++ bluez-4.58-new/input/fakehid.h	2009-11-15 04:42:56.000000000 -0800
 @@ -30,7 +30,18 @@
  	gboolean (*connect) (struct fake_input *fake_input, GError **err);
  	int (*disconnect) (struct fake_input *fake_input);
@@ -521,9 +521,9 @@ diff -Naur bluez-4.57-old/input/fakehid.h bluez-4.57-new/input/fakehid.h
  };
  
  struct fake_hid *get_fake_hid(uint16_t vendor, uint16_t product);
-diff -Naur bluez-4.57-old/input/input.conf bluez-4.57-new/input/input.conf
---- bluez-4.57-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
-+++ bluez-4.57-new/input/input.conf	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/input.conf bluez-4.58-new/input/input.conf
+--- bluez-4.58-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
++++ bluez-4.58-new/input/input.conf	2009-11-15 04:42:56.000000000 -0800
 @@ -4,6 +4,14 @@
  # particular interface
  [General]
@@ -540,9 +540,9 @@ diff -Naur bluez-4.57-old/input/input.conf bluez-4.57-new/input/input.conf
 +# Set keymap to generic keycodes/scancodes, in order
 +# to be compatible with old XInput driver.
 +#Compat=1
-diff -Naur bluez-4.57-old/input/manager.c bluez-4.57-new/input/manager.c
---- bluez-4.57-old/input/manager.c	2009-08-16 11:43:34.000000000 -0700
-+++ bluez-4.57-new/input/manager.c	2009-11-15 04:19:39.000000000 -0800
+diff -Naur bluez-4.58-old/input/manager.c bluez-4.58-new/input/manager.c
+--- bluez-4.58-old/input/manager.c	2009-08-16 11:43:34.000000000 -0700
++++ bluez-4.58-new/input/manager.c	2009-11-15 04:42:56.000000000 -0800
 @@ -42,7 +42,7 @@
  #include "server.h"
  #include "manager.h"
