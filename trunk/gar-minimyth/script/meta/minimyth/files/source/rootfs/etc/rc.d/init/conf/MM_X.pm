@@ -82,6 +82,14 @@ $var_list{'MM_X_HACK_HIDE_BLUE_LINE_ENABLED'} =
 #===============================================================================
 #
 #===============================================================================
+$var_list{'MM_X_FETCH_XBINDKEYSRC'} =
+{
+    value_default => 'no',
+    value_valid   => 'no|yes',
+    value_file    => 'yes',
+    file          => {name_remote => '/xbindkeysrc',
+                      name_local  => '/etc/X11/xbindkeysrc'}
+};
 $var_list{'MM_X_FETCH_XINITRC'} =
 {
     value_default => 'no',
