@@ -28,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--enable-debug=no \
+	--enable-debug=minimal \
 	--enable-shm \
 	--enable-xkb \
 	--enable-xinerama \
