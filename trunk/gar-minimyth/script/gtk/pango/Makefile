@@ -1,5 +1,5 @@
 GARNAME = pango
-GARVERSION = 1.26.0
+GARVERSION = 1.26.1
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.26/
 DISTFILES = $(DISTNAME).tar.bz2
