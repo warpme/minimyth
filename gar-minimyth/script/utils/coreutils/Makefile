@@ -1,5 +1,5 @@
 GARNAME = coreutils
-GARVERSION = 7.6
+GARVERSION = 8.1
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile su
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-rpath \
 	--with-gnu-ld
 
