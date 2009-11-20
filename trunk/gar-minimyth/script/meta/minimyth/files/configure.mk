@@ -32,6 +32,7 @@ MM_INIT_START := \
     irtrans \
     iguanair \
     lirc \
+    bluetoothd \
     g15daemon \
     lcdproc \
     aquosserver \

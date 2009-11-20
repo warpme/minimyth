@@ -30,11 +30,6 @@ sub start
                 return 0;
             }
         }
-
-        if (-e '/usr/sbin/bluetoothd')
-        {
-            system(qq(/usr/sbin/bluetoothd));
-        }
     }
 
     return 1;
@@ -44,8 +39,6 @@ sub stop
 {
     my $self     = shift;
     my $minimyth = shift;
-
-    $minimyth->application_stop('bluetoothd', "stopping bluetoothd...");
 
     return 1;
 }

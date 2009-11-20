@@ -111,11 +111,21 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my $device = $minimyth->var_get($name);
-        if (($device) && (! -e $device))
+        my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
+        # We cannot test for the Sony PlayStation 3 Blu-ray Disc Remote Control device
+        # as it uses Bluetooth and is very unlikely to be paired.
+        if (($driver) && ($driver =~ /^ps3bdremote$/))
         {
-            $minimyth->message_output('err', "Remote control device '$device' specified by '$name' does not exist.");
-            return 0;
+            return 1;
+        }
+        else
+        {
+            my $device = $minimyth->var_get($name);
+            if (($device) && (! -e $device))
+            {
+                $minimyth->message_output('err', "Remote control device '$device' specified by '$name' does not exist.");
+                return 0;
+            }
         }
 
         return 1;
