@@ -123,8 +123,22 @@ sub start
     # Determine master LIRC daemon.
     # The master LIRC daemon combines the LIRC daemons for multiple LIRC devices.
     # Therefore, if there is more than one LIRC device, then we need a master LIRC daemon.
-    my $daemon_master = '';
+    my $daemon_master_required = 'no';
     if (($#device_list + 1) > 1)
+    {
+        $daemon_master_required = 'yes'
+    }
+    foreach my $device_item (@device_list)
+    {
+        my @device_args = split(/,/, $device_item);
+        my $driver = $device_args[1];
+        if ($driver =~ /^ps3bdremote$/)
+        {
+            $daemon_master_required = 'yes'
+        }
+    }
+    my $daemon_master = '';
+    if ($daemon_master_required =~ /^yes$/)
     {
         $daemon_master = '/usr/sbin/lircd';
         $daemon_master = $daemon_master . ' --driver=null';
@@ -151,8 +165,16 @@ sub start
         my $driver     = $device_args[1];
         my $lircd_conf = $device_args[2];
 
+        if ((! $device) || (! $driver))
+        {
+            next;
+        }
+
         # Convert driver to the the lirc daemon appropriate driver.
-        if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
+        if    (($driver) && ($driver =~ /^ps3bdremote$/))
+        {
+        }
+        elsif (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
         {
             my $driver_actual = 'default';
             while (<FILE>)
@@ -175,27 +197,40 @@ sub start
 
         # Start daemon.
         my $daemon = '';
-        my $instance = $device;
-        $instance =~ s/\/+/~/g;
-        $instance =~ s/^~dev~//;
-        if ($daemon_master)
+        if ($driver =~ /^ps3bdremote$/)
         {
             my $port = 8765 + $index;
-            $daemon = '/usr/sbin/lircd';
-            $daemon = $daemon . " --release=:UP";
-            $daemon = $daemon . " --device=$device --driver=$driver";
-            $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
-            $daemon = $daemon . " --listen=$port";
-            $daemon = $daemon . " $lircd_conf";
+            $daemon = '/usr/sbin/bdremoteng';
+            $daemon = $daemon . " -l";
+            $daemon = $daemon . " -R ':UP'";
+            $daemon = $daemon . " -a $device";
+            $daemon = $daemon . " -t 30";
+            $daemon = $daemon . " -p $port";
         }
         else
         {
-            $daemon = '/usr/sbin/lircd';
-            $daemon = $daemon . " --release=:UP";
-            $daemon = $daemon . " --device=$device --driver=$driver";
-            $daemon = $daemon . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
-            $daemon = $daemon . " $lircd_conf";
-            symlink('/var/run/lirc/lircd', "/var/run/lirc/lircd-$instance");
+            my $instance = $device;
+            $instance =~ s/\/+/~/g;
+            $instance =~ s/^~dev~//;
+            if ($daemon_master)
+            {
+                my $port = 8765 + $index;
+                $daemon = '/usr/sbin/lircd';
+                $daemon = $daemon . " --release=:UP";
+                $daemon = $daemon . " --device=$device --driver=$driver";
+                $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
+                $daemon = $daemon . " --listen=$port";
+                $daemon = $daemon . " $lircd_conf";
+            }
+            else
+            {
+                $daemon = '/usr/sbin/lircd';
+                $daemon = $daemon . " --release=:UP";
+                $daemon = $daemon . " --device=$device --driver=$driver";
+                $daemon = $daemon . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
+                $daemon = $daemon . " $lircd_conf";
+                symlink('/var/run/lirc/lircd', "/var/run/lirc/lircd-$instance");
+            }
         }
         $minimyth->message_log('info', "started '$daemon'.");
         system(qq($daemon));
@@ -231,13 +266,15 @@ sub stop
 
     if ( ($minimyth->application_running('lircmd')) ||
          ($minimyth->application_running('irexec')) ||
-         ($minimyth->application_running('lircd')) )
+         ($minimyth->application_running('lircd')) ||
+         ($minimyth->application_running('bdremoteng')) )
     {
         $minimyth->message_output('info', "stopping remote control ...");
 
         $minimyth->application_stop('lircmd');
         $minimyth->application_stop('irexec');
         $minimyth->application_stop('lircd');
+        $minimyth->application_stop('bdremoteng');
     }
 
     return 1;
