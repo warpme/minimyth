@@ -1,7 +1,7 @@
 GARNAME = lighttpd
-GARVERSION = 1.4.24
+GARVERSION = 1.4.25
 CATEGORIES = net
-MASTER_SITES = http://www.lighttpd.net/download/
+MASTER_SITES = http://download.lighttpd.net/lighttpd/releases-1.4.x/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = BSD_3_Clause
 
