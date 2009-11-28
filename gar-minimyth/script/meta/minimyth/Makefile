@@ -17,6 +17,7 @@ DEPENDS = \
 	system/acpid \
 	system/aquosserver \
 	utils/alsa-utils \
+	system/bdremote-ng \
 	utils/busybox \
 	net/curl \
 	disk/e2fsprogs \
