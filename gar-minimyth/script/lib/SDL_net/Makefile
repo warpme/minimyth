@@ -23,11 +23,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gui \
 	--with-gnu-ld
 
+CONFIGURE_ENV = \
+	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
+
 include ../../gar.mk
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(MAKECOOKIE)
+	@echo $(PATH)
+	@#$(MAKECOOKIE)
 
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libSDL_net.la

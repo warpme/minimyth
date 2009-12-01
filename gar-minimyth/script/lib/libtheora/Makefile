@@ -31,7 +31,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-examples \
 	--with-gnu-ld
 
-Optional Packages:
+CONFIGURE_ENV = \
+	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
 
 include ../../gar.mk
 

@@ -29,8 +29,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-gpc \
 	--disable-sdltest \
 	--with-gnu-ld \
-	--with-sdl-prefix="$(DESTDIR)$(prefix)" \
 	--with-x
+
+CONFIGURE_ENV = \
+	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
 	
 include ../../gar.mk
 
