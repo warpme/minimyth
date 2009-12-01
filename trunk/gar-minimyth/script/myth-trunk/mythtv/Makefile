@@ -63,7 +63,6 @@ CONFIGURE_ARGS = \
 	--mandir="$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-libfaad \
-	--enable-libfftw3 \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
 	--sysroot="$(DESTDIR)$(rootdir)" \
@@ -97,6 +96,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-jack \
+	--disable-audio-pulseoutput \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
@@ -120,6 +120,7 @@ CONFIGURE_ARGS = \
 	--enable-opengl-video \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
+	--disable-mac-bundle \
 	--without-bindings="perl,python"
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
