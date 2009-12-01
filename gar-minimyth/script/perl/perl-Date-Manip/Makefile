@@ -1,5 +1,5 @@
 GARNAME      = perl-Date-Manip
-GARVERSION   = 5.54
+GARVERSION   = 6.04
 MASTER_SITES = http://www.cpan.org/authors/id/S/SB/SBECK/
 DEPENDS      = perl/perl-libwww-perl perl/perl-XML-DOM perl/perl-XML-Parser
 
