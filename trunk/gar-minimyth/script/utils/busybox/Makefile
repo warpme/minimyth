@@ -5,7 +5,13 @@ MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-1.15.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  =
+PATCHFILES  = \
+	busybox-1.15.2-ash.patch \
+	busybox-1.15.2-awk.patch \
+	busybox-1.15.2-buildsys.patch \
+	busybox-1.15.2-flash.patch \
+	busybox-1.15.2-ping.patch \
+	busybox-1.15.2-split.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
