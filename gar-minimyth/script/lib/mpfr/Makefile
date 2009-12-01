@@ -1,5 +1,5 @@
 GARNAME = mpfr
-GARVERSION = 2.4.1
+GARVERSION = 2.4.2
 CATEGORIES = lib
 MASTER_SITES = http://www.mpfr.org/mpfr-current/
 DISTFILES = $(DISTNAME).tar.bz2
