@@ -12,6 +12,7 @@ MM_INIT_START := \
     console \
     telnet \
     ssh_server \
+    hotplug \
     cron \
     game \
     master \
@@ -59,6 +60,7 @@ MM_INIT_KILL := \
     acpi \
     game \
     cron \
+    hotplug \
     ssh_server \
     telnet \
     cpu \
