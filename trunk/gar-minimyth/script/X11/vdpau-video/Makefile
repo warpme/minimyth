@@ -1,5 +1,5 @@
 GARNAME = vdpau-video
-GARVERSION = 0.5.2
+GARVERSION = 0.6.0
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
@@ -18,6 +18,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-glx \
+	--disable-debug \
+	--disable-tracer \
 	--disable-static \
 	--enable-shared \
 	--with-gnu-ld
