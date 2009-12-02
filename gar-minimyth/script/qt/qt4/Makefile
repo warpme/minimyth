@@ -1,5 +1,5 @@
-GARNAME = qt-x11-opensource-src
-GARVERSION = 4.5.3
+GARNAME = qt-everywhere-opensource-src
+GARVERSION = 4.6.0
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
@@ -22,29 +22,38 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	-prefix $(qt4prefix) \
-	-hostprefix $(DESTDIR)$(qt4prefix) \
+	-prefix-install \
 	-bindir $(qt4bindir) \
 	-libdir $(qt4libdir) \
+	-docdir $(qt4libdir)/doc \
 	-headerdir $(qt4includedir) \
+	-datadir $(qt4libdir) \
+	-translationdir $(qt4libdir)/translations \
+	-sysconfdir $(DESTDIR)$(qt4libdir)/settings \
 	-examplesdir $(DESTDIR)$(qt4prefix)/examples \
 	-demosdir $(DESTDIR)$(qt4prefix)/demos \
 	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
-	-shared \
 	-opensource \
-	-qt-gif \
-	-system-zlib \
+	-shared \
 	-no-fast \
-	-no-exceptions \
-	-platform $(PLATFORM_GARBUILD_NAME) \
-	-plugin-sql-mysql \
-	-no-sql-sqlite \
-	-no-nis \
-	-no-pch \
-	-dbus-linked \
-	-no-cups \
 	-largefile \
+	-no-exceptions \
+	-no-accessibility \
 	-stl \
-	-verbose \
+	-plugin-sql-mysql \
+	-qt3support \
+	-no-xmlpatterns \
+	-multimedia \
+	-no-phonon \
+	-no-phonon-backend \
+	-svg \
+	-webkit \
+	-script \
+	-scripttools \
+	-no-declarative \
+	-platform $(PLATFORM_GARBUILD_NAME) \
+	-system-zlib \
+	-qt-gif \
 	-system-libtiff \
 	-system-libpng \
 	-system-libmng \
@@ -53,20 +62,33 @@ CONFIGURE_ARGS = \
 	-nomake demos \
 	-nomake examples \
 	-no-rpath \
+	-verbose \
+	-no-optimized-qmake \
+	-no-nis \
+	-no-cups \
+	-iconv \
+	-no-pch \
+	-dbus-linked \
+	-no-separate-debug-info \
+	-no-gtkstyle \
 	-no-nas-sound \
 	-opengl \
+	-no-openvg \
 	-no-sm \
 	-no-xshape \
+	-no-xsync \
 	-xinerama \
 	-no-xcursor \
 	-xfixes \
 	-xrandr \
 	-xrender \
+	-mitshm \
 	-fontconfig \
 	-no-xinput \
 	-xkb \
-	-no-separate-debug-info \
 	-glib \
+	-hostprefix $(DESTDIR)$(qt4prefix) \
+	-force-pkg-config \
 	-little-endian
 ifeq ($(DESTIMG),build)
 BUILD_ENV = \
