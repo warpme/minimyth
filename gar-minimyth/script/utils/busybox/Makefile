@@ -10,6 +10,7 @@ PATCHFILES  = \
 	busybox-1.15.2-awk.patch \
 	busybox-1.15.2-buildsys.patch \
 	busybox-1.15.2-flash.patch \
+	busybox-1.15.2-grep.patch \
 	busybox-1.15.2-ping.patch \
 	busybox-1.15.2-split.patch
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
