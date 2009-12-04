@@ -1,5 +1,5 @@
 GARNAME = xcb-proto
-GARVERSION = 1.5
+GARVERSION = 1.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
