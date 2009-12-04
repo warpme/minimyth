@@ -1,5 +1,5 @@
 GARNAME = libxcb
-GARVERSION = 1.4
+GARVERSION = 1.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,6 +26,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
@@ -39,6 +40,7 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxcb-composite.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-damage.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-dpms.la
+	@rm -f $(DESTDIR)$(libdir)/libxcb-dri2.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-glx.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-randr.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-record.la
