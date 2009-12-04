@@ -1,5 +1,5 @@
 GARNAME = evtest
-GARVERSION = 1.24
+GARVERSION = 1.25
 CATEGORIES = utils
 MASTER_SITES = http://cgit.freedesktop.org/~whot/evtest/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
