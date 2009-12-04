@@ -26,5 +26,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_trace.la
+	@rm -f $(DESTDIR)$(libdir)/vdpau/$(GARNAME)_trace.la
 	@$(MAKECOOKIE)
