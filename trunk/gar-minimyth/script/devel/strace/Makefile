@@ -3,6 +3,7 @@ GARVERSION = 4.5.19
 CATEGORIES = devel
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-linux_2_6_32.patch
 LICENSE = BSD_3_Clause
 
 DESCRIPTION =
