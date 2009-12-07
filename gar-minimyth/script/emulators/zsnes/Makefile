@@ -40,7 +40,8 @@ CONFIGURE_ENV = \
 	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
 	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
 	CXXFLAGS_FOR_BUILD="$(build_CXXFLAGS)" \
-	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)"
+	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)" \
+	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
 
 include ../../gar.mk
 
