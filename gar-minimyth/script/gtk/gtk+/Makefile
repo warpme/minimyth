@@ -1,5 +1,5 @@
 GARNAME = gtk+
-GARVERSION = 2.18.4
+GARVERSION = 2.18.5
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.18/
 DISTFILES = $(DISTNAME).tar.bz2
