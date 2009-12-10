@@ -119,7 +119,7 @@ $var_list{'MM_LIRC_DEVICE'} =
             return 1;
         }
         # We cannot test for the LIRC UDP device.
-        else if (($driver) &&($driver =~ /^udp$/))
+        elsif (($driver) &&($driver =~ /^udp$/))
         {
             return 1;
         }
