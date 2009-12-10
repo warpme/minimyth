@@ -114,7 +114,12 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         # We cannot test for the Sony PlayStation 3 Blu-ray Disc Remote Control device
         # as it uses Bluetooth and is very unlikely to be paired.
-        if (($driver) && ($driver =~ /^ps3bdremote$/))
+        if      (($driver) &&($driver =~ /^ps3bdremote$/))
+        {
+            return 1;
+        }
+        # We cannot test for the LIRC UDP device.
+        else if (($driver) &&($driver =~ /^udp$/))
         {
             return 1;
         }
