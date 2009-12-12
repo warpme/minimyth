@@ -1,5 +1,5 @@
 GARNAME = coreutils
-GARVERSION = 8.1
+GARVERSION = 8.2
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
