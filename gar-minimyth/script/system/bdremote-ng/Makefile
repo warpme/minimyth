@@ -1,5 +1,5 @@
 GARNAME = bdremote-ng
-GARVERSION = 0.5-RC2
+GARVERSION = 0.5-RC3
 CATEGORIES = system
 MASTER_SITES = http://bdremote-ng.googlecode.com/files/
 DISTFILES = $(DISTNAME).tar.bz2
