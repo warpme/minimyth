@@ -63,9 +63,11 @@ post-install:
 clean-all:
 	@$(MAKE) clean
 	@rm -rf $(DESTDIR)$(LINUX_MODULESDIR)/misc/lirc
-	@rm -rf $(DESTDIR)$(bindir)/lirc*
-	@rm -rf $(DESTDIR)$(sbindir)/lirc*
+	@rm -rf $(DESTDIR)$(bindir)/lircrcd
+	@rm -rf $(DESTDIR)$(sbindir)/lircd
+	@rm -rf $(DESTDIR)$(sbindir)/lircmd
 	@rm -rf $(DESTDIR)$(includedir)/lirc
 	@rm -rf $(DESTDIR)$(libdir)/liblirc_client.*
-	@rm -rf $(DESTDIR)$(mandir)/man1/lirc*
-	@rm -rf $(DESTDIR)$(mandir)/man8/lirc*
+	@rm -rf $(DESTDIR)$(mandir)/man1/lircrcd.1
+	@rm -rf $(DESTDIR)$(mandir)/man8/lircd.8
+	@rm -rf $(DESTDIR)$(mandir)/man8/lircmd.8
