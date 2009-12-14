@@ -40,6 +40,7 @@ DEPENDS = \
 	kernel/kernel \
 	fonts/liberation-fonts \
 	system/lirc \
+	system/lircudevd \
 	utils/lm_sensors \
 	utils/lsdvd \
 	utils/lsof \
