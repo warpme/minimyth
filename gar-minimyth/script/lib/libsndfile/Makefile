@@ -1,7 +1,7 @@
 GARNAME = libsndfile
-GARVERSION = 1.0.20
+GARVERSION = 1.0.21
 CATEGORIES = lib
-MASTER_SITES = http://www.mega-nerd.com/libsndfile/
+MASTER_SITES = http://www.mega-nerd.com/libsndfile/files/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = LGPL2_1
 
@@ -18,8 +18,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-experimental \
 	--disable-sqlite \
-	--disable-flac \
+	--enable-alsa \
+	--disable-external-libs \
+	--disable-test-coverage \
+	--enable-largefile \
+	--disable-shave \
 	--with-gnu-ld
 
 include ../../gar.mk
