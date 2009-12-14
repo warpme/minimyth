@@ -1,6 +1,6 @@
 diff -Naur bdremote-ng-0.5-old/build/CMakeLists.txt bdremote-ng-0.5-new/build/CMakeLists.txt
 --- bdremote-ng-0.5-old/build/CMakeLists.txt	2009-10-25 04:35:31.000000000 -0700
-+++ bdremote-ng-0.5-new/build/CMakeLists.txt	2009-12-13 08:25:52.000000000 -0800
++++ bdremote-ng-0.5-new/build/CMakeLists.txt	2009-12-13 18:06:28.000000000 -0800
 @@ -102,6 +102,7 @@
  ${PREFIX}/lirc_srv.h
  ${PREFIX}/q.h
@@ -19,7 +19,7 @@ diff -Naur bdremote-ng-0.5-old/build/CMakeLists.txt bdremote-ng-0.5-new/build/CM
  include_directories (${PREFIX})
 diff -Naur bdremote-ng-0.5-old/src/bdrcfg.c bdremote-ng-0.5-new/src/bdrcfg.c
 --- bdremote-ng-0.5-old/src/bdrcfg.c	2009-12-11 15:21:44.000000000 -0800
-+++ bdremote-ng-0.5-new/src/bdrcfg.c	2009-12-13 08:25:52.000000000 -0800
++++ bdremote-ng-0.5-new/src/bdrcfg.c	2009-12-13 18:06:28.000000000 -0800
 @@ -56,6 +56,7 @@
    FREEVAL(_config->release);
    _config->lirc_namespace = 0;
@@ -38,7 +38,7 @@ diff -Naur bdremote-ng-0.5-old/src/bdrcfg.c bdremote-ng-0.5-new/src/bdrcfg.c
      {
 diff -Naur bdremote-ng-0.5-old/src/bdrcfg.h bdremote-ng-0.5-new/src/bdrcfg.h
 --- bdremote-ng-0.5-old/src/bdrcfg.h	2009-12-11 15:16:44.000000000 -0800
-+++ bdremote-ng-0.5-new/src/bdrcfg.h	2009-12-13 08:25:52.000000000 -0800
++++ bdremote-ng-0.5-new/src/bdrcfg.h	2009-12-13 18:06:28.000000000 -0800
 @@ -52,6 +52,8 @@
     char* release;
     /** Enable/disable use of LIRC namespace. */
@@ -50,7 +50,7 @@ diff -Naur bdremote-ng-0.5-old/src/bdrcfg.h bdremote-ng-0.5-new/src/bdrcfg.h
     /** Indicates if the BT address of the interface to use was set. */
 diff -Naur bdremote-ng-0.5-old/src/bdremoteng.c bdremote-ng-0.5-new/src/bdremoteng.c
 --- bdremote-ng-0.5-old/src/bdremoteng.c	2009-12-11 16:06:16.000000000 -0800
-+++ bdremote-ng-0.5-new/src/bdremoteng.c	2009-12-13 08:25:52.000000000 -0800
++++ bdremote-ng-0.5-new/src/bdremoteng.c	2009-12-13 18:06:28.000000000 -0800
 @@ -96,7 +96,7 @@
     memset(&config, 0, sizeof(config));
     setDefaults(&config);
@@ -77,7 +77,7 @@ diff -Naur bdremote-ng-0.5-old/src/bdremoteng.c bdremote-ng-0.5-new/src/bdremote
 +   /* Initialize output event device. */
 +   if (config.event_out)
 +   {
-+       event_out_init();
++       event_out_init(&config);
 +   }
 +
     /* Start LIRC thread. */
@@ -87,7 +87,7 @@ diff -Naur bdremote-ng-0.5-old/src/bdremoteng.c bdremote-ng-0.5-new/src/bdremote
     DestroyCaptureData(&cdata);
     destroyLircData(&ldata);
  
-+   event_out_exit();
++   event_out_exit(&config);
 +
     destroyConfig(&config);
  
@@ -96,29 +96,33 @@ diff -Naur bdremote-ng-0.5-old/src/bdremoteng.c bdremote-ng-0.5-new/src/bdremote
            "\t-e <num>             Wait <num> ms before repeating a key.\n"
            "\t-R <suffix>          Auto-generate release events with appended <suffix>.\n"
            "\t-l                   Follow LIRC namespace for the key names.\n"
-+          "\t-E                   Make output available through a Linux event device as well.\n"
++          "\t-E                   Make output available through a Linux event device.\n"
            "\t-u <username>        Change UID to the UID of this user.\n"
            "\t-g <group>           Change GID to the GID of this group.\n"
            "\t-f <filename>        Write log to <filename>.\n"
 diff -Naur bdremote-ng-0.5-old/src/event_out.c bdremote-ng-0.5-new/src/event_out.c
 --- bdremote-ng-0.5-old/src/event_out.c	1969-12-31 16:00:00.000000000 -0800
-+++ bdremote-ng-0.5-new/src/event_out.c	2009-12-13 08:25:52.000000000 -0800
-@@ -0,0 +1,99 @@
++++ bdremote-ng-0.5-new/src/event_out.c	2009-12-13 18:08:07.000000000 -0800
+@@ -0,0 +1,106 @@
 +#include <fcntl.h>
 +#include <stdint.h>
 +#include <string.h>
 +#include <sys/types.h>
-+#include <linux/input.h>
-+#include <linux/uinput.h>
 +
 +#include "globaldefs.h"
 +#include "keydef.h"
 +#include "event_out.h"
 +
++#ifdef __linux__
++#include <linux/input.h>
++#include <linux/uinput.h>
++#endif
++
 +static int event_out_fd = -1;
 +
-+void event_out_send(int _event_code, int _event_value)
++void event_out_send(const configuration *_config, int _event_code, int _event_value)
 +{
++#ifdef __linux__
 +    struct input_event event;
 +
 +    if (event_out_fd != -1)
@@ -132,20 +136,24 @@ diff -Naur bdremote-ng-0.5-old/src/event_out.c bdremote-ng-0.5-new/src/event_out
 +            ;
 +        }
 +    }
++#endif
 +}
 +
-+void event_out_exit()
++void event_out_exit(const configuration *_config)
 +{
++#ifdef __linux__
 +    if(event_out_fd != -1)
 +    {
 +        ioctl(event_out_fd, UI_DEV_DESTROY);
 +        close(event_out_fd);
 +        event_out_fd = -1;
 +    }
++#endif
 +}
 +
-+int event_out_init()
++void event_out_init(const configuration *_config)
 +{
++#ifdef __linux__
 +    const char *uinput_devname[] =
 +    {
 +        "/dev/uinput",
@@ -163,67 +171,67 @@ diff -Naur bdremote-ng-0.5-old/src/event_out.c bdremote-ng-0.5-new/src/event_out
 +    }
 +    if (event_out_fd == -1)
 +    {
-+        goto setup_error;
++        return;
 +    }
 +
 +    memset(&dev, 0, sizeof(dev));
-+    strncpy(dev.name, "bdremote-ng", sizeof(dev.name));
++    strncpy(dev.name, "bdremoteng", sizeof(dev.name));
 +    dev.name[sizeof(dev.name) - 1] = '\0';
 +
 +    if (write(event_out_fd, &dev, sizeof(dev)) != sizeof(dev))
 +    {
-+        goto setup_error;
++        close(event_out_fd);
++        event_out_fd = -1;
++        return;
 +    }
++
 +    if (ioctl(event_out_fd, UI_SET_EVBIT, EV_KEY) != 0)
 +    {
-+        goto setup_error;
++        close(event_out_fd);
++        event_out_fd = -1;
++        return;
 +    }
 +
 +    for(i = 0 ; i < ps3remote_num_keys ; i++)
 +    {
 +        if(ioctl(event_out_fd, UI_SET_KEYBIT, ps3remote_keys[i].event_code) != 0)
 +        {
-+            goto setup_error;
++            close(event_out_fd);
++            event_out_fd = -1;
++            return;
 +        }
 +    }
 +
 +    if(ioctl(event_out_fd, UI_DEV_CREATE) != 0)
 +    {
-+        goto setup_error;
-+    }
-+
-+    return 0;
-+
-+ setup_error:
-+    if (event_out_fd != -1)
-+    {
 +        close(event_out_fd);
 +        event_out_fd = -1;
++        return;
 +    }
-+
-+    return -1;
++#endif
 +}
 diff -Naur bdremote-ng-0.5-old/src/event_out.h bdremote-ng-0.5-new/src/event_out.h
 --- bdremote-ng-0.5-old/src/event_out.h	1969-12-31 16:00:00.000000000 -0800
-+++ bdremote-ng-0.5-new/src/event_out.h	2009-12-13 08:25:52.000000000 -0800
-@@ -0,0 +1,8 @@
++++ bdremote-ng-0.5-new/src/event_out.h	2009-12-13 18:06:28.000000000 -0800
+@@ -0,0 +1,10 @@
 +#ifndef EVENT_OUT_H
 +#define EVENT_OUT_H
 +
-+void event_out_send(int _code, int _value);
-+void event_out_exit();
-+int  event_out_init();
++#include "bdrcfg.h"
++
++void event_out_send(const configuration *_config, int _code, int _value);
++void event_out_exit(const configuration *_config);
++void event_out_init(const configuration *_config);
 +
 +#endif
 diff -Naur bdremote-ng-0.5-old/src/keydef.h bdremote-ng-0.5-new/src/keydef.h
 --- bdremote-ng-0.5-old/src/keydef.h	2009-11-19 22:25:20.000000000 -0800
-+++ bdremote-ng-0.5-new/src/keydef.h	2009-12-13 09:03:18.000000000 -0800
-@@ -38,13 +38,18 @@
++++ bdremote-ng-0.5-new/src/keydef.h	2009-12-13 18:06:28.000000000 -0800
+@@ -38,19 +38,75 @@
  #ifndef BD_KEYDEF_H
  #define BD_KEYDEF_H
  
 +#include <stdint.h>
-+#include <linux/input.h>
 +
  /** Key information. */
  struct key_info
@@ -239,7 +247,65 @@ diff -Naur bdremote-ng-0.5-old/src/keydef.h bdremote-ng-0.5-new/src/keydef.h
    /** The code. */
    unsigned int code;
    /** The mask. */
-@@ -61,59 +66,59 @@
+   uint32_t mask;
+ };
+ 
++#define KEY_ENTER		28
++#define KEY_POWER		116
++#define KEY_SELECT		0x161
++#define BTN_C			0x132
++#define BTN_Z			0x135
++#define BTN_START		0x13b
++#define KEY_UP			103
++#define KEY_RIGHT		106
++#define KEY_DOWN		108
++#define KEY_LEFT		105
++#define BTN_B			0x131
++#define BTN_Y			0x134
++#define BTN_A			0x130
++#define BTN_X			0x133
++#define KEY_OPTION		0x165
++#define KEY_BACK		158
++#define KEY_CLEAR		0x163
++#define KEY_ZOOM		0x174
++#define KEY_1			2
++#define KEY_2			3
++#define KEY_3			4
++#define KEY_4			5
++#define KEY_5			6
++#define KEY_6			7
++#define KEY_7			8
++#define KEY_8			9
++#define KEY_9			10
++#define KEY_0			11
++#define KEY_MEDIA_REPEAT	0x1b7
++//#define KEY_CLEAR		0x163
++#define KEY_EJECTCD		161
++#define KEY_MENU		139
++#define KEY_TIME		0x167
++#define KEY_PREVIOUS		0x19c
++#define KEY_NEXT		0x197
++#define KEY_PLAY		207
++#define KEY_REWIND		168
++#define KEY_FORWARD		159
++#define KEY_STOP		128
++#define KEY_PAUSE		119
++#define KEY_CONTEXT_MENU	0x1b6
++#define KEY_FRAMEBACK		0x1b4
++#define KEY_FRAMEFORWARD	0x1b5
++#define KEY_SUBTITLE		0x172
++#define KEY_AUDIO		0x188
++#define KEY_ANGLE		0x173
++#define KEY_INFO		0x166
++#define KEY_BLUE		0x191
++#define KEY_RED			0x18e
++#define KEY_GREEN		0x18f
++#define KEY_YELLOW		0x190
++
+ /** The code for a key release. */
+ #define ps3remote_keyup 0xFF
+ /** Undefined key. */
+@@ -61,59 +117,59 @@
  #define ps3remote_num_masked 18
  
  /** Array of keys. */
@@ -353,7 +419,7 @@ diff -Naur bdremote-ng-0.5-old/src/keydef.h bdremote-ng-0.5-new/src/keydef.h
  #endif /* BD_KEYDEF_H */
 diff -Naur bdremote-ng-0.5-old/src/lirc_thr.c bdremote-ng-0.5-new/src/lirc_thr.c
 --- bdremote-ng-0.5-old/src/lirc_thr.c	2009-11-20 10:49:38.000000000 -0800
-+++ bdremote-ng-0.5-new/src/lirc_thr.c	2009-12-13 08:45:49.000000000 -0800
++++ bdremote-ng-0.5-new/src/lirc_thr.c	2009-12-13 18:06:28.000000000 -0800
 @@ -33,13 +33,14 @@
    that is holding down a key on the remote.
  
@@ -385,7 +451,7 @@ diff -Naur bdremote-ng-0.5-old/src/lirc_thr.c bdremote-ng-0.5-new/src/lirc_thr.c
  		  broadcastToLirc(ld, name, 0 /*ks.repeat_sent*/, ps3remote_keys[ks.lastKey].code);
 +                  if (ld->config->event_out)
 +                  {
-+                      event_out_send(ps3remote_keys[ks.lastKey].event_code, 2);
++                      event_out_send(ld->config, ps3remote_keys[ks.lastKey].event_code, 2);
 +                  }
  		  /* Reset elapsed time.*/
  		  ks.elapsed = 0;
@@ -396,7 +462,7 @@ diff -Naur bdremote-ng-0.5-old/src/lirc_thr.c bdremote-ng-0.5-new/src/lirc_thr.c
        broadcastToLirc(_ld, name, 0, ps3remote_keys[num].code);
 +      if (_ld->config->event_out)
 +      {
-+          event_out_send(ps3remote_keys[num].event_code, 1);
++          event_out_send(_ld->config, ps3remote_keys[num].event_code, 1);
 +      }
      }
  }
@@ -431,7 +497,7 @@ diff -Naur bdremote-ng-0.5-old/src/lirc_thr.c bdremote-ng-0.5-new/src/lirc_thr.c
            }
 +          if (_ld->config->event_out)
 +          {
-+              event_out_send(ps3remote_keys[_ks->lastKey].event_code, 0);
++              event_out_send(_ld->config, ps3remote_keys[_ks->lastKey].event_code, 0);
 +          }
  
            _ks->keyDown      = 0;
