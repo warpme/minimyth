@@ -151,7 +151,7 @@ mm-all:
 		   [ ! "$${software}" = "perl"           ] && \
 		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
-		   [ ! "$${software}" = "ps3bdremote"    ] && \
+		   [ ! "$${software}" = "bdremote"       ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
 		   [ ! "$${software}" = "backend"        ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
