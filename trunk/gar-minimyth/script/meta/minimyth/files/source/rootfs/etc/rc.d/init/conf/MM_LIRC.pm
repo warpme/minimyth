@@ -60,8 +60,13 @@ $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my $blacklist_dir   = q(/lib/udev/mm_device_blacklist);
+        my $blacklist_dir   = q(/lib/udev/mm_device_blacklist.d);
         my $blacklist_group = q(lirc);
+
+        if (! -e qq($blacklist_dir))
+        {
+            File::Path::mkpath(qq($blacklist_dir), { mode => 0755 });
+        }
 
         if (-e qq($blacklist_dir/$blacklist_group))
         {
