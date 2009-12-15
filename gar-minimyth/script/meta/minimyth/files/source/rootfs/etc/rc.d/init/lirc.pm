@@ -112,43 +112,14 @@ sub start
 
     my @device_list = split(/ +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST'));
 
-    # There are no remote control devices, so there is no need to continue.
-    if (($#device_list + 1) <= 0)
+    # There are no remote control devices and we will not auto-detect any later, so there is no need to continue.
+    if ((($#device_list + 1) <= 0) &&
+        ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') == 'no'))
     {
         return 1;
     }
 
     $minimyth->message_output('info', "starting remote control(s) ...");
-
-    # Determine master LIRC daemon.
-    # The master LIRC daemon combines the LIRC daemons for multiple LIRC devices.
-    # Therefore, if there is more than one LIRC device, then we need a master LIRC daemon.
-    my $daemon_master_required = 'no';
-    if (($#device_list + 1) > 1)
-    {
-        $daemon_master_required = 'yes'
-    }
-    foreach my $device_item (@device_list)
-    {
-        my @device_args = split(/,/, $device_item);
-        my $driver = $device_args[1];
-        if ($driver =~ /^ps3bdremote$/)
-        {
-            $daemon_master_required = 'yes'
-        }
-    }
-    my $daemon_master = '';
-    if ($daemon_master_required =~ /^yes$/)
-    {
-        $daemon_master = '/usr/sbin/lircd';
-        $daemon_master = $daemon_master . ' --driver=null';
-        $daemon_master = $daemon_master . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
-        for (my $index = 0 ; $index <= $#device_list ; $index++)
-        {
-            my $port = 8765 + $index;
-            $daemon_master = $daemon_master . " --connect=localhost:$port"
-        }
-    }
 
     # Create directories used by the LIRC daemon.
     File::Path::mkpath('/var/lock', { mode => 0755 });
@@ -157,7 +128,6 @@ sub start
     chmod(0755, '/var/run/lirc');
 
     # Enable wakeup and start an LIRC daemon for each device.
-    my $index = 0;
     foreach my $device_item (@device_list)
     {
         my @device_args = split(/,/, $device_item);
@@ -170,8 +140,11 @@ sub start
             next;
         }
 
-        # Convert driver to the the lirc daemon appropriate driver.
-        if    (($driver) && ($driver =~ /^ps3bdremote$/))
+        # Convert the driver to the lirc daemon appropriate driver.
+        if    (($driver) && ($driver =~ /^bdremote$/))
+        {
+        }
+        elsif (($driver) && ($driver =~ /^irtrans$/))
         {
         }
         elsif (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
@@ -195,54 +168,27 @@ sub start
             $self->_remote_wakeup_enable($device);
         }
 
-        # Start daemon.
-        my $daemon = '';
-        if ($driver =~ /^ps3bdremote$/)
-        {
-            my $port = 8765 + $index;
-            $daemon = '/usr/sbin/bdremoteng';
-            $daemon = $daemon . " -l";
-            $daemon = $daemon . " -R ':UP'";
-            $daemon = $daemon . " -a $device";
-            $daemon = $daemon . " -t 30";
-            $daemon = $daemon . " -p $port";
-        }
-        else
+        # Start an lircd instance associated with the device the device is
+        # handled by a unless a daemon other than lircd.
+        if ( ($driver !~ /^bdremote$/) &&
+             ($driver !~ /^irtrans$/ ) )
         {
             my $instance = $device;
             $instance =~ s/\/+/~/g;
             $instance =~ s/^~dev~//;
-            if ($daemon_master)
-            {
-                my $port = 8765 + $index;
-                $daemon = '/usr/sbin/lircd';
-                $daemon = $daemon . " --release=:UP";
-                $daemon = $daemon . " --device=$device --driver=$driver";
-                $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
-                $daemon = $daemon . " --listen=$port";
-                $daemon = $daemon . " $lircd_conf";
-            }
-            else
-            {
-                $daemon = '/usr/sbin/lircd';
-                $daemon = $daemon . " --release=:UP";
-                $daemon = $daemon . " --device=$device --driver=$driver";
-                $daemon = $daemon . ' --output=/var/run/lirc/lircd --pidfile=/var/run/lirc/lircd.pid';
-                $daemon = $daemon . " $lircd_conf";
-                symlink('/var/run/lirc/lircd', "/var/run/lirc/lircd-$instance");
-            }
+            my $daemon = '/usr/sbin/lircd';
+            $daemon = $daemon . " --driver=$driver";
+            $daemon = $daemon . " --device=$device";
+            $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
+            $daemon = $daemon . " --uinput";
+            $daemon = $daemon . " $lircd_conf";
+            $minimyth->message_log('info', "started '$daemon'.");
+            system(qq($daemon));
         }
-        $minimyth->message_log('info', "started '$daemon'.");
-        system(qq($daemon));
-
-        $index++;
     }
 
-    # Start master LIRC daemon.
-    if ($daemon_master)
-    {
-        system(qq($daemon_master));
-    }
+    # Start the lircudevd daemon.
+    system(qq(/usr/sbin/lircudevd --keymap=/etc/lircudevd.d --socket=/var/run/lirc/lircd --release=:UP));
 
     # Start the irexec daemon.
     if ($minimyth->var_get('MM_LIRC_IREXEC_ENABLED') eq 'yes')
@@ -266,6 +212,7 @@ sub stop
 
     if ( ($minimyth->application_running('lircmd')) ||
          ($minimyth->application_running('irexec')) ||
+         ($minimyth->application_running('lircudevd')) ||
          ($minimyth->application_running('lircd')) ||
          ($minimyth->application_running('bdremoteng')) )
     {
@@ -273,6 +220,7 @@ sub stop
 
         $minimyth->application_stop('lircmd');
         $minimyth->application_stop('irexec');
+        $minimyth->application_stop('lircudevd');
         $minimyth->application_stop('lircd');
         $minimyth->application_stop('bdremoteng');
     }

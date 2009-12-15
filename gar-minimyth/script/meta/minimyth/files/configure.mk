@@ -29,9 +29,10 @@ MM_INIT_START := \
     audio \
     video \
     bluetooth \
+    bdremote \
     wiimote \
-    irtrans \
     iguanair \
+    irtrans \
     lirc \
     bluetoothd \
     g15daemon \
@@ -47,10 +48,12 @@ MM_INIT_KILL := \
     sharpaquos \
     lcdproc \
     g15daemon \
+    bluetoothd \
     lirc \
-    iguanair \
     irtrans \
+    iguanair \
     wiimote \
+    bdremote \
     bluetooth \
     audio \
     media \
