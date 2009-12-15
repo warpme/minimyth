@@ -12,93 +12,51 @@ use File::Basename ();
 use File::Path ();
 use MiniMyth ();
 
+                my $dir = File::Basename::dirname($_);
 sub _remote_wakeup_enable
 {
     my $self   = shift;
     my $device = shift;
 
-    my $wakeup_node = undef;
-
-    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=all --attribute-walk --name='$device'))))
+    my $path = undef;
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=path --name='$device'))))
     {
-        my $kernels    = undef;
-        my $subsystems = undef;
-        my $class      = undef;
-        my $in_record  = 0;
         while (<FILE>)
         {
             chomp;
-            my $field = $_;
-            if ($field =~ /^ *looking at parent device .*$/)
-            {
-                $kernels    = undef;
-                $subsystems = undef;
-                $class      = undef;
-                $in_record  = 1;
-                next;
-            }
-            if ($in_record)
-            {
-                if ($field =~ /^ *$/)
-                {
-                    if (($kernels =~ /^[^ ]+/) && ($subsystems =~ /^pci$/) && ($class =~ /^0x0c03(0|1|2)0$/))
-                    {
-                        $wakeup_node = "$subsystems:$kernels";
-                        last;
-                    }
-                    $in_record  = 0;
-                    next;
-                }
-                if ($field =~ /^ *([^ ]+)=="(.*)"$/)
-                {
-                    my $name  = $1;
-                    my $value = $2;
-                    given ($name)
-                    {
-                        when (/^KERNELS$/)
-                        {
-                            $kernels = $value;
-                        }
-                        when (/^SUBSYSTEMS$/)
-                        {
-                            $subsystems = $value;
-                        }
-                        when (/^ATTRS{class}$/)
-                        {
-                            $class = $value;
-                        }
-                    }
-                    next;
-                }
-            }
+            $path = Cwd::abs_path(qq(/sys/$_));
+            last;
         }
         close(FILE);
     }
 
-    if ((defined($wakeup_node)) && ($wakeup_node ne ''))
+    if ($path)
     {
-        if ((-r '/proc/acpi/wakeup') && (open(FILE, '<', '/proc/acpi/wakeup')))
+        while (($path) && ($path !~ /^\/sys$/))
         {
-            my $wakeup_device = undef;
-            my $wakeup_status = undef;
-            foreach (grep(/ $wakeup_node$/, (<FILE>)))
+            if (-e qq($path/power/wakeup)) 
             {
-                chomp;
-                ($wakeup_device, undef, $wakeup_status) = split(/ +/, $_);
-                last;
-            }
-            close(FILE);
-
-            if ((defined($wakeup_device)) && ($wakeup_device ne '') &&
-                (defined($wakeup_status)) && ($wakeup_status ne '') &&
-                ($wakeup_status ne 'enabled'))
-            {
-                if ((-w '/proc/acpi/wakeup') && (open(FILE, '>', '/proc/acpi/wakeup')))
+                my $state = undef;
+                if (open(FILE, '<', qq($path/power/wakeup)))
                 {
-                    print FILE $wakeup_device . "\n";
+                    while (<FILE>)
+                    {
+                        chomp;
+                        $state = $_;
+                        last;
+                    }
                     close(FILE);
                 }
+                if ($state =~ /^disabled$/)
+                {
+                    if (open(FILE, '>', qq($path/power/wakeup)))
+                    {
+                        print FILE q(enabled);
+                        close(FILE);
+                    }
+                }
             }
+            $path = File::Basename::dirname($path);
         }
     }
 
