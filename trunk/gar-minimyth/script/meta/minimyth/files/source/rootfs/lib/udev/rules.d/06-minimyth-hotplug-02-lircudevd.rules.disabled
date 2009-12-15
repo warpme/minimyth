@@ -1,0 +1,44 @@
+ACTION=="add", ENV{mm_device_owner}=="?*", GOTO="end"
+
+ACTION!="add|remove", GOTO="end"
+
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin"
+GOTO="end"
+LABEL="begin"
+
+PROGRAM="mm_device_blacklist lircudevd", RESULT=="yes", GOTO="end"
+
+ATTRS{name}=="lircudevd", GOTO="end"
+
+ATTRS{name}=="lircd", \
+  ENV{lircudevd.enable}="true", \
+  ENV{lircudevd.keymap}="default.keymap"
+
+ATTRS{name}=="bdremoteng", \
+  ENV{lircudevd.enable}="true", \
+  ENV{lircudevd.keymap}="bdremoteng.keymap"
+
+SUBSYSTEMS=="usb", GOTO="begin-usb"
+GOTO="end-usb"
+LABEL="begin-usb"
+ENV{ID_USB_INTERFACES}=="", IMPORT{program}="usb_id --export %p"
+ENV{ID_VENDOR}=="05a4", ENV{ID_MODEL}=="9881", \
+  ENV{lircudevd.enable}="true", \
+  ENV{lircudevd.keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
+ENV{ID_VENDOR}=="0766", ENV{ID_MODEL}=="0204", \
+  ENV{lircudevd.enable}="true", \
+  ENV{lircudevd.keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
+ENV{ID_VENDOR}=="147a", ENV{ID_MODEL}=="e02d", \
+  ENV{lircudevd.enable}="true", \
+  ENV{lircudevd.keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
+LABEL="end-usb"
+
+SUBSYSTEMS=="bluetooth", GOTO="begin-bluetooth"
+GOTO="end-bluetooth"
+LABEL="begin-bluetooth"
+
+LABEL="end-bluetooth"
+
+ENV{lircudevd.enable}== "true", ENV{mm_device_owner}="lircudevd"
+
+LABEL="end"

@@ -34,7 +34,23 @@ $var_list{'MM_LIRC_AUTO_ENABLED'} =
         }
         return $value_default;
     },
-    value_valid    => 'yes|no'
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_valid;
+        if ($minimyth->var_get('MM_LIRC_DRIVER') =~ /^irtrans$/)
+        {
+            $value_valid = 'no';
+        }
+        else
+        {
+            $value_valid = 'yes|no';
+        }
+        
+        return $value_valid;
+    }
 };
 $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
 {
@@ -74,7 +90,7 @@ $var_list{'MM_LIRC_DRIVER'} =
 {
     value_default  => 'none',
     value_valid    => 'none|.+',
-    value_obsolete => 'auto|mceusb2|mceusbnew',
+    value_obsolete => 'auto|mceusb2|mceusbnew|ps3bdremote',
     value_none     => ''
 };
 $var_list{'MM_LIRC_DEVICE'} =
@@ -114,12 +130,12 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         # We cannot test for the Sony PlayStation 3 Blu-ray Disc Remote Control device
         # as it uses Bluetooth and is very unlikely to be paired.
-        if      (($driver) &&($driver =~ /^ps3bdremote$/))
+        if      (($driver) && ($driver =~ /^bdremote$/))
         {
             return 1;
         }
         # We cannot test for the LIRC UDP device.
-        elsif (($driver) &&($driver =~ /^udp$/))
+        elsif (($driver) && ($driver =~ /^udp$/))
         {
             return 1;
         }
@@ -546,12 +562,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
 
         my @device_list;
 
-        # If the manual LIRC driver is not 'irtrans',
-        # then create LIRC device list.
-        # If the manually configured LIRC driver is 'irtrans',
-        # then the IRTrans server will act as the LIRC device
-        # so no LIRC device list is created.
-        if ($minimyth->var_get('MM_LIRC_DRIVER') ne 'irtrans')
+        # Create the LIRC device list.
         {
             my $device     = $minimyth->device_canonicalize($minimyth->var_get('MM_LIRC_DEVICE'));
             my $driver     = $minimyth->var_get('MM_LIRC_DRIVER');
@@ -577,7 +588,7 @@ $var_list{'MM_LIRC_DEVICE_LIST'} =
                     }
                 }
             }
-            # Remove any dumplicates.
+            # Remove any duplicates.
             {
                 my $prev = '';
                 @device_list = grep($_ ne $prev && (($prev) = $_), sort(@device_list));
@@ -622,7 +633,7 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 };
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_FETCH_LIRCMD_CONF'],
+    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_LIST', 'MM_LIRC_FETCH_LIRCMD_CONF'],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -645,6 +656,19 @@ $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
         {
             push(@kernel_modules, $minimyth->var_get('MM_LIRC_KERNEL_MODULE'));
         }
+        # Since we have drivers,
+        # MiniMyth will be starting lircd and lircudevd, both of which require uinput.
+        if ($minimyth->var_get('MM_LIRC_DEVICE_LIST') ne '')
+        {
+            push(@kernel_modules, 'uinput');
+        }
+        # Since we may detect devices routed through lircudevd in the future,
+        # MiniMyth will be starting lircudevd, which requires uinput.
+        if ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'yes')
+        {
+            push(@kernel_modules, 'uinput');
+        }
+        # lircmd requires uinput.
         if ($minimyth->var_get('MM_LIRC_FETCH_LIRCMD_CONF') eq 'yes')
         {
             push(@kernel_modules, 'uinput');

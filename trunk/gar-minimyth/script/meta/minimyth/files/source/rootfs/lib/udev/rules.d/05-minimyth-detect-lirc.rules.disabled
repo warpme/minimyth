@@ -22,11 +22,9 @@ ACTION!="add|change|remove", GOTO="end"
 
 PROGRAM="mm_device_blacklist lirc", RESULT=="yes", GOTO="end"
 
-KERNEL=="event[0-9]*",  SUBSYSTEM=="input", SUBSYSTEMS=="usb", GOTO="begin"
-KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb",   SUBSYSTEMS=="usb", GOTO="begin"
-KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc",  SUBSYSTEMS=="i2c", GOTO="begin"
-KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc",  SUBSYSTEMS=="usb", GOTO="begin"
-KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty",   SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb",  SUBSYSTEMS=="usb", GOTO="begin"
+KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc", SUBSYSTEMS=="i2c", GOTO="begin"
+KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
@@ -46,10 +44,7 @@ ENV{mm_detect_state_lirc}=""
 #-------------------------------------------------------------------------------
 # non-lirc device list
 #-------------------------------------------------------------------------------
-  ENV{MODALIAS}=="input:b0003v0419p0001e*"             , ENV{mm_detect_state_lirc}="devinput,"
-  ENV{MODALIAS}=="usb:v0766p0204d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_0766_0204"
-  ENV{MODALIAS}=="usb:v0FE9p9010d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="dvico,"
-  ENV{MODALIAS}=="usb:v147ApE02Dd*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="devinput,/etc/lirc/lircd.conf.d/optional/devinput.usb_147a_e02d"
+ENV{MODALIAS}=="usb:v0FE9p9010d*dc*dsc*dp*ic*isc*ip*", ENV{mm_detect_state_lirc}="dvico,"
 
 LABEL="end-nonlirc"
 
