@@ -15,7 +15,7 @@
 .\" You should have received a copy of the GNU General Public License
 .\" along with lircudevd.  If not, see <http://www.gnu.org/licenses/>.
 .\"
-.TH lircudevd 8 "DECEMBER 09, 2009"
+.TH lircudevd 8 "DECEMBER 16, 2009"
 .SH NAME
 lircudevd \- an LIRC daemon with integrated udev support.
 .SH SYNOPSIS
@@ -46,11 +46,6 @@ A keyboard shortcut consists of
 zero or more lock keys (capslock, numlock and scrolllock)
 zero or more modifier keys (ctrl, shift, alt and meta) and
 one base key (non-lock and non-modifier key).
-.LP
-Udev signals that \fBlircudevd\fR should use a device as an \fBlircudevd\fR input device
-by setting the environment variable \fBlircudevd.enable\fR to true.
-Udev provides \fBlircudevd\fR with the name of the key map file to use for mapping the keyboard shortcuts for the device
-by setting the environment variable \fBlircudevd.keymap\fR to the name of the key map file in the \fBlircudevd\fR key map directory.
 .SH OPTIONS
 .TP
 \fB\-h\fR \fB\-\-help\fR
@@ -78,14 +73,40 @@ Create the lircd socket with mode \fBmode\fR rather than with mode 0666.
 .TP
 \fB\-r\fR \fB\-\-release=suffix\fR
 Generate key release events with \fBsuffix\fR appended to the key name.
+.SH UDEV DEVICE PROPERTIES
+.LP
+Udev communicates with lircudevd using udev device properties.
+The following are the lircudevd specific udev device properties that can be set using ENV{} in udev rules.
+.TP
+\fBlircudevd_enable\fR
+Used to ask \fBlircudevd\fR to handle the device.
+If the value is "true", then \fBlircudevd\fR will attempt to handle the device.
+.TP
+\fBlircudevd_keymap\fR
+Used to tell \fBlircudevd\fR the name of the keymap file to be used with this device.
+If it is not set, then \fBlircudevd\fR will not perform any key mapping.
+\fBlircudevd\fR assumes that the keymap file is located in the keymap directory. 
+.TP
+\fBlircudevd_remote\fR
+Used to tell \fBlircudevd\fR the remote control name to use in the output \fBlircudevd\fR sends to the lircd socket.
+If it is not set, then \fBlircudevd\fR will use "devinput" for the remote control name.
 .SH FILES
 .I @KEYMAP_DIR@/*.keymap
 .RS
 The per-device key map files.
 See \fBlircudevd.keymap (5)\fR for further details.
+.RE
 .I @includedir@/linux/input.h
 .RS
 The Linux input event device header file in which the key and button codes associated with the key event type are define.
+.RE
+.I @UDEV_DIR@/rules.d/98-lircudevd.rules.disabled
+.RS
+An example udev rules file for lircudevd.
+.RE
+.I @UDEV_DIR@/rules.d/98-lircd.rules.disabled
+.RS
+An example udev rules file for using lircd in conjuction with lircudevd.
 .SH ENVIRONMENT
 .SH DIAGNOSTICS
 .SH BUGS

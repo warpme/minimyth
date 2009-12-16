@@ -133,6 +133,7 @@ struct input_device
         bool numlock;
         bool scrolllock;
     } led;
+    char *remote;                       /* The remote control name used in lircd socket output. */
     struct                              /* The input device's mouse/joystick event output device. */
     {
         int fd;                         /* The output device's file descriptor. */
@@ -1104,7 +1105,7 @@ static int input_device_handler(void *id)
      */
     if (input_device_event_is_key(device) == true)
     {
-        if (lircd_send(&device->current.event_out, evkey_code_to_name[device->current.event_out.code], device->current.repeat_count, device->path) != 0)
+        if (lircd_send(&device->current.event_out, evkey_code_to_name[device->current.event_out.code], device->current.repeat_count, device->remote) != 0)
         {
             return -1;
         }
@@ -1144,6 +1145,11 @@ static int input_device_close(struct input_device *device)
         device->output.fd = -1;
         syslog(LOG_INFO, "destroyed output mouse/joystick device for input device %s", device->path);
     }
+    if (device->remote == NULL)
+    {
+        free(device->remote);
+    }
+    input_device_keymap_exit(device);
     if (device->fd != -1)
     {
         close(device->fd);
@@ -1244,6 +1250,7 @@ static int input_device_add(struct udev_device *udev_device)
     const char* path;
     const char* enable;
     const char* keymap_file;
+    const char* remote;
     struct input_device *device;
     unsigned long bit[BITFIELD_LONGS_PER_ARRAY(EV_MAX)];
     unsigned long bit_key[BITFIELD_LONGS_PER_ARRAY(KEY_MAX)];
@@ -1280,13 +1287,13 @@ static int input_device_add(struct udev_device *udev_device)
         return 0;
     }
 
-    enable = udev_device_get_property_value(udev_device, "lircudevd.enable");
+    enable = udev_device_get_property_value(udev_device, "lircudevd_enable");
     if ((enable == NULL) ||(strncmp(enable, "true", sizeof("true")) != 0))
     {
         return 0;
     }
 
-    keymap_file = udev_device_get_property_value(udev_device, "lircudevd.keymap");
+    keymap_file = udev_device_get_property_value(udev_device, "lircudevd_keymap");
 
     for (device = lircudevd_input.device_list ; device != NULL ; device = device->next)
     {
@@ -1296,14 +1303,27 @@ static int input_device_add(struct udev_device *udev_device)
         }
     }
 
+    remote = udev_device_get_property_value(udev_device, "lircudevd_remote");
+    if (remote == NULL)
+    {
+        remote = "devinput";
+    }
+
     if ((device = calloc(1, sizeof(struct input_device))) == NULL)
     {
         syslog(LOG_ERR, "failed to allocate memory for the input device %s: %s\n", path, strerror(errno));
         return -1;
     }
+
+    device->path = NULL;
+    device->fd = -1;
+    device->keymap = NULL;
+    device->remote = NULL;
+    device->output.fd = -1;
+
     if ((device->path = strndup(path, PATH_MAX)) == NULL)
     {
-        syslog(LOG_ERR, "failed to allocate memory for the input device %s: %s\n", path, strerror(errno));
+        syslog(LOG_ERR, "failed to allocate memory for the path name of input device %s: %s\n", path, strerror(errno));
         free(device);
         return -1;
     }
@@ -1325,6 +1345,16 @@ static int input_device_add(struct udev_device *udev_device)
 
     if (input_device_keymap_init(device, lircudevd_input.keymap_dir, keymap_file) != 0)
     {
+        close(device->fd);
+        free(device->path);
+        free(device);
+        return -1;
+    }
+    
+    if ((device->remote = strndup(remote, PATH_MAX)) == NULL)
+    {
+        syslog(LOG_ERR, "failed to allocate memory for the remote name of the input device %s: %s\n", path, strerror(errno));
+        input_device_keymap_exit(device);
         close(device->fd);
         free(device->path);
         free(device);
@@ -1387,7 +1417,7 @@ static int input_device_add(struct udev_device *udev_device)
     }
 
     /*
-     * Check for event types and codes that are not support by lircudevd.
+     * Check for event types and codes that are not supported by lircudevd.
      */
     for (i = 1 ; i < EV_MAX ; i++)
     {
@@ -1545,6 +1575,7 @@ static int input_device_add(struct udev_device *udev_device)
     if (device->output.fd == -1)
     {
         syslog(LOG_ERR, "unable to open uinput device for input device %s: %s\n", device->path, strerror(errno));
+        free(device->remote);
         input_device_keymap_exit(device);
         close(device->fd);
         free(device->path);
@@ -1570,6 +1601,7 @@ static int input_device_add(struct udev_device *udev_device)
     if (ioctl(device->output.fd, UI_SET_PHYS, device->path) < 0)
     {
         syslog(LOG_ERR, "failed to set UI_SET_PHYS for %s: %s\n", device->path, strerror(errno));
+        free(device->remote);
         close(device->output.fd);
         input_device_keymap_exit(device);
         close(device->fd);
@@ -1835,6 +1867,7 @@ static int input_device_add(struct udev_device *udev_device)
                    "unable to create uinput device for %s: %s\n",
                    device->path, strerror(errno));
             close(device->output.fd);
+            free(device->remote);
             input_device_keymap_exit(device);
             close(device->fd);
             free(device->path);
@@ -1854,6 +1887,7 @@ static int input_device_add(struct udev_device *udev_device)
     if (monitor_client_add(device->fd, &input_device_handler, device) != 0)
     {
         close(device->output.fd);
+        free(device->remote);
         input_device_keymap_exit(device);
         close(device->fd);
         free(device->path);
