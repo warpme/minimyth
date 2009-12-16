@@ -12,56 +12,6 @@ use File::Basename ();
 use File::Path ();
 use MiniMyth ();
 
-sub _remote_wakeup_enable
-{
-    my $self   = shift;
-    my $device = shift;
-
-    my $path = undef;
-    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=path --name='$device'))))
-    {
-        while (<FILE>)
-        {
-            chomp;
-            $path = Cwd::abs_path(qq(/sys/$_));
-            last;
-        }
-        close(FILE);
-    }
-
-    if ($path)
-    {
-        while (($path) && ($path !~ /^\/sys$/))
-        {
-            if (-e qq($path/power/wakeup)) 
-            {
-                my $state = undef;
-                if (open(FILE, '<', qq($path/power/wakeup)))
-                {
-                    while (<FILE>)
-                    {
-                        chomp;
-                        $state = $_;
-                        last;
-                    }
-                    close(FILE);
-                }
-                if ($state =~ /^disabled$/)
-                {
-                    if (open(FILE, '>', qq($path/power/wakeup)))
-                    {
-                        print FILE q(enabled);
-                        close(FILE);
-                    }
-                }
-            }
-            $path = File::Basename::dirname($path);
-        }
-    }
-
-    return 1;
-}
-
 sub start
 {
     my $self     = shift;
@@ -104,12 +54,6 @@ sub start
                 }
             }
             $driver = $driver_actual;
-        }
-
-        # Enable wakeup on remote.
-        if ($minimyth->var_get('MM_LIRC_WAKEUP_ENABLED') eq 'yes')
-        {
-            $self->_remote_wakeup_enable($device);
         }
 
         # Start the lircd daemon.
