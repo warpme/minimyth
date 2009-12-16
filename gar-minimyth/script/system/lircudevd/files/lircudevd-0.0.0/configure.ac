@@ -95,6 +95,11 @@ AC_ARG_WITH(keymap-dir, AS_HELP_STRING([--with-keymap-dir=DIR], [key map directo
     [KEYMAP_DIR="${sysconfdir}/lircudevd.d"])
 AC_SUBST(KEYMAP_DIR)
 
+AC_ARG_WITH(udev-dir, AS_HELP_STRING([--with-udev-dir=DIR], [key map directory @<:@/lib/udev@:>@]),
+    [UDEV_DIR="$withval"],
+    [UDEV_DIR="/lib/udev"])
+AC_SUBST(UDEV_DIR)
+
 AC_CONFIG_HEADERS([src/config.h])
-AC_CONFIG_FILES([Makefile man/Makefile man/lircudevd.8 man/lircudevd.keymap.5 src/Makefile src/evkey_code_to_name.h.sh src/evkey_name_to_code.h.sh src/evkey_type.h.sh])
+AC_CONFIG_FILES([Makefile etc/Makefile man/Makefile man/lircudevd.8 man/lircudevd.keymap.5 src/Makefile src/evkey_code_to_name.h.sh src/evkey_name_to_code.h.sh src/evkey_type.h.sh udev/Makefile udev/lircd_helper udev/wakeup_enable udev/rules.d/98-lircd.rules.disabled udev/rules.d/98-lircudevd.rules.disabled])
 AC_OUTPUT
