@@ -555,68 +555,6 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
     file           => {name_remote => '/lircrc.xine',
                        name_local  => '/etc/lirc/lircrc.d/xine'}
 };
-$var_list{'MM_LIRC_DEVICE_LIST'} =
-{
-    prerequisite   => ['MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_BLACKLIST', 'MM_LIRC_DEVICE', 'MM_LIRC_FETCH_LIRCD_CONF'],
-    value_default  => 'auto',
-    value_valid    => 'auto|.+',
-    value_auto     => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        my @device_list;
-
-        # Create the LIRC device list.
-        {
-            my $device     = $minimyth->device_canonicalize($minimyth->var_get('MM_LIRC_DEVICE'));
-            my $driver     = $minimyth->var_get('MM_LIRC_DRIVER');
-            my $lircd_conf = q(/etc/lirc/lircd.conf);
-            if (($device) && ($driver))
-            {
-                push(@device_list, "$device,$driver,$lircd_conf");
-            }
-            if ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'yes')
-            {
-                foreach my $item (@{$minimyth->detect_state_get('lirc')})
-                {
-                    my $device =     $minimyth->device_canonicalize($item->{'device'});
-                    my $driver     = $item->{'driver'};
-                    my $lircd_conf = $item->{'lircd_conf'};
-                    if ((! $lircd_conf) || ($minimyth->var_get('MM_LIRC_FETCH_LIRCD_CONF') eq 'yes'))
-                    {
-                        $lircd_conf = q(/etc/lirc/lircd.conf);
-                    }
-                    if (($device) && ($driver))
-                    {
-                        push(@device_list, "$device,$driver,$lircd_conf");
-                    }
-                }
-            }
-            # Remove any duplicates.
-            {
-                my $prev = '';
-                @device_list = grep($_ ne $prev && (($prev) = $_), sort(@device_list));
-            }
-        }
-
-        if ($minimyth->var_get('MM_LIRC_DEVICE_BLACKLIST'))
-        {
-            my @blacklist = ();
-            foreach my $item (split(/  +/, $minimyth->var_get('MM_LIRC_DEVICE_BLACKLIST')))
-            {
-                if ($item)
-                {
-                    push(@blacklist, $minimyth->device_canonicalize($item));
-                }
-            }
-            my $blacklist_filter = join('|', @blacklist);
-            @device_list = grep(! /^($blacklist_filter),.+$/, @device_list);
-        }
-
-        return join(' ', @device_list);
-    }
-};
 $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 {
     prerequisite   => ['MM_LIRC_FETCH_LIRCMD_CONF'],
@@ -638,7 +576,7 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 };
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DEVICE_LIST', 'MM_LIRC_FETCH_LIRCMD_CONF'],
+    prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DRIVER', 'MM_LIRC_FETCH_LIRCMD_CONF'],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -661,9 +599,9 @@ $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
         {
             push(@kernel_modules, $minimyth->var_get('MM_LIRC_KERNEL_MODULE'));
         }
-        # Since we have drivers,
+        # Since we have a configured device,
         # MiniMyth will be starting lircd and lircudevd, both of which require uinput.
-        if ($minimyth->var_get('MM_LIRC_DEVICE_LIST') ne '')
+        if ($minimyth->var_get('MM_LIRC_DRIVER') ne '')
         {
             push(@kernel_modules, 'uinput');
         }

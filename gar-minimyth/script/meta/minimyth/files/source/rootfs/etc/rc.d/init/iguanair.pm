@@ -13,17 +13,7 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    my $igdaemon_enabled = 'no';
-    my @device_list = split(/ +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST'));
-    foreach my $device_item (@device_list)
-    {
-        my (undef, $driver, undef) = split(/,/, $device_item);
-        if ($driver eq 'iguanaIR')
-        {
-            $igdaemon_enabled = 'yes';
-        }
-    }
-    if ($igdaemon_enabled eq 'yes')
+    if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'iguanaIR')
     {
         $minimyth->message_output('info', "starting iguanaIR daemon ...");
         system('/usr/bin/igdaemon',

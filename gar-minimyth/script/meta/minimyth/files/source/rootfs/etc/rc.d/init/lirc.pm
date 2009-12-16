@@ -12,7 +12,6 @@ use File::Basename ();
 use File::Path ();
 use MiniMyth ();
 
-                my $dir = File::Basename::dirname($_);
 sub _remote_wakeup_enable
 {
     my $self   = shift;
@@ -68,11 +67,9 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    my @device_list = split(/ +/, $minimyth->var_get('MM_LIRC_DEVICE_LIST'));
-
-    # There are no remote control devices and we will not auto-detect any later, so there is no need to continue.
-    if ((($#device_list + 1) <= 0) &&
-        ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') == 'no'))
+    # There are is no configured remote control device and we will not auto-detect any later, so there is no need to continue.
+    if ( ($minimyth->var_get('MM_LIRC_DRIVER')       eq ''  ) &&
+         ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'no') )
     {
         return 1;
     }
@@ -85,32 +82,21 @@ sub start
     File::Path::mkpath('/var/run/lirc', { mode => 0755 });
     chmod(0755, '/var/run/lirc');
 
-    # Enable wakeup and start an LIRC daemon for each device.
-    foreach my $device_item (@device_list)
+    # Start an lircd instance associated with the device unless the device is
+    # handled by a daemon other than lircd.
+    my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
+    if (($driver !~ /^bdremote$/) &&
+        ($driver !~ /^irtrans$/ ) )
     {
-        my @device_args = split(/,/, $device_item);
-        my $device     = $device_args[0];
-        my $driver     = $device_args[1];
-        my $lircd_conf = $device_args[2];
-
-        if ((! $device) || (! $driver))
-        {
-            next;
-        }
+        my $device = $minimyth->var_get('MM_LIRC_DEVICE');
 
         # Convert the driver to the lirc daemon appropriate driver.
-        if    (($driver) && ($driver =~ /^bdremote$/))
-        {
-        }
-        elsif (($driver) && ($driver =~ /^irtrans$/))
-        {
-        }
-        elsif (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
+        if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
         {
             my $driver_actual = 'default';
             while (<FILE>)
             {
-	        chomp;
+                chomp;
                 s/[[:cntrl:]]//g;
                 if (/^$driver$/)
                 {
@@ -126,23 +112,19 @@ sub start
             $self->_remote_wakeup_enable($device);
         }
 
-        # Start an lircd instance associated with the device the device is
-        # handled by a unless a daemon other than lircd.
-        if ( ($driver !~ /^bdremote$/) &&
-             ($driver !~ /^irtrans$/ ) )
-        {
-            my $instance = $device;
-            $instance =~ s/\/+/~/g;
-            $instance =~ s/^~dev~//;
-            my $daemon = '/usr/sbin/lircd';
-            $daemon = $daemon . " --driver=$driver";
-            $daemon = $daemon . " --device=$device";
-            $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
-            $daemon = $daemon . " --uinput";
-            $daemon = $daemon . " $lircd_conf";
-            $minimyth->message_log('info', "started '$daemon'.");
-            system(qq($daemon));
-        }
+        # Start the lircd daemon.
+        my $instance = $device;
+        $instance =~ s/\/+/~/g;
+        $instance =~ s/^~dev~//;
+        my $daemon = '/usr/sbin/lircd';
+        $daemon = $daemon . " --driver=$driver";
+        $daemon = $daemon . " --device=$device";
+        $daemon = $daemon . " --output=/var/run/lirc/lircd-$instance --pidfile=/var/run/lirc/lircd-$instance.pid";
+        $daemon = $daemon . " --uinput";
+        $daemon = $daemon . " /etc/lirc/lircd.conf";
+
+        $minimyth->message_log('info', "started '$daemon'.");
+        system(qq($daemon));
     }
 
     # Start the lircudevd daemon.

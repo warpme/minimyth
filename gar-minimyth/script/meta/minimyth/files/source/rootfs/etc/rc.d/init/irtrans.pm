@@ -19,16 +19,13 @@ sub start
         if ($minimyth->var_get('MM_LCDPROC_DEVICE'))
         {
             $minimyth->message_output('info', "starting IRTrans server ...");
-            # Use IRTrans server's LIRC support if
-            # either the LIRC driver is 'irtrans',
-            # or there is no other LIRC device.
-            if (($minimyth->var_get('MM_LIRC_DRIVER') eq 'irtrans') ||
-                (! $minimyth->var_get('MM_LIRC_DEVICE_LIST')))
+            # Use IRTrans server's LIRC support if LIRC driver is 'irtrans'.
+            if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'irtrans')
             {
                 system('/usr/sbin/irserver',
                        '-logfile', '/var/log/irserver',
-		       '-pidfile', '/var/run/irserver.pid',
-		       '-daemon',
+                       '-pidfile', '/var/run/irserver.pid',
+                       '-daemon',
                        $minimyth->var_get('MM_LCDPROC_DEVICE'));
             }
             else
@@ -36,8 +33,8 @@ sub start
                 system('/usr/sbin/irserver',
                        '-no_lirc',
                        '-logfile', '/var/log/irserver',
-		       '-pidfile', '/var/run/irserver.pid',
-		       '-daemon',
+                       '-pidfile', '/var/run/irserver.pid',
+                       '-daemon',
                        $minimyth->var_get('MM_LCDPROC_DEVICE'));
             }
         }
