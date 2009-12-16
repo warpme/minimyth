@@ -40,7 +40,7 @@ $var_list{'MM_HULU_URL'} =
 
 $var_list{'MM_HULU_REMOTE'} =
 {
-    value_default => 'mceusb',
+    value_default => 'devinput',
     value_valid   => '.+',
     value_none    => ''
 };
