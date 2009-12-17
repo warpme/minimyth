@@ -19,8 +19,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-CFLAGS += -ggdb
-
 $(DOWNLOADDIR)/$(DISTNAME):
 	@mkdir -p $(DOWNLOADDIR)
 	@rm -f $(DISTNAME)
