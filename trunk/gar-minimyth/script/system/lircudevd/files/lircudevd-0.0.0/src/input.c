@@ -799,7 +799,6 @@ static int input_device_event_update(struct input_device *device, const struct i
         }
     }
 
-////////////////////////////////////////////////////////////////////////////////
     /*
      * lircudevd does not map non-key events. therefore, just set the output
      * event to the input event and return.
@@ -944,7 +943,6 @@ static int input_device_event_update(struct input_device *device, const struct i
         return 0;
     }
 
-////////////////////////////////////////////////////////////////////////////////
     /*
      * Map the current event.
      */
@@ -982,7 +980,6 @@ static int input_device_event_update(struct input_device *device, const struct i
                 device->current.repeat_count = 0;
                 return -1;
             }
-////////////////////////////////////////////////////////////////////////////////
             break;
         /*
          * Process the key repeat event.
@@ -1021,7 +1018,6 @@ static int input_device_event_update(struct input_device *device, const struct i
                     return 0;
                 }
             }
-////////////////////////////////////////////////////////////////////////////////
             previous->repeat_count++;
             previous->event_out.time = device->current.event_out.time;
             device->current.repeat_count = previous->repeat_count;
@@ -1143,7 +1139,7 @@ static int input_device_close(struct input_device *device)
         ioctl(device->output.fd, UI_DEV_DESTROY);
         close(device->output.fd);
         device->output.fd = -1;
-        syslog(LOG_INFO, "destroyed output mouse/joystick device for input device %s", device->path);
+        syslog(LOG_INFO, "input device %s: output event device destroyed", device->path);
     }
     if (device->remote == NULL)
     {
@@ -1154,7 +1150,7 @@ static int input_device_close(struct input_device *device)
     {
         close(device->fd);
         device->fd = -1;
-        syslog(LOG_INFO, "released input device %s", device->path);
+        syslog(LOG_INFO, "intput device %s: released", device->path);
     }
     if (device->path != NULL)
     {
@@ -1311,7 +1307,7 @@ static int input_device_add(struct udev_device *udev_device)
 
     if ((device = calloc(1, sizeof(struct input_device))) == NULL)
     {
-        syslog(LOG_ERR, "failed to allocate memory for the input device %s: %s\n", path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: memory allocation failed: %s\n", path, strerror(errno));
         return -1;
     }
 
@@ -1323,20 +1319,20 @@ static int input_device_add(struct udev_device *udev_device)
 
     if ((device->path = strndup(path, PATH_MAX)) == NULL)
     {
-        syslog(LOG_ERR, "failed to allocate memory for the path name of input device %s: %s\n", path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: memory allocation for path name failed: %s\n", path, strerror(errno));
         free(device);
         return -1;
     }
     if ((device->fd = open(device->path, O_RDWR)) < 0)
     {
-        syslog(LOG_ERR, "failed to open device %s: %s\n", device->path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: device open failed: %s\n", device->path, strerror(errno));
         free(device->path);
         free(device);
         return -1;
     }
     if (ioctl(device->fd, EVIOCGRAB, 1) < 0)
     {
-        syslog(LOG_ERR, "failed to grab device %s: %s\n", device->path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: device grab failed: %s\n", device->path, strerror(errno));
         close(device->fd);
         free(device->path);
         free(device);
@@ -1353,7 +1349,7 @@ static int input_device_add(struct udev_device *udev_device)
     
     if ((device->remote = strndup(remote, PATH_MAX)) == NULL)
     {
-        syslog(LOG_ERR, "failed to allocate memory for the remote name of the input device %s: %s\n", path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: memory allocation for remote name failed: %s\n", path, strerror(errno));
         input_device_keymap_exit(device);
         close(device->fd);
         free(device->path);
@@ -1433,29 +1429,29 @@ static int input_device_add(struct udev_device *udev_device)
                     break;
                 case EV_MSC:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_MSC from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_MSC will be discarded\n",
                            device->path);
                     for (j = 0 ; j < MSC_MAX ; j++)
                     {
                         if (BITFIELD_TEST(j, bit_msc) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "event code 0x%02x of unsupported event type EV_MSC from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: event code 0x%02x of unsupported event type EV_MSC will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
                 case EV_SW:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_SW from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_SW will be discarded\n",
                            device->path);
                     for (j = 0 ; j < SW_MAX ; j++)
                     {
                         if (BITFIELD_TEST(j, bit_sw) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "event code 0x%02x of unsupported event type EV_SW from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: event code 0x%02x of unsupported event type EV_SW will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
@@ -1471,67 +1467,67 @@ static int input_device_add(struct udev_device *udev_device)
                         if (BITFIELD_TEST(j, bit_led) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "unsupported event code 0x%02x of event type EV_LED from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: unsupported event code 0x%02x of event type EV_LED will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
                 case EV_SND:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_SND from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_SND will be discarded\n",
                            device->path);
                     for (j = 0 ; j < SND_MAX ; j++)
                     {
                         if (BITFIELD_TEST(j, bit_snd) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "event code 0x%02x of unsupported event type EV_SND from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: event code 0x%02x of unsupported event type EV_SND will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
                 case EV_REP:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_REP from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_REP will be discarded\n",
                            device->path);
                     break;
                 case EV_FF:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_FF from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_FF will be discarded\n",
                            device->path);
                     for (j = 0 ; j < FF_MAX ; j++)
                     {
                         if (BITFIELD_TEST(j, bit_ff) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "event code 0x%02x of unsupported event type EV_FF from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: event code 0x%02x of unsupported event type EV_FF will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
                 case EV_PWR:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_PWR from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_PWR will be discarded\n",
                            device->path);
                     break;
                 case EV_FF_STATUS:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type EV_FF_STATUS from %s will be discarded\n",
+                           "input device %s: events of unsupported event type EV_FF_STATUS will be discarded\n",
                            device->path);
                     for (j = 0 ; j < FF_STATUS_MAX ; j++)
                     {
                         if (BITFIELD_TEST(j, bit_ff_status) != 0)
                         {
                             syslog(LOG_DEBUG,
-                                   "event code 0x%02x of unsupported event type EV_FF_STATUS from %s will be discarded\n",
-                                   j, device->path);
+                                   "input device %s: event code 0x%02x of unsupported event type EV_FF_STATUS will be discarded\n",
+                                   device->path, j);
                         }
                     }
                     break;
                 default:
                     syslog(LOG_DEBUG,
-                           "events of unsupported event type 0x%02x from %s will be discarded\n",
-                           type, device->path);
+                           "input device %s: events of unsupported event type 0x%02x will be discarded\n",
+                           device->path, type);
                     break;
             }
         }
@@ -1566,7 +1562,9 @@ static int input_device_add(struct udev_device *udev_device)
     device->current.event_out.type = LIRCUDEVD_EV_NULL;
     device->current.repeat_count = 0;
 
-    /* create output event device for events that are not consumed by LIRCD */
+    /*
+     * Create output event device for events that are not sent to the lircd socket.
+     */
     device->output.fd = -1;
     for (i = 0 ; (device->output.fd == -1) && (uinput_devname[i] != NULL) ; i++)
     {
@@ -1574,7 +1572,7 @@ static int input_device_add(struct udev_device *udev_device)
     }
     if (device->output.fd == -1)
     {
-        syslog(LOG_ERR, "unable to open uinput device for input device %s: %s\n", device->path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: unable to open event device: %s\n", device->path, strerror(errno));
         free(device->remote);
         input_device_keymap_exit(device);
         close(device->fd);
@@ -1591,7 +1589,7 @@ static int input_device_add(struct udev_device *udev_device)
     device->output.dev.name[UINPUT_MAX_NAME_SIZE - 1] = '\0';
     if (ioctl(device->fd, EVIOCGID, &(device->output.dev.id)) != 0)
     {
-        syslog(LOG_WARNING, "unable to retreive id information for input device %s: %s\n", device->path, strerror(errno));
+        syslog(LOG_WARNING, "input device %s: unable to retreive id information: %s\n", device->path, strerror(errno));
         device->output.dev.id.bustype = 0;
         device->output.dev.id.vendor = 0;
         device->output.dev.id.product = 0;
@@ -1600,7 +1598,7 @@ static int input_device_add(struct udev_device *udev_device)
 
     if (ioctl(device->output.fd, UI_SET_PHYS, device->path) < 0)
     {
-        syslog(LOG_ERR, "failed to set UI_SET_PHYS for %s: %s\n", device->path, strerror(errno));
+        syslog(LOG_ERR, "input device %s: unable to set UI_SET_PHYS for output event device: %s\n", device->path, strerror(errno));
         free(device->remote);
         close(device->output.fd);
         input_device_keymap_exit(device);
@@ -1679,14 +1677,14 @@ static int input_device_add(struct udev_device *udev_device)
                                 if (ioctl(device->output.fd, UI_SET_EVBIT, EV_KEY) < 0)
                                 {
                                     syslog(LOG_ERR,
-                                           "failed to set UI_SET_EVBIT EV_KEY for %s: %s\n",
+                                           "input device %s: failed to set UI_SET_EVBIT EV_KEY for output event device: %s\n",
                                            device->path, strerror(errno));
                                 }
                                 if (ioctl(device->output.fd, UI_SET_KEYBIT, code) < 0)
                                 {
                                     syslog(LOG_ERR,
-                                           "failed to set UI_SET_KEYBIT 0x%02x for %s: %s\n",
-                                           code, device->path, strerror(errno));
+                                           "input device %s: failed to set UI_SET_KEYBIT 0x%02x for output event device: %s\n",
+                                           device->path, code, strerror(errno));
                                 }
                                 output_active = true;
                             }
@@ -1703,14 +1701,14 @@ static int input_device_add(struct udev_device *udev_device)
                             if (ioctl(device->output.fd, UI_SET_EVBIT, EV_REL) < 0)
                             {
                                 syslog(LOG_ERR,
-                                       "failed to set UI_SET_EVBIT EV_REL for %s: %s\n",
+                                       "input device %s: failed to set UI_SET_EVBIT EV_REL for output event device: %s\n",
                                        device->path, strerror(errno));
                             }
                             if (ioctl(device->output.fd, UI_SET_RELBIT, code) < 0)
                             {
                                 syslog(LOG_ERR,
-                                       "failed to set UI_SET_RELBIT 0x%02x for %s: %s\n",
-                                       code, device->path, strerror(errno));
+                                       "input device %s: failed to set UI_SET_RELBIT 0x%02x for output event device: %s\n",
+                                       device->path, code, strerror(errno));
                             }
                             output_active = true;
                         }
@@ -1727,19 +1725,19 @@ static int input_device_add(struct udev_device *udev_device)
                             if (ioctl(device->output.fd, UI_SET_EVBIT, EV_ABS) < 0)
                             {
                                 syslog(LOG_ERR,
-                                       "failed to set UI_SET_EVBIT EV_ABS for %s: %s\n",
+                                       "input device %s: failed to set UI_SET_EVBIT EV_ABS for output event device: %s\n",
                                        device->path, strerror(errno));
                             }
                             if (ioctl(device->output.fd, UI_SET_ABSBIT, code) < 0)
                             {
                                 syslog(LOG_ERR,
-                                       "failed to set UI_SET_ABSBIT 0x%02x for %s: %s\n",
-                                       code, device->path, strerror(errno));
+                                       "input device %s: failed to set UI_SET_ABSBIT 0x%02x for output event device: %s\n",
+                                       device->path, code, strerror(errno));
                             }
                             if (ioctl(device->fd, EVIOCGABS(code), &absinfo) < 0)
                             {
                                 syslog(LOG_ERR,
-                                       "failed to get ABS information for 0x%02x of %s: %s\n",
+                                       "input event %s: failed to get ABS information for 0x%02x of output event device: %s\n",
                                        code, device->path, strerror(errno));
                             }
                             else
@@ -1842,13 +1840,13 @@ static int input_device_add(struct udev_device *udev_device)
                 if (ioctl(device->output.fd, UI_SET_EVBIT, EV_KEY) < 0)
                 {
                     syslog(LOG_ERR,
-                           "failed to set UI_SET_EVBIT EV_KEY for %s: %s\n",
+                           "input device %s: failed to set UI_SET_EVBIT EV_KEY for output event device: %s\n",
                            device->path, strerror(errno));
                 }
                 if (ioctl(device->output.fd, UI_SET_KEYBIT, code_out) < 0)
                 {
                     syslog(LOG_ERR,
-                           "failed to set UI_SET_KEYBIT 0x%02x for %s: %s\n",
+                           "input device %s: failed to set UI_SET_KEYBIT 0x%02x for output event device: %s\n",
                            code_out, device->path, strerror(errno));
                 }
                 output_active = true;
@@ -1864,7 +1862,7 @@ static int input_device_add(struct udev_device *udev_device)
         if (ioctl(device->output.fd, UI_DEV_CREATE))
         {
             syslog(LOG_ERR,
-                   "unable to create uinput device for %s: %s\n",
+                   "input device %s: unable to create output event device: %s\n",
                    device->path, strerror(errno));
             close(device->output.fd);
             free(device->remote);
@@ -1926,10 +1924,10 @@ static int input_device_add(struct udev_device *udev_device)
     device->next = lircudevd_input.device_list;
     lircudevd_input.device_list = device;
 
-    syslog(LOG_INFO, "grabbed input device %s", device->path);
+    syslog(LOG_INFO, "input device %s: grabbed", device->path);
     if (device->output.fd != -1)
     {
-        syslog(LOG_INFO, "created output mouse/joystick device for input device %s", device->path);
+        syslog(LOG_INFO, "input device %s: created output event device", device->path);
     }
 
     return 0;
