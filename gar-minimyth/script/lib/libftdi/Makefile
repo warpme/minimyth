@@ -1,5 +1,5 @@
 GARNAME = libftdi
-GARVERSION = 0.16
+GARVERSION = 0.17
 CATEGORIES = lib
 MASTER_SITES = http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/
 DISTFILES = $(DISTNAME).tar.gz
@@ -20,7 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-libftdipp \
-	--disable-python-bindings \
+	--disable-python-binding \
 	--with-gnu-ld \
 	--without-boost
 
