@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-udev_20090929.patch \
+	$(DISTNAME)-udev_20091206.patch \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
