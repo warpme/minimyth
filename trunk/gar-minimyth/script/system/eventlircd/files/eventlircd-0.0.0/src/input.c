@@ -1950,22 +1950,21 @@ static int input_handler(void *id)
     }
 
     action = udev_device_get_action(udev_device);
-    if (action == NULL)
+    if (action != NULL)
     {
-        ;
-    }
-    else if (strncmp(action, "add", strlen("add") + 1) == 0)
-    {
-        if (input_device_add(udev_device) != 0)
+        if      (strncmp(action, "add", strlen("add") + 1) == 0)
         {
-            return -1;
+            if (input_device_add(udev_device) != 0)
+            {
+                return -1;
+            }
         }
-    }
-    else if (strncmp(action, "remove", strlen("remove") + 1) == 0)
-    {
-        if (input_device_remove(udev_device) != 0)
+        else if (strncmp(action, "remove", strlen("remove") + 1) == 0)
         {
-            return -1;
+            if (input_device_remove(udev_device) != 0)
+            {
+                return -1;
+            }
         }
     }
 
