@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2009 Paul Bender.
  *
- * This file is part of lircudevd.
+ * This file is part of eventlircd.
  *
- * lircudevd is free software: you can redistribute it and/or modify
+ * eventlircd is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  *
- * lircudevd is distributed in the hope that it will be useful,
+ * eventlircd is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with lircudevd.  If not, see <http://www.gnu.org/licenses/>.
+ * along with eventlircd.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <errno.h>
 #include <malloc.h>
@@ -42,7 +42,7 @@ struct monitor_client
 struct
 {
     struct monitor_client *client_list;
-} lircudevd_monitor =
+} eventlircd_monitor =
 {
     .client_list = NULL
 };
@@ -73,7 +73,7 @@ static int monitor_client_purge()
 
     return_code = 0;
 
-    client_ptr = &(lircudevd_monitor.client_list);
+    client_ptr = &(eventlircd_monitor.client_list);
     while (*client_ptr != NULL)
     {
         client = *client_ptr;
@@ -102,7 +102,7 @@ int monitor_client_remove(int fd)
 
     return_code = 0;
 
-    for (client = lircudevd_monitor.client_list ; client != NULL ; client = client->next)
+    for (client = eventlircd_monitor.client_list ; client != NULL ; client = client->next)
     {
         if (client->fd == fd)
         {
@@ -145,8 +145,8 @@ int monitor_client_add(int fd, int (*handler)(void *id), void *id)
     client->handler = handler;
     client->id = id;
 
-    client->next = lircudevd_monitor.client_list;
-    lircudevd_monitor.client_list = client;
+    client->next = eventlircd_monitor.client_list;
+    eventlircd_monitor.client_list = client;
 
     return 0;
 }
@@ -158,7 +158,7 @@ int monitor_exit()
 
     return_code = 0;
 
-    for (client = lircudevd_monitor.client_list ; client != NULL ; client = client->next)
+    for (client = eventlircd_monitor.client_list ; client != NULL ; client = client->next)
     {
         if (monitor_client_close(client) != 0)
         {
@@ -175,7 +175,7 @@ int monitor_exit()
 
 int monitor_init()
 {
-    lircudevd_monitor.client_list = NULL;
+    eventlircd_monitor.client_list = NULL;
 
     return 0;
 }
@@ -218,7 +218,7 @@ int monitor_run()
 
         FD_ZERO(&fdset);
         nfds = 0;
-        for (client = lircudevd_monitor.client_list ; client != NULL ; client = client->next)
+        for (client = eventlircd_monitor.client_list ; client != NULL ; client = client->next)
         {
             if (client->fd < 0)
             {
@@ -241,7 +241,7 @@ int monitor_run()
             return -1;
         }
 
-        for (client = lircudevd_monitor.client_list ; client != NULL ; client = client->next)
+        for (client = eventlircd_monitor.client_list ; client != NULL ; client = client->next)
         {
             if (client->fd == -1)
             {
