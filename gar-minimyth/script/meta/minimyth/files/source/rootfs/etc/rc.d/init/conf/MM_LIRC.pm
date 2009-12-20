@@ -600,13 +600,13 @@ $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
             push(@kernel_modules, $minimyth->var_get('MM_LIRC_KERNEL_MODULE'));
         }
         # Since we have a configured device,
-        # MiniMyth will be starting lircd and lircudevd, both of which require uinput.
+        # MiniMyth will be starting lircd and eventlircd, both of which require uinput.
         if ($minimyth->var_get('MM_LIRC_DRIVER') ne '')
         {
             push(@kernel_modules, 'uinput');
         }
-        # Since we may detect devices routed through lircudevd in the future,
-        # MiniMyth will be starting lircudevd, which requires uinput.
+        # Since we may detect devices routed through eventlircd in the future,
+        # MiniMyth will be starting eventlircd, which requires uinput.
         if ($minimyth->var_get('MM_LIRC_AUTO_ENABLED') eq 'yes')
         {
             push(@kernel_modules, 'uinput');

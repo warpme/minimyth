@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2009 Paul Bender.
  *
- * This file is part of lircudevd.
+ * This file is part of eventlircd.
  *
- * lircudevd is free software: you can redistribute it and/or modify
+ * eventlircd is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  *
- * lircudevd is distributed in the hope that it will be useful,
+ * eventlircd is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with lircudevd.  If not, see <http://www.gnu.org/licenses/>.
+ * along with eventlircd.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stddef.h>
 #include <errno.h>
@@ -44,7 +44,7 @@
 #include "lircd.h"
 #include "monitor.h"
 
-#define DEVICE_NAME    "lircudevd"
+#define DEVICE_NAME    "eventlircd"
 #define DEVICE_BUSTYPE 0
 #define DEVICE_VENDOR  0
 #define DEVICE_PRODUCT 0
@@ -111,8 +111,8 @@ struct input_device_keymap
 
 /*
  * The 'input_device' structure is used by the 'device_list' member of the
- * 'lircudevd_input' variable. It is used to hold information associated with
- * each input device handled by lircudevd. In addition to holding the keymap,
+ * 'eventlircd_input' variable. It is used to hold information associated with
+ * each input device handled by eventlircd. In addition to holding the keymap,
  * current event and previous key press events information for the input device,
  * it holds the information associated with the input device's mouse/joystick
  * event output device.
@@ -145,11 +145,11 @@ struct input_device
 
 /*
  * The 'lirudevd_input' variable holds information associated with input event
- * devices handled by lircudevd. It contains the information with associated
+ * devices handled by eventlircd. It contains the information with associated
  * with monitoring udev for input event devices and a list of the input devices
- * currently being handled by lircudevd. The udev monitor file descriptor and
+ * currently being handled by eventlircd. The udev monitor file descriptor and
  * each of the the input device file descriptors are registered with monitor
- * so that input is notified of any udev and input device events that lircudevd
+ * so that input is notified of any udev and input device events that eventlircd
  * might need to handle.
  */
 struct
@@ -161,7 +161,7 @@ struct
         struct udev_monitor *monitor;
     } udev;
     struct input_device *device_list;   /* The linked list of udev detected input devices. */
-} lircudevd_input =
+} eventlircd_input =
 {
     .keymap_dir = NULL,
     .udev.fd = -1,
@@ -800,7 +800,7 @@ static int input_device_event_update(struct input_device *device, const struct i
     }
 
     /*
-     * lircudevd does not map non-key events. therefore, just set the output
+     * eventlircd does not map non-key events. therefore, just set the output
      * event to the input event and return.
      */
     if (device->current.event_in.type != EV_KEY)
@@ -966,7 +966,7 @@ static int input_device_event_update(struct input_device *device, const struct i
         case 1:
             device->current.repeat_count = 0;
             /*
-             * As this is a key press event, lircudevd will need later to map
+             * As this is a key press event, eventlircd will need later to map
              * correctly any corresponding key repeat and key release events.
              * Therefore, we push it onto the previous key press event list.
              * If we fail, then we discard the event as we will not be able to
@@ -1169,7 +1169,7 @@ static int input_device_purge()
 
     return_code = 0;
 
-    device_ptr = &(lircudevd_input.device_list);
+    device_ptr = &(eventlircd_input.device_list);
     while (*device_ptr != NULL)
     {
         device = *device_ptr;
@@ -1211,7 +1211,7 @@ static int input_device_remove(struct udev_device *udev_device)
 
     return_code = 0;
 
-    for (device = lircudevd_input.device_list ; device != NULL ; device = device->next)
+    for (device = eventlircd_input.device_list ; device != NULL ; device = device->next)
     {
         if (device->path == NULL)
         {
@@ -1272,7 +1272,7 @@ static int input_device_add(struct udev_device *udev_device)
     }
 
     name = udev_device_get_property_value(udev_device_get_parent(udev_device), "NAME");
-    if ((name != NULL) && (strncmp(name, "\"lircudevd\"", strlen("\"lircudevd\"")) == 0))
+    if ((name != NULL) && (strncmp(name, "\"eventlircd\"", strlen("\"eventlircd\"")) == 0))
     {
         return 0;
     }
@@ -1283,15 +1283,15 @@ static int input_device_add(struct udev_device *udev_device)
         return 0;
     }
 
-    enable = udev_device_get_property_value(udev_device, "lircudevd_enable");
+    enable = udev_device_get_property_value(udev_device, "eventlircd_enable");
     if ((enable == NULL) ||(strncmp(enable, "true", sizeof("true")) != 0))
     {
         return 0;
     }
 
-    keymap_file = udev_device_get_property_value(udev_device, "lircudevd_keymap");
+    keymap_file = udev_device_get_property_value(udev_device, "eventlircd_keymap");
 
-    for (device = lircudevd_input.device_list ; device != NULL ; device = device->next)
+    for (device = eventlircd_input.device_list ; device != NULL ; device = device->next)
     {
         if (strncmp(device->path, path, PATH_MAX) == 0)
         {
@@ -1299,7 +1299,7 @@ static int input_device_add(struct udev_device *udev_device)
         }
     }
 
-    remote = udev_device_get_property_value(udev_device, "lircudevd_remote");
+    remote = udev_device_get_property_value(udev_device, "eventlircd_remote");
     if (remote == NULL)
     {
         remote = "devinput";
@@ -1339,7 +1339,7 @@ static int input_device_add(struct udev_device *udev_device)
         return -1;
     }
 
-    if (input_device_keymap_init(device, lircudevd_input.keymap_dir, keymap_file) != 0)
+    if (input_device_keymap_init(device, eventlircd_input.keymap_dir, keymap_file) != 0)
     {
         close(device->fd);
         free(device->path);
@@ -1413,7 +1413,7 @@ static int input_device_add(struct udev_device *udev_device)
     }
 
     /*
-     * Check for event types and codes that are not supported by lircudevd.
+     * Check for event types and codes that are not supported by eventlircd.
      */
     for (i = 1 ; i < EV_MAX ; i++)
     {
@@ -1610,7 +1610,7 @@ static int input_device_add(struct udev_device *udev_device)
 
     /*
      * Configure mouse/joystick device with the mapped event types and codes
-     * that are supported by lircudevd.
+     * that are supported by eventlircd.
      */
     output_active = false;
     for (i = 1 ; i < EV_MAX ; i++)
@@ -1632,7 +1632,7 @@ static int input_device_add(struct udev_device *udev_device)
                         {
                             /*
                              * If the key code is a lock key code, then skip it
-                             * as lircudevd consumes it as part of keyboard
+                             * as eventlircd consumes it as part of keyboard
                              * shortcut mapping.
                              */
                             if ((code == KEY_CAPSLOCK  ) ||
@@ -1643,7 +1643,7 @@ static int input_device_add(struct udev_device *udev_device)
                             }
                             /*
                              * If the key code is a modifier key code, then skip
-                             * it as lircudevd consumes it as part of keyboard
+                             * it as eventlircd consumes it as part of keyboard
                              * shortcut mapping.
                              */
                             if ((code == KEY_LEFTCTRL ) || (code == KEY_RIGHTCTRL ) ||
@@ -1921,8 +1921,8 @@ static int input_device_add(struct udev_device *udev_device)
         }
     }
 
-    device->next = lircudevd_input.device_list;
-    lircudevd_input.device_list = device;
+    device->next = eventlircd_input.device_list;
+    eventlircd_input.device_list = device;
 
     syslog(LOG_INFO, "input device %s: grabbed", device->path);
     if (device->output.fd != -1)
@@ -1938,12 +1938,12 @@ static int input_handler(void *id)
     struct udev_device *udev_device;
     const char *action;
 
-    if (lircudevd_input.udev.monitor == NULL)
+    if (eventlircd_input.udev.monitor == NULL)
     {
         return -1;
     }
 
-    udev_device = udev_monitor_receive_device(lircudevd_input.udev.monitor);
+    udev_device = udev_monitor_receive_device(eventlircd_input.udev.monitor);
     if (udev_device == NULL)
     {
         return -1;
@@ -1982,12 +1982,12 @@ int input_exit()
 
     return_code = 0;
 
-    if (monitor_client_remove(lircudevd_input.udev.fd) != 0)
+    if (monitor_client_remove(eventlircd_input.udev.fd) != 0)
     {
         return_code = -1;
     }
 
-    for (device = lircudevd_input.device_list ; device != NULL ; device = device->next)
+    for (device = eventlircd_input.device_list ; device != NULL ; device = device->next)
     {
         if (input_device_close(device) != 0)
         {
@@ -1999,11 +1999,11 @@ int input_exit()
         return_code = -1;
     }
 
-    if (lircudevd_input.udev.monitor != NULL)
+    if (eventlircd_input.udev.monitor != NULL)
     {
-        udev = udev_monitor_get_udev(lircudevd_input.udev.monitor);
-        udev_monitor_unref(lircudevd_input.udev.monitor);
-        lircudevd_input.udev.monitor = NULL;
+        udev = udev_monitor_get_udev(eventlircd_input.udev.monitor);
+        udev_monitor_unref(eventlircd_input.udev.monitor);
+        eventlircd_input.udev.monitor = NULL;
         if (udev != NULL)
         {
             udev_unref(udev);
@@ -2013,12 +2013,12 @@ int input_exit()
             return_code = -1;
         }
     }
-    lircudevd_input.udev.fd = -1;
+    eventlircd_input.udev.fd = -1;
 
-    if (lircudevd_input.keymap_dir != NULL)
+    if (eventlircd_input.keymap_dir != NULL)
     {
-        free(lircudevd_input.keymap_dir);
-        lircudevd_input.keymap_dir = NULL;
+        free(eventlircd_input.keymap_dir);
+        eventlircd_input.keymap_dir = NULL;
     }
 
     return return_code;
@@ -2034,10 +2034,10 @@ int input_init(const char *keymap_dir)
     struct udev_device *udev_device;
     const char *name;
 
-    lircudevd_input.keymap_dir = NULL;
-    lircudevd_input.udev.fd = -1;
-    lircudevd_input.udev.monitor = NULL;
-    lircudevd_input.device_list = NULL;
+    eventlircd_input.keymap_dir = NULL;
+    eventlircd_input.udev.fd = -1;
+    eventlircd_input.udev.monitor = NULL;
+    eventlircd_input.device_list = NULL;
 
     if (keymap_dir == NULL)
     {
@@ -2045,7 +2045,7 @@ int input_init(const char *keymap_dir)
         return -1;
     }
 
-    if ((lircudevd_input.keymap_dir = strndup(keymap_dir, PATH_MAX + 1)) == NULL)
+    if ((eventlircd_input.keymap_dir = strndup(keymap_dir, PATH_MAX + 1)) == NULL)
     {
         syslog(LOG_ERR, "failed to allocate memory for the input device key map directory name %s: %s\n", keymap_dir, strerror(errno));
         input_exit();
@@ -2059,28 +2059,28 @@ int input_init(const char *keymap_dir)
         return -1;
     }
 
-    if ((lircudevd_input.udev.monitor = udev_monitor_new_from_netlink(udev, "udev")) == NULL)
+    if ((eventlircd_input.udev.monitor = udev_monitor_new_from_netlink(udev, "udev")) == NULL)
     {
         syslog(LOG_ERR, "failed to bind the udev monitor: %s\n", strerror(errno));
         input_exit();
         return -1;
     }
 
-    if ((lircudevd_input.udev.fd = udev_monitor_get_fd(lircudevd_input.udev.monitor)) == -1)
+    if ((eventlircd_input.udev.fd = udev_monitor_get_fd(eventlircd_input.udev.monitor)) == -1)
     {
         syslog(LOG_ERR, "failed to get udev monitor file descriptor: %s\n", strerror(errno));
         input_exit();
         return -1;
     }
 
-    if (udev_monitor_filter_add_match_subsystem_devtype(lircudevd_input.udev.monitor, "input", NULL) < 0)
+    if (udev_monitor_filter_add_match_subsystem_devtype(eventlircd_input.udev.monitor, "input", NULL) < 0)
     {
         syslog(LOG_ERR, "failed to bind the udev monitor: %s\n", strerror(errno));
         input_exit();
         return -1;
     }
 
-    if (udev_monitor_enable_receiving(lircudevd_input.udev.monitor))
+    if (udev_monitor_enable_receiving(eventlircd_input.udev.monitor))
     {
         syslog(LOG_ERR, "failed to bind the udev monitor: %s\n", strerror(errno));
         input_exit();
@@ -2118,7 +2118,7 @@ int input_init(const char *keymap_dir)
     }
     udev_enumerate_unref(enumerate);
 
-    if (monitor_client_add(lircudevd_input.udev.fd, &input_handler, NULL) != 0)
+    if (monitor_client_add(eventlircd_input.udev.fd, &input_handler, NULL) != 0)
     {
         input_exit();
         return -1;

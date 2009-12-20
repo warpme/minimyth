@@ -1,4 +1,4 @@
-GARNAME = lircudevd
+GARNAME = eventlircd
 GARVERSION = 0.0.0
 CATEGORIES = system
 DISTFILES = $(DISTNAME)

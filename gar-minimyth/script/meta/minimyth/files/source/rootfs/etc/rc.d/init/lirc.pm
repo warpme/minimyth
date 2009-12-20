@@ -71,8 +71,8 @@ sub start
         system(qq($daemon));
     }
 
-    # Start the lircudevd daemon.
-    system(qq(/usr/sbin/lircudevd --keymap=/etc/lircudevd.d --socket=/var/run/lirc/lircd --release=:UP));
+    # Start the eventlircd daemon.
+    system(qq(/usr/sbin/eventlircd --keymap=/etc/eventlircd.d --socket=/var/run/lirc/lircd --release=:UP));
 
     # Start the irexec daemon.
     if ($minimyth->var_get('MM_LIRC_IREXEC_ENABLED') eq 'yes')
@@ -96,7 +96,7 @@ sub stop
 
     if ( ($minimyth->application_running('lircmd')) ||
          ($minimyth->application_running('irexec')) ||
-         ($minimyth->application_running('lircudevd')) ||
+         ($minimyth->application_running('eventlircd')) ||
          ($minimyth->application_running('lircd')) ||
          ($minimyth->application_running('bdremoteng')) )
     {
@@ -104,7 +104,7 @@ sub stop
 
         $minimyth->application_stop('lircmd');
         $minimyth->application_stop('irexec');
-        $minimyth->application_stop('lircudevd');
+        $minimyth->application_stop('eventlircd');
         $minimyth->application_stop('lircd');
         $minimyth->application_stop('bdremoteng');
     }

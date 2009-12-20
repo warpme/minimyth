@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2009 Paul Bender.
  *
- * This file is part of lircudevd.
+ * This file is part of eventlircd.
  *
- * lircudevd is free software: you can redistribute it and/or modify
+ * eventlircd is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  *
- * lircudevd is distributed in the hope that it will be useful,
+ * eventlircd is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with lircudevd.  If not, see <http://www.gnu.org/licenses/>.
+ * along with eventlircd.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <errno.h>
 #include <fcntl.h>
@@ -52,7 +52,7 @@ struct
     mode_t mode;
     char *release_suffix;
     struct lircd_client *client_list;
-} lircudevd_lircd =
+} eventlircd_lircd =
 {
     .fd = -1,
     .path = NULL,
@@ -65,7 +65,7 @@ static int lircd_client_add()
 {
     struct lircd_client *client;
 
-    if (lircudevd_lircd.fd == -1)
+    if (eventlircd_lircd.fd == -1)
     {
         return -1;
     }
@@ -76,7 +76,7 @@ static int lircd_client_add()
         return -1;
     }
 
-    client->fd = accept(lircudevd_lircd.fd, NULL, NULL);
+    client->fd = accept(eventlircd_lircd.fd, NULL, NULL);
 
     if  (client->fd < 0)
     {
@@ -88,8 +88,8 @@ static int lircd_client_add()
     int flags = fcntl(client->fd, F_GETFL);
     fcntl(client->fd, F_SETFL, flags | O_NONBLOCK);
 
-    client->next = lircudevd_lircd.client_list;
-    lircudevd_lircd.client_list = client;
+    client->next = eventlircd_lircd.client_list;
+    eventlircd_lircd.client_list = client;
 
     return 0;
 }
@@ -129,7 +129,7 @@ static int lircd_client_purge()
 
     return_code = 0;
 
-    client_ptr = &(lircudevd_lircd.client_list);
+    client_ptr = &(eventlircd_lircd.client_list);
     while (*client_ptr != NULL)
     {
         client = *client_ptr;
@@ -157,17 +157,17 @@ int lircd_exit()
 
     return_code = 0;
 
-    if (lircudevd_lircd.fd >= 0)
+    if (eventlircd_lircd.fd >= 0)
     {
-        if (monitor_client_remove(lircudevd_lircd.fd) != 0)
+        if (monitor_client_remove(eventlircd_lircd.fd) != 0)
         {
             return_code = -1;
         }
-        close(lircudevd_lircd.fd);
-        lircudevd_lircd.fd = -1;
+        close(eventlircd_lircd.fd);
+        eventlircd_lircd.fd = -1;
     }
 
-    for (client = lircudevd_lircd.client_list ; client != NULL ; client = client->next)
+    for (client = eventlircd_lircd.client_list ; client != NULL ; client = client->next)
     {
         if (lircd_client_close(client) != 0)
         {
@@ -179,11 +179,11 @@ int lircd_exit()
         return_code = -1;
     }
 
-    if (lircudevd_lircd.path != NULL)
+    if (eventlircd_lircd.path != NULL)
     {
-        unlink(lircudevd_lircd.path);
-        free(lircudevd_lircd.path);
-        lircudevd_lircd.path = NULL;
+        unlink(eventlircd_lircd.path);
+        free(eventlircd_lircd.path);
+        eventlircd_lircd.path = NULL;
     }
 
     return return_code;
@@ -193,11 +193,11 @@ int lircd_init(const char *path, mode_t mode, const char *release_suffix)
 {
     struct sockaddr_un addr;
 
-    lircudevd_lircd.fd = -1;
-    lircudevd_lircd.path = NULL;
-    lircudevd_lircd.mode = 0;
-    lircudevd_lircd.release_suffix = NULL;
-    lircudevd_lircd.client_list = NULL;
+    eventlircd_lircd.fd = -1;
+    eventlircd_lircd.path = NULL;
+    eventlircd_lircd.mode = 0;
+    eventlircd_lircd.release_suffix = NULL;
+    eventlircd_lircd.client_list = NULL;
 
     if (path == NULL)
     {
@@ -212,18 +212,18 @@ int lircd_init(const char *path, mode_t mode, const char *release_suffix)
         return -1;
     }
 
-    if ((lircudevd_lircd.path = strndup(path, PATH_MAX)) == NULL)
+    if ((eventlircd_lircd.path = strndup(path, PATH_MAX)) == NULL)
     {
         syslog(LOG_ERR, "failed to allocate memory for the lircd device %s: %s\n", path, strerror(errno));
         lircd_exit();
         return -1;
     }
 
-    lircudevd_lircd.mode = mode;
+    eventlircd_lircd.mode = mode;
 
     if (release_suffix != NULL)
     {
-        if ((lircudevd_lircd.release_suffix = strndup(release_suffix, 128)) == NULL)
+        if ((eventlircd_lircd.release_suffix = strndup(release_suffix, 128)) == NULL)
         {
             syslog(LOG_ERR, "failed to allocate memory for the lircd device %s: %s\n", path, strerror(errno));
             lircd_exit();
@@ -231,7 +231,7 @@ int lircd_init(const char *path, mode_t mode, const char *release_suffix)
         }
     }
 
-    if (unlink(lircudevd_lircd.path) != 0)
+    if (unlink(eventlircd_lircd.path) != 0)
     {
         if (errno != ENOENT)
         {
@@ -241,8 +241,8 @@ int lircd_init(const char *path, mode_t mode, const char *release_suffix)
         }
     }
 
-    lircudevd_lircd.fd = socket(AF_UNIX, SOCK_STREAM, 0);
-    if (lircudevd_lircd.fd < 0)
+    eventlircd_lircd.fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (eventlircd_lircd.fd < 0)
     {
         syslog(LOG_ERR, "failed to create Unix socket for lircd output: %s\n", strerror(errno));
         lircd_exit();
@@ -250,24 +250,24 @@ int lircd_init(const char *path, mode_t mode, const char *release_suffix)
     }
 
     addr.sun_family = AF_UNIX;
-    strcpy(addr.sun_path, lircudevd_lircd.path);
-    if(bind(lircudevd_lircd.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+    strcpy(addr.sun_path, eventlircd_lircd.path);
+    if(bind(eventlircd_lircd.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
         syslog(LOG_ERR, "failed to bind to Unix socket needed for lircd output; %s\n", strerror(errno));
         lircd_exit();
         return -1;
     }
 
-    chmod(lircudevd_lircd.path, mode);
+    chmod(eventlircd_lircd.path, mode);
 
-    if (listen(lircudevd_lircd.fd, 3) < 0)
+    if (listen(eventlircd_lircd.fd, 3) < 0)
     {
         syslog(LOG_ERR, "failed to listen on Unix socket needed for lircd output: %s\n", strerror(errno));
         lircd_exit();
         return -1;
     }
 
-    if (monitor_client_add(lircudevd_lircd.fd, &lircd_handler, NULL) != 0)
+    if (monitor_client_add(eventlircd_lircd.fd, &lircd_handler, NULL) != 0)
     {
         syslog(LOG_ERR, "failed to add lircd to the monitor client list: %s\n", strerror(errno));
         lircd_exit();
@@ -304,7 +304,7 @@ int lircd_send(const struct input_event *event, const char *name, int repeat_cou
         return -1;
     }
 
-    if ((event->value == 0) && (lircudevd_lircd.release_suffix == NULL))
+    if ((event->value == 0) && (eventlircd_lircd.release_suffix == NULL))
     {
         return 0;
     }
@@ -318,7 +318,7 @@ int lircd_send(const struct input_event *event, const char *name, int repeat_cou
                        event->code,
                        repeat_count,
                        name,
-                       lircudevd_lircd.release_suffix,
+                       eventlircd_lircd.release_suffix,
                        remote);
     }
     else
@@ -332,7 +332,7 @@ int lircd_send(const struct input_event *event, const char *name, int repeat_cou
 
     if (message_len > 0)
     {
-        for(client = lircudevd_lircd.client_list ; client != NULL ; client = client->next)
+        for(client = eventlircd_lircd.client_list ; client != NULL ; client = client->next)
         {
             if (write(client->fd, message, message_len) != message_len)
             {

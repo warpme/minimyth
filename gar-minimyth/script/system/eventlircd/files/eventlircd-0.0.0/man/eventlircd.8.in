@@ -1,26 +1,26 @@
 .\" Copyright (C) 2009 Paul Bender.
 .\"
-.\" This file is part of lircudevd.
+.\" This file is part of eventlircd.
 .\"
-.\" lircudevd is free software: you can redistribute it and/or modify
+.\" eventlircd is free software: you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
 .\" the Free Software Foundation, either version 2 of the License, or
 .\" (at your option) any later version.
 .\"
-.\" lircudevd is distributed in the hope that it will be useful,
+.\" eventlircd is distributed in the hope that it will be useful,
 .\" but WITHOUT ANY WARRANTY; without even the implied warranty of
 .\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 .\" GNU General Public License for more details.
 .\"
 .\" You should have received a copy of the GNU General Public License
-.\" along with lircudevd.  If not, see <http://www.gnu.org/licenses/>.
+.\" along with eventlircd.  If not, see <http://www.gnu.org/licenses/>.
 .\"
-.TH lircudevd 8 "DECEMBER 16, 2009"
+.TH eventlircd 8 "DECEMBER 16, 2009"
 .SH NAME
-lircudevd \- an LIRC daemon with integrated udev support.
+eventlircd \- an LIRC daemon with integrated udev support.
 .SH SYNOPSIS
 .LP
-.B lircudevd
+.B eventlircd
 .RB [ \-vf ]
 .RB [ \-s
 .IR socket ]
@@ -29,14 +29,14 @@ lircudevd \- an LIRC daemon with integrated udev support.
 .RB [ \-r
 .IR suffix ]
 .LP
-.B lircudevd -V
+.B eventlircd -V
 .LP
-.B lircudevd -h
+.B eventlircd -h
 .SH AVAILABILITY
 Any GNU/Linux system with udev (at least version 136) and uinput (at least driver version 0.3) support.
 .SH DESCRIPTION
 .LP
-\fBlircudevd\fR is an LIRC daemon for input devices that
+\fBeventlircd\fR is an LIRC daemon for input devices that
 supports multiple input devices at the same time,
 discovers the input devices to be handled using udev,
 maps keyboard shortcuts to single keys (e.g. ctrl+shift+KEY_B to KEY_REWIND), and
@@ -60,7 +60,7 @@ This option can appear up to three times.
 The more often it appears, the more verbose the message output.
 .TP
 \fB\-f\fR \fB\-\-foreground\fR
-Run \fBlircudevd\fR in the foreground rather than in the background.
+Run \fBeventlircd\fR in the foreground rather than in the background.
 .TP
 \fB\-k\fR \fB\-\-keymap=dir\fR
 Look for device keymap files in directory \fBdirectory\fR rather than directory @KEYMAP_DIR@.
@@ -75,44 +75,44 @@ Create the lircd socket with mode \fBmode\fR rather than with mode 0666.
 Generate key release events with \fBsuffix\fR appended to the key name.
 .SH UDEV DEVICE PROPERTIES
 .LP
-Udev communicates with lircudevd using udev device properties.
-The following are the lircudevd specific udev device properties that can be set using ENV{} in udev rules.
+Udev communicates with eventlircd using udev device properties.
+The following are the eventlircd specific udev device properties that can be set using ENV{} in udev rules.
 .TP
-\fBlircudevd_enable\fR
-Used to ask \fBlircudevd\fR to handle the device.
-If the value is "true", then \fBlircudevd\fR will attempt to handle the device.
+\fBeventlircd_enable\fR
+Used to ask \fBeventlircd\fR to handle the device.
+If the value is "true", then \fBeventlircd\fR will attempt to handle the device.
 .TP
-\fBlircudevd_keymap\fR
-Used to tell \fBlircudevd\fR the name of the keymap file to be used with this device.
-If it is not set, then \fBlircudevd\fR will not perform any key mapping.
-\fBlircudevd\fR assumes that the keymap file is located in the keymap directory. 
+\fBeventlircd_keymap\fR
+Used to tell \fBeventlircd\fR the name of the keymap file to be used with this device.
+If it is not set, then \fBeventlircd\fR will not perform any key mapping.
+\fBeventlircd\fR assumes that the keymap file is located in the keymap directory. 
 .TP
-\fBlircudevd_remote\fR
-Used to tell \fBlircudevd\fR the remote control name to use in the output \fBlircudevd\fR sends to the lircd socket.
-If it is not set, then \fBlircudevd\fR will use "devinput" for the remote control name.
+\fBeventlircd_remote\fR
+Used to tell \fBeventlircd\fR the remote control name to use in the output \fBeventlircd\fR sends to the lircd socket.
+If it is not set, then \fBeventlircd\fR will use "devinput" for the remote control name.
 .SH FILES
 .I @KEYMAP_DIR@/*.keymap
 .RS
 The per-device key map files.
-See \fBlircudevd.keymap (5)\fR for further details.
+See \fBeventlircd.keymap (5)\fR for further details.
 .RE
 .I @includedir@/linux/input.h
 .RS
 The Linux input event device header file in which the key and button codes associated with the key event type are define.
 .RE
-.I @UDEV_DIR@/rules.d/98-lircudevd.rules.disabled
+.I @UDEV_DIR@/rules.d/98-eventlircd.rules.disabled
 .RS
-An example udev rules file for lircudevd.
+An example udev rules file for eventlircd.
 .RE
 .I @UDEV_DIR@/rules.d/98-lircd.rules.disabled
 .RS
-An example udev rules file for using lircd in conjuction with lircudevd.
+An example udev rules file for using lircd in conjuction with eventlircd.
 .SH ENVIRONMENT
 .SH DIAGNOSTICS
 .SH BUGS
 .SH CAVEATS
 .LP
-\fBlircudevd\fR 
+\fBeventlircd\fR 
 consumes all keys that it associates with
 either a lock or modifier key token.
 Therefore, when a key associated with
@@ -123,7 +123,7 @@ When a key press event is mapped to a value,
 any intermediate key repeat events and the final key release event associated with the key press event
 are mapped to the same value.
 .LP
-\fBlircudevd\fR 
+\fBeventlircd\fR 
 supports a subset of the Linux input event types and event codes,
 and silently discards the event types and codes that it does not support.
 It supports 
@@ -138,4 +138,4 @@ All other Linux input event types and event codes are not supported.
 .SH AUTHOR
 Paul Bender
 .SH "SEE ALSO"
-.BR lircudevd.keymap (5)
+.BR eventlircd.keymap (5)
