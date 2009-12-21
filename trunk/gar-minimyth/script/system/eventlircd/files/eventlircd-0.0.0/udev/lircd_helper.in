@@ -36,9 +36,9 @@ case "${ACTION}" in
         devname_instance=`echo ${DEVNAME} | sed -e 's/\/\+/~/g' -e 's/^~dev~//'`
         if test ! -e "@localstatedir@/run/lirc/lircd-${devname_instance}.pid" ; then
             daemon='@sbindir@/lircd'
-            daemon="${daemon} --uinput"
-            daemon="${daemon} --device=${DEVNAME}"
             daemon="${daemon} --driver=${lircd_driver}"
+            daemon="${daemon} --device=${DEVNAME}"
+            daemon="${daemon} --uinput"
             daemon="${daemon} --output=@localstatedir@/run/lirc/lircd-${devname_instance}"
             daemon="${daemon} --pidfile=@localstatedir@/run/lirc/lircd-${devname_instance}.pid"
             daemon="${daemon} ${lircd_conf}"
