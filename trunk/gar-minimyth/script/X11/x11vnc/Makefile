@@ -1,5 +1,5 @@
 GARNAME = x11vnc
-GARVERSION = 0.9.8
+GARVERSION = 0.9.9
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/
 DISTFILES = $(DISTNAME).tar.gz
