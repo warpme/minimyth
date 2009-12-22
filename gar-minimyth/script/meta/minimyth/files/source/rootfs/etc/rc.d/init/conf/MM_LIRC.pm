@@ -60,33 +60,25 @@ $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
         my $minimyth = shift;
         my $name     = shift;
 
-        my $blacklist_dir   = q(/lib/udev/mm_device_blacklist.d);
-        my $blacklist_group = q(lirc);
-
-        if (! -e qq($blacklist_dir))
+        my @blacklist_list = split(/ +/, $minimyth->var_get($name));
+        my @blacklist = ();
+        foreach my $blacklist_item (@blacklist_list)
         {
-            File::Path::mkpath(qq($blacklist_dir), { mode => 0755 });
+            my $devname = $blacklist_item;
+            $devname =~ s/\/+/\//;
+            $devname =~ s/^\/dev\///;
+            my $devlink = $blacklist_item;
+            $devlink =~ s/\/+/\//;
+            
+            push(@blacklist, qq(ENV{DEVNAME}=="$devname", GOTO="end"));
+            push(@blacklist, qq(ENV{DEVLINKS}=="$devlink", GOTO="end"));
         }
-
-        if (-e qq($blacklist_dir/$blacklist_group))
-        {
-            unlink(qq($blacklist_dir/$blacklist_group));
-        }
-        if (-e qq($blacklist_dir/$blacklist_group~))
-        {
-            unlink(qq($blacklist_dir/$blacklist_group~));
-        }
-
-        if (open(FILE, '>', qq($blacklist_dir/$blacklist_group~)))
-        {
-            my @blacklist_list = split(/ +/, $minimyth->var_get($name));
-            foreach my $blacklist_item (@blacklist_list)
-            {
-                print FILE $blacklist_item . "\n"
-            }
-            close(FILE);
-            rename(qq($blacklist_dir/$blacklist_group~), qq($blacklist_dir/$blacklist_group));
-        }
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            { '@MM_LIRC_BLACKLIST@' => join("\n", @blacklist) });
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            { '@MM_LIRC_BLACKLIST@' => join("\n", @blacklist) });
 
         return 1;
     }
@@ -133,25 +125,57 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $name     = shift;
 
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
-        # We cannot test for the Sony PlayStation 3 Blu-ray Disc Remote Control device
-        # as it uses Bluetooth and is very unlikely to be paired.
-        if      (($driver) && ($driver =~ /^bdremote$/))
+        my $device = $minimyth->var_get($name);
+        if ( ( ! (($driver) && ($driver =~ /^bdremote$/)) ) &&
+             ( ! (($driver) && ($driver =~ /^iguanaIR$/)) ) &&
+             ( ! (($driver) && ($driver =~ /^irtrans$/))  ) &&
+             ( ! (($driver) && ($driver =~ /^udp$/))      ) &&
+           ($device) )
         {
-            return 1;
-        }
-        # We cannot test for the LIRC UDP device.
-        elsif (($driver) && ($driver =~ /^udp$/))
-        {
-            return 1;
+            my $devname = $device;
+            $devname =~ s/\/+/\//;
+            $devname =~ s/^\/dev\///;
+            my $devlink = $device;
+            $devlink =~ s/\/+/\//;
+            if (($driver) && ($driver =~ /^devinput$/))
+            {
+                $minimyth->file_replace_variable(
+                    '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '#',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => '',
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
+                $minimyth->file_replace_variable(
+                    '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => $devname,
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => $devlink });
+            }
+            else
+            {
+                $minimyth->file_replace_variable(
+                    '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => $devname,
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => $devlink });
+                $minimyth->file_replace_variable(
+                    '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '#',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => '',
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
+            }
         }
         else
         {
-            my $device = $minimyth->var_get($name);
-            if (($device) && (! -e $device))
-            {
-                $minimyth->message_output('err', "Remote control device '$device' specified by '$name' does not exist.");
-                return 0;
-            }
+            $minimyth->file_replace_variable(
+                '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '#',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => '',
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
+            $minimyth->file_replace_variable(
+                '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                    { '@MM_LIRC_DEVICE_TRUE@'         => '#',
+                      '@MM_LIRC_DEVICE_DEVNAME@'      => '',
+                      '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
         }
 
         return 1;
@@ -363,7 +387,31 @@ $var_list{'MM_LIRC_SLEEP_ENABLED'} =
 $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
 {
     value_default  => 'yes',
-    value_valid    => 'no|yes'
+    value_valid    => 'no|yes',
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        if ($minimyth->var_get($name) eq 'yes')
+        {
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            { '@MM_LIRC_WAKEUP_TRUE@' => '' });
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            { '@MM_LIRC_WAKEUP_TRUE@' => '' });
+        }
+        else
+        {
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
+        }
+    }
 };
 $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
 {

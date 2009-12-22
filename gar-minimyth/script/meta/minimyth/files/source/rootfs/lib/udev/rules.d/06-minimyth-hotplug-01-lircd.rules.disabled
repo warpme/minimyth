@@ -2,15 +2,18 @@ ACTION=="add', ENV{mm_device_owner}=="*?", GOTO="end"
 
 ACTION!="add|remove", GOTO="end"
 
+# Device configured in minimyth.conf.
+@MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin"
+@MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin"
+
 KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb",  SUBSYSTEMS=="usb", GOTO="begin"
 KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc", SUBSYSTEMS=="i2c", GOTO="begin"
 KERNEL=="lirc[0-9]*",   SUBSYSTEM=="lirc", SUBSYSTEMS=="usb", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
-ENV{MM_LIRC_AUTO_ENABLED}=="", IMPORT{program}="mm_env_import MM_LIRC_"
-
-PROGRAM="mm_device_blacklist lircd", RESULT=="yes", GOTO="end"
+# Devices blacklisted in minimyth.conf.
+@MM_LIRC_BLACKLIST@
 
 SUBSYSTEM=="lirc",\
   ENV{lircd_driver}="default", \
@@ -26,7 +29,7 @@ ENV{ID_VENDOR}=="0fe9", ENV{ID_MODEL}=="9010", \
   ENV{lircd_driver}="dvico", \
   ENV{lircd_conf}="/etc/lirc/lircd.conf"
 
-ENV{lircd_driver}=="?*", ENV{lircd_conf}=="?*", ENV{MM_LIRC_WAKEUP_ENABLED}=="yes", RUN+="wakeup_enable"
+@MM_LIRC_WAKEUP_TRUE@ENV{lircd_driver}=="?*", ENV{lircd_conf}=="?*", RUN+="wakeup_enable"
 
 LABEL="end-usb"
 
