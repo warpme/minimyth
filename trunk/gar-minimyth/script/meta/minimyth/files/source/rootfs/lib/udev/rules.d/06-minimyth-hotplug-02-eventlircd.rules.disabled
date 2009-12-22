@@ -2,13 +2,16 @@ ACTION=="add", ENV{mm_device_owner}=="?*", GOTO="end"
 
 ACTION!="add|remove", GOTO="end"
 
+# Device configured in minimyth.conf.
+@MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin"
+@MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin"
+
 KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
-ENV{MM_LIRC_AUTO_ENABLED}=="", IMPORT{program}="mm_env_import MM_LIRC_"
-
-PROGRAM="mm_device_blacklist eventlircd", RESULT=="yes", GOTO="end"
+# Devices blacklisted in minimyth.conf.
+@MM_LIRC_BLACKLIST@
 
 ATTRS{name}=="eventlircd", GOTO="end"
 
@@ -37,7 +40,7 @@ ENV{ID_VENDOR}=="147a", ENV{ID_MODEL}=="e02d", \
   ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
 LABEL="end-usb"
 
-ENV{eventlircd_enable}=="true", ENV{MM_LIRC_WAKEUP_ENABLED}=="yes", RUN+="wakeup_enable"
+@MM_LIRC_WAKEUP_TRUE@ENV{lircd_driver}=="?*", ENV{lircd_conf}=="?*", RUN+="wakeup_enable"
 
 SUBSYSTEMS=="bluetooth", GOTO="begin-bluetooth"
 GOTO="end-bluetooth"

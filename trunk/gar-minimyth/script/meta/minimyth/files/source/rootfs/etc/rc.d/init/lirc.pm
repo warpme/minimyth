@@ -32,11 +32,10 @@ sub start
     File::Path::mkpath('/var/run/lirc', { mode => 0755 });
     chmod(0755, '/var/run/lirc');
 
-    # Start an lircd instance associated with the device unless the device is
-    # handled by a daemon other than lircd.
+    # If the driver is for an lircd supported device that cannot be detected by udev,
+    # then start the lircd daemon for the device.
     my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
-    if (($driver !~ /^bdremote$/) &&
-        ($driver !~ /^irtrans$/ ) )
+    if ($driver =~ /^udp$/)
     {
         my $device = $minimyth->var_get('MM_LIRC_DEVICE');
 
