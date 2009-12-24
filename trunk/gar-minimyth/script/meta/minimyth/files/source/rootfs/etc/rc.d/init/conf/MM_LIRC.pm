@@ -88,7 +88,18 @@ $var_list{'MM_LIRC_DRIVER'} =
     value_default  => 'none',
     value_valid    => 'none|.+',
     value_obsolete => 'auto|mceusb2|mceusbnew|ps3bdremote',
-    value_none     => ''
+    value_none     => '',
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
+
+        $minimyth->file_replace_variable(
+            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            { '@MM_LIRC_DRIVER@' => $driver });
+    }
 };
 $var_list{'MM_LIRC_DEVICE'} =
 {
@@ -126,6 +137,7 @@ $var_list{'MM_LIRC_DEVICE'} =
 
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         my $device = $minimyth->var_get($name);
+
         if ( ( ! (($driver) && ($driver =~ /^bdremote$/)) ) &&
              ( ! (($driver) && ($driver =~ /^iguanaIR$/)) ) &&
              ( ! (($driver) && ($driver =~ /^irtrans$/))  ) &&
