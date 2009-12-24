@@ -2,53 +2,49 @@ ACTION=="add", ENV{mm_device_owner}=="?*", GOTO="end"
 
 ACTION!="add|remove", GOTO="end"
 
-# Device configured in minimyth.conf.
-@MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin"
-@MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin"
-
-KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin"
-GOTO="end"
-LABEL="begin"
+ATTRS{name}=="eventlircd", GOTO="end"
 
 # Devices blacklisted in minimyth.conf.
 @MM_LIRC_BLACKLIST@
 
-ATTRS{name}=="eventlircd", GOTO="end"
+# Device configured in minimyth.conf.
+@MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin-conf"
+@MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin-conf"
+GOTO="end-conf"
+LABEL="begin-conf"
+ENV{eventlircd_enable}="true"
+ENV{eventlircd_keymap}="lircudevd.keymap"
+GOTO="begin-generic"
+LABEL="end-conf"
 
-ATTRS{name}=="lircd", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="default.keymap"
-
-ATTRS{name}=="bdremoteng", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="bdremoteng.keymap"
-
-SUBSYSTEMS=="usb", GOTO="begin-usb"
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="usb", GOTO="begin-usb"
 GOTO="end-usb"
 LABEL="begin-usb"
 ENV{ID_USB_INTERFACES}=="", IMPORT{program}="usb_id --export %p"
-ENV{ID_VENDOR}=="0419", ENV{ID_MODEL}=="0001", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
-ENV{ID_VENDOR}=="05a4", ENV{ID_MODEL}=="9881", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
-ENV{ID_VENDOR}=="0766", ENV{ID_MODEL}=="0204", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
-ENV{ID_VENDOR}=="147a", ENV{ID_MODEL}=="e02d", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
+ENV{ID_VENDOR}=="0419", ENV{ID_MODEL}=="0001", ENV{eventlircd_enable}="true"
+ENV{ID_VENDOR}=="05a4", ENV{ID_MODEL}=="9881", ENV{eventlircd_enable}="true"
+ENV{ID_VENDOR}=="0766", ENV{ID_MODEL}=="0204", ENV{eventlircd_enable}="true"
+ENV{ID_VENDOR}=="147a", ENV{ID_MODEL}=="e02d", ENV{eventlircd_enable}="true"
+ENV{eventlircd_enable}=="true", ENV{eventlircd_keymap}="03_$env{ID_VENDOR}_$env{ID_MODEL}.keymap"
+GOTO="begin-generic"
 LABEL="end-usb"
 
-@MM_LIRC_WAKEUP_TRUE@ENV{lircd_driver}=="?*", ENV{lircd_conf}=="?*", RUN+="wakeup_enable"
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin-notusb"
+GOTO="end-notusb"
+LABEL="begin-notusb"
+ATTRS{name}=="lircd", \
+  ENV{eventlircd_enable}="true", \
+  ENV{eventlircd_keymap}="default.keymap"
+ATTRS{name}=="bdremoteng", \
+  ENV{eventlircd_enable}="true", \
+  ENV{eventlircd_keymap}="bdremoteng.keymap"
+GOTO="begin-generic"
+LABEL="end-notusb"
 
-SUBSYSTEMS=="bluetooth", GOTO="begin-bluetooth"
-GOTO="end-bluetooth"
-LABEL="begin-bluetooth"
+LABEL="begin-generic"
 
-LABEL="end-bluetooth"
-
-ENV{eventlircd_enable}== "true", ENV{mm_device_owner}="eventlircd"
+ENV{lircd_enable}!="true", GOTO="end"
+@MM_LIRC_WAKEUP_TRUE@SUBSYSTEMS=="usb", RUN+="wakeup_enable"
+ENV{mm_device_owner}="eventlircd"
 
 LABEL="end"
