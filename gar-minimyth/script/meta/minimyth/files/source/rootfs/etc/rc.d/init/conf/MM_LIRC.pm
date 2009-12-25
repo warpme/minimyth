@@ -52,6 +52,7 @@ $var_list{'MM_LIRC_AUTO_ENABLED'} =
         return $value_valid;
     }
 };
+
 $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
 {
     value_default  => '',
@@ -83,6 +84,7 @@ $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
         return 1;
     }
 };
+
 $var_list{'MM_LIRC_DRIVER'} =
 {
     value_default  => 'none',
@@ -101,6 +103,7 @@ $var_list{'MM_LIRC_DRIVER'} =
             { '@MM_LIRC_DRIVER@' => $driver });
     }
 };
+
 $var_list{'MM_LIRC_DEVICE'} =
 {
     prerequisite   => ['MM_LIRC_DRIVER'],
@@ -193,6 +196,7 @@ $var_list{'MM_LIRC_DEVICE'} =
         return 1;
     },
 };
+
 $var_list{'MM_LIRC_KERNEL_MODULE'} =
 {
     prerequisite   => ['MM_LIRC_DRIVER'],
@@ -223,6 +227,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE'} =
     },
     value_none     => ''
 };
+
 $var_list{'MM_LIRC_KERNEL_MODULE_OPTIONS'} =
 {
     prerequisite   => ['MM_LIRC_DRIVER'],
@@ -253,6 +258,7 @@ $var_list{'MM_LIRC_KERNEL_MODULE_OPTIONS'} =
     },
     value_none     => '',
 };
+
 $var_list{'MM_LIRC_IREXEC_ENABLED'} =
 {
     prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
@@ -299,6 +305,7 @@ $var_list{'MM_LIRC_IREXEC_ENABLED'} =
         return $value;
     }
 };
+
 $var_list{'MM_LIRC_IRXEVENT_ENABLED'} =
 {
     prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
@@ -345,6 +352,7 @@ $var_list{'MM_LIRC_IRXEVENT_ENABLED'} =
         return $value;
     }
 };
+
 $var_list{'MM_LIRC_IRXKEYS_ENABLED'} =
 {
     prerequisite   => [ 'MM_LIRC_FETCH_LIRCRC' ],
@@ -391,11 +399,13 @@ $var_list{'MM_LIRC_IRXKEYS_ENABLED'} =
         return $value;
     }
 };
+
 $var_list{'MM_LIRC_SLEEP_ENABLED'} =
 {
     value_default  => 'yes',
     value_valid    => 'no|yes'
 };
+
 $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
 {
     value_default  => 'yes',
@@ -425,6 +435,7 @@ $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
         }
     }
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
 {
     value_default  => 'no',
@@ -465,6 +476,7 @@ $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
         return 1;
     }
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCMD_CONF'} =
 {
     value_default  => 'no',
@@ -473,6 +485,7 @@ $var_list{'MM_LIRC_FETCH_LIRCMD_CONF'} =
     file           => {name_remote => '/lircmd.conf',
                        name_local  => '/etc/lirc/lircmd.conf'}
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC'} =
 {
     prerequisite   => [ 
@@ -575,6 +588,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC'} =
         return 1;
     }
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC_MINIMYTH'} =
 {
     value_default  => 'no',
@@ -583,6 +597,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MINIMYTH'} =
     file           => {name_remote => '/lircrc.minimyth',
                        name_local  => '/etc/lirc/lircrc.d/minimyth'}
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC_MYTHTV'} =
 {
     value_default  => 'no',
@@ -591,6 +606,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MYTHTV'} =
     file           => {name_remote => '/lircrc.mythtv',
                        name_local  => '/etc/lirc/lircrc.d/mythtv'}
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC_MPLAYER'} =
 {
     value_default  => 'no',
@@ -599,6 +615,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_MPLAYER'} =
     file           => {name_remote => '/lircrc.mplayer',
                        name_local  => '/etc/lirc/lircrc.d/mplayer'}
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC_VLC'} =
 {
     value_default  => 'no',
@@ -607,6 +624,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_VLC'} =
     file           => {name_remote => '/lircrc.vlc',
                        name_local  => '/etc/lirc/lircrc.d/vlc'}
 };
+
 $var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
 {
     value_default  => 'no',
@@ -615,6 +633,7 @@ $var_list{'MM_LIRC_FETCH_LIRCRC_XINE'} =
     file           => {name_remote => '/lircrc.xine',
                        name_local  => '/etc/lirc/lircrc.d/xine'}
 };
+
 $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 {
     prerequisite   => ['MM_LIRC_FETCH_LIRCMD_CONF'],
@@ -634,6 +653,7 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
         return $device;
     }
 };
+
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
 {
     prerequisite   => ['MM_LIRC_KERNEL_MODULE', 'MM_LIRC_KERNEL_MODULE_OPTIONS', 'MM_LIRC_AUTO_ENABLED', 'MM_LIRC_DRIVER', 'MM_LIRC_FETCH_LIRCMD_CONF'],
