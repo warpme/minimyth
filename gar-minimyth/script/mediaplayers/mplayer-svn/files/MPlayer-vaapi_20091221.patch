@@ -1,6 +1,6 @@
-diff -Naur MPlayer-29903-old/cfg-common-opts.h MPlayer-29903-new/cfg-common-opts.h
---- MPlayer-29903-old/cfg-common-opts.h	2009-11-11 16:43:20.000000000 -0800
-+++ MPlayer-29903-new/cfg-common-opts.h	2009-12-10 06:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/cfg-common-opts.h MPlayer-30109-new/cfg-common-opts.h
+--- MPlayer-30109-old/cfg-common-opts.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/cfg-common-opts.h	2009-12-24 23:03:57.000000000 -0800
 @@ -228,6 +228,7 @@
  //	{"ac", &audio_codec, CONF_TYPE_STRING, 0, 0, 0, NULL},
  	{"ac", &audio_codec_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
@@ -9,9 +9,9 @@ diff -Naur MPlayer-29903-old/cfg-common-opts.h MPlayer-29903-new/cfg-common-opts
  
  	// postprocessing:
  #ifdef CONFIG_LIBAVCODEC
-diff -Naur MPlayer-29903-old/codec-cfg.c MPlayer-29903-new/codec-cfg.c
---- MPlayer-29903-old/codec-cfg.c	2009-11-11 16:43:20.000000000 -0800
-+++ MPlayer-29903-new/codec-cfg.c	2009-12-10 06:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/codec-cfg.c MPlayer-30109-new/codec-cfg.c
+--- MPlayer-30109-old/codec-cfg.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/codec-cfg.c	2009-12-24 23:03:57.000000000 -0800
 @@ -187,6 +187,13 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
@@ -26,10 +26,10 @@ diff -Naur MPlayer-29903-old/codec-cfg.c MPlayer-29903-new/codec-cfg.c
  		{"VDPAU_MPEG1",IMGFMT_VDPAU_MPEG1},
  		{"VDPAU_MPEG2",IMGFMT_VDPAU_MPEG2},
  		{"VDPAU_H264",IMGFMT_VDPAU_H264},
-diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
---- MPlayer-29903-old/configure	2009-12-10 06:59:32.000000000 -0800
-+++ MPlayer-29903-new/configure	2009-12-10 06:59:46.000000000 -0800
-@@ -353,6 +353,9 @@
+diff -Naur MPlayer-30109-old/configure MPlayer-30109-new/configure
+--- MPlayer-30109-old/configure	2009-12-24 23:03:11.000000000 -0800
++++ MPlayer-30109-new/configure	2009-12-24 23:03:57.000000000 -0800
+@@ -356,6 +356,9 @@
    --disable-muxer=MUXER     disable specified FFmpeg muxer
    --enable-muxer=MUXER      enable specified FFmpeg muxer
  
@@ -39,7 +39,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  Video output:
    --disable-vidix          disable VIDIX [for x86 *nix]
    --with-vidix-drivers[=*] list of VIDIX drivers to be compiled in
-@@ -538,6 +541,8 @@
+@@ -541,6 +544,8 @@
  _libavcodec_a=auto
  _libopencore_amrnb=auto
  _libopencore_amrwb=auto
@@ -48,7 +48,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  _libavdecoders_all=$(sed -n 's/^[^#]*DEC.*(.*, *\(.*\)).*/\1_decoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
  _libavdecoders=$(echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER//)
  _libavencoders_all=$(sed -n 's/^[^#]*ENC.*(.*, *\(.*\)).*/\1_encoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
-@@ -561,6 +566,9 @@
+@@ -565,6 +570,9 @@
  _libavcodec_mpegaudio_hp=yes
  _mencoder=yes
  _mplayer=yes
@@ -58,7 +58,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  _x11=auto
  _xshape=auto
  _xss=auto
-@@ -902,6 +910,8 @@
+@@ -907,6 +915,8 @@
    --disable-mplayer)	_mplayer=no	;;
    --enable-dynamic-plugins) _dynamic_plugins=yes ;;
    --disable-dynamic-plugins) _dynamic_plugins=no ;;
@@ -67,7 +67,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
    --enable-x11)		_x11=yes	;;
    --disable-x11)	_x11=no		;;
    --enable-xshape)	_xshape=yes	;;
-@@ -3803,6 +3813,28 @@
+@@ -3813,6 +3823,28 @@
  echores "$_gettimeofday"
  
  
@@ -96,7 +96,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  echocheck "glob()"
  cat > $TMPC << EOF
  #include <stdio.h>
-@@ -4231,7 +4263,7 @@
+@@ -4241,7 +4273,7 @@
    _novomodules="x11 $_novomodules"
    _res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -105,7 +105,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  fi
  echores "$_x11"
  
-@@ -4362,7 +4394,7 @@
+@@ -4372,7 +4404,7 @@
  else
    def_vdpau='#define CONFIG_VDPAU 0'
    _novomodules="vdpau $_novomodules"
@@ -114,7 +114,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  fi
  echores "$_vdpau"
  
-@@ -4942,6 +4974,90 @@
+@@ -4961,6 +4993,90 @@
  fi
  echores "$_gl"
  
@@ -205,7 +205,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  
  echocheck "PNG support"
  if test "$_png" = auto ; then
-@@ -8350,6 +8466,7 @@
+@@ -8379,6 +8495,7 @@
  TWOLAME=$_twolame
  UNRAR_EXEC = $_unrar_exec
  V4L2 = $_v4l2
@@ -213,7 +213,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  VCD = $_vcd
  VDPAU = $_vdpau
  VESA = $_vesa
-@@ -8430,6 +8547,7 @@
+@@ -8459,6 +8576,7 @@
  CONFIG_LIBDIRAC_DECODER=$_libdirac_lavc
  CONFIG_LIBDIRAC_ENCODER=$_libdirac_lavc
  CONFIG_LIBFAAC_ENCODER=$_faac_lavc
@@ -221,7 +221,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  CONFIG_LIBMP3LAME_ENCODER=$_mp3lame_lavc
  CONFIG_LIBOPENCORE_AMRNB_DECODER=$_libopencore_amrnb
  CONFIG_LIBOPENCORE_AMRNB_ENCODER=$_libopencore_amrnb
-@@ -8444,6 +8562,7 @@
+@@ -8473,6 +8591,7 @@
  CONFIG_POSTPROC = yes
  # Prevent building libavcodec/imgresample.c with conflicting symbols
  CONFIG_SWSCALE=yes
@@ -229,7 +229,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  CONFIG_VDPAU=$_vdpau
  CONFIG_XVMC=$_xvmc
  CONFIG_ZLIB=$_zlib
-@@ -8453,6 +8572,7 @@
+@@ -8482,6 +8601,7 @@
  HAVE_W32THREADS = $_w32threads
  HAVE_YASM = $_have_yasm
  
@@ -237,7 +237,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  $(echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
-@@ -8558,6 +8678,7 @@
+@@ -8588,6 +8708,7 @@
  
  
  /* system functions */
@@ -245,7 +245,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  $def_gethostbyname2
  $def_gettimeofday
  $def_glob
-@@ -8593,6 +8714,7 @@
+@@ -8623,6 +8744,7 @@
  $def_extern_prefix
  $def_iconv
  $def_kstat
@@ -253,7 +253,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  $def_macosx_bundle
  $def_macosx_finder
  $def_maemo
-@@ -8812,6 +8934,8 @@
+@@ -8844,6 +8966,8 @@
  $def_tdfxvid
  $def_tga
  $def_v4l2
@@ -262,7 +262,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  $def_vdpau
  $def_vesa
  $def_vidix
-@@ -8929,6 +9053,7 @@
+@@ -8964,6 +9088,7 @@
  $def_x264_lavc
  $def_xvid_lavc
  
@@ -270,7 +270,7 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  $(ff_config_enable "$_libavdecoders_all" "$_libavdecoders")
  $(ff_config_enable "$_libavencoders_all" "$_libavencoders")
  $(ff_config_enable "$_libavparsers_all"  "$_libavparsers")
-@@ -8937,13 +9062,6 @@
+@@ -8972,13 +9097,6 @@
  $(ff_config_enable "$_libavprotocols_all" "$_libavprotocols")
  $(ff_config_enable "$_libavbsfs_all" "$_libavbsfs")
  
@@ -284,18 +284,18 @@ diff -Naur MPlayer-29903-old/configure MPlayer-29903-new/configure
  #endif /* MPLAYER_CONFIG_H */
  EOF
  
-diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
---- MPlayer-29903-old/etc/codecs.conf	2009-11-11 16:43:19.000000000 -0800
-+++ MPlayer-29903-new/etc/codecs.conf	2009-12-10 06:59:46.000000000 -0800
-@@ -164,6 +164,7 @@
-   fourcc LMP2 ; Lead mpeg2 in avi
+diff -Naur MPlayer-30109-old/etc/codecs.conf MPlayer-30109-new/etc/codecs.conf
+--- MPlayer-30109-old/etc/codecs.conf	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/etc/codecs.conf	2009-12-24 23:03:57.000000000 -0800
+@@ -181,6 +181,7 @@
+   fourcc slif ; SoftLab MPEG-2 I-frames Codec
    driver ffmpeg
    dll "mpeg2video"
 +  out VAAPI_MPEG2
    out YV12,I420,IYUV
    out 422P,444P
  
-@@ -847,6 +848,7 @@
+@@ -881,6 +882,7 @@
    fourcc WMV3,wmv3
    driver ffmpeg
    dll wmv3
@@ -303,7 +303,7 @@ diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffwmv3vdpau
-@@ -864,6 +866,7 @@
+@@ -898,6 +900,7 @@
    fourcc vc-1,VC-1
    driver ffmpeg
    dll vc1
@@ -311,7 +311,7 @@ diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffvc1vdpau
-@@ -885,6 +888,7 @@
+@@ -919,6 +922,7 @@
    format 0x10000005
    driver ffmpeg
    dll h264
@@ -319,7 +319,7 @@ diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffh264vdpau
-@@ -952,6 +956,7 @@
+@@ -986,6 +990,7 @@
    fourcc EPHV,SN40
    driver ffmpeg
    dll mpeg4 ;opendivx
@@ -327,7 +327,7 @@ diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffodivxvdpau
-@@ -1502,6 +1507,7 @@
+@@ -1539,6 +1544,7 @@
    fourcc VX1K     ; Agora Labs VX1000S H263
    driver ffmpeg
    dll h263
@@ -335,9 +335,9 @@ diff -Naur MPlayer-29903-old/etc/codecs.conf MPlayer-29903-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffzygo
-diff -Naur MPlayer-29903-old/fmt-conversion.c MPlayer-29903-new/fmt-conversion.c
---- MPlayer-29903-old/fmt-conversion.c	2009-11-11 16:43:20.000000000 -0800
-+++ MPlayer-29903-new/fmt-conversion.c	2009-12-10 06:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/fmt-conversion.c MPlayer-30109-new/fmt-conversion.c
+--- MPlayer-30109-old/fmt-conversion.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/fmt-conversion.c	2009-12-24 23:03:57.000000000 -0800
 @@ -18,12 +18,14 @@
  
  #include "mp_msg.h"
@@ -388,9 +388,9 @@ diff -Naur MPlayer-29903-old/fmt-conversion.c MPlayer-29903-new/fmt-conversion.c
              break;
      fmt = conversion_map[i].fmt;
      if (!fmt)
-diff -Naur MPlayer-29903-old/fmt-conversion.h MPlayer-29903-new/fmt-conversion.h
---- MPlayer-29903-old/fmt-conversion.h	2009-11-11 16:43:20.000000000 -0800
-+++ MPlayer-29903-new/fmt-conversion.h	2009-12-10 06:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/fmt-conversion.h MPlayer-30109-new/fmt-conversion.h
+--- MPlayer-30109-old/fmt-conversion.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/fmt-conversion.h	2009-12-24 23:03:57.000000000 -0800
 @@ -4,6 +4,6 @@
  #include "libavutil/avutil.h"
  
@@ -399,9 +399,9 @@ diff -Naur MPlayer-29903-old/fmt-conversion.h MPlayer-29903-new/fmt-conversion.h
 +int pixfmt2imgfmt(enum PixelFormat pix_fmt, int codec_id);
  
  #endif /* MPLAYER_FMT_CONVERSION_H */
-diff -Naur MPlayer-29903-old/gui/mplayer/gtk/opts.c MPlayer-29903-new/gui/mplayer/gtk/opts.c
---- MPlayer-29903-old/gui/mplayer/gtk/opts.c	2009-11-11 16:43:12.000000000 -0800
-+++ MPlayer-29903-new/gui/mplayer/gtk/opts.c	2009-12-10 06:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/gui/mplayer/gtk/opts.c MPlayer-30109-new/gui/mplayer/gtk/opts.c
+--- MPlayer-30109-old/gui/mplayer/gtk/opts.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/gui/mplayer/gtk/opts.c	2009-12-24 23:03:57.000000000 -0800
 @@ -63,9 +63,11 @@
         GtkWidget * prEFontName;
         GtkWidget * prEDVDDevice;
@@ -480,10 +480,10 @@ diff -Naur MPlayer-29903-old/gui/mplayer/gtk/opts.c MPlayer-29903-new/gui/mplaye
    AddLabel( MSGTR_PREFERENCES_VideoCodecFamily,hbox5 );
  
    CBVFM=gtk_combo_new();
-diff -Naur MPlayer-29903-old/help/help_mp-en.h MPlayer-29903-new/help/help_mp-en.h
---- MPlayer-29903-old/help/help_mp-en.h	2009-11-11 16:43:18.000000000 -0800
-+++ MPlayer-29903-new/help/help_mp-en.h	2009-12-10 06:59:46.000000000 -0800
-@@ -718,6 +718,7 @@
+diff -Naur MPlayer-30109-old/help/help_mp-en.h MPlayer-30109-new/help/help_mp-en.h
+--- MPlayer-30109-old/help/help_mp-en.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/help/help_mp-en.h	2009-12-24 23:03:57.000000000 -0800
+@@ -719,6 +719,7 @@
  #define MSGTR_PREFERENCES_IDX "Rebuild index table, if needed"
  #define MSGTR_PREFERENCES_VideoCodecFamily "Video codec family:"
  #define MSGTR_PREFERENCES_AudioCodecFamily "Audio codec family:"
@@ -491,7 +491,7 @@ diff -Naur MPlayer-29903-old/help/help_mp-en.h MPlayer-29903-new/help/help_mp-en
  #define MSGTR_PREFERENCES_FRAME_OSD_Level "OSD level"
  #define MSGTR_PREFERENCES_FRAME_Subtitle "Subtitle"
  #define MSGTR_PREFERENCES_FRAME_Font "Font"
-@@ -1657,6 +1658,7 @@
+@@ -1659,6 +1660,7 @@
  #define MSGTR_MPCODECS_UnexpectedInitVoError "[VD_FFMPEG] Unexpected init_vo error.\n"
  #define MSGTR_MPCODECS_UnrecoverableErrorRenderBuffersNotTaken "[VD_FFMPEG] Unrecoverable error, render buffers not taken.\n"
  #define MSGTR_MPCODECS_OnlyBuffersAllocatedByVoXvmcAllowed "[VD_FFMPEG] Only buffers allocated by vo_xvmc allowed.\n"
@@ -499,9 +499,9 @@ diff -Naur MPlayer-29903-old/help/help_mp-en.h MPlayer-29903-new/help/help_mp-en
  
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
-diff -Naur MPlayer-29903-old/libmpcodecs/dec_video.c MPlayer-29903-new/libmpcodecs/dec_video.c
---- MPlayer-29903-old/libmpcodecs/dec_video.c	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/dec_video.c	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/dec_video.c MPlayer-30109-new/libmpcodecs/dec_video.c
+--- MPlayer-30109-old/libmpcodecs/dec_video.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/dec_video.c	2009-12-24 23:04:02.000000000 -0800
 @@ -39,9 +39,47 @@
  int field_dominance=-1;
  
@@ -550,9 +550,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/dec_video.c MPlayer-29903-new/libmpcode
  int get_video_quality_max(sh_video_t *sh_video){
    vf_instance_t* vf=sh_video->vfilter;
    if(vf){
-diff -Naur MPlayer-29903-old/libmpcodecs/dec_video.h MPlayer-29903-new/libmpcodecs/dec_video.h
---- MPlayer-29903-old/libmpcodecs/dec_video.h	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/dec_video.h	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/dec_video.h MPlayer-30109-new/libmpcodecs/dec_video.h
+--- MPlayer-30109-old/libmpcodecs/dec_video.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/dec_video.h	2009-12-24 23:04:02.000000000 -0800
 @@ -3,6 +3,14 @@
  
  #include "libmpdemux/stheader.h"
@@ -580,9 +580,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/dec_video.h MPlayer-29903-new/libmpcode
 +extern char *video_hwaccel_name;
  
  #endif /* MPLAYER_DEC_VIDEO_H */
-diff -Naur MPlayer-29903-old/libmpcodecs/img_format.c MPlayer-29903-new/libmpcodecs/img_format.c
---- MPlayer-29903-old/libmpcodecs/img_format.c	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/img_format.c	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/img_format.c MPlayer-30109-new/libmpcodecs/img_format.c
+--- MPlayer-30109-old/libmpcodecs/img_format.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/img_format.c	2009-12-24 23:04:02.000000000 -0800
 @@ -69,6 +69,14 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -598,10 +598,10 @@ diff -Naur MPlayer-29903-old/libmpcodecs/img_format.c MPlayer-29903-new/libmpcod
  	case IMGFMT_VDPAU_MPEG1: return "MPEG1 VDPAU acceleration";
  	case IMGFMT_VDPAU_MPEG2: return "MPEG2 VDPAU acceleration";
  	case IMGFMT_VDPAU_H264: return "H.264 VDPAU acceleration";
-diff -Naur MPlayer-29903-old/libmpcodecs/img_format.h MPlayer-29903-new/libmpcodecs/img_format.h
---- MPlayer-29903-old/libmpcodecs/img_format.h	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/img_format.h	2009-12-10 06:59:55.000000000 -0800
-@@ -111,6 +111,26 @@
+diff -Naur MPlayer-30109-old/libmpcodecs/img_format.h MPlayer-30109-new/libmpcodecs/img_format.h
+--- MPlayer-30109-old/libmpcodecs/img_format.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/img_format.h	2009-12-24 23:04:02.000000000 -0800
+@@ -113,6 +113,26 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
  
@@ -628,9 +628,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/img_format.h MPlayer-29903-new/libmpcod
  // VDPAU specific format.
  #define IMGFMT_VDPAU               0x1DC80000
  #define IMGFMT_VDPAU_MASK          0xFFFF0000
-diff -Naur MPlayer-29903-old/libmpcodecs/mp_image.h MPlayer-29903-new/libmpcodecs/mp_image.h
---- MPlayer-29903-old/libmpcodecs/mp_image.h	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/mp_image.h	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/mp_image.h MPlayer-30109-new/libmpcodecs/mp_image.h
+--- MPlayer-30109-old/libmpcodecs/mp_image.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/mp_image.h	2009-12-24 23:04:02.000000000 -0800
 @@ -111,6 +111,7 @@
      // compressed formats
      if(out_fmt == IMGFMT_MPEGPES ||
@@ -639,9 +639,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/mp_image.h MPlayer-29903-new/libmpcodec
         IMGFMT_IS_VDPAU(out_fmt) || IMGFMT_IS_XVMC(out_fmt)){
  	mpi->bpp=0;
  	return;
-diff -Naur MPlayer-29903-old/libmpcodecs/vd.c MPlayer-29903-new/libmpcodecs/vd.c
---- MPlayer-29903-old/libmpcodecs/vd.c	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vd.c	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/vd.c MPlayer-30109-new/libmpcodecs/vd.c
+--- MPlayer-30109-old/libmpcodecs/vd.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vd.c	2009-12-24 23:04:02.000000000 -0800
 @@ -348,3 +348,12 @@
    if(vf->draw_slice)
      vf->draw_slice(vf,src,stride,w,h,x,y);
@@ -655,9 +655,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd.c MPlayer-29903-new/libmpcodecs/vd.c
 +        return ctx;
 +    return NULL;
 +}
-diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c	2009-12-10 06:59:28.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vd_ffmpeg.c	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/vd_ffmpeg.c MPlayer-30109-new/libmpcodecs/vd_ffmpeg.c
+--- MPlayer-30109-old/libmpcodecs/vd_ffmpeg.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vd_ffmpeg.c	2009-12-24 23:04:02.000000000 -0800
 @@ -14,6 +14,7 @@
  #include "fmt-conversion.h"
  
@@ -691,7 +691,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
      if(lavc_codec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
          avctx->get_format = get_format;
 @@ -459,7 +466,7 @@
-                         AVFrame *src, int offset[4],
+                         const AVFrame *src, int offset[4],
                          int y, int type, int height){
      sh_video_t *sh = s->opaque;
 -    uint8_t *source[MP_MAX_PLANES]= {src->data[0] + offset[0], src->data[1] + offset[1], src->data[2] + offset[2]};
@@ -711,7 +711,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
          ctx->vo_initialized = 1;
      }
      return 0;
-@@ -580,7 +588,9 @@
+@@ -578,7 +586,9 @@
          return avctx->get_buffer(avctx, pic);
      }
  
@@ -722,7 +722,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
          type =  MP_IMGTYPE_NUMBERED | (0xffff << 16);
      } else
      if (!pic->buffer_hints) {
-@@ -611,6 +621,11 @@
+@@ -608,6 +618,11 @@
          avctx->draw_horiz_band= draw_slice;
      } else
          avctx->draw_horiz_band= NULL;
@@ -734,7 +734,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
      if(IMGFMT_IS_VDPAU(mpi->imgfmt)) {
          avctx->draw_horiz_band= draw_slice;
      }
-@@ -645,6 +660,7 @@
+@@ -642,6 +657,7 @@
      pic->data[0]= mpi->planes[0];
      pic->data[1]= mpi->planes[1];
      pic->data[2]= mpi->planes[2];
@@ -742,7 +742,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
  
  #if 0
      assert(mpi->width >= ((width +align)&(~align)));
-@@ -669,6 +685,7 @@
+@@ -666,6 +682,7 @@
      pic->linesize[0]= mpi->stride[0];
      pic->linesize[1]= mpi->stride[1];
      pic->linesize[2]= mpi->stride[2];
@@ -750,7 +750,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
  
      pic->opaque = mpi;
  //printf("%X\n", (int)mpi->planes[0]);
-@@ -890,9 +907,11 @@
+@@ -887,9 +904,11 @@
          mpi->planes[0]=pic->data[0];
          mpi->planes[1]=pic->data[1];
          mpi->planes[2]=pic->data[2];
@@ -762,7 +762,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
      }
  
      if (!mpi->planes[0])
-@@ -922,24 +941,62 @@
+@@ -919,24 +938,62 @@
      return mpi;
  }
  
@@ -837,9 +837,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
  }
 -#endif /* CONFIG_XVMC || CONFIG_VDPAU */
 +#endif /* CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU */
-diff -Naur MPlayer-29903-old/libmpcodecs/vd.h MPlayer-29903-new/libmpcodecs/vd.h
---- MPlayer-29903-old/libmpcodecs/vd.h	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vd.h	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/vd.h MPlayer-30109-new/libmpcodecs/vd.h
+--- MPlayer-30109-old/libmpcodecs/vd.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vd.h	2009-12-24 23:04:02.000000000 -0800
 @@ -34,6 +34,7 @@
  int mpcodecs_config_vo(sh_video_t *sh, int w, int h, unsigned int preferred_outfmt);
  mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h);
@@ -848,9 +848,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd.h MPlayer-29903-new/libmpcodecs/vd.h
  
  #define VDFLAGS_DROPFRAME 3
  
-diff -Naur MPlayer-29903-old/libmpcodecs/vf.h MPlayer-29903-new/libmpcodecs/vf.h
---- MPlayer-29903-old/libmpcodecs/vf.h	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vf.h	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/vf.h MPlayer-30109-new/libmpcodecs/vf.h
+--- MPlayer-30109-old/libmpcodecs/vf.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vf.h	2009-12-24 23:04:02.000000000 -0800
 @@ -89,6 +89,7 @@
  #define VFCTRL_GET_PTS         17 /* Return last pts value that reached vf_vo*/
  #define VFCTRL_SET_DEINTERLACE 18 /* Set deinterlacing status */
@@ -859,10 +859,10 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vf.h MPlayer-29903-new/libmpcodecs/vf.h
  
  #include "vfcap.h"
  
-diff -Naur MPlayer-29903-old/libmpcodecs/vf_vo.c MPlayer-29903-new/libmpcodecs/vf_vo.c
---- MPlayer-29903-old/libmpcodecs/vf_vo.c	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vf_vo.c	2009-12-10 06:59:55.000000000 -0800
-@@ -151,6 +151,12 @@
+diff -Naur MPlayer-30109-old/libmpcodecs/vf_vo.c MPlayer-30109-new/libmpcodecs/vf_vo.c
+--- MPlayer-30109-old/libmpcodecs/vf_vo.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vf_vo.c	2009-12-24 23:04:02.000000000 -0800
+@@ -154,6 +154,12 @@
  	*(double *)data = vf->priv->pts;
  	return CONTROL_TRUE;
      }
@@ -875,7 +875,7 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vf_vo.c MPlayer-29903-new/libmpcodecs/v
      }
      // return video_out->control(request,data);
      return CONTROL_UNKNOWN;
-@@ -170,6 +176,7 @@
+@@ -173,6 +179,7 @@
      if(!vo_config_count) return;
      // GET_IMAGE is required for hardware-accelerated formats
      if(vo_directrendering ||
@@ -883,9 +883,9 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vf_vo.c MPlayer-29903-new/libmpcodecs/v
         IMGFMT_IS_XVMC(mpi->imgfmt) || IMGFMT_IS_VDPAU(mpi->imgfmt))
  	video_out->control(VOCTRL_GET_IMAGE,mpi);
  }
-diff -Naur MPlayer-29903-old/libvo/stats.c MPlayer-29903-new/libvo/stats.c
---- MPlayer-29903-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-29903-new/libvo/stats.c	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libvo/stats.c MPlayer-30109-new/libvo/stats.c
+--- MPlayer-30109-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30109-new/libvo/stats.c	2009-12-24 23:04:02.000000000 -0800
 @@ -0,0 +1,217 @@
 +#include "config.h"
 +#include "stats.h"
@@ -1104,9 +1104,9 @@ diff -Naur MPlayer-29903-old/libvo/stats.c MPlayer-29903-new/libvo/stats.c
 +#endif
 +    return error;
 +}
-diff -Naur MPlayer-29903-old/libvo/stats.h MPlayer-29903-new/libvo/stats.h
---- MPlayer-29903-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-29903-new/libvo/stats.h	2009-12-10 06:59:55.000000000 -0800
+diff -Naur MPlayer-30109-old/libvo/stats.h MPlayer-30109-new/libvo/stats.h
+--- MPlayer-30109-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30109-new/libvo/stats.h	2009-12-24 23:04:02.000000000 -0800
 @@ -0,0 +1,21 @@
 +#ifndef MPLAYER_STATS_H
 +#define MPLAYER_STATS_H
@@ -1129,10 +1129,10 @@ diff -Naur MPlayer-29903-old/libvo/stats.h MPlayer-29903-new/libvo/stats.h
 +float get_cpu_usage(enum CpuUsageType type);
 +
 +#endif /* MPLAYER_STATS_H */
-diff -Naur MPlayer-29903-old/libvo/video_out.c MPlayer-29903-new/libvo/video_out.c
---- MPlayer-29903-old/libvo/video_out.c	2009-11-11 16:43:13.000000000 -0800
-+++ MPlayer-29903-new/libvo/video_out.c	2009-12-10 06:59:55.000000000 -0800
-@@ -132,6 +132,7 @@
+diff -Naur MPlayer-30109-old/libvo/video_out.c MPlayer-30109-new/libvo/video_out.c
+--- MPlayer-30109-old/libvo/video_out.c	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libvo/video_out.c	2009-12-24 23:04:02.000000000 -0800
+@@ -137,6 +137,7 @@
  extern vo_functions_t video_out_quartz;
  extern vo_functions_t video_out_pnm;
  extern vo_functions_t video_out_md5sum;
@@ -1140,7 +1140,7 @@ diff -Naur MPlayer-29903-old/libvo/video_out.c MPlayer-29903-new/libvo/video_out
  
  const vo_functions_t* const video_out_drivers[] =
  {
-@@ -274,6 +275,9 @@
+@@ -279,6 +280,9 @@
  #ifdef CONFIG_MD5SUM
          &video_out_md5sum,
  #endif
@@ -1150,10 +1150,10 @@ diff -Naur MPlayer-29903-old/libvo/video_out.c MPlayer-29903-new/libvo/video_out
          NULL
  };
  
-diff -Naur MPlayer-29903-old/libvo/video_out.h MPlayer-29903-new/libvo/video_out.h
---- MPlayer-29903-old/libvo/video_out.h	2009-11-11 16:43:13.000000000 -0800
-+++ MPlayer-29903-new/libvo/video_out.h	2009-12-10 06:59:55.000000000 -0800
-@@ -97,6 +97,10 @@
+diff -Naur MPlayer-30109-old/libvo/video_out.h MPlayer-30109-new/libvo/video_out.h
+--- MPlayer-30109-old/libvo/video_out.h	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/libvo/video_out.h	2009-12-24 23:04:02.000000000 -0800
+@@ -98,6 +98,10 @@
    int w,h;
  } mp_win_t;
  
@@ -1164,10 +1164,10 @@ diff -Naur MPlayer-29903-old/libvo/video_out.h MPlayer-29903-new/libvo/video_out
  #define VO_TRUE		1
  #define VO_FALSE	0
  #define VO_ERROR	-1
-diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
---- MPlayer-29903-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-29903-new/libvo/vo_vaapi.c	2009-12-10 06:59:55.000000000 -0800
-@@ -0,0 +1,1748 @@
+diff -Naur MPlayer-30109-old/libvo/vo_vaapi.c MPlayer-30109-new/libvo/vo_vaapi.c
+--- MPlayer-30109-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30109-new/libvo/vo_vaapi.c	2009-12-24 23:04:02.000000000 -0800
+@@ -0,0 +1,1750 @@
 +/*
 + * VA API output module
 + *
@@ -1260,6 +1260,7 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +static int                      g_colorspace;
 +
 +#if CONFIG_GL
++static MPGLContext              gl_context;
 +static int                      gl_enabled;
 +static int                      gl_binding;
 +static int                      gl_reflect;
@@ -1268,8 +1269,6 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +#endif
 +
 +#if CONFIG_VAAPI_GLX
-+static GLXContext               gl_context;
-+static XVisualInfo             *gl_visual_info;
 +static int                      gl_visual_attr[] = {
 +    GLX_RGBA,
 +    GLX_RED_SIZE, 1,
@@ -1880,6 +1879,11 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +
 +    stats_init();
 +
++#if CONFIG_GL
++    if (gl_enabled && !init_mpglcontext(&gl_context, GLTYPE_X11))
++        return -1;
++    else
++#endif
 +    if (!vo_init())
 +        return -1;
 +
@@ -2040,13 +2044,6 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +        gl_texture = GL_NONE;
 +    }
 +#endif
-+
-+#if CONFIG_VAAPI_GLX
-+    if (gl_enabled) {
-+        releaseGlContext(&gl_visual_info, &gl_context);
-+        gl_visual_info = NULL;
-+    }
-+#endif
 +}
 +
 +static void uninit(void)
@@ -2085,6 +2082,11 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +
 +#ifdef CONFIG_XF86VM
 +    vo_vm_close();
++#endif
++#if CONFIG_GL
++    if (gl_enabled)
++        uninit_mpglcontext(&gl_context);
++    else
 +#endif
 +    vo_x11_uninit();
 +
@@ -2168,7 +2170,7 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +#if CONFIG_VAAPI_GLX
 +static int config_glx(unsigned int width, unsigned int height)
 +{
-+    if (setGlWindow(&gl_visual_info, &gl_context, vo_window) < 0)
++    if (gl_context.setGlWindow(&gl_context) == SET_WINDOW_FAILED)
 +        return -1;
 +
 +    glDisable(GL_DEPTH_TEST);
@@ -2625,7 +2627,7 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +        gl_printf("MPlayer: %.1f%% of CPU @ %u MHz", cpu_usage, cpu_frequency);
 +    }
 +
-+    swapGlBuffers();
++    gl_context.swapGlBuffers(&gl_context);
 +
 +    if (vo_fs) /* avoid flickering borders in fullscreen mode */
 +        glClear(GL_COLOR_BUFFER_BIT);
@@ -2916,10 +2918,10 @@ diff -Naur MPlayer-29903-old/libvo/vo_vaapi.c MPlayer-29903-new/libvo/vo_vaapi.c
 +    }
 +    return VO_NOTIMPL;
 +}
-diff -Naur MPlayer-29903-old/Makefile MPlayer-29903-new/Makefile
---- MPlayer-29903-old/Makefile	2009-11-11 16:43:20.000000000 -0800
-+++ MPlayer-29903-new/Makefile	2009-12-10 06:59:46.000000000 -0800
-@@ -612,6 +612,7 @@
+diff -Naur MPlayer-30109-old/Makefile MPlayer-30109-new/Makefile
+--- MPlayer-30109-old/Makefile	2009-12-24 23:03:02.000000000 -0800
++++ MPlayer-30109-new/Makefile	2009-12-24 23:03:57.000000000 -0800
+@@ -619,6 +619,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
  SRCS_MPLAYER-$(V4L2)          += libao2/ao_v4l2.c
@@ -2927,7 +2929,7 @@ diff -Naur MPlayer-29903-old/Makefile MPlayer-29903-new/Makefile
  SRCS_MPLAYER-$(VDPAU)         += libvo/vo_vdpau.c
  SRCS_MPLAYER-$(VESA)          += libvo/gtf.c libvo/vo_vesa.c libvo/vesa_lvo.c
  SRCS_MPLAYER-$(VIDIX)         += libvo/vo_cvidix.c \
-@@ -665,6 +666,7 @@
+@@ -672,6 +673,7 @@
                 libvo/aspect.c \
                 libvo/geometry.c \
                 libvo/spuenc.c \

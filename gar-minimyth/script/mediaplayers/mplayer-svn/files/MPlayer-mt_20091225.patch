@@ -1,6 +1,6 @@
-diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c	2009-11-11 16:43:08.000000000 -0800
-+++ MPlayer-29903-new/libmpcodecs/vd_ffmpeg.c	2009-11-11 16:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/libmpcodecs/vd_ffmpeg.c MPlayer-30109-new/libmpcodecs/vd_ffmpeg.c
+--- MPlayer-30109-old/libmpcodecs/vd_ffmpeg.c	2009-12-24 22:41:12.000000000 -0800
++++ MPlayer-30109-new/libmpcodecs/vd_ffmpeg.c	2009-12-24 22:43:51.000000000 -0800
 @@ -145,7 +145,12 @@
          avcodec_flush_buffers(avctx);
          return CONTROL_TRUE;
@@ -15,19 +15,19 @@ diff -Naur MPlayer-29903-old/libmpcodecs/vd_ffmpeg.c MPlayer-29903-new/libmpcode
      }
      return CONTROL_UNKNOWN;
  }
-diff -Naur MPlayer-29903-old/libvo/vo_corevideo.m MPlayer-29903-new/libvo/vo_corevideo.m
---- MPlayer-29903-old/libvo/vo_corevideo.m	2009-11-11 16:43:13.000000000 -0800
-+++ MPlayer-29903-new/libvo/vo_corevideo.m	2009-11-11 16:59:46.000000000 -0800
+diff -Naur MPlayer-30109-old/libvo/vo_corevideo.m MPlayer-30109-new/libvo/vo_corevideo.m
+--- MPlayer-30109-old/libvo/vo_corevideo.m	2009-12-24 22:41:24.000000000 -0800
++++ MPlayer-30109-new/libvo/vo_corevideo.m	2009-12-24 22:43:51.000000000 -0800
 @@ -500,6 +500,8 @@
- 	NSRect frame;
+ 	NSRect visibleFrame;
  	CVReturn error = kCVReturnSuccess;
  
 +        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 +
  	//config window
- 	d_width = vo_dwidth; d_height = vo_dheight;
- 	frame = NSMakeRect(0, 0, d_width, d_height);
-@@ -531,6 +533,8 @@
+ 	[window setContentSize:NSMakeSize(vo_dwidth, vo_dheight)];
+ 
+@@ -538,6 +540,8 @@
  
  	if(vo_ontop)
  		[mpGLView ontop];
