@@ -91,6 +91,9 @@ $var_list{'MM_LIRC_DRIVER'} =
     value_valid    => 'none|.+',
     value_obsolete => 'auto|mceusb2|mceusbnew|ps3bdremote',
     value_none     => '',
+    value_file     => 'devinput',
+    file           => {name_remote => '/devinput.keymap',
+                       name_local  => '/etc/eventlircd.d/devinput.keymap'},
     extra          => sub
     {
         my $minimyth = shift;

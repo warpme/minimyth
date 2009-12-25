@@ -2686,6 +2686,10 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 'MM_LIRC_DRIVER' is used to determine what LIRC driver to use.
               </p>
               <p>
+                Most MM_LIRC_DRIVER values are handled by the lircd daemon.
+                However, the MM_LIRC_DRIVER values of 'bdremote', 'iguanaIR', 'irtrans' and 'devinput' are handled by other daemons.
+              </p>
+              <p>
                 If the value is 'bdremote',
                 then MiniMyth will start
                 <a href="http://code.google.com/p/bdremote-ng/">bdremote-ng</a> along with lircd/eventlircd,
@@ -2708,6 +2712,17 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 then MiniMyth will start the
                 <a href="http://www.irtrans.de/en/download/linux.php">IRTrans server</a>
                 instead of lircd and eventlircd.
+              </p>
+              <p>
+                If the value is 'devinput',
+                then MiniMyth will use the eventlircd daemon to handle the device.
+                The eventlircd daemon use per-device key map files to map keys.
+                Therefore, if the value is 'devinput',
+                then MiniMyth will assume that there is an eventlircd key map file named 'devinput.keymap'
+                in the MiniMyth read only configuration directory.
+                If the device does not require any key mapping,
+                then create an empty file named 'devinput.keymap'
+                in the MiniMyth read only configuration directory.
               </p>
               <p>
                 If the value is 'none,' then no lircd driver will be set.
@@ -3528,7 +3543,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2009-12-20
+          Last Updated on 2009-12-25
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>
