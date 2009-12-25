@@ -1,16 +1,16 @@
 GARNAME = ffmpeg
-GARVERSION = 20520.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 20918.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20091111.patch $(GARNAME)-vaapi_20091209.patch
+PATCHFILES = $(GARNAME)-mt_20091225.patch $(GARNAME)-vaapi_20091221.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/zlib utils/bzip2 X11/libva X11/libvdpau
+DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/SDL lib/zlib utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -144,9 +144,6 @@ CONFIGURE_ARGS = \
 	--disable-extra-warnings \
 	--disable-stripping
 
-CONFIGURE_ENV = \
-	SDL_CONFIG="false"
-
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
@@ -215,8 +212,8 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=19242
-FFMPEG_MT_VERSION_THREAD=20997d60c8ec84dd0dd68055901e847c4b4e171a
+FFMPEG_MT_VERSION_NORMAL=20198
+FFMPEG_MT_VERSION_THREAD=287e761820e85514e00eb6c5958496ecb61825cb
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2

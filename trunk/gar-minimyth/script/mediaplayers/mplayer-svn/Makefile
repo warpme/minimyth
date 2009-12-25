@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20091111.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20091209.patch
+PATCHFILES = $(GARNAME)-mt_20091225.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20091221.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -87,6 +87,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-vstream \
 	--enable-pthreads \
 	--disable-w32threads \
+	--enable-ass-internal \
 	--enable-ass \
 	--disable-rpath
 # Codecs
@@ -226,7 +227,6 @@ CONFIGURE_ARGS_MISC = \
 	--enable-runtime-cpudetection \
 	--enable-cross-compile \
 	--cc="$(CC)" \
-	--extra-cflags="-I$(DESTDIR)$(includedir)" \
 	--host-cc="$(build_CC)" \
 	--as="$(AS)" \
 	--nm="$(NM)" \
@@ -261,6 +261,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-crash-debug \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
+	--extra-cflags="-I$(DESTDIR)$(includedir)" \
 	--with-xvmclib=XvMCW
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \
