@@ -92,8 +92,6 @@ $var_list{'MM_LIRC_DRIVER'} =
     value_obsolete => 'auto|mceusb2|mceusbnew|ps3bdremote',
     value_none     => '',
     value_file     => 'devinput',
-    file           => {name_remote => '/devinput.keymap',
-                       name_local  => '/etc/eventlircd.d/devinput.keymap'},
     extra          => sub
     {
         my $minimyth = shift;
@@ -655,6 +653,29 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 
         return $device;
     }
+};
+
+$var_list{'MM_LIRC_FETCH_DEVINPUT_KEYMAP'} =
+{
+    prerequisite   => ['MM_LIRC_DRIVER'],
+    value_default  => 'auto',
+    value_valid    => 'auto|no|yes',
+    value_auto     => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $auto = 'no';
+        if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'devinput')
+        {
+            $auto = 'yes';
+        }
+
+        return $auto;
+    },
+    value_file     => 'yes',
+    file           => {name_remote => '/devinput.keymap',
+                       name_local  => '/etc/eventlircd.d/devinput.keymap'}
 };
 
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
