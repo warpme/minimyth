@@ -2691,8 +2691,9 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               </p>
               <p>
                 If the value is 'bdremote',
-                then MiniMyth will start
-                <a href="http://code.google.com/p/bdremote-ng/">bdremote-ng</a> along with lircd/eventlircd,
+                then MiniMyth will start the
+                <a href="http://code.google.com/p/bdremote-ng/">bdremoteng</a>
+                daemon as well as eventlircd,
                 allowing you to control your MiniMyth system with a Sony PlayStation 3 Blu-ray Disc remote control.
                 When the value is 'bdremote',
                 '<a href="#MM_LIRC_DEVICE">MM_LIRC_DEVICE</a>'
@@ -2704,14 +2705,14 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               <p>
                 If the value is 'iguanaIR'
                 then MiniMyth will start the
-                <a href="http://iguanaworks.net/downloads.php">iguanaIR daemon</a>
-                as well as lircd and eventlircd.
+                <a href="http://iguanaworks.net/downloads.php">igdaemon</a>
+                daemon as well as lircd and eventlircd.
               </p>
               <p>
                 If the value is 'irtrans',
                 then MiniMyth will start the
-                <a href="http://www.irtrans.de/en/download/linux.php">IRTrans server</a>
-                instead of lircd and eventlircd.
+                <a href="http://www.irtrans.de/en/download/linux.php">irserver</a>
+                daemon instead of lircd and eventlircd.
               </p>
               <p>
                 If the value is 'devinput',
@@ -2888,18 +2889,9 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 then you will need to provide one in order for your remote control to work with MiniMyth.
               </p>
               <p>
-                MiniMyth's LIRC configuration files follow the proposed
-                <a href="http://arnaud.quette.free.fr/lirc/lirc-nns.html">LIRC namespace</a>.
-                Therefore,
-                if you provide an
+                Currently, MiniMyth provides
                 '<a href="document-configure.html#lircd_conf">lircd.conf</a>'
-                that conforms to this namespace,
-                then it should work with MiniMyth's included
-                '<a href="document-configure.html#lircrc">lircrc</a>'
-                file.
-              </p>
-              <p>
-                Currently includes support for the following receiver+remote combinations:
+                files for the following receiver+remote combinations:
               </p>
               <ul>
                 <li>an 'atiusb' receiver with various remotes</li>
@@ -2910,6 +2902,22 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 <li>an 'serial' receiver with a 'hauppauge_R808' remote</li>
                 <li>a 'streamzap' receiver with a 'streamzap' remote</li>
               </ul>
+              <p>
+                While the lircd daemon makes use of
+                '<a href="document-configure.html#lircd_conf">lircd.conf</a>',
+                other daemons used to support remote controls do not.
+                Therefore, MiniMyth does not use this file for the remote control devices handled by other daemons:
+                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>='bdremote' (handled by the
+                <a href="http://code.google.com/p/bdremote-ng/">bdremoteng</a>
+                daemon),
+                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>='iguanaIR' (handled by the
+                <a href="http://iguanaworks.net/downloads.php">igdaemon</a>
+                daemon),
+                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>='irtrans' (handled by the
+                <a href="http://www.irtrans.de/en/download/linux.php">irserver</a>
+                daemon) and
+                <a href="#MM_LIRC_DRIVER">MM_LIRC_DRIVER</a>='devinput' (handled by the eventlircd daemon).
+              </p>
             </dd>
             <dt id="MM_LIRC_FETCH_LIRCMD_CONF"><strong>MM_LIRC_FETCH_LIRCMD_CONF</strong></dt>
             <dd>
@@ -3543,7 +3551,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               alt="Valid CSS!"      height="31" width="88" /></a>
         </div>
         <div class="version">
-          Last Updated on 2009-12-25
+          Last Updated on 2009-12-26
           <br />
           &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
         </div>

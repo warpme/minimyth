@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta name="author" content="Paul Bender" />
+    <meta name="copyright" content="2006-2009 Paul Bender &amp; minimyth.org" />
+    <meta name="keywords" content="MiniMyth,Linux,PVR,Linux,MythTV,diskless,Mini-ITX,EPIA" />
+    <meta name="description" content="Instructions on how to configure MiniMyth to use a remote control." />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>MiniMyth - Documents - HowTos - LIRC: Using a remote control</title>
+    <style type="text/css" title="main-styles">
+      @import "css/minimyth.css";
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="header">
+        <div class="heading">MiniMyth from <a href="http://www.minimyth.org">minimyth.org</a></div>
+        <div class="menu">
+          <span class="menuItemFirst"><a href="index.html">Home</a></span>
+          <span class="menuItem"     ><a href="document.html">Documents</a></span>
+          <span class="menuItem"     ><a href="document-howto.html">HowTos</a></span>
+          <span class="menuItem"     >LIRC</span>
+        </div>
+      </div>
+      <div class="middle">
+        <div class="heading">LIRC: Using a remote control</div>
+        <div id="introduction" class="section">
+          <div class="heading">Introduction</div>
+          <p>
+            MiniMyth supports remote controls using a combination of
+            <a href="http://en.wikipedia.org/wiki/Udev">udev</a>,
+            <a href="http://www.lirc.org/">LIRC</a>,
+            eventlircd, and
+            MiniMyth read only configuration variables.
+            This combination enables MiniMyth
+          </p>
+          <ul>
+            <li>to support remote control hotplugging,</li>
+            <li>to support remote controls that may not be present when MiniMyth boots
+                (e.g. <a href="http://www.newegg.com/product/product.aspx?item=N82E16879261053">Sony Play Station 3 Blu-ray Disc Remote Control</a>),</li>
+            <li>to support remote controls that appear as Linux event devices and use keyboard shortcuts
+                (e.g. <a href="http://www.adesso.com/products_detail.asp?productid=366">Adesso ARC-1100 Remote Control</a>),</li>
+            <li>to support remote controls that contain mouse/joystick controls
+                (e.g. <a href="http://www.adesso.com/products_detail.asp?productid=366">Adesso ARC-1100 Remote Control</a>), and</li>
+            <li>to support multiple remote controls.</li>
+          </ul>
+          <p>
+            MiniMyth uses udev
+          </p>
+          <ul>
+            <li>to load LIRC kernel driver(s) when a device requiring the driver(s) is added,</li>
+            <li>to start and stop lircd when a device requiring lircd is added or removed, and</li>
+            <li>to notify eventlircd when an input event device that should be routed through LIRC is added or removed.</li>
+          </ul>
+          <p>
+            MiniMyth uses the LIRC kernel drivers (lirc_*.ko) and the LIRC daemon (lircd)
+          </p>
+          <ul>
+            <li>to create a Linux input event device for receiving remote control key presses as Linux input events, and</li>
+            <li>to create an lircd socket for sending IR commands using IR transmitters.
+          </ul>
+          <p>
+            MiniMyth uses the eventlircd daemon
+          </p>
+          <ul>
+            <li>to map keyboard shortcuts to single events,</li>
+            <li>to create a Linux input event device for events not handled by the lircd socket (e.g. mouse and joystick events), and</li>
+            <li>to combine multiple input event devices into a single lircd socket.</li>
+          </ul>
+          <p>
+            If your MiniMyth system has a remote control receiver/transmiiter that is not (or cannot) be detected by udev,
+            then you can manually configure it using the
+            <a href="document-minimyth_conf.html#MM_LIRC">MM_LIRC_*</a>
+            configuration variables.
+            When possible, MiniMyth uses the
+            <a href="document-minimyth_conf.html#MM_LIRC">MM_LIRC_*</a>
+            configuration variables to modify the udev scripts
+            so that the remote control is handled by the normal udev-&gt;lircd-&gt;eventlircd path. 
+            Otherwise, MiniMyth uses an init script to start the appropriate daemon for the manually configured remote control.
+          </p>
+        </div>
+      </div>
+      <div class="footer">
+        <hr />
+        <div class="valid-xhtml">
+          <a href="http://validator.w3.org/check?uri=referer"><img
+              src="/image/w3c-valid-xhtml11-blue.gif"
+              alt="Valid XHTML 1.1" height="31" width="88" /></a>
+        </div>
+        <div class="valid-css">
+          <a href="http://jigsaw.w3.org/css-validator/check/referer"><img
+              src="/image/w3c-valid-css2-blue.gif"
+              alt="Valid CSS!"      height="31" width="88" /></a>
+        </div>
+        <div class="version">
+          Last Updated on 2009-12-25
+          <br />
+          &lt;&nbsp;mailto&nbsp;:&nbsp;webmaster&nbsp;at&nbsp;minimyth&nbsp;dot&nbsp;org&nbsp;&gt;
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
