@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-udev_20091206.patch \
+	$(DISTNAME)-udev_20090929.patch \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
@@ -16,7 +16,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/openssl \
+DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/fixesproto \
@@ -49,6 +49,9 @@ DEPENDS = lang/c lib/openssl \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
+ifneq ($(DESTIMG),build)
+DEPENDS += system/udev
+endif
 BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-sgml-doctools
