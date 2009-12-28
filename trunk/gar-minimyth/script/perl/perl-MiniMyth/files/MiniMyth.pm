@@ -1766,9 +1766,10 @@ sub game_save
             return 0;
         }
 
-        if ($self->confrw_put($remote_file, $local_file) != 0)
+        if (! $self->confrw_put($remote_file, $local_file))
         {
             unlink ($local_file);
+            $self->message_log('err', qq(failed to save game files file.));
             return 0;
         }
 
