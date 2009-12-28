@@ -81,9 +81,26 @@ sub start
     }
     else
     {
-        $minimyth->file_replace_variable(
-            '/usr/share/mythtv/library.xml',
-            { '<type>HULU</type>' => '<type>HULU</type><depends>disabled</depends>' });
+        if    ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+                ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 20) )
+        {
+            $minimyth->file_replace_variable(
+                '/usr/share/mythtv/library.xml',
+                { '<type>HULU</type>' => '<type>HULU</type><depends>disabled</depends>' });
+        }
+        elsif ( ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MAJOR') ==  0) &&
+                ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR') == 21) )
+        {
+            $minimyth->file_replace_variable(
+                '/usr/share/mythtv/library.xml',
+                { '<type>HULU</type>' => '<type>HULU</type><depends>disabled</depends>' });
+        }
+        else
+        {
+            $minimyth->file_replace_variable(
+                '/usr/share/mythtv/themes/defaultmenu/library.xml',
+                { '<type>HULU</type>' => '<type>HULU</type><depends>disabled</depends>' });
+        }
         $minimyth->file_replace_variable(
             '/usr/share/mythtv/themes/classic/mainmenu.xml',
             { '<type>HULU</type>' => '<type>HULU</type><depends>disabled</depends>' });
