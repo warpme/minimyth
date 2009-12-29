@@ -1,7 +1,8 @@
 GARNAME = eventlircd
-GARVERSION = 0.0.0
+GARVERSION = 2
 CATEGORIES = system
-DISTFILES = $(DISTNAME)
+MASTER_SITES = svn://eventlircd.googlecode.com/svn/trunk/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -19,19 +20,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-$(DOWNLOADDIR)/$(DISTNAME):
-	@mkdir -p $(DOWNLOADDIR)
-	@rm -f $(DISTNAME)
-	@cp -r files/$(DISTNAME) $(DOWNLOADDIR)/$(DISTNAME)
+svn//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME):
-	@$(MAKECOOKIE)
-
-extract-$(DISTNAME):
-	@mkdir -p $(WORKDIR)
-	@rm -rf $(WORKSRC)
-	@cp -r $(DOWNLOADDIR)/$(DISTNAME) $(WORKDIR)
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
