@@ -20,18 +20,25 @@
 # include "config.h"
 #endif
 
+/*
+ * Single Unix Specification Version 3 headers.
+ */
+#include <signal.h>       /* C89 */
+#include <stdbool.h>      /* C99 */
+#include <stdio.h>        /* C89 */
+#include <stdlib.h>       /* C89 */
+#include <string.h>       /* C89 */
+#include <sys/stat.h>     /* POSIX */
+#include <syslog.h>       /* XSI */
+#include <unistd.h>       /* POSIX */
+/*
+ * Misc headers.
+ */
 #include <getopt.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <sysexits.h>
-#include <syslog.h>
-#include <unistd.h>
-
-#include <sys/stat.h>
-
+/*
+ * eventlircd headers.
+ */
 #include "input.h"
 #include "lircd.h"
 #include "monitor.h"

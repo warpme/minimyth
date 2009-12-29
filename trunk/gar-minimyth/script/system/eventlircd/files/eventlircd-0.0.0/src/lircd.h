@@ -19,9 +19,14 @@
 #ifndef _LIRCUDEVD_LIRCD_H_
 #define _LIRCUDEVD_LIRCD_H_ 1
 
-#include <sys/stat.h>
-
-#include <linux/input.h>
+/*
+ * Single Unix Specification Version 3 headers.
+ */
+#include <sys/stat.h>     /* POSIX */
+/*
+ * Linux headers.
+ */
+#include <linux/input.h>  /* */
 
 int lircd_init(const char *path, mode_t mode, const char *release_suffix);
 int lircd_exit();
