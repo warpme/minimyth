@@ -48,32 +48,35 @@ AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_HEADER_TIME
 
-AC_CHECK_HEADER([errno.h],[],[AC_MSG_ERROR([failed to find the required header file errno.h])])
-AC_CHECK_HEADER([fcntl.h],[],[AC_MSG_ERROR([failed to find the required header file fcntl.h])])
+dnl
+dnl Fine grain header checks. This is overkill, but better safe than sorry.
+dnl
+dnl Single Unix Specification Version 3 headers.
+AC_CHECK_HEADER([errno.h],[],[AC_MSG_ERROR([failed to find the required header file errno.h])])               dnl C89
+AC_CHECK_HEADER([fcntl.h],[],[AC_MSG_ERROR([failed to find the required header file fcntl.h])])               dnl POSIX
+AC_CHECK_HEADER([signal.h],[],[AC_MSG_ERROR([failed to find the required header file signal.h])])             dnl C89
+AC_CHECK_HEADER([stdbool.h],[],[AC_MSG_ERROR([failed to find the required header file stdbool.h])])           dnl C99
+AC_CHECK_HEADER([stddef.h],[],[AC_MSG_ERROR([failed to find the required header file stddef.h])])             dnl C89
+AC_CHECK_HEADER([stdio.h],[],[AC_MSG_ERROR([failed to find the required header file stdio.h])])               dnl C89
+AC_CHECK_HEADER([stdlib.h],[],[AC_MSG_ERROR([failed to find the required header file stdlib.h])])             dnl C89
+AC_CHECK_HEADER([string.h],[],[AC_MSG_ERROR([failed to find the required header file string.h])])             dnl C89
+AC_CHECK_HEADER([sys/select.h],[],[AC_MSG_ERROR([failed to find the required header file sys/select.h])])     dnl POSIX
+AC_CHECK_HEADER([sys/socket.h],[],[AC_MSG_ERROR([failed to find the required header file sys/socket.h])])     dnl POSIX
+AC_CHECK_HEADER([sys/stat.h],[],[AC_MSG_ERROR([failed to find the required header file sys/stat.h])])         dnl POSIX
+AC_CHECK_HEADER([sys/time.h],[],[AC_MSG_ERROR([failed to find the required header file sys/time.h])])         dnl POSIX
+AC_CHECK_HEADER([sys/types.h],[],[AC_MSG_ERROR([failed to find the required header file sys/types.h])])       dnl POSIX
+AC_CHECK_HEADER([sys/un.h],[],[AC_MSG_ERROR([failed to find the required header file sys/un.h])])             dnl XSI
+AC_CHECK_HEADER([syslog.h],[],[AC_MSG_ERROR([failed to find the required header file syslog.h])])             dnl XSI
+AC_CHECK_HEADER([unistd.h],[],[AC_MSG_ERROR([failed to find the required header file unistd.h])])             dnl POSIX
+dnl Misc headers.
 AC_CHECK_HEADER([getopt.h],[],[AC_MSG_ERROR([failed to find the required header file getopt.h])])
-AC_CHECK_HEADER([malloc.h],[],[AC_MSG_ERROR([failed to find the required header file malloc.h])])
-AC_CHECK_HEADER([signal.h],[],[AC_MSG_ERROR([failed to find the required header file signal.h])])
-AC_CHECK_HEADER([stdbool.h],[],[AC_MSG_ERROR([failed to find the required header file stdbool.h])])
-AC_CHECK_HEADER([stddef.h],[],[AC_MSG_ERROR([failed to find the required header file stddef.h])])
-AC_CHECK_HEADER([stdio.h],[],[AC_MSG_ERROR([failed to find the required header file stdio.h])])
-AC_CHECK_HEADER([stdlib.h],[],[AC_MSG_ERROR([failed to find the required header file stdlib.h])])
-AC_CHECK_HEADER([string.h],[],[AC_MSG_ERROR([failed to find the required header file string.h])])
 AC_CHECK_HEADER([sysexits.h],[],[AC_MSG_ERROR([failed to find the required header file sysexits.h])])
-AC_CHECK_HEADER([syslog.h],[],[AC_MSG_ERROR([failed to find the required header file syslog.h])])
-AC_CHECK_HEADER([unistd.h],[],[AC_MSG_ERROR([failed to find the required header file unistd.h])])
-
-AC_CHECK_HEADER([sys/select.h],[],[AC_MSG_ERROR([failed to find the required header file sys/select.h])])
-AC_CHECK_HEADER([sys/socket.h],[],[AC_MSG_ERROR([failed to find the required header file sys/socket.h])])
-AC_CHECK_HEADER([sys/stat.h],[],[AC_MSG_ERROR([failed to find the required header file sys/stat.h])])
-AC_CHECK_HEADER([sys/time.h],[],[AC_MSG_ERROR([failed to find the required header file sys/time.h])])
-AC_CHECK_HEADER([sys/types.h],[],[AC_MSG_ERROR([failed to find the required header file sys/types.h])])
-AC_CHECK_HEADER([sys/un.h],[],[AC_MSG_ERROR([failed to find the required header file sys/un.h])])
-
-AC_CHECK_HEADER([linux/input.h],[],[AC_MSG_ERROR([failed to find the required header file linux/input.h])])
-AC_CHECK_HEADER([linux/limits.h],[],[AC_MSG_ERROR([failed to find the required header file linux/limits.h])])
-AC_CHECK_HEADER([linux/types.h],[],[AC_MSG_ERROR([failed to find the required header file linux/types.h])])
-AC_CHECK_HEADER([linux/uinput.h],[],[AC_MSG_ERROR([failed to find the required header file linux/uinput.h])])
-
+dnl Linux headers.
+AC_CHECK_HEADER([linux/input.h],[],[AC_MSG_ERROR([failed to find the required header file linux/input.h])])   dnl
+AC_CHECK_HEADER([linux/limits.h],[],[AC_MSG_ERROR([failed to find the required header file linux/limits.h])]) dnl
+AC_CHECK_HEADER([linux/types.h],[],[AC_MSG_ERROR([failed to find the required header file linux/types.h])])   dnl
+AC_CHECK_HEADER([linux/uinput.h],[],[AC_MSG_ERROR([failed to find the required header file linux/uinput.h])]) dnl
+dnl libudev headers.
 AC_CHECK_HEADER([libudev.h],[],[AC_MSG_ERROR([failed to find the required header file libudev.h])])
 
 dnl Determine the absolute path to the header file linux/input.h.

@@ -16,17 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with eventlircd.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <errno.h>
-#include <malloc.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-#include <syslog.h>
-#include <unistd.h>
 
-#include <sys/select.h>
-
+/*
+ * Single Unix Specification Version 3 headers.
+ */
+#include <errno.h>        /* C89 */
+#include <signal.h>       /* C89 */
+#include <stdbool.h>      /* C99 */
+#include <stdio.h>        /* C89 */
+#include <stdlib.h>       /* C89 */
+#include <string.h>       /* C89 */
+#include <unistd.h>       /* POSIX */
+#include <sys/select.h>   /* POSIX */
+#include <syslog.h>       /* XSI */
+/*
+ * eventlircd headers.
+ */
 #include "input.h"
 #include "lircd.h"
 #include "monitor.h"
