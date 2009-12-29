@@ -5,7 +5,13 @@ MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 #MASTER_SITES = http://www.lirc.org/software/snapshots/
 #MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-linux_2_6_32.patch $(DISTNAME)-uinput_key_fix.patch $(DISTNAME)-remove_smp_unsafe_drivers.patch $(DISTNAME)-input_map.patch.gar
+PATCHFILES = \
+	$(DISTNAME)-linux_2_6_32.patch \
+	$(DISTNAME)-lirc_mceusb_device_0bda_0161.patch \
+	$(DISTNAME)-lirc_mceusb_device_105a_2000.patch \
+	$(DISTNAME)-uinput_key_fix.patch \
+	$(DISTNAME)-remove_smp_unsafe_drivers.patch \
+	$(DISTNAME)-input_map.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
