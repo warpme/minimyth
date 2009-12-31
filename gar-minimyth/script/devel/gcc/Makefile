@@ -1,8 +1,7 @@
 GARNAME = gcc
 GARVERSION = $(GCC_VERSION)
 CATEGORIES = devel
-MASTER_SITES  = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)/
-MASTER_SITES += ftp://ftp.gnu.org/gnu/$(GARNAME)/releases/$(DISTNAME)/
+MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/

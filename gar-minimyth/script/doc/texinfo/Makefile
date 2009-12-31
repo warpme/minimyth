@@ -1,7 +1,7 @@
 GARNAME = texinfo
 GARVERSION = 4.13a
 CATEGORIES = doc
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = GPL3

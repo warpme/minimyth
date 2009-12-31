@@ -1,7 +1,7 @@
 GARNAME = ncurses
 GARVERSION = $(NCURSES_VERSION)
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).patch.gar
 LICENSE = MIT_Modified

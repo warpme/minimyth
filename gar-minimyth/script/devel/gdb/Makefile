@@ -1,7 +1,7 @@
 GARNAME = gdb
 GARVERSION = 7.0.1
 CATEGORIES = devel
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2
 
