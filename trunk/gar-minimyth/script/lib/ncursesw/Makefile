@@ -1,7 +1,6 @@
 GARNAME = ncursesw
 GARVERSION = $(NCURSES_VERSION)
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
 SOURCEPKG = lib/ncurses
 LICENSE = MIT_Modified
 

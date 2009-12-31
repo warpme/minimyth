@@ -1,7 +1,7 @@
 GARNAME = gmp
 GARVERSION = 4.3.1
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL3/LGPL3
 

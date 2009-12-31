@@ -1,7 +1,7 @@
 GARNAME = diffutils
 GARVERSION = 2.8.1
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

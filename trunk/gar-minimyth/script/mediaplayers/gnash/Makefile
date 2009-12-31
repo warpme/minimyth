@@ -1,7 +1,7 @@
 GARNAME = gnash
 GARVERSION = 0.8.6
 CATEGORIES = mediaplayers
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = GPL2

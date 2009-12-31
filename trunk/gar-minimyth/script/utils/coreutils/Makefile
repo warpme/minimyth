@@ -1,7 +1,7 @@
 GARNAME = coreutils
 GARVERSION = 8.2
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME)-sysinfo.patch $(DISTNAME)-disable_man.patch
 LICENSE = GPL3
