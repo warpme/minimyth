@@ -1,9 +1,8 @@
 GARNAME = bdremote-ng
-GARVERSION = 0.5-RC3
+GARVERSION = 0.5
 CATEGORIES = system
 MASTER_SITES = http://bdremote-ng.googlecode.com/files/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-event_out.patch
 LICENSE = GPL2
 
 DESCRIPTION =
