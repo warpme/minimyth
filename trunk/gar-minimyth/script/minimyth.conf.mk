@@ -36,6 +36,7 @@ mm_DEBUG_BUILD            ?= no
 # 'vmware'.
 mm_GRAPHICS               ?= intel \
                              $(if $(filter $(mm_GARCH_FAMILY),i386),geode) \
+                             nouveau \
                              nv \
                              nvidia \
                              openchrome \
