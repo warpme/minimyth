@@ -115,6 +115,7 @@ mm-all:
 	@for graphic in $(mm_GRAPHICS) ; do \
 		if [ ! "$${graphic}" = "intel"      ] && \
 		   [ ! "$${graphic}" = "geode"      ] && \
+		   [ ! "$${graphic}" = "nouveau"    ] && \
 		   [ ! "$${graphic}" = "nv"         ] && \
 		   [ ! "$${graphic}" = "nvidia"     ] && \
 		   [ ! "$${graphic}" = "openchrome" ] && \

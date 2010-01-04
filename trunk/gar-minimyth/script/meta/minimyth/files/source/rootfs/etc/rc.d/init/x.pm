@@ -133,6 +133,9 @@ sub start
         when (/^(geode)$/)
         {
         }
+        when (/^(nouveau)$/)
+        {
+        }
         when (/^(nv)$/)
         {
         }
@@ -221,6 +224,9 @@ sub start
         {
         }
         when (/^(geode)$/)
+        {
+        }
+        when (/^(nouveau)$/)
         {
         }
         when (/^(nv)$/)

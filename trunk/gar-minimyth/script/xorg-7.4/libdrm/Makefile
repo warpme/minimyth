@@ -24,7 +24,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
-	--disable-nouveau-experimental-api \
+	--enable-nouveau-experimental-api \
 	--disable-radeon-experimental-api \
 	--with-gnu-ld
 ifeq ($(DESTIMG),build)
@@ -44,4 +44,5 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_intel.la
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_nouveau.la
 	@$(MAKECOOKIE)
