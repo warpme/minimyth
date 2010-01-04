@@ -38,6 +38,11 @@ sub start
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
             ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
+        when (/^nouveau$/)
+        {
+            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
+            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
+        }
         when (/^nv$/)
         {
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');

@@ -31,8 +31,9 @@ mm_DEBUG                  ?= no
 # Valid values for mm_DEBUG_BUILD are 'yes' and 'no'.
 mm_DEBUG_BUILD            ?= no
 # Lists the graphics drivers supported.
-# Valid values for mm_GRAPHICS are one or more of 'intel', 'geode', 'nvidia',
-# 'nv', 'openchrome', 'radeon', 'radeonhd', 'savage', 'sis', and 'vmware'.
+# Valid values for mm_GRAPHICS are one or more of 'intel', 'geode', 'nouveau',
+# 'nvidia', 'nv', 'openchrome', 'radeon', 'radeonhd', 'savage', 'sis', and
+# 'vmware'.
 mm_GRAPHICS               ?= intel \
                              $(if $(filter $(mm_GARCH_FAMILY),i386),geode) \
                              nv \
