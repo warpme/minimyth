@@ -1,0 +1,21 @@
+diff -Naur xf86-video-nv-2.1.16-old/configure.ac xf86-video-nv-2.1.16-new/configure.ac
+--- xf86-video-nv-2.1.16-old/configure.ac	2009-12-15 15:49:00.000000000 -0800
++++ xf86-video-nv-2.1.16-new/configure.ac	2009-12-16 22:01:08.000000000 -0800
+@@ -45,6 +45,7 @@
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+ AC_PROG_CC
++PKG_PROG_PKG_CONFIG
+ 
+ AH_TOP([#include "xorg-server.h"])
+ 
+@@ -72,7 +73,8 @@
+                   HAVE_XEXTPROTO_71="yes"; AC_DEFINE(HAVE_XEXTPROTO_71, 1, [xextproto 7.1 available]),
+                   HAVE_XEXTPROTO_71="no")
+ AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
+-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ # Checks for libraries.
+ 

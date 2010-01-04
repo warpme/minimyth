@@ -215,7 +215,8 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_XORG_VERSION"
-	@if [ ! "$(mm_XORG_VERSION)" = "7.4" ] ; then \
+	@if [ ! "$(mm_XORG_VERSION)" = "7.4" ] && \
+	    [ ! "$(mm_XORG_VERSION)" = "7.5" ] ; then \
 		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
