@@ -1,6 +1,6 @@
-diff -Naur MPlayer-30135-old/cfg-common-opts.h MPlayer-30135-new/cfg-common-opts.h
---- MPlayer-30135-old/cfg-common-opts.h	2009-12-29 08:13:56.000000000 -0800
-+++ MPlayer-30135-new/cfg-common-opts.h	2009-12-29 08:18:25.000000000 -0800
+diff -Naur MPlayer-30224-old/cfg-common-opts.h MPlayer-30224-new/cfg-common-opts.h
+--- MPlayer-30224-old/cfg-common-opts.h	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/cfg-common-opts.h	2010-01-05 15:18:23.000000000 -0800
 @@ -228,6 +228,7 @@
  //	{"ac", &audio_codec, CONF_TYPE_STRING, 0, 0, 0, NULL},
  	{"ac", &audio_codec_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
@@ -9,10 +9,10 @@ diff -Naur MPlayer-30135-old/cfg-common-opts.h MPlayer-30135-new/cfg-common-opts
  
  	// postprocessing:
  #ifdef CONFIG_LIBAVCODEC
-diff -Naur MPlayer-30135-old/codec-cfg.c MPlayer-30135-new/codec-cfg.c
---- MPlayer-30135-old/codec-cfg.c	2009-12-29 08:13:56.000000000 -0800
-+++ MPlayer-30135-new/codec-cfg.c	2009-12-29 08:18:25.000000000 -0800
-@@ -187,6 +187,13 @@
+diff -Naur MPlayer-30224-old/codec-cfg.c MPlayer-30224-new/codec-cfg.c
+--- MPlayer-30224-old/codec-cfg.c	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/codec-cfg.c	2010-01-05 15:18:23.000000000 -0800
+@@ -198,6 +198,13 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
  
@@ -26,10 +26,10 @@ diff -Naur MPlayer-30135-old/codec-cfg.c MPlayer-30135-new/codec-cfg.c
  		{"VDPAU_MPEG1",IMGFMT_VDPAU_MPEG1},
  		{"VDPAU_MPEG2",IMGFMT_VDPAU_MPEG2},
  		{"VDPAU_H264",IMGFMT_VDPAU_H264},
-diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
---- MPlayer-30135-old/configure	2009-12-29 08:17:54.000000000 -0800
-+++ MPlayer-30135-new/configure	2009-12-29 08:18:25.000000000 -0800
-@@ -356,6 +356,9 @@
+diff -Naur MPlayer-30224-old/configure MPlayer-30224-new/configure
+--- MPlayer-30224-old/configure	2010-01-05 15:17:29.000000000 -0800
++++ MPlayer-30224-new/configure	2010-01-05 15:18:23.000000000 -0800
+@@ -357,6 +357,9 @@
    --disable-muxer=MUXER     disable specified FFmpeg muxer
    --enable-muxer=MUXER      enable specified FFmpeg muxer
  
@@ -39,16 +39,16 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  Video output:
    --disable-vidix          disable VIDIX [for x86 *nix]
    --with-vidix-drivers[=*] list of VIDIX drivers to be compiled in
-@@ -541,6 +544,8 @@
- _libavcodec_a=auto
+@@ -544,6 +547,8 @@
  _libopencore_amrnb=auto
  _libopencore_amrwb=auto
+ libopenjpeg=auto
 +_libavhwaccels_all=$(sed -n 's/^[^#]*HWACCEL.*(.*, *\(.*\)).*/\1_hwaccel/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
 +_libavhwaccels="$_libavhwaccels_all"
  _libavdecoders_all=$(sed -n 's/^[^#]*DEC.*(.*, *\(.*\)).*/\1_decoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
  _libavdecoders=$(echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER//)
  _libavencoders_all=$(sed -n 's/^[^#]*ENC.*(.*, *\(.*\)).*/\1_encoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
-@@ -565,6 +570,9 @@
+@@ -568,6 +573,9 @@
  _libavcodec_mpegaudio_hp=yes
  _mencoder=yes
  _mplayer=yes
@@ -58,16 +58,16 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  _x11=auto
  _xshape=auto
  _xss=auto
-@@ -907,6 +915,8 @@
-   --disable-mplayer)	_mplayer=no	;;
-   --enable-dynamic-plugins) _dynamic_plugins=yes ;;
-   --disable-dynamic-plugins) _dynamic_plugins=no ;;
+@@ -921,6 +929,8 @@
+   --disable-xv)         _xv=no          ;;
+   --enable-xvmc)        _xvmc=yes       ;;
+   --disable-xvmc)       _xvmc=no        ;;
 +  --enable-vaapi)       _vaapi=yes      ;;
 +  --disable-vaapi)      _vaapi=no       ;;
-   --enable-x11)		_x11=yes	;;
-   --disable-x11)	_x11=no		;;
-   --enable-xshape)	_xshape=yes	;;
-@@ -3813,6 +3823,28 @@
+   --enable-vdpau)       _vdpau=yes      ;;
+   --disable-vdpau)      _vdpau=no       ;;
+   --enable-sdl)         _sdl=yes        ;;
+@@ -3821,6 +3831,28 @@
  echores "$_gettimeofday"
  
  
@@ -96,7 +96,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  echocheck "glob()"
  cat > $TMPC << EOF
  #include <stdio.h>
-@@ -4241,7 +4273,7 @@
+@@ -4249,7 +4281,7 @@
    _novomodules="x11 $_novomodules"
    _res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -105,7 +105,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  fi
  echores "$_x11"
  
-@@ -4372,7 +4404,7 @@
+@@ -4380,7 +4412,7 @@
  else
    def_vdpau='#define CONFIG_VDPAU 0'
    _novomodules="vdpau $_novomodules"
@@ -114,7 +114,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  fi
  echores "$_vdpau"
  
-@@ -4961,6 +4993,90 @@
+@@ -4982,6 +5014,90 @@
  fi
  echores "$_gl"
  
@@ -205,7 +205,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  
  echocheck "PNG support"
  if test "$_png" = auto ; then
-@@ -8379,6 +8495,7 @@
+@@ -8449,6 +8565,7 @@
  TWOLAME=$_twolame
  UNRAR_EXEC = $_unrar_exec
  V4L2 = $_v4l2
@@ -213,7 +213,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  VCD = $_vcd
  VDPAU = $_vdpau
  VESA = $_vesa
-@@ -8459,6 +8576,7 @@
+@@ -8529,6 +8646,7 @@
  CONFIG_LIBDIRAC_DECODER=$_libdirac_lavc
  CONFIG_LIBDIRAC_ENCODER=$_libdirac_lavc
  CONFIG_LIBFAAC_ENCODER=$_faac_lavc
@@ -221,7 +221,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  CONFIG_LIBMP3LAME_ENCODER=$_mp3lame_lavc
  CONFIG_LIBOPENCORE_AMRNB_DECODER=$_libopencore_amrnb
  CONFIG_LIBOPENCORE_AMRNB_ENCODER=$_libopencore_amrnb
-@@ -8473,6 +8591,7 @@
+@@ -8545,6 +8663,7 @@
  CONFIG_POSTPROC = yes
  # Prevent building libavcodec/imgresample.c with conflicting symbols
  CONFIG_SWSCALE=yes
@@ -229,7 +229,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  CONFIG_VDPAU=$_vdpau
  CONFIG_XVMC=$_xvmc
  CONFIG_ZLIB=$_zlib
-@@ -8482,6 +8601,7 @@
+@@ -8554,6 +8673,7 @@
  HAVE_W32THREADS = $_w32threads
  HAVE_YASM = $_have_yasm
  
@@ -237,7 +237,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  $(echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
  $(echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
-@@ -8588,6 +8708,7 @@
+@@ -8660,6 +8780,7 @@
  
  
  /* system functions */
@@ -245,7 +245,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  $def_gethostbyname2
  $def_gettimeofday
  $def_glob
-@@ -8623,6 +8744,7 @@
+@@ -8695,6 +8816,7 @@
  $def_extern_prefix
  $def_iconv
  $def_kstat
@@ -253,7 +253,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  $def_macosx_bundle
  $def_macosx_finder
  $def_maemo
-@@ -8844,6 +8966,8 @@
+@@ -8918,6 +9040,8 @@
  $def_tdfxvid
  $def_tga
  $def_v4l2
@@ -262,7 +262,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  $def_vdpau
  $def_vesa
  $def_vidix
-@@ -8964,6 +9088,7 @@
+@@ -9047,6 +9171,7 @@
  $def_x264_lavc
  $def_xvid_lavc
  
@@ -270,7 +270,7 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  $(ff_config_enable "$_libavdecoders_all" "$_libavdecoders")
  $(ff_config_enable "$_libavencoders_all" "$_libavencoders")
  $(ff_config_enable "$_libavparsers_all"  "$_libavparsers")
-@@ -8972,13 +9097,6 @@
+@@ -9055,13 +9180,6 @@
  $(ff_config_enable "$_libavprotocols_all" "$_libavprotocols")
  $(ff_config_enable "$_libavbsfs_all" "$_libavbsfs")
  
@@ -284,9 +284,9 @@ diff -Naur MPlayer-30135-old/configure MPlayer-30135-new/configure
  #endif /* MPLAYER_CONFIG_H */
  EOF
  
-diff -Naur MPlayer-30135-old/etc/codecs.conf MPlayer-30135-new/etc/codecs.conf
---- MPlayer-30135-old/etc/codecs.conf	2009-12-29 08:13:55.000000000 -0800
-+++ MPlayer-30135-new/etc/codecs.conf	2009-12-29 08:18:25.000000000 -0800
+diff -Naur MPlayer-30224-old/etc/codecs.conf MPlayer-30224-new/etc/codecs.conf
+--- MPlayer-30224-old/etc/codecs.conf	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/etc/codecs.conf	2010-01-05 15:18:23.000000000 -0800
 @@ -181,6 +181,7 @@
    fourcc slif ; SoftLab MPEG-2 I-frames Codec
    driver ffmpeg
@@ -327,7 +327,7 @@ diff -Naur MPlayer-30135-old/etc/codecs.conf MPlayer-30135-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffodivxvdpau
-@@ -1539,6 +1544,7 @@
+@@ -1551,6 +1556,7 @@
    fourcc VX1K     ; Agora Labs VX1000S H263
    driver ffmpeg
    dll h263
@@ -335,9 +335,9 @@ diff -Naur MPlayer-30135-old/etc/codecs.conf MPlayer-30135-new/etc/codecs.conf
    out YV12,I420,IYUV
  
  videocodec ffzygo
-diff -Naur MPlayer-30135-old/fmt-conversion.c MPlayer-30135-new/fmt-conversion.c
---- MPlayer-30135-old/fmt-conversion.c	2009-12-29 08:13:56.000000000 -0800
-+++ MPlayer-30135-new/fmt-conversion.c	2009-12-29 08:18:25.000000000 -0800
+diff -Naur MPlayer-30224-old/fmt-conversion.c MPlayer-30224-new/fmt-conversion.c
+--- MPlayer-30224-old/fmt-conversion.c	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/fmt-conversion.c	2010-01-05 15:18:23.000000000 -0800
 @@ -18,12 +18,14 @@
  
  #include "mp_msg.h"
@@ -353,7 +353,7 @@ diff -Naur MPlayer-30135-old/fmt-conversion.c MPlayer-30135-new/fmt-conversion.c
  } conversion_map[] = {
      {IMGFMT_BGR32, PIX_FMT_RGB32},
      {IMGFMT_BGR24, PIX_FMT_BGR24},
-@@ -74,6 +76,17 @@
+@@ -85,6 +87,17 @@
      {IMGFMT_VDPAU_WMV3,      PIX_FMT_VDPAU_WMV3},
      {IMGFMT_VDPAU_VC1,       PIX_FMT_VDPAU_VC1},
      {IMGFMT_VDPAU_MPEG4,     PIX_FMT_VDPAU_MPEG4},
@@ -371,7 +371,7 @@ diff -Naur MPlayer-30135-old/fmt-conversion.c MPlayer-30135-new/fmt-conversion.c
      {0, PIX_FMT_NONE}
  };
  
-@@ -90,12 +103,14 @@
+@@ -101,12 +114,14 @@
      return pix_fmt;
  }
  
@@ -388,10 +388,10 @@ diff -Naur MPlayer-30135-old/fmt-conversion.c MPlayer-30135-new/fmt-conversion.c
              break;
      fmt = conversion_map[i].fmt;
      if (!fmt)
-diff -Naur MPlayer-30135-old/fmt-conversion.h MPlayer-30135-new/fmt-conversion.h
---- MPlayer-30135-old/fmt-conversion.h	2009-12-29 08:13:56.000000000 -0800
-+++ MPlayer-30135-new/fmt-conversion.h	2009-12-29 08:18:25.000000000 -0800
-@@ -4,6 +4,6 @@
+diff -Naur MPlayer-30224-old/fmt-conversion.h MPlayer-30224-new/fmt-conversion.h
+--- MPlayer-30224-old/fmt-conversion.h	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/fmt-conversion.h	2010-01-05 15:18:23.000000000 -0800
+@@ -5,6 +5,6 @@
  #include "libavutil/avutil.h"
  
  enum PixelFormat imgfmt2pixfmt(int fmt);
@@ -399,9 +399,9 @@ diff -Naur MPlayer-30135-old/fmt-conversion.h MPlayer-30135-new/fmt-conversion.h
 +int pixfmt2imgfmt(enum PixelFormat pix_fmt, int codec_id);
  
  #endif /* MPLAYER_FMT_CONVERSION_H */
-diff -Naur MPlayer-30135-old/gui/mplayer/gtk/opts.c MPlayer-30135-new/gui/mplayer/gtk/opts.c
---- MPlayer-30135-old/gui/mplayer/gtk/opts.c	2009-12-29 08:13:28.000000000 -0800
-+++ MPlayer-30135-new/gui/mplayer/gtk/opts.c	2009-12-29 08:18:25.000000000 -0800
+diff -Naur MPlayer-30224-old/gui/mplayer/gtk/opts.c MPlayer-30224-new/gui/mplayer/gtk/opts.c
+--- MPlayer-30224-old/gui/mplayer/gtk/opts.c	2010-01-04 22:50:48.000000000 -0800
++++ MPlayer-30224-new/gui/mplayer/gtk/opts.c	2010-01-05 15:18:23.000000000 -0800
 @@ -63,9 +63,11 @@
         GtkWidget * prEFontName;
         GtkWidget * prEDVDDevice;
@@ -480,9 +480,9 @@ diff -Naur MPlayer-30135-old/gui/mplayer/gtk/opts.c MPlayer-30135-new/gui/mplaye
    AddLabel( MSGTR_PREFERENCES_VideoCodecFamily,hbox5 );
  
    CBVFM=gtk_combo_new();
-diff -Naur MPlayer-30135-old/help/help_mp-en.h MPlayer-30135-new/help/help_mp-en.h
---- MPlayer-30135-old/help/help_mp-en.h	2009-12-29 08:13:49.000000000 -0800
-+++ MPlayer-30135-new/help/help_mp-en.h	2009-12-29 08:18:25.000000000 -0800
+diff -Naur MPlayer-30224-old/help/help_mp-en.h MPlayer-30224-new/help/help_mp-en.h
+--- MPlayer-30224-old/help/help_mp-en.h	2010-01-04 22:51:01.000000000 -0800
++++ MPlayer-30224-new/help/help_mp-en.h	2010-01-05 15:18:23.000000000 -0800
 @@ -719,6 +719,7 @@
  #define MSGTR_PREFERENCES_IDX "Rebuild index table, if needed"
  #define MSGTR_PREFERENCES_VideoCodecFamily "Video codec family:"
@@ -499,9 +499,9 @@ diff -Naur MPlayer-30135-old/help/help_mp-en.h MPlayer-30135-new/help/help_mp-en
  
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
-diff -Naur MPlayer-30135-old/libmpcodecs/dec_video.c MPlayer-30135-new/libmpcodecs/dec_video.c
---- MPlayer-30135-old/libmpcodecs/dec_video.c	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/dec_video.c	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/dec_video.c MPlayer-30224-new/libmpcodecs/dec_video.c
+--- MPlayer-30224-old/libmpcodecs/dec_video.c	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/dec_video.c	2010-01-05 15:18:39.000000000 -0800
 @@ -39,9 +39,47 @@
  int field_dominance=-1;
  
@@ -550,9 +550,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/dec_video.c MPlayer-30135-new/libmpcode
  int get_video_quality_max(sh_video_t *sh_video){
    vf_instance_t* vf=sh_video->vfilter;
    if(vf){
-diff -Naur MPlayer-30135-old/libmpcodecs/dec_video.h MPlayer-30135-new/libmpcodecs/dec_video.h
---- MPlayer-30135-old/libmpcodecs/dec_video.h	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/dec_video.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/dec_video.h MPlayer-30224-new/libmpcodecs/dec_video.h
+--- MPlayer-30224-old/libmpcodecs/dec_video.h	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/dec_video.h	2010-01-05 15:18:39.000000000 -0800
 @@ -3,6 +3,14 @@
  
  #include "libmpdemux/stheader.h"
@@ -580,10 +580,10 @@ diff -Naur MPlayer-30135-old/libmpcodecs/dec_video.h MPlayer-30135-new/libmpcode
 +extern char *video_hwaccel_name;
  
  #endif /* MPLAYER_DEC_VIDEO_H */
-diff -Naur MPlayer-30135-old/libmpcodecs/img_format.c MPlayer-30135-new/libmpcodecs/img_format.c
---- MPlayer-30135-old/libmpcodecs/img_format.c	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/img_format.c	2009-12-29 08:18:42.000000000 -0800
-@@ -69,6 +69,14 @@
+diff -Naur MPlayer-30224-old/libmpcodecs/img_format.c MPlayer-30224-new/libmpcodecs/img_format.c
+--- MPlayer-30224-old/libmpcodecs/img_format.c	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/img_format.c	2010-01-05 15:18:39.000000000 -0800
+@@ -76,6 +76,14 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
  	case IMGFMT_XVMC_IDCT_MPEG2: return "MPEG1/2 Motion Compensation and IDCT";
@@ -598,10 +598,10 @@ diff -Naur MPlayer-30135-old/libmpcodecs/img_format.c MPlayer-30135-new/libmpcod
  	case IMGFMT_VDPAU_MPEG1: return "MPEG1 VDPAU acceleration";
  	case IMGFMT_VDPAU_MPEG2: return "MPEG2 VDPAU acceleration";
  	case IMGFMT_VDPAU_H264: return "H.264 VDPAU acceleration";
-diff -Naur MPlayer-30135-old/libmpcodecs/img_format.h MPlayer-30135-new/libmpcodecs/img_format.h
---- MPlayer-30135-old/libmpcodecs/img_format.h	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/img_format.h	2009-12-29 08:18:42.000000000 -0800
-@@ -113,6 +113,26 @@
+diff -Naur MPlayer-30224-old/libmpcodecs/img_format.h MPlayer-30224-new/libmpcodecs/img_format.h
+--- MPlayer-30224-old/libmpcodecs/img_format.h	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/img_format.h	2010-01-05 15:18:39.000000000 -0800
+@@ -138,6 +138,26 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
  
@@ -628,9 +628,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/img_format.h MPlayer-30135-new/libmpcod
  // VDPAU specific format.
  #define IMGFMT_VDPAU               0x1DC80000
  #define IMGFMT_VDPAU_MASK          0xFFFF0000
-diff -Naur MPlayer-30135-old/libmpcodecs/mp_image.h MPlayer-30135-new/libmpcodecs/mp_image.h
---- MPlayer-30135-old/libmpcodecs/mp_image.h	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/mp_image.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/mp_image.h MPlayer-30224-new/libmpcodecs/mp_image.h
+--- MPlayer-30224-old/libmpcodecs/mp_image.h	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/mp_image.h	2010-01-05 15:18:39.000000000 -0800
 @@ -111,6 +111,7 @@
      // compressed formats
      if(out_fmt == IMGFMT_MPEGPES ||
@@ -639,9 +639,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/mp_image.h MPlayer-30135-new/libmpcodec
         IMGFMT_IS_VDPAU(out_fmt) || IMGFMT_IS_XVMC(out_fmt)){
  	mpi->bpp=0;
  	return;
-diff -Naur MPlayer-30135-old/libmpcodecs/vd.c MPlayer-30135-new/libmpcodecs/vd.c
---- MPlayer-30135-old/libmpcodecs/vd.c	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/vd.c	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/vd.c MPlayer-30224-new/libmpcodecs/vd.c
+--- MPlayer-30224-old/libmpcodecs/vd.c	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/vd.c	2010-01-05 15:18:39.000000000 -0800
 @@ -348,3 +348,12 @@
    if(vf->draw_slice)
      vf->draw_slice(vf,src,stride,w,h,x,y);
@@ -655,9 +655,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vd.c MPlayer-30135-new/libmpcodecs/vd.c
 +        return ctx;
 +    return NULL;
 +}
-diff -Naur MPlayer-30135-old/libmpcodecs/vd_ffmpeg.c MPlayer-30135-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-30135-old/libmpcodecs/vd_ffmpeg.c	2009-12-29 08:17:50.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/vd_ffmpeg.c	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/vd_ffmpeg.c MPlayer-30224-new/libmpcodecs/vd_ffmpeg.c
+--- MPlayer-30224-old/libmpcodecs/vd_ffmpeg.c	2010-01-05 15:17:25.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/vd_ffmpeg.c	2010-01-05 15:18:39.000000000 -0800
 @@ -14,6 +14,7 @@
  #include "fmt-conversion.h"
  
@@ -734,35 +734,7 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vd_ffmpeg.c MPlayer-30135-new/libmpcode
      if(IMGFMT_IS_VDPAU(mpi->imgfmt)) {
          avctx->draw_horiz_band= draw_slice;
      }
-@@ -644,6 +659,7 @@
-     pic->data[0]= mpi->planes[0];
-     pic->data[1]= mpi->planes[1];
-     pic->data[2]= mpi->planes[2];
-+    pic->data[3]= mpi->planes[3];
- 
- #if 0
-     assert(mpi->width >= ((width +align)&(~align)));
-@@ -668,6 +684,7 @@
-     pic->linesize[0]= mpi->stride[0];
-     pic->linesize[1]= mpi->stride[1];
-     pic->linesize[2]= mpi->stride[2];
-+    pic->linesize[3]= mpi->stride[3];
- 
-     pic->opaque = mpi;
- //printf("%X\n", (int)mpi->planes[0]);
-@@ -889,9 +906,11 @@
-         mpi->planes[0]=pic->data[0];
-         mpi->planes[1]=pic->data[1];
-         mpi->planes[2]=pic->data[2];
-+        mpi->planes[3]=pic->data[3];
-         mpi->stride[0]=pic->linesize[0];
-         mpi->stride[1]=pic->linesize[1];
-         mpi->stride[2]=pic->linesize[2];
-+        mpi->stride[3]=pic->linesize[3];
-     }
- 
-     if (!mpi->planes[0])
-@@ -921,24 +940,62 @@
+@@ -925,24 +940,62 @@
      return mpi;
  }
  
@@ -837,9 +809,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vd_ffmpeg.c MPlayer-30135-new/libmpcode
  }
 -#endif /* CONFIG_XVMC || CONFIG_VDPAU */
 +#endif /* CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU */
-diff -Naur MPlayer-30135-old/libmpcodecs/vd.h MPlayer-30135-new/libmpcodecs/vd.h
---- MPlayer-30135-old/libmpcodecs/vd.h	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/vd.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/vd.h MPlayer-30224-new/libmpcodecs/vd.h
+--- MPlayer-30224-old/libmpcodecs/vd.h	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/vd.h	2010-01-05 15:18:39.000000000 -0800
 @@ -34,6 +34,7 @@
  int mpcodecs_config_vo(sh_video_t *sh, int w, int h, unsigned int preferred_outfmt);
  mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h);
@@ -848,9 +820,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vd.h MPlayer-30135-new/libmpcodecs/vd.h
  
  #define VDFLAGS_DROPFRAME 3
  
-diff -Naur MPlayer-30135-old/libmpcodecs/vf.h MPlayer-30135-new/libmpcodecs/vf.h
---- MPlayer-30135-old/libmpcodecs/vf.h	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/vf.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/vf.h MPlayer-30224-new/libmpcodecs/vf.h
+--- MPlayer-30224-old/libmpcodecs/vf.h	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/vf.h	2010-01-05 15:18:39.000000000 -0800
 @@ -89,6 +89,7 @@
  #define VFCTRL_GET_PTS         17 /* Return last pts value that reached vf_vo*/
  #define VFCTRL_SET_DEINTERLACE 18 /* Set deinterlacing status */
@@ -859,9 +831,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vf.h MPlayer-30135-new/libmpcodecs/vf.h
  
  #include "vfcap.h"
  
-diff -Naur MPlayer-30135-old/libmpcodecs/vf_vo.c MPlayer-30135-new/libmpcodecs/vf_vo.c
---- MPlayer-30135-old/libmpcodecs/vf_vo.c	2009-12-29 08:13:18.000000000 -0800
-+++ MPlayer-30135-new/libmpcodecs/vf_vo.c	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libmpcodecs/vf_vo.c MPlayer-30224-new/libmpcodecs/vf_vo.c
+--- MPlayer-30224-old/libmpcodecs/vf_vo.c	2010-01-04 22:50:41.000000000 -0800
++++ MPlayer-30224-new/libmpcodecs/vf_vo.c	2010-01-05 15:18:39.000000000 -0800
 @@ -154,6 +154,12 @@
  	*(double *)data = vf->priv->pts;
  	return CONTROL_TRUE;
@@ -883,9 +855,9 @@ diff -Naur MPlayer-30135-old/libmpcodecs/vf_vo.c MPlayer-30135-new/libmpcodecs/v
         IMGFMT_IS_XVMC(mpi->imgfmt) || IMGFMT_IS_VDPAU(mpi->imgfmt))
  	video_out->control(VOCTRL_GET_IMAGE,mpi);
  }
-diff -Naur MPlayer-30135-old/libvo/stats.c MPlayer-30135-new/libvo/stats.c
---- MPlayer-30135-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30135-new/libvo/stats.c	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libvo/stats.c MPlayer-30224-new/libvo/stats.c
+--- MPlayer-30224-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30224-new/libvo/stats.c	2010-01-05 15:18:39.000000000 -0800
 @@ -0,0 +1,217 @@
 +#include "config.h"
 +#include "stats.h"
@@ -1104,9 +1076,9 @@ diff -Naur MPlayer-30135-old/libvo/stats.c MPlayer-30135-new/libvo/stats.c
 +#endif
 +    return error;
 +}
-diff -Naur MPlayer-30135-old/libvo/stats.h MPlayer-30135-new/libvo/stats.h
---- MPlayer-30135-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30135-new/libvo/stats.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libvo/stats.h MPlayer-30224-new/libvo/stats.h
+--- MPlayer-30224-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30224-new/libvo/stats.h	2010-01-05 15:18:39.000000000 -0800
 @@ -0,0 +1,21 @@
 +#ifndef MPLAYER_STATS_H
 +#define MPLAYER_STATS_H
@@ -1129,10 +1101,10 @@ diff -Naur MPlayer-30135-old/libvo/stats.h MPlayer-30135-new/libvo/stats.h
 +float get_cpu_usage(enum CpuUsageType type);
 +
 +#endif /* MPLAYER_STATS_H */
-diff -Naur MPlayer-30135-old/libvo/video_out.c MPlayer-30135-new/libvo/video_out.c
---- MPlayer-30135-old/libvo/video_out.c	2009-12-29 08:13:30.000000000 -0800
-+++ MPlayer-30135-new/libvo/video_out.c	2009-12-29 08:18:42.000000000 -0800
-@@ -137,6 +137,7 @@
+diff -Naur MPlayer-30224-old/libvo/video_out.c MPlayer-30224-new/libvo/video_out.c
+--- MPlayer-30224-old/libvo/video_out.c	2010-01-04 22:50:50.000000000 -0800
++++ MPlayer-30224-new/libvo/video_out.c	2010-01-05 15:18:39.000000000 -0800
+@@ -138,6 +138,7 @@
  extern vo_functions_t video_out_quartz;
  extern vo_functions_t video_out_pnm;
  extern vo_functions_t video_out_md5sum;
@@ -1140,7 +1112,7 @@ diff -Naur MPlayer-30135-old/libvo/video_out.c MPlayer-30135-new/libvo/video_out
  
  const vo_functions_t* const video_out_drivers[] =
  {
-@@ -279,6 +280,9 @@
+@@ -283,6 +284,9 @@
  #ifdef CONFIG_MD5SUM
          &video_out_md5sum,
  #endif
@@ -1150,9 +1122,9 @@ diff -Naur MPlayer-30135-old/libvo/video_out.c MPlayer-30135-new/libvo/video_out
          NULL
  };
  
-diff -Naur MPlayer-30135-old/libvo/video_out.h MPlayer-30135-new/libvo/video_out.h
---- MPlayer-30135-old/libvo/video_out.h	2009-12-29 08:13:30.000000000 -0800
-+++ MPlayer-30135-new/libvo/video_out.h	2009-12-29 08:18:42.000000000 -0800
+diff -Naur MPlayer-30224-old/libvo/video_out.h MPlayer-30224-new/libvo/video_out.h
+--- MPlayer-30224-old/libvo/video_out.h	2010-01-04 22:50:50.000000000 -0800
++++ MPlayer-30224-new/libvo/video_out.h	2010-01-05 15:18:39.000000000 -0800
 @@ -98,6 +98,10 @@
    int w,h;
  } mp_win_t;
@@ -1164,10 +1136,10 @@ diff -Naur MPlayer-30135-old/libvo/video_out.h MPlayer-30135-new/libvo/video_out
  #define VO_TRUE		1
  #define VO_FALSE	0
  #define VO_ERROR	-1
-diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
---- MPlayer-30135-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30135-new/libvo/vo_vaapi.c	2009-12-29 08:18:42.000000000 -0800
-@@ -0,0 +1,1750 @@
+diff -Naur MPlayer-30224-old/libvo/vo_vaapi.c MPlayer-30224-new/libvo/vo_vaapi.c
+--- MPlayer-30224-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
++++ MPlayer-30224-new/libvo/vo_vaapi.c	2010-01-05 15:18:39.000000000 -0800
+@@ -0,0 +1,1908 @@
 +/*
 + * VA API output module
 + *
@@ -1196,6 +1168,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +#include "subopt-helper.h"
 +#include "video_out.h"
 +#include "video_out_internal.h"
++#include "fastmemcpy.h"
 +#include "sub.h"
 +#include "x11_common.h"
 +#include "libavutil/common.h"
@@ -1239,6 +1212,11 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +                                unsigned char *src, unsigned char *srca,
 +                                int stride);
 +
++struct vaapi_surface {
++    VASurfaceID id;
++    VAImage     image;
++};
++
 +struct vaapi_equalizer {
 +    VADisplayAttribute brightness;
 +    VADisplayAttribute contrast;
@@ -1252,7 +1230,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +static uint32_t                 g_image_format;
 +static struct vo_rect           g_borders;
 +static struct vo_rect           g_output_rect;
-+static VASurfaceID              g_output_surfaces[MAX_OUTPUT_SURFACES];
++static struct vaapi_surface    *g_output_surfaces[MAX_OUTPUT_SURFACES];
 +static unsigned int             g_output_surface;
 +static int                      g_top_field_first;
 +static int                      g_deint;
@@ -1287,7 +1265,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +static int                      va_num_entrypoints;
 +static VASurfaceID             *va_surface_ids;
 +static int                      va_num_surfaces;
-+static VASurfaceID            **va_free_surfaces;
++static struct vaapi_surface   **va_free_surfaces;
 +static int                      va_free_surfaces_head_index;
 +static int                      va_free_surfaces_tail_index;
 +static VAImageFormat           *va_image_formats;
@@ -1461,6 +1439,76 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +        return has_entrypoint(entrypoint);
 +
 +    return -1;
++}
++
++static VAImageFormat *find_image_format(uint32_t fourcc)
++{
++    if (va_image_formats && va_num_image_formats > 0) {
++        int i;
++        for (i = 0; i < va_num_image_formats; i++) {
++            if (va_image_formats[i].fourcc == fourcc)
++                return &va_image_formats[i];
++        }
++    }
++    return NULL;
++}
++
++static VAImageFormat *VAImageFormat_from_imgfmt(uint32_t format)
++{
++    uint32_t fourcc = 0;
++
++    switch (format) {
++    case IMGFMT_NV12: fourcc = VA_FOURCC('N','V','1','2'); break;
++    case IMGFMT_YV12: fourcc = VA_FOURCC('Y','V','1','2'); break;
++    case IMGFMT_I420: fourcc = VA_FOURCC('I','4','2','0'); break;
++    case IMGFMT_IYUV: fourcc = VA_FOURCC('I','Y','U','V'); break;
++    }
++
++    if (fourcc)
++        return find_image_format(fourcc);
++
++    return NULL;
++}
++
++static struct vaapi_surface *alloc_vaapi_surface(unsigned int width,
++                                                 unsigned int height,
++                                                 unsigned int format)
++{
++    struct vaapi_surface *surface = NULL;
++    struct vaapi_surface **surfaces;
++    VASurfaceID *surface_ids;
++    VAStatus status;
++
++    surface = malloc(sizeof(*surface));
++    if (!surface)
++        goto error;
++
++    surfaces = realloc(va_free_surfaces,
++                       (1 + va_num_surfaces) * sizeof(surfaces[0]));
++    if (!surfaces)
++        goto error;
++
++    surface_ids = realloc(va_surface_ids,
++                          (1 + va_num_surfaces) * sizeof(surface_ids[0]));
++    if (!surface_ids)
++        goto error;
++
++    status = vaCreateSurfaces(va_context->display, width, height, format,
++                              1, &surface->id);
++    if (!check_status(status, "vaCreateSurfaces()"))
++        goto error;
++
++    va_surface_ids                    = surface_ids;
++    va_surface_ids[va_num_surfaces]   = surface->id;
++    va_free_surfaces                  = surfaces;
++    va_free_surfaces[va_num_surfaces] = surface;
++    surface->image.image_id           = VA_INVALID_ID;
++    surface->image.buf                = VA_INVALID_ID;
++    ++va_num_surfaces;
++    return surface;
++error:
++    free(surface);
++    return NULL;
 +}
 +
 +static void resize(void)
@@ -1986,6 +2034,8 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +
 +static void free_video_specific(void)
 +{
++    int i;
++
 +#if CONFIG_VAAPI_GLX
 +    if (gl_surface) {
 +        VAStatus status;
@@ -2001,6 +2051,17 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    }
 +
 +    if (va_free_surfaces) {
++        for (i = 0; i < va_num_surfaces; i++) {
++            if (!va_free_surfaces[i])
++                continue;
++            if (va_free_surfaces[i]->image.image_id != VA_INVALID_ID) {
++                vaDestroyImage(va_context->display,
++                               va_free_surfaces[i]->image.image_id);
++                va_free_surfaces[i]->image.image_id = VA_INVALID_ID;
++            }
++            free(va_free_surfaces[i]);
++            va_free_surfaces[i] = NULL;
++        }
 +        free(va_free_surfaces);
 +        va_free_surfaces = NULL;
 +    }
@@ -2026,6 +2087,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +        vaDestroySurfaces(va_context->display, va_surface_ids, va_num_surfaces);
 +        free(va_surface_ids);
 +        va_surface_ids = NULL;
++        va_num_surfaces = 0;
 +    }
 +
 +    if (va_context && va_context->config_id) {
@@ -2210,7 +2272,96 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +{
 +    VAConfigAttrib attrib;
 +    VAStatus status;
-+    int i, j, profile, entrypoint, max_entrypoints;
++    int i, j, profile, entrypoint, max_entrypoints, num_surfaces;
++
++    /* Create video surfaces */
++    if (!IMGFMT_IS_VAAPI(format))
++        num_surfaces = MAX_OUTPUT_SURFACES;
++    else {
++        switch (IMGFMT_VAAPI_CODEC(format)) {
++        case IMGFMT_VAAPI_CODEC_MPEG2:
++            num_surfaces = NUM_VIDEO_SURFACES_MPEG2;
++            break;
++        case IMGFMT_VAAPI_CODEC_MPEG4:
++            num_surfaces = NUM_VIDEO_SURFACES_MPEG4;
++            break;
++        case IMGFMT_VAAPI_CODEC_H264:
++            num_surfaces = NUM_VIDEO_SURFACES_H264;
++            break;
++        case IMGFMT_VAAPI_CODEC_VC1:
++            num_surfaces = NUM_VIDEO_SURFACES_VC1;
++            break;
++        default:
++            num_surfaces = 0;
++            break;
++        }
++        if (num_surfaces == 0)
++            return -1;
++        if (!is_direct_mapping())
++            num_surfaces = FFMIN(2 * num_surfaces, MAX_VIDEO_SURFACES);
++    }
++    for (i = 0; i < num_surfaces; i++) {
++        struct vaapi_surface *surface;
++        surface = alloc_vaapi_surface(width, height, VA_RT_FORMAT_YUV420);
++        if (!surface)
++            return -1;
++    }
++    assert(va_num_surfaces == num_surfaces);
++
++#if CONFIG_VAAPI_GLX
++    /* Create GLX surfaces */
++    if (gl_enabled) {
++        status = vaCreateSurfaceGLX(va_context->display,
++                                    GL_TEXTURE_2D, gl_texture,
++                                    &gl_surface);
++        if (!check_status(status, "vaCreateSurfaceGLX()"))
++            return -1;
++    }
++#endif
++
++    /* Create OSD data */
++    va_osd_draw_alpha     = NULL;
++    va_osd_image.image_id = VA_INVALID_ID;
++    va_osd_image.buf      = VA_INVALID_ID;
++    va_osd_subpicture     = VA_INVALID_ID;
++    for (i = 0; va_osd_info[i].format; i++) {
++        for (j = 0; j < va_num_subpic_formats; j++)
++            if (va_subpic_formats[j].fourcc == va_osd_info[i].format)
++                break;
++        if (j < va_num_subpic_formats &&
++            vaCreateImage(va_context->display, &va_subpic_formats[j],
++                          width, height, &va_osd_image) == VA_STATUS_SUCCESS) {
++            va_osd_palette = gen_osd_palette(&va_osd_image);
++            if (((!va_osd_image.num_palette_entries) ^ (!va_osd_palette)) == 0)
++                break;
++        }
++    }
++    if (va_osd_info[i].format &&
++        vaCreateSubpicture(va_context->display, va_osd_image.image_id,
++                           &va_osd_subpicture) == VA_STATUS_SUCCESS) {
++        va_osd_draw_alpha = va_osd_info[i].draw_alpha;
++        if (va_osd_palette) {
++            status = vaSetImagePalette(va_context->display,
++                                       va_osd_image.image_id, va_osd_palette);
++            check_status(status, "vaSetImagePalette()");
++        }
++        mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] Using %s surface for OSD\n",
++               string_of_VAImageFormat(&va_osd_image.format));
++    }
++
++    /* Allocate VA images */
++    if (!IMGFMT_IS_VAAPI(format)) {
++        VAImageFormat *image_format = VAImageFormat_from_imgfmt(format);
++        if (!image_format)
++            return -1;
++        for (i = 0; i < va_num_surfaces; i++) {
++            status = vaCreateImage(va_context->display, image_format,
++                                   width, height, &va_free_surfaces[i]->image);
++            if (!check_status(status, "vaCreateImage()"))
++                return -1;
++        }
++        return 0;
++    }
 +
 +    /* Check profile */
 +    profile = VAProfile_from_imgfmt(format);
@@ -2250,85 +2401,6 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    if (!check_status(status, "vaCreateConfig()"))
 +        return -1;
 +
-+    /* Create video surfaces */
-+    switch (IMGFMT_VAAPI_CODEC(format)) {
-+    case IMGFMT_VAAPI_CODEC_MPEG2:
-+        va_num_surfaces = NUM_VIDEO_SURFACES_MPEG2;
-+        break;
-+    case IMGFMT_VAAPI_CODEC_MPEG4:
-+        va_num_surfaces = NUM_VIDEO_SURFACES_MPEG4;
-+        break;
-+    case IMGFMT_VAAPI_CODEC_H264:
-+        va_num_surfaces = NUM_VIDEO_SURFACES_H264;
-+        break;
-+    case IMGFMT_VAAPI_CODEC_VC1:
-+        va_num_surfaces = NUM_VIDEO_SURFACES_VC1;
-+        break;
-+    default:
-+        va_num_surfaces = 0;
-+        break;
-+    }
-+    if (va_num_surfaces == 0)
-+        return -1;
-+    if (!is_direct_mapping())
-+        va_num_surfaces = FFMIN(2 * va_num_surfaces, MAX_VIDEO_SURFACES);
-+
-+    va_surface_ids = calloc(va_num_surfaces, sizeof(*va_surface_ids));
-+    if (!va_surface_ids)
-+        return -1;
-+
-+    status = vaCreateSurfaces(va_context->display, width, height, VA_RT_FORMAT_YUV420,
-+                              va_num_surfaces, va_surface_ids);
-+    if (!check_status(status, "vaCreateSurfaces()"))
-+        return -1;
-+
-+    va_free_surfaces = calloc(va_num_surfaces, sizeof(*va_free_surfaces));
-+    if (!va_free_surfaces)
-+        return -1;
-+    for (i = 0; i < va_num_surfaces; i++)
-+        va_free_surfaces[i] = &va_surface_ids[i];
-+
-+    /* Create OSD data */
-+    va_osd_draw_alpha     = NULL;
-+    va_osd_image.image_id = VA_INVALID_ID;
-+    va_osd_image.buf      = VA_INVALID_ID;
-+    va_osd_subpicture     = VA_INVALID_ID;
-+    for (i = 0; va_osd_info[i].format; i++) {
-+        for (j = 0; j < va_num_subpic_formats; j++)
-+            if (va_subpic_formats[j].fourcc == va_osd_info[i].format)
-+                break;
-+        if (j < va_num_subpic_formats &&
-+            vaCreateImage(va_context->display, &va_subpic_formats[j],
-+                          width, height, &va_osd_image) == VA_STATUS_SUCCESS) {
-+            va_osd_palette = gen_osd_palette(&va_osd_image);
-+            if (((!va_osd_image.num_palette_entries) ^ (!va_osd_palette)) == 0)
-+                break;
-+        }
-+    }
-+    if (va_osd_info[i].format &&
-+        vaCreateSubpicture(va_context->display, va_osd_image.image_id,
-+                           &va_osd_subpicture) == VA_STATUS_SUCCESS) {
-+        va_osd_draw_alpha = va_osd_info[i].draw_alpha;
-+        if (va_osd_palette) {
-+            status = vaSetImagePalette(va_context->display,
-+                                       va_osd_image.image_id, va_osd_palette);
-+            check_status(status, "vaSetImagePalette()");
-+        }
-+        mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] Using %s surface for OSD\n",
-+               string_of_VAImageFormat(&va_osd_image.format));
-+    }
-+
-+#if CONFIG_VAAPI_GLX
-+    /* Create GLX surfaces */
-+    if (gl_enabled) {
-+        status = vaCreateSurfaceGLX(va_context->display,
-+                                    GL_TEXTURE_2D, gl_texture,
-+                                    &gl_surface);
-+        if (!check_status(status, "vaCreateSurfaceGLX()"))
-+            return -1;
-+    }
-+#endif
-+
 +    /* Create a context for the decode pipeline */
 +    status = vaCreateContext(va_context->display, va_context->config_id,
 +                             width, height, VA_PROGRESSIVE,
@@ -2336,10 +2408,6 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +                             &va_context->context_id);
 +    if (!check_status(status, "vaCreateContext()"))
 +        return -1;
-+
-+    g_output_surface = 0;
-+    for (i = 0; i < MAX_OUTPUT_SURFACES; i++)
-+        g_output_surfaces[i] = VA_INVALID_SURFACE;
 +    return 0;
 +}
 +
@@ -2390,6 +2458,13 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    case IMGFMT_VAAPI_WMV3:
 +    case IMGFMT_VAAPI_VC1:
 +        return default_caps | VOCAP_NOSLICES;
++    case IMGFMT_NV12:
++    case IMGFMT_YV12:
++    case IMGFMT_I420:
++    case IMGFMT_IYUV:
++        if (VAImageFormat_from_imgfmt(format))
++            return default_caps;
++        break;
 +    }
 +    return 0;
 +}
@@ -2422,14 +2497,14 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    return csp;
 +}
 +
-+static void put_surface_x11(VASurfaceID surface)
++static void put_surface_x11(struct vaapi_surface *surface)
 +{
 +    VAStatus status;
 +    int i;
 +
 +    for (i = 0; i <= !!(g_deint > 1); i++) {
 +        status = vaPutSurface(va_context->display,
-+                              surface,
++                              surface->id,
 +                              vo_window,
 +                              0, 0, g_image_width, g_image_height,
 +                              g_output_rect.left,
@@ -2444,19 +2519,16 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +}
 +
 +#if CONFIG_VAAPI_GLX
-+static void put_surface_glx(VASurfaceID surface)
++static void put_surface_glx(struct vaapi_surface *surface)
 +{
 +    VAStatus status;
 +    int i;
-+
-+    if (surface == VA_INVALID_SURFACE)
-+        return;
 +
 +    if (gl_binding) {
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
 +            status = vaAssociateSurfaceGLX(va_context->display,
 +                                           gl_surface,
-+                                           surface,
++                                           surface->id,
 +                                           get_field_flags(i) | get_colorspace_flags());
 +            if (!check_status(status, "vaAssociateSurfaceGLX()"))
 +                return;
@@ -2466,7 +2538,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
 +            status = vaCopySurfaceGLX(va_context->display,
 +                                      gl_surface,
-+                                      surface,
++                                      surface->id,
 +                                      get_field_flags(i) | get_colorspace_flags());
 +
 +            if (status == VA_STATUS_ERROR_UNIMPLEMENTED) {
@@ -2598,8 +2670,6 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +
 +static void flip_page_glx(void)
 +{
-+    VAStatus status;
-+
 +    glClear(GL_COLOR_BUFFER_BIT);
 +
 +    if (gl_reflect) {
@@ -2634,9 +2704,9 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +}
 +#endif
 +
-+static void put_surface(VASurfaceID surface)
++static void put_surface(struct vaapi_surface *surface)
 +{
-+    if (surface == VA_INVALID_SURFACE)
++    if (!surface || surface->id == VA_INVALID_SURFACE)
 +        return;
 +
 +#if CONFIG_VAAPI_GLX
@@ -2650,7 +2720,36 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +static int draw_slice(uint8_t * image[], int stride[],
 +                      int w, int h, int x, int y)
 +{
++    struct vaapi_surface * const surface = va_free_surfaces[g_output_surface];
++    VAImage * const va_image = &surface->image;
++    VAStatus status;
++    uint8_t *dst, *image_data = NULL;
++
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] draw_slice(): location (%d,%d), size %dx%d\n", x, y, w, h);
++
++    status = vaMapBuffer(va_context->display, va_image->buf, &image_data);
++    if (!check_status(status, "vaMapBuffer()"))
++        return VO_FALSE;
++
++    dst = image_data + va_image->offsets[0] + y * va_image->pitches[0] + x;
++    memcpy_pic(dst, image[0], w, h, va_image->pitches[0], stride[0]);
++
++    x /= 2;
++    y /= 2;
++    w /= 2;
++    h /= 2;
++
++    dst = image_data + va_image->offsets[1] + y * va_image->pitches[1] + x;
++    memcpy_pic(dst, image[1], w, h, va_image->pitches[1], stride[1]);
++
++    if (image[2]) { /* NV12 only has two planes */
++        dst = image_data + va_image->offsets[2] + y * va_image->pitches[2] + x;
++        memcpy_pic(dst, image[2], w, h, va_image->pitches[2], stride[2]);
++    }
++
++    status = vaUnmapBuffer(va_context->display, surface->image.buf);
++    if (!check_status(status, "vaUnmapBuffer()"))
++        return VO_FALSE;
 +
 +    return VO_TRUE;
 +}
@@ -2697,26 +2796,26 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +
 +static void flip_page(void)
 +{
-+    VASurfaceID surface;
++    struct vaapi_surface *surface;
 +
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] flip_page()\n");
 +
 +    surface = g_output_surfaces[g_output_surface];
-+    if (surface != VA_INVALID_SURFACE)
++    if (surface)
 +        put_surface(surface);
 +    g_output_surface = (g_output_surface + 1) % MAX_OUTPUT_SURFACES;
 +
 +#if CONFIG_VAAPI_GLX
-+    if (gl_enabled && surface != VA_INVALID_SURFACE)
++    if (gl_enabled && surface)
 +        flip_page_glx();
 +#endif
 +}
 +
-+static VASurfaceID *get_surface(mp_image_t *mpi)
++static struct vaapi_surface *get_surface(mp_image_t *mpi)
 +{
-+    VASurfaceID *surface;
++    struct vaapi_surface *surface;
 +
-+    if (is_direct_mapping()) {
++    if (mpi->type == MP_IMGTYPE_NUMBERED && is_direct_mapping()) {
 +        assert(mpi->number < va_num_surfaces);
 +        surface = va_free_surfaces[mpi->number];
 +        return surface;
@@ -2739,7 +2838,7 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +
 +static uint32_t get_image(mp_image_t *mpi)
 +{
-+    VASurfaceID *surface;
++    struct vaapi_surface *surface;
 +
 +    if (mpi->type != MP_IMGTYPE_NUMBERED)
 +        return VO_FALSE;
@@ -2754,20 +2853,51 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    mpi->flags |= MP_IMGFLAG_DIRECT;
 +    mpi->stride[0] = mpi->stride[1] = mpi->stride[2] = mpi->stride[3] = 0;
 +    mpi->planes[0] = mpi->planes[1] = mpi->planes[2] = mpi->planes[3] = NULL;
-+    mpi->planes[0] = mpi->planes[3] = (char *)(uintptr_t)*surface;
++    mpi->planes[0] = (char *)surface;
++    mpi->planes[3] = (char *)(uintptr_t)surface->id;
 +    mpi->num_planes = 1;
 +    mpi->priv = surface;
 +
-+    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] get_image(): surface 0x%08x\n", *surface);
++    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] get_image(): surface 0x%08x\n", surface->id);
++
++    return VO_TRUE;
++}
++
++static int put_image(mp_image_t *mpi, struct vaapi_surface *surface)
++{
++    VAStatus status;
++ 
++    if ((mpi->flags & (MP_IMGFLAG_PLANAR|MP_IMGFLAG_YUV)) != (MP_IMGFLAG_PLANAR|MP_IMGFLAG_YUV))
++        return VO_FALSE;
++
++    if (!(mpi->flags & MP_IMGFLAG_DRAW_CALLBACK)) {
++        if (!draw_slice(mpi->planes, mpi->stride, mpi->w, mpi->h, 0, 0))
++            return VO_FALSE;
++    }
++
++    status = vaPutImage(va_context->display,
++                        surface->id,
++                        surface->image.image_id,
++                        mpi->x, mpi->y, mpi->w, mpi->h,
++                        mpi->x, mpi->y, mpi->w, mpi->h);
++    if (!check_status(status, "vaPutImage()"))
++        return VO_FALSE;
 +
 +    return VO_TRUE;
 +}
 +
 +static uint32_t draw_image(mp_image_t *mpi)
 +{
-+    VASurfaceID surface = (uintptr_t)mpi->planes[3];
++    struct vaapi_surface *surface = (struct vaapi_surface *)mpi->priv;
 +
-+    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] draw_image(): surface 0x%08x\n", surface);
++    if (!IMGFMT_IS_VAAPI(mpi->imgfmt)) {
++        /* XXX: no direct rendering in non-accelerated mode */
++        surface = va_free_surfaces[g_output_surface];
++        if (!put_image(mpi, surface))
++            return VO_FALSE;
++    }
++
++    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] draw_image(): surface 0x%08x\n", surface->id);
 +
 +    g_output_surfaces[g_output_surface] = surface;
 +
@@ -2794,8 +2924,8 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +        resize();
 +
 +    if ((events & (VO_EVENT_EXPOSE|VO_EVENT_RESIZE)) && g_is_paused) {
-+        VASurfaceID surface = g_output_surfaces[g_output_surface];
-+        if (surface != VA_INVALID_SURFACE)
++        struct vaapi_surface *surface = g_output_surfaces[g_output_surface];
++        if (surface)
 +            put_surface(surface);
 +    }
 +}
@@ -2918,10 +3048,10 @@ diff -Naur MPlayer-30135-old/libvo/vo_vaapi.c MPlayer-30135-new/libvo/vo_vaapi.c
 +    }
 +    return VO_NOTIMPL;
 +}
-diff -Naur MPlayer-30135-old/Makefile MPlayer-30135-new/Makefile
---- MPlayer-30135-old/Makefile	2009-12-29 08:13:56.000000000 -0800
-+++ MPlayer-30135-new/Makefile	2009-12-29 08:18:25.000000000 -0800
-@@ -619,6 +619,7 @@
+diff -Naur MPlayer-30224-old/Makefile MPlayer-30224-new/Makefile
+--- MPlayer-30224-old/Makefile	2010-01-04 22:51:03.000000000 -0800
++++ MPlayer-30224-new/Makefile	2010-01-05 15:18:23.000000000 -0800
+@@ -620,6 +620,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
  SRCS_MPLAYER-$(V4L2)          += libao2/ao_v4l2.c
@@ -2929,7 +3059,7 @@ diff -Naur MPlayer-30135-old/Makefile MPlayer-30135-new/Makefile
  SRCS_MPLAYER-$(VDPAU)         += libvo/vo_vdpau.c
  SRCS_MPLAYER-$(VESA)          += libvo/gtf.c libvo/vo_vesa.c libvo/vesa_lvo.c
  SRCS_MPLAYER-$(VIDIX)         += libvo/vo_cvidix.c \
-@@ -672,6 +673,7 @@
+@@ -673,6 +674,7 @@
                 libvo/aspect.c \
                 libvo/geometry.c \
                 libvo/spuenc.c \
