@@ -3,7 +3,7 @@ GARVERSION = 2.4.17
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-stdint_h.patch
+PATCHFILES = $(DISTNAME)-stdint_h.patch $(DISTNAME)-update_20100101.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -39,6 +39,7 @@ endif
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
