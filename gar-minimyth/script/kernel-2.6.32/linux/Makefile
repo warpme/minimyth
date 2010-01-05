@@ -13,7 +13,7 @@ PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.3.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
-#PATCHFILES += $(DISTNAME)-defaults.patch
+PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
