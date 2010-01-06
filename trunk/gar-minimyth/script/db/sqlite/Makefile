@@ -1,8 +1,8 @@
 GARNAME = sqlite
-GARVERSION = 3.6.21
+GARVERSION = 3.6.22
 CATEGORIES = db
 MASTER_SITES = http://www.sqlite.org/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(GARNAME)-amalgamation-$(GARVERSION).tar.gz
 LICENSE =
 
 DESCRIPTION = 
@@ -19,24 +19,14 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--enable-largefile \
-	--enable-threadsafe \
-	--disable-cross-thread-connections \
-	--disable-threads-override-locks \
-	--disable-releasemode \
-	--enable-tempstore=no \
-	--disable-tcl \
 	--disable-readline \
-	--disable-debug \
-	--enable-amalgamation \
-	--disable-load-extension \
-	--disable-gcov  \
+	--enable-threadsafe \
+	--enable-dynamic-extensions \
 	--with-gnu-ld
 
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
