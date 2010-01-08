@@ -213,10 +213,8 @@ sub start
     }
 
     # Hacks to deal with the fact that the names for proprietary drivers and
-    # open source drivers conflict.
-    #   the proprietary NVIDIA GL libraries conflict with the Open Source Mesa GL libraries.
-    my $dri_true    = '';
-    my $dri_false   = '#';
+    # open source drivers conflict:
+    #   The proprietary NVIDIA GL libraries conflict with the Open Source Mesa GL libraries.
     my $nvidia_true = '#';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
@@ -234,8 +232,6 @@ sub start
         }
         when (/^(nvidia)$/)
         {
-            $dri_true    = '#';
-            $dri_false   = '';
             $nvidia_true = '';
             # Include path to proprietary libraries.
             {
@@ -359,8 +355,6 @@ sub start
           '@X_DISPLAYSIZE_Y@'    => $displaysize_y                         ,
           '@X_VIRTUAL_X@'        => $virtual_x                             ,
           '@X_VIRTUAL_Y@'        => $virtual_y                             ,
-          '@DRI_TRUE@'           => $dri_true                              ,
-          '@DRI_FALSE@'          => $dri_false                             ,
           '@NVIDIA_TRUE@'        => $nvidia_true                            });
 
     $minimyth->message_output('info', "starting X ...");
