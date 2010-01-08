@@ -1,7 +1,7 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.16.2
+GARVERSION = 2.17
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.16/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.17/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -19,11 +19,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--bindir=$(ebindir) \
 	--sbindir=$(esbindir) \
 	--libdir=$(elibdir) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--disable-gtk-doc \
 	--enable-tls \
 	--enable-mount \
 	--enable-fsck \
+	--enable-libuuid \
 	--enable-uuidd \
 	--enable-libblkid \
 	--enable-nls \
@@ -32,6 +35,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-agetty \
 	--enable-cramfs \
 	--enable-switch-root \
+	--disable-pivot-root \
+	--disable-fallocate \
+	--disable-unshare \
 	--disable-elvtune \
 	--disable-init \
 	--disable-kill \
@@ -53,7 +59,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-require-password \
 	--disable-use-tty-group \
 	--disable-makeinstall-chown \
-	--with-gnu-ld
+	--disable-makeinstall-setuid \
+	--with-gnu-ld \
+	--without-slang \
+	--without-pam \
+	--without-selinux \
+	--without-audit
 
 BUILD_ARGS     = \
 	usrbinexecdir=$(bindir) \
