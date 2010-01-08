@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.6.1
+GARVERSION = 7.7
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
@@ -43,6 +43,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--enable-xcb \
+	--disable-gallium \
+	--disable-gallium-svga \
+	--disable-gallium-intel \
+	--disable-gallium-radeon \
+	--disable-gallium-nouveau \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
