@@ -66,7 +66,7 @@ pre-configure:
 	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
-xpost-install:
+post-install:
 	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@rm -f $(DESTDIR)$(libdir)/libIntelXvMC.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
