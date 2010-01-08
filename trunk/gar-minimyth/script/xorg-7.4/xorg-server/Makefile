@@ -8,7 +8,8 @@ PATCHFILES = \
 	$(DISTNAME)-xdmcp.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
-	$(DISTNAME)-remove_moduledefaults.patch
+	$(DISTNAME)-detect_nouveau.patch \
+	$(DISTNAME)-detect_radeon.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
