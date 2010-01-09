@@ -1,5 +1,5 @@
 GARNAME = libraw1394
-GARVERSION = 2.0.4
+GARVERSION = 2.0.5
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/libs/ieee1394/
 DISTFILES = $(DISTNAME).tar.bz2
