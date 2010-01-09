@@ -1,5 +1,5 @@
 GARNAME = libpng
-GARVERSION = 1.2.42
+GARVERSION = 1.4.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES  = $(DISTNAME).tar.bz2
@@ -35,15 +35,15 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libpng12.la
+	@rm -f $(DESTDIR)$(libdir)/libpng14.la
 	@rm -f $(DESTDIR)$(libdir)/libpng.la
-	@rm -f $(DESTDIR)$(bindir)-config/libpng12-config
+	@rm -f $(DESTDIR)$(bindir)-config/libpng14-config
 	@rm -f $(DESTDIR)$(bindir)-config/libpng-config
-	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng12-config
+	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng14-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng-config
 	@mkdir -p $(DESTDIR)$(bindir)-config
-	@mv $(DESTDIR)$(bindir)/libpng12-config $(DESTDIR)$(bindir)-config/libpng12-config
+	@mv $(DESTDIR)$(bindir)/libpng14-config $(DESTDIR)$(bindir)-config/libpng14-config
 	@mv $(DESTDIR)$(bindir)/libpng-config $(DESTDIR)$(bindir)-config/libpng-config
-	@$(if $(compiler_prefix), ln -s libpng12-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng12-config)
+	@$(if $(compiler_prefix), ln -s libpng14-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng14-config)
 	@$(if $(compiler_prefix), ln -s libpng-config $(DESTDIR)$(bindir)-config/$(compiler_prefix)libpng-config)
 	@$(MAKECOOKIE)

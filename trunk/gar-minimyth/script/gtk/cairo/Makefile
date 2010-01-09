@@ -45,6 +45,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-x
 
+CONFIGURE_ENV = \
+	png_REQUIRES="libpng"
+
 include ../../gar.mk
 
 pre-configure:

@@ -3,6 +3,7 @@ GARVERSION = 3.3.8b
 CATEGORIES = qt
 MASTER_SITES = ftp://ftp.trolltech.com/qt/source/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-libpng14.patch
 LICENSE = GPL2/GPL3
 
 DESCRIPTION = 
