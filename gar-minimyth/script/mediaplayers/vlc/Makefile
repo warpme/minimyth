@@ -12,7 +12,7 @@ MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSIO
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 endif
-PATCHFILES = $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-libpng14.patch $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
