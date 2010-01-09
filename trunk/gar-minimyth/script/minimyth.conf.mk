@@ -136,7 +136,7 @@ mm_NVIDIA_VERSION         ?= 190.53
 mm_XORG_VERSION           ?= 7.5
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 23011
+mm_MYTH_TRUNK_VERSION     ?= 23095
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
