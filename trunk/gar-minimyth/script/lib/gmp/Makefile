@@ -1,5 +1,5 @@
 GARNAME = gmp
-GARVERSION = 4.3.2
+GARVERSION = 5.0.0
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,9 +11,12 @@ endef
 
 DEPENDS = lang/c
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+ifeq ($(DESTIMG),build)
+BUILD_SCRIPTS     += check
+endif
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
@@ -25,6 +28,11 @@ include ../../gar.mk
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
+build-check:
+	@echo " ==> Running make check in $(WORKSRC)"
+	@$(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") -C $(WORKSRC) $(BUILD_ARGS) check
 	@$(MAKECOOKIE)
 
 post-install:
