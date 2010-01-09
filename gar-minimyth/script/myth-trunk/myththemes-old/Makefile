@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/oldthemes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-programid.patch \
 	$(DISTNAME_SHORT)-alphapulse.patch
 LICENSE = GPL2
 
