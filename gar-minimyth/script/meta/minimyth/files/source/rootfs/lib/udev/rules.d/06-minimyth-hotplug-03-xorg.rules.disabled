@@ -6,6 +6,10 @@ KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin"
 GOTO="end"
 LABEL="begin"
 
+# MiniMyth has no reason for Xorg to know about ACPI devices
+# (e.g. lid switch, power button, sleep button and video bus).
+SUBSYSTEMS=="acpi", GOTO="end"
+
 ENV{x11_driver}="evdev"
 
 ENV{mm_device_owner}="xorg"
