@@ -71,7 +71,7 @@ sub start
     }
 
     # Start the eventlircd daemon.
-    system(qq(/usr/sbin/eventlircd --keymap=/etc/eventlircd.d --socket=/var/run/lirc/lircd --release=:UP));
+    system(qq(/usr/sbin/eventlircd --evmap=/etc/eventlircd.d --socket=/var/run/lirc/lircd --release=:UP));
 
     # Start the irexec daemon.
     if ($minimyth->var_get('MM_LIRC_IREXEC_ENABLED') eq 'yes')
