@@ -674,8 +674,8 @@ $var_list{'MM_LIRC_FETCH_DEVINPUT_KEYMAP'} =
         return $auto;
     },
     value_file     => 'yes',
-    file           => {name_remote => '/devinput.keymap',
-                       name_local  => '/etc/eventlircd.d/devinput.keymap'}
+    file           => {name_remote => '/devinput.evmap',
+                       name_local  => '/etc/eventlircd.d/devinput.evmap'}
 };
 
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
