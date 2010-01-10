@@ -15,7 +15,8 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-drm_vsync_control.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
-	$(DISTNAME_SHORT)-minimyth.patch
+	$(DISTNAME_SHORT)-minimyth.patch \
+	$(DISTNAME_SHORT)-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
