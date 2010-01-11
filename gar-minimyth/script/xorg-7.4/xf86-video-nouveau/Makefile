@@ -1,7 +1,7 @@
 GARNAME = xf86-video-nouveau
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	bb1947831d9a4e080b8d1e9dba086af6527ef479, \
+	061cb284b93612848296599759b915a4d66b6d01, \
 	xxx ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
@@ -31,7 +31,6 @@ BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xorg-sgml-doctools
-
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
