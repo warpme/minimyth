@@ -1,12 +1,9 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.9.1
+GARVERSION = 2.10.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-pkg_config.patch
-ifeq ("$(GARVERSION)","2.7.1")
-PATCHFILES += $(DISTNAME)-ticket-21371.patch
-endif
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -15,12 +12,14 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
+	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -29,11 +28,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
-ifneq ("$(GARVERSION)","2.7.1")
-DEPENDS += \
-	$(CATEGORY)/dri2proto \
-	$(CATEGORY)/libXfixes
-endif
 BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
@@ -47,21 +41,14 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-dri \
 	--disable-video-debug \
 	--enable-xvmc \
+	--disable-kms-only \
 	--with-gnu-ld
-ifneq ("$(GARVERSION)","2.7.1")
-CONFIGURE_ARGS += \
-	--disable-debug \
-	--disable-shave
-ifneq ("$(GARVERSION)","2.8.1")
-CONFIGURE_ARGS += \
-	--disable-kms-only
-endif
-endif
 
 CONFIGURE_ENV = \
 	XORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
@@ -82,10 +69,5 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@rm -f $(DESTDIR)$(libdir)/libIntelXvMC.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7017.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7xxx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ivch.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/sil164.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/tfp410.la
 	@$(MAKECOOKIE)
