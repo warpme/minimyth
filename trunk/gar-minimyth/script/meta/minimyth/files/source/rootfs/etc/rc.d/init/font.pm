@@ -25,7 +25,7 @@ sub start
 
         if ($minimyth->var_get('MM_FONT_FILE_TTF_DELETE'))
         {
-            for (split(/  +/, $minimyth->var_get('MM_FONT_FILE_TTF_DELETE')))
+            for (split(/ +/, $minimyth->var_get('MM_FONT_FILE_TTF_DELETE')))
             {
                 unlink("/usr/share/fonts/X11/TTF/$_");
                 unlink("/usr/share/mythtv/$_");
@@ -33,7 +33,7 @@ sub start
         }
         if ($minimyth->var_get('MM_FONT_FILE_TTF_ADD'))
         {
-            for (split(/  +/, $minimyth->var_get('MM_FONT_FILE_TTF_ADD')))
+            for (split(/ +/, $minimyth->var_get('MM_FONT_FILE_TTF_ADD')))
             {
                 unlink("/usr/share/mythtv/$_");
                 if (-e "/usr/share/fonts/X11/TTF/$_")
