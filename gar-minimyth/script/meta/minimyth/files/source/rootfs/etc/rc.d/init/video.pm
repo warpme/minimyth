@@ -442,7 +442,7 @@ sub start
                 chomp;
                 s/^flags[[:cntrl:]]*://;
                 s/[[:cntrl:]]/ /g;
-                s/  +/ /g;
+                s/ +/ /g;
                 s/^ //;
                 s/ $//;
                 foreach (split(/ /, $_))

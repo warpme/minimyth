@@ -380,7 +380,7 @@ $var_list{'MM_X_MODELINE'} =
         my $name     = shift;
 
         my $value_clean = $minimyth->var_get($name);
-        $value_clean =~ s/  +/ /g;
+        $value_clean =~ s/ +/ /g;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
         $minimyth->var_set($name, $value_clean);
 
@@ -451,7 +451,7 @@ $var_list{'MM_X_MODELINE_0'} =
         my $name     = shift;
 
         my $value_clean = $minimyth->var_get($name);
-        $value_clean =~ s/  +/ /g;
+        $value_clean =~ s/ +/ /g;
         $value_clean =~ s/^ //;
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
@@ -471,7 +471,7 @@ $var_list{'MM_X_MODELINE_1'} =
         my $name     = shift;
 
         my $value_clean = $minimyth->var_get($name);
-        $value_clean =~ s/  +/ /g;
+        $value_clean =~ s/ +/ /g;
         $value_clean =~ s/^ //;
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;
@@ -491,7 +491,7 @@ $var_list{'MM_X_MODELINE_2'} =
         my $name     = shift;
 
         my $value_clean = $minimyth->var_get($name);
-        $value_clean =~ s/  +/ /g;
+        $value_clean =~ s/ +/ /g;
         $value_clean =~ s/^ //;
         $value_clean =~ s/ $//;
         $value_clean =~ s/^[Mm][Oo][Dd][Ee][Ll][Ii][Nn][Ee] "([0-9]+)[Xx]([0-9]+)([^"]*)" (.*)$/Modeline "$1x$2$3" $4/;

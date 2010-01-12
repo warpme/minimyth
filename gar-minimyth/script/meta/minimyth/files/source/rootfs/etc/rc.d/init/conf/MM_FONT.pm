@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use File::Basename ();
+use Regexp::Wildcards ();
 
 my %var_list;
 
@@ -25,7 +26,14 @@ $var_list{'MM_FONT_FILE_TTF_DELETE'} =
 
         if ($minimyth->var_get($name))
         {
-            my $font_match = join('|', split(/  +/, $minimyth->var_get($name)));
+            my @file_wildcard_unix   = split(/ +/, $minimyth->var_get($name));
+            my @file_wildcard_regexp = ();
+            my $rw = Regexp::Wildcards->new(type => 'unix');
+            foreach (@file_wildcard_unix)
+            {
+                push(@file_wildcard_regexp, $rw->convert($_));
+            }
+            my $font_match = join('|', @file_wildcard_regexp);
             $minimyth->var_set($name, '');
             if ((-d '/usr/share/fonts/X11/TTF') && (opendir(DIR, '/usr/share/fonts/X11/TTF')))
             {

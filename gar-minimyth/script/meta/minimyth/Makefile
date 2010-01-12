@@ -62,6 +62,7 @@ DEPENDS = \
 	perl/perl-Lchown \
 	perl/perl-MiniMyth \
 	perl/perl-RFLibs \
+	perl/perl-Regexp-Wildcards \
 	utils/pmount \
 	net/portmap \
 	system/powernowd \
