@@ -117,6 +117,84 @@ $var_list{'MM_X_FETCH_XORG_CONF'} =
 #===============================================================================
 #
 #===============================================================================
+$var_list{'MM_X_XKB_RULES'} =
+{
+    value_default => '',
+    extra         => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->file_replace_variable(
+            '/etc/default/keyboard',
+            { '@' . $name . '@' => $minimyth->var_get($name) });
+
+        return 1;
+    }
+};
+$var_list{'MM_X_XKB_LAYOUT'} =
+{
+    value_default => '',
+    extra         => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->file_replace_variable(
+            '/etc/default/keyboard',
+            { '@' . $name . '@' => $minimyth->var_get($name) });
+
+        return 1;
+    }
+};
+$var_list{'MM_X_XKB_VARIANT'} =
+{
+    value_default => '',
+    extra         => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->file_replace_variable(
+            '/etc/default/keyboard',
+            { '@' . $name . '@' => $minimyth->var_get($name) });
+
+        return 1;
+    }
+};
+$var_list{'MM_X_XKB_MODEL'} =
+{
+    value_default => '',
+    extra         => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->file_replace_variable(
+            '/etc/default/keyboard',
+            { '@' . $name . '@' => $minimyth->var_get($name) });
+
+        return 1;
+    }
+};
+$var_list{'MM_X_XKB_OPTIONS'} =
+{
+    value_default => '',
+    extra         => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        $minimyth->file_replace_variable(
+            '/etc/default/keyboard',
+            { '@' . $name . '@' => $minimyth->var_get($name) });
+
+        return 1;
+    }
+};
+#===============================================================================
+#
+#===============================================================================
 $var_list{'MM_X_OUTPUT_HDMI'} =
 {
     value_default => 'none',
