@@ -39,15 +39,34 @@ sub start
                     if ((system(qq(/usr/sbin/ifplugstatus -q $_)) >> 8) == 2)
                     {
                         $interface = $_;
+                        last;
                     }
                 }
             }
-            # No network interface was found.
-            if (! $interface)
+        }
+        if (! $interface)
+        {
+            # No connected network interface found, so use any network interface.
+            # We use the first network interface found.
+            if ((-d '/sys/class/net') &&
+                (opendir(DIR, '/sys/class/net')))
             {
-                $minimyth->message_output('info', "no network interface found, defaulting to 'eth0'.");
-                $interface = 'eth0';
+                foreach (grep((! /^\./) && (! /^lo$/), (readdir(DIR))))
+                {
+                    $interface = $_;
+                    last;
+                }
             }
+            if ($interface)
+            {
+                $minimyth->message_output('info', "no connected network interface detected, using '$interface'.");
+            }
+        }
+        if (! $interface)
+        {
+            # No network interface was found.
+            $minimyth->message_output('err', "no network interface found.");
+            return 0;
         }
 
         # If the client's address has not been manually configured, then run the DHCP client.
