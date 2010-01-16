@@ -1,9 +1,7 @@
 GARNAME = attr
 GARVERSION = 2.4.44
 CATEGORIES = lib
-MASTER_SITES  = http://download.savannah.gnu.org/releases-noredirect/attr/
-MASTER_SITES += ftp://oss.sgi.com/projects/xfs/cmd_tars/
-MASTER_SITES += ftp://oss.sgi.com/projects/xfs/previous/cmd_tars/
+MASTER_SITES = http://download.savannah.gnu.org/releases-noredirect/attr/
 DISTFILES = $(DISTNAME).src.tar.gz
 LICENSE = GPL2/LGPL2_1
 
