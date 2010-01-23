@@ -15,17 +15,19 @@ DEPENDS = lang/c
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
-BUILD_ARGS = \
-	CFLAGS='$(CFLAGS) -DVERSION="\"$(GARVERSION)\"" -D_GNU_SOURCE'
-
-BUILD_OVERRIDE_DIRS   = BINDIR SBINDIR MAN8DIR
-INSTALL_OVERRIDE_DIRS = BINDIR SBINDIR MAN8DIR
+BUILD_ARGS   = \
+	OPT="$(CFPAGS)" \
+	BINDIR=$(bindir) \
+	SBINDIR=$(sbindir) \
+	MAN8DIR=$(mandir)/man8 \
+	DOCDIR=$(docdir)/acpid
+INSTALL_ARGS = \
+	BINDIR=$(bindir) \
+	SBINDIR=$(sbindir) \
+	MAN8DIR=$(mandir)/man8 \
+	DOCDIR=$(docdir)/acpid
 
 include ../../gar.mk
-
-BINDIR  := $(bindir)
-SBINDIR := $(sbindir)
-MAN8DIR := $(mandir)/man8
 
 post-install:
 	@chmod 755 $(DESTDIR)$(sbindir)/acpid
