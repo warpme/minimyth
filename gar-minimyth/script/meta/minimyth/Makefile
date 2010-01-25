@@ -26,6 +26,7 @@ DEPENDS = \
 	utils/evtest \
 	devel/fakeroot \
 	system/g15daemon \
+	devel/glibc-locale \
 	$(if $(filter i386,$(mm_GARCH_FAMILY)),net/gpxe) \
 	disk/hdparm \
 	net/ifplugd \
