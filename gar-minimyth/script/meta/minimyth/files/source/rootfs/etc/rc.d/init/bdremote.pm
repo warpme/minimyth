@@ -33,7 +33,7 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->application_stop('bdremoteng', "starting Sony PS3 Blu-ray Disc Remote Control daemon ...");
+    $minimyth->application_stop('bdremoteng', "stopping Sony PS3 Blu-ray Disc Remote Control daemon ...");
 
     return 1;
 }
