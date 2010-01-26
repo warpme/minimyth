@@ -18,7 +18,7 @@ sub start
         $minimyth->message_output('info', "starting iguanaIR daemon ...");
         system('/usr/bin/igdaemon',
                '--log-file=/var/log/igdaemon.log',
-               '--pid-file=/var/run/igdaemon.pid')
+               '--pid-file=/var/run/igdaemon.pid');
     }
     return 1;
 }
