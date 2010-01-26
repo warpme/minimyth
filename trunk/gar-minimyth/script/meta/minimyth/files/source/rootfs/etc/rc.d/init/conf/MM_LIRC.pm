@@ -143,7 +143,6 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $device = $minimyth->var_get($name);
 
         if ( ( ! (($driver) && ($driver =~ /^bdremote$/)) ) &&
-             ( ! (($driver) && ($driver =~ /^iguanaIR$/)) ) &&
              ( ! (($driver) && ($driver =~ /^irtrans$/))  ) &&
              ( ! (($driver) && ($driver =~ /^udp$/))      ) &&
            ($device) )
