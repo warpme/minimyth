@@ -149,7 +149,6 @@ mm-all:
 		   [ ! "$${software}" = "mplayer-vld"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \
-		   [ ! "$${software}" = "perl"           ] && \
 		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "bdremote"       ] && \
