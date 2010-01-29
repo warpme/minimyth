@@ -1,5 +1,5 @@
 GARNAME = vdpau-video
-GARVERSION = 0.6.2
+GARVERSION = 0.6.3
 CATEGORIES = X11
 MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
