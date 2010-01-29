@@ -1,9 +1,9 @@
 GARNAME = udev
-GARVERSION = 150
+GARVERSION = 151
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-absolute_linux_input_h.patch
+#PATCHFILES = $(DISTNAME)-absolute_linux_input_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
