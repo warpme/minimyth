@@ -99,6 +99,22 @@ $var_list{'MM_LIRC_DRIVER'} =
 
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
 
+        # Convert driver to the the lirc daemon appropriate driver.
+        if (($driver) && (open(FILE, '-|', '/usr/sbin/lircd --driver=help 2>&1')))
+        {
+            my $driver_actual = 'default';
+            while (<FILE>)
+            {
+	        chomp;
+                s/[[:cntrl:]]//g;
+                if (/^$driver$/)
+                {
+                    $driver_actual = $_;
+                }
+            }
+            $driver = $driver_actual;
+        }
+
         $minimyth->file_replace_variable(
             '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_DRIVER@' => $driver });
