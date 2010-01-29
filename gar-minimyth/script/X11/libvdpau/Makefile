@@ -1,5 +1,5 @@
 GARNAME = libvdpau
-GARVERSION = 0.3
+GARVERSION = 0.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
 DISTFILES = $(DISTNAME).tar.gz
