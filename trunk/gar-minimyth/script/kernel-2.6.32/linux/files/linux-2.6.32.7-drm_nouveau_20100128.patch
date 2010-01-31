@@ -1,6 +1,6 @@
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc.c linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -125,6 +125,15 @@
  DRM_ENUM_NAME_FN(drm_get_tv_subconnector_name,
  		 drm_tv_subconnector_enum_list)
@@ -210,8 +210,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc.c linux-2.6.32.7-new/driv
 +	return ret;
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc_helper.c linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc_helper.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc_helper.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc_helper.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc_helper.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_crtc_helper.c	2010-01-26 20:49:28.000000000 -0800
 @@ -109,7 +109,7 @@
  
  	count = (*connector_funcs->get_modes)(connector);
@@ -268,7 +268,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_crtc_helper.c linux-2.6.32.7-n
  	drm_helper_disable_unused_functions(dev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_dp_i2c_helper.c linux-2.6.32.7-new/drivers/gpu/drm/drm_dp_i2c_helper.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/drm_dp_i2c_helper.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_dp_i2c_helper.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_dp_i2c_helper.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,209 @@
 +/*
 + * Copyright © 2009 Keith Packard
@@ -480,8 +480,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_dp_i2c_helper.c linux-2.6.32.7
 +}
 +EXPORT_SYMBOL(i2c_dp_aux_add_bus);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_drv.c linux-2.6.32.7-new/drivers/gpu/drm/drm_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -145,6 +145,8 @@
  	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETFB, drm_mode_getfb, DRM_MASTER|DRM_CONTROL_ALLOW),
  	DRM_IOCTL_DEF(DRM_IOCTL_MODE_ADDFB, drm_mode_addfb, DRM_MASTER|DRM_CONTROL_ALLOW),
@@ -586,8 +586,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_drv.c linux-2.6.32.7-new/drive
  		if (cmd & IOC_OUT) {
  			if (copy_to_user((void __user *)arg, kdata,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_edid.c linux-2.6.32.7-new/drivers/gpu/drm/drm_edid.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_edid.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_edid.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_edid.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_edid.c	2010-01-26 20:49:28.000000000 -0800
 @@ -123,18 +123,20 @@
   */
  static bool edid_is_valid(struct edid *edid)
@@ -1009,8 +1009,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_edid.c linux-2.6.32.7-new/driv
  		if (mode) {
  			drm_mode_probed_add(connector, mode);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_fb_helper.c linux-2.6.32.7-new/drivers/gpu/drm/drm_fb_helper.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_fb_helper.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_fb_helper.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_fb_helper.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_fb_helper.c	2010-01-26 20:49:28.000000000 -0800
 @@ -156,7 +156,7 @@
  			force = DRM_FORCE_ON;
  			break;
@@ -1100,8 +1100,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_fb_helper.c linux-2.6.32.7-new
  EXPORT_SYMBOL(drm_fb_helper_free);
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_fops.c linux-2.6.32.7-new/drivers/gpu/drm/drm_fops.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_fops.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_fops.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_fops.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_fops.c	2010-01-26 20:49:28.000000000 -0800
 @@ -257,6 +257,9 @@
  
  	INIT_LIST_HEAD(&priv->lhead);
@@ -1258,8 +1258,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_fops.c linux-2.6.32.7-new/driv
  }
  EXPORT_SYMBOL(drm_poll);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/drm_ioc32.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_ioc32.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_ioc32.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_ioc32.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -104,7 +104,7 @@
  			  &version->desc))
  		return -EFAULT;
@@ -1558,8 +1558,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_ioc32.c linux-2.6.32.7-new/dri
  	return ret;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_irq.c linux-2.6.32.7-new/drivers/gpu/drm/drm_irq.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_irq.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_irq.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_irq.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_irq.c	2010-01-26 20:49:28.000000000 -0800
 @@ -568,6 +568,63 @@
  	return ret;
  }
@@ -1686,8 +1686,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_irq.c linux-2.6.32.7-new/drive
  }
  EXPORT_SYMBOL(drm_handle_vblank);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_mm.c linux-2.6.32.7-new/drivers/gpu/drm/drm_mm.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_mm.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_mm.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_mm.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_mm.c	2010-01-26 20:49:28.000000000 -0800
 @@ -226,6 +226,44 @@
  }
  EXPORT_SYMBOL(drm_mm_get_block_generic);
@@ -1836,8 +1836,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_mm.c linux-2.6.32.7-new/driver
  }
  EXPORT_SYMBOL(drm_mm_dump_table);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_modes.c linux-2.6.32.7-new/drivers/gpu/drm/drm_modes.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_modes.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_modes.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_modes.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_modes.c	2010-01-26 20:49:28.000000000 -0800
 @@ -553,6 +553,32 @@
  }
  EXPORT_SYMBOL(drm_mode_height);
@@ -1881,8 +1881,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_modes.c linux-2.6.32.7-new/dri
   * FIXME: why is this needed?  shouldn't vrefresh be set already?
   *
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_stub.c linux-2.6.32.7-new/drivers/gpu/drm/drm_stub.c
---- linux-2.6.32.7-old/drivers/gpu/drm/drm_stub.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/drm_stub.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/drm_stub.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/drm_stub.c	2010-01-26 20:49:28.000000000 -0800
 @@ -128,6 +128,7 @@
  	kref_get(&master->refcount);
  	return master;
@@ -1942,7 +1942,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/drm_stub.c linux-2.6.32.7-new/driv
  	mutex_init(&dev->ctxlist_mutex);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_drv.c linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_drv.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_drv.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_drv.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,536 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -2482,7 +2482,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_drv.c linux-2.6.32.7-ne
 +module_exit(ch7006_exit);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_mode.c linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_mode.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_mode.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_mode.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_mode.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,468 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -2954,7 +2954,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_mode.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_priv.h linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_priv.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_priv.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_priv.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/ch7006_priv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,344 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -3302,15 +3302,15 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/ch7006_priv.h linux-2.6.32.7-n
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i2c/Makefile linux-2.6.32.7-new/drivers/gpu/drm/i2c/Makefile
 --- linux-2.6.32.7-old/drivers/gpu/drm/i2c/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/Makefile	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i2c/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,4 @@
 +ccflags-y := -Iinclude/drm
 +
 +ch7006-y := ch7006_drv.o ch7006_mode.o
 +obj-$(CONFIG_DRM_I2C_CH7006) += ch7006.o
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_dma.c linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_dma.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_dma.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_dma.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_dma.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_dma.c	2010-01-26 20:49:28.000000000 -0800
 @@ -115,7 +115,7 @@
  static const struct file_operations i810_buffer_fops = {
  	.open = drm_open,
@@ -3321,8 +3321,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_dma.c linux-2.6.32.7-new
  	.fasync = drm_fasync,
  };
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_drv.c linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i810/i810_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -59,7 +59,7 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -3333,8 +3333,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i810/i810_drv.c linux-2.6.32.7-new
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_dma.c linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_dma.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_dma.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_dma.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_dma.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_dma.c	2010-01-26 20:49:28.000000000 -0800
 @@ -117,7 +117,7 @@
  static const struct file_operations i830_buffer_fops = {
  	.open = drm_open,
@@ -3345,8 +3345,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_dma.c linux-2.6.32.7-new
  	.fasync = drm_fasync,
  };
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_drv.c linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i830/i830_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -70,7 +70,7 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -3357,8 +3357,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i830/i830_drv.c linux-2.6.32.7-new
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7017.c linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7017.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7017.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7017.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7017.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7017.c	2010-01-26 20:49:28.000000000 -0800
 @@ -249,7 +249,8 @@
  	if (val != CH7017_DEVICE_ID_VALUE &&
  	    val != CH7018_DEVICE_ID_VALUE &&
@@ -3397,8 +3397,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7017.c linux-2.6.32.7-n
  
  	DUMP(CH7017_HORIZONTAL_ACTIVE_PIXEL_INPUT);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7xxx.c linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7xxx.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7xxx.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7xxx.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7xxx.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ch7xxx.c	2010-01-26 20:49:28.000000000 -0800
 @@ -152,7 +152,7 @@
  	};
  
@@ -3456,8 +3456,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ch7xxx.c linux-2.6.32.7-n
  }
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ivch.c linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ivch.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ivch.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ivch.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ivch.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_ivch.c	2010-01-26 20:49:28.000000000 -0800
 @@ -202,7 +202,8 @@
  	};
  
@@ -3544,8 +3544,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_ivch.c linux-2.6.32.7-new
  
  static void ivch_save(struct intel_dvo_device *dvo)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_sil164.c linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_sil164.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_sil164.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_sil164.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_sil164.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_sil164.c	2010-01-26 20:49:28.000000000 -0800
 @@ -105,7 +105,7 @@
  	};
  
@@ -3611,8 +3611,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_sil164.c linux-2.6.32.7-n
  
  static void sil164_save(struct intel_dvo_device *dvo)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_tfp410.c linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_tfp410.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_tfp410.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_tfp410.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_tfp410.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/dvo_tfp410.c	2010-01-26 20:49:28.000000000 -0800
 @@ -130,7 +130,7 @@
  	};
  
@@ -3696,8 +3696,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/dvo_tfp410.c linux-2.6.32.7-n
  
  static void tfp410_save(struct intel_dvo_device *dvo)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_debugfs.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_debugfs.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_debugfs.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_debugfs.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_debugfs.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_debugfs.c	2010-01-26 20:49:28.000000000 -0800
 @@ -27,6 +27,7 @@
   */
  
@@ -3866,8 +3866,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_debugfs.c linux-2.6.32.7
  #endif /* CONFIG_DEBUG_FS */
 -
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_dma.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_dma.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_dma.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_dma.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_dma.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_dma.c	2010-01-26 20:49:28.000000000 -0800
 @@ -807,6 +807,12 @@
  	case I915_PARAM_NUM_FENCES_AVAIL:
  		value = dev_priv->num_fence_regs - dev_priv->fence_reg_start;
@@ -4010,8 +4010,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_dma.c linux-2.6.32.7-new
  
  int i915_max_ioctl = DRM_ARRAY_SIZE(i915_ioctls);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -329,10 +329,11 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -4026,8 +4026,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.c linux-2.6.32.7-new
  		 .compat_ioctl = i915_compat_ioctl,
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.h
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_drv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -170,6 +170,8 @@
  	/* clock gating init */
  };
@@ -4255,8 +4255,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_drv.h linux-2.6.32.7-new
  #define PRIMARY_RINGBUFFER_SIZE         (128*1024)
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -1584,7 +1584,7 @@
   *
   * Returned sequence numbers are nonzero on success.
@@ -4527,8 +4527,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem.c linux-2.6.32.7-new
  	if (ret)
  		return -EFAULT;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem_tiling.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem_tiling.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem_tiling.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem_tiling.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem_tiling.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_gem_tiling.c	2010-01-26 20:49:28.000000000 -0800
 @@ -121,7 +121,7 @@
  				     0,   pcibios_align_resource,
  				     dev_priv->bridge_dev);
@@ -4550,8 +4550,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_gem_tiling.c linux-2.6.3
  		 */
  		swizzle_x = I915_BIT_6_SWIZZLE_9_10;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_ioc32.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_ioc32.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_ioc32.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_ioc32.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -66,8 +66,7 @@
  			  &batchbuffer->cliprects))
  		return -EFAULT;
@@ -4621,8 +4621,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_ioc32.c linux-2.6.32.7-n
  	return ret;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_irq.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_irq.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_irq.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_irq.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_irq.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_irq.c	2010-01-26 20:49:28.000000000 -0800
 @@ -43,10 +43,13 @@
   * we leave them always unmasked in IMR and then control enabling them through
   * PIPESTAT alone.
@@ -5089,8 +5089,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_irq.c linux-2.6.32.7-new
  	}
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_opregion.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_opregion.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_opregion.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_opregion.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_opregion.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_opregion.c	2010-01-26 20:49:28.000000000 -0800
 @@ -118,6 +118,10 @@
  #define ASLE_BACKLIGHT_FAIL    (2<<12)
  #define ASLE_PFIT_FAIL         (2<<14)
@@ -5253,8 +5253,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_opregion.c linux-2.6.32.
  		opregion_enable_asle(dev);
  	}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_reg.h linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_reg.h
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_reg.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_reg.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_reg.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -140,6 +140,7 @@
  #define MI_NOOP			MI_INSTR(0, 0)
  #define MI_USER_INTERRUPT	MI_INSTR(0x02, 0)
@@ -5497,8 +5497,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_reg.h linux-2.6.32.7-new
  /* both Tx and Rx */
  #define  FDI_SCRAMBLING_ENABLE          (0<<7)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_suspend.c linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_suspend.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_suspend.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_suspend.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_suspend.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/i915_suspend.c	2010-01-26 20:49:28.000000000 -0800
 @@ -27,14 +27,14 @@
  #include "drmP.h"
  #include "drm.h"
@@ -5819,8 +5819,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/i915_suspend.c linux-2.6.32.7
  }
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.c	2010-01-26 20:49:28.000000000 -0800
 @@ -114,6 +114,8 @@
  	struct lvds_dvo_timing *dvo_timing;
  	struct drm_display_mode *panel_fixed_mode;
@@ -6054,8 +6054,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.c linux-2.6.32.7-n
  
  	pci_unmap_rom(pdev, bios);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.h linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.h
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_bios.h	2010-01-26 20:49:28.000000000 -0800
 @@ -549,4 +549,21 @@
  #define   SWF14_APM_STANDBY	0x1
  #define   SWF14_APM_RESTORE	0x0
@@ -6079,8 +6079,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_bios.h linux-2.6.32.7-n
 +
  #endif /* _I830_BIOS_H_ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_crt.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_crt.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_crt.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_crt.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_crt.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_crt.c	2010-01-26 20:49:28.000000000 -0800
 @@ -39,7 +39,7 @@
  	struct drm_i915_private *dev_priv = dev->dev_private;
  	u32 temp, reg;
@@ -6201,8 +6201,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_crt.c linux-2.6.32.7-ne
  	}
  	intel_output->ddc_bus = intel_i2c_create(dev, i2c_reg, "CRTDDC_A");
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_display.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_display.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_display.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_display.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_display.c	2010-01-26 20:49:28.000000000 -0800
 @@ -32,7 +32,7 @@
  #include "intel_drv.h"
  #include "i915_drm.h"
@@ -8376,8 +8376,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_display.c linux-2.6.32.
  }
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp.c	2010-01-26 20:49:28.000000000 -0800
 @@ -33,7 +33,8 @@
  #include "intel_drv.h"
  #include "i915_drm.h"
@@ -8649,7 +8649,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.c linux-2.6.32.7-new
  			       sizeof(struct intel_dp_priv), 1, GFP_KERNEL);
  	if (!intel_output)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.h linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp.h
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.h	2010-01-28 19:15:18.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.h	2010-01-28 15:06:20.000000000 -0800
 +++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp.h	1969-12-31 16:00:00.000000000 -0800
 @@ -1,144 +0,0 @@
 -/*
@@ -8797,7 +8797,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp.h linux-2.6.32.7-new
 -
 -#endif /* _INTEL_DP_H_ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp_i2c.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp_i2c.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp_i2c.c	2010-01-28 19:15:18.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp_i2c.c	2010-01-28 15:06:20.000000000 -0800
 +++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_dp_i2c.c	1969-12-31 16:00:00.000000000 -0800
 @@ -1,273 +0,0 @@
 -/*
@@ -9074,8 +9074,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_dp_i2c.c linux-2.6.32.7
 -}
 -EXPORT_SYMBOL(i2c_dp_aux_add_bus);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_drv.h linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_drv.h
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_drv.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_drv.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_drv.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_drv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -110,6 +110,32 @@
  	int clone_mask;
  };
@@ -9160,8 +9160,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_drv.h linux-2.6.32.7-ne
 +			       struct drm_file *file_priv);
  #endif /* __INTEL_DRV_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_fb.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_fb.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_fb.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_fb.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_fb.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -230,8 +230,9 @@
  	par->intel_fb = intel_fb;
  
@@ -9184,8 +9184,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_fb.c linux-2.6.32.7-new
  	return ret;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_hdmi.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_hdmi.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_hdmi.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_hdmi.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_hdmi.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_hdmi.c	2010-01-26 20:49:28.000000000 -0800
 @@ -82,7 +82,7 @@
  	/* HW workaround, need to toggle enable bit off and on for 12bpc, but
  	 * we do this anyway which shows more stable in testing.
@@ -9269,8 +9269,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_hdmi.c linux-2.6.32.7-n
  			       sizeof(struct intel_hdmi_priv), 1, GFP_KERNEL);
  	if (!intel_output)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_i2c.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_i2c.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_i2c.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_i2c.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_i2c.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_i2c.c	2010-01-26 20:49:28.000000000 -0800
 @@ -39,7 +39,7 @@
  	struct drm_i915_private *dev_priv = dev->dev_private;
  
@@ -9314,8 +9314,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_i2c.c linux-2.6.32.7-ne
  	intel_i2c_quirk_set(dev, true);
  	set_data(chan, 1);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_lvds.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_lvds.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_lvds.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_lvds.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_lvds.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_lvds.c	2010-01-26 20:49:28.000000000 -0800
 @@ -56,7 +56,7 @@
  	struct drm_i915_private *dev_priv = dev->dev_private;
  	u32 blc_pwm_ctl, reg;
@@ -9594,7 +9594,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_lvds.c linux-2.6.32.7-n
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_overlay.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_overlay.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_overlay.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_overlay.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_overlay.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1416 @@
 +/*
 + * Copyright © 2009
@@ -11013,8 +11013,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_overlay.c linux-2.6.32.
 +	}
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_sdvo.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_sdvo.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_sdvo.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_sdvo.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_sdvo.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_sdvo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -36,8 +36,6 @@
  #include "i915_drv.h"
  #include "intel_sdvo_regs.h"
@@ -11060,7 +11060,108 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_sdvo.c linux-2.6.32.7-n
  
  static u8 intel_sdvo_read_response(struct intel_output *intel_output,
  				   void *response, int response_len)
-@@ -1702,6 +1692,10 @@
+@@ -472,63 +462,14 @@
+ }
+ 
+ /**
+- * Try to read the response after issuie the DDC switch command. But it
+- * is noted that we must do the action of reading response and issuing DDC
+- * switch command in one I2C transaction. Otherwise when we try to start
+- * another I2C transaction after issuing the DDC bus switch, it will be
+- * switched to the internal SDVO register.
++ * Don't check status code from this as it switches the bus back to the
++ * SDVO chips which defeats the purpose of doing a bus switch in the first
++ * place.
+  */
+ static void intel_sdvo_set_control_bus_switch(struct intel_output *intel_output,
+ 					      u8 target)
+ {
+-	struct intel_sdvo_priv *sdvo_priv = intel_output->dev_priv;
+-	u8 out_buf[2], cmd_buf[2], ret_value[2], ret;
+-	struct i2c_msg msgs[] = {
+-		{
+-			.addr = sdvo_priv->slave_addr >> 1,
+-			.flags = 0,
+-			.len = 2,
+-			.buf = out_buf,
+-		},
+-		/* the following two are to read the response */
+-		{
+-			.addr = sdvo_priv->slave_addr >> 1,
+-			.flags = 0,
+-			.len = 1,
+-			.buf = cmd_buf,
+-		},
+-		{
+-			.addr = sdvo_priv->slave_addr >> 1,
+-			.flags = I2C_M_RD,
+-			.len = 1,
+-			.buf = ret_value,
+-		},
+-	};
+-
+-	intel_sdvo_debug_write(intel_output, SDVO_CMD_SET_CONTROL_BUS_SWITCH,
+-					&target, 1);
+-	/* write the DDC switch command argument */
+-	intel_sdvo_write_byte(intel_output, SDVO_I2C_ARG_0, target);
+-
+-	out_buf[0] = SDVO_I2C_OPCODE;
+-	out_buf[1] = SDVO_CMD_SET_CONTROL_BUS_SWITCH;
+-	cmd_buf[0] = SDVO_I2C_CMD_STATUS;
+-	cmd_buf[1] = 0;
+-	ret_value[0] = 0;
+-	ret_value[1] = 0;
+-
+-	ret = i2c_transfer(intel_output->i2c_bus, msgs, 3);
+-	if (ret != 3) {
+-		/* failure in I2C transfer */
+-		DRM_DEBUG_KMS("I2c transfer returned %d\n", ret);
+-		return;
+-	}
+-	if (ret_value[0] != SDVO_CMD_STATUS_SUCCESS) {
+-		DRM_DEBUG_KMS("DDC switch command returns response %d\n",
+-					ret_value[0]);
+-		return;
+-	}
+-	return;
++	intel_sdvo_write_cmd(intel_output, SDVO_CMD_SET_CONTROL_BUS_SWITCH, &target, 1);
+ }
+ 
+ static bool intel_sdvo_set_target_input(struct intel_output *intel_output, bool target_0, bool target_1)
+@@ -1638,32 +1579,6 @@
+ 	edid = drm_get_edid(&intel_output->base,
+ 			    intel_output->ddc_bus);
+ 
+-	/* This is only applied to SDVO cards with multiple outputs */
+-	if (edid == NULL && intel_sdvo_multifunc_encoder(intel_output)) {
+-		uint8_t saved_ddc, temp_ddc;
+-		saved_ddc = sdvo_priv->ddc_bus;
+-		temp_ddc = sdvo_priv->ddc_bus >> 1;
+-		/*
+-		 * Don't use the 1 as the argument of DDC bus switch to get
+-		 * the EDID. It is used for SDVO SPD ROM.
+-		 */
+-		while(temp_ddc > 1) {
+-			sdvo_priv->ddc_bus = temp_ddc;
+-			edid = drm_get_edid(&intel_output->base,
+-				intel_output->ddc_bus);
+-			if (edid) {
+-				/*
+-				 * When we can get the EDID, maybe it is the
+-				 * correct DDC bus. Update it.
+-				 */
+-				sdvo_priv->ddc_bus = temp_ddc;
+-				break;
+-			}
+-			temp_ddc >>= 1;
+-		}
+-		if (edid == NULL)
+-			sdvo_priv->ddc_bus = saved_ddc;
+-	}
+ 	/* when there is no edid and no monitor is connected with VGA
+ 	 * port, try to use the CRT ddc to read the EDID for DVI-connector
+ 	 */
+@@ -1702,6 +1617,10 @@
  
  	intel_sdvo_write_cmd(intel_output,
  			     SDVO_CMD_GET_ATTACHED_DISPLAYS, NULL, 0);
@@ -11072,8 +11173,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_sdvo.c linux-2.6.32.7-n
  
  	DRM_DEBUG_KMS("SDVO response %d %d\n", response & 0xff, response >> 8);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_tv.c linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_tv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_tv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_tv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_tv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/intel_tv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -1413,16 +1413,16 @@
  	 *  0 0 0 Component
  	 */
@@ -11149,8 +11250,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/intel_tv.c linux-2.6.32.7-new
  	if (!dev_priv->int_tv_support)
  		return;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/Makefile linux-2.6.32.7-new/drivers/gpu/drm/i915/Makefile
---- linux-2.6.32.7-old/drivers/gpu/drm/i915/Makefile	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/i915/Makefile	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/i915/Makefile	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/i915/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -15,7 +15,6 @@
  	  intel_lvds.o \
  	  intel_bios.o \
@@ -11168,8 +11269,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/i915/Makefile linux-2.6.32.7-new/d
  	  dvo_ch7017.o \
  	  dvo_ivch.o \
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/Makefile linux-2.6.32.7-new/drivers/gpu/drm/Makefile
---- linux-2.6.32.7-old/drivers/gpu/drm/Makefile	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/Makefile	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/Makefile	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -15,7 +15,7 @@
  
  drm-$(CONFIG_COMPAT) += drm_ioc32.o
@@ -11188,8 +11289,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/Makefile linux-2.6.32.7-new/driver
 +obj-$(CONFIG_DRM_NOUVEAU) +=nouveau/
 +obj-y			+= i2c/
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_drv.c linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -68,7 +68,7 @@
  		.owner = THIS_MODULE,
  		.open = drm_open,
@@ -11200,8 +11301,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_drv.c linux-2.6.32.7-new/d
  		.poll = drm_poll,
  		.fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_ioc32.c
---- linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_ioc32.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_ioc32.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_ioc32.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/mga/mga_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -100,8 +100,7 @@
  	if (err)
  		return -EFAULT;
@@ -11248,7 +11349,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/mga/mga_ioc32.c linux-2.6.32.7-new
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Kconfig linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Kconfig
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Kconfig	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Kconfig	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Kconfig	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,44 @@
 +config DRM_NOUVEAU
 +	tristate "Nouveau (nVidia) cards"
@@ -11296,7 +11397,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Kconfig linux-2.6.32.7-new
 +endmenu
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Makefile linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Makefile
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Makefile	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,32 @@
 +#
 +# Makefile for the drm device driver.  This driver provides support for the
@@ -11332,7 +11433,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/Makefile linux-2.6.32.7-ne
 +obj-$(CONFIG_DRM_NOUVEAU)+= nouveau.o
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_acpi.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_acpi.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_acpi.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_acpi.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_acpi.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,125 @@
 +#include <linux/pci.h>
 +#include <linux/acpi.h>
@@ -11461,7 +11562,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_acpi.c linux-2.6.3
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_backlight.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_backlight.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_backlight.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_backlight.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_backlight.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,155 @@
 +/*
 + * Copyright (C) 2009 Red Hat <mjg@redhat.com>
@@ -11620,7 +11721,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_backlight.c linux-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,6051 @@
 +/*
 + * Copyright 2005-2006 Erik Waling
@@ -17675,7 +17776,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.c linux-2.6.3
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bios.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,290 @@
 +/*
 + * Copyright 2007-2008 Nouveau Project
@@ -17969,7 +18070,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bios.h linux-2.6.3
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bo.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_bo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,773 @@
 +/*
 + * Copyright 2007 Dave Airlied
@@ -18746,7 +18847,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_bo.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_calc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_calc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_calc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_calc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_calc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,478 @@
 +/*
 + * Copyright 1993-2003 NVIDIA, Corporation
@@ -19228,7 +19329,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_calc.c linux-2.6.3
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_channel.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_channel.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_channel.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_channel.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_channel.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,431 @@
 +/*
 + * Copyright 2005-2006 Stephane Marchesin
@@ -19663,7 +19764,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_channel.c linux-2.
 +int nouveau_max_ioctl = DRM_ARRAY_SIZE(nouveau_ioctls);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,845 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -20512,7 +20613,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.c linux-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_connector.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -20570,7 +20671,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_connector.h linux-
 +#endif /* __NOUVEAU_CONNECTOR_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_crtc.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_crtc.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_crtc.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_crtc.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_crtc.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,95 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -20669,7 +20770,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_crtc.h linux-2.6.3
 +#endif /* __NOUVEAU_CRTC_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_debugfs.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_debugfs.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_debugfs.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_debugfs.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_debugfs.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,155 @@
 +/*
 + * Copyright (C) 2009 Red Hat <bskeggs@redhat.com>
@@ -20828,7 +20929,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_debugfs.c linux-2.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_display.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_display.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_display.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_display.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_display.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,115 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -20947,7 +21048,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_display.c linux-2.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,244 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -21195,7 +21296,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dma.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,159 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -21358,7 +21459,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dma.h linux-2.6.32
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dp.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dp.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dp.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dp.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_dp.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,575 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -21937,8 +22038,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_dp.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.c	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,413 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.c	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,421 @@
 +/*
 + * Copyright 2005 Stephane Marchesin.
 + * All Rights Reserved.
@@ -21997,7 +22098,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.c linux-2.6.32
 +module_param_named(vram_pushbuf, nouveau_vram_pushbuf, int, 0400);
 +
 +MODULE_PARM_DESC(vram_notify, "Force DMA notifiers to be in VRAM");
-+int nouveau_vram_notify;
++int nouveau_vram_notify = 1;
 +module_param_named(vram_notify, nouveau_vram_notify, int, 0400);
 +
 +MODULE_PARM_DESC(duallink, "Allow dual-link TMDS (>=GeForce 8)");
@@ -22015,6 +22116,14 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.c linux-2.6.32
 +MODULE_PARM_DESC(ignorelid, "Ignore ACPI lid status");
 +int nouveau_ignorelid = 0;
 +module_param_named(ignorelid, nouveau_ignorelid, int, 0400);
++
++MODULE_PARM_DESC(noagp, "Disable all acceleration");
++int nouveau_noaccel = 0;
++module_param_named(noaccel, nouveau_noaccel, int, 0400);
++
++MODULE_PARM_DESC(noagp, "Disable fbcon acceleration");
++int nouveau_nofbaccel = 0;
++module_param_named(nofbaccel, nouveau_nofbaccel, int, 0400);
 +
 +MODULE_PARM_DESC(tv_norm, "Default TV norm.\n"
 +		 "\t\tSupported: PAL, PAL-M, PAL-N, PAL-Nc, NTSC-M, NTSC-J,\n"
@@ -22354,8 +22463,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.c linux-2.6.32
 +MODULE_LICENSE("GPL and additional rights");
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.h	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,1348 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_drv.h	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,1350 @@
 +/*
 + * Copyright 2005 Stephane Marchesin.
 + * All Rights Reserved.
@@ -23036,6 +23145,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.h linux-2.6.32
 +extern char *nouveau_vbios;
 +extern int nouveau_ctxfw;
 +extern int nouveau_ignorelid;
++extern int nouveau_nofbaccel;
++extern int nouveau_noaccel;
 +
 +/* nouveau_state.c */
 +extern void nouveau_preclose(struct drm_device *dev, struct drm_file *);
@@ -23706,7 +23817,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_drv.h linux-2.6.32
 +#endif /* __NOUVEAU_DRV_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_encoder.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_encoder.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_encoder.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_encoder.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_encoder.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,91 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -23801,8 +23912,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_encoder.h linux-2.
 +#endif /* __NOUVEAU_ENCODER_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.c	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,389 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.c	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,393 @@
 +/*
 + * Copyright © 2007 David Airlie
 + *
@@ -24072,8 +24183,12 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.c linux-2.6.
 +	dev_priv->fbdev_info = info;
 +
 +	strcpy(info->fix.id, "nouveaufb");
-+	info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA |
-+		      FBINFO_HWACCEL_FILLRECT | FBINFO_HWACCEL_IMAGEBLIT;
++	if (nouveau_nofbaccel)
++		info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_DISABLED;
++	else
++		info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA |
++			      FBINFO_HWACCEL_FILLRECT |
++			      FBINFO_HWACCEL_IMAGEBLIT;
 +	info->fbops = &nouveau_fbcon_ops;
 +	info->fix.smem_start = dev->mode_config.fb_base + nvbo->bo.offset -
 +			       dev_priv->vm_vram_base;
@@ -24121,7 +24236,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.c linux-2.6.
 +	par->nouveau_fb = nouveau_fb;
 +	par->dev = dev;
 +
-+	if (dev_priv->channel) {
++	if (dev_priv->channel && !nouveau_nofbaccel) {
 +		switch (dev_priv->card_type) {
 +		case NV_50:
 +			nv50_fbcon_accel_init(info);
@@ -24194,7 +24309,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fbcon.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,48 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -24246,7 +24361,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fbcon.h linux-2.6.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fb.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fb.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fb.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fb.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fb.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,47 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -24297,7 +24412,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fb.h linux-2.6.32.
 +#endif /* __NOUVEAU_FB_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fence.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fence.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fence.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fence.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_fence.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,262 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -24563,7 +24678,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_fence.c linux-2.6.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_gem.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_gem.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_gem.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_gem.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_gem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,992 @@
 +/*
 + * Copyright (C) 2008 Ben Skeggs.
@@ -25559,7 +25674,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_gem.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,161 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -25724,7 +25839,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_grctx.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,133 @@
 +#ifndef __NOUVEAU_GRCTX_H__
 +#define __NOUVEAU_GRCTX_H__
@@ -25861,7 +25976,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_grctx.h linux-2.6.
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1080 @@
 +/*
 + * Copyright 2006 Dave Airlie
@@ -26945,7 +27060,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.c linux-2.6.32.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_hw.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,455 @@
 +/*
 + * Copyright 2008 Stuart Bennett
@@ -27404,7 +27519,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_hw.h linux-2.6.32.
 +#endif	/* __NOUVEAU_HW_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,269 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -27677,7 +27792,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_i2c.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,52 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -27733,7 +27848,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_i2c.h linux-2.6.32
 +#endif /* __NOUVEAU_I2C_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ioc32.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ioc32.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ioc32.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,70 @@
 +/**
 + * \file mga_ioc32.c
@@ -27807,7 +27922,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ioc32.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_irq.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_irq.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_irq.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_irq.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_irq.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,710 @@
 +/*
 + * Copyright (C) 2006 Ben Skeggs.
@@ -28521,7 +28636,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_irq.c linux-2.6.32
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_mem.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_mem.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_mem.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_mem.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_mem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,668 @@
 +/*
 + * Copyright (C) The Weather Channel, Inc.  2002.  All Rights Reserved.
@@ -29193,8 +29308,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_mem.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_notifier.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_notifier.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_notifier.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_notifier.c	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,196 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_notifier.c	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,203 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
 + *
@@ -29231,15 +29346,20 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_notifier.c linux-2
 +{
 +	struct drm_device *dev = chan->dev;
 +	struct nouveau_bo *ntfy = NULL;
++	uint32_t flags;
 +	int ret;
 +
-+	ret = nouveau_gem_new(dev, NULL, PAGE_SIZE, 0, nouveau_vram_notify ?
-+			      TTM_PL_FLAG_VRAM : TTM_PL_FLAG_TT,
++	if (nouveau_vram_notify)
++		flags = TTM_PL_FLAG_VRAM;
++	else
++		flags = TTM_PL_FLAG_TT;
++
++	ret = nouveau_gem_new(dev, NULL, PAGE_SIZE, 0, flags,
 +			      0, 0x0000, false, true, &ntfy);
 +	if (ret)
 +		return ret;
 +
-+	ret = nouveau_bo_pin(ntfy, TTM_PL_FLAG_VRAM);
++	ret = nouveau_bo_pin(ntfy, flags);
 +	if (ret)
 +		goto out_err;
 +
@@ -29325,6 +29445,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_notifier.c linux-2
 +			target = NV_DMA_TARGET_PCI;
 +		} else {
 +			target = NV_DMA_TARGET_AGP;
++			if (dev_priv->card_type >= NV_50)
++				offset += dev_priv->vm_gart_base;
 +		}
 +	} else {
 +		NV_ERROR(dev, "Bad DMA target, mem_type %d!\n",
@@ -29393,7 +29515,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_notifier.c linux-2
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_object.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_object.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_object.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_object.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_object.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1294 @@
 +/*
 + * Copyright (C) 2006 Ben Skeggs.
@@ -30691,8 +30813,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_object.c linux-2.6
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_reg.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_reg.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_reg.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_reg.h	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,836 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_reg.h	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,837 @@
 +
 +
 +#define NV03_BOOT_0                                        0x00100000
@@ -30794,6 +30916,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_reg.h linux-2.6.32
 + * the card will hang early on in the X init process.
 + */
 +#    define NV_PMC_ENABLE_UNK13                               (1<<13)
++#define NV40_PMC_GRAPH_UNITS				   0x00001540
 +#define NV40_PMC_BACKLIGHT				   0x000015f0
 +#	define NV40_PMC_BACKLIGHT_MASK			   0x001f0000
 +#define NV40_PMC_1700                                      0x00001700
@@ -31531,7 +31654,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_reg.h linux-2.6.32
 +#define NV50_PDISPLAY_CURSOR_USER_POS(i)             ((i) * 0x1000 + 0x00647084)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_sgdma.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_sgdma.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_sgdma.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_sgdma.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_sgdma.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,321 @@
 +#include "drmP.h"
 +#include "nouveau_drv.h"
@@ -31856,8 +31979,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_sgdma.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_state.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_state.c	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,872 @@
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_state.c	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,889 @@
 +/*
 + * Copyright 2005 Stephane Marchesin
 + * Copyright 2008 Stuart Bennett
@@ -32287,15 +32410,19 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.
 +	if (ret)
 +		goto out_timer;
 +
-+	/* PGRAPH */
-+	ret = engine->graph.init(dev);
-+	if (ret)
-+		goto out_fb;
++	if (nouveau_noaccel)
++		engine->graph.accel_blocked = true;
++	else {
++		/* PGRAPH */
++		ret = engine->graph.init(dev);
++		if (ret)
++			goto out_fb;
 +
-+	/* PFIFO */
-+	ret = engine->fifo.init(dev);
-+	if (ret)
-+		goto out_graph;
++		/* PFIFO */
++		ret = engine->fifo.init(dev);
++		if (ret)
++			goto out_graph;
++	}
 +
 +	/* this call irq_preinstall, register irq handler and
 +	 * call irq_postinstall
@@ -32339,9 +32466,11 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.
 +out_irq:
 +	drm_irq_uninstall(dev);
 +out_fifo:
-+	engine->fifo.takedown(dev);
++	if (!nouveau_noaccel)
++		engine->fifo.takedown(dev);
 +out_graph:
-+	engine->graph.takedown(dev);
++	if (!nouveau_noaccel)
++		engine->graph.takedown(dev);
 +out_fb:
 +	engine->fb.takedown(dev);
 +out_timer:
@@ -32378,8 +32507,10 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.
 +			dev_priv->channel = NULL;
 +		}
 +
-+		engine->fifo.takedown(dev);
-+		engine->graph.takedown(dev);
++		if (!nouveau_noaccel) {
++			engine->fifo.takedown(dev);
++			engine->graph.takedown(dev);
++		}
 +		engine->fb.takedown(dev);
 +		engine->timer.takedown(dev);
 +		engine->mc.takedown(dev);
@@ -32677,6 +32808,15 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.
 +	case NOUVEAU_GETPARAM_VM_VRAM_BASE:
 +		getparam->value = dev_priv->vm_vram_base;
 +		break;
++	case NOUVEAU_GETPARAM_GRAPH_UNITS:
++		/* NV40 and NV50 versions are quite different, but register
++		 * address is the same. User is supposed to know the card
++		 * family anyway... */
++		if (dev_priv->chipset >= 0x40) {
++			getparam->value = nv_rd32(dev, NV40_PMC_GRAPH_UNITS);
++			break;
++		}
++		/* FALLTHRU */
 +	default:
 +		NV_ERROR(dev, "unknown parameter %lld\n", getparam->param);
 +		return -EINVAL;
@@ -32732,7 +32872,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_state.c linux-2.6.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ttm.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ttm.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ttm.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ttm.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nouveau_ttm.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,103 @@
 +/*
 + * Copyright (c) 2007-2008 Tungsten Graphics, Inc., Cedar Park, TX., USA,
@@ -32839,7 +32979,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nouveau_ttm.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_crtc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_crtc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_crtc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_crtc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_crtc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1002 @@
 +/*
 + * Copyright 1993-2003 NVIDIA, Corporation
@@ -33845,7 +33985,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_crtc.c linux-2.6.32.7
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_cursor.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_cursor.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_cursor.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_cursor.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_cursor.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,70 @@
 +#include "drmP.h"
 +#include "drm_mode.h"
@@ -33919,7 +34059,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_cursor.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dac.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dac.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dac.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dac.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dac.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,527 @@
 +/*
 + * Copyright 2003 NVIDIA, Corporation
@@ -34450,7 +34590,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dac.c linux-2.6.32.7-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dfp.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dfp.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dfp.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dfp.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_dfp.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,623 @@
 +/*
 + * Copyright 2003 NVIDIA, Corporation
@@ -35077,7 +35217,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_dfp.c linux-2.6.32.7-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_display.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_display.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_display.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_display.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_display.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,287 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -35368,7 +35508,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_display.c linux-2.6.3
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fb.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fb.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fb.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,21 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -35393,7 +35533,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fb.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fbcon.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fbcon.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fbcon.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fbcon.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fbcon.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,315 @@
 +/*
 + * Copyright 2009 Ben Skeggs
@@ -35712,7 +35852,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fbcon.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fifo.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fifo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fifo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fifo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_fifo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,305 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -36021,7 +36161,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_fifo.c linux-2.6.32.7
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_graph.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_graph.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_graph.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_graph.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_graph.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,584 @@
 +/*
 + * Copyright 2007 Stephane Marchesin
@@ -36609,7 +36749,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_graph.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_instmem.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_instmem.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_instmem.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_instmem.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_instmem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,208 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -36821,7 +36961,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_instmem.c linux-2.6.3
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_mc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_mc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_mc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_mc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_mc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,20 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -36845,7 +36985,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_mc.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_timer.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_timer.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_timer.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_timer.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_timer.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,51 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -36900,7 +37040,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_timer.c linux-2.6.32.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_tv.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_tv.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_tv.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_tv.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv04_tv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,305 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -37209,7 +37349,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv04_tv.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fb.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fb.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fb.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,44 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -37257,7 +37397,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fb.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fifo.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fifo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fifo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fifo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_fifo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,260 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -37521,7 +37661,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_fifo.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_graph.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_graph.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_graph.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_graph.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv10_graph.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1009 @@
 +/*
 + * Copyright 2007 Matthieu CASTET <castet.matthieu@free.fr>
@@ -38534,7 +38674,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv10_graph.c linux-2.6.32.
 +};
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_gpio.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_gpio.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_gpio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_gpio.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_gpio.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,92 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -38630,7 +38770,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_gpio.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,776 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -39410,7 +39550,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,156 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -39570,7 +39710,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv.h linux-2.6.32.7-n
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv_modes.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv_modes.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv_modes.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv_modes.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv17_tv_modes.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,583 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -40157,7 +40297,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv17_tv_modes.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv20_graph.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv20_graph.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv20_graph.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv20_graph.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv20_graph.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,775 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -40936,7 +41076,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv20_graph.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fb.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fb.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fb.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,75 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -41015,7 +41155,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fb.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fifo.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fifo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fifo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fifo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_fifo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,314 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -41333,7 +41473,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_fifo.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_graph.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_graph.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_graph.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_graph.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_graph.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,406 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -41743,7 +41883,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_graph.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_grctx.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_grctx.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_grctx.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_grctx.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_grctx.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,678 @@
 +/*
 + * Copyright 2009 Red Hat Inc.
@@ -42425,7 +42565,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_grctx.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_mc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_mc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_mc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_mc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv40_mc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,38 @@
 +#include "drmP.h"
 +#include "drm.h"
@@ -42467,7 +42607,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv40_mc.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_crtc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_crtc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_crtc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_crtc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_crtc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,789 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -43260,7 +43400,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_crtc.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_cursor.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_cursor.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_cursor.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_cursor.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_cursor.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,156 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -43420,7 +43560,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_cursor.c linux-2.6.32
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_dac.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_dac.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_dac.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_dac.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_dac.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,304 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -43728,7 +43868,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_dac.c linux-2.6.32.7-
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1032 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -44764,7 +44904,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.c linux-2.6.3
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_display.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,46 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -44814,7 +44954,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_display.h linux-2.6.3
 +#endif /* __NV50_DISPLAY_H__ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_evo.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_evo.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_evo.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_evo.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_evo.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,113 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -44931,7 +45071,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_evo.h linux-2.6.32.7-
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fbcon.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fbcon.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fbcon.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fbcon.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fbcon.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,270 @@
 +#include "drmP.h"
 +#include "nouveau_drv.h"
@@ -45205,7 +45345,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fbcon.c linux-2.6.32.
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fifo.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fifo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fifo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fifo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_fifo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,492 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -45701,7 +45841,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_fifo.c linux-2.6.32.7
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_graph.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_graph.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_graph.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_graph.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_graph.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,390 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -46095,7 +46235,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_graph.c linux-2.6.32.
 +};
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_instmem.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_instmem.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_instmem.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_instmem.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_instmem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,509 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -46608,7 +46748,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_instmem.c linux-2.6.3
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_mc.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_mc.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_mc.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_mc.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_mc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,40 @@
 +/*
 + * Copyright (C) 2007 Ben Skeggs.
@@ -46652,7 +46792,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_mc.c linux-2.6.32.7-n
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_sor.c linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_sor.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_sor.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_sor.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nv50_sor.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,322 @@
 +/*
 + * Copyright (C) 2008 Maarten Maathuis.
@@ -46978,7 +47118,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nv50_sor.c linux-2.6.32.7-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nvreg.h linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nvreg.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nvreg.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nvreg.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/nouveau/nvreg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,535 @@
 +/* $XConsortium: nvreg.h /main/2 1996/10/28 05:13:41 kaleb $ */
 +/*
@@ -47516,8 +47656,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/nouveau/nvreg.h linux-2.6.32.7-new
 +
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_drv.c linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -64,7 +64,7 @@
  		.owner = THIS_MODULE,
  		.open = drm_open,
@@ -47528,8 +47668,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_drv.c linux-2.6.32.7-new
  		.poll = drm_poll,
  		.fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_ioc32.c
---- linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_ioc32.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_ioc32.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_ioc32.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/r128/r128_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -95,8 +95,7 @@
  			  &init->agp_textures_offset))
  		return -EFAULT;
@@ -47585,8 +47725,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/r128/r128_ioc32.c linux-2.6.32.7-n
  	return ret;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_crtc.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_crtc.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_crtc.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_crtc.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_crtc.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_crtc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -249,15 +249,13 @@
  		if (ASIC_IS_DCE3(rdev))
  			atombios_enable_crtc_memreq(crtc, 1);
@@ -47702,7 +47842,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_crtc.c linux-2.6.3
  	/* Bytes per pixel may have changed */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_dp.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_dp.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_dp.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_dp.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios_dp.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,790 @@
 +/*
 + * Copyright 2007-8 Advanced Micro Devices, Inc.
@@ -48495,8 +48635,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios_dp.c linux-2.6.32.
 +}
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atombios.h	2010-01-26 20:49:28.000000000 -0800
 @@ -2680,7 +2680,7 @@
  typedef struct _ATOM_HPD_INT_RECORD {
  	ATOM_COMMON_RECORD_HEADER sheader;
@@ -48507,8 +48647,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atombios.h linux-2.6.32.7-n
  
  typedef struct _ATOM_OUTPUT_PROTECTION_RECORD {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.c	2010-01-26 20:49:28.000000000 -0800
 @@ -263,10 +263,10 @@
  	case ATOM_ARG_FB:
  		idx = U8(*ptr);
@@ -48564,8 +48704,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.c linux-2.6.32.7-new/d
 +	return 0;
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/atom.h	2010-01-26 20:49:28.000000000 -0800
 @@ -132,6 +132,7 @@
  	uint8_t shift;
  	int cs_equal, cs_above;
@@ -48583,8 +48723,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/atom.h linux-2.6.32.7-new/d
  #include "atombios.h"
  #include "ObjectID.h"
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/Makefile linux-2.6.32.7-new/drivers/gpu/drm/radeon/Makefile
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/Makefile	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/Makefile	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/Makefile	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -49,7 +49,7 @@
  	radeon_cs.o radeon_bios.o radeon_benchmark.o r100.o r300.o r420.o \
  	rs400.o rs600.o rs690.o rv515.o r520.o r600.o rv770.o radeon_test.o \
@@ -48595,8 +48735,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/Makefile linux-2.6.32.7-new
  radeon-$(CONFIG_COMPAT) += radeon_ioc32.o
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100.c	2010-01-26 20:49:28.000000000 -0800
 @@ -65,6 +65,95 @@
   * r100,rv100,rs100,rv200,rs200,r200,rv250,rs300,rv280
   */
@@ -49157,8 +49297,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100.c linux-2.6.32.7-new/d
  		return r;
  	if (rdev->flags & RADEON_IS_PCI) {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100_track.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100_track.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100_track.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100_track.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100_track.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r100_track.h	2010-01-26 20:49:28.000000000 -0800
 @@ -10,26 +10,30 @@
   * CS functions
   */
@@ -49204,8 +49344,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r100_track.h linux-2.6.32.7
  
  struct r100_cs_track_limits {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r200.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r200.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r200.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r200.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r200.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r200.c	2010-01-26 20:49:28.000000000 -0800
 @@ -401,7 +401,6 @@
  		case R200_TXFORMAT_Y8:
  			track->textures[i].cpp = 1;
@@ -49233,8 +49373,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r200.c linux-2.6.32.7-new/d
  		}
  		track->textures[i].cube_info[4].width = 1 << ((idx_value >> 16) & 0xf);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300.c	2010-01-26 20:49:28.000000000 -0800
 @@ -137,14 +137,19 @@
  
  void rv370_pcie_gart_disable(struct radeon_device *rdev)
@@ -49385,8 +49525,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300.c linux-2.6.32.7-new/d
  		return r;
  	if (rdev->flags & RADEON_IS_PCIE) {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300_cmdbuf.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300_cmdbuf.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300_cmdbuf.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300_cmdbuf.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300_cmdbuf.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r300_cmdbuf.c	2010-01-26 20:49:28.000000000 -0800
 @@ -990,7 +990,7 @@
  	int sz;
  	int addr;
@@ -49410,8 +49550,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r300_cmdbuf.c linux-2.6.32.
  	stride = type ? 4 : 6;
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r420.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r420.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r420.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r420.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r420.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r420.c	2010-01-26 20:49:28.000000000 -0800
 @@ -169,6 +169,9 @@
  {
  	int r;
@@ -49483,8 +49623,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r420.c linux-2.6.32.7-new/d
  		r = rv370_pcie_gart_init(rdev);
  		if (r)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r500_reg.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/r500_reg.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r500_reg.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r500_reg.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r500_reg.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r500_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -716,6 +716,8 @@
  
  #define AVIVO_DVOA_BIT_DEPTH_CONTROL			0x7988
@@ -49495,8 +49635,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r500_reg.h linux-2.6.32.7-n
  #define AVIVO_GPIO_1                        0x7e40
  #define AVIVO_GPIO_2                        0x7e50
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r520.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r520.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r520.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r520.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r520.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r520.c	2010-01-26 20:49:28.000000000 -0800
 @@ -185,7 +185,6 @@
  			return r;
  	}
@@ -49535,7 +49675,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r520.c linux-2.6.32.7-new/d
  	r = rv370_pcie_gart_init(rdev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_audio.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_audio.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_audio.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_audio.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_audio.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,267 @@
 +/*
 + * Copyright 2008 Advanced Micro Devices, Inc.
@@ -49805,8 +49945,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_audio.c linux-2.6.32.7
 +	del_timer(&rdev->audio_timer);
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_blit_kms.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_blit_kms.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_blit_kms.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_blit_kms.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_blit_kms.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_blit_kms.c	2010-01-26 20:49:28.000000000 -0800
 @@ -473,9 +473,8 @@
  	obj_size += r6xx_ps_size * 4;
  	obj_size = ALIGN(obj_size, 256);
@@ -49882,8 +50022,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_blit_kms.c linux-2.6.3
  	WARN_ON(r);
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600.c	2010-01-26 20:49:28.000000000 -0800
 @@ -38,8 +38,10 @@
  
  #define PFP_UCODE_SIZE 576
@@ -51293,8 +51433,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600.c linux-2.6.32.7-new/d
  	return 0;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_cs.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_cs.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_cs.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_cs.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_cs.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_cs.c	2010-01-26 20:49:28.000000000 -0800
 @@ -170,7 +170,7 @@
  			  idx, relocs_chunk->length_dw);
  		return -EINVAL;
@@ -51314,8 +51454,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_cs.c linux-2.6.32.7-ne
  		return -ENOMEM;
  	}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600d.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600d.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600d.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600d.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600d.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600d.h	2010-01-26 20:49:28.000000000 -0800
 @@ -456,7 +456,215 @@
  #define         WAIT_2D_IDLECLEAN_bit                           (1 << 16)
  #define         WAIT_3D_IDLECLEAN_bit                           (1 << 17)
@@ -51548,7 +51688,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600d.h linux-2.6.32.7-new/
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_hdmi.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_hdmi.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_hdmi.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_hdmi.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_hdmi.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,506 @@
 +/*
 + * Copyright 2008 Advanced Micro Devices, Inc.
@@ -52057,8 +52197,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_hdmi.c linux-2.6.32.7-
 +	radeon_encoder->hdmi_audio_workaround = 0;
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_reg.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_reg.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_reg.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_reg.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_reg.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/r600_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -110,5 +110,79 @@
  #define R600_BIOS_6_SCRATCH               0x173c
  #define R600_BIOS_7_SCRATCH               0x1740
@@ -52140,8 +52280,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/r600_reg.h linux-2.6.32.7-n
  
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_asic.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_asic.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_asic.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_asic.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_asic.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_asic.h	2010-01-26 20:49:28.000000000 -0800
 @@ -76,6 +76,12 @@
  void r100_bandwidth_update(struct radeon_device *rdev);
  void r100_ring_ib_execute(struct radeon_device *rdev, struct radeon_ib *ib);
@@ -52318,8 +52458,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_asic.h linux-2.6.32.
  
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_atombios.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_atombios.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_atombios.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_atombios.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_atombios.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_atombios.c	2010-01-26 20:49:28.000000000 -0800
 @@ -47,7 +47,8 @@
  			  int connector_type,
  			  struct radeon_i2c_bus_rec *i2c_bus,
@@ -52862,8 +53002,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_atombios.c linux-2.6
  		drm_mode_set_crtcinfo(&lvds->native_mode, CRTC_INTERLACE_HALVE_V);
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_benchmark.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_benchmark.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_benchmark.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_benchmark.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_benchmark.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_benchmark.c	2010-01-26 20:49:28.000000000 -0800
 @@ -29,8 +29,8 @@
  void radeon_benchmark_move(struct radeon_device *rdev, unsigned bsize,
  			   unsigned sdomain, unsigned ddomain)
@@ -52933,8 +53073,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_benchmark.c linux-2.
  	if (fence) {
  		radeon_fence_unref(&fence);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_clocks.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_clocks.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_clocks.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_clocks.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_clocks.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_clocks.c	2010-01-26 20:49:28.000000000 -0800
 @@ -44,6 +44,10 @@
  
  	ref_div =
@@ -52980,8 +53120,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_clocks.c linux-2.6.3
  			p2pll->reference_div = 12;
  		if (rdev->family < CHIP_RS600) {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_combios.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_combios.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_combios.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_combios.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_combios.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_combios.c	2010-01-26 20:49:28.000000000 -0800
 @@ -50,7 +50,8 @@
  			    uint32_t supported_device,
  			    int connector_type,
@@ -54216,8 +54356,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_combios.c linux-2.6.
  {
  	struct radeon_device *rdev = dev->dev_private;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_connectors.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_connectors.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_connectors.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_connectors.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_connectors.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_connectors.c	2010-01-26 20:49:28.000000000 -0800
 @@ -40,6 +40,26 @@
  				       struct drm_encoder *encoder,
  				       bool connected);
@@ -54542,8 +54682,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_connectors.c linux-2
  		break;
  	case DRM_MODE_CONNECTOR_LVDS:
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cp.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cp.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cp.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cp.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cp.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cp.c	2010-01-26 20:49:28.000000000 -0800
 @@ -1941,8 +1941,8 @@
  	for (t = 0; t < dev_priv->usec_timeout; t++) {
  		u32 done_age = GET_SCRATCH(dev_priv, 1);
@@ -54614,8 +54754,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cp.c linux-2.6.32.7-
  {
  	struct drm_device_dma *dma = dev->dma;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cs.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cs.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cs.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cs.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cs.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_cs.c	2010-01-26 20:49:28.000000000 -0800
 @@ -76,17 +76,17 @@
  			}
  			p->relocs_ptr[i] = &p->relocs[i];
@@ -54652,8 +54792,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_cs.c linux-2.6.32.7-
  	for (i = 0; i < parser->nrelocs; i++) {
  		if (parser->relocs[i].gobj) {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_device.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_device.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_device.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_device.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_device.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_device.c	2010-01-26 20:49:28.000000000 -0800
 @@ -44,10 +44,11 @@
  	if (rdev->family < CHIP_R600) {
  		int i;
@@ -54802,8 +54942,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_device.c linux-2.6.3
  	drm_helper_resume_force_mode(dev);
  	return 0;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_display.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_display.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_display.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_display.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_display.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_display.c	2010-01-26 20:49:28.000000000 -0800
 @@ -250,6 +250,16 @@
  	"HDMI-B",
  };
@@ -55039,8 +55179,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_display.c linux-2.6.
  			first = false;
  		} else {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -86,6 +86,8 @@
  int radeon_testing = 0;
  int radeon_connector_table = 0;
@@ -55082,8 +55222,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.c linux-2.6.32.7
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_drv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -1104,7 +1104,6 @@
  #       define R600_IT_WAIT_REG_MEM             0x00003C00
  #       define R600_IT_MEM_WRITE                0x00003D00
@@ -55093,8 +55233,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_drv.h linux-2.6.32.7
  #              define R600_CB0_DEST_BASE_ENA    (1 << 6)
  #              define R600_TC_ACTION_ENA        (1 << 23)
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_encoders.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_encoders.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_encoders.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_encoders.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_encoders.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_encoders.c	2010-01-26 20:49:28.000000000 -0800
 @@ -35,6 +35,51 @@
  bool radeon_atom_get_tv_timings(struct radeon_device *rdev, int index,
  				struct drm_display_mode *mode);
@@ -55649,8 +55789,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_encoders.c linux-2.6
 +	r600_hdmi_init(encoder);
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fb.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fb.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fb.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fb.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fb.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -140,7 +140,7 @@
  	struct radeon_framebuffer *rfb;
  	struct drm_mode_fb_cmd mode_cmd;
@@ -55801,8 +55941,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fb.c linux-2.6.32.7-
  		framebuffer_release(info);
  	}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fence.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fence.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fence.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fence.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fence.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fence.c	2010-01-26 20:49:28.000000000 -0800
 @@ -168,37 +168,6 @@
  	return signaled;
  }
@@ -55877,8 +56017,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fence.c linux-2.6.32
  	if (unlikely(!radeon_fence_signaled(fence))) {
  		if (unlikely(r == 0)) {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fixed.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fixed.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fixed.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fixed.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fixed.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_fixed.h	2010-01-26 20:49:28.000000000 -0800
 @@ -38,6 +38,23 @@
  #define fixed_init_half(A) { .full = rfixed_const_half((A)) }
  #define rfixed_trunc(A) ((A).full >> 12)
@@ -55904,8 +56044,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_fixed.h linux-2.6.32
  {
  	u64 tmp = ((u64)A.full << 13);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gart.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gart.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gart.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gart.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gart.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gart.c	2010-01-26 20:49:28.000000000 -0800
 @@ -78,11 +78,9 @@
  	int r;
  
@@ -55975,8 +56115,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gart.c linux-2.6.32.
  
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gem.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gem.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gem.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gem.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gem.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_gem.c	2010-01-26 20:49:28.000000000 -0800
 @@ -38,22 +38,21 @@
  
  void radeon_gem_object_free(struct drm_gem_object *gobj)
@@ -56242,8 +56382,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_gem.c linux-2.6.32.7
  	drm_gem_object_unreference(gobj);
  	mutex_unlock(&dev->struct_mutex);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon.h	2010-01-26 20:49:28.000000000 -0800
 @@ -28,8 +28,6 @@
  #ifndef __RADEON_H__
  #define __RADEON_H__
@@ -56617,8 +56757,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon.h linux-2.6.32.7-new
  
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_i2c.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_i2c.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_i2c.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_i2c.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_i2c.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_i2c.c	2010-01-26 20:49:28.000000000 -0800
 @@ -59,35 +59,43 @@
  }
  
@@ -56872,8 +57012,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_i2c.c linux-2.6.32.7
 +}
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ioc32.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ioc32.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ioc32.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ioc32.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ioc32.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ioc32.c	2010-01-26 20:49:28.000000000 -0800
 @@ -92,8 +92,7 @@
  			  &init->gart_textures_offset))
  		return -EFAULT;
@@ -57000,8 +57140,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ioc32.c linux-2.6.32
  	return ret;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_irq_kms.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_irq_kms.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_irq_kms.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_irq_kms.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_irq_kms.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_irq_kms.c	2010-01-26 20:49:28.000000000 -0800
 @@ -39,11 +39,32 @@
  	return radeon_irq_process(rdev);
  }
@@ -57095,8 +57235,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_irq_kms.c linux-2.6.
 +}
 +
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_kms.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_kms.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_kms.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_kms.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_kms.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_kms.c	2010-01-26 20:49:28.000000000 -0800
 @@ -30,10 +30,19 @@
  #include "radeon.h"
  #include "radeon_drm.h"
@@ -57161,8 +57301,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_kms.c linux-2.6.32.7
  
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_crtc.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_crtc.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_crtc.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_crtc.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_crtc.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_crtc.c	2010-01-26 20:49:28.000000000 -0800
 @@ -30,6 +30,18 @@
  #include "radeon.h"
  #include "atom.h"
@@ -57346,8 +57486,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_crtc.c linux-
  
  static const struct drm_crtc_helper_funcs legacy_helper_funcs = {
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_encoders.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_encoders.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_encoders.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_encoders.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_legacy_encoders.c	2010-01-26 20:49:28.000000000 -0800
 @@ -136,7 +136,14 @@
  	lvds_pll_cntl &= ~RADEON_LVDS_PLL_EN;
  
@@ -57596,8 +57736,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_legacy_encoders.c li
  	}
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_mode.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_mode.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_mode.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_mode.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_mode.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_mode.h	2010-01-26 20:49:28.000000000 -0800
 @@ -33,6 +33,7 @@
  #include <drm_crtc.h>
  #include <drm_mode.h>
@@ -57867,8 +58007,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_mode.h linux-2.6.32.
  void radeon_copy_fb(struct drm_device *dev, struct drm_gem_object *dst_obj);
  void radeon_combios_asic_init(struct drm_device *dev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.c	2010-01-26 20:49:28.000000000 -0800
 @@ -34,100 +34,62 @@
  #include "radeon_drm.h"
  #include "radeon.h"
@@ -58678,8 +58818,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.c linux-2.6.3
 +	radeon_bo_check_tiling(rbo, 0, 0);
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_object.h	2010-01-26 20:49:28.000000000 -0800
 @@ -28,19 +28,146 @@
  #ifndef __RADEON_OBJECT_H__
  #define __RADEON_OBJECT_H__
@@ -58840,8 +58980,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_object.h linux-2.6.3
 +extern int radeon_bo_get_surface_reg(struct radeon_bo *bo);
  #endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_pm.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_pm.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_pm.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_pm.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_pm.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_pm.c	2010-01-26 20:49:28.000000000 -0800
 @@ -27,7 +27,7 @@
  int radeon_pm_init(struct radeon_device *rdev)
  {
@@ -58866,8 +59006,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_pm.c linux-2.6.32.7-
  	return 0;
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_reg.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_reg.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_reg.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_reg.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_reg.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -887,6 +887,7 @@
  #       define RADEON_FP_PANEL_FORMAT          (1 <<  3)
  #       define RADEON_FP_EN_TMDS               (1 <<  7)
@@ -58996,8 +59136,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_reg.h linux-2.6.32.7
  /* first capture unit */
  
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ring.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ring.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ring.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ring.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ring.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ring.c	2010-01-26 20:49:28.000000000 -0800
 @@ -165,19 +165,24 @@
  		return 0;
  	/* Allocate 1M object buffer */
@@ -59118,8 +59258,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ring.c linux-2.6.32.
  		rdev->cp.ring_obj = NULL;
  	}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_test.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_test.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_test.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_test.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_test.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_test.c	2010-01-26 20:49:28.000000000 -0800
 @@ -30,8 +30,8 @@
  /* Test BO GTT->VRAM and VRAM->GTT GPU copies across the whole GTT aperture */
  void radeon_test_moves(struct radeon_device *rdev)
@@ -59272,8 +59412,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_test.c linux-2.6.32.
  }
 -
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ttm.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ttm.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ttm.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ttm.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ttm.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/radeon_ttm.c	2010-01-26 20:49:28.000000000 -0800
 @@ -150,7 +150,7 @@
  		man->default_caching = TTM_PL_FLAG_CACHED;
  		break;
@@ -59470,8 +59610,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/radeon_ttm.c linux-2.6.32.7
  	ttm_bo_clean_mm(&rdev->mman.bdev, TTM_PL_VRAM);
  	ttm_bo_clean_mm(&rdev->mman.bdev, TTM_PL_TT);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs400.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs400.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs400.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs400.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs400.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs400.c	2010-01-26 20:49:28.000000000 -0800
 @@ -352,7 +352,7 @@
  	u32 tmp;
  
@@ -59542,8 +59682,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs400.c linux-2.6.32.7-new/
  		return r;
  	r = rs400_gart_init(rdev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600.c	2010-01-26 20:49:28.000000000 -0800
 @@ -45,6 +45,122 @@
  void rs600_gpu_init(struct radeon_device *rdev);
  int rs600_mc_wait_for_idle(struct radeon_device *rdev);
@@ -59893,8 +60033,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600.c linux-2.6.32.7-new/
  		return r;
  	r = rs600_gart_init(rdev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600d.h linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600d.h
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600d.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600d.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600d.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs600d.h	2010-01-26 20:49:28.000000000 -0800
 @@ -30,27 +30,12 @@
  
  /* Registers */
@@ -60022,8 +60162,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs600d.h linux-2.6.32.7-new
  /* MC registers */
  #define R_000000_MC_STATUS                           0x000000
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs690.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs690.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs690.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs690.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs690.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rs690.c	2010-01-26 20:49:28.000000000 -0800
 @@ -162,6 +162,21 @@
  	rdev->pm.core_bandwidth.full = rfixed_div(rdev->pm.sclk, a);
  }
@@ -60133,8 +60273,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rs690.c linux-2.6.32.7-new/
  		return r;
  	r = rs400_gart_init(rdev);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv515.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv515.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv515.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv515.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv515.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv515.c	2010-01-26 20:49:28.000000000 -0800
 @@ -478,7 +478,6 @@
  			return r;
  	}
@@ -60220,8 +60360,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv515.c linux-2.6.32.7-new/
  	}
  }
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv770.c linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv770.c
---- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv770.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv770.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv770.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/radeon/rv770.c	2010-01-26 20:49:28.000000000 -0800
 @@ -92,7 +92,7 @@
  void rv770_pcie_gart_disable(struct radeon_device *rdev)
  {
@@ -60406,8 +60546,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/radeon/rv770.c linux-2.6.32.7-new/
  	kfree(rdev->bios);
  	rdev->bios = NULL;
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/savage/savage_drv.c linux-2.6.32.7-new/drivers/gpu/drm/savage/savage_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/savage/savage_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/savage/savage_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/savage/savage_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/savage/savage_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -50,7 +50,7 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -60418,8 +60558,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/savage/savage_drv.c linux-2.6.32.7
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/sis/sis_drv.c linux-2.6.32.7-new/drivers/gpu/drm/sis/sis_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/sis/sis_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/sis/sis_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/sis/sis_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/sis/sis_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -80,7 +80,7 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -60430,8 +60570,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/sis/sis_drv.c linux-2.6.32.7-new/d
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/tdfx/tdfx_drv.c linux-2.6.32.7-new/drivers/gpu/drm/tdfx/tdfx_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/tdfx/tdfx_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/tdfx/tdfx_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/tdfx/tdfx_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/tdfx/tdfx_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -48,7 +48,7 @@
  		 .owner = THIS_MODULE,
  		 .open = drm_open,
@@ -60442,8 +60582,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/tdfx/tdfx_drv.c linux-2.6.32.7-new
  		 .poll = drm_poll,
  		 .fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/Makefile linux-2.6.32.7-new/drivers/gpu/drm/ttm/Makefile
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/Makefile	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/Makefile	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/Makefile	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -3,6 +3,7 @@
  
  ccflags-y := -Iinclude/drm
@@ -60454,8 +60594,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/Makefile linux-2.6.32.7-new/dr
  
  obj-$(CONFIG_DRM_TTM) += ttm.o
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo.c
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -27,6 +27,14 @@
  /*
   * Authors: Thomas Hellstrom <thellstrom-at-vmware-dot-com>
@@ -61530,8 +61670,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo.c linux-2.6.32.7-new/dr
  /**
   * A buffer object shrink method that tries to swap out the first
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_util.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_util.c
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_util.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_util.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_util.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_util.c	2010-01-26 20:49:28.000000000 -0800
 @@ -369,6 +369,7 @@
  #endif
  	return tmp;
@@ -61541,8 +61681,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_util.c linux-2.6.32.7-n
  static int ttm_bo_ioremap(struct ttm_buffer_object *bo,
  			  unsigned long bus_base,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_vm.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_vm.c
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_vm.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_vm.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_vm.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_bo_vm.c	2010-01-26 20:49:28.000000000 -0800
 @@ -114,7 +114,7 @@
  		ret = ttm_bo_wait(bo, false, true, false);
  		spin_unlock(&bo->lock);
@@ -61582,7 +61722,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_bo_vm.c linux-2.6.32.7-new
  	default:
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_execbuf_util.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_execbuf_util.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_execbuf_util.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_execbuf_util.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_execbuf_util.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,117 @@
 +/**************************************************************************
 + *
@@ -61703,7 +61843,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_execbuf_util.c linux-2.6.3
 +EXPORT_SYMBOL(ttm_eu_fence_buffer_objects);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_lock.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_lock.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_lock.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_lock.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_lock.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,311 @@
 +/**************************************************************************
 + *
@@ -62017,8 +62157,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_lock.c linux-2.6.32.7-new/
 +	wait_event(lock->queue, __ttm_suspend_lock(lock));
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_memory.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_memory.c
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_memory.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_memory.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_memory.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_memory.c	2010-01-26 20:49:28.000000000 -0800
 @@ -274,16 +274,17 @@
  static int ttm_mem_init_highmem_zone(struct ttm_mem_global *glob,
  				     const struct sysinfo *si)
@@ -62076,7 +62216,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_memory.c linux-2.6.32.7-ne
 +EXPORT_SYMBOL(ttm_round_pot);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_object.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_object.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_object.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_object.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_object.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,452 @@
 +/**************************************************************************
 + *
@@ -62531,8 +62671,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_object.c linux-2.6.32.7-ne
 +}
 +EXPORT_SYMBOL(ttm_object_device_release);
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_tt.c linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_tt.c
---- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_tt.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_tt.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_tt.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/ttm/ttm_tt.c	2010-01-26 20:49:28.000000000 -0800
 @@ -192,6 +192,7 @@
  	ttm->state = tt_unbound;
  	return 0;
@@ -62542,8 +62682,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/ttm/ttm_tt.c linux-2.6.32.7-new/dr
  #ifdef CONFIG_X86
  static inline int ttm_tt_set_page_caching(struct page *p,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/via/via_drv.c linux-2.6.32.7-new/drivers/gpu/drm/via/via_drv.c
---- linux-2.6.32.7-old/drivers/gpu/drm/via/via_drv.c	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/via/via_drv.c	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/drivers/gpu/drm/via/via_drv.c	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/via/via_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -58,7 +58,7 @@
  		.owner = THIS_MODULE,
  		.open = drm_open,
@@ -62555,7 +62695,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/via/via_drv.c linux-2.6.32.7-new/d
  		.fasync = drm_fasync,
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Kconfig linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Kconfig
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Kconfig	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Kconfig	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Kconfig	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,13 @@
 +config DRM_VMWGFX
 +	tristate "DRM driver for VMware Virtual GPU"
@@ -62572,7 +62712,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Kconfig linux-2.6.32.7-new/
 +	  called vmwgfx.ko
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Makefile linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Makefile
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Makefile	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/Makefile	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,9 @@
 +
 +ccflags-y := -Iinclude/drm
@@ -62585,7 +62725,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/Makefile linux-2.6.32.7-new
 +obj-$(CONFIG_DRM_VMWGFX) := vmwgfx.o
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga3d_reg.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga3d_reg.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga3d_reg.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga3d_reg.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga3d_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1793 @@
 +/**********************************************************
 + * Copyright 1998-2009 VMware, Inc.  All rights reserved.
@@ -64382,7 +64522,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga3d_reg.h linux-2.6.32.7
 +#endif /* _SVGA3D_REG_H_ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_escape.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_escape.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_escape.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_escape.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_escape.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,89 @@
 +/**********************************************************
 + * Copyright 2007-2009 VMware, Inc.  All rights reserved.
@@ -64475,7 +64615,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_escape.h linux-2.6.32.
 +#endif /* _SVGA_ESCAPE_H_ */
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_overlay.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_overlay.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_overlay.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_overlay.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_overlay.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,201 @@
 +/**********************************************************
 + * Copyright 2007-2009 VMware, Inc.  All rights reserved.
@@ -64680,7 +64820,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_overlay.h linux-2.6.32
 +#endif // _SVGA_OVERLAY_H_
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_reg.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_reg.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_reg.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_reg.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1346 @@
 +/**********************************************************
 + * Copyright 1998-2009 VMware, Inc.  All rights reserved.
@@ -66030,7 +66170,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_reg.h linux-2.6.32.7-n
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_types.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_types.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_types.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_types.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/svga_types.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,45 @@
 +/**************************************************************************
 + *
@@ -66079,7 +66219,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/svga_types.h linux-2.6.32.7
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,229 @@
 +/**************************************************************************
 + *
@@ -66312,7 +66452,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_buffer.c linux-2.6.3
 +};
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,726 @@
 +/**************************************************************************
 + *
@@ -67042,7 +67182,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c linux-2.6.32.7
 +MODULE_LICENSE("GPL and additional rights");
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,513 @@
 +/**************************************************************************
 + *
@@ -67559,7 +67699,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_drv.h linux-2.6.32.7
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,621 @@
 +/**************************************************************************
 + *
@@ -68184,7 +68324,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,742 @@
 +/**************************************************************************
 + *
@@ -68930,7 +69070,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fb.c linux-2.6.32.7-
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,519 @@
 +/**************************************************************************
 + *
@@ -69453,7 +69593,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c linux-2.6.32.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,213 @@
 +/**************************************************************************
 + *
@@ -69670,7 +69810,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,81 @@
 +/**************************************************************************
 + *
@@ -69755,7 +69895,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c linux-2.6.32
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,293 @@
 +/**************************************************************************
 + *
@@ -70052,7 +70192,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_irq.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,872 @@
 +/**************************************************************************
 + *
@@ -70928,7 +71068,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,102 @@
 +/**************************************************************************
 + *
@@ -71034,7 +71174,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h linux-2.6.32.7
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,516 @@
 +/**************************************************************************
 + *
@@ -71554,7 +71694,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c linux-2.6.32.7
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,634 @@
 +/**************************************************************************
 + *
@@ -72192,7 +72332,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c linux-2.6.
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,57 @@
 +/**************************************************************************
 + *
@@ -72253,7 +72393,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_reg.h linux-2.6.32.7
 +#endif
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,1183 @@
 +/**************************************************************************
 + *
@@ -73440,7 +73580,7 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c linux-2.6
 +}
 diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
 --- linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,99 @@
 +/**************************************************************************
 + *
@@ -73542,8 +73682,8 @@ diff -Naur linux-2.6.32.7-old/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c linux-2.6
 +	ttm_global_item_unref(&dev_priv->mem_global_ref);
 +}
 diff -Naur linux-2.6.32.7-old/include/drm/drm_crtc.h linux-2.6.32.7-new/include/drm/drm_crtc.h
---- linux-2.6.32.7-old/include/drm/drm_crtc.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_crtc.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm_crtc.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_crtc.h	2010-01-26 20:49:28.000000000 -0800
 @@ -123,7 +123,7 @@
  	int type;
  
@@ -73677,7 +73817,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_crtc.h linux-2.6.32.7-new/include/
  				bool reduced, bool interlaced, bool margins);
 diff -Naur linux-2.6.32.7-old/include/drm/drm_dp_helper.h linux-2.6.32.7-new/include/drm/drm_dp_helper.h
 --- linux-2.6.32.7-old/include/drm/drm_dp_helper.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_dp_helper.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_dp_helper.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,180 @@
 +/*
 + * Copyright © 2008 Keith Packard
@@ -73860,8 +74000,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_dp_helper.h linux-2.6.32.7-new/inc
 +
 +#endif /* _DRM_DP_HELPER_H_ */
 diff -Naur linux-2.6.32.7-old/include/drm/drm_edid.h linux-2.6.32.7-new/include/drm/drm_edid.h
---- linux-2.6.32.7-old/include/drm/drm_edid.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_edid.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm_edid.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_edid.h	2010-01-26 20:49:28.000000000 -0800
 @@ -106,6 +106,10 @@
  	u8 wpindex2[3];
  } __attribute__((packed));
@@ -73888,8 +74028,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_edid.h linux-2.6.32.7-new/include/
  #define EDID_DETAIL_MONITOR_CPDATA 0xfb
  #define EDID_DETAIL_MONITOR_NAME 0xfc
 diff -Naur linux-2.6.32.7-old/include/drm/drm.h linux-2.6.32.7-new/include/drm/drm.h
---- linux-2.6.32.7-old/include/drm/drm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -36,17 +36,27 @@
  #ifndef _DRM_H_
  #define _DRM_H_
@@ -74000,8 +74140,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm.h linux-2.6.32.7-new/include/drm/d
  #ifndef __KERNEL__
  typedef struct drm_clip_rect drm_clip_rect_t;
 diff -Naur linux-2.6.32.7-old/include/drm/drm_mm.h linux-2.6.32.7-new/include/drm/drm_mm.h
---- linux-2.6.32.7-old/include/drm/drm_mm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_mm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm_mm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_mm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -66,6 +66,13 @@
  						    unsigned long size,
  						    unsigned alignment,
@@ -74064,8 +74204,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_mm.h linux-2.6.32.7-new/include/dr
  int drm_mm_dump_table(struct seq_file *m, struct drm_mm *mm);
  #endif
 diff -Naur linux-2.6.32.7-old/include/drm/drm_mode.h linux-2.6.32.7-new/include/drm/drm_mode.h
---- linux-2.6.32.7-old/include/drm/drm_mode.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_mode.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm_mode.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_mode.h	2010-01-26 20:49:28.000000000 -0800
 @@ -27,9 +27,6 @@
  #ifndef _DRM_MODE_H
  #define _DRM_MODE_H
@@ -74173,8 +74313,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_mode.h linux-2.6.32.7-new/include/
 +
  #endif
 diff -Naur linux-2.6.32.7-old/include/drm/drm_os_linux.h linux-2.6.32.7-new/include/drm/drm_os_linux.h
---- linux-2.6.32.7-old/include/drm/drm_os_linux.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drm_os_linux.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drm_os_linux.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drm_os_linux.h	2010-01-26 20:49:28.000000000 -0800
 @@ -123,5 +123,5 @@
  	remove_wait_queue(&(queue), &entry);			\
  } while (0)
@@ -74183,8 +74323,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/drm_os_linux.h linux-2.6.32.7-new/incl
 +#define DRM_WAKEUP( queue ) wake_up( queue )
  #define DRM_INIT_WAITQUEUE( queue ) init_waitqueue_head( queue )
 diff -Naur linux-2.6.32.7-old/include/drm/drmP.h linux-2.6.32.7-new/include/drm/drmP.h
---- linux-2.6.32.7-old/include/drm/drmP.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/drmP.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/drmP.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/drmP.h	2010-01-26 20:49:28.000000000 -0800
 @@ -245,16 +245,6 @@
  
  #endif
@@ -74375,7 +74515,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/drmP.h linux-2.6.32.7-new/include/drm/
  static __inline void drm_free_large(void *ptr)
 diff -Naur linux-2.6.32.7-old/include/drm/i2c/ch7006.h linux-2.6.32.7-new/include/drm/i2c/ch7006.h
 --- linux-2.6.32.7-old/include/drm/i2c/ch7006.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/i2c/ch7006.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/i2c/ch7006.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,86 @@
 +/*
 + * Copyright (C) 2009 Francisco Jerez.
@@ -74464,8 +74604,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/i2c/ch7006.h linux-2.6.32.7-new/includ
 +
 +#endif
 diff -Naur linux-2.6.32.7-old/include/drm/i915_drm.h linux-2.6.32.7-new/include/drm/i915_drm.h
---- linux-2.6.32.7-old/include/drm/i915_drm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/i915_drm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/i915_drm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/i915_drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -27,11 +27,11 @@
  #ifndef _I915_DRM_H_
  #define _I915_DRM_H_
@@ -74582,8 +74722,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/i915_drm.h linux-2.6.32.7-new/include/
 +
  #endif				/* _I915_DRM_H_ */
 diff -Naur linux-2.6.32.7-old/include/drm/Kbuild linux-2.6.32.7-new/include/drm/Kbuild
---- linux-2.6.32.7-old/include/drm/Kbuild	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/Kbuild	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/Kbuild	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/Kbuild	2010-01-26 20:49:28.000000000 -0800
 @@ -7,4 +7,6 @@
  unifdef-y += radeon_drm.h
  unifdef-y += sis_drm.h
@@ -74592,8 +74732,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/Kbuild linux-2.6.32.7-new/include/drm/
  unifdef-y += via_drm.h
 +unifdef-y += nouveau_drm.h
 diff -Naur linux-2.6.32.7-old/include/drm/mga_drm.h linux-2.6.32.7-new/include/drm/mga_drm.h
---- linux-2.6.32.7-old/include/drm/mga_drm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/mga_drm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/mga_drm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/mga_drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -35,7 +35,7 @@
  #ifndef __MGA_DRM_H__
  #define __MGA_DRM_H__
@@ -74605,8 +74745,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/mga_drm.h linux-2.6.32.7-new/include/d
   * defines in the Xserver file (mga_sarea.h)
 diff -Naur linux-2.6.32.7-old/include/drm/nouveau_drm.h linux-2.6.32.7-new/include/drm/nouveau_drm.h
 --- linux-2.6.32.7-old/include/drm/nouveau_drm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/nouveau_drm.h	2010-01-28 19:16:21.000000000 -0800
-@@ -0,0 +1,220 @@
++++ linux-2.6.32.7-new/include/drm/nouveau_drm.h	2010-01-26 20:49:28.000000000 -0800
+@@ -0,0 +1,221 @@
 +/*
 + * Copyright 2005 Stephane Marchesin.
 + * All Rights Reserved.
@@ -74686,6 +74826,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/nouveau_drm.h linux-2.6.32.7-new/inclu
 +#define NOUVEAU_GETPARAM_PCI_PHYSICAL    10
 +#define NOUVEAU_GETPARAM_CHIPSET_ID      11
 +#define NOUVEAU_GETPARAM_VM_VRAM_BASE    12
++#define NOUVEAU_GETPARAM_GRAPH_UNITS     13
 +struct drm_nouveau_getparam {
 +	uint64_t param;
 +	uint64_t value;
@@ -74828,8 +74969,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/nouveau_drm.h linux-2.6.32.7-new/inclu
 +
 +#endif /* __NOUVEAU_DRM_H__ */
 diff -Naur linux-2.6.32.7-old/include/drm/radeon_drm.h linux-2.6.32.7-new/include/drm/radeon_drm.h
---- linux-2.6.32.7-old/include/drm/radeon_drm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/radeon_drm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/radeon_drm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/radeon_drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -33,7 +33,7 @@
  #ifndef __RADEON_DRM_H__
  #define __RADEON_DRM_H__
@@ -74840,8 +74981,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/radeon_drm.h linux-2.6.32.7-new/includ
  /* WARNING: If you change any of these defines, make sure to change the
   * defines in the X server file (radeon_sarea.h)
 diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_bo_api.h linux-2.6.32.7-new/include/drm/ttm/ttm_bo_api.h
---- linux-2.6.32.7-old/include/drm/ttm/ttm_bo_api.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/ttm/ttm_bo_api.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/ttm/ttm_bo_api.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/ttm/ttm_bo_api.h	2010-01-26 20:49:28.000000000 -0800
 @@ -44,6 +44,29 @@
  
  struct drm_mm_node;
@@ -75073,8 +75214,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_bo_api.h linux-2.6.32.7-new/in
   */
  
 diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_bo_driver.h linux-2.6.32.7-new/include/drm/ttm/ttm_bo_driver.h
---- linux-2.6.32.7-old/include/drm/ttm/ttm_bo_driver.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/ttm/ttm_bo_driver.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/ttm/ttm_bo_driver.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/ttm/ttm_bo_driver.h	2010-01-26 20:49:28.000000000 -0800
 @@ -242,12 +242,6 @@
  /**
   * struct ttm_bo_driver
@@ -75172,7 +75313,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_bo_driver.h linux-2.6.32.7-new
  extern int ttm_bo_block_reservation(struct ttm_buffer_object *bo,
 diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_execbuf_util.h linux-2.6.32.7-new/include/drm/ttm/ttm_execbuf_util.h
 --- linux-2.6.32.7-old/include/drm/ttm/ttm_execbuf_util.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/ttm/ttm_execbuf_util.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/ttm/ttm_execbuf_util.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,107 @@
 +/**************************************************************************
 + *
@@ -75283,7 +75424,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_execbuf_util.h linux-2.6.32.7-
 +#endif
 diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_lock.h linux-2.6.32.7-new/include/drm/ttm/ttm_lock.h
 --- linux-2.6.32.7-old/include/drm/ttm/ttm_lock.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/ttm/ttm_lock.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/ttm/ttm_lock.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,247 @@
 +/**************************************************************************
 + *
@@ -75534,7 +75675,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_lock.h linux-2.6.32.7-new/incl
 +#endif
 diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_object.h linux-2.6.32.7-new/include/drm/ttm/ttm_object.h
 --- linux-2.6.32.7-old/include/drm/ttm/ttm_object.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/ttm/ttm_object.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/ttm/ttm_object.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,271 @@
 +/**************************************************************************
 + *
@@ -75808,8 +75949,8 @@ diff -Naur linux-2.6.32.7-old/include/drm/ttm/ttm_object.h linux-2.6.32.7-new/in
 +
 +#endif
 diff -Naur linux-2.6.32.7-old/include/drm/via_drm.h linux-2.6.32.7-new/include/drm/via_drm.h
---- linux-2.6.32.7-old/include/drm/via_drm.h	2010-01-28 19:15:18.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/via_drm.h	2010-01-28 19:16:21.000000000 -0800
+--- linux-2.6.32.7-old/include/drm/via_drm.h	2010-01-28 15:06:20.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/via_drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -24,7 +24,7 @@
  #ifndef _VIA_DRM_H_
  #define _VIA_DRM_H_
@@ -75821,7 +75962,7 @@ diff -Naur linux-2.6.32.7-old/include/drm/via_drm.h linux-2.6.32.7-new/include/d
   * if you change them, you must change the defines in the Xserver.
 diff -Naur linux-2.6.32.7-old/include/drm/vmwgfx_drm.h linux-2.6.32.7-new/include/drm/vmwgfx_drm.h
 --- linux-2.6.32.7-old/include/drm/vmwgfx_drm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.32.7-new/include/drm/vmwgfx_drm.h	2010-01-28 19:16:21.000000000 -0800
++++ linux-2.6.32.7-new/include/drm/vmwgfx_drm.h	2010-01-26 20:49:28.000000000 -0800
 @@ -0,0 +1,574 @@
 +/**************************************************************************
 + *
