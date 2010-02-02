@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 5.1.42
+GARVERSION = 5.1.43
 CATEGORIES = db
 MASTER_SITES  = http://mysql.he.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
