@@ -1,5 +1,5 @@
 GARNAME = gpxe
-GARVERSION = 0.9.8
+GARVERSION = 1.0.0
 CATEGORIES = net
 MASTER_SITES = http://kernel.org/pub/software/utils/boot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
