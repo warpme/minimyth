@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 21029.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 21620.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100104.patch $(GARNAME)-vaapi_20100105.patch
+PATCHFILES = $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100203.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -38,6 +38,10 @@ CONFIGURE_ARGS = \
 	--enable-ffmpeg \
 	--disable-ffplay \
 	--disable-ffserver \
+	--enable-avdevice \
+	--enable-avcodec \
+	--enable-avformat \
+	--enable-swscale \
 	--enable-postproc \
 	--disable-avfilter \
 	--disable-avfilter-lavf \
@@ -47,13 +51,13 @@ CONFIGURE_ARGS = \
 	--disable-w32threads \
 	--enable-x11grab \
 	--enable-network \
-	--disable-ipv6 \
 	--disable-mpegaudio-hp \
 	--disable-gray \
 	--enable-swscale-alpha \
 	--enable-fastdiv \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-aandct \
+	--enable-dct \
 	--enable-fft \
 	--enable-golomb \
 	--enable-lpc \
@@ -61,6 +65,7 @@ CONFIGURE_ARGS = \
 	--enable-rdft \
 	--enable-vaapi \
 	--enable-vdpau \
+	--disable-dxva2 \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
@@ -122,6 +127,7 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH_FAMILY) \
 	--cpu=$(GARCH) \
 	--disable-powerpc-perf \
+	--enable-asm \
 	--disable-altivec \
 	--enable-amd3dnow \
 	--enable-amd3dnowext \
@@ -138,6 +144,7 @@ CONFIGURE_ARGS = \
 	--disable-neon \
 	--disable-vis \
 	--enable-yasm \
+	--disable-sram \
 	--disable-debug \
 	--disable-gprof \
 	--enable-optimizations \
@@ -212,8 +219,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=21010
-FFMPEG_MT_VERSION_THREAD=5eb0c649c780e26a77085bd213f945d88761ad00
+FFMPEG_MT_VERSION_NORMAL=21620
+FFMPEG_MT_VERSION_THREAD=d4fad7c7f05e6fd7d677eaf1069e04c94b946a0c
+FFMPEG_MT_VERSION_DATE=20100203
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
@@ -226,13 +234,14 @@ source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
 	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-thread.tar.bz2
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
-	@cd $(PARTIALDIR) ; rm -f ffmpeg-mt.patch
-	@cd $(PARTIALDIR) ; diff -Naur ffmpeg-mt-normal ffmpeg-mt-thread > ffmpeg-mt.patch || test $$? = 1
+	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread/mt-work
+	@cd $(PARTIALDIR) ; rm -f ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch
+	@cd $(PARTIALDIR) ; diff -Naur ffmpeg-mt-normal ffmpeg-mt-thread > ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch || test $$? = 1
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
-	@rm -f files/ffmpeg-mt.patch 
-	@mv $(PARTIALDIR)/ffmpeg-mt.patch files/ffmpeg-mt.patch
-	@cat checksums | grep -v $(DOWNLOADDIR)/ffmpeg-mt.patch > checksums~
-	@md5sum $(DOWNLOADDIR)/ffmpeg-mt.patch >> checksums~ || exit 1
-	@rm -f checksums || exit 1
-	@mv -f checksums~ checksums || exit 1
+	@rm -f files/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch 
+	@mv $(PARTIALDIR)/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch files/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch
+	@#cat checksums | grep -v $(DOWNLOADDIR)/ffmpeg-mt-*.patch > checksums~
+	@#md5sum $(DOWNLOADDIR)/ffmpeg-mt-$(FFMPEG_MT_VERSION_DATE).patch >> checksums~ || exit 1
+	@#rm -f checksums || exit 1
+	@#mv -f checksums~ checksums || exit 1
