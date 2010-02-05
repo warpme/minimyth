@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100104.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100105.patch
+PATCHFILES = $(GARNAME)-mt_20100203.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100114.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -147,7 +147,8 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-libmpeg2 \
 	--disable-musepack \
 	--disable-libopencore_amrnb \
-	--disable-libopencore_amrwb
+	--disable-libopencore_amrwb \
+	--disable-libopenjpeg
 # Video output: enable xv (requires x11 and vm), xvmc and vdpau.
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix \
@@ -155,6 +156,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-dhahelper \
 	--disable-svgalib_helper \
 	--enable-gl \
+	--disable-matrixview \
 	--disable-dga2 \
 	--disable-dga1 \
 	--disable-vesa \
@@ -213,6 +215,7 @@ CONFIGURE_ARGS_AUDIO = \
 	--disable-nas \
 	--disable-sgiaudio \
 	--disable-sunaudio \
+	--disable-kai \
 	--disable-dart \
 	--disable-win32waveout \
 	--disable-coreaudio \

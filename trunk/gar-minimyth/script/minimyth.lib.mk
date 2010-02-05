@@ -103,20 +103,20 @@ FETCH_CVS = \
 
 # $(call FETCH_GIT, <git_url>, <git_objectid>, <file_base>)
 FETCH_GIT = \
-	mkdir -p $(PARTIALDIR)                                                                   ; \
-	cd $(PARTIALDIR)                                                                         ; \
-	rm -rf $(strip $(3))                                                                     ; \
-	rm -rf $(strip $(3)).tar.bz2                                                             ; \
-	git clone git://$(strip $(1)) $(strip $(3))                                              ; \
-	if [ ! -d $(strip $(3)) ] ; then                                                           \
-		rm -rf $(strip $(3))                                                             ; \
-		rm -rf $(strip $(3)).tar.bz2                                                     ; \
-		exit 1                                                                           ; \
-	fi                                                                                       ; \
-	cd $(strip $(3))                                                                         ; \
-	git checkout -b $(strip $(2)) $(strip $(2))                                              ; \
-	cd ..                                                                                    ; \
-	tar --exclude '*/.git' --exclude '*/.gitignore' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
+	mkdir -p $(PARTIALDIR)                                                                                             ; \
+	cd $(PARTIALDIR)                                                                                                   ; \
+	rm -rf $(strip $(3))                                                                                               ; \
+	rm -rf $(strip $(3)).tar.bz2                                                                                       ; \
+	git clone git://$(strip $(1)) $(strip $(3))                                                                        ; \
+	if [ ! -d $(strip $(3)) ] ; then                                                                                     \
+		rm -rf $(strip $(3))                                                                                       ; \
+		rm -rf $(strip $(3)).tar.bz2                                                                               ; \
+		exit 1                                                                                                     ; \
+	fi                                                                                                                 ; \
+	cd $(strip $(3))                                                                                                   ; \
+	git checkout -b $(strip $(2)) $(strip $(2))                                                                        ; \
+	cd ..                                                                                                              ; \
+	tar --exclude '*/.git' --exclude '*/.gitignore' --exclude '*/.gitmodules' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
 	rm -rf $(strip $(3))
 
 # $(call FETCH_SVN, <svn_url>, <svn_revision>, <file_base>)
