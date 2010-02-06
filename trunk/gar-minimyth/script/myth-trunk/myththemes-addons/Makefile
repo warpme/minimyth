@@ -16,8 +16,8 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+#CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+#INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)" \
