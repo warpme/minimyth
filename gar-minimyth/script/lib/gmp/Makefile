@@ -1,5 +1,5 @@
 GARNAME = gmp
-GARVERSION = 5.0.0
+GARVERSION = 5.0.1
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
