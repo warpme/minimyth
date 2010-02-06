@@ -47,16 +47,17 @@ mm_GRAPHICS               ?= intel \
 # Lists the software to be supported.
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
-# 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'flash', 'gnash', 'hulu', 'mplayer-svn',
-# 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
-# warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
-# 'debug'.
+# 'mythgame', 'mythmusic', 'mythnetvision', 'mythnews', 'mythphone',
+# 'mythstream', 'mythvideo', 'mythweather', 'mythzoneminder', 'flash', 'gnash',
+# 'hulu', 'mplayer-svn', 'mplayer-vld', 'vlc' (experimental and may be removed
+# in the future without warning), 'xine', 'transcode', 'mame', 'bdremote',
+# 'wiimote', 'backend', 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
                              mythgame \
                              mythmusic \
+                             $(if $(filter $(mm_MYTH_VERSION),trunk),mythnetvision) \
                              mythnews \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 0.21),mythphone) \
                              mythstream \
@@ -135,7 +136,7 @@ mm_NVIDIA_VERSION         ?= 190.53
 mm_XORG_VERSION           ?= 7.4
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 23304
+mm_MYTH_TRUNK_VERSION     ?= 23485
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
