@@ -1903,7 +1903,7 @@ sub flash_fetch_and_save
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
         $flash_file = q(libflashplayer.64.so);
-        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/libflashplayer-10.0.42.34.linux-x86_64.so.tar.gz);
+        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/libflashplayer-10.0.45.2.linux-x86_64.so.tar.gz);
     }
     else
     {
