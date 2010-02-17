@@ -1,9 +1,10 @@
 GARNAME = acpid
-GARVERSION = 2.0.1
+GARVERSION = 2.0.2
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://www.tedfelix.com/linux/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-mandb.patch
 LICENSE = GPL2
 
 DESCRIPTION =
