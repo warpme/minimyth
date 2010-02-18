@@ -1,3 +1,10 @@
+commit 377b4b4894d9b7450983d95ac14442bae3f8fd52
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Feb 12 14:27:42 2010 +0000
+
+    Strip vaPutSurface() flags to match those supported in the
+    previous VA-API version.
+
 commit 2e7aa803a8547dfcde6e97ae2bb4a8bbdbb2634e
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Mon Nov 23 12:22:09 2009 +0000
@@ -78,10 +85,10 @@ Date:   Wed Jun 24 11:40:56 2009 +0000
 
 diff --git a/src/va_compat.c b/src/va_compat.c
 new file mode 100644
-index 0000000..0bd7385
+index 0000000..792ac42
 --- /dev/null
 +++ b/src/va_compat.c
-@@ -0,0 +1,1171 @@
+@@ -0,0 +1,1177 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -863,14 +870,20 @@ index 0000000..0bd7385
 +    (VADriverContextP ctx, VASurfaceID render_target, VASurfaceStatus *status),
 +    (ctx, render_target, status))
 +
-+DEFINE_VTABLE_ENTRY(
++DEFINE_VTABLE_ENTRY_(
 +    VAStatus, PutSurface,
 +    (VADriverContextP ctx, VASurfaceID surface, Drawable draw,
 +     short srcx, short srcy, unsigned short srcw, unsigned short srch,
 +     short destx, short desty, unsigned short destw, unsigned short desth,
 +     VARectangle *cliprects, unsigned int number_cliprects, unsigned int flags),
++    PutSurface,
 +    (ctx, surface, draw, srcx, srcy, srcw, srch, destx, desty, destw, desth,
-+     cliprects, number_cliprects, flags))
++     cliprects, number_cliprects, flags),
++    {
++        if (COMPAT_CTX(ctx)->compat_version < 30) /* 0.30 */
++            flags &= (VA_TOP_FIELD|VA_BOTTOM_FIELD|VA_CLEAR_DRAWABLE);
++    },
++    {})
 +
 +DEFINE_VTABLE_ENTRY(
 +    VAStatus, QueryImageFormats,
