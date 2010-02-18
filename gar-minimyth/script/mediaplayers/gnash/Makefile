@@ -1,9 +1,9 @@
 GARNAME = gnash
-GARVERSION = 0.8.6
+GARVERSION = 0.8.7
 CATEGORIES = mediaplayers
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libpng14.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-option-checking \
 	--enable-nls \
 	--disable-rpath \
 	--disable-avm2 \
@@ -49,6 +50,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-npapi \
 	--enable-plugins \
 	--disable-xpcom \
+	--enable-glib \
 	--disable-ghelp \
 	--disable-docbook \
 	--enable-visibility \
