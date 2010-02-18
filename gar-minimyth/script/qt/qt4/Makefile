@@ -1,5 +1,5 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.6.1
+GARVERSION = 4.6.2
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
