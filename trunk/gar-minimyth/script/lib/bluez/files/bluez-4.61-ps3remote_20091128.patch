@@ -1,6 +1,6 @@
-diff -Naur bluez-4.60-old/input/device.c bluez-4.60-new/input/device.c
---- bluez-4.60-old/input/device.c	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/input/device.c	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/device.c bluez-4.61-new/input/device.c
+--- bluez-4.61-old/input/device.c	2010-02-12 11:26:48.000000000 -0800
++++ bluez-4.61-new/input/device.c	2010-02-17 18:12:43.000000000 -0800
 @@ -465,14 +465,14 @@
  
  static gboolean fake_hid_connect(struct input_conn *iconn, GError **err)
@@ -41,7 +41,7 @@ diff -Naur bluez-4.60-old/input/device.c bluez-4.60-new/input/device.c
  		goto cleanup;
  	}
  
-@@ -787,7 +791,7 @@
+@@ -781,7 +785,7 @@
  	struct input_device *idev = user_data;
  	int flags;
  
@@ -50,7 +50,7 @@ diff -Naur bluez-4.60-old/input/device.c bluez-4.60-new/input/device.c
  
  	flags = removal ? (1 << HIDP_VIRTUAL_CABLE_UNPLUG) : 0;
  
-@@ -1291,3 +1295,15 @@
+@@ -1285,3 +1289,15 @@
  
  	return 0;
  }
@@ -66,9 +66,9 @@ diff -Naur bluez-4.60-old/input/device.c bluez-4.60-new/input/device.c
 +	device_request_disconnect(idev->device, NULL);
 +}
 +
-diff -Naur bluez-4.60-old/input/device.h bluez-4.60-new/input/device.h
---- bluez-4.60-old/input/device.h	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/input/device.h	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/device.h bluez-4.61-new/input/device.h
+--- bluez-4.61-old/input/device.h	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.61-new/input/device.h	2010-02-17 18:12:43.000000000 -0800
 @@ -29,6 +29,7 @@
  
  struct input_device;
@@ -98,9 +98,9 @@ diff -Naur bluez-4.60-old/input/device.h bluez-4.60-new/input/device.h
  int input_device_close_channels(const bdaddr_t *src, const bdaddr_t *dst);
 +void input_device_request_disconnect(const bdaddr_t *src, const bdaddr_t *dst);
 +
-diff -Naur bluez-4.60-old/input/fakehid.c bluez-4.60-new/input/fakehid.c
---- bluez-4.60-old/input/fakehid.c	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/input/fakehid.c	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/fakehid.c bluez-4.61-new/input/fakehid.c
+--- bluez-4.61-old/input/fakehid.c	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.61-new/input/fakehid.c	2010-02-17 18:12:43.000000000 -0800
 @@ -48,8 +48,479 @@
  #include "fakehid.h"
  #include "uinput.h"
@@ -1052,9 +1052,9 @@ diff -Naur bluez-4.60-old/input/fakehid.c bluez-4.60-new/input/fakehid.c
 +	}
 +}
 +
-diff -Naur bluez-4.60-old/input/fakehid.h bluez-4.60-new/input/fakehid.h
---- bluez-4.60-old/input/fakehid.h	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/input/fakehid.h	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/fakehid.h bluez-4.61-new/input/fakehid.h
+--- bluez-4.61-old/input/fakehid.h	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.61-new/input/fakehid.h	2010-02-17 18:12:43.000000000 -0800
 @@ -37,3 +37,8 @@
  
  int fake_hid_connadd(struct fake_input *fake, GIOChannel *intr_io,
@@ -1064,9 +1064,9 @@ diff -Naur bluez-4.60-old/input/fakehid.h bluez-4.60-new/input/fakehid.h
 +
 +void fake_hid_exit(void);
 +
-diff -Naur bluez-4.60-old/input/input.conf bluez-4.60-new/input/input.conf
---- bluez-4.60-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
-+++ bluez-4.60-new/input/input.conf	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/input.conf bluez-4.61-new/input/input.conf
+--- bluez-4.61-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
++++ bluez-4.61-new/input/input.conf	2010-02-17 18:12:43.000000000 -0800
 @@ -7,3 +7,76 @@
  # Set idle timeout (in minutes) before the connection will
  # be disconnect (defaults to 0 for no timeout)
@@ -1144,9 +1144,9 @@ diff -Naur bluez-4.60-old/input/input.conf bluez-4.60-new/input/input.conf
 +0x61 = KEY_FRAMEFORWARD   # SLOW/STEP FORWARD (XBMC recommendation: KEY_DOT)
 +0xff = KEY_MAX
 +
-diff -Naur bluez-4.60-old/input/manager.c bluez-4.60-new/input/manager.c
---- bluez-4.60-old/input/manager.c	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/input/manager.c	2010-01-09 19:21:58.000000000 -0800
+diff -Naur bluez-4.61-old/input/manager.c bluez-4.61-new/input/manager.c
+--- bluez-4.61-old/input/manager.c	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.61-new/input/manager.c	2010-02-17 18:12:43.000000000 -0800
 @@ -41,6 +41,7 @@
  #include "device.h"
  #include "server.h"
@@ -1172,10 +1172,10 @@ diff -Naur bluez-4.60-old/input/manager.c bluez-4.60-new/input/manager.c
 +
  	connection = NULL;
  }
-diff -Naur bluez-4.60-old/src/device.c bluez-4.60-new/src/device.c
---- bluez-4.60-old/src/device.c	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.60-new/src/device.c	2010-01-09 19:21:58.000000000 -0800
-@@ -840,6 +840,7 @@
+diff -Naur bluez-4.61-old/src/device.c bluez-4.61-new/src/device.c
+--- bluez-4.61-old/src/device.c	2010-02-12 11:26:48.000000000 -0800
++++ bluez-4.61-new/src/device.c	2010-02-17 18:12:43.000000000 -0800
+@@ -843,6 +843,7 @@
  	const gchar *adapter_path = adapter_get_path(adapter);
  	bdaddr_t src;
  	char srcaddr[18];
@@ -1183,7 +1183,7 @@ diff -Naur bluez-4.60-old/src/device.c bluez-4.60-new/src/device.c
  
  	device = g_try_malloc0(sizeof(struct btd_device));
  	if (device == NULL)
-@@ -865,6 +866,10 @@
+@@ -868,6 +869,10 @@
  	ba2str(&src, srcaddr);
  	read_device_name(srcaddr, address, device->name);
  
@@ -1194,7 +1194,7 @@ diff -Naur bluez-4.60-old/src/device.c bluez-4.60-new/src/device.c
  	device->auth = 0xff;
  
  	if (read_link_key(&src, &device->bdaddr, NULL, NULL) == 0)
-@@ -1082,6 +1087,8 @@
+@@ -1085,6 +1090,8 @@
  		if (!probe_uuids)
  			continue;
  
