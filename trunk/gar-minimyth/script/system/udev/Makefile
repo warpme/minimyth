@@ -3,6 +3,7 @@ GARVERSION = 151
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-pci_ids_path.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -27,11 +28,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld \
 	--with-rootlibdir=$(libdir) \
 	--with-pci-ids-path=$(datadir)/pci.ids
-
-CONFIGURE_ENV = \
-	ac_cv_file__usr_share_pci_ids='no' \
-	ac_cv_file__usr_share_hwdata_pci_ids='no' \
-	ac_cv_file__usr_share_misc_pci_ids='no'
 
 include ../../gar.mk
 
