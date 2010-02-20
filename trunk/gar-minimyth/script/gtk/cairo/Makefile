@@ -1,9 +1,9 @@
 GARNAME = cairo
-GARVERSION = 1.8.8
+GARVERSION = 1.8.10
 CATEGORIES = gtk
 MASTER_SITES = http://www.cairographics.org/releases/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = LGPL2
+LICENSE = LGPL2_1
 
 DESCRIPTION =
 define BLURB
