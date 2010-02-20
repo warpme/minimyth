@@ -80,6 +80,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashagg.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashamf.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashbase.la
 	@rm -f $(DESTDIR)/$(libdir)/gnash/libgnashcore.la
