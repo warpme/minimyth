@@ -1,23 +1,35 @@
 diff -Naur udev-151-old/configure.ac udev-151-new/configure.ac
 --- udev-151-old/configure.ac	2010-01-24 23:21:07.000000000 -0800
-+++ udev-151-new/configure.ac	2010-02-20 08:21:22.000000000 -0800
-@@ -69,15 +69,13 @@
++++ udev-151-new/configure.ac	2010-02-20 11:04:39.000000000 -0800
+@@ -69,17 +69,27 @@
  	PKG_CHECK_MODULES(USBUTILS, usbutils >= 0.82)
  	AC_SUBST([USB_DATABASE], [$($PKG_CONFIG --variable=usbids usbutils)])
  
 -	AC_CHECK_FILES([/usr/share/pci.ids], [pciids=/usr/share/pci.ids])
 -	AC_CHECK_FILES([/usr/share/hwdata/pci.ids], [pciids=/usr/share/hwdata/pci.ids])
 -	AC_CHECK_FILES([/usr/share/misc/pci.ids], [pciids=/usr/share/misc/pci.ids])
++	if test $cross_compiling = no; then
++		AC_CHECK_FILES([/usr/share/pci.ids],
++			       [pciids=/usr/share/pci.ids])
++		AC_CHECK_FILES([/usr/share/hwdata/pci.ids],
++			       [pciids=/usr/share/hwdata/pci.ids])
++		AC_CHECK_FILES([/usr/share/misc/pci.ids],
++			       [pciids=/usr/share/misc/pci.ids])
++	else
++		# just assume location
++		pciids=/usr/share/pci.ids
++	fi
  	AC_ARG_WITH(pci-ids-path,
- 		AS_HELP_STRING([--pci-ids-path=DIR], [Path to pci.ids file]),
+-		AS_HELP_STRING([--pci-ids-path=DIR], [Path to pci.ids file]),
++		[AS_HELP_STRING([--with-pci-ids-path=DIR], [Path to pci.ids file])],
  		[PCI_DATABASE=${withval}],
--		[if test -n "$pciids" ; then
--			PCI_DATABASE="$pciids"
--		else
-+		[AC_CHECK_FILES([/usr/share/pci.ids], [PCI_DATABASE=/usr/share/pci.ids])
-+		AC_CHECK_FILES([/usr/share/hwdata/pci.ids], [PCI_DATABASE=/usr/share/hwdata/pci.ids])
-+		AC_CHECK_FILES([/usr/share/misc/pci.ids], [PCI_DATABASE=/usr/share/misc/pci.ids])
-+		if test -x "$PCI_DATABASE" ; then
+ 		[if test -n "$pciids" ; then
+ 			PCI_DATABASE="$pciids"
+ 		else
  			AC_MSG_ERROR([pci.ids not found, try --with-pci-ids-path=])
  		fi])
++	AC_MSG_CHECKING([for PCI database location])
++	AC_MSG_RESULT([$PCI_DATABASE])
  	AC_SUBST(PCI_DATABASE)
+ 
+ 	AC_CHECK_HEADER([linux/input.h], [:], AC_MSG_ERROR([kernel headers not found]))
