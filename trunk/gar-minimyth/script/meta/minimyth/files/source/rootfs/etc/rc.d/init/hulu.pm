@@ -36,19 +36,20 @@ sub start
             $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
 
             chmod(oct('0644'), $name_local);
-            # Make sure that uid and gid are for user 'minimyth'.
-            my $uid = getpwnam('minimyth');
-            my $gid = getgrnam('minimyth');
-            File::Find::finddepth(
-                sub
-                {
-                    if (((stat($File::Find::name))[4] != $uid) || ((stat(_))[5] != $gid))
-                    {
-                        chown($uid, $gid, $File::Find::name);
-                    }
-                },
-                '/home/minimyth/.local');
         }
+        # Make sure that the uid and gid are for user 'minimyth',
+        # as even a failed MiniMyth::*_get will create the parent directory.
+        my $uid = getpwnam('minimyth');
+        my $gid = getgrnam('minimyth');
+        File::Find::finddepth(
+            sub
+            {
+                if (((stat($File::Find::name))[4] != $uid) || ((stat(_))[5] != $gid))
+                {
+                    chown($uid, $gid, $File::Find::name);
+                }
+            },
+            '/home/minimyth/.local');
     }
 
     if (-f '/usr/bin/huludesktop')
