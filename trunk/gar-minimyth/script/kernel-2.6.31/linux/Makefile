@@ -11,7 +11,6 @@ PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-saa7164.patch
 PATCHFILES += $(DISTNAME)-intel_atom.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
-PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.3.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
