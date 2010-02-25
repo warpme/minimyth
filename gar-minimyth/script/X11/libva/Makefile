@@ -42,6 +42,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-glx \
 	--enable-dummy-driver \
 	--enable-i965-driver \
 	--disable-static \
