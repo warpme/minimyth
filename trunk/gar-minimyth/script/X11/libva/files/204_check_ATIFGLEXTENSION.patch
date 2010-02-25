@@ -1,22 +1,9 @@
-commit ff6537d7f9676c3c174d29dccf591ce7d05d8017
+commit d91645f8b37aa43bafa76da3146dcdc9c17963ff
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Fri Nov 20 15:51:22 2009 +0000
 
     Fix detection of fglrx.
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index d7f4850..8063d9a 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -37,7 +37,7 @@ libva_la_LDFLAGS = $(LDADD) -no-undefined
- libva_la_LIBADD = $(LIBVA_LIBS) -ldl
- 
- libva_x11_la_SOURCES = 
--libva_x11_la_LIBADD  = $(libvacorelib) x11/libva_x11.la $(LIBVA_LIBS) $(X11_LIBS) $(XEXT_LIBS) $(XFIXES_LIBS)
-+libva_x11_la_LIBADD  = $(libvacorelib) x11/libva_x11.la $(LIBVA_LIBS) $(X11_LIBS) $(XEXT_LIBS) $(XFIXES_LIBS) -ldl
- libva_x11_la_LDFLAGS = $(LDADD)
- libva_x11_la_DEPENDENCIES = $(libvacorelib) x11/libva_x11.la
- 
 diff --git a/src/x11/Makefile.am b/src/x11/Makefile.am
 index b6916f2..0b61c33 100644
 --- a/src/x11/Makefile.am
@@ -49,7 +36,7 @@ index b6916f2..0b61c33 100644
 +	$(NULL)
 diff --git a/src/x11/va_fglext.c b/src/x11/va_fglext.c
 new file mode 100644
-index 0000000..add1f28
+index 0000000..bc58e8b
 --- /dev/null
 +++ b/src/x11/va_fglext.c
 @@ -0,0 +1,175 @@
@@ -272,7 +259,7 @@ index 0000000..f2d87c3
 +
 +#endif /* VA_FGLEXTLIB_H */
 diff --git a/src/x11/va_x11.c b/src/x11/va_x11.c
-index a2acd4d..297c137 100644
+index 414c261..0510e00 100644
 --- a/src/x11/va_x11.c
 +++ b/src/x11/va_x11.c
 @@ -31,6 +31,7 @@
@@ -313,7 +300,7 @@ index a2acd4d..297c137 100644
  static VAStatus va_DisplayContextGetDriverName (
      VADisplayContextP pDisplayContext,
      char **driver_name
-@@ -147,7 +171,8 @@ static VAStatus va_DisplayContextGetDriverName (
+@@ -156,7 +180,8 @@ static VAStatus va_DisplayContextGetDriverName (
          vaStatus = va_DRIGetDriverName(pDisplayContext, driver_name);
      if (vaStatus != VA_STATUS_SUCCESS)
          vaStatus = va_NVCTRL_GetDriverName(pDisplayContext, driver_name);

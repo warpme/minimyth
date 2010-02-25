@@ -1,8 +1,26 @@
-commit 69474b0e2c2a064b771a81ff16141eb8f7c6d4b2
+commit f0b352251894becfcec50de1430bda12c314a464
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
-Date:   Fri Aug 21 11:58:16 2009 +0000
+Date:   Tue Sep 22 13:00:34 2009 +0000
 
-    Add OpenGL extensions (v3) and generic implementation with TFP and FBO.
+    Fix libva-glx pkgconfig dependencies.
+
+commit df0953a951d8a2e5e4b0a28a95ae0f1ac735726e
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Tue Sep 8 12:25:14 2009 +0000
+
+    Add generic VA/GLX implementation with TFP and FBO.
+
+commit f640b1cf9eab4e5d478239b608ed0d8b68f6c5f6
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Tue Sep 8 12:15:35 2009 +0000
+
+    Move GLX VTable to a new file.
+
+commit 70d9cb6d1aa2fc2dde6646f3b692433e0d93d431
+Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
+Date:   Fri Aug 28 11:15:51 2009 +0000
+
+    Add OpenGL extensions (v3).
 
 diff --git a/Makefile.am b/Makefile.am
 index 07385e6..6fb4cae 100644
@@ -24,10 +42,10 @@ index 07385e6..6fb4cae 100644
  
  CLEANFILES = $(pcfiles)
 diff --git a/configure.ac b/configure.ac
-index 128510c..0ab5a16 100644
+index c3aba90..abef435 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -66,6 +66,11 @@ LIBVA_LT_LDFLAGS="-version-info $LIBVA_LT_VERSION -release $LIBVA_VERSION.$LIBVA
+@@ -52,6 +55,11 @@ AC_SUBST(LIBVA_MINOR_VERSION)
  AC_SUBST(LIBVA_LT_VERSION)
  AC_SUBST(LIBVA_LT_LDFLAGS)
  
@@ -39,7 +57,7 @@ index 128510c..0ab5a16 100644
  AC_ARG_ENABLE(dummy-driver,
                [AC_HELP_STRING([--enable-dummy-driver],
                                [build dummy video driver])],
-@@ -130,6 +135,22 @@ fi
+@@ -100,6 +132,23 @@ if test x$enable_i965_driver = xyes && ! $PKG_CONFIG --atleast-version=2.4 libdr
  AC_DEFINE_UNQUOTED([ATTRIBUTE_HIDDEN], [$ATTRIBUTE_HIDDEN],
      [Defined to __attribute__((visibility("hidden"))) when available])
  
@@ -47,6 +65,7 @@ index 128510c..0ab5a16 100644
 +USE_GLX="no"
 +GL_DEPS_CFLAGS=""
 +GL_DEPS_LIBS=""
++
 +if test x$enable_glx = xyes; then
 +    AC_CHECK_HEADERS([GL/gl.h])
 +    AC_CHECK_HEADERS([GL/glx.h])
@@ -62,7 +81,7 @@ index 128510c..0ab5a16 100644
  # We only need the headers, we don't link against the DRM libraries
  LIBVA_CFLAGS="$DRM_CFLAGS"
  AC_SUBST(LIBVA_CFLAGS)
-@@ -149,6 +170,7 @@ AC_OUTPUT([
+@@ -119,6 +192,7 @@ AC_OUTPUT([
  	src/Makefile
  	src/va_version.h
  	src/x11/Makefile
@@ -70,8 +89,8 @@ index 128510c..0ab5a16 100644
  	dummy_drv_video/Makefile
  	i965_drv_video/Makefile
  	i965_drv_video/shaders/Makefile
-@@ -162,5 +184,6 @@ AC_OUTPUT([
- 	test/encode/Makefile
+@@ -128,5 +202,6 @@ AC_OUTPUT([
+ 	test/Makefile
  	libva.pc
  	libva-x11.pc
 +	libva-glx.pc
@@ -79,7 +98,7 @@ index 128510c..0ab5a16 100644
  
 diff --git a/libva-glx.pc.in b/libva-glx.pc.in
 new file mode 100644
-index 0000000..2019915
+index 0000000..20ba20a
 --- /dev/null
 +++ b/libva-glx.pc.in
 @@ -0,0 +1,12 @@
@@ -96,7 +115,7 @@ index 0000000..2019915
 +Libs: -L${libdir} -lva-${display}
 +Cflags: -I${includedir}
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 8063d9a..9e957b2 100644
+index 2f4210a..e50a15f 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -28,9 +28,17 @@ INCLUDES = \
@@ -134,31 +153,10 @@ index 8063d9a..9e957b2 100644
 +
 +DIST_SUBDIRS = x11 glx
  
- libva_la_SOURCES = va.c va_crystalhd.c
+ libva_la_SOURCES = va.c
  
-diff --git a/src/glx/Makefile.am b/src/glx/Makefile.am
-new file mode 100644
-index 0000000..7783d8c
-diff --git a/src/glx/va_backend_glx.h b/src/glx/va_backend_glx.h
-new file mode 100644
-index 0000000..d110485
-diff --git a/src/glx/va_glx.c b/src/glx/va_glx.c
-new file mode 100644
-index 0000000..2a06923
-diff --git a/src/glx/va_glx.h b/src/glx/va_glx.h
-new file mode 100644
-index 0000000..25d2965
-diff --git a/src/glx/va_glx_impl.c b/src/glx/va_glx_impl.c
-new file mode 100644
-index 0000000..8b1e8c3
-diff --git a/src/glx/va_glx_impl.h b/src/glx/va_glx_impl.h
-new file mode 100644
-index 0000000..977bfcc
-diff --git a/src/glx/va_glx_private.h b/src/glx/va_glx_private.h
-new file mode 100644
-index 0000000..e1002a6
 diff --git a/src/va_backend.h b/src/va_backend.h
-index d514ba0..bdc189d 100644
+index 6f858f5..8f722a3 100644
 --- a/src/va_backend.h
 +++ b/src/va_backend.h
 @@ -32,9 +32,11 @@
@@ -190,8 +188,8 @@ index d514ba0..bdc189d 100644
 +    void *glx;                          /* opaque for GLX code */
  };
  
- #define VA_DISPLAY_MAGIC 0x56414430 /* VAD0 */
-@@ -416,6 +422,8 @@ struct VADisplayContext
+ struct VADisplayContext
+@@ -413,6 +420,8 @@ struct VADisplayContext
  	VADisplayContextP ctx,
  	char **driver_name
      );
@@ -201,10 +199,10 @@ index d514ba0..bdc189d 100644
  
  typedef VAStatus (*VADriverInit) (
 diff --git a/src/x11/va_x11.c b/src/x11/va_x11.c
-index 297c137..d55ee62 100644
+index 9de904e..b8c60fa 100644
 --- a/src/x11/va_x11.c
 +++ b/src/x11/va_x11.c
-@@ -216,6 +216,7 @@ VADisplay vaGetDisplay (
+@@ -243,6 +243,7 @@ VADisplay vaGetDisplay (
  	  pDisplayContext->vaIsValid       = va_DisplayContextIsValid;
  	  pDisplayContext->vaDestroy       = va_DisplayContextDestroy;
  	  pDisplayContext->vaGetDriverName = va_DisplayContextGetDriverName;
