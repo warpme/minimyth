@@ -1,8 +1,9 @@
 GARNAME = lame
-GARVERSION = 398-2
+GARVERSION = 3.98.3
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
+DISTFILES  = $(DISTNAME).tar.gz
+DISTFILES += config.cache.$(GARCH_FAMILY)
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -11,8 +12,6 @@ endef
 
 DEPENDS   = lang/c lib/ncurses
 BUILDDEPS = devel/nasm
-
-PWD := $(shell pwd)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -24,7 +23,21 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-nasm \
 	--disable-cpml \
-	--with-gnu-ld
+	--disable-gtktest \
+	--disable-efence \
+	--disable-analyzer-hooks \
+	--enable-decoder \
+	--enable-decode-layer1 \
+	--enable-decode-layer2 \
+	--disable-frontend \
+	--disable-mp3x \
+	--disable-mp3rtp \
+	--disable-brhist \
+	--disable-all-float \
+	--enable-expopt=no \
+	--enable-debug=no \
+	--with-gnu-ld \
+	--with-fileio=lame
 
 CONFIGURE_ENV = \
 	GTK_CONFIG='no'
@@ -41,6 +54,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-post-install:
+x-post-install:
 	@rm -f $(DESTDIR)$(libdir)/libmp3lame.la
 	@$(MAKECOOKIE)
