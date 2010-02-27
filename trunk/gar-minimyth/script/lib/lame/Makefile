@@ -54,6 +54,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-x-post-install:
+post-install:
 	@rm -f $(DESTDIR)$(libdir)/libmp3lame.la
 	@$(MAKECOOKIE)
