@@ -12,6 +12,7 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
+	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
@@ -32,6 +33,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
+	--disable-static \
+	--enable-shared \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
@@ -45,4 +49,5 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/vmware_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/vmwlegacy_drv.la
 	@$(MAKECOOKIE)
