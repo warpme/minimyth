@@ -1,9 +1,9 @@
 GARNAME = mount.cifs
-GARVERSION = 3.4.6
+GARVERSION = 3.5.0
 CATEGORIES = net
 DISTFILES = samba-$(GARVERSION).tar.gz
 MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
-PATCHFILES = $(DISTNAME)-sys_stat_h.patch
+#PATCHFILES = $(DISTNAME)-sys_stat_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -12,7 +12,7 @@ endef
 
 DEPENDS = lang/c
 
-WORKSRC = $(WORKDIR)/samba-$(GARVERSION)/source3/client
+WORKSRC = $(WORKDIR)/samba-$(GARVERSION)/client
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
