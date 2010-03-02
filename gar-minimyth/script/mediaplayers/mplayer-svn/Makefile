@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100215.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100114.patch
+PATCHFILES = $(GARNAME)-mt_20100215.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100224.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
