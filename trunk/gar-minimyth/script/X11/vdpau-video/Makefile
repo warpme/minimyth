@@ -1,8 +1,7 @@
 GARNAME = vdpau-video
-GARVERSION = 0.6.3
+GARVERSION = 0.6.4
 CATEGORIES = X11
-MASTER_SITES  = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-MASTER_SITES += http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/patches/
+MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2

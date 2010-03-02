@@ -1,6 +1,6 @@
 diff -Naur MPlayer-30521-old/cfg-common-opts.h MPlayer-30521-new/cfg-common-opts.h
---- MPlayer-30521-old/cfg-common-opts.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/cfg-common-opts.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/cfg-common-opts.h	2010-02-06 07:34:59.000000000 -0800
++++ MPlayer-30521-new/cfg-common-opts.h	2010-03-01 14:56:59.000000000 -0800
 @@ -246,6 +246,7 @@
  //	{"ac", &audio_codec, CONF_TYPE_STRING, 0, 0, 0, NULL},
  	{"ac", &audio_codec_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
@@ -10,8 +10,8 @@ diff -Naur MPlayer-30521-old/cfg-common-opts.h MPlayer-30521-new/cfg-common-opts
  	// postprocessing:
  #ifdef CONFIG_LIBAVCODEC
 diff -Naur MPlayer-30521-old/codec-cfg.c MPlayer-30521-new/codec-cfg.c
---- MPlayer-30521-old/codec-cfg.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/codec-cfg.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/codec-cfg.c	2010-02-06 07:34:59.000000000 -0800
++++ MPlayer-30521-new/codec-cfg.c	2010-03-01 14:56:59.000000000 -0800
 @@ -214,6 +214,13 @@
  		{"IDCT_MPEG2",IMGFMT_XVMC_IDCT_MPEG2},
  		{"MOCO_MPEG2",IMGFMT_XVMC_MOCO_MPEG2},
@@ -27,8 +27,8 @@ diff -Naur MPlayer-30521-old/codec-cfg.c MPlayer-30521-new/codec-cfg.c
  		{"VDPAU_MPEG2",IMGFMT_VDPAU_MPEG2},
  		{"VDPAU_H264",IMGFMT_VDPAU_H264},
 diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
---- MPlayer-30521-old/configure	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/configure	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/configure	2010-03-01 14:55:49.000000000 -0800
++++ MPlayer-30521-new/configure	2010-03-01 15:00:15.000000000 -0800
 @@ -357,6 +357,9 @@
    --disable-muxer=MUXER     disable specified FFmpeg muxer
    --enable-muxer=MUXER      enable specified FFmpeg muxer
@@ -39,16 +39,17 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  Video output:
    --disable-vidix          disable VIDIX [for x86 *nix]
    --with-vidix-drivers[=*] list of VIDIX drivers to be compiled in
-@@ -547,6 +550,8 @@
- _libopencore_amrnb=auto
- _libopencore_amrwb=auto
- libopenjpeg=auto
-+_libavhwaccels_all=$(sed -n 's/^[^#]*HWACCEL.*(.*, *\(.*\)).*/\1_hwaccel/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
-+_libavhwaccels="$_libavhwaccels_all"
- _libavdecoders_all=$(sed -n 's/^[^#]*DEC.*(.*, *\(.*\)).*/\1_decoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
- _libavdecoders=$(echo $_libavdecoders_all | sed -e 's/ LIB[A-Z0-9_]*_DECODER//g' -e s/MPEG4AAC_DECODER//)
- _libavencoders_all=$(sed -n 's/^[^#]*ENC.*(.*, *\(.*\)).*/\1_encoder/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
-@@ -574,6 +579,9 @@
+@@ -556,8 +559,7 @@
+ _libavbsfs_all=$(sed -n 's/^[^#]*BSF.*(.*, *\(.*\)).*/\1_bsf/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
+ _libavbsfs=$_libavbsfs_all
+ _libavhwaccels_all=$(sed -n 's/^[^#]*HWACCEL.*(.*, *\(.*\)).*/\1_hwaccel/p' libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
+-# Disable all hardware accelerators for now.
+-_libavhwaccels=
++_libavhwaccels=$(for h in $_libavhwaccels_all; do case $h in (*_VAAPI_HWACCEL) echo $h;; esac; done)
+ _libavdemuxers_all=$(sed -n 's/^[^#]*DEMUX.*(.*, *\(.*\)).*/\1_demuxer/p' libavformat/allformats.c | tr '[a-z]' '[A-Z]')
+ _libavdemuxers=$(echo $_libavdemuxers_all | sed -e 's/ LIB[A-Z0-9_]*_DEMUXER//g' -e s/REDIR_DEMUXER// -e s/AVISYNTH_DEMUXER//)
+ _libavmuxers_all=$(sed -n 's/^[^#]*_MUX.*(.*, *\(.*\)).*/\1_muxer/p' libavformat/allformats.c | tr '[a-z]' '[A-Z]')
+@@ -574,6 +576,9 @@
  _libavcodec_mpegaudio_hp=yes
  _mencoder=yes
  _mplayer=yes
@@ -58,7 +59,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  _x11=auto
  _xshape=auto
  _xss=auto
-@@ -932,6 +940,8 @@
+@@ -932,6 +937,8 @@
    --disable-xv)         _xv=no          ;;
    --enable-xvmc)        _xvmc=yes       ;;
    --disable-xvmc)       _xvmc=no        ;;
@@ -67,7 +68,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
    --enable-vdpau)       _vdpau=yes      ;;
    --disable-vdpau)      _vdpau=no       ;;
    --enable-sdl)         _sdl=yes        ;;
-@@ -4012,6 +4022,28 @@
+@@ -4012,6 +4019,28 @@
  echores "$_gettimeofday"
  
  
@@ -96,7 +97,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  echocheck "glob()"
  cat > $TMPC << EOF
  #include <stdio.h>
-@@ -4440,7 +4472,7 @@
+@@ -4440,7 +4469,7 @@
    _novomodules="x11 $_novomodules"
    _res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -105,7 +106,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  fi
  echores "$_x11"
  
-@@ -4571,7 +4603,7 @@
+@@ -4571,7 +4600,7 @@
  else
    def_vdpau='#define CONFIG_VDPAU 0'
    _novomodules="vdpau $_novomodules"
@@ -114,7 +115,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  fi
  echores "$_vdpau"
  
-@@ -5159,6 +5191,65 @@
+@@ -5159,6 +5188,65 @@
  fi
  echores "$_gl"
  
@@ -180,7 +181,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  
  echocheck "MatrixView"
  if test "$_gl" = no ; then
-@@ -5174,6 +5265,31 @@
+@@ -5174,6 +5262,31 @@
  echores "$matrixview"
  
  
@@ -212,7 +213,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  echocheck "PNG support"
  if test "$_png" = auto ; then
    _png=no
-@@ -8673,6 +8789,7 @@
+@@ -8673,6 +8786,7 @@
  TWOLAME=$_twolame
  UNRAR_EXEC = $_unrar_exec
  V4L2 = $_v4l2
@@ -220,7 +221,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  VCD = $_vcd
  VDPAU = $_vdpau
  VESA = $_vesa
-@@ -8758,6 +8875,7 @@
+@@ -8758,6 +8872,7 @@
  CONFIG_LIBDIRAC_DECODER=$_libdirac_lavc
  CONFIG_LIBDIRAC_ENCODER=$_libdirac_lavc
  CONFIG_LIBFAAC_ENCODER=$_faac_lavc
@@ -228,7 +229,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  CONFIG_LIBMP3LAME_ENCODER=$_mp3lame_lavc
  CONFIG_LIBOPENCORE_AMRNB_DECODER=$_libopencore_amrnb
  CONFIG_LIBOPENCORE_AMRNB_ENCODER=$_libopencore_amrnb
-@@ -8774,6 +8892,7 @@
+@@ -8774,6 +8889,7 @@
  CONFIG_POSTPROC = yes
  # Prevent building libavcodec/imgresample.c with conflicting symbols
  CONFIG_SWSCALE=yes
@@ -236,15 +237,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  CONFIG_VDPAU=$_vdpau
  CONFIG_XVMC=$_xvmc
  CONFIG_ZLIB=$_zlib
-@@ -8783,6 +8902,7 @@
- HAVE_W32THREADS = $_w32threads
- HAVE_YASM = $_have_yasm
- 
-+$(echo $_libavhwaccels | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
- $(echo $_libavdecoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
- $(echo $_libavencoders | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
- $(echo $_libavparsers | tr '[a-z] ' '[A-Z]\n' | sed 's/^/CONFIG_/;s/$/=yes/')
-@@ -8890,6 +9010,7 @@
+@@ -8890,6 +9006,7 @@
  
  
  /* system functions */
@@ -252,7 +245,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  $def_exp2
  $def_exp2f
  $def_gethostbyname2
-@@ -8928,6 +9049,7 @@
+@@ -8928,6 +9045,7 @@
  $def_extern_prefix
  $def_iconv
  $def_kstat
@@ -260,7 +253,7 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  $def_macosx_bundle
  $def_macosx_finder
  $def_maemo
-@@ -9159,6 +9281,8 @@
+@@ -9159,6 +9277,8 @@
  $def_tdfxvid
  $def_tga
  $def_v4l2
@@ -269,17 +262,9 @@ diff -Naur MPlayer-30521-old/configure MPlayer-30521-new/configure
  $def_vdpau
  $def_vesa
  $def_vidix
-@@ -9289,6 +9413,7 @@
- $def_x264_lavc
- $def_xvid_lavc
- 
-+$(ff_config_enable "$_libavhwaccels_all" "$_libavhwaccels")
- $(ff_config_enable "$_libavdecoders_all" "$_libavdecoders")
- $(ff_config_enable "$_libavencoders_all" "$_libavencoders")
- $(ff_config_enable "$_libavparsers_all"  "$_libavparsers")
 diff -Naur MPlayer-30521-old/etc/codecs.conf MPlayer-30521-new/etc/codecs.conf
---- MPlayer-30521-old/etc/codecs.conf	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/etc/codecs.conf	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/etc/codecs.conf	2010-02-06 07:34:57.000000000 -0800
++++ MPlayer-30521-new/etc/codecs.conf	2010-03-01 14:56:59.000000000 -0800
 @@ -180,6 +180,7 @@
    fourcc slif ; SoftLab MPEG-2 I-frames Codec
    driver ffmpeg
@@ -329,8 +314,8 @@ diff -Naur MPlayer-30521-old/etc/codecs.conf MPlayer-30521-new/etc/codecs.conf
  
  videocodec ffzygo
 diff -Naur MPlayer-30521-old/fmt-conversion.c MPlayer-30521-new/fmt-conversion.c
---- MPlayer-30521-old/fmt-conversion.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/fmt-conversion.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/fmt-conversion.c	2010-02-06 07:34:59.000000000 -0800
++++ MPlayer-30521-new/fmt-conversion.c	2010-03-01 14:56:59.000000000 -0800
 @@ -18,12 +18,14 @@
  
  #include "mp_msg.h"
@@ -382,8 +367,8 @@ diff -Naur MPlayer-30521-old/fmt-conversion.c MPlayer-30521-new/fmt-conversion.c
      fmt = conversion_map[i].fmt;
      if (!fmt)
 diff -Naur MPlayer-30521-old/fmt-conversion.h MPlayer-30521-new/fmt-conversion.h
---- MPlayer-30521-old/fmt-conversion.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/fmt-conversion.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/fmt-conversion.h	2010-02-06 07:34:59.000000000 -0800
++++ MPlayer-30521-new/fmt-conversion.h	2010-03-01 14:56:59.000000000 -0800
 @@ -23,6 +23,6 @@
  #include "libavutil/avutil.h"
  
@@ -393,8 +378,8 @@ diff -Naur MPlayer-30521-old/fmt-conversion.h MPlayer-30521-new/fmt-conversion.h
  
  #endif /* MPLAYER_FMT_CONVERSION_H */
 diff -Naur MPlayer-30521-old/gui/mplayer/gtk/opts.c MPlayer-30521-new/gui/mplayer/gtk/opts.c
---- MPlayer-30521-old/gui/mplayer/gtk/opts.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/gui/mplayer/gtk/opts.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/gui/mplayer/gtk/opts.c	2010-02-06 07:34:34.000000000 -0800
++++ MPlayer-30521-new/gui/mplayer/gtk/opts.c	2010-03-01 14:56:59.000000000 -0800
 @@ -63,9 +63,11 @@
         GtkWidget * prEFontName;
         GtkWidget * prEDVDDevice;
@@ -474,8 +459,8 @@ diff -Naur MPlayer-30521-old/gui/mplayer/gtk/opts.c MPlayer-30521-new/gui/mplaye
  
    CBVFM=gtk_combo_new();
 diff -Naur MPlayer-30521-old/help/help_mp-en.h MPlayer-30521-new/help/help_mp-en.h
---- MPlayer-30521-old/help/help_mp-en.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/help/help_mp-en.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/help/help_mp-en.h	2010-02-06 07:34:53.000000000 -0800
++++ MPlayer-30521-new/help/help_mp-en.h	2010-03-01 14:56:59.000000000 -0800
 @@ -719,6 +719,7 @@
  #define MSGTR_PREFERENCES_IDX "Rebuild index table, if needed"
  #define MSGTR_PREFERENCES_VideoCodecFamily "Video codec family:"
@@ -493,8 +478,8 @@ diff -Naur MPlayer-30521-old/help/help_mp-en.h MPlayer-30521-new/help/help_mp-en
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
 diff -Naur MPlayer-30521-old/libmpcodecs/dec_video.c MPlayer-30521-new/libmpcodecs/dec_video.c
---- MPlayer-30521-old/libmpcodecs/dec_video.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/dec_video.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/dec_video.c	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/dec_video.c	2010-03-01 14:56:59.000000000 -0800
 @@ -56,9 +56,47 @@
  int field_dominance=-1;
  
@@ -544,8 +529,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/dec_video.c MPlayer-30521-new/libmpcode
    vf_instance_t* vf=sh_video->vfilter;
    if(vf){
 diff -Naur MPlayer-30521-old/libmpcodecs/dec_video.h MPlayer-30521-new/libmpcodecs/dec_video.h
---- MPlayer-30521-old/libmpcodecs/dec_video.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/dec_video.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/dec_video.h	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/dec_video.h	2010-03-01 14:56:59.000000000 -0800
 @@ -21,6 +21,14 @@
  
  #include "libmpdemux/stheader.h"
@@ -574,8 +559,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/dec_video.h MPlayer-30521-new/libmpcode
  
  #endif /* MPLAYER_DEC_VIDEO_H */
 diff -Naur MPlayer-30521-old/libmpcodecs/img_format.c MPlayer-30521-new/libmpcodecs/img_format.c
---- MPlayer-30521-old/libmpcodecs/img_format.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/img_format.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/img_format.c	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/img_format.c	2010-03-01 14:56:59.000000000 -0800
 @@ -94,6 +94,14 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -592,8 +577,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/img_format.c MPlayer-30521-new/libmpcod
  	case IMGFMT_VDPAU_MPEG2: return "MPEG2 VDPAU acceleration";
  	case IMGFMT_VDPAU_H264: return "H.264 VDPAU acceleration";
 diff -Naur MPlayer-30521-old/libmpcodecs/img_format.h MPlayer-30521-new/libmpcodecs/img_format.h
---- MPlayer-30521-old/libmpcodecs/img_format.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/img_format.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/img_format.h	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/img_format.h	2010-03-01 14:56:59.000000000 -0800
 @@ -172,6 +172,26 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
@@ -622,8 +607,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/img_format.h MPlayer-30521-new/libmpcod
  #define IMGFMT_VDPAU               0x1DC80000
  #define IMGFMT_VDPAU_MASK          0xFFFF0000
 diff -Naur MPlayer-30521-old/libmpcodecs/mp_image.h MPlayer-30521-new/libmpcodecs/mp_image.h
---- MPlayer-30521-old/libmpcodecs/mp_image.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/mp_image.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/mp_image.h	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/mp_image.h	2010-03-01 14:56:59.000000000 -0800
 @@ -129,6 +129,7 @@
      // compressed formats
      if(out_fmt == IMGFMT_MPEGPES ||
@@ -633,8 +618,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/mp_image.h MPlayer-30521-new/libmpcodec
  	mpi->bpp=0;
  	return;
 diff -Naur MPlayer-30521-old/libmpcodecs/vd.c MPlayer-30521-new/libmpcodecs/vd.c
---- MPlayer-30521-old/libmpcodecs/vd.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/vd.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/vd.c	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/vd.c	2010-03-01 14:56:59.000000000 -0800
 @@ -373,3 +373,12 @@
    if(vf->draw_slice)
      vf->draw_slice(vf,src,stride,w,h,x,y);
@@ -649,8 +634,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/vd.c MPlayer-30521-new/libmpcodecs/vd.c
 +    return NULL;
 +}
 diff -Naur MPlayer-30521-old/libmpcodecs/vd_ffmpeg.c MPlayer-30521-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-30521-old/libmpcodecs/vd_ffmpeg.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/vd_ffmpeg.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/vd_ffmpeg.c	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/vd_ffmpeg.c	2010-03-01 14:56:59.000000000 -0800
 @@ -32,6 +32,7 @@
  #include "fmt-conversion.h"
  
@@ -803,8 +788,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/vd_ffmpeg.c MPlayer-30521-new/libmpcode
 -#endif /* CONFIG_XVMC || CONFIG_VDPAU */
 +#endif /* CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU */
 diff -Naur MPlayer-30521-old/libmpcodecs/vd.h MPlayer-30521-new/libmpcodecs/vd.h
---- MPlayer-30521-old/libmpcodecs/vd.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/vd.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/vd.h	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/vd.h	2010-03-01 14:56:59.000000000 -0800
 @@ -52,6 +52,7 @@
  int mpcodecs_config_vo(sh_video_t *sh, int w, int h, unsigned int preferred_outfmt);
  mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h);
@@ -814,8 +799,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/vd.h MPlayer-30521-new/libmpcodecs/vd.h
  #define VDFLAGS_DROPFRAME 3
  
 diff -Naur MPlayer-30521-old/libmpcodecs/vf.h MPlayer-30521-new/libmpcodecs/vf.h
---- MPlayer-30521-old/libmpcodecs/vf.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/vf.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/vf.h	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/vf.h	2010-03-01 14:56:59.000000000 -0800
 @@ -107,6 +107,7 @@
  #define VFCTRL_GET_PTS         17 /* Return last pts value that reached vf_vo*/
  #define VFCTRL_SET_DEINTERLACE 18 /* Set deinterlacing status */
@@ -825,8 +810,8 @@ diff -Naur MPlayer-30521-old/libmpcodecs/vf.h MPlayer-30521-new/libmpcodecs/vf.h
  #include "vfcap.h"
  
 diff -Naur MPlayer-30521-old/libmpcodecs/vf_vo.c MPlayer-30521-new/libmpcodecs/vf_vo.c
---- MPlayer-30521-old/libmpcodecs/vf_vo.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libmpcodecs/vf_vo.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libmpcodecs/vf_vo.c	2010-02-06 07:34:26.000000000 -0800
++++ MPlayer-30521-new/libmpcodecs/vf_vo.c	2010-03-01 14:56:59.000000000 -0800
 @@ -172,6 +172,12 @@
  	*(double *)data = vf->priv->pts;
  	return CONTROL_TRUE;
@@ -850,7 +835,7 @@ diff -Naur MPlayer-30521-old/libmpcodecs/vf_vo.c MPlayer-30521-new/libmpcodecs/v
  }
 diff -Naur MPlayer-30521-old/libvo/stats.c MPlayer-30521-new/libvo/stats.c
 --- MPlayer-30521-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30521-new/libvo/stats.c	2010-02-06 07:35:57.000000000 -0800
++++ MPlayer-30521-new/libvo/stats.c	2010-03-01 14:56:59.000000000 -0800
 @@ -0,0 +1,217 @@
 +#include "config.h"
 +#include "stats.h"
@@ -1071,7 +1056,7 @@ diff -Naur MPlayer-30521-old/libvo/stats.c MPlayer-30521-new/libvo/stats.c
 +}
 diff -Naur MPlayer-30521-old/libvo/stats.h MPlayer-30521-new/libvo/stats.h
 --- MPlayer-30521-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30521-new/libvo/stats.h	2010-02-06 07:35:57.000000000 -0800
++++ MPlayer-30521-new/libvo/stats.h	2010-03-01 14:56:59.000000000 -0800
 @@ -0,0 +1,21 @@
 +#ifndef MPLAYER_STATS_H
 +#define MPLAYER_STATS_H
@@ -1095,8 +1080,8 @@ diff -Naur MPlayer-30521-old/libvo/stats.h MPlayer-30521-new/libvo/stats.h
 +
 +#endif /* MPLAYER_STATS_H */
 diff -Naur MPlayer-30521-old/libvo/video_out.c MPlayer-30521-new/libvo/video_out.c
---- MPlayer-30521-old/libvo/video_out.c	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libvo/video_out.c	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libvo/video_out.c	2010-02-06 07:34:37.000000000 -0800
++++ MPlayer-30521-new/libvo/video_out.c	2010-03-01 14:56:59.000000000 -0800
 @@ -138,6 +138,7 @@
  extern vo_functions_t video_out_quartz;
  extern vo_functions_t video_out_pnm;
@@ -1116,8 +1101,8 @@ diff -Naur MPlayer-30521-old/libvo/video_out.c MPlayer-30521-new/libvo/video_out
  };
  
 diff -Naur MPlayer-30521-old/libvo/video_out.h MPlayer-30521-new/libvo/video_out.h
---- MPlayer-30521-old/libvo/video_out.h	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/libvo/video_out.h	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/libvo/video_out.h	2010-02-06 07:34:37.000000000 -0800
++++ MPlayer-30521-new/libvo/video_out.h	2010-03-01 14:56:59.000000000 -0800
 @@ -98,6 +98,10 @@
    int w,h;
  } mp_win_t;
@@ -1131,8 +1116,8 @@ diff -Naur MPlayer-30521-old/libvo/video_out.h MPlayer-30521-new/libvo/video_out
  #define VO_ERROR	-1
 diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 --- MPlayer-30521-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-30521-new/libvo/vo_vaapi.c	2010-02-06 07:35:57.000000000 -0800
-@@ -0,0 +1,1915 @@
++++ MPlayer-30521-new/libvo/vo_vaapi.c	2010-03-01 14:56:59.000000000 -0800
+@@ -0,0 +1,2201 @@
 +/*
 + * VA API output module
 + *
@@ -1168,6 +1153,7 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +#include "libavcodec/vaapi.h"
 +#include "gui/interface.h"
 +#include "stats.h"
++#include "libass/ass_mp.h"
 +#include <stdarg.h>
 +
 +#if CONFIG_GL
@@ -1182,6 +1168,39 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +#include <va/va_x11.h>
 +#if CONFIG_VAAPI_GLX
 +#include <va/va_glx.h>
++#endif
++
++/* Compatibility glue with VA-API >= 0.30 */
++#ifndef VA_INVALID_ID
++#define VA_INVALID_ID           0xffffffff
++#endif
++#ifndef VA_FOURCC
++#define VA_FOURCC(ch0, ch1, ch2, ch3)           \
++    ((uint32_t)(uint8_t)(ch0) |                 \
++     ((uint32_t)(uint8_t)(ch1) << 8) |          \
++     ((uint32_t)(uint8_t)(ch2) << 16) |         \
++     ((uint32_t)(uint8_t)(ch3) << 24 ))
++#endif
++#if defined VA_SRC_BT601 && defined VA_SRC_BT709
++#define USE_VAAPI_COLORSPACE 1
++#else
++#define USE_VAAPI_COLORSPACE 0
++#endif
++
++/* Defined to 1 if VA/GLX 'bind' API is available */
++#define USE_VAAPI_GLX_BIND                                \
++    (VA_MAJOR_VERSION == 0 &&                             \
++     ((VA_MINOR_VERSION == 30 &&                          \
++       VA_MICRO_VERSION == 4 && VA_SDS_VERSION >= 5) ||   \
++      (VA_MINOR_VERSION == 31 &&                          \
++       VA_MICRO_VERSION == 0 && VA_SDS_VERSION < 5)))
++
++/* Compatibility glue with VA-API >= 0.31 */
++#if defined VA_CHECK_VERSION
++#if VA_CHECK_VERSION(0,31,0)
++#define vaPutImage2             vaPutImage
++#define vaAssociateSubpicture2  vaAssociateSubpicture
++#endif
 +#endif
 +
 +static vo_info_t info = {
@@ -1204,6 +1223,11 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +typedef void (*draw_alpha_func)(int x0, int y0, int w, int h,
 +                                unsigned char *src, unsigned char *srca,
 +                                int stride);
++
++typedef void (*eosd_draw_alpha_func)(unsigned char *src,
++                                     int src_w, int src_h, int src_stride,
++                                     int dst_x, int dst_y,
++                                     uint32_t color);
 +
 +struct vaapi_surface {
 +    VASurfaceID id;
@@ -1273,6 +1297,11 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +static draw_alpha_func          va_osd_draw_alpha;
 +static uint8_t                 *va_osd_palette;
 +static struct vaapi_equalizer   va_equalizer;
++static VAImage                  va_eosd_image;
++static uint8_t                 *va_eosd_image_data;
++static VASubpictureID           va_eosd_subpicture;
++static int                      va_eosd_associated;
++static eosd_draw_alpha_func     va_eosd_draw_alpha;
 +
 +///< Flag: direct surface mapping: use mpi->number to select free VA surface?
 +static int                      va_dm;
@@ -1736,6 +1765,7 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    int i, is_rgb;
 +    int r_idx = -1, g_idx = -1, b_idx = -1;
 +    int y_idx = -1, u_idx = -1, v_idx = -1;
++    int i_idx = -1, a_idx = -1;
 +
 +    if (image->num_palette_entries < 1)
 +        return NULL;
@@ -1752,6 +1782,8 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +        case 'Y': y_idx = i; is_rgb = 0; break;
 +        case 'U': u_idx = i; is_rgb = 0; break;
 +        case 'V': v_idx = i; is_rgb = 0; break;
++        case 'I': i_idx = i; break;
++        case 'A': a_idx = i; break;
 +        }
 +    }
 +
@@ -1767,8 +1799,17 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +        for (i = 0; i < image->num_palette_entries; i++) {
 +            const int n = i * image->entry_bytes;
 +            palette[n + y_idx] = i * 0xff / (image->num_palette_entries - 1);
-+            palette[n + u_idx] = 0xff;
-+            palette[n + v_idx] = 0xff;
++            palette[n + u_idx] = 0x80;
++            palette[n + v_idx] = 0x80;
++        }
++    }
++    else if (i_idx != -1 && a_idx != -1) {/* AYUV format (GMA500 "psb" bug) */
++        for (i = 0; i < image->num_palette_entries; i++) {
++            const int n = i * image->entry_bytes;
++            palette[n + 0] = 0x80;
++            palette[n + 1] = 0x80;
++            palette[n + 2] = 16 + i * 220 / (image->num_palette_entries - 1);
++            palette[n + 3] = 0;
 +        }
 +    }
 +    else {
@@ -1798,24 +1839,121 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +
 +    disable_osd();
 +
-+    status = vaAssociateSubpicture(va_context->display,
-+                                   va_osd_subpicture,
-+                                   va_surface_ids, va_num_surfaces,
-+                                   src_rect->left,
-+                                   src_rect->top,
-+                                   src_rect->right - src_rect->left,
-+                                   src_rect->bottom - src_rect->top,
-+                                   dst_rect->left,
-+                                   dst_rect->top,
-+                                   dst_rect->right - dst_rect->left,
-+                                   dst_rect->bottom - dst_rect->top,
-+                                   0);
++    status = vaAssociateSubpicture2(va_context->display,
++                                    va_osd_subpicture,
++                                    va_surface_ids, va_num_surfaces,
++                                    src_rect->left,
++                                    src_rect->top,
++                                    src_rect->right - src_rect->left,
++                                    src_rect->bottom - src_rect->top,
++                                    dst_rect->left,
++                                    dst_rect->top,
++                                    dst_rect->right - dst_rect->left,
++                                    dst_rect->bottom - dst_rect->top,
++                                    0);
 +    if (!check_status(status, "vaAssociateSubpicture()"))
 +        return -1;
 +
 +    va_osd_associated = 1;
 +    return 0;
 +}
++
++static inline unsigned char *get_eosd_image_data(int x0, int y0)
++{
++    return (va_eosd_image_data +
++            va_eosd_image.offsets[0] +
++            va_eosd_image.pitches[0] * y0 +
++            x0 * ((va_eosd_image.format.bits_per_pixel + 7) / 8));
++}
++
++static void eosd_draw_alpha_bgra(unsigned char *src,
++                                 int src_w, int src_h, int src_stride,
++                                 int dst_x, int dst_y,
++                                 uint32_t color)
++{
++    int x, y;
++    const unsigned int dst_stride = va_eosd_image.pitches[0];
++    unsigned char *dst = get_eosd_image_data(dst_x, dst_y);
++    const unsigned int r = (color >> 24) & 0xff;
++    const unsigned int g = (color >> 16) & 0xff;
++    const unsigned int b = (color >>  8) & 0xff;
++    const unsigned int a = 0xff - (color & 0xff);
++
++    for (y = 0; y < src_h; y++, dst += dst_stride, src += src_stride)
++        for (x = 0; x < src_w; x++) {
++            const unsigned int v = src[x];
++            dst[4*x + 0] = (b * v + dst[4*x + 0] * (0xff - v)) / 255;
++            dst[4*x + 1] = (g * v + dst[4*x + 1] * (0xff - v)) / 255;
++            dst[4*x + 2] = (r * v + dst[4*x + 2] * (0xff - v)) / 255;
++            dst[4*x + 3] = (a * v + dst[4*x + 3] * (0xff - v)) / 255;
++        }
++}
++
++static void eosd_draw_alpha_rgba(unsigned char *src,
++                                 int src_w, int src_h, int src_stride,
++                                 int dst_x, int dst_y,
++                                 uint32_t color)
++{
++    int x, y;
++    const unsigned int dst_stride = va_eosd_image.pitches[0];
++    unsigned char *dst = get_eosd_image_data(dst_x, dst_y);
++    const unsigned int r = (color >> 24) & 0xff;
++    const unsigned int g = (color >> 16) & 0xff;
++    const unsigned int b = (color >>  8) & 0xff;
++    const unsigned int a = 0xff - (color & 0xff);
++
++    for (y = 0; y < src_h; y++, dst += dst_stride, src += src_stride)
++        for (x = 0; x < src_w; x++) {
++            const unsigned int v = src[x];
++            dst[4*x + 0] = (r * v + dst[4*x + 0] * (0xff - v)) / 255;
++            dst[4*x + 1] = (g * v + dst[4*x + 1] * (0xff - v)) / 255;
++            dst[4*x + 2] = (b * v + dst[4*x + 2] * (0xff - v)) / 255;
++            dst[4*x + 3] = (a * v + dst[4*x + 3] * (0xff - v)) / 255;
++        }
++}
++
++static void disable_eosd(void)
++{
++    if (!va_eosd_associated)
++        return;
++
++    vaDeassociateSubpicture(va_context->display,
++                            va_eosd_subpicture,
++                            va_surface_ids, va_num_surfaces);
++
++    va_eosd_associated = 0;
++}
++
++static int enable_eosd(void)
++{
++    VAStatus status;
++
++    if (va_eosd_associated)
++        return 0;
++
++    status = vaAssociateSubpicture2(va_context->display,
++                                    va_eosd_subpicture,
++                                    va_surface_ids, va_num_surfaces,
++                                    0, 0, g_image_width, g_image_height,
++                                    0, 0, g_image_width, g_image_height,
++                                    0);
++    if (!check_status(status, "vaAssociateSubpicture()"))
++        return -1;
++
++    va_eosd_associated = 1;
++    return 0;
++}
++
++///< List of subpicture formats in preferred order
++static const struct {
++    uint32_t format;
++    eosd_draw_alpha_func draw_alpha;
++}
++va_eosd_info[] = {
++    { VA_FOURCC('B','G','R','A'), eosd_draw_alpha_bgra },
++    { VA_FOURCC('R','G','B','A'), eosd_draw_alpha_rgba },
++    { 0, NULL }
++};
 +
 +static int is_direct_mapping_init(void)
 +{
@@ -1860,10 +1998,14 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    { "dm",          OPT_ARG_INT,  &va_dm,        (opt_test_f)int_012 },
 +    { "stats",       OPT_ARG_BOOL, &cpu_stats,    NULL },
 +    { "deint",       OPT_ARG_INT,  &g_deint,      (opt_test_f)int_012 },
++#if USE_VAAPI_COLORSPACE
 +    { "colorspace",  OPT_ARG_INT,  &g_colorspace, (opt_test_f)int_012 },
++#endif
 +#if CONFIG_GL
 +    { "gl",          OPT_ARG_BOOL, &gl_enabled,   NULL },
++#if USE_VAAPI_GLX_BIND
 +    { "bind",        OPT_ARG_BOOL, &gl_binding,   NULL },
++#endif
 +    { "reflect",     OPT_ARG_BOOL, &gl_reflect,   NULL },
 +#endif
 +    { NULL, }
@@ -1901,8 +2043,10 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +#if CONFIG_GL
 +               "  gl\n"
 +               "    Enable OpenGL rendering\n"
++#if USE_VAAPI_GLX_BIND
 +               "  bind\n"
 +               "    Use VA surface binding instead of copy\n"
++#endif
 +               "  reflect\n"
 +               "    Enable OpenGL reflection effects\n"
 +#endif
@@ -1986,8 +2130,10 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    for (i = 0; i < va_num_profiles; i++)
 +        mp_msg(MSGT_VO, MSGL_DBG2, "  %s\n", string_of_VAProfile(va_profiles[i]));
 +
-+    va_osd_subpicture = VA_INVALID_ID;
-+    va_osd_image.image_id = VA_INVALID_ID;
++    va_osd_subpicture      = VA_INVALID_ID;
++    va_osd_image.image_id  = VA_INVALID_ID;
++    va_eosd_subpicture     = VA_INVALID_ID;
++    va_eosd_image.image_id = VA_INVALID_ID;
 +
 +    max_display_attrs = vaMaxNumDisplayAttributes(va_context->display);
 +    display_attrs = calloc(max_display_attrs, sizeof(*display_attrs));
@@ -2068,7 +2214,18 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +        va_osd_palette = NULL;
 +    }
 +
++    disable_eosd();
 +    disable_osd();
++
++    if (va_eosd_subpicture != VA_INVALID_ID) {
++        vaDestroySubpicture(va_context->display, va_eosd_subpicture);
++        va_eosd_subpicture = VA_INVALID_ID;
++    }
++
++    if (va_eosd_image.image_id != VA_INVALID_ID) {
++        vaDestroyImage(va_context->display, va_eosd_image.image_id);
++        va_eosd_image.image_id = VA_INVALID_ID;
++    }
 +
 +    if (va_osd_subpicture != VA_INVALID_ID) {
 +        vaDestroySubpicture(va_context->display, va_osd_subpicture);
@@ -2349,6 +2506,28 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +               string_of_VAImageFormat(&va_osd_image.format));
 +    }
 +
++    /* Create EOSD data */
++    va_eosd_draw_alpha     = NULL;
++    va_eosd_image.image_id = VA_INVALID_ID;
++    va_eosd_image.buf      = VA_INVALID_ID;
++    va_eosd_subpicture     = VA_INVALID_ID;
++    for (i = 0; va_eosd_info[i].format; i++) {
++        for (j = 0; j < va_num_subpic_formats; j++)
++            if (va_subpic_formats[j].fourcc == va_eosd_info[i].format)
++                break;
++        if (j < va_num_subpic_formats &&
++            vaCreateImage(va_context->display, &va_subpic_formats[j],
++                          width, height, &va_eosd_image) == VA_STATUS_SUCCESS)
++            break;
++    }
++    if (va_eosd_info[i].format &&
++        vaCreateSubpicture(va_context->display, va_eosd_image.image_id,
++                           &va_eosd_subpicture) == VA_STATUS_SUCCESS) {
++        va_eosd_draw_alpha = va_eosd_info[i].draw_alpha;
++        mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] Using %s surface for EOSD\n",
++               string_of_VAImageFormat(&va_eosd_image.format));
++    }
++
 +    /* Allocate VA images */
 +    if (!IMGFMT_IS_VAAPI(format)) {
 +        VAImageFormat *image_format = VAImageFormat_from_imgfmt(format);
@@ -2445,7 +2624,8 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +                              VFCAP_CSP_SUPPORTED_BY_HW |
 +                              VFCAP_HWSCALE_UP |
 +                              VFCAP_HWSCALE_DOWN |
-+                              VFCAP_OSD);
++                              VFCAP_OSD |
++                              VFCAP_EOSD);
 +
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] query_format(): format %x (%s)\n",
 +           format, vo_format_name(format));
@@ -2472,13 +2652,14 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +static inline int get_field_flags(int i)
 +{
 +    return (g_deint ? 
-+            ((g_top_field_first == i) ^ (g_deint > 1) ?
++            ((g_top_field_first ^ i) == 0 ?
 +             VA_BOTTOM_FIELD : VA_TOP_FIELD) : VA_FRAME_PICTURE);
 +}
 +
 +static inline int get_colorspace_flags(void)
 +{
-+    int csp;
++    int csp = 0;
++#if USE_VAAPI_COLORSPACE
 +    switch (g_colorspace) {
 +    case 0:
 +        csp = ((g_image_width >= 1280 || g_image_height > 576) ?
@@ -2494,6 +2675,7 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +        assert(0);
 +        break;
 +    }
++#endif
 +    return csp;
 +}
 +
@@ -2525,6 +2707,7 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    int i;
 +
 +    if (gl_binding) {
++#if USE_VAAPI_GLX_BIND
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
 +            status = vaAssociateSurfaceGLX(va_context->display,
 +                                           gl_surface,
@@ -2533,8 +2716,13 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +            if (!check_status(status, "vaAssociateSurfaceGLX()"))
 +                return;
 +        }
++#else
++        mp_msg(MSGT_VO, MSGL_WARN, "vaAssociateSurfaceGLX() is not implemented\n");
++        gl_binding = 0;
++#endif
 +    }
-+    else {
++
++    if (!gl_binding) {
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
 +            status = vaCopySurfaceGLX(va_context->display,
 +                                      gl_surface,
@@ -2562,11 +2750,13 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    glEnable(GL_TEXTURE_2D);
 +    BindTexture(GL_TEXTURE_2D, gl_texture);
 +
++#if USE_VAAPI_GLX_BIND
 +    if (gl_binding) {
 +        status = vaBeginRenderSurfaceGLX(va_context->display, gl_surface);
 +        if (!check_status(status, "vaBeginRenderSurfaceGLX()"))
 +            return -1;
 +    }
++#endif
 +    return 0;
 +}
 +
@@ -2574,11 +2764,13 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +{
 +    VAStatus status;
 +
++#if USE_VAAPI_GLX_BIND
 +    if (gl_binding) {
 +        status = vaEndRenderSurfaceGLX(va_context->display, gl_surface);
 +        if (!check_status(status, "vaEndRenderSurfaceGLX()"))
 +            return -1;
 +    }
++#endif
 +
 +    BindTexture(GL_TEXTURE_2D, 0);
 +    glDisable(GL_TEXTURE_2D);
@@ -2723,7 +2915,9 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    struct vaapi_surface * const surface = va_free_surfaces[g_output_surface];
 +    VAImage * const va_image = &surface->image;
 +    VAStatus status;
-+    uint8_t *dst, *image_data = NULL;
++    uint8_t *image_data = NULL;
++    uint8_t *dst[3] = { 0, };
++    unsigned int dst_stride[3];
 +
 +    mp_msg(MSGT_VO, MSGL_DBG2, "[vo_vaapi] draw_slice(): location (%d,%d), size %dx%d\n", x, y, w, h);
 +
@@ -2731,21 +2925,39 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    if (!check_status(status, "vaMapBuffer()"))
 +        return VO_FALSE;
 +
-+    dst = image_data + va_image->offsets[0] + y * va_image->pitches[0] + x;
-+    memcpy_pic(dst, image[0], w, h, va_image->pitches[0], stride[0]);
++    dst_stride[0] = va_image->pitches[0];
++    dst[0] = image_data + va_image->offsets[0] + y * dst_stride[0] + x;
++
++    memcpy_pic(dst[0], image[0], w, h, dst_stride[0], stride[0]);
 +
 +    x /= 2;
 +    y /= 2;
 +    w /= 2;
 +    h /= 2;
 +
-+    dst = image_data + va_image->offsets[1] + y * va_image->pitches[1] + x;
-+    memcpy_pic(dst, image[1], w, h, va_image->pitches[1], stride[1]);
-+
-+    if (image[2]) { /* NV12 only has two planes */
-+        dst = image_data + va_image->offsets[2] + y * va_image->pitches[2] + x;
-+        memcpy_pic(dst, image[2], w, h, va_image->pitches[2], stride[2]);
++    if (g_image_format == IMGFMT_YV12) {
++        /* MPlayer's YV12 is actually I420, so swap U/V components */
++        dst_stride[1] = va_image->pitches[2];
++        dst[1] = image_data + va_image->offsets[2] + y * dst_stride[1] + x;
++        dst_stride[2] = va_image->pitches[1];
++        dst[2] = image_data + va_image->offsets[1] + y * dst_stride[2] + x;
 +    }
++    else {
++        if (image[1]) {
++            dst_stride[1] = va_image->pitches[1];
++            dst[1] = image_data + va_image->offsets[1] + y * dst_stride[1] + x;
++        }
++        if (image[2]) {
++            dst_stride[2] = va_image->pitches[2];
++            dst[2] = image_data + va_image->offsets[2] + y * dst_stride[2] + x;
++        }
++    }
++
++    if (image[1]) /* RGBA only has a single plane */
++        memcpy_pic(dst[1], image[1], w, h, dst_stride[1], stride[1]);
++
++    if (image[2]) /* NV12 only has two planes */
++        memcpy_pic(dst[2], image[2], w, h, dst_stride[2], stride[2]);
 +
 +    status = vaUnmapBuffer(va_context->display, surface->image.buf);
 +    if (!check_status(status, "vaUnmapBuffer()"))
@@ -2792,6 +3004,48 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    va_osd_image_data = NULL;
 +
 +    enable_osd(&va_osd_image_dirty_rect, &va_osd_image_dirty_rect);
++}
++
++static void draw_eosd(mp_eosd_images_t *imgs)
++{
++    ass_image_t *img = imgs->imgs;
++    ass_image_t *i;
++    VAStatus status;
++
++    if (!va_eosd_draw_alpha)
++        return;
++
++    // Nothing changed, no need to redraw
++    if (imgs->changed == 0)
++        return;
++
++    // There's nothing to render!
++    if (!img) {
++        disable_eosd();
++        return;
++    }
++
++    if (imgs->changed == 1)
++        goto eosd_skip_upload;
++
++    status = vaMapBuffer(va_context->display, va_eosd_image.buf,
++                         &va_eosd_image_data);
++    if (!check_status(status, "vaMapBuffer()"))
++        return;
++
++    memset(va_eosd_image_data, 0, va_eosd_image.data_size);
++
++    for (i = img; i; i = i->next)
++        va_eosd_draw_alpha(i->bitmap, i->w, i->h, i->stride,
++                           i->dst_x, i->dst_y, i->color);
++
++    status = vaUnmapBuffer(va_context->display, va_eosd_image.buf);
++    if (!check_status(status, "vaUnmapBuffer()"))
++        return;
++    va_eosd_image_data = NULL;
++
++eosd_skip_upload:
++    enable_eosd();
 +}
 +
 +static void flip_page(void)
@@ -2875,11 +3129,11 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +            return VO_FALSE;
 +    }
 +
-+    status = vaPutImage(va_context->display,
-+                        surface->id,
-+                        surface->image.image_id,
-+                        mpi->x, mpi->y, mpi->w, mpi->h,
-+                        mpi->x, mpi->y, mpi->w, mpi->h);
++    status = vaPutImage2(va_context->display,
++                         surface->id,
++                         surface->image.image_id,
++                         mpi->x, mpi->y, mpi->w, mpi->h,
++                         mpi->x, mpi->y, mpi->w, mpi->h);
 +    if (!check_status(status, "vaPutImage()"))
 +        return VO_FALSE;
 +
@@ -3037,6 +3291,9 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    case VOCTRL_ONTOP:
 +        vo_x11_ontop();
 +        return VO_TRUE;
++    case VOCTRL_UPDATE_SCREENINFO:
++        update_xinerama_info();
++        return VO_TRUE;
 +    case VOCTRL_GET_PANSCAN:
 +        return VO_TRUE;
 +    case VOCTRL_SET_PANSCAN:
@@ -3045,12 +3302,26 @@ diff -Naur MPlayer-30521-old/libvo/vo_vaapi.c MPlayer-30521-new/libvo/vo_vaapi.c
 +    case VOCTRL_GET_HWACCEL_CONTEXT:
 +        *((void **)data) = va_context;
 +        return VO_TRUE;
++    case VOCTRL_DRAW_EOSD:
++        if (!data)
++            return VO_FALSE;
++        draw_eosd(data);
++        return VO_TRUE;
++    case VOCTRL_GET_EOSD_RES: {
++        mp_eosd_res_t *r = data;
++        r->mt = r->mb = r->ml = r->mr = 0;
++        r->srcw = g_image_width;
++        r->srch = g_image_height;
++        r->w    = g_image_width;
++        r->h    = g_image_height;
++        return VO_TRUE;
++    }
 +    }
 +    return VO_NOTIMPL;
 +}
 diff -Naur MPlayer-30521-old/Makefile MPlayer-30521-new/Makefile
---- MPlayer-30521-old/Makefile	2010-02-06 07:35:56.000000000 -0800
-+++ MPlayer-30521-new/Makefile	2010-02-06 07:35:57.000000000 -0800
+--- MPlayer-30521-old/Makefile	2010-02-06 07:34:59.000000000 -0800
++++ MPlayer-30521-new/Makefile	2010-03-01 14:56:59.000000000 -0800
 @@ -624,6 +624,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
