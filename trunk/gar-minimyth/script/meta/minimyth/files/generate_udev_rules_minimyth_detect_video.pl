@@ -22,7 +22,7 @@ die qq(error: temporary file $tmpfile_udev_rules already exists.\n) if (-e $tmpf
 my $tmpfile_pciids_txt = qq(/tmp/$$.pciids.txt);
 die qq(error: temporary file $tmpfile_pciids_txt already exists.\n) if (-e $tmpfile_pciids_txt);
 
-system(qq(wget 'http://cgit.freedesktop.org/mesa/drm/plain/shared-core/drm_pciids.txt' -O $tmpfile_pciids_txt));
+system(qq(wget 'http://cgit.freedesktop.org/mesa/drm/tree/shared-core/drm_pciids.txt?id=a66cf9ce68bdf9bd887f91a38ced4b59c129b3c7' -O $tmpfile_pciids_txt));
 die qq(error: failed to download DRM PCI ids file.\n) if (! -e $tmpfile_pciids_txt);
 if (open(FILE, '<', qq($tmpfile_pciids_txt)))
 {
