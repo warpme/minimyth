@@ -1,9 +1,8 @@
 GARNAME = mount.cifs
-GARVERSION = 3.5.0
+GARVERSION = 3.5.1
 CATEGORIES = net
 DISTFILES = samba-$(GARVERSION).tar.gz
 MASTER_SITES = http://us1.samba.org/samba/ftp/stable/
-#PATCHFILES = $(DISTNAME)-sys_stat_h.patch
 LICENSE = GPL2
 
 DESCRIPTION =
