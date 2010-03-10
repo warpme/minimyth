@@ -1,5 +1,5 @@
 GARNAME = tar
-GARVERSION = 1.22
+GARVERSION = 1.23
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-rpath \
 	--with-gnu-ld
 
