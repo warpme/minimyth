@@ -1,5 +1,5 @@
 GARNAME = nasm
-GARVERSION = 2.07
+GARVERSION = 2.08.01
 CATEGORIES = devel
 MASTER_SITES  = http://www.nasm.us/pub/nasm/releasebuilds/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/

@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100215.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100224.patch
+PATCHFILES = $(GARNAME)-mt_20100309.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100224.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -174,7 +174,6 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-ivtv \
 	--disable-v4l2 \
 	--disable-dvb \
-	--disable-dvbhead \
 	--disable-mga \
 	--disable-xmga \
 	--enable-xv \
@@ -257,6 +256,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-neon \
 	--disable-iwmmxt \
 	--enable-fastmemcpy \
+	--disable-hardcoded-tables \
 	--disable-big-endian \
 	--disable-debug \
 	--disable-profile \
