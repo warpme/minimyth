@@ -25,41 +25,6 @@ sub start
         my $interface = $minimyth->var_get('MM_NETWORK_INTERFACE');
         if (! $interface)
         {
-            # Locate a connected network interface.
-            # We use the first connected network interface found.
-            if ((-d '/sys/class/net') &&
-                (opendir(DIR, '/sys/class/net')))
-            {
-                foreach (grep((! /^\./) && (! /^lo$/), (readdir(DIR))))
-                {
-                    if ((system(qq(/usr/sbin/ifplugstatus -q $_)) >> 8) == 2)
-                    {
-                        $interface = $_;
-                        last;
-                    }
-                }
-            }
-        }
-        if (! $interface)
-        {
-            # No connected network interface found, so use any network interface.
-            # We use the first network interface found.
-            if ((-d '/sys/class/net') &&
-                (opendir(DIR, '/sys/class/net')))
-            {
-                foreach (grep((! /^\./) && (! /^lo$/), (readdir(DIR))))
-                {
-                    $interface = $_;
-                    last;
-                }
-            }
-            if ($interface)
-            {
-                $minimyth->message_output('info', "no connected network interface detected, using '$interface'.");
-            }
-        }
-        if (! $interface)
-        {
             # No network interface was found.
             $minimyth->message_output('err', "no network interface found.");
             return 0;
