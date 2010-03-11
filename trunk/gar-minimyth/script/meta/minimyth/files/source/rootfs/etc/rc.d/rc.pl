@@ -15,7 +15,6 @@ my @script_list_start =
 (
     'ld',
     'loopback',
-    'dhcp',
     'conf',
     'log'
 );

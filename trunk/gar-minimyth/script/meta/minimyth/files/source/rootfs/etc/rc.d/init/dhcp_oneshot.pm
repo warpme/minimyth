@@ -1,7 +1,7 @@
 ################################################################################
-# dhcp
+# dhcp_oneshot
 ################################################################################
-package init::dhcp;
+package init::dhcp_oneshot;
 
 use strict;
 use warnings;
@@ -16,7 +16,7 @@ sub start
     # Start 'udhcpc'.
     if (! $minimyth->application_running('udhcpc'))
     {
-        $minimyth->message_output('info', "configuring network interface ...");
+        $minimyth->message_output('info', "configuring network interface (one shot) ...");
 
         # Create a 'udhcpc.conf' file.
         $minimyth->var_save({ file => '/etc/udhcpc.conf', filter => 'MM_DHCP_.*' });
@@ -93,6 +93,9 @@ sub start
                 $command = $command . ' ' . qq(-r $ip_address);
             }
 
+            # Obtain a lease and then quit.
+            $command = $command . ' ' . qq(-q);
+
             $command = $command . ' ' .  q(> /var/log/udhcpc 2>&1);
 
             # Start DHCP client on the interface.
@@ -140,8 +143,6 @@ sub stop
 {
     my $self     = shift;
     my $minimyth = shift;
-
-    $minimyth->application_stop('udhcpc', "stopping DHCP client ...");
 
     return 1;
 }

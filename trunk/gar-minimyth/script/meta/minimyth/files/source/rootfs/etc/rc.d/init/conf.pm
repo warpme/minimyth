@@ -41,12 +41,38 @@ sub start
     unlink('/etc/conf.d/dhcp.override')                       if (-e '/etc/conf.d/dhcp.override');
     unlink('/etc/conf.d/minimyth')                            if (-e '/etc/conf.d/minimyth');
 
+    my $success = 1;
+
     # Create conf state directory.
     File::Path::mkpath('/var/cache/minimyth/init/state/conf', { mode => 0755 });
 
-    # Read core and dhcp configuration files, which are included in '/etc/conf'.
+    # Read configuration.
     $minimyth->var_clear();
     $minimyth->var_load({ 'file' => '/etc/conf' });
+
+    # If the MiniMyth boot directory was not set to a local path on the boot
+    # line, then we may need the network interface in order to access the
+    # MiniMyth boot directory.
+    if ( (! $minimyth->var_get('MM_MINIMYTH_BOOT_URL')            ) ||
+         (  $minimyth->var_get('MM_MINIMYTH_BOOT_URL') !~ /^file:/) )
+        {
+        $minimyth->package_require(q(init::dhcp_oneshot));
+        if ($minimyth->package_member_require(q(init::dhcp_oneshot), q(start)))
+        {
+            eval
+            {
+                init::dhcp_oneshot->start($minimyth) || ($success = 0);
+            };
+            if ($@)
+            {
+                $minimyth->message_output('err', qq($@));
+                $success = 0;
+            }
+        }
+        # Reread configuration to take into account configuration from DHCP.
+        $minimyth->var_clear();
+        $minimyth->var_load({ 'file' => '/etc/conf' });
+    }
 
     $minimyth->message_output('info', "fetching configuration file  ...");
 
@@ -86,8 +112,6 @@ sub start
         $minimyth->message_output('err', "'minimyth.conf' not readable.");
         return 0;
     }
-
-    my $success = 1;
 
     # Save the current boot directory location so that it is available to the
     # 'mm_minimyth_conf_include shell' shell function that might be called from
