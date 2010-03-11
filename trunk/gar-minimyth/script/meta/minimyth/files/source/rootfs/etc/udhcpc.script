@@ -171,7 +171,6 @@ case "${1}" in
         /bin/rm -f "${DHCP_CONF}~"
         /bin/touch ${DHCP_CONF}~
         /bin/chmod 644 ${DHCP_CONF}~
-        NETWORK_INTERFACE=${interface}
         TFTP_SERVER=${siaddr}
         TFTP_BOOT_FILE=${boot_file}
         TFTP_BOOT_URL=
@@ -185,9 +184,8 @@ case "${1}" in
                 fi
             fi
         fi
-        conf_variable_write ${DHCP_CONF}~ MM_NETWORK_INTERFACE "${NETWORK_INTERFACE}"
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER       "${TFTP_SERVER}"
-        conf_variable_write ${DHCP_CONF}~ MM_TFTP_BOOT_URL     "${TFTP_BOOT_URL}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_SERVER   "${TFTP_SERVER}"
+        conf_variable_write ${DHCP_CONF}~ MM_TFTP_BOOT_URL "${TFTP_BOOT_URL}"
         /usr/bin/cmp -s "${DHCP_CONF}~" "${DHCP_CONF}" 2> /dev/null
         if /usr/bin/test $? -ne 0 ; then
             /bin/mv -f ${DHCP_CONF}~ ${DHCP_CONF}

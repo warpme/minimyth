@@ -56,6 +56,7 @@ sub start
     if ( (! $minimyth->var_get('MM_MINIMYTH_BOOT_URL')            ) ||
          (  $minimyth->var_get('MM_MINIMYTH_BOOT_URL') !~ /^file:/) )
         {
+        $minimyth->_run($minimyth, 'MM_NETWORK_INTERFACE');
         $minimyth->package_require(q(init::dhcp_oneshot));
         if ($minimyth->package_member_require(q(init::dhcp_oneshot), q(start)))
         {
@@ -196,6 +197,7 @@ sub start
     }
 
     # Start the DHCP client now that we have created the DHCP override variables file.
+    $minimyth->_run($minimyth, 'MM_NETWORK_INTERFACE');
     $minimyth->package_require(q(init::dhcp));
     if ($minimyth->package_member_require(q(init::dhcp), q(start)))
     {
