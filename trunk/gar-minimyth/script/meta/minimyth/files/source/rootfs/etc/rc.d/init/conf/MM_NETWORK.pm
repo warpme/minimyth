@@ -16,7 +16,27 @@ sub var_list
 $var_list{'MM_NETWORK_INTERFACE'} =
 {
     value_default  => 'auto',
-    value_valid    => 'auto|.+',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_valid = '';
+
+        my @interface_list = ();
+        if ((-d '/sys/class/net') &&
+            (opendir(DIR, '/sys/class/net')))
+        {
+            foreach (grep((! /^\./) && (! /^lo$/), (readdir(DIR))))
+            {
+                push(@interface_list, $_);
+            }
+        }
+
+        $value_valid = join('|', ('auto', @interface_list));
+
+        return $value_valid;
+    },
     value_auto     => sub
     {
         my $minimyth = shift;
@@ -25,6 +45,7 @@ $var_list{'MM_NETWORK_INTERFACE'} =
         my $value_auto = '';
 
         my @interface_list = ();
+
         if ((-d '/sys/class/net') &&
             (opendir(DIR, '/sys/class/net')))
         {
@@ -79,7 +100,7 @@ $var_list{'MM_NETWORK_INTERFACE'} =
         }
                 
         return $value_auto;
-    },
+    }
 };
 
 1;
