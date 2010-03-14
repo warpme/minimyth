@@ -414,7 +414,7 @@ sub start
                      $x_resolution_x = "$1";
                      $x_resolution_y = "$2";
                 }
-                $minimyth->mythdb_settings_set('VidModeWidth12',        $x_resolution_x);
+                $minimyth->mythdb_settings_set('VidModeWidth2' ,        $x_resolution_x);
                 $minimyth->mythdb_settings_set('VidModeHeight2',        $x_resolution_y);
                 $minimyth->mythdb_settings_set('TVVidModeResolution2',  $x_resolution);
                 $minimyth->mythdb_settings_set('TVVidModeRefreshRate2', '0');
