@@ -22,17 +22,8 @@ CONFIGURE_ARGS = \
      	--libdir=$(libdir) \
 	--includedir=$(includedir) \
 	--shared
-BUILD_ARGS     = \
-	LIBS="libz.a libz.so.1.2.4"
-INSTALL_ARGS   = \
-	LIBS="libz.a libz.so.1.2.4"
-
-INSTALL_OVERRIDE_DIRS = prefix exec_prefix libdir includedir mandir
 
 include ../../gar.mk
-
-CFLAGS := $(CFLAGS) -fPIC
-AR     := $(AR)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libz.a
