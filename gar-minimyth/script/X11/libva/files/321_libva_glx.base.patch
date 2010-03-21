@@ -1,11 +1,11 @@
-commit 69474b0e2c2a064b771a81ff16141eb8f7c6d4b2
+commit e69075435675d356c7c9b4ff734a60e8cd031604
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
-Date:   Fri Aug 21 11:58:16 2009 +0000
+Date:   Mon Mar 8 09:44:25 2010 +0100
 
     Add OpenGL extensions (v3) and generic implementation with TFP and FBO.
 
 diff --git a/Makefile.am b/Makefile.am
-index 07385e6..6fb4cae 100644
+index 459660b..e75a2db 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -32,10 +32,13 @@ endif
@@ -24,7 +24,7 @@ index 07385e6..6fb4cae 100644
  
  CLEANFILES = $(pcfiles)
 diff --git a/configure.ac b/configure.ac
-index 128510c..0ab5a16 100644
+index 95cf992..86366e9 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -66,6 +66,11 @@ LIBVA_LT_LDFLAGS="-version-info $LIBVA_LT_VERSION -release $LIBVA_VERSION.$LIBVA
@@ -63,10 +63,10 @@ index 128510c..0ab5a16 100644
  LIBVA_CFLAGS="$DRM_CFLAGS"
  AC_SUBST(LIBVA_CFLAGS)
 @@ -149,6 +170,7 @@ AC_OUTPUT([
- 	src/Makefile
- 	src/va_version.h
- 	src/x11/Makefile
-+	src/glx/Makefile
+ 	va/Makefile
+ 	va/va_version.h
+ 	va/x11/Makefile
++	va/glx/Makefile
  	dummy_drv_video/Makefile
  	i965_drv_video/Makefile
  	i965_drv_video/shaders/Makefile
@@ -95,11 +95,11 @@ index 0000000..2019915
 +Version: @PACKAGE_VERSION@
 +Libs: -L${libdir} -lva-${display}
 +Cflags: -I${includedir}
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 8063d9a..9e957b2 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -28,9 +28,17 @@ INCLUDES = \
+diff --git a/va/Makefile.am b/va/Makefile.am
+index 99f6bbf..ebff3d5 100644
+--- a/va/Makefile.am
++++ b/va/Makefile.am
+@@ -27,9 +27,17 @@ INCLUDES = \
  LDADD = \
  	$(LIBVA_LT_LDFLAGS)
  
@@ -120,7 +120,7 @@ index 8063d9a..9e957b2 100644
  
  libva_ladir = $(libdir)
  libva_la_LDFLAGS = $(LDADD) -no-undefined
-@@ -41,7 +49,14 @@ libva_x11_la_LIBADD  = $(libvacorelib) x11/libva_x11.la $(LIBVA_LIBS) $(X11_LIBS
+@@ -40,7 +48,14 @@ libva_x11_la_LIBADD  = $(libvacorelib) x11/libva_x11.la $(LIBVA_LIBS) $(X11_LIBS
  libva_x11_la_LDFLAGS = $(LDADD)
  libva_x11_la_DEPENDENCIES = $(libvacorelib) x11/libva_x11.la
  
@@ -136,54 +136,42 @@ index 8063d9a..9e957b2 100644
  
  libva_la_SOURCES = va.c va_crystalhd.c
  
-diff --git a/src/glx/Makefile.am b/src/glx/Makefile.am
+diff --git a/va/glx/Makefile.am b/va/glx/Makefile.am
 new file mode 100644
-index 0000000..7783d8c
-diff --git a/src/glx/va_backend_glx.h b/src/glx/va_backend_glx.h
+index 0000000..337f34e
+diff --git a/va/glx/va_backend_glx.h b/va/glx/va_backend_glx.h
 new file mode 100644
 index 0000000..d110485
-diff --git a/src/glx/va_glx.c b/src/glx/va_glx.c
+diff --git a/va/glx/va_glx.c b/va/glx/va_glx.c
 new file mode 100644
-index 0000000..2a06923
-diff --git a/src/glx/va_glx.h b/src/glx/va_glx.h
+index 0000000..ec50a0e
+diff --git a/va/glx/va_glx.h b/va/glx/va_glx.h
 new file mode 100644
-index 0000000..25d2965
-diff --git a/src/glx/va_glx_impl.c b/src/glx/va_glx_impl.c
+index 0000000..1a0624d
+diff --git a/va/glx/va_glx_impl.c b/va/glx/va_glx_impl.c
 new file mode 100644
-index 0000000..8b1e8c3
-diff --git a/src/glx/va_glx_impl.h b/src/glx/va_glx_impl.h
+index 0000000..b0f24bb
+diff --git a/va/glx/va_glx_impl.h b/va/glx/va_glx_impl.h
 new file mode 100644
 index 0000000..977bfcc
-diff --git a/src/glx/va_glx_private.h b/src/glx/va_glx_private.h
+diff --git a/va/glx/va_glx_private.h b/va/glx/va_glx_private.h
 new file mode 100644
-index 0000000..e1002a6
-diff --git a/src/va_backend.h b/src/va_backend.h
-index d514ba0..bdc189d 100644
---- a/src/va_backend.h
-+++ b/src/va_backend.h
-@@ -32,9 +32,11 @@
- #ifdef IN_LIBVA
- #include "va.h"
- #include "x11/va_x11.h"
-+#include "glx/va_backend_glx.h"
- #else
- #include <va/va.h>
- #include <va/va_x11.h>
-+#include <va/va_backend_glx.h>
- #endif
- 
- #include <stdlib.h>
-@@ -372,6 +374,9 @@ struct VADriverVTable
+index 0000000..d416729
+diff --git a/va/va_backend.h b/va/va_backend.h
+index ff86744..06fef7f 100644
+--- a/va/va_backend.h
++++ b/va/va_backend.h
+@@ -365,6 +365,9 @@ struct VADriverVTable
                  unsigned int *chroma_v_offset,
                  void **buffer
          );
 +
 +        /* Optional: GLX support hooks */
-+        struct VADriverVTableGLX glx;
++        struct VADriverVTableGLX *glx;
  };
  
  struct VADriverContext
-@@ -394,6 +399,7 @@ struct VADriverContext
+@@ -387,6 +390,7 @@ struct VADriverContext
      void *handle;			/* dlopen handle */
      
      void *dri_state;
@@ -191,7 +179,7 @@ index d514ba0..bdc189d 100644
  };
  
  #define VA_DISPLAY_MAGIC 0x56414430 /* VAD0 */
-@@ -416,6 +422,8 @@ struct VADisplayContext
+@@ -409,6 +413,8 @@ struct VADisplayContext
  	VADisplayContextP ctx,
  	char **driver_name
      );
@@ -200,11 +188,11 @@ index d514ba0..bdc189d 100644
  };
  
  typedef VAStatus (*VADriverInit) (
-diff --git a/src/x11/va_x11.c b/src/x11/va_x11.c
-index 297c137..d55ee62 100644
---- a/src/x11/va_x11.c
-+++ b/src/x11/va_x11.c
-@@ -216,6 +216,7 @@ VADisplay vaGetDisplay (
+diff --git a/va/x11/va_x11.c b/va/x11/va_x11.c
+index 71cc36f..6826b31 100644
+--- a/va/x11/va_x11.c
++++ b/va/x11/va_x11.c
+@@ -217,6 +217,7 @@ VADisplay vaGetDisplay (
  	  pDisplayContext->vaIsValid       = va_DisplayContextIsValid;
  	  pDisplayContext->vaDestroy       = va_DisplayContextDestroy;
  	  pDisplayContext->vaGetDriverName = va_DisplayContextGetDriverName;

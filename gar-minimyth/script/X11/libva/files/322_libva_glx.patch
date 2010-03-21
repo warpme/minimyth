@@ -1,23 +1,23 @@
-commit fa0a96f490a068162c4c9d12cad8b736dce7cbba
+commit 37f6246890b10be4ee57916c7a028205637c17d6
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
-Date:   Thu Feb 18 15:03:16 2010 +0000
-
-    Fix check for FBO.
-
-commit e6da92b34aacb1428510a3e1334b8dc7fa9855f6
-Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
-Date:   Mon Feb 15 09:24:42 2010 +0000
-
-    Drop VA/GLX 'bind' API.
-
-commit 6f37dfe4326887f02a4cedb90464930ccb8debb1
-Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
-Date:   Fri Aug 21 11:58:16 2009 +0000
+Date:   Mon Mar 8 09:44:25 2010 +0100
 
     Add OpenGL extensions (v3) and generic implementation with TFP and FBO.
 
+diff --git a/Makefile.am b/Makefile.am
+index 459660b..e75a2db 100644
+diff --git a/configure.ac b/configure.ac
+index 95cf992..86366e9 100644
+diff --git a/libva-glx.pc.in b/libva-glx.pc.in
+new file mode 100644
+index 0000000..2019915
+diff --git a/va/Makefile.am b/va/Makefile.am
+index 99f6bbf..ebff3d5 100644
+diff --git a/va/glx/Makefile.am b/va/glx/Makefile.am
+new file mode 100644
+index 0000000..337f34e
 --- /dev/null
-+++ b/src/glx/Makefile.am
++++ b/va/glx/Makefile.am
 @@ -0,0 +1,41 @@
 +# Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 +#
@@ -41,7 +41,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 +# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 +
-+AM_CFLAGS = -DLINUX -DIN_LIBVA -I$(top_srcdir)/src -I$(top_srcdir)/src/x11
++AM_CFLAGS = -DLINUX -I$(top_srcdir)/va -I$(top_srcdir)/va/x11
 +
 +source_c = \
 +	va_glx.c		\
@@ -60,8 +60,11 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +libva_glxinclude_HEADERS = $(source_h)
 +libva_glx_la_SOURCES	 = $(source_c)
 +noinst_HEADERS		 = $(source_h_priv)
+diff --git a/va/glx/va_backend_glx.h b/va/glx/va_backend_glx.h
+new file mode 100644
+index 0000000..d110485
 --- /dev/null
-+++ b/src/glx/va_backend_glx.h
++++ b/va/glx/va_backend_glx.h
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
@@ -117,9 +120,12 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +};
 +
 +#endif /* VA_BACKEND_GLX_H */
+diff --git a/va/glx/va_glx.c b/va/glx/va_glx.c
+new file mode 100644
+index 0000000..96efafd
 --- /dev/null
-+++ b/src/glx/va_glx.c
-@@ -0,0 +1,200 @@
++++ b/va/glx/va_glx.c
+@@ -0,0 +1,202 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -144,6 +150,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 + * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 + */
 +
++#include <stdlib.h>
 +#include "va_glx_private.h"
 +#include "va_glx_impl.h"
 +
@@ -209,10 +216,11 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +
 +    pDisplayContextGLX = pDisplayContext->opaque;
 +    if (pDisplayContextGLX) {
-+        if (pDisplayContextGLX->vaDestroy)
-+            pDisplayContextGLX->vaDestroy(pDisplayContext);
++        vaDestroyFunc vaDestroy = pDisplayContextGLX->vaDestroy;
 +        free(pDisplayContextGLX);
 +        pDisplayContext->opaque = NULL;
++        if (vaDestroy)
++            vaDestroy(pDisplayContext);
 +    }
 +}
 +
@@ -320,9 +328,12 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +    INVOKE(ctx, CopySurface, (ctx, pSurfaceGLX, surface, flags));
 +    return status;
 +}
+diff --git a/va/glx/va_glx.h b/va/glx/va_glx.h
+new file mode 100644
+index 0000000..1a0624d
 --- /dev/null
-+++ b/src/glx/va_glx.h
-@@ -0,0 +1,113 @@
++++ b/va/glx/va_glx.h
+@@ -0,0 +1,109 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -350,11 +361,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +#ifndef VA_GLX_H
 +#define VA_GLX_H
 +
-+#ifdef IN_LIBVA
-+#include "va.h"
-+#else
 +#include <va/va.h>
-+#endif
 +#include <GL/glx.h>
 +
 +#ifdef __cplusplus
@@ -436,9 +443,12 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +#endif
 +
 +#endif /* VA_GLX_H */
+diff --git a/va/glx/va_glx_impl.c b/va/glx/va_glx_impl.c
+new file mode 100644
+index 0000000..6fd7057
 --- /dev/null
-+++ b/src/glx/va_glx_impl.c
-@@ -0,0 +1,1015 @@
++++ b/va/glx/va_glx_impl.c
+@@ -0,0 +1,1013 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -467,6 +477,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +#include "va_glx_private.h"
 +#include "va_glx_impl.h"
 +#include <stdio.h>
++#include <stdlib.h>
 +#include <stdarg.h>
 +#include <string.h>
 +#include <assert.h>
@@ -1165,7 +1176,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +/* ========================================================================= */
 +
 +#define INVOKE(ctx, func, args) do {                    \
-+        VADriverVTableGLXP vtable = &(ctx)->vtable.glx; \
++        VADriverVTableGLXP vtable = (ctx)->vtable.glx;  \
 +        if (!vtable->va##func##GLX)                     \
 +            return VA_STATUS_ERROR_UNIMPLEMENTED;       \
 +                                                        \
@@ -1269,7 +1280,6 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +)
 +{
 +    VADriverContextGLXP pDriverContextGLX = VA_DRIVER_CONTEXT_GLX(ctx);
-+    VADriverVTableGLXP vtable = &pDriverContextGLX->vtable;
 +    VASurfaceGLXP pSurfaceGLX = gl_surface;
 +    VAStatus status;
 +
@@ -1348,7 +1358,6 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +{
 +    VADriverContextGLXP pDriverContextGLX = VA_DRIVER_CONTEXT_GLX(ctx);
 +    VASurfaceGLXP pSurfaceGLX = gl_surface;
-+    VAStatus status;
 +
 +    if (!pDriverContextGLX->use_tfp)
 +        return VA_STATUS_ERROR_UNIMPLEMENTED;
@@ -1368,7 +1377,6 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +)
 +{
 +    VADriverContextGLXP pDriverContextGLX = VA_DRIVER_CONTEXT_GLX(ctx);
-+    VADriverVTableGLXP vtable = &pDriverContextGLX->vtable;
 +    VASurfaceGLXP pSurfaceGLX = gl_surface;
 +    VAStatus status;
 +
@@ -1419,7 +1427,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +    if (glx_ctx->is_initialized)
 +        return VA_STATUS_SUCCESS;
 +
-+    if (ctx->vtable.glx.vaCopySurfaceGLX) {
++    if (ctx->vtable.glx && ctx->vtable.glx->vaCopySurfaceGLX) {
 +        vtable->vaCreateSurfaceGLX      = vaCreateSurfaceGLX_impl_driver;
 +        vtable->vaDestroySurfaceGLX     = vaDestroySurfaceGLX_impl_driver;
 +        vtable->vaCopySurfaceGLX        = vaCopySurfaceGLX_impl_driver;
@@ -1454,8 +1462,11 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +    glx_ctx->is_initialized = 1;
 +    return VA_STATUS_SUCCESS;
 +}
+diff --git a/va/glx/va_glx_impl.h b/va/glx/va_glx_impl.h
+new file mode 100644
+index 0000000..977bfcc
 --- /dev/null
-+++ b/src/glx/va_glx_impl.h
++++ b/va/glx/va_glx_impl.h
 @@ -0,0 +1,46 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
@@ -1503,9 +1514,12 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +    ATTRIBUTE_HIDDEN;
 +
 +#endif /* VA_GLX_IMPL_H */
+diff --git a/va/glx/va_glx_private.h b/va/glx/va_glx_private.h
+new file mode 100644
+index 0000000..b2c44e8
 --- /dev/null
-+++ b/src/glx/va_glx_private.h
-@@ -0,0 +1,96 @@
++++ b/va/glx/va_glx_private.h
+@@ -0,0 +1,99 @@
 +/*
 + * Copyright (C) 2009 Splitted-Desktop Systems. All Rights Reserved.
 + *
@@ -1538,6 +1552,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +#include "va_backend.h"
 +#include "va_x11.h"
 +#include "va_glx.h"
++#include "va_backend_glx.h"
 +
 +#if GLX_GLXEXT_VERSION < 18
 +typedef void (*PFNGLXBINDTEXIMAGEEXTPROC)(Display *, GLXDrawable, int, const int *);
@@ -1566,8 +1581,10 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +typedef struct VASurfaceGLX        *VASurfaceGLXP;
 +typedef struct VADriverVTableGLX   *VADriverVTableGLXP;
 +
++typedef void (*vaDestroyFunc)(VADisplayContextP);
++
 +struct VADisplayContextGLX {
-+    void (*vaDestroy)(VADisplayContextP ctx);
++    vaDestroyFunc vaDestroy;
 +};
 +
 +#define VA_DRIVER_CONTEXT_GLX(ctx) ((VADriverContextGLXP)((ctx)->glx))
@@ -1602,3 +1619,7 @@ Date:   Fri Aug 21 11:58:16 2009 +0000
 +};
 +
 +#endif /* VA_GLX_PRIVATE_H */
+diff --git a/va/va_backend.h b/va/va_backend.h
+index ff86744..06fef7f 100644
+diff --git a/va/x11/va_x11.c b/va/x11/va_x11.c
+index 71cc36f..6826b31 100644
