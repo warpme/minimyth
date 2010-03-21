@@ -1,14 +1,14 @@
-commit 8169fa5dee60769e42e56a7e838ca9c95c1e5032
+commit 0eeee71bcd334512a6b86702ee612b35feb644b2
 Author: Gwenole Beauchesne <gbeauchesne@splitted-desktop.com>
 Date:   Tue Feb 23 10:05:25 2010 +0000
 
     Detect Broadcom Crystal HD chip.
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 2f4210a..491ddfc 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -43,7 +43,7 @@ libva_x11_la_DEPENDENCIES = $(libvacorelib) x11/libva_x11.la
+diff --git a/va/Makefile.am b/va/Makefile.am
+index aeaf82f..f382c0e 100644
+--- a/va/Makefile.am
++++ b/va/Makefile.am
+@@ -42,7 +42,7 @@ libva_x11_la_DEPENDENCIES = $(libvacorelib) x11/libva_x11.la
  
  SUBDIRS = x11
  
@@ -16,22 +16,22 @@ index 2f4210a..491ddfc 100644
 +libva_la_SOURCES = va.c va_crystalhd.c
  
  libvaincludedir = ${includedir}/va
- libvainclude_HEADERS = va.h va_backend.h va_version.h
-@@ -52,4 +52,5 @@ DISTCLEANFILES = \
+ libvainclude_HEADERS = va.h va_x11.h va_backend.h va_version.h
+@@ -51,4 +51,5 @@ DISTCLEANFILES = \
  	va_version.h
  
  EXTRA_DIST = \
 -	va_version.h.in
 +	va_version.h.in \
 +	va_crystalhd.h
-diff --git a/src/va.c b/src/va.c
-index f7df517..9f25758 100644
---- a/src/va.c
-+++ b/src/va.c
-@@ -23,8 +23,10 @@
-  */
+diff --git a/va/va.c b/va/va.c
+index b5940e5..fd68481 100644
+--- a/va/va.c
++++ b/va/va.c
+@@ -24,8 +24,10 @@
  
  #define _GNU_SOURCE 1
+ 
 +#include "config.h"
  #include "va.h"
  #include "va_backend.h"
@@ -39,7 +39,7 @@ index f7df517..9f25758 100644
  
  #include <assert.h>
  #include <stdarg.h>
-@@ -352,6 +354,15 @@ VAStatus vaInitialize (
+@@ -349,6 +351,15 @@ VAStatus vaInitialize (
          vaStatus = va_openDriver(dpy, driver_name);
          va_infoMessage("va_openDriver() returns %d\n", vaStatus);
  
@@ -55,11 +55,11 @@ index f7df517..9f25758 100644
          *major_version = VA_MAJOR_VERSION;
          *minor_version = VA_MINOR_VERSION;
      }
-diff --git a/src/va_crystalhd.c b/src/va_crystalhd.c
+diff --git a/va/va_crystalhd.c b/va/va_crystalhd.c
 new file mode 100644
 index 0000000..1ddd4fe
 --- /dev/null
-+++ b/src/va_crystalhd.c
++++ b/va/va_crystalhd.c
 @@ -0,0 +1,54 @@
 +/*
 + * Copyright (C) 2010 Splitted-Desktop Systems. All Rights Reserved.
@@ -115,11 +115,11 @@ index 0000000..1ddd4fe
 +    fclose(fp);
 +    return found;
 +}
-diff --git a/src/va_crystalhd.h b/src/va_crystalhd.h
+diff --git a/va/va_crystalhd.h b/va/va_crystalhd.h
 new file mode 100644
 index 0000000..44a39d9
 --- /dev/null
-+++ b/src/va_crystalhd.h
++++ b/va/va_crystalhd.h
 @@ -0,0 +1,32 @@
 +/*
 + * Copyright (C) 2010 Splitted-Desktop Systems. All Rights Reserved.

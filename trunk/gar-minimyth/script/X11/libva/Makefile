@@ -2,9 +2,8 @@ GARNAME = libva
 GARVERSION = 0.31.0
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds10.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds11.tar.gz
 PATCHFILES = \
-	010_fix_putsurface_test.patch \
 	032_g45_fix_subpic_formats.patch \
 	033_g45_add_rgba_subpic.patch \
 	034_g45_fix_return_for_unimpl.patch \
@@ -12,6 +11,7 @@ PATCHFILES = \
 	036_g45_add_vaGetImage.patch \
 	037_g45_add_vaPutImage.patch \
 	038_g45_vaPutSurface_cliprects.patch \
+	039_g45_add_vaDeriveImage.patch \
 	102_attribute_visibility.patch \
 	103_fix_vainfo_deps.patch \
 	104_fix_libva_pkgconfig_deps.patch \
@@ -22,7 +22,6 @@ PATCHFILES = \
 	203_fix_fglrx_detection.patch \
 	204_check_ATIFGLEXTENSION.patch \
 	300_sds_version.patch \
-	320_move_vaPutSurface_flags_def.patch \
 	321_libva_glx.base.patch \
 	322_libva_glx.patch \
 	390_compat.base.patch \
