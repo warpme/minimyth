@@ -146,6 +146,18 @@ unlink(qq($tmpfile_pciids_txt));
 
 }
 
+# SiS.
+{
+    my $vendor = q(1039);
+    {
+        my $driver= q(sis);
+        foreach my $product (qw(6325))
+        {
+            $entries{qq($vendor.$product)} = $driver;
+        }
+    }
+}
+
 # VMWare.
 {
     my $vendor = q(15AD);
