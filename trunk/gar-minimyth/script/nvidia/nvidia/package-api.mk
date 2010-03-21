@@ -65,7 +65,7 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 		$(if $(wildcard $(WORKSRC)/usr/lib/tls/libnvidia-tls.so.*), \
 			libnvidia-tls.so:/usr/lib/tls:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/lib/vdpau/libvdpau_nvidia.so.*), \
-			libvdpau_nvidia.so:/usr/lib/vdpau:$(libdir)/nvidia) \
+			libvdpau_nvidia.so:/usr/lib/vdpau:$(libdir)/vdpau) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/libXvMCNVIDIA.so.*), \
 			libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.*), \
@@ -112,6 +112,7 @@ install-nvidia-x11:
 		    $(DESTDIR)$(word 3,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) ; \
 	)
 	@rm -rf $(DESTDIR)$(libdir)/nvidia
+	@rm -rf $(DESTDIR)$(libdir)/vdpau/libvdpau_nvidia.*
 	@$(foreach entry,$(NVIDIA_FILE_LIST_LIB_DRV), \
 		install -D \
 		    $(WORKSRC)$(word 2,$(subst :, ,$(entry)))/$(word 1,$(subst :, ,$(entry))) \
@@ -160,3 +161,4 @@ clean-all-kernel:
 clean-all-x11:
 	@rm -rf $(DESTDIR)$(bindir)/nvidia*
 	@rm -rf $(DESTDIR)$(libdir)/nvidia
+	@rm -rf $(DESTDIR)$(libdir)/vdpau/libvdpau_nvidia.*
