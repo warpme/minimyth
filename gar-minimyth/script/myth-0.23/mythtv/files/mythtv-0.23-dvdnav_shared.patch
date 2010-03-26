@@ -1,0 +1,57 @@
+diff -Naur mythtv-0.23-23789-old/libs/libmythdvdnav/libmythdvdnav.pro mythtv-0.23-23789-new/libs/libmythdvdnav/libmythdvdnav.pro
+--- mythtv-0.23-23789-old/libs/libmythdvdnav/libmythdvdnav.pro	2010-03-25 19:16:07.000000000 -0700
++++ mythtv-0.23-23789-new/libs/libmythdvdnav/libmythdvdnav.pro	2010-03-25 19:16:08.000000000 -0700
+@@ -2,7 +2,7 @@
+ 
+ TEMPLATE = lib
+ TARGET = mythdvdnav-$$LIBVERSION
+-CONFIG += thread staticlib warn_off
++CONFIG += thread dll warn_off
+ CONFIG -= qt
+ target.path = $${LIBDIR}
+ 
+diff -Naur mythtv-0.23-23789-old/libs/libmythtv/libmythtv.pro mythtv-0.23-23789-new/libs/libmythtv/libmythtv.pro
+--- mythtv-0.23-23789-old/libs/libmythtv/libmythtv.pro	2010-03-25 19:16:07.000000000 -0700
++++ mythtv-0.23-23789-new/libs/libmythtv/libmythtv.pro	2010-03-25 19:16:08.000000000 -0700
+@@ -60,7 +60,7 @@
+ TARGETDEPS += ../libavcodec/libmythavcodec-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../libavformat/libmythavformat-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../libmythmpeg2/libmythmpeg2-$${MYTH_LIB_EXT}
+-TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${MYTH_LIB_EXT}
++TARGETDEPS += ../libmythdvdnav/libmythdvdnav-$${MYTH_SHLIB_EXT}
+ using_mheg: TARGETDEPS += ../libmythfreemheg/libmythfreemheg-$${MYTH_SHLIB_EXT}
+ using_live: TARGETDEPS += ../libmythlivemedia/libmythlivemedia-$${MYTH_SHLIB_EXT}
+ using_hdhomerun: TARGETDEPS += ../libmythhdhomerun/libmythhdhomerun-$${MYTH_SHLIB_EXT}
+diff -Naur mythtv-0.23-23789-old/programs/programs-libs.pro mythtv-0.23-23789-new/programs/programs-libs.pro
+--- mythtv-0.23-23789-old/programs/programs-libs.pro	2010-03-25 19:16:07.000000000 -0700
++++ mythtv-0.23-23789-new/programs/programs-libs.pro	2010-03-25 19:16:08.000000000 -0700
+@@ -10,11 +10,13 @@
+ LIBS += -L../../libs/libmythdb
+ LIBS += -L../../libs/libmythui
+ LIBS += -L../../libs/libmythupnp
++LIBS += -L../../libs/libmythdvdnav
+ 
+ LIBS += -lmythtv-$$LIBVERSION -lmythavformat-$$LIBVERSION
+ LIBS += -lmythavutil-$$LIBVERSION -lmythavcodec-$$LIBVERSION
+ LIBS += -lmythswscale-$$LIBVERSION
+ LIBS += -lmythupnp-$$LIBVERSION
++LIBS += -lmythdvdnav-$$LIBVERSION
+ LIBS += -lmythdb-$$LIBVERSION
+ LIBS += -lmythui-$$LIBVERSION
+ LIBS += -lmyth-$$LIBVERSION
+@@ -36,6 +38,7 @@
+ TARGETDEPS += ../../libs/libavformat/libmythavformat-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libswscale/libmythswscale-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libmythupnp/libmythupnp-$${MYTH_SHLIB_EXT}
++TARGETDEPS += ../../libs/libmythdvdnav/libmythdvdnav-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += ../../libs/libmythdb/libmythdb-$${MYTH_SHLIB_EXT}
+ using_live: TARGETDEPS += ../../libs/libmythlivemedia/libmythlivemedia-$${MYTH_SHLIB_EXT}
+ using_hdhomerun: TARGETDEPS += ../../libs/libmythhdhomerun/libmythhdhomerun-$${MYTH_SHLIB_EXT}
+@@ -44,6 +47,7 @@
+ DEPENDPATH += ../../libs/libavutil ../../libs/libavformat ../../libs/libavcodec
+ DEPENDPATH += ../../libs/libswscale
+ DEPENDPATH += ../../libs/libmythupnp ../../libs/libmythui
++DEPENDPATH += ../../libs/libmythdvdnav
+ DEPENDPATH += ../../libs/libmythlivemedia ../../libmythdb ../../libmythhdhomerun
+ 
+ using_opengl:CONFIG += opengl
