@@ -11,6 +11,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.20-softpad ,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
                                 $(if $(filter 0.21 ,        $(mm_MYTH_VERSION)),0.21.0                        ) \
                                 $(if $(filter 0.22 ,        $(mm_MYTH_VERSION)),0.22.0                        ) \
+                                $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.0                        ) \
                                 $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 72
@@ -62,7 +63,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythstream \
                              mythvideo \
                              mythweather \
-                             $(if $(filter $(mm_MYTH_VERSION),0.21 0.22 trunk),mythzoneminder) \
+                             $(if $(filter $(mm_MYTH_VERSION),0.21 0.22 0.23 trunk),mythzoneminder) \
                              flash \
                              hulu \
                              mplayer-svn \
@@ -124,7 +125,7 @@ mm_KERNEL_VERSION         ?= 2.6.32
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.20', '0.20-softpad', '0.21', '0.22' and 'trunk'.
+# Valid values are '0.20', '0.20-softpad', '0.21', '0.22', '0.23' and 'trunk'.
 mm_MYTH_VERSION           ?= 0.22
 # The version of the NVIDIA driver.
 # Valid values are '96.43.16' (legacy), '173.14.25' (legacy), '185.18.36',

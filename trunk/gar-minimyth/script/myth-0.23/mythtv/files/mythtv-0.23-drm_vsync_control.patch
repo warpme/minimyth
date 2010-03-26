@@ -1,0 +1,52 @@
+diff -Naur mythtv-0.23-23789-old/libs/libmythtv/vsync.cpp mythtv-0.23-23789-new/libs/libmythtv/vsync.cpp
+--- mythtv-0.23-23789-old/libs/libmythtv/vsync.cpp	2010-03-25 19:16:11.000000000 -0700
++++ mythtv-0.23-23789-new/libs/libmythtv/vsync.cpp	2010-03-25 19:16:12.000000000 -0700
+@@ -81,6 +81,8 @@
+ {
+     VideoSync *trial = NULL;
+     tryingVideoSync  = true;
++    bool tryDRM      = (gContext->GetNumSetting("UseDRMVSync", 1) &&
++                        (getenv("NO_DRM_VSYNC") == NULL));
+     bool tryOpenGL   = (gContext->GetNumSetting("UseOpenGLVSync", 1) &&
+                         (getenv("NO_OPENGL_VSYNC") == NULL));
+ 
+@@ -100,7 +102,8 @@
+ //    TESTVIDEOSYNC(VDPAUVideoSync);
+ #endif
+ #ifndef _WIN32
+-    TESTVIDEOSYNC(DRMVideoSync);
++    if (tryDRM)
++        TESTVIDEOSYNC(DRMVideoSync);
+     if (tryOpenGL)
+         TESTVIDEOSYNC(OpenGLVideoSync);
+ #endif // _WIN32
+diff -Naur mythtv-0.23-23789-old/programs/mythfrontend/globalsettings.cpp mythtv-0.23-23789-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.23-23789-old/programs/mythfrontend/globalsettings.cpp	2010-03-25 19:16:11.000000000 -0700
++++ mythtv-0.23-23789-new/programs/mythfrontend/globalsettings.cpp	2010-03-25 19:16:12.000000000 -0700
+@@ -3757,6 +3757,18 @@
+     };
+ };
+ 
++static HostCheckBox *UseDRMVSync()
++{
++    HostCheckBox *gc = new HostCheckBox("UseDRMVSync");
++    gc->setLabel(QObject::tr("Enable DRM vertical sync for timing"));
++    gc->setValue(false);
++    gc->setHelpText(QObject::tr(
++                        "If it is supported by your hardware/drivers, "
++                        "MythTV will use DRM vertical syncing for "
++                        "video timing, reducing frame jitter."));
++    return gc;
++}
++
+ #ifdef USING_OPENGL_VSYNC
+ static HostCheckBox *UseOpenGLVSync()
+ {
+@@ -4283,6 +4295,7 @@
+     general1->addChild(columns);
+     general1->addChild(LiveTVIdleTimeout());
+     general1->addChild(AlwaysStreamFiles());
++    general1->addChild(UseDRMVSync());
+ #ifdef USING_OPENGL_VSYNC
+     general1->addChild(UseOpenGLVSync());
+ #endif // USING_OPENGL_VSYNC
