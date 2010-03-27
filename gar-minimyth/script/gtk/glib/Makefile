@@ -1,7 +1,7 @@
 GARNAME = glib
-GARVERSION = 2.22.5
+GARVERSION = 2.24.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.22/
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.24/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
