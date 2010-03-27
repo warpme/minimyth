@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lib/pcre
+DEPENDS    = lang/c lib/pcre lib/zlib
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/glib
