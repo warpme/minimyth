@@ -1,5 +1,5 @@
 GARNAME = libogg
-GARVERSION = 1.1.4
+GARVERSION = 1.2.0
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/ogg/
 DISTFILES = $(DISTNAME).tar.gz
