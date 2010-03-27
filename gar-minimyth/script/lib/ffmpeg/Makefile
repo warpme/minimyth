@@ -1,10 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 22445.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 22701.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100309.patch
-#PATCHFILES = $(GARNAME)-mt_20100215.patch
+PATCHFILES = $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100327.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -152,6 +151,10 @@ CONFIGURE_ARGS = \
 	--enable-optimizations \
 	--disable-extra-warnings \
 	--disable-stripping
+BUILD_ARGS     = \
+	V='1'
+INSTALL_ARGS   = \
+	V='1'
 
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
@@ -221,9 +224,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=22377
-FFMPEG_MT_VERSION_THREAD=d62b7c03b163c3dc067f122ab9fec44de87b37ae
-FFMPEG_MT_VERSION_DATE=20100309
+FFMPEG_MT_VERSION_NORMAL=22696
+FFMPEG_MT_VERSION_THREAD=f550857de3ffcb6b2980c4c952b7e84db478d399
+FFMPEG_MT_VERSION_DATE=20100327
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
