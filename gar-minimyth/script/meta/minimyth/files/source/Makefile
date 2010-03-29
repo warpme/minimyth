@@ -180,7 +180,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		mkdir -p $@~$(qt3prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt3prefix)/plugins/sqldrivers $@~$(qt3prefix)/plugins ; \
 	 )
-	@$(if $(filter 0.22 trunk,$(mm_MYTH_VERSION)), \
+	@$(if $(filter 0.22 0.23 trunk,$(mm_MYTH_VERSION)), \
 		rm -rf   $@~$(qt4prefix)/plugins ; \
 		mkdir -p $@~$(qt4prefix)/plugins ; \
 		cp -pdR $(DESTDIR)$(qt4prefix)/plugins/graphicssystems $@~$(qt4prefix)/plugins ; \
