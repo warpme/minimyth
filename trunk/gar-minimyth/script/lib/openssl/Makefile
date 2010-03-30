@@ -1,5 +1,5 @@
 GARNAME = openssl
-GARVERSION = 0.9.8n
+GARVERSION = 1.0.0
 CATEGORIES = lib
 MASTER_SITES = http://www.openssl.org/source/
 DISTFILES = $(DISTNAME).tar.gz
@@ -19,6 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix=$(prefix) \
+	--libdir=$(patsubst $(prefix)/%,%,$(libdir)) \
 	--install_prefix=$(DESTDIR) \
 	--openssldir=$(sysconfdir)/ssl \
 	shared \
