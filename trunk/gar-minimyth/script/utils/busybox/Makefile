@@ -1,8 +1,8 @@
 GARNAME = busybox
-GARVERSION = 1.15.3
+GARVERSION = 1.16.1
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
-MASTER_SITES += http://www.busybox.net/downloads/fixes-1.15.1/
+MASTER_SITES += http://www.busybox.net/downloads/fixes-1.16.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  =
