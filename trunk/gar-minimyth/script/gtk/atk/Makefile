@@ -1,7 +1,7 @@
 GARNAME = atk
-GARVERSION = 1.28.0
+GARVERSION = 1.30.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/atk/1.28/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/atk/1.30/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--enable-rebuilds \
 	--disable-glibtest \
+	--disable-introspection \
 	--disable-gtk-doc \
 	--with-gnu-ld
 
