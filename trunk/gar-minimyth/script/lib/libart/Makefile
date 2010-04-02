@@ -1,5 +1,5 @@
 GARNAME = libart_lgpl
-GARVERSION = 2.3.20
+GARVERSION = 2.3.21
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/2.3/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -38,7 +38,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 install-cross:
-	@if test -e $(WORKSRC)/gen_art_config ; then cp -f $(WORKSRC)/gen_art_config $(DESTDIR)$(bindir)/libart-gen_art_config ; fi
+	@if test -e $(WORKSRC)/gen_art_config.sh ; then cp -f $(WORKSRC)/gen_art_config.sh $(DESTDIR)$(bindir)/libart-gen_art_config.sh ; fi
 	@$(MAKECOOKIE)
 
 post-install:
