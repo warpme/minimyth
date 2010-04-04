@@ -935,7 +935,7 @@ $var_list{'MM_X_TV_TYPE'} =
 
         given ($minimyth->var_get('MM_X_DRIVER'))
         {
-            when (/^intel$/     ) { return 'PAL(-(M|N)?|NTSC-(443|J|M)'                                              ; }
+            when (/^intel$/     ) { return 'PAL(-(M|N))?|NTSC-(443|J|M)'                                             ; }
             when (/^nvidia$/    ) { return 'PAL-(B|D|G|H|I|K1|M|N|NC)|NTSC-(J|M)|HD(480[ip]|576[ip]|720[p]|1080[ip])'; }
             when (/^openchrome$/) { return 'PAL|NTSC|480P|576P|720P|1080I'                                           ; }
             default               { return 'PAL|NTSC'                                                                ; }
