@@ -26,7 +26,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--enable-nouveau-experimental-api \
-	--disable-radeon-experimental-api \
+	--enable-radeon-experimental-api \
 	--with-gnu-ld
 ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
@@ -47,4 +47,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_intel.la
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_nouveau.la
+	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_radeon.la
 	@$(MAKECOOKIE)
