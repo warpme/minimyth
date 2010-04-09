@@ -1,5 +1,5 @@
 GARNAME = libxcb
-GARVERSION = 1.5
+GARVERSION = 1.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,6 +26,30 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-build-docs \
+	--disable-composite \
+	--enable-damage \
+	--enable-dpms \
+	--enable-dri2 \
+	--enable-glx \
+	--enable-randr \
+	--enable-record \
+	--enable-render \
+	--enable-resource \
+	--enable-screensaver \
+	--enable-shape \
+	--enable-shm \
+	--enable-sync \
+	--enable-xevie \
+	--enable-xfixes \
+	--enable-xfree86-dri \
+	--enable-xinerama \
+	--disable-xinput \
+	--disable-xprint \
+	--disable-selinux \
+	--enable-xtest \
+	--enable-xv \
+	--enable-xvmc \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
@@ -37,7 +61,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-composite.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-damage.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-dpms.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-dri2.la
@@ -54,7 +77,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xf86dri.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xfixes.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xinerama.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-xprint.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xtest.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xv.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-xvmc.la
