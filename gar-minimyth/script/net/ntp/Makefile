@@ -1,5 +1,5 @@
 GARNAME = ntp
-GARVERSION = 4.2.6
+GARVERSION = 4.2.6p1
 CATEGORIES = net
 MASTER_SITES = http://www.eecis.udel.edu/~$(GARNAME)/$(GARNAME)_spool/$(GARNAME)4/$(GARNAME)-4.2/
 DISTFILES = $(DISTNAME).tar.gz
