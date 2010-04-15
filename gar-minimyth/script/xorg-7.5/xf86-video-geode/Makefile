@@ -1,10 +1,9 @@
 GARNAME = xf86-video-geode
 GARVERSION_TYPE =
-GARVERSION = 2.11.6
+GARVERSION = 2.11.8
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -19,7 +18,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
-	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
@@ -34,6 +32,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
   	--enable-geodegx-panel \
@@ -45,8 +44,6 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@rm -f $(WORKSRC)/acinclude.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
