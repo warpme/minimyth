@@ -1,5 +1,5 @@
 GARNAME = alsa-utils
-GARVERSION = 1.0.22
+GARVERSION = 1.0.23
 CATEGORIES = utils
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/utils/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,9 +26,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-largefile \
 	--with-gnu-ld \
 	--with-curses=ncursesw
-
-xCONFIGURE_ENV = \
-	ncursesw5_config='yes'
 
 include ../../gar.mk
 
