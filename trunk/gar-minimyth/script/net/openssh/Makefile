@@ -1,5 +1,5 @@
 GARNAME = openssh
-GARVERSION = 5.4p1
+GARVERSION = 5.5p1
 CATEGORIES = net
 MASTER_SITES  = ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
 MASTER_SITES += ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/old/
