@@ -1,5 +1,5 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.22
+GARVERSION = 1.0.23
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,8 +18,21 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
+	--enable-symbolic-functions \
+	--disable-debug \
+	--enable-aload \
+	--disable-resmgr \
+	--enable-mixer \
+	--enable-pcm \
+	--enable-rawmidi \
+	--enable-hwdep \
+	--enable-seq \
+	--enable-alisp \
+	--disable-old-symbols \
 	--disable-python \
 	--with-gnu-ld \
+	--with-versioned \
+	--without-debug \
 	--with-tmpdir="$(rootdir)/tmp" \
 	--with-alsa-devdir="$(rootdir)/dev/snd" \
 	--with-aload-devdir="$(rootdir)/dev"
