@@ -1,6 +1,6 @@
-diff -Naur ffmpeg-22712.30975-old/doc/multithreading.txt ffmpeg-22712.30975-new/doc/multithreading.txt
---- ffmpeg-22712.30975-old/doc/multithreading.txt	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-22712.30975-new/doc/multithreading.txt	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/doc/multithreading.txt ffmpeg-22912.31044-new/doc/multithreading.txt
+--- ffmpeg-22912.31044-old/doc/multithreading.txt	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-22912.31044-new/doc/multithreading.txt	2010-04-19 07:00:17.000000000 -0700
 @@ -0,0 +1,73 @@
 +FFmpeg multithreading methods
 +==============================================
@@ -75,12 +75,12 @@ diff -Naur ffmpeg-22712.30975-old/doc/multithreading.txt ffmpeg-22712.30975-new/
 +
 +5. Call ff_report_frame_setup_done() as soon as possible. This will start the
 +next thread.
-diff -Naur ffmpeg-22712.30975-old/ffmpeg.c ffmpeg-22712.30975-new/ffmpeg.c
---- ffmpeg-22712.30975-old/ffmpeg.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/ffmpeg.c	2010-03-28 11:14:43.000000000 -0700
-@@ -502,11 +502,6 @@
-         else if (st->codec->codec_type == CODEC_TYPE_VIDEO && video_stream_copy)
-             st->stream_copy = 1;
+diff -Naur ffmpeg-22912.31044-old/ffmpeg.c ffmpeg-22912.31044-new/ffmpeg.c
+--- ffmpeg-22912.31044-old/ffmpeg.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/ffmpeg.c	2010-04-19 07:00:17.000000000 -0700
+@@ -541,11 +541,6 @@
+                 choose_pixel_fmt(st, codec);
+         }
  
 -        if(!st->codec->thread_count)
 -            st->codec->thread_count = 1;
@@ -90,7 +90,7 @@ diff -Naur ffmpeg-22712.30975-old/ffmpeg.c ffmpeg-22712.30975-new/ffmpeg.c
          if(st->codec->flags & CODEC_FLAG_BITEXACT)
              nopts = 1;
      }
-@@ -3137,7 +3132,7 @@
+@@ -3159,7 +3154,7 @@
      bitstream_filters[nb_output_files][oc->nb_streams - 1]= video_bitstream_filters;
      video_bitstream_filters= NULL;
  
@@ -99,7 +99,7 @@ diff -Naur ffmpeg-22712.30975-old/ffmpeg.c ffmpeg-22712.30975-new/ffmpeg.c
  
      video_enc = st->codec;
  
-@@ -3287,7 +3282,7 @@
+@@ -3297,7 +3292,7 @@
      bitstream_filters[nb_output_files][oc->nb_streams - 1]= audio_bitstream_filters;
      audio_bitstream_filters= NULL;
  
@@ -107,20 +107,20 @@ diff -Naur ffmpeg-22712.30975-old/ffmpeg.c ffmpeg-22712.30975-new/ffmpeg.c
 +    st->codec->thread_count= thread_count;
  
      audio_enc = st->codec;
-     audio_enc->codec_type = CODEC_TYPE_AUDIO;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/libavcodec/avcodec.h
---- ffmpeg-22712.30975-old/libavcodec/avcodec.h	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/avcodec.h	2010-03-28 11:14:43.000000000 -0700
+     audio_enc->codec_type = AVMEDIA_TYPE_AUDIO;
+diff -Naur ffmpeg-22912.31044-old/libavcodec/avcodec.h ffmpeg-22912.31044-new/libavcodec/avcodec.h
+--- ffmpeg-22912.31044-old/libavcodec/avcodec.h	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/avcodec.h	2010-04-19 07:00:17.000000000 -0700
 @@ -30,7 +30,7 @@
  #include "libavutil/avutil.h"
  
  #define LIBAVCODEC_VERSION_MAJOR 52
--#define LIBAVCODEC_VERSION_MINOR 61
-+#define LIBAVCODEC_VERSION_MINOR 62
+-#define LIBAVCODEC_VERSION_MINOR 66
++#define LIBAVCODEC_VERSION_MINOR 67
  #define LIBAVCODEC_VERSION_MICRO  0
  
  #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
-@@ -640,6 +640,10 @@
+@@ -643,6 +643,10 @@
   * as a last resort.
   */
  #define CODEC_CAP_SUBFRAMES        0x0100
@@ -131,7 +131,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
  
  //The following defines may change, don't expect compatibility if you use them.
  #define MB_TYPE_INTRA4x4   0x0001
-@@ -920,7 +924,20 @@
+@@ -923,7 +927,20 @@
       * - decoding: Set by libavcodec\
       */\
      void *hwaccel_picture_private;\
@@ -153,7 +153,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
  
  #define FF_QSCALE_TYPE_MPEG1 0
  #define FF_QSCALE_TYPE_MPEG2 1
-@@ -1127,7 +1144,7 @@
+@@ -1130,7 +1147,7 @@
       * If non NULL, 'draw_horiz_band' is called by the libavcodec
       * decoder to draw a horizontal band. It improves cache usage. Not
       * all codecs can do that. You must check the codec capabilities
@@ -162,7 +162,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
       * The function is also used by hardware acceleration APIs.
       * It is called at least once during frame decoding to pass
       * the data needed for hardware render.
-@@ -1377,7 +1394,8 @@
+@@ -1380,7 +1397,8 @@
       * height, as they normally need to be rounded up to the next multiple of 16.
       * if CODEC_CAP_DR1 is not set then get_buffer() must call
       * avcodec_default_get_buffer() instead of providing buffers allocated by
@@ -172,7 +172,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
       * - encoding: unused
       * - decoding: Set by libavcodec., user can override.
       */
-@@ -1386,7 +1404,9 @@
+@@ -1389,7 +1407,9 @@
      /**
       * Called to release buffers which were allocated with get_buffer.
       * A released buffer can be reused in get_buffer().
@@ -183,7 +183,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
       * - encoding: unused
       * - decoding: Set by libavcodec., user can override.
       */
-@@ -1688,6 +1708,7 @@
+@@ -1691,6 +1711,7 @@
  #define FF_DEBUG_VIS_QP      0x00002000
  #define FF_DEBUG_VIS_MB_TYPE 0x00004000
  #define FF_DEBUG_BUFFERS     0x00008000
@@ -191,7 +191,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
  
      /**
       * debug
-@@ -2509,7 +2530,7 @@
+@@ -2512,7 +2533,7 @@
       */
      float rc_min_vbv_overflow_use;
  
@@ -200,7 +200,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
       * Hardware accelerator in use
       * - encoding: unused.
       * - decoding: Set by libavcodec
-@@ -2643,6 +2664,34 @@
+@@ -2646,6 +2667,34 @@
       * - decoding: unused
       */
      int rc_lookahead;
@@ -235,7 +235,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
  } AVCodecContext;
  
  /**
-@@ -2684,6 +2733,26 @@
+@@ -2687,6 +2736,26 @@
      const int *supported_samplerates;       ///< array of supported audio samplerates, or NULL if unknown, array is terminated by 0
      const enum SampleFormat *sample_fmts;   ///< array of supported sample formats, or NULL if unknown, array is terminated by -1
      const int64_t *channel_layouts;         ///< array of support channel layouts, or NULL if unknown. array is terminated by 0
@@ -262,9 +262,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/avcodec.h ffmpeg-22712.30975-new/li
  } AVCodec;
  
  /**
-diff -Naur ffmpeg-22712.30975-old/libavcodec/beosthread.c ffmpeg-22712.30975-new/libavcodec/beosthread.c
---- ffmpeg-22712.30975-old/libavcodec/beosthread.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/beosthread.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/beosthread.c ffmpeg-22912.31044-new/libavcodec/beosthread.c
+--- ffmpeg-22912.31044-old/libavcodec/beosthread.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/beosthread.c	2010-04-19 07:00:17.000000000 -0700
 @@ -121,7 +121,13 @@
      int i;
      ThreadContext *c;
@@ -279,9 +279,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/beosthread.c ffmpeg-22712.30975-new
  
      if (thread_count <= 1)
          return 0;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/dsputil.c ffmpeg-22712.30975-new/libavcodec/dsputil.c
---- ffmpeg-22712.30975-old/libavcodec/dsputil.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/dsputil.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/dsputil.c ffmpeg-22912.31044-new/libavcodec/dsputil.c
+--- ffmpeg-22912.31044-old/libavcodec/dsputil.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/dsputil.c	2010-04-19 07:00:17.000000000 -0700
 @@ -330,7 +330,7 @@
  
  /* draw the edges of width 'w' of an image of size width, height */
@@ -322,10 +322,10 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/dsputil.c ffmpeg-22712.30975-new/li
      }
  }
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/dsputil.h ffmpeg-22712.30975-new/libavcodec/dsputil.h
---- ffmpeg-22712.30975-old/libavcodec/dsputil.h	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/dsputil.h	2010-03-28 11:14:43.000000000 -0700
-@@ -496,8 +496,10 @@
+diff -Naur ffmpeg-22912.31044-old/libavcodec/dsputil.h ffmpeg-22912.31044-new/libavcodec/dsputil.h
+--- ffmpeg-22912.31044-old/libavcodec/dsputil.h	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/dsputil.h	2010-04-19 07:00:17.000000000 -0700
+@@ -498,8 +498,10 @@
  #define BASIS_SHIFT 16
  #define RECON_SHIFT 6
  
@@ -337,9 +337,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/dsputil.h ffmpeg-22712.30975-new/li
  
      void (*prefetch)(void *mem, int stride, int h);
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/h263dec.c ffmpeg-22712.30975-new/libavcodec/h263dec.c
---- ffmpeg-22712.30975-old/libavcodec/h263dec.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/h263dec.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/h263dec.c ffmpeg-22912.31044-new/libavcodec/h263dec.c
+--- ffmpeg-22912.31044-old/libavcodec/h263dec.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/h263dec.c	2010-04-19 07:00:17.000000000 -0700
 @@ -34,6 +34,7 @@
  #include "mpeg4video_parser.h"
  #include "msmpeg4.h"
@@ -373,9 +373,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h263dec.c ffmpeg-22712.30975-new/li
      if (CONFIG_MPEG4_VDPAU_DECODER && (s->avctx->codec->capabilities & CODEC_CAP_HWACCEL_VDPAU)) {
          ff_vdpau_mpeg4_decode_picture(s, s->gb.buffer, s->gb.buffer_end - s->gb.buffer);
          goto frame_end;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libavcodec/h264.c
---- ffmpeg-22712.30975-old/libavcodec/h264.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/h264.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/h264.c ffmpeg-22912.31044-new/libavcodec/h264.c
+--- ffmpeg-22912.31044-old/libavcodec/h264.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/h264.c	2010-04-19 07:00:17.000000000 -0700
 @@ -36,6 +36,7 @@
  #include "golomb.h"
  #include "mathops.h"
@@ -648,7 +648,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
              h->thread_context[i]->s.obmc_scratchpad = av_malloc(16*2*s->linesize + 8*2*s->uvlinesize);
  
      /* some macroblocks can be accessed before they're available in case of lost slices, mbaff or threading*/
-@@ -978,11 +1213,164 @@
+@@ -978,11 +1213,167 @@
  
      s->current_picture_ptr->field_poc[0]=
      s->current_picture_ptr->field_poc[1]= INT_MAX;
@@ -678,7 +678,10 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
 +    if (h->next_output_pic) return;
 +
 +    if (cur->field_poc[0]==INT_MAX || cur->field_poc[1]==INT_MAX) {
-+        ff_thread_finish_setup(s->avctx);
++        //FIXME this allows the next thread to start once we encounter the first field of a PAFF packet
++        //This works if the next packet contains the second field. It does not work if both fields are
++        //in the same packet.
++        //ff_thread_finish_setup(s->avctx);
 +        return;
 +    }
 +
@@ -813,7 +816,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  static inline void backup_mb_border(H264Context *h, uint8_t *src_y, uint8_t *src_cb, uint8_t *src_cr, int linesize, int uvlinesize, int simple){
      MpegEncContext * const s = &h->s;
      uint8_t *top_border;
-@@ -1467,7 +1855,7 @@
+@@ -1488,7 +1879,7 @@
              h->delayed_pic[i]->reference= 0;
          h->delayed_pic[i]= NULL;
      }
@@ -822,7 +825,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
      h->prev_interlaced_frame = 1;
      idr(h);
      if(h->s.current_picture_ptr)
-@@ -1603,24 +1991,28 @@
+@@ -1624,24 +2015,28 @@
      }
  }
  
@@ -860,7 +863,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  
      if (avctx->hwaccel) {
          if (avctx->hwaccel->end_frame(avctx) < 0)
-@@ -1710,7 +2102,7 @@
+@@ -1731,7 +2126,7 @@
  
      if(first_mb_in_slice == 0){ //FIXME better field boundary detection
          if(h0->current_slice && FIELD_PICTURE){
@@ -869,7 +872,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
          }
  
          h0->current_slice = 0;
-@@ -1775,8 +2167,10 @@
+@@ -1800,8 +2195,10 @@
      if (s->context_initialized
          && (   s->width != s->avctx->width || s->height != s->avctx->height
              || av_cmp_q(h->sps.sar, s->avctx->sample_aspect_ratio))) {
@@ -881,7 +884,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
          free_tables(h);
          flush_dpb(s->avctx);
          MPV_common_end(s);
-@@ -1817,20 +2211,25 @@
+@@ -1842,21 +2239,26 @@
          init_scan_tables(h);
          ff_h264_alloc_tables(h);
  
@@ -890,6 +893,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
 -            c = h->thread_context[i] = av_malloc(sizeof(H264Context));
 -            memcpy(c, h->s.thread_context[i], sizeof(MpegEncContext));
 -            memset(&c->s + 1, 0, sizeof(H264Context) - sizeof(MpegEncContext));
+-            c->h264dsp = h->h264dsp;
 -            c->sps = h->sps;
 -            c->pps = h->pps;
 -            init_scan_tables(c);
@@ -907,6 +911,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
 +                c = h->thread_context[i] = av_malloc(sizeof(H264Context));
 +                memcpy(c, h->s.thread_context[i], sizeof(MpegEncContext));
 +                memset(&c->s + 1, 0, sizeof(H264Context) - sizeof(MpegEncContext));
++                c->h264dsp = h->h264dsp;
 +                c->sps = h->sps;
 +                c->pps = h->pps;
 +                init_scan_tables(c);
@@ -920,7 +925,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
      }
  
      h->frame_num= get_bits(&s->gb, h->sps.log2_max_frame_num);
-@@ -1851,6 +2250,10 @@
+@@ -1877,6 +2279,10 @@
      h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
  
      if(h0->current_slice == 0){
@@ -931,7 +936,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
          while(h->frame_num !=  h->prev_frame_num &&
                h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
              av_log(NULL, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
-@@ -1859,6 +2262,8 @@
+@@ -1885,6 +2291,8 @@
              h->prev_frame_num++;
              h->prev_frame_num %= 1<<h->sps.log2_max_frame_num;
              s->current_picture_ptr->frame_num= h->prev_frame_num;
@@ -940,7 +945,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
              ff_h264_execute_ref_pic_marking(h, NULL, 0);
          }
  
-@@ -1992,6 +2397,9 @@
+@@ -2018,6 +2426,9 @@
      if(h->slice_type_nos!=FF_I_TYPE && ff_h264_decode_ref_pic_list_reordering(h) < 0)
          return -1;
  
@@ -950,7 +955,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
      if(h->slice_type_nos!=FF_I_TYPE){
          s->last_picture_ptr= &h->ref_list[0][0];
          ff_copy_picture(&s->last_picture, s->last_picture_ptr);
-@@ -2001,6 +2409,8 @@
+@@ -2027,6 +2438,8 @@
          ff_copy_picture(&s->next_picture, s->next_picture_ptr);
      }
  
@@ -959,7 +964,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
      if(   (h->pps.weighted_pred          && h->slice_type_nos == FF_P_TYPE )
         ||  (h->pps.weighted_bipred_idc==1 && h->slice_type_nos== FF_B_TYPE ) )
          pred_weight_table(h);
-@@ -2141,7 +2551,8 @@
+@@ -2173,7 +2586,8 @@
                            +(h->ref_list[j][i].reference&3);
      }
  
@@ -968,8 +973,8 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
 +    h->emu_edge_width= (s->flags&CODEC_FLAG_EMU_EDGE || (!h->sps.frame_mbs_only_flag && s->avctx->active_thread_type&FF_THREAD_FRAME)) ? 0 : 16;
      h->emu_edge_height= (FRAME_MBAFF || FIELD_PICTURE) ? 0 : h->emu_edge_width;
  
-     s->avctx->refs= h->sps.ref_frame_count;
-@@ -2248,6 +2659,40 @@
+     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
+@@ -2494,6 +2908,40 @@
      h->mb_mbaff = h->mb_field_decoding_flag = IS_INTERLACED(mb_type) ? 1 : 0;
  }
  
@@ -1010,7 +1015,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  static int decode_slice(struct AVCodecContext *avctx, void *arg){
      H264Context *h = *(void**)arg;
      MpegEncContext * const s = &h->s;
-@@ -2301,7 +2746,7 @@
+@@ -2547,7 +2995,7 @@
              if( ++s->mb_x >= s->mb_width ) {
                  s->mb_x = 0;
                  loop_filter(h);
@@ -1019,7 +1024,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
                  ++s->mb_y;
                  if(FIELD_OR_MBAFF_PICTURE) {
                      ++s->mb_y;
-@@ -2341,7 +2786,7 @@
+@@ -2587,7 +3035,7 @@
              if(++s->mb_x >= s->mb_width){
                  s->mb_x=0;
                  loop_filter(h);
@@ -1028,7 +1033,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
                  ++s->mb_y;
                  if(FIELD_OR_MBAFF_PICTURE) {
                      ++s->mb_y;
-@@ -2474,7 +2919,7 @@
+@@ -2720,7 +3168,7 @@
      int context_count = 0;
      int next_avc= h->is_avc ? 0 : buf_size;
  
@@ -1037,34 +1042,35 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  #if 0
      int i;
      for(i=0; i<50; i++){
-@@ -2577,14 +3022,21 @@
-             avctx->profile = hx->sps.profile_idc;
-             avctx->level   = hx->sps.level_idc;
+@@ -2820,16 +3268,24 @@
+             if((err = decode_slice_header(hx, h)))
+                break;
  
--            if (s->avctx->hwaccel && h->current_slice == 1) {
--                if (s->avctx->hwaccel->start_frame(s->avctx, NULL, 0) < 0)
--                    return -1;
--            }
--
-             s->current_picture_ptr->key_frame |=
-                     (hx->nal_unit_type == NAL_IDR_SLICE) ||
-                     (h->sei_recovery_frame_cnt >= 0);
++            avctx->profile = hx->sps.profile_idc;
++            avctx->level   = hx->sps.level_idc;
 +
-+            if (h->current_slice == 1) {
++            s->current_picture_ptr->key_frame |=
++                    (hx->nal_unit_type == NAL_IDR_SLICE) ||
++                    (h->sei_recovery_frame_cnt >= 0);
++
+             if (h->current_slice == 1) {
 +                if(!(s->flags2 & CODEC_FLAG2_CHUNKS)) {
 +                    decode_postinit(h);
 +                }
 +
-+                if (s->avctx->hwaccel) {
-+                    if (s->avctx->hwaccel->start_frame(s->avctx, NULL, 0) < 0)
-+                        return -1;
-+                }
-+            }
-+
+                 if (s->avctx->hwaccel && s->avctx->hwaccel->start_frame(s->avctx, NULL, 0) < 0)
+                     return -1;
+                 if(CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
+                     ff_vdpau_h264_picture_start(s);
+             }
+ 
+-            s->current_picture_ptr->key_frame |=
+-                    (hx->nal_unit_type == NAL_IDR_SLICE) ||
+-                    (h->sei_recovery_frame_cnt >= 0);
              if(hx->redundant_pic_count==0 && hx->s.hurry_up < 5
                 && (avctx->skip_frame < AVDISCARD_NONREF || hx->nal_ref_idc)
                 && (avctx->skip_frame < AVDISCARD_BIDIR  || hx->slice_type_nos!=FF_B_TYPE)
-@@ -2716,6 +3168,8 @@
+@@ -2958,6 +3414,8 @@
          Picture *out;
          int i, out_idx;
  
@@ -1073,7 +1079,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  //FIXME factorize this with the output code below
          out = h->delayed_pic[0];
          out_idx = 0;
-@@ -2747,143 +3201,18 @@
+@@ -2989,143 +3447,18 @@
      }
  
      if(!(s->flags2 & CODEC_FLAG2_CHUNKS) || (s->mb_y >= s->mb_height && s->mb_height)){
@@ -1223,7 +1229,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
          }
      }
  
-@@ -3126,10 +3455,11 @@
+@@ -3368,10 +3701,11 @@
      NULL,
      ff_h264_decode_end,
      decode_frame,
@@ -1236,9 +1242,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.c ffmpeg-22712.30975-new/libav
  };
  
  #if CONFIG_H264_VDPAU_DECODER
-diff -Naur ffmpeg-22712.30975-old/libavcodec/h264_direct.c ffmpeg-22712.30975-new/libavcodec/h264_direct.c
---- ffmpeg-22712.30975-old/libavcodec/h264_direct.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/h264_direct.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/h264_direct.c ffmpeg-22912.31044-new/libavcodec/h264_direct.c
+--- ffmpeg-22912.31044-old/libavcodec/h264_direct.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/h264_direct.c	2010-04-19 07:00:17.000000000 -0700
 @@ -31,6 +31,7 @@
  #include "mpegvideo.h"
  #include "h264.h"
@@ -1363,9 +1369,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264_direct.c ffmpeg-22712.30975-ne
      l1mv0  = &h->ref_list[1][0].motion_val[0][h->mb2b_xy [mb_xy]];
      l1mv1  = &h->ref_list[1][0].motion_val[1][h->mb2b_xy [mb_xy]];
      l1ref0 = &h->ref_list[1][0].ref_index [0][4*mb_xy];
-diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.h ffmpeg-22712.30975-new/libavcodec/h264.h
---- ffmpeg-22712.30975-old/libavcodec/h264.h	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/h264.h	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/h264.h ffmpeg-22912.31044-new/libavcodec/h264.h
+--- ffmpeg-22912.31044-old/libavcodec/h264.h	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/h264.h	2010-04-19 07:00:17.000000000 -0700
 @@ -391,9 +391,9 @@
      /**
       * num_ref_idx_l0/1_active_minus1 + 1
@@ -1387,9 +1393,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/h264.h ffmpeg-22712.30975-new/libav
  
      /**
       * memory management control operations buffer.
-diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/libavcodec/huffyuv.c
---- ffmpeg-22712.30975-old/libavcodec/huffyuv.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/huffyuv.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/huffyuv.c ffmpeg-22912.31044-new/libavcodec/huffyuv.c
+--- ffmpeg-22912.31044-old/libavcodec/huffyuv.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/huffyuv.c	2010-04-19 07:00:17.000000000 -0700
 @@ -32,6 +32,7 @@
  #include "get_bits.h"
  #include "put_bits.h"
@@ -1398,7 +1404,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/li
  
  #define VLC_BITS 11
  
-@@ -523,6 +524,28 @@
+@@ -526,6 +527,28 @@
  
      return 0;
  }
@@ -1427,7 +1433,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/li
  #endif /* CONFIG_HUFFYUV_DECODER || CONFIG_FFVHUFF_DECODER */
  
  #if CONFIG_HUFFYUV_ENCODER || CONFIG_FFVHUFF_ENCODER
-@@ -946,10 +969,10 @@
+@@ -949,10 +972,10 @@
      s->dsp.bswap_buf((uint32_t*)s->bitstream_buffer, (const uint32_t*)buf, buf_size/4);
  
      if(p->data[0])
@@ -1440,7 +1446,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/li
          av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
          return -1;
      }
-@@ -1421,8 +1444,9 @@
+@@ -1424,8 +1447,9 @@
      NULL,
      decode_end,
      decode_frame,
@@ -1451,7 +1457,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/li
      .long_name = NULL_IF_CONFIG_SMALL("Huffyuv / HuffYUV"),
  };
  #endif
-@@ -1437,8 +1461,9 @@
+@@ -1440,8 +1464,9 @@
      NULL,
      decode_end,
      decode_frame,
@@ -1462,9 +1468,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/huffyuv.c ffmpeg-22712.30975-new/li
      .long_name = NULL_IF_CONFIG_SMALL("Huffyuv FFmpeg variant"),
  };
  #endif
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mdec.c ffmpeg-22712.30975-new/libavcodec/mdec.c
---- ffmpeg-22712.30975-old/libavcodec/mdec.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mdec.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mdec.c ffmpeg-22912.31044-new/libavcodec/mdec.c
+--- ffmpeg-22912.31044-old/libavcodec/mdec.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mdec.c	2010-04-19 07:00:17.000000000 -0700
 @@ -31,6 +31,7 @@
  #include "dsputil.h"
  #include "mpegvideo.h"
@@ -1515,9 +1521,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mdec.c ffmpeg-22712.30975-new/libav
 +    .init_thread_copy= ONLY_IF_THREADS_ENABLED(decode_init_thread_copy)
  };
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mimic.c ffmpeg-22712.30975-new/libavcodec/mimic.c
---- ffmpeg-22712.30975-old/libavcodec/mimic.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mimic.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mimic.c ffmpeg-22912.31044-new/libavcodec/mimic.c
+--- ffmpeg-22912.31044-old/libavcodec/mimic.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mimic.c	2010-04-19 07:00:17.000000000 -0700
 @@ -27,6 +27,7 @@
  #include "get_bits.h"
  #include "bytestream.h"
@@ -1671,9 +1677,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mimic.c ffmpeg-22712.30975-new/liba
      .long_name = NULL_IF_CONFIG_SMALL("Mimic"),
 +    .update_thread_context = ONLY_IF_THREADS_ENABLED(mimic_decode_update_thread_context)
  };
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mpeg12.c ffmpeg-22712.30975-new/libavcodec/mpeg12.c
---- ffmpeg-22712.30975-old/libavcodec/mpeg12.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mpeg12.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mpeg12.c ffmpeg-22912.31044-new/libavcodec/mpeg12.c
+--- ffmpeg-22912.31044-old/libavcodec/mpeg12.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mpeg12.c	2010-04-19 07:00:17.000000000 -0700
 @@ -37,6 +37,7 @@
  #include "bytestream.h"
  #include "vdpau_internal.h"
@@ -1784,9 +1790,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mpeg12.c ffmpeg-22712.30975-new/lib
          return -1;
      if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
          return -1;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mpeg4videodec.c ffmpeg-22712.30975-new/libavcodec/mpeg4videodec.c
---- ffmpeg-22712.30975-old/libavcodec/mpeg4videodec.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mpeg4videodec.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mpeg4videodec.c ffmpeg-22912.31044-new/libavcodec/mpeg4videodec.c
+--- ffmpeg-22912.31044-old/libavcodec/mpeg4videodec.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mpeg4videodec.c	2010-04-19 07:00:17.000000000 -0700
 @@ -23,6 +23,7 @@
  #include "mpegvideo.h"
  #include "mpeg4video.h"
@@ -1840,9 +1846,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mpeg4videodec.c ffmpeg-22712.30975-
  };
  
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo.c ffmpeg-22712.30975-new/libavcodec/mpegvideo.c
---- ffmpeg-22712.30975-old/libavcodec/mpegvideo.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mpegvideo.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mpegvideo.c ffmpeg-22912.31044-new/libavcodec/mpegvideo.c
+--- ffmpeg-22912.31044-old/libavcodec/mpegvideo.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mpegvideo.c	2010-04-19 07:00:17.000000000 -0700
 @@ -36,6 +36,7 @@
  #include "msmpeg4.h"
  #include "faandct.h"
@@ -2300,9 +2306,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo.c ffmpeg-22712.30975-new/
 +    if (s->pict_type != FF_B_TYPE && !s->partitioned_frame)
 +        ff_thread_report_progress((AVFrame*)s->current_picture_ptr, s->mb_y, 0);
 +}
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo_enc.c ffmpeg-22712.30975-new/libavcodec/mpegvideo_enc.c
---- ffmpeg-22712.30975-old/libavcodec/mpegvideo_enc.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mpegvideo_enc.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mpegvideo_enc.c ffmpeg-22912.31044-new/libavcodec/mpegvideo_enc.c
+--- ffmpeg-22912.31044-old/libavcodec/mpegvideo_enc.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mpegvideo_enc.c	2010-04-19 07:00:17.000000000 -0700
 @@ -36,6 +36,7 @@
  #include "mjpegenc.h"
  #include "msmpeg4.h"
@@ -2391,9 +2397,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo_enc.c ffmpeg-22712.30975-
          merge_context_after_encode(s, s->thread_context[i]);
      }
      emms_c();
-diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo.h ffmpeg-22712.30975-new/libavcodec/mpegvideo.h
---- ffmpeg-22712.30975-old/libavcodec/mpegvideo.h	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/mpegvideo.h	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/mpegvideo.h ffmpeg-22912.31044-new/libavcodec/mpegvideo.h
+--- ffmpeg-22912.31044-old/libavcodec/mpegvideo.h	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/mpegvideo.h	2010-04-19 07:00:17.000000000 -0700
 @@ -123,6 +123,7 @@
      int ref_poc[2][2][16];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
      int ref_count[2][2];        ///< number of entries in ref_poc              (FIXME need per slice)
@@ -2430,9 +2436,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/mpegvideo.h ffmpeg-22712.30975-new/
  const uint8_t *ff_find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
  void ff_set_qscale(MpegEncContext * s, int qscale);
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/options.c ffmpeg-22712.30975-new/libavcodec/options.c
---- ffmpeg-22712.30975-old/libavcodec/options.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/options.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/options.c ffmpeg-22912.31044-new/libavcodec/options.c
+--- ffmpeg-22912.31044-old/libavcodec/options.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/options.c	2010-04-19 07:00:17.000000000 -0700
 @@ -247,6 +247,7 @@
  {"vis_qp", "visualize quantization parameter (QP), lower QP are tinted greener", 0, FF_OPT_TYPE_CONST, FF_DEBUG_VIS_QP, INT_MIN, INT_MAX, V|D, "debug"},
  {"vis_mb_type", "visualize block types", 0, FF_OPT_TYPE_CONST, FF_DEBUG_VIS_MB_TYPE, INT_MIN, INT_MAX, V|D, "debug"},
@@ -2451,9 +2457,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/options.c ffmpeg-22712.30975-new/li
  {NULL},
  };
  
-diff -Naur ffmpeg-22712.30975-old/libavcodec/os2thread.c ffmpeg-22712.30975-new/libavcodec/os2thread.c
---- ffmpeg-22712.30975-old/libavcodec/os2thread.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/os2thread.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/os2thread.c ffmpeg-22912.31044-new/libavcodec/os2thread.c
+--- ffmpeg-22912.31044-old/libavcodec/os2thread.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/os2thread.c	2010-04-19 07:00:17.000000000 -0700
 @@ -114,7 +114,13 @@
      ThreadContext *c;
      uint32_t threadid;
@@ -2468,9 +2474,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/os2thread.c ffmpeg-22712.30975-new/
  
      if (thread_count <= 1)
          return 0;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/pthread.c ffmpeg-22712.30975-new/libavcodec/pthread.c
---- ffmpeg-22712.30975-old/libavcodec/pthread.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/pthread.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/pthread.c ffmpeg-22912.31044-new/libavcodec/pthread.c
+--- ffmpeg-22912.31044-old/libavcodec/pthread.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/pthread.c	2010-04-19 07:00:17.000000000 -0700
 @@ -1,5 +1,6 @@
  /*
   * Copyright (c) 2004 Roman Shaposhnik
@@ -2589,7 +2595,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/pthread.c ffmpeg-22712.30975-new/li
  
      avctx->thread_count = thread_count;
  
-@@ -184,3 +254,547 @@
+@@ -184,3 +254,549 @@
      avctx->execute2 = avcodec_thread_execute2;
      return 0;
  }
@@ -2658,32 +2664,34 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/pthread.c ffmpeg-22712.30975-new/li
 +    //coded_width/height are not copied here, so that codecs' update_thread_context can see when they change
 +    //many encoding parameters could be theoretically changed during encode, but aren't copied ATM
 +
-+    COPY(sub_id);
-+    COPY(width);
-+    COPY(height);
-+    COPY(pix_fmt);
-+    COPY(real_pict_num); //necessary?
-+    COPY(delay);
-+    COPY(max_b_frames);
++    if (dst != src) {
++        COPY(sub_id);
++        COPY(width);
++        COPY(height);
++        COPY(pix_fmt);
++        COPY(real_pict_num); //necessary?
++        COPY(delay);
++        COPY(max_b_frames);
 +
-+    COPY_FIELDS(mv_bits, opaque);
++        COPY_FIELDS(mv_bits, opaque);
 +
-+    COPY(has_b_frames);
-+    COPY(bits_per_coded_sample);
-+    COPY(sample_aspect_ratio);
-+    COPY(idct_algo);
-+    memcpy(dst->error, src->error, sizeof(src->error));
-+    COPY(last_predictor_count); //necessary?
-+    COPY(dtg_active_format);
-+    COPY(color_table_id);
-+    COPY(profile);
-+    COPY(level);
-+    COPY(bits_per_raw_sample);
-+    COPY(ticks_per_frame);
-+    COPY(color_primaries);
-+    COPY(color_trc);
-+    COPY(colorspace);
-+    COPY(color_range);
++        COPY(has_b_frames);
++        COPY(bits_per_coded_sample);
++        COPY(sample_aspect_ratio);
++        COPY(idct_algo);
++        memcpy(dst->error, src->error, sizeof(src->error));
++        COPY(last_predictor_count); //necessary?
++        COPY(dtg_active_format);
++        COPY(color_table_id);
++        COPY(profile);
++        COPY(level);
++        COPY(bits_per_raw_sample);
++        COPY(ticks_per_frame);
++        COPY(color_primaries);
++        COPY(color_trc);
++        COPY(colorspace);
++        COPY(color_range);
++    }
 +
 +    if (for_user) {
 +        COPY(coded_frame);
@@ -3137,9 +3145,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/pthread.c ffmpeg-22712.30975-new/li
 +    else
 +        thread_free(avctx);
 +}
-diff -Naur ffmpeg-22712.30975-old/libavcodec/snow.c ffmpeg-22712.30975-new/libavcodec/snow.c
---- ffmpeg-22712.30975-old/libavcodec/snow.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/snow.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/snow.c ffmpeg-22912.31044-new/libavcodec/snow.c
+--- ffmpeg-22912.31044-old/libavcodec/snow.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/snow.c	2010-04-19 07:00:17.000000000 -0700
 @@ -1977,9 +1977,9 @@
     int h= s->avctx->height;
  
@@ -3153,9 +3161,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/snow.c ffmpeg-22712.30975-new/libav
      }
  
      release_buffer(s->avctx);
-diff -Naur ffmpeg-22712.30975-old/libavcodec/thread.h ffmpeg-22712.30975-new/libavcodec/thread.h
---- ffmpeg-22712.30975-old/libavcodec/thread.h	1969-12-31 16:00:00.000000000 -0800
-+++ ffmpeg-22712.30975-new/libavcodec/thread.h	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/thread.h ffmpeg-22912.31044-new/libavcodec/thread.h
+--- ffmpeg-22912.31044-old/libavcodec/thread.h	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-22912.31044-new/libavcodec/thread.h	2010-04-19 07:00:17.000000000 -0700
 @@ -0,0 +1,112 @@
 +/*
 + * Multithreading support
@@ -3269,9 +3277,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/thread.h ffmpeg-22712.30975-new/lib
 +void ff_thread_release_buffer(AVCodecContext *avctx, AVFrame *f);
 +
 +#endif /* AVCODEC_THREAD_H */
-diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/libavcodec/utils.c
---- ffmpeg-22712.30975-old/libavcodec/utils.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/utils.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/utils.c ffmpeg-22912.31044-new/libavcodec/utils.c
+--- ffmpeg-22912.31044-old/libavcodec/utils.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/utils.c	2010-04-19 07:00:17.000000000 -0700
 @@ -36,6 +36,7 @@
  #include "dsputil.h"
  #include "opt.h"
@@ -3280,7 +3288,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
  #include "audioconvert.h"
  #include "libxvid_internal.h"
  #include "internal.h"
-@@ -257,6 +258,11 @@
+@@ -262,6 +263,11 @@
      (*picture_number)++;
  
      if(buf->base[0] && (buf->width != w || buf->height != h || buf->pix_fmt != s->pix_fmt)){
@@ -3292,7 +3300,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
          for(i=0; i<4; i++){
              av_freep(&buf->base[i]);
              buf->data[i]= NULL;
-@@ -355,6 +361,7 @@
+@@ -360,6 +366,7 @@
      assert(pic->type==FF_BUFFER_TYPE_INTERNAL);
      assert(s->internal_buffer_count);
  
@@ -3300,7 +3308,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
      buf = NULL; /* avoids warning */
      for(i=0; i<s->internal_buffer_count; i++){ //just 3-5 checks so is not worth to optimize
          buf= &((InternalBuffer*)s->internal_buffer)[i];
-@@ -366,6 +373,7 @@
+@@ -371,6 +378,7 @@
      last = &((InternalBuffer*)s->internal_buffer)[s->internal_buffer_count];
  
      FFSWAP(InternalBuffer, *buf, *last);
@@ -3308,7 +3316,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
  
      for(i=0; i<4; i++){
          pic->data[i]=NULL;
-@@ -507,7 +515,17 @@
+@@ -512,7 +520,17 @@
          goto free_and_end;
      }
      avctx->frame_number = 0;
@@ -3327,7 +3335,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
          ret = avctx->codec->init(avctx);
          if (ret < 0) {
              goto free_and_end;
-@@ -598,12 +616,15 @@
+@@ -603,12 +621,15 @@
                           AVPacket *avpkt)
  {
      int ret;
@@ -3345,7 +3353,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
                                  avpkt);
  
          emms_c(); //needed to avoid an emms_c() call before every return;
-@@ -701,13 +722,14 @@
+@@ -706,13 +727,14 @@
  
      if (HAVE_THREADS && avctx->thread_opaque)
          avcodec_thread_free(avctx);
@@ -3354,14 +3362,14 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
          avctx->codec->close(avctx);
      avcodec_default_free_buffers(avctx);
      av_freep(&avctx->priv_data);
-     if(avctx->codec->encode)
+     if(avctx->codec && avctx->codec->encode)
          av_freep(&avctx->extradata);
      avctx->codec = NULL;
 +    avctx->active_thread_type = 0;
      entangled_thread_counter--;
  
      /* Release any user-supplied mutex. */
-@@ -943,6 +965,8 @@
+@@ -942,6 +964,8 @@
  
  void avcodec_flush_buffers(AVCodecContext *avctx)
  {
@@ -3370,7 +3378,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
      if(avctx->codec->flush)
          avctx->codec->flush(avctx);
  }
-@@ -1294,3 +1318,34 @@
+@@ -1293,3 +1317,34 @@
      }
      return 0;
  }
@@ -3405,9 +3413,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/utils.c ffmpeg-22712.30975-new/liba
 +}
 +
 +#endif
-diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavcodec/vp3.c
---- ffmpeg-22712.30975-old/libavcodec/vp3.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/vp3.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/vp3.c ffmpeg-22912.31044-new/libavcodec/vp3.c
+--- ffmpeg-22912.31044-old/libavcodec/vp3.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/vp3.c	2010-04-19 07:00:17.000000000 -0700
 @@ -39,6 +39,7 @@
  
  #include "vp3data.h"
@@ -3416,7 +3424,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  
  #define FRAGMENT_PIXELS 8
  
-@@ -1306,6 +1307,12 @@
+@@ -1310,6 +1311,12 @@
      int h, cy;
      int offset[4];
  
@@ -3429,7 +3437,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      if(s->avctx->draw_horiz_band==NULL)
          return;
  
-@@ -1329,6 +1336,32 @@
+@@ -1333,6 +1340,32 @@
      s->last_slice_end= y + h;
  }
  
@@ -3462,7 +3470,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  /*
   * Perform the final rendering for a particular slice of data.
   * The slice number ranges from 0..(c_superblock_height - 1).
-@@ -1389,6 +1422,9 @@
+@@ -1393,6 +1426,9 @@
  
                  first_pixel = 8*y*stride + 8*x;
  
@@ -3471,8 +3479,8 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
 +
                  /* transform if this block was coded */
                  if (s->all_fragments[i].coding_method != MODE_COPY) {
-                     int intra = s->all_fragments[i].coding_method == MODE_INTRA;
-@@ -1497,6 +1533,38 @@
+                     if ((s->all_fragments[i].coding_method == MODE_USING_GOLDEN) ||
+@@ -1503,6 +1539,38 @@
      vp3_draw_horiz_band(s, FFMIN(64*slice + 64-16, s->height-16));
  }
  
@@ -3511,7 +3519,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  /*
   * This is the ffmpeg/libavcodec API init function.
   */
-@@ -1546,7 +1614,6 @@
+@@ -1552,7 +1620,6 @@
      s->superblock_count = s->y_superblock_count + (s->c_superblock_count * 2);
      s->u_superblock_start = s->y_superblock_count;
      s->v_superblock_start = s->u_superblock_start + s->c_superblock_count;
@@ -3519,7 +3527,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  
      s->macroblock_width = (s->width + 15) / 16;
      s->macroblock_height = (s->height + 15) / 16;
-@@ -1564,18 +1631,6 @@
+@@ -1570,18 +1637,6 @@
      s->fragment_start[1] = y_fragment_count;
      s->fragment_start[2] = y_fragment_count + c_fragment_count;
  
@@ -3538,7 +3546,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      if (!s->theora_tables)
      {
          for (i = 0; i < 64; i++) {
-@@ -1675,28 +1730,92 @@
+@@ -1681,28 +1736,92 @@
          &motion_vector_vlc_table[0][1], 2, 1,
          &motion_vector_vlc_table[0][0], 2, 1, 0);
  
@@ -3641,7 +3649,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  /*
   * This is the ffmpeg/libavcodec API frame decode function.
   */
-@@ -1708,7 +1827,6 @@
+@@ -1714,7 +1833,6 @@
      int buf_size = avpkt->size;
      Vp3DecodeContext *s = avctx->priv_data;
      GetBitContext gb;
@@ -3649,7 +3657,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      int i;
  
      init_get_bits(&gb, buf, buf_size * 8);
-@@ -1734,8 +1852,7 @@
+@@ -1740,8 +1858,7 @@
  
      if (s->avctx->debug & FF_DEBUG_PICT_INFO)
          av_log(s->avctx, AV_LOG_INFO, " VP3 %sframe #%d: Q index = %d\n",
@@ -3659,7 +3667,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  
      if (s->qps[0] != s->last_qps[0])
          init_loop_filter(s);
-@@ -1751,7 +1868,7 @@
+@@ -1757,7 +1874,7 @@
  
      s->current_frame.reference = 3;
      s->current_frame.pict_type = s->keyframe ? FF_I_TYPE : FF_P_TYPE;
@@ -3668,7 +3676,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
          av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed\n");
          goto error;
      }
-@@ -1764,7 +1881,7 @@
+@@ -1770,7 +1887,7 @@
              if (s->version)
              {
                  s->version = get_bits(&gb, 5);
@@ -3677,7 +3685,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
                      av_log(s->avctx, AV_LOG_DEBUG, "VP version: %d\n", s->version);
              }
          }
-@@ -1780,7 +1897,7 @@
+@@ -1786,7 +1903,7 @@
  
              s->golden_frame.reference = 3;
              s->golden_frame.pict_type = FF_I_TYPE;
@@ -3686,7 +3694,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
                  av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed\n");
                  goto error;
              }
-@@ -1793,6 +1910,7 @@
+@@ -1799,6 +1916,7 @@
      s->current_frame.qstride= 0;
  
      memset(s->all_fragments, 0, s->fragment_count * sizeof(Vp3Fragment));
@@ -3694,7 +3702,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  
      if (unpack_superblocks(s, &gb)){
          av_log(s->avctx, AV_LOG_ERROR, "error in unpack_superblocks\n");
-@@ -1837,28 +1955,17 @@
+@@ -1843,28 +1961,17 @@
      *data_size=sizeof(AVFrame);
      *(AVFrame*)data= s->current_frame;
  
@@ -3729,7 +3737,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      return -1;
  }
  
-@@ -1879,6 +1986,8 @@
+@@ -1885,6 +1992,8 @@
      av_free(s->motion_val[0]);
      av_free(s->motion_val[1]);
  
@@ -3738,7 +3746,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      for (i = 0; i < 16; i++) {
          free_vlc(&s->dc_vlc[i]);
          free_vlc(&s->ac_vlc_1[i]);
-@@ -1894,9 +2003,9 @@
+@@ -1900,9 +2009,9 @@
  
      /* release all frames */
      if (s->golden_frame.data[0])
@@ -3750,7 +3758,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      /* no need to release the current_frame since it will always be pointing
       * to the same frame as either the golden or last frame */
  
-@@ -2198,9 +2307,10 @@
+@@ -2212,9 +2321,10 @@
      NULL,
      vp3_decode_end,
      vp3_decode_frame,
@@ -3762,7 +3770,7 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
  };
  #endif
  
-@@ -2213,7 +2323,8 @@
+@@ -2227,7 +2337,8 @@
      NULL,
      vp3_decode_end,
      vp3_decode_frame,
@@ -3772,9 +3780,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/vp3.c ffmpeg-22712.30975-new/libavc
      .long_name = NULL_IF_CONFIG_SMALL("On2 VP3"),
 +    .update_thread_context = ONLY_IF_THREADS_ENABLED(vp3_update_thread_context)
  };
-diff -Naur ffmpeg-22712.30975-old/libavcodec/w32thread.c ffmpeg-22712.30975-new/libavcodec/w32thread.c
---- ffmpeg-22712.30975-old/libavcodec/w32thread.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/w32thread.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/w32thread.c ffmpeg-22912.31044-new/libavcodec/w32thread.c
+--- ffmpeg-22912.31044-old/libavcodec/w32thread.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/w32thread.c	2010-04-19 07:00:17.000000000 -0700
 @@ -129,7 +129,13 @@
      ThreadContext *c;
      uint32_t threadid;
@@ -3789,9 +3797,9 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/w32thread.c ffmpeg-22712.30975-new/
  
      if (thread_count <= 1)
          return 0;
-diff -Naur ffmpeg-22712.30975-old/libavcodec/x86/dsputil_mmx.c ffmpeg-22712.30975-new/libavcodec/x86/dsputil_mmx.c
---- ffmpeg-22712.30975-old/libavcodec/x86/dsputil_mmx.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavcodec/x86/dsputil_mmx.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavcodec/x86/dsputil_mmx.c ffmpeg-22912.31044-new/libavcodec/x86/dsputil_mmx.c
+--- ffmpeg-22912.31044-old/libavcodec/x86/dsputil_mmx.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavcodec/x86/dsputil_mmx.c	2010-04-19 07:00:17.000000000 -0700
 @@ -807,7 +807,7 @@
  
  /* draw the edges of width 'w' of an image of size width, height
@@ -3869,10 +3877,10 @@ diff -Naur ffmpeg-22712.30975-old/libavcodec/x86/dsputil_mmx.c ffmpeg-22712.3097
      }
  }
  
-diff -Naur ffmpeg-22712.30975-old/libavformat/utils.c ffmpeg-22712.30975-new/libavformat/utils.c
---- ffmpeg-22712.30975-old/libavformat/utils.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavformat/utils.c	2010-03-28 11:14:43.000000000 -0700
-@@ -858,6 +858,11 @@
+diff -Naur ffmpeg-22912.31044-old/libavformat/utils.c ffmpeg-22912.31044-new/libavformat/utils.c
+--- ffmpeg-22912.31044-old/libavformat/utils.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavformat/utils.c	2010-04-19 07:00:17.000000000 -0700
+@@ -867,6 +867,11 @@
      /* do we have a video B-frame ? */
      delay= st->codec->has_b_frames;
      presentation_delayed = 0;
@@ -3884,9 +3892,9 @@ diff -Naur ffmpeg-22712.30975-old/libavformat/utils.c ffmpeg-22712.30975-new/lib
      /* XXX: need has_b_frame, but cannot get it if the codec is
          not initialized */
      if (delay &&
-diff -Naur ffmpeg-22712.30975-old/libavutil/internal.h ffmpeg-22712.30975-new/libavutil/internal.h
---- ffmpeg-22712.30975-old/libavutil/internal.h	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavutil/internal.h	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavutil/internal.h ffmpeg-22912.31044-new/libavutil/internal.h
+--- ffmpeg-22912.31044-old/libavutil/internal.h	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavutil/internal.h	2010-04-19 07:00:17.000000000 -0700
 @@ -204,4 +204,10 @@
  #   define NULL_IF_CONFIG_SMALL(x) x
  #endif
@@ -3898,9 +3906,9 @@ diff -Naur ffmpeg-22712.30975-old/libavutil/internal.h ffmpeg-22712.30975-new/li
 +#endif
 +
  #endif /* AVUTIL_INTERNAL_H */
-diff -Naur ffmpeg-22712.30975-old/libavutil/log.c ffmpeg-22712.30975-new/libavutil/log.c
---- ffmpeg-22712.30975-old/libavutil/log.c	2010-03-28 11:14:43.000000000 -0700
-+++ ffmpeg-22712.30975-new/libavutil/log.c	2010-03-28 11:14:43.000000000 -0700
+diff -Naur ffmpeg-22912.31044-old/libavutil/log.c ffmpeg-22912.31044-new/libavutil/log.c
+--- ffmpeg-22912.31044-old/libavutil/log.c	2010-04-19 07:00:17.000000000 -0700
++++ ffmpeg-22912.31044-new/libavutil/log.c	2010-04-19 07:00:17.000000000 -0700
 @@ -38,6 +38,8 @@
      static int count;
      static char line[1024], prev[1024];
