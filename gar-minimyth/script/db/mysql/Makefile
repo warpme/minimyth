@@ -3,7 +3,7 @@ GARVERSION = 5.1.45
 CATEGORIES = db
 MASTER_SITES  = http://mysql.he.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-ac_cache_check.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-mysql_config.patch.gar
+PATCHFILES = $(DISTNAME)-skip_abi_check.patch $(DISTNAME)-ac_cache_check.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-mysql_config.patch.gar
 ifneq ($(DESTIMG),build)
 DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES += $(DISTNAME)-cross.patch

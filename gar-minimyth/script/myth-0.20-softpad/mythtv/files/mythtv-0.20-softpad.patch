@@ -1,13 +1,13 @@
 diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp mythtv-0.20-16082-new/libs/libmythtv/programinfo.cpp
---- mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.cpp	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp	2010-04-20 09:05:32.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.cpp	2010-04-20 09:06:42.000000000 -0700
 @@ -91,6 +91,8 @@
      endts = startts;
      recstartts = startts;
      recendts = startts;
 +    softstart = 0;
 +    softend = 0;
-     originalAirDate = QDate::QDate (0, 1, 1);
+     originalAirDate = QDate (0, 1, 1);
      lastmodified = startts;
      lastInUseTime = startts.addSecs(-4 * 60 * 60);
 @@ -180,6 +182,8 @@
@@ -103,8 +103,8 @@ diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.cpp mythtv-0.20-1608
      progMap["time"] = timeNow.time().toString(timeFormat);
  
 diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.h mythtv-0.20-16082-new/libs/libmythtv/programinfo.h
---- mythtv-0.20-16082-old/libs/libmythtv/programinfo.h	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.h	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/libs/libmythtv/programinfo.h	2008-09-15 14:04:57.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/programinfo.h	2010-04-20 09:05:55.000000000 -0700
 @@ -268,6 +268,8 @@
      QDateTime endts;
      QDateTime recstartts;
@@ -115,8 +115,8 @@ diff -Naur mythtv-0.20-16082-old/libs/libmythtv/programinfo.h mythtv-0.20-16082-
      AvailableStatusType availableStatus;
      
 diff -Naur mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp mythtv-0.20-16082-new/libs/libmythtv/viewschdiff.cpp
---- mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/libs/libmythtv/viewschdiff.cpp	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp	2010-04-20 09:05:32.000000000 -0700
++++ mythtv-0.20-16082-new/libs/libmythtv/viewschdiff.cpp	2010-04-20 09:05:55.000000000 -0700
 @@ -453,6 +453,9 @@
  
  void ViewScheduleDiff::updateList(QPainter *p)
@@ -142,8 +142,8 @@ diff -Naur mythtv-0.20-16082-old/libs/libmythtv/viewschdiff.cpp mythtv-0.20-1608
                           (p->recstatus != rsDontRecord &&
                            p->recstatus <= rsEarlierShowing))
 diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp mythtv-0.20-16082-new/programs/mythbackend/scheduler.cpp
---- mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.cpp	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp	2008-09-15 14:05:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.cpp	2010-04-20 09:05:55.000000000 -0700
 @@ -152,16 +152,27 @@
          return a->startts < b->startts;
      if (a->endts != b->endts)
@@ -360,8 +360,8 @@ diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.cpp mythtv-0.20-
  
      VERBOSE(VB_SCHEDULE, " +-- Cleanup...");
 diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.h mythtv-0.20-16082-new/programs/mythbackend/scheduler.h
---- mythtv-0.20-16082-old/programs/mythbackend/scheduler.h	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.h	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/programs/mythbackend/scheduler.h	2008-09-15 14:05:08.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythbackend/scheduler.h	2010-04-20 09:05:55.000000000 -0700
 @@ -83,7 +83,7 @@
      void MarkShowingsList(RecList &showinglist, ProgramInfo *p);
      void BackupRecStatus(void);
@@ -372,8 +372,8 @@ diff -Naur mythtv-0.20-16082-old/programs/mythbackend/scheduler.h mythtv-0.20-16
      void MoveHigherRecords(void);
      void PruneRedundants(void);
 diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp mythtv-0.20-16082-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/programs/mythfrontend/globalsettings.cpp	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp	2010-04-20 09:05:32.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/globalsettings.cpp	2010-04-20 09:05:55.000000000 -0700
 @@ -652,6 +652,34 @@
      return bs;
  }
@@ -409,7 +409,7 @@ diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp mythtv
  static GlobalLineEdit *OverTimeCategory()
  {
      GlobalLineEdit *ge = new GlobalLineEdit("OverTimeCategory");
-@@ -3569,6 +3597,8 @@
+@@ -3582,6 +3610,8 @@
      general2->setLabel(QObject::tr("General (Advanced)"));
      general2->addChild(RecordPreRoll());
      general2->addChild(RecordOverTime());
@@ -419,8 +419,8 @@ diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/globalsettings.cpp mythtv
      general2->addChild(ATSCCheckSignalThreshold());
      general2->addChild(ATSCCheckSignalWait());
 diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp mythtv-0.20-16082-new/programs/mythfrontend/viewscheduled.cpp
---- mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/programs/mythfrontend/viewscheduled.cpp	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp	2010-04-20 09:05:32.000000000 -0700
++++ mythtv-0.20-16082-new/programs/mythfrontend/viewscheduled.cpp	2010-04-20 09:05:55.000000000 -0700
 @@ -314,6 +314,9 @@
  
  void ViewScheduled::updateList(QPainter *p)
@@ -451,8 +451,8 @@ diff -Naur mythtv-0.20-16082-old/programs/mythfrontend/viewscheduled.cpp mythtv-
                           (p->recstatus != rsDontRecord &&
                            p->recstatus <= rsEarlierShowing))
 diff -Naur mythtv-0.20-16082-old/themes/blue/theme.xml mythtv-0.20-16082-new/themes/blue/theme.xml
---- mythtv-0.20-16082-old/themes/blue/theme.xml	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/themes/blue/theme.xml	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/themes/blue/theme.xml	2008-09-15 14:04:46.000000000 -0700
++++ mythtv-0.20-16082-new/themes/blue/theme.xml	2010-04-20 09:05:55.000000000 -0700
 @@ -59,7 +59,11 @@
      <font name="list-inactive" base="list-active">
        <color>#aaaaee</color>
@@ -467,8 +467,8 @@ diff -Naur mythtv-0.20-16082-old/themes/blue/theme.xml mythtv-0.20-16082-new/the
        <color>#33ff33</color>
      </font>
 diff -Naur mythtv-0.20-16082-old/themes/blue/ui.xml mythtv-0.20-16082-new/themes/blue/ui.xml
---- mythtv-0.20-16082-old/themes/blue/ui.xml	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/themes/blue/ui.xml	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/themes/blue/ui.xml	2008-09-15 14:04:46.000000000 -0700
++++ mythtv-0.20-16082-new/themes/blue/ui.xml	2010-04-20 09:05:55.000000000 -0700
 @@ -290,6 +290,7 @@
          <fcnfont name="list-norecord" function="disabledrecording"></fcnfont>
          <fcnfont name="list-active" function="active"></fcnfont>
@@ -504,8 +504,8 @@ diff -Naur mythtv-0.20-16082-old/themes/blue/ui.xml mythtv-0.20-16082-new/themes
        </textarea>
        <textarea name="subdescr" draworder="6">
 diff -Naur mythtv-0.20-16082-old/themes/G.A.N.T./ui.xml mythtv-0.20-16082-new/themes/G.A.N.T./ui.xml
---- mythtv-0.20-16082-old/themes/G.A.N.T./ui.xml	2008-09-15 14:09:31.000000000 -0700
-+++ mythtv-0.20-16082-new/themes/G.A.N.T./ui.xml	2008-09-15 14:09:31.000000000 -0700
+--- mythtv-0.20-16082-old/themes/G.A.N.T./ui.xml	2010-04-20 09:05:32.000000000 -0700
++++ mythtv-0.20-16082-new/themes/G.A.N.T./ui.xml	2010-04-20 09:05:55.000000000 -0700
 @@ -352,6 +352,13 @@
        <bold>yes</bold>
      </font>

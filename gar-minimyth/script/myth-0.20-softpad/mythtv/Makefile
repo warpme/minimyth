@@ -12,8 +12,9 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-avformat_asf_utf8.patch \
-	$(DISTNAME_SHORT)-gcc_4.3.patch \
-	$(DISTNAME_SHORT)-gcc_4.4.patch \
+	$(DISTNAME_SHORT)-gcc_4.3.0.patch \
+	$(DISTNAME_SHORT)-gcc_4.4.0.patch \
+	$(DISTNAME_SHORT)-gcc_4.5.0.patch \
 	$(DISTNAME_SHORT)-link_xvmc_lib.patch \
 	$(DISTNAME_SHORT)-mythstream.patch \
 	$(DISTNAME_SHORT)-hulu.patch \

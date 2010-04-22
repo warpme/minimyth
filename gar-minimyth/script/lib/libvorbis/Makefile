@@ -25,6 +25,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# Fails to compile with GCC 4.5.0 and option -Os, so make the option -O2.
+CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -O%, $(CFLAGS)) -O2)
+
 post-patch:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
