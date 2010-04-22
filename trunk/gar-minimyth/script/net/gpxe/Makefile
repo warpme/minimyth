@@ -20,6 +20,7 @@ BUILD_ARGS = \
 	CROSS_COMPILE="$(compiler_prefix)" \
 	ARCH="$(GARCH_FAMILY)" \
 	Q=" " \
+	NO_WERROR="1" \
 	bin/undionly.kpxe
 
 include ../../gar.mk
