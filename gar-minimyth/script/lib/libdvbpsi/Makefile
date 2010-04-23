@@ -1,5 +1,5 @@
-GARNAME = libdvbpsi5
-GARVERSION = 0.1.6
+GARNAME = libdvbpsi
+GARVERSION = 0.1.7
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/libdvbpsi/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
