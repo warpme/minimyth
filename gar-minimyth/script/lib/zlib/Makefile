@@ -1,7 +1,8 @@
 GARNAME = zlib
-GARVERSION = 1.2.4
+GARVERSION = 1.2.5
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libpng/
+MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/libpng/
+MASTER_SITES += http://zlib.net/
 DISTFILES = $(DISTNAME).tar.gz license
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKDIR)/license
