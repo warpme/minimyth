@@ -1,26 +1,23 @@
-diff -Naur udev-151-old/configure.ac udev-151-new/configure.ac
---- udev-151-old/configure.ac	2010-01-24 23:21:07.000000000 -0800
-+++ udev-151-new/configure.ac	2010-02-20 11:04:39.000000000 -0800
-@@ -69,17 +69,27 @@
+diff -Naur udev-153-old/configure.ac udev-153-new/configure.ac
+--- udev-153-old/configure.ac	2010-04-20 23:30:43.000000000 -0700
++++ udev-153-new/configure.ac	2010-04-23 11:21:39.000000000 -0700
+@@ -69,17 +69,24 @@
  	PKG_CHECK_MODULES(USBUTILS, usbutils >= 0.82)
  	AC_SUBST([USB_DATABASE], [$($PKG_CONFIG --variable=usbids usbutils)])
  
 -	AC_CHECK_FILES([/usr/share/pci.ids], [pciids=/usr/share/pci.ids])
 -	AC_CHECK_FILES([/usr/share/hwdata/pci.ids], [pciids=/usr/share/hwdata/pci.ids])
 -	AC_CHECK_FILES([/usr/share/misc/pci.ids], [pciids=/usr/share/misc/pci.ids])
-+	if test $cross_compiling = no; then
-+		AC_CHECK_FILES([/usr/share/pci.ids],
-+			       [pciids=/usr/share/pci.ids])
-+		AC_CHECK_FILES([/usr/share/hwdata/pci.ids],
-+			       [pciids=/usr/share/hwdata/pci.ids])
-+		AC_CHECK_FILES([/usr/share/misc/pci.ids],
-+			       [pciids=/usr/share/misc/pci.ids])
++	if test "x$cross_compiling" = "xno" ; then
++		AC_CHECK_FILES([/usr/share/pci.ids], [pciids=/usr/share/pci.ids])
++		AC_CHECK_FILES([/usr/share/hwdata/pci.ids], [pciids=/usr/share/hwdata/pci.ids])
++		AC_CHECK_FILES([/usr/share/misc/pci.ids], [pciids=/usr/share/misc/pci.ids])
 +	else
-+		# just assume location
++ 		# just assume location
 +		pciids=/usr/share/pci.ids
 +	fi
  	AC_ARG_WITH(pci-ids-path,
--		AS_HELP_STRING([--pci-ids-path=DIR], [Path to pci.ids file]),
+-		AS_HELP_STRING([--with-pci-ids-path=DIR], [Path to pci.ids file]),
 +		[AS_HELP_STRING([--with-pci-ids-path=DIR], [Path to pci.ids file])],
  		[PCI_DATABASE=${withval}],
  		[if test -n "$pciids" ; then
@@ -32,4 +29,4 @@ diff -Naur udev-151-old/configure.ac udev-151-new/configure.ac
 +	AC_MSG_RESULT([$PCI_DATABASE])
  	AC_SUBST(PCI_DATABASE)
  
- 	AC_CHECK_HEADER([linux/input.h], [:], AC_MSG_ERROR([kernel headers not found]))
+ 	AC_ARG_WITH(firmware-path,
