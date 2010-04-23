@@ -49,7 +49,7 @@
 # Start udev userspace daemon of listening to events.
 /sbin/udevd -d
 # Regenerate the events that have already happened.
-/sbin/udevadm trigger
+/sbin/udevadm trigger --action=add
 # Wait for udev to process all the regenerated events.
 /sbin/udevadm settle --timeout=60
 
