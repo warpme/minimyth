@@ -237,7 +237,7 @@ sub start
         }
         closedir(DIR);
     }
-    system(qq(/sbin/udevadm trigger));
+    system(qq(/sbin/udevadm trigger --action=add));
     system(qq(/sbin/udevadm settle --timeout=60));
 
     # Fetch firmware files.
