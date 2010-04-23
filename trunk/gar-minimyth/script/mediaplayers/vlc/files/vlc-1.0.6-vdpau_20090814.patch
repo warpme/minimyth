@@ -1,6 +1,6 @@
-diff -Naur vlc-1.0.5-old/configure.ac vlc-1.0.5-new/configure.ac
---- vlc-1.0.5-old/configure.ac	2010-01-30 18:14:51.000000000 -0800
-+++ vlc-1.0.5-new/configure.ac	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/configure.ac vlc-1.0.6-new/configure.ac
+--- vlc-1.0.6-old/configure.ac	2010-04-23 10:09:08.000000000 -0700
++++ vlc-1.0.6-new/configure.ac	2010-04-23 10:09:37.000000000 -0700
 @@ -3139,6 +3139,7 @@
        VLC_ADD_LIBS([avcodec],[$AVCODEC_LIBS $X_LIBS $X_PRE_LIBS -lX11 -lva-x11])
        VLC_ADD_CFLAGS([avcodec],[$AVCODEC_CFLAGS $X_CFLAGS])
@@ -49,18 +49,18 @@ diff -Naur vlc-1.0.5-old/configure.ac vlc-1.0.5-new/configure.ac
    modules/codec/wmafixed/Makefile
    modules/codec/xvmc/Makefile
    modules/control/Makefile
-diff -Naur vlc-1.0.5-old/modules/codec/Modules.am vlc-1.0.5-new/modules/codec/Modules.am
---- vlc-1.0.5-old/modules/codec/Modules.am	2010-01-30 18:14:39.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/Modules.am	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/Modules.am vlc-1.0.6-new/modules/codec/Modules.am
+--- vlc-1.0.6-old/modules/codec/Modules.am	2010-04-23 10:08:59.000000000 -0700
++++ vlc-1.0.6-new/modules/codec/Modules.am	2010-04-23 10:09:37.000000000 -0700
 @@ -1,4 +1,4 @@
 -SUBDIRS = cmml dmo avcodec shine subtitles spudec wmafixed xvmc
 +SUBDIRS = cmml dmo avcodec shine subtitles spudec vdpau wmafixed xvmc
  SOURCES_a52 = a52.c a52.h
  SOURCES_dts = dts.c
  SOURCES_flac = flac.c
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avcodec.c vlc-1.0.5-new/modules/codec/vdpau/avcodec.c
---- vlc-1.0.5-old/modules/codec/vdpau/avcodec.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/avcodec.c	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/avcodec.c vlc-1.0.6-new/modules/codec/vdpau/avcodec.c
+--- vlc-1.0.6-old/modules/codec/vdpau/avcodec.c	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/avcodec.c	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,251 @@
 +/*****************************************************************************
 + * avcodec.c: video and audio decoder and encoder using libavcodec
@@ -313,9 +313,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avcodec.c vlc-1.0.5-new/modules/cod
 +
 +    vlc_avcodec_unlock();
 +}
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avcodec.h vlc-1.0.5-new/modules/codec/vdpau/avcodec.h
---- vlc-1.0.5-old/modules/codec/vdpau/avcodec.h	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/avcodec.h	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/avcodec.h vlc-1.0.6-new/modules/codec/vdpau/avcodec.h
+--- vlc-1.0.6-old/modules/codec/vdpau/avcodec.h	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/avcodec.h	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,249 @@
 +/*****************************************************************************
 + * avcodec.h: decoder and encoder using libavcodec
@@ -566,9 +566,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avcodec.h vlc-1.0.5-new/modules/cod
 +#   define AV_VERSION_INT(a, b, c) ((a)<<16 | (b)<<8 | (c))
 +#endif
 +
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avutil.h vlc-1.0.5-new/modules/codec/vdpau/avutil.h
---- vlc-1.0.5-old/modules/codec/vdpau/avutil.h	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/avutil.h	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/avutil.h vlc-1.0.6-new/modules/codec/vdpau/avutil.h
+--- vlc-1.0.6-old/modules/codec/vdpau/avutil.h	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/avutil.h	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,60 @@
 +/*****************************************************************************
 + * avutil.h: avutil helper functions
@@ -630,9 +630,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/avutil.h vlc-1.0.5-new/modules/code
 +        break;
 +    }
 +}
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/chroma.c vlc-1.0.5-new/modules/codec/vdpau/chroma.c
---- vlc-1.0.5-old/modules/codec/vdpau/chroma.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/chroma.c	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/chroma.c vlc-1.0.6-new/modules/codec/vdpau/chroma.c
+--- vlc-1.0.6-old/modules/codec/vdpau/chroma.c	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/chroma.c	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,158 @@
 +/*****************************************************************************
 + * chroma.c: libavutil <-> libvlc conversion routines
@@ -792,9 +792,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/chroma.c vlc-1.0.5-new/modules/code
 +    }
 +    return VLC_EGENERIC;
 +}
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/deinterlace.c vlc-1.0.5-new/modules/codec/vdpau/deinterlace.c
---- vlc-1.0.5-old/modules/codec/vdpau/deinterlace.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/deinterlace.c	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/deinterlace.c vlc-1.0.6-new/modules/codec/vdpau/deinterlace.c
+--- vlc-1.0.6-old/modules/codec/vdpau/deinterlace.c	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/deinterlace.c	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,157 @@
 +/*****************************************************************************
 + * video filter: video filter doing chroma conversion and resizing
@@ -953,9 +953,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/deinterlace.c vlc-1.0.5-new/modules
 +    picture_Release( p_pic );
 +    return p_pic_dst;
 +}
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/fourcc.c vlc-1.0.5-new/modules/codec/vdpau/fourcc.c
---- vlc-1.0.5-old/modules/codec/vdpau/fourcc.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/fourcc.c	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/fourcc.c vlc-1.0.6-new/modules/codec/vdpau/fourcc.c
+--- vlc-1.0.6-old/modules/codec/vdpau/fourcc.c	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/fourcc.c	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,177 @@
 +/*****************************************************************************
 + * fourcc.c: libavcodec <-> libvlc conversion routines
@@ -1134,9 +1134,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/fourcc.c vlc-1.0.5-new/modules/code
 +    }
 +    return false;
 +}
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/Modules.am vlc-1.0.5-new/modules/codec/vdpau/Modules.am
---- vlc-1.0.5-old/modules/codec/vdpau/Modules.am	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/Modules.am	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/Modules.am vlc-1.0.6-new/modules/codec/vdpau/Modules.am
+--- vlc-1.0.6-old/modules/codec/vdpau/Modules.am	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/Modules.am	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,18 @@
 +SOURCES_vdpau = \
 +	avcodec.c \
@@ -1156,9 +1156,9 @@ diff -Naur vlc-1.0.5-old/modules/codec/vdpau/Modules.am vlc-1.0.5-new/modules/co
 +
 +EXTRA_LTLIBRARIES += \
 +	libvdpau_plugin.la
-diff -Naur vlc-1.0.5-old/modules/codec/vdpau/video.c vlc-1.0.5-new/modules/codec/vdpau/video.c
---- vlc-1.0.5-old/modules/codec/vdpau/video.c	1969-12-31 16:00:00.000000000 -0800
-+++ vlc-1.0.5-new/modules/codec/vdpau/video.c	2010-01-30 18:15:30.000000000 -0800
+diff -Naur vlc-1.0.6-old/modules/codec/vdpau/video.c vlc-1.0.6-new/modules/codec/vdpau/video.c
+--- vlc-1.0.6-old/modules/codec/vdpau/video.c	1969-12-31 16:00:00.000000000 -0800
++++ vlc-1.0.6-new/modules/codec/vdpau/video.c	2010-04-23 10:09:37.000000000 -0700
 @@ -0,0 +1,1446 @@
 +/*****************************************************************************
 + * video.c: video decoder using the ffmpeg library

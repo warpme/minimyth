@@ -1,6 +1,6 @@
 GARNAME = vlc
 #GARVERSION = snapshot-20091015-2228
-GARVERSION = 1.0.5
+GARVERSION = 1.0.6
 CATEGORIES = mediaplayers
 PATCHFILES  =
 ifeq ($(word 1,$(subst -, ,$(GARVERSION))),snapshot)
