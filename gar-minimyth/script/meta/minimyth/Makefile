@@ -116,27 +116,24 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythphone),myth-$(mm_MYTH_VERSION)/mythphone)) \
 	$(if $(filter mythstream,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythstream),myth-$(mm_MYTH_VERSION)/mythstream) \
-		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl-HTML-Parser \
-			perl/perl-libwww-perl \
-			perl/perl-XML-DOM \
-			perl/perl-XML-XQL)) \
+		perl/perl-HTML-Parser \
+		perl/perl-libwww-perl \
+		perl/perl-XML-DOM \
+		perl/perl-XML-XQL) \
 	$(if $(filter mythvideo,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo) \
-		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl-HTML-Parser \
-			perl/perl-libwww-perl \
-			perl/perl-URI)) \
+		perl/perl-HTML-Parser \
+		perl/perl-libwww-perl \
+		perl/perl-URI) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
-		$(if $(filter perl,$(mm_SOFTWARE)), \
-			perl/perl-Date-Manip \
-			perl/perl-Image-Size \
-			perl/perl-libwww-perl \
-			perl/perl-SOAP-Lite \
-			perl/perl-XML-Parser \
-			perl/perl-XML-SAX \
-			perl/perl-XML-Simple)) \
+		perl/perl-Date-Manip \
+		perl/perl-Image-Size \
+		perl/perl-libwww-perl \
+		perl/perl-SOAP-Lite \
+		perl/perl-XML-Parser \
+		perl/perl-XML-SAX \
+		perl/perl-XML-Simple) \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter flash,$(mm_SOFTWARE)), \
