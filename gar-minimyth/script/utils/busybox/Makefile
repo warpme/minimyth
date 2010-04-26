@@ -6,6 +6,7 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-1.16.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
+	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-dnsd.patch \
 	$(DISTNAME)-hwclock.patch \
 	$(DISTNAME)-indexcgi.patch \
