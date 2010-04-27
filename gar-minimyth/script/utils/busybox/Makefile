@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
+	$(DISTNAME)-cpio.patch \
 	$(DISTNAME)-dnsd.patch \
 	$(DISTNAME)-hwclock.patch \
 	$(DISTNAME)-indexcgi.patch \
