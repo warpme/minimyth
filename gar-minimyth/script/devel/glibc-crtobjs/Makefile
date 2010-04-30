@@ -56,7 +56,7 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
-CFLAGS := $(filter-out -O%, $(CFLAGS)) -O2
+CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 
 PARALLELMFLAGS := -j1
 
