@@ -20,6 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--disable-xml-docs \
