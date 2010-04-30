@@ -2,8 +2,10 @@ GARNAME = libva
 GARVERSION = 0.31.0
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds12.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds13.tar.gz
 PATCHFILES = \
+	030_g45_h264_decoder.patch \
+	031_g45_h264_decoder_check_disable.patch \
 	032_g45_fix_subpic_formats.patch \
 	033_g45_add_rgba_subpic.patch \
 	034_g45_fix_return_for_unimpl.patch \
@@ -13,6 +15,8 @@ PATCHFILES = \
 	038_g45_vaPutSurface_cliprects.patch \
 	039_g45_add_vaDeriveImage.patch \
 	040_g45_add_i420_image_format.patch \
+	041_g45_internals.patch \
+	042_g45_add_nv12_image_format.patch \
 	102_attribute_visibility.patch \
 	103_fix_vainfo_deps.patch \
 	104_fix_libva_pkgconfig_deps.patch \
