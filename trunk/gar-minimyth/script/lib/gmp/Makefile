@@ -1,5 +1,5 @@
 GARNAME = gmp
-GARVERSION = 5.0.1
+GARVERSION = 4.3.2
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -19,6 +19,7 @@ endif
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-cxx \
 	--enable-shared \
 	--disable-static \
 	--without-readline \
@@ -37,4 +38,5 @@ build-check:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libgmp.la
+	@rm -f $(DESTDIR)$(libdir)/libgmpxx.la
 	@$(MAKECOOKIE)
