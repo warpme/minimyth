@@ -3,7 +3,7 @@ GARVERSION = 23008.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100501.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100501.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
