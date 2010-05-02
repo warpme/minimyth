@@ -33,6 +33,9 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+# sdlmame 0.136 fails to compile with GCC 4.4.4's fgraphite-identity.
+CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
 OPTIMIZE := $(subst -O,,$(filter -O%,$(CFLAGS)))
 
 install-custom:

@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lib/ncurses lib/zlib
+DEPENDS    = lang/c lang/c++ lib/ncurses lib/zlib
 BUILDDEPS  = utils/procps
 ifneq ($(DESTIMG),build)
 BUILDDEPS += db/mysql
@@ -40,6 +40,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
+
+# mysql 5.1.46 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
+CFLAGS   := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CXXFLAGS))
 
 # Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
 # MySQL 4.1.10 breaks with strict aliasing.

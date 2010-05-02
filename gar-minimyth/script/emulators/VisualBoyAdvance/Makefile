@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libpng lib/SDL lib/zlib xorg/xorg
+DEPENDS   = lang/c++ lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -40,3 +40,6 @@ pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
+
+# VisualBoyAdvance 1.7.2 fails to compile with GCC 4.4.4's fgraphite-identity.
+CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))

@@ -23,6 +23,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# jpeg 8a fails to compile with GCC 4.4.4's fgraphite-identity.
+CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libjpeg.la
 	@$(MAKECOOKIE)

@@ -25,6 +25,9 @@ IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = devel/glibc
 DEPENDS  = lang/c lib/gmp lib/mpfr
 BUILDDEPS = devel/make devel/binutils
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+DEPENDS += lib/cloog-ppl lib/ppl
+endif
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -35,7 +38,7 @@ CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
@@ -54,9 +57,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+CONFIGURE_ARGS += \
+	--with-ppl-include=$(DESTDIR)$(includedir) \
+	--with-ppl-lib=$(DESTDIR)$(libdir) \
+	--with-cloog-include=$(DESTDIR)$(includedir) \
+	--with-cloog-lib=$(DESTDIR)$(libdir)
+endif
 # Bootstrap the native environment compiler.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-BUILD_ARGS     = \
+BUILD_ARGS      = \
 	bootstrap
 endif
 

@@ -49,6 +49,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+# mednafen 0.8.C fails to compile with GCC 4.4.4's fgraphite-identity.
+CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)

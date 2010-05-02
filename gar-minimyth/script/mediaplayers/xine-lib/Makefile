@@ -126,6 +126,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+# xine-lib 1.1.16.3 fails to compile with at least some of GCC 4.4.4's graphite support.
+CFLAGS := $(filter-out -ftree-loop-distribution, $(CFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
