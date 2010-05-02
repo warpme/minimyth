@@ -64,6 +64,9 @@ CONFIGURE_ENV = \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
+# libX11 1.2.2 fails to compile with GCC 4.4.4's fgraphite-identity.
+CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

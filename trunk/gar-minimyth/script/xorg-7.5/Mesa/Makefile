@@ -59,6 +59,9 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+# Mesa 7.7.1 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
+CFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
+
 DRI_DIRS := $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 r600 radeon savage sis swrast unichrome) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 r600 radeon savage sis swrast unichrome))

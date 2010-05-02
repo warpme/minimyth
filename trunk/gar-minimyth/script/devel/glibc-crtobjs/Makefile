@@ -55,6 +55,7 @@ INSTALL_ARGS    = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+CFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 

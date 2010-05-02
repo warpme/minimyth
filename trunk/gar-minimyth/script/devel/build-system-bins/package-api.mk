@@ -110,6 +110,7 @@ build_system_bins_gawk = \
 # Overridden by binaries from package devel/gcc.
 build_system_bins_gcc = \
 	cpp \
+	g++ \
 	gcc
 
 build_system_bins_git = \

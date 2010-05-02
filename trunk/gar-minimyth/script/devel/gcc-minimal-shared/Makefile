@@ -15,6 +15,7 @@ IMGDEPS += $(CROSSIMG)
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-crtobjs
 DEPENDS  = lang/c devel/binutils
+DEPENDS += lib/cloog-ppl lib/ppl
 endif
 DEPENDS += lib/gmp lib/mpfr
 
@@ -51,6 +52,10 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 # Avoid sysroot for minimal native compiler because linker may not have sysroot support.
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \
+	--with-ppl-include=$(DESTDIR)$(includedir) \
+	--with-ppl-lib=$(DESTDIR)$(libdir) \
+	--with-cloog-include=$(DESTDIR)$(includedir) \
+	--with-cloog-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 endif
 # Bootstrap the native environment compiler.

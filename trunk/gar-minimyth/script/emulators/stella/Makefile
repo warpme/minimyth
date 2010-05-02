@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/SDL lib/zlib xorg/xorg
+DEPENDS = lang/c++ lib/SDL lib/zlib xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -34,3 +34,6 @@ CONFIGURE_ARGS = \
 	--x-libraries="$(DESTDIR)$(libdir)"
 
 include ../../gar.mk
+
+# stell 3.1.1 fails to compile with GCC 4.4.4's fgraphite-identity.
+CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))

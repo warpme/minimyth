@@ -138,6 +138,10 @@ USE_BUILD_BIN = \
 	ln -sf $(build_DESTDIR)$(build_qt3prefix)/bin/$(strip $(1)) $(WORKSRC)/bin/$(strip $(1))
 endif
 
+# qt 4.6.2 segmentation faults when compiled with at least some of GCC 4.4.4's graphite support.
+#CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
+#CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
+
 pre-configure:
 	@$(call CREATE_PLATFORM, $(PLATFORM_GARBUILD_PATH), build_)
 	@$(call CREATE_PLATFORM, $(PLATFORM_GARHOST_PATH) ,       )
