@@ -176,7 +176,6 @@ mm_CFLAGS                 ?= $(strip \
                                  $(if $(filter c3-2        ,$(mm_GARCH)),-march=c3-2        -mtune=c3-2    -Os -mfpmath=sse) \
                                  $(if $(filter pentium-mmx ,$(mm_GARCH)),-march=pentium-mmx -mtune=generic -Os             ) \
                                  $(if $(filter x86-64      ,$(mm_GARCH)),-march=x86-64      -mtune=generic -O3 -mfpmath=sse) \
-                                 -fno-tree-vectorize                                                                         \
                                  -ftree-loop-distribution                                                                    \
                                  -floop-interchange                                                                          \
                                  -floop-strip-mine                                                                           \
