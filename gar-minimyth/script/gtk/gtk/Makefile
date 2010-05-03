@@ -1,5 +1,5 @@
 GARNAME = gtk+
-GARVERSION = 2.20.0
+GARVERSION = 2.20.1
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.20/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -61,7 +61,7 @@ endif
 
 include ../../gar.mk
 
-# gtk+ 2.20.0 fails to compile with GCC 4.4.4's fgraphite-identity.
+# gtk+ 2.20.1 fails to compile with GCC 4.4.4's fgraphite-identity.
 CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
 
 pre-configure:
