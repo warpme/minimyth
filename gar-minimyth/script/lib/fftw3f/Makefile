@@ -26,6 +26,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# fftw 3.2.2 fails to compile with GCC 4.4.4's fgraphite-identity.
+CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
