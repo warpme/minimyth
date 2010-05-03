@@ -137,7 +137,7 @@ DEPENDS = \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
 	$(if $(filter flash,$(mm_SOFTWARE)), \
-		gtk/gtk+ \
+		gtk/gtk \
 		lib/nss) \
 	$(if $(filter gnash,$(mm_SOFTWARE)), \
 		mediaplayers/gnash) \
