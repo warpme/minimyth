@@ -12,7 +12,7 @@ endef
 DEPENDS    = lang/c gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
-BUILDDEPS += gtk/gtk+
+BUILDDEPS += gtk/gtk
 endif
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure

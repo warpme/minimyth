@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++ gtk/atk gtk/glib gtk/gtk+ gtk/pango lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/libjpeg lib/libpng lib/libxml2 lib/zlib net/curl system/lirc xorg/xorg
+DEPENDS = lang/c++ gtk/atk gtk/glib gtk/gtk gtk/pango lib/agg lib/boost lib/expat lib/ffmpeg lib/fontconfig lib/freetype lib/giflib lib/libjpeg lib/libpng lib/libxml2 lib/zlib net/curl system/lirc xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
