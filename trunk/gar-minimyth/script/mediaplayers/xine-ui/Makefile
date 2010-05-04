@@ -1,9 +1,9 @@
 GARNAME = xine-ui
-GARVERSION = 0.99.5
+GARVERSION = 0.99.6
 CATEGORIES = mediaplayers
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
-DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-libpng14.patch $(DISTNAME)-duplicate_headers.patch $(DISTNAME)-fork_wait.patch $(DISTNAME)-lirc_shared.patch $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xscreensaver.patch $(DISTNAME)-xtest_disable.patch
+MASTER_SITES = http://easynews.dl.sourceforge.net/project/xine/$(GARNAME)/$(GARVERSION)/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-fork_wait.patch $(DISTNAME)-lirc.patch $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xscreensaver.patch $(DISTNAME)-xtest_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =
