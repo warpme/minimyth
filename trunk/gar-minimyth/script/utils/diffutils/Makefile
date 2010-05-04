@@ -1,9 +1,9 @@
 GARNAME = diffutils
-GARVERSION = 2.8.1
+GARVERSION = 3.0
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-LICENSE = GPL2
+LICENSE = GPL3
 
 DESCRIPTION = 
 define BLURB
@@ -16,6 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--with-gnu-ld
 
 include ../../gar.mk
