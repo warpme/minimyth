@@ -55,5 +55,5 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# x11vnc 0.9.9 fails to compile with GCC 4.4.4's graphite.
+# x11vnc 0.9.10 fails to compile with GCC 4.4.4's graphite.
 CFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
