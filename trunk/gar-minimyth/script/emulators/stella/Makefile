@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 3.1.1
+GARVERSION = 3.1.2
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -35,5 +35,5 @@ CONFIGURE_ARGS = \
 
 include ../../gar.mk
 
-# stell 3.1.1 fails to compile with GCC 4.4.4's fgraphite-identity.
+# stell 3.1.2 fails to compile with GCC 4.4.4's fgraphite-identity.
 CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))
