@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c++ lib/expat \
+DEPENDS   = lang/c lib/expat \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/glproto \
