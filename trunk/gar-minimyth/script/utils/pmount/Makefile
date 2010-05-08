@@ -1,8 +1,8 @@
 GARNAME = pmount
-GARVERSION = 0.9.20
+GARVERSION = 0.9.21
 CATEGORIES = utils
-MASTER_SITES = http://alioth.debian.org/frs/download.php/3127/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://alioth.debian.org/frs/download.php/3278/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
