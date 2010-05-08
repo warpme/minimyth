@@ -1,5 +1,5 @@
 GARNAME = libusb
-GARVERSION = 1.0.7
+GARVERSION = 1.0.8
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
