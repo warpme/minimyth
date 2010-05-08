@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 23008.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23053.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100501.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100507.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -44,7 +44,7 @@ CONFIGURE_ARGS = \
 	--enable-avformat \
 	--enable-swscale \
 	--enable-postproc \
-	--disable-avfilter \
+	--enable-avfilter \
 	--disable-avfilter-lavf \
 	--disable-beosthreads \
 	--disable-os2threads \
@@ -113,6 +113,7 @@ CONFIGURE_ARGS = \
 	--sysinclude="$(DESTDIR)$(includedir)" \
 	--target-os="linux" \
 	--nm="$(NM)" \
+	--ar="$(AR)" \
 	--as="$(AS)" \
 	--cc="$(CC)" \
 	--ld="$(CC)" \
@@ -227,9 +228,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=23000
-FFMPEG_MT_VERSION_THREAD=d8014c67ff1ef20ca05302dea9e262a3089d996e
-FFMPEG_MT_VERSION_DATE=20100501
+FFMPEG_MT_VERSION_NORMAL=23040
+FFMPEG_MT_VERSION_THREAD=6abde3d9e6ccfb062c6f547334171665386b0d85
+FFMPEG_MT_VERSION_DATE=20100507
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
