@@ -7,6 +7,7 @@ MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-linux_2_6_32.patch \
+	$(DISTNAME)-linux_2_6_33.patch \
 	$(DISTNAME)-lirc_mceusb_device_0bda_0161.patch \
 	$(DISTNAME)-lirc_mceusb_device_105a_2000.patch \
 	$(DISTNAME)-uinput_key_fix.patch \

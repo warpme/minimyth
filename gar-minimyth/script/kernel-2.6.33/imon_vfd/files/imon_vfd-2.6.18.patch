@@ -1,0 +1,39 @@
+diff -Naur imon-old/imon_vfd.c imon-new/imon_vfd.c
+--- imon-old/imon_vfd.c	2005-03-17 14:46:24.000000000 -0800
++++ imon-new/imon_vfd.c	2006-12-08 21:43:57.000000000 -0800
+@@ -31,7 +31,7 @@
+ #define KERNEL_2_5
+ #endif
+ 
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ 
+ #include <linux/errno.h>
+ #include <linux/init.h>
+@@ -40,7 +40,7 @@
+ #include <linux/slab.h>
+ #include <asm/uaccess.h>
+ #include <linux/usb.h>
+-#include <linux/devfs_fs_kernel.h>
++//#include <linux/devfs_fs_kernel.h>
+ 
+ #define MOD_AUTHOR	"Venky Raju <dev@venky.ws>"
+ #define MOD_DESC	"Driver for Soundgraph iMON VFD"
+@@ -144,7 +144,9 @@
+ 
+ /* USB Device data */
+ static struct usb_driver imon_driver = {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,16)
+ 	.owner 		= THIS_MODULE,
++#endif
+ 	.name 		= MOD_NAME,
+ 	.probe 		= imon_probe,
+ 	.disconnect 	= imon_disconnect,
+@@ -159,7 +161,6 @@
+ static struct usb_class_driver imon_class = {
+ 	.name 		= DEVFS_NAME,
+ 	.fops		= &vfd_fops,
+-	.mode		= DEVFS_MODE,
+ 	.minor_base	= VFD_MINOR_BASE,
+ };
+ #endif
