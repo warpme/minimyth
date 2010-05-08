@@ -17,7 +17,7 @@ $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-crtobjs
 DEPENDS  = lang/c devel/binutils
 DEPENDS += lib/cloog-ppl lib/ppl
 endif
-DEPENDS += lib/gmp lib/mpfr
+DEPENDS += lib/gmp lib/libelf lib/mpc lib/mpfr
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -45,6 +45,10 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-shared \
 	--enable-threads=no \
 	--enable-version-specific-runtime-libs \
+	--with-libelf-include=$(DESTDIR)$(includedir) \
+	--with-libelf-lib=$(DESTDIR)$(libdir) \
+	--with-mpc-include=$(DESTDIR)$(includedir) \
+	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
