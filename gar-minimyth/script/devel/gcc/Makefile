@@ -23,11 +23,11 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = devel/glibc
-DEPENDS  = lang/c lib/gmp lib/mpfr
-BUILDDEPS = devel/make devel/binutils
+DEPENDS  = lang/c lib/gmp lib/libelf lib/mpc lib/mpfr
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 DEPENDS += lib/cloog-ppl lib/ppl
 endif
+BUILDDEPS = devel/make devel/binutils
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -52,6 +52,10 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-shared \
 	--enable-threads=posix \
 	--enable-version-specific-runtime-libs \
+	--with-libelf-include=$(DESTDIR)$(includedir) \
+	--with-libelf-lib=$(DESTDIR)$(libdir) \
+	--with-mpc-include=$(DESTDIR)$(includedir) \
+	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
