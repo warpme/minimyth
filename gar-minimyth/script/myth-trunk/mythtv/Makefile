@@ -115,7 +115,7 @@ CONFIGURE_ARGS = \
 	--enable-xv \
 	--enable-xvmc \
 	--enable-xvmcw \
-	--enable-xvmc-pro \
+	--enable-xvmc-vld \
 	--enable-vdpau \
 	--xvmc-lib=XvMCW \
 	--enable-opengl-video \
