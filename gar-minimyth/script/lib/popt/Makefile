@@ -1,5 +1,5 @@
 GARNAME = popt
-GARVERSION = 1.15
+GARVERSION = 1.16
 CATEGORIES = lib
 MASTER_SITES = http://rpm5.org/files/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
