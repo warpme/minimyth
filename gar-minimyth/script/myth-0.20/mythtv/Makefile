@@ -39,7 +39,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	lang/c++ \
+	lang/cxx \
 	db/mysql \
 	lib/alsa-lib \
 	lib/faad2 \

@@ -9,7 +9,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	lang/c++ \
+	lang/cxx \
 	$(CATEGORY)/mythtv \
 	lib/faad2 \
 	lib/flac \

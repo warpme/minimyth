@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++
+DEPENDS = lang/cxx
 
 BUILD_SCRIPTS     = $(WORKSRC)/make/linux/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/make/linux/Makefile

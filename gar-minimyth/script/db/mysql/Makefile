@@ -14,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/c++ lib/ncurses lib/zlib
+DEPENDS    = lang/c lang/cxx lib/ncurses lib/zlib
 BUILDDEPS  = utils/procps
 ifneq ($(DESTIMG),build)
 BUILDDEPS += db/mysql

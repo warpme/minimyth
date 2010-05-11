@@ -9,7 +9,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	lang/c++ \
+	lang/cxx \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))

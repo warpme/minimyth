@@ -1,4 +1,4 @@
-GARNAME = c++
+GARNAME = cxx
 GARVERSION = none
 CATEGORIES = lang
 
@@ -6,12 +6,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libstdc++
-BUILDDEPS = lang/c++
+DEPENDS   = lang/c lib/libstdcxx
+BUILDDEPS = lang/cxx
 
 include ../../gar.mk
 
-$(DESTIMG)_NODEPEND += lang/c++
+$(DESTIMG)_NODEPEND += lang/cxx
 export $(DESTIMG)_NODEPEND
 
 post-install:

@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++ lib/libebml
+DEPENDS = lang/cxx lib/libebml
 
 BUILD_SCRIPTS     = $(WORKSRC)/make/linux/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/make/linux/Makefile
