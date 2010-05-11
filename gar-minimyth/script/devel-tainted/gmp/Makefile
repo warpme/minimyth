@@ -1,15 +1,14 @@
 GARNAME = gmp
-GARVERSION = 4.3.2
-CATEGORIES = lib
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
+GARVERSION = $(GMP_VERSION)
+CATEGORIES = devel-tainted
+SOURCEPKG = devel/gmp
 LICENSE = GPL3/LGPL3
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c
+BUILDDEPS = devel-tainted/make
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
@@ -19,13 +18,19 @@ endif
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--enable-cxx \
+	--disable-cxx \
 	--enable-shared \
 	--disable-static \
 	--without-readline \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += devel/gmp/package-api.mk
 include ../../gar.mk
+
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
@@ -38,5 +43,4 @@ build-check:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libgmp.la
-	@rm -f $(DESTDIR)$(libdir)/libgmpxx.la
 	@$(MAKECOOKIE)

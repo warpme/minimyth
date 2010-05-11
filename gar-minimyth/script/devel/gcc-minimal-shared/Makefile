@@ -15,9 +15,10 @@ IMGDEPS += $(CROSSIMG)
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 $(CROSSIMG)_DEPENDS = kernel-headers/linux-headers devel/glibc-crtobjs
 DEPENDS  = lang/c devel/binutils
-DEPENDS += lib/cloog-ppl lib/ppl
+else
+DEPENDS  =
 endif
-DEPENDS += lib/gmp lib/libelf lib/mpc lib/mpfr
+DEPENDS += devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -42,26 +43,23 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libssp \
 	--disable-multilib \
 	--disable-nls \
+	--disable-decimal-float \
 	--enable-shared \
 	--enable-threads=no \
 	--enable-version-specific-runtime-libs \
 	--with-libelf-include=$(DESTDIR)$(includedir) \
 	--with-libelf-lib=$(DESTDIR)$(libdir) \
+	--with-ppl-include=$(DESTDIR)$(includedir) \
+	--with-ppl-lib=$(DESTDIR)$(libdir) \
+	--with-cloog-include=$(DESTDIR)$(includedir) \
+	--with-cloog-lib=$(DESTDIR)$(libdir) \
 	--with-mpc-include=$(DESTDIR)$(includedir) \
 	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
-	--with-gmp-lib=$(DESTDIR)$(libdir)
-# Avoid sysroot for minimal native compiler because linker may not have sysroot support.
-ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-CONFIGURE_ARGS += \
-	--with-ppl-include=$(DESTDIR)$(includedir) \
-	--with-ppl-lib=$(DESTDIR)$(libdir) \
-	--with-cloog-include=$(DESTDIR)$(includedir) \
-	--with-cloog-lib=$(DESTDIR)$(libdir) \
+	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-endif
 # Bootstrap the native environment compiler.
 ifeq  ("$(DESTIMG)+$(CROSSIMG)","build+build")
 BUILD_ARGS      = \

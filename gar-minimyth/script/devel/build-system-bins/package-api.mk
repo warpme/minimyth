@@ -110,7 +110,6 @@ build_system_bins_gawk = \
 # Overridden by binaries from package devel/gcc.
 build_system_bins_gcc = \
 	cpp \
-	g++ \
 	gcc
 
 build_system_bins_git = \
@@ -129,7 +128,8 @@ build_system_bins_grep = \
 
 # Overridden by binaries from package utils/gzip.
 build_system_bins_gzip = \
-	gzip
+	gzip \
+	gunzip \
 
 # Overridden by binaries from package utils/m4.
 build_system_bins_m4 = \

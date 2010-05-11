@@ -1,15 +1,15 @@
 GARNAME = mpfr
-GARVERSION = 2.4.2
-CATEGORIES = lib
-MASTER_SITES = http://www.mpfr.org/mpfr-current/
-DISTFILES = $(DISTNAME).tar.bz2
+GARVERSION = $(MPFR_VERSION)
+CATEGORIES = devel-tainted
+SOURCEPKG = devel/mpfr
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lib/gmp
+DEPENDS   = devel-tainted/gmp
+BUILDDEPS = devel-tainted/make
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -22,7 +22,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += devel/mpfr/package-api.mk
 include ../../gar.mk
+
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

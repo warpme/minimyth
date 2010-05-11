@@ -1,6 +1,6 @@
 GARNAME = cloog-ppl
 GARVERSION = 0.15.9
-CATEGORIES = lib
+CATEGORIES = devel
 MASTER_SITES = ftp://gcc.gnu.org/pub/gcc/infrastructure/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL3/LGPL3
@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/gmp lib/ppl
+DEPENDS   = lang/c++ devel/gmp devel/ppl
+BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile

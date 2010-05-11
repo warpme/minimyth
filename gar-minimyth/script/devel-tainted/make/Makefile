@@ -1,20 +1,12 @@
 GARNAME = make
 GARVERSION = $(MAKE_VERSION)
-CATEGORIES = devel
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-library_search.patch
-ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-PATCHFILES += $(DISTNAME)-perl.patch.gar
-endif
+CATEGORIES = devel-tainted
+SOURCEPKG = devel/make
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
-
-DEPENDS   = lang/c
-BUILDDEPS = devel-tainted/devel-tainted
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -23,4 +15,10 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath
 
+GAR_EXTRA_CONF += devel/make/package-api.mk
 include ../../gar.mk
+
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
