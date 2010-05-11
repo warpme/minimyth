@@ -9,8 +9,6 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
-
 WORKSRC = $(WORKDIR)/nouveau
 
 INSTALL_SCRIPTS = custom
