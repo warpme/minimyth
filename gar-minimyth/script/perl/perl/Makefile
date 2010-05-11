@@ -16,7 +16,7 @@ define BLURB
 endef
 
 DEPENDS    = lang/c
-BUILDDEPS  =
+BUILDDEPS  = utils/bash
 ifneq ($(DESTIMG),build)
 BUILDDEPS += perl/perl
 endif
