@@ -1,15 +1,16 @@
-GARNAME = mpc
-GARVERSION = 0.8.1
-CATEGORIES = lib
-MASTER_SITES = http://www.multiprecision.org/mpc/download/
-DISTFILES = $(DISTNAME).tar.gz
-LICENSE = LGPL2_1
+GARNAME = mpfr
+GARVERSION = $(MPFR_VERSION)
+CATEGORIES = devel
+MASTER_SITES = http://www.mpfr.org/mpfr-current/
+DISTFILES = $(DISTNAME).tar.bz2
+LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lib/gmp lib/mpfr
+DEPENDS   = lang/c devel/gmp
+BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -18,8 +19,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--with-mpfr-include=$(DESTDIR)$(includedir) \
-	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--with-gnu-ld
@@ -31,5 +30,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libmpc.la
+	@rm -f $(DESTDIR)$(libdir)/libmpfr.la
 	@$(MAKECOOKIE)

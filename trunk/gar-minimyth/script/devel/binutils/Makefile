@@ -18,13 +18,8 @@ endef
 CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
-DEPENDS = lang/c lib/gmp lib/mpfr
-ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-# If the build system's binutils version is not older than our binutils version,
-# then build a minimal gcc before binutils,
-# since the build system's gcc may depend on features in the build system's newer binutils.
-BUILDDEPS  = $(if $(filter $(BINUTILS_BUILD_UP_TO_DATE),yes),devel/gcc-minimal-shared)
-endif
+DEPENDS  = lang/c devel/gmp devel/mpfr
+BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d

@@ -1,6 +1,6 @@
 GARNAME = ppl
 GARVERSION = 0.10.2
-CATEGORIES = lib
+CATEGORIES = devel
 MASTER_SITES = http://www.cs.unipr.it/ppl/Download/ftp/releases/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL3
@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/gmp
+DEPENDS   = lang/c++ devel/gmp
+BUILDDEPS = devel-tainted/devel-tainted devel/make perl/perl
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile

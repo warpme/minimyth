@@ -1,17 +1,7 @@
 GARNAME = gcc
 GARVERSION = $(GCC_VERSION)
-CATEGORIES = devel
-MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)/
-MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
-MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
-MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-disable_multilib_i386_linux64.patch
-ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-PATCHFILES += $(DISTNAME)-perl.patch.gar
-PATCHFILES += $(DISTNAME)-dynamic_linker.patch
-PATCHFILES += $(DISTNAME)-libstdc++-v3_config.patch
-endif
+CATEGORIES = devel-tainted
+SOURCEPKG = devel/gcc
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
@@ -21,10 +11,11 @@ endef
 CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
-IMGDEPS += $(CROSSIMG)
-$(CROSSIMG)_DEPENDS = devel/glibc
-DEPENDS   = lang/c devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
-BUILDDEPS = devel/make devel/binutils
+ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
+endif
+
+DEPENDS   = devel-tainted/binutils devel-tainted/gmp devel-tainted/mpc devel-tainted/mpfr
+BUILDDEPS = devel-tainted/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -36,41 +27,32 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
-	--with-gnu-as \
-	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
 	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c,c++ \
-	--enable-libgomp \
+	--disable-decimal-float \
+	--disable-libgomp \
 	--disable-libmudflap \
-	--enable-libssp \
+	--disable-libssp \
 	--disable-multilib \
-	--enable-nls \
-	--enable-decimal-float \
+	--disable-nls \
 	--enable-shared \
-	--enable-threads=posix \
+	--enable-threads=no \
 	--enable-version-specific-runtime-libs \
-	--with-libelf-include=$(DESTDIR)$(includedir) \
-	--with-libelf-lib=$(DESTDIR)$(libdir) \
 	--with-mpc-include=$(DESTDIR)$(includedir) \
 	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
-	--with-ppl-include=$(DESTDIR)$(includedir) \
-	--with-ppl-lib=$(DESTDIR)$(libdir) \
-	--with-cloog-include=$(DESTDIR)$(includedir) \
-	--with-cloog-lib=$(DESTDIR)$(libdir) \
+	--without-ppl \
+	--without-cloog \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-# Bootstrap the native environment compiler.
-ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 BUILD_ARGS      = \
 	bootstrap
-endif
 
-GAR_EXTRA_CONF += devel/glibc/package-api.mk
+GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk
 
 CPPFLAGS :=
@@ -84,21 +66,9 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(CROSS_GCC_LIBDIR)/libgomp.la
-	@rm -f $(CROSS_GCC_LIBDIR)/libssp.la
-	@rm -f $(CROSS_GCC_LIBDIR)/libssp_nonshared.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
-	@# Native compile.
-	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
-		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
-	)
-	@# Cross compile.
-	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
-		mkdir -p $(DESTDIR)$(prefix)/$(GARHOST)/bin ; \
-		cp $(DESTDIR)$(bindir)/$(GARTARGET)-cpp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cpp ; \
-		cp $(DESTDIR)$(bindir)/$(GARTARGET)-gcc $(DESTDIR)$(prefix)/$(GARTARGET)/bin/cc ; \
-	)
+	@ln -sf gcc $(DESTDIR)$(bindir)/cc
 	@mkdir -p $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir)
 	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgcc.a        ),cp -af $(file) $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir) ; )
 	@$(foreach file,$(wildcard $(CROSS_GCC_LIBDIR)/libgcc_s.so     ),cp -af $(file) $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_elibdir) ; )
