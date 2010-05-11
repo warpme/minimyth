@@ -1,10 +1,10 @@
 GARNAME = pmount
-GARVERSION = 0.9.21
+GARVERSION = 0.9.22
 CATEGORIES = utils
-MASTER_SITES = http://alioth.debian.org/frs/download.php/3278/
+MASTER_SITES = http://alioth.debian.org/frs/download.php/3293/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-install.patch
-LICENSE = GPL2
+LICENSE = GPL3
 
 DESCRIPTION = 
 define BLURB
