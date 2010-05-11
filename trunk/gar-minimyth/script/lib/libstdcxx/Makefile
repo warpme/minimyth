@@ -1,4 +1,4 @@
-GARNAME = libstdc++
+GARNAME = libstdcxx
 GARVERSION = $(GCC_VERSION)
 CATEGORIES = lib
 LICENSE = LGPL2_1
@@ -7,7 +7,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c++
+DEPENDS = lang/cxx
 
 BUILD_SCRIPTS = custom
 

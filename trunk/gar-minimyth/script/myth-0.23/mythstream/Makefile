@@ -19,7 +19,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	lang/c++ \
+	lang/cxx \
 	$(CATEGORY)/mythtv \
 	lib/fftw3f
 

@@ -9,7 +9,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	lang/c++ \
+	lang/cxx \
 	db/mysql \
 	$(CATEGORY)/mythtv
 

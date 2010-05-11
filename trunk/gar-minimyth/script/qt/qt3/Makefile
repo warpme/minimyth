@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/c++ lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql lib/freetype lib/fontconfig xorg/xorg
+DEPENDS    = lang/c lang/cxx lib/libjpeg lib/libmng lib/libpng lib/zlib db/mysql lib/freetype lib/fontconfig xorg/xorg
 BUILDDEPS  = devel/bison devel/flex
 ifneq ($(DESTIMG),build)
 BUILDDEPS += qt/qt3

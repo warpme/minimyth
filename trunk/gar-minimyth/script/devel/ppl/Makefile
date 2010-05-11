@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c++ devel/gmp
+DEPENDS   = lang/cxx devel/gmp
 BUILDDEPS = devel-tainted/devel-tainted devel/make perl/perl
 
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure

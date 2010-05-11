@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c++ lib/libpng lib/SDL lib/zlib xorg/xorg
+DEPENDS   = lang/cxx lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
