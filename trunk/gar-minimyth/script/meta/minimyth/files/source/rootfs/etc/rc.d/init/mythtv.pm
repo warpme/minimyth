@@ -193,15 +193,51 @@ sub start
     # Delete disabled plugins.
     if ($minimyth->var_get('MM_PLUGIN_INFORMATION_CENTER_ENABLED') eq 'no')
     {
-        $minimyth->file_replace_variable(
-            '/usr/share/mythtv/mainmenu.xml',
-            { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^20$/)
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/mainmenu.xml',
+                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
+            }
+            when (/^21$/)
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/mainmenu.xml',
+                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
+            }
+            default
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
+                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
+            }
+        }
     }
     if ($minimyth->var_get('MM_PLUGIN_OPTICAL_DISK_ENABLED') eq 'no')
     {
-        $minimyth->file_replace_variable(
-            '/usr/share/mythtv/mainmenu.xml',
-            { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^20$/)
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/mainmenu.xml',
+                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
+            }
+            when (/^21$/)
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/mainmenu.xml',
+                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
+            }
+            default
+            {
+                $minimyth->file_replace_variable(
+                    '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
+                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
+            }
+        }
     }
     my %plugin_remove = ();
     given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
