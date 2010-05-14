@@ -179,7 +179,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 include ../../gar.mk
 
 pre-everything:
-	@#$(MAKE) -f files/check.mk DESTIMG=$(DESTIMG)
+	@$(MAKE) -f files/check.mk DESTIMG=$(DESTIMG)
 	@# There is no MAKECOOKIE so that this runs every time.
 
 $(DOWNLOADDIR)/$(DISTNAME).tar.bz2:
