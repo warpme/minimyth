@@ -102,13 +102,9 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
-# mysql 5.1.46 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
+# qt 4.6.2 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
 CFLAGS   := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
 CXXFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CXXFLAGS))
-
-# qt 4.6.2 segmentation faults when compiled with at least some of GCC 4.4.4's graphite support.
-#CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
-#CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
 PLATFORM_GARBUILD_BASE_NAME = $(strip \
 	$(if $(filter i386,$(build_GARCH_FAMILY)),linux-g++-32,) \

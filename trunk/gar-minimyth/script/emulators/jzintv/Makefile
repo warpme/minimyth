@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/SDL
+DEPENDS = lang/c lang/cxx lib/SDL
 
 BUILD_SCRIPTS   = $(WORKSRC)/src/Makefile
 INSTALL_SCRIPTS = custom
@@ -22,6 +22,13 @@ BUILD_ENV = \
 	CFLAGS_FOR_BUILD="$(build_CXXFLAGS)"
 
 include ../../gar.mk
+
+CFLAGS   += -lm
+CXXFLAGS += -lm
+
+# jzintv 1.0-beta3 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)

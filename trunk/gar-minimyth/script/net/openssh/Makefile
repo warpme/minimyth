@@ -32,9 +32,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-#CPPFLAGS   += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
-#CFLAGS     += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
-#CXXFLAGS   += -DX_UNIX_PATH=\\\"@/tmp/.X11-unix/X%u\\\"
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 
 LD         := $(CC)
 LDFLAGS    := $(CFLAGS)

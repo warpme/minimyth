@@ -161,6 +161,7 @@ GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
 # ffmpeg 22956 fails to compile with GCC 4.4.4's fgraphite-identity.
+# However, it compiles with GCC 4.5.0.
 CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
 
 svn//%/$(DISTNAME).tar.bz2:

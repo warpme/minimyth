@@ -1,6 +1,6 @@
 GARNAME = libelf
 GARVERSION = 0.8.13
-CATEGORIES = lib
+CATEGORIES = devel
 MASTER_SITES = http://www.mr511.de/software/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = LGPL2
@@ -10,17 +10,14 @@ define BLURB
 endef
 
 DEPENDS   = lang/c
-BUILDDEPS = devel-tainted/devel-tainted devel/binutils devel/make
+BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
-ifeq ("$(DESTIMG)","build")
-CONFIGURE_ARGS += \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-nls
-endif
 
 include ../../gar.mk
 

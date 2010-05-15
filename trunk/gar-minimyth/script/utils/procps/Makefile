@@ -38,3 +38,6 @@ man8         := $(mandir)/man8/
 lib          := $(elibdir)/
 usr/lib      := $(libdir)/
 usr/include  := $(includedir)/
+
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))

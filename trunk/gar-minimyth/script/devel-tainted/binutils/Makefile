@@ -14,7 +14,7 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 endif
 
-DEPENDS   = devel-tainted/gmp devel-tainted/mpfr
+DEPENDS   =
 BUILDDEPS = devel-tainted/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -25,13 +25,20 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+	--disable-plugins \
+	--disable-libada \
+	--disable-libssp \
+	--disable-lto \
 	--disable-werror \
-	--disable-nls \
 	--disable-multilib \
-	--with-mpfr-include=$(DESTDIR)$(includedir) \
-	--with-mpfr-lib=$(DESTDIR)$(libdir) \
-	--with-gmp-include=$(DESTDIR)$(includedir) \
-	--with-gmp-lib=$(DESTDIR)$(libdir) \
+	--disable-nls \
+	--enable-version-specific-runtime-libs \
+	--without-mpc \
+	--without-mpfr \
+	--without-gmp \
+	--without-ppl \
+	--without-cloog \
+	--without-libelf \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR) \
 	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):$(strip $(if $(filter i386,$(GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))"
 

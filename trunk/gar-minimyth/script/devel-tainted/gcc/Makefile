@@ -27,13 +27,17 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+	--with-gnu-as \
+	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
+	--enable-plugin \
 	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c,c++ \
 	--disable-decimal-float \
 	--disable-libgomp \
 	--disable-libmudflap \
+	--disable-libada \
 	--disable-libssp \
 	--disable-multilib \
 	--disable-nls \
@@ -48,9 +52,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
 	--without-ppl \
 	--without-cloog \
+	--without-libelf \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-BUILD_ARGS      = \
-	bootstrap
 
 GAR_EXTRA_CONF += devel/gcc/package-api.mk
 include ../../gar.mk

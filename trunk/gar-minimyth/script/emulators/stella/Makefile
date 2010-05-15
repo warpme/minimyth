@@ -36,4 +36,5 @@ CONFIGURE_ARGS = \
 include ../../gar.mk
 
 # stell 3.1.2 fails to compile with GCC 4.4.4's fgraphite-identity.
+# However, it compiles with GCC 4.5.0.
 CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))
