@@ -265,6 +265,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
 	--extra-cflags="-I$(DESTDIR)$(includedir)" \
+	--extra-ldflags="-lva -lXext -lX11" \
 	--with-xvmclib=XvMCW
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \

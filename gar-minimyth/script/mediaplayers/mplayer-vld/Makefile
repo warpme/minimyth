@@ -222,6 +222,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-crash-debug \
 	--disable-dynamic-plugins
 CONFIGURE_ARGS_WITH = \
+	--extra-libs="-lXext -lX11" \
 	--with-xvmclib=XvMCW
 CONFIGURE_ARGS = \
 	$(CONFIGURE_ARGS_DIR) \

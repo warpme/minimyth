@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c lang/cxx
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -36,6 +36,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+# libcdio 0.82 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force

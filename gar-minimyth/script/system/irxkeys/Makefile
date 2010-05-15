@@ -20,7 +20,7 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-LDFLAGS := -lXtst -llirc_client $(LDFLAGS)
+LDFLAGS := -lX11 -lXtst -llirc_client $(LDFLAGS)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)

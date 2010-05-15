@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
+DEPENDS    = lang/c lang/cxx gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/gtk
@@ -62,7 +62,12 @@ endif
 include ../../gar.mk
 
 # gtk+ 2.20.1 fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+# However, it compiles with GCC 4.5.0.
+#CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+
+# gtk+ 2.20.1 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)

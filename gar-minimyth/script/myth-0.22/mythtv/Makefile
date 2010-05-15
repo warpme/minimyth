@@ -8,6 +8,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-ticket-7063-20091202.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
+	$(DISTNAME_SHORT)-dvdnav_ldl.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-gcc_4.5.0.patch \
@@ -132,9 +133,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
-
-# mythtv (libavcodec) 0.22 fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))

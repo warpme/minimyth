@@ -18,7 +18,7 @@ endef
 CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
-DEPENDS  = lang/c devel/gmp devel/mpfr
+DEPENDS  = lang/c devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
 BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -29,11 +29,27 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
+	--enable-plugins \
+	--enable-gold=both/ld \
+	--disable-libada \
+	--disable-libssp \
+	--enable-lto \
+	--enable-werror \
 	--disable-multilib \
+	--enable-nls \
+	--enable-version-specific-runtime-libs \
+	--with-mpc-include=$(DESTDIR)$(includedir) \
+	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
+	--with-ppl-include=$(DESTDIR)$(includedir) \
+	--with-ppl-lib=$(DESTDIR)$(libdir) \
+	--with-cloog-include=$(DESTDIR)$(includedir) \
+	--with-cloog-lib=$(DESTDIR)$(libdir) \
+	--with-libelf-include=$(DESTDIR)$(includedir) \
+	--with-libelf-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 # I do not know what '=' does at the beginning of the path name. However, the correct libraries are not found without it.
 # For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.

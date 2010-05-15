@@ -19,7 +19,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS = lang/c lang/cxx \
 	lib/a52dec \
 	lib/alsa-lib \
 	lib/faad2 \
@@ -238,6 +238,10 @@ CONFIGURE_ARGS += \
 endif
 
 include ../../gar.mk
+
+# vlc 1.0.6 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 # Ignored when the vaapi patch is not applied.
 CPPFLAGS += -DHAVE_AVCODEC_VAAPI

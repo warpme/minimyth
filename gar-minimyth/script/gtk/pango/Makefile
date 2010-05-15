@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/cairo gtk/glib lib/freetype xorg/xorg
+DEPENDS = lang/c lang/cxx gtk/cairo gtk/glib lib/freetype xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -31,6 +31,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x
 
 include ../../gar.mk
+
+# pango 1.28.0 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)

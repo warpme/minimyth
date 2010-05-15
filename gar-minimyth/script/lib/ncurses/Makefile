@@ -39,6 +39,9 @@ endif
 
 include ../../gar.mk
 
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+
 post-install:
 	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
 	@rm -f $(DESTDIR)$(bindir)-config/ncurses5-config

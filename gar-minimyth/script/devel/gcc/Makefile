@@ -39,20 +39,22 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-local-prefix=$(patsubst %/include,%,$($(CROSSIMG)_includedir)) \
+	--enable-plugin \
 	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c,c++ \
 	--enable-libgomp \
 	--disable-libmudflap \
-	--enable-libssp \
+	--enable-gold \
+	--disable-libada \
+	--disable-libssp \
+	--enable-lto \
 	--disable-multilib \
 	--enable-nls \
 	--enable-decimal-float \
 	--enable-shared \
 	--enable-threads=posix \
 	--enable-version-specific-runtime-libs \
-	--with-libelf-include=$(DESTDIR)$(includedir) \
-	--with-libelf-lib=$(DESTDIR)$(libdir) \
 	--with-mpc-include=$(DESTDIR)$(includedir) \
 	--with-mpc-lib=$(DESTDIR)$(libdir) \
 	--with-mpfr-include=$(DESTDIR)$(includedir) \
@@ -63,12 +65,9 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-ppl-lib=$(DESTDIR)$(libdir) \
 	--with-cloog-include=$(DESTDIR)$(includedir) \
 	--with-cloog-lib=$(DESTDIR)$(libdir) \
+	--with-libelf-include=$(DESTDIR)$(includedir) \
+	--with-libelf-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
-# Bootstrap the native environment compiler.
-ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
-BUILD_ARGS      = \
-	bootstrap
-endif
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk

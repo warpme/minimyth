@@ -4,7 +4,7 @@ CATEGORIES = utils
 #MASTER_SITES = http://abstrakraft.org/cwiid/downloads/
 MASTER_SITES = svn://abstrakraft.org/cwiid/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libm.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch
+PATCHFILES = $(DISTNAME)-ldlibs.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -22,9 +22,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ldconfig
 
 include ../../gar.mk
-
-# -Wl,--as-needed does not work when compiling wmgui.
-LDFLAGS :=
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))

@@ -10,16 +10,22 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib
+DEPENDS = lang/c lang/cxx lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+# taglib 1.6.3 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

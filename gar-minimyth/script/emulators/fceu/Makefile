@@ -29,6 +29,8 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+CFLAGS += -lm
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(MAKECOOKIE)

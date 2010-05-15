@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libpng lib/SDL lib/zlib xorg/xorg
+DEPENDS   = lang/c lang/cxx lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
 WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))
@@ -44,6 +44,10 @@ CONFIGURE_ENV = \
 	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
 
 include ../../gar.mk
+
+# zsnes 151 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal

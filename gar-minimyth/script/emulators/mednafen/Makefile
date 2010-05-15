@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
+DEPENDS = lang/c lang/cxx lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
 
 WORKSRC = $(WORKDIR)/$(GARNAME)
 
@@ -50,7 +50,13 @@ CONFIGURE_ENV = \
 include ../../gar.mk
 
 # mednafen 0.8.C fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
+# However, it compiles with GCC 4.5.0.
+CFLAGS   := $(filter-out -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))
+
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/cxx lib/libpng lib/SDL lib/zlib xorg/xorg
+DEPENDS   = lang/c lang/cxx lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -36,10 +36,16 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+# VisualBoyAdvance 1.7.2 fails to compile with GCC 4.4.4's fgraphite-identity.
+# However, it compiles with GCC 4.5.0.
+CFLAGS   := $(filter-out -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))
+
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
-
-# VisualBoyAdvance 1.7.2 fails to compile with GCC 4.4.4's fgraphite-identity.
-CXXFLAGS := $(filter-out -fgraphite-identity, $(CXXFLAGS))

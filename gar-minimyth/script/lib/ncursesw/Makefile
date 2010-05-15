@@ -35,6 +35,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += lib/ncurses/package-api.mk
 include ../../gar.mk
 
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+
 post-install:
 	@rm -f $(DESTDIR)$(bindir)-config/ncursesw5-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncursesw5-config

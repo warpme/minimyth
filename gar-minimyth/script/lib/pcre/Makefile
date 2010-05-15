@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c
+DEPENDS   = lang/c lang/cxx
 ifneq ($(DESTIMG),build)
 BUILDDEPS = lib/pcre
 endif
@@ -33,6 +33,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+# pcre 8.02 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

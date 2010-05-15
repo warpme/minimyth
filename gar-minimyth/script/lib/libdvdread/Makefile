@@ -21,6 +21,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# libdvdread 1191 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
