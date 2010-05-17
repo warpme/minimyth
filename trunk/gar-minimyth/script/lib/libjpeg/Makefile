@@ -1,5 +1,5 @@
 GARNAME = jpeg
-GARVERSION = 8a
+GARVERSION = 8b
 CATEGORIES = lib
 MASTER_SITES = http://www.ijg.org/files/
 DISTFILES = jpegsrc.v$(GARVERSION).tar.gz
