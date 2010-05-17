@@ -143,7 +143,6 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-twolame \
 	--disable-xmms \
 	--enable-mp3lib \
-	--disable-liba52-internal \
 	--enable-libmpeg2 \
 	--disable-musepack \
 	--disable-libopencore_amrnb \
