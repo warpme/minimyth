@@ -1,6 +1,6 @@
-diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24571-new/programs/mythfrontend/main.cpp
---- mythtv-trunk-24571-old/programs/mythfrontend/main.cpp	2010-05-11 16:08:54.000000000 -0700
-+++ mythtv-trunk-24571-new/programs/mythfrontend/main.cpp	2010-05-11 16:08:55.000000000 -0700
+diff -Naur mythtv-trunk-24715-old/programs/mythfrontend/main.cpp mythtv-trunk-24715-new/programs/mythfrontend/main.cpp
+--- mythtv-trunk-24715-old/programs/mythfrontend/main.cpp	2010-05-17 09:45:56.000000000 -0700
++++ mythtv-trunk-24715-new/programs/mythfrontend/main.cpp	2010-05-17 09:45:57.000000000 -0700
 @@ -1,10 +1,13 @@
  
  #include <unistd.h>
@@ -15,7 +15,7 @@ diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24
  #include <iostream>
  using namespace std;
  
-@@ -1477,15 +1480,71 @@
+@@ -1433,15 +1436,71 @@
          mainWindow->installEventFilter(mon);
      }
  
@@ -24,7 +24,7 @@ diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24
 +    QList<NetworkControl *> networkControls;
      NetworkControl *networkControl = NULL;
 +    QHostAddress networkAddress;
-+    int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
++    int networkPort = gCoreContext->GetNumSetting("NetworkControlPort", 6545);
 +    // Loopback address.
 +    networkAddress.setAddress("127.0.0.1");
 +    networkControl = new NetworkControl();
@@ -34,9 +34,9 @@ diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24
 +                .arg(networkPort).arg(networkAddress.toString()));
 +    networkControls.append(networkControl);
 +    // Non-loopback address(es).
-     if (gContext->GetNumSetting("NetworkControlEnabled", 0))
+     if (gCoreContext->GetNumSetting("NetworkControlEnabled", 0))
      {
--        int networkPort = gContext->GetNumSetting("NetworkControlPort", 6545);
+-        int networkPort = gCoreContext->GetNumSetting("NetworkControlPort", 6545);
 -        networkControl = new NetworkControl();
 -        if (!networkControl->listen(QHostAddress::Any,networkPort))
 +        char hostname[256];
@@ -91,8 +91,8 @@ diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24
 +        }
      }
  
-     themename = gContext->GetSetting("Theme", DEFAULT_UI_THEME);
-@@ -1499,7 +1558,8 @@
+     themename = gCoreContext->GetSetting("Theme", DEFAULT_UI_THEME);
+@@ -1455,7 +1514,8 @@
  
      if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
      {
@@ -102,7 +102,7 @@ diff -Naur mythtv-trunk-24571-old/programs/mythfrontend/main.cpp mythtv-trunk-24
          return FRONTEND_EXIT_NO_THEME;
      }
  
-@@ -1528,7 +1588,8 @@
+@@ -1484,7 +1544,8 @@
          pthread_join(priv_thread, NULL);
      }
  
