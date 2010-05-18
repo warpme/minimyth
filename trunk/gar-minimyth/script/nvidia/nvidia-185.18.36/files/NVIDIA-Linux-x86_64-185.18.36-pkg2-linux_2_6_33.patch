@@ -1,0 +1,80 @@
+diff -Naur NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/conftest.sh NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/conftest.sh
+--- NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/conftest.sh	2009-08-14 18:39:38.000000000 -0700
++++ NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/conftest.sh	2010-05-18 11:26:10.000000000 -0700
+@@ -32,14 +32,14 @@
+     # CONFIG_XEN and CONFIG_PARAVIRT are present, text_xen() treats
+     # the kernel as a stand-alone kernel.
+     #
+-    FILE="linux/autoconf.h"
++    FILE="generated/autoconf.h"
+ 
+     if [ -f $HEADERS/$FILE -o -f $OUTPUT/include/$FILE ]; then
+         #
+         # We are looking at a configured source tree; verify
+         # that it's not a Xen kernel.
+         #
+-        echo "#include <linux/autoconf.h>
++        echo "#include <generated/autoconf.h>
+         #if defined(CONFIG_XEN) && !defined(CONFIG_PARAVIRT)
+         #error CONFIG_XEN defined!
+         #endif
+@@ -111,7 +111,7 @@
+     fi
+ }
+ 
+-CONFTEST_PREAMBLE="#include <linux/autoconf.h>
++CONFTEST_PREAMBLE="#include <generated/autoconf.h>
+     #if defined(CONFIG_XEN) && \
+         defined(CONFIG_XEN_INTERFACE_VERSION) &&  !defined(__XEN_INTERFACE_VERSION__)
+     #define __XEN_INTERFACE_VERSION__ CONFIG_XEN_INTERFACE_VERSION
+@@ -1322,7 +1322,7 @@
+         #
+         RET=1
+         VERBOSE=$6
+-        FILE="linux/autoconf.h"
++        FILE="generated/autoconf.h"
+ 
+         if [ -f $HEADERS/$FILE -o -f $OUTPUT/include/$FILE ]; then
+             #
+@@ -1376,7 +1376,7 @@
+         #
+         RET=1
+         VERBOSE=$6
+-        FILE="linux/autoconf.h"
++        FILE="generated/autoconf.h"
+ 
+         if [ -f $HEADERS/$FILE -o -f $OUTPUT/include/$FILE ]; then
+             #
+diff -Naur NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/nvacpi.c NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/nvacpi.c
+--- NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/nvacpi.c	2009-08-14 18:39:38.000000000 -0700
++++ NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/nvacpi.c	2010-05-18 11:25:39.000000000 -0700
+@@ -508,7 +508,7 @@
+     *handlesPresent = 0;
+ 
+     acpi_walk_namespace(ACPI_TYPE_DEVICE, ACPI_ROOT_OBJECT, 
+-                        ACPI_UINT32_MAX, nv_acpi_find_methods, NULL, NULL);
++                        ACPI_UINT32_MAX, nv_acpi_find_methods, NULL, NULL, NULL);
+ 
+     if (nvif_handle)
+     {
+@@ -1148,7 +1148,7 @@
+             "NAMESPACE INVALID\n");
+     }
+ 
+-    acpi_walk_namespace(ACPI_TYPE_ANY, handle, 1, nv_acpi_walk_callback, acpi_name, NULL);
++    acpi_walk_namespace(ACPI_TYPE_ANY, handle, 1, nv_acpi_walk_callback, acpi_name, NULL, NULL);
+ 
+     os_free_mem(acpi_name);
+ }
+diff -Naur NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/nv-linux.h NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/nv-linux.h
+--- NVIDIA-Linux-x86_64-185.18.36-pkg2-old/usr/src/nv/nv-linux.h	2009-08-14 18:39:38.000000000 -0700
++++ NVIDIA-Linux-x86_64-185.18.36-pkg2-new/usr/src/nv/nv-linux.h	2010-05-18 11:26:47.000000000 -0700
+@@ -14,7 +14,7 @@
+ 
+ #include "nv.h"
+ 
+-#include <linux/autoconf.h>
++#include <generated/autoconf.h>
+ #include <linux/version.h>
+ #include <linux/utsname.h>
+ 
