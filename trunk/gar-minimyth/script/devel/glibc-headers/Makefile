@@ -18,7 +18,7 @@ INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sanity-checks \
-	--enable-kernel=2.6.31 \
+	--enable-kernel=2.6.34 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
 	--with-headers=$(DESTDIR)$(includedir) \
