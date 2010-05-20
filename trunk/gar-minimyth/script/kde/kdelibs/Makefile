@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c xorg/xorg qt/qt3 lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
+DEPENDS   = lang/c lang/cxx xorg/xorg qt/qt3 lib/libart lib/libtiff lib/libxml2 lib/libxslt lib/openssl lib/pcre utils/bzip2
 ifneq ($(DESTIMG),build)
 BUILDDEPS = kde/kdelibs
 endif
@@ -79,6 +79,10 @@ BUILD_ENV      = \
 	$(CONFIGURE_ENV)
 
 include ../../gar.mk
+
+# kdelibs 3.5.10 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 DIRPATHS := \
 	--prefix=$(kdeprefix) \
