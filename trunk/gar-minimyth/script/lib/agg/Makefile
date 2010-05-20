@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/cxx lib/freetype lib/SDL
+DEPENDS   = lang/c lang/cxx lib/freetype lib/SDL
 BUILDDEPS = lib/SDL
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -35,6 +35,10 @@ CONFIGURE_ENV = \
 	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
 	
 include ../../gar.mk
+
+# agg 2.5 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC) ; aclocal
