@@ -72,6 +72,9 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+# gnash 0.8.7 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+
 pre-configure:
 	@rm -f $(WORKSRC)/macros/libltdl.m4
 	@rm -f $(WORKSRC)/macros/pkg.m4
