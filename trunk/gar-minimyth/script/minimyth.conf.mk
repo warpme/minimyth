@@ -46,10 +46,9 @@ mm_GRAPHICS               ?= intel \
                              sis \
                              vmware
 # Lists the software to be supported.
-# Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'flash', 'gnash', 'hulu', 'mplayer-svn',
+# 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
 # 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
 # warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
 # 'debug'.

@@ -143,7 +143,6 @@ mm-all:
 		   [ ! "$${software}" = "mythweather"    ] && \
 		   [ ! "$${software}" = "mythzoneminder" ] && \
 		   [ ! "$${software}" = "flash"          ] && \
-		   [ ! "$${software}" = "gnash"          ] && \
 		   [ ! "$${software}" = "hulu"           ] && \
 		   [ ! "$${software}" = "mplayer-svn"    ] && \
 		   [ ! "$${software}" = "mplayer-vld"    ] && \
