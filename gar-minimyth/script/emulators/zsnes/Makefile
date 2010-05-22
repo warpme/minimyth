@@ -48,6 +48,10 @@ include ../../gar.mk
 # zsnes 151 fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+build_CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(build_CFLAGS))
+build_CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(build_CXXFLAGS))
+build_LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(build_LDFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal

@@ -10,9 +10,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg
+DEPENDS = lang/cxx xorg/xorg
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 include ../../gar.mk
+
+# xmacro pre0.3-20000911 fails to compile with GCC 4.5.0's link time optimization.
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
