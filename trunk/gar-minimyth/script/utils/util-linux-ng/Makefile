@@ -75,6 +75,9 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
+# util-linux-ng 2.17.2 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

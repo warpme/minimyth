@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c utils/util-linux-ng
+DEPENDS = lang/c lang/cxx utils/util-linux-ng
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -34,6 +34,14 @@ CONFIGURE_ENV = \
 	libblkid_is_recent="yes"
 
 include ../../gar.mk
+
+# nfs-utils 1.1.0 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+build_CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(build_CFLAGS))
+build_CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(build_CXXFLAGS))
+build_LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(build_LDFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force

@@ -126,10 +126,6 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# xine-lib 1.1.16.3 fails to compile with at least some of GCC 4.4.4's graphite support.
-# However, it compiles with GCC 4.5.0.
-CFLAGS := $(filter-out -ftree-loop-distribution, $(CFLAGS))
-
 # xine-lib 1.1.16.3 fails to compile with GCC 4.5.0's Os optimization.
 CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
 

@@ -59,11 +59,13 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-# Mesa 7.7.1 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
-CFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
-
 # Mesa 7.7.1 fails to compile with GCC 4.5.0's Os optimization.
-CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
+CFLAGS   := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
+CXXFLAGS := $(if $(filter -Os, $(CXXFLAGS)), $(filter-out -Os, $(CXXFLAGS)) -O2)
+
+# Mesa 7.7.1 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 DRI_DIRS := $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 r600 radeon savage sis swrast unichrome) \

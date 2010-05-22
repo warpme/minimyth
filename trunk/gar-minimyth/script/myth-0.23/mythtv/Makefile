@@ -131,9 +131,6 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
-# mythtv (libavcodec) 0.23 fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
-
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
 	@$(MAKECOOKIE)

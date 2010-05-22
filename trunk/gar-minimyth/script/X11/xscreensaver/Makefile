@@ -37,9 +37,6 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
-# xscreensaver 5.10 fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
-
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@# Work around a problem caused by xscreensaver' broken use of intltools.

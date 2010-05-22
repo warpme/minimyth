@@ -32,6 +32,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# pmount 0.9.22 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)

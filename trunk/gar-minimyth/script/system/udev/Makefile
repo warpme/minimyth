@@ -32,7 +32,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 # udev 154 fails to compile with GCC 4.5.0's link time optimization.
-# However, it compiles with GCC 4.5.0.
 CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 
 sbindir    := $(esbindir)

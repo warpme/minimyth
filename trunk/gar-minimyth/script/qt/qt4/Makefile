@@ -102,10 +102,6 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
-# qt 4.6.2 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
-CFLAGS   := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
-CXXFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CXXFLAGS))
-
 PLATFORM_GARBUILD_BASE_NAME = $(strip \
 	$(if $(filter i386,$(build_GARCH_FAMILY)),linux-g++-32,) \
 	$(if $(filter x86_64,$(build_GARCH_FAMILY)),linux-g++-64,))

@@ -23,9 +23,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
 
-# xvidcore 1.2.2 fails to compile with GCC 4.4.4's fgraphite-identity.
-CFLAGS := $(filter-out -fgraphite-identity, $(CFLAGS))
-
 API_MAJOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MAJOR=' | sed 's%^API_MAJOR=%%')
 API_MINOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MINOR=' | sed 's%^API_MINOR=%%')
 

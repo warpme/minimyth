@@ -180,6 +180,8 @@ mm_CFLAGS                 ?= $(strip \
                                  -floop-strip-mine                                                                           \
                                  -floop-block                                                                                \
                                  -fgraphite-identity                                                                         \
+                                 -fno-ipa-sra                                                                                \
+                                 -flto                                                                                       \
                                  $(if $(filter i386  ,$(mm_GARCH_FAMILY)),-m32)                                              \
                                  $(if $(filter x86_64,$(mm_GARCH_FAMILY)),-m64)                                              \
                                  $(if $(filter yes,$(mm_DEBUG)),-g)                                                          \

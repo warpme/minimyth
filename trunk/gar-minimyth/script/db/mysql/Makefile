@@ -41,18 +41,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-# mysql 5.1.46 fails to compile with GCC 4.4.4's floop-block and fgraphite-identity.
-# However, it compiles with GCC 4.5.0.
-CFLAGS   := $(filter-out -floop-block -fgraphite-identity, $(CFLAGS))
-CXXFLAGS := $(filter-out -floop-block -fgraphite-identity, $(CXXFLAGS))
-
 # Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 
 # mysql 5.1.46 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 
 # Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
 # MySQL 4.1.10 breaks with strict aliasing.
