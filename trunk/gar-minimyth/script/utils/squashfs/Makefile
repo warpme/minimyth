@@ -1,21 +1,18 @@
 GARNAME = squashfs
-GARVERSION = 4.0-lzma-snapshot
+GARVERSION = 20100521
 CATEGORIES = lib
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/people/pkl/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/sevenzip/
-DISTFILES = $(GARNAME)$(GARVERSION).tgz lzma465.tar.bz2
-#DISTFILES = $(GARNAME)$(GARVERSION).tar.gz
-#PATCHFILES = $(DISTNAME)-multi_core_fix.patch
+MASTER_SITES += cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2 lzma465.tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib
-
-WORKSRC  = $(WORKDIR)/$(GARNAME)$(GARVERSION)
+DEPENDS = lang/c lib/libattr lib/zlib
 
 BUILD_SCRIPTS   = $(WORKSRC)/squashfs-tools/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/squashfs-tools/Makefile
@@ -30,6 +27,13 @@ INSTALL_ARGS = \
 include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -I. -I../../LZMA/C -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -DCOMP_DEFAULT=\\\"lzma\\\" -DLZMA_SUPPORT
+
+cvs//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 pre-install:
 	@rm -f $(DESTDIR)$(bindir)/mksquashfs
