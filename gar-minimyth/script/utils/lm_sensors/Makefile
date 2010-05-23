@@ -41,6 +41,9 @@ INSTALL_ARGS = $(ARGS)
 
 include ../../gar.mk
 
+# lm_sensors 3.1.2 fails to compile with GCC 4.5.0's link time optimization (x86_64 has fPIC related error).
+CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
