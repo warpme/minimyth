@@ -73,6 +73,10 @@ INSTALL_ARGS = \
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
+# qt 3.3.8b fails to compile with GCC 4.5.0's link time optimization (on x86_64).
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+
 PLATFORM_INITIAL_NAME  = linux-g++
 PLATFORM_GARBUILD_NAME = $(PLATFORM_INITIAL_NAME)-garbuild
 PLATFORM_GARHOST_NAME  = $(PLATFORM_INITIAL_NAME)-garhost
