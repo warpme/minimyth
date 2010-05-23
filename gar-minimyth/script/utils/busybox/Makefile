@@ -10,6 +10,7 @@ PATCHFILES  = \
 	$(DISTNAME)-cpio.patch \
 	$(DISTNAME)-dhcpd.patch \
 	$(DISTNAME)-dnsd.patch \
+	$(DISTNAME)-hush.patch \
 	$(DISTNAME)-hwclock.patch \
 	$(DISTNAME)-indexcgi.patch \
 	$(DISTNAME)-sed.patch
