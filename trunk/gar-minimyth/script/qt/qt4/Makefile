@@ -102,6 +102,10 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
+# qt 4.6.2 fails to compile with GCC 4.5.0's link time optimization (on x86_64).
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+
 PLATFORM_GARBUILD_BASE_NAME = $(strip \
 	$(if $(filter i386,$(build_GARCH_FAMILY)),linux-g++-32,) \
 	$(if $(filter x86_64,$(build_GARCH_FAMILY)),linux-g++-64,))
