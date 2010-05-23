@@ -113,7 +113,7 @@ build_chroot_DESTDIR ?= /tmp/chroot
 # allow us to link to libraries we installed
 main_CPPFLAGS += 
 main_CFLAGS += $(mm_CFLAGS)
-main_LDFLAGS += -Wl,--as-needed
+main_LDFLAGS += -flto -Wl,--as-needed
 main_CXXFLAGS += $(main_CFLAGS)
 
 # allow us to link to libraries we installed
