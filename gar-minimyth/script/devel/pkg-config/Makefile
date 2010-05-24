@@ -1,9 +1,9 @@
 GARNAME = pkg-config
-GARVERSION = 0.23
+GARVERSION = 0.24
 CATEGORIES = devel
 MASTER_SITES = http://pkgconfig.freedesktop.org/releases/
 DISTFILES = $(DISTNAME).tar.gz 
-PATCHFILES = $(DISTNAME)-sysroot.patch $(DISTNAME)-m4_pattern_allow.patch
+PATCHFILES = $(DISTNAME)-m4_pattern_allow.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -17,6 +17,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-shared \
+	--disable-static \
 	--with-gnu-ld
 
 include ../../gar.mk
