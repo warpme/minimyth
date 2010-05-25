@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 23201.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23303.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -103,6 +103,7 @@ CONFIGURE_ARGS = \
 	--disable-libspeex \
 	--enable-libtheora \
 	--enable-libvorbis \
+	--disable-libvpx \
 	--disable-libx264 \
 	--disable-libxvid \
 	--disable-mlib \
