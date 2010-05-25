@@ -26,7 +26,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 # nspr 4.8.4 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/mozilla/nsprpub/configure)

@@ -52,7 +52,8 @@ endif
 include ../../gar.mk
 
 # glib 2.24.1 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)

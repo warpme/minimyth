@@ -162,7 +162,8 @@ GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
 # ffmpeg 23201.* fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))

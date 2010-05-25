@@ -42,7 +42,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 # e2fsprogs 1.41.12 fails to compile with GCC 4.5.0's link time optimization (x86_64 has fPIC related error).
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)

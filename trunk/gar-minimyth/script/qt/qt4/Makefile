@@ -109,6 +109,7 @@ CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-stri
 # qt 4.6.2 fails to compile with GCC 4.5.0's link time optimization (on x86_64).
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 PLATFORM_GARBUILD_BASE_NAME = $(strip \
 	$(if $(filter i386,$(build_GARCH_FAMILY)),linux-g++-32,) \
