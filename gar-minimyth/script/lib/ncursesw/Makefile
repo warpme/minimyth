@@ -36,10 +36,12 @@ GAR_EXTRA_CONF += lib/ncurses/package-api.mk
 include ../../gar.mk
 
 # Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
-CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 # ncurses fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 post-install:
 	@rm -f $(DESTDIR)$(bindir)-config/ncursesw5-config

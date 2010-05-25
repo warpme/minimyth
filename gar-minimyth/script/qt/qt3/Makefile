@@ -76,6 +76,7 @@ include ../../gar.mk
 # qt 3.3.8b fails to compile with GCC 4.5.0's link time optimization (on x86_64).
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 PLATFORM_INITIAL_NAME  = linux-g++
 PLATFORM_GARBUILD_NAME = $(PLATFORM_INITIAL_NAME)-garbuild

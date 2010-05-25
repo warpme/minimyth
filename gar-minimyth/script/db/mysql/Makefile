@@ -44,10 +44,12 @@ include ../../gar.mk
 # Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 # mysql 5.1.46 fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 # Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
 # MySQL 4.1.10 breaks with strict aliasing.

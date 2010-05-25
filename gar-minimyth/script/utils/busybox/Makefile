@@ -44,7 +44,8 @@ INSTALL_ARGS   = $(DEFAULT_ARGS)
 include ../../gar.mk
 
 # busybox 1.16.1 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 # busybox 1.16.1 (sed) segmentation faults when compiled with GCC 4.5.0 optimization enabled.
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O0

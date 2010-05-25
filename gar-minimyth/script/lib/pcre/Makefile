@@ -37,6 +37,7 @@ include ../../gar.mk
 # pcre 8.02 fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

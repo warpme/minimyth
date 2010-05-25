@@ -242,6 +242,7 @@ include ../../gar.mk
 # vlc 1.0.6 fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 # Ignored when the vaapi patch is not applied.
 CPPFLAGS += -DHAVE_AVCODEC_VAAPI

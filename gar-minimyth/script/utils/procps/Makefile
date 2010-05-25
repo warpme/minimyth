@@ -29,10 +29,12 @@ INSTALL_OVERRIDE_DIRS = \
 include ../../gar.mk
 
 # Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
-CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 # procps 3.2.8 (top) segmentation faults when compiled with GCC 4.5.0 link time optimization.
-CFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 usr/bin      := $(bindir)/
 bin          := $(ebindir)/
