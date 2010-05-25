@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 1.7
+GARVERSION = 1.8
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xlibs.freedesktop.org/xkbdesc/
 DISTFILES = $(DISTNAME).tar.bz2
