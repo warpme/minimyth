@@ -229,6 +229,10 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libvlc.la
 	@rm -f $(DESTDIR)$(libdir)/libvlccore.la
