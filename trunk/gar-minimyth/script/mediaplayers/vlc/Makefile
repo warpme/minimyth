@@ -229,11 +229,6 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
-# Ignored when the vaapi patch is not applied.
-#CPPFLAGS += -DHAVE_AVCODEC_VAAPI
-#CFLAGS   += -DHAVE_AVCODEC_VAAPI
-#CXXFLAGS += -DHAVE_AVCODEC_VAAPI
-
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libvlc.la
 	@rm -f $(DESTDIR)$(libdir)/libvlccore.la
