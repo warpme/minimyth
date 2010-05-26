@@ -1,5 +1,5 @@
 GARNAME = ethtool
-GARVERSION = 2.6.33
+GARVERSION = 2.6.34
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/gkernel/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,7 +18,3 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
-
-# ethtool 2.6.33 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
