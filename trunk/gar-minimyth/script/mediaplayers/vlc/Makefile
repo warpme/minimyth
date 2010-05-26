@@ -1,18 +1,10 @@
 GARNAME = vlc
-#GARVERSION = snapshot-20091015-2228
-GARVERSION = 1.0.6
+GARVERSION = 1.1.0-rc
 CATEGORIES = mediaplayers
 PATCHFILES  =
-ifeq ($(word 1,$(subst -, ,$(GARVERSION))),snapshot)
-MASTER_SITES  = http://nightlies.videolan.org/build/source/$(subst snapshot,trunk,$(GARVERSION))/
-DISTFILES = $(GARNAME)-snapshot-$(word 2,$(subst -, ,$(GARVERSION))).tar.bz2
-WORKSRC = $(WORKDIR)/$(GARNAME)-1.1.0-git
-else
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-endif
-PATCHFILES = $(DISTNAME)-libpng14.patch $(DISTNAME)-libgcrypt_m4.patch $(DISTNAME)-vaapi.patch $(DISTNAME)-vdpau_20090814.patch $(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -50,16 +42,16 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
+	--enable-option-checking \
 	--disable-silent-rules \
-	--disable-python-bindings \
-	--disable-java-bindings \
+	--without-contrib \
 	--disable-macosx-defaults \
+	--disable-peflags \
 	--disable-static \
 	--enable-shared \
+	--with-gnu-ld \
 	--enable-nls \
 	--disable-rpath \
-	--disable-hal \
-	--disable-mtp \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
@@ -67,58 +59,62 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-cprof \
 	--enable-mmx \
 	--enable-sse \
+	--disable-neon \
 	--disable-altivec \
+	--with-tuning=$(GARCH) \
 	--disable-optimize-memory \
 	--disable-optimizations \
 	--disable-debug \
 	--disable-run-as-root \
 	--disable-coverage \
-	--enable-release \
 	--enable-sout \
-	--disable-switcher \
-	--disable-shout \
 	--disable-lua \
 	--disable-httpd \
 	--disable-libproxy \
 	--disable-vlm \
 	--disable-growl \
 	--disable-notify \
-	--disable-audioscrobbler \
 	--enable-taglib \
 	--disable-live555 \
 	--disable-dc1394 \
 	--disable-dv \
 	--disable-dvdread \
 	--enable-dvdnav \
+	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
 	--disable-dshow \
 	--disable-bda \
 	--disable-opencv \
 	--disable-smb \
+	--disable-sftp \
 	--enable-dvbpsi \
 	--disable-v4l \
+	--disable-libv4l \
 	--disable-v4l2 \
 	--disable-libv4l2 \
 	--disable-pvr \
 	--disable-gnomevfs \
-	--enable-libcdio \
-	--disable-vcdinfo \
-	--disable-cddax \
-	--disable-libcddb \
 	--disable-vcdx \
-	--enable-cdda \
 	--enable-vcd \
+	--disable-libcddb \
 	--disable-dvb \
 	--disable-screen \
 	--disable-ogg \
+	--disable-mux_ogg \
+	--disable-shout \
 	--enable-mkv \
 	--disable-mod \
 	--disable-mpc \
 	--disable-gme \
 	--disable-wma-fixed \
 	--disable-shine \
+	--disable-omxil \
 	--enable-mad \
 	--disable-id3tag \
+	--disable-merge-ffmpeg \
 	--enable-avcodec \
+	--enable-libva \
+	--disable-dxva2 \
+	--disable-switcher \
 	--enable-avformat \
 	--enable-swscale \
 	--enable-postproc \
@@ -127,7 +123,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-quicktime \
 	--disable-real \
 	--disable-realrtsp \
-	--disable-libsysfs \
 	--disable-libtar \
 	--enable-a52 \
 	--enable-dca \
@@ -136,28 +131,22 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vorbis \
 	--disable-tremor \
 	--disable-speex \
-	--disable-tarkin \
 	--enable-theora \
 	--disable-dirac \
 	--disable-schroedinger \
 	--enable-png \
-	--enable-vdpau \
 	--disable-x264 \
 	--disable-fluidsynth \
 	--disable-zvbi \
 	--disable-telx \
-	--disable-csri \
 	--disable-libass \
 	--disable-asademux \
-	--disable-cmml \
 	--disable-kate \
 	--disable-tiger \
-	--enable-x11 \
+	--with-x \
+	--enable-xcb \
 	--enable-xvideo \
 	--enable-glx \
-	--enable-xvmc \
-	--enable-xinerama \
-	--enable-xcb \
 	--enable-opengl \
 	--disable-sdl \
 	--disable-sdl-image \
@@ -167,18 +156,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libxml2 \
 	--disable-svg \
 	--disable-snapshot \
-	--disable-qte \
 	--disable-hd1000v \
 	--disable-directx \
+	--disable-wingdi \
 	--disable-fb \
-	--disable-mga \
 	--disable-omapfb \
 	--disable-svgalib \
 	--disable-directfb \
 	--disable-ggi \
 	--disable-aa \
 	--disable-caca \
-	--disable-wingdi \
 	--disable-oss \
 	--disable-pulse \
 	--disable-portaudio \
@@ -190,40 +177,34 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-cyberlink \
 	--disable-upnp \
 	--disable-skins2 \
-	--disable-pda \
-	--disable-maemo \
-	--disable-wince \
-	--disable-opie \
+	--disable-hildon \
 	--disable-macosx \
-	--disable-qnx \
 	--disable-ncurses \
 	--disable-xosd \
 	--disable-fbosd \
 	--disable-visual \
-	--disable-galaktos \
 	--disable-goom \
+	--disable-projectm \
 	--disable-atmo \
 	--disable-bonjour \
+	--disable-udev \
+	--disable-mtp \
 	--enable-lirc \
 	--disable-libgcrypt \
 	--disable-gnutls \
 	--disable-remoteosd \
+	--disable-osso_screensaver \
 	--disable-update-check \
+	--disable-sqlite \
 	--disable-loader \
 	--enable-vlc \
 	--disable-activex \
-	--disable-mozilla \
-	--disable-testsuite \
-	--without-contrib \
-	--with-gnu-ld \
-	--with-tuning=$(mm_ARCH) \
-	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
-	--with-x
+	--disable-mozilla
 
 CONFIGURE_ENV =
 
-# Build VLC with the Qt4 GUI.
-ifdef VLC_GUI_QT4
+# # Build VLC with the Qt4 GUI.
+# ifdef VLC_GUI_QT4
 DEPENDS += \
 	qt/qt4
 CONFIGURE_ARGS += \
@@ -232,28 +213,26 @@ CONFIGURE_ENV += \
 	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
 	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
 	ac_cv_path_UIC=$(DESTDIR)$(qt4bindir)/uic
-else
-CONFIGURE_ARGS += \
-	--disable-qt4
-endif
+# else
+# CONFIGURE_ARGS += \
+# 	--disable-qt4
+# endif
 
 include ../../gar.mk
 
-# vlc 1.0.6 fails to compile with GCC 4.5.0's link time optimization.
+# vlc 1.1.0-rc fails to compile with GCC 4.5.0's graphite.
+CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
+
+# vlc 1.1.0-rc fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 # Ignored when the vaapi patch is not applied.
-CPPFLAGS += -DHAVE_AVCODEC_VAAPI
-CFLAGS   += -DHAVE_AVCODEC_VAAPI
-CXXFLAGS += -DHAVE_AVCODEC_VAAPI
-
-pre-configure:
-	@$(if $(wildcard $(WORKSRC)/modules/codec/vdpau/*),cd $(WORKSRC) ; ./modules/genmf codec/vdpau)
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
-	@$(MAKECOOKIE)
+#CPPFLAGS += -DHAVE_AVCODEC_VAAPI
+#CFLAGS   += -DHAVE_AVCODEC_VAAPI
+#CXXFLAGS += -DHAVE_AVCODEC_VAAPI
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libvlc.la
