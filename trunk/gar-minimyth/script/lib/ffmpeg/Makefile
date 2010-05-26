@@ -3,7 +3,7 @@ GARVERSION = 23303.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100519.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100526.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -161,7 +161,7 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# ffmpeg 23201.* fails to compile with GCC 4.5.0's link time optimization.
+# ffmpeg 23303.* fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
@@ -230,9 +230,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=23196
-FFMPEG_MT_VERSION_THREAD=c91d7a205df4dd224461b96749b9ce12e2bf6825
-FFMPEG_MT_VERSION_DATE=20100519
+FFMPEG_MT_VERSION_NORMAL=23303
+FFMPEG_MT_VERSION_THREAD=ae7e6bb9708a0f0dac89295c788266e0f15899d2
+FFMPEG_MT_VERSION_DATE=20100526
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
