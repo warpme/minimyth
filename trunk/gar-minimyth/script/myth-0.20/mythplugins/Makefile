@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-mythbrowser_kdecore.patch \
 	$(DISTNAME_SHORT)-gcc_4.3.patch \
 	$(DISTNAME_SHORT)-mythweather_weather_com.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \

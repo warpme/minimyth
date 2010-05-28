@@ -6,7 +6,8 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-disable_multilib_i386_linux64.patch
+PATCHFILES  = $(DISTNAME)-bfd_and_gold.patch
+PATCHFILES += $(DISTNAME)-disable_multilib_i386_linux64.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
@@ -45,7 +46,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-languages=c,c++ \
 	--enable-libgomp \
 	--disable-libmudflap \
-	--enable-gold \
+	--enable-gold=both/ld \
 	--disable-libada \
 	--disable-libssp \
 	--enable-lto \

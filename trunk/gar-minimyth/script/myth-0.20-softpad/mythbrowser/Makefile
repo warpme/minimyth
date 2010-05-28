@@ -30,5 +30,9 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk $(CATEGORY)/mythplugins/package-api.mk
 include ../../gar.mk
 
+# mythbrowser 0.20 fails to compile using the gold linker.
+CXXFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(XXCFLAGS))
+LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
+
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

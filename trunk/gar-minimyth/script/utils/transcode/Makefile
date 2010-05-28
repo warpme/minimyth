@@ -85,7 +85,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-#CFLAGS += `pkg-config --cflags libavcodec` `pkg-config --libs libavcodec`
+# transcode 1.1.5 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
+CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache

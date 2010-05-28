@@ -19,3 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
+
+# strace 4.5.20 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
