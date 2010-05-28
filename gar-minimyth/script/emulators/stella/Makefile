@@ -34,3 +34,7 @@ CONFIGURE_ARGS = \
 	--x-libraries="$(DESTDIR)$(libdir)"
 
 include ../../gar.mk
+
+# 3.1.2 fails to compile with GCC 4.5.0's link time optimization.
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
