@@ -67,6 +67,7 @@ include ../../gar.mk
 
 # Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 LDFLAGS += -lrt
 
