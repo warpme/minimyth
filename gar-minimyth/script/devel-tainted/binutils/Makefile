@@ -25,7 +25,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
-	--disable-plugins \
+	--enable-plugins \
 	--disable-libada \
 	--disable-libssp \
 	--disable-lto \

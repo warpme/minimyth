@@ -43,6 +43,10 @@ INSTALL_ARGS   = $(DEFAULT_ARGS)
 
 include ../../gar.mk
 
+# busybox 1.16.1 fails to compile using the gold linker.
+CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
+
 # busybox 1.16.1 fails to compile with GCC 4.5.0's link time optimization.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
