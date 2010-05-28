@@ -16,7 +16,7 @@ BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 BUILD_ARGS   = \
-	OPT="$(CFPAGS)" \
+	OPT="$(CFLAGS)" \
 	BINDIR=$(bindir) \
 	SBINDIR=$(sbindir) \
 	MAN8DIR=$(mandir)/man8 \
@@ -29,6 +29,11 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+# acpid 2.0.5 fails to compile with GCC 4.5.0's link time optimization.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
+CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 post-install:
 	@chmod 755 $(DESTDIR)$(sbindir)/acpid
 	@$(MAKECOOKIE)
