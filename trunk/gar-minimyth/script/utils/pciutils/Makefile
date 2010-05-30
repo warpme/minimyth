@@ -62,10 +62,6 @@ INSTALL_ARGS = \
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
-# pciutils 3.1.7 fails to compile with GCC 4.5.0's link time optimization (x86_64 has fPIC related error).
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 extract-pci.ids:
 	@cp -f $(DOWNLOADDIR)/pci.ids $(WORKSRC)/pci.ids
 	@$(MAKECOOKIE)

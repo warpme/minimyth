@@ -43,10 +43,6 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# ncurses fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 post-install:
 	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
 	@rm -f $(DESTDIR)$(bindir)-config/ncurses5-config

@@ -161,7 +161,7 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# ffmpeg 23303.* fails to compile with GCC 4.5.0's link time optimization.
+# Fails to compile with GCC's link time optimization.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 

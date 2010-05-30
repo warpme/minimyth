@@ -102,11 +102,16 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
-# qt 4.6.2 segmentation faults when compiled with at least some of GCC 4.5.0's graphite support.
+# Segmentation faults when compiled with at least some of GCC's graphite support.
 CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
 CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
-# qt 4.6.2 fails to compile with GCC 4.5.0's link time optimization (on x86_64).
+# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+ 
+# Crashes at runtime when compiled with GCC's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))

@@ -48,10 +48,6 @@ PARALLELMFLAGS := -j1
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# openssl 1.0.0 fails to compile with GCC 4.5.0's link time optimization.
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 configure-%/Configure: 
 	@echo " ==> Running Configure in $*"
 	@cd $* && $(CONFIGURE_ENV) ./Configure $(CONFIGURE_ARGS)
