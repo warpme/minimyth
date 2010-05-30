@@ -126,7 +126,7 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# xine-lib 1.1.16.3 fails to compile with GCC 4.5.0's Os optimization.
+# xine-lib fails to compile with GCC's Os optimization, so convert it so O2 optimization.
 CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
 
 pre-configure:

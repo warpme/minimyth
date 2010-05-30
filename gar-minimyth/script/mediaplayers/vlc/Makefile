@@ -220,11 +220,11 @@ CONFIGURE_ENV += \
 
 include ../../gar.mk
 
-# vlc 1.1.0-rc fails to compile with GCC 4.5.0's graphite.
+# Fails to compile with GCC's graphite.
 CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
 CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
-# vlc 1.1.0-rc fails to compile with GCC 4.5.0's link time optimization.
+# Fails to compile with GCC's link time optimization (autoconf adds duplicate object files).
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))

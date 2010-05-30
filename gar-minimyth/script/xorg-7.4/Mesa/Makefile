@@ -59,11 +59,11 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-# Mesa 7.7.1 fails to compile with GCC 4.5.0's Os optimization.
+# Fails to compile with GCC's Os optimization, so convert it to O2 optimization
 CFLAGS   := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
 CXXFLAGS := $(if $(filter -Os, $(CXXFLAGS)), $(filter-out -Os, $(CXXFLAGS)) -O2)
 
-# Mesa 7.7.1 fails to compile with GCC 4.5.0's link time optimization.
+# Mesa 7.7.1 fails to compile with GCC's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))

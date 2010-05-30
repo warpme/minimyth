@@ -39,7 +39,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# alsa-lib 1.0.23 fails to compile with GCC 4.5.0's link time optimization.
+# Fails to compile with GCC's link time optimization.
 CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 
 pre-configure:
