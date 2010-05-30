@@ -203,8 +203,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 CONFIGURE_ENV =
 
-# # Build VLC with the Qt4 GUI.
-# ifdef VLC_GUI_QT4
+# Build VLC with the Qt4 GUI.
+ifdef VLC_GUI_QT4
 DEPENDS += \
 	qt/qt4
 CONFIGURE_ARGS += \
@@ -213,10 +213,10 @@ CONFIGURE_ENV += \
 	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
 	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
 	ac_cv_path_UIC=$(DESTDIR)$(qt4bindir)/uic
-# else
-# CONFIGURE_ARGS += \
-# 	--disable-qt4
-# endif
+else
+CONFIGURE_ARGS += \
+	--disable-qt4
+endif
 
 include ../../gar.mk
 
