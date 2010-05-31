@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100526.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100414.patch
+PATCHFILES = $(GARNAME)-mt_20100530.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100414.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -64,6 +64,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-smb \
 	--disable-live \
 	--disable-nemesi \
+	--disable-librtmp \
 	--enable-vcd \
 	--enable-dvdnav \
 	--enable-dvdread \
@@ -115,6 +116,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-x264-lavc \
 	--disable-libdirac-lavc \
 	--disable-libschroedinger-lavc \
+	--disable-libvpx-lavc \
 	--disable-libnut \
 	--disable-libavutil_a \
 	--disable-libavcodec_a \
