@@ -39,6 +39,10 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
+# causes procps's top to segmentation fault when compiled with gcc's link time optimization.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 post-install:
 	@rm -f $(DESTDIR)$(bindir)-config/ncursesw5-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncursesw5-config
