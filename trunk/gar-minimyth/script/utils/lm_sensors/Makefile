@@ -6,7 +6,8 @@ MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
 DISTFILES   = $(DISTNAME).tar.bz2
 PATCHFILES  = \
 	$(DISTNAME)-commit_5832.patch \
-	$(DISTNAME)-commit_5835.patch
+	$(DISTNAME)-commit_5835.patch \
+	$(DISTNAME)-commit_5837.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
