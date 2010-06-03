@@ -21,8 +21,10 @@ INSTALL_SCRIPTS  = custom
 
 include ../../gar.mk
 
-CFLAGS  += -DUSELIRC -I$(DESTDIR)$(includedir)/lirc
-LDFLAGS += -llirc_client
+CFLAGS  := $(CFLAGS) -DUSELIRC -I$(DESTDIR)$(includedir)/lirc
+LDFLAGS := $(LDFLAGS) -llirc_client
+
+LDFLAGS := $(CFLAGS) $(LDFLAGS)
 
 cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, apps/$(GARNAME), $(GARVERSION), $(DISTNAME))
