@@ -16,3 +16,5 @@ BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
 
 include ../../gar.mk
+
+CXXFLAGS := $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS)
