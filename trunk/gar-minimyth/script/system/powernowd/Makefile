@@ -17,7 +17,7 @@ INSTALL_SCRIPTS = custom
 include ../../gar.mk
 
 build-custom:
-	@cd $(WORKSRC) ; $(CC) $(CFLAGS) -o powernowd powernowd.c
+	cd $(WORKSRC) ; $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o powernowd powernowd.c
 	@$(MAKECOOKIE)
 
 install-custom:
