@@ -29,6 +29,8 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+LDFLAGS := $(CFLAGS) $(LDFLAGS)
+
 post-install:
 	@chmod 755 $(DESTDIR)$(sbindir)/acpid
 	@$(MAKECOOKIE)
