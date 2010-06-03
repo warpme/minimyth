@@ -26,5 +26,3 @@ CONFIGURE_ENV = \
 	GTK_CONFIG=no
 
 include ../../gar.mk
-
-LDFLAGS := $(LDFLAGS) -fwhole-program
