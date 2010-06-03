@@ -24,6 +24,8 @@ include ../../gar.mk
 CFLAGS  := $(CFLAGS) -DUSELIRC -I$(DESTDIR)$(includedir)/lirc
 LDFLAGS := $(LDFLAGS) -llirc_client
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 LDFLAGS := $(CFLAGS) $(LDFLAGS)
 
 cvs//%/$(DISTNAME).tar.bz2:

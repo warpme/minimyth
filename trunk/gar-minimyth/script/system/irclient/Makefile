@@ -26,6 +26,8 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 install-custom:
 	@mkdir -p $(DESTDIR)$(sbindir)
 	@rm -rf $(DESTDIR)$(sbindir)/irclient

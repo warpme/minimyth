@@ -22,6 +22,8 @@ include ../../gar.mk
 
 LDFLAGS := -lX11 -lXtst -llirc_client $(LDFLAGS)
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/irxkeys $(DESTDIR)$(bindir)/irxkeys

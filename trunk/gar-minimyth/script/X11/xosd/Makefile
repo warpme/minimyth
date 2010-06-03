@@ -36,6 +36,8 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxosd.la
 	@rm -f $(DESTDIR)$(bindir)-config/xosd-config

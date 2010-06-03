@@ -16,6 +16,8 @@ INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 build-custom:
 	cd $(WORKSRC) ; $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o powernowd powernowd.c
 	@$(MAKECOOKIE)
