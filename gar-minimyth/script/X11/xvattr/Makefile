@@ -3,7 +3,7 @@ GARVERSION = 1.3
 CATEGORIES = X11
 MASTER_SITES = http://www.dtek.chalmers.se/groups/dvd/dist/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-no_gtk.patch $(DISTNAME)-no_pod.patch
+PATCHFILES = $(DISTNAME)-cflags.patch $(DISTNAME)-no_gtk.patch $(DISTNAME)-no_pod.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -26,3 +26,5 @@ CONFIGURE_ENV = \
 	GTK_CONFIG=no
 
 include ../../gar.mk
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
