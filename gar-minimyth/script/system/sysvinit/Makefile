@@ -18,7 +18,7 @@ INSTALL_SCRIPTS = $(WORKSRC)/src/Makefile
 DEFAULT_ARGS = \
 	CC="$(CC)" \
         CFLAGS="$(CFLAGS) -D_GNU_SOURCE" \
-        LDFLAGS="$(CFLAGS)" \
+        LDFLAGS="$(LDFLAGS)" \
 	INSTALL="install" \
 	ROOT="$(DESTDIR)" \
 	MANDIR="$(mandir)" \
@@ -32,3 +32,5 @@ BUILD_ARGS   = $(DEFAULT_ARGS)
 INSTALL_ARGS = $(DEFAULT_ARGS)
 
 include ../../gar.mk
+
+LDFLAGS := $(CFLAGS) $(LDFLAGS)
