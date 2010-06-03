@@ -29,6 +29,8 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 LDFLAGS := $(CFLAGS) $(LDFLAGS)
 
 post-install:

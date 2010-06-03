@@ -31,6 +31,8 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

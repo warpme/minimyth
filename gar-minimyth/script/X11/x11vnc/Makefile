@@ -54,3 +54,5 @@ CONFIGURE_ENV = \
 	ac_cv_func_stat_empty_string_bug=no
 
 include ../../gar.mk
+
+LDFLAGS := $(LDFLAGS) -fwhole-program

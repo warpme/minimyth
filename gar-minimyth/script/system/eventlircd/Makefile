@@ -20,6 +20,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
