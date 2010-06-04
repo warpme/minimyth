@@ -106,11 +106,6 @@ include ../../gar.mk
 CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
 CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
-# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
- 
 # Crashes at runtime when compiled with GCC's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))

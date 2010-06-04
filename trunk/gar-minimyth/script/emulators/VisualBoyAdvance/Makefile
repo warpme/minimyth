@@ -36,7 +36,7 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+# Suffers from bug 44149 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=44149>.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))

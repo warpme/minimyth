@@ -23,10 +23,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
 
-# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
-CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
-
 API_MAJOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MAJOR=' | sed 's%^API_MAJOR=%%')
 API_MINOR = $(shell cat $(WORKSRC)/build/generic/platform.inc | grep '^API_MINOR=' | sed 's%^API_MINOR=%%')
 

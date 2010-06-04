@@ -85,7 +85,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
+# Fails to compile with the gcc 4.5 linker plugin.
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
