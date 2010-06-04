@@ -180,7 +180,6 @@ mm_CFLAGS                 ?= $(strip \
                                  -floop-strip-mine                                                                           \
                                  -floop-block                                                                                \
                                  -fgraphite-identity                                                                         \
-                                 -fno-ipa-sra                                                                                \
                                  -flto                                                                                       \
                                  -fuse-linker-plugin                                                                         \
                                  -fuse-ld=gold                                                                               \
