@@ -41,10 +41,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Suffers from bug 42453 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42453>.
-CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
-
 pre-configure:
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
