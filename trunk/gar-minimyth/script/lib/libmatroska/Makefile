@@ -1,5 +1,5 @@
 GARNAME = libmatroska
-GARVERSION = 0.9.0
+GARVERSION = 1.0.0
 CATEGORIES = lib
 MASTER_SITES = http://dl.matroska.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
