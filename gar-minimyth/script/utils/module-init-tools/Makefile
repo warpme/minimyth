@@ -1,5 +1,5 @@
 GARNAME = module-init-tools
-GARVERSION = 3.11.1
+GARVERSION = 3.12
 CATEGORIES = utils
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -22,3 +22,10 @@ include ../../gar.mk
 bindir  := $(ebindir)
 sbindir := $(esbindir)
 libdir  := $(elibdir)
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
+pre-configure:
+	@touch $(WORKSRC)/*.5
+	@touch $(WORKSRC)/*.8
+	@$(MAKECOOKIE)
