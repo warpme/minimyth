@@ -89,6 +89,7 @@ post-install:
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp_nonshared.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
+	@rm -f $(CROSS_GCC_LIBEXECDIR)/liblto_plugin.la
 	@# Native compile.
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
 		ln -sf gcc $(DESTDIR)$(bindir)/cc ; \
