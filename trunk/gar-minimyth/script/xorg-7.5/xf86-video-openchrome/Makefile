@@ -1,10 +1,10 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 0.2.904
+GARVERSION = 854
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
 MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-composite.patch $(DISTNAME)-pkg_config.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = MIT
 
 DESCRIPTION = 
