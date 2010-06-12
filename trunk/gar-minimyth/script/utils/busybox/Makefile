@@ -39,9 +39,6 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
 
-# Segmentation faults (in 'sed') when compiled with GCC's optimization enabled.
-CFLAGS := $(filter-out -O%, $(CFLAGS)) -O0
-
 extract-$(CONFIGFILE):
 	@cat $(DOWNLOADDIR)/$(CONFIGFILE) \
 		| sed -e 's%@GAR_localstatedir@%$(localstatedir)%g' \
