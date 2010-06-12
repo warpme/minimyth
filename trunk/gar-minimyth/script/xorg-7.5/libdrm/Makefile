@@ -1,9 +1,9 @@
 GARNAME = libdrm
-GARVERSION = 2.4.17
+GARVERSION = 2.4.21
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-stdint_h.patch $(DISTNAME)-update_20100101.patch
+#PATCHFILES = $(DISTNAME)-stdint_h.patch $(DISTNAME)-update_20100101.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -25,8 +25,12 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
+	--disable-silent-rules \
+	--disable-libkms \
+	--enable-intel \
+	--enable-radeon \
+	--disable-vmwgfx-experimental-api \
 	--enable-nouveau-experimental-api \
-	--enable-radeon-experimental-api \
 	--with-gnu-ld
 ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
@@ -39,7 +43,7 @@ endif
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@#cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
