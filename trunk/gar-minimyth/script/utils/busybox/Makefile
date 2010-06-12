@@ -1,19 +1,11 @@
 GARNAME = busybox
-GARVERSION = 1.16.1
+GARVERSION = 1.16.2
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-1.16.1/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = \
-	$(DISTNAME)-ash.patch \
-	$(DISTNAME)-cpio.patch \
-	$(DISTNAME)-dhcpd.patch \
-	$(DISTNAME)-dnsd.patch \
-	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-hwclock.patch \
-	$(DISTNAME)-indexcgi.patch \
-	$(DISTNAME)-sed.patch
+PATCHFILES  =
 PATCHFILES += $(DISTNAME)-dhcp_options.patch $(DISTNAME)-dhcp_timezone.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
