@@ -1,5 +1,5 @@
 GARNAME = tiff
-GARVERSION = 3.9.2
+GARVERSION = 3.9.3
 CATEGORIES = lib
 MASTER_SITES  = http://ftp.remotesensing.org/pub/libtiff/
 MASTER_SITES += http://ftp.remotesensing.org/pub/libtiff/old
