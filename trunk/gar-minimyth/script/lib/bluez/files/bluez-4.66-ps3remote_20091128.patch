@@ -1,6 +1,6 @@
-diff -Naur bluez-4.65-old/input/device.c bluez-4.65-new/input/device.c
---- bluez-4.65-old/input/device.c	2010-05-23 05:47:19.000000000 -0700
-+++ bluez-4.65-new/input/device.c	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/device.c bluez-4.66-new/input/device.c
+--- bluez-4.66-old/input/device.c	2010-06-12 00:45:14.000000000 -0700
++++ bluez-4.66-new/input/device.c	2010-06-13 07:03:00.000000000 -0700
 @@ -465,14 +465,14 @@
  
  static gboolean fake_hid_connect(struct input_conn *iconn, GError **err)
@@ -18,7 +18,7 @@ diff -Naur bluez-4.65-old/input/device.c bluez-4.65-new/input/device.c
  
  	return fhid->disconnect(iconn->fake);
  }
-@@ -603,7 +603,7 @@
+@@ -602,7 +602,7 @@
  }
  
  static int hidp_add_connection(const struct input_device *idev,
@@ -27,7 +27,7 @@ diff -Naur bluez-4.65-old/input/device.c bluez-4.65-new/input/device.c
  {
  	struct hidp_connadd_req *req;
  	struct fake_hid *fake_hid;
-@@ -639,8 +639,12 @@
+@@ -638,8 +638,12 @@
  		fake = g_new0(struct fake_input, 1);
  		fake->connect = fake_hid_connect;
  		fake->disconnect = fake_hid_disconnect;
@@ -41,16 +41,16 @@ diff -Naur bluez-4.65-old/input/device.c bluez-4.65-new/input/device.c
  		goto cleanup;
  	}
  
-@@ -781,7 +785,7 @@
+@@ -779,7 +783,7 @@
  	struct input_device *idev = user_data;
  	int flags;
  
 -	info("Input: disconnect %s", idev->path);
-+	debug("Input: disconnect %s", idev->path);
++	btd_debug("Input: disconnect %s", idev->path);
  
  	flags = removal ? (1 << HIDP_VIRTUAL_CABLE_UNPLUG) : 0;
  
-@@ -1287,3 +1291,15 @@
+@@ -1285,3 +1289,15 @@
  
  	return 0;
  }
@@ -66,9 +66,9 @@ diff -Naur bluez-4.65-old/input/device.c bluez-4.65-new/input/device.c
 +	device_request_disconnect(idev->device, NULL);
 +}
 +
-diff -Naur bluez-4.65-old/input/device.h bluez-4.65-new/input/device.h
---- bluez-4.65-old/input/device.h	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.65-new/input/device.h	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/device.h bluez-4.66-new/input/device.h
+--- bluez-4.66-old/input/device.h	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.66-new/input/device.h	2010-06-13 07:03:00.000000000 -0700
 @@ -29,6 +29,7 @@
  
  struct input_device;
@@ -98,9 +98,9 @@ diff -Naur bluez-4.65-old/input/device.h bluez-4.65-new/input/device.h
  int input_device_close_channels(const bdaddr_t *src, const bdaddr_t *dst);
 +void input_device_request_disconnect(const bdaddr_t *src, const bdaddr_t *dst);
 +
-diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
---- bluez-4.65-old/input/fakehid.c	2010-05-23 05:47:19.000000000 -0700
-+++ bluez-4.65-new/input/fakehid.c	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/fakehid.c bluez-4.66-new/input/fakehid.c
+--- bluez-4.66-old/input/fakehid.c	2010-05-23 05:47:19.000000000 -0700
++++ bluez-4.66-new/input/fakehid.c	2010-06-13 07:03:00.000000000 -0700
 @@ -48,8 +48,479 @@
  #include "fakehid.h"
  #include "uinput.h"
@@ -735,7 +735,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 -		goto failed;
 -	} else if (key == KEY_MAX)
 +	key = ps3remote_decode(buff, size, &value, ps3data);
-+	debug("Got key: %d [%d]", key, value);
++	btd_debug("Got key: %d [%d]", key, value);
 +	if (key == KEY_RESERVED || key == KEY_MAX)
  		return TRUE;
  
@@ -751,7 +751,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +		/* delay transmit of this key til release, assuming possible turn-off */
 +		if (ps3data->lastkey == KEY_HOMEPAGE &&
 +				value == 0 && ps3data->lastval == 1) {
-+			debug("homepage key released");
++			btd_debug("homepage key released");
 +			uinput_sendkey(fake->uinput, key, 1);
 +			uinput_sendkey(fake->uinput, key, 0);
 +		}
@@ -794,7 +794,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +	fake->priv = ps3data;
 +
 +	ba2str(&fake->ba_dst, devaddr);
-+	debug("Processing PS3 device: %s", devaddr);
++	btd_debug("Processing PS3 device: %s", devaddr);
 +
 +	/* Load config file */
 +	config = g_key_file_new();
@@ -812,7 +812,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +				g_error_free(cfgerr);
 +			} else {
 +				fake->idle_timeout = timeout * 60;
-+				debug("[%s] Using timeout of %d seconds",
++				btd_debug("[%s] Using timeout of %d seconds",
 +					devaddr, fake->idle_timeout);
 +			}
 +		}
@@ -825,7 +825,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +
 +static int ps3remote_disconnect(struct fake_input *fake)
 +{
-+	debug("Disconnecting PS3 remote");
++	btd_debug("Disconnecting PS3 remote");
 +
 +	g_free(fake->priv);
 +	fake->priv = NULL;
@@ -850,7 +850,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +		return 0;
 +	}
 +
-+	debug("Setting up PS3 Remote uinput");
++	btd_debug("Setting up PS3 Remote uinput");
 +
 +	ps3remote_uinput = open("/dev/input/uinput", O_RDWR);
 +	if (ps3remote_uinput < 0) {
@@ -912,7 +912,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
  static gboolean fake_hid_common_connect(struct fake_input *fake, GError **err)
  {
 +	if (fake->idle_timeout > 0) {
-+		debug("Creating timeout");
++		btd_debug("Creating timeout");
 +		fake->timer = g_timeout_add_seconds(fake->idle_timeout,
 +					fake_hid_common_timeout, fake);
 +	}
@@ -923,7 +923,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
  static int fake_hid_common_disconnect(struct fake_input *fake)
  {
 +	if (fake->timer) {
-+		debug("Destroying timer");
++		btd_debug("Destroying timer");
 +		g_source_remove(fake->timer);
 +		fake->timer = 0;
 +	}
@@ -935,7 +935,7 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +{
 +	struct fake_input *fake = data;
 +
-+	debug("Disconnecting device because of timeout");
++	btd_debug("Disconnecting device because of timeout");
 +	input_device_request_disconnect(&fake->ba_src, &fake->ba_dst);
 +	
 +	fake->timer = 0;
@@ -1052,9 +1052,9 @@ diff -Naur bluez-4.65-old/input/fakehid.c bluez-4.65-new/input/fakehid.c
 +	}
 +}
 +
-diff -Naur bluez-4.65-old/input/fakehid.h bluez-4.65-new/input/fakehid.h
---- bluez-4.65-old/input/fakehid.h	2010-01-09 12:52:17.000000000 -0800
-+++ bluez-4.65-new/input/fakehid.h	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/fakehid.h bluez-4.66-new/input/fakehid.h
+--- bluez-4.66-old/input/fakehid.h	2010-01-09 12:52:17.000000000 -0800
++++ bluez-4.66-new/input/fakehid.h	2010-06-13 07:03:00.000000000 -0700
 @@ -37,3 +37,8 @@
  
  int fake_hid_connadd(struct fake_input *fake, GIOChannel *intr_io,
@@ -1064,9 +1064,9 @@ diff -Naur bluez-4.65-old/input/fakehid.h bluez-4.65-new/input/fakehid.h
 +
 +void fake_hid_exit(void);
 +
-diff -Naur bluez-4.65-old/input/input.conf bluez-4.65-new/input/input.conf
---- bluez-4.65-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
-+++ bluez-4.65-new/input/input.conf	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/input.conf bluez-4.66-new/input/input.conf
+--- bluez-4.66-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
++++ bluez-4.66-new/input/input.conf	2010-06-13 07:03:00.000000000 -0700
 @@ -7,3 +7,76 @@
  # Set idle timeout (in minutes) before the connection will
  # be disconnect (defaults to 0 for no timeout)
@@ -1144,9 +1144,9 @@ diff -Naur bluez-4.65-old/input/input.conf bluez-4.65-new/input/input.conf
 +0x61 = KEY_FRAMEFORWARD   # SLOW/STEP FORWARD (XBMC recommendation: KEY_DOT)
 +0xff = KEY_MAX
 +
-diff -Naur bluez-4.65-old/input/manager.c bluez-4.65-new/input/manager.c
---- bluez-4.65-old/input/manager.c	2010-05-23 05:47:19.000000000 -0700
-+++ bluez-4.65-new/input/manager.c	2010-05-24 09:11:59.000000000 -0700
+diff -Naur bluez-4.66-old/input/manager.c bluez-4.66-new/input/manager.c
+--- bluez-4.66-old/input/manager.c	2010-05-23 05:47:19.000000000 -0700
++++ bluez-4.66-new/input/manager.c	2010-06-13 07:03:00.000000000 -0700
 @@ -41,6 +41,7 @@
  #include "device.h"
  #include "server.h"
@@ -1172,10 +1172,10 @@ diff -Naur bluez-4.65-old/input/manager.c bluez-4.65-new/input/manager.c
 +
  	connection = NULL;
  }
-diff -Naur bluez-4.65-old/src/device.c bluez-4.65-new/src/device.c
---- bluez-4.65-old/src/device.c	2010-05-23 05:47:19.000000000 -0700
-+++ bluez-4.65-new/src/device.c	2010-05-24 09:11:59.000000000 -0700
-@@ -1000,6 +1000,7 @@
+diff -Naur bluez-4.66-old/src/device.c bluez-4.66-new/src/device.c
+--- bluez-4.66-old/src/device.c	2010-06-12 00:45:14.000000000 -0700
++++ bluez-4.66-new/src/device.c	2010-06-13 07:03:00.000000000 -0700
+@@ -1002,6 +1002,7 @@
  	const gchar *adapter_path = adapter_get_path(adapter);
  	bdaddr_t src;
  	char srcaddr[18], alias[MAX_NAME_LENGTH + 1];
@@ -1183,22 +1183,22 @@ diff -Naur bluez-4.65-old/src/device.c bluez-4.65-new/src/device.c
  
  	device = g_try_malloc0(sizeof(struct btd_device));
  	if (device == NULL)
-@@ -1031,6 +1032,10 @@
+@@ -1033,6 +1034,10 @@
  	if (read_blocked(&src, &device->bdaddr))
  		device_block(conn, device);
  
 +	read_device_id(srcaddr, address, NULL, &vendor, &product, &version);
-+	debug("Device %s has vendor=0x%04x product=0x%04x version=0x%04x",
++	btd_debug("Device %s has vendor=0x%04x product=0x%04x version=0x%04x",
 +			device->path, vendor, product, version);
 +
  	device->auth = 0xff;
  
  	if (read_link_key(&src, &device->bdaddr, NULL, NULL) == 0)
-@@ -1240,6 +1245,8 @@
+@@ -1245,6 +1250,8 @@
  		if (!probe_uuids)
  			continue;
  
-+		debug("Driver match %s for %s", driver->name, device->path);
++		btd_debug("Driver match %s for %s", driver->name, device->path);
 +
  		driver_data = g_new0(struct btd_driver_data, 1);
  
