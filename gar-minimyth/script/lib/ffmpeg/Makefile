@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 23492.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23607.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100530.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100614.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -70,7 +70,6 @@ CONFIGURE_ARGS = \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
-	--disable-beos-netserver \
 	--enable-encoders \
 	--disable-encoder="theora" \
 	--disable-encoder="vorbis" \
@@ -230,9 +229,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=23388
-FFMPEG_MT_VERSION_THREAD=11b1a8ee92128524a3259903c28da54ffd9a60fa
-FFMPEG_MT_VERSION_DATE=20100530
+FFMPEG_MT_VERSION_NORMAL=23596
+FFMPEG_MT_VERSION_THREAD=5380fee33a871580fe9f3424767eaf2362c8cde0
+FFMPEG_MT_VERSION_DATE=20100614
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
