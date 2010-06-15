@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100530.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
+PATCHFILES = $(GARNAME)-mt_20100614.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/libtheora lib/libvorbis lib/zlib system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libmpeg2 lib/libpng lib/libtheora lib/libvorbis lib/zlib system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILD_DEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -37,7 +37,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-gui \
 	--disable-gtk1 \
 	--enable-largefiles \
-	--disable-linux-devfs \
 	--disable-termcap \
 	--disable-termios \
 	--enable-iconv \
@@ -100,6 +99,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 # --enable-libswscale_so
 # --enable-libdca
 # --enable-liba52
+# --enable-libmpeg2
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
@@ -145,7 +145,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-twolame \
 	--disable-xmms \
 	--enable-mp3lib \
-	--enable-libmpeg2 \
+	--disable-libmpeg2-internal \
 	--disable-musepack \
 	--disable-libopencore_amrnb \
 	--disable-libopencore_amrwb \
