@@ -31,6 +31,7 @@ DEPENDS = lang/c lang/cxx \
 	lib/libxml2 \
 	lib/taglib \
 	lib/zlib \
+	qt/qt4 \
 	system/lirc \
 	X11/libvdpau \
 	xorg/xorg
@@ -178,6 +179,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-upnp \
 	--disable-skins2 \
 	--disable-hildon \
+	--enable-qt4 \
 	--disable-macosx \
 	--disable-ncurses \
 	--disable-xosd \
@@ -200,23 +202,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vlc \
 	--disable-activex \
 	--disable-mozilla
-
-CONFIGURE_ENV =
-
-# Build VLC with the Qt4 GUI.
-ifdef VLC_GUI_QT4
-DEPENDS += \
-	qt/qt4
-CONFIGURE_ARGS += \
-	--enable-qt4
-CONFIGURE_ENV += \
+CONFIGURE_ENV = \
 	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
 	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
 	ac_cv_path_UIC=$(DESTDIR)$(qt4bindir)/uic
-else
-CONFIGURE_ARGS += \
-	--disable-qt4
-endif
 
 include ../../gar.mk
 
