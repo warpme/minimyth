@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION = 7.20.1
+GARVERSION = 7.21.0
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -42,6 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libgcc \
 	--disable-ipv6 \
 	--enable-nonblocking \
+	--enable-threaded-resolver \
 	--enable-verbose \
 	--disable-sspi \
 	--enable-crypto-auth \
@@ -57,11 +58,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-egd-socket \
 	--with-random="$(rootdir)/dev/urandom" \
 	--without-gnutls \
+	--without-polarssl \
 	--without-nss \
 	--with-ca-bundle="$(sysconfdir)/ssl/certs/ca-bundle.crt" \
 	--without-ca-path \
 	--without-libssh2 \
+	--with-librtmp \
 	--without-libidn
+CONFIGURE_ENV  = \
+	ac_cv_path_PKGCONFIG="pkg-config"
 
 include ../../gar.mk
 
