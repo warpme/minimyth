@@ -18,9 +18,6 @@ sub start
     # Real time clock.
     system(qq(/sbin/modprobe rtc));
 
-    # IO scheduler.
-    system(qq(/sbin/modprobe as-iosched));
-
     # Loopback device.
     system(qq(/sbin/modprobe loop));
 
