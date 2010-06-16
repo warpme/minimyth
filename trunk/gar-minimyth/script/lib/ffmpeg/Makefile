@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/SDL lib/zlib utils/bzip2 X11/libva X11/libvdpau
+DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -98,6 +98,7 @@ CONFIGURE_ARGS = \
 	--disable-libmp3lame \
 	--disable-libnut \
 	--disable-libopenjpeg \
+	--enable-librtmp \
 	--disable-libschroedinger \
 	--disable-libspeex \
 	--enable-libtheora \
