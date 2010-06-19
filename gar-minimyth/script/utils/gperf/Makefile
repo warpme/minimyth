@@ -3,7 +3,7 @@ GARVERSION = 3.0.4
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES= $(DISTNAME)-perl.patch.gar
+PATCHFILES= $(DISTNAME)-ar.patch
 LICENSE = GPL3
 
 DESCRIPTION = 
@@ -26,5 +26,6 @@ CXXFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
+	@cd $(WORKSRC)/lib ; autoconf --verbose
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
