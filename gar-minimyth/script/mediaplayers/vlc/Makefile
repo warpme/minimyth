@@ -31,7 +31,6 @@ DEPENDS = lang/c lang/cxx \
 	lib/libxml2 \
 	lib/taglib \
 	lib/zlib \
-	qt/qt4 \
 	system/lirc \
 	X11/libvdpau \
 	xorg/xorg
@@ -179,7 +178,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-upnp \
 	--disable-skins2 \
 	--disable-hildon \
-	--enable-qt4 \
+	--disable-qt4 \
 	--disable-macosx \
 	--disable-ncurses \
 	--disable-xosd \
@@ -202,16 +201,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vlc \
 	--disable-activex \
 	--disable-mozilla
-CONFIGURE_ENV = \
-	ac_cv_path_MOC=$(DESTDIR)$(qt4bindir)/moc \
-	ac_cv_path_RCC=$(DESTDIR)$(qt4bindir)/rcc \
-	ac_cv_path_UIC=$(DESTDIR)$(qt4bindir)/uic
 
 include ../../gar.mk
-
-# Fails to compile with GCC's graphite.
-CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
-CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
 # Fails to compile with GCC's link time optimization (autoconf adds duplicate object files).
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
@@ -232,7 +223,6 @@ clean-all:
 	@$(MAKE) -C ../vlc clean
 	@rm -rf $(DESTDIR)$(bindir)/vlc
 	@rm -rf $(DESTDIR)$(bindir)/cvlc
-	@rm -rf $(DESTDIR)$(bindir)/qvlc
 	@rm -rf $(DESTDIR)$(bindir)/rvlc
 	@rm -rf $(DESTDIR)$(bindir)/vlc-wrapper
 	@rm -rf $(DESTDIR)$(includedir)/vlc
