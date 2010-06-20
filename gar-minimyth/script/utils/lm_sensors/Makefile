@@ -7,7 +7,8 @@ DISTFILES   = $(DISTNAME).tar.bz2
 PATCHFILES  = \
 	$(DISTNAME)-commit_5832.patch \
 	$(DISTNAME)-commit_5835.patch \
-	$(DISTNAME)-commit_5837.patch
+	$(DISTNAME)-commit_5837.patch \
+	$(DISTNAME)-commit_5842.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
