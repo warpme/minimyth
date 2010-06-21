@@ -1,0 +1,210 @@
+diff -Naur ffmpeg-23679.31515-old/ffpresets/libvpx-1080p50_60.ffpreset ffmpeg-23679.31515-new/ffpresets/libvpx-1080p50_60.ffpreset
+--- ffmpeg-23679.31515-old/ffpresets/libvpx-1080p50_60.ffpreset	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-23679.31515-new/ffpresets/libvpx-1080p50_60.ffpreset	2010-06-21 07:39:55.000000000 -0700
+@@ -0,0 +1,13 @@
++vcodec=libvpx
++g=120
++rc_lookahead=25
++level=216
++profile=1
++qmax=42
++qmin=10
++token_partitions=4
++vb=2M
++
++#ignored unless using -pass 2
++maxrate=24M
++minrate=100k
+diff -Naur ffmpeg-23679.31515-old/ffpresets/libvpx-1080p.ffpreset ffmpeg-23679.31515-new/ffpresets/libvpx-1080p.ffpreset
+--- ffmpeg-23679.31515-old/ffpresets/libvpx-1080p.ffpreset	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-23679.31515-new/ffpresets/libvpx-1080p.ffpreset	2010-06-21 07:39:55.000000000 -0700
+@@ -0,0 +1,13 @@
++vcodec=libvpx
++g=120
++rc_lookahead=16
++level=216
++profile=1
++qmax=42
++qmin=10
++token_partitions=4
++vb=2M
++
++#ignored unless using -pass 2
++maxrate=24M
++minrate=100k
+diff -Naur ffmpeg-23679.31515-old/ffpresets/libvpx-360p.ffpreset ffmpeg-23679.31515-new/ffpresets/libvpx-360p.ffpreset
+--- ffmpeg-23679.31515-old/ffpresets/libvpx-360p.ffpreset	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-23679.31515-new/ffpresets/libvpx-360p.ffpreset	2010-06-21 07:39:55.000000000 -0700
+@@ -0,0 +1,12 @@
++vcodec=libvpx
++g=120
++rc_lookahead=16
++level=216
++profile=0
++qmax=51
++qmin=1
++vb=768k
++
++#ignored unless using -pass 2
++maxrate=1.5M
++minrate=40k
+diff -Naur ffmpeg-23679.31515-old/ffpresets/libvpx-720p50_60.ffpreset ffmpeg-23679.31515-new/ffpresets/libvpx-720p50_60.ffpreset
+--- ffmpeg-23679.31515-old/ffpresets/libvpx-720p50_60.ffpreset	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-23679.31515-new/ffpresets/libvpx-720p50_60.ffpreset	2010-06-21 07:39:55.000000000 -0700
+@@ -0,0 +1,13 @@
++vcodec=libvpx
++g=120
++rc_lookahead=25
++level=216
++profile=0
++qmax=42
++qmin=10
++token_partitions=4
++vb=2M
++
++#ignored unless using -pass 2
++maxrate=24M
++minrate=100k
+diff -Naur ffmpeg-23679.31515-old/ffpresets/libvpx-720p.ffpreset ffmpeg-23679.31515-new/ffpresets/libvpx-720p.ffpreset
+--- ffmpeg-23679.31515-old/ffpresets/libvpx-720p.ffpreset	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-23679.31515-new/ffpresets/libvpx-720p.ffpreset	2010-06-21 07:39:55.000000000 -0700
+@@ -0,0 +1,13 @@
++vcodec=libvpx
++g=120
++rc_lookahead=16
++level=216
++profile=0
++qmax=42
++qmin=10
++token_partitions=4
++vb=2M
++
++#ignored unless using -pass 2
++maxrate=24M
++minrate=100k
+diff -Naur ffmpeg-23679.31515-old/libavcodec/avcodec.h ffmpeg-23679.31515-new/libavcodec/avcodec.h
+--- ffmpeg-23679.31515-old/libavcodec/avcodec.h	2010-06-21 07:39:35.000000000 -0700
++++ ffmpeg-23679.31515-new/libavcodec/avcodec.h	2010-06-21 07:39:55.000000000 -0700
+@@ -600,6 +600,7 @@
+ #define CODEC_FLAG2_PSY           0x00080000 ///< Use psycho visual optimizations.
+ #define CODEC_FLAG2_SSIM          0x00100000 ///< Compute SSIM during encoding, error[] values are undefined.
+ #define CODEC_FLAG2_INTRA_REFRESH 0x00200000 ///< Use periodic insertion of intra blocks instead of keyframes.
++#define CODEC_FLAG2_ALT_REF       0x00400000 ///< Allow encoder to insert alternate reference frames (VP8 only)
+ 
+ /* Unsupported options :
+  *              Syntax Arithmetic coding (SAC)
+@@ -2666,6 +2667,18 @@
+      */
+     float crf_max;
+ 
++    /**
++     * Number of token partitions.
++     * Indicates number of sub-streams in the bitstream. Used for parallelized
++     * decoding.
++     * Valid values are 1, 2, 4 & 8
++     * - encoding: Set by user.
++     * - decoding: unused
++     *
++     *  \attention VP8 specific
++     */
++    int token_partitions;
++
+     int log_level_offset;
+ } AVCodecContext;
+ 
+diff -Naur ffmpeg-23679.31515-old/libavcodec/libvpxenc.c ffmpeg-23679.31515-new/libavcodec/libvpxenc.c
+--- ffmpeg-23679.31515-old/libavcodec/libvpxenc.c	2010-06-21 07:39:36.000000000 -0700
++++ ffmpeg-23679.31515-new/libavcodec/libvpxenc.c	2010-06-21 07:39:55.000000000 -0700
+@@ -36,13 +36,13 @@
+  * One encoded frame returned from the library.
+  */
+ struct FrameListData {
+-    void *buf;                       /**≤ compressed data buffer */
+-    size_t sz;                       /**≤ length of compressed data */
+-    int64_t pts;                     /**≤ time stamp to show frame
++    void *buf;                       /**< compressed data buffer */
++    size_t sz;                       /**< length of compressed data */
++    int64_t pts;                     /**< time stamp to show frame
+                                           (in timebase units) */
+-    unsigned long duration;          /**≤ duration to show frame
++    unsigned long duration;          /**< duration to show frame
+                                           (in timebase units) */
+-    uint32_t flags;                  /**≤ flags for this frame */
++    uint32_t flags;                  /**< flags for this frame */
+     struct FrameListData *next;
+ };
+ 
+@@ -218,11 +218,21 @@
+     }
+     dump_enc_cfg(avctx, &enccfg);
+ 
++    /* With altref set an additional frame at the same pts may be produced.
++       Increasing the time_base gives the library a window to place these frames
++       ensuring strictly increasing timestamps. */
++    if (avctx->flags2 & CODEC_FLAG2_ALT_REF) {
++        avctx->ticks_per_frame = 2;
++        avctx->time_base       = av_mul_q(avctx->time_base,
++                                          (AVRational){1, avctx->ticks_per_frame});
++    }
++
+     enccfg.g_w            = avctx->width;
+     enccfg.g_h            = avctx->height;
+     enccfg.g_timebase.num = avctx->time_base.num;
+     enccfg.g_timebase.den = avctx->time_base.den;
+     enccfg.g_threads      = avctx->thread_count;
++    enccfg.g_lag_in_frames= FFMIN(avctx->rc_lookahead, 25);  //0-25, avoids init failure
+ 
+     if (avctx->flags & CODEC_FLAG_PASS1)
+         enccfg.g_pass = VPX_RC_FIRST_PASS;
+@@ -276,7 +286,29 @@
+         enccfg.rc_twopass_stats_in = ctx->twopass_stats;
+     }
+ 
+-    ctx->deadline = VPX_DL_GOOD_QUALITY;
++    /* 0-3: For non-zero values the encoder increasingly optimizes for reduced
++       complexity playback on low powered devices at the expense of encode
++       quality. */
++    if (avctx->profile != FF_PROFILE_UNKNOWN)
++        enccfg.g_profile = avctx->profile;
++    switch (FFABS(avctx->level) / 100) {
++    case 1:
++        ctx->deadline = VPX_DL_BEST_QUALITY;
++        break;
++    case 2:
++    default:
++        ctx->deadline = VPX_DL_GOOD_QUALITY;
++        break;
++    case 3:
++        ctx->deadline = VPX_DL_REALTIME;
++        break;
++    }
++    av_log(avctx, AV_LOG_DEBUG, "Using deadline: %lu\n", ctx->deadline);
++
++    if (avctx->level != FF_LEVEL_UNKNOWN) {
++        enccfg.g_error_resilient = avctx->level < 0;
++        cpuused                  = FFABS(avctx->level) % 100 - 16; //[-16,16]
++    }
+ 
+     dump_enc_cfg(avctx, &enccfg);
+     /* Construct Encoder Context */
+@@ -290,6 +322,8 @@
+     av_log(avctx, AV_LOG_DEBUG, "vpx_codec_control\n");
+     codecctl_int(avctx, VP8E_SET_CPUUSED,           cpuused);
+     codecctl_int(avctx, VP8E_SET_NOISE_SENSITIVITY, avctx->noise_reduction);
++    codecctl_int(avctx, VP8E_SET_ENABLEAUTOALTREF,  !!(avctx->flags2 & CODEC_FLAG2_ALT_REF));
++    codecctl_int(avctx, VP8E_SET_TOKEN_PARTITIONS,  av_log2(avctx->token_partitions));
+ 
+     //provide dummy value to initialize wrapper, values will be updated each _encode()
+     vpx_img_wrap(&ctx->rawimg, VPX_IMG_FMT_I420, avctx->width, avctx->height, 1,
+diff -Naur ffmpeg-23679.31515-old/libavcodec/options.c ffmpeg-23679.31515-new/libavcodec/options.c
+--- ffmpeg-23679.31515-old/libavcodec/options.c	2010-06-21 07:39:35.000000000 -0700
++++ ffmpeg-23679.31515-new/libavcodec/options.c	2010-06-21 07:39:55.000000000 -0700
+@@ -414,6 +414,8 @@
+ {"intra_refresh", "use periodic insertion of intra blocks instead of keyframes", 0, FF_OPT_TYPE_CONST, CODEC_FLAG2_INTRA_REFRESH, INT_MIN, INT_MAX, V|E, "flags2"},
+ {"crf_max", "in crf mode, prevents vbv from lowering quality beyond this point", OFFSET(crf_max), FF_OPT_TYPE_FLOAT, DEFAULT, 0, 51, V|E},
+ {"log_level_offset", "set the log level offset", OFFSET(log_level_offset), FF_OPT_TYPE_INT, 0, INT_MIN, INT_MAX },
++{"altref", "enable use of alternate reference frames (VP8/2-pass only)", 0, FF_OPT_TYPE_CONST, CODEC_FLAG2_ALT_REF, INT_MIN, INT_MAX, V|E, "flags2"},
++{"token_partitions", "Number of sub-streams in bitstream (1,2,4,8). Used for parallelized decoding.", OFFSET(token_partitions), FF_OPT_TYPE_INT, 1, 1, INT_MAX, V|E},
+ {NULL},
+ };
+ 
