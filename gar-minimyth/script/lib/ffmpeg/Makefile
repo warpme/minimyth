@@ -1,16 +1,16 @@
 GARNAME = ffmpeg
-GARVERSION = 23634.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23679.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100616.patch
+PATCHFILES = $(GARNAME)-libvpx_0_9_1.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100616.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
+DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/libvpx lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -92,8 +92,6 @@ CONFIGURE_ARGS = \
 	--disable-libdc1394 \
 	--disable-libdirac \
 	--disable-libfaac \
-	--disable-libfaad \
-	--disable-libfaadbin \
 	--disable-libgsm \
 	--disable-libmp3lame \
 	--disable-libnut \
@@ -103,7 +101,7 @@ CONFIGURE_ARGS = \
 	--disable-libspeex \
 	--enable-libtheora \
 	--enable-libvorbis \
-	--disable-libvpx \
+	--enable-libvpx \
 	--disable-libx264 \
 	--disable-libxvid \
 	--disable-mlib \
