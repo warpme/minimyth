@@ -1,10 +1,9 @@
 GARNAME = xorg-server
-GARVERSION = 1.7.7
+GARVERSION = 1.8.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-udev_20090929.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
 	$(DISTNAME)-detect_nouveau.patch \
@@ -19,20 +18,20 @@ endef
 DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
+	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fixesproto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libdrm \
-	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
-	$(CATEGORY)/libXinerama \
 	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/Mesa \
 	$(CATEGORY)/pixman \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \
@@ -63,17 +62,18 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-strict-compilation \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-largefile \
-	--disable-werror \
 	--disable-debug \
 	--disable-unit-tests \
 	--disable-sparkle \
 	--disable-builddocs \
 	--enable-install-libxf86config \
-	--disable-null-root-cursor \
 	--enable-visibility \
+	--enable-pc98=auto \
 	--enable-aiglx \
 	--disable-glx-tls \
 	--enable-registry \
@@ -109,6 +109,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vgahw \
 	--enable-vbe \
 	--enable-int10-module \
+	--disable-windowswm \
 	--enable-xorg \
 	--disable-dmx \
 	--disable-xvfb \
@@ -118,19 +119,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xwin \
 	--disable-kdrive \
 	--disable-xephyr \
-	--disable-xsdl \
 	--disable-xfake \
 	--disable-xfbdev \
 	--disable-install-setuid \
-	--disable-secure-rpc \
 	--enable-unix-transport \
 	--disable-tcp-transport \
 	--disable-ipv6 \
 	--disable-local-transport \
-	--disable-silent-rules \
-	--disable-shave \
+	--disable-secure-rpc \
 	--with-gnu-ld \
-	--with-fontdir="$(datadir)/fonts/X11" \
 	--with-default-font-path="$(datadir)/fonts/X11/TTF,$(datadir)/fonts/X11/misc" \
 	--with-xkb-path="$(datadir)/X11/xkb" \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \

@@ -1,11 +1,11 @@
 GARNAME = Mesa
-GARVERSION = 7.7.1
+GARVERSION = 7.8.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-xeglthreads.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
@@ -13,9 +13,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lang/cxx lib/expat \
+DEPENDS    = lang/c lang/cxx lib/expat \
 	$(CATEGORY)/dri2proto \
-	$(CATEGORY)/xf86driproto \
+	$(CATEGORY)/xextproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
@@ -26,16 +26,21 @@ DEPENDS   = lang/c lang/cxx lib/expat \
 	$(CATEGORY)/libXi \
 	$(CATEGORY)/libXmu \
 	$(CATEGORY)/libXxf86vm \
-	$(CATEGORY)/xf86vidmodeproto \
-	$(CATEGORY)/xproto
-BUILDDEPS = $(CATEGORY)/makedepend
+	$(CATEGORY)/libXt
+BUILDDEPS  = $(CATEGORY)/makedepend
+ifneq ($(DESTIMG),build)
+BUILDDEPS += $(CATEGORY)/Mesa
+endif
 
 PWD := $(shell pwd)
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile xdemos source
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile xdemos source
+ifeq ($(DESTIMG),build)
+INSTALL_SCRIPTS   += glsl-compile
+endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -48,14 +53,18 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gallium-intel \
 	--disable-gallium-radeon \
 	--disable-gallium-nouveau \
+	--disable-gallium-swrast \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
 	--with-dri-drivers="$(DRI_DIRS)"
 
-BUILD_ARGS = \
+BUILD_ARGS  = \
 	HOST_CC="$(build_CC)" \
 	HOST_CFLAGS="$(build_CFLAGS)"
+ifneq ($(DESTIMG),build)
+BUILD_ARGS += GLSL_CL=$(build_DESTDIR)$(build_bindir)/glsl-compile
+endif
 
 include ../../gar.mk
 
@@ -63,7 +72,7 @@ include ../../gar.mk
 CFLAGS   := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
 CXXFLAGS := $(if $(filter -Os, $(CXXFLAGS)), $(filter-out -Os, $(CXXFLAGS)) -O2)
 
-# Mesa 7.7.1 fails to compile with GCC's link time optimization.
+# Mesa 7.8.2 fails to compile when compiling with GCC's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
@@ -87,4 +96,9 @@ install-source:
 	@mkdir -p $(DESTDIR)$(sourcedir)
 	@rm -f $(DESTDIR)$(sourcedir)/Mesa
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/Mesa
+	@$(MAKECOOKIE)
+
+install-glsl-compile:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/src/glsl/apps/compile $(DESTDIR)$(bindir)/glsl-compile
 	@$(MAKECOOKIE)
