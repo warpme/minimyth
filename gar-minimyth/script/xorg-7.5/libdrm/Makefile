@@ -26,7 +26,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--disable-silent-rules \
-	--disable-libkms \
+	--enable-libkms \
 	--enable-intel \
 	--enable-radeon \
 	--disable-vmwgfx-experimental-api \

@@ -1,7 +1,7 @@
 GARNAME = xf86-video-nouveau
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	9a3d0ab43f6335ab6cd48be4aa2f4f728386b386, \
+	db98ad23633958e52f84501c5a2061d42d346b64, \
 	xxx ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
@@ -16,7 +16,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS  = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -27,6 +27,9 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
+ifneq ($(DESTIMG),build)
+DEPENDS += system/udev
+endif
 BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
@@ -42,8 +45,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--with-gnu-ld \
-	--with-kms
+	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
