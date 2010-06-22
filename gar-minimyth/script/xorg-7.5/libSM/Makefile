@@ -1,5 +1,5 @@
 GARNAME = libSM
-GARVERSION = 1.1.0
+GARVERSION = 1.1.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS = lang/c utils/util-linux-ng \
 	$(CATEGORY)/libICE \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
@@ -29,7 +29,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--with-gnu-ld \
-	--without-libuuid
+	--with-libuuid
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
