@@ -1,5 +1,5 @@
 GARNAME = libXfont
-GARVERSION = 1.4.1
+GARVERSION = 1.4.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/freetype \
+DEPENDS = lang/c lib/freetype lib/zlib \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/xproto \
@@ -25,7 +25,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--disable-silent-rules \
 	--disable-devel-docs \
 	--enable-freetype \
 	--enable-builtins \
