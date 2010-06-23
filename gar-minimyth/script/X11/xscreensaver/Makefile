@@ -1,9 +1,9 @@
 GARNAME = xscreensaver
-GARVERSION = 5.10
+GARVERSION = 5.11
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-intltool_disable.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-po_remove.patch $(DISTNAME)-intltool_disable.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION =
@@ -39,6 +39,4 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@# Work around a problem caused by xscreensaver' broken use of intltools.
-	@cd $(WORKSRC) ; touch po/stamp-it
 	@$(MAKECOOKIE)
