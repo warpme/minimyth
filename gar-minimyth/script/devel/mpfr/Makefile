@@ -3,6 +3,7 @@ GARVERSION = $(MPFR_VERSION)
 CATEGORIES = devel
 MASTER_SITES = http://www.mpfr.org/mpfr-current/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-allpatches_20100623.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
