@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 23679.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23738.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -46,8 +46,6 @@ CONFIGURE_ARGS = \
 	--enable-postproc \
 	--enable-avfilter \
 	--disable-avfilter-lavf \
-	--disable-beosthreads \
-	--disable-os2threads \
 	--enable-pthreads \
 	--disable-w32threads \
 	--enable-x11grab \
