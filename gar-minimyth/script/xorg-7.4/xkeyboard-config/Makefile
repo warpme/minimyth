@@ -1,7 +1,8 @@
 GARNAME = xkeyboard-config
-GARVERSION = 1.8
+GARVERSION = 1.9
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://xlibs.freedesktop.org/xkbdesc/
+MASTER_SITES  = http://xlibs.freedesktop.org/xkbdesc/
+MASTER_SITES += http://people.freedesktop.org/~svu/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
