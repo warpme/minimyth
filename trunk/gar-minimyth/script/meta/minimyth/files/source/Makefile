@@ -264,10 +264,22 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		index=$$(($${index}+2)) && \
 		ln -sf ../init/$(file).pm $@~$(sysconfdir)/rc.d/rc/K$${index}$(file) ; )
 	@# Make font file links.
-	@for font in `cd $@~$(datadir)/fonts/X11/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
-		ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv))$(datadir)/fonts/X11/TTF/$${font} \
-		       $@~$(datadir)/mythtv/$${font} ; \
-	 done
+	@
+	@if [ $(mm_MYTH_VERSION) = "0.20" ]         || \
+	    [ $(mm_MYTH_VERSION) = "0.20-softpad" ] || \
+	    [ $(mm_MYTH_VERSION) = "0.21" ]         || \
+	    [ $(mm_MYTH_VERSION) = "0.22" ]         || \
+	    [ $(mm_MYTH_VERSION) = "0.23" ]         ; then \
+		for font in `cd $@~$(datadir)/fonts/X11/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
+			ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv))$(datadir)/fonts/X11/TTF/$${font} \
+			       $@~$(datadir)/mythtv/$${font} ; \
+	 	done ; \
+	else \
+		for font in `cd $@~$(datadir)/fonts/X11/TTF ; ls -1 *.{TTF,ttf} 2> /dev/null` ; do \
+			ln -sf $(patsubst /%,%,$(call DIRSTODOTS,$(datadir)/mythtv/fonts))$(datadir)/fonts/X11/TTF/$${font} \
+			       $@~$(datadir)/mythtv/fonts/$${font} ; \
+	 	done ; \
+	fi
 	@# Remove unneeded perl files.
 	@echo 'removing unneeded perl files'
 	@dirs='$(PERL_libdir)' ; \
