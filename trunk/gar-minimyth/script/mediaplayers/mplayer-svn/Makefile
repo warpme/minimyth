@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libvpx_0_9_1.patch $(GARNAME)-mt_20100616.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
+PATCHFILES = $(GARNAME)-libvpx_0_9_1.patch $(GARNAME)-mt_20100624.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libmpeg2 lib/libpng lib/libtheora lib/libvorbis lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libmpeg2 lib/libpng lib/libtheora lib/libvorbis lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILD_DEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -131,7 +131,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-speex \
 	--enable-theora \
 	--enable-faad \
-	--disable-faad-internal \
+	--enable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \
 	--disable-faac-lavc \

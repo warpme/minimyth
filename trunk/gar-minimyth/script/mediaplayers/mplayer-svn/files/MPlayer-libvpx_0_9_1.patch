@@ -1,24 +1,7 @@
-diff -Naur MPlayer-31536-old/configure MPlayer-31536-new/configure
---- MPlayer-31536-old/configure	2010-06-23 06:15:48.000000000 -0700
-+++ MPlayer-31536-new/configure	2010-06-23 06:16:34.000000000 -0700
-@@ -7669,8 +7669,15 @@
-     cat > $TMPC << EOF
- #include <vpx/vpx_decoder.h>
- #include <vpx/vp8dx.h>
-+#include <vpx/vpx_encoder.h>
-+#include <vpx/vp8cx.h>
- struct vpx_codec_ctx decoder;
--int main(void) { vpx_codec_dec_init(NULL, &vpx_codec_vp8_dx_algo, NULL, 0); return 0; }
-+int main(void)
-+{
-+    vpx_codec_dec_init(NULL,&vpx_codec_vp8_dx_algo,NULL,0);
-+    vpx_codec_enc_init(NULL,&vpx_codec_vp8_cx_algo,NULL,0);
-+    return 0;
-+}
- EOF
-     cc_check -lvpx && _libvpx_lavc=yes && extra_ldflags="$extra_ldflags -lvpx"
-   fi
-@@ -7678,6 +7685,7 @@
+diff -Naur MPlayer-31555-old/configure MPlayer-31555-new/configure
+--- MPlayer-31555-old/configure	2010-06-24 13:32:20.000000000 -0700
++++ MPlayer-31555-new/configure	2010-06-24 13:38:42.000000000 -0700
+@@ -7592,6 +7592,7 @@
  if test "$_libvpx_lavc" = yes ; then
    def_libvpx_lavc='#define CONFIG_LIBVPX 1'
    _libavdecoders="$_libavdecoders LIBVPX_DECODER"
