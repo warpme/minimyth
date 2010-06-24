@@ -1,9 +1,8 @@
 GARNAME = udev
-GARVERSION = 157
+GARVERSION = 158
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pci_ids_path.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -39,7 +38,6 @@ sbindir    := $(esbindir)
 libexecdir := $(elibdir)/udev
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
