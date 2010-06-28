@@ -297,6 +297,18 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			done ; \
 		fi ; \
 	 done
+	@# Remove unneeded python files.
+	@echo 'removing unneeded python files'
+	@dirs='$(PYTHON_libdir)' ; \
+	 for dir in $${dirs} ; do \
+		if [ -e $@~$${dir} ] ; then \
+			cd $@~$${dir} ; \
+			find . -depth -type f -name 'EGG-INFO' -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.egg-info' -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.pyc' -exec rm -rf '{}' \; ; \
+			find . -depth -type f -name '*.pyo' -exec rm -rf '{}' \; ; \
+		fi ; \
+	 done
 	@# Remove unwanted binaries, etcs, shares and libraries.
 	@echo 'removing unwanted files'
 	@for file_item in $(addprefix $@~,$(MM_REMOVES)) ; do \
@@ -421,6 +433,22 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 			rm -f $@~$${revert}.ERR ; \
 			rm -f $@~$${revert}.LOG ; \
 			cp -f $(DESTDIR)$${revert} $@~$${revert} ; \
+		done ; \
+	 fi
+	@# Strip Python scripts
+	@if [ ! $(mm_DEBUG) = yes ] ; then \
+		echo 'stripping python' ; \
+		dir_list="$@~$(PYTHON_libdir) $@~$(datadir)/mythtv" ; \
+		file_list=`find $${dir_list} -depth -name '*.py'` ; \
+		file_list='' ; \
+		for file in $${file_list} ; do \
+			python $(build_DESTDIR)/$(build_bindir)/pyminimizer.py "$${file}" > "$${file}~" >& /dev/null ; \
+			if [ "x$$?" = "x0" ] ; then \
+				mv -f "$${file}~" "$${file}" ; \
+			else \
+				echo "stripping python: not stripping file [...]$${file}" ; \
+				rm -f "$${file}~" ; \
+			fi ; \
 		done ; \
 	 fi
 	@# Create library loader symbolic link to help out binary applications.

@@ -153,6 +153,7 @@ mm-all:
 		   [ ! "$${software}" = "bdremote"       ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
 		   [ ! "$${software}" = "backend"        ] && \
+		   [ ! "$${software}" = "python"         ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \

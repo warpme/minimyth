@@ -68,6 +68,7 @@ DEPENDS = \
 	net/portmap \
 	system/powernowd \
 	utils/procps \
+	python/python \
 	X11/ratpoison \
 	utils/regionset \
 	X11/rxvt \
@@ -124,7 +125,12 @@ DEPENDS = \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythvideo),myth-$(mm_MYTH_VERSION)/mythvideo) \
 		perl/perl-HTML-Parser \
 		perl/perl-libwww-perl \
-		perl/perl-URI) \
+		perl/perl-URI \
+		$(if $(filter python,$(mm_SOFTWARE)), \
+			python/python-BeautifulSoup \
+			python/python-IMDbPY \
+			python/python-Imaging \
+			python/python-MySQL-python)) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
 		perl/perl-Date-Manip \
@@ -170,7 +176,8 @@ BUILDDEPS = \
 	utils/tar \
 	utils/util-linux-ng \
 	xorg/xorg \
-	perl/perlstrip
+	perl/perlstrip \
+	python/python-pyminimizer
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

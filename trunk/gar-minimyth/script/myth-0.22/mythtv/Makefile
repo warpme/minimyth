@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-python_cross.patch \
 	$(DISTNAME_SHORT)-ticket-7063-20091202.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
@@ -38,6 +39,7 @@ DEPENDS = \
 	lib/libavc1394 \
 	lib/libiec61883 \
 	lib/zlib \
+	python/python \
 	qt/qt4 \
 	system/lirc \
 	X11/libvdpau \
@@ -125,13 +127,17 @@ CONFIGURE_ARGS = \
 	--enable-opengl-video \
 	--disable-mac-accel \
 	--enable-opengl-vsync \
-	--without-bindings="perl,python"
+	--without-bindings="perl" \
+	--with-bindings="python"
 
-CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
-BUILD_ENV     = $(MYTHTV_BUILD_ENV)
-INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
+CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
+BUILD_ENV      = $(MYTHTV_BUILD_ENV)
+INSTALL_ENV    = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
+BUILD_ENV     += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
+INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
+
+GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk python/python/package-api.mk
 include ../../gar.mk
 
 # Fails to compile with GCC's link time optimization.

@@ -1,5 +1,5 @@
 GARNAME = Python
-GARVERSION =  2.6.5
+GARVERSION =  $(PYTHON_VERSION)
 CATEGORIES = python
 MASTER_SITES = http://www.python.org/ftp/python/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -7,7 +7,8 @@ PATCHFILES  = $(DISTNAME)-configure.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
-LICENSE =
+LICENSE = $(GARNAME)
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
 DESCRIPTION = 
 define BLURB
@@ -19,14 +20,31 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += python/python
 endif
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
+BUILD_SCRIPTS      = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
+ifeq ($(DESTIMG),build)
+INSTALL_SCRIPTS   += cross
+endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-shared
-
+ifneq ($(DESTIMG),build)
+BUILD_ARGS     = \
+	HOSTPYTHON=$(build_DESTDIR)$(build_bindir)/python \
+	HOSTPGEN=$(build_DESTDIR)$(build_bindir)/python-pgen \
+	BLDSHARED="$(CC) -shared" \
+	CROSS_COMPILE=$(compiler_prefix) \
+	CROSS_COMPILE_TARGET=yes
+INSTALL_ARGS   = \
+	HOSTPYTHON=$(build_DESTDIR)$(build_bindir)/python \
+	HOSTPGEN=$(build_DESTDIR)$(build_bindir)/python-pgen \
+	BLDSHARED="$(CC) -shared" \
+	CROSS_COMPILE=$(compiler_prefix) \
+	CROSS_COMPILE_TARGET=yes
+endif
+	
 ifneq ($(DESTIMG),build)
 CONFIGURE_ENV = \
 	ac_cv_file_dev_ptc=no \
@@ -35,12 +53,17 @@ CONFIGURE_ENV = \
 	ac_cv_func_chflags_works=no \
 	ac_cv_func_printf_zd=yes
 endif
-	
+
 include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
+install-cross:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/Parser/pgen $(DESTDIR)$(bindir)/python-pgen
 	@$(MAKECOOKIE)
 
 post-install:
