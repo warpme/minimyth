@@ -3,7 +3,7 @@ GARVERSION ?= $(mm_VERSION)
 
 all: mm-all
 
-GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk perl/perl/package-api.mk
+GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk perl/perl/package-api.mk python/python/package-api.mk
 include ../../gar.mk
 
 MM_INIT_START := \
@@ -166,6 +166,7 @@ MM_CONFIG_VARS := $(sort \
 	mm_VERSION \
 	OBJDUMP \
 	PERL_libdir \
+	PYTHON_libdir \
 	qt3prefix \
 	qt4prefix \
 	rootdir \

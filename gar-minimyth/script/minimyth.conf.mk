@@ -51,7 +51,7 @@ mm_GRAPHICS               ?= intel \
 # 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
 # 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
 # warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
-# 'debug'.
+# 'python', 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
@@ -72,6 +72,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              bdremote \
                              wiimote \
                              backend \
+                             $(if $(filter-out $(mm_MYTH_VERSION),0.20 0.20-softpad),python) \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
