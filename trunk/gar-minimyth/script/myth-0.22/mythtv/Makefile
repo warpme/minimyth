@@ -44,7 +44,9 @@ DEPENDS = \
 	system/lirc \
 	X11/libvdpau \
 	xorg/xorg
-BUILDDEPS = devel/yasm
+BUILDDEPS = \
+	devel/yasm \
+	python/python-distutilscross
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
