@@ -3,7 +3,8 @@ GARVERSION = 0.8.4
 CATEGORIES = python
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/pyxml/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
-PATCHFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
+PATCHFILES  = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-xpath_fix.patch
+PATCHFILES += $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENCE
 
