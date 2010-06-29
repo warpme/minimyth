@@ -51,7 +51,8 @@ CONFIGURE_ENV = \
 	ac_cv_file_dev_ptmx=yes \
 	ac_cv_func_lchflags_works=no \
 	ac_cv_func_chflags_works=no \
-	ac_cv_func_printf_zd=yes
+	ac_cv_func_printf_zd=yes \
+	EXTRA_CFLAGS="$(CFLAGS)"
 endif
 
 include ../../gar.mk
