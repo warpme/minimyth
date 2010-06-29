@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 23759.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 23876.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -125,7 +125,6 @@ CONFIGURE_ARGS = \
 	--build-suffix="" \
 	--arch=$(GARCH_FAMILY) \
 	--cpu=$(GARCH) \
-	--disable-powerpc-perf \
 	--enable-asm \
 	--disable-altivec \
 	--enable-amd3dnow \
@@ -145,7 +144,6 @@ CONFIGURE_ARGS = \
 	--enable-yasm \
 	--disable-sram \
 	--disable-debug \
-	--disable-gprof \
 	--enable-optimizations \
 	--disable-extra-warnings \
 	--disable-stripping

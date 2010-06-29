@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libvpx_0_9_1.patch $(GARNAME)-mt_20100624.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
+PATCHFILES = $(GARNAME)-mt_20100624.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100602.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -130,7 +130,6 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-libvorbis \
 	--disable-speex \
 	--enable-theora \
-	--enable-faad \
 	--enable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \
