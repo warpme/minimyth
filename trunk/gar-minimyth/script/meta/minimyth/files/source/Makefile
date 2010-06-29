@@ -436,21 +436,20 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		done ; \
 	 fi
 	@# Strip Python scripts
-	@if [ ! $(mm_DEBUG) = yes ] ; then \
-		echo 'stripping python' ; \
-		dir_list="$@~$(PYTHON_libdir) $@~$(datadir)/mythtv" ; \
-		file_list=`find $${dir_list} -depth -name '*.py'` ; \
-		file_list='' ; \
-		for file in $${file_list} ; do \
-			python $(build_DESTDIR)/$(build_bindir)/pyminifier.py "$${file}" > "$${file}~" >& /dev/null ; \
-			if [ "x$$?" = "x0" ] ; then \
-				mv -f "$${file}~" "$${file}" ; \
-			else \
-				echo "stripping python: not stripping file [...]$${file}" ; \
-				rm -f "$${file}~" ; \
-			fi ; \
-		done ; \
-	 fi
+	@#if [ ! $(mm_DEBUG) = yes ] ; then \
+	#	echo 'stripping python' ; \
+	#	dir_list="$@~$(PYTHON_libdir) $@~$(datadir)/mythtv" ; \
+	#	file_list=`find $${dir_list} -depth -name '*.py'` ; \
+	#	for file in $${file_list} ; do \
+	#		python $(build_DESTDIR)/$(build_bindir)/pyminifier.py "$${file}" 1> "$${file}~" 2> /dev/null ; \
+	#		if [ "x$$?" = "x0" ] ; then \
+	#			mv -f "$${file}~" "$${file}" ; \
+	#		else \
+	#			echo "stripping python: not stripping file [...]$${file}" ; \
+	#			rm -f "$${file}~" ; \
+	#		fi ; \
+	#	done ; \
+	# fi
 	@# Create library loader symbolic link to help out binary applications.
 	@if [ -e $@~$(elibdir)/ld-linux.so.2 ] ; then \
 		if [ ! $(elibdir) = '/lib32' ] ; then \
