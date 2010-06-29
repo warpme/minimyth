@@ -1,4 +1,4 @@
-GARNAME = python-pyminimizer
+GARNAME = python-pyminifier
 GARVERSION = 1.3
 CATEGORIES = python
 MASTER_SITES = http://code.activestate.com/recipes/576704-python-code-minifier/download/1/
