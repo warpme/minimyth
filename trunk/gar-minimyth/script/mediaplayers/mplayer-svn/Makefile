@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libmpeg2 lib/libpng lib/libtheora lib/libvorbis lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILD_DEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -99,7 +99,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 # --enable-libswscale_so
 # --enable-libdca
 # --enable-liba52
-# --enable-libmpeg2
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
@@ -127,9 +126,9 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-tremor-internal \
 	--disable-tremor-low \
 	--disable-tremor \
-	--enable-libvorbis \
+	--disable-libvorbis \
 	--disable-speex \
-	--enable-theora \
+	--disable-theora \
 	--enable-faad-internal \
 	--disable-faad-fixed \
 	--disable-faac \
@@ -144,6 +143,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-twolame \
 	--disable-xmms \
 	--enable-mp3lib \
+	--disable-libmpeg2 \
 	--disable-libmpeg2-internal \
 	--disable-musepack \
 	--disable-libopencore_amrnb \
