@@ -52,4 +52,5 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_intel.la
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_nouveau.la
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME)_radeon.la
+	@rm -f $(DESTDIR)$(libdir)/libkms.la
 	@$(MAKECOOKIE)
