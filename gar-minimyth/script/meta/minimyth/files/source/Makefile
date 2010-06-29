@@ -442,7 +442,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 		file_list=`find $${dir_list} -depth -name '*.py'` ; \
 		file_list='' ; \
 		for file in $${file_list} ; do \
-			python $(build_DESTDIR)/$(build_bindir)/pyminimizer.py "$${file}" > "$${file}~" >& /dev/null ; \
+			python $(build_DESTDIR)/$(build_bindir)/pyminifier.py "$${file}" > "$${file}~" >& /dev/null ; \
 			if [ "x$$?" = "x0" ] ; then \
 				mv -f "$${file}~" "$${file}" ; \
 			else \

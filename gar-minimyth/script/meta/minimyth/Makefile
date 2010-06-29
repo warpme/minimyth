@@ -177,7 +177,7 @@ BUILDDEPS = \
 	utils/util-linux-ng \
 	xorg/xorg \
 	perl/perlstrip \
-	python/python-pyminimizer
+	python/python-pyminifier
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
