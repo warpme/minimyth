@@ -3,7 +3,7 @@ GARVERSION = 0.6.9
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-native_dpy.patch $(DISTNAME)-install.patch
+PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
