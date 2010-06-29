@@ -299,7 +299,7 @@ $(top_build)/image/rootfs: $(build_DESTDIR)$(build_rootdir) $(DESTDIR)$(rootdir)
 	 done
 	@# Remove unneeded python files.
 	@echo 'removing unneeded python files'
-	@dirs='$(PYTHON_libdir)' ; \
+	@dirs='$(PYTHON_libdir) $(datadir)/mythtv' ; \
 	 for dir in $${dirs} ; do \
 		if [ -e $@~$${dir} ] ; then \
 			cd $@~$${dir} ; \
