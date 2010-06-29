@@ -3,14 +3,14 @@ GARVERSION = 23876.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libvpx_0_9_1.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100624.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100624.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libtheora lib/libvorbis lib/libvpx lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
+DEPENDS   = lang/c lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -68,12 +68,8 @@ CONFIGURE_ARGS = \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
-	--enable-encoders \
-	--disable-encoder="theora" \
-	--disable-encoder="vorbis" \
+	--disable-encoders \
 	--enable-decoders \
-	--disable-decoder="theora" \
-	--disable-decoder="vorbis" \
 	--enable-hwaccels \
 	--enable-muxers \
 	--enable-demuxers \
@@ -97,9 +93,9 @@ CONFIGURE_ARGS = \
 	--enable-librtmp \
 	--disable-libschroedinger \
 	--disable-libspeex \
-	--enable-libtheora \
-	--enable-libvorbis \
-	--enable-libvpx \
+	--disable-libtheora \
+	--disable-libvorbis \
+	--disable-libvpx \
 	--disable-libx264 \
 	--disable-libxvid \
 	--disable-mlib \
