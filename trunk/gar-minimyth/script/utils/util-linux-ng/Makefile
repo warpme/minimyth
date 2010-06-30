@@ -1,7 +1,7 @@
 GARNAME = util-linux-ng
-GARVERSION = 2.17.2
+GARVERSION = 2.18
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.17/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.18/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -29,6 +29,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libuuid \
 	--enable-uuidd \
 	--enable-libblkid \
+	--disable-libmount \
 	--enable-nls \
 	--disable-rpath \
 	--enable-arch \
@@ -45,7 +46,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-mesg \
 	--disable-partx \
 	--disable-raw \
-	--disable-rdev \
 	--enable-rename \
 	--disable-reset \
 	--disable-login-utils \
@@ -62,6 +62,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-makeinstall-setuid \
 	--with-gnu-ld \
 	--without-slang \
+	--without-utempter \
 	--without-pam \
 	--without-selinux \
 	--without-audit
