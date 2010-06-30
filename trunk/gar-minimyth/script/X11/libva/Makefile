@@ -3,6 +3,7 @@ GARVERSION = 1.0.3
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-fixes_20100625.patch
 LICENSE = MIT
 
 DESCRIPTION = 
