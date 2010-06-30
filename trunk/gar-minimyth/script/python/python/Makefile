@@ -17,6 +17,12 @@ endef
 DEPENDS    = lang/c
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
+DEPENDS   += \
+	lib/bluez \
+	lib/ncurses \
+	lib/openssl \
+	lib/readline \
+	lib/zlib
 BUILDDEPS += python/python
 endif
 
@@ -51,8 +57,7 @@ CONFIGURE_ENV = \
 	ac_cv_file_dev_ptmx=yes \
 	ac_cv_func_lchflags_works=no \
 	ac_cv_func_chflags_works=no \
-	ac_cv_func_printf_zd=yes \
-	EXTRA_CFLAGS="$(CFLAGS)"
+	ac_cv_func_printf_zd=yes
 endif
 
 include ../../gar.mk
