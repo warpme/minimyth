@@ -1,6 +1,6 @@
 diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
 --- Python-2.6.5-old/Makefile.pre.in	2009-12-24 06:19:38.000000000 -0800
-+++ Python-2.6.5-new/Makefile.pre.in	2010-06-23 13:06:24.000000000 -0700
++++ Python-2.6.5-new/Makefile.pre.in	2010-06-30 09:05:15.000000000 -0700
 @@ -175,6 +175,7 @@
  
  PYTHON=		python$(EXE)
@@ -82,7 +82,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  		--install-platlib=$(DESTSHARED) \
 diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
 --- Python-2.6.5-old/setup.py	2010-03-07 23:08:25.000000000 -0800
-+++ Python-2.6.5-new/setup.py	2010-06-23 13:06:24.000000000 -0700
++++ Python-2.6.5-new/setup.py	2010-06-30 09:05:15.000000000 -0700
 @@ -17,7 +17,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -159,7 +159,7 @@ diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
          if (ssl_incs is not None and
              ssl_libs is not None and
 -            openssl_ver >= 0x00907000):
-+            openssl_ver >= 0x00907000 and False):
++            True):
              # The _hashlib module wraps optimized implementations
              # of hash functions from the OpenSSL library.
              exts.append( Extension('_hashlib', ['_hashopenssl.c'],
@@ -168,7 +168,7 @@ diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
              missing.append('_hashlib')
  
 -        if (openssl_ver < 0x00908000):
-+        if (True or openssl_ver < 0x00908000):
++        if (False):
              # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
              exts.append( Extension('_sha256', ['sha256module.c']) )
              exts.append( Extension('_sha512', ['sha512module.c']) )
