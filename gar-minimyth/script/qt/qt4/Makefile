@@ -4,7 +4,7 @@ CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-webkit_changeset_61307.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
