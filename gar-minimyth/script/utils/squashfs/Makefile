@@ -1,5 +1,5 @@
 GARNAME = squashfs
-GARVERSION = 20100521
+GARVERSION = 20100630
 CATEGORIES = lib
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/people/pkl/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
