@@ -136,6 +136,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-ladspa \
 	--disable-libbs2b \
 	--disable-libdv \
+	--disable-mpg123 \
 	--enable-mad \
 	--disable-mp3lame \
 	--disable-mp3lame-lavc \
