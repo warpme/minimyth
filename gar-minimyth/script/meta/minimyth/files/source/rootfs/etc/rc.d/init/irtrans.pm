@@ -54,10 +54,7 @@ sub stop
         {
             system(qq(/usr/sbin/irclient localhost -shutdown));
         }
-        else
-        {
-            system(qq(/usr/bin/killall irserver));
-        }
+        $minimyth->application_stop('irserver');
     }
     return 1;
 }
