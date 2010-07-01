@@ -1,9 +1,8 @@
 GARNAME = libva
-GARVERSION = 1.0.3
+GARVERSION = 0.31.1
 CATEGORIES = X11
-MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-fixes_20100625.patch
+MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds2.tar.gz
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -18,8 +17,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
-	--enable-dummy-driver \
-	--enable-dummy-backend \
+	--disable-dummy-driver \
+	--disable-dummy-backend \
 	--enable-i965-driver \
 	--disable-static \
 	--enable-shared \
@@ -28,6 +27,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+pre-patch:
+	cd $(WORKSRC) ; cat debian/patches/*.patch | patch -p1
+	$(MAKECOOKIE)
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
@@ -35,10 +38,9 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libva.la
-	@rm -f $(DESTDIR)$(libdir)/libva-dummy.la
+	@rm -f $(DESTDIR)$(libdir)/libva-compat.la
 	@rm -f $(DESTDIR)$(libdir)/libva-glx.la
 	@rm -f $(DESTDIR)$(libdir)/libva-tpi.la
 	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
-	@rm -f $(DESTDIR)$(libdir)/va/dummy_drv_video.la
 	@rm -f $(DESTDIR)$(libdir)/va/i965_drv_video.la
 	@$(MAKECOOKIE)
