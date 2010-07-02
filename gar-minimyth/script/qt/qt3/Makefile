@@ -78,6 +78,10 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
+# MythMusci fails to compile when compiled with at least some of GCC's graphite support.
+CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
+
 PLATFORM_INITIAL_NAME  = linux-g++
 PLATFORM_GARBUILD_NAME = $(PLATFORM_INITIAL_NAME)-garbuild
 PLATFORM_GARHOST_NAME  = $(PLATFORM_INITIAL_NAME)-garhost
