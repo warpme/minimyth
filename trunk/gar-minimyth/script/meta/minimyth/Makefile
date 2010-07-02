@@ -185,6 +185,17 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 include ../../gar.mk
 
+CFLAGS += -DUSE_ATI_PROPRIETARY_DRIVER_XVIDEO_HACK
+
+# MythMusic fails to compile (pentium-mmx) with GCC's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
+# MythMusic fails to compile (pentium-mmx) when compiled with at least some of GCC's graphite support.
+CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
+
 pre-everything:
 	@$(MAKE) -f files/check.mk DESTIMG=$(DESTIMG)
 	@# There is no MAKECOOKIE so that this runs every time.
