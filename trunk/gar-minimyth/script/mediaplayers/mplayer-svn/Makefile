@@ -128,6 +128,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-tremor \
 	--disable-libvorbis \
 	--disable-speex \
+	--disable-libgsm \
 	--disable-theora \
 	--enable-faad \
 	--disable-faad-internal \
