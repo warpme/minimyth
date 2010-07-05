@@ -45,13 +45,13 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-build_CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(build_CFLAGS))
-build_CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(build_CXXFLAGS))
-build_LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(build_LDFLAGS))
+# Fails to compile using GCC's linker plugin due to segmentation fault.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+build_CFLAGS   := $(filter-out -fuse-linker-plugin, $(build_CFLAGS))
+build_CXXFLAGS := $(filter-out -fuse-linker-plugin, $(build_CXXFLAGS))
+build_LDFLAGS  := $(filter-out -fuse-linker-plugin, $(build_LDFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal

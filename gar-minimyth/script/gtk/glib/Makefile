@@ -10,7 +10,7 @@ define BLURB
 endef
 
 DEPENDS    = lang/c lib/pcre lib/zlib
-BUILDDEPS  =
+BUILDDEPS  = gtk/gtk-doc
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/glib
 endif
@@ -51,11 +51,8 @@ endif
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization (appears to be libtool related).
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 

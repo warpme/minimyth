@@ -10,7 +10,7 @@ define BLURB
 endef
 
 DEPENDS    = lang/c lang/cxx gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
-BUILDDEPS  =
+BUILDDEPS  = gtk/gtk-doc
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/gtk
 endif
@@ -61,12 +61,13 @@ endif
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization (appears to be libtool related).
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile using GCC's linker plugin due to segmentation fault.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 

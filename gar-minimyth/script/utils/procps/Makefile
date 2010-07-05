@@ -28,7 +28,7 @@ INSTALL_OVERRIDE_DIRS = \
 
 include ../../gar.mk
 
-# Segmentation faults (in 'top') when compiled with GCC's link time optimization.
+# Causes "floating point exception" (in 'top') when compiled with GCC's link time optimization.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 

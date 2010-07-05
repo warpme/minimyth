@@ -23,13 +23,13 @@ BUILD_ENV = \
 
 include ../../gar.mk
 
+# Fails to compile using GCC's linker plugin due to segmentation fault.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+
 CFLAGS   += -lm
 CXXFLAGS += -lm
-
-# Fails to compile with GCC's link time optimization.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)
