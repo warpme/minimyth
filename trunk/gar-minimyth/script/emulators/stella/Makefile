@@ -35,6 +35,8 @@ CONFIGURE_ARGS = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization.
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile using GCC's linker plugin due to segmentation fault.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+

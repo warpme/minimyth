@@ -41,14 +41,6 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
-# Ensure that the files are position independent so that x86_64 builds do not fail.
-#CFLAGS  := $(CFLAGS) -fPIC -DPIC 
-#LDFLAGS := $(LDFLAGS) -fPIC -DPIC 
-
-# Skip LTO just to be safe.
-#CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-#LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/librtmp.a
 	@$(MAKECOOKIE)
