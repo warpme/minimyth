@@ -46,7 +46,7 @@ include ../../gar.mk
 
 # Fails to compile (x86_64) with GCC's O3 optimization, so convert it to O2 optimization.
 CFLAGS   := $(if $(filter -O3, $(CFLAGS)), $(filter-out -O3, $(CFLAGS)) -O2)
-CXXFLAGS := $(if $(filter -O3, $(CFLAGS)), $(filter-out -O3, $(CFLAGS)) -O2)
+CXXFLAGS := $(if $(filter -O3, $(CXXFLAGS)), $(filter-out -O3, $(CXXFLAGS)) -O2)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
