@@ -126,8 +126,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# xine-lib fails to compile with GCC's Os optimization, so convert it so O2 optimization.
-CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
+# Fails to compile (pentium-mmx) with the gcc 4.5 link time optimization due to impossible register constraints.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
