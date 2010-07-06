@@ -51,6 +51,10 @@ endif
 
 include ../../gar.mk
 
+# GCC's link time optimization causes huludesktop to wedge in function g_datalist_set_flags.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
