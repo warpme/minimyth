@@ -1,9 +1,8 @@
 GARNAME = autoconf
-GARVERSION = 2.64
+GARVERSION = 2.65
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
