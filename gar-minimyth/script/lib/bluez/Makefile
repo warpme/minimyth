@@ -10,13 +10,16 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/glib lib/dbus lib/expat lib/libusb-compat
+DEPENDS  = lang/c gtk/glib lib/dbus lib/expat
+ifneq ($(DESTIMG),build)
+DEPENDS += lib/libusb-compat
+endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
@@ -30,7 +33,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-service \
 	--disable-gstreamer \
 	--disable-alsa \
-	--enable-usb \
 	--disable-netlink \
 	--enable-tools \
 	--enable-bccmd \
@@ -46,6 +48,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-configfiles \
 	--disable-debug \
 	--with-gnu-ld
+ifneq ($(DESTIMG),build)
+CONFIGURE_ARGS += \
+	--enable-usb
+endif
 
 include ../../gar.mk
 
