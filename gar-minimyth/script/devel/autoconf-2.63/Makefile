@@ -18,5 +18,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--program-suffix="-$(GARVERSION)"
+BUILD_ARGS     = \
+	pkgdatadir=$(datadir)/autoconf-$(GARVERSION)
+	pkglibdir=$(libdir)/autoconf-$(GARVERSION)
+	pkgincludedir=$(includedir)/autoconf-$(GARVERSION)
+INSTALL_ARGS   = \
+	pkgdatadir=$(datadir)/autoconf-$(GARVERSION)
+	pkglibdir=$(libdir)/autoconf-$(GARVERSION)
+	pkgincludedir=$(includedir)/autoconf-$(GARVERSION)
 
 include ../../gar.mk
