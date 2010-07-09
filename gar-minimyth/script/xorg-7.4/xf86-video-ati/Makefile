@@ -1,8 +1,8 @@
 GARNAME = xf86-video-ati
 GARVERSION_TYPE =
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	00ac9d2f8d58725d0d3e6b1bf7f728d9ae7e6109 , \
-	6.13.0 ))
+	ad999e633ff41d27eed9d2c6535e163a7181b0bd , \
+	6.13.1 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-ati/ , \
@@ -15,7 +15,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS  = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -26,6 +26,9 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
+ifneq ($(DESTIMG),build)
+DEPENDS += system/udev
+endif
 BUILDDEPS = \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
