@@ -1,5 +1,5 @@
 GARNAME = vdpau-video
-GARVERSION = 0.6.9
+GARVERSION = 0.6.10
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -12,9 +12,9 @@ endef
 
 DEPENDS = lang/c X11/libva X11/libvdpau xorg/xorg
 
-#CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-#BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-#INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
