@@ -17,9 +17,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lib/bluez lib/ncurses lib/openssl lib/readline lib/zlib
+DEPENDS    = lang/c lib/ncurses lib/openssl lib/readline lib/zlib
 BUILDDEPS  =
 ifneq ($(DESTIMG),build)
+DEPENDS   += lib/bluez
 BUILDDEPS += python/python
 endif
 
