@@ -6,10 +6,10 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-setup_honor_environ.patch
 PATCHFILES += $(DISTNAME)-distutils_pythonxcprefix.patch
 PATCHFILES += $(DISTNAME)-configure.patch
+PATCHFILES += $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
-PATCHFILES += $(DISTNAME).patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 
