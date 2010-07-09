@@ -3,8 +3,7 @@ GARVERSION = 1.1.7
 CATEGORIES = python
 MASTER_SITES = http://effbot.org/downloads/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
-PATCHFILES  = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
-PATCHFILES += $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).patch.gar
+PATCHFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).patch.gar
 LICENSE =
 
 DESCRIPTION = 
@@ -12,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c lib/freetype lib/libjpeg lib/libtiff lib/zlib python/python python/python-PyXML
-BUILDDEPS = python/python-distutilscross
+BUILDDEPS = python/python
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -22,15 +21,16 @@ INSTALL_SCRIPTS = $(WORKSRC)/setup.py
 CONFIGURE_ARGS =
 BUILD_ARGS     =
 INSTALL_ARGS   = \
-	--prefix=$(DESTDIR)$(prefix)
+	--prefix=$(prefix) \
+	--root=/$(DESTDIR)
 CONFIGURE_ENV  =
 BUILD_ENV      =
 INSTALL_ENV    = \
 	PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
 ifneq ($(DESTIMG),build)
-BUILD_ARGS += --cross-compile
-BUILD_ENV  += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
+BUILD_ENV  += \
+	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 endif
 
 GAR_EXTRA_CONF += python/python/package-api.mk

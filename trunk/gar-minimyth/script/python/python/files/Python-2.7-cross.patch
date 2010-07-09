@@ -1,7 +1,7 @@
-diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
---- Python-2.6.5-old/Makefile.pre.in	2009-12-24 06:19:38.000000000 -0800
-+++ Python-2.6.5-new/Makefile.pre.in	2010-06-30 09:05:15.000000000 -0700
-@@ -175,6 +175,7 @@
+diff -Naur Python-2.7-old/Makefile.pre.in Python-2.7-new/Makefile.pre.in
+--- Python-2.7-old/Makefile.pre.in	2010-04-11 17:10:46.000000000 -0700
++++ Python-2.7-new/Makefile.pre.in	2010-07-08 14:01:24.000000000 -0700
+@@ -179,6 +179,7 @@
  
  PYTHON=		python$(EXE)
  BUILDPYTHON=	python$(BUILDEXE)
@@ -9,7 +9,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -206,6 +207,8 @@
+@@ -212,6 +213,8 @@
  # Parser
  PGEN=		Parser/pgen$(EXE)
  
@@ -18,18 +18,18 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  POBJS=		\
  		Parser/acceler.o \
  		Parser/grammar1.o \
-@@ -394,8 +397,8 @@
+@@ -404,8 +407,8 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
--	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
--	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
-+	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py -q build;; \
-+	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py build;; \
+-	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
+-	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
++	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(HOSTPYTHON) -E $(srcdir)/setup.py -q build;; \
++	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(HOSTPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
  # Build static library
-@@ -517,7 +520,7 @@
+@@ -538,7 +541,7 @@
  
  $(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
@@ -38,7 +38,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  
  $(PGEN):	$(PGENOBJS)
  		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
-@@ -886,24 +889,24 @@
+@@ -919,26 +922,26 @@
  		done; \
  	done
  	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
@@ -47,13 +47,15 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
 +	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
 +		$(HOSTPYTHON) -Wi -tt $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
- 		-x 'bad_coding|badsyntax|site-packages' $(DESTDIR)$(LIBDEST)
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
 -	PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
 -		./$(BUILDPYTHON) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
 +	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
 +		$(HOSTPYTHON) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
- 		-x 'bad_coding|badsyntax|site-packages' $(DESTDIR)$(LIBDEST)
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
 -		./$(BUILDPYTHON) -Wi -t $(DESTDIR)$(LIBDEST)/compileall.py \
 +		$(HOSTPYTHON) -Wi -t $(DESTDIR)$(LIBDEST)/compileall.py \
@@ -70,7 +72,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  
  # Create the PLATDIR source directory, if one wasn't distributed..
  $(srcdir)/Lib/$(PLATDIR):
-@@ -1001,7 +1004,8 @@
+@@ -1043,7 +1046,8 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -80,11 +82,11 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
-diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
---- Python-2.6.5-old/setup.py	2010-03-07 23:08:25.000000000 -0800
-+++ Python-2.6.5-new/setup.py	2010-06-30 09:05:15.000000000 -0700
-@@ -17,7 +17,7 @@
- from distutils.command.install_lib import install_lib
+diff -Naur Python-2.7-old/setup.py Python-2.7-new/setup.py
+--- Python-2.7-old/setup.py	2010-06-27 05:36:16.000000000 -0700
++++ Python-2.7-new/setup.py	2010-07-08 14:00:48.000000000 -0700
+@@ -21,7 +21,7 @@
+ COMPILED_WITH_PYDEBUG = hasattr(sys, 'gettotalrefcount')
  
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
@@ -92,7 +94,7 @@ diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -267,33 +267,40 @@
+@@ -304,33 +304,40 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -154,21 +156,3 @@ diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
          except:
              exc_type, why, tb = sys.exc_info()
              self.announce('*** WARNING: importing extension "%s" '
-@@ -668,7 +675,7 @@
- 
-         if (ssl_incs is not None and
-             ssl_libs is not None and
--            openssl_ver >= 0x00907000):
-+            True):
-             # The _hashlib module wraps optimized implementations
-             # of hash functions from the OpenSSL library.
-             exts.append( Extension('_hashlib', ['_hashopenssl.c'],
-@@ -688,7 +695,7 @@
-                             depends = ['md5.h']) )
-             missing.append('_hashlib')
- 
--        if (openssl_ver < 0x00908000):
-+        if (False):
-             # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
-             exts.append( Extension('_sha256', ['sha256module.c']) )
-             exts.append( Extension('_sha512', ['sha512module.c']) )

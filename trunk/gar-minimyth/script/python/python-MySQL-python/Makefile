@@ -10,7 +10,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c python/python
-BUILDDEPS = python/python-distutilscross
+BUILDDEPS = python/python python/python-distribute
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -20,15 +20,16 @@ INSTALL_SCRIPTS = $(WORKSRC)/setup.py
 CONFIGURE_ARGS =
 BUILD_ARGS     =
 INSTALL_ARGS   = \
-	--prefix=$(DESTDIR)$(prefix)
+	--prefix=$(prefix) \
+	--root=/$(DESTDIR)
 CONFIGURE_ENV  =
 BUILD_ENV      =
 INSTALL_ENV    = \
 	PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
 ifneq ($(DESTIMG),build)
-BUILD_ARGS += --cross-compile
-BUILD_ENV  += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
+BUILD_ENV  += \
+	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 endif
 
 GAR_EXTRA_CONF += python/python/package-api.mk
