@@ -1,6 +1,6 @@
 diff -Naur Python-2.7-old/Makefile.pre.in Python-2.7-new/Makefile.pre.in
 --- Python-2.7-old/Makefile.pre.in	2010-04-11 17:10:46.000000000 -0700
-+++ Python-2.7-new/Makefile.pre.in	2010-07-08 14:01:24.000000000 -0700
++++ Python-2.7-new/Makefile.pre.in	2010-07-09 13:40:47.000000000 -0700
 @@ -179,6 +179,7 @@
  
  PYTHON=		python$(EXE)
@@ -72,87 +72,45 @@ diff -Naur Python-2.7-old/Makefile.pre.in Python-2.7-new/Makefile.pre.in
  
  # Create the PLATDIR source directory, if one wasn't distributed..
  $(srcdir)/Lib/$(PLATDIR):
-@@ -1043,7 +1046,8 @@
+@@ -1042,8 +1045,10 @@
+ 
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
- sharedinstall:
+-sharedinstall:
 -	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
-+	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' CROSS_COMPILE='$(CROSS_COMPILE)' \
++sharedinstall: sharedmods
++	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
 +	$(RUNSHARED) $(HOSTPYTHON) -E $(srcdir)/setup.py install \
++		--skip-build \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
 diff -Naur Python-2.7-old/setup.py Python-2.7-new/setup.py
 --- Python-2.7-old/setup.py	2010-06-27 05:36:16.000000000 -0700
-+++ Python-2.7-new/setup.py	2010-07-08 14:00:48.000000000 -0700
-@@ -21,7 +21,7 @@
- COMPILED_WITH_PYDEBUG = hasattr(sys, 'gettotalrefcount')
- 
++++ Python-2.7-new/setup.py	2010-07-09 13:54:29.000000000 -0700
+@@ -23,6 +23,10 @@
  # This global variable is used to hold the list of modules to be disabled.
--disabled_module_list = []
-+disabled_module_list = ['_ctypes']
+ disabled_module_list = []
  
++# _ctypes fails to cross-compile due to the libffi configure script.
++if os.environ.has_key('PYTHONXCPREFIX'):
++    disabled_module_list.append('_ctypes')
++
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -304,33 +304,40 @@
-             self.announce('WARNING: skipping import check for Cygwin-based "%s"'
-                 % ext.name)
+     1) 'dir' is not already in 'dirlist'
+@@ -278,6 +282,14 @@
+                           (ext.name, sys.exc_info()[1]))
+             self.failed.append(ext.name)
              return
-+        if os.environ.get('CROSS_COMPILE_TARGET') == 'yes':
++
++        # Inport check will not work when cross-compiling.
++        if os.environ.has_key('PYTHONXCPREFIX'):
++            self.announce(
++                'WARNING: skipping inport check for cross-compiled: "%s"' %
++                ext.name)
 +            return
 +
-         ext_filename = os.path.join(
-             self.build_lib,
-             self.get_ext_filename(self.get_ext_fullname(ext.name)))
-         try:
-             imp.load_dynamic(ext.name, ext_filename)
-         except ImportError, why:
--            self.failed.append(ext.name)
--            self.announce('*** WARNING: renaming "%s" since importing it'
--                          ' failed: %s' % (ext.name, why), level=3)
--            assert not self.inplace
--            basename, tail = os.path.splitext(ext_filename)
--            newname = basename + "_failed" + tail
--            if os.path.exists(newname):
--                os.remove(newname)
--            os.rename(ext_filename, newname)
--
--            # XXX -- This relies on a Vile HACK in
--            # distutils.command.build_ext.build_extension().  The
--            # _built_objects attribute is stored there strictly for
--            # use here.
--            # If there is a failure, _built_objects may not be there,
--            # so catch the AttributeError and move on.
--            try:
--                for filename in self._built_objects:
--                    os.remove(filename)
--            except AttributeError:
--                self.announce('unable to remove files (ignored)')
-+            if os.environ.get('CROSS_COMPILE_TARGET') != "yes":
-+                self.announce('*** WARNING: renaming "%s" since importing it'
-+                              ' failed: %s' % (ext.name, why), level=3)
-+                assert not self.inplace
-+                basename, tail = os.path.splitext(ext_filename)
-+                newname = basename + "_failed" + tail
-+                if os.path.exists(newname):
-+                    os.remove(newname)
-+                os.rename(ext_filename, newname)
-+
-+                # XXX -- This relies on a Vile HACK in
-+                # distutils.command.build_ext.build_extension().  The
-+                # _built_objects attribute is stored there strictly for
-+                # use here.
-+                # If there is a failure, _built_objects may not be there,
-+                # so catch the AttributeError and move on.
-+                try:
-+                    for filename in self._built_objects:
-+                        os.remove(filename)
-+                except AttributeError:
-+                    self.announce('unable to remove files (ignored)')
-+            else:
-+                self.announce('WARNING: "%s" failed importing, but we leave it '
-+                              'because we are cross-compiling' %
-+                              ext.name)
-         except:
-             exc_type, why, tb = sys.exc_info()
-             self.announce('*** WARNING: importing extension "%s" '
+         # Workaround for Mac OS X: The Carbon-based modules cannot be
+         # reliably imported into a command-line Python
+         if 'Carbon' in ext.extra_link_args:
