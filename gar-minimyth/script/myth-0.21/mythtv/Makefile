@@ -50,7 +50,7 @@ DEPENDS = \
 	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = \
-	python/python-distutilscross
+	python/python
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

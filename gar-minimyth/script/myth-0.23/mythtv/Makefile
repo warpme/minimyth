@@ -43,7 +43,7 @@ DEPENDS = \
 	xorg/xorg
 BUILDDEPS = \
 	devel/yasm \
-	python/python-distutilscross
+	python/python
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
