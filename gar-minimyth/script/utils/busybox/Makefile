@@ -6,6 +6,9 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  =
+PATCHFILES += $(DISTNAME)-build_system.patch
+PATCHFILES += $(DISTNAME)-diff.patch
+PATCHFILES += $(DISTNAME)-modprobe-l.patch
 PATCHFILES += $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
