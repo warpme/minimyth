@@ -9,7 +9,6 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
-	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
