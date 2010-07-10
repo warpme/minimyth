@@ -5,7 +5,6 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-python_cross.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
