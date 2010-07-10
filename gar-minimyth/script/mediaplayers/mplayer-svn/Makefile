@@ -65,6 +65,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-nemesi \
 	--enable-librtmp \
 	--enable-vcd \
+	--disable-bluray \
 	--enable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \

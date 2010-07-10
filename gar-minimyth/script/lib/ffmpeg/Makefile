@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 24038.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 24159.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -107,7 +107,7 @@ CONFIGURE_ARGS = \
 	--target-os="linux" \
 	--nm="$(NM)" \
 	--ar="$(AR)" \
-	--as="$(AS)" \
+	--as="$(CC)" \
 	--cc="$(CC)" \
 	--ld="$(CC)" \
 	--host-cc="$(build_CC)" \
