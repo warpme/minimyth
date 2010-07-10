@@ -53,6 +53,14 @@ build_CFLAGS   := $(filter-out -fuse-linker-plugin, $(build_CFLAGS))
 build_CXXFLAGS := $(filter-out -fuse-linker-plugin, $(build_CXXFLAGS))
 build_LDFLAGS  := $(filter-out -fuse-linker-plugin, $(build_LDFLAGS))
 
+# Fails to compile (pentium-mmx) with GCC's link time optimization due to a /tmp/*.lto.o dependency.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+build_CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(build_CFLAGS))
+build_CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(build_CXXFLAGS))
+build_LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(build_LDFLAGS))
+
 pre-configure:
 	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal
 	@cd $(WORKSRC)/src ; autoconf --verbose --force
