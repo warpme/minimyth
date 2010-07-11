@@ -1,5 +1,5 @@
 GARNAME        = perl-DBD-mysql
-GARVERSION     = 4.015
+GARVERSION     = 4.016
 MASTER_SITES   = http://www.cpan.org/authors/id/C/CA/CAPTTOFU/
 DEPENDS        = perl/perl-DBI
 PERL_MODULE_SO = true
