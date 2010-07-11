@@ -10,6 +10,7 @@ PATCHFILES = \
 	$(DISTNAME)-demux_mov_fix_20080129.patch \
 	$(DISTNAME)-url_fix_20080120.patch \
 	$(DISTNAME)-stream_cddb_fix_20080120.patch
+PATCHFILES += $(DISTNAME)-gcc_4.4.0_hack.patch
 PATCHFILES += $(DISTNAME)-liba52_external.patch
 PATCHFILES += $(DISTNAME)-libdvdread_udf.patch
 PATCHFILES += $(DISTNAME)-dvdnav.patch
