@@ -52,7 +52,7 @@ mm_GRAPHICS               ?= intel \
 # 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
 # warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
 # 'python', 'debug'.
-mm_SOFTWARE               ?= mythbrowser \
+mm_SOFTWARE               ?= $(if $(filter-out $(mm_MYTH_VERSION),0.20 0.20-softpat 0.21),mythbrowser) \
                              $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
                              mythgallery \
                              mythgame \
