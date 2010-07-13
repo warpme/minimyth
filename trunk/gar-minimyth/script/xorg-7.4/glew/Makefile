@@ -27,7 +27,7 @@ BUILD_ARGS  = \
 	GLEW_DEST="$(prefix)" \
 	BINDIR="$(bindir)" \
 	LIBDIR="$(libdir)" \
-	INCDIR="$(includedir)" \
+	INCDIR="$(includedir)/GL" \
 	CC="$(CC)" \
 	LD="$(CC)" \
 	AR="$(AR)" \
@@ -37,6 +37,6 @@ INSTALL_ARGS = \
 	GLEW_DEST="$(DESTDIR)$(prefix)" \
 	BINDIR="$(DESTDIR)$(bindir)" \
 	LIBDIR="$(DESTDIR)$(libdir)" \
-	INCDIR="$(DESTDIR)$(includedir)"
+	INCDIR="$(DESTDIR)$(includedir)/GL"
 
 include ../../gar.mk
