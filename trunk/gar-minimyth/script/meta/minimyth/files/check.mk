@@ -81,7 +81,8 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_GARCH"
-	@if [ ! "$(mm_GARCH)" = "c3"          ] && \
+	@if [ ! "$(mm_GARCH)" = "atom"        ] && \
+	    [ ! "$(mm_GARCH)" = "c3"          ] && \
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
 	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] && \
 	    [ ! "$(mm_GARCH)" = "x86-64"      ] ; then \
