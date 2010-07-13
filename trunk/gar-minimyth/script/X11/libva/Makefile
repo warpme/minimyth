@@ -2,7 +2,7 @@ GARNAME = libva
 GARVERSION = 0.31.1
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds3.tar.gz
+DISTFILES = $(GARNAME)_$(GARVERSION)-1+sds4.tar.gz
 LICENSE = MIT
 
 DESCRIPTION = 
