@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
-DISTFILES = MesaLib-$(GARVERSION).tar.bz2 MesaGLUT-$(GARVERSION).tar.bz2 MesaDemos-$(GARVERSION).tar.bz2
+DISTFILES = MesaLib-$(GARVERSION).tar.bz2
 PATCHFILES  = $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
@@ -35,7 +35,7 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile xdemos source
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -59,10 +59,6 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC's Os optimization, so convert it to O2 optimization
-CFLAGS   := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O2)
-CXXFLAGS := $(if $(filter -Os, $(CXXFLAGS)), $(filter-out -Os, $(CXXFLAGS)) -O2)
-
 # Mesa 7.7.1 fails to compile with GCC's link time optimization.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
@@ -75,12 +71,6 @@ DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
-	@$(MAKECOOKIE)
-
-install-xdemos:
-	@mkdir -p $(DESTDIR)$(bindir)
-	@cp -f $(WORKSRC)/progs/xdemos/glxgears $(DESTDIR)$(bindir)
-	@cp -f $(WORKSRC)/progs/xdemos/glxinfo  $(DESTDIR)$(bindir)
 	@$(MAKECOOKIE)
 
 install-source:

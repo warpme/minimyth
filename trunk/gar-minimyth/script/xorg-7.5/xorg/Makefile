@@ -12,6 +12,8 @@ DEPENDS = \
 	$(CATEGORY)/font-bh-ttf \
 	$(CATEGORY)/font-cursor-misc \
 	$(CATEGORY)/font-misc-misc \
+	$(CATEGORY)/freeglut \
+	$(CATEGORY)/glew \
 	$(CATEGORY)/iceauth \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXdamage \
@@ -27,6 +29,7 @@ DEPENDS = \
 	$(CATEGORY)/libXt \
 	$(CATEGORY)/libXtst \
 	$(CATEGORY)/Mesa \
+	$(CATEGORY)/mesa-demos \
 	$(CATEGORY)/mkfontdir \
 	$(CATEGORY)/mkfontscale \
 	$(CATEGORY)/rgb \
