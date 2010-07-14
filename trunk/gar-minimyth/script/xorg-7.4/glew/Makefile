@@ -1,5 +1,5 @@
 GARNAME = glew
-GARVERSION = 1.5.4
+GARVERSION = 1.5.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tgz
