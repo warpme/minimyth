@@ -11,6 +11,7 @@ PATCHFILES  = \
 	busybox-1.17.0-diff.patch \
 	busybox-1.17.0-mktemp.patch \
 	busybox-1.17.0-modprobe-l.patch \
+	busybox-1.17.0-volumeid.patch \
 	busybox-1.17.0-wget.patch
 PATCHFILES += $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
