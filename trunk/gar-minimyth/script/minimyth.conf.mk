@@ -174,7 +174,7 @@ mm_GARHOST                ?= $(strip \
                               )-minimyth-linux-gnu
 mm_CFLAGS                 ?= $(strip \
                                  -pipe                                                                                       \
-                                 $(if $(filter atom        ,$(mm_GARCH)),-march=atom        -mtune=atom    -O3 -mfpmath=sse) \
+                                 $(if $(filter atom        ,$(mm_GARCH)),-march=atom        -mtune=atom    -O2 -mfpmath=sse -ftree-vectorize -mmovbe) \
                                  $(if $(filter c3          ,$(mm_GARCH)),-march=c3          -mtune=c3      -Os             ) \
                                  $(if $(filter c3-2        ,$(mm_GARCH)),-march=c3-2        -mtune=c3-2    -Os -mfpmath=sse) \
                                  $(if $(filter pentium-mmx ,$(mm_GARCH)),-march=pentium-mmx -mtune=generic -Os             ) \
