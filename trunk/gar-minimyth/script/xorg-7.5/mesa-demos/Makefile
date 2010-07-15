@@ -1,5 +1,5 @@
 GARNAME = mesa-demos
-GARVERSION = 8.0.0
+GARVERSION = 8.0.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/demos/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
