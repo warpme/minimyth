@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100624.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100713.patch
+PATCHFILES = $(GARNAME)-mt_20100718.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100713.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -13,7 +13,7 @@ define BLURB
 endef
 
 DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/faad2 lib/ffmpeg lib/fontconfig lib/freetype lib/libbluray lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
-BUILD_DEPS = devel/yasm
+BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -58,7 +58,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-tv-bsdbt848 \
 	--disable-pvr \
 	--enable-rtc \
-	--enable-network \
+	--enable-networking \
 	--disable-winsock2_h \
 	--disable-smb \
 	--disable-live \
