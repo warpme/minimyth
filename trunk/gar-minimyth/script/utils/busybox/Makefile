@@ -6,13 +6,14 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
-	busybox-1.17.0-acpid.patch \
-	busybox-1.17.0-build_system.patch \
-	busybox-1.17.0-diff.patch \
-	busybox-1.17.0-mktemp.patch \
-	busybox-1.17.0-modprobe-l.patch \
-	busybox-1.17.0-volumeid.patch \
-	busybox-1.17.0-wget.patch
+	$(DISTNAME)-acpid.patch \
+	$(DISTNAME)-build_system.patch \
+	$(DISTNAME)-diff.patch \
+	$(DISTNAME)-dos2unix.patch \
+	$(DISTNAME)-mktemp.patch \
+	$(DISTNAME)-modprobe-l.patch \
+	$(DISTNAME)-volumeid.patch \
+	$(DISTNAME)-wget.patch
 PATCHFILES += $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
