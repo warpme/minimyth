@@ -1,16 +1,16 @@
 GARNAME = liberation-fonts
-GARVERSION = 1.05.3.20100621
+GARVERSION = 1.06.0.20100721
 CATEGORIES = fonts
 MASTER_SITES = http://fedorahosted.org/releases/l/i/$(GARNAME)/
 DISTFILES = $(GARNAME)-ttf-$(GARVERSION).tar.gz
-LICENSE = $(GARNAME) GPL3
+LICENSE = $(GARNAME) GPL2
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/License.txt
 
 DESCRIPTION =
 define BLURB
 endef
 
-WORKSRC = $(WORKDIR)
+WORKSRC = $(WORKDIR)/$(GARNAME)-ttf-$(GARVERSION)
 
 INSTALL_SCRIPTS = custom
 
@@ -18,18 +18,18 @@ include ../../gar.mk
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationMono-Bold.ttf        $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationMono-BoldItalic.ttf  $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationMono-Italic.ttf      $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationMono-Regular.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSans-Bold.ttf        $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSans-BoldItalic.ttf  $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSans-Italic.ttf      $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSans-Regular.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSerif-Bold.ttf       $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSerif-BoldItalic.ttf $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSerif-Italic.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
-	@cp -f $(WORKSRC)/ttf/LiberationSerif-Regular.ttf    $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationMono-Bold.ttf        $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationMono-BoldItalic.ttf  $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationMono-Italic.ttf      $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationMono-Regular.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSans-Bold.ttf        $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSans-BoldItalic.ttf  $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSans-Italic.ttf      $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSans-Regular.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSerif-Bold.ttf       $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSerif-BoldItalic.ttf $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSerif-Italic.ttf     $(DESTDIR)$(datadir)/fonts/X11/TTF
+	@cp -f $(WORKSRC)/LiberationSerif-Regular.ttf    $(DESTDIR)$(datadir)/fonts/X11/TTF
 	@$(MAKECOOKIE)
 
 clean-all:
