@@ -7,7 +7,7 @@ PATCHFILES  = $(DISTNAME)-dash.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-path
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-config_sh-$(GARCH_FAMILY).patch.gar $(DISTNAME)-cross.patch.gar
 else
-PATCHFILES += $(DISTNAME)-dynaloader.patch $(DISTNAME)-errno.patch
+PATCHFILES += $(DISTNAME)-cbuilder.patch $(DISTNAME)-xsloader.patch $(DISTNAME)-dynaloader.patch $(DISTNAME)-errno.patch
 endif
 LICENSE = Artistic
 
