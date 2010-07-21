@@ -7,11 +7,16 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-acpid.patch \
+	$(DISTNAME)-ask_terminal.patch \
 	$(DISTNAME)-build_system.patch \
+	$(DISTNAME)-cosmetics.patch \
+	$(DISTNAME)-depmod.patch \
 	$(DISTNAME)-diff.patch \
 	$(DISTNAME)-dos2unix.patch \
 	$(DISTNAME)-mktemp.patch \
 	$(DISTNAME)-modprobe-l.patch \
+	$(DISTNAME)-top.patch \
+	$(DISTNAME)-vi.patch \
 	$(DISTNAME)-volumeid.patch \
 	$(DISTNAME)-wget.patch
 PATCHFILES += $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
