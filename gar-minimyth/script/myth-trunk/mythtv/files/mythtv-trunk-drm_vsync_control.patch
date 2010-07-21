@@ -1,29 +1,23 @@
-diff -Naur mythtv-trunk-25326-old/libs/libmythtv/vsync.cpp mythtv-trunk-25326-new/libs/libmythtv/vsync.cpp
---- mythtv-trunk-25326-old/libs/libmythtv/vsync.cpp	2010-07-10 10:27:53.000000000 -0700
-+++ mythtv-trunk-25326-new/libs/libmythtv/vsync.cpp	2010-07-10 10:27:54.000000000 -0700
-@@ -83,6 +83,8 @@
- {
-     VideoSync *trial = NULL;
-     tryingVideoSync  = true;
-+    bool tryDRM      = (gCoreContext->GetNumSetting("UseDRMVSync", 1) &&
-+                        (getenv("NO_DRM_VSYNC") == NULL));
-     bool tryOpenGL   = (gCoreContext->GetNumSetting("UseOpenGLVSync", 1) &&
-                         (getenv("NO_OPENGL_VSYNC") == NULL));
- 
-@@ -102,7 +104,8 @@
+diff -Naur mythtv-trunk-25388-old/libs/libmythtv/vsync.cpp mythtv-trunk-25388-new/libs/libmythtv/vsync.cpp
+--- mythtv-trunk-25388-old/libs/libmythtv/vsync.cpp	2010-07-20 20:46:58.000000000 -0700
++++ mythtv-trunk-25388-new/libs/libmythtv/vsync.cpp	2010-07-20 20:46:58.000000000 -0700
+@@ -100,7 +100,11 @@
  //    TESTVIDEOSYNC(VDPAUVideoSync);
  #endif
  #ifndef _WIN32
 -    TESTVIDEOSYNC(DRMVideoSync);
-+    if (tryDRM)
++    if (gCoreContext->GetNumSetting("UseDRMVSync", 1) &&
++       (getenv("NO_DRM_VSYNC") == NULL))
++    {
 +        TESTVIDEOSYNC(DRMVideoSync);
-     if (tryOpenGL)
-         TESTVIDEOSYNC(OpenGLVideoSync);
- #endif // _WIN32
-diff -Naur mythtv-trunk-25326-old/programs/mythfrontend/globalsettings.cpp mythtv-trunk-25326-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-trunk-25326-old/programs/mythfrontend/globalsettings.cpp	2010-07-10 10:27:53.000000000 -0700
-+++ mythtv-trunk-25326-new/programs/mythfrontend/globalsettings.cpp	2010-07-10 10:27:54.000000000 -0700
-@@ -3725,6 +3725,18 @@
++    }
+ #ifdef USING_OPENGL_VSYNC
+     if (gCoreContext->GetNumSetting("UseOpenGLVSync", 1) &&
+        (getenv("NO_OPENGL_VSYNC") == NULL))
+diff -Naur mythtv-trunk-25388-old/programs/mythfrontend/globalsettings.cpp mythtv-trunk-25388-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-trunk-25388-old/programs/mythfrontend/globalsettings.cpp	2010-07-20 20:46:58.000000000 -0700
++++ mythtv-trunk-25388-new/programs/mythfrontend/globalsettings.cpp	2010-07-20 20:46:58.000000000 -0700
+@@ -3724,6 +3724,18 @@
      };
  };
  
@@ -42,7 +36,7 @@ diff -Naur mythtv-trunk-25326-old/programs/mythfrontend/globalsettings.cpp mytht
  #ifdef USING_OPENGL_VSYNC
  static HostCheckBox *UseOpenGLVSync()
  {
-@@ -4250,6 +4262,7 @@
+@@ -4249,6 +4261,7 @@
      general1->addChild(columns);
      general1->addChild(LiveTVIdleTimeout());
      general1->addChild(AlwaysStreamFiles());
