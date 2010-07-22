@@ -1,5 +1,5 @@
 GARNAME = sqlite
-GARVERSION = 3.6.23.1
+GARVERSION = 3.7.0
 CATEGORIES = db
 MASTER_SITES = http://www.sqlite.org/
 DISTFILES = $(GARNAME)-amalgamation-$(GARVERSION).tar.gz
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c
+DEPENDS   = lang/c lib/readline
 BUILDDEPS = utils/tcl
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -19,7 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--disable-readline \
+	--enable-readline \
 	--enable-threadsafe \
 	--enable-dynamic-extensions \
 	--with-gnu-ld
