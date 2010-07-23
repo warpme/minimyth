@@ -1,5 +1,5 @@
 GARNAME = libdvdnav
-GARVERSION = 1199
+GARVERSION = 1204
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
