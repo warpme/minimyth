@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 24319.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 24451.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -40,6 +40,7 @@ CONFIGURE_ARGS = \
 	--disable-ffprobe \
 	--disable-ffserver \
 	--enable-avdevice \
+	--enable-avcore \
 	--enable-avcodec \
 	--enable-avformat \
 	--enable-swscale \
@@ -181,6 +182,7 @@ clean-all:
 	@$(MAKE) clean
 	@rm -rf $(DESTDIR)$(includedir)/ffmpeg
 	@rm -rf $(DESTDIR)$(libdir)/libavcodec.*
+	@rm -rf $(DESTDIR)$(libdir)/libavcore.*
 	@rm -rf $(DESTDIR)$(libdir)/libavdevice.*
 	@rm -rf $(DESTDIR)$(libdir)/libavformat.*
 	@rm -rf $(DESTDIR)$(libdir)/libavutil.*
