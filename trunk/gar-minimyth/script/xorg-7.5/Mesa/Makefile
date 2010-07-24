@@ -73,6 +73,14 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
+# Mesa 7.8.2 fails to compile with march=atom so replace with march=i686 or march=x86-64.
+CFLAGS   := $(if $(filter -march=atom, $(CFLAGS)), \
+                 $(if $(filter -m32, $(CFLAGS)), $(filter-out -march=atom, $(CFLAGS)) -march=i686) \
+                 $(if $(filter -m64, $(CFLAGS)), $(filter-out -march=atom, $(CFLAGS)) -march=x86-64))
+CXXFLAGS := $(if $(filter -march=atom, $(CXXFLAGS)), \
+                 $(if $(filter -m32, $(CXXFLAGS)), $(filter-out -march=atom, $(CXXFLAGS)) -march=i686) \
+                 $(if $(filter -m64, $(CXXFLAGS)), $(filter-out -march=atom, $(CXXFLAGS)) -march=x86-64))
+
 DRI_DIRS := $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 r600 radeon savage sis swrast unichrome) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 r600 radeon savage sis swrast unichrome))
