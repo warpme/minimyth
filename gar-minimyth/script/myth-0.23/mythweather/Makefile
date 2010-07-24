@@ -8,9 +8,17 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = \
+DEPENDS   = \
 	lang/cxx \
-	$(CATEGORY)/mythtv
+	$(CATEGORY)/mythtv \
+	perl/perl-Date-Manip \
+	perl/perl-DateTime-Format-ISO8601 \
+	perl/perl-Image-Size \
+	perl/perl-SOAP-Lite \
+	perl/perl-XML-Simple \
+	perl/perl-XML-XPath
+BUILDDEPS = \
+	perl/perl-DateTime
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -22,11 +30,11 @@ CONFIGURE_ARGS = \
 	$(MYTHPLUGINS_CONFIGURE_ARGS) \
 	--enable-mythweather
 
-CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
-BUILD_ENV     = $(MYTHTV_BUILD_ENV)
-INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
+CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV) $(PERL_CONFIGURE_ENV)
+BUILD_ENV     = $(MYTHTV_BUILD_ENV)     $(PERL_BUILD_ENV)
+INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)   $(PERL_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk $(CATEGORY)/mythplugins/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk $(CATEGORY)/mythplugins/package-api.mk perl/perl/package-api.mk
 include ../../gar.mk
 
 post-install: post-install-mythtv-version
