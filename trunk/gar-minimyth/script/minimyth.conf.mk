@@ -11,7 +11,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.20-softpad ,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
                                 $(if $(filter 0.21 ,        $(mm_MYTH_VERSION)),0.21.0                        ) \
                                 $(if $(filter 0.22 ,        $(mm_MYTH_VERSION)),0.22.0                        ) \
-                                $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.0                        ) \
+                                $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.1                        ) \
                                 $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 72
@@ -136,7 +136,7 @@ mm_NVIDIA_VERSION         ?= 195.36.31
 mm_XORG_VERSION           ?= 7.5
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 25388
+mm_MYTH_TRUNK_VERSION     ?= 25416
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
