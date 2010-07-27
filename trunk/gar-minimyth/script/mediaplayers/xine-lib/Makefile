@@ -1,134 +1,132 @@
 GARNAME = xine-lib
-GARVERSION = 1.1.16.3
+GARVERSION = 11552
 CATEGORIES = mediaplayers
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/xine/
+MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-m2ts.patch $(DISTNAME)-vdpau_svn_286.patch $(DISTNAME)-libtool_2.2.x.patch $(DISTNAME).patch.gar $(DISTNAME)-cross.patch
-LICENSE = GPL2
+PATCHFILES = $(DISTNAME)-ffmpeg_cflags.patch $(DISTNAME)-vdpau_avutil_cflags.patch
+LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# --without-external-dvdnav must be auto or internal dvdnav will work.
 # Linux is only used for dha-kmod, which is disabled.
 # Therefore, --with-linux-path is set to '/dev/null'.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--cache-file=config.cache \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-debug \
+	--disable-profiling \
+	--disable-ipv6 \
+	--enable-antialiasing \
+	--disable-macosx-universal \
 	--disable-static \
 	--enable-shared \
 	--disable-rpath \
 	--enable-iconvtest \
 	--enable-nls \
-	--enable-ffmpeg-uncommon-codecs \
-	--enable-ffmpeg-popular-codecs \
 	--disable-altivec \
 	--disable-vis \
-	--disable-mlib \
-	--disable-mlib-lazyload \
-	--disable-ipv6 \
-	--enable-opengl \
-	--enable-glu \
-	--disable-syncfb \
-	--disable-v4l \
-	--disable-static-xv \
-	--enable-xvmc \
-	--enable-xinerama \
-	--disable-aalib \
-	--disable-aalibtest \
-	--disable-fb \
-	--disable-macosx-video \
+	--enable-optimizations \
+	--disable-mmap \
+	--enable-largefile \
 	--disable-coreaudio \
+	--disable-irixal \
+	--disable-oss \
+	--disable-sunaudio \
+	--disable-sndio \
+	--disable-aalib \
+	--disable-dha-kmod \
 	--disable-directfb \
 	--disable-dxr3 \
-	--disable-libfametest \
+	--disable-fb \
+	--disable-macosx-video \
+	--enable-opengl \
+	--enable-glu \
 	--disable-vidix \
-	--disable-dha-kmod \
-	--disable-libFLACtest \
-	--enable-a52dec \
-	--enable-mad \
-	--disable-musepack \
-	--enable-mng \
-	--disable-oss \
-	--disable-artstest \
+	--enable-xinerama \
+	--disable-static-xv \
+	--enable-xvmc \
+	--enable-vdpau \
+	--disable-dvb \
 	--disable-gnomevfs \
-	--disable-gdkpixbuf \
 	--disable-samba \
-	--disable-dvdnavtest \
+	--disable-v4l \
+	--disable-v4l2 \
+	--disable-libv4l \
 	--enable-vcd \
+	--disable-vdr \
+	--enable-a52dec \
 	--enable-asf \
 	--enable-nosefart \
 	--enable-faad \
+	--disable-gdkpixbuf \
 	--enable-dts \
+	--enable-mad \
 	--disable-modplug \
+	--disable-libmpeg2new \
+	--disable-musepack \
+	--disable-mlib \
+	--disable-mlib-lazyload \
+	--enable-mng \
 	--enable-real-codecs \
-	--enable-mmap \
-	--enable-antialiasing \
-	--enable-largefile \
-	--enable-optimizations \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
 	--with-gnu-ld \
-	$(if $(filter i386,$(GARCH_FAMILY)),--without-pic) \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
-	--with-external-ffmpeg \
-	--with-x \
+	--without-external-libxdg-basedir \
 	--without-zlib-prefix \
-	--with-xv-path="$(DESTDIR)$(libdir)" \
-	--with-xxmc-path="$(DESTDIR)$(libdir)" \
-	--with-xxmc-lib=XvMCW \
-	--with-xvmc-path="$(DESTDIR)$(libdir)" \
-	--with-xvmc-lib=XvMCW \
-	--with-vdpau \
-	--with-xcb \
+	--with-freetype \
+	--with-fontconfig \
+	--with-x \
+	--with-alsa \
+	--without-esound \
+	--without-fusionsound \
+	--without-jack \
+	--without-pulseaudio \
 	--with-aalib-prefix="$(DESTDIR)$(prefix)" \
 	--with-aalib-exec-prefix="$(DESTDIR)$(exec_prefix)" \
 	--without-caca \
-	--without-sdl \
-	--without-libstk \
-	--without-pulseaudio \
+	--with-linux-path="/dev/null" \
 	--without-dxheaders \
 	--with-libfame-prefix="$(DESTDIR)$(prefix)" \
 	--with-libfame-exec-prefix="$(DESTDIR)$(exec_prefix)" \
-	--with-linux-path="/dev/null" \
-	--without-vorbis \
-	--without-theora \
-	--without-speex \
-	--with-libflac \
-	--without-external-a52dec \
-	--with-external-libmad \
-	--without-external-libmpcdec \
+	--without-libstk \
+	--without-sdl \
+	--with-xcb \
+	--with-xv-path="$(DESTDIR)$(libdir)" \
+	--with-xvmc-path="$(DESTDIR)$(libdir)" \
+	--with-external-dvdnav \
 	--without-imagemagick \
-	--with-freetype \
-	--with-fontconfig \
-	--with-alsa \
-	--without-esound \
-	--without-arts \
-	--without-fusionsound \
-	--without-jack \
-	--without-internal-vcdlibs \
-	--with-external-libdts \
-	--without-wavpack \
+	--with-libflac \
+	--without-speex \
+	--without-theora \
+	--without-vorbis \
 	--with-real-codecs-path="$(libdir)/codecs" \
 	--with-w32-path="$(libdir)/codecs" \
-	--with-gnu-as
+	--without-wavpack
 
 CONFIGURE_ENV = \
-	lt_cv_path_MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
+	MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
 
 include ../../gar.mk
 
 # Fails to compile (pentium-mmx) with the gcc 4.5 link time optimization due to impossible register constraints.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
+hg//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_HG, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf --verbose --install --force
@@ -137,6 +135,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libxine.la
+	@rm -f $(DESTDIR)$(libdir)/libxine-interface.la
 	@rm -f $(DESTDIR)$(bindir)-config/xine-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)xine-config
 	@mkdir -p $(DESTDIR)$(bindir)-config
