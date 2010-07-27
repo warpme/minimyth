@@ -139,6 +139,9 @@ build_system_bins_m4 = \
 build_system_bins_make = \
 	make
 
+build_system_bins_mercurial = \
+	hg
+
 # Overridden by binaries from package devel/patch.
 build_system_bins_patch = \
 	patch
