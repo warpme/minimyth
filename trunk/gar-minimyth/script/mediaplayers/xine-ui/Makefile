@@ -1,10 +1,9 @@
 GARNAME = xine-ui
-GARVERSION = 3049
+GARVERSION = 3051
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-librt.patch $(DISTNAME)-fork_wait.patch $(DISTNAME)-lirc.patch $(DISTNAME).patch.gar $(DISTNAME)-xscreensaver.patch $(DISTNAME)-xtest_disable.patch $(DISTNAME)-desktop_disable.patch
-#PATCHFILES = $(DISTNAME)-fork_wait.patch $(DISTNAME)-lirc.patch $(DISTNAME).patch.gar $(DISTNAME)-pmaxsize.patch $(DISTNAME)-xscreensaver.patch $(DISTNAME)-xtest_disable.patch
+PATCHFILES = $(GARNAME)-librt.patch $(GARNAME)-fork_wait.patch $(GARNAME)-lirc.patch $(GARNAME).patch.gar $(GARNAME)-xscreensaver.patch $(GARNAME)-xtest_disable.patch $(GARNAME)-desktop_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -43,7 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-hg//%$(DISTNAME).tar.bz2:
+hg//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_HG, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
@@ -68,3 +67,35 @@ clean-all:
 	@rm -rf $(DESTDIR)$(datadir)/xine-lib
 	@rm -rf $(DESTDIR)$(docdir)/xine
 	@rm -rf $(DESTDIR)$(docdir)/xine-lib
+
+source-update:
+	@$(MAKE) source-update-source
+	@$(MAKE) source-update-patches
+
+source-update-source:
+	@$(MAKE) clean
+	@$(MAKE) fetch
+	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
+	@$(MAKE) clean
+
+source-update-patches:
+	@$(MAKE) clean
+	@$(MAKE) extract
+	@$(foreach PATCHFILE, $(PATCHFILES), \
+		cd $(WORKDIR) || exit 1 ; \
+		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
+		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
+		cd $(DISTNAME)-new || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		cd ../ || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
+		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
+		rm -fr $(DISTNAME)-old || exit 1 ; \
+		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
+		cd ../../ || exit 1 ; \
+		rm -f checksums~ || exit 1 ; \
+		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ ; \
+		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
+		rm -f checksums || exit 1 ; \
+		mv -f checksums~ checksums || exit 1 ; )
+	@$(MAKE) clean

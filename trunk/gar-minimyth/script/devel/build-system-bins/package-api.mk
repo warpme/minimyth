@@ -14,6 +14,7 @@ build_system_bins = $(strip $(sort \
 	glibc \
 	grep \
 	gzip \
+	mercurial \
 	m4 \
 	make \
 	patch \
