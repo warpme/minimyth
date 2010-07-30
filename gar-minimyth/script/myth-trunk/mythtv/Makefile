@@ -124,7 +124,7 @@ CONFIGURE_ARGS = \
 	--enable-vdpau \
 	--xvmc-lib=XvMCW \
 	--enable-opengl-video \
-	--disable-mac-accel \
+	--disable-quartz-video \
 	--enable-opengl-vsync \
 	--disable-mac-bundle \
 	--without-bindings="perl" \
