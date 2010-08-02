@@ -16,6 +16,7 @@ PATCHFILES += \
 	$(DISTNAME)-youtube_parser_fix_2.patch \
 	$(DISTNAME)-mythtv_0_21.patch \
 	$(DISTNAME)-fftw3f.patch \
+	$(DISTNAME)-mplayer_vo.patch \
 	$(DISTNAME).patch.gar
 PARSERS = \
 	apple-3.pl \
