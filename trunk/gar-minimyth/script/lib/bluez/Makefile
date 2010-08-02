@@ -39,7 +39,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-pcmcia \
 	--enable-hid2hci \
 	--enable-dfutool \
-	--disable-hidd \
+	--enable-hidd \
 	--disable-pand \
 	--disable-dund \
 	--disable-cups \
