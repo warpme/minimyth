@@ -1,5 +1,5 @@
 GARNAME = xine-ui
-GARVERSION = 3051
+GARVERSION = 3054
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
