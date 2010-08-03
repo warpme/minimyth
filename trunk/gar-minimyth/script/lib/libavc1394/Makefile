@@ -1,5 +1,5 @@
 GARNAME = libavc1394
-GARVERSION = 0.5.3
+GARVERSION = 0.5.4
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
