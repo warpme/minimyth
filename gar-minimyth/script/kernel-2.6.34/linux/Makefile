@@ -9,7 +9,6 @@ PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
-PATCHFILES += $(DISTNAME)-usb_remote_wakeup.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.4.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
