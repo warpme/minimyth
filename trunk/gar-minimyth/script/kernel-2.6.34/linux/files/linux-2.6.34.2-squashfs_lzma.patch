@@ -1,6 +1,6 @@
-diff -Naur linux-2.6.34.1-old/fs/squashfs/decompressor.c linux-2.6.34.1-new/fs/squashfs/decompressor.c
---- linux-2.6.34.1-old/fs/squashfs/decompressor.c	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/fs/squashfs/decompressor.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/fs/squashfs/decompressor.c linux-2.6.34.2-new/fs/squashfs/decompressor.c
+--- linux-2.6.34.2-old/fs/squashfs/decompressor.c	2010-08-03 09:45:31.000000000 -0700
++++ linux-2.6.34.2-new/fs/squashfs/decompressor.c	2010-08-03 09:46:25.000000000 -0700
 @@ -50,7 +50,11 @@
  
  static const struct squashfs_decompressor *decompressor[] = {
@@ -13,9 +13,9 @@ diff -Naur linux-2.6.34.1-old/fs/squashfs/decompressor.c linux-2.6.34.1-new/fs/s
  	&squashfs_lzo_unsupported_comp_ops,
  	&squashfs_unknown_comp_ops
  };
-diff -Naur linux-2.6.34.1-old/fs/squashfs/Kconfig linux-2.6.34.1-new/fs/squashfs/Kconfig
---- linux-2.6.34.1-old/fs/squashfs/Kconfig	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/fs/squashfs/Kconfig	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/fs/squashfs/Kconfig linux-2.6.34.2-new/fs/squashfs/Kconfig
+--- linux-2.6.34.2-old/fs/squashfs/Kconfig	2010-08-03 09:45:31.000000000 -0700
++++ linux-2.6.34.2-new/fs/squashfs/Kconfig	2010-08-03 09:46:25.000000000 -0700
 @@ -26,6 +26,12 @@
  
  	  If unsure, say N.
@@ -29,9 +29,9 @@ diff -Naur linux-2.6.34.1-old/fs/squashfs/Kconfig linux-2.6.34.1-new/fs/squashfs
  config SQUASHFS_EMBEDDED
  
  	bool "Additional option for memory-constrained systems" 
-diff -Naur linux-2.6.34.1-old/fs/squashfs/lzma_wrapper.c linux-2.6.34.1-new/fs/squashfs/lzma_wrapper.c
---- linux-2.6.34.1-old/fs/squashfs/lzma_wrapper.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.34.1-new/fs/squashfs/lzma_wrapper.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/fs/squashfs/lzma_wrapper.c linux-2.6.34.2-new/fs/squashfs/lzma_wrapper.c
+--- linux-2.6.34.2-old/fs/squashfs/lzma_wrapper.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.34.2-new/fs/squashfs/lzma_wrapper.c	2010-08-03 09:46:25.000000000 -0700
 @@ -0,0 +1,152 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -185,17 +185,17 @@ diff -Naur linux-2.6.34.1-old/fs/squashfs/lzma_wrapper.c linux-2.6.34.1-new/fs/s
 +	.supported = 1
 +};
 +
-diff -Naur linux-2.6.34.1-old/fs/squashfs/Makefile linux-2.6.34.1-new/fs/squashfs/Makefile
---- linux-2.6.34.1-old/fs/squashfs/Makefile	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/fs/squashfs/Makefile	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/fs/squashfs/Makefile linux-2.6.34.2-new/fs/squashfs/Makefile
+--- linux-2.6.34.2-old/fs/squashfs/Makefile	2010-08-03 09:45:31.000000000 -0700
++++ linux-2.6.34.2-new/fs/squashfs/Makefile	2010-08-03 09:46:25.000000000 -0700
 @@ -5,3 +5,4 @@
  obj-$(CONFIG_SQUASHFS) += squashfs.o
  squashfs-y += block.o cache.o dir.o export.o file.o fragment.o id.o inode.o
  squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o
 +squashfs-$(CONFIG_SQUASHFS_LZMA) += lzma_wrapper.o
-diff -Naur linux-2.6.34.1-old/fs/squashfs/squashfs.h linux-2.6.34.1-new/fs/squashfs/squashfs.h
---- linux-2.6.34.1-old/fs/squashfs/squashfs.h	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/fs/squashfs/squashfs.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/fs/squashfs/squashfs.h linux-2.6.34.2-new/fs/squashfs/squashfs.h
+--- linux-2.6.34.2-old/fs/squashfs/squashfs.h	2010-08-03 09:45:31.000000000 -0700
++++ linux-2.6.34.2-new/fs/squashfs/squashfs.h	2010-08-03 09:46:25.000000000 -0700
 @@ -94,3 +94,6 @@
  
  /* zlib_wrapper.c */
@@ -203,9 +203,9 @@ diff -Naur linux-2.6.34.1-old/fs/squashfs/squashfs.h linux-2.6.34.1-new/fs/squas
 +
 +/* lzma wrapper.c */
 +extern const struct squashfs_decompressor squashfs_lzma_comp_ops;
-diff -Naur linux-2.6.34.1-old/include/linux/decompress/bunzip2_mm.h linux-2.6.34.1-new/include/linux/decompress/bunzip2_mm.h
---- linux-2.6.34.1-old/include/linux/decompress/bunzip2_mm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.34.1-new/include/linux/decompress/bunzip2_mm.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/include/linux/decompress/bunzip2_mm.h linux-2.6.34.2-new/include/linux/decompress/bunzip2_mm.h
+--- linux-2.6.34.2-old/include/linux/decompress/bunzip2_mm.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.34.2-new/include/linux/decompress/bunzip2_mm.h	2010-08-03 09:46:25.000000000 -0700
 @@ -0,0 +1,13 @@
 +#ifndef BUNZIP2_MM_H
 +#define BUNZIP2_MM_H
@@ -220,9 +220,9 @@ diff -Naur linux-2.6.34.1-old/include/linux/decompress/bunzip2_mm.h linux-2.6.34
 +#endif
 +
 +#endif
-diff -Naur linux-2.6.34.1-old/include/linux/decompress/inflate_mm.h linux-2.6.34.1-new/include/linux/decompress/inflate_mm.h
---- linux-2.6.34.1-old/include/linux/decompress/inflate_mm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.34.1-new/include/linux/decompress/inflate_mm.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/include/linux/decompress/inflate_mm.h linux-2.6.34.2-new/include/linux/decompress/inflate_mm.h
+--- linux-2.6.34.2-old/include/linux/decompress/inflate_mm.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.34.2-new/include/linux/decompress/inflate_mm.h	2010-08-03 09:46:25.000000000 -0700
 @@ -0,0 +1,13 @@
 +#ifndef INFLATE_MM_H
 +#define INFLATE_MM_H
@@ -237,9 +237,9 @@ diff -Naur linux-2.6.34.1-old/include/linux/decompress/inflate_mm.h linux-2.6.34
 +#endif
 +
 +#endif
-diff -Naur linux-2.6.34.1-old/include/linux/decompress/mm.h linux-2.6.34.1-new/include/linux/decompress/mm.h
---- linux-2.6.34.1-old/include/linux/decompress/mm.h	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/include/linux/decompress/mm.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/include/linux/decompress/mm.h linux-2.6.34.2-new/include/linux/decompress/mm.h
+--- linux-2.6.34.2-old/include/linux/decompress/mm.h	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/include/linux/decompress/mm.h	2010-08-03 09:46:25.000000000 -0700
 @@ -63,8 +63,6 @@
  
  #define set_error_fn(x)
@@ -260,9 +260,9 @@ diff -Naur linux-2.6.34.1-old/include/linux/decompress/mm.h linux-2.6.34.1-new/i
  #define STATIC
  
  #include <linux/init.h>
-diff -Naur linux-2.6.34.1-old/include/linux/decompress/unlzma_mm.h linux-2.6.34.1-new/include/linux/decompress/unlzma_mm.h
---- linux-2.6.34.1-old/include/linux/decompress/unlzma_mm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.34.1-new/include/linux/decompress/unlzma_mm.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/include/linux/decompress/unlzma_mm.h linux-2.6.34.2-new/include/linux/decompress/unlzma_mm.h
+--- linux-2.6.34.2-old/include/linux/decompress/unlzma_mm.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.34.2-new/include/linux/decompress/unlzma_mm.h	2010-08-03 09:46:25.000000000 -0700
 @@ -0,0 +1,20 @@
 +#ifndef UNLZMA_MM_H
 +#define UNLZMA_MM_H
@@ -284,9 +284,9 @@ diff -Naur linux-2.6.34.1-old/include/linux/decompress/unlzma_mm.h linux-2.6.34.
 +#endif
 +
 +#endif
-diff -Naur linux-2.6.34.1-old/include/linux/decompress/unlzo_mm.h linux-2.6.34.1-new/include/linux/decompress/unlzo_mm.h
---- linux-2.6.34.1-old/include/linux/decompress/unlzo_mm.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.34.1-new/include/linux/decompress/unlzo_mm.h	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/include/linux/decompress/unlzo_mm.h linux-2.6.34.2-new/include/linux/decompress/unlzo_mm.h
+--- linux-2.6.34.2-old/include/linux/decompress/unlzo_mm.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.34.2-new/include/linux/decompress/unlzo_mm.h	2010-08-03 09:46:25.000000000 -0700
 @@ -0,0 +1,13 @@
 +#ifndef UNLZO_MM_H
 +#define UNLZO_MM_H
@@ -301,9 +301,9 @@ diff -Naur linux-2.6.34.1-old/include/linux/decompress/unlzo_mm.h linux-2.6.34.1
 +#endif
 +
 +#endif
-diff -Naur linux-2.6.34.1-old/lib/decompress_bunzip2.c linux-2.6.34.1-new/lib/decompress_bunzip2.c
---- linux-2.6.34.1-old/lib/decompress_bunzip2.c	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/decompress_bunzip2.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/decompress_bunzip2.c linux-2.6.34.2-new/lib/decompress_bunzip2.c
+--- linux-2.6.34.2-old/lib/decompress_bunzip2.c	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/decompress_bunzip2.c	2010-08-03 09:46:25.000000000 -0700
 @@ -52,6 +52,7 @@
  #include <linux/slab.h>
  #endif /* STATIC */
@@ -312,9 +312,9 @@ diff -Naur linux-2.6.34.1-old/lib/decompress_bunzip2.c linux-2.6.34.1-new/lib/de
  #include <linux/decompress/mm.h>
  
  #ifndef INT_MAX
-diff -Naur linux-2.6.34.1-old/lib/decompress_inflate.c linux-2.6.34.1-new/lib/decompress_inflate.c
---- linux-2.6.34.1-old/lib/decompress_inflate.c	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/decompress_inflate.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/decompress_inflate.c linux-2.6.34.2-new/lib/decompress_inflate.c
+--- linux-2.6.34.2-old/lib/decompress_inflate.c	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/decompress_inflate.c	2010-08-03 09:46:25.000000000 -0700
 @@ -23,6 +23,7 @@
  
  #endif /* STATIC */
@@ -323,9 +323,9 @@ diff -Naur linux-2.6.34.1-old/lib/decompress_inflate.c linux-2.6.34.1-new/lib/de
  #include <linux/decompress/mm.h>
  
  #define GZIP_IOBUF_SIZE (16*1024)
-diff -Naur linux-2.6.34.1-old/lib/decompress_unlzma.c linux-2.6.34.1-new/lib/decompress_unlzma.c
---- linux-2.6.34.1-old/lib/decompress_unlzma.c	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/decompress_unlzma.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/decompress_unlzma.c linux-2.6.34.2-new/lib/decompress_unlzma.c
+--- linux-2.6.34.2-old/lib/decompress_unlzma.c	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/decompress_unlzma.c	2010-08-03 09:46:25.000000000 -0700
 @@ -36,6 +36,7 @@
  #include <linux/slab.h>
  #endif /* STATIC */
@@ -640,9 +640,9 @@ diff -Naur linux-2.6.34.1-old/lib/decompress_unlzma.c linux-2.6.34.1-new/lib/dec
  
  #ifdef PREBOOT
  STATIC int INIT decompress(unsigned char *buf, int in_len,
-diff -Naur linux-2.6.34.1-old/lib/decompress_unlzo.c linux-2.6.34.1-new/lib/decompress_unlzo.c
---- linux-2.6.34.1-old/lib/decompress_unlzo.c	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/decompress_unlzo.c	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/decompress_unlzo.c linux-2.6.34.2-new/lib/decompress_unlzo.c
+--- linux-2.6.34.2-old/lib/decompress_unlzo.c	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/decompress_unlzo.c	2010-08-03 09:46:25.000000000 -0700
 @@ -39,6 +39,7 @@
  
  #include <linux/types.h>
@@ -651,9 +651,9 @@ diff -Naur linux-2.6.34.1-old/lib/decompress_unlzo.c linux-2.6.34.1-new/lib/deco
  #include <linux/decompress/mm.h>
  
  #include <linux/compiler.h>
-diff -Naur linux-2.6.34.1-old/lib/Kconfig linux-2.6.34.1-new/lib/Kconfig
---- linux-2.6.34.1-old/lib/Kconfig	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/Kconfig	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/Kconfig linux-2.6.34.2-new/lib/Kconfig
+--- linux-2.6.34.2-old/lib/Kconfig	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/Kconfig	2010-08-03 09:46:25.000000000 -0700
 @@ -121,6 +121,9 @@
  	select LZO_DECOMPRESS
  	tristate
@@ -664,9 +664,9 @@ diff -Naur linux-2.6.34.1-old/lib/Kconfig linux-2.6.34.1-new/lib/Kconfig
  #
  # Generic allocator support is selected if needed
  #
-diff -Naur linux-2.6.34.1-old/lib/Makefile linux-2.6.34.1-new/lib/Makefile
---- linux-2.6.34.1-old/lib/Makefile	2010-07-05 14:57:01.000000000 -0700
-+++ linux-2.6.34.1-new/lib/Makefile	2010-07-05 14:57:34.000000000 -0700
+diff -Naur linux-2.6.34.2-old/lib/Makefile linux-2.6.34.2-new/lib/Makefile
+--- linux-2.6.34.2-old/lib/Makefile	2010-08-03 09:45:32.000000000 -0700
++++ linux-2.6.34.2-new/lib/Makefile	2010-08-03 09:46:25.000000000 -0700
 @@ -69,7 +69,7 @@
  
  lib-$(CONFIG_DECOMPRESS_GZIP) += decompress_inflate.o
