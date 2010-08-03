@@ -95,6 +95,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
 # --enable-libavutil_so
 # --enable-libavcodec_so
+# --enable-libavcore_so
 # --enable-libavformat_so
 # --enable-libpostproc_so
 # --enable-libswscale_so
@@ -120,6 +121,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libnut \
 	--disable-libavutil_a \
 	--disable-libavcodec_a \
+	--disable-libavcore_a \
 	--disable-libavformat_a \
 	--disable-libpostproc_a \
 	--disable-libswscale_a \
