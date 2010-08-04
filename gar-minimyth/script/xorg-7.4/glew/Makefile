@@ -40,3 +40,7 @@ INSTALL_ARGS = \
 	INCDIR="$(DESTDIR)$(includedir)/GL"
 
 include ../../gar.mk
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libGLEW.a
+	@$(MAKECOOKIE)
