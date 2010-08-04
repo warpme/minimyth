@@ -6,6 +6,7 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT)-python_build.patch \
+	$(DISTNAME_SHORT)-changeset-23459.patch \
 	$(DISTNAME_SHORT)-ticket-7063-20091202.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \

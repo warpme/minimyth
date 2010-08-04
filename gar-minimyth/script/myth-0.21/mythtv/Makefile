@@ -7,6 +7,7 @@ PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME_SHORT)-python_build.patch \
 	$(DISTNAME_SHORT)-changeset-18944.patch \
+	$(DISTNAME_SHORT)-changeset-23459.patch \
 	$(DISTNAME_SHORT)-ffmpeg_changeset-17091.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
