@@ -14,7 +14,7 @@ endef
 DEPENDS   = lang/c kernel/kernel xorg/xorg
 BUILDDEPS = utils/module-init-tools
 
-DISTFILE = NVIDIA-Linux-$(NVIDIA_SUPER_VERSION)-$(NVIDIA_VERSION)-$(NVIDIA_EXTRA_VERSION)
+DISTFILE = NVIDIA-Linux-$(NVIDIA_SUPER_VERSION)-$(NVIDIA_VERSION)$(NVIDIA_EXTRA_VERSION)
 
 WORKSRC = $(WORKDIR)/$(DISTFILE)
 
@@ -22,8 +22,10 @@ NVIDIA_SUPER_VERSION = $(strip \
 	$(if $(filter i386,  $(GARCH_FAMILY)),x86   ) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
 NVIDIA_EXTRA_VERSION = $(strip \
-	$(if $(filter x86,   $(NVIDIA_SUPER_VERSION)),pkg1) \
-	$(if $(filter x86_64,$(NVIDIA_SUPER_VERSION)),pkg2))
+	$(if $(filter-out 256, $(NVIDIA_MAJOR_VERSION)), \
+		$(if $(filter x86,   $(NVIDIA_SUPER_VERSION)),-pkg1) \
+		$(if $(filter x86_64,$(NVIDIA_SUPER_VERSION)),-pkg2) \
+	))
 	
 NVIDIA_VERSION_LIST  = $(strip \
 	$(if $(NVIDIA_MAJOR_VERSION), \
@@ -48,14 +50,20 @@ NVIDIA_FILE_LIST_BIN     = $(strip \
 			nvidia-settings:/usr/bin:$(bindir)) \
 		$(if $(wildcard $(WORKSRC)/usr/bin/nvidia-xconfig), \
 			nvidia-xconfig:/usr/bin:$(bindir)) \
+		$(if $(wildcard $(WORKSRC)/nvidia-bug-report.sh), \
+			nvidia-bug-report.sh:/:$(bindir)) \
+		$(if $(wildcard $(WORKSRC)/nvidia-settings), \
+			nvidia-settings:/:$(bindir)) \
+		$(if $(wildcard $(WORKSRC)/nvidia-xconfig), \
+			nvidia-xconfig:/:$(bindir)) \
 	)
 NVIDIA_FILE_LIST_LIB_DRV = $(strip \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/drivers/nvidia_drv.so), \
 			nvidia_drv.so:/usr/X11R6/lib/modules/drivers:$(libdir)/nvidia/xorg/modules/drivers) \
+		$(if $(wildcard $(WORKSRC)/nvidia_drv.so), \
+			nvidia_drv.so:/:$(libdir)/nvidia/xorg/modules/drivers) \
 	)
 NVIDIA_FILE_LIST_LIB_SO  = $(strip \
-		$(if $(wildcard $(WORKSRC)/usr/lib/libcuda.so.*), \
-			libcuda.so:/usr/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/lib/libGL.so.*), \
 			libGL.so:/usr/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/lib/libGLcore.so.*), \
@@ -70,6 +78,22 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 			libXvMCNVIDIA.so:/usr/X11R6/lib:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/usr/X11R6/lib/modules/extensions/libglx.so.*), \
 			libglx.so:/usr/X11R6/lib/modules/extensions:$(libdir)/nvidia/xorg/modules/extensions) \
+		$(if $(wildcard $(WORKSRC)/libGL.so.*), \
+			libGL.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libnvidia-glcore.so.*), \
+			libnvidia-glcore.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libnvidia-cfg.so.*), \
+			libnvidia-cfg.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libnvidia-tls.so.*), \
+			libnvidia-tls.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libnvidia-wfb.so.*), \
+			libnvidia-wfb.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libvdpau_nvidia.so.*), \
+			libvdpau_nvidia.so:/:$(libdir)/vdpau) \
+		$(if $(wildcard $(WORKSRC)/libXvMCNVIDIA.so.*), \
+			libXvMCNVIDIA.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/libglx.so.*), \
+			libglx.so:/:$(libdir)/nvidia/xorg/modules/extensions) \
 	)
 
 NVIDIA_MAKE_ARGS = \
@@ -91,8 +115,14 @@ extract-%.run:
 	@$(MAKECOOKIE)
 
 build-nvidia:
-	@echo " ==> Running make in $(WORKSRC)/usr/src/nv"
-	@cd $(WORKSRC)/usr/src/nv ; $(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") $(BUILD_ARGS)
+	@$(if $(wildcard $(WORKSRC)/usr/src/nv), \
+		echo " ==> Running make in $(WORKSRC)/usr/src/nv" ; \
+		cd $(WORKSRC)/usr/src/nv ; $(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") $(BUILD_ARGS) \
+	)
+	@$(if $(wildcard $(WORKSRC)/kernel), \
+		echo " ==> Running make in $(WORKSRC)/kernel" ; \
+		cd $(WORKSRC)/kernel ; $(BUILD_ENV) $(MAKE) $(PARALLELMFLAGS) $(foreach TTT,$(BUILD_OVERRIDE_DIRS),$(TTT)="$($(TTT))") $(BUILD_ARGS) \
+	)
 	@$(MAKECOOKIE)
 
 install-nvidia: install-nvidia-kernel install-nvidia-x11
@@ -100,7 +130,10 @@ install-nvidia: install-nvidia-kernel install-nvidia-x11
 
 install-nvidia-kernel:
 	@mkdir -p $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia
-	@cp $(WORKSRC)/usr/src/nv/nvidia.ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia/nvidia.ko
+	@$(if $(wildcard $(WORKSRC)/usr/src/nv/nvidia.ko), \
+		cp $(WORKSRC)/usr/src/nv/nvidia.ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia/nvidia.ko)
+	@$(if $(wildcard $(WORKSRC)/kernel/nvidia.ko), \
+		cp $(WORKSRC)/kernel/nvidia.ko $(DESTDIR)$(LINUX_MODULESDIR)/misc/nvidia/nvidia.ko)
 	@depmod -b "$(DESTDIR)$(rootdir)" "$(LINUX_FULL_VERSION)"
 	@$(MAKECOOKIE)
 
