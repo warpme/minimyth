@@ -3,7 +3,7 @@ GARVERSION = 1.1.0
 CATEGORIES = net
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/nfs/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-nolock.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-sys_stat_h.patch $(DISTNAME)-nolock.patch $(DISTNAME)-cross.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
