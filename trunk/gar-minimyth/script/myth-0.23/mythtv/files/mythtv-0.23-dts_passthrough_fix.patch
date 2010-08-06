@@ -1,0 +1,18 @@
+diff -Naur mythtv-0.23-25536-old/libs/libmythtv/avformatdecoder.cpp mythtv-0.23-25536-new/libs/libmythtv/avformatdecoder.cpp
+--- mythtv-0.23-25536-old/libs/libmythtv/avformatdecoder.cpp	2010-08-01 21:46:05.000000000 -0700
++++ mythtv-0.23-25536-new/libs/libmythtv/avformatdecoder.cpp	2010-08-06 11:13:02.000000000 -0700
+@@ -4714,6 +4714,14 @@
+ 
+     GetNVP()->ReinitAudio();
+ 
++    if (using_passthru != DoPassThrough(codec_ctx))
++    {
++        // detected audio capabilities changed half-way
++        // recheck audio stream
++        VERBOSE(VB_AUDIO, LOC + "Audio config changed. Rescanning");
++        return SetupAudioStream();
++    }
++
+     if (LCD *lcd = LCD::Get())
+     {
+         LCDAudioFormatSet audio_format;
