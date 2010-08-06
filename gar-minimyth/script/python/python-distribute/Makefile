@@ -9,8 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = python/python
-BUILDDEPS = python/python
+DEPENDS = python/python
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -20,8 +19,7 @@ INSTALL_SCRIPTS = $(WORKSRC)/setup.py
 CONFIGURE_ARGS =
 BUILD_ARGS     =
 INSTALL_ARGS   = \
-	--prefix=$(prefix) \
-	--root=/$(DESTDIR)
+	--prefix=$(DESTDIR)$(prefix)
 CONFIGURE_ENV  =
 BUILD_ENV      =
 INSTALL_ENV    = \

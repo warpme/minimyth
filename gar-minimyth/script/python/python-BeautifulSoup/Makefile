@@ -3,6 +3,7 @@ GARVERSION = 3.0.8.1
 CATEGORIES = python
 MASTER_SITES = http://www.crummy.com/software/BeautifulSoup/download/3.x/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
+PATCHFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
 LICENSE = BSD
 
 DESCRIPTION = 
@@ -10,7 +11,7 @@ define BLURB
 endef
 
 DEPENDS   = python/python
-BUILDDEPS = python/python
+BUILDDEPS = python/python-distutilscross
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -20,16 +21,15 @@ INSTALL_SCRIPTS = $(WORKSRC)/setup.py
 CONFIGURE_ARGS =
 BUILD_ARGS     =
 INSTALL_ARGS   = \
-	--prefix=$(prefix) \
-	--root=/$(DESTDIR)
+	--prefix=$(DESTDIR)$(prefix)
 CONFIGURE_ENV  =
 BUILD_ENV      =
 INSTALL_ENV    = \
 	PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
 ifneq ($(DESTIMG),build)
-BUILD_ENV  += \
-	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
+BUILD_ARGS += --cross-compile
+BUILD_ENV  += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 endif
 
 GAR_EXTRA_CONF += python/python/package-api.mk

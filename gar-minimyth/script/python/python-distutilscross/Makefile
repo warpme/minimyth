@@ -1,18 +1,16 @@
-GARNAME = python-Imaging
-GARVERSION = 1.1.7
+GARNAME = python-distutilscross
+GARVERSION = 0.1
 CATEGORIES = python
-MASTER_SITES = http://effbot.org/downloads/
+MASTER_SITES = http://pypi.python.org/packages/source/d/distutilscross/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
-PATCHFILES  = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
-PATCHFILES += $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).patch.gar
 LICENSE =
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/freetype lib/libjpeg lib/libtiff lib/zlib python/python python/python-PyXML
-BUILDDEPS = python/python-distutilscross
+DEPENDS   = python/python-distribute
+BUILDDEPS = python/python-distribute
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -28,18 +26,8 @@ BUILD_ENV      =
 INSTALL_ENV    = \
 	PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
-ifneq ($(DESTIMG),build)
-BUILD_ARGS += --cross-compile
-BUILD_ENV  += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
-endif
-
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
-
-CFLAGS  += -I$(DESTDIR)$(PYTHON_includedir)
-CFLAGS  += -L$(DESTDIR)$(libdir)
-LDFLAGS += -I$(DESTDIR)$(PYTHON_includedir)
-LDFLAGS += -L$(DESTDIR)$(libdir)
 
 build-%/setup.py:
 	@echo " ==> Running setup.py build in $*"

@@ -3,10 +3,7 @@ GARVERSION =  $(PYTHON_VERSION)
 CATEGORIES = python
 MASTER_SITES = http://www.python.org/ftp/python/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-setup_honor_environ.patch
-PATCHFILES += $(DISTNAME)-distutils_pythonxcprefix.patch
-PATCHFILES += $(DISTNAME)-configure.patch
-PATCHFILES += $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-configure.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
@@ -37,46 +34,37 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-shared
 ifneq ($(DESTIMG),build)
-BUILD_ARGS    = \
+BUILD_ARGS     = \
 	HOSTPYTHON=$(build_DESTDIR)$(build_bindir)/python \
 	HOSTPGEN=$(build_DESTDIR)$(build_bindir)/python-pgen \
+	BLDSHARED="$(CC) -shared" \
 	CROSS_COMPILE=$(compiler_prefix) \
-	CROSS_COMPILE_TARGET=yes \
-	DESTDIR=$(DESTDIR)
-INSTALL_ARGS = \
+	CROSS_COMPILE_TARGET=yes
+INSTALL_ARGS   = \
 	HOSTPYTHON=$(build_DESTDIR)$(build_bindir)/python \
 	HOSTPGEN=$(build_DESTDIR)$(build_bindir)/python-pgen \
+	BLDSHARED="$(CC) -shared" \
 	CROSS_COMPILE=$(compiler_prefix) \
-	CROSS_COMPILE_TARGET=yes \
-	DESTDIR=$(DESTDIR)
+	CROSS_COMPILE_TARGET=yes
 endif
 	
 ifneq ($(DESTIMG),build)
 CONFIGURE_ENV = \
 	ac_cv_file_dev_ptc=no \
 	ac_cv_file_dev_ptmx=yes \
-	ac_cv_func_chflags=no \
-	ac_cv_func_lchflags=no \
-	ac_cv_have_long_long_format=yes \
-	ac_cv_have_size_t_format=yes
+	ac_cv_func_lchflags_works=no \
+	ac_cv_func_chflags_works=no \
+	ac_cv_func_printf_zd=yes
 endif
 
 include ../../gar.mk
 
-CFLAGS := $(CFLAGS) -I$(shell pwd)/$(WORKSRC)/Include
+# Needed so that Python can find the correct libpython shared library.
+LDFLAGS := $(LDFLAGS) -L$(PWD)/$(WORKSRC)
 
 pre-configure:
 	@cd $(WORKSRC) ; autoreconf-2.65 --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(MAKECOOKIE)
-
-post-configure:
-	@rm -rf $(DESTDIR)$(PYTHON_libdir)/config
-	@mkdir -p $(DESTDIR)$(PYTHON_libdir)/config
-	@cp $(WORKSRC)/Makefile $(DESTDIR)$(PYTHON_libdir)/config/Makefile
-	@rm -rf $(DESTDIR)$(PYTHON_includedir)
-	@mkdir -p $(DESTDIR)$(PYTHON_includedir)
-	@cp $(WORKSRC)/pyconfig.h $(DESTDIR)$(PYTHON_includedir)/pyconfig.h
 	@$(MAKECOOKIE)
 
 install-cross:

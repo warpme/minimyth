@@ -4,6 +4,7 @@ CATEGORIES = python
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/pyxml/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
 PATCHFILES  = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-xpath_fix.patch
+PATCHFILES += $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENCE
 
@@ -12,7 +13,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c python/python
-BUILDDEPS = python/python
+BUILDDEPS = python/python-distutilscross
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
@@ -22,20 +23,22 @@ INSTALL_SCRIPTS = $(WORKSRC)/setup.py
 CONFIGURE_ARGS =
 BUILD_ARGS     =
 INSTALL_ARGS   = \
-	--prefix=$(prefix) \
-	--root=/$(DESTDIR)
+	--prefix=$(DESTDIR)$(prefix)
 CONFIGURE_ENV  =
 BUILD_ENV      =
 INSTALL_ENV    = \
 	PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
 ifneq ($(DESTIMG),build)
-BUILD_ENV  += \
-	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
+BUILD_ARGS += --cross-compile
+BUILD_ENV  += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 endif
 
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
+
+CFLAGS  += -L$(DESTDIR)$(libdir)
+LDFLAGS += -L$(DESTDIR)$(libdir)
 
 build-%/setup.py:
 	@echo " ==> Running setup.py build in $*"
