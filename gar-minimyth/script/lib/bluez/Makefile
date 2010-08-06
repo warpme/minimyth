@@ -3,7 +3,7 @@ GARVERSION = 4.69
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-ps3remote_20091128.patch
+PATCHFILES = $(DISTNAME)-ps3remote_20100714.patch
 LICENSE = GPL2
 
 DESCRIPTION =
