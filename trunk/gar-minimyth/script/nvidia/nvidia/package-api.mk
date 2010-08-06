@@ -84,8 +84,8 @@ NVIDIA_FILE_LIST_LIB_SO  = $(strip \
 			libnvidia-glcore.so:/:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/libnvidia-cfg.so.*), \
 			libnvidia-cfg.so:/:$(libdir)/nvidia) \
-		$(if $(wildcard $(WORKSRC)/libnvidia-tls.so.*), \
-			libnvidia-tls.so:/:$(libdir)/nvidia) \
+		$(if $(wildcard $(WORKSRC)/tls/libnvidia-tls.so.*), \
+			libnvidia-tls.so:/tls:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/libnvidia-wfb.so.*), \
 			libnvidia-wfb.so:/:$(libdir)/nvidia) \
 		$(if $(wildcard $(WORKSRC)/libvdpau_nvidia.so.*), \
