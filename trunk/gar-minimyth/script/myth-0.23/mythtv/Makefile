@@ -37,13 +37,15 @@ DEPENDS = \
 	lib/libiec61883 \
 	lib/zlib \
 	python/python \
+	python/python-MySQL-python \
+	python/python-lxml \
 	qt/qt4 \
 	system/lirc \
 	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = \
 	devel/yasm \
-	python/python
+	python/python-distutilscross
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
