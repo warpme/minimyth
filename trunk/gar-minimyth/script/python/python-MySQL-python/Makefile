@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c python/python
+DEPENDS   = lang/c python/python db/mysql
 BUILDDEPS = python/python-distutilscross
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
