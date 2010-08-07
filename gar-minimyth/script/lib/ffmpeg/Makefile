@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 24691.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 24735.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -59,6 +59,7 @@ CONFIGURE_ARGS = \
 	--enable-dct \
 	--enable-fft \
 	--enable-golomb \
+	--enable-huffman \
 	--enable-lpc \
 	--enable-mdct \
 	--enable-rdft \
