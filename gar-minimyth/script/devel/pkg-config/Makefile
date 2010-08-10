@@ -3,7 +3,7 @@ GARVERSION = 0.25
 CATEGORIES = devel
 MASTER_SITES = http://pkgconfig.freedesktop.org/releases/
 DISTFILES = $(DISTNAME).tar.gz 
-PATCHFILES = $(DISTNAME)-m4_pattern_allow.patch
+PATCHFILES = $(DISTNAME)-autoconf_2.66.patch $(DISTNAME)-m4_pattern_allow.patch
 LICENSE = GPL2
 
 DESCRIPTION =
