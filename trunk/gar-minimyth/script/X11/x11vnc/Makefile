@@ -1,5 +1,5 @@
 GARNAME = x11vnc
-GARVERSION = 0.9.10
+GARVERSION = 0.9.11
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -45,7 +45,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-jpeg=$(DESTDIR)$(prefix) \
 	--with-zlib \
 	--with-zlib=$(DESTDIR)$(prefix) \
-	--with-pthread
+	--with-pthread \
+	--without-gnutls \
+	--without-client-tls
 
 CONFIGURE_ENV = \
 	ac_cv_func_fork_works=yes \
