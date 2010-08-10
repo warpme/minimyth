@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 24735.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 24757.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100802.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100810.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -223,9 +223,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=24646
-FFMPEG_MT_VERSION_THREAD=9ec9f0868de2df3d3448dec887e7440ebb006b27
-FFMPEG_MT_VERSION_DATE=20100802
+FFMPEG_MT_VERSION_NORMAL=24746
+FFMPEG_MT_VERSION_THREAD=0b64ceb6b15560313d0a6ac7cffe9270d7b8e0e8
+FFMPEG_MT_VERSION_DATE=20100810
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
