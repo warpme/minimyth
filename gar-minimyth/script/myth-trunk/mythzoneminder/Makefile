@@ -32,3 +32,6 @@ include ../../gar.mk
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)
+
+pre-fetch:
+	echo "" | gcc -E -dM -c - | grep linux
