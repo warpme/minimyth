@@ -1,6 +1,6 @@
-diff -Naur mythplugins-trunk-25535-old/configure mythplugins-trunk-25535-new/configure
---- mythplugins-trunk-25535-old/configure	2010-08-01 21:52:00.000000000 -0700
-+++ mythplugins-trunk-25535-new/configure	2010-08-01 21:52:00.000000000 -0700
+diff -Naur mythplugins-trunk-25603-old/configure mythplugins-trunk-25603-new/configure
+--- mythplugins-trunk-25603-old/configure	2010-08-10 07:28:06.000000000 -0700
++++ mythplugins-trunk-25603-new/configure	2010-08-10 07:28:07.000000000 -0700
 @@ -382,11 +382,27 @@
  
  if ! disabled fftw; then
@@ -59,10 +59,10 @@ diff -Naur mythplugins-trunk-25535-old/configure mythplugins-trunk-25535-new/con
      elif enabled fftw_lib; then
          echo "        FFTW v.2       support will be included in MythMusic"
          echo "#define FFTW2_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
-diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-25535-new/mythmusic/mythmusic/visualize.cpp
---- mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp	2010-08-01 21:52:00.000000000 -0700
-+++ mythplugins-trunk-25535-new/mythmusic/mythmusic/visualize.cpp	2010-08-01 21:52:00.000000000 -0700
-@@ -58,8 +58,8 @@
+diff -Naur mythplugins-trunk-25603-old/mythmusic/mythmusic/visualize.cpp mythplugins-trunk-25603-new/mythmusic/mythmusic/visualize.cpp
+--- mythplugins-trunk-25603-old/mythmusic/mythmusic/visualize.cpp	2010-08-10 07:28:06.000000000 -0700
++++ mythplugins-trunk-25603-new/mythmusic/mythmusic/visualize.cpp	2010-08-10 07:28:07.000000000 -0700
+@@ -59,8 +59,8 @@
      rout = (myth_fftw_complex*)
          av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
  
@@ -73,7 +73,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      lin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
      rin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
-@@ -86,8 +86,8 @@
+@@ -87,8 +87,8 @@
          av_free(rout);
  #endif
  #ifdef FFTW3_SUPPORT
@@ -84,7 +84,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_destroy_plan(plan);
  #endif
-@@ -152,8 +152,8 @@
+@@ -153,8 +153,8 @@
      fast_reals_set(lin + i, rin + i, 0, FFTW_N - i);
  
  #ifdef FFTW3_SUPPORT
@@ -95,7 +95,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_one(plan, lin, lout);
      rfftw_one(plan, rin, rout);
-@@ -762,8 +762,8 @@
+@@ -761,8 +761,8 @@
      rout = (myth_fftw_complex*)
          av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
  
@@ -106,7 +106,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      lin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
      rin = (fftw_real*) av_malloc(sizeof(fftw_real)*FFTW_N);
-@@ -793,8 +793,8 @@
+@@ -792,8 +792,8 @@
          av_free(rout);
  #endif
  #ifdef FFTW3_SUPPORT
@@ -117,7 +117,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_destroy_plan(plan);
  #endif
-@@ -851,8 +851,8 @@
+@@ -850,8 +850,8 @@
  
      fast_reals_set(lin + i, rin + i, 0, FFTW_N - i);
  #ifdef FFTW3_SUPPORT
@@ -128,9 +128,9 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.cpp mythplu
  #elif FFTW2_SUPPORT
      rfftw_one(plan, lin, lout);
      rfftw_one(plan, rin, rout);
-diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-25535-new/mythmusic/mythmusic/visualize.h
---- mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.h	2010-08-01 21:52:00.000000000 -0700
-+++ mythplugins-trunk-25535-new/mythmusic/mythmusic/visualize.h	2010-08-01 21:52:00.000000000 -0700
+diff -Naur mythplugins-trunk-25603-old/mythmusic/mythmusic/visualize.h mythplugins-trunk-25603-new/mythmusic/mythmusic/visualize.h
+--- mythplugins-trunk-25603-old/mythmusic/mythmusic/visualize.h	2010-08-10 07:28:06.000000000 -0700
++++ mythplugins-trunk-25603-new/mythmusic/mythmusic/visualize.h	2010-08-10 07:28:07.000000000 -0700
 @@ -29,14 +29,35 @@
  extern "C" {
  #ifdef FFTW3_SUPPORT
@@ -180,7 +180,7 @@ diff -Naur mythplugins-trunk-25535-old/mythmusic/mythmusic/visualize.h mythplugi
      myth_fftw_float *lin, *rin;
      myth_fftw_complex *lout, *rout;
  #elif FFTW2_SUPPORT
-@@ -171,7 +192,7 @@
+@@ -170,7 +191,7 @@
      GLfloat angle, view_roty;
  
  #ifdef FFTW3_SUPPORT
