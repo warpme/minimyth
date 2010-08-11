@@ -23,6 +23,12 @@ INSTALL_SCRIPTS   = $(WORKSRC)/mozilla/nsprpub/Makefile  nsinstall
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),--enable-64bit)
 
+CONFIGURE_ENV = \
+	ac_cv_path_AS="$(AS)" \
+	ac_cv_path_AR="$(AR)" \
+	ac_cv_path_LD="$(LD)" \
+	ac_cv_path_STRIP="$(STRIP)"
+
 include ../../gar.mk
 
 pre-configure:
