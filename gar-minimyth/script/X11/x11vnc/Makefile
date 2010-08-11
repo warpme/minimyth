@@ -3,6 +3,7 @@ GARVERSION = 0.9.11
 CATEGORIES = X11
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libvncserver/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-ar.patch $(DISTNAME)-pointer.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -18,7 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--without-filetransfer \
+	--with-tightvnc-filetransfer \
 	--with-24bpp \
 	--without-ffmpeg \
 	--with-x \
@@ -58,3 +59,8 @@ CONFIGURE_ENV = \
 include ../../gar.mk
 
 LDFLAGS := $(LDFLAGS) -fwhole-program
+
+pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
