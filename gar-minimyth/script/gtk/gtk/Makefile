@@ -3,6 +3,7 @@ GARVERSION = 2.20.1
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.20/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-nm.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
