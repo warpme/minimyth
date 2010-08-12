@@ -24,8 +24,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
-
-LDFLAGS := $(LDFLAGS) -fwhole-program
