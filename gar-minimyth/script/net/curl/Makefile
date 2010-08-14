@@ -70,9 +70,8 @@ CONFIGURE_ENV  = \
 
 include ../../gar.mk
 
-LDFLAGS += -lrt
-
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
