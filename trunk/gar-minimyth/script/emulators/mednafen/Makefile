@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
+DEPENDS   = lang/c lang/cxx lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
+BUILDDEPS = devel/autoconf-2.64
 
 WORKSRC = $(WORKDIR)/$(GARNAME)
 
@@ -20,7 +21,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
-	--disable-rath \
+	--disable-rpath \
 	--enable-nls \
 	--enable-threads=posix \
 	--disable-debugger \
@@ -43,9 +44,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-libpth-prefix \
 	--without-libintl-prefix
 
-CONFIGURE_ENV = \
-	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
-
 include ../../gar.mk
 
 # Fails to compile with the gcc 4.5 linker plugin.
@@ -54,5 +52,6 @@ CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
+	@cd $(WORKSRC) ; AUTOM4TE='autom4te-2.64' autoreconf-2.64 --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
