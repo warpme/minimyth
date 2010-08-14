@@ -1,0 +1,52 @@
+diff -Naur iguanaIR-0.99-old/autoconf/configure.ac iguanaIR-0.99-new/autoconf/configure.ac
+--- iguanaIR-0.99-old/autoconf/configure.ac	2008-11-18 18:28:01.000000000 -0800
++++ iguanaIR-0.99-new/autoconf/configure.ac	2010-08-13 10:51:25.000000000 -0700
+@@ -58,7 +58,8 @@
+ AC_CHECK_FUNCS([floor gettimeofday memset mkdir select socket strchr strdup strerror strrchr strspn strstr mach_absolute_time])
+ 
+ # Some default environment variable values
+-CFLAGS="-Wall -pedantic"
++AX_CFLAGS_GCC_OPTION(-Wall)
++AX_CFLAGS_GCC_OPTION(-pedantic)
+ 
+ # use -Wextra when possible
+ AX_CFLAGS_GCC_OPTION(-Wextra)
+@@ -76,8 +77,6 @@
+ if test x$ENABLE_DEBUG_FLAGS = xyes; then
+   CPPFLAGS="$CPPFLAGS -D_DEBUG"
+   CFLAGS="$CFLAGS -g"
+-else
+-  CFLAGS="$CFLAGS -O2"
+ fi
+ 
+ # Allow the user to override clock_gettime detection
+diff -Naur iguanaIR-0.99-old/Makefile.in iguanaIR-0.99-new/Makefile.in
+--- iguanaIR-0.99-old/Makefile.in	2010-08-13 10:50:50.000000000 -0700
++++ iguanaIR-0.99-new/Makefile.in	2010-08-13 10:51:07.000000000 -0700
+@@ -48,14 +48,14 @@
+ igclient igdaemon: $(LIBNAME)
+ 
+ $(LIBNAME): iguanaIR.o support.o dataPackets.o compat.o pipes.o
+-	$(CC) $(SHAREARG) $(LINKARGS) $(LDFLAGS) $^ -o $@
++	$(CC) $(SHAREARG) $(LINKARGS) $(CFLAGS) $(LDFLAGS) $^ -o $@
+ 
+ igdaemon: daemon.o client-interface.o device-interface.o usbclient.o \
+           list.o protocol-versions.o support.o pipes.o dataPackets.o compat.o
+-	$(CC) $(LDFLAGS) $^ -lpopt -lusb -lpthread $(LIBNAME) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) $^ -lpopt -lusb -lpthread $(LIBNAME) -o $@
+ 
+ igclient: client.o list.o support.o compat.o
+-	$(CC) $(LDFLAGS) $^ -lpopt $(LIBNAME) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) $^ -lpopt $(LIBNAME) -o $@
+ 
+ %.o: %.c Makefile iguanaIR.h
+ 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+@@ -93,7 +93,7 @@
+ 	$(CC) -c $(CPPFLAGS) @PYTHON_CPPFLAGS@ $(CFLAGS) -Wno-strict-aliasing -Wno-unused -Wno-implicit-function-declaration -Wno-long-long $< -o $@
+ 
+ _iguanaIR.$(SHAREEXT): iguanaIR_wrap.o
+-	$(CC) $(LDFLAGS) @PYTHON_LDFLAGS@ $(SHAREARG) $^ $(LIBNAME) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) @PYTHON_LDFLAGS@ $(SHAREARG) $^ $(LIBNAME) -o $@
+ endif
+ 
+ # change ownership unless we're building an rpm

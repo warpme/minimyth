@@ -3,7 +3,7 @@ GARVERSION = 0.99
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-libusb_config.patch $(DISTNAME)-ln.patch
+PATCHFILES = $(DISTNAME)-ln.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
@@ -39,5 +39,4 @@ post-extract:
 pre-configure:
 	@cd $(WORKSRC)/autoconf ; aclocal --verbose --force
 	@cd $(WORKSRC)/autoconf ; autoconf --verbose --force -o ../configure
-	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)

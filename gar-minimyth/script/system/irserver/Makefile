@@ -27,6 +27,10 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+# Fails to compile with GCC's link time optimization (likely do to it containing a binary blob).
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 LDFLAGS := $(LDFLAGS) -fwhole-program
 
 install-custom:
