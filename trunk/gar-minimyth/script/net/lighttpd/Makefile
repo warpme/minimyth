@@ -1,5 +1,5 @@
 GARNAME = lighttpd
-GARVERSION = 1.4.26
+GARVERSION = 1.4.27
 CATEGORIES = net
 MASTER_SITES = http://download.lighttpd.net/lighttpd/releases-1.4.x/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -43,6 +43,7 @@ CONFIGURE_ENV  = \
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
