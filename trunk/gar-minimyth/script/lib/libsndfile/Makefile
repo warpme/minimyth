@@ -29,7 +29,19 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# Fails to compile with GCC's link time optimization.
+# See <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=45007>
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 pre-configure:
+	@cd $(WORKSRC) ; rm -f M4/libtool.m4
+	@cd $(WORKSRC) ; rm -f M4/lt~obsolete.m4
+	@cd $(WORKSRC) ; rm -f M4/ltoptions.m4
+	@cd $(WORKSRC) ; rm -f M4/ltsugar.m4
+	@cd $(WORKSRC) ; rm -f M4/ltversion.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I M4
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

@@ -4,6 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES  = $(DISTNAME).tar.gz
 DISTFILES += config.cache.$(GARCH_FAMILY)
+PATCHFILES = $(DISTNAME)-am_path_gtk.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -11,7 +12,7 @@ define BLURB
 endef
 
 DEPENDS   = lang/c lib/ncurses
-BUILDDEPS = devel/nasm
+BUILDDEPS = devel/nasm gtk/gtk
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -51,6 +52,7 @@ extract-config.cache.$(GARCH_FAMILY):
 	@$(MAKECOOKIE)
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

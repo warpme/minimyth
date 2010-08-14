@@ -43,6 +43,7 @@ include ../../gar.mk
 CFLAGS := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
