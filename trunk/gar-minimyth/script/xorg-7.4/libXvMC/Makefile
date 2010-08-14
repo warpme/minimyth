@@ -1,9 +1,8 @@
 GARNAME = libXvMC
-GARVERSION = 1.0.5
+GARVERSION = 1.0.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-xvmclib_h.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -37,6 +36,7 @@ include ../../gar.mk
 sysconfdir := $(subst //,/,$(sysconfdir))
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
