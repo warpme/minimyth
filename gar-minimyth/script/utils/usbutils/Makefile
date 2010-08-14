@@ -25,5 +25,6 @@ extract-usb.ids:
 	@$(MAKECOOKIE)
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
