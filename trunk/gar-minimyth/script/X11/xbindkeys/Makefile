@@ -3,7 +3,7 @@ GARVERSION = 1.8.3
 CATEGORIES = X11
 MASTER_SITES = http://www.nongnu.org/xbindkeys/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES = $(DISTNAME)-getline.patch $(DISTNAME)-staticgravity.patch
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -28,7 +28,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 CONFIGURE_ENV  =
 ifneq ("$(DESTIMG)","build")
 CONFIGURE_ENV += \
-	ac_cv_func_malloc_0_nonnull=yes
+	ac_cv_func_fork=yes \
+	ac_cv_func_fork_works=yes \
+	ac_cv_func_malloc_0_nonnull=yes \
+	ac_cv_func_vfork=yes \
+	ac_cv_func_vfork_works=yes
 endif
 
 include ../../gar.mk
@@ -36,5 +40,6 @@ include ../../gar.mk
 LDFLAGS := $(LDFLAGS) -fwhole-program
 
 pre-configure:
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
