@@ -29,6 +29,8 @@ include ../../gar.mk
 CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -O%, $(CFLAGS)) -O2)
 
 post-patch:
+	@cd $(WORKSRC) ; rm -f m4/pkg.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I m4
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

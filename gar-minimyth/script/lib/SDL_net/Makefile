@@ -23,12 +23,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gui \
 	--with-gnu-ld
 
-CONFIGURE_ENV = \
-	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
-
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; rm -f acinclude/libtool.m4
+	@cd $(WORKSRC) ; rm -f acinclude/sdl.m4
+	@cd $(WORKSRC) ; touch NEWS
+	@cd $(WORKSRC) ; touch AUTHORS
+	@cd $(WORKSRC) ; touch ChangeLog
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@echo $(PATH)
 	@#$(MAKECOOKIE)

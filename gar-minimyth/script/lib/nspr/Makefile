@@ -31,10 +31,6 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-pre-configure:
-	@$(call FIX_LIBTOOL,$(WORKSRC)/mozilla/nsprpub/configure)
-	@$(MAKECOOKIE)
-
 install-nsinstall:
 	@cp -f $(WORKSRC)/mozilla/nsprpub/config/nsinstall $(DESTDIR)$(bindir)/nsinstall
 	@$(MAKECOOKIE)

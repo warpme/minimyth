@@ -28,7 +28,10 @@ CONFIGURE_ENV  = \
 include ../../gar.mk
 
 pre-configure:
-	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@cd $(WORKSRC)/builds/unix ; aclocal -I . --force
+	@cd $(WORKSRC)/builds/unix ; libtoolize --force --copy --install
+	@cd $(WORKSRC)/builds/unix ; autoconf --force
+	@$(call FIX_LIBTOOL,$(WORKSRC)/builds/unix/configure)
 	@$(MAKECOOKIE)
 
 post-install:

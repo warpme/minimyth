@@ -43,6 +43,9 @@ PKG_DOC_DIR     := $(docdir)/$(GARNAME)
 PKG_LOCALE_DIR  := $(datadir)/locale
 
 pre-configure:
+	@cd $(WORKSRC) ; aclocal --verbose --force -I m4
+	@cd $(WORKSRC) ; libtoolize --force --copy --install
+	@cd $(WORKSRC) ; autoconf --verbose --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

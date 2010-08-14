@@ -104,6 +104,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; rm -f acinclude/alsa.m4
+	@cd $(WORKSRC) ; rm -f acinclude/libtool.m4
+	@cd $(WORKSRC) ; rm -f acinclude/ltdl.m4
+	@cd $(WORKSRC) ; rm -f acinclude/lt~obsolete.m4
+	@cd $(WORKSRC) ; rm -f acinclude/ltoptions.m4
+	@cd $(WORKSRC) ; rm -f acinclude/ltsugar.m4
+	@cd $(WORKSRC) ; rm -f acinclude/ltversion.m4
+	@cd $(WORKSRC) ; aclocal --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude
+	@cd $(WORKSRC) ; libtoolize --force --copy --install
+	@cd $(WORKSRC) ; autoconf --force
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
