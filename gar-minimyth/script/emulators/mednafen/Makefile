@@ -3,14 +3,14 @@ GARVERSION = 0.8.D.2
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-autoconf_2.65.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS   = lang/c lang/cxx lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
-BUILDDEPS = devel/autoconf-2.64
+DEPENDS = lang/c lang/cxx lib/alsa-lib lib/libcdio lib/libsndfile lib/SDL lib/SDL_net
 
 WORKSRC = $(WORKDIR)/$(GARNAME)
 
@@ -52,6 +52,7 @@ CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
-	@cd $(WORKSRC) ; AUTOM4TE='autom4te-2.64' autoreconf-2.64 --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
+	@cd $(WORKSRC) ; rm -f acinclude.m4
+	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
