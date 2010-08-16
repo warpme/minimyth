@@ -80,8 +80,8 @@ LDFLAGS  :=
 
 autoconf:
 	@# Used to recreate configure files for the bfd_and_gold patch.
-	cd $(WORKSRC)     ; autoconf-2.64 -I config --verbose
-	cd $(WORKSRC)/gcc ; autoconf-2.64 -I config --verbose
+	cd $(WORKSRC)     ; AUTOM4TE='autom4te-2.64' autoconf-2.64 -I config --verbose
+	cd $(WORKSRC)/gcc ; AUTOM4TE='autom4te-2.64' autoconf-2.64 -I config --verbose
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
