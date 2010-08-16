@@ -1,6 +1,51 @@
-diff -Naur linux-2.6.35-old/Documentation/filesystems/00-INDEX linux-2.6.35-new/Documentation/filesystems/00-INDEX
---- linux-2.6.35-old/Documentation/filesystems/00-INDEX	2010-08-10 15:02:31.000000000 -0700
-+++ linux-2.6.35-new/Documentation/filesystems/00-INDEX	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/arch/x86/kernel/apic/apic.c linux-2.6.35.2-new/arch/x86/kernel/apic/apic.c
+--- linux-2.6.35.2-old/arch/x86/kernel/apic/apic.c	2010-08-15 09:29:34.000000000 -0700
++++ linux-2.6.35.2-new/arch/x86/kernel/apic/apic.c	2010-08-15 09:30:33.000000000 -0700
+@@ -1606,7 +1606,7 @@
+ 		 * acpi lapic path already maps that address in
+ 		 * acpi_register_lapic_address()
+ 		 */
+-		if (!acpi_lapic)
++		if (!acpi_lapic && !smp_found_config)
+ 			set_fixmap_nocache(FIX_APIC_BASE, apic_phys);
+ 
+ 		apic_printk(APIC_VERBOSE, "mapped APIC to %08lx (%08lx)\n",
+diff -Naur linux-2.6.35.2-old/arch/x86/kernel/mpparse.c linux-2.6.35.2-new/arch/x86/kernel/mpparse.c
+--- linux-2.6.35.2-old/arch/x86/kernel/mpparse.c	2010-08-15 09:29:34.000000000 -0700
++++ linux-2.6.35.2-new/arch/x86/kernel/mpparse.c	2010-08-15 09:30:33.000000000 -0700
+@@ -274,6 +274,18 @@
+ 
+ void __init default_smp_read_mpc_oem(struct mpc_table *mpc) { }
+ 
++static void __init smp_register_lapic_address(unsigned long address)
++{
++	mp_lapic_addr = address;
++
++	set_fixmap_nocache(FIX_APIC_BASE, address);
++	if (boot_cpu_physical_apicid == -1U) {
++		boot_cpu_physical_apicid  = read_apic_id();
++		apic_version[boot_cpu_physical_apicid] =
++			 GET_APIC_VERSION(apic_read(APIC_LVR));
++	}
++}
++
+ static int __init smp_read_mpc(struct mpc_table *mpc, unsigned early)
+ {
+ 	char str[16];
+@@ -295,6 +307,10 @@
+ 	if (early)
+ 		return 1;
+ 
++	/* Initialize the lapic mapping */
++	if (!acpi_lapic)
++		smp_register_lapic_address(mpc->lapic);
++
+ 	if (mpc->oemptr)
+ 		x86_init.mpparse.smp_read_mpc_oem(mpc);
+ 
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/00-INDEX linux-2.6.35.2-new/Documentation/filesystems/00-INDEX
+--- linux-2.6.35.2-old/Documentation/filesystems/00-INDEX	2010-08-15 09:29:33.000000000 -0700
++++ linux-2.6.35.2-new/Documentation/filesystems/00-INDEX	2010-08-15 09:30:33.000000000 -0700
 @@ -112,6 +112,8 @@
  	- info and mount options for the UDF filesystem.
  ufs.txt
@@ -10,9 +55,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/00-INDEX linux-2.6.35-new/
  vfat.txt
  	- info on using the VFAT filesystem used in Windows NT and Windows 95
  vfs.txt
-diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/00-INDEX linux-2.6.35-new/Documentation/filesystems/unionfs/00-INDEX
---- linux-2.6.35-old/Documentation/filesystems/unionfs/00-INDEX	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/Documentation/filesystems/unionfs/00-INDEX	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/unionfs/00-INDEX linux-2.6.35.2-new/Documentation/filesystems/unionfs/00-INDEX
+--- linux-2.6.35.2-old/Documentation/filesystems/unionfs/00-INDEX	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/Documentation/filesystems/unionfs/00-INDEX	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,10 @@
 +00-INDEX
 +	- this file.
@@ -24,9 +69,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/00-INDEX linux-2.6
 +	- Information regarding rename operations.
 +usage.txt
 +	- Usage information and examples.
-diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/concepts.txt linux-2.6.35-new/Documentation/filesystems/unionfs/concepts.txt
---- linux-2.6.35-old/Documentation/filesystems/unionfs/concepts.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/Documentation/filesystems/unionfs/concepts.txt	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/unionfs/concepts.txt linux-2.6.35.2-new/Documentation/filesystems/unionfs/concepts.txt
+--- linux-2.6.35.2-old/Documentation/filesystems/unionfs/concepts.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/Documentation/filesystems/unionfs/concepts.txt	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,287 @@
 +Unionfs 2.x CONCEPTS:
 +=====================
@@ -315,9 +360,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/concepts.txt linux
 +branch is marked read-only by unionfs, then a copyup will take place.)
 +
 +For more information, see <http://unionfs.filesystems.org/>.
-diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/issues.txt linux-2.6.35-new/Documentation/filesystems/unionfs/issues.txt
---- linux-2.6.35-old/Documentation/filesystems/unionfs/issues.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/Documentation/filesystems/unionfs/issues.txt	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/unionfs/issues.txt linux-2.6.35.2-new/Documentation/filesystems/unionfs/issues.txt
+--- linux-2.6.35.2-old/Documentation/filesystems/unionfs/issues.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/Documentation/filesystems/unionfs/issues.txt	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,28 @@
 +KNOWN Unionfs 2.x ISSUES:
 +=========================
@@ -347,9 +392,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/issues.txt linux-2
 +   from Lockdep, please report them to the Unionfs maintainers.
 +
 +For more information, see <http://unionfs.filesystems.org/>.
-diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/rename.txt linux-2.6.35-new/Documentation/filesystems/unionfs/rename.txt
---- linux-2.6.35-old/Documentation/filesystems/unionfs/rename.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/Documentation/filesystems/unionfs/rename.txt	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/unionfs/rename.txt linux-2.6.35.2-new/Documentation/filesystems/unionfs/rename.txt
+--- linux-2.6.35.2-old/Documentation/filesystems/unionfs/rename.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/Documentation/filesystems/unionfs/rename.txt	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,31 @@
 +Rename is a complex beast. The following table shows which rename(2) operations
 +should succeed and which should fail.
@@ -382,9 +427,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/rename.txt linux-2
 +2) Rename source to destination
 +3) Make destination opaque to prevent anything under it from showing up
 +
-diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/usage.txt linux-2.6.35-new/Documentation/filesystems/unionfs/usage.txt
---- linux-2.6.35-old/Documentation/filesystems/unionfs/usage.txt	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/Documentation/filesystems/unionfs/usage.txt	2010-08-10 15:03:22.000000000 -0700
+diff -Naur linux-2.6.35.2-old/Documentation/filesystems/unionfs/usage.txt linux-2.6.35.2-new/Documentation/filesystems/unionfs/usage.txt
+--- linux-2.6.35.2-old/Documentation/filesystems/unionfs/usage.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/Documentation/filesystems/unionfs/usage.txt	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,134 @@
 +Unionfs is a stackable unification file system, which can appear to merge
 +the contents of several directories (branches), while keeping their physical
@@ -520,9 +565,9 @@ diff -Naur linux-2.6.35-old/Documentation/filesystems/unionfs/usage.txt linux-2.
 +
 +
 +For more information, see <http://unionfs.filesystems.org/>.
-diff -Naur linux-2.6.35-old/fs/Kconfig linux-2.6.35-new/fs/Kconfig
---- linux-2.6.35-old/fs/Kconfig	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/fs/Kconfig	2010-08-10 15:03:23.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/Kconfig linux-2.6.35.2-new/fs/Kconfig
+--- linux-2.6.35.2-old/fs/Kconfig	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/fs/Kconfig	2010-08-15 09:30:33.000000000 -0700
 @@ -169,6 +169,7 @@
  source "fs/adfs/Kconfig"
  source "fs/affs/Kconfig"
@@ -531,9 +576,9 @@ diff -Naur linux-2.6.35-old/fs/Kconfig linux-2.6.35-new/fs/Kconfig
  source "fs/hfs/Kconfig"
  source "fs/hfsplus/Kconfig"
  source "fs/befs/Kconfig"
-diff -Naur linux-2.6.35-old/fs/Makefile linux-2.6.35-new/fs/Makefile
---- linux-2.6.35-old/fs/Makefile	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/fs/Makefile	2010-08-10 15:03:23.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/Makefile linux-2.6.35.2-new/fs/Makefile
+--- linux-2.6.35.2-old/fs/Makefile	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/fs/Makefile	2010-08-15 09:30:33.000000000 -0700
 @@ -84,6 +84,7 @@
  obj-$(CONFIG_HFSPLUS_FS)	+= hfsplus/ # Before hfs to find wrapped HFS+
  obj-$(CONFIG_HFS_FS)		+= hfs/
@@ -542,9 +587,9 @@ diff -Naur linux-2.6.35-old/fs/Makefile linux-2.6.35-new/fs/Makefile
  obj-$(CONFIG_VXFS_FS)		+= freevxfs/
  obj-$(CONFIG_NFS_FS)		+= nfs/
  obj-$(CONFIG_EXPORTFS)		+= exportfs/
-diff -Naur linux-2.6.35-old/fs/namei.c linux-2.6.35-new/fs/namei.c
---- linux-2.6.35-old/fs/namei.c	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/fs/namei.c	2010-08-10 15:03:23.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/namei.c linux-2.6.35.2-new/fs/namei.c
+--- linux-2.6.35.2-old/fs/namei.c	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/fs/namei.c	2010-08-15 09:30:33.000000000 -0700
 @@ -386,6 +386,7 @@
  	else
  		fput(nd->intent.open.file);
@@ -553,9 +598,9 @@ diff -Naur linux-2.6.35-old/fs/namei.c linux-2.6.35-new/fs/namei.c
  
  static inline struct dentry *
  do_revalidate(struct dentry *dentry, struct nameidata *nd)
-diff -Naur linux-2.6.35-old/fs/splice.c linux-2.6.35-new/fs/splice.c
---- linux-2.6.35-old/fs/splice.c	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/fs/splice.c	2010-08-10 15:03:23.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/splice.c linux-2.6.35.2-new/fs/splice.c
+--- linux-2.6.35.2-old/fs/splice.c	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/fs/splice.c	2010-08-15 09:30:33.000000000 -0700
 @@ -1104,8 +1104,8 @@
  /*
   * Attempt to initiate a splice from pipe to file.
@@ -608,7 +653,7 @@ diff -Naur linux-2.6.35-old/fs/splice.c linux-2.6.35-new/fs/splice.c
  
 -	return do_splice_from(pipe, file, &file->f_pos, sd->total_len,
 -			      sd->flags);
-+	return vfs_splice_from(pipe, file, &sd->pos, sd->total_len,
++	return vfs_splice_from(pipe, file, &file->f_pos, sd->total_len,
 +			       sd->flags);
  }
  
@@ -631,9 +676,9 @@ diff -Naur linux-2.6.35-old/fs/splice.c linux-2.6.35-new/fs/splice.c
  
  		if (off_in && copy_to_user(off_in, off, sizeof(loff_t)))
  			ret = -EFAULT;
-diff -Naur linux-2.6.35-old/fs/stack.c linux-2.6.35-new/fs/stack.c
---- linux-2.6.35-old/fs/stack.c	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/fs/stack.c	2010-08-10 15:03:23.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/stack.c linux-2.6.35.2-new/fs/stack.c
+--- linux-2.6.35.2-old/fs/stack.c	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/fs/stack.c	2010-08-15 09:30:33.000000000 -0700
 @@ -1,8 +1,20 @@
 +/*
 + * Copyright (c) 2006-2009 Erez Zadok
@@ -656,9 +701,9 @@ diff -Naur linux-2.6.35-old/fs/stack.c linux-2.6.35-new/fs/stack.c
   *
   * This function cannot be inlined since i_size_{read,write} is rather
   * heavy-weight on 32-bit systems
-diff -Naur linux-2.6.35-old/fs/unionfs/commonfops.c linux-2.6.35-new/fs/unionfs/commonfops.c
---- linux-2.6.35-old/fs/unionfs/commonfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/commonfops.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/commonfops.c linux-2.6.35.2-new/fs/unionfs/commonfops.c
+--- linux-2.6.35.2-old/fs/unionfs/commonfops.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/commonfops.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,896 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -1556,10 +1601,10 @@ diff -Naur linux-2.6.35-old/fs/unionfs/commonfops.c linux-2.6.35-new/fs/unionfs/
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/copyup.c linux-2.6.35-new/fs/unionfs/copyup.c
---- linux-2.6.35-old/fs/unionfs/copyup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/copyup.c	2010-08-10 15:03:30.000000000 -0700
-@@ -0,0 +1,897 @@
+diff -Naur linux-2.6.35.2-old/fs/unionfs/copyup.c linux-2.6.35.2-new/fs/unionfs/copyup.c
+--- linux-2.6.35.2-old/fs/unionfs/copyup.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/copyup.c	2010-08-15 09:30:33.000000000 -0700
+@@ -0,0 +1,896 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -1888,8 +1933,7 @@ diff -Naur linux-2.6.35-old/fs/unionfs/copyup.c linux-2.6.35-new/fs/unionfs/copy
 +	kfree(buf);
 +
 +	if (!err)
-+		err = output_file->f_op->fsync(output_file,
-+					       new_lower_dentry, 0);
++		err = output_file->f_op->fsync(output_file, 0);
 +
 +	if (err)
 +		goto out_close_out;
@@ -2457,9 +2501,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/copyup.c linux-2.6.35-new/fs/unionfs/copy
 +	dbend(dentry) = bstart;
 +	ibend(dentry->d_inode) = ibstart(dentry->d_inode) = bstart;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/debug.c linux-2.6.35-new/fs/unionfs/debug.c
---- linux-2.6.35-old/fs/unionfs/debug.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/debug.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/debug.c linux-2.6.35.2-new/fs/unionfs/debug.c
+--- linux-2.6.35.2-old/fs/unionfs/debug.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/debug.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,533 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -2994,9 +3038,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/debug.c linux-2.6.35-new/fs/unionfs/debug
 +			 file, fxn, line);
 +	}
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/dentry.c linux-2.6.35-new/fs/unionfs/dentry.c
---- linux-2.6.35-old/fs/unionfs/dentry.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/dentry.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/dentry.c linux-2.6.35.2-new/fs/unionfs/dentry.c
+--- linux-2.6.35.2-old/fs/unionfs/dentry.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/dentry.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,397 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -3395,9 +3439,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/dentry.c linux-2.6.35-new/fs/unionfs/dent
 +	.d_release	= unionfs_d_release,
 +	.d_iput		= unionfs_d_iput,
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/dirfops.c linux-2.6.35-new/fs/unionfs/dirfops.c
---- linux-2.6.35-old/fs/unionfs/dirfops.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/dirfops.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/dirfops.c linux-2.6.35.2-new/fs/unionfs/dirfops.c
+--- linux-2.6.35.2-old/fs/unionfs/dirfops.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/dirfops.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,302 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -3701,9 +3745,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/dirfops.c linux-2.6.35-new/fs/unionfs/dir
 +	.fsync		= unionfs_fsync,
 +	.fasync		= unionfs_fasync,
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/dirhelper.c linux-2.6.35-new/fs/unionfs/dirhelper.c
---- linux-2.6.35-old/fs/unionfs/dirhelper.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/dirhelper.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/dirhelper.c linux-2.6.35.2-new/fs/unionfs/dirhelper.c
+--- linux-2.6.35.2-old/fs/unionfs/dirhelper.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/dirhelper.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,158 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -3863,9 +3907,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/dirhelper.c linux-2.6.35-new/fs/unionfs/d
 +
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/fanout.h linux-2.6.35-new/fs/unionfs/fanout.h
---- linux-2.6.35-old/fs/unionfs/fanout.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/fanout.h	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/fanout.h linux-2.6.35.2-new/fs/unionfs/fanout.h
+--- linux-2.6.35.2-old/fs/unionfs/fanout.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/fanout.h	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,407 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -4274,10 +4318,10 @@ diff -Naur linux-2.6.35-old/fs/unionfs/fanout.h linux-2.6.35-new/fs/unionfs/fano
 +}
 +
 +#endif	/* not _FANOUT_H */
-diff -Naur linux-2.6.35-old/fs/unionfs/file.c linux-2.6.35-new/fs/unionfs/file.c
---- linux-2.6.35-old/fs/unionfs/file.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/file.c	2010-08-10 15:03:30.000000000 -0700
-@@ -0,0 +1,380 @@
+diff -Naur linux-2.6.35.2-old/fs/unionfs/file.c linux-2.6.35.2-new/fs/unionfs/file.c
+--- linux-2.6.35.2-old/fs/unionfs/file.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/file.c	2010-08-15 09:30:33.000000000 -0700
+@@ -0,0 +1,379 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -4468,10 +4512,11 @@ diff -Naur linux-2.6.35-old/fs/unionfs/file.c linux-2.6.35-new/fs/unionfs/file.c
 +	return err;
 +}
 +
-+int unionfs_fsync(struct file *file, struct dentry *dentry, int datasync)
++int unionfs_fsync(struct file *file, int datasync)
 +{
 +	int bindex, bstart, bend;
 +	struct file *lower_file;
++	struct dentry *dentry = file->f_path.dentry;
 +	struct dentry *lower_dentry;
 +	struct dentry *parent;
 +	struct inode *lower_inode, *inode;
@@ -4504,9 +4549,7 @@ diff -Naur linux-2.6.35-old/fs/unionfs/file.c linux-2.6.35-new/fs/unionfs/file.c
 +		lower_file = unionfs_lower_file_idx(file, bindex);
 +		lower_dentry = unionfs_lower_dentry_idx(dentry, bindex);
 +		mutex_lock(&lower_inode->i_mutex);
-+		err = lower_inode->i_fop->fsync(lower_file,
-+						lower_dentry,
-+						datasync);
++		err = lower_inode->i_fop->fsync(lower_file, datasync);
 +		if (!err && bindex == bstart)
 +			fsstack_copy_attr_times(inode, lower_inode);
 +		mutex_unlock(&lower_inode->i_mutex);
@@ -4658,9 +4701,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/file.c linux-2.6.35-new/fs/unionfs/file.c
 +	.splice_read	= unionfs_splice_read,
 +	.splice_write	= unionfs_splice_write,
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/inode.c linux-2.6.35-new/fs/unionfs/inode.c
---- linux-2.6.35-old/fs/unionfs/inode.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/inode.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/inode.c linux-2.6.35.2-new/fs/unionfs/inode.c
+--- linux-2.6.35.2-old/fs/unionfs/inode.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/inode.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,1055 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -5717,9 +5760,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/inode.c linux-2.6.35-new/fs/unionfs/inode
 +	.listxattr	= unionfs_listxattr,
 +#endif /* CONFIG_UNION_FS_XATTR */
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/Kconfig linux-2.6.35-new/fs/unionfs/Kconfig
---- linux-2.6.35-old/fs/unionfs/Kconfig	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/Kconfig	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/Kconfig linux-2.6.35.2-new/fs/unionfs/Kconfig
+--- linux-2.6.35.2-old/fs/unionfs/Kconfig	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/Kconfig	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,24 @@
 +config UNION_FS
 +	tristate "Union file system (EXPERIMENTAL)"
@@ -5745,9 +5788,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/Kconfig linux-2.6.35-new/fs/unionfs/Kconf
 +	depends on UNION_FS
 +	help
 +	  If you say Y here, you can turn on debugging output from Unionfs.
-diff -Naur linux-2.6.35-old/fs/unionfs/lookup.c linux-2.6.35-new/fs/unionfs/lookup.c
---- linux-2.6.35-old/fs/unionfs/lookup.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/lookup.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/lookup.c linux-2.6.35.2-new/fs/unionfs/lookup.c
+--- linux-2.6.35.2-old/fs/unionfs/lookup.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/lookup.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,569 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -6318,9 +6361,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/lookup.c linux-2.6.35-new/fs/unionfs/look
 +		return d_interposed;
 +	return ERR_PTR(err);
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/main.c linux-2.6.35-new/fs/unionfs/main.c
---- linux-2.6.35-old/fs/unionfs/main.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/main.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/main.c linux-2.6.35.2-new/fs/unionfs/main.c
+--- linux-2.6.35.2-old/fs/unionfs/main.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/main.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,758 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -7080,11 +7123,11 @@ diff -Naur linux-2.6.35-old/fs/unionfs/main.c linux-2.6.35-new/fs/unionfs/main.c
 +
 +module_init(init_unionfs_fs);
 +module_exit(exit_unionfs_fs);
-diff -Naur linux-2.6.35-old/fs/unionfs/Makefile linux-2.6.35-new/fs/unionfs/Makefile
---- linux-2.6.35-old/fs/unionfs/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/Makefile	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/Makefile linux-2.6.35.2-new/fs/unionfs/Makefile
+--- linux-2.6.35.2-old/fs/unionfs/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/Makefile	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,17 @@
-+UNIONFS_VERSION="2.5.4 (for 2.6.34-rc0)"
++UNIONFS_VERSION="2.5.5 (for 2.6.35.1)"
 +
 +EXTRA_CFLAGS += -DUNIONFS_VERSION=\"$(UNIONFS_VERSION)\"
 +
@@ -7101,9 +7144,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/Makefile linux-2.6.35-new/fs/unionfs/Make
 +ifeq ($(CONFIG_UNION_FS_DEBUG),y)
 +EXTRA_CFLAGS += -DDEBUG
 +endif
-diff -Naur linux-2.6.35-old/fs/unionfs/mmap.c linux-2.6.35-new/fs/unionfs/mmap.c
---- linux-2.6.35-old/fs/unionfs/mmap.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/mmap.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/mmap.c linux-2.6.35.2-new/fs/unionfs/mmap.c
+--- linux-2.6.35.2-old/fs/unionfs/mmap.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/mmap.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,89 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -7194,9 +7237,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/mmap.c linux-2.6.35-new/fs/unionfs/mmap.c
 +struct vm_operations_struct unionfs_vm_ops = {
 +	.fault		= unionfs_fault,
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/rdstate.c linux-2.6.35-new/fs/unionfs/rdstate.c
---- linux-2.6.35-old/fs/unionfs/rdstate.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/rdstate.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/rdstate.c linux-2.6.35.2-new/fs/unionfs/rdstate.c
+--- linux-2.6.35.2-old/fs/unionfs/rdstate.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/rdstate.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,285 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -7483,9 +7526,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/rdstate.c linux-2.6.35-new/fs/unionfs/rds
 +out:
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/rename.c linux-2.6.35-new/fs/unionfs/rename.c
---- linux-2.6.35-old/fs/unionfs/rename.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/rename.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/rename.c linux-2.6.35.2-new/fs/unionfs/rename.c
+--- linux-2.6.35.2-old/fs/unionfs/rename.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/rename.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,517 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -8004,9 +8047,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/rename.c linux-2.6.35-new/fs/unionfs/rena
 +
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/sioq.c linux-2.6.35-new/fs/unionfs/sioq.c
---- linux-2.6.35-old/fs/unionfs/sioq.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/sioq.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/sioq.c linux-2.6.35.2-new/fs/unionfs/sioq.c
+--- linux-2.6.35.2-old/fs/unionfs/sioq.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/sioq.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,101 @@
 +/*
 + * Copyright (c) 2006-2010 Erez Zadok
@@ -8109,9 +8152,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/sioq.c linux-2.6.35-new/fs/unionfs/sioq.c
 +	args->err = vfs_unlink(u->parent, u->dentry);
 +	complete(&args->comp);
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/sioq.h linux-2.6.35-new/fs/unionfs/sioq.h
---- linux-2.6.35-old/fs/unionfs/sioq.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/sioq.h	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/sioq.h linux-2.6.35.2-new/fs/unionfs/sioq.h
+--- linux-2.6.35.2-old/fs/unionfs/sioq.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/sioq.h	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,91 @@
 +/*
 + * Copyright (c) 2006-2010 Erez Zadok
@@ -8204,9 +8247,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/sioq.h linux-2.6.35-new/fs/unionfs/sioq.h
 +extern void __is_opaque_dir(struct work_struct *work);
 +
 +#endif /* not _SIOQ_H */
-diff -Naur linux-2.6.35-old/fs/unionfs/subr.c linux-2.6.35-new/fs/unionfs/subr.c
---- linux-2.6.35-old/fs/unionfs/subr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/subr.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/subr.c linux-2.6.35.2-new/fs/unionfs/subr.c
+--- linux-2.6.35.2-old/fs/unionfs/subr.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/subr.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,95 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -8303,10 +8346,10 @@ diff -Naur linux-2.6.35-old/fs/unionfs/subr.c linux-2.6.35-new/fs/unionfs/subr.c
 +	 */
 +	dest->i_nlink = unionfs_get_nlinks(dest);
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/super.c linux-2.6.35-new/fs/unionfs/super.c
---- linux-2.6.35-old/fs/unionfs/super.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/super.c	2010-08-10 15:03:30.000000000 -0700
-@@ -0,0 +1,1047 @@
+diff -Naur linux-2.6.35.2-old/fs/unionfs/super.c linux-2.6.35.2-new/fs/unionfs/super.c
+--- linux-2.6.35.2-old/fs/unionfs/super.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/super.c	2010-08-15 09:30:33.000000000 -0700
+@@ -0,0 +1,1048 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -9247,7 +9290,8 @@ diff -Naur linux-2.6.35-old/fs/unionfs/super.c linux-2.6.35-new/fs/unionfs/super
 + *
 + * No need to grab sb info's rwsem.
 + */
-+static int unionfs_write_inode(struct inode *inode, int sync)
++static int unionfs_write_inode(struct inode *inode,
++			       struct writeback_control *wbc)
 +{
 +	struct list_head *pos, *n;
 +	struct unionfs_dir_state *rdstate;
@@ -9354,10 +9398,10 @@ diff -Naur linux-2.6.35-old/fs/unionfs/super.c linux-2.6.35-new/fs/unionfs/super
 +	.alloc_inode	= unionfs_alloc_inode,
 +	.destroy_inode	= unionfs_destroy_inode,
 +};
-diff -Naur linux-2.6.35-old/fs/unionfs/union.h linux-2.6.35-new/fs/unionfs/union.h
---- linux-2.6.35-old/fs/unionfs/union.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/union.h	2010-08-10 15:03:30.000000000 -0700
-@@ -0,0 +1,670 @@
+diff -Naur linux-2.6.35.2-old/fs/unionfs/union.h linux-2.6.35.2-new/fs/unionfs/union.h
+--- linux-2.6.35.2-old/fs/unionfs/union.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/union.h	2010-08-15 09:30:33.000000000 -0700
+@@ -0,0 +1,669 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
 + * Copyright (c) 2003-2006 Charles P. Wright
@@ -9776,8 +9820,7 @@ diff -Naur linux-2.6.35-old/fs/unionfs/union.h linux-2.6.35-new/fs/unionfs/union
 +extern int unionfs_flush(struct file *file, fl_owner_t id);
 +extern long unionfs_ioctl(struct file *file, unsigned int cmd,
 +			  unsigned long arg);
-+extern int unionfs_fsync(struct file *file, struct dentry *dentry,
-+			 int datasync);
++extern int unionfs_fsync(struct file *file, int datasync);
 +extern int unionfs_fasync(int fd, struct file *file, int flag);
 +
 +/* Inode operations */
@@ -10028,9 +10071,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/union.h linux-2.6.35-new/fs/unionfs/union
 +#endif /* not CONFIG_UNION_FS_DEBUG */
 +
 +#endif	/* not _UNION_H_ */
-diff -Naur linux-2.6.35-old/fs/unionfs/unlink.c linux-2.6.35-new/fs/unionfs/unlink.c
---- linux-2.6.35-old/fs/unionfs/unlink.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/unlink.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/unlink.c linux-2.6.35.2-new/fs/unionfs/unlink.c
+--- linux-2.6.35.2-old/fs/unionfs/unlink.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/unlink.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,278 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -10310,9 +10353,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/unlink.c linux-2.6.35-new/fs/unionfs/unli
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/whiteout.c linux-2.6.35-new/fs/unionfs/whiteout.c
---- linux-2.6.35-old/fs/unionfs/whiteout.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/whiteout.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/whiteout.c linux-2.6.35.2-new/fs/unionfs/whiteout.c
+--- linux-2.6.35.2-old/fs/unionfs/whiteout.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/whiteout.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,584 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -10898,9 +10941,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/whiteout.c linux-2.6.35-new/fs/unionfs/wh
 +out_err:
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/fs/unionfs/xattr.c linux-2.6.35-new/fs/unionfs/xattr.c
---- linux-2.6.35-old/fs/unionfs/xattr.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/fs/unionfs/xattr.c	2010-08-10 15:03:30.000000000 -0700
+diff -Naur linux-2.6.35.2-old/fs/unionfs/xattr.c linux-2.6.35.2-new/fs/unionfs/xattr.c
+--- linux-2.6.35.2-old/fs/unionfs/xattr.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/fs/unionfs/xattr.c	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,173 @@
 +/*
 + * Copyright (c) 2003-2010 Erez Zadok
@@ -11075,9 +11118,9 @@ diff -Naur linux-2.6.35-old/fs/unionfs/xattr.c linux-2.6.35-new/fs/unionfs/xattr
 +	unionfs_read_unlock(dentry->d_sb);
 +	return err;
 +}
-diff -Naur linux-2.6.35-old/include/linux/fs_stack.h linux-2.6.35-new/include/linux/fs_stack.h
---- linux-2.6.35-old/include/linux/fs_stack.h	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/include/linux/fs_stack.h	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/include/linux/fs_stack.h linux-2.6.35.2-new/include/linux/fs_stack.h
+--- linux-2.6.35.2-old/include/linux/fs_stack.h	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/include/linux/fs_stack.h	2010-08-15 09:30:33.000000000 -0700
 @@ -1,7 +1,19 @@
 +/*
 + * Copyright (c) 2006-2009 Erez Zadok
@@ -11099,9 +11142,9 @@ diff -Naur linux-2.6.35-old/include/linux/fs_stack.h linux-2.6.35-new/include/li
   * filesystems; none of these functions require i_mutex to be held.
   */
  
-diff -Naur linux-2.6.35-old/include/linux/magic.h linux-2.6.35-new/include/linux/magic.h
---- linux-2.6.35-old/include/linux/magic.h	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/include/linux/magic.h	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/include/linux/magic.h linux-2.6.35.2-new/include/linux/magic.h
+--- linux-2.6.35.2-old/include/linux/magic.h	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/include/linux/magic.h	2010-08-15 09:30:33.000000000 -0700
 @@ -47,6 +47,8 @@
  #define REISER2FS_SUPER_MAGIC_STRING	"ReIsEr2Fs"
  #define REISER2FS_JR_SUPER_MAGIC_STRING	"ReIsEr3Fs"
@@ -11111,9 +11154,9 @@ diff -Naur linux-2.6.35-old/include/linux/magic.h linux-2.6.35-new/include/linux
  #define SMB_SUPER_MAGIC		0x517B
  #define USBDEVICE_SUPER_MAGIC	0x9fa2
  #define CGROUP_SUPER_MAGIC	0x27e0eb
-diff -Naur linux-2.6.35-old/include/linux/namei.h linux-2.6.35-new/include/linux/namei.h
---- linux-2.6.35-old/include/linux/namei.h	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/include/linux/namei.h	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/include/linux/namei.h linux-2.6.35.2-new/include/linux/namei.h
+--- linux-2.6.35.2-old/include/linux/namei.h	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/include/linux/namei.h	2010-08-15 09:30:33.000000000 -0700
 @@ -72,6 +72,7 @@
  
  extern struct file *lookup_instantiate_filp(struct nameidata *nd, struct dentry *dentry,
@@ -11122,9 +11165,9 @@ diff -Naur linux-2.6.35-old/include/linux/namei.h linux-2.6.35-new/include/linux
  
  extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
  
-diff -Naur linux-2.6.35-old/include/linux/splice.h linux-2.6.35-new/include/linux/splice.h
---- linux-2.6.35-old/include/linux/splice.h	2010-08-10 15:02:32.000000000 -0700
-+++ linux-2.6.35-new/include/linux/splice.h	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/include/linux/splice.h linux-2.6.35.2-new/include/linux/splice.h
+--- linux-2.6.35.2-old/include/linux/splice.h	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/include/linux/splice.h	2010-08-15 09:30:33.000000000 -0700
 @@ -81,6 +81,11 @@
  			      struct splice_pipe_desc *);
  extern ssize_t splice_direct_to_actor(struct file *, struct splice_desc *,
@@ -11137,9 +11180,9 @@ diff -Naur linux-2.6.35-old/include/linux/splice.h linux-2.6.35-new/include/linu
  
  /*
   * for dynamic pipe sizing
-diff -Naur linux-2.6.35-old/include/linux/union_fs.h linux-2.6.35-new/include/linux/union_fs.h
---- linux-2.6.35-old/include/linux/union_fs.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-2.6.35-new/include/linux/union_fs.h	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/include/linux/union_fs.h linux-2.6.35.2-new/include/linux/union_fs.h
+--- linux-2.6.35.2-old/include/linux/union_fs.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.35.2-new/include/linux/union_fs.h	2010-08-15 09:30:33.000000000 -0700
 @@ -0,0 +1,22 @@
 +/*
 + * Copyright (c) 2003-2009 Erez Zadok
@@ -11163,9 +11206,9 @@ diff -Naur linux-2.6.35-old/include/linux/union_fs.h linux-2.6.35-new/include/li
 +
 +#endif /* _LINUX_UNIONFS_H */
 +
-diff -Naur linux-2.6.35-old/MAINTAINERS linux-2.6.35-new/MAINTAINERS
---- linux-2.6.35-old/MAINTAINERS	2010-08-10 15:02:31.000000000 -0700
-+++ linux-2.6.35-new/MAINTAINERS	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/MAINTAINERS linux-2.6.35.2-new/MAINTAINERS
+--- linux-2.6.35.2-old/MAINTAINERS	2010-08-15 09:29:33.000000000 -0700
++++ linux-2.6.35.2-new/MAINTAINERS	2010-08-15 09:30:33.000000000 -0700
 @@ -5766,6 +5766,14 @@
  F:	drivers/cdrom/cdrom.c
  F:	include/linux/cdrom.h
@@ -11181,9 +11224,9 @@ diff -Naur linux-2.6.35-old/MAINTAINERS linux-2.6.35-new/MAINTAINERS
  UNSORTED BLOCK IMAGES (UBI)
  M:	Artem Bityutskiy <dedekind1@gmail.com>
  W:	http://www.linux-mtd.infradead.org/
-diff -Naur linux-2.6.35-old/security/security.c linux-2.6.35-new/security/security.c
---- linux-2.6.35-old/security/security.c	2010-08-10 15:02:33.000000000 -0700
-+++ linux-2.6.35-new/security/security.c	2010-08-10 15:03:31.000000000 -0700
+diff -Naur linux-2.6.35.2-old/security/security.c linux-2.6.35.2-new/security/security.c
+--- linux-2.6.35.2-old/security/security.c	2010-08-15 09:29:35.000000000 -0700
++++ linux-2.6.35.2-new/security/security.c	2010-08-15 09:30:33.000000000 -0700
 @@ -529,6 +529,7 @@
  		return 0;
  	return security_ops->inode_permission(inode, mask);
