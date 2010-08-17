@@ -164,6 +164,12 @@ clean-image:
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d
 
 garchive-touch:
+	@if test -d files ; then \
+		duplicates=`find files/* -maxdepth 0 -type f -exec basename '{}' \;` ; \
+	 	for duplicate in $${duplicates} ; do                                   \
+			find $(GARCHIVEROOT) -name $${duplicate} -exec rm '{}' \;    ; \
+		done                                                                 ; \
+	fi
 	@$(if $(strip $(ALLFILES)), $(if $(wildcard $(GARCHIVEDIR)), touch $(GARCHIVEDIR)))
 
 patch-%.gar: gar-patch-%.gar
