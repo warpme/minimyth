@@ -157,6 +157,20 @@ FETCH_SVN = \
 	tar --exclude '*/.svn' -jcf $(strip $(3)).tar.bz2 $(strip $(3)) ; \
 	rm -rf $(strip $(3))
 
+# $(call RUN_AUTOTOOLS)
+# $(call RUN_AUTOTOOLS, <autotools-command>)
+RUN_AUTOTOOLS = \
+	if [ -e $(build_DESTDIR)$(build_bindir)/autoreconf  ] &&                 \
+	   [ -e $(build_DESTDIR)$(build_bindir)/autoconf    ] &&                 \
+	   [ -e $(build_DESTDIR)$(build_bindir)/automake    ] &&                 \
+	   [ -e $(build_DESTDIR)$(build_bindir)/libtoolize  ] &&                 \
+	   [ -e $(build_DESTDIR)$(build_bindir)/intltoolize ] ; then             \
+		$(if $(strip $(1)),                                            \
+			$(strip $(1)) ,                                        \
+			cd $(WORKSRC) ; autoreconf --verbose --install --force \
+		)                                                              ; \
+	fi
+
 clean-image:
 	@rm -rf $(COOKIEROOTDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d
