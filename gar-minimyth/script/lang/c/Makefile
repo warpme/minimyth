@@ -24,6 +24,7 @@ BUILDDEPS += \
 	devel/flex \
 	devel/gettext \
 	devel/autoconf \
+	devel/autoconf-archive \
 	devel/automake \
 	devel/libtool \
 	devel/intltool \
