@@ -42,5 +42,5 @@ CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-stri
 CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(MAKECOOKIE)

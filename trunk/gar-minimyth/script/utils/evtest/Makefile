@@ -23,6 +23,6 @@ include ../../gar.mk
 CFLAGS += -DKEY_RFKILL=0x20c
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)

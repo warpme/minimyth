@@ -15,8 +15,8 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/libICE \
 	$(CATEGORY)/libSM \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xproto
-BUILDDEPS = $(CATEGORY)/util-macros
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -44,7 +44,8 @@ CFLAGS   := $(CPPFLAGS) $(CFLAGS)
 CPPFLAGS :=
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@rm -f $(WORKSRC)/acinclude.m4
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

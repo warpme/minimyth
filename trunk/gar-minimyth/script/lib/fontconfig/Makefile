@@ -49,7 +49,7 @@ CFLAGS   := $(if $(filter -O3, $(CFLAGS)), $(filter-out -O3, $(CFLAGS)) -O2)
 CXXFLAGS := $(if $(filter -O3, $(CXXFLAGS)), $(filter-out -O3, $(CXXFLAGS)) -O2)
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

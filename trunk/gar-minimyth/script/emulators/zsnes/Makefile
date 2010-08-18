@@ -62,6 +62,5 @@ build_CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(build_CXXFLAGS))
 build_LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(build_LDFLAGS))
 
 pre-configure:
-	@cd $(WORKSRC)/src ; aclocal --verbose --force -I $(DESTDIR)$(datadir)/aclocal
-	@cd $(WORKSRC)/src ; autoconf --verbose --force
+	@$(call RUN_AUTOTOOLS)
 	@$(MAKECOOKIE)

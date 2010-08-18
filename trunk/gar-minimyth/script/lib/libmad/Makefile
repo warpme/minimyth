@@ -28,7 +28,7 @@ pre-configure:
 	@touch $(WORKSRC)/AUTHORS
 	@touch $(WORKSRC)/ChangeLog
 	@touch $(WORKSRC)/NEWS
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

@@ -22,6 +22,7 @@ DEPENDS  = lang/c \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
@@ -31,8 +32,6 @@ ifneq ($(DESTIMG),build)
 DEPENDS += system/udev
 endif
 BUILDDEPS = \
-	$(CATEGORY)/util-macros \
-	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -59,8 +58,7 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
-	@rm -f $(WORKSRC)/acinclude.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@rm -f $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)

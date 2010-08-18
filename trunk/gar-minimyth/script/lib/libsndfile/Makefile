@@ -3,6 +3,7 @@ GARVERSION = 1.0.21
 CATEGORIES = lib
 MASTER_SITES = http://www.mega-nerd.com/libsndfile/files/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -36,12 +37,7 @@ CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
-	@cd $(WORKSRC) ; rm -f M4/libtool.m4
-	@cd $(WORKSRC) ; rm -f M4/lt~obsolete.m4
-	@cd $(WORKSRC) ; rm -f M4/ltoptions.m4
-	@cd $(WORKSRC) ; rm -f M4/ltsugar.m4
-	@cd $(WORKSRC) ; rm -f M4/ltversion.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I M4
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

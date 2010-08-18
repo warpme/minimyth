@@ -38,7 +38,7 @@ LDFLAGS    := $(CFLAGS) $(LDFLAGS)
 sysconfdir := $(sysconfdir)/ssh
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@rm -f $(WORKSRC)/config.cache
 	@echo "ac_cv_have_space_for_dirent_d_name=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)

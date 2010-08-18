@@ -3,7 +3,7 @@ GARVERSION = 1.2.14
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION =
@@ -105,15 +105,7 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; rm -f acinclude/alsa.m4
-	@cd $(WORKSRC) ; rm -f acinclude/libtool.m4
-	@cd $(WORKSRC) ; rm -f acinclude/ltdl.m4
-	@cd $(WORKSRC) ; rm -f acinclude/lt~obsolete.m4
-	@cd $(WORKSRC) ; rm -f acinclude/ltoptions.m4
-	@cd $(WORKSRC) ; rm -f acinclude/ltsugar.m4
-	@cd $(WORKSRC) ; rm -f acinclude/ltversion.m4
-	@cd $(WORKSRC) ; aclocal --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude
-	@cd $(WORKSRC) ; libtoolize --force --copy --install
-	@cd $(WORKSRC) ; autoconf --force
+	@$(call RUN_AUTOTOOLS, cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 

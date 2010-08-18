@@ -70,7 +70,7 @@ DRI_DIRS := $(strip \
 DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(MAKECOOKIE)
 
 install-source:

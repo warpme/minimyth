@@ -3,6 +3,7 @@ GARVERSION = 2.1.0
 CATEGORIES = lib
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-diag/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
@@ -23,7 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I m4
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
