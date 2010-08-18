@@ -3,7 +3,7 @@ GARVERSION = 1.2.7
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/projects/$(GARNAME)/release/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION =
@@ -26,12 +26,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; rm -f acinclude/libtool.m4
 	@cd $(WORKSRC) ; rm -f acinclude/sdl.m4
 	@cd $(WORKSRC) ; touch NEWS
 	@cd $(WORKSRC) ; touch AUTHORS
 	@cd $(WORKSRC) ; touch ChangeLog
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@echo $(PATH)
 	@#$(MAKECOOKIE)

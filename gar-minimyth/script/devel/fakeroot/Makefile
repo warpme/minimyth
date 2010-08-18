@@ -27,6 +27,8 @@ INSTALL_ARGS   = \
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; mkdir -p build-aux
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

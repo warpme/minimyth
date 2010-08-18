@@ -43,9 +43,11 @@ PKG_DOC_DIR     := $(docdir)/$(GARNAME)
 PKG_LOCALE_DIR  := $(datadir)/locale
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal --verbose --force -I m4
-	@cd $(WORKSRC) ; libtoolize --force --copy --install
-	@cd $(WORKSRC) ; autoconf --verbose --force
+	@cd $(WORKSRC) ; rm -f include/config.h.in~
+	@cd $(WORKSRC) ; mv include/config.h.in include/config.h.in~
+	@$(call RUN_AUTOTOOLS, cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I m4)
+	@cd $(WORKSRC) ; rm -f include/config.h.in
+	@cd $(WORKSRC) ; mv include/config.h.in~ include/config.h.in
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

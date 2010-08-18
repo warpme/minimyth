@@ -14,6 +14,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXv \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto
 
@@ -36,7 +37,7 @@ include ../../gar.mk
 sysconfdir := $(subst //,/,$(sysconfdir))
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

@@ -53,6 +53,6 @@ LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@cd $(WORKSRC) ; rm -f acinclude.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)

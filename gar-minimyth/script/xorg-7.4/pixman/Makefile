@@ -40,7 +40,7 @@ CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

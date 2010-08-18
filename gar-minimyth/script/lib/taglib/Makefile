@@ -36,8 +36,7 @@ LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@# Unfortunately autoreconf does not work.
-	@#rm -f $(WORKSRC)/acinclude.m4
-	@#cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

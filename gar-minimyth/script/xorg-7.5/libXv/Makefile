@@ -13,6 +13,7 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto
 
@@ -33,7 +34,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

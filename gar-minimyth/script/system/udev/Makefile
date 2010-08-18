@@ -9,7 +9,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/glib lib/libacl lib/libusb-compat lib/libxslt utils/gperf utils/usbutils
+DEPENDS   = lang/c gtk/glib lib/libacl lib/libusb-compat lib/libxslt utils/usbutils
+BUILDDEPS = utils/gperf
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -34,7 +35,7 @@ sbindir    := $(esbindir)
 libexecdir := $(elibdir)/udev
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

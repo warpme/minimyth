@@ -40,6 +40,7 @@ patch-%: normal-patch-%
 	@$(MAKECOOKIE)
 
 pre-configure:
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

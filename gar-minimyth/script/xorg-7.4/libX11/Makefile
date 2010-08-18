@@ -17,12 +17,12 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/kbproto \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libxcb \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
-BUILDDEPS = $(CATEGORY)/util-macros
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -65,7 +65,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

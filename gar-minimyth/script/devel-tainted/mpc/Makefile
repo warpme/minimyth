@@ -33,6 +33,7 @@ CXXFLAGS :=
 LDFLAGS  :=
 
 pre-configure:
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

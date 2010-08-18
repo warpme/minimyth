@@ -160,15 +160,17 @@ FETCH_SVN = \
 # $(call RUN_AUTOTOOLS)
 # $(call RUN_AUTOTOOLS, <autotools-command>)
 RUN_AUTOTOOLS = \
-	if [ -e $(build_DESTDIR)$(build_bindir)/autoreconf  ] &&                 \
-	   [ -e $(build_DESTDIR)$(build_bindir)/autoconf    ] &&                 \
-	   [ -e $(build_DESTDIR)$(build_bindir)/automake    ] &&                 \
-	   [ -e $(build_DESTDIR)$(build_bindir)/libtoolize  ] &&                 \
-	   [ -e $(build_DESTDIR)$(build_bindir)/intltoolize ] ; then             \
-		$(if $(strip $(1)),                                            \
-			$(strip $(1)) ,                                        \
-			cd $(WORKSRC) ; autoreconf --verbose --install --force \
-		)                                                              ; \
+	if [ -e $(build_DESTDIR)$(build_bindir)/autoreconf  ] &&                                     \
+	   [ -e $(build_DESTDIR)$(build_bindir)/autoconf    ] &&                                     \
+	   [ -e $(build_DESTDIR)$(build_bindir)/automake    ] &&                                     \
+	   [ -e $(build_DESTDIR)$(build_bindir)/libtoolize  ] &&                                     \
+	   [ -e $(build_DESTDIR)$(build_bindir)/intltoolize ] ; then                                 \
+		$(if $(strip $(1)),                                                              \
+			$(strip $(1)) ,                                                          \
+			mkdir -p $(DESTDIR)$(datadir)/aclocal                                  ; \
+			cd $(WORKSRC)                                                          ; \
+			autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal   \
+		)                                                                                   ; \
 	fi
 
 clean-image:

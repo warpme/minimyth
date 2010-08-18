@@ -38,6 +38,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/resourceproto \
 	$(CATEGORY)/scrnsaverproto \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
@@ -51,7 +52,6 @@ ifneq ($(DESTIMG),build)
 DEPENDS += system/udev
 endif
 BUILDDEPS = \
-	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -141,7 +141,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@rm -f $(WORKSRC)/config.cache
 	@#echo "ac_cv_sys_linker_h=no" >> $(WORKSRC)/config.cache

@@ -29,7 +29,7 @@ include ../../gar.mk
 pre-configure:
 	@cp $(WORKSRC)/makefiles/configure.in $(WORKSRC)
 	@cp $(WORKSRC)/makefiles/Makefile.am $(WORKSRC)
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

@@ -3,6 +3,7 @@ GARVERSION = 1.3.1
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/vorbis/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = xiph
 xiph_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -28,9 +29,10 @@ include ../../gar.mk
 # Fails to compile with GCC's Os optimization, so convert it to O2 optimization.
 CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -O%, $(CFLAGS)) -O2)
 
-post-patch:
+pre-configure:
+	@cd $(WORKSRC) ; rm -f m4/ogg.m4
 	@cd $(WORKSRC) ; rm -f m4/pkg.m4
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force -I m4
+	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
