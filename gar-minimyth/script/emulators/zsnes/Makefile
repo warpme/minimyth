@@ -14,11 +14,11 @@ endef
 DEPENDS   = lang/c lang/cxx lib/libpng lib/SDL lib/zlib xorg/xorg
 BUILDDEPS = devel/nasm
 
-WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))
+WORKSRC = $(WORKDIR)/$(GARNAME)_$(subst .,_,$(GARVERSION))/src
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/src/configure
-BUILD_SCRIPTS     = $(WORKSRC)/src/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/src/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(incdludedir)" \
