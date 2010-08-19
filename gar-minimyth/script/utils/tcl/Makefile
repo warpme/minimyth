@@ -4,7 +4,7 @@ CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)$(GARVERSION)-src.tar.gz
 LICENSE = $(GARNAME)
-$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/license.terms
+$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/../license.terms
 
 DESCRIPTION = 
 define BLURB
@@ -12,11 +12,11 @@ endef
 
 DEPENDS = lang/c system/zoneinfo
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/unix/configure
-BUILD_SCRIPTS     = $(WORKSRC)/unix/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/unix/Makefile
+WORKSRC = $(WORKDIR)/$(GARNAME)$(GARVERSION)/unix
 
-WORKSRC = $(WORKDIR)/$(GARNAME)$(GARVERSION)
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-man-symlinks \
@@ -39,7 +39,7 @@ include ../../gar.mk
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
-	@$(call FIX_LIBTOOL,$(WORKSRC)/unix/configure)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:
