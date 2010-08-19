@@ -4,6 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME).patch.gar
+#PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION =
@@ -11,7 +12,7 @@ define BLURB
 endef
 
 DEPENDS    = lang/c lib/alsa-lib xorg/xorg
-BUILDDEPS  = devel/yasm
+BUILDDEPS  = devel/autoconf-2.64 devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -81,8 +82,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-video-caca \
 	--disable-video-qtopia \
 	--disable-video-picogui \
-	--disable-video-xbios \
-	--disable-video-gem \
+	--disable-xbios \
+	--disable-gem \
 	--disable-video-dummy \
 	--enable-video-opengl \
 	--enable-osmesa-shared \
@@ -105,7 +106,11 @@ include ../../gar.mk
 
 pre-configure:
 	@cd $(WORKSRC) ; rm -f acinclude/alsa.m4
-	@$(call RUN_AUTOTOOLS, cd $(WORKSRC) ; autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude)
+	@# Skip autoheader because there is a problem with AC_DEFINE's in the configure.in of SDL 1.2.14.
+	@# Added include directory 'acinclude' because SDL 1.2.14 has no Makefile.am in which to specify it.
+	@$(call RUN_AUTOTOOLS, \
+		cd $(WORKSRC) ; \
+		AUTOHEADER="true" autoreconf --verbose --install --force -I $(DESTDIR)$(datadir)/aclocal -I acinclude)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
