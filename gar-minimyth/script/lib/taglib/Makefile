@@ -3,14 +3,14 @@ GARVERSION = 1.6.3
 CATEGORIES = lib
 MASTER_SITES = http://developer.kde.org/~wheeler/files/src/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-remove_kde.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx lib/zlib
+DEPENDS = lang/cxx lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -23,19 +23,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization due to libtool.
-# Unfortunately the new libtool does not work with tablib's auto* files.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile using the gold linker due to duplication of libraries caused by libtool.
-CFLAGS   := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile using the LTO linker plugin.
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
-	@# Unfortunately autoreconf does not work.
+	@cd $(WORKSRC) ; rm -f acinclude.m4
+	@cd $(WORKSRC) ; touch acinclude.m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
