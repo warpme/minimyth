@@ -1,5 +1,5 @@
 GARNAME = vlc
-GARVERSION = 1.1.2
+GARVERSION = 1.1.3
 CATEGORIES = mediaplayers
 PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
@@ -201,15 +201,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization due to a /tmp/*.lto.o dependency added by libtool.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile using the gold linker due to duplication of libraries caused by libtool.
-CFLAGS   := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile using the LTO linker plugin.
+CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
