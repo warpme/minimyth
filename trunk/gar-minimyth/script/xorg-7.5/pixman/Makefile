@@ -35,6 +35,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
+# Fails to compile using the gold linker link time optimization plugin.
+CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
