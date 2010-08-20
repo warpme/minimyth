@@ -1,5 +1,5 @@
 GARNAME = hdparm
-GARVERSION = 9.29
+GARVERSION = 9.30
 CATEGORIES = disk
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -21,10 +21,13 @@ DEFAULT_ARGS = \
 	exec_prefix="$(exec_prefix)" \
 	sbindir="$(sbindir)" \
 	mandir="$(mandir)" \
-	oldmandir="$(mandir)"
+	oldmandir="$(mandir)" \
+	LDFLAGS="$(LDFLAGS) -s"
 BUILD_ARGS   = \
 	$(DEFAULT_ARGS)
 INSTALL_ARGS = \
 	$(DEFAULT_ARGS)
 
 include ../../gar.mk
+
+LDFLAGS := $(CFLAGS) $(LDFLAGS) -fwhole-program
