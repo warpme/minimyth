@@ -173,6 +173,18 @@ RUN_AUTOTOOLS = \
 		)                                                                                   ; \
 	fi
 
+# $(call RUN_GETTEXTIZE)
+# $(call RUN_GETTEXTIZE, <gettextize-command>)
+RUN_GETTEXTIZE = \
+	if [ -e $(build_DESTDIR)$(build_bindir)/gettextize ] ; then        \
+		$(if $(strip $(1)),                                     \
+			$(strip $(1)) ,                                 \
+			mkdir -p $(DESTDIR)$(datadir)/aclocal         ; \
+			cd $(WORKSRC)                                 ; \
+			gettextize --force                              \
+		)                                                         ; \
+	fi
+
 clean-image:
 	@rm -rf $(COOKIEROOTDIR)/$(DESTIMG).d
 	@rm -rf $(WORKROOTDIR)/$(DESTIMG).d

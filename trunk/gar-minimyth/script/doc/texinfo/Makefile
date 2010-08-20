@@ -25,7 +25,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; gettextize --force
+	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)

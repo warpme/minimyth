@@ -77,7 +77,7 @@ INSTALL_ARGS   = \
 include ../../gar.mk
 
 pre-configure:
-	@cd $(WORKSRC) ; gettextize --force
+	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
