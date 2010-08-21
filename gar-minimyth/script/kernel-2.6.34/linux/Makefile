@@ -7,7 +7,6 @@ CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
-PATCHFILES += $(DISTNAME)-commit_11ac55.patch
 PATCHFILES += $(DISTNAME)-usb_remote_wakeup.patch
 PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
