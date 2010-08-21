@@ -1,5 +1,5 @@
 GARNAME = pixman
-GARVERSION = 0.18.4
+GARVERSION = 0.19.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -22,6 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--disable-openmp \
 	--enable-mmx \
 	--enable-sse2 \
 	--disable-vmx \
