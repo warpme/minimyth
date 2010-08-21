@@ -37,9 +37,9 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
-# Fails to compile (x86_64) when compiled with at least some of GCC's graphite support.
-CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
-CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
+# Fails to compile (x86_64) when compiled with at least some of GCC's -ftree-loop-distribution option.
+CFLAGS   := $(filter-out -ftree-loop-distribution, $(CFLAGS))
+CXXFLAGS := $(filter-out -ftree-loop-distribution, $(CXXFLAGS))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
