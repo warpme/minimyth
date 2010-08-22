@@ -1,0 +1,57 @@
+diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebKit/qt/ChangeLog qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebKit/qt/ChangeLog
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebKit/qt/ChangeLog	2010-06-01 19:03:12.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebKit/qt/ChangeLog	2010-08-22 08:21:33.000000000 -0700
+@@ -1,3 +1,17 @@
++2009-12-07  Girish Ramakrishnan  <girish@forwardbias.in>
++
++        Reviewed by Simon Hausmann.
++
++        [Qt] Plugins: Force windowless mode when there is no native window handle
++        
++        Inject wmode=opaque while instantiating the plugin for the case when the
++        webpage is not backed by a native window handle.
++        
++        https://bugs.webkit.org/show_bug.cgi?id=32059
++
++        * WebCoreSupport/FrameLoaderClientQt.cpp:
++        (WebCore::FrameLoaderClientQt::createPlugin):
++
+ 2010-05-19  Denis Dzyubenko <denis.dzyubenko@nokia.com>
+ 
+         Reviewed by Kenneth Rohde Christiansen.
+diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp	2010-06-01 19:03:12.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp	2010-08-22 08:21:33.000000000 -0700
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
+  * Copyright (C) 2008 Collabora Ltd. All rights reserved.
+  * Coypright (C) 2008 Holger Hans Peter Freyther
++ * Coypright (C) 2009 Girish Ramakrishnan <girish@forwardbias.in>
+  *
+  * All rights reserved.
+  *
+@@ -1303,8 +1304,23 @@
+             // FIXME: make things work for widgetless plugins as well
+             delete object;
+     } else { // NPAPI Plugins
++        Vector<String> params = paramNames;
++        Vector<String> values = paramValues;
++        if (mimeType == "application/x-shockwave-flash") {
++            QWebPageClient* client = m_webFrame->page()->d->client;
++            if (!client || !qobject_cast<QWidget*>(client->pluginParent())) {
++                // inject wmode=opaque when there is no client or the client is not a QWebView
++                size_t wmodeIndex = params.find("wmode");
++                if (wmodeIndex == -1) {
++                    params.append("wmode");
++                    values.append("opaque");
++                } else
++                    values[wmodeIndex] = "opaque";
++            }
++        }
++
+         RefPtr<PluginView> pluginView = PluginView::create(m_frame, pluginSize, element, url,
+-            paramNames, paramValues, mimeType, loadManually);
++            params, values, mimeType, loadManually);
+         return pluginView;
+     }
+ 
