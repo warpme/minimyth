@@ -1,10 +1,10 @@
 GARNAME = nasm
-GARVERSION = 2.08.02
+GARVERSION = 2.09
 CATEGORIES = devel
 MASTER_SITES  = http://www.nasm.us/pub/nasm/releasebuilds/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = LGPL2_1
+LICENSE = BSD_2_Clause
 
 DESCRIPTION = 
 define BLURB
