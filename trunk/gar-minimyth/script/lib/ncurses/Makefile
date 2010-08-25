@@ -3,7 +3,7 @@ GARVERSION = $(NCURSES_VERSION)
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-perl.patch.gar $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-shell.patch $(DISTNAME)-perl.patch.gar $(DISTNAME).patch.gar
 LICENSE = MIT_Modified
 
 DESCRIPTION =
@@ -42,6 +42,10 @@ include ../../gar.mk
 # causes procps's top to segmentation fault when compiled with gcc's link time optimization.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
 
 post-install:
 	@cd $(DESTDIR)$(libdir) && ln -sf libncurses.so libtermcap.so
