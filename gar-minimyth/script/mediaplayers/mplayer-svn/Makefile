@@ -99,6 +99,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 # --enable-libavformat_so
 # --enable-libpostproc_so
 # --enable-libswscale_so
+# --enable-system-ffmpeg
 # --enable-libdca
 # --enable-liba52
 CONFIGURE_ARGS_CODEC = \
