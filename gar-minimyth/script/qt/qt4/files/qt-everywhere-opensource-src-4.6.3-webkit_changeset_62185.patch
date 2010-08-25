@@ -1,9 +1,9 @@
 diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/ChangeLog qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/ChangeLog
---- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/ChangeLog	2010-08-22 10:55:58.000000000 -0700
-+++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/ChangeLog	2010-08-22 10:57:48.000000000 -0700
-@@ -1,5 +1,27 @@
- 2010-06-30  Andreas Kling  <andreas.kling@nokia.com>
- 
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/ChangeLog	2010-08-24 20:30:56.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/ChangeLog	2010-08-24 20:33:48.000000000 -0700
+@@ -1,3 +1,25 @@
++2010-06-30  Andreas Kling  <andreas.kling@nokia.com>
++
 +        Reviewed by Kenneth Rohde Christiansen.
 +
 +        [Qt] Make "disallow multiple calls to SetWindow" on windowed plugins a quirk
@@ -24,14 +24,12 @@ diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/Ch
 +        * plugins/qt/PluginViewQt.cpp:
 +        (WebCore::PluginView::setNPWindowIfNeeded):
 +
-+2010-06-30  Andreas Kling  <andreas.kling@nokia.com>
-+
-         Reviewed by Antti Koivisto.
+ 2010-06-16  Dawit Alemayehu  <adawit@kde.org>
  
-         [Qt, Gtk, Symbian] Mind the semantics of NPRect for windowed plugin clip rects
+         Reviewed by Simon Hausmann.
 diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp
---- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp	2010-08-22 10:53:07.000000000 -0700
-+++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp	2010-08-22 10:57:48.000000000 -0700
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp	2010-08-24 20:30:39.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginPackage.cpp	2010-08-24 20:31:53.000000000 -0700
 @@ -189,6 +189,10 @@
          } else {
              // Flash 9 and older requests windowless plugins if we return a mozilla user agent
@@ -44,8 +42,8 @@ diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/pl
  
          m_quirks.add(PluginQuirkThrottleInvalidate);
 diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h
---- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h	2010-08-22 10:53:07.000000000 -0700
-+++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h	2010-08-22 10:57:48.000000000 -0700
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h	2010-08-24 20:30:39.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/PluginQuirkSet.h	2010-08-24 20:31:53.000000000 -0700
 @@ -46,7 +46,8 @@
          PluginQuirkDontSetNullWindowHandleOnDestroy = 1 << 10,
          PluginQuirkDontAllowMultipleInstances = 1 << 11,
@@ -57,9 +55,9 @@ diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/pl
  
      class PluginQuirkSet {
 diff -Naur qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp
---- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp	2010-08-22 10:54:56.000000000 -0700
-+++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp	2010-08-22 10:57:48.000000000 -0700
-@@ -515,9 +515,14 @@
+--- qt-everywhere-opensource-src-4.6.3-old/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp	2010-08-24 20:30:39.000000000 -0700
++++ qt-everywhere-opensource-src-4.6.3-new/src/3rdparty/webkit/WebCore/plugins/qt/PluginViewQt.cpp	2010-08-24 20:31:53.000000000 -0700
+@@ -511,9 +511,14 @@
          m_npWindow.clipRect.bottom = 0;
      }
  
