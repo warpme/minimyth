@@ -21,13 +21,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gettext \
 	--disable-lib64 \
 	--with-gnu-ld
-INSTALL_ARGS   = install-dev install-lib
+BUILD_ARGS     = SHELL=$(CONFIG_SHELL)
+INSTALL_ARGS   = SHELL=$(CONFIG_SHELL) install-dev install-lib
 
 CONFIGURE_ENV = \
 	ac_cv_path_MAKE=$(build_DESTDIR)$(build_bindir)/make
 
 BUILD_OVERRIDE_DIRS   = PKG_BIN_DIR PKG_SBIN_DIR PKG_LIB_DIR PKG_DEVLIB_DIR PKG_INC_DIR PKG_MAN_DIR PKG_DOC_DIR
 INSTALL_OVERRIDE_DIRS = PKG_BIN_DIR PKG_SBIN_DIR PKG_LIB_DIR PKG_DEVLIB_DIR PKG_INC_DIR PKG_MAN_DIR PKG_DOC_DIR
+
+export SHELL='/bin/sh'
 
 include ../../gar.mk
 
