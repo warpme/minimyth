@@ -4,7 +4,7 @@ CATEGORIES = X11
 MASTER_SITES = http://ignavus.net/
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libxosd/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-defaults.patch
+PATCHFILES = $(DISTNAME)-libxosd_m4.patch $(DISTNAME)-defaults.patch
 LICENSE = GPL2
 
 DESCRIPTION =
