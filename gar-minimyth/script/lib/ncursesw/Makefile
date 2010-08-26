@@ -39,6 +39,10 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
+pre-configure:
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
 post-install:
 	@rm -f $(DESTDIR)$(bindir)-config/ncursesw5-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)ncursesw5-config
