@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 3.2
+GARVERSION = 3.2.1
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -40,3 +40,5 @@ LDFLAGS := $(CXXFLAGS) $(LDFLAGS)
 # Fails to compile using GCC's linker plugin due to segmentation fault.
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
