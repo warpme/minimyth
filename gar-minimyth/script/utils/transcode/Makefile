@@ -4,7 +4,7 @@ CATEGORIES = utils
 MASTER_SITES = http://download.berlios.de/tcforge/
 DISTFILES  = $(DISTNAME).tar.bz2
 DISTFILES += config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME)-configure.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =

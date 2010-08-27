@@ -3,7 +3,7 @@ GARVERSION = 0.99
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-autoconf.patch $(DISTNAME)-ln.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-ln.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =

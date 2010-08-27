@@ -3,7 +3,7 @@ GARVERSION = 7.21.1
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION = 

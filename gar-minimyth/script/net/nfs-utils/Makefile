@@ -3,7 +3,7 @@ GARVERSION = 1.1.0
 CATEGORIES = net
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/nfs/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-autoconf.patch $(DISTNAME)-sys_stat_h.patch $(DISTNAME)-nolock.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-sys_stat_h.patch $(DISTNAME)-nolock.patch $(DISTNAME)-cross.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -21,7 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-nfsv4 \
 	--disable-gss \
 	--disable-kprefix \
-	--with-uuid \
+	--enable-uuid \
 	--enable-mount \
 	--without-tcp-wrappers \
 	--with-gnu-ld \

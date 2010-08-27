@@ -3,6 +3,7 @@ GARVERSION = 1.1.26
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/libxml2/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-dash.patch
 LICENSE = MIT_Modified
 
 DESCRIPTION = 
