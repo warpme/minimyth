@@ -169,7 +169,8 @@ build_GARHOST := $(GARBUILD)
 build_NODEPEND += kernel/linux-headers devel/glibc
 
 # This is for foo-config chaos
-CONFIG_SHELL = $(if $(wildcard $(build_DESTDIR)$(build_ebindir)/bash),$(build_DESTDIR)$(build_ebindir)/bash,/bin/sh)
+SHELL = $(if $(wildcard $(build_DESTDIR)$(build_ebindir)/bash),$(build_DESTDIR)$(build_ebindir)/bash,/bin/sh)
+CONFIG_SHELL = $(SHELL)
 PKG_CONFIG_PATH = 
 PKG_CONFIG_LIBDIR = $(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(datadir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig:$(DESTDIR)$(qt3libdir)/pkgconfig
 PKG_CONFIG_SYSROOT_DIR = $(DESTDIR)
@@ -192,7 +193,7 @@ MANIFEST_ENV += $(foreach TTT,$(STAGE_EXPORTS),$(TTT)="$($(TTT))")
 # Global environment
 export GARBUILD
 export BUILD_SYSTEM_PATH GAR_SYSTEM_PATH PATH LIBRARY_PATH LD_LIBRARY_PATH #LD_PRELOAD
-export CONFIG_SHELL
+export SHELL CONFIG_SHELL
 export PKG_CONFIG_PATH PKG_CONFIG_LIBDIR PKG_CONFIG_SYSROOT_DIR
 export PERLLIB PERL5LIB
 
