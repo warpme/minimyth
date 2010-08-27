@@ -3,6 +3,7 @@ GARVERSION = 2.65
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-as_echo.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -27,3 +28,7 @@ INSTALL_ARGS   = \
 	pkgincludedir=$(includedir)/autoconf-$(GARVERSION)
 
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)

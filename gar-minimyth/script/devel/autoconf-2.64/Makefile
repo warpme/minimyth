@@ -3,7 +3,7 @@ GARVERSION = 2.64
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-perl.patch.gar
+PATCHFILES = $(DISTNAME)-as_echo.patch $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -28,3 +28,7 @@ INSTALL_ARGS   = \
 	pkgincludedir=$(includedir)/autoconf-$(GARVERSION)
 
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)
