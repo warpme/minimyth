@@ -19,6 +19,7 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-rpath \
+	--enable-interfaces="c,cxx" \
 	--enable-shared \
 	--disable-static \
 	--with-cc="$(CC)" \
