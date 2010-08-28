@@ -1,6 +1,6 @@
 diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configure.ac
---- splashutils-1.5.4.3-old/configure.ac	2008-11-13 11:54:19.000000000 -0800
-+++ splashutils-1.5.4.3-new/configure.ac	2009-06-10 07:13:14.000000000 -0700
+--- splashutils-1.5.4.3-old/configure.ac	2010-08-28 06:31:58.000000000 -0700
++++ splashutils-1.5.4.3-new/configure.ac	2010-08-28 06:35:44.000000000 -0700
 @@ -63,19 +63,6 @@
  )
  AM_CONDITIONAL([CONFIG_DEBUG], [test "x${config_debug}" = "xyes"])
@@ -46,7 +46,7 @@ diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configur
 -  AS_HELP_STRING([--with-freetype2-src=DIR], [freetype2 source to use when linking with klibc]),
 -  [
 -	AS_IF(
--	  [test "`echo ${withval} | sed -e 's,^/.*,,'`" = "${withval}"],
+-	  [test "`AS_ECHO([${withval}]) | sed -e 's,^/.*,,'`" = "${withval}"],
 -	  [LIBFREETYPE2_SOURCE="\$(abs_top_srcdir)/${withval}"],
 -	  [LIBFREETYPE2_SOURCE="${withval}"]
 -	)
@@ -59,7 +59,7 @@ diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configur
 -  AS_HELP_STRING([--with-jpeg-src=DIR], [jpeglib source to use when linking with klibc]),
 -  [
 -	AS_IF(
--	  [test "`echo ${withval} | sed -e 's,^/.*,,'`" = "${withval}"],
+-	  [test "`AS_ECHO([${withval}]) | sed -e 's,^/.*,,'`" = "${withval}"],
 -	  [LIBJPEG_SOURCE="\$(abs_top_srcdir)/${withval}"],
 -	  [LIBJPEG_SOURCE="${withval}"]
 -	)
@@ -72,7 +72,7 @@ diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configur
 -  AS_HELP_STRING([--with-lpng-src=DIR], [libpng source to use when linking with klibc]),
 -  [
 -	AS_IF(
--	  [test "`echo ${withval} | sed -e 's,^/.*,,'`" = "${withval}"],
+-	  [test "`AS_ECHO([${withval}]) | sed -e 's,^/.*,,'`" = "${withval}"],
 -	  [LIBPNG_SOURCE="\$(abs_top_srcdir)/${withval}"],
 -	  [LIBPNG_SOURCE="${withval}"]
 -	)
@@ -85,7 +85,7 @@ diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configur
 -  AS_HELP_STRING([--with-zlib-src=DIR], [zlib source to use when linking with klibc]),
 -  [
 -	AS_IF(
--	  [test "`echo ${withval} | sed -e 's,^/.*,,'`" = "${withval}"],
+-	  [test "`AS_ECHO([${withval}]) | sed -e 's,^/.*,,'`" = "${withval}"],
 -	  [LIBZ_SOURCE="\$(abs_top_srcdir)/${withval}"],
 -	  [LIBZ_SOURCE="${withval}"]
 -	)
@@ -96,10 +96,10 @@ diff -Naur splashutils-1.5.4.3-old/configure.ac splashutils-1.5.4.3-new/configur
 -
  AC_ARG_WITH([essential-prefix],
    AS_HELP_STRING([--with-essential-prefix=ESPREFIX], [install essential files in ESPREFIX @<:@/@:>@]),
-   [essential_prefix="$(echo ${withval} | sed -e 's#/$##')"],
+   [essential_prefix=`AS_ECHO([${withval}]) | sed -e 's#/$##')`],
 diff -Naur splashutils-1.5.4.3-old/Makefile.am splashutils-1.5.4.3-new/Makefile.am
 --- splashutils-1.5.4.3-old/Makefile.am	2008-11-13 11:54:19.000000000 -0800
-+++ splashutils-1.5.4.3-new/Makefile.am	2009-06-10 07:04:54.000000000 -0700
++++ splashutils-1.5.4.3-new/Makefile.am	2010-08-28 06:35:44.000000000 -0700
 @@ -1,4 +1,4 @@
 -SUBDIRS = libs src docs misc scripts
 +SUBDIRS = src docs misc scripts
@@ -107,8 +107,8 @@ diff -Naur splashutils-1.5.4.3-old/Makefile.am splashutils-1.5.4.3-new/Makefile.
  
  include common.mk
 diff -Naur splashutils-1.5.4.3-old/src/Makefile.am splashutils-1.5.4.3-new/src/Makefile.am
---- splashutils-1.5.4.3-old/src/Makefile.am	2008-11-13 11:54:19.000000000 -0800
-+++ splashutils-1.5.4.3-new/src/Makefile.am	2009-06-10 07:34:52.000000000 -0700
+--- splashutils-1.5.4.3-old/src/Makefile.am	2010-08-28 06:32:03.000000000 -0700
++++ splashutils-1.5.4.3-new/src/Makefile.am	2010-08-28 06:35:44.000000000 -0700
 @@ -221,62 +221,23 @@
  
  fbcondecor_helper_SOURCES = \

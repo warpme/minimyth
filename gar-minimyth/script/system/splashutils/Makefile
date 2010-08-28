@@ -3,7 +3,7 @@ GARVERSION = 1.5.4.3
 CATEGORIES = system
 MASTER_SITES = http://download.berlios.de/fbsplash/
 DISTFILES = $(GARNAME)-lite-$(GARVERSION).tar.bz2
-PATCHFILES = $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch $(DISTNAME)-no_klibc.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-autotools_fixes.patch $(DISTNAME)-remove_no_static.patch $(DISTNAME)-no_klibc.patch
 LICENSE = GPL2
 
 DESCRIPTION =
