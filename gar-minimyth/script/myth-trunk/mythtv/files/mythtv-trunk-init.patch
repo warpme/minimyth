@@ -1,7 +1,17 @@
-diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mythtv-trunk-25603-new/programs/mythfrontend/globalsettings.cpp
---- mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp	2010-08-10 07:27:57.000000000 -0700
-+++ mythtv-trunk-25603-new/programs/mythfrontend/globalsettings.cpp	2010-08-10 07:27:58.000000000 -0700
-@@ -514,7 +514,7 @@
+diff -Naur mythtv-trunk-25998-old/libs/libmythmetadata/globals.cpp mythtv-trunk-25998-new/libs/libmythmetadata/globals.cpp
+--- mythtv-trunk-25998-old/libs/libmythmetadata/globals.cpp	2010-08-30 07:45:26.000000000 -0700
++++ mythtv-trunk-25998-new/libs/libmythmetadata/globals.cpp	2010-08-30 07:45:27.000000000 -0700
+@@ -32,5 +32,5 @@
+ #ifdef Q_WS_MACX
+ const QString DEFAULT_VIDEOSTARTUP_DIR = QDir::homePath() + "/Movies";
+ #else
+-const QString DEFAULT_VIDEOSTARTUP_DIR = "/share/Movies/dvd";
++const QString DEFAULT_VIDEOSTARTUP_DIR = "/mnt/video";
+ #endif
+diff -Naur mythtv-trunk-25998-old/programs/mythfrontend/globalsettings.cpp mythtv-trunk-25998-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-trunk-25998-old/programs/mythfrontend/globalsettings.cpp	2010-08-30 07:45:26.000000000 -0700
++++ mythtv-trunk-25998-new/programs/mythfrontend/globalsettings.cpp	2010-08-30 07:45:27.000000000 -0700
+@@ -515,7 +515,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("MythControlsVolume");
      gc->setLabel(QObject::tr("Use internal volume controls"));
@@ -10,7 +20,7 @@ diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mytht
      gc->setHelpText(QObject::tr("If enabled, MythTV will control the PCM and "
                      "master mixer volume. Disable this option if you prefer "
                      "to control the volume externally (for example, using "
-@@ -538,7 +538,7 @@
+@@ -539,7 +539,7 @@
      }
  #endif
  #ifdef USING_ALSA
@@ -19,7 +29,7 @@ diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mytht
  #endif
  #ifdef USING_MINGW
      gc->addSelection("DirectX:", "DirectX:");
-@@ -1835,7 +1835,7 @@
+@@ -1836,7 +1836,7 @@
      gc->setLabel(QObject::tr("Sort episodes"));
      gc->addSelection(QObject::tr("Record date"), "Date");
      gc->addSelection(QObject::tr("Original air date"), "OrigAirDate");
@@ -28,7 +38,7 @@ diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mytht
      gc->setHelpText(QObject::tr("Selects how to sort a shows episodes"));
      return gc;
  }
-@@ -2131,7 +2131,7 @@
+@@ -2149,7 +2149,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -37,7 +47,7 @@ diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mytht
      gc->addSelection(QObject::tr("Always prompt (excluding Live TV)"), "1");
      gc->addSelection(QObject::tr("Always prompt (including Live TV)"), "4");
      gc->addSelection(QObject::tr("Prompt for Live TV only"), "8");
-@@ -2146,7 +2146,7 @@
+@@ -2164,7 +2164,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("EndOfRecordingExitPrompt");
      gc->setLabel(QObject::tr("Prompt at end of recording"));
@@ -46,16 +56,16 @@ diff -Naur mythtv-trunk-25603-old/programs/mythfrontend/globalsettings.cpp mytht
      gc->setHelpText(QObject::tr("If enabled, a menu will be displayed allowing "
                      "you to delete the recording when it has finished "
                      "playing."));
-@@ -2209,7 +2209,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
-     gc->setLabel(QObject::tr("Display live preview of recordings"));
--    gc->setValue(true);
-+    gc->setValue(false);
-     gc->setHelpText(QObject::tr("If enabled, a preview of the recording "
-                     "will play in a small window on the \"Watch a "
-                     "Recording\" menu."));
-@@ -2970,7 +2970,7 @@
+@@ -2227,7 +2227,7 @@
+ // {
+ //     HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
+ //     gc->setLabel(QObject::tr("Display live preview of recordings"));
+-//     gc->setValue(true);
++//     gc->setValue(false);
+ //     gc->setHelpText(QObject::tr("If enabled, a preview of the recording "
+ //                     "will play in a small window on the \"Watch a "
+ //                     "Recording\" menu."));
+@@ -2990,7 +2990,7 @@
      GlobalCheckBox *bc = new GlobalCheckBox("LastFreeCard");
      bc->setLabel(QObject::tr("Avoid conflicts between Live TV and "
                   "scheduled shows"));
