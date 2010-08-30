@@ -25,9 +25,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
-	@touch $(WORKSRC)/AUTHORS
-	@touch $(WORKSRC)/ChangeLog
-	@touch $(WORKSRC)/NEWS
+	@cd $(WORKSRC) ; touch AUTHORS
+	@cd $(WORKSRC) ; touch ChangeLog
+	@cd $(WORKSRC) ; touch NEWS
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
