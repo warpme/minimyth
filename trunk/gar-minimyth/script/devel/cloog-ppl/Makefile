@@ -1,5 +1,5 @@
 GARNAME = cloog-ppl
-GARVERSION = 0.15.9
+GARVERSION = 0.15.10
 CATEGORIES = devel
 MASTER_SITES = ftp://gcc.gnu.org/pub/gcc/infrastructure/
 DISTFILES = $(DISTNAME).tar.gz
@@ -26,6 +26,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 include ../../gar.mk
 
 pre-configure:
+	@cd $(WORKSRC) ; mkdir -p m4
+	@cd $(WORKSRC) ; touch AUTHORS
+	@cd $(WORKSRC) ; touch ChangeLog
+	@cd $(WORKSRC) ; touch NEWS
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
