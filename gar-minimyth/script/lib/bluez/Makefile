@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.69
+GARVERSION = 4.70
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c gtk/glib lib/dbus lib/expat
+DEPENDS  = lang/c gtk/glib lib/alsa-lib lib/dbus lib/expat
 ifneq ($(DESTIMG),build)
 DEPENDS += lib/libusb-compat
 endif
@@ -23,17 +23,19 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
+	--enable-optimization \
 	--enable-fortify \
-	--disable-pie \
-	--disable-capng \
+	--enable-pie \
 	--disable-network \
 	--disable-serial \
 	--enable-input \
 	--disable-audio \
 	--enable-service \
+	--disable-pnat \
+	--disable-attrib \
 	--disable-gstreamer \
-	--disable-alsa \
-	--disable-netlink \
+	--enable-alsa \
+	--disable-tracer \
 	--enable-tools \
 	--enable-bccmd \
 	--enable-pcmcia \
@@ -47,6 +49,9 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-udevrules \
 	--enable-configfiles \
 	--disable-debug \
+	--disable-maemo6 \
+	--disable-capng \
+	--disable-netlink \
 	--with-gnu-ld
 ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
