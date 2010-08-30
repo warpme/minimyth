@@ -126,7 +126,7 @@ mm_KERNEL_VERSION         ?= 2.6.34
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
 # Valid values are '0.20', '0.20-softpad', '0.21', '0.22', '0.23' and 'trunk'.
-mm_MYTH_VERSION           ?= 0.22
+mm_MYTH_VERSION           ?= 0.23
 # The version of the NVIDIA driver.
 # Valid values are '96.43.18' (legacy), '173.14.27' (legacy), '185.18.36',
 # '190.53', '195.36.31', '256.44'.
