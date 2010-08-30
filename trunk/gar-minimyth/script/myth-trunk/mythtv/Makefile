@@ -8,11 +8,9 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-python_build.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
-	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
-	$(DISTNAME_SHORT)-udevinfo.patch \
 	$(DISTNAME_SHORT)-drm_vsync_control.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
@@ -28,7 +26,6 @@ DEPENDS = \
 	lang/cxx \
 	db/mysql \
 	lib/alsa-lib \
-	lib/faad2 \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
@@ -40,6 +37,7 @@ DEPENDS = \
 	python/python-lxml \
 	qt/qt4 \
 	system/lirc \
+	system/udev \
 	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = \
@@ -70,7 +68,6 @@ CONFIGURE_ARGS = \
 	--incdir="$(incdir)" \
 	--mandir="$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
-	--enable-libfaad \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
 	--sysroot="$(DESTDIR)$(rootdir)" \
