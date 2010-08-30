@@ -3,7 +3,7 @@ GARVERSION = 2.65
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-bash.patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
