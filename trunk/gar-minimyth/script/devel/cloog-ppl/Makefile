@@ -3,6 +3,7 @@ GARVERSION = 0.15.10
 CATEGORIES = devel
 MASTER_SITES = ftp://gcc.gnu.org/pub/gcc/infrastructure/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL3/LGPL3
 
 DESCRIPTION = 
