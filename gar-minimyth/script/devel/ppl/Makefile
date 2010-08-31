@@ -1,5 +1,5 @@
 GARNAME = ppl
-GARVERSION = 0.10.2
+GARVERSION = 0.11
 CATEGORIES = devel
 MASTER_SITES = http://www.cs.unipr.it/ppl/Download/ftp/releases/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -27,8 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-cflags="$(CFLAGS)" \
 	--with-cxxflags="$(CXXFLAGS)" \
 	--with-gnu-ld \
-  	--with-libgmp-prefix=$(DESTDIR)$(prefix) \
-  	--with-libgmpxx-prefix=$(DESTDIR)$(prefix)
+  	--with-gmp-prefix=$(DESTDIR)$(prefix)
 
 include ../../gar.mk
 
