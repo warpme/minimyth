@@ -25,7 +25,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--enable-optimization \
 	--enable-fortify \
-	--enable-pie \
+	--disable-pie \
 	--disable-network \
 	--disable-serial \
 	--enable-input \
