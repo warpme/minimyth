@@ -13,6 +13,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-libdvdread_udf.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-glvdpau20744.patch \
+	$(DISTNAME_SHORT)-codec_id_svq3_fix.patch \
 	$(DISTNAME_SHORT)-ticket-4792.patch \
 	$(DISTNAME_SHORT)-ticket-5487.patch \
 	$(DISTNAME_SHORT)-gcc_4.5.0.patch \
