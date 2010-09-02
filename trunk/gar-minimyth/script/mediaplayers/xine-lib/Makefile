@@ -105,6 +105,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-external-dvdnav \
 	--without-imagemagick \
 	--with-libflac \
+	--with-libFLAC-libraries="$(DESTDIR)$(libdir)" \
+	--with-libFLAC-includes="$(DESTDIR)$(includedir)" \
 	--without-speex \
 	--without-theora \
 	--without-vorbis \
