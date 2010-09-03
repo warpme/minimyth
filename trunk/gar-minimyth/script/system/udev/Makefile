@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 161
+GARVERSION = 162
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -21,12 +21,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--disable-gtk-doc \
+	--disable-gtk-doc-html \
+	--disable-gtk-doc-pdf \
 	--disable-debug \
 	--enable-logging \
 	--enable-extras \
 	--disable-introspection \
 	--with-gnu-ld \
 	--with-rootlibdir=$(libdir) \
+	--without-selinux \
+	--with-firmware-path=$(elibdir)/firmware \
+	--without-systemdsystemunitdir \
 	--with-pci-ids-path=$(datadir)/pci.ids
 
 include ../../gar.mk
