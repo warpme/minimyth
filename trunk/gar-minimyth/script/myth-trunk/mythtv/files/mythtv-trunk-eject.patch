@@ -1,6 +1,6 @@
-diff -Naur mythtv-trunk-26007-old/libs/libmyth/mythcdrom-linux.cpp mythtv-trunk-26007-new/libs/libmyth/mythcdrom-linux.cpp
---- mythtv-trunk-26007-old/libs/libmyth/mythcdrom-linux.cpp	2010-08-30 14:02:10.000000000 -0700
-+++ mythtv-trunk-26007-new/libs/libmyth/mythcdrom-linux.cpp	2010-08-30 14:02:11.000000000 -0700
+diff -Naur mythtv-trunk-26107-old/libs/libmyth/mythcdrom-linux.cpp mythtv-trunk-26107-new/libs/libmyth/mythcdrom-linux.cpp
+--- mythtv-trunk-26107-old/libs/libmyth/mythcdrom-linux.cpp	2010-09-03 14:36:19.000000000 -0700
++++ mythtv-trunk-26107-new/libs/libmyth/mythcdrom-linux.cpp	2010-09-03 14:36:20.000000000 -0700
 @@ -15,9 +15,18 @@
  #include "mythconfig.h"      // for HAVE_BIGENDIAN
  #include "mythverbose.h"
@@ -20,14 +20,17 @@ diff -Naur mythtv-trunk-26007-old/libs/libmyth/mythcdrom-linux.cpp mythtv-trunk-
  // On a mixed-mode disc (audio+data), set this to 0 to mount the data portion:
  #define ASSUME_WANT_AUDIO 1
  
-@@ -284,12 +293,31 @@
+@@ -284,6 +293,8 @@
  
  MediaError MythCDROMLinux::eject(bool open_close)
  {
 +    QString MountCommand;
 +
      if (!isDeviceOpen())
-         openDevice();
+     {
+         if (!openDevice())
+@@ -291,8 +302,25 @@
+     }
  
      if (open_close)
 -        return (ioctl(m_DeviceHandle, CDROMEJECT) == 0) ? MEDIAERR_OK
