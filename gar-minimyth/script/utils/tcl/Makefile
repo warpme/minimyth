@@ -1,5 +1,5 @@
 GARNAME = tcl
-GARVERSION = 8.5.8
+GARVERSION = 8.5.9
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(GARNAME)$(GARVERSION)-src.tar.gz
