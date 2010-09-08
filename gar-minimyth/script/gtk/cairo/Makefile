@@ -1,5 +1,5 @@
 GARNAME = cairo
-GARVERSION = 1.8.10
+GARVERSION = 1.10.0
 CATEGORIES = gtk
 MASTER_SITES = http://www.cairographics.org/releases/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,29 +18,54 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--disable-gtk-doc \
+	--enable-largefile \
+	--enable-atomic \
 	--disable-gcov \
+	--disable-valgrind \
 	--enable-xlib \
 	--enable-xlib-xrender \
-	--enable-xcb \
+	--disable-xcb \
+	--disable-xlib-xcb \
+	--disable-xcb-shm \
+	--disable-qt \
 	--disable-quartz \
 	--disable-quartz-font \
 	--disable-quartz-image \
 	--disable-win32 \
 	--disable-win32-font \
+	--disable-skia \
 	--disable-os2 \
 	--disable-beos \
+	--disable-drm \
+	--disable-drm-xr \
+	--disable-gallium \
+	--disable-xcb-drm \
 	--enable-png \
-	--disable-glitz \
+	--enable-gl \
 	--disable-directfb \
+	--disable-vg \
+	--disable-egl \
+	--enable-glx \
+	--disable-wgl \
+	--disable-script \
 	--enable-ft \
-	--enable-pthread \
+	--enable-fc \
 	--enable-ps \
 	--enable-pdf \
 	--enable-svg \
 	--disable-test-surfaces \
+	--disable-tee \
+	--disable-xml \
+	--enable-pthread \
+	--disable-gobject \
+	--disable-full-testing \
+	--disable-trace \
+	--enable-interpreter \
+	--disable-symbol-lookup \
 	--enable-some-floating-point \
 	--with-gnu-ld \
 	--with-x
@@ -57,4 +82,5 @@ pre-configure:
 
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libcairo.la
+	@rm -rf $(DESTDIR)$(libdir)/libcairo-script-interpreter.la
 	@$(MAKECOOKIE)
