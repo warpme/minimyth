@@ -27,7 +27,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) \
 	--with-moddir="$(LINUX_MODULESDIR)/kernel/sound" \
 	--with-isapnp=no \
 	--with-sequencer=yes \
-	--with-oss=yes \
+	--with-oss=no \
 	--with-cards="ali5451,atiixp,ca0106,cmipci,cs5535audio,emu10k1,ens1371,hda-intel,ice1724,intel8x0,intel8x0m,usb-audio,via82xx"
 
 CONFIGURE_ENV = $(LINUX_MAKE_ENV)

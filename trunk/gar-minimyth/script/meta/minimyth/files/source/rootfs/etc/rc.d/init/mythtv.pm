@@ -193,95 +193,21 @@ sub start
     # Delete disabled plugins.
     if ($minimyth->var_get('MM_PLUGIN_INFORMATION_CENTER_ENABLED') eq 'no')
     {
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-        {
-            when (/^20$/)
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/mainmenu.xml',
-                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
-            }
-            when (/^21$/)
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/mainmenu.xml',
-                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
-            }
-            default
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
-                    { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
-            }
-        }
+        $minimyth->file_replace_variable(
+            '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
+            { '<type>MENU_INFO_CENTER</type>' => '<type>MENU_INFO_CENTER</type><depends>disabled</depends>' });
     }
     if ($minimyth->var_get('MM_PLUGIN_OPTICAL_DISK_ENABLED') eq 'no')
     {
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-        {
-            when (/^20$/)
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/mainmenu.xml',
-                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
-            }
-            when (/^21$/)
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/mainmenu.xml',
-                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
-            }
-            default
-            {
-                $minimyth->file_replace_variable(
-                    '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
-                    { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
-            }
-        }
+        $minimyth->file_replace_variable(
+            '/usr/share/mythtv/themes/defaultmenu/mainmenu.xml',
+            { '<depends>mythmusic mythvideo mytharchive mythburn</depends>' => '<depends>disabled</depends>' });
     }
     my %plugin_remove = ();
-    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-    {
-        when (/^20$/)
-        {
-            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so',
-                  '/usr/share/mythtv/bookmark*',
-                  '/usr/share/mythtv/mythbookmarkmanager*',
-                  '/usr/share/mythtv/browser*',
-                  '/usr/share/mythtv/mythbrowser*' ];
-        }
-        when (/^21$/)
-        {
-            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so',
-                  '/usr/share/mythtv/bookmark*',
-                  '/usr/share/mythtv/mythbookmarkmanager*',
-                  '/usr/share/mythtv/browser*',
-                  '/usr/share/mythtv/mythbrowser*' ];
-        }
-        default
-        {
-            $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythbrowser.so',
-                  '/usr/share/mythtv/browser*',
-                  '/usr/share/mythtv/mythbrowser*' ];
-        }
-    }
-    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-    {
-        when (/^20$/)
-        {
-            $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythdvd.so',
-                  '/usr/share/mythtv/dvd*',
-                  '/usr/share/mythtv/mythdvd*' ];
-        }
-        default
-        {
-            $plugin_remove{'MM_PLUGIN_DVD_ENABLED'} = [];
-        }
-    }
+    $plugin_remove{'MM_PLUGIN_BROWSER_ENABLED'} =
+        [ '/usr/lib/mythtv/plugins/libmythbrowser.so',
+          '/usr/share/mythtv/browser*',
+          '/usr/share/mythtv/mythbrowser*' ];
     $plugin_remove{'MM_PLUGIN_GALLERY_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythgallery.so',
           '/usr/share/mythtv/gallery*',
@@ -298,27 +224,6 @@ sub start
         [ '/usr/lib/mythtv/plugins/libmythnews.so',
           '/usr/share/mythtv/news*',
           '/usr/share/mythtv/mythnews*' ];
-    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-    {
-        when (/^20$/)
-        {
-            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythphone.so',
-                  '/usr/share/mythtv/phone*',
-                  '/usr/share/mythtv/mythphone*' ];
-        }
-        when (/^21$/)
-        {
-            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} =
-                [ '/usr/lib/mythtv/plugins/libmythphone.so',
-                  '/usr/share/mythtv/phone*',
-                  '/usr/share/mythtv/mythphone*' ];
-        }
-        default
-        {
-            $plugin_remove{'MM_PLUGIN_PHONE_ENABLED'} = [];
-        }
-    }
     $plugin_remove{'MM_PLUGIN_STREAM_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythstream.so',
           '/usr/share/mythtv/stream*',
@@ -373,8 +278,7 @@ sub start
     }
 
     # Check for libdvdcss.so.2
-    if ( ($minimyth->var_get('MM_PLUGIN_DVD_ENABLED')   eq 'yes') ||
-         ($minimyth->var_get('MM_PLUGIN_VIDEO_ENABLED') eq 'yes') )
+    if ($minimyth->var_get('MM_PLUGIN_VIDEO_ENABLED') eq 'yes')
     {
         my $found = 0;
         if ((-e '/etc/ld.so.conf') && (open(FILE, '<', '/etc/ld.so.conf')))

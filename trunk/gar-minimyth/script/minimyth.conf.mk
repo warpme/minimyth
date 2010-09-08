@@ -7,9 +7,6 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter 0.20 ,        $(mm_MYTH_VERSION)),0.20.2                        ) \
-                                $(if $(filter 0.20-softpad ,$(mm_MYTH_VERSION)),0.20.2.softpad                ) \
-                                $(if $(filter 0.21 ,        $(mm_MYTH_VERSION)),0.21.0                        ) \
                                 $(if $(filter 0.22 ,        $(mm_MYTH_VERSION)),0.22.0                        ) \
                                 $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.1                        ) \
                                 $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
@@ -20,7 +17,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 50
+mm_CONF_VERSION           ?= 51
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -52,17 +49,14 @@ mm_GRAPHICS               ?= intel \
 # 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
 # warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
 # 'python', 'debug'.
-mm_SOFTWARE               ?= $(if $(filter-out $(mm_MYTH_VERSION),0.20 0.20-softpat 0.21),mythbrowser) \
-                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad),mythdvd) \
-                             mythgallery \
+mm_SOFTWARE               ?= mythgallery \
                              mythgame \
                              mythmusic \
                              mythnews \
-                             $(if $(filter $(mm_MYTH_VERSION),0.20 0.20-softpad 0.21),mythphone) \
                              mythstream \
                              mythvideo \
                              mythweather \
-                             $(if $(filter $(mm_MYTH_VERSION),0.21 0.22 0.23 trunk),mythzoneminder) \
+                             mythzoneminder \
                              flash \
                              hulu \
                              mplayer-svn \
@@ -72,7 +66,7 @@ mm_SOFTWARE               ?= $(if $(filter-out $(mm_MYTH_VERSION),0.20 0.20-soft
                              bdremote \
                              wiimote \
                              backend \
-                             $(if $(filter-out $(mm_MYTH_VERSION),0.20 0.20-softpad),python) \
+                             python \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
@@ -125,7 +119,7 @@ mm_KERNEL_VERSION         ?= 2.6.35
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.20', '0.20-softpad', '0.21', '0.22', '0.23' and 'trunk'.
+# Valid values are '0.22', '0.23' and 'trunk'.
 mm_MYTH_VERSION           ?= 0.23
 # The version of the NVIDIA driver.
 # Valid values are '96.43.18' (legacy), '173.14.27' (legacy), '256.53'.

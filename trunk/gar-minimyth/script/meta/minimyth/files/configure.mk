@@ -81,7 +81,6 @@ bindirs_base := \
 	$(sbindir) \
 	$(bindir) \
 	$(libexecdir) \
-	$(qt3bindir) \
 	$(qt4bindir) \
 	$(kdebindir)
 bindirs := \
@@ -93,7 +92,6 @@ libdirs_base := \
 	$(libdir) \
 	$(libdir)/gnash \
 	$(libdir)/mysql \
-	$(qt3libdir) \
 	$(qt4libdir) \
 	$(kdelibdir)
 libdirs := \
@@ -167,7 +165,6 @@ MM_CONFIG_VARS := $(sort \
 	OBJDUMP \
 	PERL_libdir \
 	PYTHON_libdir \
-	qt3prefix \
 	qt4prefix \
 	rootdir \
 	sharedirs \
