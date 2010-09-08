@@ -1,9 +1,9 @@
 GARNAME = dbus
-GARVERSION = 1.2.24
+GARVERSION = 1.4.0
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-remove_pie.patch
+#PATCHFILES = $(DISTNAME)-remove_pie.patch
 LICENSE = GPL2
 
 DESCRIPTION =
