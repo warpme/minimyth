@@ -1,5 +1,5 @@
 GARNAME = myththemes-blue-abstract-wide
-GARVERSION = 2010.07.15
+GARVERSION = 2010.09.06
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = ftp://miroku.no-ip.com/
 DISTFILES = blue-abstract-wide.$(GARVERSION).tar.bz2
@@ -24,6 +24,6 @@ GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
 include ../../gar.mk
 
 install-custom:
-	@rm -f $(DESTIDR)$(datadir)/mythtv/themes/blue-abstract-wide
+	@rm -rf $(DESTIDR)$(datadir)/mythtv/themes/blue-abstract-wide
 	@cp -r $(WORKSRC) $(DESTDIR)$(datadir)/mythtv/themes/blue-abstract-wide
 	@$(MAKECOOKIE)
