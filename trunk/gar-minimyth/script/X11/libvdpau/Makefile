@@ -1,5 +1,5 @@
 GARNAME = libvdpau
-GARVERSION = 0.4
+GARVERSION = 0.4.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
 DISTFILES = $(DISTNAME).tar.gz
@@ -16,6 +16,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--enable-dri2 \
+	--disable-documentation \
 	--with-gnu-ld
 
 include ../../gar.mk
