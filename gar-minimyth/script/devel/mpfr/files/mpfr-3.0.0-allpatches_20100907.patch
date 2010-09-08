@@ -1,6 +1,6 @@
 diff -Naur mpfr-3.0.0-old/acinclude.m4 mpfr-3.0.0-new/acinclude.m4
 --- mpfr-3.0.0-old/acinclude.m4	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/acinclude.m4	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/acinclude.m4	2010-09-07 19:01:52.000000000 -0700
 @@ -59,6 +59,9 @@
  dnl sys/fpu.h - MIPS specific
  AC_CHECK_HEADERS([sys/time.h sys/fpu.h])
@@ -13,7 +13,7 @@ diff -Naur mpfr-3.0.0-old/acinclude.m4 mpfr-3.0.0-new/acinclude.m4
  
 diff -Naur mpfr-3.0.0-old/configure mpfr-3.0.0-new/configure
 --- mpfr-3.0.0-old/configure	2010-06-10 04:00:51.000000000 -0700
-+++ mpfr-3.0.0-new/configure	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/configure	2010-09-07 19:01:52.000000000 -0700
 @@ -783,6 +783,7 @@
  OBJDUMP
  DLLTOOL
@@ -322,7 +322,7 @@ diff -Naur mpfr-3.0.0-old/configure mpfr-3.0.0-new/configure
  #if HAVE_DLFCN_H
 diff -Naur mpfr-3.0.0-old/gamma.c mpfr-3.0.0-new/gamma.c
 --- mpfr-3.0.0-old/gamma.c	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/gamma.c	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/gamma.c	2010-09-07 19:01:52.000000000 -0700
 @@ -274,7 +274,7 @@
        /* we want an upper bound for x * [log(2-x)-1].
           since x < 0, we need a lower bound on log(2-x) */
@@ -345,7 +345,7 @@ diff -Naur mpfr-3.0.0-old/gamma.c mpfr-3.0.0-new/gamma.c
  
 diff -Naur mpfr-3.0.0-old/Makefile.in mpfr-3.0.0-new/Makefile.in
 --- mpfr-3.0.0-old/Makefile.in	2010-06-10 04:00:52.000000000 -0700
-+++ mpfr-3.0.0-new/Makefile.in	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/Makefile.in	2010-09-07 19:01:52.000000000 -0700
 @@ -239,6 +239,7 @@
  distuninstallcheck_listfiles = find . -type f -print
  distcleancheck_listfiles = find . -type f -print
@@ -356,19 +356,86 @@ diff -Naur mpfr-3.0.0-old/Makefile.in mpfr-3.0.0-new/Makefile.in
  AS = @AS@
 diff -Naur mpfr-3.0.0-old/mpfr.h mpfr-3.0.0-new/mpfr.h
 --- mpfr-3.0.0-old/mpfr.h	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/mpfr.h	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/mpfr.h	2010-09-07 19:01:52.000000000 -0700
 @@ -27,7 +27,7 @@
  #define MPFR_VERSION_MAJOR 3
  #define MPFR_VERSION_MINOR 0
  #define MPFR_VERSION_PATCHLEVEL 0
 -#define MPFR_VERSION_STRING "3.0.0"
-+#define MPFR_VERSION_STRING "3.0.0-p3"
++#define MPFR_VERSION_STRING "3.0.0-p4"
  
  /* Macros dealing with MPFR VERSION */
  #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+@@ -798,35 +798,45 @@
+      anyway. Checking with other ICC versions is needed. Possibly detect
+      whether warnings are produced or not with a configure test.
+    + Remove C++ too, since it complains too much. */
++/* Added casts to improve robustness in case of undefined behavior and
++   compiler extensions based on UB (in particular -fwrapv). MPFR doesn't
++   use such extensions, but these macros will be used by 3rd-party code,
++   where such extensions may be required.
++   Moreover casts to unsigned long have been added to avoid warnings in
++   programs that use MPFR and are compiled with -Wconversion; such casts
++   are OK since if X is a constant expression, then (unsigned long) X is
++   also a constant expression, so that the optimizations still work. */
+ #if defined (__GNUC__) && !defined(__ICC) && !defined(__cplusplus)
+ #if (__GNUC__ >= 2)
+ #undef mpfr_cmp_ui
+-/* We use the fact that mpfr_sgn on NaN sets the erange flag and returns 0. */
+-#define mpfr_cmp_ui(_f,_u)                 \
+- (__builtin_constant_p (_u) && (_u) == 0 ? \
+-   mpfr_sgn (_f) :                         \
+-   mpfr_cmp_ui_2exp ((_f),(_u),0))
++/* We use the fact that mpfr_sgn on NaN sets the erange flag and returns 0.
++   But warning! mpfr_sgn is specified as a macro in the API, thus the macro
++   mustn't be used if side effects are possible, like here. */
++#define mpfr_cmp_ui(_f,_u)                                      \
++  (__builtin_constant_p (_u) && (unsigned long) (_u) == 0 ?     \
++   (mpfr_sgn) (_f) :                                            \
++   mpfr_cmp_ui_2exp ((_f), (unsigned long) (_u), 0))
+ #undef mpfr_cmp_si
+-#define mpfr_cmp_si(_f,_s)                 \
+- (__builtin_constant_p (_s) && (_s) >= 0 ? \
+-   mpfr_cmp_ui ((_f), (_s)) :              \
+-   mpfr_cmp_si_2exp ((_f), (_s), 0))
++#define mpfr_cmp_si(_f,_s)                              \
++  (__builtin_constant_p (_s) && (long) (_s) >= 0 ?      \
++   mpfr_cmp_ui ((_f), (unsigned long) (long) (_s)) :    \
++   mpfr_cmp_si_2exp ((_f), (long) (_s), 0))
+ #if __GNUC__ > 2 || __GNUC_MINOR__ >= 95
+ #undef mpfr_set_ui
+-#define mpfr_set_ui(_f,_u,_r)              \
+- (__builtin_constant_p (_u) && (_u) == 0 ? \
+-   __extension__ ({                        \
+-     mpfr_ptr _p = (_f);                   \
+-     _p->_mpfr_sign = 1;                   \
+-     _p->_mpfr_exp = __MPFR_EXP_ZERO;      \
+-     (void) (_r); 0; }) :                  \
+-   mpfr_set_ui_2exp ((_f), (_u), 0, (_r)))
++#define mpfr_set_ui(_f,_u,_r)                                   \
++  (__builtin_constant_p (_u) && (unsigned long) (_u) == 0 ?     \
++   __extension__ ({                                             \
++       mpfr_ptr _p = (_f);                                      \
++       _p->_mpfr_sign = 1;                                      \
++       _p->_mpfr_exp = __MPFR_EXP_ZERO;                         \
++       (void) (_r); 0; }) :                                     \
++   mpfr_set_ui_2exp ((_f), (unsigned long) (_u), 0, (_r)))
+ #endif
+ #undef mpfr_set_si
+-#define mpfr_set_si(_f,_s,_r)              \
+- (__builtin_constant_p (_s) && (_s) >= 0 ? \
+-   mpfr_set_ui ((_f), (_s), (_r)) :        \
+-   mpfr_set_si_2exp ((_f), (_s), 0, (_r)))
++#define mpfr_set_si(_f,_s,_r)                                   \
++  (__builtin_constant_p (_s) && (long) (_s) >= 0 ?              \
++   mpfr_set_ui ((_f), (unsigned long) (long) (_s), (_r)) :      \
++   mpfr_set_si_2exp ((_f), (long) (_s), 0, (_r)))
+ #endif
+ #endif
+ 
 diff -Naur mpfr-3.0.0-old/mpfr.texi mpfr-3.0.0-new/mpfr.texi
 --- mpfr-3.0.0-old/mpfr.texi	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/mpfr.texi	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/mpfr.texi	2010-09-07 19:01:52.000000000 -0700
 @@ -2050,7 +2050,7 @@
  are printed. If @var{base} is greater than 10, @samp{@@} will be used
  instead of @samp{e} as exponent delimiter.
@@ -380,7 +447,7 @@ diff -Naur mpfr-3.0.0-old/mpfr.texi mpfr-3.0.0-new/mpfr.texi
  @deftypefun size_t mpfr_inp_str (mpfr_t @var{rop}, FILE *@var{stream}, int @var{base}, mpfr_rnd_t @var{rnd})
 diff -Naur mpfr-3.0.0-old/out_str.c mpfr-3.0.0-new/out_str.c
 --- mpfr-3.0.0-old/out_str.c	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/out_str.c	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/out_str.c	2010-09-07 19:01:52.000000000 -0700
 @@ -22,6 +22,16 @@
  
  #include "mpfr-impl.h"
@@ -492,14 +559,15 @@ diff -Naur mpfr-3.0.0-old/out_str.c mpfr-3.0.0-new/out_str.c
    return l;
 diff -Naur mpfr-3.0.0-old/PATCHES mpfr-3.0.0-new/PATCHES
 --- mpfr-3.0.0-old/PATCHES	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/PATCHES	2010-07-11 08:07:36.000000000 -0700
-@@ -0,0 +1,3 @@
++++ mpfr-3.0.0-new/PATCHES	2010-09-07 19:01:52.000000000 -0700
+@@ -0,0 +1,4 @@
++mpfr_cmp/set_ui/si
 +gamma_underflow
 +alloca
 +mpfr_out_str
 diff -Naur mpfr-3.0.0-old/tests/Makefile.in mpfr-3.0.0-new/tests/Makefile.in
 --- mpfr-3.0.0-old/tests/Makefile.in	2010-06-10 04:00:52.000000000 -0700
-+++ mpfr-3.0.0-new/tests/Makefile.in	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/tests/Makefile.in	2010-09-07 19:01:52.000000000 -0700
 @@ -960,6 +960,7 @@
  red=; grn=; lgn=; blu=; std=
  DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -508,9 +576,148 @@ diff -Naur mpfr-3.0.0-old/tests/Makefile.in mpfr-3.0.0-new/tests/Makefile.in
  AMTAR = @AMTAR@
  AR = @AR@
  AS = @AS@
+diff -Naur mpfr-3.0.0-old/tests/tcmp_ui.c mpfr-3.0.0-new/tests/tcmp_ui.c
+--- mpfr-3.0.0-old/tests/tcmp_ui.c	2010-06-10 04:00:13.000000000 -0700
++++ mpfr-3.0.0-new/tests/tcmp_ui.c	2010-09-07 19:01:52.000000000 -0700
+@@ -88,6 +88,126 @@
+   mpfr_clear (x);
+ }
+ 
++/* Since mpfr_cmp_ui and mpfr_cmp_si are also implemented by a macro
++   with __builtin_constant_p for GCC, check that side effects are
++   handled correctly. */
++static void
++check_macros (void)
++{
++  mpfr_t x;
++  int c;
++
++  mpfr_init2 (x, 32);
++
++  c = 0;
++  mpfr_set_ui (x, 17, MPFR_RNDN);
++  if (mpfr_cmp_ui (x, 17) != 0)
++    {
++      printf ("Error 1 on mpfr_cmp_ui(x,17) in check_macros\n");
++      exit (1);
++    }
++  if (mpfr_cmp_ui (x, (c++, 17)) != 0)
++    {
++      printf ("Error 2 on mpfr_cmp_ui(x,17) in check_macros\n");
++      exit (1);
++    }
++  if (c != 1)
++    {
++      printf ("Error 3 on mpfr_cmp_ui(x,17) in check_macros\n"
++              "(c = %d instead of 1)\n", c);
++      exit (1);
++    }
++  if (mpfr_cmp_si (x, 17) != 0)
++    {
++      printf ("Error 1 on mpfr_cmp_si(x,17) in check_macros\n");
++      exit (1);
++    }
++  if (mpfr_cmp_si (x, (c++, 17)) != 0)
++    {
++      printf ("Error 2 on mpfr_cmp_si(x,17) in check_macros\n");
++      exit (1);
++    }
++  if (c != 2)
++    {
++      printf ("Error 3 on mpfr_cmp_si(x,17) in check_macros\n"
++              "(c = %d instead of 2)\n", c);
++      exit (1);
++    }
++
++  c = 0;
++  mpfr_set_ui (x, 0, MPFR_RNDN);
++  if (mpfr_cmp_ui (x, 0) != 0)
++    {
++      printf ("Error 1 on mpfr_cmp_ui(x,0) in check_macros\n");
++      exit (1);
++    }
++  if (mpfr_cmp_ui (x, (c++, 0)) != 0)
++    {
++      printf ("Error 2 on mpfr_cmp_ui(x,0) in check_macros\n");
++      exit (1);
++    }
++  if (c != 1)
++    {
++      printf ("Error 3 on mpfr_cmp_ui(x,0) in check_macros\n"
++              "(c = %d instead of 1)\n", c);
++      exit (1);
++    }
++  if (mpfr_cmp_si (x, 0) != 0)
++    {
++      printf ("Error 1 on mpfr_cmp_si(x,0) in check_macros\n");
++      exit (1);
++    }
++  if (mpfr_cmp_si (x, (c++, 0)) != 0)
++    {
++      printf ("Error 2 on mpfr_cmp_si(x,0) in check_macros\n");
++      exit (1);
++    }
++  if (c != 2)
++    {
++      printf ("Error 3 on mpfr_cmp_si(x,0) in check_macros\n"
++              "(c = %d instead of 2)\n", c);
++      exit (1);
++    }
++
++  mpfr_clear (x);
++}
++
++/* Bug in r7114 */
++static void
++test_macros (void)
++{
++  mpfr_t x[3];
++  mpfr_ptr p;
++
++  mpfr_inits (x[0], x[1], x[2], (mpfr_ptr) 0);
++  mpfr_set_ui (x[0], 0, MPFR_RNDN);
++  p = x[0];
++  if (mpfr_cmp_ui (p++, 0) != 0)
++    {
++      printf ("Error in mpfr_cmp_ui macro: result should be 0.\n");
++      exit (1);
++    }
++  if (p != x[1])
++    {
++      printf ("Error in mpfr_cmp_ui macro: p - x[0] = %d (expecting 1)\n",
++              (int) (p - x[0]));
++      exit (1);
++    }
++  p = x[0];
++  if (mpfr_cmp_si (p++, 0) != 0)
++    {
++      printf ("Error in mpfr_cmp_si macro: result should be 0.\n");
++      exit (1);
++    }
++  if (p != x[1])
++    {
++      printf ("Error in mpfr_cmp_si macro: p - x[0] = %d (expecting 1)\n",
++              (int) (p - x[0]));
++      exit (1);
++    }
++  mpfr_clears (x[0], x[1], x[2], (mpfr_ptr) 0);
++}
++
+ int
+ main (void)
+ {
+@@ -216,6 +336,8 @@
+   mpfr_clear (x);
+ 
+   check_nan ();
++  check_macros ();
++  test_macros ();
+ 
+   tests_end_mpfr ();
+   return 0;
 diff -Naur mpfr-3.0.0-old/tests/tgamma.c mpfr-3.0.0-new/tests/tgamma.c
 --- mpfr-3.0.0-old/tests/tgamma.c	2010-06-10 04:00:13.000000000 -0700
-+++ mpfr-3.0.0-new/tests/tgamma.c	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/tests/tgamma.c	2010-09-07 19:01:52.000000000 -0700
 @@ -461,6 +461,20 @@
    mpfr_clear (x);
  }
@@ -542,7 +749,7 @@ diff -Naur mpfr-3.0.0-old/tests/tgamma.c mpfr-3.0.0-new/tests/tgamma.c
  
 diff -Naur mpfr-3.0.0-old/tests/tout_str.c mpfr-3.0.0-new/tests/tout_str.c
 --- mpfr-3.0.0-old/tests/tout_str.c	2010-06-10 04:00:13.000000000 -0700
-+++ mpfr-3.0.0-new/tests/tout_str.c	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/tests/tout_str.c	2010-09-07 19:01:52.000000000 -0700
 @@ -46,22 +46,54 @@
  special (void)
  {
@@ -605,17 +812,17 @@ diff -Naur mpfr-3.0.0-old/tests/tout_str.c mpfr-3.0.0-new/tests/tout_str.c
  }
 diff -Naur mpfr-3.0.0-old/VERSION mpfr-3.0.0-new/VERSION
 --- mpfr-3.0.0-old/VERSION	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/VERSION	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/VERSION	2010-09-07 19:01:52.000000000 -0700
 @@ -1 +1 @@
 -3.0.0
-+3.0.0-p3
++3.0.0-p4
 diff -Naur mpfr-3.0.0-old/version.c mpfr-3.0.0-new/version.c
 --- mpfr-3.0.0-old/version.c	2010-06-10 04:00:14.000000000 -0700
-+++ mpfr-3.0.0-new/version.c	2010-07-11 08:07:36.000000000 -0700
++++ mpfr-3.0.0-new/version.c	2010-09-07 19:01:52.000000000 -0700
 @@ -25,5 +25,5 @@
  const char *
  mpfr_get_version (void)
  {
 -  return "3.0.0";
-+  return "3.0.0-p3";
++  return "3.0.0-p4";
  }
