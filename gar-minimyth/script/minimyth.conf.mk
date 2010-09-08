@@ -44,12 +44,12 @@ mm_GRAPHICS               ?= intel \
                              vmware
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
-# 'mythgame', 'mythmusic', 'mythnews', 'mythphone', 'mythstream', 'mythvideo',
-# 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
-# 'mplayer-vld', 'vlc' (experimental and may be removed in the future without
-# warning), 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend',
-# 'python', 'debug'.
-mm_SOFTWARE               ?= mythgallery \
+# 'mythgame', 'mythmusic', 'mythnews', 'mythstream', 'mythvideo', 'mythweather',
+# 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn', 'mplayer-vld', 'vlc'
+# 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend','python',
+# 'debug'.
+mm_SOFTWARE               ?= mythbrowser \
+                             mythgallery \
                              mythgame \
                              mythmusic \
                              mythnews \
