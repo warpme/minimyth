@@ -26,65 +26,18 @@ $var_list{'MM_PLUGIN_OPTICAL_DISK_ENABLED'} =
 };
 $var_list{'MM_PLUGIN_BROWSER_ENABLED'} =
 {
-    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        if (-e '/usr/lib/mythtv/plugins/libmythbrowser.so')
         {
-            when (/^20|21$/)
-            {
-                if (-e '/usr/lib/mythtv/plugins/libmythbookmarkmanager.so')
-                {
-                    return 'yes';
-                }
-                else
-                {
-                    return 'no';
-                }
-            }
-            default
-            {
-                if (-e '/usr/lib/mythtv/plugins/libmythbrowser.so')
-                {
-                    return 'yes';
-                }
-                else
-                {
-                    return 'no';
-                }
-            }
+            return 'yes';
         }
-    },
-    value_valid    => 'no|yes'
-};
-$var_list{'MM_PLUGIN_DVD_ENABLED'} =
-{
-    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
-    value_default  => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        else
         {
-            when (/^20$/)
-            {
-                if (-e '/usr/lib/mythtv/plugins/libmythdvd.so')
-                {
-                    return 'yes';
-                }
-                else
-                {
-                    return 'no';
-                }
-            }
-            default
-            {
-                return 'no';
-            }
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
@@ -161,35 +114,6 @@ $var_list{'MM_PLUGIN_NEWS_ENABLED'} =
     },
     value_valid    => 'no|yes'
 };
-$var_list{'MM_PLUGIN_PHONE_ENABLED'} =
-{
-    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
-    value_default  => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-        {
-            when (/^20|21$/)
-            {
-                if (-e '/usr/lib/mythtv/plugins/libmythphone.so')
-                {
-                    return 'yes';
-                }
-                else
-                {
-                    return 'no';
-                }
-            }
-            default
-            {
-                return 'no';
-            }
-        }
-    },
-    value_valid    => 'no|yes'
-};
 $var_list{'MM_PLUGIN_STREAM_ENABLED'} =
 {
     value_default  => sub
@@ -246,36 +170,24 @@ $var_list{'MM_PLUGIN_WEATHER_ENABLED'} =
 };
 $var_list{'MM_PLUGIN_ZONEMINDER_ENABLED'} =
 {
-    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        if (-e '/usr/lib/mythtv/plugins/libmythzoneminder.so')
         {
-            when (/^20$/)
-            {
-                return 'no';
-            }
-            default
-            {
-                if (-e '/usr/lib/mythtv/plugins/libmythzoneminder.so')
-                {
-                    return 'yes';
-                }
-                else
-                {
-                    return 'no';
-                }
-            }
+            return 'yes';
+        }
+        else
+        {
+            return 'no';
         }
     },
     value_valid    => 'no|yes'
 };
 $var_list{'MM_PLUGIN_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => ['MM_PLUGIN_PHONE_ENABLED'],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -293,12 +205,6 @@ $var_list{'MM_PLUGIN_KERNEL_MODULE_LIST'} =
         my $name     = shift;
 
         my @kernel_modules;
-
-        # MythPhone uses OSS not ALSA.
-        if ($minimyth->var_get('MM_PLUGIN_PHONE_ENABLED') eq 'yes')
-        {
-            push(@kernel_modules, 'snd-pcm-oss');
-        }
 
         return join(' ', @kernel_modules);
     }

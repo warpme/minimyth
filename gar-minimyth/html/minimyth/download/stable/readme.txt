@@ -10,18 +10,6 @@ latest-nvidia.173.x.x  : supports pentium-mmx or better.
 latest-x86_64          : supports generic x86_64 or better.
                          includes latest MythTV 0.23 version,
                          includes latest stable NVIDIA driver version.
-latest-0.20            : supports pentium-mmx or better.
-                         includes latest MythTV 0.20 version.
-                         includes latest stable NVIDIA driver version.
-latest-0.20-x86_64     : supports pentium-mmx or better.
-                         includes latest MythTV 0.20 version.
-                         includes latest stable NVIDIA driver version.
-latest-0.21            : supports pentium-mmx or better.
-                         includes latest MythTV 0.21 version.
-                         includes latest stable NVIDIA driver version.
-latest-0.21-x86_64     : supports generic x86_64 or better.
-                         includes latest MythTV 0.21 version.
-                         includes latest stable NVIDIA driver version.
 latest-0.22            : supports pentium-mmx or better.
                          includes latest MythTV 0.22 version.
                          includes latest stable NVIDIA driver version.

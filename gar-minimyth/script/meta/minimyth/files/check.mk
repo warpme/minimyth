@@ -94,10 +94,6 @@ mm-all:
 		echo "error: mm_HOME must be set to \"`cd $(GARDIR)/.. ; pwd`\" but has been set to \"$(mm_HOME)\"."; \
 		exit 1 ; \
 	fi
-	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qt3prefix))))" ] ; then \
-		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qt3prefix))))\"."; \
-		exit 1 ; \
-	fi
 	@if [ "$(firstword $(strip $(subst /, ,$(mm_HOME))))" = "$(firstword $(strip $(subst /, ,$(qt4prefix))))" ] ; then \
 		echo "error: MiniMyth cannot be built in a subdirectory of \"/$(firstword $(strip $(subst /, ,$(qt4prefix))))\"."; \
 		exit 1 ; \
@@ -159,25 +155,6 @@ mm-all:
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
 		fi ; \
-		if [ "$(mm_MYTH_VERSION)" = "0.20"         ] || \
-		   [ "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
-			if [ "$${software}" = "mythzoneminder" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-		fi ; \
-		if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] ; then \
-			if [ "$${software}" = "mythdvd" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-		fi ; \
-		if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
-		   [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] ; then \
-			if [ "$${software}" = "mythdvd" ] ; then \
-				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
-			fi ; \
-		fi ; \
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.35" ] ; then \
@@ -196,10 +173,7 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_MYTH_VERSION"
-	@if [ ! "$(mm_MYTH_VERSION)" = "0.20"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.20-softpad" ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.21"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.22"         ] && \
+	@if [ ! "$(mm_MYTH_VERSION)" = "0.22"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "0.23"         ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "trunk"        ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
