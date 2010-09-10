@@ -106,7 +106,7 @@ DEPENDS = \
 		emulators/jzintv \
 		emulators/mednafen \
 		emulators/stella \
-		$(if $(filter mame,$(mm_SOFTWARE)),emulators/sdlmame) \
+		$(if $(filter mame,$(mm_SOFTWARE)),emulators/mame) \
 		emulators/VisualBoyAdvance \
 		$(if $(filter i386,$(mm_GARCH_FAMILY)),emulators/zsnes)) \
 	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
