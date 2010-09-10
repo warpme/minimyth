@@ -1,0 +1,72 @@
+diff -Naur mame-0.139-old/makefile mame-0.139-new/makefile
+--- mame-0.139-old/makefile	2010-07-02 17:12:46.000000000 -0700
++++ mame-0.139-new/makefile	2010-09-09 19:08:16.000000000 -0700
+@@ -203,10 +203,10 @@
+ # BIGENDIAN = 1
+ 
+ # uncomment next line to build expat as part of MAME build
+-BUILD_EXPAT = 1
++# BUILD_EXPAT = 1
+ 
+ # uncomment next line to build zlib as part of MAME build
+-BUILD_ZLIB = 1
++# BUILD_ZLIB = 1
+ 
+ # uncomment next line to include the symbols
+ # SYMBOLS = 1
+@@ -294,12 +294,12 @@
+ endif
+ 
+ # compiler, linker and utilities
+-AR = @ar
+-CC = @gcc
+-LD = @g++
+-MD = -mkdir$(EXE)
+-RM = @rm -f
+-OBJDUMP = @objdump
++AR ?= ar
++CC ?= gcc
++LD ?= g++
++MD = mkdir$(EXE) -p
++RM = rm -f
++OBJDUMP ?= objdump
+ 
+ 
+ 
+@@ -420,7 +420,7 @@
+ 
+ # CFLAGS is defined based on C or C++ targets
+ # (remember, expansion only happens when used, so doing it here is ok)
+-CFLAGS = $(CCOMFLAGS) $(CPPONLYFLAGS)
++CFLAGS = $(CCOMFLAGS) $(CPPONLYFLAGS) @GAR_CXXFLAGS@
+ 
+ # we compile C-only to C89 standard with GNU extensions
+ # we compile C++ code to C++98 standard with GNU extensions
+@@ -520,11 +520,11 @@
+ 
+ # LDFLAGS are used generally; LDFLAGSEMULATOR are additional
+ # flags only used when linking the core emulator
+-LDFLAGS =
++LDFLAGS = @GAR_CXXFLAGS@ @GAR_LDFLAGS@
+ ifneq ($(TARGETOS),macosx)
+ ifneq ($(TARGETOS),os2)
+ ifneq ($(TARGETOS),solaris)
+-LDFLAGS = -Wl,--warn-common
++LDFLAGS = -Wl,--warn-common @GAR_CXXFLAGS@ @GAR_LDFLAGS@
+ endif
+ endif
+ endif
+diff -Naur mame-0.139-old/src/osd/sdl/sdl.mak mame-0.139-new/src/osd/sdl/sdl.mak
+--- mame-0.139-old/src/osd/sdl/sdl.mak	2010-02-14 04:47:30.000000000 -0800
++++ mame-0.139-new/src/osd/sdl/sdl.mak	2010-09-09 21:51:59.000000000 -0700
+@@ -458,10 +458,6 @@
+ LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
+ #CCOMFLAGS += -DGTK_DISABLE_DEPRECATED
+ 
+-# some systems still put important things in a different prefix
+-LIBS += -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/openwin/lib
+-# make sure we can find X headers
+-CCOMFLAGS += -I/usr/X11/include -I/usr/X11R6/include -I/usr/openwin/include
+ endif # NO_X11
+ 
+ #-------------------------------------------------

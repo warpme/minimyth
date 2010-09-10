@@ -1,0 +1,49 @@
+diff -Naur mame-0.139-old/src/osd/sdl/sdl.mak mame-0.139-new/src/osd/sdl/sdl.mak
+--- mame-0.139-old/src/osd/sdl/sdl.mak	2010-09-09 21:51:59.000000000 -0700
++++ mame-0.139-new/src/osd/sdl/sdl.mak	2010-09-09 21:55:25.000000000 -0700
+@@ -202,19 +202,19 @@
+ LDFLAGS += -Wl,--allow-multiple-definition
+ 
+ # do we have GTK ?
+-ifndef GTK_INSTALL_ROOT
++#ifndef GTK_INSTALL_ROOT
+ NO_DEBUGGER = 1
+-else
+-DEBUGOBJS = $(SDLOBJ)/debugwin.o $(SDLOBJ)/dview.o $(SDLOBJ)/debug-sup.o $(SDLOBJ)/debug-intf.o
+-LIBS += -lgtk-win32-2.0 -lgdk-win32-2.0 -lgmodule-2.0 -lglib-2.0 -lgobject-2.0 \
+-	-lpango-1.0 -latk-1.0 -lgdk_pixbuf-2.0
+-CCOMFLAGS += -mms-bitfields \
+-	-I$(GTK_INSTALL_ROOT)/include/gtk-2.0 -I$(GTK_INSTALL_ROOT)/include/glib-2.0 \
+-	-I$(GTK_INSTALL_ROOT)/include/cairo -I$(GTK_INSTALL_ROOT)/include/pango-1.0 \
+-	-I$(GTK_INSTALL_ROOT)/include/atk-1.0 \
+-	-I$(GTK_INSTALL_ROOT)/lib/glib-2.0/include -I$(GTK_INSTALL_ROOT)/lib/gtk-2.0/include
+-LDFLAGS += -L$(GTK_INSTALL_ROOT)/lib
+-endif # GTK_INSTALL_ROOT
++#else
++#DEBUGOBJS = $(SDLOBJ)/debugwin.o $(SDLOBJ)/dview.o $(SDLOBJ)/debug-sup.o $(SDLOBJ)/debug-intf.o
++#LIBS += -lgtk-win32-2.0 -lgdk-win32-2.0 -lgmodule-2.0 -lglib-2.0 -lgobject-2.0 \
++#	-lpango-1.0 -latk-1.0 -lgdk_pixbuf-2.0
++#CCOMFLAGS += -mms-bitfields \
++#	-I$(GTK_INSTALL_ROOT)/include/gtk-2.0 -I$(GTK_INSTALL_ROOT)/include/glib-2.0 \
++#	-I$(GTK_INSTALL_ROOT)/include/cairo -I$(GTK_INSTALL_ROOT)/include/pango-1.0 \
++#	-I$(GTK_INSTALL_ROOT)/include/atk-1.0 \
++#	-I$(GTK_INSTALL_ROOT)/lib/glib-2.0/include -I$(GTK_INSTALL_ROOT)/lib/gtk-2.0/include
++#LDFLAGS += -L$(GTK_INSTALL_ROOT)/lib
++#endif # GTK_INSTALL_ROOT
+ 
+ # enable UNICODE
+ DEFS += -Dmain=utf8_main -DUNICODE -D_UNICODE
+@@ -451,13 +451,6 @@
+ # Default libs
+ DEFS += -DSDLMAME_X11
+ LIBS += -lX11 -lXinerama
+-
+-# the new debugger relies on GTK+ in addition to the base SDLMAME needs
+-# Non-X11 builds can not use the debugger
+-CCOMFLAGS += `pkg-config --cflags gtk+-2.0` `pkg-config --cflags gconf-2.0`
+-LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
+-#CCOMFLAGS += -DGTK_DISABLE_DEPRECATED
+-
+ endif # NO_X11
+ 
+ #-------------------------------------------------
