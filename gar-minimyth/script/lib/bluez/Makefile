@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS  = lang/c gtk/glib lib/alsa-lib lib/dbus lib/expat
+DEPENDS  = lang/c gtk/glib lib/alsa-lib lib/dbus
 ifneq ($(DESTIMG),build)
 DEPENDS += lib/libusb-compat
 endif
