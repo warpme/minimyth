@@ -1,5 +1,5 @@
 GARNAME = mednafen
-GARVERSION = 0.8.D.2
+GARVERSION = 0.8.D.3
 CATEGORIES = emulators
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
