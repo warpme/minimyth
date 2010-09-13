@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/expat lib/freetype
+DEPENDS   = lang/c lib/libxml2 lib/freetype
 BUILDDEPS = lib/freetype
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -21,11 +21,10 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--enable-libxml2 \
 	--disable-docs \
 	--with-gnu-ld \
 	--with-arch=$(GARCH) \
-	--with-expat-includes=$(DESTDIR)$(includedir) \
-	--with-expat-lib=$(DESTDIR)$(libdir) \
 	--with-add-fonts=no
 
 DEFAULT_ENV   = \
