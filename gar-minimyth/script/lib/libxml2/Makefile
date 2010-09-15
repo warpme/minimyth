@@ -25,7 +25,6 @@ include ../../gar.mk
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
-	@cd $(WORKSRC) ; autoreconf --verbose --install --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
