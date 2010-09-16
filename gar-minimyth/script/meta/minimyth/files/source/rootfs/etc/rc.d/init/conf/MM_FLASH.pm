@@ -15,7 +15,7 @@ sub var_list
 
 $var_list{'MM_FLASH_URL'} =
 {
-    prerequisite   => ['MM_HULU_URL', 'MM_PLUGIN_BROWSER_ENABLED'],
+    prerequisite   => ['MM_HULU_URL', 'MM_PLUGIN_BROWSER_ENABLED', 'MM_PLUGIN_NETVISION_ENABLED'],
     value_default  => 'auto',
     value_valid    => 'auto|none|((cifs|confro|confrw|dist|file|http|hunt|nfs|tftp):(//(([^:@]*)?(:([^@]*))?\@)?([^/]+))?[^?#]*(\?([^#]*))?(\#(.*))?)',
     value_auto     => sub
@@ -25,8 +25,9 @@ $var_list{'MM_FLASH_URL'} =
 
         my $value_auto = 'none';
 
-        if (($minimyth->var_get('MM_HULU_URL') ne '')                  ||
-            ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes'))
+        if (($minimyth->var_get('MM_HULU_URL') ne '')                    ||
+            ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes')   ||
+            ($minimyth->var_get('MM_PLUGIN_NETVISION_ENABLED') eq 'yes'))
         {
             if (-e '/lib/ld-linux.so.2')
             {

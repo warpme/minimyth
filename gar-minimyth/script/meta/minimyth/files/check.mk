@@ -133,6 +133,7 @@ mm-all:
 		   [ ! "$${software}" = "mythgallery"    ] && \
 		   [ ! "$${software}" = "mythgame"       ] && \
 		   [ ! "$${software}" = "mythmusic"      ] && \
+		   [ ! "$${software}" = "mythnetvision"  ] && \
 		   [ ! "$${software}" = "mythnews"       ] && \
 		   [ ! "$${software}" = "mythphone"      ] && \
 		   [ ! "$${software}" = "mythstream"     ] && \
@@ -154,6 +155,11 @@ mm-all:
 		   [ ! "$${software}" = "debug"          ] ; then \
 			echo "error: mm_SOFTWARE=\"$${software}\" is an invalid value." ; \
 			exit 1 ; \
+		fi ; \
+		if [ "$(mm_MYTH_VERSION)" = "0.22" ] ; then \
+			if [ "$${software}" = "mythnetvision" ] ; then \
+				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
+			fi ; \
 		fi ; \
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"

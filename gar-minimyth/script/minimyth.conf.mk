@@ -17,7 +17,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 51
+mm_CONF_VERSION           ?= 52
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -44,14 +44,15 @@ mm_GRAPHICS               ?= intel \
                              vmware
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
-# 'mythgame', 'mythmusic', 'mythnews', 'mythstream', 'mythvideo', 'mythweather',
-# 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn', 'mplayer-vld', 'vlc'
-# 'xine', 'transcode', 'mame', 'bdremote', 'wiimote', 'backend','python',
-# 'debug'.
+# 'mythgame', 'mythmusic', 'mythnetvision', 'mythnews', 'mythstream',
+# 'mythvideo', 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
+# 'mplayer-vld', 'vlc' 'xine', 'transcode', 'mame', 'bdremote', 'wiimote',
+# 'backend','python', 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
                              mythgame \
                              mythmusic \
+                             $(if $(filter-out $(mm_MYTH_VERSION),0.22),mythnetvision) \
                              mythnews \
                              mythstream \
                              mythvideo \
