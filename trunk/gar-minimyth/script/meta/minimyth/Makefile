@@ -111,6 +111,12 @@ DEPENDS = \
 		$(if $(filter i386,$(mm_GARCH_FAMILY)),emulators/zsnes)) \
 	$(if $(filter mythmusic,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythmusic),myth-$(mm_MYTH_VERSION)/mythmusic)) \
+	$(if $(filter mythnetvision,$(mm_SOFTWARE)), \
+		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythnetvision),myth-$(mm_MYTH_VERSION)/mythnetvision) \
+		$(if $(filter python,$(mm_SOFTWARE)), \
+			python/python-lxml \
+			python/python-MySQL-python \
+			python/python-pycurl)) \
 	$(if $(filter mythnews,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythnews),myth-$(mm_MYTH_VERSION)/mythnews)) \
 	$(if $(filter mythphone,$(mm_SOFTWARE)), \

@@ -96,6 +96,36 @@ $var_list{'MM_PLUGIN_MUSIC_ENABLED'} =
     },
     value_valid    => 'no|yes'
 };
+$var_list{'MM_PLUGIN_NETVISION_ENABLED'} =
+{
+    prerequisite   => ['MM_PLUGIN_BROWSER_ENABLED', 'MM_VERSION_MYTH_BINARY_MINOR'],
+    value_default  => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^22$/)
+            {
+                return 'no';
+            }
+            default
+            {
+                if ((-e '/usr/lib/mythtv/plugins/libmythnetvision.so')         &&
+                    ($minimyth->var_get('MM_PLUGIN_BROWSER_ENABLED') eq 'yes'))
+                {
+                    return 'yes';
+                }
+                else
+                {
+                    return 'no';
+                }
+            }
+        }
+    },
+    value_valid    => 'no|yes'
+};
 $var_list{'MM_PLUGIN_NEWS_ENABLED'} =
 {
     value_default  => sub

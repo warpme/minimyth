@@ -220,6 +220,10 @@ sub start
         [ '/usr/lib/mythtv/plugins/libmythmusic.so',
           '/usr/share/mythtv/music*',
           '/usr/share/mythtv/mythmusic*' ];
+    $plugin_remove{'MM_PLUGIN_NETVISION_ENABLED'} =
+        [ '/usr/lib/mythtv/plugins/libmythnetvision.so',
+          '/usr/share/mythtv/netvision*',
+          '/usr/share/mythtv/mythnetvision*' ];
     $plugin_remove{'MM_PLUGIN_NEWS_ENABLED'} =
         [ '/usr/lib/mythtv/plugins/libmythnews.so',
           '/usr/share/mythtv/news*',
