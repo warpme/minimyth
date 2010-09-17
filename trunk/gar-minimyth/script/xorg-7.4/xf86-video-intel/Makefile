@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.11.0
+GARVERSION = 2.9.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -40,13 +40,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
-	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-dri \
 	--disable-video-debug \
 	--enable-xvmc \
 	--disable-kms-only \
+	--disable-shave \
 	--with-gnu-ld
 
 CONFIGURE_ENV = \
@@ -67,5 +67,10 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libI810XvMC.la
 	@rm -f $(DESTDIR)$(libdir)/libIntelXvMC.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7017.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ch7xxx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/intel_drv.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/ivch.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/sil164.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/tfp410.la
 	@$(MAKECOOKIE)
