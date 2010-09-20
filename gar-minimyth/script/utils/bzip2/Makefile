@@ -1,5 +1,5 @@
 GARNAME = bzip2
-GARVERSION = 1.0.5
+GARVERSION = 1.0.6
 CATEGORIES = utils
 MASTER_SITES = http://www.bzip.org/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
