@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libattr lib/zlib utils/xz
+DEPENDS = lang/c lib/libattr utils/xz
 
 WORKSRC = $(WORKDIR)/$(GARNAME)$(GARVERSION)
 
