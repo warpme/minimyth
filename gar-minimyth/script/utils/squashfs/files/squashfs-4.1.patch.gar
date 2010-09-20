@@ -1,0 +1,71 @@
+diff -Naur squashfs4.1-old/squashfs-tools/Makefile squashfs4.1-new/squashfs-tools/Makefile
+--- squashfs4.1-old/squashfs-tools/Makefile	2010-09-16 21:59:24.000000000 -0700
++++ squashfs4.1-new/squashfs-tools/Makefile	2010-09-20 09:54:29.000000000 -0700
+@@ -30,9 +30,9 @@
+ # work) - download and unpack it, uncomment and set LZMA_DIR to unpacked source,
+ # and uncomment the LZMA_SUPPORT line below.
+ #
+-XZ_SUPPORT = 1
+-#LZMA_SUPPORT = 1
+-#LZMA_DIR = ../../../LZMA/lzma465
++#XZ_SUPPORT = 1
++LZMA_SUPPORT = 1
++LZMA_DIR = ../../LZMA
+ 
+ 
+ ############ Building LZO support ##############
+@@ -43,7 +43,7 @@
+ # LZO_SUPPORT line below. If needed, uncomment and set LZO_DIR to the
+ # installation prefix.
+ #
+-LZO_SUPPORT = 1
++#LZO_SUPPORT = 1
+ #LZO_DIR = /usr/local
+ 
+ 
+@@ -53,7 +53,7 @@
+ # in Mksquashfs.  Obviously the compression algorithm must have been
+ # selected to be built
+ #
+-COMP_DEFAULT = gzip
++COMP_DEFAULT = lzma
+ 
+ ###############################################
+ #  Extended attribute (XATTRs) build options  #
+@@ -80,15 +80,15 @@
+ ###############################################
+ 
+ INCLUDEDIR = -I.
+-INSTALL_DIR = /usr/local/bin
++INSTALL_DIR = @GAR_DESTDIR@@GAR_bindir@
+ 
+ MKSQUASHFS_OBJS = mksquashfs.o read_fs.o sort.o swap.o pseudo.o compressor.o
+ 
+ UNSQUASHFS_OBJS = unsquashfs.o unsquash-1.o unsquash-2.o unsquash-3.o \
+ 	unsquash-4.o swap.o compressor.o
+ 
+-CFLAGS = $(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE \
+-	-D_GNU_SOURCE -DCOMP_DEFAULT=\"$(COMP_DEFAULT)\"  -O2 -Wall
++CFLAGS += $(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE \
++	-D_GNU_SOURCE -DCOMP_DEFAULT=\"$(COMP_DEFAULT)\" -Wall
+ 
+ LIBS =
+ ifdef GZIP_SUPPORT
+@@ -175,7 +175,7 @@
+ all: mksquashfs unsquashfs
+ 
+ mksquashfs: $(MKSQUASHFS_OBJS)
+-	$(CC) $(MKSQUASHFS_OBJS) -lpthread -lm $(LIBS) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) $(MKSQUASHFS_OBJS) -lpthread -lm $(LIBS) -o $@
+ 
+ mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h \
+ 	squashfs_swap.h xattr.h
+@@ -195,7 +195,7 @@
+ read_xattrs.o: xattr.h
+ 
+ unsquashfs: $(UNSQUASHFS_OBJS)
+-	$(CC) $(UNSQUASHFS_OBJS) -lpthread -lm $(LIBS) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) $(UNSQUASHFS_OBJS) -lpthread -lm $(LIBS) -o $@
+ 
+ unsquashfs.o: unsquashfs.h unsquashfs.c squashfs_fs.h squashfs_swap.h \
+ 	squashfs_compat.h global.h xattr.h
