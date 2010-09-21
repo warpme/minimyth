@@ -62,20 +62,26 @@ sub start
         }
     }
 
-    my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-    my $themeosd_url  = $minimyth->var_get('MM_THEMEOSD_URL');
-    # Set the MythTV OSD theme.
-    if ($themeosd_name)
+    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
     {
-        $minimyth->mythdb_settings_set('OSDTheme', $themeosd_name);
-    }
-    # Mount MythTV OSD theme directory.
-    if ($themeosd_url)
-    {
-        if (! $minimyth->url_mount($themeosd_url, "/usr/share/mythtv/themes/$themeosd_name"))
+        when (/^(22|23)$/)
         {
-            $minimyth->message_output('err', "mount of 'MM_THEMEOSD_URL=$themeosd_url' failed.");
-            return 0;
+            my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+            my $themeosd_url  = $minimyth->var_get('MM_THEMEOSD_URL');
+            # Set the MythTV OSD theme.
+            if ($themeosd_name)
+            {
+                $minimyth->mythdb_settings_set('OSDTheme', $themeosd_name);
+            }
+            # Mount MythTV OSD theme directory.
+            if ($themeosd_url)
+            {
+                if (! $minimyth->url_mount($themeosd_url, "/usr/share/mythtv/themes/$themeosd_name"))
+                {
+                    $minimyth->message_output('err', "mount of 'MM_THEMEOSD_URL=$themeosd_url' failed.");
+                    return 0;
+                }
+            }
         }
     }
 

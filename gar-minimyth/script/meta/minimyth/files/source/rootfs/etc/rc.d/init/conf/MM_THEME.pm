@@ -5,6 +5,7 @@ package init::conf::MM_THEME;
 
 use strict;
 use warnings;
+use feature "switch";
 
 use File::Basename ();
 
@@ -97,58 +98,95 @@ $var_list{'MM_THEME_URL'} =
 };
 $var_list{'MM_THEMEOSD_NAME'} =
 {
+    prerequisite   => ['MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => '',
-    value_valid    => '.+',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^(22|23)$/)
+            {
+                return '.+';
+            }
+            default
+            {
+                return '';
+            }
+        }
+    }
 };
 $var_list{'MM_THEMEOSD_URL'} =
 {
-    prerequisite   => ['MM_THEMEOSD_NAME'],
+    prerequisite   => ['MM_THEMEOSD_NAME', 'MM_VERSION_MYTH_BINARY_MINOR'],
     value_default  => 'auto',
     value_valid    => sub
     {
         my $minimyth = shift;
         my $name     = shift;
   
-        if ($minimyth->var_get($name) !~ /^auto|none$/)
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-            if (-e "/usr/share/mythtv/themes/$themeosd_name")
+            when (/^(22|23)$/)
             {
-                $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' already exists.");
-                return '';
+                if ($minimyth->var_get($name) !~ /^auto|none$/)
+                {
+                    my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+                    if (-e "/usr/share/mythtv/themes/$themeosd_name")
+                    {
+                        $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' already exists.");
+                        return '';
+                    }
+                }
+                if ($minimyth->var_get($name) eq 'none')
+                {
+                    my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+                    if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+                    {
+                        $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' does not exist.");
+                        return '';
+                    }
+                }
+                return '.+';
+            }
+            default
+            {
+                return 'none';
             }
         }
-        if ($minimyth->var_get($name) eq 'none')
-        {
-            my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-            if (! -e "/usr/share/mythtv/themes/$themeosd_name")
-            {
-                $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' does not exist.");
-                return '';
-            }
-        }
-        return '.+';
     },
     value_auto     => sub
     {
         my $minimyth = shift;
         my $name     = shift;
   
-        my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-        if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
+            when (/^(22|23)$/)
             {
-                return "hunt:themes/$themeosd_name.sfs"
+                my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+                if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+                {
+                    if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
+                    {
+                        return "hunt:themes/$themeosd_name.sfs"
+                    }
+                    else
+                    {
+                        return "confro:themes/$themeosd_name.sfs"
+                    }
+                }
+                else
+                {
+                    return 'none';
+                }
             }
-            else
+            default
             {
-                return "confro:themes/$themeosd_name.sfs"
+                return 'none';
             }
-        }
-        else
-        {
-            return 'none';
         }
     },
     value_none     => ''
