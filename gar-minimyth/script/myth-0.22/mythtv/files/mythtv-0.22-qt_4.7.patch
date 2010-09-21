@@ -1,0 +1,105 @@
+diff -Naur mythtv-0.22-25328-old/libs/libmyth/mythdeque.h mythtv-0.22-25328-new/libs/libmyth/mythdeque.h
+--- mythtv-0.22-25328-old/libs/libmyth/mythdeque.h	2010-08-17 07:13:43.000000000 -0700
++++ mythtv-0.22-25328-new/libs/libmyth/mythdeque.h	2010-09-21 15:02:48.000000000 -0700
+@@ -3,9 +3,15 @@
+ #ifndef __MYTH_DEQUE_H__
+ #define __MYTH_DEQUE_H__
+ 
++#include <QString>
+ #include <deque>
+ using namespace std;
+ 
++template<typename T>
++inline T myth_deque_init(const T*) { return (T)(0); }
++template<>
++inline QString myth_deque_init(const QString*) { return QString(); }
++
+ /** \class MythDeque
+  *  \brief MythDeque is similar to QPtrQueue, while being based off
+  *         deque, this allows that items that are not at the head of
+@@ -18,8 +24,9 @@
+     /// \brief Removes item from front of list and returns a copy. O(1).
+     T dequeue()
+     {
++        T *dummy = NULL;
+         if (deque<T>::empty())
+-            return (T)(0);
++            return myth_deque_init(dummy);
+         T item = deque<T>::front();
+         deque<T>::pop_front();
+         return item;
+@@ -65,16 +72,22 @@
+     size_type count() const { return deque<T>::size(); }
+ 
+     /// \brief Returns item at head of list. O(1).
+-    T head() { return (deque<T>::size()) ? deque<T>::front() : (T)(NULL); }
++    T head()
++        { if (!deque<T>::empty()) return deque<T>::front();
++          T *dummy = NULL; return myth_deque_init(dummy); }
+     /// \brief Returns item at head of list. O(1).
+     const T head() const
+-        { return (deque<T>::size()) ? deque<T>::front() : (T)(NULL); }
++        { if (!deque<T>::empty()) return deque<T>::front();
++          T *dummy = NULL; return myth_deque_init(dummy); }
+ 
+     /// \brief Returns item at tail of list. O(1).
+-    T tail() { return (deque<T>::size()) ? deque<T>::back() : (T)(NULL); }
++    T tail()
++        { if (!deque<T>::empty()) return deque<T>::back();
++          T *dummy = NULL; return myth_deque_init(dummy); }
+     /// \brief Returns item at tail of list. O(1).
+     const T tail() const
+-        { return (deque<T>::size()) ? deque<T>::back() : (T)(NULL); }
++        { if (!deque<T>::empty()) return deque<T>::back();
++          T *dummy = NULL; return myth_deque_init(dummy); }
+ };
+ 
+ #endif // __MYTH_DEQUE_H__
+diff -Naur mythtv-0.22-25328-old/libs/libmythtv/recordingprofile.h mythtv-0.22-25328-new/libs/libmythtv/recordingprofile.h
+--- mythtv-0.22-25328-old/libs/libmythtv/recordingprofile.h	2010-08-17 07:13:36.000000000 -0700
++++ mythtv-0.22-25328-new/libs/libmythtv/recordingprofile.h	2010-09-21 15:01:55.000000000 -0700
+@@ -84,7 +84,7 @@
+ 
+   public:
+     // initializers
+-    RecordingProfile(QString profName = NULL);
++    RecordingProfile(QString profName = QString());
+     virtual void loadByID(int id);
+     virtual bool loadByType(QString name, QString cardtype);
+     virtual bool loadByGroup(QString name, QString group);
+diff -Naur mythtv-0.22-25328-old/libs/libmythupnp/eventing.h mythtv-0.22-25328-new/libs/libmythupnp/eventing.h
+--- mythtv-0.22-25328-old/libs/libmythupnp/eventing.h	2010-08-17 07:13:44.000000000 -0700
++++ mythtv-0.22-25328-new/libs/libmythupnp/eventing.h	2010-09-21 15:02:48.000000000 -0700
+@@ -173,6 +173,11 @@
+         }
+ };
+ 
++template<typename T>
++inline T state_var_init(const T*) { return (T)(0); }
++template<>
++inline QString state_var_init(const QString*) { return QString(); }
++
+ //////////////////////////////////////////////////////////////////////////////
+ 
+ class StateVariables
+@@ -233,9 +238,10 @@
+         template < class T >
+         T GetValue( const QString &sName )
+         {
++            T *dummy = NULL;
+             SVMap::iterator it = m_map.find(sName);
+             if (it == m_map.end())
+-                return T(0);
++                return state_var_init(dummy);
+ 
+             StateVariable< T > *pVariable =
+                 dynamic_cast< StateVariable< T > *>( *it );
+@@ -243,7 +249,7 @@
+             if (pVariable != NULL)
+                 return pVariable->GetValue();
+ 
+-            return T(0);
++            return state_var_init(dummy);
+         }
+ 
+         uint BuildNotifyBody(QTextStream &ts, TaskTime ttLastNotified) const;
