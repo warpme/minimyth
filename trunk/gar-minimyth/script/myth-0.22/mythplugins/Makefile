@@ -9,6 +9,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-limits_h.patch \
 	$(DISTNAME_SHORT)-mythmusic_cdio.patch \
 	$(DISTNAME_SHORT)-mythmusic_fftw3.patch \
+	$(DISTNAME_SHORT)-qt_4.7.patch \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch
 LICENSE = GPL2

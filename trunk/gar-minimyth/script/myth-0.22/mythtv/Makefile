@@ -16,6 +16,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
 	$(DISTNAME_SHORT)-fftw3f.patch \
 	$(DISTNAME_SHORT)-gcc_4.5.0.patch \
+	$(DISTNAME_SHORT)-qt_4.7.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
