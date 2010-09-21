@@ -1,9 +1,9 @@
 GARNAME = libX11
-GARVERSION = 1.2.2
+GARVERSION = 1.3.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-abstract_socket_fix.patch $(DISTNAME)-default_local_trans.patch $(DISTNAME)-xdmcp.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -33,6 +33,11 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
+	--enable-unix-transport \
+	--disable-tcp-transport \
+	--disable-ipv6 \
+	--disable-local-transport \
 	--disable-secure-rpc \
 	--disable-loadable-i18n \
 	--enable-loadable-xcursor \
@@ -46,10 +51,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-composecache \
 	--disable-lint-library \
 	--enable-malloc0returnsnull \
-	--enable-unix-transport \
-	--disable-tcp-transport \
-	--disable-ipv6 \
-	--disable-local-transport \
 	--with-gnu-ld \
 	--with-xcb \
 	--without-launchd \

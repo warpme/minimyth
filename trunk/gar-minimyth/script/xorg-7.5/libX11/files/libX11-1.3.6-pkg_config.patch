@@ -1,0 +1,20 @@
+diff -Naur libX11-1.3.6-old/configure.ac libX11-1.3.6-new/configure.ac
+--- libX11-1.3.6-old/configure.ac	2010-09-19 23:04:16.000000000 -0700
++++ libX11-1.3.6-new/configure.ac	2010-09-20 13:19:46.000000000 -0700
+@@ -35,6 +35,7 @@
+ DOLT
+ AC_PROG_CC
+ PKG_PROG_PKG_CONFIG
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
+ 
+ if test x"$CC_FOR_BUILD" = x; then
+ 	if test x"$cross_compiling" = xyes; then
+@@ -355,7 +356,7 @@
+ # Find keysymdef.h
+ #
+ AC_MSG_CHECKING([keysym definitions])
+-KEYSYMDEFDIR=`$PKG_CONFIG --variable=includedir xproto`/X11
++KEYSYMDEFDIR=$PKG_CONFIG_SYSROOT_DIR`$PKG_CONFIG --variable=includedir xproto`/X11
+ FILES="keysymdef.h XF86keysym.h Sunkeysym.h DECkeysym.h HPkeysym.h"
+ for i in $FILES; do
+     if test -f "$KEYSYMDEFDIR/$i"; then
