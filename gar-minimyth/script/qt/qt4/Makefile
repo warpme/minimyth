@@ -4,7 +4,7 @@ CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = \
+PATCHFILES  = \
 	$(DISTNAME)-webkit_changeset_62185.patch \
 	$(DISTNAME)-webkit_changeset_65586.patch
 PATCHFILES += $(DISTNAME).patch.gar
@@ -51,6 +51,7 @@ CONFIGURE_ARGS = \
 	-no-phonon-backend \
 	-svg \
 	-webkit \
+	-javascript-jit \
 	-script \
 	-scripttools \
 	-no-declarative \
