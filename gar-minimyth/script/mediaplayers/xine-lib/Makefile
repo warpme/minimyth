@@ -1,9 +1,9 @@
 GARNAME = xine-lib
-GARVERSION = 11577
+GARVERSION = 11590
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-xvmclib_h.patch $(GARNAME)-ffmpeg_cflags.patch $(GARNAME)-vdpau_avutil_cflags.patch
+PATCHFILES = $(GARNAME)-ffmpeg_cflags.patch $(GARNAME)-vdpau_avutil_cflags.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
