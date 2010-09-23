@@ -4,7 +4,7 @@ PERL_CONFIGURE_ENV = PERL5LIB="$(PERL_PERL5LIB)"
 PERL_BUILD_ENV     = PERL5LIB="$(PERL_PERL5LIB)"
 PERL_INSTALL_ENV   = PERL5LIB="$(PERL_PERL5LIB)"
 
-# This is a hack for cross compilation, but it should does not break native compilation.
+# This is a hack for cross compilation, but it should not break native compilation.
 # Ensure that everything is built using the compiler flags that were used when generating the config.sh files.
 PERL_CPPFLAGS =
 PERL_CFLAGS   = \
