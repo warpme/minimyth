@@ -3,7 +3,7 @@ GARVERSION = 2.4
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-bash.patch.gar $(DISTNAME)-use_ld.patch
+PATCHFILES = $(DISTNAME)-no_use_linker_plugin.patch $(DISTNAME)-bash.patch.gar $(DISTNAME)-use_ld.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
