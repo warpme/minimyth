@@ -51,6 +51,14 @@ BUILD_ARGS      = \
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
+ 
+# Fails to compile using the gold linker.
+CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
+
+# Fails to compile with GCC's link time optimization.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
