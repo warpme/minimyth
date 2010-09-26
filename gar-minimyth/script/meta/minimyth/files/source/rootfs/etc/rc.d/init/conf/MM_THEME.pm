@@ -121,7 +121,23 @@ $var_list{'MM_THEMEOSD_NAME'} =
 $var_list{'MM_THEMEOSD_URL'} =
 {
     prerequisite   => ['MM_THEMEOSD_NAME', 'MM_VERSION_MYTH_BINARY_MINOR'],
-    value_default  => 'auto',
+    value_default  => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^(22|23)$/)
+            {
+                return 'auto';
+            }
+            default
+            {
+                return 'none';
+            }
+        }
+    },
     value_valid    => sub
     {
         my $minimyth = shift;
@@ -162,31 +178,21 @@ $var_list{'MM_THEMEOSD_URL'} =
         my $minimyth = shift;
         my $name     = shift;
   
-        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
+        if (! -e "/usr/share/mythtv/themes/$themeosd_name")
         {
-            when (/^(22|23)$/)
+            if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
             {
-                my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-                if (! -e "/usr/share/mythtv/themes/$themeosd_name")
-                {
-                    if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
-                    {
-                        return "hunt:themes/$themeosd_name.sfs"
-                    }
-                    else
-                    {
-                        return "confro:themes/$themeosd_name.sfs"
-                    }
-                }
-                else
-                {
-                    return 'none';
-                }
+                return "hunt:themes/$themeosd_name.sfs"
             }
-            default
+            else
             {
-                return 'none';
+                return "confro:themes/$themeosd_name.sfs"
             }
+        }
+        else
+        {
+            return 'none';
         }
     },
     value_none     => ''
