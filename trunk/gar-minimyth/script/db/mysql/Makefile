@@ -1,7 +1,7 @@
 GARNAME = mysql
-GARVERSION = 5.1.50
+GARVERSION = 5.1.51
 CATEGORIES = db
-MASTER_SITES  = http://mysql.he.net/Downloads/MySQL-5.1/
+MASTER_SITES = http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-skip_abi_check.patch $(DISTNAME)-ac_cache_check.patch $(DISTNAME)-perl.patch.gar $(DISTNAME)-mysql_config.patch.gar
 ifneq ($(DESTIMG),build)
