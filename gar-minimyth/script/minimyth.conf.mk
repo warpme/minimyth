@@ -155,6 +155,7 @@ mm_GARCH_FAMILY           ?= $(strip \
                                  $(if $(filter atom       ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter c3         ,$(mm_GARCH)),i386  ) \
                                  $(if $(filter c3-2       ,$(mm_GARCH)),i386  ) \
+                                 $(if $(filter i686       ,$(mm_GARCH)),i386  ) \
                                  $(if $(filter pentium-mmx,$(mm_GARCH)),i386  ) \
                                  $(if $(filter x86-64     ,$(mm_GARCH)),x86_64) \
                               )
@@ -162,6 +163,7 @@ mm_GARHOST                ?= $(strip \
                                  $(if $(filter atom       ,$(mm_GARCH)),x86_64) \
                                  $(if $(filter c3         ,$(mm_GARCH)),i586  ) \
                                  $(if $(filter c3-2       ,$(mm_GARCH)),i586  ) \
+                                 $(if $(filter i686       ,$(mm_GARCH)),i686  ) \
                                  $(if $(filter pentium-mmx,$(mm_GARCH)),i586  ) \
                                  $(if $(filter x86-64     ,$(mm_GARCH)),x86_64) \
                               )-minimyth-linux-gnu
@@ -170,6 +172,7 @@ mm_CFLAGS                 ?= $(strip \
                                  $(if $(filter atom        ,$(mm_GARCH)),-march=atom        -mtune=atom    -O2 -mfpmath=sse -ftree-vectorize -mmovbe) \
                                  $(if $(filter c3          ,$(mm_GARCH)),-march=c3          -mtune=c3      -Os             ) \
                                  $(if $(filter c3-2        ,$(mm_GARCH)),-march=c3-2        -mtune=c3-2    -Os -mfpmath=sse) \
+                                 $(if $(filter i686        ,$(mm_GARCH)),-march=i686        -mtune=i686    -O2 -mfpmath=sse) \
                                  $(if $(filter pentium-mmx ,$(mm_GARCH)),-march=pentium-mmx -mtune=generic -Os             ) \
                                  $(if $(filter x86-64      ,$(mm_GARCH)),-march=x86-64      -mtune=generic -O3 -mfpmath=sse) \
                                  -ftree-loop-distribution                                                                    \

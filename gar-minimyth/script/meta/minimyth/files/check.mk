@@ -84,6 +84,7 @@ mm-all:
 	@if [ ! "$(mm_GARCH)" = "atom"        ] && \
 	    [ ! "$(mm_GARCH)" = "c3"          ] && \
 	    [ ! "$(mm_GARCH)" = "c3-2"        ] && \
+	    [ ! "$(mm_GARCH)" = "i686"        ] && \
 	    [ ! "$(mm_GARCH)" = "pentium-mmx" ] && \
 	    [ ! "$(mm_GARCH)" = "x86-64"      ] ; then \
 		echo "error: mm_GARCH=\"$(mm_GARCH)\" is an invalid value." ; \
