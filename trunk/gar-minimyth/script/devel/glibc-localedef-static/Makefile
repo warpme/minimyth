@@ -2,6 +2,7 @@ GARNAME = glibc-localedef-static
 GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
 SOURCEPKG = devel/glibc
+PATCHFILES += glibc-$(GARVERSION)-localedef_static.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -27,7 +28,6 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-shared \
 	--enable-bind-now \
 	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
@@ -62,9 +62,6 @@ LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
-CFLAGS := $(CFLAGS) -static -static-libgcc
-
-LDFLAGS := $(LDFLAGS) -Wl,-static
 
 PARALLELMFLAGS := -j1
 
