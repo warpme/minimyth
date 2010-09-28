@@ -1,0 +1,85 @@
+diff -Naur mythplugins-0.22-25328-old/mythweather/mythweather/scripts/ca_envcan/envcan.pl mythplugins-0.22-25328-new/mythweather/mythweather/scripts/ca_envcan/envcan.pl
+--- mythplugins-0.22-25328-old/mythweather/mythweather/scripts/ca_envcan/envcan.pl	2010-08-17 07:10:45.000000000 -0700
++++ mythplugins-0.22-25328-new/mythweather/mythweather/scripts/ca_envcan/envcan.pl	2010-09-28 07:07:01.000000000 -0700
+@@ -92,7 +92,7 @@
+ my $getData = 1;
+ if (open(CACHE, "$dir/envcan_$loc")) {
+     ($nextupdate, $creationdate) = split / /, <CACHE>;
+-    if (Date_Cmp($nextupdate, "today") > 0) { # use cache
++    if (Date_Cmp($nextupdate, "now") > 0) { # use cache
+         no strict "vars";
+         %results = eval <CACHE>;
+ 
+@@ -120,8 +120,8 @@
+     # cache is good for 15 minutes
+     my $newmin = 15;
+ 
+-    $nextupdate = DateCalc("today", "+ $newmin minutes");
+-    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("today", "%O\n");
++    $nextupdate = DateCalc("now", "+ $newmin minutes");
++    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("now", "%O\n");
+     print CACHE Data::Dumper->Dump([\%results], ['*results']);
+ }
+ 
+diff -Naur mythplugins-0.22-25328-old/mythweather/mythweather/scripts/us_nws/ndfd18.pl mythplugins-0.22-25328-new/mythweather/mythweather/scripts/us_nws/ndfd18.pl
+--- mythplugins-0.22-25328-old/mythweather/mythweather/scripts/us_nws/ndfd18.pl	2010-08-17 07:10:45.000000000 -0700
++++ mythplugins-0.22-25328-new/mythweather/mythweather/scripts/us_nws/ndfd18.pl	2010-09-28 07:07:23.000000000 -0700
+@@ -93,7 +93,7 @@
+     # We don't have to check the start/end dates, since we get the same chunk
+     # every time, and we update the cache atleast every hour, which is how often the
+     # data is updated by the NWS.
+-    if (Date_Cmp($nextupdate, "today") > 0) { # use cache
++    if (Date_Cmp($nextupdate, "now") > 0) { # use cache
+         no strict "vars"; # because eval doesn't scope var correctly
+         $result = eval <CACHE>;
+         if ($result) {
+@@ -115,15 +115,15 @@
+     $Data::Dumper::Indent = 0;
+     # NDFD is updated by 45 minutes after the hour, we'll give them until 50 to
+     # make sure
+-    my $min = UnixDate("today", "%M");
++    my $min = UnixDate("now", "%M");
+     my $newmin;
+     if ($min < 50) {
+         $newmin = 50-$min;
+     } else {
+         $newmin = 60-($min-50);
+     }
+-    $nextupdate = DateCalc("today", "+ $newmin minutes");
+-    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("today", "%O\n");
++    $nextupdate = DateCalc("now", "+ $newmin minutes");
++    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("now", "%O\n");
+     print CACHE Dumper($result);
+ }
+ my $index = 0;
+diff -Naur mythplugins-0.22-25328-old/mythweather/mythweather/scripts/us_nws/ndfd.pl mythplugins-0.22-25328-new/mythweather/mythweather/scripts/us_nws/ndfd.pl
+--- mythplugins-0.22-25328-old/mythweather/mythweather/scripts/us_nws/ndfd.pl	2010-08-17 07:10:45.000000000 -0700
++++ mythplugins-0.22-25328-new/mythweather/mythweather/scripts/us_nws/ndfd.pl	2010-09-28 07:07:08.000000000 -0700
+@@ -96,7 +96,7 @@
+     # We don't have to check the start/end dates, since we get the same chunk
+     # every time, and we update the cache atleast every hour, which is how often the
+     # data is updated by the NWS.
+-    if (Date_Cmp($nextupdate, "today") > 0) { # use cache
++    if (Date_Cmp($nextupdate, "now") > 0) { # use cache
+         no strict "vars"; # because eval doesn't scope var correctly
+         $result = eval <CACHE>;
+         if ($result) {
+@@ -118,15 +118,15 @@
+     $Data::Dumper::Indent = 0;
+     # NDFD is updated by 45 minutes after the hour, we'll give them until 50 to
+     # make sure
+-    my $min = UnixDate("today", "%M");
++    my $min = UnixDate("now", "%M");
+     my $newmin;
+     if ($min < 50) {
+         $newmin = 50-$min;
+     } else {
+         $newmin = 60-($min-50);
+     }
+-    $nextupdate = DateCalc("today", "+ $newmin minutes");
+-    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("today", "%O\n");
++    $nextupdate = DateCalc("now", "+ $newmin minutes");
++    print CACHE UnixDate($nextupdate, "%O ") . UnixDate("now", "%O\n");
+     print CACHE Dumper($result);
+ }
+ 
