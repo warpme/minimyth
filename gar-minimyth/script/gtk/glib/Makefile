@@ -1,7 +1,7 @@
 GARNAME = glib
-GARVERSION = 2.24.2
+GARVERSION = 2.26.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.24/
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.26/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
@@ -31,6 +31,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-regex \
 	--disable-gtk-doc \
 	--disable-man \
+	--disable-dtrace \
+	--disable-systemtap \
+	--disable-gcov \
+	--enable-Bsymbolic \
 	--with-gnu-ld \
 	--with-threads=posix \
 	--with-pcre=system

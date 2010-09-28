@@ -1,16 +1,16 @@
 GARNAME = gtk+
-GARVERSION = 2.20.1
+GARVERSION = 2.22.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.20/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.22/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-nm.patch
+PATCHFILES = $(DISTNAME)-have_xcomposite.patch $(DISTNAME)-nm.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx gtk/atk gtk/cairo gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
+DEPENDS    = lang/c lang/cxx gtk/atk gtk/cairo gtk/gdk-pixbuf gtk/glib gtk/pango lib/libjpeg lib/libpng lib/libtiff xorg/xorg
 BUILDDEPS  = gtk/gtk-doc
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/gtk
@@ -20,7 +20,7 @@ CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 ifeq ($(DESTIMG),build)
-INSTALL_SCRIPTS   += gdk-pixbuf.loaders
+INSTALL_SCRIPTS   += cross
 endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
@@ -38,7 +38,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-explicit-deps=auto \
 	--disable-glibtest \
 	--enable-modules \
-	--disable-gdiplus \
 	--disable-cups \
 	--disable-papi \
 	--disable-test-print-backend \
@@ -47,17 +46,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-man \
 	--with-gnu-ld \
 	--without-xinput \
-	--with-gtkgarget=x11 \
-	--with-libpng \
-	--with-libjpeg \
-	--with-libtiff \
-	--without-libjasper \
+	--with-gdktarget=x11 \
 	--with-x
 
 CONFIGURE_ENV  =
 ifneq ($(DESTIMG),build)
 CONFIGURE_ENV += \
-	gio_can_sniff='yes'
+	GTK_UPDATE_ICON_CACHE=$(build_DESTDIR)$(build_bindir)/gtk-update-icon-cache
 endif
 
 include ../../gar.mk
@@ -72,21 +67,22 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
-install-gdk-pixbuf.loaders:
+x-install-gdk-pixbuf.loaders:
 	@mkdir -p $(DESTDIR)$(sysconfdir)/gtk-2.0
 	@rm -f $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders
 	@$(DESTDIR)$(bindir)/gdk-pixbuf-query-loaders > $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders
+	@$(MAKECOOKIE)
+
+install-cross:
+	@if test -e $(WORKSRC)/gtk/gtk-update-icon-cache ; then cp -f $(WORKSRC)/gtk/gtk-update-icon-cache $(DESTDIR)$(bindir)/gtk-update-icon-cache ; fi
 	@$(MAKECOOKIE)
 
 post-install:
 	@rm -rf $(DESTDIR)$(libdir)/gtk-2.0/modules/*.la
 	@rm -rf $(DESTDIR)$(libdir)/gtk-2.0/2.10.0/engines/*.la
 	@rm -rf $(DESTDIR)$(libdir)/gtk-2.0/2.10.0/immodules/*.la
-	@rm -rf $(DESTDIR)$(libdir)/gtk-2.0/2.10.0/loaders/*.la
 	@rm -rf $(DESTDIR)$(libdir)/gtk-2.0/2.10.0/printbackends/*.la
 	@rm -rf $(DESTDIR)$(libdir)/libgailutil.la
-	@rm -rf $(DESTDIR)$(libdir)/libgdk_pixbuf-2.0.la
-	@rm -rf $(DESTDIR)$(libdir)/libgdk_pixbuf_xlib-2.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libgdk-x11-2.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libgtk-x11-2.0.la
 	@$(MAKECOOKIE)
