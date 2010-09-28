@@ -38,14 +38,14 @@ sub page
 
     my @page = ();
 
-    push(@page,  q(Content-Type: text/html; charset=UTF-8));
+    push(@page,  q(Content-Type: text/html; charset=utf-8));
     push(@page,  q());
     push(@page,  q(<!DOCTYPE HTML>));
     push(@page,  q(<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">));
     push(@page,  q(  <head>));
-    push(@page,  q(    <meta charset="UTF-8" />));
+    push(@page,  q(    <meta http-equiv="content-type" content="text/html; charset=utf-8" />));
     push(@page,  q(    <meta name="author" content="Paul Bender" />));
-    push(@page,  q(    <meta name="copyright" content="2006-2009 Paul Bender &amp; minimyth.org" />));
+    push(@page,  q(    <meta name="copyright" content="2006-2009 Paul Bender &#38; minimyth.org" />));
     push(@page,  q(    <meta name="keywords" content="PVR,Linux,MythTV,MiniMyth" />));
     push(@page,  q(    <meta name="description" content="" />));
     push(@page, qq(    <title>MiniMyth System $title</title>));
@@ -97,7 +97,7 @@ sub page
     push(@page,  q(        <div class="version">));
     push(@page,  q(          Last Updated on 2010-09-19));
     push(@page,  q(          <br />));
-    push(@page,  q(          &lt;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&gt;));
+    push(@page,  q(          &#60;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&#62;));
     push(@page,  q(        </div>));
     push(@page,  q(      </div>));
     push(@page,  q(    </div>));
