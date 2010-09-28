@@ -30,3 +30,7 @@ pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
+
+post-install:
+	@rm -rf $(DESTDIR)$(libdir)/liblzma.la
+	@$(MAKECOOKIE)
