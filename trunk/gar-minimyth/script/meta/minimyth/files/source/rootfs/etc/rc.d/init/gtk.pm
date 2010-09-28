@@ -18,13 +18,13 @@ sub start
 
     if (-e q(/usr/bin/gdk-pixbuf-query-loaders))
     {
-        if (! -e q(/etc/gtk-2.0))
+        if (! -e q(/usr/lib/gdk-pixbuf-2.0/2.10.0/))
         {
-            File::Path::mkpath(q(/etc/gtk-2.0), { mode => 0755 });
+            File::Path::mkpath(q(/usr/lib/gdk-pixbuf-2.0/2.10.0/), { mode => 0755 });
         }
-        chmod(0755, q(/etc/gtk-2.0));
-        system(qq(/usr/bin/gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders));
-        chmod(0644, q(/etc/gtk-2.0/gdk-pixbuf.loaders));
+        chmod(0755, q(/usr/lib/gdk-pixbuf-2.0/2.10.0/));
+	system(qq(/usr/bin/gdk-pixbuf-query-loaders --update-cache));
+        chmod(0644, q(/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache));
     }
 
     if (-e q(/usr/bin/pango-querymodules))
