@@ -1901,7 +1901,7 @@ sub flash_fetch_and_save
         # 10.1 release.
         $flash_url  = q(http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_10_linux.tar.gz);
         # New preview release.
-        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/flashplayer_square_p1_32bit_linux_091510.tar.gz);
+        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/flashplayer_square_p2_32bit_linux_092710.tar.gz);
     }
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
@@ -1909,7 +1909,7 @@ sub flash_fetch_and_save
         # Withdrawn 10.1 beta.
         $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/libflashplayer-10.0.45.2.linux-x86_64.so.tar.gz);
         # New preview release.
-        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/flashplayer_square_p1_64bit_linux_091510.tar.gz);
+        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplayer10/flashplayer_square_p2_64bit_linux_092710.tar.gz);
     }
     else
     {
