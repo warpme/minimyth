@@ -1,5 +1,5 @@
 GARNAME = libaacs
-GARVERSION = 11542bc75ac203dc4e315cdf5cc8cbae6f22cc70
+GARVERSION = ac44f760155953e6aa9e96d602109bc79ae14330
 CATEGORIES = extras
 MASTER_SITES = git://git.videolan.org/libaacs.git/
 DISTFILES = $(DISTNAME).tar.bz2
