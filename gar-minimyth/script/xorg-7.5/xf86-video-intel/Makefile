@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.12.0
+GARVERSION = 2.13.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -14,7 +14,6 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fontsproto \
-	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
@@ -26,7 +25,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
-	$(CATEGORY)/xineramaproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
@@ -44,7 +42,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--enable-dri \
-	--disable-video-debug \
 	--enable-xvmc \
 	--disable-kms-only \
 	--with-gnu-ld
