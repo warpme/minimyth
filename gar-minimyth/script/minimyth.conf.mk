@@ -69,7 +69,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              python \
                              $(if $(filter $(mm_DEBUG),yes),debug)
 # Indicates the microprocessor architecture.
-# Valid values for mm_GARCH are 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
+# Valid values for mm_GARCH are 'atom', 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
 mm_GARCH                  ?= pentium-mmx
 # Indicates whether or not to create the RAM based part of the distribution.
 mm_DISTRIBUTION_RAM       ?= yes
