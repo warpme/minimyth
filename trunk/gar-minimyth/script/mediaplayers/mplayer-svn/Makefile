@@ -4,7 +4,7 @@ CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20100909.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100713.patch
+PATCHFILES = $(GARNAME)-mt_20100930.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20100713.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -93,13 +93,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-rpath
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
-# --enable-libavutil_so
-# --enable-libavcodec_so
-# --enable-libavcore_so
-# --enable-libavformat_so
-# --enable-libpostproc_so
-# --enable-libswscale_so
-# --enable-system-ffmpeg
+# --enable-ffmpeg_so
 # --enable-libdca
 # --enable-liba52
 CONFIGURE_ARGS_CODEC = \
@@ -120,12 +114,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libschroedinger-lavc \
 	--disable-libvpx-lavc \
 	--disable-libnut \
-	--disable-libavutil_a \
-	--disable-libavcodec_a \
-	--disable-libavcore_a \
-	--disable-libavformat_a \
-	--disable-libpostproc_a \
-	--disable-libswscale_a \
+	--disable-ffmpeg_a \
 	--disable-libavcodec_mpegaudio_hp \
 	--disable-tremor-internal \
 	--disable-tremor-low \

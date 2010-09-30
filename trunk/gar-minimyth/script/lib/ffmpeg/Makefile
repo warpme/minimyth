@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 25093.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 25269.$(MPLAYER_TRUNK_VERSION)
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100909.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20100930.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -82,8 +82,10 @@ CONFIGURE_ARGS = \
 	--enable-filters \
 	--disable-avisynth \
 	--enable-bzlib \
+	--disable-frei0r \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
+	--disable-libopencv \
 	--disable-libdc1394 \
 	--disable-libdirac \
 	--disable-libfaac \
@@ -185,6 +187,7 @@ clean-all:
 	@rm -rf $(DESTDIR)$(libdir)/libavcodec.*
 	@rm -rf $(DESTDIR)$(libdir)/libavcore.*
 	@rm -rf $(DESTDIR)$(libdir)/libavdevice.*
+	@rm -rf $(DESTDIR)$(libdir)/libavfilter.*
 	@rm -rf $(DESTDIR)$(libdir)/libavformat.*
 	@rm -rf $(DESTDIR)$(libdir)/libavutil.*
 	@rm -rf $(DESTDIR)$(libdir)/libpostproc.*
@@ -223,9 +226,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=25090
-FFMPEG_MT_VERSION_THREAD=0097d3b01e33d1e0f636a19778a0435a730d4590
-FFMPEG_MT_VERSION_DATE=20100909
+FFMPEG_MT_VERSION_NORMAL=25261
+FFMPEG_MT_VERSION_THREAD=480a82da7912bc5034a4b0bc2090879920567521
+FFMPEG_MT_VERSION_DATE=20100930
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
