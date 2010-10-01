@@ -287,13 +287,10 @@ CFLAGS :=
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
 	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2 ; rm -r $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavcodec
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavformat
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libavutil
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libpostproc
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libswscale
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/ffmpeg
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdnav
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdread4
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libswscale
 	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
@@ -302,13 +299,10 @@ checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 post-patch:
-	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavcodec  $(WORKSRC)/libavcodec
-	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavformat $(WORKSRC)/libavformat
-	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libavutil   $(WORKSRC)/libavutil
-	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libpostproc $(WORKSRC)/libpostproc
-	@mv $(wildcard $(WORKDIR)/ffmpeg-*)/libswscale  $(WORKSRC)/libswscale
-	@mv $(wildcard $(WORKDIR)/libdvdnav-*)          $(WORKSRC)/libdvdnav
-	@mv $(wildcard $(WORKDIR)/libdvdread-*)         $(WORKSRC)/libdvdread4
+	@mv    $(wildcard $(WORKDIR)/ffmpeg-*)     $(WORKSRC)/ffmpeg
+	@mv    $(wildcard $(WORKDIR)/libdvdnav-*)  $(WORKSRC)/libdvdnav
+	@mv    $(wildcard $(WORKDIR)/libdvdread-*) $(WORKSRC)/libdvdread4
+	@cp -r $(WORKSRC)/ffmpeg/libswscale        $(WORKSRC)/libswscale
 	@$(MAKECOOKIE)
 
 pre-configure:
