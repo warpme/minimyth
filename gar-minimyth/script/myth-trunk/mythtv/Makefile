@@ -5,6 +5,7 @@ MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(DISTNAME_SHORT)-version.patch \
 	$(DISTNAME_SHORT)-codec_id_svq3_fix.patch \
 	$(DISTNAME_SHORT)-python_build.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
