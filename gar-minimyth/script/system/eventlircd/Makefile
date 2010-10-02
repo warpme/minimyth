@@ -1,5 +1,5 @@
 GARNAME = eventlircd
-GARVERSION = 17
+GARVERSION = 20
 CATEGORIES = system
 MASTER_SITES = svn://eventlircd.googlecode.com/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -19,8 +19,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-udev-dir=$(elibdir)/udev
 
 include ../../gar.mk
-
-LDFLAGS := $(LDFLAGS) -fwhole-program
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
