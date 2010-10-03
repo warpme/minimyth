@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES += $(DISTNAME)-input_io_nr_type.patch
 PATCHFILES += $(DISTNAME)-bluetooth_blacklist_support.patch
 PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
