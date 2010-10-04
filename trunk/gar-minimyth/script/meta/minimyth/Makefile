@@ -23,6 +23,7 @@ DEPENDS = \
 	disk/e2fsprogs \
 	disk/eject \
 	utils/ethtool \
+	system/eventlircd \
 	utils/evtest \
 	devel/fakeroot \
 	system/g15daemon \
@@ -41,7 +42,6 @@ DEPENDS = \
 	kernel/kernel \
 	fonts/liberation-fonts \
 	system/lirc \
-	system/eventlircd \
 	utils/lm_sensors \
 	utils/lsdvd \
 	utils/lsof \
