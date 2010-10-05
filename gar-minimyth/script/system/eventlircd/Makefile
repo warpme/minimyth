@@ -1,5 +1,5 @@
 GARNAME = eventlircd
-GARVERSION = 28
+GARVERSION = 32
 CATEGORIES = system
 MASTER_SITES = svn://eventlircd.googlecode.com/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
