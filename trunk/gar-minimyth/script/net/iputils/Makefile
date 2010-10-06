@@ -1,5 +1,5 @@
 GARNAME = iputils
-GARVERSION = s20100418
+GARVERSION = s20101006
 CATEGORIES = net
 MASTER_SITES = http://www.skbuff.net/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -21,6 +21,8 @@ BUILD_ARGS   = \
 	ping
 
 include ../../gar.mk
+
+LDFLAGS += -fwhole-program
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(ebindir)
