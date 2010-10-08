@@ -11,7 +11,9 @@ PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-004 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-005 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-006 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-007
+	$(GARNAME)$(subst .,,$(GARVERSION))-007 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-008 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-009
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL3
 
@@ -40,7 +42,8 @@ patch-%: normal-patch-%
 	@$(MAKECOOKIE)
 
 pre-configure:
-	@$(call RUN_AUTOTOOLS)
+	@# Running autotools fails.
+	@#$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
