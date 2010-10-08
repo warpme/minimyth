@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 162
+GARVERSION = 163
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
