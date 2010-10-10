@@ -1,9 +1,8 @@
 GARNAME = xz
-GARVERSION = 4.999.9beta
+GARVERSION = 4.999.9beta-212-gacbc
 CATEGORIES = utils
 MASTER_SITES = http://tukaani.org/$(GARNAME)/
-http://www.bzip.org/$(GARVERSION)/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = xz/GPL2/LGPL2_1
 xz_LICENSE_TEXT = $(WORKSRC)/COPYING
 
