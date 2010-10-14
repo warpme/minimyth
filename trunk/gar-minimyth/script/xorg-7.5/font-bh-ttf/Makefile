@@ -1,5 +1,5 @@
 GARNAME = font-bh-ttf
-GARVERSION = 1.0.1
+GARVERSION = 1.0.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c
+DEPENDS   = lang/c $(CATEGORY)/font-util
 BUILDDEPS = lib/fontconfig $(CATEGORY)/mkfontdir $(CATEGORY)/mkfontscale
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -24,3 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)
