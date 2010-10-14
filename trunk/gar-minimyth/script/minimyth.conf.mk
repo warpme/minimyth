@@ -52,6 +52,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
                              mythgame \
                              mythmusic \
+                             $(if $(filter-out $(mm_MYTH_VERSION),0.22),mythnetvision) \
                              mythnews \
                              mythstream \
                              mythvideo \
