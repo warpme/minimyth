@@ -179,7 +179,13 @@ include $(GARDIR)/gar.bugs.mk
 #################### DIRECTORY MAKERS ####################
 
 # This is to make dirs as needed by the base rules
-$(sort $(DOWNLOADDIR) $(PARTIALDIR) $(COOKIEDIR) $(WORKSRC) $(WORKDIR) $(EXTRACTDIR) $(FILEDIR) $(SCRATCHDIR) $(INSTALL_DIRS) $(GARCHIVEDIR) $(GARPKGDIR) $(STAGINGDIR)) $(COOKIEDIR)/%:
+$(sort $(DOWNLOADDIR) $(PARTIALDIR) $(COOKIEDIR) $(WORKSRC) $(WORKDIR) $(EXTRACTDIR) $(FILEDIR) $(SCRATCHDIR) $(INSTALL_DIRS) $(GARCHIVEDIR) $(GARPKGDIR) $(STAGINGDIR)):
+	@if test -d $@; then : ; else \
+		install -d $@; \
+		echo "install -d $@"; \
+	fi
+
+$(COOKIEDIR)/%:
 	@if test -d $@; then : ; else \
 		install -d $@; \
 		echo "install -d $@"; \
