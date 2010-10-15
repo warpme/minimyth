@@ -47,9 +47,9 @@ main_CPPFLAGS=''
 main_CFLAGS='$(mm_CFLAGS)'
 main_CXXFLAGS='$(main_CFLAGS)'
 main_LDFLAGS='-flto -fuse-linker-plugin -fuse-ld=gold -Wl,--as-needed'
-GAR_SYSTEM_PATH='$(DESTDIR)$(bindir)-config:$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_kdebindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
-_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql'
-_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_kdelibdir):$(build_DESTDIR)$(build_libdir)/mysql$(strip $(if $(filter i386,$(build_GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(build_GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))'
+GAR_SYSTEM_PATH='$(DESTDIR)$(bindir)-config:$(build_DESTDIR)$(build_esbindir):$(build_DESTDIR)$(build_ebindir):$(build_DESTDIR)$(build_sbindir):$(build_DESTDIR)$(build_bindir):$(build_DESTDIR)$(build_rootdir)/bin-build-system'
+_LD_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_libdir)/mysql'
+_LIBRARY_PATH='$(build_DESTDIR)$(build_elibdir):$(build_DESTDIR)$(build_libdir):$(build_DESTDIR)$(build_qt4libdir):$(build_DESTDIR)$(build_libdir)/mysql$(strip $(if $(filter i386,$(build_GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(build_GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))'
 _PKG_CONFIG_LIBDIR='$(DESTDIR)$(libdir)/pkgconfig:$(DESTDIR)$(datadir)/pkgconfig:$(DESTDIR)$(qt4libdir)/pkgconfig'
 _PKG_CONFIG_SYSROOT_DIR='$(DESTDIR)'
 
@@ -102,7 +102,7 @@ sed -i '/^STAGE_EXPORTS *+=/s% includedir%& oldincludedir%g' ${SCRIPT_DIR}/gar.c
 # Make all prefixes and directories relative to rootdir.
 # Set sysconfdir=rootdir/etc and locatestatedir=rootdir/var.
 # Set mandir=rootdir/usr/share/man
-# Add qt and kde directories
+# Add qt directories
 # Add essential library (elib), user binary (ebin) and system binary (esbin) directories.
 sed -i "s%^build_prefix *?=.*%build_rootdir ?= ${build_rootdir}\n&%g" ${SCRIPT_DIR}/gar.conf.mk
 sed -i "s%^main_prefix *?=.*%main_rootdir ?= ${main_rootdir}\n&%g" ${SCRIPT_DIR}/gar.conf.mk
@@ -117,26 +117,6 @@ sed -i 's%^\(build\|main\)_sysconfdir *=.*%\1_sysconfdir = $(\1_rootdir)/etc%g' 
 sed -i 's%^\(build\|main\)_localstatedir *=.*%\1_localstatedir = $(\1_rootdir)/var%g' ${SCRIPT_DIR}/gar.conf.mk
 
 sed -i 's%^\(build\|main\)_mandir *=.*%\1_mandir = $(\1_rootdir)/usr/share/man%g' ${SCRIPT_DIR}/gar.conf.mk
-
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdelibdir = $(\1_kdeprefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdelibdir ?= $(main_kdelibdir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdelibdir = $($(DESTIMG)_kdelibdir)%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdeincludedir = $(\1_kdeprefix)/include%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdeincludedir ?= $(main_kdeincludedir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdeincludedir = $($(DESTIMG)_kdeincludedir)%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdedatadir = $(\1_kdeprefix)/share%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdedatadir ?= $(main_kdedatadir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdedatadir = $($(DESTIMG)_kdedatadir)%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdebindir = $(\1_kdeprefix)/bin%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdebindir ?= $(main_kdebindir)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdebindir = $($(DESTIMG)_kdebindir)%g' ${SCRIPT_DIR}/gar.mk
-
-sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_kdeprefix = $(\1_prefix)/kde%g' ${SCRIPT_DIR}/gar.conf.mk
-sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_kdeprefix ?= $(main_kdeprefix)%g' ${SCRIPT_DIR}/gar.mk
-sed -i 's%^versiondir *= *$($(DESTIMG)_versiondir)%&\nkdeprefix = $($(DESTIMG)_kdeprefix)%g' ${SCRIPT_DIR}/gar.mk
 
 sed -i 's%^\(build\|main\)_versiondir *=.*$%&\n\1_qt4libdir = $(\1_qt4prefix)/lib%g' ${SCRIPT_DIR}/gar.conf.mk
 sed -i 's%^$(DESTIMG)_versiondir *?= *$(main_versiondir)%&\n$(DESTIMG)_qt4libdir ?= $(main_qt4libdir)%g' ${SCRIPT_DIR}/gar.mk

@@ -54,11 +54,6 @@ main_qt4prefix = $(main_libdir)/qt4
 main_qt4bindir = $(main_qt4prefix)/bin
 main_qt4includedir = $(main_qt4prefix)/include
 main_qt4libdir = $(main_qt4prefix)/lib
-main_kdeprefix = $(main_prefix)/kde
-main_kdebindir = $(main_kdeprefix)/bin
-main_kdedatadir = $(main_kdeprefix)/share
-main_kdeincludedir = $(main_kdeprefix)/include
-main_kdelibdir = $(main_kdeprefix)/lib
 
 # Directory config for the "build" image
 build_rootdir ?= $(mm_HOME)/images/build
@@ -89,11 +84,6 @@ build_qt4prefix = $(build_libdir)/qt4
 build_qt4bindir = $(build_qt4prefix)/bin
 build_qt4includedir = $(build_qt4prefix)/include
 build_qt4libdir = $(build_qt4prefix)/lib
-build_kdeprefix = $(build_prefix)/kde
-build_kdebindir = $(build_kdeprefix)/bin
-build_kdedatadir = $(build_kdeprefix)/share
-build_kdeincludedir = $(build_kdeprefix)/include
-build_kdelibdir = $(build_kdeprefix)/lib
 
 # the DESTDIR is used at INSTALL TIME ONLY to determine what the
 # filesystem root should be.  Each different DESTIMG has its own
