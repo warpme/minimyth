@@ -46,19 +46,6 @@ sub start
         # Link to the default name.
         unlink('/etc/ssl/cert.pem');
         symlink('/etc/ssl/certs/ca-bundle.crt', '/etc/ssl/cert.pem');
-        # Add KSSL's bundle.
-        if ((-w '/usr/kde/share/apps/kssl/ca-bundle.crt') && (open(OFILE, '>>', '/usr/kde/share/apps/kssl/ca-bundle.crt')))
-        {
-            if ((-r '/etc/ssl/certs/ca-bundle.crt') && (open(IFILE, '<', '/etc/ssl/certs/ca-bundle.crt')))
-            {
-                while (<IFILE>)
-                {
-                    print OFILE $_;
-                }
-                close(IFILE);
-            }
-            close(OFILE);
-        }
     }
 
     if (-e '/etc/cifs/credentials_cifs')

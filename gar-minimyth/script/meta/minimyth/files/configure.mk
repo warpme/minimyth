@@ -81,8 +81,7 @@ bindirs_base := \
 	$(sbindir) \
 	$(bindir) \
 	$(libexecdir) \
-	$(qt4bindir) \
-	$(kdebindir)
+	$(qt4bindir)
 bindirs := \
 	$(bindirs_base) \
 	$(libexecdir)
@@ -91,8 +90,7 @@ libdirs_base := \
 	$(elibdir) \
 	$(libdir) \
 	$(libdir)/mysql \
-	$(qt4libdir) \
-	$(kdelibdir)
+	$(qt4libdir)
 libdirs := \
 	$(libdirs_base) \
 	$(libdir)/xorg/modules \
@@ -102,8 +100,7 @@ etcdirs := \
 	$(sysconfdir)
 sharedirs := \
 	$(extras_datadir) \
-	$(datadir) \
-	$(kdedatadir)
+	$(datadir)
 
 MM_CONFIG_VARS := $(sort \
 	bindir \
