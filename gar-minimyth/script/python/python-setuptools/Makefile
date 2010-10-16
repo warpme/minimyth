@@ -1,7 +1,7 @@
-GARNAME = python-distribute
-GARVERSION = 0.6.14
+GARNAME = python-setuptools
+GARVERSION = 0.6c11
 CATEGORIES = python
-MASTER_SITES = http://pypi.python.org/packages/source/d/distribute/
+MASTER_SITES = http://pypi.python.org/packages/source/s/setuptools/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
 LICENSE =
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = python/python-setuptools
+DEPENDS = python/python
 
 WORKSRC = $(WORKDIR)/$(patsubst python-%,%,$(GARNAME))-$(GARVERSION)
 
