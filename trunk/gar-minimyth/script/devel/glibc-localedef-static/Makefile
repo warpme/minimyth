@@ -63,8 +63,6 @@ LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 
-PARALLELMFLAGS := -j1
-
 pre-configure:
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
