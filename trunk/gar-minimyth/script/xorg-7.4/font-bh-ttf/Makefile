@@ -10,8 +10,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c $(CATEGORY)/font-util
-BUILDDEPS = lib/fontconfig $(CATEGORY)/mkfontdir $(CATEGORY)/mkfontscale
+DEPENDS   = lang/c \
+	$(CATEGORY)/font-util \
+	$(CATEGORY)/util-macros
+BUILDDEPS = lib/fontconfig  \
+	$(CATEGORY)/mkfontdir \
+	$(CATEGORY)/mkfontscale
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
