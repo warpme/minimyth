@@ -12,8 +12,12 @@ define BLURB
 endef
 
 DEPENDS   = lang/c \
-	$(CATEGORY)/font-util
-BUILDDEPS = $(CATEGORY)/bdftopcf $(CATEGORY)/font-util $(CATEGORY)/mkfontdir $(CATEGORY)/mkfontscale
+	$(CATEGORY)/font-util \
+	$(CATEGORY)/util-macros
+BUILDDEPS = $(CATEGORY)/bdftopcf \
+	$(CATEGORY)/font-util \
+	$(CATEGORY)/mkfontdir \
+	$(CATEGORY)/mkfontscale
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -42,3 +46,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)
