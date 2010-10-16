@@ -45,8 +45,6 @@ CONFIGURE_ENV := $(DEFAULT_ENV)
 BUILD_ENV     := $(DEFAULT_ENV)
 INSTALL_ENV   := $(DEFAULT_ENV)
 
-PARALLELMFLAGS := -j1
-
 pre-configure:
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
