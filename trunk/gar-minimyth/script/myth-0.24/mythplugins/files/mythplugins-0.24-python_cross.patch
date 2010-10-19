@@ -1,0 +1,20 @@
+diff -Naur mythplugins-0.24-26902-old/configure mythplugins-0.24-26902-new/configure
+--- mythplugins-0.24-26902-old/configure	2010-10-19 14:05:39.000000000 -0700
++++ mythplugins-0.24-26902-new/configure	2010-10-19 14:06:48.000000000 -0700
+@@ -343,10 +343,15 @@
+ 
+ check_py_lib(){
+     log check_py_lib "$@"
++if test "x${PYTHONXCPREFIX}" = "x" ; then
++   py_prefix=${prefix}
++else
++   py_prefix=${PYTHONXCPREFIX}
++fi
+     check_cmd $python <<EOF
+ from distutils.sysconfig import get_python_lib
+ import sys
+-sys.path.append(get_python_lib(prefix='${prefix}'))
++sys.path.append(get_python_lib(prefix='${py_prefix}'))
+ try:
+     import ${1}
+ except:

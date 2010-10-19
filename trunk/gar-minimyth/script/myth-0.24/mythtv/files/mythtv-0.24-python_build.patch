@@ -1,0 +1,47 @@
+diff -Naur mythtv-0.24-26902-old/bindings/python/Makefile mythtv-0.24-26902-new/bindings/python/Makefile
+--- mythtv-0.24-26902-old/bindings/python/Makefile	2010-10-19 14:06:33.000000000 -0700
++++ mythtv-0.24-26902-new/bindings/python/Makefile	2010-10-19 14:06:34.000000000 -0700
+@@ -1,15 +1,15 @@
+ include ../../config.mak
+ 
+-ifdef INSTALL_ROOT
++#ifdef INSTALL_ROOT
+ 	ROOT_FLAGS = --root="$(INSTALL_ROOT)"
+-endif
++#endif
+ 
+ REAL_PREFIX = $(PREFIX)
+-ifneq ($(PREFIX:/=), /usr)
+-	ifneq ($(PREFIX:/=), /usr/local)
++#ifneq ($(PREFIX:/=), /usr)
++#	ifneq ($(PREFIX:/=), /usr/local)
+ 		PREFIX_FLAGS=--prefix="$(PREFIX)"
+-	endif
+-endif
++#	endif
++#endif
+ 
+ all: python_build
+ 
+@@ -19,7 +19,7 @@
+ distclean: clean
+ 
+ python_build: setup.py setprefix.py
+-	$(PYTHON) setup.py build
++	$(PYTHON) setup.py build --cross-compile
+ 	$(PYTHON) setprefix.py "$(REAL_PREFIX)"
+ 
+ install: setup.py
+diff -Naur mythtv-0.24-26902-old/bindings/python/setup.py mythtv-0.24-26902-new/bindings/python/setup.py
+--- mythtv-0.24-26902-old/bindings/python/setup.py	2010-10-19 14:06:33.000000000 -0700
++++ mythtv-0.24-26902-new/bindings/python/setup.py	2010-10-19 14:06:34.000000000 -0700
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python
+ 
+-from distutils.core import setup
+-from distutils.cmd import Command
++from setuptools import setup
++from setuptools import Command
+ from distutils.sysconfig import get_python_lib
+ from distutils.command.install import INSTALL_SCHEMES
+ import os

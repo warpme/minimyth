@@ -1,0 +1,245 @@
+diff -Naur mythtv-0.24-26902-old/libs/libmyth/mythmediamonitor.cpp mythtv-0.24-26902-new/libs/libmyth/mythmediamonitor.cpp
+--- mythtv-0.24-26902-old/libs/libmyth/mythmediamonitor.cpp	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/libs/libmyth/mythmediamonitor.cpp	2010-10-19 14:06:41.000000000 -0700
+@@ -709,6 +709,12 @@
+         VERBOSE(VB_MEDIA, "Ignoring device: " + device->getDevicePath());
+         return true;
+     }
++    // If the disk is the local MiniMyth disk/conf device, stop now:
++    else if (device->getMountPath() == "/minimyth")
++    {
++        VERBOSE(VB_MEDIA, "Ignoring device: " + device->getDevicePath());
++        return true;
++    }
+ #if 0
+     else
+     {
+diff -Naur mythtv-0.24-26902-old/libs/libmythtv/videodisplayprofile.cpp mythtv-0.24-26902-new/libs/libmythtv/videodisplayprofile.cpp
+--- mythtv-0.24-26902-old/libs/libmythtv/videodisplayprofile.cpp	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/libs/libmythtv/videodisplayprofile.cpp	2010-10-19 14:06:41.000000000 -0700
+@@ -1146,6 +1146,16 @@
+                   "vdpauskipchroma,vdpaucolorspace=auto");
+ }
+ 
++void VideoDisplayProfile::CreateMiniMythProfiles(const QString &hostname)
++{
++    (void) QObject::tr("MiniMyth", "MiniMyth");
++    DeleteProfileGroup("MiniMyth", hostname);
++    uint groupid = CreateProfileGroup("MiniMyth", hostname);
++    CreateProfile(groupid, 1, ">", 0, 0, "", 0, 0,
++                  "ffmpeg", 1, true, "xv-blit", "softblend", false,
++                  "bobdeint", "onefield", "");
++}
++
+ void VideoDisplayProfile::CreateProfiles(const QString &hostname)
+ {
+     CreateOldProfiles(hostname);
+diff -Naur mythtv-0.24-26902-old/libs/libmythtv/videodisplayprofile.h mythtv-0.24-26902-new/libs/libmythtv/videodisplayprofile.h
+--- mythtv-0.24-26902-old/libs/libmythtv/videodisplayprofile.h	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/libs/libmythtv/videodisplayprofile.h	2010-10-19 14:06:41.000000000 -0700
+@@ -149,6 +149,7 @@
+     static void        CreateOldProfiles(const QString &hostname);
+     static void        CreateNewProfiles(const QString &hostname);
+     static void        CreateVDPAUProfiles(const QString &hostname);
++    static void        CreateMiniMythProfiles(const QString &hostname);
+ 
+     static QStringList GetVideoRenderers(const QString &decoder);
+     static QString     GetVideoRendererHelp(const QString &renderer);
+diff -Naur mythtv-0.24-26902-old/programs/mythfrontend/globalsettings.cpp mythtv-0.24-26902-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.24-26902-old/programs/mythfrontend/globalsettings.cpp	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/programs/mythfrontend/globalsettings.cpp	2010-10-19 14:06:41.000000000 -0700
+@@ -1681,6 +1681,11 @@
+     if (profiles.empty())
+         return;
+ 
++    if (!profiles.contains("MiniMyth"))
++    {
++        VideoDisplayProfile::CreateMiniMythProfiles(host);
++        profiles = VideoDisplayProfile::GetProfiles(host);
++    }
+     if (!profiles.contains("Normal") &&
+         !profiles.contains("High Quality") &&
+         !profiles.contains("Slim"))
+diff -Naur mythtv-0.24-26902-old/themes/classic/mainmenu.xml mythtv-0.24-26902-new/themes/classic/mainmenu.xml
+--- mythtv-0.24-26902-old/themes/classic/mainmenu.xml	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/themes/classic/mainmenu.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -105,6 +105,12 @@
+     </button>
+ 
+     <button>
++       <type>MINIMYTH_TOOLS</type>
++       <text>MiniMyth Tools</text>
++       <action>MENU minimyth_tools.xml</action>
++    </button>
++ 
++    <button>
+         <type>SETUP</type>
+         <text>Setup</text>
+         <description>Settings for TV, Images, Music, Video, Weather, etc.</description>
+diff -Naur mythtv-0.24-26902-old/themes/classic/minimyth_backend_tools.xml mythtv-0.24-26902-new/themes/classic/minimyth_backend_tools.xml
+--- mythtv-0.24-26902-old/themes/classic/minimyth_backend_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.24-26902-new/themes/classic/minimyth_backend_tools.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -0,0 +1,21 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_BACKEND_START</type>
++      <text>Start Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend start &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_STOP</type>
++      <text>Stop Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend stop &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_CONFIGURE</type>
++      <text>Configure Slave Backend</text>
++      <action>EXEC /usr/bin/mythtv-setup 2&gt;&amp;1 | /usr/bin/logger -t mythtv-setup -p local0.info</action>
++   </button>
++
++</mythmenu>
+diff -Naur mythtv-0.24-26902-old/themes/classic/minimyth_tools.xml mythtv-0.24-26902-new/themes/classic/minimyth_tools.xml
+--- mythtv-0.24-26902-old/themes/classic/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.24-26902-new/themes/classic/minimyth_tools.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -0,0 +1,45 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_GAME_SAVE</type>
++      <text>Save Game Settings</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command game_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_GAME_RESTORE</type>
++      <text>Restore Game Settings</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command game_restore</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_THEMECACHE_SAVE</type>
++      <text>Save Themecache</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command themecache_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_CODECS_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command codecs_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_FLASH_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command flash_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_HULU_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command hulu_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_TOOLS</type>
++      <text>Slave Backend Tools</text>
++      <action>MENU minimyth_backend_tools.xml</action>
++   </button>
++
++</mythmenu>
+diff -Naur mythtv-0.24-26902-old/themes/defaultmenu/minimyth_backend_tools.xml mythtv-0.24-26902-new/themes/defaultmenu/minimyth_backend_tools.xml
+--- mythtv-0.24-26902-old/themes/defaultmenu/minimyth_backend_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.24-26902-new/themes/defaultmenu/minimyth_backend_tools.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -0,0 +1,21 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_BACKEND_START</type>
++      <text>Start Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend start &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_STOP</type>
++      <text>Stop Slave Backend</text>
++      <action>EXEC /usr/bin/mm_service backend stop &gt; /dev/null 2&gt;&amp;1</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_CONFIGURE</type>
++      <text>Configure Slave Backend</text>
++      <action>EXEC /usr/bin/mythtv-setup 2&gt;&amp;1 | /usr/bin/logger -t mythtv-setup -p local0.info</action>
++   </button>
++
++</mythmenu>
+diff -Naur mythtv-0.24-26902-old/themes/defaultmenu/minimyth_tools.xml mythtv-0.24-26902-new/themes/defaultmenu/minimyth_tools.xml
+--- mythtv-0.24-26902-old/themes/defaultmenu/minimyth_tools.xml	1969-12-31 16:00:00.000000000 -0800
++++ mythtv-0.24-26902-new/themes/defaultmenu/minimyth_tools.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -0,0 +1,45 @@
++<mythmenu name="MINIMYTH_TOOLS">
++
++   <button>
++      <type>MINIMYTH_GAME_SAVE</type>
++      <text>Save Game Settings</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command game_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_GAME_RESTORE</type>
++      <text>Restore Game Settings</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command game_restore</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_THEMECACHE_SAVE</type>
++      <text>Save Themecache</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command themecache_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_CODECS_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command codecs_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_FLASH_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command flash_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_HULU_SAVE</type>
++      <text>Fetch and Save Codecs</text>
++      <action>EXEC /usr/bin/mm_term_start /usr/bin/mm_command hulu_fetch_and_save</action>
++   </button>
++
++   <button>
++      <type>MINIMYTH_BACKEND_TOOLS</type>
++      <text>Slave Backend Tools</text>
++      <action>MENU minimyth_backend_tools.xml</action>
++   </button>
++
++</mythmenu>
+diff -Naur mythtv-0.24-26902-old/themes/defaultmenu/util_menu.xml mythtv-0.24-26902-new/themes/defaultmenu/util_menu.xml
+--- mythtv-0.24-26902-old/themes/defaultmenu/util_menu.xml	2010-10-19 14:06:40.000000000 -0700
++++ mythtv-0.24-26902-new/themes/defaultmenu/util_menu.xml	2010-10-19 14:06:41.000000000 -0700
+@@ -2,6 +2,15 @@
+ <mythmenu name="UTIL">
+ 
+     <button>
++       <type>MINIMYTH_TOOLS</type>
++       <text>MiniMyth Tools</text>
++       <action>MENU minimyth_tools.xml</action>
++    </button>
++  
++    <button>
++        <type>MUSIC_PLAYLIST</type>
++        <text>Music Tools</text>
++        <text lang="IT">Opzioni Musica</text>
+         <type>MUSIC_PLAYLIST</type>
+         <text>Music Tools</text>
+         <description>Select, import, or play music</description>

@@ -1,0 +1,46 @@
+diff -Naur mythtv-0.24-26902-old/libs/libmythtv/vsync.cpp mythtv-0.24-26902-new/libs/libmythtv/vsync.cpp
+--- mythtv-0.24-26902-old/libs/libmythtv/vsync.cpp	2010-10-19 14:06:38.000000000 -0700
++++ mythtv-0.24-26902-new/libs/libmythtv/vsync.cpp	2010-10-19 14:06:39.000000000 -0700
+@@ -100,7 +100,11 @@
+ //    TESTVIDEOSYNC(VDPAUVideoSync);
+ #endif
+ #ifndef _WIN32
+-    TESTVIDEOSYNC(DRMVideoSync);
++    if (gCoreContext->GetNumSetting("UseDRMVSync", 1) &&
++       (getenv("NO_DRM_VSYNC") == NULL))
++    {
++        TESTVIDEOSYNC(DRMVideoSync);
++    }
+ #ifdef USING_OPENGL_VSYNC
+ /*
+     if (gCoreContext->GetNumSetting("UseOpenGLVSync", 1) &&
+diff -Naur mythtv-0.24-26902-old/programs/mythfrontend/globalsettings.cpp mythtv-0.24-26902-new/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.24-26902-old/programs/mythfrontend/globalsettings.cpp	2010-10-19 14:06:38.000000000 -0700
++++ mythtv-0.24-26902-new/programs/mythfrontend/globalsettings.cpp	2010-10-19 14:06:39.000000000 -0700
+@@ -3516,6 +3516,18 @@
+     };
+ };
+ 
++static HostCheckBox *UseDRMVSync()
++{
++    HostCheckBox *gc = new HostCheckBox("UseDRMVSync");
++    gc->setLabel(QObject::tr("Enable DRM vertical sync for timing"));
++    gc->setValue(false);
++    gc->setHelpText(QObject::tr(
++                        "If it is supported by your hardware/drivers, "
++                        "MythTV will use DRM vertical syncing for "
++                        "video timing, reducing frame jitter."));
++    return gc;
++}
++
+ #ifdef USING_OPENGL_VSYNC
+ /*
+ static HostCheckBox *UseOpenGLVSync()
+@@ -4043,6 +4055,7 @@
+ 
+     general1->addChild(columns);
+     general1->addChild(LiveTVIdleTimeout());
++    general1->addChild(UseDRMVSync());
+ #ifdef USING_OPENGL_VSYNC
+     //general1->addChild(UseOpenGLVSync());
+ #endif // USING_OPENGL_VSYNC
