@@ -37,11 +37,6 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
-# Fails to compile using the gold linker due to duplication of libraries caused by libtool.
-CFLAGS   := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
-
 pre-configure:
 	@cd $(WORKSRC) ; rm -f m4/ogg.m4
 	@$(call RUN_AUTOTOOLS)
