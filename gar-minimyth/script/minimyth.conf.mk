@@ -9,7 +9,7 @@ mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSI
 mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.22 ,        $(mm_MYTH_VERSION)),0.22.0                        ) \
                                 $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.1                        ) \
-                                $(if $(filter 0.24 ,        $(mm_MYTH_VERSION)),0.24.0-rc1                    ) \
+                                $(if $(filter 0.24 ,        $(mm_MYTH_VERSION)),0.24.0                        ) \
                                 $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
                               )
 mm_VERSION_MINIMYTH       ?= 74
