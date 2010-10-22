@@ -1,8 +1,191 @@
-MiniMyth Changelog
+MiniMyth Changelog 2010
 
 --------------------------------------------------------------------------------
-This file contains the changes made to MiniMyth since the previous stable
-MiniMyth release. For earlier changes see the yearly changelog files.
+Changes since 73 (2010-10-19):
+
+Current MythTV versions
+    MythTV trunk: version trunk.26905, trunk svn 26905.
+    MythTV 0.24:  version 0.24.0,      release-0-24-fixes branch svn 26906.
+    MythTV 0.23:  version 0.23.1,      release-0-23-fixes branch svn 26863.
+    MythTV 0.22:  version 0.22.0,      release-0-22-fixes branch svn 25328.
+
+Modified init
+    - Removed MM_PLUGIN_DVD_ENABLED and MM_PLUGIN_PHONE_ENABLED as they are no
+      longer used.
+    - Added MM_PLUGIN_NETVISION_ENABLED as the MiniMyth build system has
+      support for the MythNetvision plugin.
+    - Modified init scripts so that MM_THEMEOSD_NAME and MM_THEMEOSD_URL are
+      not used for versions of MythTV beyond 0.23.
+    - Modified udev init scripts so that they do not change the device name as
+      udevd no longer considers changing the device name acceptable behavior.
+
+Modified mediaplayers
+    - Updated FFmpeg and MPlayer multi-threading patches.
+    - Updated the Adobe Flash Player fetch and save command so that it fetches
+      the "Flash Player 'Square' Preview Release" (P2 from 2010.09.27).
+
+Modified game emulators
+    - Replaced sdlmame with mame as sdlmame has been merged into mame.
+
+Modified LIRC
+    - Removed the Sony BD remote patch from Bluez because MiniMyth supports
+      this remote using bdremote-ng.
+
+Modified kernel
+    - Removed OSS emulation drivers as it was only used by MythPhone.
+    - Removed video camera drivers as they were only used by MythPhone.
+    - Updated unionfs patch.
+
+Fixed bugs
+    - Fixed a bug that caused the episode ID to not show up in the watch
+      recordings screen under MythTV 0.23 and trunk.
+
+Modified build system
+    - Changed lists so that /usr/share/mythtv/myth* plugin directories are not
+      included unless the corresponding plugin is included.
+    - Removed -fuse-ld=gold and -fuse-linker-plugin from CFLAGS and CXXFLAGS as
+      they only really belong in LDFLAGS.
+    - Changed build system so that it clears and unexports Qt environment
+      variables (QMAKE* and QT*).
+    - Enabled parallel build of glibc packages.
+    - Disabled building static module-init-tools utilities as they are not
+      used, and builing them results in requiring the build host to have glibc
+      static libraries installed.
+
+Fixed build system
+    - Fixed an autoreconf bug in lib/libxml2 uncovered by switching all
+      possible packages that were dependent on lib/expat to be dependent on
+      lib/libxml2.
+    - Fixed a dependency bug in perl/perl-XML-Parser uncovered by switching all
+      possible packages that were dependent on lib/expat to be dependent on
+      lib/libxml2.
+    - Patched glibc so that it can build for i686 targets.
+    - Changed how devel/glibc-localedef-static is built so that it does not
+      fail to build due to it not building vm86.o.
+    - Fixed a bug in make 3.81 that would cause parallel building of packages
+      such as glibc to fail: <http://savannah.gnu.org/bugs/?18124>.
+    - Fixed a problem with gar.mk that caused it to not work with make 3.82.
+
+Removed packages
+    Removed emulators/sdlmame.
+    Removed kernel-2.6.34/*.
+    Removed kernel-headers/linux-headers-2.6.34.
+    Removed lib/libart.
+    Removed lib/libid3tag.
+    Removed myth-0.20/*.
+    Removed myth-0.20-softpad/*.
+    Removed myth-0.21/*.
+    Removed nvidia/nvidia-173.14.27.
+    Removed nvidia/nvidia-185.18.36.
+    Removed nvidia/nvidia-185.18.36.
+    Removed nvidia/nvidia-190.53.
+    Removed nvidia/nvidia-195.36.31.
+    Removed qt/qt3.
+
+Added packages
+    Added emulators/mame.
+    Added gtk/gdk-pixbuf.
+    Added nvidia/nvidia-173.14.28.
+    Added nvidia/nvidia-260.19.12.
+    Added python/python-oauth.
+    Added python/python-pycurl.
+    Added myth-0.23/mythnetvision.
+    Added myth-0.24/*.
+    Added myth-trunk/mythnetvision.
+    Added utils/xz.
+
+Updated packages
+    Updated db/mysql.
+    Updated db/sqlite.
+    Updated devel/autoconf.
+    Updated devel/libtool.
+    Updated devel/nasm.
+    Updated disk/hdparm.
+    Updated emulators/mednafen.
+    Updated emulators/stella.
+    Updated extras/libaacs.
+    Updated gtk/atk.
+    Updated gtk/cairo.
+    Updated gtk/glib.
+    Updated gtk/gtk.
+    Updated gtk/pango.
+    Updated kernel-2.6.35/linux.
+    Updated kernel-headers/linux-headers-2.6.35.
+    Updated lib/bluez.
+    Updated lib/dbus.
+    Updated lib/ffmpeg.
+    Updated lib/freetype.
+    Updated lib/libbluray.
+    Updated lib/libdvdnav.
+    Updated lib/libdvdread.
+    Updated lib/libpng.
+    Updated lib/libsndfile.
+    Updated lib/nss.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated mediaplayers/xine-lib.
+    Updated mediaplayers/xine-ui.
+    Updated myth-0.23/myththemes-blue-abstract-wide.
+    Updated myth-trunk/myththemes-blue-abstract-wide.
+    Updated net/curl.
+    Updated net/gpxe.
+    Updated net/iputils.
+    Updated net/mount.cifs.
+    Updated perl/perl.
+    Updated perl/perl-DateTime.
+    Updated perl/perl-DateTime-Format-Strptime.
+    Updated perl/perl-DateTime-TimeZone.
+    Updated perl/perl-DBI.
+    Updated perl/perl-libwww-perl.
+    Updated perl/perl-URI.
+    Updated python/python-distribute.
+    Updated qt/qt4.
+    Updated system/eventlircd.
+    Updated system/lirc.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/busybox.
+    Updated utils/bzip2.
+    Updated utils/coreutils.
+    Updated utils/grep.
+    Updated utils/lm_sensors.
+    Updated utils/squashfs.
+    Updated utils/tcl.
+    Updated X11/libvdpau.
+    Updated X11/x11vnc.
+    Updated X11/xscreensaver.
+    Updated X11/vdpau-video.
+    Updated xorg-7.4/font-alias
+    Updated xorg-7.4/font-bh-ttf
+    Updated xorg-7.4/font-cursor-misc
+    Updated xorg-7.4/font-misc-misc
+    Updated xorg-7.4/font-util
+    Updated xorg-7.4/glew.
+    Updated xorg-7.4/libICE.
+    Updated xorg-7.4/libX11.
+    Updated xorg-7.4/pixman.
+    Updated xorg-7.4/rgb.
+    Updated xorg-7.4/util-macros.
+    Updated xorg-7.4/xf86-video-ati.
+    Reverted xorg-7.4/xf86-video-intel.
+    Updated xorg-7.4/xlsclients.
+    Updated xorg-7.4/xmodmap.
+    Updated xorg-7.5/font-alias
+    Updated xorg-7.5/font-bh-ttf
+    Updated xorg-7.5/font-cursor-misc
+    Updated xorg-7.5/font-misc-misc
+    Updated xorg-7.5/font-util
+    Updated xorg-7.5/glew.
+    Updated xorg-7.5/libdrm.
+    Updated xorg-7.5/libICE.
+    Updated xorg-7.5/libX11.
+    Updated xorg-7.5/pixman.
+    Updated xorg-7.5/rgb.
+    Updated xorg-7.5/util-macros.
+    Updated xorg-7.5/xf86-video-ati.
+    Updated xorg-7.5/xf86-video-intel.
+    Updated xorg-7.5/xlsclients.
+    Updated xorg-7.5/xmodmap.
 
 --------------------------------------------------------------------------------
 Changes since 72 (2010-09-06):
