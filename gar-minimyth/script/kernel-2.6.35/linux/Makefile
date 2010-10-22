@@ -14,6 +14,7 @@ PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.6.patch
+PATCHFILES += $(DISTNAME)-unionfs_2.5.6_oops.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
