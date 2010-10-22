@@ -1,5 +1,5 @@
 GARNAME = libfontenc
-GARVERSION = 1.0.5
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib \
+DEPENDS   = lang/c lib/zlib \
+	$(CATEGORY)/font-util \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xproto
 
@@ -21,6 +22,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld
