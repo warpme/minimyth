@@ -55,9 +55,10 @@ endif
 
 include ../../gar.mk
 
-# GCC's link time optimization causes huludesktop to wedge in function g_datalist_set_flags.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile with GCC link time optimization, outputing the error:
+# "mem-overflow.c:137:1: sorry, unimplemented: gimple bytecode streams do not support the optimization attribute".
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
