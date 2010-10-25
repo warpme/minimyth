@@ -73,9 +73,9 @@ CXXFLAGS := $(PERL_CXXFLAGS)
 LDFLAGS  := $(PERL_LDFLAGS)
 
 configure-%/Makefile.PL:
-	@echo " ==> Running 'perl Makefile.PL' in $*"
-	@cd $* ; $(CONFIGURE_ENV) perl Makefile.PL $(CONFIGURE_ARGS)
-	@for file in `find $* -name Makefile` ; do \
+	echo " ==> Running 'perl Makefile.PL' in $*"
+	cd $* ; $(CONFIGURE_ENV) perl Makefile.PL $(CONFIGURE_ARGS)
+	for file in `find $* -name Makefile` ; do \
 		sed -i 's%^PERL_INC *= *%PERL_INC = $$(DESTDIR)%' $${file} ; \
 		sed -i 's%^PERL_ARCHLIB *= *%PERL_ARCHLIB = $$(DESTDIR)%' $${file} ; \
 		sed -i 's% \($(PERL_privlib)/ExtUtils/typemap\)% $$(DESTDIR)\1%' $${file} ; \
