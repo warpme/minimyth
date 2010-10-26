@@ -38,11 +38,6 @@ CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# Generates duplicate link time optimization symbols when compiled using GCC's link time optimization.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
-
 # The linker must the c++ because some of the object files are compiled as c++ using the c compiler.
 LD := $(CXX)
 
