@@ -20,11 +20,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
 
-# Fails to compile using the gold linker link time optimization plugin.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
-
 pre-configure:
 	@cd $(WORKSRC)/lib ; autoconf --verbose
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
