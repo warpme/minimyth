@@ -1,5 +1,5 @@
 GARNAME           = perl-DateTime
-GARVERSION        = 0.63
+GARVERSION        = 0.65
 MASTER_SITES      = http://www.cpan.org/authors/id/D/DR/DROLSKY/
 PERL_MODULE_STYLE = Build.PL
 DEPENDS           = perl/perl-DateTime-Locale perl/perl-DateTime-TimeZone perl/perl-Params-Validate
