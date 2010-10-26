@@ -1,9 +1,8 @@
 GARNAME = autoconf-archive
-GARVERSION = 2010.08.19
+GARVERSION = 2010.10.26
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-autoconf_2.65.patch
 LICENSE = GPL3
 
 DESCRIPTION = 
