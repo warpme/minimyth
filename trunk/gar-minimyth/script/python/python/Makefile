@@ -3,7 +3,7 @@ GARVERSION =  $(PYTHON_VERSION)
 CATEGORIES = python
 MASTER_SITES = http://www.python.org/ftp/python/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-configure.patch
+PATCHFILES  = $(DISTNAME)-parallel.patch $(DISTNAME)-configure.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
 endif
