@@ -1,8 +1,8 @@
 GARNAME = lirc
-GARVERSION = 0.8.7
+GARVERSION = 0.9.0-pre1
 CATEGORIES = system
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-#MASTER_SITES = http://www.lirc.org/software/snapshots/
+#MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://www.lirc.org/software/snapshots/
 #MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
@@ -54,6 +54,7 @@ x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
+	@mkdir -p $(WORKSRC)/m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
