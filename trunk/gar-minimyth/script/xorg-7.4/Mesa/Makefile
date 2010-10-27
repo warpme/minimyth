@@ -59,6 +59,16 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
+# Mesa 7.7.1 fails to compile with march=atom so replace with march=i686 or march=x86-64.
+CFLAGS   := $(if $(filter -march=atom, $(CFLAGS)), \
+                 $(if $(filter -m32, $(CFLAGS)), $(filter-out -march=atom, $(CFLAGS)) -march=i686) \
+                 $(if $(filter -m64, $(CFLAGS)), $(filter-out -march=atom, $(CFLAGS)) -march=x86-64), \
+                 $(CFLAGS))
+CXXFLAGS := $(if $(filter -march=atom, $(CXXFLAGS)), \
+                 $(if $(filter -m32, $(CXXFLAGS)), $(filter-out -march=atom, $(CXXFLAGS)) -march=i686) \
+                 $(if $(filter -m64, $(CXXFLAGS)), $(filter-out -march=atom, $(CXXFLAGS)) -march=x86-64), \
+                 $(CXXFLAGS))
+
 # Fails to compile using GCC's linker plugin due to segmentation fault.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
