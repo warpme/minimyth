@@ -1,6 +1,6 @@
 diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
---- Python-2.6.5-old/Makefile.pre.in	2009-12-24 06:19:38.000000000 -0800
-+++ Python-2.6.5-new/Makefile.pre.in	2010-06-30 09:05:15.000000000 -0700
+--- Python-2.6.5-old/Makefile.pre.in	2010-10-27 13:38:41.000000000 -0700
++++ Python-2.6.5-new/Makefile.pre.in	2010-10-27 13:39:53.000000000 -0700
 @@ -175,6 +175,7 @@
  
  PYTHON=		python$(EXE)
@@ -9,7 +9,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -206,6 +207,8 @@
+@@ -207,6 +208,8 @@
  # Parser
  PGEN=		Parser/pgen$(EXE)
  
@@ -18,7 +18,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  POBJS=		\
  		Parser/acceler.o \
  		Parser/grammar1.o \
-@@ -394,8 +397,8 @@
+@@ -395,8 +398,8 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
@@ -29,16 +29,16 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  	esac
  
  # Build static library
-@@ -517,7 +520,7 @@
+@@ -531,7 +534,7 @@
  
- $(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
+ $(GRAMMAR_STAMP): $(PGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
 -		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
 +		-$(HOSTPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 		touch $(GRAMMAR_STAMP)
  
  $(PGEN):	$(PGENOBJS)
- 		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
-@@ -886,24 +889,24 @@
+@@ -901,24 +904,24 @@
  		done; \
  	done
  	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
@@ -70,7 +70,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  
  # Create the PLATDIR source directory, if one wasn't distributed..
  $(srcdir)/Lib/$(PLATDIR):
-@@ -1001,7 +1004,8 @@
+@@ -1016,7 +1019,8 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -82,7 +82,7 @@ diff -Naur Python-2.6.5-old/Makefile.pre.in Python-2.6.5-new/Makefile.pre.in
  		--install-platlib=$(DESTSHARED) \
 diff -Naur Python-2.6.5-old/setup.py Python-2.6.5-new/setup.py
 --- Python-2.6.5-old/setup.py	2010-03-07 23:08:25.000000000 -0800
-+++ Python-2.6.5-new/setup.py	2010-06-30 09:05:15.000000000 -0700
++++ Python-2.6.5-new/setup.py	2010-10-27 13:39:05.000000000 -0700
 @@ -17,7 +17,7 @@
  from distutils.command.install_lib import install_lib
  
