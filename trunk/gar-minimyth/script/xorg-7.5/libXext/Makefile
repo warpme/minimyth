@@ -1,5 +1,5 @@
 GARNAME = libXext
-GARVERSION = 1.1.2
+GARVERSION = 1.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -24,9 +24,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
-	--disable-silent-rules \
 	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
