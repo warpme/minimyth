@@ -5,7 +5,10 @@ MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  =
+PATCHFILES  = \
+	$(DISTNAME)-dnsd.patch \
+	$(DISTNAME)-sort.patch \
+	$(DISTNAME)-unicode.patch
 PATCHFILES += $(DISTNAME)-check_cc.patch $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
 
