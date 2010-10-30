@@ -1,5 +1,5 @@
 GARNAME = libXtst
-GARVERSION = 1.1.0
+GARVERSION = 1.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -25,9 +25,11 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
-	--disable-silent-rules \
+	--with-xmlto \
+	--with-fop \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
