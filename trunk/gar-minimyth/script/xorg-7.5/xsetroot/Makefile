@@ -1,5 +1,5 @@
 GARNAME = xsetroot
-GARVERSION = 1.0.3
+GARVERSION = 1.1.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,6 +12,7 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libXcursor \
 	$(CATEGORY)/libXmu \
 	$(CATEGORY)/xbitmaps
 
