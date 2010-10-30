@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.8.2
+GARVERSION = 7.9
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
