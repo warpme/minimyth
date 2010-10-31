@@ -31,6 +31,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/Mesa \
 	$(CATEGORY)/pixman \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \
