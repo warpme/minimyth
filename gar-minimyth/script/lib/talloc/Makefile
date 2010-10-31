@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://samba.org/ftp/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-autoconf_tools.patch
-LICENSE = LGPL
+LICENSE = LGPL2_1
 
 DESCRIPTION =
 define BLURB
