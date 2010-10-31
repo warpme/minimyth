@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx lib/expat \
+DEPENDS    = lang/c lang/cxx lib/expat lib/talloc \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xorg-server \
