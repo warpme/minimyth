@@ -16,7 +16,6 @@ endef
 DEPENDS    = lang/c lang/cxx lib/expat lib/talloc \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xextproto \
-	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libX11 \
@@ -31,7 +30,7 @@ DEPENDS    = lang/c lang/cxx lib/expat lib/talloc \
 ifneq ($(DESTIMG),build)
 DEPENDS   += system/udev
 endif
-BUILDDEPS  = python/python-lxml \
+BUILDDEPS  = lib/libxml2 \
 	$(CATEGORY)/makedepend
 ifneq ($(DESTIMG),build)
 BUILDDEPS += $(CATEGORY)/Mesa
