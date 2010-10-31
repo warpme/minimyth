@@ -1,7 +1,15 @@
 diff -Naur Mesa-7.9-old/configs/default Mesa-7.9-new/configs/default
---- Mesa-7.9-old/configs/default	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/configs/default	2010-10-30 15:35:51.000000000 -0700
-@@ -82,8 +82,8 @@
+--- Mesa-7.9-old/configs/default	2010-10-04 18:58:00.000000000 -0700
++++ Mesa-7.9-new/configs/default	2010-10-31 05:49:34.000000000 -0700
+@@ -37,6 +37,7 @@
+ MKDEP = makedepend
+ MKDEP_OPTIONS = -fdepend
+ MAKE = make
++PKG_CONFIG = pkg-config
+ 
+ # Use MINSTALL for installing libraries, INSTALL for everything else
+ MINSTALL = $(SHELL) $(TOP)/bin/minstall
+@@ -82,8 +83,8 @@
  GLESv2_LIB_GLOB = $(GLESv2_LIB_NAME)*
  VG_LIB_GLOB = $(VG_LIB_NAME)*
  
@@ -13,8 +21,8 @@ diff -Naur Mesa-7.9-old/configs/default Mesa-7.9-new/configs/default
  # Optional assembly language optimization files for libGL
  MESA_ASM_SOURCES = 
 diff -Naur Mesa-7.9-old/configs/freebsd-dri Mesa-7.9-new/configs/freebsd-dri
---- Mesa-7.9-old/configs/freebsd-dri	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/configs/freebsd-dri	2010-10-30 15:35:54.000000000 -0700
+--- Mesa-7.9-old/configs/freebsd-dri	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/configs/freebsd-dri	2010-10-31 05:48:47.000000000 -0700
 @@ -30,8 +30,8 @@
  MESA_ASM_SOURCES = 
  
@@ -27,8 +35,8 @@ diff -Naur Mesa-7.9-old/configs/freebsd-dri Mesa-7.9-new/configs/freebsd-dri
  GL_LIB_DEPS = -L/usr/local/lib -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
  	-lm -pthread $(LIBDRM_LIB)
 diff -Naur Mesa-7.9-old/configs/linux-dri Mesa-7.9-new/configs/linux-dri
---- Mesa-7.9-old/configs/linux-dri	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/configs/linux-dri	2010-10-30 15:36:23.000000000 -0700
+--- Mesa-7.9-old/configs/linux-dri	2010-10-04 18:58:00.000000000 -0700
++++ Mesa-7.9-new/configs/linux-dri	2010-10-31 05:48:47.000000000 -0700
 @@ -43,8 +43,8 @@
  # Library/program dependencies
  EXTRA_LIB_PATH=-L/usr/X11R6/lib
@@ -54,8 +62,8 @@ diff -Naur Mesa-7.9-old/configs/linux-dri Mesa-7.9-new/configs/linux-dri
 +RADEON_LIBS = `$(PKG_CONFIG) --libs libdrm_radeon`
 +RADEON_CFLAGS = `$(PKG_CONFIG) --cflags libdrm_radeon`
 diff -Naur Mesa-7.9-old/configs/linux-dri-xcb Mesa-7.9-new/configs/linux-dri-xcb
---- Mesa-7.9-old/configs/linux-dri-xcb	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/configs/linux-dri-xcb	2010-10-30 15:37:32.000000000 -0700
+--- Mesa-7.9-old/configs/linux-dri-xcb	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/configs/linux-dri-xcb	2010-10-31 05:48:47.000000000 -0700
 @@ -25,7 +25,7 @@
  	-DGLX_DIRECT_RENDERING -DGLX_INDIRECT_RENDERING \
          -DHAVE_ALIAS -DUSE_XCB -DHAVE_POSIX_MEMALIGN
@@ -84,8 +92,8 @@ diff -Naur Mesa-7.9-old/configs/linux-dri-xcb Mesa-7.9-new/configs/linux-dri-xcb
  SRC_DIRS = glx gallium mesa glu glut/glx glw
  
 diff -Naur Mesa-7.9-old/configs/linux-egl Mesa-7.9-new/configs/linux-egl
---- Mesa-7.9-old/configs/linux-egl	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/configs/linux-egl	2010-10-30 15:37:52.000000000 -0700
+--- Mesa-7.9-old/configs/linux-egl	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/configs/linux-egl	2010-10-31 05:48:47.000000000 -0700
 @@ -38,8 +38,8 @@
  # Library/program dependencies
  EXTRA_LIB_PATH=-L/usr/X11R6/lib
@@ -98,8 +106,8 @@ diff -Naur Mesa-7.9-old/configs/linux-egl Mesa-7.9-new/configs/linux-egl
  GL_LIB_DEPS   = $(EXTRA_LIB_PATH) -lX11 -lXext -lXxf86vm -lXdamage -lXfixes \
  		-lm -lpthread -ldl \
 diff -Naur Mesa-7.9-old/src/gallium/drivers/r600/Makefile Mesa-7.9-new/src/gallium/drivers/r600/Makefile
---- Mesa-7.9-old/src/gallium/drivers/r600/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/drivers/r600/Makefile	2010-10-30 15:41:30.000000000 -0700
+--- Mesa-7.9-old/src/gallium/drivers/r600/Makefile	2010-10-04 18:58:00.000000000 -0700
++++ Mesa-7.9-new/src/gallium/drivers/r600/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -4,7 +4,7 @@
  LIBNAME = r600
  
@@ -110,8 +118,8 @@ diff -Naur Mesa-7.9-old/src/gallium/drivers/r600/Makefile Mesa-7.9-new/src/galli
  C_SOURCES = \
  	r600_buffer.c \
 diff -Naur Mesa-7.9-old/src/gallium/state_trackers/dri/drm/Makefile Mesa-7.9-new/src/gallium/state_trackers/dri/drm/Makefile
---- Mesa-7.9-old/src/gallium/state_trackers/dri/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/state_trackers/dri/drm/Makefile	2010-10-30 15:41:46.000000000 -0700
+--- Mesa-7.9-old/src/gallium/state_trackers/dri/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/state_trackers/dri/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -10,7 +10,7 @@
  	-I$(TOP)/src/gallium/state_trackers/dri/common \
  	-I$(TOP)/src/mesa/drivers/dri/common \
@@ -122,8 +130,8 @@ diff -Naur Mesa-7.9-old/src/gallium/state_trackers/dri/drm/Makefile Mesa-7.9-new
  
  C_SOURCES = \
 diff -Naur Mesa-7.9-old/src/gallium/state_trackers/egl/Makefile Mesa-7.9-new/src/gallium/state_trackers/egl/Makefile
---- Mesa-7.9-old/src/gallium/state_trackers/egl/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/state_trackers/egl/Makefile	2010-10-30 15:42:16.000000000 -0700
+--- Mesa-7.9-old/src/gallium/state_trackers/egl/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/state_trackers/egl/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -17,14 +17,14 @@
  	-I$(TOP)/src/mapi \
  	-I$(TOP)/src/mesa \
@@ -142,8 +150,8 @@ diff -Naur Mesa-7.9-old/src/gallium/state_trackers/egl/Makefile Mesa-7.9-new/src
  drm_OBJECTS = $(drm_SOURCES:.c=.o)
  
 diff -Naur Mesa-7.9-old/src/gallium/state_trackers/xorg/Makefile Mesa-7.9-new/src/gallium/state_trackers/xorg/Makefile
---- Mesa-7.9-old/src/gallium/state_trackers/xorg/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/state_trackers/xorg/Makefile	2010-10-30 15:43:10.000000000 -0700
+--- Mesa-7.9-old/src/gallium/state_trackers/xorg/Makefile	2010-03-30 15:40:35.000000000 -0700
++++ Mesa-7.9-new/src/gallium/state_trackers/xorg/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -5,12 +5,12 @@
  
  LIBRARY_INCLUDES = \
@@ -164,8 +172,8 @@ diff -Naur Mesa-7.9-old/src/gallium/state_trackers/xorg/Makefile Mesa-7.9-new/sr
  	-I$(TOP)/src/gallium/auxiliary \
  	-I$(TOP)/include \
 diff -Naur Mesa-7.9-old/src/gallium/targets/dri-nouveau/Makefile Mesa-7.9-new/src/gallium/targets/dri-nouveau/Makefile
---- Mesa-7.9-old/src/gallium/targets/dri-nouveau/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/dri-nouveau/Makefile	2010-10-30 15:39:57.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/dri-nouveau/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/dri-nouveau/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -22,6 +22,6 @@
  
  include ../Makefile.dri
@@ -175,8 +183,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/dri-nouveau/Makefile Mesa-7.9-new/sr
  
  symlinks:
 diff -Naur Mesa-7.9-old/src/gallium/targets/Makefile.xorg Mesa-7.9-new/src/gallium/targets/Makefile.xorg
---- Mesa-7.9-old/src/gallium/targets/Makefile.xorg	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/Makefile.xorg	2010-10-30 15:39:26.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/Makefile.xorg	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/Makefile.xorg	2010-10-31 05:48:47.000000000 -0700
 @@ -19,7 +19,7 @@
  	$(ASM_SOURCES:.S=.o)
  
@@ -187,8 +195,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/Makefile.xorg Mesa-7.9-new/src/galli
  	-I$(TOP)/src/gallium/drivers \
  	-I$(TOP)/src/gallium/auxiliary \
 diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-i915/Makefile Mesa-7.9-new/src/gallium/targets/xorg-i915/Makefile
---- Mesa-7.9-old/src/gallium/targets/xorg-i915/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/xorg-i915/Makefile	2010-10-30 15:40:11.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/xorg-i915/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/xorg-i915/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -19,6 +19,6 @@
  	$(TOP)/src/gallium/drivers/rbug/librbug.a
  
@@ -198,8 +206,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-i915/Makefile Mesa-7.9-new/src/
  
  include ../Makefile.xorg
 diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-i965/Makefile Mesa-7.9-new/src/gallium/targets/xorg-i965/Makefile
---- Mesa-7.9-old/src/gallium/targets/xorg-i965/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/xorg-i965/Makefile	2010-10-30 15:40:30.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/xorg-i965/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/xorg-i965/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -21,6 +21,6 @@
  	$(TOP)/src/gallium/drivers/softpipe/libsoftpipe.a
  
@@ -209,8 +217,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-i965/Makefile Mesa-7.9-new/src/
  
  include ../Makefile.xorg
 diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-nouveau/Makefile Mesa-7.9-new/src/gallium/targets/xorg-nouveau/Makefile
---- Mesa-7.9-old/src/gallium/targets/xorg-nouveau/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/xorg-nouveau/Makefile	2010-10-30 15:40:44.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/xorg-nouveau/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/xorg-nouveau/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -20,6 +20,6 @@
  	$(TOP)/src/gallium/drivers/rbug/librbug.a
  
@@ -220,8 +228,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-nouveau/Makefile Mesa-7.9-new/s
  
  include ../Makefile.xorg
 diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-radeon/Makefile Mesa-7.9-new/src/gallium/targets/xorg-radeon/Makefile
---- Mesa-7.9-old/src/gallium/targets/xorg-radeon/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/xorg-radeon/Makefile	2010-10-30 15:40:57.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/xorg-radeon/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/xorg-radeon/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -19,6 +19,6 @@
  	$(TOP)/src/gallium/drivers/rbug/librbug.a
  
@@ -231,8 +239,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-radeon/Makefile Mesa-7.9-new/sr
  
  include ../Makefile.xorg
 diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-vmwgfx/Makefile Mesa-7.9-new/src/gallium/targets/xorg-vmwgfx/Makefile
---- Mesa-7.9-old/src/gallium/targets/xorg-vmwgfx/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/targets/xorg-vmwgfx/Makefile	2010-10-30 15:41:11.000000000 -0700
+--- Mesa-7.9-old/src/gallium/targets/xorg-vmwgfx/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/targets/xorg-vmwgfx/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -28,6 +28,6 @@
  	$(TOP)/src/gallium/drivers/rbug/librbug.a
  
@@ -242,8 +250,8 @@ diff -Naur Mesa-7.9-old/src/gallium/targets/xorg-vmwgfx/Makefile Mesa-7.9-new/sr
  
  include ../Makefile.xorg
 diff -Naur Mesa-7.9-old/src/gallium/winsys/i915/drm/Makefile Mesa-7.9-new/src/gallium/winsys/i915/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/i915/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/i915/drm/Makefile	2010-10-30 15:43:26.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/i915/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/i915/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -9,8 +9,8 @@
  	i915_drm_fence.c \
  	i915_drm_winsys.c
@@ -256,8 +264,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/i915/drm/Makefile Mesa-7.9-new/src/ga
  
  include ../../../Makefile.template
 diff -Naur Mesa-7.9-old/src/gallium/winsys/i965/drm/Makefile Mesa-7.9-new/src/gallium/winsys/i965/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/i965/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/i965/drm/Makefile	2010-10-30 15:43:45.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/i965/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/i965/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -7,8 +7,8 @@
  	i965_drm_buffer.c \
  	i965_drm_winsys.c
@@ -270,8 +278,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/i965/drm/Makefile Mesa-7.9-new/src/ga
  
  include ../../../Makefile.template
 diff -Naur Mesa-7.9-old/src/gallium/winsys/nouveau/drm/Makefile Mesa-7.9-new/src/gallium/winsys/nouveau/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/nouveau/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/nouveau/drm/Makefile	2010-10-30 15:44:04.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/nouveau/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/nouveau/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -5,7 +5,7 @@
  
  C_SOURCES = nouveau_drm_winsys.c
@@ -283,8 +291,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/nouveau/drm/Makefile Mesa-7.9-new/src
  
  include ../../../Makefile.template
 diff -Naur Mesa-7.9-old/src/gallium/winsys/r600/drm/Makefile Mesa-7.9-new/src/gallium/winsys/r600/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/r600/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/r600/drm/Makefile	2010-10-30 15:44:14.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/r600/drm/Makefile	2010-10-04 18:58:00.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/r600/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -16,7 +16,7 @@
  	r600_drm.c
  
@@ -295,8 +303,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/r600/drm/Makefile Mesa-7.9-new/src/ga
  include ../../../Makefile.template
  
 diff -Naur Mesa-7.9-old/src/gallium/winsys/radeon/drm/Makefile Mesa-7.9-new/src/gallium/winsys/radeon/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/radeon/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/radeon/drm/Makefile	2010-10-30 15:44:24.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/radeon/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/radeon/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -10,7 +10,7 @@
  	radeon_r300.c
  
@@ -307,8 +315,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/radeon/drm/Makefile Mesa-7.9-new/src/
  include ../../../Makefile.template
  
 diff -Naur Mesa-7.9-old/src/gallium/winsys/svga/drm/Makefile Mesa-7.9-new/src/gallium/winsys/svga/drm/Makefile
---- Mesa-7.9-old/src/gallium/winsys/svga/drm/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/gallium/winsys/svga/drm/Makefile	2010-10-30 15:44:39.000000000 -0700
+--- Mesa-7.9-old/src/gallium/winsys/svga/drm/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/gallium/winsys/svga/drm/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -17,11 +17,11 @@
  LIBRARY_INCLUDES = \
         -I$(TOP)/src/gallium/drivers/svga \
@@ -324,8 +332,8 @@ diff -Naur Mesa-7.9-old/src/gallium/winsys/svga/drm/Makefile Mesa-7.9-new/src/ga
  
  include ../../../Makefile.template
 diff -Naur Mesa-7.9-old/src/mesa/drivers/dri/i915/Makefile Mesa-7.9-new/src/mesa/drivers/dri/i915/Makefile
---- Mesa-7.9-old/src/mesa/drivers/dri/i915/Makefile	2010-10-30 15:32:42.000000000 -0700
-+++ Mesa-7.9-new/src/mesa/drivers/dri/i915/Makefile	2010-10-30 15:38:38.000000000 -0700
+--- Mesa-7.9-old/src/mesa/drivers/dri/i915/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/mesa/drivers/dri/i915/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -57,8 +57,8 @@
  ASM_SOURCES = 
  
@@ -338,8 +346,8 @@ diff -Naur Mesa-7.9-old/src/mesa/drivers/dri/i915/Makefile Mesa-7.9-new/src/mesa
  INCLUDES += $(INTEL_CFLAGS)
  DRI_LIB_DEPS += $(INTEL_LIBS)
 diff -Naur Mesa-7.9-old/src/mesa/drivers/dri/nouveau/Makefile Mesa-7.9-new/src/mesa/drivers/dri/nouveau/Makefile
---- Mesa-7.9-old/src/mesa/drivers/dri/nouveau/Makefile	2010-10-30 15:32:43.000000000 -0700
-+++ Mesa-7.9-new/src/mesa/drivers/dri/nouveau/Makefile	2010-10-30 15:39:07.000000000 -0700
+--- Mesa-7.9-old/src/mesa/drivers/dri/nouveau/Makefile	2010-10-01 15:51:28.000000000 -0700
++++ Mesa-7.9-new/src/mesa/drivers/dri/nouveau/Makefile	2010-10-31 05:48:47.000000000 -0700
 @@ -3,8 +3,8 @@
  TOP = ../../../../..
  include $(TOP)/configs/current

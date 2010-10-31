@@ -31,7 +31,8 @@ DEPENDS    = lang/c lang/cxx lib/expat lib/talloc \
 ifneq ($(DESTIMG),build)
 DEPENDS   += system/udev
 endif
-BUILDDEPS  = $(CATEGORY)/makedepend
+BUILDDEPS  = python/python-lxml \
+	$(CATEGORY)/makedepend
 ifneq ($(DESTIMG),build)
 BUILDDEPS += $(CATEGORY)/Mesa
 endif
