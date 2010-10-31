@@ -15,11 +15,17 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
-	--with-gnu-ld \
+	--with-gnu-ld
+ifeq ($(DESTIMG),build)
+CONFIGURE_ARGS += \
+	--with-python
+else
+CONFIGURE_ARGS += \
 	--without-python
+endif
 
 include ../../gar.mk
 
