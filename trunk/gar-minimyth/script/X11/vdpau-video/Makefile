@@ -3,7 +3,7 @@ GARVERSION = 0.7.2
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-install.patch
+PATCHFILES = $(DISTNAME)-utils_glx_h.patch $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
