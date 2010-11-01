@@ -20,7 +20,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fixesproto \
-	$(CATEGORY)/fontutil \
+	$(CATEGORY)/font-util \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/inputproto \
@@ -134,9 +134,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
 	--with-serverconfig-path="$(libdir)/xserver" \
 	--with-dri-driver-path="$(libdir)/xorg/modules/dri" \
-	--with-ps2pdf \
-	--with-xmlto \
-	--with-fop \
+	--without-ps2pdf \
+	--without-xmlto \
+	--without-fop \
 	--with-sha1=libcrypto
 
 CONFIGURE_ENV = \
@@ -159,6 +159,7 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfbdevhw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libint10.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadow.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libshadowfb.la
@@ -167,7 +168,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/linux/libfbdevhw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/msp3430_drv.la
