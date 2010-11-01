@@ -1,5 +1,5 @@
 GARNAME = libvorbis
-GARVERSION = 1.3.1
+GARVERSION = 1.3.2
 CATEGORIES = lib
 MASTER_SITES = http://downloads.xiph.org/releases/vorbis/
 DISTFILES = $(DISTNAME).tar.gz
@@ -25,9 +25,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
-
-# Fails to compile with GCC's Os optimization, so convert it to O2 optimization.
-CFLAGS := $(if $(filter -Os, $(CFLAGS)), $(filter-out -O%, $(CFLAGS)) -O2)
 
 pre-configure:
 	@cd $(WORKSRC) ; rm -f m4/ogg.m4
