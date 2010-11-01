@@ -1,0 +1,12 @@
+diff -Naur linux-2.6.36-old/fs/unionfs/super.c linux-2.6.36-new/fs/unionfs/super.c
+--- linux-2.6.36-old/fs/unionfs/super.c	2010-11-01 10:02:39.000000000 -0700
++++ linux-2.6.36-new/fs/unionfs/super.c	2010-11-01 10:03:54.000000000 -0700
+@@ -861,6 +861,8 @@
+ 
+ 	kfree(UNIONFS_I(inode)->lower_inodes);
+ 	UNIONFS_I(inode)->lower_inodes = NULL;
++	truncate_inode_pages(inode->i_mapping, 0);
++	end_writeback(inode);
+ }
+ 
+ static struct inode *unionfs_alloc_inode(struct super_block *sb)
