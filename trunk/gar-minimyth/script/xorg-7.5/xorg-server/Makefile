@@ -134,7 +134,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
 	--with-serverconfig-path="$(libdir)/xserver" \
 	--with-dri-driver-path="$(libdir)/xorg/modules/dri" \
-	--without-ps2pdf \
 	--without-xmlto \
 	--without-fop \
 	--with-sha1=libcrypto
