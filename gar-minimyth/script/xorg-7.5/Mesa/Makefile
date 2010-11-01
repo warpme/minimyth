@@ -42,9 +42,6 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
-ifeq ($(DESTIMG),build)
-INSTALL_SCRIPTS   += glsl-compile
-endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
@@ -66,9 +63,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 BUILD_ARGS  = \
 	HOST_CC="$(build_CC)" \
 	HOST_CFLAGS="$(build_CFLAGS)"
-ifneq ($(DESTIMG),build)
-BUILD_ARGS += GLSL_CL=$(build_DESTDIR)$(build_bindir)/glsl-compile
-endif
 
 include ../../gar.mk
 
@@ -96,9 +90,4 @@ install-source:
 	@mkdir -p $(DESTDIR)$(sourcedir)
 	@rm -f $(DESTDIR)$(sourcedir)/Mesa
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/Mesa
-	@$(MAKECOOKIE)
-
-install-glsl-compile:
-	@mkdir -p $(DESTDIR)$(bindir)
-	@cp -f $(WORKSRC)/src/glsl/apps/compile $(DESTDIR)$(bindir)/glsl-compile
 	@$(MAKECOOKIE)
