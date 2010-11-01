@@ -1,5 +1,5 @@
 GARNAME = xinit
-GARVERSION = 1.2.1
+GARVERSION = 1.3.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -24,3 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)
