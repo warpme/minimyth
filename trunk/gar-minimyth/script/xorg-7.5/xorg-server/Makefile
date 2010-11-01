@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.8.2
+GARVERSION = 1.9.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,6 +20,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fixesproto \
+	$(CATEGORY)/fontutil \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/inputproto \
@@ -28,7 +29,6 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXau \
-	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
 	$(CATEGORY)/Mesa \
@@ -42,6 +42,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
+	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xf86dgaproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xf86vidmodeproto \
@@ -61,7 +62,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--cache-file=config.cache \
 	--disable-strict-compilation \
 	--disable-silent-rules \
 	--disable-static \
@@ -97,7 +97,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xcsecurity \
 	--disable-xcalibrate \
 	--disable-tslib \
-	--disable-multibuffer \
 	--enable-dbe \
 	--enable-xf86bigfont \
 	--enable-dpms \
@@ -110,6 +109,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vbe \
 	--enable-int10-module \
 	--disable-windowswm \
+	--enable-libdrm \
 	--enable-xorg \
 	--disable-dmx \
 	--disable-xvfb \
@@ -127,12 +127,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ipv6 \
 	--disable-local-transport \
 	--disable-secure-rpc \
+	--disable-devel-docs \
 	--with-gnu-ld \
 	--with-default-font-path="$(datadir)/fonts/X11/TTF,$(datadir)/fonts/X11/misc" \
 	--with-xkb-path="$(datadir)/X11/xkb" \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
 	--with-serverconfig-path="$(libdir)/xserver" \
-	--with-dri-driver-path="$(libdir)/xorg/modules/dri"
+	--with-dri-driver-path="$(libdir)/xorg/modules/dri" \
+	--with-ps2pdf \
+	--with-xmlto \
+	--with-fop \
+	--with-sha1=libcrypto
 
 CONFIGURE_ENV = \
 	XORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
@@ -143,8 +148,6 @@ include ../../gar.mk
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@rm -f $(WORKSRC)/config.cache
-	@#echo "ac_cv_sys_linker_h=no" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
