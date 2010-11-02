@@ -9,7 +9,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib
+DEPENDS  = lang/c lib/zlib
+ifeq ($(DESTIMG),build)
+DEPENDS += python/python
+endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
