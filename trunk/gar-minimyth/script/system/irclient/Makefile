@@ -1,5 +1,5 @@
 GARNAME = irclient
-GARVERSION = 20100630
+GARVERSION = 20101101
 CATEGORIES = system
 # This site lacks a version number so we will download it from www.minimyth.org.
 #MASTER_SITES = http://www.irtrans.de/download/Client/
