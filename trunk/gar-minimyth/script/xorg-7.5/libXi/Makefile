@@ -1,5 +1,5 @@
 GARNAME = libXi
-GARVERSION = 1.3.2
+GARVERSION = 1.4.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -14,6 +14,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
 
@@ -24,9 +25,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
-	--disable-silent-rules \
 	--enable-malloc0returnsnull \
 	--with-gnu-ld
 
