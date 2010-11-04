@@ -9,6 +9,7 @@ PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-input_io_nr_type.patch
 PATCHFILES += $(DISTNAME)-posix_types_fd_type.patch
+PATCHFILES += $(DISTNAME)-r8168_8.019.00.patch
 PATCHFILES += $(DISTNAME)-squashfs_lzma.patch
 PATCHFILES += $(DISTNAME)-bttv_lirc.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
