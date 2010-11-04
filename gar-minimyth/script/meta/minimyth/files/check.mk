@@ -189,7 +189,7 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_NVIDIA_VERSION"
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "96.43.18"  ] && \
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "96.43.19"  ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "173.14.28" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "256.53"    ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "260.19.12" ] ; then \
