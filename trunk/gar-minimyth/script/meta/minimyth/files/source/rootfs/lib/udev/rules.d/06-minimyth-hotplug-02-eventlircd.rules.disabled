@@ -7,6 +7,10 @@ ATTRS{name}=="eventlircd", GOTO="end"
 # Devices blacklisted in minimyth.conf.
 @MM_LIRC_BLACKLIST@
 
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="rc", \
+  ENV{eventlircd_enable}="true", \
+  ENV{eventlircd_evmap}="default.evmap"
+
 # Device configured in minimyth.conf.
 @MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin-conf"
 @MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin-conf"
