@@ -7,8 +7,9 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-dnsd.patch \
-	$(DISTNAME)-sort.patch \
 	$(DISTNAME)-iproute.patch \
+	$(DISTNAME)-ls.patch \
+	$(DISTNAME)-sort.patch \
 	$(DISTNAME)-unicode.patch
 PATCHFILES += $(DISTNAME)-check_cc.patch $(DISTNAME)-dhcp_log_server.patch $(DISTNAME)-dhcp_tcode.patch $(DISTNAME)-tftp_timeout.patch
 LICENSE = GPL2
