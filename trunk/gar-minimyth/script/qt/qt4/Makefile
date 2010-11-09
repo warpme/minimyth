@@ -1,12 +1,11 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.7.0
+GARVERSION = 4.7.1
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
-	$(DISTNAME)-webkit_changeset_62185.patch \
-	$(DISTNAME)-webkit_changeset_65586.patch
+	$(DISTNAME)-webkit_changeset_62185.patch
 PATCHFILES += $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
