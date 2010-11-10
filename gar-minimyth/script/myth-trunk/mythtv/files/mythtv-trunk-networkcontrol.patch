@@ -1,6 +1,6 @@
-diff -Naur mythtv-trunk-27112-old/programs/mythfrontend/main.cpp mythtv-trunk-27112-new/programs/mythfrontend/main.cpp
---- mythtv-trunk-27112-old/programs/mythfrontend/main.cpp	2010-11-07 06:06:26.000000000 -0800
-+++ mythtv-trunk-27112-new/programs/mythfrontend/main.cpp	2010-11-07 06:06:27.000000000 -0800
+diff -Naur mythtv-trunk-27166-old/programs/mythfrontend/main.cpp mythtv-trunk-27166-new/programs/mythfrontend/main.cpp
+--- mythtv-trunk-27166-old/programs/mythfrontend/main.cpp	2010-11-10 14:33:37.000000000 -0800
++++ mythtv-trunk-27166-new/programs/mythfrontend/main.cpp	2010-11-10 14:33:38.000000000 -0800
 @@ -1,10 +1,13 @@
  
  #include <unistd.h>
@@ -15,7 +15,7 @@ diff -Naur mythtv-trunk-27112-old/programs/mythfrontend/main.cpp mythtv-trunk-27
  #include <iostream>
  using namespace std;
  
-@@ -1417,15 +1420,71 @@
+@@ -1432,19 +1435,77 @@
          mainWindow->installEventFilter(mon);
      }
  
@@ -91,18 +91,14 @@ diff -Naur mythtv-trunk-27112-old/programs/mythfrontend/main.cpp mythtv-trunk-27
 +        }
      }
  
-     themename = gCoreContext->GetSetting("Theme", DEFAULT_UI_THEME);
-@@ -1439,7 +1498,8 @@
- 
      if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
      {
--        delete networkControl;
 +        while (!networkControls.isEmpty())
 +            delete networkControls.takeFirst();
          return FRONTEND_EXIT_NO_THEME;
      }
  
-@@ -1473,7 +1533,8 @@
+@@ -1478,7 +1539,8 @@
          pthread_join(priv_thread, NULL);
      }
  

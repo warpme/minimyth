@@ -8,7 +8,6 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-codec_id_svq3_fix.patch \
 	$(DISTNAME_SHORT)-python_build.patch \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
-	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
