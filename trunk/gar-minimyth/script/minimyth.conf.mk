@@ -122,7 +122,7 @@ mm_KERNEL_VERSION         ?= 2.6.36
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
 # Valid values are '0.22', '0.23', '0.24' and 'trunk'.
-mm_MYTH_VERSION           ?= 0.23
+mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
 # Valid values are '96.43.19' (pre-release, legacy), '173.14.28' (legacy), '256.53', '260.19.12', '260.19.21' (pre-release)
 mm_NVIDIA_VERSION         ?= 260.19.21
