@@ -1,5 +1,5 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 856
+GARVERSION = 874
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
 MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+xDEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -20,14 +20,11 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
-	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
-BUILDDEPS = \
-	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
