@@ -1,5 +1,5 @@
 GARNAME = libbluray
-GARVERSION = c32862b77dea4eac592f41368157889d77710b22
+GARVERSION = 24f5fa1e65fefb5423fa7c275256b5c0b1d93410
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/libbluray.git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,10 +18,10 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-dlopen-crypto-libs \
 	--disable-werror \
 	--disable-extra-warnings \
 	--disable-optimizations \
+	--disable-examples \
 	--disable-debug \
 	--disable-bdjava \
 	--enable-shared \
@@ -36,6 +36,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-doxygen-html \
 	--disable-doxygen-ps \
 	--disable-doxygen-pdf \
+	--with-dlopen-crypto-libs \
 	--with-gnu-ld
 
 include ../../gar.mk
