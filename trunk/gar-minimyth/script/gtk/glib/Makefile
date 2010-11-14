@@ -1,5 +1,5 @@
 GARNAME = glib
-GARVERSION = 2.26.0
+GARVERSION = 2.26.1
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.26/
 DISTFILES = $(DISTNAME).tar.bz2
