@@ -72,7 +72,7 @@ if ($minimyth->application_running('irexec'))
     }
 }
 
-# Stop mm_sleep_on_ss so that it does not immediately send the system back to sleep.
+# Stop mm_sleep_on_ss so that it does not immediately sleep after waking from sleep.
 if ($minimyth->application_running('mm_sleep_on_ss'))
 {
     if (open(FILE, '>', "/var/lib/mm_sleep.$$/mm_sleep_on_ss"))
@@ -86,6 +86,23 @@ if ($minimyth->application_running('mm_sleep_on_ss'))
     while ($minimyth->application_running('mm_sleep_on_ss'))
     {
         $minimyth->application_stop('mm_sleep_on_ss');
+    }
+}
+
+# Stop mm_off_on_ss so that it does not immediately power off after waking from sleep.
+if ($minimyth->application_running('mm_off_on_ss'))
+{
+    if (open(FILE, '>', "/var/lib/mm_sleep.$$/mm_off_on_ss"))
+    {
+        foreach (@{$minimyth->application_cmds('mm_off_on_ss')})
+        {
+            print FILE "$_\n";
+        }
+        close(FILE);
+    }
+    while ($minimyth->application_running('mm_off_on_ss'))
+    {
+        $minimyth->application_stop('mm_off_on_ss');
     }
 }
 
@@ -145,6 +162,24 @@ if ($minimyth->var_get('MM_X_RESTART_ON_SLEEP_ENABLED') eq 'yes')
 
 # Deactivate any screensavers.
 $minimyth->x_screensaver_deactivate();
+
+# If mm_off_on_ss was running before suspend, then restart it.
+if (-e "/var/lib/mm_sleep.$$/mm_off_on_ss")
+{
+    if (! $minimyth->application_running('mm_off_on_ss'))
+    {
+        if (open(FILE, '<', "/var/lib/mm_sleep.$$/mm_off_on_ss"))
+        {
+            while(<FILE>)
+            {
+                chomp;
+                system($_);
+            }
+            close(FILE);
+        }
+    }
+    unlink("/var/lib/mm_sleep.$$/mm_off_on_ss");
+}
 
 # If mm_sleep_on_ss was running before suspend, then restart it.
 if (-e "/var/lib/mm_sleep.$$/mm_sleep_on_ss")

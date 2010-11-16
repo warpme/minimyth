@@ -2408,9 +2408,14 @@ sub x_start
     system(qq(/bin/su -c '/usr/bin/nohup /usr/bin/xinit > $devnull 2>&1 &' - minimyth));
 
     $self->application_stop('mm_sleep_on_ss');
+    $self->application_stop('mm_off_on_ss');
     if ($self->var_get('MM_X_SCREENSAVER_HACK') eq 'sleep')
     {
         system(qq(/usr/bin/mm_sleep_on_ss));
+    }
+    if ($self->var_get('MM_X_SCREENSAVER_HACK') eq 'off')
+    {
+        system(qq(/usr/bin/mm_off_on_ss));
     }
 
     return 1;
@@ -2446,6 +2451,7 @@ sub x_stop
     }
 
     $self->application_stop('mm_sleep_on_ss');
+    $self->application_stop('mm_off_on_ss');
 
     # Only stop X if X is running.
     if (! $self->application_running('X'))
