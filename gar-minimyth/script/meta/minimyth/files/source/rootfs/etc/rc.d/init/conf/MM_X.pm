@@ -64,7 +64,7 @@ $var_list{'MM_X_SCREENSAVER_TIMEOUT'} =
 $var_list{'MM_X_SCREENSAVER_HACK'} =
 {
     value_default => 'blank',
-    value_valid   => 'sleep|blank|glslideshow'
+    value_valid   => 'off|sleep|blank|glslideshow'
 };
 $var_list{'MM_X_MYTH_PROGRAM'} =
 {

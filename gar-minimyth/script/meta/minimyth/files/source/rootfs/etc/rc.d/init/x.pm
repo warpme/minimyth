@@ -30,6 +30,15 @@ sub start
 
     given ($minimyth->var_get('MM_X_SCREENSAVER_HACK'))
     {
+        when (/^off$/)
+        {
+            $minimyth->file_replace_variable(
+                '/home/minimyth/.xscreensaver',
+                { '@MODE@'                        => 'blank',
+                  '@SELECTED@'                    => '0',
+                  '@MM_X_SCREENSAVER_TIMEOUT@'    => $minimyth->var_get('MM_X_SCREENSAVER_TIMEOUT'),
+                  '@MM_MEDIA_GALLERY_MOUNTPOINT@' => $minimyth->var_get('MM_MEDIA_GALLERY_MOUNTPOINT') });
+        }
         when (/^sleep$/)
         {
             $minimyth->file_replace_variable(
