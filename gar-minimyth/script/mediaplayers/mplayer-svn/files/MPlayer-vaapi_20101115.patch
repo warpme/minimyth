@@ -1,6 +1,6 @@
 diff -Naur MPlayer-32628-old/cfg-common.h MPlayer-32628-new/cfg-common.h
---- MPlayer-32628-old/cfg-common.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/cfg-common.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/cfg-common.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/cfg-common.h	2010-11-15 22:05:14.000000000 -0800
 @@ -521,6 +521,7 @@
      {"vfm", &video_fm_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
      {"ac", &audio_codec_list, CONF_TYPE_STRING_LIST, 0, 0, 0, NULL},
@@ -10,8 +10,8 @@ diff -Naur MPlayer-32628-old/cfg-common.h MPlayer-32628-new/cfg-common.h
      // postprocessing:
  #ifdef CONFIG_FFMPEG
 diff -Naur MPlayer-32628-old/codec-cfg.c MPlayer-32628-new/codec-cfg.c
---- MPlayer-32628-old/codec-cfg.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/codec-cfg.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/codec-cfg.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/codec-cfg.c	2010-11-15 22:05:14.000000000 -0800
 @@ -224,6 +224,13 @@
      {"VDPAU_VC1",IMGFMT_VDPAU_VC1},
      {"VDPAU_MPEG4",IMGFMT_VDPAU_MPEG4},
@@ -27,8 +27,8 @@ diff -Naur MPlayer-32628-old/codec-cfg.c MPlayer-32628-new/codec-cfg.c
  };
  
 diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
---- MPlayer-32628-old/configure	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/configure	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/configure	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/configure	2010-11-15 22:05:14.000000000 -0800
 @@ -395,6 +395,9 @@
    --disable-muxer=MUXER     disable specified FFmpeg muxer
    --enable-muxer=MUXER      enable specified FFmpeg muxer
@@ -47,7 +47,15 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
    --enable-xv              enable Xv video output [autodetect]
    --enable-xvmc            enable XvMC acceleration [disable]
    --enable-vdpau           enable VDPAU acceleration [autodetect]
-@@ -592,8 +596,7 @@
+@@ -529,6 +533,7 @@
+   --extra-libs-mencoder=FLAGS extra linker flags for MEncoder
+   --with-xvmclib=NAME         adapter-specific library name (e.g. XvMCNVIDIA)
+ 
++  --with-vaapi-prefix=PATH    prefix to VA-API include and lib directories
+   --with-freetype-config=PATH path to freetype-config
+   --with-glib-config=PATH     path to glib*-config
+   --with-gtk-config=PATH      path to gtk*-config
+@@ -592,8 +597,7 @@
  libavbsfs_all=$(sed -n 's/^[^#]*BSF.*(.*, *\(.*\)).*/\1_bsf/p' ffmpeg/libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
  libavbsfs=$libavbsfs_all
  libavhwaccels_all=$(sed -n 's/^[^#]*HWACCEL.*(.*, *\(.*\)).*/\1_hwaccel/p' ffmpeg/libavcodec/allcodecs.c | tr '[a-z]' '[A-Z]')
@@ -57,7 +65,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  libavdemuxers_all=$(sed -n 's/^[^#]*DEMUX.*(.*, *\(.*\)).*/\1_demuxer/p' ffmpeg/libavformat/allformats.c | tr '[a-z]' '[A-Z]')
  libavdemuxers=$(echo $libavdemuxers_all | sed -e 's/ LIB[A-Z0-9_]*_DEMUXER//g' -e s/REDIR_DEMUXER// -e s/AVISYNTH_DEMUXER//)
  libavmuxers_all=$(sed -n 's/^[^#]*_MUX.*(.*, *\(.*\)).*/\1_muxer/p' ffmpeg/libavformat/allformats.c | tr '[a-z]' '[A-Z]')
-@@ -602,11 +605,15 @@
+@@ -602,11 +606,15 @@
  libavprotocols=$libavprotocols_all
  _mencoder=yes
  _mplayer=yes
@@ -73,7 +81,17 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  _xv=auto
  _xvmc=no  #auto when complete
  _vdpau=auto
-@@ -946,10 +953,14 @@
+@@ -831,6 +839,9 @@
+     _xvmclib=$(echo $ac_option | cut -d '=' -f 2)
+     ;;
+ 
++  --with-vaapi-prefix=*)
++    _vaapiprefix=$(echo $ac_option | cut -d '=' -f 2)
++    ;;
+   --with-sdl-config=*)
+     _sdlconfig=$(echo $ac_option | cut -d '=' -f 2)
+     ;;
+@@ -946,10 +957,14 @@
    --disable-xshape)     _xshape=no      ;;
    --enable-xss)         _xss=yes        ;;
    --disable-xss)        _xss=no         ;;
@@ -88,7 +106,16 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
    --enable-vdpau)       _vdpau=yes      ;;
    --disable-vdpau)      _vdpau=no       ;;
    --enable-sdl)         _sdl=yes        ;;
-@@ -3903,6 +3914,28 @@
+@@ -1044,6 +1059,8 @@
+   --disable-twolame)    _twolame=no     ;;
+   --enable-libcdio)     _libcdio=yes    ;;
+   --disable-libcdio)    _libcdio=no     ;;
++  --enable-libgtop)     _libgtop=yes    ;;
++  --disable-libgtop)    _libgtop=no     ;;
+   --enable-liblzo)      _liblzo=yes     ;;
+   --disable-liblzo)     _liblzo=no      ;;
+   --enable-libvorbis)   _libvorbis=yes  ;;
+@@ -3903,6 +3920,28 @@
  echores "$_gettimeofday"
  
  
@@ -117,7 +144,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  echocheck "glob()"
  _glob=no
  statement_check glob.h 'glob("filename", 0, 0, 0)' && _glob=yes
-@@ -4285,7 +4318,7 @@
+@@ -4285,7 +4324,7 @@
    novomodules="x11 $novomodules"
    res_comment="check if the dev(el) packages are installed"
    # disable stuff that depends on X
@@ -126,7 +153,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  fi
  echores "$_x11"
  
-@@ -4337,6 +4370,30 @@
+@@ -4337,6 +4376,30 @@
  fi
  
  
@@ -157,7 +184,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  echocheck "Xv"
  if test "$_xv" = auto ; then
    _xv=no
-@@ -4403,7 +4460,7 @@
+@@ -4403,7 +4466,7 @@
  else
    def_vdpau='#define CONFIG_VDPAU 0'
    novomodules="vdpau $novomodules"
@@ -166,7 +193,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  fi
  echores "$_vdpau"
  
-@@ -4835,6 +4892,31 @@
+@@ -4835,6 +4898,31 @@
  fi #if darwin
  
  
@@ -198,7 +225,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  echocheck "PNG support"
  if test "$_png" = auto ; then
    _png=no
-@@ -5210,6 +5292,23 @@
+@@ -5210,6 +5298,23 @@
  fi
  echores "$_gl"
  
@@ -222,7 +249,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  
  echocheck "MatrixView"
  if test "$_gl" = no ; then
-@@ -5779,6 +5878,52 @@
+@@ -5779,6 +5884,57 @@
  fi #if os2
  
  
@@ -231,19 +258,24 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
 +#########################
 +
 +echocheck "VA-API"
++if test -n "$_vaapiprefix"; then
++  _vaapiinc="-I$_vaapiprefix/include"
++  _vaapilib="-L$_vaapiprefix/lib"
++fi
 +if test "$_vaapi" = yes -o "$_vaapi" = auto; then
 +  _vaapi=no
 +  cat > $TMPC <<EOF
 +#include <va/va_x11.h>
 +int main(void) { (void) vaGetDisplay(0); return 0; }
 +EOF
-+  cc_check -lva-x11 && _vaapi=yes
++  cc_check $_vaapiinc $_vaapilib -lva-x11 && _vaapi=yes
 +fi
 +
 +if test "$_vaapi" = yes ; then
 +  def_vaapi='#define CONFIG_VAAPI 1'
-+  libs_mencoder="$libs_mencoder -lva"
-+  libs_mplayer="$libs_mplayer -lva-x11"
++  extra_cflags="$extra_cflags $_vaapiinc"
++  libs_mencoder="$libs_mencoder $_vaapilib -lva"
++  libs_mplayer="$libs_mplayer $_vaapilib -lva -lva-x11"
 +  vomodules="vaapi $vomodules"
 +else
 +  def_vaapi='#define CONFIG_VAAPI 0'
@@ -260,7 +292,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
 +#include <va/va_glx.h>
 +int main(void) { (void) vaGetDisplayGLX(0); return 0; }
 +EOF
-+    cc_check -lva-glx && _vaapi_glx=yes
++    cc_check $_vaapiinc $_vaapilib -lva-glx && _vaapi_glx=yes
 +  fi
 +fi
 +if test "$_vaapi_glx" = yes; then
@@ -275,7 +307,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  # set default CD/DVD devices
  if win32 || os2 ; then
    default_cdrom_device="D:"
-@@ -8174,6 +8319,7 @@
+@@ -8174,6 +8330,7 @@
  TWOLAME=$_twolame
  UNRAR_EXEC = $_unrar_exec
  V4L2 = $_v4l2
@@ -283,17 +315,17 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  VCD = $_vcd
  VDPAU = $_vdpau
  VESA = $_vesa
-@@ -8263,7 +8409,9 @@
+@@ -8263,7 +8420,9 @@
  CONFIG_MUXERS   = $_mencoder
  CONFIG_POSTPROC = yes
  CONFIG_RTPDEC   = $networking
 +CONFIG_VAAPI    = $_vaapi
  CONFIG_VDPAU    = $_vdpau
-+CONFIG_XRENDER  = $_xrender
++CONFIG_XRENDER	= $_xrender
  CONFIG_XVMC     = $_xvmc
  CONFIG_ZLIB     = $_zlib
  
-@@ -8383,6 +8531,7 @@
+@@ -8383,6 +8542,7 @@
  
  
  /* system functions */
@@ -301,7 +333,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  $def_gethostbyname2
  $def_gettimeofday
  $def_glob
-@@ -8413,6 +8562,7 @@
+@@ -8413,6 +8573,7 @@
  $def_extern_prefix
  $def_iconv
  $def_kstat
@@ -309,7 +341,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  $def_macosx_bundle
  $def_macosx_finder
  $def_maemo
-@@ -8643,6 +8793,8 @@
+@@ -8643,6 +8804,8 @@
  $def_tdfxvid
  $def_tga
  $def_v4l2
@@ -318,7 +350,7 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  $def_vdpau
  $def_vesa
  $def_vidix
-@@ -8668,6 +8820,7 @@
+@@ -8668,6 +8831,7 @@
  $def_xinerama
  $def_xmga
  $def_xss
@@ -327,8 +359,8 @@ diff -Naur MPlayer-32628-old/configure MPlayer-32628-new/configure
  $def_xvmc
  $def_xvr100
 diff -Naur MPlayer-32628-old/etc/codecs.conf MPlayer-32628-new/etc/codecs.conf
---- MPlayer-32628-old/etc/codecs.conf	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/etc/codecs.conf	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/etc/codecs.conf	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/etc/codecs.conf	2010-11-15 22:05:14.000000000 -0800
 @@ -212,6 +212,7 @@
    fourcc slif ; SoftLab MPEG-2 I-frames Codec
    driver ffmpeg
@@ -378,8 +410,8 @@ diff -Naur MPlayer-32628-old/etc/codecs.conf MPlayer-32628-new/etc/codecs.conf
  
  videocodec ffzygo
 diff -Naur MPlayer-32628-old/fmt-conversion.c MPlayer-32628-new/fmt-conversion.c
---- MPlayer-32628-old/fmt-conversion.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/fmt-conversion.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/fmt-conversion.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/fmt-conversion.c	2010-11-15 22:05:14.000000000 -0800
 @@ -18,12 +18,14 @@
  
  #include "mp_msg.h"
@@ -431,8 +463,8 @@ diff -Naur MPlayer-32628-old/fmt-conversion.c MPlayer-32628-new/fmt-conversion.c
      fmt = conversion_map[i].fmt;
      if (!fmt)
 diff -Naur MPlayer-32628-old/fmt-conversion.h MPlayer-32628-new/fmt-conversion.h
---- MPlayer-32628-old/fmt-conversion.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/fmt-conversion.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/fmt-conversion.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/fmt-conversion.h	2010-11-15 22:05:14.000000000 -0800
 @@ -23,6 +23,6 @@
  #include "libavutil/avutil.h"
  
@@ -442,8 +474,8 @@ diff -Naur MPlayer-32628-old/fmt-conversion.h MPlayer-32628-new/fmt-conversion.h
  
  #endif /* MPLAYER_FMT_CONVERSION_H */
 diff -Naur MPlayer-32628-old/gui/mplayer/gtk/opts.c MPlayer-32628-new/gui/mplayer/gtk/opts.c
---- MPlayer-32628-old/gui/mplayer/gtk/opts.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/gui/mplayer/gtk/opts.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/gui/mplayer/gtk/opts.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/gui/mplayer/gtk/opts.c	2010-11-15 22:05:14.000000000 -0800
 @@ -66,9 +66,11 @@
         GtkWidget * prEFontName;
         GtkWidget * prEDVDDevice;
@@ -523,8 +555,8 @@ diff -Naur MPlayer-32628-old/gui/mplayer/gtk/opts.c MPlayer-32628-new/gui/mplaye
  
    CBVFM=gtk_combo_new();
 diff -Naur MPlayer-32628-old/help/help_mp-en.h MPlayer-32628-new/help/help_mp-en.h
---- MPlayer-32628-old/help/help_mp-en.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/help/help_mp-en.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/help/help_mp-en.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/help/help_mp-en.h	2010-11-15 22:05:14.000000000 -0800
 @@ -722,6 +722,7 @@
  #define MSGTR_PREFERENCES_IDX "Rebuild index table, if needed"
  #define MSGTR_PREFERENCES_VideoCodecFamily "Video codec family:"
@@ -542,8 +574,8 @@ diff -Naur MPlayer-32628-old/help/help_mp-en.h MPlayer-32628-new/help/help_mp-en
  // libmpcodecs/ve_lavc.c
  #define MSGTR_MPCODECS_HighQualityEncodingSelected "[VE_LAVC] High quality encoding selected (non-realtime)!\n"
 diff -Naur MPlayer-32628-old/libmpcodecs/dec_video.c MPlayer-32628-new/libmpcodecs/dec_video.c
---- MPlayer-32628-old/libmpcodecs/dec_video.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/dec_video.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/dec_video.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/dec_video.c	2010-11-15 22:05:14.000000000 -0800
 @@ -53,9 +53,47 @@
  int field_dominance = -1;
  
@@ -593,8 +625,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/dec_video.c MPlayer-32628-new/libmpcode
  {
      vf_instance_t *vf = sh_video->vfilter;
 diff -Naur MPlayer-32628-old/libmpcodecs/dec_video.h MPlayer-32628-new/libmpcodecs/dec_video.h
---- MPlayer-32628-old/libmpcodecs/dec_video.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/dec_video.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/dec_video.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/dec_video.h	2010-11-15 22:05:14.000000000 -0800
 @@ -21,6 +21,14 @@
  
  #include "libmpdemux/stheader.h"
@@ -623,8 +655,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/dec_video.h MPlayer-32628-new/libmpcode
  
  #endif /* MPLAYER_DEC_VIDEO_H */
 diff -Naur MPlayer-32628-old/libmpcodecs/img_format.c MPlayer-32628-new/libmpcodecs/img_format.c
---- MPlayer-32628-old/libmpcodecs/img_format.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/img_format.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/img_format.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/img_format.c	2010-11-15 22:05:14.000000000 -0800
 @@ -96,6 +96,14 @@
  	case IMGFMT_ZRMJPEGIB: return "Zoran MJPEG bottom field first";
  	case IMGFMT_XVMC_MOCO_MPEG2: return "MPEG1/2 Motion Compensation";
@@ -641,8 +673,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/img_format.c MPlayer-32628-new/libmpcod
  	case IMGFMT_VDPAU_MPEG2: return "MPEG2 VDPAU acceleration";
  	case IMGFMT_VDPAU_H264: return "H.264 VDPAU acceleration";
 diff -Naur MPlayer-32628-old/libmpcodecs/img_format.h MPlayer-32628-new/libmpcodecs/img_format.h
---- MPlayer-32628-old/libmpcodecs/img_format.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/img_format.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/img_format.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/img_format.h	2010-11-15 22:05:14.000000000 -0800
 @@ -182,6 +182,26 @@
  #define IMGFMT_XVMC_MOCO_MPEG2 (IMGFMT_XVMC|0x02)
  #define IMGFMT_XVMC_IDCT_MPEG2 (IMGFMT_XVMC|0x82)
@@ -670,18 +702,20 @@ diff -Naur MPlayer-32628-old/libmpcodecs/img_format.h MPlayer-32628-new/libmpcod
  // VDPAU specific format.
  #define IMGFMT_VDPAU               0x1DC80000
  #define IMGFMT_VDPAU_MASK          0xFFFF0000
-@@ -193,7 +213,7 @@
+@@ -193,7 +213,9 @@
  #define IMGFMT_VDPAU_VC1           (IMGFMT_VDPAU|0x05)
  #define IMGFMT_VDPAU_MPEG4         (IMGFMT_VDPAU|0x06)
  
 -#define IMGFMT_IS_HWACCEL(fmt) (IMGFMT_IS_VDPAU(fmt) || IMGFMT_IS_XVMC(fmt))
-+#define IMGFMT_IS_HWACCEL(fmt) (IMGFMT_IS_VAAPI(fmt) || IMGFMT_IS_VDPAU(fmt) || IMGFMT_IS_XVMC(fmt))
++#define IMGFMT_IS_HWACCEL(fmt)     (IMGFMT_IS_VAAPI(fmt) || \
++                                    IMGFMT_IS_VDPAU(fmt) || \
++                                    IMGFMT_IS_XVMC(fmt))
  
  typedef struct {
      void* data;
 diff -Naur MPlayer-32628-old/libmpcodecs/vd.c MPlayer-32628-new/libmpcodecs/vd.c
---- MPlayer-32628-old/libmpcodecs/vd.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/vd.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/vd.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/vd.c	2010-11-15 22:05:14.000000000 -0800
 @@ -403,3 +403,12 @@
      if (vf->draw_slice)
          vf->draw_slice(vf, src, stride, w, h, x, y);
@@ -696,8 +730,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd.c MPlayer-32628-new/libmpcodecs/vd.c
 +    return NULL;
 +}
 diff -Naur MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c MPlayer-32628-new/libmpcodecs/vd_ffmpeg.c
---- MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/vd_ffmpeg.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/vd_ffmpeg.c	2010-11-15 22:05:14.000000000 -0800
 @@ -33,6 +33,7 @@
  
  #include "vd_internal.h"
@@ -749,12 +783,12 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c MPlayer-32628-new/libmpcode
          ctx->vo_initialized = 1;
      }
      return 0;
-@@ -971,24 +979,63 @@
+@@ -971,24 +979,62 @@
      return mpi;
  }
  
 -#if CONFIG_XVMC || CONFIG_VDPAU
-+#if CONFIG_XVMC || CONFIG_VDPAU || CONFIG_VAAPI
++#if CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU
 +static inline int is_hwaccel_format(int imgfmt)
 +{
 +    switch (get_video_hwaccel()) {
@@ -784,13 +818,14 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c MPlayer-32628-new/libmpcode
 +}
 +
  static enum PixelFormat get_format(struct AVCodecContext *avctx,
-                                     const enum PixelFormat *fmt){
+-                                    const enum PixelFormat *fmt){
 -    enum PixelFormat selected_format;
++                                   const enum PixelFormat *fmt){
 +    enum PixelFormat selected_format = PIX_FMT_NONE;
      int imgfmt;
      sh_video_t *sh = avctx->opaque;
-     int i;
-+    int try_hwaccel;
+-    int i;
++    int i, try_hwaccel;
  
 -    for(i=0;fmt[i]!=PIX_FMT_NONE;i++){
 -        imgfmt = pixfmt2imgfmt(fmt[i]);
@@ -799,7 +834,7 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c MPlayer-32628-new/libmpcode
 -        if(init_vo(sh, fmt[i]) >= 0) {
 -            break;
 +    for (try_hwaccel = 1; try_hwaccel >= 0; --try_hwaccel) {
-+        for (i = 0; fmt[i] != PIX_FMT_NONE; i++){
++        for (i = 0; fmt[i] != PIX_FMT_NONE; i++) {
 +            imgfmt = pixfmt2imgfmt(fmt[i], avctx->codec_id);
 +            if ((try_hwaccel ^ is_hwaccel_format(imgfmt)) != 0)
 +                continue;
@@ -822,10 +857,10 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd_ffmpeg.c MPlayer-32628-new/libmpcode
      return selected_format;
  }
 -#endif /* CONFIG_XVMC || CONFIG_VDPAU */
-+#endif /* CONFIG_XVMC || CONFIG_VDPAU || CONFIG_VAAPI */
++#endif /* CONFIG_XVMC || CONFIG_VAAPI || CONFIG_VDPAU */
 diff -Naur MPlayer-32628-old/libmpcodecs/vd.h MPlayer-32628-new/libmpcodecs/vd.h
---- MPlayer-32628-old/libmpcodecs/vd.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/vd.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/vd.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/vd.h	2010-11-15 22:05:14.000000000 -0800
 @@ -64,6 +64,7 @@
  int mpcodecs_config_vo(sh_video_t *sh, int w, int h, unsigned int preferred_outfmt);
  mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h);
@@ -835,8 +870,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vd.h MPlayer-32628-new/libmpcodecs/vd.h
  #define VDFLAGS_DROPFRAME 3
  
 diff -Naur MPlayer-32628-old/libmpcodecs/vf.h MPlayer-32628-new/libmpcodecs/vf.h
---- MPlayer-32628-old/libmpcodecs/vf.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/vf.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/vf.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/vf.h	2010-11-15 22:05:14.000000000 -0800
 @@ -111,6 +111,7 @@
  #define VFCTRL_GET_PTS         17 /* Return last pts value that reached vf_vo*/
  #define VFCTRL_SET_DEINTERLACE 18 /* Set deinterlacing status */
@@ -846,8 +881,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vf.h MPlayer-32628-new/libmpcodecs/vf.h
  #include "vfcap.h"
  
 diff -Naur MPlayer-32628-old/libmpcodecs/vf_vo.c MPlayer-32628-new/libmpcodecs/vf_vo.c
---- MPlayer-32628-old/libmpcodecs/vf_vo.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libmpcodecs/vf_vo.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libmpcodecs/vf_vo.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libmpcodecs/vf_vo.c	2010-11-15 22:05:14.000000000 -0800
 @@ -138,6 +138,12 @@
  	*(double *)data = vf->priv->pts;
  	return CONTROL_TRUE;
@@ -862,8 +897,8 @@ diff -Naur MPlayer-32628-old/libmpcodecs/vf_vo.c MPlayer-32628-new/libmpcodecs/v
      // return video_out->control(request,data);
      return CONTROL_UNKNOWN;
 diff -Naur MPlayer-32628-old/libvo/gl_common.c MPlayer-32628-new/libvo/gl_common.c
---- MPlayer-32628-old/libvo/gl_common.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libvo/gl_common.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libvo/gl_common.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libvo/gl_common.c	2010-11-15 22:05:14.000000000 -0800
 @@ -141,6 +141,11 @@
  void (GLAPIENTRY *mpglFreeMemoryMESA)(void *, int, void *);
  /** \} */ // end of glextfunctions group
@@ -888,8 +923,8 @@ diff -Naur MPlayer-32628-old/libvo/gl_common.c MPlayer-32628-new/libvo/gl_common
  };
  
 diff -Naur MPlayer-32628-old/libvo/gl_common.h MPlayer-32628-new/libvo/gl_common.h
---- MPlayer-32628-old/libvo/gl_common.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libvo/gl_common.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libvo/gl_common.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libvo/gl_common.h	2010-11-15 22:05:14.000000000 -0800
 @@ -510,4 +510,9 @@
  extern void* (GLAPIENTRY *mpglAllocateMemoryMESA)(void *, int, size_t, float, float, float);
  extern void (GLAPIENTRY *mpglFreeMemoryMESA)(void *, int, void *);
@@ -902,7 +937,7 @@ diff -Naur MPlayer-32628-old/libvo/gl_common.h MPlayer-32628-new/libvo/gl_common
  #endif /* MPLAYER_GL_COMMON_H */
 diff -Naur MPlayer-32628-old/libvo/stats.c MPlayer-32628-new/libvo/stats.c
 --- MPlayer-32628-old/libvo/stats.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-32628-new/libvo/stats.c	2010-11-14 13:32:06.000000000 -0800
++++ MPlayer-32628-new/libvo/stats.c	2010-11-15 22:05:14.000000000 -0800
 @@ -0,0 +1,217 @@
 +#include "config.h"
 +#include "stats.h"
@@ -1123,7 +1158,7 @@ diff -Naur MPlayer-32628-old/libvo/stats.c MPlayer-32628-new/libvo/stats.c
 +}
 diff -Naur MPlayer-32628-old/libvo/stats.h MPlayer-32628-new/libvo/stats.h
 --- MPlayer-32628-old/libvo/stats.h	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-32628-new/libvo/stats.h	2010-11-14 13:32:06.000000000 -0800
++++ MPlayer-32628-new/libvo/stats.h	2010-11-15 22:05:14.000000000 -0800
 @@ -0,0 +1,21 @@
 +#ifndef MPLAYER_STATS_H
 +#define MPLAYER_STATS_H
@@ -1147,8 +1182,8 @@ diff -Naur MPlayer-32628-old/libvo/stats.h MPlayer-32628-new/libvo/stats.h
 +
 +#endif /* MPLAYER_STATS_H */
 diff -Naur MPlayer-32628-old/libvo/video_out.c MPlayer-32628-new/libvo/video_out.c
---- MPlayer-32628-old/libvo/video_out.c	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libvo/video_out.c	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libvo/video_out.c	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libvo/video_out.c	2010-11-15 22:05:14.000000000 -0800
 @@ -94,6 +94,7 @@
  extern const vo_functions_t video_out_xmga;
  extern const vo_functions_t video_out_x11;
@@ -1168,8 +1203,8 @@ diff -Naur MPlayer-32628-old/libvo/video_out.c MPlayer-32628-new/libvo/video_out
  };
  
 diff -Naur MPlayer-32628-old/libvo/video_out.h MPlayer-32628-new/libvo/video_out.h
---- MPlayer-32628-old/libvo/video_out.h	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/libvo/video_out.h	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/libvo/video_out.h	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/libvo/video_out.h	2010-11-15 22:05:14.000000000 -0800
 @@ -95,6 +95,10 @@
    int w,h;
  } mp_win_t;
@@ -1183,8 +1218,8 @@ diff -Naur MPlayer-32628-old/libvo/video_out.h MPlayer-32628-new/libvo/video_out
  #define VO_ERROR	-1
 diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 --- MPlayer-32628-old/libvo/vo_vaapi.c	1969-12-31 16:00:00.000000000 -0800
-+++ MPlayer-32628-new/libvo/vo_vaapi.c	2010-11-14 13:32:06.000000000 -0800
-@@ -0,0 +1,2668 @@
++++ MPlayer-32628-new/libvo/vo_vaapi.c	2010-11-15 22:05:14.000000000 -0800
+@@ -0,0 +1,2738 @@
 +/*
 + * VA API output module
 + *
@@ -1210,18 +1245,18 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +#include "config.h"
 +#include "mp_msg.h"
 +#include "help_mp.h"
-+#include "sub/eosd.h"
 +#include "subopt-helper.h"
 +#include "video_out.h"
 +#include "video_out_internal.h"
 +#include "fastmemcpy.h"
 +#include "sub/sub.h"
++#include "sub/eosd.h"
++#include "sub/ass_mp.h"
 +#include "x11_common.h"
 +#include "libavutil/common.h"
 +#include "libavcodec/vaapi.h"
 +#include "gui/interface.h"
 +#include "stats.h"
-+#include "sub/ass_mp.h"
 +#include <stdarg.h>
 +
 +#if CONFIG_GL
@@ -1242,6 +1277,11 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +#include <X11/extensions/Xrender.h>
 +#endif
 +
++/* Compatibility glue with upstream libva */
++#ifndef VA_SDS_VERSION
++#define VA_SDS_VERSION          0
++#endif
++
 +/* Compatibility glue with VA-API >= 0.30 */
 +#ifndef VA_INVALID_ID
 +#define VA_INVALID_ID           0xffffffff
@@ -1254,14 +1294,10 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +     ((uint32_t)(uint8_t)(ch3) << 24 ))
 +#endif
 +#if defined VA_SRC_BT601 && defined VA_SRC_BT709
-+#define USE_VAAPI_COLORSPACE 1
++# define USE_VAAPI_COLORSPACE 1
 +#else
-+#define USE_VAAPI_COLORSPACE 0
++# define USE_VAAPI_COLORSPACE 0
 +#endif
-+
-+/* Defined to 1 if IA44/AI44 subpicture formats are allowed */
-+/* XXX: they are not visually attractive... */
-+#define USE_VAAPI_IA44_FORMATS 0
 +
 +/* Defined to 1 if VA/GLX 'bind' API is available */
 +#define USE_VAAPI_GLX_BIND                                \
@@ -1269,7 +1305,7 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +     ((VA_MINOR_VERSION == 30 &&                          \
 +       VA_MICRO_VERSION == 4 && VA_SDS_VERSION >= 5) ||   \
 +      (VA_MINOR_VERSION == 31 &&                          \
-+       VA_MICRO_VERSION == 0 && VA_SDS_VERSION < 5)))
++       VA_MICRO_VERSION == 0 && VA_SDS_VERSION >= 1 && VA_SDS_VERSION < 5)))
 +
 +/* Compatibility glue with VA-API >= 0.31 */
 +#if defined VA_CHECK_VERSION
@@ -1277,6 +1313,16 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +#define vaPutImage2             vaPutImage
 +#define vaAssociateSubpicture2  vaAssociateSubpicture
 +#endif
++#endif
++
++/* Compatibility glue with VA-API >= 0.31.1 */
++#ifndef VA_SRC_SMPTE_240
++#define VA_SRC_SMPTE_240        0x00000040
++#endif
++#if defined VA_FILTER_SCALING_MASK
++# define USE_VAAPI_SCALING 1
++#else
++# define USE_VAAPI_SCALING 0
 +#endif
 +
 +static vo_info_t info = {
@@ -1334,6 +1380,7 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +static int                      g_deint;
 +static int                      g_deint_type;
 +static int                      g_colorspace;
++static unsigned int             g_scaling;
 +
 +static int                      gl_enabled;
 +static int                      gl_use_tfp;
@@ -1361,7 +1408,6 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +
 +static int                      xr_enabled;
 +#if CONFIG_XRENDER
-+static Pixmap                   g_image_pixmap;
 +static Picture                  xr_video_picture;
 +static Picture                  xr_window_picture;
 +#endif
@@ -1790,7 +1836,6 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +        }
 +}
 +
-+#if USE_VAAPI_IA44_FORMATS
 +static void draw_alpha_IA44(int x0, int y0, int w, int h,
 +                            unsigned char *src, unsigned char *srca,
 +                            int stride)
@@ -1816,7 +1861,6 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +        for (x = 0; x < w; x++)
 +            dst[x] = (src[y*stride + x] >> 4) | (-srca[y*stride + x] & 0xf0);
 +}
-+#endif
 +
 +static void draw_alpha_IA88(int x0, int y0, int w, int h,
 +                            unsigned char *src, unsigned char *srca,
@@ -1854,10 +1898,8 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    draw_alpha_func draw_alpha;
 +}
 +va_osd_info[] = {
-+#if USE_VAAPI_IA44_FORMATS
 +    { VA_FOURCC('I','A','4','4'), draw_alpha_IA44  },
 +    { VA_FOURCC('A','I','4','4'), draw_alpha_AI44  },
-+#endif
 +    { VA_FOURCC('I','A','8','8'), draw_alpha_IA88  },
 +    { VA_FOURCC('A','I','8','8'), draw_alpha_AI88  },
 +    { VA_FOURCC('B','G','R','A'), draw_alpha_rgb32 },
@@ -2157,12 +2199,40 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    return *n >= 0 && *n <= 2;
 +}
 +
++#if USE_VAAPI_SCALING
++static strarg_t g_scaling_arg = { 0, NULL };
++
++static int test_scaling_arg(void *arg)
++{
++    strarg_t * const strarg = arg;
++
++    return (strargcmp(strarg, "default") == 0 ||
++            strargcmp(strarg, "fast") == 0 ||
++            strargcmp(strarg, "hq") == 0);
++}
++
++static void setup_scaling(const char *scaling)
++{
++    if (strcmp(scaling, "default") == 0)
++        g_scaling = VA_FILTER_SCALING_DEFAULT;
++    else if (strcmp(scaling, "fast") == 0)
++        g_scaling = VA_FILTER_SCALING_FAST;
++    else if (strcmp(scaling, "hq") == 0)
++        g_scaling = VA_FILTER_SCALING_HQ;
++    else if (strcmp(scaling, "nla") == 0)
++        g_scaling = VA_FILTER_SCALING_NL_ANAMORPHIC;
++}
++#endif
++
 +static const opt_t subopts[] = {
 +    { "dm",          OPT_ARG_INT,  &va_dm,        (opt_test_f)int_012 },
 +    { "stats",       OPT_ARG_BOOL, &cpu_stats,    NULL },
 +    { "deint",       OPT_ARG_INT,  &g_deint,      (opt_test_f)int_012 },
 +#if USE_VAAPI_COLORSPACE
 +    { "colorspace",  OPT_ARG_INT,  &g_colorspace, (opt_test_f)int_012 },
++#endif
++#if USE_VAAPI_SCALING
++    { "scaling",     OPT_ARG_STR,  &g_scaling_arg, test_scaling_arg },
 +#endif
 +#if CONFIG_GL
 +    { "gl",          OPT_ARG_BOOL, &gl_enabled,   NULL },
@@ -2191,6 +2261,7 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    g_deint = 0;
 +    g_deint_type = 2;
 +    g_colorspace = 1;
++    g_scaling = 0;
 +    if (subopt_parse(arg, subopts) != 0) {
 +        mp_msg(MSGT_VO, MSGL_FATAL,
 +               "\n-vo vaapi command line help:\n"
@@ -2204,10 +2275,20 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +               "    0: no deinterlacing (default)\n"
 +               "    1: only show first field\n"
 +               "    2: bob deinterlacing\n"
++#if USE_VAAPI_COLORSPACE
 +               "  colorspace\n"
 +               "    0: guess based on video resolution\n"
 +               "    1: ITU-R BT.601 (default)\n"
 +               "    2: ITU-R BT.709\n"
++               "    3: SMPTE-240M\n"
++#endif
++#if USE_VAAPI_SCALING
++               "  scaling\n"
++               "    default: use implementation default (default)\n"
++               "    fast:    use fast scaling, but possibly with less quality\n"
++               "    hq:      use high-quality scaling, but possibly slower\n"
++               "    nla:     use non-linear anamorphic scaling\n"
++#endif
 +#if CONFIG_GL
 +               "  gl\n"
 +               "    Enable OpenGL rendering\n"
@@ -2243,6 +2324,12 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +#if CONFIG_XRENDER
 +    if (xr_enabled)
 +        mp_msg(MSGT_VO, MSGL_INFO, "[vo_vaapi] Using Xrender rendering\n");
++#endif
++#if USE_VAAPI_SCALING
++    if (g_scaling_arg.str) {
++        mp_msg(MSGT_VO, MSGL_INFO, "[vo_vaapi] Using '%s' scaling\n", g_scaling_arg.str);
++        setup_scaling(g_scaling_arg.str);
++    }
 +#endif
 +
 +    stats_init();
@@ -3130,6 +3217,9 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    case 2:
 +        csp = VA_SRC_BT709;
 +        break;
++    case 3:
++        csp = VA_SRC_SMPTE_240;
++        break;
 +    default:
 +        assert(0);
 +        break;
@@ -3144,6 +3234,9 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    int i;
 +
 +    for (i = 0; i <= !!(g_deint > 1); i++) {
++        const unsigned int flags = (get_field_flags(i) |
++                                    get_colorspace_flags() |
++                                    g_scaling);
 +        status = vaPutSurface(va_context->display,
 +                              surface->id,
 +                              vo_window,
@@ -3153,7 +3246,7 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +                              g_output_rect.width,
 +                              g_output_rect.height,
 +                              NULL, 0,
-+                              get_field_flags(i) | get_colorspace_flags());
++                              flags);
 +        if (!check_status(status, "vaPutSurface()"))
 +            return;
 +    }
@@ -3167,13 +3260,16 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +
 +    if (gl_use_tfp) {
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
++            const unsigned int flags = (get_field_flags(i) |
++                                        get_colorspace_flags() |
++                                        g_scaling);
 +            status = vaPutSurface(va_context->display,
 +                                  surface->id,
 +                                  g_image_pixmap,
 +                                  0, 0, g_image_width, g_image_height,
 +                                  0, 0, g_image_width, g_image_height,
 +                                  NULL, 0,
-+                                  get_field_flags(i) | get_colorspace_flags());
++                                  flags);
 +            if (!check_status(status, "vaPutSurface()"))
 +                return;
 +        }
@@ -3185,10 +3281,13 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    if (gl_binding) {
 +#if USE_VAAPI_GLX_BIND
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
++            const unsigned int flags = (get_field_flags(i) |
++                                        get_colorspace_flags() |
++                                        g_scaling);
 +            status = vaAssociateSurfaceGLX(va_context->display,
 +                                           gl_surface,
 +                                           surface->id,
-+                                           get_field_flags(i) | get_colorspace_flags());
++                                           flags);
 +            if (!check_status(status, "vaAssociateSurfaceGLX()"))
 +                return;
 +        }
@@ -3200,10 +3299,13 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +
 +    if (!gl_binding) {
 +        for (i = 0; i <= !!(g_deint > 1); i++) {
++            const unsigned int flags = (get_field_flags(i) |
++                                        get_colorspace_flags() |
++                                        g_scaling);
 +            status = vaCopySurfaceGLX(va_context->display,
 +                                      gl_surface,
 +                                      surface->id,
-+                                      get_field_flags(i) | get_colorspace_flags());
++                                      flags);
 +
 +            if (status == VA_STATUS_ERROR_UNIMPLEMENTED) {
 +                mp_msg(MSGT_VO, MSGL_WARN,
@@ -3395,13 +3497,16 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    int i;
 +
 +    for (i = 0; i <= !!(g_deint > 1); i++) {
++        const unsigned int flags = (get_field_flags(i) |
++                                    get_colorspace_flags() |
++                                    g_scaling);
 +        status = vaPutSurface(va_context->display,
 +                              surface->id,
 +                              g_image_pixmap,
 +                              0, 0, g_image_width, g_image_height,
 +                              0, 0, g_output_rect.width, g_output_rect.height,
 +                              NULL, 0,
-+                              get_field_flags(i) | get_colorspace_flags());
++                              flags);
 +        if (!check_status(status, "vaPutSurface()"))
 +            return;
 +        XRenderComposite(mDisplay,
@@ -3854,8 +3959,8 @@ diff -Naur MPlayer-32628-old/libvo/vo_vaapi.c MPlayer-32628-new/libvo/vo_vaapi.c
 +    return VO_NOTIMPL;
 +}
 diff -Naur MPlayer-32628-old/Makefile MPlayer-32628-new/Makefile
---- MPlayer-32628-old/Makefile	2010-11-14 13:32:06.000000000 -0800
-+++ MPlayer-32628-new/Makefile	2010-11-14 13:32:06.000000000 -0800
+--- MPlayer-32628-old/Makefile	2010-11-15 22:05:14.000000000 -0800
++++ MPlayer-32628-new/Makefile	2010-11-15 22:05:14.000000000 -0800
 @@ -629,6 +629,7 @@
  SRCS_MPLAYER-$(TGA)           += libvo/vo_tga.c
  SRCS_MPLAYER-$(V4L2)          += libvo/vo_v4l2.c
