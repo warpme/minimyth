@@ -18,7 +18,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 53
+mm_CONF_VERSION           ?= 54
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -124,7 +124,7 @@ mm_KERNEL_CONFIG          ?=
 # Valid values are '0.22', '0.23', '0.24' and 'trunk'.
 mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
-# Valid values are '96.43.19' (pre-release, legacy), '173.14.28' (legacy), '256.53', '260.19.21'
+# Valid values are '96.43.19' (legacy), '173.14.28' (legacy), '256.53', '260.19.21'
 mm_NVIDIA_VERSION         ?= 260.19.21
 # The version of xorg to use.
 # Valid values are '7.4' and '7.5'.
