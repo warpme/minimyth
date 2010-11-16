@@ -1,5 +1,5 @@
 GARNAME = acpid
-GARVERSION = 2.0.6
+GARVERSION = 2.0.7
 CATEGORIES = system
 MASTER_SITES  = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES += http://www.tedfelix.com/linux/
