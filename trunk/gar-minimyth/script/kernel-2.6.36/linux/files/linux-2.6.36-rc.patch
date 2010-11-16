@@ -1,0 +1,48 @@
+diff -Naur linux-2.6.36-old/drivers/media/IR/mceusb.c linux-2.6.36-new/drivers/media/IR/mceusb.c
+--- linux-2.6.36-old/drivers/media/IR/mceusb.c	2010-10-20 13:30:22.000000000 -0700
++++ linux-2.6.36-new/drivers/media/IR/mceusb.c	2010-11-15 18:46:12.000000000 -0800
+@@ -35,8 +35,9 @@
+ #include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+-#include <linux/usb.h>
+ #include <linux/input.h>
++#include <linux/usb.h>
++#include <linux/usb/input.h>
+ #include <media/ir-core.h>
+ #include <media/ir-common.h>
+ 
+@@ -899,6 +900,9 @@
+ 
+ 	ir->props = props;
+ 
++	usb_to_input_id(ir->usbdev, &idev->id);
++	idev->dev.parent = ir->dev;
++
+ 	ret = ir_input_register(idev, RC_MAP_RC6_MCE, props, DRIVER_NAME);
+ 	if (ret < 0) {
+ 		dev_err(dev, "remote input device register failed\n");
+diff -Naur linux-2.6.36-old/drivers/media/IR/streamzap.c linux-2.6.36-new/drivers/media/IR/streamzap.c
+--- linux-2.6.36-old/drivers/media/IR/streamzap.c	2010-10-20 13:30:22.000000000 -0700
++++ linux-2.6.36-new/drivers/media/IR/streamzap.c	2010-11-15 18:47:59.000000000 -0800
+@@ -34,8 +34,9 @@
+ #include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+-#include <linux/usb.h>
+ #include <linux/input.h>
++#include <linux/usb.h>
++#include <linux/usb/input.h>
+ #include <media/ir-core.h>
+ 
+ #define DRIVER_VERSION	"1.60"
+@@ -451,6 +452,9 @@
+ 
+ 	sz->props = props;
+ 
++	usb_to_input_id(sz->usbdev, &idev->id);
++	idev->dev.parent = sz->dev;
++
+ 	ret = ir_input_register(idev, RC_MAP_RC5_STREAMZAP, props, DRIVER_NAME);
+ 	if (ret < 0) {
+ 		dev_err(dev, "remote input device register failed\n");
