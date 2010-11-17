@@ -6,6 +6,7 @@ MASTER_SITES = http://www.lirc.org/software/snapshots/
 #MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-lirc_serial_dev.patch \
 	$(DISTNAME)-lirc_gpio.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
 	$(DISTNAME)-input_map.patch.gar
