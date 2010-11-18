@@ -1,5 +1,5 @@
 GARNAME = ethtool
-GARVERSION = 2.6.35
+GARVERSION = 2.6.36
 CATEGORIES = utils
 MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/gkernel/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,3 +18,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(MAKECOOKIE)
