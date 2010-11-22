@@ -1,5 +1,5 @@
 GARNAME = libX11
-GARVERSION = 1.3.6
+GARVERSION = 1.4.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,17 +12,16 @@ define BLURB
 endef
 
 DEPENDS   = lang/c \
-	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/kbproto \
-	$(CATEGORY)/libXau \
 	$(CATEGORY)/libxcb \
 	$(CATEGORY)/util-macros \
-	$(CATEGORY)/xcmiscproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86bigfontproto \
 	$(CATEGORY)/xproto \
 	$(CATEGORY)/xtrans
+BUILDDEPS = \
+	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -31,9 +30,9 @@ BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
-	--disable-silent-rules \
 	--enable-unix-transport \
 	--disable-tcp-transport \
 	--disable-ipv6 \
@@ -47,12 +46,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xlocaledir \
 	--enable-xf86bigfont \
 	--enable-xkb \
-	--disable-man-pages \
 	--disable-composecache \
 	--disable-lint-library \
 	--enable-malloc0returnsnull \
+	--without-xmlto \
+	--without-fop \
 	--with-gnu-ld \
-	--with-xcb \
 	--without-launchd \
 	--without-lint
 
