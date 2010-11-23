@@ -7,52 +7,48 @@ ATTRS{name}=="eventlircd", GOTO="end"
 # Devices blacklisted in minimyth.conf.
 @MM_LIRC_BLACKLIST@
 
-# Device configured in minimyth.conf.
+# Device is configured in minimyth.conf as an remote control.
+# Therefore, eventlircd will take ownership of it.
 @MM_LIRC_DEVICE_TRUE@ENV{DEVNAME}=="@MM_LIRC_DEVICE_DEVNAME@", GOTO="begin-conf"
 @MM_LIRC_DEVICE_TRUE@ENV{DEVLINKS}=="@MM_LIRC_DEVICE_DEVLINK@", GOTO="begin-conf"
 GOTO="end-conf"
 LABEL="begin-conf"
 ENV{eventlircd_enable}="true"
-ENV{eventlircd_evmap}="devinput.evmap"
+ENV{eventlircd_evmap}="default.evmap"
 GOTO="begin-generic"
 LABEL="end-conf"
 
+# The device is a USB based input event device.
+# If eventlircd has an evmap file for it, then it will take ownership of it.
 KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="usb", GOTO="begin-usb"
 GOTO="end-usb"
 LABEL="begin-usb"
-
 ENV{ID_USB_INTERFACES}=="", IMPORT{program}="usb_id --export %p"
-
-ENV{ID_VENDOR_ID}=="0419", ENV{ID_MODEL_ID}=="0001", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap"
-ENV{ID_VENDOR_ID}=="05a4", ENV{ID_MODEL_ID}=="9881", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap"
-ENV{ID_VENDOR_ID}=="0766", ENV{ID_MODEL_ID}=="0204", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap"
-ENV{ID_VENDOR_ID}=="1241", ENV{ID_MODEL_ID}=="e000", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="mcekbd.evmap"
-ENV{ID_VENDOR_ID}=="147a", ENV{ID_MODEL_ID}=="e02d", \
+PROGRAM="/bin/ls /etc/eventlircd.d/03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap >> /dev/null 2>&1",
   ENV{eventlircd_enable}="true", \
   ENV{eventlircd_evmap}="03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap"
 GOTO="begin-generic"
-
 LABEL="end-usb"
 
-KERNEL=="event[0-9]*", SUBSYSTEM=="input", GOTO="begin-notusb"
-GOTO="end-notusb"
-LABEL="begin-notusb"
-ATTRS{name}=="lircd", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="default.evmap"
-ATTRS{name}=="bdremoteng", \
-  ENV{eventlircd_enable}="true", \
-  ENV{eventlircd_evmap}="bdremoteng.evmap"
+# Device is an lircd created input event device.
+# Therefore, eventlircd will take ownership of it.
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="lircd", GOTO="begin-lircd"
+GOTO="end-lircd"
+LABEL="begin-lircd"
+ENV{eventlircd_enable}="true"
+ENV{eventlircd_evmap}="lircd.evmap"
 GOTO="begin-generic"
-LABEL="end-notusb"
+LABEL="end-lircd"
+
+# The device is an bdremoteng created input event device.
+# Therefore, eventlircd will take ownership of it.
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="bdremoteng", GOTO="begin-bdremoteng"
+GOTO="end-bdremoteng"
+LABEL="begin-bdremoteng"
+ENV{eventlircd_enable}="true"
+ENV{eventlircd_evmap}="bdremoteng.evmap"
+GOTO="begin-generic"
+LABEL="end-bdremoteng"
 
 LABEL="begin-generic"
 

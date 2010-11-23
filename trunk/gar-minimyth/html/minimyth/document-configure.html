@@ -749,9 +749,28 @@ sub stop
                 MiniMyth only supports key names that are Linux key event names.
                 Because the LIRC namespace uses the Linux key event names,
                 you can list the valid key names by running the command 'irrecord&#160;--list-namespace'.
+              </p>
+              <p>
                 In addition,
                 if you want a key to be treated as a remote control button rather than a mouse/joystick button,
-                then do not use a LIRC namespace key name with the BTN_ prefix.
+                then do not use an LIRC namespace key name with the BTN_ prefix.
+                MiniMyth uses eventlircd,
+                which assumes that BTN_ prefix names are mouse/joystick buttons handled by Xorg.
+              </p>
+              <p>
+                Finally,
+                if you want MiniMyth to handle a remote control button using its built-in
+                <a href="#lircrc">lircrc</a>
+                files,
+                then use an LIRC namespace key name that MiniMyth uses in its built-in lircrc files.
+                While there exist multiple possible KEY_* names for that same remote control button,
+                MiniMyth tends to use only one of the possible KEY_* names in its built-in lircrc files.
+                For example,
+                while the "0" remote control button might generate KEY_0, KEY_KP0 or KEY_NUMERIC_0,
+                MiniMyth's lircrc files only expect it to generate KEY_NUMERIC_0.
+                Therefore,
+                you need to be sure that your LIRC daemon configuration file maps each remote control button
+                to the KEY_* name expected by MiniMyth's built-in lircrc files.
               </p>
             </dd>
             <dt id="lircmd_conf">lircmd.conf</dt>
@@ -935,7 +954,7 @@ sub stop
               alt="Valid CSS 2.1" /></a>
         </div>
         <div class="version">
-          Last Updated on 2010-09-28
+          Last Updated on 2010-11-23
           <br />
           &#60;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&#62;
         </div>

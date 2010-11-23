@@ -452,6 +452,47 @@ $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
     }
 };
 
+$var_list{'MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD'} =
+{
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_clean = $minimyth->var_get($name);
+        $value_clean = " $value_clean ";
+        $value_clean =~ s/[ \t]+/ /g;
+        $value_clean =~ s/ ([^ \/])/ \/$1/g;
+        $value_clean =~ s/\/+/\//g;
+        $value_clean =~ s/^ //;
+        $value_clean =~ s/ $//;
+        $minimyth->var_set($name, $value_clean);
+
+        return 1;
+    },
+    value_default  => '',
+    value_file     => '.+',
+    file           => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @file = ();
+
+        foreach (split(/ /, $minimyth->var_get($name)))
+        {
+            my $item;
+            $item->{'name_remote'} = "$_";
+            $item->{'name_local'}  = '/etc/eventlircd.d/' . File::Basename::basename($_);
+            $item->{'mode_local'}  = '0644';
+
+            push(@file, $item);
+        }
+
+        return \@file;
+    }
+};
+
 $var_list{'MM_LIRC_FETCH_LIRCD_CONF'} =
 {
     value_default  => 'no',
@@ -668,29 +709,6 @@ $var_list{'MM_LIRC_LIRCM_DEVICE'} =
 
         return $device;
     }
-};
-
-$var_list{'MM_LIRC_FETCH_DEVINPUT_KEYMAP'} =
-{
-    prerequisite   => ['MM_LIRC_DRIVER'],
-    value_default  => 'auto',
-    value_valid    => 'auto|no|yes',
-    value_auto     => sub
-    {
-        my $minimyth = shift;
-        my $name     = shift;
-
-        my $auto = 'no';
-        if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'devinput')
-        {
-            $auto = 'yes';
-        }
-
-        return $auto;
-    },
-    value_file     => 'yes',
-    file           => {name_remote => '/devinput.evmap',
-                       name_local  => '/etc/eventlircd.d/devinput.evmap'}
 };
 
 $var_list{'MM_LIRC_KERNEL_MODULE_LIST'} =
