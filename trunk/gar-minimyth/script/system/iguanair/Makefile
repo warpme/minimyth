@@ -1,9 +1,9 @@
 GARNAME = iguanaIR
-GARVERSION = 0.99
+GARVERSION = 1.0.1
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-ln.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
+PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
@@ -27,14 +27,9 @@ CONFIGURE_ENV += \
 	ac_cv_func_realloc_0_nonnull='yes'
 endif
 INSTALL_ENV    = \
-	LIBDIR='lib' \
 	RPM_OS='yes'
 
 include ../../gar.mk
-
-post-extract:
-	@cd $(WORKSRC) ; make cleanest
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@cd $(WORKSRC)/autoconf ; aclocal --verbose --force

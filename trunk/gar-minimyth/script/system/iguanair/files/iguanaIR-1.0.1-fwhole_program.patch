@@ -1,0 +1,16 @@
+diff -Naur iguanaIR-1.0.1-old/Makefile.in iguanaIR-1.0.1-new/Makefile.in
+--- iguanaIR-1.0.1-old/Makefile.in	2010-11-24 05:32:22.000000000 -0800
++++ iguanaIR-1.0.1-new/Makefile.in	2010-11-24 05:35:53.000000000 -0800
+@@ -30,10 +30,10 @@
+           list.o protocol-versions.o pipes.o dataPackets.o compat-unix.o \
+           support.c $(OSSUPPORT)
+ 	$(CC) $(EXPORTARGS) $(CPPFLAGS) $(CFLAGS) -DSUPPORT_EXPORTS \
+-              $(LDFLAGS) $^ -lpopt -lusb -lpthread -ldl $(LIBNAME) -o $@
++              $(LDFLAGS) -fwhole-program $^ -lpopt -lusb -lpthread -ldl $(LIBNAME) -o $@
+ 
+ igclient: client.o list.o support.o compat-unix.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -lpopt $(LIBNAME) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) -fwhole-program $^ -lpopt $(LIBNAME) -o $@
+ 
+ %.o: %.c Makefile iguanaIR.h
+ 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
