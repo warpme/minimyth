@@ -2602,6 +2602,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
           <div class="heading">Configuration variables for: LIRC</div>
           <ul>
             <li><a href="#MM_LIRC-overview">Overview</a></li>
+            <li><a href="#MM_LIRC-mapping">Mapping from Remote Control Buttons to Application Actions</a></li>
           </ul>
           <ul>
             <li><a href="#MM_LIRC_AUTO_ENABLED">MM_LIRC_AUTO_ENABLED</a></li>
@@ -2672,7 +2673,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 <li>to combine multiple input event devices into a single lircd socket.</li>
               </ul>
               <p>
-                If your MiniMyth system has a remote control receiver/transmiiter that is not (or cannot) be detected by udev,
+                If your MiniMyth system has a remote control receiver/transmitter that is not (or cannot) be detected by udev,
                 then you can manually configure it using the LIRC configuration variables.
               </p>
             </dd>
@@ -2705,6 +2706,42 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 the remote control / remote control receiver vendor and model, the LIRC driver used,
                 the output of the command 'lsusb' with the remote control receiver connected and (if you have them)
                 'lircd.conf' and 'lircrc' files that work with MiniMyth.
+              </p>
+            </dd>
+            <dt id="MM_LIRC-mapping"><strong>Mapping from Remote Control Buttons to Application Actions</strong></dt>
+            <dd>
+              <p>
+                There are multiple configuration files in the processing chain from remote control button to application action;
+                each of which can modify the mapping from remote control button to application action.
+              </p>
+              <p>
+                First, MiniMyth attempts to map each remote control button to a unique EVKEY Linux input event.
+                Second, MiniMyth attempts to map each KEY_* EVKEY Linux input event to an action for each supported application.
+              </p>
+              <p>
+                MiniMyth attempts to make the mapping from KEY_* to application action independent of the remote control.
+                It does this so that it needs one lircrc per application rather than one lircrc per application per remote.
+                In order to accomplish this,
+                MiniMyth attempts to map remote control buttons to the appropriate KEY_* before outputing it on the lircd socket.
+                For remote control devices that make use of lircd,
+                any mapping of remote control button to KEY_* is done using an lircd configuration file.
+                For remote control devices that do not make use of lircd
+                (e.g. a remote control device that presents itself as a USB keyboard and/or mouse),
+                the mapping from remote control button to KEY_* is done an eventlircd event map file.
+              </p>
+              <p>
+                Therefore,
+                when a remote control button does not cause the desired application action,
+                then it is important to determine whether the problem is
+                with the mapping of remote control button to KEY_* or
+                with the mapping of KEY_* to application action.
+                If MiniMyth does not contain a KEY_* to application action in its lircrc files for the desired application action,
+                then
+                <a href="http://www.minimyth.org/forum/">let us know</a>
+                the missing application action so that MiniMyth can include it.
+                If MiniMyth does not map remote control button to KEY_* correctly for your remote,
+                then
+                <a href="http://www.minimyth.org/forum/">let us know</a>.
               </p>
             </dd>
             <dt id="MM_LIRC_DEVICE_BLACKLIST"><strong>MM_LIRC_DEVICE_BLACKLIST</strong></dt>
