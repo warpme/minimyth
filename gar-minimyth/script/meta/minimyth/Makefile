@@ -59,6 +59,7 @@ DEPENDS = \
 	net/openssh \
 	utils/pciutils \
 	perl/perl \
+	perl/perl-Class-Inspector \
 	perl/perl-Date-Manip \
 	perl/perl-Lchown \
 	perl/perl-MiniMyth \
