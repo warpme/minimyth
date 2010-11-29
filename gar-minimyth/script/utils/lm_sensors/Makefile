@@ -7,6 +7,7 @@ DISTFILES   = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += $(DISTNAME)-changeset_5870.patch
 PATCHFILES += $(DISTNAME)-changeset_5883.patch
+PATCHFILES += $(DISTNAME)-changeset_5886.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
