@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use feature "switch";
 
+use Class::Inspector ();
 use MiniMyth ();
 
 my $minimyth = new MiniMyth;
@@ -79,9 +80,20 @@ sub usage
     push(@usage, "  mm_command command [command_args ...]");
     push(@usage, "");
     push(@usage, "  where 'command' is one of the MiniMyth perl package methods and");
-    push(@usage, "  'command_args' are the arguments for that MiniMyth perl package method. Only");
-    push(@usage, "  MiniMyth perl package methods that have integer and string arguments will");
-    push(@usage, "  work correctly.");
+    push(@usage, "  'command_args' are the arguments for that MiniMyth perl package method. Note");
+    push(@usage, "  that MiniMyth perl package methods that arguments other than integers and");
+    push(@usage, "  strings will not work correctly.");
+    push(@usage, "");
+
+    push(@usage, "MiniMyth perl package methods:");
+    my $methods = Class::Inspector->methods( 'MiniMyth', 'public' );
+    foreach (@{$methods})
+    {
+       if (! m/(destroy|new)/i)
+       {
+           push(@usage, "  $_");
+       }
+    }
     push(@usage, "");
 
     return \@usage;
