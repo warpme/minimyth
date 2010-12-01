@@ -75,6 +75,7 @@ CONFIGURE_ARGS = \
 	-no-separate-debug-info \
 	-no-gtkstyle \
 	-no-nas-sound \
+	-no-egl \
 	-opengl \
 	-no-openvg \
 	-no-sm \

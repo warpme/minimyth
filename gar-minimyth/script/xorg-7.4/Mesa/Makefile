@@ -43,6 +43,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--enable-xcb \
+	--disable-egl \
 	--disable-gallium \
 	--disable-gallium-svga \
 	--disable-gallium-intel \
