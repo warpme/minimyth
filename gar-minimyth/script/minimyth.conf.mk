@@ -135,19 +135,19 @@ mm_MYTH_TRUNK_VERSION     ?= 27392
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
-# by adding to the lists found in minimyth-bin-list and bins-share-list
+# by adding to the lists found in minimyth-bin-list* and bins-share-list files.
 mm_USER_BIN_LIST          ?=
 # Lists additional configs to include in the MiniMyth image
-# by adding to the lists found in minimyth-etc-list and extras-etc-list
+# by adding to the lists found in minimyth-etc-list* and extras-etc-list files.
 mm_USER_ETC_LIST          ?=
 # Lists additional libraries to include in the MiniMyth image
-# by adding to the lists found in minimyth-lib-list and extras-lib-list
+# by adding to the lists found in minimyth-lib-list* and extras-lib-list files.
 mm_USER_LIB_LIST          ?=
-# Lists additional data to include in the MiniMyth image
-# by adding to the lists found in minimyth-share-list and extras-share-list
-mm_USER_REMOVE_LIST       ?=
 # Lists additional files to remove from the MiniMyth image
-# by adding to the lists found in minimyth-remove-list*.
+# by adding to the lists found in minimyth-remove-list* and extras-remote-list files.
+mm_USER_REMOVE_LIST       ?=
+# Lists additional data to include in the MiniMyth image
+# by adding to the lists found in minimyth-share-list* and extras-share-list files.
 mm_USER_SHARE_LIST        ?=
 
 #-------------------------------------------------------------------------------
