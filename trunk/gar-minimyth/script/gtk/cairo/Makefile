@@ -75,6 +75,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+# gcc 4.5-20101125 segmentation faults when compiling cairo 1.10.0.
+CFLAGS += -fno-inline-small-functions
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
