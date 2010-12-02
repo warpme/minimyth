@@ -1,7 +1,7 @@
 GARNAME = mythtv
-GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
+GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/$(GARNAME)/
+MASTER_SITES = svn://svn.mythtv.org/svn/branches/release-0-23-fixes/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
@@ -11,7 +11,7 @@ PATCHFILES += \
 	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
 	$(DISTNAME_SHORT)-sysroot.patch \
 	$(DISTNAME_SHORT)-dvdnav_shared.patch \
-	$(DISTNAME_SHORT)-fftw3f.patch \
+	$(DISTNAME_SHORT)-fftw3.patch \
 	$(DISTNAME_SHORT)-hulu.patch \
 	$(DISTNAME_SHORT)-networkcontrol.patch \
 	$(DISTNAME_SHORT)-eject.patch \
@@ -20,7 +20,10 @@ PATCHFILES += \
 	$(DISTNAME_SHORT).patch.gar \
 	$(DISTNAME_SHORT)-init.patch \
 	$(DISTNAME_SHORT)-minimyth.patch \
-	$(DISTNAME_SHORT)-programid.patch
+	$(DISTNAME_SHORT)-programid.patch \
+	$(DISTNAME_SHORT)-limits_h.patch \
+	$(DISTNAME_SHORT)-cdio.patch \
+	$(DISTNAME_SHORT)-font.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -49,13 +52,15 @@ BUILDDEPS = \
 	devel/yasm \
 	python/python-distutilscross
 
+DISTNAME_SHORT = $(GARNAME)-$(MYTHTV_GARVERSION_SHORT)
+
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
 PWD := $(shell pwd)
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile source
+CONFIGURE_SCRIPTS = $(WORKSRC)/mythtv/configure
+BUILD_SCRIPTS     = $(WORKSRC)/mythtv/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/mythtv/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
@@ -133,14 +138,14 @@ CONFIGURE_ARGS = \
 	--without-bindings="perl" \
 	--with-bindings="python"
 
-CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
-BUILD_ENV     = $(MYTHTV_BUILD_ENV)
-INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
+CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
+BUILD_ENV      = $(MYTHTV_BUILD_ENV)
+INSTALL_ENV    = $(MYTHTV_INSTALL_ENV)
 
 BUILD_ENV     += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk python/python/package-api.mk
+GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
 
 # Fails to compile with GCC's link time optimization.
@@ -159,10 +164,53 @@ install-source:
 	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@mkdir -p $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@rm -rf $(DESTDIR)$(MYTHTV_SOURCEDIR)
-	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(MYTHTV_SOURCEDIR)
+	@ln -sf $(PWD)/$(WORKSRC)/mythtv $(DESTDIR)$(MYTHTV_SOURCEDIR)
 	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
 	@rm -f $(DESTDIR)$(bindir)/mythtv
 	@mv $(DESTDIR)$(bindir)/mythavtest $(DESTDIR)$(bindir)/mythtv
 	@$(MAKECOOKIE)
+
+clean-all:
+	@rm -rf $(DESTDIR)$(bindir)/mtd
+	@rm -rf $(DESTDIR)$(bindir)/myth*
+	@rm -rf $(DESTDIR)$(datadir)/myth*
+	@rm -rf $(DESTDIR)$(includedir)/myth*
+	@rm -rf $(DESTDIR)$(libdir)/libmyth*
+	@rm -rf $(DESTDIR)$(libdir)/myth*
+	@rm -rf $(DESTDIR)$(libdir)/python*/site-packages/MythTV
+	@rm -rf $(DESTDIR)$(libdir)/python*/site-packages/MythTV-*
+	@$(foreach dir,$(filter-out %/Makefile,$(wildcard ../../myth/* ../../myth-*/*)),$(MAKE) -C $(dir) clean ; )
+
+source-update:
+	@$(MAKE) source-update-source
+	@$(MAKE) source-update-patches
+
+source-update-source:
+	@$(MAKE) clean
+	@$(MAKE) fetch
+	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
+	@$(MAKE) clean
+
+source-update-patches:
+	@$(MAKE) clean
+	@$(MAKE) extract
+	@$(foreach PATCHFILE, $(PATCHFILES), \
+		cd $(WORKDIR) || exit 1 ; \
+		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
+		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
+		cd $(DISTNAME)-new || exit 1 ; \
+		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
+		cd ../ || exit 1 ; \
+		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
+		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
+		rm -fr $(DISTNAME)-old || exit 1 ; \
+		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
+		cd ../../ || exit 1 ; \
+		rm -f checksums~ || exit 1 ; \
+		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ || true ; \
+		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
+		rm -f checksums || exit 1 ; \
+		mv -f checksums~ checksums || exit 1 ; )
+	@$(MAKE) clean

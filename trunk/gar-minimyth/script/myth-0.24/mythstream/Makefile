@@ -37,7 +37,7 @@ CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
 
 post-extract:

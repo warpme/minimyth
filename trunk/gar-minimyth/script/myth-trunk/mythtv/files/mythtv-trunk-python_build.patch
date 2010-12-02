@@ -1,6 +1,26 @@
-diff -Naur mythtv-trunk-27392-old/bindings/python/Makefile mythtv-trunk-27392-new/bindings/python/Makefile
---- mythtv-trunk-27392-old/bindings/python/Makefile	2010-11-30 18:00:18.000000000 -0800
-+++ mythtv-trunk-27392-new/bindings/python/Makefile	2010-11-30 18:00:19.000000000 -0800
+diff -Naur mythtv-trunk-27420-old/mythplugins/configure mythtv-trunk-27420-new/mythplugins/configure
+--- mythtv-trunk-27420-old/mythplugins/configure	2010-12-02 14:28:05.000000000 -0800
++++ mythtv-trunk-27420-new/mythplugins/configure	2010-12-02 14:28:07.000000000 -0800
+@@ -343,10 +343,15 @@
+ 
+ check_py_lib(){
+     log check_py_lib "$@"
++if test "x${PYTHONXCPREFIX}" = "x" ; then
++   py_prefix=${prefix}
++else
++   py_prefix=${PYTHONXCPREFIX}
++fi
+     check_cmd $python <<EOF
+ from distutils.sysconfig import get_python_lib
+ import sys
+-sys.path.append(get_python_lib(prefix='${prefix}'))
++sys.path.append(get_python_lib(prefix='${py_prefix}'))
+ try:
+     import ${1}
+ except:
+diff -Naur mythtv-trunk-27420-old/mythtv/bindings/python/Makefile mythtv-trunk-27420-new/mythtv/bindings/python/Makefile
+--- mythtv-trunk-27420-old/mythtv/bindings/python/Makefile	2010-12-02 14:28:05.000000000 -0800
++++ mythtv-trunk-27420-new/mythtv/bindings/python/Makefile	2010-12-02 14:28:07.000000000 -0800
 @@ -1,15 +1,15 @@
  include ../../config.mak
  
@@ -32,9 +52,9 @@ diff -Naur mythtv-trunk-27392-old/bindings/python/Makefile mythtv-trunk-27392-ne
  	$(PYTHON) setprefix.py "$(REAL_PREFIX)"
  
  install: setup.py
-diff -Naur mythtv-trunk-27392-old/bindings/python/setup.py mythtv-trunk-27392-new/bindings/python/setup.py
---- mythtv-trunk-27392-old/bindings/python/setup.py	2010-11-30 18:00:18.000000000 -0800
-+++ mythtv-trunk-27392-new/bindings/python/setup.py	2010-11-30 18:00:19.000000000 -0800
+diff -Naur mythtv-trunk-27420-old/mythtv/bindings/python/setup.py mythtv-trunk-27420-new/mythtv/bindings/python/setup.py
+--- mythtv-trunk-27420-old/mythtv/bindings/python/setup.py	2010-12-02 14:28:05.000000000 -0800
++++ mythtv-trunk-27420-new/mythtv/bindings/python/setup.py	2010-12-02 14:28:07.000000000 -0800
 @@ -1,7 +1,7 @@
  #!/usr/bin/env python
  

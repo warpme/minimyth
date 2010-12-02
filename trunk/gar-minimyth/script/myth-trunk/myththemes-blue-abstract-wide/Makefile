@@ -20,7 +20,7 @@ WORKSRC = $(WORKDIR)/blue-abstract-wide
 
 INSTALL_SCRIPTS = custom
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
 
 install-custom:
