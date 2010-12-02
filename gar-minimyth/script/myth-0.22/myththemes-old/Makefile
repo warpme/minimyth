@@ -1,11 +1,7 @@
 GARNAME = myththemes-old
-GARVERSION = $(GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
+GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/$(MYTHTV_SVN_BRANCH)/oldthemes/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  =
-PATCHFILES += \
-	$(DISTNAME_SHORT)-alphapulse.patch
+SOURCEPKG = $(CATEGORY)/mythtv
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -18,8 +14,10 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+WORKSRC = $(WORKDIR)/mythtv-$(MYTHTV_VERSION)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/oldthemes/configure
+INSTALL_SCRIPTS   = $(WORKSRC)/oldthemes/Makefile
 
 CONFIGURE_ARGS = \
 	--prefix="$(prefix)" \
@@ -30,15 +28,8 @@ CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
-
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)

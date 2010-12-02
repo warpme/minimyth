@@ -1,7 +1,7 @@
 GARNAME = mythgallery
-GARVERSION = $(MYTHPLUGINS_VERSION)
+GARVERSION = $(MYTHTV_VERSION)
 CATEGORIES = $(CATEGORY)
-SOURCEPKG = $(CATEGORY)/mythplugins
+SOURCEPKG = $(CATEGORY)/mythtv
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -16,12 +16,14 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+WORKSRC = $(WORKDIR)/mythtv-$(MYTHTV_VERSION)
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/mythplugins/configure
+BUILD_SCRIPTS     = $(WORKSRC)/mythplugins/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/mythplugins/Makefile
 
 CONFIGURE_ARGS = \
-	$(MYTHPLUGINS_CONFIGURE_ARGS) \
+	$(MYTHTV_PLUGINS_CONFIGURE_ARGS) \
 	--enable-mythgallery \
 		--enable-exif \
 		--enable-new-exif
@@ -30,7 +32,7 @@ CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 
-GAR_EXTRA_CONF += $(CATEGORY)/myth/package-api.mk $(CATEGORY)/mythplugins/package-api.mk
+GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
 
 post-install: post-install-mythtv-version
