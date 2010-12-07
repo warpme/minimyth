@@ -1,9 +1,8 @@
 GARNAME = xbindkeys
-GARVERSION = 1.8.3
+GARVERSION = 1.8.4
 CATEGORIES = X11
 MASTER_SITES = http://www.nongnu.org/xbindkeys/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
