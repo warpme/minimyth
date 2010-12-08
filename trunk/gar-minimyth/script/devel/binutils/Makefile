@@ -31,8 +31,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-plugins \
-	--enable-gold=default \
-	--enable-ld \
+	--enable-gold \
+	--enable-ld=default \
 	--disable-libada \
 	--disable-libssp \
 	--enable-lto \
