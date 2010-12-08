@@ -44,6 +44,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-gold=both/ld \
 	--disable-libada \
 	--disable-libssp \
+	--disable-ppl-version-check \
 	--enable-lto \
 	--disable-multilib \
 	--disable-nls \

@@ -39,6 +39,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libmudflap \
 	--disable-libada \
 	--disable-libssp \
+	--disable-ppl-version-check \
 	--disable-multilib \
 	--disable-nls \
 	--enable-shared \
