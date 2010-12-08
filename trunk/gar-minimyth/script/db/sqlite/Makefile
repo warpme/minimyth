@@ -1,8 +1,8 @@
 GARNAME = sqlite
-GARVERSION = 3.7.3
+GARVERSION = autoconf-3070400
 CATEGORIES = db
 MASTER_SITES = http://www.sqlite.org/
-DISTFILES = $(GARNAME)-amalgamation-$(GARVERSION).tar.gz
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE =
 
 DESCRIPTION = 
