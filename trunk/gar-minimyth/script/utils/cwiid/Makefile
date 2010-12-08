@@ -4,7 +4,7 @@ CATEGORIES = utils
 #MASTER_SITES = http://abstrakraft.org/cwiid/downloads/
 MASTER_SITES = svn://abstrakraft.org/cwiid/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-ldlibs.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch
+PATCHFILES = $(DISTNAME)-ldlibs.patch $(DISTNAME)-rootdir.patch $(DISTNAME)-ioctl_ui_set_phys.patch $(DISTNAME)-wait_forever_sleep.patch $(DISTNAME)-abs_only.patch
 LICENSE = GPL2
 
 DESCRIPTION =
