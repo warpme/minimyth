@@ -128,7 +128,7 @@ mm_MYTH_VERSION           ?= 0.24
 mm_NVIDIA_VERSION         ?= 260.19.21
 # The version of xorg to use.
 # Valid values are '7.4' and '7.5'.
-mm_XORG_VERSION           ?= 7.4
+mm_XORG_VERSION           ?= 7.5
 # Myth trunk version built. If the version changes too much then the patches may
 # no longer work.
 mm_MYTH_TRUNK_VERSION     ?= 27420
