@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION = 7.21.2
+GARVERSION = 7.21.3
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
