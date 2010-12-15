@@ -1,3 +1,6 @@
+# Hack to keep xorg from trying to own the device.
+ACTION=="add", ENV{mm_device_owner}=="?*", ENV{ID_INPUT}=""
+
 ACTION=="add", ENV{mm_device_owner}=="?*", GOTO="end"
 
 ACTION!="add|remove", GOTO="end"
@@ -10,7 +13,11 @@ LABEL="begin"
 # (e.g. lid switch, power button, sleep button and video bus).
 SUBSYSTEMS=="acpi", GOTO="end"
 
+# Method for xorg 7.4.
 ENV{x11_driver}="evdev"
+
+# Method for xorg 7.5 and beyond.
+ENV{ID_INPUT}=="", IMPORT{program}="input_id %p"
 
 IMPORT{file}="/etc/default/keyboard"
 
