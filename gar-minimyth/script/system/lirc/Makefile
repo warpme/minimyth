@@ -3,7 +3,7 @@ GARVERSION = 0.9.0-pre1
 CATEGORIES = system
 #MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
 MASTER_SITES = http://www.lirc.org/software/snapshots/
-#MASTER_SITES = cvs://anonymous@$(GARNAME).cvs.sourceforge.net:/cvsroot/$(GARNAME)/
+#MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-lirc_serial_dev.patch \
@@ -47,8 +47,8 @@ include ../../gar.mk
 
 PARALLELMFLAGS := -j1
 
-cvs//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 x-checksum-$(DISTNAME).tar.bz2:
