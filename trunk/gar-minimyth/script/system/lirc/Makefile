@@ -1,12 +1,12 @@
 GARNAME = lirc
-GARVERSION = 0.9.0-pre1
+#GARVERSION = 0.9.0-pre1
+GARVERSION = 6b440d65b50f3d2fab0a618e7c35ee6a34cdc1e8
 CATEGORIES = system
 #MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
-MASTER_SITES = http://www.lirc.org/software/snapshots/
-#MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
+#MASTER_SITES = http://www.lirc.org/software/snapshots/
+MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-lirc_serial_dev.patch \
 	$(DISTNAME)-lirc_gpio.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
 	$(DISTNAME)-input_map.patch.gar
@@ -51,7 +51,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
