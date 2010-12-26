@@ -1,5 +1,5 @@
 GARNAME = cairo
-GARVERSION = 1.10.0
+GARVERSION = 1.10.2
 CATEGORIES = gtk
 MASTER_SITES = http://www.cairographics.org/releases/
 DISTFILES = $(DISTNAME).tar.gz
