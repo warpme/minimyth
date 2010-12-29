@@ -15,7 +15,6 @@ endef
 DEPENDS = lang/c lang/cxx \
 	lib/a52dec \
 	lib/alsa-lib \
-	lib/faad2 \
 	lib/ffmpeg \
 	lib/fontconfig \
 	lib/freetype \
@@ -116,7 +115,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-avformat \
 	--enable-swscale \
 	--enable-postproc \
-	--enable-faad \
+	--disable-faad \
 	--disable-twolame \
 	--disable-quicktime \
 	--disable-real \
