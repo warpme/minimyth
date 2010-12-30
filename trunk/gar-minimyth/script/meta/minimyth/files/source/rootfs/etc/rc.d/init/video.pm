@@ -66,11 +66,6 @@ sub start
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
             ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
         }
-        when (/^radeonhd$/)
-        {
-            ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');
-            ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
-        }
         when (/^savage$/)
         {
             ($decoder      eq 'auto') && ($decoder      = 'ffmpeg');

@@ -40,7 +40,6 @@ DEPENDS = \
 	$(CATEGORY)/xf86-input-void \
 	$(CATEGORY)/xf86-video-ati \
 	$(if $(filter i386  ,$(GARCH_FAMILY)), $(CATEGORY)/xf86-video-geode) \
-	$(CATEGORY)/xf86-video-radeonhd \
 	$(CATEGORY)/xf86-video-intel \
 	$(CATEGORY)/xf86-video-nouveau \
 	$(CATEGORY)/xf86-video-nv \

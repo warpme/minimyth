@@ -207,9 +207,6 @@ sub start
         when (/^(radeon)$/)
         {
         }
-        when (/^(radeonhd)$/)
-        {
-        }
         when (/^(savage)$/)
         {
         }
@@ -309,9 +306,6 @@ sub start
         {
         }
         when (/^(radeon)$/)
-        {
-        }
-        when (/^(radeonhd)$/)
         {
         }
         when (/^(savage)$/)
