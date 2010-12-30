@@ -19,14 +19,15 @@ sub var_list
 #===============================================================================
 $var_list{'MM_X_DRIVER'} =
 {
-    value_default => sub
+    value_default  => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
         return $minimyth->detect_state_get('video', 0, 'driver');
     },
-    value_valid   => '.+'
+    value_valid    => '.+',
+    value_obsolete => 'radeonhd',
 };
 #===============================================================================
 #
