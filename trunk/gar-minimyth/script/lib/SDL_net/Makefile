@@ -35,7 +35,6 @@ pre-configure:
 	@cd $(WORKSRC) ; touch ChangeLog
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@echo $(PATH)
 	@#$(MAKECOOKIE)
 
 post-install:
