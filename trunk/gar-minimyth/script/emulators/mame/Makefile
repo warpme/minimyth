@@ -1,5 +1,5 @@
 GARNAME = mame
-GARVERSION = 0.140
+GARVERSION = 0.141
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/expat lib/SDL lib/zlib xorg/xorg
+DEPENDS = lang/c lib/expat lib/SDL lib/SDL_ttf lib/zlib xorg/xorg
 ifneq ($(DESTIMG),build)
 BUILDDEPS += emulators/mame
 endif
