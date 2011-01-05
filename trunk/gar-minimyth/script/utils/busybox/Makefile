@@ -8,7 +8,8 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-bzip2.patch \
 	$(DISTNAME)-cpio.patch \
-	$(DISTNAME)-hush.patch
+	$(DISTNAME)-hush.patch \
+	$(DISTNAME)-mkswap.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
