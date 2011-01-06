@@ -106,9 +106,10 @@ sub start
         $virtual_y = $2;
     }
 
-    my $device_intel  = '';
-    my $device_nvidia = '';
-    my $device_via    = '';
+    my $device_intel   = '';
+    my $device_nouveau = '';
+    my $device_nvidia  = '';
+    my $device_via     = '';
     given ($minimyth->var_get('MM_X_DRIVER'))
     {
         when (/^(intel_810|intel_915)$/)
@@ -144,6 +145,26 @@ sub start
         }
         when (/^(nouveau)$/)
         {
+            given ($minimyth->var_get('MM_X_OUTPUT_TV'))
+            {
+                when (/^auto$/)     { $device_nouveau = 'TV-1';     }
+                when (/^([0-9]+)$/) { $device_nouveau = 'TV-' . $1; }
+            }
+            given ($minimyth->var_get('MM_X_OUTPUT_VGA'))
+            {
+                when (/^auto$/)     { $device_nouveau = 'VGA-1';     }
+                when (/^([0-9]+)$/) { $device_nouveau = 'VGA-' . $1; }
+            }
+            given ($minimyth->var_get('MM_X_OUTPUT_DVI'))
+            {
+                when (/^auto$/)     { $device_nouveau = 'TMDS-1';     }
+                when (/^([0-9]+)$/) { $device_nouveau = 'TMDS-' . $1; }
+            }
+            given ($minimyth->var_get('MM_X_OUTPUT_HDMI'))
+            {
+                when (/^auto$/)     { $device_nouveau = 'HDMI-1';     }
+                when (/^([0-9]+)$/) { $device_nouveau = 'HDMI-' . $1; }
+            }
         }
         when (/^(nv)$/)
         {
@@ -337,28 +358,29 @@ sub start
 
     $minimyth->file_replace_variable(
         '/etc/X11/xorg.conf',
-        { '@MM_X_DRIVER@'        => $minimyth->var_get('MM_X_DRIVER')      ,
-          '@MM_X_DEVICE_INTEL@'  => $device_intel                          ,
-          '@MM_X_DEVICE_NVIDIA@' => $device_nvidia                         ,
-          '@MM_X_DEVICE_VIA@'    => $device_via                            ,
-          '@MM_X_TV_TYPE@'       => $minimyth->var_get('MM_X_TV_TYPE')     ,
-          '@MM_X_TV_OUTPUT@'     => $minimyth->var_get('MM_X_TV_OUTPUT')   ,
-          '@MM_X_TV_OVERSCAN@'   => $minimyth->var_get('MM_X_TV_OVERSCAN') ,
-          '@MM_X_SYNC@'          => $minimyth->var_get('MM_X_SYNC')        ,
-          '@MM_X_REFRESH@'       => $minimyth->var_get('MM_X_REFRESH')     ,
-          '@MM_X_MODELINE@'      => $minimyth->var_get('MM_X_MODELINE')    ,
-          '@MM_X_MODELINE_0@'    => $minimyth->var_get('MM_X_MODELINE_0')  ,
-          '@MM_X_MODELINE_1@'    => $minimyth->var_get('MM_X_MODELINE_1')  ,
-          '@MM_X_MODELINE_2@'    => $minimyth->var_get('MM_X_MODELINE_2')  ,
-          '@MM_X_MODE@'          => $mode                                  ,
-          '@MM_X_MODE_0@'        => $mode_0                                ,
-          '@MM_X_MODE_1@'        => $mode_1                                ,
-          '@MM_X_MODE_2@'        => $mode_2                                ,
-          '@X_DISPLAYSIZE_X@'    => $displaysize_x                         ,
-          '@X_DISPLAYSIZE_Y@'    => $displaysize_y                         ,
-          '@X_VIRTUAL_X@'        => $virtual_x                             ,
-          '@X_VIRTUAL_Y@'        => $virtual_y                             ,
-          '@NVIDIA_TRUE@'        => $nvidia_true                            });
+        { '@MM_X_DRIVER@'         => $minimyth->var_get('MM_X_DRIVER')      ,
+          '@MM_X_DEVICE_INTEL@'   => $device_intel                          ,
+          '@MM_X_DEVICE_NOUVEAU@' => $device_nouveau                        ,
+          '@MM_X_DEVICE_NVIDIA@'  => $device_nvidia                         ,
+          '@MM_X_DEVICE_VIA@'     => $device_via                            ,
+          '@MM_X_TV_TYPE@'        => $minimyth->var_get('MM_X_TV_TYPE')     ,
+          '@MM_X_TV_OUTPUT@'      => $minimyth->var_get('MM_X_TV_OUTPUT')   ,
+          '@MM_X_TV_OVERSCAN@'    => $minimyth->var_get('MM_X_TV_OVERSCAN') ,
+          '@MM_X_SYNC@'           => $minimyth->var_get('MM_X_SYNC')        ,
+          '@MM_X_REFRESH@'        => $minimyth->var_get('MM_X_REFRESH')     ,
+          '@MM_X_MODELINE@'       => $minimyth->var_get('MM_X_MODELINE')    ,
+          '@MM_X_MODELINE_0@'     => $minimyth->var_get('MM_X_MODELINE_0')  ,
+          '@MM_X_MODELINE_1@'     => $minimyth->var_get('MM_X_MODELINE_1')  ,
+          '@MM_X_MODELINE_2@'     => $minimyth->var_get('MM_X_MODELINE_2')  ,
+          '@MM_X_MODE@'           => $mode                                  ,
+          '@MM_X_MODE_0@'         => $mode_0                                ,
+          '@MM_X_MODE_1@'         => $mode_1                                ,
+          '@MM_X_MODE_2@'         => $mode_2                                ,
+          '@X_DISPLAYSIZE_X@'     => $displaysize_x                         ,
+          '@X_DISPLAYSIZE_Y@'     => $displaysize_y                         ,
+          '@X_VIRTUAL_X@'         => $virtual_x                             ,
+          '@X_VIRTUAL_Y@'         => $virtual_y                             ,
+          '@NVIDIA_TRUE@'         => $nvidia_true                            });
 
     $minimyth->message_output('info', "starting X ...");
     $minimyth->x_start();
