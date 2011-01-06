@@ -5,7 +5,7 @@ This file contains the changes made to MiniMyth since the previous stable
 MiniMyth release. For earlier changes see the yearly changelog files.
 
 --------------------------------------------------------------------------------
-Changes since 75 (2011-01-04):
+Changes since 75 (2011-01-06):
 
 Current MythTV versions
     MythTV trunk: version trunk.27420, trunk svn 27420.
@@ -28,6 +28,16 @@ Modified kernel
     - Added gspca kernel drivers (and included in the image when mythzoneminder
       is included in the image).
       binary image.
+    - Hacked init to handle KMS capable drivers better.
+        - Blackisted the KMS capable drivers (i.e. i915, nouveau and radeon) so
+          none of them load until they are explicitly loaded by the
+          corresponding Xorg driver.
+            - This hack reduces problems caused by (1) a KMS capable driver
+              interfering with the boot splash screen that running on the
+              vesafb driver based frame buffer not the KMS capable frame buffer
+              driver and (2) a somewhat buggy nouveau driver causing problems
+              when it loads too early.
+        - Enabled KMS so that Xorg drivers can use it.
 
 Fixed bugs
     - Fixed lirc_serial by updating to LIRC git
