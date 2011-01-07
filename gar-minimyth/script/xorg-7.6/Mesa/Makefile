@@ -5,7 +5,7 @@ MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
@@ -50,16 +50,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-xcb \
 	--disable-egl \
-	--disable-gallium \
-	--disable-gallium-svga \
-	--disable-gallium-intel \
-	--disable-gallium-radeon \
-	--disable-gallium-nouveau \
-	--disable-gallium-swrast \
+	--enable-gallium \
+	--enable-gallium-svga \
+	--enable-gallium-intel \
+	--enable-gallium-radeon \
+	--enable-gallium-nouveau \
+	--enable-gallium-swrast \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
-	--with-dri-drivers="$(DRI_DIRS)"
+	--with-dri-drivers="$(DRI_DIRS)" \
+	--with-state-trackers="dri,glx"
 
 BUILD_ARGS  = \
 	HOST_CC="$(build_CC)" \
@@ -79,8 +80,8 @@ CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 DRI_DIRS := $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 r200 r300 r600 radeon savage sis swrast unichrome) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 r200 r300 r600 radeon savage sis swrast unichrome))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 nouveau r200 r300 r600 radeon savage sis swrast unichrome) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 nouveau r200 r300 r600 radeon savage sis swrast unichrome))
 DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
