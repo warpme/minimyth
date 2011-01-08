@@ -113,7 +113,6 @@ mm-all:
 		if [ ! "$${graphic}" = "intel"      ] && \
 		   [ ! "$${graphic}" = "geode"      ] && \
 		   [ ! "$${graphic}" = "nouveau"    ] && \
-		   [ ! "$${graphic}" = "nv"         ] && \
 		   [ ! "$${graphic}" = "nvidia"     ] && \
 		   [ ! "$${graphic}" = "openchrome" ] && \
 		   [ ! "$${graphic}" = "radeon"     ] && \
