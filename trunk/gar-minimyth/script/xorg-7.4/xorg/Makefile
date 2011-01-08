@@ -42,7 +42,6 @@ DEPENDS = \
 	$(if $(filter i386  ,$(GARCH_FAMILY)), $(CATEGORY)/xf86-video-geode) \
 	$(CATEGORY)/xf86-video-intel \
 	$(CATEGORY)/xf86-video-nouveau \
-	$(CATEGORY)/xf86-video-nv \
 	$(CATEGORY)/xf86-video-openchrome \
 	$(CATEGORY)/xf86-video-savage \
 	$(CATEGORY)/xf86-video-sis \

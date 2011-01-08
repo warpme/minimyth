@@ -18,7 +18,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 56
+mm_CONF_VERSION           ?= 57
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -31,11 +31,10 @@ mm_DEBUG                  ?= no
 mm_DEBUG_BUILD            ?= no
 # Lists the graphics drivers supported.
 # Valid values for mm_GRAPHICS are one or more of 'intel', 'geode', 'nouveau',
-# 'nvidia', 'nv', 'openchrome', 'radeon', 'savage', 'sis', and 'vmware'.
+# 'nvidia', 'openchrome', 'radeon', 'savage', 'sis', and 'vmware'.
 mm_GRAPHICS               ?= intel \
                              $(if $(filter $(mm_GARCH_FAMILY),i386),geode) \
                              nouveau \
-                             nv \
                              nvidia \
                              openchrome \
                              radeon \

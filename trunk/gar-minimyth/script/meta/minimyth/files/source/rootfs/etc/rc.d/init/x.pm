@@ -166,9 +166,6 @@ sub start
                 when (/^([0-9]+)$/) { $device_nouveau = 'HDMI-' . $1; }
             }
         }
-        when (/^(nv)$/)
-        {
-        }
         when (/^(nvidia)$/)
         {
             given ($minimyth->var_get('MM_X_OUTPUT_TV'))
@@ -252,9 +249,6 @@ sub start
         {
         }
         when (/^(nouveau)$/)
-        {
-        }
-        when (/^(nv)$/)
         {
         }
         when (/^(nvidia)$/)

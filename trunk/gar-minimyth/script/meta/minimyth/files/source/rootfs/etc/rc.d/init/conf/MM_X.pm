@@ -27,7 +27,7 @@ $var_list{'MM_X_DRIVER'} =
         return $minimyth->detect_state_get('video', 0, 'driver');
     },
     value_valid    => '.+',
-    value_obsolete => 'radeonhd',
+    value_obsolete => ['nv', 'radeonhd']
 };
 #===============================================================================
 #
