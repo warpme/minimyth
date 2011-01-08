@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.13.0
+GARVERSION = 2.14.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS = lang/c system/udev \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
@@ -27,8 +27,6 @@ DEPENDS = lang/c \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
-BUILDDEPS = \
-	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
