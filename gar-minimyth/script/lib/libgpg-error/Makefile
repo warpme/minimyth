@@ -1,5 +1,5 @@
 GARNAME = libgpg-error
-GARVERSION = 1.9
+GARVERSION = 1.10
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnupg.org/gcrypt/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
