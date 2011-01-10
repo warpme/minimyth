@@ -10,6 +10,8 @@ PATCHFILES  = \
 	$(DISTNAME)-cpio.patch \
 	$(DISTNAME)-hush.patch \
 	$(DISTNAME)-mkswap.patch \
+	$(DISTNAME)-modprobe-small.patch \
+	$(DISTNAME)-tftp.patch \
 	$(DISTNAME)-warning.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
