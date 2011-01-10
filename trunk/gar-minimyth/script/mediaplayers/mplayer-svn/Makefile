@@ -124,8 +124,6 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libgsm \
 	--disable-theora \
 	--disable-faad \
-	--disable-faad-internal \
-	--disable-faad-fixed \
 	--disable-faac \
 	--disable-faac-lavc \
 	--disable-ladspa \
