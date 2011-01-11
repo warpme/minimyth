@@ -1,11 +1,11 @@
 GARNAME = Mesa
-GARVERSION = 7.10
+GARVERSION = 7.9.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 MASTER_SITES += http://easynews.dl.sourceforge.net/sourceforge/mesa3d/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
@@ -51,7 +51,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xcb \
 	--disable-egl \
 	--enable-gallium \
-	--disable-gallium-egl \
 	--disable-gallium-llvm \
 	--enable-gallium-svga \
 	--enable-gallium-i915 \
@@ -60,7 +59,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-gallium-r600 \
 	--enable-gallium-nouveau \
 	--enable-gallium-swrast \
-	--enable-gallium-noop \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
