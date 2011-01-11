@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/flac lib/freetype lib/libcdio lib/libdca lib/libdvdnav lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -65,7 +65,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-a52dec \
 	--enable-asf \
 	--enable-nosefart \
-	--disable-faad \
+	--enable-faad \
 	--disable-gdkpixbuf \
 	--enable-dts \
 	--enable-mad \
