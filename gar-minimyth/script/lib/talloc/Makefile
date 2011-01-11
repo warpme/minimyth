@@ -35,5 +35,9 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libmad.la
+	@rm -f $(DESTDIR)$(libdir)/libtalloc.a
+	@rm -f $(DESTDIR)$(libdir)/libtalloc.so
+	@rm -f $(DESTDIR)$(libdir)/libtalloc.so.2
+	@ln -s libtalloc.so.$(GARVERSION) $(DESTDIR)$(libdir)/libtalloc.so.2
+	@ln -s libtalloc.so.2 $(DESTDIR)$(libdir)/libtalloc.so
 	@$(MAKECOOKIE)
