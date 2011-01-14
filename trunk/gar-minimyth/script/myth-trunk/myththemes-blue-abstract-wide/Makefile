@@ -1,5 +1,5 @@
 GARNAME = myththemes-blue-abstract-wide
-GARVERSION = 1.3_2011.01.05
+GARVERSION = 1.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = ftp://miroku.no-ip.com/
 DISTFILES = blue-abstract-wide_$(GARVERSION).tar.bz2
@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-xDEPENDS = \
-	lang/cxx \
+#DEPENDS = \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
