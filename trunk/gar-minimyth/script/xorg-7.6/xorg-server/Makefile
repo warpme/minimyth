@@ -75,7 +75,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-visibility \
 	--enable-pc98=auto \
 	--enable-aiglx \
-	--enable-glx-tls \
 	--enable-registry \
 	--disable-composite \
 	--enable-mitshm \
