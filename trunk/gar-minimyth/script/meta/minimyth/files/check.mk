@@ -58,8 +58,14 @@ mm-all:
 		echo "error: mm_INSTALL_NFS should be replaced with mm_INSTALL_NFS_BOOT." ; \
 		exit 1 ; \
 	fi
+	@echo "    mm_MYTH_SVN_VERSION"
 	@if [ -n "$(mm_MYTH_SVN_VERSION)" ] ; then \
-		echo "error: mm_MYTH_SVN_VERSION should be replaced with mm_MYTH_TRUNK_VERSION." ; \
+		echo "error: mm_MYTH_TRUNK_VERSION should be replaced with mm_MYTHTV_MASTER_VERSION." ; \
+		exit 1 ; \
+	fi
+	@echo "    mm_MYTH_TRUNK_VERSION"
+	@if [ -n "$(mm_MYTH_TRUNK_VERSION)" ] ; then \
+		echo "error: mm_MYTH_TRUNK_VERSION should be replaced with mm_MYTHTV_MASTER_VERSION." ; \
 		exit 1 ; \
 	fi
 	@echo "    mm_XORG_VERSION='old'"

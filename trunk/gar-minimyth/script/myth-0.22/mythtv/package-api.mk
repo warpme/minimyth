@@ -1,11 +1,9 @@
-MYTHTV_GARVERSION_SHORT = 0.22
-MYTHTV_SVN_VERSION      = 27412
-
-MYTHTV_VERSION = $(MYTHTV_GARVERSION_SHORT)-$(MYTHTV_SVN_VERSION)
+MYTHTV_GARVERSION = 0.22-20100711-3c6ce60-697a6ac
 
 MYTHTV_SOURCEDIR = $(sourcedir)/mythtv
 
-MYTHTV_CONFIGURE_ENV =
+MYTHTV_CONFIGURE_ENV = \
+	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 MYTHTV_BUILD_ENV     =
 MYTHTV_INSTALL_ENV   = \
 	INSTALL_ROOT=$(DESTDIR)
@@ -20,5 +18,13 @@ MYTHTV_PLUGINS_CONFIGURE_ARGS = \
 
 post-install-mythtv-version:
 	@install -d $(DESTDIR)$(versiondir) 
-	@echo "$(MYTHTV_GARVERSION_SHORT) through SVN $(MYTHTV_SVN_VERSION)" > $(DESTDIR)$(versiondir)/$(GARNAME)
+	@rm -rf     $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n "$(MYTHTV_GARVERSION) "                                                  >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n "("                                                                      >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n "$(word 1,$(subst -, ,$(MYTHTV_GARVERSION)))"                            >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n " through "                                                              >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n "mythtv git repo commit $(word 3,$(subst -, ,$(MYTHTV_GARVERSION)))"     >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n " and "                                                                  >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo -n "myththemes git repo commit $(word 4,$(subst -, ,$(MYTHTV_GARVERSION)))" >> $(DESTDIR)$(versiondir)/$(GARNAME)
+	@echo    ")"                                                                      >> $(DESTDIR)$(versiondir)/$(GARNAME)
 	@$(MAKECOOKIE)

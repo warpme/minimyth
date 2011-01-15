@@ -1,24 +1,23 @@
 GARNAME = mythtv
-GARVERSION = $(MYTHTV_VERSION)
+GARVERSION = $(MYTHTV_GARVERSION)
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = svn://svn.mythtv.org/svn/trunk/
+MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(DISTNAME_SHORT)-codec_id_svq3_fix.patch \
-	$(DISTNAME_SHORT)-python_build.patch \
-	$(DISTNAME_SHORT)-max_num_xvmc_surfaces_14.patch \
-	$(DISTNAME_SHORT)-sysroot.patch \
-	$(DISTNAME_SHORT)-fftw3.patch \
-	$(DISTNAME_SHORT)-hulu.patch \
-	$(DISTNAME_SHORT)-networkcontrol.patch \
-	$(DISTNAME_SHORT)-eject.patch \
-	$(DISTNAME_SHORT)-drm_vsync_control.patch \
-	$(DISTNAME_SHORT).patch.gar \
-	$(DISTNAME_SHORT)-init.patch \
-	$(DISTNAME_SHORT)-minimyth.patch \
-	$(DISTNAME_SHORT)-programid.patch \
-	$(DISTNAME_SHORT)-cdio.patch
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-codec_id_svq3_fix.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-drm_vsync_control.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-minimyth.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-programid.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-cdio.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -34,6 +33,7 @@ DEPENDS = \
 	lib/lame \
 	lib/libavc1394 \
 	lib/libiec61883 \
+	lib/libxml2 \
 	lib/zlib \
 	python/python \
 	python/python-MySQL-python \
@@ -48,8 +48,6 @@ BUILDDEPS = \
 	python/python-distutilscross \
 	python/python-MySQL-python \
 	python/python-lxml
-
-DISTNAME_SHORT = $(GARNAME)-$(MYTHTV_GARVERSION_SHORT)
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -107,6 +105,7 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-jack \
 	--disable-audio-pulseoutput \
+	--enable-ffmpeg-pthreads \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
@@ -131,7 +130,10 @@ CONFIGURE_ARGS = \
 	--disable-quartz-video \
 	--enable-opengl-vsync \
 	--disable-mac-bundle \
+	--enable-libxml2 \
+	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
 	--without-bindings="perl" \
+	--without-bindings="php" \
 	--with-bindings="python"
 
 CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
@@ -149,9 +151,16 @@ CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(MYTHTV_SVN_VERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
+git//%/$(DISTNAME).tar.bz2:
+	$(call FETCH_GIT, $*/mythtv.git,     $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
+	$(call FETCH_GIT, $*/myththemes.git, $(word 4,$(subst -, ,$(GARVERSION))), myththemes)
+	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR) ; tar -jxf myththemes.tar.bz2
+	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/myththemes
+	@cd $(PARTIALDIR) ; mv myththemes $(DISTNAME)/myththemes
+	@cd $(PARTIALDIR) ; rm -rf   $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR) ; rm -rf                       $(DISTNAME)
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
