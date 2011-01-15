@@ -7,10 +7,10 @@
 # The version of MiniMyth.
 mm_VERSION                ?= $(mm_VERSION_MYTH)-$(mm_VERSION_MINIMYTH)$(mm_VERSION_EXTRA)
 mm_VERSION_MYTH           ?= $(strip \
-                                $(if $(filter 0.22 ,        $(mm_MYTH_VERSION)),0.22.0                        ) \
-                                $(if $(filter 0.23 ,        $(mm_MYTH_VERSION)),0.23.1                        ) \
-                                $(if $(filter 0.24 ,        $(mm_MYTH_VERSION)),0.24.0                        ) \
-                                $(if $(filter trunk,        $(mm_MYTH_VERSION)),trunk.$(mm_MYTH_TRUNK_VERSION)) \
+                                $(if $(filter 0.22  ,$(mm_MYTH_VERSION)),0.22.0) \
+                                $(if $(filter 0.23  ,$(mm_MYTH_VERSION)),0.23.1) \
+                                $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.0) \
+                                $(if $(filter trunk ,$(mm_MYTH_VERSION)),master) \
                               )
 mm_VERSION_MINIMYTH       ?= 75
 mm_VERSION_EXTRA          ?= $(strip \
@@ -126,9 +126,11 @@ mm_NVIDIA_VERSION         ?= 260.19.29
 # The version of xorg to use.
 # Valid values are '7.4' and '7.6'.
 mm_XORG_VERSION           ?= 7.6
-# Myth trunk version built. If the version changes too much then the patches may
-# no longer work.
-mm_MYTH_TRUNK_VERSION     ?= 27420
+# MythTV master version built. If the version changes too much then the patches
+# may no longer work. The version string format is:
+# master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
+# the format YYYYMMDD.
+mm_MYTHTV_MASTER_VERSION  ?= master-20110114-5707d26-45d6b63
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image

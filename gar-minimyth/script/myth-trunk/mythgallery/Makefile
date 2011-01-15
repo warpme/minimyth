@@ -1,5 +1,5 @@
 GARNAME = mythgallery
-GARVERSION = $(MYTHTV_VERSION)
+GARVERSION = $(MYTHTV_GARVERSION)
 CATEGORIES = $(CATEGORY)
 SOURCEPKG = $(CATEGORY)/mythtv
 LICENSE = GPL2
@@ -16,7 +16,7 @@ DEPENDS = \
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
-WORKSRC = $(WORKDIR)/mythtv-$(MYTHTV_VERSION)
+WORKSRC = $(WORKDIR)/mythtv-$(MYTHTV_GARVERSION)
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/mythplugins/configure
 BUILD_SCRIPTS     = $(WORKSRC)/mythplugins/Makefile
@@ -26,7 +26,8 @@ CONFIGURE_ARGS = \
 	$(MYTHTV_PLUGINS_CONFIGURE_ARGS) \
 	--enable-mythgallery \
 		--enable-exif \
-		--enable-new-exif
+		--enable-new-exif \
+		--disable-dcraw
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
