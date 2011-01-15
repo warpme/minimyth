@@ -22,9 +22,9 @@ latest-0.23            : supports pentium-mmx or better.
 latest-0.23-x86_64     : supports generic x86_64 or better.
                          includes latest MythTV 0.23 version.
                          includes latest stable NVIDIA driver version.
-latest-trunk           : supports pentium-mmx or better.
-                         includes latest MythTV trunk version.
+latest-master          : supports pentium-mmx or better.
+                         includes latest MythTV master version.
                          includes latest stable NVIDIA driver version.
-latest-trunk-x86_64    : supports generic x86_64 or better.
-                         includes latest MythTV trunk version.
+latest-master-x86_64   : supports generic x86_64 or better.
+                         includes latest MythTV master version.
                          includes latest stable NVIDIA driver version.
