@@ -1,0 +1,12 @@
+diff -Naur MPlayer-32790-old/libmpcodecs/vd_ffmpeg.c MPlayer-32790-new/libmpcodecs/vd_ffmpeg.c
+--- MPlayer-32790-old/libmpcodecs/vd_ffmpeg.c	2011-01-15 13:35:37.000000000 -0800
++++ MPlayer-32790-new/libmpcodecs/vd_ffmpeg.c	2011-01-16 07:05:10.000000000 -0800
+@@ -280,7 +280,7 @@
+         return 0;
+     }
+ 
+-    if(vd_use_slices && (lavc_codec->capabilities&CODEC_CAP_DRAW_HORIZ_BAND) && !do_vis_debug)
++    if(vd_use_slices && (lavc_codec->capabilities&CODEC_CAP_DRAW_HORIZ_BAND) && !do_vis_debug && lavc_param_threads <= 1)
+         ctx->do_slices=1;
+ 
+     if(lavc_codec->capabilities&CODEC_CAP_DR1 && !do_vis_debug && lavc_codec->id != CODEC_ID_H264 && lavc_codec->id != CODEC_ID_INTERPLAY_VIDEO && lavc_codec->id != CODEC_ID_ROQ && lavc_codec->id != CODEC_ID_VP8 && lavc_codec->id != CODEC_ID_LAGARITH)
