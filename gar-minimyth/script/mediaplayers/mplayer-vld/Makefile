@@ -130,7 +130,7 @@ CONFIGURE_ARGS_CODEC = \
 	--enable-libdca \
 	--enable-mp3lib \
 	--enable-liba52 \
-	--enable-libmpeg2 \
+	--disable-libmpeg2 \
 	--disable-musepack \
 	--disable-libamr_nb \
 	--disable-libamr_wb
