@@ -29,9 +29,7 @@ if (open(FILE, '<', qq($tmpfile_pciids_txt)))
     my $driver = undef;
     while (<FILE>)
     {
-        if    (/^\[i810\]$/)   { $driver = q(intel_810);  }
-        elsif (/^\[i915\]$/)   { $driver = q(intel_915);  }
-        elsif (/^\[viadrv\]$/) { $driver = q(openchrome); }
+        if    (/^\[viadrv\]$/) { $driver = q(openchrome); }
         elsif (/^\[savage\]$/) { $driver = q(savage);     }
         elsif (/^\[sis\]$/)    { $driver = q(sis);        }
         elsif (/^\[.*\]$/)     { $driver = undef;         }
@@ -90,6 +88,24 @@ unlink(qq($tmpfile_pciids_txt));
         my $driver= q(geode);
         my $product = q(2081);
         $entries{qq($vendor.$product)} = $driver;
+    }
+
+}
+
+# Intel.
+{
+    my $vendor = q(8086);
+    {
+        my $driver= q(intel_i915);
+        my $product = q(????);
+        $entries{qq($vendor.$product)} = $driver;
+    }
+    {
+        my $driver= q(intel_i810);
+        foreach my $product (qw(1132 7121 7123 7125))
+        {
+            $entries{qq($vendor.$product)} = $driver;
+        }
     }
 
 }
