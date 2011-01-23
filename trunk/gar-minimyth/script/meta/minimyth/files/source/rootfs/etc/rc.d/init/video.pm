@@ -23,7 +23,17 @@ sub start
     {
         when (/^intel_810$/)
         {
-            ($decoder      eq 'auto') && ($decoder      = 'xvmc');
+            given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+            {
+                when (/^(22|23|24)$/)
+                {
+                    ($decoder eq 'auto') && ($decoder = 'xvmc');
+                }
+                default
+                {
+                    ($decoder eq 'auto') && ($decoder = 'ffmpeg');
+                }
+            }
             ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libI810XvMC.so.1') && ($xvmc_lib = '/usr/lib/libI810XvMC.so.1');
         }
@@ -57,7 +67,17 @@ sub start
         }
         when (/^openchrome$/)
         {
-            ($decoder      eq 'auto') && ($decoder      = 'xvmc-vld');
+            given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+            {
+                when (/^(22|23|24)$/)
+                {
+                    ($decoder eq 'auto') && ($decoder = 'xvmc-vld');
+                }
+                default
+                {
+                    ($decoder eq 'auto') && ($decoder = 'ffmpeg');
+                }
+            }
             ($deinterlacer eq 'auto') && ($deinterlacer = 'bobdeint');
             (-e '/usr/lib/libchromeXvMC.so.1') && ($xvmc_lib = '/usr/lib/libchromeXvMC.so.1');
         }
