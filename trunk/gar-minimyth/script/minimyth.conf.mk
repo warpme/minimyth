@@ -59,7 +59,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              flash \
                              hulu \
                              mplayer-svn \
-                             mplayer-vld \
+                             $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mplayer-vld) \
                              vlc \
                              xine \
                              bdremote \
