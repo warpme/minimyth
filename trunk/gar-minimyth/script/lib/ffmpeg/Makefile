@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 26400.$(MPLAYER_TRUNK_VERSION)
+GARVERSION = 26402
 CATEGORIES = lib
 MASTER_SITES = svn://svn.ffmpeg.org/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110117.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110121.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -161,18 +161,7 @@ CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-# When using the SVN version, GARVERSION must have the form <ffmpeg-trunk-version>.<mplayer-trunk-version>.
-# This is done to ensure that the correct version of libswscale is used.
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk            , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
-	@$(call FETCH_SVN, svn://$*/mplayer/trunk/libswscale, $(word 2,$(subst ., ,$(GARVERSION))), libswscale )
-	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2 ; rm -r $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jxf libswscale.tar.bz2  ; rm -r libswscale.tar.bz2  ; rm -rf $(DISTNAME)/libswscale ; mv libswscale $(DISTNAME)/
-	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
+	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
@@ -227,9 +216,9 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=26398
-FFMPEG_MT_VERSION_THREAD=0ac282b447075a0645036fba56d2881bbcc8f471
-FFMPEG_MT_VERSION_DATE=20110117
+FFMPEG_MT_VERSION_NORMAL=26402
+FFMPEG_MT_VERSION_THREAD=f374d2ee585d7f6c98ffd3a7803223552497904e
+FFMPEG_MT_VERSION_DATE=20110121
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
