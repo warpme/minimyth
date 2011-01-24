@@ -49,16 +49,14 @@ sub page
     push(@page,  q(    <meta name="keywords" content="MiniMyth,Linux,PVR,MythTV,diskless,Mini-ITX,EPIA,ION,VDPAU" />));
     push(@page,  q(    <meta name="description" content="" />));
     push(@page, qq(    <title>MiniMyth System $title</title>));
-    push(@page,  q(    <style type="text/css" title="main-styles">));
-    push(@page,  q(      @import "../css/minimyth.css";));
+    push(@page,  q(    <link href="../css/minimyth.css" rel="stylesheet" type="text/css" />));
     if (defined($style))
     {
         foreach (@{$style})
         {
-             push(@page,  q(      @import ) . qq("$_";));
+             push(@page,  q(    <link href=) . qq("$_") . q( rel="stylesheet" type="text/css" />));
         }
     }
-    push(@page,  q(    </style>));
     push(@page,  q(  </head>));
     push(@page,  q(  <body>));
     push(@page,  q(    <div class="main">));
@@ -83,23 +81,23 @@ sub page
     push(@page,  q(        <div class="html5">));
     push(@page,  q(          <a href="http://www.w3.org/"><img));
     push(@page,  q(              title="HTML5"));
-    push(@page,  q(              src="/image/HTML5_Logo_32.png"));
+    push(@page,  q(              src="../image/HTML5_Logo_32.png"));
     push(@page,  q(              alt="HTML5" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="valid">));
     push(@page,  q(          <a href="http://validator.w3.org/check?uri=referer"><img));
     push(@page,  q(              style="border:0;width:88px;height:31px"));
-    push(@page,  q(              title="Valid HTML 5"));
-    push(@page,  q(              src="/image/validicons-blueHTML.gif"));
-    push(@page,  q(              alt="Valid HTML 5" /></a>));
-    push(@page,  q(          <a href="http://jigsaw.w3.org/css-validator/check/referer"><img));
+    push(@page,  q(              title="Valid HTML5!"));
+    push(@page,  q(              src="../image/validicons-blueHTML.gif"));
+    push(@page,  q(              alt="Valid HTML5!" /></a>));
+    push(@page,  q(          <a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3"><img));
     push(@page,  q(              style="border:0;width:88px;height:31px"));
-    push(@page,  q(              title="Valid CSS 2.1"));
-    push(@page,  q(              src="/image/validicons-blueCSS.gif"));
-    push(@page,  q(              alt="Valid CSS 2.1" /></a>));
+    push(@page,  q(              title="Valid CSS3!"));
+    push(@page,  q(              src="../image/validicons-blueCSS.gif"));
+    push(@page,  q(              alt="Valid CSS3!" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="version">));
-    push(@page,  q(          Last Updated on 2011-01-23));
+    push(@page,  q(          Last Updated on 2011-01-24));
     push(@page,  q(          <br />));
     push(@page,  q(          &#60;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&#62;));
     push(@page,  q(        </div>));
