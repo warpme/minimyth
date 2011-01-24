@@ -1,7 +1,7 @@
 GARNAME = ffmpeg
-GARVERSION = 26402
+GARVERSION = 91d51ee
 CATEGORIES = lib
-MASTER_SITES = svn://svn.ffmpeg.org/
+MASTER_SITES = git://git.videolan.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110121.patch
 LICENSE = GPL2/LGPL2_1
@@ -160,8 +160,8 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, svn://$*/ffmpeg/trunk , $(word 1,$(subst ., ,$(GARVERSION))), $(DISTNAME))
+git//%/$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
