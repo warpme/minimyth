@@ -1,10 +1,10 @@
 GARNAME = openssh
-GARVERSION = 5.6p1
+GARVERSION = 5.7p1
 CATEGORIES = net
 MASTER_SITES  = ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
 MASTER_SITES += ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/old/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-abstract_socket.patch $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-abstract_socket.patch $(DISTNAME).patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENCE
 
