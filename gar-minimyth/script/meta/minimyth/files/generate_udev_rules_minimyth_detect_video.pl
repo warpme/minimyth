@@ -96,12 +96,12 @@ unlink(qq($tmpfile_pciids_txt));
 {
     my $vendor = q(8086);
     {
-        my $driver= q(intel_i915);
+        my $driver= q(intel_915);
         my $product = q(????);
         $entries{qq($vendor.$product)} = $driver;
     }
     {
-        my $driver= q(intel_i810);
+        my $driver= q(intel_810);
         foreach my $product (qw(1132 7121 7123 7125))
         {
             $entries{qq($vendor.$product)} = $driver;
