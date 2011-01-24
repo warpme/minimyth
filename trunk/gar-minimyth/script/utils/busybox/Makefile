@@ -8,7 +8,8 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-buildsys.patch \
 	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-modprobe-small.patch
+	$(DISTNAME)-modprobe-small.patch \
+	$(DISTNAME)-wc.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
