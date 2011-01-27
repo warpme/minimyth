@@ -26,7 +26,12 @@ sub start
         {
             if (system(qq(/usr/sbin/hciconfig $device up > $devnull 2>&1)) != 0)
             {
-                $minimyth->message_output('err', "configuration of bluetooth device '$device' failed.");
+                $minimyth->message_output('err', "configuration of bluetooth device '$device' failed (hciconfig command: up).");
+                return 0;
+            }
+            if (system(qq(/usr/sbin/hciconfig $device lm master > $devnull 2>&1)) != 0)
+            {
+                $minimyth->message_output('err', "configuration of bluetooth device '$device' failed (hciconfig command: lm master).");
                 return 0;
             }
         }
