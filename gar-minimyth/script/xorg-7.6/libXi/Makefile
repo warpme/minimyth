@@ -1,5 +1,5 @@
 GARNAME = libXi
-GARVERSION = 1.4.0
+GARVERSION = 1.4.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -29,6 +29,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--enable-malloc0returnsnull \
+	--without-xmlto \
+	--without-fop \
+	--without-asciidoc \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
