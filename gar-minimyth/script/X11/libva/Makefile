@@ -1,7 +1,8 @@
 GARNAME = libva
-GARVERSION = 1.0.7
+GARVERSION = 874c618
 CATEGORIES = X11
-MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
+#MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
+MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -27,6 +28,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
