@@ -3,7 +3,7 @@ GARVERSION = e781c4e
 CATEGORIES = lib
 MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110121.patch
+PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110121.patch $(GARNAME)-vaapi_20110127.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
