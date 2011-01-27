@@ -1,7 +1,8 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.23
+GARVERSION = 1.0.24
 CATEGORIES = lib
-MASTER_SITES = ftp://ftp.alsa-project.org/pub/lib/
+MASTER_SITES  = ftp://ftp.alsa-project.org/pub/lib/
+MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 

@@ -1,10 +1,9 @@
 GARNAME = alsa-driver
-GARVERSION = 1.0.23
+GARVERSION = 1.0.24
 CATEGORIES = kernel-2.6.37
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/driver/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-resume.patch $(DISTNAME)-nvidia_hdmi.patch $(DISTNAME)-2.6.34.patch $(DISTNAME)-quirk.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
