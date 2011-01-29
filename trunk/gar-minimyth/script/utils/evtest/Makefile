@@ -1,7 +1,7 @@
 GARNAME = evtest
-GARVERSION = 1.25
+GARVERSION = 334beb8
 CATEGORIES = utils
-MASTER_SITES = http://cgit.freedesktop.org/~whot/evtest/snapshot/
+MASTER_SITES = git://anongit.freedesktop.org/~whot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c lib/libxml2 lib/libxslt
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -19,8 +19,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
 
-# This can be removed once we have upgraded to Linux Kernel 2.6.32.
-CFLAGS += -DKEY_RFKILL=0x20c
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
