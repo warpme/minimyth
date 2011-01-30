@@ -36,7 +36,7 @@ mm_GRAPHICS               ?= intel \
                              $(if $(filter $(mm_GARCH_FAMILY),i386),geode) \
                              nouveau \
                              nvidia \
-                             openchrome \
+                             $(if $(filter $(mm_GARCH_FAMILY),i386),openchrome) \
                              radeon \
                              sis \
                              vmware
@@ -126,7 +126,7 @@ mm_MYTH_VERSION           ?= 0.24
 mm_NVIDIA_VERSION         ?= 260.19.36
 # The version of xorg to use.
 # Valid values are '7.4' and '7.6'.
-mm_XORG_VERSION           ?= 7.6
+mm_XORG_VERSION           ?= $(strip $(if $(filter $(mm_GARCH_FAMILY), i386), 7.4, 7.6))
 # MythTV master version built. If the version changes too much then the patches
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has

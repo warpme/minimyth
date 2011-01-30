@@ -48,14 +48,10 @@ Improved kernel
       is included in the image).
       binary image.
     - Hacked init to handle KMS capable drivers better.
-        - Blackisted the KMS capable drivers (i.e. i915, nouveau and radeon) so
-          none of them load until they are explicitly loaded by the
-          corresponding Xorg driver.
-            - This hack reduces problems caused by (1) a KMS capable driver
-              interfering with the boot splash screen that running on the
-              vesafb driver based frame buffer not the KMS capable frame buffer
-              driver and (2) a somewhat buggy nouveau driver causing problems
-              when it loads too early.
+        - Blackisted the KMS capable nouveau driver so it does not load until
+          it is explicitly loaded the Xorg nouveau driver. This hack reduces
+          problems caused by a somewhat buggy nouveau driver causing problems
+          when it loads too early.
         - Enabled KMS so that Xorg drivers can use it.
 
 Fixed bugs
@@ -76,6 +72,10 @@ Modified build system
       drivers during native compile.
     - Stopped including mediaplayer-vld in the image when MythTV version is
       trunk as trunk does not support xvmc or xvmc-vld.
+    - Changed minimyth.conf.mk so that it selects Xorg 7.4 for 32-bit builds
+      and builds Xorg 7.6 for 64-bit builds.
+        - Sadly, the newer openChrome drivers appear to have problems with
+          at least some of the TV out resolutions.
 
 Moved packages
     Moved myth-trunk to myth-master.
