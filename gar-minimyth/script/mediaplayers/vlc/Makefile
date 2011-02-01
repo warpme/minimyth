@@ -13,17 +13,13 @@ define BLURB
 endef
 
 DEPENDS = lang/c lang/cxx \
-	lib/a52dec \
 	lib/alsa-lib \
-	lib/faad2 \
 	lib/ffmpeg \
 	lib/fontconfig \
 	lib/freetype \
 	lib/libcdio \
 	lib/libdvdnav \
 	lib/libdvbpsi \
-	lib/libdca \
-	lib/libmad \
 	lib/libpng \
 	lib/libxml2 \
 	lib/taglib \
@@ -105,7 +101,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-wma-fixed \
 	--disable-shine \
 	--disable-omxil \
-	--enable-mad \
+	--disable-mad \
 	--disable-id3tag \
 	--disable-merge-ffmpeg \
 	--enable-avcodec \
@@ -115,14 +111,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-avformat \
 	--enable-swscale \
 	--enable-postproc \
-	--enable-faad \
+	--disable-faad \
 	--disable-twolame \
 	--disable-quicktime \
 	--disable-real \
 	--disable-realrtsp \
 	--disable-libtar \
-	--enable-a52 \
-	--enable-dca \
+	--disable-a52 \
+	--disable-dca \
 	--disable-flac \
 	--disable-libmpeg2 \
 	--disable-vorbis \
