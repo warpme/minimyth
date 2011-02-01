@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/ffmpeg lib/lame lib/xvidcore xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/lame lib/xvidcore xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -53,7 +53,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-libdv \
 	--disable-libquicktime \
 	--disable-lzo \
-	--enable-a52 \
+	--disable-a52 \
 	--disable-faac \
 	--disable-libxml2 \
 	--disable-ibp \
@@ -75,9 +75,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xvid-prefix=$(DESTDIR)$(prefix) \
 	--with-xvid-includes=$(DESTDIR)$(includedir) \
 	--with-xvid-libs=$(DESTDIR)$(libdir) \
-	--with-a52-prefix=$(DESTDIR)$(prefix) \
-	--with-a52-includes=$(DESTDIR)$(includedir) \
-	--with-a52-libs=$(DESTDIR)$(libdir) \
 	--with-mod-path=$(libdir)/transcode
 
 include ../../gar.mk

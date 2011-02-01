@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/a52dec lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libbluray lib/libcdio lib/libdca lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmad lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -94,8 +94,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
 # --enable-ffmpeg_so
-# --enable-libdca
-# --enable-liba52
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
@@ -130,13 +128,15 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libbs2b \
 	--disable-libdv \
 	--disable-mpg123 \
-	--enable-mad \
+	--disable-mad \
 	--disable-mp3lame \
 	--disable-mp3lame-lavc \
 	--disable-toolame \
 	--disable-twolame \
 	--disable-xmms \
-	--enable-mp3lib \
+	--disable-libdca \
+	--disable-mp3lib \
+	--disable-liba52 \
 	--disable-libmpeg2 \
 	--disable-libmpeg2-internal \
 	--disable-musepack \
