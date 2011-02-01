@@ -1,11 +1,11 @@
 GARNAME = vlc
-GARVERSION = 1.1.6
+GARVERSION = 1.1.7
 CATEGORIES = mediaplayers
 PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-errno_h.patch
+PATCHFILES = $(DISTNAME)-dash.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -24,7 +24,6 @@ DEPENDS = lang/c lang/cxx \
 	lib/libdvbpsi \
 	lib/libdca \
 	lib/libmad \
-	lib/libmatroska \
 	lib/libpng \
 	lib/libxml2 \
 	lib/taglib \
@@ -99,7 +98,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-ogg \
 	--disable-mux_ogg \
 	--disable-shout \
-	--enable-mkv \
+	--disable-mkv \
 	--disable-mod \
 	--disable-mpc \
 	--disable-gme \
