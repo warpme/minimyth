@@ -1,7 +1,7 @@
 GARNAME = gtk+
-GARVERSION = 2.22.1
+GARVERSION = 2.24.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.22/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.24/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-have_xcomposite.patch $(DISTNAME)-nm.patch
 LICENSE = LGPL2
