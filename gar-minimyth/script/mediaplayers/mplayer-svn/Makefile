@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 32812
+GARVERSION = 32837
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -288,7 +288,6 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/ffmpeg
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdnav
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libdvdread4
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/libswscale
 	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
