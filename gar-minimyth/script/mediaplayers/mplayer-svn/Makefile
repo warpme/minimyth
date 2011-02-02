@@ -1,10 +1,10 @@
 GARNAME = MPlayer
-GARVERSION = 32837
+GARVERSION = 32841
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20110121.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20110127.patch
+PATCHFILES = $(GARNAME)-mt_20110202.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20110127.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
