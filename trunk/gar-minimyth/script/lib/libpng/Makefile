@@ -1,7 +1,7 @@
 GARNAME = libpng
 GARVERSION = 1.4.5
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)14/$(GARVERSION)/
 DISTFILES  = $(DISTNAME).tar.bz2
 DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch.gar

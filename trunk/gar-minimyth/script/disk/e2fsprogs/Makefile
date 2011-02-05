@@ -1,7 +1,7 @@
 GARNAME = e2fsprogs
 GARVERSION = 1.41.14
 CATEGORIES = disk
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-chmod.patch
 LICENSE = GPL2/LGPL2

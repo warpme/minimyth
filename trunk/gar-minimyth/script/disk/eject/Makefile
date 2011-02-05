@@ -1,9 +1,9 @@
 GARNAME = eject
 GARVERSION = 2.1.5
 CATEGORIES = disk
-MASTER_SITES  = http://ca.geocities.com/jefftranter@rogers.com/
-MASTER_SITES += http://www.ibiblio.org/pub/Linux/utils/disk-management/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES  = http://www.paldo.org/paldo/sources/$(GARNAME)/
+MASTER_SITES += ftp://mirrors.kernel.org/slackware/slackware-13.1/source/a/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-opendevice.patch
 LICENSE = GPL2
 

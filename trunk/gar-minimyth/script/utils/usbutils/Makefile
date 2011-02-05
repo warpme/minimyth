@@ -1,7 +1,7 @@
 GARNAME = usbutils
 GARVERSION = 0.86
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-usb/
+MASTER_SITES = http://downloads.sourceforge.net/project/linux-usb/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz usb.ids
 LICENSE = GPL2
 

@@ -1,7 +1,7 @@
 GARNAME = sysfsutils
 GARVERSION = 2.1.0
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/linux-diag/
+MASTER_SITES = http://downloads.sourceforge.net/project/linux-diag/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-configure.patch
 LICENSE = GPL2/LGPL2_1

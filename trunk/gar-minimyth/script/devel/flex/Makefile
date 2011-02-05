@@ -1,7 +1,7 @@
 GARNAME = flex
 GARVERSION = 2.5.35
 CATEGORIES = devel
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-perl.patch.gar
 LICENSE = $(GARNAME)

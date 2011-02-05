@@ -1,7 +1,7 @@
 GARNAME = faad2
 GARVERSION = 2.7
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/faac/
+MASTER_SITES = http://downloads.sourceforge.net/project/faac/$(GARNAME)-src/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-mp4ff_shared.patch
 LICENSE = GPL2

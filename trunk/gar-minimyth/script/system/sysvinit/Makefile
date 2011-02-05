@@ -1,8 +1,8 @@
 GARNAME = sysvinit
-GARVERSION = 2.86
+GARVERSION = 2.88dsf
 CATEGORIES = system
-MASTER_SITES = ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://download.savannah.gnu.org/releases/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-init_silent.patch $(DISTNAME)-makefile.patch $(DISTNAME)-halt.patch
 LICENSE = GPL2
 

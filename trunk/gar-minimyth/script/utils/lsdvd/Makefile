@@ -1,7 +1,7 @@
 GARNAME = lsdvd
 GARVERSION = 0.16
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)%20-%20I%20hate%20James%20Blunt/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

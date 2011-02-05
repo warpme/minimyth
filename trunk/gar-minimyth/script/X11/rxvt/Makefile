@@ -1,7 +1,7 @@
 GARNAME = rxvt
 GARVERSION = 2.6.4
 CATEGORIES = X11
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME).patch
 LICENSE = GPL2

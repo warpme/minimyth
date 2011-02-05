@@ -1,7 +1,7 @@
 GARNAME = libmad
 GARVERSION = 0.15.1b
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mad/
+MASTER_SITES = http://downloads.sourceforge.net/project/mad/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-gcc_4.5.0.patch $(DISTNAME)-mad_pc.patch
 LICENSE = GPL2

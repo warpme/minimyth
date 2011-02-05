@@ -1,7 +1,7 @@
 GARNAME = freeglut
 GARVERSION = 2.6.0
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = MIT
 

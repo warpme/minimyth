@@ -1,7 +1,7 @@
 GARNAME = ethtool
 GARVERSION = 2.6.36
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/gkernel/
+MASTER_SITES = http://downloads.sourceforge.net/project/gkernel/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 

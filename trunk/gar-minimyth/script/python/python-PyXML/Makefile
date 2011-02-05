@@ -1,7 +1,7 @@
 GARNAME = python-PyXML
 GARVERSION = 0.8.4
 CATEGORIES = python
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/pyxml/
+MASTER_SITES = http://downloads.sourceforge.net/project/pyxml/pyxml/$(GARVERSION)/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
 PATCHFILES  = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-xpath_fix.patch
 PATCHFILES += $(patsubst python-%,%,$(GARNAME))-$(GARVERSION)-setuptools.patch
