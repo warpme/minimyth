@@ -1,7 +1,7 @@
 GARNAME = libusb-compat
 GARVERSION = 0.1.3
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/libusb/
+MASTER_SITES = http://downloads.sourceforge.net/project/libusb/$(GARNAME)-0.1/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = LGPL2_1

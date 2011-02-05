@@ -1,7 +1,7 @@
 GARNAME = python-IMDbPY
 GARVERSION = 4.7
 CATEGORIES = python
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/imdbpy/
+MASTER_SITES = http://downloads.sourceforge.net/project/imdbpy/IMDbPY/$(GARVERSION)/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
 LICENSE =
 

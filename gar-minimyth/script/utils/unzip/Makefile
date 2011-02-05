@@ -1,7 +1,7 @@
 GARNAME = unzip
 GARVERSION = 6.0
 CATEGORIES = utils
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/infozip/
+MASTER_SITES = http://downloads.sourceforge.net/project/infozip/UnZip%206.x%20%28latest%29/UnZip%206.0/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION)).tar.gz
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT=$(WORKSRC)/LICENSE

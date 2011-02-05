@@ -1,7 +1,7 @@
 GARNAME = libirman
 GARVERSION = 0.4.5
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/lirc/
+MASTER_SITES = http://downloads.sourceforge.net/project/lirc/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2
 

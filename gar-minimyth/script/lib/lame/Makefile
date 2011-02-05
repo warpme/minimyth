@@ -1,7 +1,7 @@
 GARNAME = lame
 GARVERSION = 3.98.4
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES  = $(DISTNAME).tar.gz
 DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES = $(DISTNAME)-am_path_gtk.patch

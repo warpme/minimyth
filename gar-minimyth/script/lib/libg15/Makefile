@@ -1,7 +1,7 @@
 GARNAME = libg15
 GARVERSION = 1.2.7
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/g15tools/
+MASTER_SITES = http://downloads.sourceforge.net/project/g15tools/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-dash.patch
 LICENSE = LGPL2

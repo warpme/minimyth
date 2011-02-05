@@ -1,7 +1,7 @@
 GARNAME = python-MySQL-python
 GARVERSION = 1.2.3
 CATEGORIES = python
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/mysql-python/mysql-python/$(GARVERSION)/
+MASTER_SITES = http://downloads.sourceforge.net/project/mysql-python/mysql-python/$(GARVERSION)/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
 LICENSE =
 

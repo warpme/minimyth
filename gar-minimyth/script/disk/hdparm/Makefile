@@ -1,7 +1,7 @@
 GARNAME = hdparm
 GARVERSION = 9.37
 CATEGORIES = disk
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = hdparm
 hdparm_LICENSE_TEXT = $(WORKSRC)/LICENSE.TXT

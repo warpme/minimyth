@@ -1,7 +1,7 @@
 GARNAME = flac
 GARVERSION = 1.2.1
 CATEGORIES = lib
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)-src/$(DISTNAME)-src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-cxxflags.patch $(DISTNAME)-gcc_4.3.patch
 LICENSE = GPL2/LGPL2_1/FDL1_2/xiph

@@ -1,7 +1,7 @@
 GARNAME = lcdproc
 GARVERSION = 0.5.3
 CATEGORIES = system
-MASTER_SITES = http://easynews.dl.sourceforge.net/sourceforge/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-dm140_henlar_v0.2.patch
 LICENSE = GPL2
