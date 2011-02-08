@@ -11,6 +11,9 @@ PATCHFILES  = \
 	$(DISTNAME)-libbb.patch \
 	$(DISTNAME)-modprobe.patch \
 	$(DISTNAME)-modprobe-small.patch \
+	$(DISTNAME)-ping.patch \
+	$(DISTNAME)-tar.patch \
+	$(DISTNAME)-udhcp.patch \
 	$(DISTNAME)-wc.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
