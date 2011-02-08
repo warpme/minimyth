@@ -1,0 +1,159 @@
+diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.cpp mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.cpp
+--- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-07 17:33:34.000000000 -0800
++++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-07 17:36:05.000000000 -0800
+@@ -89,6 +89,43 @@
+ #define LOC_ERR  QString("Player(%1), Error: ").arg(dbg_ident(this),0,36)
+ #define LOC_DEC  QString("Player(%1): ").arg(dbg_ident(m_mp),0,36)
+ 
++QEvent::Type PlayerTimer::kPlayerEventType =
++    (QEvent::Type) QEvent::registerEventType();
++
++PlayerTimer::PlayerTimer(MythPlayer *player) : m_mp(player), m_queue_size(0)
++{
++    if (!m_mp)
++        VERBOSE(VB_IMPORTANT, QString("PlayerTimer has no parent."));
++    PostNextEvent();
++}
++
++void PlayerTimer::PostNextEvent(void)
++{
++    QEvent *event = new QEvent(kPlayerEventType);
++    qApp->postEvent(this, event);
++    m_queue_size++;
++}
++
++bool PlayerTimer::event(QEvent *e)
++{
++    if (e->type() == kPlayerEventType)
++    {
++        // TODO this may fail if events are lost and the queue size is wrong
++        m_queue_size--;
++        uint max_queue = m_mp->GetFFRewSkip() == 1 ? 3 : 1;
++        while (m_queue_size < max_queue)
++            PostNextEvent();
++
++        if (m_mp && !m_mp->IsErrored())
++        {
++            m_mp->EventLoop();
++            m_mp->VideoLoop();
++        }
++        return true;
++    }
++    return false;
++}
++
+ void DecoderThread::run(void)
+ {
+     if (!m_mp)
+@@ -125,6 +162,7 @@
+     : decoder(NULL),                decoder_change_lock(QMutex::Recursive),
+       videoOutput(NULL),            player_ctx(NULL),
+       decoderThread(NULL),          playerThread(NULL),
++      playerTimer(NULL),
+       no_hardware_decoders(false),
+       // Window stuff
+       parentWidget(NULL), embedid(0),
+@@ -250,6 +288,12 @@
+         decoderThread = NULL;
+     }
+ 
++    if (playerTimer)
++    {
++        delete playerTimer;
++        playerTimer = NULL;
++    }
++
+     if (interactiveTV)
+     {
+         delete interactiveTV;
+@@ -2416,6 +2460,9 @@
+         InitialSeek();
+     VideoStart();
+ 
++    if (playerTimer)
++        delete playerTimer;
++    playerTimer = new PlayerTimer(this);
+     playerThread->setPriority(QThread::TimeCriticalPriority);
+     return !IsErrored();
+ }
+@@ -2441,6 +2488,12 @@
+     VERBOSE(VB_PLAYBACK, LOC + QString("StopPlaying - begin"));
+     playerThread->setPriority(QThread::NormalPriority);
+ 
++    if (playerTimer)
++    {
++        delete playerTimer;
++        playerTimer = NULL;
++    }
++
+     DecoderEnd();
+     VideoEnd();
+     AudioEnd();
+diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.h mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.h
+--- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.h	2011-02-07 17:33:34.000000000 -0800
++++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.h	2011-02-07 17:36:05.000000000 -0800
+@@ -80,6 +80,20 @@
+     kDisplayTeletextMenu        = 0x100,
+ };
+ 
++class PlayerTimer : public QObject
++{
++    Q_OBJECT
++  public:
++    PlayerTimer(MythPlayer *mp);
++    void PostNextEvent(void);
++    virtual bool event(QEvent *e);
++    static enum QEvent::Type kPlayerEventType;
++
++  private:
++    MythPlayer *m_mp;
++    uint32_t    m_queue_size;
++};
++
+ class DecoderThread : public QThread
+ {
+     Q_OBJECT
+@@ -519,6 +533,7 @@
+     PlayerContext *player_ctx;
+     DecoderThread *decoderThread;
+     QThread       *playerThread;
++    PlayerTimer   *playerTimer;
+     bool           no_hardware_decoders;
+ 
+     // Window stuff
+diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/tv_play.cpp mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/tv_play.cpp
+--- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/tv_play.cpp	2011-02-07 17:33:34.000000000 -0800
++++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/tv_play.cpp	2011-02-07 17:36:05.000000000 -0800
+@@ -365,28 +365,13 @@
+ 
+         while (true)
+         {
+-            if (qApp->hasPendingEvents())
+-                qApp->processEvents();
++            qApp->processEvents();
+ 
+             TVState state = tv->GetState(0);
+-            if ((kState_Error == state) || (kState_None == state))
++            bool is_err   = kState_Error == state;
++            bool is_none  = kState_None  == state;
++            if (is_err || is_none)
+                 break;
+-
+-            if (kState_ChangingState == state)
+-                continue;
+-
+-            const PlayerContext *mctx = tv->GetPlayerReadLock(0, __FILE__, __LINE__);
+-            if (mctx)
+-            {
+-                mctx->LockDeletePlayer(__FILE__, __LINE__);
+-                if (mctx->player && !mctx->player->IsErrored())
+-                {
+-                    mctx->player->EventLoop();
+-                    mctx->player->VideoLoop();
+-                }
+-            }
+-            mctx->UnlockDeletePlayer(__FILE__, __LINE__);
+-            tv->ReturnPlayerLock(mctx);
+         }
+ 
+         VERBOSE(VB_PLAYBACK, LOC + "StartTV -- process events end");
