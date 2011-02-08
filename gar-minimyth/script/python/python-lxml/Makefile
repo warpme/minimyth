@@ -1,5 +1,5 @@
 GARNAME = python-lxml
-GARVERSION = 2.2.7
+GARVERSION = 2.3
 CATEGORIES = python
 MASTER_SITES = http://codespeak.net/lxml/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tgz
