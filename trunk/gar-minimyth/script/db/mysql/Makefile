@@ -41,6 +41,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
+# Fails to compile (x86_64) using GCC's linker plugin due to segmentation fault.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 # Fails to compile using GCC's linker plugin due to segmentation fault.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
