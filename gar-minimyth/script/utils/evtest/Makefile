@@ -1,5 +1,5 @@
 GARNAME = evtest
-GARVERSION = 334beb8
+GARVERSION = 5d03d29
 CATEGORIES = utils
 MASTER_SITES = git://anongit.freedesktop.org/~whot/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
