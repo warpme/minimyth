@@ -1,20 +1,11 @@
 GARNAME = busybox
-GARVERSION = 1.18.2
+GARVERSION = 1.18.3
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = \
-	$(DISTNAME)-buildsys.patch \
-	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-libbb.patch \
-	$(DISTNAME)-modprobe.patch \
-	$(DISTNAME)-modprobe-small.patch \
-	$(DISTNAME)-ping.patch \
-	$(DISTNAME)-tar.patch \
-	$(DISTNAME)-udhcp.patch \
-	$(DISTNAME)-wc.patch
+PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
