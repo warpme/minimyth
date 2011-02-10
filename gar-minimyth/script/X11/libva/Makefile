@@ -4,7 +4,7 @@ CATEGORIES = X11
 #MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-vtable_ptr.patch
+#PATCHFILES = $(GARNAME)-vtable_ptr.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -22,7 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--disable-dummy-driver \
 	--disable-dummy-backend \
-	--enable-i965-driver \
+	--disable-i965-driver \
 	--disable-static \
 	--enable-shared \
 	--with-drivers-path="$(libdir)/va" \
