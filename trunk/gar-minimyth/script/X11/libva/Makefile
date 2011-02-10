@@ -20,8 +20,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--enable-glx \
-	--enble-dummy-driver \
-	--enble-dummy-backend \
+	--disable-dummy-driver \
+	--disable-dummy-backend \
 	--enable-i965-driver \
 	--disable-static \
 	--enable-shared \
