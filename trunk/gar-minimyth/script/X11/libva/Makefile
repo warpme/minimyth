@@ -4,7 +4,6 @@ CATEGORIES = X11
 #MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(GARNAME)-vtable_ptr.patch
 LICENSE = MIT
 
 DESCRIPTION = 
