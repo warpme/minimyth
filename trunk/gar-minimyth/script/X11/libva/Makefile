@@ -1,5 +1,5 @@
 GARNAME = libva
-GARVERSION = bc7c905
+GARVERSION = 2b7850b
 CATEGORIES = X11
 #MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
@@ -21,7 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--disable-dummy-driver \
 	--disable-dummy-backend \
-	--disable-i965-driver \
+	--enable-i965-driver \
 	--disable-static \
 	--enable-shared \
 	--with-drivers-path="$(libdir)/va" \
@@ -44,6 +44,7 @@ pre-configure:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libva.la
 	@rm -f $(DESTDIR)$(libdir)/libva-glx.la
+	@rm -f $(DESTDIR)$(libdir)/libva-egl.la
 	@rm -f $(DESTDIR)$(libdir)/libva-tpi.la
 	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
 	@rm -f $(DESTDIR)$(libdir)/va/i965_drv_video.la
