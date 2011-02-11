@@ -1,7 +1,7 @@
-GARNAME = util-linux-ng
-GARVERSION = 2.18
+GARNAME = util-linux
+GARVERSION = 2.19
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.18/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.19/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -25,11 +25,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gtk-doc \
 	--enable-tls \
 	--enable-mount \
-	--enable-fsck \
+	--disable-fsck \
 	--enable-libuuid \
 	--enable-uuidd \
 	--enable-libblkid \
 	--disable-libmount \
+	--disable-libmount-mount \
 	--enable-nls \
 	--disable-rpath \
 	--enable-arch \
