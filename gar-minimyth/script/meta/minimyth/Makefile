@@ -79,7 +79,7 @@ DEPENDS = \
 	system/udev \
 	X11/unclutter \
 	utils/usbutils \
-	utils/util-linux-ng \
+	utils/util-linux \
 	utils/v4l-utils \
 	X11/vdpau-video \
 	X11/vdpauinfo \
