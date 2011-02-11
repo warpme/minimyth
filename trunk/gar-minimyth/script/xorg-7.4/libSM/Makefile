@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c utils/util-linux-ng \
+DEPENDS = lang/c utils/util-linux \
 	$(CATEGORY)/libICE \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xproto \
