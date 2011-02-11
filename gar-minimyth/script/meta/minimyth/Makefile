@@ -188,7 +188,7 @@ BUILDDEPS = \
 	utils/findutils \
 	utils/squashfs \
 	utils/tar \
-	utils/util-linux-ng \
+	utils/util-linux \
 	xorg/xorg \
 	perl/perlstrip \
 	python/python-pyminifier
