@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 646739a
+GARVERSION = e063f58
 CATEGORIES = lib
 MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
