@@ -1,10 +1,10 @@
 GARNAME = readline
-GARVERSION = 6.1
+GARVERSION = 6.2
 CATEGORIES = lib
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = \
+xPATCHFILES = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-002
 LICENSE = GPL3
