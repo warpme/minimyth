@@ -12,7 +12,6 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-drm_vsync_control.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-minimyth.patch \
@@ -121,14 +120,14 @@ CONFIGURE_ARGS = \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
-	--enable-xvmc \
-	--enable-xvmcw \
-	--enable-xvmc-vld \
-	--enable-vdpau \
+	--disable-xvmc \
+	--disable-xvmcw \
+	--disable-xvmc-vld \
 	--xvmc-lib=XvMCW \
+	--enable-vdpau \
+	--disable-crystalhd \
 	--enable-opengl-video \
 	--disable-quartz-video \
-	--enable-opengl-vsync \
 	--disable-mac-bundle \
 	--enable-libxml2 \
 	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
