@@ -1,19 +1,10 @@
 GARNAME = bash
-GARVERSION = 4.1
+GARVERSION = 4.2
 CATEGORIES = utils
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  = \
-	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-002 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-003 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-004 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-005 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-006 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-007 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-008 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-009
+PATCHFILES  =
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL3
 
