@@ -1,6 +1,6 @@
-diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.cpp mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.cpp
---- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-07 17:33:34.000000000 -0800
-+++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-07 17:36:05.000000000 -0800
+diff -Naur mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/mythplayer.cpp mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/mythplayer.cpp
+--- mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-14 21:24:47.000000000 -0800
++++ mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/mythplayer.cpp	2011-02-14 21:27:24.000000000 -0800
 @@ -89,6 +89,43 @@
  #define LOC_ERR  QString("Player(%1), Error: ").arg(dbg_ident(this),0,36)
  #define LOC_DEC  QString("Player(%1): ").arg(dbg_ident(m_mp),0,36)
@@ -53,7 +53,7 @@ diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythpl
        no_hardware_decoders(false),
        // Window stuff
        parentWidget(NULL), embedid(0),
-@@ -250,6 +288,12 @@
+@@ -249,6 +287,12 @@
          decoderThread = NULL;
      }
  
@@ -66,7 +66,7 @@ diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythpl
      if (interactiveTV)
      {
          delete interactiveTV;
-@@ -2416,6 +2460,9 @@
+@@ -2412,6 +2456,9 @@
          InitialSeek();
      VideoStart();
  
@@ -76,7 +76,7 @@ diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythpl
      playerThread->setPriority(QThread::TimeCriticalPriority);
      return !IsErrored();
  }
-@@ -2441,6 +2488,12 @@
+@@ -2437,6 +2484,12 @@
      VERBOSE(VB_PLAYBACK, LOC + QString("StopPlaying - begin"));
      playerThread->setPriority(QThread::NormalPriority);
  
@@ -89,9 +89,9 @@ diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythpl
      DecoderEnd();
      VideoEnd();
      AudioEnd();
-diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.h mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.h
---- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythplayer.h	2011-02-07 17:33:34.000000000 -0800
-+++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/mythplayer.h	2011-02-07 17:36:05.000000000 -0800
+diff -Naur mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/mythplayer.h mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/mythplayer.h
+--- mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/mythplayer.h	2011-02-14 21:24:47.000000000 -0800
++++ mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/mythplayer.h	2011-02-14 21:27:24.000000000 -0800
 @@ -80,6 +80,20 @@
      kDisplayTeletextMenu        = 0x100,
  };
@@ -121,16 +121,11 @@ diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/mythpl
      bool           no_hardware_decoders;
  
      // Window stuff
-diff -Naur mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/tv_play.cpp mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/tv_play.cpp
---- mythtv-0.24-20110204-1a69c92-1c84b13-old/mythtv/libs/libmythtv/tv_play.cpp	2011-02-07 17:33:34.000000000 -0800
-+++ mythtv-0.24-20110204-1a69c92-1c84b13-new/mythtv/libs/libmythtv/tv_play.cpp	2011-02-07 17:36:05.000000000 -0800
-@@ -365,28 +365,13 @@
- 
-         while (true)
-         {
--            if (qApp->hasPendingEvents())
--                qApp->processEvents();
-+            qApp->processEvents();
+diff -Naur mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/tv_play.cpp mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/tv_play.cpp
+--- mythtv-0.24-20110214-316718a-b6f0080-old/mythtv/libs/libmythtv/tv_play.cpp	2011-02-14 21:24:47.000000000 -0800
++++ mythtv-0.24-20110214-316718a-b6f0080-new/mythtv/libs/libmythtv/tv_play.cpp	2011-02-14 21:27:24.000000000 -0800
+@@ -371,24 +371,10 @@
+             qApp->processEvents();
  
              TVState state = tv->GetState(0);
 -            if ((kState_Error == state) || (kState_None == state))
