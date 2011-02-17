@@ -1,7 +1,7 @@
 GARNAME = xf86-video-nouveau
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	38e8809, \
+	c123618, \
 	xxx ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
