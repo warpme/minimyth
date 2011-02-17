@@ -1,9 +1,8 @@
 GARNAME = acpid
-GARVERSION = 2.0.7
+GARVERSION = 2.0.8
 CATEGORIES = system
 MASTER_SITES = http://www.tedfelix.com/linux/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-cast.patch
 LICENSE = GPL2
 
 DESCRIPTION =
