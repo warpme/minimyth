@@ -1,0 +1,226 @@
+MiniMyth Changelog
+
+--------------------------------------------------------------------------------
+This file contains the changes made to MiniMyth since the previous stable
+MiniMyth release. For earlier changes see the yearly changelog files.
+
+--------------------------------------------------------------------------------
+Changes since 75 (2011-02-16):
+
+Current MythTV Git versions
+     MythTV  | mythtv git repo | mythtv git repo | myththemes git repo
+     version | commit date     | commit          | commit
+    ---------|-----------------|-----------------|---------------------
+     master  | 20110214        | 919163d         | 1f6d53a
+     0.24.0  | 20110214        | 316718a         | b6f0080
+     0.23.1  | 20110114        | 4e3b56d         | de0d6b3
+     0.22.0  | 20100711        | 3c6ce60         | 697a6ac
+
+Modified init
+    - Stopped autoconfiguring video decoder to either xvmc or xvmc-vld when
+      MythTV version is trunk as trunk does not support xvmc or xvmc-vld.
+    - Added code to the bluetooth and bdremoteng that should increase the
+      likelihood that the Sony PS3 Bluray Disc remote will be able to perform
+      wake-on-usb.
+
+Modified mediaplayers
+    - Updated FFmpeg and MPlayer multi-threading patches.
+    - Updated FFmpeg and MPlayer vaapi patches.
+    - Revertd the Adobe Flash Player fetch and save command because the 10.1
+      beta is too buggy (e.g. causes mythfrontend to use 100% of the CPU when
+      Hulu Desktop is running).
+    - Switched MPlayer SVN and VLC from using a52dec to using ffmpeg for ac3
+      support.
+    - Switched MPlayer SVN and VLC from using faad2 to using ffmpeg for aac
+      support.
+    - Switched MPlayer SVN and VLC from using libdca to using ffmpeg for dts
+      support.
+    - Switched MPlayer SVN and VLC from using libmad to using ffmpeg for mpeg
+      layer 1, 2 and 3 audio support.
+    - Switched VLC from using libmatroska to using ffmpeg for mkv support.
+    - Switched Xine from using flac to using ffmpeg for flac support.
+    - Disabled MPlayer VLD's internal libmpeg2 support as the only reason for
+      including MPlayer VLD is to support XvMC-VLD decoding of MPEG2 using
+      a patched version of MPlayer VLD's internal FFmpeg.
+
+Improved Xorg
+    - Modified udev rules so that event devices work correctly with Xorg 7.6.
+    - Removed support for the nv driver as the nouveau driver should
+      contain all nv driver functionality.
+    - Removed support for the radeonhd driver as the radeon driver should
+      contain all radeonhd driver functionality.
+    - Added Mesa's gallium nouveau driver to Xorg 7.6.
+
+Improved kernel
+    - Added gspca kernel drivers (and included in the image when mythzoneminder
+      is included in the image).
+    - Added i2c-dev kernel driver.
+    - Added i2c-sis96x kernel driver.
+    - Added NFSv4 support.
+    - Hacked init to handle KMS capable drivers better.
+        - Blackisted the KMS capable nouveau driver so it does not load until
+          it is explicitly loaded the Xorg nouveau driver. This hack reduces
+          problems caused by a somewhat buggy nouveau driver causing problems
+          when it loads too early.
+        - Enabled KMS so that Xorg drivers can use it.
+
+Fixed bugs
+    - Fixed lirc_serial by updating to LIRC git
+      6b440d65b50f3d2fab0a618e7c35ee6a34cdc1e8.
+    - Fixed lirc_atiusb by reverting the kernel's kfifo implementation to the
+      version in 2.6.35.10.
+    - Added the MythTV metadata parsers to the MiniMyth image.
+    - Fixed a kernel bug (introduced by kernel git commit ff2f078) that caused
+      usb suspend to fail every other time.
+
+Modified build system
+    - Switched to pulling MythTV from Git rather than from SVN.
+    - Added building of the ati_remote and ati_remote2 kernel drivers
+        - They are not included in the binary image as the binary image uses
+          lirc_atiusb.
+    - Changed xorg-7.4/xorg and xorg-7.6/xorg so that they do not build
+      drivers during native compile.
+    - Stopped including mediaplayer-vld in the image when MythTV version is
+      trunk as trunk does not support xvmc or xvmc-vld.
+    - Changed minimyth.conf.mk so that it selects Xorg 7.4 for 32-bit builds
+      and builds Xorg 7.6 for 64-bit builds.
+        - Sadly, the newer openChrome drivers appear to have problems with
+          at least some of the TV out resolutions.
+    - Changed MASTER_SITES for packages that are downloaded from sourceforge.
+
+Moved packages
+    Moved myth-trunk to myth-master.
+    Moved utils/util-linux-ng to utils/util-linux.
+    Moved xorg-7.5 to xorg-7.6.
+
+Removed packages
+    Removed kernel-2.6.36/ath3k-firmware.
+    Removed kernel-2.6.36/imon_vfd.
+    Removed lib/libebml.
+    Removed lib/libmatroska.
+    Removed nvidia/nvidia-260.19.21.
+    Removed xorg-7.4/xf86-video-nv.
+    Removed xorg-7.4/xf86-video-radeonhd.
+    Removed xorg-7.6/xf86-video-nv.
+    Removed xorg-7.6/xf86-video-radeonhd.
+
+Added packages
+    Added kernel-2.6.36/linux-firmware.
+    Added kernel-2.6.37/*.
+    Added kernel-headers/linux-headers-2.6.37.
+    Added lib/SDL_ttf.
+    Added nvidia/nvidia-260.19.36.
+
+Updated packages
+    Updated db/mysql.
+    Updated db/sqlite.
+    Updated devel/autoconf-archive.
+    Updated devel/gcc.
+    Updated devel/gcc-minimal-shared.
+    Updated devel/gcc-minimal-static.
+    Updated devel/glibc.
+    Updated devel/glibc-crtobjs.
+    Updated devel/glibc-headers.
+    Updated devel/glibc-locale.
+    Updated devel/glibc-localedef-static.
+    Updated devel-tainted/gcc.
+    Updated disk/e2fsprogs.
+    Updated disk/hdparm.
+    Updated emulators/mame.
+    Updated extras/libaacs.
+    Updated gtk/cairo.
+    Updated gtk/glib.
+    Updated gtk/gtk-doc.
+    Updated kernel-2.6.36/alsa-driver.
+    Updated kernel-2.6.36/linux.
+    Updated kernel-headers/linux-headers-2.6.36.
+    Updated lib/alsa-lib.
+    Updated lib/bluez.
+    Updated lib/dbus.
+    Updated lib/ffmpeg.
+    Updated lib/fontconfig.
+    Updated lib/libbluray.
+    Updated lib/libdvdnav.
+    Updated lib/libdvdread.
+    Updated lib/libjpeg.
+    Updated lib/libgpg-error.
+    Updated lib/libebml.
+    Updated lib/libexif.
+    Updated lib/libmatroska.
+    Updated lib/nspr.
+    Updated lib/nss.
+    Updated lib/openssl.
+    Updated lib/pcre.
+    Updated lib/readline.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated mediaplayers/xine-lib.
+    Updated mediaplayers/xine-ui.
+    Updated myth-0.24/myththemes-blue-abstract-wide.
+    Updated myth-trunk/myththemes-blue-abstract-wide.
+    Updated net/curl.
+    Updated net/nfs-utils.
+    Updated net/ntp.
+    Updated net/openssh.
+    Updated perl/perl.
+    Updated perl/perl-DBI.
+    Updated perl/perl-DateTime-TimeZone.
+    Updated perl/perl-Lchown.
+    Updated perl/perl-Perl-Tidy.
+    Updated perl/perl-URI.
+    Updated python/python-IMDbPY.
+    Updated python/python-lxml.
+    Updated python/python-oauth.
+    Updated system/acpid.
+    Updated system/eventlircd.
+    Updated system/irserver.
+    Updated system/lirc.
+    Updated system/sysvinit.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/alsa-utils.
+    Updated utils/bash.
+    Updated utils/busybox.
+    Updated utils/coreutils.
+    Updated utils/evtest.
+    Updated utils/lsof.
+    Updated utils/util-linux-ng.
+    Updated utils/v4l-utils.
+    Updated utils/xz.
+    Updated X11/libva.
+    Updated X11/vdpau-video.
+    Updated xorg-7.4/evieext.
+    Updated xorg-7.4/glew.
+    Updated xorg-7.4/libpciaccess.
+    Updated xorg-7.4/libX11.
+    Updated xorg-7.4/pixman.
+    Updated xorg-7.4/xdpyinfo.
+    Updated xorg-7.4/xf86-input-evdev.
+    Updated xorg-7.4/xf86-video-ati.
+    Updated xorg-7.4/xf86-video-geode.
+    Updated xorg-7.4/xf86driproto.
+    Updated xorg-7.4/xf86vidmodeproto.
+    Updated xorg-7.4/xineramaproto.
+    Updated xorg-7.4/xkbcomp.
+    Updated xorg-7.4/xorg-sgml-doctools.
+    Updated xorg-7.6/evieext.
+    Updated xorg-7.6/glew.
+    Updated xorg-7.6/libdrm.
+    Updated xorg-7.6/libpciaccess.
+    Updated xorg-7.6/libX11.
+    Updated xorg-7.6/libXi.
+    Updated xorg-7.6/Mesa.
+    Updated xorg-7.6/pixman.
+    Updated xorg-7.6/xdpyinfo.
+    Updated xorg-7.6/xf86-input-evdev.
+    Updated xorg-7.6/xf86-video-ati.
+    Updated xorg-7.6/xf86-video-geode.
+    Updated xorg-7.6/xf86-video-intel.
+    Updated xorg-7.6/xf86-video-nouveau.
+    Updated xorg-7.6/xf86-video-openchrome.
+    Updated xorg-7.6/xf86driproto.
+    Updated xorg-7.6/xf86vidmodeproto.
+    Updated xorg-7.6/xkbcomp.
+    Updated xorg-7.6/xineramaproto.
+    Updated xorg-7.6/xorg-server.
+    Updated xorg-7.6/xorg-sgml-doctools.
