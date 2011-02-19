@@ -5,13 +5,6 @@ MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
 DISTFILES   = $(DISTNAME).tar.bz2
 PATCHFILES  =
-PATCHFILES += $(DISTNAME)-changeset_5870.patch
-PATCHFILES += $(DISTNAME)-changeset_5883.patch
-PATCHFILES += $(DISTNAME)-changeset_5886.patch
-PATCHFILES += $(DISTNAME)-changeset_5887.patch
-PATCHFILES += $(DISTNAME)-changeset_5889.patch
-PATCHFILES += $(DISTNAME)-changeset_5905.patch
-PATCHFILES += $(DISTNAME)-changeset_5913.patch
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL2
 
