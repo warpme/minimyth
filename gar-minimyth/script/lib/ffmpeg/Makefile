@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = e063f58
+GARVERSION = bf6fa73
 CATEGORIES = lib
 MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -40,7 +40,6 @@ CONFIGURE_ARGS = \
 	--disable-ffprobe \
 	--disable-ffserver \
 	--enable-avdevice \
-	--enable-avcore \
 	--enable-avcodec \
 	--enable-avformat \
 	--enable-swscale \
@@ -175,7 +174,6 @@ clean-all:
 	@$(MAKE) clean
 	@rm -rf $(DESTDIR)$(includedir)/ffmpeg
 	@rm -rf $(DESTDIR)$(libdir)/libavcodec.*
-	@rm -rf $(DESTDIR)$(libdir)/libavcore.*
 	@rm -rf $(DESTDIR)$(libdir)/libavdevice.*
 	@rm -rf $(DESTDIR)$(libdir)/libavfilter.*
 	@rm -rf $(DESTDIR)$(libdir)/libavformat.*
