@@ -1,5 +1,5 @@
 GARNAME = ppl
-GARVERSION = 0.11
+GARVERSION = 0.11.1
 CATEGORIES = devel
 MASTER_SITES = http://www.cs.unipr.it/ppl/Download/ftp/releases/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
