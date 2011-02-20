@@ -1,5 +1,5 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.3
+GARVERSION = 0.5.4
 CATEGORIES = system
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -19,6 +19,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libusb \
 	--enable-libftdi \
+	--disable-libhid \
 	--enable-ethlcd \
 	--disable-doxygen \
 	--disable-dot \
