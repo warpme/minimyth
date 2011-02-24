@@ -1,5 +1,5 @@
 GARNAME = vdpau-video
-GARVERSION = 0.7.3.pre6
+GARVERSION = 0.7.3.pre7
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
