@@ -4,6 +4,8 @@ CATEGORIES = lib
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(GARNAME)$(subst .,,$(GARVERSION))-001
 LICENSE = GPL3
 
 DESCRIPTION = 
