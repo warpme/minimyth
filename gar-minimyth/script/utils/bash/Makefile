@@ -6,6 +6,13 @@ MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  =
 PATCHFILES += $(DISTNAME)-perl.patch.gar
+PATCHFILES  = \
+	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-002 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-003 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-004 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-005 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-006 
 LICENSE = GPL3
 
 DESCRIPTION = 
