@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-buildsys.patch \
+	$(DISTNAME)-menuconfig.patch \
 	$(DISTNAME)-modutils24.patch \
 	$(DISTNAME)-wget.patch
 PATCHFILES += \
