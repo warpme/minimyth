@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.9.1
+GARVERSION = 7.9.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx lib/expat lib/talloc \
+DEPENDS    = lang/c lang/cxx lib/expat \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/glproto \
