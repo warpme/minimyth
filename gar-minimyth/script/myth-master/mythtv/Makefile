@@ -37,6 +37,7 @@ DEPENDS = \
 	python/python \
 	python/python-MySQL-python \
 	python/python-lxml \
+	python/python-urlgrabber \
 	qt/qt4 \
 	system/lirc \
 	system/udev \
@@ -46,7 +47,8 @@ BUILDDEPS = \
 	devel/yasm \
 	python/python-distutilscross \
 	python/python-MySQL-python \
-	python/python-lxml
+	python/python-lxml \
+	python/python-urlgrabber
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -120,11 +122,8 @@ CONFIGURE_ARGS = \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
-	--disable-xvmc \
-	--disable-xvmcw \
-	--disable-xvmc-vld \
-	--xvmc-lib=XvMCW \
 	--enable-vdpau \
+	--disable-dxva2 \
 	--disable-crystalhd \
 	--enable-opengl-video \
 	--disable-quartz-video \
