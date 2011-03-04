@@ -1,9 +1,9 @@
 GARNAME = libdvdread
-GARVERSION = 1222
+GARVERSION = 1225
 CATEGORIES = lib
 MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-destdir.patch
+PATCHFILES = $(DISTNAME)-destdir.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
