@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = bf6fa73
+GARVERSION = 8cf9a09
 CATEGORIES = lib
 MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -132,6 +132,7 @@ CONFIGURE_ARGS = \
 	--enable-mmx2 \
 	--enable-sse \
 	--enable-ssse3 \
+	--disable-avx \
 	--disable-armv5te \
 	--disable-armv6 \
 	--disable-armv6t2 \
