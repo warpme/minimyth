@@ -31,6 +31,7 @@ DEPENDS = \
 	lib/freetype \
 	lib/lame \
 	lib/libavc1394 \
+	lib/libcdio \
 	lib/libiec61883 \
 	lib/libxml2 \
 	lib/zlib \
