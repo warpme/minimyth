@@ -1,5 +1,5 @@
 GARNAME = linux-firmware
-GARVERSION = 20110222
+GARVERSION = 20110311
 CATEGORIES = kernel-2.6.37
 MASTER_SITES = http://www.kernel.org/pub/linux/kernel/people/dwmw2/firmware/
 DISTFILES = $(DISTNAME).tar.bz2
