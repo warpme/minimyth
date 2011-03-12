@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 8cf9a09
+GARVERSION = 0215006
 CATEGORIES = lib
 MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110202.patch $(GARNAME)-vaapi_20110127.patch
+PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110310.patch $(GARNAME)-vaapi_20110127.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -215,17 +215,17 @@ source-update-patches:
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
 
-FFMPEG_MT_VERSION_NORMAL=26402
-FFMPEG_MT_VERSION_THREAD=2a9b493a5a0f46f43959ce2466849dd6a6217012
-FFMPEG_MT_VERSION_DATE=20110202
+FFMPEG_MT_VERSION_NORMAL=35d7d6f7489c75aaa2fcb39820fb25b0fd44524b
+FFMPEG_MT_VERSION_THREAD=4118a72e28be1cee657561a1f45dc3ce160dbf07
+FFMPEG_MT_VERSION_DATE=20110310
 
 source-update-mt:
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
-	@$(call FETCH_SVN, svn://svn.ffmpeg.org/ffmpeg/trunk, $(FFMPEG_MT_VERSION_NORMAL), ffmpeg-mt-normal)
+	@$(call FETCH_GIT, git.ffmpeg.org/ffmpeg.git, $(FFMPEG_MT_VERSION_NORMAL), ffmpeg-mt-normal)
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
 	@$(call FETCH_GIT, gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git, $(FFMPEG_MT_VERSION_THREAD), ffmpeg-mt-thread)
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
-	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-normal.tar.bz2 && rm -rf ffmpeg-mt-normal/libswscale
+	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-normal.tar.bz2
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
 	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
 	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-thread.tar.bz2
