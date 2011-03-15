@@ -1,5 +1,5 @@
 GARNAME = xbindkeys
-GARVERSION = 1.8.4
+GARVERSION = 1.8.5
 CATEGORIES = X11
 MASTER_SITES = http://www.nongnu.org/xbindkeys/
 DISTFILES = $(DISTNAME).tar.gz
@@ -18,7 +18,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--disable-tk \
 	--enable-fork \
 	--disable-tk \
 	--disable-guile \
