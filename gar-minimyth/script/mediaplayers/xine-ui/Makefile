@@ -1,9 +1,9 @@
 GARNAME = xine-ui
-GARVERSION = 3083
+GARVERSION = 3087
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-librt.patch $(GARNAME)-fork_wait.patch $(GARNAME)-lirc.patch $(GARNAME).patch.gar $(GARNAME)-xscreensaver.patch $(GARNAME)-xtest_disable.patch $(GARNAME)-desktop_disable.patch
+PATCHFILES = $(GARNAME)-fork_wait.patch $(GARNAME)-lirc.patch $(GARNAME).patch.gar $(GARNAME)-xscreensaver.patch $(GARNAME)-xtest_disable.patch $(GARNAME)-desktop_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =
