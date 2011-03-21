@@ -1,0 +1,22 @@
+diff -Naur linux-2.6.38-old/fs/unionfs/commonfops.c linux-2.6.38-new/fs/unionfs/commonfops.c
+--- linux-2.6.38-old/fs/unionfs/commonfops.c	2011-03-16 12:49:31.000000000 -0700
++++ linux-2.6.38-new/fs/unionfs/commonfops.c	2011-03-16 12:50:14.000000000 -0700
+@@ -16,6 +16,7 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <linux/compat.h>
+ #include "union.h"
+ 
+ /*
+@@ -740,9 +741,8 @@
+ 	if (lower_file->f_op->unlocked_ioctl) {
+ 		err = lower_file->f_op->unlocked_ioctl(lower_file, cmd, arg);
+ #ifdef CONFIG_COMPAT
+-	} else if (lower_file->f_op->ioctl) {
++	} else if (lower_file->f_op->compat_ioctl) {
+ 		err = lower_file->f_op->compat_ioctl(
+-			lower_file->f_path.dentry->d_inode,
+ 			lower_file, cmd, arg);
+ #endif
+ 	}
