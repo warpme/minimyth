@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 33077
+GARVERSION = 33086
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -170,6 +170,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-dvb \
 	--disable-mga \
 	--disable-xmga \
+	--enable-xrender \
 	--enable-xv \
 	--enable-xvmc \
 	--enable-vaapi \
