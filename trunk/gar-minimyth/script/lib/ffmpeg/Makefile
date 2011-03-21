@@ -1,7 +1,7 @@
 GARNAME = ffmpeg
-GARVERSION = 0215006
+GARVERSION = d4a50a2
 CATEGORIES = lib
-MASTER_SITES = git://git.ffmpeg.org/$(GARNAME).git/
+MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110310.patch $(GARNAME)-vaapi_20110127.patch
 LICENSE = GPL2/LGPL2_1
@@ -88,6 +88,7 @@ CONFIGURE_ARGS = \
 	--disable-libdc1394 \
 	--disable-libdirac \
 	--disable-libfaac \
+	--disable-libfreetype \
 	--disable-libgsm \
 	--disable-libmp3lame \
 	--disable-libnut \
