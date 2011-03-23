@@ -1,9 +1,9 @@
 GARNAME = glib
-GARVERSION = 2.28.2
+GARVERSION = 2.28.4
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.28/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-linux_magic_h.patch
+#PATCHFILES = $(DISTNAME)-linux_magic_h.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
