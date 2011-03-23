@@ -3,6 +3,7 @@ GARVERSION = 166
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-remove_v4l1.patch
 LICENSE = GPL2
 
 DESCRIPTION =
