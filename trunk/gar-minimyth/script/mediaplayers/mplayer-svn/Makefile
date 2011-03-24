@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 33086
+GARVERSION = 33094
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
