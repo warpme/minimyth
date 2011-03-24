@@ -1,9 +1,8 @@
 GARNAME = libbluray
-GARVERSION = 20739ed
+GARVERSION = a103cbc
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/libbluray.git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-configure.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
