@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = d4a50a2
+GARVERSION = 4952aff
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-mt_20110310.patch $(GARNAME)-vaapi_20110127.patch
+PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-vaapi_20110127.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -215,30 +215,3 @@ source-update-patches:
 		rm -f checksums || exit 1 ; \
 		mv -f checksums~ checksums || exit 1 ; )
 	@$(MAKE) clean
-
-FFMPEG_MT_VERSION_NORMAL=35d7d6f7489c75aaa2fcb39820fb25b0fd44524b
-FFMPEG_MT_VERSION_THREAD=4118a72e28be1cee657561a1f45dc3ce160dbf07
-FFMPEG_MT_VERSION_DATE=20110310
-
-source-update-mt:
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
-	@$(call FETCH_GIT, git.ffmpeg.org/ffmpeg.git, $(FFMPEG_MT_VERSION_NORMAL), ffmpeg-mt-normal)
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
-	@$(call FETCH_GIT, gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git, $(FFMPEG_MT_VERSION_THREAD), ffmpeg-mt-thread)
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
-	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-normal.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
-	@cd $(PARTIALDIR) ; tar -jxf ffmpeg-mt-thread.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread/mt-work
-	@cd $(PARTIALDIR) ; rm -f ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch
-	@cd $(PARTIALDIR) ; diff -Naur ffmpeg-mt-normal ffmpeg-mt-thread > ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch || test $$? = 1
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-normal
-	@cd $(PARTIALDIR) ; rm -rf ffmpeg-mt-thread
-	@rm -f files/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch 
-	@mv $(PARTIALDIR)/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch files/ffmpeg-mt_$(FFMPEG_MT_VERSION_DATE).patch
-	@#cat checksums | grep -v $(DOWNLOADDIR)/ffmpeg-mt-*.patch > checksums~
-	@#md5sum $(DOWNLOADDIR)/ffmpeg-mt-$(FFMPEG_MT_VERSION_DATE).patch >> checksums~ || exit 1
-	@#rm -f checksums || exit 1
-	@#mv -f checksums~ checksums || exit 1
