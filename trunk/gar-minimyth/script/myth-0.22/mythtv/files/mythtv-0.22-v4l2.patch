@@ -1,0 +1,544 @@
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/configure mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/configure
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/configure	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/configure	2011-03-23 15:48:08.000000000 -0700
+@@ -273,7 +273,8 @@
+ #  echo "  --enable-dbox2           enable support for Nokia DBOX2 DVB boxes (or compatibles)"
+   echo "  --disable-hdhomerun      disable support for HDHomeRun boxes"
+   echo "  --disable-v4l            disable Video4Linux support"
+-  echo "  --disable-ivtv           disable ivtv support (PVR-x50) req. v4l support"
++  echo "  --disable-v4l2           disable Video4Linux2 support"
++  echo "  --disable-ivtv           disable ivtv support (PVR-x50) req. v4l2 support"
+   echo "  --disable-hdpvr          disable HD-PVR support"
+   echo "  --disable-dvb            disable DVB support"
+   echo "  --dvb-path=HDRLOC        location of directory containing"
+@@ -1205,6 +1206,7 @@
+     opengl_vsync
+     qtwebkit
+     v4l
++    v4l2
+     valgrind
+     x11
+     xrandr
+@@ -1496,14 +1498,15 @@
+ dvb_deps="backend"
+ firewire_deps="backend"
+ iptv_deps="backend"
+-ivtv_deps="backend v4l"
+-hdpvr_deps="backend"
++ivtv_deps="backend v4l2"
++hdpvr_deps="backend v4l2"
+ hdhomerun_deps="backend"
+ mpegtsraw_demuxer_deps="merge_libavformat_mpegts_c"
+ opengl_deps_any="agl_h GL_gl_h darwin windows x11"
+ opengl_video_deps="opengl"
+ opengl_vsync_deps="opengl"
+-v4l_deps="backend"
++v4l_deps="backend linux_videodev_h linux_videodev2_h"
++v4l2_deps="backend linux_videodev2_h"
+ xrandr_deps="x11"
+ xv_deps="x11"
+ xvmc_deps="xv X11_extensions_XvMClib_h"
+@@ -1616,6 +1619,7 @@
+ enable opengl_vsync
+ enable opengl_video
+ enable v4l
++enable v4l2
+ enable x11
+ enable xrandr
+ enable xv
+@@ -2204,6 +2208,7 @@
+         disable opengl_vsync
+         enable  proc_opt
+         disable v4l
++        disable v4l2
+         disable x11
+         # Workaround compile errors from missing gmtime_r/localtime_r/uint def
+         CFLAGS=`echo $CFLAGS | sed 's/-D_POSIX_C_SOURCE=200112//'`
+@@ -2241,6 +2246,7 @@
+             disable protocols
+         fi
+         disable v4l
++        disable v4l2
+         enable  windows
+         disable x11
+         ###### Standard ffmpeg configure stuff follows:
+@@ -3794,6 +3800,7 @@
+ 
+ if enabled backend; then
+   echo "Video4Linux sup.          ${v4l-no}"
++  echo "Video4Linux2 sup.         ${v4l2-no}"
+   echo "ivtv support              ${ivtv-no}"
+   echo "HD-PVR support            ${hdpvr-no}"
+   echo "FireWire support          ${firewire-no}"
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/analogsignalmonitor.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/analogsignalmonitor.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/analogsignalmonitor.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/analogsignalmonitor.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -50,6 +50,7 @@
+     }
+     else 
+     {
++#ifdef USING_V4L
+         struct video_tuner tuner;
+         bzero(&tuner, sizeof(tuner));
+ 
+@@ -62,6 +63,7 @@
+         {
+             isLocked = tuner.signal;
+         }
++#endif
+     }
+ 
+     {
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/cardutil.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/cardutil.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/cardutil.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/cardutil.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -4,7 +4,7 @@
+ 
+ #include <algorithm>
+ 
+-#if defined(USING_V4L) || defined(USING_DVB)
++#if defined(USING_V4L) || defined(USING_V4L2) || defined(USING_DVB)
+ #include <sys/ioctl.h>
+ #endif
+ 
+@@ -26,7 +26,7 @@
+ #include "dvbtypes.h"
+ #endif
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+ #include "videodev_myth.h"
+ #endif
+ 
+@@ -1458,15 +1458,15 @@
+ bool CardUtil::hasV4L2(int videofd)
+ {
+     (void) videofd;
+-#ifdef USING_V4L
++#ifdef USING_V4L2
+     struct v4l2_capability vcap;
+     bzero(&vcap, sizeof(vcap));
+ 
+     return ((ioctl(videofd, VIDIOC_QUERYCAP, &vcap) >= 0) &&
+             (vcap.capabilities & V4L2_CAP_VIDEO_CAPTURE));
+-#else // if !USING_V4L
++#else // if !USING_V4L2
+     return false;
+-#endif // !USING_V4L
++#endif // !USING_V4L2
+ }
+ 
+ bool CardUtil::GetV4LInfo(
+@@ -1478,7 +1478,7 @@
+     if (videofd < 0)
+         return false;
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     // First try V4L2 query
+     struct v4l2_capability capability;
+     bzero(&capability, sizeof(struct v4l2_capability));
+@@ -1490,11 +1490,13 @@
+     }
+     else // Fallback to V4L1 query
+     {
++#ifdef USING_V4L
+         struct video_capability capability;
+         if (ioctl(videofd, VIDIOCGCAP, &capability) >= 0)
+             card = QString::fromAscii((const char*)capability.name);
++#endif //USING_V4L
+     }
+-#endif // !USING_V4L
++#endif // !USING_V4L || USING_V4L2
+ 
+     return !card.isEmpty();
+ }
+@@ -1506,9 +1508,9 @@
+     InputNames list;
+     ok = false;
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     bool usingv4l2 = hasV4L2(videofd);
+-
++#ifdef USING_V4L2
+     // V4L v2 query
+     struct v4l2_input vin;
+     bzero(&vin, sizeof(vin));
+@@ -1523,8 +1525,10 @@
+         ok = true;
+         return list;
+     }
++#endif
+ 
+     // V4L v1 query
++#ifdef USING_V4L
+     struct video_capability vidcap;
+     bzero(&vidcap, sizeof(vidcap));
+     if (ioctl(videofd, VIDIOCGCAP, &vidcap) != 0)
+@@ -1552,15 +1556,15 @@
+ 
+         list[i] = test.name;
+     }
+-
++#endif
+     // Create an input on single input cards that don't advertise input
+     if (!list.size())
+         list[0] = "Television";
+ 
+     ok = true;
+-#else // if !USING_V4L
++#else // if !USING_V4L || USING_V4L2
+     list[-1] += QObject::tr("ERROR, Compile with V4L support to query inputs");
+-#endif // !USING_V4L
++#endif // !USING_V4L || USING_V4L2
+     return list;
+ }
+ 
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/channelscanner.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/channelscanner.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/channelscanner.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/channelscanner.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -342,7 +342,7 @@
+         channel = new DVBChannel(device);
+ #endif
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     if (("V4L" == card_type) || ("MPEG" == card_type))
+         channel = new V4LChannel(NULL, device);
+ #endif
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/channelscan_sm.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/channelscan_sm.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/channelscan_sm.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/channelscan_sm.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -1255,7 +1255,7 @@
+ 
+ V4LChannel *ChannelScanSM::GetV4LChannel(void)
+ {
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     return dynamic_cast<V4LChannel*>(channel);
+ #else
+     return NULL;
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/scanwizardconfig.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/scanwizardconfig.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/channelscan/scanwizardconfig.cpp	2011-02-04 11:44:43.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/channelscan/scanwizardconfig.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -27,14 +27,14 @@
+     cardTypes += "'DVB'";
+ #endif // USING_DVB
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     if (!cardTypes.isEmpty())
+         cardTypes += ",";
+     cardTypes += "'V4L'";
+ # ifdef USING_IVTV
+     cardTypes += ",'MPEG'";
+ # endif // USING_IVTV
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+ 
+ #ifdef USING_IPTV
+     if (!cardTypes.isEmpty())
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/libmythtv.pro mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/libmythtv.pro
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/libmythtv.pro	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/libmythtv.pro	2011-03-23 15:45:49.000000000 -0700
+@@ -451,11 +451,17 @@
+     }
+ 
+     # Support for Video4Linux devices
+-    using_v4l {
++    using_v4l || using_v4l2 {
+         HEADERS += v4lchannel.h                analogsignalmonitor.h
+         SOURCES += v4lchannel.cpp              analogsignalmonitor.cpp
+ 
+-        DEFINES += USING_V4L
++        using_v4l {
++            DEFINES += USING_V4L
++        }
++
++        using_v4l2 {
++            DEFINES += USING_V4L2
++        }
+     }
+ 
+     # Support for cable boxes that provide Firewire out
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/signalmonitor.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/signalmonitor.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/signalmonitor.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/signalmonitor.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -22,7 +22,7 @@
+ #   include "dvbchannel.h"
+ #endif
+ 
+-#ifdef USING_V4L
++#ifdef USING_V4L2
+ #   include "analogsignalmonitor.h"
+ #   include "v4lchannel.h"
+ #endif
+@@ -92,7 +92,7 @@
+     }
+ #endif
+ 
+-#ifdef USING_V4L
++#if defined (USING_V4L) || defined (USING_V4L2)
+     if ((cardtype.toUpper() == "V4L") ||
+         (cardtype.toUpper() == "MPEG") || 
+         (cardtype.toUpper() == "HDPVR"))
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/tv_rec.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/tv_rec.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/tv_rec.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/tv_rec.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -62,7 +62,7 @@
+ 
+ #include "channelgroup.h"
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+ #include "v4lchannel.h"
+ #endif
+ 
+@@ -213,7 +213,7 @@
+     }
+     else // "V4L" or "MPEG", ie, analog TV
+     {
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+         channel = new V4LChannel(this, genOpt.videodev);
+         if (!channel->Open())
+             return false;
+@@ -1044,11 +1044,11 @@
+     }
+     else
+     {
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+         // V4L/MJPEG/GO7007 from here on
+         recorder = new NuppelVideoRecorder(this, channel);
+         recorder->SetOption("skipbtaudio", genOpt.skip_btaudio);
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+     }
+ 
+     if (recorder)
+@@ -1263,11 +1263,11 @@
+ 
+ V4LChannel *TVRec::GetV4LChannel(void)
+ {
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     return dynamic_cast<V4LChannel*>(channel);
+ #else
+     return NULL;
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+ }
+ 
+ /** \fn TVRec::EventThread(void*)
+@@ -4112,7 +4112,7 @@
+                                   channel->GetCurrentName());
+     }
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     if (GetV4LChannel())
+     {
+         channel->InitPictureAttributes();
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/v4lchannel.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/v4lchannel.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/v4lchannel.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/v4lchannel.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -146,8 +146,10 @@
+     {
+         if (fmt == "NTSC-JP")
+             return 6;
++#ifdef USING_V4L
+         else if (fmt.left(5) == "SECAM")
+             return VIDEO_MODE_SECAM;
++#endif
+         else if (fmt == "PAL-NC")
+             return 3;
+         else if (fmt == "PAL-M")
+@@ -155,6 +157,7 @@
+         else if (fmt == "PAL-N")
+             return 5;
+         // generics...
++#ifdef USING_V4L
+         else if (fmt.left(3) == "PAL")
+             return VIDEO_MODE_PAL;
+         else if (fmt.left(4) == "NTSC")
+@@ -162,6 +165,7 @@
+         else if (fmt.left(4) == "ATSC")
+             return VIDEO_MODE_NTSC; // We've dropped V4L ATSC support...
+         return VIDEO_MODE_NTSC;
++#endif 
+     }
+ 
+     VERBOSE(VB_IMPORTANT,
+@@ -233,6 +237,7 @@
+     }
+     else if (1 == v4l_version)
+     {
++#ifdef USING_V4L    
+         if (mode == VIDEO_MODE_NTSC)
+             return "NTSC";
+         else if (mode == VIDEO_MODE_ATSC)
+@@ -247,6 +252,7 @@
+             return "PAL-N";
+         else if (mode == 6)
+             return "NTSC-JP";
++#endif
+     }
+     else
+     {
+@@ -674,6 +680,7 @@
+         return true;
+     }
+ 
++#ifdef USING_V4L
+     // Video4Linux version 1 tuning
+     uint freq = frequency / 62500;
+     ioctlval = ioctl(videofd, VIDIOCSFREQ, &freq);
+@@ -685,6 +692,7 @@
+                 .arg(device).arg(ioctlval).arg(strerror(errno)));
+         return false;
+     }
++#endif
+ 
+     SetSIStandard(si_std);
+ 
+@@ -856,6 +864,7 @@
+ 
+     if (usingv4l1)
+     {
++#ifdef USING_V4L
+         VERBOSE(VB_CHANNEL, LOC + msg + "(v4l v1)");
+ 
+         // read in old settings
+@@ -873,8 +882,9 @@
+         {
+             VERBOSE(VB_IMPORTANT, LOC_ERR + msg + 
+                     "\n\t\t\twhile setting format (v4l v1)" + ENO);
+-        }
+-        else if (usingv4l2)
++        } else
++#endif
++        if (usingv4l2)
+         {
+             VERBOSE(VB_IMPORTANT, LOC + msg +
+                     "\n\t\t\tSetting video mode with v4l version 1 worked");
+@@ -949,6 +959,7 @@
+     return ok;
+ }
+ 
++#ifdef USING_V4L
+ static unsigned short *get_v4l1_field(
+     int v4l2_attrib, struct video_picture &vid_pic)
+ {
+@@ -968,6 +979,7 @@
+     }
+     return NULL;
+ }
++#endif
+ 
+ static int get_v4l2_attribute(const QString &db_col_name)
+ {
+@@ -1065,6 +1077,7 @@
+     }
+ 
+     // V4L1
++#ifdef USING_V4L
+     unsigned short *setfield;
+     struct video_picture vid_pic;
+     bzero(&vid_pic, sizeof(vid_pic));
+@@ -1085,7 +1098,7 @@
+         VERBOSE(VB_IMPORTANT, loc_err + "failed to set controls." + ENO);
+         return false;
+     }
+-
++#endif
+     return true;
+ }
+ 
+@@ -1152,6 +1165,7 @@
+ 
+ static int get_v4l1_attribute_value(int videofd, int v4l2_attrib)
+ {
++#ifdef USING_V4L
+     struct video_picture vid_pic;
+     bzero(&vid_pic, sizeof(vid_pic));
+ 
+@@ -1165,6 +1179,7 @@
+     unsigned short *setfield = get_v4l1_field(v4l2_attrib, vid_pic);
+     if (setfield)
+         return *setfield;
++#endif
+ 
+     return -1;
+ }
+@@ -1208,6 +1223,7 @@
+ 
+ static int set_v4l1_attribute_value(int videofd, int v4l2_attrib, int newvalue)
+ {
++#ifdef USING_V4L
+     unsigned short *setfield;
+     struct video_picture vid_pic;
+     bzero(&vid_pic, sizeof(vid_pic));
+@@ -1234,7 +1250,7 @@
+         // ???
+         return -1;
+     }
+-
++#endif
+     return 0;
+ }
+ 
+diff -Naur mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/videosource.cpp mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/videosource.cpp
+--- mythtv-0.22-20100711-3c6ce60-697a6ac-old/mythtv/libs/libmythtv/videosource.cpp	2011-02-04 11:44:44.000000000 -0800
++++ mythtv-0.22-20100711-3c6ce60-697a6ac-new/mythtv/libs/libmythtv/videosource.cpp	2011-03-23 15:45:49.000000000 -0700
+@@ -2027,7 +2027,7 @@
+     setTrigger(cardtype);
+     setSaveAll(false);
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     addTarget("V4L",       new V4LConfigurationGroup(parent));
+ # ifdef USING_IVTV
+     addTarget("MPEG",      new MPEGConfigurationGroup(parent));
+@@ -2035,7 +2035,7 @@
+ # ifdef USING_HDPVR
+     addTarget("HDPVR",     new HDPVRConfigurationGroup(parent));
+ # endif // USING_HDPVR
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+ 
+ #ifdef USING_DVB
+     addTarget("DVB",       new DVBConfigurationGroup(parent));
+@@ -2222,7 +2222,7 @@
+ 
+ void CardType::fillSelections(SelectSetting* setting)
+ {
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     setting->addSelection(
+         QObject::tr("Analog V4L capture card"), "V4L");
+     setting->addSelection(
+@@ -2235,7 +2235,7 @@
+     setting->addSelection(
+         QObject::tr("H.264 encoder card (HD-PVR)"), "HDPVR");
+ # endif // USING_HDPVR
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+ 
+ #ifdef USING_DVB
+     setting->addSelection(
+@@ -2247,11 +2247,11 @@
+         QObject::tr("FireWire cable box"), "FIREWIRE");
+ #endif // USING_FIREWIRE
+ 
+-#ifdef USING_V4L
++#if defined(USING_V4L) || defined(USING_V4L2)
+     setting->addSelection(
+         QObject::tr("USB MPEG-4 encoder box (Plextor ConvertX, etc)"),
+         "GO7007");
+-#endif // USING_V4L
++#endif // USING_V4L || USING_V4L2
+ 
+ #ifdef USING_DBOX2
+     setting->addSelection(
