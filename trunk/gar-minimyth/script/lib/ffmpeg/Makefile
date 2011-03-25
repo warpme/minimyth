@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 4952aff
+GARVERSION = 797ef67
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2

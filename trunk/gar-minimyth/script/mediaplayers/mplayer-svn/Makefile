@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 33094
+GARVERSION = 33107
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -142,7 +142,8 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-musepack \
 	--disable-libopencore_amrnb \
 	--disable-libopencore_amrwb \
-	--disable-libopenjpeg
+	--disable-libopenjpeg \
+	--disable-crystalhd
 # Video output: enable xv (requires x11 and vm), xvmc and vdpau.
 CONFIGURE_ARGS_VIDEO = \
 	--disable-vidix \
