@@ -62,17 +62,17 @@ INSTALL_SCRIPTS   = $(WORKSRC)/mythtv/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
-	--prefix="$(prefix)" \
+	--prefix="$(DESTDIR)$(prefix)" \
 	--runprefix="$(prefix)" \
 	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
 	--disable-ccache \
 	--disable-distcc \
-	--bindir="$(bindir)" \
-	--datadir="$(datadir)" \
-	--libdir="$(libdir)" \
-	--shlibdir="$(libdir)" \
-	--incdir="$(incdir)" \
-	--mandir="$(mandir)" \
+	--bindir="$(DESTDIR)$(bindir)" \
+	--datadir="$(DESTDIR)$(datadir)/mythtv" \
+	--libdir="$(DESTDIR)$(libdir)" \
+	--shlibdir="$(DESTDIR)$(libdir)" \
+	--incdir="$(DESTDIR)$(includedir)/mythtv" \
+	--mandir="$(DESTDIR)$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
