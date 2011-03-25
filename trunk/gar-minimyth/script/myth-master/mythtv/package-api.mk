@@ -6,13 +6,13 @@ MYTHTV_CONFIGURE_ENV = \
 	PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 MYTHTV_BUILD_ENV     =
 MYTHTV_INSTALL_ENV   = \
-	INSTALL_ROOT=$(DESTDIR)
+	INSTALL_ROOT="/" \
 
 MYTHTV_PLUGINS_CONFIGURE_ARGS = \
-	--prefix="$(prefix)" \
+	--prefix="$(DESTDIR)$(prefix)" \
 	--sysroot="$(DESTDIR)$(rootdir)" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
-	--libdir-name="lib" \
+	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
 	--disable-all \
 	--enable-opengl
 

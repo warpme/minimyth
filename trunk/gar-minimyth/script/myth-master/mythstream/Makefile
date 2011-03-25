@@ -8,7 +8,6 @@ PATCHFILES = \
 	$(DISTNAME)-mythcontext.patch \
 	$(DISTNAME)-youtube_parser_fix_2.patch \
 	$(DISTNAME)-mythconfig_mak.patch \
-	$(DISTNAME)-sysroot.patch \
 	$(DISTNAME)-qt4_header.patch \
 	$(DISTNAME)-mythversion_h.patch \
 	$(DISTNAME)-streams_res.patch \
