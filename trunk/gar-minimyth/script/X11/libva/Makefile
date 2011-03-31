@@ -1,8 +1,8 @@
 GARNAME = libva
-GARVERSION = b7ff214
+GARVERSION = 1.0.11
 CATEGORIES = X11
-#MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
-MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
+MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
+#MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -33,7 +33,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
