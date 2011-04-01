@@ -678,7 +678,7 @@ $(top_build)/stage/extras.sfs: $(top_build)/stage/image/extras
 	@echo "making the squashfs version of the extras file system"
 	@mkdir -m 0755 -p $(@D)
 	@rm -rf $@ $@~
-	@fakeroot -i $<.fakeroot sh -c "mksquashfs $< $@~ -comp xz -no-exports -no-progress -no-fragments > /dev/null 2>&1"
+	@fakeroot sh -c "mksquashfs $< $@~ -comp xz -no-exports -no-progress -no-fragments > /dev/null 2>&1"
 	@chmod 0644 $@~
 	@touch $@~
 	@mv $@~ $@
