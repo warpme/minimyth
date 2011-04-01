@@ -35,7 +35,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += lib/ncurses/package-api.mk
 include ../../gar.mk
 
-# causes procps's top to segmentation fault when compiled with gcc's link time optimization.
+# Causes procps's top to segmentation fault when compiled with GCC 4.5.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
