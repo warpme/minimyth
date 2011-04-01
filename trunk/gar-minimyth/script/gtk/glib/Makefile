@@ -56,7 +56,7 @@ endif
 
 include ../../gar.mk
 
-# Fails to compile with GCC link time optimization, outputing the error:
+# Fails to compile with GCC 4.5.2's link time optimization enabled, outputing the error:
 # "mem-overflow.c:137:1: sorry, unimplemented: gimple bytecode streams do not support the optimization attribute".
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
