@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 797ef67
+GARVERSION = 7ac1674
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch $(GARNAME)-vaapi_20110127.patch
+PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
