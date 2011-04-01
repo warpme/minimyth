@@ -1,5 +1,5 @@
 GARNAME = cloog-ppl
-GARVERSION = 0.15.10
+GARVERSION = 0.15.11
 CATEGORIES = devel
 MASTER_SITES = ftp://gcc.gnu.org/pub/gcc/infrastructure/
 DISTFILES = $(DISTNAME).tar.gz
