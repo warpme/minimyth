@@ -1,10 +1,11 @@
 GARNAME = MPlayer
-GARVERSION = 33107
+GARVERSION = 33171
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-mt_20110310.patch $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20110127.patch
+#PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch $(GARNAME)-vaapi_20110127.patch
+PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -171,10 +172,8 @@ CONFIGURE_ARGS_VIDEO = \
 	--disable-dvb \
 	--disable-mga \
 	--disable-xmga \
-	--enable-xrender \
 	--enable-xv \
 	--enable-xvmc \
-	--enable-vaapi \
 	--enable-vdpau \
 	--enable-vm \
 	--enable-xinerama \
