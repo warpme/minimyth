@@ -117,9 +117,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# Fails to compile (pentium-mmx) with the gcc 4.5 link time optimization due to impossible register constraints.
-#CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-#LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile with GCC 4.5.2's link time optimization enabled.
+CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 hg//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_HG, $*, $(GARVERSION), $(DISTNAME))
