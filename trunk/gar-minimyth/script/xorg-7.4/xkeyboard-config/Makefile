@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.1
+GARVERSION = 2.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.x.org/releases/individual/data/$(GARNAME)/
 MASTER_SITES += http://xlibs.freedesktop.org/xkbdesc/
@@ -12,7 +12,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c \
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/xproto
 BUILDDEPS = \
 	perl/perl-XML-Parser
 
@@ -24,6 +26,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-compat-rules \
+	--disable-runtime-deps \
 	--enable-nls \
 	--with-xkb-base="$(datadir)/X11/xkb" \
 	--without-xkb-rules-symlink
@@ -33,3 +36,8 @@ CONFIGURE_ENV  = \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
