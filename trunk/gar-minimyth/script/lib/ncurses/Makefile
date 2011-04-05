@@ -19,7 +19,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-cxx-binding \
 	--without-ada \
-	--without-ada-compiler \
+	--with-manpages \
+	--without-tests \
 	--with-build-cc="$(build_CC)" \
 	--with-build-cppflags="$(build_CPPFLAGS)" \
 	--with-build-cflags="$(build_CFLAGS)" \
@@ -30,6 +31,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-debug \
 	--without-profile \
 	--disable-rpath \
+	--disable-relink \
+	--disable-rpath-hack \
 	--disable-widec \
 	--enable-termcap
 ifneq ($(DESTIMG),build)

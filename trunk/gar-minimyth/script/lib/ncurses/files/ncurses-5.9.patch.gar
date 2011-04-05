@@ -1,6 +1,6 @@
-diff -Naur ncurses-5.7-old/aclocal.m4 ncurses-5.7-new/aclocal.m4
---- ncurses-5.7-old/aclocal.m4	2008-10-25 15:15:32.000000000 -0700
-+++ ncurses-5.7-new/aclocal.m4	2009-09-18 05:24:26.000000000 -0700
+diff -Naur ncurses-5.9-old/aclocal.m4 ncurses-5.9-new/aclocal.m4
+--- ncurses-5.9-old/aclocal.m4	2011-04-05 12:32:33.000000000 -0700
++++ ncurses-5.9-new/aclocal.m4	2011-04-05 12:33:13.000000000 -0700
 @@ -73,14 +73,14 @@
  	ACPPFLAGS="-I\${srcdir}/../../include $ACPPFLAGS"
  fi
@@ -19,8 +19,8 @@ diff -Naur ncurses-5.7-old/aclocal.m4 ncurses-5.7-new/aclocal.m4
  	fi
  fi
  AC_SUBST(ACPPFLAGS)
-@@ -2039,14 +2039,14 @@
- 	CPPFLAGS="-I\${srcdir}/../include $CPPFLAGS"
+@@ -2477,14 +2477,14 @@
+ 	CPPFLAGS="$CPPFLAGS -I\${srcdir}/../include"
  fi
  if test "$GCC" != yes; then
 -	CPPFLAGS="$CPPFLAGS -I\${includedir}"
@@ -37,12 +37,12 @@ diff -Naur ncurses-5.7-old/aclocal.m4 ncurses-5.7-new/aclocal.m4
  	fi
  fi
  AC_SUBST(CPPFLAGS)
-diff -Naur ncurses-5.7-old/misc/ncurses-config.in ncurses-5.7-new/misc/ncurses-config.in
---- ncurses-5.7-old/misc/ncurses-config.in	2007-03-17 13:02:19.000000000 -0700
-+++ ncurses-5.7-new/misc/ncurses-config.in	2009-09-18 05:25:50.000000000 -0700
-@@ -30,13 +30,13 @@
+diff -Naur ncurses-5.9-old/misc/ncurses-config.in ncurses-5.9-new/misc/ncurses-config.in
+--- ncurses-5.9-old/misc/ncurses-config.in	2011-04-05 12:32:33.000000000 -0700
++++ ncurses-5.9-new/misc/ncurses-config.in	2011-04-05 12:35:07.000000000 -0700
+@@ -30,14 +30,14 @@
  #
- # Author: Thomas E. Dickey, 2006
+ # Author: Thomas E. Dickey, 2006-on
  
 -prefix="@prefix@"
 -exec_prefix="@exec_prefix@"
@@ -50,37 +50,24 @@ diff -Naur ncurses-5.7-old/misc/ncurses-config.in ncurses-5.7-new/misc/ncurses-c
 +exec_prefix="@DESTDIR@@exec_prefix@"
  
 -bindir="@bindir@"
+-includedir="@includedir@"
 -libdir="@libdir@"
 -datadir="@datadir@"
 -mandir="@mandir@"
 +bindir="@DESTDIR@@bindir@"
++includedir="@DESTDIR@@includedir@"
 +libdir="@DESTDIR@@libdir@"
 +datadir="@DESTDIR@@datadir@"
 +mandir="@DESTDIR@@mandir@"
  
- THIS="ncurses@DFT_ARG_SUFFIX@"
- 
-@@ -75,11 +75,11 @@
- 	# compile/link
- 	--cflags)
- 		INCS=
--		if test "${prefix}/include" != /usr/include ; then
--			INCS="-I${prefix}/include"
+ THIS="@LIB_NAME@@DFT_ARG_SUFFIX@"
+ TINFO_LIB="@TINFO_ARG_SUFFIX@"
+@@ -75,7 +75,7 @@
+ 		if test "x@WITH_OVERWRITE@" = xno ; then
+ 			INCS="$INCS -I${includedir}/${THIS}"
+ 		fi
+-		if test "${includedir}" != /usr/include ; then
 +		if test "${includedir}" != @GAR_DESTDIR@@GAR_includedir@ ; then
-+			INCS="-I${includedir}"
- 		fi
- 		if test "@WITH_OVERWRITE@" != no ; then
--			INCS="$INCS -I${prefix}/include/${THIS}"
-+			INCS="$INCS -I${includedir}/${THIS}"
+ 			INCS="$INCS -I${includedir}"
  		fi
  		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
- 			$INCS
-@@ -87,7 +87,7 @@
- 		;;
- 	--libs)
- 		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
--			-L${exec_prefix}/lib @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
-+			-L${libdir} @EXTRA_LDFLAGS@ -l${THIS} @LIBS@
- ENDECHO
- 		;;
- 	# identification
