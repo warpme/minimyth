@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.2
+GARVERSION = 2.2.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.x.org/releases/individual/data/$(GARNAME)/
 MASTER_SITES += http://xlibs.freedesktop.org/xkbdesc/
@@ -26,7 +26,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-compat-rules \
-	--disable-runtime-deps \
 	--enable-nls \
 	--with-xkb-base="$(datadir)/X11/xkb" \
 	--without-xkb-rules-symlink
