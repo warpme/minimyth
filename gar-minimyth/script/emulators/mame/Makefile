@@ -1,5 +1,5 @@
 GARNAME = mame
-GARVERSION = 0.141
+GARVERSION = 0.142
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
