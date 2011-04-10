@@ -1,10 +1,10 @@
 GARNAME = Mesa
-GARVERSION = 7.9.2
+GARVERSION = 7.10.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-nouveau.patch $(DISTNAME)-libdrm_nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-libdrm_nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
@@ -50,6 +50,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xcb \
 	--disable-egl \
 	--enable-gallium \
+	--disable-gallium-egl \
 	--disable-gallium-llvm \
 	--enable-gallium-svga \
 	--enable-gallium-i915 \
@@ -58,6 +59,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-gallium-r600 \
 	--enable-gallium-nouveau \
 	--enable-gallium-swrast \
+	--disable-gallium-noop \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
@@ -70,16 +72,14 @@ BUILD_ARGS  = \
 
 include ../../gar.mk
 
-# Mesa 7.8.2 fails to compile (atom) when compiling with GCC's link time optimization plugin.
+# Mesa 7.10.2 fails to compile when compiling with GCC's link time optimization plugin.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# Mesa 7.8.2 has incorrect symbol visibility when using the GCC's link time optimization.
-# Could be <http://gcc.gnu.org/ml/gcc-patches/2010-07/msg00580.html>.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+# Mesa 7.10.2 nouveau-dri fails when compiled with at least some of GCC 4.5.2's graphite support.
+CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
+CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
 
 DRI_DIRS := $(strip \
 	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 nouveau r200 r300 r600 radeon savage sis swrast unichrome) \
