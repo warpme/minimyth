@@ -1,5 +1,5 @@
 GARNAME = libdrm
-GARVERSION = 2.4.24
+GARVERSION = 2.4.25
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -23,9 +23,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--disable-silent-rules \
 	--enable-libkms \
 	--enable-intel \
 	--enable-radeon \
