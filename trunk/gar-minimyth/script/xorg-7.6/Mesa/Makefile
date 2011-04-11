@@ -77,6 +77,12 @@ CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
+# Mesa 7.10.2 has incorrect symbol visibility when using the GCC's link time optimization.
+# Could be <http://gcc.gnu.org/ml/gcc-patches/2010-07/msg00580.html>.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 # Mesa 7.10.2 nouveau-dri fails when compiled with at least some of GCC 4.5.2's graphite support.
 CFLAGS   := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CFLAGS))
 CXXFLAGS := $(filter-out -ftree-loop-distribution -floop-interchange -floop-strip-mine -floop-block -fgraphite-identity, $(CXXFLAGS))
