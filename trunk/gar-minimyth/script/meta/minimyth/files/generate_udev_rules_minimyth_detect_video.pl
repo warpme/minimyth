@@ -120,12 +120,22 @@ unlink(qq($tmpfile_pciids_txt));
     }
     {
         my $driver= q(nouveau);
+	# The Open Source nouveau driver replaces the proprietary NVIDIA 71.86.xx driver.
         foreach my $product (qw(0020 0028 0029 002c 002d 00a0 0100 0101 0103 0150 0151 0152 0153))
         {
             $entries{qq($vendor.$product)} = $driver;
         }
+	# The Open Source nouveau driver replaces the proprietary NVIDIA 96.43.xx driver.
+        foreach my $product (qw(0110 0111 0112 0113 0170 0171 0172 0173 0174 0175 0176 0177 0178 0179 017a 017c 017d 0181 0182 0183 0185 0188 018a 018b 018c 01a0 01f0 0200 0201 0202 0203 0250 0251 0253 0258 0259 025b 0280 0281 0282 0286 0288 0289 028c))
+        {
+            $entries{qq($vendor.$product)} = $driver;
+        }
+	# The Open Source nouveau driver replaces the proprietary NVIDIA 173.14.xx driver.
+        foreach my $product (qw(00fa 00fb 00fc 00fd 00fe 0301 0302 0308 0309 0311 0312 0314 031a 031b 031c 0320 0321 0322 0323 0324 0325 0326 0327 0328 032a 032b 032c 032d 0330 0331 0332 0333 0334 0338 033f 0341 0342 0343 0344 0347 0348 034c 034e))
+        {
+            $entries{qq($vendor.$product)} = $driver;
+        }
     }
-
 }
 
 # SiS.
