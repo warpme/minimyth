@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.9.5
+GARVERSION = 1.10.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -70,8 +70,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-debug \
 	--disable-unit-tests \
 	--disable-sparkle \
-	--disable-builddocs \
-	--enable-install-libxf86config \
+	--disable-install-libxf86config \
 	--enable-visibility \
 	--enable-pc98=auto \
 	--enable-aiglx \
@@ -132,7 +131,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-xkb-path="$(datadir)/X11/xkb" \
 	--with-xkb-output="$(datadir)/X11/xkb/compiled" \
 	--with-serverconfig-path="$(libdir)/xserver" \
-	--with-dri-driver-path="$(libdir)/xorg/modules/dri" \
 	--without-xmlto \
 	--without-fop \
 	--with-sha1=libcrypto
@@ -147,6 +145,10 @@ pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
+
+# Workaround to a problem in xorg-server 1.10.0.
+pre-build:
+	@rm -f $(WORKSRC)/hw/xfree86/loader/sdksyms.c
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdbe.la
@@ -165,7 +167,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxf8_16bpp.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/msp3430_drv.la
