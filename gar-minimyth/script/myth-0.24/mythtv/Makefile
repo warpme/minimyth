@@ -36,9 +36,6 @@ DEPENDS = \
 	lib/libavc1394 \
 	lib/libiec61883 \
 	lib/zlib \
-	perl/perl \
-	perl/perl-DBI \
-	perl/perl-Net-UPnP \
 	python/python \
 	python/python-MySQL-python \
 	python/python-lxml \
@@ -49,7 +46,6 @@ DEPENDS = \
 	xorg/xorg
 BUILDDEPS = \
 	devel/yasm \
-	perl/perl \
 	python/python-distutilscross \
 	python/python-MySQL-python \
 	python/python-lxml
@@ -135,7 +131,8 @@ CONFIGURE_ARGS = \
 	--disable-quartz-video \
 	--enable-opengl-vsync \
 	--disable-mac-bundle \
-	--with-bindings="perl,python"
+	--without-bindings="perl" \
+	--with-bindings="python"
 
 CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV      = $(MYTHTV_BUILD_ENV)
