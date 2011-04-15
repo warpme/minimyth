@@ -36,6 +36,9 @@ DEPENDS = \
 	lib/libavc1394 \
 	lib/libiec61883 \
 	lib/zlib \
+	perl/perl \
+	perl/perl-DBI \
+	perl/perl-Net-UPnP \
 	python/python \
 	python/python-MySQL-python \
 	python/python-lxml \
@@ -46,6 +49,7 @@ DEPENDS = \
 	xorg/xorg
 BUILDDEPS = \
 	devel/yasm \
+	perl/perl \
 	python/python-distutilscross \
 	python/python-MySQL-python \
 	python/python-lxml
@@ -131,17 +135,20 @@ CONFIGURE_ARGS = \
 	--disable-quartz-video \
 	--enable-opengl-vsync \
 	--disable-mac-bundle \
-	--without-bindings="perl" \
-	--with-bindings="python"
+	--with-bindings="perl,python"
 
 CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV      = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV    = $(MYTHTV_INSTALL_ENV)
 
+CONFIGURE_ENV += $(PERL_CONFIGURE_ENV)
+#BUILD_ENV     += $(PERL_BUILD_ENV)
+INSTALL_ENV   += $(PERL_INSTALL_ENV)
+
 BUILD_ENV     += PYTHONXCPREFIX=$(DESTDIR)$(prefix)
 INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
-GAR_EXTRA_CONF += python/python/package-api.mk
+GAR_EXTRA_CONF += perl/perl/package-api.mk python/python/package-api.mk
 include ../../gar.mk
 
 # Fails to compile with GCC 4.5.2's link time optimization enabled.

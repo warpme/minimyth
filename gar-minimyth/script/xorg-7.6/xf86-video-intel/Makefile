@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.14.0
+GARVERSION = 2.15.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -42,6 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri \
 	--enable-xvmc \
 	--disable-kms-only \
+	--disable-debug \
 	--with-gnu-ld
 
 CONFIGURE_ENV = \
