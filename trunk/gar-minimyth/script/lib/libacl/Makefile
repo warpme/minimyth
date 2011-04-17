@@ -1,5 +1,5 @@
 GARNAME = acl
-GARVERSION = 2.2.49
+GARVERSION = 2.2.50
 CATEGORIES = lib
 MASTER_SITES  = http://download.savannah.gnu.org/releases-noredirect/acl/
 MASTER_SITES += ftp://oss.sgi.com/projects/xfs/cmd_tars/
