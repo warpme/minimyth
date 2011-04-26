@@ -1,9 +1,9 @@
 GARNAME = zoneinfo
-GARVERSION = 2011f
+GARVERSION = 2011g
 CATEGORIES = system
 MASTER_SITES = ftp://elsie.nci.nih.gov/pub/
-DISTFILES = tzcode2011e.tar.gz tzdata$(GARVERSION).tar.gz
-#PATCHFILES = $(DISTNAME).patch
+DISTFILES = tzcode2011g.tar.gz tzdata$(GARVERSION).tar.gz
+PATCHFILES = $(DISTNAME).patch
 LICENSE = Public_Domain
 
 DESCRIPTION =
