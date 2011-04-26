@@ -27,6 +27,10 @@
 /bin/mkdir -p /var/tmp
 /bin/chmod 1777 /var/tmp
 
+# Create /run.
+/bin/mkdir -p /run
+/bin/mkdir -p /run/udev
+
 # Create /dev.
 /bin/mkdir -p /var
 /bin/mount -n -t tmpfs /dev /dev
