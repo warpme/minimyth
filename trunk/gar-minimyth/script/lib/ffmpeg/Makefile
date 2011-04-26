@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 7ac1674
+GARVERSION = ff558d7
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -81,6 +81,7 @@ CONFIGURE_ARGS = \
 	--enable-filters \
 	--disable-avisynth \
 	--enable-bzlib \
+	--disable-libcelt \
 	--disable-frei0r \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
@@ -97,6 +98,8 @@ CONFIGURE_ARGS = \
 	--disable-libschroedinger \
 	--disable-libspeex \
 	--disable-libtheora \
+	--disable-libvo-aacenc \
+	--disable-libvo-amrwbenc \
 	--disable-libvorbis \
 	--disable-libvpx \
 	--disable-libx264 \
