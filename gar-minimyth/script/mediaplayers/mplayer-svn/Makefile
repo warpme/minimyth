@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 33171
+GARVERSION = 33331
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -37,7 +37,6 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--enable-mplayer \
 	--disable-gui \
 	--disable-gtk1 \
-	--enable-largefiles \
 	--disable-termcap \
 	--disable-termios \
 	--enable-iconv \
