@@ -13,7 +13,7 @@ PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
 PATCHFILES += $(DISTNAME)-libstdc++-v3_config.patch
 endif
-LICENSE = GPL2/LGPL2_1
+LICENSE = GPL2/GPL3/LGPL2_1/LGPL3
 
 DESCRIPTION =
 define BLURB
