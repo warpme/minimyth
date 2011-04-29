@@ -12,7 +12,8 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
-	$(CATEGORY)/libXmu
+	$(CATEGORY)/libXmu \
+	$(CATEGORY)/xcb-util
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
