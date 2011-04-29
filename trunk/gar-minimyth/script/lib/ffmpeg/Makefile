@@ -1,9 +1,11 @@
 GARNAME = ffmpeg
-GARVERSION = ff558d7
+GARVERSION = 0.7-rc1
 CATEGORIES = lib
-MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
+MASTER_SITES = http://ffmpeg.org/releases/
+#MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-uint64_c.patch $(DISTNAME)-libswscale_symbol_export.patch
+#PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -168,7 +170,7 @@ git//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 post-install:
