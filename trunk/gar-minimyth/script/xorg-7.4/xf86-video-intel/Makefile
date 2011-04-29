@@ -24,6 +24,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/util-macros \
+	$(CATEGORY)/xcb-util \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
 	$(CATEGORY)/xineramaproto \
