@@ -11,7 +11,7 @@ endef
 
 DEPENDS  = lang/c gtk/glib lib/alsa-lib lib/dbus
 ifneq ($(DESTIMG),build)
-DEPENDS += lib/libusb-compat
+DEPENDS += lib/libusb-compat system/udev
 endif
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -40,7 +40,6 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-tools \
 	--enable-bccmd \
 	--enable-pcmcia \
-	--enable-hid2hci \
 	--enable-dfutool \
 	--enable-hidd \
 	--disable-pand \
@@ -56,9 +55,14 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-capng \
 	--disable-netlink \
 	--with-gnu-ld
-ifneq ($(DESTIMG),build)
+ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
-	--enable-usb
+	--disable-usb \
+	--disable-hid2hci
+else
+CONFIGURE_ARGS += \
+	--enable-usb \
+	--enable-hid2hci
 endif
 
 include ../../gar.mk
