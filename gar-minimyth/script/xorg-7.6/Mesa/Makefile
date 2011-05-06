@@ -4,7 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-libdrm_nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-llvmpipe_ld.patch $(DISTNAME)-llvm_so.patch $(DISTNAME)-libdrm_nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
 LICENSE = LGPL2/MIT
 
@@ -27,7 +27,7 @@ DEPENDS    = lang/c lang/cxx lib/expat \
 	$(CATEGORY)/libXxf86vm \
 	$(CATEGORY)/libXt
 ifneq ($(DESTIMG),build)
-DEPENDS   += system/udev
+DEPENDS   += devel/llvm system/udev
 endif
 BUILDDEPS  = lib/libxml2 \
 	$(CATEGORY)/makedepend
@@ -51,7 +51,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-egl \
 	--enable-gallium \
 	--disable-gallium-egl \
-	--disable-gallium-llvm \
+	--enable-gallium-llvm \
 	--enable-gallium-svga \
 	--enable-gallium-i915 \
 	--enable-gallium-i965 \
