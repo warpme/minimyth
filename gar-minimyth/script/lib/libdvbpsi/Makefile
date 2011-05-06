@@ -1,9 +1,9 @@
 GARNAME = libdvbpsi
-GARVERSION = 0.1.7
+GARVERSION = 0.2.0
 CATEGORIES = lib
 MASTER_SITES = http://download.videolan.org/pub/libdvbpsi/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = LGPL2
+LICENSE = LGPL2_1
 
 DESCRIPTION = 
 define BLURB
