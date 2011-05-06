@@ -1,5 +1,5 @@
 GARNAME = xlsclients
-GARVERSION = 1.1.1
+GARVERSION = 1.1.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,8 +12,8 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
+	$(CATEGORY)/libxcb \
 	$(CATEGORY)/libXmu \
-	$(CATEGORY)/xcb-util
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
