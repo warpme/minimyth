@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 5.1.56
+GARVERSION = 5.1.57
 CATEGORIES = db
 MASTER_SITES = http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
@@ -42,14 +42,9 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 # Fails to compile (for x86_64) with GCC 4.5.2's link time optimization enabled.
-CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile with GCC 4.5.2's link time optimization linker plugin enabled.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+#CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+#CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+#LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 # Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
 # MySQL 4.1.10 breaks with strict aliasing.
