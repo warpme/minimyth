@@ -40,10 +40,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-timestamps \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-targets=x86) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),--enable-targets=x86_64)
-BUILD_ARGS     = \
+BUILD_ARGS     =
+INSTALL_ARGS   =
+ifneq ($(DESTIMG),build)
+BUILD_ARGS    += \
 	TBLGEN="$(build_DESTDIR)$(build_bindir)/tblgen"
-INSTALL_ARGS   = \
+INSTALL_ARGS  += \
 	TBLGEN="$(build_DESTDIR)$(build_bindir)/tblgen"
+endif
 
 CONFIGURE_ENV = \
 	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
