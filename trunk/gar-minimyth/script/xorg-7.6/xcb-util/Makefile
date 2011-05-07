@@ -35,14 +35,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-x-post-install:
-	@rm -f $(DESTDIR)$(libdir)/libxcb-atom.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-aux.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-event.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-icccm.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-image.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-keysyms.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-property.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-render-util.la
-	@rm -f $(DESTDIR)$(libdir)/libxcb-reply.la
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libxcb-util.la
 	@$(MAKECOOKIE)

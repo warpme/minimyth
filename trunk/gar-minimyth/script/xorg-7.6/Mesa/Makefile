@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx lib/expat \
+DEPENDS    = lang/c lang/cxx devel/llvm lib/expat \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/glproto \
@@ -27,7 +27,7 @@ DEPENDS    = lang/c lang/cxx lib/expat \
 	$(CATEGORY)/libXxf86vm \
 	$(CATEGORY)/libXt
 ifneq ($(DESTIMG),build)
-DEPENDS   += devel/llvm system/udev
+DEPENDS   += system/udev
 endif
 BUILDDEPS  = lib/libxml2 \
 	$(CATEGORY)/makedepend

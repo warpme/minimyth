@@ -1,4 +1,4 @@
-GARNAME = xcb-util
+GARNAME = xcb-util-keysyms
 GARVERSION = 0.3.8
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
@@ -12,7 +12,6 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/libxcb \
 	$(CATEGORY)/xproto
-BUILDDEPS = utils/gperf
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -30,11 +29,10 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@rm -f $(WORKSRC)/acinclude.m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libxcb-util.la
+	@rm -f $(DESTDIR)$(libdir)/libxcb-keysyms.la
 	@$(MAKECOOKIE)

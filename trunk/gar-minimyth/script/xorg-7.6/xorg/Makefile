@@ -33,6 +33,7 @@ DEPENDS = \
 	$(CATEGORY)/mkfontdir \
 	$(CATEGORY)/mkfontscale \
 	$(CATEGORY)/rgb \
+	$(CATEGORY)/xcb-util-keysyms \
 	$(CATEGORY)/xdpyinfo \
 	$(CATEGORY)/xev \
 	$(if $(filter-out build, $(DESTIMG)), \
