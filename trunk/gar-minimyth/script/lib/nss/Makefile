@@ -1,7 +1,7 @@
 GARNAME = nss
-GARVERSION = 3.12.9
+GARVERSION = 3.12.10
 CATEGORIES = lib
-MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_9_RTM/src/
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_10_RTM/src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = $(DISTNAME)-freebl_no_depend.patch $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
