@@ -131,7 +131,7 @@ mm_XORG_VERSION           ?= 7.6
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
 # the format YYYYMMDD.
-mm_MYTHTV_MASTER_VERSION  ?= master-20110331-de61d61-ecaeffc
+mm_MYTHTV_MASTER_VERSION  ?= master-20110511-30bdb49-8eeb80e
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
