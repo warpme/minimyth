@@ -1,9 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 11666
+GARVERSION = 11678
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-ffmpeg_cflags.patch $(GARNAME)-vdpau_avutil_cflags.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -21,6 +20,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	--disable-debug \
 	--disable-profiling \
 	--disable-ipv6 \

@@ -14,7 +14,7 @@ DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile a52_internal_h
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
@@ -35,6 +35,14 @@ pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
+
+# Needed by xine-lib.
+install-a52_internal_h:
+	@mkdir -p $(DESTDIR)$(includedir)/a52dec
+	@rm -f $(DESTDIR)$(includedir)/a52dec/a52_internal.h
+	@cp -f $(WORKSRC)/liba52/a52_internal.h $(DESTDIR)$(includedir)/a52dec
+	@$(MAKECOOKIE)
+
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/liba52.la
