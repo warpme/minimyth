@@ -29,7 +29,7 @@ CONFIGURE_ARGS = \
 	--datadir=$(datadir)/ffmpeg \
 	--libdir=$(libdir) \
 	--shlibdir=$(libdir) \
-	--incdir=$(includedir)/ffmpeg \
+	--incdir=$(includedir) \
 	--mandir=$(mandir) \
 	--disable-static \
 	--enable-shared \
@@ -179,7 +179,13 @@ post-install:
 
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(DESTDIR)$(includedir)/ffmpeg
+	@rm -rf $(DESTDIR)$(includedir)/libavcodec
+	@rm -rf $(DESTDIR)$(includedir)/libavdevice
+	@rm -rf $(DESTDIR)$(includedir)/libavfilter
+	@rm -rf $(DESTDIR)$(includedir)/libavformat
+	@rm -rf $(DESTDIR)$(includedir)/libavutil
+	@rm -rf $(DESTDIR)$(includedir)/libpostproc
+	@rm -rf $(DESTDIR)$(includedir)/libswscale
 	@rm -rf $(DESTDIR)$(libdir)/libavcodec.*
 	@rm -rf $(DESTDIR)$(libdir)/libavdevice.*
 	@rm -rf $(DESTDIR)$(libdir)/libavfilter.*
@@ -187,6 +193,7 @@ clean-all:
 	@rm -rf $(DESTDIR)$(libdir)/libavutil.*
 	@rm -rf $(DESTDIR)$(libdir)/libpostproc.*
 	@rm -rf $(DESTDIR)$(libdir)/libswscale.*
+	@rm -rf $(DESTDIR)$(datadir)/ffmpeg
 	@rm -rf $(DESTDIR)$(bin)/ffmpeg
 
 source-update:
