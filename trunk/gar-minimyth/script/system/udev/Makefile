@@ -1,8 +1,9 @@
 GARNAME = udev
-GARVERSION = 168
+GARVERSION = 169
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -25,8 +26,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gtk-doc-pdf \
 	--disable-debug \
 	--enable-logging \
-	--enable-extras \
+	--disable-rule_generator \
+	--disable-hwdb \
+	--disable-udev_acl \
+	--disable-gudev \
 	--disable-introspection \
+	--disable-keymap \
+	--disable-floppy \
+	--disable-edd \
+	--disable-action_modeswitch \
 	--with-gnu-ld \
 	--with-rootlibdir=$(libdir) \
 	--without-selinux \
@@ -48,13 +56,11 @@ pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@rm -rf $(DESTDIR)$(sbindir)/udevadm
 	@rm -rf $(DESTDIR)$(sbindir)/udevd
-	@rm -rf $(DESTDIR)$(libdir)/libgudev-1.0.*
 	@rm -rf $(DESTDIR)$(libdir)/libudev.*
 	@rm -rf $(DESTDIR)$(libdir)/pkgconfig/libudev.pc
-	@rm -rf $(DESTDIR)$(libdir)/udev
+	@rm -rf $(DESTDIR)$(elibdir)/udev
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -rf $(DESTDIR)$(libdir)/libgudev-1.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libudev.la
 	@$(MAKECOOKIE)
