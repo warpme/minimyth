@@ -1,5 +1,5 @@
 GARNAME = libftdi
-GARVERSION = 0.18
+GARVERSION = 0.19
 CATEGORIES = lib
 MASTER_SITES = http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/
 DISTFILES = $(DISTNAME).tar.gz
