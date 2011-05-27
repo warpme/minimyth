@@ -1,9 +1,8 @@
 GARNAME = udev
-GARVERSION = 170
+GARVERSION = 171
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-configure.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -40,6 +39,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-selinux \
 	--with-firmware-path=$(elibdir)/firmware \
 	--without-systemdsystemunitdir \
+	--with-usb-ids-path=$(datadir)/usb.ids \
 	--with-pci-ids-path=$(datadir)/pci.ids
 
 include ../../gar.mk
