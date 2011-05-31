@@ -1,7 +1,7 @@
 diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefile
---- xvidcore-old/build/generic/Makefile	2011-01-11 03:37:52.000000000 -0800
-+++ xvidcore-new/build/generic/Makefile	2011-03-24 15:47:46.000000000 -0700
-@@ -45,6 +45,8 @@
+--- xvidcore-old/build/generic/Makefile	2011-05-19 01:27:26.000000000 -0700
++++ xvidcore-new/build/generic/Makefile	2011-05-31 16:32:58.000000000 -0700
+@@ -47,6 +47,8 @@
  
  RM = rm -rf
  
@@ -10,7 +10,7 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  ##############################################################################
  #
  # Build rules
-@@ -83,7 +85,7 @@
+@@ -85,7 +87,7 @@
  
  $(BUILD_DIR):
  	@echo "  D: $(BUILD_DIR)"
@@ -19,7 +19,7 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  
  #-----------------------------------------------------------------------------
  # Generic assembly rule
-@@ -91,8 +93,8 @@
+@@ -93,8 +95,8 @@
  
  .$(ASSEMBLY_EXTENSION).$(OBJECT_EXTENSION):
  	@echo "  A: $(@D)/$(<F)"
@@ -30,7 +30,7 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  
  #-----------------------------------------------------------------------------
  # Generic C rule
-@@ -102,8 +104,8 @@
+@@ -104,8 +106,8 @@
  
  .c.$(OBJECT_EXTENSION):
  	@echo "  C: $(@D)/$(<F)"
@@ -41,7 +41,16 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  
  #-----------------------------------------------------------------------------
  # Static Library
-@@ -130,9 +132,9 @@
+@@ -113,7 +115,7 @@
+ 
+ $(STATIC_LIB): $(BUILD_DIR) $(OBJECTS)
+ 	@echo "  L: $(@F)"
+-	@cd $(BUILD_DIR) && $(AR) rc $(@F) $(OBJECTS) && $(RANLIB) $(@F)
++	cd $(BUILD_DIR) && $(AR) rc $(@F) $(OBJECTS) && $(RANLIB) $(@F)
+ 
+ #-----------------------------------------------------------------------------
+ # Shared Library
+@@ -132,9 +134,9 @@
  
  $(SHARED_LIB): $(BUILD_DIR) $(OBJECTS)
  	@echo "  L: $(@F)"
@@ -54,7 +63,7 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  
  #-----------------------------------------------------------------------------
  # Installation
-@@ -140,15 +142,15 @@
+@@ -142,15 +144,15 @@
  
  install: $(BUILD_DIR)/$(STATIC_LIB) $(BUILD_DIR)/$(SHARED_LIB)
  	@echo "  D: $(libdir)"
@@ -75,7 +84,7 @@ diff -Naur xvidcore-old/build/generic/Makefile xvidcore-new/build/generic/Makefi
  
  #-----------------------------------------------------------------------------
  # Platorm specific file -- dumb rules for people executing make before
-@@ -170,23 +172,23 @@
+@@ -172,23 +174,23 @@
  
  clean:
  	@echo "  Cl: Build directory"
