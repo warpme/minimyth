@@ -1,5 +1,5 @@
 GARNAME = libva
-GARVERSION = 1.0.12
+GARVERSION = 1.0.13
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 #MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c xorg/xorg
+DEPENDS = lang/c lang/cxx xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
