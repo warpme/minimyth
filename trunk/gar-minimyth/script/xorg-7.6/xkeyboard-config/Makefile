@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.2.1
+GARVERSION = 2.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.x.org/releases/individual/data/$(GARNAME)/
 MASTER_SITES += http://xlibs.freedesktop.org/xkbdesc/
