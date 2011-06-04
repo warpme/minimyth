@@ -1,8 +1,9 @@
 GARNAME = module-init-tools
-GARVERSION = 3.13
+GARVERSION = 3.16
 CATEGORIES = utils
 MASTER_SITES = http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-disable_man.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -29,4 +30,6 @@ LDFLAGS := $(LDFLAGS) -fwhole-program
 pre-configure:
 	@touch $(WORKSRC)/*.5
 	@touch $(WORKSRC)/*.8
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
