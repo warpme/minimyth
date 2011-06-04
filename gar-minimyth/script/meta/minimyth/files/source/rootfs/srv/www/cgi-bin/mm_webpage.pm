@@ -46,7 +46,6 @@ sub page
     push(@page,  q(    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />));
     push(@page,  q(    <meta name="robots" content="index, follow" />));
     push(@page,  q(    <meta name="author" content="Paul Bender" />));
-    push(@page,  q(    <meta name="copyright" content="2006-2011 Paul Bender" />));
     push(@page,  q(    <meta name="keywords" content="MiniMyth,Linux,PVR,MythTV,diskless,Mini-ITX,EPIA,ION,VDPAU" />));
     push(@page,  q(    <meta name="description" content="" />));
     push(@page, qq(    <title>MiniMyth System $title</title>));
@@ -98,9 +97,13 @@ sub page
     push(@page,  q(              alt="Valid CSS3!" /></a>));
     push(@page,  q(        </div>));
     push(@page,  q(        <div class="version">));
-    push(@page,  q(          Last Updated on 2011-01-27));
-    push(@page,  q(          <br />));
+    push(@page,  q(          Last Updated on 2011-06-04));
+    push(@page,  q(        </div>));
+    push(@page,  q(        <div class="address">));
     push(@page,  q(          &#60;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&#62;));
+    push(@page,  q(        </div>));
+    push(@page,  q(        <div class="copyright">));
+    push(@page,  q(          &#169; 2006-2011 Paul Bender));
     push(@page,  q(        </div>));
     push(@page,  q(      </div>));
     push(@page,  q(    </div>));
