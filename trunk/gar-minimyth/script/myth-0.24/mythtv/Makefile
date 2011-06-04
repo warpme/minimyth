@@ -5,7 +5,6 @@ MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-v4l2.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-codec_id_svq3_fix.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-max_num_xvmc_surfaces_14.patch \
@@ -112,8 +111,7 @@ CONFIGURE_ARGS = \
 	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
-	--disable-v4l \
-	--enable-v4l2 \
+	--enable-v4l \
 	--enable-ivtv \
 	--enable-hdpvr \
 	--enable-dvb \
