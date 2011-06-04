@@ -5,13 +5,13 @@ MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-v4l2.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-codec_id_svq3_fix.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
+
+#	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
@@ -108,26 +108,25 @@ CONFIGURE_ARGS = \
 	--enable-audio-alsa \
 	--disable-audio-jack \
 	--disable-audio-pulseoutput \
-	--enable-ffmpeg-pthreads \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
 	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
-	--disable-v4l \
 	--enable-v4l2 \
 	--enable-ivtv \
 	--enable-hdpvr \
 	--enable-dvb \
 	--dvb-path="$(DESTDIR)$(includedir)" \
+	--disable-asi \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
 	--enable-vdpau \
-	--disable-dxva2 \
 	--disable-crystalhd \
+	--disable-dxva2 \
 	--enable-opengl-video \
 	--disable-quartz-video \
 	--disable-mac-bundle \
