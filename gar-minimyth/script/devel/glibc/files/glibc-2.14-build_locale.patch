@@ -1,0 +1,16 @@
+diff -Naur glibc-2.14-old/Makefile.in glibc-2.14-new/Makefile.in
+--- glibc-2.14-old/Makefile.in	2011-06-04 12:45:39.000000000 -0700
++++ glibc-2.14-new/Makefile.in	2011-06-04 12:46:17.000000000 -0700
+@@ -11,6 +11,12 @@
+ all .DEFAULT:
+ 	$(MAKE) -r PARALLELMFLAGS="$(PARALLELMFLAGS)" CVSOPTS="$(CVSOPTS)" -C $(srcdir) objdir=`pwd` $@
+ 
++lib:
++	$(MAKE) -r PARALLELMFLAGS="$(PARALLELMFLAGS)" CVSOPTS="$(CVSOPTS)" -C $(srcdir) objdir=`pwd` $@
++
++locale: lib
++	$(MAKE) -r PARALLELMFLAGS="$(PARALLELMFLAGS)" CVSOPTS="$(CVSOPTS)" -C $(srcdir)/locale objdir=`pwd`
++
+ install:
+ 	LANGUAGE=C LC_ALL=C; export LANGUAGE LC_ALL; \
+ 	$(MAKE) -r PARALLELMFLAGS="$(PARALLELMFLAGS)" CVSOPTS="$(CVSOPTS)" -C $(srcdir) objdir=`pwd` $@
