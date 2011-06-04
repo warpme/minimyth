@@ -10,6 +10,7 @@ define BLURB
 endef
 
 DEPENDS  = lang/c \
+	$(CATEGORY)/libpciaccess \
 	$(CATEGORY)/libpthread-stubs
 ifneq ($(DESTIMG),build)
 DEPENDS += system/udev
