@@ -46,6 +46,11 @@ CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
+# Fails to compile (for x86_64) with GCC 4.5.3's link time optimization.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
+
 # Copied from <http://cvs.fedoraproject.org/viewvc/devel/mysql/mysql.spec?revision=1.130&view=markup>.
 # MySQL 4.1.10 breaks with strict aliasing.
 CFLAGS   += -fno-strict-aliasing
