@@ -1,12 +1,15 @@
 GARNAME = lirc
-#GARVERSION = 0.9.0-pre1
-GARVERSION = 77c9429
+GARVERSION = 0.9.0
+#GARVERSION = 77c9429
 CATEGORIES = system
-#MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/LIRC/$(GARVERSION)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/LIRC/$(GARVERSION)/
 #MASTER_SITES = http://www.lirc.org/software/snapshots/
-MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
+#MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-disable_lirc_i2c.patch \
+	$(DISTNAME)-remove_smp_lock_h.patch \
+	$(DISTNAME)-bit_le_fix.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
 	$(DISTNAME)-input_map.patch.gar
 LICENSE = GPL2
@@ -50,7 +53,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
