@@ -1,5 +1,5 @@
 GARNAME = fakeroot
-GARVERSION = 1.15.1
+GARVERSION = 1.16
 CATEGORIES = devel
 MASTER_SITES = http://ftp.debian.org/debian/pool/main/f/$(GARNAME)/
 DISTFILES = $(GARNAME)_$(GARVERSION).orig.tar.bz2
