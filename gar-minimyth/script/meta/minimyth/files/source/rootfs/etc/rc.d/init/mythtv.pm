@@ -119,63 +119,6 @@ sub start
         }
     }
 
-    given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
-    {
-        when (/^(22|23)$/)
-        {
-            # Configure MythVideo DVD ripping.
-            # Since mythfrontend is run as user 'minimyth', mtd is run as user 'minimyth'.
-            # As a result, it is user 'minimyth' that must have the required read-write access.
-            my $dvd_rip_url        = $minimyth->var_get('MM_MEDIA_DVD_RIP_URL');
-            my $dvd_rip_mountpoint = $minimyth->var_get('MM_MEDIA_DVD_RIP_MOUNTPOINT');
-            if (($dvd_rip_url) && ($dvd_rip_mountpoint))
-            {
-                my $mtd       = $minimyth->application_path('mtd');
-                my $transcode = $minimyth->application_path('transcode');
-                if (! $mtd)
-                {
-                    $minimyth->message_output('err', "'mtd' not found.");
-                    return 0;
-                }
-                if (system(qq(/bin/su -c '/usr/bin/test ! -e $dvd_rip_mountpoint' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint' does not exist.");
-                    return 0;
-                }
-                if (system(qq(/bin/su -c '/usr/bin/test ! -d $dvd_rip_mountpoint' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint' is not a directory.");
-                    return 0;
-                }
-                if (system(qq(/bin/su -c '/usr/bin/test ! -w $dvd_rip_mountpoint' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint' is not writable by user 'minimyth'.");
-                    return 0;
-                }
-                system(qq(/bin/su -c '/bin/mkdir -p $dvd_rip_mountpoint/.mtd' - minimyth));
-                if (system(qq(/bin/su -c '/usr/bin/test ! -e $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' does not exist.");
-                    return 0;
-                }
-                if (system(qq(/bin/su -c '/usr/bin/test ! -d $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' is not a directory.");
-                    return 0;
-                }
-                if (system(qq(/bin/su -c '/usr/bin/test ! -w $dvd_rip_mountpoint/.mtd' - minimyth)) == 0)
-                {
-                    $minimyth->message_output('err', "'$dvd_rip_mountpoint/.mtd' is not writable by user 'minimyth'.");
-                    return 0;
-                }
-                $minimyth->mythdb_settings_set('DVDRipLocation', "$dvd_rip_mountpoint/.mtd");
-                $minimyth->mythdb_settings_set('TranscodeCommand', "$transcode");
-                system(qq(/bin/su -c '$mtd --daemon' - minimyth));
-            }
-        }
-    }
-
-    # Configure Myth database jumppoints to match MiniMyth.
     foreach (@{$minimyth->var_list({ 'filter' => 'MM_MYTHDB_JUMPPOINTS_.*' })})
     {
         if ($minimyth->var_get($_) =~ /^([^~]+)~([^~]*)$/)
@@ -325,8 +268,6 @@ sub stop
 {
     my $self     = shift;
     my $minimyth = shift;
-
-    $minimyth->application_stop('mtd');
 
     return 1;
 }

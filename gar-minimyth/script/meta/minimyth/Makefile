@@ -171,8 +171,6 @@ DEPENDS = \
 		mediaplayers/vlc) \
 	$(if $(filter xine,$(mm_SOFTWARE)), \
 		mediaplayers/xine-ui) \
-	$(if $(filter transcode,$(mm_SOFTWARE)), \
-		utils/transcode) \
 	$(if $(filter wiimote,$(mm_SOFTWARE)), \
 		utils/cwiid) \
 	$(if $(filter debug,$(mm_SOFTWARE)), \
