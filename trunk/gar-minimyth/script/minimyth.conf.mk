@@ -18,7 +18,7 @@ mm_VERSION_EXTRA          ?= $(strip \
                               )
 
 # Configuration file (minimyth.conf) version.
-mm_CONF_VERSION           ?= 57
+mm_CONF_VERSION           ?= 58
 
 #-------------------------------------------------------------------------------
 # Variables that you are likely to be override based on your environment.
@@ -44,8 +44,8 @@ mm_GRAPHICS               ?= intel \
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnetvision', 'mythnews', 'mythstream',
 # 'mythvideo', 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
-# 'mplayer-vld', 'vlc' 'xine', 'transcode', 'mame', 'bdremote', 'wiimote',
-# 'backend','python', 'debug'.
+# 'mplayer-vld', 'vlc' 'xine', 'mame', 'bdremote', 'wiimote', 'backend','python',
+# 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
                              mythgame \

@@ -150,7 +150,6 @@ mm-all:
 		   [ ! "$${software}" = "mplayer-vld"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \
-		   [ ! "$${software}" = "transcode"      ] && \
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "bdremote"       ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
