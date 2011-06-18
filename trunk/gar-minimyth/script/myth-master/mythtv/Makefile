@@ -10,8 +10,7 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
-
-#	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
@@ -43,6 +42,7 @@ DEPENDS = \
 	qt/qt4 \
 	system/lirc \
 	system/udev \
+	X11/libva \
 	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = \
@@ -83,6 +83,7 @@ CONFIGURE_ARGS = \
 	--as="$(CC)" \
 	--cc="$(CC)" \
 	--cxx="$(CXX)" \
+	--ld="$(CC)" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
@@ -95,7 +96,6 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--disable-proc-opt \
 	--disable-altivec \
 	--enable-amd3dnow \
 	--enable-amd3dnowext \
@@ -104,6 +104,7 @@ CONFIGURE_ARGS = \
 	--enable-sse \
 	--enable-ssse3 \
 	--enable-yasm \
+	--disable-proc-opt \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-jack \
@@ -126,6 +127,7 @@ CONFIGURE_ARGS = \
 	--enable-xv \
 	--enable-vdpau \
 	--disable-crystalhd \
+	--enable-vaapi \
 	--disable-dxva2 \
 	--enable-opengl-video \
 	--disable-quartz-video \
