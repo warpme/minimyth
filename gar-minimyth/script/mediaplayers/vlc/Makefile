@@ -17,6 +17,7 @@ DEPENDS = lang/c lang/cxx \
 	lib/ffmpeg \
 	lib/fontconfig \
 	lib/freetype \
+	lib/libass \
 	lib/libcdio \
 	lib/libdvdnav \
 	lib/libdvbpsi \
@@ -132,7 +133,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-fluidsynth \
 	--disable-zvbi \
 	--disable-telx \
-	--disable-libass \
+	--enable-libass \
 	--disable-asademux \
 	--disable-kate \
 	--disable-tiger \

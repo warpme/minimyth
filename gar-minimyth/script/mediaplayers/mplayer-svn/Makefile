@@ -13,8 +13,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
-BUILDDEPS = devel/yasm
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libass lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+BUILDDEPS = devel/yasm lib/libass
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -31,6 +31,7 @@ CONFIGURE_ARGS_DIR = \
 	--codecsdir="$(libdir)/codecs"
 # Optional features
 # --enable-fontconfig must be auto or cflags and libs will not be determined correctly.
+# --enable-ass must be auto or cflags and libs will not be determined correctly.
 # Support for external dvdread appears to be broken.
 CONFIGURE_ARGS_OPTIONAL = \
 	--disable-mencoder \
@@ -88,8 +89,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-vstream \
 	--enable-pthreads \
 	--disable-w32threads \
-	--enable-ass-internal \
-	--enable-ass \
+	--disable-ass-internal \
 	--disable-rpath
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.

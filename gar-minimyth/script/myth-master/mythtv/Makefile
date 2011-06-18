@@ -30,6 +30,7 @@ DEPENDS = \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
+	lib/libass \
 	lib/libavc1394 \
 	lib/libcdio \
 	lib/libiec61883 \
