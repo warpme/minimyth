@@ -42,7 +42,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--without-cloog \
 	--without-libelf \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR) \
-	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):$(strip $(if $(filter i386,$(GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))"
+	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):/lib/$(GARBUILD):/usr/lib/$(GARBUILD):$(strip $(if $(filter i386,$(GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))"
 
 GAR_EXTRA_CONF += devel/binutils/package-api.mk
 include ../../gar.mk

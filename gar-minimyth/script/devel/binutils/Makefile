@@ -56,11 +56,12 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 # I do not know what '=' does at the beginning of the path name. However, the correct libraries are not found without it.
 # For the native environment, glibc is not installed, so the native environment needs to pick up glibc from the system.
-# Libraries are located in /lib and /usr/lib. On some systems i386 libraries are located in /lib32 and /usr/lib32, and
-# on some systems x86_64 libraries are located in /lib64 and /usr/lib64.
+# Libraries are located in /lib and /usr/lib. On some systems (e.g. Ubuntu 11.04), some libraries (e.g. libc.so) are
+# located in /lib/$(GARBUILD) and /usr/lib/$(GARBUILD). On some systems, i386 libraries are located in /lib32 and /usr/lib32,
+# and on some systems x86_64 libraries are located in /lib64 and /usr/lib64.
 ifeq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 CONFIGURE_ARGS += \
-	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):$(strip $(if $(filter i386,$(GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))"
+	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir):/lib/$(GARBUILD):/usr/lib/$(GARBUILD):$(strip $(if $(filter i386,$(GARCH_FAMILY)),:/lib32:/usr/lib32:/lib:/usr/lib) $(if $(filter x86_64,$(GARCH_FAMILY)),:/lib64:/usr/lib64:/lib:/usr/lib))"
 else
 CONFIGURE_ARGS += \
 	--with-lib-path="=$($(CROSSIMG)_elibdir):=$($(CROSSIMG)_libdir)"
