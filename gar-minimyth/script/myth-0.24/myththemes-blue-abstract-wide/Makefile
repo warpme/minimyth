@@ -1,5 +1,5 @@
 GARNAME = myththemes-blue-abstract-wide
-GARVERSION = 1.4
+GARVERSION = 1.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = ftp://miroku.no-ip.com/
 DISTFILES = blue-abstract-wide_$(GARVERSION).tar.bz2
