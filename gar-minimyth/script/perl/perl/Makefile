@@ -94,7 +94,7 @@ PERL_config_sh_LINUX_VERSION=$(call PERL_config_sh_var,osvers)
 PERL_libpth := `$(CC) -print-search-dirs \
 	| grep '^libraries' \
 	| sed -e 's%^libraries: *%%' -e 's%:% %g' -e 's%=%%g' -e 's%//*%/%g' -e 's%/ % %g' -e 's%/$$%%' \
-	| sed -e 's%[^ ]*$(GARHOST)[^ ]*%%g'`
+	| sed -e 's%[^ ]*/lib/gcc/$(GARHOST)[^ ]*%%g'`
 
 pre-configure:
 	@ln -sf Configure $(WORKSRC)/configure
