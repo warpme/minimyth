@@ -39,43 +39,44 @@ FIX_LIBTOOL_HARDCODE = \
 # Libtool assumes a library search path that is wrong. sed line (1) fixes this.
 # Libtool assumes a library dlsearch path that is wrong. sed line (2) fixes this.
 FIX_LIBTOOL_LIBPATH = \
-	if [ "x$(strip $(1))" = "x" ] ; then                                                                                \
-		exit 1                                                                                                    ; \
-	fi                                                                                                                ; \
-	if [ ! -e $(strip $(1)) ] ; then                                                                                    \
-		exit 1                                                                                                    ; \
-	fi                                                                                                                ; \
-	if [ ! -f $(strip $(1)) ] && [ ! -d $(strip $(1)) ] ; then                                                          \
-		exit 1                                                                                                    ; \
-	fi                                                                                                                ; \
-	if [ -d $(strip $(1)) ] && [ "x$(strip $(2))" = "x" ] ; then                                                        \
-		exit 1                                                                                                    ; \
-	fi                                                                                                                ; \
-	file_name_list=''                                                                                                 ; \
-	if [ -f $(strip $(1)) ] ; then                                                                                      \
-		file_name_list=$(strip $(1))                                                                              ; \
-	fi                                                                                                                ; \
-	if [ -d $(strip $(1)) ] ; then                                                                                      \
-        	file_name_list=`find $(strip $(1)) -name $(strip $(2))`                                                   ; \
-	fi                                                                                                                ; \
-	if [ "x$${file_name_list}" = "x" ] ; then                                                                           \
-		exit 1                                                                                                    ; \
-	fi                                                                                                                ; \
-	libpath_l=`LANG=C $(CC) -print-search-dirs                                                                          \
-		| grep -e '^libraries:'                                                                                     \
-		| sed -e 's%^libraries: *%%' -e 's%=/%/%g' -e 's%:% %g'`                                                  ; \
-	libpath_l=`echo $${libpath_l} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                       ; \
-	libpath_r=""                                                                                                      ; \
-	libpath_r="$${libpath_r} $(elibdir)"                                                                              ; \
-	libpath_r="$${libpath_r} $(libdir)"                                                                               ; \
-	libpath_r="$${libpath_r} $(qt4libdir)"                                                                            ; \
-	libpath_r="$${libpath_r} $(libdir)/mysql"                                                                         ; \
-	libpath_r="$${libpath_r} $(if $(filter build+i386  ,$(DESTIMG)+$(GARCH_FAMILY)),/lib32 /usr/lib32 /lib /usr/lib)" ; \
-	libpath_r="$${libpath_r} $(if $(filter build+x86_64,$(DESTIMG)+$(GARCH_FAMILY)),/lib64 /usr/lib64 /lib /usr/lib)" ; \
-	libpath_r=`echo $${libpath_r} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                       ; \
-	for file_name in $${file_name_list} ; do                                                                            \
-		sed -i "s%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=\'$${libpath_l}\'%"     $${file_name}     ; \
-		sed -i "s%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=\'$${libpath_r}\'%" $${file_name}     ; \
+	if [ "x$(strip $(1))" = "x" ] ; then                                                                                      \
+		exit 1                                                                                                          ; \
+	fi                                                                                                                      ; \
+	if [ ! -e $(strip $(1)) ] ; then                                                                                          \
+		exit 1                                                                                                          ; \
+	fi                                                                                                                      ; \
+	if [ ! -f $(strip $(1)) ] && [ ! -d $(strip $(1)) ] ; then                                                                \
+		exit 1                                                                                                          ; \
+	fi                                                                                                                      ; \
+	if [ -d $(strip $(1)) ] && [ "x$(strip $(2))" = "x" ] ; then                                                              \
+		exit 1                                                                                                          ; \
+	fi                                                                                                                      ; \
+	file_name_list=''                                                                                                       ; \
+	if [ -f $(strip $(1)) ] ; then                                                                                            \
+		file_name_list=$(strip $(1))                                                                                    ; \
+	fi                                                                                                                      ; \
+	if [ -d $(strip $(1)) ] ; then                                                                                            \
+        	file_name_list=`find $(strip $(1)) -name $(strip $(2))`                                                         ; \
+	fi                                                                                                                      ; \
+	if [ "x$${file_name_list}" = "x" ] ; then                                                                                 \
+		exit 1                                                                                                          ; \
+	fi                                                                                                                      ; \
+	libpath_l=`LANG=C $(CC) -print-search-dirs                                                                                \
+		| grep -e '^libraries:'                                                                                           \
+		| sed -e 's%^libraries: *%%' -e 's%=/%/%g' -e 's%:% %g'`                                                        ; \
+	libpath_l=`echo $${libpath_l} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                             ; \
+	libpath_r=""                                                                                                            ; \
+	libpath_r="$${libpath_r} $(elibdir)"                                                                                    ; \
+	libpath_r="$${libpath_r} $(libdir)"                                                                                     ; \
+	libpath_r="$${libpath_r} $(qt4libdir)"                                                                                  ; \
+	libpath_r="$${libpath_r} $(libdir)/mysql"                                                                               ; \
+	libpath_r="$${libpath_r} $(if $(filter build       ,$(DESTIMG))                ,/lib/$(GARBUILD) /usr/lib/$(GARBUILD))" ; \
+	libpath_r="$${libpath_r} $(if $(filter build+i386  ,$(DESTIMG)+$(GARCH_FAMILY)),/lib32 /usr/lib32 /lib /usr/lib)"       ; \
+	libpath_r="$${libpath_r} $(if $(filter build+x86_64,$(DESTIMG)+$(GARCH_FAMILY)),/lib64 /usr/lib64 /lib /usr/lib)"       ; \
+	libpath_r=`echo $${libpath_r} | sed -e 's%  *% %g' -e 's%^ %%' -e 's% $$%%' -e 's%//*%/%g'`                             ; \
+	for file_name in $${file_name_list} ; do                                                                                  \
+		sed -i "s%^sys_lib_search_path_spec=.*%sys_lib_search_path_spec=\'$${libpath_l}\'%"     $${file_name}           ; \
+		sed -i "s%^sys_lib_dlsearch_path_spec=.*%sys_lib_dlsearch_path_spec=\'$${libpath_r}\'%" $${file_name}           ; \
 	done
 # $(call FIX_LIBTOOL,<file_name>)
 # $(call FIX_LIBTOOL,<dir_name>,<file_basename>)
