@@ -1,5 +1,5 @@
 GARNAME = freetype
-GARVERSION = 2.4.4
+GARVERSION = 2.4.5
 CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)2/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,15 +11,25 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/zlib
+DEPENDS = lang/c lib/zlib utils/bzip2
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-biarch-config \
+	--enable-mmap \
 	--enable-shared \
 	--disable-static \
+	--with-zlib \
+	--with-bzip2 \
+	--without-old-mac-fonts \
+	--without-fsspec \
+	--without-fsref \
+	--without-quickdraw-toolbox \
+	--without-quickdraw-carbon \
+	--without-ats \
 	--with-gnu-ld
 
 CONFIGURE_ENV  = \
