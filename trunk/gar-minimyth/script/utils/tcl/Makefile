@@ -1,5 +1,5 @@
 GARNAME = tcl
-GARVERSION = 8.5.9
+GARVERSION = 8.5.10
 CATEGORIES = utils
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/Tcl/$(GARVERSION)/
 DISTFILES = $(GARNAME)$(GARVERSION)-src.tar.gz
