@@ -143,7 +143,7 @@ unlink(qq($tmpfile_pciids_txt));
     my $vendor = q(1039);
     {
         my $driver= q(sis);
-        foreach my $product (qw(6325))
+        foreach my $product (qw(5315 6325))
         {
             $entries{qq($vendor.$product)} = $driver;
         }
