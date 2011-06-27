@@ -79,7 +79,7 @@ CONFIGURE_ARGS = \
 	-opengl \
 	-no-openvg \
 	-no-sm \
-	-no-xshape \
+	-xshape \
 	-no-xsync \
 	-xinerama \
 	-no-xcursor \
