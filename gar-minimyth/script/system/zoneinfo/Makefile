@@ -1,5 +1,5 @@
 GARNAME = zoneinfo
-GARVERSION = 2011g
+GARVERSION = 2011h
 CATEGORIES = system
 MASTER_SITES = ftp://elsie.nci.nih.gov/pub/
 DISTFILES = tzcode2011g.tar.gz tzdata$(GARVERSION).tar.gz
