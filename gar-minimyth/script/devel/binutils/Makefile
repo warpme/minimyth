@@ -5,8 +5,7 @@ MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 MASTER_SITES += ftp://sourceware.org/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-bug_12366.patch
-PATCHFILES += $(DISTNAME)-visibility.patch
+PATCHFILES  = $(DISTNAME)-visibility.patch
 PATCHFILES += $(DISTNAME)-multi_os_directory.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
