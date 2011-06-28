@@ -162,7 +162,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--enable-vm \
 	--enable-xinerama \
 	--enable-x11 \
-	--disable-xshape \
+	--enable-xshape \
 	--disable-fbdev \
 	--disable-mlib \
 	--disable-3dfx \
