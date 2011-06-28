@@ -177,7 +177,7 @@ CONFIGURE_ARGS_VIDEO = \
 	--enable-vm \
 	--enable-xinerama \
 	--enable-x11 \
-	--disable-xshape \
+	--enable-xshape \
 	--disable-xss \
 	--disable-fbdev \
 	--disable-mlib \
