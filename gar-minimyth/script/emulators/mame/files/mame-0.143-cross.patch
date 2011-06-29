@@ -1,7 +1,16 @@
-diff -Naur mame-0.142-old/makefile mame-0.142-new/makefile
---- mame-0.142-old/makefile	2011-04-06 07:40:16.000000000 -0700
-+++ mame-0.142-new/makefile	2011-04-06 07:41:02.000000000 -0700
-@@ -753,12 +753,12 @@
+diff -Naur mame-0.143-old/makefile mame-0.143-new/makefile
+--- mame-0.143-old/makefile	2011-06-29 06:06:57.000000000 -0700
++++ mame-0.143-new/makefile	2011-06-29 09:09:16.000000000 -0700
+@@ -674,7 +674,7 @@
+ # $(SRC)/emu, as well as all the OSD objects and anything in the $(OBJ) tree
+ depend: maketree $(MAKEDEP_TARGET)
+ 	@echo Rebuilding depend.mak...
+-	$(MAKEDEP) -I. $(INCPATH) -X$(SRC)/emu -X$(SRC)/osd/... -X$(OBJ)/... src/$(TARGET) > depend.mak
++	mame-makedep -I. $(INCPATH) -X$(SRC)/emu -X$(SRC)/osd/... -X$(OBJ)/... src/$(TARGET) > depend.mak
+ 
+ tools: maketree $(TOOLS)
+ 
+@@ -752,12 +752,12 @@
  
  $(OBJ)/%.lh: $(SRC)/%.lay $(FILE2STR_TARGET)
  	@echo Converting $<...
@@ -15,12 +24,21 @@ diff -Naur mame-0.142-old/makefile mame-0.142-new/makefile
 +	@mame-png2bdc $< $(OBJ)/temp.bdc
 +	@mame-file2str $(OBJ)/temp.bdc $@ font_$(basename $(notdir $<)) UINT8
  
+ $(DRIVLISTOBJ): $(DRIVLISTSRC)
+ 	@echo Compiling $<...
+@@ -765,7 +765,7 @@
+ 
+ $(DRIVLISTSRC): $(SRC)/$(TARGET)/$(SUBTARGET).lst $(MAKELIST_TARGET)
+ 	@echo Building driver list $<...
+-	@$(MAKELIST) $< >$@
++	@mame-makelist $< >$@
+ 
  $(OBJ)/%.a:
  	@echo Archiving $@...
-diff -Naur mame-0.142-old/src/emu/cpu/cpu.mak mame-0.142-new/src/emu/cpu/cpu.mak
---- mame-0.142-old/src/emu/cpu/cpu.mak	2011-04-06 07:40:16.000000000 -0700
-+++ mame-0.142-new/src/emu/cpu/cpu.mak	2011-04-06 07:41:02.000000000 -0700
-@@ -1052,7 +1052,7 @@
+diff -Naur mame-0.143-old/src/emu/cpu/cpu.mak mame-0.143-new/src/emu/cpu/cpu.mak
+--- mame-0.143-old/src/emu/cpu/cpu.mak	2011-06-29 06:06:44.000000000 -0700
++++ mame-0.143-new/src/emu/cpu/cpu.mak	2011-06-29 06:07:25.000000000 -0700
+@@ -1078,7 +1078,7 @@
  # rule to generate the C files
  $(CPUOBJ)/m68000/m68kops.c: $(M68KMAKE) $(CPUSRC)/m68000/m68k_in.c
  	@echo Generating M68K source files...
@@ -29,7 +47,7 @@ diff -Naur mame-0.142-old/src/emu/cpu/cpu.mak mame-0.142-new/src/emu/cpu/cpu.mak
  
  # rule to build the generator
  ifneq ($(CROSS_BUILD),1)
-@@ -1652,7 +1652,7 @@
+@@ -1678,7 +1678,7 @@
  # rule to generate the C file
  $(CPUOBJ)/tms57002/tms57002.inc: $(TMSMAKE) $(CPUSRC)/tms57002/tmsinstr.lst
  	@echo Generating TMS57002 source file...
