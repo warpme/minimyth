@@ -4,7 +4,7 @@ CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-cross.patch
-LICENSE = LGPL2_1
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
@@ -25,6 +25,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-uuid \
 	--enable-mount \
 	--disable-tirpc \
+	--disable-ipv6 \
+	--disable-mountconfig \
+	--disable-caps \
+	--enable-largefile \
 	--enable-shared \
 	--disable-static \
 	--without-tcp-wrappers \
@@ -42,8 +46,4 @@ include ../../gar.mk
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(MAKECOOKIE)
-
-x-post-install:
-	@chmod 755 $(DESTDIR)$(esbindir)/mount.nfs
 	@$(MAKECOOKIE)
