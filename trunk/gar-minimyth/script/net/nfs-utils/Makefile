@@ -3,18 +3,18 @@ GARVERSION = 1.2.3
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-cross.patch
+PATCHFILES = $(DISTNAME)-dash.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx utils/util-linux
+DEPENDS = lang/c lang/cxx net/libtirpc utils/util-linux
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+BUILD_SCRIPTS     = $(WORKSRC)/support/Makefile $(WORKSRC)/utils/mount/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/utils/mount/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-nfsv3 \
@@ -24,13 +24,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-kprefix \
 	--enable-uuid \
 	--enable-mount \
-	--disable-tirpc \
+	--enable-tirpc \
 	--disable-ipv6 \
 	--disable-mountconfig \
 	--disable-caps \
 	--enable-largefile \
 	--enable-shared \
 	--disable-static \
+	--with-tirpcinclude=$(DESTDIR)$(includedir)/tirpc \
 	--without-tcp-wrappers \
 	--with-gnu-ld \
 	--without-krb5
