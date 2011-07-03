@@ -10,11 +10,12 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx net/libtirpc utils/util-linux
+DEPENDS   = lang/c lang/cxx net/libtirpc utils/util-linux
+BUILDDEPS = devel/glibc-rpcgen-static
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
-BUILD_SCRIPTS     = $(WORKSRC)/support/Makefile $(WORKSRC)/utils/mount/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/utils/mount/Makefile
+BUILD_SCRIPTS     = $(WORKSRC)/support/Makefile $(WORKSRC)/utils/Makefile $(WORKSRC)/utils/mount/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/support/Makefile $(WORKSRC)/utils/mount/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-nfsv3 \
@@ -32,6 +33,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--with-tirpcinclude=$(DESTDIR)$(includedir)/tirpc \
+	--with-rpcgen=$(build_DESTDIR)$(build_bindir)/rpcgen-static \
 	--without-tcp-wrappers \
 	--with-gnu-ld \
 	--without-krb5

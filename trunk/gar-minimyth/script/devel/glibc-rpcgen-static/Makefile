@@ -1,23 +1,15 @@
-GARNAME = glibc
+GARNAME = glibc-rpcgen-static
 GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
-MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
-MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-select_fd_type.patch $(DISTNAME)-__i686.patch $(DISTNAME)-build_lib.patch $(DISTNAME)-build_locale.patch $(DISTNAME)-build_sunrpc.patch $(DISTNAME)-perl.patch.gar $(DISTNAME).patch $(DISTNAME)-ldd.patch
+SOURCEPKG = devel/glibc
+PATCHFILES += glibc-$(GARVERSION)-rpcgen_static.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
 endef
 
-ifeq ($(DESTIMG),build)
-DEPENDS   = lang/c
-BUILDDEPS = devel/binutils devel/gcc
-else
-DEPENDS   = lang/c kernel-headers/linux-headers devel/glibc-headers
-BUILDDEPS = devel/binutils devel/gcc-minimal-shared
-endif
+DEPENDS = lang/c
 
 # If this is the build image and the system is using linuxthreads, then we need to use linux threads.
 # Otherwise, the build packages will not compile and run correctly.
@@ -28,20 +20,21 @@ use_linuxthreads = yes
 endif
 endif
 
+WORKSRC = $(WORKDIR)/glibc-$(GARVERSION)
 WORKBLD = $(WORKSRC)_build
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
-INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
+INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-bind-now \
-	--enable-kernel=2.6.39 \
+	--enable-static-nss \
+	--enable-kernel=2.6.9 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
 	--with-elf \
-	--with-headers=$(DESTDIR)$(includedir) \
 	--cache-file=config.cache
 ifeq ($(use_linuxthreads),yes)
 CONFIGURE_ARGS += \
@@ -54,12 +47,14 @@ CONFIGURE_ARGS += \
 	--with-tls \
 	--with-__thread
 endif
+BUILD_ARGS      = \
+	sunrpc
 INSTALL_ARGS    = \
-	install_root=$(DESTDIR)
+	sunrpc
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
-
+ 
 # Fails to compile using the gold linker.
 CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
@@ -85,6 +80,8 @@ configure-custom:
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
 	@$(MAKECOOKIE)
 
-post-install:
-	@cd $(DESTDIR)$(datadir)/i18n/charmaps ; gzip -d *.gz
-	@$(MAKECOOKIE)
+install-custom:
+	@mkdir -p $(build_DESTDIR)/$(build_bindir)
+	@rm -f $(build_DESTDIR)/$(build_bindir)/rpcgen-static
+	@cp $(WORKBLD)/sunrpc/rpcgen $(build_DESTDIR)/$(build_bindir)/rpcgen-static
+	@chmod 0755 $(build_DESTDIR)/$(build_bindir)/rpcgen-static

@@ -19,7 +19,7 @@ sub start
     system(qq(/sbin/ifconfig lo 127.0.0.1 up));
 
     # Start portmap on the local netowrk interface.
-    system(qq(/sbin/portmap -l));
+    system(qq(/usr/bin/rpcbind -h 127.0.0.1));
 
     return 1;
 }
@@ -32,7 +32,7 @@ sub stop
     $minimyth->message_output('info', "stopping loopback network interface ...");
 
     # Stop portmap on the local network interface.
-    $minimyth->application_stop('portmap');
+    $minimyth->application_stop('rpcbind');
 
     # Bring down the loopback network interface.
     system(qq(/sbin/ifconfig lo 0 down));
