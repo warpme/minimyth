@@ -56,6 +56,7 @@ DEPENDS = \
 	net/nfs-utils \
 	net/ntp \
 	net/openssh \
+	net/rpcbind \
 	utils/pciutils \
 	perl/perl \
 	perl/perl-Class-Inspector \
@@ -65,7 +66,6 @@ DEPENDS = \
 	perl/perl-RFLibs \
 	perl/perl-Regexp-Wildcards \
 	utils/pmount \
-	net/portmap \
 	system/powernowd \
 	utils/procps \
 	python/python \
