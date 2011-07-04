@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c
+DEPENDS = lang/c net/libtirpc
 
 WORKSRC = $(WORKDIR)/$(GARNAME)_$(GARVERSION)/$(GARNAME)_$(GARVERSION)_src
 
@@ -30,7 +30,7 @@ CONFIGURE_ENV = \
 	LSOF_VSTR="$(LSOF_VSTR)" \
 	LSOF_INCLUDE="$(LSOF_INCLUDE)"
 
-GAR_EXTRA_CONF += kernel-2.6.23/linux/package-api.mk devel/glibc/package-api.mk
+GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
 LINUX_CLIB   := $(strip $(shell \
@@ -42,11 +42,11 @@ LINUX_CLIB   := $(strip $(shell \
 		echo "-DGLIBCV=$${major}$${minor}"                                 ; \
         fi                                                                           ))
 LSOF_AR      := $(AR) cr
-LSOF_CC      := $(CC)
+LSOF_CC      := $(CC) -I$(DESTDIR)$(includedir)/tirpc -ltirpc $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 LSOF_CCV     := $(strip $(shell PATH="$(PATH)" LANG=C $(CC) -v 2>&1 | sed -n 's/.*version \(.*\)/\1/p'))
 LSOF_INCLUDE := $(DESTDIR)$(includedir)
 LSOF_RANLIB  := $(RANLIB) \$${LIB}
-LSOF_VSTR    := $(LINUX_VERSION)
+LSOF_VSTR    := 2.6.39
 
 extract-$(GARNAME)_$(GARVERSION).tar.bz2:
 	@echo " ==> Extracting $(DOWNLOADDIR)/$(GARNAME)_$(GARVERSION).tar.bz2"
