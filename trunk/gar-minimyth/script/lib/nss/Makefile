@@ -1,5 +1,5 @@
 GARNAME = nss
-GARVERSION = 3.12.10
+GARVERSION = $(NSS_VERSION)
 CATEGORIES = lib
 MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_10_RTM/src/
 DISTFILES = $(DISTNAME).tar.gz

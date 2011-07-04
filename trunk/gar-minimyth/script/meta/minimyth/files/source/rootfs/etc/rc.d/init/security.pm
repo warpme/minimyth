@@ -39,13 +39,13 @@ sub start
             '/home/minimyth');
     }
 
-    if (-e '/etc/ssl/certs/ca-bundle.crt')
+    if (-e '/etc/pki/tls/certs/ca-bundle.crt')
     {
         # Set permissions.
-        chmod(0644, '/etc/ssl/certs/ca-bundle.crt');
+        chmod(0644, '/etc/pki/tls/certs/ca-bundle.crt');
         # Link to the default name.
-        unlink('/etc/ssl/cert.pem');
-        symlink('/etc/ssl/certs/ca-bundle.crt', '/etc/ssl/cert.pem');
+        unlink('/etc/pki/tls/cert.pem');
+        symlink('/etc/pki/tls/certs/ca-bundle.crt', '/etc/pki/tls/cert.pem');
     }
 
     if (-e '/etc/cifs/credentials_cifs')

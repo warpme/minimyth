@@ -21,7 +21,7 @@ CONFIGURE_ARGS = \
 	--prefix=$(prefix) \
 	--libdir=$(patsubst $(prefix)/%,%,$(libdir)) \
 	--install_prefix=$(DESTDIR) \
-	--openssldir=$(sysconfdir)/ssl \
+	--openssldir=$(sysconfdir)/pki/tls \
 	shared \
 	no-krb5 \
 	zlib \
