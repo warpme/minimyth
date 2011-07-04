@@ -61,7 +61,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-gnutls \
 	--without-polarssl \
 	--without-nss \
-	--with-ca-bundle="$(sysconfdir)/ssl/certs/ca-bundle.crt" \
+	--with-ca-bundle="$(sysconfdir)/pki/tls/certs/ca-bundle.crt" \
 	--without-ca-path \
 	--without-libssh2 \
 	--with-librtmp \

@@ -19,6 +19,7 @@ DEPENDS = \
 	utils/alsa-utils \
 	system/bdremote-ng \
 	utils/busybox \
+	data/ca-bundle.crt \
 	net/curl \
 	disk/e2fsprogs \
 	disk/eject \
