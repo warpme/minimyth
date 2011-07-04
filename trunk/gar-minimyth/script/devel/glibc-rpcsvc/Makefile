@@ -38,5 +38,5 @@ install-locale:
 	 for rpcsvc_input_file in $${rpcsvc_input_list} ; do \
 		echo "creating $(DESTDIR)$(includedir)/rpcsvc/$${rpcsvc_input_file}.h" ; \
 		rm -f $(DESTDIR)$(includedir)/rpcsvc/$${rpcsvc_input_file}.h ; \
-		CPP="$(CC) -E -x c-header" $(build_DESTDIR)$(build_bindir)/rpcgen -Y $(WORKSRC)/scripts -h $(WORKSRC)/sunrpc/rpcsvc/$${rpcsvc_input_file}.x -o $(DESTDIR)$(includedir)/rpcsvc/$${rpcsvc_input_file}.h ; \
+		CPP="$(CC) -E -x c-header" $(build_DESTDIR)$(build_bindir)/rpcgen-static -Y $(WORKSRC)/scripts -h $(WORKSRC)/sunrpc/rpcsvc/$${rpcsvc_input_file}.x -o $(DESTDIR)$(includedir)/rpcsvc/$${rpcsvc_input_file}.h ; \
 	 done
