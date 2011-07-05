@@ -58,7 +58,7 @@ foreach my $type (@type_name)
         push(@middle,  q(      <ul>));
         if (opendir(SOFTWAREDIR, "/srv/www/software/$type/versions"))
         {
-            foreach my $software (grep((! /^\./) && (! /^minimyth$/) && (! /^minimyth.conf.mk$/), (readdir(SOFTWAREDIR))))
+            foreach my $software (sort({uc($a) cmp uc($b)} grep((! /^\./) && (! /^minimyth$/) && (! /^minimyth.conf.mk$/), (readdir(SOFTWAREDIR)))))
             {
                 my $version = '';
                 if (open(FILE, '<', "/srv/www/software/$type/versions/$software"))
