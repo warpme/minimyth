@@ -17,12 +17,12 @@ $var_list{'MM_WIIMOTE_ADDRESS_0'} =
 {
     prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
     value_default  => '',
-    value_extra    => sub
+    extra          => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        if (($minimyth->var_get($name) ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
         {
             $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
             return 0;
@@ -34,12 +34,12 @@ $var_list{'MM_WIIMOTE_ADDRESS_1'} =
 {
     prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
     value_default  => '',
-    value_extra    => sub
+    extra          => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        if (($minimyth->var_get($name) ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
         {
             $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
             return 0;
@@ -51,12 +51,12 @@ $var_list{'MM_WIIMOTE_ADDRESS_2'} =
 {
     prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
     value_default  => '',
-    value_extra    => sub
+    extra          => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        if (($minimyth->var_get($name) ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
         {
             $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
             return 0;
@@ -68,12 +68,12 @@ $var_list{'MM_WIIMOTE_ADDRESS_3'} =
 {
     prerequisite   => ['MM_BLUETOOTH_DEVICE_LIST'],
     value_default  => '',
-    value_extra    => sub
+    extra          => sub
     {
         my $minimyth = shift;
         my $name     = shift;
 
-        if (($name ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
+        if (($minimyth->var_get($name) ne '') && ($minimyth->var_get('MM_BLUETOOTH_DEVICE_LIST') eq ''))
         {
             $minimyth->message_output('err', qq($name is non-empty while MM_BLUETOOTH_DEVICE_LIST is empty));
             return 0;
