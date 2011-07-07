@@ -49,7 +49,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gdktarget=x11 \
 	--with-x
 
-CONFIGURE_ENV  =
+CONFIGURE_ENV  = \
+	DB2HTML="false"
 ifneq ($(DESTIMG),build)
 CONFIGURE_ENV += \
 	GTK_UPDATE_ICON_CACHE=$(build_DESTDIR)$(build_bindir)/gtk-update-icon-cache
