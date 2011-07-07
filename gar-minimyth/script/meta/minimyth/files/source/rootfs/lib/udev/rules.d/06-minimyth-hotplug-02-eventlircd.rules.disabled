@@ -15,8 +15,8 @@ GOTO="end-conf"
 LABEL="begin-conf"
 ENV{eventlircd_enable}="true"
 ENV{eventlircd_evmap}="default.evmap"
-GOTO="begin-generic"
 LABEL="end-conf"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
 
 # The device is a USB based input event device.
 # If eventlircd has an evmap file for it, then it will take ownership of it.
@@ -27,8 +27,29 @@ ENV{ID_USB_INTERFACES}=="", IMPORT{program}="usb_id --export %p"
 PROGRAM="eventlircd_helper 03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap", \
   ENV{eventlircd_enable}="true", \
   ENV{eventlircd_evmap}="03_$env{ID_VENDOR_ID}_$env{ID_MODEL_ID}.evmap"
-GOTO="begin-generic"
 LABEL="end-usb"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
+
+# The device is an rc created input event device.
+# Therefore, eventlircd will take ownership of it.
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="rc", GOTO="begin-rc"
+GOTO="end-rc"
+LABEL="begin-rc"
+ENV{eventlircd_enable}="true"
+ENV{eventlircd_evmap}="default.evmap"
+LABEL="end-rc"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
+
+# The device is an ATI remote input event device.
+# Therefore, eventlircd will take ownership of it.
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", DRIVERS=="ati_remote" , GOTO="begin-ati"
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", DRIVERS=="ati_remote2", GOTO="begin-ati"
+GOTO="end-ati"
+LABEL="begin-ati"
+ENV{eventlircd_enable}="true"
+ENV{eventlircd_evmap}="default.evmap"
+LABEL="end-ati"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
 
 # Device is an lircd created input event device.
 # Therefore, eventlircd will take ownership of it.
@@ -37,8 +58,8 @@ GOTO="end-lircd"
 LABEL="begin-lircd"
 ENV{eventlircd_enable}="true"
 ENV{eventlircd_evmap}="lircd.evmap"
-GOTO="begin-generic"
 LABEL="end-lircd"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
 
 # The device is an bdremoteng created input event device.
 # Therefore, eventlircd will take ownership of it.
@@ -47,8 +68,8 @@ GOTO="end-bdremoteng"
 LABEL="begin-bdremoteng"
 ENV{eventlircd_enable}="true"
 ENV{eventlircd_evmap}="bdremoteng.evmap"
-GOTO="begin-generic"
 LABEL="end-bdremoteng"
+ENV{eventlircd_enable}=="true", GOTO="begin-generic"
 
 LABEL="begin-generic"
 

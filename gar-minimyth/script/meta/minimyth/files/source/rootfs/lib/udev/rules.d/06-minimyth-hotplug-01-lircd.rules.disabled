@@ -12,17 +12,18 @@ GOTO="end-conf"
 LABEL="begin-conf"
 ENV{lircd_driver}="@MM_LIRC_DRIVER@"
 ENV{lircd_conf}="/etc/lirc/lircd.conf"
-GOTO="begin-generic"
 LABEL="end-conf"
+ENV{lircd_driver}!="", GOTO="begin-generic"
 
 # Devices that are handled by LIRC kernel drivers.
+KERNEL=="lirc[0-9]*", SUBSYSTEM=="lirc", SUBSYSTEMS=="rc", GOTO="end-lirc"
 KERNEL=="lirc[0-9]*", SUBSYSTEM=="lirc", GOTO="begin-lirc"
 GOTO="end-lirc"
 LABEL="begin-lirc"
 ENV{lircd_driver}="default"
 ENV{lircd_conf}="/etc/lirc/lircd.conf"
-GOTO="begin-generic"
 LABEL="end-lirc"
+ENV{lircd_driver}!="", GOTO="begin-generic"
 
 # Devices that are USB HID devices, are not treated as input event devices and are not handled by LIRC kernel drivers.
 KERNEL=="hiddev[0-9]*", SUBSYSTEM=="usb", GOTO="begin-usb"
@@ -32,8 +33,8 @@ ENV{ID_USB_INTERFACES}=="", IMPORT{program}="usb_id --export %p"
 ENV{ID_VENDOR_ID}=="0fe9", ENV{ID_MODEL_ID}=="9010", \
   ENV{lircd_driver}="dvico", \
   ENV{lircd_conf}="/etc/lirc/lircd.conf"
-GOTO="begin-generic"
 LABEL="end-usb"
+ENV{lircd_driver}!="", GOTO="begin-generic"
 
 LABEL="begin-generic"
 
