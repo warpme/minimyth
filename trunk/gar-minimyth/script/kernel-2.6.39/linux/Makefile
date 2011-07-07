@@ -8,7 +8,6 @@ DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-ati_remote.patch
-PATCHFILES += $(DISTNAME)-kfifo.patch
 PATCHFILES += $(DISTNAME)-input_io_nr_type.patch
 PATCHFILES += $(DISTNAME)-posix_types_fd_type.patch
 PATCHFILES += $(DISTNAME)-r8168_8.024.00.patch

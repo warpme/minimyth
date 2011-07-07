@@ -11,6 +11,7 @@ PATCHFILES = \
 	$(DISTNAME)-disable_lirc_i2c.patch \
 	$(DISTNAME)-remove_smp_lock_h.patch \
 	$(DISTNAME)-bit_le_fix.patch \
+	$(DISTNAME)-kfifo_fix.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
 	$(DISTNAME)-input_map.patch.gar
 LICENSE = GPL2
