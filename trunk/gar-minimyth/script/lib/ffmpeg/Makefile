@@ -1,11 +1,10 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = e65d6e2
+GARVERSION = 5d1b39f
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-uint64_c.patch $(DISTNAME)-libswscale_symbol_export.patch
 PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
 LICENSE = GPL2/LGPL2_1
 
@@ -107,6 +106,7 @@ CONFIGURE_ARGS = \
 	--disable-libx264 \
 	--disable-libxavs \
 	--disable-libxvid \
+	--disable-openal \
 	--disable-mlib \
 	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
