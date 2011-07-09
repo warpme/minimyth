@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-BUILD_DEPS = lib/openssl perl/perl
+BUILDDEPS = lib/openssl perl/perl
 
 WORKSRC = $(WORKDIR)/nss-$(GARVERSION)
 
