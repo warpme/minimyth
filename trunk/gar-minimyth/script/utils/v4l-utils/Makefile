@@ -3,7 +3,7 @@ GARVERSION = 0.8.4
 CATEGORIES = utils
 MASTER_SITES = http://linuxtv.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES =
+PATCHFILES = $(DISTNAME)-ir_keytable_fixes.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
