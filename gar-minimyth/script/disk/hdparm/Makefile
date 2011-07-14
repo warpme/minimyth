@@ -30,4 +30,6 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
-LDFLAGS := $(CFLAGS) $(LDFLAGS) -fwhole-program
+LDFLAGS := $(LDFLAGS) -fwhole-program
+
+LDFLAGS := $(CFLAGS) $(LDFLAGS)
