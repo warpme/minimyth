@@ -20,7 +20,7 @@ INSTALL_SCRIPTS = $(WORKSRC)/squashfs-tools/Makefile
 
 include ../../gar.mk
 
-LDFLAGS += -fwhole-program
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 cvs//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_CVS, $*, $(GARNAME), $(GARVERSION), $(DISTNAME))
