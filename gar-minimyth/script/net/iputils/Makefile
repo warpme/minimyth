@@ -22,7 +22,7 @@ BUILD_ARGS   = \
 
 include ../../gar.mk
 
-LDFLAGS += -fwhole-program
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(ebindir)
