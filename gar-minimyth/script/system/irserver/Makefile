@@ -1,5 +1,5 @@
 GARNAME = irserver
-GARVERSION = 20110712
+GARVERSION = 20110713
 CATEGORIES = system
 # This site lacks a version number so we will download it from www.minimyth.org.
 #MASTER_SITES = http://www.irtrans.de/download/Server/Linux/
