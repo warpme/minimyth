@@ -12,11 +12,11 @@ define BLURB
 endef
 
 ifeq ($(DESTIMG),build)
-DEPENDS   = lang/c
-BUILDDEPS = devel/binutils devel/gcc
+#DEPENDS   = lang/c
+#BUILDDEPS = devel/binutils devel/gcc
 else
-DEPENDS   = lang/c kernel-headers/linux-headers devel/glibc-headers
-BUILDDEPS = devel/binutils devel/gcc-minimal-shared
+#DEPENDS   = lang/c kernel-headers/linux-headers devel/glibc-headers
+#BUILDDEPS = devel/binutils devel/gcc-minimal-shared
 endif
 
 # If this is the build image and the system is using linuxthreads, then we need to use linux threads.
@@ -86,5 +86,5 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
-	@cd $(DESTDIR)$(datadir)/i18n/charmaps ; gzip -d *.gz
+	@cd $(DESTDIR)$(datadir)/i18n/charmaps ; gzip -df *.gz
 	@$(MAKECOOKIE)
