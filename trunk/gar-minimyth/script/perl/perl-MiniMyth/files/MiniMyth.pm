@@ -1910,7 +1910,6 @@ sub flash_fetch_and_save
         # 11.0 beta 1.
         $flash_url = q(http://download.macromedia.com/pub/labs/flashplatformruntimes/flashplayer11/flashplayer11_b1_install_lin_64_071311.tar.gz);
     }
-    }
     else
     {
         $self->message_log('err', qq(failed to create Adobe Flash player file because could not determine required file format.));
