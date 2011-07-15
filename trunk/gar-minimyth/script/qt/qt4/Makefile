@@ -34,7 +34,7 @@ CONFIGURE_ARGS = \
 	-sysconfdir $(DESTDIR)$(qt4libdir)/settings \
 	-examplesdir $(DESTDIR)$(qt4prefix)/examples \
 	-demosdir $(DESTDIR)$(qt4prefix)/demos \
-	$(if $(filter yes,$(mm_DEBUG)),-debug,-release) \
+	-release \
 	-opensource \
 	-shared \
 	-no-fast \
@@ -72,7 +72,7 @@ CONFIGURE_ARGS = \
 	-iconv \
 	-no-pch \
 	-dbus-linked \
-	-no-separate-debug-info \
+	-separate-debug-info \
 	-no-gtkstyle \
 	-no-nas-sound \
 	-no-egl \
