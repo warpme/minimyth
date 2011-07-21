@@ -1,11 +1,14 @@
 GARNAME = Mesa
-GARVERSION = 7.10.3
+GARVERSION = 7.11-rc2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
-MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(word 1,$(subst -, ,$(GARVERSION)))/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-llvmpipe_ld.patch $(DISTNAME)-llvm_so.patch $(DISTNAME)-libdrm_nouveau.patch $(DISTNAME)-__atom.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-llvm_so.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-version.patch
+ifneq ($(DESTIMG),build)
+PATCHFILES += $(DISTNAME)-cross.patch
+endif
 LICENSE = LGPL2/MIT
 
 DESCRIPTION = 
@@ -29,7 +32,7 @@ DEPENDS    = lang/c lang/cxx devel/llvm lib/expat \
 ifneq ($(DESTIMG),build)
 DEPENDS   += system/udev
 endif
-BUILDDEPS  = lib/libxml2 \
+BUILDDEPS  = lib/libxml2 python/python \
 	$(CATEGORY)/makedepend
 ifneq ($(DESTIMG),build)
 BUILDDEPS += $(CATEGORY)/Mesa
@@ -41,25 +44,33 @@ CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 CONFIGURE_SCRIPTS  = $(WORKSRC)/configure
 BUILD_SCRIPTS      = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS    = $(WORKSRC)/Makefile source
+ifeq ($(DESTIMG),build)
+INSTALL_SCRIPTS   += cross
+endif
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
-	--enable-shared \
 	--disable-static \
-	--enable-xcb \
+	--enable-shared \
+	--disable-texture-float \
+	--disable-selinux \
+	--enable-opengl \
+	--disable-gles1 \
+	--disable-gles2 \
+	--disable-openvg \
+	--disable-xorg \
+	--disable-d3d1x \
 	--disable-egl \
-	--enable-gallium \
+	--disable-gbm \
 	--disable-gallium-egl \
+	--disable-gallium-gbm \
+	--disable-shared-glapi \
+	--enable-xcb \
+	--enable-shared-dricore \
+	--disable-egl \
 	--enable-gallium-llvm \
-	--enable-gallium-svga \
-	--enable-gallium-i915 \
-	--enable-gallium-i965 \
-	--enable-gallium-radeon \
-	--enable-gallium-r600 \
-	--enable-gallium-nouveau \
-	--enable-gallium-swrast \
-	--disable-gallium-noop \
+	--with-gallium-drivers="i915,i965,nouveau,r300,r600,svga,swrast" \
 	--with-driver="dri" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
@@ -100,4 +111,9 @@ install-source:
 	@mkdir -p $(DESTDIR)$(sourcedir)
 	@rm -f $(DESTDIR)$(sourcedir)/Mesa
 	@ln -sf $(PWD)/$(WORKSRC) $(DESTDIR)$(sourcedir)/Mesa
+	@$(MAKECOOKIE)
+
+install-cross:
+	@mkdir -p $(DESTDIR)$(bindir)
+	@cp -f $(WORKSRC)/src/glsl/builtin_compiler $(DESTDIR)$(bindir)/mesa-builtin_compiler
 	@$(MAKECOOKIE)
