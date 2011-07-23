@@ -166,18 +166,18 @@ mm-all:
 		fi ; \
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"
-	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "2.6.39" ] ; then \
+	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "3.0" ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION=\"$(mm_KERNEL_HEADERS_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@echo "    mm_KERNEL_VERSION"
-	@if [ ! "$(mm_KERNEL_VERSION)" = "2.6.39" ] ; then \
+	@if [ ! "$(mm_KERNEL_VERSION)" = "3.0" ] ; then \
 		echo "error: mm_KERNEL_VERSION=\"$(mm_KERNEL_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@echo "    mm_KERNEL_VERSION >= mm_KERNEL_HEADERS_VERSION"
-	@if [ `echo ${mm_KERNEL_HEADERS_VERSION} | sed 's%2\.6\.\(.*\)%\1%'` -gt \
-	      `echo ${mm_KERNEL_VERSION}         | sed 's%2\.6\.\(.*\)%\1%'`     ] ; then \
+	@if [ `echo ${mm_KERNEL_HEADERS_VERSION} | sed 's%3\.\(.*\)%\1%'` -gt \
+	      `echo ${mm_KERNEL_VERSION}         | sed 's%3\.\(.*\)%\1%'`     ] ; then \
 		echo "error: mm_KERNEL_HEADERS_VERSION is greater than mm_KERNEL_VERSION." ; \
 		exit 1 ; \
 	fi
