@@ -198,8 +198,8 @@ $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
                 closedir(DIR);
             }
             if (($kernel_version) && ($kernel_arch) &&
-                (-d "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq") &&
-                (opendir(DIR, "/lib/modules/$kernel_version/kernel/arch/$kernel_arch/kernel/cpu/cpufreq")))
+                (-d "/lib/modules/$kernel_version/kernel/drivers/cpufreq") &&
+                (opendir(DIR, "/lib/modules/$kernel_version/kernel/drivers/cpufreq")))
             {
                 foreach (grep(! /^\./, readdir(DIR)))
                 {
