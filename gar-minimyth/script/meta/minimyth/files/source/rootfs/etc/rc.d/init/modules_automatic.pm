@@ -44,20 +44,6 @@ sub stop
     my $self     = shift;
     my $minimyth = shift;
 
-    $minimyth->message_output('info', "unloading kernel modules (automatic) ...");
-
-    if (open(FILE, '-|', '/bin/lsmod'))
-    {
-        while (<FILE>)
-        {
-            chomp;
-            if (/^([^ ]+)/)
-            {
-                system(qq(/sbin/modprobe -r $1));
-            }
-        }
-    }
-
     return 1;
 }
 
