@@ -1,6 +1,6 @@
-diff -Naur mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfrontend/main.cpp mythtv-master-20110709-c9dac5b-f037f74-new/mythtv/programs/mythfrontend/main.cpp
---- mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfrontend/main.cpp	2011-07-10 16:23:47.000000000 -0700
-+++ mythtv-master-20110709-c9dac5b-f037f74-new/mythtv/programs/mythfrontend/main.cpp	2011-07-10 16:23:48.000000000 -0700
+diff -Naur mythtv-master-20110722-546af2f-f037f74-old/mythtv/programs/mythfrontend/main.cpp mythtv-master-20110722-546af2f-f037f74-new/mythtv/programs/mythfrontend/main.cpp
+--- mythtv-master-20110722-546af2f-f037f74-old/mythtv/programs/mythfrontend/main.cpp	2011-07-23 04:35:46.000000000 -0700
++++ mythtv-master-20110722-546af2f-f037f74-new/mythtv/programs/mythfrontend/main.cpp	2011-07-23 04:35:48.000000000 -0700
 @@ -1,8 +1,11 @@
  #include <unistd.h>
 +#include <sys/socket.h>
@@ -13,7 +13,7 @@ diff -Naur mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfronte
  #include <iostream>
  using namespace std;
  
-@@ -1575,19 +1578,71 @@
+@@ -1577,18 +1580,71 @@
          mainWindow->installEventFilter(mon);
      }
  
@@ -38,9 +38,8 @@ diff -Naur mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfronte
 -            gCoreContext->GetNumSetting("NetworkControlPort", 6545);
 -        networkControl = new NetworkControl();
 -
--        if (!networkControl->
--                listen(QHostAddress(gCoreContext->MythHostAddressAny()),
--                       networkPort))
+-        if (!networkControl->listen(gCoreContext->MythHostAddressAny(),
+-                                    networkPort))
 +        char hostname[256];
 +        if (!gethostname(hostname,256))
 +        {
@@ -94,7 +93,7 @@ diff -Naur mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfronte
      }
  
  #ifdef __linux__
-@@ -1601,6 +1656,8 @@
+@@ -1602,6 +1658,8 @@
  
      if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
      {
@@ -103,7 +102,7 @@ diff -Naur mythtv-master-20110709-c9dac5b-f037f74-old/mythtv/programs/mythfronte
          return GENERIC_EXIT_NO_THEME;
      }
  
-@@ -1636,7 +1693,8 @@
+@@ -1637,7 +1695,8 @@
      if (mon)
          mon->deleteLater();
  
