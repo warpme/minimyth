@@ -27,8 +27,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-profiling \
 	--disable-assertions \
 	--disable-expensive-checks \
-	--disable-debug-runtime \
-	--disable-debug-symbols \
+	--enable-debug-runtime \
+	--enable-debug-symbols \
 	--enable-jit \
 	--disable-docs \
 	--disable-doxygen \
