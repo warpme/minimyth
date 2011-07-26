@@ -29,7 +29,7 @@ INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-bind-now \
-	--enable-kernel=2.6.39 \
+	--enable-kernel=3.0.0 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
