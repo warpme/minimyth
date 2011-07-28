@@ -7,11 +7,11 @@ MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/LIRC/$(GARVER
 #MASTER_SITES = git://lirc.git.sourceforge.net/gitroot/lirc/lirc/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-git_9592bb4.patch \
 	$(DISTNAME)-lirc_xbox.patch \
 	$(DISTNAME)-disable_lirc_i2c.patch \
 	$(DISTNAME)-remove_smp_lock_h.patch \
 	$(DISTNAME)-bit_le_fix.patch \
-	$(DISTNAME)-kfifo_fix.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
 	$(DISTNAME)-input_map.patch.gar
 LICENSE = GPL2
