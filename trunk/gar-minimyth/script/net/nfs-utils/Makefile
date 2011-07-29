@@ -25,7 +25,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-kprefix \
 	--enable-uuid \
 	--enable-mount \
-	--disable-libmount-mount \
+	--enable-libmount-mount \
 	--enable-tirpc \
 	--disable-ipv6 \
 	--disable-mountconfig \
