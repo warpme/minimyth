@@ -29,8 +29,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libuuid \
 	--enable-uuidd \
 	--enable-libblkid \
-	--disable-libmount \
-	--disable-libmount-mount \
+	--enable-libmount \
+	--enable-libmount-mount \
 	--enable-nls \
 	--disable-rpath \
 	--enable-arch \
@@ -85,5 +85,6 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libblkid.la
+	@rm -f $(DESTDIR)$(libdir)/libmount.la
 	@rm -f $(DESTDIR)$(libdir)/libuuid.la
 	@$(MAKECOOKIE)
