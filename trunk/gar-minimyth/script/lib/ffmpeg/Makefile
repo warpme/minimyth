@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = 5d1b39f
+GARVERSION = d9c23a0
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
