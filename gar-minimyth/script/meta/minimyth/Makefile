@@ -20,6 +20,7 @@ DEPENDS = \
 	system/bdremote-ng \
 	utils/busybox \
 	data/ca-bundle.crt \
+	net/cifs-utils \
 	net/curl \
 	disk/e2fsprogs \
 	disk/eject \
@@ -48,7 +49,6 @@ DEPENDS = \
 	utils/lsof \
 	utils/microcode_ctl \
 	utils/module-init-tools \
-	net/mount.cifs \
 	myth-$(mm_MYTH_VERSION)/myththemes \
 	myth-$(mm_MYTH_VERSION)/myththemes-blue-abstract-wide \
 	$(if $(filter 0.22,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes-old) \
