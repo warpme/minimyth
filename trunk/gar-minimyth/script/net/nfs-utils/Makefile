@@ -1,9 +1,9 @@
 GARNAME = nfs-utils
-GARVERSION = 1.2.3
+GARVERSION = 1.2.4
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch
+PATCHFILES = $(DISTNAME)-config_nfsidmap.patch $(DISTNAME)-enable_libmount.patch $(DISTNAME)-dash.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -25,6 +25,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-kprefix \
 	--enable-uuid \
 	--enable-mount \
+	--disable-libmount-mount \
 	--enable-tirpc \
 	--disable-ipv6 \
 	--disable-mountconfig \
