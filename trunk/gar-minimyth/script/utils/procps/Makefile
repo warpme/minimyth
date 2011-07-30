@@ -3,6 +3,7 @@ GARVERSION = 3.2.8
 CATEGORIES = utils
 MASTER_SITES = http://procps.sourceforge.net/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-make_3.82.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
