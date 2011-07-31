@@ -1,11 +1,9 @@
 GARNAME = libass
-GARVERSION = 0.9.12
+GARVERSION = 0.9.13
 CATEGORIES = lib
 MASTER_SITES = http://libass.googlecode.com/files/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-cxxflags.patch $(DISTNAME)-gcc_4.3.patch
-LICENSE = libass
-libass_LICENSE_TEXT = $(WORKSRC)/COPYING
+LICENSE = ISC
 
 DESCRIPTION =
 define BLURB
