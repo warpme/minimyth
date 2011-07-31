@@ -4,7 +4,7 @@ CATEGORIES = system
 MASTER_SITES = http://frodo.dyn.gno.org/~brettk/download/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-fixes.patch
-LICENSE =
+LICENSE = Public_Domain
 
 DESCRIPTION =
 define BLURB
