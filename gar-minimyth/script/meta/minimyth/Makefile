@@ -40,7 +40,6 @@ DEPENDS = \
 	system/irxkeys \
 	system/lcdproc \
 	net/lighttpd \
-	system/kbdd \
 	kernel/kernel \
 	fonts/liberation-fonts \
 	system/lirc \
