@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 7.11-rc2
+GARVERSION = 7.11-rc4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.mesa3d.org/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(word 1,$(subst -, ,$(GARVERSION)))/
