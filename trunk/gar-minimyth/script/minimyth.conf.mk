@@ -61,8 +61,8 @@ mm_SOFTWARE               ?= mythbrowser \
                              mplayer-svn \
                              $(if $(filter openchrome,$(mm_GRAPHICS)), \
                                  $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mplayer-vld)) \
-                             $(if $(filter $(mm_MYTHVERSION),0.22 0.23),vlc) \
-                             $(if $(filter $(mm_MYTHVERSION),0.22 0.23),xine) \
+                             vlc \
+                             xine \
                              bdremote \
                              wiimote \
                              backend \
