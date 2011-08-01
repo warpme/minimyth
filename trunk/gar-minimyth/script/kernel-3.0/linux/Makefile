@@ -12,6 +12,7 @@ PATCHFILES += $(DISTNAME)-input_io_nr_type.patch
 PATCHFILES += $(DISTNAME)-posix_types_fd_type.patch
 PATCHFILES += $(DISTNAME)-r8168_8.024.00.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
+PATCHFILES += $(DISTNAME)-hid_wiimote.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.9.2.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.9.2_oops.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
