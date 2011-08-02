@@ -28,7 +28,6 @@ MM_INIT_START := \
     media \
     audio \
     video \
-    bluetooth \
     bdremote \
     wiimote \
     iguanair \
