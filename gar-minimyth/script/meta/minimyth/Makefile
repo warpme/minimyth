@@ -18,6 +18,7 @@ DEPENDS = \
 	system/aquosserver \
 	utils/alsa-utils \
 	system/bdremote-ng \
+	utils/bluez-tools \
 	utils/busybox \
 	data/ca-bundle.crt \
 	net/cifs-utils \
@@ -92,6 +93,7 @@ DEPENDS = \
 	X11/xosd \
 	X11/xscreensaver \
 	X11/xvattr \
+	utils/xwiimote \
 	system/zoneinfo \
 	$(if $(filter nvidia,$(mm_GRAPHICS)), \
 		nvidia/nvidia-$(mm_NVIDIA_VERSION)) \
