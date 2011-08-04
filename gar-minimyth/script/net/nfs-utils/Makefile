@@ -3,7 +3,7 @@ GARVERSION = 1.2.4
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-config_nfsidmap.patch $(DISTNAME)-enable_libmount.patch $(DISTNAME)-dash.patch
+PATCHFILES = $(DISTNAME)-git_151a82d.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
