@@ -1,9 +1,9 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.15.0
+GARVERSION = 2.16.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch
+#PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -19,7 +19,9 @@ DEPENDS = lang/c system/udev \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfixes \
+	$(CATEGORY)/libXrender \
 	$(CATEGORY)/libXvMC \
+	$(CATEGORY)/pixman \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/util-macros \
@@ -43,6 +45,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri \
 	--enable-xvmc \
 	--disable-kms-only \
+	--disable-sna \
+	--disable-vmap \
 	--disable-debug \
 	--with-gnu-ld
 
