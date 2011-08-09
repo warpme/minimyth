@@ -1,0 +1,39 @@
+diff -Naur nspr-4.8.9-old/mozilla/nsprpub/config/nspr-config.in nspr-4.8.9-new/mozilla/nsprpub/config/nspr-config.in
+--- nspr-4.8.9-old/mozilla/nsprpub/config/nspr-config.in	2005-05-10 17:53:41.000000000 -0700
++++ nspr-4.8.9-new/mozilla/nsprpub/config/nspr-config.in	2011-08-09 14:09:43.000000000 -0700
+@@ -118,11 +118,11 @@
+ fi
+ 
+ if test "$echo_cflags" = "yes"; then
+-    echo -I$includedir
++    echo -I$DESTDIR$includedir
+ fi
+ 
+ if test "$echo_libs" = "yes"; then
+-      libdirs=-L$libdir
++      libdirs=-L$DESTDIR$libdir
+       if test -n "$lib_plds"; then
+ 	libdirs="$libdirs -lplds${major_version}"
+       fi
+diff -Naur nspr-4.8.9-old/mozilla/nsprpub/configure nspr-4.8.9-new/mozilla/nsprpub/configure
+--- nspr-4.8.9-old/mozilla/nsprpub/configure	2011-07-28 06:08:33.000000000 -0700
++++ nspr-4.8.9-new/mozilla/nsprpub/configure	2011-08-09 14:09:43.000000000 -0700
+@@ -2741,6 +2741,7 @@
+ 
+ if test "$cross_compiling"  = "yes"; then
+     CROSS_COMPILE=1
++    NSINSTALL='nsinstall'
+ else
+     CROSS_COMPILE=
+ fi
+diff -Naur nspr-4.8.9-old/mozilla/nsprpub/configure.in nspr-4.8.9-new/mozilla/nsprpub/configure.in
+--- nspr-4.8.9-old/mozilla/nsprpub/configure.in	2011-07-28 06:08:33.000000000 -0700
++++ nspr-4.8.9-new/mozilla/nsprpub/configure.in	2011-08-09 14:09:43.000000000 -0700
+@@ -619,6 +619,7 @@
+ 
+ if test "$cross_compiling"  = "yes"; then
+     CROSS_COMPILE=1
++    NSINSTALL='nsinstall'
+ else
+     CROSS_COMPILE=
+ fi
