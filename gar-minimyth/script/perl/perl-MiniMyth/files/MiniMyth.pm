@@ -1900,15 +1900,15 @@ sub flash_fetch_and_save
     {
         $flash_file = q(libflashplayer.32.so);
         ## 10.3 release.
-        #$flash_url  = q(http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_10_linux.tar.gz);
-        # 11.0 beta 1.
-        $flash_url  = q(http://download.macromedia.com/pub/labs/flashplatformruntimes/flashplayer11/flashplayer11_b1_install_lin_32_071311.tar.gz);
+        #$flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_10_linux.tar.gz);
+        # 11.0 beta 2.
+        $flash_url = q(http://download.macromedia.com/pub/labs/flashplatformruntimes/flashplayer11/flashplayer11_b2_install_lin_32_080811.tar.gz);
     }
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
         $flash_file = q(libflashplayer.64.so);
-        # 11.0 beta 1.
-        $flash_url = q(http://download.macromedia.com/pub/labs/flashplatformruntimes/flashplayer11/flashplayer11_b1_install_lin_64_071311.tar.gz);
+        # 11.0 beta 2.
+        $flash_url = q(http://download.macromedia.com/pub/labs/flashplatformruntimes/flashplayer11/flashplayer11_b2_install_lin_64_080811.tar.gz);
     }
     else
     {
