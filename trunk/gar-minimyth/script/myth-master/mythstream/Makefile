@@ -11,6 +11,7 @@ PATCHFILES = \
 	$(DISTNAME)-mythconfig_mak.patch \
 	$(DISTNAME)-qt4_header.patch \
 	$(DISTNAME)-mythversion_h.patch \
+	$(DISTNAME)-sqlquery.patch \
 	$(DISTNAME)-streams_res.patch \
 	$(DISTNAME)-mplayer_vo.patch \
 	$(DISTNAME).patch.gar
