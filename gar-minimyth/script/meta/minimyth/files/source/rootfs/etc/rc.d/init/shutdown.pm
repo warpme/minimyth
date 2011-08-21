@@ -30,7 +30,9 @@ sub _mountpoints_get
                      ($2 =~ /^\/\/minimyth\//) ||
                      ($3 =~ /^cifs$/)          ||
                      ($3 =~ /^nfs$/)           ||
-                     ($3 =~ /^ext3$/)          )
+                     ($3 =~ /^ext2$/)          ||
+                     ($3 =~ /^ext3$/)          ||
+                     ($3 =~ /^ext4$/)          )
                 {
                     unshift(@mountpoints, $mountpoint);
                 }
