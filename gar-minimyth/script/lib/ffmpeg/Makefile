@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = d9c23a0
+GARVERSION = 4becc86
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -38,6 +38,7 @@ CONFIGURE_ARGS = \
 	--disable-nonfree \
 	--enable-doc \
 	--enable-ffmpeg \
+	--disable-avconv \
 	--disable-ffplay \
 	--disable-ffprobe \
 	--disable-ffserver \
@@ -72,7 +73,7 @@ CONFIGURE_ARGS = \
 	--disable-encoders \
 	--enable-decoders \
 	--enable-hwaccels \
-	--enable-muxers \
+	--disable-muxers \
 	--enable-demuxers \
 	--enable-parsers \
 	--enable-bsfs \
