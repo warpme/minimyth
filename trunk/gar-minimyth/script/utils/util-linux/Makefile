@@ -1,7 +1,7 @@
 GARNAME = util-linux
-GARVERSION = 2.19.1
+GARVERSION = 2.20
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.19/
+MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.20/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
@@ -26,14 +26,17 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-tls \
 	--enable-mount \
 	--disable-fsck \
+	--disable-partx \
 	--enable-libuuid \
 	--enable-uuidd \
 	--enable-libblkid \
 	--enable-libmount \
 	--enable-libmount-mount \
+	--disable-mountpoint \
 	--enable-nls \
 	--disable-rpath \
 	--enable-arch \
+	--disable-ddate \
 	--enable-agetty \
 	--enable-cramfs \
 	--enable-switch-root \
@@ -41,11 +44,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-fallocate \
 	--disable-unshare \
 	--disable-elvtune \
-	--disable-init \
 	--disable-kill \
 	--disable-last \
+	--disable-line \
 	--disable-mesg \
-	--disable-partx \
 	--disable-raw \
 	--enable-rename \
 	--disable-reset \
