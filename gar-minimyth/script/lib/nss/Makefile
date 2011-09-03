@@ -1,7 +1,7 @@
 GARNAME = nss
 GARVERSION = $(NSS_VERSION)
 CATEGORIES = lib
-MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_11_RTM/src/
+MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/$(shell echo $(DISTNAME) | sed -e 's/-/_/g' -e 's/\./_/g' -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/')_RTM/src/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = $(DISTNAME)-freebl_no_depend.patch $(DISTNAME).patch.gar
 ifneq ($(DESTIMG),build)
@@ -18,6 +18,8 @@ BUILDDEPS  =
 ifneq ($(DESTIMG),build)
 BUILDDEPS += lib/nss
 endif
+
+WORKSRC = $(WORKDIR)/$(shell echo $(DISTNAME) | sed -e 's/\.with\.ckbi\..*$$//')
 
 BUILD_SCRIPTS    = $(WORKSRC)/mozilla/security/nss/Makefile
 INSTALL_SCRIPTS  = custom
@@ -44,6 +46,9 @@ xBUILD_ENV = $(BUILD_ARGS)
 include ../../gar.mk
 
 PARALLELMFLAGS := -j1
+
+pre-fetch:
+	echo $(WORKSRC)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)
