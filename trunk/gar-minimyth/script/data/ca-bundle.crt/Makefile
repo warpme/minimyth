@@ -29,7 +29,7 @@ build-custom:
 		echo "error: file '$(WORKSRC)/mozilla/security/nss/lib/ckfw/builtins/certdata.txt' cannot be read" ; \
 		exit 1 ; \
 	fi
-	@cd $(WORKDIR) ; perl -w ca-bundle.pl nss-$(GARVERSION)/mozilla/security/nss/lib/ckfw/builtins/certdata.txt ca-bundle.crt
+	@cd $(shell dirname $(WORKSRC)); perl -w ca-bundle.pl $(shell basename $(WORKSRC))/mozilla/security/nss/lib/ckfw/builtins/certdata.txt ca-bundle.crt
 	@$(MAKECOOKIE)
 
 install-custom:
