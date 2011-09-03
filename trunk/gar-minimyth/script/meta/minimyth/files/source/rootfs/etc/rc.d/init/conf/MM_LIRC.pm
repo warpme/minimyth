@@ -452,6 +452,56 @@ $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
     }
 };
 
+$var_list{'MM_LIRC_FETCH_RC_MAPS_CFG'} =
+{
+    value_default  => 'no',
+    value_valid    => 'no|yes',
+    value_file     => 'yes',
+    file           => {name_remote => '/rc_maps.cfg',
+                       name_local  => '/etc/rc_maps.cfg'}
+};
+
+$var_list{'MM_LIRC_RC_KEYMAPS_FILE_ADD'} =
+{
+    value_clean    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $value_clean = $minimyth->var_get($name);
+        $value_clean = " $value_clean ";
+        $value_clean =~ s/[ \t]+/ /g;
+        $value_clean =~ s/ ([^ \/])/ \/$1/g;
+        $value_clean =~ s/\/+/\//g;
+        $value_clean =~ s/^ //;
+        $value_clean =~ s/ $//;
+        $minimyth->var_set($name, $value_clean);
+
+        return 1;
+    },
+    value_default  => '',
+    value_file     => '.+',
+    file           => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my @file = ();
+
+        foreach (split(/ /, $minimyth->var_get($name)))
+        {
+            my $item;
+            $item->{'name_remote'} = "$_";
+            $item->{'name_local'}  = '/etc/rc_keymaps/' . File::Basename::basename($_);
+            $item->{'mode_local'}  = '0644';
+
+            push(@file, $item);
+        }
+
+        return \@file;
+    }
+};
+
 $var_list{'MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD'} =
 {
     value_clean    => sub
