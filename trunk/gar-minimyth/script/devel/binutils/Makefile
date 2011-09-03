@@ -4,7 +4,7 @@ CATEGORIES = devel
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 MASTER_SITES += ftp://sourceware.org/pub/$(GARNAME)/snapshots/
-DISTFILES = $(DISTNAME)a.tar.bz2
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  = $(DISTNAME)-visibility.patch
 PATCHFILES += $(DISTNAME)-multi_os_directory.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
@@ -24,6 +24,8 @@ BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
+
+WORKSRC = $(WORKDIR)/$(patsubst %a,%,$(DISTNAME))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
