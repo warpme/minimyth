@@ -11,7 +11,7 @@ endef
 
 BUILDDEPS = lib/openssl perl/perl
 
-WORKSRC = $(WORKDIR)/nss-$(GARVERSION)
+WORKSRC = $(WORKDIR)/$(shell echo nss-$(GARVERSION) | sed -e 's/\.with\.ckbi\..*$$//')
 
 BUILD_SCRIPTS   = custom
 INSTALL_SCRIPTS = custom
