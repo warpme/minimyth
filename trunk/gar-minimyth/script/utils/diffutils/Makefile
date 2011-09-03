@@ -1,5 +1,5 @@
 GARNAME = diffutils
-GARVERSION = 3.1
+GARVERSION = 3.2
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
