@@ -1,5 +1,5 @@
 GARNAME = gdb
-GARVERSION = 7.3a
+GARVERSION = 7.3.1
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,8 +10,6 @@ define BLURB
 endef
 
 DEPENDS = lang/c lib/ncurses
-
-WORKSRC = $(WORKDIR)/$(patsubst %a,%,$(DISTNAME))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
