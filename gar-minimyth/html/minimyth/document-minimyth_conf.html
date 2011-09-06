@@ -2586,9 +2586,9 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
             <li><a href="#MM_LIRC_IRXKEYS_ENABLED">MM_LIRC_IRXKEYS_ENABLED</a></li>
             <li><a href="#MM_LIRC_SLEEP_ENABLED">MM_LIRC_SLEEP_ENABLED</a></li>
             <li><a href="#MM_LIRC_WAKEUP_ENABLED">MM_LIRC_WAKEUP_ENABLED</a></li>
+            <li><a href="#MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD">MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD</a></li>
             <li><a href="#MM_LIRC_FETCH_RC_MAPS_CFG">MM_LIRC_FECTH_RC_MAPS_CFG</a></li>
             <li><a href="#MM_LIRC_RC_KEYMAPS_FILE_ADD">MM_LIRC_RC_KEYMAPS_FILE_ADD</a></li>
-            <li><a href="#MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD">MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD</a></li>
             <li><a href="#MM_LIRC_FETCH_LIRCD_CONF">MM_LIRC_FETCH_LIRCD_CONF</a></li>
             <li><a href="#MM_LIRC_FETCH_LIRCMD_CONF">MM_LIRC_FETCH_LIRCMD_CONF</a></li>
             <li><a href="#MM_LIRC_FETCH_LIRCRC">MM_LIRC_FETCH_LIRCRC</a></li>
@@ -2602,16 +2602,60 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
             <dt id="MM_LIRC-overview"><strong>Overview</strong></dt>
             <dd>
               <p>
-                Support for remote control devices in Linux is going through some growing pains.
-                As
-                <a href="http://wilsonet.com/?p=85">LIRC's out-of-tree kernel drivers have matured to the point that they have become in-tree kernel drivers</a>,
-                they have changed.
-                As a result, MiniMyth has been compelled to change how it interacts with these recently matured drivers.
-                In particular, MiniMyth has added support for changing in-kernel remote control key maps using
-                <a HREF="MM_LIRC_FETCH_RC_MAPS_CFG">MM_LIRC_FETCH_RC_MAPS_CFG</a>
-                and
-                <a HREF="#MM_LIRC_RC_KEYMAPS_FILE_ADD">MM_LIRC_RC_KEYMAPS_FILE_ADD</a>.
+                Support for remote control transcievers under Linux is going through a transition.
+                Thanks to the hard work of
+                <a href="http://wilsonet.com/">Jarod Wilson</a>,
+                <a href="http://wilsonet.com/?p=85">LIRC's kernel drivers are being integrated into the kernel tree</a>.
+                Traditionally,
+                translation from remote control signal to Linux input event has been performed by the lircd daemon.
+                However, once a driver is integrated into the kernel tree,
+                translation from remote control signal to Linux input event is performed by the kernel.
+                Therefore,
+                the mapping from remote control signal to Linux input event is handled by either the lircd daemon or the Linux kernel,
+                depending on whether or not the kernel driver has been integrated into the kernel tree.
               </p>
+              <p>
+                If your remote control receiver uses one of the drivers listed below,
+                then translation from remote control signal to Linux input event is handled by the Linux kernel,
+                which means that you replace the appropriate RC key map file
+                (and '<a href="document-configure.html#rc_maps_cfg">rc_maps.cfg</a>' if needed)
+                using
+                '<a HREF="#MM_LIRC_RC_KEYMAPS_FILE_ADD">MM_LIRC_RC_KEYMAPS_FILE_ADD</a>'
+                (and '<a HREF="#MM_LIRC_FETCH_RC_MAPS_CFG">MM_LIRC_FETCH_RC_MAPS_CFG</a>' if needed).
+              </p>
+              <ul>
+                <li>ene_ir</li>
+                <li>fintek-cir</li>
+                <li>imon</li>
+                <li>ite-cir</li>
+                <li>mceusb</li>
+                <li>nuvoton-cir</li>
+                <li>redrat3</li>
+                <li>streamzap</li>
+                <li>winbond-cir</li>
+              </ul>
+              <p>
+                if you remote control receiver uses one the drivers listed below or uses one of the LIRC userspace drivers,
+                then translation form remote control signal to Linux input event is handled by the lircd daemon,
+                which means you replace
+                '<a href="document-configure.html#lircd_conf">lircd.conf</a>'
+                using
+                '<a href="MM_LIRC_FETCH_LIRCD_CONF">MM_LIRC_FETCH_LIRCD_CONF</a>'
+                for changing the remote control signal to Linux input event mapping.
+              </p>
+              <ul>
+                <li>lirc_atiusb</li>
+                <li>lirc_bt829</li>
+                <li>lirc_igorplugusb</li>
+                <li>lirc_imon</li>
+                <li>lirc_parallel</li>
+                <li>lirc_sasem</li>
+                <li>lirc_serial</li>
+                <li>lirc_sir</li>
+                <li>lirc_ttusbir</li>
+                <li>lirc_wpc8769l</li>
+                <li>lirc_zilog</li>
+              </ul>
               <p>
                 MiniMyth supports remote controls using a combination of
                 <a href="http://en.wikipedia.org/wiki/Udev">udev</a>,
@@ -2948,6 +2992,21 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
                 that has been enabled using the appropriate motherboard BIOS settings and/or motherboard jumper positions.
               </p>
             </dd>
+            <dt id="MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD"><strong>MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD</strong></dt>
+            <dd>
+              <p>
+                A list of eventlircd event map (*.evmap) files to add/replace.
+                These event map files will be fetched from the MiniMyth system's MiniMyth read-only configuration directory.
+              </p>
+              <p>
+                MiniMyth's goal is to include all the required eventlircd evmap files,
+                As a result, you should not need to use this variable.
+                If you do, then please
+                <a href="http://www.minimyth.org/forum/">let us know</a>.
+              </p>
+              <p>
+              </p>
+            </dd>
             <dt id="MM_LIRC_FETCH_RC_MAPS_CFG"><strong>MM_LIRC_FETCH_RC_MAPS_CFG</strong></dt>
             <dd>
               <p>
@@ -2962,21 +3021,6 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               <p>
                 A list of rc keymap files to add/replace.
                 These rc keymap files will be fetched from the MiniMyth system's MiniMyth read-only configuration directory.
-              </p>
-            </dd>
-            <dt id="MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD"><strong>MM_LIRC_EVENTLIRCD_FILE_EVMAP_ADD</strong></dt>
-            <dd>
-              <p>
-                A list of eventlircd event map (*.evmap) files to add/replace.
-                These event map files will be fetched from the MiniMyth system's MiniMyth read-only configuration directory.
-              </p>
-              <p>
-                MiniMyth's goal is to include all the required eventlircd evmap files,
-                As a result, you should not need to use this variable.
-                If you do, then please
-                <a href="http://www.minimyth.org/forum/">let us know</a>.
-              </p>
-              <p>
               </p>
             </dd>
             <dt id="MM_LIRC_FETCH_LIRCD_CONF"><strong>MM_LIRC_FETCH_LIRCD_CONF</strong></dt>
@@ -3653,7 +3697,7 @@ LoadModule dav_fs_module modules/mod_dav_fs.so
               alt="Valid CSS3!" /></a>
         </div>
         <div class="version">
-          Last Updated on 2011-09-03
+          Last Updated on 2011-09-05
         </div>
         <div class="address">
           &#60;&#160;mailto&#160;:&#160;webmaster&#160;at&#160;minimyth&#160;dot&#160;org&#160;&#62;
