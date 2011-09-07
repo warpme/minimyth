@@ -1,14 +1,11 @@
 GARNAME = busybox
-GARVERSION = 1.19.1
+GARVERSION = 1.19.2
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = \
-	$(DISTNAME)-hush.patch \
-	$(DISTNAME)-match_fstype.patch \
-	$(DISTNAME)-patch.patch
+PATCHFILES  =
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
