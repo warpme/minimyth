@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = 4becc86
+GARVERSION = 15240fe
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -99,6 +99,7 @@ CONFIGURE_ARGS = \
 	--enable-librtmp \
 	--disable-libschroedinger \
 	--disable-libspeex \
+	--disable-libstagefright-h264 \
 	--disable-libtheora \
 	--disable-libvo-aacenc \
 	--disable-libvo-amrwbenc \
@@ -119,12 +120,14 @@ CONFIGURE_ARGS = \
 	--ar="$(AR)" \
 	--as="$(CC)" \
 	--cc="$(CC)" \
+	--cxx="$(CXX)" \
 	--ld="$(CC)" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
 	--host-ldflags="$(build_LDFLAGS)" \
 	--host-libs="" \
 	--extra-cflags="$(CFLAGS)" \
+	--extra-cxxflags="$(CXXFLAGS)" \
 	--extra-ldflags="$(LDFLAGS)" \
 	--extra-libs="" \
 	--extra-version="" \
