@@ -1,5 +1,5 @@
 GARNAME = x11vnc
-GARVERSION = 0.9.12
+GARVERSION = 0.9.13
 CATEGORIES = X11
 MASTER_SITES = http://downloads.sourceforge.net/project/libvncserver/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -48,7 +48,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-zlib=$(DESTDIR)$(prefix) \
 	--with-pthread \
 	--without-gnutls \
-	--without-client-tls
+	--without-client-tls \
+	--without-ipv6
 
 CONFIGURE_ENV = \
 	ac_cv_func_fork_works=yes \
