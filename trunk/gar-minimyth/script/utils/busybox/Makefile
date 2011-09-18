@@ -6,9 +6,13 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
+	$(DISTNAME)-android.patch \
+	$(DISTNAME)-buildsys.patch \
 	$(DISTNAME)-chpasswd.patch \
 	$(DISTNAME)-crond.patch \
-	$(DISTNAME)-inetd.patch
+	$(DISTNAME)-inetd.patch \
+	$(DISTNAME)-syslogd.patch \
+	$(DISTNAME)-tail.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
