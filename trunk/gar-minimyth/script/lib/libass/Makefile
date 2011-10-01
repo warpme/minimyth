@@ -1,5 +1,5 @@
 GARNAME = libass
-GARVERSION = 0.9.13
+GARVERSION = 0.10.0
 CATEGORIES = lib
 MASTER_SITES = http://libass.googlecode.com/files/
 DISTFILES = $(DISTNAME).tar.gz
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/fontconfig lib/freetype
+DEPENDS = lang/c lib/fontconfig lib/freetype lib/fribidi
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -21,6 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-test \
 	--disable-enca \
 	--enable-fontconfig \
+	--disable-harfbuzz \
 	--disable-silent-rules \
 	--with-gnu-ld \
 
