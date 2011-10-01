@@ -27,6 +27,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+ifeq ($(DESTIMG),build)
+CPPFLAGS += -DFRIBIDI_CHUNK_SIZE=4080
+endif
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
