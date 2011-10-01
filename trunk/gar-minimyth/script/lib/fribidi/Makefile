@@ -32,6 +32,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
 	@$(MAKECOOKIE)
 
-x-post-install:
+post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfribidi.la
 	@$(MAKECOOKIE)
