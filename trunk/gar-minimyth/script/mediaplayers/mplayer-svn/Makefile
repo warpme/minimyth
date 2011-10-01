@@ -1,10 +1,10 @@
 GARNAME = MPlayer
-GARVERSION = 34104
+GARVERSION = 34168
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-libbluray_api.patch $(GARNAME)-gcc_4.4.0_hack.patch
+PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -248,6 +248,7 @@ CONFIGURE_ARGS_ADVANCED = \
 	--disable-armvfp \
 	--disable-vfpv3 \
 	--disable-neon \
+	--disable-thumb \
 	--disable-iwmmxt \
 	--enable-fastmemcpy \
 	--disable-hardcoded-tables \

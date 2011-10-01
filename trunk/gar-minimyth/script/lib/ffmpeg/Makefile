@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = 15240fe
+GARVERSION = fe70c1f
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -34,6 +34,7 @@ CONFIGURE_ARGS = \
 	--disable-static \
 	--enable-shared \
 	--enable-gpl \
+	--disable-version2 \
 	--disable-version3 \
 	--disable-nonfree \
 	--enable-doc \
@@ -45,6 +46,7 @@ CONFIGURE_ARGS = \
 	--enable-avdevice \
 	--enable-avcodec \
 	--enable-avformat \
+	--enable-swresample \
 	--enable-swscale \
 	--enable-postproc \
 	--enable-avfilter \
@@ -85,9 +87,11 @@ CONFIGURE_ARGS = \
 	--enable-bzlib \
 	--disable-libcelt \
 	--disable-frei0r \
+	--disable-libaacplus \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
 	--disable-libopencv \
+	--disable-libcdio \
 	--disable-libdc1394 \
 	--disable-libdirac \
 	--disable-libfaac \
