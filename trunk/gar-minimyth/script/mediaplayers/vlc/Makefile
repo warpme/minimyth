@@ -17,6 +17,7 @@ DEPENDS = lang/c lang/cxx \
 	lib/ffmpeg \
 	lib/fontconfig \
 	lib/freetype \
+	lib/fribidi \
 	lib/libass \
 	lib/libcdio \
 	lib/libdvdnav \
@@ -145,7 +146,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sdl \
 	--disable-sdl-image \
 	--enable-freetype \
-	--disable-fribidi \
+	--enable-fribidi \
 	--enable-fontconfig \
 	--enable-libxml2 \
 	--disable-svg \

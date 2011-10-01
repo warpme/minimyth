@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/libass lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/fribidi lib/libass lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILDDEPS = devel/yasm lib/libass
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -77,7 +77,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-unrarexec \
 	--enable-menu \
 	--enable-sortsub \
-	--disable-fribidi \
+	--enable-fribidi \
 	--disable-enca \
 	--disable-maemo \
 	--disable-macosx-finder \
@@ -281,7 +281,8 @@ BUILD_ENV  = \
 
 include ../../gar.mk
 
-CFLAGS :=
+CFLAGS  :=
+LDFLAGS := $(LDFLAGS) -lfribidi
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, svn://$*, $(GARVERSION), $(DISTNAME))
