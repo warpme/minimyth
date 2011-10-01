@@ -1,7 +1,7 @@
 GARNAME = glib
-GARVERSION = 2.28.8
+GARVERSION = 2.30.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.28/
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.30/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lib/pcre lib/zlib
+DEPENDS    = lang/c lib/libffi lib/pcre lib/zlib
 BUILDDEPS  = gtk/gtk-doc
 ifneq ($(DESTIMG),build)
 BUILDDEPS += gtk/glib
@@ -46,6 +46,7 @@ CONFIGURE_ENV += \
 	ac_cv_func_posix_getpwuid_r='yes' \
 	ac_cv_func_posix_getgrgid_r='yes' \
 	ac_cv_func_printf_unix98='yes' \
+	ac_cv_func_qsort_r='no' \
 	ac_cv_func_snprintf_c99='yes' \
 	ac_cv_func_vsnprintf_c99='yes' \
 	glib_cv_stack_grows='no' \
