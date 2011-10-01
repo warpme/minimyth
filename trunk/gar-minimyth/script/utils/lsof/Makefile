@@ -1,7 +1,8 @@
 GARNAME = lsof
-GARVERSION = 4.84
+GARVERSION = 4.85
 CATEGORIES = utils
-MASTER_SITES = ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/
+MASTER_SITES  = ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/
+MASTER_SITES += ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/OLD/
 DISTFILES = $(GARNAME)_$(GARVERSION).tar.bz2
 LICENSE =
 
