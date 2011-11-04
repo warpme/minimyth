@@ -1,18 +1,13 @@
 GARNAME = busybox
-GARVERSION = 1.19.2
+GARVERSION = 1.19.3
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
-	$(DISTNAME)-android.patch \
-	$(DISTNAME)-buildsys.patch \
-	$(DISTNAME)-chpasswd.patch \
-	$(DISTNAME)-crond.patch \
-	$(DISTNAME)-inetd.patch \
-	$(DISTNAME)-syslogd.patch \
-	$(DISTNAME)-tail.patch
+	$(DISTNAME)-getty.patch \
+	$(DISTNAME)-modinfo.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
