@@ -1,11 +1,10 @@
 GARNAME = vlc
-GARVERSION = 1.1.11
+GARVERSION = 1.1.12
 CATEGORIES = mediaplayers
 PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch
 LICENSE = GPL2
 
 DESCRIPTION =
