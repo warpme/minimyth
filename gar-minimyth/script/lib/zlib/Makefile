@@ -4,6 +4,7 @@ CATEGORIES = lib
 MASTER_SITES  = http://downloads.sourceforge.net/project/libpng/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://zlib.net/
 DISTFILES = $(DISTNAME).tar.gz license
+PATCHFILES = $(DISTNAME)-largefile64_source.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKDIR)/license
 
