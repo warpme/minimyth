@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 34168
+GARVERSION = 34285
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -112,6 +112,7 @@ CONFIGURE_ARGS_CODEC = \
 	--disable-libvpx-lavc \
 	--disable-libnut \
 	--disable-ffmpeg_a \
+	--disable-vf-lavfi \
 	--disable-libavcodec_mpegaudio_hp \
 	--disable-tremor-internal \
 	--disable-tremor-low \

@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = fe70c1f
+GARVERSION = 988f585
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -34,7 +34,6 @@ CONFIGURE_ARGS = \
 	--disable-static \
 	--enable-shared \
 	--enable-gpl \
-	--disable-version2 \
 	--disable-version3 \
 	--disable-nonfree \
 	--enable-doc \
@@ -69,6 +68,7 @@ CONFIGURE_ARGS = \
 	--enable-vaapi \
 	--enable-vdpau \
 	--disable-dxva2 \
+	--disable-vda \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
 	--disable-memalign-hack \
@@ -97,6 +97,7 @@ CONFIGURE_ARGS = \
 	--disable-libfaac \
 	--disable-libfreetype \
 	--disable-libgsm \
+	--disable-libmodplug \
 	--disable-libmp3lame \
 	--disable-libnut \
 	--disable-libopenjpeg \
@@ -105,6 +106,7 @@ CONFIGURE_ARGS = \
 	--disable-libspeex \
 	--disable-libstagefright-h264 \
 	--disable-libtheora \
+	--disable-libutvideo \
 	--disable-libvo-aacenc \
 	--disable-libvo-amrwbenc \
 	--disable-libvorbis \
