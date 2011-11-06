@@ -1,5 +1,5 @@
 GARNAME = libva
-GARVERSION = 1.0.14
+GARVERSION = 1.0.15
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 #MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
