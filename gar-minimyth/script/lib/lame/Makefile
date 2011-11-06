@@ -1,5 +1,5 @@
 GARNAME = lame
-GARVERSION = 3.98.4
+GARVERSION = 3.99
 CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES  = $(DISTNAME).tar.gz
@@ -23,18 +23,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--enable-nasm \
+	--disable-rpath \
 	--disable-cpml \
 	--disable-gtktest \
 	--disable-efence \
 	--disable-analyzer-hooks \
 	--enable-decoder \
-	--enable-decode-layer1 \
-	--enable-decode-layer2 \
 	--disable-frontend \
 	--disable-mp3x \
 	--disable-mp3rtp \
-	--disable-brhist \
-	--disable-all-float \
+	--disable-dynamic-frontends \
 	--enable-expopt=no \
 	--enable-debug=no \
 	--with-gnu-ld \
