@@ -1,5 +1,5 @@
 GARNAME      = perl-Task-Weaken
-GARVERSION   = 1.03
+GARVERSION   = 1.04
 MASTER_SITES = http://www.cpan.org/authors/id/A/AD/ADAMK/
 DEPENDS      =
 
