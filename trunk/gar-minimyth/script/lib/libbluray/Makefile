@@ -1,5 +1,5 @@
 GARNAME = libbluray
-GARVERSION = e037110
+GARVERSION = b9fa915
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/libbluray.git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -35,7 +35,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-doxygen-html \
 	--disable-doxygen-ps \
 	--disable-doxygen-pdf \
-	--with-dlopen-crypto-libs \
+	--without-jdk \
 	--with-gnu-ld
 
 include ../../gar.mk
