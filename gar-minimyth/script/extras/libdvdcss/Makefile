@@ -1,5 +1,5 @@
 GARNAME = libdvdcss
-GARVERSION = 1.2.10
+GARVERSION = 1.2.11
 CATEGORIES = extras
 MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -18,6 +18,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--disable-doc \
 	--with-gnu-ld
 
 include ../../gar.mk
