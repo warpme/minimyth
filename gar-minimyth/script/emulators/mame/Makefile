@@ -1,5 +1,5 @@
 GARNAME = mame
-GARVERSION = 0.143
+GARVERSION = 0.144
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
@@ -63,6 +63,7 @@ install-cross:
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/file2str $(DESTDIR)$(bindir)/mame-file2str ; \
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/m68kmake $(DESTDIR)$(bindir)/mame-m68kmake ; \
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/makedep  $(DESTDIR)$(bindir)/mame-makedep  ; \
+		cp -f $(WORKSRC)/obj/sdl/mame64/build/makedev  $(DESTDIR)$(bindir)/mame-makedev  ; \
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/makelist $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/png2bdc  $(DESTDIR)$(bindir)/mame-png2bdc  ; \
 		cp -f $(WORKSRC)/obj/sdl/mame64/build/tmsmake  $(DESTDIR)$(bindir)/mame-tmsmake  ; \
@@ -70,6 +71,7 @@ install-cross:
 		cp -f $(WORKSRC)/obj/sdl/mame/build/file2str   $(DESTDIR)$(bindir)/mame-file2str ; \
 		cp -f $(WORKSRC)/obj/sdl/mame/build/m68kmake   $(DESTDIR)$(bindir)/mame-m68kmake ; \
 		cp -f $(WORKSRC)/obj/sdl/mame/build/makedep    $(DESTDIR)$(bindir)/mame-makedep  ; \
+		cp -f $(WORKSRC)/obj/sdl/mame/build/makedev    $(DESTDIR)$(bindir)/mame-makedev  ; \
 		cp -f $(WORKSRC)/obj/sdl/mame/build/makelist   $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl/mame/build/png2bdc    $(DESTDIR)$(bindir)/mame-png2bdc  ; \
 		cp -f $(WORKSRC)/obj/sdl/mame/build/tmsmake    $(DESTDIR)$(bindir)/mame-tmsmake  ; \
