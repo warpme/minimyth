@@ -33,6 +33,7 @@ DEPENDS = \
 	lib/libass \
 	lib/libavc1394 \
 	lib/libcdio \
+	lib/libcec \
 	lib/libiec61883 \
 	lib/libxml2 \
 	lib/zlib \
@@ -113,6 +114,7 @@ CONFIGURE_ARGS = \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
+	--enable-libcec \
 	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
