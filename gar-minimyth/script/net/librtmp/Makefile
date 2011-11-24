@@ -41,6 +41,9 @@ INSTALL_ARGS = \
 
 include ../../gar.mk
 
+CFLAGS  := $(CFLAGS)  -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
+
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/librtmp.a
 	@$(MAKECOOKIE)
