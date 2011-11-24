@@ -14,7 +14,17 @@ PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-007 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-008 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-009 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-010
+	$(GARNAME)$(subst .,,$(GARVERSION))-010 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-011 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-012 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-013 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-014 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-015 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-016 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-017 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-018 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-019 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-020
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL3
 
