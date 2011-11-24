@@ -41,6 +41,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+CFLAGS  := $(CFLAGS)  -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
