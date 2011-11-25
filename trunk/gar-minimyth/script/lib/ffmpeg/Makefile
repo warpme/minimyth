@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = 988f585
+GARVERSION = 12d2765
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -51,6 +51,7 @@ CONFIGURE_ARGS = \
 	--enable-avfilter \
 	--enable-pthreads \
 	--disable-w32threads \
+	--disable-os2threads \
 	--enable-x11grab \
 	--enable-network \
 	--disable-gray \
@@ -66,6 +67,7 @@ CONFIGURE_ARGS = \
 	--enable-mdct \
 	--enable-rdft \
 	--enable-vaapi \
+	--disable-vda \
 	--enable-vdpau \
 	--disable-dxva2 \
 	--disable-vda \
@@ -88,6 +90,7 @@ CONFIGURE_ARGS = \
 	--disable-libcelt \
 	--disable-frei0r \
 	--disable-libaacplus \
+	--disable-gnutls \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
 	--disable-libopencv \
@@ -101,12 +104,14 @@ CONFIGURE_ARGS = \
 	--disable-libmp3lame \
 	--disable-libnut \
 	--disable-libopenjpeg \
+	--disable-libpulse \
 	--enable-librtmp \
 	--disable-libschroedinger \
 	--disable-libspeex \
 	--disable-libstagefright-h264 \
 	--disable-libtheora \
 	--disable-libutvideo \
+	--disable-libv4l2 \
 	--disable-libvo-aacenc \
 	--disable-libvo-amrwbenc \
 	--disable-libvorbis \
@@ -116,6 +121,7 @@ CONFIGURE_ARGS = \
 	--disable-libxvid \
 	--disable-openal \
 	--disable-mlib \
+	--disable-openssl \
 	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
 	--enable-cross-compile \
