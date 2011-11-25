@@ -31,6 +31,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+CFLAGS  := $(CFLAGS)  -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
+
 install-nsinstall:
 	@cp -f $(WORKSRC)/mozilla/nsprpub/config/nsinstall $(DESTDIR)$(bindir)/nsinstall
 	@$(MAKECOOKIE)
