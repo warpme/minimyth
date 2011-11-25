@@ -34,8 +34,8 @@ endif
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
 
-#CFLAGS  += -L$(DESTDIR)$(libdir)
-#LDFLAGS += -L$(DESTDIR)$(libdir)
+CFLAGS  := $(CFLAGS)  -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
 
 build-%/setup.py:
 	@echo " ==> Running setup.py build in $*"
