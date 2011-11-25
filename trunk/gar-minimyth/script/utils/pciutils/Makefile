@@ -62,6 +62,9 @@ INSTALL_ARGS = \
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+CFLAGS  := $(CFLAGS)  -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
+
 extract-pci.ids:
 	@cp -f $(DOWNLOADDIR)/pci.ids $(WORKSRC)/pci.ids
 	@$(MAKECOOKIE)
