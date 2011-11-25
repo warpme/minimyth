@@ -26,4 +26,8 @@ INSTALL_ARGS = \
 	PREFIX="$(prefix)" \
 	LIBDIR="$(libdir)"
 
+CFLAGS   := $(CFLAGS)   -fPIC
+CXXFLAGS := $(CXXFLAGS) -fPIC
+LDFLAGS  := $(LDFLAGS)  -fPIC
+
 include ../../gar.mk
