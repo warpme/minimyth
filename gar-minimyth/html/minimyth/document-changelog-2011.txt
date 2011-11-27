@@ -1,6 +1,234 @@
 MiniMyth Changelog 2011
 
 --------------------------------------------------------------------------------
+Changes since 77 (2011-11-22):
+
+Current MythTV Git versions
+     MythTV  | mythtv git repo | mythtv git repo | myththemes git repo
+     version | commit date     | commit          | commit
+    ---------|-----------------|-----------------|---------------------
+     master  | 20111119        | 2271553         | f037f74
+     0.24.1  | 20111116        | f5fd11f         | 931028f
+     0.23.1  | 20111005        | bcd91d5         | de0d6b3
+     0.22.0  | 20100711        | 3c6ce60         | 697a6ac
+
+Modified init
+    - Obsoleted MM_MEDIA_DVD_RIP_MOUNTPOINT and MM_MEDIA_DVD_RIP_URL as
+      support for DVD ripping has been removed.
+    - Modified udev scripts so that SiS 550 (PCI 1039:5315) selects sis Xorg
+      video driver.
+    - Replaced the older portmap with the newer rpcbind.
+    - Relocated ca-bundle.crt from /etc/ssl/certs to /etc/pki/tls/certs.
+    - Modified MM_SECURITY_FETCH_CA_BUNDLE_CRT so that it is prepended to
+      MiniMyth's built-in ca-bundle.crt.
+    - Changed init so that it does not attempt to unload kernel modules as
+      part of shutdown.
+    - Changed init so the udev not init eables bluethooth devices.
+    - Added support for loading RC key maps using udev.
+
+Modified MiniMyth.pm
+    - Made CIFS authentication NTLMv2.
+    - Updated the Adobe Flash Player fetch and save command to fetch and save
+      Adobe Flash Player 11.1.102.55.
+    - Added support for ext4 to url_mount.
+
+Modified MythTV
+    - Removed support for DVD ripping in MythTV 0.22 and MythTV 0.23 as it has
+      been removed from MythTV 0.24 and MythTV master.
+
+Modified remote control
+    - Switched kernel drivers from out-of-tree drivers to in-tree drivers
+      whenever possible.
+        - Continue to use lirc_atiusb rather than ati_remote, ati_remote2 and
+          lirc_xbox because ati_remote and ati_remote2 behave differently.
+    - Switched translation to input events for lircd to the kernel drivers
+      whenever possible.
+        - In the cases that the kernel driver does the translation to input
+          events, custom lircd.conf files will no longer work.
+    - Changed from KEY_MEDIA to KEY_IMAGES for MythGallery to better match the
+      in-tree keymaps.
+    - Added support for configuring video4linux rc driver key maps.
+
+Improved kernel
+    - Added the msr driver.
+    - Added the sis7019 driver.
+    - Added the jme driver.
+    - Added the hid-wiimote driver (though it is not included in the default
+      image).
+    - Updated unionfs patch.
+
+Fixed bugs
+    - Fixed a bug that caused MythTV media guide to not display live TV.
+    - Fixed a bug that caused playback of DVDs from a DVD drive to fail.
+    - Fixed a bug that caused https connections using MythBrowser to fail.
+    - Fixed a bug that caused init to not make sure that there is a
+      bluetooth interface when a wiimote is enabled.
+    - Fixed a bug that caused ir-keytable to fail with some (including MCE)
+      keytables.
+
+Fixed build system
+    - Fixed a build problem on Ubuntu 11.04 caused by the distribution 
+      changing the location of multiarch libraries.
+    - Fixed a build system problem that would cause lib/libxslt to detect
+      and attempt to use the build hots's libgcrypt-config.
+    - Fixed an error in a patch to lib/libgcrypt.
+    - Fixed the building of packages that require -flto when using -fwhole-program.
+    - Fixed a build problem with package devel/llvm caused by it attempting to
+      strip files during installation using the wrong strip program.
+
+Removed packages
+    Removed kernel-2.6.38/*.
+    Removed kernel-headers/linux-headers-2.6.38.
+    Removed lib/xvidcore.
+    Removed net/mount.cifs.
+    Removed net/portmap.
+    Removed nvidia/nvidia-96.43.19.
+    Removed nvidia/nvidia-173.14.30.
+    Removed system/kbdd.
+    Removed utils/transcode.
+    Removed xorg-7.4/*.
+
+Added packages
+    Added data/ca-bundle.crt.
+    Added devel/glibc-rpcgen-static.
+    Added devel/glibc-rpcsvc.
+    Added kernel-3.1/*.
+    Added kernel-headers/linux-headers-3.1.
+    Added lib/fribidi.
+    Added lib/libass.
+    Added lib/libcap-ng.
+    Added lib/libcec.
+    Added lib/libffi.
+    Added net/cifs-utils.
+    Added net/libtirpc.
+    Added net/rpcbind.
+    Added nvidia/nvidia-96.43.20.
+    Added nvidia/nvidia-173.14.31.
+    Added nvidia/nvidia-275.36.
+    Added nvidia/nvidia-290.10.
+    Added utils/bluez-tools.
+    Added utils/xwiimote.
+
+Updated packages
+    Updated db/mysql.
+    Updated db/sqlite.
+    Updated devel/autoconf-archive.
+    Updated devel/binutils.
+    Updated devel/fakeroot.
+    Updated devel/gdb.
+    Updated devel/intltool.
+    Updated devel/libtool.
+    Updated devel/make.
+    Updated devel/mpfr.
+    Updated devel/nasm.
+    Updated devel/yasm.
+    Updated devel-tainted/binutils.
+    Updated devel-tainted/make.
+    Updated devel-tainted/mpfr.
+    Updated emulators/mame.
+    Updated emulators/stella.
+    Updated extras/libaacs.
+    Updated extras/libdvdcss.
+    Updated fonts/liberation-fonts.
+    Updated gtk/dbus-glib.
+    Updated gtk/glib.
+    Updated gtk/gtk.
+    Updated gtk/gtk-doc.
+    Updated lib/bluez.
+    Updated lib/dbus.
+    Updated lib/ffmpeg.
+    Updated lib/fftw3f.
+    Updated lib/freetype.
+    Updated lib/lame.
+    Updated lib/libbluray.
+    Updated lib/libcdio.
+    Updated lib/libcdio-mini.
+    Updated lib/libdvbpsi.
+    Updated lib/libdvdnav.
+    Updated lib/libdvdread.
+    Updated lib/libgcrypt.
+    Updated lib/libogg.
+    Updated lib/libsndfile.
+    Updated lib/nspr.
+    Updated lib/nss.
+    Updated lib/openssl.
+    Updated lib/pcre.
+    Updated mediaplayers/mplayer-svn.
+    Updated mediaplayers/vlc.
+    Updated mediaplayers/xine-lib.
+    Updated mediaplayers/xine-ui.
+    Updated myth-0.24/blue-abstract-wide.
+    Updated myth-master/blue-abstract-wide.
+    Updated net/curl.
+    Updated net/lighttpd.
+    Updated net/nfs-utils.
+    Updated net/ntp.
+    Updated net/openssh.
+    Updated net/mount.cifs.
+    Updated perl/perl-DateTime-TimeZone.
+    Updated perl/perl-DBD-mysql.
+    Updated perl/perl-HTML-Parser.
+    Updated perl/perl-MiniMyth.
+    Updated perl/perl-Params-Validate.
+    Updated perl/perl-Regexp-Wildcards.
+    Updated perl/perl-Task-Weaken.
+    Updated perl/perl-URI.
+    Updated python/python-distribute.
+    Updated python/python-IMDbPY.
+    Updated python/python-lxml.
+    Updated python/python-oauth.
+    Updated system/acpid.
+    Updated system/eventlircd.
+    Updated system/lirc.
+    Updated system/irclient.
+    Updated system/irserver.
+    Updated system/splashutils.
+    Updated system/udev.
+    Updated system/zoneinfo.
+    Updated utils/busybox.
+    Updated utils/diffutils.
+    Updated utils/coreutils.
+    Updated utils/file.
+    Updated utils/gawk.
+    Updated utils/grep.
+    Updated utils/lm_sensors.
+    Updated utils/lsof.
+    Updated utils/tcl.
+    Updated utils/util-linux.
+    Updated utils/v4l-utils.
+    Updated X11/libva.
+    Updated X11/x11vnc.
+    Updated X11/xscreensaver.
+    Updated xorg-7.6/dri2proto/Makefile
+    Updated xorg-7.6/glew.
+    Updated xorg-7.6/glproto/Makefile
+    Updated xorg-7.6/inputproto.
+    Updated xorg-7.6/libdrm.
+    Updated xorg-7.6/libX11.
+    Updated xorg-7.6/libXcursor/Makefile
+    Updated xorg-7.6/libXfont.
+    Updated xorg-7.6/libXi.
+    Updated xorg-7.6/libXrandr/Makefile
+    Updated xorg-7.6/Mesa.
+    Updated xorg-7.6/mkfontscale/Makefile
+    Updated xorg-7.6/pixman.
+    Updated xorg-7.6/util-macros.
+    Updated xorg-7.6/xdpyinfo.
+    Updated xorg-7.6/xf86-video-ati.
+    Updated xorg-7.6/xf86-video-intel.
+    Updated xorg-7.6/xf86-video-nouveau.
+    Updated xorg-7.6/xf86-video-openchrome.
+    Updated xorg-7.6/xf86-video-savage.
+    Updated xorg-7.6/xinit.
+    Updated xorg-7.6/xkbcomp.
+    Updated xorg-7.6/xkeyboard-config.
+    Updated xorg-7.6/xorg-server.
+    Updated xorg-7.6/xorg-sgml-doctools.
+    Updated xorg-7.6/xproto.
+    Updated xorg-7.6/xrandr/Makefile
+    Updated xorg-7.6/xset.
+
+--------------------------------------------------------------------------------
 Changes since 76 (2011-06-04):
 
 Current MythTV Git versions
