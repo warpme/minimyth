@@ -1,5 +1,5 @@
 GARNAME = lame
-GARVERSION = 3.99.2
+GARVERSION = 3.99.3
 CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/3.99/
 DISTFILES  = $(DISTNAME).tar.gz
