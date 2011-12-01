@@ -1,5 +1,5 @@
 GARNAME = libaacs
-GARVERSION = c5f01a9
+GARVERSION = 7801a71
 CATEGORIES = extras
 MASTER_SITES = git://git.videolan.org/libaacs.git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/libgcrypt
-BUILDDEPS =
+DEPENDS = lang/c lib/libgpg-error lib/libgcrypt
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
