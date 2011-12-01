@@ -3,7 +3,7 @@ GARVERSION = 1.42
 CATEGORIES = disk
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
-#PATCHFILES = $(DISTNAME)-chmod.patch
+PATCHFILES = $(DISTNAME)-chmod.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
