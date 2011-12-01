@@ -1,5 +1,5 @@
 GARNAME = irserver
-GARVERSION = 20111009
+GARVERSION = 20111127
 CATEGORIES = system
 # This site lacks a version number so we will download it from www.minimyth.org.
 #MASTER_SITES = http://www.irtrans.de/download/Server/Linux/
@@ -27,7 +27,7 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC 4.5.2's link time optimization (likely do to it containing a binary blob).
+# Fails to compile with GCC 4.5.3's link time optimization (likely do to it containing a binary blob).
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
