@@ -1,9 +1,9 @@
 GARNAME = e2fsprogs
-GARVERSION = 1.41.14
+GARVERSION = 1.42
 CATEGORIES = disk
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-chmod.patch
+#PATCHFILES = $(DISTNAME)-chmod.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -28,9 +28,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-testio-debug \
 	--disable-libuuid \
 	--disable-libblkid \
+	--disable-quota \
 	--disable-debugfs \
 	--disable-imager \
 	--disable-resizer \
+	--disable-defrag \
 	--disable-fsck \
 	--disable-e2initrd-helper \
 	--enable-tls \
