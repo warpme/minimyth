@@ -1,5 +1,5 @@
 GARNAME = libbluray
-GARVERSION = 3fca731
+GARVERSION = 3b9a9f0
 CATEGORIES = lib
 MASTER_SITES = git://git.videolan.org/libbluray.git/
 DISTFILES = $(DISTNAME).tar.bz2
