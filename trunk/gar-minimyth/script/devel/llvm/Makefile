@@ -1,8 +1,8 @@
 GARNAME = llvm
-GARVERSION = 2.9
+GARVERSION = 3.0
 CATEGORIES = devel
 MASTER_SITES = http://www.llvm.org/releases/$(GARVERSION)/
-DISTFILES = $(DISTNAME).tgz
+DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-cross.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE.TXT
@@ -16,6 +16,8 @@ BUILDDEPS  = perl/perl python/python utils/tcl
 ifneq ($(DESTIMG),build)
 BUILDDEPS += devel/llvm
 endif
+
+WORKSRC = $(WORKDIR)/$(DISTNAME).src
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -44,9 +46,9 @@ BUILD_ARGS     =
 INSTALL_ARGS   =
 ifneq ($(DESTIMG),build)
 BUILD_ARGS    += \
-	TBLGEN="$(build_DESTDIR)$(build_bindir)/tblgen"
+	LLVM_TBLGEN="$(build_DESTDIR)$(build_bindir)/llvm-tblgen"
 INSTALL_ARGS  += \
-	TBLGEN="$(build_DESTDIR)$(build_bindir)/tblgen"
+	LLVM_TBLGEN="$(build_DESTDIR)$(build_bindir)/llvm-tblgen"
 endif
 
 CONFIGURE_ENV = \
