@@ -1,9 +1,8 @@
 GARNAME = libaacs
-GARVERSION = 7801a71
+GARVERSION = 5e8e9b4
 CATEGORIES = extras
 MASTER_SITES = git://git.videolan.org/libaacs.git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-gpg_error.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
