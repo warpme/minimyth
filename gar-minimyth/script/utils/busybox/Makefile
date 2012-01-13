@@ -7,7 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-getty.patch \
-	$(DISTNAME)-modinfo.patch
+	$(DISTNAME)-modinfo.patch \
+	$(DISTNAME)-wget.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
