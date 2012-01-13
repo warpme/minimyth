@@ -1,5 +1,5 @@
 GARNAME = bluez
-GARVERSION = 4.96
+GARVERSION = 4.98
 CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
@@ -28,6 +28,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-network \
 	--disable-sap \
 	--disable-proximity \
+	--disable-time \
+	--disable-alert \
 	--disable-serial \
 	--enable-input \
 	--disable-audio \
