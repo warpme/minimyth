@@ -1,7 +1,7 @@
 GARNAME = freeglut
-GARVERSION = 2.6.0
+GARVERSION = 2.8.0
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/
+MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = MIT
 
