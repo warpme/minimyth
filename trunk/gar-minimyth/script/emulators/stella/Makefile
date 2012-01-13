@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 3.4.1
+GARVERSION = 3.5
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME)-src.tar.gz
@@ -37,7 +37,7 @@ include ../../gar.mk
 
 LDFLAGS := $(CXXFLAGS) $(LDFLAGS)
 
-# Fails to compile with GCC 4.5.2's link time optimization linker plugin enabled.
+# Fails to compile with GCC 4.5.3's link time optimization linker plugin enabled.
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
