@@ -3,7 +3,7 @@ GARVERSION = 1.7.2
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/vba/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(GARNAME)-src-$(GARVERSION).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME)-strrchr.patch $(DISTNAME)-x86_64.patch
+PATCHFILES = $(DISTNAME)-libpng_1.5.patch $(DISTNAME)-configure.patch $(DISTNAME)-strrchr.patch $(DISTNAME)-x86_64.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
