@@ -1,7 +1,7 @@
 GARNAME = gdk-pixbuf
-GARVERSION = 2.22.0
+GARVERSION = 2.24.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gdk-pixbuf/2.22/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gdk-pixbuf/2.24/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-nm.patch
 LICENSE = LGPL2
