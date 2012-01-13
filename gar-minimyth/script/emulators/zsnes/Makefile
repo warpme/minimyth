@@ -3,7 +3,7 @@ GARVERSION = 1.51
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/ZSNES%20v$(GARVERSION)/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))src.tar.bz2
-PATCHFILES = $(DISTNAME)-gcc_4.3.patch $(DISTNAME).patch
+PATCHFILES = $(DISTNAME)-gcc_4.3.patch $(DISTNAME)-libpng_1.5.patch $(DISTNAME).patch
 LICENSE = GPL2
 
 DESCRIPTION = 

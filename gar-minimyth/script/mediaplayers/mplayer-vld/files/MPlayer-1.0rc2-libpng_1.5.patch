@@ -1,0 +1,62 @@
+diff -Naur MPlayer-1.0rc2-old/libmpcodecs/vd_mpng.c MPlayer-1.0rc2-new/libmpcodecs/vd_mpng.c
+--- MPlayer-1.0rc2-old/libmpcodecs/vd_mpng.c	2007-10-07 12:49:25.000000000 -0700
++++ MPlayer-1.0rc2-new/libmpcodecs/vd_mpng.c	2012-01-11 21:26:37.000000000 -0800
+@@ -56,7 +56,7 @@
+ 
+ static void pngReadFN( png_structp pngstr,png_bytep buffer,png_size_t size )
+ {
+- char * p = pngstr->io_ptr;
++ char * p = png_get_io_ptr(pngstr);
+  if(size>pngLength-pngPointer && pngLength>=pngPointer) size=pngLength-pngPointer;
+  fast_memcpy( buffer,(char *)&p[pngPointer],size );
+  pngPointer+=size;
+@@ -93,7 +93,7 @@
+  png_get_IHDR( png,info,&png_width,&png_height,&depth,&color,NULL,NULL,NULL );
+  png_set_bgr( png );
+ 
+- switch( info->color_type ) {
++ switch( png_get_color_type(png, info) ) {
+    case PNG_COLOR_TYPE_GRAY_ALPHA:
+       mp_msg( MSGT_DECVIDEO,MSGL_INFO,"Sorry gray scaled png with alpha channel not supported at moment.\n" );
+       break;
+@@ -110,7 +110,7 @@
+       out_fmt=IMGFMT_BGR24;
+       break;
+    default:
+-      mp_msg( MSGT_DECVIDEO,MSGL_INFO,"Sorry, unsupported PNG colorspace: %d.\n" ,info->color_type);
++      mp_msg( MSGT_DECVIDEO,MSGL_INFO,"Sorry, unsupported PNG colorspace: %d.\n" ,png_get_color_type(png, info));
+  }
+ 
+  // (re)init libvo if image parameters changed (width/height/colorspace)
+diff -Naur MPlayer-1.0rc2-old/libmpcodecs/vf_screenshot.c MPlayer-1.0rc2-new/libmpcodecs/vf_screenshot.c
+--- MPlayer-1.0rc2-old/libmpcodecs/vf_screenshot.c	2007-10-07 12:49:25.000000000 -0700
++++ MPlayer-1.0rc2-new/libmpcodecs/vf_screenshot.c	2012-01-11 21:16:06.000000000 -0800
+@@ -67,7 +67,7 @@
+     info_ptr = png_create_info_struct(png_ptr);
+     fp = NULL;
+ 
+-    if (setjmp(png_ptr->jmpbuf)) {
++  if (setjmp(png_jmpbuf(png_ptr))) {
+ 	png_destroy_write_struct(&png_ptr, &info_ptr);
+ 	fclose(fp);
+ 	return;
+diff -Naur MPlayer-1.0rc2-old/libvo/vo_png.c MPlayer-1.0rc2-new/libvo/vo_png.c
+--- MPlayer-1.0rc2-old/libvo/vo_png.c	2007-10-07 12:49:28.000000000 -0700
++++ MPlayer-1.0rc2-new/libvo/vo_png.c	2012-01-11 21:36:04.000000000 -0800
+@@ -13,6 +13,7 @@
+ #include <errno.h>
+ 
+ #include <png.h>
++#include <zlib.h>
+ 
+ #include "mp_msg.h"
+ #include "config.h"
+@@ -85,7 +86,7 @@
+        return png;
+     }
+     
+-    if (setjmp(png.png_ptr->jmpbuf)) {
++    if (setjmp(png_jmpbuf(png.png_ptr))) {
+         mp_msg(MSGT_VO,MSGL_DBG2, "PNG Internal error!\n");
+         png_destroy_write_struct(&png.png_ptr, &png.info_ptr);
+         fclose(png.fp);
