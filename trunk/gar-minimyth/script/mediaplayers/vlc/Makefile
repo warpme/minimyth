@@ -1,5 +1,5 @@
 GARNAME = vlc
-GARVERSION = 1.1.12
+GARVERSION = 1.1.13
 CATEGORIES = mediaplayers
 PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
