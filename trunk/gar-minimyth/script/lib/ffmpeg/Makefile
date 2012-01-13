@@ -1,6 +1,6 @@
 GARNAME = ffmpeg
 #GARVERSION = 0.7-rc1
-GARVERSION = 12d2765
+GARVERSION = b18e17e
 CATEGORIES = lib
 #MASTER_SITES = http://ffmpeg.org/releases/
 MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -73,6 +73,7 @@ CONFIGURE_ARGS = \
 	--disable-vda \
 	--enable-runtime-cpudetect \
 	--disable-hardcoded-tables \
+	--enable-safe-bitstream-reader \
 	--disable-memalign-hack \
 	--disable-encoders \
 	--enable-decoders \
@@ -87,10 +88,11 @@ CONFIGURE_ARGS = \
 	--enable-filters \
 	--disable-avisynth \
 	--enable-bzlib \
-	--disable-libcelt \
 	--disable-frei0r \
-	--disable-libaacplus \
 	--disable-gnutls \
+	--disable-libaacplus \
+	--disable-libass \
+	--disable-libcelt \
 	--disable-libopencore-amrnb \
 	--disable-libopencore-amrwb \
 	--disable-libopencv \
@@ -166,6 +168,7 @@ CONFIGURE_ARGS = \
 	--enable-yasm \
 	--disable-sram \
 	--disable-symver \
+	--disable-coverage \
 	--disable-debug \
 	--enable-optimizations \
 	--disable-extra-warnings \
@@ -178,7 +181,7 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# Fails to compile with GCC's link time optimization.
+# Fails to compile with GCC 4.5.3's link time optimization enabled.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
