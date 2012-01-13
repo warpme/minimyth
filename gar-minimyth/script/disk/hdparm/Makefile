@@ -1,5 +1,5 @@
 GARNAME = hdparm
-GARVERSION = 9.37
+GARVERSION = 9.38
 CATEGORIES = disk
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
