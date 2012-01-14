@@ -1,5 +1,5 @@
 GARNAME = python-oauth
-GARVERSION = 1263
+GARVERSION = 1267
 CATEGORIES = python
 MASTER_SITES = svn://oauth.googlecode.com/svn/code/python/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.bz2
