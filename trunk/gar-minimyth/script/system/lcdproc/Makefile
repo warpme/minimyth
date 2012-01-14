@@ -1,9 +1,9 @@
 GARNAME = lcdproc
-GARVERSION = 0.5.4
+GARVERSION = 0.5.5
 CATEGORIES = system
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-dm140_henlar_v0.2.patch
+PATCHFILES = $(DISTNAME)-automake_1.11.2.patch $(DISTNAME)-dm140_henlar_v0.2.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -49,4 +49,5 @@ clean-all:
 	@rm -rf $(DESTDIR)$(bindir)/lcdvc
 	@rm -rf $(DESTDIR)$(sbindir)/LCDd
 	@rm -rf $(DESTDIR)$(libdir)/lcdproc
+	@rm -rf $(DESTDIR)$(libexecdir)/lcdproc
 	@rm -rf $(DESTDIR)$(sysconfdir)/LCDd.conf
