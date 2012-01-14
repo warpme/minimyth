@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 173
+GARVERSION = 177
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c gtk/glib lib/libacl lib/libusb-compat lib/libxslt utils/usbutils
+DEPENDS   = lang/c gtk/glib lib/libacl lib/libkmod lib/libusb-compat lib/libxslt utils/usbutils
 BUILDDEPS = utils/gperf
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -25,22 +25,21 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gtk-doc-pdf \
 	--disable-debug \
 	--enable-logging \
-	--disable-rule_generator \
-	--disable-hwdb \
-	--disable-udev_acl \
 	--disable-gudev \
 	--disable-introspection \
 	--disable-keymap \
+	--disable-mtd_probe \
+	--disable-rule_generator \
+	--disable-udev_acl \
 	--disable-floppy \
 	--disable-edd \
-	--disable-action_modeswitch \
 	--with-gnu-ld \
+	--with-usb-ids-path=$(datadir)/usb.ids \
+	--with-pci-ids-path=$(datadir)/pci.ids \
 	--with-rootlibdir=$(libdir) \
 	--without-selinux \
 	--with-firmware-path=$(elibdir)/firmware \
-	--without-systemdsystemunitdir \
-	--with-usb-ids-path=$(datadir)/usb.ids \
-	--with-pci-ids-path=$(datadir)/pci.ids
+	--without-systemdsystemunitdir
 
 include ../../gar.mk
 
