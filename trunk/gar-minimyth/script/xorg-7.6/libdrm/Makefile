@@ -1,9 +1,9 @@
 GARNAME = libdrm
-GARVERSION = 2.4.28
+GARVERSION = 2.4.30
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-rbo_h.patch
+PATCHFILES = $(DISTNAME)-remove_test_decode.patch
 LICENSE = MIT
 
 DESCRIPTION = 
