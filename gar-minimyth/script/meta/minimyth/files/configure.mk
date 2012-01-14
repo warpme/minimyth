@@ -88,6 +88,7 @@ libdirs_base := \
 	$(extras_libdir) \
 	$(elibdir) \
 	$(libdir) \
+	$(libexecdir) \
 	$(libdir)/mysql \
 	$(qt4libdir)
 libdirs := \
