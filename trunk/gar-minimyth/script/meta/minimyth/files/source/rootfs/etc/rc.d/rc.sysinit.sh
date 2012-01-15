@@ -33,7 +33,7 @@
 
 # Create /dev.
 /bin/mkdir -p /var
-/bin/mount -n -t tmpfs /dev /dev
+/bin/mount -n -t devtmpfs /dev /dev
 /bin/mknod -m 0600 /dev/console c 5 1
 /bin/mknod -m 0600 /dev/initctl p
 /bin/mknod -m 0666 /dev/null    c 1 3
