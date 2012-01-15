@@ -1,8 +1,10 @@
 GARNAME = util-linux
-GARVERSION = 2.20
+GARVERSION = 2.20.1
 CATEGORIES = utils
-MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.20/
+MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.20/
+MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.20/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-agetty_2.19.1.patch
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -19,6 +21,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--bindir=$(ebindir) \
 	--sbindir=$(esbindir) \
 	--libdir=$(elibdir) \
+	--cache-file=config.cache \
 	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
@@ -83,6 +86,7 @@ pre-configure:
 	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(if $(filter-out build,$(DESTIMG)),echo "scanf_cv_type_modifier=ms" >> $(WORKSRC)/config.cache)
 	@$(MAKECOOKIE)
 
 post-install:
