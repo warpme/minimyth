@@ -1,5 +1,5 @@
 GARNAME = libxcb
-GARVERSION = 1.7
+GARVERSION = 1.8
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -24,6 +24,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--disable-build-docs \
