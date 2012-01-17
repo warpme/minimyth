@@ -33,6 +33,7 @@ BUILDDEPS += \
 	utils/which \
 	utils/file \
 	utils/tar \
+	utils/xz \
 	utils/bzip2 \
 	utils/gzip \
 	utils/unzip \
