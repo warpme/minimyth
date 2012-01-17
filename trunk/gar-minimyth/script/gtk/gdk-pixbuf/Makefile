@@ -1,8 +1,8 @@
 GARNAME = gdk-pixbuf
-GARVERSION = 2.24.0
+GARVERSION = 2.24.1
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gdk-pixbuf/2.24/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = $(DISTNAME)-nm.patch
 LICENSE = LGPL2
 
@@ -43,7 +43,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-libpng \
  	--with-libjpeg \
 	--with-libtiff \
-	--without-libjasper
+	--without-libjasper \
+	--with-x11
 
 CONFIGURE_ENV  =
 ifneq ($(DESTIMG),build)
