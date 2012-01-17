@@ -1,9 +1,9 @@
 GARNAME = kmod
-GARVERSION = 3
+GARVERSION = 4
 CATEGORIES = lib
-MASTER_SITES = http://git.profusion.mobi/cgit.cgi/kmod.git/snapshot/
-DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = GPL2
+MASTER_SITES = http://packages.profusion.mobi/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.xz
+LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
 define BLURB
@@ -22,6 +22,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-tools \
 	--enable-logging \
 	--disable-debug \
+	--disable-gtk-doc \
+	--disable-gtk-doc-html \
+	--disable-gtk-doc-pdf \
 	--with-gnu-ld \
 	--without-xz \
 	--without-zlib
