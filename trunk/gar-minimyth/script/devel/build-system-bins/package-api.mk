@@ -23,6 +23,7 @@ build_system_bins = $(strip $(sort \
 	tar \
 	texinfo \
 	wget \
+	xz \
 ))
 
 # Overridden by binaries from package devel/binutils.
@@ -164,3 +165,7 @@ build_system_bins_texinfo = \
 
 build_system_bins_wget = \
 	wget
+
+# Overridden by binaries from package utils/xz.
+build_system_bins_xz = \
+	xz
