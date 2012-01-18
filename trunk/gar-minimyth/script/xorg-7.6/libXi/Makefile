@@ -1,5 +1,5 @@
 GARNAME = libXi
-GARVERSION = 1.4.3
+GARVERSION = 1.5.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,13 +10,15 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
+BUILDDEPS = \
+	$(CATEGORY)/xorg-sgml-doctools
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -25,12 +27,15 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
+	--disable-docs \
+	--disable-specs \
 	--enable-malloc0returnsnull \
 	--without-xmlto \
 	--without-fop \
+	--without-xsltproc \
 	--without-asciidoc \
 	--with-gnu-ld
 
