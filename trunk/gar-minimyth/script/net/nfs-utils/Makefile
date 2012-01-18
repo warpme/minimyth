@@ -1,9 +1,8 @@
 GARNAME = nfs-utils
-GARVERSION = 1.2.4
+GARVERSION = 1.2.5
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-git_151a82d.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
