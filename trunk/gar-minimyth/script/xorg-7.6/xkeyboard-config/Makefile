@@ -1,7 +1,8 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.4
+GARVERSION = 2.4.1
 CATEGORIES = $(CATEGORY)
-MASTER_SITES  = http://www.x.org/releases/individual/data/$(GARNAME)/
+MASTER_SITES  = http://xorg.freedesktop.org/releases/individual/data/$(GARNAME)/
+MASTER_SITES += http://xorg.freedesktop.org/releases/individual/data/
 MASTER_SITES += http://xlibs.freedesktop.org/xkbdesc/
 MASTER_SITES += http://people.freedesktop.org/~svu/
 DISTFILES = $(DISTNAME).tar.bz2
