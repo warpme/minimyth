@@ -1,5 +1,5 @@
 GARNAME = vcdimager
-GARVERSION = 0.7.23
+GARVERSION = 0.7.24
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
