@@ -1,9 +1,9 @@
 GARNAME = libcec
-GARVERSION = 5d5a2dc
+GARVERSION = f00ff00
 CATEGORIES = lib
 MASTER_SITES = git://github.com/Pulse-Eight/libcec.git/
 DISTFILES = $(DISTNAME).tar.bz2
-#LICENSE = GPL2/LGPL2_1
+LICENSE = GPL2
 
 DESCRIPTION = 
 define BLURB
@@ -16,13 +16,14 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld
 
 include ../../gar.mk
 
-# libcec fails to compile when compiling with GCC's link time optimization plugin.
+# libcec fails to compile when compiling with GCC 4.5.3's link time optimization plugin.
 CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
