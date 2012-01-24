@@ -1,5 +1,5 @@
 GARNAME = gdb
-GARVERSION = 7.3.1
+GARVERSION = 7.4
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
