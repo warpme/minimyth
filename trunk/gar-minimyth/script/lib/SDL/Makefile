@@ -1,18 +1,17 @@
 GARNAME = SDL
-GARVERSION = 1.2.14
+GARVERSION = 1.2.15
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME).patch.gar
-#PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lib/alsa-lib xorg/xorg
-BUILDDEPS  = devel/autoconf-2.64 devel/yasm
+DEPENDS   = lang/c lib/alsa-lib xorg/xorg
+BUILDDEPS = devel/autoconf-2.64 devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
