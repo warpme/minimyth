@@ -1,7 +1,7 @@
-diff -Naur pcre-8.21-old/pcre-config.in pcre-8.21-new/pcre-config.in
---- pcre-8.21-old/pcre-config.in	2011-12-07 08:32:02.000000000 -0800
-+++ pcre-8.21-new/pcre-config.in	2012-01-09 21:53:37.000000000 -0800
-@@ -18,16 +18,16 @@
+diff -Naur pcre-8.30-old/pcre-config.in pcre-8.30-new/pcre-config.in
+--- pcre-8.30-old/pcre-config.in	2012-01-21 08:00:28.000000000 -0800
++++ pcre-8.30-new/pcre-config.in	2012-02-09 13:01:57.000000000 -0800
+@@ -31,16 +31,16 @@
  libR=
  case `uname -s` in
    *SunOS*)
@@ -22,10 +22,10 @@ diff -Naur pcre-8.21-old/pcre-config.in pcre-8.21-new/pcre-config.in
  fi
  
  while test $# -gt 0; do
-@@ -57,8 +57,8 @@
+@@ -70,15 +70,15 @@
        echo @PACKAGE_VERSION@
        ;;
-     --cflags | --cflags-posix)
+     --cflags)
 -      if test @includedir@ != /usr/include ; then
 -        includes=-I@includedir@
 +      if test @GAR_DESTDIR@@includedir@ != @GAR_DESTDIR@/usr/include ; then
@@ -33,3 +33,12 @@ diff -Naur pcre-8.21-old/pcre-config.in pcre-8.21-new/pcre-config.in
        fi
        echo $includes @PCRE_STATIC_CFLAG@
        ;;
+     --cflags-posix)
+       if test @enable_pcre8@ = yes ; then
+-        if test @includedir@ != /usr/include ; then
+-          includes=-I@includedir@
++        if test @GAR_DESTDIR@@includedir@ != @GAR_DESTDIR@/usr/include ; then
++          includes=-I@GAR_DESTDIR@@includedir@
+         fi
+         echo $includes @PCRE_STATIC_CFLAG@
+       else
