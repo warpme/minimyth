@@ -1,5 +1,5 @@
 GARNAME = kmod
-GARVERSION = 4
+GARVERSION = 5
 CATEGORIES = lib
 MASTER_SITES = http://packages.profusion.mobi/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.xz
