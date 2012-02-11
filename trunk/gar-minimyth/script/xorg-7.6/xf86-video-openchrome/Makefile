@@ -1,8 +1,8 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 1050
+GARVERSION = 0.2.905
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://www.openchrome.org/releases/
-MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
+#MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-pkg_config.patch
 LICENSE = MIT
@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-xDEPENDS = lang/c \
+DEPENDS = lang/c \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -20,6 +20,7 @@ xDEPENDS = lang/c \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
+	$(CATEGORY)/util-macros \
 	$(CATEGORY)/videoproto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xf86driproto \
@@ -34,20 +35,24 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-dri \
 	--disable-debug \
 	--disable-xv-debug \
+	--enable-viaregtool \
 	--with-gnu-ld
 
 include ../../gar.mk
+
+CPPFLAGS := $(CPPFLAGS) `pkg-config --cflags xorg-server`
 
 svn//%/$(DISTNAME).tar.bz2:
 	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+xchecksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 pre-configure:
