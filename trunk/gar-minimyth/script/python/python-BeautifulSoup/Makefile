@@ -1,5 +1,5 @@
 GARNAME = python-BeautifulSoup
-GARVERSION = 3.0.8.1
+GARVERSION = 3.2.0
 CATEGORIES = python
 MASTER_SITES = http://www.crummy.com/software/BeautifulSoup/download/3.x/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
