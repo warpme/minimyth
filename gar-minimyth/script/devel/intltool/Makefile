@@ -1,5 +1,5 @@
 GARNAME = intltool
-GARVERSION = 0.50.0
+GARVERSION = 0.50.1
 CATEGORIES = devel
 MASTER_SITES  = http://edge.launchpad.net/intltool/trunk/$(GARVERSION)/+download/
 MASTER_SITES += http://ftp.gnome.org/pub/gnome/sources/$(GARNAME)/0.41/
