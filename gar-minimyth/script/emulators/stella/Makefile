@@ -1,5 +1,5 @@
 GARNAME = stella
-GARVERSION = 3.5
+GARVERSION = 3.5.5
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME)-src.tar.gz
