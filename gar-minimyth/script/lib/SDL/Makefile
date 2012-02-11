@@ -114,7 +114,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libSDLmain.a
+	@rm -f $(DESTDIR)$(libdir)/libSDLmain.la
 	@rm -f $(DESTDIR)$(libdir)/libSDL.la
 	@rm -f $(DESTDIR)$(bindir)-config/sdl-config
 	@rm -f $(DESTDIR)$(bindir)-config/$(compiler_prefix)sdl-config
