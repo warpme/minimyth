@@ -164,6 +164,14 @@ mm-all:
 				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
 			fi ; \
 		fi ; \
+		if [ ! "$(mm_MYTH_VERSION)" = "0.22" ] && \
+		   [ ! "$(mm_MYTH_VERSION)" = "0.23" ] && \
+		   [ ! "$(mm_MYTH_VERSION)" = "0.24" ] ; then \
+			if [ "$${software}" = "mythstream"  ] || \
+			   [ "$${software}" = "mythstvideo" ] ; then \
+				echo "warning: mm_SOFTWARE=\"$${software}\" is an invalid value for mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\"." ; \
+			fi ; \
+		fi ; \
 	done
 	@echo "    mm_KERNEL_HEADERS_VERSION"
 	@if [ ! "$(mm_KERNEL_HEADERS_VERSION)" = "3.1" ] ; then \
