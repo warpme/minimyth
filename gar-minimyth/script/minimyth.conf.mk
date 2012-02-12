@@ -52,7 +52,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythmusic \
                              $(if $(filter-out $(mm_MYTH_VERSION),0.22),mythnetvision) \
                              mythnews \
-                             mythstream \
+                             $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mythstream) \
                              $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mythvideo) \
                              mythweather \
                              mythzoneminder \
