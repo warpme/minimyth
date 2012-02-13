@@ -1,5 +1,5 @@
 GARNAME = libcec
-GARVERSION = 7c82746
+GARVERSION = 8cd01ab
 CATEGORIES = lib
 MASTER_SITES = git://github.com/Pulse-Eight/libcec.git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,7 +16,6 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--with-gnu-ld
