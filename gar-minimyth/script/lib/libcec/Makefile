@@ -1,5 +1,5 @@
 GARNAME = libcec
-GARVERSION = 8cd01ab
+GARVERSION = cec99a5
 CATEGORIES = lib
 MASTER_SITES = git://github.com/Pulse-Eight/libcec.git/
 DISTFILES = $(DISTNAME).tar.bz2
