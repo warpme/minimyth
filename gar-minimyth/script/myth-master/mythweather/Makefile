@@ -14,6 +14,7 @@ DEPENDS   = \
 	perl/perl-Date-Manip \
 	perl/perl-DateTime-Format-ISO8601 \
 	perl/perl-Image-Size \
+	perl/perl-JSON \
 	perl/perl-SOAP-Lite \
 	perl/perl-XML-Simple \
 	perl/perl-XML-XPath

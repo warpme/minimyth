@@ -1,114 +1,22 @@
-diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfrontend/main.cpp mythtv-master-20111119-2271553-f037f74-new/mythtv/programs/mythfrontend/main.cpp
---- mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfrontend/main.cpp	2011-11-20 08:13:28.000000000 -0800
-+++ mythtv-master-20111119-2271553-f037f74-new/mythtv/programs/mythfrontend/main.cpp	2011-11-20 08:13:30.000000000 -0800
-@@ -1,8 +1,11 @@
- #include <unistd.h>
-+#include <sys/socket.h>
-+#include <netdb.h>
- #include <fcntl.h>
- #include <signal.h>
- #include <cerrno>
- 
-+#include <cstring>
- #include <iostream>
- using namespace std;
- 
-@@ -1612,18 +1615,71 @@
-         mainWindow->installEventFilter(mon);
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/programs/mythfrontend/main.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythtv/programs/mythfrontend/main.cpp
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/programs/mythfrontend/main.cpp	2012-02-29 14:12:05.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/programs/mythfrontend/main.cpp	2012-02-29 17:23:05.000000000 -0800
+@@ -1684,6 +1684,18 @@
+                 QString("NetworkControl failed to bind to port %1.")
+                    .arg(port));
      }
- 
-+    // Network control.
-+    // Create a separate network control on each address enabling simultaneous local and remote control.
-+    QList<NetworkControl *> networkControls;
-     NetworkControl *networkControl = NULL;
-+    QHostAddress networkAddress;
-+    int networkPort = gCoreContext->GetNumSetting("NetworkControlPort", 6545);
-+    // Loopback address.
-+    networkAddress.setAddress("127.0.0.1");
-+    networkControl = new NetworkControl();
-+    if (!networkControl->listen(networkAddress, networkPort))
-+        LOG(VB_GENERAL, LOG_ERR,
-+                QString("NetworkControl failed to bind to port %1 of address %2.")
-+                .arg(networkPort).arg(networkAddress.toString()));
-+    networkControls.append(networkControl);
-+    // Non-loopback address(es).
-     if (gCoreContext->GetNumSetting("NetworkControlEnabled", 0))
-     {
--        int networkPort =
--            gCoreContext->GetNumSetting("NetworkControlPort", 6545);
--        networkControl = new NetworkControl();
--
--        if (!networkControl->listen(gCoreContext->MythHostAddressAny(),
--                                    networkPort))
-+        char hostname[256];
-+        if (!gethostname(hostname,256))
-+        {
-+            struct addrinfo req;
-+            struct addrinfo *res = NULL;
-+            memset(&req, 0, sizeof(req));
-+            req.ai_family = PF_UNSPEC;     // Request both IPv4 and IPv6 addresses.
-+            req.ai_socktype = SOCK_STREAM; // Request only one socket type so that we get only one record per address.
-+            if (!getaddrinfo(hostname, NULL, &req, &res))
-+            {
-+                struct addrinfo *cur = res;
-+                while (cur != NULL)
-+                {
-+                    char address[INET_ADDRSTRLEN + INET6_ADDRSTRLEN];
-+                    if (!getnameinfo(cur->ai_addr, cur->ai_addrlen,
-+                                     address, INET_ADDRSTRLEN + INET6_ADDRSTRLEN,
-+                                     NULL, 0,
-+                                     NI_NUMERICHOST))
-+                    {
-+                        networkAddress.setAddress(address);
-+                        if ( !(  networkAddress.isNull()                                                               ) &&
-+                             !( (networkAddress.protocol() == QAbstractSocket::IPv4Protocol) && (networkAddress.toString() == "127.0.0.1") ) &&
-+                             !( (networkAddress.protocol() == QAbstractSocket::IPv6Protocol) && (networkAddress.toString() == "::1"      ) ) )
-+                        {
-+                            networkControl = new NetworkControl();
-+                            if (!networkControl->listen(networkAddress, networkPort))
-+                                LOG(VB_GENERAL, LOG_ERR,
-+                                        QString("NetworkControl failed to bind to port %1 of address %2.")
-+                                        .arg(networkPort).arg(networkAddress.toString()));
-+                            networkControls.append(networkControl);
-+                        }
-+                    }
-+                    cur = cur->ai_next;
-+                }
-+            }
-+            else
-+            {
-+                LOG(VB_GENERAL, LOG_ERR,
-+                        QString("NetworkControl failed to determine network address(es)."));
-+            }
-+            if (res != NULL)
-+                freeaddrinfo(res);
-+        }
-+        else
-+        {
-             LOG(VB_GENERAL, LOG_ERR,
--                QString("NetworkControl failed to bind to port %1.")
--                    .arg(networkPort));
-+                QString("NetworkControl failed to determine host name."));
-+        }
-     }
++    else
++    {
++        int port = gCoreContext->GetNumSetting("NetworkControlPort", 6546);
++        networkControl = new NetworkControl();
++        QList<QHostAddress> LocalhostList;
++        LocalhostList.clear();
++        LocalhostList.append(QHostAddress("127.0.0.1"));
++        if (!networkControl->listen(LocalhostList, port))
++            LOG(VB_GENERAL, LOG_ERR,
++                QString("NetworkControl failed to bind to port %1.")
++                   .arg(port));
++    }
  
  #ifdef __linux__
-@@ -1637,6 +1693,8 @@
- 
-     if (!RunMenu(themedir, themename) && !resetTheme(themedir, themename))
-     {
-+        while (!networkControls.isEmpty())
-+            delete networkControls.takeFirst();
-         return GENERIC_EXIT_NO_THEME;
-     }
- 
-@@ -1708,7 +1766,8 @@
-     if (mon)
-         mon->deleteLater();
- 
--    delete networkControl;
-+    while (!networkControls.isEmpty())
-+        delete networkControls.takeFirst();
- 
-     DestroyMythMainWindow();
- 
+ #ifdef CONFIG_BINDINGS_PYTHON

@@ -5,9 +5,9 @@ MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-codec_id_svq3_fix.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-libcec.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
@@ -15,8 +15,7 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-minimyth.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-programid.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-cdio.patch
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -115,9 +114,11 @@ CONFIGURE_ARGS = \
 	--enable-lirc \
 	--enable-joystick-menu \
 	--enable-libcec \
+	--libcec-path="$(DESTDIR)$(includedir)" \
 	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
+	--disable-ceton \
 	--enable-v4l2 \
 	--enable-ivtv \
 	--enable-hdpvr \
@@ -137,6 +138,8 @@ CONFIGURE_ARGS = \
 	--disable-mac-bundle \
 	--enable-libxml2 \
 	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
+	--disable-libdns-sd \
+	--disable-libcrypto \
 	--without-bindings="perl" \
 	--without-bindings="php" \
 	--with-bindings="python"

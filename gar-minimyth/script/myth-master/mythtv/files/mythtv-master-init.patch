@@ -1,6 +1,6 @@
-diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp mythtv-master-20111119-2271553-f037f74-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp
---- mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2011-11-20 08:13:32.000000000 -0800
-+++ mythtv-master-20111119-2271553-f037f74-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2011-11-20 08:13:34.000000000 -0800
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2012-02-29 15:46:23.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2012-02-29 15:46:25.000000000 -0800
 @@ -42,7 +42,7 @@
  #ifdef Q_WS_MACX
      gc->setValue(QDir::homePath() + "/Pictures");
@@ -10,16 +10,7 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythgallery/my
  #endif
      gc->setHelpText(QObject::tr("This directory must exist and "
                         "MythGallery needs to have read permission."));
-@@ -87,7 +87,7 @@
- {
-     HostLineEdit *gc = new HostLineEdit("GalleryMoviePlayerCmd");
-     gc->setLabel(QObject::tr("Command run to display movie files"));
--    gc->setValue("mplayer -fs %s");
-+    gc->setValue("mplayer -fs -zoom -quiet -loop 0 %s");
-     gc->setHelpText(QObject::tr("This command is executed whenever a movie "
-                     "file is selected"));
-     return gc;
-@@ -107,7 +107,7 @@
+@@ -97,7 +97,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("GalleryImportDirs");
      gc->setLabel(QObject::tr("Paths to import images from"));
@@ -28,86 +19,9 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythgallery/my
      gc->setHelpText(QObject::tr("This is a colon separated list of paths. "
                      "If the path in the list is a directory, its contents will "
                      "be copied. If it is an executable, it will be run."));
-diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythmusic/mythmusic/globalsettings.cpp mythtv-master-20111119-2271553-f037f74-new/mythplugins/mythmusic/mythmusic/globalsettings.cpp
---- mythtv-master-20111119-2271553-f037f74-old/mythplugins/mythmusic/mythmusic/globalsettings.cpp	2011-11-20 08:13:32.000000000 -0800
-+++ mythtv-master-20111119-2271553-f037f74-new/mythplugins/mythmusic/mythmusic/globalsettings.cpp	2011-11-20 08:13:34.000000000 -0800
-@@ -39,7 +39,7 @@
- #ifdef Q_WS_MACX
-     gc->setValue(QDir::homePath() + "/Music");
- #else
--    gc->setValue("/mnt/store/music/");
-+    gc->setValue("/mnt/music/");
- #endif
-     gc->setHelpText(QObject::tr("This directory must exist, and the user "
-                     "running MythMusic needs to have write permission "
-@@ -52,6 +52,10 @@
-     HostComboBox *gc = new HostComboBox("MusicAudioDevice", true);
-     gc->setLabel(QObject::tr("Audio device"));
-     gc->addSelection(QObject::tr("default"), "default");
-+
-+    gc->addSelection(QObject::tr("ALSA:default"), "ALSA:default");
-+    gc->addSelection(QObject::tr("ALSA:iec958"), "ALSA:iec958");
-+
-     QDir dev("/dev", "dsp*", QDir::Name, QDir::System);
-     gc->fillSelectionsFromDir(dev);
-     dev.setNameFilter("adsp*");
-@@ -90,7 +94,7 @@
- {
-     HostLineEdit *gc = new HostLineEdit("TreeLevels", true);
-     gc->setLabel(QObject::tr("Tree Sorting"));
--    gc->setValue("splitartist artist album title");
-+    gc->setValue("directory");
-     gc->setHelpText(QObject::tr("Order in which to sort the Music "
-                     "Tree. Possible values are a space-separated list of "
-                     "genre, splitartist, splitartist1, artist, album, and "
-@@ -113,7 +117,7 @@
- {
-     HostLineEdit *gc = new HostLineEdit("NonID3FileNameFormat");
-     gc->setLabel(QObject::tr("Filename Format"));
--    gc->setValue("GENRE/ARTIST/ALBUM/TRACK_TITLE");
-+    gc->setValue("ARTIST/YEAR - ALBUM/TRACK - TITLE");
-     gc->setHelpText(QObject::tr("Directory and filename Format used to grab "
-                     "information if no ID3 information is found. Accepts "
-                     "GENRE, ARTIST, ALBUM, TITLE, ARTIST_TITLE and "
-@@ -231,7 +235,7 @@
- {
-     HostLineEdit *gc = new HostLineEdit("FilenameTemplate");
-     gc->setLabel(QObject::tr("File storage location"));
--    gc->setValue("ARTIST/ALBUM/TRACK-TITLE"); // Don't translate
-+    gc->setValue("ARTIST/YEAR-ALBUM/TRACK-TITLE"); // Don't translate
-     gc->setHelpText(QObject::tr("Defines the location/name for new songs. "
-                     "Valid tokens are: GENRE, ARTIST, ALBUM, "
-                     "TRACK, TITLE, YEAR"));
-@@ -355,7 +359,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("ListAsShuffled");
-     gc->setLabel(QObject::tr("List as Shuffled"));
--    gc->setValue(false);
-+    gc->setValue(true);
-     gc->setHelpText(QObject::tr("List songs on the playback screen "
-                     "in the order they will be played."));
-     return gc;
-@@ -365,7 +369,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("ShowWholeTree");
-     gc->setLabel(QObject::tr("Show entire music tree"));
--    gc->setValue(false);
-+    gc->setValue(true);
-     gc->setHelpText(QObject::tr("If selected, you can navigate your entire "
-                     "music tree from the playing screen. N.B. Does not work "
-                     "with accelerated buttons disabled"));
-@@ -501,7 +505,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("CDWriterEnabled");
-     gc->setLabel(QObject::tr("Enable CD Writing."));
--    gc->setValue(true);
-+    gc->setValue(false);
-     gc->setHelpText(QObject::tr("Requires a SCSI or an IDE-SCSI CD Writer."));
-     return gc;
- };
-diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/libs/libmythmetadata/globals.cpp mythtv-master-20111119-2271553-f037f74-new/mythtv/libs/libmythmetadata/globals.cpp
---- mythtv-master-20111119-2271553-f037f74-old/mythtv/libs/libmythmetadata/globals.cpp	2011-11-20 08:13:32.000000000 -0800
-+++ mythtv-master-20111119-2271553-f037f74-new/mythtv/libs/libmythmetadata/globals.cpp	2011-11-20 08:13:34.000000000 -0800
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/libs/libmythmetadata/globals.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythtv/libs/libmythmetadata/globals.cpp
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/libs/libmythmetadata/globals.cpp	2012-02-29 15:46:24.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/libs/libmythmetadata/globals.cpp	2012-02-29 15:46:25.000000000 -0800
 @@ -32,5 +32,5 @@
  #ifdef Q_WS_MACX
  const QString DEFAULT_VIDEOSTARTUP_DIR = QDir::homePath() + "/Movies";
@@ -115,9 +29,9 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/libs/libmythmetadat
 -const QString DEFAULT_VIDEOSTARTUP_DIR = "/share/Movies/dvd";
 +const QString DEFAULT_VIDEOSTARTUP_DIR = "/mnt/video";
  #endif
-diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfrontend/globalsettings.cpp mythtv-master-20111119-2271553-f037f74-new/mythtv/programs/mythfrontend/globalsettings.cpp
---- mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfrontend/globalsettings.cpp	2011-11-20 08:13:33.000000000 -0800
-+++ mythtv-master-20111119-2271553-f037f74-new/mythtv/programs/mythfrontend/globalsettings.cpp	2011-11-20 08:13:34.000000000 -0800
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/programs/mythfrontend/globalsettings.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythtv/programs/mythfrontend/globalsettings.cpp
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/programs/mythfrontend/globalsettings.cpp	2012-02-29 15:46:24.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/programs/mythfrontend/globalsettings.cpp	2012-02-29 15:46:25.000000000 -0800
 @@ -1283,7 +1283,7 @@
      gc->addSelection(QObject::tr("Record date"), "Date");
      gc->addSelection(QObject::tr("Season/Episode"), "Season");
@@ -127,7 +41,7 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfronte
      gc->setHelpText(QObject::tr("Selects how to sort a shows episodes"));
      return gc;
  }
-@@ -1544,7 +1544,7 @@
+@@ -1528,7 +1528,7 @@
      HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
      gc->setLabel(QObject::tr("Action on playback exit"));
      gc->addSelection(QObject::tr("Just exit"), "0");
@@ -136,7 +50,7 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfronte
      gc->addSelection(QObject::tr("Always prompt (excluding Live TV)"), "1");
      gc->addSelection(QObject::tr("Always prompt (including Live TV)"), "4");
      gc->addSelection(QObject::tr("Prompt for Live TV only"), "8");
-@@ -1559,7 +1559,7 @@
+@@ -1543,7 +1543,7 @@
  {
      HostCheckBox *gc = new HostCheckBox("EndOfRecordingExitPrompt");
      gc->setLabel(QObject::tr("Prompt at end of recording"));
@@ -145,7 +59,7 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfronte
      gc->setHelpText(QObject::tr("If enabled, a menu will be displayed allowing "
                      "you to delete the recording when it has finished "
                      "playing."));
-@@ -1622,7 +1622,7 @@
+@@ -1606,7 +1606,7 @@
  // {
  //     HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
  //     gc->setLabel(QObject::tr("Display live preview of recordings"));
@@ -154,12 +68,3 @@ diff -Naur mythtv-master-20111119-2271553-f037f74-old/mythtv/programs/mythfronte
  //     gc->setHelpText(QObject::tr("If enabled, a preview of the recording "
  //                     "will play in a small window on the \"Watch a "
  //                     "Recording\" menu."));
-@@ -2252,7 +2252,7 @@
-     GlobalCheckBox *bc = new GlobalCheckBox("LastFreeCard");
-     bc->setLabel(QObject::tr("Avoid conflicts between Live TV and "
-                  "scheduled shows"));
--    bc->setValue(false);
-+    bc->setValue(true);
-     bc->setHelpText(QObject::tr("If enabled, Live TV will choose a tuner card "
-                     "that is less likely to have scheduled recordings "
-                     "rather than the best card available."));
