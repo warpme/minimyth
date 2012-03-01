@@ -1,0 +1,31 @@
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/configure mythtv-master-20120228-5206271-ee9ef62-new/mythtv/configure
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/configure	2012-02-29 14:12:04.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/configure	2012-02-29 16:28:14.000000000 -0800
+@@ -4140,7 +4140,7 @@
+ int main(void) {
+     if (CEC_LIB_VERSION_MAJOR < 1)
+         return 0;
+-    return (long) LoadLibCec;
++    return (long) LibCecInit;
+ }
+ EOF
+ fi
+diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/libs/libmythui/cecadapter.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythtv/libs/libmythui/cecadapter.cpp
+--- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/libs/libmythui/cecadapter.cpp	2012-02-29 14:12:05.000000000 -0800
++++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/libs/libmythui/cecadapter.cpp	2012-02-29 16:29:19.000000000 -0800
+@@ -18,12 +18,12 @@
+ #define MAX_CEC_DEVICES 10
+ #define LOC QString("CECAdapter: ")
+ 
+-#include "cec.h"
+-#include "cecc.h"
++#include "libcec/cec.h"
++#include "libcec/cecc.h"
+ #include <iostream>
+ using namespace CEC;
+ using namespace std;
+-#include "cecloader.h"
++#include "libcec/cecloader.h"
+ 
+ QMutex* CECAdapter::gLock = new QMutex(QMutex::Recursive);
+ 

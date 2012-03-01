@@ -18,7 +18,6 @@ DEPENDS = \
 	lib/libcdio \
 	lib/libogg \
 	lib/libvorbis \
-	lib/SDL \
 	lib/taglib
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -32,9 +31,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/mythplugins/Makefile
 CONFIGURE_ARGS = \
 	$(MYTHTV_PLUGINS_CONFIGURE_ARGS) \
 	--enable-mythmusic \
-		--disable-libvisual \
-		--enable-fftw \
-		--enable-sdl
+		--enable-cdio \
+		--enable-fftw
 
 CONFIGURE_ENV = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV     = $(MYTHTV_BUILD_ENV)
