@@ -28,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-build-docs \
-	--disable-composite \
+	--enable-composite \
 	--enable-damage \
 	--enable-dpms \
 	--enable-dri2 \
@@ -63,6 +63,7 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
+	@rm -f $(DESTDIR)$(libdir)/libxcb-composite.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-damage.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-dpms.la
 	@rm -f $(DESTDIR)$(libdir)/libxcb-dri2.la
