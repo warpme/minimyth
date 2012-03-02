@@ -1,6 +1,6 @@
 diff -Naur lirc-0.9.0-old/ANNOUNCE lirc-0.9.0-new/ANNOUNCE
 --- lirc-0.9.0-old/ANNOUNCE	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/ANNOUNCE	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/ANNOUNCE	2012-02-29 21:44:36.000000000 -0800
 @@ -1,4 +1,4 @@
 -LIRC - Linux Infrared Remote Control, Version: 0.9.0
 +LIRC - Linux Infrared Remote Control, Version: 0.9.1-git
@@ -9,7 +9,7 @@ diff -Naur lirc-0.9.0-old/ANNOUNCE lirc-0.9.0-new/ANNOUNCE
  Copyright (C) 1998-2010 Christoph Bartelmus <lirc@bartelmus.de>
 diff -Naur lirc-0.9.0-old/configure.ac lirc-0.9.0-new/configure.ac
 --- lirc-0.9.0-old/configure.ac	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/configure.ac	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/configure.ac	2012-02-29 21:46:37.000000000 -0800
 @@ -7,7 +7,7 @@
  AC_CONFIG_SRCDIR([daemons/lircd.c])
  AC_CONFIG_MACRO_DIR([m4])
@@ -81,9 +81,20 @@ diff -Naur lirc-0.9.0-old/configure.ac lirc-0.9.0-new/configure.ac
  AC_SUBST(driver)
  AC_SUBST(lirc_driver)
  AC_SUBST(hw_module_libs)
+@@ -1715,7 +1708,9 @@
+ 
+ AH_TOP([
+ /* device file names - beneath DEVDIR (default /dev) */
+-#define DEV_LIRC	"lirc"
++#define DEV_LIRC	"lirc0"
++
++/* daemon socket file names - beneath $varrundir (default /var/run/lirc) */
+ #define DEV_LIRCD	"lircd"
+ #define DEV_LIRCM	"lircm"
+ 
 diff -Naur lirc-0.9.0-old/contrib/release-process.txt lirc-0.9.0-new/contrib/release-process.txt
 --- lirc-0.9.0-old/contrib/release-process.txt	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/contrib/release-process.txt	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/contrib/release-process.txt	2012-02-29 21:44:36.000000000 -0800
 @@ -22,7 +22,7 @@
  4) Switch back to master:
  	git checkout master
@@ -104,7 +115,7 @@ diff -Naur lirc-0.9.0-old/contrib/release-process.txt lirc-0.9.0-new/contrib/rel
  	cp INSTALL.txt INSTALL
 diff -Naur lirc-0.9.0-old/daemons/dump_config.c lirc-0.9.0-new/daemons/dump_config.c
 --- lirc-0.9.0-old/daemons/dump_config.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/daemons/dump_config.c	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/daemons/dump_config.c	2012-02-29 21:44:36.000000000 -0800
 @@ -120,11 +120,11 @@
  	if (!is_raw(rem)) {
  		if (rem->pre_data_bits > 0) {
@@ -141,7 +152,7 @@ diff -Naur lirc-0.9.0-old/daemons/dump_config.c lirc-0.9.0-new/daemons/dump_conf
  			fprintf(f, "  baud            %d\n", rem->baud);
 diff -Naur lirc-0.9.0-old/daemons/ir_remote.c lirc-0.9.0-new/daemons/ir_remote.c
 --- lirc-0.9.0-old/daemons/ir_remote.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/daemons/ir_remote.c	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/daemons/ir_remote.c	2012-02-29 21:44:36.000000000 -0800
 @@ -490,7 +490,8 @@
  {
  	int len;
@@ -154,7 +165,7 @@ diff -Naur lirc-0.9.0-old/daemons/ir_remote.c lirc-0.9.0-new/daemons/ir_remote.c
  }
 diff -Naur lirc-0.9.0-old/daemons/lircd.c lirc-0.9.0-new/daemons/lircd.c
 --- lirc-0.9.0-old/daemons/lircd.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/daemons/lircd.c	2011-07-27 20:10:09.000000000 -0700
++++ lirc-0.9.0-new/daemons/lircd.c	2012-02-29 21:44:36.000000000 -0800
 @@ -231,14 +231,10 @@
  	int done, todo = len;
  
@@ -192,7 +203,7 @@ diff -Naur lirc-0.9.0-old/daemons/lircd.c lirc-0.9.0-new/daemons/lircd.c
  	}
 diff -Naur lirc-0.9.0-old/drivers/lirc_atiusb/lirc_atiusb.c lirc-0.9.0-new/drivers/lirc_atiusb/lirc_atiusb.c
 --- lirc-0.9.0-old/drivers/lirc_atiusb/lirc_atiusb.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/lirc_atiusb/lirc_atiusb.c	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/drivers/lirc_atiusb/lirc_atiusb.c	2012-02-29 21:44:36.000000000 -0800
 @@ -1048,7 +1048,7 @@
  		goto new_irctl_failure_check;
  	}
@@ -204,8 +215,103 @@ diff -Naur lirc-0.9.0-old/drivers/lirc_atiusb/lirc_atiusb.c lirc-0.9.0-new/drive
  	}
 diff -Naur lirc-0.9.0-old/drivers/lirc_dev/lirc_dev.c lirc-0.9.0-new/drivers/lirc_dev/lirc_dev.c
 --- lirc-0.9.0-old/drivers/lirc_dev/lirc_dev.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/lirc_dev/lirc_dev.c	2011-07-27 20:10:21.000000000 -0700
-@@ -904,7 +904,7 @@
++++ lirc-0.9.0-new/drivers/lirc_dev/lirc_dev.c	2012-02-29 21:50:48.000000000 -0800
+@@ -236,7 +236,9 @@
+ 		cdev_init(cdev, &lirc_dev_fops);
+ 		cdev->owner = THIS_MODULE;
+ 	}
+-	kobject_set_name(&cdev->kobj, "lirc%d", d->minor);
++	retval = kobject_set_name(&cdev->kobj, "lirc%d", d->minor);
++	if (retval)
++		return retval;
+ 
+ 	retval = cdev_add(cdev, MKDEV(MAJOR(lirc_base_dev), d->minor), 1);
+ 	if (retval)
+@@ -583,6 +585,8 @@
+ 
+ 	mutex_unlock(&lirc_dev_lock);
+ 
++	nonseekable_open(inode, file);
++
+ 	return retval;
+ }
+ EXPORT_SYMBOL(lirc_dev_fop_open);
+@@ -746,10 +750,8 @@
+ }
+ EXPORT_SYMBOL(lirc_dev_fop_ioctl);
+ 
+-ssize_t lirc_dev_fop_read(struct file *file,
+-			  char *buffer,
+-			  size_t length,
+-			  loff_t *ppos)
++ssize_t lirc_dev_fop_read(struct file *file, char __user *buffer,
++			  size_t length, loff_t *ppos)
+ {
+ 	struct irctl *ir = irctls[iminor(file->f_dentry->d_inode)];
+ 	unsigned char *buf;
+@@ -767,18 +769,18 @@
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	if (mutex_lock_interruptible(&ir->irctl_lock))
+-		return -ERESTARTSYS;
++	if (mutex_lock_interruptible(&ir->irctl_lock)) {
++		ret = -ERESTARTSYS;
++		goto out_unlocked;
++	}
+ 	if (!ir->attached) {
+-		mutex_unlock(&ir->irctl_lock);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto out_locked;
+ 	}
+ 
+ 	if (length % ir->chunk_size) {
+-		dprintk(LOGHEAD "read result = -EINVAL\n",
+-			ir->d.name, ir->d.minor);
+-		mutex_unlock(&ir->irctl_lock);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out_locked;
+ 	}
+ 
+ 	/*
+@@ -829,19 +831,23 @@
+ 			lirc_buffer_read(ir->buf, buf);
+ 			ret = copy_to_user((void *)buffer+written, buf,
+ 					   ir->buf->chunk_size);
+-			written += ir->buf->chunk_size;
++			if (!ret)
++				written += ir->buf->chunk_size;
++			else
++				ret = -EFAULT;
+ 		}
+ 	}
+ 
+ 	remove_wait_queue(&ir->buf->wait_poll, &wait);
+ 	set_current_state(TASK_RUNNING);
+ 
++out_locked:
+ 	mutex_unlock(&ir->irctl_lock);
+ 
+ out_unlocked:
+ 	kfree(buf);
+ 	dprintk(LOGHEAD "read result = %s (%d)\n",
+-		ir->d.name, ir->d.minor, ret ? "-EFAULT" : "OK", ret);
++		ir->d.name, ir->d.minor, ret ? "<fail>" : "OK", ret);
+ 
+ 	return ret ? ret : written;
+ }
+@@ -864,7 +870,7 @@
+ EXPORT_SYMBOL(lirc_get_pdata);
+ 
+ 
+-ssize_t lirc_dev_fop_write(struct file *file, const char *buffer,
++ssize_t lirc_dev_fop_write(struct file *file, const char __user *buffer,
+ 			   size_t length, loff_t *ppos)
+ {
+ 	struct irctl *ir = irctls[iminor(file->f_dentry->d_inode)];
+@@ -904,7 +910,7 @@
  	}
  
  	printk(KERN_INFO "lirc_dev: IR Remote Control driver registered, "
@@ -214,9 +320,25 @@ diff -Naur lirc-0.9.0-old/drivers/lirc_dev/lirc_dev.c lirc-0.9.0-new/drivers/lir
  
  error:
  	return retval;
+diff -Naur lirc-0.9.0-old/drivers/lirc_dev/lirc_dev.h lirc-0.9.0-new/drivers/lirc_dev/lirc_dev.h
+--- lirc-0.9.0-old/drivers/lirc_dev/lirc_dev.h	2011-03-25 15:28:18.000000000 -0700
++++ lirc-0.9.0-new/drivers/lirc_dev/lirc_dev.h	2012-02-29 21:50:02.000000000 -0800
+@@ -257,9 +257,9 @@
+ #else
+ long lirc_dev_fop_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ #endif
+-ssize_t lirc_dev_fop_read(struct file *file, char *buffer, size_t length,
++ssize_t lirc_dev_fop_read(struct file *file, char __user *buffer, size_t length,
+ 			  loff_t *ppos);
+-ssize_t lirc_dev_fop_write(struct file *file, const char *buffer, size_t length,
+-			   loff_t *ppos);
++ssize_t lirc_dev_fop_write(struct file *file, const char __user *buffer,
++			   size_t length, loff_t *ppos);
+ 
+ #endif
 diff -Naur lirc-0.9.0-old/drivers/lirc_sir/lirc_sir.c lirc-0.9.0-new/drivers/lirc_sir/lirc_sir.c
 --- lirc-0.9.0-old/drivers/lirc_sir/lirc_sir.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/lirc_sir/lirc_sir.c	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/drivers/lirc_sir/lirc_sir.c	2012-02-29 21:44:36.000000000 -0800
 @@ -203,8 +203,6 @@
  /* SECTION: Prototypes */
  
@@ -262,7 +384,7 @@ diff -Naur lirc-0.9.0-old/drivers/lirc_sir/lirc_sir.c lirc-0.9.0-new/drivers/lir
  static int set_use_inc(void *data)
 diff -Naur lirc-0.9.0-old/drivers/lirc_wpc8769l/lirc_wpc8769l.c lirc-0.9.0-new/drivers/lirc_wpc8769l/lirc_wpc8769l.c
 --- lirc-0.9.0-old/drivers/lirc_wpc8769l/lirc_wpc8769l.c	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/lirc_wpc8769l/lirc_wpc8769l.c	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/drivers/lirc_wpc8769l/lirc_wpc8769l.c	2012-02-29 21:44:36.000000000 -0800
 @@ -816,10 +816,6 @@
  	/* Reset last timeout value. */
  	lastus = 0;
@@ -336,7 +458,7 @@ diff -Naur lirc-0.9.0-old/drivers/lirc_wpc8769l/lirc_wpc8769l.c lirc-0.9.0-new/d
  		release_region(baseport2, WPC8769L_IO_REGION_2_SIZE);
 diff -Naur lirc-0.9.0-old/drivers/Makefile.am lirc-0.9.0-new/drivers/Makefile.am
 --- lirc-0.9.0-old/drivers/Makefile.am	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/Makefile.am	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/drivers/Makefile.am	2012-02-29 21:44:36.000000000 -0800
 @@ -26,14 +26,3 @@
  
  CLEANFILES = *~
@@ -354,7 +476,7 @@ diff -Naur lirc-0.9.0-old/drivers/Makefile.am lirc-0.9.0-new/drivers/Makefile.am
 -	-test "@driver@" != "mediafocusI" || test -c $(DESTDIR)$(devdir)/lirc || $(RM) $(DESTDIR)$(devdir)/lirc
 diff -Naur lirc-0.9.0-old/drivers/Makefile.common lirc-0.9.0-new/drivers/Makefile.common
 --- lirc-0.9.0-old/drivers/Makefile.common	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/drivers/Makefile.common	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/drivers/Makefile.common	2012-02-29 21:44:36.000000000 -0800
 @@ -8,7 +8,7 @@
  # some magic for using linux kernel settings
  # when compiling module(s)
@@ -385,7 +507,7 @@ diff -Naur lirc-0.9.0-old/drivers/Makefile.common lirc-0.9.0-new/drivers/Makefil
  endif
 diff -Naur lirc-0.9.0-old/NEWS lirc-0.9.0-new/NEWS
 --- lirc-0.9.0-old/NEWS	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/NEWS	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/NEWS	2012-02-29 21:44:36.000000000 -0800
 @@ -1,3 +1,6 @@
 +0.9.1-git: UNDER DEVELOPMENT
 +  * TBD
@@ -395,7 +517,7 @@ diff -Naur lirc-0.9.0-old/NEWS lirc-0.9.0-new/NEWS
      now redundant with upstream kernel drivers
 diff -Naur lirc-0.9.0-old/setup.sh lirc-0.9.0-new/setup.sh
 --- lirc-0.9.0-old/setup.sh	2011-03-25 15:28:18.000000000 -0700
-+++ lirc-0.9.0-new/setup.sh	2011-07-27 20:10:21.000000000 -0700
++++ lirc-0.9.0-new/setup.sh	2012-02-29 21:44:36.000000000 -0800
 @@ -1,6 +1,6 @@
  #! /bin/sh
  
