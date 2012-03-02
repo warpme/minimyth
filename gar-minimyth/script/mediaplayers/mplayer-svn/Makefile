@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 34553
+GARVERSION = 34603
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -88,11 +88,13 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-vstream \
 	--enable-pthreads \
 	--disable-w32threads \
+	--disable-os2threads \
 	--disable-ass-internal \
 	--disable-rpath
 # Codecs
 # --enable-libcdio must be auto or cflags and libs will not be determined correctly.
-# --enable-ffmpeg_so
+# --enable-ffmpeg_so must be auto or cflags and libs will not be determined correctly.
+# --enable-postproc must be auto or cflags and libs will not be determined correctly.
 CONFIGURE_ARGS_CODEC = \
 	--disable-gif \
 	--enable-png \
