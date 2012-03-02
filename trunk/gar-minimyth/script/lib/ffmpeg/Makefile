@@ -1,9 +1,9 @@
 GARNAME = ffmpeg
-#GARVERSION = 0.7-rc1
-GARVERSION = b18e17e
+GARVERSION = 0.10
+#GARVERSION = b18e17e
 CATEGORIES = lib
-#MASTER_SITES = http://ffmpeg.org/releases/
-MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
+MASTER_SITES = http://ffmpeg.org/releases/
+#MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
 LICENSE = GPL2/LGPL2_1
@@ -38,7 +38,6 @@ CONFIGURE_ARGS = \
 	--disable-nonfree \
 	--enable-doc \
 	--enable-ffmpeg \
-	--disable-avconv \
 	--disable-ffplay \
 	--disable-ffprobe \
 	--disable-ffserver \
@@ -133,6 +132,7 @@ CONFIGURE_ARGS = \
 	--nm="$(NM)" \
 	--ar="$(AR)" \
 	--as="$(CC)" \
+	--yasmexe="yesm" \
 	--cc="$(CC)" \
 	--cxx="$(CXX)" \
 	--ld="$(CC)" \
@@ -168,6 +168,7 @@ CONFIGURE_ARGS = \
 	--enable-yasm \
 	--disable-sram \
 	--disable-symver \
+	--postproc-version="current" \
 	--disable-coverage \
 	--disable-debug \
 	--enable-optimizations \
