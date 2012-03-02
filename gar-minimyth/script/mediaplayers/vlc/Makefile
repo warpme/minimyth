@@ -1,10 +1,10 @@
 GARNAME = vlc
-GARVERSION = 1.1.13
+GARVERSION = 2.0.0
 CATEGORIES = mediaplayers
 PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -36,74 +36,71 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
-	--enable-option-checking \
 	--disable-silent-rules \
 	--without-contrib \
-	--disable-macosx-defaults \
-	--disable-peflags \
 	--disable-static \
 	--enable-shared \
 	--with-gnu-ld \
 	--enable-nls \
 	--disable-rpath \
+	--disable-non-utf8 \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
+	--disable-debug \
 	--disable-gprof \
 	--disable-cprof \
+	--disable-coverage \
+	--disable-optimizations \
 	--enable-mmx \
 	--enable-sse \
 	--disable-neon \
 	--disable-altivec \
 	--with-tuning=$(GARCH) \
 	--disable-optimize-memory \
-	--disable-optimizations \
-	--disable-debug \
 	--disable-run-as-root \
-	--disable-coverage \
 	--enable-sout \
 	--disable-lua \
 	--disable-httpd \
-	--disable-libproxy \
 	--disable-vlm \
-	--disable-growl \
-	--disable-notify \
-	--enable-taglib \
+	--disable-libproxy \
 	--disable-live555 \
 	--disable-dc1394 \
 	--disable-dv \
+	--disable-linsys \
 	--disable-dvdread \
 	--enable-dvdnav \
-	--with-dvdnav-config-path=$(DESTDIR)$(bindir) \
 	--disable-dshow \
-	--disable-bda \
+	--disable-bluray \
 	--disable-opencv \
 	--disable-smb \
 	--disable-sftp \
-	--enable-dvbpsi \
-	--disable-v4l \
-	--disable-libv4l \
 	--disable-v4l2 \
-	--disable-libv4l2 \
 	--disable-pvr \
+	--disable-decklink \
 	--disable-gnomevfs \
 	--disable-vcdx \
 	--enable-vcd \
 	--disable-libcddb \
-	--disable-dvb \
 	--disable-screen \
+	--disable-realrtsp \
+	--disable-macosx-eyetv \
+	--disable-macosx-qtkit \
+	--enable-dvbpsi \
+	--disable-gme \
+	--disable-sid \
 	--disable-ogg \
 	--disable-mux_ogg \
 	--disable-shout \
 	--disable-mkv \
 	--disable-mod \
 	--disable-mpc \
-	--disable-gme \
 	--disable-wma-fixed \
 	--disable-shine \
 	--disable-omxil \
+	--disable-iomx \
+	--disable-crystalhd \
 	--disable-mad \
-	--disable-id3tag \
 	--disable-merge-ffmpeg \
 	--enable-avcodec \
 	--enable-libva \
@@ -116,8 +113,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-twolame \
 	--disable-quicktime \
 	--disable-real \
-	--disable-realrtsp \
-	--disable-libtar \
 	--disable-a52 \
 	--disable-dca \
 	--disable-flac \
@@ -134,49 +129,51 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-zvbi \
 	--disable-telx \
 	--enable-libass \
-	--disable-asademux \
 	--disable-kate \
 	--disable-tiger \
+	--disable-egl \
 	--with-x \
 	--enable-xcb \
 	--enable-xvideo \
 	--enable-glx \
-	--enable-opengl \
 	--disable-sdl \
 	--disable-sdl-image \
+	--disable-macosx-vout \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-fontconfig \
-	--enable-libxml2 \
+	--disable-macosx-quartztext \
 	--disable-svg \
-	--disable-snapshot \
-	--disable-hd1000v \
+	--disable-android-surface \
+	--disable-ios-vout \
 	--disable-directx \
+	--disable-direct2d \
 	--disable-wingdi \
-	--disable-fb \
-	--disable-omapfb \
-	--disable-svgalib \
 	--disable-directfb \
-	--disable-ggi \
 	--disable-aa \
 	--disable-caca \
-	--disable-oss \
+	--disable-kva \
 	--disable-pulse \
-	--disable-portaudio \
 	--enable-alsa \
+	--disable-oss \
+	--disable-portaudio \
 	--disable-waveout \
 	--disable-macosx-audio \
-	--disable-hd1000a \
+	--disable-audioqueue \
 	--disable-jack \
-	--disable-cyberlink \
-	--disable-upnp \
+	--disable-opensles \
+	--disable-samplerate \
+	--disable-kai \
 	--disable-skins2 \
+	--disable-libtar \
 	--disable-hildon \
 	--disable-qt4 \
 	--disable-macosx \
+	--disable-macosx-dialog-provider \
 	--disable-ncurses \
 	--disable-xosd \
 	--disable-fbosd \
+	--enable-lirc \
 	--disable-visual \
 	--disable-goom \
 	--disable-projectm \
@@ -184,24 +181,27 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-bonjour \
 	--disable-udev \
 	--disable-mtp \
-	--enable-lirc \
+	--disable-upnp \
+	--enable-libxml2 \
 	--disable-libgcrypt \
 	--disable-gnutls \
-	--disable-remoteosd \
-	--disable-osso_screensaver \
+	--enable-taglib \
 	--disable-update-check \
+	--disable-growl \
+	--disable-notify \
+	--disable-media-library \
 	--disable-sqlite \
+	--without-kde-solid \
 	--disable-loader \
 	--enable-vlc \
-	--disable-activex \
-	--disable-mozilla
+	--disable-macosx-vlc-app
 
 include ../../gar.mk
 
-# Fails to compile using the LTO linker plugin.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+# Fails to compile with GCC 4.5.3's link time optimization enabled.
+CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
