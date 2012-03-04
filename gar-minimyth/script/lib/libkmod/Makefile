@@ -1,8 +1,8 @@
 GARNAME = kmod
 GARVERSION = 6
 CATEGORIES = lib
-MASTER_SITES = http://packages.profusion.mobi/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.xz
+MASTER_SITES = http://ftp.kernel.org/pub/linux/utils/kernel/$(GARNAME)/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
