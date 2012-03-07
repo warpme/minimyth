@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS = \
+DEPENDS = \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
@@ -23,6 +23,7 @@ GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
 
 install-custom:
+	@mkdir -p $(DESTDIR)$(datadir)/mythtv/themes/
 	@rm -rf $(DESTIDR)$(datadir)/mythtv/themes/blue-abstract-wide
 	@cp -r $(WORKSRC) $(DESTDIR)$(datadir)/mythtv/themes/blue-abstract-wide
 	@$(MAKECOOKIE)
