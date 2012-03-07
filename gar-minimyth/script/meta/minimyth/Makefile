@@ -142,7 +142,7 @@ DEPENDS = \
 			python/python-MySQL-python)) \
 	$(if $(filter mythweather,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythweather),myth-$(mm_MYTH_VERSION)/mythweather) \
-		$(if $(filter 0.20 0.20-softpad 0.21 0.22 0.23,$(mm_MYTH_VERSION)), \
+		$(if $(filter 0.22 0.23,$(mm_MYTH_VERSION)), \
 			perl/perl-Date-Manip \
 			perl/perl-Image-Size \
 			perl/perl-libwww-perl \
