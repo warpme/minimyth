@@ -78,6 +78,8 @@ GAR_EXTRA_CONF += devel/glibc/package-api.mk
 GAR_EXTRA_CONF += kernel-$(mm_KERNEL_VERSION)/linux/package-api.mk
 include ../../gar.mk
 
+PARALLELMFLAGS := -j1
+
 CPPFLAGS := $(PERL_CPPFLAGS)
 CFLAGS   := $(PERL_CFLAGS)
 CXXFLAGS := $(PERL_CXXFLAGS)
