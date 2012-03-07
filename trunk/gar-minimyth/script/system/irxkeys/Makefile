@@ -1,7 +1,7 @@
 GARNAME = irxkeys
 GARVERSION = 1.0
 CATEGORIES = system
-MASTER_SITES = http://frodo.dyn.gno.org/~brettk/download/
+MASTER_SITES = http://blog.b-ark.ca/download/irxkeys-1.0.tar.gz
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-fixes.patch
 LICENSE = Public_Domain
