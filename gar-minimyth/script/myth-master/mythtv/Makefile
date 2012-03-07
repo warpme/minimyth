@@ -7,7 +7,6 @@ PATCHFILES  =
 PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-libcec.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
@@ -160,15 +159,7 @@ CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
 git//%/$(DISTNAME).tar.bz2:
-	$(call FETCH_GIT, $*/mythtv.git,     $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	$(call FETCH_GIT, $*/myththemes.git, $(word 4,$(subst -, ,$(GARVERSION))), myththemes)
-	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jxf myththemes.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/myththemes
-	@cd $(PARTIALDIR) ; mv myththemes $(DISTNAME)/myththemes
-	@cd $(PARTIALDIR) ; rm -rf   $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR) ; rm -rf                       $(DISTNAME)
+	$(call FETCH_GIT, $*/mythtv.git, $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)

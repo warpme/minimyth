@@ -1,151 +1,28 @@
-diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/configure mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/configure
---- mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/configure	2012-02-29 15:46:17.000000000 -0800
-+++ mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/configure	2012-02-29 15:46:19.000000000 -0800
-@@ -382,8 +382,26 @@
+diff -Naur mythtv-master-20120304-20f2c45-old/mythplugins/configure mythtv-master-20120304-20f2c45-new/mythplugins/configure
+--- mythtv-master-20120304-20f2c45-old/mythplugins/configure	2012-03-05 20:52:37.000000000 -0800
++++ mythtv-master-20120304-20f2c45-new/mythplugins/configure	2012-03-05 20:52:39.000000000 -0800
+@@ -574,7 +574,7 @@
  fi
  
- if ! disabled fftw; then
-+    disable fftw_lib3f
-+    if has_library libfftw3f ; then
-+        if has_header fftw3.h ; then
-+            enable fftw_lib3f
-+        fi
-+    fi
-+fi
-+
-+if ! disabled fftw; then
-+    disable fftw_lib3l
-+    if has_library libfftw3l ; then
-+        if has_header fftw3.h ; then
-+            enable fftw_lib3l
-+        fi
-+    fi
-+fi
-+
-+if ! disabled fftw; then
-     disable fftw_lib3
--    if has_library libfftw3_threads ; then
-+    if has_library libfftw3  ; then
-         if has_header fftw3.h ; then
-             enable fftw_lib3
-         fi
-@@ -745,11 +763,21 @@
-       echo "        libcdio        support will not be included in MythMusic"
-     fi
+ #Test if fftw_lib3 is available
+-if enabled fftw &&! check_lib2 fftw3.h fftw_init_threads -lfftw3_threads -lfftw3f -lfftw3 ; then
++if enabled fftw &&! check_lib2 fftw3.h fftwf_init_threads -lfftw3f_threads -lfftw3f ; then
+     disable fftw
+ fi
  
--    if enabled fftw_lib3; then
-+    if enabled fftw_lib3f; then
-+        echo "        FFTW v.3       support will be included in MythMusic"
-+        echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
-+        echo "#define FFTW3_SUPPORT_FFTWF 1" >> ./mythmusic/mythmusic/config.h
-+        echo "LIBS += -lfftw3f -lm" >> ./mythmusic/mythmusic/config.pro
-+    elif enabled fftw_lib3; then
-+        echo "        FFTW v.3       support will be included in MythMusic"
-+        echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
-+        echo "#define FFTW3_SUPPORT_FFTW 1" >> ./mythmusic/mythmusic/config.h
-+        echo "LIBS += -lfftw3 -lm" >> ./mythmusic/mythmusic/config.pro
-+    elif enabled fftw_lib3l; then
+@@ -898,7 +898,7 @@
+     if enabled fftw; then
          echo "        FFTW v.3       support will be included in MythMusic"
          echo "#define FFTW3_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
 -        echo "LIBS += -lfftw3 -lm" >> \
--             ./mythmusic/mythmusic/config.pro
-+        echo "#define FFTW3_SUPPORT_FFTWL 1" >> ./mythmusic/mythmusic/config.h
-+        echo "LIBS += -lfftw3d -lm" >> ./mythmusic/mythmusic/config.pro
++        echo "LIBS += -lfftw3f -lm" >> \
+              ./mythmusic/mythmusic/config.pro
      else
          echo "        FFTW           support will not be included in MythMusic"
-     fi
-diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythmusic/mythmusic/visualize.cpp mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythmusic/mythmusic/visualize.cpp
---- mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythmusic/mythmusic/visualize.cpp	2012-02-29 15:46:17.000000000 -0800
-+++ mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythmusic/mythmusic/visualize.cpp	2012-02-29 15:46:19.000000000 -0800
-@@ -604,8 +604,8 @@
-     rout = (myth_fftw_complex*) av_malloc(sizeof(myth_fftw_complex)*(FFTW_N/2+1));
-     memset(rout, 0, sizeof(myth_fftw_complex)*(FFTW_N/2+1));
- 
--    lplan = fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*)lout, FFTW_MEASURE);
--    rplan = fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*)rout, FFTW_MEASURE);
-+    lplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, lin, (myth_fftw_complex_cast*)lout, FFTW_MEASURE);
-+    rplan = myth_fftw_plan_dft_r2c_1d(FFTW_N, rin, (myth_fftw_complex_cast*)rout, FFTW_MEASURE);
- 
-     startColor = QColor(0,0,255);
-     targetColor = QColor(255,0,0); 
-@@ -622,8 +622,8 @@
-     if (rout)
-         av_free(rout);
- 
--    fftw_destroy_plan(lplan);
--    fftw_destroy_plan(rplan);
-+    myth_fftw_destroy_plan(lplan);
-+    myth_fftw_destroy_plan(rplan);
- }
- 
- void Spectrum::resize(const QSize &newsize)
-@@ -690,8 +690,8 @@
- 
-     fast_reals_set(lin + i, rin + i, 0, FFTW_N - i);
- 
--    fftw_execute(lplan);
--    fftw_execute(rplan);
-+    myth_fftw_execute(lplan);
-+    myth_fftw_execute(rplan);
- 
-     index = 1;
- 
-diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythmusic/mythmusic/visualize.h mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythmusic/mythmusic/visualize.h
---- mythtv-master-20120228-5206271-ee9ef62-old/mythplugins/mythmusic/mythmusic/visualize.h	2012-02-29 15:46:17.000000000 -0800
-+++ mythtv-master-20120228-5206271-ee9ef62-new/mythplugins/mythmusic/mythmusic/visualize.h	2012-02-29 15:46:19.000000000 -0800
-@@ -27,14 +27,35 @@
- extern "C" {
- #ifdef FFTW3_SUPPORT
- #include <fftw3.h>
--#define myth_fftw_float double /* need to use different plan function to change */
--#define fftw_real myth_fftw_float
-+#if ! defined (FFTW3_SUPPORT_FFTW) && ! defined (FFTW3_SUPPORT_FFTWF) && ! defined (FFTW3_SUPPORT_FFTWL)
-+#define FFTW3_SUPPORT_FFTW
-+#endif
-+#if defined (FFTW3_SUPPORT_FFTW)
-+#define myth_fftw_float double
- #define myth_fftw_complex std::complex<myth_fftw_float>
--#if (myth_fftw_float == double)
- #define myth_fftw_complex_cast fftw_complex
--#elif (myth_fftw_float == float)
-+#define myth_fftw_plan fftw_plan
-+#define myth_fftw_destroy_plan(a) fftw_destroy_plan(a)
-+#define myth_fftw_execute(a) fftw_execute(a)
-+#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftw_plan_dft_r2c_1d(a,b,c,d)
-+#elif defined (FFTW3_SUPPORT_FFTWF)
-+#define myth_fftw_float float
-+#define myth_fftw_complex std::complex<myth_fftw_float>
- #define myth_fftw_complex_cast fftwf_complex
-+#define myth_fftw_plan fftwf_plan
-+#define myth_fftw_destroy_plan(a) fftwf_destroy_plan(a)
-+#define myth_fftw_execute(a) fftwf_execute(a)
-+#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftwf_plan_dft_r2c_1d(a,b,c,d)
-+#elif defined (FFTW3_SUPPORT_FFTWL)
-+#define myth_fftw_float long double
-+#define myth_fftw_complex std::complex<myth_fftw_float>
-+#define myth_fftw_complex_cast fftwl_complex
-+#define myth_fftw_plan fftwl_plan
-+#define myth_fftw_destroy_plan(a) fftwl_destroy_plan(a)
-+#define myth_fftw_execute(a) fftwl_execute(a)
-+#define myth_fftw_plan_dft_r2c_1d(a,b,c,d) fftwl_plan_dft_r2c_1d(a,b,c,d)
- #endif
-+#define fftw_real myth_fftw_float
- #endif
- }
- 
-@@ -181,7 +202,7 @@
-     double scaleFactor, falloff;
-     int analyzerBarWidth;
- 
--    fftw_plan lplan, rplan;
-+    myth_fftw_plan lplan, rplan;
-     myth_fftw_float *lin, *rin;
-     myth_fftw_complex *lout, *rout;
- };
-diff -Naur mythtv-master-20120228-5206271-ee9ef62-old/mythtv/configure mythtv-master-20120228-5206271-ee9ef62-new/mythtv/configure
---- mythtv-master-20120228-5206271-ee9ef62-old/mythtv/configure	2012-02-29 15:46:17.000000000 -0800
-+++ mythtv-master-20120228-5206271-ee9ef62-new/mythtv/configure	2012-02-29 15:46:19.000000000 -0800
-@@ -4124,7 +4124,7 @@
+diff -Naur mythtv-master-20120304-20f2c45-old/mythtv/configure mythtv-master-20120304-20f2c45-new/mythtv/configure
+--- mythtv-master-20120304-20f2c45-old/mythtv/configure	2012-03-05 20:52:37.000000000 -0800
++++ mythtv-master-20120304-20f2c45-new/mythtv/configure	2012-03-05 20:52:39.000000000 -0800
+@@ -4142,7 +4142,7 @@
      fi
  fi
  
