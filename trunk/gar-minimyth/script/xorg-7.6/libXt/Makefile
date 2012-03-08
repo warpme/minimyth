@@ -1,5 +1,5 @@
 GARNAME = libXt
-GARVERSION = 1.1.1
+GARVERSION = 1.1.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -39,9 +39,6 @@ CONFIGURE_ENV = \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-CFLAGS   := $(CPPFLAGS) $(CFLAGS)
-CPPFLAGS :=
 
 pre-configure:
 	@rm -f $(WORKSRC)/acinclude.m4
