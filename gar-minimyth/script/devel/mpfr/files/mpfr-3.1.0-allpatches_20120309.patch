@@ -846,25 +846,53 @@ diff -Naurd mpfr-3.1.0-a/src/lngamma.c mpfr-3.1.0-b/src/lngamma.c
    x0 = *(MPFR_MANT (x) + prec / GMP_NUMB_BITS);
 diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
 --- mpfr-3.1.0-a/src/mpfr-impl.h	2012-02-24 13:50:05.000000000 +0000
-+++ mpfr-3.1.0-b/src/mpfr-impl.h	2012-03-08 15:17:03.000000000 +0000
-@@ -646,10 +646,15 @@
++++ mpfr-3.1.0-b/src/mpfr-impl.h	2012-03-09 12:06:26.000000000 +0000
+@@ -646,10 +646,24 @@
   **************** mpfr_t properties *******************
   ******************************************************/
  
 +/* In the following macro, p is usually a mpfr_prec_t, but this macro
-+   works with other integer types (without integer overflow). */
++   works with other integer types (without integer overflow). Checking
++   that p >= 1 in debug mode is useful here because this macro can be
++   used on a computed precision (in particular, this formula does not
++   work for a degenerate case p = 0, and could give different results
++   on different platforms). But let us not use an assertion checking
++   in the MPFR_LAST_LIMB() and MPFR_LIMB_SIZE() macros below to avoid
++   too much expansion for assertions (in practice, this should be a
++   problem just when testing MPFR with the --enable-assert configure
++   option and the -ansi -pedantic-errors gcc compiler flags). */
 +#define MPFR_PREC2LIMBS(p) \
-+  (MPFR_ASSERTD (p >= 1), ((p) - 1) / GMP_NUMB_BITS + 1)
++  (MPFR_ASSERTD ((p) >= 1), ((p) - 1) / GMP_NUMB_BITS + 1)
 +
  #define MPFR_PREC(x)      ((x)->_mpfr_prec)
  #define MPFR_EXP(x)       ((x)->_mpfr_exp)
  #define MPFR_MANT(x)      ((x)->_mpfr_d)
 -#define MPFR_LIMB_SIZE(x) ((MPFR_PREC((x))-1)/GMP_NUMB_BITS+1)
-+#define MPFR_LIMB_SIZE(x) (MPFR_PREC2LIMBS (MPFR_PREC ((x))))
++#define MPFR_LAST_LIMB(x) ((MPFR_PREC (x) - 1) / GMP_NUMB_BITS)
++#define MPFR_LIMB_SIZE(x) (MPFR_LAST_LIMB (x) + 1)
  
  
  /******************************************************
-@@ -1213,8 +1218,8 @@
+@@ -749,7 +763,8 @@
+ #define MPFR_IS_FP(x)       (!MPFR_IS_NAN(x) && !MPFR_IS_INF(x))
+ #define MPFR_IS_SINGULAR(x) (MPFR_EXP(x) <= MPFR_EXP_INF)
+ #define MPFR_IS_PURE_FP(x)  (!MPFR_IS_SINGULAR(x) && \
+-  (MPFR_ASSERTD (MPFR_MANT(x)[MPFR_LIMB_SIZE(x)-1] & MPFR_LIMB_HIGHBIT), 1))
++  (MPFR_ASSERTD ((MPFR_MANT(x)[MPFR_LAST_LIMB(x)]  \
++                  & MPFR_LIMB_HIGHBIT) != 0), 1))
+ 
+ #define MPFR_ARE_SINGULAR(x,y) \
+   (MPFR_UNLIKELY(MPFR_IS_SINGULAR(x)) || MPFR_UNLIKELY(MPFR_IS_SINGULAR(y)))
+@@ -1061,7 +1076,7 @@
+ /* Set a number to 1 (Fast) - It doesn't check if 1 is in the exponent range */
+ #define MPFR_SET_ONE(x)                                               \
+ do {                                                                  \
+-  mp_size_t _size = MPFR_LIMB_SIZE(x) - 1;                            \
++  mp_size_t _size = MPFR_LAST_LIMB(x);                                \
+   MPFR_SET_POS(x);                                                    \
+   MPFR_EXP(x) = 1;                                                    \
+   MPN_ZERO ( MPFR_MANT(x), _size);                                    \
+@@ -1213,8 +1228,8 @@
      _destp = MPFR_MANT (dest);                                              \
      if (MPFR_UNLIKELY (_destprec >= _srcprec))                              \
        {                                                                     \
@@ -875,7 +903,7 @@ diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
          MPN_COPY (_destp + _dests, srcp, _srcs);                            \
          MPN_ZERO (_destp, _dests);                                          \
          inexact = 0;                                                        \
-@@ -1227,8 +1232,8 @@
+@@ -1227,8 +1242,8 @@
          mp_limb_t _rb, _sb, _ulp;                                           \
                                                                              \
          /* Compute Position and shift */                                    \
@@ -886,7 +914,7 @@ diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
          MPFR_UNSIGNED_MINUS_MODULO (_sh, _destprec);                        \
          _sp = (srcp) + _srcs - _dests;                                      \
                                                                              \
-@@ -1372,7 +1377,7 @@
+@@ -1372,7 +1387,7 @@
        if (MPFR_LIKELY (MPFR_PREC (dest) == MPFR_PREC (src)))            \
          {                                                               \
            MPN_COPY (MPFR_MANT (dest), MPFR_MANT (src),                  \
@@ -895,7 +923,7 @@ diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
            inexact = 0;                                                  \
          }                                                               \
        else                                                              \
-@@ -1682,7 +1687,7 @@
+@@ -1682,7 +1697,7 @@
   MPFR_ASSERTD (_prec >= MPFR_PREC_MIN);                                 \
   if (MPFR_UNLIKELY (_prec > MPFR_PREC_MAX))                             \
     mpfr_abort_prec_max ();                                              \
@@ -904,7 +932,7 @@ diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
   if (MPFR_UNLIKELY (_size * (num) > MPFR_GROUP_STATIC_SIZE))            \
     {                                                                    \
       (g).alloc = (num) * _size * sizeof (mp_limb_t);                    \
-@@ -1733,7 +1738,7 @@
+@@ -1733,7 +1748,7 @@
   MPFR_ASSERTD (_prec >= MPFR_PREC_MIN);                                 \
   if (MPFR_UNLIKELY (_prec > MPFR_PREC_MAX))                             \
     mpfr_abort_prec_max ();                                              \
@@ -913,7 +941,7 @@ diff -Naurd mpfr-3.1.0-a/src/mpfr-impl.h mpfr-3.1.0-b/src/mpfr-impl.h
   (g).alloc = (num) * _size * sizeof (mp_limb_t);                        \
   if (MPFR_LIKELY (_oalloc == 0))                                        \
     (g).mant = (mp_limb_t *) (*__gmp_allocate_func) ((g).alloc);         \
-@@ -1886,7 +1891,7 @@
+@@ -1886,7 +1901,7 @@
         MPFR_NORETURN_ATTR;
  
  __MPFR_DECLSPEC void mpfr_rand_raw _MPFR_PROTO((mpfr_limb_ptr, gmp_randstate_t,
