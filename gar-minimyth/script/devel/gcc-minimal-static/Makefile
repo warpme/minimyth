@@ -41,7 +41,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--enable-languages=c \
 	--disable-libgomp \
 	--disable-libmudflap \
-	--enable-gold=both/ld \
+	--enable-gold \
+	--enable-ld \
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \

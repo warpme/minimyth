@@ -1,34 +1,15 @@
-diff -Naur gcc-4.6.0-old/gcc/collect2.c gcc-4.6.0-new/gcc/collect2.c
---- gcc-4.6.0-old/gcc/collect2.c	2011-01-06 10:50:20.000000000 -0800
-+++ gcc-4.6.0-new/gcc/collect2.c	2011-03-28 21:52:29.000000000 -0700
-@@ -1075,17 +1075,19 @@
- int
+diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
+--- gcc-4.6.3-old/gcc/collect2.c	2011-01-06 10:50:20.000000000 -0800
++++ gcc-4.6.3-new/gcc/collect2.c	2012-03-09 09:18:42.000000000 -0800
+@@ -1076,6 +1076,8 @@
  main (int argc, char **argv)
  {
--  static const char *const ld_suffix	= "ld";
--  static const char *const plugin_ld_suffix = PLUGIN_LD;
--  static const char *const real_ld_suffix = "real-ld";
-+  static const char *const ld_suffix	     = "ld";
+   static const char *const ld_suffix	= "ld";
 +  static const char *const gold_suffix       = "gold";
 +  static const char *const bfd_ld_suffix     = "ld.bfd";
-+  static const char *const plugin_ld_suffix  = PLUGIN_LD;
-+  static const char *const real_ld_suffix    = "real-ld";
+   static const char *const plugin_ld_suffix = PLUGIN_LD;
+   static const char *const real_ld_suffix = "real-ld";
    static const char *const collect_ld_suffix = "collect-ld";
--  static const char *const nm_suffix	= "nm";
--  static const char *const gnm_suffix	= "gnm";
-+  static const char *const nm_suffix	     = "nm";
-+  static const char *const gnm_suffix	     = "gnm";
- #ifdef LDD_SUFFIX
--  static const char *const ldd_suffix	= LDD_SUFFIX;
-+  static const char *const ldd_suffix	     = LDD_SUFFIX;
- #endif
--  static const char *const strip_suffix = "strip";
--  static const char *const gstrip_suffix = "gstrip";
-+  static const char *const strip_suffix      = "strip";
-+  static const char *const gstrip_suffix     = "gstrip";
- 
- #ifdef CROSS_DIRECTORY_STRUCTURE
-   /* If we look for a program in the compiler directories, we just use
 @@ -1095,6 +1097,10 @@
  
    const char *const full_ld_suffix =
@@ -40,30 +21,15 @@ diff -Naur gcc-4.6.0-old/gcc/collect2.c gcc-4.6.0-new/gcc/collect2.c
    const char *const full_plugin_ld_suffix =
      concat(target_machine, "-", plugin_ld_suffix, NULL);
    const char *const full_nm_suffix =
-@@ -1110,15 +1116,17 @@
-   const char *const full_gstrip_suffix =
+@@ -1111,6 +1117,8 @@
      concat (target_machine, "-", gstrip_suffix, NULL);
  #else
--  const char *const full_ld_suffix	= ld_suffix;
-+  const char *const full_ld_suffix	  = ld_suffix;
+   const char *const full_ld_suffix	= ld_suffix;
 +  const char *const full_gold_suffix	  = gold_suffix;
 +  const char *const full_bfd_ld_suffix	  = bfd_ld_suffix;
    const char *const full_plugin_ld_suffix = plugin_ld_suffix;
--  const char *const full_nm_suffix	= nm_suffix;
--  const char *const full_gnm_suffix	= gnm_suffix;
-+  const char *const full_nm_suffix	  = nm_suffix;
-+  const char *const full_gnm_suffix	  = gnm_suffix;
- #ifdef LDD_SUFFIX
--  const char *const full_ldd_suffix	= ldd_suffix;
-+  const char *const full_ldd_suffix	  = ldd_suffix;
- #endif
--  const char *const full_strip_suffix	= strip_suffix;
--  const char *const full_gstrip_suffix	= gstrip_suffix;
-+  const char *const full_strip_suffix	  = strip_suffix;
-+  const char *const full_gstrip_suffix	  = gstrip_suffix;
- #endif /* CROSS_DIRECTORY_STRUCTURE */
- 
-   const char *arg;
+   const char *const full_nm_suffix	= nm_suffix;
+   const char *const full_gnm_suffix	= gnm_suffix;
 @@ -1132,7 +1140,13 @@
    const char **c_ptr;
    char **ld1_argv;
@@ -226,10 +192,10 @@ diff -Naur gcc-4.6.0-old/gcc/collect2.c gcc-4.6.0-new/gcc/collect2.c
  
  #ifdef REAL_NM_FILE_NAME
    nm_file_name = find_a_file (&path, REAL_NM_FILE_NAME);
-diff -Naur gcc-4.6.0-old/gcc/common.opt gcc-4.6.0-new/gcc/common.opt
---- gcc-4.6.0-old/gcc/common.opt	2011-03-05 16:38:13.000000000 -0800
-+++ gcc-4.6.0-new/gcc/common.opt	2011-03-28 21:52:29.000000000 -0700
-@@ -2019,6 +2019,9 @@
+diff -Naur gcc-4.6.3-old/gcc/common.opt gcc-4.6.3-new/gcc/common.opt
+--- gcc-4.6.3-old/gcc/common.opt	2011-04-11 08:26:47.000000000 -0700
++++ gcc-4.6.3-new/gcc/common.opt	2012-03-09 09:18:42.000000000 -0800
+@@ -2028,6 +2028,9 @@
  Common Report Var(flag_unwind_tables) Optimization
  Just generate unwind tables for exception handling
  
@@ -239,10 +205,10 @@ diff -Naur gcc-4.6.0-old/gcc/common.opt gcc-4.6.0-new/gcc/common.opt
  fuse-linker-plugin
  Common Undocumented
  
-diff -Naur gcc-4.6.0-old/gcc/configure.ac gcc-4.6.0-new/gcc/configure.ac
---- gcc-4.6.0-old/gcc/configure.ac	2011-02-28 07:36:37.000000000 -0800
-+++ gcc-4.6.0-new/gcc/configure.ac	2011-03-28 21:58:18.000000000 -0700
-@@ -1937,6 +1937,17 @@
+diff -Naur gcc-4.6.3-old/gcc/configure.ac gcc-4.6.3-new/gcc/configure.ac
+--- gcc-4.6.3-old/gcc/configure.ac	2011-11-18 03:45:44.000000000 -0800
++++ gcc-4.6.3-new/gcc/configure.ac	2012-03-09 09:18:42.000000000 -0800
+@@ -1927,6 +1927,17 @@
          AC_PATH_PROG(gcc_cv_ld, $LD_FOR_TARGET)
  fi])
  
@@ -260,7 +226,7 @@ diff -Naur gcc-4.6.0-old/gcc/configure.ac gcc-4.6.0-new/gcc/configure.ac
  ORIGINAL_PLUGIN_LD_FOR_TARGET=$gcc_cv_ld
  PLUGIN_LD=`basename $gcc_cv_ld`
  AC_ARG_WITH(plugin-ld,
-@@ -1966,6 +1977,9 @@
+@@ -1956,6 +1967,9 @@
    *) AC_CONFIG_FILES(collect-ld:exec-tool.in, [chmod +x collect-ld]) ;;
  esac 
  
@@ -270,9 +236,9 @@ diff -Naur gcc-4.6.0-old/gcc/configure.ac gcc-4.6.0-new/gcc/configure.ac
  AC_MSG_CHECKING(what linker to use)
  if test "$gcc_cv_ld" = ../ld/ld-new$build_exeext; then
  	# Single tree build which includes ld.  We want to prefer it
-diff -Naur gcc-4.6.0-old/gcc/doc/invoke.texi gcc-4.6.0-new/gcc/doc/invoke.texi
---- gcc-4.6.0-old/gcc/doc/invoke.texi	2011-03-18 07:34:52.000000000 -0700
-+++ gcc-4.6.0-new/gcc/doc/invoke.texi	2011-03-28 21:52:29.000000000 -0700
+diff -Naur gcc-4.6.3-old/gcc/doc/invoke.texi gcc-4.6.3-new/gcc/doc/invoke.texi
+--- gcc-4.6.3-old/gcc/doc/invoke.texi	2012-01-03 08:43:38.000000000 -0800
++++ gcc-4.6.3-new/gcc/doc/invoke.texi	2012-03-09 09:18:42.000000000 -0800
 @@ -401,7 +401,7 @@
  -funit-at-a-time -funroll-all-loops -funroll-loops @gol
  -funsafe-loop-optimizations -funsafe-math-optimizations -funswitch-loops @gol
@@ -282,7 +248,7 @@ diff -Naur gcc-4.6.0-old/gcc/doc/invoke.texi gcc-4.6.0-new/gcc/doc/invoke.texi
  --param @var{name}=@var{value}
  -O  -O0  -O1  -O2  -O3  -Os -Ofast}
  
-@@ -7743,6 +7743,16 @@
+@@ -7745,6 +7745,16 @@
  
  Enabled at levels @option{-O}, @option{-O2}, @option{-O3}, @option{-Os}.
  
@@ -299,9 +265,9 @@ diff -Naur gcc-4.6.0-old/gcc/doc/invoke.texi gcc-4.6.0-new/gcc/doc/invoke.texi
  @item -fcprop-registers
  @opindex fcprop-registers
  After register allocation and post-register allocation instruction splitting,
-diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
---- gcc-4.6.0-old/gcc/exec-tool.in	2011-01-03 12:52:22.000000000 -0800
-+++ gcc-4.6.0-new/gcc/exec-tool.in	2011-03-28 21:52:29.000000000 -0700
+diff -Naur gcc-4.6.3-old/gcc/exec-tool.in gcc-4.6.3-new/gcc/exec-tool.in
+--- gcc-4.6.3-old/gcc/exec-tool.in	2011-01-03 12:52:22.000000000 -0800
++++ gcc-4.6.3-new/gcc/exec-tool.in	2012-03-09 09:18:42.000000000 -0800
 @@ -1,6 +1,6 @@
  #! /bin/sh
  
@@ -331,12 +297,7 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 -    # when using a linker plugin, gcc will always pass '-plugin' as the
 -    # first or second option to the linker.
 -    if test x"$1" = "x-plugin" || test x"$2" = "x-plugin"; then
--      original=$ORIGINAL_PLUGIN_LD_FOR_TARGET
--    else
--      original=$ORIGINAL_LD_FOR_TARGET
--    fi
-     prog=ld-new$exeext
--    dir=ld
++    prog=ld-new$exeext
 +    # Look for the a command line option
 +    # specifying the linker to be used.
 +    case " $* " in
@@ -349,7 +310,8 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 +        dir=ld
 +        ;;
 +      *\ -plugin\ *)
-+        original=$ORIGINAL_PLUGIN_LD_FOR_TARGET
+       original=$ORIGINAL_PLUGIN_LD_FOR_TARGET
+-    else
 +        dir=ld
 +	;;
 +      *)
@@ -365,8 +327,10 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 +        original=$ORIGINAL_PLUGIN_LD_FOR_TARGET
 +        dir=ld
 +      elif test x"$ORIGINAL_LD_FOR_TARGET" != x; then
-+        original=$ORIGINAL_LD_FOR_TARGET
-+        dir=ld
+       original=$ORIGINAL_LD_FOR_TARGET
+-    fi
+-    prog=ld-new$exeext
+     dir=ld
 +      elif test x"$ORIGINAL_GOLD_FOR_TARGET" != x; then
 +        original=$ORIGINAL_GOLD_FOR_TARGET
 +        dir=gold
@@ -384,46 +348,36 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 -      test "$fast_install" = yes || exec $scriptdir/../$dir/$prog ${1+"$@"}
 -
 -      # if libtool did everything it needs to do, there's a fast path
--      lt_prog=$scriptdir/../$dir/$objdir/lt-$prog 
--      test -x $lt_prog && exec $lt_prog ${1+"$@"}
--
--      # libtool has not relinked ld-new yet, but we cannot just use the
--      # previous stage (because then the relinking would just never happen!).
--      # So we take extra care to use prev-ld/ld-new *on recursive calls*.
--      eval LT_RCU="\${LT_RCU_$id}"
--      test x"$LT_RCU" = x"1" && exec $scriptdir/../prev-$dir/$prog ${1+"$@"}
--
--      eval LT_RCU_$id=1
--      export LT_RCU_$id
--      $scriptdir/../$dir/$prog ${1+"$@"}
--      result=$?
--      exit $result
--
 +      if test "$fast_install" = yes; then
 +        # If libtool did everything it needs to do, there's a fast path.
-+        lt_prog=$scriptdir/../$dir/$objdir/lt-$prog 
-+
+       lt_prog=$scriptdir/../$dir/$objdir/lt-$prog 
+-      test -x $lt_prog && exec $lt_prog ${1+"$@"}
+ 
+-      # libtool has not relinked ld-new yet, but we cannot just use the
 +	if test -x $lt_prog; then
 +	  original=$lt_prog
 +        else
 +          # Libtool has not relinked ld-new yet, but we cannot just use the
-+          # previous stage (because then the relinking would just never happen!).
-+          # So we take extra care to use prev-ld/ld-new *on recursive calls*.
-+          eval LT_RCU="\${LT_RCU_$id}"
+       # previous stage (because then the relinking would just never happen!).
+       # So we take extra care to use prev-ld/ld-new *on recursive calls*.
+       eval LT_RCU="\${LT_RCU_$id}"
+-      test x"$LT_RCU" = x"1" && exec $scriptdir/../prev-$dir/$prog ${1+"$@"}
+-
 +          if test x"$LT_RCU" = x"1"; then
 +	    original=$scriptdir/../prev-$dir/$prog
 +          else
-+            eval LT_RCU_$id=1
-+            export LT_RCU_$id
+       eval LT_RCU_$id=1
+       export LT_RCU_$id
 +            case " $* " in
 +              *\ -v\ *)
 +               echo "$invoked $version"
 +               echo $scriptdir/../$dir/$prog $*
 +               ;;
 +            esac
-+            $scriptdir/../$dir/$prog ${1+"$@"}
-+            result=$?
-+            exit $result
+       $scriptdir/../$dir/$prog ${1+"$@"}
+       result=$?
+       exit $result
+-
 +          fi
 +        fi
 +      else
@@ -439,8 +393,8 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 +  "")
 +    echo "$invoked: executable not configured"
 +    exit 1
-     ;;
- esac
++    ;;
++esac
 +
 +# If -v has been used then display our version number
 +# and then echo the command we are about to invoke.
@@ -448,8 +402,8 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 +  *\ -v\ *)
 +    echo "$invoked $version"
 +    echo $original $*
-+    ;;
-+esac
+     ;;
+ esac
 +
 +if test -x $original; then
 +  exec "$original" ${1+"$@"}
@@ -457,9 +411,9 @@ diff -Naur gcc-4.6.0-old/gcc/exec-tool.in gcc-4.6.0-new/gcc/exec-tool.in
 +  echo "$invoked: unable to locate executable: $original"
 +  exit 1
 +fi
-diff -Naur gcc-4.6.0-old/gcc/gcc.c gcc-4.6.0-new/gcc/gcc.c
---- gcc-4.6.0-old/gcc/gcc.c	2011-02-22 18:04:43.000000000 -0800
-+++ gcc-4.6.0-new/gcc/gcc.c	2011-03-28 21:52:29.000000000 -0700
+diff -Naur gcc-4.6.3-old/gcc/gcc.c gcc-4.6.3-new/gcc/gcc.c
+--- gcc-4.6.3-old/gcc/gcc.c	2011-02-22 18:04:43.000000000 -0800
++++ gcc-4.6.3-new/gcc/gcc.c	2012-03-09 09:18:42.000000000 -0800
 @@ -657,6 +657,9 @@
      }"PLUGIN_COND_CLOSE" \
      %{flto|flto=*:%<fcompare-debug*} \
@@ -470,17 +424,14 @@ diff -Naur gcc-4.6.0-old/gcc/gcc.c gcc-4.6.0-new/gcc/gcc.c
     "%X %{o*} %{e*} %{N} %{n} %{r}\
      %{s} %{t} %{u*} %{z} %{Z} %{!nostdlib:%{!nostartfiles:%S}}\
      %{static:} %{L*} %(mfwrap) %(link_libgcc) %o\
-diff -Naur gcc-4.6.0-old/gcc/opts.c gcc-4.6.0-new/gcc/opts.c
---- gcc-4.6.0-old/gcc/opts.c	2011-02-17 14:51:57.000000000 -0800
-+++ gcc-4.6.0-new/gcc/opts.c	2011-03-28 21:52:29.000000000 -0700
-@@ -1692,8 +1692,9 @@
+diff -Naur gcc-4.6.3-old/gcc/opts.c gcc-4.6.3-new/gcc/opts.c
+--- gcc-4.6.3-old/gcc/opts.c	2011-02-17 14:51:57.000000000 -0800
++++ gcc-4.6.3-new/gcc/opts.c	2012-03-09 09:18:42.000000000 -0800
+@@ -1692,6 +1692,7 @@
        dc->max_errors = value;
        break;
  
 +    case OPT_fuse_ld_:
      case OPT_fuse_linker_plugin:
--      /* No-op. Used by the driver and passed to us because it starts with f.*/
-+      /* No-op. Used by the driver and passed to us because it starts with f.  */
+       /* No-op. Used by the driver and passed to us because it starts with f.*/
        break;
- 
-     default:
