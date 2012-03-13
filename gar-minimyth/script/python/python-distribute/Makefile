@@ -1,5 +1,5 @@
 GARNAME = python-distribute
-GARVERSION = 0.6.24
+GARVERSION = 0.6.25
 CATEGORIES = python
 MASTER_SITES = http://pypi.python.org/packages/source/d/distribute/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tar.gz
