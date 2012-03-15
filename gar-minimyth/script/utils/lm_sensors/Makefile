@@ -1,12 +1,12 @@
 GARNAME = lm_sensors
-GARVERSION = 3.3.1
+GARVERSION = 3.3.2
 CATEGORIES = utils
 MASTER_SITES  = http://dl.lm-sensors.org/lm-sensors/releases/
 MASTER_SITES += svn://lm-sensors.org/svn/lm-sensors/trunk/
 DISTFILES   = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += $(DISTNAME)-perl.patch.gar
-LICENSE = GPL2
+LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
 define BLURB
