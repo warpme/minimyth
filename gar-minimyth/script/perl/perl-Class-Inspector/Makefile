@@ -1,5 +1,5 @@
 GARNAME      = perl-Class-Inspector
-GARVERSION   = 1.25
+GARVERSION   = 1.27
 MASTER_SITES = http://www.cpan.org/authors/id/A/AD/ADAMK/
 DEPENDS      =
 
