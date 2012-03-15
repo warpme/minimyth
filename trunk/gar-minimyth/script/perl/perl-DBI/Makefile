@@ -1,5 +1,5 @@
 GARNAME        = perl-DBI
-GARVERSION     = 1.616
+GARVERSION     = 1.618
 MASTER_SITES   = http://www.cpan.org/authors/id/T/TI/TIMB/
 PERL_MODULE_SO = true
 
