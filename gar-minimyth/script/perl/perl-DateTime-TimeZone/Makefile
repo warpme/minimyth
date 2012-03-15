@@ -1,5 +1,5 @@
 GARNAME      = perl-DateTime-TimeZone
-GARVERSION   = 1.42
+GARVERSION   = 1.45
 MASTER_SITES = http://www.cpan.org/authors/id/D/DR/DROLSKY/
 DEPENDS      = perl/perl-Class-Load perl/perl-Class-Singleton perl/perl-Params-Validate
 
