@@ -32,8 +32,10 @@ DEPENDS = \
 	lib/libavc1394 \
 	lib/libcdio \
 	lib/libcec \
+	lib/libdns_sd \
 	lib/libiec61883 \
 	lib/libxml2 \
+	lib/openssl \
 	lib/zlib \
 	python/python \
 	python/python-MySQL-python \
@@ -137,8 +139,8 @@ CONFIGURE_ARGS = \
 	--disable-mac-bundle \
 	--enable-libxml2 \
 	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
-	--disable-libdns-sd \
-	--disable-libcrypto \
+	--enable-libdns_sd \
+	--enable-libcrypto \
 	--without-bindings="perl" \
 	--without-bindings="php" \
 	--with-bindings="python"
@@ -152,6 +154,10 @@ INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
+
+CPPFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
+CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
+CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 
 # Fails to compile with GCC 4.5.2's link time optimization enabled.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
