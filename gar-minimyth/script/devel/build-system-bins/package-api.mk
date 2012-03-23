@@ -1,4 +1,5 @@
 build_system_bins = $(strip $(sort \
+	bash \
 	binutils \
 	bison \
 	bzip2 \
@@ -25,6 +26,10 @@ build_system_bins = $(strip $(sort \
 	wget \
 	xz \
 ))
+
+# Overridden by binaries from package utils/bash.
+build_system_bins_bash = \
+	sh
 
 # Overridden by binaries from package devel/binutils.
 build_system_bins_binutils = \
