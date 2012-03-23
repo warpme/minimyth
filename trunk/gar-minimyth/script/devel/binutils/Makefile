@@ -38,7 +38,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libada \
 	--disable-libssp \
 	--enable-lto \
-	--enable-werror \
+	--disable-werror \
 	--disable-multilib \
 	--enable-nls \
 	--enable-version-specific-runtime-libs \
