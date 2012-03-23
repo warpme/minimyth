@@ -1,7 +1,7 @@
-diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
---- gcc-4.6.3-old/gcc/collect2.c	2011-01-06 10:50:20.000000000 -0800
-+++ gcc-4.6.3-new/gcc/collect2.c	2012-03-09 09:18:42.000000000 -0800
-@@ -1076,6 +1076,8 @@
+diff -Naur gcc-4.7.0-old/gcc/collect2.c gcc-4.7.0-new/gcc/collect2.c
+--- gcc-4.7.0-old/gcc/collect2.c	2012-01-03 03:36:25.000000000 -0800
++++ gcc-4.7.0-new/gcc/collect2.c	2012-03-22 08:22:06.000000000 -0700
+@@ -1021,6 +1021,8 @@
  main (int argc, char **argv)
  {
    static const char *const ld_suffix	= "ld";
@@ -10,7 +10,7 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
    static const char *const plugin_ld_suffix = PLUGIN_LD;
    static const char *const real_ld_suffix = "real-ld";
    static const char *const collect_ld_suffix = "collect-ld";
-@@ -1095,6 +1097,10 @@
+@@ -1040,6 +1042,10 @@
  
    const char *const full_ld_suffix =
      concat(target_machine, "-", ld_suffix, NULL);
@@ -21,7 +21,7 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
    const char *const full_plugin_ld_suffix =
      concat(target_machine, "-", plugin_ld_suffix, NULL);
    const char *const full_nm_suffix =
-@@ -1111,6 +1117,8 @@
+@@ -1056,6 +1062,8 @@
      concat (target_machine, "-", gstrip_suffix, NULL);
  #else
    const char *const full_ld_suffix	= ld_suffix;
@@ -30,7 +30,7 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
    const char *const full_plugin_ld_suffix = plugin_ld_suffix;
    const char *const full_nm_suffix	= nm_suffix;
    const char *const full_gnm_suffix	= gnm_suffix;
-@@ -1132,7 +1140,13 @@
+@@ -1077,7 +1085,13 @@
    const char **c_ptr;
    char **ld1_argv;
    const char **ld1;
@@ -45,7 +45,7 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
  
    /* The kinds of symbols we will have to consider when scanning the
       outcome of a first pass link.  This is ALL to start with, then might
-@@ -1209,15 +1223,21 @@
+@@ -1168,15 +1182,21 @@
          else if (! strcmp (argv[i], "-flto-partition=none"))
  	  no_partition = true;
          else if ((! strncmp (argv[i], "-flto=", 6)
@@ -69,7 +69,7 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
  #ifdef COLLECT_EXPORT_LIST
  	/* since -brtl, -bexport, -b64 are not position dependent
  	   also check for them here */
-@@ -1299,35 +1319,108 @@
+@@ -1258,35 +1278,108 @@
    /* Try to discover a valid linker/nm/strip to use.  */
  
    /* Maybe we know the right file to use (if not cross).  */
@@ -192,10 +192,10 @@ diff -Naur gcc-4.6.3-old/gcc/collect2.c gcc-4.6.3-new/gcc/collect2.c
  
  #ifdef REAL_NM_FILE_NAME
    nm_file_name = find_a_file (&path, REAL_NM_FILE_NAME);
-diff -Naur gcc-4.6.3-old/gcc/common.opt gcc-4.6.3-new/gcc/common.opt
---- gcc-4.6.3-old/gcc/common.opt	2011-04-11 08:26:47.000000000 -0700
-+++ gcc-4.6.3-new/gcc/common.opt	2012-03-09 09:18:42.000000000 -0800
-@@ -2028,6 +2028,9 @@
+diff -Naur gcc-4.7.0-old/gcc/common.opt gcc-4.7.0-new/gcc/common.opt
+--- gcc-4.7.0-old/gcc/common.opt	2012-02-01 01:20:32.000000000 -0800
++++ gcc-4.7.0-new/gcc/common.opt	2012-03-22 08:22:06.000000000 -0700
+@@ -2086,6 +2086,9 @@
  Common Report Var(flag_unwind_tables) Optimization
  Just generate unwind tables for exception handling
  
@@ -205,10 +205,10 @@ diff -Naur gcc-4.6.3-old/gcc/common.opt gcc-4.6.3-new/gcc/common.opt
  fuse-linker-plugin
  Common Undocumented
  
-diff -Naur gcc-4.6.3-old/gcc/configure.ac gcc-4.6.3-new/gcc/configure.ac
---- gcc-4.6.3-old/gcc/configure.ac	2011-11-18 03:45:44.000000000 -0800
-+++ gcc-4.6.3-new/gcc/configure.ac	2012-03-09 09:18:42.000000000 -0800
-@@ -1927,6 +1927,17 @@
+diff -Naur gcc-4.7.0-old/gcc/configure.ac gcc-4.7.0-new/gcc/configure.ac
+--- gcc-4.7.0-old/gcc/configure.ac	2012-03-08 05:54:54.000000000 -0800
++++ gcc-4.7.0-new/gcc/configure.ac	2012-03-22 08:22:06.000000000 -0700
+@@ -2008,6 +2008,17 @@
          AC_PATH_PROG(gcc_cv_ld, $LD_FOR_TARGET)
  fi])
  
@@ -226,7 +226,7 @@ diff -Naur gcc-4.6.3-old/gcc/configure.ac gcc-4.6.3-new/gcc/configure.ac
  ORIGINAL_PLUGIN_LD_FOR_TARGET=$gcc_cv_ld
  PLUGIN_LD=`basename $gcc_cv_ld`
  AC_ARG_WITH(plugin-ld,
-@@ -1956,6 +1967,9 @@
+@@ -2037,6 +2048,9 @@
    *) AC_CONFIG_FILES(collect-ld:exec-tool.in, [chmod +x collect-ld]) ;;
  esac 
  
@@ -234,12 +234,12 @@ diff -Naur gcc-4.6.3-old/gcc/configure.ac gcc-4.6.3-new/gcc/configure.ac
 +AC_SUBST(ORIGINAL_GOLD_FOR_TARGET)
 +
  AC_MSG_CHECKING(what linker to use)
- if test "$gcc_cv_ld" = ../ld/ld-new$build_exeext; then
- 	# Single tree build which includes ld.  We want to prefer it
-diff -Naur gcc-4.6.3-old/gcc/doc/invoke.texi gcc-4.6.3-new/gcc/doc/invoke.texi
---- gcc-4.6.3-old/gcc/doc/invoke.texi	2012-01-03 08:43:38.000000000 -0800
-+++ gcc-4.6.3-new/gcc/doc/invoke.texi	2012-03-09 09:18:42.000000000 -0800
-@@ -401,7 +401,7 @@
+ if test "$gcc_cv_ld" = ../ld/ld-new$build_exeext \
+    || test "$gcc_cv_ld" = ../gold/ld-new$build_exeext; then
+diff -Naur gcc-4.7.0-old/gcc/doc/invoke.texi gcc-4.7.0-new/gcc/doc/invoke.texi
+--- gcc-4.7.0-old/gcc/doc/invoke.texi	2012-03-13 16:18:07.000000000 -0700
++++ gcc-4.7.0-new/gcc/doc/invoke.texi	2012-03-22 08:22:06.000000000 -0700
+@@ -415,7 +415,7 @@
  -funit-at-a-time -funroll-all-loops -funroll-loops @gol
  -funsafe-loop-optimizations -funsafe-math-optimizations -funswitch-loops @gol
  -fvariable-expansion-in-unroller -fvect-cost-model -fvpt -fweb @gol
@@ -248,7 +248,7 @@ diff -Naur gcc-4.6.3-old/gcc/doc/invoke.texi gcc-4.6.3-new/gcc/doc/invoke.texi
  --param @var{name}=@var{value}
  -O  -O0  -O1  -O2  -O3  -Os -Ofast}
  
-@@ -7745,6 +7745,16 @@
+@@ -8039,6 +8039,16 @@
  
  Enabled at levels @option{-O}, @option{-O2}, @option{-O3}, @option{-Os}.
  
@@ -265,9 +265,9 @@ diff -Naur gcc-4.6.3-old/gcc/doc/invoke.texi gcc-4.6.3-new/gcc/doc/invoke.texi
  @item -fcprop-registers
  @opindex fcprop-registers
  After register allocation and post-register allocation instruction splitting,
-diff -Naur gcc-4.6.3-old/gcc/exec-tool.in gcc-4.6.3-new/gcc/exec-tool.in
---- gcc-4.6.3-old/gcc/exec-tool.in	2011-01-03 12:52:22.000000000 -0800
-+++ gcc-4.6.3-new/gcc/exec-tool.in	2012-03-09 09:18:42.000000000 -0800
+diff -Naur gcc-4.7.0-old/gcc/exec-tool.in gcc-4.7.0-new/gcc/exec-tool.in
+--- gcc-4.7.0-old/gcc/exec-tool.in	2011-01-03 12:52:22.000000000 -0800
++++ gcc-4.7.0-new/gcc/exec-tool.in	2012-03-22 08:22:06.000000000 -0700
 @@ -1,6 +1,6 @@
  #! /bin/sh
  
@@ -411,12 +411,12 @@ diff -Naur gcc-4.6.3-old/gcc/exec-tool.in gcc-4.6.3-new/gcc/exec-tool.in
 +  echo "$invoked: unable to locate executable: $original"
 +  exit 1
 +fi
-diff -Naur gcc-4.6.3-old/gcc/gcc.c gcc-4.6.3-new/gcc/gcc.c
---- gcc-4.6.3-old/gcc/gcc.c	2011-02-22 18:04:43.000000000 -0800
-+++ gcc-4.6.3-new/gcc/gcc.c	2012-03-09 09:18:42.000000000 -0800
-@@ -657,6 +657,9 @@
-     }"PLUGIN_COND_CLOSE" \
-     %{flto|flto=*:%<fcompare-debug*} \
+diff -Naur gcc-4.7.0-old/gcc/gcc.c gcc-4.7.0-new/gcc/gcc.c
+--- gcc-4.7.0-old/gcc/gcc.c	2012-02-28 09:31:38.000000000 -0800
++++ gcc-4.7.0-new/gcc/gcc.c	2012-03-22 08:22:06.000000000 -0700
+@@ -671,6 +671,9 @@
+     LINK_PLUGIN_SPEC \
+     "%{flto|flto=*:%<fcompare-debug*} \
      %{flto} %{flto=*} %l " LINK_PIE_SPEC \
 +   "%{fuse-ld=gold:%{fuse-ld=bfd:%e-fuse-ld=gold and -fuse-ld=bfd may not be used together}} \
 +    %{fuse-ld=gold:-use-gold} \
@@ -424,10 +424,10 @@ diff -Naur gcc-4.6.3-old/gcc/gcc.c gcc-4.6.3-new/gcc/gcc.c
     "%X %{o*} %{e*} %{N} %{n} %{r}\
      %{s} %{t} %{u*} %{z} %{Z} %{!nostdlib:%{!nostartfiles:%S}}\
      %{static:} %{L*} %(mfwrap) %(link_libgcc) %o\
-diff -Naur gcc-4.6.3-old/gcc/opts.c gcc-4.6.3-new/gcc/opts.c
---- gcc-4.6.3-old/gcc/opts.c	2011-02-17 14:51:57.000000000 -0800
-+++ gcc-4.6.3-new/gcc/opts.c	2012-03-09 09:18:42.000000000 -0800
-@@ -1692,6 +1692,7 @@
+diff -Naur gcc-4.7.0-old/gcc/opts.c gcc-4.7.0-new/gcc/opts.c
+--- gcc-4.7.0-old/gcc/opts.c	2012-01-10 08:27:55.000000000 -0800
++++ gcc-4.7.0-new/gcc/opts.c	2012-03-22 08:22:06.000000000 -0700
+@@ -1735,6 +1735,7 @@
        dc->max_errors = value;
        break;
  
