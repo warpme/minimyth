@@ -1,7 +1,8 @@
 GARNAME = libaacs
-GARVERSION = 41b0365
+GARVERSION = 0.3.1
 CATEGORIES = extras
-MASTER_SITES = git://git.videolan.org/libaacs.git/
+MASTER_SITES  = ftp://ftp.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
+MASTER_SITES += git://git.videolan.org/libaacs.git/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 
@@ -31,7 +32,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
