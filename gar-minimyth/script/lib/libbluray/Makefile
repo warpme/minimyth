@@ -1,7 +1,8 @@
 GARNAME = libbluray
-GARVERSION = 362385f
+GARVERSION = 0.2.2
 CATEGORIES = lib
-MASTER_SITES = git://git.videolan.org/libbluray.git/
+MASTER_SITES  = ftp://ftp.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
+MASTER_SITES += git://git.videolan.org/libbluray.git/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 
@@ -44,7 +45,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
