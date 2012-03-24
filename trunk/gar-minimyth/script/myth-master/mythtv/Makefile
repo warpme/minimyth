@@ -5,6 +5,7 @@ MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-gcc_4.7.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
@@ -159,7 +160,7 @@ CPPFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 
-# Fails to compile with GCC 4.5.2's link time optimization enabled.
+# mythtv master fails to compile with gcc 4.5.2's link time optimization enabled.
 CFLAGS   := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto -fuse-linker-plugin, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
