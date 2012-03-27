@@ -48,6 +48,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libmudflap \
 	--enable-gold \
 	--enable-ld \
+	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath) \
+	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath-support) \
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \
