@@ -33,8 +33,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-plugins \
-	--enable-gold \
-	--enable-ld=default \
+	--disable-gold \
+	--enable-ld \
 	--disable-libada \
 	--disable-libssp \
 	--enable-lto \
@@ -84,15 +84,5 @@ post-install:
 	@$(if $(filter $(GARHOST), $(GARTARGET)) , \
 		rm -f $(DESTDIR)$(libdir)/libopcodes.la , \
 		rm -f $(DESTDIR)$(prefix)/$(GARHOST)/$(GARTARGET)/lib/libopcodes.la \
-	)
-	@# Native compile.
-	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \
-		cp $(DESTDIR)$(bindir)/ld.gold                  $(DESTDIR)$(bindir)/gold ; \
-		cp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/ld.gold $(DESTDIR)$(prefix)/$(GARTARGET)/bin/gold ; \
-	)
-	@# Cross compile.
-	@$(if $(filter-out $(DESTIMG),$(CROSSIMG)), \
-		cp $(DESTDIR)$(bindir)/$(GARTARGET)-ld.gold     $(DESTDIR)$(bindir)/$(GARTARGET)-gold ; \
-		cp $(DESTDIR)$(prefix)/$(GARTARGET)/bin/ld.gold $(DESTDIR)$(prefix)/$(GARTARGET)/bin/gold ; \
 	)
 	@$(MAKECOOKIE)
