@@ -43,6 +43,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-libmudflap \
 	--enable-gold \
 	--enable-ld \
+	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath) \
+	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath-support) \
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \
@@ -77,7 +79,14 @@ LDFLAGS  :=
 
 # Do not link to libc.so, because it is not available yet.
 pre-configure:
-	@sed -i '/^SHLIB_LC = /s%-lc%%' $(WORKSRC)/gcc/config/t-slibgcc-elf-ver
+	@#gcc 4.5.3
+	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-libunwind-elf     ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
+	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-slibgcc           ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
+	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-slibgcc-elf-ver   ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
+	@#gcc 4.7.0
+	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-libunwind-elf  ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
+	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-slibgcc        ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
+	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-slibgcc-elf-ver), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
 	@$(MAKECOOKIE)
 
 configure-custom:
