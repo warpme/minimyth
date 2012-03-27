@@ -6,8 +6,7 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-bfd_and_gold.patch
-PATCHFILES += $(DISTNAME)-disable_multilib_i386_linux64.patch
+PATCHFILES  = $(DISTNAME)-disable_multilib_i386_linux64.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
@@ -81,11 +80,6 @@ CPPFLAGS :=
 CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
-
-autoconf:
-	@# Used to recreate configure files for the bfd_and_gold patch.
-	cd $(WORKSRC)     ; AUTOM4TE='autom4te-2.64' autoconf-2.64 -I config --verbose
-	cd $(WORKSRC)/gcc ; AUTOM4TE='autom4te-2.64' autoconf-2.64 -I config --verbose
 
 configure-custom:
 	@mkdir -p $(WORKBLD)
