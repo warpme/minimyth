@@ -55,11 +55,7 @@ INSTALL_ARGS    = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
  
-# Fails to compile using the gold linker.
-CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile with GCC's link time optimization.
+# glibc 2.15 fails to compile with gcc 4.7.0's link time optimization enabled.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 

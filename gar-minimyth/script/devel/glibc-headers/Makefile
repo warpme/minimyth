@@ -17,6 +17,7 @@ CONFIGURE_SCRIPTS = custom
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
 	--disable-sanity-checks \
 	--enable-kernel=3.0.0 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
@@ -40,7 +41,8 @@ DEFAULT_ENV   := \
 	AR="$(build_AR)" \
 	AS="$(build_AS)" \
 	OBJDUMP="$(build_OBJDUMP)" \
-	RANLIB="$(build_RANLIB)"
+	RANLIB="$(build_RANLIB)" \
+	libc_cv_386_tls="yes"
 CONFIGURE_ENV := $(DEFAULT_ENV)
 BUILD_ENV     := $(DEFAULT_ENV)
 INSTALL_ENV   := $(DEFAULT_ENV)
@@ -49,6 +51,8 @@ pre-configure:
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
+	@rm -rf $(WORKBLD)/config.cache
+	@echo "libc_cv_386_tls=yes" >> $(WORKBLD)/config.cache
 	@$(MAKECOOKIE)
 
 configure-custom:
