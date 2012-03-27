@@ -95,7 +95,7 @@ build_chroot_DESTDIR ?= /tmp/chroot
 # allow us to link to libraries we installed
 main_CPPFLAGS += 
 main_CFLAGS += $(mm_CFLAGS)
-main_LDFLAGS += -flto -fuse-linker-plugin -fuse-ld=gold -Wl,--as-needed
+main_LDFLAGS += -flto -fuse-linker-plugin -Wl,--as-needed
 main_CXXFLAGS += $(main_CFLAGS)
 
 # allow us to link to libraries we installed
