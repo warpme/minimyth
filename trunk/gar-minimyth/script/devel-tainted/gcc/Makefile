@@ -72,6 +72,7 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(CROSS_GCC_LIBDIR)/libitm.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libsupc++.la
 	@ln -sf gcc $(DESTDIR)$(bindir)/cc
