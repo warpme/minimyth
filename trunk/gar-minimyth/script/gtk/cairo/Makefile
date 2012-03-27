@@ -1,5 +1,5 @@
 GARNAME = cairo
-GARVERSION = 1.10.2
+GARVERSION = 1.12.0
 CATEGORIES = gtk
 MASTER_SITES = http://www.cairographics.org/releases/
 DISTFILES = $(DISTNAME).tar.gz
@@ -46,6 +46,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xcb-drm \
 	--enable-png \
 	--enable-gl \
+	--disable-glesv2 \
+	--disable-cogl \
 	--disable-directfb \
 	--disable-vg \
 	--disable-egl \
