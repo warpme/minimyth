@@ -1,12 +1,14 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.7.4
+GARVERSION = 4.8.0
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
-	$(DISTNAME)-webkit_changeset_62185.patch
-PATCHFILES += $(DISTNAME).patch.gar
+	$(DISTNAME)-webkit_no_error.patch \
+	$(DISTNAME)-gcc_4.7.patch
+PATCHFILES += \
+	$(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -56,7 +58,6 @@ CONFIGURE_ARGS = \
 	-no-declarative \
 	-platform $(PLATFORM_GARBUILD_NAME) \
 	-system-zlib \
-	-qt-gif \
 	-system-libtiff \
 	-system-libpng \
 	-system-libmng \
@@ -147,12 +148,15 @@ CREATE_PLATFORM   = \
 	rm -rf $(strip $(2)) ; \
 	cp -r $(strip $(1)) $(strip $(2)) ; \
 	rm -f $(strip $(2))/qmake.conf~ ; \
-	echo "QMAKE_CFLAGS_RELEASE = $($(strip $(3))CFLAGS)"                          >> $(strip $(2))/qmake.conf~ ; \
-	cat $(strip $(2))/qmake.conf           | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
-	cat $(strip $(2))/../common/g++.conf   | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
-	cat $(strip $(2))/../common/linux.conf | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
-	cat $(strip $(2))/../common/unix.conf  | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
-	echo 'load(qt_config)'                                                        >> $(strip $(2))/qmake.conf~ ; \
+	echo "QMAKE_CFLAGS_RELEASE = $($(strip $(3))CFLAGS)"                                  >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/qmake.conf                   | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/gcc-base.conf      | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/gcc-base-unix.conf | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/g++-base.conf      | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/g++-unix.conf      | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/linux.conf         | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	cat $(strip $(2))/../common/unix.conf          | grep -v '^include' | grep -v '^load' >> $(strip $(2))/qmake.conf~ ; \
+	echo 'load(qt_config)'                                                                >> $(strip $(2))/qmake.conf~ ; \
 	rm -f $(strip $(2))/qmake.conf ; \
 	mv -f $(strip $(2))/qmake.conf~ $(strip $(2))/qmake.conf ; \
 	$(call UPDATE_PLATFORM, $(2), QMAKE_COPY          , , cp -f --preserve=timestamps) ; \
