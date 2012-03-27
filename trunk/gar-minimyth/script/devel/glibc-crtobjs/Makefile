@@ -28,14 +28,14 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--cache-file=config.cache \
 	--enable-bind-now \
 	--enable-kernel=3.0.0 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
 	--with-elf \
-	--with-headers=$(DESTDIR)$(includedir) \
-	--cache-file=config.cache
+	--with-headers=$(DESTDIR)$(includedir)
 ifeq ($(use_linuxthreads),yes)
 CONFIGURE_ARGS += \
 	--enable-add-ons=linuxthreads \
@@ -59,11 +59,7 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# Fails to compile using the gold linker.
-CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile with GCC's link time optimization.
+# glibc 2.15 fails to compile with gcc 4.7.0's link time optimization enabled.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
@@ -77,6 +73,7 @@ pre-configure:
 	@rm -rf $(WORKBLD)/config.cache
 	@echo "libc_cv_forced_unwind=yes" >> $(WORKBLD)/config.cache
 	@echo "libc_cv_c_cleanup=yes"     >> $(WORKBLD)/config.cache
+	@echo "libc_cv_ctors_header=yes"  >> $(WORKBLD)/config.cache
 	@$(MAKECOOKIE)
 
 configure-custom:

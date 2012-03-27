@@ -52,11 +52,7 @@ BUILD_ARGS      = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
  
-# Fails to compile using the gold linker.
-CFLAGS  := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-ld=gold -fuse-linker-plugin, $(LDFLAGS))
-
-# Fails to compile with GCC's link time optimization.
+# glibc 2.15 fails to compile with gcc 4.7.0's link time optimization enabled.
 CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
 
@@ -70,6 +66,7 @@ pre-configure:
 	@rm -rf $(WORKBLD)/config.cache
 	@echo "libc_cv_forced_unwind=yes" >> $(WORKBLD)/config.cache
 	@echo "libc_cv_c_cleanup=yes"     >> $(WORKBLD)/config.cache
+	@echo "libc_cv_ctors_header=yes"  >> $(WORKBLD)/config.cache
 	@$(MAKECOOKIE)
 
 configure-custom:
