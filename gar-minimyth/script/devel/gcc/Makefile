@@ -88,6 +88,7 @@ configure-custom:
 
 post-install:
 	@rm -f $(CROSS_GCC_LIBDIR)/libgomp.la
+	@rm -f $(CROSS_GCC_LIBDIR)/libitm.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp_nonshared.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libstdc++.la
