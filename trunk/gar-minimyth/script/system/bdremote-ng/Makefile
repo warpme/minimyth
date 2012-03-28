@@ -21,8 +21,7 @@ include ../../gar.mk
 
 CFLAGS := $(CFLAGS) -DENABLE_REPEAT=1
 
-CFLAGS  := $(CFLAGS)  -flto
-LDFLAGS := $(LDFLAGS) -flto -fwhole-program
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 build-custom:
 	cd $(WORKSRC)/src ; $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -I . -o bdremoteng bdremoteng.c bdrcfg.c captureif.c globaldefs.c l.c lirc_callback.c lirc_srv.c lirc_thr.c lirc_util.c q.c ug.c event_out.c capture/capture_bluez.c -lpthread -lbluetooth

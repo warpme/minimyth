@@ -13,7 +13,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/expat lib/SDL lib/SDL_ttf lib/zlib xorg/xorg
+DEPENDS = lang/c lang/cxx lib/expat lib/SDL lib/SDL_ttf lib/zlib xorg/xorg
 ifneq ($(DESTIMG),build)
 BUILDDEPS += emulators/mame
 endif
@@ -33,12 +33,12 @@ BUILD_ARGS = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC 4.5.3's link time optimization linker plugin enabled.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+# mame 0.145 fails to compile with gcc 4.7.0's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
 
-# The linker must the c++ because some of the object files are compiled as c++ using the c compiler.
+# The linker must be c++ because some of the object files are compiled as c++ using the c compiler.
 LD := $(CXX)
 
 OPTIMIZE := $(subst -O,,$(filter -O%,$(CFLAGS)))

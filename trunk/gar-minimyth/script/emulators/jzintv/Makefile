@@ -23,8 +23,10 @@ BUILD_ENV = \
 
 include ../../gar.mk
 
-CFLAGS   += -lm
-CXXFLAGS += -lm
+CFLAGS   := $(CFLAGS) -lm
+CXXFLAGS := $(CXXFLAGS) -lm
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(bindir)

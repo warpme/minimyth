@@ -29,7 +29,9 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-CFLAGS += -lm
+CFLAGS  := $(CFLAGS) -lm
+
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)

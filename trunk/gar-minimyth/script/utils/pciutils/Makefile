@@ -65,6 +65,10 @@ include ../../gar.mk
 CFLAGS  := $(CFLAGS)  -fPIC
 LDFLAGS := $(LDFLAGS) -fPIC
 
+# pciutils 3.1.9 fails to compile with gcc 4.7.0's link time optimization enabled.
+CFLAGS  := $(filter-out -flto, $(CFLAGS))
+LDFLAGS := $(filter-out -flto, $(LDFLAGS))
+
 extract-pci.ids:
 	@cp -f $(DOWNLOADDIR)/pci.ids $(WORKSRC)/pci.ids
 	@$(MAKECOOKIE)
