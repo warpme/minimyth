@@ -41,11 +41,7 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# Fails to compile with GCC 4.5.2's link time optimization linker plugin enabled.
-# Suffers from bug 44149 <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=44149>.
-CFLAGS   := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)

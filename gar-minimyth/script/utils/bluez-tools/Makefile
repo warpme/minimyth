@@ -20,8 +20,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-CFLAGS  := $(CFLAGS)  -flto
-LDFLAGS := $(LDFLAGS) -flto -fwhole-program
+LDFLAGS := $(LDFLAGS) -fwhole-program
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)

@@ -29,10 +29,6 @@ INSTALL_OVERRIDE_DIRS = \
 
 include ../../gar.mk
 
-# Causes "floating point exception" (in 'top') when compiled with GCC 4.5.2's link time optimization enabled.
-CFLAGS  := $(filter-out -flto -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -flto -fuse-linker-plugin, $(LDFLAGS))
-
 usr/bin      := $(bindir)/
 bin          := $(ebindir)/
 sbin         := $(esbindir)/

@@ -37,8 +37,4 @@ include ../../gar.mk
 
 LDFLAGS := $(CXXFLAGS) $(LDFLAGS)
 
-# Fails to compile with GCC 4.5.3's link time optimization linker plugin enabled.
-CXXFLAGS := $(filter-out -fuse-linker-plugin, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
-
 LDFLAGS := $(LDFLAGS) -fwhole-program
