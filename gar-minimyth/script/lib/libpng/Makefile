@@ -1,5 +1,5 @@
 GARNAME = libpng
-GARVERSION = 1.5.9
+GARVERSION = 1.5.10
 CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)15/$(GARVERSION)/
 DISTFILES  = $(DISTNAME).tar.bz2
