@@ -1,8 +1,8 @@
 GARNAME = acpid
-GARVERSION = 2.0.14
+GARVERSION = 2.0.16
 CATEGORIES = system
 MASTER_SITES = http://www.tedfelix.com/linux/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL2
 
 DESCRIPTION =
@@ -11,27 +11,22 @@ endef
 
 DEPENDS = lang/c
 
-BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-BUILD_ARGS   = \
-	OPT="$(CFLAGS)" \
-	BINDIR=$(bindir) \
-	SBINDIR=$(sbindir) \
-	MAN8DIR=$(mandir)/man8 \
-	DOCDIR=$(docdir)/acpid
-INSTALL_ARGS = \
-	BINDIR=$(bindir) \
-	SBINDIR=$(sbindir) \
-	MAN8DIR=$(mandir)/man8 \
-	DOCDIR=$(docdir)/acpid
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules
+
+CONFIGURE_ENV = \
+	ac_cv_func_malloc_0_nonnull='yes' \
+	ac_cv_func_realloc_0_nonnull='yes'
 
 include ../../gar.mk
 
 LDFLAGS := $(LDFLAGS) -fwhole-program
 
-LDFLAGS := $(CFLAGS) $(LDFLAGS)
-
-post-install:
-	@chmod 755 $(DESTDIR)$(sbindir)/acpid
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
