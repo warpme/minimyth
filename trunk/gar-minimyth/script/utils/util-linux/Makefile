@@ -1,8 +1,8 @@
 GARNAME = util-linux
-GARVERSION = 2.20.1
+GARVERSION = 2.21.1
 CATEGORIES = utils
-MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.20/
-MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.20/
+MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.21/
+MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.21/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-agetty_2.19.1.patch
 LICENSE = GPL2
@@ -26,26 +26,26 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-gtk-doc \
-	--enable-tls \
-	--enable-mount \
-	--disable-fsck \
-	--disable-partx \
-	--enable-libuuid \
-	--enable-uuidd \
-	--enable-libblkid \
-	--enable-libmount \
-	--enable-libmount-mount \
-	--disable-mountpoint \
 	--enable-nls \
 	--disable-rpath \
+	--enable-tls \
+	--enable-libuuid \
+	--enable-libblkid \
+	--enable-libmount \
+	--enable-mount \
+	--enable-libmount-mount \
+	--disable-fsck \
+	--disable-partx \
+	--enable-uuidd \
+	--disable-mountpoint \
+	--disable-fallocate \
+	--disable-unshare \
 	--enable-arch \
 	--disable-ddate \
 	--enable-agetty \
 	--enable-cramfs \
 	--enable-switch-root \
 	--disable-pivot-root \
-	--disable-fallocate \
-	--disable-unshare \
 	--disable-elvtune \
 	--disable-kill \
 	--disable-last \
@@ -67,11 +67,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-makeinstall-chown \
 	--disable-makeinstall-setuid \
 	--with-gnu-ld \
-	--without-slang \
-	--without-utempter \
-	--without-pam \
 	--without-selinux \
-	--without-audit
+	--without-audit \
+	--without-udev \
+	--without-slang \
+	--without-utempter
 
 BUILD_ARGS     = \
 	usrbinexecdir=$(bindir) \
