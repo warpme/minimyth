@@ -1,26 +1,26 @@
-diff -Naur mythtv-0.24-20120221-c29d36f-931028f-old/mythplugins/configure mythtv-0.24-20120221-c29d36f-931028f-new/mythplugins/configure
---- mythtv-0.24-20120221-c29d36f-931028f-old/mythplugins/configure	2012-02-29 18:01:34.000000000 -0800
-+++ mythtv-0.24-20120221-c29d36f-931028f-new/mythplugins/configure	2012-02-29 18:01:39.000000000 -0800
-@@ -343,10 +343,15 @@
- 
+diff -Naur mythtv-0.24-20120315-322de47-931028f-old/mythplugins/configure mythtv-0.24-20120315-322de47-931028f-new/mythplugins/configure
+--- mythtv-0.24-20120315-322de47-931028f-old/mythplugins/configure	2012-04-01 08:50:30.000000000 -0700
++++ mythtv-0.24-20120315-322de47-931028f-new/mythplugins/configure	2012-04-01 08:50:31.000000000 -0700
+@@ -344,10 +344,15 @@
  check_py_lib(){
      log check_py_lib "$@"
-+if test "x${PYTHONXCPREFIX}" = "x" ; then
-+   py_prefix=${prefix}
-+else
-+   py_prefix=${PYTHONXCPREFIX}
-+fi
+     lib=${1}
++    if test "x${PYTHONXCPREFIX}" = "x" ; then
++       py_prefix=${prefix}
++    else
++       py_prefix=${PYTHONXCPREFIX}
++    fi
      check_cmd $python <<EOF
  from distutils.sysconfig import get_python_lib
  import sys
 -sys.path.append(get_python_lib(prefix='${prefix}'))
 +sys.path.append(get_python_lib(prefix='${py_prefix}'))
  try:
-     import ${1}
+     import $lib
  except:
-diff -Naur mythtv-0.24-20120221-c29d36f-931028f-old/mythtv/bindings/python/Makefile mythtv-0.24-20120221-c29d36f-931028f-new/mythtv/bindings/python/Makefile
---- mythtv-0.24-20120221-c29d36f-931028f-old/mythtv/bindings/python/Makefile	2012-02-29 18:01:34.000000000 -0800
-+++ mythtv-0.24-20120221-c29d36f-931028f-new/mythtv/bindings/python/Makefile	2012-02-29 18:01:39.000000000 -0800
+diff -Naur mythtv-0.24-20120315-322de47-931028f-old/mythtv/bindings/python/Makefile mythtv-0.24-20120315-322de47-931028f-new/mythtv/bindings/python/Makefile
+--- mythtv-0.24-20120315-322de47-931028f-old/mythtv/bindings/python/Makefile	2012-04-01 08:50:30.000000000 -0700
++++ mythtv-0.24-20120315-322de47-931028f-new/mythtv/bindings/python/Makefile	2012-04-01 08:50:31.000000000 -0700
 @@ -1,15 +1,15 @@
  include ../../config.mak
  
@@ -52,9 +52,9 @@ diff -Naur mythtv-0.24-20120221-c29d36f-931028f-old/mythtv/bindings/python/Makef
  	$(PYTHON) setprefix.py "$(REAL_PREFIX)"
  
  install: setup.py
-diff -Naur mythtv-0.24-20120221-c29d36f-931028f-old/mythtv/bindings/python/setup.py mythtv-0.24-20120221-c29d36f-931028f-new/mythtv/bindings/python/setup.py
---- mythtv-0.24-20120221-c29d36f-931028f-old/mythtv/bindings/python/setup.py	2012-02-29 18:01:34.000000000 -0800
-+++ mythtv-0.24-20120221-c29d36f-931028f-new/mythtv/bindings/python/setup.py	2012-02-29 18:01:39.000000000 -0800
+diff -Naur mythtv-0.24-20120315-322de47-931028f-old/mythtv/bindings/python/setup.py mythtv-0.24-20120315-322de47-931028f-new/mythtv/bindings/python/setup.py
+--- mythtv-0.24-20120315-322de47-931028f-old/mythtv/bindings/python/setup.py	2012-04-01 08:50:30.000000000 -0700
++++ mythtv-0.24-20120315-322de47-931028f-new/mythtv/bindings/python/setup.py	2012-04-01 08:50:31.000000000 -0700
 @@ -1,7 +1,7 @@
  #!/usr/bin/env python
  
