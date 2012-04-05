@@ -23,7 +23,7 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = devel/glibc
-DEPENDS   = lang/c devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
+DEPENDS   = lang/c devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
 BUILDDEPS = devel/make devel/binutils
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -47,11 +47,12 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libmudflap \
 	--enable-gold \
 	--enable-ld \
-	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath) \
-	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath-support) \
+	--disable-libquadmath \
+	--disable-libquadmath-support \
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \
+	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-multilib \
 	--enable-nls \
