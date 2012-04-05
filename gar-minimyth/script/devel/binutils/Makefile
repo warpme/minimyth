@@ -18,7 +18,7 @@ endef
 CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
-DEPENDS  = lang/c devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
+DEPENDS  = lang/c devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
 BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -36,6 +36,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-ld \
 	--disable-libada \
 	--disable-libssp \
+	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-werror \
 	--disable-multilib \

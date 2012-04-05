@@ -18,7 +18,7 @@ DEPENDS  = lang/c devel/binutils
 else
 DEPENDS  =
 endif
-DEPENDS += devel/cloog-ppl devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
+DEPENDS += devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -48,6 +48,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GA
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \
+	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-multilib \
 	--disable-nls \
@@ -79,11 +80,6 @@ LDFLAGS  :=
 
 # Do not link to libc.so, because it is not available yet.
 pre-configure:
-	@#gcc 4.5.3
-	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-libunwind-elf     ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
-	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-slibgcc           ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
-	@$(foreach file,$(wildcard $(WORKSRC)/gcc/config/t-slibgcc-elf-ver   ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
-	@#gcc 4.7.0
 	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-libunwind-elf  ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
 	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-slibgcc        ), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )
 	@$(foreach file,$(wildcard $(WORKSRC)/libgcc/config/t-slibgcc-elf-ver), sed -i '/^SHLIB_LC = /s%-lc%%' $(file) ; )

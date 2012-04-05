@@ -37,8 +37,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-decimal-float \
 	--disable-libgomp \
 	--disable-libmudflap \
-	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath) \
-	$(if $(filter 4.5.3,$(GCC_VERSION)),,--disable-libquadmath-support) \
+	--disable-libquadmath \
+	--disable-libquadmath-support \
 	--disable-libada \
 	--disable-libssp \
 	--disable-ppl-version-check \
