@@ -48,7 +48,7 @@ DEPENDS = \
 	utils/lsdvd \
 	utils/lsof \
 	utils/microcode_ctl \
-	utils/module-init-tools \
+	utils/kmod \
 	$(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes) \
 	myth-$(mm_MYTH_VERSION)/myththemes-blue-abstract-wide \
 	$(if $(filter 0.22,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes-old) \
@@ -187,6 +187,7 @@ BUILDDEPS = \
 	devel/fakeroot \
 	utils/file \
 	utils/findutils \
+	utils/module-init-tools \
 	utils/squashfs \
 	utils/tar \
 	utils/util-linux \
