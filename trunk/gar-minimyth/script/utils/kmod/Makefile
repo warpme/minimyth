@@ -31,28 +31,24 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-bindir  := $(esbindir)
-sbindir := $(esbindir)
-libdir  := $(elibdir)
-
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 install-links:
-	@rm -f $(DESTDIR)$(bindir)/depmod
-	@ln -s kmod $(DESTDIR)$(bindir)/depmod
-	@rm -f $(DESTDIR)$(bindir)/insmod
-	@ln -s kmod $(DESTDIR)$(bindir)/insmod
-	@rm -f $(DESTDIR)$(bindir)/lsmod
-	@ln -s kmod $(DESTDIR)$(bindir)/lsmod
-	@rm -f $(DESTDIR)$(bindir)/modinfo
-	@ln -s kmod $(DESTDIR)$(bindir)/modinfo
-	@rm -f $(DESTDIR)$(bindir)/modprobe
-	@ln -s kmod $(DESTDIR)$(bindir)/modprobe
-	@rm -f $(DESTDIR)$(bindir)/rmmod
-	@ln -s kmod $(DESTDIR)$(bindir)/rmmod
+	@rm -f $(DESTDIR)$(esbindir)/depmod
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/depmod
+	@rm -f $(DESTDIR)$(esbindir)/insmod
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/insmod
+	@rm -f $(DESTDIR)$(esbindir)/lsmod
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/lsmod
+	@rm -f $(DESTDIR)$(esbindir)/modinfo
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/modinfo
+	@rm -f $(DESTDIR)$(esbindir)/modprobe
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/modprobe
+	@rm -f $(DESTDIR)$(esbindir)/rmmod
+	@ln -s $(patsubst /%,%,$(call DIRSTODOTS,$(esbindir)))$(bindir)/kmod $(DESTDIR)$(esbindir)/rmmod
 	@$(MAKECOOKIE)
 
 post-install:
