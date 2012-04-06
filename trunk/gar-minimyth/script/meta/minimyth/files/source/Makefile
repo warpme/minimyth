@@ -498,9 +498,10 @@ $(top_build)/stage/image/rootfs: $(top_build)/image/rootfs
 	@mkdir -m 0755 -p                   $@~/rootfs
 	@mkdir -m 0755 -p                   $@~/rw
 	@mkdir -m 0755 -p                   $@~/bin
+	@mkdir -m 0755 -p                   $@~/sbin
 	@ln -s rootfs-ro/dev                $@~/dev
 	@ln -s rootfs-ro/lib                $@~/lib
-	@mkdir -m 0755 -p                   $@~/sbin
+	@ln -s rootfs-ro/usr                $@~/usr
 	@ln -s ../rootfs-ro/bin/mkdir       $@~/bin/mkdir
 	@ln -s ../rootfs-ro/sbin/modprobe   $@~/sbin/modprobe
 	@ln -s ../rootfs-ro/bin/mount       $@~/bin/mount
