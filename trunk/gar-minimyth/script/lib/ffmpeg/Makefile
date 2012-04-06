@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 0.10.1
+GARVERSION = 0.10.2
 #GARVERSION = b18e17e
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
