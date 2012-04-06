@@ -1,5 +1,5 @@
 GARNAME = udev
-GARVERSION = 173
+GARVERSION = 174
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -55,7 +55,6 @@ pre-configure:
 pre-install:
 	@rm -rf $(DESTDIR)$(sysconfdir)/udev
 	@rm -rf $(DESTDIR)$(sbindir)/udevadm
-	@rm -rf $(DESTDIR)$(sbindir)/udevd
 	@rm -rf $(DESTDIR)$(libdir)/libudev.*
 	@rm -rf $(DESTDIR)$(libdir)/pkgconfig/libudev.pc
 	@rm -rf $(DESTDIR)$(elibdir)/udev

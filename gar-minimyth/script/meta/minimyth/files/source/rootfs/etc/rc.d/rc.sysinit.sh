@@ -44,7 +44,7 @@
 /bin/echo -e '\000\000\000\000' > /proc/sys/kernel/hotplug
 
 # Start udev userspace daemon of listening to events.
-/sbin/udevd -d
+/lib/udev/udevd -d
 # Regenerate the events that have already happened.
 /sbin/udevadm trigger --action=add
 # Wait for udev to process all the regenerated events.
