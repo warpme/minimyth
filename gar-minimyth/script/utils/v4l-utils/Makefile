@@ -1,5 +1,5 @@
 GARNAME = v4l-utils
-GARVERSION = 0.8.6
+GARVERSION = 0.8.7
 CATEGORIES = utils
 MASTER_SITES = http://linuxtv.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/sysfsutils qt/qt4
+DEPENDS = lang/c lang/cxx lib/sysfsutils qt/qt4
 
 BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = $(WORKSRC)/Makefile
