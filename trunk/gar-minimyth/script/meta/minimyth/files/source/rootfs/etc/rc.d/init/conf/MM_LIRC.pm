@@ -75,10 +75,10 @@ $var_list{'MM_LIRC_DEVICE_BLACKLIST'} =
             push(@blacklist, qq(ENV{DEVLINKS}=="$devlink", GOTO="end"));
         }
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_BLACKLIST@' => join("\n", @blacklist) });
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
             { '@MM_LIRC_BLACKLIST@' => join("\n", @blacklist) });
 
         return 1;
@@ -116,7 +116,7 @@ $var_list{'MM_LIRC_DRIVER'} =
         }
 
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_DRIVER@' => $driver });
     }
 };
@@ -171,12 +171,12 @@ $var_list{'MM_LIRC_DEVICE'} =
             if (($driver) && ($driver =~ /^devinput$/))
             {
                 $minimyth->file_replace_variable(
-                    '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                    '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '#',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => '',
                       '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
                 $minimyth->file_replace_variable(
-                    '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                    '/usr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => $devname,
                       '@MM_LIRC_DEVICE_DEVLINK@'      => $devlink });
@@ -184,12 +184,12 @@ $var_list{'MM_LIRC_DEVICE'} =
             else
             {
                 $minimyth->file_replace_variable(
-                    '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                    '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => $devname,
                       '@MM_LIRC_DEVICE_DEVLINK@'      => $devlink });
                 $minimyth->file_replace_variable(
-                    '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                    '/usr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '#',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => '',
                       '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
@@ -198,12 +198,12 @@ $var_list{'MM_LIRC_DEVICE'} =
         else
         {
             $minimyth->file_replace_variable(
-                '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+                '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '#',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => '',
                       '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
             $minimyth->file_replace_variable(
-                '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+                '/usr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
                     { '@MM_LIRC_DEVICE_TRUE@'         => '#',
                       '@MM_LIRC_DEVICE_DEVNAME@'      => '',
                       '@MM_LIRC_DEVICE_DEVLINK@'      => '', });
@@ -434,19 +434,19 @@ $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
         if ($minimyth->var_get($name) eq 'yes')
         {
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '' });
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '' });
         }
         else
         {
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
+            '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
         $minimyth->file_replace_variable(
-            '/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            '/lusr/ib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
         }
     }

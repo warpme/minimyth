@@ -17,16 +17,16 @@ sub start
 
     # Real time clock.
 
-    if (opendir(DIR, '/lib/udev/rules.d'))
+    if (opendir(DIR, '/usr/lib/udev/rules.d'))
     {
         foreach (grep(s/^(06-minimyth-hotplug-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
-            rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
+            rename("/usr/lib/udev/rules.d/$_.disabled", "/usr/lib/udev/rules.d/$_");
         }
         closedir(DIR);
     }
-    system(qq(/sbin/udevadm trigger --action=add));
-    system(qq(/sbin/udevadm settle --timeout=60));
+    system(qq(/usr/bin/udevadm trigger --action=add));
+    system(qq(/usr/bin/udevadm settle --timeout=60));
 
     return 1;
 }

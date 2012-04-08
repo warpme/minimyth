@@ -16,7 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--with-udev-dir=$(elibdir)/udev
+	--with-udev-dir=$(libdir)/udev
 
 include ../../gar.mk
 

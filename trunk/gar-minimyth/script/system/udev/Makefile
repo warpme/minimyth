@@ -44,8 +44,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-sbindir    := $(esbindir)
-libexecdir := $(elibdir)/udev
+sbindir    := $(bindir)
+libexecdir := $(libdir)/udev
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
@@ -57,7 +57,9 @@ pre-install:
 	@rm -rf $(DESTDIR)$(sbindir)/udevadm
 	@rm -rf $(DESTDIR)$(libdir)/libudev.*
 	@rm -rf $(DESTDIR)$(libdir)/pkgconfig/libudev.pc
-	@rm -rf $(DESTDIR)$(elibdir)/udev
+	@rm -rf $(DESTDIR)$(libexecdir)/udev
+	@rm -rf $(DESTDIR)$(licensedir)/udev
+	@rm -rf $(DESTDIR)$(versiondir)/udev
 	@$(MAKECOOKIE)
 
 post-install:

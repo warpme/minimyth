@@ -3,6 +3,7 @@ GARVERSION = 0.8.7
 CATEGORIES = utils
 MASTER_SITES = http://linuxtv.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 

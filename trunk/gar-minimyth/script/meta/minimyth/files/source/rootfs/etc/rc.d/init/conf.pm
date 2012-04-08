@@ -229,16 +229,16 @@ sub start
     # automatic and manual kernel modules have yet to be loaded.
     # The firmware auto-detection rules will trigger because they do
     # do not depend on the automatic and manual kernel modules.
-    if (opendir(DIR, '/lib/udev/rules.d'))
+    if (opendir(DIR, '/usr/lib/udev/rules.d'))
     {
         foreach (grep(s/^(05-minimyth-detect-.*\.rules)\.disabled$/$1/, (readdir(DIR))))
         {
-            rename("/lib/udev/rules.d/$_.disabled", "/lib/udev/rules.d/$_");
+            rename("/usr/lib/udev/rules.d/$_.disabled", "/usr/lib/udev/rules.d/$_");
         }
         closedir(DIR);
     }
-    system(qq(/sbin/udevadm trigger --action=add));
-    system(qq(/sbin/udevadm settle --timeout=60));
+    system(qq(/usr/bin/udevadm trigger --action=add));
+    system(qq(/usr/bin/udevadm settle --timeout=60));
 
     # Fetch firmware files.
     $minimyth->message_output('info', "Fetching firmware files ...");

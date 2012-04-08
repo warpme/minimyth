@@ -32,7 +32,7 @@ sub start
             $minimyth->message_output('err', "failed to load kernel module: $kernel_module");
             return 0;
         }
-        system(qq(/sbin/udevadm settle --timeout=60));
+        system(qq(/usr/bin/udevadm settle --timeout=60));
         if (! -e '/dev/cpu/microcode')
         {
             $minimyth->message_output('err', "'/dev/cpu/microcode' does not exist.");

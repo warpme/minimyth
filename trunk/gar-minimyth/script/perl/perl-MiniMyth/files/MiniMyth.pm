@@ -463,7 +463,7 @@ sub device_canonicalize
     my $device = shift;
 
     # If possible, covert the device name to its real name.
-    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=name --root --name='$device'))))
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/usr/bin/udevadm info --query=name --root --name='$device'))))
     {
         while (<FILE>)
         {
@@ -474,7 +474,7 @@ sub device_canonicalize
         close(FILE);
     }
     # If possible, covert the device name to its persistent link name.
-    if (($device) && (-e $device) && (open(FILE, '-|', qq(/sbin/udevadm info --query=symlink --root --name='$device'))))
+    if (($device) && (-e $device) && (open(FILE, '-|', qq(/usr/bin/udevadm info --query=symlink --root --name='$device'))))
     {
         while (<FILE>)
         {
