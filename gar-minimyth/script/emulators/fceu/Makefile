@@ -3,7 +3,10 @@ GARVERSION = 0.98.13-pre
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/fceultra/Source%20Code/$(GARVERSION)/
 DISTFILES = $(DISTNAME).src.tar.bz2
-PATCHFILES = $(DISTNAME)-fixes.patch $(DISTNAME)-sdl_sound.patch
+PATCHFILES = \
+	$(DISTNAME)-zlib_1.2.6.patch \
+	$(DISTNAME)-fixes.patch \
+	$(DISTNAME)-sdl_sound.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

@@ -5,6 +5,7 @@ MASTER_SITES = http://downloads.sourceforge.net/project/vba/$(GARNAME)/$(GARVERS
 DISTFILES = $(GARNAME)-src-$(GARVERSION).tar.gz
 PATCHFILES = \
 	$(DISTNAME)-libpng_1.5.patch \
+	$(DISTNAME)-zlib_1.2.6.patch \
 	$(DISTNAME)-configure.patch \
 	$(DISTNAME)-strrchr.patch \
 	$(DISTNAME)-x86_64.patch \

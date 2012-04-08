@@ -3,7 +3,9 @@ GARVERSION = 0.8.D.3
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/mednafen/Mednafen/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-autoconf_2.65.patch
+PATCHFILES = \
+	$(DISTNAME)-zlib_1.2.6.patch \
+	$(DISTNAME)-autoconf_2.65.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
