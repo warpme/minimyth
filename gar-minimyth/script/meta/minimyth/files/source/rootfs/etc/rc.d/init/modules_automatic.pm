@@ -30,7 +30,7 @@ sub start
     system(qq(/sbin/modprobe ppdev));
 
     # Enable modeprobe udev rules.
-    rename('/lib/udev/rules.d/01-minimyth-modprobe.rules.disabled', '/lib/udev/rules.d/01-minimyth-modprobe.rules');
+    rename('/usr/lib/udev/rules.d/01-minimyth-modprobe.rules.disabled', '/usr/lib/udev/rules.d/01-minimyth-modprobe.rules');
 
     # Trigger udev with the additional udev rules that handle detected hardware.
     system(qq(/sbin/udevadm trigger --action=add));

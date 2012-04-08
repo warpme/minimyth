@@ -232,7 +232,7 @@ if (open(FILE, '>', qq($outfile_udev_rules)))
         print FILE qq(\n);
     }
     print FILE qq(# The state has been set, so save it.\n);
-    print FILE qq(ENV{mm_detect_state_video}=="?*", RUN+="/lib/udev/mm_detect video %k \$env{mm_detect_state_video}"\n);
+    print FILE qq(ENV{mm_detect_state_video}=="?*", RUN+="mm_detect video %k \$env{mm_detect_state_video}"\n);
     print FILE qq(\n);
     print FILE qq(LABEL="end"\n);
     close(FILE);
