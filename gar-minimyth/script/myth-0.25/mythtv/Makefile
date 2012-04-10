@@ -6,26 +6,16 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-gcc_4.7.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-v4l2.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-codec_id_svq3_fix.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-dts_passthrough_fix.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-max_num_xvmc_surfaces_14.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-dvdnav_shared.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-udevinfo.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-drm_vsync_control.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION))).patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-init.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-minimyth.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-programid.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-limits_h.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-cdio.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-font.patch
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-programid.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -36,23 +26,34 @@ DEPENDS = \
 	lang/cxx \
 	db/mysql \
 	lib/alsa-lib \
-	lib/faad2 \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
+	lib/libass \
 	lib/libavc1394 \
+	lib/libcdio \
+	lib/libcec \
+	lib/libdns_sd \
 	lib/libiec61883 \
+	lib/libxml2 \
+	lib/openssl \
 	lib/zlib \
 	python/python \
 	python/python-MySQL-python \
 	python/python-lxml \
+	python/python-urlgrabber \
 	qt/qt4 \
 	system/lirc \
+	system/udev \
+	X11/libva \
 	X11/libvdpau \
 	xorg/xorg
 BUILDDEPS = \
 	devel/yasm \
-	python/python-distutilscross
+	python/python-distutilscross \
+	python/python-MySQL-python \
+	python/python-lxml \
+	python/python-urlgrabber
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -64,19 +65,18 @@ INSTALL_SCRIPTS   = $(WORKSRC)/mythtv/Makefile source
 
 CONFIGURE_ARGS = \
 	--compile-type=$(if $(filter yes,$(mm_DEBUG)),"debug","release") \
-	--prefix="$(prefix)" \
+	--prefix="$(DESTDIR)$(prefix)" \
 	--runprefix="$(prefix)" \
 	--libdir-name="$(patsubst $(prefix)/%,%,$(libdir))" \
 	--disable-ccache \
 	--disable-distcc \
-	--bindir="$(bindir)" \
-	--datadir="$(datadir)" \
-	--libdir="$(libdir)" \
-	--shlibdir="$(libdir)" \
-	--incdir="$(incdir)" \
-	--mandir="$(mandir)" \
+	--bindir="$(DESTDIR)$(bindir)" \
+	--datadir="$(DESTDIR)$(datadir)/mythtv" \
+	--libdir="$(DESTDIR)$(libdir)" \
+	--shlibdir="$(DESTDIR)$(libdir)" \
+	--incdir="$(DESTDIR)$(includedir)/mythtv" \
+	--mandir="$(DESTDIR)$(mandir)" \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
-	--enable-libfaad \
 	--cross-prefix="$(compiler_prefix)" \
 	--enable-cross-compile \
 	--sysroot="$(DESTDIR)$(rootdir)" \
@@ -86,6 +86,7 @@ CONFIGURE_ARGS = \
 	--as="$(CC)" \
 	--cc="$(CC)" \
 	--cxx="$(CXX)" \
+	--ld="$(CC)" \
 	--qmake="$(DESTDIR)$(qt4bindir)/qmake" \
 	--host-cc="$(build_CC)" \
 	--host-cflags="$(build_CFLAGS)" \
@@ -98,7 +99,6 @@ CONFIGURE_ARGS = \
 	--arch=$(GARCH_FAMILY) \
 	--tune=$(GARCH) \
 	--cpu=$(GARCH) \
-	--disable-proc-opt \
 	--disable-altivec \
 	--enable-amd3dnow \
 	--enable-amd3dnowext \
@@ -107,6 +107,7 @@ CONFIGURE_ARGS = \
 	--enable-sse \
 	--enable-ssse3 \
 	--enable-yasm \
+	--disable-proc-opt \
 	--enable-audio-oss \
 	--enable-audio-alsa \
 	--disable-audio-jack \
@@ -114,29 +115,35 @@ CONFIGURE_ARGS = \
 	--disable-valgrind \
 	--enable-lirc \
 	--enable-joystick-menu \
+	--enable-libcec \
+	--libcec-path="$(DESTDIR)$(includedir)" \
 	--enable-firewire \
 	--disable-iptv \
 	--disable-hdhomerun \
-	--disable-v4l \
+	--disable-ceton \
 	--enable-v4l2 \
 	--enable-ivtv \
 	--enable-hdpvr \
 	--enable-dvb \
 	--dvb-path="$(DESTDIR)$(includedir)" \
+	--disable-asi \
 	--enable-x11 \
 	--x11-path="$(DESTDIR)$(includedir)" \
 	--enable-xrandr \
 	--enable-xv \
-	--enable-xvmc \
-	--enable-xvmcw \
-	--enable-xvmc-pro \
 	--enable-vdpau \
-	--xvmc-lib=XvMCW \
+	--disable-crystalhd \
+	--enable-vaapi \
+	--disable-dxva2 \
 	--enable-opengl-video \
-	--disable-mac-accel \
-	--enable-opengl-vsync \
+	--disable-quartz-video \
 	--disable-mac-bundle \
+	--enable-libxml2 \
+	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
+	--enable-libdns_sd \
+	--enable-libcrypto \
 	--without-bindings="perl" \
+	--without-bindings="php" \
 	--with-bindings="python"
 
 CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
@@ -149,21 +156,17 @@ INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
 
-# mythtv 0.23 fails to compile with gcc 4.7.0's link time optimization enabled.
+CPPFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
+CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
+CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
+
+# mythtv 0.25 fails to compile with gcc 4.7.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
 
 git//%/$(DISTNAME).tar.bz2:
-	$(call FETCH_GIT, $*/mythtv.git,     $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	$(call FETCH_GIT, $*/myththemes.git, $(word 4,$(subst -, ,$(GARVERSION))), myththemes)
-	@cd $(PARTIALDIR) ; tar -jxf $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jxf myththemes.tar.bz2
-	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)/myththemes
-	@cd $(PARTIALDIR) ; mv myththemes $(DISTNAME)/myththemes
-	@cd $(PARTIALDIR) ; rm -rf   $(DISTNAME).tar.bz2
-	@cd $(PARTIALDIR) ; tar -jcf $(DISTNAME).tar.bz2 $(DISTNAME)
-	@cd $(PARTIALDIR) ; rm -rf                       $(DISTNAME)
+	$(call FETCH_GIT, $*/mythtv.git, $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)

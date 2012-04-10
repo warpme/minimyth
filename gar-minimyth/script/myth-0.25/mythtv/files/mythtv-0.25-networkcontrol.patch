@@ -1,0 +1,22 @@
+diff -Naur mythtv-0.25-20120410-5866fdb-old/mythtv/programs/mythfrontend/main.cpp mythtv-0.25-20120410-5866fdb-new/mythtv/programs/mythfrontend/main.cpp
+--- mythtv-0.25-20120410-5866fdb-old/mythtv/programs/mythfrontend/main.cpp	2012-04-10 06:11:44.000000000 -0700
++++ mythtv-0.25-20120410-5866fdb-new/mythtv/programs/mythfrontend/main.cpp	2012-04-10 06:11:46.000000000 -0700
+@@ -1690,6 +1690,18 @@
+                 QString("NetworkControl failed to bind to port %1.")
+                    .arg(port));
+     }
++    else
++    {
++        int port = gCoreContext->GetNumSetting("NetworkControlPort", 6546);
++        networkControl = new NetworkControl();
++        QList<QHostAddress> LocalhostList;
++        LocalhostList.clear();
++        LocalhostList.append(QHostAddress("127.0.0.1"));
++        if (!networkControl->listen(LocalhostList, port))
++            LOG(VB_GENERAL, LOG_ERR,
++                QString("NetworkControl failed to bind to port %1.")
++                   .arg(port));
++    }
+ 
+ #ifdef __linux__
+ #ifdef CONFIG_BINDINGS_PYTHON
