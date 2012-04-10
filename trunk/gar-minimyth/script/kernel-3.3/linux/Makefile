@@ -10,6 +10,7 @@ PATCHFILES  = $(DISTNAME).patch.gar
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-input_io_nr_type.patch
 PATCHFILES += $(DISTNAME)-posix_types_fd_type.patch
+PATCHFILES += $(DISTNAME)-formosa_aim_ir606.patch
 PATCHFILES += $(DISTNAME)-r8168_8.029.00.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.11.patch
