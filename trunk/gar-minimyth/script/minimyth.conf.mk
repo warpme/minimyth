@@ -10,6 +10,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.22  ,$(mm_MYTH_VERSION)),0.22.0) \
                                 $(if $(filter 0.23  ,$(mm_MYTH_VERSION)),0.23.1) \
                                 $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.2) \
+                                $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.0) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
 mm_VERSION_MINIMYTH       ?= 79
@@ -119,7 +120,7 @@ mm_KERNEL_VERSION         ?= 3.3
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.22', '0.23', '0.24' and 'master'.
+# Valid values are '0.22', '0.23', '0.24', '0.25', 'master'.
 mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
 # Valid values are '96.43.20' (legacy), '173.14.31' (legacy), '270.41.19',
