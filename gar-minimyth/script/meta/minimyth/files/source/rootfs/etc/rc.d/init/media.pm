@@ -98,7 +98,8 @@ sub start
 
     $minimyth->file_replace_variable(
         '/home/minimyth/.xine/config',
-        { '@MEDIA_FILES_ORIGIN_PATH@' => $minimyth->var_get('MM_MEDIA_VIDEO_MOUNTPOINT') });
+        { '@MEDIA_FILES_ORIGIN_PATH@' => $minimyth->var_get('MM_MEDIA_VIDEO_MOUNTPOINT'),
+          '@MEDIA_BLURAY_MOUNTPOINT@' => $minimyth->var_get('MM_MEDIA_VIDEO_MOUNTPOINT') });
 
     return 1;
 }
