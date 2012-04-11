@@ -13,7 +13,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.0) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
-mm_VERSION_MINIMYTH       ?= 79
+mm_VERSION_MINIMYTH       ?= 80
 mm_VERSION_EXTRA          ?= $(strip \
                                 $(if $(filter yes,$(mm_DEBUG)),-debug) \
                               )
