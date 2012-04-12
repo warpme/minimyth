@@ -66,6 +66,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              xine \
                              bdremote \
                              wiimote \
+                             $(if $(filter-out $(mm_MYTH_VERSION),0.22 0.23 0.24),cec) \
                              backend \
                              python \
                              $(if $(filter $(mm_DEBUG),yes),debug)

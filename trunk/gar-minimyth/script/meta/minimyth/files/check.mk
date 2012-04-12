@@ -153,6 +153,7 @@ mm-all:
 		   [ ! "$${software}" = "mame"           ] && \
 		   [ ! "$${software}" = "bdremote"       ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
+		   [ ! "$${software}" = "cec"            ] && \
 		   [ ! "$${software}" = "backend"        ] && \
 		   [ ! "$${software}" = "python"         ] && \
 		   [ ! "$${software}" = "debug"          ] ; then \
