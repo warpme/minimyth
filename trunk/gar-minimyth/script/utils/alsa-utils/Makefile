@@ -11,7 +11,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ncursesw
+DEPENDS = lang/c lib/alsa-lib lib/ncursesw system/udev
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -26,6 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xmlto \
 	--enable-largefile \
 	--with-gnu-ld \
+	--with-udev-rules-dir="$(libdir)/udev/rules.d" \
 	--with-curses=ncursesw
 
 include ../../gar.mk
