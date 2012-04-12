@@ -1,0 +1,25 @@
+diff -Naur iguanaIR-1.0.1-old/Makefile.in iguanaIR-1.0.1-new/Makefile.in
+--- iguanaIR-1.0.1-old/Makefile.in	2010-11-20 16:28:34.000000000 -0800
++++ iguanaIR-1.0.1-new/Makefile.in	2012-04-11 17:41:23.000000000 -0700
+@@ -124,8 +124,8 @@
+ 	install -D $(srcdir)/iguanaIR.init $(DESTDIR)/etc/init.d/iguanaIR
+ 	install -D --mode 644 $(srcdir)/iguanaIR.options $(DESTDIR)/etc/default/iguanaIR
+ 	install -D --mode 644 $(srcdir)/udev/iguanaIR.rules \
+-	                      $(DESTDIR)/lib/udev/rules.d/80-iguanaIR.rules
+-	install --mode 755 $(SETOWNER) -d $(DESTDIR)/lib/udev/devices/iguanaIR
++	                      $(DESTDIR)/$(LIBDIR)/udev/rules.d/80-iguanaIR.rules
++	install --mode 755 $(SETOWNER) -d $(DESTDIR)/$(LIBDIR)/udev/devices/iguanaIR
+ 	install --mode 755 $(SETOWNER) -d $(DESTDIR)/dev/iguanaIR
+ endif
+ 
+@@ -138,8 +138,8 @@
+ 	/etc/init.d/iguanaIR stop || true
+ 	rm -f $(DESTDIR)/etc/init.d/iguanaIR
+ 	rm -f $(DESTDIR)/etc/default/iguanaIR
+-	rm -f $(DESTDIR)/etc/udev/rules.d/iguanaIR.rules
+-	rmdir $(DESTDIR)/lib/udev/devices/iguanaIR 2>/dev/null || true
++	rm -f $(DESTDIR)/$(LIBDIR)/udev/rules.d/iguanaIR.rules
++	rmdir $(DESTDIR)/$(LIBDIR)/udev/devices/iguanaIR 2>/dev/null || true
+ 	rmdir $(DESTDIR)/dev/iguanaIR 2>/dev/null || true
+ endif
+ 	rm -f $(DESTDIR)$(BINDIR)/igclient

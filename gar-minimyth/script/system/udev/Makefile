@@ -33,7 +33,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-keymap \
 	--disable-floppy \
 	--disable-edd \
-	--disable-action_modeswitch \
 	--with-gnu-ld \
 	--with-rootlibdir=$(libdir) \
 	--without-selinux \
@@ -57,7 +56,7 @@ pre-install:
 	@rm -rf $(DESTDIR)$(sbindir)/udevadm
 	@rm -rf $(DESTDIR)$(libdir)/libudev.*
 	@rm -rf $(DESTDIR)$(libdir)/pkgconfig/libudev.pc
-	@rm -rf $(DESTDIR)$(libexecdir)/udev
+	@rm -rf $(DESTDIR)$(libexecdir)
 	@rm -rf $(DESTDIR)$(licensedir)/udev
 	@rm -rf $(DESTDIR)$(versiondir)/udev
 	@$(MAKECOOKIE)

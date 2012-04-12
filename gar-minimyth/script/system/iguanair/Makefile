@@ -3,7 +3,11 @@ GARVERSION = 1.0.1
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-dash.patch $(DISTNAME)-cflags.patch $(DISTNAME)-fwhole_program.patch
+PATCHFILES = \
+	$(DISTNAME)-udev.patch \
+	$(DISTNAME)-dash.patch \
+	$(DISTNAME)-cflags.patch \
+	$(DISTNAME)-fwhole_program.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION =
