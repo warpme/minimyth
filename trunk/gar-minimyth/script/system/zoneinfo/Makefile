@@ -1,8 +1,8 @@
 GARNAME = zoneinfo
-GARVERSION = 2011k
+GARVERSION = 2012c
 CATEGORIES = system
-#MASTER_SITES = ftp://elsie.nci.nih.gov/pub/
-DISTFILES = tzcode2011i.tar.gz tzdata$(GARVERSION).tar.gz
+MASTER_SITES = http://www.iana.org/time-zones/repository/releases/
+DISTFILES = tzcode2012b.tar.gz tzdata$(GARVERSION).tar.gz
 PATCHFILES = $(DISTNAME).patch
 LICENSE = Public_Domain
 
