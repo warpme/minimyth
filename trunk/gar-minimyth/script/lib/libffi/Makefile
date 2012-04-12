@@ -1,5 +1,5 @@
 GARNAME = libffi
-GARVERSION = 3.0.10
+GARVERSION = 3.0.11
 CATEGORIES = lib
 MASTER_SITES = ftp://sourceware.org/pub/$(GARNAME)/
 DISTFILES  = $(DISTNAME).tar.gz
