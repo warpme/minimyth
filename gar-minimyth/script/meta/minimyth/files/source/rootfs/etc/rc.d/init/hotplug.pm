@@ -25,6 +25,7 @@ sub start
         }
         closedir(DIR);
     }
+    system(qq(/usr/bin/udevadm control --reload));
     system(qq(/usr/bin/udevadm trigger --action=add));
     system(qq(/usr/bin/udevadm settle --timeout=60));
 
