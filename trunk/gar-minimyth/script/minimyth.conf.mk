@@ -34,10 +34,10 @@ mm_DEBUG_BUILD            ?= no
 # Valid values for mm_GRAPHICS are one or more of 'intel', 'geode', 'nouveau',
 # 'nvidia', 'openchrome', 'radeon', 'savage', 'sis', and 'vmware'.
 mm_GRAPHICS               ?= intel \
-                             $(if $(filter $(mm_GARCH_FAMILY),i386),geode) \
+                             $(if $(filter i386,$(mm_GARCH_FAMILY)),geode) \
                              nouveau \
                              nvidia \
-                             $(if $(filter $(mm_GARCH_FAMILY),i386),openchrome) \
+                             $(if $(filter i386,$(mm_GARCH_FAMILY)),openchrome) \
                              radeon \
                              sis \
                              vmware
@@ -51,25 +51,25 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
                              mythgame \
                              mythmusic \
-                             $(if $(filter-out $(mm_MYTH_VERSION),0.22),mythnetvision) \
+                             $(if $(filter-out 0.22,$(mm_MYTH_VERSION)),mythnetvision) \
                              mythnews \
-                             $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mythstream) \
-                             $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mythvideo) \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mythstream) \
+                             $(if $(filter 0.22 0.23 0.24),mythvideo) \
                              mythweather \
                              mythzoneminder \
                              flash \
                              hulu \
                              mplayer-svn \
                              $(if $(filter openchrome,$(mm_GRAPHICS)), \
-                                 $(if $(filter $(mm_MYTH_VERSION),0.22 0.23 0.24),mplayer-vld)) \
+                                 $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
                              vlc \
                              xine \
                              bdremote \
                              wiimote \
-                             $(if $(filter-out $(mm_MYTH_VERSION),0.22 0.23 0.24),cec) \
+                             $(if $(filter-out 0.22 0.23 0.24,$(mm_MYTH_VERSION)),cec) \
                              backend \
                              python \
-                             $(if $(filter $(mm_DEBUG),yes),debug)
+                             $(if $(filter yes,$(mm_DEBUG)),debug)
 # Indicates the microprocessor architecture.
 # Valid values for mm_GARCH are 'atom', 'c3', 'c3-2', 'pentium-mmx' and 'x86-64'.
 mm_GARCH                  ?= pentium-mmx
