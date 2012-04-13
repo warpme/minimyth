@@ -33,6 +33,7 @@ sub start
     rename('/usr/lib/udev/rules.d/01-minimyth-modprobe.rules.disabled', '/usr/lib/udev/rules.d/01-minimyth-modprobe.rules');
 
     # Trigger udev with the additional udev rules that handle detected hardware.
+    system(qq(/usr/bin/udevadm control --reload));
     system(qq(/sbin/udevadm trigger --action=add));
     system(qq(/sbin/udevadm settle --timeout=60));
 
