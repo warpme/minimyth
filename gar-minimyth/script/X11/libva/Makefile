@@ -21,7 +21,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--disable-dummy-driver \
 	--disable-dummy-backend \
-	--enable-i965-driver \
 	--disable-static \
 	--enable-shared \
 	--with-drivers-path="$(libdir)/va" \

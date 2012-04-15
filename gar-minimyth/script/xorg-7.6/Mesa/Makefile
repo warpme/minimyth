@@ -1,10 +1,10 @@
 GARNAME = Mesa
-GARVERSION = 7.11.2
+GARVERSION = 8.0.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-llvm_3.0.patch $(DISTNAME)-llvm_so.patch $(DISTNAME)-pkg_config.patch $(DISTNAME).patch.gar
+PATCHFILES  = $(DISTNAME)-llvm_so.patch
 PATCHFILES += $(DISTNAME)-version.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += $(DISTNAME)-cross.patch
@@ -15,7 +15,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx devel/llvm lib/expat \
+DEPENDS    = lang/c lang/cxx devel/llvm lib/expat X11/libvdpau \
 	$(CATEGORY)/dri2proto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/glproto \
@@ -25,10 +25,8 @@ DEPENDS    = lang/c lang/cxx devel/llvm lib/expat \
 	$(CATEGORY)/libXdamage \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfixes \
-	$(CATEGORY)/libXi \
-	$(CATEGORY)/libXmu \
 	$(CATEGORY)/libXxf86vm \
-	$(CATEGORY)/libXt
+	$(CATEGORY)/libXvMC
 ifneq ($(DESTIMG),build)
 DEPENDS   += system/udev
 endif
@@ -48,44 +46,57 @@ ifeq ($(DESTIMG),build)
 INSTALL_SCRIPTS   += cross
 endif
 
+# There appears to be a circular dependency between Mesa and libva, so I have disabled libva support in Mesa.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	$(if $(filter i386  , $(GARCH_FAMILY)),--enable-32-bit) \
+	$(if $(filter x86_64, $(GARCH_FAMILY)),--enable-64-bit) \
 	--disable-static \
 	--enable-shared \
+	--disable-debug \
+	--disable-mangling \
 	--disable-texture-float \
+	--enable-asm \
 	--disable-selinux \
 	--enable-opengl \
 	--disable-gles1 \
 	--disable-gles2 \
 	--disable-openvg \
-	--disable-xorg \
-	--disable-d3d1x \
+	--enable-dri \
+	--enable-glx \
+	--disable-osmesa \
 	--disable-egl \
+	--disable-xorg \
+	--disable-xa \
+	--disable-d3d1x \
 	--disable-gbm \
+	--enable-xvmc \
+	--enable-vdpau \
+	--disable-va  \
+	--disable-xlib-glx \
 	--disable-gallium-egl \
 	--disable-gallium-gbm \
 	--disable-shared-glapi \
-	--enable-xcb \
 	--enable-shared-dricore \
-	--disable-egl \
 	--enable-gallium-llvm \
-	--with-gallium-drivers="i915,i965,nouveau,r300,r600,svga,swrast" \
-	--with-driver="dri" \
+	--with-gallium-drivers="i915,nouveau,r300,r600,svga,swrast" \
 	--with-x \
 	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
 	--with-dri-drivers="$(DRI_DIRS)" \
 	--with-state-trackers="dri,glx"
-
 BUILD_ARGS  = \
 	HOST_CC="$(build_CC)" \
 	HOST_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
 
+xDRI_DIRS := $(strip \
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i915 i965 nouveau r200 r300 r600 radeon swrast) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),i915 i965 nouveau r200 r300 r600 radeon swrast))
 DRI_DIRS := $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i810 i915 i965 nouveau r200 r300 r600 radeon savage sis swrast unichrome) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),     i915 i965 nouveau r200 r300 r600 radeon savage sis swrast unichrome))
+	$(if $(filter i386  ,$(GARCH_FAMILY)),i965 r200 radeon) \
+	$(if $(filter x86_64,$(GARCH_FAMILY)),i965 r200 radeon))
 DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
