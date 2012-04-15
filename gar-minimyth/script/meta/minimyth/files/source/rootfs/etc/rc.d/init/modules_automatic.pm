@@ -34,8 +34,8 @@ sub start
 
     # Trigger udev with the additional udev rules that handle detected hardware.
     system(qq(/usr/bin/udevadm control --reload));
-    system(qq(/sbin/udevadm trigger --action=add));
-    system(qq(/sbin/udevadm settle --timeout=60));
+    system(qq(/usr/bin/udevadm trigger --action=add));
+    system(qq(/usr/bin/udevadm settle --timeout=60));
 
     return 1;
 }
