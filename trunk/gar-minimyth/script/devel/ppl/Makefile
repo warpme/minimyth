@@ -1,5 +1,5 @@
 GARNAME = ppl
-GARVERSION = 0.12
+GARVERSION = 0.12.1
 CATEGORIES = devel
 MASTER_SITES = http://bugseng.com/products/ppl/download/ftp/releases/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
