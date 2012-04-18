@@ -4,10 +4,14 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = $(DISTNAME)-llvm_so.patch
-PATCHFILES += $(DISTNAME)-version.patch
+PATCHFILES  = \
+	$(DISTNAME)-git_9b3ac17.patch
+PATCHFILES += \
+	$(DISTNAME)-llvm_so.patch \
+	$(DISTNAME)-version.patch
 ifneq ($(DESTIMG),build)
-PATCHFILES += $(DISTNAME)-cross.patch
+PATCHFILES += \
+	$(DISTNAME)-cross.patch
 endif
 LICENSE = LGPL2/MIT
 
