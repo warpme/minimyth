@@ -1,0 +1,21 @@
+diff -Naur mythtv-0.25-20120411-d3c35b3-old/mythtv/programs/mythfrontend/videodlg.cpp mythtv-0.25-20120411-d3c35b3-new/mythtv/programs/mythfrontend/videodlg.cpp
+--- mythtv-0.25-20120411-d3c35b3-old/mythtv/programs/mythfrontend/videodlg.cpp	2012-04-12 05:58:14.000000000 -0700
++++ mythtv-0.25-20120411-d3c35b3-new/mythtv/programs/mythfrontend/videodlg.cpp	2012-04-18 17:48:20.000000000 -0700
+@@ -1027,6 +1027,8 @@
+                 SLOT(UpdateText(MythUIButtonListItem *)));
+     }
+ 
++    connect(&m_d->m_parentalLevel, SIGNAL(SigLevelChanged()),
++            SLOT(reloadData()));
+     return true;
+ }
+ 
+@@ -1035,8 +1037,6 @@
+     m_d->m_parentalLevel.SetLevel(ParentalLevel(gCoreContext->
+                     GetNumSetting("VideoDefaultParentalLevel",
+                             ParentalLevel::plLowest)));
+-    connect(&m_d->m_parentalLevel, SIGNAL(SigLevelChanged()),
+-            SLOT(reloadData()));
+ }
+ 
+ void VideoDialog::Load()
