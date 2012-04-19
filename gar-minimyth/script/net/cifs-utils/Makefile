@@ -1,5 +1,5 @@
 GARNAME = cifs-utils
-GARVERSION = 5.2
+GARVERSION = 5.4
 CATEGORIES = net
 MASTER_SITES = ftp://ftp.samba.org/pub/linux-cifs/cifs-utils/
 DISTFILES = $(DISTNAME).tar.bz2
