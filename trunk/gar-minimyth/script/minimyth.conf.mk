@@ -54,7 +54,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter-out 0.22,$(mm_MYTH_VERSION)),mythnetvision) \
                              mythnews \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mythstream) \
-                             $(if $(filter 0.22 0.23 0.24),mythvideo) \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mythvideo) \
                              mythweather \
                              mythzoneminder \
                              flash \
