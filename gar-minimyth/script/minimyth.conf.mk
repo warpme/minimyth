@@ -59,11 +59,11 @@ mm_SOFTWARE               ?= mythbrowser \
                              mythzoneminder \
                              flash \
                              hulu \
-                             mplayer-svn \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-svn) \
                              $(if $(filter openchrome,$(mm_GRAPHICS)), \
-                                 $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
-                             vlc \
-                             xine \
+                                 $(if $(filter 22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),vlc) \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),xine) \
                              bdremote \
                              wiimote \
                              $(if $(filter-out 0.22 0.23 0.24,$(mm_MYTH_VERSION)),cec) \
