@@ -46,7 +46,6 @@ DEPENDS = \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
-	utils/lsof \
 	utils/microcode_ctl \
 	utils/kmod \
 	$(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes) \
