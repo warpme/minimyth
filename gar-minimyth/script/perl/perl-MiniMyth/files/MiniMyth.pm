@@ -1192,6 +1192,7 @@ sub url_expand
         {
             push(@list, @{$self->url_expand('dist:' . $file)});
             push(@list, @{$self->url_expand('confro:' . $file)});
+            push(@list, @{$self->url_expand('confrw:' . $file)});
         }
         when (/^tftp$/  )
         {
@@ -1521,7 +1522,8 @@ sub confrw_put
 #         read-only configuration directory.  A 'confrw' URL causes MiniMyth to
 #         look for the file in the MiniMyth read-write configuration directory.
 #         A 'hunt' URL causes MiniMyth to look for the file first in the
-#         MiniMyth distribution directory and second in the MiniMyth read-only
+#         MiniMyth distribution directory, second in the MiniMyth read-only
+#         configuration directory and third in the MiniMyth read-write
 #         configuration directory.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
@@ -2086,6 +2088,62 @@ sub extras_save
     {
         unlink($local_file);
         $self->message_log('err', qq(failed to save the extras file.));
+        return 0;
+    }
+
+    unlink($local_file);
+
+    return 1;
+}
+
+sub theme_save
+{
+    my $self = shift;
+
+    my $devnull = File::Spec->devnull;
+
+    my $theme_name = $self->var_get('MM_THEME_NAME');
+
+    my $theme_path = '';
+    if (($theme_path =~ /^$/) && (-d qq(/home/minimyth/.mythtv/themes/$theme_name)))
+    {
+        $theme_path = qq(/home/minimyth/.mythtv/themes/$theme_name);
+    }
+    if (($theme_path =~ /^$/) && (-d qq(/usr/share/mythtv/themes/$theme_name)))
+    {
+        $theme_path = qq(/usr/share/mythtv/themes/$theme_name);
+    }
+    if ($theme_path =~ /^$/)
+    {
+        $self->message_log('err', qq(failed to create the MythTV theme file because the MythTV theme "$theme_name" does not exist.));
+        return 0;
+    }
+
+    my $file        = $theme_name . '.sfs';
+    my $remote_file = $file;
+    my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
+    my $local_file  = $local_dir . '/' . $file;
+
+    unlink($local_file);
+    File::Path::mkpath($local_dir, { mode => 0755 });
+    if (! -d $local_dir)
+    {
+        return 0;
+    }
+
+    my $uid = getpwnam('minimyth');
+    my $gid = getgrnam('minimyth');
+    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" -no-exports -no-progress -force-uid $uid -force-gid $gid > "$devnull" 2>&1)) != 0)
+    {
+        unlink($local_file);
+        $self->message_log('err', qq(failed to create the MythTV theme file because squashfs failed.));
+        return 0;
+    }
+
+    if (! $self->confrw_put($remote_file, $local_file))
+    {
+        unlink($local_file);
+        $self->message_log('err', qq(failed to save the MythTV theme file.));
         return 0;
     }
 
