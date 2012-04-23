@@ -25,6 +25,7 @@ MM_INIT_START := \
     time \
     web \
     dbus \
+    avahi \
     media \
     audio \
     video \

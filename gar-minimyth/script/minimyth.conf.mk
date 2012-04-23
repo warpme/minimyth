@@ -44,9 +44,9 @@ mm_GRAPHICS               ?= intel \
 # Lists the software to be supported.
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnetvision', 'mythnews', 'mythstream',
-# 'mythvideo', 'mythweather', 'mythzoneminder', 'flash', 'hulu', 'mplayer-svn',
-# 'mplayer-vld', 'vlc' 'xine', 'mame', 'bdremote', 'wiimote', 'backend','python',
-# 'debug'.
+# 'mythvideo', 'mythweather', 'mythzoneminder', 'airplay', 'flash', 'hulu',
+# 'mplayer-svn', 'mplayer-vld', 'vlc' 'xine', 'mame', 'bdremote', 'wiimote',
+# 'cec', 'backend','python', 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
                              mythgame \
@@ -57,6 +57,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mythvideo) \
                              mythweather \
                              mythzoneminder \
+                             $(if $(filter-out 0.22 0.23 0.24,$(mm_MYTH_VERSION)),airplay) \
                              flash \
                              hulu \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-svn) \
