@@ -158,11 +158,12 @@ DEPENDS = \
 			perl/perl-XML-XPath)) \
 	$(if $(filter mythzoneminder,$(mm_SOFTWARE)), \
 		$(if $(wildcard ../../myth-$(mm_MYTH_VERSION)/mythzoneminder),myth-$(mm_MYTH_VERSION)/mythzoneminder)) \
+	$(if $(filter airplay,$(mm_SOFTWARE)), \
+		lib/dbus \
+		lib/avahi) \
 	$(if $(filter flash,$(mm_SOFTWARE)), \
 		gtk/gtk \
 		lib/nss) \
-	$(if $(filter gnash,$(mm_SOFTWARE)), \
-		mediaplayers/gnash) \
 	$(if $(filter mplayer-svn,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer-svn \
 		mediaplayers/mplayer-resumer) \

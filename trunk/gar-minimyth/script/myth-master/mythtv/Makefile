@@ -27,6 +27,7 @@ DEPENDS = \
 	lang/cxx \
 	db/mysql \
 	lib/alsa-lib \
+	lib/avahi \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
@@ -34,7 +35,6 @@ DEPENDS = \
 	lib/libavc1394 \
 	lib/libcdio \
 	lib/libcec \
-	lib/libdns_sd \
 	lib/libiec61883 \
 	lib/libxml2 \
 	lib/openssl \

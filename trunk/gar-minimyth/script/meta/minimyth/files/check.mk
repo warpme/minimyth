@@ -144,6 +144,7 @@ mm-all:
 		   [ ! "$${software}" = "mythvideo"      ] && \
 		   [ ! "$${software}" = "mythweather"    ] && \
 		   [ ! "$${software}" = "mythzoneminder" ] && \
+		   [ ! "$${software}" = "airplay"        ] && \
 		   [ ! "$${software}" = "flash"          ] && \
 		   [ ! "$${software}" = "hulu"           ] && \
 		   [ ! "$${software}" = "mplayer-svn"    ] && \

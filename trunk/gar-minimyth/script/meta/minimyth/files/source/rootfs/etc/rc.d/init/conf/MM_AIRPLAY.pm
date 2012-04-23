@@ -25,7 +25,7 @@ $var_list{'MM_AIRPLAY_FETCH_RAOPKEY_RSA'} =
 
         given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
         {
-            when (/^(22|23|24)$/)
+            when (/^(22|23)$/)
             {
                 return 'no';
             }
