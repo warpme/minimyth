@@ -81,7 +81,7 @@ DEPENDS = \
 	X11/unclutter \
 	utils/usbutils \
 	utils/util-linux \
-	utils/v4l-utils \
+	utils/ir-keytable \
 	X11/vdpau-video \
 	X11/vdpauinfo \
 	net/wakelan \
