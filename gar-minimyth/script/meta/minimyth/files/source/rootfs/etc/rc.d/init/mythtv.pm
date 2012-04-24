@@ -55,7 +55,7 @@ sub start
     # Mount MythTV theme directory.
     if ($theme_url)
     {
-        if (! $minimyth->url_mount($theme_url, "/usr/share/mythtv/themes/$theme_name"))
+        if (! $minimyth->url_mount($theme_url, "/home/minimyth/.mythtv/themes/$theme_name"))
         {
             $minimyth->message_output('err', "mount of 'MM_THEME_URL=$theme_url' failed.");
             return 0;
@@ -76,7 +76,7 @@ sub start
             # Mount MythTV OSD theme directory.
             if ($themeosd_url)
             {
-                if (! $minimyth->url_mount($themeosd_url, "/usr/share/mythtv/themes/$themeosd_name"))
+                if (! $minimyth->url_mount($themeosd_url, "/home/minimyth/.mythtv/themes/$themeosd_name"))
                 {
                     $minimyth->message_output('err', "mount of 'MM_THEMEOSD_URL=$themeosd_url' failed.");
                     return 0;
