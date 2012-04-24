@@ -11,10 +11,10 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx lib/sysfsutils qt/qt4 system/udev
+DEPENDS = lang/c lang/cxx system/udev
 
-BUILD_SCRIPTS   = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/Makefile
+BUILD_SCRIPTS   = $(WORKSRC)/utils/keytable/Makefile
+INSTALL_SCRIPTS = $(WORKSRC)/utils/keytable/Makefile
 
 BUILD_ARGS   = \
 	DESTDIR="$(DESTDIR)" \
