@@ -55,7 +55,7 @@ $var_list{'MM_THEME_URL'} =
         if ($minimyth->var_get($name) !~ /^auto|none$/)
         {
             my $theme_name = $minimyth->var_get('MM_THEME_NAME');
-            if (-e "/usr/share/mythtv/themes/$theme_name")
+            if (-e "/home/minimyth/.mythtv/themes/$theme_name")
             {
                 $minimyth->message_output('err', "MythTV theme directory '$theme_name' already exists.");
                 return '';
@@ -64,7 +64,7 @@ $var_list{'MM_THEME_URL'} =
         if ($minimyth->var_get($name) eq 'none')
         {
             my $theme_name = $minimyth->var_get('MM_THEME_NAME');
-            if (! -e "/usr/share/mythtv/themes/$theme_name")
+            if ((! -e "/home/minimyth/.mythtv/themes/$theme_name") && (! -e "/usr/share/mythtv/themes/$theme_name"))
             {
                 $minimyth->message_output('err', "MythTV theme directory '$theme_name' does not exist.");
                 return '';
@@ -78,7 +78,7 @@ $var_list{'MM_THEME_URL'} =
         my $name     = shift;
   
         my $theme_name = $minimyth->var_get('MM_THEME_NAME');
-        if (! -e "/usr/share/mythtv/themes/$theme_name")
+        if ((! -e "/home/minimyth/.mythtv/themes/$theme_name") && (! -e "/usr/share/mythtv/themes/$theme_name"))
         {
             if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
             {
@@ -150,7 +150,7 @@ $var_list{'MM_THEMEOSD_URL'} =
                 if ($minimyth->var_get($name) !~ /^auto|none$/)
                 {
                     my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-                    if (-e "/usr/share/mythtv/themes/$themeosd_name")
+                    if (-e "/home/minimyth/.mythtv/themes/$themeosd_name")
                     {
                         $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' already exists.");
                         return '';
@@ -159,7 +159,7 @@ $var_list{'MM_THEMEOSD_URL'} =
                 if ($minimyth->var_get($name) eq 'none')
                 {
                     my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-                    if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+                    if ((! -e "/home/minimyth/.mythtv/themes/$themeosd_name") && (! -e "/usr/share/mythtv/themes/$themeosd_name"))
                     {
                         $minimyth->message_output('err', "MythTV theme directory '$themeosd_name' does not exist.");
                         return '';
@@ -179,7 +179,7 @@ $var_list{'MM_THEMEOSD_URL'} =
         my $name     = shift;
   
         my $themeosd_name = $minimyth->var_get('MM_THEMEOSD_NAME');
-        if (! -e "/usr/share/mythtv/themes/$themeosd_name")
+        if ((! -e "/home/minimyth/.mythtv/themes/$themeosd_name") && (! -e "/usr/share/mythtv/themes/$themeosd_name"))
         {
             if ($minimyth->var_get('MM_ROOTFS_TYPE') eq 'squashfs')
             {
