@@ -36,6 +36,7 @@ DEPENDS = \
 	net/ifplugd \
 	system/iguanair \
 	net/iputils \
+	utils/ir-keytable \
 	system/irclient \
 	system/irserver \
 	system/irxkeys \
@@ -81,7 +82,6 @@ DEPENDS = \
 	X11/unclutter \
 	utils/usbutils \
 	utils/util-linux \
-	utils/ir-keytable \
 	X11/vdpau-video \
 	X11/vdpauinfo \
 	net/wakelan \
