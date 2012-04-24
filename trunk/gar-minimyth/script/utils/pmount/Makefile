@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/sysfsutils utils/util-linux
+DEPENDS   = lang/c utils/util-linux
 BUILDDEPS = perl/perl-XML-Parser
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
