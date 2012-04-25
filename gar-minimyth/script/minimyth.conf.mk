@@ -62,7 +62,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              hulu \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-svn) \
                              $(if $(filter openchrome,$(mm_GRAPHICS)), \
-                                 $(if $(filter 22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
+                                 $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),vlc) \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),xine) \
                              bdremote \
