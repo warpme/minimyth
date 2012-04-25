@@ -1190,9 +1190,9 @@ sub url_expand
         }
         when (/^hunt$/  )
         {
-            push(@list, @{$self->url_expand('dist:' . $file)});
-            push(@list, @{$self->url_expand('confro:' . $file)});
             push(@list, @{$self->url_expand('confrw:' . $file)});
+            push(@list, @{$self->url_expand('confro:' . $file)});
+            push(@list, @{$self->url_expand('dist:' . $file)});
         }
         when (/^tftp$/  )
         {
@@ -1522,8 +1522,8 @@ sub confrw_put
 #         read-only configuration directory.  A 'confrw' URL causes MiniMyth to
 #         look for the file in the MiniMyth read-write configuration directory.
 #         A 'hunt' URL causes MiniMyth to look for the file first in the
-#         MiniMyth distribution directory, second in the MiniMyth read-only
-#         configuration directory and third in the MiniMyth read-write
+#         MiniMyth read-write, second in the MiniMyth read-only configuration
+#         directory and third in the MiniMyth distribution directory.
 #         configuration directory.
 #     MOUNT_DIR: required argument:
 #         The local directory (e.g. /mnt/music) where the URL will be mounted.
@@ -2120,7 +2120,7 @@ sub theme_save
     }
 
     my $file        = $theme_name . '.sfs';
-    my $remote_file = $file;
+    my $remote_file = 'themes+' . $file;
     my $local_dir   = $ENV{'HOME'} . '/' . 'tmp';
     my $local_file  = $local_dir . '/' . $file;
 
@@ -2133,7 +2133,7 @@ sub theme_save
 
     my $uid = getpwnam('minimyth');
     my $gid = getgrnam('minimyth');
-    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themecache' "$local_file" -no-exports -no-progress -force-uid $uid -force-gid $gid > "$devnull" 2>&1)) != 0)
+    if (system(qq(/usr/bin/fakeroot /usr/bin/mksquashfs '/home/minimyth/.mythtv/themes/$theme_name' "$local_file" -no-exports -no-progress -force-uid $uid -force-gid $gid > "$devnull" 2>&1)) != 0)
     {
         unlink($local_file);
         $self->message_log('err', qq(failed to create the MythTV theme file because squashfs failed.));
