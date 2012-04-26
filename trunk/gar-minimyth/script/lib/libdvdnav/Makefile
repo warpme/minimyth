@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = http://dvdnav.mplayerhq.hu/releases/
 #MASTER_SITES = svn://svn.mplayerhq.hu/dvdnav/trunk/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-#PATCHFILES = $(DISTNAME)-destdir.patch
+PATCHFILES = $(DISTNAME)-destdir.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
