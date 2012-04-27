@@ -4,7 +4,8 @@ CATEGORIES = utils
 MASTER_SITES = http://linuxtv.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-udev.patch
+	$(DISTNAME)-udev.patch \
+	$(DISTNAME)-rc_keymaps.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
