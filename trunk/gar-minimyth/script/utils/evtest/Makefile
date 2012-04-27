@@ -1,8 +1,8 @@
 GARNAME = evtest
-GARVERSION = 5d03d29
+GARVERSION = 1.30
 CATEGORIES = utils
-MASTER_SITES = git://anongit.freedesktop.org/~whot/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://cgit.freedesktop.org/$(GARNAME)/snapshot/
+DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -18,13 +18,6 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
 
 include ../../gar.mk
-
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
