@@ -1,7 +1,7 @@
 GARNAME = linux-firmware
-GARVERSION = 20110818
+GARVERSION = 20120412-f6480b1
 CATEGORIES = kernel-3.3
-MASTER_SITES = http://www.kernel.org/pub/linux/kernel/people/dwmw2/firmware/
+MASTER_SITES = git://git.kernel.org/pub/scm/linux/kernel/git/firmware/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE =
 
@@ -14,6 +14,12 @@ DEPENDS = lang/c kernel-3.3/linux
 INSTALL_SCRIPTS = custom
 
 include ../../gar.mk
+
+git//%/$(DISTNAME).tar.bz2:
+	$(call FETCH_GIT, $*/$(GARNAME).git, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(elibdir)/firmware/
