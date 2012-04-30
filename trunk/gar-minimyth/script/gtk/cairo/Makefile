@@ -1,8 +1,8 @@
 GARNAME = cairo
-GARVERSION = 1.12.0
+GARVERSION = 1.12.2
 CATEGORIES = gtk
 MASTER_SITES = http://www.cairographics.org/releases/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = LGPL2_1
 
 DESCRIPTION =
