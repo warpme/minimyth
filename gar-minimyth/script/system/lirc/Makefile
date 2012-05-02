@@ -10,6 +10,7 @@ PATCHFILES = \
 	$(DISTNAME)-git_e0ab92be.patch \
 	$(DISTNAME)-lirc_xbox.patch \
 	$(DISTNAME)-disable_lirc_i2c.patch \
+	$(DISTNAME)-ati_remote.patch \
 	$(DISTNAME)-remove_smp_lock_h.patch \
 	$(DISTNAME)-bit_le_fix.patch \
 	$(DISTNAME)-uinput_key_fix.patch \
