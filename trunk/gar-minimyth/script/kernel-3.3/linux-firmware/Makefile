@@ -16,7 +16,7 @@ INSTALL_SCRIPTS = custom
 include ../../gar.mk
 
 git//%/$(DISTNAME).tar.bz2:
-	$(call FETCH_GIT, $*/$(GARNAME).git, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
+	@$(call FETCH_GIT, $*/$(GARNAME).git, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
