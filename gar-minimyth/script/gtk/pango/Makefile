@@ -1,8 +1,8 @@
 GARNAME = pango
-GARVERSION = 1.28.4
+GARVERSION = 1.30.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.28/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.30/
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = LGPL2
 
 DESCRIPTION =
