@@ -192,16 +192,17 @@ mm-all:
 		exit 1 ; \
 	fi
 	@echo "    mm_MYTH_VERSION"
-	@if [ ! "$(mm_MYTH_VERSION)" = "0.22"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.23"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.24"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "0.25"         ] && \
-	    [ ! "$(mm_MYTH_VERSION)" = "master"       ] ; then \
+	@if [ ! "$(mm_MYTH_VERSION)" = "0.22"   ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.23"   ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.24"   ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.25"   ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "master" ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@echo "    mm_NVIDIA_VERSION"
-	@if [ ! "$(mm_NVIDIA_VERSION)" = "295.40"    ] ; then \
+	@if [ ! "$(mm_NVIDIA_VERSION)" = "295.40" ] && \
+	    [ ! "$(mm_NVIDIA_VERSION)" = "302.07" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
