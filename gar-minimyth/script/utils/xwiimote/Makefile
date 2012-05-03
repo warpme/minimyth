@@ -1,38 +1,42 @@
 GARNAME = xwiimote
-GARVERSION = 7341491
+GARVERSION = 20110222-54f4f1d
 CATEGORIES = utils
 MASTER_SITES = git://github.com/dvdhrm/xwiimote.git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-makefile.patch
-LICENSE = Public_Domain
+LICENSE = BSD_2_Clause
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c gtk/dbus-glib lib/dbus system/udev
+DEPENDS = lang/c lib/ncurses system/udev
 
-BUILD_SCRIPTS     = $(WORKSRC)/makefile $(WORKSRC)/tools/makefile
-INSTALL_SCRIPTS   = custom
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
+	--enable-shared \
+	--disable-static \
+	--disable-debug \
+	--with-gnu-ld
 
 include ../../gar.mk
 
-
 git//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
-install-custom:
-	@mkdir -p $(DESTDIR)$(libdir)
-	@rm -f $(DESTDIR)$(libdir)/libxwiimote.so
-	@cp $(WORKSRC)/libxwiimote.so  $(DESTDIR)$(libdir)/libxwiimote.so
-	@mkdir -p $(DESTDIR)$(bindir)
-	@$(foreach tool, xwii xwiiconn xwiidump xwiishow, \
-		rm -f $(DESTDIR)$(bindir)/$(tool) ; \
-		cp $(WORKSRC)/tools/$(tool) $(DESTDIR)$(bindir)/$(tool) ; \
-		chmod 0755 $(DESTDIR)$(bindir)/$(tool) ; \
-	 )
+pre-configure:
+	@mkdir -p $(WORKSRC)/m4
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/libxwiimote.la
 	@$(MAKECOOKIE)
