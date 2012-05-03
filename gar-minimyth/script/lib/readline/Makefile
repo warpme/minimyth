@@ -4,9 +4,11 @@ CATEGORIES = lib
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = \
+PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-002
+PATCHFILES += \
+	$(DISTNAME)-shlib_libs.patch
 LICENSE = GPL3
 
 DESCRIPTION = 
