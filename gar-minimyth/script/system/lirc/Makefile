@@ -1,6 +1,5 @@
 GARNAME = lirc
 GARVERSION = 0.9.0
-#GARVERSION = 77c9429
 CATEGORIES = system
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/LIRC/$(GARVERSION)/
 #MASTER_SITES = http://www.lirc.org/software/snapshots/
@@ -53,7 +52,7 @@ include ../../gar.mk
 PARALLELMFLAGS := -j1
 
 git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 x-checksum-$(DISTNAME).tar.bz2:
