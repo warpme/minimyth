@@ -1,6 +1,5 @@
 GARNAME = ffmpeg
 GARVERSION = 0.10.2
-#GARVERSION = b18e17e
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 #MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -187,7 +186,7 @@ CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
 git//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(GARVERSION), $(DISTNAME))
+	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
 checksum-$(DISTNAME).tar.bz2:
