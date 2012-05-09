@@ -1,0 +1,218 @@
+diff -Naur mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/mythmusic/playlisteditorview.cpp mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/mythmusic/playlisteditorview.cpp
+--- mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/mythmusic/playlisteditorview.cpp	2012-05-09 04:05:52.000000000 -0700
++++ mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/mythmusic/playlisteditorview.cpp	2012-05-09 04:06:44.000000000 -0700
+@@ -489,12 +489,10 @@
+         {
+             menu = createPlaylistMenu();
+         }
+-        else if (mnode->getAction() == "album" ||
+-                 mnode->getAction() == "artist" ||
+-                 mnode->getAction() == "compartist" ||
+-                 mnode->getAction() == "genre" ||
+-                 mnode->getAction() == "year" ||
+-                 mnode->getAction() == "rating")
++        else if (mnode->getAction() == "trackid")
++        {
++        }
++        else
+         {
+             menu = createPlaylistOptionsMenu();
+ 
+@@ -661,10 +659,10 @@
+     }
+     node->SetData(qVariantFromValue(compTracks));
+ 
+-#if 0
+     node = new MusicGenericTree(m_rootNode, tr("Directory"), "directory");
+     node->setDrawArrow(true);
+-#endif
++    node->SetData(qVariantFromValue(gMusicData->all_music->getAllMetadata()));
++
+     node = new MusicGenericTree(m_rootNode, tr("Playlists"), "playlists");
+     node->setDrawArrow(true);
+ 
+@@ -680,21 +678,7 @@
+     if (!mnode)
+         return;
+ 
+-    if (mnode->getAction() == "smartplaylists" ||
+-        mnode->getAction() == "smartplaylistcategory" ||
+-        mnode->getAction() == "playlists" ||
+-        mnode->getAction() == "smartplaylist" ||
+-        mnode->getAction() == "playlist" ||
+-        mnode->getAction() == "album" ||
+-        mnode->getAction() == "artist" ||
+-        mnode->getAction() == "compartist" ||
+-        mnode->getAction() == "genre" ||
+-        mnode->getAction() == "year" ||
+-        mnode->getAction() == "rating")
+-    {
+-        ShowMenu();
+-    }
+-    else if (mnode->getAction() == "trackid")
++    if (mnode->getAction() == "trackid")
+     {
+         if (gPlayer->getPlaylist()->checkTrack(mnode->getInt()))
+         {
+@@ -709,6 +693,8 @@
+             mnode->setCheck(MythUIButtonListItem::FullChecked);
+         }
+     }
++    else
++        ShowMenu();
+ }
+ 
+ 
+@@ -796,6 +782,11 @@
+             state = "compilations";
+             artFile="blank.png";
+         }
++        else if (mnode->getAction() == "directory")
++        {
++            state = "directory";
++            artFile="blank.png";
++        }
+         else if (mnode->getAction() == "playlists")
+         {
+             state = "playlists";
+@@ -1094,6 +1085,79 @@
+         }
+ 
+     }
++    else if (node->getAction() == "directory")
++    {
++        QMap<QString, MetadataPtrList*> map;
++
++        // which directories have we already filtered by
++        QString dir;
++        MusicGenericTree *climber = node;
++        while (climber)
++        {
++            dir = climber->GetText() + '/' + dir;
++            climber = (MusicGenericTree *) climber->getParent();
++        }
++
++        // remove the top two nodes
++        QString top2 = "Root Music Node/" + tr("Directory") + '/';
++        if (dir.startsWith(top2))
++            dir = dir.mid(top2.length());
++
++        for (int x = 0; x < tracks->count(); x++)
++        {
++            Metadata *mdata = tracks->at(x);
++            if (mdata)
++            {
++                QString filename = mdata->Filename(false);
++
++                if (filename.startsWith(dir))
++                    filename = filename.mid(dir.length());
++
++                QStringList dirs = filename.split("/");
++
++                QString key = dirs.count() > 1 ? dirs[0] : "[TRACK]" + dirs[0];
++                if (map.contains(key))
++                {
++                    MetadataPtrList *filteredTracks = map.value(key);
++                    filteredTracks->append(mdata);
++                }
++                else
++                {
++                    MetadataPtrList *filteredTracks = new MetadataPtrList;
++                    m_deleteList.append(filteredTracks);
++                    filteredTracks->append(mdata);
++                    map.insert(key, filteredTracks);
++                }
++            }
++        }
++
++        // add directories first
++        QMap<QString, MetadataPtrList*>::const_iterator i = map.constBegin();
++        while (i != map.constEnd())
++        {
++            if (!i.key().startsWith("[TRACK]"))
++            {
++                MusicGenericTree *newnode = new MusicGenericTree(node, i.key(), "directory");
++                newnode->SetData(qVariantFromValue(i.value()));
++            }
++            ++i;
++        }
++
++        // now add tracks
++        i = map.constBegin();
++        while (i != map.constEnd())
++        {
++            if (i.key().startsWith("[TRACK]"))
++            {
++                MusicGenericTree *newnode = new MusicGenericTree(node, i.key().mid(7), "trackid");
++                newnode->setInt(i.value()->at(0)->ID());
++                newnode->setDrawArrow(false);
++                bool hasTrack = gPlayer->getPlaylist()->checkTrack(newnode->getInt());
++                newnode->setCheck( hasTrack ? MythUIButtonListItem::FullChecked : MythUIButtonListItem::NotChecked);
++            }
++            ++i;
++        }
++    }
+     else if (node->getAction() == "artist" || node->getAction() == "compartist" ||
+              node->getAction() == "album" || node->getAction() == "genre" ||
+              node->getAction() == "rating" || node->getAction() == "year" ||
+diff -Naur mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/default/music-base.xml mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/default/music-base.xml
+--- mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/default/music-base.xml	2012-05-09 04:05:52.000000000 -0700
++++ mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/default/music-base.xml	2012-05-09 04:06:44.000000000 -0700
+@@ -288,6 +288,13 @@
+                             <filename>mm_compilations.png</filename>
+                         </imagetype>
+                     </state>
++                    <state name="directory">
++                        <imagetype name="directory">
++                            <area>0,0,80,80</area>
++                            <filename>mm_directory.png</filename>
++                        </imagetype>
++                    </state>
++
+                     <state name="playlists">
+                         <imagetype name="playlists">
+                             <area>0,0,80,80</area>
+diff -Naur mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/default-wide/music-base.xml mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/default-wide/music-base.xml
+--- mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/default-wide/music-base.xml	2012-05-09 04:05:52.000000000 -0700
++++ mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/default-wide/music-base.xml	2012-05-09 04:06:44.000000000 -0700
+@@ -558,6 +558,13 @@
+                             <filename>mm_compilations.png</filename>
+                         </imagetype>
+                     </state>
++                    <state name="directory">
++                        <imagetype name="directory">
++                            <area>0,0,110,110</area>
++                            <filename>mm_directory.png</filename>
++                        </imagetype>
++                    </state>
++
+                     <state name="playlists">
+                         <imagetype name="playlists">
+                             <area>0,0,110,110</area>
+diff -Naur mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/theme.pro mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/theme.pro
+--- mythtv-0.25-20120508-f22e556-old/mythplugins/mythmusic/theme/theme.pro	2012-05-09 04:05:52.000000000 -0700
++++ mythtv-0.25-20120508-f22e556-new/mythplugins/mythmusic/theme/theme.pro	2012-05-09 04:06:44.000000000 -0700
+@@ -1,6 +1,6 @@
+ include ( ../../mythconfig.mak )
+ include ( ../../settings.pro )
+-  
++
+ QMAKE_STRIP = echo
+ 
+ TARGET = themenop
+diff -Naur mythtv-0.25-20120508-f22e556-old/mythtv/themes/MythCenter-wide/music-base.xml mythtv-0.25-20120508-f22e556-new/mythtv/themes/MythCenter-wide/music-base.xml
+--- mythtv-0.25-20120508-f22e556-old/mythtv/themes/MythCenter-wide/music-base.xml	2012-05-09 04:05:54.000000000 -0700
++++ mythtv-0.25-20120508-f22e556-new/mythtv/themes/MythCenter-wide/music-base.xml	2012-05-09 04:06:44.000000000 -0700
+@@ -558,6 +558,12 @@
+                             <filename>mm_compilations.png</filename>
+                         </imagetype>
+                     </state>
++                    <state name="directory">
++                        <imagetype name="directory">
++                            <area>0,0,110,110</area>
++                            <filename>mm_directory.png</filename>
++                        </imagetype>
++                    </state>
+                     <state name="playlists">
+                         <imagetype name="playlists">
+                             <area>0,0,110,110</area>
