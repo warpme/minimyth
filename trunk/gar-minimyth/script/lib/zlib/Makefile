@@ -1,5 +1,5 @@
 GARNAME = zlib
-GARVERSION = 1.2.6
+GARVERSION = 1.2.7
 CATEGORIES = lib
 MASTER_SITES  = http://downloads.sourceforge.net/project/libpng/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://zlib.net/
