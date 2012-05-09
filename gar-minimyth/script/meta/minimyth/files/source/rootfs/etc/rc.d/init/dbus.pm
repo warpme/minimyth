@@ -28,6 +28,17 @@ sub start
         chmod(0644, q(/var/lib/dbus/machine-id));
     }
 
+    if (-e q(/usr/libexec/dbus-daemon-launch-helper))
+    {
+        my $uid = getpwnam('root');
+        my $gid = getgrnam('messagebus');
+        if (((stat(q(/usr/libexec/dbus-daemon-launch-helper)))[4] != $uid) || ((stat(_))[5] != $gid))
+        {
+            chown($uid, $gid, q(/usr/libexec/dbus-daemon-launch-helper));
+        }
+        chmod(4750, q(/var/lib/dbus));
+    }
+
     if ((-e q(/usr/bin/dbus-daemon)) && (-e q(/etc/dbus-1/system.conf)))
     {
         $minimyth->message_output('info', "starting dbus daemon ...");
