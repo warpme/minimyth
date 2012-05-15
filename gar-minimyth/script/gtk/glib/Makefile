@@ -1,8 +1,10 @@
 GARNAME = glib
-GARVERSION = 2.32.1
+GARVERSION = 2.32.3
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.32/
 DISTFILES = $(DISTNAME).tar.xz
+PATCHFILES = \
+	$(DISTNAME)-ac_header_stdc.patch
 LICENSE = LGPL2
 
 DESCRIPTION =
