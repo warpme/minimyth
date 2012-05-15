@@ -18,7 +18,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dri2 \
 	--disable-documentation \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-module-dir="$(libdir)/vdpau"
 
 include ../../gar.mk
 
