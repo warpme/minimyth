@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c gtk/glib lib/libacl lib/libusb-compat lib/libxslt utils/kmod utils/usbutils utils/util-linux
+DEPENDS   = lang/c gtk/glib lib/libxslt utils/kmod utils/pciutils utils/usbutils utils/util-linux
 BUILDDEPS = utils/gperf
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
