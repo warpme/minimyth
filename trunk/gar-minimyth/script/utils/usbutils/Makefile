@@ -1,15 +1,15 @@
 GARNAME = usbutils
-GARVERSION = 0.86
+GARVERSION = 005
 CATEGORIES = utils
-MASTER_SITES = http://downloads.sourceforge.net/project/linux-usb/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz usb.ids
+MASTER_SITES = http://ftp.debian.org/debian/pool/main/u/$(GARNAME)/
+DISTFILES = $(GARNAME)_$(GARVERSION).orig.tar.gz usb.ids
 LICENSE = GPL2
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/libusb-compat
+DEPENDS = lang/c lib/libusb
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
