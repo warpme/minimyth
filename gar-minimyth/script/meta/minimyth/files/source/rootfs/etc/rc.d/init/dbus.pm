@@ -36,7 +36,7 @@ sub start
         {
             chown($uid, $gid, q(/usr/libexec/dbus-daemon-launch-helper));
         }
-        chmod(4750, q(/var/lib/dbus));
+        chmod(4750, q(/usr/libexec/dbus-daemon-launch-helper));
     }
 
     if ((-e q(/usr/bin/dbus-daemon)) && (-e q(/etc/dbus-1/system.conf)))
