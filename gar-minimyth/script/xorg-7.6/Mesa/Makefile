@@ -86,22 +86,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-gallium-llvm \
 	--with-gallium-drivers="i915,nouveau,r300,r600,svga,swrast" \
 	--with-x \
-	--with-dri-driverdir="$(libdir)/xorg/modules/dri" \
-	--with-dri-drivers="$(DRI_DIRS)" \
-	--with-state-trackers="dri,glx"
+	--with-dri-driverdir="$(libdir)/dri" \
+	--with-dri-drivers="i965,r200,radeon" \
+	--with-state-trackers="dri,glx" \
+	--with-vdpau-libdir="$(libdir)/vdpau" \
+	--with-va-libdir="$(libdir)/va"
 BUILD_ARGS  = \
 	HOST_CC="$(build_CC)" \
 	HOST_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
-
-xDRI_DIRS := $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i915 i965 nouveau r200 r300 r600 radeon swrast) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),i915 i965 nouveau r200 r300 r600 radeon swrast))
-DRI_DIRS := $(strip \
-	$(if $(filter i386  ,$(GARCH_FAMILY)),i965 r200 radeon) \
-	$(if $(filter x86_64,$(GARCH_FAMILY)),i965 r200 radeon))
-DRI_DIRS := `echo "$(DRI_DIRS)" | sed -e 's% %,%g'`
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
