@@ -1,8 +1,8 @@
 GARNAME = ethtool
-GARVERSION = 2.6.36
+GARVERSION = 3.2
 CATEGORIES = utils
-MASTER_SITES = http://downloads.sourceforge.net/project/gkernel/$(GARNAME)/$(GARVERSION)/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://www.kernel.org/pub/software/network/ethtool/
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = GPL2
 
 DESCRIPTION =
