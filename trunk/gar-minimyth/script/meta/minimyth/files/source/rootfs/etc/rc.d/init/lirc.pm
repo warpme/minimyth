@@ -28,9 +28,9 @@ sub start
 
     # Create directories used by the LIRC daemon.
     File::Path::mkpath('/var/lock', { mode => 0755 });
-    chmod(0755, '/var/lock');
+    chmod(00755, '/var/lock');
     File::Path::mkpath('/var/run/lirc', { mode => 0755 });
-    chmod(0755, '/var/run/lirc');
+    chmod(00755, '/var/run/lirc');
 
     # If the driver is for an lircd supported device that cannot be detected by udev,
     # then start the lircd daemon for the device.

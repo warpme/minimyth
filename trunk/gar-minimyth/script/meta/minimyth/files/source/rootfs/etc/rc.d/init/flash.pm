@@ -20,7 +20,7 @@ sub start
     }
     if (-f '/usr/lib/browser/plugins/libflashplayer.so')
     {
-        chmod(0666, '/usr/lib/browser/plugins/libflashplayer.so');
+        chmod(00666, '/usr/lib/browser/plugins/libflashplayer.so');
         if (-e '/lib/ld-linux.so.2')
         {
             if (system(qq(/lib/ld-linux.so.2 --list /usr/lib/browser/plugins/libflashplayer.so > /dev/null 2>&1)) != 0)

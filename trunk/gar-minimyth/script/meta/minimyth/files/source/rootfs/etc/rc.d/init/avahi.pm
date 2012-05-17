@@ -33,7 +33,7 @@ sub start
                 File::Path::mkpath(q(/var/run/avahi-daemon), { mode => 0755 });
             }
 
-            chmod(0755, q(/var/run/avahi-daemon));
+            chmod(00755, q(/var/run/avahi-daemon));
             chown($uid, $gid, q(/var/run/avahi-daemon));
 
             system(qq(/usr/sbin/avahi-daemon --daemonize --file=/etc/avahi/avahi-daemon.conf));

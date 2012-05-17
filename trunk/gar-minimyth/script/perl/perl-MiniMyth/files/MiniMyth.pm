@@ -301,7 +301,7 @@ sub var_save
     unlink("$conf_file.$$");
     if (open(FILE, '>', "$conf_file.$$"))
     {
-        chmod(0644, "$conf_file.$$");
+        chmod(00644, "$conf_file.$$");
         foreach (sort keys %{$self->{'conf_variable'}})
         {
             chomp;
@@ -1262,7 +1262,7 @@ sub url_get
                 if ( (-e $local_file) &&
                      ($retcode != 0)  )
                 {
-                    chmod(0600, $local_file);
+                    chmod(00600, $local_file);
                     $result = $url_item;
                 }
             }
@@ -1270,7 +1270,7 @@ sub url_get
             {
                 if (open(my $OUT_FILE, '>', $local_file))
                 {
-                    chmod(0600, $local_file);
+                    chmod(00600, $local_file);
                     my $curl = new WWW::Curl::Easy;
                     $curl->setopt(CURLOPT_VERBOSE, 0);
                     $curl->setopt(CURLOPT_URL, $url_item);
@@ -1290,7 +1290,7 @@ sub url_get
             {
                 if (open(my $OUT_FILE, '>', $local_file))
                 {
-                    chmod(0600, $local_file);
+                    chmod(00600, $local_file);
                     my $curl = new WWW::Curl::Easy;
                     $curl->setopt(CURLOPT_VERBOSE, 0);
                     $curl->setopt(CURLOPT_URL, $url_item);
@@ -1382,7 +1382,7 @@ sub url_put
                 if ( (-e $local_file) &&
                      ($retcode != 0)  )
                 {
-                    chmod(0600, $local_file);
+                    chmod(00600, $local_file);
                     $result = $url_item;
                 }
             }
@@ -1866,11 +1866,11 @@ sub codecs_fetch_and_save
             chown($uid, $gid, $File::Find::name);
             if (-d $File::Find::name)
             {
-                chmod(0755, $File::Find::name);
+                chmod(00755, $File::Find::name);
             }
             else
             {
-                chmod(0644, $File::Find::name);
+                chmod(00644, $File::Find::name);
             }
         },
         "$local_dir/$codecs_base");

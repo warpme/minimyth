@@ -24,7 +24,7 @@ sub start
         my $gid = getgrnam('root');
         File::Path::rmtree('/tmp/.ICE-unix');
         File::Path::mkpath('/tmp/.ICE-unix', { mode => 0777 } );
-        chmod(0777, '/tmp/.ICE-unix');
+        chmod(00777, '/tmp/.ICE-unix');
         chown($uid, $gid, '/tmp/.ICE-unix');
     }
 
