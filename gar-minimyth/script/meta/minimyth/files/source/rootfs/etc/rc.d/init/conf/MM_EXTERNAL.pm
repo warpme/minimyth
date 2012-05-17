@@ -39,7 +39,7 @@ $var_list{'MM_EXTERNAL_POWER_OFF'} =
 
             if (open(FILE, '>', '/usr/bin/mm_external_power_off'))
             {
-                chmod(0755, '/usr/bin/mm_external_power_off');
+                chmod(00755, '/usr/bin/mm_external_power_off');
                 print FILE qq(#!/bin/sh\n);
                 foreach my $command (@command_list)
                 {
@@ -91,7 +91,7 @@ $var_list{'MM_EXTERNAL_POWER_ON'} =
 
             if (open(FILE, '>', '/usr/bin/mm_external_power_on'))
             {
-                chmod(0755, '/usr/bin/mm_external_power_on');
+                chmod(00755, '/usr/bin/mm_external_power_on');
                 print FILE qq(#!/bin/sh\n);
                 foreach my $command (@command_list)
                 {
@@ -135,7 +135,7 @@ $var_list{'MM_EXTERNAL_VOLUME_DOWN'} =
 
             if (open(FILE, '>', '/usr/bin/mm_external_volume_down'))
             {
-                chmod(0755, '/usr/bin/mm_external_volume_down');
+                chmod(00755, '/usr/bin/mm_external_volume_down');
                 print FILE qq(#!/bin/sh\n);
                 foreach my $command (@command_list)
                 {
@@ -190,7 +190,7 @@ $var_list{'MM_EXTERNAL_VOLUME_UP'} =
 
             if (open(FILE, '>', '/usr/bin/mm_external_volume_up'))
             {
-                chmod(0755, '/usr/bin/mm_external_volume_up');
+                chmod(00755, '/usr/bin/mm_external_volume_up');
                 print FILE qq(#!/bin/sh\n);
                 foreach my $command (@command_list)
                 {
@@ -255,7 +255,7 @@ $var_list{'MM_EXTERNAL_VOLUME_MUTE'} =
 
             if (open(FILE, '>', '/usr/bin/mm_external_volume_mute'))
             {
-                chmod(0755, '/usr/bin/mm_external_volume_mute');
+                chmod(00755, '/usr/bin/mm_external_volume_mute');
                 print FILE qq(#!/bin/sh\n);
                 foreach my $command (@command_list)
                 {

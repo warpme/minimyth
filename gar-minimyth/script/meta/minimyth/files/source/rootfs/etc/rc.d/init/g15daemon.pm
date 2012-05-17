@@ -24,7 +24,7 @@ sub start
         {
             if (open(FILE, '>', '/etc/g15daemon.conf'))
             {
-                chmod(0644, '/etc/g15daemon.conf');
+                chmod(00644, '/etc/g15daemon.conf');
                 close(FILE);
             }
             if (! -e '/etc/g15daemon.conf')

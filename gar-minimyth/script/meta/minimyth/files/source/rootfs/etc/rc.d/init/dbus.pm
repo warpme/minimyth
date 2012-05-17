@@ -23,9 +23,9 @@ sub start
         {
             File::Path::mkpath(q(/var/lib/dbus), { mode => 0755 });
         }
-        chmod(0755, q(/var/lib/dbus));
+        chmod(00755, q(/var/lib/dbus));
         system(qq(/usr/bin/dbus-uuidgen > /var/lib/dbus/machine-id));
-        chmod(0644, q(/var/lib/dbus/machine-id));
+        chmod(00644, q(/var/lib/dbus/machine-id));
     }
 
     if (-e q(/usr/libexec/dbus-daemon-launch-helper))
@@ -36,7 +36,7 @@ sub start
         {
             chown($uid, $gid, q(/usr/libexec/dbus-daemon-launch-helper));
         }
-        chmod(4750, q(/usr/libexec/dbus-daemon-launch-helper));
+        chmod(04750, q(/usr/libexec/dbus-daemon-launch-helper));
     }
 
     if ((-e q(/usr/bin/dbus-daemon)) && (-e q(/etc/dbus-1/system.conf)))
@@ -47,7 +47,7 @@ sub start
         {
             File::Path::mkpath(q(/var/run/dbus), { mode => 0755 });
         }
-        chmod(0755, q(/var/run/dbus));
+        chmod(00755, q(/var/run/dbus));
         system(qq(/usr/bin/dbus-daemon --config-file=/etc/dbus-1/system.conf));
     }
 

@@ -42,7 +42,7 @@ sub start
     if (-e '/etc/pki/tls/certs/ca-bundle.crt')
     {
         # Set permissions.
-        chmod(0644, '/etc/pki/tls/certs/ca-bundle.crt');
+        chmod(00644, '/etc/pki/tls/certs/ca-bundle.crt');
         # Link to the default name.
         unlink('/etc/pki/tls/cert.pem');
         symlink('/etc/pki/tls/certs/ca-bundle.crt', '/etc/pki/tls/cert.pem');
@@ -51,7 +51,7 @@ sub start
     if (-e '/etc/cifs/credentials_cifs')
     {
         # Set permissions.
-        chmod(0600, '/etc/cifs/credentials_cifs');
+        chmod(00600, '/etc/cifs/credentials_cifs');
     }
 
     return 1;

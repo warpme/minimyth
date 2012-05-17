@@ -35,7 +35,7 @@ sub start
             $minimyth->message_log('info', qq(  by fetching ') . $result . qq('));
             $minimyth->message_log('info', qq(  to local file ') . $name_local . qq('.));
 
-            chmod(oct('0644'), $name_local);
+            chmod(00644, $name_local);
         }
         # Make sure that the uid and gid are for user 'minimyth',
         # as even a failed MiniMyth::*_get will create the parent directory.
@@ -54,7 +54,7 @@ sub start
 
     if (-f '/usr/bin/huludesktop')
     {
-        chmod(0755, '/usr/bin/huludesktop');
+        chmod(00755, '/usr/bin/huludesktop');
         if (-e '/lib/ld-linux.so.2')
         {
             if (system(qq(/lib/ld-linux.so.2 --list /usr/bin/huludesktop > /dev/null 2>&1)) != 0)

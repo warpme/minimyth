@@ -22,25 +22,25 @@ sub start
 
     if (-e '/etc/ssh/sshd_config')
     {
-        chmod(0600,       '/etc/ssh/sshd_config');
+        chmod(00600,      '/etc/ssh/sshd_config');
         chown($uid, $gid, '/etc/ssh/sshd_config');
     }
 
     if (-e '/etc/ssh/ssh_host_rsa_key')
     {
-        chmod(0600,       '/etc/ssh/ssh_host_rsa_key');
+        chmod(00600,      '/etc/ssh/ssh_host_rsa_key');
         chown($uid, $gid, '/etc/ssh/ssh_host_rsa_key');
     }
 
     if (-e '/etc/ssh/authorized_keys')
     {
-        chmod(0600,       '/etc/ssh/authorized_keys');
+        chmod(00600,      '/etc/ssh/authorized_keys');
         chown($uid, $gid, '/etc/ssh/authorized_keys');
 
         File::Path::mkpath('/root/.ssh', { mode => 0755 });
-        chmod(0755, '/root/.ssh');
+        chmod(00755, '/root/.ssh');
         File::Copy::copy('/etc/ssh/authorized_keys', '/root/.ssh/authorized_keys');
-        chmod(0600,       '/root/.ssh/authorized_keys');
+        chmod(00600,      '/root/.ssh/authorized_keys');
         chown($uid, $gid, '/root/.ssh/authorized_keys');
     }
 

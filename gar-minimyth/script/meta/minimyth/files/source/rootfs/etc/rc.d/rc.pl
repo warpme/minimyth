@@ -150,12 +150,12 @@ sub rc_run
         if (! -e $log_dir)
         {
             File::Path::mkpath($log_dir, { mode => 0755 });
-            chmod(0755, $log_dir);
+            chmod(00755, $log_dir);
         }
         if (-w $log_dir)
         {
             open(FILE, '>', $log_file);
-            chmod(0666, $log_file);
+            chmod(00666, $log_file);
             close(FILE);
         }
     }
