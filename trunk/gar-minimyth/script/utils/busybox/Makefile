@@ -7,6 +7,8 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-buildsys.patch \
+	$(DISTNAME)-ext4.patch \
+	$(DISTNAME)-find.patch \
 	$(DISTNAME)-getty.patch \
 	$(DISTNAME)-lineedit.patch \
 	$(DISTNAME)-sed.patch
