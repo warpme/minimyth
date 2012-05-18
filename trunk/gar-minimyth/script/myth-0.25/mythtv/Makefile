@@ -8,7 +8,6 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-mythmusic_directory_browse.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-mythmusic_button_list_quick_scroll.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-ticket_10388.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-gcc_4.7.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
