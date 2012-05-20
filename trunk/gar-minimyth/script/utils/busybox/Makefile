@@ -11,6 +11,7 @@ PATCHFILES  = \
 	$(DISTNAME)-find.patch \
 	$(DISTNAME)-getty.patch \
 	$(DISTNAME)-lineedit.patch \
+	$(DISTNAME)-mdev.patch \
 	$(DISTNAME)-sed.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
