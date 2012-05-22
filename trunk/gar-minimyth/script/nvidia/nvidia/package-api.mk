@@ -14,18 +14,13 @@ endef
 DEPENDS   = lang/c kernel/kernel xorg/xorg
 BUILDDEPS = utils/module-init-tools
 
-DISTFILE = NVIDIA-Linux-$(NVIDIA_SUPER_VERSION)-$(NVIDIA_VERSION)$(NVIDIA_EXTRA_VERSION)
+DISTFILE = NVIDIA-Linux-$(NVIDIA_SUPER_VERSION)-$(NVIDIA_VERSION)
 
 WORKSRC = $(WORKDIR)/$(DISTFILE)
 
 NVIDIA_SUPER_VERSION = $(strip \
 	$(if $(filter i386,  $(GARCH_FAMILY)),x86   ) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
-NVIDIA_EXTRA_VERSION = $(strip \
-	$(if $(filter-out 270 275 280 285 290 295 302, $(NVIDIA_MAJOR_VERSION)), \
-		$(if $(filter x86,   $(NVIDIA_SUPER_VERSION)),-pkg1) \
-		$(if $(filter x86_64,$(NVIDIA_SUPER_VERSION)),-pkg2) \
-	))
 	
 NVIDIA_VERSION_LIST  = $(strip \
 	$(if $(NVIDIA_MAJOR_VERSION), \
