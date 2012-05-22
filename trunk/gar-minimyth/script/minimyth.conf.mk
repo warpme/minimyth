@@ -125,7 +125,7 @@ mm_KERNEL_CONFIG          ?=
 # Valid values are '0.22', '0.23', '0.24', '0.25', 'master'.
 mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
-# Valid values are '295.53', '302.07' (beta).
+# Valid values are '295.53', '302.11' (beta).
 mm_NVIDIA_VERSION         ?= 295.53
 # The version of xorg to use.
 # Valid values are '7.6'.
