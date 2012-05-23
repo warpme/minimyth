@@ -38,7 +38,8 @@ BUILDDEPS += \
 	utils/gzip \
 	utils/unzip \
 	doc/texinfo \
-	python/python
+	python/python \
+	devel/cmake
 
 include ../../gar.mk
 
