@@ -43,5 +43,9 @@ INSTALL_ENV   = $(MYTHTV_INSTALL_ENV)
 GAR_EXTRA_CONF += $(CATEGORY)/mythtv/package-api.mk
 include ../../gar.mk
 
+#CPPFLAGS := $(CPPFLAGS) -I$(DESTDIR)$(includedir)/taglib
+#CFLAGS   := $(CFLAGS)   -I$(DESTDIR)$(includedir)/taglib
+#CXXFLAGS := $(CXXFLAGS) -I$(DESTDIR)$(includedir)/taglib
+
 post-install: post-install-mythtv-version
 	@$(MAKECOOKIE)
