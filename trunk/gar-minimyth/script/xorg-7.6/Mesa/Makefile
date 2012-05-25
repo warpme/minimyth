@@ -5,7 +5,8 @@ MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
 MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
 PATCHFILES  = \
-	$(DISTNAME)-git_9b3ac17.patch
+	$(DISTNAME)-git_9b3ac17.patch \
+	$(DISTNAME)-llvm_3.1.patch
 PATCHFILES += \
 	$(DISTNAME)-llvm_so.patch \
 	$(DISTNAME)-version.patch
