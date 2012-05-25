@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 12114
+GARVERSION = 12122
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -115,12 +115,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 CONFIGURE_ENV = \
 	MAGIC_CMD="$(build_DESTDIR)$(build_bindir)/file"
+BUILD_ENV     = \
+	V="1"
+INSTALL_ENV   = \
+	V="1"
 
 include ../../gar.mk
 
-# xine-lib 12069 fails to compile with gcc 4.7.0's link time optimization enabled.
-CFLAGS  := $(filter-out -flto, $(CFLAGS))
-LDFLAGS := $(filter-out -flto, $(LDFLAGS))
+# xine-lib 12122 fails to compile with -Os.
+CFLAGS  := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O1)
 
 hg//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_HG, $*, $(GARVERSION), $(DISTNAME))
