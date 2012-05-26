@@ -1,5 +1,5 @@
 GARNAME = MPlayer
-GARVERSION = 34603
+GARVERSION = 34971
 CATEGORIES = mediaplayers
 MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
@@ -83,6 +83,7 @@ CONFIGURE_ARGS_OPTIONAL = \
 	--disable-macosx-finder \
 	--disable-macosx-bundle \
 	--disable-inet6 \
+	--disable-sctp \
 	--enable-gethostbyname2 \
 	--enable-ftp \
 	--disable-vstream \
