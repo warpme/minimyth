@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 0.10.3
+GARVERSION = 0.11
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 #MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
@@ -56,12 +56,8 @@ CONFIGURE_ARGS = \
 	--enable-swscale-alpha \
 	--enable-fastdiv \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
-	--enable-aandct \
 	--enable-dct \
 	--enable-fft \
-	--enable-golomb \
-	--enable-huffman \
-	--enable-lpc \
 	--enable-mdct \
 	--enable-rdft \
 	--enable-vaapi \
@@ -96,7 +92,6 @@ CONFIGURE_ARGS = \
 	--disable-libopencv \
 	--disable-libcdio \
 	--disable-libdc1394 \
-	--disable-libdirac \
 	--disable-libfaac \
 	--disable-libfreetype \
 	--disable-libgsm \
@@ -120,7 +115,6 @@ CONFIGURE_ARGS = \
 	--disable-libxavs \
 	--disable-libxvid \
 	--disable-openal \
-	--disable-mlib \
 	--disable-openssl \
 	--enable-zlib \
 	--cross-prefix=$(compiler_prefix) \
@@ -160,7 +154,6 @@ CONFIGURE_ARGS = \
 	--disable-armv6 \
 	--disable-armv6t2 \
 	--disable-armvfp \
-	--disable-iwmmxt \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
