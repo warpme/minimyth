@@ -1,7 +1,7 @@
 GARNAME = xwiimote
-GARVERSION = 20110222-54f4f1d
+GARVERSION = 0.3
 CATEGORIES = utils
-MASTER_SITES = git://github.com/dvdhrm/xwiimote.git/
+MASTER_SITES = http://github.com/downloads/dvdhrm/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = BSD_2_Clause
 
@@ -24,15 +24,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-git//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE) 
-
 pre-configure:
-	@mkdir -p $(WORKSRC)/m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
