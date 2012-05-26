@@ -1,5 +1,5 @@
 GARNAME = util-linux
-GARVERSION = 2.21.1
+GARVERSION = 2.21.2
 CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.21/
 MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.21/
