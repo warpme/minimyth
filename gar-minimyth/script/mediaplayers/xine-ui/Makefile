@@ -40,6 +40,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-fb \
 	--without-tar
 
+BUILD_ENV     = \
+	V="1"
+INSTALL_ENV   = \
+	V="1"
+
 include ../../gar.mk
 
 hg//%/$(DISTNAME).tar.bz2:
