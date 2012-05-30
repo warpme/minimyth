@@ -1,5 +1,5 @@
 GARNAME = libva
-GARVERSION = 1.0.15
+GARVERSION = 1.1.0
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 #MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
@@ -18,6 +18,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
+	--disable-docs \
+	--enable-glx \
+	--disable-egl \
 	--enable-glx \
 	--disable-dummy-driver \
 	--disable-dummy-backend \
