@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.5.1
+GARVERSION = 2.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://xorg.freedesktop.org/releases/individual/data/$(GARNAME)/
 MASTER_SITES += http://xorg.freedesktop.org/releases/individual/data/
@@ -17,7 +17,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/xproto
 BUILDDEPS = \
-	perl/perl-XML-Parser
+	perl/perl-XML-Parser \
+	$(CATEGORY)/xkbcomp
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -28,18 +29,17 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-compat-rules \
 	--enable-nls \
+	--disable-rpath \
 	--without-xsltproc \
 	--with-xkb-base="$(datadir)/X11/xkb" \
-	--without-xkb-rules-symlink
-
-CONFIGURE_ENV  = \
-	XKBCOMP=$(bindir)/xkbcomp
+	--without-xkb-rules-symlink \
+	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 pre-configure:
-	@#Requires AM_GLIB_GNU_GETTEXT.
+	@#Broken intltoolize.
 	@#$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
