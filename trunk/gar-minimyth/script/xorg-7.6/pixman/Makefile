@@ -1,5 +1,5 @@
 GARNAME = pixman
-GARVERSION = 0.24.4
+GARVERSION = 0.26.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -23,21 +23,24 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
 	--disable-openmp \
+	--disable-loongson-mmi \
 	--enable-mmx \
 	--enable-sse2 \
 	--disable-vmx \
 	--disable-arm-simd \
 	--disable-arm-neon \
 	--disable-arm-iwmmxt \
+	--disable-mips-dspr2 \
 	--enable-gcc-inline-asm \
 	--disable-timers \
 	--disable-gtk \
+	--disable-libpng \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-# pixman 0.24.4 fails to compile with gcc 4.7.0's link time optimization enabled.
+# pixman 0.26.0 fails to compile with gcc 4.7.0's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
