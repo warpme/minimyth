@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 12132
+GARVERSION = 12140
 CATEGORIES = mediaplayers
 MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -122,7 +122,7 @@ INSTALL_ENV   = \
 
 include ../../gar.mk
 
-# xine-lib 12122 fails to compile with -Os.
+# xine-lib 12140 fails to compile with -Os.
 CFLAGS  := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O1)
 
 hg//%$(DISTNAME).tar.bz2:
