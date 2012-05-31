@@ -1,5 +1,5 @@
 GARNAME = xcb-util
-GARVERSION = 0.3.8
+GARVERSION = 0.3.9
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,7 +12,6 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/libxcb \
 	$(CATEGORY)/xproto
-BUILDDEPS = utils/gperf
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -23,6 +22,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-static \
+	--enable-selective-werror \
 	--disable-silent-rules \
 	--with-gnu-ld
 
