@@ -5,14 +5,12 @@ MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-xPATCHFILES  = \
-	$(DISTNAME)-buildsys.patch \
-	$(DISTNAME)-ext4.patch \
-	$(DISTNAME)-find.patch \
-	$(DISTNAME)-getty.patch \
-	$(DISTNAME)-lineedit.patch \
-	$(DISTNAME)-mdev.patch \
-	$(DISTNAME)-sed.patch
+PATCHFILES  = \
+	$(DISTNAME)-ash.patch \
+	$(DISTNAME)-ifupdown.patch \
+	$(DISTNAME)-man.patch \
+	$(DISTNAME)-ps.patch \
+	$(DISTNAME)-tar.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
