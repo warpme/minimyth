@@ -1,10 +1,9 @@
 GARNAME = ffmpeg
-GARVERSION = 0.11
+GARVERSION = 0.11.1
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
-#MASTER_SITES = git://git.videolan.org/$(GARNAME).git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-pkg_config.patch $(GARNAME)-uint64_c.patch $(GARNAME)-libswscale_symbol_export.patch
+PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-uint64_c.patch $(DISTNAME)-libswscale_symbol_export.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -174,16 +173,9 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# ffmpeg 0.10 fails to compile with GCC 4.7.0's link time optimization enabled.
+# ffmpeg 0.11.1 fails to compile with GCC 4.7.1's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
-
-git//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 post-install:
 	@cp -f $(WORKSRC)/libavcodec/vaapi.h $(DESTDIR)`pkg-config --variable=includedir libavcodec`/libavcodec/vaapi.h
@@ -207,35 +199,3 @@ clean-all:
 	@rm -rf $(DESTDIR)$(libdir)/libswscale.*
 	@rm -rf $(DESTDIR)$(datadir)/ffmpeg
 	@rm -rf $(DESTDIR)$(bin)/ffmpeg
-
-source-update:
-	@$(MAKE) source-update-source
-	@$(MAKE) source-update-patches
-	
-source-update-source:
-	@$(MAKE) clean
-	@$(MAKE) fetch
-	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
-	@$(MAKE) clean
-
-source-update-patches:
-	@$(MAKE) clean
-	@$(MAKE) extract
-	@$(foreach PATCHFILE, $(PATCHFILES), \
-		cd $(WORKDIR) || exit 1 ; \
-		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
-		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
-		cd $(DISTNAME)-new || exit 1 ; \
-		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
-		cd ../ || exit 1 ; \
-		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
-		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
-		rm -fr $(DISTNAME)-old || exit 1 ; \
-		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
-		cd ../../ || exit 1 ; \
-		rm -f checksums~ || exit 1 ; \
-		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ ; \
-		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
-		rm -f checksums || exit 1 ; \
-		mv -f checksums~ checksums || exit 1 ; )
-	@$(MAKE) clean
