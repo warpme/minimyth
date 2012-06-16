@@ -1,5 +1,5 @@
 GARNAME = dbus
-GARVERSION = 1.4.20
+GARVERSION = 1.6.0
 CATEGORIES = lib
 MASTER_SITES = http://dbus.freedesktop.org/releases/dbus/
 DISTFILES = $(DISTNAME).tar.gz
@@ -22,6 +22,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--enable-verbose-mode \
+	--enable-asserts \
+	--enable-checks \
 	--disable-xml-docs \
 	--disable-doxygen-docs \
 	--enable-abstract-sockets \
