@@ -1,8 +1,8 @@
 GARNAME = xine-lib
-GARVERSION = 12142
+GARVERSION = 1.2.2
 CATEGORIES = mediaplayers
-MASTER_SITES = hg://hg.debian.org/hg/xine-lib/$(GARNAME)-1.2/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = http://downloads.sourceforge.net/project/xine/$(GARNAME)/$(GARVERSION)/
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
@@ -122,15 +122,8 @@ INSTALL_ENV   = \
 
 include ../../gar.mk
 
-# xine-lib 12140 fails to compile with -Os.
+# xine-lib 1.2.2 fails to compile with -Os.
 CFLAGS  := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O1)
-
-hg//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_HG, $*, $(GARVERSION), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
@@ -149,35 +142,3 @@ post-install:
 
 clean-all:
 	@$(MAKE) -C ../xine-ui clean-all
-
-source-update:
-	@$(MAKE) source-update-source
-	@$(MAKE) source-update-patches
-
-source-update-source:
-	@$(MAKE) clean
-	@$(MAKE) fetch
-	@$(MAKE) $(GARCHIVEDIR)/$(DISTNAME).tar.bz2
-	@$(MAKE) clean
-
-source-update-patches:
-	@$(MAKE) clean
-	@$(MAKE) extract
-	@$(foreach PATCHFILE, $(PATCHFILES), \
-		cd $(WORKDIR) || exit 1 ; \
-		mv $(DISTNAME) $(DISTNAME)-old || exit 1 ; \
-		cp -r $(DISTNAME)-old $(DISTNAME)-new || exit 1 ; \
-		cd $(DISTNAME)-new || exit 1 ; \
-		SIMPLE_BACKUP_SUFFIX=.gar-source-update-patches patch -p1 < ../../../files/$(PATCHFILE) || exit 1 ; \
-		cd ../ || exit 1 ; \
-		find $(DISTNAME)-new -name *.gar-source-update-patches -exec rm {} \; || exit 1 ; \
-		( diff -Naur $(DISTNAME)-old $(DISTNAME)-new > ../../files/$(PATCHFILE) ; test $$? -lt 2 ) || exit 1 ; \
-		rm -fr $(DISTNAME)-old || exit 1 ; \
-		mv $(DISTNAME)-new $(DISTNAME) || exit 1 ; \
-		cd ../../ || exit 1 ; \
-		rm -f checksums~ || exit 1 ; \
-		cat checksums | grep -v $(DOWNLOADDIR)/$(PATCHFILE) > checksums~ ; \
-		md5sum $(DOWNLOADDIR)/$(PATCHFILE) >> checksums~ || exit 1 ; \
-		rm -f checksums || exit 1 ; \
-		mv -f checksums~ checksums || exit 1 ; )
-	@$(MAKE) clean
