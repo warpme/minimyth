@@ -1,6 +1,6 @@
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/Kconfig linux-3.3.7-new/drivers/net/ethernet/realtek/Kconfig
---- linux-3.3.7-old/drivers/net/ethernet/realtek/Kconfig	2012-05-22 03:57:32.000000000 -0700
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/Kconfig	2012-05-22 03:58:09.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/Kconfig linux-3.3.8-new/drivers/net/ethernet/realtek/Kconfig
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/Kconfig	2012-06-07 21:24:21.000000000 -0700
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/Kconfig	2012-06-07 21:24:50.000000000 -0700
 @@ -102,6 +102,27 @@
  	  experience problems, you can enable this option to restore the
  	  old RX-reset behavior.  If unsure, say N.
@@ -29,25 +29,25 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/Kconfig linux-3.3.7-new/
  config R8169
  	tristate "Realtek 8169 gigabit ethernet support"
  	depends on PCI
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/Makefile linux-3.3.7-new/drivers/net/ethernet/realtek/Makefile
---- linux-3.3.7-old/drivers/net/ethernet/realtek/Makefile	2012-05-22 03:57:32.000000000 -0700
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/Makefile	2012-05-22 03:58:09.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/Makefile linux-3.3.8-new/drivers/net/ethernet/realtek/Makefile
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/Makefile	2012-06-07 21:24:21.000000000 -0700
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/Makefile	2012-06-07 21:24:50.000000000 -0700
 @@ -5,4 +5,5 @@
  obj-$(CONFIG_8139CP) += 8139cp.o
  obj-$(CONFIG_8139TOO) += 8139too.o
  obj-$(CONFIG_ATP) += atp.o
 +obj-$(CONFIG_R8168) += r8168/
  obj-$(CONFIG_R8169) += r8169.o
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/Makefile linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/Makefile
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/Makefile	2012-05-22 03:58:09.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/Makefile linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/Makefile
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/Makefile	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,3 @@
 +obj-$(CONFIG_R8168) += r8168.o
 +
 +r8168-objs :=  r8168_n.o r8168_asf.o rtl_eeprom.o rtltool.o
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.c linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_asf.c
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_asf.c	2012-05-22 03:58:09.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_asf.c linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_asf.c
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_asf.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_asf.c	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,420 @@
 +/*
 +################################################################################
@@ -469,9 +469,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.c linux-
 +		for (i = UUID_LEN - 1, j = 0; i >= 0 ; i--, j++)
 +			rtl8168_eri_write(ioaddr, UUID + i, RW_ONE_BYTE, data[j], ERIAR_ASF);
 +}
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.h linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_asf.h
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_asf.h	2012-05-22 03:58:09.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_asf.h linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_asf.h
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_asf.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_asf.h	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,295 @@
 +/*
 +################################################################################
@@ -768,9 +768,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_asf.h linux-
 +void rtl8168_asf_rw_iana(void __iomem *ioaddr, int arg, unsigned int *data);
 +void rtl8168_asf_rw_uuid(void __iomem *ioaddr, int arg, unsigned int *data);
 +void rtl8168_asf_rw_systemid(void __iomem *ioaddr, int arg, unsigned int *data);
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168.h linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168.h
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168.h	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168.h linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168.h
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168.h	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,1271 @@
 +/*
 +################################################################################
@@ -2043,9 +2043,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168.h linux-3.3.
 +#define netdev_for_each_mc_addr(mclist, dev) \
 +	for (mclist = dev->mc_list; mclist; mclist = mclist->next)
 +#endif
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_n.c linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_n.c
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_n.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/r8168_n.c	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_n.c linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_n.c
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/r8168_n.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/r8168_n.c	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,15371 @@
 +/*
 +################################################################################
@@ -17418,9 +17418,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/r8168_n.c linux-3.
 +
 +module_init(rtl8168_init_module);
 +module_exit(rtl8168_cleanup_module);
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,290 @@
 +/*
 +################################################################################
@@ -17712,9 +17712,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.c linux
 +	x |= Cfg9346_EECS;
 +	RTL_W8(Cfg9346, x);
 +}
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,55 @@
 +/*
 +################################################################################
@@ -17771,9 +17771,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtl_eeprom.h linux
 +
 +
 +
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.c linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtltool.c
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.c	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtltool.c	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtltool.c linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtltool.c
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtltool.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtltool.c	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,338 @@
 +#include <linux/module.h>
 +#include <linux/version.h>
@@ -18113,9 +18113,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.c linux-3.
 +
 +	return ret;
 +}
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.h linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtltool.h
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.h	1969-12-31 16:00:00.000000000 -0800
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8168/rtltool.h	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtltool.h linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtltool.h
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8168/rtltool.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8168/rtltool.h	2012-06-07 21:24:50.000000000 -0700
 @@ -0,0 +1,44 @@
 +#ifndef _LINUX_RTLTOOL_H
 +#define _LINUX_RTLTOOL_H
@@ -18161,9 +18161,9 @@ diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8168/rtltool.h linux-3.
 +#endif
 +
 +#endif /* _LINUX_RTLTOOL_H */
-diff -Naur linux-3.3.7-old/drivers/net/ethernet/realtek/r8169.c linux-3.3.7-new/drivers/net/ethernet/realtek/r8169.c
---- linux-3.3.7-old/drivers/net/ethernet/realtek/r8169.c	2012-05-22 03:57:32.000000000 -0700
-+++ linux-3.3.7-new/drivers/net/ethernet/realtek/r8169.c	2012-05-22 03:58:10.000000000 -0700
+diff -Naur linux-3.3.8-old/drivers/net/ethernet/realtek/r8169.c linux-3.3.8-new/drivers/net/ethernet/realtek/r8169.c
+--- linux-3.3.8-old/drivers/net/ethernet/realtek/r8169.c	2012-06-07 21:24:21.000000000 -0700
++++ linux-3.3.8-new/drivers/net/ethernet/realtek/r8169.c	2012-06-07 21:24:50.000000000 -0700
 @@ -263,7 +263,6 @@
  	{ PCI_DEVICE(PCI_VENDOR_ID_REALTEK,	0x8129), 0, 0, RTL_CFG_0 },
  	{ PCI_DEVICE(PCI_VENDOR_ID_REALTEK,	0x8136), 0, 0, RTL_CFG_2 },
