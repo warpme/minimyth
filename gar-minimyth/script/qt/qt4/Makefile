@@ -1,12 +1,12 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.8.1
+GARVERSION = 4.8.2
 CATEGORIES = qt
 MASTER_SITES  = ftp://ftp.trolltech.com/qt/source/
 MASTER_SITES += ftp://ftp.trolltech.com/qt/snapshots/
+MASTER_SITES += http://releases.qt-project.org/qt4/source/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
-	$(DISTNAME)-webkit_no_error.patch \
-	$(DISTNAME)-gcc_4.7.patch
+	$(DISTNAME)-webkit_no_error.patch
 PATCHFILES += \
 	$(DISTNAME).patch.gar
 LICENSE = LGPL2_1
