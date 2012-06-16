@@ -11,6 +11,7 @@ PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-r8168_8.029.00.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
 PATCHFILES += $(DISTNAME)-unionfs_2.5.11.patch
+PATCHFILES += $(DISTNAME)-unionfs_2.5.11_linux_3.4.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
