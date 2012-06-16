@@ -1,5 +1,5 @@
 GARNAME = bison
-GARVERSION = 2.5
+GARVERSION = 2.5.1
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
