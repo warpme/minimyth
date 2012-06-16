@@ -40,7 +40,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-# pixman 0.26.0 fails to compile with gcc 4.7.0's link time optimization enabled.
+# pixman 0.26.0 fails to compile with gcc 4.7.1's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
