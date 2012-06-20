@@ -147,7 +147,7 @@ mm-all:
 		   [ ! "$${software}" = "airplay"        ] && \
 		   [ ! "$${software}" = "flash"          ] && \
 		   [ ! "$${software}" = "hulu"           ] && \
-		   [ ! "$${software}" = "mplayer-svn"    ] && \
+		   [ ! "$${software}" = "mplayer-new"    ] && \
 		   [ ! "$${software}" = "mplayer-vld"    ] && \
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \

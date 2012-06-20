@@ -45,7 +45,7 @@ mm_GRAPHICS               ?= intel \
 # Valid values for MM_SOFTWARE are zero or more of 'mythbrowser', 'mythgallery',
 # 'mythgame', 'mythmusic', 'mythnetvision', 'mythnews', 'mythstream',
 # 'mythvideo', 'mythweather', 'mythzoneminder', 'airplay', 'flash', 'hulu',
-# 'mplayer-svn', 'mplayer-vld', 'vlc' 'xine', 'mame', 'bdremote', 'wiimote',
+# 'mplayer-new', 'mplayer-vld', 'vlc' 'xine', 'mame', 'bdremote', 'wiimote',
 # 'cec', 'backend','python', 'debug'.
 mm_SOFTWARE               ?= mythbrowser \
                              mythgallery \
@@ -60,7 +60,7 @@ mm_SOFTWARE               ?= mythbrowser \
                              $(if $(filter-out 0.22 0.23 0.24,$(mm_MYTH_VERSION)),airplay) \
                              flash \
                              hulu \
-                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-svn) \
+                             $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-new) \
                              $(if $(filter openchrome,$(mm_GRAPHICS)), \
                                  $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),mplayer-vld)) \
                              $(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)),vlc) \
