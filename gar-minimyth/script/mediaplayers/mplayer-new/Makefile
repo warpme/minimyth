@@ -1,10 +1,14 @@
 GARNAME = MPlayer
-GARVERSION = 34971
+GARVERSION = 1.1
+#GARVERSION = 34971
 CATEGORIES = mediaplayers
-MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
+MASTER_SITES = http://www.mplayerhq.hu/MPlayer/releases/
+#MASTER_SITES = svn://svn.mplayerhq.hu/mplayer/trunk/
 SOURCEPKG = lib/ffmpeg lib/libdvdnav lib/libdvdread
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch
+DISTFILES = $(DISTNAME).tar.xz
+#DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-gcc_4.4.0_hack.patch
+#PATCHFILES = $(GARNAME)-gcc_4.4.0_hack.patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -298,7 +302,7 @@ svn//%/$(DISTNAME).tar.bz2:
 	@cd $(PARTIALDIR) ; rm -rf $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-$(DISTNAME).tar.bz2:
+x-checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE)
 
 post-patch:
@@ -321,8 +325,8 @@ install-config:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(bindir)/mplayer-svn
-	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-svn
+	@rm -f $(DESTDIR)$(bindir)/mplayer-new
+	@mv -f $(DESTDIR)$(bindir)/mplayer $(DESTDIR)$(bindir)/mplayer-new
 	@$(MAKECOOKIE)
 
 source-update:

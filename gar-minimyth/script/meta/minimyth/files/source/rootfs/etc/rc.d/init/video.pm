@@ -215,7 +215,7 @@ sub start
     {
         when (/^ffmpeg$/)
         {
-            $mplayer      = 'mplayer-svn';
+            $mplayer      = 'mplayer-new';
             $video_driver = 'xv';
             $vdpau_true   = '#';
             $vdpau_false  = '';
@@ -224,7 +224,7 @@ sub start
         }
         when (/^libmpeg2$/)
         {
-            $mplayer      = 'mplayer-svn';
+            $mplayer      = 'mplayer-new';
             $video_driver = 'xv';
             $vdpau_true   = '#';
             $vdpau_false  = '';
@@ -233,7 +233,7 @@ sub start
         }
         when (/^vdpau$/)
         {
-            $mplayer      = 'mplayer-svn';
+            $mplayer      = 'mplayer-new';
             $video_driver = 'vdpau';
             $vdpau_true   = '';
             $vdpau_false  = '#';
@@ -242,7 +242,7 @@ sub start
         }
         when (/^xvmc$/)
         {
-            $mplayer      = 'mplayer-svn';
+            $mplayer      = 'mplayer-new';
             $video_driver = 'xvmc';
             $vdpau_true   = '#';
             $vdpau_false  = '';

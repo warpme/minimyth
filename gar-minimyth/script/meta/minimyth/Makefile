@@ -164,8 +164,8 @@ DEPENDS = \
 	$(if $(filter flash,$(mm_SOFTWARE)), \
 		gtk/gtk \
 		lib/nss) \
-	$(if $(filter mplayer-svn,$(mm_SOFTWARE)), \
-		mediaplayers/mplayer-svn \
+	$(if $(filter mplayer-new,$(mm_SOFTWARE)), \
+		mediaplayers/mplayer-new \
 		mediaplayers/mplayer-resumer) \
 	$(if $(filter mplayer-vld,$(mm_SOFTWARE)), \
 		mediaplayers/mplayer-vld \
