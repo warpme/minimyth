@@ -1,7 +1,7 @@
-diff -Naur bluez-4.99-old/input/device.c bluez-4.99-new/input/device.c
---- bluez-4.99-old/input/device.c	2012-03-05 01:03:57.000000000 -0800
-+++ bluez-4.99-new/input/device.c	2012-05-02 21:58:22.000000000 -0700
-@@ -563,13 +563,14 @@
+diff -Naur bluez-4.101-old/input/device.c bluez-4.101-new/input/device.c
+--- bluez-4.101-old/input/device.c	2012-06-13 08:04:20.000000000 -0700
++++ bluez-4.101-new/input/device.c	2012-06-27 21:22:00.000000000 -0700
+@@ -567,7 +567,8 @@
  	close(req->ctrl_sock);
  
  cleanup:
@@ -11,14 +11,7 @@ diff -Naur bluez-4.99-old/input/device.c bluez-4.99-new/input/device.c
  
  	g_free(req);
  }
- 
- static int hidp_add_connection(const struct input_device *idev,
--				const struct input_conn *iconn)
-+				struct input_conn *iconn)
- {
- 	struct hidp_connadd_req *req;
- 	struct fake_hid *fake_hid;
-@@ -609,11 +610,13 @@
+@@ -630,11 +631,13 @@
  		fake->disconnect = fake_hid_disconnect;
  		fake->priv = fake_hid;
  		fake->idev = idev;
@@ -32,7 +25,7 @@ diff -Naur bluez-4.99-old/input/device.c bluez-4.99-new/input/device.c
  		goto cleanup;
  	}
  
-@@ -638,7 +641,8 @@
+@@ -664,7 +667,8 @@
  	err = ioctl_connadd(req);
  
  cleanup:
@@ -42,7 +35,7 @@ diff -Naur bluez-4.99-old/input/device.c bluez-4.99-new/input/device.c
  	g_free(req);
  
  	return err;
-@@ -1257,3 +1261,17 @@
+@@ -1306,3 +1310,17 @@
  
  	return 0;
  }
@@ -60,10 +53,10 @@ diff -Naur bluez-4.99-old/input/device.c bluez-4.99-new/input/device.c
 +	device_request_disconnect(idev->device, NULL);
 +	// or call disconnect(idev, 0) ???
 +}
-diff -Naur bluez-4.99-old/input/device.h bluez-4.99-new/input/device.h
---- bluez-4.99-old/input/device.h	2010-09-08 08:27:53.000000000 -0700
-+++ bluez-4.99-new/input/device.h	2012-05-02 21:58:22.000000000 -0700
-@@ -40,6 +40,10 @@
+diff -Naur bluez-4.101-old/input/device.h bluez-4.101-new/input/device.h
+--- bluez-4.101-old/input/device.h	2012-06-13 08:04:20.000000000 -0700
++++ bluez-4.101-new/input/device.h	2012-06-27 21:19:39.000000000 -0700
+@@ -37,6 +37,10 @@
  	int		(*disconnect) (struct input_conn *iconn);
  	void		*priv;
  	const struct input_device *idev;
@@ -74,15 +67,15 @@ diff -Naur bluez-4.99-old/input/device.h bluez-4.99-new/input/device.h
  };
  
  int fake_input_register(DBusConnection *conn, struct btd_device *device,
-@@ -54,3 +58,5 @@
+@@ -49,3 +53,5 @@
  int input_device_set_channel(const bdaddr_t *src, const bdaddr_t *dst, int psm,
  							GIOChannel *io);
  int input_device_close_channels(const bdaddr_t *src, const bdaddr_t *dst);
 +void input_device_get_devaddr(const struct input_device *idev, char devaddr[]);
 +void input_device_request_disconnect(const struct input_device *idev);
-diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
---- bluez-4.99-old/input/fakehid.c	2012-03-05 01:03:57.000000000 -0800
-+++ bluez-4.99-new/input/fakehid.c	2012-05-02 22:00:02.000000000 -0700
+diff -Naur bluez-4.101-old/input/fakehid.c bluez-4.101-new/input/fakehid.c
+--- bluez-4.101-old/input/fakehid.c	2012-06-13 08:04:20.000000000 -0700
++++ bluez-4.101-new/input/fakehid.c	2012-06-28 04:10:29.000000000 -0700
 @@ -31,6 +31,7 @@
  #include <unistd.h>
  #include <stdlib.h>
@@ -90,8 +83,8 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
 +#include <sys/stat.h>
  
  #include <bluetooth/bluetooth.h>
- #include <bluetooth/hidp.h>
-@@ -47,8 +48,479 @@
+ 
+@@ -44,6 +45,477 @@
  #include "fakehid.h"
  #include "uinput.h"
  
@@ -560,8 +553,6 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
 +	ENTRY(KEY_MAX)
 +};
 +
- #define PS3_FLAGS_MASK 0xFFFFFF00
- 
 +struct ps3remote_data {
 +	unsigned int lastkey;
 +	unsigned int lastval;
@@ -571,7 +562,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  enum ps3remote_special_keys {
  	PS3R_BIT_PS = 0,
  	PS3R_BIT_ENTER = 3,
-@@ -91,6 +563,8 @@
+@@ -86,6 +558,8 @@
  	[PS3R_BIT_SELECT] = 0x50,
  };
  
@@ -580,7 +571,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  static unsigned int ps3remote_keymap[] = {
  	[0x16] = KEY_EJECTCD,
  	[0x64] = KEY_AUDIO,
-@@ -146,10 +620,35 @@
+@@ -141,10 +615,35 @@
  	[0xff] = KEY_MAX,
  };
  
@@ -619,7 +610,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  	unsigned int i, mask;
  	int retval;
  	guint8 key;
-@@ -164,7 +663,7 @@
+@@ -159,7 +658,7 @@
  
  	/* first, check flags */
  	for (i = 0; i < 24; i++) {
@@ -628,7 +619,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  			continue;
  		if (ps3remote_bits[i] == 0)
  			goto error;
-@@ -183,19 +682,19 @@
+@@ -178,19 +677,19 @@
  	if (buff[11] == 1) {
  		retval = ps3remote_keymap[key];
  	} else
@@ -651,7 +642,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  
  	return retval;
  
-@@ -203,70 +702,123 @@
+@@ -198,70 +697,123 @@
  	error("ps3remote: unrecognized sequence [%#x][%#x][%#x][%#x] [%#x],"
  			"last: [%#x][%#x][%#x][%#x]",
  			buff[2], buff[3], buff[4], buff[5], buff[11],
@@ -810,7 +801,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  	g_io_channel_unref(fake->io);
  
  	return FALSE;
-@@ -276,8 +828,17 @@
+@@ -271,8 +823,17 @@
  						struct fake_hid *fake_hid)
  {
  	struct uinput_dev dev;
@@ -828,7 +819,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  	fake->uinput = open("/dev/input/uinput", O_RDWR);
  	if (fake->uinput < 0) {
  		fake->uinput = open("/dev/uinput", O_RDWR);
-@@ -332,21 +893,59 @@
+@@ -327,21 +888,59 @@
  
  static gboolean fake_hid_common_connect(struct fake_input *fake, GError **err)
  {
@@ -890,7 +881,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  		.event		= ps3remote_event,
  		.setup_uinput	= ps3remote_setup_uinput,
  		.devices	= NULL,
-@@ -383,6 +982,7 @@
+@@ -378,6 +977,7 @@
  	for (l = fake_hid->devices; l != NULL; l = l->next) {
  		old = l->data;
  		if (old->idev == fake->idev) {
@@ -898,7 +889,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  			g_free(fake);
  			fake = old;
  			fake_hid->connect(fake, NULL);
-@@ -394,6 +994,8 @@
+@@ -389,6 +989,8 @@
  	/* New device? Add it to the list of known devices,
  	 * and create the uinput necessary */
  	if (old == NULL || old->uinput < 0) {
@@ -907,7 +898,7 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
  		if (fake_hid->setup_uinput(fake, fake_hid)) {
  			error("Error setting up uinput");
  			g_free(fake);
-@@ -406,8 +1008,68 @@
+@@ -401,8 +1003,68 @@
  
  	fake->io = g_io_channel_ref(intr_io);
  	g_io_channel_set_close_on_unref(fake->io, TRUE);
@@ -977,9 +968,9 @@ diff -Naur bluez-4.99-old/input/fakehid.c bluez-4.99-new/input/fakehid.c
 +void fake_hid_exit(void)
 +{
 +}
-diff -Naur bluez-4.99-old/input/fakehid.h bluez-4.99-new/input/fakehid.h
---- bluez-4.99-old/input/fakehid.h	2010-09-08 08:27:53.000000000 -0700
-+++ bluez-4.99-new/input/fakehid.h	2012-05-02 21:58:22.000000000 -0700
+diff -Naur bluez-4.101-old/input/fakehid.h bluez-4.101-new/input/fakehid.h
+--- bluez-4.101-old/input/fakehid.h	2011-05-30 19:38:52.000000000 -0700
++++ bluez-4.101-new/input/fakehid.h	2012-06-27 21:19:39.000000000 -0700
 @@ -38,3 +38,6 @@
  
  struct fake_input *fake_hid_connadd(struct fake_input *fake, GIOChannel *intr_io,
@@ -987,9 +978,9 @@ diff -Naur bluez-4.99-old/input/fakehid.h bluez-4.99-new/input/fakehid.h
 +
 +void fake_hid_init(GKeyFile *config);
 +void fake_hid_exit(void);
-diff -Naur bluez-4.99-old/input/input.conf bluez-4.99-new/input/input.conf
---- bluez-4.99-old/input/input.conf	2008-08-05 14:14:56.000000000 -0700
-+++ bluez-4.99-new/input/input.conf	2012-05-02 21:58:22.000000000 -0700
+diff -Naur bluez-4.101-old/input/input.conf bluez-4.101-new/input/input.conf
+--- bluez-4.101-old/input/input.conf	2008-10-04 06:08:56.000000000 -0700
++++ bluez-4.101-new/input/input.conf	2012-06-27 21:19:39.000000000 -0700
 @@ -4,6 +4,81 @@
  # particular interface
  [General]
@@ -1073,10 +1064,10 @@ diff -Naur bluez-4.99-old/input/input.conf bluez-4.99-new/input/input.conf
 +0x61 = KEY_FRAMEFORWARD   # SLOW/STEP FORWARD (XBMC recommendation: KEY_DOT)
 +0xff = KEY_MAX
 +
-diff -Naur bluez-4.99-old/input/manager.c bluez-4.99-new/input/manager.c
---- bluez-4.99-old/input/manager.c	2012-01-11 14:44:59.000000000 -0800
-+++ bluez-4.99-new/input/manager.c	2012-05-02 21:58:22.000000000 -0700
-@@ -41,6 +41,7 @@
+diff -Naur bluez-4.101-old/input/manager.c bluez-4.101-new/input/manager.c
+--- bluez-4.101-old/input/manager.c	2012-06-13 08:04:20.000000000 -0700
++++ bluez-4.101-new/input/manager.c	2012-06-28 04:02:05.000000000 -0700
+@@ -42,6 +42,7 @@
  #include "device.h"
  #include "server.h"
  #include "manager.h"
@@ -1084,16 +1075,16 @@ diff -Naur bluez-4.99-old/input/manager.c bluez-4.99-new/input/manager.c
  
  static int idle_timeout = 0;
  
-@@ -72,7 +73,7 @@
- 	device_get_address(device, &dst, NULL);
+@@ -68,7 +69,7 @@
+ 		return -1;
  
- 	return input_device_register(connection, device, path, &src, &dst,
--				HID_UUID, rec->handle, idle_timeout * 60);
-+				HID_UUID, rec->handle, idle_timeout);
+ 	return input_device_register(connection, device, path, HID_UUID, rec,
+-							idle_timeout * 60);
++							idle_timeout);
  }
  
  static void hid_device_remove(struct btd_device *device)
-@@ -184,6 +185,8 @@
+@@ -174,6 +175,8 @@
  		}
  	}
  
@@ -1102,7 +1093,7 @@ diff -Naur bluez-4.99-old/input/manager.c bluez-4.99-new/input/manager.c
  	connection = dbus_connection_ref(conn);
  
  	btd_register_adapter_driver(&input_server_driver);
-@@ -203,5 +206,7 @@
+@@ -193,5 +196,7 @@
  
  	dbus_connection_unref(connection);
  
@@ -1110,10 +1101,10 @@ diff -Naur bluez-4.99-old/input/manager.c bluez-4.99-new/input/manager.c
 +
  	connection = NULL;
  }
-diff -Naur bluez-4.99-old/src/device.c bluez-4.99-new/src/device.c
---- bluez-4.99-old/src/device.c	2012-03-05 01:03:57.000000000 -0800
-+++ bluez-4.99-new/src/device.c	2012-05-02 21:58:22.000000000 -0700
-@@ -1056,6 +1056,10 @@
+diff -Naur bluez-4.101-old/src/device.c bluez-4.101-new/src/device.c
+--- bluez-4.101-old/src/device.c	2012-06-13 08:04:20.000000000 -0700
++++ bluez-4.101-new/src/device.c	2012-06-27 21:19:39.000000000 -0700
+@@ -1078,6 +1078,10 @@
  		device->alias = g_strdup(alias);
  	device->trusted = read_trust(&src, address, GLOBAL_TRUST);
  
@@ -1124,7 +1115,7 @@ diff -Naur bluez-4.99-old/src/device.c bluez-4.99-new/src/device.c
  	if (read_blocked(&src, &device->bdaddr))
  		device_block(conn, device, FALSE);
  
-@@ -1294,6 +1298,8 @@
+@@ -1330,6 +1334,8 @@
  		if (!probe_uuids)
  			continue;
  
