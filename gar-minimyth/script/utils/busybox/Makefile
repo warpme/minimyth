@@ -9,6 +9,7 @@ PATCHFILES  = \
 	$(DISTNAME)-ash.patch \
 	$(DISTNAME)-ifupdown.patch \
 	$(DISTNAME)-man.patch \
+	$(DISTNAME)-mke2fs.patch \
 	$(DISTNAME)-ps.patch \
 	$(DISTNAME)-tar.patch
 PATCHFILES += \
