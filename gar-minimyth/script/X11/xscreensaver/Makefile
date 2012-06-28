@@ -1,5 +1,5 @@
 GARNAME = xscreensaver
-GARVERSION = 5.15
+GARVERSION = 5.17
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
@@ -37,10 +37,8 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
-# Fails to compile (x86_64) when compiled with at least some of GCC's -ftree-loop-distribution option.
-CFLAGS   := $(filter-out -ftree-loop-distribution, $(CFLAGS))
-CXXFLAGS := $(filter-out -ftree-loop-distribution, $(CXXFLAGS))
-
 pre-configure:
+	@# Hack for a bug in xscreensaver 5.17.
+	@sed -i 's/lament.xpm/lament512.xpm/' $(WORKSRC)/hacks/glx/Makefile.in
 	@$(call RUN_AUTOTOOLS)
 	@$(MAKECOOKIE)
