@@ -1,0 +1,52 @@
+diff -Naur linux-3.4.4-old/fs/cifs/cifs_dfs_ref.c linux-3.4.4-new/fs/cifs/cifs_dfs_ref.c
+--- linux-3.4.4-old/fs/cifs/cifs_dfs_ref.c	2012-06-26 12:49:19.000000000 -0700
++++ linux-3.4.4-new/fs/cifs/cifs_dfs_ref.c	2012-06-26 12:52:00.000000000 -0700
+@@ -216,8 +216,8 @@
+ 		strcat(mountdata, fullpath + ref->path_consumed);
+ 	}
+ 
+-	/*cFYI(1, "%s: parent mountdata: %s", __func__,sb_mountdata);*/
+-	/*cFYI(1, "%s: submount mountdata: %s", __func__, mountdata );*/
++	cFYI(1, "%s: parent mountdata: %s", __func__,sb_mountdata);
++	cFYI(1, "%s: submount mountdata: %s", __func__, mountdata );
+ 
+ compose_mount_options_out:
+ 	kfree(srvIP);
+diff -Naur linux-3.4.4-old/fs/cifs/connect.c linux-3.4.4-new/fs/cifs/connect.c
+--- linux-3.4.4-old/fs/cifs/connect.c	2012-06-26 12:49:19.000000000 -0700
++++ linux-3.4.4-new/fs/cifs/connect.c	2012-06-26 12:52:00.000000000 -0700
+@@ -1579,7 +1579,7 @@
+ 			value++;
+ 
+ 			/* Set tmp_end to end of the string */
+-			tmp_end = (char *) value + strlen(value);
++			tmp_end = (char *) value + strlen(value) + 1;
+ 
+ 			/* Check if following character is the deliminator
+ 			 * If yes, we have encountered a double deliminator
+@@ -1587,6 +1587,8 @@
+ 			 */
+ 			if (tmp_end < end && tmp_end[1] == delim)
+ 				tmp_end[0] = delim;
++			else
++				goto no_double_delim;
+ 
+ 			/* Keep iterating until we get to a single deliminator
+ 			 * OR the end
+@@ -1604,6 +1606,8 @@
+ 				/* Reached the end of the mount option string */
+ 				options = end;
+ 
++no_double_delim:
++			options = tmp_end;
+ 			/* Now build new password string */
+ 			temp_len = strlen(value);
+ 			vol->password = kzalloc(temp_len+1, GFP_KERNEL);
+@@ -1621,6 +1625,7 @@
+ 					i++;
+ 			}
+ 			vol->password[j] = '\0';
++			printk("options before leaving Opt_pass: %s", options);
+ 			break;
+ 		case Opt_blank_ip:
+ 			vol->UNCip = NULL;
