@@ -59,7 +59,7 @@ include ../../gar.mk
 CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
 LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
 
-# glibc 2.15 fails to compile with gcc 4.7.0's link time optimization enabled.
+# glibc 2.16.0 fails to compile with gcc 4.7.1's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
