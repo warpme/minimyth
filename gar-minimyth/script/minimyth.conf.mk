@@ -10,7 +10,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.22  ,$(mm_MYTH_VERSION)),0.22.0) \
                                 $(if $(filter 0.23  ,$(mm_MYTH_VERSION)),0.23.1) \
                                 $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.3) \
-                                $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.0) \
+                                $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.1) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
 mm_VERSION_MINIMYTH       ?= 80
