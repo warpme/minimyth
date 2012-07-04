@@ -1,17 +1,12 @@
 GARNAME = busybox
-GARVERSION = 1.20.1
+GARVERSION = 1.20.2
 CATEGORIES = utils
 MASTER_SITES = http://www.busybox.net/downloads/
 MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
-	$(DISTNAME)-ash.patch \
-	$(DISTNAME)-ifupdown.patch \
-	$(DISTNAME)-man.patch \
-	$(DISTNAME)-mke2fs.patch \
-	$(DISTNAME)-ps.patch \
-	$(DISTNAME)-tar.patch
+	$(DISTNAME)-sys_resource_h.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
 	$(DISTNAME)-dhcp_log_server.patch \
