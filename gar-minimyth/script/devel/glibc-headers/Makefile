@@ -19,7 +19,7 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--disable-sanity-checks \
-	--enable-kernel=3.0.0 \
+	--enable-kernel=3.4.0 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
 	--with-headers=$(DESTDIR)$(includedir) \
@@ -70,5 +70,5 @@ post-install:
 	@touch $(DESTDIR)$(includedir)/gnu/stubs.h
 	@cp $(WORKBLD)/bits/stdio_lim.h $(DESTDIR)$(includedir)/bits
 	@cp $(WORKSRC)/nptl/sysdeps/pthread/pthread.h $(DESTDIR)$(includedir)
-	@cp $(WORKSRC)/nptl/sysdeps/unix/sysv/linux/i386/bits/pthreadtypes.h $(DESTDIR)$(includedir)/bits
+	@cp $(WORKSRC)/nptl/sysdeps/unix/sysv/linux/x86/bits/pthreadtypes.h $(DESTDIR)$(includedir)/bits
 	@$(MAKECOOKIE)

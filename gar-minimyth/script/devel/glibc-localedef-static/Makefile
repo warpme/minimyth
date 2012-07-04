@@ -3,6 +3,7 @@ GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
 SOURCEPKG = devel/glibc
 PATCHFILES += glibc-$(GARVERSION)-localedef_static.patch
+PATCHFILES += glibc-$(GARVERSION)-kernel_2.6.18.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -28,8 +29,9 @@ BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = custom
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-sanity-checks \
 	--enable-bind-now \
-	--enable-kernel=2.6.9 \
+	--enable-kernel=2.6.18 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
@@ -46,7 +48,7 @@ CONFIGURE_ARGS += \
 	--with-tls \
 	--with-__thread
 endif
-BUILD_ARGS      = \
+xBUILD_ARGS      = \
 	locale
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
