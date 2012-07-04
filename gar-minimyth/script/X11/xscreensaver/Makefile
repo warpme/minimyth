@@ -1,9 +1,9 @@
 GARNAME = xscreensaver
-GARVERSION = 5.17
+GARVERSION = 5.18
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-intltool_disable.patch $(DISTNAME)-po_disable.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-af_link.patch $(DISTNAME)-intltool_disable.patch $(DISTNAME)-po_disable.patch $(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION =
@@ -38,7 +38,5 @@ INSTALL_ARGS   = \
 include ../../gar.mk
 
 pre-configure:
-	@# Hack for a bug in xscreensaver 5.17.
-	@sed -i 's/lament.xpm/lament512.xpm/' $(WORKSRC)/hacks/glx/Makefile.in
 	@$(call RUN_AUTOTOOLS)
 	@$(MAKECOOKIE)
