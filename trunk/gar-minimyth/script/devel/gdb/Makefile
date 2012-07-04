@@ -3,6 +3,7 @@ GARVERSION = 7.4.1
 CATEGORIES = devel
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-siginfo.patch
 LICENSE = GPL2/LGPL2
 
 DESCRIPTION =
