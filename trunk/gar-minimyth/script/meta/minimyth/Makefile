@@ -35,19 +35,19 @@ DEPENDS = \
 	disk/hdparm \
 	net/ifplugd \
 	system/iguanair \
+	utils/intel-microcode2ucode \
 	net/iputils \
 	utils/ir-keytable \
 	system/irclient \
 	system/irserver \
 	system/irxkeys \
+	kernel/kernel \
 	system/lcdproc \
 	net/lighttpd \
-	kernel/kernel \
 	fonts/liberation-fonts \
 	system/lirc \
 	utils/lm_sensors \
 	utils/lsdvd \
-	utils/microcode_ctl \
 	utils/kmod \
 	$(if $(filter 0.22 0.23 0.24,$(mm_MYTH_VERSION)), myth-$(mm_MYTH_VERSION)/myththemes) \
 	myth-$(mm_MYTH_VERSION)/myththemes-blue-abstract-wide \

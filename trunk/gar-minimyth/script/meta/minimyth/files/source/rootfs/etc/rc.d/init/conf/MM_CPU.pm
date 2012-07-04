@@ -121,11 +121,28 @@ $var_list{'MM_CPU_FETCH_MICROCODE_DAT'} =
     },
     value_file     => 'yes',
     file           => {name_remote => '/microcode.dat',
-                       name_local  => '/etc/firmware/microcode.dat'}
+                       name_local  => '/lib/firmware/microcode.dat'},
+    extra          => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+
+        my $devnull = File::Spec->devnull;
+
+        if (-f '/lib/firmware/microcode.dat')
+        {
+            if (system(qq(cd /lib/firmware && /usr/bin/intel-microcode2ucode > $devnull 2>&1)) != 0)
+            {
+                $minimyth->message_output('err', "failed to convert '/lib/firmware/microcode.dat' to '/lib/firmware/intel-ucode/'.");
+                return 0;
+            }
+        }
+        return 1;
+    }
 };
 $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
 {
-    prerequisite   => [ 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_CPU_VENDOR', 'MM_CPU_FREQUENCY_GOVERNOR' ],
+    prerequisite   => [ 'MM_CPU_FAMILY', 'MM_CPU_MODEL', 'MM_CPU_VENDOR', 'MM_CPU_FREQUENCY_GOVERNOR', 'MM_CPU_FETCH_MICROCODE_DAT' ],
     value_clean    => sub
     {
         my $minimyth = shift;
@@ -218,6 +235,14 @@ $var_list{'MM_CPU_KERNEL_MODULE_LIST'} =
 
             # Add frequency governor kernel module.
             push(@kernel_modules, 'cpufreq-' . $minimyth->var_get('MM_CPU_FREQUENCY_GOVERNOR'));
+        }
+
+        if (("$vendor" eq 'GenuineIntel'    ) &&
+            ( $family  >= 6                 ) &&
+            (-d '/lib/firmware/intel-ucode'))
+        {
+            # Add microcode kernel module.
+            push(@kernel_modules, 'microcode');
         }
 
         return join(' ', @kernel_modules);
