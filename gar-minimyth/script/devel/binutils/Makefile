@@ -30,12 +30,14 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+# Disable PPL version check as the PPL major version number has been bumped so the check fails.
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-plugins \
 	--disable-gold \
 	--enable-ld \
 	--disable-libada \
 	--disable-libssp \
+	--disable-ppl-version-check \
 	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-werror \
