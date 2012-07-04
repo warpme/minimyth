@@ -3,6 +3,7 @@ GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
 SOURCEPKG = devel/glibc
 PATCHFILES += glibc-$(GARVERSION)-rpcgen_static.patch
+PATCHFILES += glibc-$(GARVERSION)-kernel_2.6.18.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -30,7 +31,7 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-bind-now \
 	--enable-static-nss \
-	--enable-kernel=2.6.9 \
+	--enable-kernel=2.6.18 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
@@ -47,10 +48,7 @@ CONFIGURE_ARGS += \
 	--with-tls \
 	--with-__thread
 endif
-BUILD_ARGS      = \
-	sunrpc
-INSTALL_ARGS    = \
-	sunrpc
+BUILD_ARGS      =
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk

@@ -7,7 +7,6 @@ DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-rpc_key_prot_h.patch \
 	$(DISTNAME)-select_fd_type.patch \
-	$(DISTNAME)-__i686.patch \
 	$(DISTNAME)-build_lib.patch \
 	$(DISTNAME)-build_locale.patch \
 	$(DISTNAME)-build_sunrpc.patch \
@@ -46,7 +45,7 @@ INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-bind-now \
-	--enable-kernel=3.0.0 \
+	--enable-kernel=3.4.0 \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \

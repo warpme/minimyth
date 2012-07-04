@@ -14,12 +14,12 @@ BUILDDEPS = devel/glibc-rpcgen-static
 WORKSRC = $(WORKDIR)/glibc-$(GARVERSION)
 WORKBLD = $(WORKSRC)_build
 
-INSTALL_SCRIPTS = locale
+INSTALL_SCRIPTS = rpcsvc
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-install-locale:
+install-rpcsvc:
 	@rm -rf $(DESTDIR)$(includedir)/rpcsvc
 	@mkdir -p $(DESTDIR)$(includedir)/rpcsvc
 	@rpcsvc_input_list=`cd $(WORKSRC)/nis/rpcsvc ; ls -1 *.h | sed -e 's!\.h$$!!'`; \
