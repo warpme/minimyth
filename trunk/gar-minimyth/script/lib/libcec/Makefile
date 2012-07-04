@@ -1,5 +1,5 @@
 GARNAME = libcec
-GARVERSION = 20120407-340ce76
+GARVERSION = 20120627-ebefc26c10
 CATEGORIES = lib
 MASTER_SITES = git://github.com/Pulse-Eight/libcec.git/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/cxx system/udev
+DEPENDS = lang/cxx lib/lockdev system/udev
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
