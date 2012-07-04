@@ -1562,7 +1562,7 @@ sub url_mount
     {
         $mount_vfstype = 'cifs';
         $mount_device  = '//' . $url_server . '/' . $url_path;
-        $mount_options = 'sec=' . 'ntlmv2' . ',' . $mount_options;
+        $mount_options = 'sec=' . 'ntlmv2i' . ',' . $mount_options;
         if ($url_password ne '')
         {
             $mount_options = 'password=' . $url_password . ',' . $mount_options;
