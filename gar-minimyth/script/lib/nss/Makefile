@@ -41,14 +41,9 @@ BUILD_ARGS = \
 	ZLIB_LIBS="-lz" \
 	build_coreconf build_dbm all
 
-xBUILD_ENV = $(BUILD_ARGS)
-
 include ../../gar.mk
 
 PARALLELMFLAGS := -j1
-
-pre-fetch:
-	echo $(WORKSRC)
 
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)

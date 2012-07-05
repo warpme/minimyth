@@ -1,23 +1,76 @@
 diff -Naur nss-3.13.5-old/mozilla/security/nss/cmd/shlibsign/sign.sh nss-3.13.5-new/mozilla/security/nss/cmd/shlibsign/sign.sh
---- nss-3.13.5-old/mozilla/security/nss/cmd/shlibsign/sign.sh	2012-06-03 13:58:23.000000000 -0700
-+++ nss-3.13.5-new/mozilla/security/nss/cmd/shlibsign/sign.sh	2012-06-03 13:59:25.000000000 -0700
-@@ -18,8 +18,8 @@
-         PATH=${ARG1}/lib:${ARG1}/bin:${ARG4}:${PATH}
-     fi
-     export PATH
+--- nss-3.13.5-old/mozilla/security/nss/cmd/shlibsign/sign.sh	2009-12-07 17:33:37.000000000 -0800
++++ nss-3.13.5-new/mozilla/security/nss/cmd/shlibsign/sign.sh	2012-07-05 11:19:39.000000000 -0700
+@@ -1,40 +1,40 @@
+ #!/bin/sh
+ case "${3}" in
+ WIN*)
+-    if echo "${PATH}" | grep -c \; >/dev/null; then
+-        PATH=${1}/lib\;${1}/bin\;${4}\;${PATH}
+-    else
+-        # ARG1 is ${1} with the drive letter escaped.
+-        if echo "${1}" | grep -c : >/dev/null; then
+-            ARG1=`(cd ${1}; pwd)`
+-        else
+-            ARG1=${1}
+-        fi
+-        if echo "${4}" | grep -c : >/dev/null; then
+-            ARG4=`(cd ${4}; pwd)`
+-        else
+-            ARG4=${4}
+-        fi
+-        PATH=${ARG1}/lib:${ARG1}/bin:${ARG4}:${PATH}
+-    fi
+-    export PATH
 -    echo "${2}"/shlibsign -v -i "${5}"
 -    "${2}"/shlibsign -v -i "${5}"
++#    if echo "${PATH}" | grep -c \; >/dev/null; then
++#        PATH=${1}/lib\;${1}/bin\;${4}\;${PATH}
++#    else
++#        # ARG1 is ${1} with the drive letter escaped.
++#        if echo "${1}" | grep -c : >/dev/null; then
++#            ARG1=`(cd ${1}; pwd)`
++#        else
++#            ARG1=${1}
++#        fi
++#        if echo "${4}" | grep -c : >/dev/null; then
++#            ARG4=`(cd ${4}; pwd)`
++#        else
++#            ARG4=${4}
++#        fi
++#        PATH=${ARG1}/lib:${ARG1}/bin:${ARG4}:${PATH}
++#    fi
++#    export PATH
 +    echo nss-shlibsign -v -i "${5}"
 +    nss-shlibsign -v -i "${5}"
      ;;
  *)
-     LIBPATH=`(cd "${1}"/lib; pwd)`:`(cd "${4}"; pwd)`:$LIBPATH
-@@ -34,7 +34,7 @@
-     export LIBRARY_PATH
-     ADDON_PATH=${1}/lib:${4}:$ADDON_PATH
-     export ADDON_PATH
+-    LIBPATH=`(cd "${1}"/lib; pwd)`:`(cd "${4}"; pwd)`:$LIBPATH
+-    export LIBPATH
+-    SHLIB_PATH=${1}/lib:${4}:$SHLIB_PATH
+-    export SHLIB_PATH
+-    LD_LIBRARY_PATH=${1}/lib:${4}:$LD_LIBRARY_PATH
+-    export LD_LIBRARY_PATH
+-    DYLD_LIBRARY_PATH=${1}/lib:${4}:$DYLD_LIBRARY_PATH
+-    export DYLD_LIBRARY_PATH
+-    LIBRARY_PATH=${1}/lib:${4}:$LIBRARY_PATH
+-    export LIBRARY_PATH
+-    ADDON_PATH=${1}/lib:${4}:$ADDON_PATH
+-    export ADDON_PATH
 -    echo "${2}"/shlibsign -v -i "${5}"
 -    "${2}"/shlibsign -v -i "${5}"
++#    LIBPATH=`(cd "${1}"/lib; pwd)`:`(cd "${4}"; pwd)`:$LIBPATH
++#    export LIBPATH
++#    SHLIB_PATH=${1}/lib:${4}:$SHLIB_PATH
++#    export SHLIB_PATH
++#    LD_LIBRARY_PATH=${1}/lib:${4}:$LD_LIBRARY_PATH
++#    export LD_LIBRARY_PATH
++#    DYLD_LIBRARY_PATH=${1}/lib:${4}:$DYLD_LIBRARY_PATH
++#    export DYLD_LIBRARY_PATH
++#    LIBRARY_PATH=${1}/lib:${4}:$LIBRARY_PATH
++#    export LIBRARY_PATH
++#    ADDON_PATH=${1}/lib:${4}:$ADDON_PATH
++#    export ADDON_PATH
 +    echo nss-shlibsign -v -i "${5}"
 +    nss-shlibsign -v -i "${5}"
      ;;
