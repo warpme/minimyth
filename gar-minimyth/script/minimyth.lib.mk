@@ -205,6 +205,8 @@ patch-%.gar: gar-patch-%.gar
 gar-patch-%:
 	@echo " ==> Applying patch $(DOWNLOADDIR)/$*"
 	@cat $(DOWNLOADDIR)/$* \
+		| sed 's%@GAR_GARBUILD@%$(GARBUILD)%g' \
+		| sed 's%@GAR_GARHOST@%$(GARHOST)%g' \
 		| sed 's%@GAR_build_DESTDIR@%$(build_DESTDIR)%g' \
 		| sed 's%@GAR_build_bindir@%$(build_bindir)%g' \
 		| sed 's%@GAR_build_includedir@%$(build_includedir)%g' \
