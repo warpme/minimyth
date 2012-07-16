@@ -6,7 +6,8 @@ MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-002
+	$(GARNAME)$(subst .,,$(GARVERSION))-002 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-003
 PATCHFILES += \
 	$(DISTNAME)-shlib_libs.patch
 LICENSE = GPL3
