@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.19.0
+GARVERSION = 2.20.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -48,7 +48,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sna \
 	--enable-uxa \
 	--disable-glamor \
+	--disable-xaa \
+	--disable-dga \
+	--disable-cache-level \
 	--disable-vmap \
+	--disable-async-swap \
 	--disable-debug \
 	--with-gnu-ld
 
