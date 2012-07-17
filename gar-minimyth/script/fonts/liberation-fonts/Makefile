@@ -1,10 +1,9 @@
 GARNAME = liberation-fonts
-GARVERSION = 1.07.2
+GARVERSION = 2.00.0
 CATEGORIES = fonts
 MASTER_SITES = http://fedorahosted.org/releases/l/i/$(GARNAME)/
 DISTFILES = $(GARNAME)-ttf-$(GARVERSION).tar.gz
-LICENSE = $(GARNAME) GPL2
-$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/License.txt
+LICENSE = OFL1_1
 
 DESCRIPTION =
 define BLURB
