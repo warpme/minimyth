@@ -4,7 +4,9 @@ CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/3.99/
 DISTFILES  = $(DISTNAME).tar.gz
 DISTFILES += config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME)-am_path_gtk.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.12.patch \
+	$(DISTNAME)-am_path_gtk.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
