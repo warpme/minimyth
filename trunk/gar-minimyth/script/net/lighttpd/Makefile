@@ -3,6 +3,7 @@ GARVERSION = 1.4.31
 CATEGORIES = net
 MASTER_SITES = http://download.lighttpd.net/lighttpd/releases-1.4.x/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-automake_1.12.patch
 LICENSE = BSD_3_Clause
 
 DESCRIPTION =
