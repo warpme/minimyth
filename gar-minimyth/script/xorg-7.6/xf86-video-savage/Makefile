@@ -1,5 +1,5 @@
 GARNAME = xf86-video-savage
-GARVERSION = 2.3.5
+GARVERSION = 2.3.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -34,6 +34,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
+	--disable-silent-rules \
 	--enable-dri \
 	--with-gnu-ld
 
