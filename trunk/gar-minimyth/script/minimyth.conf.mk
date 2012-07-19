@@ -10,7 +10,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.22  ,$(mm_MYTH_VERSION)),0.22.0) \
                                 $(if $(filter 0.23  ,$(mm_MYTH_VERSION)),0.23.1) \
                                 $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.3) \
-                                $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.1) \
+                                $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.2) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
 mm_VERSION_MINIMYTH       ?= 80
@@ -134,7 +134,7 @@ mm_XORG_VERSION           ?= 7.6
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
 # the format YYYYMMDD.
-mm_MYTHTV_MASTER_VERSION  ?= master-20120702-e2a0efd
+mm_MYTHTV_MASTER_VERSION  ?= master-20120717-ec2ac41
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
