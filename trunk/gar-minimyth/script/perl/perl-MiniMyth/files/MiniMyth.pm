@@ -1909,17 +1909,17 @@ sub flash_fetch_and_save
     {
         $flash_file = q(libflashplayer.32.so);
         # 11.1 release.
-        #$flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_11_linux.i386.tar.gz);
+        $flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.62/install_flash_player_11_linux.i386.tar.gz);
         # 11.2 release.
-        $flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.228/install_flash_player_11_linux.i386.tar.gz);
+        #$flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.236/install_flash_player_11_linux.i386.tar.gz);
     }
     elsif (-e q(/lib/ld-linux-x86-64.so.2))
     {
         $flash_file = q(libflashplayer.64.so);
         # 11.1 release.
-        #$flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_11_linux.x86_64.tar.gz);
+        $flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.62/install_flash_player_11_linux.x86_64.tar.gz);
         # 11.2 release.
-        $flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.228/install_flash_player_11_linux.x86_64.tar.gz);
+        #$flash_url = q(http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.236/install_flash_player_11_linux.x86_64.tar.gz);
     }
     else
     {
