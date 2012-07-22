@@ -56,4 +56,9 @@ pre-install:
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libfontconfig.la
 	@sed -i 's%-L$(DESTDIR)$(libdir)%-L$${libdir}%g' $(DESTDIR)$(libdir)/pkgconfig/fontconfig.pc
+	@# Get rid of symlinks.
+	@$(foreach file,$(notdir $(wildcard $(DESTDIR)$(datadir)/fontconfig/conf.avail/*.conf)), \
+		rm -f $(DESTDIR)$(sysconfdir)/fonts/conf.d/$(file) ; \
+		cp $(DESTDIR)$(datadir)/fontconfig/conf.avail/$(file) $(DESTDIR)$(sysconfdir)/fonts/conf.d/$(file) ; \
+	)
 	@$(MAKECOOKIE)
