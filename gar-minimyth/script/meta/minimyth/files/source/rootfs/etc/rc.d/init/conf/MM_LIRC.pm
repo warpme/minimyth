@@ -446,7 +446,7 @@ $var_list{'MM_LIRC_WAKEUP_ENABLED'} =
             '/usr/lib/udev/rules.d/06-minimyth-hotplug-01-lircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
         $minimyth->file_replace_variable(
-            '/lusr/ib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
+            '/lusr/lib/udev/rules.d/06-minimyth-hotplug-02-eventlircd.rules.disabled',
             { '@MM_LIRC_WAKEUP_TRUE@' => '#' });
         }
     }
