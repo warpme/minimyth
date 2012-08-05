@@ -1,5 +1,5 @@
 GARNAME = curl
-GARVERSION = 7.26.0
+GARVERSION = 7.27.0
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -57,6 +57,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-krb4 \
 	--without-spnego \
 	--without-gssapi \
+	--without-winssl \
+	--without-darwinssl \
 	--with-ssl \
 	--with-zlib \
 	--without-egd-socket \
@@ -66,8 +68,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-nss \
 	--with-ca-bundle="$(sysconfdir)/pki/tls/certs/ca-bundle.crt" \
 	--without-ca-path \
+	--without-libmetalink \
 	--without-libssh2 \
 	--with-librtmp \
+	--without-winidn \
 	--without-libidn
 CONFIGURE_ENV  = \
 	ac_cv_path_PKGCONFIG="pkg-config"
