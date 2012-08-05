@@ -1,8 +1,7 @@
-GARNAME = libva
-GARVERSION = 1.0.16
+GARNAME = intel-driver
+GARVERSION = 1.0.18
 CATEGORIES = X11
-MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
-#MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
+MASTER_SITES = http://cgit.freedesktop.org/vaapi/intel-driver/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -10,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx xorg/xorg
+DEPENDS = lang/c lang/cxx X11/libva xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -18,12 +17,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
-	--enable-glx \
-	--disable-dummy-driver \
-	--disable-dummy-backend \
 	--disable-static \
 	--enable-shared \
-	--with-drivers-path="$(libdir)/va" \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -41,9 +36,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libva.la
-	@rm -f $(DESTDIR)$(libdir)/libva-glx.la
-	@rm -f $(DESTDIR)$(libdir)/libva-egl.la
-	@rm -f $(DESTDIR)$(libdir)/libva-tpi.la
-	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
+	@rm -f $(DESTDIR)$(libdir)/va/i965_drv_video.la
 	@$(MAKECOOKIE)
