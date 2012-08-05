@@ -1,8 +1,8 @@
 GARNAME = zoneinfo
-GARVERSION = 2012d
+GARVERSION = 2012e
 CATEGORIES = system
 MASTER_SITES = http://www.iana.org/time-zones/repository/releases/
-DISTFILES = tzcode2012c.tar.gz tzdata$(GARVERSION).tar.gz
+DISTFILES = tzcode2012e.tar.gz tzdata$(GARVERSION).tar.gz
 PATCHFILES = $(DISTNAME).patch
 LICENSE = Public_Domain
 
