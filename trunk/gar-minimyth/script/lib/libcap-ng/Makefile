@@ -1,5 +1,5 @@
 GARNAME = libcap-ng
-GARVERSION = 0.6.6
+GARVERSION = 0.7
 CATEGORIES = lib
 MASTER_SITES = http://people.redhat.com/sgrubb/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
