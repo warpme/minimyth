@@ -1,5 +1,5 @@
 GARNAME = nasm
-GARVERSION = 2.10.02
+GARVERSION = 2.10.03
 CATEGORIES = devel
 MASTER_SITES = http://www.nasm.us/pub/nasm/releasebuilds/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
