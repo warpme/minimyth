@@ -1,5 +1,5 @@
 GARNAME = glew
-GARVERSION = 1.8.0
+GARVERSION = 1.9.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tgz
