@@ -1,5 +1,5 @@
 GARNAME = grep
-GARVERSION = 2.13
+GARVERSION = 2.14
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.xz
