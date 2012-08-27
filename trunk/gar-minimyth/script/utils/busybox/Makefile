@@ -6,6 +6,8 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
+	$(DISTNAME)-kernel_ver.patch
+PATCHFILES += \
 	$(DISTNAME)-sys_resource_h.patch
 PATCHFILES += \
 	$(DISTNAME)-check_cc.patch \
