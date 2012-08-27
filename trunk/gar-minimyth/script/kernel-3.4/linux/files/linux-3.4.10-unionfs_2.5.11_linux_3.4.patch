@@ -1,6 +1,6 @@
-diff -Naur linux-3.4.7-old/fs/unionfs/main.c linux-3.4.7-new/fs/unionfs/main.c
---- linux-3.4.7-old/fs/unionfs/main.c	2012-08-04 15:51:36.000000000 -0700
-+++ linux-3.4.7-new/fs/unionfs/main.c	2012-08-04 15:52:09.000000000 -0700
+diff -Naur linux-3.4.10-old/fs/unionfs/main.c linux-3.4.10-new/fs/unionfs/main.c
+--- linux-3.4.10-old/fs/unionfs/main.c	2012-08-27 09:31:37.000000000 -0700
++++ linux-3.4.10-new/fs/unionfs/main.c	2012-08-27 09:32:10.000000000 -0700
 @@ -599,10 +599,10 @@
  		err = PTR_ERR(inode);
  		goto out_dput;
@@ -33,9 +33,9 @@ diff -Naur linux-3.4.7-old/fs/unionfs/main.c linux-3.4.7-new/fs/unionfs/main.c
  out_dput:
  	if (lower_root_info && !IS_ERR(lower_root_info)) {
  		for (bindex = lower_root_info->bstart;
-diff -Naur linux-3.4.7-old/fs/unionfs/union.h linux-3.4.7-new/fs/unionfs/union.h
---- linux-3.4.7-old/fs/unionfs/union.h	2012-08-04 15:51:36.000000000 -0700
-+++ linux-3.4.7-new/fs/unionfs/union.h	2012-08-04 15:52:09.000000000 -0700
+diff -Naur linux-3.4.10-old/fs/unionfs/union.h linux-3.4.10-new/fs/unionfs/union.h
+--- linux-3.4.10-old/fs/unionfs/union.h	2012-08-27 09:31:38.000000000 -0700
++++ linux-3.4.10-new/fs/unionfs/union.h	2012-08-27 09:32:10.000000000 -0700
 @@ -48,8 +48,6 @@
  #include <linux/splice.h>
  #include <linux/sched.h>
@@ -45,15 +45,15 @@ diff -Naur linux-3.4.7-old/fs/unionfs/union.h linux-3.4.7-new/fs/unionfs/union.h
  #include <linux/union_fs.h>
  
  /* the file system name */
-@@ -67,6 +65,53 @@
+@@ -67,6 +65,56 @@
  /* minimum time (seconds) required for time-based cache-coherency */
  #define UNIONFS_MIN_CC_TIME	3
  
 +/* restore local copy of FD_SET/ZERO to get it to build with 3.4 */
 +static inline void __FD_SET(unsigned long __fd, __kernel_fd_set *__fdsetp)
 +{
-+       unsigned long __tmp = __fd / __NFDBITS;
-+       unsigned long __rem = __fd % __NFDBITS;
++       unsigned long __tmp = __fd / BITS_PER_LONG;
++       unsigned long __rem = __fd % BITS_PER_LONG;
 +       __fdsetp->fds_bits[__tmp] |= (1UL<<__rem);
 +}
 +
@@ -62,8 +62,8 @@ diff -Naur linux-3.4.7-old/fs/unionfs/union.h linux-3.4.7-new/fs/unionfs/union.h
 +       unsigned long *__tmp = __p->fds_bits;
 +       int __i;
 +
-+       if (__builtin_constant_p(__FDSET_LONGS)) {
-+               switch (__FDSET_LONGS) {
++       if (__builtin_constant_p(__FD_SETSIZE / (8 * sizeof(long)))) {
++               switch (__FD_SETSIZE / (8 * sizeof(long))) {
 +               case 16:
 +                       __tmp[ 0] = 0; __tmp[ 1] = 0;
 +                       __tmp[ 2] = 0; __tmp[ 3] = 0;
@@ -88,13 +88,16 @@ diff -Naur linux-3.4.7-old/fs/unionfs/union.h linux-3.4.7-new/fs/unionfs/union.h
 +                       return;
 +               }
 +       }
-+       __i = __FDSET_LONGS;
++       __i = __FD_SETSIZE / (8 * sizeof(long));
 +       while (__i) {
 +               __i--;
 +               *__tmp = 0;
 +               __tmp++;
 +       }
 +}
++
++#define FD_SET(fd,fdsetp)	__FD_SET(fd,fdsetp)
++#define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)
 +
  /* Operations vectors defined in specific files. */
  extern struct file_operations unionfs_main_fops;
