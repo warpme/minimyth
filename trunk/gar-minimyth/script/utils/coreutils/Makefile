@@ -1,5 +1,5 @@
 GARNAME = coreutils
-GARVERSION = 8.17
+GARVERSION = 8.19
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.xz
@@ -14,7 +14,7 @@ DEPENDS = lang/c
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
-INSTALL_SCRIPTS   = $(WORKSRC)/Makefile su
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
@@ -27,13 +27,4 @@ pre-configure:
 	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
-	@$(MAKECOOKIE)
-
-install-su:
-	@install -m 755 -D $(WORKSRC)/src/su $(DESTDIR)$(bindir)/su
-	@$(MAKECOOKIE)
-
-post-install:
-	@# We need to use the system's 'su', because it must be suid.
-	@$(if $(filter build,$(DESTIMG)),rm -f $(DESTDIR)$(bindir)/su)
 	@$(MAKECOOKIE)
