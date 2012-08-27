@@ -1,5 +1,5 @@
 GARNAME = libbluray
-GARVERSION = 0.2.2
+GARVERSION = 0.2.3
 CATEGORIES = lib
 MASTER_SITES  = ftp://ftp.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += git://git.videolan.org/libbluray.git/
