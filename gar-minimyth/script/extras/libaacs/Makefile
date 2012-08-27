@@ -1,5 +1,5 @@
 GARNAME = libaacs
-GARVERSION = 0.4.0
+GARVERSION = 0.5.0
 CATEGORIES = extras
 MASTER_SITES  = ftp://ftp.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += git://git.videolan.org/libaacs.git/
