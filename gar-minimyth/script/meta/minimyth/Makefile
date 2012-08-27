@@ -35,6 +35,7 @@ DEPENDS = \
 	disk/hdparm \
 	net/ifplugd \
 	system/iguanair \
+	X11/intel-driver \
 	utils/intel-microcode2ucode \
 	net/iputils \
 	utils/ir-keytable \
