@@ -1,5 +1,5 @@
 GARNAME = gdk-pixbuf
-GARVERSION = 2.26.1
+GARVERSION = 2.26.3
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gdk-pixbuf/2.26/
 DISTFILES = $(DISTNAME).tar.xz
