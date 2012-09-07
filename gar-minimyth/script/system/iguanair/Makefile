@@ -1,5 +1,5 @@
 GARNAME = iguanaIR
-GARVERSION = 1.0.1
+GARVERSION = 1.0.3
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
 DISTFILES = $(DISTNAME).tar.bz2
