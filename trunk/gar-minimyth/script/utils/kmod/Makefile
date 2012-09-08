@@ -1,5 +1,5 @@
 GARNAME = kmod
-GARVERSION = 9
+GARVERSION = 10
 CATEGORIES = lib
 MASTER_SITES = http://ftp.kernel.org/pub/linux/utils/kernel/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
