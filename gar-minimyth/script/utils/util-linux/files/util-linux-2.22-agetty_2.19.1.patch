@@ -1,6 +1,6 @@
-diff -Naur util-linux-2.21.2-old/term-utils/agetty.8 util-linux-2.21.2-new/term-utils/agetty.8
---- util-linux-2.21.2-old/term-utils/agetty.8	2012-05-15 04:51:45.000000000 -0700
-+++ util-linux-2.21.2-new/term-utils/agetty.8	2012-05-25 20:05:07.000000000 -0700
+diff -Naur util-linux-2.22-old/term-utils/agetty.8 util-linux-2.22-new/term-utils/agetty.8
+--- util-linux-2.22-old/term-utils/agetty.8	2012-06-11 03:06:53.000000000 -0700
++++ util-linux-2.22-new/term-utils/agetty.8	2012-09-05 18:51:17.000000000 -0700
 @@ -1,15 +1,14 @@
 -.TH AGETTY 8 "May 2011" "util-linux" "System Administration"
 +.TH AGETTY 8 
@@ -295,9 +295,9 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.8 util-linux-2.21.2-new/term-
  The agetty command is part of the util-linux package and is available from
 -ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
 +ftp://ftp.kernel.org/pub/linux/utils/util-linux/.
-diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-utils/agetty.c
---- util-linux-2.21.2-old/term-utils/agetty.c	2012-05-25 02:44:59.000000000 -0700
-+++ util-linux-2.21.2-new/term-utils/agetty.c	2012-05-25 20:05:07.000000000 -0700
+diff -Naur util-linux-2.22-old/term-utils/agetty.c util-linux-2.22-new/term-utils/agetty.c
+--- util-linux-2.22-old/term-utils/agetty.c	2012-07-25 07:13:11.000000000 -0700
++++ util-linux-2.22-new/term-utils/agetty.c	2012-09-05 18:51:31.000000000 -0700
 @@ -1,15 +1,18 @@
 -/*
 - * Alternate Getty (agetty) 'agetty' is a versatile, portable, easy to use
@@ -337,7 +337,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <fcntl.h>
-@@ -29,87 +31,61 @@
+@@ -29,88 +31,61 @@
  #include <sys/file.h>
  #include <sys/socket.h>
  #include <netdb.h>
@@ -345,11 +345,12 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -#include <grp.h>
  
  #include "strutils.h"
--#include "writeall.h"
+-#include "all-io.h"
  #include "nls.h"
  #include "pathnames.h"
  #include "c.h"
 -#include "widechar.h"
+-#include "ttyutils.h"
  
  #ifdef __linux__
 -#  include <sys/kd.h>
@@ -456,21 +457,15 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
  #define DEF_ERASE	DEL		/* default erase character */
  #define DEF_INTR	CTL('C')	/* default interrupt character */
  #define DEF_QUIT	CTL('\\')	/* default quit char */
-@@ -119,1853 +95,1212 @@
+@@ -119,1796 +94,1213 @@
+ #define DEF_EOL		0
  #define DEF_SWITCH	0		/* default switch char */
  
- #ifndef MAXHOSTNAMELEN
--#  ifdef HOST_NAME_MAX
--#    define MAXHOSTNAMELEN HOST_NAME_MAX
--#  else
--#    define MAXHOSTNAMELEN 64
--#  endif			/* HOST_NAME_MAX */
--#endif				/* MAXHOSTNAMELEN */
--
 -/*
 - * When multiple baud rates are specified on the command line, the first one
 - * we will try is the first one specified.
 - */
++#ifndef MAXHOSTNAMELEN
 +# ifdef HOST_NAME_MAX
 +#  define MAXHOSTNAMELEN HOST_NAME_MAX
 +# else
@@ -706,13 +701,13 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
  
 +/* ... */
  #ifdef DEBUGGING
- #define debug(s) fprintf(dbf,s); fflush(dbf)
+-#define debug(s) do { fprintf(dbf,s); fflush(dbf); } while (0)
++#define debug(s) fprintf(dbf,s); fflush(dbf)
  FILE *dbf;
  #else
--#define debug(s)
--#endif				/* DEBUGGING */
+-#define debug(s) do { ; } while (0)
 +#define debug(s) /* nothing */
-+#endif
+ #endif
  
 -int main(int argc, char **argv)
 -{
@@ -1129,8 +1124,6 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -/* Parse command-line arguments. */
 -static void parse_args(int argc, char **argv, struct options *op)
 -{
--	extern char *optarg;
--	extern int optind;
 -	int c;
 -
 -	enum {
@@ -1520,25 +1513,6 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -				&& utp->ut_type >= INIT_PROCESS
 -				&& utp->ut_type <= DEAD_PROCESS)
 -			break;
--
--	if (utp) {
--		memcpy(&ut, utp, sizeof(ut));
--	} else {
--		/* Some inits do not initialize utmp. */
--		memset(&ut, 0, sizeof(ut));
--		if (vcline && *vcline)
--			/* Standard virtual console devices */
--			strncpy(ut.ut_id, vcline, sizeof(ut.ut_id));
--		else {
--			size_t len = strlen(line);
--			char * ptr;
--			if (len >= sizeof(ut.ut_id))
--				ptr = line + len - sizeof(ut.ut_id);
--			else
--				ptr = line;
--			strncpy(ut.ut_id, ptr, sizeof(ut.ut_id));
--		}
--	}
 +/* update_utmp - update our utmp entry */
 +void
 +update_utmp(line)
@@ -1588,6 +1562,27 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +    ut.ut_type = LOGIN_PROCESS;
 +    ut.ut_pid = mypid;
  
+-	if (utp) {
+-		memcpy(&ut, utp, sizeof(ut));
+-	} else {
+-		/* Some inits do not initialize utmp. */
+-		memset(&ut, 0, sizeof(ut));
+-		if (vcline && *vcline)
+-			/* Standard virtual console devices */
+-			strncpy(ut.ut_id, vcline, sizeof(ut.ut_id));
+-		else {
+-			size_t len = strlen(line);
+-			char * ptr;
+-			if (len >= sizeof(ut.ut_id))
+-				ptr = line + len - sizeof(ut.ut_id);
+-			else
+-				ptr = line;
+-			strncpy(ut.ut_id, ptr, sizeof(ut.ut_id));
+-		}
+-	}
++    pututline(&ut);
++    endutent();
+ 
 -	strncpy(ut.ut_user, "LOGIN", sizeof(ut.ut_user));
 -	strncpy(ut.ut_line, line, sizeof(ut.ut_line));
 -	if (fakehost)
@@ -1597,9 +1592,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	ut.ut_type = LOGIN_PROCESS;
 -	ut.ut_pid = pid;
 -	ut.ut_session = sid;
-+    pututline(&ut);
-+    endutent();
- 
+-
 -	pututline(&ut);
 -	endutent();
 -
@@ -1651,11 +1644,10 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +     int    local;
  {
 -	const pid_t pid = getpid();
--	int serial;
+-	int serial, closed = 0;
 -
 -	/* Set up new standard input, unless we are given an already opened port. */
-+    /* Get rid of the present standard { output, error} if any. */
- 
+-
 -	if (strcmp(tty, "-") != 0) {
 -		char buf[PATH_MAX+1];
 -		struct group *gr = NULL;
@@ -1684,10 +1676,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -			else
 -				log_err("%s: %m", buf);
 -		}
-+    (void) close(1);
-+    (void) close(2);
-+    errno = 0;					/* ignore above errors */
- 
+-
 -		/* Open the tty as standard input. */
 -		if ((fd = open(buf, O_RDWR|O_NOCTTY|O_NONBLOCK, 0)) < 0)
 -			log_err(_("/dev/%s: cannot open as standard input: %m"), tty);
@@ -1704,47 +1693,61 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -			if (ioctl(fd, TIOCSCTTY, 1) == -1)
 -				log_warn("/dev/%s: cannot get controlling tty: %m", tty);
 -		}
-+    /* Set up new standard input, unless we are given an already opened port. */
- 
--		if (op->flags & F_HANGUP) {
--			/*
--			 * vhangup() will replace all open file descriptors in the kernel
--			 * that point to our controlling tty by a dummy that will deny
--			 * further reading/writing to our device. It will also reset the
--			 * tty to sane defaults, so we don't have to modify the tty device
--			 * for sane settings. We also get a SIGHUP/SIGCONT.
--			 */
--			if (vhangup())
--				log_err("/dev/%s: vhangup() failed: %m", tty);
--			ioctl(fd, TIOCNOTTY);
--		}
-+    if (strcmp(tty, "-")) {
-+	struct stat st;
- 
--		close(fd);
+-
 -		close(STDIN_FILENO);
 -		errno = 0;
+-
+-		if (op->flags & F_HANGUP) {
+-
+-			if (ioctl(fd, TIOCNOTTY))
+-				debug("TIOCNOTTY ioctl failed\n");
+-
+-			/*
+-			 * Let's close all file decriptors before vhangup
+-			 * https://lkml.org/lkml/2012/6/5/145
+-			 */
+-			close(fd);
+-			close(STDOUT_FILENO);
+-			close(STDERR_FILENO);
+-			errno = 0;
+-			closed = 1;
+-
+-			if (vhangup())
+-				log_err("/dev/%s: vhangup() failed: %m", tty);
+-		} else
+-			close(fd);
 -
 -		debug("open(2)\n");
 -		if (open(buf, O_RDWR|O_NOCTTY|O_NONBLOCK, 0) != 0)
 -			log_err(_("/dev/%s: cannot open as standard input: %m"), tty);
+-
 -		if (((tid = tcgetsid(STDIN_FILENO)) < 0) || (pid != tid)) {
 -			if (ioctl(STDIN_FILENO, TIOCSCTTY, 1) == -1)
 -				log_warn("/dev/%s: cannot get controlling tty: %m", tty);
 -		}
-+	/* Sanity checks... */
++    /* Get rid of the present standard { output, error} if any. */
  
 -	} else {
--
++    (void) close(1);
++    (void) close(2);
++    errno = 0;					/* ignore above errors */
+ 
 -		/*
 -		 * Standard input should already be connected to an open port. Make
 -		 * sure it is open for read/write.
 -		 */
--
++    /* Set up new standard input, unless we are given an already opened port. */
+ 
 -		if ((fcntl(STDIN_FILENO, F_GETFL, 0) & O_RDWR) != O_RDWR)
 -			log_err(_("%s: not open for read/write"), tty);
--
++    if (strcmp(tty, "-")) {
++	struct stat st;
+ 
 -	}
++	/* Sanity checks... */
+ 
+-	if (tcsetpgrp(STDIN_FILENO, pid))
+-		log_warn("/dev/%s: cannot set process group: %m", tty);
 +	if (chdir("/dev"))
 +	    error(_("/dev: chdir() failed: %m"));
 +	if (stat(tty, &st) < 0)
@@ -1752,31 +1755,31 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +	if ((st.st_mode & S_IFMT) != S_IFCHR)
 +	    error(_("/dev/%s: not a character device"), tty);
  
--	if (tcsetpgrp(STDIN_FILENO, pid))
--		log_err("/dev/%s: cannot set process group: %m", tty);
+-	/* Get rid of the present outputs. */
+-	if (!closed) {
+-		close(STDOUT_FILENO);
+-		close(STDERR_FILENO);
+-		errno = 0;
+-	}
 +	/* Open the tty as standard input. */
  
--	/* Get rid of the present outputs. */
--	close(STDOUT_FILENO);
--	close(STDERR_FILENO);
--	errno = 0;
--
 -	/* Set up standard output and standard error file descriptors. */
 -	debug("duping\n");
--
--	/* set up stdout and stderr */
--	if (dup(STDIN_FILENO) != 1 || dup(STDIN_FILENO) != 2)
--		log_err(_("%s: dup problem: %m"), tty);
 +	(void) close(0);
 +	errno = 0;				/* ignore close(2) errors */
  
--	/* make stdio unbuffered for slow modem lines */
--	setvbuf(stdout, NULL, _IONBF, 0);
+-	/* set up stdout and stderr */
+-	if (dup(STDIN_FILENO) != 1 || dup(STDIN_FILENO) != 2)
+-		log_err(_("%s: dup problem: %m"), tty);
 +	debug("open(2)\n");
 +	if (open(tty, O_RDWR|O_NONBLOCK, 0) != 0)
 +	    error(_("/dev/%s: cannot open as standard input: %m"), tty);
  
--	/*
+-	/* make stdio unbuffered for slow modem lines */
+-	setvbuf(stdout, NULL, _IONBF, 0);
++    } else {
+ 
+ 	/*
 -	 * The following ioctl will fail if stdin is not a tty, but also when
 -	 * there is noise on the modem control lines. In the latter case, the
 -	 * common course of action is (1) fix your cables (2) give the modem
@@ -1785,34 +1788,24 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	 * SunOS users can achieve (2) by patching the SunOS kernel variable
 -	 * "zsadtrlow" to a larger value; 5 seconds seems to be a good value.
 -	 * http://www.sunmanagers.org/archives/1993/0574.html
--	 */
--	memset(tp, 0, sizeof(struct termios));
--	if (tcgetattr(STDIN_FILENO, tp) < 0)
--		log_err("%s: tcgetattr: %m", tty);
-+    } else {
- 
- 	/*
--	 * Detect if this is a virtual console or serial/modem line.
--	 * In case of a virtual console the ioctl TIOCMGET fails and
--	 * the error number will be set to EINVAL.
 +	 * Standard input should already be connected to an open port. Make
 +	 * sure it is open for read/write.
  	 */
+-	memset(tp, 0, sizeof(struct termios));
+-	if (tcgetattr(STDIN_FILENO, tp) < 0)
+-		log_err("%s: tcgetattr: %m", tty);
+ 
+-	/*
+-	 * Detect if this is a virtual console or serial/modem line.
+-	 * In case of a virtual console the ioctl TIOCMGET fails and
+-	 * the error number will be set to EINVAL.
+-	 */
 -	if (ioctl(STDIN_FILENO, TIOCMGET, &serial) < 0 && (errno == EINVAL)) {
 -		op->flags |= F_VCONSOLE;
 -		if (!op->term)
 -			op->term = DEFAULT_VCTERM;
 -	} else if (!op->term)
 -		op->term = DEFAULT_STERM;
--
--	setenv("TERM", op->term, 1);
--}
- 
--/* Initialize termios settings. */
--static void termio_init(struct options *op, struct termios *tp)
--{
--	speed_t ispeed, ospeed;
--	struct winsize ws;
 +	if ((fcntl(0, F_GETFL, 0) & O_RDWR) != O_RDWR)
 +	    error(_("%s: not open for read/write"), tty);
 +    }
@@ -1893,6 +1886,15 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +	tp->c_cflag |= CLOCAL;
 +    }
  
+-	setenv("TERM", op->term, 1);
+-}
+-
+-/* Initialize termios settings. */
+-static void termio_init(struct options *op, struct termios *tp)
+-{
+-	speed_t ispeed, ospeed;
+-	struct winsize ws;
+-
 -	if (op->flags & F_VCONSOLE) {
 -#if defined(IUTF8) && defined(KDGKBMODE)
 -		int mode;
@@ -1923,9 +1925,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -
 -		if ((tp->c_cflag & (CS8|PARODD|PARENB)) == CS8)
 -			op->flags |= F_EIGHTBITS;
-+    tp->c_cc[VMIN] = 1;
-+    tp->c_cc[VTIME] = 0;
- 
+-
 -		if ((op->flags & F_NOCLEAR) == 0) {
 -			/*
 -			 * Do not write a full reset (ESC c) because this destroys
@@ -1959,7 +1959,9 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	 * reads will be done in raw mode anyway. Errors will be dealt with
 -	 * later on.
 -	 */
--
++    tp->c_cc[VMIN] = 1;
++    tp->c_cc[VTIME] = 0;
+ 
 -	 /* Flush input and output queues, important for modems! */
 -	tcflush(STDIN_FILENO, TCIOFLUSH);
 +    /* Optionally enable hardware flow control */
@@ -2063,7 +2065,8 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +		    cfsetispeed(tp, speed);
 +		    cfsetospeed(tp, speed);
  		}
--		ioctl(STDIN_FILENO, TIOCSWINSZ, &ws);
+-		if (ioctl(STDIN_FILENO, TIOCSWINSZ, &ws))
+-			debug("TIOCSWINSZ ioctl failed\n");
 +		break;
 +	    }
  	}
@@ -2096,79 +2099,29 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +     struct options *op;
 +     struct termios *tp;
  {
--	/* Use defaults of <sys/ttydefaults.h> for base settings */
--	tp->c_iflag |= TTYDEF_IFLAG;
--	tp->c_oflag |= TTYDEF_OFLAG;
--	tp->c_lflag |= TTYDEF_LFLAG;
+-	int fl = 0;
 -
--	if ((op->flags & F_KEEPCFLAGS) == 0) {
--#ifdef CBAUD
--		tp->c_lflag &= ~CBAUD;
--#endif
--		tp->c_cflag |= (B38400 | TTYDEF_CFLAG);
--	}
+-	fl |= (op->flags & F_KEEPCFLAGS) == 0 ? 0 : UL_TTY_KEEPCFLAGS;
+-	fl |= (op->flags & F_UTF8)       == 0 ? 0 : UL_TTY_UTF8;
 +#ifdef	ISSUE
 +    FILE    *fd;
 +    int     oflag;
 +    int     c;
 +    struct utsname uts;
  
--	/* Sane setting, allow eight bit characters, no carriage return delay
--	 * the same result as `stty sane cr0 pass8'
--	 */
--	tp->c_iflag |=  (BRKINT | ICRNL | IMAXBEL);
--	tp->c_iflag &= ~(IGNBRK | INLCR | IGNCR | IXOFF | IUCLC | IXANY | ISTRIP);
--	tp->c_oflag |=  (OPOST | ONLCR | NL0 | CR0 | TAB0 | BS0 | VT0 | FF0);
--	tp->c_oflag &= ~(OLCUC | OCRNL | ONOCR | ONLRET | OFILL | \
--			    NLDLY|CRDLY|TABDLY|BSDLY|VTDLY|FFDLY);
--	tp->c_lflag |=  (ISIG | ICANON | IEXTEN | ECHO|ECHOE|ECHOK|ECHOKE);
--	tp->c_lflag &= ~(ECHONL|ECHOCTL|ECHOPRT | NOFLSH | TOSTOP);
--
--	if ((op->flags & F_KEEPCFLAGS) == 0) {
--		tp->c_cflag |=  (CREAD | CS8 | HUPCL);
--		tp->c_cflag &= ~(PARODD | PARENB);
--	}
--#ifdef OFDEL
--	tp->c_oflag &= ~OFDEL;
--#endif
--#ifdef XCASE
--	tp->c_lflag &= ~XCASE;
--#endif
--#ifdef IUTF8
--	if (op->flags & F_UTF8)
--		tp->c_iflag |= IUTF8;	    /* Set UTF-8 input flag */
--	else
--		tp->c_iflag &= ~IUTF8;
--#endif
--	/* VTIME and VMIN can overlap with VEOF and VEOL since they are
--	 * only used for non-canonical mode. We just set the at the
--	 * beginning, so nothing bad should happen.
--	 */
--	tp->c_cc[VTIME]    = 0;
--	tp->c_cc[VMIN]     = 1;
--	tp->c_cc[VINTR]    = CINTR;
--	tp->c_cc[VQUIT]    = CQUIT;
--	tp->c_cc[VERASE]   = CERASE; /* ASCII DEL (0177) */
--	tp->c_cc[VKILL]    = CKILL;
--	tp->c_cc[VEOF]     = CEOF;
--#ifdef VSWTC
--	tp->c_cc[VSWTC]    = _POSIX_VDISABLE;
--#elif defined(VSWTCH)
--	tp->c_cc[VSWTCH]   = _POSIX_VDISABLE;
+-	reset_virtual_console(tp, fl);
 +    (void) uname(&uts);
- #endif
--	tp->c_cc[VSTART]   = CSTART;
--	tp->c_cc[VSTOP]    = CSTOP;
--	tp->c_cc[VSUSP]    = CSUSP;
--	tp->c_cc[VEOL]     = _POSIX_VDISABLE;
--	tp->c_cc[VREPRINT] = CREPRINT;
--	tp->c_cc[VDISCARD] = CDISCARD;
--	tp->c_cc[VWERASE]  = CWERASE;
--	tp->c_cc[VLNEXT]   = CLNEXT;
--	tp->c_cc[VEOL2]    = _POSIX_VDISABLE;
++#endif
+ 
 -	if (tcsetattr(STDIN_FILENO, TCSADRAIN, tp))
 -		log_warn("tcsetattr problem: %m");
 -}
++    ignore_result( write(1, "\r\n", 2) );			/* start a new line */
++#ifdef	ISSUE					/* optional: show /etc/issue */
++    if ((op->flags & F_ISSUE) && (fd = fopen(op->issue, "r"))) {
++	oflag = tp->c_oflag;			/* save current setting */
++	tp->c_oflag |= (ONLCR | OPOST);		/* map NL in output to CR-NL */
++	(void) tcsetattr(0, TCSADRAIN, tp);
  
 -/* Extract baud rate from modem status message. */
 -static void auto_baud(struct termios *tp)
@@ -2179,12 +2132,6 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	char buf[BUFSIZ];
 -	char *bp;
 -	int nread;
-+    ignore_result( write(1, "\r\n", 2) );			/* start a new line */
-+#ifdef	ISSUE					/* optional: show /etc/issue */
-+    if ((op->flags & F_ISSUE) && (fd = fopen(op->issue, "r"))) {
-+	oflag = tp->c_oflag;			/* save current setting */
-+	tp->c_oflag |= (ONLCR | OPOST);		/* map NL in output to CR-NL */
-+	(void) tcsetattr(0, TCSADRAIN, tp);
  
 -	/*
 -	 * This works only if the modem produces its status code AFTER raising
@@ -2200,33 +2147,6 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	 * processing (comma-separated list of baud rates) if the processing of
 -	 * modem status messages is enabled.
 -	 */
- 
--	/*
--	 * Use 7-bit characters, don't block if input queue is empty. Errors will
--	 * be dealt with later on.
--	 */
--	iflag = tp->c_iflag;
--	/* Enable 8th-bit stripping. */
--	tp->c_iflag |= ISTRIP;
--	vmin = tp->c_cc[VMIN];
--	/* Do not block when queue is empty. */
--	tp->c_cc[VMIN] = 0;
--	tcsetattr(STDIN_FILENO, TCSANOW, tp);
--
--	/*
--	 * Wait for a while, then read everything the modem has said so far and
--	 * try to extract the speed of the dial-in call.
--	 */
--	sleep(1);
--	if ((nread = read(STDIN_FILENO, buf, sizeof(buf) - 1)) > 0) {
--		buf[nread] = '\0';
--		for (bp = buf; bp < buf + nread; bp++)
--			if (isascii(*bp) && isdigit(*bp)) {
--				if ((speed = bcode(bp))) {
--					cfsetispeed(tp, speed);
--					cfsetospeed(tp, speed);
--				}
--				break;
 +	while ((c = getc(fd)) != EOF)
 +	{
 +	    if (c == '\\')
@@ -2288,16 +2208,21 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +					dom = canon + 1;
 +				fputs(dom, stdout);
 +				freeaddrinfo(info);
- 			}
--	}
++			}
 +		   }
 +		  break;
  
--	/* Restore terminal settings. Errors will be dealt with later on. */
--	tp->c_iflag = iflag;
--	tp->c_cc[VMIN] = vmin;
+-	/*
+-	 * Use 7-bit characters, don't block if input queue is empty. Errors will
+-	 * be dealt with later on.
+-	 */
+-	iflag = tp->c_iflag;
+-	/* Enable 8th-bit stripping. */
+-	tp->c_iflag |= ISTRIP;
+-	vmin = tp->c_cc[VMIN];
+-	/* Do not block when queue is empty. */
+-	tp->c_cc[VMIN] = 0;
 -	tcsetattr(STDIN_FILENO, TCSANOW, tp);
--}
 +		  case 'd':
 +		  case 't':
 +		    {
@@ -2328,14 +2253,35 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 +		    {
 +			int i;
  
--/* Show login prompt, optionally preceded by /etc/issue contents. */
--static void do_prompt(struct options *op, struct termios *tp)
+-	/*
+-	 * Wait for a while, then read everything the modem has said so far and
+-	 * try to extract the speed of the dial-in call.
+-	 */
+-	sleep(1);
+-	if ((nread = read(STDIN_FILENO, buf, sizeof(buf) - 1)) > 0) {
+-		buf[nread] = '\0';
+-		for (bp = buf; bp < buf + nread; bp++)
+-			if (isascii(*bp) && isdigit(*bp)) {
+-				if ((speed = bcode(bp))) {
+-					cfsetispeed(tp, speed);
+-					cfsetospeed(tp, speed);
+-				}
 +			for (i = 0; speedtab[i].speed; i++) {
 +			    if (speedtab[i].code == cfgetispeed(tp)) {
 +				printf("%ld", speedtab[i].speed);
-+				break;
+ 				break;
 +			    }
-+			}
+ 			}
+-	}
+-
+-	/* Restore terminal settings. Errors will be dealt with later on. */
+-	tp->c_iflag = iflag;
+-	tp->c_cc[VMIN] = vmin;
+-	tcsetattr(STDIN_FILENO, TCSANOW, tp);
+-}
+-
+-/* Show login prompt, optionally preceded by /etc/issue contents. */
+-static void do_prompt(struct options *op, struct termios *tp)
 +			break;
 +		    }
 +		  case 'u':
@@ -2462,10 +2408,9 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -		if (ioctl(STDIN_FILENO, KDGKBLED, &kb) == 0) {
 -			char hint[256] = { '\0' };
 -			int nl = 0;
--			struct stat st;
 +    *cp = init_chardata;
  
--			if (stat("/var/run/numlock-on", &st) == 0)
+-			if (access(_PATH_NUMLOCK_ON, F_OK) == 0)
 -				nl = 1;
 +    /* Flush pending input (esp. after parsing or switching the baud rate). */
  
@@ -3134,7 +3079,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -	{
 -		time_t now;
 -		struct tm *tm;
- 
+-
 -		time(&now);
 -		tm = localtime(&now);
 -
@@ -3194,7 +3139,7 @@ diff -Naur util-linux-2.21.2-old/term-utils/agetty.c util-linux-2.21.2-new/term-
 -{
 -	char ch, *p, *q;
 -	int i;
--
+ 
 -	op->initstring = malloc(strlen(arg) + 1);
 -	if (!op->initstring)
 -		log_err(_("failed to allocate memory: %m"));

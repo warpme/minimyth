@@ -1,8 +1,8 @@
 GARNAME = util-linux
-GARVERSION = 2.21.2
+GARVERSION = 2.22
 CATEGORIES = utils
-MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.21/
-MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.21/
+MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.22/
+MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.22/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-agetty_2.19.1.patch
 LICENSE = GPL2
@@ -32,8 +32,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-libuuid \
 	--enable-libblkid \
 	--enable-libmount \
+	--disable-deprecated-mount \
 	--enable-mount \
-	--enable-libmount-mount \
 	--disable-fsck \
 	--disable-partx \
 	--enable-uuidd \
@@ -42,6 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-unshare \
 	--enable-arch \
 	--disable-ddate \
+	--disable-eject \
 	--enable-agetty \
 	--enable-cramfs \
 	--enable-switch-root \
@@ -49,18 +50,26 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-elvtune \
 	--disable-kill \
 	--disable-last \
+	--disable-utmpdump \
 	--disable-line \
 	--disable-mesg \
 	--disable-raw \
 	--enable-rename \
 	--disable-reset \
-	--disable-login-utils \
-	--enable-schedutils \
-	--enable-wall \
-	--disable-write \
+	--disable-vipw \
+	--disable-newgrp \
+	--disable-chfn-chsh \
 	--enable-chsh-only-listed \
+	--disable-login \
 	--disable-login-chown-vcs \
 	--disable-login-stat-mail \
+	--disable-sulogin \
+	--disable-su \
+	--disable-schedutils \
+	--disable-wall \
+	--disable-write \
+	--disable-chkdupexe \
+	--disable-socket-activation \
 	--enable-pg-bell \
 	--enable-require-password \
 	--disable-use-tty-group \
@@ -71,7 +80,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-audit \
 	--without-udev \
 	--without-slang \
-	--without-utempter
+	--without-utempter \
+	--without-systemdsystemunitdir
 
 BUILD_ARGS     = \
 	usrbinexecdir=$(bindir) \
