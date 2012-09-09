@@ -1,15 +1,13 @@
 GARNAME = xf86-video-ati
-GARVERSION_TYPE =
+GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	ad999e633ff41d27eed9d2c6535e163a7181b0bd , \
+	20120905-7fe16dd, \
 	6.14.6 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-ati/ , \
 	$(XORG_MASTER_SITES) ))
-DISTFILES = $(DISTNAME).tar.gz
-xPATCHFILES = \
-	$(DISTNAME)-git248e912c48.patch
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -59,7 +57,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:

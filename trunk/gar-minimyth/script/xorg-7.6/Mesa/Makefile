@@ -1,13 +1,15 @@
 GARNAME = Mesa
-GARVERSION = 8.0.4
+#GARVERSION = 8.0.4
+GARVERSION = 9.0-20120905-c7775e8
 CATEGORIES = $(CATEGORY)
-MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
-MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+#MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
+#MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+MASTER_SITES  = git://anongit.freedesktop.org/git/mesa/mesa/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-PATCHFILES  = \
+xPATCHFILES  = \
 	$(DISTNAME)-git_9b3ac17.patch \
 	$(DISTNAME)-llvm_3.1.patch
-PATCHFILES += \
+xPATCHFILES += \
 	$(DISTNAME)-llvm_so.patch \
 	$(DISTNAME)-version.patch
 ifneq ($(DESTIMG),build)
@@ -55,6 +57,7 @@ endif
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes="$(DESTDIR)$(includedir)" \
 	--x-libraries="$(DESTDIR)$(libdir)" \
+	--disable-silent-rules \
 	$(if $(filter i386  , $(GARCH_FAMILY)),--enable-32-bit) \
 	$(if $(filter x86_64, $(GARCH_FAMILY)),--enable-64-bit) \
 	--disable-static \
@@ -90,6 +93,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-dri-driverdir="$(libdir)/dri" \
 	--with-dri-drivers="i965,r200,radeon" \
 	--with-state-trackers="dri,glx" \
+	--with-llvm-shared-libs \
 	--with-vdpau-libdir="$(libdir)/vdpau" \
 	--with-va-libdir="$(libdir)/va"
 BUILD_ARGS  = \
@@ -97,6 +101,18 @@ BUILD_ARGS  = \
 	HOST_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
+
+git//%MesaLib-$(GARVERSION).tar.bz2:
+	@$(call FETCH_GIT, $*, $(word 3,$(subst -, ,$(GARVERSION))), MesaLib-$(GARVERSION))
+	@cd $(PARTIALDIR) ; tar -jxf MesaLib-$(GARVERSION).tar.bz2
+	@cd $(PARTIALDIR) ; mv MesaLib-$(GARVERSION) $(DISTNAME)
+	@cd $(PARTIALDIR) ; rm -rf   $(DISTNAME).tar.bz2
+	@cd $(PARTIALDIR) ; tar -jcf MesaLib-$(GARVERSION).tar.bz2 $(DISTNAME)
+	@cd $(PARTIALDIR) ; rm -rf                                 $(DISTNAME)
+	@$(MAKECOOKIE)
+
+checksum-MesaLib-$(GARVERSION).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
@@ -111,4 +127,12 @@ install-source:
 install-cross:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@cp -f $(WORKSRC)/src/glsl/builtin_compiler $(DESTDIR)$(bindir)/mesa-builtin_compiler
+	@$(MAKECOOKIE)
+
+post-install:
+	@rm -f $(DESTDIR)$(libdir)/dri/i965_dri.la
+	@rm -f $(DESTDIR)$(libdir)/dri/r200_dri.la
+	@rm -f $(DESTDIR)$(libdir)/dri/radeon_dri.la
+	@rm -f $(DESTDIR)$(libdir)/libdricore9.0.0.la
+	@rm -f $(DESTDIR)$(libdir)/libGL.la
 	@$(MAKECOOKIE)

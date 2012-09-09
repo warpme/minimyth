@@ -1,9 +1,9 @@
 GARNAME = libdrm
-GARVERSION = 2.4.33
+GARVERSION = 2.4.39
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://dri.freedesktop.org/libdrm/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-remove_test_decode.patch
+PATCHFILES = $(DISTNAME)-o_cloexec.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -32,7 +32,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-radeon \
 	--enable-nouveau \
 	--disable-vmwgfx-experimental-api \
-	--enable-nouveau-experimental-api \
+	--disable-omap-experimental-api \
+	--disable-exynos-experimental-api \
 	--with-gnu-ld
 ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
