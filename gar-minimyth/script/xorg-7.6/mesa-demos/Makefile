@@ -11,6 +11,7 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/glew \
+	$(CATEGORY)/glu \
 	$(CATEGORY)/freeglut \
 	$(CATEGORY)/Mesa
 

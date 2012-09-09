@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.12.4
+GARVERSION = 1.13.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -98,10 +98,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xf86bigfont \
 	--enable-dpms \
 	$(if $(filter build, $(DESTIMG)), --disable-config-udev, --enable-config-udev) \
+	$(if $(filter build, $(DESTIMG)), --disable-config-udev-kms, --enable-config-udev-kms) \
 	--disable-config-dbus \
 	--disable-config-hal \
 	--enable-xfree86-utils \
-	--enable-xaa \
 	--enable-vgahw \
 	--enable-vbe \
 	--enable-int10-module \
@@ -165,7 +165,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvbe.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libxaa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/msp3430_drv.la

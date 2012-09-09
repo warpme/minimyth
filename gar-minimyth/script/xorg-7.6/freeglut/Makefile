@@ -3,6 +3,7 @@ GARVERSION = 2.8.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = $(DISTNAME)-disable_example_smooth_opengl3.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -14,6 +15,7 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXi \
 	$(CATEGORY)/libXxf86vm \
+	$(CATEGORY)/glu \
 	$(CATEGORY)/Mesa
 
 PWD := $(shell pwd)

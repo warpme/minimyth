@@ -1,7 +1,12 @@
 GARNAME = xf86-video-vmware
-GARVERSION = 12.0.2
+GARVERSION_TYPE = git
+GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	20120830-007bed3, \
+	12.0.2 ))
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(XORG_MASTER_SITES)
+MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-vmware/ , \
+	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -39,6 +44,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
+
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
+	@$(MAKECOOKIE)
+
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
