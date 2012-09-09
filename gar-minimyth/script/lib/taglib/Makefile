@@ -1,7 +1,7 @@
 GARNAME = taglib
-GARVERSION = 1.7.2
+GARVERSION = 1.8
 CATEGORIES = lib
-MASTER_SITES = http://developer.kde.org/~wheeler/files/src/
+MASTER_SITES = http://github.com/downloads/$(GARNAME)/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
