@@ -1,5 +1,5 @@
 GARNAME = linux-firmware
-GARVERSION = 20120816-bbede96
+GARVERSION = 20120909-a707c25
 CATEGORIES = kernel-3.4
 MASTER_SITES = git://git.kernel.org/pub/scm/linux/kernel/git/firmware/
 DISTFILES = $(DISTNAME).tar.bz2
