@@ -1,17 +1,11 @@
 GARNAME = Mesa
 #GARVERSION = 8.0.4
-GARVERSION = 9.0-20120905-c7775e8
+GARVERSION = 9.0-20120907-7f011e2
 CATEGORIES = $(CATEGORY)
 #MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
 #MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
 MASTER_SITES  = git://anongit.freedesktop.org/git/mesa/mesa/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
-xPATCHFILES  = \
-	$(DISTNAME)-git_9b3ac17.patch \
-	$(DISTNAME)-llvm_3.1.patch
-xPATCHFILES += \
-	$(DISTNAME)-llvm_so.patch \
-	$(DISTNAME)-version.patch
 ifneq ($(DESTIMG),build)
 PATCHFILES += \
 	$(DISTNAME)-cross.patch
