@@ -1,5 +1,5 @@
 GARNAME = tiff
-GARVERSION = 4.0.2
+GARVERSION = 4.0.3
 CATEGORIES = lib
 MASTER_SITES  = http://download.osgeo.org/libtiff/
 MASTER_SITES += http://download.osgeo.org/libtiff/old/
