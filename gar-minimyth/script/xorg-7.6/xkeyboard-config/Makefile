@@ -1,5 +1,5 @@
 GARNAME = xkeyboard-config
-GARVERSION = 2.6
+GARVERSION = 2.7
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = http://xorg.freedesktop.org/releases/individual/data/$(GARNAME)/
 MASTER_SITES += http://xorg.freedesktop.org/releases/individual/data/
