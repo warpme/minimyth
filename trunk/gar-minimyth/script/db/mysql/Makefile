@@ -1,10 +1,10 @@
 GARNAME = mysql
-GARVERSION = 5.1.65
+GARVERSION = 5.1.66
 CATEGORIES = db
 #MASTER_SITES = http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.1/
 MASTER_SITES = http://mysql.he.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = \
+PATCHFILES  = \
 	$(DISTNAME)-dash.patch \
 	$(DISTNAME)-skip_abi_check.patch \
 	$(DISTNAME)-ac_cache_check.patch \
