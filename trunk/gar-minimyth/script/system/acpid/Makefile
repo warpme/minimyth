@@ -1,5 +1,5 @@
 GARNAME = acpid
-GARVERSION = 2.0.16
+GARVERSION = 2.0.17
 CATEGORIES = system
 MASTER_SITES = http://www.tedfelix.com/linux/
 DISTFILES = $(DISTNAME).tar.xz
