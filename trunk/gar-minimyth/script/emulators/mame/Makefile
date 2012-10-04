@@ -1,5 +1,5 @@
 GARNAME = mame
-GARVERSION = 0.146
+GARVERSION = 0.147
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
@@ -24,12 +24,21 @@ ifeq ($(DESTIMG),build)
 INSTALL_SCRIPTS += cross
 endif
 
-BUILD_ARGS = \
+BUILD_ARGS  = \
 	NOWERROR="1" \
 	OPTIMIZE="$(OPTIMIZE)" \
 	OPT_FLAGS="$(CFLAGS)" \
 	NO_DEBUGGER="1" \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),PTR64="1",PTR64="0")
+
+ifneq ($(DESTIMG),build)
+BUILD_ARGS += \
+	FILE2STR_TARGET="mame-file2str" \
+	MAKEDEP_TARGET="mame-makedep" \
+	MAKELIST_TARGET="mame-makelist" \
+	PNG2BDC_TARGET="mame-png2bdc" \
+	VERINFO_TARGET="mame-verinfo"
+endif
 
 include ../../gar.mk
 
@@ -61,19 +70,18 @@ install-cross:
 	@mkdir -p $(DESTDIR)$(bindir)
 	@$(if $(filter x86_64,$(GARCH_FAMILY)), \
 		cp -f $(WORKSRC)/obj/sdl64/build/file2str $(DESTDIR)$(bindir)/mame-file2str ; \
-		cp -f $(WORKSRC)/obj/sdl64/build/m68kmake $(DESTDIR)$(bindir)/mame-m68kmake ; \
 		cp -f $(WORKSRC)/obj/sdl64/build/makedep  $(DESTDIR)$(bindir)/mame-makedep  ; \
-		cp -f $(WORKSRC)/obj/sdl64/build/makedev  $(DESTDIR)$(bindir)/mame-makedev  ; \
 		cp -f $(WORKSRC)/obj/sdl64/build/makelist $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl64/build/png2bdc  $(DESTDIR)$(bindir)/mame-png2bdc  ; \
-		cp -f $(WORKSRC)/obj/sdl64/build/tmsmake  $(DESTDIR)$(bindir)/mame-tmsmake  ; \
 		cp -f $(WORKSRC)/obj/sdl64/build/verinfo  $(DESTDIR)$(bindir)/mame-verinfo,   \
 		cp -f $(WORKSRC)/obj/sdl/build/file2str   $(DESTDIR)$(bindir)/mame-file2str ; \
-		cp -f $(WORKSRC)/obj/sdl/build/m68kmake   $(DESTDIR)$(bindir)/mame-m68kmake ; \
 		cp -f $(WORKSRC)/obj/sdl/build/makedep    $(DESTDIR)$(bindir)/mame-makedep  ; \
-		cp -f $(WORKSRC)/obj/sdl/build/makedev    $(DESTDIR)$(bindir)/mame-makedev  ; \
 		cp -f $(WORKSRC)/obj/sdl/build/makelist   $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl/build/png2bdc    $(DESTDIR)$(bindir)/mame-png2bdc  ; \
-		cp -f $(WORKSRC)/obj/sdl/build/tmsmake    $(DESTDIR)$(bindir)/mame-tmsmake  ; \
 		cp -f $(WORKSRC)/obj/sdl/build/verinfo    $(DESTDIR)$(bindir)/mame-verinfo)
+	@$(if $(filter x86_64,$(GARCH_FAMILY)), \
+		cp -f $(WORKSRC)/obj/sdl64/build/m68kmake $(DESTDIR)$(bindir)/mame-m68kmake ; \
+		cp -f $(WORKSRC)/obj/sdl64/build/tmsmake  $(DESTDIR)$(bindir)/mame-tmsmake,   \
+		cp -f $(WORKSRC)/obj/sdl/build/m68kmake   $(DESTDIR)$(bindir)/mame-m68kmake ; \
+		cp -f $(WORKSRC)/obj/sdl/build/tmsmake    $(DESTDIR)$(bindir)/mame-tmsmake)
 	@$(MAKECOOKIE)
