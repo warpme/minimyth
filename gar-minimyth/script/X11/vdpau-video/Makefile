@@ -3,7 +3,7 @@ GARVERSION = 0.7.3
 CATEGORIES = X11
 MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-remove_sds_checks.patch $(DISTNAME)-utils_glx_h.patch $(DISTNAME)-install.patch
+PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -17,7 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--enable-glx \
+	--disable-glx \
 	--disable-debug \
 	--disable-tracer \
 	--disable-static \
@@ -25,8 +25,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-gnu-ld
 
 include ../../gar.mk
-
-CPPFLAGS += -DVA_SDS_VERSION=1
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
