@@ -1,5 +1,5 @@
 GARNAME = libxslt
-GARVERSION = 1.1.27-rc1
+GARVERSION = 1.1.27
 CATEGORIES = lib
 MASTER_SITES = ftp://xmlsoft.org/libxml2/
 DISTFILES = $(DISTNAME).tar.gz
@@ -10,8 +10,6 @@ define BLURB
 endef
 
 DEPENDS = lang/c lib/libxml2 lib/zlib
-
-WORKSRC = $(WORKDIR)/$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
