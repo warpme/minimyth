@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 0.11.1
+GARVERSION = 1.0
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
+DEPENDS   = lang/c lib/libbluray lib/SDL lib/zlib net/librtmp utils/bzip2 X11/libva X11/libvdpau
 BUILDDEPS = devel/yasm
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -35,6 +35,10 @@ CONFIGURE_ARGS = \
 	--disable-version3 \
 	--disable-nonfree \
 	--enable-doc \
+	--enable-htmlpages \
+	--enable-manpages \
+	--enable-podpages \
+	--enable-txtpages \
 	--enable-ffmpeg \
 	--disable-ffplay \
 	--disable-ffprobe \
@@ -53,9 +57,10 @@ CONFIGURE_ARGS = \
 	--enable-network \
 	--disable-gray \
 	--enable-swscale-alpha \
-	--enable-fastdiv \
 	$(if $(filter -Os,$(CFLAGS)),--enable-small) \
 	--enable-dct \
+	--disable-dwt \
+	--disable-lsp \
 	--enable-fft \
 	--enable-mdct \
 	--enable-rdft \
@@ -85,15 +90,19 @@ CONFIGURE_ARGS = \
 	--disable-gnutls \
 	--disable-libaacplus \
 	--disable-libass \
+	--enable-libbluray \
+	--disable-libcaca \
 	--disable-libcelt \
-	--disable-libopencore-amrnb \
-	--disable-libopencore-amrwb \
 	--disable-libopencv \
 	--disable-libcdio \
 	--disable-libdc1394 \
 	--disable-libfaac \
+	--disable-libfdk-aac \
+	--disable-libflite \
 	--disable-libfreetype \
 	--disable-libgsm \
+	--disable-libiec61883 \
+	--disable-libilbc \
 	--disable-libmodplug \
 	--disable-libmp3lame \
 	--disable-libnut \
@@ -145,10 +154,15 @@ CONFIGURE_ARGS = \
 	--enable-amd3dnow \
 	--enable-amd3dnowext \
 	--enable-mmx \
-	--enable-mmx2 \
+	--enable-mmxext \
 	--enable-sse \
+	--enable-sse2 \
+	--enable-sse3 \
 	--enable-ssse3 \
+	--disable-sse4 \
+	--disable-sse42 \
 	--disable-avx \
+	--disable-fma4  \
 	--disable-armv5te \
 	--disable-armv6 \
 	--disable-armv6t2 \
@@ -156,9 +170,11 @@ CONFIGURE_ARGS = \
 	--disable-mmi \
 	--disable-neon \
 	--disable-vis \
+	--enable-inline-asm \
 	--enable-yasm \
 	--disable-sram \
 	--disable-symver \
+	--disable-thumb \
 	--postproc-version="current" \
 	--disable-coverage \
 	--disable-debug \
