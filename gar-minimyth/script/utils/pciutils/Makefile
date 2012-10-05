@@ -65,7 +65,7 @@ include ../../gar.mk
 CFLAGS  := $(CFLAGS)  -fPIC
 LDFLAGS := $(LDFLAGS) -fPIC
 
-# pciutils 3.1.10 fails to compile with gcc 4.7.1's link time optimization enabled.
+# pciutils 3.1.10 fails to compile with gcc 4.7.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
