@@ -1,0 +1,37 @@
+GARNAME = libva-vdpau-driver
+GARVERSION = 0.7.4
+CATEGORIES = X11
+MASTER_SITES = http://www.freedesktop.org/software/vaapi/releases/libva-vdpau-driver/
+DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-install.patch
+LICENSE = GPL2
+
+DESCRIPTION = 
+define BLURB
+endef
+
+DEPENDS = lang/c X11/libva X11/libvdpau xorg/xorg
+
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
+
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-glx \
+	--disable-debug \
+	--disable-tracer \
+	--disable-static \
+	--enable-shared \
+	--disable-silent-rules \
+	--with-gnu-ld
+
+include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
+
+x-post-install:
+	@rm -f $(DESTDIR)$(libdir)/va/vdpau_drv_video.la
+	@$(MAKECOOKIE)

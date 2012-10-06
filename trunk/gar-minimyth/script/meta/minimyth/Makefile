@@ -44,6 +44,7 @@ DEPENDS = \
 	system/irxkeys \
 	kernel/kernel \
 	system/lcdproc \
+	X11/libva-vdpau-driver \
 	net/lighttpd \
 	fonts/liberation-fonts \
 	system/lirc \
@@ -83,7 +84,6 @@ DEPENDS = \
 	X11/unclutter \
 	utils/usbutils \
 	utils/util-linux \
-	X11/vdpau-video \
 	X11/vdpauinfo \
 	net/wakelan \
 	X11/x11vnc \
