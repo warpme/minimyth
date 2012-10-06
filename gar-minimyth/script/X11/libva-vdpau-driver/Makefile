@@ -3,7 +3,7 @@ GARVERSION = 0.7.4
 CATEGORIES = X11
 MASTER_SITES = http://www.freedesktop.org/software/vaapi/releases/libva-vdpau-driver/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-install.patch
+#PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
@@ -32,6 +32,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-x-post-install:
+post-install:
 	@rm -f $(DESTDIR)$(libdir)/va/vdpau_drv_video.la
 	@$(MAKECOOKIE)
