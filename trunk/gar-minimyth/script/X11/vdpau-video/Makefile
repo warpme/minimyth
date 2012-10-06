@@ -1,8 +1,8 @@
-GARNAME = vdpau-video
-GARVERSION = 0.7.3
+GARNAME = libva-vdpau-driver
+GARVERSION = 0.7.4
 CATEGORIES = X11
-MASTER_SITES = http://www.splitted-desktop.com/~gbeauchesne/$(GARNAME)/
-DISTFILES = $(DISTNAME).tar.gz
+MASTER_SITES = http://www.freedesktop.org/software/vaapi/releases/libva-vdpau-driver/
+DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = $(DISTNAME)-install.patch
 LICENSE = GPL2
 
@@ -22,6 +22,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-tracer \
 	--disable-static \
 	--enable-shared \
+	--disable-silent-rules \
 	--with-gnu-ld
 
 include ../../gar.mk
@@ -31,6 +32,6 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-post-install:
+x-post-install:
 	@rm -f $(DESTDIR)$(libdir)/va/vdpau_drv_video.la
 	@$(MAKECOOKIE)
