@@ -1,8 +1,7 @@
 GARNAME = libva
-GARVERSION = 1.0.16
+GARVERSION = 1.1.0
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
-#MASTER_SITES = git://anongit.freedesktop.org/git/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -18,9 +17,13 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
+	--disable-docs \
+	--enable-drm \
+	--enable-x11 \
 	--enable-glx \
+	--disable-egl \
+	--disable-wayland \
 	--disable-dummy-driver \
-	--disable-dummy-backend \
 	--disable-static \
 	--enable-shared \
 	--with-drivers-path="$(libdir)/va" \
@@ -28,22 +31,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-x-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE) 
-
 pre-configure:
+	@mkdir -p $(WORKSRC)/m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libva.la
+	@rm -f $(DESTDIR)$(libdir)/libva-drm.la
 	@rm -f $(DESTDIR)$(libdir)/libva-glx.la
-	@rm -f $(DESTDIR)$(libdir)/libva-egl.la
 	@rm -f $(DESTDIR)$(libdir)/libva-tpi.la
 	@rm -f $(DESTDIR)$(libdir)/libva-x11.la
 	@$(MAKECOOKIE)
