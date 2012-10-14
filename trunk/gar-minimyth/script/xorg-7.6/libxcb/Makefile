@@ -1,5 +1,5 @@
 GARNAME = libxcb
-GARVERSION = 1.8.1
+GARVERSION = 1.9
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
