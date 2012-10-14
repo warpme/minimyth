@@ -1,10 +1,10 @@
 GARNAME = Mesa
-#GARVERSION = 8.0.4
-GARVERSION = 9.0-20121003-b2048c5
+GARVERSION = 9.0
+#GARVERSION = 9.0-20121003-b2048c5
 CATEGORIES = $(CATEGORY)
-#MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/beta/
-#MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
-MASTER_SITES  = git://anongit.freedesktop.org/git/mesa/mesa/
+#MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/beta/
+MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+#MASTER_SITES = git://anongit.freedesktop.org/git/mesa/mesa/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
 ifneq ($(DESTIMG),build)
 PATCHFILES += \
@@ -105,7 +105,7 @@ git//%MesaLib-$(GARVERSION).tar.bz2:
 	@cd $(PARTIALDIR) ; rm -rf                                 $(DISTNAME)
 	@$(MAKECOOKIE)
 
-checksum-MesaLib-$(GARVERSION).tar.bz2:
+x-checksum-MesaLib-$(GARVERSION).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
