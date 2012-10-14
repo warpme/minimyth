@@ -1,7 +1,7 @@
 GARNAME = glib
-GARVERSION = 2.32.4
+GARVERSION = 2.34.0
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.32/
+MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.34/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
 	$(DISTNAME)-ac_header_stdc.patch
@@ -30,6 +30,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-selinux \
 	--disable-fam \
 	--enable-xattr \
+	--disable-libelf \
 	--disable-gtk-doc \
 	--disable-man \
 	--disable-dtrace \
