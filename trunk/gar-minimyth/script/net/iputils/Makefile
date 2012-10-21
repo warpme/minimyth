@@ -1,5 +1,5 @@
 GARNAME = iputils
-GARVERSION = s20101006
+GARVERSION = s20121011
 CATEGORIES = net
 MASTER_SITES = http://www.skbuff.net/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,8 @@ BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
 
 BUILD_ARGS   = \
+	USE_CAP=no \
+	USE_SYSFS=no \
 	LIBC_INCLUDE=$(includedir) \
 	CC="$(CC)" \
 	ping
