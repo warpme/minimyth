@@ -1,5 +1,5 @@
 GARNAME = libass
-GARVERSION = 0.10.0
+GARVERSION = 0.10.1
 CATEGORIES = lib
 MASTER_SITES = http://libass.googlecode.com/files/
 DISTFILES = $(DISTNAME).tar.gz
