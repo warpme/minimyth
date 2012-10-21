@@ -3,6 +3,7 @@ GARVERSION = 1.0.18
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/vaapi/intel-driver/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = $(DISTNAME)-drm_state.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -27,7 +28,7 @@ git//%$(DISTNAME).tar.bz2:
 	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-x-checksum-$(DISTNAME).tar.bz2:
+checksum-$(DISTNAME).tar.bz2:
 	@$(MAKECOOKIE) 
 
 pre-configure:
