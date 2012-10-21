@@ -1,10 +1,9 @@
 GARNAME = v4l-utils
-GARVERSION = 0.8.8
+GARVERSION = 0.9.1
 CATEGORIES = utils
 MASTER_SITES = http://linuxtv.org/downloads/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
-	$(DISTNAME)-udev.patch \
 	$(DISTNAME)-rc_keymaps.patch
 LICENSE = GPL2/LGPL2_1
 
@@ -14,23 +13,28 @@ endef
 
 DEPENDS = lang/c lang/cxx system/udev
 
-BUILD_SCRIPTS   = $(WORKSRC)/utils/keytable/Makefile
-INSTALL_SCRIPTS = $(WORKSRC)/utils/keytable/Makefile
+CONFIGURE_SCRIPTS = $(WORKSRC)/configure
+BUILD_SCRIPTS     = $(WORKSRC)/utils/keytable/Makefile
+INSTALL_SCRIPTS   = $(WORKSRC)/utils/keytable/Makefile
 
-BUILD_ARGS   = \
-	DESTDIR="$(DESTDIR)" \
-	PREFIX="$(prefix)" \
-	LIBDIR="$(libdir)" \
-	CPPFLAGS="$(CPPFLAGS)" \
-	CFLAGS="$(CFLAGS) $(LDFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS) $(LDFLAGS)"
-INSTALL_ARGS = \
-	DESTDIR="$(DESTDIR)" \
-	PREFIX="$(prefix)" \
-	LIBDIR="$(libdir)"
 
-CFLAGS   := $(CFLAGS)   -fPIC
-CXXFLAGS := $(CXXFLAGS) -fPIC
-LDFLAGS  := $(LDFLAGS)  -fPIC
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
+	--enable-shared \
+	--disable-static \
+	--enable-nls \
+	--disable-rpath \
+	--disable-libdvbv5 \
+	--disable-libv4l \
+	--disable-v4l-utils \
+	--disable-qv4l2 \
+	--with-gnu-ld \
+	--without-jpeg \
+	--with-udevdir="$(libdir)/udev"
 
 include ../../gar.mk
+
+pre-configure:
+	@$(call RUN_AUTOTOOLS)
+	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
+	@$(MAKECOOKIE)
