@@ -2,13 +2,14 @@ GARNAME = xf86-video-nouveau
 #GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	20120903-239f399, \
-	1.0.2 ))
+	1.0.4 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/nouveau/$(GARNAME)/ , \
 	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+PATCHFILES  = $(DISTNAME)-disable_composite_fix.patch
+PATCHFILES += $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	$(GARNAME)-pkg_config.patch, \
 	$(DISTNAME)-pkg_config.patch ))
 LICENSE = $(GARNAME)
