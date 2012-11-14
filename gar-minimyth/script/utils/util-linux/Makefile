@@ -84,11 +84,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-systemdsystemunitdir
 
 BUILD_ARGS     = \
-	usrbinexecdir=$(bindir) \
-	usrsbinexecdir=$(sbindir)
+	usrbin_execdir=$(bindir) \
+	usrsbin_execdir=$(sbindir) \
+	usrlib_execdir=$(elibdir)
 INSTALL_ARGS   = \
-	usrbinexecdir=$(bindir) \
-	usrsbinexecdir=$(sbindir)
+	usrbin_execdir=$(bindir) \
+	usrsbin_execdir=$(sbindir) \
+	usrlib_execdir=$(elibdir)
 
 include ../../gar.mk
 
@@ -100,7 +102,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libblkid.la
-	@rm -f $(DESTDIR)$(libdir)/libmount.la
-	@rm -f $(DESTDIR)$(libdir)/libuuid.la
+	@rm -f $(DESTDIR)$(elibdir)/libblkid.la
+	@rm -f $(DESTDIR)$(elibdir)/libmount.la
+	@rm -f $(DESTDIR)$(elibdir)/libuuid.la
 	@$(MAKECOOKIE)
