@@ -1,0 +1,19 @@
+diff -Naur xf86-video-ati-7.0.0-old/src/radeon_dri2.c xf86-video-ati-7.0.0-new/src/radeon_dri2.c
+--- xf86-video-ati-7.0.0-old/src/radeon_dri2.c	2012-10-28 09:46:05.000000000 -0700
++++ xf86-video-ati-7.0.0-new/src/radeon_dri2.c	2012-11-14 13:52:26.000000000 -0800
+@@ -596,10 +596,15 @@
+     }
+ 
+     if (translate && drawable->type == DRAWABLE_WINDOW) {
++#ifdef COMPOSITE
+ 	PixmapPtr pPix = GetDrawablePixmap(drawable);
+ 
+ 	off_x = drawable->x - pPix->screen_x;
+ 	off_y = drawable->y - pPix->screen_y;
++#else
++		off_x = 0;
++		off_y = 0;
++#endif
+     }
+     gc = GetScratchGC(dst_drawable->depth, pScreen);
+     copy_clip = REGION_CREATE(pScreen, NULL, 0);
