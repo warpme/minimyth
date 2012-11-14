@@ -1,7 +1,7 @@
 GARNAME = pango
-GARVERSION = 1.30.1
+GARVERSION = 1.32.2
 CATEGORIES = gtk
-MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.30/
+MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.32/
 DISTFILES = $(DISTNAME).tar.xz
 LICENSE = LGPL2
 
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS   = lang/c lang/cxx gtk/cairo gtk/glib lib/freetype xorg/xorg
+DEPENDS   = lang/c lang/cxx gtk/cairo gtk/glib gtk/harfbuzz lib/freetype lib/fontconfig xorg/xorg
 BUILDDEPS = gtk/gtk-doc
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
@@ -17,9 +17,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--x-includes="$(DESTDIR)$(includedir)" \
-	--x-libraries="$(DESTDIR)$(libdir)" \
 	--disable-silent-rules \
+	--config-cache \
 	--disable-static \
 	--enable-shared \
 	--disable-debug \
@@ -29,7 +28,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-doc-cross-references \
 	--enable-explicit-deps=auto \
 	--with-gnu-ld \
-	--with-x
+	--with-xft
 
 include ../../gar.mk
 
@@ -42,18 +41,8 @@ post-install:
 	@rm -rf $(DESTDIR)$(libdir)/libpango-1.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libpangocairo-1.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libpangoft2-1.0.la
-	@rm -rf $(DESTDIR)$(libdir)/libpangox-1.0.la
 	@rm -rf $(DESTDIR)$(libdir)/libpangoxft-1.0.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-arabic-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-arabic-lang.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-basic-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-basic-x.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-hangul-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-hebrew-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-indic-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-indic-lang.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-khmer-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-syriac-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-thai-fc.la
-	@rm -rf $(DESTDIR)$(libdir)/pango/1.6.0/modules/pango-tibetan-fc.la
+	@rm -rf $(DESTDIR)$(libdir)/pango/1.8.0/modules/pango-arabic-lang.la
+	@rm -rf $(DESTDIR)$(libdir)/pango/1.8.0/modules/pango-basic-fc.la
+	@rm -rf $(DESTDIR)$(libdir)/pango/1.8.0/modules/pango-indic-lang.la
 	@$(MAKECOOKIE)
