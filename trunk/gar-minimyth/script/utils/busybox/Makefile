@@ -6,7 +6,9 @@ MASTER_SITES += http://www.busybox.net/downloads/fixes-$(GARVERSION)/
 CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
-	$(DISTNAME)-kernel_ver.patch
+	$(DISTNAME)-kernel_ver.patch \
+	$(DISTNAME)-pkg-config-selinux.patch \
+	$(DISTNAME)-sys-resource.patch
 PATCHFILES += \
 	$(DISTNAME)-sys_resource_h.patch
 PATCHFILES += \
