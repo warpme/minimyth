@@ -86,11 +86,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 BUILD_ARGS     = \
 	usrbin_execdir=$(bindir) \
 	usrsbin_execdir=$(sbindir) \
-	usrlib_execdir=$(elibdir)
+	usrlib_execdir=$(elibdir) \
+	pkgconfigdir=$(libdir)/pkgconfig
 INSTALL_ARGS   = \
 	usrbin_execdir=$(bindir) \
 	usrsbin_execdir=$(sbindir) \
-	usrlib_execdir=$(elibdir)
+	usrlib_execdir=$(elibdir) \
+	pkgconfigdir=$(libdir)/pkgconfig
 
 include ../../gar.mk
 
