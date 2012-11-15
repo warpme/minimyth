@@ -34,6 +34,7 @@ DEPENDS = \
 	lib/libass \
 	lib/libavc1394 \
 	lib/libcdio \
+	lib/libcdio-paranoia \
 	lib/libcec \
 	lib/libiec61883 \
 	lib/libxml2 \
