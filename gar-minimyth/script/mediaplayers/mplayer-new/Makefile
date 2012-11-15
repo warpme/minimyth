@@ -16,7 +16,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/fribidi lib/libass lib/libbluray lib/libcdio lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/ffmpeg lib/fontconfig lib/freetype lib/fribidi lib/libass lib/libbluray lib/libcdio lib/libcdio-paranoia lib/libdvdnav lib/libdvdread lib/libjpeg lib/libmng lib/libpng lib/zlib net/librtmp system/lirc X11/libva X11/libvdpau xorg/xorg
 BUILDDEPS = devel/yasm lib/libass
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
