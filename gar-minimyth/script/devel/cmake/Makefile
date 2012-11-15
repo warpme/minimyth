@@ -1,5 +1,5 @@
 GARNAME = cmake
-GARVERSION = 2.8.9
+GARVERSION = 2.8.10.1
 CATEGORIES = devel
 MASTER_SITES = http://www.cmake.org/files/v2.8/
 DISTFILES = $(DISTNAME).tar.gz
@@ -26,8 +26,11 @@ CONFIGURE_ARGS = \
 	--no-system-libarchive \
 	--no-qt-gui \
 	--prefix="$(prefix)" \
-	--datadir="$(datadir)/CMake" \
-	--docdir="$(docdir)/CMake" \
-	--mandir="$(mandir)"
+	--datadir="$(subst $(prefix),,$(datadir)/CMake)" \
+	--docdir="$(subst $(prefix),,$(docdir)/CMake)" \
+	--mandir="$(subst $(prefix),,$(mandir))"
 
 include ../../gar.mk
+
+pre-extract:
+	echo $(CONFIGURE_ARGS)
