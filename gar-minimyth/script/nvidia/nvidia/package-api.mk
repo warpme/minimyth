@@ -21,6 +21,7 @@ WORKSRC = $(WORKDIR)/$(DISTFILE)
 NVIDIA_SUPER_VERSION = $(strip \
 	$(if $(filter i386,  $(GARCH_FAMILY)),x86   ) \
 	$(if $(filter x86_64,$(GARCH_FAMILY)),x86_64))
+NVIDIA_SUPER_VERSION = x86_64
 	
 NVIDIA_VERSION_LIST  = $(strip \
 	$(if $(NVIDIA_MAJOR_VERSION), \
