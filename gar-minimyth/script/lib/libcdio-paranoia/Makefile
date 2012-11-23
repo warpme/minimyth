@@ -25,6 +25,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += lib/libcdio/package-api.mk
 include ../../gar.mk
 
+post-extract:
+	@cd $(WORKSRC)/include/cdio; ln -sf paranoia/cdda.h cdda.h
+	@$(MAKECOOKIE)
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL_LIBPATH,$(WORKSRC),configure)
