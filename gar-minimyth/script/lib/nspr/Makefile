@@ -1,5 +1,5 @@
 GARNAME = nspr
-GARVERSION = 4.9.3
+GARVERSION = 4.9.4
 CATEGORIES = lib
 MASTER_SITES = http://ftp.mozilla.org/pub/mozilla.org/$(GARNAME)/releases/v$(GARVERSION)/src/
 DISTFILES = $(DISTNAME).tar.gz
