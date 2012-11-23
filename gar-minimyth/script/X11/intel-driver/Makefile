@@ -1,9 +1,8 @@
 GARNAME = intel-driver
-GARVERSION = 1.0.18
+GARVERSION = 1.0.19
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/vaapi/intel-driver/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-drm_state.patch
 LICENSE = MIT
 
 DESCRIPTION = 
