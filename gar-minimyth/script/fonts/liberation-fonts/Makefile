@@ -1,5 +1,5 @@
 GARNAME = liberation-fonts
-GARVERSION = 2.00.0
+GARVERSION = 2.00.1
 CATEGORIES = fonts
 MASTER_SITES = http://fedorahosted.org/releases/l/i/$(GARNAME)/
 DISTFILES = $(GARNAME)-ttf-$(GARVERSION).tar.gz
