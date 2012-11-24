@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 9.0
+GARVERSION = 9.0.1
 #GARVERSION = 9.0-20121003-b2048c5
 CATEGORIES = $(CATEGORY)
 #MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/beta/
@@ -95,6 +95,10 @@ BUILD_ARGS  = \
 	HOST_CFLAGS="$(build_CFLAGS)"
 
 include ../../gar.mk
+
+# Mesa 9.0.1's i965_dri.so segmentation faults when compiled with -O2 and -O3 but works with -Os.
+CFLAGS   := $(filter-out -O%, $(CFLAGS)) -Os
+CXXFLAGS := $(filter-out -O%, $(CXXFLAGS)) -Os
 
 git//%MesaLib-$(GARVERSION).tar.bz2:
 	@$(call FETCH_GIT, $*, $(word 3,$(subst -, ,$(GARVERSION))), MesaLib-$(GARVERSION))
