@@ -16,6 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-pie \
 	--disable-relro \
 	--disable-cifsupcall \
 	--disable-cifscreds \
@@ -30,6 +31,9 @@ CONFIGURE_ENV = \
 	ac_cv_func_realloc_0_nonnull=yes
 
 include ../../gar.mk
+
+CFLAGS  := $(CFLAGS) -fPIC
+LDFLAGS := $(LDFLAGS) -fPIC
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
