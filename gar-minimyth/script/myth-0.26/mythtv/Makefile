@@ -108,7 +108,9 @@ CONFIGURE_ARGS = \
 	--enable-mmx2 \
 	--enable-sse \
 	--enable-ssse3 \
+	--enable-avx \
 	--enable-yasm \
+	--enable-pic \
 	--disable-proc-opt \
 	--enable-audio-oss \
 	--enable-audio-alsa \
@@ -139,6 +141,7 @@ CONFIGURE_ARGS = \
 	--disable-dxva2 \
 	--enable-opengl-video \
 	--disable-quartz-video \
+	--enable-libass \
 	--disable-mac-bundle \
 	--enable-libxml2 \
 	--libxml2-path="$(DESTDIR)$(includedir)/libxml2" \
@@ -146,7 +149,13 @@ CONFIGURE_ARGS = \
 	--enable-libcrypto \
 	--without-bindings="perl" \
 	--without-bindings="php" \
-	--with-bindings="python"
+	--with-bindings="python" \
+	--disable-libmp3lame \
+	--disable-libfaac \
+	--disable-libx264 \
+	--disable-libvpx \
+	--disable-libxvid \
+	--disable-sdl
 
 CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
 BUILD_ENV      = $(MYTHTV_BUILD_ENV)
