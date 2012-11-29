@@ -1,5 +1,5 @@
 GARNAME = cmake
-GARVERSION = 2.8.10.1
+GARVERSION = 2.8.10.2
 CATEGORIES = devel
 MASTER_SITES = http://www.cmake.org/files/v2.8/
 DISTFILES = $(DISTNAME).tar.gz
