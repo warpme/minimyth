@@ -28,7 +28,23 @@ $var_list{'MM_THEMECACHE_URL'} =
 $var_list{'MM_THEME_NAME'} =
 {
     value_default  => '',
-    value_valid    => '.+',
+    value_valid    => sub
+    {
+        my $minimyth = shift;
+        my $name     = shift;
+  
+        given ($minimyth->var_get('MM_VERSION_MYTH_BINARY_MINOR'))
+        {
+            when (/^(22|23)$/)
+            {
+                return '.+';
+            }
+            default
+            {
+                return '';
+            }
+        }
+    }
     extra          => sub
     {
         my $minimyth = shift;
