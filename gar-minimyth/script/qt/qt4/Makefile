@@ -1,11 +1,9 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.8.3
+GARVERSION = 4.8.4
 CATEGORIES = qt
 MASTER_SITES = http://releases.qt-project.org/qt4/source/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES  = \
-	$(DISTNAME)-webkit_no_error.patch
-PATCHFILES += \
+PATCHFILES = \
 	$(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
