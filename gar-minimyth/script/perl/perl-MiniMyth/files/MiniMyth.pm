@@ -1615,7 +1615,7 @@ sub url_mount
             File::Path::mkpath("$dir/rw", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
             system(qq(/bin/mount -t squashfs -o ro,loop "$dir/$file" "$dir/ro")) && return 0;
-            system(qq(/bin/mount -t unionfs -o dirs=$dir/rw=rw:$dir/ro=ro none "$mount_dir")) && return 0;
+            system(qq(/bin/mount -t overlayfs -o lowerdir=$dir/ro,upperdir=$dir/rw none "$mount_dir")) && return 0;
         }
         elsif ($url_ext1 eq 'cmg')
         {
@@ -1628,7 +1628,7 @@ sub url_mount
             File::Path::mkpath("$dir/rw", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
             system(qq(/bin/mount -t cramfs -o ro,loop "$dir/$file" "$dir/ro")) && return 0;
-            system(qq(/bin/mount -t unionfs -o dirs=$dir/rw=rw:$dir/ro=ro none "$mount_dir")) && return 0;
+            system(qq(/bin/mount -t overlayfs -o lowerdir=$dir/ro,upperdir=$dir/rw none "$mount_dir")) && return 0;
         }
         elsif (($url_ext1 eq 'bz2') && ($url_ext2 eq 'tar'))
         {
