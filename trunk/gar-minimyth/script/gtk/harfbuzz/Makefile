@@ -1,11 +1,11 @@
 GARNAME = harfbuzz
-GARVERSION = 0.9.7
+GARVERSION = 0.9.9
 CATEGORIES = lib
 MASTER_SITES = http://www.freedesktop.org/software/harfbuzz/release/
 http://www.fontconfig.org/release/
 DISTFILES = $(DISTNAME).tar.bz2
-LICENSE = fontconfig
-fontconfig_LICENSE_TEXT = $(WORKSRC)/COPYING
+LICENSE = harfbuzz
+harfbuzz_LICENSE_TEXT = $(WORKSRC)/COPYING
 
 DESCRIPTION = 
 define BLURB
