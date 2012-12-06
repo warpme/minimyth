@@ -1,5 +1,5 @@
 GARNAME = fribidi
-GARVERSION = 0.19.4
+GARVERSION = 0.19.5
 CATEGORIES = lib
 MASTER_SITES = http://fribidi.org/download/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -16,6 +16,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--disable-debug \
