@@ -41,10 +41,10 @@ $var_list{'MM_THEME_NAME'} =
             }
             default
             {
-                return '';
+                return '.*';
             }
         }
-    }
+    },
     extra          => sub
     {
         my $minimyth = shift;
