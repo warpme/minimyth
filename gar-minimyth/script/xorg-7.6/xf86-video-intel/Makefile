@@ -42,16 +42,16 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
+	--enable-udev \
 	--enable-dri \
 	--enable-xvmc \
 	--disable-kms-only \
-	--disable-sna \
+	--disable-ums-only \
+	--enable-sna \
 	--enable-uxa \
 	--disable-glamor \
 	--disable-xaa \
 	--disable-dga \
-	--disable-cache-level \
-	--disable-vmap \
 	--disable-async-swap \
 	--disable-debug \
 	--with-gnu-ld
