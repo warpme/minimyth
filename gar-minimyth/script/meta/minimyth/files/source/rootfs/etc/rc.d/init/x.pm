@@ -116,23 +116,23 @@ sub start
         {
             given ($minimyth->var_get('MM_X_OUTPUT_TV'))
             {
-                when (/^auto$/)     { $device_intel = 'TV';       }
-                when (/^([0-9]+)$/) { $device_intel = 'TV-' . $1; }
+                when (/^auto$/)     { $device_intel = 'TV' . '1'; }
+                when (/^([0-9]+)$/) { $device_intel = 'TV' . $1;  }
             }
             given ($minimyth->var_get('MM_X_OUTPUT_VGA'))
             {
-                when (/^auto$/)     { $device_intel = 'VGA';       }
-                when (/^([0-9]+)$/) { $device_intel = 'VGA-' . $1; }
+                when (/^auto$/)     { $device_intel = 'VGA' . '1'; }
+                when (/^([0-9]+)$/) { $device_intel = 'VGA' . $1;  }
             }
             given ($minimyth->var_get('MM_X_OUTPUT_DVI'))
             {
-                when (/^auto$/)     { $device_intel = 'TMDS';       }
-                when (/^([0-9]+)$/) { $device_intel = 'TMDS-' . $1; }
+                when (/^auto$/)     { $device_intel = 'TMDS' . '1'; }
+                when (/^([0-9]+)$/) { $device_intel = 'TMDS' . $1;  }
             }
             given ($minimyth->var_get('MM_X_OUTPUT_HDMI'))
             {
-                when (/^auto$/)     { $device_intel = 'HDMI';       }
-                when (/^([0-9]+)$/) { $device_intel = 'HDMI-' . $1; }
+                when (/^auto$/)     { $device_intel = 'HDMI' . '1'; }
+                when (/^([0-9]+)$/) { $device_intel = 'HDMI' . $1;  }
             }
             if ($device_intel eq '')
             {
