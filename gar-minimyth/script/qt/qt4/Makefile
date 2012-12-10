@@ -103,7 +103,7 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
-# qt 4.8.2 fails to compile with gcc 4.7.1's link time optimization enabled.
+# qt 4.8.4 fails to compile with gcc 4.7.2's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
