@@ -1,5 +1,5 @@
 GARNAME = ethtool
-GARVERSION = 3.6
+GARVERSION = 3.7
 CATEGORIES = utils
 MASTER_SITES = http://www.kernel.org/pub/software/network/ethtool/
 DISTFILES = $(DISTNAME).tar.bz2
