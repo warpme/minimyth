@@ -100,7 +100,8 @@ pre-configure:
 	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(if $(filter-out build,$(DESTIMG)),echo "scanf_cv_type_modifier=ms" >> $(WORKSRC)/config.cache)
+	@$(if $(filter-out build,$(DESTIMG)),echo "scanf_cv_alloc_modifier=ms" >> $(WORKSRC)/config.cache)
+	@$(if $(filter-out build,$(DESTIMG)),echo "ax_cv_have_tls=yes"         >> $(WORKSRC)/config.cache)
 	@$(MAKECOOKIE)
 
 post-install:
