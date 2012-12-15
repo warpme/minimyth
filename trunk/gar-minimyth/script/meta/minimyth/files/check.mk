@@ -68,14 +68,9 @@ mm-all:
 		echo "error: mm_MYTH_TRUNK_VERSION should be replaced with mm_MYTHTV_MASTER_VERSION." ; \
 		exit 1 ; \
 	fi
-	@echo "    mm_XORG_VERSION='old'"
-	@if [ "$(mm_XORG_VERSION)" = "old" ] ; then \
-		echo "error: mm_XORG_VERSION=\"old\" should be replaced with mm_XORG_VERSION=\"6.8\"." ; \
-		exit 1 ; \
-	fi
-	@echo "    mm_XORG_VERSION='new'"
-	@if [ "$(mm_XORG_VERSION)" = "new" ] ; then \
-		echo "error: mm_XORG_VERSION=\"new\" should be replaced with mm_XORG_VERSION=\"7.0\"." ; \
+	@echo "    mm_XORG_VERSION"
+	@if [ -n "$(mm_XORG_VERSION)" ] ; then \
+		echo "error: mm_XORG_VERSION is no longer used and should be removed." ; \
 		exit 1 ; \
 	fi
 	@echo "  obsolete parameters and parameter values ... done"
@@ -207,11 +202,6 @@ mm-all:
 	@if [ ! "$(mm_NVIDIA_VERSION)" = "304.64" ] && \
 	    [ ! "$(mm_NVIDIA_VERSION)" = "310.19" ] ; then \
 		echo "error: mm_NVIDIA_VERSION=\"$(mm_NVIDIA_VERSION)\" is an invalid value." ; \
-		exit 1 ; \
-	fi
-	@echo "    mm_XORG_VERSION"
-	@if [ ! "$(mm_XORG_VERSION)" = "7.6" ] ; then \
-		echo "error: mm_XORG_VERSION=\"$(mm_XORG_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
 	fi
 	@echo "  build parameters ... done"
