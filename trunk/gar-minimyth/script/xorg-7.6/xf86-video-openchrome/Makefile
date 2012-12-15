@@ -1,7 +1,7 @@
 GARNAME = xf86-video-openchrome
 GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	20121211-0db1c3, \
+	20121211-0db1c3c, \
 	0.3.1 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
