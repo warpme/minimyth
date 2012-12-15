@@ -15,6 +15,7 @@ define BLURB
 endef
 
 DEPENDS    = lang/c lib/ncurses lib/openssl lib/readline lib/zlib
+BUILDDEPS  = devel/autoconf devel/automake
 ifneq ($(DESTIMG),build)
 DEPENDS   += lib/bluez
 BUILDDEPS += python/python
