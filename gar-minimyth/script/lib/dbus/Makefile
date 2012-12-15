@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/expat xorg-$(mm_XORG_VERSION)/libX11 xorg-$(mm_XORG_VERSION)/libXt
+DEPENDS = lang/c lib/expat xorg/libX11 xorg/libXt
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

@@ -128,9 +128,6 @@ mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
 # Valid values are '304.64', '310.19'.
 mm_NVIDIA_VERSION         ?= 304.64
-# The version of xorg to use.
-# Valid values are '7.6'.
-mm_XORG_VERSION           ?= 7.6
 # MythTV master version built. If the version changes too much then the patches
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
