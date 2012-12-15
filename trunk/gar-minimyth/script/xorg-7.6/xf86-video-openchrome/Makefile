@@ -1,8 +1,12 @@
 GARNAME = xf86-video-openchrome
-GARVERSION = 0.3.1
+GARVERSION_TYPE = git
+GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	20121211-0db1c3, \
+	0.3.1 ))
 CATEGORIES = $(CATEGORY)
-MASTER_SITES  = http://www.openchrome.org/releases/
-#MASTER_SITES += svn://svn.openchrome.org/svn/trunk/
+MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
+	git://anongit.freedesktop.org/git/openchrome/$(GARNAME)/ , \
+	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -10,7 +14,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c \
+DEPENDS = lang/c system/udev \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -33,35 +37,26 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--cache-file=config.cache \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--enable-dri \
 	--disable-debug \
 	--disable-xv-debug \
-	--enable-viaregtool \
+	--disable-viaregtool \
 	--with-gnu-ld
 
 include ../../gar.mk
 
-CPPFLAGS := $(CPPFLAGS) `pkg-config --cflags xorg-server`
-
-svn//%/$(DISTNAME).tar.bz2:
-	@$(call FETCH_SVN, http://$*, $(GARVERSION), $(DISTNAME))
+git//%$(DISTNAME).tar.bz2:
+	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	@$(MAKECOOKIE)
 
-xchecksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE) 
 
 pre-configure:
-	@rm -f $(WORKSRC)/acinclude.m4
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"        >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"  >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"      >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:
