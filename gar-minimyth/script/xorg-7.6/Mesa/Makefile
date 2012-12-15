@@ -131,6 +131,6 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/dri/i965_dri.la
 	@rm -f $(DESTDIR)$(libdir)/dri/r200_dri.la
 	@rm -f $(DESTDIR)$(libdir)/dri/radeon_dri.la
-	@rm -f $(DESTDIR)$(libdir)/libdricore9.0.0.la
+	@rm -f $(DESTDIR)$(libdir)/libdricore9.0.1.la
 	@rm -f $(DESTDIR)$(libdir)/libGL.la
 	@$(MAKECOOKIE)
