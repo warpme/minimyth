@@ -76,6 +76,8 @@ CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 
 pre-configure:
+	@cd $(WORKSRC) ; aclocal  --force --verbose
+	@cd $(WORKSRC) ; autoconf --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms

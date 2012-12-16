@@ -48,6 +48,8 @@ BUILD_ENV     := $(DEFAULT_ENV)
 INSTALL_ENV   := $(DEFAULT_ENV)
 
 pre-configure:
+	@cd $(WORKSRC) ; aclocal  --force --verbose
+	@cd $(WORKSRC) ; autoconf --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
