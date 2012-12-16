@@ -9,6 +9,14 @@ include ../../gar.mk
 mm-all:
 	@echo "checking ..."
 	@# Check build environment.
+	@echo "  checking for problematic binaries ..."
+	@$(foreach bin,'ccache', \
+		which $(bin) > /dev/null 2>&1 ; \
+		if [ "$$?" = "0" ] ; then \
+			echo "error: your system contains the program '$(bin)', which might cause build failure." ; \
+			exit 1 ; \
+		fi ; \
+	)
 	@echo "  build system binaries ..."
 	@$(foreach pkg,$(build_system_bins), \
 		$(foreach bin,$(sort $(build_system_bins_$(subst -,_,$(pkg)))), \
