@@ -26,9 +26,7 @@ sub start
 
     $minimyth->message_output('info', "starting remote control(s) ...");
 
-    # Create directories used by the LIRC daemon.
-    File::Path::mkpath('/var/lock', { mode => 0755 });
-    chmod(00755, '/var/lock');
+    # Create additional directory used by the LIRC daemon.
     File::Path::mkpath('/var/run/lirc', { mode => 0755 });
     chmod(00755, '/var/run/lirc');
 

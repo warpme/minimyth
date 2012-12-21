@@ -21,6 +21,9 @@
 /bin/mkdir -p /var/cache
 /bin/mkdir -p /var/lib
 /bin/mkdir -p /var/lock
+/bin/chmod 0775 /var/lock
+/bin/chown root:lock /var/lock
+
 /bin/mkdir -p /var/log
 /bin/mkdir -p /var/run
 /bin/touch    /var/run/utmp
