@@ -9,8 +9,7 @@
 if   (   /usr/bin/test "${MM_VERSION_MYTH_BINARY_MAJOR}" = "0"       ) &&
      ( ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "22" ) ||
        ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "23" ) ||
-       ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "24" ) ||
-       ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "25" )    ) ; then
+       ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "24" )    ) ; then
     if   /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythfrontend" ; then
         args=""
         if /usr/bin/test "${MM_DEBUG}" = "yes" ; then
@@ -29,6 +28,7 @@ else
         else
             args="${args} --loglevel=warn"
         fi
+        args="${args} --nodblog"
         args="${args} --syslog=local0"
         args="${args} -d"
         /usr/bin/mythfrontend ${args} 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
@@ -39,6 +39,7 @@ else
         else
             args="${args} --loglevel=warn"
         fi
+        args="${args} --nodblog"
         args="${args} --syslog=local0"
         /usr/bin/mythwelcome ${args} 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
     fi
