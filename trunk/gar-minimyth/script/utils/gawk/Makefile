@@ -1,9 +1,8 @@
 GARNAME = gawk
-GARVERSION = 4.0.1
+GARVERSION = 4.0.2
 CATEGORIES = utils
 MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-autoconf.patch
 LICENSE = GPL3
 
 DESCRIPTION = 
