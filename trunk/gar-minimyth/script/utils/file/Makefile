@@ -1,11 +1,9 @@
 GARNAME = file
-GARVERSION = 5.11
+GARVERSION = 5.12
 CATEGORIES = utils
 MASTER_SITES  = ftp://ftp.astron.com/pub/$(GARNAME)/
 MASTER_SITES += ftp://ftp.gw.com/mirrors/pub/unix/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch
 LICENSE = BSD_2_Clause
 
 DESCRIPTION = 
