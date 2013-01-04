@@ -4,7 +4,9 @@ CATEGORIES = extras
 MASTER_SITES  = ftp://ftp.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += git://git.videolan.org/libaacs.git/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-bison_2.6.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-bison_2.6.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 

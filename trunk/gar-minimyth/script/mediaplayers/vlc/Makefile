@@ -1,10 +1,11 @@
 GARNAME = vlc
 GARVERSION = 2.0.5
 CATEGORIES = mediaplayers
-PATCHFILES  =
 MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSION)/
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.xz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION =

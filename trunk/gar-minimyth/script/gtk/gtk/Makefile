@@ -3,7 +3,9 @@ GARVERSION = 2.24.14
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/gtk+/2.24/
 DISTFILES = $(DISTNAME).tar.xz
-PATCHFILES = $(DISTNAME)-nm.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-nm.patch
 LICENSE = LGPL2
 
 DESCRIPTION =

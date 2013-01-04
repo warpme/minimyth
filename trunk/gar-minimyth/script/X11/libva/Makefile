@@ -3,6 +3,8 @@ GARVERSION = 1.1.0
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
 DESCRIPTION = 

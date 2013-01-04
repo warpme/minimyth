@@ -3,6 +3,8 @@ GARVERSION = 1.2.12
 CATEGORIES = extras
 MASTER_SITES = http://download.videolan.org/pub/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

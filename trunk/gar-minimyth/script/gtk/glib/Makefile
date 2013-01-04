@@ -4,7 +4,8 @@ CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/gnome/sources/glib/2.34/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
-	$(DISTNAME)-ac_header_stdc.patch
+	$(DISTNAME)-ac_header_stdc.patch \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = LGPL2
 
 DESCRIPTION =

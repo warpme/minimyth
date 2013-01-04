@@ -3,7 +3,13 @@ GARVERSION = 0.99.7
 CATEGORIES = mediaplayers
 MASTER_SITES = http://downloads.sourceforge.net/project/xine/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.xz
-PATCHFILES = $(DISTNAME)-lirc.patch $(DISTNAME).patch.gar $(DISTNAME)-xscreensaver.patch $(DISTNAME)-xtest_disable.patch $(DISTNAME)-desktop_disable.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-lirc.patch \
+	$(DISTNAME).patch.gar \
+	$(DISTNAME)-xscreensaver.patch \
+	$(DISTNAME)-xtest_disable.patch \
+	$(DISTNAME)-desktop_disable.patch
 LICENSE = GPL2
 
 DESCRIPTION =

@@ -3,6 +3,8 @@ GARVERSION = 1.32.5
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/pango/1.32/
 DISTFILES = $(DISTNAME).tar.xz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = LGPL2
 
 DESCRIPTION =

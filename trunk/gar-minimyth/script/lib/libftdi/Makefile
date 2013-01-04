@@ -3,7 +3,9 @@ GARVERSION = 0.20
 CATEGORIES = lib
 MASTER_SITES = http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME).patch.gar
 LICENSE = LGPL2
 
 DESCRIPTION = 

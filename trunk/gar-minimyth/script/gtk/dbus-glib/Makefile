@@ -3,6 +3,8 @@ GARVERSION = 0.100
 CATEGORIES = gtk
 MASTER_SITES = http://dbus.freedesktop.org/releases/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = LGPL2
 
 DESCRIPTION =

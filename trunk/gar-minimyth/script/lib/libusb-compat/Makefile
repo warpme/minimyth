@@ -3,7 +3,9 @@ GARVERSION = 0.1.4
 CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/libusb/$(GARNAME)-0.1/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION = 

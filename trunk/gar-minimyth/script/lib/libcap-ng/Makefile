@@ -3,6 +3,8 @@ GARVERSION = 0.7.3
 CATEGORIES = lib
 MASTER_SITES = http://people.redhat.com/sgrubb/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
