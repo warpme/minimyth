@@ -3,6 +3,8 @@ GARVERSION = 0.27.1
 CATEGORIES = devel
 MASTER_SITES = http://pkgconfig.freedesktop.org/releases/
 DISTFILES = $(DISTNAME).tar.gz 
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION =

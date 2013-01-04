@@ -3,7 +3,9 @@ GARVERSION = 0.9.13
 CATEGORIES = X11
 MASTER_SITES = http://downloads.sourceforge.net/project/libvncserver/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-ar.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-ar.patch
 LICENSE = GPL2
 
 DESCRIPTION =

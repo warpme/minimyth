@@ -3,6 +3,8 @@ GARVERSION = 3.3.3
 CATEGORIES = lib
 MASTER_SITES = http://www.fftw.org/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 

@@ -3,7 +3,9 @@ GARVERSION = 1.32.0
 CATEGORIES = gtk
 MASTER_SITES = http://ftp.gnome.org/pub/GNOME/sources/atk/1.32/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-glib_2.30.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-glib_2.30.patch
 LICENSE = LGPL2
 
 DESCRIPTION =

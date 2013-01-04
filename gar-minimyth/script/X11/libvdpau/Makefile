@@ -3,6 +3,8 @@ GARVERSION = 0.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
 DESCRIPTION = 

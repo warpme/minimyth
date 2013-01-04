@@ -3,6 +3,8 @@ GARVERSION = 1.0.19
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/vaapi/intel-driver/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
 DESCRIPTION = 

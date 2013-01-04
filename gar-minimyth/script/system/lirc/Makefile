@@ -7,6 +7,7 @@ MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/LIRC/$(GARVER
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-git_e0ab92be.patch \
+	$(DISTNAME)-automake_1.13.patch \
 	$(DISTNAME)-kernel_err.patch \
 	$(DISTNAME)-remove_asm_sytem_h.patch \
 	$(DISTNAME)-lirc_xbox.patch \

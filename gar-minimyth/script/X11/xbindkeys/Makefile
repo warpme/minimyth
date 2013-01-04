@@ -3,6 +3,8 @@ GARVERSION = 1.8.5
 CATEGORIES = X11
 MASTER_SITES = http://www.nongnu.org/xbindkeys/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION =

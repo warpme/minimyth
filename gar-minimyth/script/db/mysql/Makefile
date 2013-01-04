@@ -5,6 +5,7 @@ CATEGORIES = db
 MASTER_SITES = http://mysql.he.net/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
+	$(DISTNAME)-automake_1.13.patch \
 	$(DISTNAME)-dash.patch \
 	$(DISTNAME)-skip_abi_check.patch \
 	$(DISTNAME)-ac_cache_check.patch \

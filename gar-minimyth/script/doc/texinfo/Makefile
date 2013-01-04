@@ -12,7 +12,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncurses
+DEPENDS = lang/c doc/help2man lib/ncurses
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-4.13
 
@@ -21,6 +21,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-rpath \
 	--with-gnu-ld
 

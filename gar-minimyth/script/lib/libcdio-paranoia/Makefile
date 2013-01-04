@@ -3,7 +3,9 @@ GARVERSION = 10.2+$(LIBCDIO_VERSION)
 CATEGORIES = lib
 MASTER_SITES = http://ftp.gnu.org/gnu/libcdio/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-include_path.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-include_path.patch
 LICENSE = GPL3
 
 DESCRIPTION = 

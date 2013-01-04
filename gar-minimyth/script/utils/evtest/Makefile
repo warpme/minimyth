@@ -3,6 +3,8 @@ GARVERSION = 1.30
 CATEGORIES = utils
 MASTER_SITES = http://cgit.freedesktop.org/$(GARNAME)/snapshot/
 DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION = 

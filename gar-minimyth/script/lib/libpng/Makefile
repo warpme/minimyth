@@ -4,7 +4,9 @@ CATEGORIES = lib
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)15/$(GARVERSION)/
 DISTFILES  = $(DISTNAME).tar.bz2
 DISTFILES += config.cache.$(GARCH_FAMILY)
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME).patch.gar
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE
 

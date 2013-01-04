@@ -3,7 +3,9 @@ GARVERSION = 0.2.2
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-remove_des.patch
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-remove_des.patch
 LICENSE = BSD_3_Clause
 
 DESCRIPTION = 

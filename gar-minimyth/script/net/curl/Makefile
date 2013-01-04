@@ -3,7 +3,9 @@ GARVERSION = 7.28.1
 CATEGORIES = net
 MASTER_SITES = http://curl.haxx.se/download/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -78,7 +80,11 @@ CONFIGURE_ENV  = \
 include ../../gar.mk
 
 pre-configure:
-	@$(call RUN_AUTOTOOLS)
+	@#$(call RUN_AUTOTOOLS)
+	@cd $(WORKSRC) ; aclocal  --force --verbose
+	@cd $(WORKSRC) ; automake --force
+	@cd $(WORKSRC) ; libtoolize --force --copy --install
+	@cd $(WORKSRC) ; autoconf --force
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 

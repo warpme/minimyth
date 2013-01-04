@@ -5,7 +5,8 @@ MASTER_SITES = http://downloads.sourceforge.net/project/mednafen/Mednafen/$(GARV
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
 	$(DISTNAME)-zlib_1.2.6.patch \
-	$(DISTNAME)-autoconf_2.65.patch
+	$(DISTNAME)-autoconf_2.65.patch \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
