@@ -1,5 +1,5 @@
 GARNAME = harfbuzz
-GARVERSION = 0.9.9
+GARVERSION = 0.9.10
 CATEGORIES = lib
 MASTER_SITES = http://www.freedesktop.org/software/harfbuzz/release/
 http://www.fontconfig.org/release/
