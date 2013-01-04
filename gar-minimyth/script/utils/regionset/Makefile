@@ -1,5 +1,5 @@
 GARNAME = regionset
-GARVERSION = 0.1
+GARVERSION = 0.2
 CATEGORIES = utils
 MASTER_SITES = http://linvdr.org/download/regionset/
 DISTFILES = $(DISTNAME).tar.gz
@@ -15,7 +15,7 @@ BUILD_SCRIPTS   = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS = custom
 
 BUILD_ARGS = \
-	CC="$(CC) $(CFLAGS)"
+	CC="$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)"
 
 include ../../gar.mk
 
