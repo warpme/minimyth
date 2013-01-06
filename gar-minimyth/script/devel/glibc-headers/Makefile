@@ -19,7 +19,9 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--disable-sanity-checks \
-	--enable-kernel=3.4.0 \
+	--enable-kernel=3.6.0 \
+	--disable-build-nscd \
+	--disable-nscd \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
 	--with-headers=$(DESTDIR)$(includedir) \
@@ -29,6 +31,22 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 INSTALL_ARGS    = \
 	cross-compiling=yes \
 	install_root=$(DESTDIR)
+
+CONFIGURE_ENV = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
+BUILD_ENV     = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
+INSTALL_ENV   = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
@@ -48,8 +66,8 @@ BUILD_ENV     := $(DEFAULT_ENV)
 INSTALL_ENV   := $(DEFAULT_ENV)
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal  --force --verbose
-	@cd $(WORKSRC) ; autoconf --force --verbose
+	@cd $(WORKSRC) ; aclocal       --force --verbose
+	@cd $(WORKSRC) ; autoconf-2.68 --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms

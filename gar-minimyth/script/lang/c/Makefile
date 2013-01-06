@@ -23,6 +23,7 @@ BUILDDEPS += \
 	devel/bison \
 	devel/flex \
 	devel/gettext \
+	devel/autoconf-2.68 \
 	devel/autoconf \
 	devel/autoconf-archive \
 	devel/automake \

@@ -3,13 +3,10 @@ GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
 MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
-DISTFILES = $(DISTNAME).tar.bz2
+DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
 	$(DISTNAME)-rpc_key_prot_h.patch \
 	$(DISTNAME)-select_fd_type.patch \
-	$(DISTNAME)-build_lib.patch \
-	$(DISTNAME)-build_locale.patch \
-	$(DISTNAME)-build_sunrpc.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME).patch \
 	$(DISTNAME)-ldd.patch
@@ -40,12 +37,14 @@ WORKBLD = $(WORKSRC)_build
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
-INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
+INSTALL_SCRIPTS   = $(WORKBLD)/Makefile build-rpcgen
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-bind-now \
-	--enable-kernel=3.4.0 \
+	--enable-kernel=3.6.0 \
+	--disable-build-nscd \
+	--disable-nscd \
 	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
@@ -65,10 +64,26 @@ endif
 INSTALL_ARGS    = \
 	install_root=$(DESTDIR)
 
+CONFIGURE_ENV = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
+BUILD_ENV     = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
+INSTALL_ENV   = \
+	BUILD_CC="$(build_CC)" \
+	BUILD_CPPFLAGS="$(build_CPPFLAGS)" \
+	BUILD_CFLAGS="$(build_CFLAGS)" \
+	BUILD_LDFLAGS="$(build_LDFLAGS)"
+
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-# glibc 2.16.0 fails to compile with gcc 4.7.1's link time optimization enabled.
+# glibc 2.17 fails to compile with gcc 4.7.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
@@ -76,8 +91,8 @@ CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
 CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal  --force --verbose
-	@cd $(WORKSRC) ; autoconf --force --verbose
+	@cd $(WORKSRC) ; aclocal       --force --verbose
+	@cd $(WORKSRC) ; autoconf-2.68 --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
@@ -90,6 +105,12 @@ pre-configure:
 configure-custom:
 	@mkdir -p $(WORKBLD)
 	@cd $(WORKBLD) && $(CONFIGURE_ENV) ./$(call DIRSTODOTS,$(WORKBLD))/$(WORKSRC)/configure $(CONFIGURE_ARGS)
+	@$(MAKECOOKIE)
+
+install-build-rpcgen:
+	@mkdir -p $(build_DESTDIR)$(build_bindir)
+	@rm -f $(build_DESTDIR)$(build_bindir)/rpcgen
+	@cp $(WORKBLD)/sunrpc/cross-rpcgen $(build_DESTDIR)$(build_bindir)/rpcgen
 	@$(MAKECOOKIE)
 
 post-install:
