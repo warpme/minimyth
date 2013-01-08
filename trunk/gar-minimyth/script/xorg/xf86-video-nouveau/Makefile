@@ -2,7 +2,7 @@ GARNAME = xf86-video-nouveau
 #GARVERSION_TYPE = git
 GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	20120903-239f399, \
-	1.0.4 ))
+	1.0.6 ))
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	git://anongit.freedesktop.org/git/nouveau/$(GARNAME)/ , \
