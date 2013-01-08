@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 1.0.1
+GARVERSION = 1.1
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,6 +20,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 # --enable-devices is not supported (only --disable-devices).
 CONFIGURE_ARGS = \
 	--enable-logging \
+	--fatal-warnings \
 	--prefix=$(prefix) \
 	--bindir=$(bindir) \
 	--datadir=$(datadir)/ffmpeg \
@@ -36,18 +37,21 @@ CONFIGURE_ARGS = \
 	--enable-runtime-cpudetect \
 	--disable-gray \
 	--enable-swscale-alpha \
+	--disable-all \
+	--disable-programs \
+	--enable-ffmpeg \
+	--disable-ffplay \
+	--disable-ffprobe \
+	--disable-ffserver \
 	--enable-doc \
 	--enable-htmlpages \
 	--enable-manpages \
 	--enable-podpages \
 	--enable-txtpages \
-	--enable-ffmpeg \
-	--disable-ffplay \
-	--disable-ffprobe \
-	--disable-ffserver \
 	--enable-avdevice \
 	--enable-avcodec \
 	--enable-avformat \
+	--enable-avutil \
 	--enable-swresample \
 	--enable-swscale \
 	--enable-postproc \
@@ -61,12 +65,12 @@ CONFIGURE_ARGS = \
 	--enable-dct \
 	--disable-dwt \
 	--disable-lsp \
+	--enable-lzo \
 	--enable-mdct \
 	--enable-rdft \
 	--enable-fft \
 	--disable-dxva2 \
 	--enable-vaapi \
-	--disable-vda \
 	--enable-vdpau \
 	--disable-everything \
 	--disable-encoders \
@@ -110,6 +114,7 @@ CONFIGURE_ARGS = \
 	--disable-libpulse \
 	--enable-librtmp \
 	--disable-libschroedinger \
+	--disable-libsoxr \
 	--disable-libspeex \
 	--disable-libstagefright-h264 \
 	--disable-libtheora \
@@ -160,6 +165,7 @@ CONFIGURE_ARGS = \
 	--disable-hardcoded-tables \
 	--enable-safe-bitstream-reader \
 	--disable-memalign-hack \
+	--disable-lto \
 	--enable-asm \
 	--disable-altivec \
 	--enable-amd3dnow \
@@ -177,8 +183,7 @@ CONFIGURE_ARGS = \
 	--disable-armv5te \
 	--disable-armv6 \
 	--disable-armv6t2 \
-	--disable-armvfp \
-	--disable-mmi \
+	--disable-vfp \
 	--disable-neon \
 	--disable-vis \
 	--enable-inline-asm \
@@ -188,7 +193,6 @@ CONFIGURE_ARGS = \
 	--disable-mipsdspr2 \
 	--disable-mipsfpu \
 	--enable-fast-unaligned \
-	--postproc-version="current" \
 	--disable-coverage \
 	--disable-debug \
 	--enable-optimizations \
@@ -202,7 +206,7 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# ffmpeg 1.0.1 fails to compile with GCC 4.7.2's link time optimization enabled.
+# ffmpeg 1.1 fails to compile with GCC 4.7.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
