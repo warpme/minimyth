@@ -31,7 +31,7 @@ sub start
     if (-e q(/usr/libexec/dbus-daemon-launch-helper))
     {
         my $uid = getpwnam('root');
-        my $gid = getgrnam('dbus');
+        my $gid = getgrnam('messagebus');
         if (((stat(q(/usr/libexec/dbus-daemon-launch-helper)))[4] != $uid) || ((stat(_))[5] != $gid))
         {
             chown($uid, $gid, q(/usr/libexec/dbus-daemon-launch-helper));
