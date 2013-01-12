@@ -5,7 +5,8 @@ MASTER_SITES = http://downloads.sourceforge.net/project/libvncserver/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = \
 	$(DISTNAME)-automake_1.13.patch \
-	$(DISTNAME)-ar.patch
+	$(DISTNAME)-ar.patch \
+	$(DISTNAME)-xlinker.patch
 LICENSE = GPL2
 
 DESCRIPTION =
