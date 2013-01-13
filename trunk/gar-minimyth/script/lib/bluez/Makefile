@@ -4,7 +4,6 @@ CATEGORIES = lib
 MASTER_SITES = http://www.kernel.org/pub/linux/bluetooth/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = \
-	$(DISTNAME)-ps3remote.patch \
 	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
