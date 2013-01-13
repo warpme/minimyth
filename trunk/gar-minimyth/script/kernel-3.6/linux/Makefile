@@ -19,8 +19,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS   = lang/c
-#BUILDDEPS = lib/ncursesw utils/mktemp utils/module-init-tools
+DEPENDS   = lang/c
+BUILDDEPS = lib/ncursesw utils/mktemp utils/module-init-tools
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
