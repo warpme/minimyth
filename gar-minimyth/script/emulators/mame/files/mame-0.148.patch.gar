@@ -1,7 +1,7 @@
-diff -Naur mame-0.147-old/makefile mame-0.147-new/makefile
---- mame-0.147-old/makefile	2012-09-08 15:58:12.000000000 -0700
-+++ mame-0.147-new/makefile	2012-10-03 15:53:55.000000000 -0700
-@@ -210,10 +210,10 @@
+diff -Naur mame-0.148-old/makefile mame-0.148-new/makefile
+--- mame-0.148-old/makefile	2013-01-09 20:46:20.000000000 -0800
++++ mame-0.148-new/makefile	2013-01-12 13:58:13.000000000 -0800
+@@ -214,10 +214,10 @@
  # BIGENDIAN = 1
  
  # uncomment next line to build expat as part of MAME build
@@ -14,26 +14,27 @@ diff -Naur mame-0.147-old/makefile mame-0.147-new/makefile
  
  # uncomment next line to build libflac as part of MAME build
  BUILD_FLAC = 1
-@@ -307,12 +307,12 @@
+@@ -314,13 +314,13 @@
  endif
  
  # compiler, linker and utilities
 -AR = @ar
 -CC = @gcc
 -LD = @g++
--MD = -mkdir$(EXE)
--RM = @rm -f
--OBJDUMP = @objdump
 +AR ?= ar
 +CC ?= gcc
 +LD ?= g++
-+MD = mkdir$(EXE) -p
+ MD = -mkdir$(EXE)
+-RM = @rm -f
+-OBJDUMP = @objdump
+-PYTHON = @python
 +RM = rm -f
 +OBJDUMP ?= objdump
++PYTHON = python
  
  
- 
-@@ -448,7 +448,7 @@
+ #-------------------------------------------------
+@@ -455,7 +455,7 @@
  
  # CFLAGS is defined based on C or C++ targets
  # (remember, expansion only happens when used, so doing it here is ok)
@@ -42,7 +43,7 @@ diff -Naur mame-0.147-old/makefile mame-0.147-new/makefile
  
  # we compile C-only to C89 standard with GNU extensions
  # we compile C++ code to C++98 standard with GNU extensions
-@@ -550,11 +550,11 @@
+@@ -557,11 +557,11 @@
  
  # LDFLAGS are used generally; LDFLAGSEMULATOR are additional
  # flags only used when linking the core emulator
@@ -56,12 +57,12 @@ diff -Naur mame-0.147-old/makefile mame-0.147-new/makefile
  endif
  endif
  endif
-diff -Naur mame-0.147-old/src/osd/sdl/sdl.mak mame-0.147-new/src/osd/sdl/sdl.mak
---- mame-0.147-old/src/osd/sdl/sdl.mak	2012-09-15 17:45:00.000000000 -0700
-+++ mame-0.147-new/src/osd/sdl/sdl.mak	2012-10-03 15:53:55.000000000 -0700
-@@ -573,10 +573,6 @@
- LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
- #CCOMFLAGS += -DGTK_DISABLE_DEPRECATED
+diff -Naur mame-0.148-old/src/osd/sdl/sdl.mak mame-0.148-new/src/osd/sdl/sdl.mak
+--- mame-0.148-old/src/osd/sdl/sdl.mak	2013-01-11 08:32:48.000000000 -0800
++++ mame-0.148-new/src/osd/sdl/sdl.mak	2013-01-12 13:55:45.000000000 -0800
+@@ -696,10 +696,6 @@
+ LIBS += `pkg-config QtGui --libs`
+ endif
  
 -# some systems still put important things in a different prefix
 -LIBS += -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/openwin/lib

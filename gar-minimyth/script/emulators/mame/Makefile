@@ -1,5 +1,5 @@
 GARNAME = mame
-GARVERSION = 0.147
+GARVERSION = 0.148
 CATEGORIES = emulators
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
@@ -42,12 +42,6 @@ endif
 
 include ../../gar.mk
 
-# mame 0.146 fails to compile with gcc 4.7.1's link time optimization enabled.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
-
-# The linker must be c++ because some of the object files are compiled as c++ using the c compiler.
 LD := $(CXX)
 
 OPTIMIZE := $(subst -O,,$(filter -O%,$(CFLAGS)))
@@ -79,9 +73,4 @@ install-cross:
 		cp -f $(WORKSRC)/obj/sdl/build/makelist   $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl/build/png2bdc    $(DESTDIR)$(bindir)/mame-png2bdc  ; \
 		cp -f $(WORKSRC)/obj/sdl/build/verinfo    $(DESTDIR)$(bindir)/mame-verinfo)
-	@$(if $(filter x86_64,$(GARCH_FAMILY)), \
-		cp -f $(WORKSRC)/obj/sdl64/build/m68kmake $(DESTDIR)$(bindir)/mame-m68kmake ; \
-		cp -f $(WORKSRC)/obj/sdl64/build/tmsmake  $(DESTDIR)$(bindir)/mame-tmsmake,   \
-		cp -f $(WORKSRC)/obj/sdl/build/m68kmake   $(DESTDIR)$(bindir)/mame-m68kmake ; \
-		cp -f $(WORKSRC)/obj/sdl/build/tmsmake    $(DESTDIR)$(bindir)/mame-tmsmake)
 	@$(MAKECOOKIE)
