@@ -73,4 +73,7 @@ install-cross:
 		cp -f $(WORKSRC)/obj/sdl/build/makelist   $(DESTDIR)$(bindir)/mame-makelist ; \
 		cp -f $(WORKSRC)/obj/sdl/build/png2bdc    $(DESTDIR)$(bindir)/mame-png2bdc  ; \
 		cp -f $(WORKSRC)/obj/sdl/build/verinfo    $(DESTDIR)$(bindir)/mame-verinfo)
+	@$(if $(filter x86_64,$(GARCH_FAMILY)), \
+		cp -f $(WORKSRC)/obj/sdl64/build/m68kmake $(DESTDIR)$(bindir)/mame-m68kmake,  \
+		cp -f $(WORKSRC)/obj/sdl/build/m68kmake   $(DESTDIR)$(bindir)/mame-m68kmake)
 	@$(MAKECOOKIE)
