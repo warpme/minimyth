@@ -155,7 +155,7 @@ mm-all:
 		   [ ! "$${software}" = "vlc"            ] && \
 		   [ ! "$${software}" = "xine"           ] && \
 		   [ ! "$${software}" = "mame"           ] && \
-		   [ ! "$${software}" = "bdremote"       ] && \
+		   [ ! "$${software}" = "ps3remote"      ] && \
 		   [ ! "$${software}" = "wiimote"        ] && \
 		   [ ! "$${software}" = "cec"            ] && \
 		   [ ! "$${software}" = "backend"        ] && \

@@ -29,7 +29,7 @@ MM_INIT_START := \
     media \
     audio \
     video \
-    bdremote \
+    ps3remote \
     wiimote \
     iguanair \
     irtrans \
@@ -53,7 +53,7 @@ MM_INIT_KILL := \
     irtrans \
     iguanair \
     wiimote \
-    bdremote \
+    ps3remote \
     bluetooth \
     audio \
     media \
