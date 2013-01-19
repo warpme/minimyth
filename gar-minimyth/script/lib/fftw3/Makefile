@@ -1,7 +1,10 @@
 GARNAME = fftw
-GARVERSION = $(FFTW_VERSION)
+GARVERSION = 3.3.3
 CATEGORIES = lib
-SOURCEPKG = lib/fftw3
+MASTER_SITES = http://www.fftw.org/
+DISTFILES = $(DISTNAME).tar.gz
+PATCHFILES = \
+	$(DISTNAME)-automake_1.13.patch
 LICENSE = LGPL2
 
 DESCRIPTION = 
@@ -16,14 +19,12 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
-	--enable-single \
 	--disable-static \
 	--enable-portable-binary \
 	--enable-threads \
 	--with-gnu-ld \
 	--with-gcc-arch=$(GARCH)
 
-GAR_EXTRA_CONF += lib/fftw3/package-api.mk
 include ../../gar.mk
 
 pre-configure:
@@ -32,6 +33,6 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/libfftw3f.la
-	@rm -f $(DESTDIR)$(libdir)/libfftw3f_threads.la
+	@rm -f $(DESTDIR)$(libdir)/libfftw3.la
+	@rm -f $(DESTDIR)$(libdir)/libfftw3_threads.la
 	@$(MAKECOOKIE)

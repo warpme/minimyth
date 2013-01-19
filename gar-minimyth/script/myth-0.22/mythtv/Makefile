@@ -17,7 +17,6 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-dvdnav_ldl.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-dvdnav_shared.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
@@ -43,6 +42,7 @@ DEPENDS = \
 	db/mysql \
 	lib/alsa-lib \
 	lib/faad2 \
+	lib/fftw3 \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
@@ -144,7 +144,8 @@ CONFIGURE_ARGS = \
 	--without-bindings="perl" \
 	--with-bindings="python"
 
-CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV)
+CONFIGURE_ENV  = $(MYTHTV_CONFIGURE_ENV) \
+	libfftw3='yes'
 BUILD_ENV      = $(MYTHTV_BUILD_ENV)
 INSTALL_ENV    = $(MYTHTV_INSTALL_ENV)
 

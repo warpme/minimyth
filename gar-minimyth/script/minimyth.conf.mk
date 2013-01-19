@@ -132,7 +132,7 @@ mm_NVIDIA_VERSION         ?= 304.64
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
 # the format YYYYMMDD.
-mm_MYTHTV_MASTER_VERSION  ?= master-20121214-021b2e5
+mm_MYTHTV_MASTER_VERSION  ?= master-20130118-5a465ba
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image

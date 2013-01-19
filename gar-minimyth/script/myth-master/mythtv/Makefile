@@ -9,7 +9,6 @@ PATCHFILES += \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-mythmusic_button_list_quick_scroll.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-sysroot.patch \
-	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-fftw3.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-hulu.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-networkcontrol.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-eject.patch \
@@ -28,6 +27,7 @@ DEPENDS = \
 	db/mysql \
 	lib/alsa-lib \
 	lib/avahi \
+	lib/fftw3 \
 	lib/fftw3f \
 	lib/freetype \
 	lib/lame \
@@ -105,8 +105,12 @@ CONFIGURE_ARGS = \
 	--enable-amd3dnow \
 	--enable-amd3dnowext \
 	--enable-mmx \
-	--enable-mmx2 \
+	--enable-mmxext \
 	--enable-sse \
+	--enable-sse2 \
+	--enable-sse3 \
+	--enable-sse4 \
+	--enable-sse42 \
 	--enable-ssse3 \
 	--enable-avx \
 	--enable-yasm \
