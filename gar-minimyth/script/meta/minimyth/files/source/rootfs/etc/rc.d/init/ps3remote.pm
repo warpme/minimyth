@@ -1,7 +1,7 @@
 ################################################################################
-# bdremote
+# ps3remote
 ################################################################################
-package init::bdremote;
+package init::ps3remote;
 
 use strict;
 use warnings;
@@ -15,7 +15,7 @@ sub start
     my $self     = shift;
     my $minimyth = shift;
 
-    if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'bdremote')
+    if ($minimyth->var_get('MM_LIRC_DRIVER') eq 'ps3remote')
     {
         $minimyth->message_output('info', "starting Sony PS3 Blu-ray Disc Remote Control daemon ...");
 

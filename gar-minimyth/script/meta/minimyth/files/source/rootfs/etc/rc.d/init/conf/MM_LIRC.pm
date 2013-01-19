@@ -89,7 +89,7 @@ $var_list{'MM_LIRC_DRIVER'} =
 {
     value_default  => 'none',
     value_valid    => 'none|.+',
-    value_obsolete => 'auto|mceusb2|mceusbnew|ps3bdremote',
+    value_obsolete => 'auto|bdremote|mceusb2|mceusbnew|ps3bdremote',
     value_none     => '',
     value_file     => 'devinput',
     extra          => sub
@@ -158,9 +158,9 @@ $var_list{'MM_LIRC_DEVICE'} =
         my $driver = $minimyth->var_get('MM_LIRC_DRIVER');
         my $device = $minimyth->var_get($name);
 
-        if ( ( ! (($driver) && ($driver =~ /^bdremote$/)) ) &&
-             ( ! (($driver) && ($driver =~ /^irtrans$/))  ) &&
-             ( ! (($driver) && ($driver =~ /^udp$/))      ) &&
+        if ( ( ! (($driver) && ($driver =~ /^ps3remote$/)) ) &&
+             ( ! (($driver) && ($driver =~ /^irtrans$/))   ) &&
+             ( ! (($driver) && ($driver =~ /^udp$/))       ) &&
            ($device) )
         {
             my $devname = $device;
