@@ -7,6 +7,7 @@ CONFIGFILE = $(DISTNAME).config
 DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
 PATCHFILES  = \
 	$(DISTNAME)-kernel_ver.patch \
+	$(DISTNAME)-ntpd.patch \
 	$(DISTNAME)-pkg-config-selinux.patch \
 	$(DISTNAME)-sys-resource.patch
 PATCHFILES += \
