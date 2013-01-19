@@ -12,6 +12,7 @@ DEPENDS = \
 	lang/cxx \
 	$(CATEGORY)/mythtv \
 	lib/flac \
+	lib/fftw3 \
 	lib/fftw3f \
 	lib/lame \
 	lib/libcdaudio \
