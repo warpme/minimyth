@@ -57,7 +57,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-ft \
 	--enable-fc \
 	--disable-ps \
-	--disable-pdf \
+	--enable-pdf \
 	--disable-svg \
 	--disable-test-surfaces \
 	--disable-tee \
