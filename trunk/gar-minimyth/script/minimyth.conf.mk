@@ -126,7 +126,7 @@ mm_KERNEL_CONFIG          ?=
 # Valid values are '0.22', '0.23', '0.24', '0.25', '0.26', 'master'.
 mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
-# Valid values are '304.64', '310.19'.
+# Valid values are '304.64' (legacy), '310.32'.
 mm_NVIDIA_VERSION         ?= 304.64
 # MythTV master version built. If the version changes too much then the patches
 # may no longer work. The version string format is:
