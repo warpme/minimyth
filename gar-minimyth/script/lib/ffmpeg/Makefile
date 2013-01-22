@@ -1,5 +1,5 @@
 GARNAME = ffmpeg
-GARVERSION = 1.1
+GARVERSION = 1.1.1
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 DISTFILES = $(DISTNAME).tar.bz2
