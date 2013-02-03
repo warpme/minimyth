@@ -1,5 +1,5 @@
 GARNAME = Mesa
-GARVERSION = 9.0.1
+GARVERSION = 9.0.2
 #GARVERSION = 9.0-20121003-b2048c5
 CATEGORIES = $(CATEGORY)
 #MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/beta/
