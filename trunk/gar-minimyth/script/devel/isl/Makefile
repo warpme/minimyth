@@ -1,7 +1,7 @@
 GARNAME = isl
 GARVERSION = 0.07
 CATEGORIES = devel
-MASTER_SITES = ftp://ftp.linux.student.kuleuven.be/pub/people/skimo/isl/
+MASTER_SITES = http://isl.gforge.inria.fr/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = LGPL2_1
 
