@@ -1,5 +1,5 @@
 GARNAME      = perl-libwww-perl
-GARVERSION   = 6.04
+GARVERSION   = 6.05
 MASTER_SITES = http://www.cpan.org/authors/id/G/GA/GAAS/
 DEPENDS      = perl/perl-HTML-Parser perl/perl-URI
 
