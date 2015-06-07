@@ -1,7 +1,7 @@
 GARNAME = python-lxml
 GARVERSION = 3.0.2
 CATEGORIES = python
-MASTER_SITES = http://codespeak.net/lxml/
+MASTER_SITES = http://lxml.de/files/
 DISTFILES = $(patsubst python-%,%,$(GARNAME))-$(GARVERSION).tgz
 LICENSE = BSD_3_Clause
 
