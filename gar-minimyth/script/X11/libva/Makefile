@@ -33,6 +33,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# The snapshot is generated from git so it may have a different checksum.
+checksum-$(DISTNAME).tar.bz2:
+	@$(MAKECOOKIE)
+
 pre-configure:
 	@mkdir -p $(WORKSRC)/m4
 	@$(call RUN_AUTOTOOLS)
