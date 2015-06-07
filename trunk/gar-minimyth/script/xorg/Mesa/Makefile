@@ -3,7 +3,8 @@ GARVERSION = 9.0.2
 #GARVERSION = 9.0-20121003-b2048c5
 CATEGORIES = $(CATEGORY)
 #MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/beta/
-MASTER_SITES = ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/$(GARVERSION)/
+MASTER_SITES += ftp://ftp.freedesktop.org/pub/mesa/older-versions/9.x/$(GARVERSION)/
 #MASTER_SITES = git://anongit.freedesktop.org/git/mesa/mesa/
 DISTFILES = MesaLib-$(GARVERSION).tar.bz2
 ifneq ($(DESTIMG),build)
