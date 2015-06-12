@@ -1,70 +1,70 @@
-diff -Naur mythtv-master-20130118-5a465ba-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp mythtv-master-20130118-5a465ba-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp
---- mythtv-master-20130118-5a465ba-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2013-01-19 05:21:35.000000000 -0800
-+++ mythtv-master-20130118-5a465ba-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2013-01-19 05:21:36.000000000 -0800
-@@ -42,7 +42,7 @@
+diff -Naur mythtv-master-20141222-5b386a0-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp mythtv-master-20141222-5b386a0-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp
+--- mythtv-master-20141222-5b386a0-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2015-06-11 01:01:21.922000003 -0700
++++ mythtv-master-20141222-5b386a0-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2015-06-11 01:01:23.028000003 -0700
+@@ -45,7 +45,7 @@
  #ifdef Q_OS_MAC
      gc->setValue(QDir::homePath() + "/Pictures");
  #else
 -    gc->setValue("/var/lib/pictures");
 +    gc->setValue("/mnt/gallery");
  #endif
-     gc->setHelpText(QObject::tr("This directory must exist and "
-                        "MythGallery needs to have read permission."));
-@@ -97,7 +97,7 @@
+     gc->setHelpText(GallerySettings::tr("This directory must exist and "
+                                         "MythGallery needs to have read "
+@@ -107,7 +107,7 @@
  {
      HostLineEdit *gc = new HostLineEdit("GalleryImportDirs");
-     gc->setLabel(QObject::tr("Paths to import images from"));
+     gc->setLabel(GallerySettings::tr("Paths to import images from"));
 -    gc->setValue("/mnt/cdrom:/mnt/camera");
 +    gc->setValue("");
-     gc->setHelpText(QObject::tr("This is a colon separated list of paths. "
-                     "If the path in the list is a directory, its contents will "
-                     "be copied. If it is an executable, it will be run."));
-diff -Naur mythtv-master-20130118-5a465ba-old/mythtv/libs/libmythmetadata/globals.cpp mythtv-master-20130118-5a465ba-new/mythtv/libs/libmythmetadata/globals.cpp
---- mythtv-master-20130118-5a465ba-old/mythtv/libs/libmythmetadata/globals.cpp	2013-01-19 05:21:35.000000000 -0800
-+++ mythtv-master-20130118-5a465ba-new/mythtv/libs/libmythmetadata/globals.cpp	2013-01-19 05:21:36.000000000 -0800
-@@ -32,5 +32,5 @@
+     gc->setHelpText(GallerySettings::tr("This is a colon separated list of "
+                     "paths. If the path in the list is a directory, its "
+                     "contents will be copied. If it is an executable, "
+diff -Naur mythtv-master-20141222-5b386a0-old/mythtv/libs/libmythmetadata/globals.cpp mythtv-master-20141222-5b386a0-new/mythtv/libs/libmythmetadata/globals.cpp
+--- mythtv-master-20141222-5b386a0-old/mythtv/libs/libmythmetadata/globals.cpp	2015-06-11 01:01:21.716000003 -0700
++++ mythtv-master-20141222-5b386a0-new/mythtv/libs/libmythmetadata/globals.cpp	2015-06-11 01:01:23.028000003 -0700
+@@ -44,5 +44,5 @@
  #ifdef Q_OS_MAC
  const QString DEFAULT_VIDEOSTARTUP_DIR = QDir::homePath() + "/Movies";
  #else
 -const QString DEFAULT_VIDEOSTARTUP_DIR = "/share/Movies/dvd";
 +const QString DEFAULT_VIDEOSTARTUP_DIR = "/mnt/video";
  #endif
-diff -Naur mythtv-master-20130118-5a465ba-old/mythtv/programs/mythfrontend/globalsettings.cpp mythtv-master-20130118-5a465ba-new/mythtv/programs/mythfrontend/globalsettings.cpp
---- mythtv-master-20130118-5a465ba-old/mythtv/programs/mythfrontend/globalsettings.cpp	2013-01-19 05:21:35.000000000 -0800
-+++ mythtv-master-20130118-5a465ba-new/mythtv/programs/mythfrontend/globalsettings.cpp	2013-01-19 05:21:36.000000000 -0800
-@@ -1226,7 +1226,7 @@
-     gc->addSelection(QObject::tr("Record date"), "Date");
-     gc->addSelection(QObject::tr("Season/Episode"), "Season");
-     gc->addSelection(QObject::tr("Original air date"), "OrigAirDate");
--    gc->addSelection(QObject::tr("Program ID"), "Id");
-+    gc->addSelection(QObject::tr("Program ID"), "Id", true);
-     gc->setHelpText(QObject::tr("Selects how to sort a show's episodes"));
-     return gc;
- }
-@@ -1436,7 +1436,7 @@
-     HostComboBox *gc = new HostComboBox("PlaybackExitPrompt");
-     gc->setLabel(QObject::tr("Action on playback exit"));
-     gc->addSelection(QObject::tr("Just exit"), "0");
--    gc->addSelection(QObject::tr("Save position and exit"), "2");
-+    gc->addSelection(QObject::tr("Save position and exit"), "2", true);
-     gc->addSelection(QObject::tr("Always prompt (excluding Live TV)"), "1");
-     gc->addSelection(QObject::tr("Always prompt (including Live TV)"), "4");
-     gc->addSelection(QObject::tr("Prompt for Live TV only"), "8");
-@@ -1451,7 +1451,7 @@
- {
-     HostCheckBox *gc = new HostCheckBox("EndOfRecordingExitPrompt");
-     gc->setLabel(QObject::tr("Prompt at end of recording"));
+diff -Naur mythtv-master-20141222-5b386a0-old/mythtv/programs/mythfrontend/globalsettings.cpp mythtv-master-20141222-5b386a0-new/mythtv/programs/mythfrontend/globalsettings.cpp
+--- mythtv-master-20141222-5b386a0-old/mythtv/programs/mythfrontend/globalsettings.cpp	2015-06-11 01:01:21.167000002 -0700
++++ mythtv-master-20141222-5b386a0-new/mythtv/programs/mythfrontend/globalsettings.cpp	2015-06-11 01:01:23.029000003 -0700
+@@ -1398,7 +1398,7 @@
+     gc->addSelection(PlaybackSettings::tr("Record date"), "Date");
+     gc->addSelection(PlaybackSettings::tr("Season/Episode"), "Season");
+     gc->addSelection(PlaybackSettings::tr("Original air date"), "OrigAirDate");
+-    gc->addSelection(PlaybackSettings::tr("Program ID"), "Id");
++    gc->addSelection(PlaybackSettings::tr("Program ID"), "Id", true);
+ 
+     gc->setHelpText(PlaybackSettings::tr("Selects how to sort a show's "
+                                          "episodes"));
+@@ -1686,7 +1686,7 @@
+     gc->setLabel(PlaybackSettings::tr("Action on playback exit"));
+ 
+     gc->addSelection(PlaybackSettings::tr("Just exit"), "0");
+-    gc->addSelection(PlaybackSettings::tr("Save position and exit"), "2");
++    gc->addSelection(PlaybackSettings::tr("Save position and exit"), "2", true);
+     gc->addSelection(PlaybackSettings::tr("Always prompt (excluding Live TV)"),
+                      "1");
+     gc->addSelection(PlaybackSettings::tr("Always prompt (including Live TV)"),
+@@ -1708,7 +1708,7 @@
+ 
+     gc->setLabel(PlaybackSettings::tr("Prompt at end of recording"));
+ 
 -    gc->setValue(false);
 +    gc->setValue(true);
-     gc->setHelpText(QObject::tr("If enabled, a menu will be displayed allowing "
-                     "you to delete the recording when it has finished "
-                     "playing."));
-@@ -1514,7 +1514,7 @@
- // {
- //     HostCheckBox *gc = new HostCheckBox("PlaybackPreview");
- //     gc->setLabel(QObject::tr("Display live preview of recordings"));
+ 
+     gc->setHelpText(PlaybackSettings::tr("If enabled, a menu will be displayed "
+                                          "allowing you to delete the recording "
+@@ -1789,7 +1789,7 @@
+ //
+ //     gc->setLabel(PlaybackSettings::tr("Display live preview of recordings"));
+ //
 -//     gc->setValue(true);
 +//     gc->setValue(false);
- //     gc->setHelpText(QObject::tr("If enabled, a preview of the recording "
+ //
+ //     gc->setHelpText(PlaybackSettings::tr("If enabled, a preview of the recording "
  //                     "will play in a small window on the \"Watch a "
- //                     "Recording\" menu."));

@@ -12,6 +12,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.3) \
                                 $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.3) \
                                 $(if $(filter 0.26  ,$(mm_MYTH_VERSION)),0.26.0) \
+                                $(if $(filter 0.27  ,$(mm_MYTH_VERSION)),0.27.4) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
 mm_VERSION_MINIMYTH       ?= 82
@@ -123,7 +124,7 @@ mm_KERNEL_VERSION         ?= 3.7
 # When not set, a built-in kernel configuration file will be used.
 mm_KERNEL_CONFIG          ?=
 # The version of Myth to use.
-# Valid values are '0.22', '0.23', '0.24', '0.25', '0.26', 'master'.
+# Valid values are '0.22', '0.23', '0.24', '0.25', '0.26', '0.27', 'master'.
 mm_MYTH_VERSION           ?= 0.24
 # The version of the NVIDIA driver.
 # Valid values are '304.64' (legacy), '310.32'.
@@ -132,7 +133,7 @@ mm_NVIDIA_VERSION         ?= 304.64
 # may no longer work. The version string format is:
 # master-<date>-<mythtv-git-commit>-<myththemes-git-commit>, where <date> has
 # the format YYYYMMDD.
-mm_MYTHTV_MASTER_VERSION  ?= master-20130118-5a465ba
+mm_MYTHTV_MASTER_VERSION  ?= master-20141222-5b386a0
 # Lists additional packages to build when minimyth is built.
 mm_USER_PACKAGES          ?=
 # Lists additional binaries to include in the MiniMyth image
