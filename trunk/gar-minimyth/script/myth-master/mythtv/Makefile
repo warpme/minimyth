@@ -5,6 +5,7 @@ MASTER_SITES = git://github.com/MythTV/
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES  =
 PATCHFILES += \
+	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-automake_1.13.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-zeromq_cross.patch.gar \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-mythmusic_button_list_quick_scroll.patch \
 	$(GARNAME)-$(word 1,$(subst -, ,$(GARVERSION)))-python_build.patch \
@@ -27,6 +28,7 @@ DEPENDS = \
 	db/mysql \
 	lib/alsa-lib \
 	lib/avahi \
+	lib/exiv2 \
 	lib/fftw3 \
 	lib/fftw3f \
 	lib/freetype \

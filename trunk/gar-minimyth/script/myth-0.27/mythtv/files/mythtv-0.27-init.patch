@@ -1,0 +1,70 @@
+diff -Naur mythtv-0.27-20150529-b7afc9b-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp mythtv-0.27-20150529-b7afc9b-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp
+--- mythtv-0.27-20150529-b7afc9b-old/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2015-06-09 00:07:06.255000363 -0700
++++ mythtv-0.27-20150529-b7afc9b-new/mythplugins/mythgallery/mythgallery/gallerysettings.cpp	2015-06-09 00:07:07.940000363 -0700
+@@ -45,7 +45,7 @@
+ #ifdef Q_OS_MAC
+     gc->setValue(QDir::homePath() + "/Pictures");
+ #else
+-    gc->setValue("/var/lib/pictures");
++    gc->setValue("/mnt/gallery");
+ #endif
+     gc->setHelpText(GallerySettings::tr("This directory must exist and "
+                                         "MythGallery needs to have read "
+@@ -107,7 +107,7 @@
+ {
+     HostLineEdit *gc = new HostLineEdit("GalleryImportDirs");
+     gc->setLabel(GallerySettings::tr("Paths to import images from"));
+-    gc->setValue("/mnt/cdrom:/mnt/camera");
++    gc->setValue("");
+     gc->setHelpText(GallerySettings::tr("This is a colon separated list of "
+                     "paths. If the path in the list is a directory, its "
+                     "contents will be copied. If it is an executable, "
+diff -Naur mythtv-0.27-20150529-b7afc9b-old/mythtv/libs/libmythmetadata/globals.cpp mythtv-0.27-20150529-b7afc9b-new/mythtv/libs/libmythmetadata/globals.cpp
+--- mythtv-0.27-20150529-b7afc9b-old/mythtv/libs/libmythmetadata/globals.cpp	2015-06-09 00:07:06.019000363 -0700
++++ mythtv-0.27-20150529-b7afc9b-new/mythtv/libs/libmythmetadata/globals.cpp	2015-06-09 00:07:07.940000363 -0700
+@@ -42,5 +42,5 @@
+ #ifdef Q_OS_MAC
+ const QString DEFAULT_VIDEOSTARTUP_DIR = QDir::homePath() + "/Movies";
+ #else
+-const QString DEFAULT_VIDEOSTARTUP_DIR = "/share/Movies/dvd";
++const QString DEFAULT_VIDEOSTARTUP_DIR = "/mnt/video";
+ #endif
+diff -Naur mythtv-0.27-20150529-b7afc9b-old/mythtv/programs/mythfrontend/globalsettings.cpp mythtv-0.27-20150529-b7afc9b-new/mythtv/programs/mythfrontend/globalsettings.cpp
+--- mythtv-0.27-20150529-b7afc9b-old/mythtv/programs/mythfrontend/globalsettings.cpp	2015-06-09 00:07:05.179000363 -0700
++++ mythtv-0.27-20150529-b7afc9b-new/mythtv/programs/mythfrontend/globalsettings.cpp	2015-06-09 00:07:07.941000363 -0700
+@@ -1399,7 +1399,7 @@
+     gc->addSelection(PlaybackSettings::tr("Record date"), "Date");
+     gc->addSelection(PlaybackSettings::tr("Season/Episode"), "Season");
+     gc->addSelection(PlaybackSettings::tr("Original air date"), "OrigAirDate");
+-    gc->addSelection(PlaybackSettings::tr("Program ID"), "Id");
++    gc->addSelection(PlaybackSettings::tr("Program ID"), "Id", true);
+ 
+     gc->setHelpText(PlaybackSettings::tr("Selects how to sort a show's "
+                                          "episodes"));
+@@ -1687,7 +1687,7 @@
+     gc->setLabel(PlaybackSettings::tr("Action on playback exit"));
+ 
+     gc->addSelection(PlaybackSettings::tr("Just exit"), "0");
+-    gc->addSelection(PlaybackSettings::tr("Save position and exit"), "2");
++    gc->addSelection(PlaybackSettings::tr("Save position and exit"), "2", true);
+     gc->addSelection(PlaybackSettings::tr("Always prompt (excluding Live TV)"),
+                      "1");
+     gc->addSelection(PlaybackSettings::tr("Always prompt (including Live TV)"),
+@@ -1709,7 +1709,7 @@
+ 
+     gc->setLabel(PlaybackSettings::tr("Prompt at end of recording"));
+ 
+-    gc->setValue(false);
++    gc->setValue(true);
+ 
+     gc->setHelpText(PlaybackSettings::tr("If enabled, a menu will be displayed "
+                                          "allowing you to delete the recording "
+@@ -1790,7 +1790,7 @@
+ //
+ //     gc->setLabel(PlaybackSettings::tr("Display live preview of recordings"));
+ //
+-//     gc->setValue(true);
++//     gc->setValue(false);
+ //
+ //     gc->setHelpText(PlaybackSettings::tr("If enabled, a preview of the recording "
+ //                     "will play in a small window on the \"Watch a "

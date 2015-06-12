@@ -200,6 +200,7 @@ mm-all:
 	    [ ! "$(mm_MYTH_VERSION)" = "0.24"   ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "0.25"   ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "0.26"   ] && \
+	    [ ! "$(mm_MYTH_VERSION)" = "0.27"   ] && \
 	    [ ! "$(mm_MYTH_VERSION)" = "master" ] ; then \
 		echo "error: mm_MYTH_VERSION=\"$(mm_MYTH_VERSION)\" is an invalid value." ; \
 		exit 1 ; \
