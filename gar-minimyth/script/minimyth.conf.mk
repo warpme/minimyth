@@ -11,7 +11,7 @@ mm_VERSION_MYTH           ?= $(strip \
                                 $(if $(filter 0.23  ,$(mm_MYTH_VERSION)),0.23.1) \
                                 $(if $(filter 0.24  ,$(mm_MYTH_VERSION)),0.24.3) \
                                 $(if $(filter 0.25  ,$(mm_MYTH_VERSION)),0.25.3) \
-                                $(if $(filter 0.26  ,$(mm_MYTH_VERSION)),0.26.0) \
+                                $(if $(filter 0.26  ,$(mm_MYTH_VERSION)),0.26.2) \
                                 $(if $(filter 0.27  ,$(mm_MYTH_VERSION)),0.27.4) \
                                 $(if $(filter master,$(mm_MYTH_VERSION)),master) \
                               )
