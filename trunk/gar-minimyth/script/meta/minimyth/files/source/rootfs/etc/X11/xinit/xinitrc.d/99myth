@@ -20,7 +20,8 @@ if   (   /usr/bin/test "${MM_VERSION_MYTH_BINARY_MAJOR}" = "0"       ) &&
     elif /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythwelcome"  ; then
         /usr/bin/mythwelcome 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
     fi
-else
+elif (   /usr/bin/test "${MM_VERSION_MYTH_BINARY_MAJOR}" = "0"       ) &&
+     ( ( /usr/bin/test "${MM_VERSION_MYTH_BINARY_MINOR}" = "25" )    ) ; then
     if   /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythfrontend" ; then
         args=""
         if   /usr/bin/test "${MM_DEBUG}" = "yes" ; then
@@ -40,6 +41,27 @@ else
             args="${args} --loglevel=warning"
         fi
         args="${args} --nodblog"
+        args="${args} --syslog=local0"
+        /usr/bin/mythwelcome ${args} 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
+    fi
+else
+    if   /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythfrontend" ; then
+        args=""
+        if   /usr/bin/test "${MM_DEBUG}" = "yes" ; then
+            args="${args} --loglevel=debug"
+        else
+            args="${args} --loglevel=warning"
+        fi
+        args="${args} --syslog=local0"
+        args="${args} -d"
+        /usr/bin/mythfrontend ${args} 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
+    elif /usr/bin/test "${MM_X_MYTH_PROGRAM}" = "mythwelcome"  ; then
+        args=""
+        if   /usr/bin/test "${MM_DEBUG}" = "yes" ; then
+            args="${args} --loglevel=debug"
+        else
+            args="${args} --loglevel=warning"
+        fi
         args="${args} --syslog=local0"
         /usr/bin/mythwelcome ${args} 2>&1 | /usr/bin/logger -t mythwelcome -p local0.info
     fi
