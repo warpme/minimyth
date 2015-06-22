@@ -1,12 +1,9 @@
 GARNAME = alsa-lib
-GARVERSION = 1.0.26
+GARVERSION = 1.0.29
 CATEGORIES = lib
 MASTER_SITES  = ftp://ftp.alsa-project.org/pub/lib/
 MASTER_SITES += ftp://ftp.alsa-project.org/pub/testing/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch \
-	$(DISTNAME)-sys_types_h.patch
 LICENSE = LGPL2_1
 
 DESCRIPTION = 
@@ -24,14 +21,15 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--enable-symbolic-functions \
-	--disable-debug-assert \
-	--enable-aload \
+	--disable-debug \
 	--disable-resmgr \
+	--enable-aload \
 	--enable-mixer \
 	--enable-pcm \
 	--enable-rawmidi \
 	--enable-hwdep \
 	--enable-seq \
+	--enable-ucm \
 	--enable-alisp \
 	--disable-old-symbols \
 	--disable-python \
@@ -44,7 +42,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
-# alsa-lib 1.0.26 fails to compile with gcc 4.7.2's link time optimization enabled.
+# alsa-lib 1.0.29 fails to compile with gcc 4.7.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 

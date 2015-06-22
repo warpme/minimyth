@@ -19,8 +19,7 @@ DEPENDS = \
 	lib/libcdio \
 	lib/libcdio-paranoia \
 	lib/libogg \
-	lib/libvorbis \
-	lib/taglib
+	lib/libvorbis
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
