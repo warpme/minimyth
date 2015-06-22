@@ -200,6 +200,7 @@ install-source:
 post-install: post-install-mythtv-version
 	@rm -f $(DESTDIR)$(bindir)/mythtv
 	@mv $(DESTDIR)$(bindir)/mythavtest $(DESTDIR)$(bindir)/mythtv
+	@rm -f $(DESTDIR)$(libdir)/libmythzmq.la
 	@$(MAKECOOKIE)
 
 clean-all:
