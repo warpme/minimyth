@@ -1,6 +1,7 @@
 GARNAME = mame
 GARVERSION = 0.148
 CATEGORIES = emulators
+MASTER_SITES = http://github.com/mamedev/mame/releases/download/$(GARNAME)$(subst .,,$(GARVERSION))/
 DISTFILES = $(GARNAME)$(subst .,,$(GARVERSION))s.zip
 PATCHFILES  = $(DISTNAME).patch.gar $(DISTNAME)-no_gtk.patch
 ifneq ($(DESTIMG),build)
