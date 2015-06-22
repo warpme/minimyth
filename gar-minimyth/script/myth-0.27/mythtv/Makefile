@@ -40,6 +40,7 @@ DEPENDS = \
 	lib/libiec61883 \
 	lib/libxml2 \
 	lib/openssl \
+	lib/taglib \
 	lib/zlib \
 	python/python \
 	python/python-MySQL-python \

@@ -8,7 +8,7 @@ define BLURB
 endef
 
 DEPENDS = \
-	$(filter-out %/Makefile %/kernel %/alsa-driver,$(subst ../../,,$(wildcard ../../kernel-3.7/*)))
+	$(filter-out %/Makefile %/kernel,$(subst ../../,,$(wildcard ../../kernel-3.7/*)))
 
 GAR_EXTRA_CONF += kernel-3.7/linux/package-api.mk
 include ../../gar.mk
