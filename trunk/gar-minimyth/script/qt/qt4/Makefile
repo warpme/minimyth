@@ -1,7 +1,8 @@
 GARNAME = qt-everywhere-opensource-src
-GARVERSION = 4.8.4
+GARVERSION = 4.8.7
 CATEGORIES = qt
-MASTER_SITES = http://download.qt.io/archive/qt/4.8/$(GARVERSION)/
+MASTER_SITES  = http://download.qt.io/official_releases/qt/4.8/$(GARVERSION)/
+MASTER_SITES += http://download.qt.io/archive/qt/4.8/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = \
 	$(DISTNAME).patch.gar
