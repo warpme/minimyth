@@ -380,6 +380,7 @@ OFL1_1_LICENSE_TEXT = $(LICENSEDIR)/OFL1_1.txt
 Artistic_LICENSE_TEXT = $(LICENSEDIR)/Artistic.txt
 Clarified_Artistic_LICENSE_TEXT = $(LICENSEDIR)/Clarified_Artistic.txt
 Public_Domain_LICENSE_TEXT = $(LICENSEDIR)/Public_Domain.txt
+zlib_LICENSE_TEXT = $(LICENSEDIR)/zlib.txt
 
 install-version:
 	@install -d $(DESTDIR)$(versiondir) 
