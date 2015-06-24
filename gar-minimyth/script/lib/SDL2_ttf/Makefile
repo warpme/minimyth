@@ -1,31 +1,33 @@
-GARNAME = SDL_net
-GARVERSION = 1.2.8
+GARNAME = SDL2_ttf
+GARVERSION = 2.0.12
 CATEGORIES = lib
-MASTER_SITES = http://www.libsdl.org/projects/$(GARNAME)/release/
+MASTER_SITES = http://www.libsdl.org/projects/SDL_ttf/release/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-configure.patch
-LICENSE = $(GARNAME)
-$(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
+LICENSE = zlib
 
 DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/SDL
+DEPENDS = lang/c lib/freetype lib/SDL2 xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--x-includes="$(DESTDIR)$(includedir)" \
+	--x-libraries="$(DESTDIR)$(libdir)" \
 	--enable-shared \
 	--disable-static \
+	--disable-silent-rules \
 	--disable-sdltest \
-	--disable-gui \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--with-x
 
 CONFIGURE_ENV = \
-	SDL_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl-config
+	SDL2_CONFIG=$(DESTDIR)$(prefix)/bin-config/sdl2-config
 
 include ../../gar.mk
 
@@ -44,5 +46,5 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -rf $(DESTDIR)$(libdir)/libSDL_net.la
+	@rm -rf $(DESTDIR)$(libdir)/libSDL2_ttf.la
 	@$(MAKECOOKIE)
