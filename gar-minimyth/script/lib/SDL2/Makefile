@@ -35,13 +35,18 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-haptic \
 	--enable-power \
 	--enable-filesystem \
-	\
 	--enable-threads \
 	--enable-timers \
 	--enable-file \
 	--enable-loadso \
 	--enable-cpuinfo \
 	--enable-assembly \
+	--disable-ssemath \
+	--enable-mmx \
+	--enable-3dnow \
+	--enable-sse \
+	--disable-sse2 \
+	--disable-altivec \
 	--disable-oss \
 	--enable-alsa \
 	--enable-alsatest \
@@ -54,18 +59,33 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-arts \
 	--disable-arts-shared \
 	--disable-nas \
+	--disable-nas-shared \
+	--disable-sndio \
+	--disable-sndio-shared \
 	--disable-diskaudio \
 	--disable-dummyaudio \
-	--disable-altivec \
+	--disable-video-wayland \
+	--disable-video-wayland-qt-touch \
+	--disable-wayland-shared \
+	--disable-video-mir \
+	--disable-mir-shared \
 	--enable-video-x11 \
 	--enable-x11-shared \
-	--enable-video-x11-vm \
+	--enable-video-x11-xcursor \
 	--enable-video-x11-xinerama \
+	--enable-video-x11-xinput \
 	--enable-video-x11-xrandr \
+	--disable-video-x11-scrnsaver \
+	--enable-video-x11-xshape \
+	--enable-video-x11-vm \
 	--disable-video-cocoa \
 	--disable-video-directfb \
+	--disable-directfb-shared \
+	--disable-fusionsound \
+	--disable-fusionsound-shared \
 	--enable-video-dummy \
 	--enable-video-opengl \
+	--disable-video-opengles \
 	--disable-libudev \
   	--disable-dbus \
 	--disable-input-tslib \
