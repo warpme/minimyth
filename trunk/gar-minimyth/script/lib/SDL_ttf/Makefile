@@ -31,13 +31,16 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-LDFLAGS += -lm
-
 pre-configure:
-	@cd $(WORKSRC) ; rm -f acinclude/sdl.m4
-	@cd $(WORKSRC) ; touch NEWS
+	@cd $(WORKSRC) ; rm -rf acinclude
+	@cd $(WORKSRC) ; mkdir -p acinclude
+	@cd $(WORKSRC) ; rm -f aclocal.m4
 	@cd $(WORKSRC) ; touch AUTHORS
 	@cd $(WORKSRC) ; touch ChangeLog
+	@cd $(WORKSRC) ; touch COPYING
+	@cd $(WORKSRC) ; touch INSTALL
+	@cd $(WORKSRC) ; touch NEWS
+	@cd $(WORKSRC) ; touch README
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
