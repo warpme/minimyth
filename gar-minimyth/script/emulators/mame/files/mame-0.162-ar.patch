@@ -1,0 +1,52 @@
+diff -Naur mame-0.162-old/makefile mame-0.162-new/makefile
+--- mame-0.162-old/makefile	2015-05-27 10:44:32.000000000 -0700
++++ mame-0.162-new/makefile	2015-06-26 07:38:08.571001554 -0700
+@@ -67,6 +67,7 @@
+ # OVERRIDE_CC = cc
+ # OVERRIDE_CXX = c++
+ # OVERRIDE_LD = ld
++# OVERRIDE_AR = ar
+ 
+ # DEPRECATED = 1
+ # LTO = 1
+@@ -328,6 +329,12 @@
+ LD := $(OVERRIDE_LD)
+ endif
+ endif
++ifdef OVERRIDE_AR
++PARAMS += --AR='$(OVERRIDE_AR)'
++ifndef CROSS_BUILD
++AR := $(OVERRIDE_AR)
++endif
++endif
+ 
+ #-------------------------------------------------
+ # sanity check the configuration
+diff -Naur mame-0.162-old/scripts/genie.lua mame-0.162-new/scripts/genie.lua
+--- mame-0.162-old/scripts/genie.lua	2015-05-27 10:44:32.000000000 -0700
++++ mame-0.162-new/scripts/genie.lua	2015-06-26 07:39:21.019000645 -0700
+@@ -134,6 +134,11 @@
+ }
+ 
+ newoption {
++	trigger = "AR",
++	description = "AR replacement",
++}
++
++newoption {
+ 	trigger = "PROFILE",
+ 	description = "Enable profiling.",
+ }
+diff -Naur mame-0.162-old/scripts/toolchain.lua mame-0.162-new/scripts/toolchain.lua
+--- mame-0.162-old/scripts/toolchain.lua	2015-05-27 10:44:32.000000000 -0700
++++ mame-0.162-new/scripts/toolchain.lua	2015-06-26 07:40:14.324000145 -0700
+@@ -357,6 +357,9 @@
+ 	if (_OPTIONS["LD"] ~= nil) then
+ 		premake.gcc.ld  = _OPTIONS["LD"]
+ 	end	
++	if (_OPTIONS["AR"] ~= nil) then
++		premake.gcc.ar  = _OPTIONS["AR"]
++	end	
+ 	
+ 	configuration {} -- reset configuration
+ 
