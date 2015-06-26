@@ -27,11 +27,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-openmp \
 	--disable-loongson-mmi \
 	--enable-mmx \
-	--enable-sse2 \
+	$(if $(filter i386 i486 i586 c3 c3-2 pentium-mmx,$($(DESTIMG)_GARCH)),--disable-sse2,--enable-sse2) \
 	--disable-vmx \
 	--disable-arm-simd \
 	--disable-arm-neon \
 	--disable-arm-iwmmxt \
+	--disable-arm-iwmmxt2 \
 	--disable-mips-dspr2 \
 	--enable-gcc-inline-asm \
 	--disable-timers \
@@ -41,10 +42,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
-
-# pixman 0.28.2 fails to compile with gcc 4.7.2's for i386-pentium with link time optimization enabled.
-CFLAGS  := $(filter-out -flto, $(CFLAGS))
-LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)

@@ -5,6 +5,7 @@ MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/3.
 DISTFILES  = $(DISTNAME).tar.gz
 DISTFILES += config.cache.$(GARCH_FAMILY)
 PATCHFILES = \
+	$(DISTNAME)-gcc_4.9.patch \
 	$(DISTNAME)-automake_1.12.patch \
 	$(DISTNAME)-am_path_gtk.patch
 LICENSE = LGPL2
@@ -46,6 +47,11 @@ CONFIGURE_ENV = \
 include ../../gar.mk
 
 PARALLELMFLAGS := -j1
+
+# lame 3.99.5 fails to compile with gcc 4.9.2's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
 
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache

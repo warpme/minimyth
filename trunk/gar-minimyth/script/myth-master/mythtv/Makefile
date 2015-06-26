@@ -180,7 +180,7 @@ LDFLAGS  += -DPIC
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
 
-# mythtv master fails to compile with gcc 4.7.0's link time optimization enabled.
+# mythtv master fails to compile with gcc 4.9.2's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))

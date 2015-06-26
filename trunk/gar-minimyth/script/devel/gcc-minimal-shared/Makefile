@@ -18,7 +18,7 @@ DEPENDS  = lang/c devel/binutils
 else
 DEPENDS  =
 endif
-DEPENDS += devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
+DEPENDS += devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -39,21 +39,21 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--enable-__cxa_atexit \
 	--enable-clocale=gnu \
 	--enable-languages=c \
+	--disable-libatomic \
 	--disable-libgomp \
-	--disable-libmudflap \
 	--enable-gold \
 	--enable-ld \
 	--disable-libquadmath \
 	--disable-libquadmath-support \
 	--disable-libada \
 	--disable-libssp \
-	--disable-ppl-version-check \
 	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-multilib \
 	--disable-nls \
 	--disable-decimal-float \
 	--enable-shared \
+	--enable-host-shared \
 	--enable-threads=no \
 	--enable-version-specific-runtime-libs \
 	--with-mpc-include=$(DESTDIR)$(includedir) \
@@ -62,8 +62,6 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
-	--with-ppl-include=$(DESTDIR)$(includedir) \
-	--with-ppl-lib=$(DESTDIR)$(libdir) \
 	--with-cloog-include=$(DESTDIR)$(includedir) \
 	--with-cloog-lib=$(DESTDIR)$(libdir) \
 	--with-libelf-include=$(DESTDIR)$(includedir) \
