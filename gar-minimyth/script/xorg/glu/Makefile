@@ -20,6 +20,8 @@ INSTALL_SCRIPTS    = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
+	--enable-shared \
+	--disable-static \
 	--disable-debug \
 	--disable-osmesa \
 	--with-gnu-ld

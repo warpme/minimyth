@@ -2,8 +2,7 @@ GARNAME = mpfr
 GARVERSION = $(MPFR_VERSION)
 CATEGORIES = devel
 MASTER_SITES = http://www.mpfr.org/mpfr-current/
-DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-allpatches_20141204.patch
+DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL3/LGPL3
 
 DESCRIPTION = 
@@ -18,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--with-gmp-include=$(DESTDIR)$(includedir) \

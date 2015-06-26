@@ -180,7 +180,7 @@ LDFLAGS  += -DPIC
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
 
-# mythtv 0.27 fails to compile with gcc 4.7.0's link time optimization enabled.
+# mythtv 0.27 fails to compile with gcc 4.9.2's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
@@ -202,6 +202,7 @@ post-install: post-install-mythtv-version
 	@rm -f $(DESTDIR)$(bindir)/mythtv
 	@mv $(DESTDIR)$(bindir)/mythavtest $(DESTDIR)$(bindir)/mythtv
 	@rm -f $(DESTDIR)$(libdir)/libmythzmq.la
+	@rm -f $(DESTDIR)$(libdir)/libmythzmq.a
 	@$(MAKECOOKIE)
 
 clean-all:

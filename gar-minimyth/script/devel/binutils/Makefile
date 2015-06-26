@@ -18,7 +18,7 @@ endef
 CROSSIMG ?= $(DESTIMG)
 GARTARGET = $($(CROSSIMG)_GARHOST)
 
-DEPENDS  = lang/c devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr devel/ppl
+DEPENDS  = lang/c devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr
 BUILDDEPS = devel-tainted/devel-tainted devel/make
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -30,14 +30,12 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# Disable PPL version check as the PPL major version number has been bumped so the check fails.
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(GARTARGET) \
 	--enable-plugins \
 	--disable-gold \
-	--enable-ld \
+	--enable-ld=default \
 	--disable-libada \
 	--disable-libssp \
-	--disable-ppl-version-check \
 	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-werror \
@@ -50,8 +48,6 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
-	--with-ppl-include=$(DESTDIR)$(includedir) \
-	--with-ppl-lib=$(DESTDIR)$(libdir) \
 	--with-cloog-include=$(DESTDIR)$(includedir) \
 	--with-cloog-lib=$(DESTDIR)$(libdir) \
 	--with-libelf-include=$(DESTDIR)$(includedir) \

@@ -60,6 +60,11 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
+# mednafen 0.9.38.4 fails to compile with GCC 4.9.2's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
+
 LDFLAGS := $(LDFLAGS) -fwhole-program
 
 pre-configure:
