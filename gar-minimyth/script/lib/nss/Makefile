@@ -45,6 +45,9 @@ include ../../gar.mk
 
 PARALLELMFLAGS := -j1
 
+# nss 3.14.1.with.ckbi.1.93 uses cross LDFLAGS during native build.
+LDFLAGS :=
+
 install-custom:
 	@mkdir -p $(DESTDIR)$(libdir)
 	@$(foreach lib, $(wildcard $(WORKSRC)/mozilla/dist/Linux*/lib/*.so), cp -f $(lib) $(DESTDIR)$(libdir) ; )
