@@ -30,10 +30,9 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-bind-now \
-	--enable-kernel=3.6.0 \
+	--enable-kernel=3.7.0 \
 	--disable-build-nscd \
 	--disable-nscd \
-	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-gd \
 	--without-cvs \
 	--with-elf \
@@ -73,11 +72,7 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-# gcc was compiled staticly so there is no linker plugin.
-CFLAGS  := $(filter-out -fuse-linker-plugin, $(CFLAGS))
-LDFLAGS := $(filter-out -fuse-linker-plugin, $(LDFLAGS))
-
-# glibc 2.17 fails to compile with gcc 4.7.2's link time optimization enabled.
+# glibc 2.17 fails to compile with gcc 4.9.2's link time optimization enabled.
 CFLAGS  := $(filter-out -flto, $(CFLAGS))
 LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
