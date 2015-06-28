@@ -8,7 +8,8 @@ PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-001 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-002 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-003 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-004
+	$(GARNAME)$(subst .,,$(GARVERSION))-004 \
+	$(GARNAME)$(subst .,,$(GARVERSION))-005
 PATCHFILES += \
 	$(DISTNAME)-shlib_libs.patch
 LICENSE = GPL3
