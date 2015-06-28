@@ -19,10 +19,9 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--disable-sanity-checks \
-	--enable-kernel=3.6.0 \
+	--enable-kernel=3.7.0 \
 	--disable-build-nscd \
 	--disable-nscd \
-	--with-binutils=$(build_DESTDIR)$(build_bindir) \
 	--without-cvs \
 	--with-headers=$(DESTDIR)$(includedir) \
 	--disable-add-ons \
@@ -51,19 +50,18 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-DEFAULT_ENV   := \
-	DESTDIR="$(DESTDIR)" \
-	CC="$(build_CC)" \
-	CXX="$(build_CXX)" \
-	LD="$(build_LD)" \
-	AR="$(build_AR)" \
-	AS="$(build_AS)" \
-	OBJDUMP="$(build_OBJDUMP)" \
-	RANLIB="$(build_RANLIB)" \
-	libc_cv_386_tls="yes"
-CONFIGURE_ENV := $(DEFAULT_ENV)
-BUILD_ENV     := $(DEFAULT_ENV)
-INSTALL_ENV   := $(DEFAULT_ENV)
+CPP      := $(build_CPP)
+CC       := $(build_CC)
+CXX      := $(build_CXX)
+LD       := $(build_LD)
+AR       := $(build_AR)
+AS       := $(build_AS)
+OBJDUMP  := $(build_OBJDUMP)
+RANLIB   := $(build_RANLIB)
+CPPFLAGS :=
+CFLAGS   :=
+CXXFLAGS :=
+LDFLAGS  :=
 
 pre-configure:
 	@cd $(WORKSRC) ; aclocal       --force --verbose
