@@ -33,6 +33,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-rpath \
 	--disable-relink \
 	--disable-rpath-hack \
+	--enable-overwrite \
 	--disable-widec \
 	--enable-termcap
 ifneq ($(DESTIMG),build)
