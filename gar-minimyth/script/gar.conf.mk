@@ -94,15 +94,16 @@ build_chroot_DESTDIR ?= /tmp/chroot
 
 # allow us to link to libraries we installed
 main_CPPFLAGS += 
+main_CFLAGS += -pipe -flto
 main_CFLAGS += $(mm_CFLAGS)
-main_LDFLAGS += -flto -fuse-linker-plugin -Wl,--as-needed
 main_CXXFLAGS += $(main_CFLAGS)
+main_LDFLAGS += -Wl,--as-needed $(main_CFLAGS)
 
 # allow us to link to libraries we installed
 build_CPPFLAGS += 
 build_CFLAGS += -pipe -march=$(build_GARCH) -O2 $(if $(filter i386,$(build_GARCH_FAMILY)),-m32) $(if $(filter x86_64,$(build_GARCH_FAMILY)),-m64)
 build_CXXFLAGS += $(build_CFLAGS)
-build_LDFLAGS += 
+build_LDFLAGS += $(build_CFLAGS)
 
 # Default main_CC to gcc, $(DESTIMG)_CC to main_CC and set CC based on $(DESTIMG)
 main_compiler_prefix ?= $(GARHOST)-
