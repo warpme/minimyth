@@ -19,7 +19,7 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--disable-sanity-checks \
-	--enable-kernel=3.7.0 \
+	--enable-kernel=3.18.0 \
 	--disable-build-nscd \
 	--disable-nscd \
 	--without-cvs \
@@ -64,8 +64,8 @@ CXXFLAGS :=
 LDFLAGS  :=
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal       --force --verbose
-	@cd $(WORKSRC) ; autoconf-2.68 --force --verbose
+	@cd $(WORKSRC) ; aclocal  --force --verbose
+	@cd $(WORKSRC) ; autoconf --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
@@ -84,9 +84,9 @@ install-custom:
 
 post-install:
 	@mkdir -p $(DESTDIR)$(includedir)/gnu
-	@mkdir -p $(DESTDIR)$(includedir)/bits
 	@touch $(DESTDIR)$(includedir)/gnu/stubs.h
-	@cp $(WORKBLD)/bits/stdio_lim.h $(DESTDIR)$(includedir)/bits
-	@cp $(WORKSRC)/nptl/sysdeps/pthread/pthread.h $(DESTDIR)$(includedir)
-	@cp $(WORKSRC)/nptl/sysdeps/unix/sysv/linux/x86/bits/pthreadtypes.h $(DESTDIR)$(includedir)/bits
+	@#mkdir -p $(DESTDIR)$(includedir)/bits
+	@#cp $(WORKBLD)/bits/stdio_lim.h $(DESTDIR)$(includedir)/bits
+	@#cp $(WORKSRC)/nptl/sysdeps/pthread/pthread.h $(DESTDIR)$(includedir)
+	@#cp $(WORKSRC)/nptl/sysdeps/unix/sysv/linux/x86/bits/pthreadtypes.h $(DESTDIR)$(includedir)/bits
 	@$(MAKECOOKIE)
