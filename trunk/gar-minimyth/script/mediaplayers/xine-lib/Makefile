@@ -1,5 +1,5 @@
 GARNAME = xine-lib
-GARVERSION = 1.2.2
+GARVERSION = 1.2.6
 CATEGORIES = mediaplayers
 MASTER_SITES = http://downloads.sourceforge.net/project/xine/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.xz
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/freetype lib/libbluray lib/libcdio lib/libdca lib/libdvdnav lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libvdpau xorg/xorg
+DEPENDS = lang/c lib/alsa-lib lib/faad2 lib/ffmpeg lib/freetype lib/libbluray lib/libcdio lib/libdca lib/libdvdnav lib/libjpeg lib/libmad lib/libmng lib/libpng lib/vcdimager lib/zlib X11/libva X11/libvdpau xorg/xorg
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -54,6 +54,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static-xv \
 	--enable-xvmc \
 	--enable-vdpau \
+	--enable-vaapi \
 	--disable-dvb \
 	--disable-gnomevfs \
 	--disable-samba \
@@ -63,11 +64,13 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-vcd \
 	--disable-vdr \
 	--enable-bluray \
+	--enable-avformat \
 	--enable-a52dec \
 	--enable-asf \
 	--enable-nosefart \
 	--enable-faad \
 	--disable-gdkpixbuf \
+	--enable-libjpeg \
 	--enable-dts \
 	--enable-mad \
 	--disable-modplug \
@@ -78,6 +81,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-mng \
 	--enable-real-codecs \
 	$(if $(filter i386,$(GARCH_FAMILY)),--enable-w32dll,--disable-w32dll) \
+	--disable-vpx \
+	--disable-mmal \
 	--with-gnu-ld \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
@@ -122,8 +127,9 @@ INSTALL_ENV   = \
 
 include ../../gar.mk
 
-# xine-lib 1.2.2 fails to compile with -Os.
-CFLAGS  := $(if $(filter -Os, $(CFLAGS)), $(filter-out -Os, $(CFLAGS)) -O1)
+# xine-lib 1.2.6 fails to compile with -Os.
+CFLAGS  := $(if $(filter -Os, $(CFLAGS)),  $(filter-out -Os, $(CFLAGS)) -O1)
+LDFLAGS := $(if $(filter -Os, $(LDFLAGS)), $(filter-out -Os, $(LDFLAGS)) -O1)
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
