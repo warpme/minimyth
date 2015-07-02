@@ -1,6 +1,6 @@
 GARNAME = linux-firmware
 GARVERSION = 20150513-3161bfa
-CATEGORIES = kernel-3.7
+CATEGORIES = kernel-3.18
 MASTER_SITES = git://git.kernel.org/pub/scm/linux/kernel/git/firmware/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE =
@@ -9,7 +9,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c kernel-3.7/linux
+DEPENDS = lang/c kernel-3.18/linux
 
 INSTALL_SCRIPTS = custom
 

@@ -1612,11 +1612,12 @@ sub url_mount
             $dir = "/initrd/rw/loopfs/$dir";
             my $file = 'image.sfs';
             File::Path::mkpath("$dir", { mode => 0755 });
-            File::Path::mkpath("$dir/ro", { mode => 0755 });
-            File::Path::mkpath("$dir/rw", { mode => 0755 });
+            File::Path::mkpath("$dir/ld", { mode => 0755 });
+            File::Path::mkpath("$dir/ud", { mode => 0755 });
+            File::Path::mkpath("$dir/wd", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
-            system(qq(/bin/mount -t squashfs -o ro,loop "$dir/$file" "$dir/ro")) && return 0;
-            system(qq(/bin/mount -t overlayfs -o lowerdir=$dir/ro,upperdir=$dir/rw none "$mount_dir")) && return 0;
+            system(qq(/bin/mount -t squashfs -o ro,loop "$dir/$file" "$dir/ld")) && return 0;
+            system(qq(/bin/mount -t overlay -o lowerdir=$dir/ld,upperdir=$dir/ud,workdir=$dir/wd none "$mount_dir")) && return 0;
         }
         elsif ($url_ext1 eq 'cmg')
         {
@@ -1625,11 +1626,12 @@ sub url_mount
             $dir = "/initrd/rw/loopfs/$dir";
             my $file = 'image.cmg';
             File::Path::mkpath("$dir", { mode => 0755 });
-            File::Path::mkpath("$dir/ro", { mode => 0755 });
-            File::Path::mkpath("$dir/rw", { mode => 0755 });
+            File::Path::mkpath("$dir/ld", { mode => 0755 });
+            File::Path::mkpath("$dir/ud", { mode => 0755 });
+            File::Path::mkpath("$dir/wd", { mode => 0755 });
             $self->url_get($url, "$dir/$file") || return 0;
-            system(qq(/bin/mount -t cramfs -o ro,loop "$dir/$file" "$dir/ro")) && return 0;
-            system(qq(/bin/mount -t overlayfs -o lowerdir=$dir/ro,upperdir=$dir/rw none "$mount_dir")) && return 0;
+            system(qq(/bin/mount -t squashfs -o ro,loop "$dir/$file" "$dir/ld")) && return 0;
+            system(qq(/bin/mount -t overlay -o lowerdir=$dir/ld,upperdir=$dir/ud,workdir=$dir/wd none "$mount_dir")) && return 0;
         }
         elsif (($url_ext1 eq 'bz2') && ($url_ext2 eq 'tar'))
         {

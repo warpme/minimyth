@@ -39,7 +39,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--with-x \
 	--with-kerneldir="$(DESTDIR)$(LINUX_SOURCEDIR)" \
 	--with-moduledir="$(LINUX_MODULESDIR)/misc/lirc" \
-	--with-driver=all \
+	--with-driver=userspace \
 	--with-transmitter \
 	--with-syslog
 BUILD_ARGS     = $(LINUX_MAKE_ARGS)
