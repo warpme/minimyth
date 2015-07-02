@@ -6,7 +6,8 @@ MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(DISTNAME)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/prerelease-$(GCC_VERSION)/
 MASTER_SITES += ftp://gcc.gnu.org/pub/$(GARNAME)/snapshots/$(GCC_VERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-disable_multilib_i386_linux64.patch
+PATCHFILES  = $(DISTNAME)-rpc.patch
+PATCHFILES += $(DISTNAME)-disable_multilib_i386_linux64.patch
 ifneq ("$(DESTIMG)+$(CROSSIMG)","build+build")
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 PATCHFILES += $(DISTNAME)-dynamic_linker.patch
@@ -23,7 +24,7 @@ GARTARGET = $($(CROSSIMG)_GARHOST)
 
 IMGDEPS += $(CROSSIMG)
 $(CROSSIMG)_DEPENDS = devel/glibc
-DEPENDS   = lang/c devel/cloog devel/gmp devel/libelf devel/mpc devel/mpfr
+DEPENDS   = lang/c devel/gmp devel/isl devel/libelf devel/mpc devel/mpfr
 BUILDDEPS = devel/make devel/binutils
 
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
@@ -51,7 +52,6 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--disable-libquadmath-support \
 	--disable-libada \
 	--disable-libssp \
-	--enable-cloog-backend=isl \
 	--enable-lto \
 	--disable-multilib \
 	--enable-nls \
@@ -66,8 +66,8 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
-	--with-cloog-include=$(DESTDIR)$(includedir) \
-	--with-cloog-lib=$(DESTDIR)$(libdir) \
+	--with-isl-include=$(DESTDIR)$(includedir) \
+	--with-isl-lib=$(DESTDIR)$(libdir) \
 	--with-libelf-include=$(DESTDIR)$(includedir) \
 	--with-libelf-lib=$(DESTDIR)$(libdir) \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
@@ -86,10 +86,12 @@ configure-custom:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/libcc1.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libasan.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libatomic.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libcilkrts.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libgomp.la
+	@rm -f $(CROSS_GCC_LIBDIR)/libgomp-plugin-host_nonshm.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libitm.la
 	@rm -f $(CROSS_GCC_LIBDIR)/liblsan.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libssp.la
@@ -99,6 +101,7 @@ post-install:
 	@rm -f $(CROSS_GCC_LIBDIR)/libtsan.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libubsan.la
 	@rm -f $(CROSS_GCC_LIBDIR)/libvtv.la
+	@rm -f $(CROSS_GCC_LIBDIR)/plugin/libcc1plugin.la
 	@rm -f $(CROSS_GCC_LIBEXECDIR)/liblto_plugin.la
 	@# Native compile.
 	@$(if $(filter     $(DESTIMG),$(CROSSIMG)), \

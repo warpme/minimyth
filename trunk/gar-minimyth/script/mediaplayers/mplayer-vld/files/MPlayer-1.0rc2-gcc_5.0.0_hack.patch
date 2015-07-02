@@ -1,0 +1,39 @@
+diff -Naur MPlayer-1.0rc2-old/configure MPlayer-1.0rc2-new/configure
+--- MPlayer-1.0rc2-old/configure	2015-06-30 17:18:56.509001457 -0700
++++ MPlayer-1.0rc2-new/configure	2015-06-30 17:35:05.163013664 -0700
+@@ -1424,7 +1424,7 @@
+       cc_version="v. ?.??, bad"
+       cc_verc_fail=yes
+       ;;
+-    2.95.[2-9]|2.95.[2-9][-.]*|[3-4].*)
++    2.95.[2-9]|2.95.[2-9][-.]*|[3-5].*)
+       _cc_major=`echo $cc_version | cut -d '.' -f 1`
+       _cc_minor=`echo $cc_version | cut -d '.' -f 2`
+       _cc_mini=`echo $cc_version | cut -d '.' -f 3`
+@@ -2320,18 +2320,22 @@
+ fi # if darwin && test "$cc_vendor" = "gnu" ; then
+ 
+ 
++_std=""
++if test "$cc_vendor" = "gnu" && test "$_cc_major" -ge 5 ; then
++  _std="-std=gnu89"
++fi
+ # Checking for CFLAGS
+ _install_strip="-s"
+ if test "$_profile" != "" || test "$_debug" != "" ; then
+-  CFLAGS="-W -Wall -O2 $_march $_mcpu $_pipe $_debug $_profile"
++  CFLAGS="$_std -W -Wall -O2 $_march $_mcpu $_pipe $_debug $_profile"
+   _install_strip=
+ elif test -z "$CFLAGS" ; then
+   if test "$cc_vendor" = "intel" ; then
+-    CFLAGS="-O2 $_march $_mcpu $_pipe -fomit-frame-pointer -wd167 -wd556 -wd144"
++    CFLAGS="$_std -O2 $_march $_mcpu $_pipe -fomit-frame-pointer -wd167 -wd556 -wd144"
+   elif test "$cc_vendor" != "gnu" ; then
+-    CFLAGS="-O2 $_march $_mcpu $_pipe"
++    CFLAGS="$_std -O2 $_march $_mcpu $_pipe"
+   else
+-    CFLAGS="-Wall -Wno-switch -Wpointer-arith -Wredundant-decls -O2 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
++    CFLAGS="$_std -Wall -Wno-switch -Wpointer-arith -Wredundant-decls -O2 $_march $_mcpu $_pipe -ffast-math -fomit-frame-pointer"
+   fi
+ else
+   _warn_CFLAGS=yes

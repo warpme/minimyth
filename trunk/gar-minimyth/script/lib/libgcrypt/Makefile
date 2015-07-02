@@ -27,6 +27,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+CFLAGS   += -std=gnu89
+CXXFLAGS += -std=gnu89
+LDFLAGS  += -std=gnu89
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)

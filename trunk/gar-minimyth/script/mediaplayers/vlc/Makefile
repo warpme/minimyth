@@ -34,6 +34,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
+# The VLC 2.0.5 API to ffmpeg has SSE mismatch when compiling with gcc 5.1.0 (at least with pentium-mmx).
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--x-includes=$(DESTDIR)$(includedir) \
 	--x-libraries=$(DESTDIR)$(libdir) \
@@ -54,7 +55,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-coverage \
 	--disable-optimizations \
 	--enable-mmx \
-	--enable-sse \
+        $(if $(filter x86-64,$(mm_GARCH_FAMILY)),--enable-sse,--disable-sse) \
 	--disable-neon \
 	--disable-altivec \
 	--with-tuning=$(GARCH) \

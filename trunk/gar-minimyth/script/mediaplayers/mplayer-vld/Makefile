@@ -9,13 +9,17 @@ PATCHFILES = \
 	$(DISTNAME)-demux_audio_fix_20080129.patch \
 	$(DISTNAME)-demux_mov_fix_20080129.patch \
 	$(DISTNAME)-url_fix_20080120.patch \
-	$(DISTNAME)-stream_cddb_fix_20080120.patch
-PATCHFILES += $(DISTNAME)-libpng_1.5.patch
-PATCHFILES += $(DISTNAME)-gcc_4.4.0_hack.patch
-PATCHFILES += $(DISTNAME)-liba52_external.patch
-PATCHFILES += $(DISTNAME)-libdvdread_udf.patch
-PATCHFILES += $(DISTNAME)-dvdnav.patch
-PATCHFILES += $(DISTNAME)-openchrome.patch $(DISTNAME)-x11_headers.patch $(DISTNAME)-cross-$(GARCH_FAMILY).patch
+	$(DISTNAME)-stream_cddb_fix_20080120.patch \
+	$(DISTNAME)-libpng_1.5.patch \
+	$(DISTNAME)-gcc_4.4.0_hack.patch \
+	$(DISTNAME)-gcc_5.0.0_hack.patch \
+	$(DISTNAME)-liba52_external.patch \
+	$(DISTNAME)-libdvdread_udf.patch \
+	$(DISTNAME)-dvdnav.patch \
+	$(DISTNAME)-openchrome.patch \
+	$(DISTNAME)-x11_headers.patch \
+
+#	$(DISTNAME)-cross-$(GARCH_FAMILY).patch
 LICENSE = mplayer
 mplayer_LICENSE_TEXT = $(WORKSRC)/Copyright
 
@@ -245,7 +249,8 @@ BUILD_ENV  = \
 
 include ../../gar.mk
 
-CFLAGS :=
+CFLAGS  :=
+LDFLAGS :=
 
 # When using the SVN version, GARVERSION must have the form <mplayer-svn-version>.<ffmpeg-svn-version>.
 # This is done to ensure that the correct version of FFmpeg is used.
