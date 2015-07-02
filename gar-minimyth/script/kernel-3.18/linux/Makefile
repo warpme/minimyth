@@ -1,17 +1,13 @@
 GARNAME = linux
 GARVERSION = $(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)$(if $(LINUX_TEENY_VERSION),$(if $(filter-out 0,$(LINUX_TEENY_VERSION)),.$(LINUX_TEENY_VERSION)))$(LINUX_EXTRA_VERSION)
-CATEGORIES = kernel-3.7
+CATEGORIES = kernel-3.18
 MASTER_SITES  = http://www.kernel.org/pub/linux/kernel/v3.x/
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/
 MASTER_SITES += http://www.kernel.org/pub/linux/kernel/v$(LINUX_MAJOR_VERSION).$(LINUX_MINOR_VERSION)/testing/
 CONFIGFILE = $(DISTNAME)-$(GARCH_FAMILY)-$(GARCH).config
-DISTFILES = $(DISTNAME).tar.bz2 $(CONFIGFILE)
-PATCHFILES  = $(DISTNAME).patch.gar
-PATCHFILES += $(DISTNAME)-perl.patch.gar
-PATCHFILES += $(DISTNAME)-install_headers.patch
-PATCHFILES += $(DISTNAME)-r8168_8.035.00.patch
+DISTFILES = $(DISTNAME).tar.xz $(CONFIGFILE)
+PATCHFILES  = $(DISTNAME)-r8168_8.040.00.patch
 PATCHFILES += $(DISTNAME)-via_rhine_avoid_d3.patch
-PATCHFILES += $(DISTNAME)-overlayfs_v15_3d5a648.patch
 PATCHFILES += $(DISTNAME)-disable_dma_for_cfa.patch
 PATCHFILES += $(DISTNAME)-defaults.patch
 LICENSE = GPL2
@@ -20,8 +16,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-#DEPENDS   = lang/c
-#BUILDDEPS = lib/ncursesw utils/mktemp utils/module-init-tools
+DEPENDS   = lang/c
+BUILDDEPS = lib/ncursesw utils/bc utils/mktemp utils/module-init-tools
 
 CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

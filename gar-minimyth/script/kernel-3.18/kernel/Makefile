@@ -1,6 +1,6 @@
 GARNAME = kernel
-GARVERSION = 3.7
-CATEGORIES = kernel-3.7
+GARVERSION = 3.18
+CATEGORIES = kernel-3.18
 LICENSE =
 
 DESCRIPTION = 
@@ -8,9 +8,9 @@ define BLURB
 endef
 
 DEPENDS = \
-	$(filter-out %/Makefile %/kernel,$(subst ../../,,$(wildcard ../../kernel-3.7/*)))
+	$(filter-out %/Makefile %/kernel,$(subst ../../,,$(wildcard ../../kernel-3.18/*)))
 
-GAR_EXTRA_CONF += kernel-3.7/linux/package-api.mk
+GAR_EXTRA_CONF += kernel-3.18/linux/package-api.mk
 include ../../gar.mk
 
 post-install:
