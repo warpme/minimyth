@@ -11,7 +11,8 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/ncursesw lib/zlib
+# util-linux 2.22.2 fails checking for ncurses headers before checking for ncursesw library.
+DEPENDS = lang/c lib/ncurses lib/ncursesw lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile

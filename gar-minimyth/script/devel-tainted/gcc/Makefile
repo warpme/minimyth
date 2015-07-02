@@ -53,7 +53,7 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) --target=$(G
 	--with-mpfr-lib=$(DESTDIR)$(libdir) \
 	--with-gmp-include=$(DESTDIR)$(includedir) \
 	--with-gmp-lib=$(DESTDIR)$(libdir) \
-	--without-cloog \
+	--without-isl \
 	--without-libelf \
 	--with-sysroot=$($(CROSSIMG)_DESTDIR)
 

@@ -4,6 +4,7 @@ CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-gcc_5.0.patch \
 	$(DISTNAME)-perl.patch.gar \
 	$(DISTNAME)-pkg_config.patch \
 	$(DISTNAME)-detect_radeon.patch
@@ -73,7 +74,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-sparkle \
 	--disable-install-libxf86config \
 	--enable-visibility \
-	--enable-pc98=auto \
 	--enable-aiglx \
 	--enable-registry \
 	--disable-composite \
@@ -94,7 +94,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xace \
 	--disable-xselinux \
 	--disable-xcsecurity \
-	--disable-xcalibrate \
 	--disable-tslib \
 	--enable-dbe \
 	--enable-xf86bigfont \
@@ -147,17 +146,8 @@ pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
-# Workaround to a problem in xorg-server 1.10.0.
-pre-build:
-	@rm -f $(WORKSRC)/hw/xfree86/loader/sdksyms.c
-
 post-install:
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdbe.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdri.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libdri2.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libextmod.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libglx.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/librecord.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfbdevhw.la

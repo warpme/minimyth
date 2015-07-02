@@ -1,0 +1,27 @@
+diff -Naur xorg-server-1.13.2-old/hw/xfree86/sdksyms.sh xorg-server-1.13.2-new/hw/xfree86/sdksyms.sh
+--- xorg-server-1.13.2-old/hw/xfree86/sdksyms.sh	2012-10-13 16:38:51.000000000 -0700
++++ xorg-server-1.13.2-new/hw/xfree86/sdksyms.sh	2015-06-28 22:12:53.112993519 -0700
+@@ -348,6 +348,23 @@
+     if (sdk) {
+ 	n = 3;
+ 
++	# detect the following gcc5 cpp pattern and skip it:
++	# extern
++	# # 320 "../../include/os.h" 3 4
++	#     __attribute__((visibility("default")))
++	# # 320 "../../include/os.h"
++	# Note in this case the "extern " or "extern void " always has
++	# a trailing space
++	if ($0 ~ "^extern.* $") {
++	    getline;
++	    getline;
++	    getline;
++	    getline;
++	    n = 1;
++	    while ($n == " ")
++		n++;
++	}
++
+ 	# skip attribute, if any
+ 	while ($n ~ /^(__attribute__|__global)/ ||
+ 	    # skip modifiers, if any

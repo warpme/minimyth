@@ -3,7 +3,9 @@ GARVERSION = 1.10
 CATEGORIES = lib
 MASTER_SITES = ftp://ftp.gnupg.org/gcrypt/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-gcc_5.0.0-fix.patch \
+	$(DISTNAME).patch.gar
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
