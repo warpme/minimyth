@@ -1,5 +1,5 @@
 GARNAME = xine-ui
-GARVERSION = 0.99.7
+GARVERSION = 0.99.9
 CATEGORIES = mediaplayers
 MASTER_SITES = http://downloads.sourceforge.net/project/xine/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.xz
