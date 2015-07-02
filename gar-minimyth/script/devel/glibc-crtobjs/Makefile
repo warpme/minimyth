@@ -30,7 +30,7 @@ INSTALL_SCRIPTS   = custom
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-bind-now \
-	--enable-kernel=3.7.0 \
+	--enable-kernel=3.18.0 \
 	--disable-build-nscd \
 	--disable-nscd \
 	--without-gd \
@@ -44,7 +44,7 @@ CONFIGURE_ARGS += \
 	--without-__thread
 else
 CONFIGURE_ARGS += \
-	--enable-add-ons=nptl \
+	--disable-add-ons \
 	--with-tls \
 	--with-__thread
 endif
@@ -72,16 +72,16 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-# glibc 2.17 fails to compile with gcc 4.9.2's link time optimization enabled.
-CFLAGS  := $(filter-out -flto, $(CFLAGS))
-LDFLAGS := $(filter-out -flto, $(LDFLAGS))
-
-CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
-CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
+CFLAGS  := $(filter-out -O%, $(CFLAGS))
+LDFLAGS := $(filter-out -O%, $(LDFLAGS))
+CFLAGS  := $(filter-out -f%, $(CFLAGS))
+LDFLAGS := $(filter-out -f%, $(LDFLAGS))
+CFLAGS  := $(CFLAGS)  -O2
+LDFLAGS := $(LDFLAGS) -O2
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal       --force --verbose
-	@cd $(WORKSRC) ; autoconf-2.68 --force --verbose
+	@cd $(WORKSRC) ; aclocal  --force --verbose
+	@cd $(WORKSRC) ; autoconf --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
