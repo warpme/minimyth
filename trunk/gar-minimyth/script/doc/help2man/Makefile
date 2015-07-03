@@ -1,7 +1,7 @@
 GARNAME = help2man
 GARVERSION = 1.41.1
 CATEGORIES = doc
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL3
 
