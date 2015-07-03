@@ -1,7 +1,7 @@
 GARNAME = glibc
 GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
-MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES  = https://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
