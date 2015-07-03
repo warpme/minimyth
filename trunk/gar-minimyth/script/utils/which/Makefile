@@ -1,7 +1,7 @@
 GARNAME = which
 GARVERSION = 2.20
 CATEGORIES = utils
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-broken.patch
 LICENSE = GPL3

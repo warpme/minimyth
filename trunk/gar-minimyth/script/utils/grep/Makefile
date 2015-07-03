@@ -1,7 +1,7 @@
 GARNAME = grep
 GARVERSION = 2.14
 CATEGORIES = utils
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL3
 
