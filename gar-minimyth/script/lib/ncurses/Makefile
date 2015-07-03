@@ -1,7 +1,7 @@
 GARNAME = ncurses
 GARVERSION = $(NCURSES_VERSION)
 CATEGORIES = lib
-#MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+#MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES = ftp://dickey.his.com/pub/ncurses/current/
 #DISTFILES = $(DISTNAME).tar.gz
 DISTFILES = $(DISTNAME).tgz

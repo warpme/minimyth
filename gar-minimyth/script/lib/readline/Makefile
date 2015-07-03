@@ -1,8 +1,8 @@
 GARNAME = readline
 GARVERSION = 6.2
 CATEGORIES = lib
-MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
-MASTER_SITES += http://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
+MASTER_SITES  = https://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES += https://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-001 \

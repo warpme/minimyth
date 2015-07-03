@@ -1,7 +1,7 @@
 GARNAME = libcdio
 GARVERSION = $(LIBCDIO_VERSION)
 CATEGORIES = lib
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = \
 	$(DISTNAME)-automake_1.13.patch
