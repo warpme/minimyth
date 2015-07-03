@@ -1,7 +1,7 @@
 GARNAME = ed
 GARVERSION = 1.7
 CATEGORIES = utils
-MASTER_SITES = http://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL3/FDL1_3
 
