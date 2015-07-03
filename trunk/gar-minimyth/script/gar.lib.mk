@@ -50,6 +50,10 @@ $(DOWNLOADDIR)/%:
 		fi; \
 	fi
 
+# download an https URL (colons omitted)
+https//%:
+	@cd $(PARTIALDIR) ; wget -c --no-check-certificate https://$*
+
 # download an http URL (colons omitted)
 http//%: 
 	@cd $(PARTIALDIR) ; wget -c http://$*
