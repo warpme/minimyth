@@ -70,7 +70,7 @@ include ../../gar.mk
 
 IMPORT_EXECUTABLES := "$(PWD)/$(WORKROOTDIR)/build.d/$(DISTNAME)_build/import_executables.cmake"
 
-# mariadb 10.1.5 fails to compile with GCC 5.1.0's link time optimization enabled.
+# mariadb 10.1.5 fails to compile with gcc 5.1.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))

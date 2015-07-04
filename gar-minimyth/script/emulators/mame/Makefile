@@ -39,7 +39,7 @@ BUILD_ARGS  = \
 
 include ../../gar.mk
 
-# mame 0.162 fails to compile with GCC 4.9.2's link time optimization enabled.
+# mame 0.162 fails to compile with gcc 5.1.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))

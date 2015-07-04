@@ -19,7 +19,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# xmodmap 1.0.7  will not compile with gcc 4.9.2 without --disable-selective-werror.
+# xmodmap 1.0.7  will not compile with gcc 5.1.0 without --disable-selective-werror.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-selective-werror \
 	--disable-strict-compilation \
