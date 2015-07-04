@@ -21,7 +21,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-shared \
 	--enable-symbolic-functions \
-	--disable-debug \
 	--disable-resmgr \
 	--enable-aload \
 	--enable-mixer \
