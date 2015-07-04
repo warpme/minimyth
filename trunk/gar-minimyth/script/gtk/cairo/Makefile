@@ -77,7 +77,7 @@ CONFIGURE_ENV = \
 
 include ../../gar.mk
 
-# cairo 1.12.12 fails to configure with gcc 4.9.2's link time optimization enabled.
+# cairo 1.12.12 fails to configure with gcc 5.1.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))

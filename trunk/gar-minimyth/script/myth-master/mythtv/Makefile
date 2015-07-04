@@ -176,11 +176,11 @@ CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 
 # needed to compile zeromq.
-LDFLAGS  += -DPIC
 CFLAGS   += -fPIC
 CXXFLAGS += -fPIC
+LDFLAGS  += -DPIC
 
-# mythtv master fails to compile with gcc 4.9.2's link time optimization enabled.
+# mythtv master fails to compile with gcc 5.1.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
