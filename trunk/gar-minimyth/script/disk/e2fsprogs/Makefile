@@ -1,7 +1,8 @@
 GARNAME = e2fsprogs
 GARVERSION = 1.42.7
 CATEGORIES = disk
-MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/v$(GARVERSION)/
+MASTER_SITES  = http://downloads.sourceforge.net/project/$(GARNAME)/$(GARNAME)/v$(GARVERSION)/
+MASTER_ISTES += https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES = $(DISTNAME)-chmod.patch
 LICENSE = GPL2/LGPL2
