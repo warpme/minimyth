@@ -1,7 +1,7 @@
 GARNAME = mysql
 GARVERSION = 5.1.73
 CATEGORIES = db
-MASTER_SITES = http://downloads.mariadb.com/archives/mysql-5.1/
+MASTER_SITES = https://dev.mysql.com/get/Downloads/MySQL-5.1/
 DISTFILES = $(DISTNAME).tar.gz
 PATCHFILES  = \
 	$(DISTNAME)-dash.patch \
