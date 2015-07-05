@@ -1,7 +1,7 @@
 GARNAME = intltool
 GARVERSION = 0.50.2
 CATEGORIES = devel
-MASTER_SITES = http://launchpad.net/intltool/trunk/$(GARVERSION)/+download/
+MASTER_SITES = https://launchpad.net/intltool/trunk/$(GARVERSION)/+download/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2
 
