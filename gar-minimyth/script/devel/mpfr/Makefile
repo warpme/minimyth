@@ -1,7 +1,7 @@
 GARNAME = mpfr
 GARVERSION = $(MPFR_VERSION)
 CATEGORIES = devel
-MASTER_SITES = http://www.mpfr.org/mpfr-current/
+MASTER_SITES = https://ftp.gnu.org/gnu/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.xz
 LICENSE = GPL3/LGPL3
 
