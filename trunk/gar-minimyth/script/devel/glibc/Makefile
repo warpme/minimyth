@@ -84,6 +84,10 @@ CFLAGS  := $(filter-out -O%, $(CFLAGS))
 LDFLAGS := $(filter-out -O%, $(LDFLAGS))
 CFLAGS  := $(filter-out -f%, $(CFLAGS))
 LDFLAGS := $(filter-out -f%, $(LDFLAGS))
+# glibc 2.21 sets -mno-sse and -Werror for x86-32 and x86-64 causing a build failure with -mfpmath=sse.
+CFLAGS  := $(filter-out -mfpmath=%, $(CFLAGS))
+LDFLAGS := $(filter-out -mfpmath=%, $(LDFLAGS))
+
 CFLAGS  := $(CFLAGS)  -O2
 LDFLAGS := $(LDFLAGS) -O2
 
