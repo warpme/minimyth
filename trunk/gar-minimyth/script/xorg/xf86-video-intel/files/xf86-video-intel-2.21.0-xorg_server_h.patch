@@ -1,0 +1,14 @@
+diff -Naur xf86-video-intel-2.21.0-old/configure.ac xf86-video-intel-2.21.0-new/configure.ac
+--- xf86-video-intel-2.21.0-old/configure.ac	2013-01-30 09:14:38.000000000 -0800
++++ xf86-video-intel-2.21.0-new/configure.ac	2015-07-08 15:42:22.160000019 -0700
+@@ -360,7 +360,9 @@
+         CFLAGS="$CFLAGS $XORG_CFLAGS $DRI_CFLAGS $DRM_CFLAGS"
+         CPPFLAGS="$CPPFLAGS $XORG_CFLAGS $DRI_CFLAGS $DRM_CFLAGS"
+         AC_CHECK_HEADERS([dri.h sarea.h dristruct.h],, [DRI=no],
+-                [/* for dri.h */
++                [/* this header is always included first */
++                 #include <xorg-server.h>
++		 /* for dri.h */
+                  #include <xf86str.h>
+                  /* for dristruct.h */
+                  #include <xorg-server.h>
