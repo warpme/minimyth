@@ -25,7 +25,7 @@ endef
 
 DEPENDS = \
 	lang/cxx \
-	db/mysql \
+	db/mariadb \
 	lib/alsa-lib \
 	lib/avahi \
 	lib/exiv2 \

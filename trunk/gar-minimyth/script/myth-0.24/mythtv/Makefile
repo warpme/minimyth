@@ -27,7 +27,7 @@ endef
 
 DEPENDS = \
 	lang/cxx \
-	db/mysql \
+	db/mariadb \
 	lib/alsa-lib \
 	lib/fftw3 \
 	lib/fftw3f \

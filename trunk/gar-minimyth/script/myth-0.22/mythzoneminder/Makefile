@@ -10,7 +10,7 @@ endef
 
 DEPENDS = \
 	lang/cxx \
-	db/mysql \
+	db/mariadb \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))

@@ -1,4 +1,4 @@
-GARNAME = mythzoneminder
+db/mariadb= mythzoneminder
 GARVERSION = $(MYTHTV_GARVERSION)
 CATEGORIES = $(CATEGORY)
 SOURCEPKG = $(CATEGORY)/mythtv
@@ -10,7 +10,7 @@ endef
 
 DEPENDS = \
 	lang/cxx \
-	db/mysql \
+	db/mariadb \
 	$(CATEGORY)/mythtv
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
