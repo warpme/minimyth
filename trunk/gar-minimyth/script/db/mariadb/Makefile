@@ -1,7 +1,7 @@
 GARNAME = mariadb
-GARVERSION = 10.1.5
+GARVERSION = 10.0.20
 CATEGORIES = db
-MASTER_SITES = http://downloads.mariadb.com/archives/MariaDB/$(DISTNAME)/source/
+MASTER_SITES = https://downloads.mariadb.org/interstitial/$(DISTNAME)/source/
 DISTFILES = $(DISTNAME).tar.gz
 LICENSE = GPL2/LGPL2_1
 
@@ -70,7 +70,7 @@ include ../../gar.mk
 
 IMPORT_EXECUTABLES := "$(PWD)/$(WORKROOTDIR)/build.d/$(DISTNAME)_build/import_executables.cmake"
 
-# mariadb 10.1.5 fails to compile with gcc 5.1.0's link time optimization enabled.
+# mariadb 10.0.20 fails to compile with gcc 5.1.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
