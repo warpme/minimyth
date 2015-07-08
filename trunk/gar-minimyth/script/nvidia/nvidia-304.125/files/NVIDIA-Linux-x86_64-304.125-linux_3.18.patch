@@ -1,0 +1,14 @@
+diff -Naur NVIDIA-Linux-x86_64-304.125-old/kernel/nv-drm.c NVIDIA-Linux-x86_64-304.125-new/kernel/nv-drm.c
+--- NVIDIA-Linux-x86_64-304.125-old/kernel/nv-drm.c	2014-12-01 19:58:34.000000000 -0800
++++ NVIDIA-Linux-x86_64-304.125-new/kernel/nv-drm.c	2015-07-06 22:29:21.012999998 -0700
+@@ -76,6 +76,10 @@
+     .unload = nv_drm_unload,
+     .fops = &nv_drm_fops,
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0)
++    .set_busid = drm_pci_set_busid,
++#endif
++
+     .name = "nvidia-drm",
+     .desc = "NVIDIA DRM driver",
+     .date = "20140818",
