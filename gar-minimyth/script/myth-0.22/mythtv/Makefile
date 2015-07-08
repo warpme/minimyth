@@ -39,7 +39,7 @@ endef
 
 DEPENDS = \
 	lang/cxx \
-	db/mysql \
+	db/mariadb \
 	lib/alsa-lib \
 	lib/faad2 \
 	lib/fftw3 \
