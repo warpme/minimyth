@@ -15,6 +15,8 @@ ifneq ($(DESTIMG),build)
 BUILDDEPS += db/mariadb
 endif
 
+PWD := $(shell pwd)
+
 WORKBLD = $(WORKSRC)_build
 
 CONFIGURE_SCRIPTS  = $(WORKBLD)/cmake
