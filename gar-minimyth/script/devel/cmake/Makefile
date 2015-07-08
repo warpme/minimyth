@@ -1,5 +1,5 @@
 GARNAME = cmake
-GARVERSION = 2.8.10.2
+GARVERSION = 2.8.12.2
 CATEGORIES = devel
 MASTER_SITES = http://www.cmake.org/files/v2.8/
 DISTFILES = $(DISTNAME).tar.gz
@@ -31,6 +31,3 @@ CONFIGURE_ARGS = \
 	--mandir="$(subst $(prefix),,$(mandir))"
 
 include ../../gar.mk
-
-pre-extract:
-	echo $(CONFIGURE_ARGS)
