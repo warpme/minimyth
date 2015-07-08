@@ -9,6 +9,7 @@ MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
 	$(XORG_MASTER_SITES) ))
 DISTFILES = $(DISTNAME).tar.bz2
 PATCHFILES = \
+	$(DISTNAME)-xorg_server_h.patch \
 	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
