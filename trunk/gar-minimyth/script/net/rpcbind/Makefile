@@ -29,11 +29,12 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# rpcbind 0.2.0 segfaults when compiled with gcc 5.1.0 and lto enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(MAKECOOKIE)
-
-x-post-install:
-	@rm -f $(DESTDIR)$(libdir)/$(GARNAME).la
 	@$(MAKECOOKIE)
