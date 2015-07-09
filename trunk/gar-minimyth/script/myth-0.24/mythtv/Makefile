@@ -154,6 +154,12 @@ CFLAGS   := $(filter-out -flto, $(CFLAGS))
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
 
+# <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63745>
+# <http://www.gossamer-threads.com/lists/mythtv/users/584449>
+CFLAGS   += -fno-devirtualize
+CXXFLAGS += -fno-devirtualize
+LDFLAGS  += -fno-devirtualize
+
 git//%/$(DISTNAME).tar.bz2:
 	$(call FETCH_GIT, $*/mythtv.git,     $(word 3,$(subst -, ,$(GARVERSION))), $(DISTNAME))
 	$(call FETCH_GIT, $*/myththemes.git, $(word 4,$(subst -, ,$(GARVERSION))), myththemes)
