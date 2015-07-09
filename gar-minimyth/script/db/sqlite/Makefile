@@ -26,6 +26,9 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 include ../../gar.mk
 
+# sqlite autoconf-3081002 fails to parallel build sometimes.
+PARALLELMFLAGS := -j1
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC),configure)
