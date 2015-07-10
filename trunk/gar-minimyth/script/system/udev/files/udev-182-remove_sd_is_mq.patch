@@ -1,0 +1,39 @@
+diff -Naur udev-182-old/src/sd-daemon.c udev-182-new/src/sd-daemon.c
+--- udev-182-old/src/sd-daemon.c	2012-02-14 05:44:10.391187515 -0800
++++ udev-182-new/src/sd-daemon.c	2015-07-09 20:26:58.638000023 -0700
+@@ -382,6 +382,8 @@
+         return 1;
+ }
+ 
++#if 0
++/* This code is dead and mq_getattr no longer works */
+ _sd_export_ int sd_is_mq(int fd, const char *path) {
+ #if !defined(__linux__)
+         return 0;
+@@ -418,6 +420,7 @@
+         return 1;
+ #endif
+ }
++#endif
+ 
+ _sd_export_ int sd_notify(int unset_environment, const char *state) {
+ #if defined(DISABLE_SYSTEMD) || !defined(__linux__) || !defined(SOCK_CLOEXEC)
+diff -Naur udev-182-old/src/sd-daemon.h udev-182-new/src/sd-daemon.h
+--- udev-182-old/src/sd-daemon.h	2012-02-14 05:44:19.638194109 -0800
++++ udev-182-new/src/sd-daemon.h	2015-07-09 20:21:59.729000023 -0700
+@@ -181,6 +181,7 @@
+ */
+ int sd_is_socket_unix(int fd, int type, int listening, const char *path, size_t length);
+ 
++#if 0
+ /*
+   Helper call for identifying a passed file descriptor. Returns 1 if
+   the file descriptor is a POSIX Message Queue of the specified name,
+@@ -188,6 +189,7 @@
+   done. Returns a negative errno style error code on failure.
+ */
+ int sd_is_mq(int fd, const char *path);
++#endif
+ 
+ /*
+   Informs systemd about changed daemon state. This takes a number of

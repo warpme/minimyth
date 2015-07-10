@@ -3,6 +3,8 @@ GARVERSION = 182
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
 DISTFILES = $(DISTNAME).tar.bz2
+PATCHFILES = \
+	$(DISTNAME)-remove_sd_is_mq.patch
 LICENSE = GPL2
 
 DESCRIPTION =
