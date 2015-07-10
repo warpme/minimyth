@@ -1,13 +1,15 @@
 GARNAME = glibc
 GARVERSION = $(GLIBC_VERSION)
 CATEGORIES = devel
-MASTER_SITES  = https://ftp.gnu.org/gnu/$(GARNAME)/
+MASTER_SITES  = http://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += ftp://sources.redhat.com/pub/$(GARNAME)/snapshots/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
 	$(DISTNAME)-rpc_key_prot_h.patch \
+	$(DISTNAME)-select_fd_type.patch \
 	$(DISTNAME)-perl.patch.gar \
-	$(DISTNAME).patch
+	$(DISTNAME).patch \
+	$(DISTNAME)-ldd.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -54,7 +56,7 @@ CONFIGURE_ARGS += \
 	--without-__thread
 else
 CONFIGURE_ARGS += \
-	--disable-add-ons \
+	--enable-add-ons=nptl \
 	--with-tls \
 	--with-__thread
 endif
@@ -80,20 +82,14 @@ INSTALL_ENV   = \
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
 
-CFLAGS  := $(filter-out -O%, $(CFLAGS))
-LDFLAGS := $(filter-out -O%, $(LDFLAGS))
-CFLAGS  := $(filter-out -f%, $(CFLAGS))
-LDFLAGS := $(filter-out -f%, $(LDFLAGS))
-# glibc 2.21 sets -mno-sse and -Werror for x86-32 and x86-64 causing a build failure with -mfpmath=sse.
-CFLAGS  := $(filter-out -mfpmath=%, $(CFLAGS))
-LDFLAGS := $(filter-out -mfpmath=%, $(LDFLAGS))
+# glibc 2.17 fails to compile with gcc 5.1.0's link time optimization enabled.
+CFLAGS  := $(filter-out -flto, $(CFLAGS))
+LDFLAGS := $(filter-out -flto, $(LDFLAGS))
 
-CFLAGS  := $(CFLAGS)  -O2
-LDFLAGS := $(LDFLAGS) -O2
+CFLAGS := $(filter-out -ffast-math, $(CFLAGS))
+CFLAGS := $(filter-out -O%, $(CFLAGS)) -O3
 
 pre-configure:
-	@cd $(WORKSRC) ; aclocal  --force --verbose
-	@cd $(WORKSRC) ; autoconf --force --verbose
 	@mkdir -p $(WORKBLD)
 	@rm -rf $(WORKBLD)/configparms
 	@echo "slibdir=$(elibdir)" >> $(WORKBLD)/configparms
