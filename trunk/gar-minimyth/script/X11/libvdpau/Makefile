@@ -1,8 +1,8 @@
 GARNAME = libvdpau
-GARVERSION = 0.6
+GARVERSION = 1.1
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
-DISTFILES = $(DISTNAME).tar.gz
+DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -16,6 +16,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
+	--disable-static \
+	--enable-shared \
 	--enable-dri2 \
 	--disable-documentation \
 	--with-gnu-ld \
