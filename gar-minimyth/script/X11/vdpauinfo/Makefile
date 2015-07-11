@@ -1,5 +1,5 @@
 GARNAME = vdpauinfo
-GARVERSION = 0.0.6
+GARVERSION = 1.0
 CATEGORIES = X11
 MASTER_SITES = http://people.freedesktop.org/~aplattner/vdpau/
 DISTFILES = $(DISTNAME).tar.gz
@@ -15,7 +15,8 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST)
+CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules
 
 include ../../gar.mk
 
