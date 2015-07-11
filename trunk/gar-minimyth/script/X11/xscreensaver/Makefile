@@ -1,9 +1,11 @@
 GARNAME = xscreensaver
-GARVERSION = 5.32
+GARVERSION = 5.33
 CATEGORIES = X11
 MASTER_SITES = http://www.jwz.org/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-po_disable.patch $(DISTNAME).patch.gar
+PATCHFILES = \
+	$(DISTNAME)-po_disable.patch \
+	$(DISTNAME).patch.gar
 LICENSE = MIT
 
 DESCRIPTION =
