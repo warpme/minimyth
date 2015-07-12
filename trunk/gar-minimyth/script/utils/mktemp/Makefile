@@ -1,5 +1,5 @@
 GARNAME = mktemp
-GARVERSION = 1.6
+GARVERSION = 1.7
 CATEGORIES = utils
 MASTER_SITES  = http://www.mktemp.org/mktemp/dist/
 DISTFILES = $(DISTNAME).tar.gz
