@@ -44,7 +44,6 @@ DEPENDS = \
 	system/irxkeys \
 	kernel/kernel \
 	system/lcdproc \
-	X11/libva-vdpau-driver \
 	net/lighttpd \
 	fonts/liberation-fonts \
 	system/lirc \
