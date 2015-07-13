@@ -1,10 +1,8 @@
 GARNAME = mednafen
-GARVERSION = 0.9.38.4
+GARVERSION = 0.9.38.5
 CATEGORIES = emulators
 MASTER_SITES = http://downloads.sourceforge.net/project/mednafen/Mednafen/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch
 LICENSE = GPL2
 
 DESCRIPTION = 
