@@ -1,0 +1,45 @@
+diff -Naur libgpg-error-1.19-old/src/gpg-error-config.in libgpg-error-1.19-new/src/gpg-error-config.in
+--- libgpg-error-1.19-old/src/gpg-error-config.in	2014-01-24 10:57:44.000000000 -0800
++++ libgpg-error-1.19-new/src/gpg-error-config.in	2015-07-12 17:18:27.490000232 -0700
+@@ -9,7 +9,7 @@
+ # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+ # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ 
+-
++DESTDIR=@GAR_DESTDIR@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ includedir=@includedir@
+@@ -63,13 +63,13 @@
+ 	    exit 0
+ 	    ;;
+         --cflags)
+-	    if test "x$includedir" != "x/usr/include" -a "x$includedir" != "x/include"; then
+-		output="$output -I$includedir"
++	    if test "x$DESTDIR$includedir" != "x@GAR_DESTDIR@@GAR_includedir@"; then
++		output="$output -I$DESTDIR$includedir"
+ 	    fi
+             # Note: -idirafter is a gcc extension.  It is only used on
+             #       systems where gcc is the only compiler we support.
+             for i in $isubdirafter; do
+-                output="$output -idirafter ${includedir}/${i}"
++                output="$output -idirafter ${DESTDIR}${includedir}/${i}"
+             done
+ 	    output="$output @GPG_ERROR_CONFIG_CFLAGS@"
+             if test $mt = yes ; then
+@@ -77,12 +77,9 @@
+             fi
+ 	    ;;
+ 	--libs)
+-	    case "$libdir" in
+-		/usr/lib|/usr/lib64|/lib|/lib64) ;;
+-		*)
+-		    output="$output -L$libdir"
+-		    ;;
+-	    esac
++ 	    if test "x$DESTDIR$libdir" != "x@GAR_DESTDIR@@GAR_libdir@" -a "x$DESTDIR$libdir" != "x@GAR_DESTDIR@@GAR_elibdir@"; then
++ 		output="$output -L$DESTDIR$libdir"
++ 	    fi
+ 	    output="$output @GPG_ERROR_CONFIG_LIBS@"
+             if test $mt = yes ; then
+                 output="$output @GPG_ERROR_CONFIG_MT_LIBS@"
