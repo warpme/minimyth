@@ -3,7 +3,10 @@ GARVERSION = 1.1.16
 CATEGORIES = lib
 MASTER_SITES = http://ffmpeg.org/releases/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = $(DISTNAME)-pkg_config.patch $(DISTNAME)-uint64_c.patch
+PATCHFILES = \
+	$(DISTNAME)-git_76d9012.patch \
+	$(DISTNAME)-pkg_config.patch \
+	$(DISTNAME)-uint64_c.patch
 LICENSE = GPL2/LGPL2_1
 
 DESCRIPTION = 
@@ -206,9 +209,9 @@ INSTALL_ARGS   = \
 GAR_EXTRA_CONF += mediaplayers/mplayer-svn/package-api.mk
 include ../../gar.mk
 
-# ffmpeg 1.1.6 fails to compile with gcc 5.1.0's link time optimization enabled.
-CFLAGS  := $(filter-out -flto, $(CFLAGS))
-LDFLAGS := $(filter-out -flto, $(LDFLAGS))
+# ffmpeg 1.1.6 fails to compile with asm and gcc 5.1.0's link time optimization enabled.
+CFLAGS  := $(filter-out -flto, $(CFLAGS))  -fno-lto
+LDFLAGS := $(filter-out -flto, $(LDFLAGS)) -fno-lto
 
 clean-all:
 	@$(MAKE) clean

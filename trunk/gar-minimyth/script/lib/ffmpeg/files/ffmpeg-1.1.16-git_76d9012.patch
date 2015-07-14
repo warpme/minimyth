@@ -1,0 +1,142 @@
+diff -Naur ffmpeg-1.1.16-old/libavfilter/vf_hqdn3d.c ffmpeg-1.1.16-new/libavfilter/vf_hqdn3d.c
+--- ffmpeg-1.1.16-old/libavfilter/vf_hqdn3d.c	2015-03-13 10:34:49.000000000 -0700
++++ ffmpeg-1.1.16-new/libavfilter/vf_hqdn3d.c	2015-07-13 17:00:47.421006208 -0700
+@@ -26,6 +26,7 @@
+  * libmpcodecs/vf_hqdn3d.c.
+  */
+ 
++#include "config.h"
+ #include "libavutil/common.h"
+ #include "libavutil/pixdesc.h"
+ #include "libavutil/intreadwrite.h"
+@@ -33,21 +34,7 @@
+ #include "formats.h"
+ #include "internal.h"
+ #include "video.h"
+-
+-typedef struct {
+-    int16_t *coefs[4];
+-    uint16_t *line;
+-    uint16_t *frame_prev[3];
+-    double strength[4];
+-    int hsub, vsub;
+-    int depth;
+-    void (*denoise_row[17])(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
+-} HQDN3DContext;
+-
+-void ff_hqdn3d_row_8_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
+-void ff_hqdn3d_row_9_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
+-void ff_hqdn3d_row_10_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
+-void ff_hqdn3d_row_16_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++#include "vf_hqdn3d.h"
+ 
+ #define LUT_BITS (depth==16 ? 8 : 4)
+ #define LOAD(x) (((depth == 8 ? src[x] : AV_RN16A(src + (x) * 2)) << (16 - depth))\
+@@ -313,12 +300,8 @@
+             return AVERROR(ENOMEM);
+     }
+ 
+-#if HAVE_YASM
+-    hqdn3d->denoise_row[ 8] = ff_hqdn3d_row_8_x86;
+-    hqdn3d->denoise_row[ 9] = ff_hqdn3d_row_9_x86;
+-    hqdn3d->denoise_row[10] = ff_hqdn3d_row_10_x86;
+-    hqdn3d->denoise_row[16] = ff_hqdn3d_row_16_x86;
+-#endif
++    if (ARCH_X86)
++        ff_hqdn3d_init_x86(hqdn3d);
+ 
+     return 0;
+ }
+diff -Naur ffmpeg-1.1.16-old/libavfilter/vf_hqdn3d.h ffmpeg-1.1.16-new/libavfilter/vf_hqdn3d.h
+--- ffmpeg-1.1.16-old/libavfilter/vf_hqdn3d.h	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-1.1.16-new/libavfilter/vf_hqdn3d.h	2015-07-13 17:00:47.422006115 -0700
+@@ -0,0 +1,37 @@
++/*
++ * This file is part of Libav.
++ *
++ * Libav is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Libav is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with Libav; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef AVFILTER_VF_HQDN3D_H
++#define AVFILTER_VF_HQDN3D_H
++
++#include <stddef.h>
++#include <stdint.h>
++
++typedef struct {
++    int16_t *coefs[4];
++    uint16_t *line;
++    uint16_t *frame_prev[3];
++    double strength[4];
++    int hsub, vsub;
++    int depth;
++    void (*denoise_row[17])(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++} HQDN3DContext;
++
++void ff_hqdn3d_init_x86(HQDN3DContext *hqdn3d);
++
++#endif /* AVFILTER_VF_HQDN3D_H */
+diff -Naur ffmpeg-1.1.16-old/libavfilter/x86/Makefile ffmpeg-1.1.16-new/libavfilter/x86/Makefile
+--- ffmpeg-1.1.16-old/libavfilter/x86/Makefile	2015-03-13 10:34:49.000000000 -0700
++++ ffmpeg-1.1.16-new/libavfilter/x86/Makefile	2015-07-13 17:00:47.422006115 -0700
+@@ -1,4 +1,5 @@
+ OBJS-$(CONFIG_GRADFUN_FILTER)                += x86/gradfun.o
++OBJS-$(CONFIG_HQDN3D_FILTER)                 += x86/vf_hqdn3d_init.o
+ OBJS-$(CONFIG_VOLUME_FILTER)                 += x86/af_volume_init.o
+ OBJS-$(CONFIG_YADIF_FILTER)                  += x86/yadif.o
+ 
+diff -Naur ffmpeg-1.1.16-old/libavfilter/x86/vf_hqdn3d_init.c ffmpeg-1.1.16-new/libavfilter/x86/vf_hqdn3d_init.c
+--- ffmpeg-1.1.16-old/libavfilter/x86/vf_hqdn3d_init.c	1969-12-31 16:00:00.000000000 -0800
++++ ffmpeg-1.1.16-new/libavfilter/x86/vf_hqdn3d_init.c	2015-07-13 17:00:47.422006115 -0700
+@@ -0,0 +1,39 @@
++/*
++ * This file is part of Libav.
++ *
++ * Libav is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * Libav is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with Libav; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include <stddef.h>
++#include <stdint.h>
++
++#include "libavutil/attributes.h"
++#include "libavfilter/vf_hqdn3d.h"
++#include "config.h"
++
++void ff_hqdn3d_row_8_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++void ff_hqdn3d_row_9_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++void ff_hqdn3d_row_10_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++void ff_hqdn3d_row_16_x86(uint8_t *src, uint8_t *dst, uint16_t *line_ant, uint16_t *frame_ant, ptrdiff_t w, int16_t *spatial, int16_t *temporal);
++
++av_cold void ff_hqdn3d_init_x86(HQDN3DContext *hqdn3d)
++{
++#if HAVE_YASM
++    hqdn3d->denoise_row[ 8] = ff_hqdn3d_row_8_x86;
++    hqdn3d->denoise_row[ 9] = ff_hqdn3d_row_9_x86;
++    hqdn3d->denoise_row[10] = ff_hqdn3d_row_10_x86;
++    hqdn3d->denoise_row[16] = ff_hqdn3d_row_16_x86;
++#endif
++}
