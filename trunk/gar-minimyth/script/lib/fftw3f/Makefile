@@ -16,6 +16,7 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
+	--disable-silent-rules \
 	--enable-single \
 	--disable-static \
 	--enable-portable-binary \
