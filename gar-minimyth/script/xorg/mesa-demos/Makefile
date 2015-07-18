@@ -1,5 +1,5 @@
 GARNAME = mesa-demos
-GARVERSION = 8.0.1
+GARVERSION = 8.2.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES  = ftp://ftp.freedesktop.org/pub/mesa/demos/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -24,6 +24,9 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
+	--enable-shared \
+	--disable-static \
+	--disable-egl \
 	--with-gnu-ld
 
 include ../../gar.mk
