@@ -21,7 +21,7 @@ CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
-CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-polly \
 	--enable-optimized \
 	--disable-profiling \
@@ -38,25 +38,30 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-shared \
 	--disable-embed-stdcxx \
 	--enable-timestamps \
+	--enable-targets="$(strip $(TARGETS_$(GARCH_FAMILY)))" \
 	--enable-bindings="no" \
 	--with-optimize-option="$(EXTRA_OPTIONS)" \
 	--with-extra-options="$(EXTRA_OPTIONS)" \
 	--with-extra-ld-options="$(EXTRA_LD_OPTIONS)"
-# the configure script applies the host compiler flags when checking the build compiler.
-ifneq ($(GARCHFAMLY),i386)
-CONFIGURE_AGS += \
-	--enable-targets="x86,r600"
-endif
-ifneq ($(GARCHFAMLY),x86_64)
-CONFIGURE_AGS += \
-	--enable-targets="x86_64,r600"
-endif
+BUILD_ARGS     = \
+	VERBOSE="1"
+INSTALL_ARGS   = \
+	VERBOSE="1"
 
 include ../../gar.mk
+
+TARGETS_i386   := "x86,r600"
+TARGETS_x86_64 := "x86_64,r600"
+
+# llvm 3.5.2 fails to compile for x86_64 with gcc 5.1.0's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
 
 EXTRA_OPTIONS    := $(CFLAGS)
 EXTRA_LD_OPTIONS := $(LDFLAGS)
 
+# the configure script applies the host compiler flags when checking the build compiler.
 CFLAGS   :=
 CXXFLAGS :=
 LDFLAGS  :=
