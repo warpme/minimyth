@@ -1,5 +1,5 @@
 GARNAME = xorg-server
-GARVERSION = 1.13.2
+GARVERSION = 1.17.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -33,6 +33,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/libxkbfile \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/pixman \
+	$(CATEGORY)/presentproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/recordproto \
 	$(CATEGORY)/renderproto \
@@ -61,9 +62,8 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# xorg-server 1.13.2 will not compile with gcc 5.1.0 without --disable-selective-werror.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-selective-werror \
+	--enable-selective-werror \
 	--disable-strict-compilation \
 	--disable-silent-rules \
 	--disable-static \
@@ -75,7 +75,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-install-libxf86config \
 	--enable-visibility \
 	--enable-aiglx \
-	--enable-registry \
 	--disable-composite \
 	--enable-mitshm \
 	--disable-xres \
@@ -89,6 +88,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--enable-dri \
 	--enable-dri2 \
+	--disable-dri3 \
+	--enable-present \
 	--enable-xinerama \
 	--enable-xf86vidmode \
 	--disable-xace \
@@ -100,7 +101,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-dpms \
 	$(if $(filter build, $(DESTIMG)), --disable-config-udev, --enable-config-udev) \
 	$(if $(filter build, $(DESTIMG)), --disable-config-udev-kms, --enable-config-udev-kms) \
-	--disable-config-dbus \
 	--disable-config-hal \
 	--enable-xfree86-utils \
 	--enable-vgahw \
@@ -108,6 +108,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-int10-module \
 	--disable-windowswm \
 	--enable-libdrm \
+	--enable-linux-acpi \
+	--enable-linux-apm \
+	--disable-systemd-logind  \
+	--disable-suid-wrapper \
 	--enable-xorg \
 	--disable-dmx \
 	--disable-xvfb \
@@ -147,6 +151,7 @@ pre-configure:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/xorg/modules/drivers/modesetting_drv.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/extensions/libglx.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libexa.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libfb.la
@@ -157,11 +162,4 @@ post-install:
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvbe.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libvgahw.la
 	@rm -f $(DESTDIR)$(libdir)/xorg/modules/libwfb.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/bt829_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/fi1236_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/msp3430_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda8425_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9850_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/tda9885_drv.la
-	@rm -f $(DESTDIR)$(libdir)/xorg/modules/multimedia/uda1380_drv.la
 	@$(MAKECOOKIE)
