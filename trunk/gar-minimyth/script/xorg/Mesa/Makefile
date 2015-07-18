@@ -94,8 +94,8 @@ install-source:
 	@$(MAKECOOKIE)
 
 post-install:
-	@rm -r $(DESTDIR)$(libdir)/libEGL.la
-	@rm -r $(DESTDIR)$(libdir)/libgbm.la
-	@rm -r $(DESTDIR)$(libdir)/libGL.la
-	@rm -r $(DESTDIR)$(libdir)/libglapi.la
+	@rm -f $(DESTDIR)$(libdir)/libEGL.la
+	@rm -f $(DESTDIR)$(libdir)/libgbm.la
+	@rm -f $(DESTDIR)$(libdir)/libGL.la
+	@rm -f $(DESTDIR)$(libdir)/libglapi.la
 	@$(MAKECOOKIE)
