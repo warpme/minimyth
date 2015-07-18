@@ -1,5 +1,5 @@
 GARNAME = xf86-video-intel
-GARVERSION = 2.21.0
+GARVERSION = 2.99.917
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -40,39 +40,42 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--cache-file=config.cache \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
 	--enable-udev \
 	--enable-dri \
+	--enable-dri2 \
+	--disable-dri3 \
 	--enable-xvmc \
+	--enable-kms \
+	--enable-ums \
 	--disable-kms-only \
 	--disable-ums-only \
 	--enable-sna \
 	--enable-uxa \
-	--disable-glamor \
 	--disable-xaa \
 	--disable-dga \
-	--disable-fast-reloc \
-	--disable-handle-lut \
+	--disable-tear-free \
+	--disable-rendernode \
+	--disable-wc-mmap \
+	--disable-create2 \
 	--disable-async-swap \
 	--disable-debug \
+	--disable-valgrind \
 	--with-gnu-ld
-
-CONFIGURE_ENV = \
-	XORG_SGML_PATH="$(DESTDIR)$(includedir)/xorg"
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
+# xf86-video-intel 2.99.917 fails to compile with gcc 5.1.0's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@rm -f $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dri.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"       >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/sarea.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes"     >> $(WORKSRC)/config.cache
-	@echo "`echo ac_cv_file_$(DESTDIR)$(includedir)/xorg/dristruct.h | sed -e 's%[^a-zA-Z0-9]%_%g'`=yes" >> $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)
 
 post-install:

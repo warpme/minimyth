@@ -1,0 +1,22 @@
+diff -Naur xf86-video-intel-2.99.917-old/configure.ac xf86-video-intel-2.99.917-new/configure.ac
+--- xf86-video-intel-2.99.917-old/configure.ac	2015-07-14 17:44:22.832003023 -0700
++++ xf86-video-intel-2.99.917-new/configure.ac	2015-07-14 17:46:13.794001244 -0700
+@@ -91,6 +91,8 @@
+ 	AC_DEFINE(USE_BACKLIGHT_HELPER, 1, [Enable use of the backlight helper interfaces])
+ fi
+ 
++PKG_PROG_PKG_CONFIG
++
+ # Are we in a git checkout?
+ dot_git=no
+ if test -e .git; then
+@@ -771,7 +773,8 @@
+ AC_SEARCH_LIBS(clock_gettime, rt, [CLOCK_GETTIME_LIBS=$LIBS])
+ AC_SUBST(CLOCK_GETTIME_LIBS)
+ 
+-sdkdir=`$PKG_CONFIG --variable=sdkdir xorg-server`
++m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++sdkdir="$PKG_CONFIG_SYSROOT_DIR$($PKG_CONFIG --variable=sdkdir xorg-server)"
+ 
+ AM_CONDITIONAL(DEBUG, test "x$DEBUG" != "xno")
+ AM_CONDITIONAL(FULL_DEBUG, test "x$DEBUG" = "xfull")

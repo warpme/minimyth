@@ -1,12 +1,7 @@
 GARNAME = xf86-video-geode
-#GARVERSION_TYPE = git
-GARVERSION = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	20120829-4a20e8a, \
-	2.11.14 ))
+GARVERSION = 2.11.17
 CATEGORIES = $(CATEGORY)
-MASTER_SITES = $(strip $(if $(filter git,$(GARVERSION_TYPE)) , \
-	git://anongit.freedesktop.org/git/xorg/driver/xf86-video-geode/ , \
-	$(XORG_MASTER_SITES) ))
+MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
@@ -46,15 +41,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-x-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE) 
-
 pre-configure:
-	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
 
