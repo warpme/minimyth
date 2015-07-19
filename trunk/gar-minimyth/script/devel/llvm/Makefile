@@ -36,7 +36,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-threads \
 	--enable-pthreads \
 	--enable-pic \
-	--disable-shared \
+	--enable-shared \
 	--disable-embed-stdcxx \
 	--enable-timestamps \
 	--enable-targets="$(strip $(TARGETS_$(GARCH_FAMILY)))" \
@@ -55,9 +55,9 @@ TARGETS_i386   := "x86,r600"
 TARGETS_x86_64 := "x86_64,r600"
 
 # llvm 3.5.2 fails to compile for x86_64 with --enable-shared and gcc 5.1.0's link time optimization enabled.
-#CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
-#CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
-#LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
+CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
 
 EXTRA_OPTIONS    := $(CFLAGS)
 EXTRA_LD_OPTIONS := $(LDFLAGS)
