@@ -146,9 +146,9 @@ GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk
 
 # xorg-server 1.17.2 fails to compile with gcc 5.1.0 and -O3 optimization enabled.
-CFLAGS   := $(filter-out -O3, $(CFLAGS))   -O2
-CXXFLAGS := $(filter-out -O3, $(CXXFLAGS)) -O2
-LDFLAGS  := $(filter-out -O3, $(LDFLAGS))  -O2
+CFLAGS   := $(if $(filter -O3,$(CFLAGS)  ),$(patsubst -O3,-O2,$(CFLAGS)  ))
+CXXFLAGS := $(if $(filter -O3,$(CXXFLAGS)),$(patsubst -O3,-O2,$(CXXFLAGS)))
+LDFLAGS  := $(if $(filter -O3,$(LDFLAGS) ),$(patsubst -O3,-O2,$(LDFLAGS) ))
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
