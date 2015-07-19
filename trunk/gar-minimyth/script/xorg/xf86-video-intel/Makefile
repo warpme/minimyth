@@ -73,6 +73,11 @@ CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
 CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
 LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
 
+# xf86-video-intel 2.99.917 fails to compile with gcc 5.1.0 and -O3 optimization enabled.
+CFLAGS   := $(patsubst -O3,-O2,$(CFLAGS))
+CXXFLAGS := $(patsubst -O3,-O2,$(CXXFLAGS))
+LDFLAGS  := $(patsubst -O3,-O2,$(LDFLAGS))
+
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
