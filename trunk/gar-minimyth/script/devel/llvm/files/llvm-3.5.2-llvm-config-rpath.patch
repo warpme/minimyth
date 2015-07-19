@@ -1,0 +1,14 @@
+diff -Naur llvm-3.5.2.src-old/Makefile.rules llvm-3.5.2.src-new/Makefile.rules
+--- llvm-3.5.2.src-old/Makefile.rules	2014-06-20 12:00:41.000000000 -0700
++++ llvm-3.5.2.src-new/Makefile.rules	2015-07-19 01:03:23.162007765 -0700
+@@ -652,7 +652,9 @@
+   endif
+   ifneq ($(HOST_OS), Darwin)
+     ifdef TOOLNAME
+-      LD.Flags += $(RPATH) -Wl,'$$ORIGIN/../lib'
++      ifneq ($(TOOLNAME),llvm-config)
++        LD.Flags += $(RPATH) -Wl,'$$ORIGIN/../lib'
++      endif
+     endif
+   else
+     ifneq ($(DARWIN_MAJVERS),4)
