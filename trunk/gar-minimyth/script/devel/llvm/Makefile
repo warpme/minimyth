@@ -1,10 +1,11 @@
 GARNAME = llvm
-# 3.6.x requires python 2.7 to build.
-GARVERSION = 3.5.2
+GARVERSION = 3.6.2
 CATEGORIES = devel
 MASTER_SITES = http://www.llvm.org/releases/$(GARVERSION)/
 DISTFILES = $(DISTNAME).src.tar.xz
-PATCHFILES = $(DISTNAME)-llvm-config-rpath.patch
+PATCHFILES = \
+	$(DISTNAME)-llvm-config-rpath.patch \
+	$(DISTNAME)-python_2.6.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/LICENSE.TXT
 
