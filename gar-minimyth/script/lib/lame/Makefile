@@ -48,11 +48,6 @@ include ../../gar.mk
 
 PARALLELMFLAGS := -j1
 
-# lame 3.99.5 fails to compile with gcc 5.1.0's link time optimization enabled.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
-
 extract-config.cache.$(GARCH_FAMILY):
 	@cp $(DOWNLOADDIR)/config.cache.$(GARCH_FAMILY) $(WORKSRC)/config.cache
 	@$(MAKECOOKIE)

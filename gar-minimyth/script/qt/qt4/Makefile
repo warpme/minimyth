@@ -104,10 +104,10 @@ endif
 GAR_EXTRA_CONF += devel/gcc/package-api.mk devel/glibc/package-api.mk
 include ../../gar.mk
 
-# qt 4.8.7 fails to compile with gcc 5.1.0's link time optimization enabled.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
+# qt 4.8.7 fails to compile with gcc 5.2.0's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
 
 PLATFORM_GARBUILD_BASE_NAME = $(strip \
 	$(if $(filter i386,$(build_GARCH_FAMILY)),linux-g++-32,) \
