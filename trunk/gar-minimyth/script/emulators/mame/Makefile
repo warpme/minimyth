@@ -40,10 +40,10 @@ BUILD_ARGS  = \
 
 include ../../gar.mk
 
-# mame 0.162 fails to compile with gcc 5.1.0's link time optimization enabled.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS))
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))
+# mame 0.163 fails to compile (or takes very long to complete) with gcc 5.2.0's link time optimization enabled.
+CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
+CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
+LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
 
 CROSS_BUILD := $(if $(filter build,$(DESTIMG)),0,1)
 OPTIMIZE    := $(subst -O,,$(filter -O%,$(CFLAGS)))

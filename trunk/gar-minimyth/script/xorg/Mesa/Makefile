@@ -78,11 +78,6 @@ endif
 
 include ../../gar.mk
 
-# mesa 10.6.2 fails to compile with asm and gcc 5.1.0's link time optimization enabled.
-CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto
-CXXFLAGS := $(filter-out -flto, $(CXXFLAGS)) -fno-lto
-LDFLAGS  := $(filter-out -flto, $(LDFLAGS))  -fno-lto
-
 pre-configure:
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
 	@$(MAKECOOKIE)
