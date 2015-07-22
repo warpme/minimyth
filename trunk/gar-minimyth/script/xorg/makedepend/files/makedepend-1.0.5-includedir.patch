@@ -1,0 +1,40 @@
+diff -Naur makedepend-1.0.5-old/main.c makedepend-1.0.5-new/main.c
+--- makedepend-1.0.5-old/main.c	2013-07-22 22:14:47.000000000 -0700
++++ makedepend-1.0.5-new/main.c	2015-07-21 12:23:17.423996944 -0700
+@@ -404,9 +404,12 @@
+ 		fatalerr("Too many -I flags.\n");
+ 	    *incp++ = PREINCDIR;
+ #endif
++
++#ifdef INCLUDEDIR
+ 	    if (incp >= includedirs + MAXDIRS)
+ 		fatalerr("Too many -I flags.\n");
+ 	    *incp++ = INCLUDEDIR;
++#endif
+ 
+ #ifdef EXTRAINCDIR
+ 	    if (incp >= includedirs + MAXDIRS)
+diff -Naur makedepend-1.0.5-old/Makefile.am makedepend-1.0.5-new/Makefile.am
+--- makedepend-1.0.5-old/Makefile.am	2013-07-22 22:14:47.000000000 -0700
++++ makedepend-1.0.5-new/Makefile.am	2015-07-21 12:23:59.456999479 -0700
+@@ -11,7 +11,7 @@
+                      def.h \
+                      imakemdep.h
+ 
+-AM_CPPFLAGS = -DOBJSUFFIX=\".${OBJEXT}\" -DINCLUDEDIR=\"/usr/include\"
++AM_CPPFLAGS = -DOBJSUFFIX=\".${OBJEXT}\"
+ AM_CPPFLAGS += $(X_CFLAGS)
+ AM_CFLAGS = $(CWARNFLAGS)
+ 
+diff -Naur makedepend-1.0.5-old/Makefile.in makedepend-1.0.5-new/Makefile.in
+--- makedepend-1.0.5-old/Makefile.in	2013-07-22 22:14:53.000000000 -0700
++++ makedepend-1.0.5-new/Makefile.in	2015-07-21 12:24:45.179000281 -0700
+@@ -513,7 +513,7 @@
+                      def.h \
+                      imakemdep.h
+ 
+-AM_CPPFLAGS = -DOBJSUFFIX=\".${OBJEXT}\" -DINCLUDEDIR=\"/usr/include\" \
++AM_CPPFLAGS = -DOBJSUFFIX=\".${OBJEXT}\" \
+ 	$(X_CFLAGS)
+ AM_CFLAGS = $(CWARNFLAGS)
+ EXTRA_DIST = autogen.sh makedepend.man ChangeLog \

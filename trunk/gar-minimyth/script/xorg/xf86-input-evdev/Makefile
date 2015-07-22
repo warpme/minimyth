@@ -1,5 +1,5 @@
 GARNAME = xf86-input-evdev
-GARVERSION = 2.7.2
+GARVERSION = 2.9.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -13,6 +13,7 @@ endef
 
 DEPENDS = lang/c system/udev \
 	$(CATEGORY)/inputproto \
+	$(CATEGORY)/libevdev \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xorg-server \
 	$(CATEGORY)/xproto
@@ -26,9 +27,9 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	--disable-silent-rules \
 	--with-gnu-ld
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk

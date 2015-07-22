@@ -1,5 +1,5 @@
 GARNAME = xmodmap
-GARVERSION = 1.0.7
+GARVERSION = 1.0.9
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,7 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/libX11
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -19,10 +20,7 @@ CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
-# xmodmap 1.0.7  will not compile with gcc 5.1.0 without --disable-selective-werror.
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-selective-werror \
-	--disable-strict-compilation \
 	--disable-silent-rules
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk

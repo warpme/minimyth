@@ -1,10 +1,11 @@
 GARNAME = libX11
-GARVERSION = 1.5.0
+GARVERSION = 1.6.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES  = $(DISTNAME)-pkg_config.patch
-PATCHFILES += $(DISTNAME)-disable_nls_tests.patch
+PATCHFILES  = \
+	$(DISTNAME)-pkg_config.patch \
+	$(DISTNAME)-disable_nls_tests.patch
 LICENSE = $(GARNAME)
 $(GARNAME)_LICENSE_TEXT = $(WORKSRC)/COPYING
 
@@ -48,13 +49,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-xf86bigfont \
 	--enable-xkb \
 	--disable-composecache \
-	--disable-lint-library \
 	--enable-malloc0returnsnull \
 	--without-xmlto \
 	--without-fop \
 	--with-gnu-ld \
-	--without-launchd \
-	--without-lint
+	--without-launchd
 
 CONFIGURE_ENV = \
 	CC_FOR_BUILD="$(build_CC)" \

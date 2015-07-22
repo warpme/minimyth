@@ -1,5 +1,5 @@
 GARNAME = libXt
-GARVERSION = 1.1.3
+GARVERSION = 1.1.5
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -30,7 +30,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-static \
 	--enable-xkb \
 	--enable-malloc0returnsnull \
-	--with-gnu-ld
+	--with-gnu-ld \
+	--without-glib
 
 CONFIGURE_ENV = \
 	CC_FOR_BUILD="$(build_CC)" \

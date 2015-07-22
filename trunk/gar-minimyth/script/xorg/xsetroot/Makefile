@@ -14,7 +14,8 @@ DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXcursor \
 	$(CATEGORY)/libXmu \
-	$(CATEGORY)/xbitmaps
+	$(CATEGORY)/xbitmaps \
+	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

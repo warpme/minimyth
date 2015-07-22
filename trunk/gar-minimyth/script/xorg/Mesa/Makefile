@@ -10,8 +10,9 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS    = lang/c lang/cxx devel/libelf devel/llvm lib/expat X11/libvdpau \
+DEPENDS    = lang/c lang/cxx devel/libelf devel/llvm lib/expat X11/libva-mini X11/libvdpau \
 	$(CATEGORY)/dri2proto \
+	$(CATEGORY)/dri3proto \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/glproto \
 	$(CATEGORY)/libdrm \
@@ -20,6 +21,7 @@ DEPENDS    = lang/c lang/cxx devel/libelf devel/llvm lib/expat X11/libvdpau \
 	$(CATEGORY)/libXdamage \
 	$(CATEGORY)/libXext \
 	$(CATEGORY)/libXfixes \
+	$(CATEGORY)/libxshmfence \
 	$(CATEGORY)/libXxf86vm \
 	$(CATEGORY)/libXvMC
 ifneq ($(DESTIMG),build)
@@ -39,8 +41,6 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-shared \
-	$(if $(filter i386  , $(GARCH_FAMILY)),--enable-32-bit) \
-	$(if $(filter x86_64, $(GARCH_FAMILY)),--enable-64-bit) \
 	--disable-debug \
 	--disable-mangling \
 	--disable-texture-float \
@@ -49,28 +49,37 @@ CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-opengl \
 	--disable-gles1 \
 	--disable-gles2 \
-	--disable-openvg \
 	--enable-dri \
-	--disable-dri3 \
+	--enable-dri3 \
 	--enable-glx \
 	--disable-osmesa \
+	--disable-gallium-osmesa \
 	--enable-egl \
 	--disable-xa \
 	--enable-gbm \
+	--disable-nine \
 	--enable-xvmc \
 	--enable-vdpau \
+	--disable-omx \
+	--enable-va \
+	--disable-opencl \
+	--disable-opencl-icd \
 	--disable-xlib-glx \
-	--disable-gallium-egl \
-	--disable-gallium-gbm \
-	--enable-shared-glapi \
-	--enable-gallium-llvm \
 	--enable-r600-llvm-compiler \
+	--disable-gallium-tests \
+	--enable-shared-glapi \
+	--enable-driglx-direct \
+	--disable-glx-tls \
+	--enable-gallium-llvm \
+	--enable-llvm-shared-libs \
+	--with-gnu-ld \
 	--with-gallium-drivers="i915,nouveau,r300,r600,radeonsi,svga,swrast" \
 	--with-dri-driverdir="$(libdir)/dri" \
 	--with-dri-drivers="i915,i965,nouveau,r200,radeon,swrast" \
 	--with-egl-platforms="drm" \
-	--with-llvm-shared-libs \
-	--with-vdpau-libdir="$(libdir)/vdpau"
+	--with-xvmc-libdir="$(libdir)" \
+	--with-vdpau-libdir="$(libdir)/vdpau" \
+	--with-va-libdir="$(libdir)/dri"
 ifeq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
 	--enable-sysfs
@@ -89,6 +98,7 @@ install-source:
 	@$(MAKECOOKIE)
 
 post-install:
+	@rm -f $(DESTDIR)$(libdir)/dri/gallium_drv_video.la
 	@rm -f $(DESTDIR)$(libdir)/libEGL.la
 	@rm -f $(DESTDIR)$(libdir)/libgbm.la
 	@rm -f $(DESTDIR)$(libdir)/libGL.la

@@ -15,6 +15,7 @@ endef
 
 DEPENDS = lang/c system/udev \
 	$(CATEGORY)/dri2proto \
+	$(CATEGORY)/dri3proto \
 	$(CATEGORY)/fontsproto \
 	$(CATEGORY)/libdrm \
 	$(CATEGORY)/libpciaccess \
@@ -46,7 +47,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-udev \
 	--enable-dri \
 	--enable-dri2 \
-	--disable-dri3 \
+	--enable-dri3 \
 	--enable-xvmc \
 	--enable-kms \
 	--enable-ums \
