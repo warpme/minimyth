@@ -3,7 +3,7 @@ GARVERSION = 1.2.15
 CATEGORIES = lib
 MASTER_SITES = http://www.libsdl.org/release/
 DISTFILES = $(DISTNAME).tar.gz
-PATCHFILES = $(DISTNAME)-configure.patch $(DISTNAME).patch.gar
+PATCHFILES = $(DISTNAME)-const-xdata32.patch  $(DISTNAME)-configure.patch $(DISTNAME).patch.gar
 LICENSE = LGPL2_1
 
 DESCRIPTION =
