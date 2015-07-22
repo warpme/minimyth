@@ -14,6 +14,7 @@ DEPENDS   = lang/c \
 	$(CATEGORY)/inputproto \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXext \
+	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/util-macros \
 	$(CATEGORY)/xextproto \
 	$(CATEGORY)/xproto
