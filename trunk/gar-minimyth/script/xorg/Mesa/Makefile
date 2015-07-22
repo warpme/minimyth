@@ -23,7 +23,8 @@ DEPENDS    = lang/c lang/cxx devel/libelf devel/llvm lib/expat X11/libva-mini X1
 	$(CATEGORY)/libXfixes \
 	$(CATEGORY)/libxshmfence \
 	$(CATEGORY)/libXxf86vm \
-	$(CATEGORY)/libXvMC
+	$(CATEGORY)/libXvMC \
+	$(CATEGORY)/presentproto
 ifneq ($(DESTIMG),build)
 DEPENDS   += system/udev
 endif
