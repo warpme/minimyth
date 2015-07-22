@@ -20,7 +20,6 @@ INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS = \
 	-DCMAKE_INSTALL_PREFIX="$(prefix)" \
-	-DCMAKE_STAGING_PREFIX="$(DESTDIR)$(prefix)" \
 	-DCMAKE_INSTALL_LIBDIR="lib" \
 	-DCMAKE_FIND_ROOT_PATH="$(DESTDIR)$(prefix)" \
 	-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM="NEVER" \
@@ -47,8 +46,6 @@ ifneq ($(DESTIMG),build)
 CONFIGURE_ARGS += \
 	-DCMAKE_SYSTEM_NAME="Linux"
 endif
-INSTALL_ARGS    = \
-	DESTDIR=""
 
 include ../../gar.mk
 
