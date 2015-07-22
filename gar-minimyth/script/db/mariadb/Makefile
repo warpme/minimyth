@@ -65,6 +65,8 @@ CONFIGURE_ARGS += \
 	-DSTACK_DIRECTION="-1" \
 	-DIMPORT_EXECUTABLES="$(IMPORT_EXECUTABLES)"
 endif
+INSTALL_ARGS    = \
+	DESTDIR=""
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
