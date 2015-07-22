@@ -1,10 +1,8 @@
-GARNAME = intel-driver
-GARVERSION = 1.0.19
+GARNAME = libva-intel-driver
+GARVERSION = 1.6.0
 CATEGORIES = X11
-MASTER_SITES = http://cgit.freedesktop.org/vaapi/intel-driver/snapshot/
+MASTER_SITES = http://www.freedesktop.org/software/vaapi/releases/$(GARNAME)/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
 DESCRIPTION = 
@@ -19,18 +17,14 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
+	--enable-drm \
+	--enable-x11 \
+	--disable-wayland \
 	--disable-static \
 	--enable-shared \
 	--with-gnu-ld
 
 include ../../gar.mk
-
-git//%$(DISTNAME).tar.bz2:
-	@$(call FETCH_GIT, $*, $(word 2,$(subst -, ,$(GARVERSION))), $(DISTNAME))
-	@$(MAKECOOKIE)
-
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE) 
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)

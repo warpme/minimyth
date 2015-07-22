@@ -1,7 +1,7 @@
 GARNAME = libva
 GARVERSION = $(LIBVA_VERSION)
 CATEGORIES = X11
-MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
+MASTER_SITES = http://www.freedesktop.org/software/vaapi/releases/libva/
 DISTFILES = $(DISTNAME).tar.bz2
 LICENSE = MIT
 
@@ -10,6 +10,7 @@ define BLURB
 endef
 
 DEPENDS = lang/c lang/cxx \
+	X11/libva-mini \
 	xorg/libdrm \
 	xorg/libX11 \
 	xorg/libXext \
@@ -36,10 +37,6 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 
 GAR_EXTRA_CONF += X11/libva/package-api.mk
 include ../../gar.mk
-
-# The snapshot is generated from git so it may have a different checksum.
-checksum-$(DISTNAME).tar.bz2:
-	@$(MAKECOOKIE)
 
 pre-configure:
 	@mkdir -p $(WORKSRC)/m4
