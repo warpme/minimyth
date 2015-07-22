@@ -38,8 +38,8 @@ CONFIGURE_ARGS  = \
 	-DCMAKE_OBJDUMP="$(build_DESTDIR)$(build_bindir)/$(OBJDUMP)" \
 	-DCMAKE_RANLIB="$(build_DESTDIR)$(build_bindir)/$(RANLIB)" \
 	-DCMAKE_STRIP="$(build_DESTDIR)$(build_bindir)/$(STRIP)" \
-	-DCMAKE_INSTALL_PREFIX="$(prefix)" \
-	-DCMAKE_STAGING_PREFIX="$(DESTDIR)$(prefix)" \
+	-DCMAKE_INSTALL_PREFIX="$(DESTDIR)" \
+	-DCMAKE_STAGING_PREFIX="$(DESTDIR)" \
 	-DCMAKE_VERBOSE_MAKEFILE="ON" \
 	-DINSTALL_BINDIR="$(bindir)" \
 	-DINSTALL_DOCDIR="$(docdir)/mysql" \
@@ -65,8 +65,6 @@ CONFIGURE_ARGS += \
 	-DSTACK_DIRECTION="-1" \
 	-DIMPORT_EXECUTABLES="$(IMPORT_EXECUTABLES)"
 endif
-INSTALL_ARGS    = \
-	DESTDIR=""
 
 GAR_EXTRA_CONF += devel/glibc/package-api.mk
 include ../../gar.mk
