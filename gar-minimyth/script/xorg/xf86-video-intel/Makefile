@@ -25,6 +25,7 @@ DEPENDS = lang/c system/udev \
 	$(CATEGORY)/libXrender \
 	$(CATEGORY)/libXvMC \
 	$(CATEGORY)/pixman \
+	$(CATEGORY)/presentproto \
 	$(CATEGORY)/randrproto \
 	$(CATEGORY)/renderproto \
 	$(CATEGORY)/util-macros \
