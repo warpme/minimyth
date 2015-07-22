@@ -64,7 +64,3 @@ configure-%/cmake:
 	@mkdir -p $*
 	@cd $* && $(CONFIGURE_ENV) cmake $(CONFIGURE_ARGS) ../$(DISTNAME)
 	@$(MAKECOOKIE)
-
-post-install:
-	@rm -f $(DESTDIR)$(libdir)/libglut.la
-	@$(MAKECOOKIE)
