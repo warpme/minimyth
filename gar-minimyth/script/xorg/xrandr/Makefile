@@ -1,5 +1,5 @@
 GARNAME = xrandr
-GARVERSION = 1.3.5
+GARVERSION = 1.4.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -13,7 +13,8 @@ endef
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
 	$(CATEGORY)/libXrandr \
-	$(CATEGORY)/libXrender
+	$(CATEGORY)/libXrender \
+	$(CATEGORY)/xproto
 	
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

@@ -19,6 +19,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/bigreqsproto \
 	$(CATEGORY)/damageproto \
 	$(CATEGORY)/dri2proto \
+	$(CATEGORY)/dri3proto \
 	$(CATEGORY)/fixesproto \
 	$(CATEGORY)/font-util \
 	$(CATEGORY)/fontsproto \
@@ -31,6 +32,7 @@ DEPENDS  = lang/c lib/openssl \
 	$(CATEGORY)/libXau \
 	$(CATEGORY)/libXfont \
 	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/libxshmfence \
 	$(CATEGORY)/Mesa \
 	$(CATEGORY)/pixman \
 	$(CATEGORY)/presentproto \
@@ -75,6 +77,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-install-libxf86config \
 	--enable-visibility \
 	--enable-aiglx \
+	--disable-glx-tls \
 	--disable-composite \
 	--enable-mitshm \
 	--disable-xres \
@@ -88,7 +91,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--enable-glx \
 	--enable-dri \
 	--enable-dri2 \
-	--disable-dri3 \
+	--enable-dri3 \
 	--enable-present \
 	--enable-xinerama \
 	--enable-xf86vidmode \
@@ -117,12 +120,14 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-xvfb \
 	--disable-xnest \
 	--disable-xquartz \
+	--disable-xwayland \
 	--disable-standalone-xpbproxy \
 	--disable-xwin \
 	--disable-kdrive \
 	--disable-xephyr \
 	--disable-xfake \
 	--disable-xfbdev \
+	--enable-xshmfence \
 	--disable-install-setuid \
 	--enable-unix-transport \
 	--disable-tcp-transport \

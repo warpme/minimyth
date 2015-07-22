@@ -1,5 +1,5 @@
 GARNAME = pixman
-GARVERSION = 0.30.0
+GARVERSION = 0.32.6
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -25,7 +25,8 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-openmp \
 	--disable-loongson-mmi \
 	--enable-mmx \
-	$(if $(filter i386 i486 i586 c3 c3-2 pentium-mmx,$($(DESTIMG)_GARCH)),--disable-sse2,--enable-sse2) \
+	--enable-sse2 \
+	--enable-sse3 \
 	--disable-vmx \
 	--disable-arm-simd \
 	--disable-arm-neon \

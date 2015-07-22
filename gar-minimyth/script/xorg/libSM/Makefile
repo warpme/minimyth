@@ -1,5 +1,5 @@
 GARNAME = libSM
-GARVERSION = 1.2.1
+GARVERSION = 1.2.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -26,6 +26,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
+	--disable-docs \
 	--enable-unix-transport \
 	--disable-tcp-transport \
 	--disable-ipv6 \

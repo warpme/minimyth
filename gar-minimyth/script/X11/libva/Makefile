@@ -1,17 +1,20 @@
 GARNAME = libva
-GARVERSION = 1.1.0
+GARVERSION = $(LIBVA_VERSION)
 CATEGORIES = X11
 MASTER_SITES = http://cgit.freedesktop.org/libva/snapshot/
 DISTFILES = $(DISTNAME).tar.bz2
-PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch
 LICENSE = MIT
 
 DESCRIPTION = 
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx xorg/xorg
+DEPENDS = lang/c lang/cxx \
+	xorg/libdrm \
+	xorg/libX11 \
+	xorg/libXext \
+	xorg/libXfixes \
+	xorg/Mesa
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -28,9 +31,10 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-dummy-driver \
 	--disable-static \
 	--enable-shared \
-	--with-drivers-path="$(libdir)/va" \
+	--with-drivers-path="$(libdir)/dri" \
 	--with-gnu-ld
 
+GAR_EXTRA_CONF += X11/libva/package-api.mk
 include ../../gar.mk
 
 # The snapshot is generated from git so it may have a different checksum.

@@ -1,5 +1,5 @@
 GARNAME = xproto
-GARVERSION = 7.0.26
+GARVERSION = 7.0.28
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -21,7 +21,8 @@ INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-silent-rules \
 	--without-xmlto \
-	--without-fop
+	--without-fop \
+	--without-xsltproc
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk

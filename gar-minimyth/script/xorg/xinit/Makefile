@@ -1,5 +1,5 @@
 GARNAME = xinit
-GARVERSION = 1.3.2
+GARVERSION = 1.3.4
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,7 +11,8 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/libX11
+	$(CATEGORY)/libX11 \
+	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
@@ -20,7 +21,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-silent-rules
+	--disable-silent-rules \
+	--without-launchd
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk

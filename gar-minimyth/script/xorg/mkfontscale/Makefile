@@ -1,5 +1,5 @@
 GARNAME = mkfontscale
-GARVERSION = 1.1.0
+GARVERSION = 1.1.2
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,7 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lib/freetype lib/zlib \
+DEPENDS = lang/c lib/freetype lib/zlib utils/bzip2 \
 	$(CATEGORY)/libfontenc \
 	$(CATEGORY)/xproto
 
@@ -21,7 +21,8 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-silent-rules
+	--disable-silent-rules \
+	--with-bzip2
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk

@@ -1,5 +1,5 @@
 GARNAME = xcb-util
-GARVERSION = 0.3.9
+GARVERSION = 0.4.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = http://xcb.freedesktop.org/dist/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -20,11 +20,12 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
-	--enable-selective-werror \
-	--disable-silent-rules \
-	--with-gnu-ld
+	--disable-devel-docs \
+	--with-gnu-ld \
+	--without-doxygen
 
 GAR_EXTRA_CONF += $(CATEGORY)/xorg/package-api.mk
 include ../../gar.mk

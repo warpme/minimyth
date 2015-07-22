@@ -1,5 +1,5 @@
 GARNAME = xlsclients
-GARVERSION = 1.1.2
+GARVERSION = 1.1.3
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -11,9 +11,7 @@ define BLURB
 endef
 
 DEPENDS = lang/c \
-	$(CATEGORY)/libX11 \
-	$(CATEGORY)/libxcb \
-	$(CATEGORY)/libXmu
+	$(CATEGORY)/libxcb
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 

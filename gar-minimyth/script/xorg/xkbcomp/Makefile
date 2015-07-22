@@ -1,5 +1,5 @@
 GARNAME = xkbcomp
-GARVERSION = 1.2.4
+GARVERSION = 1.3.0
 CATEGORIES = $(CATEGORY)
 MASTER_SITES = $(XORG_MASTER_SITES)
 DISTFILES = $(DISTNAME).tar.bz2
@@ -12,7 +12,8 @@ endef
 
 DEPENDS = lang/c \
 	$(CATEGORY)/libX11 \
-	$(CATEGORY)/libxkbfile
+	$(CATEGORY)/libxkbfile \
+	$(CATEGORY)/xproto
 
 CATEGORY := $(shell basename $(shell dirname $(shell pwd)))
 
