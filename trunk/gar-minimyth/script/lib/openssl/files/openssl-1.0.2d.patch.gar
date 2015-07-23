@@ -1,0 +1,99 @@
+diff -Naur openssl-1.0.2d-old/Configure openssl-1.0.2d-new/Configure
+--- openssl-1.0.2d-old/Configure	2015-07-09 04:57:15.000000000 -0700
++++ openssl-1.0.2d-new/Configure	2015-07-22 16:22:17.317000154 -0700
+@@ -406,7 +406,7 @@
+ "linux64-mips64",   "gcc:-mabi=64 -O3 -Wall -DBN_DIV3W::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${mips64_asm}:64:dlfcn:linux-shared:-fPIC:-mabi=64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+ #### IA-32 targets...
+ "linux-ia32-icc",	"icc:-DL_ENDIAN -O2::-D_REENTRANT::-ldl -no_cpprt:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-KPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+-"linux-elf",	"gcc:-DL_ENDIAN -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-elf",	"@GAR_CC@:-DL_ENDIAN -O3 -fomit-frame-pointer -Wall @GAR_CFLAGS@::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:@GAR_LDFLAGS@ -fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-aout",	"gcc:-DL_ENDIAN -O3 -fomit-frame-pointer -march=i486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_asm}:a.out",
+ ####
+ "linux-generic64","gcc:-O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+@@ -414,7 +414,7 @@
+ "linux-ppc64le","gcc:-m64 -DL_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL:$ppc64_asm:linux64le:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::",
+ "linux-ia64",	"gcc:-DL_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_UNROLL DES_INT:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-ia64-icc","icc:-DL_ENDIAN -O2 -Wall::-D_REENTRANT::-ldl -no_cpprt:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_INT:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+-"linux-x86_64",	"gcc:-m64 -DL_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
++"linux-x86_64",	"@GAR_CC@:-m64 -DL_ENDIAN -O3 -Wall @GAR_CFLAGS@::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:@GAR_LDFLAGS@ -fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+ "linux-x86_64-clang",	"clang: -m64 -DL_ENDIAN -O3 -Wall -Wextra $clang_disabled_warnings -Qunused-arguments::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+ "linux-x86_64-icc", "icc:-DL_ENDIAN -O2::-D_REENTRANT::-ldl -no_cpprt:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+ "linux-x32",	"gcc:-mx32 -DL_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT RC4_CHUNK_LL DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-mx32:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::x32",
+@@ -1706,13 +1706,13 @@
+ 		s/^AR=\s*/AR= \$\(CROSS_COMPILE\)/;
+ 		s/^NM=\s*/NM= \$\(CROSS_COMPILE\)/;
+ 		s/^RANLIB=\s*/RANLIB= \$\(CROSS_COMPILE\)/;
+-		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= \$\(CROSS_COMPILE\)$cc/ if $cc eq "gcc";
++		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= \$\(CROSS_COMPILE\)$cc/ if $cc eq "@GAR_CC@";
+ 		}
+ 	else	{
+ 		s/^CC=.*$/CC= $cc/;
+ 		s/^AR=\s*ar/AR= $ar/;
+ 		s/^RANLIB=.*/RANLIB= $ranlib/;
+-		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
++		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "@GAR_CC@";
+ 		}
+ 	s/^CFLAG=.*$/CFLAG= $cflags/;
+ 	s/^DEPFLAG=.*$/DEPFLAG=$depflags/;
+diff -Naur openssl-1.0.2d-old/Makefile openssl-1.0.2d-new/Makefile
+--- openssl-1.0.2d-old/Makefile	2015-07-09 05:03:09.000000000 -0700
++++ openssl-1.0.2d-new/Makefile	2015-07-22 16:22:17.317000154 -0700
+@@ -59,7 +59,7 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
+-CC= cc
++CC= @GAR_CC@
+ CFLAG= -O
+ DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_LIBUNBOUND -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SSL_TRACE -DOPENSSL_NO_STORE -DOPENSSL_NO_UNIT_TEST
+ PEX_LIBS= 
+@@ -67,12 +67,12 @@
+ EXE_EXT= 
+ ARFLAGS= 
+ AR= ar $(ARFLAGS) r
+-RANLIB= /usr/bin/ranlib
+-NM= nm
+-PERL= /usr/bin/perl
++RANLIB= @GAR_RANLIB@
++NM= @GAR_NM@
++PERL= perl
+ TAR= tar
+ TARFLAGS= --no-recursion
+-MAKEDEPPROG=makedepend
++MAKEDEPPROG=@GAR_CC@
+ LIBDIR=lib
+ 
+ # We let the C compiler driver to take care of .s files. This is done in
+diff -Naur openssl-1.0.2d-old/Makefile.shared openssl-1.0.2d-new/Makefile.shared
+--- openssl-1.0.2d-old/Makefile.shared	2015-07-09 04:53:21.000000000 -0700
++++ openssl-1.0.2d-new/Makefile.shared	2015-07-22 16:22:17.317000154 -0700
+@@ -6,7 +6,7 @@
+ # properly
+ 
+ # CC contains the current compiler.  This one MUST be defined
+-CC=cc
++CC=@GAR_CC@
+ CFLAGS=$(CFLAG)
+ # LDFLAGS contains flags to be used when temporary object files (when building
+ # shared libraries) are created, or when an application is linked.
+@@ -14,7 +14,7 @@
+ LDFLAGS=
+ SHARED_LDFLAGS=
+ 
+-NM=nm
++NM=@GAR_NM@
+ 
+ # LIBNAME contains just the name of the library, without prefix ("lib"
+ # on Unix, "cyg" for certain forms under Cygwin...) or suffix (.a, .so,
+diff -Naur openssl-1.0.2d-old/util/domd openssl-1.0.2d-new/util/domd
+--- openssl-1.0.2d-old/util/domd	2015-07-09 04:53:21.000000000 -0700
++++ openssl-1.0.2d-new/util/domd	2015-07-22 16:22:17.317000154 -0700
+@@ -9,7 +9,7 @@
+     MAKEDEPEND=$1
+     shift
+ fi
+-if [ "$MAKEDEPEND" = "" ]; then MAKEDEPEND=makedepend; fi
++if [ "$MAKEDEPEND" = "" ]; then MAKEDEPEND=@GAR_CC@ ; fi
+ 
+ cp Makefile Makefile.save
+ # fake the presence of Kerberos
