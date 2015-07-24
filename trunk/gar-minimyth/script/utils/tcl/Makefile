@@ -1,5 +1,5 @@
 GARNAME = tcl
-GARVERSION = 8.6.0
+GARVERSION = 8.6.4
 CATEGORIES = utils
 MASTER_SITES = http://downloads.sourceforge.net/project/$(GARNAME)/Tcl/$(GARVERSION)/
 DISTFILES = $(GARNAME)$(GARVERSION)-src.tar.gz
@@ -44,8 +44,8 @@ pre-configure:
 
 post-install:
 	@rm -f $(DESTDIR)$(libdir)/libtclstub8.6.a
-	@rm -f $(DESTDIR)$(libdir)/tdbc1.0.0/libtdbcstub1.0.0.a
-	@rm -f $(DESTDIR)$(libdir)/itcl4.0.0/libitclstub4.0.0.a
+	@rm -f $(DESTDIR)$(libdir)/tdbc1.0.3/libtdbcstub1.0.3.a
+	@rm -f $(DESTDIR)$(libdir)/itcl4.0.3/libitclstub4.0.3.a
 	@rm -f $(DESTDIR)$(bindir)/tclsh
 	@ln -s tclsh$(word 1,$(subst ., ,$(GARVERSION))).$(word 2,$(subst ., ,$(GARVERSION))) $(DESTDIR)$(bindir)/tclsh
 	@$(MAKECOOKIE)
