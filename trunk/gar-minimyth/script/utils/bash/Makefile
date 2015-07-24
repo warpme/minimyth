@@ -1,5 +1,5 @@
 GARNAME = bash
-GARVERSION = 4.2
+GARVERSION = 4.3
 CATEGORIES = utils
 MASTER_SITES  = https://ftp.gnu.org/gnu/$(GARNAME)/
 MASTER_SITES += https://ftp.gnu.org/gnu/$(GARNAME)/$(DISTNAME)-patches/
@@ -43,21 +43,7 @@ PATCHFILES  = \
 	$(GARNAME)$(subst .,,$(GARVERSION))-036 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-037 \
 	$(GARNAME)$(subst .,,$(GARVERSION))-038 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-039 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-040 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-041 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-042 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-043 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-044 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-045 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-046 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-047 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-048 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-049 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-050 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-051 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-052 \
-	$(GARNAME)$(subst .,,$(GARVERSION))-053
+	$(GARNAME)$(subst .,,$(GARVERSION))-039
 PATCHFILES += $(DISTNAME)-perl.patch.gar
 LICENSE = GPL3
 
