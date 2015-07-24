@@ -138,6 +138,12 @@ tar-bz-extract-%:
 	@bzip2 -dc $(DOWNLOADDIR)/$* | tar -xf - -C $(EXTRACTDIR)
 	@$(MAKECOOKIE)
 
+# rule to extract files with tar and lz
+tar-lz-extract-%:
+	@echo " ==> Extracting $(DOWNLOADDIR)/$*"
+	@lzip -dc $(DOWNLOADDIR)/$* | tar -xf - -C $(EXTRACTDIR)
+	@$(MAKECOOKIE)
+
 # rule to extract files with tar and xz
 tar-xz-extract-%:
 	@echo " ==> Extracting $(DOWNLOADDIR)/$*"
@@ -191,6 +197,9 @@ extract-%.tar.bz2: tar-bz-extract-%.tar.bz2
 	@$(MAKECOOKIE)
 
 extract-%.tbz: tar-bz-extract-%.tbz
+	@$(MAKECOOKIE)
+
+extract-%.tar.lz: tar-lz-extract-%.tar.lz
 	@$(MAKECOOKIE)
 
 extract-%.tar.xz: tar-xz-extract-%.tar.xz
