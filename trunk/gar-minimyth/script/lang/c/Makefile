@@ -13,6 +13,7 @@ BUILDDEPS += \
 	utils/bash \
 	perl/perl \
 	utils/coreutils \
+	utils/lzip \
 	utils/ed \
 	utils/sed \
 	utils/gawk \
