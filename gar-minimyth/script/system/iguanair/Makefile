@@ -1,4 +1,5 @@
 GARNAME = iguanaIR
+# version 1.1.0 requires cmake.
 GARVERSION = 1.0.3
 CATEGORIES = system
 MASTER_SITES = http://iguanaworks.net/downloads/
