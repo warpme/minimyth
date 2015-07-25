@@ -1,4 +1,5 @@
 GARNAME = udev
+# updating requires switching to eudev <http://dev.gentoo.org/~blueness/eudev/>.
 GARVERSION = 182
 CATEGORIES = system
 MASTER_SITES = ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/
