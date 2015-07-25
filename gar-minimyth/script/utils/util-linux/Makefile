@@ -1,9 +1,8 @@
 GARNAME = util-linux
 GARVERSION = 2.22.2
 CATEGORIES = utils
-MASTER_SITES  = ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.22/
-MASTER_SITES += ftp://ftp.infradead.org/pub/util-linux/v2.22/
-DISTFILES = $(DISTNAME).tar.bz2
+MASTER_SITES = https://www.kernel.org/pub/linux/utils/util-linux/v2.22/
+DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = $(DISTNAME)-agetty_2.19.1.patch
 LICENSE = GPL2
 
