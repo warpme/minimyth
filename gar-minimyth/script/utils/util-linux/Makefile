@@ -1,7 +1,7 @@
 GARNAME = util-linux
-GARVERSION = 2.22.2
+GARVERSION = 2.26.2
 CATEGORIES = utils
-MASTER_SITES = https://www.kernel.org/pub/linux/utils/util-linux/v2.22/
+MASTER_SITES = https://www.kernel.org/pub/linux/utils/util-linux/v2.26/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = $(DISTNAME)-agetty_2.19.1.patch
 LICENSE = GPL2
@@ -28,60 +28,29 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--disable-gtk-doc \
 	--enable-nls \
 	--disable-rpath \
+	--disable-all-programs \
 	--enable-tls \
 	--enable-libuuid \
 	--enable-libblkid \
 	--enable-libmount \
-	--disable-deprecated-mount \
 	--enable-mount \
-	--disable-fsck \
-	--disable-partx \
 	--enable-uuidd \
-	--disable-mountpoint \
-	--disable-fallocate \
-	--disable-unshare \
-	--enable-arch \
-	--disable-ddate \
-	--disable-eject \
 	--enable-agetty \
 	--enable-cramfs \
 	--enable-switch-root \
-	--disable-pivot-root \
-	--disable-elvtune \
-	--disable-kill \
-	--disable-last \
-	--disable-utmpdump \
-	--disable-line \
-	--disable-mesg \
-	--disable-raw \
 	--enable-rename \
-	--disable-reset \
-	--disable-vipw \
-	--disable-newgrp \
-	--disable-chfn-chsh \
 	--enable-chsh-only-listed \
-	--disable-login \
-	--disable-login-chown-vcs \
-	--disable-login-stat-mail \
-	--disable-sulogin \
-	--disable-su \
-	--disable-schedutils \
-	--disable-wall \
-	--disable-write \
-	--disable-chkdupexe \
-	--disable-socket-activation \
 	--enable-pg-bell \
-	--enable-require-password \
-	--disable-use-tty-group \
-	--disable-makeinstall-chown \
-	--disable-makeinstall-setuid \
 	--with-gnu-ld \
 	--without-selinux \
 	--without-audit \
 	--without-udev \
 	--without-slang \
 	--without-utempter \
-	--without-systemdsystemunitdir
+	--without-user \
+	--without-systemd \
+	--without-smack \
+	--without-python
 
 BUILD_ARGS     = \
 	usrbin_execdir=$(bindir) \
