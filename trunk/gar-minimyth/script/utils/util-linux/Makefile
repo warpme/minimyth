@@ -10,8 +10,7 @@ DESCRIPTION =
 define BLURB
 endef
 
-# util-linux 2.22.2 fails checking for ncurses headers before checking for ncursesw library.
-DEPENDS = lang/c lib/ncurses lib/ncursesw lib/zlib
+DEPENDS = lang/c lib/ncursesw lib/zlib
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
@@ -21,26 +20,77 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--bindir=$(ebindir) \
 	--sbindir=$(esbindir) \
 	--libdir=$(elibdir) \
-	--cache-file=config.cache \
 	--disable-silent-rules \
 	--enable-shared \
 	--disable-static \
 	--disable-gtk-doc \
 	--enable-nls \
 	--disable-rpath \
-	--disable-all-programs \
 	--enable-tls \
 	--enable-libuuid \
 	--enable-libblkid \
 	--enable-libmount \
+	--disable-libmount-force-mountinfo \
+	--disable-libsmartcols \
+	--disable-libfdisk \
 	--enable-mount \
+	--disable-losetup \
+	--disable-zramctl \
+	--disable-fsck \
+	--disable-partx \
 	--enable-uuidd \
+	--disable-mountpoint \
+	--disable-fallocate \
+	--disable-unshare \
+	--disable-nsenter \
+	--disable-setpriv \
+	--disable-eject \
 	--enable-agetty \
 	--enable-cramfs \
-	--enable-switch-root \
+	--disable-bfs \
+	--disable-minix \
+	--disable-fdformat \
+	--disable-hwclock \
+	--disable-wdctl \
+	--enable-switch_root \
+	--disable-pivot_root \
+	--disable-tunelp \
+	--disable-kill \
+	--disable-deprecated-last \
+	--disable-last \
+	--disable-utmpdump \
+	--disable-line \
+	--disable-mesg \
+	--disable-raw \
 	--enable-rename \
+	--disable-reset \
+	--disable-vipw \
+	--disable-newgrp \
+	--disable-chfn-chsh-password \
+	--disable-chfn-chsh \
 	--enable-chsh-only-listed \
+	--disable-login \
+	--disable-login-chown-vcs \
+	--disable-login-stat-mail \
+	--disable-nologin \
+	--disable-sulogin \
+	--disable-su \
+	--disable-runuser \
+	--disable-ul \
+	--disable-more \
+	--disable-pg \
+	--disable-setterm \
+	--disable-schedutils \
+	--disable-wall \
+	--disable-write \
+	--disable-bash-completion \
+	--disable-pylibmount \
 	--enable-pg-bell \
+	--disable-use-tty-group \
+	--disable-sulogin-emergency-mount \
+	--disable-makeinstall-chown \
+	--disable-makeinstall-setuid \
+	--disable-colors-default \
 	--with-gnu-ld \
 	--without-selinux \
 	--without-audit \
@@ -49,6 +99,7 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-utempter \
 	--without-user \
 	--without-systemd \
+	--without-systemdsystemunitdir \
 	--without-smack \
 	--without-python
 
@@ -65,12 +116,14 @@ INSTALL_ARGS   = \
 
 include ../../gar.mk
 
+# util-linux 2.26.2 fails to compile with gcc 5.2.0's link time optimization enabled.
+CFLAGS  := $(filter-out -flto, $(CFLAGS))  -fno-lto
+LDFLAGS := $(filter-out -flto, $(LDFLAGS)) -fno-lto
+
 pre-configure:
 	@$(call RUN_GETTEXTIZE)
 	@$(call RUN_AUTOTOOLS)
 	@$(call FIX_LIBTOOL,$(WORKSRC)/configure)
-	@$(if $(filter-out build,$(DESTIMG)),echo "scanf_cv_alloc_modifier=ms" >> $(WORKSRC)/config.cache)
-	@$(if $(filter-out build,$(DESTIMG)),echo "ax_cv_have_tls=yes"         >> $(WORKSRC)/config.cache)
 	@$(MAKECOOKIE)
 
 post-install:
