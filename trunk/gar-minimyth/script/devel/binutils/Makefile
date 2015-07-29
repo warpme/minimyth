@@ -24,8 +24,6 @@ BUILDDEPS = devel-tainted/devel-tainted devel/make
 WORKDIR   = $(WORKROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 COOKIEDIR = $(COOKIEROOTDIR)/$(DESTIMG)_$(CROSSIMG).d
 
-WORKSRC = $(WORKDIR)/$(patsubst %a,%,$(DISTNAME))
-
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
@@ -78,6 +76,14 @@ CXXFLAGS :=
 LDFLAGS  :=
 
 post-install:
+	@$(if $(filter $(DESTIMG)+$(CROSSIMG), build+build) , \
+		mkdir -p $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_includedir) ; \
+		rm -f $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_includedir)/libiberty.h ; \
+		cp $(WORKSRC)/include/libiberty.h $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_includedir)/libiberty.h ; \
+		mkdir -p $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir) ; \
+		rm -f $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir)/libiberty.a ; \
+		cp $(WORKSRC)/libiberty/libiberty.a $($(CROSSIMG)_DESTDIR)$($(CROSSIMG)_libdir)/libiberty.a , \
+	)
 	@$(if $(filter $(GARHOST), $(GARTARGET)) , \
 		rm -f $(DESTDIR)$(libdir)/libbfd.la , \
 		rm -f $(DESTDIR)$(prefix)/$(GARHOST)/$(GARTARGET)/lib/libbfd.la \
