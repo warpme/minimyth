@@ -1,0 +1,46 @@
+diff -Naur nfs-utils-1.2.7-old/tools/locktest/Makefile.am nfs-utils-1.2.7-new/tools/locktest/Makefile.am
+--- nfs-utils-1.2.7-old/tools/locktest/Makefile.am	2012-11-11 15:01:23.000000000 -0800
++++ nfs-utils-1.2.7-new/tools/locktest/Makefile.am	2015-07-28 15:47:59.712998983 -0700
+@@ -1,12 +1,13 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-CC=$(CC_FOR_BUILD)
++CC = @CC_FOR_BUILD@
++CFLAGS = @CFLAGS_FOR_BUILD@
++CPP = @CPP_FOR_BUILD@
++CPPFLAGS = @CPPFLAGS_FOR_BUILD@
++LDFLAGS = @LDFLAGS_FOR_BUILD@
+ LIBTOOL = @LIBTOOL@ --tag=CC
+ 
+ noinst_PROGRAMS = testlk
+ testlk_SOURCES = testlk.c
+-testlk_CFLAGS=$(CFLAGS_FOR_BUILD)
+-testlk_CPPFLAGS=$(CPPFLAGS_FOR_BUILD)
+-testlk_LDFLAGS=$(LDFLAGS_FOR_BUILD)
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+diff -Naur nfs-utils-1.2.7-old/tools/rpcdebug/Makefile.am nfs-utils-1.2.7-new/tools/rpcdebug/Makefile.am
+--- nfs-utils-1.2.7-old/tools/rpcdebug/Makefile.am	2012-11-11 15:01:23.000000000 -0800
++++ nfs-utils-1.2.7-new/tools/rpcdebug/Makefile.am	2015-07-28 15:52:26.626989690 -0700
+@@ -1,6 +1,10 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-CC=$(CC_FOR_BUILD)
++CC = @CC_FOR_BUILD@
++CFLAGS = @CFLAGS_FOR_BUILD@
++CPP = @CPP_FOR_BUILD@
++CPPFLAGS = @CPPFLAGS_FOR_BUILD@
++LDFLAGS = @LDFLAGS_FOR_BUILD@
+ LIBTOOL = @LIBTOOL@ --tag=CC
+ 
+ man8_MANS = rpcdebug.man
+@@ -8,8 +12,6 @@
+ 
+ sbin_PROGRAMS = rpcdebug
+ rpcdebug_SOURCES = rpcdebug.c
+-rpcdebug_CFLAGS=$(CFLAGS_FOR_BUILD)
+-rpcdebug_CPPFLAGS=$(CPPFLAGS_FOR_BUILD) -I$(top_srcdir)/support/include
+-rpcdebug_LDFLAGS=$(LDFLAGS_FOR_BUILD)
++rpcdebug_CPPFLAGS = -I$(top_srcdir)/support/include
+ 
+ MAINTAINERCLEANFILES = Makefile.in
