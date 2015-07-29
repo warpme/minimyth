@@ -17,6 +17,7 @@ BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
-	--disable-silent-rules
+	--disable-silent-rules \
+	--disable-iberty
 
 include ../../gar.mk
