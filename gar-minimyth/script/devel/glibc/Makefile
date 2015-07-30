@@ -39,10 +39,12 @@ CONFIGURE_SCRIPTS = custom
 BUILD_SCRIPTS     = $(WORKBLD)/Makefile
 INSTALL_SCRIPTS   = $(WORKBLD)/Makefile build-rpcgen
 
+# --enable-obsolete-rpc is required because libtirpc 0.3.2 still needs the cbc_crypt and ebc_crypt functions.
 CONFIGURE_ARGS  = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--cache-file=config.cache \
 	--enable-bind-now \
 	--enable-kernel=3.18.0 \
+	--enable-obsolete-rpc \
 	--disable-build-nscd \
 	--disable-nscd \
 	--without-gd \
