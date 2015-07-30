@@ -1,5 +1,5 @@
 GARNAME = nfs-utils
-GARVERSION = 1.2.7
+GARVERSION = 1.3.2
 CATEGORIES = net
 MASTER_SITES = http://downloads.sourceforge.net/project/nfs/$(GARNAME)/$(GARVERSION)/
 DISTFILES = $(DISTNAME).tar.bz2
@@ -10,16 +10,18 @@ DESCRIPTION =
 define BLURB
 endef
 
-DEPENDS = lang/c lang/cxx net/libtirpc utils/util-linux
+DEPENDS = lang/c net/libtirpc utils/util-linux
 
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 BUILD_SCRIPTS     = $(WORKSRC)/Makefile
 INSTALL_SCRIPTS   = $(WORKSRC)/Makefile
 
 CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
+	--disable-silent-rules \
 	--disable-nfsv4 \
 	--disable-nfsv41 \
 	--disable-gss \
+	--disable-svcgss \
 	--disable-kprefix \
 	--enable-uuid \
 	--enable-mount \
@@ -39,16 +41,11 @@ CONFIGURE_ARGS = $(DIRPATHS) --build=$(GARBUILD) --host=$(GARHOST) \
 	--without-krb5
 CONFIGURE_ENV = \
 	CFLAGS_FOR_BUILD="$(build_CFLAGS)" \
-	CXXFLAGS_FOR_BUILD="$(build_CXXFLAGS)" \
 	CPPFLAGS_FOR_BUILD="$(build_CPPFLAGS)" \
 	LDFLAGS_FOR_BUILD="$(build_LDFLAGS)" \
 	libblkid_cv_is_recent="yes"
 
 include ../../gar.mk
-
-# nfs-utils 1.2.7 fails to compile with gcc 5.2.0's link time optimization enabled.
-CFLAGS  := $(filter-out -flto, $(CFLAGS))  -fno-lto
-LDFLAGS := $(filter-out -flto, $(LDFLAGS)) -fno-lto
 
 pre-configure:
 	@$(call RUN_AUTOTOOLS)
