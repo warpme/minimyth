@@ -4,7 +4,7 @@ CATEGORIES = lib
 MASTER_SITES = https://github.com/Pulse-Eight/platform/archive/
 DISTFILES = $(GARVERSION).tar.gz
 PATCHFILES = \
-	$(DISTNAME)-libdir.patch
+	$(DISTNAME).patch.gar
 LICENSE = GPL2
 
 DESCRIPTION = 
