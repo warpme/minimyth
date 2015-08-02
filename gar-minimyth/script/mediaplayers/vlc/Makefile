@@ -5,7 +5,8 @@ MASTER_SITES  = http://download.videolan.org/pub/videolan/$(GARNAME)/$(GARVERSIO
 MASTER_SITES += http://download.videolan.org/pub/videolan/testing/$(DISTNAME)/
 DISTFILES = $(DISTNAME).tar.xz
 PATCHFILES = \
-	$(DISTNAME)-automake_1.13.patch
+	$(DISTNAME)-automake_1.13.patch \
+	$(DISTNAME)-vaapi_0.34.0.patch
 LICENSE = GPL2
 
 DESCRIPTION =
