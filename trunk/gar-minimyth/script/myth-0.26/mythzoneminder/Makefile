@@ -1,4 +1,4 @@
-db/mariadb= mythzoneminder
+GARNAME = mythzoneminder
 GARVERSION = $(MYTHTV_GARVERSION)
 CATEGORIES = $(CATEGORY)
 SOURCEPKG = $(CATEGORY)/mythtv
