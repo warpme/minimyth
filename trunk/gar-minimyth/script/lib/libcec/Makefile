@@ -23,6 +23,8 @@ INSTALL_SCRIPTS   = $(WORKBLD)/Makefile
 
 CONFIGURE_ARGS = \
 	-DCMAKE_INSTALL_PREFIX="$(prefix)" \
+	-DCMAKE_INSTALL_LIBDIR:PATH="$(patsubst $(prefix)/%,%,$(libdir))" \
+	-DCMAKE_INSTALL_LIBDIR_NOARCH:PATH="$(patsubst $(prefix)/%,%,$(libdir))" \
 	-DCMAKE_FIND_ROOT_PATH="$(DESTDIR)$(prefix)" \
 	-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM="NEVER" \
 	-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY="ONLY" \
