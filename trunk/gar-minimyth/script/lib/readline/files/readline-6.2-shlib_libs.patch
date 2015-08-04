@@ -1,6 +1,6 @@
 diff -Naur readline-6.2-old/configure readline-6.2-new/configure
 --- configure	2010-11-14 14:48:06.000000000 -0800
-+++ configure	2012-05-02 19:38:49.000000000 -0700
++++ configure	2015-08-04 15:05:59.020000305 -0700
 @@ -10450,10 +10450,10 @@
  $as_echo_n "checking configuration for building shared libraries... " >&6; }
          eval `TERMCAP_LIB=$TERMCAP_LIB ${CONFIG_SHELL-/bin/sh} ${srcdir}/support/shobj-conf -C "${CC}" -c ${host_cpu} -o ${host_os} -v ${host_vendor}`
@@ -18,7 +18,7 @@ diff -Naur readline-6.2-old/configure readline-6.2-new/configure
  
 diff -Naur readline-6.2-old/configure.in readline-6.2-new/configure.in
 --- configure.in	2010-11-14 14:41:48.000000000 -0800
-+++ configure.in	2012-05-02 19:38:41.000000000 -0700
++++ configure.in	2015-08-04 15:05:59.020000305 -0700
 @@ -214,10 +214,10 @@
          AC_MSG_CHECKING(configuration for building shared libraries)
          eval `TERMCAP_LIB=$TERMCAP_LIB ${CONFIG_SHELL-/bin/sh} ${srcdir}/support/shobj-conf -C "${CC}" -c ${host_cpu} -o ${host_os} -v ${host_vendor}`
@@ -34,3 +34,69 @@ diff -Naur readline-6.2-old/configure.in readline-6.2-new/configure.in
  	
          AC_SUBST(SHOBJ_CC)
          AC_SUBST(SHOBJ_CFLAGS)
+diff -Naur readline-6.2-old/support/shobj-conf readline-6.2-new/support/shobj-conf
+--- support/shobj-conf	2015-08-04 15:05:26.233000305 -0700
++++ support/shobj-conf	2015-08-04 15:05:59.020000305 -0700
+@@ -114,7 +114,7 @@
+ 	SHOBJ_LD='${CC}'
+ 	SHOBJ_LDFLAGS='-shared -Wl,-soname,$@'
+ 
+-	SHLIB_XLDFLAGS='-Wl,-rpath,$(libdir) -Wl,-soname,`basename $@ $(SHLIB_MINOR)`'
++	SHLIB_XLDFLAGS='-Wl,-soname,`basename $@ $(SHLIB_MINOR)`'
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)$(SHLIB_MINOR)'
+ 	;;
+ 
+@@ -135,7 +135,7 @@
+ 	if [ -x /usr/bin/objformat ] && [ "`/usr/bin/objformat`" = "elf" ]; then
+ 		SHOBJ_LDFLAGS='-shared -Wl,-soname,$@'
+ 
+-		SHLIB_XLDFLAGS='-Wl,-rpath,$(libdir)'
++		SHLIB_XLDFLAGS=''
+ 		SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	else
+ 		SHOBJ_LDFLAGS='-shared'
+@@ -151,7 +151,7 @@
+ 	SHOBJ_LD='${CC}'
+ 
+ 	SHOBJ_LDFLAGS='-shared -Wl,-soname,$@'
+-	SHLIB_XLDFLAGS='-Wl,-rpath,$(libdir)'
++	SHLIB_XLDFLAGS=''
+ 
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+@@ -252,7 +252,7 @@
+ 	SHOBJ_LD='${CC}'
+ 	SHOBJ_LDFLAGS='-shared -Wl,-soname,$@'
+ 
+-	SHLIB_XLDFLAGS='-rpath $(libdir)'
++	SHLIB_XLDFLAGS=''
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+ 
+@@ -260,7 +260,7 @@
+ 	SHOBJ_LD=ld
+ 	SHOBJ_LDFLAGS='-shared -soname $@ -expect_unresolved "*"'
+ 
+-	SHLIB_XLDFLAGS='-rpath $(libdir)'
++	SHLIB_XLDFLAGS=''
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+ 
+@@ -294,7 +294,7 @@
+ 	SHOBJ_LD='${CC}'
+ 	SHOBJ_LDFLAGS='-shared -Wl,-soname,$@'
+ 
+-	SHLIB_XLDFLAGS='-Wl,-rpath,$(libdir)'
++	SHLIB_XLDFLAGS=''
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+ 
+@@ -306,7 +306,7 @@
+ #	remove the `-no_unresolved'
+ 	SHOBJ_LDFLAGS='-shared -no_unresolved -soname $@'
+ 
+-	SHLIB_XLDFLAGS='-rpath $(libdir)'
++	SHLIB_XLDFLAGS=''
+ 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
+ 	;;
+ 
