@@ -171,14 +171,10 @@ INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
 
+# MythTV does not look in the default include install directory for dns_sd.h.
 CPPFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
-
-# needed to compile zeromq.
-CFLAGS   += -fPIC
-CXXFLAGS += -fPIC
-LDFLAGS  += -DPIC
 
 # mythtv master fails to compile with gcc 5.2.0's link time optimization enabled.
 CFLAGS   := $(filter-out -flto, $(CFLAGS))   -fno-lto

@@ -160,6 +160,7 @@ INSTALL_ENV   += PYTHONPATH=$(DESTDIR)$(PYTHON_libdir)/site-packages
 GAR_EXTRA_CONF += python/python/package-api.mk
 include ../../gar.mk
 
+# MythTV does not look in the default include install directory for dns_sd.h.
 CPPFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CFLAGS   += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
 CXXFLAGS += -I$(DESTDIR)$(includedir)/avahi-compat-libdns_sd
